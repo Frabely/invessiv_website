@@ -44,7 +44,7 @@ export function ThemeToggle(props: {
       onClick={() => {
         setThemeState((prev) => (prev === "light" ? "dark" : "light"));
       }}
-      className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 text-xs font-semibold text-[var(--color-foreground)] transition hover:bg-[var(--color-surface-muted)]"
+      className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px] hover:bg-[var(--color-surface)]"
     >
       {theme === "light" ? props.lightLabel : props.darkLabel}
     </button>

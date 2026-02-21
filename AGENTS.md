@@ -242,3 +242,4 @@ Outputs:
 - Bei neuer Logik oder Workflows frueh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
 - Refactoring kontinuierlich einplanen, sobald Komplexitaet oder Dateidichte ansteigt
 
+

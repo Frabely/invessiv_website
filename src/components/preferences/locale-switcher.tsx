@@ -9,7 +9,7 @@ export function LocaleSwitcher(props: {
   activeLocale: "de" | "en";
 }) {
   return (
-    <label className="flex items-center gap-2 text-xs font-semibold text-[var(--color-muted-foreground)]">
+    <label className="flex items-center gap-2 text-xs font-bold text-[var(--color-muted-foreground)]">
       <span>{props.label}</span>
       <select
         aria-label={props.label}
@@ -19,7 +19,7 @@ export function LocaleSwitcher(props: {
           document.cookie = `${localeCookieName}=${nextLocale}; path=/; max-age=31536000; samesite=lax`;
           window.location.reload();
         }}
-        className="rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs font-semibold text-[var(--color-foreground)] outline-none ring-[var(--color-primary)] transition focus:ring-2"
+        className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-2 py-1.5 text-xs font-extrabold text-[var(--color-foreground)] outline-none ring-[var(--accent)] transition focus:ring-2"
       >
         <option value="de">{props.deLabel}</option>
         <option value="en">{props.enLabel}</option>

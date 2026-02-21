@@ -7,8 +7,8 @@ export function ContactOptionsSection(props: {
   emailLabel: string;
 }) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 pt-10">
-      <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 text-[var(--color-foreground)]">
+    <section className="mx-auto w-full max-w-[1080px] px-4 pt-4">
+      <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 text-[var(--color-foreground)]">
         <h2 className="text-2xl font-black tracking-tight sm:text-3xl">
           {props.heading}
         </h2>
@@ -18,13 +18,13 @@ export function ContactOptionsSection(props: {
         <div className="mt-5 flex flex-wrap gap-3">
           <Link
             href="https://calendly.com/"
-            className="rounded-full bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--color-background)]"
+            className="rounded-xl border border-[color:rgba(20,184,166,0.55)] bg-[linear-gradient(140deg,rgba(20,184,166,0.35),rgba(15,118,110,0.42))] px-4 py-2 text-sm font-extrabold text-[var(--color-foreground)]"
           >
             {props.primaryCta}
           </Link>
           <Link
             href="mailto:kontakt@invessiv.de"
-            className="rounded-full border border-[var(--color-border)] px-5 py-2.5 text-sm font-semibold text-[var(--color-foreground)]"
+            className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2 text-sm font-extrabold text-[var(--color-foreground)]"
           >
             {props.emailLabel}
           </Link>

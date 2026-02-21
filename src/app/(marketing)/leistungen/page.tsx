@@ -15,7 +15,7 @@ export default async function LeistungenPage() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-6xl px-4 pb-6 pt-16">
+      <section className="mx-auto w-full max-w-[1080px] px-4 pb-3 pt-5">
         <h1 className="text-3xl font-black tracking-tight text-[var(--color-foreground)] sm:text-4xl">
           {dictionary.pages.leistungen.title}
         </h1>

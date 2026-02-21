@@ -7,24 +7,25 @@ import { siteConfig } from "@/config/site";
 
 export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-surface)]/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-[70px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
         <Link
           href="/"
-          className="text-lg font-extrabold tracking-tight text-[var(--color-foreground)]"
+          className="flex items-center gap-2 text-[15px] font-extrabold tracking-tight text-[var(--color-foreground)]"
         >
-          {siteConfig.name}
+          <span className="h-[34px] w-[34px] rounded-[10px] bg-[linear-gradient(145deg,var(--brand),var(--accent))] shadow-[0_10px_24px_rgba(20,184,166,0.34)]" />
+          <span>{siteConfig.name}</span>
         </Link>
         <div className="flex items-center gap-3">
           <nav
             aria-label="Hauptnavigation"
-            className="hidden gap-5 text-sm font-semibold text-[var(--color-muted-foreground)] md:flex"
+            className="hidden gap-2 text-sm font-bold text-[var(--color-muted-foreground)] md:flex"
           >
             {props.dictionary.navigation.main.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="transition-colors hover:text-[var(--color-foreground)]"
+                className="rounded-[10px] border border-transparent px-2.5 py-2 transition hover:border-[var(--color-border)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-foreground)]"
               >
                 {item.label}
               </Link>
@@ -49,17 +50,17 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
 
 export function SiteFooter(props: { dictionary: SiteDictionary }) {
   return (
-    <footer className="border-t border-[var(--color-border)] bg-[var(--color-surface-muted)]">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-[var(--color-muted-foreground)]">
+    <footer className="mt-5 border-t border-[var(--color-border)]">
+      <div className="mx-auto flex w-full max-w-[1080px] flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-[var(--color-muted-foreground)]">
         <p>
           © {new Date().getFullYear()} {siteConfig.name}
         </p>
-        <nav aria-label="Rechtliche Navigation" className="flex gap-4">
+        <nav aria-label="Rechtliche Navigation" className="flex flex-wrap gap-2">
           {props.dictionary.navigation.legal.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="underline-offset-4 hover:underline"
+              className="rounded-full border border-[var(--color-border)] px-3 py-1.5 text-xs font-semibold transition hover:bg-[var(--color-surface-muted)]"
             >
               {item.label}
             </Link>

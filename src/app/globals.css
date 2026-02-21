@@ -1,45 +1,73 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #f2f6fb;
   --foreground: #0f172a;
-  --surface: #ffffff;
-  --surface-muted: #eef2f7;
-  --border: #cfd8e3;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-muted: rgba(255, 255, 255, 0.75);
+  --border: rgba(15, 23, 42, 0.14);
   --muted-foreground: #475569;
   --primary: #0f172a;
+  --brand: #0d9488;
+  --accent: #d97706;
+  --line: rgba(15, 23, 42, 0.14);
+  --shell-bg:
+    radial-gradient(900px 500px at 10% -12%, rgba(13, 148, 136, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 94% -20%, rgba(217, 119, 6, 0.15), transparent 55%),
+    linear-gradient(180deg, #eef4fb, #eaf2fb 45%, #edf3fa);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #020817;
-    --foreground: #e2e8f0;
-    --surface: #0f172a;
-    --surface-muted: #111c31;
-    --border: #273449;
-    --muted-foreground: #94a3b8;
-    --primary: #e2e8f0;
+    --background: #0b1220;
+    --foreground: #e5e7eb;
+    --surface: rgba(17, 24, 39, 0.9);
+    --surface-muted: rgba(17, 24, 39, 0.75);
+    --border: rgba(255, 255, 255, 0.14);
+    --muted-foreground: #9ca3af;
+    --primary: #14b8a6;
+    --brand: #14b8a6;
+    --accent: #f59e0b;
+    --line: rgba(255, 255, 255, 0.14);
+    --shell-bg:
+      radial-gradient(900px 500px at 15% -10%, rgba(20, 184, 166, 0.24), transparent 55%),
+      radial-gradient(900px 500px at 90% -20%, rgba(245, 158, 11, 0.2), transparent 55%),
+      linear-gradient(180deg, #0b1220, #0f172a 45%, #111827);
   }
 }
 
 :root[data-theme="light"] {
-  --background: #f8fafc;
+  --background: #f2f6fb;
   --foreground: #0f172a;
-  --surface: #ffffff;
-  --surface-muted: #eef2f7;
-  --border: #cfd8e3;
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-muted: rgba(255, 255, 255, 0.75);
+  --border: rgba(15, 23, 42, 0.14);
   --muted-foreground: #475569;
   --primary: #0f172a;
+  --brand: #0d9488;
+  --accent: #d97706;
+  --line: rgba(15, 23, 42, 0.14);
+  --shell-bg:
+    radial-gradient(900px 500px at 10% -12%, rgba(13, 148, 136, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 94% -20%, rgba(217, 119, 6, 0.15), transparent 55%),
+    linear-gradient(180deg, #eef4fb, #eaf2fb 45%, #edf3fa);
 }
 
 :root[data-theme="dark"] {
-  --background: #020817;
-  --foreground: #e2e8f0;
-  --surface: #0f172a;
-  --surface-muted: #111c31;
-  --border: #273449;
-  --muted-foreground: #94a3b8;
-  --primary: #e2e8f0;
+  --background: #0b1220;
+  --foreground: #e5e7eb;
+  --surface: rgba(17, 24, 39, 0.9);
+  --surface-muted: rgba(17, 24, 39, 0.75);
+  --border: rgba(255, 255, 255, 0.14);
+  --muted-foreground: #9ca3af;
+  --primary: #14b8a6;
+  --brand: #14b8a6;
+  --accent: #f59e0b;
+  --line: rgba(255, 255, 255, 0.14);
+  --shell-bg:
+    radial-gradient(900px 500px at 15% -10%, rgba(20, 184, 166, 0.24), transparent 55%),
+    radial-gradient(900px 500px at 90% -20%, rgba(245, 158, 11, 0.2), transparent 55%),
+    linear-gradient(180deg, #0b1220, #0f172a 45%, #111827);
 }
 
 @theme inline {
@@ -55,7 +83,8 @@
 }
 
 body {
-  background: var(--background);
+  min-height: 100%;
+  background: var(--shell-bg);
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Segoe UI", Arial, sans-serif;
 }

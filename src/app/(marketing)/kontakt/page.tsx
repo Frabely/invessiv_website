@@ -17,7 +17,7 @@ export default async function KontaktPage() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-6xl px-4 pb-6 pt-16">
+      <section className="mx-auto w-full max-w-[1080px] px-4 pb-3 pt-5">
         <h1 className="text-3xl font-black tracking-tight text-[var(--color-foreground)] sm:text-4xl">
           {dictionary.pages.kontakt.title}
         </h1>
@@ -31,7 +31,7 @@ export default async function KontaktPage() {
         primaryCta={dictionary.cta.primary}
         emailLabel={dictionary.pages.kontakt.emailLabel}
       />
-      <section className="mx-auto w-full max-w-6xl px-4 pb-20 pt-8">
+      <section className="mx-auto w-full max-w-[1080px] px-4 pb-8 pt-3">
         <ContactRequestForm
           title={form.title}
           description={form.description}

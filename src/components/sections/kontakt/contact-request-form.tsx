@@ -72,7 +72,7 @@ export function ContactRequestForm(props: {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
+      className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
     >
       <h2 className="text-xl font-black text-[var(--color-foreground)]">
         {props.title}
@@ -94,7 +94,7 @@ export function ContactRequestForm(props: {
             onChange={(event) =>
               setData((prev) => ({ ...prev, name: event.target.value }))
             }
-            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--color-primary)] transition focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--accent)] transition focus:ring-2"
           />
           {getErrorMessage("name") ? (
             <span className="mt-1 block text-xs text-rose-600">
@@ -115,7 +115,7 @@ export function ContactRequestForm(props: {
             onChange={(event) =>
               setData((prev) => ({ ...prev, email: event.target.value }))
             }
-            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--color-primary)] transition focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--accent)] transition focus:ring-2"
           />
           {getErrorMessage("email") ? (
             <span className="mt-1 block text-xs text-rose-600">
@@ -137,7 +137,7 @@ export function ContactRequestForm(props: {
             onChange={(event) =>
               setData((prev) => ({ ...prev, message: event.target.value }))
             }
-            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--color-primary)] transition focus:ring-2"
+            className="mt-1 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-sm text-[var(--color-foreground)] outline-none ring-[var(--accent)] transition focus:ring-2"
           />
           {getErrorMessage("message") ? (
             <span className="mt-1 block text-xs text-rose-600">
@@ -149,7 +149,7 @@ export function ContactRequestForm(props: {
 
       <button
         type="submit"
-        className="mt-5 rounded-full bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--color-background)] transition hover:opacity-90"
+        className="mt-5 rounded-xl border border-[color:rgba(245,158,11,0.48)] bg-[linear-gradient(140deg,rgba(245,158,11,0.2),rgba(180,83,9,0.25))] px-4 py-2 text-sm font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
       >
         {props.submitLabel}
       </button>
