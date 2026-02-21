@@ -7,13 +7,15 @@ export function FoundationSection(props: {
       <h2 className="text-2xl font-black tracking-tight text-[var(--color-foreground)] sm:text-3xl">
         {props.heading}
       </h2>
-      <div className="mt-3 grid gap-3 md:grid-cols-3">
-        {props.items.map((item) => (
+      <div className="mt-3 grid gap-3 md:grid-cols-12">
+        {props.items.map((item, index) => (
           <article
             key={item.title}
-            className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+            className={`mock-card rounded-3xl p-5 md:col-span-4 ${
+              index === 0 ? "md:col-span-5" : ""
+            } ${index === 2 ? "md:col-span-7" : ""}`}
           >
-            <h3 className="text-base font-bold text-[var(--color-foreground)]">
+            <h3 className="text-base font-black text-[var(--color-foreground)]">
               {item.title}
             </h3>
             <p className="mt-2 text-sm leading-6 text-[var(--color-muted-foreground)]">

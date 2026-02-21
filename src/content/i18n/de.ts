@@ -185,6 +185,12 @@ export const deDictionary: SiteDictionary = {
       portalHint: "UI ist sichtbar, Auth-Logik ist noch deaktiviert.",
       portalLoginButton: "Einloggen (bald)",
       portalRegisterButton: "Account erstellen (bald)",
+      portalContactHeading: "Kontakt",
+      portalContactHint: "Schnellster Weg: Calendly oder kurze Nachricht.",
+      portalGoalPlaceholder: "Projektziel",
+      portalAudiencePlaceholder: "Zielgruppe",
+      portalDeadlinePlaceholder: "Gewuenschter Go-live Termin",
+      portalMessagePlaceholder: "Kurze Projektbeschreibung",
       portalMockNote: "Mockup: Login folgt spaeter mit sicherem Backend.",
     },
     leistungen: {

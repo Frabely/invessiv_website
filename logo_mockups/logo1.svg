@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 180" role="img" aria-label="Invessiv Logo">
+  <defs>
+    <style>
+      :root { --c:#111827; }
+      .c { fill: var(--c); }
+      .t { font: 700 72px "Inter", "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; letter-spacing: -0.5px; }
+    </style>
+  </defs>
+
+  <!-- Icon -->
+  <g transform="translate(40,30)">
+    <rect x="0" y="0" width="120" height="120" rx="28" class="c"></rect>
+    <!-- "I" -->
+    <rect x="34" y="30" width="14" height="60" fill="#fff" rx="7"></rect>
+    <!-- "V" (geometrisch, kein Pfeil) -->
+    <path d="M62 32 L78 90 L94 32" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"></path>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="190" y="115" class="c t">Invessiv</text>
+</svg>

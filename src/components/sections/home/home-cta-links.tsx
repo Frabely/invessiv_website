@@ -11,7 +11,7 @@ export function HomeCtaLinks(props: {
     <div className="mt-4 flex flex-wrap gap-2.5">
       <Link
         href="/kontakt"
-        className="rounded-xl border border-[color:rgba(20,184,166,0.55)] bg-[linear-gradient(140deg,rgba(20,184,166,0.35),rgba(15,118,110,0.42))] px-4 py-2.5 text-sm font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+        className="mock-btn-primary rounded-full px-4 py-2.5 text-sm font-extrabold transition hover:-translate-y-[1px]"
         onClick={() =>
           trackCtaClick({
             kind: "primary",
@@ -24,7 +24,7 @@ export function HomeCtaLinks(props: {
       </Link>
       <Link
         href="/vorlagen"
-        className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-4 py-2.5 text-sm font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px] hover:bg-[var(--color-surface)]"
+        className="mock-btn-soft rounded-full px-4 py-2.5 text-sm font-extrabold transition hover:-translate-y-[1px] hover:bg-[var(--color-surface)]"
         onClick={() =>
           trackCtaClick({
             kind: "secondary",

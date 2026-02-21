@@ -70,6 +70,12 @@ export type SiteDictionary = {
       portalHint: string;
       portalLoginButton: string;
       portalRegisterButton: string;
+      portalContactHeading: string;
+      portalContactHint: string;
+      portalGoalPlaceholder: string;
+      portalAudiencePlaceholder: string;
+      portalDeadlinePlaceholder: string;
+      portalMessagePlaceholder: string;
       portalMockNote: string;
     };
     leistungen: {

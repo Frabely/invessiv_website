@@ -179,6 +179,12 @@ export const enDictionary: SiteDictionary = {
       portalHint: "UI is visible, authentication logic is still disabled.",
       portalLoginButton: "Log in (soon)",
       portalRegisterButton: "Create account (soon)",
+      portalContactHeading: "Contact",
+      portalContactHint: "Fastest path: Calendly or a short message.",
+      portalGoalPlaceholder: "Project goal",
+      portalAudiencePlaceholder: "Audience",
+      portalDeadlinePlaceholder: "Preferred go-live date",
+      portalMessagePlaceholder: "Short project brief",
       portalMockNote: "Mockup: login will be added later with secure backend.",
     },
     leistungen: {

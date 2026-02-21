@@ -11,23 +11,27 @@ import { siteConfig } from "@/config/site";
 
 export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const brandName = siteConfig.name.charAt(0).toUpperCase() + siteConfig.name.slice(1);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-[70px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-surface)]/74 backdrop-blur-xl">
+      <div className="mx-auto flex h-[86px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
         <Link
           href="/"
-          className="flex items-center"
+          className="flex h-full items-center gap-3"
         >
-          <span className="relative h-[40px] w-[176px] overflow-hidden rounded-md">
+          <span className="relative h-14 w-14 overflow-hidden rounded-md">
             <Image
               src="/logo2.png"
               alt={siteConfig.name}
               fill
-              className="object-contain object-left [clip-path:inset(4%_0_18%_0)]"
-              sizes="176px"
+              className="object-cover object-left"
+              sizes="56px"
               priority
             />
+          </span>
+          <span className="text-[1.9rem] font-black tracking-tight text-[var(--color-foreground)]">
+            {brandName}
           </span>
         </Link>
 
@@ -40,7 +44,7 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-[10px] border border-transparent px-2.5 py-2 transition hover:border-[var(--color-border)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-foreground)]"
+                className="rounded-full border border-transparent px-3 py-2 transition hover:border-[var(--color-border)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-foreground)]"
               >
                 {item.label}
               </Link>
@@ -50,7 +54,7 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
           <div className="hidden items-center gap-2 md:flex">
             <button
               type="button"
-              className="rounded-xl border border-[color:rgba(245,158,11,0.48)] bg-[linear-gradient(140deg,rgba(245,158,11,0.2),rgba(180,83,9,0.25))] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+              className="mock-btn-soft rounded-full px-3 py-2 text-xs font-extrabold transition hover:-translate-y-[1px]"
             >
               {props.dictionary.actions.login}
             </button>
@@ -67,7 +71,7 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
             />
             <Link
               href="https://calendly.com/"
-              className="rounded-xl border border-[color:rgba(20,184,166,0.55)] bg-[linear-gradient(140deg,rgba(20,184,166,0.35),rgba(15,118,110,0.42))] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+              className="mock-btn-primary rounded-full px-3 py-2 text-xs font-extrabold transition hover:-translate-y-[1px]"
             >
               {props.dictionary.actions.call}
             </Link>

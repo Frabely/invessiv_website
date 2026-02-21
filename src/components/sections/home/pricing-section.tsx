@@ -13,11 +13,13 @@ export function PricingSection(props: {
         {props.heading}
       </h2>
       <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">{props.hint}</p>
-      <div className="mt-3 grid gap-3 md:grid-cols-3">
-        {props.plans.map((plan) => (
+      <div className="mt-3 grid gap-3 md:grid-cols-12">
+        {props.plans.map((plan, index) => (
           <article
             key={plan.title}
-            className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+            className={`mock-card rounded-3xl p-5 md:col-span-4 ${
+              index === 1 ? "md:scale-[1.01]" : ""
+            }`}
           >
             <h3 className="text-base font-black text-[var(--color-foreground)]">
               {plan.title}
@@ -32,7 +34,7 @@ export function PricingSection(props: {
             </ul>
             <Link
               href="/kontakt"
-              className="mt-4 inline-flex rounded-xl border border-[color:rgba(245,158,11,0.48)] bg-[linear-gradient(140deg,rgba(245,158,11,0.2),rgba(180,83,9,0.25))] px-3.5 py-2 text-sm font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+              className="mock-btn-primary mt-4 inline-flex rounded-full px-3.5 py-2 text-sm font-extrabold transition hover:-translate-y-[1px]"
             >
               {props.buttonLabel}
             </Link>

@@ -9,13 +9,15 @@ export function DifferenceSection(props: {
         {props.heading}
       </h2>
       <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">{props.hint}</p>
-      <div className="mt-3 grid gap-3 md:grid-cols-3">
-        {props.items.map((item) => (
+      <div className="mt-3 grid gap-3 md:grid-cols-12">
+        {props.items.map((item, index) => (
           <article
             key={item.title}
-            className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4"
+            className={`mock-card rounded-3xl p-4 md:col-span-4 ${
+              index === 1 ? "md:translate-y-2" : ""
+            }`}
           >
-            <h3 className="text-base font-bold text-[var(--color-foreground)]">
+            <h3 className="text-base font-black text-[var(--color-foreground)]">
               {item.title}
             </h3>
             <p className="mt-2 text-sm leading-6 text-[var(--color-muted-foreground)]">

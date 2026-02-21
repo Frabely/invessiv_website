@@ -75,6 +75,12 @@ export default async function HomePage() {
           hint={dictionary.pages.home.portalHint}
           loginLabel={dictionary.pages.home.portalLoginButton}
           registerLabel={dictionary.pages.home.portalRegisterButton}
+          contactHeading={dictionary.pages.home.portalContactHeading}
+          contactHint={dictionary.pages.home.portalContactHint}
+          goalPlaceholder={dictionary.pages.home.portalGoalPlaceholder}
+          audiencePlaceholder={dictionary.pages.home.portalAudiencePlaceholder}
+          deadlinePlaceholder={dictionary.pages.home.portalDeadlinePlaceholder}
+          messagePlaceholder={dictionary.pages.home.portalMessagePlaceholder}
           mockNote={dictionary.pages.home.portalMockNote}
         />
       </Reveal>
