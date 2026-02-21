@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { Locale } from "@/config/i18n";
 import { ThemeToggle } from "@/components/preferences/theme-toggle";
@@ -16,10 +17,18 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
       <div className="mx-auto flex h-[70px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 text-[15px] font-extrabold tracking-tight text-[var(--color-foreground)]"
+          className="flex items-center gap-2"
         >
-          <span className="h-[34px] w-[34px] rounded-[10px] bg-[linear-gradient(145deg,var(--brand),var(--accent))] shadow-[0_10px_24px_rgba(20,184,166,0.34)]" />
-          <span>{siteConfig.name}</span>
+          <span className="relative h-[42px] w-[176px] overflow-hidden rounded-md">
+            <Image
+              src="/logo2.png"
+              alt={siteConfig.name}
+              fill
+              className="object-cover object-center [clip-path:inset(6%_0_12%_0)] [mix-blend-mode:screen]"
+              sizes="176px"
+              priority
+            />
+          </span>
         </Link>
 
         <div className="flex items-center gap-2">
