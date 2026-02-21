@@ -1,26 +1,37 @@
-﻿import Link from "next/link";
-import { siteConfig } from "@/config/site";
+import type { Metadata } from "next";
+import { DeliveryFlowSection } from "@/components/sections/home/delivery-flow-section";
+import { FoundationSection } from "@/components/sections/home/foundation-section";
+import { HeroSection } from "@/components/sections/home/hero-section";
+import { getRequestI18n } from "@/lib/i18n/server";
 
-export default function HomePage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const { dictionary } = await getRequestI18n();
+  return {
+    title: dictionary.pages.home.metaTitle,
+    description: dictionary.pages.home.metaDescription,
+  };
+}
+
+export default async function HomePage() {
+  const { dictionary } = await getRequestI18n();
+
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-20">
-      <p className="inline-flex rounded-full bg-sky-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-sky-800">
-        Next.js Foundation
-      </p>
-      <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-        Mehrseitige Website-Struktur fuer skalierbare Landing- und Produktseiten.
-      </h1>
-      <p className="mt-4 max-w-2xl text-lg text-slate-600">
-        Diese Basis trennt Marketingseiten, Legal-Seiten und Shared Komponenten klar voneinander.
-      </p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Link href="/kontakt" className="rounded-full bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-700">
-          {siteConfig.primaryCta}
-        </Link>
-        <Link href="/vorlagen" className="rounded-full border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800 transition hover:bg-slate-100">
-          {siteConfig.secondaryCta}
-        </Link>
-      </div>
-    </section>
+    <>
+      <HeroSection
+        badge={dictionary.pages.home.badge}
+        title={dictionary.pages.home.title}
+        description={dictionary.pages.home.description}
+        primaryCta={dictionary.cta.primary}
+        secondaryCta={dictionary.cta.secondary}
+      />
+      <FoundationSection
+        heading={dictionary.pages.home.foundationHeading}
+        items={dictionary.pages.home.foundationItems}
+      />
+      <DeliveryFlowSection
+        heading={dictionary.pages.home.flowHeading}
+        steps={dictionary.pages.home.flowSteps}
+      />
+    </>
   );
 }

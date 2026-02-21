@@ -1,7 +1,11 @@
-﻿export default function LegalLayout({
+export default function LegalLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main className="bg-white text-slate-900">{children}</main>;
+  return (
+    <main className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
+      {children}
+    </main>
+  );
 }

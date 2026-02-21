@@ -1,15 +1,20 @@
-﻿import { SiteFooter, SiteHeader } from "@/components/layout/site-shell";
+import { SiteFooter, SiteHeader } from "@/components/layout/site-shell";
+import { OrganizationJsonLd } from "@/components/seo/organization-json-ld";
+import { getRequestI18n } from "@/lib/i18n/server";
 
-export default function MarketingLayout({
+export default async function MarketingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, dictionary } = await getRequestI18n();
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <SiteHeader />
+    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
+      <OrganizationJsonLd />
+      <SiteHeader locale={locale} dictionary={dictionary} />
       <main>{children}</main>
-      <SiteFooter />
+      <SiteFooter dictionary={dictionary} />
     </div>
   );
 }

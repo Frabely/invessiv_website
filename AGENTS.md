@@ -15,7 +15,8 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
 - Accessibility (WCAG 2.2 AA) und Performance (Core Web Vitals) sind Pflicht
-- Responsives Design ist Pflicht: Die Website muss auf Handy, Tablet und Desktop zuverlässig gut aussehen und nutzbar sein
+- Dark- und Light-Mode sind Pflicht; beide Themes muessen visuell konsistent und voll nutzbar sein
+- Mehrsprachigkeit ist Pflichtfaehigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
 - Security by default (least privilege, keine Secrets im Repo)
 - Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
 
@@ -181,10 +182,11 @@ Outputs:
 
 ## Architektur- und Code-Standards (ergänzend)
 - App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, später `(app)`), um Verantwortlichkeiten klar zu trennen
-- Shared UI in `src/components`, Routing-/Site-Konstanten in `src/config`, reine Hilfslogik in `src/lib` halten
+- Projektstruktur immer aktiv sauber halten: keine ueberfuellten Ordner, stattdessen fachlich aufteilen und konsistent benennen
+- Sobald ein Ordner zu viele Dateien/Verantwortlichkeiten aufnimmt, in Submodule (z. B. pro Feature/Domain) refactoren
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
-- Inhalte und Copy i18n-ready anlegen (externe Content-Dateien statt harte Strings in vielen Komponenten)
+- Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
 - Feature-Flags für unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
 - Öffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur für wirklich öffentliche Werte)
 
@@ -231,4 +233,12 @@ Outputs:
 - Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
 - Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
 
+
+
+## Senior-Entwickler Vorgehen (verbindlich)
+- Vor Implementierung erst Scope, Abhaengigkeiten und Risiken kurz festziehen; dann in kleinen, reviewbaren Schritten liefern
+- Erst Struktur, dann Features: Module/Ordner nach Verantwortung schneiden, keine Sammelordner mit zu vielen Dateien
+- Pro Aenderung klare Verantwortlichkeit: UI, Domain-Logik, Konfiguration und Telemetrie getrennt halten
+- Bei neuer Logik oder Workflows frueh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
+- Refactoring kontinuierlich einplanen, sobald Komplexitaet oder Dateidichte ansteigt
 
