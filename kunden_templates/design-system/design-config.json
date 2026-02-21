@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "guardrails": {
+    "maxStrongEffects": 1,
+    "maxEffectsTotal": 3,
+    "maxOrnaments": 2,
+    "requirePrimaryCtaAboveFold": true,
+    "requireSecondaryCtaAboveFold": true
+  },
+  "themes": [
+    {
+      "id": "editorial-slate",
+      "label": "Editorial Slate",
+      "weight": 34,
+      "tokens": {
+        "bg": "#f5f7fb",
+        "surface": "#ffffff",
+        "surface2": "#ecf1f9",
+        "text": "#132235",
+        "muted": "#4f6178",
+        "line": "#d8e1ee",
+        "primary": "#0f4d82",
+        "primaryStrong": "#0a385f",
+        "accent": "#cf8a2d",
+        "radius": "16px",
+        "font": "'Manrope','Segoe UI',Arial,sans-serif"
+      },
+      "allowedLayouts": ["split", "editorial"],
+      "allowedOrnaments": ["soft-grid", "blobs"]
+    },
+    {
+      "id": "sunset-contrast",
+      "label": "Sunset Contrast",
+      "weight": 22,
+      "tokens": {
+        "bg": "#fff8f2",
+        "surface": "#ffffff",
+        "surface2": "#fff0df",
+        "text": "#312015",
+        "muted": "#72553f",
+        "line": "#f0d2bc",
+        "primary": "#b94f1f",
+        "primaryStrong": "#8c3711",
+        "accent": "#146a5c",
+        "radius": "18px",
+        "font": "'Plus Jakarta Sans','Segoe UI',Arial,sans-serif"
+      },
+      "allowedLayouts": ["split", "immersive"],
+      "allowedOrnaments": ["blobs", "mesh"]
+    },
+    {
+      "id": "clean-tech",
+      "label": "Clean Tech",
+      "weight": 30,
+      "tokens": {
+        "bg": "#eef5f4",
+        "surface": "#ffffff",
+        "surface2": "#e4efed",
+        "text": "#0f2a28",
+        "muted": "#436461",
+        "line": "#c8dedb",
+        "primary": "#0f6f66",
+        "primaryStrong": "#0a554e",
+        "accent": "#cf7f2a",
+        "radius": "14px",
+        "font": "'Space Grotesk','Segoe UI',Arial,sans-serif"
+      },
+      "allowedLayouts": ["centered", "split"],
+      "allowedOrnaments": ["soft-grid", "mesh"]
+    },
+    {
+      "id": "dark-glass",
+      "label": "Dark Glass",
+      "weight": 14,
+      "tokens": {
+        "bg": "#0f1728",
+        "surface": "#111d31",
+        "surface2": "#15243d",
+        "text": "#e7f0ff",
+        "muted": "#a6bad9",
+        "line": "#2b3f61",
+        "primary": "#4e8fff",
+        "primaryStrong": "#3468c4",
+        "accent": "#f4b46a",
+        "radius": "18px",
+        "font": "'Sora','Segoe UI',Arial,sans-serif"
+      },
+      "allowedLayouts": ["immersive", "split"],
+      "allowedOrnaments": ["noise", "mesh"]
+    }
+  ],
+  "layouts": {
+    "hero": [
+      { "id": "split", "weight": 42 },
+      { "id": "centered", "weight": 32 },
+      { "id": "editorial", "weight": 17 },
+      { "id": "immersive", "weight": 9 }
+    ],
+    "trust": [
+      { "id": "metrics", "weight": 45 },
+      { "id": "testimonials", "weight": 30 },
+      { "id": "timeline", "weight": 25 }
+    ],
+    "pricing": [
+      { "id": "three-cards", "weight": 62 },
+      { "id": "comparison", "weight": 23 },
+      { "id": "steps", "weight": 15 }
+    ],
+    "faq": [
+      { "id": "two-column", "weight": 67 },
+      { "id": "accordion", "weight": 33 }
+    ]
+  },
+  "components": {
+    "nav": [
+      { "id": "inline", "weight": 56 },
+      { "id": "pill", "weight": 44 }
+    ],
+    "card": [
+      { "id": "soft", "weight": 53 },
+      { "id": "outline", "weight": 32 },
+      { "id": "glass", "weight": 15 }
+    ]
+  },
+  "effects": [
+    {
+      "id": "parallax-hero",
+      "weight": 30,
+      "strength": "strong",
+      "allowedHeroLayouts": ["immersive", "editorial"],
+      "incompatibleWith": ["tilt-cards"],
+      "description": "Subtiles Parallax fuer Hero-Hintergrundebenen"
+    },
+    {
+      "id": "sticky-cta-bar",
+      "weight": 36,
+      "strength": "medium",
+      "allowedHeroLayouts": ["split", "centered", "editorial", "immersive"],
+      "incompatibleWith": [],
+      "description": "Kompakte Sticky-CTA-Leiste auf Mobile"
+    },
+    {
+      "id": "stagger-reveal",
+      "weight": 54,
+      "strength": "medium",
+      "allowedHeroLayouts": ["split", "centered", "editorial", "immersive"],
+      "incompatibleWith": [],
+      "description": "Abschnitte laden zeitversetzt ein"
+    },
+    {
+      "id": "scroll-progress",
+      "weight": 28,
+      "strength": "light",
+      "allowedHeroLayouts": ["split", "centered", "editorial", "immersive"],
+      "incompatibleWith": [],
+      "description": "Schmale Fortschrittsleiste beim Scrollen"
+    },
+    {
+      "id": "tilt-cards",
+      "weight": 22,
+      "strength": "medium",
+      "allowedHeroLayouts": ["split", "centered"],
+      "incompatibleWith": ["parallax-hero"],
+      "description": "Dezenter Mouse-Tilt auf Angebotskarten"
+    }
+  ],
+  "ornaments": [
+    { "id": "soft-grid", "weight": 36 },
+    { "id": "blobs", "weight": 32 },
+    { "id": "mesh", "weight": 20 },
+    { "id": "noise", "weight": 12 }
+  ]
+}
