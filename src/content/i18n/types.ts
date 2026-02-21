@@ -58,22 +58,28 @@ export type SiteDictionary = {
     leistungen: {
       metaTitle: string;
       metaDescription: string;
+      badge: string;
       title: string;
       description: string;
+      hint: string;
       sectionHeading: string;
     };
     vorlagen: {
       metaTitle: string;
       metaDescription: string;
+      badge: string;
       title: string;
       description: string;
+      hint: string;
       sectionHeading: string;
     };
     kontakt: {
       metaTitle: string;
       metaDescription: string;
+      badge: string;
       title: string;
       description: string;
+      hint: string;
       optionsHeading: string;
       optionsDescription: string;
       emailLabel: string;

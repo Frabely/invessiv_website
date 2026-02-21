@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { PageIntroCard } from "@/components/sections/shared/page-intro-card";
 import { TemplateProductsSection } from "@/components/sections/vorlagen/template-products-section";
 import { getRequestI18n } from "@/lib/i18n/server";
 
@@ -15,14 +16,14 @@ export default async function VorlagenPage() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-[1080px] px-4 pb-3 pt-5">
-        <h1 className="text-3xl font-black tracking-tight text-[var(--color-foreground)] sm:text-4xl">
-          {dictionary.pages.vorlagen.title}
-        </h1>
-        <p className="mt-3 max-w-2xl text-[var(--color-muted-foreground)]">
-          {dictionary.pages.vorlagen.description}
-        </p>
-      </section>
+      <PageIntroCard
+        badge={dictionary.pages.vorlagen.badge}
+        title={dictionary.pages.vorlagen.title}
+        description={dictionary.pages.vorlagen.description}
+        hint={dictionary.pages.vorlagen.hint}
+        primaryAction={{ href: "/kontakt", label: dictionary.cta.secondary }}
+        secondaryAction={{ href: "/leistungen", label: dictionary.cta.primary }}
+      />
       <TemplateProductsSection
         heading={dictionary.pages.vorlagen.sectionHeading}
         ctaLabel={dictionary.cta.secondary}

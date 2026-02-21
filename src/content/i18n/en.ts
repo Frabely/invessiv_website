@@ -147,24 +147,30 @@ export const enDictionary: SiteDictionary = {
     leistungen: {
       metaTitle: "Services | invessiv",
       metaDescription: "Service packages, delivery scope, and comparison logic.",
+      badge: "Service Focus",
       title: "Services",
       description: "Service packages, delivery scope, and comparison logic.",
+      hint: "Clear offer modules with low coordination overhead.",
       sectionHeading: "Service models across growth stages",
     },
     vorlagen: {
       metaTitle: "Templates | invessiv",
       metaDescription:
         "Sellable roadmap assets, AGENTS bundles, and conversion template previews.",
+      badge: "Template Products",
       title: "Templates",
       description:
         "Sellable roadmap assets, AGENTS bundles, and conversion template previews.",
+      hint: "Ready-to-use assets with explicit pricing and delivery scope.",
       sectionHeading: "Ready-to-deploy template products",
     },
     kontakt: {
       metaTitle: "Contact | invessiv",
       metaDescription: "Direct contact flow with booking and project request form.",
+      badge: "Direct Contact",
       title: "Contact",
       description: "Direct contact flow with booking and project request form.",
+      hint: "Book an intro call or send a short request - both are immediately available.",
       optionsHeading: "Direct contact with minimal friction",
       optionsDescription:
         "For fast alignment: book an intro call or send a direct request. Both routes feed the same project backlog.",

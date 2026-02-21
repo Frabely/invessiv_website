@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ContactOptionsSection } from "@/components/sections/kontakt/contact-options-section";
 import { ContactRequestForm } from "@/components/sections/kontakt/contact-request-form";
+import { PageIntroCard } from "@/components/sections/shared/page-intro-card";
 import { getRequestI18n } from "@/lib/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,14 +18,14 @@ export default async function KontaktPage() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-[1080px] px-4 pb-3 pt-5">
-        <h1 className="text-3xl font-black tracking-tight text-[var(--color-foreground)] sm:text-4xl">
-          {dictionary.pages.kontakt.title}
-        </h1>
-        <p className="mt-3 max-w-2xl text-[var(--color-muted-foreground)]">
-          {dictionary.pages.kontakt.description}
-        </p>
-      </section>
+      <PageIntroCard
+        badge={dictionary.pages.kontakt.badge}
+        title={dictionary.pages.kontakt.title}
+        description={dictionary.pages.kontakt.description}
+        hint={dictionary.pages.kontakt.hint}
+        primaryAction={{ href: "/kontakt", label: dictionary.cta.primary }}
+        secondaryAction={{ href: "/vorlagen", label: dictionary.cta.secondary }}
+      />
       <ContactOptionsSection
         heading={dictionary.pages.kontakt.optionsHeading}
         description={dictionary.pages.kontakt.optionsDescription}

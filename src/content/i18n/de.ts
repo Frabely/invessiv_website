@@ -152,26 +152,32 @@ export const deDictionary: SiteDictionary = {
     leistungen: {
       metaTitle: "Leistungen | invessiv",
       metaDescription: "Bereich fuer Leistungsbausteine, Pakete und Vergleichslogik.",
+      badge: "Service-Fokus",
       title: "Leistungen",
       description: "Bereich fuer Leistungsbausteine, Pakete und Vergleichslogik.",
+      hint: "Klare Angebotsmodule mit reduziertem Aufwand in der Abstimmung.",
       sectionHeading: "Leistungsmodelle fuer verschiedene Wachstumsphasen",
     },
     vorlagen: {
       metaTitle: "Vorlagen | invessiv",
       metaDescription:
         "Bereich fuer verkaufbare Roadmaps, AGENTS.md-Pakete und Template-Previews.",
+      badge: "Template-Produkte",
       title: "Vorlagen",
       description:
         "Bereich fuer verkaufbare Roadmaps, AGENTS.md-Pakete und Template-Previews.",
+      hint: "Sofort nutzbare Assets mit klarer Preis- und Leistungslogik.",
       sectionHeading: "Sofort einsetzbare Template-Produkte",
     },
     kontakt: {
       metaTitle: "Kontakt | invessiv",
       metaDescription:
         "Direkter Kontakt-Flow mit Terminbuchung und Anfrageformular.",
+      badge: "Direkter Draht",
       title: "Kontakt",
       description:
         "Hier folgt der direkte Kontakt-Flow mit Terminbuchung und Anfrageformular.",
+      hint: "Erstgespraech oder kurze Anfrage - beide Wege sind direkt verfuegbar.",
       optionsHeading: "Direkter Erstkontakt ohne Reibung",
       optionsDescription:
         "Fuer schnelle Abstimmung: Erstgespraech buchen oder direkt schriftlich anfragen. Beide Wege fuehren in denselben Projekt-Backlog.",
