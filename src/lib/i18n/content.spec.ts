@@ -5,6 +5,9 @@ describe("i18n content", () => {
   it("contains non-empty core page content in german", () => {
     const dictionary = getDictionary("de");
     expect(dictionary.pages.home.title.length).toBeGreaterThan(0);
+    expect(dictionary.pages.home.differenceItems.length).toBeGreaterThan(0);
+    expect(dictionary.pages.home.cases.length).toBeGreaterThan(0);
+    expect(dictionary.pages.home.pricingPlans.length).toBeGreaterThan(0);
     expect(dictionary.pages.leistungen.title.length).toBeGreaterThan(0);
     expect(dictionary.pages.vorlagen.title.length).toBeGreaterThan(0);
     expect(dictionary.pages.kontakt.title.length).toBeGreaterThan(0);

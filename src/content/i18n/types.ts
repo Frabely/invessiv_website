@@ -26,10 +26,34 @@ export type SiteDictionary = {
       badge: string;
       title: string;
       description: string;
+      differenceHeading: string;
+      differenceHint: string;
+      differenceItems: Array<{ title: string; description: string }>;
       foundationHeading: string;
       foundationItems: Array<{ title: string; description: string }>;
       flowHeading: string;
       flowSteps: string[];
+      casesHeading: string;
+      casesHint: string;
+      cases: Array<{
+        title: string;
+        description: string;
+        metrics: string[];
+      }>;
+      pricingHeading: string;
+      pricingHint: string;
+      pricingPlans: Array<{
+        title: string;
+        price: string;
+        features: string[];
+      }>;
+      pricingMockNote: string;
+      pricingButton: string;
+      portalHeading: string;
+      portalHint: string;
+      portalLoginButton: string;
+      portalRegisterButton: string;
+      portalMockNote: string;
     };
     leistungen: {
       metaTitle: string;

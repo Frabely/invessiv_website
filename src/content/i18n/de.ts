@@ -39,6 +39,26 @@ export const deDictionary: SiteDictionary = {
         "Mehrseitige Website-Struktur fuer skalierbare Landing- und Produktseiten.",
       description:
         "Diese Basis trennt Marketingseiten, Legal-Seiten und Shared Komponenten klar voneinander.",
+      differenceHeading: "Warum das keine Standard-Template-Seite ist",
+      differenceHint:
+        "Der Fokus liegt auf schneller Lieferung, geringem Aufwand und messbaren Ergebnissen.",
+      differenceItems: [
+        {
+          title: "Time-to-Launch SLA",
+          description:
+            "Erste klickbare Version in 5 Werktagen mit klarem Go-live Plan je Paket.",
+        },
+        {
+          title: "Upgrade statt Neubau",
+          description:
+            "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
+        },
+        {
+          title: "KPI-orientiert",
+          description:
+            "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
+        },
+      ],
       foundationHeading: "Architekturprinzipien fuer nachhaltige Weiterentwicklung",
       foundationItems: [
         {
@@ -64,6 +84,70 @@ export const deDictionary: SiteDictionary = {
         "Feature-orientiert implementieren",
         "Tests, Review und kontrollierter Release",
       ],
+      casesHeading: "Mini-Cases",
+      casesHint:
+        "Kurze Problem -> Massnahme -> Ergebnis Darstellung statt austauschbarer Portfolio-Wand.",
+      cases: [
+        {
+          title: "Case: Lead-Page Upgrade",
+          description:
+            "Problem: hohe Absprungrate. Massnahme: klare Hero-Message und CTA-Hierarchie. Ergebnis: bessere Conversion-Tendenz.",
+          metrics: ["-28% Bounce (Platzhalter)", "+19% Leads (Platzhalter)"],
+        },
+        {
+          title: "Case: Service-Website Relaunch",
+          description:
+            "Problem: unklarer Nutzen. Massnahme: fokussierte Angebotsstruktur und schneller Kontaktflow. Ergebnis: kuerzere Time-to-First-Call.",
+          metrics: [
+            "-35% Time-to-First-Call (Platzhalter)",
+            "+22% Anfragequote (Platzhalter)",
+          ],
+        },
+        {
+          title: "Case: Interner Prozess-Flow",
+          description:
+            "Problem: manuelle Routineaufgaben. Massnahme: kleines Tool mit gefuehrtem Ablauf. Ergebnis: Zeitersparnis im Tagesgeschaeft.",
+          metrics: [
+            "-6h/Woche manuelle Arbeit (Platzhalter)",
+            "-41% Fehlerquote (Platzhalter)",
+          ],
+        },
+      ],
+      pricingHeading: "Preise und Checkout",
+      pricingHint:
+        "Optisch bereits final. Checkout ist aktuell absichtlich als Mock eingebaut.",
+      pricingPlans: [
+        {
+          title: "Starter Landing",
+          price: "490 EUR",
+          features: ["One-Pager + Kontakt", "Responsive Design", "Schneller Go-live"],
+        },
+        {
+          title: "Business Website",
+          price: "1.490 EUR",
+          features: [
+            "Mehrseitige Struktur",
+            "SEO + Legal Basis",
+            "Conversion-Fokus",
+          ],
+        },
+        {
+          title: "Process Tool",
+          price: "2.900 EUR",
+          features: [
+            "Automatisierung von Tasks",
+            "Klare ROI-Ziele",
+            "Erweiterbar fuer Login",
+          ],
+        },
+      ],
+      pricingMockNote: "Mockup: Zahlung folgt spaeter.",
+      pricingButton: "Jetzt buchen (bald)",
+      portalHeading: "Client Login",
+      portalHint: "UI ist sichtbar, Auth-Logik ist noch deaktiviert.",
+      portalLoginButton: "Einloggen (bald)",
+      portalRegisterButton: "Account erstellen (bald)",
+      portalMockNote: "Mockup: Login folgt spaeter mit sicherem Backend.",
     },
     leistungen: {
       metaTitle: "Leistungen | invessiv",

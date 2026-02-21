@@ -39,6 +39,26 @@ export const enDictionary: SiteDictionary = {
         "Multi-page website foundation for scalable landing and product experiences.",
       description:
         "This baseline separates marketing, legal, and shared components for maintainable growth.",
+      differenceHeading: "Why this is not a standard template website",
+      differenceHint:
+        "The focus is fast delivery, low buyer effort and measurable outcomes.",
+      differenceItems: [
+        {
+          title: "Time-to-launch SLA",
+          description:
+            "First clickable version in 5 business days with a clear go-live plan per package.",
+        },
+        {
+          title: "Upgrade over rebuild",
+          description:
+            "Existing websites are modernized strategically without starting from scratch.",
+        },
+        {
+          title: "KPI-driven",
+          description:
+            "Defined goals such as load time, leads, or conversion instead of design-only output.",
+        },
+      ],
       foundationHeading: "Architecture principles for sustainable delivery",
       foundationItems: [
         {
@@ -64,6 +84,65 @@ export const enDictionary: SiteDictionary = {
         "Implement feature-oriented modules",
         "Run tests, review, and controlled release",
       ],
+      casesHeading: "Mini cases",
+      casesHint:
+        "Short Problem -> Action -> Result summaries instead of a generic portfolio wall.",
+      cases: [
+        {
+          title: "Case: Lead page upgrade",
+          description:
+            "Problem: high bounce. Action: clear hero message and CTA hierarchy. Result: better conversion trend.",
+          metrics: ["-28% bounce (placeholder)", "+19% leads (placeholder)"],
+        },
+        {
+          title: "Case: Service website relaunch",
+          description:
+            "Problem: unclear value proposition. Action: focused offer structure and faster contact flow. Result: shorter time-to-first-call.",
+          metrics: [
+            "-35% time-to-first-call (placeholder)",
+            "+22% inquiry rate (placeholder)",
+          ],
+        },
+        {
+          title: "Case: Internal process flow",
+          description:
+            "Problem: manual routine tasks. Action: small guided tool. Result: time saved in daily operations.",
+          metrics: [
+            "-6h/week manual work (placeholder)",
+            "-41% error rate (placeholder)",
+          ],
+        },
+      ],
+      pricingHeading: "Pricing and checkout",
+      pricingHint: "UI is final-looking. Checkout is intentionally mock-only for now.",
+      pricingPlans: [
+        {
+          title: "Starter Landing",
+          price: "EUR 490",
+          features: ["One-pager + contact", "Responsive design", "Fast go-live"],
+        },
+        {
+          title: "Business Website",
+          price: "EUR 1,490",
+          features: [
+            "Multi-page structure",
+            "SEO + legal baseline",
+            "Conversion focus",
+          ],
+        },
+        {
+          title: "Process Tool",
+          price: "EUR 2,900",
+          features: ["Task automation", "Clear ROI goals", "Login-ready extension"],
+        },
+      ],
+      pricingMockNote: "Mockup: payment will be added later.",
+      pricingButton: "Book now (soon)",
+      portalHeading: "Client login",
+      portalHint: "UI is visible, authentication logic is still disabled.",
+      portalLoginButton: "Log in (soon)",
+      portalRegisterButton: "Create account (soon)",
+      portalMockNote: "Mockup: login will be added later with secure backend.",
     },
     leistungen: {
       metaTitle: "Services | invessiv",
