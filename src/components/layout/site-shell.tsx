@@ -17,15 +17,15 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
       <div className="mx-auto flex h-[70px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center"
         >
-          <span className="relative h-[38px] w-[172px] overflow-hidden rounded-md">
+          <span className="relative h-[40px] w-[176px] overflow-hidden rounded-md">
             <Image
               src="/logo2.png"
               alt={siteConfig.name}
               fill
-              className="object-contain object-center [clip-path:inset(4%_0_18%_0)]"
-              sizes="172px"
+              className="object-contain object-left [clip-path:inset(4%_0_18%_0)]"
+              sizes="176px"
               priority
             />
           </span>
