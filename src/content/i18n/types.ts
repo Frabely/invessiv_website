@@ -37,12 +37,24 @@ export type SiteDictionary = {
       foundationHeading: string;
       foundationItems: Array<{ title: string; description: string }>;
       flowHeading: string;
-      flowSteps: string[];
+      flowHint: string;
+      flowSteps: Array<{
+        title: string;
+        detail: string;
+        output: string;
+      }>;
       casesHeading: string;
       casesHint: string;
+      caseLabels: {
+        problem: string;
+        action: string;
+        result: string;
+      };
       cases: Array<{
         title: string;
-        description: string;
+        problem: string;
+        action: string;
+        result: string;
         metrics: string[];
       }>;
       pricingHeading: string;

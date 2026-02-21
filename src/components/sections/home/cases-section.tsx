@@ -1,7 +1,18 @@
 export function CasesSection(props: {
   heading: string;
   hint: string;
-  cases: Array<{ title: string; description: string; metrics: string[] }>;
+  labels: {
+    problem: string;
+    action: string;
+    result: string;
+  };
+  cases: Array<{
+    title: string;
+    problem: string;
+    action: string;
+    result: string;
+    metrics: string[];
+  }>;
 }) {
   return (
     <section className="mx-auto w-full max-w-[1080px] px-4 py-4">
@@ -18,9 +29,28 @@ export function CasesSection(props: {
             <h3 className="text-base font-bold text-[var(--color-foreground)]">
               {item.title}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-[var(--color-muted-foreground)]">
-              {item.description}
-            </p>
+
+            <div className="mt-3 space-y-2 text-sm">
+              <p className="text-[var(--color-muted-foreground)]">
+                <span className="font-black text-[var(--color-foreground)]">
+                  {props.labels.problem}:
+                </span>{" "}
+                {item.problem}
+              </p>
+              <p className="text-[var(--color-muted-foreground)]">
+                <span className="font-black text-[var(--color-foreground)]">
+                  {props.labels.action}:
+                </span>{" "}
+                {item.action}
+              </p>
+              <p className="text-[var(--color-muted-foreground)]">
+                <span className="font-black text-[var(--color-foreground)]">
+                  {props.labels.result}:
+                </span>{" "}
+                {item.result}
+              </p>
+            </div>
+
             <div className="mt-3 flex flex-wrap gap-2">
               {item.metrics.map((metric) => (
                 <span

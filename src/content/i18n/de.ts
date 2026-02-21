@@ -83,26 +83,57 @@ export const deDictionary: SiteDictionary = {
         },
       ],
       flowHeading: "Vorgehen in kleinen, belastbaren Inkrementen",
+      flowHint:
+        "Klicke auf einen Schritt, um Scope, Arbeitsmodus und Output zu sehen.",
       flowSteps: [
-        "Scope und Zielbild festlegen",
-        "Design- und Content-System definieren",
-        "Feature-orientiert implementieren",
-        "Tests, Review und kontrollierter Release",
+        {
+          title: "Scope und Zielbild festlegen",
+          detail:
+            "Geschaeftsziel, Zielgruppe und Metriken werden vor Start klar fixiert.",
+          output: "Output: Briefing-Canvas + Priorisierte Ziele",
+        },
+        {
+          title: "Design- und Content-System definieren",
+          detail:
+            "Visuelle Leitidee, Copy-Struktur und Seitenrhythmus werden als System ausgearbeitet.",
+          output: "Output: UI-Konzept + Inhaltsstruktur",
+        },
+        {
+          title: "Feature-orientiert implementieren",
+          detail:
+            "Komponenten und Logik werden in kleinen, testbaren Modulen geliefert.",
+          output: "Output: Reviewbare Inkremente mit klarer Verantwortung",
+        },
+        {
+          title: "Tests, Review und kontrollierter Release",
+          detail:
+            "Jeder Kernpfad wird validiert, dann folgt der kontrollierte Rollout.",
+          output: "Output: Release-Kandidat mit Rollback-Pfad",
+        },
       ],
       casesHeading: "Mini-Cases",
       casesHint:
         "Kurze Problem -> Massnahme -> Ergebnis Darstellung statt austauschbarer Portfolio-Wand.",
+      caseLabels: {
+        problem: "Problem",
+        action: "Massnahme",
+        result: "Ergebnis",
+      },
       cases: [
         {
           title: "Case: Lead-Page Upgrade",
-          description:
-            "Problem: hohe Absprungrate. Massnahme: klare Hero-Message und CTA-Hierarchie. Ergebnis: bessere Conversion-Tendenz.",
+          problem: "Hohe Absprungrate auf der Einstiegsseite.",
+          action:
+            "Hero-Message geschaerft, CTA-Hierarchie neu strukturiert, Above-the-fold entschlackt.",
+          result: "Stabilere Conversion-Tendenz bei klarerer Nutzerfuehrung.",
           metrics: ["-28% Bounce (Platzhalter)", "+19% Leads (Platzhalter)"],
         },
         {
           title: "Case: Service-Website Relaunch",
-          description:
-            "Problem: unklarer Nutzen. Massnahme: fokussierte Angebotsstruktur und schneller Kontaktflow. Ergebnis: kuerzere Time-to-First-Call.",
+          problem: "Unklarer Nutzen im Erstkontakt und zu viele Ablenkungen.",
+          action:
+            "Angebotsmodule fokussiert, Kontaktflow reduziert, Navigation priorisiert.",
+          result: "Kuerzere Time-to-First-Call und bessere Qualitaet der Anfragen.",
           metrics: [
             "-35% Time-to-First-Call (Platzhalter)",
             "+22% Anfragequote (Platzhalter)",
@@ -110,8 +141,10 @@ export const deDictionary: SiteDictionary = {
         },
         {
           title: "Case: Interner Prozess-Flow",
-          description:
-            "Problem: manuelle Routineaufgaben. Massnahme: kleines Tool mit gefuehrtem Ablauf. Ergebnis: Zeitersparnis im Tagesgeschaeft.",
+          problem: "Manuelle Routineaufgaben mit hoher Fehleranfaelligkeit.",
+          action:
+            "Gefuehrten Prozess in ein kleines internes Tool ueberfuehrt.",
+          result: "Spuerbare Zeitersparnis und stabilerer Ablauf im Tagesgeschaeft.",
           metrics: [
             "-6h/Woche manuelle Arbeit (Platzhalter)",
             "-41% Fehlerquote (Platzhalter)",

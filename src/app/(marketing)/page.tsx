@@ -6,6 +6,7 @@ import { FoundationSection } from "@/components/sections/home/foundation-section
 import { HeroSection } from "@/components/sections/home/hero-section";
 import { PortalSection } from "@/components/sections/home/portal-section";
 import { PricingSection } from "@/components/sections/home/pricing-section";
+import { SignatureShell } from "@/components/sections/home/signature-shell";
 import { getRequestI18n } from "@/lib/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export default async function HomePage() {
   const { dictionary } = await getRequestI18n();
 
   return (
-    <>
+    <SignatureShell>
       <HeroSection
         badge={dictionary.pages.home.badge}
         title={dictionary.pages.home.title}
@@ -39,11 +40,13 @@ export default async function HomePage() {
       />
       <DeliveryFlowSection
         heading={dictionary.pages.home.flowHeading}
+        hint={dictionary.pages.home.flowHint}
         steps={dictionary.pages.home.flowSteps}
       />
       <CasesSection
         heading={dictionary.pages.home.casesHeading}
         hint={dictionary.pages.home.casesHint}
+        labels={dictionary.pages.home.caseLabels}
         cases={dictionary.pages.home.cases}
       />
       <PricingSection
@@ -60,6 +63,6 @@ export default async function HomePage() {
         registerLabel={dictionary.pages.home.portalRegisterButton}
         mockNote={dictionary.pages.home.portalMockNote}
       />
-    </>
+    </SignatureShell>
   );
 }

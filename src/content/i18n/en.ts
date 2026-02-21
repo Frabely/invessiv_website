@@ -83,26 +83,56 @@ export const enDictionary: SiteDictionary = {
         },
       ],
       flowHeading: "Delivery in small, reliable increments",
+      flowHint: "Click a step to inspect scope, execution mode, and output.",
       flowSteps: [
-        "Define scope and target outcome",
-        "Set design and content system",
-        "Implement feature-oriented modules",
-        "Run tests, review, and controlled release",
+        {
+          title: "Define scope and target outcome",
+          detail:
+            "Business goal, audience, and success metrics are fixed before execution.",
+          output: "Output: Briefing canvas + prioritized goals",
+        },
+        {
+          title: "Set design and content system",
+          detail:
+            "Visual signature, copy structure, and page rhythm are turned into a working system.",
+          output: "Output: UI concept + content architecture",
+        },
+        {
+          title: "Implement feature-oriented modules",
+          detail:
+            "Components and logic are delivered in small, testable modules.",
+          output: "Output: Reviewable increments with clear ownership",
+        },
+        {
+          title: "Run tests, review, and controlled release",
+          detail:
+            "Core flows are validated before a controlled rollout.",
+          output: "Output: Release candidate with rollback path",
+        },
       ],
       casesHeading: "Mini cases",
       casesHint:
         "Short Problem -> Action -> Result summaries instead of a generic portfolio wall.",
+      caseLabels: {
+        problem: "Problem",
+        action: "Action",
+        result: "Result",
+      },
       cases: [
         {
           title: "Case: Lead page upgrade",
-          description:
-            "Problem: high bounce. Action: clear hero message and CTA hierarchy. Result: better conversion trend.",
+          problem: "High bounce rate on the entry page.",
+          action:
+            "Sharpened hero message, rebuilt CTA hierarchy, and reduced above-the-fold noise.",
+          result: "More stable conversion trend with clearer user direction.",
           metrics: ["-28% bounce (placeholder)", "+19% leads (placeholder)"],
         },
         {
           title: "Case: Service website relaunch",
-          description:
-            "Problem: unclear value proposition. Action: focused offer structure and faster contact flow. Result: shorter time-to-first-call.",
+          problem: "Unclear value proposition and too much navigation friction.",
+          action:
+            "Focused offer modules, reduced contact flow, and reprioritized navigation.",
+          result: "Shorter time-to-first-call and better inquiry quality.",
           metrics: [
             "-35% time-to-first-call (placeholder)",
             "+22% inquiry rate (placeholder)",
@@ -110,8 +140,10 @@ export const enDictionary: SiteDictionary = {
         },
         {
           title: "Case: Internal process flow",
-          description:
-            "Problem: manual routine tasks. Action: small guided tool. Result: time saved in daily operations.",
+          problem: "Manual routine tasks with a high error surface.",
+          action:
+            "Mapped the workflow into a small guided internal tool.",
+          result: "Clear time savings and more reliable daily operations.",
           metrics: [
             "-6h/week manual work (placeholder)",
             "-41% error rate (placeholder)",
