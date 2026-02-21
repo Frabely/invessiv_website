@@ -206,3 +206,27 @@ Outputs:
 - Auslieferungsartefakte unveränderlich speichern (pro Version ein eindeutiges Bundle)
 - Claims in Landing-Copy nur mit belegbaren Quellen/Kennzahlen verwenden
 - Mock-States immer sichtbar kennzeichnen (`Mock`, `Coming Soon`), kein irreführendes Verhalten
+
+## Next.js + Tailwind Landing-Standards (verbindlich)
+- Für jede Route eigene `metadata` definieren (Title, Description, Canonical, OpenGraph, ggf. Robots)
+- Strukturierte Daten (JSON-LD) für `Organization` und passende `Service`/`Product`-Typen einplanen
+- `sitemap.ts` und `robots.ts` im App Router bereitstellen, sobald mehr als 1 indexierbare Seite live geht
+- Interaktive Landing-Elemente nur als Client Components; statische Sections als Server Components belassen
+- Keine Inline-Styles für produktive Komponenten; Styling konsistent über Tailwind-Klassen und Design-Tokens
+- Farb-, Spacing- und Radius-Tokens zentral in `globals.css`/Theme definieren, nicht ad hoc pro Komponente
+- Komponentenvarianten (z. B. Button/Card/Badge) standardisieren, um visuelle Drift zwischen Seiten zu vermeiden
+- Externe Skripte (Calendly, Tracking, Chat) nur lazy und nur auf benötigten Seiten laden
+
+## Content- und SEO-Workflow (Landing-spezifisch)
+- Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
+- Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
+- Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
+- OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten
+- Für Template-/Paketseiten klare Preis- und Leistungsangaben ohne versteckte Bedingungen darstellen
+
+## QA- und Release-Gates (Landing-spezifisch)
+- Vor Merge: `npm run lint` und `npm run build` verpflichtend grün
+- A11y-Smoke mindestens für Startseite + primären Conversion-Flow (Keyboard, Fokus-Reihenfolge, Kontrast)
+- PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenüber Zielwerten im PR begründen
+- Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
+- Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
