@@ -19,12 +19,12 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
           href="/"
           className="flex items-center gap-2"
         >
-          <span className="relative h-[42px] w-[176px] overflow-hidden rounded-md">
+          <span className="relative h-[40px] w-[176px] overflow-hidden rounded-md">
             <Image
               src="/logo2.png"
               alt={siteConfig.name}
               fill
-              className="object-cover object-center [clip-path:inset(6%_0_12%_0)] [mix-blend-mode:screen]"
+              className="object-cover object-center [clip-path:inset(8%_0_22%_0)] [mix-blend-mode:screen]"
               sizes="176px"
               priority
             />
