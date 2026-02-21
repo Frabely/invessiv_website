@@ -7,6 +7,11 @@ export type SiteDictionary = {
     primary: string;
     secondary: string;
   };
+  actions: {
+    menu: string;
+    login: string;
+    call: string;
+  };
   preferences: {
     theme: {
       light: string;

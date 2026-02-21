@@ -39,6 +39,12 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <button
+              type="button"
+              className="rounded-xl border border-[color:rgba(245,158,11,0.48)] bg-[linear-gradient(140deg,rgba(245,158,11,0.2),rgba(180,83,9,0.25))] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+            >
+              {props.dictionary.actions.login}
+            </button>
             <LocaleSwitcher
               label={props.dictionary.preferences.language.label}
               deLabel={props.dictionary.preferences.language.de}
@@ -50,6 +56,12 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
               lightLabel={props.dictionary.preferences.theme.light}
               darkLabel={props.dictionary.preferences.theme.dark}
             />
+            <Link
+              href="https://calendly.com/"
+              className="rounded-xl border border-[color:rgba(20,184,166,0.55)] bg-[linear-gradient(140deg,rgba(20,184,166,0.35),rgba(15,118,110,0.42))] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px]"
+            >
+              {props.dictionary.actions.call}
+            </Link>
           </div>
 
           <button
@@ -59,7 +71,7 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-muted)] px-3 py-2 text-xs font-extrabold text-[var(--color-foreground)] transition hover:-translate-y-[1px] md:hidden"
           >
-            Menu
+            {props.dictionary.actions.menu}
           </button>
         </div>
       </div>
@@ -105,7 +117,7 @@ export function SiteFooter(props: { dictionary: SiteDictionary }) {
     <footer className="mt-5 border-t border-[var(--color-border)]">
       <div className="mx-auto flex w-full max-w-[1080px] flex-wrap items-center justify-between gap-3 px-4 py-6 text-sm text-[var(--color-muted-foreground)]">
         <p>
-          © {new Date().getFullYear()} {siteConfig.name}
+          (c) {new Date().getFullYear()} {siteConfig.name}
         </p>
         <nav aria-label="Rechtliche Navigation" className="flex flex-wrap gap-2">
           {props.dictionary.navigation.legal.map((item) => (

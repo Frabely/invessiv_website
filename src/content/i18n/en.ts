@@ -17,6 +17,11 @@ export const enDictionary: SiteDictionary = {
     primary: "Book a free intro call",
     secondary: "Request project",
   },
+  actions: {
+    menu: "Menu",
+    login: "Login",
+    call: "Call via Calendly",
+  },
   preferences: {
     theme: {
       light: "Light",

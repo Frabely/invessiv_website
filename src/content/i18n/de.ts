@@ -17,6 +17,11 @@ export const deDictionary: SiteDictionary = {
     primary: "Kostenloses Erstgespraech buchen",
     secondary: "Projekt anfragen",
   },
+  actions: {
+    menu: "Menue",
+    login: "Login",
+    call: "Call via Calendly",
+  },
   preferences: {
     theme: {
       light: "Hell",
