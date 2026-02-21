@@ -17,7 +17,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Accessibility (WCAG 2.2 AA) und Performance (Core Web Vitals) sind Pflicht
 - Responsives Design ist Pflicht: Die Website muss auf Handy, Tablet und Desktop zuverlässig gut aussehen und nutzbar sein
 - Security by default (least privilege, keine Secrets im Repo)
-- Jede Änderung enthält Akzeptanzkriterien, Teststrategie und Rollback-Plan
+- Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
 
 
 ## Service-Webseiten Best Practices (Research-basiert)
@@ -149,7 +149,7 @@ Outputs:
 
 ## Repo Qualitäts-Gates
 - Lint + Typecheck
-- Unit Tests
+- Generierter Code (Logik/Workflows) ist verpflichtend durch Unit-, Integration- oder E2E-Tests abgedeckt
 - Playwright E2E (Checkout smoke)
 - Dependency Audit
 - Secret Scan (pre-commit + CI)
@@ -230,3 +230,4 @@ Outputs:
 - PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenüber Zielwerten im PR begründen
 - Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
 - Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
+
