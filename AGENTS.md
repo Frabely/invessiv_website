@@ -10,7 +10,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 ## Branding & Variation (verbindlich)
 - Logo ist Pflichtinput
 - Farbgebung ist optional; ohne Vorgabe wird eine thematisch passende, kontraststarke Palette gesetzt
-- Mehrere Runs muessen sich optisch deutlich unterscheiden (Layout, Typografie, Farbwelt, Komponentenstil), keine 1:1 Template-Duplikate
+- Immer aktiv neue Ideen fuer individuelles Design mit Wiedererkennungswert einbringen und Default-Implementierungen vermeiden
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
@@ -230,4 +230,5 @@ Outputs:
 - PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenüber Zielwerten im PR begründen
 - Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
 - Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
+
 

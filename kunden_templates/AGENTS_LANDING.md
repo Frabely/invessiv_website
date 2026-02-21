@@ -7,7 +7,7 @@ The page must be precisely derived from the user's checklist input and must avoi
 ## Non-negotiables
 - No "template look": avoid the standard SaaS section order by default. Use a story-driven structure based on user inputs.
 - Every major section must reference at least one concrete item from the checklist (pain points, objections, proof, audience, CTA).
-- Design and color system must vary per project: do not reuse the same palette, gradients, typography pairing, or hero layout across projects.
+- Always introduce fresh ideas for a recognizable visual identity and avoid default implementations.
 - Mobile-first, responsive, accessible (semantic HTML, focus states, contrast).
 - Performance-first: minimal JS, optimized assets, no heavy dependencies unless essential.
 

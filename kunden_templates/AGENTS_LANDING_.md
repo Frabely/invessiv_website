@@ -78,7 +78,7 @@ Output:
 - konsistentes Spacing-System
 - Logo ist Pflichtinput
 - Farbgebung ist optional; ohne Vorgabe wird eine branchenspezifische, kontraststarke Palette gesetzt
-- unterschiedliche Runs muessen visuell deutlich unterscheidbar sein (Layout, Typo, Farbwelt, Komponentenstil)
+- immer neue Ideen fuer individuelles Design mit hohem Wiedererkennungswert einbringen und keine Default-Implementierungen verwenden
 - wenn nur Farbnamen statt exakter Farbcodes geliefert werden (z. B. "gelb"), grelle Varianten vermeiden und moderne, augenschonende Toene verwenden
 - nur wenn konkrete Farbcodes vorgegeben sind, werden diese prioritaer uebernommen
 
@@ -159,3 +159,4 @@ In allen anderen Faellen:
 2. Welche Defaults wurden gesetzt
 3. Ready-to-Ship Check (Pass/Fail je Punkt)
 4. Optional: naechste Ausbaustufe (max 3 Punkte)
+
