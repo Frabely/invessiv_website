@@ -1,5 +1,4 @@
 import { SiteHeader } from "@/components/marketing/site-header";
-import { SiteFooter } from "@/components/marketing/site-footer";
 import { HeroVisual } from "@/components/marketing/hero-visual";
 import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
 import { HOME_SECTIONS } from "@/content/landing/home";
@@ -18,81 +17,6 @@ const MARQUEE_ITEMS = [
 
 function getSectionById(sectionId: (typeof SECTION_IDS)[number]) {
   return HOME_SECTIONS.find((section) => section.id === sectionId);
-}
-
-function renderSection(sectionId: (typeof SECTION_IDS)[number]) {
-  const section = getSectionById(sectionId);
-  if (!section) {
-    return null;
-  }
-
-  if (section.id === "proof" && section.metrics) {
-    return (
-      <section className="content-section" id={section.id} key={section.id}>
-        <h2>{section.title}</h2>
-        <p>{section.description}</p>
-        <div className="metric-grid">
-          {section.metrics.map((metric) => (
-            <article className="metric-card" key={metric.label}>
-              <p className="metric-card__label">{metric.label}</p>
-              <p className="metric-card__value">{metric.value}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if ((section.id === "services" || section.id === "pricing" || section.id === "contact") && section.cards) {
-    return (
-      <section className="content-section" id={section.id} key={section.id}>
-        <h2>{section.title}</h2>
-        <p>{section.description}</p>
-        <div className="feature-grid">
-          {section.cards.map((card) => (
-            <article className="feature-card" key={card.title}>
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-              {card.points ? (
-                <ul>
-                  {card.points.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </article>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (section.id === "process" && section.steps) {
-    return (
-      <section className="content-section" id={section.id} key={section.id}>
-        <h2>{section.title}</h2>
-        <p>{section.description}</p>
-        <ol className="process-list">
-          {section.steps.map((step) => (
-            <li className="process-list__item" key={step.step}>
-              <span className="process-list__index">{step.step}</span>
-              <div>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-    );
-  }
-
-  return (
-    <section className="content-section" id={section.id} key={section.id}>
-      <h2>{section.title}</h2>
-      <p>{section.description}</p>
-    </section>
-  );
 }
 
 export default function MarketingHomePage() {
@@ -164,11 +88,21 @@ export default function MarketingHomePage() {
             </p>
           ) : null}
 
-          {SECTION_IDS.filter((id) => id !== "hero").map((id) => renderSection(id))}
+          {SECTION_IDS.filter((id) => id !== "hero").map((id) => {
+            const section = getSectionById(id);
+            if (!section) {
+              return null;
+            }
+
+            return (
+              <section className="content-section" id={section.id} key={section.id}>
+                <h2>{section.title}</h2>
+                <p>{section.description}</p>
+              </section>
+            );
+          })}
         </div>
       </main>
-
-      <SiteFooter navigation={PRIMARY_NAVIGATION} />
     </>
   );
 }
