@@ -11,11 +11,16 @@ Hinweis: Die Mockups sind bewusst reduzierte Neuimplementierungen zur Ideenfindu
 - Awwwards Inspirationsbeispiele (Scroll-/Motion-Patterns):
   - https://www.awwwards.com/inspiration/simple-process-landing-page-with-engaging-scrolling-animation-apex-countertops
   - https://www.awwwards.com/inspiration/landing-page-animation-david-heckhoff-portfolio
+  - https://www.awwwards.com/websites/animation/
 
 ## Unterstützende technische Referenzen
 
 - Wave Gradient (Stripe-inspirierter Gradient-Effekt, OSS): https://github.com/sa3dany/wave-gradient
 - Aurora Gradient (Gradient/Noise Referenz): https://auroragradient.com/
+- SVG Path Tutorial (Grundlage fuer Path-Journey): https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths
+- SVG `stroke-dasharray` (Line-Draw Technik): https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/stroke-dasharray
+- SVG `stroke-dashoffset` (Progress-Animation): https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Attribute/stroke-dashoffset
+- Scroll-driven Animation APIs (Browser-Standard): https://developer.chrome.com/docs/css-ui/scroll-driven-animations
 
 ## Effekt -> Quelle
 
@@ -25,6 +30,7 @@ Hinweis: Die Mockups sind bewusst reduzierte Neuimplementierungen zur Ideenfindu
 4. Magnetic CTA -> Awwwards Interaktionsmuster
 5. Masked Text Reveal -> Apple/Editorial Launch Pages
 6. Floating Glass UI -> Vercel/aktuelles SaaS-Motion-Design
+7. SVG Path Journey -> MDN SVG Path/Stroke-Dash + Awwwards Motion-Landing Referenzen
 
 ## Einsatzhinweise
 

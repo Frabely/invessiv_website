@@ -1,16 +1,21 @@
 # AGENTS.md - invessiv (GPT Codex Agents)
 
 ## Ziel
+
 Dieses Repository wird mit Agenten-Workflows entwickelt, um:
-- konsistente Qualität in UX, Code, Security und Compliance zu sichern
-- Features in kleinen, überprüfbaren PRs auszuliefern
+
+- konsistente Qualitï¿½t in UX, Code, Security und Compliance zu sichern
+- Features in kleinen, ï¿½berprï¿½fbaren PRs auszuliefern
 - Regressionen durch klare Tests und Release Gates zu vermeiden
 
 ## Grundprinzipien
+
 ## Branding & Variation (verbindlich)
+
 - Logo ist Pflichtinput
 - Farbgebung ist optional; ohne Vorgabe wird eine thematisch passende, kontraststarke Palette gesetzt
 - Immer aktiv neue Ideen fuer individuelles Design mit Wiedererkennungswert einbringen und Default-Implementierungen vermeiden
+- Gute neue Animations-/Interaktionsfunde immer in `animation_mockups/<effekt-name>/` als eigenes Einzel-Mockup ablegen (pro Effekt eigener Ordner mit eigener `index.html` und ggf. `styles.css`/`script.js`), statt mehrere Effekte in einer Sammeldatei zu mischen
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
@@ -18,31 +23,36 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Dark- und Light-Mode sind Pflicht; beide Themes muessen visuell konsistent und voll nutzbar sein
 - Mehrsprachigkeit ist Pflichtfaehigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
 - Security by default (least privilege, keine Secrets im Repo)
-- Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
-
+- Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach ï¿½nderungsumfang)
 
 ## Service-Webseiten Best Practices (Research-basiert)
-- Above the fold muss sofort klar sein: Angebot, Zielgruppe und ein primärer CTA
-- Primäre Navigation schlank halten (max. 4-6 Hauptpunkte), klare Informationshierarchie
-- Content scannbar schreiben: kurze Absätze, klare Überschriften, keine Textwände
+
+- Above the fold muss sofort klar sein: Angebot, Zielgruppe und ein primï¿½rer CTA
+- Primï¿½re Navigation schlank halten (max. 4-6 Hauptpunkte), klare Informationshierarchie
+- Content scannbar schreiben: kurze Absï¿½tze, klare ï¿½berschriften, keine Textwï¿½nde
 - Vertrauen sichtbar machen: klare Kontaktoption, rechtliche Links, konsistente Sprache
-- Primäre Journey priorisieren: Erstkontakt/Anfrage mit minimalen Schritten
-- Mobile-first umsetzen, dann Tablet/Desktop verfeinern; keine überladenen Sektionen
-- Interaktive Elemente mit klaren Zuständen und sichtbaren Fokus-Styles
+- Primï¿½re Journey priorisieren: Erstkontakt/Anfrage mit minimalen Schritten
+- Mobile-first umsetzen, dann Tablet/Desktop verfeinern; keine ï¿½berladenen Sektionen
+- Interaktive Elemente mit klaren Zustï¿½nden und sichtbaren Fokus-Styles
 - Performance und Lesbarkeit vor dekorativen Effekten priorisieren
+
 ## Definition of Ready (DoR)
+
 Ein Ticket ist erst startklar, wenn:
-- Zielgruppe, Problem und gewünschtes Ergebnis klar sind
+
+- Zielgruppe, Problem und gewï¿½nschtes Ergebnis klar sind
 - Akzeptanzkriterien testbar formuliert sind
 - Nicht-Ziele explizit benannt sind
-- Risiken/Abhängigkeiten dokumentiert sind
+- Risiken/Abhï¿½ngigkeiten dokumentiert sind
 
 ## Definition of Done (DoD)
-Eine Änderung gilt erst als fertig, wenn:
-- Akzeptanzkriterien erfüllt sind
-- Unit/Integration/E2E (falls relevant) grün sind
-- Security- und A11y-Auswirkungen geprüft wurden
-- Monitoring/Logging für neue kritische Flows vorhanden ist
+
+Eine ï¿½nderung gilt erst als fertig, wenn:
+
+- Akzeptanzkriterien erfï¿½llt sind
+- Unit/Integration/E2E (falls relevant) grï¿½n sind
+- Security- und A11y-Auswirkungen geprï¿½ft wurden
+- Monitoring/Logging fï¿½r neue kritische Flows vorhanden ist
 - Rollback-Pfad im PR beschrieben ist
 
 ---
@@ -50,66 +60,82 @@ Eine Änderung gilt erst als fertig, wenn:
 ## Rollen / Agenten
 
 ### 1) Product & UX Agent (`ux-lead`)
+
 Aufgaben:
+
 - Informationsarchitektur (Landing, Templates, Checkout, Legal)
 - UX-Flows (Browse -> Details -> Buy -> Download -> Support)
-- Copywriting (klar, technisch, vertrauenswürdig)
+- Copywriting (klar, technisch, vertrauenswï¿½rdig)
 - Accessibility Checks (Kontrast, Fokus, Keyboard, Screenreader-Basics)
 
 Outputs:
+
 - User Stories
 - Akzeptanzkriterien
 - UI States (loading, empty, error, success)
 
 DoD:
+
 - End-to-end-Flow ist dokumentiert
 - Edge Cases sind beschrieben (Payment fehlgeschlagen, Refund, Mail nicht angekommen, Link abgelaufen)
 
 ### 2) Frontend Agent (`fe-engineer`)
+
 Aufgaben:
+
 - UI-Implementierung (Next.js, Tailwind, Komponenten)
-- Performante Animationen und Übergänge
+- Performante Animationen und ï¿½bergï¿½nge
 - SEO (metadata, structured data)
 - i18n-ready Architektur (externe Strings, locale routing vorbereitet)
-- Responsive Umsetzung für Mobile, Tablet und Desktop inkl. sauberer Breakpoints und Layout-Checks
+- Responsive Umsetzung fï¿½r Mobile, Tablet und Desktop inkl. sauberer Breakpoints und Layout-Checks
 
-Qualitätskriterien:
-- Lighthouse > 90 (mobile) für Performance/Best Practices/SEO
-- Kein unnötiges JS, optimierte Bilder, sinnvolle Caching-Strategie
+Qualitï¿½tskriterien:
+
+- Lighthouse > 90 (mobile) fï¿½r Performance/Best Practices/SEO
+- Kein unnï¿½tiges JS, optimierte Bilder, sinnvolle Caching-Strategie
 - Sichtbare Fokus-Styles in allen interaktiven Komponenten
-- Visuelle und funktionale Konsistenz über Mobile/Tablet/Desktop in allen Core Flows
+- Visuelle und funktionale Konsistenz ï¿½ber Mobile/Tablet/Desktop in allen Core Flows
 
 ### 3) Backend Agent (`be-engineer`)
+
 Aufgaben:
+
 - Payments-Integration (Stripe Checkout + Webhook)
 - Entitlements (wer darf welche Datei laden)
 - Lizenzmodell (single purchase, bundle, subscription)
 - Download-Security (signed URLs, rate limiting)
 
-Qualitätskriterien:
+Qualitï¿½tskriterien:
+
 - Webhook idempotent, retry-safe und observierbar
 - Keine PII in Logs, strukturierte Events
 - Fehlerpfade getestet (timeout, duplicate events, payment pending)
 
 ### 4) Security & Compliance Agent (`sec-legal`)
+
 Aufgaben:
+
 - Threat Modeling (Stripe, Auth, Downloads, Abuse)
 - DSGVO-Check (Cookies, Tracking, Consent, Retention)
 - Rechtstexte (Impressum, Datenschutz, AGB/Terms, Widerruf, Haftung)
 - Dependency- und Secret-Scanning
 
 Outputs:
+
 - Security Checklist pro Release
 - Minimaler Tracking-Plan (privacy-first)
 
 ### 5) QA Agent (`qa`)
+
 Aufgaben:
+
 - Testplan (Unit + Integration + E2E)
 - Checkout-E2E (happy path + failure path)
-- Regression Suite für Core Paths
+- Regression Suite fï¿½r Core Paths
 - A11y-Smoke-Tests
 
 Outputs:
+
 - Playwright Specs
 - Release Gates
 
@@ -118,6 +144,7 @@ Outputs:
 ## Standard-Workflows
 
 ### Workflow A - Feature Delivery
+
 1. `ux-lead`: User Story, Akzeptanzkriterien, UI States
 2. `fe-engineer`/`be-engineer`: technische Spezifikation
 3. Implementierung in kleinen PRs
@@ -126,12 +153,14 @@ Outputs:
 6. Merge + Release Notes
 
 ### Workflow B - Bugfix
+
 1. `qa`: Repro Steps + minimal failing test
 2. Engineer: Fix + Test
-3. `sec-legal`: Security-Relevanz prüfen
+3. `sec-legal`: Security-Relevanz prï¿½fen
 4. Merge
 
 ### Workflow C - Hotfix
+
 1. Incident klassifizieren (Severity + Impact)
 2. Minimal-invasive Korrektur + Smoke Test
 3. Nachgelagerte Root-Cause-Analyse (RCA)
@@ -140,15 +169,17 @@ Outputs:
 ---
 
 ## Branch-/PR-Konvention
+
 - Branches: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`
-- PR-Template enthält:
+- PR-Template enthï¿½lt:
   - Was/Warum
   - Screenshots (bei UI)
   - Testplan
   - Risiko/Rollback
   - Security/Privacy Impact
 
-## Repo Qualitäts-Gates
+## Repo Qualitï¿½ts-Gates
+
 - Lint + Typecheck
 - Generierter Code (Logik/Workflows) ist verpflichtend durch Unit-, Integration- oder E2E-Tests abgedeckt
 - Playwright E2E (Checkout smoke)
@@ -156,90 +187,94 @@ Outputs:
 - Secret Scan (pre-commit + CI)
 
 ## Merge-Regeln
+
 - Kein Direkt-Merge auf `main`
 - Mindestens ein Review bei normalen PRs
-- Zwei Reviews für Payment, Auth, Download-Security, Legal-Änderungen
+- Zwei Reviews fï¿½r Payment, Auth, Download-Security, Legal-ï¿½nderungen
 
 ## Prompt-Vorlagen
 
 ### Implement feature
+
 - Scope:
 - Akzeptanzkriterien:
 - UI States:
-- Data Model Änderungen:
+- Data Model ï¿½nderungen:
 - Testplan:
 - Rollback:
 
 ### Security review
-- Angriffsflächen:
+
+- Angriffsflï¿½chen:
 - PII/DSGVO:
 - Webhook/Payment Risiken:
 - Rate limiting/abuse:
 - Empfohlene Mitigations:
 
+## Architektur- und Code-Standards (ergï¿½nzend)
 
-
-
-## Architektur- und Code-Standards (ergänzend)
-- App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, später `(app)`), um Verantwortlichkeiten klar zu trennen
+- App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, spï¿½ter `(app)`), um Verantwortlichkeiten klar zu trennen
 - Projektstruktur immer aktiv sauber halten: keine ueberfuellten Ordner, stattdessen fachlich aufteilen und konsistent benennen
 - Sobald ein Ordner zu viele Dateien/Verantwortlichkeiten aufnimmt, in Submodule (z. B. pro Feature/Domain) refactoren
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
-- Feature-Flags für unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
-- Öffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur für wirklich öffentliche Werte)
+- Feature-Flags fï¿½r unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
+- ï¿½ffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur fï¿½r wirklich ï¿½ffentliche Werte)
 
-## Performance- und Rendering-Standards (ergänzend)
-- Server Components als Default, Client Components nur bei Interaktivität
-- Bilder ausschließlich über `next/image` (mit klaren Größen und sinnvollen `alt`-Texten)
-- Fonts zentral und sparsam laden; keine unnötigen externen Skripte im kritischen Pfad
+## Performance- und Rendering-Standards (ergï¿½nzend)
+
+- Server Components als Default, Client Components nur bei Interaktivitï¿½t
+- Bilder ausschlieï¿½lich ï¿½ber `next/image` (mit klaren Grï¿½ï¿½en und sinnvollen `alt`-Texten)
+- Fonts zentral und sparsam laden; keine unnï¿½tigen externen Skripte im kritischen Pfad
 - Jede neue Seite mit Mobile-Layout zuerst bauen und danach Tablet/Desktop erweitern
-- Core Web Vitals pro Release kurz prüfen (LCP/CLS/INP) und Auffälligkeiten im PR dokumentieren
+- Core Web Vitals pro Release kurz prï¿½fen (LCP/CLS/INP) und Auffï¿½lligkeiten im PR dokumentieren
 
-## Monitoring- und Betriebsstandards (ergänzend)
+## Monitoring- und Betriebsstandards (ergï¿½nzend)
+
 - Kritische User-Flows mit strukturierten Events versehen (z. B. CTA-Klick, Formular-Submit, Checkout-Start)
 - Fehlerpfade observierbar halten (z. B. Sentry oder gleichwertig) bevor Payment/Auth live gehen
 - Keine PII in Logs oder Analytics Events speichern
 - Jede neue kritische Integration mit Fallback-Verhalten dokumentieren (z. B. Mail-Ausfall, Payment-Timeout)
 
-## Content- und Produktpaket-Standards (ergänzend)
+## Content- und Produktpaket-Standards (ergï¿½nzend)
+
 - Verkaufbare Pakete versionieren (`vX.Y.Z`) und mit Changelog ausliefern
-- Auslieferungsartefakte unveränderlich speichern (pro Version ein eindeutiges Bundle)
+- Auslieferungsartefakte unverï¿½nderlich speichern (pro Version ein eindeutiges Bundle)
 - Claims in Landing-Copy nur mit belegbaren Quellen/Kennzahlen verwenden
-- Mock-States immer sichtbar kennzeichnen (`Mock`, `Coming Soon`), kein irreführendes Verhalten
+- Mock-States immer sichtbar kennzeichnen (`Mock`, `Coming Soon`), kein irrefï¿½hrendes Verhalten
 
 ## Next.js + Tailwind Landing-Standards (verbindlich)
-- Für jede Route eigene `metadata` definieren (Title, Description, Canonical, OpenGraph, ggf. Robots)
-- Strukturierte Daten (JSON-LD) für `Organization` und passende `Service`/`Product`-Typen einplanen
+
+- Fï¿½r jede Route eigene `metadata` definieren (Title, Description, Canonical, OpenGraph, ggf. Robots)
+- Strukturierte Daten (JSON-LD) fï¿½r `Organization` und passende `Service`/`Product`-Typen einplanen
 - `sitemap.ts` und `robots.ts` im App Router bereitstellen, sobald mehr als 1 indexierbare Seite live geht
 - Interaktive Landing-Elemente nur als Client Components; statische Sections als Server Components belassen
-- Keine Inline-Styles für produktive Komponenten; Styling konsistent über Tailwind-Klassen und Design-Tokens
+- Keine Inline-Styles fï¿½r produktive Komponenten; Styling konsistent ï¿½ber Tailwind-Klassen und Design-Tokens
 - Farb-, Spacing- und Radius-Tokens zentral in `globals.css`/Theme definieren, nicht ad hoc pro Komponente
 - Komponentenvarianten (z. B. Button/Card/Badge) standardisieren, um visuelle Drift zwischen Seiten zu vermeiden
-- Externe Skripte (Calendly, Tracking, Chat) nur lazy und nur auf benötigten Seiten laden
+- Externe Skripte (Calendly, Tracking, Chat) nur lazy und nur auf benï¿½tigten Seiten laden
 
 ## Content- und SEO-Workflow (Landing-spezifisch)
-- Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
-- Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
-- Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
+
+- Copy nicht direkt in Komponenten pflegen; Inhalte ï¿½ber strukturierte Content-Dateien oder klaren Config-Layer verwalten
+- Jede Landing erhï¿½lt ein primï¿½res Keyword-Cluster und eine klare Suchintention (informational/commercial)
+- Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein fï¿½r visuelle Grï¿½ï¿½en
 - OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten
-- Für Template-/Paketseiten klare Preis- und Leistungsangaben ohne versteckte Bedingungen darstellen
+- Fï¿½r Template-/Paketseiten klare Preis- und Leistungsangaben ohne versteckte Bedingungen darstellen
 
 ## QA- und Release-Gates (Landing-spezifisch)
-- Vor Merge: `npm run lint` und `npm run build` verpflichtend grün
-- A11y-Smoke mindestens für Startseite + primären Conversion-Flow (Keyboard, Fokus-Reihenfolge, Kontrast)
-- PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenüber Zielwerten im PR begründen
-- Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
-- Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
 
-
+- Vor Merge: `npm run lint` und `npm run build` verpflichtend grï¿½n
+- A11y-Smoke mindestens fï¿½r Startseite + primï¿½ren Conversion-Flow (Keyboard, Fokus-Reihenfolge, Kontrast)
+- PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenï¿½ber Zielwerten im PR begrï¿½nden
+- Formulare mï¿½ssen valide Fehlerzustï¿½nde haben (required, Format, Submit-Fehler), auch im Mock-Status
+- Jeder CTA-Link wird auf Ziel und Tracking-Event geprï¿½ft (kein toter CTA)
 
 ## Senior-Entwickler Vorgehen (verbindlich)
+
 - Vor Implementierung erst Scope, Abhaengigkeiten und Risiken kurz festziehen; dann in kleinen, reviewbaren Schritten liefern
 - Erst Struktur, dann Features: Module/Ordner nach Verantwortung schneiden, keine Sammelordner mit zu vielen Dateien
 - Pro Aenderung klare Verantwortlichkeit: UI, Domain-Logik, Konfiguration und Telemetrie getrennt halten
 - Bei neuer Logik oder Workflows frueh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
 - Refactoring kontinuierlich einplanen, sobald Komplexitaet oder Dateidichte ansteigt
-
-

@@ -74,5 +74,21 @@
     "bestFor": ["Metrics teasers", "Dashboard previews", "Social proof blocks"],
     "performanceNotes": "Low amplitude and low frequency animations reduce distraction",
     "a11yNotes": "Stop motion under prefers-reduced-motion"
+  },
+  {
+    "id": "svg_path_journey",
+    "name": "SVG Path Journey",
+    "inspiredBy": ["Narrative product tours", "Motion-first agency landings"],
+    "effectType": "Scroll-driven line draw",
+    "trigger": "Scroll",
+    "implementation": "SVG path with stroke-dasharray/stroke-dashoffset and a moving marker",
+    "uxGoal": "Visualize progression from attention to conversion in one focused motion",
+    "bestFor": [
+      "Service process explainers",
+      "How-it-works sections",
+      "Conversion storytelling"
+    ],
+    "performanceNotes": "Animate stroke and transforms only; throttle updates with requestAnimationFrame",
+    "a11yNotes": "Keep copy readable without animation and complete state under prefers-reduced-motion"
   }
 ]

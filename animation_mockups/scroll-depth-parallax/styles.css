@@ -1,0 +1,46 @@
+﻿* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #07101d;
+  color: #e8f2ff;
+  font-family: "Sora", "Segoe UI", sans-serif;
+}
+.wrap {
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+h1 {
+  margin: 0.2rem 0;
+}
+p {
+  margin: 0;
+  color: #b3c4e0;
+}
+.track {
+  min-height: 180vh;
+  padding-top: 1.2rem;
+}
+.card {
+  position: sticky;
+  top: 18vh;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(14, 26, 46, 0.76);
+  backdrop-filter: blur(10px);
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+.a {
+  transform: translateY(0) scale(1);
+}
+.b {
+  transform: translateY(14px) scale(0.96);
+}
+.c {
+  transform: translateY(26px) scale(0.92);
+}

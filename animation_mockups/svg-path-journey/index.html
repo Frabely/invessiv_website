@@ -1,0 +1,81 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Path Journey Mockup</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="journey-hero">
+      <div class="noise" aria-hidden="true"></div>
+
+      <header class="hero-copy">
+        <img
+          src="../../logo_mockups/logo_no_text.png"
+          alt="Logo"
+          class="logo"
+        />
+        <p class="eyebrow">SVG Path Journey</p>
+        <h1>Scroll drives the journey line and reveals the offer steps.</h1>
+        <p class="subline">
+          A simple mockup for high-contrast, story-driven service landing pages.
+        </p>
+      </header>
+
+      <section class="journey-wrap" aria-label="Journey animation demo">
+        <svg
+          class="journey-svg"
+          viewBox="0 0 920 360"
+          role="img"
+          aria-label="Animated journey path"
+        >
+          <defs>
+            <linearGradient
+              id="journeyStroke"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop offset="0%" stop-color="#55f5c7" />
+              <stop offset="50%" stop-color="#7da3ff" />
+              <stop offset="100%" stop-color="#ff9a53" />
+            </linearGradient>
+          </defs>
+
+          <path
+            id="journeyPath"
+            d="M 40 290 C 160 110, 300 330, 430 170 C 540 40, 710 280, 880 110"
+            fill="none"
+            stroke="url(#journeyStroke)"
+            stroke-width="8"
+            stroke-linecap="round"
+          />
+
+          <circle id="travelDot" r="10" fill="#ffffff" cx="40" cy="290" />
+        </svg>
+
+        <div class="milestones">
+          <article class="milestone">
+            <p class="step">01</p>
+            <h2>Attention</h2>
+            <p>Intro value appears with the first scroll movement.</p>
+          </article>
+          <article class="milestone">
+            <p class="step">02</p>
+            <h2>Proof</h2>
+            <p>The line curve visualizes momentum and progress.</p>
+          </article>
+          <article class="milestone">
+            <p class="step">03</p>
+            <h2>Conversion</h2>
+            <p>Final stop highlights the primary CTA area.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

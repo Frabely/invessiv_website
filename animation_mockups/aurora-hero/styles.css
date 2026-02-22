@@ -1,0 +1,103 @@
+﻿:root {
+  --bg: #081020;
+  --text: #eef5ff;
+  --muted: #b8c7e1;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Sora", "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 2rem;
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  filter: blur(60px);
+  opacity: 0.75;
+}
+.aurora::before {
+  width: 40vw;
+  height: 40vw;
+  left: -8vw;
+  top: -10vw;
+  background: radial-gradient(circle, #48f0ed 0%, transparent 70%);
+  animation: driftA 12s ease-in-out infinite alternate;
+}
+.aurora::after {
+  width: 42vw;
+  height: 42vw;
+  right: -8vw;
+  top: -12vw;
+  background: radial-gradient(circle, #ff9ec6 0%, transparent 72%);
+  animation: driftB 14s ease-in-out infinite alternate;
+}
+.noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.11) 0.5px,
+    transparent 0.5px
+  );
+  background-size: 2px 2px;
+}
+.logo,
+.eyebrow,
+h1,
+p {
+  position: relative;
+  z-index: 1;
+}
+.logo {
+  width: 36px;
+  height: 36px;
+}
+.eyebrow {
+  color: #6ce5e8;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.8rem;
+  margin: 0;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+p {
+  margin: 0;
+  color: var(--muted);
+}
+@keyframes driftA {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(8vw, 6vw);
+  }
+}
+@keyframes driftB {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-6vw, 6vw);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

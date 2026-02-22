@@ -1,0 +1,66 @@
+﻿* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  background: #081225;
+  color: #e9f4ff;
+  font-family: "Sora", "Segoe UI", sans-serif;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+p {
+  color: #b8c7df;
+}
+.scene {
+  position: relative;
+  min-height: 240px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(
+    170deg,
+    rgba(136, 201, 255, 0.09),
+    rgba(255, 214, 160, 0.07)
+  );
+  overflow: hidden;
+}
+.chip {
+  position: absolute;
+  padding: 0.75rem 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(12, 22, 38, 0.55);
+  backdrop-filter: blur(10px);
+  animation: bob 4s ease-in-out infinite;
+}
+.one {
+  left: 8%;
+  top: 20%;
+}
+.two {
+  left: 38%;
+  top: 50%;
+  animation-delay: 0.8s;
+}
+.three {
+  right: 8%;
+  top: 24%;
+  animation-delay: 1.4s;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

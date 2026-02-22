@@ -1,0 +1,31 @@
+﻿* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  background: #050c19;
+  color: #e9f3ff;
+  font-family: "Sora", "Segoe UI", sans-serif;
+}
+main {
+  max-width: 800px;
+  margin: 0 auto;
+}
+h1 {
+  margin: 0 0 1rem;
+}
+.line {
+  position: relative;
+  overflow: hidden;
+  margin: 0.5rem 0;
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+}
+.line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #050c19;
+  transform: translateX(var(--mask, 0%));
+  transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
