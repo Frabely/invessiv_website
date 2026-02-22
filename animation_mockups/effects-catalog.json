@@ -1,0 +1,78 @@
+﻿[
+  {
+    "id": "aurora_gradient_hero",
+    "name": "Aurora Gradient Hero",
+    "inspiredBy": ["Stripe", "Vercel"],
+    "effectType": "Animated ambient background",
+    "trigger": "Autoplay",
+    "implementation": "Layered radial gradients + blur + slow keyframes + subtle noise",
+    "uxGoal": "Brand recall and modern premium atmosphere above the fold",
+    "bestFor": [
+      "Hero sections",
+      "SaaS/product landings",
+      "Dark theme backgrounds"
+    ],
+    "performanceNotes": "Use CSS instead of heavy canvas by default; reduce blur layers on mobile",
+    "a11yNotes": "Respect prefers-reduced-motion and keep text contrast >= WCAG AA"
+  },
+  {
+    "id": "scroll_depth_reveal",
+    "name": "Scroll-Depth Reveal",
+    "inspiredBy": ["Apple", "Awwwards process pages"],
+    "effectType": "Sticky scroll narrative",
+    "trigger": "Scroll",
+    "implementation": "Sticky cards with progressive scale/offset",
+    "uxGoal": "Guide users through a step sequence with visual hierarchy",
+    "bestFor": ["How-it-works", "Feature tours", "Product storytelling"],
+    "performanceNotes": "Prefer transform/opacity only; avoid layout-thrashing properties",
+    "a11yNotes": "Do not block content behind mandatory motion; preserve reading order"
+  },
+  {
+    "id": "cursor_spotlight_cards",
+    "name": "Cursor Spotlight Cards",
+    "inspiredBy": ["Linear", "Modern agency sites"],
+    "effectType": "Pointer-reactive highlight",
+    "trigger": "Pointer move",
+    "implementation": "Per-card CSS variable update for radial highlight center",
+    "uxGoal": "Increase perceived polish and interaction clarity",
+    "bestFor": ["Feature grids", "Service cards", "Benefit tiles"],
+    "performanceNotes": "Track pointer only on hovered elements; avoid global mouse listeners",
+    "a11yNotes": "Effect must be decorative only; content remains fully readable"
+  },
+  {
+    "id": "magnetic_cta",
+    "name": "Magnetic CTA",
+    "inspiredBy": ["High-end studio landings", "Awwwards interaction patterns"],
+    "effectType": "Microinteraction",
+    "trigger": "Pointer proximity",
+    "implementation": "Translate CTA slightly toward cursor with spring-like reset",
+    "uxGoal": "Boost CTA salience without aggressive animation",
+    "bestFor": ["Primary conversion buttons", "Hero CTA clusters"],
+    "performanceNotes": "Keep translation small; disable on touch-only devices if needed",
+    "a11yNotes": "Keyboard focus style and click target size must remain stable"
+  },
+  {
+    "id": "masked_text_reveal",
+    "name": "Masked Text Reveal",
+    "inspiredBy": ["Apple", "Editorial product launches"],
+    "effectType": "Scroll text reveal",
+    "trigger": "Intersection on scroll",
+    "implementation": "Overlay mask translated away when entering viewport",
+    "uxGoal": "Sequence key claims for stronger message retention",
+    "bestFor": ["Value proposition statements", "Narrative transitions"],
+    "performanceNotes": "Use IntersectionObserver; avoid scroll polling",
+    "a11yNotes": "Ensure text exists in DOM and is not image-based"
+  },
+  {
+    "id": "floating_glass_ui",
+    "name": "Floating Glass UI",
+    "inspiredBy": ["Vercel", "Contemporary SaaS dashboards"],
+    "effectType": "Ambient float motion",
+    "trigger": "Autoplay",
+    "implementation": "Low-amplitude translateY loop with translucent cards",
+    "uxGoal": "Convey live system feeling and premium interface quality",
+    "bestFor": ["Metrics teasers", "Dashboard previews", "Social proof blocks"],
+    "performanceNotes": "Low amplitude and low frequency animations reduce distraction",
+    "a11yNotes": "Stop motion under prefers-reduced-motion"
+  }
+]
