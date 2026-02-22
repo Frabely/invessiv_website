@@ -1,20 +1,23 @@
-# ROADMAP.md - invessiv Website Umsetzung
+# ROADMAP.md - Invessiv Website Umsetzung
 
 ## Zielbild
-Diese Roadmap endet nicht beim Mockup, sondern bei einer vollstaendig umgesetzten, produktionsreifen Website in Next.js + Tailwind.
+Diese Roadmap endet bei einer vollstaendigen, produktionsreifen Website in Next.js + Tailwind.  
+Umsetzung erfolgt nicht als grosser Block, sondern strikt sectionweise in kleinen, detailierten Schritten.
 
 Verbindlicher Rahmen:
 - Finale Website statt reines Visual-Mockup
-- Klare und wartbare Projektstruktur im Repository
+- Klare, wartbare Projektstruktur im Repository
 - Umsetzung nach Next.js + Tailwind Best Practices
 - Tests verpflichtend:
   - Logic-/Domain-Tests fuer relevante Geschaeftslogik
   - E2E-Tests fuer Kernablaeufe
+- Pro Section werden passende Effekte vor Umsetzung in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprueft
 
-## Priorisierungsprinzipien
-- Kernjourney und Conversion-Pfade vor dekorativen Features
-- Struktur, Lesbarkeit und Wartbarkeit vor kurzfristigen Design-Hacks
-- Performance, Accessibility und Testbarkeit sind Pflicht
+## Arbeitsprinzip (verbindlich)
+- Grosse Aufgaben immer in kleine, reviewbare Teilpakete splitten
+- Jede Section einzeln planen, umsetzen, testen und abnehmen
+- Keine neue Section starten, bevor die vorherige Section visuell, funktional und technisch stabil ist
+- Effekte nur mit klarem UX-Zweck und mit Mobile-/Reduced-Motion-Strategie einsetzen
 
 ## Nordstern-Metriken
 - Core Journey Completion: Nutzer kommt ohne Blocker von Hero zu Anfrage/Kontakt
@@ -28,7 +31,7 @@ Verbindlicher Rahmen:
 Ziel: belastbare Grundlage vor Feature-Ausbau.
 
 Must-have:
-- Informationsarchitektur final (Hero -> Proof -> Leistungen -> Prozess -> Preise -> Kontakt)
+- Informationsarchitektur final (Hero -> Proof -> Leistungen -> Prozess -> Preise -> Kontakt -> Footer)
 - Projektstruktur sauber schneiden (keine ueberladenen Ordner)
 - Rollen trennen: UI, Domain-Logik, Konfiguration, Telemetrie
 - App Router Struktur sauber nutzen
@@ -39,14 +42,19 @@ Exit-Kriterien:
 
 ---
 
-## Phase 1 - Hero & Above-the-fold (Final)
+## Phase 1 - Hero (einzeln)
 Ziel: erster Screen ist visuell stark, klar und conversion-orientiert.
 
 Must-have:
 - Full-viewport Hero beim First Load
 - Aurora-inspirierter Hero-Look mit klarer Text-/Visual-Balance
 - CTA-Hierarchie (Primary/Secondary) sichtbar ohne Scroll
-- Infinite Marquee als eigene Section nach der Hero
+- Hero-Visual interaktiv und performant (Desktop), mobile-tauglicher Fallback
+
+Effekt-Check:
+- `aurora_gradient_hero`
+- `floating_glass_ui`
+- ggf. `magnetic_cta` (nur Desktop)
 
 Exit-Kriterien:
 - Hero ist in Mobile/Desktop ausgewogen
@@ -54,38 +62,136 @@ Exit-Kriterien:
 
 ---
 
-## Phase 2 - Sections & Core Journey
-Ziel: durchgaengige, klare Nutzerfuehrung.
+## Phase 2 - Marquee Strip (einzeln)
+Ziel: Social-Proof/Capability-Strip direkt nach der Hero.
 
 Must-have:
-- Navigation entspricht exakt den realen Sections
-- Sektionen in konsistenter Reihenfolge und Rhythmik
-- Footer als eigener Abschlussbereich mit Kontakt, rechtlichen Links und klaren Secondary-CTAs
-- Login im Mockup-Kontext entfernt (vorerst out of scope)
-- Alle Links/CTAs zeigen auf existierende Ziele
+- Infinite-Marquee als eigene Section nach der Hero
+- Inhalte sind scannbar, nicht visuell ueberladen
+- Pause/Reduktion bei Reduced Motion
+
+Effekt-Check:
+- `infinite_logo_marquee`
 
 Exit-Kriterien:
-- Keine toten CTAs/Anker
-- Core Journey ohne Brueche testbar
-- Footer-Inhalte sind vollstaendig, erreichbar und auf Mobile/Desktop konsistent nutzbar
+- Marquee laeuft stabil und stoert Lesefluss nicht
+- Mobile-Darstellung bleibt klar und performant
 
 ---
 
-## Phase 3 - Effektintegration (katalogbasiert)
-Ziel: visuelle Differenzierung mit kontrollierter Komplexitaet.
+## Phase 3 - Proof Section (einzeln)
+Ziel: Vertrauen und messbare Wirkung sichtbar machen.
 
 Must-have:
-- Effektauswahl aus `animation_mockups/effects-catalog.json`
-- Jeder Effekt hat klaren UX-Zweck (Fokus, Orientierung, Feedback)
-- Reduced-motion-Fallback fuer Motion-Effekte
+- KPI-/Proof-Inhalte mit klarer Hierarchie
+- Visuelles Kartenlayout analog Mockup-Rhythmus
+- CTA-Anschluss zur Services/Contact-Journey
+
+Effekt-Check:
+- `scroll_reveal_stagger`
+- `gradient_border_grain`
+- `shimmer_hover`
 
 Exit-Kriterien:
-- Keine willkuerliche Effektmischung
-- Lesbarkeit und Performance bleiben stabil
+- Proof ist inhaltlich klar und sofort verstehbar
+- Keine toten Links, keine rein dekorativen KPI-Elemente ohne Kontext
 
 ---
 
-## Phase 4 - Next.js + Tailwind Best Practices
+## Phase 4 - Services Section (einzeln)
+Ziel: Angebot klar und differenziert darstellen.
+
+Must-have:
+- Bento-artige Kartenstruktur wie im Mockup
+- Jede Service-Karte mit klarem Nutzen und CTA-Logik
+- Desktop/Mobile konsistente Lesbarkeit
+
+Effekt-Check:
+- `cursor_spotlight_cards` (Desktop only)
+- `tilt_glass_shine` oder `tilt_cards_3d` (nur falls UX sinnvoll)
+- `scroll_reveal_stagger`
+
+Exit-Kriterien:
+- Services sind klar vergleichbar
+- Keine Motion-Overload-Effekte
+
+---
+
+## Phase 5 - Process Section (einzeln)
+Ziel: nachvollziehbarer Delivery-Track ohne Reibung.
+
+Must-have:
+- Timeline/Story-Aufbau wie im Mockup
+- Klarer Fortschrittsfluss von Input bis Go-live
+- Sticky/Scroll-Verhalten ohne Accessibility-Brueche
+
+Effekt-Check:
+- `scroll_depth_reveal`
+- `svg_path_journey`
+- optional `scroll_snap_story_panels` falls UX-Mehrwert gegeben
+
+Exit-Kriterien:
+- Prozess ist ohne Animation vollstaendig verstehbar
+- Scroll-Verhalten bleibt auf Mobile robust
+
+---
+
+## Phase 6 - Pricing Section (einzeln)
+Ziel: transparente Pakete mit klarer Entscheidungsgrundlage.
+
+Must-have:
+- Pakete klar unterscheidbar (Scope, Preisrahmen, CTA)
+- Fokus auf Conversion ohne Dark Patterns
+- Vergleichbarkeit in Desktop und Mobile
+
+Effekt-Check:
+- `gradient_border_grain`
+- `shimmer_hover`
+- optional `toggle_morph_microinteraction` fuer Paketumschalter
+
+Exit-Kriterien:
+- Preis-/Leistungsdarstellung ohne Unklarheiten
+- CTA-Pfade eindeutig
+
+---
+
+## Phase 7 - Contact Section (einzeln)
+Ziel: minimaler, klarer Anfrageflow.
+
+Must-have:
+- Kontaktbereich mit klaren Kanaelen/Handlungspfad
+- Form-/CTA-Validierung inkl. Fehlerzustaenden
+- Kein Login im Mockup-Kontext
+
+Effekt-Check:
+- `scroll_reveal_stagger`
+- `mobile_bottom_sheet_snap` (nur Mobile, falls Kontakt-CTA davon profitiert)
+
+Exit-Kriterien:
+- Anfragepfad ohne Bruch testbar
+- Alle Kontakt-CTAs fuehren auf gueltige Ziele
+
+---
+
+## Phase 8 - Footer & Legal (einzeln)
+Ziel: sauberer Abschluss mit Navigation, Kontakt, Recht.
+
+Must-have:
+- Footer mit Kontakt, Secondary-CTAs, legalen Links
+- Impressum/Datenschutz erreichbar und korrekt verlinkt
+- Konsistentes Layout in Mobile/Desktop
+
+Effekt-Check:
+- In der Regel keine starken Motion-Effekte; Fokus auf Klarheit
+- Optional dezentes `shimmer_hover` fuer linknahe UI, falls passend
+
+Exit-Kriterien:
+- Keine toten Links
+- Footer-Inhalte vollstaendig und zugreifbar
+
+---
+
+## Phase 9 - Best Practices Hardening
 Ziel: produktionsnahe Implementierung ohne Architektur-Schulden.
 
 Must-have:
@@ -100,7 +206,7 @@ Exit-Kriterien:
 
 ---
 
-## Phase 5 - Tests (verbindlich)
+## Phase 10 - Tests (verbindlich)
 Ziel: funktionale Sicherheit fuer Kernablaeufe.
 
 Must-have:
@@ -117,7 +223,7 @@ Exit-Kriterien:
 
 ---
 
-## Phase 6 - QA, A11y, Performance, Release
+## Phase 11 - QA, A11y, Performance, Release
 Ziel: release-faehige Website.
 
 Must-have:
@@ -137,3 +243,4 @@ Exit-Kriterien:
 - Performance: Motion/Rendering budgets einhalten
 - Wartbarkeit: klare Datei- und Ordnerstruktur, trennscharfe Module
 - Testbarkeit: neue Logik ohne Tests gilt nicht als fertig
+- Effektgovernance: pro Section dokumentieren, welche Effekte aus dem Katalog geprueft, gewaehlt oder verworfen wurden

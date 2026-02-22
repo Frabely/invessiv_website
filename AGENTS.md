@@ -20,6 +20,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
 - Agenten arbeiten bei Landingpages und Webseiten als Spezialisten fuer Conversion-orientierte, performante und visuell differenzierende Umsetzungen
 - Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
+- Grosse Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Aenderung detailliert, pruefbar und mit hoher Qualitaet umgesetzt werden kann
 - Die Website-Struktur im Projekt muss jederzeit klar, modular und wartbar sein (keine unstrukturierten Sammelordner)
 - Next.js + Tailwind Best Practices sind bei Struktur-, Rendering- und UI-Entscheidungen verbindlich einzuhalten
 - Architektur, Routing, Content-Layer und Komponenten werden von Anfang an so aufgebaut, dass Mehrsprachigkeit (mindestens DE/EN) ohne strukturellen Umbau erweiterbar bleibt
@@ -34,6 +35,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt
 - Animationen/Effekte, die nur auf Desktop sinnvoll oder stabil funktionieren, werden auf Mobile deaktiviert oder durch mobile-taugliche Alternativen ersetzt
 - Das Gesamtlayout ist standardmaessig zentriert; ausgenommen sind Hero-Section sowie Header/Menu, die layoutseitig bewusst frei gefuehrt werden duerfen
+- Jede Section wird einzeln geplant und umgesetzt; pro Section muessen passende Effekte zuerst in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprueft und begruendet ausgewaehlt werden
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
