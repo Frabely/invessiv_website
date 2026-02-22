@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import type { NavigationItem } from "@/config/site";
 
@@ -10,6 +11,16 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ navigation }: SiteHeaderProps) {
   const { locale, setLocale } = useLanguage();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 14);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const labelsByHref: Record<string, string> =
     locale === "de"
       ? {
@@ -30,7 +41,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
   const ctaLabel = locale === "de" ? "Projekt anfragen" : "Request project";
   const mobileMenuLabel = locale === "de" ? "Menue" : "Menu";
   return (
-    <header className="site-header">
+    <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="site-header__inner">
         <a className="site-header__brand" href="#hero">
           <Image
@@ -83,6 +94,11 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
                 <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>
               </li>
             ))}
+            <li>
+              <a className="mobile-menu-cta" href="#contact">
+                {ctaLabel}
+              </a>
+            </li>
           </ul>
         </details>
       </div>

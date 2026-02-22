@@ -10,6 +10,69 @@ import { validateNavigationSections } from "@/domain/navigation/validate-navigat
 export default function MarketingHomePage() {
   const { locale } = useLanguage();
   const sections = getHomeSections(locale);
+  const proofContent =
+    locale === "de"
+      ? {
+          title: "Warum nicht wie eine Standard-Template-Seite?",
+          hint: "Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den Kaeufer und messbaren Ergebnissen.",
+          cta: "Leistungen ansehen",
+          kpis: [
+            { value: "5", suffix: " Tage", label: "Time-to-first-draft" },
+            { value: "92", suffix: "%", label: "Briefing-Aufwand reduziert" },
+            { value: "1", suffix: " Ansprechpartner", label: "Klarer Delivery-Owner" },
+          ],
+          cards: [
+            {
+              title: "Time-to-Launch SLA",
+              tag: "Fast",
+              description:
+                "Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je Paket.",
+            },
+            {
+              title: "Upgrade statt Neubau",
+              tag: "Lean",
+              description:
+                "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
+            },
+            {
+              title: "KPI-orientiert",
+              tag: "Measured",
+              description:
+                "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
+            },
+          ],
+        }
+      : {
+          title: "Why not build it like a generic template site?",
+          hint: "The focus is fast delivery, low buyer effort, and measurable outcomes.",
+          cta: "View services",
+          kpis: [
+            { value: "5", suffix: " days", label: "Time-to-first-draft" },
+            { value: "92", suffix: "%", label: "Briefing effort reduced" },
+            { value: "1", suffix: " owner", label: "Clear delivery owner" },
+          ],
+          cards: [
+            {
+              title: "Time-to-launch SLA",
+              tag: "Fast",
+              description:
+                "First clickable version in 5 business days with a clear go-live plan per package.",
+            },
+            {
+              title: "Upgrade over rebuild",
+              tag: "Lean",
+              description:
+                "Existing pages are modernized surgically without forcing a full rebuild.",
+            },
+            {
+              title: "KPI-oriented",
+              tag: "Measured",
+              description:
+                "Predefined targets like speed, leads, and conversion instead of design output only.",
+            },
+          ],
+        };
+
   const marqueeItems =
     locale === "de"
       ? [
@@ -113,6 +176,42 @@ export default function MarketingHomePage() {
             const section = getSectionById(id);
             if (!section) {
               return null;
+            }
+
+            if (section.id === "proof") {
+              return (
+                <section className="proof-section" id={section.id} key={section.id}>
+                  <h2>{proofContent.title}</h2>
+                  <p className="proof-hint">{proofContent.hint}</p>
+
+                  <div className="proof-metrics" role="list">
+                    {proofContent.kpis.map((metric) => (
+                      <article className="proof-metric-card" key={metric.label} role="listitem">
+                        <div className="proof-metric-value">
+                          <span>{metric.value}</span>
+                          <span>{metric.suffix}</span>
+                        </div>
+                        <p className="proof-metric-label">{metric.label}</p>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="proof-cards" role="list">
+                    {proofContent.cards.map((card) => (
+                      <article className="proof-card" key={card.title} role="listitem">
+                        <div className="proof-card-head">
+                          <h3>{card.title}</h3>
+                          <span className="proof-badge">
+                            <i aria-hidden="true" />
+                            {card.tag}
+                          </span>
+                        </div>
+                        <p>{card.description}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              );
             }
 
             return (

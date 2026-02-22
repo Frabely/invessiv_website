@@ -4,6 +4,8 @@ import type { Locale } from "@/config/i18n";
 export type LandingSectionCopy = {
   title: string;
   description: string;
+  metrics?: Array<{ label: string; value: string }>;
+  cards?: Array<{ title: string; description: string; tag: string }>;
 };
 
 export type LandingSection = {
@@ -32,13 +34,61 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Proof",
-        description:
-          "Diese Sektion wird im naechsten Schritt mit belastbaren Cases, Kennzahlen und Social-Proof-Modulen ausgebaut.",
+        description: "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgefuehl.",
+        metrics: [
+          { label: "Time-to-first-draft", value: "5 Tage" },
+          { label: "Briefing-Aufwand reduziert", value: "92%" },
+          { label: "Delivery-Owner", value: "1 Ansprechpartner" },
+        ],
+        cards: [
+          {
+            title: "Time-to-Launch SLA",
+            description:
+              "Erste klickbare Version in 5 Werktagen mit klarem Go-live-Plan je Paket.",
+            tag: "Fast",
+          },
+          {
+            title: "Upgrade statt Neubau",
+            description:
+              "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
+            tag: "Lean",
+          },
+          {
+            title: "KPI-orientiert",
+            description:
+              "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
+            tag: "Measured",
+          },
+        ],
       },
       en: {
         title: "Proof",
-        description:
-          "This section will be expanded next with measurable cases, performance metrics, and social-proof modules.",
+        description: "Measurable outcomes and clear delivery signals instead of guesswork.",
+        metrics: [
+          { label: "Time-to-first-draft", value: "5 days" },
+          { label: "Briefing effort reduced", value: "92%" },
+          { label: "Delivery owner", value: "1 point of contact" },
+        ],
+        cards: [
+          {
+            title: "Time-to-launch SLA",
+            description:
+              "First clickable version in 5 business days with a clear go-live plan per package.",
+            tag: "Fast",
+          },
+          {
+            title: "Upgrade over rebuild",
+            description:
+              "Existing pages are modernized surgically without forcing a full rebuild.",
+            tag: "Lean",
+          },
+          {
+            title: "KPI-oriented",
+            description:
+              "Predefined targets like speed, leads, and conversion instead of design output only.",
+            tag: "Measured",
+          },
+        ],
       },
     },
   },
