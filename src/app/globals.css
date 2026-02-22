@@ -23,6 +23,7 @@ body {
     radial-gradient(1200px 700px at 8% 2%, rgba(84, 227, 213, 0.17), transparent 60%),
     radial-gradient(900px 650px at 82% 10%, rgba(255, 129, 180, 0.15), transparent 62%),
     linear-gradient(180deg, #060a16 0%, #0d1834 44%, #0d1834 100%);
+  background-attachment: fixed, fixed, fixed;
   color: var(--text);
   font-family: "Segoe UI", "Inter", sans-serif;
   overflow-x: hidden;
@@ -31,6 +32,50 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+main {
+  position: relative;
+  isolation: isolate;
+}
+
+.page-accents {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.page-aurora {
+  position: absolute;
+  filter: blur(74px);
+  opacity: 0.42;
+}
+
+.page-aurora--left {
+  width: 48vw;
+  height: 48vw;
+  left: -16vw;
+  top: 20vh;
+  background: radial-gradient(circle, rgba(95, 255, 236, 0.46) 0%, transparent 72%);
+  animation: drift-a 16s ease-in-out infinite alternate;
+}
+
+.page-aurora--right {
+  width: 52vw;
+  height: 52vw;
+  right: -18vw;
+  top: 58vh;
+  background: radial-gradient(circle, rgba(255, 156, 206, 0.42) 0%, transparent 74%);
+  animation: drift-b 18s ease-in-out infinite alternate;
+}
+
+.page-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 0.6px, transparent 0.6px);
+  background-size: 2px 2px;
 }
 
 .site-header {
@@ -59,9 +104,11 @@ a {
 
 .site-header__inner {
   width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
   min-height: 76px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   padding: 0 24px;
   gap: 20px;
@@ -72,10 +119,26 @@ a {
   min-height: 64px;
 }
 
+.site-header:not(.is-scrolled) .lang-switch {
+  border-color: rgba(217, 232, 255, 0.16);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.site-header:not(.is-scrolled) .menu-cta {
+  border-color: rgba(217, 232, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: #dff0ff;
+}
+
+.site-header:not(.is-scrolled) .site-header__nav {
+  color: rgba(216, 231, 255, 0.9);
+}
+
 .site-header__brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  justify-self: start;
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -676,6 +739,11 @@ a {
   .proof-section {
     padding-left: 0;
   }
+
+  .page-aurora {
+    filter: blur(60px);
+    opacity: 0.34;
+  }
 }
 
 @keyframes drift-a {
@@ -751,6 +819,7 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
   .hero__aurora,
+  .page-aurora,
   .blob,
   .hero-shot,
   .marquee__track {

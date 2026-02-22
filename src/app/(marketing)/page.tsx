@@ -117,6 +117,12 @@ export default function MarketingHomePage() {
       <SiteHeader navigation={PRIMARY_NAVIGATION} />
 
       <main>
+        <div aria-hidden="true" className="page-accents">
+          <span className="page-aurora page-aurora--left" />
+          <span className="page-aurora page-aurora--right" />
+          <span className="page-noise" />
+        </div>
+
         <section className="hero" id="hero">
           <div className="hero__noise" />
           <div className="hero__aurora hero__aurora--left" />
