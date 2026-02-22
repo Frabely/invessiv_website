@@ -16,6 +16,8 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Farbgebung ist optional; ohne Vorgabe wird eine thematisch passende, kontraststarke Palette gesetzt
 - Immer aktiv neue Ideen fuer individuelles Design mit Wiedererkennungswert einbringen und Default-Implementierungen vermeiden
 - Gute neue Animations-/Interaktionsfunde immer in `animation_mockups/<effekt-name>/` als eigenes Einzel-Mockup ablegen (pro Effekt eigener Ordner mit eigener `index.html` und ggf. `styles.css`/`script.js`), statt mehrere Effekte in einer Sammeldatei zu mischen
+- Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` pruefen und aktiv in die Umsetzung einbeziehen
+- Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
