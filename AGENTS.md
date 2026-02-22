@@ -1,4 +1,4 @@
-# AGENTS.md - invessiv (GPT Codex Agents)
+# AGENTS.md - Invessiv (GPT Codex Agents)
 
 ## Ziel
 
@@ -22,6 +22,12 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
 - Die Website-Struktur im Projekt muss jederzeit klar, modular und wartbar sein (keine unstrukturierten Sammelordner)
 - Next.js + Tailwind Best Practices sind bei Struktur-, Rendering- und UI-Entscheidungen verbindlich einzuhalten
+- Architektur, Routing, Content-Layer und Komponenten werden von Anfang an so aufgebaut, dass Mehrsprachigkeit (mindestens DE/EN) ohne strukturellen Umbau erweiterbar bleibt
+- SEO ist Pflichtstandard bei jeder Seite: saubere Informationsarchitektur, eindeutige Suchintention, semantische HTML-Struktur und crawlbare interne Verlinkung
+- Indexierbarkeit ist Pflicht: korrekte `metadata`, Canonicals, `sitemap.ts`, `robots.ts`, kontrollierter Einsatz von `noindex` und keine blockierten Kernseiten
+- Technische Sichtbarkeit ist Pflicht: Core Web Vitals (LCP/CLS/INP), stabile Performance auf Mobile und keine unnötigen Rendering-Blocker
+- Structured Data ist Pflicht, wo sinnvoll (`Organization`, `Service`, `Product`, `FAQ`) zur besseren Google-Einordnung und Rich-Result-Faehigkeit
+- Content-Qualitaet nach E-E-A-T-Prinzipien sicherstellen: klare Autoritaet, belastbare Aussagen, vertrauensbildende Nachweise und konsistente Fachsprache
 - Relevante Logik ist verpflichtend mit passenden Logic-/Domain-Tests abzusichern
 - Kernablaeufe sind verpflichtend durch E2E-Tests abzudecken
 - Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt
