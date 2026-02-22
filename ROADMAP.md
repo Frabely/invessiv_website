@@ -62,6 +62,29 @@ Exit-Kriterien:
 
 ---
 
+## Phase 1b - Header/Menu (einzeln)
+Ziel: klare Navigation mit voller Desktop-Breite und sauberem Mobile-Menue.
+
+Must-have:
+- Header/Menu als eigene Section umsetzen und nicht nebenbei in anderen Phasen mischen
+- Smart Sticky Verhalten als Best-Practice:
+  - Startzustand: Header transparent bzw. sehr leicht, damit der Hero sauber wirkt
+  - Beim Scrollen: Header wird kompakter und bekommt Blur/Background + klare Trennung (Border/Shadow)
+- Desktop: volle Breite, klare Informationshierarchie im Sticky- und Initialzustand
+- Mobile: kompaktes sticky Menue mit klarem CTA (touch-optimiert, fokus- und keyboard-stabil)
+- Navigation verlinkt exakt auf bestehende Sections
+
+Effekt-Check:
+- In der Regel nur dezente Effekte; Fokus auf Klarheit und schnelle Orientierung
+- Optional `shimmer_hover` fuer einzelne CTA-Elemente, falls UX-Mehrwert vorhanden
+
+Exit-Kriterien:
+- Keine toten Navigation-Links
+- Mobile/Desktop Navigation ist konsistent und robust nutzbar
+- Smart Sticky Uebergaenge wirken ruhig und stoeren den Hero-Eindruck nicht
+
+---
+
 ## Phase 2 - Marquee Strip (einzeln)
 Ziel: Social-Proof/Capability-Strip direkt nach der Hero.
 

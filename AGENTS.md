@@ -35,7 +35,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt
 - Animationen/Effekte, die nur auf Desktop sinnvoll oder stabil funktionieren, werden auf Mobile deaktiviert oder durch mobile-taugliche Alternativen ersetzt
 - Das Gesamtlayout ist standardmaessig zentriert; ausgenommen sind Hero-Section sowie Header/Menu, die layoutseitig bewusst frei gefuehrt werden duerfen
-- Jede Section wird einzeln geplant und umgesetzt; pro Section muessen passende Effekte zuerst in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprueft und begruendet ausgewaehlt werden
+- Jede Section wird einzeln geplant und umgesetzt (inkl. Header/Menu und Footer); pro Section muessen passende Effekte zuerst in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprueft und begruendet ausgewaehlt werden
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
