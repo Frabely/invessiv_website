@@ -24,6 +24,9 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Next.js + Tailwind Best Practices sind bei Struktur-, Rendering- und UI-Entscheidungen verbindlich einzuhalten
 - Relevante Logik ist verpflichtend mit passenden Logic-/Domain-Tests abzusichern
 - Kernablaeufe sind verpflichtend durch E2E-Tests abzudecken
+- Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt
+- Animationen/Effekte, die nur auf Desktop sinnvoll oder stabil funktionieren, werden auf Mobile deaktiviert oder durch mobile-taugliche Alternativen ersetzt
+- Das Gesamtlayout ist standardmaessig zentriert; ausgenommen sind Hero-Section sowie Header/Menu, die layoutseitig bewusst frei gefuehrt werden duerfen
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
