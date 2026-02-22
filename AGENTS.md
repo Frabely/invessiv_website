@@ -18,6 +18,12 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Gute neue Animations-/Interaktionsfunde immer in `animation_mockups/<effekt-name>/` als eigenes Einzel-Mockup ablegen (pro Effekt eigener Ordner mit eigener `index.html` und ggf. `styles.css`/`script.js`), statt mehrere Effekte in einer Sammeldatei zu mischen
 - Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` pruefen und aktiv in die Umsetzung einbeziehen
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
+- Agenten arbeiten bei Landingpages und Webseiten als Spezialisten fuer Conversion-orientierte, performante und visuell differenzierende Umsetzungen
+- Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
+- Die Website-Struktur im Projekt muss jederzeit klar, modular und wartbar sein (keine unstrukturierten Sammelordner)
+- Next.js + Tailwind Best Practices sind bei Struktur-, Rendering- und UI-Entscheidungen verbindlich einzuhalten
+- Relevante Logik ist verpflichtend mit passenden Logic-/Domain-Tests abzusichern
+- Kernablaeufe sind verpflichtend durch E2E-Tests abzudecken
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
