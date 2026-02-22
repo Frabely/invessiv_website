@@ -6,6 +6,19 @@ export type LandingSectionCopy = {
   description: string;
   metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
+  serviceCards?: Array<{
+    icon?: string;
+    iconSrc?: string;
+    iconAlt?: string;
+    title: string;
+    description: string;
+    tag: string;
+    bullets?: string[];
+    chips?: string[];
+    span?: 4 | 5 | 6 | 7;
+    visualVariant?: "landing" | "upgrade" | "ai";
+    visual?: boolean;
+  }>;
 };
 
 export type LandingSection = {
@@ -96,14 +109,124 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "services",
     copy: {
       de: {
-        title: "Leistungen",
+        title: "Unsere Leistungen",
         description:
-          "Service-Module fuer Landingpages, Webseiten und Prozess-Tools werden sectionweise im Mockup-Stil aufgebaut.",
+          "Schlanker Start mit fuenf klaren Angebotsbereichen im gleichen Delivery-Rhythmus.",
+        serviceCards: [
+          {
+            iconSrc: "/services/01-landingpages-target.png",
+            iconAlt: "Landingpages Icon",
+            title: "Landingpages",
+            description:
+              "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
+            tag: "Beispiel folgt",
+            visual: true,
+            visualVariant: "landing",
+            span: 4,
+          },
+          {
+            iconSrc: "/services/02-webseiten-screen-no-stand.png",
+            iconAlt: "Webseiten Icon",
+            title: "Webseiten",
+            description:
+              "Individuelle Firmenwebseiten mit moderner Struktur und klarer Navigation.",
+            tag: "Beispiel folgt",
+            chips: ["SEO-ready", "Mobile-first", "Schnell"],
+            span: 4,
+          },
+          {
+            iconSrc: "/services/03-prozess-tools-gears.png",
+            iconAlt: "Prozess-Tools Icon",
+            title: "Prozess-Tools",
+            description:
+              "Automatisierung interner Ablaeufe und effiziente Mini-Tools.",
+            tag: "Beispiel folgt",
+            bullets: ["Mini-Portale", "Workflow-Automation", "Status-Transparenz"],
+            span: 4,
+          },
+          {
+            iconSrc: "/services/04-upgrade-refresh-screen.png",
+            iconAlt: "Website-Upgrade Icon",
+            title: "Alte Website upgraden",
+            description:
+              "Bestehende Webseiten modernisieren und optimieren.",
+            tag: "Beispiel folgt",
+            visual: true,
+            visualVariant: "upgrade",
+            span: 6,
+          },
+          {
+            iconSrc: "/services/05-ki-templates-brain-cards.png",
+            iconAlt: "KI-Templates Icon",
+            title: "KI-Templates",
+            description: "Vorgefertigte AI-Templates fuer Content-Erstellung und Marketing.",
+            tag: "Beispiel folgt",
+            bullets: ["Texte & Bilder", "Landingpages", "Social Media Posts"],
+            visual: true,
+            visualVariant: "ai",
+            span: 6,
+          },
+        ],
       },
       en: {
-        title: "Services",
+        title: "Our Services",
         description:
-          "Service modules for landing pages, websites, and process tools will be built section-by-section in the mockup style.",
+          "A focused start with five clear offer areas in the same delivery rhythm.",
+        serviceCards: [
+          {
+            iconSrc: "/services/01-landingpages-target.png",
+            iconAlt: "Landing pages icon",
+            title: "Landing pages",
+            description:
+              "Conversion-optimized one-pagers with clear messaging and strong performance.",
+            tag: "Example coming soon",
+            visual: true,
+            visualVariant: "landing",
+            span: 4,
+          },
+          {
+            iconSrc: "/services/02-webseiten-screen-no-stand.png",
+            iconAlt: "Websites icon",
+            title: "Websites",
+            description:
+              "Custom company websites with modern structure and clean navigation.",
+            tag: "Example coming soon",
+            chips: ["SEO-ready", "Mobile-first", "Fast"],
+            span: 4,
+          },
+          {
+            iconSrc: "/services/03-prozess-tools-gears.png",
+            iconAlt: "Process tools icon",
+            title: "Process tools",
+            description:
+              "Automation of internal workflows and efficient mini tools.",
+            tag: "Example coming soon",
+            bullets: ["Mini portals", "Workflow automation", "Status visibility"],
+            span: 4,
+          },
+          {
+            iconSrc: "/services/04-upgrade-refresh-screen.png",
+            iconAlt: "Website upgrade icon",
+            title: "Upgrade existing website",
+            description:
+              "Modernize and optimize your existing websites.",
+            tag: "Example coming soon",
+            visual: true,
+            visualVariant: "upgrade",
+            span: 6,
+          },
+          {
+            iconSrc: "/services/05-ki-templates-brain-cards.png",
+            iconAlt: "AI templates icon",
+            title: "AI templates",
+            description: "Prebuilt AI templates for content creation and marketing.",
+            tag: "Example coming soon",
+            bullets: ["Texts & images", "Landing pages", "Social media posts"],
+            visual: true,
+            visualVariant: "ai",
+            span: 6,
+          },
+        ],
       },
     },
   },

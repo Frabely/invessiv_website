@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { HeroVisual } from "@/components/marketing/hero-visual";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -9,6 +11,7 @@ import { validateNavigationSections } from "@/domain/navigation/validate-navigat
 
 export default function MarketingHomePage() {
   const { locale } = useLanguage();
+  const servicesSectionRef = useRef<HTMLElement | null>(null);
   const sections = getHomeSections(locale);
   const proofContent =
     locale === "de"
@@ -99,6 +102,7 @@ export default function MarketingHomePage() {
   const heroTag = locale === "de" ? "Individuell statt Baukasten" : "Custom instead of templates";
   const heroPrimaryCta = locale === "de" ? "Projekt anfragen" : "Request project";
   const heroSecondaryCta = locale === "de" ? "Leistungen ansehen" : "View services";
+  const servicesExampleCta = locale === "de" ? "Mehr erfahren" : "Learn more";
   const heroChipTags =
     locale === "de"
       ? ["Figma-Design inkl.", "Launch in Tagen", "Antwort < 24h"]
@@ -111,6 +115,55 @@ export default function MarketingHomePage() {
     navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
     sectionIds: SECTION_IDS.filter((id) => id !== "hero"),
   });
+
+  useEffect(() => {
+    const section = servicesSectionRef.current;
+    if (!section) {
+      return;
+    }
+
+    const cards = Array.from(section.querySelectorAll<HTMLElement>(".services-card"));
+    const visualBlocks = Array.from(section.querySelectorAll<HTMLElement>(".services-visual-media"));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
+
+    cards.forEach((card, index) => {
+      card.style.setProperty("--services-reveal-delay", `${index * 75}ms`);
+    });
+
+    if (reducedMotion) {
+      cards.forEach((card) => card.classList.add("is-visible"));
+      return;
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries, currentObserver) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              (entry.target as HTMLElement).classList.add("is-visible");
+              currentObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.22, rootMargin: "0px 0px -8% 0px" },
+      );
+
+      cards.forEach((card) => observer.observe(card));
+
+      const cleanupParallax = setupServicesParallax({
+        enabled: !isMobile && visualBlocks.length > 0,
+        visualBlocks,
+      });
+
+      return () => {
+        observer.disconnect();
+        cleanupParallax();
+      };
+    }
+
+    cards.forEach((card) => card.classList.add("is-visible"));
+  }, []);
 
   return (
     <>
@@ -220,6 +273,140 @@ export default function MarketingHomePage() {
               );
             }
 
+            if (section.id === "services") {
+              const cards = section.serviceCards ?? [];
+
+              return (
+                <section
+                  className="services-section"
+                  id={section.id}
+                  key={section.id}
+                  ref={servicesSectionRef}
+                >
+                  <h2>{section.title}</h2>
+                  <p className="services-hint">{section.description}</p>
+
+                  <div className="services-bento" role="list">
+                    {cards.map((card) => {
+                      const isVisual = Boolean(card.visual);
+                      const spanClassName =
+                        card.span === 4
+                          ? "services-span-4"
+                          : card.span === 6
+                            ? "services-span-6"
+                            : isVisual
+                              ? "services-span-7"
+                              : "services-span-5";
+                      const cardClassName = `services-card ${isVisual ? "services-card--visual" : ""} ${spanClassName}`;
+
+                      return (
+                        <article className={cardClassName} key={card.title} role="listitem">
+                          <div className="services-card-top">
+                            <div className="services-card-row">
+                              <h3 className="services-title">
+                                {card.iconSrc ? (
+                                  <Image
+                                    alt={card.iconAlt ?? ""}
+                                    className="services-title-icon-image"
+                                    height={32}
+                                    src={card.iconSrc}
+                                    width={32}
+                                  />
+                                ) : card.icon ? (
+                                  <span aria-hidden="true" className="services-title-icon">
+                                    {card.icon}
+                                  </span>
+                                ) : null}
+                                <span>{card.title}</span>
+                              </h3>
+                              <span className="services-tag">{card.tag}</span>
+                            </div>
+
+                            <p className="services-meta">{card.description}</p>
+
+                            {card.chips?.length ? (
+                              <div className="services-chip-row" aria-label="Service Tags">
+                                {card.chips.map((chip) => (
+                                  <span className="services-chip" key={chip}>
+                                    <i aria-hidden="true" />
+                                    {chip}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : null}
+
+                            {card.bullets?.length ? (
+                              <ul className="services-list">
+                                {card.bullets.map((bullet) => (
+                                  <li key={bullet}>{bullet}</li>
+                                ))}
+                              </ul>
+                            ) : null}
+
+                            <a className="services-example-btn" href="#contact">
+                              {servicesExampleCta}
+                            </a>
+                          </div>
+
+                          {isVisual ? (
+                            <div className="services-visual-media" aria-hidden="true">
+                              {card.visualVariant === "ai" ? (
+                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                    d="M40 200h220l30-24h180l30 24h360"
+                                    stroke="rgba(245,158,11,0.32)"
+                                    strokeLinecap="round"
+                                    strokeWidth="8"
+                                  />
+                                  <rect fill="rgba(255,255,255,0.08)" height="10" rx="5" width="140" x="90" y="90" />
+                                  <rect fill="rgba(255,255,255,0.08)" height="10" rx="5" width="110" x="90" y="108" />
+                                  <rect fill="rgba(99,102,241,0.20)" height="8" rx="4" width="180" x="90" y="128" />
+                                  <rect fill="rgba(255,255,255,0.06)" height="104" rx="16" width="260" x="560" y="92" />
+                                  <rect fill="rgba(255,255,255,0.08)" height="66" rx="10" width="154" x="590" y="112" />
+                                  <rect fill="rgba(245,158,11,0.34)" height="14" rx="7" width="108" x="612" y="124" />
+                                </svg>
+                              ) : card.visualVariant === "upgrade" ? (
+                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+                                  <rect fill="rgba(255,255,255,0.06)" height="112" rx="16" width="230" x="82" y="118" />
+                                  <rect fill="rgba(255,255,255,0.05)" height="112" rx="16" width="270" x="336" y="118" />
+                                  <rect fill="rgba(255,255,255,0.04)" height="112" rx="16" width="250" x="626" y="118" />
+                                  <path
+                                    d="M354 182c36-24 62-24 90 0s58 24 86 0 54-24 84 0"
+                                    stroke="rgba(245,158,11,0.32)"
+                                    strokeLinecap="round"
+                                    strokeWidth="8"
+                                  />
+                                </svg>
+                              ) : (
+                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+                                  <path
+                                    d="M40 186c86-76 178-76 276 0s190 76 276 0 190-76 268 0"
+                                    stroke="rgba(20,184,166,0.38)"
+                                    strokeLinecap="round"
+                                    strokeWidth="10"
+                                  />
+                                  <path
+                                    d="M60 120c78-56 162-56 252 0s174 56 252 0 174-56 236 0"
+                                    stroke="rgba(245,158,11,0.22)"
+                                    strokeLinecap="round"
+                                    strokeWidth="10"
+                                  />
+                                  <rect fill="rgba(255,255,255,0.08)" height="12" rx="6" width="148" x="92" y="50" />
+                                  <rect fill="rgba(20,184,166,0.22)" height="10" rx="5" width="200" x="92" y="70" />
+                                  <rect fill="rgba(255,255,255,0.08)" height="12" rx="6" width="118" x="378" y="50" />
+                                  <rect fill="rgba(99,102,241,0.18)" height="10" rx="5" width="164" x="378" y="70" />
+                                </svg>
+                              )}
+                            </div>
+                          ) : null}
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            }
+
             return (
               <section className="content-section" id={section.id} key={section.id}>
                 <h2>{section.title}</h2>
@@ -231,4 +418,52 @@ export default function MarketingHomePage() {
       </main>
     </>
   );
+}
+
+function setupServicesParallax({
+  enabled,
+  visualBlocks,
+}: {
+  enabled: boolean;
+  visualBlocks: HTMLElement[];
+}) {
+  if (!enabled) {
+    return () => {};
+  }
+
+  let rafId = 0;
+
+  const update = () => {
+    const viewportHeight = window.innerHeight || 1;
+    const viewportCenter = viewportHeight * 0.5;
+
+    visualBlocks.forEach((block) => {
+      const rect = block.getBoundingClientRect();
+      const blockCenter = rect.top + rect.height * 0.5;
+      const normalized = (viewportCenter - blockCenter) / viewportHeight;
+      const offset = Math.max(-26, Math.min(26, normalized * 44));
+      block.style.setProperty("--services-parallax-y", `${offset.toFixed(2)}px`);
+    });
+
+    rafId = 0;
+  };
+
+  const requestUpdate = () => {
+    if (rafId !== 0) {
+      return;
+    }
+    rafId = window.requestAnimationFrame(update);
+  };
+
+  requestUpdate();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+
+  return () => {
+    if (rafId !== 0) {
+      window.cancelAnimationFrame(rafId);
+    }
+    window.removeEventListener("scroll", requestUpdate);
+    window.removeEventListener("resize", requestUpdate);
+  };
 }
