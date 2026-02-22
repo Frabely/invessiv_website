@@ -7,7 +7,10 @@ export function HeroSection(props: {
   description: string;
   primaryCta: string;
   secondaryCta: string;
+  marqueeItems: string[];
 }) {
+  const marqueeLoop = [...props.marqueeItems, ...props.marqueeItems];
+
   return (
     <section className="mx-auto w-full max-w-[1080px] px-4 pb-5 pt-11">
       <article className="mock-card-strong relative overflow-hidden rounded-[28px] px-7 py-7">
@@ -30,6 +33,18 @@ export function HeroSection(props: {
               primaryLabel={props.primaryCta}
               secondaryLabel={props.secondaryCta}
             />
+            <div className="mt-4 overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]/70">
+              <div className="marquee-track py-2">
+                {marqueeLoop.map((item, index) => (
+                  <span
+                    key={`${item}-${index}`}
+                    className="marquee-item ml-2 inline-flex rounded-full px-3 py-1 text-xs font-bold text-[var(--color-foreground)]"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="relative hidden h-[280px] lg:block">

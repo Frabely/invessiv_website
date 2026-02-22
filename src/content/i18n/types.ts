@@ -31,6 +31,12 @@ export type SiteDictionary = {
       badge: string;
       title: string;
       description: string;
+      marqueeItems: string[];
+      kpis: Array<{
+        value: string;
+        suffix: string;
+        label: string;
+      }>;
       differenceHeading: string;
       differenceHint: string;
       differenceItems: Array<{ title: string; description: string }>;

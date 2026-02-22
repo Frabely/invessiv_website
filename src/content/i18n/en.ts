@@ -44,6 +44,18 @@ export const enDictionary: SiteDictionary = {
         "Multi-page website foundation for scalable landing and product experiences.",
       description:
         "This baseline separates marketing, legal, and shared components for maintainable growth.",
+      marqueeItems: [
+        "Fast first draft",
+        "Clear CTA hierarchy",
+        "Performance-focused",
+        "Mockup upgrade ready",
+        "Mobile-first delivery",
+      ],
+      kpis: [
+        { value: "5", suffix: "days", label: "Time-to-first-draft" },
+        { value: "92", suffix: "%", label: "Briefing effort reduced" },
+        { value: "1", suffix: "owner", label: "Clear delivery owner" },
+      ],
       differenceHeading: "Why this is not a standard template website",
       differenceHint:
         "The focus is fast delivery, low buyer effort and measurable outcomes.",

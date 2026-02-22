@@ -18,15 +18,14 @@ export function SiteHeader(props: { locale: Locale; dictionary: SiteDictionary }
       <div className="mx-auto flex h-[86px] w-full max-w-[1080px] items-center justify-between gap-3 px-4">
         <Link
           href="/"
-          className="flex h-full items-center gap-3"
+          className="flex h-full items-center gap-1"
         >
-          <span className="relative h-14 w-14 overflow-hidden rounded-md">
+          <span className="relative h-[56px] w-[56px] shrink-0 overflow-hidden rounded-md">
             <Image
-              src="/logo2.png"
+              src="/icon.svg"
               alt={siteConfig.name}
               fill
-              className="object-cover object-left"
-              sizes="56px"
+              className="object-contain text-[var(--color-foreground)]"
               priority
             />
           </span>

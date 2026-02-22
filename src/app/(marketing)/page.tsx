@@ -7,6 +7,7 @@ import { FoundationSection } from "@/components/sections/home/foundation-section
 import { HeroSection } from "@/components/sections/home/hero-section";
 import { PortalSection } from "@/components/sections/home/portal-section";
 import { PricingSection } from "@/components/sections/home/pricing-section";
+import { SectionDivider } from "@/components/sections/home/section-divider";
 import { SignatureShell } from "@/components/sections/home/signature-shell";
 import { getRequestI18n } from "@/lib/i18n/server";
 
@@ -30,21 +31,26 @@ export default async function HomePage() {
           description={dictionary.pages.home.description}
           primaryCta={dictionary.cta.primary}
           secondaryCta={dictionary.cta.secondary}
+          marqueeItems={dictionary.pages.home.marqueeItems}
         />
       </Reveal>
+      <SectionDivider />
       <Reveal delayMs={40}>
         <DifferenceSection
           heading={dictionary.pages.home.differenceHeading}
           hint={dictionary.pages.home.differenceHint}
           items={dictionary.pages.home.differenceItems}
+          kpis={dictionary.pages.home.kpis}
         />
       </Reveal>
+      <SectionDivider />
       <Reveal delayMs={60}>
         <FoundationSection
           heading={dictionary.pages.home.foundationHeading}
           items={dictionary.pages.home.foundationItems}
         />
       </Reveal>
+      <SectionDivider />
       <Reveal delayMs={80}>
         <DeliveryFlowSection
           heading={dictionary.pages.home.flowHeading}
@@ -69,6 +75,7 @@ export default async function HomePage() {
           buttonLabel={dictionary.pages.home.pricingButton}
         />
       </Reveal>
+      <SectionDivider />
       <Reveal delayMs={140}>
         <PortalSection
           heading={dictionary.pages.home.portalHeading}

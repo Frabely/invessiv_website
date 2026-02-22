@@ -1,8 +1,10 @@
 import { ParallaxOrbs } from "@/components/motion/parallax-orbs";
+import { StageEffects } from "@/components/motion/stage-effects";
 
 export function SignatureShell(props: { children: React.ReactNode }) {
   return (
     <div className="relative">
+      <StageEffects />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 opacity-40 [background-image:radial-gradient(circle_at_12%_20%,rgba(20,184,166,0.2),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(245,158,11,0.16),transparent_34%),radial-gradient(circle_at_48%_86%,rgba(99,102,241,0.14),transparent_36%)]"

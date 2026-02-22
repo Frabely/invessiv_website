@@ -44,6 +44,18 @@ export const deDictionary: SiteDictionary = {
         "Mehrseitige Website-Struktur fuer skalierbare Landing- und Produktseiten.",
       description:
         "Diese Basis trennt Marketingseiten, Legal-Seiten und Shared Komponenten klar voneinander.",
+      marqueeItems: [
+        "Schneller Erstentwurf",
+        "Klare CTA-Hierarchie",
+        "Performance-Fokus",
+        "Mockup-Upgrade Ready",
+        "Mobile-first Delivery",
+      ],
+      kpis: [
+        { value: "5", suffix: "Tage", label: "Time-to-first-draft" },
+        { value: "92", suffix: "%", label: "Briefing-Aufwand reduziert" },
+        { value: "1", suffix: "Owner", label: "Klarer Delivery-Owner" },
+      ],
       differenceHeading: "Warum das keine Standard-Template-Seite ist",
       differenceHint:
         "Der Fokus liegt auf schneller Lieferung, geringem Aufwand und messbaren Ergebnissen.",
