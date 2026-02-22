@@ -28,6 +28,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Technische Sichtbarkeit ist Pflicht: Core Web Vitals (LCP/CLS/INP), stabile Performance auf Mobile und keine unnötigen Rendering-Blocker
 - Structured Data ist Pflicht, wo sinnvoll (`Organization`, `Service`, `Product`, `FAQ`) zur besseren Google-Einordnung und Rich-Result-Faehigkeit
 - Content-Qualitaet nach E-E-A-T-Prinzipien sicherstellen: klare Autoritaet, belastbare Aussagen, vertrauensbildende Nachweise und konsistente Fachsprache
+- UTF-8 ist verpflichtend im gesamten Projekt; deutsche Zeichen (`ä`, `ö`, `ü`, `ß`) muessen in Content, UI und Datenverarbeitung korrekt unterstuetzt werden
 - Relevante Logik ist verpflichtend mit passenden Logic-/Domain-Tests abzusichern
 - Kernablaeufe sind verpflichtend durch E2E-Tests abzudecken
 - Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt

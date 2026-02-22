@@ -60,12 +60,14 @@ Ziel: durchgaengige, klare Nutzerfuehrung.
 Must-have:
 - Navigation entspricht exakt den realen Sections
 - Sektionen in konsistenter Reihenfolge und Rhythmik
+- Footer als eigener Abschlussbereich mit Kontakt, rechtlichen Links und klaren Secondary-CTAs
 - Login im Mockup-Kontext entfernt (vorerst out of scope)
 - Alle Links/CTAs zeigen auf existierende Ziele
 
 Exit-Kriterien:
 - Keine toten CTAs/Anker
 - Core Journey ohne Brueche testbar
+- Footer-Inhalte sind vollstaendig, erreichbar und auf Mobile/Desktop konsistent nutzbar
 
 ---
 

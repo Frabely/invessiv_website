@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { NavigationItem } from "@/config/site";
 
 type SiteHeaderProps = {
@@ -9,7 +10,14 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
     <header className="site-header">
       <div className="site-header__inner">
         <a className="site-header__brand" href="#hero">
-          invessiv
+          <Image
+            src="/brand/icon.svg"
+            alt="Invessiv Logo"
+            width={26}
+            height={26}
+            priority
+          />
+          <span>Invessiv</span>
         </a>
 
         <nav aria-label="Primary" className="site-header__desktop-nav">
