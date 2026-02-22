@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/components/providers/language-provider";
 import type { NavigationItem } from "@/config/site";
 
 type SiteHeaderProps = {
@@ -6,6 +9,26 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ navigation }: SiteHeaderProps) {
+  const { locale, setLocale } = useLanguage();
+  const labelsByHref: Record<string, string> =
+    locale === "de"
+      ? {
+          "#proof": "Ergebnisse",
+          "#services": "Leistungen",
+          "#process": "Prozess",
+          "#pricing": "Pakete",
+          "#contact": "Kontakt",
+        }
+      : {
+          "#proof": "Proof",
+          "#services": "Services",
+          "#process": "Process",
+          "#pricing": "Pricing",
+          "#contact": "Contact",
+        };
+
+  const ctaLabel = locale === "de" ? "Projekt anfragen" : "Request project";
+  const mobileMenuLabel = locale === "de" ? "Menue" : "Menu";
   return (
     <header className="site-header">
       <div className="site-header__inner">
@@ -24,18 +47,40 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
           <ul className="site-header__nav">
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>
               </li>
             ))}
           </ul>
         </nav>
 
+        <div className="site-header__actions" aria-label="Language and primary action">
+          <div aria-label="Language switch" className="lang-switch" role="group">
+            <button
+              className={`lang-switch__option${locale === "de" ? " is-active" : ""}`}
+              onClick={() => setLocale("de")}
+              type="button"
+            >
+              DE
+            </button>
+            <button
+              className={`lang-switch__option${locale === "en" ? " is-active" : ""}`}
+              onClick={() => setLocale("en")}
+              type="button"
+            >
+              EN
+            </button>
+          </div>
+          <a className="menu-cta" href="#contact">
+            {ctaLabel}
+          </a>
+        </div>
+
         <details className="site-header__mobile-menu">
-          <summary>Menue</summary>
+          <summary>{mobileMenuLabel}</summary>
           <ul>
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{item.label}</a>
+                <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>
               </li>
             ))}
           </ul>

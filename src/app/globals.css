@@ -46,10 +46,11 @@ a {
 .site-header__inner {
   width: 100%;
   min-height: 72px;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
   padding: 0 24px;
+  gap: 20px;
 }
 
 .site-header__brand {
@@ -70,6 +71,58 @@ a {
   gap: 24px;
   color: #d8e7ff;
   font-size: 0.95rem;
+}
+
+.site-header__desktop-nav {
+  justify-self: center;
+}
+
+.site-header__actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 11px;
+  border: 1px solid rgba(217, 232, 255, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.lang-switch__option {
+  min-width: 42px;
+  min-height: 32px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: #bdd0ea;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.lang-switch__option.is-active {
+  background: linear-gradient(120deg, #47d5ca, #66b6ff);
+  color: #071223;
+}
+
+.menu-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: linear-gradient(120deg, #47d5ca, #66b6ff);
+  color: #081423;
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .site-header__mobile-menu {
@@ -368,6 +421,10 @@ a {
   }
 
   .site-header__desktop-nav {
+    display: none;
+  }
+
+  .site-header__actions {
     display: none;
   }
 
