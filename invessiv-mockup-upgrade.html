@@ -462,6 +462,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: flex-start;
         gap: clamp(10px, 1.6vw, 18px);
         padding-block: clamp(18px, 3.2vw, 40px);
       }
@@ -480,6 +481,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: rgba(231, 233, 239, 0.88);
         position: relative;
+        align-self: flex-start;
       }
       .pill::before {
         content: "";
@@ -1201,14 +1203,6 @@
             data-i18n="action.menu"
           >
             Menue
-          </button>
-          <button
-            class="btn soft"
-            id="btnLoginTop"
-            type="button"
-            data-i18n="action.login"
-          >
-            Login
           </button>
           <button class="btn" id="btnLang" type="button">EN</button>
           <button
@@ -1980,7 +1974,7 @@
               <ul class="list">
                 <li data-i18n="p3.f1">Automatisierung von Tasks</li>
                 <li data-i18n="p3.f2">Klare ROI-Ziele</li>
-                <li data-i18n="p3.f3">Erweiterbar fuer Login</li>
+                <li data-i18n="p3.f3">Erweiterbar fuer Portale</li>
               </ul>
               <button
                 class="btn mock"
@@ -2150,7 +2144,6 @@
           "nav.portal": "Portal",
           "nav.contact": "Kontakt",
           "action.menu": "Menue",
-          "action.login": "Login",
           "action.call": "Call via Calendly",
           "hero.pill": "Individuell statt Baukasten",
           "hero.title":
@@ -2216,29 +2209,21 @@
           "p3.t": "Process Tool",
           "p3.f1": "Automatisierung von Tasks",
           "p3.f2": "Klare ROI-Ziele",
-          "p3.f3": "Erweiterbar fuer Login",
+          "p3.f3": "Erweiterbar fuer Portale",
           "common.bookBtn": "Jetzt buchen",
           "common.mockPay": "Mockup: Zahlung folgt spaeter.",
-          "portal.title": "Client Login",
-          "portal.hint": "UI ist sichtbar, Auth-Logik ist noch deaktiviert.",
-          "portal.login": "Einloggen",
-          "portal.register": "Account erstellen",
-          "common.mockLogin":
-            "Mockup: Login folgt spaeter mit sicherem Backend.",
           "contact.title": "Kontakt",
           "contact.hint": "Schnellster Weg: Calendly oder kurze Nachricht.",
           "contact.cal": "Calendly oeffnen",
           "contact.send": "Absenden (Mock)",
           "label.name": "Name",
           "label.email": "E-Mail",
-          "label.password": "Passwort",
           "label.message": "Nachricht",
           "label.goal": "Projektziel",
           "label.audience": "Zielgruppe",
           "label.deadline": "Deadline",
           "ph.name": "Name",
           "ph.email": "E-Mail",
-          "ph.password": "Passwort",
           "ph.message": "Kurze Projektbeschreibung",
           "ph.goal": "Was ist dein Hauptziel?",
           "ph.audience": "Wer ist die Zielgruppe?",
@@ -2252,7 +2237,6 @@
           "nav.portal": "Portal",
           "nav.contact": "Contact",
           "action.menu": "Menu",
-          "action.login": "Login",
           "action.call": "Call via Calendly",
           "hero.pill": "Custom instead of templates",
           "hero.title": "A finished website with minimal time investment.",
@@ -2317,30 +2301,21 @@
           "p3.t": "Process tool",
           "p3.f1": "Task automation",
           "p3.f2": "Clear ROI goals",
-          "p3.f3": "Login-ready extension",
+          "p3.f3": "Portal-ready extension",
           "common.bookBtn": "Book now (soon)",
           "common.mockPay": "Mockup: payment will be added later.",
-          "portal.title": "Client login",
-          "portal.hint":
-            "UI is visible, authentication logic is still disabled.",
-          "portal.login": "Log in (soon)",
-          "portal.register": "Create account (soon)",
-          "common.mockLogin":
-            "Mockup: login will be added later with secure backend.",
           "contact.title": "Contact",
           "contact.hint": "Fastest route: Calendly or a short message.",
           "contact.cal": "Open Calendly",
           "contact.send": "Send (mock)",
           "label.name": "Name",
           "label.email": "Email",
-          "label.password": "Password",
           "label.message": "Message",
           "label.goal": "Project goal",
           "label.audience": "Audience",
           "label.deadline": "Deadline",
           "ph.name": "Name",
           "ph.email": "Email",
-          "ph.password": "Password",
           "ph.message": "Short project description",
           "ph.goal": "What is your main goal?",
           "ph.audience": "Who is your target audience?",
@@ -2401,14 +2376,6 @@
         document.getElementById(id).addEventListener("click", () => {
           window.open("https://calendly.com/", "_blank", "noopener,noreferrer");
         });
-      });
-
-      document.getElementById("btnLoginTop").addEventListener("click", () => {
-        showToast(
-          language === "de"
-            ? "Login ist sichtbar, aber noch nicht aktiv."
-            : "Login is visible, but not active yet.",
-        );
       });
 
       document.querySelectorAll("[data-disabled-action]").forEach((node) => {
