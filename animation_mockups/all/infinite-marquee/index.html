@@ -1,0 +1,67 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Infinite Marquee â€“ Mockup</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="ZurÃ¼ck zur Ãœbersicht">
+        <span class="dot"></span><strong>Ãœbersicht</strong
+        ><small>â† zurÃ¼ck</small>
+      </a>
+      <div class="pill"><strong>Effect 11</strong><small>Logo wall</small></div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          Infinite Marquee (Logo Wall)
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Marquees sind wieder da â€“ aber â€œmodernâ€: smooth, maskiert,
+          pausierbar, mit leichter Tiefenwirkung. Perfekt fÃ¼r Kundenlogos /
+          Integrationen / Presse.
+        </div>
+        <div class="footer">
+          Hover to pause. Use mouse wheel to change speed/direction.
+        </div>
+      </div>
+
+      <div class="card" style="padding: 18px">
+        <div class="marquee" aria-label="Marquee demo">
+          <div class="track" id="track">
+            <div class="logo">ACME</div>
+            <div class="logo">Northwind</div>
+            <div class="logo">Helio</div>
+            <div class="logo">Kite</div>
+            <div class="logo">Sora</div>
+            <div class="logo">Juniper</div>
+            <div class="logo">Nimbus</div>
+            <div class="logo">Atlas</div>
+
+            <div class="logo">ACME</div>
+            <div class="logo">Northwind</div>
+            <div class="logo">Helio</div>
+            <div class="logo">Kite</div>
+            <div class="logo">Sora</div>
+            <div class="logo">Juniper</div>
+            <div class="logo">Nimbus</div>
+            <div class="logo">Atlas</div>
+          </div>
+        </div>
+
+        <div class="hint">
+          <span class="chip">Hover pauses</span>
+          <span class="chip">Wheel changes speed</span>
+          <span class="chip">Mask fade edges</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>3D Tilt Glass – Mockup</title>
+    <style>
+      :root {
+        --bg0: #07080c;
+        --bg1: #0b1020;
+        --fg: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.66);
+        --thin: rgba(255, 255, 255, 0.12);
+        --thin2: rgba(255, 255, 255, 0.18);
+        --r: 22px;
+        color-scheme: dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            1200px 700px at 20% 10%,
+            rgba(120, 120, 255, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 650px at 70% 30%,
+            rgba(255, 120, 180, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 800px at 40% 90%,
+            rgba(80, 255, 210, 0.1),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--fg);
+        overflow-x: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .topbar {
+        position: fixed;
+        inset: 16px 16px auto 16px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .pill {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1px solid var(--thin);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      .pill small {
+        color: var(--muted);
+      }
+      .pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 96px 18px 70px;
+      }
+      .card {
+        border: 1px solid var(--thin);
+        border-radius: var(--r);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      }
+      .footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        opacity: 0.9;
+      }
+      code {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="Zurück zur Übersicht">
+        <span class="dot"></span><strong>Übersicht</strong
+        ><small>← zurück</small>
+      </a>
+      <div class="pill">
+        <strong>Effect 03</strong><small>Tilt + Shine</small>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          align-items: start;
+        "
+      >
+        <div class="card" style="padding: 22px">
+          <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+            3D Tilt + Glass Shine
+          </h1>
+          <div style="color: var(--muted); line-height: 1.55; max-width: 70ch">
+            Das klassische “3D tilt” wird deutlich hochwertiger, wenn du eine
+            bewegte “shine”-Reflexion + leichte Rand-Highlights addierst.
+          </div>
+          <div class="footer">Move your mouse over the card.</div>
+        </div>
+
+        <div class="tilt-wrap">
+          <div class="tilt" tabindex="0" aria-label="3D Tilt Card">
+            <div class="shine"></div>
+            <div class="ring"></div>
+            <div class="content">
+              <div class="badge">NEU</div>
+              <h2>Adaptive Pricing</h2>
+              <p>
+                Dein Produkt fühlt sich plötzlich nach “Premium” an – ohne
+                3D-Assets.
+              </p>
+              <div class="row">
+                <div class="stat">
+                  <span class="k">Uplift</span><span class="v">+12%</span>
+                </div>
+                <div class="stat">
+                  <span class="k">Setup</span><span class="v">5 min</span>
+                </div>
+              </div>
+              <button class="cta" type="button">Try it</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .tilt-wrap {
+        display: grid;
+        place-items: center;
+      }
+      .tilt {
+        position: relative;
+        width: min(520px, 92vw);
+        aspect-ratio: 16 / 10;
+        border-radius: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.22);
+        overflow: hidden;
+        transform-style: preserve-3d;
+        transform: perspective(900px) rotateX(var(--rx, 0deg))
+          rotateY(var(--ry, 0deg)) translateZ(0);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.55);
+        outline: none;
+      }
+      .tilt:focus-visible {
+        box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.22),
+          0 40px 80px rgba(0, 0, 0, 0.55);
+      }
+      .shine {
+        position: absolute;
+        inset: -60%;
+        background: radial-gradient(
+          500px 320px at var(--sx, 40%) var(--sy, 30%),
+          rgba(255, 255, 255, 0.22),
+          rgba(255, 255, 255, 0) 55%
+        );
+        transform: translateZ(40px);
+        mix-blend-mode: screen;
+        opacity: 0.95;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+      .ring {
+        position: absolute;
+        inset: -2px;
+        border-radius: 26px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.18),
+          rgba(255, 255, 255, 0) 45%,
+          rgba(255, 255, 255, 0.18)
+        );
+        opacity: 0.18;
+        pointer-events: none;
+        transform: translateZ(20px);
+      }
+      .content {
+        position: absolute;
+        inset: 0;
+        padding: 22px 22px 18px;
+        transform: translateZ(60px);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .badge {
+        align-self: flex-start;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.82);
+      }
+      h2 {
+        margin: 2px 0 0;
+        font-size: 28px;
+        letter-spacing: -0.03em;
+      }
+      p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.66);
+        line-height: 1.5;
+        max-width: 46ch;
+      }
+      .row {
+        display: flex;
+        gap: 12px;
+        margin-top: auto;
+      }
+      .stat {
+        flex: 1;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+        padding: 12px;
+      }
+      .stat .k {
+        display: block;
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+      }
+      .stat .v {
+        display: block;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin-top: 2px;
+      }
+      .cta {
+        margin-top: 12px;
+        align-self: flex-start;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.92);
+        padding: 10px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+      }
+    </style>
+
+    <script>
+      const card = document.querySelector(".tilt");
+      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+      const lerp = (a, b, t) => a + (b - a) * t;
+
+      let rx = 0,
+        ry = 0,
+        sx = 50,
+        sy = 50;
+      let trx = 0,
+        try_ = 0,
+        tsx = 50,
+        tsy = 50;
+
+      const set = () => {
+        rx = lerp(rx, trx, 0.16);
+        ry = lerp(ry, try_, 0.16);
+        sx = lerp(sx, tsx, 0.12);
+        sy = lerp(sy, tsy, 0.12);
+        card.style.setProperty("--rx", rx.toFixed(2) + "deg");
+        card.style.setProperty("--ry", ry.toFixed(2) + "deg");
+        card.style.setProperty("--sx", sx.toFixed(2) + "%");
+        card.style.setProperty("--sy", sy.toFixed(2) + "%");
+        requestAnimationFrame(set);
+      };
+      set();
+
+      const move = (e) => {
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+
+        const dx = px - 0.5;
+        const dy = py - 0.5;
+
+        try_ = clamp(dx * 14, -14, 14);
+        trx = clamp(-dy * 12, -12, 12);
+
+        tsx = clamp(px * 100, 0, 100);
+        tsy = clamp(py * 100, 0, 100);
+      };
+
+      card.addEventListener("pointermove", move);
+      card.addEventListener("pointerenter", () => {
+        card.querySelector(".shine").style.opacity = 1;
+      });
+      const reset = () => {
+        trx = 0;
+        try_ = 0;
+        tsx = 45;
+        tsy = 30;
+        card.querySelector(".shine").style.opacity = 0.85;
+      };
+      card.addEventListener("pointerleave", reset);
+      card.addEventListener("blur", reset);
+      reset();
+    </script>
+  </body>
+</html>

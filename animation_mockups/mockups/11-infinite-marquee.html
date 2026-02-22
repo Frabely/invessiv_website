@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Infinite Marquee – Mockup</title>
+    <style>
+      :root {
+        --bg0: #07080c;
+        --bg1: #0b1020;
+        --fg: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.66);
+        --thin: rgba(255, 255, 255, 0.12);
+        --thin2: rgba(255, 255, 255, 0.18);
+        --r: 22px;
+        color-scheme: dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            1200px 700px at 20% 10%,
+            rgba(120, 120, 255, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 650px at 70% 30%,
+            rgba(255, 120, 180, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 800px at 40% 90%,
+            rgba(80, 255, 210, 0.1),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--fg);
+        overflow-x: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .topbar {
+        position: fixed;
+        inset: 16px 16px auto 16px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .pill {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1px solid var(--thin);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      .pill small {
+        color: var(--muted);
+      }
+      .pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 96px 18px 70px;
+      }
+      .card {
+        border: 1px solid var(--thin);
+        border-radius: var(--r);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      }
+      .footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        opacity: 0.9;
+      }
+      code {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="Zurück zur Übersicht">
+        <span class="dot"></span><strong>Übersicht</strong
+        ><small>← zurück</small>
+      </a>
+      <div class="pill"><strong>Effect 11</strong><small>Logo wall</small></div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          Infinite Marquee (Logo Wall)
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Marquees sind wieder da – aber “modern”: smooth, maskiert, pausierbar,
+          mit leichter Tiefenwirkung. Perfekt für Kundenlogos / Integrationen /
+          Presse.
+        </div>
+        <div class="footer">
+          Hover to pause. Use mouse wheel to change speed/direction.
+        </div>
+      </div>
+
+      <div class="card" style="padding: 18px">
+        <div class="marquee" aria-label="Marquee demo">
+          <div class="track" id="track">
+            <div class="logo">ACME</div>
+            <div class="logo">Northwind</div>
+            <div class="logo">Helio</div>
+            <div class="logo">Kite</div>
+            <div class="logo">Sora</div>
+            <div class="logo">Juniper</div>
+            <div class="logo">Nimbus</div>
+            <div class="logo">Atlas</div>
+
+            <div class="logo">ACME</div>
+            <div class="logo">Northwind</div>
+            <div class="logo">Helio</div>
+            <div class="logo">Kite</div>
+            <div class="logo">Sora</div>
+            <div class="logo">Juniper</div>
+            <div class="logo">Nimbus</div>
+            <div class="logo">Atlas</div>
+          </div>
+        </div>
+
+        <div class="hint">
+          <span class="chip">Hover pauses</span>
+          <span class="chip">Wheel changes speed</span>
+          <span class="chip">Mask fade edges</span>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .marquee {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+        padding: 14px 0;
+        mask-image: linear-gradient(
+          90deg,
+          transparent,
+          #000 10%,
+          #000 90%,
+          transparent
+        );
+        -webkit-mask-image: linear-gradient(
+          90deg,
+          transparent,
+          #000 10%,
+          #000 90%,
+          transparent
+        );
+      }
+      .track {
+        display: flex;
+        gap: 14px;
+        width: max-content;
+        animation: scroll var(--dur, 16s) linear infinite;
+        transform: translateZ(0);
+        will-change: transform;
+      }
+      .marquee:hover .track {
+        animation-play-state: paused;
+      }
+      .logo {
+        min-width: 160px;
+        height: 56px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: rgba(255, 255, 255, 0.84);
+        position: relative;
+        overflow: hidden;
+      }
+      .logo::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        background: radial-gradient(
+          220px 120px at 30% 20%,
+          rgba(255, 255, 255, 0.12),
+          transparent 60%
+        );
+        opacity: 0.85;
+        pointer-events: none;
+      }
+      .hint {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+      .chip {
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.14);
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 12px;
+      }
+      @keyframes scroll {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .track {
+          animation: none;
+        }
+      }
+    </style>
+
+    <script>
+      const track = document.getElementById("track");
+      let dur = 16;
+      let dir = 1;
+
+      const setDur = () => {
+        track.style.setProperty(
+          "--dur",
+          Math.max(6, Math.min(30, dur)).toFixed(2) + "s",
+        );
+        track.style.animationDirection = dir === 1 ? "normal" : "reverse";
+      };
+      setDur();
+
+      addEventListener(
+        "wheel",
+        (e) => {
+          if (Math.abs(e.deltaY) < 1) return;
+          dur += (e.deltaY > 0 ? -1 : 1) * 0.8;
+          if (dur < 6) {
+            dur = 6;
+            dir = 1;
+          }
+          if (dur > 30) {
+            dur = 30;
+            dir = -1;
+          }
+          setDur();
+        },
+        { passive: true },
+      );
+    </script>
+  </body>
+</html>

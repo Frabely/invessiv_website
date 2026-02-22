@@ -1,14 +1,33 @@
 ﻿# animation_mockups
 
-Jeder Effekt liegt in einem eigenen Ordner (einzeln nutzbar und kombinierbar):
+Ordnerstruktur nach Zielplattform:
 
-- `aurora-hero/`
-- `scroll-depth-parallax/`
-- `cursor-spotlight/`
-- `magnetic-cta/`
-- `masked-text-reveal/`
-- `floating-glass/`
-- `svg-path-journey/`
+- `desktop/` (primaer Desktop-Websites)
+- `mobile/` (primaer Mobile-Websites)
+- `all/` (fuer Desktop und Mobile geeignet)
+
+Aktuelle Zuordnung:
+
+- `desktop/cursor-spotlight/`
+- `desktop/magnetic-cta/`
+- `desktop/tilt-cards/`
+- `desktop/canvas-particle-drift/`
+- `desktop/3d-tilt-glass/`
+- `desktop/clip-path-hover-reveal/`
+- `mobile/bottom-sheet-snap/`
+- `all/aurora-hero/`
+- `all/scroll-depth-parallax/`
+- `all/scroll-snap-story/`
+- `all/scroll-reveal-stagger/`
+- `all/svg-path-draw/`
+- `all/gradient-border-grain/`
+- `all/infinite-marquee/`
+- `all/toggle-microinteraction/`
+- `all/shimmer-hover/`
+- `all/masked-text-reveal/`
+- `all/floating-glass/`
+- `all/svg-path-journey/`
+- `all/view-transition-routing/`
 
 Begleitdaten:
 

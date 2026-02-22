@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Toggle Microinteraction – Mockup</title>
+    <style>
+      :root {
+        --bg0: #07080c;
+        --bg1: #0b1020;
+        --fg: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.66);
+        --thin: rgba(255, 255, 255, 0.12);
+        --thin2: rgba(255, 255, 255, 0.18);
+        --r: 22px;
+        color-scheme: dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            1200px 700px at 20% 10%,
+            rgba(120, 120, 255, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 650px at 70% 30%,
+            rgba(255, 120, 180, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 800px at 40% 90%,
+            rgba(80, 255, 210, 0.1),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--fg);
+        overflow-x: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .topbar {
+        position: fixed;
+        inset: 16px 16px auto 16px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .pill {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1px solid var(--thin);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      .pill small {
+        color: var(--muted);
+      }
+      .pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 96px 18px 70px;
+      }
+      .card {
+        border: 1px solid var(--thin);
+        border-radius: var(--r);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      }
+      .footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        opacity: 0.9;
+      }
+      code {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="Zurück zur Übersicht">
+        <span class="dot"></span><strong>Übersicht</strong
+        ><small>← zurück</small>
+      </a>
+      <div class="pill"><strong>Effect 12</strong><small>Delight</small></div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          Microinteraction: Toggle “Morph”
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Mikro-Interaktionen (“delight”) sind 2025/2026 ein
+          Standard-Differentiator. Hier: Toggle mit “squash & stretch” +
+          Icon-Morph + leichte Haptik (Vibration via scale/blur).
+        </div>
+        <div class="footer">Click the toggle.</div>
+      </div>
+
+      <div class="card" style="padding: 24px">
+        <div class="row">
+          <div>
+            <div class="k">Auto‑Optimize</div>
+            <div class="v">Ship changes continuously.</div>
+          </div>
+
+          <button
+            id="toggle"
+            class="toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label="Auto-Optimize Toggle"
+          >
+            <span class="track"></span>
+            <span class="thumb">
+              <svg
+                class="icon"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  class="p1"
+                  d="M12 3v2"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M12 19v2"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M4.2 6.2l1.4 1.4"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M18.4 18.4l1.4 1.4"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M3 12h2"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M19 12h2"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M4.2 17.8l1.4-1.4"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p1"
+                  d="M18.4 5.6l1.4-1.4"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <path
+                  class="p2"
+                  d="M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+                  stroke="rgba(255,255,255,.85)"
+                  stroke-width="2"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <div class="pane">
+          <div class="label">Live status</div>
+          <div class="status" id="status">OFF</div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .k {
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        font-size: 18px;
+      }
+      .v {
+        color: rgba(255, 255, 255, 0.66);
+        margin-top: 6px;
+      }
+      .toggle {
+        position: relative;
+        width: 78px;
+        height: 42px;
+        border: 0;
+        background: transparent;
+        padding: 0;
+        cursor: pointer;
+        outline: none;
+        transform: scale(var(--sx, 1)) translateZ(0);
+        transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .toggle:focus-visible {
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+      }
+      .track {
+        position: absolute;
+        inset: 0;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(0, 0, 0, 0.2)
+        );
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+      .thumb {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: grid;
+        place-items: center;
+        transform: translateX(var(--x, 0px)) scale(var(--t, 1));
+        transition: transform 0.42s cubic-bezier(0.2, 0.9, 0.2, 1);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+      }
+      .icon {
+        transform: rotate(var(--rot, 0deg));
+        transition: transform 0.42s cubic-bezier(0.2, 0.9, 0.2, 1);
+      }
+      .p1 {
+        opacity: var(--rays, 1);
+        transition: opacity 0.35s ease;
+      }
+      .p2 {
+        stroke-dasharray: 28;
+        stroke-dashoffset: var(--dash, 0);
+        transition: stroke-dashoffset 0.42s cubic-bezier(0.2, 0.9, 0.2, 1);
+      }
+      .pane {
+        margin-top: 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(0, 0, 0, 0.18);
+        padding: 14px;
+      }
+      .label {
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .status {
+        margin-top: 8px;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+      }
+      .toggle.on .track {
+        background:
+          linear-gradient(
+            90deg,
+            rgba(120, 160, 255, 0.35),
+            rgba(255, 120, 200, 0.28),
+            rgba(80, 255, 210, 0.22)
+          ),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.2));
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .toggle.on .thumb {
+        --x: 36px;
+      }
+      .toggle.on {
+        --sx: 1.02;
+      }
+      .toggle.on .icon {
+        --rot: 180deg;
+      }
+      .toggle.on .p1 {
+        --rays: 0;
+      }
+      .toggle.on .p2 {
+        --dash: 18;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .thumb,
+        .toggle,
+        .icon,
+        .p1,
+        .p2 {
+          transition: none;
+        }
+      }
+    </style>
+
+    <script>
+      const t = document.getElementById("toggle");
+      const status = document.getElementById("status");
+
+      function set(on) {
+        t.classList.toggle("on", on);
+        t.setAttribute("aria-pressed", on ? "true" : "false");
+        status.textContent = on ? "ON" : "OFF";
+        t.style.setProperty("--sx", on ? 1.03 : 1.01);
+        setTimeout(() => t.style.setProperty("--sx", on ? 1.02 : 1.0), 110);
+      }
+
+      let on = false;
+      t.addEventListener("click", () => {
+        on = !on;
+        set(on);
+      });
+
+      set(false);
+    </script>
+  </body>
+</html>

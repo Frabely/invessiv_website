@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SVG Path Draw – Mockup</title>
+    <style>
+      :root {
+        --bg0: #07080c;
+        --bg1: #0b1020;
+        --fg: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.66);
+        --thin: rgba(255, 255, 255, 0.12);
+        --thin2: rgba(255, 255, 255, 0.18);
+        --r: 22px;
+        color-scheme: dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(
+            1200px 700px at 20% 10%,
+            rgba(120, 120, 255, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 650px at 70% 30%,
+            rgba(255, 120, 180, 0.14),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 800px at 40% 90%,
+            rgba(80, 255, 210, 0.1),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        color: var(--fg);
+        overflow-x: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .topbar {
+        position: fixed;
+        inset: 16px 16px auto 16px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .pill {
+        pointer-events: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border: 1px solid var(--thin);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      .pill small {
+        color: var(--muted);
+      }
+      .pill .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 96px 18px 70px;
+      }
+      .card {
+        border: 1px solid var(--thin);
+        border-radius: var(--r);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+      }
+      .footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        opacity: 0.9;
+      }
+      code {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="Zurück zur Übersicht">
+        <span class="dot"></span><strong>Übersicht</strong
+        ><small>← zurück</small>
+      </a>
+      <div class="pill">
+        <strong>Effect 07</strong><small>Self-drawing hero</small>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          SVG “Self‑Drawing” Hero
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Self-drawing Lines (stroke-dasharray) sind ein “cinematic” Einstieg
+          für einen Hero: Logo/Illustration zeichnet sich und füllt sich dann.
+        </div>
+        <div class="footer">Reload the page to see the draw animation.</div>
+      </div>
+
+      <div
+        class="card"
+        style="
+          padding: 22px;
+          display: grid;
+          place-items: center;
+          overflow: hidden;
+        "
+      >
+        <svg
+          class="mark"
+          width="720"
+          height="320"
+          viewBox="0 0 720 320"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Self-drawing SVG"
+        >
+          <defs>
+            <linearGradient
+              id="g"
+              x1="80"
+              y1="40"
+              x2="640"
+              y2="280"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="rgba(120,160,255,.95)" />
+              <stop offset="0.55" stop-color="rgba(255,120,200,.85)" />
+              <stop offset="1" stop-color="rgba(80,255,210,.85)" />
+            </linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path
+            class="line"
+            d="M120 210 C 190 90, 300 70, 360 160 C 420 250, 540 250, 600 130"
+            stroke="url(#g)"
+            stroke-width="10"
+            stroke-linecap="round"
+            filter="url(#glow)"
+          />
+          <path
+            class="line"
+            d="M160 235 C 250 290, 460 310, 560 210"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="6"
+            stroke-linecap="round"
+          />
+          <path
+            class="line"
+            d="M210 120 L 260 80 L 310 120"
+            stroke="rgba(255,255,255,.18)"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <g class="fill">
+            <circle
+              cx="360"
+              cy="160"
+              r="64"
+              fill="rgba(255,255,255,.06)"
+              stroke="rgba(255,255,255,.14)"
+              stroke-width="2"
+            />
+            <path
+              d="M340 162 L358 180 L388 142"
+              stroke="rgba(255,255,255,.86)"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+
+          <text
+            x="360"
+            y="292"
+            text-anchor="middle"
+            fill="rgba(255,255,255,.82)"
+            font-size="24"
+            font-weight="800"
+            letter-spacing="-0.02em"
+          >
+            LINEAR STUDIO
+          </text>
+          <text
+            x="360"
+            y="316"
+            text-anchor="middle"
+            fill="rgba(255,255,255,.60)"
+            font-size="13"
+            font-weight="600"
+            letter-spacing="0.22em"
+          >
+            SELF‑DRAWING HERO
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <style>
+      .mark {
+        max-width: min(820px, 96vw);
+        height: auto;
+      }
+      .line {
+        stroke-dasharray: var(--len, 900);
+        stroke-dashoffset: var(--len, 900);
+        animation: draw 1.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+      .line:nth-child(1) {
+        --len: 920;
+        animation-delay: 0.05s;
+      }
+      .line:nth-child(2) {
+        --len: 620;
+        animation-delay: 0.22s;
+      }
+      .line:nth-child(3) {
+        --len: 260;
+        animation-delay: 0.34s;
+      }
+
+      .fill {
+        opacity: 0;
+        transform-origin: 360px 160px;
+        transform: scale(0.94);
+        animation: pop 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        animation-delay: 1.15s;
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.45));
+      }
+
+      @keyframes draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes pop {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .line {
+          animation: none;
+          stroke-dashoffset: 0;
+        }
+        .fill {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </body>
+</html>

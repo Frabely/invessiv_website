@@ -1,0 +1,142 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SVG Path Draw â€“ Mockup</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="ZurÃ¼ck zur Ãœbersicht">
+        <span class="dot"></span><strong>Ãœbersicht</strong
+        ><small>â† zurÃ¼ck</small>
+      </a>
+      <div class="pill">
+        <strong>Effect 07</strong><small>Self-drawing hero</small>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          SVG â€œSelfâ€‘Drawingâ€ Hero
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Self-drawing Lines (stroke-dasharray) sind ein â€œcinematicâ€ Einstieg
+          fÃ¼r einen Hero: Logo/Illustration zeichnet sich und fÃ¼llt sich dann.
+        </div>
+        <div class="footer">Reload the page to see the draw animation.</div>
+      </div>
+
+      <div
+        class="card"
+        style="
+          padding: 22px;
+          display: grid;
+          place-items: center;
+          overflow: hidden;
+        "
+      >
+        <svg
+          class="mark"
+          width="720"
+          height="320"
+          viewBox="0 0 720 320"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Self-drawing SVG"
+        >
+          <defs>
+            <linearGradient
+              id="g"
+              x1="80"
+              y1="40"
+              x2="640"
+              y2="280"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="rgba(120,160,255,.95)" />
+              <stop offset="0.55" stop-color="rgba(255,120,200,.85)" />
+              <stop offset="1" stop-color="rgba(80,255,210,.85)" />
+            </linearGradient>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <path
+            class="line"
+            d="M120 210 C 190 90, 300 70, 360 160 C 420 250, 540 250, 600 130"
+            stroke="url(#g)"
+            stroke-width="10"
+            stroke-linecap="round"
+            filter="url(#glow)"
+          />
+          <path
+            class="line"
+            d="M160 235 C 250 290, 460 310, 560 210"
+            stroke="rgba(255,255,255,.22)"
+            stroke-width="6"
+            stroke-linecap="round"
+          />
+          <path
+            class="line"
+            d="M210 120 L 260 80 L 310 120"
+            stroke="rgba(255,255,255,.18)"
+            stroke-width="6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <g class="fill">
+            <circle
+              cx="360"
+              cy="160"
+              r="64"
+              fill="rgba(255,255,255,.06)"
+              stroke="rgba(255,255,255,.14)"
+              stroke-width="2"
+            />
+            <path
+              d="M340 162 L358 180 L388 142"
+              stroke="rgba(255,255,255,.86)"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </g>
+
+          <text
+            x="360"
+            y="292"
+            text-anchor="middle"
+            fill="rgba(255,255,255,.82)"
+            font-size="24"
+            font-weight="800"
+            letter-spacing="-0.02em"
+          >
+            LINEAR STUDIO
+          </text>
+          <text
+            x="360"
+            y="316"
+            text-anchor="middle"
+            fill="rgba(255,255,255,.60)"
+            font-size="13"
+            font-weight="600"
+            letter-spacing="0.22em"
+          >
+            SELFâ€‘DRAWING HERO
+          </text>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>

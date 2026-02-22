@@ -1,0 +1,50 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clip-path Reveal â€“ Mockup</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="ZurÃ¼ck zur Ãœbersicht">
+        <span class="dot"></span><strong>Ãœbersicht</strong
+        ><small>â† zurÃ¼ck</small>
+      </a>
+      <div class="pill">
+        <strong>Effect 10</strong><small>Mask reveal on hover</small>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 14px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          Image Mask Reveal (Clipâ€‘Path)
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 82ch">
+          Ein cleanes Hover-Reveal mit <code>clip-path</code> und â€œfloatingâ€
+          Caption wirkt wie ein Mini-Storytelling-Element (z.B. Case Studies,
+          Portfolio, Features).
+        </div>
+        <div class="footer">Hover / move over the card.</div>
+      </div>
+
+      <div class="gallery">
+        <div class="shot card" tabindex="0" aria-label="Mask reveal card">
+          <div class="img" aria-hidden="true"></div>
+          <div class="cap">
+            <div class="t">Case Study</div>
+            <div class="h">â€œOrbit Checkoutâ€</div>
+            <div class="s">
+              Hover reveals a second layer + cursor spotlight.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

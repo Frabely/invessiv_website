@@ -1,0 +1,83 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scroll Reveal â€“ Mockup</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="pill" href="index.html" aria-label="ZurÃ¼ck zur Ãœbersicht">
+        <span class="dot"></span><strong>Ãœbersicht</strong
+        ><small>â† zurÃ¼ck</small>
+      </a>
+      <div class="pill">
+        <strong>Effect 04</strong><small>Staggered reveals</small>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="card" style="padding: 22px; margin-bottom: 16px">
+        <h1 style="margin: 0 0 8px; font-size: 40px; letter-spacing: -0.03em">
+          Scroll Reveal (Stagger)
+        </h1>
+        <div style="color: var(--muted); line-height: 1.55; max-width: 78ch">
+          Klassisch â€“ aber mit sauberem Timing und Stagger wirkt es
+          â€œexpensiveâ€. Das ist oft der grÃ¶ÃŸte ROI-Effekt auf Landing Pages
+          (viel Bewegung, wenig Risiko).
+        </div>
+        <div class="footer">Scroll down.</div>
+      </div>
+
+      <section class="sec card reveal" style="padding: 22px">
+        <h2>Hero Subsection</h2>
+        <p>Ein kurzer Absatz erscheint weich aus Blur + Y-Offset.</p>
+        <div class="chips">
+          <span class="chip">No libs</span
+          ><span class="chip">IntersectionObserver</span
+          ><span class="chip">Stagger</span>
+        </div>
+      </section>
+
+      <div style="height: 14px"></div>
+
+      <section class="sec card">
+        <div class="grid">
+          <article class="feat reveal" style="--d: 0ms">
+            <h3>Fast Setup</h3>
+            <p>Drop-in Utility. Perf fÃ¼r â€œsectionsâ€.</p>
+          </article>
+          <article class="feat reveal" style="--d: 90ms">
+            <h3>Stagger</h3>
+            <p>Cards animieren nacheinander (gibt Rhythmus).</p>
+          </article>
+          <article class="feat reveal" style="--d: 180ms">
+            <h3>Soft Blur</h3>
+            <p>Blur + opacity fÃ¼hlt sich â€œcinematicâ€ an.</p>
+          </article>
+          <article class="feat reveal" style="--d: 270ms">
+            <h3>Accessible</h3>
+            <p>Respektiert <code>prefers-reduced-motion</code>.</p>
+          </article>
+        </div>
+      </section>
+
+      <div style="height: 16px"></div>
+
+      <section class="sec card reveal" style="padding: 22px">
+        <h2>CTA</h2>
+        <p>
+          Reveals funktionieren besonders gut mit klaren Headlines + viel
+          â€œwhite spaceâ€.
+        </p>
+        <button class="cta">Get Started</button>
+      </section>
+
+      <div style="height: 600px"></div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

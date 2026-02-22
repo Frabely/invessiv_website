@@ -1,0 +1,36 @@
+﻿<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Transition Routing Mockup</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="scene">
+      <header class="top">
+        <img
+          src="../../../logo_mockups/logo_no_text.png"
+          alt="Logo"
+          class="logo"
+        />
+        <nav>
+          <button class="tab" data-route="home">Home</button>
+          <button class="tab" data-route="pricing">Pricing</button>
+        </nav>
+      </header>
+
+      <section class="page" id="home" data-on="1">
+        <h1>Home view with app-like route transition.</h1>
+        <p>Use this pattern for landing subviews without hard page flicker.</p>
+      </section>
+
+      <section class="page" id="pricing" data-on="0">
+        <h1>Pricing view keeps context and motion continuity.</h1>
+        <p>Falls back to a short fade if View Transition API is unavailable.</p>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
