@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
+import { ENABLE_THEME_SWITCH } from "@/config/site";
 import type { NavigationItem } from "@/config/site";
 
 type SiteHeaderProps = {
@@ -10,7 +11,7 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({ navigation }: SiteHeaderProps) {
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, theme, toggleTheme } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -40,6 +41,14 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
 
   const ctaLabel = locale === "de" ? "Projekt anfragen" : "Request project";
   const mobileMenuLabel = locale === "de" ? "Menue" : "Menu";
+  const themeToggleLabel =
+    locale === "de"
+      ? theme === "dark"
+        ? "Light"
+        : "Dark"
+      : theme === "dark"
+        ? "Light"
+        : "Dark";
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="site-header__inner">
@@ -65,6 +74,11 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
         </nav>
 
         <div className="site-header__actions" aria-label="Language and primary action">
+          {ENABLE_THEME_SWITCH ? (
+            <button className="theme-switch" onClick={toggleTheme} type="button">
+              {themeToggleLabel}
+            </button>
+          ) : null}
           <div aria-label="Language switch" className="lang-switch" role="group">
             <button
               className={`lang-switch__option${locale === "de" ? " is-active" : ""}`}
@@ -89,6 +103,13 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
         <details className="site-header__mobile-menu">
           <summary>{mobileMenuLabel}</summary>
           <ul>
+            {ENABLE_THEME_SWITCH ? (
+              <li>
+                <button className="theme-switch theme-switch--mobile" onClick={toggleTheme} type="button">
+                  {themeToggleLabel}
+                </button>
+              </li>
+            ) : null}
             {navigation.map((item) => (
               <li key={item.href}>
                 <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>

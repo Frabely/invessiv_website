@@ -19,6 +19,11 @@ export type LandingSectionCopy = {
     visualVariant?: "landing" | "upgrade" | "ai";
     visual?: boolean;
   }>;
+  processSteps?: Array<{
+    step: string;
+    title: string;
+    description: string;
+  }>;
 };
 
 export type LandingSection = {
@@ -114,7 +119,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Schlanker Start mit fuenf klaren Angebotsbereichen im gleichen Delivery-Rhythmus.",
         serviceCards: [
           {
-            iconSrc: "/services/01-landingpages-target.png",
+            iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
             description:
@@ -125,7 +130,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/02-webseiten-screen-no-stand.png",
+            iconSrc: "/services/02_websites.png",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
@@ -135,7 +140,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/03-prozess-tools-gears.png",
+            iconSrc: "/services/03_tools.png",
             iconAlt: "Prozess-Tools Icon",
             title: "Prozess-Tools",
             description:
@@ -145,7 +150,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/04-upgrade-refresh-screen.png",
+            iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website-Upgrade Icon",
             title: "Alte Website upgraden",
             description:
@@ -156,7 +161,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 6,
           },
           {
-            iconSrc: "/services/05-ki-templates-brain-cards.png",
+            iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "KI-Templates Icon",
             title: "KI-Templates",
             description: "Vorgefertigte AI-Templates fuer Content-Erstellung und Marketing.",
@@ -174,7 +179,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "A focused start with five clear offer areas in the same delivery rhythm.",
         serviceCards: [
           {
-            iconSrc: "/services/01-landingpages-target.png",
+            iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
             description:
@@ -185,7 +190,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/02-webseiten-screen-no-stand.png",
+            iconSrc: "/services/02_websites.png",
             iconAlt: "Websites icon",
             title: "Websites",
             description:
@@ -195,7 +200,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/03-prozess-tools-gears.png",
+            iconSrc: "/services/03_tools.png",
             iconAlt: "Process tools icon",
             title: "Process tools",
             description:
@@ -205,7 +210,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 4,
           },
           {
-            iconSrc: "/services/04-upgrade-refresh-screen.png",
+            iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website upgrade icon",
             title: "Upgrade existing website",
             description:
@@ -216,7 +221,7 @@ const HOME_SECTIONS: LandingSection[] = [
             span: 6,
           },
           {
-            iconSrc: "/services/05-ki-templates-brain-cards.png",
+            iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "AI templates icon",
             title: "AI templates",
             description: "Prebuilt AI templates for content creation and marketing.",
@@ -237,11 +242,63 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Prozess",
         description:
           "Der Delivery-Track wird als klare Timeline umgesetzt: von Input ueber Draft bis Go-live.",
+        processSteps: [
+          {
+            step: "01",
+            title: "Input",
+            description:
+              "Du gibst Ziel, Angebot und Kerninfos vor. Wir strukturieren direkt die Umsetzungsbasis.",
+          },
+          {
+            step: "02",
+            title: "Draft",
+            description:
+              "Du bekommst einen ersten klickbaren Stand mit klarer Messaging- und Layout-Struktur.",
+          },
+          {
+            step: "03",
+            title: "Feinschliff",
+            description:
+              "Texte, Design-Details und Conversion-Elemente werden fokussiert auf den finalen Stand gebracht.",
+          },
+          {
+            step: "04",
+            title: "Go-live",
+            description:
+              "Nach kurzer QA geht die Seite live, inklusive sauberem technischen Setup und Uebergabe.",
+          },
+        ],
       },
       en: {
         title: "Process",
         description:
           "The delivery track will be implemented as a clear timeline from input and draft to go-live.",
+        processSteps: [
+          {
+            step: "01",
+            title: "Input",
+            description:
+              "You provide goals, offer details, and core info. We turn it into a clear build foundation.",
+          },
+          {
+            step: "02",
+            title: "Draft",
+            description:
+              "You get the first clickable version with clear messaging and layout structure.",
+          },
+          {
+            step: "03",
+            title: "Refinement",
+            description:
+              "Copy, design details, and conversion elements are refined into the final version.",
+          },
+          {
+            step: "04",
+            title: "Go live",
+            description:
+              "After a short QA pass, the page goes live with clean technical setup and handover.",
+          },
+        ],
       },
     },
   },
@@ -283,3 +340,6 @@ export function getHomeSections(locale: Locale) {
     ...section.copy[locale],
   }));
 }
+
+
+

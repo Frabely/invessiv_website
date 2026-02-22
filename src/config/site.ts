@@ -21,3 +21,5 @@ export const PRIMARY_NAVIGATION: NavigationItem[] = [
   { href: "#pricing", label: "Pakete" },
   { href: "#contact", label: "Kontakt" },
 ];
+
+export const ENABLE_THEME_SWITCH = false;

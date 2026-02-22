@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { HeroVisual } from "@/components/marketing/hero-visual";
@@ -12,6 +11,10 @@ import { validateNavigationSections } from "@/domain/navigation/validate-navigat
 export default function MarketingHomePage() {
   const { locale } = useLanguage();
   const servicesSectionRef = useRef<HTMLElement | null>(null);
+  const processSectionRef = useRef<HTMLElement | null>(null);
+  const processStepsRef = useRef<HTMLDivElement | null>(null);
+  const processPathRef = useRef<SVGPathElement | null>(null);
+  const processDotRef = useRef<SVGCircleElement | null>(null);
   const sections = getHomeSections(locale);
   const proofContent =
     locale === "de"
@@ -123,11 +126,10 @@ export default function MarketingHomePage() {
     }
 
     const cards = Array.from(section.querySelectorAll<HTMLElement>(".services-card"));
-    const visualBlocks = Array.from(section.querySelectorAll<HTMLElement>(".services-visual-media"));
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
     cards.forEach((card, index) => {
+      card.classList.remove("is-visible");
       card.style.setProperty("--services-reveal-delay", `${index * 75}ms`);
     });
 
@@ -151,19 +153,40 @@ export default function MarketingHomePage() {
 
       cards.forEach((card) => observer.observe(card));
 
-      const cleanupParallax = setupServicesParallax({
-        enabled: !isMobile && visualBlocks.length > 0,
-        visualBlocks,
-      });
-
       return () => {
         observer.disconnect();
-        cleanupParallax();
       };
     }
 
     cards.forEach((card) => card.classList.add("is-visible"));
-  }, []);
+  }, [locale]);
+
+  useEffect(() => {
+    const section = processSectionRef.current;
+    const stepsContainer = processStepsRef.current;
+    const path = processPathRef.current;
+    const dot = processDotRef.current;
+
+    if (!section || !stepsContainer || !path || !dot) {
+      return;
+    }
+
+    const stepCards = Array.from(section.querySelectorAll<HTMLElement>(".process-step"));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 900px)").matches;
+
+    const cleanup = setupProcessJourney({
+      dot,
+      isMobile,
+      path,
+      reducedMotion,
+      section,
+      stepsContainer,
+      stepCards,
+    });
+
+    return cleanup;
+  }, [locale]);
 
   return (
     <>
@@ -304,15 +327,7 @@ export default function MarketingHomePage() {
                           <div className="services-card-top">
                             <div className="services-card-row">
                               <h3 className="services-title">
-                                {card.iconSrc ? (
-                                  <Image
-                                    alt={card.iconAlt ?? ""}
-                                    className="services-title-icon-image"
-                                    height={32}
-                                    src={card.iconSrc}
-                                    width={32}
-                                  />
-                                ) : card.icon ? (
+                                {card.icon ? (
                                   <span aria-hidden="true" className="services-title-icon">
                                     {card.icon}
                                   </span>
@@ -407,8 +422,73 @@ export default function MarketingHomePage() {
               );
             }
 
+            if (section.id === "process") {
+              const processSteps = section.processSteps ?? [];
+
+              return (
+                <section
+                  className="process-section"
+                  id={section.id}
+                  key={section.id}
+                  ref={processSectionRef}
+                >
+                  <h2>{section.title}</h2>
+                  <p className="process-hint">{section.description}</p>
+
+                  <div className="process-layout">
+                    <svg
+                      aria-label="Process journey path"
+                      className="process-journey-svg process-journey-svg--overlay"
+                      role="img"
+                      viewBox="0 0 1200 900"
+                    >
+                      <defs>
+                        <linearGradient id="processJourneyStroke" x1="0%" x2="0%" y1="0%" y2="100%">
+                          <stop offset="0%" stopColor="#52e0c2" />
+                          <stop offset="50%" stopColor="#7da3ff" />
+                          <stop offset="100%" stopColor="#f59e0b" />
+                        </linearGradient>
+                      </defs>
+
+                      <path
+                        className="process-journey-path"
+                        d="M80 40 C 80 220, 1120 220, 1120 360 C 1120 520, 80 520, 80 680 C 80 760, 1120 760, 1120 860"
+                        fill="none"
+                        ref={processPathRef}
+                        stroke="url(#processJourneyStroke)"
+                        strokeLinecap="round"
+                        strokeWidth="10"
+                      />
+                      <circle className="process-journey-dot" cx="80" cy="40" r="12" ref={processDotRef} />
+                    </svg>
+
+                    <div className="process-steps" ref={processStepsRef} role="list">
+                      {processSteps.map((step, index) => (
+                        <article
+                          className="process-step"
+                          key={step.step}
+                          role="listitem"
+                          style={{ ["--process-step-delay" as string]: `${index * 80}ms` }}
+                        >
+                          <div className="process-step-inner">
+                            <p className="process-step-index">{step.step}</p>
+                            <h3>{step.title}</h3>
+                            <p>{step.description}</p>
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              );
+            }
+
             return (
-              <section className="content-section" id={section.id} key={section.id}>
+              <section
+                className={`content-section ${section.id === "pricing" || section.id === "contact" ? "content-section--tall" : ""}`}
+                id={section.id}
+                key={section.id}
+              >
                 <h2>{section.title}</h2>
                 <p>{section.description}</p>
               </section>
@@ -420,29 +500,143 @@ export default function MarketingHomePage() {
   );
 }
 
-function setupServicesParallax({
-  enabled,
-  visualBlocks,
+function setupProcessJourney({
+  dot,
+  isMobile,
+  path,
+  reducedMotion,
+  section,
+  stepsContainer,
+  stepCards,
 }: {
-  enabled: boolean;
-  visualBlocks: HTMLElement[];
+  dot: SVGCircleElement;
+  isMobile: boolean;
+  path: SVGPathElement;
+  reducedMotion: boolean;
+  section: HTMLElement;
+  stepsContainer: HTMLElement;
+  stepCards: HTMLElement[];
 }) {
-  if (!enabled) {
+  let pathLength = 0;
+  let lastVisibleCount = 0;
+  let pulseTimeout: number | null = null;
+
+  const recalculatePath = () => {
+    const svg = path.ownerSVGElement;
+    if (svg) {
+      const width = Math.max(960, Math.round(stepsContainer.clientWidth));
+      const height = Math.max(780, Math.round(stepsContainer.scrollHeight + 120));
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    }
+
+    const nextPath = buildProcessJourneyPathD(stepCards, stepsContainer);
+    path.setAttribute("d", nextPath);
+    pathLength = path.getTotalLength();
+    path.style.strokeDasharray = String(pathLength);
+  };
+
+  recalculatePath();
+
+  const setProgress = (progress: number) => {
+    const clamped = Math.max(0, Math.min(1, progress));
+    path.style.strokeDashoffset = String(pathLength - pathLength * clamped);
+    const point = path.getPointAtLength(pathLength * clamped);
+    dot.setAttribute("cx", point.x.toFixed(2));
+    dot.setAttribute("cy", point.y.toFixed(2));
+
+    let visibleCount = 0;
+    stepCards.forEach((card, index) => {
+      const cardMidY = card.offsetTop + card.offsetHeight * 0.5;
+      const isVisible = point.y >= cardMidY;
+      card.classList.toggle("is-visible", isVisible);
+      if (isVisible) {
+        visibleCount += 1;
+      }
+    });
+
+    if (visibleCount > lastVisibleCount) {
+      dot.classList.remove("process-journey-dot--pulse-final");
+      dot.classList.remove("process-journey-dot--pulse");
+      void dot.getBoundingClientRect();
+      dot.classList.add("process-journey-dot--pulse");
+      if (pulseTimeout) {
+        window.clearTimeout(pulseTimeout);
+      }
+      pulseTimeout = window.setTimeout(() => {
+        dot.classList.remove("process-journey-dot--pulse");
+      }, 320);
+    }
+    lastVisibleCount = visibleCount;
+
+    const lastCard = stepCards[stepCards.length - 1];
+    const finalStopY = lastCard ? lastCard.offsetTop + lastCard.offsetHeight * 0.5 : Infinity;
+    const isAtFinalStop = clamped >= 0.999 && point.y >= finalStopY - 1;
+    if (isAtFinalStop) {
+      if (pulseTimeout) {
+        window.clearTimeout(pulseTimeout);
+        pulseTimeout = null;
+      }
+      dot.classList.remove("process-journey-dot--pulse");
+      dot.classList.add("process-journey-dot--pulse-final");
+    } else {
+      dot.classList.remove("process-journey-dot--pulse-final");
+    }
+
+    section.style.setProperty("--process-glow-x", `${point.x.toFixed(2)}px`);
+    section.style.setProperty("--process-glow-y", `${point.y.toFixed(2)}px`);
+    return clamped;
+  };
+
+  if (reducedMotion) {
+    setProgress(1);
+    stepCards.forEach((card) => card.classList.add("is-visible"));
     return () => {};
+  }
+
+  if (isMobile) {
+    setProgress(1);
+
+    if (!("IntersectionObserver" in window)) {
+      stepCards.forEach((card) => card.classList.add("is-visible"));
+      return () => {};
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, currentObserver) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add("is-visible");
+            currentObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    stepCards.forEach((card) => observer.observe(card));
+
+    return () => observer.disconnect();
   }
 
   let rafId = 0;
 
   const update = () => {
+    const stepsRect = stepsContainer.getBoundingClientRect();
+    const start = window.innerHeight * 0.9;
+    const end = window.innerHeight * 0.24;
+    const fullRange = stepsRect.height + (start - end);
+    const progress = (start - stepsRect.top) / Math.max(1, fullRange);
+    const acceleratedProgress = progress * 1.75;
+    setProgress(acceleratedProgress);
+
     const viewportHeight = window.innerHeight || 1;
     const viewportCenter = viewportHeight * 0.5;
-
-    visualBlocks.forEach((block) => {
-      const rect = block.getBoundingClientRect();
-      const blockCenter = rect.top + rect.height * 0.5;
-      const normalized = (viewportCenter - blockCenter) / viewportHeight;
-      const offset = Math.max(-26, Math.min(26, normalized * 44));
-      block.style.setProperty("--services-parallax-y", `${offset.toFixed(2)}px`);
+    stepCards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.top + rect.height * 0.5;
+      const normalized = (viewportCenter - cardCenter) / viewportHeight;
+      const offset = Math.max(-18, Math.min(18, normalized * 34));
+      card.style.setProperty("--process-card-parallax-y", `${offset.toFixed(2)}px`);
     });
 
     rafId = 0;
@@ -455,15 +649,72 @@ function setupServicesParallax({
     rafId = window.requestAnimationFrame(update);
   };
 
+  const handleResize = () => {
+    recalculatePath();
+    requestUpdate();
+  };
+
   requestUpdate();
   window.addEventListener("scroll", requestUpdate, { passive: true });
-  window.addEventListener("resize", requestUpdate);
+  window.addEventListener("resize", handleResize);
 
   return () => {
     if (rafId !== 0) {
       window.cancelAnimationFrame(rafId);
     }
+    if (pulseTimeout) {
+      window.clearTimeout(pulseTimeout);
+    }
     window.removeEventListener("scroll", requestUpdate);
-    window.removeEventListener("resize", requestUpdate);
+    window.removeEventListener("resize", handleResize);
   };
+}
+
+function buildProcessJourneyPathD(stepCards: HTMLElement[], stepsContainer: HTMLElement) {
+  const width = Math.max(960, Math.round(stepsContainer.clientWidth));
+  const height = Math.max(780, Math.round(stepsContainer.scrollHeight + 120));
+  const sidePadding = Math.max(46, Math.min(84, Math.round(width * 0.06)));
+  const leftX = sidePadding;
+  const rightX = width - sidePadding;
+
+  if (stepCards.length === 0) {
+    return `M${leftX} 30 C ${leftX} 260, ${rightX} 260, ${rightX} ${height - 40}`;
+  }
+
+  const firstCard = stepCards[0];
+  const lastCard = stepCards[stepCards.length - 1];
+  const startY = firstCard.offsetTop + firstCard.offsetHeight * 0.5;
+  let d = `M${leftX} ${startY}`;
+
+  let currentX = leftX;
+  let currentY = startY;
+
+  for (let index = 0; index < stepCards.length - 1; index += 1) {
+    const currentCard = stepCards[index];
+    const nextCard = stepCards[index + 1];
+    const currentBottom = currentCard.offsetTop + currentCard.offsetHeight;
+    const nextTop = nextCard.offsetTop;
+    const gapCenterY = (currentBottom + nextTop) * 0.5;
+    const isSecondLastLane = index === stepCards.length - 3;
+    const isLastLane = index === stepCards.length - 2;
+    const availableGap = Math.max(0, nextTop - currentBottom);
+    const laneY = isLastLane
+      ? currentBottom + availableGap * 0.7
+      : isSecondLastLane
+        ? currentBottom + availableGap * 0.62
+        : gapCenterY;
+    const targetX = index % 2 === 0 ? rightX : leftX;
+    const bend = Math.max(26, Math.min(54, Math.abs(laneY - currentY) * 0.42));
+
+    d += ` C ${currentX} ${currentY + bend}, ${currentX} ${laneY - bend}, ${currentX} ${laneY}`;
+    d += ` C ${currentX + (targetX - currentX) * 0.38} ${laneY}, ${targetX - (targetX - currentX) * 0.38} ${laneY}, ${targetX} ${laneY}`;
+
+    currentX = targetX;
+    currentY = laneY;
+  }
+
+  const endY = Math.min(height - 22, lastCard.offsetTop + lastCard.offsetHeight * 0.5);
+  d += ` C ${currentX} ${currentY + 34}, ${currentX} ${endY - 34}, ${currentX} ${endY}`;
+
+  return d;
 }
