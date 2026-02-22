@@ -1,1215 +1,2628 @@
 <!doctype html>
 <html lang="de">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>invessiv – mockup (animated)</title>
-  <meta name="description" content="invessiv mockup | Lively motion, parallax, bento layout, subtle visuals." />
-  <style>
-    :root{
-      --bg:#070a12;
-      --panel:rgba(17,24,39,.72);
-      --panel2:rgba(17,24,39,.92);
-      --line:rgba(255,255,255,.10);
-      --line2:rgba(255,255,255,.18);
-      --text:#e7e9ef;
-      --muted:rgba(231,233,239,.72);
-      --muted2:rgba(231,233,239,.60);
-      --a:rgba(20,184,166,.95);
-      --b:rgba(245,158,11,.95);
-      --c:rgba(99,102,241,.85);
-      --shadow:0 22px 60px rgba(0,0,0,.42);
-      --max:1120px;
-      --r:18px;
-      --r2:24px;
-      --ease:cubic-bezier(.2,.9,.2,1);
-      --glow:rgba(20,184,166,.22);
-      --glow2:rgba(245,158,11,.18);
-      --glass:linear-gradient(180deg, rgba(17,24,39,.82), rgba(17,24,39,.58));
-      --glass2:linear-gradient(180deg, rgba(17,24,39,.94), rgba(17,24,39,.70));
-    }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>invessiv – mockup (animated)</title>
+    <meta
+      name="description"
+      content="invessiv mockup | Lively motion, parallax, bento layout, subtle visuals."
+    />
+    <style>
+      :root {
+        --bg: #070a12;
+        --panel: rgba(17, 24, 39, 0.72);
+        --panel2: rgba(17, 24, 39, 0.92);
+        --line: rgba(255, 255, 255, 0.1);
+        --line2: rgba(255, 255, 255, 0.18);
+        --text: #e7e9ef;
+        --muted: rgba(231, 233, 239, 0.72);
+        --muted2: rgba(231, 233, 239, 0.6);
+        --a: rgba(20, 184, 166, 0.95);
+        --b: rgba(245, 158, 11, 0.95);
+        --c: rgba(99, 102, 241, 0.85);
+        --shadow: 0 22px 60px rgba(0, 0, 0, 0.42);
+        --max: 1120px;
+        --r: 18px;
+        --r2: 24px;
+        --ease: cubic-bezier(0.2, 0.9, 0.2, 1);
+        --glow: rgba(20, 184, 166, 0.22);
+        --glow2: rgba(245, 158, 11, 0.18);
+        --glass: linear-gradient(
+          180deg,
+          rgba(17, 24, 39, 0.82),
+          rgba(17, 24, 39, 0.58)
+        );
+        --glass2: linear-gradient(
+          180deg,
+          rgba(17, 24, 39, 0.94),
+          rgba(17, 24, 39, 0.7)
+        );
+      }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--text);
-      line-height:1.45;
-      overflow-x:hidden;
-      background:var(--bg);
-    }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial;
+        color: var(--text);
+        line-height: 1.45;
+        overflow-x: hidden;
+        background: var(--bg);
+      }
 
-    a{color:inherit;text-decoration:none}
-    .container{width:min(var(--max),calc(100% - 32px));margin:0 auto}
-    .sr-only{
-      position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
-    }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .container {
+        width: min(var(--max), calc(100% - 32px));
+        margin: 0 auto;
+      }
+      .sr-only {
+        position: absolute !important;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
 
-    .stage{
-      position:fixed;
-      inset:0;
-      z-index:-3;
-      overflow:hidden;
-      background:
-        radial-gradient(900px 460px at 20% -10%, rgba(20,184,166,.18), transparent 55%),
-        radial-gradient(760px 420px at 85% 15%, rgba(245,158,11,.14), transparent 58%),
-        radial-gradient(900px 520px at 50% 110%, rgba(99,102,241,.12), transparent 65%),
-        var(--bg);
-    }
-    .mesh{
-      position:absolute;inset:-20%;
-      filter:blur(24px) saturate(1.15);
-      opacity:.92;
-      transform:translate3d(0,0,0);
-      will-change:transform;
-    }
-    .mesh::before,.mesh::after{
-      content:"";
-      position:absolute;inset:0;
-      background:
-        radial-gradient(420px 320px at 18% 22%, rgba(20,184,166,.34), transparent 60%),
-        radial-gradient(520px 420px at 72% 28%, rgba(245,158,11,.30), transparent 62%),
-        radial-gradient(560px 460px at 52% 78%, rgba(99,102,241,.28), transparent 62%);
-    }
-    .mesh::after{
-      background:
-        radial-gradient(520px 420px at 18% 72%, rgba(99,102,241,.22), transparent 62%),
-        radial-gradient(420px 320px at 82% 72%, rgba(20,184,166,.22), transparent 62%),
-        radial-gradient(560px 460px at 48% 24%, rgba(245,158,11,.18), transparent 62%);
-      mix-blend-mode:screen;
-      opacity:.72;
-      transform:scale(1.05);
-    }
+      .stage {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            900px 460px at 20% -10%,
+            rgba(20, 184, 166, 0.18),
+            transparent 55%
+          ),
+          radial-gradient(
+            760px 420px at 85% 15%,
+            rgba(245, 158, 11, 0.14),
+            transparent 58%
+          ),
+          radial-gradient(
+            900px 520px at 50% 110%,
+            rgba(99, 102, 241, 0.12),
+            transparent 65%
+          ),
+          var(--bg);
+      }
+      .mesh {
+        position: absolute;
+        inset: -20%;
+        filter: blur(24px) saturate(1.15);
+        opacity: 0.92;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+      }
+      .mesh::before,
+      .mesh::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            420px 320px at 18% 22%,
+            rgba(20, 184, 166, 0.34),
+            transparent 60%
+          ),
+          radial-gradient(
+            520px 420px at 72% 28%,
+            rgba(245, 158, 11, 0.3),
+            transparent 62%
+          ),
+          radial-gradient(
+            560px 460px at 52% 78%,
+            rgba(99, 102, 241, 0.28),
+            transparent 62%
+          );
+      }
+      .mesh::after {
+        background:
+          radial-gradient(
+            520px 420px at 18% 72%,
+            rgba(99, 102, 241, 0.22),
+            transparent 62%
+          ),
+          radial-gradient(
+            420px 320px at 82% 72%,
+            rgba(20, 184, 166, 0.22),
+            transparent 62%
+          ),
+          radial-gradient(
+            560px 460px at 48% 24%,
+            rgba(245, 158, 11, 0.18),
+            transparent 62%
+          );
+        mix-blend-mode: screen;
+        opacity: 0.72;
+        transform: scale(1.05);
+      }
 
-    .grain{
-      position:absolute;inset:0;
-      opacity:.10;
-      mix-blend-mode:overlay;
-      pointer-events:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
-      background-size:220px 220px;
-    }
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.1;
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E");
+        background-size: 220px 220px;
+      }
 
-    .spotlight{
-      position:fixed;inset:0;
-      z-index:-2;
-      pointer-events:none;
-      background:radial-gradient(560px 380px at var(--cx,50%) var(--cy,50%), rgba(255,255,255,.10), transparent 60%);
-      opacity:.0;
-      transition:opacity .35s var(--ease);
-    }
-    body.is-pointer .spotlight{opacity:.9}
+      .spotlight {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background: radial-gradient(
+          560px 380px at var(--cx, 50%) var(--cy, 50%),
+          rgba(255, 255, 255, 0.1),
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.35s var(--ease);
+      }
+      body.is-pointer .spotlight {
+        opacity: 0.9;
+      }
 
-    .scrollbar{
-      position:fixed;top:0;left:0;right:0;height:3px;
-      z-index:80;
-      background:rgba(255,255,255,.04);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .scrollbar > i{
-      display:block;height:100%;
-      width:var(--p,0%);
-      background:linear-gradient(90deg, rgba(20,184,166,.95), rgba(59,130,246,.85), rgba(245,158,11,.92));
-      filter:drop-shadow(0 8px 18px rgba(20,184,166,.18));
-      transform-origin:left;
-    }
+      .scrollbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        z-index: 80;
+        background: rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .scrollbar > i {
+        display: block;
+        height: 100%;
+        width: var(--p, 0%);
+        background: linear-gradient(
+          90deg,
+          rgba(20, 184, 166, 0.95),
+          rgba(59, 130, 246, 0.85),
+          rgba(245, 158, 11, 0.92)
+        );
+        filter: drop-shadow(0 8px 18px rgba(20, 184, 166, 0.18));
+        transform-origin: left;
+      }
 
-    header{
-      position:sticky;top:0;z-index:60;
-      backdrop-filter:saturate(1.2) blur(12px);
-      background:linear-gradient(to bottom, rgba(7,10,18,.78), rgba(7,10,18,.38));
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .nav{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 0;
-      gap:14px;
-    }
-    .brand{
-      display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.2px
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background:linear-gradient(135deg, rgba(20,184,166,.95), rgba(245,158,11,.95));
-      box-shadow:0 0 0 5px rgba(255,255,255,.03);
-    }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        backdrop-filter: saturate(1.2) blur(12px);
+        background: linear-gradient(
+          to bottom,
+          rgba(7, 10, 18, 0.78),
+          rgba(7, 10, 18, 0.38)
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(
+          135deg,
+          rgba(20, 184, 166, 0.95),
+          rgba(245, 158, 11, 0.95)
+        );
+        box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.03);
+      }
 
-    nav.links{display:flex;gap:16px;align-items:center}
-    nav.links a{opacity:.86;position:relative}
-    nav.links a::after{
-      content:"";
-      position:absolute;left:0;right:0;bottom:-8px;height:2px;
-      background:linear-gradient(90deg, transparent, rgba(20,184,166,.85), transparent);
-      transform:scaleX(0);
-      transform-origin:center;
-      transition:transform .25s var(--ease);
-      opacity:.9;
-    }
-    nav.links a:hover{opacity:1}
-    nav.links a:hover::after{transform:scaleX(1)}
+      nav.links {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      nav.links a {
+        opacity: 0.86;
+        position: relative;
+      }
+      nav.links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -8px;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(20, 184, 166, 0.85),
+          transparent
+        );
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.25s var(--ease);
+        opacity: 0.9;
+      }
+      nav.links a:hover {
+        opacity: 1;
+      }
+      nav.links a:hover::after {
+        transform: scaleX(1);
+      }
 
-    .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;gap:10px;
-      height:40px;padding:0 14px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:var(--text);
-      cursor:pointer;
-      transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease), box-shadow .18s var(--ease);
-      user-select:none;
-      position:relative;
-      overflow:hidden;
-      transform:translate3d(0,0,0);
-    }
-    .btn::before{
-      content:"";
-      position:absolute;inset:-40%;
-      background:radial-gradient(240px 140px at var(--bx,50%) var(--by,50%), rgba(255,255,255,.14), transparent 60%);
-      opacity:0;
-      transition:opacity .18s var(--ease);
-    }
-    .btn:hover{
-      transform:translateY(-1px);
-      border-color:rgba(255,255,255,.18);
-      background:rgba(255,255,255,.08);
-      box-shadow:0 18px 45px rgba(0,0,0,.20);
-    }
-    .btn:hover::before{opacity:1}
-    .btn.primary{
-      background:linear-gradient(135deg, rgba(20,184,166,.95), rgba(59,130,246,.85));
-      border-color:rgba(255,255,255,.14);
-    }
-    .btn.soft{background:rgba(20,184,166,.10);border-color:rgba(20,184,166,.22)}
-    .btn.menu{display:none}
-    .btn.mock{opacity:.72;cursor:not-allowed}
+      .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          transform 0.18s var(--ease),
+          border-color 0.18s var(--ease),
+          background 0.18s var(--ease),
+          box-shadow 0.18s var(--ease);
+        user-select: none;
+        position: relative;
+        overflow: hidden;
+        transform: translate3d(0, 0, 0);
+      }
+      .btn::before {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: radial-gradient(
+          240px 140px at var(--bx, 50%) var(--by, 50%),
+          rgba(255, 255, 255, 0.14),
+          transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.18s var(--ease);
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+      }
+      .btn:hover::before {
+        opacity: 1;
+      }
+      .btn.primary {
+        background: linear-gradient(
+          135deg,
+          rgba(20, 184, 166, 0.95),
+          rgba(59, 130, 246, 0.85)
+        );
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+      .btn.soft {
+        background: rgba(20, 184, 166, 0.1);
+        border-color: rgba(20, 184, 166, 0.22);
+      }
+      .btn.menu {
+        display: none;
+      }
+      .btn.mock {
+        opacity: 0.72;
+        cursor: not-allowed;
+      }
 
-    .mobile-nav{display:none}
-    .mobile-nav-inner{display:grid;gap:10px;padding:12px 0 16px}
-    .mobile-nav a{
-      padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)
-    }
+      .mobile-nav {
+        display: none;
+      }
+      .mobile-nav-inner {
+        display: grid;
+        gap: 10px;
+        padding: 12px 0 16px;
+      }
+      .mobile-nav a {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
 
-    main{padding:26px 0 56px}
+      main {
+        padding: 0 0 56px;
+      }
 
-    .hero{padding:26px 0 8px}
-    .hero-card{
-      position:relative;
-      overflow:hidden;
-      border-radius:calc(var(--r2) + 6px);
-      background:var(--glass);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:var(--shadow);
-      padding:26px;
-      min-height:320px;
-      isolation:isolate;
-    }
-    .hero-card::before{
-      content:"";
-      position:absolute;inset:-2px;
-      border-radius:inherit;
-      background:
-        radial-gradient(540px 240px at 18% 20%, rgba(20,184,166,.20), transparent 60%),
-        radial-gradient(520px 280px at 78% 30%, rgba(245,158,11,.14), transparent 62%),
-        radial-gradient(520px 280px at 50% 84%, rgba(99,102,241,.12), transparent 62%);
-      opacity:.9;
-      z-index:-1;
-      transform:translate3d(0,0,0);
-      animation:heroGlow 10s ease-in-out infinite alternate;
-    }
-    @keyframes heroGlow{
-      0%{transform:translate3d(-12px,-6px,0) scale(1)}
-      100%{transform:translate3d(10px,8px,0) scale(1.03)}
-    }
+      .hero {
+        padding: 0;
+        min-height: calc(100vh - 72px);
+        width: 100%;
+      }
+      .hero-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0;
+        background:
+          radial-gradient(
+            860px 480px at 16% 18%,
+            rgba(20, 184, 166, 0.24),
+            transparent 60%
+          ),
+          radial-gradient(
+            760px 420px at 82% 24%,
+            rgba(99, 102, 241, 0.24),
+            transparent 64%
+          ),
+          radial-gradient(
+            700px 380px at 54% 86%,
+            rgba(245, 158, 11, 0.18),
+            transparent 66%
+          ),
+          var(--glass);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: none;
+        padding: clamp(22px, 4vw, 54px) clamp(16px, 4vw, 52px);
+        min-height: calc(100vh - 72px);
+        isolation: isolate;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        border-radius: inherit;
+        background:
+          radial-gradient(
+            540px 240px at 18% 20%,
+            rgba(20, 184, 166, 0.2),
+            transparent 60%
+          ),
+          radial-gradient(
+            520px 280px at 78% 30%,
+            rgba(245, 158, 11, 0.14),
+            transparent 62%
+          ),
+          radial-gradient(
+            520px 280px at 50% 84%,
+            rgba(99, 102, 241, 0.12),
+            transparent 62%
+          );
+        opacity: 0.9;
+        z-index: -1;
+        transform: translate3d(0, 0, 0);
+        animation: heroGlow 10s ease-in-out infinite alternate;
+      }
+      .hero-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.12;
+        mix-blend-mode: overlay;
+        background-image: radial-gradient(
+          rgba(255, 255, 255, 0.9) 0.5px,
+          transparent 0.5px
+        );
+        background-size: 2px 2px;
+      }
+      @keyframes heroGlow {
+        0% {
+          transform: translate3d(-12px, -6px, 0) scale(1);
+        }
+        100% {
+          transform: translate3d(10px, 8px, 0) scale(1.03);
+        }
+      }
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        max-width: 760px;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: clamp(10px, 1.6vw, 18px);
+        padding-block: clamp(18px, 3.2vw, 40px);
+      }
+      .hero-copy section {
+        display: contents;
+      }
 
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      font-size:13px;padding:7px 12px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:rgba(231,233,239,.88);
-      position:relative;
-    }
-    .pill::before{
-      content:"";
-      width:9px;height:9px;border-radius:999px;
-      background:linear-gradient(135deg, rgba(20,184,166,.95), rgba(245,158,11,.95));
-      box-shadow:0 0 0 5px rgba(255,255,255,.03);
-    }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(231, 233, 239, 0.88);
+        position: relative;
+      }
+      .pill::before {
+        content: "";
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: linear-gradient(
+          135deg,
+          rgba(20, 184, 166, 0.95),
+          rgba(245, 158, 11, 0.95)
+        );
+        box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.03);
+      }
 
-    h1{margin:12px 0 8px;font-size:44px;line-height:1.02;letter-spacing:-.8px;max-width:760px}
-    .grad-text{
-      background:linear-gradient(90deg, rgba(231,233,239,.98), rgba(20,184,166,.92), rgba(245,158,11,.92), rgba(231,233,239,.98));
-      background-size:220% 100%;
-      -webkit-background-clip:text;background-clip:text;
-      color:transparent;
-      animation:shift 9s ease-in-out infinite;
-    }
-    @keyframes shift{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
-    .sub{margin:0;color:var(--muted);max-width:780px}
-    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+      .hero h1 {
+        margin: 0;
+        font-size: 44px;
+        line-height: 1.1;
+        letter-spacing: -0.8px;
+        max-width: 19ch;
+        text-wrap: balance;
+      }
+      .grad-text {
+        background: linear-gradient(
+          90deg,
+          rgba(231, 233, 239, 0.98),
+          rgba(20, 184, 166, 0.92),
+          rgba(245, 158, 11, 0.92),
+          rgba(231, 233, 239, 0.98)
+        );
+        background-size: 220% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shift 9s ease-in-out infinite;
+      }
+      @keyframes shift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      .sub {
+        margin: 0;
+        color: var(--muted);
+        max-width: 62ch;
+      }
+      .cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
 
-    .hero-visual{
-      position:absolute;
-      inset:-50px -50px auto auto;
-      width:620px;height:420px;
-      pointer-events:none;
-      z-index:-1;
-    }
-    .blob{
-      position:absolute;border-radius:999px;
-      filter:blur(26px);
-      opacity:.82;
-      transform:translate3d(0,0,0);
-      will-change:transform;
-    }
-    .blob.b1{width:300px;height:300px;right:270px;top:10px;background:rgba(20,184,166,.30)}
-    .blob.b2{width:260px;height:260px;right:60px;top:150px;background:rgba(245,158,11,.22)}
-    .blob.b3{width:220px;height:220px;right:150px;top:220px;background:rgba(99,102,241,.18)}
-    .shot{
-      position:absolute;right:10px;top:50px;width:470px;
-      transform:rotate(-2deg);
-      opacity:.98;
-      filter:drop-shadow(0 24px 55px rgba(0,0,0,.38));
-      will-change:transform;
-    }
+      .hero-visual {
+        position: relative;
+        width: 100%;
+        height: 430px;
+        pointer-events: none;
+        z-index: 1;
+        overflow: visible;
+        display: grid;
+        place-items: center;
+      }
+      .hero-visual[role="presentation"] {
+        display: grid;
+      }
+      .blob {
+        position: absolute;
+        border-radius: 999px;
+        filter: blur(30px);
+        opacity: 0.9;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+      }
+      .blob.b1 {
+        width: 350px;
+        height: 350px;
+        left: 8%;
+        top: -32px;
+        background: rgba(20, 184, 166, 0.34);
+      }
+      .blob.b2 {
+        width: 300px;
+        height: 300px;
+        right: 10%;
+        top: 64px;
+        background: rgba(245, 158, 11, 0.25);
+      }
+      .blob.b3 {
+        width: 260px;
+        height: 260px;
+        left: 34%;
+        top: 214px;
+        background: rgba(99, 102, 241, 0.22);
+      }
+      .shot {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: min(560px, 100%);
+        transform: translate(-50%, -50%) rotate(-2deg);
+        opacity: 1;
+        filter: drop-shadow(0 30px 70px rgba(0, 0, 0, 0.46));
+        will-change: transform;
+      }
 
-    .divider{padding:14px 0 2px}
-    .divider-line{
-      height:1px;
-      width:min(var(--max), calc(100% - 32px));
-      margin:0 auto;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
-      transform:translate3d(0,0,0);
-      will-change:transform;
-    }
-    .divider-line::after{
-      content:"";
-      display:block;
-      height:18px;
-      margin-top:-9px;
-      background:radial-gradient(260px 18px at 50% 50%, rgba(20,184,166,.22), transparent 70%);
-    }
+      .divider {
+        padding: 14px 0 2px;
+      }
+      .divider-line {
+        height: 1px;
+        width: min(var(--max), calc(100% - 32px));
+        margin: 0 auto;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.16),
+          transparent
+        );
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+      }
+      .divider-line::after {
+        content: "";
+        display: block;
+        height: 18px;
+        margin-top: -9px;
+        background: radial-gradient(
+          260px 18px at 50% 50%,
+          rgba(20, 184, 166, 0.22),
+          transparent 70%
+        );
+      }
 
-    .section{padding:44px 0}
-    .section h2{margin:0 0 8px;font-size:28px;letter-spacing:-.2px}
-    .hint{margin:0 0 18px;color:var(--muted2);max-width:780px}
+      .section {
+        padding: 44px 0;
+      }
+      .section h2 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        letter-spacing: -0.2px;
+      }
+      .hint {
+        margin: 0 0 18px;
+        color: var(--muted2);
+        max-width: 780px;
+      }
 
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
-    .cols{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
-    .kpi-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 14px;
+      }
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
 
-    .card{
-      position:relative;
-      border-radius:var(--r2);
-      background:var(--panel);
-      border:1px solid var(--line);
-      padding:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,.24);
-      transition:transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease), box-shadow .22s var(--ease);
-      overflow:hidden;
-      transform:translate3d(0,0,0);
-      will-change:transform;
-      perspective:800px;
-    }
-    .card::after{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      border-radius:inherit;
-      background:
-        radial-gradient(420px 220px at var(--mx, 50%) var(--my, 40%), rgba(20,184,166,.16), transparent 55%),
-        radial-gradient(460px 240px at calc(var(--mx,50%) + 16%) calc(var(--my,40%) + 18%), rgba(245,158,11,.12), transparent 62%);
-      opacity:0;
-      transition:opacity .22s var(--ease);
-      pointer-events:none;
-    }
-    .card:hover{
-      border-color:var(--line2);
-      background:var(--panel2);
-      box-shadow:0 20px 56px rgba(0,0,0,.34);
-    }
-    .card:hover::after{opacity:1}
-    .meta{margin:8px 0 0;color:var(--muted);font-size:14px}
-    .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .tag{
-      font-size:12px;padding:4px 10px;border-radius:999px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.10);
-      color:rgba(231,233,239,.84);
-      white-space:nowrap;
-    }
-    .list{margin:10px 0 0;padding:0 0 0 18px;color:rgba(231,233,239,.80)}
-    .list li{margin:6px 0}
+      .card {
+        position: relative;
+        border-radius: var(--r2);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        padding: 18px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+        transition:
+          transform 0.22s var(--ease),
+          border-color 0.22s var(--ease),
+          background 0.22s var(--ease),
+          box-shadow 0.22s var(--ease);
+        overflow: hidden;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+        perspective: 800px;
+      }
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: inherit;
+        background:
+          radial-gradient(
+            420px 220px at var(--mx, 50%) var(--my, 40%),
+            rgba(20, 184, 166, 0.16),
+            transparent 55%
+          ),
+          radial-gradient(
+            460px 240px at calc(var(--mx, 50%) + 16%) calc(var(--my, 40%) + 18%),
+            rgba(245, 158, 11, 0.12),
+            transparent 62%
+          );
+        opacity: 0;
+        transition: opacity 0.22s var(--ease);
+        pointer-events: none;
+      }
+      .card:hover {
+        border-color: var(--line2);
+        background: var(--panel2);
+        box-shadow: 0 20px 56px rgba(0, 0, 0, 0.34);
+      }
+      .card:hover::after {
+        opacity: 1;
+      }
+      .meta {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .tag {
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(231, 233, 239, 0.84);
+        white-space: nowrap;
+      }
+      .list {
+        margin: 10px 0 0;
+        padding: 0 0 0 18px;
+        color: rgba(231, 233, 239, 0.8);
+      }
+      .list li {
+        margin: 6px 0;
+      }
 
-    .field{
-      width:100%;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.05);
-      color:var(--text);
-      padding:11px 12px;
-      outline:none;
-      transition:border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
-      transform:translate3d(0,0,0);
-    }
-    .field:focus{border-color:rgba(20,184,166,.34);background:rgba(255,255,255,.07)}
-    .field:focus-visible{box-shadow:0 0 0 4px rgba(20,184,166,.10)}
-    textarea.field{min-height:110px;resize:vertical}
-    .note{margin-top:10px;font-size:13px;color:rgba(231,233,239,.62)}
-    .plan-price{margin-top:10px;font-weight:800;font-size:18px;letter-spacing:-.2px}
+      .field {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text);
+        padding: 11px 12px;
+        outline: none;
+        transition:
+          border-color 0.18s var(--ease),
+          background 0.18s var(--ease),
+          transform 0.18s var(--ease);
+        transform: translate3d(0, 0, 0);
+      }
+      .field:focus {
+        border-color: rgba(20, 184, 166, 0.34);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .field:focus-visible {
+        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+      }
+      textarea.field {
+        min-height: 110px;
+        resize: vertical;
+      }
+      .note {
+        margin-top: 10px;
+        font-size: 13px;
+        color: rgba(231, 233, 239, 0.62);
+      }
+      .plan-price {
+        margin-top: 10px;
+        font-weight: 800;
+        font-size: 18px;
+        letter-spacing: -0.2px;
+      }
 
-    [data-reveal]{
-      opacity:0;
-      transform:translateY(14px) scale(.99);
-      filter:saturate(.95);
-      transition:opacity .7s var(--ease), transform .7s var(--ease), filter .7s var(--ease);
-      transition-delay:var(--delay, 0s);
-      will-change:transform, opacity;
-    }
-    [data-reveal].is-visible{opacity:1;transform:translateY(0) scale(1);filter:saturate(1)}
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(14px) scale(0.99);
+        filter: saturate(0.95);
+        transition:
+          opacity 0.7s var(--ease),
+          transform 0.7s var(--ease),
+          filter 0.7s var(--ease);
+        transition-delay: var(--delay, 0s);
+        will-change: transform, opacity;
+      }
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: saturate(1);
+      }
 
-    .bento{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      align-items:stretch;
-    }
-    .span-4{grid-column:span 4}
-    .span-5{grid-column:span 5}
-    .span-6{grid-column:span 6}
-    .span-7{grid-column:span 7}
-    .span-8{grid-column:span 8}
-    .span-12{grid-column:span 12}
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+        align-items: stretch;
+      }
+      .span-4 {
+        grid-column: span 4;
+      }
+      .span-5 {
+        grid-column: span 5;
+      }
+      .span-6 {
+        grid-column: span 6;
+      }
+      .span-7 {
+        grid-column: span 7;
+      }
+      .span-8 {
+        grid-column: span 8;
+      }
+      .span-12 {
+        grid-column: span 12;
+      }
 
-    .card.visual{
-      padding:0;
-      overflow:hidden;
-    }
-    .visual-top{
-      padding:18px 18px 0;
-    }
-    .visual-media{
-      height:190px;
-      border-top:1px solid rgba(255,255,255,.08);
-      background:
-        radial-gradient(540px 260px at 20% 30%, rgba(20,184,166,.18), transparent 60%),
-        radial-gradient(520px 320px at 75% 55%, rgba(245,158,11,.16), transparent 60%),
-        radial-gradient(520px 320px at 50% 120%, rgba(99,102,241,.12), transparent 62%),
-        linear-gradient(180deg, rgba(255,255,255,.03), transparent);
-      position:relative;
-    }
-    .visual-media svg{position:absolute;inset:0;width:100%;height:100%;opacity:.95;transform:translate3d(0,0,0)}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      font-size:12px;
-      color:rgba(231,233,239,.88);
-    }
-    .badge i{
-      width:8px;height:8px;border-radius:999px;
-      background:linear-gradient(135deg, rgba(20,184,166,.95), rgba(245,158,11,.95));
-      display:inline-block;
-      box-shadow:0 0 0 4px rgba(255,255,255,.03);
-    }
+      .card.visual {
+        padding: 0;
+        overflow: hidden;
+      }
+      .visual-top {
+        padding: 18px 18px 0;
+      }
+      .visual-media {
+        height: 190px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        background:
+          radial-gradient(
+            540px 260px at 20% 30%,
+            rgba(20, 184, 166, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            520px 320px at 75% 55%,
+            rgba(245, 158, 11, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            520px 320px at 50% 120%,
+            rgba(99, 102, 241, 0.12),
+            transparent 62%
+          ),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+        position: relative;
+      }
+      .visual-media svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.95;
+        transform: translate3d(0, 0, 0);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.06);
+        font-size: 12px;
+        color: rgba(231, 233, 239, 0.88);
+      }
+      .badge i {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: linear-gradient(
+          135deg,
+          rgba(20, 184, 166, 0.95),
+          rgba(245, 158, 11, 0.95)
+        );
+        display: inline-block;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.03);
+      }
 
-    .marquee-wrap{
-      position:relative;
-      margin-top:14px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      overflow:hidden;
-    }
-    .marquee{
-      display:flex;
-      gap:18px;
-      white-space:nowrap;
-      padding:10px 14px;
-      will-change:transform;
-      animation:marquee 20s linear infinite;
-    }
-    .marquee span{
-      opacity:.86;
-      font-size:13px;
-      letter-spacing:.12px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.03);
-    }
-    @keyframes marquee{
-      0%{transform:translateX(0)}
-      100%{transform:translateX(-50%)}
-    }
+      .marquee-wrap {
+        position: relative;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.04);
+        overflow: hidden;
+      }
 
-    .timeline{
-      position:relative;
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      align-items:start;
-    }
-    .sticky{
-      position:sticky;
-      top:88px;
-    }
-    .steps{
-      display:grid;gap:10px;margin-top:14px;
-    }
-    .step{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:10px 12px;border-radius:14px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      transition:transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease);
-    }
-    .step[data-active="true"]{
-      border-color:rgba(20,184,166,.26);
-      background:rgba(20,184,166,.08);
-      transform:translateX(6px);
-    }
-    .step strong{letter-spacing:-.2px}
-    .dots{
-      display:flex;gap:8px;align-items:center;
-    }
-    .dots i{
-      width:6px;height:6px;border-radius:999px;
-      background:rgba(231,233,239,.28);
-    }
-    .dots i.on{background:rgba(20,184,166,.90);box-shadow:0 0 0 4px rgba(20,184,166,.10)}
-    .story{
-      display:grid;gap:14px;
-    }
-    .story .card{min-height:160px}
-    .story .card h3{margin:0}
-    .story .card p{margin:8px 0 0;color:var(--muted)}
+      .hero-tags {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+        color: rgba(167, 178, 207, 0.86);
+        font-size: 13px;
+      }
+      .hero-tags .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        background: rgba(10, 16, 30, 0.2);
+      }
+      .hero-tags svg {
+        width: 16px;
+        height: 16px;
+        opacity: 0.9;
+      }
+      .marquee {
+        display: flex;
+        gap: 18px;
+        white-space: nowrap;
+        padding: 10px 14px;
+        will-change: transform;
+        animation: marquee 20s linear infinite;
+      }
+      .marquee span {
+        opacity: 0.86;
+        font-size: 13px;
+        letter-spacing: 0.12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
 
-    .kpis{
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:14px;
-      margin-top:16px;
-    }
-    .kpi{
-      grid-column:span 4;
-      padding:18px;
-    }
-    .kpi .num{
-      font-size:30px;
-      font-weight:900;
-      letter-spacing:-.6px;
-    }
-    .kpi .label{margin-top:4px;color:var(--muted);font-size:13px}
+      .timeline {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      .sticky {
+        position: sticky;
+        top: 88px;
+      }
+      .steps {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition:
+          transform 0.22s var(--ease),
+          border-color 0.22s var(--ease),
+          background 0.22s var(--ease);
+      }
+      .step[data-active="true"] {
+        border-color: rgba(20, 184, 166, 0.26);
+        background: rgba(20, 184, 166, 0.08);
+        transform: translateX(6px);
+      }
+      .step strong {
+        letter-spacing: -0.2px;
+      }
+      .dots {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .dots i {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(231, 233, 239, 0.28);
+      }
+      .dots i.on {
+        background: rgba(20, 184, 166, 0.9);
+        box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
+      }
+      .story {
+        display: grid;
+        gap: 14px;
+      }
+      .story .card {
+        min-height: 160px;
+      }
+      .story .card h3 {
+        margin: 0;
+      }
+      .story .card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
 
-    footer{
-      padding:22px 0 30px;
-      border-top:1px solid rgba(255,255,255,.06);
-      background:linear-gradient(to top, rgba(7,10,18,.92), rgba(7,10,18,.30));
-    }
-    .legal{display:flex;gap:12px;flex-wrap:wrap}
-    .legal a{opacity:.76}
-    .legal a:hover{opacity:1}
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+        margin-top: 16px;
+      }
+      .kpi {
+        grid-column: span 4;
+        padding: 18px;
+      }
+      .kpi .num {
+        font-size: 30px;
+        font-weight: 900;
+        letter-spacing: -0.6px;
+      }
+      .kpi .label {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 13px;
+      }
 
-    .toast{
-      position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
-      padding:10px 14px;border-radius:14px;
-      background:rgba(17,24,39,.92);
-      border:1px solid rgba(255,255,255,.12);
-      color:rgba(231,233,239,.90);
-      box-shadow:0 18px 55px rgba(0,0,0,.45);
-      display:none;
-      z-index:90;
-    }
+      footer {
+        padding: 22px 0 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        background: linear-gradient(
+          to top,
+          rgba(7, 10, 18, 0.92),
+          rgba(7, 10, 18, 0.3)
+        );
+      }
+      .legal {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .legal a {
+        opacity: 0.76;
+      }
+      .legal a:hover {
+        opacity: 1;
+      }
 
-    @media (max-width: 980px){
-      nav.links{display:none}
-      .btn.menu{display:inline-flex}
-      .mobile-nav{display:block}
-      .cols{grid-template-columns:1fr}
-      h1{font-size:36px}
-      .hero-card{min-height:auto}
-      .hero-visual{position:relative;inset:auto;width:100%;height:250px;margin-top:16px}
-      .shot{right:0;top:0;width:100%;transform:rotate(-1.5deg)}
-      .blob.b1{right:40%;top:-12px}
-      .blob.b2{right:6%;top:72px}
-      .blob.b3{right:22%;top:152px}
-      .timeline{grid-template-columns:1fr}
-      .sticky{position:relative;top:auto}
-      .kpi{grid-column:span 6}
-      .span-7,.span-8,.span-6,.span-5,.span-4{grid-column:span 12}
-      .marquee{animation-duration:26s}
-    }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(17, 24, 39, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(231, 233, 239, 0.9);
+        box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+        display: none;
+        z-index: 90;
+      }
 
-    @media (max-width: 560px){
-      h1{font-size:32px}
-      .hero-card{padding:18px}
-      .actions{gap:8px}
-      .kpi{grid-column:span 12}
-    }
+      @media (max-width: 980px) {
+        nav.links {
+          display: none;
+        }
+        .btn.menu {
+          display: inline-flex;
+        }
+        .mobile-nav {
+          display: block;
+        }
+        .cols {
+          grid-template-columns: 1fr;
+        }
+        .hero h1 {
+          font-size: 36px;
+        }
+        .hero {
+          min-height: auto;
+        }
+        .hero-card {
+          min-height: unset;
+          grid-template-columns: 1fr;
+          align-items: center;
+        }
+        .hero-visual {
+          height: 270px;
+          margin-top: 6px;
+        }
+        .shot {
+          width: 100%;
+          max-width: 540px;
+          transform: translate(-50%, -50%) rotate(-1.5deg);
+        }
+        .blob.b1 {
+          left: 8%;
+          top: -12px;
+        }
+        .blob.b2 {
+          right: 6%;
+          top: 72px;
+        }
+        .blob.b3 {
+          left: 26%;
+          top: 152px;
+        }
+        .hero-tags {
+          margin-top: 2px;
+        }
+        .timeline {
+          grid-template-columns: 1fr;
+        }
+        .sticky {
+          position: relative;
+          top: auto;
+        }
+        .kpi {
+          grid-column: span 6;
+        }
+        .span-7,
+        .span-8,
+        .span-6,
+        .span-5,
+        .span-4 {
+          grid-column: span 12;
+        }
+        .marquee {
+          animation-duration: 26s;
+        }
+      }
 
-    @media (prefers-reduced-motion: reduce){
-      .mesh,.hero-card::before{animation:none}
-      .grad-text{animation:none;color:var(--text);background:none;-webkit-background-clip:initial;background-clip:initial}
-      [data-reveal]{transition:none;opacity:1;transform:none;filter:none}
-      .card,.btn,.step{transition:none}
-      .card:hover,.btn:hover{transform:none}
-      .marquee{animation:none}
-      .spotlight{display:none}
-      .scrollbar{display:none}
-    }
-  </style>
-</head>
-<body>
-  <div class="stage" aria-hidden="true">
-    <div class="mesh" id="mesh"></div>
-    <div class="grain"></div>
-  </div>
-  <div class="spotlight" id="spotlight" aria-hidden="true"></div>
-  <div class="scrollbar" aria-hidden="true"><i id="scrollbarFill"></i></div>
+      @media (max-width: 560px) {
+        .hero h1 {
+          font-size: 32px;
+        }
+        .hero-card {
+          padding: 18px;
+        }
+        .actions {
+          gap: 8px;
+        }
+        .kpi {
+          grid-column: span 12;
+        }
+      }
 
-  <header>
-    <div class="container nav">
-      <div class="brand">
-        <span class="dot" aria-hidden="true"></span>
-        <a href="#top" aria-label="invessiv">invessiv</a>
-      </div>
-
-      <nav class="links" aria-label="Navigation">
-        <a href="#services" data-i18n="nav.services">Leistungen</a>
-        <a href="#pricing" data-i18n="nav.pricing">Preise</a>
-        <a href="#portal" data-i18n="nav.portal">Portal</a>
-        <a href="#contact" data-i18n="nav.contact">Kontakt</a>
-      </nav>
-
-      <div class="actions">
-        <button class="btn menu" id="btnMenu" type="button" aria-expanded="false" aria-controls="mobileNav" data-i18n="action.menu">Menue</button>
-        <button class="btn soft" id="btnLoginTop" type="button" data-i18n="action.login">Login</button>
-        <button class="btn" id="btnLang" type="button">EN</button>
-        <button class="btn primary" id="btnCalendlyTop" type="button" data-i18n="action.call">Call via Calendly</button>
-      </div>
+      @media (prefers-reduced-motion: reduce) {
+        .mesh,
+        .hero-card::before {
+          animation: none;
+        }
+        .grad-text {
+          animation: none;
+          color: var(--text);
+          background: none;
+          -webkit-background-clip: initial;
+          background-clip: initial;
+        }
+        [data-reveal] {
+          transition: none;
+          opacity: 1;
+          transform: none;
+          filter: none;
+        }
+        .card,
+        .btn,
+        .step {
+          transition: none;
+        }
+        .card:hover,
+        .btn:hover {
+          transform: none;
+        }
+        .marquee {
+          animation: none;
+        }
+        .spotlight {
+          display: none;
+        }
+        .scrollbar {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" aria-hidden="true">
+      <div class="mesh" id="mesh"></div>
+      <div class="grain"></div>
     </div>
+    <div class="spotlight" id="spotlight" aria-hidden="true"></div>
+    <div class="scrollbar" aria-hidden="true"><i id="scrollbarFill"></i></div>
 
-    <div class="mobile-nav" id="mobileNav" hidden>
-      <div class="container mobile-nav-inner">
-        <a href="#services" data-i18n="nav.services">Leistungen</a>
-        <a href="#pricing" data-i18n="nav.pricing">Preise</a>
-        <a href="#portal" data-i18n="nav.portal">Portal</a>
-        <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+    <header>
+      <div class="container nav">
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <a href="#top" aria-label="invessiv">invessiv</a>
+        </div>
+
+        <nav class="links" aria-label="Navigation">
+          <a href="#services" data-i18n="nav.services">Leistungen</a>
+          <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+          <a href="#portal" data-i18n="nav.portal">Portal</a>
+          <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+        </nav>
+
+        <div class="actions">
+          <button
+            class="btn menu"
+            id="btnMenu"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobileNav"
+            data-i18n="action.menu"
+          >
+            Menue
+          </button>
+          <button
+            class="btn soft"
+            id="btnLoginTop"
+            type="button"
+            data-i18n="action.login"
+          >
+            Login
+          </button>
+          <button class="btn" id="btnLang" type="button">EN</button>
+          <button
+            class="btn primary"
+            id="btnCalendlyTop"
+            type="button"
+            data-i18n="action.call"
+          >
+            Call via Calendly
+          </button>
+        </div>
       </div>
-    </div>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container">
-        <article class="hero-card" data-reveal style="--delay:.02s">
-          <span class="pill" data-i18n="hero.pill">Individuell statt Baukasten</span>
-          <h1><span class="grad-text" data-i18n="hero.title">Mit wenig Zeitaufwand schnell zu einer fertigen Website.</span></h1>
-          <p class="sub" data-i18n="hero.sub">Du gibst nur den noetigen Input, wir uebernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.</p>
+      <div class="mobile-nav" id="mobileNav" hidden>
+        <div class="container mobile-nav-inner">
+          <a href="#services" data-i18n="nav.services">Leistungen</a>
+          <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+          <a href="#portal" data-i18n="nav.portal">Portal</a>
+          <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+        </div>
+      </div>
+    </header>
 
-          <div class="cta">
-            <a class="btn primary" href="#services" data-i18n="hero.cta1">Leistungen ansehen</a>
-            <a class="btn" href="#contact" data-i18n="hero.cta2">Projekt anfragen</a>
-          </div>
+    <main id="top">
+      <section class="hero">
+        <article class="hero-card" data-reveal style="--delay: 0.02s">
+          <section class="hero-copy">
+            <span class="pill" data-i18n="hero.pill"
+              >Individuell statt Baukasten</span
+            >
+            <h1>
+              <span class="grad-text" data-i18n="hero.title"
+                >Mit wenig Zeitaufwand schnell zu einer fertigen Website.</span
+              >
+            </h1>
+            <p class="sub" data-i18n="hero.sub">
+              Du gibst nur den noetigen Input, wir uebernehmen den Rest:
+              Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung
+              bis zum produktiven Ergebnis.
+            </p>
 
-          <div class="marquee-wrap" aria-label="Social proof (mock)">
-            <div class="marquee" id="marquee">
-              <span>Studio A</span><span>Nordlicht GmbH</span><span>Falken &amp; Co</span><span>Rhein Labs</span><span>Kernwerk</span><span>Fjord Studio</span><span>Atlas Partners</span><span>Delta Systems</span>
-              <span>Studio A</span><span>Nordlicht GmbH</span><span>Falken &amp; Co</span><span>Rhein Labs</span><span>Kernwerk</span><span>Fjord Studio</span><span>Atlas Partners</span><span>Delta Systems</span>
+            <div class="cta">
+              <a class="btn primary" href="#services" data-i18n="hero.cta1"
+                >Leistungen ansehen</a
+              >
+              <a class="btn" href="#contact" data-i18n="hero.cta2"
+                >Projekt anfragen</a
+              >
             </div>
-          </div>
 
-          <div class="hero-visual" aria-hidden="true">
+            <div class="hero-tags" aria-label="Kurzvorteile">
+              <span class="tag">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M7 12l3 3 7-7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Figma-Design inkl.
+              </span>
+              <span class="tag">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M12 6v6l4 2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Launch in Tagen
+              </span>
+              <span class="tag">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path
+                    d="M4 12l4 4L20 4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Antwort &lt; 24h
+              </span>
+            </div>
+          </section>
+
+          <aside class="hero-visual" aria-hidden="true" role="presentation">
             <div class="blob b1" data-parallax="0.20"></div>
             <div class="blob b2" data-parallax="0.30"></div>
             <div class="blob b3" data-parallax="0.12"></div>
-            <div class="shot" data-parallax="0.16" data-tilt="heroShot">
-              <svg viewBox="0 0 560 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="shot" data-tilt="heroShot">
+              <svg
+                viewBox="0 0 560 340"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="560" y2="340" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="rgba(20,184,166,0.35)"/>
-                    <stop offset="0.55" stop-color="rgba(59,130,246,0.20)"/>
-                    <stop offset="1" stop-color="rgba(245,158,11,0.20)"/>
+                  <linearGradient
+                    id="g1"
+                    x1="0"
+                    y1="0"
+                    x2="560"
+                    y2="340"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop stop-color="rgba(20,184,166,0.35)" />
+                    <stop offset="0.55" stop-color="rgba(59,130,246,0.20)" />
+                    <stop offset="1" stop-color="rgba(245,158,11,0.20)" />
                   </linearGradient>
                 </defs>
-                <rect x="18" y="20" width="524" height="300" rx="18" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
-                <rect x="42" y="52" width="290" height="18" rx="9" fill="url(#g1)"/>
-                <rect x="42" y="86" width="220" height="12" rx="6" fill="rgba(255,255,255,0.10)"/>
-                <rect x="42" y="112" width="360" height="12" rx="6" fill="rgba(255,255,255,0.08)"/>
-                <rect x="42" y="164" width="200" height="112" rx="14" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.35)"/>
-                <rect x="258" y="164" width="260" height="112" rx="14" fill="rgba(20,184,166,0.10)" stroke="rgba(20,184,166,0.35)"/>
-                <path d="M110 250c24-12 48-12 72 0" stroke="rgba(245,158,11,0.55)" stroke-width="7" stroke-linecap="round"/>
-                <path d="M300 250c28-16 58-16 86 0" stroke="rgba(20,184,166,0.55)" stroke-width="7" stroke-linecap="round"/>
-                <circle cx="496" cy="60" r="10" fill="rgba(245,158,11,0.75)"/>
-                <circle cx="464" cy="60" r="10" fill="rgba(20,184,166,0.75)"/>
-                <circle cx="432" cy="60" r="10" fill="rgba(99,102,241,0.65)"/>
+                <rect
+                  x="18"
+                  y="20"
+                  width="524"
+                  height="300"
+                  rx="18"
+                  fill="rgba(255,255,255,0.05)"
+                  stroke="rgba(255,255,255,0.14)"
+                />
+                <rect
+                  x="42"
+                  y="52"
+                  width="290"
+                  height="18"
+                  rx="9"
+                  fill="url(#g1)"
+                />
+                <rect
+                  x="42"
+                  y="86"
+                  width="220"
+                  height="12"
+                  rx="6"
+                  fill="rgba(255,255,255,0.10)"
+                />
+                <rect
+                  x="42"
+                  y="112"
+                  width="360"
+                  height="12"
+                  rx="6"
+                  fill="rgba(255,255,255,0.08)"
+                />
+                <rect
+                  x="42"
+                  y="164"
+                  width="200"
+                  height="112"
+                  rx="14"
+                  fill="rgba(245,158,11,0.12)"
+                  stroke="rgba(245,158,11,0.35)"
+                />
+                <rect
+                  x="258"
+                  y="164"
+                  width="260"
+                  height="112"
+                  rx="14"
+                  fill="rgba(20,184,166,0.10)"
+                  stroke="rgba(20,184,166,0.35)"
+                />
+                <path
+                  d="M110 250c24-12 48-12 72 0"
+                  stroke="rgba(245,158,11,0.55)"
+                  stroke-width="7"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M300 250c28-16 58-16 86 0"
+                  stroke="rgba(20,184,166,0.55)"
+                  stroke-width="7"
+                  stroke-linecap="round"
+                />
+                <circle cx="496" cy="60" r="10" fill="rgba(245,158,11,0.75)" />
+                <circle cx="464" cy="60" r="10" fill="rgba(20,184,166,0.75)" />
+                <circle cx="432" cy="60" r="10" fill="rgba(99,102,241,0.65)" />
               </svg>
             </div>
-          </div>
+          </aside>
         </article>
-      </div>
-    </section>
+      </section>
 
-    <div class="divider" aria-hidden="true"><div class="divider-line" data-parallax="0.08"></div></div>
-
-    <section class="section" id="difference">
-      <div class="container" data-reveal style="--delay:.03s">
-        <h2 data-i18n="diff.title">Warum nicht wie eine Standard-Template-Seite?</h2>
-        <p class="hint" data-i18n="diff.hint">Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den Kaeufer und messbaren Ergebnissen.</p>
-
-        <div class="kpis" aria-label="KPI highlights (mock)">
-          <article class="card kpi" data-kpi="5"><div class="num"><span data-count="5">0</span><span> Tage</span></div><div class="label">Time-to-first-draft</div></article>
-          <article class="card kpi" data-kpi="92"><div class="num"><span data-count="92">0</span><span>%</span></div><div class="label">Briefing-Aufwand reduziert</div></article>
-          <article class="card kpi" data-kpi="1"><div class="num"><span data-count="1">0</span><span> Ansprechpartner</span></div><div class="label">Klarer Delivery-Owner</div></article>
-        </div>
-
-        <div class="kpi-grid" style="margin-top:14px">
-          <article class="card span-4">
-            <div class="row"><h3 data-i18n="diff.sla.t">Time-to-Launch SLA</h3><span class="badge"><i></i>Fast</span></div>
-            <p class="meta" data-i18n="diff.sla.d">Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je Paket.</p>
-          </article>
-          <article class="card span-4">
-            <div class="row"><h3 data-i18n="diff.upgrade.t">Upgrade statt Neubau</h3><span class="badge"><i></i>Lean</span></div>
-            <p class="meta" data-i18n="diff.upgrade.d">Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.</p>
-          </article>
-          <article class="card span-4">
-            <div class="row"><h3 data-i18n="diff.kpi.t">KPI-orientiert</h3><span class="badge"><i></i>Measured</span></div>
-            <p class="meta" data-i18n="diff.kpi.d">Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <div class="divider" aria-hidden="true"><div class="divider-line" data-parallax="0.06"></div></div>
-
-    <section class="section" id="intake">
-      <div class="container timeline" data-reveal style="--delay:.04s">
-        <div class="card sticky">
-          <h2 data-i18n="track.title">Delivery Track</h2>
-          <p class="hint" data-i18n="track.hint">Transparenter Ablauf mit klaren Meilensteinen und wenig Abstimmungsaufwand.</p>
-          <div class="steps" id="steps">
-            <div class="step" data-step="0" data-active="true"><strong data-i18n="track.s1.t">1. Input</strong><span class="meta" data-i18n="track.s1.d">Kerninfos sammeln</span></div>
-            <div class="step" data-step="1"><strong data-i18n="track.s2.t">2. Draft</strong><span class="meta" data-i18n="track.s2.d">Erste Version liefern</span></div>
-            <div class="step" data-step="2"><strong data-i18n="track.s3.t">3. Review</strong><span class="meta" data-i18n="track.s3.d">Gezieltes Feedback</span></div>
-            <div class="step" data-step="3"><strong data-i18n="track.s4.t">4. Go-live</strong><span class="meta" data-i18n="track.s4.d">Live + Uebergabe</span></div>
+      <section class="section" aria-label="Social proof (mock)">
+        <div class="container" data-reveal style="--delay: 0.03s">
+          <div class="marquee-wrap">
+            <div class="marquee" id="marquee">
+              <span>Studio A</span><span>Nordlicht GmbH</span
+              ><span>Falken &amp; Co</span><span>Rhein Labs</span
+              ><span>Kernwerk</span><span>Fjord Studio</span
+              ><span>Atlas Partners</span><span>Delta Systems</span>
+              <span>Studio A</span><span>Nordlicht GmbH</span
+              ><span>Falken &amp; Co</span><span>Rhein Labs</span
+              ><span>Kernwerk</span><span>Fjord Studio</span
+              ><span>Atlas Partners</span><span>Delta Systems</span>
+            </div>
           </div>
-          <div style="margin-top:12px" class="dots" aria-hidden="true" id="dots">
-            <i class="on"></i><i></i><i></i><i></i>
+        </div>
+      </section>
+
+      <div class="divider" aria-hidden="true">
+        <div class="divider-line" data-parallax="0.08"></div>
+      </div>
+
+      <section class="section" id="difference">
+        <div class="container" data-reveal style="--delay: 0.03s">
+          <h2 data-i18n="diff.title">
+            Warum nicht wie eine Standard-Template-Seite?
+          </h2>
+          <p class="hint" data-i18n="diff.hint">
+            Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den
+            Kaeufer und messbaren Ergebnissen.
+          </p>
+
+          <div class="kpis" aria-label="KPI highlights (mock)">
+            <article class="card kpi" data-kpi="5">
+              <div class="num">
+                <span data-count="5">0</span><span> Tage</span>
+              </div>
+              <div class="label">Time-to-first-draft</div>
+            </article>
+            <article class="card kpi" data-kpi="92">
+              <div class="num">
+                <span data-count="92">0</span><span>%</span>
+              </div>
+              <div class="label">Briefing-Aufwand reduziert</div>
+            </article>
+            <article class="card kpi" data-kpi="1">
+              <div class="num">
+                <span data-count="1">0</span><span> Ansprechpartner</span>
+              </div>
+              <div class="label">Klarer Delivery-Owner</div>
+            </article>
           </div>
-          <div class="note">Scroll, um den Ablauf zu sehen (Mock).</div>
-        </div>
 
-        <div class="story" id="story">
-          <article class="card" data-story="0">
-            <div class="row"><h3>Input mit minimalem Aufwand</h3><span class="tag">5 Fragen</span></div>
-            <p>Wir nehmen nur das Nötigste auf: Ziel, Zielgruppe, Angebot, Stil und Deadline – der Rest ist Delivery.</p>
-          </article>
-          <article class="card" data-story="1">
-            <div class="row"><h3>Erster Draft, schnell klickbar</h3><span class="tag">SLA</span></div>
-            <p>Du bekommst früh eine nutzbare Version (nicht nur ein PDF) – so kann man direkt gezielt optimieren.</p>
-          </article>
-          <article class="card" data-story="2">
-            <div class="row"><h3>Review ohne endlose Schleifen</h3><span class="tag">Fokus</span></div>
-            <p>Wir fragen nach konkreten Entscheidungen: Copy, CTA, Sektionen – nicht nach “gefällt mir / gefällt mir nicht”.</p>
-          </article>
-          <article class="card" data-story="3">
-            <div class="row"><h3>Go-live + Übergabe</h3><span class="tag">Ready</span></div>
-            <p>Live-Schaltung, Tracking-Grundlage und Hand-off. Danach optional: Iterationen anhand von KPIs.</p>
-          </article>
+          <div class="kpi-grid" style="margin-top: 14px">
+            <article class="card span-4">
+              <div class="row">
+                <h3 data-i18n="diff.sla.t">Time-to-Launch SLA</h3>
+                <span class="badge"><i></i>Fast</span>
+              </div>
+              <p class="meta" data-i18n="diff.sla.d">
+                Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je
+                Paket.
+              </p>
+            </article>
+            <article class="card span-4">
+              <div class="row">
+                <h3 data-i18n="diff.upgrade.t">Upgrade statt Neubau</h3>
+                <span class="badge"><i></i>Lean</span>
+              </div>
+              <p class="meta" data-i18n="diff.upgrade.d">
+                Bestehende Seiten werden gezielt modernisiert, ohne alles neu
+                aufzusetzen.
+              </p>
+            </article>
+            <article class="card span-4">
+              <div class="row">
+                <h3 data-i18n="diff.kpi.t">KPI-orientiert</h3>
+                <span class="badge"><i></i>Measured</span>
+              </div>
+              <p class="meta" data-i18n="diff.kpi.d">
+                Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt
+                nur Design-Output.
+              </p>
+            </article>
+          </div>
         </div>
+      </section>
+
+      <div class="divider" aria-hidden="true">
+        <div class="divider-line" data-parallax="0.06"></div>
       </div>
-    </section>
 
-    <section class="section" id="services">
-      <div class="container" data-reveal style="--delay:.05s">
-        <h2 data-i18n="services.title">Leistungen</h2>
-        <p class="hint" data-i18n="services.hint">Schlanker Start mit vier klaren Angebotsbereichen.</p>
+      <section class="section" id="intake">
+        <div class="container timeline" data-reveal style="--delay: 0.04s">
+          <div class="card sticky">
+            <h2 data-i18n="track.title">Delivery Track</h2>
+            <p class="hint" data-i18n="track.hint">
+              Transparenter Ablauf mit klaren Meilensteinen und wenig
+              Abstimmungsaufwand.
+            </p>
+            <div class="steps" id="steps">
+              <div class="step" data-step="0" data-active="true">
+                <strong data-i18n="track.s1.t">1. Input</strong
+                ><span class="meta" data-i18n="track.s1.d"
+                  >Kerninfos sammeln</span
+                >
+              </div>
+              <div class="step" data-step="1">
+                <strong data-i18n="track.s2.t">2. Draft</strong
+                ><span class="meta" data-i18n="track.s2.d"
+                  >Erste Version liefern</span
+                >
+              </div>
+              <div class="step" data-step="2">
+                <strong data-i18n="track.s3.t">3. Review</strong
+                ><span class="meta" data-i18n="track.s3.d"
+                  >Gezieltes Feedback</span
+                >
+              </div>
+              <div class="step" data-step="3">
+                <strong data-i18n="track.s4.t">4. Go-live</strong
+                ><span class="meta" data-i18n="track.s4.d"
+                  >Live + Uebergabe</span
+                >
+              </div>
+            </div>
+            <div
+              style="margin-top: 12px"
+              class="dots"
+              aria-hidden="true"
+              id="dots"
+            >
+              <i class="on"></i><i></i><i></i><i></i>
+            </div>
+            <div class="note">Scroll, um den Ablauf zu sehen (Mock).</div>
+          </div>
 
-        <div class="bento">
-          <article class="card visual span-7">
-            <div class="visual-top">
-              <div class="row"><h3 data-i18n="s1.t">Landingpages</h3><span class="tag" data-i18n="common.example">Beispiel folgt</span></div>
-              <p class="meta" data-i18n="s1.d">Conversion-orientierte One-Pager mit klarer Botschaft, CTA und sauberer Performance.</p>
-              <button class="btn mock" type="button" aria-disabled="true" data-disabled-action="example" data-i18n="common.exampleBtn">Beispiel ansehen</button>
-            </div>
-            <div class="visual-media" data-parallax="0.06" aria-hidden="true">
-              <svg viewBox="0 0 900 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M40 186c86-76 178-76 276 0s190 76 276 0 190-76 268 0" stroke="rgba(20,184,166,0.38)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M60 120c78-56 162-56 252 0s174 56 252 0 174-56 236 0" stroke="rgba(245,158,11,0.22)" stroke-width="10" stroke-linecap="round"/>
-                <rect x="70" y="36" width="250" height="54" rx="18" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)"/>
-                <rect x="90" y="52" width="140" height="12" rx="6" fill="rgba(255,255,255,0.10)"/>
-                <rect x="90" y="72" width="200" height="10" rx="5" fill="rgba(20,184,166,0.22)"/>
-                <rect x="354" y="36" width="220" height="54" rx="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
-                <rect x="374" y="52" width="110" height="12" rx="6" fill="rgba(255,255,255,0.10)"/>
-                <rect x="374" y="72" width="160" height="10" rx="5" fill="rgba(99,102,241,0.18)"/>
-                <rect x="610" y="36" width="220" height="54" rx="18" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.10)"/>
-                <rect x="630" y="52" width="120" height="12" rx="6" fill="rgba(255,255,255,0.10)"/>
-                <rect x="630" y="72" width="170" height="10" rx="5" fill="rgba(245,158,11,0.18)"/>
-              </svg>
-            </div>
-          </article>
-
-          <article class="card span-5">
-            <div class="row"><h3 data-i18n="s2.t">Webseiten</h3><span class="tag" data-i18n="common.example">Beispiel folgt</span></div>
-            <p class="meta" data-i18n="s2.d">Individuelle Firmenseiten mit klarem Aufbau, modernem Look und professioneller Praesenz.</p>
-            <div style="margin-top:12px" class="row">
-              <span class="badge"><i></i>SEO-ready</span>
-              <span class="badge"><i></i>Mobile-first</span>
-              <span class="badge"><i></i>Fast</span>
-            </div>
-            <button class="btn mock" style="margin-top:12px" type="button" aria-disabled="true" data-disabled-action="example" data-i18n="common.exampleBtn">Beispiel ansehen</button>
-          </article>
-
-          <article class="card span-5">
-            <div class="row"><h3 data-i18n="s3.t">Prozess-Tools</h3><span class="tag" data-i18n="common.example">Beispiel folgt</span></div>
-            <p class="meta" data-i18n="s3.d">Kleine interne Tools, die wiederkehrende Ablaeufe automatisieren und Zeit sparen.</p>
-            <ul class="list">
-              <li>Mini-Portal / Intake</li>
-              <li>Workflow-Automation</li>
-              <li>Status-Transparenz</li>
-            </ul>
-            <button class="btn mock" style="margin-top:12px" type="button" aria-disabled="true" data-disabled-action="example" data-i18n="common.exampleBtn">Beispiel ansehen</button>
-          </article>
-
-          <article class="card visual span-7">
-            <div class="visual-top">
-              <div class="row"><h3 data-i18n="s4.t">Alte Website upgraden</h3><span class="tag" data-i18n="common.example">Beispiel folgt</span></div>
-              <p class="meta" data-i18n="s4.d">Bestehende Website modernisieren: schneller, klarer und conversion-staerker ohne kompletten Neustart.</p>
-              <button class="btn mock" type="button" aria-disabled="true" data-disabled-action="example" data-i18n="common.exampleBtn">Beispiel ansehen</button>
-            </div>
-            <div class="visual-media" data-parallax="0.08" aria-hidden="true">
-              <svg viewBox="0 0 900 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="50" y="44" width="800" height="172" rx="24" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
-                <rect x="86" y="84" width="260" height="18" rx="9" fill="rgba(20,184,166,0.22)"/>
-                <rect x="86" y="114" width="360" height="12" rx="6" fill="rgba(255,255,255,0.09)"/>
-                <rect x="86" y="136" width="300" height="12" rx="6" fill="rgba(255,255,255,0.07)"/>
-                <rect x="86" y="162" width="150" height="36" rx="18" fill="rgba(59,130,246,0.18)" stroke="rgba(59,130,246,0.30)"/>
-                <rect x="520" y="84" width="300" height="114" rx="18" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.26)"/>
-                <path d="M560 156c40-42 84-42 124 0" stroke="rgba(245,158,11,0.42)" stroke-width="10" stroke-linecap="round"/>
-                <circle cx="804" cy="104" r="7" fill="rgba(20,184,166,0.78)"/>
-                <circle cx="780" cy="104" r="7" fill="rgba(245,158,11,0.72)"/>
-                <circle cx="756" cy="104" r="7" fill="rgba(99,102,241,0.62)"/>
-              </svg>
-            </div>
-          </article>
+          <div class="story" id="story">
+            <article class="card" data-story="0">
+              <div class="row">
+                <h3>Input mit minimalem Aufwand</h3>
+                <span class="tag">5 Fragen</span>
+              </div>
+              <p>
+                Wir nehmen nur das Nötigste auf: Ziel, Zielgruppe, Angebot, Stil
+                und Deadline – der Rest ist Delivery.
+              </p>
+            </article>
+            <article class="card" data-story="1">
+              <div class="row">
+                <h3>Erster Draft, schnell klickbar</h3>
+                <span class="tag">SLA</span>
+              </div>
+              <p>
+                Du bekommst früh eine nutzbare Version (nicht nur ein PDF) – so
+                kann man direkt gezielt optimieren.
+              </p>
+            </article>
+            <article class="card" data-story="2">
+              <div class="row">
+                <h3>Review ohne endlose Schleifen</h3>
+                <span class="tag">Fokus</span>
+              </div>
+              <p>
+                Wir fragen nach konkreten Entscheidungen: Copy, CTA, Sektionen –
+                nicht nach “gefällt mir / gefällt mir nicht”.
+              </p>
+            </article>
+            <article class="card" data-story="3">
+              <div class="row">
+                <h3>Go-live + Übergabe</h3>
+                <span class="tag">Ready</span>
+              </div>
+              <p>
+                Live-Schaltung, Tracking-Grundlage und Hand-off. Danach
+                optional: Iterationen anhand von KPIs.
+              </p>
+            </article>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="divider" aria-hidden="true"><div class="divider-line" data-parallax="0.07"></div></div>
+      <section class="section" id="services">
+        <div class="container" data-reveal style="--delay: 0.05s">
+          <h2 data-i18n="services.title">Leistungen</h2>
+          <p class="hint" data-i18n="services.hint">
+            Schlanker Start mit vier klaren Angebotsbereichen.
+          </p>
 
-    <section class="section" id="pricing">
-      <div class="container" data-reveal style="--delay:.06s">
-        <h2 data-i18n="pricing.title">Preise</h2>
-        <p class="hint" data-i18n="pricing.hint">Fixe Pakete fuer schnelle Lieferung. Checkout ist aktuell als Mock eingebaut.</p>
+          <div class="bento">
+            <article class="card visual span-7">
+              <div class="visual-top">
+                <div class="row">
+                  <h3 data-i18n="s1.t">Landingpages</h3>
+                  <span class="tag" data-i18n="common.example"
+                    >Beispiel folgt</span
+                  >
+                </div>
+                <p class="meta" data-i18n="s1.d">
+                  Conversion-orientierte One-Pager mit klarer Botschaft, CTA und
+                  sauberer Performance.
+                </p>
+                <button
+                  class="btn mock"
+                  type="button"
+                  aria-disabled="true"
+                  data-disabled-action="example"
+                  data-i18n="common.exampleBtn"
+                >
+                  Beispiel ansehen
+                </button>
+              </div>
+              <div class="visual-media" data-parallax="0.06" aria-hidden="true">
+                <svg
+                  viewBox="0 0 900 260"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M40 186c86-76 178-76 276 0s190 76 276 0 190-76 268 0"
+                    stroke="rgba(20,184,166,0.38)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M60 120c78-56 162-56 252 0s174 56 252 0 174-56 236 0"
+                    stroke="rgba(245,158,11,0.22)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <rect
+                    x="70"
+                    y="36"
+                    width="250"
+                    height="54"
+                    rx="18"
+                    fill="rgba(255,255,255,0.05)"
+                    stroke="rgba(255,255,255,0.12)"
+                  />
+                  <rect
+                    x="90"
+                    y="52"
+                    width="140"
+                    height="12"
+                    rx="6"
+                    fill="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="90"
+                    y="72"
+                    width="200"
+                    height="10"
+                    rx="5"
+                    fill="rgba(20,184,166,0.22)"
+                  />
+                  <rect
+                    x="354"
+                    y="36"
+                    width="220"
+                    height="54"
+                    rx="18"
+                    fill="rgba(255,255,255,0.04)"
+                    stroke="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="374"
+                    y="52"
+                    width="110"
+                    height="12"
+                    rx="6"
+                    fill="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="374"
+                    y="72"
+                    width="160"
+                    height="10"
+                    rx="5"
+                    fill="rgba(99,102,241,0.18)"
+                  />
+                  <rect
+                    x="610"
+                    y="36"
+                    width="220"
+                    height="54"
+                    rx="18"
+                    fill="rgba(255,255,255,0.04)"
+                    stroke="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="630"
+                    y="52"
+                    width="120"
+                    height="12"
+                    rx="6"
+                    fill="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="630"
+                    y="72"
+                    width="170"
+                    height="10"
+                    rx="5"
+                    fill="rgba(245,158,11,0.18)"
+                  />
+                </svg>
+              </div>
+            </article>
 
-        <div class="bento">
-          <article class="card span-4">
-            <div class="row"><h3 data-i18n="p1.t">Starter Landing</h3><span class="tag">MVP</span></div>
-            <div class="plan-price">ab 390 EUR</div>
-            <ul class="list">
-              <li data-i18n="p1.f1">One-Pager + Kontakt</li>
-              <li data-i18n="p1.f2">Responsive Design</li>
-              <li data-i18n="p1.f3">Schneller Go-live</li>
-            </ul>
-            <button class="btn mock" type="button" aria-disabled="true" data-disabled-action="checkout" data-i18n="common.bookBtn">Jetzt buchen</button>
-            <div class="note" data-i18n="common.mockPay">Mockup: Zahlung folgt spaeter.</div>
-          </article>
+            <article class="card span-5">
+              <div class="row">
+                <h3 data-i18n="s2.t">Webseiten</h3>
+                <span class="tag" data-i18n="common.example"
+                  >Beispiel folgt</span
+                >
+              </div>
+              <p class="meta" data-i18n="s2.d">
+                Individuelle Firmenseiten mit klarem Aufbau, modernem Look und
+                professioneller Praesenz.
+              </p>
+              <div style="margin-top: 12px" class="row">
+                <span class="badge"><i></i>SEO-ready</span>
+                <span class="badge"><i></i>Mobile-first</span>
+                <span class="badge"><i></i>Fast</span>
+              </div>
+              <button
+                class="btn mock"
+                style="margin-top: 12px"
+                type="button"
+                aria-disabled="true"
+                data-disabled-action="example"
+                data-i18n="common.exampleBtn"
+              >
+                Beispiel ansehen
+              </button>
+            </article>
 
-          <article class="card visual span-4">
-            <div class="visual-top">
-              <div class="row"><h3 data-i18n="p2.t">Business Website</h3><span class="tag">Popular</span></div>
-              <div class="plan-price">ab 890 EUR</div>
+            <article class="card span-5">
+              <div class="row">
+                <h3 data-i18n="s3.t">Prozess-Tools</h3>
+                <span class="tag" data-i18n="common.example"
+                  >Beispiel folgt</span
+                >
+              </div>
+              <p class="meta" data-i18n="s3.d">
+                Kleine interne Tools, die wiederkehrende Ablaeufe automatisieren
+                und Zeit sparen.
+              </p>
               <ul class="list">
-                <li data-i18n="p2.f1">Mehrseitige Struktur</li>
-                <li data-i18n="p2.f2">SEO + Legal Basis</li>
-                <li data-i18n="p2.f3">Conversion-Fokus</li>
+                <li>Mini-Portal / Intake</li>
+                <li>Workflow-Automation</li>
+                <li>Status-Transparenz</li>
               </ul>
-              <button class="btn mock" type="button" aria-disabled="true" data-disabled-action="checkout" data-i18n="common.bookBtn">Jetzt buchen</button>
-              <div class="note" data-i18n="common.mockPay">Mockup: Zahlung folgt spaeter.</div>
-            </div>
-            <div class="visual-media" style="height:150px" data-parallax="0.05" aria-hidden="true">
-              <svg viewBox="0 0 900 220" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M90 170h720" stroke="rgba(255,255,255,0.10)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M90 170h420" stroke="rgba(20,184,166,0.36)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M90 120h520" stroke="rgba(245,158,11,0.24)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M90 70h300" stroke="rgba(99,102,241,0.22)" stroke-width="10" stroke-linecap="round"/>
-              </svg>
-            </div>
+              <button
+                class="btn mock"
+                style="margin-top: 12px"
+                type="button"
+                aria-disabled="true"
+                data-disabled-action="example"
+                data-i18n="common.exampleBtn"
+              >
+                Beispiel ansehen
+              </button>
+            </article>
+
+            <article class="card visual span-7">
+              <div class="visual-top">
+                <div class="row">
+                  <h3 data-i18n="s4.t">Alte Website upgraden</h3>
+                  <span class="tag" data-i18n="common.example"
+                    >Beispiel folgt</span
+                  >
+                </div>
+                <p class="meta" data-i18n="s4.d">
+                  Bestehende Website modernisieren: schneller, klarer und
+                  conversion-staerker ohne kompletten Neustart.
+                </p>
+                <button
+                  class="btn mock"
+                  type="button"
+                  aria-disabled="true"
+                  data-disabled-action="example"
+                  data-i18n="common.exampleBtn"
+                >
+                  Beispiel ansehen
+                </button>
+              </div>
+              <div class="visual-media" data-parallax="0.08" aria-hidden="true">
+                <svg
+                  viewBox="0 0 900 260"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="50"
+                    y="44"
+                    width="800"
+                    height="172"
+                    rx="24"
+                    fill="rgba(255,255,255,0.03)"
+                    stroke="rgba(255,255,255,0.10)"
+                  />
+                  <rect
+                    x="86"
+                    y="84"
+                    width="260"
+                    height="18"
+                    rx="9"
+                    fill="rgba(20,184,166,0.22)"
+                  />
+                  <rect
+                    x="86"
+                    y="114"
+                    width="360"
+                    height="12"
+                    rx="6"
+                    fill="rgba(255,255,255,0.09)"
+                  />
+                  <rect
+                    x="86"
+                    y="136"
+                    width="300"
+                    height="12"
+                    rx="6"
+                    fill="rgba(255,255,255,0.07)"
+                  />
+                  <rect
+                    x="86"
+                    y="162"
+                    width="150"
+                    height="36"
+                    rx="18"
+                    fill="rgba(59,130,246,0.18)"
+                    stroke="rgba(59,130,246,0.30)"
+                  />
+                  <rect
+                    x="520"
+                    y="84"
+                    width="300"
+                    height="114"
+                    rx="18"
+                    fill="rgba(245,158,11,0.08)"
+                    stroke="rgba(245,158,11,0.26)"
+                  />
+                  <path
+                    d="M560 156c40-42 84-42 124 0"
+                    stroke="rgba(245,158,11,0.42)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <circle
+                    cx="804"
+                    cy="104"
+                    r="7"
+                    fill="rgba(20,184,166,0.78)"
+                  />
+                  <circle
+                    cx="780"
+                    cy="104"
+                    r="7"
+                    fill="rgba(245,158,11,0.72)"
+                  />
+                  <circle
+                    cx="756"
+                    cy="104"
+                    r="7"
+                    fill="rgba(99,102,241,0.62)"
+                  />
+                </svg>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider" aria-hidden="true">
+        <div class="divider-line" data-parallax="0.07"></div>
+      </div>
+
+      <section class="section" id="pricing">
+        <div class="container" data-reveal style="--delay: 0.06s">
+          <h2 data-i18n="pricing.title">Preise</h2>
+          <p class="hint" data-i18n="pricing.hint">
+            Fixe Pakete fuer schnelle Lieferung. Checkout ist aktuell als Mock
+            eingebaut.
+          </p>
+
+          <div class="bento">
+            <article class="card span-4">
+              <div class="row">
+                <h3 data-i18n="p1.t">Starter Landing</h3>
+                <span class="tag">MVP</span>
+              </div>
+              <div class="plan-price">ab 390 EUR</div>
+              <ul class="list">
+                <li data-i18n="p1.f1">One-Pager + Kontakt</li>
+                <li data-i18n="p1.f2">Responsive Design</li>
+                <li data-i18n="p1.f3">Schneller Go-live</li>
+              </ul>
+              <button
+                class="btn mock"
+                type="button"
+                aria-disabled="true"
+                data-disabled-action="checkout"
+                data-i18n="common.bookBtn"
+              >
+                Jetzt buchen
+              </button>
+              <div class="note" data-i18n="common.mockPay">
+                Mockup: Zahlung folgt spaeter.
+              </div>
+            </article>
+
+            <article class="card visual span-4">
+              <div class="visual-top">
+                <div class="row">
+                  <h3 data-i18n="p2.t">Business Website</h3>
+                  <span class="tag">Popular</span>
+                </div>
+                <div class="plan-price">ab 890 EUR</div>
+                <ul class="list">
+                  <li data-i18n="p2.f1">Mehrseitige Struktur</li>
+                  <li data-i18n="p2.f2">SEO + Legal Basis</li>
+                  <li data-i18n="p2.f3">Conversion-Fokus</li>
+                </ul>
+                <button
+                  class="btn mock"
+                  type="button"
+                  aria-disabled="true"
+                  data-disabled-action="checkout"
+                  data-i18n="common.bookBtn"
+                >
+                  Jetzt buchen
+                </button>
+                <div class="note" data-i18n="common.mockPay">
+                  Mockup: Zahlung folgt spaeter.
+                </div>
+              </div>
+              <div
+                class="visual-media"
+                style="height: 150px"
+                data-parallax="0.05"
+                aria-hidden="true"
+              >
+                <svg
+                  viewBox="0 0 900 220"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M90 170h720"
+                    stroke="rgba(255,255,255,0.10)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M90 170h420"
+                    stroke="rgba(20,184,166,0.36)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M90 120h520"
+                    stroke="rgba(245,158,11,0.24)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M90 70h300"
+                    stroke="rgba(99,102,241,0.22)"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </div>
+            </article>
+
+            <article class="card span-4">
+              <div class="row">
+                <h3 data-i18n="p3.t">Process Tool</h3>
+                <span class="tag">Custom</span>
+              </div>
+              <div class="plan-price">ab 1.290 EUR</div>
+              <ul class="list">
+                <li data-i18n="p3.f1">Automatisierung von Tasks</li>
+                <li data-i18n="p3.f2">Klare ROI-Ziele</li>
+                <li data-i18n="p3.f3">Erweiterbar fuer Login</li>
+              </ul>
+              <button
+                class="btn mock"
+                type="button"
+                aria-disabled="true"
+                data-disabled-action="checkout"
+                data-i18n="common.bookBtn"
+              >
+                Jetzt buchen
+              </button>
+              <div class="note" data-i18n="common.mockPay">
+                Mockup: Zahlung folgt spaeter.
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="portal">
+        <div class="container cols" data-reveal style="--delay: 0.07s">
+          <article class="card">
+            <h2 data-i18n="intake.title">Gefuehrtes Intake in 5 Fragen</h2>
+            <p class="hint" data-i18n="intake.hint">
+              Minimaler Briefing-Aufwand: du beantwortest kurz die Kernfragen,
+              wir starten die Umsetzung.
+            </p>
+            <form id="intakeForm" style="display: grid; gap: 10px" novalidate>
+              <label class="sr-only" for="goal" data-i18n="label.goal"
+                >Projektziel</label
+              >
+              <input
+                class="field"
+                id="goal"
+                data-i18n-ph="ph.goal"
+                placeholder="Was ist dein Hauptziel?"
+                required
+              />
+              <label class="sr-only" for="audience" data-i18n="label.audience"
+                >Zielgruppe</label
+              >
+              <input
+                class="field"
+                id="audience"
+                data-i18n-ph="ph.audience"
+                placeholder="Wer ist die Zielgruppe?"
+                required
+              />
+              <label class="sr-only" for="deadline" data-i18n="label.deadline"
+                >Deadline</label
+              >
+              <input
+                class="field"
+                id="deadline"
+                data-i18n-ph="ph.deadline"
+                placeholder="Gewuenschter Go-live Termin"
+                required
+              />
+              <button
+                class="btn mock"
+                type="submit"
+                aria-disabled="true"
+                data-i18n="intake.send"
+              >
+                Intake senden (Mock)
+              </button>
+            </form>
           </article>
 
-          <article class="card span-4">
-            <div class="row"><h3 data-i18n="p3.t">Process Tool</h3><span class="tag">Custom</span></div>
-            <div class="plan-price">ab 1.290 EUR</div>
-            <ul class="list">
-              <li data-i18n="p3.f1">Automatisierung von Tasks</li>
-              <li data-i18n="p3.f2">Klare ROI-Ziele</li>
-              <li data-i18n="p3.f3">Erweiterbar fuer Login</li>
-            </ul>
-            <button class="btn mock" type="button" aria-disabled="true" data-disabled-action="checkout" data-i18n="common.bookBtn">Jetzt buchen</button>
-            <div class="note" data-i18n="common.mockPay">Mockup: Zahlung folgt spaeter.</div>
+          <article class="card" id="contact">
+            <h2 data-i18n="contact.title">Kontakt</h2>
+            <p class="hint" data-i18n="contact.hint">
+              Schnellster Weg: Calendly oder kurze Nachricht.
+            </p>
+            <div
+              class="row"
+              style="align-items: stretch; gap: 10px; flex-wrap: wrap"
+            >
+              <button
+                class="btn primary"
+                id="btnCalendly"
+                type="button"
+                data-i18n="contact.cal"
+              >
+                Calendly oeffnen
+              </button>
+              <a class="btn" href="mailto:support@invessiv.example"
+                >support@invessiv.example</a
+              >
+            </div>
+            <form
+              id="contactForm"
+              style="display: grid; gap: 10px; margin-top: 12px"
+              novalidate
+            >
+              <label class="sr-only" for="contactName" data-i18n="label.name"
+                >Name</label
+              >
+              <input
+                class="field"
+                id="contactName"
+                name="name"
+                data-i18n-ph="ph.name"
+                placeholder="Name"
+                required
+              />
+              <label class="sr-only" for="contactEmail" data-i18n="label.email"
+                >E-Mail</label
+              >
+              <input
+                class="field"
+                id="contactEmail"
+                name="email"
+                type="email"
+                data-i18n-ph="ph.email"
+                placeholder="E-Mail"
+                required
+              />
+              <label
+                class="sr-only"
+                for="contactMessage"
+                data-i18n="label.message"
+                >Nachricht</label
+              >
+              <textarea
+                class="field"
+                id="contactMessage"
+                name="message"
+                data-i18n-ph="ph.message"
+                placeholder="Kurze Projektbeschreibung"
+                required
+              ></textarea>
+              <button
+                class="btn mock"
+                type="submit"
+                aria-disabled="true"
+                data-i18n="contact.send"
+              >
+                Absenden (Mock)
+              </button>
+            </form>
           </article>
         </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div data-i18n="footer.one">
+          invessiv Mockup | Klarer Service-Fokus, reduzierte Struktur,
+          mobile-first.
+        </div>
+        <div style="margin-top: 6px" class="legal">
+          <a href="#" data-legal="impressum">Impressum</a>
+          <a href="#" data-legal="datenschutz">Datenschutz</a>
+          <a href="#" data-legal="agb">AGB / Terms</a>
+        </div>
       </div>
-    </section>
+    </footer>
 
-    <section class="section" id="portal">
-      <div class="container cols" data-reveal style="--delay:.07s">
-        <article class="card">
-          <h2 data-i18n="intake.title">Gefuehrtes Intake in 5 Fragen</h2>
-          <p class="hint" data-i18n="intake.hint">Minimaler Briefing-Aufwand: du beantwortest kurz die Kernfragen, wir starten die Umsetzung.</p>
-          <form id="intakeForm" style="display:grid;gap:10px" novalidate>
-            <label class="sr-only" for="goal" data-i18n="label.goal">Projektziel</label>
-            <input class="field" id="goal" data-i18n-ph="ph.goal" placeholder="Was ist dein Hauptziel?" required />
-            <label class="sr-only" for="audience" data-i18n="label.audience">Zielgruppe</label>
-            <input class="field" id="audience" data-i18n-ph="ph.audience" placeholder="Wer ist die Zielgruppe?" required />
-            <label class="sr-only" for="deadline" data-i18n="label.deadline">Deadline</label>
-            <input class="field" id="deadline" data-i18n-ph="ph.deadline" placeholder="Gewuenschter Go-live Termin" required />
-            <button class="btn mock" type="submit" aria-disabled="true" data-i18n="intake.send">Intake senden (Mock)</button>
-          </form>
-        </article>
+    <div class="toast" id="toast" aria-live="polite"></div>
 
-        <article class="card" id="contact">
-          <h2 data-i18n="contact.title">Kontakt</h2>
-          <p class="hint" data-i18n="contact.hint">Schnellster Weg: Calendly oder kurze Nachricht.</p>
-          <div class="row" style="align-items:stretch;gap:10px;flex-wrap:wrap">
-            <button class="btn primary" id="btnCalendly" type="button" data-i18n="contact.cal">Calendly oeffnen</button>
-            <a class="btn" href="mailto:support@invessiv.example">support@invessiv.example</a>
-          </div>
-          <form id="contactForm" style="display:grid;gap:10px;margin-top:12px" novalidate>
-            <label class="sr-only" for="contactName" data-i18n="label.name">Name</label>
-            <input class="field" id="contactName" name="name" data-i18n-ph="ph.name" placeholder="Name" required />
-            <label class="sr-only" for="contactEmail" data-i18n="label.email">E-Mail</label>
-            <input class="field" id="contactEmail" name="email" type="email" data-i18n-ph="ph.email" placeholder="E-Mail" required />
-            <label class="sr-only" for="contactMessage" data-i18n="label.message">Nachricht</label>
-            <textarea class="field" id="contactMessage" name="message" data-i18n-ph="ph.message" placeholder="Kurze Projektbeschreibung" required></textarea>
-            <button class="btn mock" type="submit" aria-disabled="true" data-i18n="contact.send">Absenden (Mock)</button>
-          </form>
-        </article>
-      </div>
-    </section>
-  </main>
+    <script>
+      const copy = {
+        de: {
+          "nav.services": "Leistungen",
+          "nav.pricing": "Preise",
+          "nav.portal": "Portal",
+          "nav.contact": "Kontakt",
+          "action.menu": "Menue",
+          "action.login": "Login",
+          "action.call": "Call via Calendly",
+          "hero.pill": "Individuell statt Baukasten",
+          "hero.title":
+            "Mit wenig Zeitaufwand schnell zu einer fertigen Website.",
+          "hero.sub":
+            "Du gibst nur den noetigen Input, wir uebernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
+          "hero.cta1": "Leistungen ansehen",
+          "hero.cta2": "Projekt anfragen",
+          "diff.title": "Warum nicht wie eine Standard-Template-Seite?",
+          "diff.hint":
+            "Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den Kaeufer und messbaren Ergebnissen.",
+          "diff.sla.t": "Time-to-Launch SLA",
+          "diff.sla.d":
+            "Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je Paket.",
+          "diff.upgrade.t": "Upgrade statt Neubau",
+          "diff.upgrade.d":
+            "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
+          "diff.kpi.t": "KPI-orientiert",
+          "diff.kpi.d":
+            "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
+          "intake.title": "Gefuehrtes Intake in 5 Fragen",
+          "intake.hint":
+            "Minimaler Briefing-Aufwand: du beantwortest kurz die Kernfragen, wir starten die Umsetzung.",
+          "intake.send": "Intake senden (Mock)",
+          "track.title": "Delivery Track",
+          "track.hint":
+            "Transparenter Ablauf mit klaren Meilensteinen und wenig Abstimmungsaufwand.",
+          "track.s1.t": "1. Input",
+          "track.s1.d": "Kerninfos sammeln",
+          "track.s2.t": "2. Draft",
+          "track.s2.d": "Erste Version liefern",
+          "track.s3.t": "3. Review",
+          "track.s3.d": "Gezieltes Feedback",
+          "track.s4.t": "4. Go-live",
+          "track.s4.d": "Live + Uebergabe",
+          "services.title": "Leistungen",
+          "services.hint": "Schlanker Start mit vier klaren Angebotsbereichen.",
+          "s1.t": "Landingpages",
+          "s1.d":
+            "Conversion-orientierte One-Pager mit klarer Botschaft, CTA und sauberer Performance.",
+          "s2.t": "Webseiten",
+          "s2.d":
+            "Individuelle Firmenseiten mit klarem Aufbau, modernem Look und professioneller Praesenz.",
+          "s3.t": "Prozess-Tools",
+          "s3.d":
+            "Kleine interne Tools, die wiederkehrende Ablaeufe automatisieren und Zeit sparen.",
+          "s4.t": "Alte Website upgraden",
+          "s4.d":
+            "Bestehende Website modernisieren: schneller, klarer und conversion-staerker ohne kompletten Neustart.",
+          "common.example": "Beispiel folgt",
+          "common.exampleBtn": "Beispiel ansehen",
+          "pricing.title": "Preise",
+          "pricing.hint":
+            "Fixe Pakete fuer schnelle Lieferung. Checkout ist aktuell als Mock eingebaut.",
+          "p1.t": "Starter Landing",
+          "p1.f1": "One-Pager + Kontakt",
+          "p1.f2": "Responsive Design",
+          "p1.f3": "Schneller Go-live",
+          "p2.t": "Business Website",
+          "p2.f1": "Mehrseitige Struktur",
+          "p2.f2": "SEO + Legal Basis",
+          "p2.f3": "Conversion-Fokus",
+          "p3.t": "Process Tool",
+          "p3.f1": "Automatisierung von Tasks",
+          "p3.f2": "Klare ROI-Ziele",
+          "p3.f3": "Erweiterbar fuer Login",
+          "common.bookBtn": "Jetzt buchen",
+          "common.mockPay": "Mockup: Zahlung folgt spaeter.",
+          "portal.title": "Client Login",
+          "portal.hint": "UI ist sichtbar, Auth-Logik ist noch deaktiviert.",
+          "portal.login": "Einloggen",
+          "portal.register": "Account erstellen",
+          "common.mockLogin":
+            "Mockup: Login folgt spaeter mit sicherem Backend.",
+          "contact.title": "Kontakt",
+          "contact.hint": "Schnellster Weg: Calendly oder kurze Nachricht.",
+          "contact.cal": "Calendly oeffnen",
+          "contact.send": "Absenden (Mock)",
+          "label.name": "Name",
+          "label.email": "E-Mail",
+          "label.password": "Passwort",
+          "label.message": "Nachricht",
+          "label.goal": "Projektziel",
+          "label.audience": "Zielgruppe",
+          "label.deadline": "Deadline",
+          "ph.name": "Name",
+          "ph.email": "E-Mail",
+          "ph.password": "Passwort",
+          "ph.message": "Kurze Projektbeschreibung",
+          "ph.goal": "Was ist dein Hauptziel?",
+          "ph.audience": "Wer ist die Zielgruppe?",
+          "ph.deadline": "Gewuenschter Go-live Termin",
+          "footer.one":
+            "invessiv Mockup | Klarer Service-Fokus, reduzierte Struktur, mobile-first.",
+        },
+        en: {
+          "nav.services": "Services",
+          "nav.pricing": "Pricing",
+          "nav.portal": "Portal",
+          "nav.contact": "Contact",
+          "action.menu": "Menu",
+          "action.login": "Login",
+          "action.call": "Call via Calendly",
+          "hero.pill": "Custom instead of templates",
+          "hero.title": "A finished website with minimal time investment.",
+          "hero.sub":
+            "You provide only the essential input, we do the rest: landing pages, websites and small process tools with fast delivery to a productive result.",
+          "hero.cta1": "View services",
+          "hero.cta2": "Request project",
+          "diff.title": "Why not a standard template page?",
+          "diff.hint":
+            "The focus is on fast delivery, low effort for the buyer and measurable outcomes.",
+          "diff.sla.t": "Time-to-launch SLA",
+          "diff.sla.d":
+            "First clickable version in 5 business days, clear go-live plan per package.",
+          "diff.upgrade.t": "Upgrade instead of rebuild",
+          "diff.upgrade.d":
+            "Modernize existing sites without starting from scratch.",
+          "diff.kpi.t": "KPI-driven",
+          "diff.kpi.d":
+            "Define goals upfront like speed, leads or conversion instead of only design output.",
+          "intake.title": "Guided intake in 5 questions",
+          "intake.hint":
+            "Minimal briefing effort: answer the key questions, we start delivery.",
+          "intake.send": "Send intake (mock)",
+          "track.title": "Delivery track",
+          "track.hint":
+            "Transparent steps with clear milestones and low coordination overhead.",
+          "track.s1.t": "1. Input",
+          "track.s1.d": "Collect essentials",
+          "track.s2.t": "2. Draft",
+          "track.s2.d": "Deliver first version",
+          "track.s3.t": "3. Review",
+          "track.s3.d": "Focused feedback",
+          "track.s4.t": "4. Go-live",
+          "track.s4.d": "Launch + handover",
+          "services.title": "Services",
+          "services.hint": "Lean start with four clear offer areas.",
+          "s1.t": "Landing pages",
+          "s1.d":
+            "Conversion-focused one-pagers with clear messaging, CTA and solid performance.",
+          "s2.t": "Websites",
+          "s2.d":
+            "Custom company sites with a clear structure, modern look and professional presence.",
+          "s3.t": "Process tools",
+          "s3.d":
+            "Small internal tools that automate recurring workflows and save time.",
+          "s4.t": "Upgrade old website",
+          "s4.d":
+            "Modernize existing websites: faster, clearer and more conversion-focused without a full rebuild.",
+          "common.example": "Example soon",
+          "common.exampleBtn": "View example",
+          "pricing.title": "Pricing",
+          "pricing.hint":
+            "Fixed packages for fast delivery. Checkout is intentionally mock-only for now.",
+          "p1.t": "Starter landing",
+          "p1.f1": "One-pager + contact",
+          "p1.f2": "Responsive design",
+          "p1.f3": "Fast go-live",
+          "p2.t": "Business website",
+          "p2.f1": "Multi-page structure",
+          "p2.f2": "SEO + legal baseline",
+          "p2.f3": "Conversion focus",
+          "p3.t": "Process tool",
+          "p3.f1": "Task automation",
+          "p3.f2": "Clear ROI goals",
+          "p3.f3": "Login-ready extension",
+          "common.bookBtn": "Book now (soon)",
+          "common.mockPay": "Mockup: payment will be added later.",
+          "portal.title": "Client login",
+          "portal.hint":
+            "UI is visible, authentication logic is still disabled.",
+          "portal.login": "Log in (soon)",
+          "portal.register": "Create account (soon)",
+          "common.mockLogin":
+            "Mockup: login will be added later with secure backend.",
+          "contact.title": "Contact",
+          "contact.hint": "Fastest route: Calendly or a short message.",
+          "contact.cal": "Open Calendly",
+          "contact.send": "Send (mock)",
+          "label.name": "Name",
+          "label.email": "Email",
+          "label.password": "Password",
+          "label.message": "Message",
+          "label.goal": "Project goal",
+          "label.audience": "Audience",
+          "label.deadline": "Deadline",
+          "ph.name": "Name",
+          "ph.email": "Email",
+          "ph.password": "Password",
+          "ph.message": "Short project description",
+          "ph.goal": "What is your main goal?",
+          "ph.audience": "Who is your target audience?",
+          "ph.deadline": "Desired go-live date",
+          "footer.one":
+            "invessiv mockup | Clear service focus, reduced structure, mobile-first.",
+        },
+      };
 
-  <footer>
-    <div class="container">
-      <div data-i18n="footer.one">invessiv Mockup | Klarer Service-Fokus, reduzierte Struktur, mobile-first.</div>
-      <div style="margin-top:6px" class="legal">
-        <a href="#" data-legal="impressum">Impressum</a>
-        <a href="#" data-legal="datenschutz">Datenschutz</a>
-        <a href="#" data-legal="agb">AGB / Terms</a>
-      </div>
-    </div>
-  </footer>
+      let language = "de";
+      const toastEl = document.getElementById("toast");
+      const showToast = (msg) => {
+        toastEl.textContent = msg;
+        toastEl.style.display = "block";
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => {
+          toastEl.style.display = "none";
+        }, 2300);
+      };
 
-  <div class="toast" id="toast" aria-live="polite"></div>
+      const applyLanguage = () => {
+        const dict = copy[language];
+        document.documentElement.lang = language;
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          const key = node.dataset.i18n;
+          if (dict[key]) node.textContent = dict[key];
+        });
+        document.querySelectorAll("[data-i18n-ph]").forEach((node) => {
+          const key = node.dataset.i18nPh;
+          if (dict[key]) node.placeholder = dict[key];
+        });
+        document.getElementById("btnLang").textContent =
+          language === "de" ? "EN" : "DE";
+      };
 
-  <script>
-    const copy = {
-      de: {
-        "nav.services": "Leistungen", "nav.pricing": "Preise", "nav.portal": "Portal", "nav.contact": "Kontakt",
-        "action.menu": "Menue", "action.login": "Login", "action.call": "Call via Calendly",
-        "hero.pill": "Individuell statt Baukasten",
-        "hero.title": "Mit wenig Zeitaufwand schnell zu einer fertigen Website.",
-        "hero.sub": "Du gibst nur den noetigen Input, wir uebernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
-        "hero.cta1": "Leistungen ansehen", "hero.cta2": "Projekt anfragen",
-        "diff.title": "Warum nicht wie eine Standard-Template-Seite?",
-        "diff.hint": "Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den Kaeufer und messbaren Ergebnissen.",
-        "diff.sla.t": "Time-to-Launch SLA", "diff.sla.d": "Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je Paket.",
-        "diff.upgrade.t": "Upgrade statt Neubau", "diff.upgrade.d": "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
-        "diff.kpi.t": "KPI-orientiert", "diff.kpi.d": "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
-        "intake.title": "Gefuehrtes Intake in 5 Fragen",
-        "intake.hint": "Minimaler Briefing-Aufwand: du beantwortest kurz die Kernfragen, wir starten die Umsetzung.",
-        "intake.send": "Intake senden (Mock)",
-        "track.title": "Delivery Track",
-        "track.hint": "Transparenter Ablauf mit klaren Meilensteinen und wenig Abstimmungsaufwand.",
-        "track.s1.t": "1. Input", "track.s1.d": "Kerninfos sammeln",
-        "track.s2.t": "2. Draft", "track.s2.d": "Erste Version liefern",
-        "track.s3.t": "3. Review", "track.s3.d": "Gezieltes Feedback",
-        "track.s4.t": "4. Go-live", "track.s4.d": "Live + Uebergabe",
-        "services.title": "Leistungen",
-        "services.hint": "Schlanker Start mit vier klaren Angebotsbereichen.",
-        "s1.t": "Landingpages", "s1.d": "Conversion-orientierte One-Pager mit klarer Botschaft, CTA und sauberer Performance.",
-        "s2.t": "Webseiten", "s2.d": "Individuelle Firmenseiten mit klarem Aufbau, modernem Look und professioneller Praesenz.",
-        "s3.t": "Prozess-Tools", "s3.d": "Kleine interne Tools, die wiederkehrende Ablaeufe automatisieren und Zeit sparen.",
-        "s4.t": "Alte Website upgraden", "s4.d": "Bestehende Website modernisieren: schneller, klarer und conversion-staerker ohne kompletten Neustart.",
-        "common.example": "Beispiel folgt", "common.exampleBtn": "Beispiel ansehen",
-        "pricing.title": "Preise", "pricing.hint": "Fixe Pakete fuer schnelle Lieferung. Checkout ist aktuell als Mock eingebaut.",
-        "p1.t": "Starter Landing", "p1.f1": "One-Pager + Kontakt", "p1.f2": "Responsive Design", "p1.f3": "Schneller Go-live",
-        "p2.t": "Business Website", "p2.f1": "Mehrseitige Struktur", "p2.f2": "SEO + Legal Basis", "p2.f3": "Conversion-Fokus",
-        "p3.t": "Process Tool", "p3.f1": "Automatisierung von Tasks", "p3.f2": "Klare ROI-Ziele", "p3.f3": "Erweiterbar fuer Login",
-        "common.bookBtn": "Jetzt buchen", "common.mockPay": "Mockup: Zahlung folgt spaeter.",
-        "portal.title": "Client Login", "portal.hint": "UI ist sichtbar, Auth-Logik ist noch deaktiviert.",
-        "portal.login": "Einloggen", "portal.register": "Account erstellen", "common.mockLogin": "Mockup: Login folgt spaeter mit sicherem Backend.",
-        "contact.title": "Kontakt", "contact.hint": "Schnellster Weg: Calendly oder kurze Nachricht.", "contact.cal": "Calendly oeffnen", "contact.send": "Absenden (Mock)",
-        "label.name": "Name", "label.email": "E-Mail", "label.password": "Passwort", "label.message": "Nachricht",
-        "label.goal": "Projektziel", "label.audience": "Zielgruppe", "label.deadline": "Deadline",
-        "ph.name": "Name", "ph.email": "E-Mail", "ph.password": "Passwort", "ph.message": "Kurze Projektbeschreibung",
-        "ph.goal": "Was ist dein Hauptziel?", "ph.audience": "Wer ist die Zielgruppe?", "ph.deadline": "Gewuenschter Go-live Termin",
-        "footer.one": "invessiv Mockup | Klarer Service-Fokus, reduzierte Struktur, mobile-first."
-      },
-      en: {
-        "nav.services": "Services", "nav.pricing": "Pricing", "nav.portal": "Portal", "nav.contact": "Contact",
-        "action.menu": "Menu", "action.login": "Login", "action.call": "Call via Calendly",
-        "hero.pill": "Custom instead of templates",
-        "hero.title": "A finished website with minimal time investment.",
-        "hero.sub": "You provide only the essential input, we do the rest: landing pages, websites and small process tools with fast delivery to a productive result.",
-        "hero.cta1": "View services", "hero.cta2": "Request project",
-        "diff.title": "Why not a standard template page?",
-        "diff.hint": "The focus is on fast delivery, low effort for the buyer and measurable outcomes.",
-        "diff.sla.t": "Time-to-launch SLA", "diff.sla.d": "First clickable version in 5 business days, clear go-live plan per package.",
-        "diff.upgrade.t": "Upgrade instead of rebuild", "diff.upgrade.d": "Modernize existing sites without starting from scratch.",
-        "diff.kpi.t": "KPI-driven", "diff.kpi.d": "Define goals upfront like speed, leads or conversion instead of only design output.",
-        "intake.title": "Guided intake in 5 questions",
-        "intake.hint": "Minimal briefing effort: answer the key questions, we start delivery.",
-        "intake.send": "Send intake (mock)",
-        "track.title": "Delivery track",
-        "track.hint": "Transparent steps with clear milestones and low coordination overhead.",
-        "track.s1.t": "1. Input", "track.s1.d": "Collect essentials",
-        "track.s2.t": "2. Draft", "track.s2.d": "Deliver first version",
-        "track.s3.t": "3. Review", "track.s3.d": "Focused feedback",
-        "track.s4.t": "4. Go-live", "track.s4.d": "Launch + handover",
-        "services.title": "Services",
-        "services.hint": "Lean start with four clear offer areas.",
-        "s1.t": "Landing pages", "s1.d": "Conversion-focused one-pagers with clear messaging, CTA and solid performance.",
-        "s2.t": "Websites", "s2.d": "Custom company sites with a clear structure, modern look and professional presence.",
-        "s3.t": "Process tools", "s3.d": "Small internal tools that automate recurring workflows and save time.",
-        "s4.t": "Upgrade old website", "s4.d": "Modernize existing websites: faster, clearer and more conversion-focused without a full rebuild.",
-        "common.example": "Example soon", "common.exampleBtn": "View example",
-        "pricing.title": "Pricing", "pricing.hint": "Fixed packages for fast delivery. Checkout is intentionally mock-only for now.",
-        "p1.t": "Starter landing", "p1.f1": "One-pager + contact", "p1.f2": "Responsive design", "p1.f3": "Fast go-live",
-        "p2.t": "Business website", "p2.f1": "Multi-page structure", "p2.f2": "SEO + legal baseline", "p2.f3": "Conversion focus",
-        "p3.t": "Process tool", "p3.f1": "Task automation", "p3.f2": "Clear ROI goals", "p3.f3": "Login-ready extension",
-        "common.bookBtn": "Book now (soon)", "common.mockPay": "Mockup: payment will be added later.",
-        "portal.title": "Client login", "portal.hint": "UI is visible, authentication logic is still disabled.",
-        "portal.login": "Log in (soon)", "portal.register": "Create account (soon)", "common.mockLogin": "Mockup: login will be added later with secure backend.",
-        "contact.title": "Contact", "contact.hint": "Fastest route: Calendly or a short message.", "contact.cal": "Open Calendly", "contact.send": "Send (mock)",
-        "label.name": "Name", "label.email": "Email", "label.password": "Password", "label.message": "Message",
-        "label.goal": "Project goal", "label.audience": "Audience", "label.deadline": "Deadline",
-        "ph.name": "Name", "ph.email": "Email", "ph.password": "Password", "ph.message": "Short project description",
-        "ph.goal": "What is your main goal?", "ph.audience": "Who is your target audience?", "ph.deadline": "Desired go-live date",
-        "footer.one": "invessiv mockup | Clear service focus, reduced structure, mobile-first."
+      document.getElementById("btnLang").addEventListener("click", () => {
+        language = language === "de" ? "en" : "de";
+        applyLanguage();
+      });
+
+      const btnMenu = document.getElementById("btnMenu");
+      const mobileNav = document.getElementById("mobileNav");
+      btnMenu.addEventListener("click", () => {
+        const isOpen = !mobileNav.hidden;
+        mobileNav.hidden = isOpen;
+        mobileNav.style.display = isOpen ? "none" : "block";
+        btnMenu.setAttribute("aria-expanded", String(!isOpen));
+      });
+      mobileNav.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileNav.hidden = true;
+          mobileNav.style.display = "none";
+          btnMenu.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      ["btnCalendly", "btnCalendlyTop"].forEach((id) => {
+        document.getElementById(id).addEventListener("click", () => {
+          window.open("https://calendly.com/", "_blank", "noopener,noreferrer");
+        });
+      });
+
+      document.getElementById("btnLoginTop").addEventListener("click", () => {
+        showToast(
+          language === "de"
+            ? "Login ist sichtbar, aber noch nicht aktiv."
+            : "Login is visible, but not active yet.",
+        );
+      });
+
+      document.querySelectorAll("[data-disabled-action]").forEach((node) => {
+        node.addEventListener("click", () => {
+          showToast(
+            language === "de"
+              ? "Diese Funktion ist im Mockup vorbereitet und folgt spaeter."
+              : "This function is prepared in the mockup and will be implemented later.",
+          );
+        });
+      });
+
+      document
+        .getElementById("contactForm")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+          showToast(
+            language === "de"
+              ? "Anfrage gesendet (Mock)."
+              : "Request sent (mock).",
+          );
+          event.target.reset();
+        });
+
+      document
+        .getElementById("intakeForm")
+        .addEventListener("submit", (event) => {
+          event.preventDefault();
+          showToast(
+            language === "de"
+              ? "Intake gesendet (Mock)."
+              : "Intake sent (mock).",
+          );
+          event.target.reset();
+        });
+
+      document.querySelectorAll("[data-legal]").forEach((node) => {
+        node.addEventListener("click", (event) => {
+          event.preventDefault();
+          showToast(
+            language === "de"
+              ? "Legal-Seite ist aktuell ein Platzhalter."
+              : "Legal page is currently a placeholder.",
+          );
+        });
+      });
+
+      const revealNodes = Array.from(
+        document.querySelectorAll("[data-reveal]"),
+      );
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              e.target.classList.add("is-visible");
+              io.unobserve(e.target);
+            }
+          }
+        },
+        { threshold: 0.14, rootMargin: "0px 0px -10% 0px" },
+      );
+      revealNodes.forEach((n) => io.observe(n));
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      const cards = Array.from(document.querySelectorAll(".card"));
+      cards.forEach((c) => {
+        c.addEventListener("pointermove", (e) => {
+          const r = c.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width) * 100;
+          const y = ((e.clientY - r.top) / r.height) * 100;
+          c.style.setProperty("--mx", `${x}%`);
+          c.style.setProperty("--my", `${y}%`);
+        });
+      });
+
+      const buttons = Array.from(document.querySelectorAll(".btn"));
+      buttons.forEach((b) => {
+        b.addEventListener("pointermove", (e) => {
+          const r = b.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width) * 100;
+          const y = ((e.clientY - r.top) / r.height) * 100;
+          b.style.setProperty("--bx", `${x}%`);
+          b.style.setProperty("--by", `${y}%`);
+        });
+      });
+
+      const spotlight = document.getElementById("spotlight");
+      const onPointer = (e) => {
+        document.body.classList.add("is-pointer");
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        spotlight.style.setProperty("--cx", `${x}%`);
+        spotlight.style.setProperty("--cy", `${y}%`);
+      };
+      window.addEventListener("pointermove", onPointer, { passive: true });
+      window.addEventListener("pointerdown", onPointer, { passive: true });
+
+      const mesh = document.getElementById("mesh");
+      const parallaxNodes = Array.from(
+        document.querySelectorAll("[data-parallax]"),
+      );
+      const heroShot = document.querySelector("[data-tilt='heroShot']");
+
+      const parallaxTick = () => {
+        const y = window.scrollY;
+        const dy = y * 0.06;
+        for (const el of parallaxNodes) {
+          const k = parseFloat(el.dataset.parallax || "0.15");
+          el.style.transform = `translate3d(0, ${dy * k}px, 0)`;
+        }
+        mesh.style.transform = `translate3d(0, ${dy * 0.1}px, 0)`;
+        const p = Math.min(
+          100,
+          Math.max(
+            0,
+            (y / (document.body.scrollHeight - window.innerHeight)) * 100,
+          ),
+        );
+        document.documentElement.style.setProperty("--p", `${p}%`);
+        document.getElementById("scrollbarFill").style.width = `${p}%`;
+      };
+
+      if (!reduceMotion) {
+        parallaxTick();
+        window.addEventListener(
+          "scroll",
+          () => requestAnimationFrame(parallaxTick),
+          { passive: true },
+        );
       }
-    };
 
-    let language = "de";
-    const toastEl = document.getElementById("toast");
-    const showToast = (msg) => {
-      toastEl.textContent = msg;
-      toastEl.style.display = "block";
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => { toastEl.style.display = "none"; }, 2300);
-    };
+      if (!reduceMotion && heroShot) {
+        const tilt = (e) => {
+          const r = heroShot.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          const dx = (e.clientX - cx) / r.width;
+          const dy = (e.clientY - cy) / r.height;
+          const rx = (-dy * 6).toFixed(2);
+          const ry = (dx * 8).toFixed(2);
+          heroShot.style.transform = `translate(-50%, -50%) rotate(-2deg) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+        };
+        window.addEventListener("pointermove", tilt, { passive: true });
+        window.addEventListener(
+          "pointerleave",
+          () =>
+            (heroShot.style.transform = "translate(-50%, -50%) rotate(-2deg)"),
+          { passive: true },
+        );
+      }
 
-    const applyLanguage = () => {
-      const dict = copy[language];
-      document.documentElement.lang = language;
-      document.querySelectorAll("[data-i18n]").forEach((node) => {
-        const key = node.dataset.i18n;
-        if (dict[key]) node.textContent = dict[key];
-      });
-      document.querySelectorAll("[data-i18n-ph]").forEach((node) => {
-        const key = node.dataset.i18nPh;
-        if (dict[key]) node.placeholder = dict[key];
-      });
-      document.getElementById("btnLang").textContent = language === "de" ? "EN" : "DE";
-    };
+      const stories = Array.from(document.querySelectorAll("[data-story]"));
+      const steps = Array.from(document.querySelectorAll("#steps .step"));
+      const dots = Array.from(document.querySelectorAll("#dots i"));
 
-    document.getElementById("btnLang").addEventListener("click", () => {
-      language = language === "de" ? "en" : "de";
+      const setActiveStep = (idx) => {
+        steps.forEach((s, i) => (s.dataset.active = String(i === idx)));
+        dots.forEach((d, i) => d.classList.toggle("on", i === idx));
+      };
+
+      if (stories.length) {
+        const sio = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((e) => e.isIntersecting)
+              .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+            if (!visible) return;
+            const idx = parseInt(visible.target.dataset.story, 10);
+            if (Number.isFinite(idx)) setActiveStep(idx);
+          },
+          {
+            threshold: [0.22, 0.38, 0.54, 0.7],
+            rootMargin: "0px 0px -35% 0px",
+          },
+        );
+        stories.forEach((s) => sio.observe(s));
+      }
+
+      const animateCount = (node, to) => {
+        const start = 0;
+        const dur = 900;
+        const t0 = performance.now();
+        const tick = (t) => {
+          const p = Math.min(1, (t - t0) / dur);
+          const v = Math.round(start + (to - start) * (1 - Math.pow(1 - p, 3)));
+          node.textContent = String(v);
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+
+      const counters = Array.from(document.querySelectorAll("[data-count]"));
+      if (counters.length) {
+        const cio = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              const el = e.target;
+              const to = parseInt(el.dataset.count, 10);
+              if (!Number.isFinite(to) || el.dataset.done === "true") continue;
+              el.dataset.done = "true";
+              if (reduceMotion) el.textContent = String(to);
+              else animateCount(el, to);
+            }
+          },
+          { threshold: 0.6 },
+        );
+        counters.forEach((c) => cio.observe(c));
+      }
+
       applyLanguage();
-    });
-
-    const btnMenu = document.getElementById("btnMenu");
-    const mobileNav = document.getElementById("mobileNav");
-    btnMenu.addEventListener("click", () => {
-      const isOpen = !mobileNav.hidden;
-      mobileNav.hidden = isOpen;
-      mobileNav.style.display = isOpen ? "none" : "block";
-      btnMenu.setAttribute("aria-expanded", String(!isOpen));
-    });
-    mobileNav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        mobileNav.hidden = true;
-        mobileNav.style.display = "none";
-        btnMenu.setAttribute("aria-expanded", "false");
-      });
-    });
-
-    ["btnCalendly", "btnCalendlyTop"].forEach((id) => {
-      document.getElementById(id).addEventListener("click", () => {
-        window.open("https://calendly.com/", "_blank", "noopener,noreferrer");
-      });
-    });
-
-    document.getElementById("btnLoginTop").addEventListener("click", () => {
-      showToast(language === "de" ? "Login ist sichtbar, aber noch nicht aktiv." : "Login is visible, but not active yet.");
-    });
-
-    document.querySelectorAll("[data-disabled-action]").forEach((node) => {
-      node.addEventListener("click", () => {
-        showToast(language === "de" ? "Diese Funktion ist im Mockup vorbereitet und folgt spaeter." : "This function is prepared in the mockup and will be implemented later.");
-      });
-    });
-
-    document.getElementById("contactForm").addEventListener("submit", (event) => {
-      event.preventDefault();
-      showToast(language === "de" ? "Anfrage gesendet (Mock)." : "Request sent (mock).");
-      event.target.reset();
-    });
-
-    document.getElementById("intakeForm").addEventListener("submit", (event) => {
-      event.preventDefault();
-      showToast(language === "de" ? "Intake gesendet (Mock)." : "Intake sent (mock).");
-      event.target.reset();
-    });
-
-    document.querySelectorAll("[data-legal]").forEach((node) => {
-      node.addEventListener("click", (event) => {
-        event.preventDefault();
-        showToast(language === "de" ? "Legal-Seite ist aktuell ein Platzhalter." : "Legal page is currently a placeholder.");
-      });
-    });
-
-    const revealNodes = Array.from(document.querySelectorAll("[data-reveal]"));
-    const io = new IntersectionObserver((entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-visible");
-          io.unobserve(e.target);
-        }
-      }
-    }, { threshold: 0.14, rootMargin: "0px 0px -10% 0px" });
-    revealNodes.forEach((n) => io.observe(n));
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const cards = Array.from(document.querySelectorAll(".card"));
-    cards.forEach((c) => {
-      c.addEventListener("pointermove", (e) => {
-        const r = c.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        c.style.setProperty("--mx", `${x}%`);
-        c.style.setProperty("--my", `${y}%`);
-      });
-    });
-
-    const buttons = Array.from(document.querySelectorAll(".btn"));
-    buttons.forEach((b) => {
-      b.addEventListener("pointermove", (e) => {
-        const r = b.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        b.style.setProperty("--bx", `${x}%`);
-        b.style.setProperty("--by", `${y}%`);
-      });
-    });
-
-    const spotlight = document.getElementById("spotlight");
-    const onPointer = (e) => {
-      document.body.classList.add("is-pointer");
-      const x = (e.clientX / window.innerWidth) * 100;
-      const y = (e.clientY / window.innerHeight) * 100;
-      spotlight.style.setProperty("--cx", `${x}%`);
-      spotlight.style.setProperty("--cy", `${y}%`);
-    };
-    window.addEventListener("pointermove", onPointer, { passive:true });
-    window.addEventListener("pointerdown", onPointer, { passive:true });
-
-    const mesh = document.getElementById("mesh");
-    const parallaxNodes = Array.from(document.querySelectorAll("[data-parallax]"));
-    const heroShot = document.querySelector("[data-tilt='heroShot']");
-
-    const parallaxTick = () => {
-      const y = window.scrollY;
-      const dy = y * 0.06;
-      for (const el of parallaxNodes) {
-        const k = parseFloat(el.dataset.parallax || "0.15");
-        el.style.transform = `translate3d(0, ${dy * k}px, 0)`;
-      }
-      mesh.style.transform = `translate3d(0, ${dy * 0.10}px, 0)`;
-      const p = Math.min(100, Math.max(0, (y / (document.body.scrollHeight - window.innerHeight)) * 100));
-      document.documentElement.style.setProperty("--p", `${p}%`);
-      document.getElementById("scrollbarFill").style.width = `${p}%`;
-    };
-
-    if (!reduceMotion) {
-      parallaxTick();
-      window.addEventListener("scroll", () => requestAnimationFrame(parallaxTick), { passive: true });
-    }
-
-    if (!reduceMotion && heroShot) {
-      const tilt = (e) => {
-        const r = heroShot.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        const dx = (e.clientX - cx) / r.width;
-        const dy = (e.clientY - cy) / r.height;
-        const rx = (-dy * 6).toFixed(2);
-        const ry = (dx * 8).toFixed(2);
-        heroShot.style.transform = `rotate(-2deg) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-      };
-      window.addEventListener("pointermove", tilt, { passive:true });
-      window.addEventListener("pointerleave", () => heroShot.style.transform = "rotate(-2deg)", { passive:true });
-    }
-
-    const stories = Array.from(document.querySelectorAll("[data-story]"));
-    const steps = Array.from(document.querySelectorAll("#steps .step"));
-    const dots = Array.from(document.querySelectorAll("#dots i"));
-
-    const setActiveStep = (idx) => {
-      steps.forEach((s, i) => s.dataset.active = String(i === idx));
-      dots.forEach((d, i) => d.classList.toggle("on", i === idx));
-    };
-
-    if (stories.length) {
-      const sio = new IntersectionObserver((entries) => {
-        const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        const idx = parseInt(visible.target.dataset.story, 10);
-        if (Number.isFinite(idx)) setActiveStep(idx);
-      }, { threshold: [0.22, 0.38, 0.54, 0.70], rootMargin: "0px 0px -35% 0px" });
-      stories.forEach(s => sio.observe(s));
-    }
-
-    const animateCount = (node, to) => {
-      const start = 0;
-      const dur = 900;
-      const t0 = performance.now();
-      const tick = (t) => {
-        const p = Math.min(1, (t - t0) / dur);
-        const v = Math.round(start + (to - start) * (1 - Math.pow(1 - p, 3)));
-        node.textContent = String(v);
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    };
-
-    const counters = Array.from(document.querySelectorAll("[data-count]"));
-    if (counters.length) {
-      const cio = new IntersectionObserver((entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const el = e.target;
-          const to = parseInt(el.dataset.count, 10);
-          if (!Number.isFinite(to) || el.dataset.done === "true") continue;
-          el.dataset.done = "true";
-          if (reduceMotion) el.textContent = String(to);
-          else animateCount(el, to);
-        }
-      }, { threshold: 0.6 });
-      counters.forEach(c => cio.observe(c));
-    }
-
-    applyLanguage();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
