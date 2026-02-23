@@ -640,6 +640,7 @@ main {
 [data-theme="light"] .packages-disclaimer,
 [data-theme="light"] .packages-outro-cta p,
 [data-theme="light"] .contact-hint,
+[data-theme="light"] .contact-checklist-hint,
 [data-theme="light"] .contact-channel-hint,
 [data-theme="light"] .contact-cta-wrap p,
 [data-theme="light"] .services-hint,
@@ -659,6 +660,8 @@ main {
 [data-theme="light"] .services-chip,
 [data-theme="light"] .services-example-btn,
 [data-theme="light"] .packages-cta,
+[data-theme="light"] .contact-channel-action-link,
+[data-theme="light"] .contact-copy-btn,
 [data-theme="light"] .proof-badge,
 [data-theme="light"] .process-deliverable {
   background: rgba(244, 249, 255, 0.84);
@@ -761,6 +764,11 @@ main {
 [data-theme="light"] .contact-channel-link {
   color: #102d51;
   text-decoration-color: rgba(19, 152, 143, 0.38);
+}
+
+[data-theme="light"] .contact-channel-action-link:focus-visible,
+[data-theme="light"] .contact-copy-btn:focus-visible {
+  outline-color: rgba(17, 141, 145, 0.74);
 }
 
 [data-theme="light"] .packages-cta:focus-visible {
@@ -1387,9 +1395,53 @@ main {
   line-height: 1.55;
 }
 
+.contact-channel-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contact-channel-action-link,
+.contact-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(194, 220, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5f1ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.contact-channel-action-link:hover,
+.contact-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(208, 230, 255, 0.42);
+}
+
+.contact-copy-btn:focus-visible,
+.contact-channel-action-link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 74%, #fff 26%);
+  outline-offset: 2px;
+}
+
+.contact-copy-btn {
+  cursor: pointer;
+}
+
 .contact-brief-card h3 {
   margin: 0;
   font-size: 1.06rem;
+}
+
+.contact-checklist-hint {
+  margin: 8px 0 0;
+  color: #c0d2ea;
+  font-size: 0.9rem;
 }
 
 .contact-checklist {
@@ -1801,6 +1853,11 @@ main {
 
   .contact-layout {
     grid-template-columns: 1fr;
+  }
+
+  .contact-channel-action-link,
+  .contact-copy-btn {
+    width: 100%;
   }
 
   .services-span-7,

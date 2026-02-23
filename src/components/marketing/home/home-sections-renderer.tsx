@@ -113,6 +113,7 @@ export function HomeSectionsRenderer({
             <ContactSection
               channels={section.contactChannels ?? []}
               checklist={section.contactChecklist ?? []}
+              checklistHint={section.contactChecklistHint}
               checklistTitle={section.contactChecklistTitle ?? ""}
               contactCta={section.contactCta}
               description={section.description}

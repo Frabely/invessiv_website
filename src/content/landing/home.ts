@@ -61,9 +61,14 @@ export type LandingSectionCopy = {
     value: string;
     href: string;
     hint?: string;
+    actionLabel?: string;
+    copyValue?: string;
+    copyLabel?: string;
+    copiedLabel?: string;
   }>;
   contactChecklist?: string[];
   contactChecklistTitle?: string;
+  contactChecklistHint?: string;
   contactCta?: {
     label: string;
     href: string;
@@ -650,19 +655,24 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Kontakt",
         description:
-          "Sag kurz, was du brauchst - wir geben dir schnell eine klare Rueckmeldung mit naechstem sinnvollen Schritt.",
+          "Sag kurz, was du brauchst - wir geben dir schnell einen klaren nächsten Schritt mit Aufwand und Empfehlung.",
         contactChannels: [
           {
             label: "E-Mail",
             value: "hi@invessiv.de",
             href: "mailto:hi@invessiv.de",
-            hint: "Ideal fuer Scope, Unterlagen und Rueckfragen",
+            hint: "Ideal für Scope, Deadline und vorhandene Assets.",
+            actionLabel: "Per E-Mail anfragen",
+            copyValue: "hi@invessiv.de",
+            copyLabel: "E-Mail kopieren",
+            copiedLabel: "Kopiert",
           },
           {
-            label: "Kickoff Call",
-            value: "30 Minuten Klarheit",
+            label: "Kennenlern-Call",
+            value: "30 Min. → Scope + nächster Schritt + grobe Einschätzung",
             href: "#contact",
-            hint: "Kurz abstimmen, Prioritaeten setzen, direkt entscheiden",
+            hint: "Kein Sales-Druck. Keine Spam-Nachrichten.",
+            actionLabel: "Kostenlosen Call buchen",
           },
         ],
         contactChecklist: [
@@ -670,29 +680,35 @@ const HOME_SECTIONS: LandingSection[] = [
           "Gibt es eine Deadline oder ein wichtiges Datum?",
           "Welche Inhalte/Assets sind schon vorhanden?",
         ],
-        contactChecklistTitle: "Briefing-Check",
+        contactChecklistTitle: "In 3 kurzen Antworten starten",
+        contactChecklistHint: "Dauert ca. 2 Minuten.",
         contactCta: {
-          label: "Kostenlosen Kickoff Call anfragen",
+          label: "Kostenlosen Call buchen",
           href: "#contact",
-          hint: "Unverbindlich. Antwort meist innerhalb von 24h.",
+          hint: "Unverbindlich. 2-3 kurze Fragen, dann melden wir uns in 24h mit dem nächsten Schritt.",
         },
       },
       en: {
         title: "Contact",
         description:
-          "Share what you need in a few lines - we respond quickly with a clear next step.",
+          "Share what you need in a few lines - we reply with a clear next step, effort, and recommendation.",
         contactChannels: [
           {
             label: "Email",
             value: "hi@invessiv.de",
             href: "mailto:hi@invessiv.de",
             hint: "Best for scope, assets, and detailed context",
+            actionLabel: "Request by email",
+            copyValue: "hi@invessiv.de",
+            copyLabel: "Copy email",
+            copiedLabel: "Copied",
           },
           {
-            label: "Kickoff call",
-            value: "30 minutes of clarity",
+            label: "Discovery call",
+            value: "30 min → scope + next step + rough estimate",
             href: "#contact",
-            hint: "Align on priorities and decide the next move quickly",
+            hint: "No sales pressure. No spam.",
+            actionLabel: "Book free call",
           },
         ],
         contactChecklist: [
@@ -700,11 +716,12 @@ const HOME_SECTIONS: LandingSection[] = [
           "Do you have a deadline or launch date?",
           "Which assets/content are already available?",
         ],
-        contactChecklistTitle: "Briefing check",
+        contactChecklistTitle: "Start in 3 short answers",
+        contactChecklistHint: "Takes about 2 minutes.",
         contactCta: {
-          label: "Request a free kickoff call",
+          label: "Book a free call",
           href: "#contact",
-          hint: "No commitment. Usually a reply within 24h.",
+          hint: "No commitment. Answer 2-3 short questions and we reply in 24h with a clear next step.",
         },
       },
     },

@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 import type { LandingSectionCopy } from "@/content/landing/home";
 
 type ContactChannel = NonNullable<LandingSectionCopy["contactChannels"]>[number];
@@ -5,6 +9,7 @@ type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 
 type ContactSectionProps = {
   checklist: string[];
+  checklistHint?: string;
   checklistTitle: string;
   contactCta?: ContactCta;
   description: string;
@@ -15,6 +20,7 @@ type ContactSectionProps = {
 
 export function ContactSection({
   checklist,
+  checklistHint,
   checklistTitle,
   contactCta,
   description,
@@ -22,6 +28,26 @@ export function ContactSection({
   title,
   channels,
 }: ContactSectionProps) {
+  const [copiedChannelLabel, setCopiedChannelLabel] = useState<string | null>(null);
+
+  const handleCopy = async (channelLabel: string, value: string) => {
+    if (!navigator?.clipboard?.writeText) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedChannelLabel(channelLabel);
+      window.setTimeout(() => {
+        setCopiedChannelLabel((current) =>
+          current === channelLabel ? null : current,
+        );
+      }, 1400);
+    } catch {
+      // Clipboard can be blocked by browser permissions; keep UI usable.
+    }
+  };
+
   return (
     <section className="contact-section" id={id}>
       <h2>{title}</h2>
@@ -36,12 +62,33 @@ export function ContactSection({
                 {channel.value}
               </a>
               {channel.hint ? <p className="contact-channel-hint">{channel.hint}</p> : null}
+              {channel.actionLabel || channel.copyValue ? (
+                <div className="contact-channel-actions">
+                  {channel.actionLabel ? (
+                    <a className="contact-channel-action-link" href={channel.href}>
+                      {channel.actionLabel}
+                    </a>
+                  ) : null}
+                  {channel.copyValue && channel.copyLabel ? (
+                    <button
+                      className="contact-copy-btn"
+                      onClick={() => handleCopy(channel.label, channel.copyValue as string)}
+                      type="button"
+                    >
+                      {copiedChannelLabel === channel.label && channel.copiedLabel
+                        ? channel.copiedLabel
+                        : channel.copyLabel}
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
             </article>
           ))}
         </div>
 
         <aside className="contact-brief-card">
           <h3>{checklistTitle}</h3>
+          {checklistHint ? <p className="contact-checklist-hint">{checklistHint}</p> : null}
           <ul className="contact-checklist">
             {checklist.map((item) => (
               <li key={item}>{item}</li>
