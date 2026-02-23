@@ -241,6 +241,10 @@ Outputs:
 - Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
 - Styling fuer Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
 - Logiknahe Tests gehoeren in die Naehe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
+- Route-Dateien (`page.tsx`) orchestrieren nur: keine grossen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
+- Section-Mapping und Render-Verzweigungen in dedizierte Renderer-Komponenten auslagern (z. B. `home-sections-renderer`)
+- Locale- und UI-Textbausteine zentral in `src/content/**` pflegen; Komponenten konsumieren nur bereits aufbereitete Inhalte
+- Wiederkehrende UI-Interaktionslogik (Scroll, Pointer, Observer, Motion) konsequent in Hooks kapseln (`src/hooks/**`)
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
@@ -307,3 +311,4 @@ Outputs:
 - Animations-/Scroll-Logik nicht in Rendering-Dateien lassen, sondern in `hooks/` und `lib/` auslagern; Rendering-Dateien orchestrieren nur
 - Pfad-/Layout-Berechnungen als testbare Domain-Funktionen modellieren und mit Unit-Tests gegen Regression absichern
 - Section-Komponenten sollen klar typisierte Props nutzen (Content separat, Darstellung separat), damit i18n- und SEO-Layer stabil erweiterbar bleiben
+- Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test fuer kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)

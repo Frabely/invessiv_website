@@ -3,7 +3,7 @@ type ValidationInput = {
   sectionIds: string[];
 };
 
-type ValidationResult = {
+export type ValidationResult = {
   hasCompleteMapping: boolean;
   missingInSections: string[];
   missingInNavigation: string[];
