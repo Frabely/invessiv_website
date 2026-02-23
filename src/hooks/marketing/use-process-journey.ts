@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import type { RefObject } from "react";
 
-import { setupProcessJourney } from "@/domain/process/process-journey";
+import { setupProcessJourney } from "@/lib/process/process-journey";
 
 type UseProcessJourneyParams = {
   locale: string;

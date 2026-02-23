@@ -11,7 +11,7 @@ import { SiteHeader } from "@/components/marketing/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
 import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
 import { getHomeSections } from "@/content/landing/home";
-import { validateNavigationSections } from "@/domain/navigation/validate-navigation-sections";
+import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 

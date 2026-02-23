@@ -299,6 +299,6 @@ Outputs:
 - Bei neuer Logik oder Workflows frueh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
 - Refactoring kontinuierlich einplanen, sobald Komplexitaet oder Dateidichte ansteigt
 - Monolithische Seiten (z. B. grosse `page.tsx`) fruehzeitig in route-nahe Sections, wiederverwendbare Komponenten und dedizierte Hooks aufteilen
-- Animations-/Scroll-Logik nicht in Rendering-Dateien lassen, sondern in `hooks/` und `domain/` auslagern; Rendering-Dateien orchestrieren nur
+- Animations-/Scroll-Logik nicht in Rendering-Dateien lassen, sondern in `hooks/` und `lib/` auslagern; Rendering-Dateien orchestrieren nur
 - Pfad-/Layout-Berechnungen als testbare Domain-Funktionen modellieren und mit Unit-Tests gegen Regression absichern
 - Section-Komponenten sollen klar typisierte Props nutzen (Content separat, Darstellung separat), damit i18n- und SEO-Layer stabil erweiterbar bleiben
