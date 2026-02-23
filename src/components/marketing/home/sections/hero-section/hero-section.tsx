@@ -1,4 +1,4 @@
-import { HeroVisual } from "@/components/marketing/hero-visual";
+import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 
 type HeroSectionProps = {
   description: string;

@@ -236,6 +236,11 @@ Outputs:
 - App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, sp�ter `(app)`), um Verantwortlichkeiten klar zu trennen
 - Projektstruktur immer aktiv sauber halten: keine ueberfuellten Ordner, stattdessen fachlich aufteilen und konsistent benennen
 - Sobald ein Ordner zu viele Dateien/Verantwortlichkeiten aufnimmt, in Submodule (z. B. pro Feature/Domain) refactoren
+- Komponenten werden standardmaessig als eigener Ordner angelegt (kein einzelnes loses `.tsx` bei produktiven Komponenten)
+- Pro Komponente im Ordner mindestens: `component-name.tsx`; bei eigenen Styles `component-name.css` (oder `.scss`), bei relevanter Logik `component-name.test.ts(x)`
+- Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
+- Styling fuer Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
+- Logiknahe Tests gehoeren in die Naehe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen

@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
+import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
+import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
 
 type SiteHeaderProps = {
@@ -12,43 +13,10 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ navigation }: SiteHeaderProps) {
   const { locale, setLocale, theme, toggleTheme } = useLanguage();
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 14);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  const labelsByHref: Record<string, string> =
-    locale === "de"
-      ? {
-          "#proof": "Ergebnisse",
-          "#services": "Leistungen",
-          "#process": "Prozess",
-          "#pricing": "Pakete",
-          "#contact": "Kontakt",
-        }
-      : {
-          "#proof": "Proof",
-          "#services": "Services",
-          "#process": "Process",
-          "#pricing": "Pricing",
-          "#contact": "Contact",
-        };
-
-  const ctaLabel = locale === "de" ? "Projekt anfragen" : "Request project";
-  const mobileMenuLabel = locale === "de" ? "Menue" : "Menu";
+  const isScrolled = useScrolledHeader(14);
+  const ui = getSiteHeaderUiContent(locale);
   const themeToggleLabel =
-    locale === "de"
-      ? theme === "dark"
-        ? "Light"
-        : "Dark"
-      : theme === "dark"
-        ? "Light"
-        : "Dark";
+    theme === "dark" ? ui.themeToggleLabel.dark : ui.themeToggleLabel.light;
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="site-header__inner">
@@ -67,19 +35,32 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
           <ul className="site-header__nav">
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>
+                <a href={item.href}>
+                  {ui.labelsByHref[item.href] ?? item.label}
+                </a>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="site-header__actions" aria-label="Language and primary action">
+        <div
+          className="site-header__actions"
+          aria-label="Language and primary action"
+        >
           {ENABLE_THEME_SWITCH ? (
-            <button className="theme-switch" onClick={toggleTheme} type="button">
+            <button
+              className="theme-switch"
+              onClick={toggleTheme}
+              type="button"
+            >
               {themeToggleLabel}
             </button>
           ) : null}
-          <div aria-label="Language switch" className="lang-switch" role="group">
+          <div
+            aria-label="Language switch"
+            className="lang-switch"
+            role="group"
+          >
             <button
               className={`lang-switch__option${locale === "de" ? " is-active" : ""}`}
               onClick={() => setLocale("de")}
@@ -96,28 +77,34 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             </button>
           </div>
           <a className="menu-cta" href="#contact">
-            {ctaLabel}
+            {ui.ctaLabel}
           </a>
         </div>
 
         <details className="site-header__mobile-menu">
-          <summary>{mobileMenuLabel}</summary>
+          <summary>{ui.mobileMenuLabel}</summary>
           <ul>
             {ENABLE_THEME_SWITCH ? (
               <li>
-                <button className="theme-switch theme-switch--mobile" onClick={toggleTheme} type="button">
+                <button
+                  className="theme-switch theme-switch--mobile"
+                  onClick={toggleTheme}
+                  type="button"
+                >
                   {themeToggleLabel}
                 </button>
               </li>
             ) : null}
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>{labelsByHref[item.href] ?? item.label}</a>
+                <a href={item.href}>
+                  {ui.labelsByHref[item.href] ?? item.label}
+                </a>
               </li>
             ))}
             <li>
               <a className="mobile-menu-cta" href="#contact">
-                {ctaLabel}
+                {ui.ctaLabel}
               </a>
             </li>
           </ul>
