@@ -1367,7 +1367,7 @@ main {
 
 .contact-section {
   margin-top: 30px;
-  padding: 20px;
+  padding: 34px 22px 20px;
   border-radius: 22px;
   border: 1px solid rgba(179, 207, 247, 0.24);
   background:
@@ -1383,19 +1383,6 @@ main {
     ),
     rgba(8, 18, 43, 0.78);
   overflow: hidden;
-}
-
-.contact-cta-banner {
-  border-radius: 18px;
-  border: 1px solid rgba(134, 178, 255, 0.36);
-  background:
-    radial-gradient(
-      520px 180px at 80% 22%,
-      rgba(164, 126, 255, 0.16),
-      transparent 70%
-    ),
-    rgba(17, 30, 63, 0.6);
-  padding: 34px 22px 20px;
   text-align: center;
 }
 
@@ -1440,7 +1427,6 @@ main {
 .site-footer {
   margin-top: 56px;
   padding: 10px 0 24px;
-  border-top: 1px solid rgba(179, 207, 247, 0.22);
   background: transparent;
 }
 
@@ -1998,7 +1984,7 @@ main {
     align-items: center;
   }
 
-  .contact-cta-banner {
+  .contact-section {
     padding: 24px 14px 16px;
   }
 

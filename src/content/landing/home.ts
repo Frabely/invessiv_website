@@ -472,36 +472,36 @@ const HOME_SECTIONS: LandingSection[] = [
         description:
           "Konkrete Preise pro Leistung statt unklarer Paketlogik. So siehst du sofort, was du in welcher Zeit bekommst.",
         packageSummary:
-          "Typisch: Start in 3â€“5 Werktagen, klare Scope-Empfehlung vor Umsetzung und feste RÃ¼ckmeldung innerhalb von 24h.",
+          "Typisch: Start in 3–5 Werktagen, klare Scope-Empfehlung vor Umsetzung und feste Rückmeldung innerhalb von 24h.",
         packageAssurances: [
-          "1â€“2 Feedbackrunden inklusive",
+          "1–2 Feedbackrunden inklusive",
           "Updates per E-Mail oder Call",
-          "Klare Ãœbergabe mit QA",
+          "Klare Übergabe mit QA",
         ],
         packageCards: [
           {
             name: "Landingpage",
             badge: "Conversion-Fokus",
-            idealFor: "Ideal fÃ¼r Kampagnen, Angebote und schnelle Lead-Generierung",
+            idealFor: "Ideal für Kampagnen, Angebote und schnelle Lead-Generierung",
             price: "ab 1.900 EUR",
             timeline: "Typisch live in 5-7 Werktagen",
             scope: [
               "Konzept, Struktur und klare Botschaft",
-              "Copy/Design-Finish fÃ¼r eine Kernseite",
-              "QA + Livegang oder saubere Ãœbergabe",
+              "Copy/Design-Finish für eine Kernseite",
+              "QA + Livegang oder saubere Übergabe",
             ],
             ctaLabel: "Landingpage anfragen",
             ctaHref: "#contact",
           },
           {
             name: "Komplette Website",
-            badge: "Meist gewÃ¤hlt",
-            idealFor: "Ideal fÃ¼r Firmenauftritte oder Relaunches mit mehreren Seiten",
+            badge: "Meist gewählt",
+            idealFor: "Ideal für Firmenauftritte oder Relaunches mit mehreren Seiten",
             price: "ab 4.900 EUR",
             timeline: "Typisch live in 10-15 Werktagen",
             scope: [
               "Mehrseitige Struktur mit klarer Journey",
-              "Design + Content-Integration fÃ¼r zentrale Seiten",
+              "Design + Content-Integration für zentrale Seiten",
               "Tracking-Basics, QA und Launch-Begleitung",
             ],
             ctaLabel: "Website anfragen",
@@ -517,7 +517,7 @@ const HOME_SECTIONS: LandingSection[] = [
             scope: [
               "Analyse der bestehenden Seite",
               "Gezielte Verbesserungen statt kompletter Neubau",
-              "QA, technische Stabilisierung und Ãœbergabe",
+              "QA, technische Stabilisierung und Übergabe",
             ],
             ctaLabel: "Upgrade anfragen",
             ctaHref: "#contact",
@@ -525,13 +525,13 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "Tools",
             badge: "Interne Prozesse beschleunigen",
-            idealFor: "Ideal fÃ¼r interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
+            idealFor: "Ideal für interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
             price: "ab 2.900 EUR",
             timeline: "Typisch live in 7-14 Werktagen",
             scope: [
               "Anforderungs- und Flow-Definition",
               "Umsetzung eines fokussierten Tools oder Mini-Portals",
-              "QA, EinfÃ¼hrung und saubere Ãœbergabe",
+              "QA, Einführung und saubere Übergabe",
             ],
             ctaLabel: "Tools anfragen",
             ctaHref: "#contact",
@@ -539,12 +539,12 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "AI-Templates",
             badge: "Schneller Content-Output",
-            idealFor: "Ideal fÃ¼r standardisierte Content-Produktion und Marketing-Workflows",
+            idealFor: "Ideal für standardisierte Content-Produktion und Marketing-Workflows",
             price: "ab 1.400 EUR",
             timeline: "Typisch live in 3-6 Werktagen",
             scope: [
-              "Template-Set fÃ¼r wiederkehrende Use-Cases",
-              "Prompts, Struktur und Output-QualitÃ¤tsregeln",
+              "Template-Set für wiederkehrende Use-Cases",
+              "Prompts, Struktur und Output-Qualitätsregeln",
               "Onboarding und Team-Handover",
             ],
             ctaLabel: "AI-Templates anfragen",
@@ -557,7 +557,7 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "ab 1.200 EUR / Monat",
             timeline: "Start meist innerhalb von 3-5 Werktagen",
             scope: [
-              "Fester Backlog fÃ¼r Ã„nderungen und Verbesserungen",
+              "Fester Backlog für Änderungen und Verbesserungen",
               "Technische Wartung, Updates und Quality Checks",
               "Optional: neue Seiten, Tools oder Templates aus einem Flow",
             ],
@@ -688,14 +688,14 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Bereit fuer eine neue, produktive Website?",
         description:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
-        footerHeroTitle: "Bereit fÃ¼r eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
         footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
         footerColumns: [
           {
-            title: "MenÃ¼",
+            title: "Menü",
             links: [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen", href: "#services" },
@@ -722,7 +722,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "Â© 2024 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           { platform: "linkedin", href: "#", label: "LinkedIn" },
           { platform: "x", href: "#", label: "X" },
@@ -738,7 +738,7 @@ const HOME_SECTIONS: LandingSection[] = [
             label: "E-Mail",
             value: "hi@invessiv.de",
             href: "mailto:hi@invessiv.de",
-            hint: "Ideal fÃ¼r Scope, Deadline und vorhandene Assets.",
+            hint: "Ideal für Scope, Deadline und vorhandene Assets.",
             actionLabel: "Per E-Mail anfragen",
             copyValue: "hi@invessiv.de",
             copyLabel: "E-Mail kopieren",
@@ -746,7 +746,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             label: "Kennenlern-Call",
-            value: "30 Min. â†’ Scope + nÃ¤chster Schritt + grobe EinschÃ¤tzung",
+            value: "30 Min. → Scope + nächster Schritt + grobe Einschätzung",
             href: "#contact",
             hint: "Kein Sales-Druck. Keine Spam-Nachrichten.",
             actionLabel: "Jetzt Projekt anfragen",
@@ -762,7 +762,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           label: "Jetzt Projekt anfragen",
           href: "#contact",
-          hint: "Unverbindlich. 2-3 kurze Fragen, dann melden wir uns in 24h mit dem nÃ¤chsten Schritt.",
+          hint: "Unverbindlich. 2-3 kurze Fragen, dann melden wir uns in 24h mit dem nächsten Schritt.",
         },
         contactSecondaryCta: {
           label: "Leistungen ansehen",
@@ -807,7 +807,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "Â© 2024 Invessiv. All rights reserved.",
+        footerCopyright: "© 2024 Invessiv. All rights reserved.",
         footerSocialLinks: [
           { platform: "linkedin", href: "#", label: "LinkedIn" },
           { platform: "x", href: "#", label: "X" },
@@ -831,7 +831,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             label: "Discovery call",
-            value: "30 min â†’ scope + next step + rough estimate",
+            value: "30 min → scope + next step + rough estimate",
             href: "#contact",
             hint: "No sales pressure. No spam.",
             actionLabel: "Book free call",
@@ -863,14 +863,14 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Footer",
         description: "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
-        footerHeroTitle: "Bereit fÃ¼r eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
         footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
         footerColumns: [
           {
-            title: "MenÃ¼",
+            title: "Menü",
             links: [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen", href: "#services" },
@@ -897,7 +897,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "Â© 2026 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           { platform: "linkedin", href: "#", label: "LinkedIn" },
           { platform: "x", href: "#", label: "X" },
@@ -947,7 +947,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "Â© 2026 Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
           { platform: "linkedin", href: "#", label: "LinkedIn" },
           { platform: "x", href: "#", label: "X" },
