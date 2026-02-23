@@ -633,9 +633,12 @@ main {
 [data-theme="light"] .proof-card p,
 [data-theme="light"] .proof-hint,
 [data-theme="light"] .packages-hint,
+[data-theme="light"] .packages-summary,
+[data-theme="light"] .packages-assurance-chip,
 [data-theme="light"] .packages-ideal,
 [data-theme="light"] .packages-timeline,
 [data-theme="light"] .packages-disclaimer,
+[data-theme="light"] .packages-outro-cta p,
 [data-theme="light"] .contact-hint,
 [data-theme="light"] .contact-channel-hint,
 [data-theme="light"] .contact-cta-wrap p,
@@ -740,6 +743,11 @@ main {
 
 [data-theme="light"] .packages-scope {
   color: #2f4d73;
+}
+
+[data-theme="light"] .packages-assurance-chip {
+  border-color: rgba(78, 108, 148, 0.24);
+  background: rgba(244, 249, 255, 0.84);
 }
 
 [data-theme="light"] .contact-checklist {
@@ -1119,6 +1127,34 @@ main {
   font-size: 1.03rem;
 }
 
+.packages-summary {
+  margin: -4px 0 12px;
+  max-width: 920px;
+  color: #d4e4f8;
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.packages-assurance-row {
+  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.packages-assurance-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(210, 225, 246, 0.24);
+  background: rgba(255, 255, 255, 0.05);
+  color: #cfe0f3;
+  font-size: 0.77rem;
+  font-weight: 600;
+}
+
 .packages-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1260,6 +1296,26 @@ main {
   margin: 14px 0 0;
   color: #9fb3d1;
   font-size: 0.85rem;
+}
+
+.packages-outro-cta {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.packages-outro-cta .btn {
+  min-width: 220px;
+}
+
+.packages-outro-cta p {
+  margin: 0;
+  color: #bcd0ea;
+  font-size: 0.86rem;
+  line-height: 1.4;
 }
 
 .contact-section {
@@ -1732,6 +1788,15 @@ main {
   .proof-cards,
   .packages-grid {
     grid-template-columns: 1fr;
+  }
+
+  .packages-outro-cta .btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .packages-outro-cta p {
+    width: 100%;
   }
 
   .contact-layout {

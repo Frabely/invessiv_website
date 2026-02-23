@@ -48,6 +48,13 @@ export type LandingSectionCopy = {
     ctaHref: string;
     featured?: boolean;
   }>;
+  packageSummary?: string;
+  packageAssurances?: string[];
+  packageSectionCta?: {
+    label: string;
+    hint: string;
+    href: string;
+  };
   packageDisclaimer?: string;
   contactChannels?: Array<{
     label: string;
@@ -426,31 +433,38 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Leistungen & Preise",
         description:
-          "Konkrete Preise pro Leistung statt unklarer Paketlogik. Du siehst direkt, was zu deinem Vorhaben passt.",
+          "Konkrete Preise pro Leistung statt unklarer Paketlogik. So siehst du sofort, was du in welcher Zeit bekommst.",
+        packageSummary:
+          "Typisch: Start in 3–5 Werktagen, klare Scope-Empfehlung vor Umsetzung und feste Rückmeldung innerhalb von 24h.",
+        packageAssurances: [
+          "1–2 Feedbackrunden inklusive",
+          "Updates per E-Mail oder Call",
+          "Klare Übergabe mit QA",
+        ],
         packageCards: [
           {
             name: "Landingpage",
             badge: "Conversion-Fokus",
-            idealFor: "Ideal fuer Kampagnen, Offers und schnelle Lead-Generierung",
+            idealFor: "Ideal für Kampagnen, Angebote und schnelle Lead-Generierung",
             price: "ab 1.900 EUR",
             timeline: "Typisch live in 5-7 Werktagen",
             scope: [
               "Konzept, Struktur und klare Botschaft",
-              "Copy/Design-Finish fuer eine Kernseite",
-              "QA + Livegang oder saubere Uebergabe",
+              "Copy/Design-Finish für eine Kernseite",
+              "QA + Livegang oder saubere Übergabe",
             ],
             ctaLabel: "Landingpage anfragen",
             ctaHref: "#contact",
           },
           {
             name: "Komplette Website",
-            badge: "Meist gewaehlt",
-            idealFor: "Ideal fuer Firmenauftritte oder Relaunches mit mehreren Seiten",
+            badge: "Meist gewählt",
+            idealFor: "Ideal für Firmenauftritte oder Relaunches mit mehreren Seiten",
             price: "ab 4.900 EUR",
             timeline: "Typisch live in 10-15 Werktagen",
             scope: [
               "Mehrseitige Struktur mit klarer Journey",
-              "Design + Content-Integration fuer zentrale Seiten",
+              "Design + Content-Integration für zentrale Seiten",
               "Tracking-Basics, QA und Launch-Begleitung",
             ],
             ctaLabel: "Website anfragen",
@@ -460,13 +474,13 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "Website-Upgrade",
             badge: "Bestehendes Setup nutzen",
-            idealFor: "Ideal wenn die Seite schon steht, aber Design/UX/Performance nicht mehr passt",
+            idealFor: "Ideal, wenn die Seite schon steht, aber Design/UX/Performance nicht mehr passt",
             price: "ab 2.400 EUR",
             timeline: "Typisch live in 5-10 Werktagen",
             scope: [
               "Analyse der bestehenden Seite",
               "Gezielte Verbesserungen statt kompletter Neubau",
-              "QA, technische Stabilisierung und Uebergabe",
+              "QA, technische Stabilisierung und Übergabe",
             ],
             ctaLabel: "Upgrade anfragen",
             ctaHref: "#contact",
@@ -474,13 +488,13 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "Tools",
             badge: "Interne Prozesse beschleunigen",
-            idealFor: "Ideal fuer interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
+            idealFor: "Ideal für interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
             price: "ab 2.900 EUR",
             timeline: "Typisch live in 7-14 Werktagen",
             scope: [
               "Anforderungs- und Flow-Definition",
               "Umsetzung eines fokussierten Tools oder Mini-Portals",
-              "QA, Einfuehrung und saubere Uebergabe",
+              "QA, Einführung und saubere Übergabe",
             ],
             ctaLabel: "Tools anfragen",
             ctaHref: "#contact",
@@ -488,12 +502,12 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "AI-Templates",
             badge: "Schneller Content-Output",
-            idealFor: "Ideal fuer standardisierte Content-Produktion und Marketing-Workflows",
+            idealFor: "Ideal für standardisierte Content-Produktion und Marketing-Workflows",
             price: "ab 1.400 EUR",
             timeline: "Typisch live in 3-6 Werktagen",
             scope: [
-              "Template-Set fuer wiederkehrende Use-Cases",
-              "Prompts, Struktur und Output-Qualitaetsregeln",
+              "Template-Set für wiederkehrende Use-Cases",
+              "Prompts, Struktur und Output-Qualitätsregeln",
               "Onboarding und Team-Handover",
             ],
             ctaLabel: "AI-Templates anfragen",
@@ -502,11 +516,11 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             name: "Wartung",
             badge: "Bestehendes Projekt betreuen",
-            idealFor: "Ideal wenn du laufend Anpassungen, Fixes und neue Features brauchst",
+            idealFor: "Ideal, wenn du laufend Anpassungen, Fixes und neue Features brauchst",
             price: "ab 1.200 EUR / Monat",
             timeline: "Start meist innerhalb von 3-5 Werktagen",
             scope: [
-              "Fester Backlog fuer Aenderungen und Verbesserungen",
+              "Fester Backlog für Änderungen und Verbesserungen",
               "Technische Wartung, Updates und Quality Checks",
               "Optional: neue Seiten, Tools oder Templates aus einem Flow",
             ],
@@ -516,11 +530,23 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         packageDisclaimer:
           "Finale Preise richten sich nach Umfang, Integrationen und vorhandenem Ausgangsmaterial.",
+        packageSectionCta: {
+          label: "Scope anfragen",
+          hint: "Unverbindlich. Antwort in 24h. Festpreis nach Scope.",
+          href: "#contact",
+        },
       },
       en: {
         title: "Services & Pricing",
         description:
-          "Concrete pricing per service instead of vague package logic. You can quickly pick what fits your case.",
+          "Concrete pricing per service instead of vague package logic. You can quickly assess effort, timeline, and outcome.",
+        packageSummary:
+          "Typical: kickoff in 3-5 business days, clear scope recommendation before build, and first reply within 24h.",
+        packageAssurances: [
+          "1-2 feedback rounds included",
+          "Updates via email or call",
+          "Clear handover including QA",
+        ],
         packageCards: [
           {
             name: "Landing page",
@@ -610,6 +636,11 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         packageDisclaimer:
           "Final pricing depends on scope, integrations, and existing project assets.",
+        packageSectionCta: {
+          label: "Request scope",
+          hint: "No commitment. Reply in 24h. Fixed quote after scope.",
+          href: "#contact",
+        },
       },
     },
   },

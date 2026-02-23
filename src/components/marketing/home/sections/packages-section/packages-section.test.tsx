@@ -9,6 +9,7 @@ describe("PackagesSection", () => {
   it("renders all package cards with CTA links", () => {
     render(
       <PackagesSection
+        assurances={["1–2 Feedbackrunden inklusive"]}
         description="Klare Pakete"
         id="pricing"
         packageCards={[
@@ -32,11 +33,19 @@ describe("PackagesSection", () => {
             timeline: "10 Tage",
           },
         ]}
+        sectionCta={{
+          hint: "Unverbindlich. Antwort in 24h.",
+          href: "#contact",
+          label: "Scope anfragen",
+        }}
+        summary="Start in 3–5 Werktagen"
         title="Pakete"
       />,
     );
 
     expect(screen.getByRole("heading", { name: "Pakete" })).toBeTruthy();
+    expect(screen.getByText("Start in 3–5 Werktagen")).toBeTruthy();
+    expect(screen.getByText("1–2 Feedbackrunden inklusive")).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Starter" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Growth" })).toBeTruthy();
     expect(
@@ -45,5 +54,8 @@ describe("PackagesSection", () => {
     expect(
       screen.getByRole("link", { name: "Growth anfragen" }).getAttribute("href"),
     ).toBe("#contact");
+    expect(screen.getByRole("link", { name: "Scope anfragen" }).getAttribute("href")).toBe(
+      "#contact",
+    );
   });
 });

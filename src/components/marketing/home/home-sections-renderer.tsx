@@ -95,11 +95,14 @@ export function HomeSectionsRenderer({
         if (section.id === "pricing") {
           return (
             <PackagesSection
+              assurances={section.packageAssurances}
               description={section.description}
               disclaimer={section.packageDisclaimer}
               id={section.id}
               key={section.id}
               packageCards={section.packageCards ?? []}
+              sectionCta={section.packageSectionCta}
+              summary={section.packageSummary}
               title={section.title}
             />
           );

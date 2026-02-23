@@ -1,26 +1,47 @@
 import type { LandingSectionCopy } from "@/content/landing/home";
 
 type PackageCard = NonNullable<LandingSectionCopy["packageCards"]>[number];
+type PackageSectionCta = NonNullable<LandingSectionCopy["packageSectionCta"]>;
 
 type PackagesSectionProps = {
+  assurances?: string[];
   description: string;
   disclaimer?: string;
   id: string;
   packageCards: PackageCard[];
+  sectionCta?: PackageSectionCta;
+  summary?: string;
   title: string;
 };
 
 export function PackagesSection({
+  assurances = [],
   description,
   disclaimer,
   id,
   packageCards,
+  sectionCta,
+  summary,
   title,
 }: PackagesSectionProps) {
   return (
     <section className="packages-section" id={id}>
       <h2>{title}</h2>
       <p className="packages-hint">{description}</p>
+      {summary ? (
+        <p className="packages-summary" role="status">
+          {summary}
+        </p>
+      ) : null}
+      {assurances.length ? (
+        <div className="packages-assurance-row" role="list">
+          {assurances.map((assurance) => (
+            <span className="packages-assurance-chip" key={assurance} role="listitem">
+              {assurance}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       <div className="packages-grid" role="list">
         {packageCards.map((pkg) => (
@@ -50,6 +71,15 @@ export function PackagesSection({
           </article>
         ))}
       </div>
+
+      {sectionCta ? (
+        <aside className="packages-outro-cta">
+          <a className="btn btn--primary" href={sectionCta.href}>
+            {sectionCta.label}
+          </a>
+          <p>{sectionCta.hint}</p>
+        </aside>
+      ) : null}
 
       {disclaimer ? <p className="packages-disclaimer">{disclaimer}</p> : null}
     </section>
