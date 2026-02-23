@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 
+import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { PackagesSection } from "@/components/marketing/home/sections/packages-section/packages-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
@@ -104,11 +105,26 @@ export function HomeSectionsRenderer({
           );
         }
 
+        if (section.id === "contact") {
+          return (
+            <ContactSection
+              channels={section.contactChannels ?? []}
+              checklist={section.contactChecklist ?? []}
+              checklistTitle={section.contactChecklistTitle ?? ""}
+              contactCta={section.contactCta}
+              description={section.description}
+              id={section.id}
+              key={section.id}
+              title={section.title}
+            />
+          );
+        }
+
         return (
           <PlaceholderSection
             description={section.description}
             id={section.id}
-            isTall={section.id === "contact"}
+            isTall={false}
             key={section.id}
             title={section.title}
           />

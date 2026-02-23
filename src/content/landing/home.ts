@@ -49,6 +49,19 @@ export type LandingSectionCopy = {
     featured?: boolean;
   }>;
   packageDisclaimer?: string;
+  contactChannels?: Array<{
+    label: string;
+    value: string;
+    href: string;
+    hint?: string;
+  }>;
+  contactChecklist?: string[];
+  contactChecklistTitle?: string;
+  contactCta?: {
+    label: string;
+    href: string;
+    hint: string;
+  };
 };
 
 export type LandingSection = {
@@ -606,12 +619,62 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Kontakt",
         description:
-          "Der Anfrageflow wird als kurzer, klarer Conversion-Pfad mit belastbaren Zielzustaenden umgesetzt.",
+          "Sag kurz, was du brauchst - wir geben dir schnell eine klare Rueckmeldung mit naechstem sinnvollen Schritt.",
+        contactChannels: [
+          {
+            label: "E-Mail",
+            value: "hi@invessiv.de",
+            href: "mailto:hi@invessiv.de",
+            hint: "Ideal fuer Scope, Unterlagen und Rueckfragen",
+          },
+          {
+            label: "Kickoff Call",
+            value: "30 Minuten Klarheit",
+            href: "#contact",
+            hint: "Kurz abstimmen, Prioritaeten setzen, direkt entscheiden",
+          },
+        ],
+        contactChecklist: [
+          "Was soll entstehen oder verbessert werden?",
+          "Gibt es eine Deadline oder ein wichtiges Datum?",
+          "Welche Inhalte/Assets sind schon vorhanden?",
+        ],
+        contactChecklistTitle: "Briefing-Check",
+        contactCta: {
+          label: "Kostenlosen Kickoff Call anfragen",
+          href: "#contact",
+          hint: "Unverbindlich. Antwort meist innerhalb von 24h.",
+        },
       },
       en: {
         title: "Contact",
         description:
-          "The request flow will be implemented as a short, clear conversion path with reliable target states.",
+          "Share what you need in a few lines - we respond quickly with a clear next step.",
+        contactChannels: [
+          {
+            label: "Email",
+            value: "hi@invessiv.de",
+            href: "mailto:hi@invessiv.de",
+            hint: "Best for scope, assets, and detailed context",
+          },
+          {
+            label: "Kickoff call",
+            value: "30 minutes of clarity",
+            href: "#contact",
+            hint: "Align on priorities and decide the next move quickly",
+          },
+        ],
+        contactChecklist: [
+          "What should be built or improved?",
+          "Do you have a deadline or launch date?",
+          "Which assets/content are already available?",
+        ],
+        contactChecklistTitle: "Briefing check",
+        contactCta: {
+          label: "Request a free kickoff call",
+          href: "#contact",
+          hint: "No commitment. Usually a reply within 24h.",
+        },
       },
     },
   },
