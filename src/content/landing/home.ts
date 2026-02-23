@@ -46,16 +46,15 @@ export type LandingSectionCopy = {
     scope: string[];
     ctaLabel: string;
     ctaHref: string;
+    secondaryCtaLabel?: string;
+    secondaryCtaHref?: string;
     featured?: boolean;
   }>;
-  packageSummary?: string;
-  packageAssurances?: string[];
-  packageSectionCta?: {
-    label: string;
-    hint: string;
-    href: string;
-  };
-  packageDisclaimer?: string;
+  packageRecommendedBadgeLabel?: string;
+  qnaItems?: Array<{
+    question: string;
+    answer: string;
+  }>;
   contactChannels?: Array<{
     label: string;
     value: string;
@@ -468,216 +467,207 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "pricing",
     copy: {
       de: {
-        title: "Leistungen & Preise",
+        title: "Pakete, die schnell live gehen.",
         description:
-          "Konkrete Preise pro Leistung statt unklarer Paketlogik. So siehst du sofort, was du in welcher Zeit bekommst.",
-        packageSummary:
-          "Typisch: Start in 3–5 Werktagen, klare Scope-Empfehlung vor Umsetzung und feste Rückmeldung innerhalb von 24h.",
-        packageAssurances: [
-          "1–2 Feedbackrunden inklusive",
-          "Updates per E-Mail oder Call",
-          "Klare Übergabe mit QA",
-        ],
+          "Wähle das passende Paket und bringe dein Projekt zügig online.",
+        packageRecommendedBadgeLabel: "Empfohlen",
         packageCards: [
           {
-            name: "Landingpage",
-            badge: "Conversion-Fokus",
-            idealFor: "Ideal für Kampagnen, Angebote und schnelle Lead-Generierung",
-            price: "ab 1.900 EUR",
-            timeline: "Typisch live in 5-7 Werktagen",
+            name: "Start",
+            idealFor: "Perfekt für Landingpages",
+            price: "ab 99€ / Monat",
+            timeline: "Launch in wenigen Tagen",
             scope: [
-              "Konzept, Struktur und klare Botschaft",
-              "Copy/Design-Finish für eine Kernseite",
-              "QA + Livegang oder saubere Übergabe",
+              "Moderne Landingpages",
+              "Responsive Design",
+              "Schnelle Umsetzung",
+              "SEO-optimiert",
+              "KI-Templates",
             ],
-            ctaLabel: "Landingpage anfragen",
+            ctaLabel: "Projekt anfragen",
             ctaHref: "#contact",
+            secondaryCtaLabel: "Leistungen ansehen",
+            secondaryCtaHref: "#services",
           },
           {
-            name: "Komplette Website",
-            badge: "Meist gewählt",
-            idealFor: "Ideal für Firmenauftritte oder Relaunches mit mehreren Seiten",
-            price: "ab 4.900 EUR",
-            timeline: "Typisch live in 10-15 Werktagen",
+            name: "Business",
+            idealFor: "Professionelle Webseiten",
+            price: "ab 199€ / Monat",
+            timeline: "Launch in 7-10 Tagen",
             scope: [
-              "Mehrseitige Struktur mit klarer Journey",
-              "Design + Content-Integration für zentrale Seiten",
-              "Tracking-Basics, QA und Launch-Begleitung",
+              "Individuelles Design",
+              "CMS & Pflegeleicht",
+              "Performance-Optimierung",
+              "Alte Site updaten",
+              "KI-Unterstützung",
             ],
-            ctaLabel: "Website anfragen",
+            ctaLabel: "Projekt anfragen",
             ctaHref: "#contact",
+            secondaryCtaLabel: "Leistungen ansehen",
+            secondaryCtaHref: "#services",
             featured: true,
           },
           {
-            name: "Website-Upgrade",
-            badge: "Bestehendes Setup nutzen",
-            idealFor: "Ideal, wenn die Seite schon steht, aber Design/UX/Performance nicht mehr passt",
-            price: "ab 2.400 EUR",
-            timeline: "Typisch live in 5-10 Werktagen",
+            name: "Prozess",
+            idealFor: "Tools für Optimierung",
+            price: "ab 299€ / Monat",
+            timeline: "Effizienz steigern",
             scope: [
-              "Analyse der bestehenden Seite",
-              "Gezielte Verbesserungen statt kompletter Neubau",
-              "QA, technische Stabilisierung und Übergabe",
+              "Prozess-Automationen",
+              "Workflow-Tools",
+              "Daten-Analysen",
+              "KI-Integrationen",
+              "Individuelle Lösungen",
             ],
-            ctaLabel: "Upgrade anfragen",
+            ctaLabel: "Projekt anfragen",
             ctaHref: "#contact",
+            secondaryCtaLabel: "Leistungen ansehen",
+            secondaryCtaHref: "#services",
           },
           {
-            name: "Tools",
-            badge: "Interne Prozesse beschleunigen",
-            idealFor: "Ideal für interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
-            price: "ab 2.900 EUR",
-            timeline: "Typisch live in 7-14 Werktagen",
+            name: "Individuell",
+            idealFor: "Maßgeschneiderte Lösungen",
+            price: "Individuelles Angebot",
+            timeline: "Antwort < 24h",
             scope: [
-              "Anforderungs- und Flow-Definition",
-              "Umsetzung eines fokussierten Tools oder Mini-Portals",
-              "QA, Einführung und saubere Übergabe",
+              "Komplexe Projekte",
+              "Specialanforderungen",
+              "Persönliche Beratung",
             ],
-            ctaLabel: "Tools anfragen",
-            ctaHref: "#contact",
-          },
-          {
-            name: "AI-Templates",
-            badge: "Schneller Content-Output",
-            idealFor: "Ideal für standardisierte Content-Produktion und Marketing-Workflows",
-            price: "ab 1.400 EUR",
-            timeline: "Typisch live in 3-6 Werktagen",
-            scope: [
-              "Template-Set für wiederkehrende Use-Cases",
-              "Prompts, Struktur und Output-Qualitätsregeln",
-              "Onboarding und Team-Handover",
-            ],
-            ctaLabel: "AI-Templates anfragen",
-            ctaHref: "#contact",
-          },
-          {
-            name: "Wartung",
-            badge: "Bestehendes Projekt betreuen",
-            idealFor: "Ideal, wenn du laufend Anpassungen, Fixes und neue Features brauchst",
-            price: "ab 1.200 EUR / Monat",
-            timeline: "Start meist innerhalb von 3-5 Werktagen",
-            scope: [
-              "Fester Backlog für Änderungen und Verbesserungen",
-              "Technische Wartung, Updates und Quality Checks",
-              "Optional: neue Seiten, Tools oder Templates aus einem Flow",
-            ],
-            ctaLabel: "Wartung anfragen",
+            ctaLabel: "Kontakt aufnehmen",
             ctaHref: "#contact",
           },
         ],
-        packageDisclaimer:
-          "Finale Preise richten sich nach Umfang, Integrationen und vorhandenem Ausgangsmaterial.",
-        packageSectionCta: {
-          label: "Scope anfragen",
-          hint: "Unverbindlich. Antwort in 24h. Festpreis nach Scope.",
-          href: "#contact",
-        },
       },
       en: {
-        title: "Services & Pricing",
+        title: "Packages that go live quickly.",
         description:
-          "Concrete pricing per service instead of vague package logic. You can quickly assess effort, timeline, and outcome.",
-        packageSummary:
-          "Typical: kickoff in 3-5 business days, clear scope recommendation before build, and first reply within 24h.",
-        packageAssurances: [
-          "1-2 feedback rounds included",
-          "Updates via email or call",
-          "Clear handover including QA",
-        ],
+          "Choose the right package and ship your project fast.",
+        packageRecommendedBadgeLabel: "Recommended",
         packageCards: [
           {
-            name: "Landing page",
-            badge: "Conversion focus",
-            idealFor: "Best for campaigns, offers, and fast lead generation",
-            price: "from EUR 1,900",
-            timeline: "Typically live in 5-7 business days",
+            name: "Start",
+            idealFor: "Perfect for landing pages",
+            price: "from €99 / month",
+            timeline: "Launch in just a few days",
             scope: [
-              "Concept, structure, and clear messaging",
-              "Copy/design finish for one core page",
-              "QA + go-live or clean handover",
+              "Modern landing pages",
+              "Responsive design",
+              "Fast execution",
+              "SEO optimized",
+              "AI templates",
             ],
-            ctaLabel: "Request landing page",
+            ctaLabel: "Request project",
             ctaHref: "#contact",
+            secondaryCtaLabel: "View services",
+            secondaryCtaHref: "#services",
           },
           {
-            name: "Full website",
-            badge: "Most selected",
-            idealFor: "Best for company websites or larger relaunches",
-            price: "from EUR 4,900",
-            timeline: "Typically live in 10-15 business days",
+            name: "Business",
+            idealFor: "Professional websites",
+            price: "from €199 / month",
+            timeline: "Launch in 7-10 days",
             scope: [
-              "Multi-page structure with a clear journey",
-              "Design + content integration for key pages",
-              "Tracking basics, QA, and launch support",
+              "Custom design",
+              "CMS & easy maintenance",
+              "Performance optimization",
+              "Update existing site",
+              "AI support",
             ],
-            ctaLabel: "Request website",
+            ctaLabel: "Request project",
             ctaHref: "#contact",
+            secondaryCtaLabel: "View services",
+            secondaryCtaHref: "#services",
             featured: true,
           },
           {
-            name: "Website upgrade",
-            badge: "Use existing setup",
-            idealFor: "Best when a site already exists but design/UX/performance needs work",
-            price: "from EUR 2,400",
-            timeline: "Typically live in 5-10 business days",
+            name: "Process",
+            idealFor: "Tools for optimization",
+            price: "from €299 / month",
+            timeline: "Increase efficiency",
             scope: [
-              "Audit of the current setup",
-              "Targeted improvements instead of a full rebuild",
-              "QA, technical stabilization, and handover",
+              "Process automations",
+              "Workflow tools",
+              "Data analytics",
+              "AI integrations",
+              "Custom solutions",
             ],
-            ctaLabel: "Request upgrade",
+            ctaLabel: "Request project",
             ctaHref: "#contact",
+            secondaryCtaLabel: "View services",
+            secondaryCtaHref: "#services",
           },
           {
-            name: "Tools",
-            badge: "Accelerate internal workflows",
-            idealFor: "Best for internal workflows, mini tools, and recurring tasks",
-            price: "from EUR 2,900",
-            timeline: "Typically live in 7-14 business days",
+            name: "Custom",
+            idealFor: "Tailored solutions",
+            price: "Custom quote",
+            timeline: "Reply < 24h",
             scope: [
-              "Requirements and flow definition",
-              "Build a focused tool or mini portal",
-              "QA, rollout, and clean handover",
+              "Complex projects",
+              "Special requirements",
+              "Personal consulting",
             ],
-            ctaLabel: "Request tools",
-            ctaHref: "#contact",
-          },
-          {
-            name: "AI templates",
-            badge: "Faster content output",
-            idealFor: "Best for standardized content production and marketing workflows",
-            price: "from EUR 1,400",
-            timeline: "Typically live in 3-6 business days",
-            scope: [
-              "Template set for recurring use cases",
-              "Prompts, structure, and output quality rules",
-              "Onboarding and team handover",
-            ],
-            ctaLabel: "Request AI templates",
-            ctaHref: "#contact",
-          },
-          {
-            name: "Maintenance",
-            badge: "Support existing project",
-            idealFor: "Best when you need continuous fixes, updates, and new features",
-            price: "from EUR 1,200 / month",
-            timeline: "Usually starts within 3-5 business days",
-            scope: [
-              "Prioritized backlog for changes and improvements",
-              "Technical maintenance, updates, and quality checks",
-              "Optional new pages, tools, or templates in one flow",
-            ],
-            ctaLabel: "Request maintenance",
+            ctaLabel: "Get in touch",
             ctaHref: "#contact",
           },
         ],
-        packageDisclaimer:
-          "Final pricing depends on scope, integrations, and existing project assets.",
-        packageSectionCta: {
-          label: "Request scope",
-          hint: "No commitment. Reply in 24h. Fixed quote after scope.",
-          href: "#contact",
-        },
+      },
+    },
+  },
+  {
+    id: "faq",
+    copy: {
+      de: {
+        title: "Q&A",
+        description: "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
+        qnaItems: [
+          {
+            question: "Wie läuft der Projektstart ab?",
+            answer:
+              "Nach deiner Anfrage klären wir Ziel, Umfang und Deadline in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Scope-Empfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
+          },
+          {
+            question: "Könnt ihr meine alte Website überarbeiten?",
+            answer:
+              "Ja. Wir können bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sagen wir das offen vorab.",
+          },
+          {
+            question: "Welche Tools setzt ihr ein?",
+            answer:
+              "Wir arbeiten je nach Projekt mit Next.js, Tailwind, Figma und passenden Analyse- bzw. Workflow-Tools. Die Auswahl richtet sich nach deinem Setup, damit Übergabe und Wartung sauber funktionieren.",
+          },
+          {
+            question: "Gibt es versteckte Kosten?",
+            answer:
+              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Scope. Zusätzliche Wünsche außerhalb des Scopes stimmen wir immer vor Umsetzung transparent mit dir ab.",
+          },
+        ],
+      },
+      en: {
+        title: "Q&A",
+        description: "The most relevant questions about process and collaboration, clear and direct.",
+        qnaItems: [
+          {
+            question: "How does project kickoff work?",
+            answer:
+              "After your request, we align on goals, scope, and timeline in a short call or by email. You then get a clear scope recommendation with next steps, delivery timing, and transparent pricing.",
+          },
+          {
+            question: "Can you redesign my existing website?",
+            answer:
+              "Yes. We can modernize existing pages, improve technical stability, and optimize for conversion without rebuilding everything from scratch. If a full relaunch is the better option, we tell you upfront.",
+          },
+          {
+            question: "Which tools do you use?",
+            answer:
+              "Depending on the project, we work with Next.js, Tailwind, Figma, and suitable analytics or workflow tools. We choose the stack to fit your setup for a clean handover and maintainability.",
+          },
+          {
+            question: "Are there any hidden costs?",
+            answer:
+              "No. You receive a clear offer with a defined scope before implementation starts. Any additional requests outside scope are always aligned transparently before execution.",
+          },
+        ],
       },
     },
   },

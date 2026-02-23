@@ -1,47 +1,28 @@
 import type { LandingSectionCopy } from "@/content/landing/home";
 
 type PackageCard = NonNullable<LandingSectionCopy["packageCards"]>[number];
-type PackageSectionCta = NonNullable<LandingSectionCopy["packageSectionCta"]>;
 
 type PackagesSectionProps = {
-  assurances?: string[];
   description: string;
-  disclaimer?: string;
   id: string;
   packageCards: PackageCard[];
-  sectionCta?: PackageSectionCta;
-  summary?: string;
+  recommendedBadgeLabel?: string;
   title: string;
 };
 
 export function PackagesSection({
-  assurances = [],
   description,
-  disclaimer,
   id,
   packageCards,
-  sectionCta,
-  summary,
+  recommendedBadgeLabel = "Recommended",
   title,
 }: PackagesSectionProps) {
   return (
     <section className="packages-section" id={id}>
-      <h2>{title}</h2>
-      <p className="packages-hint">{description}</p>
-      {summary ? (
-        <p className="packages-summary" role="status">
-          {summary}
-        </p>
-      ) : null}
-      {assurances.length ? (
-        <div className="packages-assurance-row" role="list">
-          {assurances.map((assurance) => (
-            <span className="packages-assurance-chip" key={assurance} role="listitem">
-              {assurance}
-            </span>
-          ))}
-        </div>
-      ) : null}
+      <header className="packages-header">
+        <h2>{title}</h2>
+        <p className="packages-hint">{description}</p>
+      </header>
 
       <div className="packages-grid" role="list">
         {packageCards.map((pkg) => (
@@ -50,9 +31,9 @@ export function PackagesSection({
             key={pkg.name}
             role="listitem"
           >
+            {pkg.featured ? <span className="packages-recommended">{recommendedBadgeLabel}</span> : null}
             <div className="packages-card-head">
               <h3>{pkg.name}</h3>
-              {pkg.badge ? <span className="packages-badge">{pkg.badge}</span> : null}
             </div>
 
             <p className="packages-ideal">{pkg.idealFor}</p>
@@ -61,27 +42,30 @@ export function PackagesSection({
 
             <ul className="packages-scope">
               {pkg.scope.map((scopeItem) => (
-                <li key={scopeItem}>{scopeItem}</li>
+                <li key={scopeItem}>
+                  <span className="packages-check-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16">
+                      <path d="M6.3 10.6 3.7 8l-1.1 1.1 3.7 3.7 7-7L12.2 4.7z" />
+                    </svg>
+                  </span>
+                  {scopeItem}
+                </li>
               ))}
             </ul>
 
-            <a className="packages-cta" href={pkg.ctaHref}>
-              {pkg.ctaLabel}
-            </a>
+            <div className="packages-actions">
+              <a className="packages-cta packages-cta--primary" href={pkg.ctaHref}>
+                {pkg.ctaLabel}
+              </a>
+              {pkg.secondaryCtaLabel ? (
+                <a className="packages-cta packages-cta--ghost" href={pkg.secondaryCtaHref ?? "#services"}>
+                  {pkg.secondaryCtaLabel}
+                </a>
+              ) : null}
+            </div>
           </article>
         ))}
       </div>
-
-      {sectionCta ? (
-        <aside className="packages-outro-cta">
-          <a className="btn btn--primary" href={sectionCta.href}>
-            {sectionCta.label}
-          </a>
-          <p>{sectionCta.hint}</p>
-        </aside>
-      ) : null}
-
-      {disclaimer ? <p className="packages-disclaimer">{disclaimer}</p> : null}
     </section>
   );
 }

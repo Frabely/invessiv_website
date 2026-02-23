@@ -6,56 +6,50 @@ import { describe, expect, it } from "vitest";
 import { PackagesSection } from "./packages-section";
 
 describe("PackagesSection", () => {
-  it("renders all package cards with CTA links", () => {
+  it("renders package cards with primary and secondary actions", () => {
     render(
       <PackagesSection
-        assurances={["1–2 Feedbackrunden inklusive"]}
-        description="Klare Pakete"
+        description="Wähle das passende Paket und bringe dein Projekt zügig online."
         id="pricing"
         packageCards={[
           {
             ctaHref: "#contact",
-            ctaLabel: "Starter anfragen",
-            idealFor: "Ideal fuer Landingpages",
-            name: "Starter",
-            price: "ab 1.900 EUR",
-            scope: ["Scope A", "Scope B"],
-            timeline: "5 Tage",
+            ctaLabel: "Projekt anfragen",
+            idealFor: "Perfekt für Landingpages",
+            name: "Start",
+            price: "ab 99€ / Monat",
+            scope: ["Moderne Landingpages", "Responsive Design"],
+            secondaryCtaHref: "#services",
+            secondaryCtaLabel: "Leistungen ansehen",
+            timeline: "Launch in wenigen Tagen",
           },
           {
             ctaHref: "#contact",
-            ctaLabel: "Growth anfragen",
+            ctaLabel: "Projekt anfragen",
             featured: true,
-            idealFor: "Ideal fuer Webseiten",
-            name: "Growth",
-            price: "ab 4.900 EUR",
-            scope: ["Scope C", "Scope D"],
-            timeline: "10 Tage",
+            idealFor: "Professionelle Webseiten",
+            name: "Business",
+            price: "ab 199€ / Monat",
+            scope: ["Individuelles Design", "CMS & Pflegeleicht"],
+            secondaryCtaHref: "#services",
+            secondaryCtaLabel: "Leistungen ansehen",
+            timeline: "Launch in 7-10 Tagen",
           },
         ]}
-        sectionCta={{
-          hint: "Unverbindlich. Antwort in 24h.",
-          href: "#contact",
-          label: "Scope anfragen",
-        }}
-        summary="Start in 3–5 Werktagen"
-        title="Pakete"
+        recommendedBadgeLabel="Empfohlen"
+        title="Pakete, die schnell live gehen."
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Pakete" })).toBeTruthy();
-    expect(screen.getByText("Start in 3–5 Werktagen")).toBeTruthy();
-    expect(screen.getByText("1–2 Feedbackrunden inklusive")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Starter" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Growth" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Pakete, die schnell live gehen." })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Start" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Business" })).toBeTruthy();
+    expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: "Starter anfragen" }).getAttribute("href"),
+      screen.getAllByRole("link", { name: "Projekt anfragen" })[0]?.getAttribute("href"),
     ).toBe("#contact");
     expect(
-      screen.getByRole("link", { name: "Growth anfragen" }).getAttribute("href"),
-    ).toBe("#contact");
-    expect(screen.getByRole("link", { name: "Scope anfragen" }).getAttribute("href")).toBe(
-      "#contact",
-    );
+      screen.getAllByRole("link", { name: "Leistungen ansehen" })[0]?.getAttribute("href"),
+    ).toBe("#services");
   });
 });

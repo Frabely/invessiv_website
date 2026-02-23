@@ -6,6 +6,7 @@ import { PackagesSection } from "@/components/marketing/home/sections/packages-s
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
+import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
 import { SECTION_IDS } from "@/config/site";
 import type { HomeSectionContent } from "@/content/landing/home";
@@ -98,14 +99,23 @@ export function HomeSectionsRenderer({
           if (section.id === "pricing") {
             return (
               <PackagesSection
-                assurances={section.packageAssurances}
                 description={section.description}
-                disclaimer={section.packageDisclaimer}
                 id={section.id}
                 key={section.id}
                 packageCards={section.packageCards ?? []}
-                sectionCta={section.packageSectionCta}
-                summary={section.packageSummary}
+                recommendedBadgeLabel={section.packageRecommendedBadgeLabel}
+                title={section.title}
+              />
+            );
+          }
+
+          if (section.id === "faq") {
+            return (
+              <QAndASection
+                description={section.description}
+                id={section.id}
+                items={section.qnaItems ?? []}
+                key={section.id}
                 title={section.title}
               />
             );

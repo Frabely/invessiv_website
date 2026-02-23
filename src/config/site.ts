@@ -4,6 +4,7 @@ export const SECTION_IDS = [
   "services",
   "process",
   "pricing",
+  "faq",
   "contact",
   "footer",
 ] as const;
@@ -20,6 +21,7 @@ export const PRIMARY_NAVIGATION: NavigationItem[] = [
   { href: "#services", label: "Leistungen" },
   { href: "#process", label: "Prozess" },
   { href: "#pricing", label: "Pakete" },
+  { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Kontakt" },
 ];
 
