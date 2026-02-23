@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { FooterSection } from "./footer-section";
 
 describe("FooterSection", () => {
-  it("renders hero, columns, newsletter and legal links", () => {
+  it("renders hero, columns, socials and legal links", () => {
     render(
       <FooterSection
         brand="Invessiv"
@@ -15,30 +15,32 @@ describe("FooterSection", () => {
             links: [{ href: "#proof", label: "Ergebnisse" }],
             title: "Navigation",
           },
+          {
+            links: [{ href: "mailto:info@invessiv.de", label: "info@invessiv.de" }],
+            title: "Kontakt",
+          },
         ]}
-        copyright="© 2024"
+        copyright="(c) 2024"
         description="Schnellzugriff"
         heroDescription="Starte dein Projekt."
         heroPrimaryCta={{ href: "#contact", label: "Jetzt Projekt anfragen" }}
         heroSecondaryCta={{ href: "#services", label: "Leistungen ansehen" }}
-        heroTitle="Bereit für eine neue Website?"
+        heroTitle="Bereit fuer eine neue Website?"
         id="footer"
         legalLinks={[{ href: "#", label: "Impressum" }]}
-        newsletter={{
-          buttonLabel: "→",
-          consentLabel: "Ich stimme zu",
-          description: "Newsletter anmelden",
-          inputPlaceholder: "E-Mail",
-          title: "Newsletter",
-        }}
+        socialLinks={[{ href: "#", label: "Instagram", platform: "instagram" }]}
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Bereit für eine neue Website?" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Jetzt Projekt anfragen" }).getAttribute("href")).toBe(
-      "#contact",
-    );
-    expect(screen.getByRole("heading", { name: "Newsletter" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Bereit fuer eine neue Website?" }),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByRole("link", { name: "Jetzt Projekt anfragen" })
+        .getAttribute("href"),
+    ).toBe("#contact");
+    expect(screen.getByRole("link", { name: "Instagram" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Impressum" })).toBeTruthy();
   });
 });

@@ -94,6 +94,11 @@ export type LandingSectionCopy = {
   };
   footerBrand?: string;
   footerCopyright?: string;
+  footerSocialLinks?: Array<{
+    platform: "linkedin" | "x" | "instagram";
+    href: string;
+    label: string;
+  }>;
   footerLegalLinks?: Array<{ label: string; href: string }>;
   footerBottomNote?: string;
 };
@@ -677,7 +682,52 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Kontakt",
         description:
-          "Sag kurz, was du brauchst - wir geben dir schnell einen klaren nächsten Schritt mit Aufwand und Empfehlung.",
+          "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroDescription:
+          "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+        footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
+        footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
+        footerColumns: [
+          {
+            title: "Menü",
+            links: [
+              { label: "Ergebnisse", href: "#proof" },
+              { label: "Leistungen", href: "#services" },
+              { label: "Pakete", href: "#pricing" },
+              { label: "Kontakt", href: "#contact" },
+            ],
+          },
+          {
+            title: "Leistungen",
+            links: [
+              { label: "Landingpages", href: "#pricing" },
+              { label: "Webdesign", href: "#pricing" },
+              { label: "Webentwicklung", href: "#pricing" },
+              { label: "Prozess-Tools", href: "#pricing" },
+            ],
+          },
+          {
+            title: "Kontakt",
+            links: [
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "0170 / 12345678", href: "tel:+4917012345678" },
+            ],
+          },
+        ],
+        footerBrand: "Invessiv",
+        footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
+        footerSocialLinks: [
+          { platform: "linkedin", href: "#", label: "LinkedIn" },
+          { platform: "x", href: "#", label: "X" },
+          { platform: "instagram", href: "#", label: "Instagram" },
+        ],
+        footerLegalLinks: [
+          { label: "Impressum", href: "#" },
+          { label: "Datenschutz", href: "#" },
+          { label: "AGB", href: "#" },
+        ],
         contactChannels: [
           {
             label: "E-Mail",
@@ -713,7 +763,51 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "Contact",
         description:
-          "Share what you need in a few lines - we reply with a clear next step, effort, and recommendation.",
+          "Quick access to key sections and contact options.",
+        footerHeroTitle: "Ready for a new, productive website?",
+        footerHeroDescription: "Contact us and start your project with Invessiv.",
+        footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
+        footerHeroSecondaryCta: { label: "View services", href: "#services" },
+        footerColumns: [
+          {
+            title: "Menu",
+            links: [
+              { label: "Proof", href: "#proof" },
+              { label: "Services", href: "#services" },
+              { label: "Pricing", href: "#pricing" },
+              { label: "Contact", href: "#contact" },
+            ],
+          },
+          {
+            title: "Services",
+            links: [
+              { label: "Landing pages", href: "#pricing" },
+              { label: "Web design", href: "#pricing" },
+              { label: "Web development", href: "#pricing" },
+              { label: "Process tools", href: "#pricing" },
+            ],
+          },
+          {
+            title: "Contact",
+            links: [
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "+49 170 12345678", href: "tel:+4917012345678" },
+            ],
+          },
+        ],
+        footerBrand: "Invessiv",
+        footerCopyright: "© 2024 Invessiv. All rights reserved.",
+        footerSocialLinks: [
+          { platform: "linkedin", href: "#", label: "LinkedIn" },
+          { platform: "x", href: "#", label: "X" },
+          { platform: "instagram", href: "#", label: "Instagram" },
+        ],
+        footerLegalLinks: [
+          { label: "Imprint", href: "#" },
+          { label: "Privacy", href: "#" },
+          { label: "Terms", href: "#" },
+        ],
         contactChannels: [
           {
             label: "Email",
@@ -761,21 +855,12 @@ const HOME_SECTIONS: LandingSection[] = [
         footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
         footerColumns: [
           {
-            title: "Navigation",
+            title: "Menü",
             links: [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen", href: "#services" },
-              { label: "Prozess", href: "#process" },
-              { label: "Leistungen & Preise", href: "#pricing" },
+              { label: "Pakete", href: "#pricing" },
               { label: "Kontakt", href: "#contact" },
-            ],
-          },
-          {
-            title: "Kontakt",
-            links: [
-              { label: "Invessiv", href: "#" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "0170 / 12345678", href: "tel:+4917012345678" },
             ],
           },
           {
@@ -788,49 +873,44 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
           },
           {
-            title: "Newsletter",
-            links: [],
+            title: "Kontakt",
+            links: [
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "0170 / 12345678", href: "tel:+4917012345678" },
+            ],
           },
         ],
-        footerNewsletter: {
-          title: "Newsletter",
-          description: "Jetzt zum Newsletter anmelden.",
-          inputPlaceholder: "E-Mail-Adresse eingeben",
-          buttonLabel: "→",
-          consentLabel: "Ich stimme der Datenschutzerklärung zu",
-        },
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
+        footerSocialLinks: [
+          { platform: "linkedin", href: "#", label: "LinkedIn" },
+          { platform: "x", href: "#", label: "X" },
+          { platform: "instagram", href: "#", label: "Instagram" },
+        ],
         footerLegalLinks: [
           { label: "Impressum", href: "#" },
           { label: "Datenschutz", href: "#" },
           { label: "AGB", href: "#" },
         ],
+        footerBottomNote: "",
       },
       en: {
         title: "Footer",
-        description: "Quick access to key sections and contact options.",
+        description: "Quick access to core pages and contact options.",
         footerHeroTitle: "Ready for a new, productive website?",
-        footerHeroDescription: "Contact us and start your project with Invessiv.",
+        footerHeroDescription:
+          "Contact us and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
         footerHeroSecondaryCta: { label: "View services", href: "#services" },
         footerColumns: [
           {
-            title: "Navigation",
+            title: "Menu",
             links: [
               { label: "Proof", href: "#proof" },
               { label: "Services", href: "#services" },
-              { label: "Process", href: "#process" },
-              { label: "Services & pricing", href: "#pricing" },
+              { label: "Packages", href: "#pricing" },
               { label: "Contact", href: "#contact" },
-            ],
-          },
-          {
-            title: "Contact",
-            links: [
-              { label: "Invessiv", href: "#" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "+49 170 12345678", href: "tel:+4917012345678" },
             ],
           },
           {
@@ -843,24 +923,27 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
           },
           {
-            title: "Newsletter",
-            links: [],
+            title: "Contact",
+            links: [
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "+49 170 12345678", href: "tel:+4917012345678" },
+            ],
           },
         ],
-        footerNewsletter: {
-          title: "Newsletter",
-          description: "Sign up for the newsletter.",
-          inputPlaceholder: "Enter your email address",
-          buttonLabel: "→",
-          consentLabel: "I agree to the privacy policy",
-        },
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Invessiv. All rights reserved.",
+        footerSocialLinks: [
+          { platform: "linkedin", href: "#", label: "LinkedIn" },
+          { platform: "x", href: "#", label: "X" },
+          { platform: "instagram", href: "#", label: "Instagram" },
+        ],
         footerLegalLinks: [
           { label: "Imprint", href: "#" },
           { label: "Privacy", href: "#" },
           { label: "Terms", href: "#" },
         ],
+        footerBottomNote: "",
       },
     },
   },
