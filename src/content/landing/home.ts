@@ -44,6 +44,10 @@ export type LandingSection = {
   copy: Record<Locale, LandingSectionCopy>;
 };
 
+export type HomeSectionContent = {
+  id: SectionId;
+} & LandingSectionCopy;
+
 const HOME_SECTIONS: LandingSection[] = [
   {
     id: "hero",
@@ -423,7 +427,7 @@ const HOME_SECTIONS: LandingSection[] = [
   },
 ];
 
-export function getHomeSections(locale: Locale) {
+export function getHomeSections(locale: Locale): HomeSectionContent[] {
   return HOME_SECTIONS.map((section) => ({
     id: section.id,
     ...section.copy[locale],
