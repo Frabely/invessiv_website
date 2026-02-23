@@ -155,7 +155,7 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  padding: 0 24px;
+  padding: 0;
   gap: 20px;
   transition: min-height 220ms ease;
 }
@@ -1552,9 +1552,9 @@ main {
 }
 
 .site-footer__inner {
-  max-width: 1200px;
+  max-width: var(--max-content-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0;
 }
 
 .site-footer__grid {
@@ -1941,6 +1941,10 @@ main {
 
 @media (max-width: 900px) {
   .site-header__inner {
+    padding: 0 16px;
+  }
+
+  .site-footer__inner {
     padding: 0 16px;
   }
 
