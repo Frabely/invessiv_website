@@ -114,11 +114,8 @@ export function HomeSectionsRenderer({
           if (section.id === "contact") {
             return (
               <ContactSection
-                channels={section.contactChannels ?? []}
-                checklist={section.contactChecklist ?? []}
-                checklistHint={section.contactChecklistHint}
-                checklistTitle={section.contactChecklistTitle ?? ""}
                 contactCta={section.contactCta}
+                contactSecondaryCta={section.contactSecondaryCta}
                 description={section.description}
                 id={section.id}
                 key={section.id}

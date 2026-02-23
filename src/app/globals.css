@@ -1372,151 +1372,69 @@ main {
   border: 1px solid rgba(179, 207, 247, 0.24);
   background:
     radial-gradient(
-      620px 240px at 14% 16%,
-      rgba(99, 183, 255, 0.12),
+      760px 260px at 10% 18%,
+      rgba(84, 170, 255, 0.22),
       transparent 66%
     ),
-    rgba(8, 18, 43, 0.72);
+    radial-gradient(
+      760px 260px at 90% 84%,
+      rgba(255, 120, 180, 0.15),
+      transparent 68%
+    ),
+    rgba(8, 18, 43, 0.78);
+  overflow: hidden;
+}
+
+.contact-cta-banner {
+  border-radius: 18px;
+  border: 1px solid rgba(134, 178, 255, 0.36);
+  background:
+    radial-gradient(
+      520px 180px at 80% 22%,
+      rgba(164, 126, 255, 0.16),
+      transparent 70%
+    ),
+    rgba(17, 30, 63, 0.6);
+  padding: 34px 22px 20px;
+  text-align: center;
 }
 
 .contact-section h2 {
-  margin: 0 0 8px;
-  font-size: clamp(1.9rem, 3.1vw, 2.55rem);
+  margin: 0;
+  font-size: clamp(2rem, 3.4vw, 3rem);
   letter-spacing: -0.03em;
 }
 
 .contact-hint {
-  margin: 0 0 18px;
+  margin: 10px auto 0;
   color: #b9cae2;
-  max-width: 860px;
-  font-size: 1.03rem;
+  max-width: 640px;
+  font-size: 1.02rem;
 }
 
-.contact-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
-  gap: 14px;
-}
-
-.contact-channel-list {
-  display: grid;
-  gap: 14px;
-}
-
-.contact-channel-card,
-.contact-brief-card {
-  border-radius: 22px;
-  border: 1px solid rgba(179, 207, 247, 0.26);
-  background: rgba(8, 18, 43, 0.84);
-  padding: 18px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-.contact-channel-label {
-  margin: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: #9eb6d9;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.contact-channel-link {
-  margin-top: 8px;
+.contact-cta-actions {
+  margin-top: 18px;
   display: inline-flex;
-  font-size: 1.06rem;
-  font-weight: 700;
-  color: #f2f8ff;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(97, 231, 216, 0.4);
-}
-
-.contact-channel-link:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 74%, #fff 26%);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-.contact-channel-hint {
-  margin: 8px 0 0;
-  color: #c0d2ea;
-  line-height: 1.55;
-}
-
-.contact-channel-actions {
-  margin-top: 12px;
-  display: flex;
+  align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
-.contact-channel-action-link,
-.contact-copy-btn {
+.contact-cta-actions .btn {
+  min-width: 220px;
+}
+
+.contact-cta-actions .btn--ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(194, 220, 255, 0.25);
-  background: rgba(255, 255, 255, 0.06);
-  color: #e5f1ff;
-  font-size: 0.8rem;
-  font-weight: 700;
 }
 
-.contact-channel-action-link:hover,
-.contact-copy-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(208, 230, 255, 0.42);
-}
-
-.contact-copy-btn:focus-visible,
-.contact-channel-action-link:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 74%, #fff 26%);
-  outline-offset: 2px;
-}
-
-.contact-copy-btn {
-  cursor: pointer;
-}
-
-.contact-brief-card h3 {
-  margin: 0;
-  font-size: 1.06rem;
-}
-
-.contact-checklist-hint {
-  margin: 8px 0 0;
-  color: #c0d2ea;
-  font-size: 0.9rem;
-}
-
-.contact-checklist {
-  margin: 12px 0 0;
-  padding: 0 0 0 18px;
-  color: #d2e2f5;
-  line-height: 1.5;
-}
-
-.contact-checklist li + li {
-  margin-top: 7px;
-}
-
-.contact-cta-wrap {
-  margin-top: 14px;
-}
-
-.contact-cta-wrap .btn {
-  width: 100%;
-}
-
-.contact-cta-wrap p {
-  margin: 8px 0 0;
-  color: #bcd0ea;
-  font-size: 0.86rem;
-  line-height: 1.4;
+.contact-cta-actions .btn--ghost::after {
+  content: "\2192";
+  margin-left: 10px;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .site-footer {
@@ -2078,6 +1996,21 @@ main {
   .site-footer__bottom {
     flex-direction: column;
     align-items: center;
+  }
+
+  .contact-cta-banner {
+    padding: 24px 14px 16px;
+  }
+
+  .contact-cta-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .contact-cta-actions .btn {
+    width: 100%;
+    min-width: 0;
   }
 
   .packages-outro-cta .btn {
