@@ -22,8 +22,21 @@ export type LandingSectionCopy = {
   processSteps?: Array<{
     step: string;
     title: string;
+    deliverable?: string;
+    effort?: string;
+    result?: string;
     description: string;
   }>;
+  processSummary?: string;
+  processRoles?: Array<{
+    label: string;
+    items: string[];
+  }>;
+  processCta?: {
+    label: string;
+    hint: string;
+    href: string;
+  };
 };
 
 export type LandingSection = {
@@ -52,7 +65,8 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Proof",
-        description: "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgefuehl.",
+        description:
+          "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgefuehl.",
         metrics: [
           { label: "Time-to-first-draft", value: "5 Tage" },
           { label: "Briefing-Aufwand reduziert", value: "92%" },
@@ -81,7 +95,8 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Proof",
-        description: "Measurable outcomes and clear delivery signals instead of guesswork.",
+        description:
+          "Measurable outcomes and clear delivery signals instead of guesswork.",
         metrics: [
           { label: "Time-to-first-draft", value: "5 days" },
           { label: "Briefing effort reduced", value: "92%" },
@@ -146,15 +161,18 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Automatisierung interner Ablaeufe und effiziente Mini-Tools.",
             tag: "Beispiel folgt",
-            bullets: ["Mini-Portale", "Workflow-Automation", "Status-Transparenz"],
+            bullets: [
+              "Mini-Portale",
+              "Workflow-Automation",
+              "Status-Transparenz",
+            ],
             span: 4,
           },
           {
             iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website-Upgrade Icon",
             title: "Alte Website upgraden",
-            description:
-              "Bestehende Webseiten modernisieren und optimieren.",
+            description: "Bestehende Webseiten modernisieren und optimieren.",
             tag: "Beispiel folgt",
             visual: true,
             visualVariant: "upgrade",
@@ -164,7 +182,8 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "KI-Templates Icon",
             title: "KI-Templates",
-            description: "Vorgefertigte AI-Templates fuer Content-Erstellung und Marketing.",
+            description:
+              "Vorgefertigte AI-Templates fuer Content-Erstellung und Marketing.",
             tag: "Beispiel folgt",
             bullets: ["Texte & Bilder", "Landingpages", "Social Media Posts"],
             visual: true,
@@ -206,15 +225,18 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Automation of internal workflows and efficient mini tools.",
             tag: "Example coming soon",
-            bullets: ["Mini portals", "Workflow automation", "Status visibility"],
+            bullets: [
+              "Mini portals",
+              "Workflow automation",
+              "Status visibility",
+            ],
             span: 4,
           },
           {
             iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website upgrade icon",
             title: "Upgrade existing website",
-            description:
-              "Modernize and optimize your existing websites.",
+            description: "Modernize and optimize your existing websites.",
             tag: "Example coming soon",
             visual: true,
             visualVariant: "upgrade",
@@ -224,7 +246,8 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "AI templates icon",
             title: "AI templates",
-            description: "Prebuilt AI templates for content creation and marketing.",
+            description:
+              "Prebuilt AI templates for content creation and marketing.",
             tag: "Example coming soon",
             bullets: ["Texts & images", "Landing pages", "Social media posts"],
             visual: true,
@@ -239,66 +262,132 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "Prozess",
+        title: "In 4 Schritten zum fertigen Ergebnis",
         description:
-          "Der Delivery-Track wird als klare Timeline umgesetzt: von Input ueber Draft bis Go-live.",
+          "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, wir liefern Draft, Feinschliff und Launch.",
+        processSummary:
+          "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Uebergabe inklusive QA",
+        processRoles: [
+          {
+            label: "Du lieferst",
+            items: ["Ziel", "Angebot", "Assets"],
+          },
+          {
+            label: "Wir liefern",
+            items: [
+              "Struktur + Copy/Design",
+              "Setup + QA",
+              "Launch + Uebergabe-Doku",
+            ],
+          },
+        ],
         processSteps: [
           {
             step: "01",
-            title: "Input",
+            title: "Briefing & Input",
+            deliverable: "30-min Briefing",
+            effort: "Aufwand: 30 Min",
+            result: "Ergebnis: Klarer Scope + Prioritaeten",
             description:
-              "Du gibst Ziel, Angebot und Kerninfos vor. Wir strukturieren direkt die Umsetzungsbasis.",
+              "Du teilst Ziel, Angebot und Material. Wir setzen sofort die klare Umsetzungsbasis auf.",
           },
           {
             step: "02",
             title: "Draft",
+            deliverable: "Klickbarer Draft oder Prototyp",
+            effort: "Lieferzeit: meist 48h",
+            result: "Ergebnis: Struktur + Kernlogik",
             description:
-              "Du bekommst einen ersten klickbaren Stand mit klarer Messaging- und Layout-Struktur.",
+              "Du bekommst eine erste Version mit klarer Struktur, Inhalt und - falls noetig - funktionalem Prototyp.",
           },
           {
             step: "03",
             title: "Feinschliff",
+            deliverable: "Conversion-Finish",
+            effort: "Feedback: 1-2 Runden",
+            result: "Ergebnis: Finales Design + Funktionen",
             description:
-              "Texte, Design-Details und Conversion-Elemente werden fokussiert auf den finalen Stand gebracht.",
+              "Design, Copy, UX-Details und relevante Funktionen werden gezielt finalisiert.",
           },
           {
             step: "04",
             title: "Go-live",
+            deliverable: "Launch + Uebergabe",
+            effort: "QA: finaler Check",
+            result: "Ergebnis: Livegang oder Integrations-Uebergabe",
             description:
-              "Nach kurzer QA geht die Seite live, inklusive sauberem technischen Setup und Uebergabe.",
+              "Nach QA geht das Projekt live oder wird sauber in deine Systeme uebergeben.",
           },
         ],
+        processCta: {
+          label: "Kostenlosen Kickoff Call buchen",
+          hint: "Unverbindlich. Antwort in 24h.",
+          href: "#contact",
+        },
       },
       en: {
-        title: "Process",
+        title: "A finished result in 4 clear steps",
         description:
-          "The delivery track will be implemented as a clear timeline from input and draft to go-live.",
+          "For landing pages, full websites, upgrades, or tools/templates: you share goal and offer, we deliver draft, refinement, and launch.",
+        processSummary:
+          "Typical: first version in 48h (depending on scope) | 1-2 feedback rounds | go-live or handover including QA",
+        processRoles: [
+          {
+            label: "You provide",
+            items: ["Goal", "Offer", "Assets"],
+          },
+          {
+            label: "We deliver",
+            items: [
+              "Structure + copy/design",
+              "Setup + QA",
+              "Launch + handover docs",
+            ],
+          },
+        ],
         processSteps: [
           {
             step: "01",
-            title: "Input",
+            title: "Briefing & Input",
+            deliverable: "30-min briefing",
+            effort: "Effort: 30 min",
+            result: "Outcome: clear scope + priorities",
             description:
-              "You provide goals, offer details, and core info. We turn it into a clear build foundation.",
+              "You share goals, offer, and materials. We set up a clear delivery foundation right away.",
           },
           {
             step: "02",
             title: "Draft",
+            deliverable: "Clickable draft or prototype",
+            effort: "Delivery: usually 48h",
+            result: "Outcome: structure + core logic",
             description:
-              "You get the first clickable version with clear messaging and layout structure.",
+              "You get an initial version with clear structure, content, and functional prototype where needed.",
           },
           {
             step: "03",
             title: "Refinement",
+            deliverable: "Conversion finish",
+            effort: "Feedback: 1-2 rounds",
+            result: "Outcome: final design + functions",
             description:
-              "Copy, design details, and conversion elements are refined into the final version.",
+              "Design, copy, UX details, and relevant functions are finalized into the launch version.",
           },
           {
             step: "04",
             title: "Go live",
+            deliverable: "Launch + handover",
+            effort: "QA: final check",
+            result: "Outcome: go-live or integration handover",
             description:
-              "After a short QA pass, the page goes live with clean technical setup and handover.",
+              "After QA, the project goes live or is handed over cleanly for integration in your setup.",
           },
         ],
+        processCta: {
+          label: "Book a free kickoff call",
+          hint: "No commitment. Reply within 24h.",
+          href: "#contact",
+        },
       },
     },
   },
@@ -340,6 +429,3 @@ export function getHomeSections(locale: Locale) {
     ...section.copy[locale],
   }));
 }
-
-
-

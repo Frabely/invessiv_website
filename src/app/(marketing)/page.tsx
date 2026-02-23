@@ -25,7 +25,11 @@ export default function MarketingHomePage() {
           kpis: [
             { value: "5", suffix: " Tage", label: "Time-to-first-draft" },
             { value: "92", suffix: "%", label: "Briefing-Aufwand reduziert" },
-            { value: "1", suffix: " Ansprechpartner", label: "Klarer Delivery-Owner" },
+            {
+              value: "1",
+              suffix: " Ansprechpartner",
+              label: "Klarer Delivery-Owner",
+            },
           ],
           cards: [
             {
@@ -102,9 +106,14 @@ export default function MarketingHomePage() {
           "Tracking Clarity",
         ];
 
-  const heroTag = locale === "de" ? "Individuell statt Baukasten" : "Custom instead of templates";
-  const heroPrimaryCta = locale === "de" ? "Projekt anfragen" : "Request project";
-  const heroSecondaryCta = locale === "de" ? "Leistungen ansehen" : "View services";
+  const heroTag =
+    locale === "de"
+      ? "Individuell statt Baukasten"
+      : "Custom instead of templates";
+  const heroPrimaryCta =
+    locale === "de" ? "Projekt anfragen" : "Request project";
+  const heroSecondaryCta =
+    locale === "de" ? "Leistungen ansehen" : "View services";
   const servicesExampleCta = locale === "de" ? "Mehr erfahren" : "Learn more";
   const heroChipTags =
     locale === "de"
@@ -125,8 +134,12 @@ export default function MarketingHomePage() {
       return;
     }
 
-    const cards = Array.from(section.querySelectorAll<HTMLElement>(".services-card"));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cards = Array.from(
+      section.querySelectorAll<HTMLElement>(".services-card"),
+    );
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
 
     cards.forEach((card, index) => {
       card.classList.remove("is-visible");
@@ -171,8 +184,12 @@ export default function MarketingHomePage() {
       return;
     }
 
-    const stepCards = Array.from(section.querySelectorAll<HTMLElement>(".process-step"));
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const stepCards = Array.from(
+      section.querySelectorAll<HTMLElement>(".process-step"),
+    );
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const isMobile = window.matchMedia("(max-width: 900px)").matches;
 
     const cleanup = setupProcessJourney({
@@ -208,7 +225,9 @@ export default function MarketingHomePage() {
             <div className="hero__content">
               <p className="hero__tag">{heroTag}</p>
               <h1>
-                <span className="hero__title-gradient">{sections[0]?.title}</span>
+                <span className="hero__title-gradient">
+                  {sections[0]?.title}
+                </span>
               </h1>
               <p>{sections[0]?.description}</p>
               <div className="hero__cta-row">
@@ -262,13 +281,21 @@ export default function MarketingHomePage() {
 
             if (section.id === "proof") {
               return (
-                <section className="proof-section" id={section.id} key={section.id}>
+                <section
+                  className="proof-section"
+                  id={section.id}
+                  key={section.id}
+                >
                   <h2>{proofContent.title}</h2>
                   <p className="proof-hint">{proofContent.hint}</p>
 
                   <div className="proof-metrics" role="list">
                     {proofContent.kpis.map((metric) => (
-                      <article className="proof-metric-card" key={metric.label} role="listitem">
+                      <article
+                        className="proof-metric-card"
+                        key={metric.label}
+                        role="listitem"
+                      >
                         <div className="proof-metric-value">
                           <span>{metric.value}</span>
                           <span>{metric.suffix}</span>
@@ -280,7 +307,11 @@ export default function MarketingHomePage() {
 
                   <div className="proof-cards" role="list">
                     {proofContent.cards.map((card) => (
-                      <article className="proof-card" key={card.title} role="listitem">
+                      <article
+                        className="proof-card"
+                        key={card.title}
+                        role="listitem"
+                      >
                         <div className="proof-card-head">
                           <h3>{card.title}</h3>
                           <span className="proof-badge">
@@ -323,12 +354,19 @@ export default function MarketingHomePage() {
                       const cardClassName = `services-card ${isVisual ? "services-card--visual" : ""} ${spanClassName}`;
 
                       return (
-                        <article className={cardClassName} key={card.title} role="listitem">
+                        <article
+                          className={cardClassName}
+                          key={card.title}
+                          role="listitem"
+                        >
                           <div className="services-card-top">
                             <div className="services-card-row">
                               <h3 className="services-title">
                                 {card.icon ? (
-                                  <span aria-hidden="true" className="services-title-icon">
+                                  <span
+                                    aria-hidden="true"
+                                    className="services-title-icon"
+                                  >
                                     {card.icon}
                                   </span>
                                 ) : null}
@@ -340,7 +378,10 @@ export default function MarketingHomePage() {
                             <p className="services-meta">{card.description}</p>
 
                             {card.chips?.length ? (
-                              <div className="services-chip-row" aria-label="Service Tags">
+                              <div
+                                className="services-chip-row"
+                                aria-label="Service Tags"
+                              >
                                 {card.chips.map((chip) => (
                                   <span className="services-chip" key={chip}>
                                     <i aria-hidden="true" />
@@ -349,7 +390,6 @@ export default function MarketingHomePage() {
                                 ))}
                               </div>
                             ) : null}
-
                             {card.bullets?.length ? (
                               <ul className="services-list">
                                 {card.bullets.map((bullet) => (
@@ -364,27 +404,101 @@ export default function MarketingHomePage() {
                           </div>
 
                           {isVisual ? (
-                            <div className="services-visual-media" aria-hidden="true">
+                            <div
+                              className="services-visual-media"
+                              aria-hidden="true"
+                            >
                               {card.visualVariant === "ai" ? (
-                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+                                <svg
+                                  fill="none"
+                                  viewBox="0 0 900 260"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
                                   <path
                                     d="M40 200h220l30-24h180l30 24h360"
                                     stroke="rgba(245,158,11,0.32)"
                                     strokeLinecap="round"
                                     strokeWidth="8"
                                   />
-                                  <rect fill="rgba(255,255,255,0.08)" height="10" rx="5" width="140" x="90" y="90" />
-                                  <rect fill="rgba(255,255,255,0.08)" height="10" rx="5" width="110" x="90" y="108" />
-                                  <rect fill="rgba(99,102,241,0.20)" height="8" rx="4" width="180" x="90" y="128" />
-                                  <rect fill="rgba(255,255,255,0.06)" height="104" rx="16" width="260" x="560" y="92" />
-                                  <rect fill="rgba(255,255,255,0.08)" height="66" rx="10" width="154" x="590" y="112" />
-                                  <rect fill="rgba(245,158,11,0.34)" height="14" rx="7" width="108" x="612" y="124" />
+                                  <rect
+                                    fill="rgba(255,255,255,0.08)"
+                                    height="10"
+                                    rx="5"
+                                    width="140"
+                                    x="90"
+                                    y="90"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.08)"
+                                    height="10"
+                                    rx="5"
+                                    width="110"
+                                    x="90"
+                                    y="108"
+                                  />
+                                  <rect
+                                    fill="rgba(99,102,241,0.20)"
+                                    height="8"
+                                    rx="4"
+                                    width="180"
+                                    x="90"
+                                    y="128"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.06)"
+                                    height="104"
+                                    rx="16"
+                                    width="260"
+                                    x="560"
+                                    y="92"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.08)"
+                                    height="66"
+                                    rx="10"
+                                    width="154"
+                                    x="590"
+                                    y="112"
+                                  />
+                                  <rect
+                                    fill="rgba(245,158,11,0.34)"
+                                    height="14"
+                                    rx="7"
+                                    width="108"
+                                    x="612"
+                                    y="124"
+                                  />
                                 </svg>
                               ) : card.visualVariant === "upgrade" ? (
-                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
-                                  <rect fill="rgba(255,255,255,0.06)" height="112" rx="16" width="230" x="82" y="118" />
-                                  <rect fill="rgba(255,255,255,0.05)" height="112" rx="16" width="270" x="336" y="118" />
-                                  <rect fill="rgba(255,255,255,0.04)" height="112" rx="16" width="250" x="626" y="118" />
+                                <svg
+                                  fill="none"
+                                  viewBox="0 0 900 260"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <rect
+                                    fill="rgba(255,255,255,0.06)"
+                                    height="112"
+                                    rx="16"
+                                    width="230"
+                                    x="82"
+                                    y="118"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.05)"
+                                    height="112"
+                                    rx="16"
+                                    width="270"
+                                    x="336"
+                                    y="118"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.04)"
+                                    height="112"
+                                    rx="16"
+                                    width="250"
+                                    x="626"
+                                    y="118"
+                                  />
                                   <path
                                     d="M354 182c36-24 62-24 90 0s58 24 86 0 54-24 84 0"
                                     stroke="rgba(245,158,11,0.32)"
@@ -393,7 +507,11 @@ export default function MarketingHomePage() {
                                   />
                                 </svg>
                               ) : (
-                                <svg fill="none" viewBox="0 0 900 260" xmlns="http://www.w3.org/2000/svg">
+                                <svg
+                                  fill="none"
+                                  viewBox="0 0 900 260"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
                                   <path
                                     d="M40 186c86-76 178-76 276 0s190 76 276 0 190-76 268 0"
                                     stroke="rgba(20,184,166,0.38)"
@@ -406,10 +524,38 @@ export default function MarketingHomePage() {
                                     strokeLinecap="round"
                                     strokeWidth="10"
                                   />
-                                  <rect fill="rgba(255,255,255,0.08)" height="12" rx="6" width="148" x="92" y="50" />
-                                  <rect fill="rgba(20,184,166,0.22)" height="10" rx="5" width="200" x="92" y="70" />
-                                  <rect fill="rgba(255,255,255,0.08)" height="12" rx="6" width="118" x="378" y="50" />
-                                  <rect fill="rgba(99,102,241,0.18)" height="10" rx="5" width="164" x="378" y="70" />
+                                  <rect
+                                    fill="rgba(255,255,255,0.08)"
+                                    height="12"
+                                    rx="6"
+                                    width="148"
+                                    x="92"
+                                    y="50"
+                                  />
+                                  <rect
+                                    fill="rgba(20,184,166,0.22)"
+                                    height="10"
+                                    rx="5"
+                                    width="200"
+                                    x="92"
+                                    y="70"
+                                  />
+                                  <rect
+                                    fill="rgba(255,255,255,0.08)"
+                                    height="12"
+                                    rx="6"
+                                    width="118"
+                                    x="378"
+                                    y="50"
+                                  />
+                                  <rect
+                                    fill="rgba(99,102,241,0.18)"
+                                    height="10"
+                                    rx="5"
+                                    width="164"
+                                    x="378"
+                                    y="70"
+                                  />
                                 </svg>
                               )}
                             </div>
@@ -424,6 +570,8 @@ export default function MarketingHomePage() {
 
             if (section.id === "process") {
               const processSteps = section.processSteps ?? [];
+              const processRoles = section.processRoles ?? [];
+              const processCta = section.processCta;
 
               return (
                 <section
@@ -434,6 +582,37 @@ export default function MarketingHomePage() {
                 >
                   <h2>{section.title}</h2>
                   <p className="process-hint">{section.description}</p>
+                  {section.processSummary ? (
+                    <p className="process-summary" role="status">
+                      {section.processSummary}
+                    </p>
+                  ) : null}
+
+                  <div className="process-intro">
+                    {processRoles.length ? (
+                      <div className="process-roles-inline" role="list">
+                        {processRoles.map((role) => (
+                          <p
+                            className="process-role-line"
+                            key={role.label}
+                            role="listitem"
+                          >
+                            <strong>{role.label}:</strong>{" "}
+                            {role.items.join(" | ")}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {processCta ? (
+                      <aside className="process-intro-cta">
+                        <a className="btn btn--primary" href={processCta.href}>
+                          {processCta.label}
+                        </a>
+                        <p>{processCta.hint}</p>
+                      </aside>
+                    ) : null}
+                  </div>
 
                   <div className="process-layout">
                     <svg
@@ -443,7 +622,13 @@ export default function MarketingHomePage() {
                       viewBox="0 0 1200 900"
                     >
                       <defs>
-                        <linearGradient id="processJourneyStroke" x1="0%" x2="0%" y1="0%" y2="100%">
+                        <linearGradient
+                          id="processJourneyStroke"
+                          x1="0%"
+                          x2="0%"
+                          y1="0%"
+                          y2="100%"
+                        >
                           <stop offset="0%" stopColor="#52e0c2" />
                           <stop offset="50%" stopColor="#7da3ff" />
                           <stop offset="100%" stopColor="#f59e0b" />
@@ -459,20 +644,47 @@ export default function MarketingHomePage() {
                         strokeLinecap="round"
                         strokeWidth="10"
                       />
-                      <circle className="process-journey-dot" cx="80" cy="40" r="12" ref={processDotRef} />
+                      <circle
+                        className="process-journey-dot"
+                        cx="80"
+                        cy="40"
+                        r="12"
+                        ref={processDotRef}
+                      />
                     </svg>
 
-                    <div className="process-steps" ref={processStepsRef} role="list">
+                    <div
+                      className="process-steps"
+                      ref={processStepsRef}
+                      role="list"
+                    >
                       {processSteps.map((step, index) => (
                         <article
                           className="process-step"
                           key={step.step}
                           role="listitem"
-                          style={{ ["--process-step-delay" as string]: `${index * 80}ms` }}
+                          style={{
+                            ["--process-step-delay" as string]: `${index * 80}ms`,
+                          }}
                         >
                           <div className="process-step-inner">
                             <p className="process-step-index">{step.step}</p>
                             <h3>{step.title}</h3>
+                            {step.deliverable ? (
+                              <p className="process-deliverable">
+                                {step.deliverable}
+                              </p>
+                            ) : null}
+                            {(step.effort || step.result) && (
+                              <div className="process-step-meta" role="list">
+                                {step.effort ? (
+                                  <span role="listitem">{step.effort}</span>
+                                ) : null}
+                                {step.result ? (
+                                  <span role="listitem">{step.result}</span>
+                                ) : null}
+                              </div>
+                            )}
                             <p>{step.description}</p>
                           </div>
                         </article>
@@ -525,7 +737,10 @@ function setupProcessJourney({
     const svg = path.ownerSVGElement;
     if (svg) {
       const width = Math.max(960, Math.round(stepsContainer.clientWidth));
-      const height = Math.max(780, Math.round(stepsContainer.scrollHeight + 120));
+      const height = Math.max(
+        760,
+        Math.round(stepsContainer.scrollHeight + 24),
+      );
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     }
 
@@ -545,7 +760,7 @@ function setupProcessJourney({
     dot.setAttribute("cy", point.y.toFixed(2));
 
     let visibleCount = 0;
-    stepCards.forEach((card, index) => {
+    stepCards.forEach((card) => {
       const cardMidY = card.offsetTop + card.offsetHeight * 0.5;
       const isVisible = point.y >= cardMidY;
       card.classList.toggle("is-visible", isVisible);
@@ -569,7 +784,9 @@ function setupProcessJourney({
     lastVisibleCount = visibleCount;
 
     const lastCard = stepCards[stepCards.length - 1];
-    const finalStopY = lastCard ? lastCard.offsetTop + lastCard.offsetHeight * 0.5 : Infinity;
+    const finalStopY = lastCard
+      ? lastCard.offsetTop + lastCard.offsetHeight * 0.5
+      : Infinity;
     const isAtFinalStop = clamped >= 0.999 && point.y >= finalStopY - 1;
     if (isAtFinalStop) {
       if (pulseTimeout) {
@@ -629,16 +846,6 @@ function setupProcessJourney({
     const acceleratedProgress = progress * 1.75;
     setProgress(acceleratedProgress);
 
-    const viewportHeight = window.innerHeight || 1;
-    const viewportCenter = viewportHeight * 0.5;
-    stepCards.forEach((card) => {
-      const rect = card.getBoundingClientRect();
-      const cardCenter = rect.top + rect.height * 0.5;
-      const normalized = (viewportCenter - cardCenter) / viewportHeight;
-      const offset = Math.max(-18, Math.min(18, normalized * 34));
-      card.style.setProperty("--process-card-parallax-y", `${offset.toFixed(2)}px`);
-    });
-
     rafId = 0;
   };
 
@@ -670,51 +877,58 @@ function setupProcessJourney({
   };
 }
 
-function buildProcessJourneyPathD(stepCards: HTMLElement[], stepsContainer: HTMLElement) {
+function buildProcessJourneyPathD(
+  stepCards: HTMLElement[],
+  stepsContainer: HTMLElement,
+) {
   const width = Math.max(960, Math.round(stepsContainer.clientWidth));
-  const height = Math.max(780, Math.round(stepsContainer.scrollHeight + 120));
+  const height = Math.max(760, Math.round(stepsContainer.scrollHeight + 24));
   const sidePadding = Math.max(46, Math.min(84, Math.round(width * 0.06)));
   const leftX = sidePadding;
   const rightX = width - sidePadding;
+  const edgeShift = Math.max(12, Math.round(sidePadding * 0.26));
+  const startX = Math.max(8, leftX - edgeShift * 4);
+  const endX = Math.min(width - 8, rightX + edgeShift * 4);
 
   if (stepCards.length === 0) {
-    return `M${leftX} 30 C ${leftX} 260, ${rightX} 260, ${rightX} ${height - 40}`;
+    return `M${startX} 30 C ${startX} 260, ${rightX} 260, ${endX} ${height - 40}`;
   }
 
   const firstCard = stepCards[0];
   const lastCard = stepCards[stepCards.length - 1];
   const startY = firstCard.offsetTop + firstCard.offsetHeight * 0.5;
-  let d = `M${leftX} ${startY}`;
+  let d = `M${startX} ${startY}`;
 
-  let currentX = leftX;
+  let currentX = startX;
   let currentY = startY;
 
+  // Build a snake-like path that runs in the vertical spacing between cards.
   for (let index = 0; index < stepCards.length - 1; index += 1) {
     const currentCard = stepCards[index];
     const nextCard = stepCards[index + 1];
     const currentBottom = currentCard.offsetTop + currentCard.offsetHeight;
     const nextTop = nextCard.offsetTop;
-    const gapCenterY = (currentBottom + nextTop) * 0.5;
-    const isSecondLastLane = index === stepCards.length - 3;
-    const isLastLane = index === stepCards.length - 2;
     const availableGap = Math.max(0, nextTop - currentBottom);
-    const laneY = isLastLane
-      ? currentBottom + availableGap * 0.7
-      : isSecondLastLane
-        ? currentBottom + availableGap * 0.62
-        : gapCenterY;
+    const laneY = currentBottom + availableGap * 0.5;
     const targetX = index % 2 === 0 ? rightX : leftX;
-    const bend = Math.max(26, Math.min(54, Math.abs(laneY - currentY) * 0.42));
-
-    d += ` C ${currentX} ${currentY + bend}, ${currentX} ${laneY - bend}, ${currentX} ${laneY}`;
-    d += ` C ${currentX + (targetX - currentX) * 0.38} ${laneY}, ${targetX - (targetX - currentX) * 0.38} ${laneY}, ${targetX} ${laneY}`;
+    d += ` L ${currentX} ${laneY}`;
+    d += ` L ${targetX} ${laneY}`;
 
     currentX = targetX;
     currentY = laneY;
   }
 
-  const endY = Math.min(height - 22, lastCard.offsetTop + lastCard.offsetHeight * 0.5);
-  d += ` C ${currentX} ${currentY + 34}, ${currentX} ${endY - 34}, ${currentX} ${endY}`;
+  if (currentX !== rightX) {
+    d += ` L ${rightX} ${currentY}`;
+    currentX = rightX;
+  }
+
+  const endY = Math.min(
+    height - 22,
+    lastCard.offsetTop + lastCard.offsetHeight + 18,
+  );
+  d += ` L ${currentX} ${endY}`;
+  d += ` L ${endX} ${endY}`;
 
   return d;
 }
