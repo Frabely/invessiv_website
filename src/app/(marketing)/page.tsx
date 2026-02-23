@@ -25,7 +25,7 @@ export default function MarketingHomePage() {
 
   const validation = validateNavigationSections({
     navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
-    sectionIds: SECTION_IDS.filter((id) => id !== "hero"),
+    sectionIds: SECTION_IDS.filter((id) => id !== "hero" && id !== "footer"),
   });
 
   useServicesCardReveal(servicesSectionRef, locale);

@@ -1,6 +1,7 @@
 import type { RefObject } from "react";
 
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
+import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { PackagesSection } from "@/components/marketing/home/sections/packages-section/packages-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
@@ -120,6 +121,18 @@ export function HomeSectionsRenderer({
               id={section.id}
               key={section.id}
               title={section.title}
+            />
+          );
+        }
+
+        if (section.id === "footer") {
+          return (
+            <FooterSection
+              bottomNote={section.footerBottomNote}
+              columns={section.footerColumns ?? []}
+              description={section.description}
+              id={section.id}
+              key={section.id}
             />
           );
         }

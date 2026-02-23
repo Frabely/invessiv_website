@@ -74,6 +74,14 @@ export type LandingSectionCopy = {
     href: string;
     hint: string;
   };
+  footerColumns?: Array<{
+    title: string;
+    links: Array<{
+      label: string;
+      href: string;
+    }>;
+  }>;
+  footerBottomNote?: string;
 };
 
 export type LandingSection = {
@@ -723,6 +731,79 @@ const HOME_SECTIONS: LandingSection[] = [
           href: "#contact",
           hint: "No commitment. Answer 2-3 short questions and we reply in 24h with a clear next step.",
         },
+      },
+    },
+  },
+  {
+    id: "footer",
+    copy: {
+      de: {
+        title: "Footer",
+        description: "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+        footerColumns: [
+          {
+            title: "Navigation",
+            links: [
+              { label: "Ergebnisse", href: "#proof" },
+              { label: "Leistungen", href: "#services" },
+              { label: "Prozess", href: "#process" },
+              { label: "Leistungen & Preise", href: "#pricing" },
+              { label: "Kontakt", href: "#contact" },
+            ],
+          },
+          {
+            title: "Kontakt",
+            links: [
+              { label: "hi@invessiv.de", href: "mailto:hi@invessiv.de" },
+              { label: "Kostenlosen Call buchen", href: "#contact" },
+            ],
+          },
+          {
+            title: "Leistungsbereiche",
+            links: [
+              { label: "Landingpages", href: "#pricing" },
+              { label: "Komplette Websites", href: "#pricing" },
+              { label: "Website-Upgrades", href: "#pricing" },
+              { label: "Tools & AI-Templates", href: "#pricing" },
+            ],
+          },
+        ],
+        footerBottomNote:
+          "Invessiv · Schnelle, saubere Umsetzung für Websites, Upgrades und Tools.",
+      },
+      en: {
+        title: "Footer",
+        description: "Quick access to key sections and contact options.",
+        footerColumns: [
+          {
+            title: "Navigation",
+            links: [
+              { label: "Proof", href: "#proof" },
+              { label: "Services", href: "#services" },
+              { label: "Process", href: "#process" },
+              { label: "Services & pricing", href: "#pricing" },
+              { label: "Contact", href: "#contact" },
+            ],
+          },
+          {
+            title: "Contact",
+            links: [
+              { label: "hi@invessiv.de", href: "mailto:hi@invessiv.de" },
+              { label: "Book a free call", href: "#contact" },
+            ],
+          },
+          {
+            title: "Core offers",
+            links: [
+              { label: "Landing pages", href: "#pricing" },
+              { label: "Full websites", href: "#pricing" },
+              { label: "Website upgrades", href: "#pricing" },
+              { label: "Tools & AI templates", href: "#pricing" },
+            ],
+          },
+        ],
+        footerBottomNote:
+          "Invessiv · Fast, clean execution for websites, upgrades, and tools.",
       },
     },
   },
