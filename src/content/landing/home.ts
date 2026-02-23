@@ -81,6 +81,20 @@ export type LandingSectionCopy = {
       href: string;
     }>;
   }>;
+  footerHeroTitle?: string;
+  footerHeroDescription?: string;
+  footerHeroPrimaryCta?: { label: string; href: string };
+  footerHeroSecondaryCta?: { label: string; href: string };
+  footerNewsletter?: {
+    title: string;
+    description: string;
+    inputPlaceholder: string;
+    buttonLabel: string;
+    consentLabel: string;
+  };
+  footerBrand?: string;
+  footerCopyright?: string;
+  footerLegalLinks?: Array<{ label: string; href: string }>;
   footerBottomNote?: string;
 };
 
@@ -740,6 +754,11 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Footer",
         description: "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroDescription:
+          "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+        footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
+        footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
         footerColumns: [
           {
             title: "Navigation",
@@ -754,26 +773,47 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Kontakt",
             links: [
-              { label: "hi@invessiv.de", href: "mailto:hi@invessiv.de" },
-              { label: "Kostenlosen Call buchen", href: "#contact" },
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "0170 / 12345678", href: "tel:+4917012345678" },
             ],
           },
           {
-            title: "Leistungsbereiche",
+            title: "Leistungen",
             links: [
               { label: "Landingpages", href: "#pricing" },
-              { label: "Komplette Websites", href: "#pricing" },
-              { label: "Website-Upgrades", href: "#pricing" },
-              { label: "Tools & AI-Templates", href: "#pricing" },
+              { label: "Webdesign", href: "#pricing" },
+              { label: "Webentwicklung", href: "#pricing" },
+              { label: "Prozess-Tools", href: "#pricing" },
             ],
           },
+          {
+            title: "Newsletter",
+            links: [],
+          },
         ],
-        footerBottomNote:
-          "Invessiv · Schnelle, saubere Umsetzung für Websites, Upgrades und Tools.",
+        footerNewsletter: {
+          title: "Newsletter",
+          description: "Jetzt zum Newsletter anmelden.",
+          inputPlaceholder: "E-Mail-Adresse eingeben",
+          buttonLabel: "→",
+          consentLabel: "Ich stimme der Datenschutzerklärung zu",
+        },
+        footerBrand: "Invessiv",
+        footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
+        footerLegalLinks: [
+          { label: "Impressum", href: "#" },
+          { label: "Datenschutz", href: "#" },
+          { label: "AGB", href: "#" },
+        ],
       },
       en: {
         title: "Footer",
         description: "Quick access to key sections and contact options.",
+        footerHeroTitle: "Ready for a new, productive website?",
+        footerHeroDescription: "Contact us and start your project with Invessiv.",
+        footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
+        footerHeroSecondaryCta: { label: "View services", href: "#services" },
         footerColumns: [
           {
             title: "Navigation",
@@ -788,22 +828,39 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Contact",
             links: [
-              { label: "hi@invessiv.de", href: "mailto:hi@invessiv.de" },
-              { label: "Book a free call", href: "#contact" },
+              { label: "Invessiv", href: "#" },
+              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
+              { label: "+49 170 12345678", href: "tel:+4917012345678" },
             ],
           },
           {
-            title: "Core offers",
+            title: "Services",
             links: [
               { label: "Landing pages", href: "#pricing" },
-              { label: "Full websites", href: "#pricing" },
-              { label: "Website upgrades", href: "#pricing" },
-              { label: "Tools & AI templates", href: "#pricing" },
+              { label: "Web design", href: "#pricing" },
+              { label: "Web development", href: "#pricing" },
+              { label: "Process tools", href: "#pricing" },
             ],
           },
+          {
+            title: "Newsletter",
+            links: [],
+          },
         ],
-        footerBottomNote:
-          "Invessiv · Fast, clean execution for websites, upgrades, and tools.",
+        footerNewsletter: {
+          title: "Newsletter",
+          description: "Sign up for the newsletter.",
+          inputPlaceholder: "Enter your email address",
+          buttonLabel: "→",
+          consentLabel: "I agree to the privacy policy",
+        },
+        footerBrand: "Invessiv",
+        footerCopyright: "© 2024 Invessiv. All rights reserved.",
+        footerLegalLinks: [
+          { label: "Imprint", href: "#" },
+          { label: "Privacy", href: "#" },
+          { label: "Terms", href: "#" },
+        ],
       },
     },
   },

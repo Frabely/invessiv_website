@@ -129,10 +129,18 @@ export function HomeSectionsRenderer({
           return (
             <FooterSection
               bottomNote={section.footerBottomNote}
+              brand={section.footerBrand}
               columns={section.footerColumns ?? []}
+              copyright={section.footerCopyright}
               description={section.description}
+              heroDescription={section.footerHeroDescription}
+              heroPrimaryCta={section.footerHeroPrimaryCta}
+              heroSecondaryCta={section.footerHeroSecondaryCta}
+              heroTitle={section.footerHeroTitle}
               id={section.id}
               key={section.id}
+              legalLinks={section.footerLegalLinks}
+              newsletter={section.footerNewsletter}
             />
           );
         }
