@@ -18,6 +18,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Gute neue Animations-/Interaktionsfunde immer in `animation_mockups/<effekt-name>/` als eigenes Einzel-Mockup ablegen (pro Effekt eigener Ordner mit eigener `index.html` und ggf. `styles.css`/`script.js`), statt mehrere Effekte in einer Sammeldatei zu mischen
 - Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` pruefen und aktiv in die Umsetzung einbeziehen
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
+- Design-Prioritaetsregel (verbindlich): Sobald eine Anfrage visuelles UI, Animation oder eine Section-Umsetzung betrifft (z. B. "bau mir die contact section"), ist der erste Schritt immer der Check von `animation_mockups/` und `animation_mockups/effects-catalog.json` inkl. Use-Case-Fit; passende Effekte muessen aktiv vorgeschlagen und bei klarem Fit direkt in der Umsetzung verwendet werden
 - Agenten arbeiten bei Landingpages und Webseiten als Spezialisten fuer Conversion-orientierte, performante und visuell differenzierende Umsetzungen
 - Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
 - Grosse Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Aenderung detailliert, pruefbar und mit hoher Qualitaet umgesetzt werden kann
@@ -41,6 +42,8 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Design zuerst (UX/IA), dann Implementierung
 - Accessibility (WCAG 2.2 AA) und Performance (Core Web Vitals) sind Pflicht
 - Dark- und Light-Mode sind Pflicht; beide Themes muessen visuell konsistent und voll nutzbar sein
+- Theme-Architektur muss von Beginn an erweiterbar sein: Default ist `dark`; ein Theme-Switch ist aktuell nicht zwingend sichtbar, aber spaetere Erweiterung auf `light` und weitere Themes muss ohne strukturellen Umbau moeglich sein
+- Bei CSS Custom Properties gilt: jede verwendete Variable muss vor Nutzung zentral (z. B. in `:root`) oder im jeweiligen Scope explizit definiert sein; keine "impliziten" Variablen nur in `var(...)`-Verwendungen
 - Mehrsprachigkeit ist Pflichtfaehigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
 - Security by default (least privilege, keine Secrets im Repo)
 - Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach �nderungsumfang)

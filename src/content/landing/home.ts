@@ -37,6 +37,18 @@ export type LandingSectionCopy = {
     hint: string;
     href: string;
   };
+  packageCards?: Array<{
+    name: string;
+    badge?: string;
+    idealFor: string;
+    price: string;
+    timeline: string;
+    scope: string[];
+    ctaLabel: string;
+    ctaHref: string;
+    featured?: boolean;
+  }>;
+  packageDisclaimer?: string;
 };
 
 export type LandingSection = {
@@ -399,14 +411,192 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "pricing",
     copy: {
       de: {
-        title: "Pakete",
+        title: "Leistungen & Preise",
         description:
-          "Pakete werden transparent und vergleichbar mit klaren Scopes und CTA-Pfaden dargestellt.",
+          "Konkrete Preise pro Leistung statt unklarer Paketlogik. Du siehst direkt, was zu deinem Vorhaben passt.",
+        packageCards: [
+          {
+            name: "Landingpage",
+            badge: "Conversion-Fokus",
+            idealFor: "Ideal fuer Kampagnen, Offers und schnelle Lead-Generierung",
+            price: "ab 1.900 EUR",
+            timeline: "Typisch live in 5-7 Werktagen",
+            scope: [
+              "Konzept, Struktur und klare Botschaft",
+              "Copy/Design-Finish fuer eine Kernseite",
+              "QA + Livegang oder saubere Uebergabe",
+            ],
+            ctaLabel: "Landingpage anfragen",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Komplette Website",
+            badge: "Meist gewaehlt",
+            idealFor: "Ideal fuer Firmenauftritte oder Relaunches mit mehreren Seiten",
+            price: "ab 4.900 EUR",
+            timeline: "Typisch live in 10-15 Werktagen",
+            scope: [
+              "Mehrseitige Struktur mit klarer Journey",
+              "Design + Content-Integration fuer zentrale Seiten",
+              "Tracking-Basics, QA und Launch-Begleitung",
+            ],
+            ctaLabel: "Website anfragen",
+            ctaHref: "#contact",
+            featured: true,
+          },
+          {
+            name: "Website-Upgrade",
+            badge: "Bestehendes Setup nutzen",
+            idealFor: "Ideal wenn die Seite schon steht, aber Design/UX/Performance nicht mehr passt",
+            price: "ab 2.400 EUR",
+            timeline: "Typisch live in 5-10 Werktagen",
+            scope: [
+              "Analyse der bestehenden Seite",
+              "Gezielte Verbesserungen statt kompletter Neubau",
+              "QA, technische Stabilisierung und Uebergabe",
+            ],
+            ctaLabel: "Upgrade anfragen",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Tools",
+            badge: "Interne Prozesse beschleunigen",
+            idealFor: "Ideal fuer interne Workflows, Mini-Tools und wiederkehrende Aufgaben",
+            price: "ab 2.900 EUR",
+            timeline: "Typisch live in 7-14 Werktagen",
+            scope: [
+              "Anforderungs- und Flow-Definition",
+              "Umsetzung eines fokussierten Tools oder Mini-Portals",
+              "QA, Einfuehrung und saubere Uebergabe",
+            ],
+            ctaLabel: "Tools anfragen",
+            ctaHref: "#contact",
+          },
+          {
+            name: "AI-Templates",
+            badge: "Schneller Content-Output",
+            idealFor: "Ideal fuer standardisierte Content-Produktion und Marketing-Workflows",
+            price: "ab 1.400 EUR",
+            timeline: "Typisch live in 3-6 Werktagen",
+            scope: [
+              "Template-Set fuer wiederkehrende Use-Cases",
+              "Prompts, Struktur und Output-Qualitaetsregeln",
+              "Onboarding und Team-Handover",
+            ],
+            ctaLabel: "AI-Templates anfragen",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Wartung",
+            badge: "Bestehendes Projekt betreuen",
+            idealFor: "Ideal wenn du laufend Anpassungen, Fixes und neue Features brauchst",
+            price: "ab 1.200 EUR / Monat",
+            timeline: "Start meist innerhalb von 3-5 Werktagen",
+            scope: [
+              "Fester Backlog fuer Aenderungen und Verbesserungen",
+              "Technische Wartung, Updates und Quality Checks",
+              "Optional: neue Seiten, Tools oder Templates aus einem Flow",
+            ],
+            ctaLabel: "Wartung anfragen",
+            ctaHref: "#contact",
+          },
+        ],
+        packageDisclaimer:
+          "Finale Preise richten sich nach Umfang, Integrationen und vorhandenem Ausgangsmaterial.",
       },
       en: {
-        title: "Packages",
+        title: "Services & Pricing",
         description:
-          "Packages will be displayed transparently with comparable scopes and clear CTA paths.",
+          "Concrete pricing per service instead of vague package logic. You can quickly pick what fits your case.",
+        packageCards: [
+          {
+            name: "Landing page",
+            badge: "Conversion focus",
+            idealFor: "Best for campaigns, offers, and fast lead generation",
+            price: "from EUR 1,900",
+            timeline: "Typically live in 5-7 business days",
+            scope: [
+              "Concept, structure, and clear messaging",
+              "Copy/design finish for one core page",
+              "QA + go-live or clean handover",
+            ],
+            ctaLabel: "Request landing page",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Full website",
+            badge: "Most selected",
+            idealFor: "Best for company websites or larger relaunches",
+            price: "from EUR 4,900",
+            timeline: "Typically live in 10-15 business days",
+            scope: [
+              "Multi-page structure with a clear journey",
+              "Design + content integration for key pages",
+              "Tracking basics, QA, and launch support",
+            ],
+            ctaLabel: "Request website",
+            ctaHref: "#contact",
+            featured: true,
+          },
+          {
+            name: "Website upgrade",
+            badge: "Use existing setup",
+            idealFor: "Best when a site already exists but design/UX/performance needs work",
+            price: "from EUR 2,400",
+            timeline: "Typically live in 5-10 business days",
+            scope: [
+              "Audit of the current setup",
+              "Targeted improvements instead of a full rebuild",
+              "QA, technical stabilization, and handover",
+            ],
+            ctaLabel: "Request upgrade",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Tools",
+            badge: "Accelerate internal workflows",
+            idealFor: "Best for internal workflows, mini tools, and recurring tasks",
+            price: "from EUR 2,900",
+            timeline: "Typically live in 7-14 business days",
+            scope: [
+              "Requirements and flow definition",
+              "Build a focused tool or mini portal",
+              "QA, rollout, and clean handover",
+            ],
+            ctaLabel: "Request tools",
+            ctaHref: "#contact",
+          },
+          {
+            name: "AI templates",
+            badge: "Faster content output",
+            idealFor: "Best for standardized content production and marketing workflows",
+            price: "from EUR 1,400",
+            timeline: "Typically live in 3-6 business days",
+            scope: [
+              "Template set for recurring use cases",
+              "Prompts, structure, and output quality rules",
+              "Onboarding and team handover",
+            ],
+            ctaLabel: "Request AI templates",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Maintenance",
+            badge: "Support existing project",
+            idealFor: "Best when you need continuous fixes, updates, and new features",
+            price: "from EUR 1,200 / month",
+            timeline: "Usually starts within 3-5 business days",
+            scope: [
+              "Prioritized backlog for changes and improvements",
+              "Technical maintenance, updates, and quality checks",
+              "Optional new pages, tools, or templates in one flow",
+            ],
+            ctaLabel: "Request maintenance",
+            ctaHref: "#contact",
+          },
+        ],
+        packageDisclaimer:
+          "Final pricing depends on scope, integrations, and existing project assets.",
       },
     },
   },

@@ -1,5 +1,6 @@
 import type { RefObject } from "react";
 
+import { PackagesSection } from "@/components/marketing/home/sections/packages-section/packages-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
@@ -90,11 +91,24 @@ export function HomeSectionsRenderer({
           );
         }
 
+        if (section.id === "pricing") {
+          return (
+            <PackagesSection
+              description={section.description}
+              disclaimer={section.packageDisclaimer}
+              id={section.id}
+              key={section.id}
+              packageCards={section.packageCards ?? []}
+              title={section.title}
+            />
+          );
+        }
+
         return (
           <PlaceholderSection
             description={section.description}
             id={section.id}
-            isTall={section.id === "pricing" || section.id === "contact"}
+            isTall={section.id === "contact"}
             key={section.id}
             title={section.title}
           />
