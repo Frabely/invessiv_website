@@ -41,15 +41,25 @@ describe("PackagesSection", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Pakete, die schnell live gehen." })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Start" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Business" })).toBeTruthy();
-    expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(
-      screen.getAllByRole("link", { name: "Projekt anfragen" })[0]?.getAttribute("href"),
+      screen.getByRole("heading", { name: "Pakete, die schnell live gehen." }),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByRole("heading", { name: "Start" }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("heading", { name: "Business" }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText("Empfohlen").length).toBeGreaterThan(0);
+    expect(
+      screen
+        .getAllByRole("link", { name: "Projekt anfragen" })[0]
+        ?.getAttribute("href"),
     ).toBe("#contact");
     expect(
-      screen.getAllByRole("link", { name: "Leistungen ansehen" })[0]?.getAttribute("href"),
+      screen
+        .getAllByRole("link", { name: "Leistungen ansehen" })[0]
+        ?.getAttribute("href"),
     ).toBe("#services");
   });
 });

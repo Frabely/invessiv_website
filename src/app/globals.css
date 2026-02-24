@@ -731,16 +731,13 @@ main {
 }
 
 [data-theme="light"] .packages-recommended {
-  color: #0b2d53;
-}
-
-[data-theme="light"] .packages-card::after {
+  border-color: rgba(58, 123, 185, 0.32);
   background: linear-gradient(
-    110deg,
-    transparent 42%,
-    rgba(255, 255, 255, 0.58) 50%,
-    transparent 58%
+    130deg,
+    rgba(48, 134, 226, 0.16),
+    rgba(31, 175, 152, 0.14)
   );
+  color: #173960;
 }
 
 [data-theme="light"] .packages-price {
@@ -1200,48 +1197,41 @@ main {
   font-size: 1.08rem;
 }
 
-.packages-grid {
+.packages-viewport {
+  position: relative;
   margin-top: 28px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+  overflow: hidden;
+}
+
+.packages-track {
+  display: flex;
   gap: 14px;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+
+.packages-track:active {
+  cursor: grabbing;
 }
 
 .packages-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 420px;
-  border-radius: 16px;
+  flex: 0 0 calc((100% - 56px) / 3.3);
+  min-width: 0;
+  min-height: 408px;
+  border-radius: 18px;
   border: 1px solid rgba(193, 218, 251, 0.26);
   background: rgba(10, 17, 35, 0.58);
-  padding: 20px 18px 14px;
+  padding: 18px 16px 12px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 12px 28px rgba(7, 16, 35, 0.22);
-  overflow: hidden;
-}
-
-.packages-card::before {
-  content: "";
-  position: absolute;
-  inset: -60% -40%;
-  pointer-events: none;
-  background: conic-gradient(
-    from 0deg,
-    transparent,
-    rgba(98, 182, 255, 0.24),
-    transparent,
-    rgba(146, 127, 255, 0.2),
-    transparent
-  );
-  opacity: 0.28;
-  animation: packages-border-spin 9s linear infinite;
-}
-
-.packages-card > * {
-  position: relative;
-  z-index: 1;
 }
 
 .packages-card--featured {
@@ -1252,28 +1242,33 @@ main {
 }
 
 .packages-recommended {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  z-index: 3;
-  transform: translateX(-50%);
-  min-height: 30px;
-  padding: 0 16px;
+  position: static;
+  min-height: 26px;
+  padding: 0 12px;
   border-radius: 999px;
-  border: 1px solid rgba(179, 226, 255, 0.6);
-  background: linear-gradient(135deg, rgba(68, 168, 255, 0.92), rgba(95, 224, 255, 0.86));
-  color: #08203e;
-  font-size: 0.94rem;
-  font-weight: 800;
+  border: 1px solid rgba(160, 220, 255, 0.52);
+  background: linear-gradient(
+    130deg,
+    rgba(70, 180, 255, 0.26),
+    rgba(92, 232, 255, 0.2)
+  );
+  color: #dff4ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .packages-card-head {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
+  gap: 8px;
+  min-height: 66px;
 }
 
 .packages-card h3 {
@@ -1298,7 +1293,7 @@ main {
   border-top: 1px solid rgba(193, 217, 255, 0.18);
   color: #ecf4ff;
   text-align: center;
-  font-size: 2.74rem;
+  font-size: 2.3rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.025em;
@@ -2072,9 +2067,12 @@ main {
   }
 
   .proof-metrics,
-  .proof-cards,
-  .packages-grid {
+  .proof-cards {
     grid-template-columns: 1fr;
+  }
+
+  .packages-card {
+    flex-basis: 84%;
   }
 
   .site-footer__grid {
@@ -2213,9 +2211,9 @@ main {
   }
 }
 
-@media (max-width: 1120px) and (min-width: 901px) {
-  .packages-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 1024px) and (min-width: 901px) {
+  .packages-card {
+    flex-basis: calc((100% - 28px) / 3);
   }
 
   .contact-layout {
@@ -2224,13 +2222,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .packages-card::before {
-    animation: none !important;
-  }
-
-  .packages-card {
-    opacity: 1;
-    transform: none;
+  .packages-track {
     transition: none;
   }
 
@@ -2326,12 +2318,6 @@ main {
 @keyframes marquee-scroll {
   to {
     transform: translateX(-50%);
-  }
-}
-
-@keyframes packages-border-spin {
-  to {
-    transform: rotate(1turn);
   }
 }
 

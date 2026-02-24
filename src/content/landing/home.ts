@@ -537,12 +537,37 @@ const HOME_SECTIONS: LandingSection[] = [
             ctaLabel: "Kontakt aufnehmen",
             ctaHref: "#contact",
           },
+          {
+            name: "Template Pro",
+            idealFor: "Bald verfügbar",
+            price: "Coming Soon",
+            timeline: "Warteliste offen",
+            scope: [
+              "Platzhalter-Paket",
+              "Details folgen",
+              "Release in Planung",
+            ],
+            ctaLabel: "Interesse vormerken",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Scale+",
+            idealFor: "Bald verfügbar",
+            price: "Coming Soon",
+            timeline: "Warteliste offen",
+            scope: [
+              "Platzhalter-Paket",
+              "Details folgen",
+              "Release in Planung",
+            ],
+            ctaLabel: "Interesse vormerken",
+            ctaHref: "#contact",
+          },
         ],
       },
       en: {
         title: "Packages that go live quickly.",
-        description:
-          "Choose the right package and ship your project fast.",
+        description: "Choose the right package and ship your project fast.",
         packageRecommendedBadgeLabel: "Recommended",
         packageCards: [
           {
@@ -610,6 +635,32 @@ const HOME_SECTIONS: LandingSection[] = [
             ctaLabel: "Get in touch",
             ctaHref: "#contact",
           },
+          {
+            name: "Template Pro",
+            idealFor: "Coming soon",
+            price: "Coming Soon",
+            timeline: "Waitlist open",
+            scope: [
+              "Placeholder package",
+              "Details to follow",
+              "Release in planning",
+            ],
+            ctaLabel: "Join waitlist",
+            ctaHref: "#contact",
+          },
+          {
+            name: "Scale+",
+            idealFor: "Coming soon",
+            price: "Coming Soon",
+            timeline: "Waitlist open",
+            scope: [
+              "Placeholder package",
+              "Details to follow",
+              "Release in planning",
+            ],
+            ctaLabel: "Join waitlist",
+            ctaHref: "#contact",
+          },
         ],
       },
     },
@@ -619,7 +670,8 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Q&A",
-        description: "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
+        description:
+          "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
         qnaItems: [
           {
             question: "Wie läuft der Projektstart ab?",
@@ -645,7 +697,8 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Q&A",
-        description: "The most relevant questions about process and collaboration, clear and direct.",
+        description:
+          "The most relevant questions about process and collaboration, clear and direct.",
         qnaItems: [
           {
             question: "How does project kickoff work?",
@@ -676,13 +729,18 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Bereit fuer eine neue, produktive Website?",
-        description:
-          "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+        description: "Kontaktiere uns und starte dein Projekt mit Invessiv.",
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
-        footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
-        footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
+        footerHeroPrimaryCta: {
+          label: "Jetzt Projekt anfragen",
+          href: "#contact",
+        },
+        footerHeroSecondaryCta: {
+          label: "Leistungen ansehen",
+          href: "#services",
+        },
         footerColumns: [
           {
             title: "Menü",
@@ -762,10 +820,10 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Ready for a new, productive website?",
-        description:
-          "Contact us and start your project with Invessiv.",
+        description: "Contact us and start your project with Invessiv.",
         footerHeroTitle: "Ready for a new, productive website?",
-        footerHeroDescription: "Contact us and start your project with Invessiv.",
+        footerHeroDescription:
+          "Contact us and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
         footerHeroSecondaryCta: { label: "View services", href: "#services" },
         footerColumns: [
@@ -852,12 +910,19 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Footer",
-        description: "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+        description:
+          "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
-        footerHeroPrimaryCta: { label: "Jetzt Projekt anfragen", href: "#contact" },
-        footerHeroSecondaryCta: { label: "Leistungen ansehen", href: "#services" },
+        footerHeroPrimaryCta: {
+          label: "Jetzt Projekt anfragen",
+          href: "#contact",
+        },
+        footerHeroSecondaryCta: {
+          label: "Leistungen ansehen",
+          href: "#services",
+        },
         footerColumns: [
           {
             title: "Menü",
@@ -960,4 +1025,3 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     ...section.copy[locale],
   }));
 }
-
