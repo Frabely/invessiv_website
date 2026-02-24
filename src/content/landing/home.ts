@@ -777,9 +777,9 @@ const HOME_SECTIONS: LandingSection[] = [
           { platform: "instagram", href: "#", label: "Instagram" },
         ],
         footerLegalLinks: [
-          { label: "Impressum", href: "#" },
-          { label: "Datenschutz", href: "#" },
-          { label: "AGB", href: "#" },
+          { label: "Impressum", href: "/imprint" },
+          { label: "Datenschutz", href: "/privacy" },
+          { label: "AGB", href: "/terms" },
         ],
         contactChannels: [
           {
@@ -862,9 +862,9 @@ const HOME_SECTIONS: LandingSection[] = [
           { platform: "instagram", href: "#", label: "Instagram" },
         ],
         footerLegalLinks: [
-          { label: "Imprint", href: "#" },
-          { label: "Privacy", href: "#" },
-          { label: "Terms", href: "#" },
+          { label: "Imprint", href: "/imprint" },
+          { label: "Privacy", href: "/privacy" },
+          { label: "Terms", href: "/terms" },
         ],
         contactChannels: [
           {
@@ -959,9 +959,9 @@ const HOME_SECTIONS: LandingSection[] = [
           { platform: "instagram", href: "#", label: "Instagram" },
         ],
         footerLegalLinks: [
-          { label: "Impressum", href: "#" },
-          { label: "Datenschutz", href: "#" },
-          { label: "AGB", href: "#" },
+          { label: "Impressum", href: "/imprint" },
+          { label: "Datenschutz", href: "/privacy" },
+          { label: "AGB", href: "/terms" },
         ],
         footerBottomNote: "",
       },
@@ -1009,9 +1009,9 @@ const HOME_SECTIONS: LandingSection[] = [
           { platform: "instagram", href: "#", label: "Instagram" },
         ],
         footerLegalLinks: [
-          { label: "Imprint", href: "#" },
-          { label: "Privacy", href: "#" },
-          { label: "Terms", href: "#" },
+          { label: "Imprint", href: "/imprint" },
+          { label: "Privacy", href: "/privacy" },
+          { label: "Terms", href: "/terms" },
         ],
         footerBottomNote: "",
       },
