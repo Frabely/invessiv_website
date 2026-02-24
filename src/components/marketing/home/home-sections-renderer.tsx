@@ -14,10 +14,6 @@ import type { HomeUiContent } from "@/content/landing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
 
 type HomeSectionsRendererProps = {
-  processDotRef: RefObject<SVGCircleElement | null>;
-  processPathRef: RefObject<SVGPathElement | null>;
-  processSectionRef: RefObject<HTMLElement | null>;
-  processStepsRef: RefObject<HTMLDivElement | null>;
   sections: HomeSectionContent[];
   servicesSectionRef: RefObject<HTMLElement | null>;
   ui: HomeUiContent;
@@ -25,10 +21,6 @@ type HomeSectionsRendererProps = {
 };
 
 export function HomeSectionsRenderer({
-  processDotRef,
-  processPathRef,
-  processSectionRef,
-  processStepsRef,
   sections,
   servicesSectionRef,
   ui,
@@ -47,103 +39,101 @@ export function HomeSectionsRenderer({
           </p>
         ) : null}
 
-        {SECTION_IDS.filter((id) => id !== "hero" && id !== "footer").map((id) => {
-          const section = getSectionById(id);
-          if (!section) {
-            return null;
-          }
+        {SECTION_IDS.filter((id) => id !== "hero" && id !== "footer").map(
+          (id) => {
+            const section = getSectionById(id);
+            if (!section) {
+              return null;
+            }
 
-          if (section.id === "proof") {
-            return (
-              <ProofSection
-                id={section.id}
-                key={section.id}
-                proofContent={ui.proofContent}
-              />
-            );
-          }
+            if (section.id === "proof") {
+              return (
+                <ProofSection
+                  id={section.id}
+                  key={section.id}
+                  proofContent={ui.proofContent}
+                />
+              );
+            }
 
-          if (section.id === "services") {
+            if (section.id === "services") {
+              return (
+                <ServicesSection
+                  description={section.description}
+                  id={section.id}
+                  key={section.id}
+                  sectionRef={servicesSectionRef}
+                  serviceCards={section.serviceCards ?? []}
+                  servicesExampleCta={ui.servicesExampleCta}
+                  title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "process") {
+              return (
+                <ProcessSection
+                  description={section.description}
+                  id={section.id}
+                  key={section.id}
+                  processCta={section.processCta}
+                  processRoles={section.processRoles ?? []}
+                  processSteps={section.processSteps ?? []}
+                  summary={section.processSummary}
+                  title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "pricing") {
+              return (
+                <PackagesSection
+                  description={section.description}
+                  id={section.id}
+                  key={section.id}
+                  packageCards={section.packageCards ?? []}
+                  recommendedBadgeLabel={section.packageRecommendedBadgeLabel}
+                  title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "faq") {
+              return (
+                <QAndASection
+                  description={section.description}
+                  id={section.id}
+                  items={section.qnaItems ?? []}
+                  key={section.id}
+                  title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "contact") {
+              return (
+                <ContactSection
+                  contactCta={section.contactCta}
+                  contactSecondaryCta={section.contactSecondaryCta}
+                  description={section.description}
+                  id={section.id}
+                  key={section.id}
+                  title={section.title}
+                />
+              );
+            }
+
             return (
-              <ServicesSection
+              <PlaceholderSection
                 description={section.description}
                 id={section.id}
+                isTall={false}
                 key={section.id}
-                sectionRef={servicesSectionRef}
-                serviceCards={section.serviceCards ?? []}
-                servicesExampleCta={ui.servicesExampleCta}
                 title={section.title}
               />
             );
-          }
-
-          if (section.id === "process") {
-            return (
-              <ProcessSection
-                description={section.description}
-                id={section.id}
-                key={section.id}
-                processCta={section.processCta}
-                processDotRef={processDotRef}
-                processPathRef={processPathRef}
-                processRoles={section.processRoles ?? []}
-                processSectionRef={processSectionRef}
-                processSteps={section.processSteps ?? []}
-                processStepsRef={processStepsRef}
-                summary={section.processSummary}
-                title={section.title}
-              />
-            );
-          }
-
-          if (section.id === "pricing") {
-            return (
-              <PackagesSection
-                description={section.description}
-                id={section.id}
-                key={section.id}
-                packageCards={section.packageCards ?? []}
-                recommendedBadgeLabel={section.packageRecommendedBadgeLabel}
-                title={section.title}
-              />
-            );
-          }
-
-          if (section.id === "faq") {
-            return (
-              <QAndASection
-                description={section.description}
-                id={section.id}
-                items={section.qnaItems ?? []}
-                key={section.id}
-                title={section.title}
-              />
-            );
-          }
-
-          if (section.id === "contact") {
-            return (
-              <ContactSection
-                contactCta={section.contactCta}
-                contactSecondaryCta={section.contactSecondaryCta}
-                description={section.description}
-                id={section.id}
-                key={section.id}
-                title={section.title}
-              />
-            );
-          }
-
-          return (
-            <PlaceholderSection
-              description={section.description}
-              id={section.id}
-              isTall={false}
-              key={section.id}
-              title={section.title}
-            />
-          );
-        })}
+          },
+        )}
       </div>
 
       {footerSection ? (

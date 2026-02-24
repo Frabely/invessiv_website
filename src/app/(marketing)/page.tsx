@@ -10,16 +10,11 @@ import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
 import { getHomeSections } from "@/content/landing/home";
 import { getHomeUiContent } from "@/content/landing/home-ui";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
-import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 
 export default function MarketingHomePage() {
   const { locale } = useLanguage();
   const servicesSectionRef = useRef<HTMLElement | null>(null);
-  const processSectionRef = useRef<HTMLElement | null>(null);
-  const processStepsRef = useRef<HTMLDivElement | null>(null);
-  const processPathRef = useRef<SVGPathElement | null>(null);
-  const processDotRef = useRef<SVGCircleElement | null>(null);
   const sections = getHomeSections(locale);
   const ui = getHomeUiContent(locale);
 
@@ -29,13 +24,6 @@ export default function MarketingHomePage() {
   });
 
   useServicesCardReveal(servicesSectionRef, locale);
-  useProcessJourney({
-    locale,
-    processDotRef,
-    processPathRef,
-    processSectionRef,
-    processStepsRef,
-  });
 
   return (
     <>
@@ -60,10 +48,6 @@ export default function MarketingHomePage() {
         <MarqueeSection items={ui.marqueeItems} />
 
         <HomeSectionsRenderer
-          processDotRef={processDotRef}
-          processPathRef={processPathRef}
-          processSectionRef={processSectionRef}
-          processStepsRef={processStepsRef}
           sections={sections}
           servicesSectionRef={servicesSectionRef}
           ui={ui}

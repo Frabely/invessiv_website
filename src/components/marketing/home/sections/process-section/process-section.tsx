@@ -1,6 +1,9 @@
-import type { RefObject } from "react";
+"use client";
+
+import { useRef } from "react";
 
 import type { LandingSectionCopy } from "@/content/landing/home";
+import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
 type ProcessRole = NonNullable<LandingSectionCopy["processRoles"]>[number];
@@ -10,12 +13,8 @@ type ProcessSectionProps = {
   description: string;
   id: string;
   processCta?: ProcessCta;
-  processDotRef: RefObject<SVGCircleElement | null>;
-  processPathRef: RefObject<SVGPathElement | null>;
   processRoles: ProcessRole[];
-  processSectionRef: RefObject<HTMLElement | null>;
   processSteps: ProcessStep[];
-  processStepsRef: RefObject<HTMLDivElement | null>;
   summary?: string;
   title: string;
 };
@@ -24,17 +23,17 @@ export function ProcessSection({
   description,
   id,
   processCta,
-  processDotRef,
-  processPathRef,
   processRoles,
-  processSectionRef,
   processSteps,
-  processStepsRef,
   summary,
   title,
 }: ProcessSectionProps) {
+  const layoutRef = useRef<HTMLDivElement | null>(null);
+  const stepsRef = useRef<HTMLDivElement | null>(null);
+  useProcessStartPoint({ layoutRef, stepsRef });
+
   return (
-    <section className="process-section" id={id} ref={processSectionRef}>
+    <section className="process-section" id={id}>
       <h2>{title}</h2>
       <p className="process-hint">{description}</p>
       {summary ? (
@@ -64,46 +63,10 @@ export function ProcessSection({
         ) : null}
       </div>
 
-      <div className="process-layout">
-        <svg
-          aria-label="Process journey path"
-          className="process-journey-svg process-journey-svg--overlay"
-          role="img"
-          viewBox="0 0 1200 900"
-        >
-          <defs>
-            <linearGradient
-              id="processJourneyStroke"
-              x1="0%"
-              x2="0%"
-              y1="0%"
-              y2="100%"
-            >
-              <stop offset="0%" stopColor="#52e0c2" />
-              <stop offset="50%" stopColor="#7da3ff" />
-              <stop offset="100%" stopColor="#f59e0b" />
-            </linearGradient>
-          </defs>
-
-          <path
-            className="process-journey-path"
-            d="M80 40 C 80 220, 1120 220, 1120 360 C 1120 520, 80 520, 80 680 C 80 760, 1120 760, 1120 860"
-            fill="none"
-            ref={processPathRef}
-            stroke="url(#processJourneyStroke)"
-            strokeLinecap="round"
-            strokeWidth="10"
-          />
-          <circle
-            className="process-journey-dot"
-            cx="80"
-            cy="40"
-            r="12"
-            ref={processDotRef}
-          />
-        </svg>
-
-        <div className="process-steps" ref={processStepsRef} role="list">
+      <div className="process-layout" ref={layoutRef}>
+        <span aria-hidden="true" className="process-start-point" />
+        <span aria-hidden="true" className="process-end-point" />
+        <div className="process-steps" ref={stepsRef} role="list">
           {processSteps.map((step, index) => (
             <article
               className="process-step"

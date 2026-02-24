@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 
-import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
@@ -17,13 +16,10 @@ describe("ProcessSection", () => {
           hint: "Unverbindlich",
           label: "Kickoff buchen",
         }}
-        processDotRef={createRef<SVGCircleElement>()}
-        processPathRef={createRef<SVGPathElement>()}
         processRoles={[
           { label: "Du lieferst", items: ["Ziel", "Angebot"] },
           { label: "Wir liefern", items: ["Struktur", "Launch"] },
         ]}
-        processSectionRef={createRef<HTMLElement>()}
         processSteps={[
           {
             step: "01",
@@ -34,7 +30,6 @@ describe("ProcessSection", () => {
             description: "Kurze Beschreibung",
           },
         ]}
-        processStepsRef={createRef<HTMLDivElement>()}
         summary="Draft in 48h"
         title="In 4 Schritten"
       />,
