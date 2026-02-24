@@ -1777,6 +1777,8 @@ main {
   --process-start-y: 90px;
   --process-end-x: calc(100% - 50px);
   --process-end-y: 90px;
+  --process-leader-x: var(--process-start-x);
+  --process-leader-y: var(--process-start-y);
   --process-left-point-1-x: 50%;
   --process-left-point-1-y: 220px;
   --process-left-point-2-x: 50%;
@@ -1801,8 +1803,6 @@ main {
   overflow: visible;
 }
 
-.process-journey-track,
-.process-journey-glow,
 .process-journey-progress {
   fill: none;
   stroke-linecap: round;
@@ -1811,20 +1811,11 @@ main {
   vector-effect: non-scaling-stroke;
 }
 
-.process-journey-track {
-  stroke: rgba(125, 163, 255, 0.26);
-}
-
-.process-journey-glow {
-  stroke: rgba(125, 163, 255, 0.5);
-  stroke-width: 10;
-  filter: blur(5px);
-  opacity: 0.75;
-}
-
 .process-journey-progress {
   stroke: url(#processJourneyGradient);
+  stroke-width: 10;
   filter: drop-shadow(0 0 12px rgba(125, 163, 255, 0.45));
+  visibility: hidden;
 }
 
 .process-path-point {
@@ -1841,13 +1832,6 @@ main {
   pointer-events: none;
 }
 
-.process-path-point--left-1 {
-  transform: translate(
-    calc(var(--process-left-point-1-x) - 7px),
-    calc(var(--process-left-point-1-y) - 7px)
-  );
-}
-
 .process-path-point--start {
   transform: translate(
     calc(var(--process-start-x) - 7px),
@@ -1855,48 +1839,55 @@ main {
   );
 }
 
-.process-path-point--left-2 {
+.process-path-point--leader {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+  box-shadow:
+    0 0 0 8px rgba(82, 224, 194, 0.2),
+    0 0 28px rgba(125, 163, 255, 0.6);
   transform: translate(
-    calc(var(--process-left-point-2-x) - 7px),
-    calc(var(--process-left-point-2-y) - 7px)
+    calc(var(--process-leader-x) - 9px),
+    calc(var(--process-leader-y) - 9px)
   );
+  visibility: hidden;
 }
 
-.process-path-point--left-3 {
-  transform: translate(
-    calc(var(--process-left-point-3-x) - 7px),
-    calc(var(--process-left-point-3-y) - 7px)
-  );
+.process-path-point--leader.is-finished {
+  animation: process-leader-pulse 0.75s ease-out infinite;
 }
 
-.process-path-point--right-1 {
-  transform: translate(
-    calc(var(--process-right-point-1-x) - 7px),
-    calc(var(--process-right-point-1-y) - 7px)
-  );
-}
-
-.process-path-point--right-2 {
-  transform: translate(
-    calc(var(--process-right-point-2-x) - 7px),
-    calc(var(--process-right-point-2-y) - 7px)
-  );
-}
-
-.process-path-point--right-3 {
-  transform: translate(
-    calc(var(--process-right-point-3-x) - 7px),
-    calc(var(--process-right-point-3-y) - 7px)
-  );
-}
-
-.process-path-point--end {
-  background: linear-gradient(135deg, #7da3ff, #f59e0b);
-  box-shadow: 0 0 0 6px rgba(125, 163, 255, 0.18), 0 0 24px rgba(245, 158, 11, 0.32);
-  transform: translate(
-    calc(var(--process-end-x) - 7px),
-    calc(var(--process-end-y) - 7px)
-  );
+@keyframes process-leader-pulse {
+  0% {
+    transform: translate(
+        calc(var(--process-leader-x) - 9px),
+        calc(var(--process-leader-y) - 9px)
+      )
+      scale(1);
+    box-shadow:
+      0 0 0 8px rgba(82, 224, 194, 0.28),
+      0 0 28px rgba(125, 163, 255, 0.68);
+  }
+  55% {
+    transform: translate(
+        calc(var(--process-leader-x) - 9px),
+        calc(var(--process-leader-y) - 9px)
+      )
+      scale(1.18);
+    box-shadow:
+      0 0 0 18px rgba(82, 224, 194, 0.18),
+      0 0 48px rgba(125, 163, 255, 0.82);
+  }
+  100% {
+    transform: translate(
+        calc(var(--process-leader-x) - 9px),
+        calc(var(--process-leader-y) - 9px)
+      )
+      scale(1);
+    box-shadow:
+      0 0 0 8px rgba(82, 224, 194, 0.28),
+      0 0 28px rgba(125, 163, 255, 0.68);
+  }
 }
 
 .process-steps {

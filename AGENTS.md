@@ -252,6 +252,7 @@ Outputs:
 - Wiederkehrende UI-Interaktionslogik (Scroll, Pointer, Observer, Motion) konsequent in Hooks kapseln (`src/hooks/**`)
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
+- Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
 - Feature-Flags f�r unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
 - �ffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur f�r wirklich �ffentliche Werte)

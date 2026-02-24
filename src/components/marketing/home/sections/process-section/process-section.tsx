@@ -29,9 +29,10 @@ export function ProcessSection({
   title,
 }: ProcessSectionProps) {
   const layoutRef = useRef<HTMLDivElement | null>(null);
+  const leaderRef = useRef<HTMLSpanElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
   const stepsRef = useRef<HTMLDivElement | null>(null);
-  useProcessStartPoint({ layoutRef, pathRef, stepsRef });
+  useProcessStartPoint({ layoutRef, leaderRef, pathRef, stepsRef });
 
   return (
     <section className="process-section" id={id}>
@@ -77,18 +78,14 @@ export function ProcessSection({
               <stop offset="100%" stopColor="#f59e0b" />
             </linearGradient>
           </defs>
-          <path className="process-journey-track" d="" />
-          <path className="process-journey-glow" d="" />
           <path className="process-journey-progress" d="" ref={pathRef} />
         </svg>
         <span aria-hidden="true" className="process-path-point process-path-point--start" />
-        <span aria-hidden="true" className="process-path-point process-path-point--end" />
-        <span aria-hidden="true" className="process-path-point process-path-point--left-1" />
-        <span aria-hidden="true" className="process-path-point process-path-point--left-2" />
-        <span aria-hidden="true" className="process-path-point process-path-point--left-3" />
-        <span aria-hidden="true" className="process-path-point process-path-point--right-1" />
-        <span aria-hidden="true" className="process-path-point process-path-point--right-2" />
-        <span aria-hidden="true" className="process-path-point process-path-point--right-3" />
+        <span
+          aria-hidden="true"
+          className="process-path-point process-path-point--leader"
+          ref={leaderRef}
+        />
         <div className="process-steps" ref={stepsRef} role="list">
           {processSteps.map((step, index) => (
             <article

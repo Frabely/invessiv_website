@@ -5,20 +5,23 @@ import type { RefObject } from "react";
 
 type UseProcessStartPointParams = {
   layoutRef: RefObject<HTMLDivElement | null>;
+  leaderRef: RefObject<HTMLSpanElement | null>;
   pathRef: RefObject<SVGPathElement | null>;
   stepsRef: RefObject<HTMLDivElement | null>;
 };
 
 export function useProcessStartPoint({
   layoutRef,
+  leaderRef,
   pathRef,
   stepsRef,
 }: UseProcessStartPointParams) {
   useEffect(() => {
     const layout = layoutRef.current;
+    const leader = leaderRef.current;
     const path = pathRef.current;
     const steps = stepsRef.current;
-    if (!layout || !path || !steps) {
+    if (!layout || !leader || !path || !steps) {
       return;
     }
     let totalLength = 0;
@@ -57,12 +60,14 @@ export function useProcessStartPoint({
       const lastCenter = centerInLayout(lastRect);
       const upperWidth =
         upperCard?.getBoundingClientRect().width ?? firstRect.width;
+      // Keep the requested horizontal offset formula stable for both endpoints.
       const startShift =
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftX = firstCenter.x - startShift;
       const rightX = lastCenter.x + startShift;
       setCssPoint("--process-start-x", "--process-start-y", leftX, firstCenter.y);
       setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
+      // Use the vertical midpoint of each gap between step cards.
       const spacingMidY = cards.slice(0, -1).map((card, index) => {
         const currentRect = card.getBoundingClientRect();
         const nextRect = cards[index + 1]?.getBoundingClientRect();
@@ -100,6 +105,7 @@ export function useProcessStartPoint({
         return;
       }
 
+      // Journey order: down, right, down, left, down, right, down.
       const pathDefinition = [
         `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
         `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
@@ -110,10 +116,6 @@ export function useProcessStartPoint({
         `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
         `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
       ].join(" ");
-      const trackPath = layout.querySelector<SVGPathElement>(".process-journey-track");
-      const glowPath = layout.querySelector<SVGPathElement>(".process-journey-glow");
-      trackPath?.setAttribute("d", pathDefinition);
-      glowPath?.setAttribute("d", pathDefinition);
       path.setAttribute("d", pathDefinition);
 
       const measuredLength = path.getTotalLength();
@@ -121,12 +123,15 @@ export function useProcessStartPoint({
         totalLength = measuredLength;
         path.style.strokeDasharray = `${totalLength}`;
         path.style.strokeDashoffset = `${totalLength}`;
+        path.style.visibility = "visible";
+        leader.style.visibility = "visible";
       }
     };
 
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
+      // Start and end trigger lines tune when drawing begins and completes.
       const startLine = viewportHeight * 0.68;
       const endLine = viewportHeight * 0.5;
       const travelRange = rect.height + (startLine - endLine);
@@ -134,7 +139,12 @@ export function useProcessStartPoint({
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
       const progress = Math.max(0, Math.min(1, rawProgress));
       if (totalLength > 0) {
-        path.style.strokeDashoffset = `${totalLength * (1 - progress)}`;
+        const drawnLength = totalLength * progress;
+        path.style.strokeDashoffset = `${totalLength - drawnLength}`;
+        const point = path.getPointAtLength(Math.max(0, Math.min(totalLength, drawnLength)));
+        layout.style.setProperty("--process-leader-x", `${point.x.toFixed(2)}px`);
+        layout.style.setProperty("--process-leader-y", `${point.y.toFixed(2)}px`);
+        leader.classList.toggle("is-finished", progress >= 0.99);
       }
     };
 
@@ -148,5 +158,5 @@ export function useProcessStartPoint({
       window.removeEventListener("resize", updateJourneyProgress);
       window.removeEventListener("scroll", updateJourneyProgress);
     };
-  }, [layoutRef, pathRef, stepsRef]);
+  }, [layoutRef, leaderRef, pathRef, stepsRef]);
 }
