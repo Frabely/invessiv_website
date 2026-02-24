@@ -29,8 +29,9 @@ export function ProcessSection({
   title,
 }: ProcessSectionProps) {
   const layoutRef = useRef<HTMLDivElement | null>(null);
+  const pathRef = useRef<SVGPathElement | null>(null);
   const stepsRef = useRef<HTMLDivElement | null>(null);
-  useProcessStartPoint({ layoutRef, stepsRef });
+  useProcessStartPoint({ layoutRef, pathRef, stepsRef });
 
   return (
     <section className="process-section" id={id}>
@@ -64,6 +65,22 @@ export function ProcessSection({
       </div>
 
       <div className="process-layout" ref={layoutRef}>
+        <svg
+          aria-hidden="true"
+          className="process-journey-svg"
+          focusable="false"
+        >
+          <defs>
+            <linearGradient id="processJourneyGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+              <stop offset="0%" stopColor="#52e0c2" />
+              <stop offset="60%" stopColor="#7da3ff" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
+          <path className="process-journey-track" d="" />
+          <path className="process-journey-glow" d="" />
+          <path className="process-journey-progress" d="" ref={pathRef} />
+        </svg>
         <span aria-hidden="true" className="process-path-point process-path-point--start" />
         <span aria-hidden="true" className="process-path-point process-path-point--end" />
         <span aria-hidden="true" className="process-path-point process-path-point--left-1" />

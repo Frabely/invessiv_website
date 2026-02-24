@@ -1791,6 +1791,42 @@ main {
   --process-right-point-3-y: 620px;
 }
 
+.process-journey-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.process-journey-track,
+.process-journey-glow,
+.process-journey-progress {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.process-journey-track {
+  stroke: rgba(125, 163, 255, 0.26);
+}
+
+.process-journey-glow {
+  stroke: rgba(125, 163, 255, 0.5);
+  stroke-width: 10;
+  filter: blur(5px);
+  opacity: 0.75;
+}
+
+.process-journey-progress {
+  stroke: url(#processJourneyGradient);
+  filter: drop-shadow(0 0 12px rgba(125, 163, 255, 0.45));
+}
+
 .process-path-point {
   position: absolute;
   left: 0;
