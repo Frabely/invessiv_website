@@ -1777,9 +1777,21 @@ main {
   --process-start-y: 90px;
   --process-end-x: calc(100% - 50px);
   --process-end-y: 90px;
+  --process-left-point-1-x: 50%;
+  --process-left-point-1-y: 220px;
+  --process-left-point-2-x: 50%;
+  --process-left-point-2-y: 420px;
+  --process-left-point-3-x: 50%;
+  --process-left-point-3-y: 620px;
+  --process-right-point-1-x: calc(100% - 50px);
+  --process-right-point-1-y: 220px;
+  --process-right-point-2-x: calc(100% - 50px);
+  --process-right-point-2-y: 420px;
+  --process-right-point-3-x: calc(100% - 50px);
+  --process-right-point-3-y: 620px;
 }
 
-.process-start-point {
+.process-path-point {
   position: absolute;
   left: 0;
   top: 0;
@@ -1788,35 +1800,67 @@ main {
   border-radius: 999px;
   background: linear-gradient(135deg, #52e0c2, #7da3ff);
   border: 2px solid rgba(255, 255, 255, 0.9);
-  box-shadow:
-    0 0 0 6px rgba(82, 224, 194, 0.2),
-    0 0 24px rgba(125, 163, 255, 0.4);
-  transform: translate(
-    calc(var(--process-start-x) - 7px),
-    calc(var(--process-start-y) - 7px)
-  );
+  box-shadow: 0 0 0 6px rgba(82, 224, 194, 0.2), 0 0 24px rgba(125, 163, 255, 0.4);
   z-index: 2;
   pointer-events: none;
 }
 
-.process-end-point {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
+.process-path-point--left-1 {
+  transform: translate(
+    calc(var(--process-left-point-1-x) - 7px),
+    calc(var(--process-left-point-1-y) - 7px)
+  );
+}
+
+.process-path-point--start {
+  transform: translate(
+    calc(var(--process-start-x) - 7px),
+    calc(var(--process-start-y) - 7px)
+  );
+}
+
+.process-path-point--left-2 {
+  transform: translate(
+    calc(var(--process-left-point-2-x) - 7px),
+    calc(var(--process-left-point-2-y) - 7px)
+  );
+}
+
+.process-path-point--left-3 {
+  transform: translate(
+    calc(var(--process-left-point-3-x) - 7px),
+    calc(var(--process-left-point-3-y) - 7px)
+  );
+}
+
+.process-path-point--right-1 {
+  transform: translate(
+    calc(var(--process-right-point-1-x) - 7px),
+    calc(var(--process-right-point-1-y) - 7px)
+  );
+}
+
+.process-path-point--right-2 {
+  transform: translate(
+    calc(var(--process-right-point-2-x) - 7px),
+    calc(var(--process-right-point-2-y) - 7px)
+  );
+}
+
+.process-path-point--right-3 {
+  transform: translate(
+    calc(var(--process-right-point-3-x) - 7px),
+    calc(var(--process-right-point-3-y) - 7px)
+  );
+}
+
+.process-path-point--end {
   background: linear-gradient(135deg, #7da3ff, #f59e0b);
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  box-shadow:
-    0 0 0 6px rgba(125, 163, 255, 0.18),
-    0 0 24px rgba(245, 158, 11, 0.32);
+  box-shadow: 0 0 0 6px rgba(125, 163, 255, 0.18), 0 0 24px rgba(245, 158, 11, 0.32);
   transform: translate(
     calc(var(--process-end-x) - 7px),
     calc(var(--process-end-y) - 7px)
   );
-  z-index: 2;
-  pointer-events: none;
 }
 
 .process-steps {

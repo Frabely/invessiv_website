@@ -64,8 +64,14 @@ export function ProcessSection({
       </div>
 
       <div className="process-layout" ref={layoutRef}>
-        <span aria-hidden="true" className="process-start-point" />
-        <span aria-hidden="true" className="process-end-point" />
+        <span aria-hidden="true" className="process-path-point process-path-point--start" />
+        <span aria-hidden="true" className="process-path-point process-path-point--end" />
+        <span aria-hidden="true" className="process-path-point process-path-point--left-1" />
+        <span aria-hidden="true" className="process-path-point process-path-point--left-2" />
+        <span aria-hidden="true" className="process-path-point process-path-point--left-3" />
+        <span aria-hidden="true" className="process-path-point process-path-point--right-1" />
+        <span aria-hidden="true" className="process-path-point process-path-point--right-2" />
+        <span aria-hidden="true" className="process-path-point process-path-point--right-3" />
         <div className="process-steps" ref={stepsRef} role="list">
           {processSteps.map((step, index) => (
             <article

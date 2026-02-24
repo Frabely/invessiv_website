@@ -20,6 +20,7 @@ export function useProcessStartPoint({
     }
 
     const updatePoint = () => {
+      const layoutRect = layout.getBoundingClientRect();
       const centerInLayout = (rect: DOMRect) => ({
         x: rect.left - layoutRect.left + rect.width / 2,
         y: rect.top - layoutRect.top + rect.height / 2,
@@ -46,7 +47,6 @@ export function useProcessStartPoint({
         return;
       }
 
-      const layoutRect = layout.getBoundingClientRect();
       const firstRect = firstCard.getBoundingClientRect();
       const lastRect = lastCard.getBoundingClientRect();
       const firstCenter = centerInLayout(firstRect);
@@ -55,18 +55,41 @@ export function useProcessStartPoint({
         upperCard?.getBoundingClientRect().width ?? firstRect.width;
       const startShift =
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
-      setCssPoint(
-        "--process-start-x",
-        "--process-start-y",
-        firstCenter.x - startShift,
-        firstCenter.y,
-      );
-      setCssPoint(
-        "--process-end-x",
-        "--process-end-y",
-        lastCenter.x + startShift,
-        lastCenter.y,
-      );
+      const leftX = firstCenter.x - startShift;
+      const rightX = lastCenter.x + startShift;
+      setCssPoint("--process-start-x", "--process-start-y", leftX, firstCenter.y);
+      setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
+      const spacingMidY = cards.slice(0, -1).map((card, index) => {
+        const currentRect = card.getBoundingClientRect();
+        const nextRect = cards[index + 1]?.getBoundingClientRect();
+        if (!nextRect) {
+          return null;
+        }
+
+        const currentBottom = currentRect.bottom - layoutRect.top;
+        const nextTop = nextRect.top - layoutRect.top;
+        return currentBottom + (nextTop - currentBottom) / 2;
+      });
+
+      spacingMidY.slice(0, 3).forEach((midY, index) => {
+        if (midY == null) {
+          return;
+        }
+
+        const pointIndex = index + 1;
+        setCssPoint(
+          `--process-left-point-${pointIndex}-x`,
+          `--process-left-point-${pointIndex}-y`,
+          leftX,
+          midY,
+        );
+        setCssPoint(
+          `--process-right-point-${pointIndex}-x`,
+          `--process-right-point-${pointIndex}-y`,
+          rightX,
+          midY,
+        );
+      });
     };
 
     updatePoint();
