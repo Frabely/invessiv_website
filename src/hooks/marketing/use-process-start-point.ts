@@ -65,7 +65,12 @@ export function useProcessStartPoint({
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftX = firstCenter.x - startShift;
       const rightX = lastCenter.x + startShift;
-      setCssPoint("--process-start-x", "--process-start-y", leftX, firstCenter.y);
+      setCssPoint(
+        "--process-start-x",
+        "--process-start-y",
+        leftX,
+        firstCenter.y,
+      );
       setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
       // Use the vertical midpoint of each gap between step cards.
       const spacingMidY = cards.slice(0, -1).map((card, index) => {
@@ -131,19 +136,31 @@ export function useProcessStartPoint({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
+      const journeySpeedMultiplier = 2;
       // Start and end trigger lines tune when drawing begins and completes.
       const startLine = viewportHeight * 0.68;
       const endLine = viewportHeight * 0.5;
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
-      const progress = Math.max(0, Math.min(1, rawProgress));
+      const progress = Math.max(
+        0,
+        Math.min(1, rawProgress * journeySpeedMultiplier),
+      );
       if (totalLength > 0) {
         const drawnLength = totalLength * progress;
         path.style.strokeDashoffset = `${totalLength - drawnLength}`;
-        const point = path.getPointAtLength(Math.max(0, Math.min(totalLength, drawnLength)));
-        layout.style.setProperty("--process-leader-x", `${point.x.toFixed(2)}px`);
-        layout.style.setProperty("--process-leader-y", `${point.y.toFixed(2)}px`);
+        const point = path.getPointAtLength(
+          Math.max(0, Math.min(totalLength, drawnLength)),
+        );
+        layout.style.setProperty(
+          "--process-leader-x",
+          `${point.x.toFixed(2)}px`,
+        );
+        layout.style.setProperty(
+          "--process-leader-y",
+          `${point.y.toFixed(2)}px`,
+        );
         leader.classList.toggle("is-finished", progress >= 0.99);
       }
     };
