@@ -13,6 +13,8 @@ export function useServicesCardReveal(
       return;
     }
 
+    section.classList.add("services-section--reveal-enabled");
+
     const cards = Array.from(
       section.querySelectorAll<HTMLElement>(".services-card"),
     );
@@ -27,7 +29,9 @@ export function useServicesCardReveal(
 
     if (reducedMotion) {
       cards.forEach((card) => card.classList.add("is-visible"));
-      return;
+      return () => {
+        section.classList.remove("services-section--reveal-enabled");
+      };
     }
 
     if ("IntersectionObserver" in window) {
@@ -47,9 +51,13 @@ export function useServicesCardReveal(
 
       return () => {
         observer.disconnect();
+        section.classList.remove("services-section--reveal-enabled");
       };
     }
 
     cards.forEach((card) => card.classList.add("is-visible"));
+    return () => {
+      section.classList.remove("services-section--reveal-enabled");
+    };
   }, [locale, sectionRef]);
 }

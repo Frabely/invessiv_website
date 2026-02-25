@@ -74,7 +74,10 @@ export function ServicesSection({
                         {card.icon}
                       </span>
                     ) : card.iconSrc ? (
-                      <ServiceCardIcon iconAlt={card.iconAlt} iconSrc={card.iconSrc} />
+                      <ServiceCardIcon
+                        iconAlt={card.iconAlt}
+                        iconSrc={card.iconSrc}
+                      />
                     ) : null}
                     <span>{card.title}</span>
                   </h3>
@@ -116,7 +119,7 @@ export function ServicesSection({
                     >
                       <path
                         d="M40 200h220l30-24h180l30 24h360"
-                        stroke="rgba(245,158,11,0.32)"
+                        stroke="rgba(151,176,213,0.32)"
                         strokeLinecap="round"
                         strokeWidth="8"
                       />
@@ -137,7 +140,7 @@ export function ServicesSection({
                         y="108"
                       />
                       <rect
-                        fill="rgba(99,102,241,0.20)"
+                        fill="rgba(126,152,190,0.2)"
                         height="8"
                         rx="4"
                         width="180"
@@ -161,7 +164,7 @@ export function ServicesSection({
                         y="112"
                       />
                       <rect
-                        fill="rgba(245,158,11,0.34)"
+                        fill="rgba(231,154,73,0.18)"
                         height="14"
                         rx="7"
                         width="108"
@@ -201,7 +204,7 @@ export function ServicesSection({
                       />
                       <path
                         d="M354 182c36-24 62-24 90 0s58 24 86 0 54-24 84 0"
-                        stroke="rgba(245,158,11,0.32)"
+                        stroke="rgba(146,171,208,0.34)"
                         strokeLinecap="round"
                         strokeWidth="8"
                       />
@@ -214,13 +217,13 @@ export function ServicesSection({
                     >
                       <path
                         d="M40 186c86-76 178-76 276 0s190 76 276 0 190-76 268 0"
-                        stroke="rgba(20,184,166,0.38)"
+                        stroke="rgba(124,150,188,0.36)"
                         strokeLinecap="round"
                         strokeWidth="10"
                       />
                       <path
                         d="M60 120c78-56 162-56 252 0s174 56 252 0 174-56 236 0"
-                        stroke="rgba(245,158,11,0.22)"
+                        stroke="rgba(150,175,213,0.22)"
                         strokeLinecap="round"
                         strokeWidth="10"
                       />
@@ -233,7 +236,7 @@ export function ServicesSection({
                         y="50"
                       />
                       <rect
-                        fill="rgba(20,184,166,0.22)"
+                        fill="rgba(120,146,186,0.22)"
                         height="10"
                         rx="5"
                         width="200"
@@ -249,7 +252,7 @@ export function ServicesSection({
                         y="50"
                       />
                       <rect
-                        fill="rgba(99,102,241,0.18)"
+                        fill="rgba(117,142,180,0.18)"
                         height="10"
                         rx="5"
                         width="164"

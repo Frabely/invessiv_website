@@ -8,7 +8,9 @@ import {
 import type { LandingSectionCopy } from "@/content/landing/home";
 
 type FooterColumn = NonNullable<LandingSectionCopy["footerColumns"]>[number];
-type FooterLegalLink = NonNullable<LandingSectionCopy["footerLegalLinks"]>[number];
+type FooterLegalLink = NonNullable<
+  LandingSectionCopy["footerLegalLinks"]
+>[number];
 type FooterSocialLink = NonNullable<
   LandingSectionCopy["footerSocialLinks"]
 >[number];
@@ -32,9 +34,17 @@ export function FooterSection({
   legalLinks = [],
   socialLinks = [],
 }: FooterSectionProps) {
-  const linkColumns = columns.filter((column) => column.links.length > 0);
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
+  const linkColumns = columns
+    .map((column) => ({
+      ...column,
+      links: column.links.filter((link) => !isPlaceholderHref(link.href)),
+    }))
+    .filter((column) => column.links.length > 0);
+  const visibleSocialLinks = socialLinks.filter(
+    (link) => !isPlaceholderHref(link.href),
+  );
 
   const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
     if (platform === "linkedin") {
@@ -51,13 +61,21 @@ export function FooterSection({
       <div className="site-footer__inner">
         <div className="site-footer__grid" role="list">
           {linkColumns.map((column) => (
-            <section className="site-footer__col" key={column.title} role="listitem">
+            <section
+              className="site-footer__col"
+              key={column.title}
+              role="listitem"
+            >
               <h3>{column.title}</h3>
               <ul>
                 {column.links.map((link) => (
                   <li key={`${column.title}-${link.label}`}>
                     <a
-                      className={isPlaceholderHref(link.href) ? "is-placeholder-link" : undefined}
+                      className={
+                        isPlaceholderHref(link.href)
+                          ? "is-placeholder-link"
+                          : undefined
+                      }
                       href={link.href}
                     >
                       {link.label}
@@ -66,16 +84,18 @@ export function FooterSection({
                 ))}
               </ul>
               {(column.title === "Kontakt" || column.title === "Contact") &&
-              socialLinks.length ? (
+              visibleSocialLinks.length ? (
                 <ul className="site-footer__socials">
-                  {socialLinks.map((socialLink) => (
+                  {visibleSocialLinks.map((socialLink) => (
                     <li key={socialLink.platform}>
                       <a
                         aria-label={socialLink.label}
-                        className={`site-footer__social-link${isPlaceholderHref(socialLink.href) ? " is-placeholder-link" : ""}`}
+                        className="site-footer__social-link"
                         href={socialLink.href}
                       >
-                        <FontAwesomeIcon icon={getSocialIcon(socialLink.platform)} />
+                        <FontAwesomeIcon
+                          icon={getSocialIcon(socialLink.platform)}
+                        />
                       </a>
                     </li>
                   ))}
@@ -90,7 +110,7 @@ export function FooterSection({
             {brand ? (
               <span className="site-footer__brand">
                 <Image
-                  src="/brand/icon.svg"
+                  src="/brand/icon.png"
                   alt="Invessiv Logo"
                   width={24}
                   height={24}
@@ -104,7 +124,11 @@ export function FooterSection({
             <div className="site-footer__bottom-right">
               {legalLinks.map((link) => (
                 <a
-                  className={isPlaceholderHref(link.href) ? "is-placeholder-link" : undefined}
+                  className={
+                    isPlaceholderHref(link.href)
+                      ? "is-placeholder-link"
+                      : undefined
+                  }
                   href={link.href}
                   key={link.label}
                 >

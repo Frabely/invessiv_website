@@ -72,15 +72,24 @@ export function ProcessSection({
           focusable="false"
         >
           <defs>
-            <linearGradient id="processJourneyGradient" x1="0%" x2="0%" y1="0%" y2="100%">
-              <stop offset="0%" stopColor="#52e0c2" />
+            <linearGradient
+              id="processJourneyGradient"
+              x1="0%"
+              x2="0%"
+              y1="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#f3a64a" />
               <stop offset="60%" stopColor="#7da3ff" />
-              <stop offset="100%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#d2672a" />
             </linearGradient>
           </defs>
           <path className="process-journey-progress" d="" ref={pathRef} />
         </svg>
-        <span aria-hidden="true" className="process-path-point process-path-point--start" />
+        <span
+          aria-hidden="true"
+          className="process-path-point process-path-point--start"
+        />
         <span
           aria-hidden="true"
           className="process-path-point process-path-point--leader"

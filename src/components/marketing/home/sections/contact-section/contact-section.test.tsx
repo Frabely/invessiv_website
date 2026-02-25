@@ -14,6 +14,17 @@ describe("ContactSection", () => {
           href: "#contact",
           label: "Jetzt Projekt anfragen",
         }}
+        contactChannels={[
+          {
+            actionLabel: "Per E-Mail anfragen",
+            href: "mailto:hi@invessiv.de",
+            label: "E-Mail",
+            value: "hi@invessiv.de",
+          },
+        ]}
+        contactChecklist={["Ziel", "Deadline", "Assets"]}
+        contactChecklistHint="Dauert ca. 2 Minuten."
+        contactChecklistTitle="In 3 kurzen Antworten starten"
         contactSecondaryCta={{
           hint: "",
           href: "#services",
@@ -26,13 +37,23 @@ describe("ContactSection", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "Bereit fuer eine neue, produktive Website?" }),
+      screen.getByRole("heading", {
+        name: "Bereit fuer eine neue, produktive Website?",
+      }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: "Jetzt Projekt anfragen" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Jetzt Projekt anfragen" })
+        .getAttribute("href"),
     ).toBe("#contact");
     expect(
-      screen.getByRole("link", { name: "Leistungen ansehen" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Leistungen ansehen" })
+        .getAttribute("href"),
     ).toBe("#services");
+    expect(screen.getByText("In 3 kurzen Antworten starten")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Per E-Mail anfragen" }),
+    ).toBeTruthy();
   });
 });

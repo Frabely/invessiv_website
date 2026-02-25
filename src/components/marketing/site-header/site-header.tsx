@@ -22,7 +22,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
       <div className="site-header__inner">
         <a className="site-header__brand" href="#hero">
           <Image
-            src="/brand/icon.svg"
+            src="/brand/icon.png"
             alt="Invessiv Logo"
             width={26}
             height={26}

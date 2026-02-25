@@ -114,6 +114,10 @@ export function HomeSectionsRenderer({
               return (
                 <ContactSection
                   contactCta={section.contactCta}
+                  contactChannels={section.contactChannels ?? []}
+                  contactChecklist={section.contactChecklist ?? []}
+                  contactChecklistHint={section.contactChecklistHint}
+                  contactChecklistTitle={section.contactChecklistTitle}
                   contactSecondaryCta={section.contactSecondaryCta}
                   description={section.description}
                   id={section.id}

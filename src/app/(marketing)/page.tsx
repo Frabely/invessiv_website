@@ -31,7 +31,7 @@ const marketingStructuredData = {
       "@type": "Organization",
       name: SITE_NAME,
       url: SITE_URL,
-      logo: `${SITE_URL}/brand/icon.svg`,
+      logo: `${SITE_URL}/brand/icon.png`,
       email: "hi@invessiv.de",
       telephone: "+49-170-12345678",
     },
@@ -64,7 +64,9 @@ export default function MarketingHomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(marketingStructuredData) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(marketingStructuredData),
+        }}
       />
       <MarketingHomePageClient />
     </>

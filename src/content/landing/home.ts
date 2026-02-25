@@ -211,7 +211,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Landingpages",
             description:
               "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
-            tag: "Beispiel folgt",
+            tag: "Live-Beispiel auf Anfrage",
             visual: true,
             visualVariant: "landing",
             span: 4,
@@ -222,7 +222,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Webseiten",
             description:
               "Individuelle Firmenwebseiten mit moderner Struktur und klarer Navigation.",
-            tag: "Beispiel folgt",
+            tag: "Live-Beispiel auf Anfrage",
             chips: ["SEO-ready", "Mobile-first", "Schnell"],
             span: 4,
           },
@@ -232,7 +232,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Prozess-Tools",
             description:
               "Automatisierung interner Abläufe und effiziente Mini-Tools.",
-            tag: "Beispiel folgt",
+            tag: "Live-Beispiel auf Anfrage",
             bullets: [
               "Mini-Portale",
               "Workflow-Automation",
@@ -245,7 +245,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Website-Upgrade Icon",
             title: "Alte Website upgraden",
             description: "Bestehende Webseiten modernisieren und optimieren.",
-            tag: "Beispiel folgt",
+            tag: "Live-Beispiel auf Anfrage",
             visual: true,
             visualVariant: "upgrade",
             span: 6,
@@ -256,7 +256,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "KI-Templates",
             description:
               "Vorgefertigte AI-Templates für Content-Erstellung und Marketing.",
-            tag: "Beispiel folgt",
+            tag: "Live-Beispiel auf Anfrage",
             bullets: ["Texte & Bilder", "Landingpages", "Social Media Posts"],
             visual: true,
             visualVariant: "ai",
@@ -275,7 +275,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Landing pages",
             description:
               "Conversion-optimized one-pagers with clear messaging and strong performance.",
-            tag: "Example coming soon",
+            tag: "Live example on request",
             visual: true,
             visualVariant: "landing",
             span: 4,
@@ -286,7 +286,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Websites",
             description:
               "Custom company websites with modern structure and clean navigation.",
-            tag: "Example coming soon",
+            tag: "Live example on request",
             chips: ["SEO-ready", "Mobile-first", "Fast"],
             span: 4,
           },
@@ -296,7 +296,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Process tools",
             description:
               "Automation of internal workflows and efficient mini tools.",
-            tag: "Example coming soon",
+            tag: "Live example on request",
             bullets: [
               "Mini portals",
               "Workflow automation",
@@ -309,7 +309,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Website upgrade icon",
             title: "Upgrade existing website",
             description: "Modernize and optimize your existing websites.",
-            tag: "Example coming soon",
+            tag: "Live example on request",
             visual: true,
             visualVariant: "upgrade",
             span: 6,
@@ -320,7 +320,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "AI templates",
             description:
               "Prebuilt AI templates for content creation and marketing.",
-            tag: "Example coming soon",
+            tag: "Live example on request",
             bullets: ["Texts & images", "Landing pages", "Social media posts"],
             visual: true,
             visualVariant: "ai",
@@ -537,32 +537,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ctaLabel: "Kontakt aufnehmen",
             ctaHref: "#contact",
           },
-          {
-            name: "Template Pro",
-            idealFor: "Bald verfügbar",
-            price: "Coming Soon",
-            timeline: "Warteliste offen",
-            scope: [
-              "Platzhalter-Paket",
-              "Details folgen",
-              "Release in Planung",
-            ],
-            ctaLabel: "Interesse vormerken",
-            ctaHref: "#contact",
-          },
-          {
-            name: "Scale+",
-            idealFor: "Bald verfügbar",
-            price: "Coming Soon",
-            timeline: "Warteliste offen",
-            scope: [
-              "Platzhalter-Paket",
-              "Details folgen",
-              "Release in Planung",
-            ],
-            ctaLabel: "Interesse vormerken",
-            ctaHref: "#contact",
-          },
         ],
       },
       en: {
@@ -633,32 +607,6 @@ const HOME_SECTIONS: LandingSection[] = [
               "Personal consulting",
             ],
             ctaLabel: "Get in touch",
-            ctaHref: "#contact",
-          },
-          {
-            name: "Template Pro",
-            idealFor: "Coming soon",
-            price: "Coming Soon",
-            timeline: "Waitlist open",
-            scope: [
-              "Placeholder package",
-              "Details to follow",
-              "Release in planning",
-            ],
-            ctaLabel: "Join waitlist",
-            ctaHref: "#contact",
-          },
-          {
-            name: "Scale+",
-            idealFor: "Coming soon",
-            price: "Coming Soon",
-            timeline: "Waitlist open",
-            scope: [
-              "Placeholder package",
-              "Details to follow",
-              "Release in planning",
-            ],
-            ctaLabel: "Join waitlist",
             ctaHref: "#contact",
           },
         ],
