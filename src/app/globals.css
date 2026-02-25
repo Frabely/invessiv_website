@@ -2867,20 +2867,20 @@ body {
 
 .layout-shell > section {
   margin-top: 20px;
-  padding: 24px;
-  border-radius: 22px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
-  background: var(--color-surface-1);
-  box-shadow: 0 12px 28px rgba(8, 10, 15, 0.16);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .layout-shell > section:nth-of-type(even) {
-  background: var(--color-surface-2);
+  background: transparent;
 }
 
 .layout-shell > .services-section,
 .layout-shell > .packages-section {
-  margin-top: 26px;
+  margin-top: 24px;
 }
 
 .site-footer a {
@@ -2960,7 +2960,7 @@ body {
 }
 
 [data-theme="light"] .layout-shell > section:nth-of-type(even) {
-  background: var(--color-surface-2);
+  background: transparent;
 }
 
 .qna-marker,

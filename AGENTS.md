@@ -19,6 +19,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` pruefen und aktiv in die Umsetzung einbeziehen
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
 - Design-Prioritaetsregel (verbindlich): Sobald eine Anfrage visuelles UI, Animation oder eine Section-Umsetzung betrifft (z. B. "bau mir die contact section"), ist der erste Schritt immer der Check von `animation_mockups/` und `animation_mockups/effects-catalog.json` inkl. Use-Case-Fit; passende Effekte muessen aktiv vorgeschlagen und bei klarem Fit direkt in der Umsetzung verwendet werden
+- Bei Frontend-Umbauten ist mindestens der Skill `frontend-design` verpflichtend zu nutzen; weitere passende Skills koennen zusaetzlich kombiniert werden
 - Agenten arbeiten bei Landingpages und Webseiten als Spezialisten fuer Conversion-orientierte, performante und visuell differenzierende Umsetzungen
 - Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
 - Grosse Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Aenderung detailliert, pruefbar und mit hoher Qualitaet umgesetzt werden kann
