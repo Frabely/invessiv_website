@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { Locale } from "@/config/i18n";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
+import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 
 type Theme = "dark" | "light";
 
@@ -21,13 +22,31 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 const STORAGE_KEY = "invessiv-locale";
 const THEME_STORAGE_KEY = "invessiv-theme";
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
+const getLocaleFromPath = (): Locale | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const firstSegment = window.location.pathname.split("/").filter(Boolean)[0];
+  return firstSegment === "de" || firstSegment === "en" ? firstSegment : null;
+};
+
+export function LanguageProvider({
+  children,
+  initialLocale = DEFAULT_LOCALE as Locale,
+}: {
+  children: ReactNode;
+  initialLocale?: Locale;
+}) {
   const [locale, setLocaleState] = useState<Locale>(() => {
     if (typeof window === "undefined") {
-      return "en";
+      return initialLocale;
+    }
+    const localeFromPath = getLocaleFromPath();
+    if (localeFromPath) {
+      return localeFromPath;
     }
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored === "de" ? "de" : "en";
+    return stored === "de" || stored === "en" ? stored : initialLocale;
   });
   const [theme, setThemeState] = useState<Theme>(() => {
     if (!ENABLE_THEME_SWITCH) {

@@ -1,6 +1,7 @@
-import type { RefObject } from "react";
+import type { PointerEvent, RefObject } from "react";
 
 import type { LandingSectionCopy } from "@/content/landing/home";
+import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 
 type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
@@ -21,6 +22,24 @@ export function ServicesSection({
   servicesExampleCta,
   title,
 }: ServicesSectionProps) {
+  const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
+    const card = event.currentTarget;
+    const bounds = card.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+
+    card.style.setProperty("--services-spotlight-x", `${x}px`);
+    card.style.setProperty("--services-spotlight-y", `${y}px`);
+  };
+
+  const resetCardSpotlight = (event: PointerEvent<HTMLElement>) => {
+    event.currentTarget.style.removeProperty("--services-spotlight-x");
+    event.currentTarget.style.removeProperty("--services-spotlight-y");
+  };
+
   return (
     <section className="services-section" id={id} ref={sectionRef}>
       <h2>{title}</h2>
@@ -40,7 +59,13 @@ export function ServicesSection({
           const cardClassName = `services-card ${isVisual ? "services-card--visual" : ""} ${spanClassName}`;
 
           return (
-            <article className={cardClassName} key={card.title} role="listitem">
+            <article
+              className={cardClassName}
+              key={card.title}
+              onPointerLeave={resetCardSpotlight}
+              onPointerMove={setCardSpotlight}
+              role="listitem"
+            >
               <div className="services-card-top">
                 <div className="services-card-row">
                   <h3 className="services-title">
@@ -48,6 +73,8 @@ export function ServicesSection({
                       <span aria-hidden="true" className="services-title-icon">
                         {card.icon}
                       </span>
+                    ) : card.iconSrc ? (
+                      <ServiceCardIcon iconAlt={card.iconAlt} iconSrc={card.iconSrc} />
                     ) : null}
                     <span>{card.title}</span>
                   </h3>

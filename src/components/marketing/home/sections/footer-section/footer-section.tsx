@@ -33,6 +33,9 @@ export function FooterSection({
   socialLinks = [],
 }: FooterSectionProps) {
   const linkColumns = columns.filter((column) => column.links.length > 0);
+  const isPlaceholderHref = (href: string) =>
+    href.includes("placeholder") || href.includes("PLATZHALTER");
+
   const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
     if (platform === "linkedin") {
       return faLinkedinIn;
@@ -53,7 +56,12 @@ export function FooterSection({
               <ul>
                 {column.links.map((link) => (
                   <li key={`${column.title}-${link.label}`}>
-                    <a href={link.href}>{link.label}</a>
+                    <a
+                      className={isPlaceholderHref(link.href) ? "is-placeholder-link" : undefined}
+                      href={link.href}
+                    >
+                      {link.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -64,7 +72,7 @@ export function FooterSection({
                     <li key={socialLink.platform}>
                       <a
                         aria-label={socialLink.label}
-                        className="site-footer__social-link"
+                        className={`site-footer__social-link${isPlaceholderHref(socialLink.href) ? " is-placeholder-link" : ""}`}
                         href={socialLink.href}
                       >
                         <FontAwesomeIcon icon={getSocialIcon(socialLink.platform)} />
@@ -95,7 +103,11 @@ export function FooterSection({
           {legalLinks.length ? (
             <div className="site-footer__bottom-right">
               {legalLinks.map((link) => (
-                <a href={link.href} key={link.label}>
+                <a
+                  className={isPlaceholderHref(link.href) ? "is-placeholder-link" : undefined}
+                  href={link.href}
+                  key={link.label}
+                >
                   {link.label}
                 </a>
               ))}

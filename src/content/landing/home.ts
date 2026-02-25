@@ -123,7 +123,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Mit wenig Zeitaufwand schnell zu einer fertigen Website.",
         description:
-          "Du gibst nur den noetigen Input, wir uebernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
+          "Du gibst nur den nötigen Input, wir übernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
       },
       en: {
         title: "Ship a finished website fast with minimal time investment.",
@@ -203,7 +203,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Unsere Leistungen",
         description:
-          "Schlanker Start mit fuenf klaren Angebotsbereichen im gleichen Delivery-Rhythmus.",
+          "Schlanker Start mit fünf klaren Angebotsbereichen im gleichen Delivery-Rhythmus.",
         serviceCards: [
           {
             iconSrc: "/services/01_landingpages.png",
@@ -231,7 +231,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Prozess-Tools Icon",
             title: "Prozess-Tools",
             description:
-              "Automatisierung interner Ablaeufe und effiziente Mini-Tools.",
+              "Automatisierung interner Abläufe und effiziente Mini-Tools.",
             tag: "Beispiel folgt",
             bullets: [
               "Mini-Portale",
@@ -255,7 +255,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "KI-Templates Icon",
             title: "KI-Templates",
             description:
-              "Vorgefertigte AI-Templates fuer Content-Erstellung und Marketing.",
+              "Vorgefertigte AI-Templates für Content-Erstellung und Marketing.",
             tag: "Beispiel folgt",
             bullets: ["Texte & Bilder", "Landingpages", "Social Media Posts"],
             visual: true,
@@ -338,7 +338,7 @@ const HOME_SECTIONS: LandingSection[] = [
         description:
           "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, wir liefern Draft, Feinschliff und Launch.",
         processSummary:
-          "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Uebergabe inklusive QA",
+          "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Übergabe inklusive QA",
         processRoles: [
           {
             label: "Du lieferst",
@@ -349,7 +349,7 @@ const HOME_SECTIONS: LandingSection[] = [
             items: [
               "Struktur + Copy/Design",
               "Setup + QA",
-              "Launch + Uebergabe-Doku",
+              "Launch + Übergabe-Doku",
             ],
           },
         ],
@@ -370,7 +370,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Lieferzeit: meist 48h",
             result: "Ergebnis: Struktur + Kernlogik",
             description:
-              "Du bekommst eine erste Version mit klarer Struktur, Inhalt und - falls noetig - funktionalem Prototyp.",
+              "Du bekommst eine erste Version mit klarer Struktur, Inhalt und - falls nötig - funktionalem Prototyp.",
           },
           {
             step: "03",
@@ -384,11 +384,11 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             step: "04",
             title: "Go-live",
-            deliverable: "Launch + Uebergabe",
+            deliverable: "Launch + Übergabe",
             effort: "QA: finaler Check",
-            result: "Ergebnis: Livegang oder Integrations-Uebergabe",
+            result: "Ergebnis: Livegang oder Integrations-Übergabe",
             description:
-              "Nach QA geht das Projekt live oder wird sauber in deine Systeme uebergeben.",
+              "Nach QA geht das Projekt live oder wird sauber in deine Systeme übergeben.",
           },
         ],
         processCta: {
@@ -728,7 +728,7 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "contact",
     copy: {
       de: {
-        title: "Bereit fuer eine neue, produktive Website?",
+        title: "Bereit für eine neue, produktive Website?",
         description: "Kontaktiere uns und starte dein Projekt mit Invessiv.",
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
@@ -763,7 +763,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Kontakt",
             links: [
-              { label: "Invessiv", href: "#" },
+              { label: "Invessiv", href: "/imprint#company-details" },
               { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
               { label: "0170 / 12345678", href: "tel:+4917012345678" },
             ],
@@ -772,9 +772,17 @@ const HOME_SECTIONS: LandingSection[] = [
         footerBrand: "Invessiv",
         footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
-          { platform: "linkedin", href: "#", label: "LinkedIn" },
-          { platform: "x", href: "#", label: "X" },
-          { platform: "instagram", href: "#", label: "Instagram" },
+          {
+            platform: "linkedin",
+            href: "/imprint#placeholder-social-linkedin",
+            label: "LinkedIn",
+          },
+          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          {
+            platform: "instagram",
+            href: "/imprint#placeholder-social-instagram",
+            label: "Instagram",
+          },
         ],
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
@@ -848,7 +856,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Contact",
             links: [
-              { label: "Invessiv", href: "#" },
+              { label: "Invessiv", href: "/imprint#company-details" },
               { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
               { label: "+49 170 12345678", href: "tel:+4917012345678" },
             ],
@@ -857,9 +865,17 @@ const HOME_SECTIONS: LandingSection[] = [
         footerBrand: "Invessiv",
         footerCopyright: "© 2024 Invessiv. All rights reserved.",
         footerSocialLinks: [
-          { platform: "linkedin", href: "#", label: "LinkedIn" },
-          { platform: "x", href: "#", label: "X" },
-          { platform: "instagram", href: "#", label: "Instagram" },
+          {
+            platform: "linkedin",
+            href: "/imprint#placeholder-social-linkedin",
+            label: "LinkedIn",
+          },
+          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          {
+            platform: "instagram",
+            href: "/imprint#placeholder-social-instagram",
+            label: "Instagram",
+          },
         ],
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },
@@ -945,7 +961,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Kontakt",
             links: [
-              { label: "Invessiv", href: "#" },
+              { label: "Invessiv", href: "/imprint#company-details" },
               { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
               { label: "0170 / 12345678", href: "tel:+4917012345678" },
             ],
@@ -954,9 +970,17 @@ const HOME_SECTIONS: LandingSection[] = [
         footerBrand: "Invessiv",
         footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
-          { platform: "linkedin", href: "#", label: "LinkedIn" },
-          { platform: "x", href: "#", label: "X" },
-          { platform: "instagram", href: "#", label: "Instagram" },
+          {
+            platform: "linkedin",
+            href: "/imprint#placeholder-social-linkedin",
+            label: "LinkedIn",
+          },
+          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          {
+            platform: "instagram",
+            href: "/imprint#placeholder-social-instagram",
+            label: "Instagram",
+          },
         ],
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
@@ -995,7 +1019,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Contact",
             links: [
-              { label: "Invessiv", href: "#" },
+              { label: "Invessiv", href: "/imprint#company-details" },
               { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
               { label: "+49 170 12345678", href: "tel:+4917012345678" },
             ],
@@ -1004,9 +1028,17 @@ const HOME_SECTIONS: LandingSection[] = [
         footerBrand: "Invessiv",
         footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
-          { platform: "linkedin", href: "#", label: "LinkedIn" },
-          { platform: "x", href: "#", label: "X" },
-          { platform: "instagram", href: "#", label: "Instagram" },
+          {
+            platform: "linkedin",
+            href: "/imprint#placeholder-social-linkedin",
+            label: "LinkedIn",
+          },
+          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          {
+            platform: "instagram",
+            href: "/imprint#placeholder-social-instagram",
+            label: "Instagram",
+          },
         ],
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },

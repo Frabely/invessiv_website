@@ -1,59 +1,72 @@
-"use client";
+import type { Metadata } from "next";
+import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
+import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
-import { useRef } from "react";
-import { HomeSectionsRenderer } from "@/components/marketing/home/home-sections-renderer";
-import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
-import { MarqueeSection } from "@/components/marketing/home/sections/marquee-section/marquee-section";
-import { SiteHeader } from "@/components/marketing/site-header/site-header";
-import { useLanguage } from "@/components/providers/language-provider";
-import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
-import { getHomeSections } from "@/content/landing/home";
-import { getHomeUiContent } from "@/content/landing/home-ui";
-import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
-import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
+export const metadata: Metadata = {
+  title: `${SITE_NAME} | Landing pages, websites, and process tools`,
+  description:
+    "Invessiv builds landing pages, websites, and process tools with clear structure, fast execution, and measurable conversion focus.",
+  alternates: {
+    canonical: "/",
+    languages: {
+      de: "/de",
+      en: "/en",
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    title: `${SITE_NAME} | Landing pages, websites, and process tools`,
+    description:
+      "From idea to production-ready website fast: clear offers, predictable delivery rhythm, and focused execution.",
+    siteName: SITE_NAME,
+    locale: "en_US",
+  },
+};
+
+const marketingStructuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: `${SITE_URL}/brand/icon.svg`,
+      email: "hi@invessiv.de",
+      telephone: "+49-170-12345678",
+    },
+    {
+      "@type": "Service",
+      serviceType: "Web design and web development",
+      provider: {
+        "@type": "Organization",
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      areaServed: "DE",
+      availableLanguage: ["de", "en"],
+      description:
+        "Landing pages, website upgrades, and process tools focused on performance, clarity, and conversion.",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          minPrice: 99,
+        },
+      },
+    },
+  ],
+};
 
 export default function MarketingHomePage() {
-  const { locale } = useLanguage();
-  const servicesSectionRef = useRef<HTMLElement | null>(null);
-  const sections = getHomeSections(locale);
-  const ui = getHomeUiContent(locale);
-
-  const validation = validateNavigationSections({
-    navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
-    sectionIds: SECTION_IDS.filter((id) => id !== "hero" && id !== "footer"),
-  });
-
-  useServicesCardReveal(servicesSectionRef, locale);
-
   return (
     <>
-      <SiteHeader navigation={PRIMARY_NAVIGATION} />
-
-      <main>
-        <div aria-hidden="true" className="page-accents">
-          <span className="page-aurora page-aurora--left" />
-          <span className="page-aurora page-aurora--right" />
-          <span className="page-noise" />
-        </div>
-
-        <HeroSection
-          description={sections[0]?.description ?? ""}
-          heroChipTags={ui.heroChipTags}
-          heroPrimaryCta={ui.heroPrimaryCta}
-          heroSecondaryCta={ui.heroSecondaryCta}
-          heroTag={ui.heroTag}
-          title={sections[0]?.title ?? ""}
-        />
-
-        <MarqueeSection items={ui.marqueeItems} />
-
-        <HomeSectionsRenderer
-          sections={sections}
-          servicesSectionRef={servicesSectionRef}
-          ui={ui}
-          validation={validation}
-        />
-      </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(marketingStructuredData) }}
+      />
+      <MarketingHomePageClient />
     </>
   );
 }
