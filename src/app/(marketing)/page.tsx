@@ -3,7 +3,7 @@ import { MarketingHomePageClient } from "@/components/marketing/home/marketing-h
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} | Landing pages, websites, and process tools`,
+  title: "Landing pages, websites, and process tools",
   description:
     "Invessiv builds landing pages, websites, and process tools with clear structure, fast execution, and measurable conversion focus.",
   alternates: {

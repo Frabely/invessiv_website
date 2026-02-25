@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
-import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
+import { SITE_URL } from "@/lib/site-metadata";
 
 const SUPPORTED_LOCALES = ["de", "en"] as const;
 
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
 
   const isGerman = locale === "de";
   const title = isGerman
-    ? `${SITE_NAME} | Landingpages, Webseiten und Prozess-Tools`
-    : `${SITE_NAME} | Landing pages, websites and process tools`;
+    ? "Landingpages, Webseiten und Prozess-Tools"
+    : "Landing pages, websites and process tools";
   const description = isGerman
     ? "Invessiv entwickelt Landingpages, Webseiten und Prozess-Tools mit klarem Fokus auf Conversion."
     : "Invessiv builds landing pages, websites, and process tools with a clear conversion focus.";

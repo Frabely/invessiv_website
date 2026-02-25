@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
-  title: "Privacy | Invessiv",
+  title: "Privacy",
   description: "Datenschutzerklärung von Invessiv.",
   alternates: {
     canonical: "/privacy",

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
-  title: "Imprint | Invessiv",
+  title: "Imprint",
   description: "Impressum und Anbieterkennzeichnung von Invessiv.",
   alternates: {
     canonical: "/imprint",

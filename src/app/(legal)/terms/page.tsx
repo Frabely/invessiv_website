@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
-  title: "Terms | Invessiv",
+  title: "Terms",
   description: "Allgemeine Geschäftsbedingungen von Invessiv.",
   alternates: {
     canonical: "/terms",
