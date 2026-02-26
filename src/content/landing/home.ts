@@ -16,7 +16,7 @@ export type LandingSectionCopy = {
     bullets?: string[];
     chips?: string[];
     span?: 4 | 5 | 6 | 7;
-    visualVariant?: "landing" | "upgrade" | "ai";
+    visualVariant?: "landing" | "website" | "tools" | "upgrade" | "ai";
     visual?: boolean;
   }>;
   processSteps?: Array<{
@@ -224,6 +224,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Individuelle Firmenwebseiten mit moderner Struktur und klarer Navigation.",
             tag: "Live-Beispiel auf Anfrage",
             chips: ["SEO-ready", "Mobile-first", "Schnell"],
+            visual: true,
+            visualVariant: "website",
             span: 4,
           },
           {
@@ -238,6 +240,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Workflow-Automation",
               "Status-Transparenz",
             ],
+            visual: true,
+            visualVariant: "tools",
             span: 4,
           },
           {
@@ -288,6 +292,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Custom company websites with modern structure and clean navigation.",
             tag: "Live example on request",
             chips: ["SEO-ready", "Mobile-first", "Fast"],
+            visual: true,
+            visualVariant: "website",
             span: 4,
           },
           {
@@ -302,6 +308,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Workflow automation",
               "Status visibility",
             ],
+            visual: true,
+            visualVariant: "tools",
             span: 4,
           },
           {

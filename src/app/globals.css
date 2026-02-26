@@ -1022,7 +1022,7 @@ main {
   border-radius: 22px;
   border: 1px solid rgba(225, 167, 114, 0.24);
   background: rgba(40, 20, 12, 0.82);
-  padding: 18px;
+  padding: 0;
   box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.05);
   opacity: 0;
   transform: translateY(18px) scale(0.985);
@@ -1071,13 +1071,20 @@ main {
 
 .services-card-top {
   padding: 18px;
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  align-content: start;
 }
 
 .services-card-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: block;
+}
+
+.services-title-wrap {
+  display: grid;
   gap: 10px;
+  align-content: start;
+  width: 100%;
 }
 
 .services-card h3 {
@@ -1087,9 +1094,12 @@ main {
 }
 
 .services-title {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
+  column-gap: 12px;
+  min-height: 44px;
+  line-height: 1.25;
 }
 
 .services-title-icon {
@@ -1116,6 +1126,8 @@ main {
 .services-tag {
   display: inline-flex;
   align-items: center;
+  align-self: start;
+  justify-self: start;
   min-height: 24px;
   padding: 0 10px;
   border-radius: 999px;
