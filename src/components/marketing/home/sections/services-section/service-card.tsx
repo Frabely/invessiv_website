@@ -115,7 +115,7 @@ export function ServiceCard({
               type="button"
             >
               {detailsCtaLabel}
-              <span aria-hidden="true">›</span>
+              <span aria-hidden="true">&rsaquo;</span>
             </button>
           </div>
         ) : null}

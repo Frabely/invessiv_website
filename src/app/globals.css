@@ -1157,10 +1157,20 @@ main {
 }
 
 .services-card--recommended {
-  border-color: color-mix(in srgb, var(--accent) 48%, #ffffff 12%);
+  border: 2px solid color-mix(in srgb, var(--accent) 86%, #ffffff 14%);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 84%,
+    rgba(231, 154, 73, 0.22) 16%
+  );
   box-shadow:
-    inset 0 1px 0 rgba(255, 233, 210, 0.06),
-    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+    inset 0 1px 0 rgba(255, 233, 210, 0.11),
+    0 0 0 2px color-mix(in srgb, var(--accent) 32%, transparent),
+    0 0 30px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.services-card--recommended:hover {
+  border-color: color-mix(in srgb, var(--accent) 92%, #ffffff 8%);
 }
 
 .services-card:hover::before {
@@ -1187,8 +1197,8 @@ main {
 
 .services-card h3 {
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: clamp(1.2rem, 1.55vw, 1.34rem);
+  font-weight: 800;
   letter-spacing: -0.01em;
 }
 
@@ -1245,8 +1255,17 @@ main {
 }
 
 .services-title-badge--recommended {
-  border-color: color-mix(in srgb, var(--accent) 54%, transparent);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  min-height: 26px;
+  padding: 0 11px;
+  border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent) 92%, #ffe4c4 8%),
+    color-mix(in srgb, var(--accent) 74%, #c46a2e 26%)
+  );
+  color: #1f1209;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
 }
 
 .services-meta {
@@ -3787,10 +3806,16 @@ body {
 }
 
 [data-theme="light"] .services-card--recommended {
-  border-color: color-mix(in srgb, var(--accent) 54%, #ffffff 14%);
+  border: 2px solid color-mix(in srgb, var(--accent) 82%, #ffffff 18%);
+  background: color-mix(in srgb, #ffffff 84%, var(--accent) 16%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+[data-theme="light"] .services-card--recommended:hover {
+  border-color: color-mix(in srgb, var(--accent) 90%, #ffffff 10%);
 }
 
 @media (max-width: 1200px) {

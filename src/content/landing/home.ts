@@ -200,8 +200,8 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "landing",
             iconSrc: "/services/01_landingpages.png",
-            iconAlt: "Landingpages Icon",
-            title: "Landingpages",
+            iconAlt: "Landing pages Icon",
+            title: "Landing pages",
             description:
               "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
             isRecommended: true,
@@ -705,7 +705,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Leistungen",
             links: [
-              { label: "Landingpages", href: "#services" },
+              { label: "Landing pages", href: "#services" },
               { label: "Webdesign", href: "#services" },
               { label: "Webentwicklung", href: "#services" },
               { label: "Prozess-Tools", href: "#services" },
@@ -901,7 +901,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Leistungen",
             links: [
-              { label: "Landingpages", href: "#services" },
+              { label: "Landing pages", href: "#services" },
               { label: "Webdesign", href: "#services" },
               { label: "Webentwicklung", href: "#services" },
               { label: "Prozess-Tools", href: "#services" },
