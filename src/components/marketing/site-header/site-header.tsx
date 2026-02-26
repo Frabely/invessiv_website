@@ -81,34 +81,46 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
           </a>
         </div>
 
-        <details className="site-header__mobile-menu">
-          <summary>{ui.mobileMenuLabel}</summary>
-          <ul>
-            {ENABLE_THEME_SWITCH ? (
+        <div className="site-header__mobile-actions">
+          <a className="menu-cta site-header__mobile-cta" href="#contact">
+            {ui.ctaLabel}
+          </a>
+          <details className="site-header__mobile-menu">
+            <summary aria-label={ui.mobileMenuLabel}>
+              <span className="sr-only">{ui.mobileMenuLabel}</span>
+              <span aria-hidden="true" className="mobile-menu-icon">
+                <span />
+                <span />
+                <span />
+              </span>
+            </summary>
+            <ul>
+              {ENABLE_THEME_SWITCH ? (
+                <li>
+                  <button
+                    className="theme-switch theme-switch--mobile"
+                    onClick={toggleTheme}
+                    type="button"
+                  >
+                    {themeToggleLabel}
+                  </button>
+                </li>
+              ) : null}
+              {navigation.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href}>
+                    {ui.labelsByHref[item.href] ?? item.label}
+                  </a>
+                </li>
+              ))}
               <li>
-                <button
-                  className="theme-switch theme-switch--mobile"
-                  onClick={toggleTheme}
-                  type="button"
-                >
-                  {themeToggleLabel}
-                </button>
-              </li>
-            ) : null}
-            {navigation.map((item) => (
-              <li key={item.href}>
-                <a href={item.href}>
-                  {ui.labelsByHref[item.href] ?? item.label}
+                <a className="mobile-menu-cta" href="#contact">
+                  {ui.ctaLabel}
                 </a>
               </li>
-            ))}
-            <li>
-              <a className="mobile-menu-cta" href="#contact">
-                {ui.ctaLabel}
-              </a>
-            </li>
-          </ul>
-        </details>
+            </ul>
+          </details>
+        </div>
       </div>
     </header>
   );
