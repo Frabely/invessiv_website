@@ -11,7 +11,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${SITE_URL}/imprint`,
+      url: `${SITE_URL}/de/imprint`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/en/imprint`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.6,
@@ -29,13 +35,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/privacy`,
+      url: `${SITE_URL}/de/privacy`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.6,
     },
     {
-      url: `${SITE_URL}/terms`,
+      url: `${SITE_URL}/en/privacy`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/de/terms`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/en/terms`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.6,

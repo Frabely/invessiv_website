@@ -1,6 +1,6 @@
-﻿import type { SectionId } from "@/config/site";
+import type { SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
-
+import { COMPANY, COMPANY_MAILTO, COMPANY_TEL } from "@/config/company";
 export type LandingSectionCopy = {
   title: string;
   description: string;
@@ -107,6 +107,19 @@ export type LandingSection = {
 export type HomeSectionContent = {
   id: SectionId;
 } & LandingSectionCopy;
+
+const LEGAL_PAGE_HREFS = {
+  de: {
+    imprint: "/de/imprint",
+    privacy: "/de/privacy",
+    terms: "/de/terms",
+  },
+  en: {
+    imprint: "/en/imprint",
+    privacy: "/en/privacy",
+    terms: "/en/terms",
+  },
+} as const;
 
 const HOME_SECTIONS: LandingSection[] = [
   {
@@ -715,8 +728,8 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Kontakt",
             links: [
               { label: "Invessiv", href: "/imprint#company-details" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "0170 / 12345678", href: "tel:+4917012345678" },
+              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
+              { label: COMPANY.contact.phoneDisplayDe, href: COMPANY_TEL },
             ],
           },
         ],
@@ -743,11 +756,11 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChannels: [
           {
             label: "E-Mail",
-            value: "hi@invessiv.de",
-            href: "mailto:hi@invessiv.de",
+            value: COMPANY.contact.email,
+            href: COMPANY_MAILTO,
             hint: "Ideal für Scope, Deadline und vorhandene Assets.",
             actionLabel: "Per E-Mail anfragen",
-            copyValue: "hi@invessiv.de",
+            copyValue: COMPANY.contact.email,
             copyLabel: "E-Mail kopieren",
             copiedLabel: "Kopiert",
           },
@@ -807,8 +820,8 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Contact",
             links: [
               { label: "Invessiv", href: "/imprint#company-details" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "+49 170 12345678", href: "tel:+4917012345678" },
+              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
+              { label: COMPANY.contact.phoneDisplayEn, href: COMPANY_TEL },
             ],
           },
         ],
@@ -835,11 +848,11 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChannels: [
           {
             label: "Email",
-            value: "hi@invessiv.de",
-            href: "mailto:hi@invessiv.de",
+            value: COMPANY.contact.email,
+            href: COMPANY_MAILTO,
             hint: "Best for scope, assets, and detailed context",
             actionLabel: "Request by email",
-            copyValue: "hi@invessiv.de",
+            copyValue: COMPANY.contact.email,
             copyLabel: "Copy email",
             copiedLabel: "Copied",
           },
@@ -911,8 +924,8 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Kontakt",
             links: [
               { label: "Invessiv", href: "/imprint#company-details" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "0170 / 12345678", href: "tel:+4917012345678" },
+              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
+              { label: COMPANY.contact.phoneDisplayDe, href: COMPANY_TEL },
             ],
           },
         ],
@@ -968,8 +981,8 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Contact",
             links: [
               { label: "Invessiv", href: "/imprint#company-details" },
-              { label: "info@invessiv.de", href: "mailto:info@invessiv.de" },
-              { label: "+49 170 12345678", href: "tel:+4917012345678" },
+              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
+              { label: COMPANY.contact.phoneDisplayEn, href: COMPANY_TEL },
             ],
           },
         ],
@@ -1000,8 +1013,46 @@ const HOME_SECTIONS: LandingSection[] = [
 ];
 
 export function getHomeSections(locale: Locale): HomeSectionContent[] {
-  return HOME_SECTIONS.map((section) => ({
-    id: section.id,
-    ...section.copy[locale],
-  }));
+  const localizeLegalHref = (href: string) => {
+    if (!href.startsWith("/")) {
+      return href;
+    }
+
+    return href
+      .replace("/imprint", LEGAL_PAGE_HREFS[locale].imprint)
+      .replace("/privacy", LEGAL_PAGE_HREFS[locale].privacy)
+      .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
+  };
+
+  return HOME_SECTIONS.map((section) => {
+    const localizedSection = {
+      id: section.id,
+      ...section.copy[locale],
+    };
+
+    return {
+      ...localizedSection,
+      footerColumns: localizedSection.footerColumns?.map((column) => ({
+        ...column,
+        links: column.links.map((link) => ({
+          ...link,
+          href: localizeLegalHref(link.href),
+        })),
+      })),
+      footerSocialLinks: localizedSection.footerSocialLinks?.map((link) => ({
+        ...link,
+        href: localizeLegalHref(link.href),
+      })),
+      footerLegalLinks: localizedSection.footerLegalLinks?.map((link) => ({
+        ...link,
+        href: localizeLegalHref(link.href),
+      })),
+    };
+  });
 }
+
+
+
+
+
+

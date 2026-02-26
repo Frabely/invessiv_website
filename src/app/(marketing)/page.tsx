@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
+import { COMPANY } from "@/config/company";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
@@ -32,8 +33,8 @@ const marketingStructuredData = {
       name: SITE_NAME,
       url: SITE_URL,
       logo: `${SITE_URL}/brand/icon.png`,
-      email: "hi@invessiv.de",
-      telephone: "+49-170-12345678",
+      email: COMPANY.contact.email,
+      telephone: COMPANY.contact.phoneDisplayEn,
     },
     {
       "@type": "Service",

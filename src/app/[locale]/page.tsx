@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
+import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { SITE_URL } from "@/lib/site-metadata";
-
-const SUPPORTED_LOCALES = ["de", "en"] as const;
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -15,7 +14,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: LocalePageProps): Promise<Metadata> {
   const { locale } = await params;
-  if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) {
+  if (!isSupportedLocale(locale)) {
     return {};
   }
 
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
 
 export default async function LocalePage({ params }: LocalePageProps) {
   const { locale } = await params;
-  if (!SUPPORTED_LOCALES.includes(locale as (typeof SUPPORTED_LOCALES)[number])) {
+  if (!isSupportedLocale(locale)) {
     notFound();
   }
 
