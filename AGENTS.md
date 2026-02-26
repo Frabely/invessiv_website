@@ -247,6 +247,7 @@ Outputs:
 - Komponenten werden standardmäßig als eigener Ordner angelegt (kein einzelnes loses `.tsx` bei produktiven Komponenten)
 - Pro Komponente im Ordner mindestens: `component-name.tsx`; bei eigenen Styles `component-name.css` (oder `.scss`), bei relevanter Logik `component-name.test.ts(x)`
 - Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
+- Breadcrumbs werden immer über eine zentrale, wiederverwendbare Komponente umgesetzt; Seiten bauen Breadcrumb-Markup nicht lokal in `page.tsx`/Layouts nach
 - Styling für Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
 - Logiknahe Tests gehören in die Nähe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
 - Route-Dateien (`page.tsx`) orchestrieren nur: keine großen Render-Switches, keine umfangreiche lokale Daten-/Textlogik

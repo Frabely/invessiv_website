@@ -87,7 +87,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
   const content = contentByLocale[locale];
 
   return (
-    <LegalLayout lead={content.lead} locale={locale} slug="privacy" title={content.title}>
+    <LegalLayout lead={content.lead} locale={locale} title={content.title}>
       <section>
         <h2>{locale === "de" ? "1. Verantwortliche Stelle" : "1. Controller"}</h2>
         <p>

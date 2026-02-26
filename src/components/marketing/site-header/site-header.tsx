@@ -10,10 +10,16 @@ import type { NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 
 type SiteHeaderProps = {
+  brandHref?: string;
+  ctaHref?: string;
   navigation: NavigationItem[];
 };
 
-export function SiteHeader({ navigation }: SiteHeaderProps) {
+export function SiteHeader({
+  brandHref = "#hero",
+  ctaHref = "#contact",
+  navigation,
+}: SiteHeaderProps) {
   const { locale, setLocale, theme, toggleTheme } = useLanguage();
   const isScrolled = useScrolledHeader(14);
   const ui = getSiteHeaderUiContent(locale);
@@ -28,10 +34,15 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
     event.currentTarget.closest("details")?.removeAttribute("open");
   };
 
+  const getLabelKey = (href: string) => {
+    const hashIndex = href.indexOf("#");
+    return hashIndex >= 0 ? href.slice(hashIndex) : href;
+  };
+
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="site-header__inner">
-        <a className="site-header__brand" href="#hero">
+        <a className="site-header__brand" href={brandHref}>
           <Image
             src="/brand/icon.png"
             alt="Invessiv Logo"
@@ -47,7 +58,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             {navigation.map((item) => (
               <li key={item.href}>
                 <a href={item.href}>
-                  {ui.labelsByHref[item.href] ?? item.label}
+                  {ui.labelsByHref[getLabelKey(item.href)] ?? item.label}
                 </a>
               </li>
             ))}
@@ -100,7 +111,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
               </button>
             </div>
           </details>
-          <a className="menu-cta" href="#contact">
+          <a className="menu-cta" href={ctaHref}>
             {ui.ctaLabel}
           </a>
         </div>
@@ -180,12 +191,12 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
               {navigation.map((item) => (
                 <li key={item.href}>
                   <a href={item.href}>
-                    {ui.labelsByHref[item.href] ?? item.label}
+                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.label}
                   </a>
                 </li>
               ))}
               <li>
-                <a className="mobile-menu-cta" href="#contact">
+                <a className="mobile-menu-cta" href={ctaHref}>
                   {ui.ctaLabel}
                 </a>
               </li>

@@ -11,7 +11,7 @@ export const SECTION_IDS = [
 export type SectionId = (typeof SECTION_IDS)[number];
 
 export type NavigationItem = {
-  href: `#${SectionId}`;
+  href: string;
   label: string;
 };
 

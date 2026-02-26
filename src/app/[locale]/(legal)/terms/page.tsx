@@ -81,7 +81,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
   const content = contentByLocale[locale];
 
   return (
-    <LegalLayout lead={content.lead} locale={locale} slug="terms" title={content.title}>
+    <LegalLayout lead={content.lead} locale={locale} title={content.title}>
       <section>
         <h2>{locale === "de" ? "1. Anbieter" : "1. Provider"}</h2>
         <p>
