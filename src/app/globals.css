@@ -1858,8 +1858,8 @@ main {
 .site-footer__grid {
   margin-top: 8px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
 }
 
 .site-footer__col {
@@ -1867,11 +1867,11 @@ main {
   text-align: left;
 }
 
-.site-footer__col:nth-child(2) {
+.site-footer__col--legal {
   text-align: center;
 }
 
-.site-footer__col:nth-child(3) {
+.site-footer__col:last-child {
   text-align: right;
 }
 
@@ -1887,13 +1887,14 @@ main {
   padding: 0;
   display: grid;
   gap: 7px;
+  justify-items: start;
 }
 
-.site-footer__col:nth-child(2) ul {
+.site-footer__col--legal ul {
   justify-items: center;
 }
 
-.site-footer__col:nth-child(3) ul {
+.site-footer__col:last-child ul {
   justify-items: end;
 }
 
@@ -1949,13 +1950,10 @@ main {
 
 .site-footer__col .site-footer__socials {
   display: inline-flex;
+  justify-content: flex-start;
 }
 
-.site-footer__col:nth-child(2) .site-footer__socials {
-  justify-content: center;
-}
-
-.site-footer__col:nth-child(3) .site-footer__socials {
+.site-footer__col:last-child .site-footer__socials {
   justify-content: flex-end;
 }
 
@@ -2606,17 +2604,22 @@ main {
     text-align: center;
   }
 
-  .site-footer__col:nth-child(2),
-  .site-footer__col:nth-child(3) {
+  .site-footer__col--legal {
     text-align: center;
   }
 
-  .site-footer__col:nth-child(2) ul,
-  .site-footer__col:nth-child(3) ul {
+  .site-footer__col:last-child {
+    text-align: center;
+  }
+
+  .site-footer__col ul,
+  .site-footer__col--legal ul,
+  .site-footer__col:last-child ul {
     justify-items: center;
   }
 
-  .site-footer__col:nth-child(3) .site-footer__socials {
+  .site-footer__col .site-footer__socials,
+  .site-footer__col:last-child .site-footer__socials {
     justify-content: center;
   }
 
@@ -2859,8 +2862,8 @@ main {
 }
 
 .legal-page {
-  min-height: 100vh;
-  padding: 118px 0 92px;
+  min-height: 0;
+  padding: 118px 0 32px;
   width: min(var(--max-content-width), 100%);
   margin: 0 auto;
   font-size: 1rem;
@@ -2943,6 +2946,12 @@ main {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
   max-width: 62ch;
   font-size: 1rem;
+}
+
+.legal-updated-at {
+  margin: 8px 0 0;
+  color: color-mix(in srgb, var(--color-text) 62%, var(--color-text-muted) 38%);
+  font-size: 0.84rem;
 }
 
 .legal-page section {
@@ -3109,7 +3118,7 @@ main {
 
 @media (max-width: 900px) {
   .legal-page {
-    padding: 96px 0 60px;
+    padding: 96px 0 22px;
   }
 
   .legal-page__inner {

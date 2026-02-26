@@ -1,0 +1,38 @@
+{
+    "terms":  {
+                  "meta":  {
+                               "title":  "AGB",
+                               "description":  "Allgemeine GeschÃ¤ftsbedingungen von Invessiv.",
+                               "openGraphTitle":  "AGB | Invessiv",
+                               "openGraphLocale":  "de_DE"
+                           },
+                  "page":  {
+                               "title":  "Allgemeine GeschÃ¤ftsbedingungen (AGB)",
+                               "lead":  "Diese AGB gelten fÃ¼r Leistungen von Invessiv im Bereich Website-Erstellung, Website-Optimierung und digitale ProzesslÃ¶sungen.",
+                               "updatedAt":  "Zuletzt geÃ¤ndert: 26. Februar 2026."
+                           },
+                  "sections":  {
+                                   "provider":  {
+                                                    "title":  "1. Anbieter",
+                                                    "contractPrefix":  "Vertragspartner ist",
+                                                    "representedByLabel":  "vertreten durch"
+                                                },
+                                   "scope":  {
+                                                 "title":  "2. Geltungsbereich",
+                                                 "body":  "Diese AGB gelten fÃ¼r alle Angebote, Leistungen und VertrÃ¤ge zwischen Invessiv und Unternehmern, sofern nicht ausdrÃ¼cklich etwas anderes schriftlich vereinbart wurde."
+                                             },
+                                   "services":  {
+                                                    "title":  "3. Leistungen",
+                                                    "body":  "Art und Umfang der Leistung ergeben sich aus Angebot, Leistungsbeschreibung und Projektbriefing. Ã„nderungen des Scopes bedÃ¼rfen einer gesonderten Abstimmung."
+                                                },
+                                   "payment":  {
+                                                   "title":  "4. VergÃ¼tung und Zahlungsbedingungen",
+                                                   "body":  "Preise ergeben sich aus dem individuellen Angebot. Rechnungen sind ohne Abzug innerhalb von 14 Tagen fÃ¤llig."
+                                               },
+                                   "usageRights":  {
+                                                       "title":  "5. Nutzungsrechte",
+                                                       "body":  "Mit vollstÃ¤ndiger Zahlung erhÃ¤lt der Auftraggeber die vereinbarten Nutzungsrechte an den gelieferten Ergebnissen im vertraglich definierten Umfang."
+                                                   }
+                               }
+              }
+}

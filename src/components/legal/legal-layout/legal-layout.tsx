@@ -11,14 +11,34 @@ type LegalLayoutProps = {
   lead: string;
   locale: Locale;
   title: string;
+  updatedAt?: string;
 };
 
-export function LegalLayout({ children, lead, locale, title }: LegalLayoutProps) {
+export function LegalLayout({ children, lead, locale, title, updatedAt }: LegalLayoutProps) {
   const footerSection = getHomeSections(locale).find((section) => section.id === "footer");
   const legalHeaderNavigation = PRIMARY_NAVIGATION.map((item) => ({
     ...item,
     href: `/${locale}${item.href}`,
   }));
+  const localizeFooterHref = (href: string) => {
+    if (href.startsWith("#")) {
+      return `/${locale}${href}`;
+    }
+    return href;
+  };
+  const localizedFooterColumns =
+    footerSection?.footerColumns?.map((column) => ({
+      ...column,
+      links: column.links.map((link) => ({
+        ...link,
+        href: localizeFooterHref(link.href),
+      })),
+    })) ?? [];
+  const localizedFooterLegalLinks =
+    footerSection?.footerLegalLinks?.map((link) => ({
+      ...link,
+      href: localizeFooterHref(link.href),
+    })) ?? [];
 
   return (
     <>
@@ -39,6 +59,7 @@ export function LegalLayout({ children, lead, locale, title }: LegalLayoutProps)
           <header className="legal-page__intro">
             <h1>{title}</h1>
             <p className="legal-lead">{lead}</p>
+            {updatedAt ? <p className="legal-updated-at">{updatedAt}</p> : null}
           </header>
           {children}
         </div>
@@ -47,11 +68,11 @@ export function LegalLayout({ children, lead, locale, title }: LegalLayoutProps)
         <FooterSection
           bottomNote={footerSection.footerBottomNote}
           brand={footerSection.footerBrand}
-          columns={footerSection.footerColumns ?? []}
+          columns={localizedFooterColumns}
           copyright={footerSection.footerCopyright}
           description={footerSection.description}
           id="footer"
-          legalLinks={footerSection.footerLegalLinks}
+          legalLinks={localizedFooterLegalLinks}
           socialLinks={footerSection.footerSocialLinks}
         />
       ) : null}

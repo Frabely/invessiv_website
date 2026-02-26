@@ -62,7 +62,12 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
   const imprint = dict.imprint;
 
   return (
-    <LegalLayout lead={imprint.page.lead} locale={locale} title={imprint.page.title}>
+    <LegalLayout
+      lead={imprint.page.lead}
+      locale={locale}
+      title={imprint.page.title}
+      updatedAt={imprint.page.updatedAt}
+    >
       <section className="legal-content-card" id="company-details">
         <h2 className="legal-content-card__title">{COMPANY.brandName}</h2>
 

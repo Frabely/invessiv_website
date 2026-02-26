@@ -1,0 +1,38 @@
+{
+    "privacy":  {
+                    "meta":  {
+                                 "title":  "Privacy",
+                                 "description":  "Privacy policy of Invessiv.",
+                                 "openGraphTitle":  "Privacy | Invessiv",
+                                 "openGraphLocale":  "en_US"
+                             },
+                    "page":  {
+                                 "title":  "Privacy Policy",
+                                 "lead":  "This policy explains what personal data we process, why we process it, and how we handle it on this website.",
+                                 "updatedAt":  "Last updated: February 26, 2026."
+                             },
+                    "sections":  {
+                                     "controller":  {
+                                                        "title":  "1. Controller",
+                                                        "ownerLabel":  "Owner",
+                                                        "phoneLabel":  "Phone"
+                                                    },
+                                     "hosting":  {
+                                                     "title":  "2. Hosting and server logs",
+                                                     "body":  "When visiting this website, the hosting provider processes technically required connection data (for example IP address, timestamp, user-agent, referrer, requested resource) to ensure service stability and abuse prevention. Legal basis: Art. 6 para. 1 lit. f GDPR."
+                                                 },
+                                     "contactRequests":  {
+                                                             "title":  "3. Contact requests",
+                                                             "body":  "If you contact us via email or phone, we process your data to handle your request and related follow-ups."
+                                                         },
+                                     "cookies":  {
+                                                     "title":  "4. Cookies and similar technologies",
+                                                     "body":  "This website currently uses only technically required functionality. Tracking or marketing cookies are not actively used at this time."
+                                                 },
+                                     "rights":  {
+                                                    "title":  "5. Your rights",
+                                                    "body":  "Under the GDPR you have rights including access, rectification, erasure, restriction, data portability and objection."
+                                                }
+                                 }
+                }
+}

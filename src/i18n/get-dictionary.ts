@@ -12,6 +12,7 @@ export type Dictionary = {
     page: {
       title: string;
       lead: string;
+      updatedAt: string;
     };
     sections: {
       provider: {
@@ -72,9 +73,90 @@ export type Dictionary = {
       phoneDisplay: string;
     };
   };
+  terms: {
+    meta: {
+      title: string;
+      description: string;
+      openGraphTitle: string;
+      openGraphLocale: string;
+    };
+    page: {
+      title: string;
+      lead: string;
+      updatedAt: string;
+    };
+    sections: {
+      provider: {
+        title: string;
+        contractPrefix: string;
+        representedByLabel: string;
+      };
+      scope: {
+        title: string;
+        body: string;
+      };
+      services: {
+        title: string;
+        body: string;
+      };
+      payment: {
+        title: string;
+        body: string;
+      };
+      usageRights: {
+        title: string;
+        body: string;
+      };
+    };
+  };
+  privacy: {
+    meta: {
+      title: string;
+      description: string;
+      openGraphTitle: string;
+      openGraphLocale: string;
+    };
+    page: {
+      title: string;
+      lead: string;
+      updatedAt: string;
+    };
+    sections: {
+      controller: {
+        title: string;
+        ownerLabel: string;
+        phoneLabel: string;
+      };
+      hosting: {
+        title: string;
+        body: string;
+      };
+      contactRequests: {
+        title: string;
+        body: string;
+      };
+      cookies: {
+        title: string;
+        body: string;
+      };
+      rights: {
+        title: string;
+        body: string;
+      };
+    };
+  };
 };
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const dictionary = await import(`./dictionaries/${locale}.json`);
-  return dictionary.default as Dictionary;
+  const [imprint, terms, privacy] = await Promise.all([
+    import(`./dictionaries/legal/imprint/${locale}.json`),
+    import(`./dictionaries/legal/terms/${locale}.json`),
+    import(`./dictionaries/legal/privacy/${locale}.json`),
+  ]);
+
+  return {
+    imprint: imprint.default.imprint,
+    terms: terms.default.terms,
+    privacy: privacy.default.privacy,
+  };
 }

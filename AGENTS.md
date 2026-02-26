@@ -328,6 +328,9 @@ Outputs:
 
 - Dictionaries liegen in `src/i18n/dictionaries/<locale>.json`
 - Laden erfolgt serverseitig über `src/i18n/get-dictionary.ts` (`server-only`)
+- High-Priority-Regel (verbindlich): Sämtliche sprachabhängigen UI-/Seitentexte liegen ausschließlich in Dictionaries; keine Inline-Texte in `page.tsx`, Layouts oder Komponenten
+- High-Priority-Regel (verbindlich): Wenn Dictionary-Dateien pro Sprache zu groß werden, müssen sie in mehrere, fachlich geschnittene Dateien aufgeteilt werden (z. B. `legal`, `home`, `services`, `footer`) statt ein monolithisches Sprachfile weiter anwachsen zu lassen
+- High-Priority-Regel (verbindlich): Neue Texte oder Textänderungen werden immer für alle unterstützten Sprachen parallel gepflegt; Merge mit veralteten Übersetzungsständen ist nicht erlaubt
 - Key-Konvention:
   - Namespace pro Seite/Domain (z. B. `imprint`)
   - Unterteilung in `meta`, `page`, `sections`, `labels`, `values` konsistent halten

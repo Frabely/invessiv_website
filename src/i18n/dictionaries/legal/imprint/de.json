@@ -1,0 +1,73 @@
+{
+    "imprint":  {
+                    "meta":  {
+                                 "title":  "Impressum",
+                                 "description":  "Impressum und Anbieterkennzeichnung von Invessiv.",
+                                 "openGraphTitle":  "Impressum | Invessiv",
+                                 "openGraphLocale":  "de_DE"
+                             },
+                    "page":  {
+                                 "title":  "Impressum",
+                                 "lead":  "Angaben gemÃ¤ÃŸ Â§ 5 TMG und Â§ 18 Abs. 2 MStV.",
+                                 "updatedAt":  "Zuletzt geÃ¤ndert: 26. Februar 2026."
+                             },
+                    "sections":  {
+                                     "provider":  {
+                                                      "title":  "Anbieter",
+                                                      "labels":  {
+                                                                     "company":  "Firma",
+                                                                     "legalForm":  "Rechtsform",
+                                                                     "representedBy":  "Vertreten durch",
+                                                                     "address":  "Adresse"
+                                                                 },
+                                                      "notePlaceholder":  "[PLATZHALTER: Falls bei Gewerbeanmeldung eine abweichende Firmierung verwendet wird, hier exakt anpassen]"
+                                                  },
+                                     "contact":  {
+                                                     "title":  "Kontakt",
+                                                     "labels":  {
+                                                                    "email":  "E-Mail",
+                                                                    "phone":  "Telefon"
+                                                                }
+                                                 },
+                                     "commercialRegister":  {
+                                                                "title":  "Registereintrag",
+                                                                "emptyEntry":  "Kein Handelsregistereintrag.",
+                                                                "notePlaceholder":  "[PLATZHALTER: Aktualisieren, falls spÃ¤ter ein Registereintrag erfolgt]"
+                                                            },
+                                     "vatId":  {
+                                                   "title":  "Umsatzsteuer-ID",
+                                                   "notePlaceholder":  "[PLATZHALTER: USt-IdNr. gemÃ¤ÃŸ Â§ 27a UStG ergÃ¤nzen, sobald vorhanden]"
+                                               },
+                                     "responsibleContent":  {
+                                                                "title":  "Verantwortlich fÃ¼r den Inhalt",
+                                                                "labels":  {
+                                                                               "name":  "Name",
+                                                                               "address":  "Adresse"
+                                                                           }
+                                                            },
+                                     "social":  {
+                                                    "title":  "Social-Profile (noch ergÃ¤nzen)",
+                                                    "placeholders":  {
+                                                                         "linkedin":  "https://www.linkedin.com/company/invessiv",
+                                                                         "x":  "https://x.com/invessiv",
+                                                                         "instagram":  "https://www.instagram.com/invessiv/"
+                                                                     }
+                                                },
+                                     "euDispute":  {
+                                                       "title":  "EU-Streitschlichtung",
+                                                       "textBeforeLink":  "Die EuropÃ¤ische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
+                                                       "linkLabel":  "ODR-Plattform der EU-Kommission",
+                                                       "textAfterLink":  "Unsere E-Mail-Adresse finden Sie oben im Impressum."
+                                                   },
+                                     "consumerDispute":  {
+                                                             "title":  "Verbraucherstreitbeilegung",
+                                                             "body":  "Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+                                                         }
+                                 },
+                    "values":  {
+                                   "legalForm":  "Einzelunternehmen (NebentÃ¤tigkeit)",
+                                   "addressLine":  "Frankenberger StraÃŸe 235, 09131 Chemnitz, Deutschland",
+                                   "phoneDisplay":  "+49 1523 2070477"
+                               }
+                }
+}

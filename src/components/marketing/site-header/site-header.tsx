@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { MouseEvent } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
@@ -21,6 +22,8 @@ export function SiteHeader({
   navigation,
 }: SiteHeaderProps) {
   const { locale, setLocale, theme, toggleTheme } = useLanguage();
+  const pathname = usePathname();
+  const router = useRouter();
   const isScrolled = useScrolledHeader(14);
   const ui = getSiteHeaderUiContent(locale);
   const themeToggleLabel =
@@ -30,7 +33,23 @@ export function SiteHeader({
     nextLocale: Locale,
     event: MouseEvent<HTMLButtonElement>,
   ) => {
+    const normalizedPath = pathname || "/";
+    const nextPathname = (() => {
+      if (normalizedPath === "/") {
+        return `/${nextLocale}`;
+      }
+      const segments = normalizedPath.split("/").filter(Boolean);
+      if (segments[0] === "de" || segments[0] === "en") {
+        segments[0] = nextLocale;
+        return `/${segments.join("/")}`;
+      }
+      return `/${nextLocale}${normalizedPath}`;
+    })();
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    const hash = typeof window !== "undefined" ? window.location.hash : "";
+
     setLocale(nextLocale);
+    router.push(`${nextPathname}${search}${hash}`);
     event.currentTarget.closest("details")?.removeAttribute("open");
   };
 

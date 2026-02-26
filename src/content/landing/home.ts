@@ -719,16 +719,9 @@ const HOME_SECTIONS: LandingSection[] = [
             links: [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen & Preise", href: "#services" },
+              { label: "Prozess", href: "#process" },
+              { label: "FAQ", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
-            ],
-          },
-          {
-            title: "Leistungen",
-            links: [
-              { label: "Landing pages", href: "#services" },
-              { label: "Webdesign", href: "#services" },
-              { label: "Webentwicklung", href: "#services" },
-              { label: "Prozess-Tools", href: "#services" },
             ],
           },
           {
@@ -810,17 +803,10 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "Proof", href: "#proof" },
-              { label: "Leistungen & Preise", href: "#services" },
+              { label: "Services & Pricing", href: "#services" },
+              { label: "Process", href: "#process" },
+              { label: "FAQ", href: "#faq" },
               { label: "Contact", href: "#contact" },
-            ],
-          },
-          {
-            title: "Services",
-            links: [
-              { label: "Landing pages", href: "#services" },
-              { label: "Web design", href: "#services" },
-              { label: "Web development", href: "#services" },
-              { label: "Process tools", href: "#services" },
             ],
           },
           {
@@ -915,16 +901,9 @@ const HOME_SECTIONS: LandingSection[] = [
             links: [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen & Preise", href: "#services" },
+              { label: "Prozess", href: "#process" },
+              { label: "FAQ", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
-            ],
-          },
-          {
-            title: "Leistungen",
-            links: [
-              { label: "Landing pages", href: "#services" },
-              { label: "Webdesign", href: "#services" },
-              { label: "Webentwicklung", href: "#services" },
-              { label: "Prozess-Tools", href: "#services" },
             ],
           },
           {
@@ -971,17 +950,10 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "Proof", href: "#proof" },
-              { label: "Leistungen & Preise", href: "#services" },
+              { label: "Services & Pricing", href: "#services" },
+              { label: "Process", href: "#process" },
+              { label: "FAQ", href: "#faq" },
               { label: "Contact", href: "#contact" },
-            ],
-          },
-          {
-            title: "Services",
-            links: [
-              { label: "Landing pages", href: "#services" },
-              { label: "Web design", href: "#services" },
-              { label: "Web development", href: "#services" },
-              { label: "Process tools", href: "#services" },
             ],
           },
           {
@@ -1057,7 +1029,6 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     };
   });
 }
-
 
 
 

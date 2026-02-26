@@ -36,12 +36,25 @@ export function FooterSection({
 }: FooterSectionProps) {
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
+  const legalColumnTitle = legalLinks.some((link) => link.label === "Impressum")
+    ? "Rechtliches"
+    : "Legal";
   const linkColumns = columns
     .map((column) => ({
       ...column,
       links: column.links.filter((link) => !isPlaceholderHref(link.href)),
     }))
     .filter((column) => column.links.length > 0);
+  const footerColumnsWithLegal = legalLinks.length
+    ? [
+        ...linkColumns.slice(0, 1),
+        {
+          title: legalColumnTitle,
+          links: legalLinks.filter((link) => !isPlaceholderHref(link.href)),
+        },
+        ...linkColumns.slice(1),
+      ]
+    : linkColumns;
   const visibleSocialLinks = socialLinks.filter(
     (link) => !isPlaceholderHref(link.href),
   );
@@ -60,9 +73,9 @@ export function FooterSection({
     <footer className="site-footer" id={id}>
       <div className="site-footer__inner">
         <div className="site-footer__grid" role="list">
-          {linkColumns.map((column) => (
+          {footerColumnsWithLegal.map((column) => (
             <section
-              className="site-footer__col"
+              className={`site-footer__col${column.title === legalColumnTitle ? " site-footer__col--legal" : ""}`}
               key={column.title}
               role="listitem"
             >
@@ -120,23 +133,6 @@ export function FooterSection({
             ) : null}
             {copyright ? <span>{copyright}</span> : null}
           </div>
-          {legalLinks.length ? (
-            <div className="site-footer__bottom-right">
-              {legalLinks.map((link) => (
-                <a
-                  className={
-                    isPlaceholderHref(link.href)
-                      ? "is-placeholder-link"
-                      : undefined
-                  }
-                  href={link.href}
-                  key={link.label}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          ) : null}
         </div>
       </div>
     </footer>
