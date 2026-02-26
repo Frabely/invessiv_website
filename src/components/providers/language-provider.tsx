@@ -45,25 +45,40 @@ export function LanguageProvider({
     const stored = window.localStorage.getItem(STORAGE_KEY);
     const storedLocale = stored === "de" || stored === "en" ? stored : null;
     const resolvedLocale = localeFromPath ?? storedLocale ?? initialLocale;
-    setLocaleState(resolvedLocale);
-  }, [initialLocale]);
+    if (resolvedLocale === locale) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      setLocaleState(resolvedLocale);
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [initialLocale, locale]);
 
   useEffect(() => {
-    if (!ENABLE_THEME_SWITCH) {
-      setThemeState("dark");
-      return;
-    }
-    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-    if (stored === "light" || stored === "dark") {
-      setThemeState(stored);
-      return;
-    }
-    setThemeState(
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+    const resolvedTheme = (() => {
+      if (!ENABLE_THEME_SWITCH) {
+        return "dark" as Theme;
+      }
+      const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === "light" || stored === "dark") {
+        return stored;
+      }
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
-        : "light",
-    );
-  }, []);
+        : "light";
+    })();
+    if (resolvedTheme === theme) {
+      return;
+    }
+    const frame = window.requestAnimationFrame(() => {
+      setThemeState(resolvedTheme);
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [theme]);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, locale);
