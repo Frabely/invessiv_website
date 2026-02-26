@@ -1157,20 +1157,31 @@ main {
 }
 
 .services-card--recommended {
-  border: 2px solid color-mix(in srgb, var(--accent) 86%, #ffffff 14%);
+  border: 3px solid color-mix(in srgb, var(--accent) 92%, #ffffff 8%);
   background: color-mix(
     in srgb,
-    var(--color-surface-1) 84%,
-    rgba(231, 154, 73, 0.22) 16%
+    var(--color-surface-1) 80%,
+    rgba(231, 154, 73, 0.3) 20%
   );
+  transform: translateY(0) scale(1.018);
   box-shadow:
-    inset 0 1px 0 rgba(255, 233, 210, 0.11),
-    0 0 0 2px color-mix(in srgb, var(--accent) 32%, transparent),
-    0 0 30px color-mix(in srgb, var(--accent) 24%, transparent);
+    inset 0 1px 0 rgba(255, 233, 210, 0.14),
+    0 0 0 3px color-mix(in srgb, var(--accent) 36%, transparent),
+    0 0 42px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.services-card--recommended::before {
+  background: radial-gradient(
+    340px circle at var(--services-spotlight-x) var(--services-spotlight-y),
+    color-mix(in srgb, var(--accent) 34%, transparent) 0%,
+    transparent 64%
+  );
+  opacity: 0.92;
 }
 
 .services-card--recommended:hover {
-  border-color: color-mix(in srgb, var(--accent) 92%, #ffffff 8%);
+  border-color: color-mix(in srgb, var(--accent) 96%, #ffffff 4%);
+  transform: translateY(-2px) scale(1.018);
 }
 
 .services-card:hover::before {
@@ -3806,16 +3817,16 @@ body {
 }
 
 [data-theme="light"] .services-card--recommended {
-  border: 2px solid color-mix(in srgb, var(--accent) 82%, #ffffff 18%);
-  background: color-mix(in srgb, #ffffff 84%, var(--accent) 16%);
+  border: 3px solid color-mix(in srgb, var(--accent) 88%, #ffffff 12%);
+  background: color-mix(in srgb, #ffffff 78%, var(--accent) 22%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent),
-    0 0 24px color-mix(in srgb, var(--accent) 20%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 0 32px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 [data-theme="light"] .services-card--recommended:hover {
-  border-color: color-mix(in srgb, var(--accent) 90%, #ffffff 10%);
+  border-color: color-mix(in srgb, var(--accent) 94%, #ffffff 6%);
 }
 
 @media (max-width: 1200px) {
@@ -3866,4 +3877,29 @@ body {
   .hero__title-gradient {
     animation: none;
   }
+}
+
+/* Final priority override: recommended service card must stay visually dominant */
+.services-card--recommended {
+  border: 4px solid var(--accent) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 233, 210, 0.14),
+    0 0 0 2px color-mix(in srgb, var(--accent) 48%, transparent),
+    0 0 46px color-mix(in srgb, var(--accent) 38%, transparent) !important;
+}
+
+.services-card--recommended::before {
+  opacity: 0.94 !important;
+}
+
+.services-card--recommended:hover {
+  border-color: var(--accent) !important;
+}
+
+[data-theme="light"] .services-card--recommended {
+  border: 4px solid var(--accent) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent),
+    0 0 38px color-mix(in srgb, var(--accent) 28%, transparent) !important;
 }
