@@ -1,6 +1,13 @@
 import type { SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
-import { COMPANY, COMPANY_MAILTO, COMPANY_TEL } from "@/config/company";
+import {
+  COMPANY,
+  COMPANY_MAILTO,
+  COMPANY_SOCIAL_INSTAGRAM,
+  COMPANY_SOCIAL_LINKEDIN,
+  COMPANY_SOCIAL_X,
+  COMPANY_TEL,
+} from "@/config/company";
 export type LandingSectionCopy = {
   title: string;
   description: string;
@@ -738,13 +745,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerSocialLinks: [
           {
             platform: "linkedin",
-            href: "/imprint#placeholder-social-linkedin",
+            href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
-            href: "/imprint#placeholder-social-instagram",
+            href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
         ],
@@ -830,13 +837,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerSocialLinks: [
           {
             platform: "linkedin",
-            href: "/imprint#placeholder-social-linkedin",
+            href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
-            href: "/imprint#placeholder-social-instagram",
+            href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
         ],
@@ -934,13 +941,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerSocialLinks: [
           {
             platform: "linkedin",
-            href: "/imprint#placeholder-social-linkedin",
+            href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
-            href: "/imprint#placeholder-social-instagram",
+            href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
         ],
@@ -991,13 +998,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerSocialLinks: [
           {
             platform: "linkedin",
-            href: "/imprint#placeholder-social-linkedin",
+            href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: "/imprint#placeholder-social-x", label: "X" },
+          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
-            href: "/imprint#placeholder-social-instagram",
+            href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
         ],

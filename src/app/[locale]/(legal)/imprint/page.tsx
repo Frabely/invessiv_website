@@ -1,7 +1,14 @@
 ﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
-import { COMPANY, COMPANY_MAILTO, COMPANY_TEL } from "@/config/company";
+import {
+  COMPANY,
+  COMPANY_MAILTO,
+  COMPANY_SOCIAL_INSTAGRAM,
+  COMPANY_SOCIAL_LINKEDIN,
+  COMPANY_SOCIAL_X,
+  COMPANY_TEL,
+} from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { SITE_URL } from "@/lib/site-metadata";
@@ -63,25 +70,43 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
     >
       <section id="company-details">
         <h2>{imprint.sections.provider.title}</h2>
-        <p>
-          <strong>{imprint.sections.provider.labels.company}:</strong> {COMPANY.brandName}
-          <br />
-          <strong>{imprint.sections.provider.labels.legalForm}:</strong> {imprint.values.legalForm}
-          <br />
-          <strong>{imprint.sections.provider.labels.representedBy}:</strong> {COMPANY.owner}
-          <br />
-          <strong>{imprint.sections.provider.labels.address}:</strong> {imprint.values.addressLine}
-        </p>
+        <dl className="legal-kv">
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.provider.labels.company}</dt>
+            <dd>{COMPANY.brandName}</dd>
+          </div>
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.provider.labels.legalForm}</dt>
+            <dd>{imprint.values.legalForm}</dd>
+          </div>
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.provider.labels.representedBy}</dt>
+            <dd>{COMPANY.owner}</dd>
+          </div>
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.provider.labels.address}</dt>
+            <dd>{imprint.values.addressLine}</dd>
+          </div>
+        </dl>
         <p className="legal-placeholder">{imprint.sections.provider.notePlaceholder}</p>
       </section>
 
       <section>
         <h2>{imprint.sections.contact.title}</h2>
-        <p>
-          {imprint.sections.contact.labels.email}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
-          <br />
-          {imprint.sections.contact.labels.phone}: <a href={COMPANY_TEL}>{imprint.values.phoneDisplay}</a>
-        </p>
+        <dl className="legal-kv">
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.contact.labels.email}</dt>
+            <dd>
+              <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            </dd>
+          </div>
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.contact.labels.phone}</dt>
+            <dd>
+              <a href={COMPANY_TEL}>{imprint.values.phoneDisplay}</a>
+            </dd>
+          </div>
+        </dl>
       </section>
 
       <section>
@@ -97,22 +122,35 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
 
       <section>
         <h2>{imprint.sections.responsibleContent.title}</h2>
-        <p>
-          {COMPANY.owner}
-          <br />
-          {imprint.values.addressLine}
-        </p>
+        <dl className="legal-kv">
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.responsibleContent.labels.name}</dt>
+            <dd>{COMPANY.owner}</dd>
+          </div>
+          <div className="legal-kv__row">
+            <dt>{imprint.sections.responsibleContent.labels.address}</dt>
+            <dd>{imprint.values.addressLine}</dd>
+          </div>
+        </dl>
       </section>
 
       <section id="placeholder-social-linkedin">
         <h2>{imprint.sections.social.title}</h2>
         <ul>
-          <li className="legal-placeholder">{imprint.sections.social.placeholders.linkedin}</li>
-          <li className="legal-placeholder" id="placeholder-social-x">
-            {imprint.sections.social.placeholders.x}
+          <li>
+            <a href={COMPANY_SOCIAL_LINKEDIN} rel="noreferrer" target="_blank">
+              LinkedIn
+            </a>
           </li>
-          <li className="legal-placeholder" id="placeholder-social-instagram">
-            {imprint.sections.social.placeholders.instagram}
+          <li id="placeholder-social-x">
+            <a href={COMPANY_SOCIAL_X} rel="noreferrer" target="_blank">
+              X
+            </a>
+          </li>
+          <li id="placeholder-social-instagram">
+            <a href={COMPANY_SOCIAL_INSTAGRAM} rel="noreferrer" target="_blank">
+              Instagram
+            </a>
           </li>
         </ul>
       </section>

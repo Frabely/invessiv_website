@@ -38,7 +38,11 @@
         "notePlaceholder": "[PLATZHALTER: USt-IdNr. gemäß § 27a UStG ergänzen, sobald vorhanden]"
       },
       "responsibleContent": {
-        "title": "Verantwortlich für den Inhalt"
+        "title": "Verantwortlich für den Inhalt",
+        "labels": {
+          "name": "Name",
+          "address": "Adresse"
+        }
       },
       "social": {
         "title": "Social-Profile (noch ergänzen)",
@@ -51,7 +55,7 @@
       "euDispute": {
         "title": "EU-Streitschlichtung",
         "textBeforeLink": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
-        "linkLabel": "https://ec.europa.eu/consumers/odr/",
+        "linkLabel": "ODR-Plattform der EU-Kommission",
         "textAfterLink": "Unsere E-Mail-Adresse finden Sie oben im Impressum."
       },
       "consumerDispute": {

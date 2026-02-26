@@ -22,6 +22,10 @@ export const COMPANY = {
   },
 } as const;
 
+export const COMPANY_SOCIAL_LINKEDIN = "https://www.linkedin.com/company/invessiv";
+export const COMPANY_SOCIAL_INSTAGRAM = "https://www.instagram.com/invessiv/";
+export const COMPANY_SOCIAL_X = "https://x.com/invessiv";
+
 export const COMPANY_ADDRESS_LINE_DE = `${COMPANY.address.street}, ${COMPANY.address.postalCode} ${COMPANY.address.city}, ${COMPANY.address.country.de}`;
 export const COMPANY_ADDRESS_LINE_EN = `${COMPANY.address.street}, ${COMPANY.address.postalCode} ${COMPANY.address.city}, ${COMPANY.address.country.en}`;
 export const COMPANY_MAILTO = `mailto:${COMPANY.contact.email}`;

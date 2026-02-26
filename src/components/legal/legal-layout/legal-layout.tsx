@@ -1,6 +1,7 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Locale } from "@/config/i18n";
+import { LegalLanguageSwitch } from "@/components/legal/legal-language-switch/legal-language-switch";
 
 type LegalSlug = "imprint" | "privacy" | "terms";
 
@@ -16,27 +17,10 @@ export function LegalLayout({ children, lead, locale, slug, title }: LegalLayout
   return (
     <main className="legal-page">
       <div className="legal-page__topbar">
-        <Link className="legal-page__back" href={`/${locale}`}>
+        <Link className="btn btn--ghost legal-page__back" href={`/${locale}`}>
           {locale === "de" ? "Zur Startseite" : "Back to home"}
         </Link>
-        <nav aria-label={locale === "de" ? "Sprache wechseln" : "Switch language"} className="legal-lang-switch">
-          <Link
-            className={`legal-lang-switch__link${locale === "de" ? " is-active" : ""}`}
-            href={`/de/${slug}`}
-            hrefLang="de"
-            lang="de"
-          >
-            DE
-          </Link>
-          <Link
-            className={`legal-lang-switch__link${locale === "en" ? " is-active" : ""}`}
-            href={`/en/${slug}`}
-            hrefLang="en"
-            lang="en"
-          >
-            EN
-          </Link>
-        </nav>
+        <LegalLanguageSwitch locale={locale} slug={slug} />
       </div>
       <h1>{title}</h1>
       <p className="legal-lead">{lead}</p>

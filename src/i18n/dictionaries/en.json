@@ -38,7 +38,11 @@
         "notePlaceholder": "[PLACEHOLDER: Add VAT ID according to § 27a UStG once available]"
       },
       "responsibleContent": {
-        "title": "Responsible for content"
+        "title": "Responsible for content",
+        "labels": {
+          "name": "Name",
+          "address": "Address"
+        }
       },
       "social": {
         "title": "Social profiles (to be added)",
@@ -51,7 +55,7 @@
       "euDispute": {
         "title": "EU dispute resolution",
         "textBeforeLink": "The European Commission provides a platform for online dispute resolution (ODR):",
-        "linkLabel": "https://ec.europa.eu/consumers/odr/",
+        "linkLabel": "EU Commission ODR platform",
         "textAfterLink": "You can find our email address above in this imprint."
       },
       "consumerDispute": {

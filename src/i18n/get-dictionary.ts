@@ -42,6 +42,10 @@ export type Dictionary = {
       };
       responsibleContent: {
         title: string;
+        labels: {
+          name: string;
+          address: string;
+        };
       };
       social: {
         title: string;
