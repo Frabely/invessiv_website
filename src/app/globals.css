@@ -2883,43 +2883,33 @@ main {
 }
 
 .legal-lang-switch {
-  display: inline-flex;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid rgba(225, 167, 114, 0.3);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.07);
-  box-shadow: 0 10px 24px rgba(5, 12, 25, 0.24);
+  position: static;
+  top: auto;
+  right: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  width: 120px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: 0 10px 22px rgba(8, 10, 15, 0.2);
+  z-index: auto;
 }
 
-.legal-lang-switch__link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 52px;
+.legal-lang-switch .site-header__locale-option {
   min-height: 44px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  color: #f2deca;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-decoration: none;
-  letter-spacing: 0.02em;
+  min-width: 0;
+  font-size: 0.82rem;
 }
 
-.legal-lang-switch__link.is-active {
-  background: linear-gradient(120deg, #f2a73a, #d45a1f);
-  color: #2c1409;
-  border-color: rgba(255, 233, 208, 0.32);
+.legal-lang-switch .site-header__locale-option:hover {
+  border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
 }
 
-.legal-lang-switch__link:hover {
-  background: rgba(255, 235, 214, 0.14);
-}
-
-.legal-lang-switch__link:focus-visible {
-  outline: 2px solid rgba(240, 178, 123, 0.66);
+.legal-lang-switch .site-header__locale-option:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 58%, transparent);
   outline-offset: 2px;
 }
 
@@ -3022,13 +3012,9 @@ main {
 }
 
 [data-theme="light"] .legal-lang-switch {
-  border-color: rgba(162, 101, 69, 0.28);
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow: 0 10px 24px rgba(38, 30, 23, 0.1);
-}
-
-[data-theme="light"] .legal-lang-switch__link {
-  color: #6f422f;
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+  box-shadow: 0 10px 22px rgba(20, 31, 51, 0.1);
 }
 
 [data-theme="light"] .legal-page h2 {
@@ -3082,11 +3068,12 @@ main {
 
   .legal-lang-switch {
     width: 100%;
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .legal-lang-switch__link {
-    flex: 1 1 0;
-    min-width: 0;
+  .legal-lang-switch .site-header__locale-option {
+    min-height: 44px;
   }
 
   .legal-page section {

@@ -1,6 +1,10 @@
-import Link from "next/link";
+"use client";
+
+import type { MouseEvent } from "react";
+import { useRouter } from "next/navigation";
 import type { Locale } from "@/config/i18n";
 import { SUPPORTED_LOCALES } from "@/config/i18n";
+import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
 
 type LegalSlug = "imprint" | "privacy" | "terms";
 
@@ -10,22 +14,37 @@ type LegalLanguageSwitchProps = {
 };
 
 export function LegalLanguageSwitch({ locale, slug }: LegalLanguageSwitchProps) {
+  const router = useRouter();
+  const ui = getSiteHeaderUiContent(locale);
+
+  const handleLocaleSelect = (
+    nextLocale: Locale,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => {
+    if (nextLocale === locale) {
+      return;
+    }
+    router.push(`/${nextLocale}/${slug}`);
+    event.currentTarget.blur();
+  };
+
   return (
-    <nav
-      aria-label={locale === "de" ? "Sprache wechseln" : "Switch language"}
-      className="legal-lang-switch"
+    <div
+      aria-label={ui.localeSwitchLabel}
+      className="site-header__locale-popover legal-lang-switch"
+      role="group"
     >
       {SUPPORTED_LOCALES.map((supportedLocale) => (
-        <Link
+        <button
           key={supportedLocale}
-          className={`legal-lang-switch__link${supportedLocale === locale ? " is-active" : ""}`}
-          href={`/${supportedLocale}/${slug}`}
-          hrefLang={supportedLocale}
-          lang={supportedLocale}
+          aria-pressed={supportedLocale === locale}
+          className={`site-header__locale-option${supportedLocale === locale ? " is-active" : ""}`}
+          onClick={(event) => handleLocaleSelect(supportedLocale, event)}
+          type="button"
         >
           {supportedLocale.toUpperCase()}
-        </Link>
+        </button>
       ))}
-    </nav>
+    </div>
   );
 }
