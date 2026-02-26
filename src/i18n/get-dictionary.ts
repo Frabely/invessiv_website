@@ -22,6 +22,7 @@ export type Dictionary = {
           representedBy: string;
           address: string;
         };
+        notePlaceholder: string;
       };
       contact: {
         title: string;
@@ -33,6 +34,11 @@ export type Dictionary = {
       commercialRegister: {
         title: string;
         emptyEntry: string;
+        notePlaceholder: string;
+      };
+      vatId: {
+        title: string;
+        notePlaceholder: string;
       };
       responsibleContent: {
         title: string;
@@ -44,6 +50,16 @@ export type Dictionary = {
           x: string;
           instagram: string;
         };
+      };
+      euDispute: {
+        title: string;
+        textBeforeLink: string;
+        linkLabel: string;
+        textAfterLink: string;
+      };
+      consumerDispute: {
+        title: string;
+        body: string;
       };
     };
     values: {

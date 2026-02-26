@@ -18,7 +18,8 @@
           "legalForm": "Legal form",
           "representedBy": "Represented by",
           "address": "Address"
-        }
+        },
+        "notePlaceholder": "[PLACEHOLDER: If legal registration uses a different company wording, update it here]"
       },
       "contact": {
         "title": "Contact",
@@ -29,7 +30,12 @@
       },
       "commercialRegister": {
         "title": "Commercial register",
-        "emptyEntry": "No commercial register entry."
+        "emptyEntry": "No commercial register entry.",
+        "notePlaceholder": "[PLACEHOLDER: Update this section if a register entry is added later]"
+      },
+      "vatId": {
+        "title": "VAT ID",
+        "notePlaceholder": "[PLACEHOLDER: Add VAT ID according to § 27a UStG once available]"
       },
       "responsibleContent": {
         "title": "Responsible for content"
@@ -41,6 +47,16 @@
           "x": "[PLACEHOLDER: X/Twitter profile URL]",
           "instagram": "[PLACEHOLDER: Instagram profile URL]"
         }
+      },
+      "euDispute": {
+        "title": "EU dispute resolution",
+        "textBeforeLink": "The European Commission provides a platform for online dispute resolution (ODR):",
+        "linkLabel": "https://ec.europa.eu/consumers/odr/",
+        "textAfterLink": "You can find our email address above in this imprint."
+      },
+      "consumerDispute": {
+        "title": "Consumer dispute resolution",
+        "body": "We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
       }
     },
     "values": {

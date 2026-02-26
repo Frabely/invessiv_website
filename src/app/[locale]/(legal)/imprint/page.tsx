@@ -72,6 +72,7 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
           <br />
           <strong>{imprint.sections.provider.labels.address}:</strong> {imprint.values.addressLine}
         </p>
+        <p className="legal-placeholder">{imprint.sections.provider.notePlaceholder}</p>
       </section>
 
       <section>
@@ -86,6 +87,12 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       <section>
         <h2>{imprint.sections.commercialRegister.title}</h2>
         <p>{imprint.sections.commercialRegister.emptyEntry}</p>
+        <p className="legal-placeholder">{imprint.sections.commercialRegister.notePlaceholder}</p>
+      </section>
+
+      <section>
+        <h2>{imprint.sections.vatId.title}</h2>
+        <p className="legal-placeholder">{imprint.sections.vatId.notePlaceholder}</p>
       </section>
 
       <section>
@@ -108,6 +115,22 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
             {imprint.sections.social.placeholders.instagram}
           </li>
         </ul>
+      </section>
+
+      <section>
+        <h2>{imprint.sections.euDispute.title}</h2>
+        <p>
+          {imprint.sections.euDispute.textBeforeLink}{" "}
+          <a href="https://ec.europa.eu/consumers/odr/" rel="noreferrer" target="_blank">
+            {imprint.sections.euDispute.linkLabel}
+          </a>
+          . {imprint.sections.euDispute.textAfterLink}
+        </p>
+      </section>
+
+      <section>
+        <h2>{imprint.sections.consumerDispute.title}</h2>
+        <p>{imprint.sections.consumerDispute.body}</p>
       </section>
     </LegalLayout>
   );
