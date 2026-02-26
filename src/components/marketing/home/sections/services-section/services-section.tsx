@@ -6,20 +6,24 @@ import { ServiceCard } from "@/components/marketing/home/sections/services-secti
 type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
 type ServicesSectionProps = {
+  deliveryLabel: string;
+  detailsCtaLabel: string;
   description: string;
   id: string;
+  primaryCtaLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
-  servicesExampleCta: string;
   serviceCards: ServiceCard[];
   title: string;
 };
 
 export function ServicesSection({
+  deliveryLabel,
+  detailsCtaLabel,
   description,
   id,
+  primaryCtaLabel,
   sectionRef,
   serviceCards,
-  servicesExampleCta,
   title,
 }: ServicesSectionProps) {
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
@@ -47,25 +51,18 @@ export function ServicesSection({
 
       <div className="services-bento" role="list">
         {serviceCards.map((card) => {
-          const isVisual = Boolean(card.visual);
-          const spanClassName =
-            card.span === 4
-              ? "services-span-4"
-              : card.span === 6
-                ? "services-span-6"
-                : isVisual
-                  ? "services-span-7"
-                  : "services-span-5";
-          const cardClassName = `services-card ${isVisual ? "services-card--visual" : ""} ${spanClassName}`;
+          const cardClassName = `services-card services-card--${card.key}${card.isRecommended ? " services-card--recommended" : ""}`;
 
           return (
             <ServiceCard
               card={card}
               cardClassName={cardClassName}
-              key={card.title}
+              defaultDeliveryLabel={deliveryLabel}
+              detailsCtaLabel={detailsCtaLabel}
+              key={card.key}
               onPointerLeave={resetCardSpotlight}
               onPointerMove={setCardSpotlight}
-              servicesExampleCta={servicesExampleCta}
+              primaryCtaLabel={primaryCtaLabel}
             />
           );
         })}
