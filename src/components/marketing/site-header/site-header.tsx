@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import type { MouseEvent } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
+import type { Locale } from "@/config/i18n";
 
 type SiteHeaderProps = {
   navigation: NavigationItem[];
@@ -17,6 +19,15 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
   const ui = getSiteHeaderUiContent(locale);
   const themeToggleLabel =
     theme === "dark" ? ui.themeToggleLabel.dark : ui.themeToggleLabel.light;
+
+  const handleLocaleSelect = (
+    nextLocale: Locale,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => {
+    setLocale(nextLocale);
+    event.currentTarget.closest("details")?.removeAttribute("open");
+  };
+
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="site-header__inner">
@@ -75,14 +86,14 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             >
               <button
                 className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
-                onClick={() => setLocale("de")}
+                onClick={(event) => handleLocaleSelect("de", event)}
                 type="button"
               >
                 DE
               </button>
               <button
                 className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
-                onClick={() => setLocale("en")}
+                onClick={(event) => handleLocaleSelect("en", event)}
                 type="button"
               >
                 EN
@@ -114,14 +125,14 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
             >
               <button
                 className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
-                onClick={() => setLocale("de")}
+                onClick={(event) => handleLocaleSelect("de", event)}
                 type="button"
               >
                 DE
               </button>
               <button
                 className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
-                onClick={() => setLocale("en")}
+                onClick={(event) => handleLocaleSelect("en", event)}
                 type="button"
               >
                 EN
