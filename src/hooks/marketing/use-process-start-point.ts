@@ -30,6 +30,7 @@ export function useProcessStartPoint({
       return;
     }
     let totalLength = 0;
+    const hasMatchMedia = typeof window.matchMedia === "function";
 
     const updatePoint = () => {
       const layoutRect = layout.getBoundingClientRect();
@@ -70,10 +71,12 @@ export function useProcessStartPoint({
       const startShift =
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftX = firstCenter.x - startShift;
-      const isMobileViewport = window.matchMedia("(max-width: 900px)").matches;
-      const isTabletViewport = window.matchMedia(
-        "(max-width: 1200px) and (min-width: 901px)",
-      ).matches;
+      const isMobileViewport = hasMatchMedia
+        ? window.matchMedia("(max-width: 900px)").matches
+        : false;
+      const isTabletViewport = hasMatchMedia
+        ? window.matchMedia("(max-width: 1200px) and (min-width: 901px)").matches
+        : false;
       const rightX = isMobileViewport
         ? layoutRect.width - leftX
         : (() => {
@@ -178,7 +181,9 @@ export function useProcessStartPoint({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const isMobileViewport = window.matchMedia("(max-width: 900px)").matches;
+      const isMobileViewport = hasMatchMedia
+        ? window.matchMedia("(max-width: 900px)").matches
+        : false;
       const journeySpeedMultiplier = isMobileViewport
         ? Math.max(1.12, Math.min(1.32, viewportHeight / 680))
         : 2;
