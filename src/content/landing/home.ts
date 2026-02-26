@@ -126,12 +126,12 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title: "Mit wenig Zeitaufwand schnell zu einer fertigen Website.",
+        title: "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
         description:
           "Du gibst nur den nötigen Input, wir übernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
       },
       en: {
-        title: "Ship a finished website fast with minimal time investment.",
+        title: "Digital solutions that create visible impact and simplify processes.",
         description:
           "You provide the required input, we handle the rest: landing pages, websites, and process tools delivered quickly to production-ready quality.",
       },

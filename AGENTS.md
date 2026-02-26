@@ -48,6 +48,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Theme-Architektur muss von Beginn an erweiterbar sein: Default ist `dark`; ein Theme-Switch ist aktuell nicht zwingend sichtbar, aber spätere Erweiterung auf `light` und weitere Themes muss ohne strukturellen Umbau möglich sein
 - Bei CSS Custom Properties gilt: jede verwendete Variable muss vor Nutzung zentral (z. B. in `:root`) oder im jeweiligen Scope explizit definiert sein; keine "impliziten" Variablen nur in `var(...)`-Verwendungen
 - Mehrsprachigkeit ist Pflichtfähigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
+- Mittel-/Hoch-Prioritätskriterium: Bei jeder Textänderung müssen alle verfügbaren Sprachen aktiv geprüft und betroffene Inhalte ggf. direkt mitübersetzt werden (kein Merge mit veralteten Sprachständen).
 - Routen- und URL-Slugs werden standardmäßig in Englisch gehalten (z. B. `/terms`, `/privacy`, `/imprint`), auch wenn die sichtbaren UI-Texte auf Deutsch sind
 - Security by default (least privilege, keine Secrets im Repo)
 - Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
