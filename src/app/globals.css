@@ -2397,6 +2397,7 @@ main {
 
   .process-layout {
     grid-template-columns: 1fr;
+    padding-bottom: 72px;
   }
 
   .process-intro {

@@ -63,6 +63,7 @@ export function useProcessStartPoint({
       const lastRect = lastCard.getBoundingClientRect();
       const firstCenter = centerInLayout(firstRect);
       const lastCenter = centerInLayout(lastRect);
+      const lastBottom = lastRect.bottom - layoutRect.top;
       const upperWidth =
         upperCard?.getBoundingClientRect().width ?? firstRect.width;
       // Keep the requested horizontal offset formula stable for both endpoints.
@@ -86,7 +87,16 @@ export function useProcessStartPoint({
         leftX,
         firstCenter.y,
       );
-      setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
+      const mobileEndY = (() => {
+        const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
+        const ctaGap = 16;
+        return lastBottom + ctaGap + ctaHeight / 2;
+      })();
+      if (isMobileViewport) {
+        setCssPoint("--process-end-x", "--process-end-y", lastCenter.x, mobileEndY);
+      } else {
+        setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
+      }
       // Use the vertical midpoint of each gap between step cards.
       const spacingMidY = cards.slice(0, -1).map((card, index) => {
         const currentRect = card.getBoundingClientRect();
@@ -125,17 +135,29 @@ export function useProcessStartPoint({
         return;
       }
 
-      // Journey order: down, right, down, left, down, right, down.
-      const pathDefinition = [
-        `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
-        `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
-        `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
-        `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
-        `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
-        `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
-        `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
-        `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
-      ].join(" ");
+      // Journey order: down, right, down, left, down, right, then to CTA endpoint.
+      const pathDefinition = isMobileViewport
+        ? [
+            `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${mobileEndY.toFixed(2)}`,
+            `L ${lastCenter.x.toFixed(2)} ${mobileEndY.toFixed(2)}`,
+          ].join(" ")
+        : [
+            `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
+            `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
+            `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
+          ].join(" ");
       path.setAttribute("d", pathDefinition);
 
       const measuredLength = path.getTotalLength();
@@ -151,10 +173,13 @@ export function useProcessStartPoint({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const journeySpeedMultiplier = 2;
+      const isMobileViewport = window.matchMedia("(max-width: 900px)").matches;
+      const journeySpeedMultiplier = isMobileViewport
+        ? Math.max(1.12, Math.min(1.32, viewportHeight / 680))
+        : 2;
       // Start and end trigger lines tune when drawing begins and completes.
-      const startLine = viewportHeight * 0.68;
-      const endLine = viewportHeight * 0.5;
+      const startLine = viewportHeight * (isMobileViewport ? 0.72 : 0.68);
+      const endLine = viewportHeight * (isMobileViewport ? 0.26 : 0.5);
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
