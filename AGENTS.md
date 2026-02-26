@@ -4,8 +4,8 @@
 
 Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 
-- konsistente Qualit�t in UX, Code, Security und Compliance zu sichern
-- Features in kleinen, �berpr�fbaren PRs auszuliefern
+- konsistente Qualität in UX, Code, Security und Compliance zu sichern
+- Features in kleinen, überprüfbaren PRs auszuliefern
 - Regressionen durch klare Tests und Release Gates zu vermeiden
 
 ## Grundprinzipien
@@ -14,71 +14,72 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 
 - Logo ist Pflichtinput
 - Farbgebung ist optional; ohne Vorgabe wird eine thematisch passende, kontraststarke Palette gesetzt
-- Immer aktiv neue Ideen fuer individuelles Design mit Wiedererkennungswert einbringen und Default-Implementierungen vermeiden
+- Immer aktiv neue Ideen für individuelles Design mit Wiedererkennungswert einbringen und Default-Implementierungen vermeiden
 - Gute neue Animations-/Interaktionsfunde immer in `animation_mockups/<effekt-name>/` als eigenes Einzel-Mockup ablegen (pro Effekt eigener Ordner mit eigener `index.html` und ggf. `styles.css`/`script.js`), statt mehrere Effekte in einer Sammeldatei zu mischen
-- Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` pruefen und aktiv in die Umsetzung einbeziehen
+- Bei neuen Mockup- oder Landing-Anfragen zuerst die bestehende Effektbibliothek in `animation_mockups/` und die Metadaten in `animation_mockups/effects-catalog.json` prüfen und aktiv in die Umsetzung einbeziehen
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
-- Design-Prioritaetsregel (verbindlich): Sobald eine Anfrage visuelles UI, Animation oder eine Section-Umsetzung betrifft (z. B. "bau mir die contact section"), ist der erste Schritt immer der Check von `animation_mockups/` und `animation_mockups/effects-catalog.json` inkl. Use-Case-Fit; passende Effekte muessen aktiv vorgeschlagen und bei klarem Fit direkt in der Umsetzung verwendet werden
-- Bei Frontend-Umbauten ist mindestens der Skill `frontend-design` verpflichtend zu nutzen; weitere passende Skills koennen zusaetzlich kombiniert werden
-- Agenten arbeiten bei Landingpages und Webseiten als Spezialisten fuer Conversion-orientierte, performante und visuell differenzierende Umsetzungen
-- Ziel ist die vollstaendige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
-- Grosse Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Aenderung detailliert, pruefbar und mit hoher Qualitaet umgesetzt werden kann
+- Design-Prioritätsregel (verbindlich): Sobald eine Anfrage visuelles UI, Animation oder eine Section-Umsetzung betrifft (z. B. "bau mir die contact section"), ist der erste Schritt immer der Check von `animation_mockups/` und `animation_mockups/effects-catalog.json` inkl. Use-Case-Fit; passende Effekte müssen aktiv vorgeschlagen und bei klarem Fit direkt in der Umsetzung verwendet werden
+- Bei Frontend-Umbauten ist mindestens der Skill `frontend-design` verpflichtend zu nutzen; weitere passende Skills können zusätzlich kombiniert werden
+- Agenten arbeiten bei Landingpages und Webseiten als Spezialisten für Conversion-orientierte, performante und visuell differenzierende Umsetzungen
+- Ziel ist die vollständige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
+- Große Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Änderung detailliert, prüfbar und mit hoher Qualität umgesetzt werden kann
 - Die Website-Struktur im Projekt muss jederzeit klar, modular und wartbar sein (keine unstrukturierten Sammelordner)
 - Next.js + Tailwind Best Practices sind bei Struktur-, Rendering- und UI-Entscheidungen verbindlich einzuhalten
 - Architektur, Routing, Content-Layer und Komponenten werden von Anfang an so aufgebaut, dass Mehrsprachigkeit (mindestens DE/EN) ohne strukturellen Umbau erweiterbar bleibt
 - SEO ist Pflichtstandard bei jeder Seite: saubere Informationsarchitektur, eindeutige Suchintention, semantische HTML-Struktur und crawlbare interne Verlinkung
 - Indexierbarkeit ist Pflicht: korrekte `metadata`, Canonicals, `sitemap.ts`, `robots.ts`, kontrollierter Einsatz von `noindex` und keine blockierten Kernseiten
 - Technische Sichtbarkeit ist Pflicht: Core Web Vitals (LCP/CLS/INP), stabile Performance auf Mobile und keine unnötigen Rendering-Blocker
-- Structured Data ist Pflicht, wo sinnvoll (`Organization`, `Service`, `Product`, `FAQ`) zur besseren Google-Einordnung und Rich-Result-Faehigkeit
-- Content-Qualitaet nach E-E-A-T-Prinzipien sicherstellen: klare Autoritaet, belastbare Aussagen, vertrauensbildende Nachweise und konsistente Fachsprache
-- UTF-8 ist verpflichtend im gesamten Projekt; deutsche Zeichen (`ä`, `ö`, `ü`, `ß`) muessen in Content, UI und Datenverarbeitung korrekt unterstuetzt werden
+- Structured Data ist Pflicht, wo sinnvoll (`Organization`, `Service`, `Product`, `FAQ`) zur besseren Google-Einordnung und Rich-Result-Fähigkeit
+- Content-Qualität nach E-E-A-T-Prinzipien sicherstellen: klare Autorität, belastbare Aussagen, vertrauensbildende Nachweise und konsistente Fachsprache
+- UTF-8 ist verpflichtend im gesamten Projekt; deutsche Zeichen (`ä`, `ö`, `ü`, `ß`) müssen in Content, UI und Datenverarbeitung korrekt unterstützt werden
 - Deutsche Texte werden immer als echtes UTF-8 gepflegt; keine fehlerhaften Encodings oder Zeichenzerfall und keine Ersetzung durch ASCII-Umschreibungen (`ae`, `oe`, `ue`) in finalem UI-Text.
+- Encoding-Artefakte (z. B. `�`, `Ã¤`, `f�r`) sind strikt zu vermeiden; bei Auftreten müssen sie vor Abschluss der Änderung vollständig bereinigt werden.
 - Relevante Logik ist verpflichtend mit passenden Logic-/Domain-Tests abzusichern
-- Kernablaeufe sind verpflichtend durch E2E-Tests abzudecken
+- Kernabläufe sind verpflichtend durch E2E-Tests abzudecken
 - Desktop-Header/Menu nutzt volle Breite; auf Mobile wird eine klare, performante und touch-optimierte Best-Practice-Navigation umgesetzt
 - Animationen/Effekte, die nur auf Desktop sinnvoll oder stabil funktionieren, werden auf Mobile deaktiviert oder durch mobile-taugliche Alternativen ersetzt
-- Das Gesamtlayout ist standardmaessig zentriert; ausgenommen sind Hero-Section sowie Header/Menu, die layoutseitig bewusst frei gefuehrt werden duerfen
-- Jede Section wird einzeln geplant und umgesetzt (inkl. Header/Menu und Footer); pro Section muessen passende Effekte zuerst in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprueft und begruendet ausgewaehlt werden
+- Das Gesamtlayout ist standardmäßig zentriert; ausgenommen sind Hero-Section sowie Header/Menu, die layoutseitig bewusst frei geführt werden dürfen
+- Jede Section wird einzeln geplant und umgesetzt (inkl. Header/Menu und Footer); pro Section müssen passende Effekte zuerst in `animation_mockups/` und `animation_mockups/effects-catalog.json` geprüft und begründet ausgewählt werden
 
 - Small PRs mit klarem Scope und nachvollziehbaren Commits
 - Design zuerst (UX/IA), dann Implementierung
 - Accessibility (WCAG 2.2 AA) und Performance (Core Web Vitals) sind Pflicht
-- Dark- und Light-Mode sind Pflicht; beide Themes muessen visuell konsistent und voll nutzbar sein
-- Theme-Architektur muss von Beginn an erweiterbar sein: Default ist `dark`; ein Theme-Switch ist aktuell nicht zwingend sichtbar, aber spaetere Erweiterung auf `light` und weitere Themes muss ohne strukturellen Umbau moeglich sein
+- Dark- und Light-Mode sind Pflicht; beide Themes müssen visuell konsistent und voll nutzbar sein
+- Theme-Architektur muss von Beginn an erweiterbar sein: Default ist `dark`; ein Theme-Switch ist aktuell nicht zwingend sichtbar, aber spätere Erweiterung auf `light` und weitere Themes muss ohne strukturellen Umbau möglich sein
 - Bei CSS Custom Properties gilt: jede verwendete Variable muss vor Nutzung zentral (z. B. in `:root`) oder im jeweiligen Scope explizit definiert sein; keine "impliziten" Variablen nur in `var(...)`-Verwendungen
-- Mehrsprachigkeit ist Pflichtfaehigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
-- Routen- und URL-Slugs werden standardmaessig in Englisch gehalten (z. B. `/terms`, `/privacy`, `/imprint`), auch wenn die sichtbaren UI-Texte auf Deutsch sind
+- Mehrsprachigkeit ist Pflichtfähigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
+- Routen- und URL-Slugs werden standardmäßig in Englisch gehalten (z. B. `/terms`, `/privacy`, `/imprint`), auch wenn die sichtbaren UI-Texte auf Deutsch sind
 - Security by default (least privilege, keine Secrets im Repo)
-- Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach �nderungsumfang)
+- Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
 
 ## Service-Webseiten Best Practices (Research-basiert)
 
-- Above the fold muss sofort klar sein: Angebot, Zielgruppe und ein prim�rer CTA
-- Prim�re Navigation schlank halten (max. 4-6 Hauptpunkte), klare Informationshierarchie
-- Content scannbar schreiben: kurze Abs�tze, klare �berschriften, keine Textw�nde
+- Above the fold muss sofort klar sein: Angebot, Zielgruppe und ein primärer CTA
+- Primäre Navigation schlank halten (max. 4-6 Hauptpunkte), klare Informationshierarchie
+- Content scannbar schreiben: kurze Absätze, klare Überschriften, keine Textwände
 - Vertrauen sichtbar machen: klare Kontaktoption, rechtliche Links, konsistente Sprache
-- Prim�re Journey priorisieren: Erstkontakt/Anfrage mit minimalen Schritten
-- Mobile-first umsetzen, dann Tablet/Desktop verfeinern; keine �berladenen Sektionen
-- Interaktive Elemente mit klaren Zust�nden und sichtbaren Fokus-Styles
+- Primäre Journey priorisieren: Erstkontakt/Anfrage mit minimalen Schritten
+- Mobile-first umsetzen, dann Tablet/Desktop verfeinern; keine überladenen Sektionen
+- Interaktive Elemente mit klaren Zuständen und sichtbaren Fokus-Styles
 - Performance und Lesbarkeit vor dekorativen Effekten priorisieren
 
 ## Definition of Ready (DoR)
 
 Ein Ticket ist erst startklar, wenn:
 
-- Zielgruppe, Problem und gew�nschtes Ergebnis klar sind
+- Zielgruppe, Problem und gewünschtes Ergebnis klar sind
 - Akzeptanzkriterien testbar formuliert sind
 - Nicht-Ziele explizit benannt sind
-- Risiken/Abh�ngigkeiten dokumentiert sind
+- Risiken/Abhängigkeiten dokumentiert sind
 
 ## Definition of Done (DoD)
 
-Eine �nderung gilt erst als fertig, wenn:
+Eine Änderung gilt erst als fertig, wenn:
 
-- Akzeptanzkriterien erf�llt sind
-- Unit/Integration/E2E (falls relevant) gr�n sind
-- Security- und A11y-Auswirkungen gepr�ft wurden
-- Monitoring/Logging f�r neue kritische Flows vorhanden ist
+- Akzeptanzkriterien erfüllt sind
+- Unit/Integration/E2E (falls relevant) grün sind
+- Security- und A11y-Auswirkungen geprüft wurden
+- Monitoring/Logging für neue kritische Flows vorhanden ist
 - Rollback-Pfad im PR beschrieben ist
 
 ---
@@ -91,7 +92,7 @@ Aufgaben:
 
 - Informationsarchitektur (Landing, Templates, Checkout, Legal)
 - UX-Flows (Browse -> Details -> Buy -> Download -> Support)
-- Copywriting (klar, technisch, vertrauensw�rdig)
+- Copywriting (klar, technisch, vertrauenswürdig)
 - Accessibility Checks (Kontrast, Fokus, Keyboard, Screenreader-Basics)
 
 Outputs:
@@ -110,17 +111,17 @@ DoD:
 Aufgaben:
 
 - UI-Implementierung (Next.js, Tailwind, Komponenten)
-- Performante Animationen und �berg�nge
+- Performante Animationen und Übergänge
 - SEO (metadata, structured data)
 - i18n-ready Architektur (externe Strings, locale routing vorbereitet)
-- Responsive Umsetzung f�r Mobile, Tablet und Desktop inkl. sauberer Breakpoints und Layout-Checks
+- Responsive Umsetzung für Mobile, Tablet und Desktop inkl. sauberer Breakpoints und Layout-Checks
 
-Qualit�tskriterien:
+Qualitätskriterien:
 
-- Lighthouse > 90 (mobile) f�r Performance/Best Practices/SEO
-- Kein unn�tiges JS, optimierte Bilder, sinnvolle Caching-Strategie
+- Lighthouse > 90 (mobile) für Performance/Best Practices/SEO
+- Kein unnötiges JS, optimierte Bilder, sinnvolle Caching-Strategie
 - Sichtbare Fokus-Styles in allen interaktiven Komponenten
-- Visuelle und funktionale Konsistenz �ber Mobile/Tablet/Desktop in allen Core Flows
+- Visuelle und funktionale Konsistenz über Mobile/Tablet/Desktop in allen Core Flows
 
 ### 3) Backend Agent (`be-engineer`)
 
@@ -131,7 +132,7 @@ Aufgaben:
 - Lizenzmodell (single purchase, bundle, subscription)
 - Download-Security (signed URLs, rate limiting)
 
-Qualit�tskriterien:
+Qualitätskriterien:
 
 - Webhook idempotent, retry-safe und observierbar
 - Keine PII in Logs, strukturierte Events
@@ -157,7 +158,7 @@ Aufgaben:
 
 - Testplan (Unit + Integration + E2E)
 - Checkout-E2E (happy path + failure path)
-- Regression Suite f�r Core Paths
+- Regression Suite für Core Paths
 - A11y-Smoke-Tests
 
 Outputs:
@@ -182,7 +183,7 @@ Outputs:
 
 1. `qa`: Repro Steps + minimal failing test
 2. Engineer: Fix + Test
-3. `sec-legal`: Security-Relevanz pr�fen
+3. `sec-legal`: Security-Relevanz prüfen
 4. Merge
 
 ### Workflow C - Hotfix
@@ -197,14 +198,14 @@ Outputs:
 ## Branch-/PR-Konvention
 
 - Branches: `feat/<slug>`, `fix/<slug>`, `chore/<slug>`
-- PR-Template enth�lt:
+- PR-Template enthält:
   - Was/Warum
   - Screenshots (bei UI)
   - Testplan
   - Risiko/Rollback
   - Security/Privacy Impact
 
-## Repo Qualit�ts-Gates
+## Repo Qualitäts-Gates
 
 - Lint + Typecheck
 - Generierter Code (Logik/Workflows) ist verpflichtend durch Unit-, Integration- oder E2E-Tests abgedeckt
@@ -216,7 +217,7 @@ Outputs:
 
 - Kein Direkt-Merge auf `main`
 - Mindestens ein Review bei normalen PRs
-- Zwei Reviews f�r Payment, Auth, Download-Security, Legal-�nderungen
+- Zwei Reviews für Payment, Auth, Download-Security, Legal-Änderungen
 
 ## Prompt-Vorlagen
 
@@ -225,29 +226,29 @@ Outputs:
 - Scope:
 - Akzeptanzkriterien:
 - UI States:
-- Data Model �nderungen:
+- Data Model Änderungen:
 - Testplan:
 - Rollback:
 
 ### Security review
 
-- Angriffsfl�chen:
+- Angriffsflächen:
 - PII/DSGVO:
 - Webhook/Payment Risiken:
 - Rate limiting/abuse:
 - Empfohlene Mitigations:
 
-## Architektur- und Code-Standards (erg�nzend)
+## Architektur- und Code-Standards (ergänzend)
 
-- App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, sp�ter `(app)`), um Verantwortlichkeiten klar zu trennen
-- Projektstruktur immer aktiv sauber halten: keine ueberfuellten Ordner, stattdessen fachlich aufteilen und konsistent benennen
+- App Router Struktur mit Route-Gruppen verwenden (`(marketing)`, `(legal)`, später `(app)`), um Verantwortlichkeiten klar zu trennen
+- Projektstruktur immer aktiv sauber halten: keine überfüllten Ordner, stattdessen fachlich aufteilen und konsistent benennen
 - Sobald ein Ordner zu viele Dateien/Verantwortlichkeiten aufnimmt, in Submodule (z. B. pro Feature/Domain) refactoren
-- Komponenten werden standardmaessig als eigener Ordner angelegt (kein einzelnes loses `.tsx` bei produktiven Komponenten)
+- Komponenten werden standardmäßig als eigener Ordner angelegt (kein einzelnes loses `.tsx` bei produktiven Komponenten)
 - Pro Komponente im Ordner mindestens: `component-name.tsx`; bei eigenen Styles `component-name.css` (oder `.scss`), bei relevanter Logik `component-name.test.ts(x)`
 - Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
-- Styling fuer Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
-- Logiknahe Tests gehoeren in die Naehe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
-- Route-Dateien (`page.tsx`) orchestrieren nur: keine grossen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
+- Styling für Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
+- Logiknahe Tests gehören in die Nähe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
+- Route-Dateien (`page.tsx`) orchestrieren nur: keine großen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
 - Section-Mapping und Render-Verzweigungen in dedizierte Renderer-Komponenten auslagern (z. B. `home-sections-renderer`)
 - Locale- und UI-Textbausteine zentral in `src/content/**` pflegen; Komponenten konsumieren nur bereits aufbereitete Inhalte
 - Wiederkehrende UI-Interaktionslogik (Scroll, Pointer, Observer, Motion) konsequent in Hooks kapseln (`src/hooks/**`)
@@ -255,68 +256,68 @@ Outputs:
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
-- Feature-Flags f�r unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
-- �ffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur f�r wirklich �ffentliche Werte)
+- Feature-Flags für unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
+- Öffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur für wirklich Öffentliche Werte)
 
-## Performance- und Rendering-Standards (erg�nzend)
+## Performance- und Rendering-Standards (ergänzend)
 
-- Server Components als Default, Client Components nur bei Interaktivit�t
-- Bilder ausschlie�lich �ber `next/image` (mit klaren Gr��en und sinnvollen `alt`-Texten)
-- Fonts zentral und sparsam laden; keine unn�tigen externen Skripte im kritischen Pfad
+- Server Components als Default, Client Components nur bei Interaktivität
+- Bilder ausschließlich über `next/image` (mit klaren Größen und sinnvollen `alt`-Texten)
+- Fonts zentral und sparsam laden; keine unnötigen externen Skripte im kritischen Pfad
 - Jede neue Seite mit Mobile-Layout zuerst bauen und danach Tablet/Desktop erweitern
-- Core Web Vitals pro Release kurz pr�fen (LCP/CLS/INP) und Auff�lligkeiten im PR dokumentieren
+- Core Web Vitals pro Release kurz prüfen (LCP/CLS/INP) und Auffälligkeiten im PR dokumentieren
 
-## Monitoring- und Betriebsstandards (erg�nzend)
+## Monitoring- und Betriebsstandards (ergänzend)
 
 - Kritische User-Flows mit strukturierten Events versehen (z. B. CTA-Klick, Formular-Submit, Checkout-Start)
 - Fehlerpfade observierbar halten (z. B. Sentry oder gleichwertig) bevor Payment/Auth live gehen
 - Keine PII in Logs oder Analytics Events speichern
 - Jede neue kritische Integration mit Fallback-Verhalten dokumentieren (z. B. Mail-Ausfall, Payment-Timeout)
 
-## Content- und Produktpaket-Standards (erg�nzend)
+## Content- und Produktpaket-Standards (ergänzend)
 
 - Verkaufbare Pakete versionieren (`vX.Y.Z`) und mit Changelog ausliefern
-- Auslieferungsartefakte unver�nderlich speichern (pro Version ein eindeutiges Bundle)
+- Auslieferungsartefakte unveränderlich speichern (pro Version ein eindeutiges Bundle)
 - Claims in Landing-Copy nur mit belegbaren Quellen/Kennzahlen verwenden
-- Mock-States immer sichtbar kennzeichnen (`Mock`, `Coming Soon`), kein irref�hrendes Verhalten
+- Mock-States immer sichtbar kennzeichnen (`Mock`, `Coming Soon`), kein irreführendes Verhalten
 
 ## Next.js + Tailwind Landing-Standards (verbindlich)
 
-- F�r jede Route eigene `metadata` definieren (Title, Description, Canonical, OpenGraph, ggf. Robots)
-- Strukturierte Daten (JSON-LD) f�r `Organization` und passende `Service`/`Product`-Typen einplanen
+- Für jede Route eigene `metadata` definieren (Title, Description, Canonical, OpenGraph, ggf. Robots)
+- Strukturierte Daten (JSON-LD) für `Organization` und passende `Service`/`Product`-Typen einplanen
 - `sitemap.ts` und `robots.ts` im App Router bereitstellen, sobald mehr als 1 indexierbare Seite live geht
 - Interaktive Landing-Elemente nur als Client Components; statische Sections als Server Components belassen
-- Keine Inline-Styles f�r produktive Komponenten; Styling konsistent �ber Tailwind-Klassen und Design-Tokens
+- Keine Inline-Styles für produktive Komponenten; Styling konsistent über Tailwind-Klassen und Design-Tokens
 - Farb-, Spacing- und Radius-Tokens zentral in `globals.css`/Theme definieren, nicht ad hoc pro Komponente
 - Komponentenvarianten (z. B. Button/Card/Badge) standardisieren, um visuelle Drift zwischen Seiten zu vermeiden
-- Externe Skripte (Calendly, Tracking, Chat) nur lazy und nur auf ben�tigten Seiten laden
+- Externe Skripte (Calendly, Tracking, Chat) nur lazy und nur auf benötigten Seiten laden
 
 ## Content- und SEO-Workflow (Landing-spezifisch)
 
-- Copy nicht direkt in Komponenten pflegen; Inhalte �ber strukturierte Content-Dateien oder klaren Config-Layer verwalten
-- Jede Landing erh�lt ein prim�res Keyword-Cluster und eine klare Suchintention (informational/commercial)
-- Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein f�r visuelle Gr��en
+- Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
+- Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
+- Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
 - OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten
-- F�r Template-/Paketseiten klare Preis- und Leistungsangaben ohne versteckte Bedingungen darstellen
+- Für Template-/Paketseiten klare Preis- und Leistungsangaben ohne versteckte Bedingungen darstellen
 
 ## QA- und Release-Gates (Landing-spezifisch)
 
-- Vor Merge: `npm run lint` und `npm run build` verpflichtend gr�n
-- A11y-Smoke mindestens f�r Startseite + prim�ren Conversion-Flow (Keyboard, Fokus-Reihenfolge, Kontrast)
-- PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegen�ber Zielwerten im PR begr�nden
-- Formulare m�ssen valide Fehlerzust�nde haben (required, Format, Submit-Fehler), auch im Mock-Status
-- Jeder CTA-Link wird auf Ziel und Tracking-Event gepr�ft (kein toter CTA)
+- Vor Merge: `npm run lint` und `npm run build` verpflichtend grün
+- A11y-Smoke mindestens für Startseite + primären Conversion-Flow (Keyboard, Fokus-Reihenfolge, Kontrast)
+- PageSpeed/Lighthouse mobil dokumentieren; Abweichungen gegenüber Zielwerten im PR begründen
+- Formulare müssen valide Fehlerzustände haben (required, Format, Submit-Fehler), auch im Mock-Status
+- Jeder CTA-Link wird auf Ziel und Tracking-Event geprüft (kein toter CTA)
 
 ## Senior-Entwickler Vorgehen (verbindlich)
 
-- Vor Implementierung erst Scope, Abhaengigkeiten und Risiken kurz festziehen; dann in kleinen, reviewbaren Schritten liefern
+- Vor Implementierung erst Scope, Abhängigkeiten und Risiken kurz festziehen; dann in kleinen, reviewbaren Schritten liefern
 - Erst Struktur, dann Features: Module/Ordner nach Verantwortung schneiden, keine Sammelordner mit zu vielen Dateien
-- Pro Aenderung klare Verantwortlichkeit: UI, Domain-Logik, Konfiguration und Telemetrie getrennt halten
-- Bei neuer Logik oder Workflows frueh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
-- Refactoring kontinuierlich einplanen, sobald Komplexitaet oder Dateidichte ansteigt
-- Monolithische Seiten (z. B. grosse `page.tsx`) fruehzeitig in route-nahe Sections, wiederverwendbare Komponenten und dedizierte Hooks aufteilen
-- Lange, unwartbare Dateien aktiv vermeiden: fruehzeitig in kleine, klar abgegrenzte Dateien/Komponenten aufsplitten, bevor technische Schulden entstehen
+- Pro Änderung klare Verantwortlichkeit: UI, Domain-Logik, Konfiguration und Telemetrie getrennt halten
+- Bei neuer Logik oder Workflows früh passende Tests anlegen (Unit/Integration/E2E je nach Risiko)
+- Refactoring kontinuierlich einplanen, sobald Komplexität oder Dateidichte ansteigt
+- Monolithische Seiten (z. B. große `page.tsx`) frühzeitig in route-nahe Sections, wiederverwendbare Komponenten und dedizierte Hooks aufteilen
+- Lange, unwartbare Dateien aktiv vermeiden: frühzeitig in kleine, klar abgegrenzte Dateien/Komponenten aufsplitten, bevor technische Schulden entstehen
 - Animations-/Scroll-Logik nicht in Rendering-Dateien lassen, sondern in `hooks/` und `lib/` auslagern; Rendering-Dateien orchestrieren nur
 - Pfad-/Layout-Berechnungen als testbare Domain-Funktionen modellieren und mit Unit-Tests gegen Regression absichern
 - Section-Komponenten sollen klar typisierte Props nutzen (Content separat, Darstellung separat), damit i18n- und SEO-Layer stabil erweiterbar bleiben
-- Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test fuer kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
+- Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test für kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
