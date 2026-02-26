@@ -1851,7 +1851,11 @@ main {
 .process-journey-progress {
   stroke: url(#processJourneyGradient);
   stroke-width: 10;
-  filter: drop-shadow(0 0 12px rgba(214, 94, 41, 0.45));
+  filter:
+    drop-shadow(
+      0 0 10px color-mix(in srgb, var(--color-accent-warm) 46%, transparent)
+    )
+    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 42%, transparent));
   visibility: hidden;
 }
 
@@ -1862,16 +1866,21 @@ main {
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #f2a64a, #d45a1f);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-warm),
+    color-mix(in srgb, var(--color-cta) 44%, var(--color-accent-warm) 56%)
+  );
   border: 2px solid rgba(255, 255, 255, 0.9);
   box-shadow:
-    0 0 0 6px rgba(244, 169, 78, 0.2),
-    0 0 24px rgba(214, 94, 41, 0.4);
+    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 28%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-accent-warm) 52%, transparent);
   z-index: 2;
   pointer-events: none;
 }
 
 .process-path-point--start {
+  background: var(--color-accent-warm);
   transform: translate(
     calc(var(--process-start-x) - 7px),
     calc(var(--process-start-y) - 7px)
@@ -1882,9 +1891,14 @@ main {
   width: 18px;
   height: 18px;
   border-width: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--color-cta),
+    var(--color-cta-active)
+  );
   box-shadow:
-    0 0 0 8px rgba(244, 169, 78, 0.2),
-    0 0 28px rgba(214, 94, 41, 0.6);
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
   transform: translate(
     calc(var(--process-leader-x) - 9px),
     calc(var(--process-leader-y) - 9px)
@@ -1893,7 +1907,39 @@ main {
 }
 
 .process-path-point--leader.is-finished {
-  animation: process-leader-pulse 0.75s ease-out infinite;
+  animation: process-leader-pulse 0.72s ease-out 1 both;
+}
+
+.process-end-cta {
+  position: absolute;
+  left: var(--process-end-x);
+  top: var(--process-end-y);
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  z-index: 3;
+  white-space: nowrap;
+  opacity: 1;
+  transition:
+    opacity 260ms ease,
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+  will-change: transform, opacity;
+}
+
+.has-journey-cta-gate .process-end-cta {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.has-journey-cta-gate .process-end-cta.is-journey-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.process-end-cta.is-journey-active {
+  animation: process-end-cta-pulse 0.82s cubic-bezier(0.22, 1, 0.36, 1) 1 both;
 }
 
 @keyframes process-leader-pulse {
@@ -1904,8 +1950,8 @@ main {
       )
       scale(1);
     box-shadow:
-      0 0 0 8px rgba(244, 169, 78, 0.28),
-      0 0 28px rgba(214, 94, 41, 0.68);
+      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
+      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
   }
   55% {
     transform: translate(
@@ -1914,8 +1960,8 @@ main {
       )
       scale(1.18);
     box-shadow:
-      0 0 0 18px rgba(244, 169, 78, 0.18),
-      0 0 48px rgba(214, 94, 41, 0.82);
+      0 0 0 18px color-mix(in srgb, var(--color-cta) 20%, transparent),
+      0 0 48px color-mix(in srgb, var(--color-cta-hover) 82%, transparent);
   }
   100% {
     transform: translate(
@@ -1924,8 +1970,24 @@ main {
       )
       scale(1);
     box-shadow:
-      0 0 0 8px rgba(244, 169, 78, 0.28),
-      0 0 28px rgba(214, 94, 41, 0.68);
+      0 0 0 8px color-mix(in srgb, var(--color-cta) 30%, transparent),
+      0 0 28px color-mix(in srgb, var(--color-cta) 66%, transparent);
+  }
+}
+
+@keyframes process-end-cta-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow:
+      0 10px 24px rgba(31, 70, 137, 0.3),
+      0 0 0 0 color-mix(in srgb, var(--color-cta) 26%, transparent);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+    box-shadow:
+      0 10px 24px rgba(31, 70, 137, 0.3),
+      0 0 0 12px color-mix(in srgb, var(--color-cta-hover) 22%, transparent);
   }
 }
 
@@ -2330,6 +2392,22 @@ main {
 
   .process-step-inner {
     transform: none;
+    transition: none;
+  }
+
+  .process-end-cta.is-journey-active {
+    animation: none;
+  }
+
+  .process-path-point--leader.is-finished {
+    animation: none;
+  }
+
+  .has-journey-cta-gate .process-end-cta,
+  .has-journey-cta-gate .process-end-cta.is-journey-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
     transition: none;
   }
 }

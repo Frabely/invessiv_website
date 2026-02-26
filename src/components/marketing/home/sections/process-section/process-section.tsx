@@ -29,10 +29,11 @@ export function ProcessSection({
   title,
 }: ProcessSectionProps) {
   const layoutRef = useRef<HTMLDivElement | null>(null);
+  const endCtaRef = useRef<HTMLAnchorElement | null>(null);
   const leaderRef = useRef<HTMLSpanElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
   const stepsRef = useRef<HTMLDivElement | null>(null);
-  useProcessStartPoint({ layoutRef, leaderRef, pathRef, stepsRef });
+  useProcessStartPoint({ layoutRef, endCtaRef, leaderRef, pathRef, stepsRef });
 
   return (
     <section className="process-section" id={id}>
@@ -57,15 +58,12 @@ export function ProcessSection({
 
         {processCta ? (
           <aside className="process-intro-cta">
-            <a className="btn btn--primary" href={processCta.href}>
-              {processCta.label}
-            </a>
             <p>{processCta.hint}</p>
           </aside>
         ) : null}
       </div>
 
-      <div className="process-layout" ref={layoutRef}>
+      <div className="process-layout has-journey-cta-gate" ref={layoutRef}>
         <svg
           aria-hidden="true"
           className="process-journey-svg"
@@ -79,9 +77,8 @@ export function ProcessSection({
               y1="0%"
               y2="100%"
             >
-              <stop offset="0%" stopColor="#f3a64a" />
-              <stop offset="60%" stopColor="#7da3ff" />
-              <stop offset="100%" stopColor="#d2672a" />
+              <stop offset="0%" style={{ stopColor: "var(--color-accent-warm)" }} />
+              <stop offset="100%" style={{ stopColor: "var(--color-cta)" }} />
             </linearGradient>
           </defs>
           <path className="process-journey-progress" d="" ref={pathRef} />
@@ -95,6 +92,15 @@ export function ProcessSection({
           className="process-path-point process-path-point--leader"
           ref={leaderRef}
         />
+        {processCta ? (
+          <a
+            className="menu-cta process-end-cta"
+            href={processCta.href}
+            ref={endCtaRef}
+          >
+            {processCta.label}
+          </a>
+        ) : null}
         <div className="process-steps" ref={stepsRef} role="list">
           {processSteps.map((step, index) => (
             <article

@@ -392,7 +392,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         processCta: {
-          label: "Kostenlosen Kickoff Call buchen",
+          label: "Projekt anfragen",
           hint: "Unverbindlich. Antwort in 24h.",
           href: "#contact",
         },
@@ -456,7 +456,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         processCta: {
-          label: "Book a free kickoff call",
+          label: "Request project",
           hint: "No commitment. Reply within 24h.",
           href: "#contact",
         },

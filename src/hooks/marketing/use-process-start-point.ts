@@ -5,6 +5,7 @@ import type { RefObject } from "react";
 
 type UseProcessStartPointParams = {
   layoutRef: RefObject<HTMLDivElement | null>;
+  endCtaRef: RefObject<HTMLAnchorElement | null>;
   leaderRef: RefObject<HTMLSpanElement | null>;
   pathRef: RefObject<SVGPathElement | null>;
   stepsRef: RefObject<HTMLDivElement | null>;
@@ -12,11 +13,15 @@ type UseProcessStartPointParams = {
 
 export function useProcessStartPoint({
   layoutRef,
+  endCtaRef,
   leaderRef,
   pathRef,
   stepsRef,
 }: UseProcessStartPointParams) {
   useEffect(() => {
+    const ctaRevealProgress = 0.97;
+    const ctaPulseProgress = 0.99;
+    const endCta = endCtaRef.current;
     const layout = layoutRef.current;
     const leader = leaderRef.current;
     const path = pathRef.current;
@@ -64,7 +69,12 @@ export function useProcessStartPoint({
       const startShift =
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftX = firstCenter.x - startShift;
-      const rightX = lastCenter.x + startShift;
+      const rightXRaw = lastCenter.x + startShift;
+      const endCtaHalfWidth =
+        (endCta?.getBoundingClientRect().width ?? 0) / 2;
+      const rightXMin = endCtaHalfWidth + 12;
+      const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
+      const rightX = Math.min(Math.max(rightXRaw, rightXMin), rightXMax);
       setCssPoint(
         "--process-start-x",
         "--process-start-y",
@@ -161,7 +171,13 @@ export function useProcessStartPoint({
           "--process-leader-y",
           `${point.y.toFixed(2)}px`,
         );
-        leader.classList.toggle("is-finished", progress >= 0.99);
+        const isCtaVisible = progress >= ctaRevealProgress;
+        const isFinished = progress >= ctaPulseProgress;
+        leader.classList.toggle("is-finished", isFinished);
+        if (endCta) {
+          endCta.classList.toggle("is-journey-visible", isCtaVisible);
+          endCta.classList.toggle("is-journey-active", isFinished);
+        }
       }
     };
 
@@ -175,5 +191,5 @@ export function useProcessStartPoint({
       window.removeEventListener("resize", updateJourneyProgress);
       window.removeEventListener("scroll", updateJourneyProgress);
     };
-  }, [layoutRef, leaderRef, pathRef, stepsRef]);
+  }, [endCtaRef, layoutRef, leaderRef, pathRef, stepsRef]);
 }
