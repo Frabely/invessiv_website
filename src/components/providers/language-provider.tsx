@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import type { Locale } from "@/config/i18n";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
@@ -39,13 +39,23 @@ export function LanguageProvider({
 }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [theme, setThemeState] = useState<Theme>("dark");
+  const localeRef = useRef<Locale>(locale);
+  const themeRef = useRef<Theme>(theme);
+
+  useEffect(() => {
+    localeRef.current = locale;
+  }, [locale]);
+
+  useEffect(() => {
+    themeRef.current = theme;
+  }, [theme]);
 
   useEffect(() => {
     const localeFromPath = getLocaleFromPath();
     const stored = window.localStorage.getItem(STORAGE_KEY);
     const storedLocale = stored === "de" || stored === "en" ? stored : null;
     const resolvedLocale = localeFromPath ?? storedLocale ?? initialLocale;
-    if (resolvedLocale === locale) {
+    if (resolvedLocale === localeRef.current) {
       return;
     }
     const frame = window.requestAnimationFrame(() => {
@@ -54,7 +64,7 @@ export function LanguageProvider({
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [initialLocale, locale]);
+  }, [initialLocale]);
 
   useEffect(() => {
     const resolvedTheme = (() => {
@@ -69,7 +79,7 @@ export function LanguageProvider({
         ? "dark"
         : "light";
     })();
-    if (resolvedTheme === theme) {
+    if (resolvedTheme === themeRef.current) {
       return;
     }
     const frame = window.requestAnimationFrame(() => {
@@ -78,7 +88,7 @@ export function LanguageProvider({
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [theme]);
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, locale);
