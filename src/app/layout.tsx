@@ -24,6 +24,11 @@ export const metadata: Metadata = {
     description:
       "Landing pages, websites, and process tools with clear structure and production-ready delivery.",
   },
+  icons: {
+    icon: [{ url: "/brand/icon_noText.png", type: "image/png" }],
+    shortcut: ["/brand/icon_noText.png"],
+    apple: [{ url: "/brand/icon_noText.png" }],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
