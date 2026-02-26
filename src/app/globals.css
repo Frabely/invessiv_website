@@ -9,6 +9,7 @@
   --max-content-width: 1240px;
   --services-reveal-delay: 0ms;
   --process-step-delay: 0ms;
+  --anchor-scroll-offset: 92px;
 }
 
 [data-theme="light"] {
@@ -46,6 +47,14 @@ body {
   color: var(--text);
   font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   overflow-x: hidden;
+}
+
+html {
+  scroll-padding-top: var(--anchor-scroll-offset);
+}
+
+section[id] {
+  scroll-margin-top: var(--anchor-scroll-offset);
 }
 
 [data-theme="light"] body {
@@ -2346,6 +2355,10 @@ main {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --anchor-scroll-offset: 84px;
+  }
+
   .site-header__inner {
     padding: 0 16px;
     grid-template-columns: minmax(0, 1fr) auto;
