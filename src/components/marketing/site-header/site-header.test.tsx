@@ -7,9 +7,17 @@ import { SiteHeader } from "./site-header";
 
 const mockUseLanguage = vi.fn();
 const mockUseScrolledHeader = vi.fn();
+const mockRouterPush = vi.fn();
 
 vi.mock("next/image", () => ({
   default: () => <span data-testid="mock-next-image" />,
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/de/imprint",
+  useRouter: () => ({
+    push: mockRouterPush,
+  }),
 }));
 
 vi.mock("@/components/providers/language-provider", () => ({
@@ -28,6 +36,7 @@ describe("SiteHeader", () => {
 
   beforeEach(() => {
     mockUseScrolledHeader.mockReturnValue(false);
+    mockRouterPush.mockReset();
   });
 
   it("renders localized navigation labels and cta for german locale", () => {
@@ -75,5 +84,6 @@ describe("SiteHeader", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
 
     expect(setLocale).toHaveBeenCalledWith("en");
+    expect(mockRouterPush).toHaveBeenCalledWith("/en/imprint");
   });
 });
