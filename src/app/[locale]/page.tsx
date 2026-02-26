@@ -18,13 +18,9 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
     return {};
   }
 
-  const isGerman = locale === "de";
-  const title = isGerman
-    ? "Landingpages, Webseiten und Prozess-Tools"
-    : "Landing pages, websites and process tools";
-  const description = isGerman
-    ? "Invessiv entwickelt Landingpages, Webseiten und Prozess-Tools mit klarem Fokus auf Conversion."
-    : "Invessiv builds landing pages, websites, and process tools with a clear conversion focus.";
+  const title = "Landing pages, websites and process tools";
+  const description =
+    "Invessiv builds landing pages, websites, and process tools with a clear conversion focus.";
 
   return {
     title,
@@ -40,7 +36,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
       title,
       description,
       url: `${SITE_URL}/${locale}`,
-      locale: isGerman ? "de_DE" : "en_US",
+      locale: "en_US",
       type: "website",
     },
   };

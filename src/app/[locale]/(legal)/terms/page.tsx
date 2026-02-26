@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
-import { COMPANY, COMPANY_ADDRESS_LINE_DE, COMPANY_ADDRESS_LINE_EN } from "@/config/company";
+import { COMPANY, COMPANY_ADDRESS_LINE_EN } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { SITE_URL } from "@/lib/site-metadata";
@@ -51,7 +51,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
 
   const dict = await getDictionary(locale);
   const terms = dict.terms;
-  const addressLine = locale === "de" ? COMPANY_ADDRESS_LINE_DE : COMPANY_ADDRESS_LINE_EN;
+  const addressLine = COMPANY_ADDRESS_LINE_EN;
 
   return (
     <LegalLayout

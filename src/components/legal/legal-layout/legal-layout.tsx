@@ -50,10 +50,10 @@ export function LegalLayout({ children, lead, locale, title, updatedAt }: LegalL
       <main className="legal-page">
         <LegalBreadcrumbs
           items={[
-            { href: `/${locale}`, isLink: true, label: locale === "de" ? "Startseite" : "Home" },
+            { href: `/${locale}`, isLink: true, label: "Home" },
             { isLink: false, label: title },
           ]}
-          navLabel={locale === "de" ? "Brotkrumen-Navigation" : "Breadcrumb navigation"}
+          navLabel="Breadcrumb navigation"
         />
         <div className="legal-page__inner">
           <header className="legal-page__intro">

@@ -108,7 +108,13 @@ export function LanguageProvider({
     () => ({
       locale,
       setLocale: (nextLocale) => setLocaleState(nextLocale),
-      toggleLocale: () => setLocaleState((current) => (current === "de" ? "en" : "de")),
+      toggleLocale: () =>
+        setLocaleState((current) => {
+          if (current === "de") {
+            return "en";
+          }
+          return "de";
+        }),
       theme,
       setTheme: (nextTheme) => {
         if (!ENABLE_THEME_SWITCH) {

@@ -57,6 +57,12 @@ export function SiteHeader({
     const hashIndex = href.indexOf("#");
     return hashIndex >= 0 ? href.slice(hashIndex) : href;
   };
+  const getLocaleOptionClassName = (targetLocale: Locale) => {
+    if (locale === targetLocale) {
+      return "site-header__locale-option is-active";
+    }
+    return "site-header__locale-option";
+  };
 
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
@@ -115,14 +121,14 @@ export function SiteHeader({
               role="group"
             >
               <button
-                className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
+                className={getLocaleOptionClassName("de")}
                 onClick={(event) => handleLocaleSelect("de", event)}
                 type="button"
               >
                 DE
               </button>
               <button
-                className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
+                className={getLocaleOptionClassName("en")}
                 onClick={(event) => handleLocaleSelect("en", event)}
                 type="button"
               >
@@ -154,14 +160,14 @@ export function SiteHeader({
               role="group"
             >
               <button
-                className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
+                className={getLocaleOptionClassName("de")}
                 onClick={(event) => handleLocaleSelect("de", event)}
                 type="button"
               >
                 DE
               </button>
               <button
-                className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
+                className={getLocaleOptionClassName("en")}
                 onClick={(event) => handleLocaleSelect("en", event)}
                 type="button"
               >

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
 import {
   COMPANY,
-  COMPANY_ADDRESS_LINE_DE,
   COMPANY_ADDRESS_LINE_EN,
   COMPANY_MAILTO,
   COMPANY_TEL,
@@ -57,7 +56,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
 
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
-  const addressLine = locale === "de" ? COMPANY_ADDRESS_LINE_DE : COMPANY_ADDRESS_LINE_EN;
+  const addressLine = COMPANY_ADDRESS_LINE_EN;
 
   return (
     <LegalLayout
@@ -78,7 +77,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
             <br />
             {privacy.sections.controller.phoneLabel}:{" "}
             <a href={COMPANY_TEL}>
-              {locale === "de" ? COMPANY.contact.phoneDisplayDe : COMPANY.contact.phoneDisplayEn}
+              {COMPANY.contact.phoneDisplayEn}
             </a>
           </p>
         </div>
