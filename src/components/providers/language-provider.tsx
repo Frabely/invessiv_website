@@ -37,30 +37,33 @@ export function LanguageProvider({
   children: ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocaleState] = useState<Locale>(() => {
-    if (typeof window === "undefined") {
-      return initialLocale;
-    }
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  const [theme, setThemeState] = useState<Theme>("dark");
+
+  useEffect(() => {
     const localeFromPath = getLocaleFromPath();
-    if (localeFromPath) {
-      return localeFromPath;
-    }
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored === "de" || stored === "en" ? stored : initialLocale;
-  });
-  const [theme, setThemeState] = useState<Theme>(() => {
+    const storedLocale = stored === "de" || stored === "en" ? stored : null;
+    const resolvedLocale = localeFromPath ?? storedLocale ?? initialLocale;
+    setLocaleState(resolvedLocale);
+  }, [initialLocale]);
+
+  useEffect(() => {
     if (!ENABLE_THEME_SWITCH) {
-      return "dark";
-    }
-    if (typeof window === "undefined") {
-      return "dark";
+      setThemeState("dark");
+      return;
     }
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
     if (stored === "light" || stored === "dark") {
-      return stored;
+      setThemeState(stored);
+      return;
     }
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  });
+    setThemeState(
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light",
+    );
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, locale);
