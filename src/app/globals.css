@@ -267,6 +267,10 @@ main {
   color: #2a1409;
   font-size: 0.86rem;
   font-weight: 700;
+  transition:
+    transform 180ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease;
 }
 
 .site-header__mobile-menu {
@@ -2861,6 +2865,13 @@ body {
   filter: none;
 }
 
+@media (hover: hover) and (pointer: fine) and (min-width: 901px) {
+  .site-header .menu-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(31, 70, 137, 0.38);
+  }
+}
+
 .btn--ghost,
 .services-example-btn,
 .packages-cta--ghost,
@@ -3514,6 +3525,12 @@ body {
 }
 
 @media (max-width: 1200px) {
+  .site-header__inner,
+  .site-footer__inner,
+  .layout-shell {
+    padding-inline: 20px;
+  }
+
   .packages-track {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

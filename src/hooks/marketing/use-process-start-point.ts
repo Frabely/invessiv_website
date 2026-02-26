@@ -71,15 +71,20 @@ export function useProcessStartPoint({
         (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftX = firstCenter.x - startShift;
       const isMobileViewport = window.matchMedia("(max-width: 900px)").matches;
+      const isTabletViewport = window.matchMedia(
+        "(max-width: 1200px) and (min-width: 901px)",
+      ).matches;
       const rightX = isMobileViewport
         ? layoutRect.width - leftX
         : (() => {
             const rightXRaw = lastCenter.x + startShift;
+            const tabletNudgeLeft = isTabletViewport ? 10 : 0;
+            const rightXTarget = rightXRaw - tabletNudgeLeft;
             const endCtaHalfWidth =
               (endCta?.getBoundingClientRect().width ?? 0) / 2;
             const rightXMin = endCtaHalfWidth + 12;
             const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
-            return Math.min(Math.max(rightXRaw, rightXMin), rightXMax);
+            return Math.min(Math.max(rightXTarget, rightXMin), rightXMax);
           })();
       setCssPoint(
         "--process-start-x",
