@@ -3,6 +3,8 @@ import type { Locale } from "@/config/i18n";
 export type SiteHeaderUiContent = {
   ctaLabel: string;
   labelsByHref: Record<string, string>;
+  localeMenuLabel: string;
+  localeSwitchLabel: string;
   mobileMenuLabel: string;
   themeToggleLabel: {
     dark: string;
@@ -20,6 +22,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
       "#pricing": "Pakete",
       "#contact": "Kontakt",
     },
+    localeMenuLabel: "Sprache öffnen",
+    localeSwitchLabel: "Sprache wählen",
     mobileMenuLabel: "Menue",
     themeToggleLabel: {
       dark: "Light",
@@ -35,6 +39,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
       "#pricing": "Pricing",
       "#contact": "Contact",
     },
+    localeMenuLabel: "Open language",
+    localeSwitchLabel: "Choose language",
     mobileMenuLabel: "Menu",
     themeToggleLabel: {
       dark: "Light",

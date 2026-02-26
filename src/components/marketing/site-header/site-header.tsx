@@ -56,34 +56,94 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
               {themeToggleLabel}
             </button>
           ) : null}
-          <div
-            aria-label="Language switch"
-            className="lang-switch"
-            role="group"
-          >
-            <button
-              className={`lang-switch__option${locale === "de" ? " is-active" : ""}`}
-              onClick={() => setLocale("de")}
-              type="button"
+          <details className="site-header__locale site-header__locale--desktop">
+            <summary aria-label={ui.localeMenuLabel}>
+              <span aria-hidden="true" className="site-header__locale-icon">
+                <svg fill="none" viewBox="0 0 24 24">
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                  <path d="M3 12h18" />
+                  <path d="M12 3a15.5 15.5 0 0 1 0 18" />
+                  <path d="M12 3a15.5 15.5 0 0 0 0 18" />
+                </svg>
+              </span>
+              <span className="site-header__locale-code">{locale.toUpperCase()}</span>
+            </summary>
+            <div
+              aria-label={ui.localeSwitchLabel}
+              className="site-header__locale-popover"
+              role="group"
             >
-              DE
-            </button>
-            <button
-              className={`lang-switch__option${locale === "en" ? " is-active" : ""}`}
-              onClick={() => setLocale("en")}
-              type="button"
-            >
-              EN
-            </button>
-          </div>
+              <button
+                className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
+                onClick={() => setLocale("de")}
+                type="button"
+              >
+                DE
+              </button>
+              <button
+                className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
+                onClick={() => setLocale("en")}
+                type="button"
+              >
+                EN
+              </button>
+            </div>
+          </details>
           <a className="menu-cta" href="#contact">
             {ui.ctaLabel}
           </a>
         </div>
 
         <div className="site-header__mobile-actions">
-          <a className="menu-cta site-header__mobile-cta" href="#contact">
-            {ui.ctaLabel}
+          <details className="site-header__locale site-header__locale--mobile">
+            <summary aria-label={ui.localeMenuLabel}>
+              <span aria-hidden="true" className="site-header__locale-icon">
+                <svg fill="none" viewBox="0 0 24 24">
+                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+                  <path d="M3 12h18" />
+                  <path d="M12 3a15.5 15.5 0 0 1 0 18" />
+                  <path d="M12 3a15.5 15.5 0 0 0 0 18" />
+                </svg>
+              </span>
+              <span className="site-header__locale-code">{locale.toUpperCase()}</span>
+            </summary>
+            <div
+              aria-label={ui.localeSwitchLabel}
+              className="site-header__locale-popover"
+              role="group"
+            >
+              <button
+                className={`site-header__locale-option${locale === "de" ? " is-active" : ""}`}
+                onClick={() => setLocale("de")}
+                type="button"
+              >
+                DE
+              </button>
+              <button
+                className={`site-header__locale-option${locale === "en" ? " is-active" : ""}`}
+                onClick={() => setLocale("en")}
+                type="button"
+              >
+                EN
+              </button>
+            </div>
+          </details>
+          <a
+            aria-label={ui.ctaLabel}
+            className="menu-cta site-header__mobile-cta"
+            href="#contact"
+            title={ui.ctaLabel}
+          >
+            <span aria-hidden="true" className="site-header__mobile-cta-icon">
+              <svg fill="none" viewBox="0 0 24 24">
+                <path d="M7.5 19.5 3 21l1.5-4.5" />
+                <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
+                <circle cx="9.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
+                <circle cx="12.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
+                <circle cx="15.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
+              </svg>
+            </span>
+            <span className="sr-only">{ui.ctaLabel}</span>
           </a>
           <details className="site-header__mobile-menu">
             <summary aria-label={ui.mobileMenuLabel}>
