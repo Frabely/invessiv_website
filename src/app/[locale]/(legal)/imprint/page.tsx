@@ -1,32 +1,14 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
-import {
-  COMPANY,
-  COMPANY_ADDRESS_LINE_DE,
-  COMPANY_ADDRESS_LINE_EN,
-  COMPANY_MAILTO,
-  COMPANY_TEL,
-} from "@/config/company";
-import { isSupportedLocale, SUPPORTED_LOCALES, type Locale } from "@/config/i18n";
+import { COMPANY, COMPANY_MAILTO, COMPANY_TEL } from "@/config/company";
+import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { SITE_URL } from "@/lib/site-metadata";
 
 type ImprintPageProps = {
   params: Promise<{ locale: string }>;
 };
-
-const imprintMeta = {
-  de: {
-    title: "Impressum",
-    description: "Impressum und Anbieterkennzeichnung von Invessiv.",
-    openGraphTitle: "Impressum | Invessiv",
-  },
-  en: {
-    title: "Imprint",
-    description: "Imprint and provider details of Invessiv.",
-    openGraphTitle: "Imprint | Invessiv",
-  },
-} as const;
 
 export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
@@ -38,23 +20,26 @@ export async function generateMetadata({ params }: ImprintPageProps): Promise<Me
     return {};
   }
 
-  const meta = imprintMeta[locale];
+  const dict = await getDictionary(locale);
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((supportedLocale) => [
+      supportedLocale,
+      `/${supportedLocale}/imprint`,
+    ]),
+  );
 
   return {
-    title: meta.title,
-    description: meta.description,
+    title: dict.imprint.meta.title,
+    description: dict.imprint.meta.description,
     alternates: {
       canonical: `/${locale}/imprint`,
-      languages: {
-        de: "/de/imprint",
-        en: "/en/imprint",
-      },
+      languages,
     },
     openGraph: {
-      title: meta.openGraphTitle,
-      description: meta.description,
+      title: dict.imprint.meta.openGraphTitle,
+      description: dict.imprint.meta.description,
       url: `${SITE_URL}/${locale}/imprint`,
-      locale: locale === "de" ? "de_DE" : "en_US",
+      locale: dict.imprint.meta.openGraphLocale,
       type: "website",
     },
   };
@@ -66,76 +51,61 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
     notFound();
   }
 
-  const contentByLocale: Record<
-    Locale,
-    { lead: string; title: string; addressLine: string }
-  > = {
-    de: {
-      title: "Impressum",
-      lead: "Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV.",
-      addressLine: COMPANY_ADDRESS_LINE_DE,
-    },
-    en: {
-      title: "Imprint",
-      lead: "Information according to Section 5 TMG and Section 18 para. 2 MStV.",
-      addressLine: COMPANY_ADDRESS_LINE_EN,
-    },
-  };
-
-  const content = contentByLocale[locale];
+  const dict = await getDictionary(locale);
+  const imprint = dict.imprint;
 
   return (
-    <LegalLayout lead={content.lead} locale={locale} slug="imprint" title={content.title}>
+    <LegalLayout
+      lead={imprint.page.lead}
+      locale={locale}
+      slug="imprint"
+      title={imprint.page.title}
+    >
       <section id="company-details">
-        <h2>{locale === "de" ? "Anbieter" : "Provider"}</h2>
+        <h2>{imprint.sections.provider.title}</h2>
         <p>
-          <strong>{locale === "de" ? "Firma" : "Company"}:</strong> {COMPANY.brandName}
+          <strong>{imprint.sections.provider.labels.company}:</strong> {COMPANY.brandName}
           <br />
-          <strong>{locale === "de" ? "Rechtsform" : "Legal form"}:</strong>{" "}
-          {COMPANY.legalForm[locale]}
+          <strong>{imprint.sections.provider.labels.legalForm}:</strong> {imprint.values.legalForm}
           <br />
-          <strong>{locale === "de" ? "Vertreten durch" : "Represented by"}:</strong>{" "}
-          {COMPANY.owner}
+          <strong>{imprint.sections.provider.labels.representedBy}:</strong> {COMPANY.owner}
           <br />
-          <strong>{locale === "de" ? "Adresse" : "Address"}:</strong> {content.addressLine}
+          <strong>{imprint.sections.provider.labels.address}:</strong> {imprint.values.addressLine}
         </p>
       </section>
 
       <section>
-        <h2>{locale === "de" ? "Kontakt" : "Contact"}</h2>
+        <h2>{imprint.sections.contact.title}</h2>
         <p>
-          E-Mail: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+          {imprint.sections.contact.labels.email}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           <br />
-          {locale === "de" ? "Telefon" : "Phone"}:{" "}
-          <a href={COMPANY_TEL}>
-            {locale === "de" ? COMPANY.contact.phoneDisplayDe : COMPANY.contact.phoneDisplayEn}
-          </a>
+          {imprint.sections.contact.labels.phone}: <a href={COMPANY_TEL}>{imprint.values.phoneDisplay}</a>
         </p>
       </section>
 
       <section>
-        <h2>{locale === "de" ? "Registereintrag" : "Commercial register"}</h2>
-        <p>{locale === "de" ? "Kein Handelsregistereintrag." : "No commercial register entry."}</p>
+        <h2>{imprint.sections.commercialRegister.title}</h2>
+        <p>{imprint.sections.commercialRegister.emptyEntry}</p>
       </section>
 
       <section>
-        <h2>{locale === "de" ? "Verantwortlich für den Inhalt" : "Responsible for content"}</h2>
+        <h2>{imprint.sections.responsibleContent.title}</h2>
         <p>
           {COMPANY.owner}
           <br />
-          {content.addressLine}
+          {imprint.values.addressLine}
         </p>
       </section>
 
       <section id="placeholder-social-linkedin">
-        <h2>{locale === "de" ? "Social-Profile (noch ergänzen)" : "Social profiles (to be added)"}</h2>
+        <h2>{imprint.sections.social.title}</h2>
         <ul>
-          <li className="legal-placeholder">[PLACEHOLDER: LinkedIn profile URL]</li>
+          <li className="legal-placeholder">{imprint.sections.social.placeholders.linkedin}</li>
           <li className="legal-placeholder" id="placeholder-social-x">
-            [PLACEHOLDER: X/Twitter profile URL]
+            {imprint.sections.social.placeholders.x}
           </li>
           <li className="legal-placeholder" id="placeholder-social-instagram">
-            [PLACEHOLDER: Instagram profile URL]
+            {imprint.sections.social.placeholders.instagram}
           </li>
         </ul>
       </section>

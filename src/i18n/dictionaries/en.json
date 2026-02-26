@@ -1,0 +1,52 @@
+{
+  "imprint": {
+    "meta": {
+      "title": "Imprint",
+      "description": "Imprint and provider details of Invessiv.",
+      "openGraphTitle": "Imprint | Invessiv",
+      "openGraphLocale": "en_US"
+    },
+    "page": {
+      "title": "Imprint",
+      "lead": "Information according to Section 5 TMG and Section 18 para. 2 MStV."
+    },
+    "sections": {
+      "provider": {
+        "title": "Provider",
+        "labels": {
+          "company": "Company",
+          "legalForm": "Legal form",
+          "representedBy": "Represented by",
+          "address": "Address"
+        }
+      },
+      "contact": {
+        "title": "Contact",
+        "labels": {
+          "email": "Email",
+          "phone": "Phone"
+        }
+      },
+      "commercialRegister": {
+        "title": "Commercial register",
+        "emptyEntry": "No commercial register entry."
+      },
+      "responsibleContent": {
+        "title": "Responsible for content"
+      },
+      "social": {
+        "title": "Social profiles (to be added)",
+        "placeholders": {
+          "linkedin": "[PLACEHOLDER: LinkedIn profile URL]",
+          "x": "[PLACEHOLDER: X/Twitter profile URL]",
+          "instagram": "[PLACEHOLDER: Instagram profile URL]"
+        }
+      }
+    },
+    "values": {
+      "legalForm": "Sole proprietorship (part-time)",
+      "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany",
+      "phoneDisplay": "+49 1523 2070477"
+    }
+  }
+}

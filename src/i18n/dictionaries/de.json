@@ -1,0 +1,52 @@
+{
+  "imprint": {
+    "meta": {
+      "title": "Impressum",
+      "description": "Impressum und Anbieterkennzeichnung von Invessiv.",
+      "openGraphTitle": "Impressum | Invessiv",
+      "openGraphLocale": "de_DE"
+    },
+    "page": {
+      "title": "Impressum",
+      "lead": "Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV."
+    },
+    "sections": {
+      "provider": {
+        "title": "Anbieter",
+        "labels": {
+          "company": "Firma",
+          "legalForm": "Rechtsform",
+          "representedBy": "Vertreten durch",
+          "address": "Adresse"
+        }
+      },
+      "contact": {
+        "title": "Kontakt",
+        "labels": {
+          "email": "E-Mail",
+          "phone": "Telefon"
+        }
+      },
+      "commercialRegister": {
+        "title": "Registereintrag",
+        "emptyEntry": "Kein Handelsregistereintrag."
+      },
+      "responsibleContent": {
+        "title": "Verantwortlich für den Inhalt"
+      },
+      "social": {
+        "title": "Social-Profile (noch ergänzen)",
+        "placeholders": {
+          "linkedin": "[PLACEHOLDER: LinkedIn-Profil-URL]",
+          "x": "[PLACEHOLDER: X/Twitter-Profil-URL]",
+          "instagram": "[PLACEHOLDER: Instagram-Profil-URL]"
+        }
+      }
+    },
+    "values": {
+      "legalForm": "Einzelunternehmen (Nebentätigkeit)",
+      "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland",
+      "phoneDisplay": "+49 1523 2070477"
+    }
+  }
+}

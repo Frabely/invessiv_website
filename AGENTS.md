@@ -322,3 +322,16 @@ Outputs:
 - Pfad-/Layout-Berechnungen als testbare Domain-Funktionen modellieren und mit Unit-Tests gegen Regression absichern
 - Section-Komponenten sollen klar typisierte Props nutzen (Content separat, Darstellung separat), damit i18n- und SEO-Layer stabil erweiterbar bleiben
 - Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test für kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
+
+## i18n / Dictionaries (verbindlich)
+
+- Dictionaries liegen in `src/i18n/dictionaries/<locale>.json`
+- Laden erfolgt serverseitig über `src/i18n/get-dictionary.ts` (`server-only`)
+- Key-Konvention:
+  - Namespace pro Seite/Domain (z. B. `imprint`)
+  - Unterteilung in `meta`, `page`, `sections`, `labels`, `values` konsistent halten
+- Page-Dateien (`page.tsx`) enthalten keine locale-spezifischen String-Objekte oder Inline-Übersetzungen mehr
+- Neue Sprache hinzufügen:
+  1. Locale in `SUPPORTED_LOCALES` ergänzen (`src/config/i18n.ts`)
+  2. Neues Dictionary `src/i18n/dictionaries/<locale>.json` mit identischen Keys anlegen
+  3. Prüfen, dass `alternates.languages`, Language-Switch und Metadata automatisch korrekt aufgelöst werden
