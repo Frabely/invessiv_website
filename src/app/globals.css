@@ -2883,19 +2883,17 @@ main {
 }
 
 .legal-lang-switch {
-  position: static;
-  top: auto;
-  right: auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  width: 120px;
-  padding: 6px;
-  border: 1px solid var(--border);
+  position: relative;
+}
+
+.legal-lang-switch summary {
+  min-height: 44px;
+  padding: 0 14px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--surface) 94%, transparent);
-  box-shadow: 0 10px 22px rgba(8, 10, 15, 0.2);
-  z-index: auto;
+}
+
+.legal-lang-switch[open] .site-header__locale-popover {
+  width: 120px;
 }
 
 .legal-lang-switch .site-header__locale-option {
@@ -3012,9 +3010,7 @@ main {
 }
 
 [data-theme="light"] .legal-lang-switch {
-  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
-  box-shadow: 0 10px 22px rgba(20, 31, 51, 0.1);
+  color: inherit;
 }
 
 [data-theme="light"] .legal-page h2 {
@@ -3068,8 +3064,16 @@ main {
 
   .legal-lang-switch {
     width: 100%;
-    max-width: none;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 100%;
+  }
+
+  .legal-lang-switch summary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .legal-lang-switch[open] .site-header__locale-popover {
+    width: 100%;
   }
 
   .legal-lang-switch .site-header__locale-option {
