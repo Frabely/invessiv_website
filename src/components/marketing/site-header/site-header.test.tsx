@@ -48,7 +48,9 @@ describe("SiteHeader", () => {
     );
 
     expect(screen.getAllByText("Ergebnisse").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Leistungen").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Leistungen & Preise").length).toBeGreaterThan(
+      0,
+    );
     expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
   });
 

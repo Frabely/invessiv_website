@@ -2,7 +2,6 @@ import type { RefObject } from "react";
 
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
-import { PackagesSection } from "@/components/marketing/home/sections/packages-section/packages-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
@@ -59,12 +58,14 @@ export function HomeSectionsRenderer({
             if (section.id === "services") {
               return (
                 <ServicesSection
+                  deliveryLabel={ui.servicesDeliveryLabel}
+                  detailsCtaLabel={ui.servicesDetailsCta}
                   description={section.description}
                   id={section.id}
                   key={section.id}
+                  primaryCtaLabel={ui.servicesPrimaryCta}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards ?? []}
-                  servicesExampleCta={ui.servicesExampleCta}
                   title={section.title}
                 />
               );
@@ -80,19 +81,6 @@ export function HomeSectionsRenderer({
                   processRoles={section.processRoles ?? []}
                   processSteps={section.processSteps ?? []}
                   summary={section.processSummary}
-                  title={section.title}
-                />
-              );
-            }
-
-            if (section.id === "pricing") {
-              return (
-                <PackagesSection
-                  description={section.description}
-                  id={section.id}
-                  key={section.id}
-                  packageCards={section.packageCards ?? []}
-                  recommendedBadgeLabel={section.packageRecommendedBadgeLabel}
                   title={section.title}
                 />
               );

@@ -3,7 +3,6 @@ export const SECTION_IDS = [
   "proof",
   "services",
   "process",
-  "pricing",
   "faq",
   "contact",
   "footer",
@@ -18,9 +17,8 @@ export type NavigationItem = {
 
 export const PRIMARY_NAVIGATION: NavigationItem[] = [
   { href: "#proof", label: "Ergebnisse" },
-  { href: "#services", label: "Leistungen" },
+  { href: "#services", label: "Leistungen & Preise" },
   { href: "#process", label: "Prozess" },
-  { href: "#pricing", label: "Pakete" },
   { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Kontakt" },
 ];

@@ -17,9 +17,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     ctaLabel: "Projekt anfragen",
     labelsByHref: {
       "#proof": "Ergebnisse",
-      "#services": "Leistungen",
+      "#services": "Leistungen & Preise",
       "#process": "Prozess",
-      "#pricing": "Pakete",
       "#contact": "Kontakt",
     },
     localeMenuLabel: "Sprache öffnen",
@@ -34,9 +33,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     ctaLabel: "Request project",
     labelsByHref: {
       "#proof": "Proof",
-      "#services": "Services",
+      "#services": "Leistungen & Preise",
       "#process": "Process",
-      "#pricing": "Pricing",
       "#contact": "Contact",
     },
     localeMenuLabel: "Open language",

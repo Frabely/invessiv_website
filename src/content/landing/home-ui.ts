@@ -15,7 +15,9 @@ export type HomeUiContent = {
   mappingWarning: string;
   marqueeItems: string[];
   proofContent: ProofContent;
-  servicesExampleCta: string;
+  servicesDeliveryLabel: string;
+  servicesDetailsCta: string;
+  servicesPrimaryCta: string;
 };
 
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
@@ -68,7 +70,9 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       title: "Warum nicht wie eine Standard-Template-Seite?",
     },
-    servicesExampleCta: "Mehr erfahren",
+    servicesPrimaryCta: "Projekt anfragen",
+    servicesDetailsCta: "Mehr Infos",
+    servicesDeliveryLabel: "Lieferzeit",
   },
   en: {
     heroChipTags: ["Figma design included", "Launch in days", "Reply < 24h"],
@@ -115,7 +119,9 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       title: "Why not build it like a generic template site?",
     },
-    servicesExampleCta: "Learn more",
+    servicesPrimaryCta: "Projekt anfragen",
+    servicesDetailsCta: "Mehr Infos",
+    servicesDeliveryLabel: "Lieferzeit",
   },
 };
 

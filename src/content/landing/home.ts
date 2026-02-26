@@ -7,17 +7,23 @@ export type LandingSectionCopy = {
   metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
   serviceCards?: Array<{
-    icon?: string;
+    key:
+      | "ai"
+      | "landing"
+      | "process"
+      | "web"
+      | "upgrade"
+      | "maintenance";
     iconSrc?: string;
     iconAlt?: string;
     title: string;
     description: string;
-    tag: string;
-    bullets?: string[];
-    chips?: string[];
-    span?: 4 | 5 | 6 | 7;
-    visualVariant?: "landing" | "website" | "tools" | "upgrade" | "ai";
-    visual?: boolean;
+    price: string;
+    delivery: string;
+    deliveryLabel?: string;
+    isRecommended?: boolean;
+    included: string[];
+    details?: string[];
   }>;
   processSteps?: Array<{
     step: string;
@@ -37,20 +43,6 @@ export type LandingSectionCopy = {
     hint: string;
     href: string;
   };
-  packageCards?: Array<{
-    name: string;
-    badge?: string;
-    idealFor: string;
-    price: string;
-    timeline: string;
-    scope: string[];
-    ctaLabel: string;
-    ctaHref: string;
-    secondaryCtaLabel?: string;
-    secondaryCtaHref?: string;
-    featured?: boolean;
-  }>;
-  packageRecommendedBadgeLabel?: string;
   qnaItems?: Array<{
     question: string;
     answer: string;
@@ -201,138 +193,292 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "services",
     copy: {
       de: {
-        title: "Unsere Leistungen",
+        title: "Leistungen & Preise",
         description:
-          "Schlanker Start mit fünf klaren Angebotsbereichen im gleichen Delivery-Rhythmus.",
+          "Projektbasierte, einmalige Preise mit klarem Scope, transparenter Lieferzeit und direktem Weg zur Anfrage.",
         serviceCards: [
           {
+            key: "landing",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
             description:
               "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
-            tag: "Live-Beispiel auf Anfrage",
-            visual: true,
-            visualVariant: "landing",
-            span: 4,
+            isRecommended: true,
+            price: "ab 990 € einmalig",
+            delivery: "3–7 Tage",
+            included: [
+              "Struktur & Wireframe (Hero, Benefits, CTA, FAQ)",
+              "Responsive Design (Mobile-first)",
+              "Basis-SEO (Meta, OG, Indexing-Ready)",
+              "Performance-Optimierung (Core Web Vitals Fokus)",
+              "Tracking-Setup (GA4/Pixel optional)",
+              "1–2 Korrekturschleifen",
+            ],
+            details: [
+              "Copy-Feinschliff und Inhaltsproduktion sind als Add-on möglich.",
+              "Mehr als 2 Korrekturschleifen werden separat kalkuliert.",
+              "Hosting, Domain und externe Tool-Lizenzen sind nicht enthalten.",
+            ],
           },
           {
+            key: "web",
             iconSrc: "/services/02_websites.png",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
-              "Individuelle Firmenwebseiten mit moderner Struktur und klarer Navigation.",
-            tag: "Live-Beispiel auf Anfrage",
-            chips: ["SEO-ready", "Mobile-first", "Schnell"],
-            visual: true,
-            visualVariant: "website",
-            span: 4,
+              "Moderne Unternehmensseiten mit sauberer Navigation und einfacher Pflege.",
+            price: "ab 2.490 € einmalig",
+            delivery: "7–14 Tage",
+            included: [
+              "Individuelles Design-System (leicht erweiterbar)",
+              "Seitenstruktur & Navigation (UX-fokussiert)",
+              "CMS / einfache Wartbarkeit (je nach Stack)",
+              "Performance & technische SEO Basics",
+              "Kontakt/Lead-Flow + Formular",
+              "Deployment/Go-Live Support",
+            ],
+            details: [
+              "Mehrsprachigkeit und zusätzliche Seiten werden vorab klar gescopet.",
+              "CMS-Setup erfolgt nur, wenn im gewählten Stack sinnvoll integriert.",
+              "Drittanbieter-Lizenzen und externe Integrationen sind nicht im Grundpreis enthalten.",
+            ],
           },
           {
+            key: "process",
             iconSrc: "/services/03_tools.png",
             iconAlt: "Prozess-Tools Icon",
             title: "Prozess-Tools",
             description:
-              "Automatisierung interner Abläufe und effiziente Mini-Tools.",
-            tag: "Live-Beispiel auf Anfrage",
-            bullets: [
-              "Mini-Portale",
-              "Workflow-Automation",
-              "Status-Transparenz",
+              "Mini-Tools zur Automatisierung interner Abläufe und mehr Transparenz.",
+            price: "ab 3.490 € einmalig",
+            delivery: "10–21 Tage",
+            included: [
+              "Scope-Workshop light (Ziele, Daten, Rollen)",
+              "MVP-Umsetzung (1 Kern-Workflow)",
+              "Status/Dashboard-Ansicht (basic)",
+              "Integrationen (nach Scope: Webhooks, APIs)",
+              "Auth/Access (basic)",
+              "Übergabe + kurze Doku/Einweisung",
             ],
-            visual: true,
-            visualVariant: "tools",
-            span: 4,
+            details: [
+              "Weitere Workflows werden modular als Folgepaket geplant.",
+              "Enterprise-Auth (z. B. SSO) ist nicht im Basis-MVP enthalten.",
+              "Betrieb, Monitoring und Support werden separat angeboten.",
+            ],
           },
           {
+            key: "upgrade",
             iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website-Upgrade Icon",
-            title: "Alte Website upgraden",
-            description: "Bestehende Webseiten modernisieren und optimieren.",
-            tag: "Live-Beispiel auf Anfrage",
-            visual: true,
-            visualVariant: "upgrade",
-            span: 6,
+            title: "Upgrade bestehende Website",
+            description:
+              "Mehr Speed, bessere UX und modernes UI – ohne kompletten Neubau.",
+            price: "ab 750 € einmalig",
+            delivery: "3–10 Tage",
+            included: [
+              "Performance-Audit + Quick-Wins",
+              "UX/UI Refresh (gezielte Verbesserungen)",
+              "SEO-Technik Basics (Indexing, Struktur)",
+              "Fixes für Responsiveness & Accessibility Basics",
+              "Code/CSS Cleanup (wo sinnvoll)",
+              "Messbare Vorher/Nachher Checks",
+            ],
+            details: [
+              "Optional auch als laufende Unterstützung mit 50 € / h.",
+              "Größere Rebuild-Themen werden transparent separat empfohlen.",
+              "Tiefe Backend-Refactors sind nicht Teil des Basis-Upgrades.",
+            ],
           },
           {
+            key: "ai",
             iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "KI-Templates Icon",
             title: "KI-Templates",
             description:
-              "Vorgefertigte AI-Templates für Content-Erstellung und Marketing.",
-            tag: "Live-Beispiel auf Anfrage",
-            bullets: ["Texte & Bilder", "Landingpages", "Social Media Posts"],
-            visual: true,
-            visualVariant: "ai",
-            span: 6,
+              "Vorlagen für Content & Marketing, abgestimmt auf deine Brand.",
+            price: "ab 290 € einmalig",
+            delivery: "2–5 Tage",
+            included: [
+              "Templates für Texte & Hooks",
+              "Landingpage-Abschnitte (Hero, Benefits, FAQ)",
+              "Social Post Sets (z. B. 10–20 Varianten)",
+              "Brand-Tone Anpassung",
+              "Beispiele + Mini-Guide zur Nutzung",
+            ],
+            details: [
+              "Kein vollautomatischer Kanalbetrieb im Paket enthalten.",
+              "Bild- oder Video-Produktion kann optional ergänzt werden.",
+              "Zusätzliche Variantenpakete sind jederzeit nachbuchbar.",
+            ],
+          },
+          {
+            key: "maintenance",
+            iconSrc: "/services/06_support.png",
+            iconAlt: "Wartung und Support Icon",
+            title: "Wartung & Support",
+            description:
+              "Schnelle Änderungen, Bugfixes und Pflege – flexibel nach Bedarf.",
+            price: "50 € / h",
+            delivery: "i.d.R. 24–72h",
+            deliveryLabel: "Reaktionszeit",
+            included: [
+              "Kleine Änderungen & Content-Pflege",
+              "Bugfixes & Updates",
+              "Monitoring/Checks (optional)",
+              "Priorisierte Abarbeitung nach Impact",
+              "Stundenpakete optional",
+            ],
+            details: [
+              "Stundenpakete: 5h = 225 € oder 10h = 430 €.",
+              "Abrechnung erfolgt transparent nach tatsächlichem Aufwand.",
+              "Notfall-Requests werden nach Verfügbarkeit priorisiert.",
+            ],
           },
         ],
       },
       en: {
-        title: "Our Services",
+        title: "Leistungen & Preise",
         description:
-          "A focused start with five clear offer areas in the same delivery rhythm.",
+          "Project-based one-time pricing with transparent scope, clear delivery windows, and direct contact CTA.",
         serviceCards: [
           {
+            key: "landing",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
             description:
               "Conversion-optimized one-pagers with clear messaging and strong performance.",
-            tag: "Live example on request",
-            visual: true,
-            visualVariant: "landing",
-            span: 4,
+            isRecommended: true,
+            price: "from €990 one-time",
+            delivery: "3–7 days",
+            included: [
+              "Structure & wireframe (hero, benefits, CTA, FAQ)",
+              "Responsive design (mobile-first)",
+              "Basic SEO setup (meta, OG, indexing-ready)",
+              "Performance optimization (Core Web Vitals focus)",
+              "Tracking setup (GA4/pixel optional)",
+              "1–2 feedback rounds",
+            ],
+            details: [
+              "Content production and copy refinement available as add-on.",
+              "More than two feedback rounds are scoped separately.",
+              "Hosting, domain, and external licenses are excluded.",
+            ],
           },
           {
+            key: "web",
             iconSrc: "/services/02_websites.png",
             iconAlt: "Websites icon",
             title: "Websites",
             description:
-              "Custom company websites with modern structure and clean navigation.",
-            tag: "Live example on request",
-            chips: ["SEO-ready", "Mobile-first", "Fast"],
-            visual: true,
-            visualVariant: "website",
-            span: 4,
+              "Modern company websites with clean navigation and easy maintenance.",
+            price: "from €2,490 one-time",
+            delivery: "7–14 days",
+            included: [
+              "Custom design system (easy to extend)",
+              "Site architecture & UX-focused navigation",
+              "CMS / simple maintainability (stack dependent)",
+              "Performance and technical SEO basics",
+              "Contact/lead flow + form",
+              "Deployment/go-live support",
+            ],
+            details: [
+              "Additional pages and multilingual scope are planned upfront.",
+              "CMS setup is included only where the stack supports it cleanly.",
+              "Third-party licenses and external integrations are excluded.",
+            ],
           },
           {
+            key: "process",
             iconSrc: "/services/03_tools.png",
             iconAlt: "Process tools icon",
             title: "Process tools",
             description:
-              "Automation of internal workflows and efficient mini tools.",
-            tag: "Live example on request",
-            bullets: [
-              "Mini portals",
-              "Workflow automation",
-              "Status visibility",
+              "Mini tools that automate internal workflows and create transparency.",
+            price: "from €3,490 one-time",
+            delivery: "10–21 days",
+            included: [
+              "Light scope workshop (goals, data, roles)",
+              "MVP implementation (1 core workflow)",
+              "Basic status/dashboard view",
+              "Integrations by scope (webhooks, APIs)",
+              "Basic auth/access",
+              "Handover + short documentation",
             ],
-            visual: true,
-            visualVariant: "tools",
-            span: 4,
+            details: [
+              "Additional workflows are delivered as scoped follow-up modules.",
+              "Enterprise auth (e.g. SSO) is not in the base MVP.",
+              "Operations, monitoring, and support are available as add-ons.",
+            ],
           },
           {
+            key: "upgrade",
             iconSrc: "/services/04_website_upgrade.png",
             iconAlt: "Website upgrade icon",
             title: "Upgrade existing website",
-            description: "Modernize and optimize your existing websites.",
-            tag: "Live example on request",
-            visual: true,
-            visualVariant: "upgrade",
-            span: 6,
+            description:
+              "More speed, better UX, and modern UI without a full rebuild.",
+            price: "from €750 one-time",
+            delivery: "3–10 days",
+            included: [
+              "Performance audit + quick wins",
+              "UX/UI refresh (targeted improvements)",
+              "SEO technical basics (indexing, structure)",
+              "Responsiveness and accessibility basics",
+              "Code/CSS cleanup where useful",
+              "Measurable before/after checks",
+            ],
+            details: [
+              "Optional hourly support also possible at €50 / h.",
+              "Larger rebuild topics are transparently scoped separately.",
+              "Deep backend refactors are outside base upgrade scope.",
+            ],
           },
           {
+            key: "ai",
             iconSrc: "/services/05_ai_tempaltes.png",
             iconAlt: "AI templates icon",
             title: "AI templates",
             description:
-              "Prebuilt AI templates for content creation and marketing.",
-            tag: "Live example on request",
-            bullets: ["Texts & images", "Landing pages", "Social media posts"],
-            visual: true,
-            visualVariant: "ai",
-            span: 6,
+              "Content and marketing templates aligned to your brand voice.",
+            price: "from €290 one-time",
+            delivery: "2–5 days",
+            included: [
+              "Templates for copy and hooks",
+              "Landing page blocks (hero, benefits, FAQ)",
+              "Social post sets (e.g. 10–20 variants)",
+              "Brand tone alignment",
+              "Examples + mini usage guide",
+            ],
+            details: [
+              "No full channel automation is included.",
+              "Image/video production can be added separately.",
+              "Additional variant packs are available any time.",
+            ],
+          },
+          {
+            key: "maintenance",
+            iconSrc: "/services/06_support.png",
+            iconAlt: "Maintenance and support icon",
+            title: "Maintenance & support",
+            description:
+              "Fast edits, bugfixes, and upkeep with flexible hourly support.",
+            price: "€50 / h",
+            delivery: "typically 24–72h",
+            deliveryLabel: "Response time",
+            included: [
+              "Small changes and content updates",
+              "Bugfixes and routine updates",
+              "Monitoring/checks (optional)",
+              "Prioritized queue by business impact",
+              "Optional hour bundles",
+            ],
+            details: [
+              "Hour bundles: 5h = €225 or 10h = €430.",
+              "Transparent billing based on effective work time.",
+              "Urgent requests are prioritized by availability.",
+            ],
           },
         ],
       },
@@ -472,156 +618,6 @@ const HOME_SECTIONS: LandingSection[] = [
     },
   },
   {
-    id: "pricing",
-    copy: {
-      de: {
-        title: "Pakete, die schnell live gehen.",
-        description:
-          "Wähle das passende Paket und bringe dein Projekt zügig online.",
-        packageRecommendedBadgeLabel: "Empfohlen",
-        packageCards: [
-          {
-            name: "Start",
-            idealFor: "Perfekt für Landingpages",
-            price: "ab 99€ / Monat",
-            timeline: "Launch in wenigen Tagen",
-            scope: [
-              "Moderne Landingpages",
-              "Responsive Design",
-              "Schnelle Umsetzung",
-              "SEO-optimiert",
-              "KI-Templates",
-            ],
-            ctaLabel: "Projekt anfragen",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "Leistungen ansehen",
-            secondaryCtaHref: "#services",
-          },
-          {
-            name: "Business",
-            idealFor: "Professionelle Webseiten",
-            price: "ab 199€ / Monat",
-            timeline: "Launch in 7-10 Tagen",
-            scope: [
-              "Individuelles Design",
-              "CMS & Pflegeleicht",
-              "Performance-Optimierung",
-              "Alte Site updaten",
-              "KI-Unterstützung",
-            ],
-            ctaLabel: "Projekt anfragen",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "Leistungen ansehen",
-            secondaryCtaHref: "#services",
-            featured: true,
-          },
-          {
-            name: "Prozess",
-            idealFor: "Tools für Optimierung",
-            price: "ab 299€ / Monat",
-            timeline: "Effizienz steigern",
-            scope: [
-              "Prozess-Automationen",
-              "Workflow-Tools",
-              "Daten-Analysen",
-              "KI-Integrationen",
-              "Individuelle Lösungen",
-            ],
-            ctaLabel: "Projekt anfragen",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "Leistungen ansehen",
-            secondaryCtaHref: "#services",
-          },
-          {
-            name: "Individuell",
-            idealFor: "Maßgeschneiderte Lösungen",
-            price: "Individuelles Angebot",
-            timeline: "Antwort < 24h",
-            scope: [
-              "Komplexe Projekte",
-              "Specialanforderungen",
-              "Persönliche Beratung",
-            ],
-            ctaLabel: "Kontakt aufnehmen",
-            ctaHref: "#contact",
-          },
-        ],
-      },
-      en: {
-        title: "Packages that go live quickly.",
-        description: "Choose the right package and ship your project fast.",
-        packageRecommendedBadgeLabel: "Recommended",
-        packageCards: [
-          {
-            name: "Start",
-            idealFor: "Perfect for landing pages",
-            price: "from €99 / month",
-            timeline: "Launch in just a few days",
-            scope: [
-              "Modern landing pages",
-              "Responsive design",
-              "Fast execution",
-              "SEO optimized",
-              "AI templates",
-            ],
-            ctaLabel: "Request project",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "View services",
-            secondaryCtaHref: "#services",
-          },
-          {
-            name: "Business",
-            idealFor: "Professional websites",
-            price: "from €199 / month",
-            timeline: "Launch in 7-10 days",
-            scope: [
-              "Custom design",
-              "CMS & easy maintenance",
-              "Performance optimization",
-              "Update existing site",
-              "AI support",
-            ],
-            ctaLabel: "Request project",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "View services",
-            secondaryCtaHref: "#services",
-            featured: true,
-          },
-          {
-            name: "Process",
-            idealFor: "Tools for optimization",
-            price: "from €299 / month",
-            timeline: "Increase efficiency",
-            scope: [
-              "Process automations",
-              "Workflow tools",
-              "Data analytics",
-              "AI integrations",
-              "Custom solutions",
-            ],
-            ctaLabel: "Request project",
-            ctaHref: "#contact",
-            secondaryCtaLabel: "View services",
-            secondaryCtaHref: "#services",
-          },
-          {
-            name: "Custom",
-            idealFor: "Tailored solutions",
-            price: "Custom quote",
-            timeline: "Reply < 24h",
-            scope: [
-              "Complex projects",
-              "Special requirements",
-              "Personal consulting",
-            ],
-            ctaLabel: "Get in touch",
-            ctaHref: "#contact",
-          },
-        ],
-      },
-    },
-  },
-  {
     id: "faq",
     copy: {
       de: {
@@ -702,18 +698,17 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Ergebnisse", href: "#proof" },
-              { label: "Leistungen", href: "#services" },
-              { label: "Pakete", href: "#pricing" },
+              { label: "Leistungen & Preise", href: "#services" },
               { label: "Kontakt", href: "#contact" },
             ],
           },
           {
             title: "Leistungen",
             links: [
-              { label: "Landingpages", href: "#pricing" },
-              { label: "Webdesign", href: "#pricing" },
-              { label: "Webentwicklung", href: "#pricing" },
-              { label: "Prozess-Tools", href: "#pricing" },
+              { label: "Landingpages", href: "#services" },
+              { label: "Webdesign", href: "#services" },
+              { label: "Webentwicklung", href: "#services" },
+              { label: "Prozess-Tools", href: "#services" },
             ],
           },
           {
@@ -795,18 +790,17 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "Proof", href: "#proof" },
-              { label: "Services", href: "#services" },
-              { label: "Pricing", href: "#pricing" },
+              { label: "Leistungen & Preise", href: "#services" },
               { label: "Contact", href: "#contact" },
             ],
           },
           {
             title: "Services",
             links: [
-              { label: "Landing pages", href: "#pricing" },
-              { label: "Web design", href: "#pricing" },
-              { label: "Web development", href: "#pricing" },
-              { label: "Process tools", href: "#pricing" },
+              { label: "Landing pages", href: "#services" },
+              { label: "Web design", href: "#services" },
+              { label: "Web development", href: "#services" },
+              { label: "Process tools", href: "#services" },
             ],
           },
           {
@@ -900,18 +894,17 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Ergebnisse", href: "#proof" },
-              { label: "Leistungen", href: "#services" },
-              { label: "Pakete", href: "#pricing" },
+              { label: "Leistungen & Preise", href: "#services" },
               { label: "Kontakt", href: "#contact" },
             ],
           },
           {
             title: "Leistungen",
             links: [
-              { label: "Landingpages", href: "#pricing" },
-              { label: "Webdesign", href: "#pricing" },
-              { label: "Webentwicklung", href: "#pricing" },
-              { label: "Prozess-Tools", href: "#pricing" },
+              { label: "Landingpages", href: "#services" },
+              { label: "Webdesign", href: "#services" },
+              { label: "Webentwicklung", href: "#services" },
+              { label: "Prozess-Tools", href: "#services" },
             ],
           },
           {
@@ -958,18 +951,17 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "Proof", href: "#proof" },
-              { label: "Services", href: "#services" },
-              { label: "Packages", href: "#pricing" },
+              { label: "Leistungen & Preise", href: "#services" },
               { label: "Contact", href: "#contact" },
             ],
           },
           {
             title: "Services",
             links: [
-              { label: "Landing pages", href: "#pricing" },
-              { label: "Web design", href: "#pricing" },
-              { label: "Web development", href: "#pricing" },
-              { label: "Process tools", href: "#pricing" },
+              { label: "Landing pages", href: "#services" },
+              { label: "Web design", href: "#services" },
+              { label: "Web development", href: "#services" },
+              { label: "Process tools", href: "#services" },
             ],
           },
           {

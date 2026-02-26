@@ -60,6 +60,17 @@ function AiIcon() {
   );
 }
 
+function SupportIcon() {
+  return (
+    <svg aria-hidden="true" className="services-title-icon-image" viewBox="0 0 24 24">
+      <path {...stroke} d="M12 18.5a6.5 6.5 0 1 0-6.5-6.5" />
+      <path {...stroke} d="M5.5 12v5.5h3.5v-4.2" />
+      <path {...stroke} d="M18.5 12v5.5H15v-4.2" />
+      <path {...stroke} d="M9.5 9.7h5M9.5 12.4H13" />
+    </svg>
+  );
+}
+
 const renderIcon = (iconSrc?: string) => {
   if (!iconSrc) {
     return <LandingIcon />;
@@ -75,6 +86,9 @@ const renderIcon = (iconSrc?: string) => {
   }
   if (iconSrc.includes("05_") || iconSrc.includes("ai")) {
     return <AiIcon />;
+  }
+  if (iconSrc.includes("06_") || iconSrc.includes("support")) {
+    return <SupportIcon />;
   }
   return <LandingIcon />;
 };
