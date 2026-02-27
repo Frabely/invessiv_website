@@ -27,6 +27,13 @@ const sectionData = [
   },
 ];
 
+const createLongTocSections = (count: number) =>
+  Array.from({ length: count }, (_, index) => ({
+    id: `section-${index + 1}`,
+    title: `${index + 1}. Abschnitt`,
+    body: <p>{buildLongText(`Abschnitt ${index + 1}`)}</p>,
+  }));
+
 describe("TermsContent", () => {
   const replaceStateSpy = vi.spyOn(window.history, "replaceState");
   const writeTextSpy = vi.fn(() => Promise.resolve());
@@ -41,6 +48,9 @@ describe("TermsContent", () => {
     dispatchEvent: vi.fn(),
   }));
   const scrollIntoViewMock = vi.fn();
+  let mockScrollY = 0;
+  let requestAnimationFrameMock: ReturnType<typeof vi.spyOn> | null = null;
+  let cancelAnimationFrameMock: ReturnType<typeof vi.spyOn> | null = null;
 
   beforeEach(() => {
     vi.useFakeTimers();
@@ -56,6 +66,26 @@ describe("TermsContent", () => {
       configurable: true,
       value: scrollIntoViewMock,
     });
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: 1280,
+    });
+    Object.defineProperty(window, "innerHeight", {
+      configurable: true,
+      value: 800,
+    });
+    mockScrollY = 0;
+    Object.defineProperty(window, "scrollY", {
+      configurable: true,
+      get: () => mockScrollY,
+    });
+    requestAnimationFrameMock = vi
+      .spyOn(window, "requestAnimationFrame")
+      .mockImplementation((callback: FrameRequestCallback) => {
+        callback(0);
+        return 1;
+      });
+    cancelAnimationFrameMock = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
     replaceStateSpy.mockReset();
     writeTextSpy.mockClear();
     matchMediaMock.mockClear();
@@ -66,6 +96,8 @@ describe("TermsContent", () => {
   afterEach(() => {
     vi.runOnlyPendingTimers();
     vi.useRealTimers();
+    requestAnimationFrameMock?.mockRestore();
+    cancelAnimationFrameMock?.mockRestore();
     cleanup();
   });
 
@@ -201,5 +233,83 @@ describe("TermsContent", () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it("keeps desktop toc fixed under header while scrolling and pins it at content end", () => {
+    render(
+      <TermsContent
+        copySectionLinkLabel="Link kopieren"
+        sectionLinkCopiedLabel="Kopiert"
+        sections={createLongTocSections(30)}
+        tocLabel="Inhalt"
+      />,
+    );
+
+    const navs = screen.getAllByRole("navigation", { name: "Inhalt" });
+    const desktopToc = navs[1] as HTMLElement;
+    const tocColumn = desktopToc.parentElement as HTMLElement;
+    const article = tocColumn.nextElementSibling as HTMLElement;
+
+    const columnTopInDocument = 200;
+    const articleBottomInDocument = 5000;
+    const columnLeft = 48;
+    const columnWidth = 260;
+
+    const rectSpy = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function () {
+      if (this === tocColumn) {
+        return {
+          x: columnLeft,
+          y: columnTopInDocument - mockScrollY,
+          top: columnTopInDocument - mockScrollY,
+          bottom: columnTopInDocument - mockScrollY + 600,
+          left: columnLeft,
+          right: columnLeft + columnWidth,
+          width: columnWidth,
+          height: 600,
+          toJSON: () => ({}),
+        };
+      }
+      if (this === article) {
+        return {
+          x: 340,
+          y: 220 - mockScrollY,
+          top: 220 - mockScrollY,
+          bottom: articleBottomInDocument - mockScrollY,
+          left: 340,
+          right: 1200,
+          width: 860,
+          height: articleBottomInDocument - 220,
+          toJSON: () => ({}),
+        };
+      }
+      return {
+        x: 0,
+        y: 0,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        toJSON: () => ({}),
+      };
+    });
+    const offsetHeightSpy = vi.spyOn(desktopToc, "offsetHeight", "get").mockReturnValue(1200);
+
+    act(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    act(() => {
+      mockScrollY = 4300;
+      window.dispatchEvent(new Event("scroll"));
+    });
+
+    expect(desktopToc.className).toContain("desktopTocBottom");
+    expect(desktopToc.style.getPropertyValue("--desktop-toc-max-height")).toBe("680px");
+    expect(Number.parseInt(desktopToc.style.getPropertyValue("--desktop-toc-bottom-top"), 10)).toBeGreaterThanOrEqual(0);
+
+    rectSpy.mockRestore();
+    offsetHeightSpy.mockRestore();
   });
 });

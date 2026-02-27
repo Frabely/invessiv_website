@@ -239,11 +239,16 @@
   border-radius: 12px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 901px) {
   .layout {
     grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: 20px;
+  }
+
+  .tocColumn {
+    min-height: 0;
+    position: relative;
   }
 
   .articleInner {
@@ -255,9 +260,12 @@
   }
 
   .desktopToc {
+    --desktop-toc-top: 108px;
     display: block;
-    position: sticky;
-    top: 108px;
+    position: relative;
+    align-self: start;
+    max-height: calc(100vh - var(--desktop-toc-top) - 12px);
+    overflow-y: auto;
     border-radius: 20px;
     border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
     background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
@@ -265,6 +273,23 @@
       0 14px 28px rgba(8, 10, 15, 0.16),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
     padding: 14px;
+  }
+
+  .desktopTocFixed {
+    position: fixed;
+    top: var(--desktop-toc-top);
+    left: var(--desktop-toc-left);
+    width: var(--desktop-toc-width);
+    max-height: var(--desktop-toc-max-height);
+    z-index: 24;
+  }
+
+  .desktopTocBottom {
+    position: absolute;
+    top: var(--desktop-toc-bottom-top);
+    left: 0;
+    width: 100%;
+    max-height: var(--desktop-toc-max-height);
   }
 
   .desktopToc h2 {

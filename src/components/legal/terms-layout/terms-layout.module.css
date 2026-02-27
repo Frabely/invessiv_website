@@ -1,9 +1,9 @@
 .page {
-  padding: 106px 20px 56px;
+  padding: 106px 0 56px;
 }
 
 .inner {
-  width: min(1100px, 100%);
+  width: min(var(--max-content-width), 100%);
   margin: 0 auto;
 }
 
@@ -121,5 +121,11 @@
   .intro {
     padding: 20px;
     border-radius: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .page {
+    padding-inline: 20px;
   }
 }

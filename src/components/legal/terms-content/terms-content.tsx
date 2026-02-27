@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import styles from "./terms-content.module.css";
 
 type TermsSection = {
@@ -24,6 +24,161 @@ export function TermsContent({
   tocLabel,
 }: TermsContentProps) {
   const [copiedSectionId, setCopiedSectionId] = useState<string>("");
+  const [desktopTocTop, setDesktopTocTop] = useState<number>(108);
+  const [desktopTocMode, setDesktopTocMode] = useState<"static" | "fixed" | "bottom">("static");
+  const [desktopTocMetrics, setDesktopTocMetrics] = useState({
+    bottomTop: 0,
+    left: 0,
+    maxHeight: 0,
+    width: 0,
+  });
+  const tocColumnRef = useRef<HTMLElement | null>(null);
+  const desktopTocRef = useRef<HTMLElement | null>(null);
+  const articleRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const headerInner = document.querySelector<HTMLElement>(".site-header__inner");
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const observedHeader = headerInner ?? header;
+
+    if (!observedHeader) {
+      return;
+    }
+
+    const updateDesktopTocTop = () => {
+      const nextTop = Math.ceil(observedHeader.getBoundingClientRect().height + 12);
+      setDesktopTocTop(nextTop);
+    };
+
+    updateDesktopTocTop();
+    const hasResizeObserver = typeof ResizeObserver !== "undefined";
+    const resizeObserver = hasResizeObserver ? new ResizeObserver(updateDesktopTocTop) : null;
+    if (resizeObserver) {
+      resizeObserver.observe(observedHeader);
+    }
+    window.addEventListener("resize", updateDesktopTocTop);
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      window.removeEventListener("resize", updateDesktopTocTop);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    let frameId = 0;
+
+    const updateDesktopTocPosition = () => {
+      frameId = 0;
+      const tocColumn = tocColumnRef.current;
+      const desktopToc = desktopTocRef.current;
+      const article = articleRef.current;
+      if (!tocColumn || !desktopToc || !article) {
+        return;
+      }
+
+      if (window.innerWidth < 901) {
+        setDesktopTocMode("static");
+        return;
+      }
+
+      const columnRect = tocColumn.getBoundingClientRect();
+      const articleRect = article.getBoundingClientRect();
+      const scrollY = window.scrollY;
+      const columnTop = columnRect.top + scrollY;
+      const articleBottom = articleRect.bottom + scrollY;
+      const maxHeight = Math.max(220, Math.floor(window.innerHeight - desktopTocTop - 12));
+      const tocHeight = Math.min(desktopToc.offsetHeight, maxHeight);
+      const maxFixedTopDocumentY = articleBottom - tocHeight - 12;
+      const fixedTopDocumentY = scrollY + desktopTocTop;
+
+      const nextMetrics = {
+        bottomTop: Math.max(0, Math.floor(maxFixedTopDocumentY - columnTop)),
+        left: Math.floor(columnRect.left),
+        maxHeight,
+        width: Math.floor(columnRect.width),
+      };
+
+      setDesktopTocMetrics((current) => {
+        if (
+          current.bottomTop === nextMetrics.bottomTop &&
+          current.left === nextMetrics.left &&
+          current.maxHeight === nextMetrics.maxHeight &&
+          current.width === nextMetrics.width
+        ) {
+          return current;
+        }
+        return nextMetrics;
+      });
+
+      if (fixedTopDocumentY <= columnTop) {
+        setDesktopTocMode("static");
+        return;
+      }
+      if (fixedTopDocumentY >= maxFixedTopDocumentY) {
+        setDesktopTocMode("bottom");
+        return;
+      }
+      setDesktopTocMode("fixed");
+    };
+
+    const scheduleUpdateDesktopTocPosition = () => {
+      if (frameId !== 0) {
+        return;
+      }
+      frameId = window.requestAnimationFrame(updateDesktopTocPosition);
+    };
+
+    scheduleUpdateDesktopTocPosition();
+    window.addEventListener("scroll", scheduleUpdateDesktopTocPosition, { passive: true });
+    window.addEventListener("resize", scheduleUpdateDesktopTocPosition);
+    const hasResizeObserver = typeof ResizeObserver !== "undefined";
+    const resizeObserver = hasResizeObserver ? new ResizeObserver(scheduleUpdateDesktopTocPosition) : null;
+    if (resizeObserver && tocColumnRef.current) {
+      resizeObserver.observe(tocColumnRef.current);
+    }
+    if (resizeObserver && desktopTocRef.current) {
+      resizeObserver.observe(desktopTocRef.current);
+    }
+    if (resizeObserver && articleRef.current) {
+      resizeObserver.observe(articleRef.current);
+    }
+
+    return () => {
+      if (frameId !== 0) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener("scroll", scheduleUpdateDesktopTocPosition);
+      window.removeEventListener("resize", scheduleUpdateDesktopTocPosition);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [desktopTocTop]);
+
+  const desktopTocStyle = {
+    "--desktop-toc-bottom-top": `${desktopTocMetrics.bottomTop}px`,
+    "--desktop-toc-left": `${desktopTocMetrics.left}px`,
+    "--desktop-toc-max-height": `${desktopTocMetrics.maxHeight}px`,
+    "--desktop-toc-top": `${desktopTocTop}px`,
+    "--desktop-toc-width": `${desktopTocMetrics.width}px`,
+  } as CSSProperties;
+
+  const desktopTocClassName =
+    desktopTocMode === "fixed"
+      ? `${styles.desktopToc} ${styles.desktopTocFixed}`
+      : desktopTocMode === "bottom"
+        ? `${styles.desktopToc} ${styles.desktopTocBottom}`
+        : styles.desktopToc;
 
   const smoothScrollToSection = useCallback((sectionId: string, updateHash: boolean) => {
     if (typeof window === "undefined") {
@@ -79,7 +234,7 @@ export function TermsContent({
 
   return (
     <div className={styles.layout}>
-      <aside className={styles.tocColumn}>
+      <aside className={styles.tocColumn} ref={tocColumnRef}>
         <details className={styles.mobileToc}>
           <summary>{tocLabel}</summary>
           <nav aria-label={tocLabel} className={styles.tocNav}>
@@ -95,7 +250,7 @@ export function TermsContent({
           </nav>
         </details>
 
-        <nav aria-label={tocLabel} className={styles.desktopToc}>
+        <nav aria-label={tocLabel} className={desktopTocClassName} ref={desktopTocRef} style={desktopTocStyle}>
           <h2>{tocLabel}</h2>
           <ol className={styles.tocList}>
             {sections.map((section) => (
@@ -109,7 +264,7 @@ export function TermsContent({
         </nav>
       </aside>
 
-      <article className={styles.article}>
+      <article className={styles.article} ref={articleRef}>
         <div className={styles.articleInner}>
           {sections.map((section) => (
             <section
