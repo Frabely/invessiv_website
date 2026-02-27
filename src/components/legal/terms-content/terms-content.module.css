@@ -108,9 +108,9 @@
 }
 
 .articleInner {
-  max-width: 80ch;
-  margin: 0 auto;
-  padding: 24px;
+  max-width: 100%;
+  margin: 0;
+  padding: 18px;
 }
 
 .articleSection + .articleSection {
@@ -246,6 +246,10 @@
     gap: 20px;
   }
 
+  .articleInner {
+    padding: 20px;
+  }
+
   .mobileToc {
     display: none;
   }
@@ -268,7 +272,7 @@
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
+    text-transform: none;
     color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
   }
 }
@@ -279,6 +283,6 @@
   }
 
   .articleInner {
-    padding: 18px;
+    padding: 12px;
   }
 }
