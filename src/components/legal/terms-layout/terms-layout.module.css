@@ -70,7 +70,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   padding: 28px;
   border-radius: 24px;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
@@ -103,7 +103,7 @@
 }
 
 .updatedAt {
-  margin: 38px 0 14px;
+  margin: 16px 0 2px;
   width: fit-content;
   padding: 8px 12px;
   border-radius: 999px;

@@ -26,6 +26,9 @@ export function TermsContent({
   const [copiedSectionId, setCopiedSectionId] = useState<string>("");
   const [desktopTocTop, setDesktopTocTop] = useState<number>(108);
   const [desktopTocMode, setDesktopTocMode] = useState<"static" | "fixed" | "bottom">("static");
+  const [mobileTocMode, setMobileTocMode] = useState<"static" | "fixed">("static");
+  const [isMobileTocQuiet, setIsMobileTocQuiet] = useState<boolean>(false);
+  const [isMobileTocOpen, setIsMobileTocOpen] = useState<boolean>(false);
   const [desktopTocMetrics, setDesktopTocMetrics] = useState({
     bottomTop: 0,
     left: 0,
@@ -33,8 +36,10 @@ export function TermsContent({
     width: 0,
   });
   const tocColumnRef = useRef<HTMLElement | null>(null);
+  const mobileTocAnchorRef = useRef<HTMLDivElement | null>(null);
   const desktopTocRef = useRef<HTMLElement | null>(null);
   const articleRef = useRef<HTMLElement | null>(null);
+  const lastMobileScrollYRef = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -165,6 +170,92 @@ export function TermsContent({
     };
   }, [desktopTocTop]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mobileBreakpoint = 900;
+    const scrollDeltaThreshold = 8;
+    const topResetThreshold = 56;
+
+    const updateMobileTocQuietMode = () => {
+      if (window.innerWidth > mobileBreakpoint) {
+        setIsMobileTocQuiet(false);
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const previousScrollY = lastMobileScrollYRef.current;
+
+      if (isMobileTocOpen || currentScrollY <= topResetThreshold) {
+        setIsMobileTocQuiet(false);
+      } else if (currentScrollY > previousScrollY + scrollDeltaThreshold) {
+        setIsMobileTocQuiet(true);
+      } else if (currentScrollY < previousScrollY - scrollDeltaThreshold) {
+        setIsMobileTocQuiet(false);
+      }
+
+      lastMobileScrollYRef.current = currentScrollY;
+    };
+
+    updateMobileTocQuietMode();
+    window.addEventListener("scroll", updateMobileTocQuietMode, { passive: true });
+    window.addEventListener("resize", updateMobileTocQuietMode);
+
+    return () => {
+      window.removeEventListener("scroll", updateMobileTocQuietMode);
+      window.removeEventListener("resize", updateMobileTocQuietMode);
+    };
+  }, [isMobileTocOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mobileBreakpoint = 900;
+
+    const updateMobileTocMode = () => {
+      const tocColumn = tocColumnRef.current;
+      const mobileAnchor = mobileTocAnchorRef.current;
+      if (!tocColumn || !mobileAnchor) {
+        return;
+      }
+      const tocColumnRect = tocColumn.getBoundingClientRect();
+      setDesktopTocMetrics((current) => {
+        const nextLeft = Math.floor(tocColumnRect.left);
+        const nextWidth = Math.floor(tocColumnRect.width);
+        if (current.left === nextLeft && current.width === nextWidth) {
+          return current;
+        }
+        return {
+          ...current,
+          left: nextLeft,
+          width: nextWidth,
+        };
+      });
+
+      if (window.innerWidth > mobileBreakpoint) {
+        setMobileTocMode("static");
+        return;
+      }
+
+      const anchorTopInDocument = mobileAnchor.getBoundingClientRect().top + window.scrollY;
+      const shouldFix = window.scrollY + desktopTocTop + 6 >= anchorTopInDocument;
+      setMobileTocMode(shouldFix ? "fixed" : "static");
+    };
+
+    updateMobileTocMode();
+    window.addEventListener("scroll", updateMobileTocMode, { passive: true });
+    window.addEventListener("resize", updateMobileTocMode);
+
+    return () => {
+      window.removeEventListener("scroll", updateMobileTocMode);
+      window.removeEventListener("resize", updateMobileTocMode);
+    };
+  }, [desktopTocTop]);
+
   const desktopTocStyle = {
     "--desktop-toc-bottom-top": `${desktopTocMetrics.bottomTop}px`,
     "--desktop-toc-left": `${desktopTocMetrics.left}px`,
@@ -172,13 +263,26 @@ export function TermsContent({
     "--desktop-toc-top": `${desktopTocTop}px`,
     "--desktop-toc-width": `${desktopTocMetrics.width}px`,
   } as CSSProperties;
+  const mobileTocStyle = {
+    "--mobile-toc-left": `${desktopTocMetrics.left}px`,
+    "--mobile-toc-top": `${desktopTocTop}px`,
+    "--mobile-toc-width": `${desktopTocMetrics.width}px`,
+  } as CSSProperties;
 
   const desktopTocClassName =
     desktopTocMode === "fixed"
       ? `${styles.desktopToc} ${styles.desktopTocFixed}`
       : desktopTocMode === "bottom"
-        ? `${styles.desktopToc} ${styles.desktopTocBottom}`
+      ? `${styles.desktopToc} ${styles.desktopTocBottom}`
         : styles.desktopToc;
+  const mobileTocClassName =
+    mobileTocMode === "fixed"
+      ? isMobileTocQuiet && !isMobileTocOpen
+        ? `${styles.mobileToc} ${styles.mobileTocFixed} ${styles.mobileTocQuiet}`
+        : `${styles.mobileToc} ${styles.mobileTocFixed}`
+      : isMobileTocQuiet && !isMobileTocOpen
+        ? `${styles.mobileToc} ${styles.mobileTocQuiet}`
+        : styles.mobileToc;
 
   const smoothScrollToSection = useCallback((sectionId: string, updateHash: boolean) => {
     if (typeof window === "undefined") {
@@ -206,6 +310,11 @@ export function TermsContent({
     (event: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
       event.preventDefault();
       smoothScrollToSection(sectionId, true);
+      const mobileDetails = event.currentTarget.closest("details");
+      if (mobileDetails) {
+        mobileDetails.removeAttribute("open");
+        setIsMobileTocOpen(false);
+      }
     },
     [smoothScrollToSection],
   );
@@ -235,7 +344,12 @@ export function TermsContent({
   return (
     <div className={styles.layout}>
       <aside className={styles.tocColumn} ref={tocColumnRef}>
-        <details className={styles.mobileToc}>
+        <div aria-hidden="true" ref={mobileTocAnchorRef} />
+        <details
+          className={mobileTocClassName}
+          onToggle={(event) => setIsMobileTocOpen(event.currentTarget.open)}
+          style={mobileTocStyle}
+        >
           <summary>{tocLabel}</summary>
           <nav aria-label={tocLabel} className={styles.tocNav}>
             <ol className={styles.tocList}>

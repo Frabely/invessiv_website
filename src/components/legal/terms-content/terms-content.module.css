@@ -9,23 +9,46 @@
 }
 
 .mobileToc {
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+  --mobile-toc-top: 96px;
+  position: relative;
+  z-index: 48;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   box-shadow:
-    0 12px 24px rgba(8, 10, 15, 0.16),
+    0 10px 26px rgba(8, 10, 15, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  overflow: hidden;
+  overflow: visible;
+  transition:
+    opacity 180ms ease,
+    transform 200ms ease;
+}
+
+.mobileTocFixed {
+  position: fixed;
+  top: calc(var(--mobile-toc-top) + 6px);
+  left: var(--mobile-toc-left);
+  right: auto;
+  width: var(--mobile-toc-width);
+  z-index: 64;
+}
+
+.mobileTocQuiet {
+  opacity: 0.46;
+  transform: translateY(-1px);
 }
 
 .mobileToc summary {
   cursor: pointer;
-  min-height: 50px;
+  min-height: 46px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
   list-style: none;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
 }
@@ -34,8 +57,41 @@
   display: none;
 }
 
+.mobileToc summary::after {
+  content: "v";
+  font-size: 0.72rem;
+  opacity: 0.72;
+  transition: transform 180ms ease;
+}
+
+.mobileToc[open] summary::after {
+  transform: rotate(180deg);
+}
+
 .mobileToc .tocNav {
-  padding: 2px 10px 12px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  max-height: min(58vh, 440px);
+  overflow-y: auto;
+  z-index: 72;
+  padding: 8px 10px 12px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
+  box-shadow:
+    0 18px 36px rgba(8, 10, 15, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.mobileTocFixed .tocNav {
+  position: fixed;
+  left: var(--mobile-toc-left);
+  right: auto;
+  top: calc(var(--mobile-toc-top) + 58px);
+  width: var(--mobile-toc-width);
+  max-height: min(46vh, 360px);
 }
 
 .desktopToc {
@@ -302,7 +358,24 @@
   }
 }
 
+@media (max-width: 900px) {
+  .layout,
+  .tocColumn,
+  .article {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
 @media (max-width: 700px) {
+  .layout,
+  .tocColumn,
+  .article {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .article {
     border-radius: 20px;
   }

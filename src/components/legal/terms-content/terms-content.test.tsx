@@ -312,4 +312,74 @@ describe("TermsContent", () => {
     rectSpy.mockRestore();
     offsetHeightSpy.mockRestore();
   });
+
+  it("uses quiet mode for mobile toc while reading and restores visibility on upward scroll", () => {
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: 390,
+    });
+
+    render(
+      <TermsContent
+        copySectionLinkLabel="Link kopieren"
+        sectionLinkCopiedLabel="Kopiert"
+        sections={sectionData}
+        tocLabel="Inhalt"
+      />,
+    );
+
+    const mobileSummary = screen
+      .getAllByText("Inhalt")
+      .find((element) => element.tagName.toLowerCase() === "summary") as HTMLElement;
+    const mobileToc = mobileSummary.closest("details") as HTMLElement;
+    expect(mobileToc.className).not.toContain("mobileTocQuiet");
+
+    act(() => {
+      mockScrollY = 180;
+      window.dispatchEvent(new Event("scroll"));
+    });
+    expect(mobileToc.className).toContain("mobileTocQuiet");
+
+    act(() => {
+      mockScrollY = 130;
+      window.dispatchEvent(new Event("scroll"));
+    });
+    expect(mobileToc.className).not.toContain("mobileTocQuiet");
+  });
+
+  it("keeps mobile toc visible when the toc sheet is open", () => {
+    Object.defineProperty(window, "innerWidth", {
+      configurable: true,
+      value: 390,
+    });
+
+    render(
+      <TermsContent
+        copySectionLinkLabel="Link kopieren"
+        sectionLinkCopiedLabel="Kopiert"
+        sections={sectionData}
+        tocLabel="Inhalt"
+      />,
+    );
+
+    const mobileSummary = screen
+      .getAllByText("Inhalt")
+      .find((element) => element.tagName.toLowerCase() === "summary") as HTMLElement;
+    const mobileToc = mobileSummary.closest("details") as HTMLElement;
+
+    act(() => {
+      mockScrollY = 180;
+      window.dispatchEvent(new Event("scroll"));
+    });
+    expect(mobileToc.className).toContain("mobileTocQuiet");
+
+    mobileToc.setAttribute("open", "");
+    fireEvent(mobileToc, new Event("toggle"));
+
+    act(() => {
+      mockScrollY = 260;
+      window.dispatchEvent(new Event("scroll"));
+    });
+    expect(mobileToc.className).not.toContain("mobileTocQuiet");
+  });
 });
