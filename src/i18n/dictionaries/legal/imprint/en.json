@@ -1,73 +1,79 @@
 {
-    "imprint":  {
-                    "meta":  {
-                                 "title":  "Imprint",
-                                 "description":  "Imprint and provider details of Invessiv.",
-                                 "openGraphTitle":  "Imprint | Invessiv",
-                                 "openGraphLocale":  "en_US"
-                             },
-                    "page":  {
-                                 "title":  "Imprint",
-                                 "lead":  "Information according to Section 5 TMG and Section 18 para. 2 MStV.",
-                                 "updatedAt":  "Last updated: February 26, 2026."
-                             },
-                    "sections":  {
-                                     "provider":  {
-                                                      "title":  "Provider",
-                                                      "labels":  {
-                                                                     "company":  "Company",
-                                                                     "legalForm":  "Legal form",
-                                                                     "representedBy":  "Represented by",
-                                                                     "address":  "Address"
-                                                                 },
-                                                      "notePlaceholder":  "[PLACEHOLDER: If legal registration uses a different company wording, update it here]"
-                                                  },
-                                     "contact":  {
-                                                     "title":  "Contact",
-                                                     "labels":  {
-                                                                    "email":  "Email",
-                                                                    "phone":  "Phone"
-                                                                }
-                                                 },
-                                     "commercialRegister":  {
-                                                                "title":  "Commercial register",
-                                                                "emptyEntry":  "No commercial register entry.",
-                                                                "notePlaceholder":  "[PLACEHOLDER: Update this section if a register entry is added later]"
-                                                            },
-                                     "vatId":  {
-                                                   "title":  "VAT ID",
-                                                   "notePlaceholder":  "[PLACEHOLDER: Add VAT ID according to Â§ 27a UStG once available]"
-                                               },
-                                     "responsibleContent":  {
-                                                                "title":  "Responsible for content",
-                                                                "labels":  {
-                                                                               "name":  "Name",
-                                                                               "address":  "Address"
-                                                                           }
-                                                            },
-                                     "social":  {
-                                                    "title":  "Social profiles (to be added)",
-                                                    "placeholders":  {
-                                                                         "linkedin":  "https://www.linkedin.com/company/invessiv",
-                                                                         "x":  "https://x.com/invessiv",
-                                                                         "instagram":  "https://www.instagram.com/invessiv/"
-                                                                     }
-                                                },
-                                     "euDispute":  {
-                                                       "title":  "EU dispute resolution",
-                                                       "textBeforeLink":  "The European Commission provides a platform for online dispute resolution (ODR):",
-                                                       "linkLabel":  "EU Commission ODR platform",
-                                                       "textAfterLink":  "You can find our email address above in this imprint."
-                                                   },
-                                     "consumerDispute":  {
-                                                             "title":  "Consumer dispute resolution",
-                                                             "body":  "We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
-                                                         }
-                                 },
-                    "values":  {
-                                   "legalForm":  "Sole proprietorship (part-time)",
-                                   "addressLine":  "Frankenberger StraÃŸe 235, 09131 Chemnitz, Germany",
-                                   "phoneDisplay":  "+49 1523 2070477"
-                               }
-                }
+  "imprint": {
+    "meta": {
+      "title": "Imprint",
+      "description": "Imprint and provider details of Invessiv.",
+      "openGraphTitle": "Imprint | Invessiv",
+      "openGraphLocale": "en_US"
+    },
+    "page": {
+      "title": "Imprint",
+      "lead": "Information according to Section 5 TMG and Section 18 para. 2 MStV.",
+      "updatedAt": "Last updated: February 26, 2026.",
+      "breadcrumbAriaLabel": "Breadcrumb",
+      "homeLabel": "Home",
+      "tocLabel": "Contents",
+      "sectionLinkLabel": "Section",
+      "copySectionLinkLabel": "Copy link",
+      "sectionLinkCopiedLabel": "Copied"
+    },
+    "sections": {
+      "provider": {
+        "title": "Provider",
+        "labels": {
+          "company": "Company",
+          "legalForm": "Legal form",
+          "representedBy": "Represented by",
+          "address": "Address"
+        },
+        "notePlaceholder": "[PLACEHOLDER: If legal registration uses a different company wording, update it here]"
+      },
+      "contact": {
+        "title": "Contact",
+        "labels": {
+          "email": "Email",
+          "phone": "Phone"
+        }
+      },
+      "commercialRegister": {
+        "title": "Commercial register",
+        "emptyEntry": "No commercial register entry.",
+        "notePlaceholder": "[PLACEHOLDER: Update this section if a register entry is added later]"
+      },
+      "vatId": {
+        "title": "VAT ID",
+        "notePlaceholder": "[PLACEHOLDER: Add VAT ID according to § 27a UStG once available]"
+      },
+      "responsibleContent": {
+        "title": "Responsible for content",
+        "labels": {
+          "name": "Name",
+          "address": "Address"
+        }
+      },
+      "social": {
+        "title": "Social profiles (to be added)",
+        "placeholders": {
+          "linkedin": "https://www.linkedin.com/company/invessiv",
+          "x": "https://x.com/invessiv",
+          "instagram": "https://www.instagram.com/invessiv/"
+        }
+      },
+      "euDispute": {
+        "title": "EU dispute resolution",
+        "textBeforeLink": "The European Commission provides a platform for online dispute resolution (ODR):",
+        "linkLabel": "EU Commission ODR platform",
+        "textAfterLink": "You can find our email address above in this imprint."
+      },
+      "consumerDispute": {
+        "title": "Consumer dispute resolution",
+        "body": "We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
+      }
+    },
+    "values": {
+      "legalForm": "Sole proprietorship (part-time)",
+      "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany",
+      "phoneDisplay": "+49 1523 2070477"
+    }
+  }
 }

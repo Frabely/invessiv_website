@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
+import { TermsContent } from "@/components/legal/terms-content/terms-content";
+import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
 import {
   COMPANY,
   COMPANY_ADDRESS_LINE_EN,
@@ -57,51 +58,62 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
   const addressLine = COMPANY_ADDRESS_LINE_EN;
+  const sections = [
+    {
+      id: "controller",
+      title: privacy.sections.controller.title,
+      body: (
+        <>
+          <p>
+            {COMPANY.brandName}, {privacy.sections.controller.ownerLabel}: {COMPANY.owner}
+          </p>
+          <p>{addressLine}</p>
+          <p>
+            {privacy.sections.controller.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+          </p>
+          <p>
+            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{COMPANY.contact.phoneDisplayEn}</a>
+          </p>
+        </>
+      ),
+    },
+    {
+      id: "hosting",
+      title: privacy.sections.hosting.title,
+      body: <p>{privacy.sections.hosting.body}</p>,
+    },
+    {
+      id: "contact-requests",
+      title: privacy.sections.contactRequests.title,
+      body: <p>{privacy.sections.contactRequests.body}</p>,
+    },
+    {
+      id: "cookies",
+      title: privacy.sections.cookies.title,
+      body: <p>{privacy.sections.cookies.body}</p>,
+    },
+    {
+      id: "rights",
+      title: privacy.sections.rights.title,
+      body: <p>{privacy.sections.rights.body}</p>,
+    },
+  ];
 
   return (
-    <LegalLayout
+    <TermsLayout
+      breadcrumbAriaLabel={privacy.page.breadcrumbAriaLabel}
+      homeLabel={privacy.page.homeLabel}
       lead={privacy.page.lead}
       locale={locale}
       title={privacy.page.title}
       updatedAt={privacy.page.updatedAt}
     >
-      <section className="legal-content-card">
-        <div className="legal-content-card__group">
-          <h3>{privacy.sections.controller.title}</h3>
-          <p>
-            {COMPANY.brandName}, {privacy.sections.controller.ownerLabel}: {COMPANY.owner}
-            <br />
-            {addressLine}
-            <br />
-            E-Mail: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
-            <br />
-            {privacy.sections.controller.phoneLabel}:{" "}
-            <a href={COMPANY_TEL}>
-              {COMPANY.contact.phoneDisplayEn}
-            </a>
-          </p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{privacy.sections.hosting.title}</h3>
-          <p>{privacy.sections.hosting.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{privacy.sections.contactRequests.title}</h3>
-          <p>{privacy.sections.contactRequests.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{privacy.sections.cookies.title}</h3>
-          <p>{privacy.sections.cookies.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{privacy.sections.rights.title}</h3>
-          <p>{privacy.sections.rights.body}</p>
-        </div>
-      </section>
-    </LegalLayout>
+      <TermsContent
+        copySectionLinkLabel={privacy.page.copySectionLinkLabel}
+        sectionLinkCopiedLabel={privacy.page.sectionLinkCopiedLabel}
+        sections={sections}
+        tocLabel={privacy.page.tocLabel}
+      />
+    </TermsLayout>
   );
 }

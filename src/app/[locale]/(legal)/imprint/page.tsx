@@ -1,6 +1,7 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
+import { TermsContent } from "@/components/legal/terms-content/terms-content";
+import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
 import {
   COMPANY,
   COMPANY_MAILTO,
@@ -60,18 +61,12 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
 
   const dict = await getDictionary(locale);
   const imprint = dict.imprint;
-
-  return (
-    <LegalLayout
-      lead={imprint.page.lead}
-      locale={locale}
-      title={imprint.page.title}
-      updatedAt={imprint.page.updatedAt}
-    >
-      <section className="legal-content-card" id="company-details">
-        <h2 className="legal-content-card__title">{COMPANY.brandName}</h2>
-
-        <div className="legal-content-card__group">
+  const sections = [
+    {
+      id: "provider",
+      title: imprint.sections.provider.title,
+      body: (
+        <>
           <p>
             <strong>{imprint.sections.provider.labels.representedBy}:</strong> {COMPANY.owner}
           </p>
@@ -93,55 +88,81 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
             <strong>{imprint.sections.commercialRegister.title}:</strong>{" "}
             {imprint.sections.commercialRegister.emptyEntry}
           </p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{imprint.sections.responsibleContent.title}</h3>
+        </>
+      ),
+    },
+    {
+      id: "responsible-content",
+      title: imprint.sections.responsibleContent.title,
+      body: (
+        <>
           <p>
             {imprint.sections.responsibleContent.labels.name}: {COMPANY.owner}
           </p>
           <p>
             {imprint.sections.responsibleContent.labels.address}: {imprint.values.addressLine}
           </p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{imprint.sections.euDispute.title}</h3>
-          <p>
-            {imprint.sections.euDispute.textBeforeLink}{" "}
-            <a href="https://ec.europa.eu/consumers/odr/" rel="noreferrer" target="_blank">
-              {imprint.sections.euDispute.linkLabel}
+        </>
+      ),
+    },
+    {
+      id: "eu-dispute",
+      title: imprint.sections.euDispute.title,
+      body: (
+        <p>
+          {imprint.sections.euDispute.textBeforeLink}{" "}
+          <a href="https://ec.europa.eu/consumers/odr/" rel="noreferrer" target="_blank">
+            {imprint.sections.euDispute.linkLabel}
+          </a>
+          . {imprint.sections.euDispute.textAfterLink}
+        </p>
+      ),
+    },
+    {
+      id: "consumer-dispute",
+      title: imprint.sections.consumerDispute.title,
+      body: <p>{imprint.sections.consumerDispute.body}</p>,
+    },
+    {
+      id: "social",
+      title: imprint.sections.social.title,
+      body: (
+        <ul>
+          <li>
+            <a href={COMPANY_SOCIAL_LINKEDIN} rel="noreferrer" target="_blank">
+              LinkedIn
             </a>
-            . {imprint.sections.euDispute.textAfterLink}
-          </p>
-        </div>
+          </li>
+          <li>
+            <a href={COMPANY_SOCIAL_X} rel="noreferrer" target="_blank">
+              X
+            </a>
+          </li>
+          <li>
+            <a href={COMPANY_SOCIAL_INSTAGRAM} rel="noreferrer" target="_blank">
+              Instagram
+            </a>
+          </li>
+        </ul>
+      ),
+    },
+  ];
 
-        <div className="legal-content-card__group">
-          <h3>{imprint.sections.consumerDispute.title}</h3>
-          <p>{imprint.sections.consumerDispute.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{imprint.sections.social.title}</h3>
-          <ul className="legal-content-card__social-list">
-            <li>
-              <a href={COMPANY_SOCIAL_LINKEDIN} rel="noreferrer" target="_blank">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href={COMPANY_SOCIAL_X} rel="noreferrer" target="_blank">
-                X
-              </a>
-            </li>
-            <li>
-              <a href={COMPANY_SOCIAL_INSTAGRAM} rel="noreferrer" target="_blank">
-                Instagram
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-    </LegalLayout>
+  return (
+    <TermsLayout
+      breadcrumbAriaLabel={imprint.page.breadcrumbAriaLabel}
+      homeLabel={imprint.page.homeLabel}
+      lead={imprint.page.lead}
+      locale={locale}
+      title={imprint.page.title}
+      updatedAt={imprint.page.updatedAt}
+    >
+      <TermsContent
+        copySectionLinkLabel={imprint.page.copySectionLinkLabel}
+        sectionLinkCopiedLabel={imprint.page.sectionLinkCopiedLabel}
+        sections={sections}
+        tocLabel={imprint.page.tocLabel}
+      />
+    </TermsLayout>
   );
 }

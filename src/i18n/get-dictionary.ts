@@ -13,6 +13,12 @@ export type Dictionary = {
       title: string;
       lead: string;
       updatedAt: string;
+      breadcrumbAriaLabel: string;
+      homeLabel: string;
+      tocLabel: string;
+      sectionLinkLabel: string;
+      copySectionLinkLabel: string;
+      sectionLinkCopiedLabel: string;
     };
     sections: {
       provider: {
@@ -84,6 +90,12 @@ export type Dictionary = {
       title: string;
       lead: string;
       updatedAt: string;
+      breadcrumbAriaLabel: string;
+      homeLabel: string;
+      tocLabel: string;
+      sectionLinkLabel: string;
+      copySectionLinkLabel: string;
+      sectionLinkCopiedLabel: string;
     };
     sections: {
       provider: {
@@ -120,11 +132,18 @@ export type Dictionary = {
       title: string;
       lead: string;
       updatedAt: string;
+      breadcrumbAriaLabel: string;
+      homeLabel: string;
+      tocLabel: string;
+      sectionLinkLabel: string;
+      copySectionLinkLabel: string;
+      sectionLinkCopiedLabel: string;
     };
     sections: {
       controller: {
         title: string;
         ownerLabel: string;
+        emailLabel: string;
         phoneLabel: string;
       };
       hosting: {

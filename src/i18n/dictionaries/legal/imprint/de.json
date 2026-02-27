@@ -9,7 +9,13 @@
     "page": {
       "title": "Impressum",
       "lead": "Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV.",
-      "updatedAt": "Zuletzt geändert: 26. Februar 2026."
+      "updatedAt": "Zuletzt geändert: 26. Februar 2026.",
+      "breadcrumbAriaLabel": "Breadcrumb",
+      "homeLabel": "Home",
+      "tocLabel": "Inhalt",
+      "sectionLinkLabel": "Abschnitt",
+      "copySectionLinkLabel": "Link kopieren",
+      "sectionLinkCopiedLabel": "Kopiert"
     },
     "sections": {
       "provider": {

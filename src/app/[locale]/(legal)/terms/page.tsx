@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LegalLayout } from "@/components/legal/legal-layout/legal-layout";
+import { TermsContent } from "@/components/legal/terms-content/terms-content";
+import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
 import { COMPANY, COMPANY_ADDRESS_LINE_EN } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -52,43 +53,54 @@ export default async function TermsPage({ params }: TermsPageProps) {
   const dict = await getDictionary(locale);
   const terms = dict.terms;
   const addressLine = COMPANY_ADDRESS_LINE_EN;
+  const sections = [
+    {
+      id: "provider",
+      title: terms.sections.provider.title,
+      body: (
+        <p>
+          {terms.sections.provider.contractPrefix} {COMPANY.brandName},{" "}
+          {terms.sections.provider.representedByLabel} {COMPANY.owner}, {addressLine}.
+        </p>
+      ),
+    },
+    {
+      id: "scope",
+      title: terms.sections.scope.title,
+      body: <p>{terms.sections.scope.body}</p>,
+    },
+    {
+      id: "services",
+      title: terms.sections.services.title,
+      body: <p>{terms.sections.services.body}</p>,
+    },
+    {
+      id: "payment",
+      title: terms.sections.payment.title,
+      body: <p>{terms.sections.payment.body}</p>,
+    },
+    {
+      id: "usage-rights",
+      title: terms.sections.usageRights.title,
+      body: <p>{terms.sections.usageRights.body}</p>,
+    },
+  ];
 
   return (
-    <LegalLayout
+    <TermsLayout
+      breadcrumbAriaLabel={terms.page.breadcrumbAriaLabel}
+      homeLabel={terms.page.homeLabel}
       lead={terms.page.lead}
       locale={locale}
       title={terms.page.title}
       updatedAt={terms.page.updatedAt}
     >
-      <section className="legal-content-card">
-        <div className="legal-content-card__group">
-          <h3>{terms.sections.provider.title}</h3>
-          <p>
-            {terms.sections.provider.contractPrefix} {COMPANY.brandName},{" "}
-            {terms.sections.provider.representedByLabel} {COMPANY.owner}, {addressLine}.
-          </p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{terms.sections.scope.title}</h3>
-          <p>{terms.sections.scope.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{terms.sections.services.title}</h3>
-          <p>{terms.sections.services.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{terms.sections.payment.title}</h3>
-          <p>{terms.sections.payment.body}</p>
-        </div>
-
-        <div className="legal-content-card__group">
-          <h3>{terms.sections.usageRights.title}</h3>
-          <p>{terms.sections.usageRights.body}</p>
-        </div>
-      </section>
-    </LegalLayout>
+      <TermsContent
+        copySectionLinkLabel={terms.page.copySectionLinkLabel}
+        sectionLinkCopiedLabel={terms.page.sectionLinkCopiedLabel}
+        sections={sections}
+        tocLabel={terms.page.tocLabel}
+      />
+    </TermsLayout>
   );
 }
