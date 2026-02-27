@@ -298,13 +298,14 @@
 @media (min-width: 901px) {
   .layout {
     grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-    align-items: stretch;
-    gap: 20px;
+    align-items: start;
+    gap: 12px;
   }
 
   .tocColumn {
     min-height: 0;
     position: relative;
+    gap: 0;
   }
 
   .articleInner {
