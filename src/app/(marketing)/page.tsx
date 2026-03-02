@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
 import { COMPANY } from "@/config/company";
+import { MARKETING_ROOT_META_CONTENT } from "@/i18n/dictionaries/marketing/root-meta";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
-  title: "Landing pages, websites, and process tools",
-  description:
-    "Invessiv builds landing pages, websites, and process tools with clear structure, fast execution, and measurable conversion focus.",
+  title: MARKETING_ROOT_META_CONTENT.pageTitle,
+  description: MARKETING_ROOT_META_CONTENT.description,
   alternates: {
     canonical: "/",
     languages: {
@@ -17,9 +17,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: `${SITE_NAME} | Landing pages, websites, and process tools`,
-    description:
-      "From idea to production-ready website fast: clear offers, predictable delivery rhythm, and focused execution.",
+    title: `${SITE_NAME} | ${MARKETING_ROOT_META_CONTENT.pageTitle}`,
+    description: MARKETING_ROOT_META_CONTENT.openGraphDescription,
     siteName: SITE_NAME,
     locale: "en_US",
   },
@@ -30,7 +29,7 @@ const marketingStructuredData = {
   "@graph": [
     {
       "@type": "Organization",
-      name: SITE_NAME,
+      name: COMPANY.legalName,
       url: SITE_URL,
       logo: `${SITE_URL}/brand/icon.png`,
       email: COMPANY.contact.email,
@@ -41,13 +40,12 @@ const marketingStructuredData = {
       serviceType: "Web design and web development",
       provider: {
         "@type": "Organization",
-        name: SITE_NAME,
+        name: COMPANY.legalName,
         url: SITE_URL,
       },
       areaServed: "DE",
       availableLanguage: ["de", "en"],
-      description:
-        "Landing pages, website upgrades, and process tools focused on performance, clarity, and conversion.",
+      description: MARKETING_ROOT_META_CONTENT.serviceDescription,
       offers: {
         "@type": "Offer",
         priceCurrency: "EUR",

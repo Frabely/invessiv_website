@@ -1939,6 +1939,24 @@ main {
   gap: 8px;
 }
 
+.site-footer__brand-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.site-footer__owner-note {
+  color: #b68f76;
+  font-size: 0.74rem;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  padding-left: 32px;
+}
+
+[data-theme="light"] .site-footer__owner-note {
+  color: #8f5a3d;
+}
+
 .site-footer__socials {
   margin-top: 10px;
   padding: 0;

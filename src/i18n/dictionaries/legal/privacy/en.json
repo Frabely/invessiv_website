@@ -2,13 +2,13 @@
   "privacy": {
     "meta": {
       "title": "Privacy",
-      "description": "Privacy policy of Invessiv.",
-      "openGraphTitle": "Privacy | Invessiv",
+      "description": "Privacy policy of Moritz Hecht – Invessiv.",
+      "openGraphTitle": "Privacy | Moritz Hecht – Invessiv",
       "openGraphLocale": "en_US"
     },
     "page": {
       "title": "Privacy Policy",
-      "lead": "This policy explains what personal data we process, why we process it, and how we handle it on this website.",
+      "lead": "This policy explains what personal data I process, why I process it, and how I handle it on this website.",
       "updatedAt": "Last updated: February 26, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
@@ -30,7 +30,7 @@
       },
       "contactRequests": {
         "title": "3. Contact requests",
-        "body": "If you contact us by email, phone, or project request form, we process your information (for example name, email, company, requested service, and project description) to handle your request and related follow-ups. Legal basis: Art. 6 para. 1 lit. b GDPR (pre-contractual communication) and Art. 6 para. 1 lit. f GDPR (efficient handling of customer requests). We retain this data only as long as required for request handling and legal documentation duties."
+        "body": "If you contact me by email, phone, or project request form, I process your information (for example name, email, company, requested service, and project description) to handle your request and related follow-ups. Legal basis: Art. 6 para. 1 lit. b GDPR (pre-contractual communication) and Art. 6 para. 1 lit. f GDPR (efficient handling of customer requests). I retain this data only as long as required for request handling and legal documentation duties."
       },
       "cookies": {
         "title": "4. Cookies and similar technologies",

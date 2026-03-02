@@ -27,6 +27,7 @@ type FooterSectionProps = {
 };
 
 export function FooterSection({
+  bottomNote,
   brand,
   columns,
   copyright,
@@ -121,15 +122,20 @@ export function FooterSection({
         <div className="site-footer__bottom">
           <div className="site-footer__bottom-left">
             {brand ? (
-              <span className="site-footer__brand">
-                <Image
-                  src="/brand/icon.png"
-                  alt="Invessiv Logo"
-                  width={24}
-                  height={24}
-                />
-                <strong>{brand}</strong>
-              </span>
+              <div className="site-footer__brand-wrap">
+                <span className="site-footer__brand">
+                  <Image
+                    src="/brand/icon.png"
+                    alt="Invessiv Logo"
+                    width={24}
+                    height={24}
+                  />
+                  <strong>{brand}</strong>
+                </span>
+                {bottomNote ? (
+                  <small className="site-footer__owner-note">{bottomNote}</small>
+                ) : null}
+              </div>
             ) : null}
             {copyright ? <span>{copyright}</span> : null}
           </div>

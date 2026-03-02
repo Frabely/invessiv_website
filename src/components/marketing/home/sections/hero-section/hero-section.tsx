@@ -2,19 +2,23 @@ import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 
 type HeroSectionProps = {
   description: string;
+  heroBenefitsAriaLabel: string;
   heroChipTags: string[];
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroVisualAriaLabel: string;
   title: string;
 };
 
 export function HeroSection({
   description,
+  heroBenefitsAriaLabel,
   heroChipTags,
   heroPrimaryCta,
   heroSecondaryCta,
   heroTag,
+  heroVisualAriaLabel,
   title,
 }: HeroSectionProps) {
   return (
@@ -39,7 +43,7 @@ export function HeroSection({
             </a>
           </div>
 
-          <div className="hero__tags" aria-label="Kurzvorteile">
+          <div className="hero__tags" aria-label={heroBenefitsAriaLabel}>
             {heroChipTags.map((item) => (
               <span className="chip-tag" key={item}>
                 {item}
@@ -48,7 +52,7 @@ export function HeroSection({
           </div>
         </div>
 
-        <HeroVisual />
+        <HeroVisual ariaLabel={heroVisualAriaLabel} />
       </div>
     </section>
   );

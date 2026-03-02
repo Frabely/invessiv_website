@@ -2,14 +2,14 @@
   "privacy": {
     "meta": {
       "title": "Datenschutz",
-      "description": "DatenschutzerklÃ¤rung von Invessiv.",
-      "openGraphTitle": "Datenschutz | Invessiv",
+      "description": "Datenschutzerklärung von Moritz Hecht – Invessiv.",
+      "openGraphTitle": "Datenschutz | Moritz Hecht – Invessiv",
       "openGraphLocale": "de_DE"
     },
     "page": {
-      "title": "DatenschutzerklÃ¤rung",
-      "lead": "Diese ErklÃ¤rung informiert Ã¼ber Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf dieser Website.",
-      "updatedAt": "Zuletzt geÃ¤ndert: 26. Februar 2026.",
+      "title": "Datenschutzerklärung",
+      "lead": "Diese Erklärung informiert über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf dieser Website.",
+      "updatedAt": "Zuletzt geändert: 26. Februar 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -30,15 +30,15 @@
       },
       "contactRequests": {
         "title": "3. Kontaktaufnahme",
-        "body": "Wenn Sie uns per E-Mail, Telefon oder Projektanfrage-Formular kontaktieren, verarbeiten wir Ihre Angaben (z. B. Name, E-Mail, Unternehmen, angefragte Leistung, Projektbeschreibung) zur Bearbeitung der Anfrage und f?r Anschlussfragen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) sowie Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Kundenanfragen). Wir speichern die Daten nur so lange, wie sie f?r die Anfragebearbeitung und gesetzliche Nachweispflichten erforderlich sind."
+        "body": "Wenn Sie mich per E-Mail, Telefon oder Projektanfrage-Formular kontaktieren, verarbeite ich Ihre Angaben (z. B. Name, E-Mail, Unternehmen, angefragte Leistung, Projektbeschreibung) zur Bearbeitung der Anfrage und für Anschlussfragen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) sowie Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Kundenanfragen). Ich speichere die Daten nur so lange, wie sie für die Anfragebearbeitung und gesetzliche Nachweispflichten erforderlich sind."
       },
       "cookies": {
-        "title": "4. Cookies und Ã¤hnliche Technologien",
+        "title": "4. Cookies und ähnliche Technologien",
         "body": "Diese Website setzt aktuell nur technisch erforderliche Funktionen ein. Tracking- oder Marketing-Cookies werden derzeit nicht aktiv eingesetzt."
       },
       "rights": {
         "title": "5. Ihre Rechte",
-        "body": "Sie haben nach DSGVO insbesondere das Recht auf Auskunft, Berichtigung, LÃ¶schung, EinschrÃ¤nkung der Verarbeitung, DatenÃ¼bertragbarkeit und Widerspruch."
+        "body": "Sie haben nach DSGVO insbesondere das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch."
       }
     }
   }

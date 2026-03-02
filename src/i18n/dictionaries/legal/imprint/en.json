@@ -2,8 +2,8 @@
   "imprint": {
     "meta": {
       "title": "Imprint",
-      "description": "Imprint and provider details of Invessiv.",
-      "openGraphTitle": "Imprint | Invessiv",
+      "description": "Imprint and provider details of Moritz Hecht – Invessiv.",
+      "openGraphTitle": "Imprint | Moritz Hecht – Invessiv",
       "openGraphLocale": "en_US"
     },
     "page": {
@@ -63,11 +63,11 @@
         "title": "EU dispute resolution",
         "textBeforeLink": "The European Commission provides a platform for online dispute resolution (ODR):",
         "linkLabel": "EU Commission ODR platform",
-        "textAfterLink": "You can find our email address above in this imprint."
+        "textAfterLink": "You can find my email address above in this imprint."
       },
       "consumerDispute": {
         "title": "Consumer dispute resolution",
-        "body": "We are not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
+        "body": "I am not obliged and not willing to participate in dispute resolution proceedings before a consumer arbitration board."
       }
     },
     "values": {

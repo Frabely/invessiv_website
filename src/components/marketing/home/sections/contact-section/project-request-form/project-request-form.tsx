@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 type ContactFormCopy = {
@@ -74,6 +74,7 @@ export function ProjectRequestForm({
   const pagesInputRef = useRef<HTMLInputElement | null>(null);
   const workflowSelectRef = useRef<HTMLSelectElement | null>(null);
   const goalSelectRef = useRef<HTMLSelectElement | null>(null);
+  const pendingOfferKeyRef = useRef<string>("");
 
   const selectedOfferTitle =
     offerOptions.find((option) => option.key === selectedOfferKey)?.title ?? "";
@@ -88,8 +89,23 @@ export function ProjectRequestForm({
     };
   }, [selectedOfferKey]);
 
-  const openForm = () => {
+  const getValidOfferKey = useCallback(
+    (value: string | null | undefined) => {
+      if (!value) {
+        return "";
+      }
+      const normalizedValue = value.toLowerCase();
+      return offerOptions.some((option) => option.key === normalizedValue)
+        ? normalizedValue
+        : "";
+    },
+    [offerOptions],
+  );
+
+  const openForm = (presetOfferKey = "") => {
     setIsOpen(true);
+    setSelectedOfferKey(getValidOfferKey(presetOfferKey));
+    setStatusMessage(null);
     window.requestAnimationFrame(() => {
       firstNameInputRef.current?.focus();
     });
@@ -100,6 +116,44 @@ export function ProjectRequestForm({
     setSelectedOfferKey("");
     setStatusMessage(null);
   };
+
+  useEffect(() => {
+    const openFromContactHash = () => {
+      if (window.location.hash !== "#contact") {
+        return;
+      }
+      const nextOfferKey = pendingOfferKeyRef.current;
+      pendingOfferKeyRef.current = "";
+      setIsOpen(true);
+      setSelectedOfferKey(nextOfferKey);
+      setStatusMessage(null);
+    };
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      const contactAnchor = target.closest("a[href='#contact']");
+      if (!(contactAnchor instanceof HTMLAnchorElement)) {
+        return;
+      }
+      const nextOfferKey = getValidOfferKey(contactAnchor.dataset.projectOffer);
+      pendingOfferKeyRef.current = nextOfferKey;
+      setIsOpen(true);
+      setSelectedOfferKey(nextOfferKey);
+      setStatusMessage(null);
+    };
+
+    openFromContactHash();
+    window.addEventListener("hashchange", openFromContactHash);
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      window.removeEventListener("hashchange", openFromContactHash);
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [getValidOfferKey]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -149,7 +203,7 @@ export function ProjectRequestForm({
       {!isOpen ? (
         <button
           className="btn btn--primary contact-primary-cta contact-primary-cta--shimmer"
-          onClick={openForm}
+          onClick={() => openForm()}
           type="button"
         >
           {openButtonLabel}
@@ -241,7 +295,7 @@ export function ProjectRequestForm({
                   <strong className="project-request-required-marker">*</strong>
                 </span>
                 <select
-                  defaultValue=""
+                  value={selectedOfferKey}
                   name="offer"
                   onChange={(event) => {
                     const nextOfferKey = event.target.value;

@@ -8,10 +8,12 @@ type ProofContent = {
 };
 
 export type HomeUiContent = {
+  heroBenefitsAriaLabel: string;
   heroChipTags: string[];
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroVisualAriaLabel: string;
   mappingWarning: string;
   marqueeItems: string[];
   proofContent: ProofContent;
@@ -22,10 +24,12 @@ export type HomeUiContent = {
 
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   de: {
+    heroBenefitsAriaLabel: "Kurzvorteile",
     heroChipTags: ["Figma-Design inkl.", "Launch in Tagen", "Antwort < 24h"],
     heroPrimaryCta: "Projekt anfragen",
     heroSecondaryCta: "Leistungen ansehen",
     heroTag: "Individuell statt Baukasten",
+    heroVisualAriaLabel: "Live Performance Einblick",
     mappingWarning: "Navigation/Section Mapping ist unvollstaendig.",
     marqueeItems: [
       "B2B Services",
@@ -75,10 +79,12 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     servicesDeliveryLabel: "Lieferzeit",
   },
   en: {
+    heroBenefitsAriaLabel: "Key benefits",
     heroChipTags: ["Figma design included", "Launch in days", "Reply < 24h"],
     heroPrimaryCta: "Request project",
     heroSecondaryCta: "View services",
     heroTag: "Custom instead of templates",
+    heroVisualAriaLabel: "Live performance snapshot",
     mappingWarning: "Navigation/section mapping is incomplete.",
     marqueeItems: [
       "B2B Services",
@@ -119,9 +125,9 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       title: "Why not build it like a generic template site?",
     },
-    servicesPrimaryCta: "Projekt anfragen",
-    servicesDetailsCta: "Mehr Infos",
-    servicesDeliveryLabel: "Lieferzeit",
+    servicesPrimaryCta: "Request project",
+    servicesDetailsCta: "More details",
+    servicesDeliveryLabel: "Delivery time",
   },
 };
 

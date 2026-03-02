@@ -66,6 +66,11 @@ describe("ServiceCard", () => {
     expect(
       screen.getByRole("link", { name: "Projekt anfragen" }).getAttribute("href"),
     ).toBe("#contact");
+    expect(
+      screen
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("landing");
     expect(screen.getByRole("link", { name: "Fragen?" }).getAttribute("href")).toBe(
       "#faq",
     );

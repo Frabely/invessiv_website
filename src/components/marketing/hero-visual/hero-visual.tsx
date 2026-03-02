@@ -3,12 +3,16 @@
 import { useRef } from "react";
 import { useHeroVisualTilt } from "@/hooks/marketing/use-hero-visual-tilt";
 
-export function HeroVisual() {
+type HeroVisualProps = {
+  ariaLabel: string;
+};
+
+export function HeroVisual({ ariaLabel }: HeroVisualProps) {
   const shotRef = useRef<HTMLDivElement | null>(null);
   useHeroVisualTilt(shotRef);
 
   return (
-    <aside aria-label="Live Performance Snapshot" className="hero__visual">
+    <aside aria-label={ariaLabel} className="hero__visual">
       <div className="blob b1" />
       <div className="blob b2" />
       <div className="blob b3" />

@@ -153,6 +153,7 @@ export function ServiceCard({
             <div className="services-details-actions">
               <a
                 className="btn btn--primary services-details-cta"
+                data-project-offer={card.key}
                 href="#contact"
               >
                 {primaryCtaLabel}

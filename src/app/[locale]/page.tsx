@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
 import { SITE_URL } from "@/lib/site-metadata";
 
 type LocalePageProps = {
@@ -18,9 +19,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
     return {};
   }
 
-  const title = "Landing pages, websites and process tools";
-  const description =
-    "Invessiv builds landing pages, websites, and process tools with a clear conversion focus.";
+  const { title, description, openGraphLocale } = getHomeMetaContent(locale);
 
   return {
     title,
@@ -36,7 +35,7 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
       title,
       description,
       url: `${SITE_URL}/${locale}`,
-      locale: "en_US",
+      locale: openGraphLocale,
       type: "website",
     },
   };

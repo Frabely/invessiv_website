@@ -176,13 +176,13 @@ const HOME_SECTIONS: LandingSection[] = [
         title:
           "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
         description:
-          "Du gibst nur den nötigen Input, wir übernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
+          "Du gibst nur den nötigen Input, ich übernehme den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
       },
       en: {
         title:
           "Digital solutions that create visible impact and simplify processes.",
         description:
-          "You provide the required input, we handle the rest: landing pages, websites, and process tools delivered quickly to production-ready quality.",
+          "You provide the required input, I handle the rest: landing pages, websites, and process tools delivered quickly to production-ready quality.",
       },
     },
   },
@@ -552,7 +552,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "In 4 Schritten zum fertigen Ergebnis",
         description:
-          "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, wir liefern Draft, Feinschliff und Launch.",
+          "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, ich liefere Draft, Feinschliff und Launch.",
         processSummary:
           "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Übergabe inklusive QA",
         processRoles: [
@@ -561,7 +561,7 @@ const HOME_SECTIONS: LandingSection[] = [
             items: ["Ziel", "Angebot", "Assets"],
           },
           {
-            label: "Wir liefern",
+            label: "Ich liefere",
             items: [
               "Struktur + Copy/Design",
               "Setup + QA",
@@ -577,7 +577,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Aufwand: 30 Min",
             result: "Ergebnis: Klarer Scope + Prioritaeten",
             description:
-              "Du teilst Ziel, Angebot und Material. Wir setzen sofort die klare Umsetzungsbasis auf.",
+              "Du teilst Ziel, Angebot und Material. Ich setze sofort die klare Umsetzungsbasis auf.",
           },
           {
             step: "02",
@@ -616,7 +616,7 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "A finished result in 4 clear steps",
         description:
-          "For landing pages, full websites, upgrades, or tools/templates: you share goal and offer, we deliver draft, refinement, and launch.",
+          "For landing pages, full websites, upgrades, or tools/templates: you share goal and offer, I deliver draft, refinement, and launch.",
         processSummary:
           "Typical: first version in 48h (depending on scope) | 1-2 feedback rounds | go-live or handover including QA",
         processRoles: [
@@ -625,7 +625,7 @@ const HOME_SECTIONS: LandingSection[] = [
             items: ["Goal", "Offer", "Assets"],
           },
           {
-            label: "We deliver",
+            label: "I deliver",
             items: [
               "Structure + copy/design",
               "Setup + QA",
@@ -641,7 +641,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Effort: 30 min",
             result: "Outcome: clear scope + priorities",
             description:
-              "You share goals, offer, and materials. We set up a clear delivery foundation right away.",
+              "You share goals, offer, and materials. I set up a clear delivery foundation right away.",
           },
           {
             step: "02",
@@ -690,22 +690,22 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage klären wir Ziel, Umfang und Deadline in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Scope-Empfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Deadline in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Scope-Empfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
           },
           {
             question: "Könnt ihr meine alte Website überarbeiten?",
             answer:
-              "Ja. Wir können bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sagen wir das offen vorab.",
+              "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
           },
           {
             question: "Welche Tools setzt ihr ein?",
             answer:
-              "Wir arbeiten je nach Projekt mit Next.js, Tailwind, Figma und passenden Analyse- bzw. Workflow-Tools. Die Auswahl richtet sich nach deinem Setup, damit Übergabe und Wartung sauber funktionieren.",
+              "Ich arbeite je nach Projekt mit Next.js, Tailwind, Figma und passenden Analyse- bzw. Workflow-Tools. Die Auswahl richtet sich nach deinem Setup, damit Übergabe und Wartung sauber funktionieren.",
           },
           {
             question: "Gibt es versteckte Kosten?",
             answer:
-              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Scope. Zusätzliche Wünsche außerhalb des Scopes stimmen wir immer vor Umsetzung transparent mit dir ab.",
+              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Scope. Zusätzliche Wünsche außerhalb des Scopes stimme ich immer vor Umsetzung transparent mit dir ab.",
           },
         ],
       },
@@ -717,17 +717,17 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, we align on goals, scope, and timeline in a short call or by email. You then get a clear scope recommendation with next steps, delivery timing, and transparent pricing.",
+              "After your request, I align on goals, scope, and timeline in a short call or by email. You then get a clear scope recommendation with next steps, delivery timing, and transparent pricing.",
           },
           {
             question: "Can you redesign my existing website?",
             answer:
-              "Yes. We can modernize existing pages, improve technical stability, and optimize for conversion without rebuilding everything from scratch. If a full relaunch is the better option, we tell you upfront.",
+              "Yes. I can modernize existing pages, improve technical stability, and optimize for conversion without rebuilding everything from scratch. If a full relaunch is the better option, I tell you upfront.",
           },
           {
             question: "Which tools do you use?",
             answer:
-              "Depending on the project, we work with Next.js, Tailwind, Figma, and suitable analytics or workflow tools. We choose the stack to fit your setup for a clean handover and maintainability.",
+              "Depending on the project, I work with Next.js, Tailwind, Figma, and suitable analytics or workflow tools. I choose the stack to fit your setup for a clean handover and maintainability.",
           },
           {
             question: "Are there any hidden costs?",
@@ -776,7 +776,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2024 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -824,7 +824,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           label: "Jetzt Projekt anfragen",
           href: "#contact",
-          hint: "Unverbindlich. 2-3 kurze Fragen, dann melden wir uns in 24h mit dem nächsten Schritt.",
+          hint: "Unverbindlich. 2-3 kurze Fragen, dann melde ich mich in 24h mit dem nächsten Schritt.",
         },
         contactSecondaryCta: {
           label: "Leistungen ansehen",
@@ -834,18 +834,18 @@ const HOME_SECTIONS: LandingSection[] = [
         contactForm: {
           title: "Projektanfrage in 2 Minuten",
           subtitle:
-            "Kurzer Scope-Check, damit wir direkt den nächsten sinnvollen Schritt liefern können.",
+            "Kurzer Scope-Check, damit ich direkt den nächsten sinnvollen Schritt liefern kann.",
           intro:
             "Je konkreter die Angaben, desto schneller bekommst du eine klare Empfehlung zu Umfang, Timing und Budget.",
           conditionalFieldHint:
-            "Je nach gewähltem Angebot blenden wir gezielt relevante Pflichtfelder ein.",
+            "Je nach gewähltem Angebot blende ich gezielt relevante Pflichtfelder ein.",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "Geschäftliche E-Mail",
-          phoneLabel: "Telefon (optional)",
+          phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
-          roleLabel: "Rolle (optional)",
-          websiteLabel: "Aktuelle Website (optional)",
+          roleLabel: "Rolle",
+          websiteLabel: "Aktuelle Website",
           websiteRequiredHint:
             "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
           offerLabel: "Gewünschtes Angebot",
@@ -857,12 +857,12 @@ const HOME_SECTIONS: LandingSection[] = [
             "Produkt verkaufen",
             "Newsletter-Anmeldungen",
           ],
-          pagesLabel: "Benötigte Seiten (Pflicht für Webseiten)",
+          pagesLabel: "Benötigte Seiten",
           pagesPlaceholder:
             "z. B. Start, Leistungen, Über uns, Kontakt, Karriere",
-          workflowLabel: "Anzahl Kern-Workflows (Pflicht für Prozess-Tools)",
+          workflowLabel: "Anzahl Kern-Workflows",
           workflowOptions: ["1 Workflow", "2 Workflows", "3+ Workflows"],
-          budgetLabel: "Budgetrahmen (optional)",
+          budgetLabel: "Budgetrahmen",
           budgetOptions: [
             "Unter 1.000 €",
             "1.000 € - 2.500 €",
@@ -871,7 +871,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "10.000 €+",
             "Noch offen",
           ],
-          startLabel: "Gewünschter Start (optional)",
+          startLabel: "Gewünschter Start",
           startOptions: [
             "Sofort",
             "Innerhalb von 2 Wochen",
@@ -905,10 +905,10 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Ready for a new, productive website?",
-        description: "Contact us and start your project with Invessiv.",
+        description: "Contact me and start your project with Invessiv.",
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
-          "Contact us and start your project with Invessiv.",
+          "Contact me and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
         footerHeroSecondaryCta: { label: "View services", href: "#services" },
         footerColumns: [
@@ -932,7 +932,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Invessiv. All rights reserved.",
+        footerCopyright: "© 2024 Moritz Hecht – Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -980,7 +980,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           label: "Start project now",
           href: "#contact",
-          hint: "No commitment. Answer 2-3 short questions and we reply in 24h with a clear next step.",
+          hint: "No commitment. Answer 2-3 short questions and I reply in 24h with a clear next step.",
         },
         contactSecondaryCta: {
           label: "View services",
@@ -990,18 +990,18 @@ const HOME_SECTIONS: LandingSection[] = [
         contactForm: {
           title: "Project request in 2 minutes",
           subtitle:
-            "A short scope check so we can recommend the next practical step right away.",
+            "A short scope check so I can recommend the next practical step right away.",
           intro:
-            "The clearer your input, the faster we can return with a concrete recommendation for scope, timing, and budget.",
+            "The clearer your input, the faster I can return with a concrete recommendation for scope, timing, and budget.",
           conditionalFieldHint:
-            "Based on your selected offer, we reveal only the required fields that matter.",
+            "Based on your selected offer, I reveal only the required fields that matter.",
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
           emailLabel: "Business email",
-          phoneLabel: "Phone (optional)",
+          phoneLabel: "Phone",
           companyLabel: "Company",
-          roleLabel: "Role (optional)",
-          websiteLabel: "Current website (optional)",
+          roleLabel: "Role",
+          websiteLabel: "Current website",
           websiteRequiredHint:
             "For website upgrade, websites, and maintenance, the current website is required.",
           offerLabel: "Requested offer",
@@ -1013,12 +1013,11 @@ const HOME_SECTIONS: LandingSection[] = [
             "Sell a product",
             "Grow newsletter sign-ups",
           ],
-          pagesLabel: "Required pages (required for websites)",
+          pagesLabel: "Required pages",
           pagesPlaceholder: "e.g. Home, Services, About, Contact, Careers",
-          workflowLabel:
-            "Number of core workflows (required for process tools)",
+          workflowLabel: "Number of core workflows",
           workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
-          budgetLabel: "Budget range (optional)",
+          budgetLabel: "Budget range",
           budgetOptions: [
             "Below €1,000",
             "€1,000 - €2,500",
@@ -1027,7 +1026,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "€10,000+",
             "Not defined yet",
           ],
-          startLabel: "Preferred start (optional)",
+          startLabel: "Preferred start",
           startOptions: [
             "Immediately",
             "Within 2 weeks",
@@ -1100,7 +1099,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1119,14 +1118,14 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Datenschutz", href: "/privacy" },
           { label: "AGB", href: "/terms" },
         ],
-        footerBottomNote: "",
+        footerBottomNote: "Inhaber: Moritz Hecht",
       },
       en: {
         title: "Footer",
         description: "Quick access to core pages and contact options.",
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
-          "Contact us and start your project with Invessiv.",
+          "Contact me and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
         footerHeroSecondaryCta: { label: "View services", href: "#services" },
         footerColumns: [
@@ -1150,7 +1149,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Moritz Hecht – Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1169,7 +1168,7 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Privacy", href: "/privacy" },
           { label: "Terms", href: "/terms" },
         ],
-        footerBottomNote: "",
+        footerBottomNote: "Owner: Moritz Hecht",
       },
     },
   },

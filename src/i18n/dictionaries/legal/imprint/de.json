@@ -2,8 +2,8 @@
   "imprint": {
     "meta": {
       "title": "Impressum",
-      "description": "Impressum und Anbieterkennzeichnung von Invessiv.",
-      "openGraphTitle": "Impressum | Invessiv",
+      "description": "Impressum und Anbieterkennzeichnung von Moritz Hecht – Invessiv.",
+      "openGraphTitle": "Impressum | Moritz Hecht – Invessiv",
       "openGraphLocale": "de_DE"
     },
     "page": {
@@ -63,11 +63,11 @@
         "title": "EU-Streitschlichtung",
         "textBeforeLink": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
         "linkLabel": "ODR-Plattform der EU-Kommission",
-        "textAfterLink": "Unsere E-Mail-Adresse finden Sie oben im Impressum."
+        "textAfterLink": "Meine E-Mail-Adresse steht oben im Impressum."
       },
       "consumerDispute": {
         "title": "Verbraucherstreitbeilegung",
-        "body": "Wir sind nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+        "body": "Ich bin nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
       }
     },
     "values": {

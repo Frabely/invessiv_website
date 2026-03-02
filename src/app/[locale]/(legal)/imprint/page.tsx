@@ -68,6 +68,9 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       body: (
         <>
           <p>
+            <strong>{imprint.sections.provider.labels.company}:</strong> {COMPANY.legalName}
+          </p>
+          <p>
             <strong>{imprint.sections.provider.labels.representedBy}:</strong> {COMPANY.owner}
           </p>
           <p>

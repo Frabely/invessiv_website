@@ -70,7 +70,7 @@ export function SiteHeader({
         <a className="site-header__brand" href={brandHref}>
           <Image
             src="/brand/icon.png"
-            alt="Invessiv Logo"
+            alt={ui.brandLogoAlt}
             width={26}
             height={26}
             priority
@@ -78,12 +78,12 @@ export function SiteHeader({
           <span>Invessiv</span>
         </a>
 
-        <nav aria-label="Primary" className="site-header__desktop-nav">
+        <nav aria-label={ui.navAriaLabel} className="site-header__desktop-nav">
           <ul className="site-header__nav">
             {navigation.map((item) => (
               <li key={item.href}>
                 <a href={item.href}>
-                  {ui.labelsByHref[getLabelKey(item.href)] ?? item.label}
+                  {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                 </a>
               </li>
             ))}
@@ -92,7 +92,7 @@ export function SiteHeader({
 
         <div
           className="site-header__actions"
-          aria-label="Language and primary action"
+          aria-label={ui.actionsAriaLabel}
         >
           {ENABLE_THEME_SWITCH ? (
             <button
@@ -182,7 +182,7 @@ export function SiteHeader({
           <a
             aria-label={ui.ctaLabel}
             className="menu-cta site-header__mobile-cta"
-            href="#contact"
+            href={ctaHref}
             title={ui.ctaLabel}
           >
             <span aria-hidden="true" className="site-header__mobile-cta-icon">
@@ -238,7 +238,7 @@ export function SiteHeader({
               {navigation.map((item) => (
                 <li key={item.href}>
                   <a href={item.href}>
-                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.label}
+                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                   </a>
                 </li>
               ))}

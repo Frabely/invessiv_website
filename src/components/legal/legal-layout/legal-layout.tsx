@@ -7,7 +7,9 @@ import { PRIMARY_NAVIGATION } from "@/config/site";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 
 type LegalLayoutProps = {
+  breadcrumbAriaLabel: string;
   children: ReactNode;
+  homeLabel: string;
   lead: string;
   locale: Locale;
   title: string;
@@ -15,7 +17,9 @@ type LegalLayoutProps = {
 };
 
 export function LegalLayout({
+  breadcrumbAriaLabel,
   children,
+  homeLabel,
   lead,
   locale,
   title,
@@ -58,10 +62,10 @@ export function LegalLayout({
       <main className="legal-page">
         <LegalBreadcrumbs
           items={[
-            { href: `/${locale}`, isLink: true, label: "Home" },
+            { href: `/${locale}`, isLink: true, label: homeLabel },
             { isLink: false, label: title },
           ]}
-          navLabel="Breadcrumb navigation"
+          navLabel={breadcrumbAriaLabel}
         />
         <div className="legal-page__inner">
           <header className="legal-page__intro">

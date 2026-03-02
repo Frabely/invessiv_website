@@ -18,7 +18,7 @@ describe("QAndASection", () => {
           },
           {
             question: "Könnt ihr meine alte Website überarbeiten?",
-            answer: "Ja, wir können bestehende Seiten gezielt modernisieren.",
+            answer: "Ja, ich kann bestehende Seiten gezielt modernisieren.",
           },
         ]}
         title="Q&A"
@@ -37,6 +37,6 @@ describe("QAndASection", () => {
 
     expect(screen.getByText("Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.")).toBeTruthy();
     expect(screen.getByText("Könnt ihr meine alte Website überarbeiten?")).toBeTruthy();
-    expect(screen.getByText("Ja, wir können bestehende Seiten gezielt modernisieren.")).toBeTruthy();
+    expect(screen.getByText("Ja, ich kann bestehende Seiten gezielt modernisieren.")).toBeTruthy();
   });
 });

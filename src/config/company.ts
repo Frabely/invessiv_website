@@ -1,5 +1,6 @@
 export const COMPANY = {
   brandName: "Invessiv",
+  legalName: "Moritz Hecht – Invessiv",
   owner: "Moritz Hecht",
   legalForm: {
     de: "Einzelunternehmen (Nebentätigkeit)",

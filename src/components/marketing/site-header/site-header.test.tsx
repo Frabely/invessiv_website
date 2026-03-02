@@ -50,8 +50,8 @@ describe("SiteHeader", () => {
     render(
       <SiteHeader
         navigation={[
-          { href: "#proof", label: "Proof" },
-          { href: "#services", label: "Services" },
+          { href: "#proof" },
+          { href: "#services" },
         ]}
       />,
     );
@@ -75,8 +75,8 @@ describe("SiteHeader", () => {
     render(
       <SiteHeader
         navigation={[
-          { href: "#proof", label: "Proof" },
-          { href: "#services", label: "Services" },
+          { href: "#proof" },
+          { href: "#services" },
         ]}
       />,
     );

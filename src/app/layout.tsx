@@ -2,6 +2,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/components/providers/language-provider";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { MARKETING_ROOT_META_CONTENT } from "@/i18n/dictionaries/marketing/root-meta";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
@@ -10,8 +11,7 @@ export const metadata: Metadata = {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
   },
-  description:
-    "Invessiv builds high-performance landing pages, websites, and process tools with a clear conversion focus.",
+  description: MARKETING_ROOT_META_CONTENT.description,
   alternates: {
     canonical: "/",
   },
@@ -21,8 +21,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     locale: "en_US",
     title: SITE_NAME,
-    description:
-      "Landing pages, websites, and process tools with clear structure and production-ready delivery.",
+    description: MARKETING_ROOT_META_CONTENT.openGraphDescription,
   },
   icons: {
     icon: [{ url: "/brand/icon_noText.png", type: "image/png" }],
