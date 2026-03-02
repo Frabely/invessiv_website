@@ -27,6 +27,7 @@ export function HomeSectionsRenderer({
 }: HomeSectionsRendererProps) {
   const getSectionById = (sectionId: (typeof SECTION_IDS)[number]) =>
     sections.find((section) => section.id === sectionId);
+  const servicesSection = getSectionById("services");
   const footerSection = getSectionById("footer");
 
   return (
@@ -99,6 +100,16 @@ export function HomeSectionsRenderer({
             }
 
             if (section.id === "contact") {
+              const contactFormOffers =
+                servicesSection?.serviceCards?.map((card) => ({
+                  key: card.key,
+                  title: card.title,
+                })) ?? [];
+              const privacyHref =
+                footerSection?.footerLegalLinks?.find((link) =>
+                  /privacy|datenschutz/i.test(link.label),
+                )?.href ?? "/privacy";
+
               return (
                 <ContactSection
                   contactCta={section.contactCta}
@@ -106,10 +117,13 @@ export function HomeSectionsRenderer({
                   contactChecklist={section.contactChecklist ?? []}
                   contactChecklistHint={section.contactChecklistHint}
                   contactChecklistTitle={section.contactChecklistTitle}
+                  contactForm={section.contactForm}
+                  contactFormOffers={contactFormOffers}
                   contactSecondaryCta={section.contactSecondaryCta}
                   description={section.description}
                   id={section.id}
                   key={section.id}
+                  privacyHref={privacyHref}
                   title={section.title}
                 />
               );

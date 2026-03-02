@@ -1,9 +1,11 @@
 import type { LandingSectionCopy } from "@/content/landing/home";
+import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 type ContactChannel = NonNullable<
   LandingSectionCopy["contactChannels"]
 >[number];
+type ContactForm = NonNullable<LandingSectionCopy["contactForm"]>;
 
 type ContactSectionProps = {
   contactCta?: ContactCta;
@@ -11,9 +13,12 @@ type ContactSectionProps = {
   contactChecklist: string[];
   contactChecklistHint?: string;
   contactChecklistTitle?: string;
+  contactForm?: ContactForm;
+  contactFormOffers: Array<{ key: string; title: string }>;
   contactSecondaryCta?: ContactCta;
   description: string;
   id: string;
+  privacyHref: string;
   title: string;
 };
 
@@ -23,11 +28,18 @@ export function ContactSection({
   contactChecklist,
   contactChecklistHint,
   contactChecklistTitle,
+  contactForm,
+  contactFormOffers,
   contactSecondaryCta,
   description,
   id,
+  privacyHref,
   title,
 }: ContactSectionProps) {
+  const contactMailto = contactChannels.find((channel) =>
+    channel.href.startsWith("mailto:"),
+  )?.href;
+
   return (
     <section className="contact-section" id={id}>
       <div className="contact-layout">
@@ -35,10 +47,15 @@ export function ContactSection({
           <h2>{title}</h2>
           <p className="contact-hint">{description}</p>
           <div className="contact-cta-actions">
-            {contactCta ? (
-              <a className="btn btn--primary" href={contactCta.href}>
-                {contactCta.label}
-              </a>
+            {contactCta && contactForm && contactMailto ? (
+              <ProjectRequestForm
+                formCopy={contactForm}
+                offerOptions={contactFormOffers}
+                openButtonLabel={contactCta.label}
+                privacyHref={privacyHref}
+                privacyLabel={contactForm.privacyLabel}
+                submitHref={contactMailto}
+              />
             ) : null}
             {contactSecondaryCta ? (
               <a className="btn btn--ghost" href={contactSecondaryCta.href}>

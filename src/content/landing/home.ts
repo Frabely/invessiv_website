@@ -14,13 +14,7 @@ export type LandingSectionCopy = {
   metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
   serviceCards?: Array<{
-    key:
-      | "ai"
-      | "landing"
-      | "process"
-      | "web"
-      | "upgrade"
-      | "maintenance";
+    key: "ai" | "landing" | "process" | "web" | "upgrade" | "maintenance";
     iconSrc?: string;
     iconAlt?: string;
     title: string;
@@ -76,6 +70,52 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
     hint: string;
+  };
+  contactForm?: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    conditionalFieldHint: string;
+    firstNameLabel: string;
+    lastNameLabel: string;
+    emailLabel: string;
+    phoneLabel: string;
+    companyLabel: string;
+    roleLabel: string;
+    websiteLabel: string;
+    websiteRequiredHint: string;
+    offerLabel: string;
+    offerPlaceholder: string;
+    goalLabel: string;
+    goalOptions: string[];
+    pagesLabel: string;
+    pagesPlaceholder: string;
+    workflowLabel: string;
+    workflowOptions: string[];
+    budgetLabel: string;
+    budgetOptions: string[];
+    startLabel: string;
+    startOptions: string[];
+    projectDetailsLabel: string;
+    projectDetailsPlaceholder: string;
+    consentLabel: string;
+    privacyLabel: string;
+    mailSubjectPrefix: string;
+    mailBodyTitle: string;
+    mailLabelName: string;
+    mailLabelEmail: string;
+    mailLabelPhone: string;
+    mailLabelCompany: string;
+    mailLabelRole: string;
+    mailLabelWebsite: string;
+    mailLabelOffer: string;
+    mailLabelBudget: string;
+    mailLabelStart: string;
+    mailBodyDetailsLabel: string;
+    submitLabel: string;
+    submitSuccess: string;
+    requiredHint: string;
+    closeLabel: string;
   };
   footerColumns?: Array<{
     title: string;
@@ -133,12 +173,14 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title: "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
+        title:
+          "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
         description:
           "Du gibst nur den nötigen Input, wir übernehmen den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
       },
       en: {
-        title: "Digital solutions that create visible impact and simplify processes.",
+        title:
+          "Digital solutions that create visible impact and simplify processes.",
         description:
           "You provide the required input, we handle the rest: landing pages, websites, and process tools delivered quickly to production-ready quality.",
       },
@@ -789,6 +831,77 @@ const HOME_SECTIONS: LandingSection[] = [
           href: "#services",
           hint: "",
         },
+        contactForm: {
+          title: "Projektanfrage in 2 Minuten",
+          subtitle:
+            "Kurzer Scope-Check, damit wir direkt den nächsten sinnvollen Schritt liefern können.",
+          intro:
+            "Je konkreter die Angaben, desto schneller bekommst du eine klare Empfehlung zu Umfang, Timing und Budget.",
+          conditionalFieldHint:
+            "Je nach gewähltem Angebot blenden wir gezielt relevante Pflichtfelder ein.",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
+          emailLabel: "Geschäftliche E-Mail",
+          phoneLabel: "Telefon (optional)",
+          companyLabel: "Unternehmen",
+          roleLabel: "Rolle (optional)",
+          websiteLabel: "Aktuelle Website (optional)",
+          websiteRequiredHint:
+            "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
+          offerLabel: "Gewünschtes Angebot",
+          offerPlaceholder: "Bitte Angebot auswählen",
+          goalLabel: "Primäres Ziel für die Landingpage",
+          goalOptions: [
+            "Leads/Anfragen erhalten",
+            "Terminbuchungen erhöhen",
+            "Produkt verkaufen",
+            "Newsletter-Anmeldungen",
+          ],
+          pagesLabel: "Benötigte Seiten (Pflicht für Webseiten)",
+          pagesPlaceholder:
+            "z. B. Start, Leistungen, Über uns, Kontakt, Karriere",
+          workflowLabel: "Anzahl Kern-Workflows (Pflicht für Prozess-Tools)",
+          workflowOptions: ["1 Workflow", "2 Workflows", "3+ Workflows"],
+          budgetLabel: "Budgetrahmen (optional)",
+          budgetOptions: [
+            "Unter 1.000 €",
+            "1.000 € - 2.500 €",
+            "2.500 € - 5.000 €",
+            "5.000 € - 10.000 €",
+            "10.000 €+",
+            "Noch offen",
+          ],
+          startLabel: "Gewünschter Start (optional)",
+          startOptions: [
+            "Sofort",
+            "Innerhalb von 2 Wochen",
+            "Innerhalb von 1 Monat",
+            "Später / flexibel",
+          ],
+          projectDetailsLabel:
+            "Anmerkungen, Anforderungen und Projektbeschreibung",
+          projectDetailsPlaceholder:
+            "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          mailSubjectPrefix: "Projektanfrage",
+          mailBodyTitle: "Neue Projektanfrage",
+          mailLabelName: "Name",
+          mailLabelEmail: "E-Mail",
+          mailLabelPhone: "Telefon",
+          mailLabelCompany: "Unternehmen",
+          mailLabelRole: "Rolle",
+          mailLabelWebsite: "Website",
+          mailLabelOffer: "Gewünschtes Angebot",
+          mailLabelBudget: "Budgetrahmen",
+          mailLabelStart: "Gewünschter Start",
+          mailBodyDetailsLabel: "Projektbeschreibung / Anforderungen",
+          submitLabel: "Anfrage senden",
+          submitSuccess:
+            "Dein Mailprogramm wurde mit den vorausgefüllten Anfragedaten geöffnet.",
+          requiredHint: "* Pflichtfelder",
+          closeLabel: "Formular schließen",
+        },
       },
       en: {
         title: "Ready for a new, productive website?",
@@ -873,6 +986,77 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "View services",
           href: "#services",
           hint: "",
+        },
+        contactForm: {
+          title: "Project request in 2 minutes",
+          subtitle:
+            "A short scope check so we can recommend the next practical step right away.",
+          intro:
+            "The clearer your input, the faster we can return with a concrete recommendation for scope, timing, and budget.",
+          conditionalFieldHint:
+            "Based on your selected offer, we reveal only the required fields that matter.",
+          firstNameLabel: "First name",
+          lastNameLabel: "Last name",
+          emailLabel: "Business email",
+          phoneLabel: "Phone (optional)",
+          companyLabel: "Company",
+          roleLabel: "Role (optional)",
+          websiteLabel: "Current website (optional)",
+          websiteRequiredHint:
+            "For website upgrade, websites, and maintenance, the current website is required.",
+          offerLabel: "Requested offer",
+          offerPlaceholder: "Select an offer",
+          goalLabel: "Primary landing page goal",
+          goalOptions: [
+            "Generate leads/inquiries",
+            "Increase booked calls",
+            "Sell a product",
+            "Grow newsletter sign-ups",
+          ],
+          pagesLabel: "Required pages (required for websites)",
+          pagesPlaceholder: "e.g. Home, Services, About, Contact, Careers",
+          workflowLabel:
+            "Number of core workflows (required for process tools)",
+          workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
+          budgetLabel: "Budget range (optional)",
+          budgetOptions: [
+            "Below €1,000",
+            "€1,000 - €2,500",
+            "€2,500 - €5,000",
+            "€5,000 - €10,000",
+            "€10,000+",
+            "Not defined yet",
+          ],
+          startLabel: "Preferred start (optional)",
+          startOptions: [
+            "Immediately",
+            "Within 2 weeks",
+            "Within 1 month",
+            "Later / flexible",
+          ],
+          projectDetailsLabel: "Notes, requirements, and project description",
+          projectDetailsPlaceholder:
+            "Describe your goal, audience, timeline, key pages/features, and available assets.",
+          consentLabel:
+            "I agree to the processing of my information according to the",
+          privacyLabel: "privacy policy.",
+          mailSubjectPrefix: "Project request",
+          mailBodyTitle: "New project request",
+          mailLabelName: "Name",
+          mailLabelEmail: "Email",
+          mailLabelPhone: "Phone",
+          mailLabelCompany: "Company",
+          mailLabelRole: "Role",
+          mailLabelWebsite: "Website",
+          mailLabelOffer: "Requested offer",
+          mailLabelBudget: "Budget range",
+          mailLabelStart: "Preferred start",
+          mailBodyDetailsLabel: "Project description / requirements",
+          submitLabel: "Send request",
+          submitSuccess:
+            "Your email app has been opened with the prefilled request details.",
+          requiredHint: "* Required fields",
+          closeLabel: "Close form",
         },
       },
     },
@@ -1029,8 +1213,3 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     };
   });
 }
-
-
-
-
-

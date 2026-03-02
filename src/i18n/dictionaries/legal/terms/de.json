@@ -2,14 +2,14 @@
   "terms": {
     "meta": {
       "title": "AGB",
-      "description": "Allgemeine Geschäftsbedingungen von Invessiv.",
+      "description": "Allgemeine GeschÃ¤ftsbedingungen von Invessiv.",
       "openGraphTitle": "AGB | Invessiv",
       "openGraphLocale": "de_DE"
     },
     "page": {
-      "title": "Allgemeine Geschäftsbedingungen (AGB)",
-      "lead": "Diese AGB gelten für Leistungen von Invessiv im Bereich Website-Erstellung, Website-Optimierung und digitale Prozesslösungen.",
-      "updatedAt": "Zuletzt geändert: 26. Februar 2026.",
+      "title": "Allgemeine GeschÃ¤ftsbedingungen (AGB)",
+      "lead": "Diese AGB gelten fÃ¼r Leistungen von Invessiv im Bereich Website-Erstellung, Website-Optimierung und digitale ProzesslÃ¶sungen.",
+      "updatedAt": "Zuletzt geÃ¤ndert: 26. Februar 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -25,19 +25,19 @@
       },
       "scope": {
         "title": "2. Geltungsbereich",
-        "body": "Diese AGB gelten für alle Angebote, Leistungen und Verträge zwischen Invessiv und Unternehmern, sofern nicht ausdrücklich etwas anderes schriftlich vereinbart wurde."
+        "body": "Diese AGB gelten f?r alle Angebote, Leistungen und Vertr?ge zwischen Invessiv und Unternehmern, sofern nicht ausdr?cklich etwas anderes schriftlich vereinbart wurde. Angaben aus der Projektanfrage dienen der vorvertraglichen Pr?fung und Angebotserstellung."
       },
       "services": {
         "title": "3. Leistungen",
-        "body": "Art und Umfang der Leistung ergeben sich aus Angebot, Leistungsbeschreibung und Projektbriefing. Änderungen des Scopes bedürfen einer gesonderten Abstimmung."
+        "body": "Art und Umfang der Leistung ergeben sich aus Angebot, Leistungsbeschreibung und Projektbriefing. Ã„nderungen des Scopes bedÃ¼rfen einer gesonderten Abstimmung."
       },
       "payment": {
-        "title": "4. Vergütung und Zahlungsbedingungen",
-        "body": "Preise ergeben sich aus dem individuellen Angebot. Rechnungen sind ohne Abzug innerhalb von 14 Tagen fällig."
+        "title": "4. VergÃ¼tung und Zahlungsbedingungen",
+        "body": "Preise ergeben sich aus dem individuellen Angebot. Rechnungen sind ohne Abzug innerhalb von 14 Tagen fÃ¤llig."
       },
       "usageRights": {
         "title": "5. Nutzungsrechte",
-        "body": "Mit vollständiger Zahlung erhält der Auftraggeber die vereinbarten Nutzungsrechte an den gelieferten Ergebnissen im vertraglich definierten Umfang."
+        "body": "Mit vollstÃ¤ndiger Zahlung erhÃ¤lt der Auftraggeber die vereinbarten Nutzungsrechte an den gelieferten Ergebnissen im vertraglich definierten Umfang."
       }
     }
   }
