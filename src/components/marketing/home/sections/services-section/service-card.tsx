@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
 
 import type { LandingSectionCopy } from "@/content/landing/home";
@@ -28,14 +28,15 @@ export function ServiceCard({
   primaryCtaLabel,
 }: ServiceCardProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const detailsId = useId();
+  const detailsId = `services-details-${card.key}`;
   const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const detailsItems = card.details ?? [];
   const visibleBullets = card.included.slice(0, 3);
   const hiddenBullets = card.included.slice(3);
   const hiddenBulletsCount = hiddenBullets.length;
-  const hasExpandableContent = hiddenBulletsCount > 0 || detailsItems.length > 0;
+  const hasExpandableContent =
+    hiddenBulletsCount > 0 || detailsItems.length > 0;
 
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
 
@@ -46,7 +47,11 @@ export function ServiceCard({
     .trim();
   const priceMeta = isHourlyPrice ? null : "einmalig";
 
-  const badgeLabel = card.isRecommended ? "Empfohlen" : card.key === "maintenance" ? "Add-on" : null;
+  const badgeLabel = card.isRecommended
+    ? "Empfohlen"
+    : card.key === "maintenance"
+      ? "Add-on"
+      : null;
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Escape" || !isDetailsOpen) {
@@ -69,7 +74,10 @@ export function ServiceCard({
           <div className="services-title-wrap">
             <div className="services-title-row">
               <h3 className="services-title">
-                <ServiceCardIcon iconAlt={card.iconAlt} iconSrc={card.iconSrc} />
+                <ServiceCardIcon
+                  iconAlt={card.iconAlt}
+                  iconSrc={card.iconSrc}
+                />
                 <span>{card.title}</span>
               </h3>
               {badgeLabel ? (
@@ -87,7 +95,9 @@ export function ServiceCard({
 
         <p className="services-price-row">
           <span className="services-price">{heroPrice}</span>
-          {priceMeta ? <span className="services-price-meta">{priceMeta}</span> : null}
+          {priceMeta ? (
+            <span className="services-price-meta">{priceMeta}</span>
+          ) : null}
         </p>
 
         <p className="services-delivery-badge">
@@ -121,7 +131,11 @@ export function ServiceCard({
         ) : null}
 
         {hasExpandableContent ? (
-          <div className="services-details-panel" hidden={!isDetailsOpen} id={detailsId}>
+          <div
+            className="services-details-panel"
+            hidden={!isDetailsOpen}
+            id={detailsId}
+          >
             {hiddenBulletsCount > 0 ? (
               <ul className="services-details-list services-details-list--bullets">
                 {hiddenBullets.map((item) => (
@@ -137,7 +151,10 @@ export function ServiceCard({
               </ul>
             ) : null}
             <div className="services-details-actions">
-              <a className="btn btn--primary services-details-cta" href="#contact">
+              <a
+                className="btn btn--primary services-details-cta"
+                href="#contact"
+              >
                 {primaryCtaLabel}
               </a>
               <a className="services-details-link" href="#faq">
