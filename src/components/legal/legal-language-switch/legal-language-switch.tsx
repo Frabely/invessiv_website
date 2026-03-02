@@ -4,7 +4,7 @@ import type { MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/config/i18n";
 import { SUPPORTED_LOCALES } from "@/config/i18n";
-import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
+import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 
 type LegalSlug = "imprint" | "privacy" | "terms";
 
@@ -13,7 +13,10 @@ type LegalLanguageSwitchProps = {
   slug: LegalSlug;
 };
 
-export function LegalLanguageSwitch({ locale, slug }: LegalLanguageSwitchProps) {
+export function LegalLanguageSwitch({
+  locale,
+  slug,
+}: LegalLanguageSwitchProps) {
   const router = useRouter();
   const ui = getSiteHeaderUiContent(locale);
 

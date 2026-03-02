@@ -1,6 +1,6 @@
 import type { PointerEvent, RefObject } from "react";
 
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card";
 
 type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];

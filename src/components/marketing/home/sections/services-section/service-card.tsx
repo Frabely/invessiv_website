@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import type { KeyboardEvent, PointerEvent } from "react";
 
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 
 type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];

@@ -7,8 +7,8 @@ import { MarqueeSection } from "@/components/marketing/home/sections/marquee-sec
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
 import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
-import { getHomeSections } from "@/content/landing/home";
-import { getHomeUiContent } from "@/content/landing/home-ui";
+import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
+import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 

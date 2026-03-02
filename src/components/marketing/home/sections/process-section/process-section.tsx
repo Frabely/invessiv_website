@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
@@ -77,7 +77,10 @@ export function ProcessSection({
               y1="0%"
               y2="100%"
             >
-              <stop offset="0%" style={{ stopColor: "var(--color-accent-warm)" }} />
+              <stop
+                offset="0%"
+                style={{ stopColor: "var(--color-accent-warm)" }}
+              />
               <stop offset="100%" style={{ stopColor: "var(--color-cta)" }} />
             </linearGradient>
           </defs>

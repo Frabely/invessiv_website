@@ -5,7 +5,7 @@ import {
   faLinkedinIn,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 type FooterColumn = NonNullable<LandingSectionCopy["footerColumns"]>[number];
 type FooterLegalLink = NonNullable<

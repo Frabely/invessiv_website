@@ -1,4 +1,4 @@
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;

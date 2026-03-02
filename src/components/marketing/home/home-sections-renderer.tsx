@@ -8,8 +8,8 @@ import { ProofSection } from "@/components/marketing/home/sections/proof-section
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
 import { SECTION_IDS } from "@/config/site";
-import type { HomeSectionContent } from "@/content/landing/home";
-import type { HomeUiContent } from "@/content/landing/home-ui";
+import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
+import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
 
 type HomeSectionsRendererProps = {

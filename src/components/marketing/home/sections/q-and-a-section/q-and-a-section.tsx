@@ -1,4 +1,4 @@
-import type { LandingSectionCopy } from "@/content/landing/home";
+import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
 
@@ -9,7 +9,12 @@ type QAndASectionProps = {
   title: string;
 };
 
-export function QAndASection({ description, id, items, title }: QAndASectionProps) {
+export function QAndASection({
+  description,
+  id,
+  items,
+  title,
+}: QAndASectionProps) {
   return (
     <section className="qna-section" id={id}>
       <h2>{title}</h2>

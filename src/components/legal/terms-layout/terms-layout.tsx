@@ -4,7 +4,7 @@ import { FooterSection } from "@/components/marketing/home/sections/footer-secti
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { PRIMARY_NAVIGATION } from "@/config/site";
-import { getHomeSections } from "@/content/landing/home";
+import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import styles from "./terms-layout.module.css";
 
 type TermsLayoutProps = {
@@ -26,7 +26,9 @@ export function TermsLayout({
   title,
   updatedAt,
 }: TermsLayoutProps) {
-  const footerSection = getHomeSections(locale).find((section) => section.id === "footer");
+  const footerSection = getHomeSections(locale).find(
+    (section) => section.id === "footer",
+  );
   const legalHeaderNavigation = PRIMARY_NAVIGATION.map((item) => ({
     ...item,
     href: `/${locale}${item.href}`,
@@ -60,14 +62,20 @@ export function TermsLayout({
       />
       <main className={`legal-page ${styles.page}`}>
         <div className={styles.inner}>
-          <nav aria-label={breadcrumbAriaLabel} className={styles.breadcrumbsWrap}>
+          <nav
+            aria-label={breadcrumbAriaLabel}
+            className={styles.breadcrumbsWrap}
+          >
             <ol className={styles.breadcrumbs}>
               <li className={styles.breadcrumbItem}>
                 <Link href={`/${locale}`} className={styles.breadcrumbLink}>
                   {homeLabel}
                 </Link>
               </li>
-              <li aria-current="page" className={`${styles.breadcrumbItem} ${styles.breadcrumbCurrent}`}>
+              <li
+                aria-current="page"
+                className={`${styles.breadcrumbItem} ${styles.breadcrumbCurrent}`}
+              >
                 <span>{title}</span>
               </li>
             </ol>

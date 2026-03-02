@@ -323,6 +323,9 @@ Outputs:
 - Pfad-/Layout-Berechnungen als testbare Domain-Funktionen modellieren und mit Unit-Tests gegen Regression absichern
 - Section-Komponenten sollen klar typisierte Props nutzen (Content separat, Darstellung separat), damit i18n- und SEO-Layer stabil erweiterbar bleiben
 - Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test für kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
+- Architektur-Gate (verbindlich): Beim Entwickeln, Refactoring und Code-Durchlauf ist aktiv zu prüfen, ob die Regeln in `AGENTS.md` eingehalten sind.
+- Falls eine geplante oder gefundene Änderung gegen eine Architekturregel verstößt, wird nicht stillschweigend weitergebaut: zuerst den Nutzer fragen, ob der Verstoß sofort behoben oder bewusst verschoben werden soll.
+- Wenn eine Behebung verschoben wird, muss die konkrete Stelle mit Dateipfad, Regelbezug, Risiko und nächstem Schritt in `architecture-open-items.md` dokumentiert werden, damit sie nicht vergessen wird.
 
 ## i18n / Dictionaries (verbindlich)
 

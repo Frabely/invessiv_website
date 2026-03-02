@@ -5,7 +5,7 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
-import { getSiteHeaderUiContent } from "@/content/marketing/site-header-ui";
+import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
@@ -113,7 +113,9 @@ export function SiteHeader({
                   <path d="M12 3a15.5 15.5 0 0 0 0 18" />
                 </svg>
               </span>
-              <span className="site-header__locale-code">{locale.toUpperCase()}</span>
+              <span className="site-header__locale-code">
+                {locale.toUpperCase()}
+              </span>
             </summary>
             <div
               aria-label={ui.localeSwitchLabel}
@@ -152,7 +154,9 @@ export function SiteHeader({
                   <path d="M12 3a15.5 15.5 0 0 0 0 18" />
                 </svg>
               </span>
-              <span className="site-header__locale-code">{locale.toUpperCase()}</span>
+              <span className="site-header__locale-code">
+                {locale.toUpperCase()}
+              </span>
             </summary>
             <div
               aria-label={ui.localeSwitchLabel}
@@ -185,9 +189,27 @@ export function SiteHeader({
               <svg fill="none" viewBox="0 0 24 24">
                 <path d="M7.5 19.5 3 21l1.5-4.5" />
                 <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
-                <circle cx="9.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
-                <circle cx="12.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
-                <circle cx="15.75" cy="12" fill="currentColor" r="0.9" stroke="none" />
+                <circle
+                  cx="9.75"
+                  cy="12"
+                  fill="currentColor"
+                  r="0.9"
+                  stroke="none"
+                />
+                <circle
+                  cx="12.75"
+                  cy="12"
+                  fill="currentColor"
+                  r="0.9"
+                  stroke="none"
+                />
+                <circle
+                  cx="15.75"
+                  cy="12"
+                  fill="currentColor"
+                  r="0.9"
+                  stroke="none"
+                />
               </svg>
             </span>
             <span className="sr-only">{ui.ctaLabel}</span>
