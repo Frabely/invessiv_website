@@ -192,7 +192,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Proof",
         description:
-          "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgefuehl.",
+          "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgef?hl.",
         metrics: [
           { label: "Time-to-first-draft", value: "5 Tage" },
           { label: "Briefing-Aufwand reduziert", value: "92%" },
@@ -347,7 +347,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Messbare Vorher/Nachher Checks",
             ],
             details: [
-              "Optional auch als laufende Unterstützung mit 50 € / h.",
+              "Optional: Development/Implementation mit 70–85 € / h oder Content/kleine Pflege mit 50–60 € / h.",
               "Größere Rebuild-Themen werden transparent separat empfohlen.",
               "Tiefe Backend-Refactors sind nicht Teil des Basis-Upgrades.",
             ],
@@ -381,12 +381,12 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Wartung & Support",
             description:
               "Schnelle Änderungen, Bugfixes und Pflege – flexibel nach Bedarf.",
-            price: "50 € / h",
-            delivery: "i.d.R. 24–72h",
-            deliveryLabel: "Reaktionszeit",
+            price: "70–85 € / h",
+            delivery: "24–72h",
+            deliveryLabel: "Typische Reaktionszeit",
             included: [
-              "Kleine Änderungen & Content-Pflege",
-              "Bugfixes & Updates",
+              "Content/kleine Pflege: 50–60 € / h",
+              "Development/Implementation: 70–85 € / h",
               "Monitoring/Checks (optional)",
               "Priorisierte Abarbeitung nach Impact",
               "Stundenpakete optional",
@@ -492,7 +492,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Measurable before/after checks",
             ],
             details: [
-              "Optional hourly support also possible at €50 / h.",
+              "Optional hourly support: development/implementation at €70–85 / h or content/small updates at €50–60 / h.",
               "Larger rebuild topics are transparently scoped separately.",
               "Deep backend refactors are outside base upgrade scope.",
             ],
@@ -526,12 +526,12 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Maintenance & support",
             description:
               "Fast edits, bugfixes, and upkeep with flexible hourly support.",
-            price: "€50 / h",
-            delivery: "typically 24–72h",
-            deliveryLabel: "Response time",
+            price: "€70–85 / h",
+            delivery: "24–72h",
+            deliveryLabel: "Typical response time",
             included: [
-              "Small changes and content updates",
-              "Bugfixes and routine updates",
+              "Content/small updates: €50–60 / h",
+              "Development/implementation: €70–85 / h",
               "Monitoring/checks (optional)",
               "Prioritized queue by business impact",
               "Optional hour bundles",
@@ -575,7 +575,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Briefing & Input",
             deliverable: "30-min Briefing",
             effort: "Aufwand: 30 Min",
-            result: "Ergebnis: Klarer Scope + Prioritaeten",
+            result: "Ergebnis: Klarer Scope + Priorit?ten",
             description:
               "Du teilst Ziel, Angebot und Material. Ich setze sofort die klare Umsetzungsbasis auf.",
           },
@@ -1212,3 +1212,5 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     };
   });
 }
+
+

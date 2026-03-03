@@ -64,8 +64,8 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       hint: "Du erhältst eine direkte Zusammenarbeit mit Fokus auf sinnvolle Umsetzung und saubere Übergabe.",
       kpis: [
-        { value: "Sauber", suffix: "", label: "Scope und Ablauf" },
-        { value: "Direkt", suffix: "", label: "Abstimmung" },
+        { value: "Klar", suffix: "", label: "Scope und Ablauf" },
+        { value: "Effizient", suffix: "", label: "Abstimmung" },
         {
           value: "1",
           suffix: " Ansprechpartner",
@@ -76,7 +76,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     },
     servicesPrimaryCta: "Projekt anfragen",
     servicesDetailsCta: "Mehr Infos",
-    servicesDeliveryLabel: "Lieferzeit",
+    servicesDeliveryLabel: "Typisch",
   },
   en: {
     heroBenefitsAriaLabel: "Key benefits",
@@ -119,18 +119,19 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       hint: "You get direct collaboration and implementation with clean handover.",
       kpis: [
-        { value: "Solid", suffix: "", label: "Scope and process" },
-        { value: "Direct", suffix: "", label: "Alignment" },
+        { value: "Clear", suffix: "", label: "Scope and process" },
+        { value: "Efficient", suffix: "", label: "Alignment" },
         { value: "1", suffix: " contact person", label: "Direct contact" },
       ],
       title: "How the collaboration works",
     },
     servicesPrimaryCta: "Request project",
     servicesDetailsCta: "More details",
-    servicesDeliveryLabel: "Delivery time",
+    servicesDeliveryLabel: "Typical",
   },
 };
 
 export function getHomeUiContent(locale: Locale): HomeUiContent {
   return HOME_UI_CONTENT[locale];
 }
+
