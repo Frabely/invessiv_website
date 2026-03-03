@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
+const DEFAULT_SUBMIT_HREF = "mailto:service@invessiv.com";
+
 type ContactFormCopy = {
   budgetLabel: string;
   budgetOptions: string[];
@@ -169,30 +171,46 @@ export function ProjectRequestForm({
     const fullName = `${getValue("firstName")} ${getValue("lastName")}`.trim();
     const selectedOffer = selectedOfferTitle || getValue("offer");
     const company = getValue("company");
+    const website = getValue("website");
+    const goal = getValue("goal");
+    const pages = getValue("pages");
+    const workflow = getValue("workflow");
+    const budget = getValue("budget");
+    const start = getValue("start");
+    const projectDetails = getValue("projectDetails");
     const subject =
       `[${formCopy.mailSubjectPrefix}] ${selectedOffer} | ${company}`.trim();
 
-    const bodyLines = [
-      formCopy.mailBodyTitle,
-      "",
-      `${formCopy.mailLabelName}: ${fullName}`,
-      `${formCopy.mailLabelEmail}: ${getValue("email")}`,
-      `${formCopy.mailLabelPhone}: ${getValue("phone") || "-"}`,
-      `${formCopy.mailLabelCompany}: ${company}`,
-      `${formCopy.mailLabelRole}: ${getValue("role") || "-"}`,
-      `${formCopy.mailLabelWebsite}: ${getValue("website") || "-"}`,
-      `${formCopy.mailLabelOffer}: ${selectedOffer}`,
-      `${formCopy.mailLabelBudget}: ${getValue("budget") || "-"}`,
-      `${formCopy.mailLabelStart}: ${getValue("start") || "-"}`,
-      `${formCopy.goalLabel}: ${getValue("goal") || "-"}`,
-      `${formCopy.pagesLabel}: ${getValue("pages") || "-"}`,
-      `${formCopy.workflowLabel}: ${getValue("workflow") || "-"}`,
-      "",
-      `${formCopy.mailBodyDetailsLabel}:`,
-      getValue("projectDetails"),
-    ];
+    const bodyLines = [formCopy.mailBodyTitle, "", `${formCopy.mailLabelOffer}: ${selectedOffer}`, ""];
+    bodyLines.push(`${formCopy.mailLabelName}: ${fullName}`);
+    bodyLines.push(`${formCopy.mailLabelEmail}: ${getValue("email")}`);
+    bodyLines.push(`${formCopy.mailLabelCompany}: ${company}`);
 
-    const mailToUrl = `${submitHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
+    const optionalFields = [
+      [formCopy.mailLabelPhone, getValue("phone")],
+      [formCopy.mailLabelRole, getValue("role")],
+      [formCopy.mailLabelWebsite, website],
+      [formCopy.goalLabel, goal],
+      [formCopy.pagesLabel, pages],
+      [formCopy.workflowLabel, workflow],
+      [formCopy.mailLabelBudget, budget],
+      [formCopy.mailLabelStart, start],
+    ] as const;
+
+    optionalFields.forEach(([label, value]) => {
+      if (value) {
+        bodyLines.push(`${label}: ${value}`);
+      }
+    });
+
+    bodyLines.push("");
+    bodyLines.push(`${formCopy.mailBodyDetailsLabel}:`);
+    bodyLines.push(projectDetails);
+
+    const normalizedSubmitHref = submitHref.startsWith("mailto:")
+      ? submitHref
+      : DEFAULT_SUBMIT_HREF;
+    const mailToUrl = `${normalizedSubmitHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
 
     window.location.href = mailToUrl;
     setStatusMessage(formCopy.submitSuccess);

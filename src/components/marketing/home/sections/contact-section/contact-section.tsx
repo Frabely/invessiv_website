@@ -1,5 +1,6 @@
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
+import { COMPANY_MAILTO } from "@/config/company";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 type ContactChannel = NonNullable<
@@ -36,10 +37,6 @@ export function ContactSection({
   privacyHref,
   title,
 }: ContactSectionProps) {
-  const contactMailto = contactChannels.find((channel) =>
-    channel.href.startsWith("mailto:"),
-  )?.href;
-
   return (
     <section className="contact-section" id={id}>
       <div className="contact-layout">
@@ -47,14 +44,14 @@ export function ContactSection({
           <h2>{title}</h2>
           <p className="contact-hint">{description}</p>
           <div className="contact-cta-actions">
-            {contactCta && contactForm && contactMailto ? (
+            {contactCta && contactForm ? (
               <ProjectRequestForm
                 formCopy={contactForm}
                 offerOptions={contactFormOffers}
                 openButtonLabel={contactCta.label}
                 privacyHref={privacyHref}
                 privacyLabel={contactForm.privacyLabel}
-                submitHref={contactMailto}
+                submitHref={COMPANY_MAILTO}
               />
             ) : null}
             {contactSecondaryCta ? (
