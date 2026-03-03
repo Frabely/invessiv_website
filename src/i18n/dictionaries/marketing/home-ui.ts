@@ -1,4 +1,4 @@
-import type { Locale } from "@/config/i18n";
+﻿import type { Locale } from "@/config/i18n";
 
 type ProofContent = {
   cards: Array<{ description: string; tag: string; title: string }>;
@@ -25,54 +25,54 @@ export type HomeUiContent = {
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   de: {
     heroBenefitsAriaLabel: "Kurzvorteile",
-    heroChipTags: ["Figma-Design inkl.", "Launch in Tagen", "Antwort < 24h"],
+    heroChipTags: ["Design inkl.", "Launch in wenigen Tagen", "Antwort < 24h"],
     heroPrimaryCta: "Projekt anfragen",
     heroSecondaryCta: "Leistungen ansehen",
     heroTag: "Individuell statt Baukasten",
     heroVisualAriaLabel: "Live Performance Einblick",
-    mappingWarning: "Navigation/Section Mapping ist unvollstaendig.",
+    mappingWarning: "Navigation/Section Mapping ist unvollständig.",
     marqueeItems: [
-      "B2B Services",
-      "Growth Ops",
-      "Lead Funnels",
-      "CRO Sprints",
-      "SEO Grundlagen",
-      "Paid + Organic",
-      "CRM Integrationen",
-      "Tracking Klarheit",
+      "Landingpages",
+      "Webseiten",
+      "Prozess-Tools",
+      "Website-Upgrades",
+      "KI-Templates",
+      "Wartung & Support",
+      "Performance-Optimierung",
+      "Technische SEO",
     ],
     proofContent: {
       cards: [
         {
-          title: "Time-to-Launch SLA",
-          tag: "Fast",
+          title: "Strukturierter Start statt Ratespiel",
+          tag: "Strukturiert",
           description:
-            "Erste klickbare Version in 5 Werktagen, klarer Go-live Plan je Paket.",
+            "Du bekommst früh eine Struktur mit den nächsten Schritten statt langer Abstimmungsschleifen.",
         },
         {
-          title: "Upgrade statt Neubau",
-          tag: "Lean",
+          title: "Modernisieren statt unnötig neu bauen",
+          tag: "Pragmatisch",
           description:
-            "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
+            "Bestehende Seiten und Prozesse werden gezielt verbessert, wenn ein kompletter Neubau nicht nötig ist.",
         },
         {
-          title: "KPI-orientiert",
-          tag: "Measured",
+          title: "Umsetzung mit Fokus",
+          tag: "Zielgerichtet",
           description:
-            "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
+            "Entscheidungen orientieren sich an deinem konkreten Ziel statt an reiner Optik oder Buzzwords.",
         },
       ],
-      hint: "Der Fokus liegt auf schneller Lieferung, wenig Aufwand fuer den Kaeufer und messbaren Ergebnissen.",
+      hint: "Du erhältst eine direkte Zusammenarbeit mit Fokus auf sinnvolle Umsetzung und saubere Übergabe.",
       kpis: [
-        { value: "5", suffix: " Tage", label: "Time-to-first-draft" },
-        { value: "92", suffix: "%", label: "Briefing-Aufwand reduziert" },
+        { value: "Sauber", suffix: "", label: "Scope und Ablauf" },
+        { value: "Direkt", suffix: "", label: "Abstimmung" },
         {
           value: "1",
           suffix: " Ansprechpartner",
-          label: "Klarer Delivery-Owner",
+          label: "Direkter Kontakt",
         },
       ],
-      title: "Warum nicht wie eine Standard-Template-Seite?",
+      title: "So läuft die Zusammenarbeit ab",
     },
     servicesPrimaryCta: "Projekt anfragen",
     servicesDetailsCta: "Mehr Infos",
@@ -80,50 +80,50 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   },
   en: {
     heroBenefitsAriaLabel: "Key benefits",
-    heroChipTags: ["Figma design included", "Launch in days", "Reply < 24h"],
+    heroChipTags: ["Design included", "Launch in a few days", "Reply < 24h"],
     heroPrimaryCta: "Request project",
     heroSecondaryCta: "View services",
     heroTag: "Custom instead of templates",
     heroVisualAriaLabel: "Live performance snapshot",
     mappingWarning: "Navigation/section mapping is incomplete.",
     marqueeItems: [
-      "B2B Services",
-      "Growth Ops",
-      "Lead Funnels",
-      "CRO Sprints",
-      "SEO Foundations",
-      "Paid + Organic",
-      "CRM Integrations",
-      "Tracking Clarity",
+      "Landing pages",
+      "Websites",
+      "Process tools",
+      "Website upgrades",
+      "AI templates",
+      "Maintenance & support",
+      "Performance optimization",
+      "Technical SEO",
     ],
     proofContent: {
       cards: [
         {
-          title: "Time-to-launch SLA",
-          tag: "Fast",
+          title: "Structured start instead of guesswork",
+          tag: "Structured",
           description:
-            "First clickable version in 5 business days with a clear go-live plan per package.",
+            "You get an early structure with next steps instead of long alignment loops.",
         },
         {
-          title: "Upgrade over rebuild",
-          tag: "Lean",
+          title: "Improve before rebuilding",
+          tag: "Practical",
           description:
-            "Existing pages are modernized surgically without forcing a full rebuild.",
+            "Existing pages and processes are improved where possible instead of rebuilding everything.",
         },
         {
-          title: "KPI-oriented",
-          tag: "Measured",
+          title: "Execution with focus",
+          tag: "Goal-driven",
           description:
-            "Predefined targets like speed, leads, and conversion instead of design output only.",
+            "Decisions are driven by your concrete project goal, not by visuals or buzzwords alone.",
         },
       ],
-      hint: "The focus is fast delivery, low buyer effort, and measurable outcomes.",
+      hint: "You get direct collaboration and implementation with clean handover.",
       kpis: [
-        { value: "5", suffix: " days", label: "Time-to-first-draft" },
-        { value: "92", suffix: "%", label: "Briefing effort reduced" },
-        { value: "1", suffix: " owner", label: "Clear delivery owner" },
+        { value: "Solid", suffix: "", label: "Scope and process" },
+        { value: "Direct", suffix: "", label: "Alignment" },
+        { value: "1", suffix: " contact person", label: "Direct contact" },
       ],
-      title: "Why not build it like a generic template site?",
+      title: "How the collaboration works",
     },
     servicesPrimaryCta: "Request project",
     servicesDetailsCta: "More details",
