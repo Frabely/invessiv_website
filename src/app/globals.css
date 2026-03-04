@@ -1253,10 +1253,22 @@ main {
 }
 
 .services-title-icon-image {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: block;
   flex: 0 0 auto;
+}
+
+.services-title-icon-image--mask {
+  background-color: var(--accent);
+  -webkit-mask-image: var(--service-icon-mask);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-image: var(--service-icon-mask);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 
 .services-title-badge {

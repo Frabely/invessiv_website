@@ -261,7 +261,7 @@ const HOME_SECTIONS: LandingSection[] = [
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/01_landingpages.png",
+            iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages Icon",
             title: "Landing pages",
             description:
@@ -285,7 +285,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "web",
-            iconSrc: "/services/02_websites.png",
+            iconSrc: "/services/coding-icon.svg",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
@@ -308,7 +308,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "process",
-            iconSrc: "/services/03_tools.png",
+            iconSrc: "/services/process-icon.svg",
             iconAlt: "Prozess-Tools Icon",
             title: "Prozess-Tools",
             description:
@@ -331,7 +331,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "upgrade",
-            iconSrc: "/services/04_website_upgrade.png",
+            iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website-Upgrade Icon",
             title: "Upgrade bestehende Website",
             description:
@@ -354,7 +354,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "ai",
-            iconSrc: "/services/05_ai_tempaltes.png",
+            iconSrc: "/services/ai-file-icon.svg",
             iconAlt: "KI-Templates Icon",
             title: "KI-Templates",
             description:
@@ -376,7 +376,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "maintenance",
-            iconSrc: "/services/06_support.png",
+            iconSrc: "/services/customer-service-icon.svg",
             iconAlt: "Wartung und Support Icon",
             title: "Wartung & Support",
             description:
@@ -406,7 +406,7 @@ const HOME_SECTIONS: LandingSection[] = [
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/01_landingpages.png",
+            iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
             description:
@@ -430,7 +430,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "web",
-            iconSrc: "/services/02_websites.png",
+            iconSrc: "/services/coding-icon.svg",
             iconAlt: "Websites icon",
             title: "Websites",
             description:
@@ -453,7 +453,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "process",
-            iconSrc: "/services/03_tools.png",
+            iconSrc: "/services/process-icon.svg",
             iconAlt: "Process tools icon",
             title: "Process tools",
             description:
@@ -476,7 +476,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "upgrade",
-            iconSrc: "/services/04_website_upgrade.png",
+            iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
             title: "Upgrade existing website",
             description:
@@ -499,7 +499,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "ai",
-            iconSrc: "/services/05_ai_tempaltes.png",
+            iconSrc: "/services/ai-file-icon.svg",
             iconAlt: "AI templates icon",
             title: "AI templates",
             description:
@@ -521,7 +521,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             key: "maintenance",
-            iconSrc: "/services/06_support.png",
+            iconSrc: "/services/customer-service-icon.svg",
             iconAlt: "Maintenance and support icon",
             title: "Maintenance & support",
             description:
