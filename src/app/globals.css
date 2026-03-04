@@ -4340,6 +4340,17 @@ body {
     padding: 0;
     border-radius: 0;
   }
+
+  .site-footer__bottom {
+    align-items: stretch;
+  }
+
+  .site-footer__bottom-left {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+    padding-inline: 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
