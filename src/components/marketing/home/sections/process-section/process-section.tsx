@@ -8,6 +8,7 @@ import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point"
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
 type ProcessCta = NonNullable<LandingSectionCopy["processCta"]>;
+type ProcessField = { label: string | null; value: string };
 
 type ProcessSectionProps = {
   description: string;
@@ -17,6 +18,33 @@ type ProcessSectionProps = {
   summaryPoints?: string[];
   title: string;
 };
+
+function parseProcessField(field: string | undefined): ProcessField | null {
+  if (!field) {
+    return null;
+  }
+
+  const normalizedField = field.trim();
+  if (!normalizedField) {
+    return null;
+  }
+
+  const separatorIndex = normalizedField.indexOf(":");
+  if (separatorIndex <= 0 || separatorIndex >= normalizedField.length - 1) {
+    return { label: null, value: normalizedField };
+  }
+
+  const label = normalizedField.slice(0, separatorIndex).trim();
+  const value = normalizedField.slice(separatorIndex + 1).trim();
+  if (!value) {
+    return { label: null, value: normalizedField };
+  }
+
+  return {
+    label: label || null,
+    value,
+  };
+}
 
 export function ProcessSection({
   description,
@@ -31,7 +59,13 @@ export function ProcessSection({
   const leaderRef = useRef<HTMLSpanElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
   const stepsRef = useRef<HTMLDivElement | null>(null);
-  useProcessStartPoint({ layoutRef, endCtaRef, leaderRef, pathRef, stepsRef });
+  useProcessStartPoint({
+    layoutRef,
+    endCtaRef,
+    leaderRef,
+    pathRef,
+    stepsRef,
+  });
 
   return (
     <section className="process-section" id={id}>
@@ -84,33 +118,61 @@ export function ProcessSection({
           </a>
         ) : null}
         <div className="process-steps" ref={stepsRef} role="list">
-          {processSteps.map((step, index) => (
-            <article
-              className="process-step"
-              key={step.step}
-              role="listitem"
-              style={{ ["--process-step-delay" as string]: `${index * 80}ms` }}
-            >
-              <div className="process-step-inner">
-                <p className="process-step-index">{step.step}</p>
-                <h3>{step.title}</h3>
-                {step.deliverable ? (
-                  <p className="process-deliverable">{step.deliverable}</p>
-                ) : null}
-                {(step.effort || step.result) && (
-                  <div className="process-step-meta" role="list">
-                    {step.effort ? (
-                      <span role="listitem">{step.effort}</span>
+          {processSteps.map((step, index) => {
+            const parsedOutput = parseProcessField(step.result);
+            const parsedMeta = parseProcessField(step.effort);
+
+            return (
+              <article
+                className="process-step"
+                key={step.step}
+                role="listitem"
+                style={{
+                  ["--process-step-delay" as string]: `${index * 80}ms`,
+                }}
+              >
+                <div className="process-step-inner">
+                  <header className="process-step-head">
+                    <div className="process-step-title-row">
+                      <p className="process-step-number">{step.step}</p>
+                      <h3 className="process-step-title">{step.title}</h3>
+                    </div>
+                    {step.deliverable ? (
+                      <p className="process-step-phase">{step.deliverable}</p>
                     ) : null}
-                    {step.result ? (
-                      <span role="listitem">{step.result}</span>
-                    ) : null}
-                  </div>
-                )}
-                <p>{step.description}</p>
-              </div>
-            </article>
-          ))}
+                  </header>
+
+                  {parsedOutput ? (
+                    <section className="process-step-output">
+                      {parsedOutput.label ? (
+                        <p className="process-step-output-label">
+                          {parsedOutput.label}
+                        </p>
+                      ) : null}
+                      <p className="process-step-output-value">
+                        {parsedOutput.value}
+                      </p>
+                    </section>
+                  ) : null}
+
+                  {parsedMeta ? (
+                    <p className="process-step-meta-line">
+                      {parsedMeta.label ? (
+                        <span className="process-step-meta-key">
+                          {parsedMeta.label}
+                        </span>
+                      ) : null}
+                      <span className="process-step-meta-value">
+                        {parsedMeta.value}
+                      </span>
+                    </p>
+                  ) : null}
+
+                  <p className="process-step-description">{step.description}</p>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

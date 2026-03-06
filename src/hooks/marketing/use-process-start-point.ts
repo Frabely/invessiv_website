@@ -30,6 +30,7 @@ export function useProcessStartPoint({
       return;
     }
     let totalLength = 0;
+    let rafId: number | null = null;
     const hasMatchMedia = typeof window.matchMedia === "function";
 
     const updatePoint = () => {
@@ -75,7 +76,8 @@ export function useProcessStartPoint({
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
       const isTabletViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 1200px) and (min-width: 901px)").matches
+        ? window.matchMedia("(max-width: 1200px) and (min-width: 901px)")
+            .matches
         : false;
       const edgePadding = 12;
       const leftX = Math.min(
@@ -106,7 +108,12 @@ export function useProcessStartPoint({
         return lastBottom + ctaGap + ctaHeight / 2;
       })();
       if (isMobileViewport) {
-        setCssPoint("--process-end-x", "--process-end-y", lastCenter.x, mobileEndY);
+        setCssPoint(
+          "--process-end-x",
+          "--process-end-y",
+          lastCenter.x,
+          mobileEndY,
+        );
       } else {
         setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
       }
@@ -172,7 +179,6 @@ export function useProcessStartPoint({
             `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
           ].join(" ");
       path.setAttribute("d", pathDefinition);
-
       const measuredLength = path.getTotalLength();
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
@@ -189,19 +195,21 @@ export function useProcessStartPoint({
       const isMobileViewport = hasMatchMedia
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
+      const prefersReducedMotion = hasMatchMedia
+        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        : false;
       const journeySpeedMultiplier = isMobileViewport
         ? Math.max(1.12, Math.min(1.32, viewportHeight / 680))
-        : 2;
+        : 1.3;
       // Start and end trigger lines tune when drawing begins and completes.
       const startLine = viewportHeight * (isMobileViewport ? 0.72 : 0.68);
       const endLine = viewportHeight * (isMobileViewport ? 0.26 : 0.5);
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
-      const progress = Math.max(
-        0,
-        Math.min(1, rawProgress * journeySpeedMultiplier),
-      );
+      const progress = prefersReducedMotion
+        ? 1
+        : Math.max(0, Math.min(1, rawProgress * journeySpeedMultiplier));
       if (totalLength > 0) {
         const drawnLength = totalLength * progress;
         path.style.strokeDashoffset = `${totalLength - drawnLength}`;
@@ -216,8 +224,10 @@ export function useProcessStartPoint({
           "--process-leader-y",
           `${point.y.toFixed(2)}px`,
         );
-        const isCtaVisible = progress >= ctaRevealProgress;
-        const isFinished = progress >= ctaPulseProgress;
+        const isCtaVisible =
+          prefersReducedMotion || progress >= ctaRevealProgress;
+        const isFinished =
+          !prefersReducedMotion && progress >= ctaPulseProgress;
         leader.classList.toggle("is-finished", isFinished);
         if (endCta) {
           endCta.classList.toggle("is-journey-visible", isCtaVisible);
@@ -226,15 +236,31 @@ export function useProcessStartPoint({
       }
     };
 
+    const scheduleJourneyProgressUpdate = () => {
+      if (rafId !== null) {
+        return;
+      }
+
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        updateJourneyProgress();
+      });
+    };
+
     updatePoint();
-    updateJourneyProgress();
+    scheduleJourneyProgressUpdate();
     window.addEventListener("resize", updatePoint);
-    window.addEventListener("resize", updateJourneyProgress);
-    window.addEventListener("scroll", updateJourneyProgress, { passive: true });
+    window.addEventListener("resize", scheduleJourneyProgressUpdate);
+    window.addEventListener("scroll", scheduleJourneyProgressUpdate, {
+      passive: true,
+    });
     return () => {
       window.removeEventListener("resize", updatePoint);
-      window.removeEventListener("resize", updateJourneyProgress);
-      window.removeEventListener("scroll", updateJourneyProgress);
+      window.removeEventListener("resize", scheduleJourneyProgressUpdate);
+      window.removeEventListener("scroll", scheduleJourneyProgressUpdate);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
     };
   }, [endCtaRef, layoutRef, leaderRef, pathRef, stepsRef]);
 }

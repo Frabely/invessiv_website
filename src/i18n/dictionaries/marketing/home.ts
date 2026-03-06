@@ -548,7 +548,7 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "In 4 Schritten zum fertigen Ergebnis",
+        title: "In wenigen Schritten zum fertigen Ergebnis",
         description:
           "Ablauf mit KI-Fokus: Nach deinen Anforderungen richte ich das Agent-Setup ein, arbeite im KI-Agenten-Workflow und finalisiere mit manuellem Feinschliff und QA.",
         summaryPoints: [
@@ -601,7 +601,7 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "A finished result in 4 clear steps",
+        title: "A finished result in a few clear steps",
         description:
           "AI-focused delivery flow: after your requirements, I set up the agent foundation, work in an AI agent workflow, and finalize with manual refinement and QA.",
         summaryPoints: [
