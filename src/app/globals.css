@@ -806,24 +806,32 @@ main {
 }
 
 [data-theme="light"] .process-step-output {
-  border-color: rgba(162, 101, 69, 0.28);
-  background: rgba(255, 245, 234, 0.8);
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 30%,
+    var(--color-border) 70%
+  );
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-cta) 10%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 90%, transparent)
+  );
 }
 
 [data-theme="light"] .process-step-output-label {
-  color: #8f6249;
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
 }
 
 [data-theme="light"] .process-step-output-value {
-  color: #55301f;
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-cta) 8%);
 }
 
 [data-theme="light"] .process-step-meta-key {
-  color: #8a6049;
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
 }
 
 [data-theme="light"] .process-step-meta-value {
-  color: #6f4834;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
 }
 
 [data-theme="light"] .services-card:hover {
@@ -895,35 +903,6 @@ main {
 
 [data-theme="light"] .packages-scope {
   color: #74503b;
-}
-
-[data-theme="light"] .qna-list {
-  border-color: rgba(162, 101, 69, 0.24);
-  background: rgba(255, 255, 255, 0.82);
-}
-
-[data-theme="light"] .qna-question {
-  color: #724a35;
-}
-
-[data-theme="light"] .qna-item + .qna-item {
-  border-top-color: rgba(162, 101, 69, 0.16);
-}
-
-[data-theme="light"] .qna-summary:hover {
-  background: rgba(255, 234, 214, 0.46);
-}
-
-[data-theme="light"] .qna-answer {
-  color: #80563f;
-}
-
-[data-theme="light"] .qna-marker {
-  color: #7d5038;
-}
-
-[data-theme="light"] .qna-arrow {
-  color: #966a52;
 }
 
 [data-theme="light"] .contact-checklist {
@@ -1880,39 +1859,76 @@ main {
 }
 
 .qna-list {
-  margin: 0;
+  margin: 10px 0 0;
   width: 100%;
   padding: 0;
   list-style: none;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid rgba(223, 167, 117, 0.24);
-  background: rgba(44, 23, 14, 0.68);
+  display: grid;
+  gap: 10px;
 }
 
 .qna-item {
   padding: 0;
 }
 
-.qna-item:hover {
-  background: rgba(255, 231, 206, 0.09);
-}
-
 .qna-disclosure {
   width: 100%;
+  display: block;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 9%, transparent),
+    0 8px 20px rgba(8, 10, 15, 0.16);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 220ms ease;
+}
+
+.qna-disclosure:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 32%,
+    var(--color-border) 68%
+  );
+  background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
+}
+
+.qna-disclosure:focus-within {
+  border-color: color-mix(in srgb, var(--color-focus) 46%, transparent);
+}
+
+.qna-disclosure[open] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 48%,
+    var(--color-border) 52%
+  );
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-cta) 14%, transparent),
+      transparent 48%
+    ),
+    color-mix(in srgb, var(--color-surface-1) 96%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 16%, transparent),
+    0 12px 28px rgba(8, 10, 15, 0.22);
 }
 
 .qna-disclosure[open] .qna-arrow {
-  transform: rotate(90deg);
+  transform: rotate(180deg);
 }
 
 .qna-summary {
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr) 18px;
+  grid-template-columns: minmax(0, 1fr) 18px;
   align-items: center;
-  gap: 10px;
-  min-height: 56px;
-  padding: 12px 16px;
+  gap: 14px;
+  min-height: 62px;
+  padding: 14px 18px;
   cursor: pointer;
   list-style: none;
 }
@@ -1921,46 +1937,132 @@ main {
   display: none;
 }
 
-.qna-marker {
-  width: 16px;
-  height: 16px;
-  color: #ffcf8b;
-}
-
-.qna-marker svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
+.qna-summary:focus-visible {
+  border-radius: 12px;
+  outline-offset: 3px;
 }
 
 .qna-question {
   margin: 0;
-  color: #f7e2ce;
-  font-size: 0.98rem;
-  font-weight: 700;
-  line-height: 1.45;
+  color: color-mix(in srgb, var(--color-text) 92%, transparent);
+  font-size: clamp(0.98rem, 1.1vw, 1.04rem);
+  font-weight: 680;
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+}
+
+.qna-disclosure[open] .qna-question {
+  color: var(--color-text);
+}
+
+.qna-answer-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  padding: 0 18px;
+  opacity: 0.74;
+  transition:
+    grid-template-rows 220ms ease,
+    opacity 200ms ease,
+    padding 200ms ease;
+}
+
+.qna-disclosure[open] .qna-answer-wrap {
+  grid-template-rows: 1fr;
+  padding: 0 18px 16px;
+  opacity: 1;
 }
 
 .qna-answer {
   margin: 0;
-  padding: 0 16px 14px 44px;
-  color: #dcb89b;
-  font-size: 0.92rem;
+  min-height: 0;
+  overflow: hidden;
+  max-width: 72ch;
+  padding-top: 0;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: clamp(0.92rem, 1vw, 0.98rem);
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.68;
+}
+
+.qna-disclosure[open] .qna-answer {
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  padding-top: 12px;
 }
 
 .qna-arrow {
   width: 16px;
   height: 16px;
-  color: #e9c8a9;
-  transition: transform 180ms ease;
+  color: color-mix(in srgb, var(--color-cta) 58%, #d7e3ff 42%);
+  transition:
+    transform 220ms ease,
+    color 200ms ease;
+}
+
+.qna-disclosure[open] .qna-arrow {
+  color: color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%);
 }
 
 .qna-arrow svg {
   width: 100%;
   height: 100%;
-  fill: currentColor;
+  display: block;
+}
+
+.qna-secondary-contact {
+  margin: 12px 2px 0;
+  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.qna-secondary-contact-link {
+  color: color-mix(in srgb, var(--color-cta) 72%, var(--color-text) 28%);
+  font-weight: 600;
+  text-underline-offset: 0.16em;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
+}
+
+.qna-secondary-contact-link:hover {
+  color: var(--color-cta-hover);
+}
+
+.qna-secondary-contact-link:focus-visible {
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .qna-list {
+    gap: 8px;
+  }
+
+  .qna-summary {
+    min-height: 58px;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .qna-answer-wrap {
+    padding: 0 14px;
+  }
+
+  .qna-disclosure[open] .qna-answer-wrap {
+    padding: 0 14px 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .qna-question {
+    font-size: 0.95rem;
+  }
+
+  .qna-answer {
+    font-size: 0.9rem;
+    line-height: 1.62;
+  }
+
+  .qna-secondary-contact {
+    font-size: 0.88rem;
+  }
 }
 
 .contact-section {
@@ -2281,6 +2383,26 @@ main {
 .process-layout {
   position: relative;
   min-height: 760px;
+  --process-highlight-border: color-mix(
+    in srgb,
+    var(--color-accent-warm) 28%,
+    var(--color-border) 72%
+  );
+  --process-highlight-card: color-mix(
+    in srgb,
+    var(--color-accent-warm) 12%,
+    transparent
+  );
+  --process-highlight-cta-start: color-mix(
+    in srgb,
+    var(--color-accent-warm) 66%,
+    var(--color-cta-active) 34%
+  );
+  --process-highlight-cta-end: color-mix(
+    in srgb,
+    var(--color-accent-warm) 50%,
+    var(--color-cta-active) 50%
+  );
   --process-start-x: 50%;
   --process-start-y: 90px;
   --process-end-x: calc(100% - 50px);
@@ -2299,6 +2421,29 @@ main {
   --process-right-point-2-y: 420px;
   --process-right-point-3-x: calc(100% - 50px);
   --process-right-point-3-y: 620px;
+}
+
+[data-theme="light"] .process-layout {
+  --process-highlight-border: color-mix(
+    in srgb,
+    var(--color-accent-warm) 24%,
+    var(--color-border) 76%
+  );
+  --process-highlight-card: color-mix(
+    in srgb,
+    var(--color-accent-warm) 8%,
+    transparent
+  );
+  --process-highlight-cta-start: color-mix(
+    in srgb,
+    var(--color-accent-warm) 58%,
+    var(--color-cta-active) 42%
+  );
+  --process-highlight-cta-end: color-mix(
+    in srgb,
+    var(--color-accent-warm) 42%,
+    var(--color-cta-active) 58%
+  );
 }
 
 .process-journey-svg {
@@ -2390,10 +2535,10 @@ main {
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   background: linear-gradient(
     125deg,
-    color-mix(in srgb, var(--color-accent-warm) 76%, transparent),
-    color-mix(in srgb, var(--color-cta) 78%, transparent)
+    var(--process-highlight-cta-start),
+    var(--process-highlight-cta-end)
   );
-  color: color-mix(in srgb, #121821 84%, var(--color-text) 16%);
+  color: var(--color-on-cta);
   transform: translate(-50%, -50%);
   transform-origin: 50% 50%;
   z-index: 3;
@@ -2514,7 +2659,7 @@ main {
   height: 180px;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-accent-warm) 18%, transparent) 0%,
+    var(--process-highlight-card) 0%,
     transparent 72%
   );
   opacity: 0.44;
@@ -2523,13 +2668,9 @@ main {
 
 .process-step.is-visible {
   transform: translateY(-4px) scale(1.008);
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 52%,
-    var(--color-accent-warm) 24%
-  );
+  border-color: var(--process-highlight-border);
   box-shadow:
-    0 14px 34px rgba(39, 20, 12, 0.35),
+    0 14px 34px rgba(20, 34, 60, 0.34),
     inset 0 1px 0 rgba(255, 231, 206, 0.09);
 }
 
@@ -2596,7 +2737,7 @@ main {
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--color-accent-warm) 12%, transparent),
+    color-mix(in srgb, var(--color-accent-warm) 10%, transparent),
     color-mix(in srgb, var(--color-surface-2) 86%, transparent)
   );
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
@@ -2609,10 +2750,10 @@ main {
 .process-step-output {
   border-radius: 13px;
   border: 1px solid
-    color-mix(in srgb, var(--color-cta) 34%, var(--color-border) 66%);
+    color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border) 72%);
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+    color-mix(in srgb, var(--color-accent-warm) 12%, transparent),
     color-mix(in srgb, var(--color-surface-2) 92%, transparent)
   );
   padding: 11px 12px;
@@ -3882,7 +4023,6 @@ body {
 .proof-card,
 .services-card,
 .packages-card,
-.qna-list,
 .process-intro,
 .process-step,
 .content-section,
@@ -4001,7 +4141,6 @@ body {
 [data-theme="light"] .proof-card,
 [data-theme="light"] .services-card,
 [data-theme="light"] .packages-card,
-[data-theme="light"] .qna-list,
 [data-theme="light"] .process-intro,
 [data-theme="light"] .process-step,
 [data-theme="light"] .content-section,
@@ -4016,7 +4155,6 @@ body {
   background: transparent;
 }
 
-.qna-marker,
 .qna-arrow,
 .packages-check-icon {
   color: color-mix(in srgb, var(--color-cta) 58%, #d7e3ff 42%);
@@ -4717,6 +4855,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .hero__title-gradient {
     animation: none;
+  }
+
+  .qna-disclosure,
+  .qna-summary,
+  .qna-answer-wrap,
+  .qna-arrow {
+    transition: none;
   }
 
   .contact-primary-cta--shimmer::after {

@@ -9,29 +9,29 @@ describe("QAndASection", () => {
   it("renders accordion items and toggles answers", () => {
     render(
       <QAndASection
-        description="Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar."
+        description=""
         id="faq"
         items={[
           {
             question: "Wie läuft der Projektstart ab?",
-            answer: "Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.",
+            answer:
+              "Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.",
           },
           {
             question: "Könnt ihr meine alte Website überarbeiten?",
             answer: "Ja, ich kann bestehende Seiten gezielt modernisieren.",
           },
         ]}
-        summaryPoints={[
-          "Start, Scope und Timing klar",
-          "Kosten und Grenzen transparent",
-          "Tooling passend zu deinem Setup",
-        ]}
+        secondaryContact={{
+          hint: "Frage nicht dabei?",
+          href: "mailto:service@invessiv.com",
+          label: "Schreib mir direkt per Mail.",
+        }}
         title="Q&A"
       />,
     );
 
     expect(screen.getByRole("heading", { name: "Q&A" })).toBeTruthy();
-    expect(screen.getByText("Start, Scope und Timing klar")).toBeTruthy();
 
     const firstQuestion = screen.getByText("Wie läuft der Projektstart ab?");
     const firstDisclosure = firstQuestion.closest("details");
@@ -41,8 +41,23 @@ describe("QAndASection", () => {
     fireEvent.click(firstQuestion.closest("summary") as HTMLElement);
     expect(firstDisclosure?.hasAttribute("open")).toBe(true);
 
-    expect(screen.getByText("Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.")).toBeTruthy();
-    expect(screen.getByText("Könnt ihr meine alte Website überarbeiten?")).toBeTruthy();
-    expect(screen.getByText("Ja, ich kann bestehende Seiten gezielt modernisieren.")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.",
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Könnt ihr meine alte Website überarbeiten?"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Ja, ich kann bestehende Seiten gezielt modernisieren."),
+    ).toBeTruthy();
+
+    const secondaryContactLink = screen.getByRole("link", {
+      name: "Schreib mir direkt per Mail.",
+    });
+    expect(secondaryContactLink.getAttribute("href")).toBe(
+      "mailto:service@invessiv.com",
+    );
   });
 });

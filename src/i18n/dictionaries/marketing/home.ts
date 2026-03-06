@@ -44,6 +44,11 @@ export type LandingSectionCopy = {
     question: string;
     answer: string;
   }>;
+  qnaSecondaryContact?: {
+    hint: string;
+    label: string;
+    href: string;
+  };
   contactChannels?: Array<{
     label: string;
     value: string;
@@ -660,13 +665,12 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Q&A",
-        description:
-          "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
-        summaryPoints: [
-          "Start, Umfang und Timing klar",
-          "Kosten und Grenzen transparent",
-          "Technik passend zu deinem Setup",
-        ],
+        description: "",
+        qnaSecondaryContact: {
+          hint: "Frage nicht dabei?",
+          label: "Schreib mir direkt per Mail.",
+          href: COMPANY_MAILTO,
+        },
         qnaItems: [
           {
             question: "Wie läuft der Projektstart ab?",
@@ -692,13 +696,12 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Q&A",
-        description:
-          "The most relevant questions about process and collaboration, clear and direct.",
-        summaryPoints: [
-          "Kickoff, scope, and timing clarified",
-          "Costs and boundaries made transparent",
-          "Tooling matched to your setup",
-        ],
+        description: "",
+        qnaSecondaryContact: {
+          hint: "Question not listed?",
+          label: "Write to me directly by email.",
+          href: COMPANY_MAILTO,
+        },
         qnaItems: [
           {
             question: "How does project kickoff work?",
