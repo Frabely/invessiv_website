@@ -35,11 +35,6 @@ export type LandingSectionCopy = {
     result?: string;
     description: string;
   }>;
-  processSummary?: string;
-  processRoles?: Array<{
-    label: string;
-    items: string[];
-  }>;
   processCta?: {
     label: string;
     hint: string;
@@ -177,7 +172,7 @@ const HOME_SECTIONS: LandingSection[] = [
         title:
           "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
         description:
-          "Du gibst nur den nötigen Input, ich übernehme den Rest: Landingpages, Webseiten und Prozess-Tools mit schneller Umsetzung bis zum produktiven Ergebnis.",
+          "Du gibst den nötigen Input, ich übernehme die Umsetzung: Landingpages, Webseiten und Prozess-Tools mit klarem Leistungsumfang und planbaren Lieferetappen.",
       },
       en: {
         title:
@@ -191,20 +186,20 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "proof",
     copy: {
       de: {
-        title: "Proof",
+        title: "Ergebnisse",
         description:
-          "Messbare Ergebnisse und klare Delivery-Signale statt Bauchgef?hl.",
+          "Nachvollziehbare Ergebnisse und klare Liefer-Signale statt Bauchgefühl.",
         metrics: [
-          { label: "Time-to-first-draft", value: "5 Tage" },
-          { label: "Briefing-Aufwand reduziert", value: "92%" },
-          { label: "Delivery-Owner", value: "1 Ansprechpartner" },
+          { label: "Erster Draft", value: "typisch 5 Werktage" },
+          { label: "Abstimmung", value: "klar strukturiert" },
+          { label: "Verantwortung", value: "1 Ansprechpartner" },
         ],
         cards: [
           {
-            title: "Time-to-Launch SLA",
+            title: "Typischer Liefer-Rhythmus",
             description:
-              "Erste klickbare Version in 5 Werktagen mit klarem Go-live-Plan je Paket.",
-            tag: "Fast",
+              "Erste klickbare Version typischerweise in 5 Werktagen mit klarem Go-live-Plan je Paket.",
+            tag: "Richtwert",
           },
           {
             title: "Upgrade statt Neubau",
@@ -225,16 +220,16 @@ const HOME_SECTIONS: LandingSection[] = [
         description:
           "Measurable outcomes and clear delivery signals instead of guesswork.",
         metrics: [
-          { label: "Time-to-first-draft", value: "5 days" },
-          { label: "Briefing effort reduced", value: "92%" },
-          { label: "Delivery owner", value: "1 point of contact" },
+          { label: "First draft", value: "typically 5 business days" },
+          { label: "Alignment", value: "structured" },
+          { label: "Delivery responsibility", value: "1 point of contact" },
         ],
         cards: [
           {
-            title: "Time-to-launch SLA",
+            title: "Typical delivery rhythm",
             description:
-              "First clickable version in 5 business days with a clear go-live plan per package.",
-            tag: "Fast",
+              "First clickable version typically in 5 business days with a clear go-live plan per package.",
+            tag: "Guideline",
           },
           {
             title: "Upgrade over rebuild",
@@ -258,18 +253,18 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Leistungen & Preise",
         description:
-          "Projektbasierte, einmalige Preise mit klarem Scope, transparenter Lieferzeit und direktem Weg zur Anfrage.",
+          "Projektbasierte, einmalige Preise mit klarem Leistungsumfang, transparenter Lieferzeit und direktem Weg zur Anfrage.",
         summaryPoints: [
           "Einmalpreise pro Projekt",
-          "Scope vor Start definiert",
-          "Lieferzeit im Angebot fix",
+          "Leistungsumfang vor Start definiert",
+          "Lieferzeit als Richtwert im Angebot",
         ],
         serviceCards: [
           {
             key: "landing",
             iconSrc: "/services/website-layout-icon.svg",
-            iconAlt: "Landing pages Icon",
-            title: "Landing pages",
+            iconAlt: "Landingpages Icon",
+            title: "Landingpages",
             description:
               "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
             isRecommended: true,
@@ -284,7 +279,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "1–2 Korrekturschleifen",
             ],
             details: [
-              "Copy-Feinschliff und Inhaltsproduktion sind als Add-on möglich.",
+              "Copy-Feinschliff und Inhaltsproduktion sind als Zusatzleistung möglich.",
               "Mehr als 2 Korrekturschleifen werden separat kalkuliert.",
               "Hosting, Domain und externe Tool-Lizenzen sind nicht enthalten.",
             ],
@@ -322,10 +317,10 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "ab 3.490 € einmalig",
             delivery: "10–21 Tage",
             included: [
-              "Scope-Workshop light (Ziele, Daten, Rollen)",
+              "Kompakter Umfangs-Workshop (Ziele, Daten, Rollen)",
               "MVP-Umsetzung (1 Kern-Workflow)",
               "Status/Dashboard-Ansicht (basic)",
-              "Integrationen (nach Scope: Webhooks, APIs)",
+              "Integrationen (nach Umfang: Webhooks, APIs)",
               "Auth/Access (basic)",
               "Übergabe + kurze Doku/Einweisung",
             ],
@@ -353,7 +348,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Messbare Vorher/Nachher Checks",
             ],
             details: [
-              "Optional: Development/Implementation mit 70–85 € / h oder Content/kleine Pflege mit 50–60 € / h.",
+              "Optional: Entwicklung/Implementierung mit 70–85 € / h oder Content/kleine Pflege mit 50–60 € / h.",
               "Größere Rebuild-Themen werden transparent separat empfohlen.",
               "Tiefe Backend-Refactors sind nicht Teil des Basis-Upgrades.",
             ],
@@ -361,23 +356,23 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "ai",
             iconSrc: "/services/ai-file-icon.svg",
-            iconAlt: "KI-Templates Icon",
-            title: "KI-Templates",
+            iconAlt: "KI-Templates & Agents Icon",
+            title: "KI-Templates & Agents",
             description:
-              "Vorlagen für Content & Marketing, abgestimmt auf deine Brand.",
+              "Einsatzbereite AGENTS.md- und CLAUDE.md-Dateien für klar definierte Einsatzfälle und schnellere Projektstarts.",
             price: "ab 290 € einmalig",
             delivery: "2–5 Tage",
             included: [
-              "Templates für Texte & Hooks",
-              "Landingpage-Abschnitte (Hero, Benefits, FAQ)",
-              "Social Post Sets (z. B. 10–20 Varianten)",
-              "Brand-Tone Anpassung",
-              "Beispiele + Mini-Guide zur Nutzung",
+              "1 kontextspezifisches Paket (AGENTS.md + CLAUDE.md)",
+              "Rollen-, Workflow- und Qualitätsregeln je Use-Case",
+              "Prompt-Struktur mit Input-/Output-Vorlagen",
+              "Anpassung auf Brand-Tonalität und Fachsprache",
+              "Kurzleitfaden für den sofortigen Einsatz",
             ],
             details: [
-              "Kein vollautomatischer Kanalbetrieb im Paket enthalten.",
-              "Bild- oder Video-Produktion kann optional ergänzt werden.",
-              "Zusätzliche Variantenpakete sind jederzeit nachbuchbar.",
+              "Gilt für den vereinbarten Kontext; weitere Kontexte werden separat gescopet.",
+              "Dateien sind in typischen Workflows direkt nutzbar, fachliche Abnahme bleibt erforderlich.",
+              "Erweiterungen und zusätzliche Varianten sind jederzeit nachbuchbar.",
             ],
           },
           {
@@ -392,13 +387,13 @@ const HOME_SECTIONS: LandingSection[] = [
             deliveryLabel: "Typische Reaktionszeit",
             included: [
               "Content/kleine Pflege: 50–60 € / h",
-              "Development/Implementation: 70–85 € / h",
+              "Entwicklung/Implementierung: 70–85 € / h",
               "Monitoring/Checks (optional)",
               "Priorisierte Abarbeitung nach Impact",
               "Stundenpakete optional",
             ],
             details: [
-              "Stundenpakete: 5h = 225 € oder 10h = 430 €.",
+              "Stundenpakete werden je nach Umfang transparent angeboten (z. B. 5h oder 10h).",
               "Abrechnung erfolgt transparent nach tatsächlichem Aufwand.",
               "Notfall-Requests werden nach Verfügbarkeit priorisiert.",
             ],
@@ -406,13 +401,13 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "Leistungen & Preise",
+        title: "Services & Pricing",
         description:
           "Project-based one-time pricing with transparent scope, clear delivery windows, and direct contact CTA.",
         summaryPoints: [
           "One-time pricing per project",
           "Scope defined before kickoff",
-          "Delivery window fixed upfront",
+          "Delivery window set as a guideline upfront",
         ],
         serviceCards: [
           {
@@ -511,23 +506,23 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "ai",
             iconSrc: "/services/ai-file-icon.svg",
-            iconAlt: "AI templates icon",
-            title: "AI templates",
+            iconAlt: "AI templates & agents icon",
+            title: "AI templates & agents",
             description:
-              "Content and marketing templates aligned to your brand voice.",
+              "Ready-to-use AGENTS.md and CLAUDE.md files for clearly defined use cases and faster project starts.",
             price: "from €290 one-time",
             delivery: "2–5 days",
             included: [
-              "Templates for copy and hooks",
-              "Landing page blocks (hero, benefits, FAQ)",
-              "Social post sets (e.g. 10–20 variants)",
-              "Brand tone alignment",
-              "Examples + mini usage guide",
+              "1 context-specific package (AGENTS.md + CLAUDE.md)",
+              "Role, workflow, and quality rules per use case",
+              "Prompt structure with input/output templates",
+              "Alignment to your brand tone and domain language",
+              "Short guide for immediate use",
             ],
             details: [
-              "No full channel automation is included.",
-              "Image/video production can be added separately.",
-              "Additional variant packs are available any time.",
+              "Valid for the agreed context; additional contexts are scoped separately.",
+              "Files are directly usable in typical workflows, but domain review remains required.",
+              "Extensions and additional variants can be added any time.",
             ],
           },
           {
@@ -548,7 +543,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Optional hour bundles",
             ],
             details: [
-              "Hour bundles: 5h = €225 or 10h = €430.",
+              "Hour bundles are offered transparently by scope (for example 5h or 10h).",
               "Transparent billing based on effective work time.",
               "Urgent requests are prioritized by availability.",
             ],
@@ -563,27 +558,11 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "In 4 Schritten zum fertigen Ergebnis",
         description:
-          "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, ich liefere Draft, Feinschliff und Launch.",
+          "Ob Landingpage, komplette Website, Upgrade, Prozess-Tool oder KI-Templates & Agents: Du gibst Ziel und Angebot vor, ich liefere Draft, Feinschliff und Launch.",
         summaryPoints: [
-          "Ziel + Angebot in 30 Minuten geklärt",
-          "Erster Draft meist in 48h",
+          "Ziel + Angebot in ca. 30 Minuten geklärt",
+          "Erster Draft oft innerhalb von 48h durch strukturierte, KI-unterstützte Vorarbeit",
           "Go-live inkl. QA und Übergabe",
-        ],
-        processSummary:
-          "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Übergabe inklusive QA",
-        processRoles: [
-          {
-            label: "Du lieferst",
-            items: ["Ziel", "Angebot", "Assets"],
-          },
-          {
-            label: "Ich liefere",
-            items: [
-              "Struktur + Copy/Design",
-              "Setup + QA",
-              "Launch + Übergabe-Doku",
-            ],
-          },
         ],
         processSteps: [
           {
@@ -591,15 +570,15 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Briefing & Input",
             deliverable: "30-min Briefing",
             effort: "Aufwand: 30 Min",
-            result: "Ergebnis: Klarer Scope + Priorit?ten",
+            result: "Ergebnis: Klarer Leistungsumfang + Prioritäten",
             description:
-              "Du teilst Ziel, Angebot und Material. Ich setze sofort die klare Umsetzungsbasis auf.",
+              "Du teilst Ziel, Angebot und Material. Ich setze direkt die klare Umsetzungsbasis auf.",
           },
           {
             step: "02",
             title: "Draft",
             deliverable: "Klickbarer Draft oder Prototyp",
-            effort: "Lieferzeit: meist 48h",
+            effort: "Lieferzeit: oft innerhalb von 48h (je nach Umfang)",
             result: "Ergebnis: Struktur + Kernlogik",
             description:
               "Du bekommst eine erste Version mit klarer Struktur, Inhalt und - falls nötig - funktionalem Prototyp.",
@@ -625,34 +604,18 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Projekt anfragen",
-          hint: "Unverbindlich. Antwort in 24h.",
+          hint: "Unverbindlich. Meist Rückmeldung innerhalb von 24h.",
           href: "#contact",
         },
       },
       en: {
         title: "A finished result in 4 clear steps",
         description:
-          "For landing pages, full websites, upgrades, or tools/templates: you share goal and offer, I deliver draft, refinement, and launch.",
+          "For landing pages, full websites, upgrades, process tools, or AI templates & agents: you share goal and offer, I deliver draft, refinement, and launch.",
         summaryPoints: [
-          "Goal and offer aligned in 30 minutes",
-          "First draft usually within 48h",
+          "Goal and offer aligned in about 30 minutes",
+          "First draft often within 48h through structured AI-assisted preparation",
           "Go-live includes QA and handover",
-        ],
-        processSummary:
-          "Typical: first version in 48h (depending on scope) | 1-2 feedback rounds | go-live or handover including QA",
-        processRoles: [
-          {
-            label: "You provide",
-            items: ["Goal", "Offer", "Assets"],
-          },
-          {
-            label: "I deliver",
-            items: [
-              "Structure + copy/design",
-              "Setup + QA",
-              "Launch + handover docs",
-            ],
-          },
         ],
         processSteps: [
           {
@@ -668,7 +631,7 @@ const HOME_SECTIONS: LandingSection[] = [
             step: "02",
             title: "Draft",
             deliverable: "Clickable draft or prototype",
-            effort: "Delivery: usually 48h",
+            effort: "Delivery: often within 48h (depending on scope)",
             result: "Outcome: structure + core logic",
             description:
               "You get an initial version with clear structure, content, and functional prototype where needed.",
@@ -694,7 +657,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Request project",
-          hint: "No commitment. Reply within 24h.",
+          hint: "No commitment. Usually a reply within 24h.",
           href: "#contact",
         },
       },
@@ -708,30 +671,30 @@ const HOME_SECTIONS: LandingSection[] = [
         description:
           "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
         summaryPoints: [
-          "Start, Scope und Timing klar",
+          "Start, Umfang und Timing klar",
           "Kosten und Grenzen transparent",
-          "Tooling passend zu deinem Setup",
+          "Technik passend zu deinem Setup",
         ],
         qnaItems: [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Deadline in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Scope-Empfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Umfangsempfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
           },
           {
-            question: "Könnt ihr meine alte Website überarbeiten?",
+            question: "Kannst du meine bestehende Website überarbeiten?",
             answer:
               "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
           },
           {
-            question: "Welche Tools setzt ihr ein?",
+            question: "Welche Tools setzt du ein?",
             answer:
               "Ich arbeite je nach Projekt mit Next.js, Tailwind, Figma und passenden Analyse- bzw. Workflow-Tools. Die Auswahl richtet sich nach deinem Setup, damit Übergabe und Wartung sauber funktionieren.",
           },
           {
             question: "Gibt es versteckte Kosten?",
             answer:
-              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Scope. Zusätzliche Wünsche außerhalb des Scopes stimme ich immer vor Umsetzung transparent mit dir ab.",
+              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Leistungsumfang. Zusätzliche Wünsche außerhalb des Leistungsumfangs stimme ich immer vor Umsetzung transparent mit dir ab.",
           },
         ],
       },
@@ -774,15 +737,15 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Bereit für eine neue, produktive Website?",
-        description: "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+        description: "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         summaryPoints: [
-          "Antwort in 24h",
+          "Meist Antwort in 24h",
           "2-3 Fragen",
           "Direkter Kontakt",
         ],
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
-          "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+          "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
           label: "Jetzt Projekt anfragen",
           href: "#contact",
@@ -812,7 +775,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -836,7 +799,7 @@ const HOME_SECTIONS: LandingSection[] = [
             label: "E-Mail",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            hint: "Ideal für Scope, Deadline und vorhandene Assets.",
+            hint: "Ideal für Leistungsumfang, Zeitrahmen und vorhandene Assets.",
             actionLabel: "Per E-Mail anfragen",
             copyValue: COMPANY.contact.email,
             copyLabel: "E-Mail kopieren",
@@ -844,7 +807,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             label: "Kennenlern-Call",
-            value: "30 Min. → Scope + nächster Schritt + grobe Einschätzung",
+            value: "30 Min. → Umfang + nächster Schritt + grobe Einschätzung",
             href: "#contact",
             hint: "Kein Sales-Druck. Keine Spam-Nachrichten.",
             actionLabel: "Jetzt Projekt anfragen",
@@ -860,7 +823,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           label: "Jetzt Projekt anfragen",
           href: "#contact",
-          hint: "Unverbindlich. 2-3 kurze Fragen, dann melde ich mich in 24h mit dem nächsten Schritt.",
+          hint: "Unverbindlich. 2-3 kurze Fragen, dann melde ich mich in der Regel innerhalb von 24h mit dem nächsten Schritt.",
         },
         contactSecondaryCta: {
           label: "Leistungen ansehen",
@@ -870,7 +833,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactForm: {
           title: "Projektanfrage in 2 Minuten",
           subtitle:
-            "Kurzer Scope-Check, damit ich direkt den nächsten sinnvollen Schritt liefern kann.",
+            "Kurzer Umfangs-Check, damit ich direkt den nächsten sinnvollen Schritt liefern kann.",
           intro:
             "Je konkreter die Angaben, desto schneller bekommst du eine klare Empfehlung zu Umfang, Timing und Budget.",
           conditionalFieldHint:
@@ -943,7 +906,7 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Ready for a new, productive website?",
         description: "Contact me and start your project with Invessiv.",
         summaryPoints: [
-          "Reply in 24h",
+          "Usually a reply within 24h",
           "2-3 questions",
           "Direct contact",
         ],
@@ -973,7 +936,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2024 Moritz Hecht – Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Moritz Hecht – Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1021,7 +984,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           label: "Start project now",
           href: "#contact",
-          hint: "No commitment. Answer 2-3 short questions and I reply in 24h with a clear next step.",
+          hint: "No commitment. Answer 2-3 short questions and I usually reply within 24h with a clear next step.",
         },
         contactSecondaryCta: {
           label: "View services",
@@ -1110,7 +1073,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
-          "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+          "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
           label: "Jetzt Projekt anfragen",
           href: "#contact",

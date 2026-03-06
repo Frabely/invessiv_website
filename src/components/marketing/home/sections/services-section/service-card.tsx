@@ -9,23 +9,31 @@ import { ServiceCardIcon } from "@/components/marketing/home/sections/services-s
 type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
 type ServiceCardProps = {
+  addonBadgeLabel: string;
   card: ServiceCardCopy;
   cardClassName: string;
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
+  faqLinkLabel: string;
   onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: PointerEvent<HTMLElement>) => void;
+  oneTimeLabel: string;
   primaryCtaLabel: string;
+  recommendedBadgeLabel: string;
 };
 
 export function ServiceCard({
+  addonBadgeLabel,
   card,
   cardClassName,
   defaultDeliveryLabel,
   detailsCtaLabel,
+  faqLinkLabel,
   onPointerLeave,
   onPointerMove,
+  oneTimeLabel,
   primaryCtaLabel,
+  recommendedBadgeLabel,
 }: ServiceCardProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const detailsId = `services-details-${card.key}`;
@@ -45,12 +53,12 @@ export function ServiceCard({
   const heroPrice = normalizedPrice
     .replace(/\s*(einmalig|one-time)\s*$/i, "")
     .trim();
-  const priceMeta = isHourlyPrice ? null : "einmalig";
+  const priceMeta = isHourlyPrice ? null : oneTimeLabel;
 
   const badgeLabel = card.isRecommended
-    ? "Empfohlen"
+    ? recommendedBadgeLabel
     : card.key === "maintenance"
-      ? "Add-on"
+      ? addonBadgeLabel
       : null;
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -159,7 +167,7 @@ export function ServiceCard({
                 {primaryCtaLabel}
               </a>
               <a className="services-details-link" href="#faq">
-                Fragen?
+                {faqLinkLabel}
               </a>
             </div>
           </div>

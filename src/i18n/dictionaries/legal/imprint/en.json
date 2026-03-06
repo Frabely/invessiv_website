@@ -9,7 +9,7 @@
     "page": {
       "title": "Imprint",
       "lead": "Information according to Section 5 TMG and Section 18 para. 2 MStV.",
-      "updatedAt": "Last updated: February 26, 2026.",
+      "updatedAt": "Last updated: March 6, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -26,7 +26,7 @@
           "representedBy": "Represented by",
           "address": "Address"
         },
-        "notePlaceholder": "[PLACEHOLDER: If legal registration uses a different company wording, update it here]"
+        "notePlaceholder": "This section is updated whenever company details change."
       },
       "contact": {
         "title": "Contact",
@@ -38,11 +38,11 @@
       "commercialRegister": {
         "title": "Commercial register",
         "emptyEntry": "No commercial register entry.",
-        "notePlaceholder": "[PLACEHOLDER: Update this section if a register entry is added later]"
+        "notePlaceholder": "Status: no commercial register entry available."
       },
       "vatId": {
         "title": "VAT ID",
-        "notePlaceholder": "[PLACEHOLDER: Add VAT ID according to § 27a UStG once available]"
+        "notePlaceholder": "No VAT identification number currently available."
       },
       "responsibleContent": {
         "title": "Responsible for content",

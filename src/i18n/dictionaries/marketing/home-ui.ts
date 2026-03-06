@@ -1,4 +1,4 @@
-﻿import type { Locale } from "@/config/i18n";
+import type { Locale } from "@/config/i18n";
 
 type ProofContent = {
   cards: Array<{ description: string; tag: string; title: string }>;
@@ -17,6 +17,10 @@ export type HomeUiContent = {
   heroVisualAriaLabel: string;
   mappingWarning: string;
   marqueeItems: string[];
+  servicesAddonBadgeLabel: string;
+  servicesFaqLinkLabel: string;
+  servicesOneTimeLabel: string;
+  servicesRecommendedBadgeLabel: string;
   proofContent: ProofContent;
   servicesDeliveryLabel: string;
   servicesDetailsCta: string;
@@ -26,7 +30,11 @@ export type HomeUiContent = {
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   de: {
     heroBenefitsAriaLabel: "Kurzvorteile",
-    heroChipTags: ["Design inkl.", "Launch in wenigen Tagen", "Antwort < 24h"],
+    heroChipTags: [
+      "Design inkl.",
+      "Planbare Lieferetappen",
+      "Meist Antwort in 24h",
+    ],
     heroPrimaryCta: "Projekt anfragen",
     heroSecondaryCta: "Leistungen ansehen",
     heroTag: "Individuell statt Baukasten",
@@ -37,7 +45,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       "Webseiten",
       "Prozess-Tools",
       "Website-Upgrades",
-      "KI-Templates",
+      "KI-Templates & Agents",
       "Wartung & Support",
       "Performance-Optimierung",
       "Technische SEO",
@@ -80,13 +88,21 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       title: "So läuft die Zusammenarbeit ab",
     },
+    servicesAddonBadgeLabel: "Zusatzleistung",
+    servicesFaqLinkLabel: "Fragen?",
+    servicesOneTimeLabel: "einmalig",
+    servicesRecommendedBadgeLabel: "Empfohlen",
     servicesPrimaryCta: "Projekt anfragen",
     servicesDetailsCta: "Mehr Infos",
     servicesDeliveryLabel: "Typisch",
   },
   en: {
     heroBenefitsAriaLabel: "Key benefits",
-    heroChipTags: ["Design included", "Launch in a few days", "Reply < 24h"],
+    heroChipTags: [
+      "Design included",
+      "Predictable delivery steps",
+      "Usually a reply within 24h",
+    ],
     heroPrimaryCta: "Request project",
     heroSecondaryCta: "View services",
     heroTag: "Custom instead of templates",
@@ -97,7 +113,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       "Websites",
       "Process tools",
       "Website upgrades",
-      "AI templates",
+      "AI templates & agents",
       "Maintenance & support",
       "Performance optimization",
       "Technical SEO",
@@ -136,6 +152,10 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       ],
       title: "How the collaboration works",
     },
+    servicesAddonBadgeLabel: "Add-on",
+    servicesFaqLinkLabel: "Questions?",
+    servicesOneTimeLabel: "one-time",
+    servicesRecommendedBadgeLabel: "Recommended",
     servicesPrimaryCta: "Request project",
     servicesDetailsCta: "More details",
     servicesDeliveryLabel: "Typical",

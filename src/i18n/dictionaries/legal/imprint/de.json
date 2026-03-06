@@ -9,7 +9,7 @@
     "page": {
       "title": "Impressum",
       "lead": "Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV.",
-      "updatedAt": "Zuletzt geändert: 26. Februar 2026.",
+      "updatedAt": "Zuletzt geändert: 6. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -26,7 +26,7 @@
           "representedBy": "Vertreten durch",
           "address": "Adresse"
         },
-        "notePlaceholder": "[PLATZHALTER: Falls bei Gewerbeanmeldung eine abweichende Firmierung verwendet wird, hier exakt anpassen]"
+        "notePlaceholder": "Bei Änderungen der Unternehmensdaten wird dieser Abschnitt aktualisiert."
       },
       "contact": {
         "title": "Kontakt",
@@ -38,11 +38,11 @@
       "commercialRegister": {
         "title": "Registereintrag",
         "emptyEntry": "Kein Handelsregistereintrag.",
-        "notePlaceholder": "[PLATZHALTER: Aktualisieren, falls später ein Registereintrag erfolgt]"
+        "notePlaceholder": "Stand: Kein Handelsregistereintrag vorhanden."
       },
       "vatId": {
         "title": "Umsatzsteuer-ID",
-        "notePlaceholder": "[PLATZHALTER: USt-IdNr. gemäß § 27a UStG ergänzen, sobald vorhanden]"
+        "notePlaceholder": "Derzeit keine Umsatzsteuer-Identifikationsnummer vorhanden."
       },
       "responsibleContent": {
         "title": "Verantwortlich für den Inhalt",
@@ -63,7 +63,7 @@
         "title": "EU-Streitschlichtung",
         "textBeforeLink": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
         "linkLabel": "ODR-Plattform der EU-Kommission",
-        "textAfterLink": "Meine E-Mail-Adresse steht oben im Impressum."
+        "textAfterLink": "Meine E-Mail-Adresse findest du oben im Impressum."
       },
       "consumerDispute": {
         "title": "Verbraucherstreitbeilegung",

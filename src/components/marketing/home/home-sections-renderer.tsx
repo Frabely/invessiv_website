@@ -59,12 +59,16 @@ export function HomeSectionsRenderer({
             if (section.id === "services") {
               return (
                 <ServicesSection
+                  addonBadgeLabel={ui.servicesAddonBadgeLabel}
                   deliveryLabel={ui.servicesDeliveryLabel}
                   detailsCtaLabel={ui.servicesDetailsCta}
                   description={section.description}
+                  faqLinkLabel={ui.servicesFaqLinkLabel}
                   id={section.id}
                   key={section.id}
+                  oneTimeLabel={ui.servicesOneTimeLabel}
                   primaryCtaLabel={ui.servicesPrimaryCta}
+                  recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards ?? []}
                   summaryPoints={section.summaryPoints}

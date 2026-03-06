@@ -8,8 +8,8 @@
     },
     "page": {
       "title": "Allgemeine Geschäftsbedingungen (AGB)",
-      "lead": "Diese AGB gelten für Leistungen von Moritz Hecht – Invessiv im Bereich Website-Erstellung, Website-Optimierung und digitale Prozesslösungen.",
-      "updatedAt": "Zuletzt geändert: 26. Februar 2026.",
+      "lead": "Diese AGB gelten für Leistungen von Moritz Hecht – Invessiv im Bereich Website-Erstellung, Website-Optimierung, digitale Prozesslösungen und KI-gestützte Workflow-Vorlagen.",
+      "updatedAt": "Zuletzt geändert: 6. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -29,11 +29,11 @@
       },
       "services": {
         "title": "3. Leistungen",
-        "body": "Art und Umfang der Leistung ergeben sich aus Angebot, Leistungsbeschreibung und Projektbriefing. Zeitangaben auf der Website sind typische Richtwerte und keine garantierten Fristen. Änderungen des Scopes bedürfen einer gesonderten Abstimmung."
+        "body": "Art und Umfang der Leistung ergeben sich aus Angebot, Leistungsbeschreibung und Projektbriefing. Zeitangaben auf der Website (z. B. 2–5 Tage oder 7–14 Tage) sind typische Richtwerte und keine garantierten Fristen. Änderungen des Scopes bedürfen einer gesonderten Abstimmung. Zur Beschleunigung von Recherche-, Struktur- und Entwurfsphasen können KI-Werkzeuge unterstützend eingesetzt werden. Fachliche Prüfung, Umsetzung und finale Qualitätssicherung erfolgen durch den Anbieter."
       },
       "payment": {
         "title": "4. Vergütung und Zahlungsbedingungen",
-        "body": "Preise ergeben sich aus dem individuellen Angebot. Auf der Website genannte Stundensätze (Development/Implementation: 70–85 € / h, Content/kleine Pflege: 50–60 € / h) sind Richtwerte und werden projektbezogen konkretisiert. Rechnungen sind ohne Abzug innerhalb von 14 Tagen fällig."
+        "body": "Preise ergeben sich aus dem individuellen Angebot. Auf der Website genannte Paketpreise und Stundensätze (Entwicklung/Implementierung: 70–85 € / h, Content/kleine Pflege: 50–60 € / h) sind Richtwerte und werden projektbezogen konkretisiert. Rechnungen sind ohne Abzug innerhalb von 14 Tagen fällig."
       },
       "usageRights": {
         "title": "5. Nutzungsrechte",

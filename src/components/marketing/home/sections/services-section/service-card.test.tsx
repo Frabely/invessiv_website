@@ -1,4 +1,4 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -13,6 +13,7 @@ describe("ServiceCard", () => {
   it("renders a price-first hierarchy and reveals hidden scope details", () => {
     const { container } = render(
       <ServiceCard
+        addonBadgeLabel="Add-on"
         card={{
           key: "landing",
           isRecommended: true,
@@ -37,9 +38,12 @@ describe("ServiceCard", () => {
         cardClassName="services-card"
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
+        faqLinkLabel="Fragen?"
         onPointerLeave={vi.fn()}
         onPointerMove={vi.fn()}
+        oneTimeLabel="einmalig"
         primaryCtaLabel="Projekt anfragen"
+        recommendedBadgeLabel="Empfohlen"
       />,
     );
 
@@ -88,6 +92,7 @@ describe("ServiceCard", () => {
   it("marks the maintenance card as add-on", () => {
     render(
       <ServiceCard
+        addonBadgeLabel="Add-on"
         card={{
           key: "maintenance",
           title: "Wartung & Support",
@@ -103,9 +108,12 @@ describe("ServiceCard", () => {
         cardClassName="services-card"
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
+        faqLinkLabel="Fragen?"
         onPointerLeave={vi.fn()}
         onPointerMove={vi.fn()}
+        oneTimeLabel="einmalig"
         primaryCtaLabel="Projekt anfragen"
+        recommendedBadgeLabel="Empfohlen"
       />,
     );
 

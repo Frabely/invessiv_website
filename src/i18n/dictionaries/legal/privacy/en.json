@@ -9,7 +9,7 @@
     "page": {
       "title": "Privacy Policy",
       "lead": "This policy explains what personal data I process, why I process it, and how I handle it on this website.",
-      "updatedAt": "Last updated: February 26, 2026.",
+      "updatedAt": "Last updated: March 6, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -29,12 +29,12 @@
         "body": "When visiting this website, the hosting provider processes technically required connection data (for example IP address, timestamp, user-agent, referrer, requested resource) to ensure service stability and abuse prevention. Legal basis: Art. 6 para. 1 lit. f GDPR."
       },
       "contactRequests": {
-        "title": "3. Contact requests",
-        "body": "If you contact me by email, phone, or project request form, I process your information (for example name, email, company, requested service, and project description) to handle your request and related follow-ups. Legal basis: Art. 6 para. 1 lit. b GDPR (pre-contractual communication) and Art. 6 para. 1 lit. f GDPR (efficient handling of customer requests). I retain this data only as long as required for request handling and legal documentation duties."
+        "title": "3. Contact requests and project inquiries",
+        "body": "If you contact me by email, phone, or project inquiry, I process your information (for example name, email, company, requested service, and project description) to handle your request and related follow-ups. The project form opens a prefilled email in your mail client. Legal basis: Art. 6 para. 1 lit. b GDPR (pre-contractual communication) and Art. 6 para. 1 lit. f GDPR (efficient handling of customer requests). AI tools may be used to support internal draft structuring. Personal data is only processed in that context where required for handling your request and where legally permissible. I retain this data only as long as required for request handling and legal documentation duties."
       },
       "cookies": {
         "title": "4. Cookies and similar technologies",
-        "body": "This website currently uses only technically required functionality. Tracking or marketing cookies are not actively used at this time."
+        "body": "This website currently uses only technically required functionality. Tracking or marketing cookies are not used at this time."
       },
       "rights": {
         "title": "5. Your rights",

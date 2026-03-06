@@ -60,6 +60,8 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
   const privacy = dict.privacy;
   const addressLine =
     locale === "de" ? COMPANY_ADDRESS_LINE_DE : COMPANY_ADDRESS_LINE_EN;
+  const phoneDisplay =
+    locale === "de" ? COMPANY.contact.phoneDisplayDe : COMPANY.contact.phoneDisplayEn;
   const sections = [
     {
       id: "controller",
@@ -74,7 +76,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
             {privacy.sections.controller.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
           <p>
-            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{COMPANY.contact.phoneDisplayEn}</a>
+            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{phoneDisplay}</a>
           </p>
         </>
       ),

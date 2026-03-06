@@ -7,11 +7,15 @@ import { SectionScanPoints } from "@/components/marketing/home/shared/section-sc
 type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
 type ServicesSectionProps = {
+  addonBadgeLabel: string;
   deliveryLabel: string;
   detailsCtaLabel: string;
   description: string;
+  faqLinkLabel: string;
   id: string;
+  oneTimeLabel: string;
   primaryCtaLabel: string;
+  recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCard[];
   summaryPoints?: string[];
@@ -19,11 +23,15 @@ type ServicesSectionProps = {
 };
 
 export function ServicesSection({
+  addonBadgeLabel,
   deliveryLabel,
   detailsCtaLabel,
   description,
+  faqLinkLabel,
   id,
+  oneTimeLabel,
   primaryCtaLabel,
+  recommendedBadgeLabel,
   sectionRef,
   serviceCards,
   summaryPoints,
@@ -62,14 +70,18 @@ export function ServicesSection({
 
           return (
             <ServiceCard
+              addonBadgeLabel={addonBadgeLabel}
               card={card}
               cardClassName={cardClassName}
               defaultDeliveryLabel={deliveryLabel}
               detailsCtaLabel={detailsCtaLabel}
+              faqLinkLabel={faqLinkLabel}
               key={card.key}
               onPointerLeave={resetCardSpotlight}
               onPointerMove={setCardSpotlight}
+              oneTimeLabel={oneTimeLabel}
               primaryCtaLabel={primaryCtaLabel}
+              recommendedBadgeLabel={recommendedBadgeLabel}
             />
           );
         })}

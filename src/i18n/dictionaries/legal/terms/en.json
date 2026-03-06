@@ -8,8 +8,8 @@
     },
     "page": {
       "title": "General Terms and Conditions",
-      "lead": "These terms apply to services by Moritz Hecht – Invessiv related to website creation, optimization and digital process solutions.",
-      "updatedAt": "Last updated: February 26, 2026.",
+      "lead": "These terms apply to services by Moritz Hecht – Invessiv related to website creation, website optimization, digital process solutions, and AI-assisted workflow templates.",
+      "updatedAt": "Last updated: March 6, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -29,11 +29,11 @@
       },
       "services": {
         "title": "3. Services",
-        "body": "Type and scope of services are defined by offer, scope description, and project briefing. Timeframes shown on the website are typical estimates and not guaranteed deadlines. Scope changes require separate agreement."
+        "body": "Type and scope of services are defined by offer, scope description, and project briefing. Timeframes shown on the website (for example 2–5 days or 7–14 days) are typical estimates and not guaranteed deadlines. Scope changes require separate agreement. To accelerate research, structuring, and draft phases, AI tools may be used as support. Domain review, implementation, and final quality assurance are carried out by the provider."
       },
       "payment": {
         "title": "4. Payment terms",
-        "body": "Prices follow the individual offer. Hourly rates listed on the website (development/implementation: €70–85 / h, content/small updates: €50–60 / h) are indicative and finalized per project. Invoices are due within 14 days without deductions."
+        "body": "Prices follow the individual offer. Package prices and hourly rates listed on the website (development/implementation: €70–85 / h, content/small updates: €50–60 / h) are indicative and finalized per project. Invoices are due within 14 days without deductions."
       },
       "usageRights": {
         "title": "5. Usage rights",
