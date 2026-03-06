@@ -425,14 +425,19 @@ main {
   gap: 8px;
   min-height: 32px;
   padding: 0 12px;
-  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
   border-radius: 999px;
   background: linear-gradient(
     120deg,
     color-mix(in srgb, var(--color-accent-warm) 20%, transparent),
     color-mix(in srgb, var(--color-surface-2) 82%, transparent)
   );
-  color: color-mix(in srgb, var(--color-text) 86%, var(--color-accent-warm) 14%);
+  color: color-mix(
+    in srgb,
+    var(--color-text) 86%,
+    var(--color-accent-warm) 14%
+  );
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -449,7 +454,8 @@ main {
     color-mix(in srgb, var(--color-accent-warm) 90%, #fff 10%),
     color-mix(in srgb, var(--color-accent) 78%, #000 22%)
   );
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
   flex: 0 0 auto;
 }
 
@@ -1253,6 +1259,10 @@ main {
   transform: translateY(-2px);
 }
 
+.services-card--expandable {
+  cursor: pointer;
+}
+
 .services-card--recommended {
   border: 3px solid color-mix(in srgb, var(--accent) 92%, #ffffff 8%);
   background: color-mix(
@@ -1439,7 +1449,11 @@ main {
   font-size: 0.92rem;
 }
 
-.services-list li + li {
+.services-list > li {
+  margin: 0;
+}
+
+.services-list > li + li {
   margin-top: 6px;
 }
 
@@ -1450,10 +1464,27 @@ main {
   font-weight: 600;
 }
 
-.services-details-toggle-wrap {
+.services-card-actions-row {
   margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+
+.services-details-toggle-wrap {
   display: flex;
   justify-content: flex-end;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.services-details-actions-spacer {
+  display: block;
+  min-height: 1px;
+  flex: 1 1 auto;
 }
 
 .services-details-toggle {
@@ -1486,20 +1517,29 @@ main {
   line-height: 1;
 }
 
-.services-details-panel {
-  margin-top: 4px;
-  padding: 10px 12px 11px;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
+.services-details-content {
+  margin-top: 0;
+  display: grid;
+  gap: 0;
+}
+
+.services-details-content[hidden] {
+  display: none;
+}
+
+.services-list.services-list--expanded {
+  margin-top: 0;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: 0.92rem;
+  line-height: 1.48;
 }
 
 .services-details-list {
-  margin: 0;
+  margin: 6px 0 0;
   padding: 0 0 0 18px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.84rem;
-  line-height: 1.45;
+  font-size: 0.92rem;
+  line-height: 1.48;
 }
 
 .services-details-list + .services-details-list {
@@ -1507,14 +1547,15 @@ main {
 }
 
 .services-details-list li + li {
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .services-details-actions {
-  margin-top: 10px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
+  flex: 1 1 auto;
 }
 
 .services-details-cta {
@@ -1534,13 +1575,19 @@ main {
 }
 
 @media (max-width: 640px) {
+  .services-card-actions-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
   .services-details-toggle-wrap {
     justify-content: flex-start;
+    margin-left: 0;
+    width: 100%;
   }
 
   .services-details-actions {
-    flex-direction: column;
-    align-items: stretch;
+    width: 100%;
   }
 
   .services-details-link {
@@ -4367,11 +4414,7 @@ body {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
 }
 
-[data-theme="light"] .services-details-panel {
-  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
-}
-
+[data-theme="light"] .services-list.services-list--expanded,
 [data-theme="light"] .services-details-list {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
 }

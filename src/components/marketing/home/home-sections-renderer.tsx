@@ -66,6 +66,8 @@ export function HomeSectionsRenderer({
                   faqLinkLabel={ui.servicesFaqLinkLabel}
                   id={section.id}
                   key={section.id}
+                  moreItemsPluralLabel={ui.servicesMoreItemsPluralLabel}
+                  moreItemsSingularLabel={ui.servicesMoreItemsSingularLabel}
                   oneTimeLabel={ui.servicesOneTimeLabel}
                   primaryCtaLabel={ui.servicesPrimaryCta}
                   recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}

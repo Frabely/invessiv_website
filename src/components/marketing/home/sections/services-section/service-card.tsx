@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import type { KeyboardEvent, PointerEvent } from "react";
+import { useRef } from "react";
+import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
@@ -15,6 +15,10 @@ type ServiceCardProps = {
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
   faqLinkLabel: string;
+  isDetailsOpen: boolean;
+  moreItemsPluralLabel: string;
+  moreItemsSingularLabel: string;
+  onDetailsToggle: (nextOpenState: boolean) => void;
   onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: PointerEvent<HTMLElement>) => void;
   oneTimeLabel: string;
@@ -29,13 +33,16 @@ export function ServiceCard({
   defaultDeliveryLabel,
   detailsCtaLabel,
   faqLinkLabel,
+  isDetailsOpen,
+  moreItemsPluralLabel,
+  moreItemsSingularLabel,
+  onDetailsToggle,
   onPointerLeave,
   onPointerMove,
   oneTimeLabel,
   primaryCtaLabel,
   recommendedBadgeLabel,
 }: ServiceCardProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const detailsId = `services-details-${card.key}`;
   const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -43,8 +50,11 @@ export function ServiceCard({
   const visibleBullets = card.included.slice(0, 3);
   const hiddenBullets = card.included.slice(3);
   const hiddenBulletsCount = hiddenBullets.length;
-  const hasExpandableContent =
-    hiddenBulletsCount > 0 || detailsItems.length > 0;
+  const hiddenDetailsCount = detailsItems.length;
+  const hiddenItemsCount = hiddenBulletsCount + hiddenDetailsCount;
+  const hasExpandableContent = hiddenBulletsCount > 0 || hiddenDetailsCount > 0;
+  const hiddenBulletsLabel =
+    hiddenItemsCount === 1 ? moreItemsSingularLabel : moreItemsPluralLabel;
 
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
 
@@ -61,17 +71,38 @@ export function ServiceCard({
       ? addonBadgeLabel
       : null;
 
+  const resolvedCardClassName = hasExpandableContent
+    ? `${cardClassName} services-card--expandable`
+    : cardClassName;
+
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Escape" || !isDetailsOpen) {
       return;
     }
-    setIsDetailsOpen(false);
+    onDetailsToggle(false);
     detailsButtonRef.current?.focus();
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    if (!hasExpandableContent) {
+      return;
+    }
+
+    const target = event.target;
+    if (
+      target instanceof Element &&
+      target.closest("button, a, input, select, textarea, summary")
+    ) {
+      return;
+    }
+
+    onDetailsToggle(!isDetailsOpen);
   };
 
   return (
     <article
-      className={cardClassName}
+      className={resolvedCardClassName}
+      onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       onPointerLeave={onPointerLeave}
       onPointerMove={onPointerMove}
@@ -112,63 +143,73 @@ export function ServiceCard({
           {deliveryLabel}: {card.delivery}
         </p>
 
-        <ul className="services-list">
-          {visibleBullets.map((bullet) => (
-            <li key={bullet}>{bullet}</li>
-          ))}
-        </ul>
+        <div className="services-bullets-stack">
+          <ul className="services-list">
+            {visibleBullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
+            {isDetailsOpen
+              ? hiddenBullets.map((item) => <li key={item}>{item}</li>)
+              : null}
+          </ul>
 
-        {hiddenBulletsCount > 0 && !isDetailsOpen ? (
-          <p className="services-more-items">+ {hiddenBulletsCount} weitere</p>
-        ) : null}
-
-        {hasExpandableContent ? (
-          <div className="services-details-toggle-wrap">
-            <button
-              aria-controls={detailsId}
-              aria-expanded={isDetailsOpen}
-              className="services-details-toggle"
-              onClick={() => setIsDetailsOpen((current) => !current)}
-              ref={detailsButtonRef}
-              type="button"
+          {hasExpandableContent &&
+          (detailsItems.length > 0 || isDetailsOpen) ? (
+            <div
+              className="services-details-content"
+              hidden={!isDetailsOpen}
+              id={detailsId}
             >
-              {detailsCtaLabel}
-              <span aria-hidden="true">&rsaquo;</span>
-            </button>
-          </div>
+              {detailsItems.length ? (
+                <ul className="services-details-list services-details-list--notes">
+                  {detailsItems.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+
+        {hiddenItemsCount > 0 && !isDetailsOpen ? (
+          <p className="services-more-items">
+            + {hiddenItemsCount} {hiddenBulletsLabel}
+          </p>
         ) : null}
 
         {hasExpandableContent ? (
-          <div
-            className="services-details-panel"
-            hidden={!isDetailsOpen}
-            id={detailsId}
-          >
-            {hiddenBulletsCount > 0 ? (
-              <ul className="services-details-list services-details-list--bullets">
-                {hiddenBullets.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-            {detailsItems.length ? (
-              <ul className="services-details-list services-details-list--notes">
-                {detailsItems.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            ) : null}
-            <div className="services-details-actions">
-              <a
-                className="btn btn--primary services-details-cta"
-                data-project-offer={card.key}
-                href="#contact"
+          <div className="services-card-actions-row">
+            {isDetailsOpen ? (
+              <div className="services-details-actions">
+                <a
+                  className="btn btn--primary services-details-cta"
+                  data-project-offer={card.key}
+                  href="#contact"
+                >
+                  {primaryCtaLabel}
+                </a>
+                <a className="services-details-link" href="#faq">
+                  {faqLinkLabel}
+                </a>
+              </div>
+            ) : (
+              <span
+                aria-hidden="true"
+                className="services-details-actions-spacer"
+              />
+            )}
+            <div className="services-details-toggle-wrap">
+              <button
+                aria-controls={detailsId}
+                aria-expanded={isDetailsOpen}
+                className="services-details-toggle"
+                onClick={() => onDetailsToggle(!isDetailsOpen)}
+                ref={detailsButtonRef}
+                type="button"
               >
-                {primaryCtaLabel}
-              </a>
-              <a className="services-details-link" href="#faq">
-                {faqLinkLabel}
-              </a>
+                {detailsCtaLabel}
+                <span aria-hidden="true">&rsaquo;</span>
+              </button>
             </div>
           </div>
         ) : null}

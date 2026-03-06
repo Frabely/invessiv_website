@@ -19,6 +19,8 @@ export type HomeUiContent = {
   marqueeItems: string[];
   servicesAddonBadgeLabel: string;
   servicesFaqLinkLabel: string;
+  servicesMoreItemsPluralLabel: string;
+  servicesMoreItemsSingularLabel: string;
   servicesOneTimeLabel: string;
   servicesRecommendedBadgeLabel: string;
   proofContent: ProofContent;
@@ -90,6 +92,8 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     },
     servicesAddonBadgeLabel: "Zusatzleistung",
     servicesFaqLinkLabel: "Fragen?",
+    servicesMoreItemsPluralLabel: "weitere Punkte",
+    servicesMoreItemsSingularLabel: "weiterer Punkt",
     servicesOneTimeLabel: "einmalig",
     servicesRecommendedBadgeLabel: "Empfohlen",
     servicesPrimaryCta: "Projekt anfragen",
@@ -154,6 +158,8 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     },
     servicesAddonBadgeLabel: "Add-on",
     servicesFaqLinkLabel: "Questions?",
+    servicesMoreItemsPluralLabel: "more items",
+    servicesMoreItemsSingularLabel: "more item",
     servicesOneTimeLabel: "one-time",
     servicesRecommendedBadgeLabel: "Recommended",
     servicesPrimaryCta: "Request project",
@@ -165,4 +171,3 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
 export function getHomeUiContent(locale: Locale): HomeUiContent {
   return HOME_UI_CONTENT[locale];
 }
-

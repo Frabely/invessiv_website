@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { PointerEvent, RefObject } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -13,6 +14,8 @@ type ServicesSectionProps = {
   description: string;
   faqLinkLabel: string;
   id: string;
+  moreItemsPluralLabel: string;
+  moreItemsSingularLabel: string;
   oneTimeLabel: string;
   primaryCtaLabel: string;
   recommendedBadgeLabel: string;
@@ -29,6 +32,8 @@ export function ServicesSection({
   description,
   faqLinkLabel,
   id,
+  moreItemsPluralLabel,
+  moreItemsSingularLabel,
   oneTimeLabel,
   primaryCtaLabel,
   recommendedBadgeLabel,
@@ -37,6 +42,8 @@ export function ServicesSection({
   summaryPoints,
   title,
 }: ServicesSectionProps) {
+  const [openCardKey, setOpenCardKey] = useState<string | null>(null);
+
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType !== "mouse") {
       return;
@@ -53,6 +60,15 @@ export function ServicesSection({
   const resetCardSpotlight = (event: PointerEvent<HTMLElement>) => {
     event.currentTarget.style.removeProperty("--services-spotlight-x");
     event.currentTarget.style.removeProperty("--services-spotlight-y");
+  };
+
+  const toggleCardDetails = (cardKey: string, nextOpenState: boolean) => {
+    setOpenCardKey((currentOpenCardKey) => {
+      if (nextOpenState) {
+        return cardKey;
+      }
+      return currentOpenCardKey === cardKey ? null : currentOpenCardKey;
+    });
   };
 
   return (
@@ -76,7 +92,13 @@ export function ServicesSection({
               defaultDeliveryLabel={deliveryLabel}
               detailsCtaLabel={detailsCtaLabel}
               faqLinkLabel={faqLinkLabel}
+              isDetailsOpen={openCardKey === card.key}
               key={card.key}
+              moreItemsPluralLabel={moreItemsPluralLabel}
+              moreItemsSingularLabel={moreItemsSingularLabel}
+              onDetailsToggle={(nextOpenState) =>
+                toggleCardDetails(card.key, nextOpenState)
+              }
               onPointerLeave={resetCardSpotlight}
               onPointerMove={setCardSpotlight}
               oneTimeLabel={oneTimeLabel}
