@@ -3,19 +3,18 @@
 import { useRef } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
-type ProcessRole = NonNullable<LandingSectionCopy["processRoles"]>[number];
 type ProcessCta = NonNullable<LandingSectionCopy["processCta"]>;
 
 type ProcessSectionProps = {
   description: string;
   id: string;
   processCta?: ProcessCta;
-  processRoles: ProcessRole[];
   processSteps: ProcessStep[];
-  summary?: string;
+  summaryPoints?: string[];
   title: string;
 };
 
@@ -23,9 +22,8 @@ export function ProcessSection({
   description,
   id,
   processCta,
-  processRoles,
   processSteps,
-  summary,
+  summaryPoints,
   title,
 }: ProcessSectionProps) {
   const layoutRef = useRef<HTMLDivElement | null>(null);
@@ -38,30 +36,11 @@ export function ProcessSection({
   return (
     <section className="process-section" id={id}>
       <h2>{title}</h2>
-      <p className="process-hint">{description}</p>
-      {summary ? (
-        <p className="process-summary" role="status">
-          {summary}
-        </p>
-      ) : null}
-
-      <div className="process-intro">
-        {processRoles.length ? (
-          <div className="process-roles-inline" role="list">
-            {processRoles.map((role) => (
-              <p className="process-role-line" key={role.label} role="listitem">
-                <strong>{role.label}:</strong> {role.items.join(" | ")}
-              </p>
-            ))}
-          </div>
-        ) : null}
-
-        {processCta ? (
-          <aside className="process-intro-cta">
-            <p>{processCta.hint}</p>
-          </aside>
-        ) : null}
-      </div>
+      <SectionScanPoints
+        fallbackClassName="process-hint"
+        fallbackText={description}
+        points={summaryPoints}
+      />
 
       <div className="process-layout has-journey-cta-gate" ref={layoutRef}>
         <svg

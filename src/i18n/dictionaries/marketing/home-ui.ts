@@ -4,6 +4,7 @@ type ProofContent = {
   cards: Array<{ description: string; tag: string; title: string }>;
   hint: string;
   kpis: Array<{ label: string; suffix: string; value: string }>;
+  summaryPoints: string[];
   title: string;
 };
 
@@ -63,6 +64,11 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
         },
       ],
       hint: "Du erhältst eine direkte Zusammenarbeit mit Fokus auf sinnvolle Umsetzung und saubere Übergabe.",
+      summaryPoints: [
+        "Klarer Scope und Ablauf ab Start",
+        "Direkter Kontakt ohne Übergaben",
+        "Fokus auf Output statt Abstimmung",
+      ],
       kpis: [
         { value: "Klar", suffix: "", label: "Scope und Ablauf" },
         { value: "Effizient", suffix: "", label: "Abstimmung" },
@@ -118,6 +124,11 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
         },
       ],
       hint: "You get direct collaboration and implementation with clean handover.",
+      summaryPoints: [
+        "Clear scope and process from day one",
+        "Direct contact without handoff loops",
+        "Execution focus over meeting overhead",
+      ],
       kpis: [
         { value: "Clear", suffix: "", label: "Scope and process" },
         { value: "Efficient", suffix: "", label: "Alignment" },

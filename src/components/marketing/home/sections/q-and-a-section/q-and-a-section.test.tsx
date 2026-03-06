@@ -21,11 +21,17 @@ describe("QAndASection", () => {
             answer: "Ja, ich kann bestehende Seiten gezielt modernisieren.",
           },
         ]}
+        summaryPoints={[
+          "Start, Scope und Timing klar",
+          "Kosten und Grenzen transparent",
+          "Tooling passend zu deinem Setup",
+        ]}
         title="Q&A"
       />,
     );
 
     expect(screen.getByRole("heading", { name: "Q&A" })).toBeTruthy();
+    expect(screen.getByText("Start, Scope und Timing klar")).toBeTruthy();
 
     const firstQuestion = screen.getByText("Wie läuft der Projektstart ab?");
     const firstDisclosure = firstQuestion.closest("details");

@@ -958,6 +958,65 @@ main {
   font-size: 1.03rem;
 }
 
+.section-scan-points {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 920px;
+}
+
+.section-scan-point {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+}
+
+.section-scan-point::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(231, 154, 73, 0.96),
+    rgba(209, 126, 49, 0.9)
+  );
+  box-shadow: 0 0 0 4px rgba(231, 154, 73, 0.14);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 640px) {
+  .section-scan-points {
+    margin-bottom: 14px;
+    gap: 6px;
+  }
+
+  .section-scan-point {
+    min-height: 26px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+  }
+
+  .section-scan-point::before {
+    width: 7px;
+    height: 7px;
+  }
+}
+
 .proof-metrics {
   margin-top: 10px;
   display: grid;
@@ -1717,6 +1776,10 @@ main {
   letter-spacing: -0.03em;
 }
 
+.qna-section .section-scan-points {
+  margin: 10px 0 12px;
+}
+
 .qna-hint {
   margin: 8px 0 0;
   max-width: 900px;
@@ -1725,7 +1788,7 @@ main {
 }
 
 .qna-list {
-  margin: 16px 0 0;
+  margin: 0;
   width: 100%;
   padding: 0;
   list-style: none;
@@ -1821,6 +1884,20 @@ main {
   margin: 0;
   font-size: clamp(2rem, 3.4vw, 3rem);
   letter-spacing: -0.03em;
+}
+
+.contact-section .section-scan-points {
+  margin: 10px 0 0;
+  max-width: none;
+  gap: 10px;
+}
+
+.contact-section .section-scan-points + .contact-cta-actions {
+  margin-top: 14px;
+}
+
+.contact-section .section-scan-point {
+  white-space: nowrap;
 }
 
 .contact-hint {

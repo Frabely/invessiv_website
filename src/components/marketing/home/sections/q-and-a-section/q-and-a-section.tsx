@@ -1,4 +1,5 @@
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 
 type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
 
@@ -6,6 +7,7 @@ type QAndASectionProps = {
   description: string;
   id: string;
   items: QnaItem[];
+  summaryPoints?: string[];
   title: string;
 };
 
@@ -13,12 +15,17 @@ export function QAndASection({
   description,
   id,
   items,
+  summaryPoints,
   title,
 }: QAndASectionProps) {
   return (
     <section className="qna-section" id={id}>
       <h2>{title}</h2>
-      <p className="qna-hint">{description}</p>
+      <SectionScanPoints
+        fallbackClassName="qna-hint"
+        fallbackText={description}
+        points={summaryPoints}
+      />
 
       <ul className="qna-list">
         {items.map((item) => (

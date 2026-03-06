@@ -11,6 +11,7 @@ import {
 export type LandingSectionCopy = {
   title: string;
   description: string;
+  summaryPoints?: string[];
   metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
   serviceCards?: Array<{
@@ -258,6 +259,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Leistungen & Preise",
         description:
           "Projektbasierte, einmalige Preise mit klarem Scope, transparenter Lieferzeit und direktem Weg zur Anfrage.",
+        summaryPoints: [
+          "Einmalpreise pro Projekt",
+          "Scope vor Start definiert",
+          "Lieferzeit im Angebot fix",
+        ],
         serviceCards: [
           {
             key: "landing",
@@ -403,6 +409,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Leistungen & Preise",
         description:
           "Project-based one-time pricing with transparent scope, clear delivery windows, and direct contact CTA.",
+        summaryPoints: [
+          "One-time pricing per project",
+          "Scope defined before kickoff",
+          "Delivery window fixed upfront",
+        ],
         serviceCards: [
           {
             key: "landing",
@@ -553,6 +564,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "In 4 Schritten zum fertigen Ergebnis",
         description:
           "Ob Landingpage, komplette Website, Upgrade oder Tool/Template: Du gibst Ziel und Angebot vor, ich liefere Draft, Feinschliff und Launch.",
+        summaryPoints: [
+          "Ziel + Angebot in 30 Minuten geklärt",
+          "Erster Draft meist in 48h",
+          "Go-live inkl. QA und Übergabe",
+        ],
         processSummary:
           "Typisch: erste Version in 48h (je nach Scope) | 1-2 Feedbackrunden | Go-live oder Übergabe inklusive QA",
         processRoles: [
@@ -617,6 +633,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "A finished result in 4 clear steps",
         description:
           "For landing pages, full websites, upgrades, or tools/templates: you share goal and offer, I deliver draft, refinement, and launch.",
+        summaryPoints: [
+          "Goal and offer aligned in 30 minutes",
+          "First draft usually within 48h",
+          "Go-live includes QA and handover",
+        ],
         processSummary:
           "Typical: first version in 48h (depending on scope) | 1-2 feedback rounds | go-live or handover including QA",
         processRoles: [
@@ -686,6 +707,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "Die wichtigsten Fragen zum Ablauf, transparent und direkt beantwortbar.",
+        summaryPoints: [
+          "Start, Scope und Timing klar",
+          "Kosten und Grenzen transparent",
+          "Tooling passend zu deinem Setup",
+        ],
         qnaItems: [
           {
             question: "Wie läuft der Projektstart ab?",
@@ -713,6 +739,11 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "The most relevant questions about process and collaboration, clear and direct.",
+        summaryPoints: [
+          "Kickoff, scope, and timing clarified",
+          "Costs and boundaries made transparent",
+          "Tooling matched to your setup",
+        ],
         qnaItems: [
           {
             question: "How does project kickoff work?",
@@ -744,6 +775,11 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Bereit für eine neue, produktive Website?",
         description: "Kontaktiere uns und starte dein Projekt mit Invessiv.",
+        summaryPoints: [
+          "Antwort in 24h",
+          "2-3 Fragen",
+          "Direkter Kontakt",
+        ],
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
           "Kontaktiere uns und starte dein Projekt mit Invessiv.",
@@ -906,6 +942,11 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "Ready for a new, productive website?",
         description: "Contact me and start your project with Invessiv.",
+        summaryPoints: [
+          "Reply in 24h",
+          "2-3 questions",
+          "Direct contact",
+        ],
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
           "Contact me and start your project with Invessiv.",

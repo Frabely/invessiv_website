@@ -65,18 +65,23 @@ export function useProcessStartPoint({
       const firstCenter = centerInLayout(firstRect);
       const lastCenter = centerInLayout(lastRect);
       const lastBottom = lastRect.bottom - layoutRect.top;
-      const upperWidth =
-        upperCard?.getBoundingClientRect().width ?? firstRect.width;
+      const horizontalViewWidth =
+        upperCard?.getBoundingClientRect().width ?? layoutRect.width;
       // Keep the requested horizontal offset formula stable for both endpoints.
       const startShift =
-        (upperWidth - firstRect.width) / 4 + firstRect.width / 2;
-      const leftX = firstCenter.x - startShift;
+        (horizontalViewWidth - firstRect.width) / 4 + firstRect.width / 2;
+      const leftXRaw = firstCenter.x - startShift;
       const isMobileViewport = hasMatchMedia
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
       const isTabletViewport = hasMatchMedia
         ? window.matchMedia("(max-width: 1200px) and (min-width: 901px)").matches
         : false;
+      const edgePadding = 12;
+      const leftX = Math.min(
+        Math.max(leftXRaw, edgePadding),
+        layoutRect.width - edgePadding,
+      );
       const rightX = isMobileViewport
         ? layoutRect.width - leftX
         : (() => {

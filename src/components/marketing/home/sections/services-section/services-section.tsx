@@ -2,6 +2,7 @@ import type { PointerEvent, RefObject } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 
 type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
@@ -13,6 +14,7 @@ type ServicesSectionProps = {
   primaryCtaLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCard[];
+  summaryPoints?: string[];
   title: string;
 };
 
@@ -24,6 +26,7 @@ export function ServicesSection({
   primaryCtaLabel,
   sectionRef,
   serviceCards,
+  summaryPoints,
   title,
 }: ServicesSectionProps) {
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
@@ -47,7 +50,11 @@ export function ServicesSection({
   return (
     <section className="services-section" id={id} ref={sectionRef}>
       <h2>{title}</h2>
-      <p className="services-hint">{description}</p>
+      <SectionScanPoints
+        fallbackClassName="services-hint"
+        fallbackText={description}
+        points={summaryPoints}
+      />
 
       <div className="services-bento" role="list">
         {serviceCards.map((card) => {

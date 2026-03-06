@@ -1,5 +1,6 @@
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { COMPANY_MAILTO } from "@/config/company";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
@@ -20,6 +21,7 @@ type ContactSectionProps = {
   description: string;
   id: string;
   privacyHref: string;
+  summaryPoints?: string[];
   title: string;
 };
 
@@ -35,6 +37,7 @@ export function ContactSection({
   description,
   id,
   privacyHref,
+  summaryPoints,
   title,
 }: ContactSectionProps) {
   return (
@@ -42,7 +45,11 @@ export function ContactSection({
       <div className="contact-layout">
         <div className="contact-brief-card">
           <h2>{title}</h2>
-          <p className="contact-hint">{description}</p>
+          <SectionScanPoints
+            fallbackClassName="contact-hint"
+            fallbackText={description}
+            points={summaryPoints}
+          />
           <div className="contact-cta-actions">
             {contactCta && contactForm ? (
               <ProjectRequestForm

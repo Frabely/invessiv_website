@@ -1,7 +1,10 @@
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+
 type ProofContent = {
   cards: Array<{ description: string; tag: string; title: string }>;
   hint: string;
   kpis: Array<{ label: string; suffix: string; value: string }>;
+  summaryPoints?: string[];
   title: string;
 };
 
@@ -14,7 +17,11 @@ export function ProofSection({ id, proofContent }: ProofSectionProps) {
   return (
     <section className="proof-section" id={id}>
       <h2>{proofContent.title}</h2>
-      <p className="proof-hint">{proofContent.hint}</p>
+      <SectionScanPoints
+        fallbackClassName="proof-hint"
+        fallbackText={proofContent.hint}
+        points={proofContent.summaryPoints}
+      />
 
       <div className="proof-metrics" role="list">
         {proofContent.kpis.map((metric) => (

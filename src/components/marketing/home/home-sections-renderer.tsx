@@ -67,6 +67,7 @@ export function HomeSectionsRenderer({
                   primaryCtaLabel={ui.servicesPrimaryCta}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards ?? []}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
@@ -79,9 +80,8 @@ export function HomeSectionsRenderer({
                   id={section.id}
                   key={section.id}
                   processCta={section.processCta}
-                  processRoles={section.processRoles ?? []}
                   processSteps={section.processSteps ?? []}
-                  summary={section.processSummary}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
@@ -94,6 +94,7 @@ export function HomeSectionsRenderer({
                   id={section.id}
                   items={section.qnaItems ?? []}
                   key={section.id}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
@@ -124,6 +125,7 @@ export function HomeSectionsRenderer({
                   id={section.id}
                   key={section.id}
                   privacyHref={privacyHref}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
