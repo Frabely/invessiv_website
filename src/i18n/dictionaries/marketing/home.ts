@@ -172,13 +172,13 @@ const HOME_SECTIONS: LandingSection[] = [
         title:
           "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
         description:
-          "Du gibst den nötigen Input, ich übernehme die Umsetzung: Landingpages, Webseiten und Prozess-Tools mit klarem Leistungsumfang und planbaren Lieferetappen.",
+          "Du gibst Ziel, Angebot und Kontext vor, ich setze dein Projekt im KI-Agenten-Workflow um: Agent-Setup, Build, Feinschliff und QA.",
       },
       en: {
         title:
           "Digital solutions that create visible impact and simplify processes.",
         description:
-          "You provide the required input, I handle the rest: landing pages, websites, and process tools delivered quickly to production-ready quality.",
+          "You provide goal, offer, and context, and I execute your project in an AI agent workflow: agent setup, build, refinement, and QA.",
       },
     },
   },
@@ -359,11 +359,11 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "KI-Templates & Agents Icon",
             title: "KI-Templates & Agents",
             description:
-              "Einsatzbereite AGENTS.md- und CLAUDE.md-Dateien für klar definierte Einsatzfälle und schnellere Projektstarts.",
+              "Einsatzbereite Agent-Templates und Agent-Setups als Basis für einen KI-Agenten-Workflow mit schnellerem Projektstart.",
             price: "ab 290 € einmalig",
             delivery: "2–5 Tage",
             included: [
-              "1 kontextspezifisches Paket (AGENTS.md + CLAUDE.md)",
+              "1 kontextspezifisches Agent-Setup inkl. Agent-Template als Startbasis",
               "Rollen-, Workflow- und Qualitätsregeln je Use-Case",
               "Prompt-Struktur mit Input-/Output-Vorlagen",
               "Anpassung auf Brand-Tonalität und Fachsprache",
@@ -371,7 +371,7 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Gilt für den vereinbarten Kontext; weitere Kontexte werden separat gescopet.",
-              "Dateien sind in typischen Workflows direkt nutzbar, fachliche Abnahme bleibt erforderlich.",
+              "Ich nutze die Dateien im Projekt aktiv als Arbeitsgrundlage; finale Umsetzung und QA erfolgen durch mich.",
               "Erweiterungen und zusätzliche Varianten sind jederzeit nachbuchbar.",
             ],
           },
@@ -509,11 +509,11 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "AI templates & agents icon",
             title: "AI templates & agents",
             description:
-              "Ready-to-use AGENTS.md and CLAUDE.md files for clearly defined use cases and faster project starts.",
+              "Ready-to-use agent templates and agent setups as a base for an AI agent workflow with faster project starts.",
             price: "from €290 one-time",
             delivery: "2–5 days",
             included: [
-              "1 context-specific package (AGENTS.md + CLAUDE.md)",
+              "1 context-specific agent setup including agent template as the starting base",
               "Role, workflow, and quality rules per use case",
               "Prompt structure with input/output templates",
               "Alignment to your brand tone and domain language",
@@ -521,7 +521,7 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Valid for the agreed context; additional contexts are scoped separately.",
-              "Files are directly usable in typical workflows, but domain review remains required.",
+              "I use these files as active working foundations in the project; final implementation and QA are handled by me.",
               "Extensions and additional variants can be added any time.",
             ],
           },
@@ -558,39 +558,39 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "In 4 Schritten zum fertigen Ergebnis",
         description:
-          "Ob Landingpage, komplette Website, Upgrade, Prozess-Tool oder KI-Templates & Agents: Du gibst Ziel und Angebot vor, ich liefere Draft, Feinschliff und Launch.",
+          "Ablauf mit KI-Fokus: Nach deinen Anforderungen richte ich das Agent-Setup ein, arbeite im KI-Agenten-Workflow und finalisiere mit manuellem Feinschliff und QA.",
         summaryPoints: [
           "Ziel + Angebot in ca. 30 Minuten geklärt",
-          "Erster Draft oft innerhalb von 48h durch strukturierte, KI-unterstützte Vorarbeit",
+          "Erster Draft oft in 48h mit KI-Agenten-Build",
           "Go-live inkl. QA und Übergabe",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Briefing & Input",
-            deliverable: "30-min Briefing",
+            title: "Anforderungen & Agent-Setup",
+            deliverable: "30-min Briefing + Agent-Setup",
             effort: "Aufwand: 30 Min",
             result: "Ergebnis: Klarer Leistungsumfang + Prioritäten",
             description:
-              "Du teilst Ziel, Angebot und Material. Ich setze direkt die klare Umsetzungsbasis auf.",
+              "Du teilst Ziel, Angebot und Material. Ich strukturiere die Anforderungen und richte ein kontextspezifisches Agent-Setup ein.",
           },
           {
             step: "02",
-            title: "Draft",
-            deliverable: "Klickbarer Draft oder Prototyp",
+            title: "KI-Agenten-Build",
+            deliverable: "Lauffähiger Draft oder Prototyp",
             effort: "Lieferzeit: oft innerhalb von 48h (je nach Umfang)",
             result: "Ergebnis: Struktur + Kernlogik",
             description:
-              "Du bekommst eine erste Version mit klarer Struktur, Inhalt und - falls nötig - funktionalem Prototyp.",
+              "Auf Basis des Agent-Setups setze ich die erste lauffähige Version im KI-Agenten-Workflow um.",
           },
           {
             step: "03",
-            title: "Feinschliff",
+            title: "Feinschliff & QA",
             deliverable: "Conversion-Finish",
             effort: "Feedback: 1-2 Runden",
             result: "Ergebnis: Finales Design + Funktionen",
             description:
-              "Design, Copy, UX-Details und relevante Funktionen werden gezielt finalisiert.",
+              "Ich prüfe Ergebnisse, verfeinere Design/Copy/UX und sichere die Qualität für den Launch.",
           },
           {
             step: "04",
@@ -611,39 +611,39 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "A finished result in 4 clear steps",
         description:
-          "For landing pages, full websites, upgrades, process tools, or AI templates & agents: you share goal and offer, I deliver draft, refinement, and launch.",
+          "AI-focused delivery flow: after your requirements, I set up the agent foundation, work in an AI agent workflow, and finalize with manual refinement and QA.",
         summaryPoints: [
           "Goal and offer aligned in about 30 minutes",
-          "First draft often within 48h through structured AI-assisted preparation",
+          "First draft often in 48h via AI agent build",
           "Go-live includes QA and handover",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Briefing & Input",
-            deliverable: "30-min briefing",
+            title: "Requirements & agent setup",
+            deliverable: "30-min briefing + agent setup",
             effort: "Effort: 30 min",
             result: "Outcome: clear scope + priorities",
             description:
-              "You share goals, offer, and materials. I set up a clear delivery foundation right away.",
+              "You share goals, offer, and materials. I structure requirements and set up a context-specific agent foundation.",
           },
           {
             step: "02",
-            title: "Draft",
-            deliverable: "Clickable draft or prototype",
+            title: "AI agent build",
+            deliverable: "Working draft or prototype",
             effort: "Delivery: often within 48h (depending on scope)",
             result: "Outcome: structure + core logic",
             description:
-              "You get an initial version with clear structure, content, and functional prototype where needed.",
+              "Based on the agent setup, I build the first working version in an AI agent workflow.",
           },
           {
             step: "03",
-            title: "Refinement",
+            title: "Refinement & QA",
             deliverable: "Conversion finish",
             effort: "Feedback: 1-2 rounds",
             result: "Outcome: final design + functions",
             description:
-              "Design, copy, UX details, and relevant functions are finalized into the launch version.",
+              "I review the result, refine design/copy/UX, and secure launch quality.",
           },
           {
             step: "04",
@@ -679,7 +679,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach bekommst du eine klare Umfangsempfehlung mit nächstem Schritt, Zeitplan und transparentem Angebot.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach richte ich ein passendes Agent-Setup für dein Projekt ein und teile den nächsten Schritt mit Zeitrahmen und transparentem Angebot.",
           },
           {
             question: "Kannst du meine bestehende Website überarbeiten?",
@@ -689,7 +689,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Welche Tools setzt du ein?",
             answer:
-              "Ich arbeite je nach Projekt mit Next.js, Tailwind, Figma und passenden Analyse- bzw. Workflow-Tools. Die Auswahl richtet sich nach deinem Setup, damit Übergabe und Wartung sauber funktionieren.",
+              "Mein Kernworkflow ist Agent-Setup + KI-Agenten-Workflow für die Umsetzung, ergänzt um Next.js, Tailwind, Figma und passende Analyse-/Workflow-Tools. Ich steuere Architektur, Review und QA, damit Übergabe und Wartung sauber funktionieren.",
           },
           {
             question: "Gibt es versteckte Kosten?",
@@ -711,7 +711,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, scope, and timeline in a short call or by email. You then get a clear scope recommendation with next steps, delivery timing, and transparent pricing.",
+              "After your request, I align on goals, scope, and timeline in a short call or by email. Then I set up a matching agent foundation for your project and share the next step with timing and transparent pricing.",
           },
           {
             question: "Can you redesign my existing website?",
@@ -721,7 +721,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Which tools do you use?",
             answer:
-              "Depending on the project, I work with Next.js, Tailwind, Figma, and suitable analytics or workflow tools. I choose the stack to fit your setup for a clean handover and maintainability.",
+              "My core workflow is agent setup + AI agent workflow for implementation, complemented by Next.js, Tailwind, Figma, and suitable analytics/workflow tools. I own architecture, review, and QA for clean handover and maintainability.",
           },
           {
             question: "Are there any hidden costs?",

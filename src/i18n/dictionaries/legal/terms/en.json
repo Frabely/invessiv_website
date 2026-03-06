@@ -21,7 +21,8 @@
       "provider": {
         "title": "1. Provider",
         "contractPrefix": "Contracting party is",
-        "representedByLabel": "represented by"
+        "representedByLabel": "represented by",
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany"
       },
       "scope": {
         "title": "2. Scope",

@@ -420,14 +420,37 @@ main {
 .hero__tag {
   margin: 0 0 14px;
   width: fit-content;
-  padding: 8px 12px;
-  border: 1px solid rgba(237, 173, 112, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
   border-radius: 999px;
-  background: rgba(237, 157, 71, 0.2);
-  color: #fde9d4;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.015em;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--color-accent-warm) 20%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
+  );
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-accent-warm) 14%);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.hero__tag::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: linear-gradient(
+    140deg,
+    color-mix(in srgb, var(--color-accent-warm) 90%, #fff 10%),
+    color-mix(in srgb, var(--color-accent) 78%, #000 22%)
+  );
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
+  flex: 0 0 auto;
 }
 
 .hero__eyebrow {
@@ -501,23 +524,25 @@ main {
   z-index: 1;
 }
 
-.hero__tags {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.section-scan-points.section-scan-points--hero {
+  margin-top: 24px;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  gap: 8px;
 }
 
-.chip-tag {
-  display: inline-flex;
-  align-items: center;
-  min-height: 34px;
+.section-scan-point.section-scan-point--hero {
+  min-height: 28px;
   padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(227, 173, 125, 0.32);
-  background: rgba(255, 229, 200, 0.1);
-  color: #f2dcc5;
   font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.hero__tags-fallback {
+  margin-top: 18px;
 }
 
 .blob {
@@ -1003,6 +1028,10 @@ main {
   .section-scan-points {
     margin-bottom: 14px;
     gap: 6px;
+  }
+
+  .section-scan-points.section-scan-points--hero {
+    flex-wrap: wrap;
   }
 
   .section-scan-point {
@@ -3476,8 +3505,6 @@ body {
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
 }
 
-.chip-tag,
-.hero__tag,
 .services-tag,
 .services-chip,
 .proof-badge,

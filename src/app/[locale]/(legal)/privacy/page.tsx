@@ -4,8 +4,6 @@ import { TermsContent } from "@/components/legal/terms-content/terms-content";
 import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
 import {
   COMPANY,
-  COMPANY_ADDRESS_LINE_DE,
-  COMPANY_ADDRESS_LINE_EN,
   COMPANY_MAILTO,
   COMPANY_TEL,
 } from "@/config/company";
@@ -58,10 +56,6 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
 
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
-  const addressLine =
-    locale === "de" ? COMPANY_ADDRESS_LINE_DE : COMPANY_ADDRESS_LINE_EN;
-  const phoneDisplay =
-    locale === "de" ? COMPANY.contact.phoneDisplayDe : COMPANY.contact.phoneDisplayEn;
   const sections = [
     {
       id: "controller",
@@ -71,12 +65,12 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
           <p>
             {COMPANY.legalName}, {privacy.sections.controller.ownerLabel}: {COMPANY.owner}
           </p>
-          <p>{addressLine}</p>
+          <p>{privacy.sections.controller.addressLine}</p>
           <p>
             {privacy.sections.controller.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
           <p>
-            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{phoneDisplay}</a>
+            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{privacy.sections.controller.phoneDisplay}</a>
           </p>
         </>
       ),

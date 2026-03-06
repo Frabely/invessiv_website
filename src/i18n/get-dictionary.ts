@@ -102,6 +102,7 @@ export type Dictionary = {
         title: string;
         contractPrefix: string;
         representedByLabel: string;
+        addressLine: string;
       };
       scope: {
         title: string;
@@ -143,8 +144,10 @@ export type Dictionary = {
       controller: {
         title: string;
         ownerLabel: string;
+        addressLine: string;
         emailLabel: string;
         phoneLabel: string;
+        phoneDisplay: string;
       };
       hosting: {
         title: string;

@@ -21,7 +21,8 @@
       "provider": {
         "title": "1. Anbieter",
         "contractPrefix": "Vertragspartner ist",
-        "representedByLabel": "vertreten durch"
+        "representedByLabel": "vertreten durch",
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland"
       },
       "scope": {
         "title": "2. Geltungsbereich",

@@ -10,9 +10,9 @@ export type MarketingRootMetaContent = {
 export const MARKETING_ROOT_META_CONTENT: MarketingRootMetaContent = {
   pageTitle: "Landing pages, websites, process tools, and AI templates & agents",
   description:
-    `${COMPANY.legalName} builds landing pages, websites, process tools, and AI templates & agents with clear scope, predictable delivery, and conversion focus.`,
+    `${COMPANY.legalName} builds landing pages, websites, process tools, and AI templates & agents in an AI agent workflow with clear scope, predictable delivery, and conversion focus.`,
   openGraphDescription:
-    "From idea to production-ready deliverables with clear scope, transparent timelines, and focused execution.",
+    "From requirements to agent setup, AI-assisted build, and production-ready delivery with clear scope and focused execution.",
   serviceDescription:
-    "Landing pages, website upgrades, process tools, and AI templates & agents focused on performance, clarity, and conversion.",
+    "Landing pages, website upgrades, process tools, and AI templates & agents with an AI-agent-supported delivery workflow focused on performance, clarity, and conversion.",
 };

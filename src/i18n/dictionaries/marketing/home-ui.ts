@@ -31,8 +31,8 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   de: {
     heroBenefitsAriaLabel: "Kurzvorteile",
     heroChipTags: [
-      "Design inkl.",
-      "Planbare Lieferetappen",
+      "KI-Agenten-Workflow",
+      "Manueller QA-Finalcheck",
       "Meist Antwort in 24h",
     ],
     heroPrimaryCta: "Projekt anfragen",
@@ -99,8 +99,8 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   en: {
     heroBenefitsAriaLabel: "Key benefits",
     heroChipTags: [
-      "Design included",
-      "Predictable delivery steps",
+      "AI agent workflow",
+      "Manual QA final check",
       "Usually a reply within 24h",
     ],
     heroPrimaryCta: "Request project",

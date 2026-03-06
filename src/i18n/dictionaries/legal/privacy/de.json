@@ -21,8 +21,10 @@
       "controller": {
         "title": "1. Verantwortliche Stelle",
         "ownerLabel": "Inhaber",
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland",
         "emailLabel": "E-Mail",
-        "phoneLabel": "Telefon"
+        "phoneLabel": "Telefon",
+        "phoneDisplay": "+49 1523 2070477"
       },
       "hosting": {
         "title": "2. Hosting und Server-Logfiles",

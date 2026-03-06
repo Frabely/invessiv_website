@@ -1,4 +1,5 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 
 type HeroSectionProps = {
   description: string;
@@ -43,13 +44,12 @@ export function HeroSection({
             </a>
           </div>
 
-          <div className="hero__tags" aria-label={heroBenefitsAriaLabel}>
-            {heroChipTags.map((item) => (
-              <span className="chip-tag" key={item}>
-                {item}
-              </span>
-            ))}
-          </div>
+          <SectionScanPoints
+            ariaLabel={heroBenefitsAriaLabel}
+            fallbackClassName="hero__tags-fallback"
+            points={heroChipTags}
+            variant="hero"
+          />
         </div>
 
         <HeroVisual ariaLabel={heroVisualAriaLabel} />
