@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
@@ -39,12 +39,19 @@ const formCopyFixture = {
   pagesLabel: "Seiten",
   pagesPlaceholder: "Start, Kontakt",
   phoneLabel: "Telefon",
+  previousStepLabel: "Zurück",
   projectDetailsLabel: "Projekt",
   projectDetailsPlaceholder: "Beschreibung",
   requiredHint: "* Pflichtfelder",
   roleLabel: "Rolle",
+  stepLabel: "Schritt",
+  stepNavigationLabel: "Anfragefortschritt",
+  stepOneTitle: "Kontakt",
+  stepThreeTitle: "Rahmen",
+  stepTwoTitle: "Projekt",
   startLabel: "Start",
   startOptions: ["Sofort"],
+  nextStepLabel: "Weiter",
   submitLabel: "Senden",
   submitSuccess: "Erfolg",
   subtitle: "Scope",
@@ -82,7 +89,7 @@ describe("ProjectRequestForm", () => {
     expect(screen.queryByRole("textbox", { name: "Vorname*" })).toBeNull();
   });
 
-  it("opens form fields and localized offer options on button click", () => {
+  it("opens first step and localized offer options on button click", () => {
     renderForm();
 
     fireEvent.click(
@@ -93,11 +100,7 @@ describe("ProjectRequestForm", () => {
     expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
-    expect(
-      screen
-        .getByRole("link", { name: "Datenschutzerklärung" })
-        .getAttribute("href"),
-    ).toBe("/privacy");
+    expect(screen.getByRole("button", { name: "Weiter" })).toBeTruthy();
   });
 
   it("preselects the offer when opened from a service CTA", () => {
@@ -124,6 +127,15 @@ describe("ProjectRequestForm", () => {
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+      target: { value: "Max" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter" }));
+
     expect(screen.getByRole("textbox", { name: /Website\*/ })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "Seiten*" })).toBeTruthy();
   });

@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
@@ -10,21 +10,34 @@ describe("ContactSection", () => {
     render(
       <ContactSection
         contactCta={{
+          description: "Für warme Leads mit klarem Scope.",
           hint: "Antwort in 24h.",
           href: "#contact",
+          kicker: "Direkt starten",
           label: "Jetzt Projekt anfragen",
         }}
         contactChannels={[
           {
-            actionLabel: "Per E-Mail anfragen",
+            actionLabel: "Kurze E-Mail senden",
+            description: "Für mittlere Leads mit grobem Vorhaben.",
             href: "mailto:hi@invessiv.de",
-            label: "E-Mail",
+            kicker: "Erst grob anfragen",
+            label: "Kurze E-Mail",
             value: "hi@invessiv.de",
+          },
+          {
+            actionLabel: "Kennenlern-Call starten",
+            description: "Für frühe Leads mit Klärungsbedarf.",
+            href: "tel:+4912345678",
+            kicker: "Kurz abstimmen",
+            label: "Kennenlern-Call",
+            value: "15-20 Min. Orientierungsgespräch",
           },
         ]}
         contactChecklist={["Ziel", "Deadline", "Assets"]}
         contactChecklistHint="Dauert ca. 2 Minuten."
-        contactChecklistTitle="In 3 kurzen Antworten starten"
+        contactChecklistTitle="Was du direkt erwarten kannst"
+        contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
         contactForm={{
           budgetLabel: "Budgetrahmen",
           budgetOptions: ["1.000 € - 2.500 €"],
@@ -55,12 +68,19 @@ describe("ContactSection", () => {
           pagesLabel: "Seiten",
           pagesPlaceholder: "Start, Kontakt",
           phoneLabel: "Telefon",
+          previousStepLabel: "Zurück",
           projectDetailsLabel: "Projektbeschreibung",
           projectDetailsPlaceholder: "Details",
           requiredHint: "* Pflichtfelder",
           roleLabel: "Rolle",
+          stepLabel: "Schritt",
+          stepNavigationLabel: "Anfragefortschritt",
+          stepOneTitle: "Kontakt",
+          stepThreeTitle: "Rahmen",
+          stepTwoTitle: "Projekt",
           startLabel: "Start",
           startOptions: ["Sofort"],
+          nextStepLabel: "Weiter",
           submitLabel: "Senden",
           submitSuccess: "Gesendet",
           subtitle: "Scope-Check",
@@ -83,13 +103,13 @@ describe("ContactSection", () => {
         description="Kontaktiere uns und starte dein Projekt mit Invessiv."
         id="contact"
         privacyHref="/privacy"
-        title="Bereit fuer eine neue, produktive Website?"
+        title="Bereit für eine neue, produktive Website?"
       />,
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Bereit fuer eine neue, produktive Website?",
+        name: "Bereit für eine neue, produktive Website?",
       }),
     ).toBeTruthy();
     expect(
@@ -100,9 +120,15 @@ describe("ContactSection", () => {
         .getByRole("link", { name: "Leistungen ansehen" })
         .getAttribute("href"),
     ).toBe("#services");
-    expect(screen.getByText("In 3 kurzen Antworten starten")).toBeTruthy();
+    expect(screen.getByText("Was du direkt erwarten kannst")).toBeTruthy();
+    expect(screen.getAllByText("Direkt starten").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Erst grob anfragen").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Kurz abstimmen").length).toBeGreaterThan(0);
     expect(
-      screen.getByRole("link", { name: "Per E-Mail anfragen" }),
+      screen.getByRole("link", { name: "Kurze E-Mail senden" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeTruthy();
   });
 });

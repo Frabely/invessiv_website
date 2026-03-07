@@ -49,8 +49,11 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
   };
+  contactDecisionIntro?: string;
   contactChannels?: Array<{
+    kicker?: string;
     label: string;
+    description?: string;
     value: string;
     href: string;
     hint?: string;
@@ -63,8 +66,10 @@ export type LandingSectionCopy = {
   contactChecklistTitle?: string;
   contactChecklistHint?: string;
   contactCta?: {
+    kicker?: string;
     label: string;
     href: string;
+    description?: string;
     hint: string;
   };
   contactSecondaryCta?: {
@@ -93,6 +98,13 @@ export type LandingSectionCopy = {
     pagesPlaceholder: string;
     workflowLabel: string;
     workflowOptions: string[];
+    stepNavigationLabel: string;
+    stepLabel: string;
+    stepOneTitle: string;
+    stepTwoTitle: string;
+    stepThreeTitle: string;
+    previousStepLabel: string;
+    nextStepLabel: string;
     budgetLabel: string;
     budgetOptions: string[];
     startLabel: string;
@@ -731,12 +743,13 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "contact",
     copy: {
       de: {
-        title: "Bereit für eine neue, produktive Website?",
-        description: "Kontaktiere mich und starte dein Projekt mit Invessiv.",
+        title: "Wähle den passenden Einstieg für dein Projekt",
+        description:
+          "Drei Wege, ein Ziel: schnell den sinnvollsten nächsten Schritt für dein Vorhaben finden.",
         summaryPoints: [
-          "Meist Antwort in 24h",
-          "2-3 Fragen",
-          "Direkter Kontakt",
+          "3 Wege je nach Projektstand",
+          "Meist Rückmeldung innerhalb von 24h",
+          "Direkter Kontakt ohne Vertriebsschleife",
         ],
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
         footerHeroDescription:
@@ -790,48 +803,58 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Datenschutz", href: "/privacy" },
           { label: "AGB", href: "/terms" },
         ],
+        contactDecisionIntro:
+          "Je nachdem, wie konkret dein Vorhaben bereits ist, kannst du direkt starten, kurz mailen oder erst ein Gespräch zur Orientierung führen.",
         contactChannels: [
           {
-            label: "E-Mail",
+            kicker: "Erst grob anfragen",
+            label: "Kurze E-Mail",
+            description:
+              "Für mittlere Leads: Du willst dein Vorhaben knapp schildern, bevor wir tiefer einsteigen.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            hint: "Ideal für Leistungsumfang, Zeitrahmen und vorhandene Assets.",
-            actionLabel: "Per E-Mail anfragen",
+            hint: "Du bekommst eine klare Antwort mit Empfehlung zum sinnvollsten nächsten Schritt.",
+            actionLabel: "Kurze E-Mail senden",
             copyValue: COMPANY.contact.email,
             copyLabel: "E-Mail kopieren",
             copiedLabel: "Kopiert",
           },
           {
+            kicker: "Kurz abstimmen",
             label: "Kennenlern-Call",
-            value: "30 Min. → Umfang + nächster Schritt + grobe Einschätzung",
-            href: "#contact",
-            hint: "Kein Sales-Druck. Keine Spam-Nachrichten.",
-            actionLabel: "Jetzt Projekt anfragen",
+            description:
+              "Für frühe Leads: Wenn du noch Orientierung brauchst und Fragen gemeinsam sortieren willst.",
+            value: "15-20 Min. Orientierungsgespräch",
+            href: COMPANY_TEL,
+            hint: "Wir klären Ziel, Prioritäten und die passende Vorgehensweise ohne Sales-Druck.",
+            actionLabel: "Kennenlern-Call starten",
           },
         ],
         contactChecklist: [
-          "Was soll entstehen oder verbessert werden?",
-          "Gibt es eine Deadline oder ein wichtiges Datum?",
-          "Welche Inhalte/Assets sind schon vorhanden?",
+          "Du erhältst eine klare Einschätzung zu Scope, Timing und nächstem Schritt.",
+          "Direkter Kontakt mit mir, ohne Übergabe an Vertrieb.",
+          "Transparente Empfehlung, auch wenn ein anderer Weg sinnvoller ist.",
         ],
-        contactChecklistTitle: "In 3 kurzen Antworten starten",
-        contactChecklistHint: "Dauert ca. 2 Minuten.",
+        contactChecklistTitle: "Welcher Einstieg passt zu dir?",
+        contactChecklistHint:
+          "Wähle den Weg, der zu deinem aktuellen Projektstand passt.",
         contactCta: {
-          label: "Jetzt Projekt anfragen",
+          kicker: "Direkt starten",
+          label: "Projektanfrage starten",
           href: "#contact",
-          hint: "Unverbindlich. 2-3 kurze Fragen, dann melde ich mich in der Regel innerhalb von 24h mit dem nächsten Schritt.",
+          hint: "3 Schritte, wenige Pflichtfelder und meist innerhalb von 24h eine klare Rückmeldung.",
         },
         contactSecondaryCta: {
-          label: "Leistungen ansehen",
+          label: "Leistungen vergleichen",
           href: "#services",
           hint: "",
         },
         contactForm: {
-          title: "Projektanfrage in 2 Minuten",
+          title: "Projektanfrage für konkrete Vorhaben",
           subtitle:
-            "Kurzer Umfangs-Check, damit ich direkt den nächsten sinnvollen Schritt liefern kann.",
+            "Ideal, wenn Ziel und Richtung bereits klar sind und du direkt starten willst.",
           intro:
-            "Je konkreter die Angaben, desto schneller bekommst du eine klare Empfehlung zu Umfang, Timing und Budget.",
+            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Scope, Timing und Budgetrahmen.",
           conditionalFieldHint:
             "Je nach gewähltem Angebot blende ich gezielt relevante Pflichtfelder ein.",
           firstNameLabel: "Vorname",
@@ -857,6 +880,13 @@ const HOME_SECTIONS: LandingSection[] = [
             "z. B. Start, Leistungen, Über uns, Kontakt, Karriere",
           workflowLabel: "Anzahl Kern-Workflows",
           workflowOptions: ["1 Workflow", "2 Workflows", "3+ Workflows"],
+          stepNavigationLabel: "Anfragefortschritt",
+          stepLabel: "Schritt",
+          stepOneTitle: "Kontakt",
+          stepTwoTitle: "Projekt",
+          stepThreeTitle: "Rahmen",
+          previousStepLabel: "Zurück",
+          nextStepLabel: "Weiter",
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
             "Unter 1.000 €",
@@ -899,12 +929,13 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "Ready for a new, productive website?",
-        description: "Contact me and start your project with Invessiv.",
+        title: "Choose the right entry point for your project",
+        description:
+          "Three paths, one goal: move to the most practical next step quickly.",
         summaryPoints: [
+          "3 paths based on lead warmth",
           "Usually a reply within 24h",
-          "2-3 questions",
-          "Direct contact",
+          "Direct contact without sales handoff",
         ],
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
@@ -951,48 +982,58 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Privacy", href: "/privacy" },
           { label: "Terms", href: "/terms" },
         ],
+        contactDecisionIntro:
+          "Depending on how concrete your project already is, you can start directly, send a short email, or book a quick call for orientation.",
         contactChannels: [
           {
-            label: "Email",
+            kicker: "Ask briefly first",
+            label: "Short email",
+            description:
+              "For medium-warm leads: share your project in a few lines before we define full scope.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            hint: "Best for scope, assets, and detailed context",
-            actionLabel: "Request by email",
+            hint: "You get a clear reply with the most practical next step.",
+            actionLabel: "Send short email",
             copyValue: COMPANY.contact.email,
             copyLabel: "Copy email",
             copiedLabel: "Copied",
           },
           {
+            kicker: "Quick alignment",
             label: "Discovery call",
-            value: "30 min → scope + next step + rough estimate",
-            href: "#contact",
-            hint: "No sales pressure. No spam.",
-            actionLabel: "Book free call",
+            description:
+              "For early leads: if you want orientation first and prefer to clarify questions live.",
+            value: "15-20 min orientation call",
+            href: COMPANY_TEL,
+            hint: "We align on goals, priorities, and the right approach without sales pressure.",
+            actionLabel: "Start discovery call",
           },
         ],
         contactChecklist: [
-          "What should be built or improved?",
-          "Do you have a deadline or launch date?",
-          "Which assets/content are already available?",
+          "You get a clear view of scope, timing, and next action.",
+          "Direct contact with me, no handoff to a sales team.",
+          "Transparent recommendation, even if another path is better.",
         ],
-        contactChecklistTitle: "Start in 3 short answers",
-        contactChecklistHint: "Takes about 2 minutes.",
+        contactChecklistTitle: "Which entry point fits you best?",
+        contactChecklistHint:
+          "Choose the path that matches your current level of project clarity.",
         contactCta: {
-          label: "Start project now",
+          kicker: "Start directly",
+          label: "Start project request",
           href: "#contact",
-          hint: "No commitment. Answer 2-3 short questions and I usually reply within 24h with a clear next step.",
+          hint: "3 steps, low friction, and usually a clear response within 24h.",
         },
         contactSecondaryCta: {
-          label: "View services",
+          label: "Compare services",
           href: "#services",
           hint: "",
         },
         contactForm: {
-          title: "Project request in 2 minutes",
+          title: "Project request for concrete scopes",
           subtitle:
-            "A short scope check so I can recommend the next practical step right away.",
+            "Best if your goal and direction are already clear and you want to move directly.",
           intro:
-            "The clearer your input, the faster I can return with a concrete recommendation for scope, timing, and budget.",
+            "Share the key project facts and I reply with a practical scope, timing, and budget recommendation.",
           conditionalFieldHint:
             "Based on your selected offer, I reveal only the required fields that matter.",
           firstNameLabel: "First name",
@@ -1017,6 +1058,13 @@ const HOME_SECTIONS: LandingSection[] = [
           pagesPlaceholder: "e.g. Home, Services, About, Contact, Careers",
           workflowLabel: "Number of core workflows",
           workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
+          stepNavigationLabel: "Request progress",
+          stepLabel: "Step",
+          stepOneTitle: "Contact",
+          stepTwoTitle: "Project",
+          stepThreeTitle: "Timing",
+          previousStepLabel: "Back",
+          nextStepLabel: "Continue",
           budgetLabel: "Budget range",
           budgetOptions: [
             "Below €1,000",

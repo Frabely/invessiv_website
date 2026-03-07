@@ -125,6 +125,7 @@ export function HomeSectionsRenderer({
                   contactChecklist={section.contactChecklist ?? []}
                   contactChecklistHint={section.contactChecklistHint}
                   contactChecklistTitle={section.contactChecklistTitle}
+                  contactDecisionIntro={section.contactDecisionIntro}
                   contactForm={section.contactForm}
                   contactFormOffers={contactFormOffers}
                   contactSecondaryCta={section.contactSecondaryCta}
