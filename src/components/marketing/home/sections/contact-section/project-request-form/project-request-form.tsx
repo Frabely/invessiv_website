@@ -59,6 +59,8 @@ type ContactFormCopy = {
   workflowLabel: string;
   workflowOptions: string[];
   nextStepLabel: string;
+  nextStepContactLabel?: string;
+  nextStepProjectLabel?: string;
 };
 
 type ProjectRequestFormProps = {
@@ -99,6 +101,12 @@ export function ProjectRequestForm({
     () => [formCopy.stepOneTitle, formCopy.stepTwoTitle, formCopy.stepThreeTitle],
     [formCopy.stepOneTitle, formCopy.stepTwoTitle, formCopy.stepThreeTitle],
   );
+  const stepOneNextLabel =
+    formCopy.nextStepContactLabel ??
+    `${formCopy.nextStepLabel} ${formCopy.stepTwoTitle}`;
+  const stepTwoNextLabel =
+    formCopy.nextStepProjectLabel ??
+    `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
 
   const fieldRules = useMemo(() => {
     const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
@@ -458,32 +466,11 @@ export function ProjectRequestForm({
                   />
                 </label>
                 <label className="project-request-field">
-                  <span>{formCopy.lastNameLabel}</span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="family-name"
-                    name="lastName"
-                    type="text"
-                  />
-                </label>
-              </div>
-
-              <div className="project-request-grid project-request-grid--two">
-                <label className="project-request-field">
                   <span>
                     {formCopy.emailLabel}
                     <strong className="project-request-required-marker">*</strong>
                   </span>
                   <input autoComplete="email" name="email" required type="email" />
-                </label>
-                <label className="project-request-field">
-                  <span>{formCopy.companyLabel}</span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="organization"
-                    name="company"
-                    type="text"
-                  />
                 </label>
               </div>
 
@@ -524,7 +511,7 @@ export function ProjectRequestForm({
                   onClick={goToNextStep}
                   type="button"
                 >
-                  {formCopy.nextStepLabel}
+                  {stepOneNextLabel}
                 </button>
               </div>
             </fieldset>
@@ -643,7 +630,7 @@ export function ProjectRequestForm({
                   onClick={goToNextStep}
                   type="button"
                 >
-                  {formCopy.nextStepLabel}
+                  {stepTwoNextLabel}
                 </button>
               </div>
             </fieldset>
@@ -654,6 +641,27 @@ export function ProjectRequestForm({
               hidden={currentStep !== 3}
             >
               <legend>{formCopy.stepThreeTitle}</legend>
+
+              <div className="project-request-grid project-request-grid--two">
+                <label className="project-request-field">
+                  <span>{formCopy.lastNameLabel}</span>
+                  <input
+                    autoCapitalize="words"
+                    autoComplete="family-name"
+                    name="lastName"
+                    type="text"
+                  />
+                </label>
+                <label className="project-request-field">
+                  <span>{formCopy.companyLabel}</span>
+                  <input
+                    autoCapitalize="words"
+                    autoComplete="organization"
+                    name="company"
+                    type="text"
+                  />
+                </label>
+              </div>
 
               <div className="project-request-grid project-request-grid--two">
                 <label className="project-request-field">

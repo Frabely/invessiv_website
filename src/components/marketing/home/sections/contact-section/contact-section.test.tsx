@@ -1,12 +1,12 @@
 ﻿// @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { ContactSection } from "./contact-section";
 
 describe("ContactSection", () => {
-  it("renders banner copy and both ctas", () => {
+  it("renders contact entry picker and shows only the active path panel", () => {
     render(
       <ContactSection
         contactCta={{
@@ -124,9 +124,18 @@ describe("ContactSection", () => {
     expect(screen.getAllByText("Direkt starten").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Erst grob anfragen").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Kurz abstimmen").length).toBeGreaterThan(0);
+
+    expect(screen.queryByRole("link", { name: "Kurze E-Mail senden" })).toBeNull();
+    expect(
+      screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
+    ).toBeNull();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Kurze E-Mail/ }));
     expect(
       screen.getByRole("link", { name: "Kurze E-Mail senden" }),
     ).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
     expect(
       screen.getByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeTruthy();

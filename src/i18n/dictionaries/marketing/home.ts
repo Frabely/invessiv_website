@@ -105,6 +105,8 @@ export type LandingSectionCopy = {
     stepThreeTitle: string;
     previousStepLabel: string;
     nextStepLabel: string;
+    nextStepContactLabel?: string;
+    nextStepProjectLabel?: string;
     budgetLabel: string;
     budgetOptions: string[];
     startLabel: string;
@@ -804,13 +806,13 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "AGB", href: "/terms" },
         ],
         contactDecisionIntro:
-          "Je nachdem, wie konkret dein Vorhaben bereits ist, kannst du direkt starten, kurz mailen oder erst ein Gespräch zur Orientierung führen.",
+          "Je nachdem, wie konkret dein Vorhaben schon ist, kannst du direkt anfragen, kurz mailen oder erst ein kurzes Gespräch führen.",
         contactChannels: [
           {
             kicker: "Erst grob anfragen",
             label: "Kurze E-Mail",
             description:
-              "Für mittlere Leads: Du willst dein Vorhaben knapp schildern, bevor wir tiefer einsteigen.",
+              "Wenn du dein Vorhaben erst kurz schildern und den nächsten Schritt unkompliziert klären willst.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             hint: "Du bekommst eine klare Antwort mit Empfehlung zum sinnvollsten nächsten Schritt.",
@@ -823,7 +825,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Kurz abstimmen",
             label: "Kennenlern-Call",
             description:
-              "Für frühe Leads: Wenn du noch Orientierung brauchst und Fragen gemeinsam sortieren willst.",
+              "Wenn du Orientierung willst und Fragen lieber kurz gemeinsam durchgehen möchtest.",
             value: "15-20 Min. Orientierungsgespräch",
             href: COMPANY_TEL,
             hint: "Wir klären Ziel, Prioritäten und die passende Vorgehensweise ohne Sales-Druck.",
@@ -837,12 +839,12 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         contactChecklistTitle: "Welcher Einstieg passt zu dir?",
         contactChecklistHint:
-          "Wähle den Weg, der zu deinem aktuellen Projektstand passt.",
+          "Wähle den Weg, der jetzt am besten zu deinem Vorhaben passt.",
         contactCta: {
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
           href: "#contact",
-          hint: "3 Schritte, wenige Pflichtfelder und meist innerhalb von 24h eine klare Rückmeldung.",
+          hint: "3 Schritte, reduzierte Pflichtfelder und meist innerhalb von 24h eine klare Rückmeldung.",
         },
         contactSecondaryCta: {
           label: "Leistungen vergleichen",
@@ -870,7 +872,7 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Bitte Angebot auswählen",
           goalLabel: "Primäres Ziel für die Landingpage",
           goalOptions: [
-            "Leads/Anfragen erhalten",
+            "Anfragen erhalten",
             "Terminbuchungen erhöhen",
             "Produkt verkaufen",
             "Newsletter-Anmeldungen",
@@ -887,6 +889,8 @@ const HOME_SECTIONS: LandingSection[] = [
           stepThreeTitle: "Rahmen",
           previousStepLabel: "Zurück",
           nextStepLabel: "Weiter",
+          nextStepContactLabel: "Weiter zu Projektdetails",
+          nextStepProjectLabel: "Weiter zu Rahmen & Versand",
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
             "Unter 1.000 €",
@@ -933,7 +937,7 @@ const HOME_SECTIONS: LandingSection[] = [
         description:
           "Three paths, one goal: move to the most practical next step quickly.",
         summaryPoints: [
-          "3 paths based on lead warmth",
+          "3 paths based on project clarity",
           "Usually a reply within 24h",
           "Direct contact without sales handoff",
         ],
@@ -989,7 +993,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Ask briefly first",
             label: "Short email",
             description:
-              "For medium-warm leads: share your project in a few lines before we define full scope.",
+              "If you want to describe your project briefly and clarify the next step without friction.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             hint: "You get a clear reply with the most practical next step.",
@@ -1002,7 +1006,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Quick alignment",
             label: "Discovery call",
             description:
-              "For early leads: if you want orientation first and prefer to clarify questions live.",
+              "If you want orientation first and prefer to sort open questions in a short call.",
             value: "15-20 min orientation call",
             href: COMPANY_TEL,
             hint: "We align on goals, priorities, and the right approach without sales pressure.",
@@ -1049,7 +1053,7 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Select an offer",
           goalLabel: "Primary landing page goal",
           goalOptions: [
-            "Generate leads/inquiries",
+            "Generate inquiries",
             "Increase booked calls",
             "Sell a product",
             "Grow newsletter sign-ups",
@@ -1065,6 +1069,8 @@ const HOME_SECTIONS: LandingSection[] = [
           stepThreeTitle: "Timing",
           previousStepLabel: "Back",
           nextStepLabel: "Continue",
+          nextStepContactLabel: "Continue to project details",
+          nextStepProjectLabel: "Continue to timing & send",
           budgetLabel: "Budget range",
           budgetOptions: [
             "Below €1,000",

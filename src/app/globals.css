@@ -739,8 +739,8 @@ main {
 [data-theme="light"] .proof-card,
 [data-theme="light"] .packages-card,
 [data-theme="light"] .contact-channel-card,
-[data-theme="light"] .contact-path-card,
 [data-theme="light"] .contact-brief-card,
+[data-theme="light"] .contact-entry-panel,
 [data-theme="light"] .site-footer,
 [data-theme="light"] .services-card,
 [data-theme="light"] .process-step {
@@ -767,10 +767,9 @@ main {
 [data-theme="light"] .packages-timeline,
 [data-theme="light"] .contact-hint,
 [data-theme="light"] .contact-decision-intro,
-[data-theme="light"] .contact-checklist-hint,
-[data-theme="light"] .contact-channel-hint,
-[data-theme="light"] .contact-path-hint,
-[data-theme="light"] .contact-path-description,
+[data-theme="light"] .contact-entry-subtitle,
+[data-theme="light"] .contact-entry-panel-hint,
+[data-theme="light"] .contact-entry-panel-description,
 [data-theme="light"] .contact-cta-wrap p,
 [data-theme="light"] .site-footer__hint,
 [data-theme="light"] .site-footer__bottom,
@@ -913,12 +912,11 @@ main {
   color: #74503b;
 }
 
-[data-theme="light"] .contact-channel-label,
-[data-theme="light"] .contact-path-label {
+[data-theme="light"] .contact-entry-trigger-kicker {
   color: #8a604a;
 }
 
-[data-theme="light"] .contact-path-label {
+[data-theme="light"] .contact-entry-trigger.is-active {
   background: rgba(255, 245, 234, 0.9);
   border-color: rgba(162, 101, 69, 0.22);
 }
@@ -2096,8 +2094,8 @@ main {
   gap: 10px;
 }
 
-.contact-section .section-scan-points + .contact-path-grid {
-  margin-top: 14px;
+.contact-section .section-scan-points + .contact-entry-title {
+  margin-top: 2px;
 }
 
 .contact-section .section-scan-point {
@@ -4439,139 +4437,131 @@ body {
 .contact-layout {
   margin-top: 12px;
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.contact-brief-card,
-.contact-checklist-card,
-.contact-path-card {
+.contact-brief-card {
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
   box-shadow: 0 10px 24px rgba(8, 10, 15, 0.16);
-}
-
-.contact-brief-card {
   padding: 18px;
+  display: grid;
+  gap: 12px;
 }
 
 .contact-decision-intro {
-  margin: 12px 0 0;
+  margin: 0;
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   line-height: 1.56;
   max-width: 72ch;
 }
 
-.contact-checklist-card {
-  padding: 18px;
-  align-self: start;
-  display: grid;
-  gap: 12px;
-}
-
-.contact-checklist-card h3 {
+.contact-entry-title {
   margin: 0;
-  font-size: 1.04rem;
+  font-size: 1.02rem;
   color: var(--color-text);
-  line-height: 1.38;
-}
-
-.contact-checklist {
-  margin: 0;
-  padding: 0 0 0 18px;
-  display: grid;
-  gap: 7px;
-}
-
-.contact-checklist li {
-  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: 0.84rem;
-  line-height: 1.48;
-}
-
-.contact-checklist-hint {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.9rem;
-  line-height: 1.46;
-}
-
-.contact-path-grid {
-  margin-top: 16px;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.contact-path-card {
-  padding: 16px;
-  display: grid;
-  gap: 10px;
-  transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.contact-path-card--primary {
-  border-color: color-mix(in srgb, var(--color-cta) 38%, var(--color-border) 62%);
-  background:
-    linear-gradient(
-      132deg,
-      color-mix(in srgb, var(--color-cta) 10%, var(--color-surface-1) 90%),
-      color-mix(in srgb, var(--color-surface-1) 98%, transparent)
-    );
-  box-shadow:
-    0 12px 28px rgba(8, 10, 15, 0.2),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 24%, transparent);
-}
-
-.contact-path-card--primary .project-request {
-  margin-top: 4px;
-}
-
-.contact-path-card--primary .project-request > .btn {
-  width: 100%;
-  justify-content: center;
-}
-
-.contact-path-card--primary .project-request-panel {
-  margin-top: 10px;
-  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
-  border-color: color-mix(in srgb, var(--color-cta) 24%, var(--color-border) 76%);
-}
-
-.contact-path-label {
-  margin: 0;
-  width: fit-content;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 82%, transparent);
-  color: color-mix(in srgb, var(--color-text) 62%, var(--color-text-muted) 38%);
-  font-size: 0.67rem;
-  font-weight: 640;
-  letter-spacing: 0.03em;
-  text-transform: none;
-}
-
-.contact-path-card h3 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.03rem;
   line-height: 1.4;
 }
 
-.contact-path-description {
+.contact-entry-subtitle {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.91rem;
-  line-height: 1.52;
+  font-size: 0.9rem;
+  line-height: 1.48;
 }
 
-.contact-path-value {
+.contact-entry-picker {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+}
+
+.contact-entry-trigger {
+  width: 100%;
+  min-height: 64px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  padding: 10px 12px;
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.contact-entry-trigger:hover {
+  border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
+}
+
+.contact-entry-trigger.is-active {
+  border-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 64%, var(--color-cta) 36%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
+}
+
+.contact-entry-trigger:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+}
+
+.contact-entry-trigger-kicker {
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
+  font-size: 0.68rem;
+  font-weight: 620;
+  letter-spacing: 0.03em;
+}
+
+.contact-entry-trigger-title {
+  color: inherit;
+  font-size: 0.88rem;
+  font-weight: 730;
+  line-height: 1.35;
+}
+
+.contact-entry-panel {
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.contact-entry-panel[hidden] {
+  display: none !important;
+}
+
+.contact-entry-panel--project {
+  border-color: color-mix(in srgb, var(--color-cta) 34%, var(--color-border) 66%);
+  background:
+    linear-gradient(
+      132deg,
+      color-mix(in srgb, var(--color-cta) 9%, var(--color-surface-1) 91%),
+      color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+    );
+}
+
+.contact-entry-panel-title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.98rem;
+  line-height: 1.4;
+}
+
+.contact-entry-panel-description {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.contact-entry-panel-value {
   margin: 0;
   border-radius: 10px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
@@ -4583,11 +4573,26 @@ body {
   line-height: 1.45;
 }
 
-.contact-path-hint {
+.contact-entry-panel-hint {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.86rem;
-  line-height: 1.45;
+  font-size: 0.84rem;
+  line-height: 1.44;
+}
+
+.contact-entry-panel--project .project-request {
+  margin-top: 2px;
+}
+
+.contact-entry-panel--project .project-request > .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-entry-panel--project .project-request-panel {
+  margin-top: 10px;
+  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 24%, var(--color-border) 76%);
 }
 
 .contact-channel-action-link {
@@ -4622,6 +4627,7 @@ body {
   color: color-mix(in srgb, var(--color-text) 90%, var(--color-cta) 10%);
   font-size: 0.88rem;
   font-weight: 740;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--color-cta) 18%, transparent);
 }
 
 .contact-channel-action-link--secondary:hover {
@@ -4637,69 +4643,41 @@ body {
   transform: translateY(1px);
 }
 
+.contact-channel-action-link--secondary:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 68%, #ffffff 12%);
+  outline-offset: 2px;
+}
+
+.contact-trust-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.contact-trust-list li {
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  padding: 4px 10px;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
 .contact-cta-wrap {
-  margin-top: 14px;
+  margin-top: 4px;
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.contact-cta-wrap p {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.84rem;
-}
-
-.contact-decision-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 9px;
-}
-
-.contact-decision-item {
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
-  padding: 10px 11px;
-  display: grid;
-  gap: 5px;
-}
-
-.contact-decision-heading {
-  margin: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.contact-decision-heading strong {
-  color: var(--color-text);
-  font-size: 0.86rem;
-  line-height: 1.36;
-}
-
-.contact-decision-heading small {
-  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.72rem;
-  line-height: 1.3;
-}
-
-.contact-decision-copy {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.82rem;
-  line-height: 1.43;
-}
-
 @media (min-width: 760px) {
-  .contact-path-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .contact-path-card--primary {
-    grid-column: 1 / -1;
+  .contact-entry-picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -5121,14 +5099,11 @@ body {
     min-height: 0;
   }
 
-  .contact-layout,
-  .contact-path-grid {
+  .contact-layout {
     grid-template-columns: 1fr;
   }
 
-  .contact-brief-card,
-  .contact-checklist-card,
-  .contact-path-card {
+  .contact-brief-card {
     padding: 16px;
   }
 

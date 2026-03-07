@@ -52,6 +52,8 @@ const formCopyFixture = {
   startLabel: "Start",
   startOptions: ["Sofort"],
   nextStepLabel: "Weiter",
+  nextStepContactLabel: "Weiter zu Projekt",
+  nextStepProjectLabel: "Weiter zu Rahmen",
   submitLabel: "Senden",
   submitSuccess: "Erfolg",
   subtitle: "Scope",
@@ -100,7 +102,9 @@ describe("ProjectRequestForm", () => {
     expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Weiter" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Weiter zu Projekt" }),
+    ).toBeTruthy();
   });
 
   it("preselects the offer when opened from a service CTA", () => {
@@ -134,7 +138,7 @@ describe("ProjectRequestForm", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Weiter" }));
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
     expect(screen.getByRole("textbox", { name: /Website\*/ })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "Seiten*" })).toBeTruthy();
