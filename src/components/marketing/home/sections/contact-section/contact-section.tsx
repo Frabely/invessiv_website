@@ -45,29 +45,30 @@ export function ContactSection({
   const primaryPath = contactCta && contactForm
     ? { cta: contactCta, form: contactForm }
     : null;
-  const decisionOptions = [
-    primaryPath
-      ? {
-          id: "primary",
-          label: primaryPath.form.title,
-          kicker: primaryPath.cta.kicker,
-          description: primaryPath.cta.description ?? primaryPath.form.subtitle,
-        }
-      : null,
-    ...contactChannels.map((channel) => ({
+  const decisionOptions: Array<{
+    id: string;
+    label: string;
+    kicker?: string;
+    description: string;
+  }> = [];
+
+  if (primaryPath) {
+    decisionOptions.push({
+      id: "primary",
+      label: primaryPath.form.title,
+      kicker: primaryPath.cta.kicker,
+      description: primaryPath.cta.description ?? primaryPath.form.subtitle,
+    });
+  }
+
+  contactChannels.forEach((channel) => {
+    decisionOptions.push({
       id: channel.label,
       label: channel.label,
       kicker: channel.kicker,
       description: channel.description ?? channel.hint ?? "",
-    })),
-  ].filter(
-    (option): option is {
-      id: string;
-      label: string;
-      kicker?: string;
-      description: string;
-    } => option !== null,
-  );
+    });
+  });
 
   return (
     <section className="contact-section" id={id}>
