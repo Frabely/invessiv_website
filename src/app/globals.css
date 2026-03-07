@@ -917,8 +917,13 @@ main {
 }
 
 [data-theme="light"] .contact-entry-trigger.is-active {
-  background: rgba(255, 245, 234, 0.9);
-  border-color: rgba(162, 101, 69, 0.22);
+  border-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
+  background: linear-gradient(
+    138deg,
+    color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2) 78%),
+    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
 }
 
 [data-theme="light"] .contact-channel-link {
@@ -4493,33 +4498,19 @@ body {
   cursor: pointer;
 }
 
-.contact-entry-trigger--project {
-  border-color: color-mix(in srgb, var(--color-cta) 38%, var(--color-border) 62%);
-  background: linear-gradient(
-    138deg,
-    color-mix(in srgb, var(--color-cta) 10%, var(--color-surface-2) 90%),
-    color-mix(in srgb, var(--color-surface-2) 84%, transparent)
-  );
-}
-
 .contact-entry-trigger:hover {
   border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
 }
 
 .contact-entry-trigger.is-active {
-  border-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 64%, var(--color-cta) 36%);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
-}
-
-.contact-entry-trigger--project.is-active {
   border-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
   background: linear-gradient(
     138deg,
     color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2) 78%),
     color-mix(in srgb, var(--color-surface-2) 82%, transparent)
   );
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
 }
 
 .contact-entry-trigger:focus-visible {

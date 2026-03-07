@@ -96,7 +96,6 @@ export function ProjectRequestForm({
   const projectDetailsRef = useRef<HTMLTextAreaElement | null>(null);
   const consentInputRef = useRef<HTMLInputElement | null>(null);
   const pagesOptionsContainerRef = useRef<HTMLDivElement | null>(null);
-  const pendingOfferKeyRef = useRef<string>("");
 
   const selectedOfferTitle =
     offerOptions.find((option) => option.key === selectedOfferKey)?.title ?? "";
@@ -300,41 +299,25 @@ export function ProjectRequestForm({
   };
 
   useEffect(() => {
-    const openFromContactHash = () => {
-      if (window.location.hash !== "#contact") {
-        return;
-      }
-      const nextOfferKey = pendingOfferKeyRef.current;
-      pendingOfferKeyRef.current = "";
-      applyOfferSelection(nextOfferKey);
-      setCurrentStep(1);
-      setStatusMessage(null);
-      focusStep(1);
-    };
-
     const handleDocumentClick = (event: MouseEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) {
         return;
       }
-      const contactAnchor = target.closest("a[href='#contact']");
+      const contactAnchor = target.closest("a[href='#contact'][data-project-offer]");
       if (!(contactAnchor instanceof HTMLAnchorElement)) {
         return;
       }
-      const nextOfferKey = getValidOfferKey(contactAnchor.dataset.projectOffer);
-      pendingOfferKeyRef.current = nextOfferKey;
+      const nextOfferKey = getValidOfferKey(contactAnchor.dataset.projectOffer ?? "");
       applyOfferSelection(nextOfferKey);
       setCurrentStep(1);
       setStatusMessage(null);
       focusStep(1);
     };
 
-    openFromContactHash();
-    window.addEventListener("hashchange", openFromContactHash);
     document.addEventListener("click", handleDocumentClick);
 
     return () => {
-      window.removeEventListener("hashchange", openFromContactHash);
       document.removeEventListener("click", handleDocumentClick);
     };
   }, [applyOfferSelection, focusStep, getValidOfferKey]);

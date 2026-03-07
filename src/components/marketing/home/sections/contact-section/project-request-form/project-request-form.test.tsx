@@ -119,6 +119,31 @@ describe("ProjectRequestForm", () => {
     expect(offerSelect.value).toBe("web");
   });
 
+  it("keeps the offer select usable when opened via plain contact anchor", () => {
+    render(
+      <>
+        <a href="#contact">Zum Kontakt</a>
+        <ProjectRequestForm
+          formCopy={formCopyFixture}
+          offerOptions={offerOptionsFixture}
+          privacyHref="/privacy"
+          privacyLabel="Datenschutzerklärung"
+          submitHref="mailto:test@example.com"
+        />
+      </>,
+    );
+
+    fireEvent.click(screen.getByRole("link", { name: "Zum Kontakt" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+      target: { value: "landing" },
+    });
+
+    const offerSelect = screen.getByRole("combobox", {
+      name: "Angebot*",
+    }) as HTMLSelectElement;
+    expect(offerSelect.value).toBe("landing");
+  });
+
   it("requires at least one selected page in step two for web projects", () => {
     renderForm();
 

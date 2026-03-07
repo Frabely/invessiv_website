@@ -269,7 +269,7 @@ export function ContactSection({
                     <button
                       aria-controls={`contact-entry-panel-${entry.id}`}
                       aria-selected={isActive}
-                      className={`contact-entry-trigger${entry.kind === "project" ? " contact-entry-trigger--project" : ""}${isActive ? " is-active" : ""}`}
+                      className={`contact-entry-trigger${isActive ? " is-active" : ""}`}
                       id={`contact-entry-tab-${entry.id}`}
                       key={entry.id}
                       onKeyDown={(event) => {
