@@ -1569,7 +1569,7 @@ main {
 .services-details-cta {
   min-height: 40px;
   padding-inline: 14px;
-  font-size: 0.82rem;
+  font-size: 0.94rem;
 }
 
 .services-details-link {
@@ -3878,22 +3878,29 @@ body {
 .menu-cta,
 .btn--primary,
 .packages-cta--primary,
-.mobile-menu-cta {
+.mobile-menu-cta,
+.process-end-cta {
   border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
   background: linear-gradient(
-    120deg,
-    var(--color-cta) 0%,
+    125deg,
+    var(--color-cta-hover) 0%,
+    var(--color-cta) 46%,
     var(--color-cta-active) 100%
   );
   color: var(--color-on-cta);
   box-shadow: 0 10px 24px rgba(31, 70, 137, 0.3);
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.15;
 }
 
 .site-header:not(.is-scrolled) .menu-cta {
   border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
   background: linear-gradient(
-    120deg,
-    var(--color-cta) 0%,
+    125deg,
+    var(--color-cta-hover) 0%,
+    var(--color-cta) 46%,
     var(--color-cta-active) 100%
   );
   color: var(--color-on-cta);
@@ -3907,11 +3914,13 @@ body {
 .menu-cta:hover,
 .btn--primary:hover,
 .packages-cta--primary:hover,
-.mobile-menu-cta:hover {
+.mobile-menu-cta:hover,
+.process-end-cta:hover {
   background: linear-gradient(
-    120deg,
+    125deg,
     var(--color-cta-hover) 0%,
-    var(--color-cta) 100%
+    var(--color-cta) 52%,
+    var(--color-cta-active) 100%
   );
   filter: none;
 }
@@ -4718,8 +4727,9 @@ body {
   width: 100%;
   padding: 0 16px;
   border-radius: 10px;
-  font-size: 0.88rem;
-  font-weight: 740;
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-size: 0.94rem;
+  font-weight: 700;
   line-height: 1;
   transition:
     transform 180ms ease,
@@ -4730,7 +4740,7 @@ body {
 }
 
 .contact-channel-action-link:hover {
-  color: var(--color-text);
+  color: inherit;
 }
 
 .contact-channel-action-link--email {
@@ -4740,15 +4750,8 @@ body {
     color-mix(in srgb, var(--color-accent-warm) 86%, #f2bf91 14%),
     color-mix(in srgb, var(--color-accent-warm) 70%, #9c5120 30%)
   );
-  color: #ffffff;
+  color: #2a1409;
   box-shadow: 0 8px 18px color-mix(in srgb, var(--color-accent-warm) 32%, transparent);
-}
-
-.contact-channel-action-link--email:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 86%, #ffffff 14%);
-  color: #ffffff;
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--color-accent-warm) 38%, transparent);
-  transform: translateY(-1px);
 }
 
 .contact-channel-action-link--call {
@@ -4758,17 +4761,28 @@ body {
   box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 6%, transparent);
 }
 
+.contact-channel-action-link--email:hover {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 86%, #ffffff 14%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 90%, #f6ca9f 10%),
+    color-mix(in srgb, var(--color-accent-warm) 74%, #8e491b 26%)
+  );
+  color: #2a1409;
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--color-accent-warm) 38%, transparent);
+  transform: translateY(-1px);
+}
+
 .contact-channel-action-link--call:hover {
   border-color: color-mix(in srgb, var(--color-cta) 68%, #ffffff 10%);
   background: color-mix(in srgb, var(--color-surface-2) 64%, var(--color-cta) 36%);
+  color: var(--color-text);
   box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 24%, transparent);
+  transform: translateY(-1px);
 }
 
+.contact-channel-action-link--email:active,
 .contact-channel-action-link--call:active {
-  transform: translateY(1px);
-}
-
-.contact-channel-action-link--email:active {
   transform: translateY(1px);
 }
 
@@ -4779,23 +4793,22 @@ body {
     color-mix(in srgb, var(--color-accent-warm) 86%, #f6ca9f 14%),
     color-mix(in srgb, var(--color-accent-warm) 72%, #a95b24 28%)
   );
-  color: #ffffff;
-}
-
-[data-theme="light"] .contact-channel-action-link--email:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 88%, #ffffff 12%);
-  color: #ffffff;
+  color: #2a1409;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--color-accent-warm) 34%, transparent);
 }
 
 [data-theme="light"] .contact-channel-action-link--call {
   border-color: color-mix(in srgb, var(--color-cta) 56%, var(--color-border) 44%);
   background: color-mix(in srgb, var(--color-surface-2) 84%, transparent);
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
 }
 
 [data-theme="light"] .contact-channel-action-link--call:hover {
   border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
   background: color-mix(in srgb, var(--color-surface-2) 70%, var(--color-cta) 30%);
+  color: var(--color-text);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 20%, transparent);
 }
 
 .contact-channel-action-link:focus-visible {
