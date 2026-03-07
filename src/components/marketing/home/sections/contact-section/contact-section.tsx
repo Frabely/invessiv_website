@@ -103,6 +103,8 @@ export function ContactSection({
     return channel.href.startsWith("tel:") ? "call" : "email";
   };
 
+  const isExternalLink = (href: string) => /^https?:\/\//i.test(href);
+
   const activeEntryId = useMemo(() => {
     if (!entries.length) {
       return "";
@@ -297,6 +299,10 @@ export function ContactSection({
                   entry.kind === "channel" && entry.channel
                     ? getChannelMode(entry.channel)
                     : null;
+                const isExternalChannelLink =
+                  entry.kind === "channel" && entry.channel
+                    ? isExternalLink(entry.channel.href)
+                    : false;
 
                 return (
                   <article
@@ -384,6 +390,8 @@ export function ContactSection({
                             <a
                               className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
                               href={entry.channel.href}
+                              rel={isExternalChannelLink ? "noopener noreferrer" : undefined}
+                              target={isExternalChannelLink ? "_blank" : undefined}
                             >
                               {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
                             </a>

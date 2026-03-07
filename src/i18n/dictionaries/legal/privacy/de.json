@@ -9,7 +9,7 @@
     "page": {
       "title": "Datenschutzerklärung",
       "lead": "Diese Erklärung informiert über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf dieser Website.",
-      "updatedAt": "Zuletzt geändert: 6. März 2026.",
+      "updatedAt": "Zuletzt geändert: 7. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -32,7 +32,7 @@
       },
       "contactRequests": {
         "title": "3. Kontaktaufnahme und Projektanfragen",
-        "body": "Wenn du mich per E-Mail, Telefon oder Projektanfrage kontaktierst, verarbeite ich deine Angaben (z. B. Name, E-Mail, Unternehmen, angefragte Leistung, Projektbeschreibung) zur Bearbeitung der Anfrage und für Anschlussfragen. Das Projektformular öffnet eine vorbefüllte E-Mail in deinem Mailprogramm. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) sowie Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Anfragen). Für die interne Vorstrukturierung von Entwürfen können KI-Werkzeuge unterstützend eingesetzt werden. Personenbezogene Daten werden dabei nur verarbeitet, soweit dies für die Anfragebearbeitung erforderlich und datenschutzrechtlich zulässig ist. Ich speichere Daten nur so lange, wie sie für die Anfragebearbeitung und gesetzliche Nachweispflichten erforderlich sind."
+        "body": "Wenn du mich per E-Mail, Telefon oder Projektanfrage kontaktierst, verarbeite ich deine Angaben (z. B. Name, E-Mail, Unternehmen, angefragte Leistung, Projektbeschreibung) zur Bearbeitung der Anfrage und für Anschlussfragen. Das Projektformular öffnet eine vorbefüllte E-Mail in deinem Mailprogramm. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) sowie Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Anfragen). Für die interne Vorstrukturierung von Entwürfen können KI-Werkzeuge unterstützend eingesetzt werden. Personenbezogene Daten werden dabei nur verarbeitet, soweit dies für die Anfragebearbeitung erforderlich und datenschutzrechtlich zulässig ist. Ich speichere Daten nur so lange, wie sie für die Anfragebearbeitung und gesetzliche Nachweispflichten erforderlich sind. Für die Terminbuchung nutze ich den externen Dienst Calendly (Calendly LLC). Beim Klick auf den Termin-Link oder bei einer Buchung werden Daten an Calendly übermittelt und dort verarbeitet. Es gelten die Datenschutzinformationen von Calendly: https://calendly.com/legal/privacy-notice."
       },
       "cookies": {
         "title": "4. Cookies und ähnliche Technologien",

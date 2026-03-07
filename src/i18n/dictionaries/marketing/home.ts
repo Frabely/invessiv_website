@@ -2,6 +2,7 @@ import type { SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import {
   COMPANY,
+  COMPANY_CALENDLY,
   COMPANY_MAILTO,
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
@@ -843,7 +844,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Für direkte Abstimmung, wenn Scope und Aufwand im Termin geklärt werden sollen.",
             value: "15-20 Minuten Abstimmung",
-            href: COMPANY_TEL,
+            href: COMPANY_CALENDLY,
             helper:
               "In 15-20 Minuten klären wir Ziel, Prioritäten und den sinnvollsten nächsten Schritt.",
             hint: "Terminweg mit klarer Empfehlung im Anschluss.",
@@ -1054,7 +1055,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Best for live alignment when scope and effort need quick discussion.",
             value: "15-20 minute alignment call",
-            href: COMPANY_TEL,
+            href: COMPANY_CALENDLY,
             helper:
               "In 15-20 minutes we align on goals, priorities, and the strongest next step.",
             hint: "Scheduling path with a clear recommendation afterward.",

@@ -28,7 +28,7 @@ describe("ContactSection", () => {
           {
             actionLabel: "Kennenlern-Call starten",
             description: "Für frühe Leads mit Klärungsbedarf.",
-            href: "tel:+4912345678",
+            href: "https://calendly.com/service-invessiv-cxf5/30min",
             kicker: "Kurz abstimmen",
             label: "Kennenlern-Call",
             value: "15-20 Min. Orientierungsgespräch",
@@ -137,8 +137,9 @@ describe("ContactSection", () => {
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    expect(
-      screen.getByRole("link", { name: "Kennenlern-Call starten" }),
-    ).toBeTruthy();
+    const callLink = screen.getByRole("link", { name: "Kennenlern-Call starten" });
+    expect(callLink).toBeTruthy();
+    expect(callLink.getAttribute("target")).toBe("_blank");
+    expect(callLink.getAttribute("rel")).toBe("noopener noreferrer");
   });
 });
