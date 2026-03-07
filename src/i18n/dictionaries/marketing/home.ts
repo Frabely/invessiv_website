@@ -51,6 +51,7 @@ export type LandingSectionCopy = {
   };
   contactDecisionIntro?: string;
   contactChannels?: Array<{
+    mode?: "email" | "call";
     kicker?: string;
     label: string;
     description?: string;
@@ -61,6 +62,10 @@ export type LandingSectionCopy = {
     copyValue?: string;
     copyLabel?: string;
     copiedLabel?: string;
+    helper?: string;
+    detailPoints?: string[];
+    metaLabel?: string;
+    metaValue?: string;
   }>;
   contactChecklist?: string[];
   contactChecklistTitle?: string;
@@ -96,6 +101,10 @@ export type LandingSectionCopy = {
     goalOptions: string[];
     pagesLabel: string;
     pagesPlaceholder: string;
+    pagesOptions?: string[];
+    pagesCustomLabel?: string;
+    pagesCustomPlaceholder?: string;
+    pagesRequiredHint?: string;
     workflowLabel: string;
     workflowOptions: string[];
     stepNavigationLabel: string;
@@ -130,7 +139,7 @@ export type LandingSectionCopy = {
     submitLabel: string;
     submitSuccess: string;
     requiredHint: string;
-    closeLabel: string;
+    closeLabel?: string;
   };
   footerColumns?: Array<{
     title: string;
@@ -806,45 +815,61 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "AGB", href: "/terms" },
         ],
         contactDecisionIntro:
-          "Je nachdem, wie konkret dein Vorhaben schon ist, kannst du direkt anfragen, kurz mailen oder erst ein kurzes Gespräch führen.",
+          "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
         contactChannels: [
           {
-            kicker: "Erst grob anfragen",
+            mode: "email",
+            kicker: "Asynchron & schnell",
             label: "Kurze E-Mail",
             description:
-              "Wenn du dein Vorhaben erst kurz schildern und den nächsten Schritt unkompliziert klären willst.",
+              "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            hint: "Du bekommst eine klare Antwort mit Empfehlung zum sinnvollsten nächsten Schritt.",
-            actionLabel: "Kurze E-Mail senden",
+            helper:
+              "2-4 Sätze reichen: Ziel, Kontext und was du als Nächstes brauchst.",
+            hint: "Du erhältst eine klare Einschätzung und einen konkreten nächsten Schritt.",
+            actionLabel: "E-Mail senden",
             copyValue: COMPANY.contact.email,
-            copyLabel: "E-Mail kopieren",
-            copiedLabel: "Kopiert",
+            copyLabel: "Adresse kopieren",
+            copiedLabel: "Adresse kopiert",
+            detailPoints: ["Antwort meist innerhalb von 24h", "Kein Termin nötig"],
+            metaLabel: "E-Mail",
+            metaValue: "Asynchroner Schnellkontakt",
           },
           {
-            kicker: "Kurz abstimmen",
+            mode: "call",
+            kicker: "Synchron abstimmen",
             label: "Kennenlern-Call",
             description:
-              "Wenn du Orientierung willst und Fragen lieber kurz gemeinsam durchgehen möchtest.",
-            value: "15-20 Min. Orientierungsgespräch",
+              "Für direkte Abstimmung, wenn Scope und Aufwand im Termin geklärt werden sollen.",
+            value: "15-20 Minuten Abstimmung",
             href: COMPANY_TEL,
-            hint: "Wir klären Ziel, Prioritäten und die passende Vorgehensweise ohne Sales-Druck.",
-            actionLabel: "Kennenlern-Call starten",
+            helper:
+              "In 15-20 Minuten klären wir Ziel, Prioritäten und den sinnvollsten nächsten Schritt.",
+            hint: "Terminweg mit klarer Empfehlung im Anschluss.",
+            actionLabel: "Termin auswählen",
+            detailPoints: [
+              "15-20 Minuten fokussiert",
+              "Scope und Aufwand grob einordnen",
+              "Konkreter nächster Schritt danach",
+            ],
+            metaLabel: "Format",
+            metaValue: "Kurzer Abstimmungstermin (Telefon/Video)",
           },
         ],
         contactChecklist: [
-          "Du erhältst eine klare Einschätzung zu Scope, Timing und nächstem Schritt.",
-          "Direkter Kontakt mit mir, ohne Übergabe an Vertrieb.",
-          "Transparente Empfehlung, auch wenn ein anderer Weg sinnvoller ist.",
+          "Klare Empfehlung",
+          "Direkter Kontakt",
+          "Scope, Timing, Aufwand",
         ],
-        contactChecklistTitle: "Welcher Einstieg passt zu dir?",
+        contactChecklistTitle: "Was du in jedem Weg bekommst",
         contactChecklistHint:
-          "Wähle den Weg, der jetzt am besten zu deinem Vorhaben passt.",
+          "Unabhängig vom Weg: klare Orientierung statt Sales-Floskeln.",
         contactCta: {
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
           href: "#contact",
-          hint: "3 Schritte, reduzierte Pflichtfelder und meist innerhalb von 24h eine klare Rückmeldung.",
+          hint: "3 kurze Schritte, nur relevante Pflichtfelder und klare Rückmeldung.",
         },
         contactSecondaryCta: {
           label: "Leistungen vergleichen",
@@ -854,23 +879,23 @@ const HOME_SECTIONS: LandingSection[] = [
         contactForm: {
           title: "Projektanfrage für konkrete Vorhaben",
           subtitle:
-            "Ideal, wenn Ziel und Richtung bereits klar sind und du direkt starten willst.",
+            "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
           intro:
             "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Scope, Timing und Budgetrahmen.",
           conditionalFieldHint:
-            "Je nach gewähltem Angebot blende ich gezielt relevante Pflichtfelder ein.",
-          firstNameLabel: "Vorname",
+            "Je nach gewähltem Angebot zeige ich nur die wirklich relevanten Felder.",
+          firstNameLabel: "Name",
           lastNameLabel: "Nachname",
-          emailLabel: "Geschäftliche E-Mail",
+          emailLabel: "E-Mail",
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
           websiteLabel: "Aktuelle Website",
           websiteRequiredHint:
             "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
-          offerLabel: "Gewünschtes Angebot",
-          offerPlaceholder: "Bitte Angebot auswählen",
-          goalLabel: "Primäres Ziel für die Landingpage",
+          offerLabel: "Passendes Angebot",
+          offerPlaceholder: "Bitte Angebot wählen",
+          goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
             "Anfragen erhalten",
             "Terminbuchungen erhöhen",
@@ -878,14 +903,27 @@ const HOME_SECTIONS: LandingSection[] = [
             "Newsletter-Anmeldungen",
           ],
           pagesLabel: "Benötigte Seiten",
-          pagesPlaceholder:
-            "z. B. Start, Leistungen, Über uns, Kontakt, Karriere",
+          pagesPlaceholder: "z. B. Referenzen, Team, FAQ",
+          pagesOptions: [
+            "Start",
+            "Leistungen",
+            "Über uns",
+            "Kontakt",
+            "Karriere",
+            "Blog",
+            "Landingpage",
+            "Sonstiges",
+          ],
+          pagesCustomLabel: "Weitere Seiten (optional)",
+          pagesCustomPlaceholder: "z. B. Referenzen, Team, FAQ",
+          pagesRequiredHint:
+            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           workflowLabel: "Anzahl Kern-Workflows",
           workflowOptions: ["1 Workflow", "2 Workflows", "3+ Workflows"],
           stepNavigationLabel: "Anfragefortschritt",
           stepLabel: "Schritt",
           stepOneTitle: "Kontakt",
-          stepTwoTitle: "Projekt",
+          stepTwoTitle: "Projektdetails",
           stepThreeTitle: "Rahmen",
           previousStepLabel: "Zurück",
           nextStepLabel: "Weiter",
@@ -907,8 +945,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Innerhalb von 1 Monat",
             "Später / flexibel",
           ],
-          projectDetailsLabel:
-            "Anmerkungen, Anforderungen und Projektbeschreibung",
+          projectDetailsLabel: "Projektziel und Anforderungen",
           projectDetailsPlaceholder:
             "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
@@ -987,45 +1024,63 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Terms", href: "/terms" },
         ],
         contactDecisionIntro:
-          "Depending on how concrete your project already is, you can start directly, send a short email, or book a quick call for orientation.",
+          "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
         contactChannels: [
           {
-            kicker: "Ask briefly first",
+            mode: "email",
+            kicker: "Async & low effort",
             label: "Short email",
             description:
-              "If you want to describe your project briefly and clarify the next step without friction.",
+              "Best for fast async contact when you want to clarify the next step in writing.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            hint: "You get a clear reply with the most practical next step.",
-            actionLabel: "Send short email",
+            helper: "2-4 lines are enough: goal, context, and what you need next.",
+            hint: "You get a clear assessment and a concrete next step.",
+            actionLabel: "Send email",
             copyValue: COMPANY.contact.email,
-            copyLabel: "Copy email",
-            copiedLabel: "Copied",
+            copyLabel: "Copy address",
+            copiedLabel: "Address copied",
+            detailPoints: [
+              "Usually a reply within 24h",
+              "No scheduling needed",
+            ],
+            metaLabel: "Email",
+            metaValue: "Asynchronous quick contact",
           },
           {
-            kicker: "Quick alignment",
+            mode: "call",
+            kicker: "Sync alignment",
             label: "Discovery call",
             description:
-              "If you want orientation first and prefer to sort open questions in a short call.",
-            value: "15-20 min orientation call",
+              "Best for live alignment when scope and effort need quick discussion.",
+            value: "15-20 minute alignment call",
             href: COMPANY_TEL,
-            hint: "We align on goals, priorities, and the right approach without sales pressure.",
-            actionLabel: "Start discovery call",
+            helper:
+              "In 15-20 minutes we align on goals, priorities, and the strongest next step.",
+            hint: "Scheduling path with a clear recommendation afterward.",
+            actionLabel: "Choose a time",
+            detailPoints: [
+              "15-20 minutes focused",
+              "Roughly map scope & effort",
+              "Leave with a concrete next step",
+            ],
+            metaLabel: "Format",
+            metaValue: "Short call (phone/video)",
           },
         ],
         contactChecklist: [
-          "You get a clear view of scope, timing, and next action.",
-          "Direct contact with me, no handoff to a sales team.",
-          "Transparent recommendation, even if another path is better.",
+          "Clear recommendation",
+          "Direct contact",
+          "Scope, timing, effort",
         ],
-        contactChecklistTitle: "Which entry point fits you best?",
+        contactChecklistTitle: "What you get in every path",
         contactChecklistHint:
-          "Choose the path that matches your current level of project clarity.",
+          "Whichever path you choose, you leave with practical clarity.",
         contactCta: {
           kicker: "Start directly",
           label: "Start project request",
           href: "#contact",
-          hint: "3 steps, low friction, and usually a clear response within 24h.",
+          hint: "3 short steps, only relevant required fields, and a clear reply.",
         },
         contactSecondaryCta: {
           label: "Compare services",
@@ -1035,21 +1090,21 @@ const HOME_SECTIONS: LandingSection[] = [
         contactForm: {
           title: "Project request for concrete scopes",
           subtitle:
-            "Best if your goal and direction are already clear and you want to move directly.",
+            "Best when direction is clear and you want to move directly.",
           intro:
             "Share the key project facts and I reply with a practical scope, timing, and budget recommendation.",
           conditionalFieldHint:
-            "Based on your selected offer, I reveal only the required fields that matter.",
-          firstNameLabel: "First name",
+            "Based on your offer, I only show fields that are actually relevant.",
+          firstNameLabel: "Name",
           lastNameLabel: "Last name",
-          emailLabel: "Business email",
+          emailLabel: "Email",
           phoneLabel: "Phone",
           companyLabel: "Company",
           roleLabel: "Role",
           websiteLabel: "Current website",
           websiteRequiredHint:
             "For website upgrade, websites, and maintenance, the current website is required.",
-          offerLabel: "Requested offer",
+          offerLabel: "Relevant offer",
           offerPlaceholder: "Select an offer",
           goalLabel: "Primary landing page goal",
           goalOptions: [
@@ -1059,13 +1114,27 @@ const HOME_SECTIONS: LandingSection[] = [
             "Grow newsletter sign-ups",
           ],
           pagesLabel: "Required pages",
-          pagesPlaceholder: "e.g. Home, Services, About, Contact, Careers",
+          pagesPlaceholder: "e.g. References, Team, FAQ",
+          pagesOptions: [
+            "Home",
+            "Services",
+            "About",
+            "Contact",
+            "Careers",
+            "Blog",
+            "Landing page",
+            "Other",
+          ],
+          pagesCustomLabel: "Additional pages (optional)",
+          pagesCustomPlaceholder: "e.g. References, Team, FAQ",
+          pagesRequiredHint:
+            "Please select at least one page or add your own.",
           workflowLabel: "Number of core workflows",
           workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
           stepNavigationLabel: "Request progress",
           stepLabel: "Step",
           stepOneTitle: "Contact",
-          stepTwoTitle: "Project",
+          stepTwoTitle: "Project details",
           stepThreeTitle: "Timing",
           previousStepLabel: "Back",
           nextStepLabel: "Continue",

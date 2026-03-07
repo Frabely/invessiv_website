@@ -1,4 +1,4 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
@@ -12,12 +12,11 @@ afterEach(() => {
 const formCopyFixture = {
   budgetLabel: "Budget",
   budgetOptions: ["1.000 € - 2.500 €"],
-  closeLabel: "Schließen",
   conditionalFieldHint: "Dynamische Pflichtfelder",
   companyLabel: "Unternehmen",
   consentLabel: "Ich stimme gemäß",
   emailLabel: "E-Mail",
-  firstNameLabel: "Vorname",
+  firstNameLabel: "Name",
   goalLabel: "Ziel",
   goalOptions: ["Leads"],
   intro: "Kurz",
@@ -36,8 +35,12 @@ const formCopyFixture = {
   mailSubjectPrefix: "Projektanfrage",
   offerLabel: "Angebot",
   offerPlaceholder: "Auswählen",
+  pagesCustomLabel: "Weitere Seiten",
+  pagesCustomPlaceholder: "z. B. FAQ",
   pagesLabel: "Seiten",
+  pagesOptions: ["Start", "Kontakt", "Karriere"],
   pagesPlaceholder: "Start, Kontakt",
+  pagesRequiredHint: "Bitte mindestens eine Seite wählen.",
   phoneLabel: "Telefon",
   previousStepLabel: "Zurück",
   projectDetailsLabel: "Projekt",
@@ -74,7 +77,6 @@ const renderForm = () =>
     <ProjectRequestForm
       formCopy={formCopyFixture}
       offerOptions={offerOptionsFixture}
-      openButtonLabel="Jetzt Projekt anfragen"
       privacyHref="/privacy"
       privacyLabel="Datenschutzerklärung"
       submitHref="mailto:test@example.com"
@@ -82,29 +84,14 @@ const renderForm = () =>
   );
 
 describe("ProjectRequestForm", () => {
-  it("renders trigger button before the panel is opened", () => {
+  it("renders the first step directly with localized offer options", () => {
     renderForm();
-
-    expect(
-      screen.getByRole("button", { name: "Jetzt Projekt anfragen" }),
-    ).toBeTruthy();
-    expect(screen.queryByRole("textbox", { name: "Vorname*" })).toBeNull();
-  });
-
-  it("opens first step and localized offer options on button click", () => {
-    renderForm();
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Jetzt Projekt anfragen" }),
-    );
 
     expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
-    expect(
-      screen.getByRole("button", { name: "Weiter zu Projekt" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Weiter zu Projekt" })).toBeTruthy();
   });
 
   it("preselects the offer when opened from a service CTA", () => {
@@ -116,7 +103,6 @@ describe("ProjectRequestForm", () => {
         <ProjectRequestForm
           formCopy={formCopyFixture}
           offerOptions={offerOptionsFixture}
-          openButtonLabel="Jetzt Projekt anfragen"
           privacyHref="/privacy"
           privacyLabel="Datenschutzerklärung"
           submitHref="mailto:test@example.com"
@@ -131,16 +117,36 @@ describe("ProjectRequestForm", () => {
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
+  });
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
-      target: { value: "Max" },
+  it("requires at least one selected page in step two for web projects", () => {
+    renderForm();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
+      target: { value: "Max Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
       target: { value: "max@example.com" },
     });
+    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+      target: { value: "web" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
-    expect(screen.getByRole("textbox", { name: /Website\*/ })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "Seiten*" })).toBeTruthy();
+    fireEvent.change(screen.getByRole("textbox", { name: /Website\*/ }), {
+      target: { value: "https://example.com" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+      target: { value: "Wir brauchen einen Relaunch." },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
+
+    expect(screen.getByRole("alert")).toBeTruthy();
+    expect(screen.getByText("Bitte mindestens eine Seite wählen.")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
+    expect(screen.getByRole("checkbox")).toBeTruthy();
   });
 });

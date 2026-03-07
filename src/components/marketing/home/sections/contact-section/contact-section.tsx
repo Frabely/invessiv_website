@@ -12,6 +12,7 @@ type ContactChannel = NonNullable<
   LandingSectionCopy["contactChannels"]
 >[number];
 type ContactForm = NonNullable<LandingSectionCopy["contactForm"]>;
+type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
   contactCta?: ContactCta;
@@ -55,6 +56,9 @@ export function ContactSection({
   summaryPoints,
   title,
 }: ContactSectionProps) {
+  const [copiedEntryId, setCopiedEntryId] = useState<string | null>(null);
+  const [copyStatusMessage, setCopyStatusMessage] = useState("");
+
   const primaryPath = useMemo(
     () =>
       contactCta && contactForm
@@ -91,6 +95,14 @@ export function ContactSection({
   }, [contactChannels, primaryPath]);
 
   const [selectedEntryId, setSelectedEntryId] = useState(entries[0]?.id ?? "");
+
+  const getChannelMode = (channel: ContactChannel): ChannelMode => {
+    if (channel.mode) {
+      return channel.mode;
+    }
+    return channel.href.startsWith("tel:") ? "call" : "email";
+  };
+
   const activeEntryId = useMemo(() => {
     if (!entries.length) {
       return "";
@@ -99,6 +111,48 @@ export function ContactSection({
     const hasSelectedEntry = entries.some((entry) => entry.id === selectedEntryId);
     return hasSelectedEntry ? selectedEntryId : entries[0].id;
   }, [entries, selectedEntryId]);
+
+  useEffect(() => {
+    if (!copiedEntryId) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setCopiedEntryId((previous) => (previous === copiedEntryId ? null : previous));
+    }, 1800);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [copiedEntryId]);
+
+  const copyChannelValue = async (entry: ContactEntry) => {
+    if (!entry.channel?.copyValue) {
+      return;
+    }
+
+    const valueToCopy = entry.channel.copyValue;
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(valueToCopy);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = valueToCopy;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      setCopiedEntryId(entry.id);
+      setCopyStatusMessage(entry.channel.copiedLabel ?? "Copied");
+    } catch {
+      setCopiedEntryId(null);
+      setCopyStatusMessage(entry.channel.copyLabel ?? "Copy unavailable");
+    }
+  };
 
   useEffect(() => {
     if (!primaryPath) {
@@ -215,7 +269,7 @@ export function ContactSection({
                     <button
                       aria-controls={`contact-entry-panel-${entry.id}`}
                       aria-selected={isActive}
-                      className={`contact-entry-trigger${isActive ? " is-active" : ""}`}
+                      className={`contact-entry-trigger${entry.kind === "project" ? " contact-entry-trigger--project" : ""}${isActive ? " is-active" : ""}`}
                       id={`contact-entry-tab-${entry.id}`}
                       key={entry.id}
                       onKeyDown={(event) => {
@@ -233,14 +287,21 @@ export function ContactSection({
                   );
                 })}
               </div>
+              <p className="contact-screen-reader-status" role="status" aria-live="polite">
+                {copyStatusMessage}
+              </p>
 
               {entries.map((entry) => {
                 const isActive = activeEntryId === entry.id;
+                const channelMode =
+                  entry.kind === "channel" && entry.channel
+                    ? getChannelMode(entry.channel)
+                    : null;
 
                 return (
                   <article
                     aria-labelledby={`contact-entry-tab-${entry.id}`}
-                    className={`contact-entry-panel${entry.kind === "project" ? " contact-entry-panel--project" : ""}`}
+                    className={`contact-entry-panel${entry.kind === "project" ? " contact-entry-panel--project" : ""}${channelMode ? ` contact-entry-panel--${channelMode}` : ""}`}
                     hidden={!isActive}
                     id={`contact-entry-panel-${entry.id}`}
                     key={`panel-${entry.id}`}
@@ -258,7 +319,6 @@ export function ContactSection({
                         <ProjectRequestForm
                           formCopy={primaryPath.form}
                           offerOptions={contactFormOffers}
-                          openButtonLabel={primaryPath.cta.label}
                           privacyHref={privacyHref}
                           privacyLabel={primaryPath.form.privacyLabel}
                           submitHref={COMPANY_MAILTO}
@@ -271,16 +331,64 @@ export function ContactSection({
 
                     {entry.kind === "channel" && entry.channel ? (
                       <>
-                        <p className="contact-entry-panel-value">{entry.channel.value}</p>
-                        <a
-                          className="contact-channel-action-link contact-channel-action-link--secondary"
-                          href={entry.channel.href}
-                        >
-                          {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
-                        </a>
-                        {entry.channel.hint ? (
-                          <p className="contact-entry-panel-hint">{entry.channel.hint}</p>
+                        {channelMode === "email" ? (
+                          <div className="contact-channel-email-card">
+                            <div className="contact-channel-meta">
+                              <p className="contact-channel-meta-label">
+                                {entry.channel.metaLabel ?? "Kontakt"}
+                              </p>
+                              <p className="contact-channel-meta-value">
+                                {entry.channel.value}
+                              </p>
+                            </div>
+                            {entry.channel.copyValue ? (
+                              <button
+                                className="contact-channel-copy-button"
+                                onClick={() => copyChannelValue(entry)}
+                                type="button"
+                              >
+                                {copiedEntryId === entry.id
+                                  ? (entry.channel.copiedLabel ?? "Copied")
+                                  : (entry.channel.copyLabel ?? "Copy")}
+                              </button>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <div className="contact-channel-call-card">
+                            <p className="contact-channel-meta-label">
+                              {entry.channel.metaLabel ?? "Format"}
+                            </p>
+                            <p className="contact-channel-meta-value">
+                              {entry.channel.metaValue ?? entry.channel.value}
+                            </p>
+                          </div>
+                        )}
+
+                        {entry.channel.helper ? (
+                          <p className="contact-entry-panel-helper">{entry.channel.helper}</p>
                         ) : null}
+
+                        {entry.channel.detailPoints?.length ? (
+                          <ul className="contact-channel-detail-list">
+                            {entry.channel.detailPoints.map((point) => (
+                              <li key={`${entry.id}-${point}`}>{point}</li>
+                            ))}
+                          </ul>
+                        ) : null}
+
+                        <div className="contact-channel-footer">
+                          {entry.channel.hint ? (
+                            <p className="contact-entry-panel-hint">{entry.channel.hint}</p>
+                          ) : null}
+                          <div className="contact-channel-actions">
+                            <a
+                              className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
+                              href={entry.channel.href}
+                            >
+                              {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
+                            </a>
+                          </div>
+                        </div>
                       </>
                     ) : null}
                   </article>
@@ -299,7 +407,7 @@ export function ContactSection({
 
           {contactSecondaryCta ? (
             <div className="contact-cta-wrap">
-              <a className="btn btn--ghost" href={contactSecondaryCta.href}>
+              <a className="contact-secondary-link" href={contactSecondaryCta.href}>
                 {contactSecondaryCta.label}
               </a>
             </div>

@@ -113,8 +113,9 @@ describe("ContactSection", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "Jetzt Projekt anfragen" }),
+      screen.getByRole("region", { name: "Projektanfrage" }),
     ).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: "Leistungen ansehen" })

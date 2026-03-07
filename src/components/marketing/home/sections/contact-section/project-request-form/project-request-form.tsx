@@ -11,7 +11,6 @@ type FormStep = (typeof STEP_SEQUENCE)[number];
 type ContactFormCopy = {
   budgetLabel: string;
   budgetOptions: string[];
-  closeLabel: string;
   conditionalFieldHint: string;
   companyLabel: string;
   consentLabel: string;
@@ -37,6 +36,10 @@ type ContactFormCopy = {
   offerPlaceholder: string;
   pagesLabel: string;
   pagesPlaceholder: string;
+  pagesOptions?: string[];
+  pagesCustomLabel?: string;
+  pagesCustomPlaceholder?: string;
+  pagesRequiredHint?: string;
   phoneLabel: string;
   projectDetailsLabel: string;
   projectDetailsPlaceholder: string;
@@ -66,7 +69,6 @@ type ContactFormCopy = {
 type ProjectRequestFormProps = {
   formCopy: ContactFormCopy;
   offerOptions: Array<{ key: string; title: string }>;
-  openButtonLabel: string;
   privacyHref: string;
   privacyLabel: string;
   submitHref: string;
@@ -75,24 +77,25 @@ type ProjectRequestFormProps = {
 export function ProjectRequestForm({
   formCopy,
   offerOptions,
-  openButtonLabel,
   privacyHref,
   privacyLabel,
   submitHref,
 }: ProjectRequestFormProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [selectedOfferKey, setSelectedOfferKey] = useState<string>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
+  const [selectedPageOptions, setSelectedPageOptions] = useState<string[]>([]);
+  const [pagesSelectionError, setPagesSelectionError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
-  const firstNameInputRef = useRef<HTMLInputElement | null>(null);
+  const nameInputRef = useRef<HTMLInputElement | null>(null);
   const offerSelectRef = useRef<HTMLSelectElement | null>(null);
   const websiteInputRef = useRef<HTMLInputElement | null>(null);
-  const pagesInputRef = useRef<HTMLInputElement | null>(null);
+  const pagesCustomInputRef = useRef<HTMLInputElement | null>(null);
   const workflowSelectRef = useRef<HTMLSelectElement | null>(null);
   const goalSelectRef = useRef<HTMLSelectElement | null>(null);
   const projectDetailsRef = useRef<HTMLTextAreaElement | null>(null);
   const consentInputRef = useRef<HTMLInputElement | null>(null);
+  const pagesOptionsContainerRef = useRef<HTMLDivElement | null>(null);
   const pendingOfferKeyRef = useRef<string>("");
 
   const selectedOfferTitle =
@@ -107,6 +110,13 @@ export function ProjectRequestForm({
   const stepTwoNextLabel =
     formCopy.nextStepProjectLabel ??
     `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
+  const availablePageOptions = useMemo(
+    () =>
+      formCopy.pagesOptions?.length
+        ? formCopy.pagesOptions
+        : ["Start", "Leistungen", "Über uns", "Kontakt", "Karriere", "Blog", "Landingpage", "Sonstiges"],
+    [formCopy.pagesOptions],
+  );
 
   const fieldRules = useMemo(() => {
     const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
@@ -122,8 +132,8 @@ export function ProjectRequestForm({
     (step: FormStep) => {
       window.requestAnimationFrame(() => {
         if (step === 1) {
-          if (firstNameInputRef.current && !firstNameInputRef.current.value) {
-            firstNameInputRef.current.focus();
+          if (nameInputRef.current && !nameInputRef.current.value) {
+            nameInputRef.current.focus();
             return;
           }
           offerSelectRef.current?.focus();
@@ -140,7 +150,7 @@ export function ProjectRequestForm({
             return;
           }
           if (fieldRules.requiresPages) {
-            pagesInputRef.current?.focus();
+            pagesCustomInputRef.current?.focus();
             return;
           }
           if (fieldRules.requiresWorkflow) {
@@ -175,54 +185,98 @@ export function ProjectRequestForm({
     [offerOptions],
   );
 
-  const openForm = (presetOfferKey = "") => {
-    setIsOpen(true);
-    setSelectedOfferKey(getValidOfferKey(presetOfferKey));
-    setCurrentStep(1);
-    setStatusMessage(null);
-    focusStep(1);
+  const togglePageOption = (option: string) => {
+    setSelectedPageOptions((previous) => {
+      if (previous.includes(option)) {
+        return previous.filter((item) => item !== option);
+      }
+      return [...previous, option];
+    });
+    setPagesSelectionError(null);
   };
 
-  const closeForm = () => {
-    setIsOpen(false);
-    setSelectedOfferKey("");
-    setCurrentStep(1);
-    setStatusMessage(null);
-  };
+  const applyOfferSelection = useCallback((nextOfferKey: string) => {
+    setSelectedOfferKey(nextOfferKey);
 
-  const validateStep = useCallback((step: FormStep) => {
-    const form = formRef.current;
-    if (!form) {
+    if (nextOfferKey === "web") {
+      return;
+    }
+
+    setSelectedPageOptions([]);
+    setPagesSelectionError(null);
+    if (pagesCustomInputRef.current) {
+      pagesCustomInputRef.current.value = "";
+    }
+  }, []);
+
+  const validatePagesSelection = useCallback(() => {
+    if (!fieldRules.requiresPages) {
+      setPagesSelectionError(null);
       return true;
     }
 
-    const controls = Array.from(
-      form.querySelectorAll<
-        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-      >(
-        `[data-step="${step}"] input, [data-step="${step}"] select, [data-step="${step}"] textarea`,
-      ),
-    );
+    const customPagesValue = pagesCustomInputRef.current?.value.trim() ?? "";
+    const hasSelectedPages =
+      selectedPageOptions.length > 0 || customPagesValue.length > 0;
 
-    for (const control of controls) {
-      if (control.disabled) {
-        continue;
-      }
-
-      if (!control.checkValidity()) {
-        control.reportValidity();
-        control.focus();
-        return false;
-      }
+    if (hasSelectedPages) {
+      setPagesSelectionError(null);
+      return true;
     }
 
-    return true;
-  }, []);
+    setPagesSelectionError(
+      formCopy.pagesRequiredHint ??
+        "Bitte mindestens eine Seite auswählen oder ergänzen.",
+    );
+    pagesOptionsContainerRef.current?.focus();
+    return false;
+  }, [
+    fieldRules.requiresPages,
+    formCopy.pagesRequiredHint,
+    selectedPageOptions.length,
+  ]);
+
+  const validateStep = useCallback(
+    (step: FormStep) => {
+      const form = formRef.current;
+      if (!form) {
+        return true;
+      }
+
+      const controls = Array.from(
+        form.querySelectorAll<
+          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >(
+          `[data-step="${step}"] input, [data-step="${step}"] select, [data-step="${step}"] textarea`,
+        ),
+      );
+
+      for (const control of controls) {
+        if (control.disabled) {
+          continue;
+        }
+
+        if (!control.checkValidity()) {
+          control.reportValidity();
+          control.focus();
+          return false;
+        }
+      }
+
+      if (step === 2 && !validatePagesSelection()) {
+        return false;
+      }
+
+      return true;
+    },
+    [validatePagesSelection],
+  );
 
   const setStep = useCallback(
     (step: FormStep) => {
       setCurrentStep(step);
       setStatusMessage(null);
+      setPagesSelectionError(null);
       focusStep(step);
     },
     [focusStep],
@@ -252,13 +306,10 @@ export function ProjectRequestForm({
       }
       const nextOfferKey = pendingOfferKeyRef.current;
       pendingOfferKeyRef.current = "";
-      setIsOpen(true);
-      setSelectedOfferKey(nextOfferKey);
+      applyOfferSelection(nextOfferKey);
       setCurrentStep(1);
       setStatusMessage(null);
-      window.requestAnimationFrame(() => {
-        firstNameInputRef.current?.focus();
-      });
+      focusStep(1);
     };
 
     const handleDocumentClick = (event: MouseEvent) => {
@@ -272,13 +323,10 @@ export function ProjectRequestForm({
       }
       const nextOfferKey = getValidOfferKey(contactAnchor.dataset.projectOffer);
       pendingOfferKeyRef.current = nextOfferKey;
-      setIsOpen(true);
-      setSelectedOfferKey(nextOfferKey);
+      applyOfferSelection(nextOfferKey);
       setCurrentStep(1);
       setStatusMessage(null);
-      window.requestAnimationFrame(() => {
-        firstNameInputRef.current?.focus();
-      });
+      focusStep(1);
     };
 
     openFromContactHash();
@@ -289,7 +337,7 @@ export function ProjectRequestForm({
       window.removeEventListener("hashchange", openFromContactHash);
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [getValidOfferKey]);
+  }, [applyOfferSelection, focusStep, getValidOfferKey]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -310,12 +358,14 @@ export function ProjectRequestForm({
     const formData = new FormData(form);
     const getValue = (name: string) => String(formData.get(name) ?? "").trim();
 
-    const fullName = `${getValue("firstName")} ${getValue("lastName")}`.trim();
+    const fullName = getValue("fullName");
     const selectedOffer = selectedOfferTitle || getValue("offer");
     const company = getValue("company");
     const website = getValue("website");
     const goal = getValue("goal");
-    const pages = getValue("pages");
+    const pagesSelected = getValue("pagesSelected");
+    const pagesCustom = getValue("pagesCustom");
+    const pages = [pagesSelected, pagesCustom].filter(Boolean).join(" | ");
     const workflow = getValue("workflow");
     const budget = getValue("budget");
     const start = getValue("start");
@@ -370,81 +420,58 @@ export function ProjectRequestForm({
 
   return (
     <div className="project-request">
-      {!isOpen ? (
-        <button
-          className="btn btn--primary contact-primary-cta contact-primary-cta--shimmer"
-          onClick={() => openForm()}
-          type="button"
-        >
-          {openButtonLabel}
-        </button>
-      ) : null}
-
-      {isOpen ? (
-        <div
-          className="project-request-panel"
-          role="region"
-          aria-label={formCopy.title}
-        >
-          <div className="project-request-head project-request-head--close-only">
-            <div className="project-request-head-copy">
-              <h3>{formCopy.title}</h3>
-              <p className="project-request-intro">{formCopy.intro}</p>
-            </div>
-            <button
-              aria-label={formCopy.closeLabel}
-              className="project-request-close"
-              onClick={closeForm}
-              type="button"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+      <div className="project-request-panel" role="region" aria-label={formCopy.title}>
+        <div className="project-request-head project-request-head--close-only">
+          <div className="project-request-head-copy">
+            <h3>{formCopy.title}</h3>
+            <p className="project-request-intro">{formCopy.intro}</p>
           </div>
+        </div>
 
-          <ol
-            aria-label={formCopy.stepNavigationLabel}
-            className="project-request-stepper"
-          >
-            {stepTitles.map((title, index) => {
-              const step = STEP_SEQUENCE[index];
-              const isDone = step < currentStep;
-              const isCurrent = step === currentStep;
+        <ol
+          aria-label={formCopy.stepNavigationLabel}
+          className="project-request-stepper"
+        >
+          {stepTitles.map((title, index) => {
+            const step = STEP_SEQUENCE[index];
+            const isDone = step < currentStep;
+            const isCurrent = step === currentStep;
 
-              return (
-                <li
-                  className={`project-request-stepper-item${isDone ? " is-done" : ""}${isCurrent ? " is-current" : ""}`}
-                  key={`${title}-${step}`}
+            return (
+              <li
+                className={`project-request-stepper-item${isDone ? " is-done" : ""}${isCurrent ? " is-current" : ""}`}
+                key={`${title}-${step}`}
+              >
+                <button
+                  aria-current={isCurrent ? "step" : undefined}
+                  className="project-request-stepper-trigger"
+                  disabled={step > currentStep}
+                  onClick={() => {
+                    if (step < currentStep) {
+                      setStep(step);
+                    }
+                  }}
+                  type="button"
                 >
-                  <button
-                    aria-current={isCurrent ? "step" : undefined}
-                    className="project-request-stepper-trigger"
-                    disabled={step > currentStep}
-                    onClick={() => {
-                      if (step < currentStep) {
-                        setStep(step);
-                      }
-                    }}
-                    type="button"
-                  >
-                    <span className="project-request-stepper-index">{step}</span>
-                    <span className="project-request-stepper-copy">
-                      <small>
-                        {formCopy.stepLabel} {step}
-                      </small>
-                      <strong>{title}</strong>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+                  <span className="project-request-stepper-index">{step}</span>
+                  <span className="project-request-stepper-copy">
+                    <small>
+                      {formCopy.stepLabel} {step}
+                    </small>
+                    <strong>{title}</strong>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
 
-          <form
-            className="project-request-form"
-            ref={formRef}
-            onSubmit={handleSubmit}
-            noValidate
-          >
+        <form
+          className="project-request-form"
+          ref={formRef}
+          onSubmit={handleSubmit}
+          noValidate
+        >
             <fieldset
               className="project-request-step"
               data-step="1"
@@ -460,9 +487,9 @@ export function ProjectRequestForm({
                   </span>
                   <input
                     autoCapitalize="words"
-                    autoComplete="given-name"
-                    name="firstName"
-                    ref={firstNameInputRef}
+                    autoComplete="name"
+                    name="fullName"
+                    ref={nameInputRef}
                     required
                     type="text"
                   />
@@ -484,7 +511,7 @@ export function ProjectRequestForm({
                 <select
                   name="offer"
                   onChange={(event) => {
-                    setSelectedOfferKey(event.target.value);
+                    applyOfferSelection(event.target.value);
                   }}
                   ref={offerSelectRef}
                   required
@@ -525,26 +552,24 @@ export function ProjectRequestForm({
             >
               <legend>{formCopy.stepTwoTitle}</legend>
 
-              <label className="project-request-field">
-                <span>
-                  {formCopy.websiteLabel}
-                  {fieldRules.requiresWebsite ? (
+              {fieldRules.requiresWebsite ? (
+                <label className="project-request-field">
+                  <span>
+                    {formCopy.websiteLabel}
                     <strong className="project-request-required-marker">*</strong>
-                  ) : null}
-                </span>
-                <input
-                  autoComplete="url"
-                  name="website"
-                  ref={websiteInputRef}
-                  required={fieldRules.requiresWebsite}
-                  type="url"
-                />
-                {fieldRules.requiresWebsite ? (
+                  </span>
+                  <input
+                    autoComplete="url"
+                    name="website"
+                    ref={websiteInputRef}
+                    required
+                    type="url"
+                  />
                   <small className="project-request-field-hint">
                     {formCopy.websiteRequiredHint}
                   </small>
-                ) : null}
-              </label>
+                </label>
+              ) : null}
 
               {fieldRules.requiresGoal ? (
                 <label className="project-request-field">
@@ -566,19 +591,54 @@ export function ProjectRequestForm({
               ) : null}
 
               {fieldRules.requiresPages ? (
-                <label className="project-request-field">
-                  <span>
+                <div
+                  className="project-request-pages"
+                  ref={pagesOptionsContainerRef}
+                  tabIndex={-1}
+                >
+                  <p className="project-request-pages-label">
                     {formCopy.pagesLabel}
                     <strong className="project-request-required-marker">*</strong>
-                  </span>
+                  </p>
                   <input
-                    name="pages"
-                    placeholder={formCopy.pagesPlaceholder}
-                    ref={pagesInputRef}
-                    required
-                    type="text"
+                    name="pagesSelected"
+                    type="hidden"
+                    value={selectedPageOptions.join(", ")}
                   />
-                </label>
+                  <div className="project-request-pages-options">
+                    {availablePageOptions.map((option) => {
+                      const isSelected = selectedPageOptions.includes(option);
+
+                      return (
+                        <button
+                          aria-pressed={isSelected}
+                          className={`project-request-page-option${isSelected ? " is-selected" : ""}`}
+                          key={option}
+                          onClick={() => togglePageOption(option)}
+                          type="button"
+                        >
+                          {option}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <label className="project-request-field project-request-pages-custom">
+                    <span>{formCopy.pagesCustomLabel ?? "Weitere Seiten (optional)"}</span>
+                    <input
+                      name="pagesCustom"
+                      placeholder={
+                        formCopy.pagesCustomPlaceholder ?? formCopy.pagesPlaceholder
+                      }
+                      ref={pagesCustomInputRef}
+                      type="text"
+                    />
+                  </label>
+                  {pagesSelectionError ? (
+                    <p className="project-request-pages-error" role="alert">
+                      {pagesSelectionError}
+                    </p>
+                  ) : null}
+                </div>
               ) : null}
 
               {fieldRules.requiresWorkflow ? (
@@ -646,15 +706,6 @@ export function ProjectRequestForm({
 
               <div className="project-request-grid project-request-grid--two">
                 <label className="project-request-field">
-                  <span>{formCopy.lastNameLabel}</span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="family-name"
-                    name="lastName"
-                    type="text"
-                  />
-                </label>
-                <label className="project-request-field">
                   <span>{formCopy.companyLabel}</span>
                   <input
                     autoCapitalize="words"
@@ -663,18 +714,21 @@ export function ProjectRequestForm({
                     type="text"
                   />
                 </label>
-              </div>
-
-              <div className="project-request-grid project-request-grid--two">
-                <label className="project-request-field">
-                  <span>{formCopy.phoneLabel}</span>
-                  <input autoComplete="tel" name="phone" type="tel" />
-                </label>
                 <label className="project-request-field">
                   <span>{formCopy.roleLabel}</span>
-                  <input autoComplete="organization-title" name="role" type="text" />
+                  <input
+                    autoCapitalize="words"
+                    autoComplete="organization-title"
+                    name="role"
+                    type="text"
+                  />
                 </label>
               </div>
+
+              <label className="project-request-field">
+                <span>{formCopy.phoneLabel}</span>
+                <input autoComplete="tel" name="phone" type="tel" />
+              </label>
 
               <div className="project-request-grid project-request-grid--two">
                 <label className="project-request-field">
@@ -735,9 +789,8 @@ export function ProjectRequestForm({
                 {statusMessage}
               </p>
             ) : null}
-          </form>
-        </div>
-      ) : null}
+        </form>
+      </div>
     </div>
   );
 }
