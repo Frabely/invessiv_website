@@ -4652,19 +4652,49 @@ body {
   margin: 0;
   padding: 0;
   list-style: none;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-content: space-between;
   gap: 8px;
+  width: 100%;
 }
 
 .contact-trust-list li {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 34px;
+  white-space: nowrap;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  padding: 4px 10px;
+  padding: 6px 12px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.75rem;
   line-height: 1.35;
+}
+
+.contact-trust-list li::before {
+  content: "\2713";
+  display: inline-block;
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #e79a49;
+  transform: translateY(-0.5px);
+}
+
+@media (max-width: 900px) {
+  .contact-trust-list {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+
+  .contact-trust-list li {
+    white-space: normal;
+  }
 }
 
 .contact-cta-wrap {
@@ -4685,7 +4715,8 @@ body {
   width: 100%;
 }
 
-.contact-primary-cta {
+.contact-primary-cta,
+.contact-primary-cta--shimmer {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -4722,14 +4753,22 @@ body {
 }
 
 .project-request-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
 }
 
 .project-request-head--close-only {
-  justify-content: flex-end;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.project-request-head-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
 }
 
 .project-request-head h3 {
@@ -4769,19 +4808,34 @@ body {
 }
 
 .project-request-intro {
-  margin: 12px 0 0;
+  margin: 0;
+  text-align: left;
+  justify-self: start;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
   font-size: 0.92rem;
   line-height: 1.56;
 }
 
+.project-request-head .project-request-close {
+  justify-self: end;
+}
+
 .project-request-stepper {
-  margin: 14px 0 0;
-  padding: 0;
+  margin: 12px 0 0;
+  padding: 12px;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
+  gap: 10px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 26%, var(--color-border) 74%);
+  background:
+    linear-gradient(
+      140deg,
+      color-mix(in srgb, var(--color-cta) 8%, var(--color-surface-2) 92%),
+      color-mix(in srgb, var(--color-surface-2) 86%, transparent)
+    );
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent);
 }
 
 .project-request-stepper-item {
@@ -4794,12 +4848,12 @@ body {
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  padding: 8px 9px;
+  padding: 10px 11px;
   display: flex;
   align-items: center;
   gap: 8px;
   text-align: left;
-  min-height: 56px;
+  min-height: 66px;
 }
 
 .project-request-stepper-item.is-current .project-request-stepper-trigger {
@@ -4823,8 +4877,8 @@ body {
 }
 
 .project-request-stepper-index {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
@@ -4859,12 +4913,13 @@ body {
 
 .project-request-stepper-copy strong {
   color: inherit;
-  font-size: 0.81rem;
+  font-size: 0.9rem;
+  font-weight: 760;
   line-height: 1.2;
 }
 
 .project-request-form {
-  margin-top: 14px;
+  margin-top: 18px;
   display: grid;
   gap: 12px;
 }
@@ -4882,11 +4937,16 @@ body {
 }
 
 .project-request-step > legend {
-  padding: 0;
+  display: block;
+  width: 100%;
   margin: 0;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.86rem;
+  padding: 0 0 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  font-size: 1rem;
   font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-bottom: 10px;
 }
 
 .project-request-grid {
@@ -5118,6 +5178,7 @@ body {
 
   .project-request-stepper {
     grid-template-columns: 1fr;
+    padding: 8px;
   }
 
   .project-request-step-actions,

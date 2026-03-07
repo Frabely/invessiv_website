@@ -387,6 +387,10 @@ export function ProjectRequestForm({
           aria-label={formCopy.title}
         >
           <div className="project-request-head project-request-head--close-only">
+            <div className="project-request-head-copy">
+              <h3>{formCopy.title}</h3>
+              <p className="project-request-intro">{formCopy.intro}</p>
+            </div>
             <button
               aria-label={formCopy.closeLabel}
               className="project-request-close"
@@ -396,8 +400,6 @@ export function ProjectRequestForm({
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-
-          <p className="project-request-intro">{formCopy.intro}</p>
 
           <ol
             aria-label={formCopy.stepNavigationLabel}
