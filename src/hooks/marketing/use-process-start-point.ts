@@ -96,11 +96,28 @@ export function useProcessStartPoint({
             const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
             return Math.min(Math.max(rightXTarget, rightXMin), rightXMax);
           })();
+      const mobileCardAnchors = isMobileViewport
+        ? cards.map((card) => {
+            const rect = card.getBoundingClientRect();
+            const center = centerInLayout(rect);
+            const leftGap = Math.max(0, rect.left - layoutRect.left);
+            const rightGap = Math.max(0, layoutRect.right - rect.right);
+            const leftMidX = leftGap / 2;
+            const rightMidX = layoutRect.width - rightGap / 2;
+            const laneX = leftGap >= rightGap ? leftMidX : rightMidX;
+
+            return { center, laneX, leftMidX, rightMidX };
+          })
+        : null;
+      const mobileStartAnchor = mobileCardAnchors?.[0];
+      const mobileStartX = mobileStartAnchor?.leftMidX;
+      const mobileEndRightX =
+        mobileCardAnchors?.[mobileCardAnchors.length - 1]?.rightMidX;
       setCssPoint(
         "--process-start-x",
         "--process-start-y",
-        leftX,
-        firstCenter.y,
+        mobileStartX ?? mobileStartAnchor?.laneX ?? leftX,
+        mobileStartAnchor?.center.y ?? firstCenter.y,
       );
       const mobileEndY = (() => {
         const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
@@ -150,34 +167,57 @@ export function useProcessStartPoint({
         );
       });
 
-      const [spacing1, spacing2, spacing3] = spacingMidY;
-      if (spacing1 == null || spacing2 == null || spacing3 == null) {
-        return;
-      }
+      const toPoint = (x: number, y: number) => `L ${x.toFixed(2)} ${y.toFixed(2)}`;
+      let pathDefinition = "";
 
-      // Journey order: down, right, down, left, down, right, then to CTA endpoint.
-      const pathDefinition = isMobileViewport
-        ? [
-            `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${mobileEndY.toFixed(2)}`,
-            `L ${lastCenter.x.toFixed(2)} ${mobileEndY.toFixed(2)}`,
-          ].join(" ")
-        : [
-            `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
-            `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
-            `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
-          ].join(" ");
+      if (isMobileViewport && mobileCardAnchors?.length) {
+        const mobileSegments = [
+          `M ${(mobileStartX ?? mobileCardAnchors[0].laneX).toFixed(2)} ${mobileCardAnchors[0].center.y.toFixed(2)}`,
+        ];
+
+        spacingMidY.forEach((midY, index) => {
+          if (midY == null) {
+            return;
+          }
+
+          const currentAnchor = mobileCardAnchors[index];
+          const nextAnchor = mobileCardAnchors[index + 1];
+          if (!currentAnchor || !nextAnchor) {
+            return;
+          }
+
+          const currentLaneX =
+            index === 0 ? (mobileStartX ?? currentAnchor.laneX) : currentAnchor.laneX;
+          mobileSegments.push(toPoint(currentLaneX, midY));
+          mobileSegments.push(toPoint(nextAnchor.laneX, midY));
+          mobileSegments.push(toPoint(nextAnchor.laneX, nextAnchor.center.y));
+        });
+
+        const lastAnchor = mobileCardAnchors[mobileCardAnchors.length - 1];
+        mobileSegments.push(toPoint(lastAnchor.laneX, mobileEndY));
+        mobileSegments.push(
+          toPoint(mobileEndRightX ?? lastAnchor.laneX, mobileEndY),
+        );
+        mobileSegments.push(toPoint(lastCenter.x, mobileEndY));
+        pathDefinition = mobileSegments.join(" ");
+      } else {
+        const [spacing1, spacing2, spacing3] = spacingMidY;
+        if (spacing1 == null || spacing2 == null || spacing3 == null) {
+          return;
+        }
+
+        // Journey order: down, right, down, left, down, right, then to CTA endpoint.
+        pathDefinition = [
+          `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
+          `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
+          `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
+          `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
+          `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
+          `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
+          `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
+          `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
+        ].join(" ");
+      }
       path.setAttribute("d", pathDefinition);
       const measuredLength = path.getTotalLength();
       if (Number.isFinite(measuredLength) && measuredLength > 0) {

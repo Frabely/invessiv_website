@@ -3216,10 +3216,20 @@ main {
   }
 
   .process-step {
-    width: min(100%, 760px);
+    width: min(85%, 760px);
     opacity: 1;
     transform: none;
     transition-delay: 0ms;
+  }
+
+  .process-step:nth-child(odd) {
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+  }
+
+  .process-step:nth-child(even) {
+    margin-inline-start: 0;
+    margin-inline-end: auto;
   }
 
   .proof-section {
@@ -3243,7 +3253,7 @@ main {
   }
 
   .process-step {
-    width: 100%;
+    width: 85%;
     border-radius: 16px;
   }
 
