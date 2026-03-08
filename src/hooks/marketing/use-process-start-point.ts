@@ -57,12 +57,11 @@ export function useProcessStartPoint({
         return;
       }
 
-      const stepsTopInLayout = steps.offsetTop;
       const cardMetrics = cards.map((card) => {
         const rect = card.getBoundingClientRect();
-        const top = stepsTopInLayout + card.offsetTop;
-        const height = card.offsetHeight;
-        const bottom = top + height;
+        const top = rect.top - layoutRect.top;
+        const bottom = rect.bottom - layoutRect.top;
+        const height = rect.height;
         const centerY = top + height / 2;
         const left = rect.left - layoutRect.left;
         const right = rect.right - layoutRect.left;
@@ -118,22 +117,35 @@ export function useProcessStartPoint({
             const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
             return Math.min(Math.max(rightXTarget, rightXMin), rightXMax);
           })();
+      const mobileLaneInset = 8;
+      const mobileLaneOffset = Math.min(
+        16,
+        Math.max(10, layoutRect.width * 0.03),
+      );
       const mobileCardAnchors = isMobileViewport
         ? cardMetrics.map((metrics) => {
             const center = { x: metrics.centerX, y: metrics.centerY };
             const leftGap = Math.max(0, metrics.left);
             const rightGap = Math.max(0, layoutRect.width - metrics.right);
-            const leftMidX = leftGap / 2;
-            const rightMidX = layoutRect.width - rightGap / 2;
-            const laneX = leftGap >= rightGap ? leftMidX : rightMidX;
+            const leftLaneX = Math.max(
+              mobileLaneInset,
+              metrics.left - mobileLaneOffset,
+            );
+            const rightLaneX = Math.min(
+              layoutRect.width - mobileLaneInset,
+              metrics.right + mobileLaneOffset,
+            );
+            const prefersLeftLane = metrics.centerX > layoutRect.width / 2;
+            const laneX =
+              Math.abs(leftGap - rightGap) <= 2
+                ? (prefersLeftLane ? leftLaneX : rightLaneX)
+                : (leftGap >= rightGap ? leftLaneX : rightLaneX);
 
-            return { center, laneX, leftMidX, rightMidX };
+            return { center, laneX, leftLaneX, rightLaneX };
           })
         : null;
       const mobileStartAnchor = mobileCardAnchors?.[0];
-      const mobileStartX = mobileStartAnchor?.leftMidX;
-      const mobileEndRightX =
-        mobileCardAnchors?.[mobileCardAnchors.length - 1]?.rightMidX;
+      const mobileStartX = mobileStartAnchor?.laneX;
       setCssPoint(
         "--process-start-x",
         "--process-start-y",
@@ -214,9 +226,6 @@ export function useProcessStartPoint({
 
         const lastAnchor = mobileCardAnchors[mobileCardAnchors.length - 1];
         mobileSegments.push(toPoint(lastAnchor.laneX, ctaEndY));
-        mobileSegments.push(
-          toPoint(mobileEndRightX ?? lastAnchor.laneX, ctaEndY),
-        );
         mobileSegments.push(toPoint(lastCenter.x, ctaEndY));
         pathDefinition = mobileSegments.join(" ");
       } else {
