@@ -65,6 +65,9 @@ export function SiteHeader({
     }
     return "site-header__locale-option";
   };
+  const mobileNavigation = navigation.filter(
+    (item) => getLabelKey(item.href) !== "#contact",
+  );
 
   return (
     <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
@@ -248,7 +251,7 @@ export function SiteHeader({
                   </button>
                 </li>
               ) : null}
-              {navigation.map((item) => (
+              {mobileNavigation.map((item) => (
                 <li key={item.href}>
                   <a href={item.href}>
                     {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
