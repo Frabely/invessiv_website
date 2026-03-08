@@ -1,15 +1,15 @@
 {
   "terms": {
     "meta": {
-      "title": "Terms",
-      "description": "General terms and conditions of Moritz Hecht – Invessiv.",
-      "openGraphTitle": "Terms | Moritz Hecht – Invessiv",
+      "title": "Terms (B2B)",
+      "description": "B2B terms and conditions of Invessiv for web development, automation, and digital process solutions.",
+      "openGraphTitle": "Terms (B2B) | Invessiv",
       "openGraphLocale": "en_US"
     },
     "page": {
-      "title": "General Terms and Conditions",
-      "lead": "These terms apply to services by Moritz Hecht – Invessiv related to website creation, website optimization, digital process solutions, and AI-assisted workflow templates.",
-      "updatedAt": "Last updated: March 6, 2026.",
+      "title": "General Terms and Conditions (B2B)",
+      "lead": "These terms apply exclusively to business customers for services provided by Invessiv in web development, automation, and digital process solutions.",
+      "updatedAt": "Last updated: March 8, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -22,23 +22,52 @@
         "title": "1. Provider",
         "contractPrefix": "Contracting party is",
         "representedByLabel": "represented by",
-        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany"
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany",
+        "emailLabel": "Email"
       },
       "scope": {
         "title": "2. Scope",
-        "body": "These terms apply to all offers, services, and contracts between Moritz Hecht – Invessiv and business customers unless otherwise agreed in writing. Information submitted through the project request is used for pre-contractual evaluation and offer preparation."
+        "body": "These terms apply to all offers, services, and contracts between Invessiv and business customers within the meaning of Section 14 German Civil Code (BGB). Any deviating terms of the client apply only if expressly accepted in text form."
       },
-      "services": {
-        "title": "3. Services",
-        "body": "Type and scope of services are defined by offer, scope description, and project briefing. Timeframes shown on the website (for example 2–5 days or 7–14 days) are typical estimates and not guaranteed deadlines. Scope changes require separate agreement. To accelerate research, structuring, and draft phases, AI tools may be used as support. Domain review, implementation, and final quality assurance are carried out by the provider."
+      "contractConclusion": {
+        "title": "3. Formation of contract",
+        "body": "Requests via website, email, or initial consultation are non-binding. A contract is concluded only through offer and acceptance in text form or through an order confirmation in text form. The binding scope and content of services are defined by the offer, service description, and explicitly agreed terms."
+      },
+      "servicesScope": {
+        "title": "4. Services and scope of services",
+        "body": "Invessiv provides services primarily in web development, digital process solutions, and related implementation and consulting services. The specific scope of services is defined in the respective offer. Change or extension requests after contract conclusion require separate agreement and may result in additional effort and additional remuneration."
+      },
+      "clientCooperation": {
+        "title": "5. Client cooperation duties",
+        "body": "The client shall provide required content, information, access credentials, points of contact, and approvals in a timely manner. Delays caused by late or incomplete cooperation extend agreed timelines appropriately. Any resulting additional effort may be billed according to agreed rates or, if no rate applies, according to customary effort."
       },
       "payment": {
-        "title": "4. Payment terms",
-        "body": "Prices follow the individual offer. Package prices and hourly rates listed on the website (development/implementation: €70–85 / h, content/small updates: €50–60 / h) are indicative and finalized per project. Invoices are due within 14 days without deductions."
+        "title": "6. Remuneration and payment terms",
+        "body": "Prices agreed in the offer apply. All prices are net plus statutory VAT, where applicable. Invoices are due within 14 days from invoice date without deduction, unless otherwise agreed. For larger projects, partial invoicing or milestone payments may apply if specified in the offer."
+      },
+      "acceptance": {
+        "title": "7. Acceptance",
+        "body": "Where services have the character of a contract for work, the client shall review and accept the completed work promptly after delivery, provided no material defects exist. Minor defects do not prevent acceptance. Material defects are documented and remedied within a reasonable period. Where no acceptance is owed, services are deemed properly rendered upon performance."
       },
       "usageRights": {
-        "title": "5. Usage rights",
-        "body": "Upon full payment, the client receives the agreed usage rights for delivered results within the contractually defined scope."
+        "title": "8. Usage rights",
+        "body": "All usage rights remain with Invessiv until full payment has been received. After full payment, the client receives the usage rights required for the contractually agreed purpose in the delivered work results. Delivery of open project files, source code, editable files, or other raw data is owed only if expressly agreed. Rights in open-source components, third-party assets, external libraries, plugins, fonts, or other third-party elements are governed by their respective license terms."
+      },
+      "thirdPartyServices": {
+        "title": "9. Third-party services and external costs",
+        "body": "Services and costs for hosting, domains, external software, APIs, third-party tools, external platforms, or other third-party services are included only if expressly stated in the offer. Invessiv may engage suitable subcontractors for service delivery."
+      },
+      "liability": {
+        "title": "10. Liability",
+        "body": "Statutory warranty rights apply unless otherwise validly agreed in these terms. Invessiv has unlimited liability for intent and gross negligence and for damages resulting from injury to life, body, or health. In cases of slight negligence involving breach of essential contractual obligations, liability is limited to foreseeable damage typical for this type of contract. In all other cases, liability for slight negligence is excluded to the extent permitted by law."
+      },
+      "confidentiality": {
+        "title": "11. Confidentiality",
+        "body": "Both parties shall treat confidential information of the other party disclosed in connection with the collaboration as confidential."
+      },
+      "finalProvisions": {
+        "title": "12. Final provisions",
+        "body": "The law of the Federal Republic of Germany applies, excluding the UN Convention on Contracts for the International Sale of Goods (CISG), where legally permissible. If the client is a merchant, a legal entity under public law, or a special fund under public law, the place of jurisdiction is the registered seat of Invessiv, where legally permissible. Individual agreements take precedence over these terms."
       }
     }
   }

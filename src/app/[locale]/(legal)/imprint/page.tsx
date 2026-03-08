@@ -8,7 +8,6 @@ import {
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
   COMPANY_SOCIAL_X,
-  COMPANY_TEL,
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -61,6 +60,7 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
 
   const dict = await getDictionary(locale);
   const imprint = dict.imprint;
+  const phoneHref = `tel:${imprint.values.phoneDisplay.replace(/\s+/g, "")}`;
   const sections = [
     {
       id: "provider",
@@ -78,53 +78,14 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
           </p>
           <p>
             <strong>{imprint.sections.contact.labels.phone}:</strong>{" "}
-            <a href={COMPANY_TEL}>{imprint.values.phoneDisplay}</a>
+            <a href={phoneHref}>{imprint.values.phoneDisplay}</a>
           </p>
           <p>
             <strong>{imprint.sections.contact.labels.email}:</strong>{" "}
             <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
-          <p>
-            <strong>{imprint.sections.vatId.title}:</strong> {imprint.sections.vatId.notePlaceholder}
-          </p>
-          <p>
-            <strong>{imprint.sections.commercialRegister.title}:</strong>{" "}
-            {imprint.sections.commercialRegister.emptyEntry}
-          </p>
         </>
       ),
-    },
-    {
-      id: "responsible-content",
-      title: imprint.sections.responsibleContent.title,
-      body: (
-        <>
-          <p>
-            {imprint.sections.responsibleContent.labels.name}: {COMPANY.owner}
-          </p>
-          <p>
-            {imprint.sections.responsibleContent.labels.address}: {imprint.values.addressLine}
-          </p>
-        </>
-      ),
-    },
-    {
-      id: "eu-dispute",
-      title: imprint.sections.euDispute.title,
-      body: (
-        <p>
-          {imprint.sections.euDispute.textBeforeLink}{" "}
-          <a href="https://ec.europa.eu/consumers/odr/" rel="noreferrer" target="_blank">
-            {imprint.sections.euDispute.linkLabel}
-          </a>
-          . {imprint.sections.euDispute.textAfterLink}
-        </p>
-      ),
-    },
-    {
-      id: "consumer-dispute",
-      title: imprint.sections.consumerDispute.title,
-      body: <p>{imprint.sections.consumerDispute.body}</p>,
     },
     {
       id: "social",

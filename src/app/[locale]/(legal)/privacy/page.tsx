@@ -5,7 +5,6 @@ import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
 import {
   COMPANY,
   COMPANY_MAILTO,
-  COMPANY_TEL,
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -56,6 +55,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
 
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
+  const phoneHref = `tel:${privacy.sections.controller.phoneDisplay.replace(/\s+/g, "")}`;
   const sections = [
     {
       id: "controller",
@@ -70,7 +70,8 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
             {privacy.sections.controller.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
           <p>
-            {privacy.sections.controller.phoneLabel}: <a href={COMPANY_TEL}>{privacy.sections.controller.phoneDisplay}</a>
+            {privacy.sections.controller.phoneLabel}:{" "}
+            <a href={phoneHref}>{privacy.sections.controller.phoneDisplay}</a>
           </p>
         </>
       ),
@@ -81,9 +82,24 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.hosting.body}</p>,
     },
     {
-      id: "contact-requests",
-      title: privacy.sections.contactRequests.title,
-      body: <p>{privacy.sections.contactRequests.body}</p>,
+      id: "contact-form",
+      title: privacy.sections.contactForm.title,
+      body: <p>{privacy.sections.contactForm.body}</p>,
+    },
+    {
+      id: "email-contact",
+      title: privacy.sections.emailContact.title,
+      body: <p>{privacy.sections.emailContact.body}</p>,
+    },
+    {
+      id: "calendly",
+      title: privacy.sections.calendly.title,
+      body: <p>{privacy.sections.calendly.body}</p>,
+    },
+    {
+      id: "zoom",
+      title: privacy.sections.zoom.title,
+      body: <p>{privacy.sections.zoom.body}</p>,
     },
     {
       id: "cookies",
@@ -91,9 +107,39 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.cookies.body}</p>,
     },
     {
+      id: "recipients",
+      title: privacy.sections.recipients.title,
+      body: <p>{privacy.sections.recipients.body}</p>,
+    },
+    {
+      id: "storage",
+      title: privacy.sections.storage.title,
+      body: <p>{privacy.sections.storage.body}</p>,
+    },
+    {
+      id: "third-country-transfers",
+      title: privacy.sections.thirdCountryTransfers.title,
+      body: <p>{privacy.sections.thirdCountryTransfers.body}</p>,
+    },
+    {
       id: "rights",
       title: privacy.sections.rights.title,
       body: <p>{privacy.sections.rights.body}</p>,
+    },
+    {
+      id: "complaints",
+      title: privacy.sections.complaints.title,
+      body: <p>{privacy.sections.complaints.body}</p>,
+    },
+    {
+      id: "data-provision",
+      title: privacy.sections.dataProvision.title,
+      body: <p>{privacy.sections.dataProvision.body}</p>,
+    },
+    {
+      id: "no-automated-decisions",
+      title: privacy.sections.noAutomatedDecisions.title,
+      body: <p>{privacy.sections.noAutomatedDecisions.body}</p>,
     },
   ];
 

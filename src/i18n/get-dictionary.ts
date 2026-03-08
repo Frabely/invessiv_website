@@ -25,33 +25,14 @@ export type Dictionary = {
         title: string;
         labels: {
           company: string;
-          legalForm: string;
           representedBy: string;
           address: string;
         };
-        notePlaceholder: string;
       };
       contact: {
-        title: string;
         labels: {
           email: string;
           phone: string;
-        };
-      };
-      commercialRegister: {
-        title: string;
-        emptyEntry: string;
-        notePlaceholder: string;
-      };
-      vatId: {
-        title: string;
-        notePlaceholder: string;
-      };
-      responsibleContent: {
-        title: string;
-        labels: {
-          name: string;
-          address: string;
         };
       };
       social: {
@@ -62,19 +43,8 @@ export type Dictionary = {
           instagram: string;
         };
       };
-      euDispute: {
-        title: string;
-        textBeforeLink: string;
-        linkLabel: string;
-        textAfterLink: string;
-      };
-      consumerDispute: {
-        title: string;
-        body: string;
-      };
     };
     values: {
-      legalForm: string;
       addressLine: string;
       phoneDisplay: string;
     };
@@ -103,12 +73,21 @@ export type Dictionary = {
         contractPrefix: string;
         representedByLabel: string;
         addressLine: string;
+        emailLabel: string;
       };
       scope: {
         title: string;
         body: string;
       };
-      services: {
+      contractConclusion: {
+        title: string;
+        body: string;
+      };
+      servicesScope: {
+        title: string;
+        body: string;
+      };
+      clientCooperation: {
         title: string;
         body: string;
       };
@@ -116,7 +95,27 @@ export type Dictionary = {
         title: string;
         body: string;
       };
+      acceptance: {
+        title: string;
+        body: string;
+      };
       usageRights: {
+        title: string;
+        body: string;
+      };
+      thirdPartyServices: {
+        title: string;
+        body: string;
+      };
+      liability: {
+        title: string;
+        body: string;
+      };
+      confidentiality: {
+        title: string;
+        body: string;
+      };
+      finalProvisions: {
         title: string;
         body: string;
       };
@@ -153,7 +152,19 @@ export type Dictionary = {
         title: string;
         body: string;
       };
-      contactRequests: {
+      contactForm: {
+        title: string;
+        body: string;
+      };
+      emailContact: {
+        title: string;
+        body: string;
+      };
+      calendly: {
+        title: string;
+        body: string;
+      };
+      zoom: {
         title: string;
         body: string;
       };
@@ -161,7 +172,31 @@ export type Dictionary = {
         title: string;
         body: string;
       };
+      recipients: {
+        title: string;
+        body: string;
+      };
+      storage: {
+        title: string;
+        body: string;
+      };
+      thirdCountryTransfers: {
+        title: string;
+        body: string;
+      };
       rights: {
+        title: string;
+        body: string;
+      };
+      complaints: {
+        title: string;
+        body: string;
+      };
+      dataProvision: {
+        title: string;
+        body: string;
+      };
+      noAutomatedDecisions: {
         title: string;
         body: string;
       };

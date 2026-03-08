@@ -184,12 +184,12 @@ const LEGAL_PAGE_HREFS = {
   de: {
     imprint: "/de/imprint",
     privacy: "/de/privacy",
-    terms: "/de/terms",
+    terms: "/de/agb",
   },
   en: {
     imprint: "/en/imprint",
     privacy: "/en/privacy",
-    terms: "/en/terms",
+    terms: "/en/agb",
   },
 } as const;
 
@@ -300,7 +300,7 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "ab 990 € einmalig",
             delivery: "3–7 Tage",
             included: [
-              "Klare Seitenstruktur (Hero, Vorteile, CTA, FAQ)",
+              "Klare Seitenstruktur (Hero, Vorteile, CTA, Q&A)",
               "Responsives Design (mobile-first)",
               "Basis-SEO: Meta-Daten, Open Graph, Indexierbarkeit",
               "Performance-Optimierung mit Fokus auf Core Web Vitals",
@@ -446,7 +446,7 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "from €990 one-time",
             delivery: "3–7 days",
             included: [
-              "Clear page structure (hero, benefits, CTA, FAQ)",
+              "Clear page structure (hero, benefits, CTA, Q&A)",
               "Responsive design (mobile-first)",
               "Basic SEO: metadata, Open Graph, indexability",
               "Performance optimization focused on Core Web Vitals",
@@ -716,6 +716,31 @@ const HOME_SECTIONS: LandingSection[] = [
             answer:
               "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Leistungsumfang. Zusätzliche Wünsche außerhalb des Leistungsumfangs stimme ich immer vor Umsetzung transparent mit dir ab.",
           },
+          {
+            question: "Was ist im Angebot typischerweise nicht enthalten?",
+            answer:
+              "Nicht enthalten sind in der Regel Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen, die nicht im vereinbarten Leistungsumfang stehen. Solche Punkte werden vor Umsetzung separat aufgeführt und abgestimmt.",
+          },
+          {
+            question: "Wie viele Korrekturen sind enthalten?",
+            answer:
+              "Die enthaltenen Korrekturen hängen vom Paket ab. Bei Landingpages sind in der Regel 1–2 Feedbackrunden enthalten. Weitere Korrekturen oder zusätzliche Schleifen stimmen wir vorab transparent als Zusatzaufwand ab.",
+          },
+          {
+            question: "Wie gehst du mit Zusatzwünschen um?",
+            answer:
+              "Zusatzwünsche außerhalb des vereinbarten Scopes werden nicht stillschweigend umgesetzt. Ich nenne dir vorab Auswirkung auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
+          },
+          {
+            question: "Welche Mitwirkung ist auf Kundenseite nötig?",
+            answer:
+              "Für einen sauberen Ablauf brauche ich zeitnahes Feedback, Freigaben, notwendige Zugänge und ggf. Inhalte/Assets. Verzögerungen bei diesen Mitwirkungen können den Zeitplan entsprechend verschieben.",
+          },
+          {
+            question: "Wann gilt ein Projekt als abgeschlossen?",
+            answer:
+              "Ein Projekt gilt als abgeschlossen, wenn der vereinbarte Leistungsumfang geliefert und die Übergabe bzw. der Go-live erfolgt ist. Weitere Wünsche danach behandeln wir als Folgeauftrag, sofern es sich nicht um Abweichungen vom vereinbarten Umfang handelt.",
+          },
         ],
       },
       en: {
@@ -746,6 +771,31 @@ const HOME_SECTIONS: LandingSection[] = [
             question: "Are there any hidden costs?",
             answer:
               "No. You receive a clear offer with a defined scope before implementation starts. Any additional requests outside scope are always aligned transparently before execution.",
+          },
+          {
+            question: "What is typically not included in the offer?",
+            answer:
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed scope. These items are listed and aligned separately before implementation.",
+          },
+          {
+            question: "How many revision rounds are included?",
+            answer:
+              "Included revisions depend on the package. For landing pages, typically 1-2 feedback rounds are included. Any additional rounds are aligned transparently in advance as extra effort.",
+          },
+          {
+            question: "How are additional requests handled?",
+            answer:
+              "Requests outside the agreed scope are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
+          },
+          {
+            question: "What client-side input is required?",
+            answer:
+              "A smooth process requires timely feedback, approvals, required access, and, where needed, content or assets. Delays in these inputs can shift the project timeline accordingly.",
+          },
+          {
+            question: "When is a project considered completed?",
+            answer:
+              "A project is considered completed when the agreed scope has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed scope.",
           },
         ],
       },
@@ -781,7 +831,7 @@ const HOME_SECTIONS: LandingSection[] = [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen & Preise", href: "#services" },
               { label: "Prozess", href: "#process" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Q&A", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
             ],
           },
@@ -813,7 +863,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
           { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/terms" },
+          { label: "AGB", href: "/agb" },
         ],
         contactDecisionIntro:
           "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
@@ -904,7 +954,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Newsletter-Anmeldungen",
           ],
           pagesLabel: "Benötigte Seiten",
-          pagesPlaceholder: "z. B. Referenzen, Team, FAQ",
+          pagesPlaceholder: "z. B. Referenzen, Team, Q&A",
           pagesOptions: [
             "Start",
             "Leistungen",
@@ -916,7 +966,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Sonstiges",
           ],
           pagesCustomLabel: "Weitere Seiten (optional)",
-          pagesCustomPlaceholder: "z. B. Referenzen, Team, FAQ",
+          pagesCustomPlaceholder: "z. B. Referenzen, Team, Q&A",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           workflowLabel: "Anzahl Kern-Workflows",
@@ -991,7 +1041,7 @@ const HOME_SECTIONS: LandingSection[] = [
               { label: "Proof", href: "#proof" },
               { label: "Services & Pricing", href: "#services" },
               { label: "Process", href: "#process" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Q&A", href: "#faq" },
               { label: "Contact", href: "#contact" },
             ],
           },
@@ -1022,7 +1072,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },
           { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
+          { label: "Terms", href: "/agb" },
         ],
         contactDecisionIntro:
           "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
@@ -1115,7 +1165,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Grow newsletter sign-ups",
           ],
           pagesLabel: "Required pages",
-          pagesPlaceholder: "e.g. References, Team, FAQ",
+          pagesPlaceholder: "e.g. References, Team, Q&A",
           pagesOptions: [
             "Home",
             "Services",
@@ -1127,7 +1177,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Other",
           ],
           pagesCustomLabel: "Additional pages (optional)",
-          pagesCustomPlaceholder: "e.g. References, Team, FAQ",
+          pagesCustomPlaceholder: "e.g. References, Team, Q&A",
           pagesRequiredHint:
             "Please select at least one page or add your own.",
           workflowLabel: "Number of core workflows",
@@ -1209,7 +1259,7 @@ const HOME_SECTIONS: LandingSection[] = [
               { label: "Ergebnisse", href: "#proof" },
               { label: "Leistungen & Preise", href: "#services" },
               { label: "Prozess", href: "#process" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Q&A", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
             ],
           },
@@ -1241,7 +1291,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
           { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/terms" },
+          { label: "AGB", href: "/agb" },
         ],
         footerBottomNote: "Inhaber: Moritz Hecht",
       },
@@ -1260,7 +1310,7 @@ const HOME_SECTIONS: LandingSection[] = [
               { label: "Proof", href: "#proof" },
               { label: "Services & Pricing", href: "#services" },
               { label: "Process", href: "#process" },
-              { label: "FAQ", href: "#faq" },
+              { label: "Q&A", href: "#faq" },
               { label: "Contact", href: "#contact" },
             ],
           },
@@ -1291,7 +1341,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },
           { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
+          { label: "Terms", href: "/agb" },
         ],
         footerBottomNote: "Owner: Moritz Hecht",
       },
@@ -1308,6 +1358,7 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     return href
       .replace("/imprint", LEGAL_PAGE_HREFS[locale].imprint)
       .replace("/privacy", LEGAL_PAGE_HREFS[locale].privacy)
+      .replace("/agb", LEGAL_PAGE_HREFS[locale].terms)
       .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
   };
 

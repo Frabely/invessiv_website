@@ -2,13 +2,13 @@
   "privacy": {
     "meta": {
       "title": "Privacy",
-      "description": "Privacy policy of Moritz Hecht – Invessiv.",
+      "description": "Privacy Policy of Moritz Hecht – Invessiv.",
       "openGraphTitle": "Privacy | Moritz Hecht – Invessiv",
       "openGraphLocale": "en_US"
     },
     "page": {
       "title": "Privacy Policy",
-      "lead": "This policy explains what personal data I process, why I process it, and how I handle it on this website.",
+      "lead": "This Privacy Policy explains how personal data is processed in connection with this website and its available contact channels.",
       "updatedAt": "Last updated: March 7, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
@@ -24,23 +24,59 @@
         "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany",
         "emailLabel": "Email",
         "phoneLabel": "Phone",
-        "phoneDisplay": "+49 1523 2070477"
+        "phoneDisplay": "+49 152 3070477"
       },
       "hosting": {
-        "title": "2. Hosting and server logs",
-        "body": "When visiting this website, the hosting provider processes technically required connection data (for example IP address, timestamp, user-agent, referrer, requested resource) to ensure service stability and abuse prevention. Legal basis: Art. 6 para. 1 lit. f GDPR."
+        "title": "2. Hosting and server log files",
+        "body": "When this website is accessed, the hosting provider may process technically required connection data, including IP address, date and time, requested resource, referrer (if technically transmitted), and browser, operating system, and user-agent information (where server-side logging is enabled). This processing is carried out to provide the website, maintain stability, ensure security, and detect misuse. Legal basis: Art. 6 para. 1 lit. f GDPR. Hosting provider: [TODO_HOSTING_PROVIDER]. Log retention period: [TODO_LOG_RETENTION]."
       },
-      "contactRequests": {
-        "title": "3. Contact requests and project inquiries",
-        "body": "If you contact me by email, phone, or project inquiry, I process your information (for example name, email, company, requested service, and project description) to handle your request and related follow-ups. The project form opens a prefilled email in your mail client. Legal basis: Art. 6 para. 1 lit. b GDPR (pre-contractual communication) and Art. 6 para. 1 lit. f GDPR (efficient handling of customer requests). AI tools may be used to support internal draft structuring. Personal data is only processed in that context where required for handling your request and where legally permissible. I retain this data only as long as required for request handling and legal documentation duties. For appointment scheduling I use the external service Calendly (Calendly LLC). When you click the scheduling link or book a slot, data is transmitted to Calendly and processed there. Calendly privacy information applies: https://calendly.com/legal/privacy-notice."
+      "contactForm": {
+        "title": "3. Contact form / project inquiries",
+        "body": "For project inquiries submitted through the contact form, we process the data you provide (for example name, email address, requested service, project details, and message) to handle your request, communicate with you, and, where applicable, prepare a contract. The submitted details are used for inquiry handling and sent to the company email address. No form-based tracking is currently performed. Recipients may include hosting and email service providers. Legal basis: Art. 6 para. 1 lit. b GDPR (steps prior to entering into a contract) or Art. 6 para. 1 lit. f GDPR (efficient communication). Data is stored until the inquiry has been completed and thereafter only where legal retention or documentation duties apply; concrete periods: [TODO_INQUIRY_RETENTION]. Required fields are marked in the form; without them, processing may be impossible or limited."
+      },
+      "emailContact": {
+        "title": "4. Contact by email",
+        "body": "If you contact us by email or via the separate short-email contact path, we process the information provided to handle your message and continue communication. Recipients may include email providers and technical service providers. Depending on the context, the legal basis is Art. 6 para. 1 lit. b GDPR (pre-contractual communication) or Art. 6 para. 1 lit. f GDPR (efficient handling of inquiries). Retention follows the same principles as inquiry handling and is limited to what is necessary for the purpose and legal obligations; concrete periods: [TODO_INQUIRY_RETENTION]."
+      },
+      "calendly": {
+        "title": "5. Appointment scheduling via Calendly",
+        "body": "We use Calendly for appointment scheduling. When this booking option is used, personal data is processed directly by or through Calendly, typically including name, email address, appointment details, and optional notes. The purpose is to organize and carry out appointments. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Processing outside the EU/EEA may occur. Relevant information on third-country transfers and applicable safeguards: [TODO_TRANSFER_MECHANISM]. The provider's own privacy information also applies."
+      },
+      "zoom": {
+        "title": "6. Online meetings via Zoom",
+        "body": "Zoom may be used for online meetings. Depending on how a meeting is used, personal data may include name, email address, meeting metadata, and audio or other communication data. The purpose is to conduct meetings. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Meetings are not recorded by default. If recording is planned in individual cases, you will be informed separately in advance. Processing outside the EU/EEA may be possible; details on transfer mechanisms: [TODO_TRANSFER_MECHANISM]."
       },
       "cookies": {
-        "title": "4. Cookies and similar technologies",
-        "body": "This website currently uses only technically required functionality. Tracking or marketing cookies are not used at this time."
+        "title": "7. Cookies and similar technologies",
+        "body": "At present, no consent-based tracking, analytics, or marketing cookies are used. If technically necessary storage mechanisms are used, they are limited to providing essential website functionality. No analytics or marketing tracking is currently active. If non-essential cookies or similar technologies are introduced in the future, this will only happen after proper notice, an update to this Privacy Policy, and, where required, obtaining consent."
+      },
+      "recipients": {
+        "title": "8. Recipients / service providers",
+        "body": "Depending on the processing activity, personal data may be received by: hosting provider ([TODO_HOSTING_PROVIDER]), email provider ([TODO_MAIL_PROVIDER]), Calendly (appointment organization), and Zoom (online meetings). In addition, we only use technical service providers where required for operation and communication."
+      },
+      "storage": {
+        "title": "9. Retention and deletion",
+        "body": "Personal data is stored only for as long as needed for the respective purpose or to comply with legal retention obligations. For server logs: [TODO_LOG_RETENTION]. For inquiries submitted via form or email: until processing is completed and then according to traceable retention criteria; concrete periods: [TODO_INQUIRY_RETENTION]."
+      },
+      "thirdCountryTransfers": {
+        "title": "10. Third-country transfers",
+        "body": "When certain service providers are used (in particular Calendly and Zoom and, where applicable, email or hosting services), personal data may be processed in countries outside the EU/EEA. In such cases, we ensure appropriate data protection safeguards. The currently applicable transfer mechanisms are to be specified here: [TODO_TRANSFER_MECHANISM]."
       },
       "rights": {
-        "title": "5. Your rights",
-        "body": "Under the GDPR you have rights including access, rectification, erasure, restriction, data portability and objection."
+        "title": "11. Your rights",
+        "body": "Under the GDPR, you have rights including access, rectification, erasure, restriction of processing, data portability, and objection. Where processing is based on your consent, you may withdraw that consent at any time with effect for the future."
+      },
+      "complaints": {
+        "title": "12. Right to lodge a complaint",
+        "body": "You have the right to lodge a complaint with a data protection supervisory authority. Competent supervisory authority: [TODO_COMPETENT_AUTHORITY]."
+      },
+      "dataProvision": {
+        "title": "13. Requirement to provide data",
+        "body": "Providing certain data is required to process inquiries. Without the information marked as required, we may be unable to process the request or may only be able to process it to a limited extent."
+      },
+      "noAutomatedDecisions": {
+        "title": "14. No automated decision-making",
+        "body": "At present, no automated decision-making and no profiling within the meaning of Art. 22 GDPR is used."
       }
     }
   }

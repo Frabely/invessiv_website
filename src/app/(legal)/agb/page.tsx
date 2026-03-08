@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function LegacyTermsPage() {
+export default function LegacyAgbPage() {
   redirect("/de/agb");
 }

@@ -36,7 +36,7 @@ const formCopyFixture = {
   offerLabel: "Angebot",
   offerPlaceholder: "Auswählen",
   pagesCustomLabel: "Weitere Seiten",
-  pagesCustomPlaceholder: "z. B. FAQ",
+  pagesCustomPlaceholder: "z. B. Q&A",
   pagesLabel: "Seiten",
   pagesOptions: ["Start", "Kontakt", "Karriere"],
   pagesPlaceholder: "Start, Kontakt",

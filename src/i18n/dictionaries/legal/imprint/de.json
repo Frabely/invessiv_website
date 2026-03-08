@@ -8,7 +8,7 @@
     },
     "page": {
       "title": "Impressum",
-      "lead": "Angaben gemäß § 5 TMG und § 18 Abs. 2 MStV.",
+      "lead": "Angaben gemäß § 5 DDG.",
       "updatedAt": "Zuletzt geändert: 6. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
@@ -21,34 +21,15 @@
       "provider": {
         "title": "Anbieter",
         "labels": {
-          "company": "Firma",
-          "legalForm": "Rechtsform",
+          "company": "Geschäftsbezeichnung",
           "representedBy": "Inhaber",
           "address": "Adresse"
-        },
-        "notePlaceholder": "Bei Änderungen der Unternehmensdaten wird dieser Abschnitt aktualisiert."
+        }
       },
       "contact": {
-        "title": "Kontakt",
         "labels": {
           "email": "E-Mail",
           "phone": "Telefon"
-        }
-      },
-      "commercialRegister": {
-        "title": "Registereintrag",
-        "emptyEntry": "Kein Handelsregistereintrag.",
-        "notePlaceholder": "Stand: Kein Handelsregistereintrag vorhanden."
-      },
-      "vatId": {
-        "title": "Umsatzsteuer-ID",
-        "notePlaceholder": "Derzeit keine Umsatzsteuer-Identifikationsnummer vorhanden."
-      },
-      "responsibleContent": {
-        "title": "Verantwortlich für den Inhalt",
-        "labels": {
-          "name": "Name",
-          "address": "Adresse"
         }
       },
       "social": {
@@ -58,22 +39,11 @@
           "x": "https://x.com/invessiv",
           "instagram": "https://www.instagram.com/invessiv/"
         }
-      },
-      "euDispute": {
-        "title": "EU-Streitschlichtung",
-        "textBeforeLink": "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:",
-        "linkLabel": "ODR-Plattform der EU-Kommission",
-        "textAfterLink": "Meine E-Mail-Adresse findest du oben im Impressum."
-      },
-      "consumerDispute": {
-        "title": "Verbraucherstreitbeilegung",
-        "body": "Ich bin nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
       }
     },
     "values": {
-      "legalForm": "Einzelunternehmen (Nebentätigkeit)",
       "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland",
-      "phoneDisplay": "+49 1523 2070477"
+      "phoneDisplay": "+49 152 3070477"
     }
   }
 }
