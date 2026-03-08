@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
+import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
@@ -25,6 +26,7 @@ export function SiteHeader({
   const pathname = usePathname();
   const router = useRouter();
   const isScrolled = useScrolledHeader(14);
+  useMobileViewportHeight();
   const ui = getSiteHeaderUiContent(locale);
   const themeToggleLabel =
     theme === "dark" ? ui.themeToggleLabel.dark : ui.themeToggleLabel.light;

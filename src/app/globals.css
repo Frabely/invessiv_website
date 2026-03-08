@@ -10,6 +10,9 @@
   --services-reveal-delay: 0ms;
   --process-step-delay: 0ms;
   --anchor-scroll-offset: 92px;
+  --mobile-viewport-height: 100dvh;
+  --mobile-safe-top: env(safe-area-inset-top, 0px);
+  --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 [data-theme="light"] {
@@ -31,6 +34,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  background-color: #1d1a18;
   background:
     radial-gradient(
       1200px 700px at 8% 2%,
@@ -58,6 +62,7 @@ section[id] {
 }
 
 [data-theme="light"] body {
+  background-color: #f5f7fb;
   background:
     radial-gradient(
       1100px 660px at 8% 2%,
@@ -134,7 +139,7 @@ main {
 
 .site-header {
   position: fixed;
-  top: 0;
+  top: var(--mobile-safe-top);
   left: 0;
   right: 0;
   z-index: 50;
@@ -2834,7 +2839,12 @@ main {
 
 @media (max-width: 900px) {
   :root {
-    --anchor-scroll-offset: 84px;
+    --anchor-scroll-offset: calc(84px + var(--mobile-safe-top));
+  }
+
+  html,
+  body {
+    background-attachment: scroll, scroll, scroll;
   }
 
   .site-header__inner {
@@ -2961,14 +2971,16 @@ main {
 
   .site-header__mobile-menu[open] ul {
     position: fixed;
-    top: 72px;
+    top: calc(72px + var(--mobile-safe-top));
     left: 16px;
     right: 16px;
     width: auto;
-    max-height: calc(100svh - 88px);
+    max-height: calc(
+      var(--mobile-viewport-height) - var(--mobile-safe-top) - 88px
+    );
     overflow-y: auto;
     margin: 0;
-    padding: 12px;
+    padding: 12px 12px calc(12px + var(--mobile-safe-bottom));
     list-style: none;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -3023,7 +3035,7 @@ main {
   }
 
   .hero {
-    min-height: 100svh;
+    min-height: var(--mobile-viewport-height);
     padding: 84px 16px 28px;
   }
 
@@ -3783,6 +3795,7 @@ main {
 
 html,
 body {
+  background-color: #1d1a18;
   background:
     radial-gradient(
       1220px 700px at 8% -8%,
@@ -3799,6 +3812,7 @@ body {
 }
 
 [data-theme="light"] body {
+  background-color: #f5f7fb;
   background:
     radial-gradient(
       1140px 690px at 8% -2%,
@@ -5596,6 +5610,7 @@ body {
   }
 
   .marketing-main .hero {
+    min-height: var(--mobile-viewport-height);
     padding-top: clamp(5rem, 10vw, 5.75rem);
     padding-bottom: clamp(1.75rem, 5vw, 2.25rem);
   }
@@ -5651,6 +5666,30 @@ body {
   .contact-primary-cta--shimmer::after {
     transition: none;
     transform: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-accents {
+    display: none;
+  }
+
+  .site-header,
+  .site-header.is-scrolled {
+    backdrop-filter: none;
+  }
+
+  .hero__aurora,
+  .hero__noise {
+    display: none;
+  }
+
+  .process-journey-progress {
+    filter: none;
+  }
+
+  .process-path-point {
+    box-shadow: none;
   }
 }
 
