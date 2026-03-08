@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { MARKETING_ROOT_META_CONTENT } from "@/i18n/dictionaries/marketing/root-meta";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html data-theme="dark" lang="en" suppressHydrationWarning>
       <body>
         <LanguageProvider initialLocale="en">{children}</LanguageProvider>
+        <Analytics />
       </body>
     </html>
   );
