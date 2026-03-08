@@ -50,6 +50,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Mehrsprachigkeit ist Pflichtfähigkeit: Inhalte und Navigation i18n-ready strukturieren (mindestens DE/EN vorbereiten)
 - Mittel-/Hoch-Prioritätskriterium: Bei jeder Textänderung müssen alle verfügbaren Sprachen aktiv geprüft und betroffene Inhalte ggf. direkt mitübersetzt werden (kein Merge mit veralteten Sprachständen).
 - Routen- und URL-Slugs werden standardmäßig in Englisch gehalten (z. B. `/terms`, `/privacy`, `/imprint`), auch wenn die sichtbaren UI-Texte auf Deutsch sind
+- Legal-Slug-Regel (verbindlich): Für AGB/Terms ist der kanonische Pfad immer `/terms` (inkl. locale-basiert `/de/terms`, `/en/terms`); `/agb` wird nicht verwendet
 - Security by default (least privilege, keine Secrets im Repo)
 - Generierter Code (insbesondere Logik und Workflows) muss durch passende Tests abgedeckt sein (mindestens Unit, Integration oder E2E je nach Änderungsumfang)
 

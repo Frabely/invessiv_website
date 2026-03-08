@@ -184,12 +184,12 @@ const LEGAL_PAGE_HREFS = {
   de: {
     imprint: "/de/imprint",
     privacy: "/de/privacy",
-    terms: "/de/agb",
+    terms: "/de/terms",
   },
   en: {
     imprint: "/en/imprint",
     privacy: "/en/privacy",
-    terms: "/en/agb",
+    terms: "/en/terms",
   },
 } as const;
 
@@ -863,7 +863,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
           { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/agb" },
+          { label: "AGB", href: "/terms" },
         ],
         contactDecisionIntro:
           "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
@@ -1072,7 +1072,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },
           { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/agb" },
+          { label: "Terms", href: "/terms" },
         ],
         contactDecisionIntro:
           "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
@@ -1291,7 +1291,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Impressum", href: "/imprint" },
           { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/agb" },
+          { label: "AGB", href: "/terms" },
         ],
         footerBottomNote: "Inhaber: Moritz Hecht",
       },
@@ -1341,7 +1341,7 @@ const HOME_SECTIONS: LandingSection[] = [
         footerLegalLinks: [
           { label: "Imprint", href: "/imprint" },
           { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/agb" },
+          { label: "Terms", href: "/terms" },
         ],
         footerBottomNote: "Owner: Moritz Hecht",
       },
@@ -1358,7 +1358,6 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     return href
       .replace("/imprint", LEGAL_PAGE_HREFS[locale].imprint)
       .replace("/privacy", LEGAL_PAGE_HREFS[locale].privacy)
-      .replace("/agb", LEGAL_PAGE_HREFS[locale].terms)
       .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
   };
 
