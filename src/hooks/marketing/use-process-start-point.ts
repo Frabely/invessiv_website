@@ -108,16 +108,16 @@ export function useProcessStartPoint({
             layoutRect.width - edgePadding,
           )
         : leftX;
-      const contentRightEdge = Math.max(
-        edgePadding,
-        Math.min(layoutRect.width - edgePadding, horizontalViewWidth),
+      const maxCardRight = cardMetrics.reduce(
+        (currentMax, metrics) => Math.max(currentMax, metrics.right),
+        0,
       );
+      const contentViewportRight = layoutRect.width;
+      const rightXRaw =
+        maxCardRight + (contentViewportRight - maxCardRight) / 2;
       const rightX = Math.min(
-        Math.max(
-          lastMetrics.right + (contentRightEdge - lastMetrics.right) / 2,
-          lastMetrics.right + 8,
-        ),
-        contentRightEdge - 8,
+        Math.max(rightXRaw, edgePadding),
+        contentViewportRight - edgePadding,
       );
       setCssPoint(
         "--process-start-x",

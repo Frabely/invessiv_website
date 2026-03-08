@@ -5414,7 +5414,7 @@ body {
 /* Unified responsive section spacing */
 .marketing-main {
   --section-space: clamp(2rem, 3.9vw, 3.75rem);
-  --section-shell-pad-inline: clamp(1rem, 2vw, 1.5rem);
+  --section-shell-pad-inline: 0px;
   --section-shell-pad-top: clamp(1.25rem, 2.6vw, 2.25rem);
   --section-shell-pad-bottom: clamp(2.5rem, 5vw, 4rem);
   --section-grid-gap: clamp(0.75rem, 1.6vw, 1.25rem);
@@ -5493,6 +5493,10 @@ body {
   .site-footer__inner,
   .layout-shell {
     padding-inline: 20px;
+  }
+
+  .marketing-main {
+    --section-shell-pad-inline: 20px;
   }
 
   .packages-track {
@@ -5584,7 +5588,7 @@ body {
 
   .marketing-main {
     --section-space: clamp(1.625rem, 5.1vw, 2.75rem);
-    --section-shell-pad-inline: clamp(0.875rem, 3vw, 1.25rem);
+    --section-shell-pad-inline: 16px;
     --section-shell-pad-top: clamp(1.125rem, 3vw, 1.5rem);
     --section-shell-pad-bottom: clamp(2rem, 6vw, 3rem);
     --section-grid-gap: clamp(0.75rem, 2.6vw, 1rem);
