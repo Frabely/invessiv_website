@@ -55,7 +55,7 @@
       },
       "thirdPartyServices": {
         "title": "9. Drittanbieter und Fremdleistungen",
-        "body": "Leistungen und Kosten für Hosting, Domains, Fremdsoftware, APIs, Drittanbieter-Tools, externe Plattformen oder sonstige Leistungen Dritter sind nur dann Bestandteil des Vertrags, wenn sie ausdrücklich im Angebot enthalten sind. Invessiv ist berechtigt, zur Leistungserbringung geeignete Dritte als Subunternehmer einzusetzen."
+        "body": "Leistungen und Kosten für Hosting, Domains, Fremdsoftware, APIs, Drittanbieter-Tools, externe Plattformen oder sonstige Leistungen Dritter sind nur dann Bestandteil des Vertrags, wenn sie ausdrücklich im Angebot enthalten sind. Soweit im Angebot nichts anderes geregelt ist, erfolgt Hosting typischerweise über Vercel Pro; Domains und ggf. Mail können über IONOS bezogen werden. Invessiv ist berechtigt, zur Leistungserbringung geeignete Dritte als Subunternehmer einzusetzen."
       },
       "liability": {
         "title": "10. Haftung",

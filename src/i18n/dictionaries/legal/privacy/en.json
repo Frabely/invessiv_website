@@ -28,23 +28,23 @@
       },
       "hosting": {
         "title": "2. Hosting and server log files",
-        "body": "When this website is accessed, the hosting provider may process technically required connection data, including IP address, date and time, requested resource, referrer (if technically transmitted), and browser, operating system, and user-agent information (where server-side logging is enabled). This processing is carried out to provide the website, maintain stability, ensure security, and detect misuse. Legal basis: Art. 6 para. 1 lit. f GDPR. Hosting provider: [TODO_HOSTING_PROVIDER]. Log retention period: [TODO_LOG_RETENTION]."
+        "body": "When this website is accessed, the hosting provider may process technically required connection data, including IP address, date and time, requested resource, referrer (if technically transmitted), and browser, operating system, and user-agent information (where server-side logging is enabled). This processing is carried out to provide the website, maintain stability, ensure security, and detect misuse. Legal basis: Art. 6 para. 1 lit. f GDPR. Hosting provider: Vercel Inc. (Vercel Pro). Runtime log retention under the current Vercel default is 1 day, unless an extended observability add-on with longer retention is enabled."
       },
       "contactForm": {
         "title": "3. Contact form / project inquiries",
-        "body": "For project inquiries submitted through the contact form, we process the data you provide (for example name, email address, requested service, project details, and message) to handle your request, communicate with you, and, where applicable, prepare a contract. The submitted details are used for inquiry handling and sent to the company email address. No form-based tracking is currently performed. Recipients may include hosting and email service providers. Legal basis: Art. 6 para. 1 lit. b GDPR (steps prior to entering into a contract) or Art. 6 para. 1 lit. f GDPR (efficient communication). Data is stored until the inquiry has been completed and thereafter only where legal retention or documentation duties apply; concrete periods: [TODO_INQUIRY_RETENTION]. Required fields are marked in the form; without them, processing may be impossible or limited."
+        "body": "For project inquiries submitted through the contact form, we process the data you provide (for example name, email address, requested service, project details, and message) to handle your request, communicate with you, and, where applicable, prepare a contract. The submitted details are used for inquiry handling and sent to the company email address. No form-based tracking is currently performed. Recipients may include hosting and email service providers. Legal basis: Art. 6 para. 1 lit. b GDPR (steps prior to entering into a contract) or Art. 6 para. 1 lit. f GDPR (efficient communication). Data is stored until the inquiry has been completed and then for at least 6 months, unless longer statutory retention or documentation obligations apply. Required fields are marked in the form; without them, processing may be impossible or limited."
       },
       "emailContact": {
         "title": "4. Contact by email",
-        "body": "If you contact us by email or via the separate short-email contact path, we process the information provided to handle your message and continue communication. Recipients may include email providers and technical service providers. Depending on the context, the legal basis is Art. 6 para. 1 lit. b GDPR (pre-contractual communication) or Art. 6 para. 1 lit. f GDPR (efficient handling of inquiries). Retention follows the same principles as inquiry handling and is limited to what is necessary for the purpose and legal obligations; concrete periods: [TODO_INQUIRY_RETENTION]."
+        "body": "If you contact us by email or via the separate short-email contact path, we process the information provided to handle your message and continue communication. Recipients may include email providers and technical service providers. Depending on the context, the legal basis is Art. 6 para. 1 lit. b GDPR (pre-contractual communication) or Art. 6 para. 1 lit. f GDPR (efficient handling of inquiries). Retention follows the same principles as inquiry handling and is at least 6 months after completion of the inquiry, unless longer legal obligations apply."
       },
       "calendly": {
         "title": "5. Appointment scheduling via Calendly",
-        "body": "We use Calendly for appointment scheduling. When this booking option is used, personal data is processed directly by or through Calendly, typically including name, email address, appointment details, and optional notes. The purpose is to organize and carry out appointments. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Processing outside the EU/EEA may occur. Relevant information on third-country transfers and applicable safeguards: [TODO_TRANSFER_MECHANISM]. The provider's own privacy information also applies."
+        "body": "We use Calendly for appointment scheduling. When this booking option is used, personal data is processed directly by or through Calendly, typically including name, email address, appointment details, and optional notes. The purpose is to organize and carry out appointments. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Processing outside the EU/EEA may occur. Appropriate safeguards are used for third-country transfers, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures. The provider's own privacy information also applies."
       },
       "zoom": {
         "title": "6. Online meetings via Zoom",
-        "body": "Zoom may be used for online meetings. Depending on how a meeting is used, personal data may include name, email address, meeting metadata, and audio or other communication data. The purpose is to conduct meetings. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Meetings are not recorded by default. If recording is planned in individual cases, you will be informed separately in advance. Processing outside the EU/EEA may be possible; details on transfer mechanisms: [TODO_TRANSFER_MECHANISM]."
+        "body": "Zoom may be used for online meetings. Depending on how a meeting is used, personal data may include name, email address, meeting metadata, and audio or other communication data. The purpose is to conduct meetings. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Meetings are not recorded by default. If recording is planned in individual cases, you will be informed separately in advance. Processing outside the EU/EEA may be possible; appropriate safeguards are used, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures."
       },
       "cookies": {
         "title": "7. Cookies and similar technologies",
@@ -52,15 +52,15 @@
       },
       "recipients": {
         "title": "8. Recipients / service providers",
-        "body": "Depending on the processing activity, personal data may be received by: hosting provider ([TODO_HOSTING_PROVIDER]), email provider ([TODO_MAIL_PROVIDER]), Calendly (appointment organization), and Zoom (online meetings). In addition, we only use technical service providers where required for operation and communication."
+        "body": "Depending on the processing activity, personal data may be received by: hosting provider (Vercel Inc., Vercel Pro), domain and, where used, email provider (IONOS SE), Calendly (appointment organization), and Zoom (online meetings). In addition, we only use technical service providers where required for operation and communication."
       },
       "storage": {
         "title": "9. Retention and deletion",
-        "body": "Personal data is stored only for as long as needed for the respective purpose or to comply with legal retention obligations. For server logs: [TODO_LOG_RETENTION]. For inquiries submitted via form or email: until processing is completed and then according to traceable retention criteria; concrete periods: [TODO_INQUIRY_RETENTION]."
+        "body": "Personal data is stored only for as long as needed for the respective purpose or to comply with legal retention obligations. For server logs and runtime logs, the current Vercel default retention is 1 day, unless an extended observability add-on with longer retention is enabled. For inquiries submitted via form or email: at least 6 months after completion of the inquiry, unless longer statutory retention or documentation obligations apply."
       },
       "thirdCountryTransfers": {
         "title": "10. Third-country transfers",
-        "body": "When certain service providers are used (in particular Calendly and Zoom and, where applicable, email or hosting services), personal data may be processed in countries outside the EU/EEA. In such cases, we ensure appropriate data protection safeguards. The currently applicable transfer mechanisms are to be specified here: [TODO_TRANSFER_MECHANISM]."
+        "body": "When certain service providers are used (in particular Calendly and Zoom and, where applicable, email or hosting services), personal data may be processed in countries outside the EU/EEA. In such cases, we ensure appropriate data protection safeguards, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures."
       },
       "rights": {
         "title": "11. Your rights",
@@ -68,7 +68,7 @@
       },
       "complaints": {
         "title": "12. Right to lodge a complaint",
-        "body": "You have the right to lodge a complaint with a data protection supervisory authority. Competent supervisory authority: [TODO_COMPETENT_AUTHORITY]."
+        "body": "You have the right to lodge a complaint with a data protection supervisory authority. Competent supervisory authority: Saxon Data Protection and Transparency Commissioner (SDTB), Maternistraße 17, 01067 Dresden, Germany, email: post@sdtb.sachsen.de, website: www.datenschutz.sachsen.de."
       },
       "dataProvision": {
         "title": "13. Requirement to provide data",

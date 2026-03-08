@@ -55,7 +55,7 @@
       },
       "thirdPartyServices": {
         "title": "9. Third-party services and external costs",
-        "body": "Services and costs for hosting, domains, external software, APIs, third-party tools, external platforms, or other third-party services are included only if expressly stated in the offer. Invessiv may engage suitable subcontractors for service delivery."
+        "body": "Services and costs for hosting, domains, external software, APIs, third-party tools, external platforms, or other third-party services are included only if expressly stated in the offer. Unless otherwise specified in the offer, hosting is typically provided via Vercel Pro; domains and, where needed, email may be sourced via IONOS. Invessiv may engage suitable subcontractors for service delivery."
       },
       "liability": {
         "title": "10. Liability",

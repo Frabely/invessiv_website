@@ -28,23 +28,23 @@
       },
       "hosting": {
         "title": "2. Hosting und Server-Logfiles",
-        "body": "Beim Aufruf der Website werden durch den Hosting-Provider technisch erforderliche Verbindungsdaten verarbeitet, insbesondere IP-Adresse, Datum und Uhrzeit, aufgerufene Ressource, Referrer (sofern technisch übermittelt) sowie Angaben zu Browser, Betriebssystem und User-Agent (soweit serverseitig protokolliert). Die Verarbeitung erfolgt zur technischen Bereitstellung, zur Stabilität, zur Sicherheit und zur Erkennung von Missbrauch. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Hosting-Provider: [TODO_HOSTING_PROVIDER]. Speicherdauer für Logfiles: [TODO_LOG_RETENTION]."
+        "body": "Beim Aufruf der Website werden durch den Hosting-Provider technisch erforderliche Verbindungsdaten verarbeitet, insbesondere IP-Adresse, Datum und Uhrzeit, aufgerufene Ressource, Referrer (sofern technisch übermittelt) sowie Angaben zu Browser, Betriebssystem und User-Agent (soweit serverseitig protokolliert). Die Verarbeitung erfolgt zur technischen Bereitstellung, zur Stabilität, zur Sicherheit und zur Erkennung von Missbrauch. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Hosting-Provider: Vercel Inc. (Vercel Pro). Speicherdauer für Runtime-Logs nach aktuellem Vercel-Standard: 1 Tag, sofern kein erweitertes Observability-Add-on mit längerer Aufbewahrung aktiviert ist."
       },
       "contactForm": {
         "title": "3. Kontaktformular / Projektanfragen",
-        "body": "Bei Projektanfragen über das Kontaktformular verarbeiten wir die von dir eingegebenen Daten (z. B. Name, E-Mail-Adresse, angefragte Leistung, Projektangaben und Nachricht) zur Bearbeitung deiner Anfrage, zur Kommunikation und ggf. zur Vertragsanbahnung. Die Angaben werden zur Bearbeitung verwendet und an die Firmen-E-Mail übermittelt. Aus dem Formular heraus erfolgt derzeit kein Tracking. Empfänger können Hosting- und Mail-Dienstleister sein. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung eines Vertrags) oder Art. 6 Abs. 1 lit. f DSGVO (effiziente Kommunikation). Die Daten werden bis zum Abschluss der Anfrage und danach nur gespeichert, soweit gesetzliche Aufbewahrungs- oder Nachweispflichten bestehen; konkrete Fristen: [TODO_INQUIRY_RETENTION]. Pflichtfelder sind im Formular gekennzeichnet; ohne diese Angaben ist eine Bearbeitung ggf. nicht oder nur eingeschränkt möglich."
+        "body": "Bei Projektanfragen über das Kontaktformular verarbeiten wir die von dir eingegebenen Daten (z. B. Name, E-Mail-Adresse, angefragte Leistung, Projektangaben und Nachricht) zur Bearbeitung deiner Anfrage, zur Kommunikation und ggf. zur Vertragsanbahnung. Die Angaben werden zur Bearbeitung verwendet und an die Firmen-E-Mail übermittelt. Aus dem Formular heraus erfolgt derzeit kein Tracking. Empfänger können Hosting- und Mail-Dienstleister sein. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung eines Vertrags) oder Art. 6 Abs. 1 lit. f DSGVO (effiziente Kommunikation). Die Daten werden bis zum Abschluss der Anfrage und darüber hinaus für mindestens 6 Monate gespeichert, soweit keine längeren gesetzlichen Aufbewahrungs- oder Nachweispflichten bestehen. Pflichtfelder sind im Formular gekennzeichnet; ohne diese Angaben ist eine Bearbeitung ggf. nicht oder nur eingeschränkt möglich."
       },
       "emailContact": {
         "title": "4. Kontaktaufnahme per E-Mail",
-        "body": "Bei einer Kontaktaufnahme per E-Mail oder über den separaten E-Mail-Kontaktweg verarbeiten wir die übermittelten Angaben zur Bearbeitung der Nachricht und zur weiteren Kommunikation. Empfänger können Mail-Provider und technische Dienstleister sein. Rechtsgrundlage ist je nach Anlass Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) oder Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Anfragen). Die Speicherung erfolgt analog zur Anfragebearbeitung und nur so lange, wie dies für den Zweck oder gesetzliche Pflichten erforderlich ist; konkrete Fristen: [TODO_INQUIRY_RETENTION]."
+        "body": "Bei einer Kontaktaufnahme per E-Mail oder über den separaten E-Mail-Kontaktweg verarbeiten wir die übermittelten Angaben zur Bearbeitung der Nachricht und zur weiteren Kommunikation. Empfänger können Mail-Provider und technische Dienstleister sein. Rechtsgrundlage ist je nach Anlass Art. 6 Abs. 1 lit. b DSGVO (vorvertragliche Kommunikation) oder Art. 6 Abs. 1 lit. f DSGVO (effiziente Bearbeitung von Anfragen). Die Speicherung erfolgt analog zur Anfragebearbeitung und beträgt nach Abschluss der Anfrage mindestens 6 Monate, soweit keine längeren gesetzlichen Pflichten greifen."
       },
       "calendly": {
         "title": "5. Terminbuchung über Calendly",
-        "body": "Für Terminbuchungen nutzen wir Calendly. Bei der Nutzung werden personenbezogene Daten direkt an bzw. über Calendly verarbeitet, typischerweise Name, E-Mail-Adresse, Terminangaben und ggf. freiwillige Notizen. Zweck ist die Organisation und Durchführung von Terminen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO oder Art. 6 Abs. 1 lit. f DSGVO. Eine Verarbeitung außerhalb der EU/des EWR kann nicht ausgeschlossen werden. Maßgebliche Angaben zu Drittlandübermittlungen und eingesetzten Mechanismen: [TODO_TRANSFER_MECHANISM]. Es gelten zusätzlich die Datenschutzhinweise des Anbieters."
+        "body": "Für Terminbuchungen nutzen wir Calendly. Bei der Nutzung werden personenbezogene Daten direkt an bzw. über Calendly verarbeitet, typischerweise Name, E-Mail-Adresse, Terminangaben und ggf. freiwillige Notizen. Zweck ist die Organisation und Durchführung von Terminen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO oder Art. 6 Abs. 1 lit. f DSGVO. Eine Verarbeitung außerhalb der EU/des EWR kann nicht ausgeschlossen werden. Für Drittlandübermittlungen werden geeignete Garantien eingesetzt, insbesondere EU-Standardvertragsklauseln (Art. 46 DSGVO) und ggf. ergänzende Schutzmaßnahmen. Es gelten zusätzlich die Datenschutzhinweise des Anbieters."
       },
       "zoom": {
         "title": "6. Online-Besprechungen über Zoom",
-        "body": "Für Online-Besprechungen kann Zoom eingesetzt werden. Dabei können je nach Nutzung Name, E-Mail-Adresse, Meeting-Metadaten sowie Audio- und sonstige Kommunikationsdaten verarbeitet werden. Zweck ist die Durchführung von Besprechungen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO oder Art. 6 Abs. 1 lit. f DSGVO. Eine Aufzeichnung von Besprechungen erfolgt nicht standardmäßig. Sollte in Einzelfällen eine Aufzeichnung vorgesehen sein, wird hierüber vorab gesondert informiert. Eine Verarbeitung außerhalb der EU/des EWR kann möglich sein; Details zu den eingesetzten Transfermechanismen: [TODO_TRANSFER_MECHANISM]."
+        "body": "Für Online-Besprechungen kann Zoom eingesetzt werden. Dabei können je nach Nutzung Name, E-Mail-Adresse, Meeting-Metadaten sowie Audio- und sonstige Kommunikationsdaten verarbeitet werden. Zweck ist die Durchführung von Besprechungen. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO oder Art. 6 Abs. 1 lit. f DSGVO. Eine Aufzeichnung von Besprechungen erfolgt nicht standardmäßig. Sollte in Einzelfällen eine Aufzeichnung vorgesehen sein, wird hierüber vorab gesondert informiert. Eine Verarbeitung außerhalb der EU/des EWR kann möglich sein; für Übermittlungen werden geeignete Garantien eingesetzt, insbesondere EU-Standardvertragsklauseln (Art. 46 DSGVO) und ggf. ergänzende Schutzmaßnahmen."
       },
       "cookies": {
         "title": "7. Cookies und ähnliche Technologien",
@@ -52,15 +52,15 @@
       },
       "recipients": {
         "title": "8. Empfänger / eingesetzte Dienstleister",
-        "body": "Empfänger personenbezogener Daten können je nach Verarbeitungsvorgang insbesondere sein: Hosting-Provider ([TODO_HOSTING_PROVIDER]), Mail-Provider ([TODO_MAIL_PROVIDER]), Calendly (Terminorganisation) und Zoom (Online-Besprechungen). Darüber hinaus setzen wir nur technische Dienstleister ein, die für den Betrieb und die Kommunikation erforderlich sind."
+        "body": "Empfänger personenbezogener Daten können je nach Verarbeitungsvorgang insbesondere sein: Hosting-Provider (Vercel Inc., Vercel Pro), Domain- und ggf. Mail-Provider (IONOS SE, soweit genutzt), Calendly (Terminorganisation) und Zoom (Online-Besprechungen). Darüber hinaus setzen wir nur technische Dienstleister ein, die für den Betrieb und die Kommunikation erforderlich sind."
       },
       "storage": {
         "title": "9. Speicherdauer und Löschung",
-        "body": "Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Für Server-Logfiles gilt: [TODO_LOG_RETENTION]. Für Anfragen über Formular oder E-Mail gilt: bis zum Abschluss der Bearbeitung und anschließend nach nachvollziehbaren Aufbewahrungskriterien; konkrete Fristen: [TODO_INQUIRY_RETENTION]."
+        "body": "Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Für Server-Logfiles bzw. Runtime-Logs gilt nach aktuellem Vercel-Standard eine Aufbewahrung von 1 Tag, sofern kein erweitertes Observability-Add-on mit längerer Aufbewahrung aktiviert ist. Für Anfragen über Formular oder E-Mail gilt: mindestens 6 Monate nach Abschluss der Anfrage, soweit keine längeren gesetzlichen Aufbewahrungs- oder Nachweispflichten bestehen."
       },
       "thirdCountryTransfers": {
         "title": "10. Drittlandübermittlungen",
-        "body": "Bei der Nutzung einzelner Dienstleister (insbesondere Calendly und Zoom sowie ggf. Mail- oder Hosting-Dienste) kann eine Verarbeitung personenbezogener Daten in Staaten außerhalb der EU/des EWR stattfinden. In diesen Fällen achten wir auf geeignete datenschutzrechtliche Garantien. Die aktuell maßgeblichen Angaben zu den eingesetzten Übermittlungsmechanismen werden ergänzt unter: [TODO_TRANSFER_MECHANISM]."
+        "body": "Bei der Nutzung einzelner Dienstleister (insbesondere Calendly und Zoom sowie ggf. Mail- oder Hosting-Dienste) kann eine Verarbeitung personenbezogener Daten in Staaten außerhalb der EU/des EWR stattfinden. In diesen Fällen achten wir auf geeignete datenschutzrechtliche Garantien, insbesondere EU-Standardvertragsklauseln (Art. 46 DSGVO) und ggf. ergänzende Schutzmaßnahmen."
       },
       "rights": {
         "title": "11. Deine Rechte",
@@ -68,7 +68,7 @@
       },
       "complaints": {
         "title": "12. Beschwerderecht bei einer Aufsichtsbehörde",
-        "body": "Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständige Aufsichtsbehörde: [TODO_COMPETENT_AUTHORITY]."
+        "body": "Du hast das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständige Aufsichtsbehörde ist die Sächsische Datenschutz- und Transparenzbeauftragte, Maternistraße 17, 01067 Dresden, E-Mail: post@sdtb.sachsen.de, Website: www.datenschutz.sachsen.de."
       },
       "dataProvision": {
         "title": "13. Pflicht zur Bereitstellung von Daten",
