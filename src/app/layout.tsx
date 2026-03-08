@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { VercelAnalytics } from "@/app/analytics";
 import { Insights } from "@/app/insights";
 import { MARKETING_ROOT_META_CONTENT } from "@/i18n/dictionaries/marketing/root-meta";
-import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
+import { DEFAULT_LOCALE, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 const googleSiteVerification =
   process.env.GOOGLE_SITE_VERIFICATION ??
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html data-theme="dark" lang="en" suppressHydrationWarning>
+    <html data-theme="dark" lang={DEFAULT_LOCALE} suppressHydrationWarning>
       <body>
-        <LanguageProvider initialLocale="en">{children}</LanguageProvider>
+        <LanguageProvider initialLocale={DEFAULT_LOCALE}>{children}</LanguageProvider>
         <VercelAnalytics />
         <Insights />
       </body>

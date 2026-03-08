@@ -30,6 +30,36 @@ const getLocaleFromPath = (): Locale | null => {
   return firstSegment === "de" || firstSegment === "en" ? firstSegment : null;
 };
 
+const getStoredLocale = (): Locale | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  return stored === "de" || stored === "en" ? stored : null;
+};
+
+const getInitialLocale = (initialLocale: Locale): Locale => {
+  const localeFromPath = getLocaleFromPath();
+  const storedLocale = getStoredLocale();
+  return localeFromPath ?? storedLocale ?? initialLocale;
+};
+
+const getInitialTheme = (): Theme => {
+  if (!ENABLE_THEME_SWITCH) {
+    return "dark";
+  }
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === "light" || storedTheme === "dark") {
+    return storedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
 export function LanguageProvider({
   children,
   initialLocale = DEFAULT_LOCALE as Locale,
@@ -37,8 +67,10 @@ export function LanguageProvider({
   children: ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocaleState] = useState<Locale>(initialLocale);
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [locale, setLocaleState] = useState<Locale>(() =>
+    getInitialLocale(initialLocale),
+  );
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
   const localeRef = useRef<Locale>(locale);
   const themeRef = useRef<Theme>(theme);
 
@@ -51,43 +83,19 @@ export function LanguageProvider({
   }, [theme]);
 
   useEffect(() => {
-    const localeFromPath = getLocaleFromPath();
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    const storedLocale = stored === "de" || stored === "en" ? stored : null;
-    const resolvedLocale = localeFromPath ?? storedLocale ?? initialLocale;
+    const resolvedLocale = getInitialLocale(initialLocale);
     if (resolvedLocale === localeRef.current) {
       return;
     }
-    const frame = window.requestAnimationFrame(() => {
-      setLocaleState(resolvedLocale);
-    });
-    return () => {
-      window.cancelAnimationFrame(frame);
-    };
+    setLocaleState(resolvedLocale);
   }, [initialLocale]);
 
   useEffect(() => {
-    const resolvedTheme = (() => {
-      if (!ENABLE_THEME_SWITCH) {
-        return "dark" as Theme;
-      }
-      const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-      if (stored === "light" || stored === "dark") {
-        return stored;
-      }
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    })();
+    const resolvedTheme = getInitialTheme();
     if (resolvedTheme === themeRef.current) {
       return;
     }
-    const frame = window.requestAnimationFrame(() => {
-      setThemeState(resolvedTheme);
-    });
-    return () => {
-      window.cancelAnimationFrame(frame);
-    };
+    setThemeState(resolvedTheme);
   }, []);
 
   useEffect(() => {

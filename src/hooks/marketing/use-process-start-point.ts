@@ -31,6 +31,8 @@ export function useProcessStartPoint({
     }
     let totalLength = 0;
     let rafId: number | null = null;
+    let isJourneyActive = true;
+    let visibilityObserver: IntersectionObserver | null = null;
 
     const updatePoint = () => {
       const layoutRect = layout.getBoundingClientRect();
@@ -247,6 +249,9 @@ export function useProcessStartPoint({
     };
 
     const scheduleJourneyProgressUpdate = () => {
+      if (!isJourneyActive) {
+        return;
+      }
       if (rafId !== null) {
         return;
       }
@@ -257,17 +262,44 @@ export function useProcessStartPoint({
       });
     };
 
+    const handleScroll = () => {
+      scheduleJourneyProgressUpdate();
+    };
+
+    if ("IntersectionObserver" in window) {
+      isJourneyActive = false;
+      visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry) {
+            return;
+          }
+          isJourneyActive = entry.isIntersecting;
+          if (isJourneyActive) {
+            updatePoint();
+            scheduleJourneyProgressUpdate();
+          }
+        },
+        {
+          threshold: 0,
+          rootMargin: "240px 0px 240px 0px",
+        },
+      );
+      visibilityObserver.observe(layout);
+    }
+
     updatePoint();
     scheduleJourneyProgressUpdate();
     window.addEventListener("resize", updatePoint);
     window.addEventListener("resize", scheduleJourneyProgressUpdate);
-    window.addEventListener("scroll", scheduleJourneyProgressUpdate, {
+    window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
     return () => {
       window.removeEventListener("resize", updatePoint);
       window.removeEventListener("resize", scheduleJourneyProgressUpdate);
-      window.removeEventListener("scroll", scheduleJourneyProgressUpdate);
+      window.removeEventListener("scroll", handleScroll);
+      visibilityObserver?.disconnect();
       if (rafId !== null) {
         window.cancelAnimationFrame(rafId);
       }
