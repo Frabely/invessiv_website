@@ -796,7 +796,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         footerBrand: "Invessiv",
         footerCopyright:
-          "© 2026 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
+          "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1005,7 +1005,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Moritz Hecht – Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1224,7 +1224,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         footerBrand: "Invessiv",
         footerCopyright:
-          "© 2026 Moritz Hecht – Invessiv. Alle Rechte vorbehalten.",
+          "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1274,7 +1274,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Moritz Hecht – Invessiv. All rights reserved.",
+        footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
             platform: "linkedin",

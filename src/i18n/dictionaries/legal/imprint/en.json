@@ -23,7 +23,7 @@
         "labels": {
           "company": "Company",
           "legalForm": "Legal form",
-          "representedBy": "Represented by",
+          "representedBy": "Owner",
           "address": "Address"
         },
         "notePlaceholder": "This section is updated whenever company details change."

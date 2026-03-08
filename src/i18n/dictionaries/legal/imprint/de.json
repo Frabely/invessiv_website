@@ -23,7 +23,7 @@
         "labels": {
           "company": "Firma",
           "legalForm": "Rechtsform",
-          "representedBy": "Vertreten durch",
+          "representedBy": "Inhaber",
           "address": "Adresse"
         },
         "notePlaceholder": "Bei Änderungen der Unternehmensdaten wird dieser Abschnitt aktualisiert."
