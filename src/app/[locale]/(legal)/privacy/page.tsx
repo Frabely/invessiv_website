@@ -82,6 +82,21 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.hosting.body}</p>,
     },
     {
+      id: "vercel-analytics",
+      title: privacy.sections.vercelAnalytics.title,
+      body: <p>{privacy.sections.vercelAnalytics.body}</p>,
+    },
+    {
+      id: "speed-insights",
+      title: privacy.sections.speedInsights.title,
+      body: <p>{privacy.sections.speedInsights.body}</p>,
+    },
+    {
+      id: "search-console",
+      title: privacy.sections.searchConsole.title,
+      body: <p>{privacy.sections.searchConsole.body}</p>,
+    },
+    {
       id: "contact-form",
       title: privacy.sections.contactForm.title,
       body: <p>{privacy.sections.contactForm.body}</p>,

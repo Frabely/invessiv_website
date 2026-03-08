@@ -37,6 +37,47 @@ export function FooterSection({
 }: FooterSectionProps) {
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
+  const getContactTarget = (href: string) => {
+    const normalizedHref = href.toLowerCase();
+    if (normalizedHref.startsWith("mailto:")) {
+      return "email";
+    }
+    if (normalizedHref.startsWith("tel:")) {
+      return "phone";
+    }
+    if (
+      normalizedHref.includes("calendly.com") ||
+      normalizedHref.includes("/calendly")
+    ) {
+      return "calendly";
+    }
+    if (
+      normalizedHref.includes("wa.me/") ||
+      normalizedHref.includes("whatsapp.com/")
+    ) {
+      return "whatsapp";
+    }
+    return null;
+  };
+  const getLinkAnalyticsProps = (href: string) => {
+    const contactTarget = getContactTarget(href);
+    if (contactTarget) {
+      return {
+        "data-analytics-event": "contact_click",
+        "data-analytics-location": "footer",
+        "data-analytics-target": contactTarget,
+      };
+    }
+    if (href === "#contact") {
+      return {
+        "data-analytics-event": "cta_click",
+        "data-analytics-location": "footer",
+        "data-analytics-variant": "primary",
+        "data-analytics-target": "form",
+      };
+    }
+    return {};
+  };
   const legalColumnTitle = legalLinks.some((link) => link.label === "Impressum")
     ? "Rechtliches"
     : "Legal";
@@ -91,6 +132,7 @@ export function FooterSection({
                           : undefined
                       }
                       href={link.href}
+                      {...getLinkAnalyticsProps(link.href)}
                     >
                       {link.label}
                     </a>

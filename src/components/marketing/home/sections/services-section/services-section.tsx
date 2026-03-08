@@ -96,7 +96,7 @@ export function ServicesSection({
               key={card.key}
               moreItemsPluralLabel={moreItemsPluralLabel}
               moreItemsSingularLabel={moreItemsSingularLabel}
-              onDetailsToggle={(nextOpenState) =>
+              onDetailsToggleAction={(nextOpenState) =>
                 toggleCardDetails(card.key, nextOpenState)
               }
               onPointerLeave={resetCardSpotlight}

@@ -152,6 +152,18 @@ export type Dictionary = {
         title: string;
         body: string;
       };
+      vercelAnalytics: {
+        title: string;
+        body: string;
+      };
+      speedInsights: {
+        title: string;
+        body: string;
+      };
+      searchConsole: {
+        title: string;
+        body: string;
+      };
       contactForm: {
         title: string;
         body: string;

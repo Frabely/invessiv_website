@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 
 const DEFAULT_SUBMIT_HREF = "mailto:service@invessiv.com";
 const STEP_SEQUENCE = [1, 2, 3] as const;
@@ -397,6 +398,11 @@ export function ProjectRequestForm({
       : DEFAULT_SUBMIT_HREF;
     const mailToUrl = `${normalizedSubmitHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
 
+    trackConversionEvent("lead_submit_success", {
+      location: "contact",
+      variant: "primary",
+      target: "form",
+    });
     window.location.href = mailToUrl;
     setStatusMessage(formCopy.submitSuccess);
   };

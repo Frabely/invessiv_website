@@ -36,10 +36,23 @@ export function HeroSection({
           </h1>
           <p>{description}</p>
           <div className="hero__cta-row">
-            <a className="btn btn--primary" href="#contact">
+            <a
+              className="btn btn--primary"
+              href="#contact"
+              data-analytics-event="cta_click"
+              data-analytics-location="hero"
+              data-analytics-variant="primary"
+              data-analytics-target="form"
+            >
               {heroPrimaryCta}
             </a>
-            <a className="btn btn--ghost" href="#services">
+            <a
+              className="btn btn--ghost"
+              href="#services"
+              data-analytics-event="cta_click"
+              data-analytics-location="hero"
+              data-analytics-variant="secondary"
+            >
               {heroSecondaryCta}
             </a>
           </div>

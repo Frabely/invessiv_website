@@ -255,7 +255,7 @@ describe("TermsContent", () => {
     const columnLeft = 48;
     const columnWidth = 260;
 
-    const rectSpy = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function () {
+    const rectSpy = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
       if (this === tocColumn) {
         return {
           x: columnLeft,

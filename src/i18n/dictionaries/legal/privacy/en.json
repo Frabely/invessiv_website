@@ -2,8 +2,8 @@
   "privacy": {
     "meta": {
       "title": "Privacy",
-      "description": "Privacy Policy of Moritz Hecht – Invessiv.",
-      "openGraphTitle": "Privacy | Moritz Hecht – Invessiv",
+      "description": "Privacy Policy of Invessiv.",
+      "openGraphTitle": "Privacy | Invessiv",
       "openGraphLocale": "en_US"
     },
     "page": {
@@ -28,54 +28,66 @@
       },
       "hosting": {
         "title": "2. Hosting and server log files",
-        "body": "When this website is accessed, the hosting provider may process technically required connection data, including IP address, date and time, requested resource, referrer (if technically transmitted), and browser, operating system, and user-agent information (where server-side logging is enabled). This processing is carried out to provide the website, maintain stability, ensure security, and detect misuse. Legal basis: Art. 6 para. 1 lit. f GDPR. Hosting provider: Vercel Inc. (Vercel Pro). Runtime log retention under the current Vercel default is 1 day, unless an extended observability add-on with longer retention is enabled."
+        "body": "When this website is accessed, the hosting provider processes technically required connection data, including IP address, date and time, requested resource, referrer (if technically transmitted), and browser, operating system, and user-agent information (where server-side logging is enabled). This processing is carried out to provide the website, maintain stability, ensure security, and detect misuse. Legal basis: Art. 6 para. 1 lit. f GDPR. Hosting provider: Vercel Inc. (Vercel Pro). Runtime log retention under the current Vercel default is 1 day, unless an extended observability add-on with longer retention is enabled."
+      },
+      "vercelAnalytics": {
+        "title": "3. Vercel Web Analytics",
+        "body": "We use Vercel Web Analytics to evaluate website usage in aggregated form. Processed data includes visited pages, technical context data (for example device type, browser type, and approximate region), referrer information, and timestamps of page access. Under the current setup, no marketing or analytics cookies are used for this service. In our integration, query parameters and URL fragments are removed before transmission; sensitive URL areas are excluded from transmission. Legal basis: Art. 6 para. 1 lit. f GDPR (reach measurement and website optimization)."
+      },
+      "speedInsights": {
+        "title": "4. Vercel Speed Insights",
+        "body": "We use Vercel Speed Insights for technical performance measurement (for example loading and interaction metrics). Processed data includes the page path and technical performance measurements related to user experience. The service is used to improve stability, analyze errors, and optimize website performance. Legal basis: Art. 6 para. 1 lit. f GDPR. Under the current setup, no consent-based marketing or analytics cookies are used for this service."
+      },
+      "searchConsole": {
+        "title": "5. Google Search Console",
+        "body": "We use Google Search Console to monitor the technical visibility of our website in Google Search (for example indexing status, crawling notices, and search query data at an aggregated level). Search Console is used by us as a website operator within our Google account; this does not add separate end-user tracking code to this website. Legal basis: Art. 6 para. 1 lit. f GDPR (website visibility and technical quality)."
       },
       "contactForm": {
-        "title": "3. Contact form / project inquiries",
-        "body": "For project inquiries submitted through the contact form, we process the data you provide (for example name, email address, requested service, project details, and message) to handle your request, communicate with you, and, where applicable, prepare a contract. The submitted details are used for inquiry handling and sent to the company email address. No form-based tracking is currently performed. Recipients may include hosting and email service providers. Legal basis: Art. 6 para. 1 lit. b GDPR (steps prior to entering into a contract) or Art. 6 para. 1 lit. f GDPR (efficient communication). Data is stored until the inquiry has been completed and then for at least 6 months, unless longer statutory retention or documentation obligations apply. Required fields are marked in the form; without them, processing may be impossible or limited."
+        "title": "6. Contact form / project inquiries",
+        "body": "For project inquiries submitted through the contact form, we process the data you provide (for example name, email address, requested service, project details, and message) to handle your request, communicate with you, and, where applicable, prepare a contract. The submitted details are used for inquiry handling and sent to the company email address. No additional form-based tracking is currently performed. Recipients may include hosting and email service providers. Legal basis: Art. 6 para. 1 lit. b GDPR (steps prior to entering into a contract) or Art. 6 para. 1 lit. f GDPR (efficient communication). Data is stored until the inquiry has been completed and then for at least 6 months, unless longer statutory retention or documentation obligations apply. Required fields are marked in the form; without them, processing may be impossible or limited."
       },
       "emailContact": {
-        "title": "4. Contact by email",
+        "title": "7. Contact by email",
         "body": "If you contact us by email or via the separate short-email contact path, we process the information provided to handle your message and continue communication. Recipients may include email providers and technical service providers. Depending on the context, the legal basis is Art. 6 para. 1 lit. b GDPR (pre-contractual communication) or Art. 6 para. 1 lit. f GDPR (efficient handling of inquiries). Retention follows the same principles as inquiry handling and is at least 6 months after completion of the inquiry, unless longer legal obligations apply."
       },
       "calendly": {
-        "title": "5. Appointment scheduling via Calendly",
+        "title": "8. Appointment scheduling via Calendly",
         "body": "We use Calendly for appointment scheduling. When this booking option is used, personal data is processed directly by or through Calendly, typically including name, email address, appointment details, and optional notes. The purpose is to organize and carry out appointments. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Processing outside the EU/EEA may occur. Appropriate safeguards are used for third-country transfers, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures. The provider's own privacy information also applies."
       },
       "zoom": {
-        "title": "6. Online meetings via Zoom",
+        "title": "9. Online meetings via Zoom",
         "body": "Zoom may be used for online meetings. Depending on how a meeting is used, personal data may include name, email address, meeting metadata, and audio or other communication data. The purpose is to conduct meetings. Legal basis: Art. 6 para. 1 lit. b GDPR or Art. 6 para. 1 lit. f GDPR. Meetings are not recorded by default. If recording is planned in individual cases, you will be informed separately in advance. Processing outside the EU/EEA may be possible; appropriate safeguards are used, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures."
       },
       "cookies": {
-        "title": "7. Cookies and similar technologies",
-        "body": "At present, no consent-based tracking, analytics, or marketing cookies are used. If technically necessary storage mechanisms are used, they are limited to providing essential website functionality. No analytics or marketing tracking is currently active. If non-essential cookies or similar technologies are introduced in the future, this will only happen after proper notice, an update to this Privacy Policy, and, where required, obtaining consent."
+        "title": "10. Cookies and similar technologies",
+        "body": "At present, no consent-based tracking, analytics, or marketing cookies are used. If technically necessary storage mechanisms are used, they are limited to providing essential website functionality. The services Vercel Web Analytics and Vercel Speed Insights are currently operated without marketing or analytics cookies. If non-essential cookies or similar technologies are introduced in the future, this will only happen after proper notice, an update to this Privacy Policy, and, where required, obtaining consent."
       },
       "recipients": {
-        "title": "8. Recipients / service providers",
-        "body": "Depending on the processing activity, personal data may be received by: hosting provider (Vercel Inc., Vercel Pro), domain and, where used, email provider (IONOS SE), Calendly (appointment organization), and Zoom (online meetings). In addition, we only use technical service providers where required for operation and communication."
+        "title": "11. Recipients / service providers",
+        "body": "Depending on the processing activity, personal data may be received by: hosting provider (Vercel Inc., Vercel Pro), technical analytics and performance services within the Vercel platform (Web Analytics, Speed Insights), Google Ireland Limited and Google LLC in connection with Google Search Console, domain and, where used, email provider (IONOS SE), Calendly (appointment organization), and Zoom (online meetings). In addition, we only use technical service providers where required for operation and communication."
       },
       "storage": {
-        "title": "9. Retention and deletion",
-        "body": "Personal data is stored only for as long as needed for the respective purpose or to comply with legal retention obligations. For server logs and runtime logs, the current Vercel default retention is 1 day, unless an extended observability add-on with longer retention is enabled. For inquiries submitted via form or email: at least 6 months after completion of the inquiry, unless longer statutory retention or documentation obligations apply."
+        "title": "12. Retention and deletion",
+        "body": "Personal data is stored only for as long as needed for the respective purpose or to comply with legal retention obligations. For server logs and runtime logs, the current Vercel default retention is 1 day, unless an extended observability add-on with longer retention is enabled. For measurement data from Vercel Web Analytics and Vercel Speed Insights, the provider's retention periods for the active plan apply. For inquiries submitted via form or email: at least 6 months after completion of the inquiry, unless longer statutory retention or documentation obligations apply."
       },
       "thirdCountryTransfers": {
-        "title": "10. Third-country transfers",
-        "body": "When certain service providers are used (in particular Calendly and Zoom and, where applicable, email or hosting services), personal data may be processed in countries outside the EU/EEA. In such cases, we ensure appropriate data protection safeguards, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures."
+        "title": "13. Third-country transfers",
+        "body": "When certain service providers are used (in particular Vercel, Google Search Console, Calendly, Zoom, and, where applicable, email services), personal data may be processed in countries outside the EU/EEA. In such cases, we ensure appropriate data protection safeguards, in particular EU Standard Contractual Clauses (Art. 46 GDPR) and, where needed, supplementary measures."
       },
       "rights": {
-        "title": "11. Your rights",
+        "title": "14. Your rights",
         "body": "Under the GDPR, you have rights including access, rectification, erasure, restriction of processing, data portability, and objection. Where processing is based on your consent, you may withdraw that consent at any time with effect for the future."
       },
       "complaints": {
-        "title": "12. Right to lodge a complaint",
+        "title": "15. Right to lodge a complaint",
         "body": "You have the right to lodge a complaint with a data protection supervisory authority. Competent supervisory authority: Saxon Data Protection and Transparency Commissioner (SDTB), Maternistraße 17, 01067 Dresden, Germany, email: post@sdtb.sachsen.de, website: www.datenschutz.sachsen.de."
       },
       "dataProvision": {
-        "title": "13. Requirement to provide data",
+        "title": "16. Requirement to provide data",
         "body": "Providing certain data is required to process inquiries. Without the information marked as required, we may be unable to process the request or may only be able to process it to a limited extent."
       },
       "noAutomatedDecisions": {
-        "title": "14. No automated decision-making",
+        "title": "17. No automated decision-making",
         "body": "At present, no automated decision-making and no profiling within the meaning of Art. 22 GDPR is used."
       }
     }

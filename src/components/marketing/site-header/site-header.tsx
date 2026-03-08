@@ -138,7 +138,14 @@ export function SiteHeader({
               </button>
             </div>
           </details>
-          <a className="menu-cta" href={ctaHref}>
+          <a
+            className="menu-cta"
+            href={ctaHref}
+            data-analytics-event="cta_click"
+            data-analytics-location="nav"
+            data-analytics-variant="primary"
+            data-analytics-target="form"
+          >
             {ui.ctaLabel}
           </a>
         </div>
@@ -184,6 +191,10 @@ export function SiteHeader({
             className="menu-cta site-header__mobile-cta"
             href={ctaHref}
             title={ui.ctaLabel}
+            data-analytics-event="cta_click"
+            data-analytics-location="nav"
+            data-analytics-variant="primary"
+            data-analytics-target="form"
           >
             <span aria-hidden="true" className="site-header__mobile-cta-icon">
               <svg fill="none" viewBox="0 0 24 24">
@@ -243,7 +254,14 @@ export function SiteHeader({
                 </li>
               ))}
               <li>
-                <a className="mobile-menu-cta" href={ctaHref}>
+                <a
+                  className="mobile-menu-cta"
+                  href={ctaHref}
+                  data-analytics-event="cta_click"
+                  data-analytics-location="nav"
+                  data-analytics-variant="primary"
+                  data-analytics-target="form"
+                >
                   {ui.ctaLabel}
                 </a>
               </li>

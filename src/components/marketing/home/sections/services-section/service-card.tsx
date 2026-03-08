@@ -18,7 +18,7 @@ type ServiceCardProps = {
   isDetailsOpen: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
-  onDetailsToggle: (nextOpenState: boolean) => void;
+  onDetailsToggleAction: (nextOpenState: boolean) => void;
   onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: PointerEvent<HTMLElement>) => void;
   oneTimeLabel: string;
@@ -36,7 +36,7 @@ export function ServiceCard({
   isDetailsOpen,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
-  onDetailsToggle,
+  onDetailsToggleAction,
   onPointerLeave,
   onPointerMove,
   oneTimeLabel,
@@ -79,7 +79,7 @@ export function ServiceCard({
     if (event.key !== "Escape" || !isDetailsOpen) {
       return;
     }
-    onDetailsToggle(false);
+    onDetailsToggleAction(false);
     detailsButtonRef.current?.focus();
   };
 
@@ -96,7 +96,7 @@ export function ServiceCard({
       return;
     }
 
-    onDetailsToggle(!isDetailsOpen);
+    onDetailsToggleAction(!isDetailsOpen);
   };
 
   return (
@@ -185,6 +185,10 @@ export function ServiceCard({
                   className="btn btn--primary services-details-cta"
                   data-project-offer={card.key}
                   href="#contact"
+                  data-analytics-event="cta_click"
+                  data-analytics-location="pricing"
+                  data-analytics-variant="primary"
+                  data-analytics-target="form"
                 >
                   {primaryCtaLabel}
                 </a>
@@ -203,7 +207,7 @@ export function ServiceCard({
                 aria-controls={detailsId}
                 aria-expanded={isDetailsOpen}
                 className="services-details-toggle"
-                onClick={() => onDetailsToggle(!isDetailsOpen)}
+                onClick={() => onDetailsToggleAction(!isDetailsOpen)}
                 ref={detailsButtonRef}
                 type="button"
               >

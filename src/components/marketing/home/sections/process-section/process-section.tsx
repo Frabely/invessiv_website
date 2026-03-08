@@ -113,6 +113,10 @@ export function ProcessSection({
             className="menu-cta process-end-cta"
             href={processCta.href}
             ref={endCtaRef}
+            data-analytics-event="cta_click"
+            data-analytics-location="process"
+            data-analytics-variant="primary"
+            data-analytics-target="form"
           >
             {processCta.label}
           </a>

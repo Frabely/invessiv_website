@@ -104,6 +104,46 @@ export function ContactSection({
   };
 
   const isExternalLink = (href: string) => /^https?:\/\//i.test(href);
+  const getContactTarget = (href: string) => {
+    const normalizedHref = href.toLowerCase();
+    if (normalizedHref.startsWith("mailto:")) {
+      return "email";
+    }
+    if (normalizedHref.startsWith("tel:")) {
+      return "phone";
+    }
+    if (
+      normalizedHref.includes("calendly.com") ||
+      normalizedHref.includes("/calendly")
+    ) {
+      return "calendly";
+    }
+    if (
+      normalizedHref.includes("wa.me/") ||
+      normalizedHref.includes("whatsapp.com/")
+    ) {
+      return "whatsapp";
+    }
+    return null;
+  };
+  const getSecondaryCtaAnalyticsProps = (href: string) => {
+    const contactTarget = getContactTarget(href);
+    if (contactTarget) {
+      return {
+        "data-analytics-event": "contact_click",
+        "data-analytics-location": "contact",
+        "data-analytics-target": contactTarget,
+      };
+    }
+    return {
+      "data-analytics-event": "cta_click",
+      "data-analytics-location": "contact",
+      "data-analytics-variant": "secondary",
+      ...(href === "#contact"
+        ? { "data-analytics-target": "form" }
+        : {}),
+    };
+  };
 
   const activeEntryId = useMemo(() => {
     if (!entries.length) {
@@ -392,6 +432,11 @@ export function ContactSection({
                               href={entry.channel.href}
                               rel={isExternalChannelLink ? "noopener noreferrer" : undefined}
                               target={isExternalChannelLink ? "_blank" : undefined}
+                              data-analytics-event="contact_click"
+                              data-analytics-location="contact"
+                              data-analytics-target={
+                                getContactTarget(entry.channel.href) ?? "email"
+                              }
                             >
                               {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
                             </a>
@@ -415,7 +460,11 @@ export function ContactSection({
 
           {contactSecondaryCta ? (
             <div className="contact-cta-wrap">
-              <a className="contact-secondary-link" href={contactSecondaryCta.href}>
+              <a
+                className="contact-secondary-link"
+                href={contactSecondaryCta.href}
+                {...getSecondaryCtaAnalyticsProps(contactSecondaryCta.href)}
+              >
                 {contactSecondaryCta.label}
               </a>
             </div>

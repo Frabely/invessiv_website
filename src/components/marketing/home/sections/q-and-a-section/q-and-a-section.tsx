@@ -72,6 +72,9 @@ export function QAndASection({
           <a
             className="qna-secondary-contact-link"
             href={secondaryContact.href}
+            data-analytics-event="contact_click"
+            data-analytics-location="qna"
+            data-analytics-target="email"
           >
             {secondaryContact.label}
           </a>
