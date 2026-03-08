@@ -31,7 +31,6 @@ export function useProcessStartPoint({
     }
     let totalLength = 0;
     let rafId: number | null = null;
-    const hasMatchMedia = typeof window.matchMedia === "function";
 
     const updatePoint = () => {
       const layoutRect = layout.getBoundingClientRect();
@@ -57,11 +56,12 @@ export function useProcessStartPoint({
         return;
       }
 
+      const stepsTopInLayout = steps.offsetTop;
       const cardMetrics = cards.map((card) => {
         const rect = card.getBoundingClientRect();
-        const top = rect.top - layoutRect.top;
-        const bottom = rect.bottom - layoutRect.top;
-        const height = rect.height;
+        const top = stepsTopInLayout + card.offsetTop;
+        const height = card.offsetHeight;
+        const bottom = top + height;
         const centerY = top + height / 2;
         const left = rect.left - layoutRect.left;
         const right = rect.right - layoutRect.left;
@@ -93,81 +93,42 @@ export function useProcessStartPoint({
       const startShift =
         (horizontalViewWidth - firstRect.width) / 4 + firstRect.width / 2;
       const leftXRaw = firstCenter.x - startShift;
+      const hasMatchMedia = typeof window.matchMedia === "function";
       const isMobileViewport = hasMatchMedia
         ? window.matchMedia("(max-width: 900px)").matches
-        : false;
-      const isTabletViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 1200px) and (min-width: 901px)")
-            .matches
         : false;
       const edgePadding = 12;
       const leftX = Math.min(
         Math.max(leftXRaw, edgePadding),
         layoutRect.width - edgePadding,
       );
-      const rightX = isMobileViewport
-        ? layoutRect.width - leftX
-        : (() => {
-            const rightXRaw = lastCenter.x + startShift;
-            const tabletNudgeLeft = isTabletViewport ? 10 : 0;
-            const rightXTarget = rightXRaw - tabletNudgeLeft;
-            const endCtaHalfWidth =
-              (endCta?.getBoundingClientRect().width ?? 0) / 2;
-            const rightXMin = endCtaHalfWidth + 12;
-            const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
-            return Math.min(Math.max(rightXTarget, rightXMin), rightXMax);
-          })();
-      const mobileLaneInset = 8;
-      const mobileLaneOffset = Math.min(
-        16,
-        Math.max(10, layoutRect.width * 0.03),
-      );
-      const mobileCardAnchors = isMobileViewport
-        ? cardMetrics.map((metrics) => {
-            const center = { x: metrics.centerX, y: metrics.centerY };
-            const leftGap = Math.max(0, metrics.left);
-            const rightGap = Math.max(0, layoutRect.width - metrics.right);
-            const leftLaneX = Math.max(
-              mobileLaneInset,
-              metrics.left - mobileLaneOffset,
-            );
-            const rightLaneX = Math.min(
-              layoutRect.width - mobileLaneInset,
-              metrics.right + mobileLaneOffset,
-            );
-            const prefersLeftLane = metrics.centerX > layoutRect.width / 2;
-            const laneX =
-              Math.abs(leftGap - rightGap) <= 2
-                ? (prefersLeftLane ? leftLaneX : rightLaneX)
-                : (leftGap >= rightGap ? leftLaneX : rightLaneX);
-
-            return { center, laneX, leftLaneX, rightLaneX };
-          })
-        : null;
-      const mobileStartAnchor = mobileCardAnchors?.[0];
-      const mobileStartX = mobileStartAnchor?.laneX;
+      const mobileStartX = isMobileViewport
+        ? Math.min(
+            Math.max(firstMetrics.left / 2, edgePadding),
+            layoutRect.width - edgePadding,
+          )
+        : leftX;
+      const rightX = (() => {
+        const rightXRaw = lastCenter.x + startShift;
+        const endCtaHalfWidth =
+          (endCta?.getBoundingClientRect().width ?? 0) / 2;
+        const rightXMin = endCtaHalfWidth + 12;
+        const rightXMax = layoutRect.width - endCtaHalfWidth - 12;
+        return Math.min(Math.max(rightXRaw, rightXMin), rightXMax);
+      })();
       setCssPoint(
         "--process-start-x",
         "--process-start-y",
-        mobileStartX ?? mobileStartAnchor?.laneX ?? leftX,
-        mobileStartAnchor?.center.y ?? firstCenter.y,
+        mobileStartX,
+        firstCenter.y,
       );
-      const ctaEndY = (() => {
-        const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
-        const ctaGap = 16;
-        return lastBottom + ctaGap + ctaHeight / 2;
-      })();
+      const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
+      const ctaGap = isMobileViewport ? 24 : 16;
+      const mobileLastBottom = lastMetrics.rect.bottom - layoutRect.top;
+      const ctaAnchorBottom = isMobileViewport ? mobileLastBottom : lastBottom;
+      const ctaEndY = ctaAnchorBottom + ctaGap + ctaHeight / 2;
       const desktopEndX = layoutRect.width / 2;
-      if (isMobileViewport) {
-        setCssPoint(
-          "--process-end-x",
-          "--process-end-y",
-          lastCenter.x,
-          ctaEndY,
-        );
-      } else {
-        setCssPoint("--process-end-x", "--process-end-y", desktopEndX, ctaEndY);
-      }
+      setCssPoint("--process-end-x", "--process-end-y", desktopEndX, ctaEndY);
       // Use the vertical midpoint of each gap between step cards.
       const spacingMidY = cardMetrics.slice(0, -1).map((metrics, index) => {
         const nextMetrics = cardMetrics[index + 1];
@@ -200,53 +161,34 @@ export function useProcessStartPoint({
 
       const toPoint = (x: number, y: number) => `L ${x.toFixed(2)} ${y.toFixed(2)}`;
       let pathDefinition = "";
-
-      if (isMobileViewport && mobileCardAnchors?.length) {
-        const mobileSegments = [
-          `M ${(mobileStartX ?? mobileCardAnchors[0].laneX).toFixed(2)} ${mobileCardAnchors[0].center.y.toFixed(2)}`,
-        ];
-
-        spacingMidY.forEach((midY, index) => {
-          if (midY == null) {
-            return;
-          }
-
-          const currentAnchor = mobileCardAnchors[index];
-          const nextAnchor = mobileCardAnchors[index + 1];
-          if (!currentAnchor || !nextAnchor) {
-            return;
-          }
-
-          const currentLaneX =
-            index === 0 ? (mobileStartX ?? currentAnchor.laneX) : currentAnchor.laneX;
-          mobileSegments.push(toPoint(currentLaneX, midY));
-          mobileSegments.push(toPoint(nextAnchor.laneX, midY));
-          mobileSegments.push(toPoint(nextAnchor.laneX, nextAnchor.center.y));
-        });
-
-        const lastAnchor = mobileCardAnchors[mobileCardAnchors.length - 1];
-        mobileSegments.push(toPoint(lastAnchor.laneX, ctaEndY));
-        mobileSegments.push(toPoint(lastCenter.x, ctaEndY));
-        pathDefinition = mobileSegments.join(" ");
+      if (isMobileViewport) {
+        pathDefinition = [
+          `M ${mobileStartX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
+          `L ${mobileStartX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
+          `L ${desktopEndX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
+        ].join(" ");
       } else {
-        const [spacing1, spacing2, spacing3] = spacingMidY;
-        if (spacing1 == null || spacing2 == null || spacing3 == null) {
+        const validSpacing = spacingMidY.filter(
+          (midY): midY is number => midY != null,
+        );
+        if (validSpacing.length === 0) {
           return;
         }
 
-        // Journey order: down, right, down, left, down, right, then to CTA endpoint.
-        pathDefinition = [
-          `M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`,
-          `L ${leftX.toFixed(2)} ${spacing1.toFixed(2)}`,
-          `L ${rightX.toFixed(2)} ${spacing1.toFixed(2)}`,
-          `L ${rightX.toFixed(2)} ${spacing2.toFixed(2)}`,
-          `L ${leftX.toFixed(2)} ${spacing2.toFixed(2)}`,
-          `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
-          `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
-          `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
-          `L ${rightX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
-          `L ${desktopEndX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
-        ].join(" ");
+        const segments = [`M ${leftX.toFixed(2)} ${firstCenter.y.toFixed(2)}`];
+        let currentX = leftX;
+        validSpacing.forEach((midY, index) => {
+          segments.push(toPoint(currentX, midY));
+          const targetX = index % 2 === 0 ? rightX : leftX;
+          if (targetX !== currentX) {
+            segments.push(toPoint(targetX, midY));
+            currentX = targetX;
+          }
+        });
+        segments.push(toPoint(currentX, lastCenter.y));
+        segments.push(toPoint(currentX, ctaEndY));
+        segments.push(toPoint(desktopEndX, ctaEndY));
+        pathDefinition = segments.join(" ");
       }
       path.setAttribute("d", pathDefinition);
       const measuredLength = path.getTotalLength();
@@ -262,24 +204,19 @@ export function useProcessStartPoint({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-      const isMobileViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 900px)").matches
-        : false;
+      const hasMatchMedia = typeof window.matchMedia === "function";
       const prefersReducedMotion = hasMatchMedia
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
-      const journeySpeedMultiplier = isMobileViewport
-        ? Math.max(1.12, Math.min(1.32, viewportHeight / 680))
-        : 1.3;
       // Start and end trigger lines tune when drawing begins and completes.
-      const startLine = viewportHeight * (isMobileViewport ? 0.72 : 0.68);
-      const endLine = viewportHeight * (isMobileViewport ? 0.26 : 0.5);
+      const startLine = viewportHeight * 0.68;
+      const endLine = viewportHeight * 0.5;
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
       const progress = prefersReducedMotion
         ? 1
-        : Math.max(0, Math.min(1, rawProgress * journeySpeedMultiplier));
+        : Math.max(0, Math.min(1, rawProgress));
       if (totalLength > 0) {
         const drawnLength = totalLength * progress;
         path.style.strokeDashoffset = `${totalLength - drawnLength}`;

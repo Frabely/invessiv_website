@@ -3031,6 +3031,10 @@ main {
     gap: 20px;
   }
 
+  .hero__tag {
+    margin-bottom: 18px;
+  }
+
   .hero h1 {
     max-width: 18ch;
   }
@@ -3228,20 +3232,18 @@ main {
   }
 
   .process-step {
-    width: min(85%, 760px);
+    width: 85%;
     opacity: 1;
     transform: none;
     transition-delay: 0ms;
-  }
-
-  .process-step:nth-child(odd) {
     margin-inline-start: auto;
     margin-inline-end: 0;
   }
 
+  .process-step:nth-child(odd),
   .process-step:nth-child(even) {
-    margin-inline-start: 0;
-    margin-inline-end: auto;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
   }
 
   .proof-section {
