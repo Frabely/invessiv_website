@@ -35,7 +35,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroChipTags: [
       "KI-Agenten-Workflow",
       "Manueller QA-Finalcheck",
-      "Meist Antwort in 24h",
+      "In der Regel Antwort in 24h",
     ],
     heroPrimaryCta: "Projekt anfragen",
     heroSecondaryCta: "Leistungen ansehen",
@@ -105,7 +105,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroChipTags: [
       "AI agent workflow",
       "Manual QA final check",
-      "Usually a reply within 24h",
+      "Typically a reply within 24h",
     ],
     heroPrimaryCta: "Request project",
     heroSecondaryCta: "View services",
@@ -171,3 +171,4 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
 export function getHomeUiContent(locale: Locale): HomeUiContent {
   return HOME_UI_CONTENT[locale];
 }
+

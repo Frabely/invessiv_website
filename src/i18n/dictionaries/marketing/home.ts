@@ -582,7 +582,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Ablauf mit KI-Fokus: Nach deinen Anforderungen richte ich das Agent-Setup ein, arbeite im KI-Agenten-Workflow und finalisiere mit manuellem Feinschliff und QA.",
         summaryPoints: [
           "Ziel + Angebot in ca. 30 Minuten geklärt",
-          "Erster Draft oft in 48h mit KI-Agenten-Build",
+          "Erster Draft in der Regel in 48h mit KI-Agenten-Build",
           "Go-live inkl. QA und Übergabe",
         ],
         processSteps: [
@@ -599,7 +599,7 @@ const HOME_SECTIONS: LandingSection[] = [
             step: "02",
             title: "KI-Agenten-Build",
             deliverable: "Lauffähiger Draft oder Prototyp",
-            effort: "Lieferzeit: oft innerhalb von 48h (je nach Umfang)",
+            effort: "Lieferzeit: in der Regel innerhalb von 48h (je nach Umfang)",
             result: "Ergebnis: Struktur + Kernlogik",
             description:
               "Auf Basis des Agent-Setups setze ich die erste lauffähige Version im KI-Agenten-Workflow um.",
@@ -625,7 +625,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Projekt anfragen",
-          hint: "Unverbindlich. Meist Rückmeldung innerhalb von 24h.",
+          hint: "Unverbindlich. In der Regel Rückmeldung innerhalb von 24h.",
           href: "#contact",
         },
       },
@@ -635,7 +635,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "AI-focused delivery flow: after your requirements, I set up the agent foundation, work in an AI agent workflow, and finalize with manual refinement and QA.",
         summaryPoints: [
           "Goal and offer aligned in about 30 minutes",
-          "First draft often in 48h via AI agent build",
+          "First draft typically in 48h via AI agent build",
           "Go-live includes QA and handover",
         ],
         processSteps: [
@@ -652,7 +652,7 @@ const HOME_SECTIONS: LandingSection[] = [
             step: "02",
             title: "AI agent build",
             deliverable: "Working draft or prototype",
-            effort: "Delivery: often within 48h (depending on scope)",
+            effort: "Delivery: typically within 48h (depending on scope)",
             result: "Outcome: structure + core logic",
             description:
               "Based on the agent setup, I build the first working version in an AI agent workflow.",
@@ -678,7 +678,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Request project",
-          hint: "No commitment. Usually a reply within 24h.",
+          hint: "No commitment. Typically a reply within 24h.",
           href: "#contact",
         },
       },
@@ -709,7 +709,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Welche Tools setzt du ein?",
             answer:
-              "Mein Kernworkflow ist Agent-Setup + KI-Agenten-Workflow für die Umsetzung, ergänzt um Next.js, Tailwind, Figma und passende Analyse-/Workflow-Tools. Ich steuere Architektur, Review und QA, damit Übergabe und Wartung sauber funktionieren.",
+              "Mein Kernworkflow ist Agent-Setup + KI-Agenten-Workflow für die Umsetzung, ergänzt um Next.js, Tailwind und passende Analyse-/Workflow-Tools. Ich steuere Architektur, Review und QA, damit Übergabe und Wartung sauber funktionieren.",
           },
           {
             question: "Gibt es versteckte Kosten?",
@@ -740,7 +740,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Which tools do you use?",
             answer:
-              "My core workflow is agent setup + AI agent workflow for implementation, complemented by Next.js, Tailwind, Figma, and suitable analytics/workflow tools. I own architecture, review, and QA for clean handover and maintainability.",
+              "My core workflow is agent setup + AI agent workflow for implementation, complemented by Next.js, Tailwind, and suitable analytics/workflow tools. I own architecture, review, and QA for clean handover and maintainability.",
           },
           {
             question: "Are there any hidden costs?",
@@ -760,7 +760,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Drei Wege, ein Ziel: schnell den sinnvollsten nächsten Schritt für dein Vorhaben finden.",
         summaryPoints: [
           "3 Wege je nach Projektstand",
-          "Meist Rückmeldung innerhalb von 24h",
+          "In der Regel Rückmeldung innerhalb von 24h",
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
         footerHeroTitle: "Bereit für eine neue, produktive Website?",
@@ -819,25 +819,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
         contactChannels: [
           {
-            mode: "email",
-            kicker: "Asynchron & schnell",
-            label: "Kurze E-Mail",
-            description:
-              "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            helper:
-              "2-4 Sätze reichen: Ziel, Kontext und was du als Nächstes brauchst.",
-            hint: "Du erhältst eine klare Einschätzung und einen konkreten nächsten Schritt.",
-            actionLabel: "E-Mail senden",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Adresse kopieren",
-            copiedLabel: "Adresse kopiert",
-            detailPoints: ["Antwort meist innerhalb von 24h", "Kein Termin nötig"],
-            metaLabel: "E-Mail",
-            metaValue: "Asynchroner Schnellkontakt",
-          },
-          {
             mode: "call",
             kicker: "Synchron abstimmen",
             label: "Kennenlern-Call",
@@ -856,6 +837,25 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             metaLabel: "Format",
             metaValue: "Kurzer Abstimmungstermin (Telefon/Video)",
+          },
+          {
+            mode: "email",
+            kicker: "Asynchron & schnell",
+            label: "Kurze E-Mail",
+            description:
+              "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
+            value: COMPANY.contact.email,
+            href: COMPANY_MAILTO,
+            helper:
+              "2-4 Sätze reichen: Ziel, Kontext und was du als Nächstes brauchst.",
+            hint: "Du erhältst eine klare Einschätzung und einen konkreten nächsten Schritt.",
+            actionLabel: "E-Mail senden",
+            copyValue: COMPANY.contact.email,
+            copyLabel: "Adresse kopieren",
+            copiedLabel: "Adresse kopiert",
+            detailPoints: ["Antwort in der Regel innerhalb von 24h", "Kein Termin nötig"],
+            metaLabel: "E-Mail",
+            metaValue: "Asynchroner Schnellkontakt",
           },
         ],
         contactChecklist: [
@@ -976,7 +976,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Three paths, one goal: move to the most practical next step quickly.",
         summaryPoints: [
           "3 paths based on project clarity",
-          "Usually a reply within 24h",
+          "Typically a reply within 24h",
           "Direct contact without sales handoff",
         ],
         footerHeroTitle: "Ready for a new, productive website?",
@@ -1028,27 +1028,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
         contactChannels: [
           {
-            mode: "email",
-            kicker: "Async & low effort",
-            label: "Short email",
-            description:
-              "Best for fast async contact when you want to clarify the next step in writing.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            helper: "2-4 lines are enough: goal, context, and what you need next.",
-            hint: "You get a clear assessment and a concrete next step.",
-            actionLabel: "Send email",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Copy address",
-            copiedLabel: "Address copied",
-            detailPoints: [
-              "Usually a reply within 24h",
-              "No scheduling needed",
-            ],
-            metaLabel: "Email",
-            metaValue: "Asynchronous quick contact",
-          },
-          {
             mode: "call",
             kicker: "Sync alignment",
             label: "Discovery call",
@@ -1067,6 +1046,27 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             metaLabel: "Format",
             metaValue: "Short call (phone/video)",
+          },
+          {
+            mode: "email",
+            kicker: "Async & low effort",
+            label: "Short email",
+            description:
+              "Best for fast async contact when you want to clarify the next step in writing.",
+            value: COMPANY.contact.email,
+            href: COMPANY_MAILTO,
+            helper: "2-4 lines are enough: goal, context, and what you need next.",
+            hint: "You get a clear assessment and a concrete next step.",
+            actionLabel: "Send email",
+            copyValue: COMPANY.contact.email,
+            copyLabel: "Copy address",
+            copiedLabel: "Address copied",
+            detailPoints: [
+              "Typically a reply within 24h",
+              "No scheduling needed",
+            ],
+            metaLabel: "Email",
+            metaValue: "Asynchronous quick contact",
           },
         ],
         contactChecklist: [
@@ -1337,3 +1337,5 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     };
   });
 }
+
+

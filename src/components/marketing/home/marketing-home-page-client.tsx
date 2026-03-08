@@ -29,7 +29,7 @@ export function MarketingHomePageClient() {
     <>
       <SiteHeader navigation={PRIMARY_NAVIGATION} />
 
-      <main>
+      <main className="marketing-main">
         <div aria-hidden="true" className="page-accents">
           <span className="page-aurora page-aurora--left" />
           <span className="page-aurora page-aurora--right" />

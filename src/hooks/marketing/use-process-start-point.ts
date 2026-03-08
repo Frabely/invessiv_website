@@ -35,10 +35,6 @@ export function useProcessStartPoint({
 
     const updatePoint = () => {
       const layoutRect = layout.getBoundingClientRect();
-      const centerInLayout = (rect: DOMRect) => ({
-        x: rect.left - layoutRect.left + rect.width / 2,
-        y: rect.top - layoutRect.top + rect.height / 2,
-      });
       const setCssPoint = (
         xName: string,
         yName: string,
@@ -61,11 +57,37 @@ export function useProcessStartPoint({
         return;
       }
 
-      const firstRect = firstCard.getBoundingClientRect();
-      const lastRect = lastCard.getBoundingClientRect();
-      const firstCenter = centerInLayout(firstRect);
-      const lastCenter = centerInLayout(lastRect);
-      const lastBottom = lastRect.bottom - layoutRect.top;
+      const stepsTopInLayout = steps.offsetTop;
+      const cardMetrics = cards.map((card) => {
+        const rect = card.getBoundingClientRect();
+        const top = stepsTopInLayout + card.offsetTop;
+        const height = card.offsetHeight;
+        const bottom = top + height;
+        const centerY = top + height / 2;
+        const left = rect.left - layoutRect.left;
+        const right = rect.right - layoutRect.left;
+        const centerX = left + rect.width / 2;
+
+        return {
+          card,
+          rect,
+          top,
+          bottom,
+          centerY,
+          left,
+          right,
+          centerX,
+        };
+      });
+      const firstMetrics = cardMetrics[0];
+      const lastMetrics = cardMetrics[cardMetrics.length - 1];
+      if (!firstMetrics || !lastMetrics) {
+        return;
+      }
+      const firstRect = firstMetrics.rect;
+      const firstCenter = { x: firstMetrics.centerX, y: firstMetrics.centerY };
+      const lastCenter = { x: lastMetrics.centerX, y: lastMetrics.centerY };
+      const lastBottom = lastMetrics.bottom;
       const horizontalViewWidth =
         upperCard?.getBoundingClientRect().width ?? layoutRect.width;
       // Keep the requested horizontal offset formula stable for both endpoints.
@@ -97,11 +119,10 @@ export function useProcessStartPoint({
             return Math.min(Math.max(rightXTarget, rightXMin), rightXMax);
           })();
       const mobileCardAnchors = isMobileViewport
-        ? cards.map((card) => {
-            const rect = card.getBoundingClientRect();
-            const center = centerInLayout(rect);
-            const leftGap = Math.max(0, rect.left - layoutRect.left);
-            const rightGap = Math.max(0, layoutRect.right - rect.right);
+        ? cardMetrics.map((metrics) => {
+            const center = { x: metrics.centerX, y: metrics.centerY };
+            const leftGap = Math.max(0, metrics.left);
+            const rightGap = Math.max(0, layoutRect.width - metrics.right);
             const leftMidX = leftGap / 2;
             const rightMidX = layoutRect.width - rightGap / 2;
             const laneX = leftGap >= rightGap ? leftMidX : rightMidX;
@@ -119,32 +140,30 @@ export function useProcessStartPoint({
         mobileStartX ?? mobileStartAnchor?.laneX ?? leftX,
         mobileStartAnchor?.center.y ?? firstCenter.y,
       );
-      const mobileEndY = (() => {
+      const ctaEndY = (() => {
         const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
         const ctaGap = 16;
         return lastBottom + ctaGap + ctaHeight / 2;
       })();
+      const desktopEndX = layoutRect.width / 2;
       if (isMobileViewport) {
         setCssPoint(
           "--process-end-x",
           "--process-end-y",
           lastCenter.x,
-          mobileEndY,
+          ctaEndY,
         );
       } else {
-        setCssPoint("--process-end-x", "--process-end-y", rightX, lastCenter.y);
+        setCssPoint("--process-end-x", "--process-end-y", desktopEndX, ctaEndY);
       }
       // Use the vertical midpoint of each gap between step cards.
-      const spacingMidY = cards.slice(0, -1).map((card, index) => {
-        const currentRect = card.getBoundingClientRect();
-        const nextRect = cards[index + 1]?.getBoundingClientRect();
-        if (!nextRect) {
+      const spacingMidY = cardMetrics.slice(0, -1).map((metrics, index) => {
+        const nextMetrics = cardMetrics[index + 1];
+        if (!nextMetrics) {
           return null;
         }
 
-        const currentBottom = currentRect.bottom - layoutRect.top;
-        const nextTop = nextRect.top - layoutRect.top;
-        return currentBottom + (nextTop - currentBottom) / 2;
+        return metrics.bottom + (nextMetrics.top - metrics.bottom) / 2;
       });
 
       spacingMidY.slice(0, 3).forEach((midY, index) => {
@@ -194,11 +213,11 @@ export function useProcessStartPoint({
         });
 
         const lastAnchor = mobileCardAnchors[mobileCardAnchors.length - 1];
-        mobileSegments.push(toPoint(lastAnchor.laneX, mobileEndY));
+        mobileSegments.push(toPoint(lastAnchor.laneX, ctaEndY));
         mobileSegments.push(
-          toPoint(mobileEndRightX ?? lastAnchor.laneX, mobileEndY),
+          toPoint(mobileEndRightX ?? lastAnchor.laneX, ctaEndY),
         );
-        mobileSegments.push(toPoint(lastCenter.x, mobileEndY));
+        mobileSegments.push(toPoint(lastCenter.x, ctaEndY));
         pathDefinition = mobileSegments.join(" ");
       } else {
         const [spacing1, spacing2, spacing3] = spacingMidY;
@@ -216,6 +235,8 @@ export function useProcessStartPoint({
           `L ${leftX.toFixed(2)} ${spacing3.toFixed(2)}`,
           `L ${rightX.toFixed(2)} ${spacing3.toFixed(2)}`,
           `L ${rightX.toFixed(2)} ${lastCenter.y.toFixed(2)}`,
+          `L ${rightX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
+          `L ${desktopEndX.toFixed(2)} ${ctaEndY.toFixed(2)}`,
         ].join(" ");
       }
       path.setAttribute("d", pathDefinition);
