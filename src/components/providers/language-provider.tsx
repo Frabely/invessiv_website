@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/config/i18n";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
@@ -22,42 +23,12 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 const STORAGE_KEY = "invessiv-locale";
 const THEME_STORAGE_KEY = "invessiv-theme";
 
-const getLocaleFromPath = (): Locale | null => {
-  if (typeof window === "undefined") {
+const getLocaleFromPathname = (pathname: string | null): Locale | null => {
+  if (!pathname) {
     return null;
   }
-  const firstSegment = window.location.pathname.split("/").filter(Boolean)[0];
+  const firstSegment = pathname.split("/").filter(Boolean)[0];
   return firstSegment === "de" || firstSegment === "en" ? firstSegment : null;
-};
-
-const getStoredLocale = (): Locale | null => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  return stored === "de" || stored === "en" ? stored : null;
-};
-
-const getInitialLocale = (initialLocale: Locale): Locale => {
-  const localeFromPath = getLocaleFromPath();
-  const storedLocale = getStoredLocale();
-  return localeFromPath ?? storedLocale ?? initialLocale;
-};
-
-const getInitialTheme = (): Theme => {
-  if (!ENABLE_THEME_SWITCH) {
-    return "dark";
-  }
-  if (typeof window === "undefined") {
-    return "dark";
-  }
-  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  if (storedTheme === "light" || storedTheme === "dark") {
-    return storedTheme;
-  }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
 };
 
 export function LanguageProvider({
@@ -67,36 +38,12 @@ export function LanguageProvider({
   children: ReactNode;
   initialLocale?: Locale;
 }) {
-  const [locale, setLocaleState] = useState<Locale>(() =>
-    getInitialLocale(initialLocale),
-  );
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
-  const localeRef = useRef<Locale>(locale);
-  const themeRef = useRef<Theme>(theme);
+  const pathname = usePathname();
+  const pathnameLocale = getLocaleFromPathname(pathname);
+  const [localOverride, setLocalOverride] = useState<Locale | null>(null);
+  const [theme, setThemeState] = useState<Theme>("dark");
 
-  useEffect(() => {
-    localeRef.current = locale;
-  }, [locale]);
-
-  useEffect(() => {
-    themeRef.current = theme;
-  }, [theme]);
-
-  useEffect(() => {
-    const resolvedLocale = getInitialLocale(initialLocale);
-    if (resolvedLocale === localeRef.current) {
-      return;
-    }
-    setLocaleState(resolvedLocale);
-  }, [initialLocale]);
-
-  useEffect(() => {
-    const resolvedTheme = getInitialTheme();
-    if (resolvedTheme === themeRef.current) {
-      return;
-    }
-    setThemeState(resolvedTheme);
-  }, []);
+  const locale = pathnameLocale ?? localOverride ?? initialLocale;
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, locale);
@@ -115,13 +62,11 @@ export function LanguageProvider({
   const value = useMemo<LanguageContextValue>(
     () => ({
       locale,
-      setLocale: (nextLocale) => setLocaleState(nextLocale),
+      setLocale: (nextLocale) => setLocalOverride(nextLocale),
       toggleLocale: () =>
-        setLocaleState((current) => {
-          if (current === "de") {
-            return "en";
-          }
-          return "de";
+        setLocalOverride((current) => {
+          const activeLocale = current ?? locale;
+          return activeLocale === "de" ? "en" : "de";
         }),
       theme,
       setTheme: (nextTheme) => {
@@ -140,7 +85,9 @@ export function LanguageProvider({
     [locale, theme],
   );
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {
