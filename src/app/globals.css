@@ -1206,6 +1206,16 @@ main {
   }
 }
 
+@media (max-width: 759px) {
+  .services-card--maintenance {
+    order: 5;
+  }
+
+  .services-card--ai {
+    order: 6;
+  }
+}
+
 @media (min-width: 1120px) {
   .services-bento {
     grid-template-columns: repeat(3, minmax(0, 1fr));
