@@ -660,53 +660,6 @@ main {
   background-size: 2px 2px;
 }
 
-.marquee-section {
-  padding: 0 24px 12px;
-}
-
-.marquee {
-  overflow: hidden;
-  margin: 0 auto;
-  width: min(1240px, 100%);
-  border: 1px solid rgba(226, 166, 111, 0.24);
-  border-radius: 16px;
-  background: rgba(42, 22, 13, 0.62);
-  padding: 12px 0;
-  mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-}
-
-.marquee__track {
-  width: max-content;
-  display: flex;
-  gap: 12px;
-  animation: marquee-scroll 20s linear infinite;
-}
-
-.marquee__item {
-  display: inline-flex;
-  align-items: center;
-  min-height: 38px;
-  border-radius: 999px;
-  border: 1px solid rgba(226, 171, 121, 0.24);
-  background: rgba(255, 226, 197, 0.08);
-  color: #f0d7be;
-  padding: 0 14px;
-  font-size: 0.86rem;
-}
-
 .layout-shell {
   max-width: var(--max-content-width);
   margin: 0 auto;
@@ -740,10 +693,8 @@ main {
   line-height: 1.65;
 }
 
-[data-theme="light"] .marquee,
 [data-theme="light"] .content-section,
-[data-theme="light"] .proof-metric-card,
-[data-theme="light"] .proof-card,
+[data-theme="light"] .included-card,
 [data-theme="light"] .packages-card,
 [data-theme="light"] .contact-channel-card,
 [data-theme="light"] .contact-brief-card,
@@ -756,8 +707,7 @@ main {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-[data-theme="light"] .proof-metric-value,
-[data-theme="light"] .proof-card h3,
+[data-theme="light"] .included-card h3,
 [data-theme="light"] .packages-card h3,
 [data-theme="light"] .contact-brief-card h3,
 [data-theme="light"] .site-footer__col h3,
@@ -766,9 +716,8 @@ main {
   color: #4a2717;
 }
 
-[data-theme="light"] .proof-metric-label,
-[data-theme="light"] .proof-card p,
-[data-theme="light"] .proof-hint,
+[data-theme="light"] .included-hint,
+[data-theme="light"] .included-card p,
 [data-theme="light"] .packages-hint,
 [data-theme="light"] .packages-ideal,
 [data-theme="light"] .packages-timeline,
@@ -798,11 +747,11 @@ main {
 [data-theme="light"] .services-example-btn,
 [data-theme="light"] .contact-channel-action-link,
 [data-theme="light"] .contact-copy-btn,
-[data-theme="light"] .proof-badge,
+[data-theme="light"] .included-badge,
 [data-theme="light"] .process-step-phase,
 [data-theme="light"] .process-step-number {
   background: rgba(255, 245, 234, 0.86);
-  border-color: rgba(78, 108, 148, 0.3);
+  border-color: rgba(162, 101, 69, 0.24);
   color: #6f4834;
 }
 
@@ -868,7 +817,7 @@ main {
 }
 
 [data-theme="light"] .services-chip i,
-[data-theme="light"] .proof-badge i {
+[data-theme="light"] .included-badge i {
   background: linear-gradient(
     135deg,
     rgba(216, 112, 44, 0.95),
@@ -894,12 +843,6 @@ main {
       transparent 62%
     ),
     linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent);
-}
-
-[data-theme="light"] .marquee__item {
-  background: rgba(248, 252, 255, 0.92);
-  border-color: rgba(162, 101, 69, 0.22);
-  color: #734936;
 }
 
 [data-theme="light"] .packages-card--featured {
@@ -998,22 +941,23 @@ main {
   min-height: 260px;
 }
 
-.proof-section {
+.included-section {
   margin-top: 28px;
   padding-left: 0;
 }
 
-.proof-section h2 {
+.included-section h2 {
   margin: 0 0 8px;
   font-size: clamp(1.9rem, 3.1vw, 2.55rem);
   letter-spacing: -0.03em;
 }
 
-.proof-hint {
-  margin: 0 0 18px;
-  color: #bf9b83;
-  max-width: 860px;
+.included-hint {
+  margin: 0 0 14px;
+  color: #d6b39a;
+  max-width: 760px;
   font-size: 1.03rem;
+  line-height: 1.65;
 }
 
 .section-scan-points {
@@ -1079,82 +1023,70 @@ main {
   }
 }
 
-.proof-metrics {
-  margin-top: 10px;
+.included-cards {
+  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
 
-.proof-metric-card {
+.included-card {
+  position: relative;
+  overflow: hidden;
   border-radius: 22px;
-  border: 1px solid rgba(225, 167, 114, 0.24);
-  background: rgba(40, 20, 12, 0.82);
-  padding: 16px 18px;
-  box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.05);
+  border: 1px solid rgba(225, 167, 114, 0.2);
+  background:
+    linear-gradient(180deg, rgba(33, 19, 12, 0.84), rgba(22, 15, 11, 0.92)),
+    rgba(28, 18, 12, 0.84);
+  padding: 20px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 233, 210, 0.05),
+    0 18px 36px rgba(11, 7, 5, 0.18);
 }
 
-.proof-metric-value {
-  margin: 0;
-  color: #fff5ea;
-  font-size: clamp(2rem, 3vw, 2.3rem);
-  font-weight: 800;
-  line-height: 1.1;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  letter-spacing: -0.02em;
+.included-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 214, 169, 0.38),
+    rgba(255, 214, 169, 0.08),
+    transparent
+  );
 }
 
-.proof-metric-label {
-  margin: 7px 0 0;
-  color: #c7a88f;
-  font-size: 0.88rem;
-}
-
-.proof-cards {
-  margin-top: 14px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.proof-card {
-  border-radius: 22px;
-  border: 1px solid rgba(225, 167, 114, 0.24);
-  background: rgba(40, 20, 12, 0.82);
-  padding: 18px;
-  box-shadow: inset 0 1px 0 rgba(255, 233, 210, 0.05);
-}
-
-.proof-card-head {
+.included-card-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.proof-card h3 {
+.included-card h3 {
   margin: 0;
   font-size: 1.04rem;
   letter-spacing: -0.01em;
 }
 
-.proof-badge {
+.included-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-height: 24px;
   padding: 0 11px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 229, 200, 0.1);
-  color: rgba(231, 233, 239, 0.92);
+  border: 1px solid rgba(255, 214, 169, 0.2);
+  background: rgba(255, 190, 120, 0.08);
+  color: rgba(255, 226, 196, 0.92);
   font-size: 0.78rem;
   font-weight: 700;
 }
 
-.proof-badge i {
+.included-badge i {
   width: 8px;
   height: 8px;
   border-radius: 999px;
@@ -1166,14 +1098,95 @@ main {
   box-shadow: 0 0 0 4px rgba(255, 233, 210, 0.05);
 }
 
-.proof-card p {
+.included-card p {
   margin-top: 10px;
   color: #dfc2ac;
   line-height: 1.6;
 }
 
-.proof-cta-wrap {
-  margin-top: 14px;
+.included-bridge {
+  --included-bridge-frame-width: min(calc(100vw - 48px), 1100px);
+  position: relative;
+  margin: 20px auto 0;
+  max-width: 760px;
+  padding: 18px 24px;
+  text-align: center;
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  text-wrap: balance;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent-warm) 2%, transparent) 18%,
+    color-mix(in srgb, var(--color-accent-warm) 5%, var(--color-surface-1) 95%)
+      50%,
+    color-mix(in srgb, var(--color-accent-warm) 2%, transparent) 82%,
+    transparent 100%
+  );
+}
+
+.included-bridge::before,
+.included-bridge::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: var(--included-bridge-frame-width);
+  height: 1px;
+  transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 8%,
+    #000 18%,
+    #000 82%,
+    rgba(0, 0, 0, 0.7) 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 8%,
+    #000 18%,
+    #000 82%,
+    rgba(0, 0, 0, 0.7) 92%,
+    transparent 100%
+  );
+}
+
+.included-bridge::before {
+  top: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent-warm) 62%, transparent) 10%,
+    color-mix(in srgb, var(--color-accent-warm) 78%, #fff0df 22%) 50%,
+    color-mix(in srgb, var(--color-accent-warm) 62%, transparent) 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent-warm) 10%, transparent),
+    0 0 12px color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+    0 0 20px color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  filter: blur(0.2px);
+}
+
+.included-bridge::after {
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-accent-warm) 24%, transparent) 14%,
+    color-mix(in srgb, var(--color-accent-warm) 38%, #fff0df 62%) 50%,
+    color-mix(in srgb, var(--color-accent-warm) 24%, transparent) 86%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px
+    color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  filter: blur(0.15px);
 }
 
 .services-section {
@@ -1762,6 +1775,27 @@ main {
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.76rem;
   font-weight: 600;
+}
+
+.services-fit-note {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 4px;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  line-height: 1.45;
+  font-size: 0.84rem;
+}
+
+.services-fit-label {
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 76%,
+    var(--color-text) 24%
+  );
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .services-list {
@@ -3388,16 +3422,11 @@ main {
     display: none;
   }
 
-  .marquee-section {
-    padding: 0 16px 8px;
-  }
-
   .layout-shell {
     padding: 24px 16px 64px;
   }
 
-  .proof-metrics,
-  .proof-cards {
+  .included-cards {
     grid-template-columns: 1fr;
   }
 
@@ -3572,7 +3601,7 @@ main {
     margin-inline-end: 0;
   }
 
-  .proof-section {
+  .included-section {
     padding-left: 0;
   }
 
@@ -3767,8 +3796,7 @@ main {
   .hero__aurora,
   .page-aurora,
   .blob,
-  .hero-shot,
-  .marquee__track {
+  .hero-shot {
     animation: none !important;
   }
 }
@@ -4295,10 +4323,9 @@ body {
 
 .services-tag,
 .services-chip,
-.proof-badge,
+.included-badge,
 .process-step-phase,
-.process-step-number,
-.marquee__item {
+.process-step-number {
   border-color: color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
@@ -4354,7 +4381,7 @@ body {
 }
 
 .services-chip i,
-.proof-badge i {
+.included-badge i {
   background: linear-gradient(
     135deg,
     rgba(231, 154, 73, 0.96),
@@ -4363,13 +4390,13 @@ body {
   box-shadow: 0 0 0 4px rgba(231, 154, 73, 0.14);
 }
 
-.proof-hint,
+.included-hint,
 .packages-hint,
 .services-hint,
 .services-meta,
+.services-fit-note,
 .services-list,
-.proof-card p,
-.proof-metric-label,
+.included-card p,
 .packages-ideal,
 .packages-timeline,
 .packages-scope li,
@@ -4407,8 +4434,7 @@ body {
     0 0 0 1px rgba(231, 154, 73, 0.15);
 }
 
-.proof-metric-value,
-.proof-card h3,
+.included-card h3,
 .packages-card h3,
 .packages-price,
 .services-card h3,
@@ -4421,14 +4447,12 @@ body {
   color: var(--color-text);
 }
 
-.proof-metric-card,
-.proof-card,
+.included-card,
 .services-card,
 .packages-card,
 .process-intro,
 .process-step,
 .content-section,
-.marquee,
 .site-footer {
   border-color: color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
@@ -4539,14 +4563,12 @@ body {
   outline-color: var(--color-focus);
 }
 
-[data-theme="light"] .proof-metric-card,
-[data-theme="light"] .proof-card,
+[data-theme="light"] .included-card,
 [data-theme="light"] .services-card,
 [data-theme="light"] .packages-card,
 [data-theme="light"] .process-intro,
 [data-theme="light"] .process-step,
 [data-theme="light"] .content-section,
-[data-theme="light"] .marquee,
 [data-theme="light"] .site-footer {
   background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
   border-color: var(--color-border);
@@ -4586,10 +4608,9 @@ body {
 [data-theme="light"] .services-example-btn,
 [data-theme="light"] .contact-channel-action-link,
 [data-theme="light"] .contact-copy-btn,
-[data-theme="light"] .proof-badge,
+[data-theme="light"] .included-badge,
 [data-theme="light"] .process-step-phase,
 [data-theme="light"] .process-step-number,
-[data-theme="light"] .marquee__item,
 [data-theme="light"] .packages-cta--ghost,
 [data-theme="light"] .btn--ghost,
 [data-theme="light"] .site-footer__social-link {
@@ -4599,7 +4620,7 @@ body {
 }
 
 [data-theme="light"] .services-chip i,
-[data-theme="light"] .proof-badge i {
+[data-theme="light"] .included-badge i {
   background: linear-gradient(
     135deg,
     rgba(220, 136, 58, 0.95),
@@ -4608,9 +4629,8 @@ body {
   box-shadow: 0 0 0 4px rgba(216, 132, 54, 0.14);
 }
 
-[data-theme="light"] .proof-hint,
-[data-theme="light"] .proof-metric-label,
-[data-theme="light"] .proof-card p,
+[data-theme="light"] .included-hint,
+[data-theme="light"] .included-card p,
 [data-theme="light"] .packages-hint,
 [data-theme="light"] .packages-ideal,
 [data-theme="light"] .packages-timeline,
@@ -4620,6 +4640,7 @@ body {
 [data-theme="light"] .contact-hint,
 [data-theme="light"] .services-hint,
 [data-theme="light"] .services-meta,
+[data-theme="light"] .services-fit-note,
 [data-theme="light"] .services-list,
 [data-theme="light"] .process-hint,
 [data-theme="light"] .process-summary,
@@ -4632,8 +4653,7 @@ body {
 }
 
 [data-theme="light"] .qna-question,
-[data-theme="light"] .proof-metric-value,
-[data-theme="light"] .proof-card h3,
+[data-theme="light"] .included-card h3,
 [data-theme="light"] .packages-card h3,
 [data-theme="light"] .packages-price,
 [data-theme="light"] .services-card h3,
@@ -5935,11 +5955,6 @@ body {
     clamp(2rem, 4vw, 3rem);
 }
 
-.marketing-main .marquee-section {
-  padding-inline: var(--section-shell-pad-inline);
-  padding-bottom: clamp(0.5rem, 1.5vw, 0.875rem);
-}
-
 .marketing-main .layout-shell {
   padding: var(--section-shell-pad-top) var(--section-shell-pad-inline)
     var(--section-shell-pad-bottom);
@@ -5966,8 +5981,7 @@ body {
 .marketing-main
   :is(
     .services-bento,
-    .proof-metrics,
-    .proof-cards,
+    .included-cards,
     .packages-track,
     .qna-list,
     .contact-entry-picker
@@ -5984,7 +5998,7 @@ body {
   :is(
     .services-card,
     .packages-card,
-    .proof-card,
+    .included-card,
     .process-step,
     .project-request-panel,
     .contact-entry-panel

@@ -23,6 +23,7 @@ describe("ServiceCard", () => {
             isRecommended: true,
             title: "Landingpages",
             description: "Conversion-optimierte One-Pager.",
+            fit: "Angebotsseiten mit klarer Conversion-Aktion.",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",
             price: "ab 990 EUR einmalig",
@@ -46,6 +47,7 @@ describe("ServiceCard", () => {
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           faqLinkLabel="Fragen?"
+          fitLabel="Passt gut für"
           isDetailsOpen={isDetailsOpen}
           moreItemsPluralLabel="weitere Punkte"
           moreItemsSingularLabel="weiterer Punkt"
@@ -64,6 +66,10 @@ describe("ServiceCard", () => {
     expect(screen.getByText(/ab 990/i)).toBeTruthy();
     expect(screen.getByText("einmalig")).toBeTruthy();
     expect(screen.getByText(/Lieferzeit:\s*3-7 Tage/i)).toBeTruthy();
+    expect(screen.getByText("Passt gut für")).toBeTruthy();
+    expect(
+      screen.getByText("Angebotsseiten mit klarer Conversion-Aktion."),
+    ).toBeTruthy();
     expect(screen.getByText("+ 4 weitere Punkte")).toBeTruthy();
     expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Projekt anfragen" })).toBeNull();
@@ -148,6 +154,7 @@ describe("ServiceCard", () => {
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         faqLinkLabel="Fragen?"
+        fitLabel="Passt gut für"
         isDetailsOpen={false}
         moreItemsPluralLabel="weitere Punkte"
         moreItemsSingularLabel="weiterer Punkt"
@@ -187,6 +194,7 @@ describe("ServiceCard", () => {
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         faqLinkLabel="Fragen?"
+        fitLabel="Best for"
         isDetailsOpen={false}
         moreItemsPluralLabel="more items"
         moreItemsSingularLabel="more item"
@@ -231,6 +239,7 @@ describe("ServiceCard", () => {
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           faqLinkLabel="Fragen?"
+          fitLabel="Passt gut für"
           isDetailsOpen={isDetailsOpen}
           moreItemsPluralLabel="weitere Punkte"
           moreItemsSingularLabel="weiterer Punkt"

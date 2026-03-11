@@ -18,6 +18,7 @@ type ServiceCardProps = {
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
   faqLinkLabel: string;
+  fitLabel: string;
   isDetailsOpen: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
@@ -39,6 +40,7 @@ export function ServiceCard({
   defaultDeliveryLabel,
   detailsCtaLabel,
   faqLinkLabel,
+  fitLabel,
   isDetailsOpen,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
@@ -231,6 +233,13 @@ export function ServiceCard({
         <p className="services-delivery-badge">
           {deliveryLabel}: {card.delivery}
         </p>
+
+        {card.fit ? (
+          <p className="services-fit-note">
+            <span className="services-fit-label">{fitLabel}</span>
+            <span>{card.fit}</span>
+          </p>
+        ) : null}
 
         <div className="services-bullets-stack">
           <ul className="services-list">

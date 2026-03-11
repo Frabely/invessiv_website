@@ -57,13 +57,13 @@ describe("SiteHeader", () => {
     });
 
     render(
-      <SiteHeader navigation={[{ href: "#proof" }, { href: "#services" }]} />,
+      <SiteHeader
+        navigation={[{ href: "#included" }, { href: "#services" }]}
+      />,
     );
 
-    expect(screen.getAllByText("Ergebnisse").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Leistungen & Preise").length).toBeGreaterThan(
-      0,
-    );
+    expect(screen.getAllByText("Was du bekommst").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Angebote & Preise").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
   });
 
@@ -77,7 +77,9 @@ describe("SiteHeader", () => {
     });
 
     render(
-      <SiteHeader navigation={[{ href: "#proof" }, { href: "#services" }]} />,
+      <SiteHeader
+        navigation={[{ href: "#included" }, { href: "#services" }]}
+      />,
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
@@ -99,7 +101,9 @@ describe("SiteHeader", () => {
     window.history.replaceState({}, "", "/de/imprint?ref=nav#services");
 
     render(
-      <SiteHeader navigation={[{ href: "#proof" }, { href: "#services" }]} />,
+      <SiteHeader
+        navigation={[{ href: "#included" }, { href: "#services" }]}
+      />,
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
@@ -121,7 +125,9 @@ describe("SiteHeader", () => {
     });
 
     const { container } = render(
-      <SiteHeader navigation={[{ href: "#proof" }, { href: "#services" }]} />,
+      <SiteHeader
+        navigation={[{ href: "#included" }, { href: "#services" }]}
+      />,
     );
 
     const mobileMenu = container.querySelector(".site-header__mobile-menu");
@@ -132,7 +138,7 @@ describe("SiteHeader", () => {
     mobileMenu.setAttribute("open", "");
 
     fireEvent.click(
-      within(mobileMenu).getByRole("link", { name: "Ergebnisse" }),
+      within(mobileMenu).getByRole("link", { name: "Was du bekommst" }),
     );
 
     expect(mobileMenu.hasAttribute("open")).toBe(false);

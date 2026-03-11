@@ -21,8 +21,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     brandLogoAlt: "Invessiv Logo",
     ctaLabel: "Projekt anfragen",
     labelsByHref: {
-      "#proof": "Ergebnisse",
-      "#services": "Leistungen & Preise",
+      "#included": "Was du bekommst",
+      "#services": "Angebote & Preise",
       "#process": "Prozess",
       "#faq": "Q&A",
       "#contact": "Kontakt",
@@ -41,8 +41,8 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     brandLogoAlt: "Invessiv logo",
     ctaLabel: "Request project",
     labelsByHref: {
-      "#proof": "Proof",
-      "#services": "Services & Pricing",
+      "#included": "What you get",
+      "#services": "Offers & pricing",
       "#process": "Process",
       "#faq": "Q&A",
       "#contact": "Contact",

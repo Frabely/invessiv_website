@@ -16,6 +16,7 @@ type ServicesSectionProps = {
   detailsCtaLabel: string;
   description: string;
   faqLinkLabel: string;
+  fitLabel: string;
   id: string;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
@@ -37,6 +38,7 @@ export function ServicesSection({
   detailsCtaLabel,
   description,
   faqLinkLabel,
+  fitLabel,
   id,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
@@ -101,6 +103,7 @@ export function ServicesSection({
               defaultDeliveryLabel={deliveryLabel}
               detailsCtaLabel={detailsCtaLabel}
               faqLinkLabel={faqLinkLabel}
+              fitLabel={fitLabel}
               isDetailsOpen={openCardKey === card.key}
               key={card.key}
               moreItemsPluralLabel={moreItemsPluralLabel}
