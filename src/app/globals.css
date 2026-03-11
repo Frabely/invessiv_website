@@ -4765,7 +4765,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: hero-title-flow 10s ease-in-out infinite alternate;
+  animation: hero-title-flow 5s ease-in-out infinite alternate;
 }
 
 @keyframes hero-title-flow {
