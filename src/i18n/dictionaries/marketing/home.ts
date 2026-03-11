@@ -9,25 +9,45 @@ import {
   COMPANY_SOCIAL_X,
   COMPANY_TEL,
 } from "@/config/company";
+
+type ServiceCardKey =
+  | "ai"
+  | "landing"
+  | "process"
+  | "web"
+  | "upgrade"
+  | "maintenance";
+
+type BaseServiceCard = {
+  key: ServiceCardKey;
+  iconSrc?: string;
+  iconAlt?: string;
+  title: string;
+  description: string;
+  isRecommended?: boolean;
+};
+
+type StandardServiceCard = BaseServiceCard & {
+  isComingSoon?: false;
+  price: string;
+  delivery: string;
+  deliveryLabel?: string;
+  included: string[];
+  details?: string[];
+};
+
+type ComingSoonServiceCard = BaseServiceCard & {
+  isComingSoon: true;
+  comingSoonExamples?: string[];
+};
+
 export type LandingSectionCopy = {
   title: string;
   description: string;
   summaryPoints?: string[];
   metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
-  serviceCards?: Array<{
-    key: "ai" | "landing" | "process" | "web" | "upgrade" | "maintenance";
-    iconSrc?: string;
-    iconAlt?: string;
-    title: string;
-    description: string;
-    price: string;
-    delivery: string;
-    deliveryLabel?: string;
-    isRecommended?: boolean;
-    included: string[];
-    details?: string[];
-  }>;
+  serviceCards?: Array<StandardServiceCard | ComingSoonServiceCard>;
   processSteps?: Array<{
     step: string;
     title: string;
@@ -386,19 +406,14 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/ai-file-icon.svg",
             iconAlt: "KI-Templates & Agents Icon",
             title: "KI-Templates & Agents",
+            isComingSoon: true,
             description:
-              "Einsatzbereite Agent-Templates und Agent-Setups als Basis für einen KI-Agenten-Workflow mit schnellerem Projektstart.",
-            price: "ab 290 € einmalig",
-            delivery: "2–5 Tage",
-            included: [
-              "Ein Agent-Setup inkl. passender Startvorlage für deinen Anwendungsfall",
-              "Klare Rollen, Workflow- und Qualitätsregeln",
-              "Prompt-Struktur mit Eingabe- und Ausgabevorlagen",
-              "Abstimmung auf Tonalität, Angebot und Fachsprache",
-              "Kurzleitfaden für den direkten Projektstart",
-            ],
-            details: [
-              "Weitere Varianten oder zusätzliche Anwendungsfälle können flexibel ergänzt werden.",
+              "KI-Agents und Skills als Download für konkrete Aufgaben.",
+            comingSoonExamples: [
+              "API Setup mit User-Login",
+              "Agent für das Erstellen eigener Webseiten",
+              "Konkrete Skills für spezielle Anwendungsfälle",
+              "Weitere konkrete Setups und Skills folgen",
             ],
           },
           {
@@ -532,19 +547,14 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/ai-file-icon.svg",
             iconAlt: "AI templates & agents icon",
             title: "AI templates & agents",
+            isComingSoon: true,
             description:
-              "Ready-to-use agent templates and agent setups as a base for an AI agent workflow with faster project starts.",
-            price: "from €290 one-time",
-            delivery: "2–5 days",
-            included: [
-              "One agent setup with a matching starter template for your use case",
-              "Clear role, workflow, and quality rules",
-              "Prompt structure with input and output templates",
-              "Aligned with your tone, offer, and domain language",
-              "Short guide for a direct project start",
-            ],
-            details: [
-              "Additional variants or use cases can be added flexibly.",
+              "AI agents and skills as downloads for specific tasks.",
+            comingSoonExamples: [
+              "API setup with user login",
+              "Agent for creating custom websites",
+              "Specialized skills for specific use cases",
+              "More focused setups and skills are planned",
             ],
           },
           {
@@ -599,7 +609,8 @@ const HOME_SECTIONS: LandingSection[] = [
             step: "02",
             title: "KI-Agenten-Build",
             deliverable: "Lauffähiger Draft oder Prototyp",
-            effort: "Lieferzeit: in der Regel innerhalb von 48h (je nach Umfang)",
+            effort:
+              "Lieferzeit: in der Regel innerhalb von 48h (je nach Umfang)",
             result: "Ergebnis: Struktur + Kernlogik",
             description:
               "Auf Basis des Agent-Setups setze ich die erste lauffähige Version im KI-Agenten-Workflow um.",
@@ -845,8 +856,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright:
-          "© 2026 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -903,7 +913,10 @@ const HOME_SECTIONS: LandingSection[] = [
             copyValue: COMPANY.contact.email,
             copyLabel: "Adresse kopieren",
             copiedLabel: "Adresse kopiert",
-            detailPoints: ["Antwort in der Regel innerhalb von 24h", "Kein Termin nötig"],
+            detailPoints: [
+              "Antwort in der Regel innerhalb von 24h",
+              "Kein Termin nötig",
+            ],
             metaLabel: "E-Mail",
             metaValue: "Asynchroner Schnellkontakt",
           },
@@ -929,8 +942,7 @@ const HOME_SECTIONS: LandingSection[] = [
         },
         contactForm: {
           title: "Projektanfrage für konkrete Vorhaben",
-          subtitle:
-            "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
+          subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
           intro:
             "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Scope, Timing und Budgetrahmen.",
           conditionalFieldHint:
@@ -1105,7 +1117,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Best for fast async contact when you want to clarify the next step in writing.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            helper: "2-4 lines are enough: goal, context, and what you need next.",
+            helper:
+              "2-4 lines are enough: goal, context, and what you need next.",
             hint: "You get a clear assessment and a concrete next step.",
             actionLabel: "Send email",
             copyValue: COMPANY.contact.email,
@@ -1178,8 +1191,7 @@ const HOME_SECTIONS: LandingSection[] = [
           ],
           pagesCustomLabel: "Additional pages (optional)",
           pagesCustomPlaceholder: "e.g. References, Team, Q&A",
-          pagesRequiredHint:
-            "Please select at least one page or add your own.",
+          pagesRequiredHint: "Please select at least one page or add your own.",
           workflowLabel: "Number of core workflows",
           workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
           stepNavigationLabel: "Request progress",
@@ -1273,8 +1285,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         footerBrand: "Invessiv",
-        footerCopyright:
-          "© 2026 Invessiv. Alle Rechte vorbehalten.",
+        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
             platform: "linkedin",
@@ -1387,5 +1398,3 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     };
   });
 }
-
-

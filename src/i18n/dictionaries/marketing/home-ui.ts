@@ -18,6 +18,9 @@ export type HomeUiContent = {
   mappingWarning: string;
   marqueeItems: string[];
   servicesAddonBadgeLabel: string;
+  servicesComingSoonExamplesCtaLabel: string;
+  servicesComingSoonExamplesHideLabel: string;
+  servicesComingSoonLabel: string;
   servicesFaqLinkLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;
@@ -91,6 +94,9 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       title: "So läuft die Zusammenarbeit ab",
     },
     servicesAddonBadgeLabel: "Zusatzleistung",
+    servicesComingSoonExamplesCtaLabel: "Was geplant ist",
+    servicesComingSoonExamplesHideLabel: "Beispiele ausblenden",
+    servicesComingSoonLabel: "Bald verfügbar",
     servicesFaqLinkLabel: "Fragen?",
     servicesMoreItemsPluralLabel: "weitere Punkte",
     servicesMoreItemsSingularLabel: "weiterer Punkt",
@@ -157,6 +163,9 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
       title: "How the collaboration works",
     },
     servicesAddonBadgeLabel: "Add-on",
+    servicesComingSoonExamplesCtaLabel: "What is planned",
+    servicesComingSoonExamplesHideLabel: "Hide examples",
+    servicesComingSoonLabel: "Coming soon",
     servicesFaqLinkLabel: "Questions?",
     servicesMoreItemsPluralLabel: "more items",
     servicesMoreItemsSingularLabel: "more item",
@@ -171,4 +180,3 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
 export function getHomeUiContent(locale: Locale): HomeUiContent {
   return HOME_UI_CONTENT[locale];
 }
-

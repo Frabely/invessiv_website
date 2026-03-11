@@ -5,6 +5,11 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/config/i18n";
 import { ENABLE_THEME_SWITCH } from "@/config/site";
+import {
+  LOCALE_SCROLL_RESTORE_STORAGE_KEY,
+  matchesLocaleScrollRestoreState,
+  parseLocaleScrollRestoreState,
+} from "@/lib/navigation/locale-scroll-restoration";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 
 type Theme = "dark" | "light";
@@ -59,6 +64,31 @@ export function LanguageProvider({
     document.documentElement.style.colorScheme = activeTheme;
   }, [theme]);
 
+  useEffect(() => {
+    const restoreState = parseLocaleScrollRestoreState(
+      window.sessionStorage.getItem(LOCALE_SCROLL_RESTORE_STORAGE_KEY),
+    );
+    if (!restoreState) {
+      return;
+    }
+
+    if (!matchesLocaleScrollRestoreState(restoreState, window.location)) {
+      return;
+    }
+
+    window.sessionStorage.removeItem(LOCALE_SCROLL_RESTORE_STORAGE_KEY);
+
+    const restoreScrollPosition = () => {
+      window.scrollTo(restoreState.x, restoreState.y);
+    };
+
+    restoreScrollPosition();
+    window.requestAnimationFrame(restoreScrollPosition);
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(restoreScrollPosition);
+    });
+  }, [pathname]);
+
   const value = useMemo<LanguageContextValue>(
     () => ({
       locale,
@@ -86,7 +116,9 @@ export function LanguageProvider({
   );
 
   return (
-    <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
   );
 }
 

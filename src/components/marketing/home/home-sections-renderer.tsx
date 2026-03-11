@@ -60,6 +60,13 @@ export function HomeSectionsRenderer({
               return (
                 <ServicesSection
                   addonBadgeLabel={ui.servicesAddonBadgeLabel}
+                  comingSoonExamplesCtaLabel={
+                    ui.servicesComingSoonExamplesCtaLabel
+                  }
+                  comingSoonExamplesHideLabel={
+                    ui.servicesComingSoonExamplesHideLabel
+                  }
+                  comingSoonLabel={ui.servicesComingSoonLabel}
                   deliveryLabel={ui.servicesDeliveryLabel}
                   detailsCtaLabel={ui.servicesDetailsCta}
                   description={section.description}

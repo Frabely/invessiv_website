@@ -6,9 +6,13 @@ import { HeroSection } from "@/components/marketing/home/sections/hero-section/h
 import { MarqueeSection } from "@/components/marketing/home/sections/marquee-section/marquee-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
-import { PRIMARY_NAVIGATION, SECTION_IDS } from "@/config/site";
+import {
+  PRIMARY_NAVIGATION,
+  PRIMARY_NAVIGATION_SECTION_IDS,
+} from "@/config/site";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
+import { useAnchorOffsetScroll } from "@/hooks/marketing/use-anchor-offset-scroll";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 
@@ -20,9 +24,10 @@ export function MarketingHomePageClient() {
 
   const validation = validateNavigationSections({
     navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
-    sectionIds: SECTION_IDS.filter((id) => id !== "hero" && id !== "footer"),
+    sectionIds: [...PRIMARY_NAVIGATION_SECTION_IDS],
   });
 
+  useAnchorOffsetScroll();
   useServicesCardReveal(servicesSectionRef, locale);
 
   return (

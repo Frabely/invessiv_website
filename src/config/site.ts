@@ -14,12 +14,16 @@ export type NavigationItem = {
   href: string;
 };
 
-export const PRIMARY_NAVIGATION: NavigationItem[] = [
-  { href: "#proof" },
-  { href: "#services" },
-  { href: "#process" },
-  { href: "#faq" },
-  { href: "#contact" },
-];
+export const PRIMARY_NAVIGATION_SECTION_IDS = [
+  "proof",
+  "services",
+  "process",
+  "faq",
+] as const;
+
+export const PRIMARY_NAVIGATION: NavigationItem[] =
+  PRIMARY_NAVIGATION_SECTION_IDS.map((sectionId) => ({
+    href: `#${sectionId}`,
+  }));
 
 export const ENABLE_THEME_SWITCH = false;

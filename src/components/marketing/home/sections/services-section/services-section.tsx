@@ -9,6 +9,9 @@ type ServiceCard = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
 type ServicesSectionProps = {
   addonBadgeLabel: string;
+  comingSoonExamplesCtaLabel: string;
+  comingSoonExamplesHideLabel: string;
+  comingSoonLabel: string;
   deliveryLabel: string;
   detailsCtaLabel: string;
   description: string;
@@ -27,6 +30,9 @@ type ServicesSectionProps = {
 
 export function ServicesSection({
   addonBadgeLabel,
+  comingSoonExamplesCtaLabel,
+  comingSoonExamplesHideLabel,
+  comingSoonLabel,
   deliveryLabel,
   detailsCtaLabel,
   description,
@@ -89,6 +95,9 @@ export function ServicesSection({
               addonBadgeLabel={addonBadgeLabel}
               card={card}
               cardClassName={cardClassName}
+              comingSoonExamplesCtaLabel={comingSoonExamplesCtaLabel}
+              comingSoonExamplesHideLabel={comingSoonExamplesHideLabel}
+              comingSoonLabel={comingSoonLabel}
               defaultDeliveryLabel={deliveryLabel}
               detailsCtaLabel={detailsCtaLabel}
               faqLinkLabel={faqLinkLabel}

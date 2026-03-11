@@ -10,6 +10,10 @@ import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-h
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
+import {
+  createLocaleScrollRestoreState,
+  LOCALE_SCROLL_RESTORE_STORAGE_KEY,
+} from "@/lib/navigation/locale-scroll-restoration";
 
 type SiteHeaderProps = {
   brandHref?: string;
@@ -48,11 +52,23 @@ export function SiteHeader({
       return `/${nextLocale}${normalizedPath}`;
     })();
     const search = typeof window !== "undefined" ? window.location.search : "";
-    const hash = typeof window !== "undefined" ? window.location.hash : "";
+    const nextUrl = `${nextPathname}${search}`;
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(
+        LOCALE_SCROLL_RESTORE_STORAGE_KEY,
+        createLocaleScrollRestoreState(nextUrl, window.scrollX, window.scrollY),
+      );
+    }
 
     setLocale(nextLocale);
-    router.push(`${nextPathname}${search}${hash}`);
+    router.replace(nextUrl, { scroll: false });
     event.currentTarget.closest("details")?.removeAttribute("open");
+  };
+  const handleMobileMenuLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.currentTarget
+      .closest<HTMLElement>(".site-header__mobile-menu")
+      ?.removeAttribute("open");
   };
 
   const getLabelKey = (href: string) => {
@@ -95,10 +111,7 @@ export function SiteHeader({
           </ul>
         </nav>
 
-        <div
-          className="site-header__actions"
-          aria-label={ui.actionsAriaLabel}
-        >
+        <div className="site-header__actions" aria-label={ui.actionsAriaLabel}>
           {ENABLE_THEME_SWITCH ? (
             <button
               className="theme-switch"
@@ -253,7 +266,7 @@ export function SiteHeader({
               ) : null}
               {mobileNavigation.map((item) => (
                 <li key={item.href}>
-                  <a href={item.href}>
+                  <a href={item.href} onClick={handleMobileMenuLinkClick}>
                     {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                   </a>
                 </li>
@@ -262,6 +275,7 @@ export function SiteHeader({
                 <a
                   className="mobile-menu-cta"
                   href={ctaHref}
+                  onClick={handleMobileMenuLinkClick}
                   data-analytics-event="cta_click"
                   data-analytics-location="nav"
                   data-analytics-variant="primary"

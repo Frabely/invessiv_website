@@ -14,6 +14,9 @@ describe("ServicesSection", () => {
     render(
       <ServicesSection
         addonBadgeLabel="Add-on"
+        comingSoonExamplesCtaLabel="Show examples"
+        comingSoonExamplesHideLabel="Hide examples"
+        comingSoonLabel="Coming soon"
         deliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         description="Leistungen als Richtwerte."

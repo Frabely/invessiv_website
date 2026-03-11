@@ -12,6 +12,9 @@ type ServiceCardProps = {
   addonBadgeLabel: string;
   card: ServiceCardCopy;
   cardClassName: string;
+  comingSoonExamplesCtaLabel: string;
+  comingSoonExamplesHideLabel: string;
+  comingSoonLabel: string;
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
   faqLinkLabel: string;
@@ -30,6 +33,9 @@ export function ServiceCard({
   addonBadgeLabel,
   card,
   cardClassName,
+  comingSoonExamplesCtaLabel,
+  comingSoonExamplesHideLabel,
+  comingSoonLabel,
   defaultDeliveryLabel,
   detailsCtaLabel,
   faqLinkLabel,
@@ -45,6 +51,98 @@ export function ServiceCard({
 }: ServiceCardProps) {
   const detailsId = `services-details-${card.key}`;
   const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const isComingSoon = card.isComingSoon === true;
+
+  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Escape" || !isDetailsOpen) {
+      return;
+    }
+    onDetailsToggleAction(false);
+    detailsButtonRef.current?.focus();
+  };
+
+  if (isComingSoon) {
+    const comingSoonExamples = card.comingSoonExamples ?? [];
+    const hasComingSoonExamples = comingSoonExamples.length > 0;
+    const resolvedCardClassName = hasComingSoonExamples
+      ? `${cardClassName} services-card--expandable`
+      : cardClassName;
+    const resolvedStateClassName = `${resolvedCardClassName} services-card--coming-soon`;
+    const handleComingSoonClick = (event: MouseEvent<HTMLElement>) => {
+      if (!hasComingSoonExamples) {
+        return;
+      }
+
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest("button, a, input, select, textarea, summary")
+      ) {
+        return;
+      }
+
+      onDetailsToggleAction(!isDetailsOpen);
+    };
+
+    return (
+      <article
+        className={resolvedStateClassName}
+        onClick={handleComingSoonClick}
+        onKeyDown={handleCardKeyDown}
+        onPointerLeave={onPointerLeave}
+        onPointerMove={onPointerMove}
+        role="listitem"
+      >
+        <div aria-hidden="true" className="services-coming-soon-shell">
+          <span className="services-coming-soon-ghost services-coming-soon-ghost--hero" />
+          <span className="services-coming-soon-ghost services-coming-soon-ghost--line" />
+          <span className="services-coming-soon-ghost services-coming-soon-ghost--line services-coming-soon-ghost--line-wide" />
+          <span className="services-coming-soon-ghost services-coming-soon-ghost--stack" />
+        </div>
+
+        <div className="services-coming-soon-overlay">
+          <span className="services-coming-soon-pill">{comingSoonLabel}</span>
+
+          <h3 className="services-coming-soon-title">
+            <ServiceCardIcon iconAlt={card.iconAlt} iconSrc={card.iconSrc} />
+            <span>{card.title}</span>
+          </h3>
+
+          <p className="services-coming-soon-copy">{card.description}</p>
+
+          {hasComingSoonExamples ? (
+            <>
+              <div className="services-coming-soon-actions">
+                <button
+                  aria-controls={isDetailsOpen ? detailsId : undefined}
+                  aria-expanded={isDetailsOpen}
+                  className="services-details-toggle services-coming-soon-toggle"
+                  onClick={() => onDetailsToggleAction(!isDetailsOpen)}
+                  ref={detailsButtonRef}
+                  type="button"
+                >
+                  {isDetailsOpen
+                    ? comingSoonExamplesHideLabel
+                    : comingSoonExamplesCtaLabel}
+                  <span aria-hidden="true">&rsaquo;</span>
+                </button>
+              </div>
+
+              {isDetailsOpen ? (
+                <div className="services-coming-soon-examples" id={detailsId}>
+                  <ul className="services-coming-soon-example-list">
+                    {comingSoonExamples.map((example) => (
+                      <li key={example}>{example}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+      </article>
+    );
+  }
 
   const detailsItems = card.details ?? [];
   const visibleBullets = card.included.slice(0, 3);
@@ -74,15 +172,6 @@ export function ServiceCard({
   const resolvedCardClassName = hasExpandableContent
     ? `${cardClassName} services-card--expandable`
     : cardClassName;
-
-  const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key !== "Escape" || !isDetailsOpen) {
-      return;
-    }
-    onDetailsToggleAction(false);
-    detailsButtonRef.current?.focus();
-  };
-
   const handleCardClick = (event: MouseEvent<HTMLElement>) => {
     if (!hasExpandableContent) {
       return;
@@ -171,7 +260,7 @@ export function ServiceCard({
           ) : null}
         </div>
 
-        {hiddenItemsCount > 0 && !isDetailsOpen ? (
+        {hiddenItemsCount > 0 && hasExpandableContent && !isDetailsOpen ? (
           <p className="services-more-items">
             + {hiddenItemsCount} {hiddenBulletsLabel}
           </p>

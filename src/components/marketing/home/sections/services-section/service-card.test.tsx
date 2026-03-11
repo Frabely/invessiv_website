@@ -40,6 +40,9 @@ describe("ServiceCard", () => {
             ],
           }}
           cardClassName="services-card"
+          comingSoonExamplesCtaLabel="Show examples"
+          comingSoonExamplesHideLabel="Hide examples"
+          comingSoonLabel="Coming soon"
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           faqLinkLabel="Fragen?"
@@ -139,6 +142,9 @@ describe("ServiceCard", () => {
           details: ["Stundenpakete: 5h = 225 EUR, 10h = 430 EUR."],
         }}
         cardClassName="services-card"
+        comingSoonExamplesCtaLabel="Show examples"
+        comingSoonExamplesHideLabel="Hide examples"
+        comingSoonLabel="Coming soon"
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         faqLinkLabel="Fragen?"
@@ -175,6 +181,9 @@ describe("ServiceCard", () => {
           included: ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"],
         }}
         cardClassName="services-card"
+        comingSoonExamplesCtaLabel="Show examples"
+        comingSoonExamplesHideLabel="Hide examples"
+        comingSoonLabel="Coming soon"
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         faqLinkLabel="Fragen?"
@@ -191,5 +200,83 @@ describe("ServiceCard", () => {
     );
 
     expect(screen.getByText("+ 1 more item")).toBeTruthy();
+  });
+
+  it("renders a public-safe coming-soon card and reveals examples only on expand", () => {
+    function ComingSoonHarness() {
+      const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+      return (
+        <ServiceCard
+          addonBadgeLabel="Add-on"
+          card={{
+            key: "ai",
+            isComingSoon: true,
+            title: "KI-Templates & Agents",
+            description:
+              "KI-Agents und Skills als Download für konkrete Aufgaben.",
+            iconSrc: "/services/ai-file-icon.svg",
+            iconAlt: "AI icon",
+            comingSoonExamples: [
+              "API Setup mit User-Login",
+              "Agent für das Erstellen eigener Webseiten",
+              "Konkrete Skills für spezielle Anwendungsfälle",
+              "Weitere konkrete Setups und Skills folgen",
+            ],
+          }}
+          cardClassName="services-card"
+          comingSoonExamplesCtaLabel="Was geplant ist"
+          comingSoonExamplesHideLabel="Beispiele ausblenden"
+          comingSoonLabel="Bald verfügbar"
+          defaultDeliveryLabel="Lieferzeit"
+          detailsCtaLabel="Mehr Infos"
+          faqLinkLabel="Fragen?"
+          isDetailsOpen={isDetailsOpen}
+          moreItemsPluralLabel="weitere Punkte"
+          moreItemsSingularLabel="weiterer Punkt"
+          onDetailsToggleAction={setIsDetailsOpen}
+          onPointerLeave={vi.fn()}
+          onPointerMove={vi.fn()}
+          oneTimeLabel="einmalig"
+          primaryCtaLabel="Projekt anfragen"
+          recommendedBadgeLabel="Empfohlen"
+        />
+      );
+    }
+
+    const { container } = render(<ComingSoonHarness />);
+
+    expect(screen.getByText("Bald verfügbar")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "KI-Agents und Skills als Download für konkrete Aufgaben.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByText("API Setup mit User-Login")).toBeNull();
+    expect(screen.queryByText(/ab 290/i)).toBeNull();
+    expect(screen.queryByText(/Lieferzeit/i)).toBeNull();
+    expect(screen.queryByRole("link", { name: "Projekt anfragen" })).toBeNull();
+
+    const article = container.querySelector("article[role='listitem']");
+    const toggleButton = screen.getByRole("button", {
+      name: "Was geplant ist",
+    });
+
+    fireEvent.click(toggleButton);
+
+    expect(screen.getByText("API Setup mit User-Login")).toBeTruthy();
+    expect(
+      screen.getByText("Agent für das Erstellen eigener Webseiten"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Konkrete Skills für spezielle Anwendungsfälle"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Weitere konkrete Setups und Skills folgen"),
+    ).toBeTruthy();
+
+    fireEvent.keyDown(article as HTMLElement, { key: "Escape" });
+
+    expect(screen.queryByText("API Setup mit User-Login")).toBeNull();
   });
 });
