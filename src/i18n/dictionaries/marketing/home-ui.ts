@@ -45,34 +45,34 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroVisualAriaLabel: "Live Performance Einblick",
     mappingWarning: "Navigation/Section Mapping ist unvollständig.",
     includedContent: {
-      title: "Klarer Rahmen, saubere Umsetzung",
+      title: "Vom ersten Scope bis zur Übergabe",
       summaryPoints: [
         "Empfehlung vor Start",
-        "direkte Abstimmung",
+        "kurze Abstimmung",
         "QA & Übergabe",
       ],
       cards: [
         {
-          title: "Scope vor dem Start",
+          title: "Passender Einstieg vor Projektbeginn",
           tag: "Setup",
           description:
-            "Nach der Anfrage klären wir Ziel, Umfang und das passende Angebot, bevor die Umsetzung startet.",
+            "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht.",
         },
         {
-          title: "Direkte Abstimmung im Projekt",
+          title: "Kurze Wege im Projekt",
           tag: "Ablauf",
           description:
-            "Fragen, Feedback und Prioritäten laufen direkt zwischen uns. Das spart Schleifen und hält Entscheidungen kurz.",
+            "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig.",
         },
         {
-          title: "Launchbereit übergeben",
+          title: "Launch sauber vorbereitet",
           tag: "QA",
           description:
-            "Responsive Checks, technische SEO, QA und Übergabe sind vor dem Launch eingeplant, nicht erst am Ende.",
+            "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss.",
         },
       ],
       bridge:
-        "Nach der Anfrage ist schnell klar, welcher Einstieg passt und was der nächste Schritt ist.",
+        "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
     },
     servicesAddonBadgeLabel: "Zusatzleistung",
     servicesComingSoonExamplesCtaLabel: "Was geplant ist",
@@ -101,34 +101,34 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroVisualAriaLabel: "Live performance snapshot",
     mappingWarning: "Navigation/section mapping is incomplete.",
     includedContent: {
-      title: "Clear scope, clean execution",
+      title: "From first scope to handoff",
       summaryPoints: [
         "recommendation before kickoff",
-        "direct feedback",
+        "short feedback loops",
         "QA & handover",
       ],
       cards: [
         {
-          title: "Scope aligned before kickoff",
+          title: "Right entry point before kickoff",
           tag: "Setup",
           description:
-            "After the inquiry, we align on goal, scope, and the right offer before implementation starts.",
+            "After the inquiry, we sort the goal, scope, and offer format before implementation begins.",
         },
         {
-          title: "Direct feedback during execution",
+          title: "Short paths during execution",
           tag: "Workflow",
           description:
-            "Questions, feedback, and priorities run directly between us. That keeps decisions short and avoids extra loops.",
+            "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving.",
         },
         {
-          title: "Handed over launch-ready",
+          title: "Launch prepared from the start",
           tag: "QA",
           description:
-            "Responsive checks, technical SEO, QA, and handover are planned before launch, not added at the end.",
+            "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end.",
         },
       ],
       bridge:
-        "After the inquiry, it quickly becomes clear which entry point fits and what the next step is.",
+        "After the inquiry, you know which entry point makes sense and how the next step looks.",
     },
     servicesAddonBadgeLabel: "Add-on",
     servicesComingSoonExamplesCtaLabel: "What is planned",

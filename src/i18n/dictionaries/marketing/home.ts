@@ -235,61 +235,61 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "included",
     copy: {
       de: {
-        title: "Klarer Rahmen, saubere Umsetzung",
+        title: "Vom ersten Scope bis zur Übergabe",
         description:
-          "Nach der Anfrage ist schnell klar, welcher Einstieg passt und was der nächste Schritt ist.",
+          "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
         summaryPoints: [
           "Empfehlung vor Start",
-          "direkte Abstimmung",
+          "kurze Abstimmung",
           "QA & Übergabe",
         ],
         cards: [
           {
-            title: "Scope vor dem Start",
+            title: "Passender Einstieg vor Projektbeginn",
             description:
-              "Nach der Anfrage klären wir Ziel, Umfang und das passende Angebot, bevor die Umsetzung startet.",
+              "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht.",
             tag: "Setup",
           },
           {
-            title: "Direkte Abstimmung im Projekt",
+            title: "Kurze Wege im Projekt",
             description:
-              "Fragen, Feedback und Prioritäten laufen direkt zwischen uns. Das spart Schleifen und hält Entscheidungen kurz.",
+              "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig.",
             tag: "Ablauf",
           },
           {
-            title: "Launchbereit übergeben",
+            title: "Launch sauber vorbereitet",
             description:
-              "Responsive Checks, technische SEO, QA und Übergabe sind vor dem Launch eingeplant, nicht erst am Ende.",
+              "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss.",
             tag: "QA",
           },
         ],
       },
       en: {
-        title: "Clear scope, clean execution",
+        title: "From first scope to handoff",
         description:
-          "After the inquiry, it quickly becomes clear which entry point fits and what the next step is.",
+          "After the inquiry, you know which entry point makes sense and how the next step looks.",
         summaryPoints: [
           "recommendation before kickoff",
-          "direct feedback",
+          "short feedback loops",
           "QA & handover",
         ],
         cards: [
           {
-            title: "Scope aligned before kickoff",
+            title: "Right entry point before kickoff",
             description:
-              "After the inquiry, we align on goal, scope, and the right offer before implementation starts.",
+              "After the inquiry, we sort the goal, scope, and offer format before implementation begins.",
             tag: "Setup",
           },
           {
-            title: "Direct feedback during execution",
+            title: "Short paths during execution",
             description:
-              "Questions, feedback, and priorities run directly between us. That keeps decisions short and avoids extra loops.",
+              "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving.",
             tag: "Workflow",
           },
           {
-            title: "Handed over launch-ready",
+            title: "Launch prepared from the start",
             description:
-              "Responsive checks, technical SEO, QA, and handover are planned before launch, not added at the end.",
+              "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end.",
             tag: "QA",
           },
         ],

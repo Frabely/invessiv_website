@@ -14,15 +14,17 @@ describe("IncludedSection", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "Klarer Rahmen, saubere Umsetzung",
+        name: "Vom ersten Scope bis zur Übergabe",
       }),
     ).toBeTruthy();
-    expect(screen.getByText("Scope vor dem Start")).toBeTruthy();
-    expect(screen.getByText("Direkte Abstimmung im Projekt")).toBeTruthy();
-    expect(screen.getByText("Launchbereit übergeben")).toBeTruthy();
+    expect(
+      screen.getByText("Passender Einstieg vor Projektbeginn"),
+    ).toBeTruthy();
+    expect(screen.getByText("Kurze Wege im Projekt")).toBeTruthy();
+    expect(screen.getByText("Launch sauber vorbereitet")).toBeTruthy();
     expect(
       screen.getByText(
-        "Nach der Anfrage ist schnell klar, welcher Einstieg passt und was der nächste Schritt ist.",
+        "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
       ),
     ).toBeTruthy();
   });
