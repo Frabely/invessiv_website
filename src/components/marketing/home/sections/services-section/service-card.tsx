@@ -18,6 +18,7 @@ type ServiceCardProps = {
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
   faqLinkLabel: string;
+  fitLabel: string;
   isDetailsOpen: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
@@ -39,6 +40,7 @@ export function ServiceCard({
   defaultDeliveryLabel,
   detailsCtaLabel,
   faqLinkLabel,
+  fitLabel,
   isDetailsOpen,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
@@ -216,10 +218,15 @@ export function ServiceCard({
                 </span>
               ) : null}
             </div>
+
+            {card.fit ? (
+              <p className="services-fit-note">
+                <span className="services-fit-label">{fitLabel}</span>
+                <span>{card.fit}</span>
+              </p>
+            ) : null}
           </div>
         </div>
-
-        <p className="services-meta">{card.description}</p>
 
         <p className="services-price-row">
           <span className="services-price">{heroPrice}</span>

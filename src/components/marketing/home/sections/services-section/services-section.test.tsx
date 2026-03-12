@@ -21,6 +21,7 @@ describe("ServicesSection", () => {
         detailsCtaLabel="Mehr Infos"
         description="Leistungen als Richtwerte."
         faqLinkLabel="Fragen?"
+        fitLabel="Ideal für"
         id="services"
         moreItemsPluralLabel="weitere Punkte"
         moreItemsSingularLabel="weiterer Punkt"
@@ -35,9 +36,10 @@ describe("ServicesSection", () => {
             iconAlt: "Landing Icon",
             title: "Landingpages",
             description: "Landingpage Paket.",
+            fit: "Angebotsseiten mit klarem Conversion-Ziel.",
             price: "ab 990 EUR einmalig",
             delivery: "3-7 Tage",
-            included: ["Scope", "Design", "SEO", "Performance", "Tracking"],
+            included: ["Rahmen", "Design", "SEO", "Performance", "Tracking"],
             details: ["Zusatzhinweis"],
           },
           {
@@ -46,13 +48,14 @@ describe("ServicesSection", () => {
             iconAlt: "Web Icon",
             title: "Webseiten",
             description: "Webseiten Paket.",
+            fit: "Relaunches mit mehreren Kernseiten.",
             price: "ab 2490 EUR einmalig",
             delivery: "7-14 Tage",
             included: ["Konzept", "UI", "Setup", "Review", "Übergabe"],
             details: ["Zweiter Zusatzhinweis"],
           },
         ]}
-        summaryPoints={["Scope vor Start", "Klare Lieferfenster"]}
+        summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
         title="Leistungen & Preise"
       />,
     );

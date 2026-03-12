@@ -24,6 +24,7 @@ type BaseServiceCard = {
   iconAlt?: string;
   title: string;
   description: string;
+  fit?: string;
   isRecommended?: boolean;
 };
 
@@ -45,7 +46,6 @@ export type LandingSectionCopy = {
   title: string;
   description: string;
   summaryPoints?: string[];
-  metrics?: Array<{ label: string; value: string }>;
   cards?: Array<{ title: string; description: string; tag: string }>;
   serviceCards?: Array<StandardServiceCard | ComingSoonServiceCard>;
   processSteps?: Array<{
@@ -219,78 +219,78 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title:
-          "Digitale Lösungen, die sichtbar wirken und Prozesse spürbar vereinfachen.",
+          "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
         description:
-          "Du gibst Ziel, Angebot und Kontext vor, ich setze dein Projekt im KI-Agenten-Workflow um: Agent-Setup, Build, Feinschliff und QA.",
+          "Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist.",
       },
       en: {
         title:
-          "Digital solutions that create visible impact and simplify processes.",
+          "Websites and process tools with thoughtful structure and a direct path to the goal.",
         description:
-          "You provide goal, offer, and context, and I execute your project in an AI agent workflow: agent setup, build, refinement, and QA.",
+          "From landing page to process tool: with a clean setup, direct feedback, and a result that is reviewed before launch.",
       },
     },
   },
   {
-    id: "proof",
+    id: "included",
     copy: {
       de: {
-        title: "Ergebnisse",
+        title: "Vom ersten Rahmen bis zur Übergabe",
         description:
-          "Nachvollziehbare Ergebnisse und klare Liefer-Signale statt Bauchgefühl.",
-        metrics: [
-          { label: "Erster Draft", value: "typisch 5 Werktage" },
-          { label: "Abstimmung", value: "klar strukturiert" },
-          { label: "Verantwortung", value: "1 Ansprechpartner" },
+          "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
+        summaryPoints: [
+          "Empfehlung vor Start",
+          "kurze Abstimmung",
+          "QA & Übergabe",
         ],
         cards: [
           {
-            title: "Typischer Liefer-Rhythmus",
+            title: "Passender Einstieg vor Projektbeginn",
             description:
-              "Erste klickbare Version typischerweise in 5 Werktagen mit klarem Go-live-Plan je Paket.",
-            tag: "Richtwert",
+              "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht.",
+            tag: "Setup",
           },
           {
-            title: "Upgrade statt Neubau",
+            title: "Kurze Wege im Projekt",
             description:
-              "Bestehende Seiten werden gezielt modernisiert, ohne alles neu aufzusetzen.",
-            tag: "Lean",
+              "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig.",
+            tag: "Ablauf",
           },
           {
-            title: "KPI-orientiert",
+            title: "Launch sauber vorbereitet",
             description:
-              "Vorab definierte Ziele wie Ladezeit, Leads oder Conversion statt nur Design-Output.",
-            tag: "Measured",
+              "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss.",
+            tag: "QA",
           },
         ],
       },
       en: {
-        title: "Proof",
+        title: "From first outline to handoff",
         description:
-          "Measurable outcomes and clear delivery signals instead of guesswork.",
-        metrics: [
-          { label: "First draft", value: "typically 5 business days" },
-          { label: "Alignment", value: "structured" },
-          { label: "Delivery responsibility", value: "1 point of contact" },
+          "After the inquiry, you know which entry point makes sense and how the next step looks.",
+        summaryPoints: [
+          "recommendation before kickoff",
+          "short feedback loops",
+          "QA & handover",
         ],
         cards: [
           {
-            title: "Typical delivery rhythm",
+            title: "Right entry point before kickoff",
             description:
-              "First clickable version typically in 5 business days with a clear go-live plan per package.",
-            tag: "Guideline",
+              "After the inquiry, we sort the goal, project range, and offer format before implementation begins.",
+            tag: "Setup",
           },
           {
-            title: "Upgrade over rebuild",
+            title: "Short paths during execution",
             description:
-              "Existing pages are modernized surgically without forcing a full rebuild.",
-            tag: "Lean",
+              "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving.",
+            tag: "Workflow",
           },
           {
-            title: "KPI-oriented",
+            title: "Launch prepared from the start",
             description:
-              "Predefined targets like speed, leads, and conversion instead of design output only.",
-            tag: "Measured",
+              "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end.",
+            tag: "QA",
           },
         ],
       },
@@ -300,13 +300,13 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "services",
     copy: {
       de: {
-        title: "Leistungen & Preise",
+        title: "Angebote & Einstiegspreise",
         description:
-          "Projektbasierte, einmalige Preise mit klarem Leistungsumfang, transparenter Lieferzeit und direktem Weg zur Anfrage.",
+          "Jedes Angebot ist auf ein klares Problem, einen sichtbaren Leistungsumfang und einen realistischen Einstiegspreis heruntergebrochen.",
         summaryPoints: [
-          "Einmalpreise pro Projekt",
-          "Leistungsumfang vor Start definiert",
-          "Lieferzeit als Richtwert im Angebot",
+          "klarer Einstieg je Problem",
+          "Umfang vor Start verbindlich",
+          "Lieferfenster und Preisanker sichtbar",
         ],
         serviceCards: [
           {
@@ -315,14 +315,15 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
             description:
-              "Conversion-optimierte One-Pager mit klarer Botschaft und starker Performance.",
+              "Landingpage mit klarer Angebotsstruktur, stärkerem CTA-Fluss und sauberer technischer Basis.",
+            fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
             isRecommended: true,
             price: "ab 990 € einmalig",
             delivery: "3–7 Tage",
             included: [
-              "Klare Seitenstruktur (Hero, Vorteile, CTA, Q&A)",
-              "Responsives Design (mobile-first)",
-              "Basis-SEO: Meta-Daten, Open Graph, Indexierbarkeit",
+              "Klare Angebots- und CTA-Struktur für dein Hauptziel",
+              "Mobile-first Design mit sauberer Leseführung",
+              "Technische Basis für SEO, Open Graph und Indexierung",
               "Performance-Optimierung mit Fokus auf Core Web Vitals",
               "1–2 Feedbackrunden inklusive",
             ],
@@ -338,13 +339,14 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
-              "Moderne Unternehmensseiten mit sauberer Navigation und einfacher Pflege.",
+              "Website-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
+            fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
             price: "ab 2.490 € einmalig",
             delivery: "7–14 Tage",
             included: [
-              "Individuelles Design-System (erweiterbar)",
-              "Klare Seitenstruktur und Navigation",
-              "CMS-Setup bzw. pflegeleichte Struktur (stackabhängig)",
+              "Positionierung, Seitenstruktur und Navigation mit klarer Journey",
+              "Erweiterbares Design-System statt Einmal-Layout",
+              "CMS-Setup bzw. pflegeleichte Struktur je nach Stack",
               "Performance- und technische SEO-Basics",
               "Kontakt- bzw. Lead-Flow inkl. Formular",
               "Deployment/Go-Live Support",
@@ -361,13 +363,14 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Prozess-Tools Icon",
             title: "Prozess-Tools",
             description:
-              "Mini-Tools zur Automatisierung interner Abläufe und mehr Transparenz.",
+              "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
+            fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
             price: "ab 3.490 € einmalig",
             delivery: "10–21 Tage",
             included: [
-              "Kompakter Scope-Workshop (Ziel, Daten, Rollen)",
-              "MVP-Umsetzung mit einem Kern-Workflow",
-              "Status- oder Dashboard-Ansicht für Transparenz",
+              "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
+              "MVP mit einem Kern-Workflow, der spürbar entlastet",
+              "Status- oder Dashboard-Ansicht für mehr Transparenz",
               "Integrationen je nach Umfang (Webhooks, APIs)",
               "Basis für Login- und Rechtekonzept",
               "Übergabe inkl. Kurz-Dokumentation",
@@ -382,14 +385,15 @@ const HOME_SECTIONS: LandingSection[] = [
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website-Upgrade Icon",
-            title: "Upgrade bestehende Website",
+            title: "Website-Upgrade",
             description:
-              "Mehr Speed, bessere UX und modernes UI – ohne kompletten Neubau.",
+              "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
+            fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
             price: "ab 750 € einmalig",
             delivery: "3–10 Tage",
             included: [
-              "Performance-Audit mit priorisierten Quick Wins",
-              "Gezielter UX/UI-Refresh",
+              "Priorisierte Quick Wins für Speed, UX und mobile Klarheit",
+              "Gezielter Refresh für Hierarchie, CTA und Leseführung",
               "Technische SEO-Basics (Indexierung, Struktur)",
               "Responsive- und Accessibility-Basics",
               "Code- und CSS-Cleanup, wo sinnvoll",
@@ -422,7 +426,8 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Wartung und Support Icon",
             title: "Wartung & Support",
             description:
-              "Schnelle Änderungen, Bugfixes und Pflege – flexibel nach Bedarf.",
+              "Schnelle Weiterentwicklung, Bugfixes und Pflege für bestehende Seiten oder Tools.",
+            fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
             price: "70–85 € / h",
             delivery: "24–72h",
             deliveryLabel: "Typische Reaktionszeit",
@@ -441,13 +446,13 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "Services & Pricing",
+        title: "Offers & Starting Prices",
         description:
-          "Project-based one-time pricing with transparent scope, clear delivery windows, and direct contact CTA.",
+          "Each offer is framed around a clear problem, a visible service range, and a realistic starting price so you can assess fit faster.",
         summaryPoints: [
-          "One-time pricing per project",
-          "Scope defined before kickoff",
-          "Delivery window set as a guideline upfront",
+          "clear entry point per problem",
+          "service range aligned before kickoff",
+          "delivery window and price anchor visible",
         ],
         serviceCards: [
           {
@@ -456,20 +461,21 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Landing pages icon",
             title: "Landing pages",
             description:
-              "Conversion-optimized one-pagers with clear messaging and strong performance.",
+              "Landing page with a clearer offer structure, stronger CTA flow, and a clean technical foundation.",
+            fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
             isRecommended: true,
             price: "from €990 one-time",
             delivery: "3–7 days",
             included: [
-              "Clear page structure (hero, benefits, CTA, Q&A)",
-              "Responsive design (mobile-first)",
-              "Basic SEO: metadata, Open Graph, indexability",
+              "Clear offer and CTA structure around your main goal",
+              "Mobile-first design with cleaner reading flow",
+              "Technical setup for SEO, Open Graph, and indexability",
               "Performance optimization focused on Core Web Vitals",
               "1–2 feedback rounds included",
             ],
             details: [
               "Copy refinement or content production is available as an add-on.",
-              "From the 3rd feedback round onward, additional effort is scoped transparently.",
+              "From the 3rd feedback round onward, additional effort is outlined transparently.",
               "Hosting, domain, and external tool licenses are not included.",
             ],
           },
@@ -479,19 +485,20 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Websites icon",
             title: "Websites",
             description:
-              "Modern company websites with clean navigation and easy maintenance.",
+              "Company website or relaunch with clearer positioning and more obvious user paths.",
+            fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
             price: "from €2,490 one-time",
             delivery: "7–14 days",
             included: [
-              "Custom design system (extendable)",
-              "Clear site structure and navigation",
-              "CMS setup or low-maintenance structure (stack dependent)",
+              "Positioning, site structure, and navigation with a clearer journey",
+              "Extendable design system instead of a one-off layout",
+              "CMS setup or low-maintenance content structure by stack",
               "Performance and technical SEO basics",
               "Contact or lead flow including form",
               "Deployment/go-live support",
             ],
             details: [
-              "Additional pages and multilingual scope are planned upfront.",
+              "Additional pages and multilingual rollout are planned upfront.",
               "CMS integration is included only when it fits the selected stack.",
               "Third-party licenses and external integrations are not included in the base price.",
             ],
@@ -502,14 +509,15 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Process tools icon",
             title: "Process tools",
             description:
-              "Mini tools that automate internal workflows and create transparency.",
+              "Small internal tool that reduces manual work and creates more transparency.",
+            fit: "Teams that want to structure or partially automate recurring internal steps.",
             price: "from €3,490 one-time",
             delivery: "10–21 days",
             included: [
-              "Compact scope workshop (goals, data, roles)",
-              "MVP implementation with one core workflow",
-              "Status or dashboard view for transparency",
-              "Integrations by scope (webhooks, APIs)",
+              "Compact planning workshop for goals, data, and roles",
+              "MVP with one core workflow that removes friction",
+              "Status or dashboard view for more transparency",
+              "Integrations by project range (webhooks, APIs)",
               "Foundation for login and access roles",
               "Handover including short documentation",
             ],
@@ -523,14 +531,15 @@ const HOME_SECTIONS: LandingSection[] = [
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
-            title: "Upgrade existing website",
+            title: "Website upgrade",
             description:
-              "More speed, better UX, and modern UI without a full rebuild.",
+              "More speed, clearer UX, stronger CTAs, and more modern UI without a full rebuild.",
+            fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
             price: "from €750 one-time",
             delivery: "3–10 days",
             included: [
-              "Performance audit with prioritized quick wins",
-              "Targeted UX/UI refresh",
+              "Prioritized quick wins for speed, UX, and mobile clarity",
+              "Targeted refresh for hierarchy, CTA, and reading flow",
               "Technical SEO basics (indexing, structure)",
               "Responsiveness and accessibility basics",
               "Code and CSS cleanup where it adds value",
@@ -538,7 +547,7 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Optional hourly model: development at €70–85/h, content/small updates at €50–60/h.",
-              "Larger rebuild topics are recommended and scoped separately.",
+              "Larger rebuild topics are recommended and planned separately.",
               "Deep backend refactoring is not included in the base upgrade.",
             ],
           },
@@ -563,7 +572,8 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Maintenance and support icon",
             title: "Maintenance & support",
             description:
-              "Fast edits, bugfixes, and upkeep with flexible hourly support.",
+              "Fast iteration, bugfixes, and upkeep for existing websites or tools.",
+            fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
             price: "€70–85 / h",
             delivery: "24–72h",
             deliveryLabel: "Typical response time",
@@ -587,108 +597,107 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "In wenigen Schritten zum fertigen Ergebnis",
+        title: "Vom ersten Rahmen bis zum Launch in vier klaren Schritten",
         description:
-          "Ablauf mit KI-Fokus: Nach deinen Anforderungen richte ich das Agent-Setup ein, arbeite im KI-Agenten-Workflow und finalisiere mit manuellem Feinschliff und QA.",
+          "Der Ablauf ist so angelegt, dass du früh Orientierung bekommst, schnell eine erste Richtung siehst und vor dem Launch keine unklaren Übergaben hast.",
         summaryPoints: [
-          "Ziel + Angebot in ca. 30 Minuten geklärt",
-          "Erster Draft in der Regel in 48h mit KI-Agenten-Build",
-          "Go-live inkl. QA und Übergabe",
+          "Ziel, Angebot und Umfang früh geklärt",
+          "erste Richtung schnell sichtbar",
+          "Launch inkl. QA und sauberer Übergabe",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Anforderungen & Agent-Setup",
-            deliverable: "30-min Briefing + Agent-Setup",
-            effort: "Aufwand: 30 Min",
-            result: "Ergebnis: Klarer Leistungsumfang + Prioritäten",
+            title: "Ziel & Rahmen klären",
+            deliverable: "Briefing + Angebotsempfehlung",
+            effort: "Aufwand: ca. 30 Min",
+            result: "Ergebnis: klarer Rahmen + Prioritäten",
             description:
-              "Du teilst Ziel, Angebot und Material. Ich strukturiere die Anforderungen und richte ein kontextspezifisches Agent-Setup ein.",
+              "Wir klären Ziel, Angebot, Material und Rahmen. Danach weißt du, welches Setup passt und was der nächste sinnvolle Schritt ist.",
           },
           {
             step: "02",
-            title: "KI-Agenten-Build",
-            deliverable: "Lauffähiger Draft oder Prototyp",
-            effort:
-              "Lieferzeit: in der Regel innerhalb von 48h (je nach Umfang)",
-            result: "Ergebnis: Struktur + Kernlogik",
+            title: "Struktur & erster Draft",
+            deliverable: "Klickbarer Draft oder Prototyp",
+            effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
+            result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
             description:
-              "Auf Basis des Agent-Setups setze ich die erste lauffähige Version im KI-Agenten-Workflow um.",
+              "Ich setze eine erste klare Richtung um. Wo sinnvoll, beschleunige ich die Umsetzung mit Build-Workflows, ohne die Qualitätskontrolle abzugeben.",
           },
           {
             step: "03",
-            title: "Feinschliff & QA",
-            deliverable: "Conversion-Finish",
+            title: "Umsetzung, Copy & QA",
+            deliverable: "Ausgearbeitete Version",
             effort: "Feedback: 1-2 Runden",
-            result: "Ergebnis: Finales Design + Funktionen",
+            result: "Ergebnis: klare UX + saubere Details",
             description:
-              "Ich prüfe Ergebnisse, verfeinere Design/Copy/UX und sichere die Qualität für den Launch.",
+              "Ich schärfe Copy, CTA-Führung, Design und technische Details, damit die Seite oder das Tool nicht nur funktioniert, sondern klar führt.",
           },
           {
             step: "04",
-            title: "Go-live",
+            title: "Launch & Übergabe",
             deliverable: "Launch + Übergabe",
             effort: "QA: finaler Check",
-            result: "Ergebnis: Livegang oder Integrations-Übergabe",
+            result: "Ergebnis: Livegang oder saubere Integration",
             description:
-              "Nach QA geht das Projekt live oder wird sauber in deine Systeme übergeben.",
+              "Nach dem finalen Check geht das Projekt live oder wird sauber an dein Setup übergeben, ohne offene Schleifen im Abschluss.",
           },
         ],
         processCta: {
-          label: "Projekt anfragen",
+          label: "Projekt & Umfang anfragen",
           hint: "Unverbindlich. In der Regel Rückmeldung innerhalb von 24h.",
           href: "#contact",
         },
       },
       en: {
-        title: "A finished result in a few clear steps",
+        title: "From first outline to launch in four clear steps",
         description:
-          "AI-focused delivery flow: after your requirements, I set up the agent foundation, work in an AI agent workflow, and finalize with manual refinement and QA.",
+          "The flow is designed so you get orientation early, see the first direction quickly, and avoid fuzzy handoffs before launch.",
         summaryPoints: [
-          "Goal and offer aligned in about 30 minutes",
-          "First draft typically in 48h via AI agent build",
-          "Go-live includes QA and handover",
+          "goal, offer, and project range clarified early",
+          "first direction visible quickly",
+          "launch includes QA and clean handover",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Requirements & agent setup",
-            deliverable: "30-min briefing + agent setup",
-            effort: "Effort: 30 min",
-            result: "Outcome: clear scope + priorities",
+            title: "Clarify goal & outline",
+            deliverable: "Briefing + offer recommendation",
+            effort: "Effort: about 30 min",
+            result: "Outcome: clear frame + priorities",
             description:
-              "You share goals, offer, and materials. I structure requirements and set up a context-specific agent foundation.",
+              "We align on goals, offer, materials, and boundaries so you know which setup fits and what the next sensible step is.",
           },
           {
             step: "02",
-            title: "AI agent build",
-            deliverable: "Working draft or prototype",
-            effort: "Delivery: typically within 48h (depending on scope)",
-            result: "Outcome: structure + core logic",
+            title: "Structure & first draft",
+            deliverable: "Clickable draft or prototype",
+            effort: "Delivery: visible early in the project",
+            result: "Outcome: page structure or core workflow",
             description:
-              "Based on the agent setup, I build the first working version in an AI agent workflow.",
+              "I build a first clear direction. Where it helps, I use fast build workflows without handing off quality control.",
           },
           {
             step: "03",
-            title: "Refinement & QA",
-            deliverable: "Conversion finish",
+            title: "Implementation, copy & QA",
+            deliverable: "Worked-out version",
             effort: "Feedback: 1-2 rounds",
-            result: "Outcome: final design + functions",
+            result: "Outcome: clearer UX + clean details",
             description:
-              "I review the result, refine design/copy/UX, and secure launch quality.",
+              "I refine copy, CTA flow, design, and technical details so the site or tool does not just work, but leads clearly.",
           },
           {
             step: "04",
-            title: "Go live",
+            title: "Launch & handover",
             deliverable: "Launch + handover",
             effort: "QA: final check",
-            result: "Outcome: go-live or integration handover",
+            result: "Outcome: go-live or clean integration",
             description:
-              "After QA, the project goes live or is handed over cleanly for integration in your setup.",
+              "After the final review, the project goes live or is handed over cleanly into your setup without loose ends.",
           },
         ],
         processCta: {
-          label: "Request project",
+          label: "Request project & outline",
           hint: "No commitment. Typically a reply within 24h.",
           href: "#contact",
         },
@@ -710,7 +719,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach richte ich ein passendes Agent-Setup für dein Projekt ein und teile den nächsten Schritt mit Zeitrahmen und transparentem Angebot.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Angebot, den nächsten Schritt und ein transparentes Setup für die Umsetzung.",
           },
           {
             question: "Kannst du meine bestehende Website überarbeiten?",
@@ -720,7 +729,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Welche Tools setzt du ein?",
             answer:
-              "Mein Kernworkflow ist Agent-Setup + KI-Agenten-Workflow für die Umsetzung, ergänzt um Next.js, Tailwind und passende Analyse-/Workflow-Tools. Ich steuere Architektur, Review und QA, damit Übergabe und Wartung sauber funktionieren.",
+              "Ich arbeite mit einem modernen Web-Stack rund um Next.js, Tailwind und passenden Analyse- bzw. Automatisierungs-Tools. Schnelle Build-Workflows nutze ich dort, wo sie sinnvoll sind, die Verantwortung für Architektur, Review und QA bleibt aber bei mir.",
           },
           {
             question: "Gibt es versteckte Kosten?",
@@ -740,7 +749,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie gehst du mit Zusatzwünschen um?",
             answer:
-              "Zusatzwünsche außerhalb des vereinbarten Scopes werden nicht stillschweigend umgesetzt. Ich nenne dir vorab Auswirkung auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
+              "Zusatzwünsche außerhalb des vereinbarten Rahmens werden nicht stillschweigend umgesetzt. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
           },
           {
             question: "Welche Mitwirkung ist auf Kundenseite nötig?",
@@ -766,7 +775,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, scope, and timeline in a short call or by email. Then I set up a matching agent foundation for your project and share the next step with timing and transparent pricing.",
+              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right offer, the next step, and a transparent setup for delivery.",
           },
           {
             question: "Can you redesign my existing website?",
@@ -776,17 +785,17 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Which tools do you use?",
             answer:
-              "My core workflow is agent setup + AI agent workflow for implementation, complemented by Next.js, Tailwind, and suitable analytics/workflow tools. I own architecture, review, and QA for clean handover and maintainability.",
+              "I work with a modern web stack around Next.js, Tailwind, and suitable analytics or automation tools. Where fast build workflows help, I use them, but architecture, review, and QA stay under my responsibility.",
           },
           {
             question: "Are there any hidden costs?",
             answer:
-              "No. You receive a clear offer with a defined scope before implementation starts. Any additional requests outside scope are always aligned transparently before execution.",
+              "No. You receive a clear offer with a defined delivery frame before implementation starts. Any additional requests outside that frame are always aligned transparently before execution.",
           },
           {
             question: "What is typically not included in the offer?",
             answer:
-              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed scope. These items are listed and aligned separately before implementation.",
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. These items are listed and aligned separately before implementation.",
           },
           {
             question: "How many revision rounds are included?",
@@ -796,7 +805,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How are additional requests handled?",
             answer:
-              "Requests outside the agreed scope are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
+              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
           },
           {
             question: "What client-side input is required?",
@@ -806,7 +815,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "When is a project considered completed?",
             answer:
-              "A project is considered completed when the agreed scope has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed scope.",
+              "A project is considered completed when the agreed service range has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed basis.",
           },
         ],
       },
@@ -832,15 +841,15 @@ const HOME_SECTIONS: LandingSection[] = [
           href: "#contact",
         },
         footerHeroSecondaryCta: {
-          label: "Leistungen ansehen",
+          label: "Angebote ansehen",
           href: "#services",
         },
         footerColumns: [
           {
             title: "Menü",
             links: [
-              { label: "Ergebnisse", href: "#proof" },
-              { label: "Leistungen & Preise", href: "#services" },
+              { label: "Was du bekommst", href: "#included" },
+              { label: "Angebote & Preise", href: "#services" },
               { label: "Prozess", href: "#process" },
               { label: "Q&A", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
@@ -883,7 +892,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Synchron abstimmen",
             label: "Kennenlern-Call",
             description:
-              "Für direkte Abstimmung, wenn Scope und Aufwand im Termin geklärt werden sollen.",
+              "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
             value: "15-20 Minuten Abstimmung",
             href: COMPANY_CALENDLY,
             helper:
@@ -892,7 +901,7 @@ const HOME_SECTIONS: LandingSection[] = [
             actionLabel: "Termin auswählen",
             detailPoints: [
               "15-20 Minuten fokussiert",
-              "Scope und Aufwand grob einordnen",
+              "Umfang und Aufwand grob einordnen",
               "Konkreter nächster Schritt danach",
             ],
             metaLabel: "Format",
@@ -924,7 +933,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChecklist: [
           "Klare Empfehlung",
           "Direkter Kontakt",
-          "Scope, Timing, Aufwand",
+          "Umfang, Timing, Aufwand",
         ],
         contactChecklistTitle: "Was du in jedem Weg bekommst",
         contactChecklistHint:
@@ -936,7 +945,7 @@ const HOME_SECTIONS: LandingSection[] = [
           hint: "3 kurze Schritte, nur relevante Pflichtfelder und klare Rückmeldung.",
         },
         contactSecondaryCta: {
-          label: "Leistungen vergleichen",
+          label: "Angebote vergleichen",
           href: "#services",
           hint: "",
         },
@@ -944,7 +953,7 @@ const HOME_SECTIONS: LandingSection[] = [
           title: "Projektanfrage für konkrete Vorhaben",
           subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
           intro:
-            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Scope, Timing und Budgetrahmen.",
+            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
             "Je nach gewähltem Angebot zeige ich nur die wirklich relevanten Felder.",
           firstNameLabel: "Name",
@@ -966,7 +975,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Newsletter-Anmeldungen",
           ],
           pagesLabel: "Benötigte Seiten",
-          pagesPlaceholder: "z. B. Referenzen, Team, Q&A",
+          pagesPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesOptions: [
             "Start",
             "Leistungen",
@@ -978,7 +987,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Sonstiges",
           ],
           pagesCustomLabel: "Weitere Seiten (optional)",
-          pagesCustomPlaceholder: "z. B. Referenzen, Team, Q&A",
+          pagesCustomPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           workflowLabel: "Anzahl Kern-Workflows",
@@ -1045,13 +1054,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerHeroDescription:
           "Contact me and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
-        footerHeroSecondaryCta: { label: "View services", href: "#services" },
+        footerHeroSecondaryCta: { label: "View offers", href: "#services" },
         footerColumns: [
           {
             title: "Menu",
             links: [
-              { label: "Proof", href: "#proof" },
-              { label: "Services & Pricing", href: "#services" },
+              { label: "What you get", href: "#included" },
+              { label: "Offers & pricing", href: "#services" },
               { label: "Process", href: "#process" },
               { label: "Q&A", href: "#faq" },
               { label: "Contact", href: "#contact" },
@@ -1094,7 +1103,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Sync alignment",
             label: "Discovery call",
             description:
-              "Best for live alignment when scope and effort need quick discussion.",
+              "Best for live alignment when project range and effort need quick discussion.",
             value: "15-20 minute alignment call",
             href: COMPANY_CALENDLY,
             helper:
@@ -1103,7 +1112,7 @@ const HOME_SECTIONS: LandingSection[] = [
             actionLabel: "Choose a time",
             detailPoints: [
               "15-20 minutes focused",
-              "Roughly map scope & effort",
+              "Roughly map range & effort",
               "Leave with a concrete next step",
             ],
             metaLabel: "Format",
@@ -1135,7 +1144,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChecklist: [
           "Clear recommendation",
           "Direct contact",
-          "Scope, timing, effort",
+          "Range, timing, effort",
         ],
         contactChecklistTitle: "What you get in every path",
         contactChecklistHint:
@@ -1147,16 +1156,16 @@ const HOME_SECTIONS: LandingSection[] = [
           hint: "3 short steps, only relevant required fields, and a clear reply.",
         },
         contactSecondaryCta: {
-          label: "Compare services",
+          label: "Compare offers",
           href: "#services",
           hint: "",
         },
         contactForm: {
-          title: "Project request for concrete scopes",
+          title: "Project request for concrete requirements",
           subtitle:
             "Best when direction is clear and you want to move directly.",
           intro:
-            "Share the key project facts and I reply with a practical scope, timing, and budget recommendation.",
+            "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
           conditionalFieldHint:
             "Based on your offer, I only show fields that are actually relevant.",
           firstNameLabel: "Name",
@@ -1178,7 +1187,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Grow newsletter sign-ups",
           ],
           pagesLabel: "Required pages",
-          pagesPlaceholder: "e.g. References, Team, Q&A",
+          pagesPlaceholder: "e.g. Team, FAQ, Careers",
           pagesOptions: [
             "Home",
             "Services",
@@ -1190,7 +1199,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Other",
           ],
           pagesCustomLabel: "Additional pages (optional)",
-          pagesCustomPlaceholder: "e.g. References, Team, Q&A",
+          pagesCustomPlaceholder: "e.g. Team, FAQ, Careers",
           pagesRequiredHint: "Please select at least one page or add your own.",
           workflowLabel: "Number of core workflows",
           workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
@@ -1261,15 +1270,15 @@ const HOME_SECTIONS: LandingSection[] = [
           href: "#contact",
         },
         footerHeroSecondaryCta: {
-          label: "Leistungen ansehen",
+          label: "Angebote ansehen",
           href: "#services",
         },
         footerColumns: [
           {
             title: "Menü",
             links: [
-              { label: "Ergebnisse", href: "#proof" },
-              { label: "Leistungen & Preise", href: "#services" },
+              { label: "Was du bekommst", href: "#included" },
+              { label: "Angebote & Preise", href: "#services" },
               { label: "Prozess", href: "#process" },
               { label: "Q&A", href: "#faq" },
               { label: "Kontakt", href: "#contact" },
@@ -1313,13 +1322,13 @@ const HOME_SECTIONS: LandingSection[] = [
         footerHeroDescription:
           "Contact me and start your project with Invessiv.",
         footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
-        footerHeroSecondaryCta: { label: "View services", href: "#services" },
+        footerHeroSecondaryCta: { label: "View offers", href: "#services" },
         footerColumns: [
           {
             title: "Menu",
             links: [
-              { label: "Proof", href: "#proof" },
-              { label: "Services & Pricing", href: "#services" },
+              { label: "What you get", href: "#included" },
+              { label: "Offers & pricing", href: "#services" },
               { label: "Process", href: "#process" },
               { label: "Q&A", href: "#faq" },
               { label: "Contact", href: "#contact" },

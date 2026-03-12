@@ -1,6 +1,6 @@
 export const SECTION_IDS = [
   "hero",
-  "proof",
+  "included",
   "services",
   "process",
   "faq",
@@ -15,7 +15,7 @@ export type NavigationItem = {
 };
 
 export const PRIMARY_NAVIGATION_SECTION_IDS = [
-  "proof",
+  "included",
   "services",
   "process",
   "faq",

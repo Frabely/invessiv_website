@@ -59,7 +59,7 @@ const formCopyFixture = {
   nextStepProjectLabel: "Weiter zu Rahmen",
   submitLabel: "Senden",
   submitSuccess: "Erfolg",
-  subtitle: "Scope",
+  subtitle: "Rahmen",
   title: "Projektanfrage",
   websiteRequiredHint: "Website erforderlich",
   websiteLabel: "Website",
@@ -91,7 +91,9 @@ describe("ProjectRequestForm", () => {
     expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Weiter zu Projekt" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Weiter zu Projekt" }),
+    ).toBeTruthy();
   });
 
   it("preselects the offer when opened from a service CTA", () => {
@@ -168,7 +170,9 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
 
     expect(screen.getByRole("alert")).toBeTruthy();
-    expect(screen.getByText("Bitte mindestens eine Seite wählen.")).toBeTruthy();
+    expect(
+      screen.getByText("Bitte mindestens eine Seite wählen."),
+    ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));

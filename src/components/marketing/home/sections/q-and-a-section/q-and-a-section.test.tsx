@@ -15,7 +15,7 @@ describe("QAndASection", () => {
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.",
+              "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
           },
           {
             question: "Könnt ihr meine alte Website überarbeiten?",
@@ -43,7 +43,7 @@ describe("QAndASection", () => {
 
     expect(
       screen.getByText(
-        "Kickoff erfolgt nach Scope-Abstimmung mit klarem Zeitplan.",
+        "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
       ),
     ).toBeTruthy();
     expect(

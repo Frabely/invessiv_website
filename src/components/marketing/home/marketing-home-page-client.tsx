@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import { HomeSectionsRenderer } from "@/components/marketing/home/home-sections-renderer";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
-import { MarqueeSection } from "@/components/marketing/home/sections/marquee-section/marquee-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
 import {
@@ -51,8 +50,6 @@ export function MarketingHomePageClient() {
           heroVisualAriaLabel={ui.heroVisualAriaLabel}
           title={sections[0]?.title ?? ""}
         />
-
-        <MarqueeSection items={ui.marqueeItems} />
 
         <HomeSectionsRenderer
           sections={sections}

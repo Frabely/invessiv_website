@@ -35,6 +35,7 @@ export function HeroSection({
             <span className="hero__title-gradient">{title}</span>
           </h1>
           <p>{description}</p>
+
           <div className="hero__cta-row">
             <a
               className="btn btn--primary"
