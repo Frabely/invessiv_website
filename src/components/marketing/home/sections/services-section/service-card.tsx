@@ -218,10 +218,15 @@ export function ServiceCard({
                 </span>
               ) : null}
             </div>
+
+            {card.fit ? (
+              <p className="services-fit-note">
+                <span className="services-fit-label">{fitLabel}</span>
+                <span>{card.fit}</span>
+              </p>
+            ) : null}
           </div>
         </div>
-
-        <p className="services-meta">{card.description}</p>
 
         <p className="services-price-row">
           <span className="services-price">{heroPrice}</span>
@@ -233,13 +238,6 @@ export function ServiceCard({
         <p className="services-delivery-badge">
           {deliveryLabel}: {card.delivery}
         </p>
-
-        {card.fit ? (
-          <p className="services-fit-note">
-            <span className="services-fit-label">{fitLabel}</span>
-            <span>{card.fit}</span>
-          </p>
-        ) : null}
 
         <div className="services-bullets-stack">
           <ul className="services-list">

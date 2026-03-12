@@ -12,13 +12,13 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
 }));
 
 describe("HeroSection", () => {
-  it("renders the updated hero messaging with scope-focused pills", () => {
+  it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Von Landingpage bis Prozess-Tool: mit klarem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist."
+        description="Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist."
         heroBenefitsAriaLabel="Kurzvorteile"
         heroChipTags={[
-          "Klare Scope-Einschaetzung",
+          "Transparente Aufwandseinschaetzung",
           "Ein Ansprechpartner",
           "QA vor Go-live",
         ]}
@@ -26,16 +26,16 @@ describe("HeroSection", () => {
         heroSecondaryCta="Angebote & Preise"
         heroTag="KLARER AUFBAU, DIREKTE UMSETZUNG"
         heroVisualAriaLabel="Hero visual preview"
-        title="Webseiten und Prozess-Tools mit klarem Aufbau, sauberer Umsetzung und direktem Weg zum Ziel."
+        title="Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel."
       />,
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Webseiten und Prozess-Tools mit klarem Aufbau, sauberer Umsetzung und direktem Weg zum Ziel.",
+        name: "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
       }),
     ).toBeTruthy();
-    expect(screen.getByText("Klare Scope-Einschaetzung")).toBeTruthy();
+    expect(screen.getByText("Transparente Aufwandseinschaetzung")).toBeTruthy();
     expect(screen.getByText("Ein Ansprechpartner")).toBeTruthy();
     expect(screen.getByText("QA vor Go-live")).toBeTruthy();
     expect(

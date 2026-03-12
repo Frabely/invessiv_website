@@ -11,7 +11,7 @@ describe("ServiceCard", () => {
     cleanup();
   });
 
-  it("renders a price-first hierarchy and reveals hidden scope details", () => {
+  it("renders a price-first hierarchy and reveals hidden card details", () => {
     function ServiceCardHarness() {
       const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -47,7 +47,7 @@ describe("ServiceCard", () => {
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           faqLinkLabel="Fragen?"
-          fitLabel="Passt gut für"
+          fitLabel="Ideal für"
           isDetailsOpen={isDetailsOpen}
           moreItemsPluralLabel="weitere Punkte"
           moreItemsSingularLabel="weiterer Punkt"
@@ -66,10 +66,11 @@ describe("ServiceCard", () => {
     expect(screen.getByText(/ab 990/i)).toBeTruthy();
     expect(screen.getByText("einmalig")).toBeTruthy();
     expect(screen.getByText(/Lieferzeit:\s*3-7 Tage/i)).toBeTruthy();
-    expect(screen.getByText("Passt gut für")).toBeTruthy();
+    expect(screen.getByText("Ideal für")).toBeTruthy();
     expect(
       screen.getByText("Angebotsseiten mit klarer Conversion-Aktion."),
     ).toBeTruthy();
+    expect(screen.queryByText("Conversion-optimierte One-Pager.")).toBeNull();
     expect(screen.getByText("+ 4 weitere Punkte")).toBeTruthy();
     expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(screen.queryByRole("link", { name: "Projekt anfragen" })).toBeNull();
@@ -154,7 +155,7 @@ describe("ServiceCard", () => {
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         faqLinkLabel="Fragen?"
-        fitLabel="Passt gut für"
+        fitLabel="Ideal für"
         isDetailsOpen={false}
         moreItemsPluralLabel="weitere Punkte"
         moreItemsSingularLabel="weiterer Punkt"
@@ -239,7 +240,7 @@ describe("ServiceCard", () => {
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           faqLinkLabel="Fragen?"
-          fitLabel="Passt gut für"
+          fitLabel="Ideal für"
           isDetailsOpen={isDetailsOpen}
           moreItemsPluralLabel="weitere Punkte"
           moreItemsSingularLabel="weiterer Punkt"

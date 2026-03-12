@@ -21,7 +21,7 @@ describe("ServicesSection", () => {
         detailsCtaLabel="Mehr Infos"
         description="Leistungen als Richtwerte."
         faqLinkLabel="Fragen?"
-        fitLabel="Passt gut für"
+        fitLabel="Ideal für"
         id="services"
         moreItemsPluralLabel="weitere Punkte"
         moreItemsSingularLabel="weiterer Punkt"
@@ -39,7 +39,7 @@ describe("ServicesSection", () => {
             fit: "Angebotsseiten mit klarem Conversion-Ziel.",
             price: "ab 990 EUR einmalig",
             delivery: "3-7 Tage",
-            included: ["Scope", "Design", "SEO", "Performance", "Tracking"],
+            included: ["Rahmen", "Design", "SEO", "Performance", "Tracking"],
             details: ["Zusatzhinweis"],
           },
           {
@@ -55,7 +55,7 @@ describe("ServicesSection", () => {
             details: ["Zweiter Zusatzhinweis"],
           },
         ]}
-        summaryPoints={["Scope vor Start", "Klare Lieferfenster"]}
+        summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
         title="Leistungen & Preise"
       />,
     );

@@ -10,7 +10,7 @@ describe("ContactSection", () => {
     render(
       <ContactSection
         contactCta={{
-          description: "Für warme Leads mit klarem Scope.",
+          description: "Für warme Leads mit klarem Rahmen.",
           hint: "Antwort in 24h.",
           href: "#contact",
           kicker: "Direkt starten",
@@ -83,7 +83,7 @@ describe("ContactSection", () => {
           nextStepLabel: "Weiter",
           submitLabel: "Senden",
           submitSuccess: "Gesendet",
-          subtitle: "Scope-Check",
+          subtitle: "Projekt-Check",
           title: "Projektanfrage",
           websiteRequiredHint: "Website erforderlich",
           websiteLabel: "Website",
@@ -112,9 +112,7 @@ describe("ContactSection", () => {
         name: "Bereit für eine neue, produktive Website?",
       }),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("region", { name: "Projektanfrage" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
     expect(
       screen
@@ -126,7 +124,9 @@ describe("ContactSection", () => {
     expect(screen.getAllByText("Erst grob anfragen").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Kurz abstimmen").length).toBeGreaterThan(0);
 
-    expect(screen.queryByRole("link", { name: "Kurze E-Mail senden" })).toBeNull();
+    expect(
+      screen.queryByRole("link", { name: "Kurze E-Mail senden" }),
+    ).toBeNull();
     expect(
       screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeNull();
@@ -137,7 +137,9 @@ describe("ContactSection", () => {
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    const callLink = screen.getByRole("link", { name: "Kennenlern-Call starten" });
+    const callLink = screen.getByRole("link", {
+      name: "Kennenlern-Call starten",
+    });
     expect(callLink).toBeTruthy();
     expect(callLink.getAttribute("target")).toBe("_blank");
     expect(callLink.getAttribute("rel")).toBe("noopener noreferrer");

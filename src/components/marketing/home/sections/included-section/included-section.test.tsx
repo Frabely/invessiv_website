@@ -14,7 +14,7 @@ describe("IncludedSection", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "Vom ersten Scope bis zur Übergabe",
+        name: "Vom ersten Rahmen bis zur Übergabe",
       }),
     ).toBeTruthy();
     expect(

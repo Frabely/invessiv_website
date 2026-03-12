@@ -35,7 +35,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   de: {
     heroBenefitsAriaLabel: "Kurzvorteile",
     heroChipTags: [
-      "Klare Scope-Einschätzung",
+      "Transparente Aufwandseinschätzung",
       "Ein Ansprechpartner",
       "QA vor Go-live",
     ],
@@ -45,7 +45,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroVisualAriaLabel: "Live Performance Einblick",
     mappingWarning: "Navigation/Section Mapping ist unvollständig.",
     includedContent: {
-      title: "Vom ersten Scope bis zur Übergabe",
+      title: "Vom ersten Rahmen bis zur Übergabe",
       summaryPoints: [
         "Empfehlung vor Start",
         "kurze Abstimmung",
@@ -79,7 +79,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     servicesComingSoonExamplesHideLabel: "Beispiele ausblenden",
     servicesComingSoonLabel: "Bald verfügbar",
     servicesFaqLinkLabel: "Fragen?",
-    servicesFitLabel: "Passt gut für",
+    servicesFitLabel: "Ideal für",
     servicesMoreItemsPluralLabel: "weitere Punkte",
     servicesMoreItemsSingularLabel: "weiterer Punkt",
     servicesOneTimeLabel: "einmalig",
@@ -91,7 +91,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
   en: {
     heroBenefitsAriaLabel: "Key benefits",
     heroChipTags: [
-      "Clear scope assessment",
+      "Transparent effort estimate",
       "One point of contact",
       "QA before go-live",
     ],
@@ -101,7 +101,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     heroVisualAriaLabel: "Live performance snapshot",
     mappingWarning: "Navigation/section mapping is incomplete.",
     includedContent: {
-      title: "From first scope to handoff",
+      title: "From first outline to handoff",
       summaryPoints: [
         "recommendation before kickoff",
         "short feedback loops",
@@ -112,7 +112,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
           title: "Right entry point before kickoff",
           tag: "Setup",
           description:
-            "After the inquiry, we sort the goal, scope, and offer format before implementation begins.",
+            "After the inquiry, we sort the goal, project range, and offer format before implementation begins.",
         },
         {
           title: "Short paths during execution",
@@ -135,7 +135,7 @@ const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
     servicesComingSoonExamplesHideLabel: "Hide examples",
     servicesComingSoonLabel: "Coming soon",
     servicesFaqLinkLabel: "Questions?",
-    servicesFitLabel: "Best for",
+    servicesFitLabel: "Ideal for",
     servicesMoreItemsPluralLabel: "more items",
     servicesMoreItemsSingularLabel: "more item",
     servicesOneTimeLabel: "one-time",

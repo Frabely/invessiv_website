@@ -219,15 +219,15 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title:
-          "Webseiten und Prozess-Tools mit klarem Aufbau, sauberer Umsetzung und direktem Weg zum Ziel.",
+          "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
         description:
-          "Von Landingpage bis Prozess-Tool: mit klarem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist.",
+          "Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist.",
       },
       en: {
         title:
-          "Websites and process tools with clear structure, clean execution, and a direct path to the goal.",
+          "Websites and process tools with thoughtful structure and a direct path to the goal.",
         description:
-          "From landing page to process tool: with a clear setup, direct feedback, and a result that is reviewed before launch.",
+          "From landing page to process tool: with a clean setup, direct feedback, and a result that is reviewed before launch.",
       },
     },
   },
@@ -235,7 +235,7 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "included",
     copy: {
       de: {
-        title: "Vom ersten Scope bis zur Übergabe",
+        title: "Vom ersten Rahmen bis zur Übergabe",
         description:
           "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
         summaryPoints: [
@@ -265,7 +265,7 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "From first scope to handoff",
+        title: "From first outline to handoff",
         description:
           "After the inquiry, you know which entry point makes sense and how the next step looks.",
         summaryPoints: [
@@ -277,7 +277,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Right entry point before kickoff",
             description:
-              "After the inquiry, we sort the goal, scope, and offer format before implementation begins.",
+              "After the inquiry, we sort the goal, project range, and offer format before implementation begins.",
             tag: "Setup",
           },
           {
@@ -305,7 +305,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Jedes Angebot ist auf ein klares Problem, einen sichtbaren Leistungsumfang und einen realistischen Einstiegspreis heruntergebrochen.",
         summaryPoints: [
           "klarer Einstieg je Problem",
-          "Scope vor Start verbindlich",
+          "Umfang vor Start verbindlich",
           "Lieferfenster und Preisanker sichtbar",
         ],
         serviceCards: [
@@ -368,7 +368,7 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "ab 3.490 € einmalig",
             delivery: "10–21 Tage",
             included: [
-              "Kompakter Scope-Workshop zu Ziel, Daten und Rollen",
+              "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
               "MVP mit einem Kern-Workflow, der spürbar entlastet",
               "Status- oder Dashboard-Ansicht für mehr Transparenz",
               "Integrationen je nach Umfang (Webhooks, APIs)",
@@ -448,10 +448,10 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "Offers & Starting Prices",
         description:
-          "Each offer is framed around a clear problem, a visible scope, and a realistic starting price so you can assess fit faster.",
+          "Each offer is framed around a clear problem, a visible service range, and a realistic starting price so you can assess fit faster.",
         summaryPoints: [
           "clear entry point per problem",
-          "scope aligned before kickoff",
+          "service range aligned before kickoff",
           "delivery window and price anchor visible",
         ],
         serviceCards: [
@@ -475,7 +475,7 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Copy refinement or content production is available as an add-on.",
-              "From the 3rd feedback round onward, additional effort is scoped transparently.",
+              "From the 3rd feedback round onward, additional effort is outlined transparently.",
               "Hosting, domain, and external tool licenses are not included.",
             ],
           },
@@ -498,7 +498,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Deployment/go-live support",
             ],
             details: [
-              "Additional pages and multilingual scope are planned upfront.",
+              "Additional pages and multilingual rollout are planned upfront.",
               "CMS integration is included only when it fits the selected stack.",
               "Third-party licenses and external integrations are not included in the base price.",
             ],
@@ -514,10 +514,10 @@ const HOME_SECTIONS: LandingSection[] = [
             price: "from €3,490 one-time",
             delivery: "10–21 days",
             included: [
-              "Compact scope workshop for goals, data, and roles",
+              "Compact planning workshop for goals, data, and roles",
               "MVP with one core workflow that removes friction",
               "Status or dashboard view for more transparency",
-              "Integrations by scope (webhooks, APIs)",
+              "Integrations by project range (webhooks, APIs)",
               "Foundation for login and access roles",
               "Handover including short documentation",
             ],
@@ -547,7 +547,7 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Optional hourly model: development at €70–85/h, content/small updates at €50–60/h.",
-              "Larger rebuild topics are recommended and scoped separately.",
+              "Larger rebuild topics are recommended and planned separately.",
               "Deep backend refactoring is not included in the base upgrade.",
             ],
           },
@@ -597,18 +597,18 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "Vom Scope bis Launch in vier klaren Schritten",
+        title: "Vom ersten Rahmen bis zum Launch in vier klaren Schritten",
         description:
           "Der Ablauf ist so angelegt, dass du früh Orientierung bekommst, schnell eine erste Richtung siehst und vor dem Launch keine unklaren Übergaben hast.",
         summaryPoints: [
-          "Ziel, Angebot und Scope früh geklärt",
+          "Ziel, Angebot und Umfang früh geklärt",
           "erste Richtung schnell sichtbar",
           "Launch inkl. QA und sauberer Übergabe",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Ziel & Scope klären",
+            title: "Ziel & Rahmen klären",
             deliverable: "Briefing + Angebotsempfehlung",
             effort: "Aufwand: ca. 30 Min",
             result: "Ergebnis: klarer Rahmen + Prioritäten",
@@ -644,24 +644,24 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         processCta: {
-          label: "Projekt & Scope anfragen",
+          label: "Projekt & Umfang anfragen",
           hint: "Unverbindlich. In der Regel Rückmeldung innerhalb von 24h.",
           href: "#contact",
         },
       },
       en: {
-        title: "From scope to launch in four clear steps",
+        title: "From first outline to launch in four clear steps",
         description:
           "The flow is designed so you get orientation early, see the first direction quickly, and avoid fuzzy handoffs before launch.",
         summaryPoints: [
-          "goal, offer, and scope clarified early",
+          "goal, offer, and project range clarified early",
           "first direction visible quickly",
           "launch includes QA and clean handover",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Clarify goal & scope",
+            title: "Clarify goal & outline",
             deliverable: "Briefing + offer recommendation",
             effort: "Effort: about 30 min",
             result: "Outcome: clear frame + priorities",
@@ -697,7 +697,7 @@ const HOME_SECTIONS: LandingSection[] = [
           },
         ],
         processCta: {
-          label: "Request project & scope",
+          label: "Request project & outline",
           hint: "No commitment. Typically a reply within 24h.",
           href: "#contact",
         },
@@ -749,7 +749,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie gehst du mit Zusatzwünschen um?",
             answer:
-              "Zusatzwünsche außerhalb des vereinbarten Scopes werden nicht stillschweigend umgesetzt. Ich nenne dir vorab Auswirkung auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
+              "Zusatzwünsche außerhalb des vereinbarten Rahmens werden nicht stillschweigend umgesetzt. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
           },
           {
             question: "Welche Mitwirkung ist auf Kundenseite nötig?",
@@ -775,7 +775,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, scope, and timeline in a short call or by email. You then get a clear recommendation on the right offer, the next step, and a transparent setup for delivery.",
+              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right offer, the next step, and a transparent setup for delivery.",
           },
           {
             question: "Can you redesign my existing website?",
@@ -790,12 +790,12 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Are there any hidden costs?",
             answer:
-              "No. You receive a clear offer with a defined scope before implementation starts. Any additional requests outside scope are always aligned transparently before execution.",
+              "No. You receive a clear offer with a defined delivery frame before implementation starts. Any additional requests outside that frame are always aligned transparently before execution.",
           },
           {
             question: "What is typically not included in the offer?",
             answer:
-              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed scope. These items are listed and aligned separately before implementation.",
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. These items are listed and aligned separately before implementation.",
           },
           {
             question: "How many revision rounds are included?",
@@ -805,7 +805,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How are additional requests handled?",
             answer:
-              "Requests outside the agreed scope are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
+              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
           },
           {
             question: "What client-side input is required?",
@@ -815,7 +815,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "When is a project considered completed?",
             answer:
-              "A project is considered completed when the agreed scope has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed scope.",
+              "A project is considered completed when the agreed service range has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed basis.",
           },
         ],
       },
@@ -892,7 +892,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Synchron abstimmen",
             label: "Kennenlern-Call",
             description:
-              "Für direkte Abstimmung, wenn Scope und Aufwand im Termin geklärt werden sollen.",
+              "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
             value: "15-20 Minuten Abstimmung",
             href: COMPANY_CALENDLY,
             helper:
@@ -901,7 +901,7 @@ const HOME_SECTIONS: LandingSection[] = [
             actionLabel: "Termin auswählen",
             detailPoints: [
               "15-20 Minuten fokussiert",
-              "Scope und Aufwand grob einordnen",
+              "Umfang und Aufwand grob einordnen",
               "Konkreter nächster Schritt danach",
             ],
             metaLabel: "Format",
@@ -933,7 +933,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChecklist: [
           "Klare Empfehlung",
           "Direkter Kontakt",
-          "Scope, Timing, Aufwand",
+          "Umfang, Timing, Aufwand",
         ],
         contactChecklistTitle: "Was du in jedem Weg bekommst",
         contactChecklistHint:
@@ -953,7 +953,7 @@ const HOME_SECTIONS: LandingSection[] = [
           title: "Projektanfrage für konkrete Vorhaben",
           subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
           intro:
-            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Scope, Timing und Budgetrahmen.",
+            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
             "Je nach gewähltem Angebot zeige ich nur die wirklich relevanten Felder.",
           firstNameLabel: "Name",
@@ -1103,7 +1103,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Sync alignment",
             label: "Discovery call",
             description:
-              "Best for live alignment when scope and effort need quick discussion.",
+              "Best for live alignment when project range and effort need quick discussion.",
             value: "15-20 minute alignment call",
             href: COMPANY_CALENDLY,
             helper:
@@ -1112,7 +1112,7 @@ const HOME_SECTIONS: LandingSection[] = [
             actionLabel: "Choose a time",
             detailPoints: [
               "15-20 minutes focused",
-              "Roughly map scope & effort",
+              "Roughly map range & effort",
               "Leave with a concrete next step",
             ],
             metaLabel: "Format",
@@ -1144,7 +1144,7 @@ const HOME_SECTIONS: LandingSection[] = [
         contactChecklist: [
           "Clear recommendation",
           "Direct contact",
-          "Scope, timing, effort",
+          "Range, timing, effort",
         ],
         contactChecklistTitle: "What you get in every path",
         contactChecklistHint:
@@ -1161,11 +1161,11 @@ const HOME_SECTIONS: LandingSection[] = [
           hint: "",
         },
         contactForm: {
-          title: "Project request for concrete scopes",
+          title: "Project request for concrete requirements",
           subtitle:
             "Best when direction is clear and you want to move directly.",
           intro:
-            "Share the key project facts and I reply with a practical scope, timing, and budget recommendation.",
+            "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
           conditionalFieldHint:
             "Based on your offer, I only show fields that are actually relevant.",
           firstNameLabel: "Name",

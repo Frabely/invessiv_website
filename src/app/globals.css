@@ -952,6 +952,14 @@ main {
   letter-spacing: -0.03em;
 }
 
+.included-section .section-scan-points {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: flex-start;
+  clear: both;
+}
+
 .included-hint {
   margin: 0 0 14px;
   color: #d6b39a;
@@ -3673,6 +3681,67 @@ main {
 
   .contact-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 901px) and (orientation: landscape) {
+  .hero {
+    min-height: 100svh;
+    padding: 78px 24px 24px;
+  }
+
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.78fr);
+    gap: clamp(18px, 2.8vw, 34px);
+  }
+
+  .hero__content {
+    max-width: 640px;
+  }
+
+  .hero__tag {
+    margin-bottom: 1rem;
+  }
+
+  .hero h1 {
+    max-width: 13ch;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+  }
+
+  .hero p:not(.hero__tag) {
+    margin-top: 12px;
+    max-width: 46ch;
+    line-height: 1.5;
+  }
+
+  .hero__cta-row {
+    margin-top: 18px;
+    gap: 10px;
+  }
+
+  .hero .btn {
+    min-height: 42px;
+    padding-inline: 16px;
+  }
+
+  .section-scan-points.section-scan-points--hero {
+    margin-top: 18px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .section-scan-point.section-scan-point--hero {
+    min-height: 26px;
+    padding: 0 10px;
+    font-size: 0.76rem;
+  }
+
+  .hero__visual {
+    min-height: 300px;
+  }
+
+  .hero-shot {
+    width: clamp(320px, 36vw, 470px);
   }
 }
 
