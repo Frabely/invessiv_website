@@ -11,7 +11,10 @@ import {
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { SITE_URL } from "@/lib/site-metadata";
+import {
+  createLocaleAlternates,
+  createPageMetadata,
+} from "@/lib/seo/page-metadata";
 
 type ImprintPageProps = {
   params: Promise<{ locale: string }>;
@@ -35,21 +38,14 @@ export async function generateMetadata({ params }: ImprintPageProps): Promise<Me
     ]),
   );
 
-  return {
+  return createPageMetadata({
     title: dict.imprint.meta.title,
     description: dict.imprint.meta.description,
-    alternates: {
-      canonical: `/${locale}/imprint`,
-      languages,
-    },
-    openGraph: {
-      title: dict.imprint.meta.openGraphTitle,
-      description: dict.imprint.meta.description,
-      url: `${SITE_URL}/${locale}/imprint`,
-      locale: dict.imprint.meta.openGraphLocale,
-      type: "website",
-    },
-  };
+    canonicalPath: `/${locale}/imprint`,
+    languages: createLocaleAlternates(languages),
+    openGraphTitle: dict.imprint.meta.openGraphTitle,
+    openGraphLocale: dict.imprint.meta.openGraphLocale,
+  });
 }
 
 export default async function ImprintPage({ params }: ImprintPageProps) {

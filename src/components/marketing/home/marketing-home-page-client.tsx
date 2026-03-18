@@ -33,7 +33,7 @@ export function MarketingHomePageClient() {
     <>
       <SiteHeader navigation={PRIMARY_NAVIGATION} />
 
-      <main className="marketing-main">
+      <main className="marketing-main" id="main-content" tabIndex={-1}>
         <div aria-hidden="true" className="page-accents">
           <span className="page-aurora page-aurora--left" />
           <span className="page-aurora page-aurora--right" />

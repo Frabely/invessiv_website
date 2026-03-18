@@ -1,11 +1,13 @@
-import "./globals.css";
-import { LanguageProvider } from "@/components/providers/language-provider";
+import "../globals.css";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { VercelAnalytics } from "@/app/analytics";
 import { Insights } from "@/app/insights";
-import { MARKETING_ROOT_META_CONTENT } from "@/i18n/dictionaries/marketing/root-meta";
-import { DEFAULT_LOCALE, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
+import { LanguageProvider } from "@/components/providers/language-provider";
+import { isSupportedLocale, type Locale } from "@/config/i18n";
+import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
+import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 const googleSiteVerification =
   process.env.GOOGLE_SITE_VERIFICATION ??
@@ -16,23 +18,6 @@ export const metadata: Metadata = {
   title: {
     default: SITE_NAME,
     template: `%s | ${SITE_NAME}`,
-  },
-  description: MARKETING_ROOT_META_CONTENT.description,
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    url: SITE_URL,
-    locale: "en_US",
-    title: SITE_NAME,
-    description: MARKETING_ROOT_META_CONTENT.openGraphDescription,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: SITE_NAME,
-    description: MARKETING_ROOT_META_CONTENT.openGraphDescription,
   },
   manifest: "/manifest.webmanifest",
   verification: googleSiteVerification
@@ -59,13 +44,30 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+type LocaleLayoutProps = {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+};
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: LocaleLayoutProps) {
+  const { locale } = await params;
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
+  const activeLocale = locale as Locale;
+  const ui = getSiteHeaderUiContent(activeLocale);
+
   return (
-    <html data-theme="dark" lang={DEFAULT_LOCALE} suppressHydrationWarning>
+    <html data-theme="dark" lang={activeLocale} suppressHydrationWarning>
       <body>
-        <LanguageProvider initialLocale={DEFAULT_LOCALE}>
-          {children}
-        </LanguageProvider>
+        <a className="skip-link" href="#main-content">
+          {ui.skipLinkLabel}
+        </a>
+        <LanguageProvider initialLocale={activeLocale}>{children}</LanguageProvider>
         <VercelAnalytics />
         <Insights />
       </body>

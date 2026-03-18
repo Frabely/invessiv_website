@@ -6,7 +6,10 @@ import { COMPANY, COMPANY_MAILTO } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { SITE_URL } from "@/lib/site-metadata";
+import {
+  createLocaleAlternates,
+  createPageMetadata,
+} from "@/lib/seo/page-metadata";
 
 type TermsPageProps = {
   params: Promise<{ locale: string }>;
@@ -41,24 +44,21 @@ export async function generateMetadata({ params }: TermsPageProps): Promise<Meta
   const dict = await getDictionary(locale);
   const terms = dict.terms;
 
-  return {
+  return createPageMetadata({
     title: terms.meta.title,
     description: terms.meta.description,
-    alternates: {
-      canonical: `/${locale}/terms`,
-      languages: {
-        de: "/de/terms",
-        en: "/en/terms",
-      },
-    },
-    openGraph: {
-      title: terms.meta.openGraphTitle,
-      description: terms.meta.description,
-      url: `${SITE_URL}/${locale}/terms`,
-      locale: terms.meta.openGraphLocale,
-      type: "website",
-    },
-  };
+    canonicalPath: `/${locale}/terms`,
+    languages: createLocaleAlternates(
+      Object.fromEntries(
+        SUPPORTED_LOCALES.map((supportedLocale) => [
+          supportedLocale,
+          `/${supportedLocale}/terms`,
+        ]),
+      ),
+    ),
+    openGraphTitle: terms.meta.openGraphTitle,
+    openGraphLocale: terms.meta.openGraphLocale,
+  });
 }
 
 export default async function TermsPage({ params }: TermsPageProps) {

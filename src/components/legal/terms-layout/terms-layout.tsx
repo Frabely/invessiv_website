@@ -60,7 +60,11 @@ export function TermsLayout({
         ctaHref={`/${locale}#contact`}
         navigation={legalHeaderNavigation}
       />
-      <main className={`legal-page ${styles.page}`}>
+      <main
+        className={`legal-page ${styles.page}`}
+        id="main-content"
+        tabIndex={-1}
+      >
         <div className={styles.inner}>
           <nav
             aria-label={breadcrumbAriaLabel}

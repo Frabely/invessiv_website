@@ -9,6 +9,7 @@ export type SiteHeaderUiContent = {
   localeSwitchLabel: string;
   mobileMenuLabel: string;
   navAriaLabel: string;
+  skipLinkLabel: string;
   themeToggleLabel: {
     dark: string;
     light: string;
@@ -31,6 +32,7 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     localeSwitchLabel: "Sprache wählen",
     mobileMenuLabel: "Menü",
     navAriaLabel: "Hauptnavigation",
+    skipLinkLabel: "Direkt zum Hauptinhalt springen",
     themeToggleLabel: {
       dark: "Light",
       light: "Dark",
@@ -51,6 +53,7 @@ const SITE_HEADER_UI_CONTENT: Record<Locale, SiteHeaderUiContent> = {
     localeSwitchLabel: "Choose language",
     mobileMenuLabel: "Menu",
     navAriaLabel: "Primary navigation",
+    skipLinkLabel: "Skip to main content",
     themeToggleLabel: {
       dark: "Light",
       light: "Dark",

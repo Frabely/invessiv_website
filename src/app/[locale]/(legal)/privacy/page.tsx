@@ -8,7 +8,10 @@ import {
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { SITE_URL } from "@/lib/site-metadata";
+import {
+  createLocaleAlternates,
+  createPageMetadata,
+} from "@/lib/seo/page-metadata";
 
 type PrivacyPageProps = {
   params: Promise<{ locale: string }>;
@@ -27,24 +30,21 @@ export async function generateMetadata({ params }: PrivacyPageProps): Promise<Me
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
 
-  return {
+  return createPageMetadata({
     title: privacy.meta.title,
     description: privacy.meta.description,
-    alternates: {
-      canonical: `/${locale}/privacy`,
-      languages: {
-        de: "/de/privacy",
-        en: "/en/privacy",
-      },
-    },
-    openGraph: {
-      title: privacy.meta.openGraphTitle,
-      description: privacy.meta.description,
-      url: `${SITE_URL}/${locale}/privacy`,
-      locale: privacy.meta.openGraphLocale,
-      type: "website",
-    },
-  };
+    canonicalPath: `/${locale}/privacy`,
+    languages: createLocaleAlternates(
+      Object.fromEntries(
+        SUPPORTED_LOCALES.map((supportedLocale) => [
+          supportedLocale,
+          `/${supportedLocale}/privacy`,
+        ]),
+      ),
+    ),
+    openGraphTitle: privacy.meta.openGraphTitle,
+    openGraphLocale: privacy.meta.openGraphLocale,
+  });
 }
 
 export default async function PrivacyPage({ params }: PrivacyPageProps) {

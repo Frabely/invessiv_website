@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
-import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import { type Locale, isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
-import { SITE_URL } from "@/lib/site-metadata";
+import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
+import {
+  createLocaleAlternates,
+  createPageMetadata,
+} from "@/lib/seo/page-metadata";
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -20,25 +24,16 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
   }
 
   const { title, description, openGraphLocale } = getHomeMetaContent(locale);
-
-  return {
+  return createPageMetadata({
     title,
     description,
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        de: "/de",
-        en: "/en",
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: `${SITE_URL}/${locale}`,
-      locale: openGraphLocale,
-      type: "website",
-    },
-  };
+    canonicalPath: `/${locale}`,
+    languages: createLocaleAlternates({
+      de: "/de",
+      en: "/en",
+    }),
+    openGraphLocale,
+  });
 }
 
 export default async function LocalePage({ params }: LocalePageProps) {
@@ -47,5 +42,22 @@ export default async function LocalePage({ params }: LocalePageProps) {
     notFound();
   }
 
-  return <MarketingHomePageClient />;
+  const activeLocale = locale as Locale;
+  const { description } = getHomeMetaContent(activeLocale);
+  const marketingStructuredData = createMarketingStructuredData(
+    activeLocale,
+    description,
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(marketingStructuredData),
+        }}
+      />
+      <MarketingHomePageClient />
+    </>
+  );
 }
