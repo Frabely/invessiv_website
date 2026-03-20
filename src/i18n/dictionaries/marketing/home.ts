@@ -9,6 +9,13 @@ import {
   COMPANY_SOCIAL_X,
   COMPANY_TEL,
 } from "@/config/company";
+import {
+  CONTACT_BUDGET_KEYS,
+  CONTACT_GOAL_KEYS,
+  CONTACT_PAGE_KEYS,
+  CONTACT_START_KEYS,
+  CONTACT_WORKFLOW_KEYS,
+} from "@/features/contact/contact-options";
 
 type ServiceCardKey =
   | "ai"
@@ -40,6 +47,11 @@ type StandardServiceCard = BaseServiceCard & {
 type ComingSoonServiceCard = BaseServiceCard & {
   isComingSoon: true;
   comingSoonExamples?: string[];
+};
+
+type ContactFormOption = {
+  key: string;
+  label: string;
 };
 
 export type LandingSectionCopy = {
@@ -109,7 +121,6 @@ export type LandingSectionCopy = {
     intro: string;
     conditionalFieldHint: string;
     firstNameLabel: string;
-    lastNameLabel: string;
     emailLabel: string;
     phoneLabel: string;
     companyLabel: string;
@@ -119,15 +130,15 @@ export type LandingSectionCopy = {
     offerLabel: string;
     offerPlaceholder: string;
     goalLabel: string;
-    goalOptions: string[];
+    goalOptions: ContactFormOption[];
     pagesLabel: string;
     pagesPlaceholder: string;
-    pagesOptions?: string[];
+    pagesOptions?: ContactFormOption[];
     pagesCustomLabel?: string;
     pagesCustomPlaceholder?: string;
     pagesRequiredHint?: string;
     workflowLabel: string;
-    workflowOptions: string[];
+    workflowOptions: ContactFormOption[];
     stepNavigationLabel: string;
     stepLabel: string;
     stepOneTitle: string;
@@ -138,27 +149,29 @@ export type LandingSectionCopy = {
     nextStepContactLabel?: string;
     nextStepProjectLabel?: string;
     budgetLabel: string;
-    budgetOptions: string[];
+    budgetOptions: ContactFormOption[];
     startLabel: string;
-    startOptions: string[];
+    startOptions: ContactFormOption[];
     projectDetailsLabel: string;
     projectDetailsPlaceholder: string;
     consentLabel: string;
     privacyLabel: string;
-    mailSubjectPrefix: string;
-    mailBodyTitle: string;
-    mailLabelName: string;
-    mailLabelEmail: string;
-    mailLabelPhone: string;
-    mailLabelCompany: string;
-    mailLabelRole: string;
-    mailLabelWebsite: string;
-    mailLabelOffer: string;
-    mailLabelBudget: string;
-    mailLabelStart: string;
-    mailBodyDetailsLabel: string;
     submitLabel: string;
+    submittingLabel: string;
     submitSuccess: string;
+    submitErrorValidation: string;
+    submitErrorRateLimited: string;
+    submitErrorDelivery: string;
+    submitErrorGeneric: string;
+    validationSummaryPrefix: string;
+    fieldErrorInvalidEmail: string;
+    fieldErrorInvalidWebsite: string;
+    fieldErrorRequired: string;
+    fieldErrorProjectDetailsRequired: string;
+    fieldErrorPagesRequired: string;
+    fieldErrorGoalRequired: string;
+    fieldErrorWorkflowRequired: string;
+    fieldErrorConsentRequired: string;
     requiredHint: string;
     closeLabel?: string;
   };
@@ -957,7 +970,6 @@ const HOME_SECTIONS: LandingSection[] = [
           conditionalFieldHint:
             "Je nach gewähltem Angebot zeige ich nur die wirklich relevanten Felder.",
           firstNameLabel: "Name",
-          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
@@ -969,29 +981,33 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Bitte Angebot wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
-            "Anfragen erhalten",
-            "Terminbuchungen erhöhen",
-            "Produkt verkaufen",
-            "Newsletter-Anmeldungen",
+            { key: CONTACT_GOAL_KEYS[0], label: "Anfragen erhalten" },
+            { key: CONTACT_GOAL_KEYS[1], label: "Terminbuchungen erhöhen" },
+            { key: CONTACT_GOAL_KEYS[2], label: "Produkt verkaufen" },
+            { key: CONTACT_GOAL_KEYS[3], label: "Newsletter-Anmeldungen" },
           ],
           pagesLabel: "Benötigte Seiten",
           pagesPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesOptions: [
-            "Start",
-            "Leistungen",
-            "Über uns",
-            "Kontakt",
-            "Karriere",
-            "Blog",
-            "Landingpage",
-            "Sonstiges",
+            { key: CONTACT_PAGE_KEYS[0], label: "Start" },
+            { key: CONTACT_PAGE_KEYS[1], label: "Leistungen" },
+            { key: CONTACT_PAGE_KEYS[2], label: "Über uns" },
+            { key: CONTACT_PAGE_KEYS[3], label: "Kontakt" },
+            { key: CONTACT_PAGE_KEYS[4], label: "Karriere" },
+            { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
+            { key: CONTACT_PAGE_KEYS[6], label: "Landingpage" },
+            { key: CONTACT_PAGE_KEYS[7], label: "Sonstiges" },
           ],
           pagesCustomLabel: "Weitere Seiten (optional)",
           pagesCustomPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           workflowLabel: "Anzahl Kern-Workflows",
-          workflowOptions: ["1 Workflow", "2 Workflows", "3+ Workflows"],
+          workflowOptions: [
+            { key: CONTACT_WORKFLOW_KEYS[0], label: "1 Workflow" },
+            { key: CONTACT_WORKFLOW_KEYS[1], label: "2 Workflows" },
+            { key: CONTACT_WORKFLOW_KEYS[2], label: "3+ Workflows" },
+          ],
           stepNavigationLabel: "Anfragefortschritt",
           stepLabel: "Schritt",
           stepOneTitle: "Kontakt",
@@ -1003,40 +1019,49 @@ const HOME_SECTIONS: LandingSection[] = [
           nextStepProjectLabel: "Weiter zu Rahmen & Versand",
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
-            "Unter 1.000 €",
-            "1.000 € - 2.500 €",
-            "2.500 € - 5.000 €",
-            "5.000 € - 10.000 €",
-            "10.000 €+",
-            "Noch offen",
+            { key: CONTACT_BUDGET_KEYS[0], label: "Unter 1.000 €" },
+            { key: CONTACT_BUDGET_KEYS[1], label: "1.000 € - 2.500 €" },
+            { key: CONTACT_BUDGET_KEYS[2], label: "2.500 € - 5.000 €" },
+            { key: CONTACT_BUDGET_KEYS[3], label: "5.000 € - 10.000 €" },
+            { key: CONTACT_BUDGET_KEYS[4], label: "10.000 €+" },
+            { key: CONTACT_BUDGET_KEYS[5], label: "Noch offen" },
           ],
           startLabel: "Gewünschter Start",
           startOptions: [
-            "Sofort",
-            "Innerhalb von 2 Wochen",
-            "Innerhalb von 1 Monat",
-            "Später / flexibel",
+            { key: CONTACT_START_KEYS[0], label: "Sofort" },
+            { key: CONTACT_START_KEYS[1], label: "Innerhalb von 2 Wochen" },
+            { key: CONTACT_START_KEYS[2], label: "Innerhalb von 1 Monat" },
+            { key: CONTACT_START_KEYS[3], label: "Später / flexibel" },
           ],
           projectDetailsLabel: "Projektziel und Anforderungen",
           projectDetailsPlaceholder:
             "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
           privacyLabel: "Datenschutzerklärung zu.",
-          mailSubjectPrefix: "Projektanfrage",
-          mailBodyTitle: "Neue Projektanfrage",
-          mailLabelName: "Name",
-          mailLabelEmail: "E-Mail",
-          mailLabelPhone: "Telefon",
-          mailLabelCompany: "Unternehmen",
-          mailLabelRole: "Rolle",
-          mailLabelWebsite: "Website",
-          mailLabelOffer: "Gewünschtes Angebot",
-          mailLabelBudget: "Budgetrahmen",
-          mailLabelStart: "Gewünschter Start",
-          mailBodyDetailsLabel: "Projektbeschreibung / Anforderungen",
           submitLabel: "Anfrage senden",
-          submitSuccess:
-            "Dein Mailprogramm wurde mit den vorausgefüllten Anfragedaten geöffnet.",
+          submittingLabel: "Anfrage wird gesendet …",
+          submitSuccess: "Danke. Deine Anfrage wurde erfolgreich gesendet.",
+          submitErrorValidation:
+            "Die Anfrage konnte nicht gesendet werden. Bitte prüfe deine Angaben.",
+          submitErrorRateLimited:
+            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
+          submitErrorDelivery:
+            "Die Anfrage konnte gerade nicht zugestellt werden. Nutze alternativ die E-Mail im Kontaktbereich.",
+          submitErrorGeneric:
+            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
+          validationSummaryPrefix: "Bitte korrigiere dieses Feld",
+          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+          fieldErrorInvalidWebsite: "Bitte gib eine gültige Website-URL ein.",
+          fieldErrorRequired: "Dieses Feld ist erforderlich.",
+          fieldErrorProjectDetailsRequired:
+            "Bitte gib eine kurze Projektbeschreibung ein.",
+          fieldErrorPagesRequired:
+            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
+          fieldErrorGoalRequired: "Bitte wähle ein Ziel für die Landingpage.",
+          fieldErrorWorkflowRequired:
+            "Bitte wähle die Anzahl der Kern-Workflows.",
+          fieldErrorConsentRequired:
+            "Bitte bestätige die Datenschutzerklärung.",
           requiredHint: "* Pflichtfelder",
           closeLabel: "Formular schließen",
         },
@@ -1169,7 +1194,6 @@ const HOME_SECTIONS: LandingSection[] = [
           conditionalFieldHint:
             "Based on your offer, I only show fields that are actually relevant.",
           firstNameLabel: "Name",
-          lastNameLabel: "Last name",
           emailLabel: "Email",
           phoneLabel: "Phone",
           companyLabel: "Company",
@@ -1181,28 +1205,32 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Select an offer",
           goalLabel: "Primary landing page goal",
           goalOptions: [
-            "Generate inquiries",
-            "Increase booked calls",
-            "Sell a product",
-            "Grow newsletter sign-ups",
+            { key: CONTACT_GOAL_KEYS[0], label: "Generate inquiries" },
+            { key: CONTACT_GOAL_KEYS[1], label: "Increase booked calls" },
+            { key: CONTACT_GOAL_KEYS[2], label: "Sell a product" },
+            { key: CONTACT_GOAL_KEYS[3], label: "Grow newsletter sign-ups" },
           ],
           pagesLabel: "Required pages",
           pagesPlaceholder: "e.g. Team, FAQ, Careers",
           pagesOptions: [
-            "Home",
-            "Services",
-            "About",
-            "Contact",
-            "Careers",
-            "Blog",
-            "Landing page",
-            "Other",
+            { key: CONTACT_PAGE_KEYS[0], label: "Home" },
+            { key: CONTACT_PAGE_KEYS[1], label: "Services" },
+            { key: CONTACT_PAGE_KEYS[2], label: "About" },
+            { key: CONTACT_PAGE_KEYS[3], label: "Contact" },
+            { key: CONTACT_PAGE_KEYS[4], label: "Careers" },
+            { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
+            { key: CONTACT_PAGE_KEYS[6], label: "Landing page" },
+            { key: CONTACT_PAGE_KEYS[7], label: "Other" },
           ],
           pagesCustomLabel: "Additional pages (optional)",
           pagesCustomPlaceholder: "e.g. Team, FAQ, Careers",
           pagesRequiredHint: "Please select at least one page or add your own.",
           workflowLabel: "Number of core workflows",
-          workflowOptions: ["1 workflow", "2 workflows", "3+ workflows"],
+          workflowOptions: [
+            { key: CONTACT_WORKFLOW_KEYS[0], label: "1 workflow" },
+            { key: CONTACT_WORKFLOW_KEYS[1], label: "2 workflows" },
+            { key: CONTACT_WORKFLOW_KEYS[2], label: "3+ workflows" },
+          ],
           stepNavigationLabel: "Request progress",
           stepLabel: "Step",
           stepOneTitle: "Contact",
@@ -1214,19 +1242,19 @@ const HOME_SECTIONS: LandingSection[] = [
           nextStepProjectLabel: "Continue to timing & send",
           budgetLabel: "Budget range",
           budgetOptions: [
-            "Below €1,000",
-            "€1,000 - €2,500",
-            "€2,500 - €5,000",
-            "€5,000 - €10,000",
-            "€10,000+",
-            "Not defined yet",
+            { key: CONTACT_BUDGET_KEYS[0], label: "Below €1,000" },
+            { key: CONTACT_BUDGET_KEYS[1], label: "€1,000 - €2,500" },
+            { key: CONTACT_BUDGET_KEYS[2], label: "€2,500 - €5,000" },
+            { key: CONTACT_BUDGET_KEYS[3], label: "€5,000 - €10,000" },
+            { key: CONTACT_BUDGET_KEYS[4], label: "€10,000+" },
+            { key: CONTACT_BUDGET_KEYS[5], label: "Not defined yet" },
           ],
           startLabel: "Preferred start",
           startOptions: [
-            "Immediately",
-            "Within 2 weeks",
-            "Within 1 month",
-            "Later / flexible",
+            { key: CONTACT_START_KEYS[0], label: "Immediately" },
+            { key: CONTACT_START_KEYS[1], label: "Within 2 weeks" },
+            { key: CONTACT_START_KEYS[2], label: "Within 1 month" },
+            { key: CONTACT_START_KEYS[3], label: "Later / flexible" },
           ],
           projectDetailsLabel: "Notes, requirements, and project description",
           projectDetailsPlaceholder:
@@ -1234,21 +1262,29 @@ const HOME_SECTIONS: LandingSection[] = [
           consentLabel:
             "I agree to the processing of my information according to the",
           privacyLabel: "privacy policy.",
-          mailSubjectPrefix: "Project request",
-          mailBodyTitle: "New project request",
-          mailLabelName: "Name",
-          mailLabelEmail: "Email",
-          mailLabelPhone: "Phone",
-          mailLabelCompany: "Company",
-          mailLabelRole: "Role",
-          mailLabelWebsite: "Website",
-          mailLabelOffer: "Requested offer",
-          mailLabelBudget: "Budget range",
-          mailLabelStart: "Preferred start",
-          mailBodyDetailsLabel: "Project description / requirements",
           submitLabel: "Send request",
-          submitSuccess:
-            "Your email app has been opened with the prefilled request details.",
+          submittingLabel: "Sending request …",
+          submitSuccess: "Thanks. Your request has been sent successfully.",
+          submitErrorValidation:
+            "The request could not be sent. Please review your information.",
+          submitErrorRateLimited:
+            "Too many requests in a short time. Please try again in a moment.",
+          submitErrorDelivery:
+            "The request could not be delivered right now. Please use the email option in the contact section.",
+          submitErrorGeneric:
+            "The request could not be sent right now. Please try again.",
+          validationSummaryPrefix: "Please fix this field",
+          fieldErrorInvalidEmail: "Please enter a valid email address.",
+          fieldErrorInvalidWebsite: "Please enter a valid website URL.",
+          fieldErrorRequired: "This field is required.",
+          fieldErrorProjectDetailsRequired:
+            "Please add a short project description.",
+          fieldErrorPagesRequired:
+            "Please select at least one page or add your own.",
+          fieldErrorGoalRequired: "Please select a landing page goal.",
+          fieldErrorWorkflowRequired:
+            "Please select the number of core workflows.",
+          fieldErrorConsentRequired: "Please confirm the privacy policy.",
           requiredHint: "* Required fields",
           closeLabel: "Close form",
         },

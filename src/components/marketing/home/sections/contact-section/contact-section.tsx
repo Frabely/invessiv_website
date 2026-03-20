@@ -5,7 +5,6 @@ import type { KeyboardEvent } from "react";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import { COMPANY_MAILTO } from "@/config/company";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 type ContactChannel = NonNullable<
@@ -61,9 +60,7 @@ export function ContactSection({
 
   const primaryPath = useMemo(
     () =>
-      contactCta && contactForm
-        ? { cta: contactCta, form: contactForm }
-        : null,
+      contactCta && contactForm ? { cta: contactCta, form: contactForm } : null,
     [contactCta, contactForm],
   );
 
@@ -139,9 +136,7 @@ export function ContactSection({
       "data-analytics-event": "cta_click",
       "data-analytics-location": "contact",
       "data-analytics-variant": "secondary",
-      ...(href === "#contact"
-        ? { "data-analytics-target": "form" }
-        : {}),
+      ...(href === "#contact" ? { "data-analytics-target": "form" } : {}),
     };
   };
 
@@ -150,7 +145,9 @@ export function ContactSection({
       return "";
     }
 
-    const hasSelectedEntry = entries.some((entry) => entry.id === selectedEntryId);
+    const hasSelectedEntry = entries.some(
+      (entry) => entry.id === selectedEntryId,
+    );
     return hasSelectedEntry ? selectedEntryId : entries[0].id;
   }, [entries, selectedEntryId]);
 
@@ -160,7 +157,9 @@ export function ContactSection({
     }
 
     const timeoutId = window.setTimeout(() => {
-      setCopiedEntryId((previous) => (previous === copiedEntryId ? null : previous));
+      setCopiedEntryId((previous) =>
+        previous === copiedEntryId ? null : previous,
+      );
     }, 1800);
 
     return () => window.clearTimeout(timeoutId);
@@ -322,14 +321,22 @@ export function ContactSection({
                       type="button"
                     >
                       {entry.kicker ? (
-                        <span className="contact-entry-trigger-kicker">{entry.kicker}</span>
+                        <span className="contact-entry-trigger-kicker">
+                          {entry.kicker}
+                        </span>
                       ) : null}
-                      <span className="contact-entry-trigger-title">{entry.label}</span>
+                      <span className="contact-entry-trigger-title">
+                        {entry.label}
+                      </span>
                     </button>
                   );
                 })}
               </div>
-              <p className="contact-screen-reader-status" role="status" aria-live="polite">
+              <p
+                className="contact-screen-reader-status"
+                role="status"
+                aria-live="polite"
+              >
                 {copyStatusMessage}
               </p>
 
@@ -354,10 +361,14 @@ export function ContactSection({
                     role="tabpanel"
                   >
                     {entry.kind === "channel" ? (
-                      <h4 className="contact-entry-panel-title">{entry.label}</h4>
+                      <h4 className="contact-entry-panel-title">
+                        {entry.label}
+                      </h4>
                     ) : null}
                     {entry.kind === "channel" && entry.description ? (
-                      <p className="contact-entry-panel-description">{entry.description}</p>
+                      <p className="contact-entry-panel-description">
+                        {entry.description}
+                      </p>
                     ) : null}
 
                     {entry.kind === "project" && primaryPath ? (
@@ -367,10 +378,11 @@ export function ContactSection({
                           offerOptions={contactFormOffers}
                           privacyHref={privacyHref}
                           privacyLabel={primaryPath.form.privacyLabel}
-                          submitHref={COMPANY_MAILTO}
                         />
                         {primaryPath.cta.hint ? (
-                          <p className="contact-entry-panel-hint">{primaryPath.cta.hint}</p>
+                          <p className="contact-entry-panel-hint">
+                            {primaryPath.cta.hint}
+                          </p>
                         ) : null}
                       </>
                     ) : null}
@@ -411,7 +423,9 @@ export function ContactSection({
                         )}
 
                         {entry.channel.helper ? (
-                          <p className="contact-entry-panel-helper">{entry.channel.helper}</p>
+                          <p className="contact-entry-panel-helper">
+                            {entry.channel.helper}
+                          </p>
                         ) : null}
 
                         {entry.channel.detailPoints?.length ? (
@@ -424,14 +438,22 @@ export function ContactSection({
 
                         <div className="contact-channel-footer">
                           {entry.channel.hint ? (
-                            <p className="contact-entry-panel-hint">{entry.channel.hint}</p>
+                            <p className="contact-entry-panel-hint">
+                              {entry.channel.hint}
+                            </p>
                           ) : null}
                           <div className="contact-channel-actions">
                             <a
                               className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
                               href={entry.channel.href}
-                              rel={isExternalChannelLink ? "noopener noreferrer" : undefined}
-                              target={isExternalChannelLink ? "_blank" : undefined}
+                              rel={
+                                isExternalChannelLink
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              }
+                              target={
+                                isExternalChannelLink ? "_blank" : undefined
+                              }
                               data-analytics-event="contact_click"
                               data-analytics-location="contact"
                               data-analytics-target={

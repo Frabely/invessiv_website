@@ -2,66 +2,73 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
+import { useLanguage } from "@/components/providers/language-provider";
 
-const DEFAULT_SUBMIT_HREF = "mailto:service@invessiv.com";
+const DEFAULT_SUBMIT_PATH = "/api/public/contact";
 const STEP_SEQUENCE = [1, 2, 3] as const;
 
 type FormStep = (typeof STEP_SEQUENCE)[number];
+type FormOption = {
+  key: string;
+  label: string;
+};
 
 type ContactFormCopy = {
   budgetLabel: string;
-  budgetOptions: string[];
+  budgetOptions: FormOption[];
   conditionalFieldHint: string;
   companyLabel: string;
   consentLabel: string;
   emailLabel: string;
   firstNameLabel: string;
   goalLabel: string;
-  goalOptions: string[];
+  goalOptions: FormOption[];
   intro: string;
-  lastNameLabel: string;
-  mailBodyDetailsLabel: string;
-  mailBodyTitle: string;
-  mailLabelBudget: string;
-  mailLabelCompany: string;
-  mailLabelEmail: string;
-  mailLabelName: string;
-  mailLabelOffer: string;
-  mailLabelPhone: string;
-  mailLabelRole: string;
-  mailLabelStart: string;
-  mailLabelWebsite: string;
-  mailSubjectPrefix: string;
   offerLabel: string;
   offerPlaceholder: string;
-  pagesLabel: string;
-  pagesPlaceholder: string;
-  pagesOptions?: string[];
   pagesCustomLabel?: string;
   pagesCustomPlaceholder?: string;
+  pagesLabel: string;
+  pagesOptions?: FormOption[];
+  pagesPlaceholder: string;
   pagesRequiredHint?: string;
   phoneLabel: string;
+  previousStepLabel: string;
   projectDetailsLabel: string;
   projectDetailsPlaceholder: string;
-  previousStepLabel: string;
   requiredHint: string;
   roleLabel: string;
+  startLabel: string;
+  startOptions: FormOption[];
   stepLabel: string;
   stepNavigationLabel: string;
   stepOneTitle: string;
   stepThreeTitle: string;
   stepTwoTitle: string;
-  startLabel: string;
-  startOptions: string[];
+  submitErrorDelivery: string;
+  submitErrorGeneric: string;
+  submitErrorRateLimited: string;
+  submitErrorValidation: string;
+  validationSummaryPrefix: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorInvalidWebsite: string;
+  fieldErrorRequired: string;
+  fieldErrorProjectDetailsRequired: string;
+  fieldErrorPagesRequired: string;
+  fieldErrorGoalRequired: string;
+  fieldErrorWorkflowRequired: string;
+  fieldErrorConsentRequired: string;
+  submittingLabel: string;
   submitLabel: string;
   submitSuccess: string;
   subtitle: string;
   title: string;
-  websiteRequiredHint: string;
   websiteLabel: string;
+  websiteRequiredHint: string;
   workflowLabel: string;
-  workflowOptions: string[];
+  workflowOptions: FormOption[];
   nextStepLabel: string;
   nextStepContactLabel?: string;
   nextStepProjectLabel?: string;
@@ -72,7 +79,7 @@ type ProjectRequestFormProps = {
   offerOptions: Array<{ key: string; title: string }>;
   privacyHref: string;
   privacyLabel: string;
-  submitHref: string;
+  submitPath?: string;
 };
 
 export function ProjectRequestForm({
@@ -80,13 +87,19 @@ export function ProjectRequestForm({
   offerOptions,
   privacyHref,
   privacyLabel,
-  submitHref,
+  submitPath = DEFAULT_SUBMIT_PATH,
 }: ProjectRequestFormProps) {
+  const { locale } = useLanguage();
   const [selectedOfferKey, setSelectedOfferKey] = useState<string>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
-  const [selectedPageOptions, setSelectedPageOptions] = useState<string[]>([]);
-  const [pagesSelectionError, setPagesSelectionError] = useState<string | null>(null);
+  const [selectedPageKeys, setSelectedPageKeys] = useState<string[]>([]);
+  const [pagesSelectionError, setPagesSelectionError] = useState<string | null>(
+    null,
+  );
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
   const formRef = useRef<HTMLFormElement | null>(null);
   const nameInputRef = useRef<HTMLInputElement | null>(null);
   const offerSelectRef = useRef<HTMLSelectElement | null>(null);
@@ -98,10 +111,12 @@ export function ProjectRequestForm({
   const consentInputRef = useRef<HTMLInputElement | null>(null);
   const pagesOptionsContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const selectedOfferTitle =
-    offerOptions.find((option) => option.key === selectedOfferKey)?.title ?? "";
   const stepTitles = useMemo(
-    () => [formCopy.stepOneTitle, formCopy.stepTwoTitle, formCopy.stepThreeTitle],
+    () => [
+      formCopy.stepOneTitle,
+      formCopy.stepTwoTitle,
+      formCopy.stepThreeTitle,
+    ],
     [formCopy.stepOneTitle, formCopy.stepTwoTitle, formCopy.stepThreeTitle],
   );
   const stepOneNextLabel =
@@ -110,13 +125,6 @@ export function ProjectRequestForm({
   const stepTwoNextLabel =
     formCopy.nextStepProjectLabel ??
     `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
-  const availablePageOptions = useMemo(
-    () =>
-      formCopy.pagesOptions?.length
-        ? formCopy.pagesOptions
-        : ["Start", "Leistungen", "Über uns", "Kontakt", "Karriere", "Blog", "Landingpage", "Sonstiges"],
-    [formCopy.pagesOptions],
-  );
 
   const fieldRules = useMemo(() => {
     const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
@@ -185,15 +193,36 @@ export function ProjectRequestForm({
     [offerOptions],
   );
 
-  const togglePageOption = (option: string) => {
-    setSelectedPageOptions((previous) => {
-      if (previous.includes(option)) {
-        return previous.filter((item) => item !== option);
+  const togglePageOption = (optionKey: string) => {
+    setSelectedPageKeys((previous) => {
+      if (previous.includes(optionKey)) {
+        return previous.filter((item) => item !== optionKey);
       }
-      return [...previous, option];
+      return [...previous, optionKey];
     });
     setPagesSelectionError(null);
+    setFieldErrors((previous) => {
+      if (!previous.pageKeys) {
+        return previous;
+      }
+
+      const next = { ...previous };
+      delete next.pageKeys;
+      return next;
+    });
   };
+
+  const clearFieldError = useCallback((fieldName: string) => {
+    setFieldErrors((previous) => {
+      if (!previous[fieldName]) {
+        return previous;
+      }
+
+      const next = { ...previous };
+      delete next[fieldName];
+      return next;
+    });
+  }, []);
 
   const applyOfferSelection = useCallback((nextOfferKey: string) => {
     setSelectedOfferKey(nextOfferKey);
@@ -202,8 +231,9 @@ export function ProjectRequestForm({
       return;
     }
 
-    setSelectedPageOptions([]);
+    setSelectedPageKeys([]);
     setPagesSelectionError(null);
+    setFieldErrors({});
     if (pagesCustomInputRef.current) {
       pagesCustomInputRef.current.value = "";
     }
@@ -217,7 +247,7 @@ export function ProjectRequestForm({
 
     const customPagesValue = pagesCustomInputRef.current?.value.trim() ?? "";
     const hasSelectedPages =
-      selectedPageOptions.length > 0 || customPagesValue.length > 0;
+      selectedPageKeys.length > 0 || customPagesValue.length > 0;
 
     if (hasSelectedPages) {
       setPagesSelectionError(null);
@@ -225,15 +255,15 @@ export function ProjectRequestForm({
     }
 
     setPagesSelectionError(
-      formCopy.pagesRequiredHint ??
-        "Bitte mindestens eine Seite auswählen oder ergänzen.",
+      formCopy.pagesRequiredHint ?? formCopy.fieldErrorPagesRequired,
     );
     pagesOptionsContainerRef.current?.focus();
     return false;
   }, [
     fieldRules.requiresPages,
+    formCopy.fieldErrorPagesRequired,
     formCopy.pagesRequiredHint,
-    selectedPageOptions.length,
+    selectedPageKeys.length,
   ]);
 
   const validateStep = useCallback(
@@ -252,7 +282,7 @@ export function ProjectRequestForm({
       );
 
       for (const control of controls) {
-        if (control.disabled) {
+        if (control.disabled || control.classList.contains("sr-only")) {
           continue;
         }
 
@@ -286,7 +316,10 @@ export function ProjectRequestForm({
     if (!validateStep(currentStep)) {
       return;
     }
-    const nextStep = Math.min(currentStep + 1, STEP_SEQUENCE.length) as FormStep;
+    const nextStep = Math.min(
+      currentStep + 1,
+      STEP_SEQUENCE.length,
+    ) as FormStep;
     if (nextStep !== currentStep) {
       setStep(nextStep);
     }
@@ -305,14 +338,19 @@ export function ProjectRequestForm({
       if (!(target instanceof Element)) {
         return;
       }
-      const contactAnchor = target.closest("a[href='#contact'][data-project-offer]");
+      const contactAnchor = target.closest(
+        "a[href='#contact'][data-project-offer]",
+      );
       if (!(contactAnchor instanceof HTMLAnchorElement)) {
         return;
       }
-      const nextOfferKey = getValidOfferKey(contactAnchor.dataset.projectOffer ?? "");
+      const nextOfferKey = getValidOfferKey(
+        contactAnchor.dataset.projectOffer ?? "",
+      );
       applyOfferSelection(nextOfferKey);
       setCurrentStep(1);
       setStatusMessage(null);
+      setStartedAt(new Date().toISOString());
       focusStep(1);
     };
 
@@ -323,7 +361,109 @@ export function ProjectRequestForm({
     };
   }, [applyOfferSelection, focusStep, getValidOfferKey]);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const getSubmitErrorMessage = (
+    response: Extract<ContactSubmitResponse, { ok: false }>,
+  ) => {
+    if (response.code === "rate_limited") {
+      return formCopy.submitErrorRateLimited;
+    }
+
+    if (response.code === "delivery_unavailable") {
+      return formCopy.submitErrorDelivery;
+    }
+
+    if (
+      response.code === "validation_error" ||
+      response.code === "spam_detected"
+    ) {
+      return formCopy.submitErrorValidation;
+    }
+
+    return formCopy.submitErrorGeneric;
+  };
+
+  const getFieldLabel = useCallback(
+    (fieldName: string) => {
+      const labels: Record<string, string> = {
+        consentAccepted: formCopy.consentLabel,
+        email: formCopy.emailLabel,
+        fullName: formCopy.firstNameLabel,
+        goalKey: formCopy.goalLabel,
+        offerKey: formCopy.offerLabel,
+        pageKeys: formCopy.pagesLabel,
+        projectDetails: formCopy.projectDetailsLabel,
+        website: formCopy.websiteLabel,
+        workflowKey: formCopy.workflowLabel,
+      };
+
+      return labels[fieldName] ?? fieldName;
+    },
+    [
+      formCopy.consentLabel,
+      formCopy.emailLabel,
+      formCopy.firstNameLabel,
+      formCopy.goalLabel,
+      formCopy.offerLabel,
+      formCopy.pagesLabel,
+      formCopy.projectDetailsLabel,
+      formCopy.websiteLabel,
+      formCopy.workflowLabel,
+    ],
+  );
+
+  const getFieldErrorText = useCallback(
+    (fieldName: string, messages: string[]) => {
+      const message = messages[0];
+      const mappedMessages: Record<string, string> = {
+        consent_required: formCopy.fieldErrorConsentRequired,
+        full_name_required: formCopy.fieldErrorRequired,
+        goal_required: formCopy.fieldErrorGoalRequired,
+        invalid_email: formCopy.fieldErrorInvalidEmail,
+        invalid_website: formCopy.fieldErrorInvalidWebsite,
+        pages_required: formCopy.fieldErrorPagesRequired,
+        project_details_required: formCopy.fieldErrorProjectDetailsRequired,
+        workflow_required: formCopy.fieldErrorWorkflowRequired,
+      };
+
+      if (fieldName === "website" && message === "website_required") {
+        return formCopy.fieldErrorRequired;
+      }
+
+      return mappedMessages[message] ?? formCopy.fieldErrorRequired;
+    },
+    [
+      formCopy.fieldErrorConsentRequired,
+      formCopy.fieldErrorGoalRequired,
+      formCopy.fieldErrorInvalidEmail,
+      formCopy.fieldErrorInvalidWebsite,
+      formCopy.fieldErrorPagesRequired,
+      formCopy.fieldErrorProjectDetailsRequired,
+      formCopy.fieldErrorRequired,
+      formCopy.fieldErrorWorkflowRequired,
+    ],
+  );
+
+  const getFieldStep = (fieldName: string): FormStep => {
+    if (["fullName", "email", "offerKey"].includes(fieldName)) {
+      return 1;
+    }
+
+    if (
+      [
+        "goalKey",
+        "pageKeys",
+        "projectDetails",
+        "website",
+        "workflowKey",
+      ].includes(fieldName)
+    ) {
+      return 2;
+    }
+
+    return 3;
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
 
@@ -334,7 +474,7 @@ export function ProjectRequestForm({
       }
     }
 
-    if (!form.checkValidity()) {
+    if (!form.checkValidity() || isSubmitting) {
       form.reportValidity();
       return;
     }
@@ -342,74 +482,101 @@ export function ProjectRequestForm({
     const formData = new FormData(form);
     const getValue = (name: string) => String(formData.get(name) ?? "").trim();
 
-    const fullName = getValue("fullName");
-    const selectedOffer = selectedOfferTitle || getValue("offer");
-    const company = getValue("company");
-    const website = getValue("website");
-    const goal = getValue("goal");
-    const pagesSelected = getValue("pagesSelected");
-    const pagesCustom = getValue("pagesCustom");
-    const pages = [pagesSelected, pagesCustom].filter(Boolean).join(" | ");
-    const workflow = getValue("workflow");
-    const budget = getValue("budget");
-    const start = getValue("start");
-    const projectDetails = getValue("projectDetails");
-    const subjectLine = [`[${formCopy.mailSubjectPrefix}] ${selectedOffer}`.trim()];
-    if (company) {
-      subjectLine.push(company);
-    }
-    const subject = subjectLine.join(" | ");
+    setIsSubmitting(true);
+    setFieldErrors({});
+    setStatusMessage(formCopy.submittingLabel);
 
-    const bodyLines = [
-      formCopy.mailBodyTitle,
-      "",
-      `${formCopy.mailLabelOffer}: ${selectedOffer}`,
-      "",
-    ];
-    bodyLines.push(`${formCopy.mailLabelName}: ${fullName}`);
-    bodyLines.push(`${formCopy.mailLabelEmail}: ${getValue("email")}`);
-    if (company) {
-      bodyLines.push(`${formCopy.mailLabelCompany}: ${company}`);
-    }
+    try {
+      const response = await fetch(submitPath, {
+        body: JSON.stringify({
+          budgetKey: getValue("budgetKey") || undefined,
+          company: getValue("company") || undefined,
+          consentAccepted: formData.get("consent") === "on",
+          email: getValue("email"),
+          fullName: getValue("fullName"),
+          goalKey: getValue("goalKey") || undefined,
+          locale,
+          offerKey: selectedOfferKey || getValue("offerKey"),
+          pagesCustom: getValue("pagesCustom") || undefined,
+          pageKeys: selectedPageKeys,
+          phone: getValue("phone") || undefined,
+          preferredStartKey: getValue("startKey") || undefined,
+          projectDetails: getValue("projectDetails"),
+          role: getValue("role") || undefined,
+          startedAt,
+          website: getValue("website") || undefined,
+          websiteTrap: getValue("websiteTrap") || undefined,
+          workflowKey: getValue("workflowKey") || undefined,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
 
-    const optionalFields = [
-      [formCopy.mailLabelPhone, getValue("phone")],
-      [formCopy.mailLabelRole, getValue("role")],
-      [formCopy.mailLabelWebsite, website],
-      [formCopy.goalLabel, goal],
-      [formCopy.pagesLabel, pages],
-      [formCopy.workflowLabel, workflow],
-      [formCopy.mailLabelBudget, budget],
-      [formCopy.mailLabelStart, start],
-    ] as const;
+      const payload = (await response.json()) as ContactSubmitResponse;
+      if (!response.ok || !payload.ok) {
+        if (!payload.ok && payload.fieldErrors) {
+          setFieldErrors(payload.fieldErrors);
 
-    optionalFields.forEach(([label, value]) => {
-      if (value) {
-        bodyLines.push(`${label}: ${value}`);
+          if (payload.fieldErrors.pageKeys) {
+            setPagesSelectionError(
+              getFieldErrorText("pageKeys", payload.fieldErrors.pageKeys),
+            );
+          }
+
+          const firstInvalidField = Object.keys(payload.fieldErrors)[0];
+          if (firstInvalidField) {
+            const invalidStep = getFieldStep(firstInvalidField);
+            setCurrentStep(invalidStep);
+            focusStep(invalidStep);
+            setStatusMessage(
+              `${formCopy.validationSummaryPrefix}: ${getFieldLabel(firstInvalidField)}. ${getFieldErrorText(
+                firstInvalidField,
+                payload.fieldErrors[firstInvalidField] ?? [],
+              )}`,
+            );
+            return;
+          }
+        }
+
+        setStatusMessage(
+          payload.ok
+            ? formCopy.submitErrorGeneric
+            : getSubmitErrorMessage(payload),
+        );
+        return;
       }
-    });
 
-    bodyLines.push("");
-    bodyLines.push(`${formCopy.mailBodyDetailsLabel}:`);
-    bodyLines.push(projectDetails);
-
-    const normalizedSubmitHref = submitHref.startsWith("mailto:")
-      ? submitHref
-      : DEFAULT_SUBMIT_HREF;
-    const mailToUrl = `${normalizedSubmitHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-
-    trackConversionEvent("lead_submit_success", {
-      location: "contact",
-      variant: "primary",
-      target: "form",
-    });
-    window.location.href = mailToUrl;
-    setStatusMessage(formCopy.submitSuccess);
+      trackConversionEvent("lead_submit_success", {
+        location: "contact",
+        target: "form",
+        variant: "primary",
+      });
+      setStatusMessage(formCopy.submitSuccess);
+      form.reset();
+      setSelectedOfferKey("");
+      setSelectedPageKeys([]);
+      setFieldErrors({});
+      setCurrentStep(1);
+      setStartedAt(new Date().toISOString());
+      window.requestAnimationFrame(() => {
+        nameInputRef.current?.focus();
+      });
+    } catch {
+      setStatusMessage(formCopy.submitErrorGeneric);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="project-request">
-      <div className="project-request-panel" role="region" aria-label={formCopy.title}>
+      <div
+        className="project-request-panel"
+        role="region"
+        aria-label={formCopy.title}
+      >
         <div className="project-request-head project-request-head--close-only">
           <div className="project-request-head-copy">
             <h3>{formCopy.title}</h3>
@@ -434,7 +601,7 @@ export function ProjectRequestForm({
                 <button
                   aria-current={isCurrent ? "step" : undefined}
                   className="project-request-stepper-trigger"
-                  disabled={step > currentStep}
+                  disabled={step > currentStep || isSubmitting}
                   onClick={() => {
                     if (step < currentStep) {
                       setStep(step);
@@ -461,323 +628,469 @@ export function ProjectRequestForm({
           onSubmit={handleSubmit}
           noValidate
         >
-            <fieldset
-              className="project-request-step"
-              data-step="1"
-              hidden={currentStep !== 1}
-            >
-              <legend>{formCopy.stepOneTitle}</legend>
+          <input
+            aria-hidden="true"
+            autoComplete="off"
+            className="sr-only"
+            name="websiteTrap"
+            tabIndex={-1}
+            type="text"
+          />
 
-              <div className="project-request-grid project-request-grid--two">
-                <label className="project-request-field">
-                  <span>
-                    {formCopy.firstNameLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="name"
-                    name="fullName"
-                    ref={nameInputRef}
-                    required
-                    type="text"
-                  />
-                </label>
-                <label className="project-request-field">
-                  <span>
-                    {formCopy.emailLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </span>
-                  <input autoComplete="email" name="email" required type="email" />
-                </label>
-              </div>
+          <fieldset
+            className="project-request-step"
+            data-step="1"
+            hidden={currentStep !== 1}
+          >
+            <legend>{formCopy.stepOneTitle}</legend>
 
+            <div className="project-request-grid project-request-grid--two">
               <label className="project-request-field">
                 <span>
-                  {formCopy.offerLabel}
+                  {formCopy.firstNameLabel}
+                  <strong className="project-request-required-marker">*</strong>
+                </span>
+                <input
+                  aria-describedby={
+                    fieldErrors.fullName
+                      ? "project-request-fullName-error"
+                      : undefined
+                  }
+                  aria-invalid={fieldErrors.fullName ? "true" : undefined}
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  name="fullName"
+                  onChange={() => clearFieldError("fullName")}
+                  ref={nameInputRef}
+                  required
+                  type="text"
+                />
+                {fieldErrors.fullName ? (
+                  <small id="project-request-fullName-error" role="alert">
+                    {getFieldErrorText("fullName", fieldErrors.fullName)}
+                  </small>
+                ) : null}
+              </label>
+              <label className="project-request-field">
+                <span>
+                  {formCopy.emailLabel}
+                  <strong className="project-request-required-marker">*</strong>
+                </span>
+                <input
+                  aria-describedby={
+                    fieldErrors.email
+                      ? "project-request-email-error"
+                      : undefined
+                  }
+                  aria-invalid={fieldErrors.email ? "true" : undefined}
+                  autoComplete="email"
+                  name="email"
+                  onChange={() => clearFieldError("email")}
+                  required
+                  type="email"
+                />
+                {fieldErrors.email ? (
+                  <small id="project-request-email-error" role="alert">
+                    {getFieldErrorText("email", fieldErrors.email)}
+                  </small>
+                ) : null}
+              </label>
+            </div>
+
+            <label className="project-request-field">
+              <span>
+                {formCopy.offerLabel}
+                <strong className="project-request-required-marker">*</strong>
+              </span>
+              <select
+                aria-describedby={
+                  fieldErrors.offerKey
+                    ? "project-request-offerKey-error"
+                    : undefined
+                }
+                aria-invalid={fieldErrors.offerKey ? "true" : undefined}
+                name="offerKey"
+                onChange={(event) => {
+                  applyOfferSelection(event.target.value);
+                  clearFieldError("offerKey");
+                }}
+                ref={offerSelectRef}
+                required
+                value={selectedOfferKey}
+              >
+                <option disabled value="">
+                  {formCopy.offerPlaceholder}
+                </option>
+                {offerOptions.map((option) => (
+                  <option key={option.key} value={option.key}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+              {fieldErrors.offerKey ? (
+                <small id="project-request-offerKey-error" role="alert">
+                  {getFieldErrorText("offerKey", fieldErrors.offerKey)}
+                </small>
+              ) : null}
+            </label>
+
+            {selectedOfferKey ? (
+              <p className="project-request-conditional-hint">
+                {formCopy.conditionalFieldHint}
+              </p>
+            ) : null}
+
+            <div className="project-request-step-actions project-request-step-actions--end">
+              <button
+                className="btn btn--primary contact-primary-cta--shimmer"
+                disabled={isSubmitting}
+                onClick={goToNextStep}
+                type="button"
+              >
+                {stepOneNextLabel}
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset
+            className="project-request-step"
+            data-step="2"
+            hidden={currentStep !== 2}
+          >
+            <legend>{formCopy.stepTwoTitle}</legend>
+
+            {fieldRules.requiresWebsite ? (
+              <label className="project-request-field">
+                <span>
+                  {formCopy.websiteLabel}
+                  <strong className="project-request-required-marker">*</strong>
+                </span>
+                <input
+                  aria-describedby={
+                    fieldErrors.website
+                      ? "project-request-website-error"
+                      : undefined
+                  }
+                  aria-invalid={fieldErrors.website ? "true" : undefined}
+                  autoComplete="url"
+                  name="website"
+                  onChange={() => clearFieldError("website")}
+                  ref={websiteInputRef}
+                  required
+                  type="url"
+                />
+                <small className="project-request-field-hint">
+                  {formCopy.websiteRequiredHint}
+                </small>
+                {fieldErrors.website ? (
+                  <small id="project-request-website-error" role="alert">
+                    {getFieldErrorText("website", fieldErrors.website)}
+                  </small>
+                ) : null}
+              </label>
+            ) : null}
+
+            {fieldRules.requiresGoal ? (
+              <label className="project-request-field">
+                <span>
+                  {formCopy.goalLabel}
                   <strong className="project-request-required-marker">*</strong>
                 </span>
                 <select
-                  name="offer"
-                  onChange={(event) => {
-                    applyOfferSelection(event.target.value);
-                  }}
-                  ref={offerSelectRef}
+                  aria-describedby={
+                    fieldErrors.goalKey
+                      ? "project-request-goalKey-error"
+                      : undefined
+                  }
+                  aria-invalid={fieldErrors.goalKey ? "true" : undefined}
+                  defaultValue=""
+                  name="goalKey"
+                  onChange={() => clearFieldError("goalKey")}
+                  ref={goalSelectRef}
                   required
-                  value={selectedOfferKey}
                 >
                   <option disabled value="">
-                    {formCopy.offerPlaceholder}
+                    -
                   </option>
-                  {offerOptions.map((option) => (
+                  {formCopy.goalOptions.map((option) => (
                     <option key={option.key} value={option.key}>
-                      {option.title}
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {fieldErrors.goalKey ? (
+                  <small id="project-request-goalKey-error" role="alert">
+                    {getFieldErrorText("goalKey", fieldErrors.goalKey)}
+                  </small>
+                ) : null}
+              </label>
+            ) : null}
+
+            {fieldRules.requiresPages ? (
+              <div
+                className="project-request-pages"
+                ref={pagesOptionsContainerRef}
+                tabIndex={-1}
+              >
+                <p className="project-request-pages-label">
+                  {formCopy.pagesLabel}
+                  <strong className="project-request-required-marker">*</strong>
+                </p>
+                <div className="project-request-pages-options">
+                  {formCopy.pagesOptions?.map((option) => {
+                    const isSelected = selectedPageKeys.includes(option.key);
+
+                    return (
+                      <button
+                        aria-pressed={isSelected}
+                        className={`project-request-page-option${isSelected ? " is-selected" : ""}`}
+                        key={option.key}
+                        onClick={() => togglePageOption(option.key)}
+                        type="button"
+                      >
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <label className="project-request-field project-request-pages-custom">
+                  <span>
+                    {formCopy.pagesCustomLabel ?? "Weitere Seiten (optional)"}
+                  </span>
+                  <input
+                    aria-describedby={
+                      fieldErrors.pageKeys
+                        ? "project-request-pageKeys-error"
+                        : undefined
+                    }
+                    aria-invalid={fieldErrors.pageKeys ? "true" : undefined}
+                    name="pagesCustom"
+                    onChange={() => {
+                      clearFieldError("pageKeys");
+                      setPagesSelectionError(null);
+                    }}
+                    placeholder={
+                      formCopy.pagesCustomPlaceholder ??
+                      formCopy.pagesPlaceholder
+                    }
+                    ref={pagesCustomInputRef}
+                    type="text"
+                  />
+                </label>
+                {pagesSelectionError || fieldErrors.pageKeys ? (
+                  <p
+                    id="project-request-pageKeys-error"
+                    className="project-request-pages-error"
+                    role="alert"
+                  >
+                    {pagesSelectionError ??
+                      getFieldErrorText("pageKeys", fieldErrors.pageKeys ?? [])}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+
+            {fieldRules.requiresWorkflow ? (
+              <label className="project-request-field">
+                <span>
+                  {formCopy.workflowLabel}
+                  <strong className="project-request-required-marker">*</strong>
+                </span>
+                <select
+                  aria-describedby={
+                    fieldErrors.workflowKey
+                      ? "project-request-workflowKey-error"
+                      : undefined
+                  }
+                  aria-invalid={fieldErrors.workflowKey ? "true" : undefined}
+                  defaultValue=""
+                  name="workflowKey"
+                  onChange={() => clearFieldError("workflowKey")}
+                  ref={workflowSelectRef}
+                  required
+                >
+                  <option disabled value="">
+                    -
+                  </option>
+                  {formCopy.workflowOptions.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {fieldErrors.workflowKey ? (
+                  <small id="project-request-workflowKey-error" role="alert">
+                    {getFieldErrorText("workflowKey", fieldErrors.workflowKey)}
+                  </small>
+                ) : null}
+              </label>
+            ) : null}
+
+            <label className="project-request-field">
+              <span>
+                {formCopy.projectDetailsLabel}
+                <strong className="project-request-required-marker">*</strong>
+              </span>
+              <textarea
+                aria-describedby={
+                  fieldErrors.projectDetails
+                    ? "project-request-projectDetails-error"
+                    : undefined
+                }
+                aria-invalid={fieldErrors.projectDetails ? "true" : undefined}
+                name="projectDetails"
+                onChange={() => clearFieldError("projectDetails")}
+                placeholder={formCopy.projectDetailsPlaceholder}
+                ref={projectDetailsRef}
+                required
+                rows={5}
+              />
+              {fieldErrors.projectDetails ? (
+                <small id="project-request-projectDetails-error" role="alert">
+                  {getFieldErrorText(
+                    "projectDetails",
+                    fieldErrors.projectDetails,
+                  )}
+                </small>
+              ) : null}
+            </label>
+
+            <div className="project-request-step-actions">
+              <button
+                className="btn btn--ghost"
+                disabled={isSubmitting}
+                onClick={goToPreviousStep}
+                type="button"
+              >
+                {formCopy.previousStepLabel}
+              </button>
+              <button
+                className="btn btn--primary contact-primary-cta--shimmer"
+                disabled={isSubmitting}
+                onClick={goToNextStep}
+                type="button"
+              >
+                {stepTwoNextLabel}
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset
+            className="project-request-step"
+            data-step="3"
+            hidden={currentStep !== 3}
+          >
+            <legend>{formCopy.stepThreeTitle}</legend>
+
+            <div className="project-request-grid project-request-grid--two">
+              <label className="project-request-field">
+                <span>{formCopy.companyLabel}</span>
+                <input
+                  autoCapitalize="words"
+                  autoComplete="organization"
+                  name="company"
+                  type="text"
+                />
+              </label>
+              <label className="project-request-field">
+                <span>{formCopy.roleLabel}</span>
+                <input
+                  autoCapitalize="words"
+                  autoComplete="organization-title"
+                  name="role"
+                  type="text"
+                />
+              </label>
+            </div>
+
+            <label className="project-request-field">
+              <span>{formCopy.phoneLabel}</span>
+              <input autoComplete="tel" name="phone" type="tel" />
+            </label>
+
+            <div className="project-request-grid project-request-grid--two">
+              <label className="project-request-field">
+                <span>{formCopy.budgetLabel}</span>
+                <select defaultValue="" name="budgetKey">
+                  <option value="">-</option>
+                  {formCopy.budgetOptions.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.label}
                     </option>
                   ))}
                 </select>
               </label>
-
-              {selectedOfferKey ? (
-                <p className="project-request-conditional-hint">
-                  {formCopy.conditionalFieldHint}
-                </p>
-              ) : null}
-
-              <div className="project-request-step-actions project-request-step-actions--end">
-                <button
-                  className="btn btn--primary contact-primary-cta--shimmer"
-                  onClick={goToNextStep}
-                  type="button"
-                >
-                  {stepOneNextLabel}
-                </button>
-              </div>
-            </fieldset>
-
-            <fieldset
-              className="project-request-step"
-              data-step="2"
-              hidden={currentStep !== 2}
-            >
-              <legend>{formCopy.stepTwoTitle}</legend>
-
-              {fieldRules.requiresWebsite ? (
-                <label className="project-request-field">
-                  <span>
-                    {formCopy.websiteLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </span>
-                  <input
-                    autoComplete="url"
-                    name="website"
-                    ref={websiteInputRef}
-                    required
-                    type="url"
-                  />
-                  <small className="project-request-field-hint">
-                    {formCopy.websiteRequiredHint}
-                  </small>
-                </label>
-              ) : null}
-
-              {fieldRules.requiresGoal ? (
-                <label className="project-request-field">
-                  <span>
-                    {formCopy.goalLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </span>
-                  <select defaultValue="" name="goal" ref={goalSelectRef} required>
-                    <option disabled value="">
-                      -
-                    </option>
-                    {formCopy.goalOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ) : null}
-
-              {fieldRules.requiresPages ? (
-                <div
-                  className="project-request-pages"
-                  ref={pagesOptionsContainerRef}
-                  tabIndex={-1}
-                >
-                  <p className="project-request-pages-label">
-                    {formCopy.pagesLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </p>
-                  <input
-                    name="pagesSelected"
-                    type="hidden"
-                    value={selectedPageOptions.join(", ")}
-                  />
-                  <div className="project-request-pages-options">
-                    {availablePageOptions.map((option) => {
-                      const isSelected = selectedPageOptions.includes(option);
-
-                      return (
-                        <button
-                          aria-pressed={isSelected}
-                          className={`project-request-page-option${isSelected ? " is-selected" : ""}`}
-                          key={option}
-                          onClick={() => togglePageOption(option)}
-                          type="button"
-                        >
-                          {option}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <label className="project-request-field project-request-pages-custom">
-                    <span>{formCopy.pagesCustomLabel ?? "Weitere Seiten (optional)"}</span>
-                    <input
-                      name="pagesCustom"
-                      placeholder={
-                        formCopy.pagesCustomPlaceholder ?? formCopy.pagesPlaceholder
-                      }
-                      ref={pagesCustomInputRef}
-                      type="text"
-                    />
-                  </label>
-                  {pagesSelectionError ? (
-                    <p className="project-request-pages-error" role="alert">
-                      {pagesSelectionError}
-                    </p>
-                  ) : null}
-                </div>
-              ) : null}
-
-              {fieldRules.requiresWorkflow ? (
-                <label className="project-request-field">
-                  <span>
-                    {formCopy.workflowLabel}
-                    <strong className="project-request-required-marker">*</strong>
-                  </span>
-                  <select
-                    defaultValue=""
-                    name="workflow"
-                    ref={workflowSelectRef}
-                    required
-                  >
-                    <option disabled value="">
-                      -
-                    </option>
-                    {formCopy.workflowOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ) : null}
-
               <label className="project-request-field">
-                <span>
-                  {formCopy.projectDetailsLabel}
-                  <strong className="project-request-required-marker">*</strong>
-                </span>
-                <textarea
-                  name="projectDetails"
-                  placeholder={formCopy.projectDetailsPlaceholder}
-                  ref={projectDetailsRef}
-                  required
-                  rows={5}
-                />
+                <span>{formCopy.startLabel}</span>
+                <select defaultValue="" name="startKey">
+                  <option value="">-</option>
+                  {formCopy.startOptions.map((option) => (
+                    <option key={option.key} value={option.key}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </label>
+            </div>
 
-              <div className="project-request-step-actions">
-                <button
-                  className="btn btn--ghost"
-                  onClick={goToPreviousStep}
-                  type="button"
-                >
-                  {formCopy.previousStepLabel}
-                </button>
-                <button
-                  className="btn btn--primary contact-primary-cta--shimmer"
-                  onClick={goToNextStep}
-                  type="button"
-                >
-                  {stepTwoNextLabel}
-                </button>
-              </div>
-            </fieldset>
-
-            <fieldset
-              className="project-request-step"
-              data-step="3"
-              hidden={currentStep !== 3}
-            >
-              <legend>{formCopy.stepThreeTitle}</legend>
-
-              <div className="project-request-grid project-request-grid--two">
-                <label className="project-request-field">
-                  <span>{formCopy.companyLabel}</span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="organization"
-                    name="company"
-                    type="text"
-                  />
-                </label>
-                <label className="project-request-field">
-                  <span>{formCopy.roleLabel}</span>
-                  <input
-                    autoCapitalize="words"
-                    autoComplete="organization-title"
-                    name="role"
-                    type="text"
-                  />
-                </label>
-              </div>
-
-              <label className="project-request-field">
-                <span>{formCopy.phoneLabel}</span>
-                <input autoComplete="tel" name="phone" type="tel" />
-              </label>
-
-              <div className="project-request-grid project-request-grid--two">
-                <label className="project-request-field">
-                  <span>{formCopy.budgetLabel}</span>
-                  <select defaultValue="" name="budget">
-                    <option value="">-</option>
-                    {formCopy.budgetOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="project-request-field">
-                  <span>{formCopy.startLabel}</span>
-                  <select defaultValue="" name="start">
-                    <option value="">-</option>
-                    {formCopy.startOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <label className="project-request-consent">
-                <input name="consent" ref={consentInputRef} required type="checkbox" />
-                <span>
-                  {formCopy.consentLabel}{" "}
-                  <a href={privacyHref} target="_self">
-                    {privacyLabel}
-                  </a>
-                  <strong className="project-request-required-marker">*</strong>
-                </span>
-              </label>
-
-              <div className="project-request-actions">
-                <button
-                  className="btn btn--ghost"
-                  onClick={goToPreviousStep}
-                  type="button"
-                >
-                  {formCopy.previousStepLabel}
-                </button>
-                <button
-                  className="btn btn--primary contact-primary-cta--shimmer"
-                  type="submit"
-                >
-                  {formCopy.submitLabel}
-                </button>
-                <p className="project-request-required-hint">{formCopy.requiredHint}</p>
-              </div>
-            </fieldset>
-
-            {statusMessage ? (
-              <p className="project-request-status" role="status">
-                {statusMessage}
+            <label className="project-request-consent">
+              <input
+                aria-describedby={
+                  fieldErrors.consentAccepted
+                    ? "project-request-consent-error"
+                    : undefined
+                }
+                aria-invalid={fieldErrors.consentAccepted ? "true" : undefined}
+                name="consent"
+                onChange={() => clearFieldError("consentAccepted")}
+                ref={consentInputRef}
+                required
+                type="checkbox"
+              />
+              <span>
+                {formCopy.consentLabel}{" "}
+                <a href={privacyHref} target="_self">
+                  {privacyLabel}
+                </a>
+                <strong className="project-request-required-marker">*</strong>
+              </span>
+            </label>
+            {fieldErrors.consentAccepted ? (
+              <p id="project-request-consent-error" role="alert">
+                {getFieldErrorText(
+                  "consentAccepted",
+                  fieldErrors.consentAccepted,
+                )}
               </p>
             ) : null}
+
+            <div className="project-request-actions">
+              <button
+                className="btn btn--ghost"
+                disabled={isSubmitting}
+                onClick={goToPreviousStep}
+                type="button"
+              >
+                {formCopy.previousStepLabel}
+              </button>
+              <button
+                className="btn btn--primary contact-primary-cta--shimmer"
+                disabled={isSubmitting}
+                type="submit"
+              >
+                {isSubmitting ? formCopy.submittingLabel : formCopy.submitLabel}
+              </button>
+              <p className="project-request-required-hint">
+                {formCopy.requiredHint}
+              </p>
+            </div>
+          </fieldset>
+
+          {statusMessage ? (
+            <p className="project-request-status" role="status">
+              {statusMessage}
+            </p>
+          ) : null}
         </form>
       </div>
     </div>
