@@ -149,9 +149,7 @@ export function FooterSection({
                         className="site-footer__social-link"
                         href={socialLink.href}
                       >
-                        <FontAwesomeIcon
-                          icon={getSocialIcon(socialLink.platform)}
-                        />
+                        <FontAwesomeIcon icon={getSocialIcon(socialLink.platform)} />
                       </a>
                     </li>
                   ))}

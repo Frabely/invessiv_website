@@ -2590,7 +2590,9 @@ main {
 }
 
 .site-footer__col a {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   max-width: 100%;
   color: #f1d9c3;
   font-size: 1.1rem;
