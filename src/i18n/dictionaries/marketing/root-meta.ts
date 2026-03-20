@@ -1,5 +1,3 @@
-import { COMPANY } from "@/config/company";
-
 export type MarketingRootMetaContent = {
   description: string;
   openGraphDescription: string;
@@ -9,8 +7,9 @@ export type MarketingRootMetaContent = {
 
 export const MARKETING_ROOT_META_CONTENT: MarketingRootMetaContent = {
   pageTitle:
-    "Landing pages, websites, process tools, and AI templates & agents",
-  description: `${COMPANY.legalName} builds landing pages, websites, process tools, and AI templates & agents in an AI agent workflow with a clear delivery frame, predictable delivery, and conversion focus.`,
+    "Invessiv | Websites, Landing Pages & Process Tools",
+  description:
+    "Invessiv builds landing pages, websites, and process tools with a clear delivery frame, predictable delivery, and conversion focus.",
   openGraphDescription:
     "From requirements to agent setup, AI-assisted build, and production-ready delivery with a defined project frame and focused execution.",
   serviceDescription:

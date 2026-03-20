@@ -1313,7 +1313,6 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Datenschutz", href: "/privacy" },
           { label: "AGB", href: "/terms" },
         ],
-        footerBottomNote: "Inhaber: Moritz Hecht",
       },
       en: {
         title: "Footer",
@@ -1363,7 +1362,6 @@ const HOME_SECTIONS: LandingSection[] = [
           { label: "Privacy", href: "/privacy" },
           { label: "Terms", href: "/terms" },
         ],
-        footerBottomNote: "Owner: Moritz Hecht",
       },
     },
   },

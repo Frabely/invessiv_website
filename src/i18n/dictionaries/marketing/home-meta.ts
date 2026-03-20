@@ -8,15 +8,15 @@ export type HomeMetaContent = {
 
 const HOME_META_CONTENT: Record<Locale, HomeMetaContent> = {
   de: {
-    title: "Landingpages, Webseiten, Prozess-Tools und KI-Templates & Agents",
+    title: "Invessiv | Webseiten, Landingpages & Prozess-Tools",
     description:
-      "Moritz Hecht – Invessiv baut Landingpages, Webseiten, Prozess-Tools sowie KI-Templates & Agents im KI-Agenten-Workflow mit klarem Leistungsrahmen und Conversion-Fokus.",
+      "Invessiv entwickelt Landingpages, Webseiten und Prozess-Tools mit klarem Leistungsrahmen, sauberem Setup und Conversion-Fokus.",
     openGraphLocale: "de_DE",
   },
   en: {
-    title: "Landing pages, websites, process tools, and AI templates & agents",
+    title: "Invessiv | Websites, Landing Pages & Process Tools",
     description:
-      "Moritz Hecht – Invessiv builds landing pages, websites, process tools, and AI templates & agents in an AI agent workflow with a clear delivery frame and conversion focus.",
+      "Invessiv builds landing pages, websites, and process tools with a clear delivery frame, clean setup, and conversion focus.",
     openGraphLocale: "en_US",
   },
 };
