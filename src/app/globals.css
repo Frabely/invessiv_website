@@ -517,10 +517,12 @@ main {
 }
 
 .hero__title-gradient {
+  display: block;
   background: linear-gradient(120deg, #ffd9ad 0%, #f3a74a 52%, #cf5a24 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  white-space: pre-line;
 }
 
 .hero p:not(.hero__tag) {

@@ -231,14 +231,12 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title:
-          "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
+        title: "Webseiten,\ndie führen.\nTools,\ndie entlasten.",
         description:
           "Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist.",
       },
       en: {
-        title:
-          "Websites and process tools with thoughtful structure and a direct path to the goal.",
+        title: "Websites,\nthat lead.\nTools,\nthat lighten the load.",
         description:
           "From landing page to process tool: with a clean setup, direct feedback, and a result that is reviewed before launch.",
       },
@@ -626,7 +624,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Aufwand: ca. 30 Min",
             result: "Ergebnis: klarer Rahmen + Prioritäten",
             description:
-              "Wir klären Ziel, Angebot, Material und Rahmen. Danach weißt du, welches Setup passt und was der nächste sinnvolle Schritt ist.",
+              "Wir klären Ziel, Material und Rahmen. Danach bekommst du eine klare Empfehlung und ein passendes Angebot.",
           },
           {
             step: "02",
@@ -635,7 +633,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
             result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
             description:
-              "Ich setze eine erste klare Richtung um. Wo sinnvoll, beschleunige ich die Umsetzung mit Build-Workflows, ohne die Qualitätskontrolle abzugeben.",
+              "Ich entwickle die Struktur, Seitenlogik oder den ersten Prototypen. So ist früh sichtbar, wie das Projekt aufgebaut wird.",
           },
           {
             step: "03",
@@ -644,7 +642,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Feedback: 1-2 Runden",
             result: "Ergebnis: klare UX + saubere Details",
             description:
-              "Ich schärfe Copy, CTA-Führung, Design und technische Details, damit die Seite oder das Tool nicht nur funktioniert, sondern klar führt.",
+              "Danach folgt die Umsetzung mit den nötigen Inhalten, Details und QA-Schritten bis zur sauberen Freigabe.",
           },
           {
             step: "04",
@@ -653,7 +651,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "QA: finaler Check",
             result: "Ergebnis: Livegang oder saubere Integration",
             description:
-              "Nach dem finalen Check geht das Projekt live oder wird sauber an dein Setup übergeben, ohne offene Schleifen im Abschluss.",
+              "Zum Schluss geht das Projekt live oder wird sauber übergeben – inklusive der nächsten sinnvollen Schritte nach dem Launch.",
           },
         ],
         processCta: {
@@ -679,7 +677,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Effort: about 30 min",
             result: "Outcome: clear frame + priorities",
             description:
-              "We align on goals, offer, materials, and boundaries so you know which setup fits and what the next sensible step is.",
+              "We align on the goal, materials, and project frame. After that, you get a clear recommendation and a fitting offer.",
           },
           {
             step: "02",
@@ -688,7 +686,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Delivery: visible early in the project",
             result: "Outcome: page structure or core workflow",
             description:
-              "I build a first clear direction. Where it helps, I use fast build workflows without handing off quality control.",
+              "I develop the structure, page logic, or the first prototype. That makes the project setup visible early.",
           },
           {
             step: "03",
@@ -697,7 +695,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Feedback: 1-2 rounds",
             result: "Outcome: clearer UX + clean details",
             description:
-              "I refine copy, CTA flow, design, and technical details so the site or tool does not just work, but leads clearly.",
+              "Then comes the implementation with the required content, details, and QA steps through to a clean approval.",
           },
           {
             step: "04",
@@ -706,7 +704,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "QA: final check",
             result: "Outcome: go-live or clean integration",
             description:
-              "After the final review, the project goes live or is handed over cleanly into your setup without loose ends.",
+              "In the end, the project goes live or is handed over cleanly, including the next sensible steps after launch.",
           },
         ],
         processCta: {
@@ -948,9 +946,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direkter Kontakt",
           "Umfang, Timing, Aufwand",
         ],
-        contactChecklistTitle: "Was du in jedem Weg bekommst",
-        contactChecklistHint:
-          "Unabhängig vom Weg: klare Orientierung statt Sales-Floskeln.",
         contactCta: {
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
@@ -1171,9 +1166,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direct contact",
           "Range, timing, effort",
         ],
-        contactChecklistTitle: "What you get in every path",
-        contactChecklistHint:
-          "Whichever path you choose, you leave with practical clarity.",
         contactCta: {
           kicker: "Start directly",
           label: "Start project request",
