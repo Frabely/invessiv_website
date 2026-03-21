@@ -233,7 +233,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Webseiten,\ndie führen.\nTools,\ndie entlasten.",
         description:
-          "Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist.",
+          "Für Unternehmen, die online klarer auftreten, schneller live gehen und intern weniger manuell nacharbeiten wollen.",
       },
       en: {
         title: "Websites,\nthat lead.\nTools,\nthat lighten the load.",
