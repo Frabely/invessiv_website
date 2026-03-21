@@ -1,0 +1,68 @@
+{
+  "mail": {
+    "contactNotification": {
+      "detailsLabel": "Projektbeschreibung / Anforderungen",
+      "heading": "Neue Projektanfrage",
+      "labels": {
+        "budgetKey": "Budgetrahmen",
+        "company": "Unternehmen",
+        "email": "E-Mail",
+        "fullName": "Name",
+        "goalKey": "Hauptziel",
+        "offerKey": "Angebot",
+        "pageKeys": "Benötigte Seiten",
+        "phone": "Telefon",
+        "preferredStartKey": "Gewünschter Start",
+        "role": "Rolle",
+        "website": "Website",
+        "workflowKey": "Anzahl Kern-Workflows"
+      },
+      "subjectPrefix": "Projektanfrage",
+      "values": {
+        "budgetKey": {
+          "above_10000": "10.000 €+",
+          "below_1000": "Unter 1.000 €",
+          "between_1000_2500": "1.000 € - 2.500 €",
+          "between_2500_5000": "2.500 € - 5.000 €",
+          "between_5000_10000": "5.000 € - 10.000 €",
+          "open": "Noch offen"
+        },
+        "goalKey": {
+          "generate_inquiries": "Anfragen erhalten",
+          "grow_newsletter": "Newsletter-Anmeldungen",
+          "increase_bookings": "Terminbuchungen erhöhen",
+          "sell_product": "Produkt verkaufen"
+        },
+        "offerKey": {
+          "ai": "KI-Templates & Agents",
+          "landing": "Landingpages",
+          "maintenance": "Wartung & Support",
+          "process": "Prozess-Tools",
+          "upgrade": "Website-Upgrade",
+          "web": "Webseiten"
+        },
+        "pageKeys": {
+          "about": "Über uns",
+          "blog": "Blog",
+          "careers": "Karriere",
+          "contact": "Kontakt",
+          "home": "Start",
+          "landing_page": "Landingpage",
+          "other": "Sonstiges",
+          "services": "Leistungen"
+        },
+        "preferredStartKey": {
+          "immediately": "Sofort",
+          "later_flexible": "Später / flexibel",
+          "within_one_month": "Innerhalb von 1 Monat",
+          "within_two_weeks": "Innerhalb von 2 Wochen"
+        },
+        "workflowKey": {
+          "one_workflow": "1 Workflow",
+          "three_plus_workflows": "3+ Workflows",
+          "two_workflows": "2 Workflows"
+        }
+      }
+    }
+  }
+}

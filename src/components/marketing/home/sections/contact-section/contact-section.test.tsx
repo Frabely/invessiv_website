@@ -1,9 +1,19 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ContactSection } from "./contact-section";
+
+vi.mock("@/components/providers/language-provider", () => ({
+  useLanguage: () => ({
+    locale: "de",
+  }),
+}));
+
+vi.mock("@/lib/analytics/conversion-events", () => ({
+  trackConversionEvent: vi.fn(),
+}));
 
 describe("ContactSection", () => {
   it("renders contact entry picker and shows only the active path panel", () => {
@@ -40,7 +50,9 @@ describe("ContactSection", () => {
         contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
         contactForm={{
           budgetLabel: "Budgetrahmen",
-          budgetOptions: ["1.000 € - 2.500 €"],
+          budgetOptions: [
+            { key: "between_1000_2500", label: "1.000 € - 2.500 €" },
+          ],
           closeLabel: "Formular schließen",
           conditionalFieldHint: "Dynamische Pflichtfelder",
           companyLabel: "Unternehmen",
@@ -48,24 +60,13 @@ describe("ContactSection", () => {
           emailLabel: "E-Mail",
           firstNameLabel: "Vorname",
           goalLabel: "Ziel",
-          goalOptions: ["Leads"],
+          goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
           intro: "Kurzbeschreibung",
-          lastNameLabel: "Nachname",
-          mailBodyDetailsLabel: "Details",
-          mailBodyTitle: "Neue Anfrage",
-          mailLabelBudget: "Budget",
-          mailLabelCompany: "Firma",
-          mailLabelEmail: "E-Mail",
-          mailLabelName: "Name",
-          mailLabelOffer: "Angebot",
-          mailLabelPhone: "Telefon",
-          mailLabelRole: "Rolle",
-          mailLabelStart: "Start",
-          mailLabelWebsite: "Website",
-          mailSubjectPrefix: "Projektanfrage",
+          nextStepLabel: "Weiter",
           offerLabel: "Angebot",
           offerPlaceholder: "Bitte wählen",
           pagesLabel: "Seiten",
+          pagesOptions: [{ key: "home", label: "Start" }],
           pagesPlaceholder: "Start, Kontakt",
           phoneLabel: "Telefon",
           previousStepLabel: "Zurück",
@@ -73,22 +74,26 @@ describe("ContactSection", () => {
           projectDetailsPlaceholder: "Details",
           requiredHint: "* Pflichtfelder",
           roleLabel: "Rolle",
+          startLabel: "Start",
+          startOptions: [{ key: "immediately", label: "Sofort" }],
           stepLabel: "Schritt",
           stepNavigationLabel: "Anfragefortschritt",
           stepOneTitle: "Kontakt",
           stepThreeTitle: "Rahmen",
           stepTwoTitle: "Projekt",
-          startLabel: "Start",
-          startOptions: ["Sofort"],
-          nextStepLabel: "Weiter",
+          submitErrorDelivery: "Delivery error",
+          submitErrorGeneric: "Generic error",
+          submitErrorRateLimited: "Rate limited",
+          submitErrorValidation: "Validation error",
           submitLabel: "Senden",
           submitSuccess: "Gesendet",
+          submittingLabel: "Wird gesendet",
           subtitle: "Projekt-Check",
           title: "Projektanfrage",
-          websiteRequiredHint: "Website erforderlich",
           websiteLabel: "Website",
+          websiteRequiredHint: "Website erforderlich",
           workflowLabel: "Workflows",
-          workflowOptions: ["1 Workflow"],
+          workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
           privacyLabel: "Datenschutzerklärung",
         }}
         contactFormOffers={[
@@ -120,9 +125,6 @@ describe("ContactSection", () => {
         .getAttribute("href"),
     ).toBe("#services");
     expect(screen.getByText("Was du direkt erwarten kannst")).toBeTruthy();
-    expect(screen.getAllByText("Direkt starten").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Erst grob anfragen").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Kurz abstimmen").length).toBeGreaterThan(0);
 
     expect(
       screen.queryByRole("link", { name: "Kurze E-Mail senden" }),

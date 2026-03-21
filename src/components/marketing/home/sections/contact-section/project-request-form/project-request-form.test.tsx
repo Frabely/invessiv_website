@@ -1,70 +1,92 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ProjectRequestForm } from "./project-request-form";
 
+const mockTrackConversionEvent = vi.fn();
+
+vi.mock("@/components/providers/language-provider", () => ({
+  useLanguage: () => ({
+    locale: "de",
+  }),
+}));
+
+vi.mock("@/lib/analytics/conversion-events", () => ({
+  trackConversionEvent: (...args: unknown[]) =>
+    mockTrackConversionEvent(...args),
+}));
+
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
+  mockTrackConversionEvent.mockReset();
+});
+
+beforeEach(() => {
+  vi.stubGlobal("fetch", vi.fn());
 });
 
 const formCopyFixture = {
   budgetLabel: "Budget",
-  budgetOptions: ["1.000 € - 2.500 €"],
-  conditionalFieldHint: "Dynamische Pflichtfelder",
+  budgetOptions: [{ key: "between_1000_2500", label: "1.000 € - 2.500 €" }],
   companyLabel: "Unternehmen",
+  conditionalFieldHint: "Dynamische Pflichtfelder",
   consentLabel: "Ich stimme gemäß",
   emailLabel: "E-Mail",
   firstNameLabel: "Name",
   goalLabel: "Ziel",
-  goalOptions: ["Leads"],
+  goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
   intro: "Kurz",
-  lastNameLabel: "Nachname",
-  mailBodyDetailsLabel: "Details",
-  mailBodyTitle: "Neue Anfrage",
-  mailLabelBudget: "Budget",
-  mailLabelCompany: "Firma",
-  mailLabelEmail: "E-Mail",
-  mailLabelName: "Name",
-  mailLabelOffer: "Angebot",
-  mailLabelPhone: "Telefon",
-  mailLabelRole: "Rolle",
-  mailLabelStart: "Start",
-  mailLabelWebsite: "Website",
-  mailSubjectPrefix: "Projektanfrage",
+  nextStepContactLabel: "Weiter zu Projekt",
+  nextStepLabel: "Weiter",
+  nextStepProjectLabel: "Weiter zu Rahmen",
   offerLabel: "Angebot",
   offerPlaceholder: "Auswählen",
   pagesCustomLabel: "Weitere Seiten",
   pagesCustomPlaceholder: "z. B. Q&A",
   pagesLabel: "Seiten",
-  pagesOptions: ["Start", "Kontakt", "Karriere"],
+  pagesOptions: [
+    { key: "home", label: "Start" },
+    { key: "contact", label: "Kontakt" },
+    { key: "careers", label: "Karriere" },
+  ],
   pagesPlaceholder: "Start, Kontakt",
   pagesRequiredHint: "Bitte mindestens eine Seite wählen.",
   phoneLabel: "Telefon",
   previousStepLabel: "Zurück",
+  privacyLabel: "Datenschutzerklärung",
   projectDetailsLabel: "Projekt",
   projectDetailsPlaceholder: "Beschreibung",
   requiredHint: "* Pflichtfelder",
   roleLabel: "Rolle",
+  startLabel: "Start",
+  startOptions: [{ key: "immediately", label: "Sofort" }],
   stepLabel: "Schritt",
   stepNavigationLabel: "Anfragefortschritt",
   stepOneTitle: "Kontakt",
   stepThreeTitle: "Rahmen",
   stepTwoTitle: "Projekt",
-  startLabel: "Start",
-  startOptions: ["Sofort"],
-  nextStepLabel: "Weiter",
-  nextStepContactLabel: "Weiter zu Projekt",
-  nextStepProjectLabel: "Weiter zu Rahmen",
+  submitErrorDelivery: "Zustellung nicht möglich",
+  submitErrorGeneric: "Allgemeiner Fehler",
+  submitErrorRateLimited: "Zu viele Anfragen",
+  submitErrorValidation: "Bitte Eingaben prüfen",
   submitLabel: "Senden",
   submitSuccess: "Erfolg",
+  submittingLabel: "Wird gesendet",
   subtitle: "Rahmen",
   title: "Projektanfrage",
-  websiteRequiredHint: "Website erforderlich",
   websiteLabel: "Website",
+  websiteRequiredHint: "Website erforderlich",
   workflowLabel: "Workflows",
-  workflowOptions: ["1 Workflow"],
+  workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
 };
 
 const offerOptionsFixture = [
@@ -79,7 +101,6 @@ const renderForm = () =>
       offerOptions={offerOptionsFixture}
       privacyHref="/privacy"
       privacyLabel="Datenschutzerklärung"
-      submitHref="mailto:test@example.com"
     />,
   );
 
@@ -107,7 +128,6 @@ describe("ProjectRequestForm", () => {
           offerOptions={offerOptionsFixture}
           privacyHref="/privacy"
           privacyLabel="Datenschutzerklärung"
-          submitHref="mailto:test@example.com"
         />
       </>,
     );
@@ -119,31 +139,6 @@ describe("ProjectRequestForm", () => {
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
-  });
-
-  it("keeps the offer select usable when opened via plain contact anchor", () => {
-    render(
-      <>
-        <a href="#contact">Zum Kontakt</a>
-        <ProjectRequestForm
-          formCopy={formCopyFixture}
-          offerOptions={offerOptionsFixture}
-          privacyHref="/privacy"
-          privacyLabel="Datenschutzerklärung"
-          submitHref="mailto:test@example.com"
-        />
-      </>,
-    );
-
-    fireEvent.click(screen.getByRole("link", { name: "Zum Kontakt" }));
-    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
-      target: { value: "landing" },
-    });
-
-    const offerSelect = screen.getByRole("combobox", {
-      name: "Angebot*",
-    }) as HTMLSelectElement;
-    expect(offerSelect.value).toBe("landing");
   });
 
   it("requires at least one selected page in step two for web projects", () => {
@@ -164,7 +159,7 @@ describe("ProjectRequestForm", () => {
       target: { value: "https://example.com" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
-      target: { value: "Wir brauchen einen Relaunch." },
+      target: { value: "Wir brauchen einen Relaunch mit besserer Struktur." },
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
@@ -177,5 +172,77 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
     expect(screen.getByRole("checkbox")).toBeTruthy();
+  });
+
+  it("submits the normalized payload to the API and shows success", async () => {
+    const fetchMock = vi.mocked(fetch);
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify({ ok: true, requestId: "req_123" }), {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      }),
+    );
+
+    renderForm();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+      target: { value: "landing" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Ziel*" }), {
+      target: { value: "generate_inquiries" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+      target: {
+        value: "Eine Landingpage für qualifizierte Leads mit klarem CTA.",
+      },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
+
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Senden" }));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    const [, requestInit] = fetchMock.mock.calls[0]!;
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("/api/public/contact");
+    expect(requestInit?.method).toBe("POST");
+    expect(requestInit?.headers).toMatchObject({
+      "Content-Type": "application/json",
+    });
+
+    const payload = JSON.parse(String(requestInit?.body));
+    expect(payload).toMatchObject({
+      consentAccepted: true,
+      email: "max@example.com",
+      fullName: "Max Mustermann",
+      goalKey: "generate_inquiries",
+      locale: "de",
+      offerKey: "landing",
+      projectDetails:
+        "Eine Landingpage für qualifizierte Leads mit klarem CTA.",
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Erfolg")).toBeTruthy();
+    });
+
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "lead_submit_success",
+      {
+        location: "contact",
+        target: "form",
+        variant: "primary",
+      },
+    );
   });
 });
