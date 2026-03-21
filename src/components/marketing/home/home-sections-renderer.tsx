@@ -117,10 +117,12 @@ export function HomeSectionsRenderer({
 
             if (section.id === "contact") {
               const contactFormOffers =
-                servicesSection?.serviceCards?.map((card) => ({
-                  key: card.key,
-                  title: card.title,
-                })) ?? [];
+                servicesSection?.serviceCards
+                  ?.filter((card) => card.key !== "ai")
+                  .map((card) => ({
+                    key: card.key,
+                    title: card.title,
+                  })) ?? [];
               const privacyHref =
                 footerSection?.footerLegalLinks?.find((link) =>
                   /privacy|datenschutz/i.test(link.label),
