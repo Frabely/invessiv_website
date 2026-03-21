@@ -1,0 +1,52 @@
+{
+  "heroBenefitsAriaLabel": "Key benefits",
+  "heroChipTags": [
+    "Transparent effort estimate",
+    "One point of contact",
+    "QA before go-live"
+  ],
+  "heroPrimaryCta": "Request project",
+  "heroSecondaryCta": "Offers & pricing",
+  "heroTag": "CLEAR STRUCTURE, DIRECT EXECUTION",
+  "heroVisualAriaLabel": "Live performance snapshot",
+  "mappingWarning": "Navigation/section mapping is incomplete.",
+  "includedContent": {
+    "title": "From first outline to handoff",
+    "summaryPoints": [
+      "recommendation before kickoff",
+      "short feedback loops",
+      "QA & handover"
+    ],
+    "cards": [
+      {
+        "title": "Right entry point before kickoff",
+        "tag": "Setup",
+        "description": "After the inquiry, we sort the goal, project range, and offer format before implementation begins."
+      },
+      {
+        "title": "Short paths during execution",
+        "tag": "Workflow",
+        "description": "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving."
+      },
+      {
+        "title": "Launch prepared from the start",
+        "tag": "QA",
+        "description": "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end."
+      }
+    ],
+    "bridge": "After the inquiry, you know which entry point makes sense and how the next step looks."
+  },
+  "servicesAddonBadgeLabel": "Add-on",
+  "servicesComingSoonExamplesCtaLabel": "What is planned",
+  "servicesComingSoonExamplesHideLabel": "Hide examples",
+  "servicesComingSoonLabel": "Coming soon",
+  "servicesFaqLinkLabel": "Questions?",
+  "servicesFitLabel": "Ideal for",
+  "servicesMoreItemsPluralLabel": "more items",
+  "servicesMoreItemsSingularLabel": "more item",
+  "servicesOneTimeLabel": "one-time",
+  "servicesRecommendedBadgeLabel": "Recommended",
+  "servicesPrimaryCta": "Request fitting offer",
+  "servicesDetailsCta": "More details",
+  "servicesDeliveryLabel": "Typical"
+}

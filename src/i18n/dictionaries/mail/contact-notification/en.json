@@ -1,0 +1,68 @@
+{
+  "mail": {
+    "contactNotification": {
+      "detailsLabel": "Project description / requirements",
+      "heading": "New project request",
+      "labels": {
+        "budgetKey": "Budget range",
+        "company": "Company",
+        "email": "Email",
+        "fullName": "Name",
+        "goalKey": "Primary goal",
+        "offerKey": "Offer",
+        "pageKeys": "Required pages",
+        "phone": "Phone",
+        "preferredStartKey": "Preferred start",
+        "role": "Role",
+        "website": "Website",
+        "workflowKey": "Core workflows"
+      },
+      "subjectPrefix": "Project request",
+      "values": {
+        "budgetKey": {
+          "above_10000": "€10,000+",
+          "below_1000": "Below €1,000",
+          "between_1000_2500": "€1,000 - €2,500",
+          "between_2500_5000": "€2,500 - €5,000",
+          "between_5000_10000": "€5,000 - €10,000",
+          "open": "Not defined yet"
+        },
+        "goalKey": {
+          "generate_inquiries": "Generate inquiries",
+          "grow_newsletter": "Grow newsletter sign-ups",
+          "increase_bookings": "Increase booked calls",
+          "sell_product": "Sell a product"
+        },
+        "offerKey": {
+          "ai": "AI Templates & Agents",
+          "landing": "Landing pages",
+          "maintenance": "Maintenance & Support",
+          "process": "Process tools",
+          "upgrade": "Website upgrade",
+          "web": "Websites"
+        },
+        "pageKeys": {
+          "about": "About",
+          "blog": "Blog",
+          "careers": "Careers",
+          "contact": "Contact",
+          "home": "Home",
+          "landing_page": "Landing page",
+          "other": "Other",
+          "services": "Services"
+        },
+        "preferredStartKey": {
+          "immediately": "Immediately",
+          "later_flexible": "Later / flexible",
+          "within_one_month": "Within 1 month",
+          "within_two_weeks": "Within 2 weeks"
+        },
+        "workflowKey": {
+          "one_workflow": "1 workflow",
+          "three_plus_workflows": "3+ workflows",
+          "two_workflows": "2 workflows"
+        }
+      }
+    }
+  }
+}

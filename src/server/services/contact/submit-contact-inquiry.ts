@@ -6,7 +6,7 @@ import { sendMail } from "@/server/services/mail/mail-service";
 
 export async function submitContactInquiry(payload: ContactSubmitInput) {
   const env = getServerEnv();
-  const message = mapContactToMail(payload, env.contactMailTo);
+  const message = await mapContactToMail(payload, env.contactMailTo);
   const deliveryResult = await sendMail(message);
 
   if (!deliveryResult.ok) {

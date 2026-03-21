@@ -2,6 +2,15 @@ import "server-only";
 import type { Locale } from "@/config/i18n";
 
 export type Dictionary = {
+  mail: {
+    contactNotification: {
+      detailsLabel: string;
+      heading: string;
+      labels: Record<string, string>;
+      subjectPrefix: string;
+      values: Record<string, Record<string, string>>;
+    };
+  };
   imprint: {
     meta: {
       title: string;
@@ -217,13 +226,15 @@ export type Dictionary = {
 };
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const [imprint, terms, privacy] = await Promise.all([
+  const [mail, imprint, terms, privacy] = await Promise.all([
+    import(`./dictionaries/mail/contact-notification/${locale}.json`),
     import(`./dictionaries/legal/imprint/${locale}.json`),
     import(`./dictionaries/legal/terms/${locale}.json`),
     import(`./dictionaries/legal/privacy/${locale}.json`),
   ]);
 
   return {
+    mail: mail.default.mail,
     imprint: imprint.default.imprint,
     terms: terms.default.terms,
     privacy: privacy.default.privacy,

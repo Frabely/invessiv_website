@@ -1,0 +1,21 @@
+{
+  "actionsAriaLabel": "Language and primary action",
+  "brandLogoAlt": "Invessiv logo",
+  "ctaLabel": "Request project",
+  "labelsByHref": {
+    "#included": "What you get",
+    "#services": "Offers & pricing",
+    "#process": "Process",
+    "#faq": "Q&A",
+    "#contact": "Contact"
+  },
+  "localeMenuLabel": "Open language",
+  "localeSwitchLabel": "Choose language",
+  "mobileMenuLabel": "Menu",
+  "navAriaLabel": "Primary navigation",
+  "skipLinkLabel": "Skip to main content",
+  "themeToggleLabel": {
+    "dark": "Light",
+    "light": "Dark"
+  }
+}
