@@ -25,7 +25,6 @@ const serviceCards = [
     title: "Landingpages",
     description: "Landingpage Paket.",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
-    isRecommended: true,
     price: "ab 990 EUR einmalig",
     delivery: "3-7 Tage",
     included: ["Rahmen", "Design", "SEO", "Performance", "Tracking"],
@@ -66,32 +65,51 @@ const serviceCards = [
   },
 ];
 
+const goalOptions = [
+  { key: "more_inquiries", label: "mehr Anfragen gewinnen" },
+  { key: "professional_presence", label: "professionell online auftreten" },
+  { key: "simplify_workflows", label: "interne Abläufe vereinfachen" },
+  { key: "improve_existing", label: "etwas Bestehendes verbessern" },
+];
+
+function renderSection() {
+  return render(
+    <ServicesSection
+      addonBadgeLabel="Add-on"
+      deliveryLabel="Lieferzeit"
+      detailsCtaLabel="Mehr Infos"
+      description="Leistungen als Richtwerte."
+      fitLabel="Ideal für"
+      goalOptions={goalOptions}
+      goalTitle="Ich will …"
+      id="services"
+      moreItemsPluralLabel="weitere Punkte"
+      moreItemsSingularLabel="weiterer Punkt"
+      oneTimeLabel="einmalig"
+      primaryCtaLabel="Projekt anfragen"
+      primaryCtaLabels={{
+        landing: "Landingpage anfragen",
+        process: "Prozess-Tool anfragen",
+        upgrade: "Upgrade anfragen",
+        web: "Webseite anfragen",
+      }}
+      recommendedBadgeLabel="Empfohlen"
+      sectionRef={{ current: null }}
+      serviceCards={serviceCards}
+      serviceSecondaryTitle="Schon etwas da?"
+      summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
+      title="Was brauchst du gerade?"
+    />,
+  );
+}
+
 describe("ServicesSection", () => {
   afterEach(() => {
     cleanup();
   });
 
-  it("renders three primary cards, two secondary cards, and a shared CTA defaulting to landing", () => {
-    const { container } = render(
-      <ServicesSection
-        addonBadgeLabel="Add-on"
-        deliveryLabel="Lieferzeit"
-        detailsCtaLabel="Mehr Infos"
-        description="Leistungen als Richtwerte."
-        fitLabel="Ideal für"
-        id="services"
-        moreItemsPluralLabel="weitere Punkte"
-        moreItemsSingularLabel="weiterer Punkt"
-        oneTimeLabel="einmalig"
-        primaryCtaLabel="Projekt anfragen"
-        recommendedBadgeLabel="Empfohlen"
-        sectionRef={{ current: null }}
-        serviceCards={serviceCards}
-        serviceSecondaryTitle="Schon etwas da?"
-        summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
-        title="Was brauchst du gerade?"
-      />,
-    );
+  it("renders chips, three primary cards, two secondary cards, and defaults to landing", () => {
+    const { container } = renderSection();
 
     const primaryCards = Array.from(
       container.querySelectorAll("[data-service-variant='primary']"),
@@ -100,45 +118,55 @@ describe("ServicesSection", () => {
       container.querySelectorAll("[data-service-variant='secondary']"),
     );
 
+    expect(screen.getByText("Ich will …")).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
+    ).toBeTruthy();
     expect(primaryCards).toHaveLength(3);
     expect(secondaryCards).toHaveLength(2);
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["web", "landing", "process"]);
+    ).toEqual(["landing", "web", "process"]);
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["upgrade", "maintenance"]);
     expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(screen.queryByText("KI-Templates & Agents")).toBeNull();
-    expect(screen.queryByText(/Ausgewählt:/i)).toBeNull();
     expect(
       screen
-        .getByRole("link", { name: "Projekt anfragen" })
+        .getByRole("link", { name: "Landingpage anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
   });
 
-  it("keeps only one primary card expanded at a time", () => {
-    render(
-      <ServicesSection
-        addonBadgeLabel="Add-on"
-        deliveryLabel="Lieferzeit"
-        detailsCtaLabel="Mehr Infos"
-        description="Leistungen als Richtwerte."
-        fitLabel="Ideal für"
-        id="services"
-        moreItemsPluralLabel="weitere Punkte"
-        moreItemsSingularLabel="weiterer Punkt"
-        oneTimeLabel="einmalig"
-        primaryCtaLabel="Projekt anfragen"
-        recommendedBadgeLabel="Empfohlen"
-        sectionRef={{ current: null }}
-        serviceCards={serviceCards}
-        serviceSecondaryTitle="Schon etwas da?"
-        summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
-        title="Was brauchst du gerade?"
-      />,
+  it("updates recommendation, CTA copy, and mobile-first DOM order when another goal is chosen", () => {
+    const { container } = renderSection();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "interne Abläufe vereinfachen" }),
     );
+
+    const primaryCards = Array.from(
+      container.querySelectorAll("[data-service-variant='primary']"),
+    );
+
+    expect(
+      primaryCards.map((card) => card.getAttribute("data-card-key")),
+    ).toEqual(["process", "web", "landing"]);
+    expect(
+      screen
+        .getByRole("link", { name: "Prozess-Tool anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("process");
+    expect(
+      screen
+        .getByRole("link", { name: "Prozess-Tool anfragen" })
+        .getAttribute("data-project-goal"),
+    ).toBe("interne Abläufe vereinfachen");
+  });
+
+  it("keeps only one primary card expanded at a time without changing the top selection", () => {
+    renderSection();
 
     const landingArticle = screen.getByText("Landingpages").closest("article");
     const webArticle = screen.getByText("Webseiten").closest("article");
@@ -151,43 +179,53 @@ describe("ServicesSection", () => {
     fireEvent.click(landingArticle as HTMLElement);
     expect(landingDetails?.hasAttribute("hidden")).toBe(false);
     expect(webDetails?.hasAttribute("hidden")).toBe(true);
+    expect(
+      screen
+        .getByRole("link", { name: "Landingpage anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("landing");
+    expect(
+      screen
+        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
 
     fireEvent.click(webArticle as HTMLElement);
     expect(landingDetails?.hasAttribute("hidden")).toBe(true);
     expect(webDetails?.hasAttribute("hidden")).toBe(false);
+    expect(
+      screen
+        .getByRole("link", { name: "Landingpage anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("landing");
+    expect(
+      screen
+        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
   });
 
-  it("updates the shared CTA offer when a secondary card is selected", () => {
-    render(
-      <ServicesSection
-        addonBadgeLabel="Add-on"
-        deliveryLabel="Lieferzeit"
-        detailsCtaLabel="Mehr Infos"
-        description="Leistungen als Richtwerte."
-        fitLabel="Ideal für"
-        id="services"
-        moreItemsPluralLabel="weitere Punkte"
-        moreItemsSingularLabel="weiterer Punkt"
-        oneTimeLabel="einmalig"
-        primaryCtaLabel="Projekt anfragen"
-        recommendedBadgeLabel="Empfohlen"
-        sectionRef={{ current: null }}
-        serviceCards={serviceCards}
-        serviceSecondaryTitle="Schon etwas da?"
-        summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
-        title="Was brauchst du gerade?"
-      />,
-    );
+  it("keeps the top goal selection stable when a secondary card is chosen", () => {
+    renderSection();
 
     fireEvent.click(
       screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
     );
 
-    expect(screen.queryByText(/Ausgewählt:/i)).toBeNull();
     expect(
       screen
-        .getByRole("link", { name: "Projekt anfragen" })
+        .getByRole("link", { name: "Upgrade anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("upgrade");
+    expect(
+      screen
+        .getByRole("link", { name: "Upgrade anfragen" })
+        .getAttribute("data-project-goal"),
+    ).toBe("mehr Anfragen gewinnen");
+    expect(
+      screen
+        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
   });
 });

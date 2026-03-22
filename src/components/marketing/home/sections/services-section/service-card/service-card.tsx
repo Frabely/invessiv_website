@@ -17,6 +17,7 @@ type ServiceCardProps = {
   detailsCtaLabel: string;
   fitLabel: string;
   isDetailsOpen: boolean;
+  isRecommended?: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
   onCardSelectAction: () => void;
@@ -34,6 +35,7 @@ export function ServiceCard({
   detailsCtaLabel,
   fitLabel,
   isDetailsOpen,
+  isRecommended = false,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
   onCardSelectAction,
@@ -98,7 +100,7 @@ export function ServiceCard({
     >
       <article
         aria-label={card.title}
-        className={`${styles.card} services-card${hasExpandableContent ? " services-card--expandable" : ""}${card.isRecommended ? " services-card--recommended" : ""}${cardClassName ? ` ${cardClassName}` : ""}`}
+        className={`${styles.card} services-card${hasExpandableContent ? " services-card--expandable" : ""}${isRecommended ? ` ${styles.cardRecommended}` : ""}${cardClassName ? ` ${cardClassName}` : ""}`}
         data-service-card="true"
         data-visible="false"
         onClick={handleCardClick}
@@ -117,7 +119,7 @@ export function ServiceCard({
                   />
                   <span>{card.title}</span>
                 </h3>
-                {card.isRecommended ? (
+                {isRecommended ? (
                   <span
                     className={`${styles.badge} services-title-badge services-title-badge--recommended`}
                   >

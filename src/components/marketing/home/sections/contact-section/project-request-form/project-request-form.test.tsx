@@ -78,6 +78,15 @@ const formCopyFixture = {
   submitErrorGeneric: "Allgemeiner Fehler",
   submitErrorRateLimited: "Zu viele Anfragen",
   submitErrorValidation: "Bitte Eingaben prüfen",
+  validationSummaryPrefix: "Bitte prüfen:",
+  fieldErrorInvalidEmail: "Ungültige E-Mail",
+  fieldErrorInvalidWebsite: "Ungültige Website",
+  fieldErrorRequired: "Pflichtfeld",
+  fieldErrorProjectDetailsRequired: "Projekt erforderlich",
+  fieldErrorPagesRequired: "Seiten erforderlich",
+  fieldErrorGoalRequired: "Ziel erforderlich",
+  fieldErrorWorkflowRequired: "Workflow erforderlich",
+  fieldErrorConsentRequired: "Zustimmung erforderlich",
   submitLabel: "Senden",
   submitSuccess: "Erfolg",
   submittingLabel: "Wird gesendet",
@@ -117,10 +126,14 @@ describe("ProjectRequestForm", () => {
     ).toBeTruthy();
   });
 
-  it("preselects the offer when opened from a service CTA", () => {
+  it("preselects the offer and seeds the project goal when opened from a service CTA", () => {
     render(
       <>
-        <a data-project-offer="web" href="#contact">
+        <a
+          data-project-goal="professionell online auftreten"
+          data-project-offer="web"
+          href="#contact"
+        >
           Aus Service öffnen
         </a>
         <ProjectRequestForm
@@ -139,6 +152,19 @@ describe("ProjectRequestForm", () => {
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
+
+    expect(
+      (screen.getByRole("textbox", { name: "Projekt*" }) as HTMLTextAreaElement)
+        .value,
+    ).toBe("professionell online auftreten");
   });
 
   it("requires at least one selected page in step two for web projects", () => {

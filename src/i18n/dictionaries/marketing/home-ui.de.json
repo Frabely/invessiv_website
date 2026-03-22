@@ -42,7 +42,30 @@
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
   "servicesOneTimeLabel": "einmalig",
   "servicesRecommendedBadgeLabel": "Empfohlen",
+  "servicesIntentTitle": "Ich will …",
+  "servicesIntentOptions": [
+    { "key": "more_inquiries", "label": "mehr Anfragen gewinnen" },
+    {
+      "key": "professional_presence",
+      "label": "professionell online auftreten"
+    },
+    {
+      "key": "simplify_workflows",
+      "label": "interne Abläufe vereinfachen"
+    },
+    {
+      "key": "improve_existing",
+      "label": "etwas Bestehendes verbessern"
+    }
+  ],
   "servicesPrimaryCta": "Projekt anfragen",
+  "servicesPrimaryCtaLabels": {
+    "landing": "Landingpage anfragen",
+    "web": "Webseite anfragen",
+    "process": "Prozess-Tool anfragen",
+    "upgrade": "Upgrade anfragen"
+  },
+  "servicesPrimaryCtaHint": "Auswahl wird im Kontaktformular übernommen",
   "servicesDetailsCta": "Mehr Infos",
   "servicesDeliveryLabel": "Typisch"
 }

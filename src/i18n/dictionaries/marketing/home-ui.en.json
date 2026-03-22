@@ -42,7 +42,30 @@
   "servicesMoreItemsSingularLabel": "more item",
   "servicesOneTimeLabel": "one-time",
   "servicesRecommendedBadgeLabel": "Recommended",
+  "servicesIntentTitle": "I want to …",
+  "servicesIntentOptions": [
+    { "key": "more_inquiries", "label": "win more inquiries" },
+    {
+      "key": "professional_presence",
+      "label": "show up professionally online"
+    },
+    {
+      "key": "simplify_workflows",
+      "label": "simplify internal workflows"
+    },
+    {
+      "key": "improve_existing",
+      "label": "improve something that already exists"
+    }
+  ],
   "servicesPrimaryCta": "Request project",
+  "servicesPrimaryCtaLabels": {
+    "landing": "Request landing page",
+    "web": "Request website",
+    "process": "Request process tool",
+    "upgrade": "Request upgrade"
+  },
+  "servicesPrimaryCtaHint": "Your selection will carry into the contact form",
   "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Typical"
 }

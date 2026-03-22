@@ -17,6 +17,22 @@
 }
 
 .cardRecommended {
+  border-width: 1px;
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--color-border) 42%);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 88%,
+    rgba(231, 154, 73, 0.12) 12%
+  );
+  transform: translateY(0) scale(1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 233, 210, 0.16),
+    0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent),
+    0 0 56px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.cardRecommended:hover {
+  transform: translateY(-2px) scale(1);
 }
 .surface {
   display: grid;
@@ -68,6 +84,8 @@
 }
 .deliveryBadge {
   margin: 0;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .body {

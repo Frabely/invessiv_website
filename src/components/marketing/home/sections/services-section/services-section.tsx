@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PointerEvent, RefObject } from "react";
 
 import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
@@ -11,6 +11,10 @@ import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import styles from "./services-section.module.css";
 
 type ServiceCardData = NonNullable<LandingSectionCopy["serviceCards"]>[number];
+type GoalOption = {
+  key: string;
+  label: string;
+};
 
 type ServicesSectionProps = {
   addonBadgeLabel: string;
@@ -18,11 +22,14 @@ type ServicesSectionProps = {
   detailsCtaLabel: string;
   description: string;
   fitLabel: string;
+  goalOptions: GoalOption[];
+  goalTitle: string;
   id: string;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
   oneTimeLabel: string;
   primaryCtaLabel: string;
+  primaryCtaLabels: Record<"landing" | "process" | "upgrade" | "web", string>;
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardData[];
@@ -33,18 +40,27 @@ type ServicesSectionProps = {
 
 const PRIMARY_ORDER = ["web", "landing", "process"] as const;
 const SECONDARY_ORDER = ["upgrade", "maintenance"] as const;
-
+const DEFAULT_GOAL_KEY = "more_inquiries";
+const GOAL_TO_SERVICE = {
+  improve_existing: "upgrade",
+  more_inquiries: "landing",
+  professional_presence: "web",
+  simplify_workflows: "process",
+} as const;
 export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
   detailsCtaLabel,
   description,
   fitLabel,
+  goalOptions,
+  goalTitle,
   id,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
   oneTimeLabel,
   primaryCtaLabel,
+  primaryCtaLabels,
   recommendedBadgeLabel,
   sectionRef,
   serviceCards,
@@ -53,6 +69,9 @@ export function ServicesSection({
   title,
 }: ServicesSectionProps) {
   const [openCardKey, setOpenCardKey] = useState<string | null>(null);
+  const [selectedGoalKey, setSelectedGoalKey] = useState<string>(
+    goalOptions[0]?.key ?? DEFAULT_GOAL_KEY,
+  );
 
   const primaryCards = useMemo(
     () =>
@@ -70,23 +89,47 @@ export function ServicesSection({
     [serviceCards],
   );
 
-  const defaultSelectedCardKey = useMemo(
-    () =>
-      primaryCards.find((card) => card.key === "landing")?.key ??
-      primaryCards[0]?.key ??
-      secondaryCards[0]?.key ??
-      null,
-    [primaryCards, secondaryCards],
-  );
+  const recommendedCardKey =
+    GOAL_TO_SERVICE[selectedGoalKey as keyof typeof GOAL_TO_SERVICE] ??
+    "landing";
 
-  const [selectedCardKey, setSelectedCardKey] = useState<string | null>(
-    defaultSelectedCardKey,
-  );
+  const [selectedSecondaryCardKey, setSelectedSecondaryCardKey] = useState<
+    string | null
+  >(null);
 
   const selectedCard =
-    serviceCards.find((card) => card.key === selectedCardKey) ??
-    serviceCards.find((card) => card.key === defaultSelectedCardKey) ??
+    serviceCards.find((card) => card.key === selectedSecondaryCardKey) ??
+    serviceCards.find((card) => card.key === recommendedCardKey) ??
     null;
+
+  const selectedGoal =
+    goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
+
+  const renderedPrimaryCards = useMemo(() => {
+    const recommendedPrimaryCard = primaryCards.find(
+      (card) => card.key === recommendedCardKey,
+    );
+
+    if (!recommendedPrimaryCard) {
+      return primaryCards;
+    }
+
+    return [
+      recommendedPrimaryCard,
+      ...primaryCards.filter((card) => card.key !== recommendedPrimaryCard.key),
+    ];
+  }, [primaryCards, recommendedCardKey]);
+
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("invessiv:project-offer-change", {
+        detail: {
+          offerKey: selectedCard?.key ?? recommendedCardKey,
+          projectGoal: selectedGoal?.label ?? "",
+        },
+      }),
+    );
+  }, [recommendedCardKey, selectedCard?.key, selectedGoal?.label]);
 
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType !== "mouse") {
@@ -117,6 +160,23 @@ export function ServicesSection({
     });
   };
 
+  const selectGoal = (goalKey: string) => {
+    setSelectedGoalKey(goalKey);
+    setSelectedSecondaryCardKey(null);
+    setOpenCardKey(null);
+  };
+
+  const handlePrimaryCardSelection = () => undefined;
+
+  const handleSecondaryCardSelection = (cardKey: string) => {
+    setSelectedSecondaryCardKey(cardKey);
+  };
+
+  const ctaLabel =
+    (selectedCard?.key &&
+      primaryCtaLabels[selectedCard.key as keyof typeof primaryCtaLabels]) ||
+    primaryCtaLabel;
+
   return (
     <section
       className={`${styles.section} services-section`}
@@ -132,8 +192,29 @@ export function ServicesSection({
         />
       </div>
 
+      <div className={styles.goalPicker} aria-label={goalTitle} role="group">
+        <p className={styles.goalTitle}>{goalTitle}</p>
+        <div className={styles.goalChips}>
+          {goalOptions.map((option) => {
+            const isActive = option.key === selectedGoalKey;
+
+            return (
+              <button
+                aria-pressed={isActive}
+                className={`services-chip ${styles.goalChip}${isActive ? ` ${styles.goalChipActive}` : ""}`}
+                key={option.key}
+                onClick={() => selectGoal(option.key)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className={styles.primaryGrid} role="list">
-        {primaryCards.map((card) => (
+        {renderedPrimaryCards.map((card) => (
           <ServiceCard
             card={card}
             cardClassName={styles.primaryCard}
@@ -141,10 +222,11 @@ export function ServicesSection({
             detailsCtaLabel={detailsCtaLabel}
             fitLabel={fitLabel}
             isDetailsOpen={openCardKey === card.key}
+            isRecommended={card.key === recommendedCardKey}
             key={card.key}
             moreItemsPluralLabel={moreItemsPluralLabel}
             moreItemsSingularLabel={moreItemsSingularLabel}
-            onCardSelectAction={() => setSelectedCardKey(card.key)}
+            onCardSelectAction={handlePrimaryCardSelection}
             onDetailsToggleAction={(nextOpenState) =>
               toggleCardDetails(card.key, nextOpenState)
             }
@@ -167,9 +249,9 @@ export function ServicesSection({
               addonBadgeLabel={addonBadgeLabel}
               card={card}
               defaultDeliveryLabel={deliveryLabel}
-              isSelected={selectedCardKey === card.key}
+              isSelected={selectedSecondaryCardKey === card.key}
               key={card.key}
-              onSelectAction={() => setSelectedCardKey(card.key)}
+              onSelectAction={() => handleSecondaryCardSelection(card.key)}
             />
           ))}
         </div>
@@ -177,17 +259,20 @@ export function ServicesSection({
 
       {selectedCard ? (
         <div className={styles.sharedCta}>
-          <a
-            className={`btn btn--primary ${styles.sharedCtaButton}`}
-            data-analytics-event="cta_click"
-            data-analytics-location="pricing"
-            data-analytics-target="form"
-            data-analytics-variant="primary"
-            data-project-offer={selectedCard.key}
-            href="#contact"
-          >
-            {primaryCtaLabel}
-          </a>
+          <div className={styles.sharedCtaInner}>
+            <a
+              className={`btn btn--primary ${styles.sharedCtaButton}`}
+              data-analytics-event="cta_click"
+              data-analytics-location="pricing"
+              data-analytics-target="form"
+              data-analytics-variant="primary"
+              data-project-goal={selectedGoal?.label ?? ""}
+              data-project-offer={selectedCard.key}
+              href="#contact"
+            >
+              {ctaLabel}
+            </a>
+          </div>
         </div>
       ) : null}
     </section>

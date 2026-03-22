@@ -19,7 +19,6 @@ describe("ServiceCard", () => {
         <ServiceCard
           card={{
             key: "landing",
-            isRecommended: true,
             title: "Landingpages",
             description: "Conversion-optimierte One-Pager.",
             fit: "Angebotsseiten mit klarer Conversion-Aktion.",
@@ -44,6 +43,7 @@ describe("ServiceCard", () => {
           detailsCtaLabel="Mehr Infos"
           fitLabel="Ideal für"
           isDetailsOpen={isDetailsOpen}
+          isRecommended
           moreItemsPluralLabel="weitere Punkte"
           moreItemsSingularLabel="weiterer Punkt"
           onCardSelectAction={vi.fn()}

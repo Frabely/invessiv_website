@@ -7,6 +7,65 @@
   display: block;
 }
 
+.goalPicker {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.goalTitle {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
+}
+
+.goalChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.goalChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 180ms ease;
+}
+
+.goalChip:hover,
+.goalChip:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--color-border) 66%);
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+}
+
+.goalChipActive {
+  border-color: color-mix(in srgb, var(--accent) 52%, var(--color-border) 48%);
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent) 20%, var(--color-surface-2) 80%),
+    color-mix(in srgb, var(--accent) 12%, var(--color-surface-1) 88%)
+  );
+  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
+  box-shadow:
+    0 10px 24px color-mix(in srgb, var(--accent) 12%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
 .primaryGrid {
   display: grid;
   gap: 18px;
@@ -41,6 +100,13 @@
   padding-top: 10px;
 }
 
+.sharedCtaInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+}
+
 .sharedCta::before,
 .sharedCta::after {
   content: "";
@@ -66,8 +132,6 @@
 }
 
 .sharedCtaButton {
-  position: relative;
-  z-index: 1;
   min-width: clamp(220px, 28vw, 300px);
   justify-content: center;
   box-shadow:
@@ -117,5 +181,11 @@
 
   .sharedCtaButton {
     width: 100%;
+  }
+
+  .goalChip {
+    width: 100%;
+    justify-content: flex-start;
+    padding-inline: 16px;
   }
 }

@@ -26,7 +26,16 @@ export type HomeUiContent = {
   includedContent: IncludedContent;
   servicesDeliveryLabel: string;
   servicesDetailsCta: string;
+  servicesIntentOptions: Array<{ key: string; label: string }>;
+  servicesIntentTitle: string;
   servicesPrimaryCta: string;
+  servicesPrimaryCtaHint?: string;
+  servicesPrimaryCtaLabels: {
+    landing: string;
+    process: string;
+    upgrade: string;
+    web: string;
+  };
 };
 
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {

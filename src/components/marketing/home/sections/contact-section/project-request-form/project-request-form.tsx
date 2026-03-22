@@ -82,6 +82,11 @@ type ProjectRequestFormProps = {
   submitPath?: string;
 };
 
+type ProjectOfferSyncDetail = {
+  offerKey?: string;
+  projectGoal?: string;
+};
+
 export function ProjectRequestForm({
   formCopy,
   offerOptions,
@@ -108,6 +113,7 @@ export function ProjectRequestForm({
   const workflowSelectRef = useRef<HTMLSelectElement | null>(null);
   const goalSelectRef = useRef<HTMLSelectElement | null>(null);
   const projectDetailsRef = useRef<HTMLTextAreaElement | null>(null);
+  const projectGoalSeedRef = useRef<string>("");
   const consentInputRef = useRef<HTMLInputElement | null>(null);
   const pagesOptionsContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -239,6 +245,32 @@ export function ProjectRequestForm({
     }
   }, []);
 
+  const applyProjectGoalSeed = useCallback((nextProjectGoal: string) => {
+    const normalizedGoal = nextProjectGoal.trim();
+    const textarea = projectDetailsRef.current;
+
+    if (!textarea) {
+      projectGoalSeedRef.current = normalizedGoal;
+      return;
+    }
+
+    const currentValue = textarea.value.trim();
+    const previousSeed = projectGoalSeedRef.current.trim();
+
+    if (!normalizedGoal) {
+      if (currentValue === previousSeed) {
+        textarea.value = "";
+      }
+      projectGoalSeedRef.current = "";
+      return;
+    }
+
+    if (!currentValue || currentValue === previousSeed) {
+      textarea.value = normalizedGoal;
+      projectGoalSeedRef.current = normalizedGoal;
+    }
+  }, []);
+
   const validatePagesSelection = useCallback(() => {
     if (!fieldRules.requiresPages) {
       setPagesSelectionError(null);
@@ -347,7 +379,9 @@ export function ProjectRequestForm({
       const nextOfferKey = getValidOfferKey(
         contactAnchor.dataset.projectOffer ?? "",
       );
+      const nextProjectGoal = contactAnchor.dataset.projectGoal ?? "";
       applyOfferSelection(nextOfferKey);
+      applyProjectGoalSeed(nextProjectGoal);
       setCurrentStep(1);
       setStatusMessage(null);
       setStartedAt(new Date().toISOString());
@@ -359,7 +393,32 @@ export function ProjectRequestForm({
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, [applyOfferSelection, focusStep, getValidOfferKey]);
+  }, [applyOfferSelection, applyProjectGoalSeed, focusStep, getValidOfferKey]);
+
+  useEffect(() => {
+    const handleOfferSync = (event: Event) => {
+      const detail = (event as CustomEvent<ProjectOfferSyncDetail>).detail;
+      const nextOfferKey = getValidOfferKey(detail?.offerKey ?? "");
+
+      if (nextOfferKey) {
+        applyOfferSelection(nextOfferKey);
+      }
+
+      applyProjectGoalSeed(detail?.projectGoal ?? "");
+    };
+
+    window.addEventListener(
+      "invessiv:project-offer-change",
+      handleOfferSync as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "invessiv:project-offer-change",
+        handleOfferSync as EventListener,
+      );
+    };
+  }, [applyOfferSelection, applyProjectGoalSeed, getValidOfferKey]);
 
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
