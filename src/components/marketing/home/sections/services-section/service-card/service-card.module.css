@@ -1,0 +1,111 @@
+.shell {
+  display: grid;
+  align-content: stretch;
+  gap: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+.card {
+  height: 100%;
+  min-height: 100%;
+}
+
+.card[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.cardRecommended {
+}
+.surface {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 18px;
+  height: 100%;
+}
+
+.header {
+  display: grid;
+  gap: 18px;
+}
+
+.titleWrap {
+  display: grid;
+  gap: 10px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+}
+.badge {
+}
+.fitNote {
+  margin: 0;
+}
+
+.fitLabel {
+}
+.metaStack {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.priceRow {
+  margin: 0;
+}
+
+.price {
+}
+.priceMeta {
+}
+.deliveryBadge {
+  margin: 0;
+}
+
+.body {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.list {
+}
+
+.details {
+  margin-top: 2px;
+}
+
+.notes {
+}
+
+.footer {
+  margin-top: auto;
+}
+
+.actions {
+}
+.faqLink {
+}
+.actionsSpacer {
+}
+.footerMeta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.moreItems {
+  margin: 0;
+}
+
+.toggle {
+}
+.toggleArrow {
+}

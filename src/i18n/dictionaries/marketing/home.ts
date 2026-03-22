@@ -17,13 +17,7 @@ import {
   CONTACT_WORKFLOW_KEYS,
 } from "@/features/contact/contact-options";
 
-type ServiceCardKey =
-  | "ai"
-  | "landing"
-  | "process"
-  | "web"
-  | "upgrade"
-  | "maintenance";
+type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
 
 type BaseServiceCard = {
   key: ServiceCardKey;
@@ -36,17 +30,11 @@ type BaseServiceCard = {
 };
 
 type StandardServiceCard = BaseServiceCard & {
-  isComingSoon?: false;
   price: string;
   delivery: string;
   deliveryLabel?: string;
   included: string[];
   details?: string[];
-};
-
-type ComingSoonServiceCard = BaseServiceCard & {
-  isComingSoon: true;
-  comingSoonExamples?: string[];
 };
 
 type ContactFormOption = {
@@ -59,7 +47,8 @@ export type LandingSectionCopy = {
   description: string;
   summaryPoints?: string[];
   cards?: Array<{ title: string; description: string; tag: string }>;
-  serviceCards?: Array<StandardServiceCard | ComingSoonServiceCard>;
+  serviceCards?: StandardServiceCard[];
+  serviceSecondaryTitle?: string;
   processSteps?: Array<{
     step: string;
     title: string;
@@ -311,14 +300,16 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "services",
     copy: {
       de: {
-        title: "Angebote & Einstiegspreise",
+        title: "Was brauchst du gerade?",
         description:
-          "Jedes Angebot ist auf ein klares Problem, einen sichtbaren Leistungsumfang und einen realistischen Einstiegspreis heruntergebrochen.",
+          "Drei typische Einstiege – je nachdem, ob du Anfragen klarer führen, deinen Auftritt neu aufsetzen oder interne Abläufe vereinfachen willst.",
         summaryPoints: [
           "klarer Einstieg je Problem",
           "Umfang vor Start verbindlich",
           "Lieferfenster und Preisanker sichtbar",
         ],
+        serviceSecondaryTitle:
+          "Schon etwas da? Oder brauchst du Unterstützung danach?",
         serviceCards: [
           {
             key: "landing",
@@ -417,21 +408,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
           },
           {
-            key: "ai",
-            iconSrc: "/services/ai-file-icon.svg",
-            iconAlt: "KI-Templates & Agents Icon",
-            title: "KI-Templates & Agents",
-            isComingSoon: true,
-            description:
-              "KI-Agents und Skills als Download für konkrete Aufgaben.",
-            comingSoonExamples: [
-              "API Setup mit User-Login",
-              "Agent für das Erstellen eigener Webseiten",
-              "Konkrete Skills für spezielle Anwendungsfälle",
-              "Weitere konkrete Setups und Skills folgen",
-            ],
-          },
-          {
             key: "maintenance",
             iconSrc: "/services/customer-service-icon.svg",
             iconAlt: "Wartung und Support Icon",
@@ -457,14 +433,16 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "Offers & Starting Prices",
+        title: "What do you need right now?",
         description:
-          "Each offer is framed around a clear problem, a visible service range, and a realistic starting price so you can assess fit faster.",
+          "Three typical entry points, depending on whether you want to guide inquiries more clearly, rebuild your presence, or simplify internal workflows.",
         summaryPoints: [
           "clear entry point per problem",
           "service range aligned before kickoff",
           "delivery window and price anchor visible",
         ],
+        serviceSecondaryTitle:
+          "Already have something in place? Or need support afterward?",
         serviceCards: [
           {
             key: "landing",
@@ -560,21 +538,6 @@ const HOME_SECTIONS: LandingSection[] = [
               "Optional hourly model: development at €70–85/h, content/small updates at €50–60/h.",
               "Larger rebuild topics are recommended and planned separately.",
               "Deep backend refactoring is not included in the base upgrade.",
-            ],
-          },
-          {
-            key: "ai",
-            iconSrc: "/services/ai-file-icon.svg",
-            iconAlt: "AI templates & agents icon",
-            title: "AI templates & agents",
-            isComingSoon: true,
-            description:
-              "AI agents and skills as downloads for specific tasks.",
-            comingSoonExamples: [
-              "API setup with user login",
-              "Agent for creating custom websites",
-              "Specialized skills for specific use cases",
-              "More focused setups and skills are planned",
             ],
           },
           {

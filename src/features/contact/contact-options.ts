@@ -1,5 +1,4 @@
 export const CONTACT_OFFER_KEYS = [
-  "ai",
   "landing",
   "maintenance",
   "process",

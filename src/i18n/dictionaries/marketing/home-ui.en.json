@@ -37,16 +37,12 @@
     "bridge": "After the inquiry, you know which entry point makes sense and how the next step looks."
   },
   "servicesAddonBadgeLabel": "Add-on",
-  "servicesComingSoonExamplesCtaLabel": "What is planned",
-  "servicesComingSoonExamplesHideLabel": "Hide examples",
-  "servicesComingSoonLabel": "Coming soon",
-  "servicesFaqLinkLabel": "Questions?",
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
   "servicesOneTimeLabel": "one-time",
   "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesPrimaryCta": "Request fitting offer",
+  "servicesPrimaryCta": "Request project",
   "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Typical"
 }

@@ -37,16 +37,12 @@
     "bridge": "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht."
   },
   "servicesAddonBadgeLabel": "Zusatzleistung",
-  "servicesComingSoonExamplesCtaLabel": "Was geplant ist",
-  "servicesComingSoonExamplesHideLabel": "Beispiele ausblenden",
-  "servicesComingSoonLabel": "Bald verfügbar",
-  "servicesFaqLinkLabel": "Fragen?",
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
   "servicesOneTimeLabel": "einmalig",
   "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesPrimaryCta": "Passendes Angebot anfragen",
+  "servicesPrimaryCta": "Projekt anfragen",
   "servicesDetailsCta": "Mehr Infos",
   "servicesDeliveryLabel": "Typisch"
 }

@@ -23,13 +23,8 @@ const sections: HomeSectionContent[] = [
     id: "services",
     title: "Services",
     description: "Leistungen",
+    serviceSecondaryTitle: "Schon etwas da?",
     serviceCards: [
-      {
-        key: "ai",
-        title: "KI-Templates & Agents",
-        description: "Temporär nicht im Anfrageformular.",
-        isComingSoon: true,
-      },
       {
         key: "web",
         title: "Webseiten",
@@ -37,6 +32,38 @@ const sections: HomeSectionContent[] = [
         price: "ab 3.000 €",
         delivery: "2-4 Wochen",
         included: ["Konzept"],
+      },
+      {
+        key: "landing",
+        title: "Landingpages",
+        description: "Fokussierte Kampagnenseiten",
+        price: "ab 990 €",
+        delivery: "3-7 Tage",
+        included: ["Konzept"],
+      },
+      {
+        key: "process",
+        title: "Prozess-Tools",
+        description: "Interne Workflows",
+        price: "ab 1.490 €",
+        delivery: "1-2 Wochen",
+        included: ["Konzept"],
+      },
+      {
+        key: "upgrade",
+        title: "Website-Upgrade",
+        description: "Bestehendes verbessern",
+        price: "ab 690 €",
+        delivery: "2-5 Tage",
+        included: ["Analyse"],
+      },
+      {
+        key: "maintenance",
+        title: "Wartung & Support",
+        description: "Pflege und Support",
+        price: "50 € / h",
+        delivery: "24-72h",
+        included: ["Bugfixes"],
       },
     ],
   },
@@ -116,13 +143,17 @@ const sections: HomeSectionContent[] = [
 ];
 
 describe("HomeSectionsRenderer", () => {
-  it("omits the AI offer from the project request select", () => {
+  it("passes the five active services into the project request select", () => {
     render(
       <HomeSectionsRenderer
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         ui={getHomeUiContent("de")}
-        validation={{ hasCompleteMapping: true, missingMappings: [] }}
+        validation={{
+          hasCompleteMapping: true,
+          missingInNavigation: [],
+          missingInSections: [],
+        }}
       />,
     );
 
@@ -131,9 +162,14 @@ describe("HomeSectionsRenderer", () => {
     });
 
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Landingpages" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Prozess-Tools" })).toBeTruthy();
     expect(
-      screen.queryByRole("option", { name: "KI-Templates & Agents" }),
-    ).toBeNull();
+      screen.getByRole("option", { name: "Website-Upgrade" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("option", { name: "Wartung & Support" }),
+    ).toBeTruthy();
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
   });
 });

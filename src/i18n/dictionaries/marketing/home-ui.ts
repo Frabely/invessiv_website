@@ -18,10 +18,6 @@ export type HomeUiContent = {
   heroVisualAriaLabel: string;
   mappingWarning: string;
   servicesAddonBadgeLabel: string;
-  servicesComingSoonExamplesCtaLabel: string;
-  servicesComingSoonExamplesHideLabel: string;
-  servicesComingSoonLabel: string;
-  servicesFaqLinkLabel: string;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;

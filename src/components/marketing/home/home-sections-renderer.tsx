@@ -60,17 +60,9 @@ export function HomeSectionsRenderer({
               return (
                 <ServicesSection
                   addonBadgeLabel={ui.servicesAddonBadgeLabel}
-                  comingSoonExamplesCtaLabel={
-                    ui.servicesComingSoonExamplesCtaLabel
-                  }
-                  comingSoonExamplesHideLabel={
-                    ui.servicesComingSoonExamplesHideLabel
-                  }
-                  comingSoonLabel={ui.servicesComingSoonLabel}
                   deliveryLabel={ui.servicesDeliveryLabel}
                   detailsCtaLabel={ui.servicesDetailsCta}
                   description={section.description}
-                  faqLinkLabel={ui.servicesFaqLinkLabel}
                   fitLabel={ui.servicesFitLabel}
                   id={section.id}
                   key={section.id}
@@ -81,6 +73,7 @@ export function HomeSectionsRenderer({
                   recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards ?? []}
+                  serviceSecondaryTitle={section.serviceSecondaryTitle}
                   summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
@@ -117,12 +110,10 @@ export function HomeSectionsRenderer({
 
             if (section.id === "contact") {
               const contactFormOffers =
-                servicesSection?.serviceCards
-                  ?.filter((card) => card.key !== "ai")
-                  .map((card) => ({
-                    key: card.key,
-                    title: card.title,
-                  })) ?? [];
+                servicesSection?.serviceCards?.map((card) => ({
+                  key: card.key,
+                  title: card.title,
+                })) ?? [];
               const privacyHref =
                 footerSection?.footerLegalLinks?.find((link) =>
                   /privacy|datenschutz/i.test(link.label),
