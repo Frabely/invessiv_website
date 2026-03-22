@@ -43,9 +43,7 @@ export function SecondaryService({
       className={styles.card}
       data-card-key={card.key}
       data-selected={isSelected ? "true" : "false"}
-      data-service-card="true"
       data-service-variant="secondary"
-      data-visible="false"
       onClick={onSelectAction}
       onKeyDown={handleKeyDown}
       role="listitem"

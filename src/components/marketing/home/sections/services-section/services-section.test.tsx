@@ -228,4 +228,24 @@ describe("ServicesSection", () => {
         .getAttribute("aria-pressed"),
     ).toBe("true");
   });
+
+  it("keeps the secondary block neutral while marking website upgrade for the improvement goal", () => {
+    renderSection();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "etwas Bestehendes verbessern" }),
+    );
+
+    expect(
+      screen
+        .getByRole("link", { name: "Upgrade anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("upgrade");
+    expect(
+      screen
+        .getByText("Website-Upgrade")
+        .closest("article")
+        ?.getAttribute("data-selected"),
+    ).toBe("true");
+  });
 });

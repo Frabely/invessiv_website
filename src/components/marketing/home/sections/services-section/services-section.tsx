@@ -104,6 +104,8 @@ export function ServicesSection({
 
   const selectedGoal =
     goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
+  const secondaryRecommendedCardKey =
+    recommendedCardKey === "upgrade" ? "upgrade" : null;
 
   const renderedPrimaryCards = useMemo(() => {
     const recommendedPrimaryCard = primaryCards.find(
@@ -249,7 +251,10 @@ export function ServicesSection({
               addonBadgeLabel={addonBadgeLabel}
               card={card}
               defaultDeliveryLabel={deliveryLabel}
-              isSelected={selectedSecondaryCardKey === card.key}
+              isSelected={
+                selectedSecondaryCardKey === card.key ||
+                secondaryRecommendedCardKey === card.key
+              }
               key={card.key}
               onSelectAction={() => handleSecondaryCardSelection(card.key)}
             />
