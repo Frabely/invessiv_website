@@ -756,9 +756,7 @@ main {
 [data-theme="light"] .packages-hint,
 [data-theme="light"] .packages-ideal,
 [data-theme="light"] .packages-timeline,
-[data-theme="light"] .contact-hint,
 [data-theme="light"] .contact-decision-intro,
-[data-theme="light"] .contact-entry-subtitle,
 [data-theme="light"] .contact-entry-panel-hint,
 [data-theme="light"] .contact-entry-panel-description,
 [data-theme="light"] .contact-cta-wrap p,
@@ -905,22 +903,8 @@ main {
   color: #74503b;
 }
 
-[data-theme="light"] .contact-checklist {
-  color: #74503b;
-}
-
 [data-theme="light"] .contact-entry-trigger-kicker {
   color: #8a604a;
-}
-
-[data-theme="light"] .contact-entry-trigger.is-active {
-  border-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
-  background: linear-gradient(
-    138deg,
-    color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2) 78%),
-    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
-  );
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
 }
 
 [data-theme="light"] .contact-channel-link {
@@ -2482,29 +2466,14 @@ main {
 
 .contact-section h2 {
   margin: 0;
-  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-size: clamp(1.95rem, 3.2vw, 2.85rem);
   letter-spacing: -0.03em;
 }
 
-.contact-section .section-scan-points {
-  margin: 10px 0 0;
-  max-width: none;
-  gap: 10px;
-}
-
-.contact-section .section-scan-points + .contact-entry-title {
-  margin-top: 2px;
-}
-
-.contact-section .section-scan-point {
-  white-space: nowrap;
-}
-
-.contact-hint {
-  margin: 10px 0 0;
-  color: #d8baa3;
-  max-width: 640px;
-  font-size: 1.02rem;
+.contact-brief-head {
+  display: grid;
+  gap: 8px;
+  max-width: 54rem;
 }
 
 .contact-cta-actions {
@@ -4968,77 +4937,74 @@ body {
 }
 
 .contact-layout {
-  margin-top: 12px;
+  margin-top: 14px;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
 }
 
 .contact-brief-card {
-  border-radius: 18px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
-  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.16);
-  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 90%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 96%, transparent)
+  );
+  box-shadow: 0 10px 26px rgba(8, 10, 15, 0.12);
+  padding: clamp(1rem, 2vw, 1.5rem);
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .contact-decision-intro {
   margin: 0;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: 0.95rem;
-  line-height: 1.56;
-  max-width: 72ch;
-}
-
-.contact-entry-title {
-  margin: 0;
-  font-size: 1.02rem;
-  color: var(--color-text);
-  line-height: 1.4;
-}
-
-.contact-entry-subtitle {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.9rem;
-  line-height: 1.48;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: 0.94rem;
+  line-height: 1.58;
+  max-width: 60ch;
 }
 
 .contact-entry-picker {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 9px;
+  gap: 8px;
+  align-items: stretch;
 }
 
 .contact-entry-trigger {
   width: 100%;
-  min-height: 64px;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-  padding: 10px 12px;
+  min-height: 58px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
+  padding: 11px 14px 12px;
   display: grid;
   justify-items: start;
-  gap: 4px;
+  align-content: center;
+  gap: 3px;
   text-align: left;
   cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .contact-entry-trigger:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 30%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
 }
 
 .contact-entry-trigger.is-active {
-  border-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 46%, transparent);
   background: linear-gradient(
-    138deg,
-    color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2) 78%),
-    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
+    145deg,
+    color-mix(in srgb, var(--color-cta) 16%, var(--color-surface-1) 84%),
+    color-mix(in srgb, var(--color-surface-2) 88%, transparent)
   );
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 20%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-cta) 16%, transparent);
 }
 
 .contact-entry-trigger:focus-visible {
@@ -5047,27 +5013,25 @@ body {
 }
 
 .contact-entry-trigger-kicker {
-  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
-  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
+  font-size: 0.64rem;
   font-weight: 620;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .contact-entry-trigger-title {
   color: inherit;
-  font-size: 0.88rem;
-  font-weight: 730;
+  font-size: 0.86rem;
+  font-weight: 720;
   line-height: 1.35;
 }
 
 .contact-entry-panel {
-  border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent);
-  padding: 14px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .contact-entry-panel[hidden] {
@@ -5075,16 +5039,7 @@ body {
 }
 
 .contact-entry-panel--project {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 34%,
-    var(--color-border) 66%
-  );
-  background: linear-gradient(
-    132deg,
-    color-mix(in srgb, var(--color-cta) 9%, var(--color-surface-1) 91%),
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
-  );
+  padding-top: 18px;
 }
 
 .contact-entry-panel-title {
@@ -5121,37 +5076,25 @@ body {
 
 .contact-entry-panel--project .project-request-panel {
   margin-top: 0;
-  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
   border-color: color-mix(
     in srgb,
-    var(--color-cta) 24%,
-    var(--color-border) 76%
-  );
-}
-
-.contact-entry-panel--email {
-  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-}
-
-.contact-entry-panel--call {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 40%,
-    var(--color-border) 60%
+    var(--color-cta) 18%,
+    var(--color-border) 82%
   );
   background: linear-gradient(
-    138deg,
-    color-mix(in srgb, var(--color-cta) 11%, var(--color-surface-1) 89%),
+    160deg,
+    color-mix(in srgb, var(--color-surface-1) 90%, var(--color-cta) 10%),
     color-mix(in srgb, var(--color-surface-1) 98%, transparent)
   );
+  box-shadow: 0 10px 24px rgba(5, 8, 12, 0.08);
 }
 
 .contact-channel-email-card,
 .contact-channel-call-card {
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
-  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  padding: 14px;
 }
 
 .contact-channel-email-card {
@@ -5237,9 +5180,9 @@ body {
 }
 
 .contact-channel-footer {
-  margin-top: 2px;
+  margin-top: 4px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .contact-channel-actions {
@@ -5399,55 +5342,6 @@ body {
   border: 0;
 }
 
-.contact-trust-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, max-content);
-  justify-content: space-between;
-  gap: 8px;
-  width: 100%;
-}
-
-.contact-trust-list li {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  min-height: 34px;
-  white-space: nowrap;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  padding: 6px 12px;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.75rem;
-  line-height: 1.35;
-}
-
-.contact-trust-list li::before {
-  content: "\2713";
-  display: inline-block;
-  flex: 0 0 auto;
-  font-size: 0.74rem;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--color-accent-warm);
-  transform: translateY(-0.5px);
-}
-
-@media (max-width: 900px) {
-  .contact-trust-list {
-    grid-template-columns: 1fr;
-    justify-content: stretch;
-  }
-
-  .contact-trust-list li {
-    white-space: normal;
-  }
-}
-
 .contact-cta-wrap {
   margin-top: 2px;
   display: flex;
@@ -5484,7 +5378,16 @@ body {
 
 @media (min-width: 760px) {
   .contact-entry-picker {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .contact-entry-trigger {
+    width: auto;
+    min-width: clamp(11rem, 17vw, 13rem);
+    max-width: min(100%, 14.5rem);
+    min-height: 52px;
   }
 }
 
@@ -5532,22 +5435,26 @@ body {
 }
 
 .project-request-panel {
-  margin-top: 14px;
-  border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 98%, transparent);
-  box-shadow: 0 12px 26px rgba(5, 8, 12, 0.2);
-  padding: 18px;
+  margin-top: 0;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 12px 28px rgba(5, 8, 12, 0.1);
+  padding: clamp(1rem, 1.8vw, 1.3rem);
 }
 
 .project-request-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  gap: 12px;
-  padding-bottom: 10px;
+  gap: 10px;
+  padding-bottom: 12px;
   border-bottom: 1px solid
-    color-mix(in srgb, var(--color-border) 72%, transparent);
+    color-mix(in srgb, var(--color-border) 66%, transparent);
 }
 
 .project-request-head--close-only {
@@ -5562,8 +5469,8 @@ body {
 
 .project-request-head h3 {
   margin: 0;
-  color: var(--color-text);
-  font-size: clamp(1rem, 1.7vw, 1.16rem);
+  color: color-mix(in srgb, var(--color-text) 94%, var(--color-text-muted) 6%);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
 }
 
 .project-request-head p {
@@ -5577,18 +5484,18 @@ body {
   margin: 0;
   text-align: left;
   justify-self: start;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.92rem;
-  line-height: 1.56;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: 0.9rem;
+  line-height: 1.54;
 }
 
 .project-request-stepper {
-  margin: 12px 0 0;
+  margin: 14px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .project-request-stepper-item {
@@ -5597,24 +5504,24 @@ body {
 
 .project-request-stepper-trigger {
   width: 100%;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  padding: 10px 11px;
+  padding: 9px 10px;
   display: flex;
   align-items: center;
   gap: 8px;
   text-align: left;
-  min-height: 66px;
+  min-height: 58px;
 }
 
 .project-request-stepper-item.is-current .project-request-stepper-trigger {
-  border-color: color-mix(in srgb, var(--color-cta) 54%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
   background: color-mix(
     in srgb,
-    var(--color-surface-2) 55%,
-    var(--color-cta) 45%
+    var(--color-surface-2) 68%,
+    var(--color-cta) 32%
   );
   color: var(--color-text);
 }
@@ -5634,8 +5541,8 @@ body {
 }
 
 .project-request-stepper-index {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
@@ -5664,7 +5571,7 @@ body {
 
 .project-request-stepper-copy small {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   line-height: 1.2;
 }
 
@@ -5674,15 +5581,15 @@ body {
 
 .project-request-stepper-copy strong {
   color: inherit;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 760;
   line-height: 1.2;
 }
 
 .project-request-form {
-  margin-top: 18px;
+  margin-top: 16px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .project-request-step {
@@ -5701,14 +5608,14 @@ body {
   display: block;
   width: 100%;
   margin: 0;
-  padding: 0 0 8px;
+  padding: 0 0 10px;
   border-bottom: 1px solid
-    color-mix(in srgb, var(--color-border) 72%, transparent);
+    color-mix(in srgb, var(--color-border) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
-  font-size: 1rem;
+  font-size: 0.94rem;
   font-weight: 700;
   letter-spacing: 0.01em;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .project-request-grid {
@@ -5726,12 +5633,12 @@ body {
 
 .project-request-field {
   display: grid;
-  gap: 7px;
+  gap: 6px;
 }
 
 .project-request-field > span {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 650;
 }
 
@@ -5741,17 +5648,48 @@ body {
   font-weight: 800;
 }
 
+.project-request-field--offer {
+  max-width: min(100%, 24rem);
+}
+
 .project-request-field input,
 .project-request-field select,
 .project-request-field textarea {
   width: 100%;
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
   color: var(--color-text);
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   line-height: 1.45;
   padding: 10px 12px;
+}
+
+.project-request-field select {
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+}
+
+.project-request-field--offer select {
+  min-height: 44px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 88%,
+    var(--color-surface-2) 12%
+  );
+}
+
+.project-request-field--offer select[data-empty="true"] {
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
+}
+
+.project-request-field--offer select[data-empty="false"] {
+  color: var(--color-text);
 }
 
 .project-request-field textarea {
@@ -5761,7 +5699,7 @@ body {
 
 .project-request-field input::placeholder,
 .project-request-field textarea::placeholder {
-  color: color-mix(in srgb, var(--color-text) 42%, var(--color-text-muted) 58%);
+  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
 }
 
 .project-request-field-hint {
@@ -6436,15 +6374,6 @@ body {
 
   .contact-channel-detail-list {
     gap: 5px;
-  }
-
-  .contact-entry-panel--project .project-request-panel {
-    margin-top: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
   }
 
   .project-request-grid--two,

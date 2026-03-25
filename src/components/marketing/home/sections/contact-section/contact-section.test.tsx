@@ -117,6 +117,7 @@ describe("ContactSection", () => {
         description="Kontaktiere uns und starte dein Projekt mit Invessiv."
         id="contact"
         privacyHref="/privacy"
+        summaryPoints={["Fast reply", "Clear path"]}
         title="Bereit für eine neue, produktive Website?"
       />,
     );
@@ -133,7 +134,9 @@ describe("ContactSection", () => {
         .getByRole("link", { name: "Leistungen ansehen" })
         .getAttribute("href"),
     ).toBe("#services");
-    expect(screen.getByText("Was du direkt erwarten kannst")).toBeTruthy();
+    expect(screen.queryByText("Was du direkt erwarten kannst")).toBeNull();
+    expect(screen.queryByText("Deadline")).toBeNull();
+    expect(screen.queryByText("Fast reply")).toBeNull();
 
     expect(
       screen.queryByRole("link", { name: "Kurze E-Mail senden" }),

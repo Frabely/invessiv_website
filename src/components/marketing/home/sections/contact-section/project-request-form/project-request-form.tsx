@@ -756,7 +756,7 @@ export function ProjectRequestForm({
               </label>
             </div>
 
-            <label className="project-request-field">
+            <label className="project-request-field project-request-field--offer">
               <span>
                 {formCopy.offerLabel}
                 <strong className="project-request-required-marker">*</strong>
@@ -773,6 +773,7 @@ export function ProjectRequestForm({
                   applyOfferSelection(event.target.value);
                   clearFieldError("offerKey");
                 }}
+                data-empty={selectedOfferKey ? "false" : "true"}
                 ref={offerSelectRef}
                 required
                 value={selectedOfferKey}

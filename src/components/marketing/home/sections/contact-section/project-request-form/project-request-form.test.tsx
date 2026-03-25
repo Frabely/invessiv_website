@@ -117,10 +117,15 @@ describe("ProjectRequestForm", () => {
   it("renders the first step directly with localized offer options", () => {
     renderForm();
 
+    const offerSelect = screen.getByRole("combobox", {
+      name: "Angebot*",
+    }) as HTMLSelectElement;
+
     expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
+    expect(offerSelect.dataset.empty).toBe("true");
     expect(
       screen.getByRole("button", { name: "Weiter zu Projekt" }),
     ).toBeTruthy();
@@ -152,6 +157,7 @@ describe("ProjectRequestForm", () => {
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
+    expect(offerSelect.dataset.empty).toBe("false");
 
     fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
       target: { value: "Max Mustermann" },

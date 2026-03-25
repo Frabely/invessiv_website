@@ -5,7 +5,6 @@ import type { KeyboardEvent } from "react";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 type ContactChannel = NonNullable<
@@ -45,9 +44,6 @@ const CONTACT_SECTION_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}']`;
 export function ContactSection({
   contactCta,
   contactChannels,
-  contactChecklist,
-  contactChecklistHint,
-  contactChecklistTitle,
   contactDecisionIntro,
   contactForm,
   contactFormOffers,
@@ -55,7 +51,6 @@ export function ContactSection({
   description,
   id,
   privacyHref,
-  summaryPoints,
   title,
 }: ContactSectionProps) {
   const [copiedEntryId, setCopiedEntryId] = useState<string | null>(null);
@@ -281,32 +276,19 @@ export function ContactSection({
     <section className="contact-section" id={id}>
       <div className="contact-layout">
         <div className="contact-brief-card">
-          <h2>{title}</h2>
-          <p className="contact-decision-intro">
-            {contactDecisionIntro ?? description}
-          </p>
-
-          {summaryPoints?.length ? (
-            <SectionScanPoints
-              fallbackClassName="contact-hint"
-              fallbackText={description}
-              points={summaryPoints}
-            />
-          ) : null}
+          <div className="contact-brief-head">
+            <h2>{title}</h2>
+            <p className="contact-decision-intro">
+              {contactDecisionIntro ?? description}
+            </p>
+          </div>
 
           {entries.length ? (
             <>
-              {contactChecklistTitle ? (
-                <h3 className="contact-entry-title">{contactChecklistTitle}</h3>
-              ) : null}
-              {contactChecklistHint ? (
-                <p className="contact-entry-subtitle">{contactChecklistHint}</p>
-              ) : null}
-
               <div
                 className="contact-entry-picker"
                 role="tablist"
-                aria-label={contactChecklistTitle ?? "Kontaktwege"}
+                aria-label="Kontaktwege"
               >
                 {entries.map((entry, entryIndex) => {
                   const isActive = activeEntryId === entry.id;
@@ -475,14 +457,6 @@ export function ContactSection({
                 );
               })}
             </>
-          ) : null}
-
-          {contactChecklist.length ? (
-            <ul className="contact-trust-list">
-              {contactChecklist.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
           ) : null}
 
           {contactSecondaryCta ? (
