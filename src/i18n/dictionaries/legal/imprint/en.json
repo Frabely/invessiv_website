@@ -9,7 +9,7 @@
     "page": {
       "title": "Legal Notice",
       "lead": "Information pursuant to Section 5 DDG.",
-      "updatedAt": "Last updated: March 6, 2026.",
+      "updatedAt": "Last updated: March 25, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -19,7 +19,7 @@
     },
     "sections": {
       "provider": {
-        "title": "Provider",
+        "title": "1. Provider information",
         "labels": {
           "company": "Business name",
           "representedBy": "Owner",
@@ -33,17 +33,12 @@
         }
       },
       "social": {
-        "title": "Social profiles",
-        "placeholders": {
-          "linkedin": "https://www.linkedin.com/company/invessiv",
-          "x": "https://x.com/invessiv",
-          "instagram": "https://www.instagram.com/invessiv/"
-        }
+        "title": "2. Social profiles"
       }
     },
     "values": {
       "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany",
-      "phoneDisplay": "+49 152 3070477"
+      "phoneDisplay": "+49 1523 2070477"
     }
   }
 }

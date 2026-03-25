@@ -9,7 +9,7 @@
     "page": {
       "title": "Impressum",
       "lead": "Angaben gemäß § 5 DDG.",
-      "updatedAt": "Zuletzt geändert: 6. März 2026.",
+      "updatedAt": "Zuletzt geändert: 25. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -19,7 +19,7 @@
     },
     "sections": {
       "provider": {
-        "title": "Anbieter",
+        "title": "1. Anbieterkennzeichnung",
         "labels": {
           "company": "Geschäftsbezeichnung",
           "representedBy": "Inhaber",
@@ -33,17 +33,12 @@
         }
       },
       "social": {
-        "title": "Social-Profile",
-        "placeholders": {
-          "linkedin": "https://www.linkedin.com/company/invessiv",
-          "x": "https://x.com/invessiv",
-          "instagram": "https://www.instagram.com/invessiv/"
-        }
+        "title": "2. Social-Profile"
       }
     },
     "values": {
       "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland",
-      "phoneDisplay": "+49 152 3070477"
+      "phoneDisplay": "+49 1523 2070477"
     }
   }
 }

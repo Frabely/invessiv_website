@@ -46,11 +46,6 @@ export type Dictionary = {
       };
       social: {
         title: string;
-        placeholders: {
-          linkedin: string;
-          x: string;
-          instagram: string;
-        };
       };
     };
     values: {
