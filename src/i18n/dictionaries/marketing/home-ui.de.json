@@ -40,9 +40,8 @@
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
-  "servicesOneTimeLabel": "",
   "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Angebot.",
+  "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "mehr Anfragen gewinnen" },
     {

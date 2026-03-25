@@ -66,7 +66,7 @@ export function SecondaryService({
         </div>
 
         <div className={styles.metaRow}>
-          <span className={styles.metaChip}>{card.price}</span>
+          <span className={styles.highlight}>{card.highlight}</span>
           <span className={styles.metaChip}>
             {deliveryLabel}: {card.delivery}
           </span>
@@ -76,6 +76,7 @@ export function SecondaryService({
       <div className={styles.copy}>
         <p className={styles.description}>{card.description}</p>
         {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+        <p className={styles.pricingHint}>{card.pricingHint}</p>
         <div className={styles.ctaSlot}>
           <a
             className={styles.ctaLink}

@@ -21,6 +21,7 @@ type ServiceCardProps = {
   detailsCtaLabel: string;
   fitLabel: string;
   isDetailsOpen: boolean;
+  isMobilePriority?: boolean;
   isRecommended?: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
@@ -28,7 +29,6 @@ type ServiceCardProps = {
   onDetailsToggleAction: (nextOpenState: boolean) => void;
   onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
   onPointerMove: (event: PointerEvent<HTMLElement>) => void;
-  oneTimeLabel: string;
   recommendedBadgeLabel: string;
 };
 
@@ -42,6 +42,7 @@ export function ServiceCard({
   detailsCtaLabel,
   fitLabel,
   isDetailsOpen,
+  isMobilePriority = false,
   isRecommended = false,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
@@ -49,7 +50,6 @@ export function ServiceCard({
   onDetailsToggleAction,
   onPointerLeave,
   onPointerMove,
-  oneTimeLabel,
   recommendedBadgeLabel,
 }: ServiceCardProps) {
   const detailsId = `services-details-${card.key}`;
@@ -64,12 +64,6 @@ export function ServiceCard({
   const hiddenBulletsLabel =
     hiddenItemsCount === 1 ? moreItemsSingularLabel : moreItemsPluralLabel;
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
-  const normalizedPrice = card.price.trim();
-  const isHourlyPrice = /\/\s*h\b/i.test(normalizedPrice);
-  const heroPrice = normalizedPrice
-    .replace(/\s*(einmalig|one-time)\s*$/i, "")
-    .trim();
-  const priceMeta = isHourlyPrice ? null : oneTimeLabel;
   const showPrimaryCta = isCtaActive || isDetailsOpen;
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -103,6 +97,7 @@ export function ServiceCard({
     <div
       className={styles.shell}
       data-card-key={card.key}
+      data-mobile-priority={isMobilePriority ? "top" : "default"}
       data-service-variant="primary"
       role="listitem"
     >
@@ -147,19 +142,17 @@ export function ServiceCard({
             </div>
 
             <div className={styles.metaStack}>
-              <p className={`${styles.priceRow} services-price-row`}>
-                <span className={`${styles.price} services-price`}>
-                  {heroPrice}
-                </span>
-                {priceMeta ? (
-                  <span className={`${styles.priceMeta} services-price-meta`}>
-                    {oneTimeLabel}
-                  </span>
-                ) : null}
+              <p className={styles.highlight}>
+                <span className={styles.highlightText}>{card.highlight}</span>
               </p>
-              <p className={`${styles.deliveryBadge} services-delivery-badge`}>
-                {deliveryLabel}: {card.delivery}
-              </p>
+              <div className={styles.metaInfo}>
+                <p
+                  className={`${styles.deliveryBadge} services-delivery-badge`}
+                >
+                  {deliveryLabel}: {card.delivery}
+                </p>
+                <p className={styles.pricingHint}>{card.pricingHint}</p>
+              </div>
             </div>
           </div>
 

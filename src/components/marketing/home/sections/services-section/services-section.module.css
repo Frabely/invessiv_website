@@ -13,6 +13,16 @@
   align-content: start;
 }
 
+.contextNote {
+  margin: -4px 0 0;
+  max-width: min(100%, 54rem);
+  color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
 .goalTitle {
   margin: 0;
   font-size: 0.92rem;
@@ -98,6 +108,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .primaryGrid > [data-mobile-priority] {
+    order: 0;
+  }
+
   .secondaryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -124,6 +138,14 @@
 }
 
 @media (max-width: 759px) {
+  .contextNote {
+    margin-top: 0;
+  }
+
+  .primaryGrid > [data-mobile-priority="top"] {
+    order: -1;
+  }
+
   .goalChip {
     width: 100%;
     justify-content: flex-start;

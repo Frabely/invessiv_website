@@ -17,7 +17,8 @@ describe("SecondaryService", () => {
           fit: "Sinnvoll, wenn bestehende Seiten laufend angepasst werden sollen.",
           iconSrc: "/services/customer-service-icon.svg",
           iconAlt: "Support Icon",
-          price: "50 EUR / h",
+          highlight: "schnelle Hilfe für laufende Themen",
+          pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
           delivery: "24-72h",
           included: ["Bugfixes", "Checks", "Pflege"],
         }}
@@ -31,8 +32,11 @@ describe("SecondaryService", () => {
 
     expect(screen.getByText("Wartung & Support")).toBeTruthy();
     expect(screen.getByText("Add-on")).toBeTruthy();
-    expect(screen.getByText(/50 EUR \/ h/i)).toBeTruthy();
+    expect(screen.getByText("schnelle Hilfe für laufende Themen")).toBeTruthy();
     expect(screen.getByText(/Reaktionszeit:\s*24-72h/i)).toBeTruthy();
+    expect(
+      screen.getByText("Nach Aufwand oder abgestimmtem Betreuungspaket"),
+    ).toBeTruthy();
     expect(
       screen.getByText(
         "Sinnvoll, wenn bestehende Seiten laufend angepasst werden sollen.",
@@ -57,7 +61,8 @@ describe("SecondaryService", () => {
           fit: "Für Seiten mit Potenzial.",
           iconSrc: "/services/upgrade-icon.svg",
           iconAlt: "Upgrade Icon",
-          price: "ab 690 EUR einmalig",
+          highlight: "spürbare UX- und Speed-Verbesserung",
+          pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
           delivery: "2-5 Tage",
           included: ["Analyse"],
         }}

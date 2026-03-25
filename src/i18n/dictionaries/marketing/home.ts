@@ -30,7 +30,8 @@ type BaseServiceCard = {
 };
 
 type StandardServiceCard = BaseServiceCard & {
-  price: string;
+  highlight: string;
+  pricingHint: string;
   delivery: string;
   deliveryLabel?: string;
   included: string[];
@@ -49,6 +50,7 @@ export type LandingSectionCopy = {
   cards?: Array<{ title: string; description: string; tag: string }>;
   serviceCards?: StandardServiceCard[];
   serviceSecondaryTitle?: string;
+  serviceContextNote?: string;
   processSteps?: Array<{
     step: string;
     title: string;
@@ -308,6 +310,8 @@ const HOME_SECTIONS: LandingSection[] = [
           "Umfang vor Start verbindlich",
           "Lieferfenster und typische Projektumfänge sichtbar",
         ],
+        serviceContextNote:
+          "Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform.",
         serviceSecondaryTitle:
           "Schon etwas da? Oder brauchst du Unterstützung danach?",
         serviceCards: [
@@ -320,7 +324,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Landingpage mit klarer Angebotsstruktur, stärkerem CTA-Fluss und sauberer technischer Basis.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
             isRecommended: true,
-            price: "auf Anfrage",
+            highlight: "schnell live & conversion-fokussiert",
+            pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
             delivery: "3–7 Tage",
             included: [
               "Klare Angebots- und CTA-Struktur für dein Hauptziel",
@@ -343,7 +348,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Website-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
-            price: "auf Anfrage",
+            highlight: "klarer professioneller Auftritt",
+            pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
             delivery: "7–14 Tage",
             included: [
               "Positionierung, Seitenstruktur und Navigation mit klarer Journey",
@@ -367,7 +373,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
-            price: "auf Anfrage",
+            highlight: "weniger manuelle Schritte im Alltag",
+            pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
             delivery: "10–21 Tage",
             included: [
               "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
@@ -391,7 +398,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
-            price: "auf Anfrage",
+            highlight: "spürbare UX- und Speed-Verbesserung",
+            pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
             delivery: "3–10 Tage",
             included: [
               "Priorisierte Quick Wins für Speed, UX und mobile Klarheit",
@@ -415,7 +423,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Schnelle Weiterentwicklung, Bugfixes und Pflege für bestehende Seiten oder Tools.",
             fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
-            price: "nach Aufwand",
+            highlight: "schnelle Hilfe für laufende Themen",
+            pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
             delivery: "24–72h",
             deliveryLabel: "Typische Reaktionszeit",
             included: [
@@ -441,6 +450,8 @@ const HOME_SECTIONS: LandingSection[] = [
           "service range aligned before kickoff",
           "delivery window and typical project scope visible",
         ],
+        serviceContextNote:
+          "Every project is calculated individually. You receive a binding written offer before delivery starts.",
         serviceSecondaryTitle:
           "Already have something in place? Or need support afterward?",
         serviceCards: [
@@ -453,7 +464,8 @@ const HOME_SECTIONS: LandingSection[] = [
               "Landing page with a clearer offer structure, stronger CTA flow, and a clean technical foundation.",
             fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
             isRecommended: true,
-            price: "on request",
+            highlight: "live quickly and tuned for conversion",
+            pricingHint: "Quote based on goal, scope, and feedback depth",
             delivery: "3–7 days",
             included: [
               "Clear offer and CTA structure around your main goal",
@@ -476,7 +488,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Company website or relaunch with clearer positioning and more obvious user paths.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
-            price: "on request",
+            highlight: "a clearer professional presence",
+            pricingHint: "Individual quote based on page scope and depth",
             delivery: "7–14 days",
             included: [
               "Positioning, site structure, and navigation with a clearer journey",
@@ -500,7 +513,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Small internal tool that reduces manual work and creates more transparency.",
             fit: "Teams that want to structure or partially automate recurring internal steps.",
-            price: "on request",
+            highlight: "fewer manual steps in daily work",
+            pricingHint: "Calculated by workflow, data, and integrations",
             delivery: "10–21 days",
             included: [
               "Compact planning workshop for goals, data, and roles",
@@ -524,7 +538,9 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "More speed, clearer UX, stronger CTAs, and more modern UI without a full rebuild.",
             fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
-            price: "on request",
+            highlight: "noticeable UX and speed gains",
+            pricingHint:
+              "Quote based on the current state and depth of intervention",
             delivery: "3–10 days",
             included: [
               "Prioritized quick wins for speed, UX, and mobile clarity",
@@ -548,7 +564,8 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Fast iteration, bugfixes, and upkeep for existing websites or tools.",
             fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
-            price: "by effort",
+            highlight: "fast help for ongoing priorities",
+            pricingHint: "By effort or an agreed support retainer",
             delivery: "24–72h",
             deliveryLabel: "Typical response time",
             included: [

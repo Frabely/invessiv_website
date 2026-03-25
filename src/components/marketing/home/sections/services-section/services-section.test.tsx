@@ -19,7 +19,8 @@ const serviceCards = [
     title: "Webseiten",
     description: "Webseiten Paket.",
     fit: "Relaunches mit mehreren Kernseiten.",
-    price: "ab 2490 EUR einmalig",
+    highlight: "klarer professioneller Auftritt",
+    pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
     delivery: "7-14 Tage",
     included: ["Konzept", "UI", "Setup", "Review", "Übergabe"],
     details: ["Zweiter Zusatzhinweis"],
@@ -31,7 +32,8 @@ const serviceCards = [
     title: "Landingpages",
     description: "Landingpage Paket.",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
-    price: "ab 990 EUR einmalig",
+    highlight: "schnell live & conversion-fokussiert",
+    pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
     delivery: "3-7 Tage",
     included: ["Rahmen", "Design", "SEO", "Performance", "Tracking"],
     details: ["Zusatzhinweis"],
@@ -43,7 +45,8 @@ const serviceCards = [
     title: "Prozess-Tools",
     description: "Workflows digitalisieren.",
     fit: "Teams mit klaren Routineabläufen.",
-    price: "ab 1490 EUR einmalig",
+    highlight: "weniger manuelle Schritte im Alltag",
+    pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
     delivery: "1-2 Wochen",
     included: ["Audit", "Konzept", "Setup", "Testing"],
   },
@@ -54,7 +57,8 @@ const serviceCards = [
     title: "Website-Upgrade",
     description: "Bestehendes verbessern.",
     fit: "Für Seiten mit Potenzial.",
-    price: "ab 690 EUR einmalig",
+    highlight: "spürbare UX- und Speed-Verbesserung",
+    pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
     delivery: "2-5 Tage",
     included: ["Analyse", "UX", "Optimierung"],
   },
@@ -65,7 +69,8 @@ const serviceCards = [
     title: "Wartung & Support",
     description: "Pflege und Support.",
     fit: "Für laufende Anpassungen.",
-    price: "50 EUR / h",
+    highlight: "schnelle Hilfe für laufende Themen",
+    pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
     delivery: "24-72h",
     included: ["Bugfixes", "Anpassungen", "Checks"],
   },
@@ -86,11 +91,10 @@ function renderSection() {
       description="Leistungen als Richtwerte."
       fitLabel="Ideal für"
       goalOptions={goalOptions}
-      goalTitle="Wähle dein Ziel – wir markieren das passendste Angebot."
+      goalTitle="Wähle dein Ziel – wir markieren das passendste Leistungsmodell."
       id="services"
       moreItemsPluralLabel="weitere Punkte"
       moreItemsSingularLabel="weiterer Punkt"
-      oneTimeLabel="einmalig"
       primaryCtaLabel="Projekt anfragen"
       primaryCtaLabels={{
         landing: "Projekt anfragen",
@@ -102,6 +106,7 @@ function renderSection() {
       recommendedBadgeLabel="Empfohlen"
       sectionRef={{ current: null }}
       serviceCards={serviceCards}
+      serviceContextNote="Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform."
       serviceSecondaryTitle="Schon etwas da?"
       summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
       title="Was brauchst du gerade?"
@@ -114,7 +119,7 @@ describe("ServicesSection", () => {
     cleanup();
   });
 
-  it("renders chips, three primary cards, two secondary cards, and defaults to landing without reordering the grid", () => {
+  it("renders chips, three primary cards, two secondary cards, and marks landing as the mobile priority by default", () => {
     const { container } = renderSection();
 
     const primaryCards = Array.from(
@@ -126,7 +131,12 @@ describe("ServicesSection", () => {
 
     expect(
       screen.getByText(
-        "Wähle dein Ziel – wir markieren das passendste Angebot.",
+        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform.",
       ),
     ).toBeTruthy();
     expect(
@@ -140,10 +150,21 @@ describe("ServicesSection", () => {
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["web", "landing", "process"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["upgrade", "maintenance"]);
     expect(screen.getByText("Empfohlen")).toBeTruthy();
+    expect(screen.getByText("klarer professioneller Auftritt")).toBeTruthy();
+    expect(
+      screen.getByText("Angebot nach Ziel, Umfang und Feedbackbedarf"),
+    ).toBeTruthy();
     expect(screen.queryByText("KI-Templates & Agents")).toBeNull();
     const landingCard = screen.getByText("Landingpages").closest("article");
     expect(
@@ -167,7 +188,7 @@ describe("ServicesSection", () => {
     ).toBe("maintenance");
   });
 
-  it("updates recommendation and CTA copy when another goal is chosen while keeping the card order stable", () => {
+  it("updates recommendation and CTA copy when another goal is chosen while keeping the desktop card order stable", () => {
     const { container } = renderSection();
 
     fireEvent.click(
@@ -181,6 +202,13 @@ describe("ServicesSection", () => {
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["web", "landing", "process"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(
       within(
         screen.getByText("Prozess-Tools").closest("article") as HTMLElement,

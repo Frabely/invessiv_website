@@ -21,7 +21,6 @@ export type HomeUiContent = {
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;
-  servicesOneTimeLabel: string;
   servicesRecommendedBadgeLabel: string;
   includedContent: IncludedContent;
   servicesDeliveryLabel: string;

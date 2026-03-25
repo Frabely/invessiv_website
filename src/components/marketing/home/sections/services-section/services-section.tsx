@@ -27,7 +27,6 @@ type ServicesSectionProps = {
   id: string;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
-  oneTimeLabel: string;
   primaryCtaLabel: string;
   primaryCtaLabels: Record<
     "landing" | "maintenance" | "process" | "upgrade" | "web",
@@ -36,6 +35,7 @@ type ServicesSectionProps = {
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardData[];
+  serviceContextNote?: string;
   serviceSecondaryTitle?: string;
   summaryPoints?: string[];
   title: string;
@@ -60,12 +60,12 @@ export function ServicesSection({
   id,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
-  oneTimeLabel,
   primaryCtaLabel,
   primaryCtaLabels,
   recommendedBadgeLabel,
   sectionRef,
   serviceCards,
+  serviceContextNote,
   serviceSecondaryTitle,
   summaryPoints,
   title,
@@ -200,6 +200,10 @@ export function ServicesSection({
         </div>
       </div>
 
+      {serviceContextNote ? (
+        <p className={styles.contextNote}>{serviceContextNote}</p>
+      ) : null}
+
       <div className={styles.primaryGrid} role="list">
         {primaryCards.map((card) => (
           <ServiceCard
@@ -212,6 +216,7 @@ export function ServicesSection({
             detailsCtaLabel={detailsCtaLabel}
             fitLabel={fitLabel}
             isDetailsOpen={openCardKey === card.key}
+            isMobilePriority={card.key === recommendedCardKey}
             isRecommended={card.key === recommendedCardKey}
             key={card.key}
             moreItemsPluralLabel={moreItemsPluralLabel}
@@ -222,7 +227,6 @@ export function ServicesSection({
             }
             onPointerLeave={resetCardSpotlight}
             onPointerMove={setCardSpotlight}
-            oneTimeLabel={oneTimeLabel}
             recommendedBadgeLabel={recommendedBadgeLabel}
           />
         ))}

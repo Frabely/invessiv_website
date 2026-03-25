@@ -43,7 +43,7 @@
 
 .header {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .titleWrap {
@@ -70,22 +70,41 @@
 }
 .metaStack {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   align-content: start;
 }
 
-.priceRow {
+.highlight {
   margin: 0;
+  min-height: 1.3rem;
 }
 
-.price {
+.highlightText {
+  display: block;
+  color: color-mix(in srgb, var(--accent) 78%, var(--color-text) 22%);
+  font-size: clamp(0.9rem, 1.02vw, 1rem);
+  font-weight: 760;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
 }
-.priceMeta {
+
+.metaInfo {
+  display: grid;
+  gap: 8px;
+  align-content: start;
 }
+
 .deliveryBadge {
   margin: 0;
   width: fit-content;
   max-width: 100%;
+}
+
+.pricingHint {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .body {
@@ -147,6 +166,14 @@
 
 @media (min-width: 760px) {
   .header {
-    grid-template-rows: minmax(8.75rem, auto) auto;
+    grid-template-rows: minmax(8.75rem, auto) minmax(3.7rem, auto);
+  }
+
+  .metaStack {
+    grid-template-rows: minmax(1.3rem, auto) auto;
+  }
+
+  .highlightText {
+    white-space: nowrap;
   }
 }

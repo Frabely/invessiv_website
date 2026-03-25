@@ -70,12 +70,12 @@ export function HomeSectionsRenderer({
                   key={section.id}
                   moreItemsPluralLabel={ui.servicesMoreItemsPluralLabel}
                   moreItemsSingularLabel={ui.servicesMoreItemsSingularLabel}
-                  oneTimeLabel={ui.servicesOneTimeLabel}
                   primaryCtaLabel={ui.servicesPrimaryCta}
                   primaryCtaLabels={ui.servicesPrimaryCtaLabels}
                   recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards ?? []}
+                  serviceContextNote={section.serviceContextNote}
                   serviceSecondaryTitle={section.serviceSecondaryTitle}
                   summaryPoints={section.summaryPoints}
                   title={section.title}

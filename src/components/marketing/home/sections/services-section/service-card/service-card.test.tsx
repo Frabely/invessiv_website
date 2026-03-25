@@ -24,7 +24,8 @@ describe("ServiceCard", () => {
             fit: "Angebotsseiten mit klarer Conversion-Aktion.",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",
-            price: "ab 990 EUR einmalig",
+            highlight: "Schnell live & conversion-fokussiert",
+            pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
             delivery: "3-7 Tage",
             included: [
               "Struktur & Wireframe",
@@ -53,7 +54,6 @@ describe("ServiceCard", () => {
           onDetailsToggleAction={setIsDetailsOpen}
           onPointerLeave={vi.fn()}
           onPointerMove={vi.fn()}
-          oneTimeLabel="einmalig"
           recommendedBadgeLabel="Empfohlen"
         />
       );
@@ -64,6 +64,12 @@ describe("ServiceCard", () => {
     expect(screen.getByText("Ideal für")).toBeTruthy();
     expect(
       screen.getByText("Angebotsseiten mit klarer Conversion-Aktion."),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Schnell live & conversion-fokussiert"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("Angebot nach Ziel, Umfang und Feedbackbedarf"),
     ).toBeTruthy();
     expect(screen.queryByText("Conversion-optimierte One-Pager.")).toBeNull();
     expect(screen.getByText("+ 4 weitere Punkte")).toBeTruthy();
@@ -103,7 +109,8 @@ describe("ServiceCard", () => {
           description: "Kurzbeschreibung.",
           iconSrc: "/services/process-icon.svg",
           iconAlt: "Process icon",
-          price: "ab 1490 EUR einmalig",
+          highlight: "Fewer manual steps in daily work",
+          pricingHint: "Calculated by workflow, data, and integrations",
           delivery: "1-2 Wochen",
           included: ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"],
         }}
@@ -119,7 +126,6 @@ describe("ServiceCard", () => {
         onDetailsToggleAction={vi.fn()}
         onPointerLeave={vi.fn()}
         onPointerMove={vi.fn()}
-        oneTimeLabel="one-time"
         recommendedBadgeLabel="Recommended"
       />,
     );

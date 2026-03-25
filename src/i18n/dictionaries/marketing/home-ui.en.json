@@ -40,9 +40,8 @@
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
-  "servicesOneTimeLabel": "",
   "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting offer.",
+  "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting service model.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "win more inquiries" },
     {
