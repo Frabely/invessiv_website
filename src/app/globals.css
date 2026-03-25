@@ -444,7 +444,7 @@ main {
 .hero__grid {
   position: relative;
   z-index: 1;
-  width: min(1240px, 100%);
+  width: min(var(--max-content-width), 100%);
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(340px, 1.15fr) minmax(300px, 0.85fr);
@@ -6166,6 +6166,230 @@ body {
 .marketing-main .contact-brief-card {
   padding: clamp(1rem, 2vw, 1.25rem);
   gap: clamp(0.75rem, 1.5vw, 1rem);
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  :root {
+    --max-content-width: 1140px;
+    --section-space: clamp(1.5rem, 1.8vw, 2.4rem);
+    --wide-monitor-inline-frame: clamp(36px, 3.6vw, 56px);
+  }
+
+  .marketing-main {
+    --section-shell-pad-inline: var(--wide-monitor-inline-frame);
+    --section-shell-pad-top: clamp(0.9rem, 1.5vw, 1.3rem);
+    --section-shell-pad-bottom: clamp(1.75rem, 2.8vw, 2.6rem);
+    --section-grid-gap: clamp(0.56rem, 0.9vw, 0.86rem);
+    --section-card-gap: clamp(0.44rem, 0.78vw, 0.72rem);
+  }
+
+  .site-header__inner,
+  .site-footer__inner,
+  .layout-shell,
+  .legal-page {
+    padding-inline: var(--wide-monitor-inline-frame);
+  }
+
+  .site-header__inner {
+    min-height: 70px;
+  }
+
+  .site-header.is-scrolled .site-header__inner {
+    min-height: 60px;
+  }
+
+  .site-header__brand {
+    font-size: 1rem;
+  }
+
+  .site-header__nav {
+    gap: 18px;
+    font-size: 0.88rem;
+  }
+
+  .marketing-main .hero {
+    padding-top: clamp(5rem, 6vw, 5.8rem);
+    padding-bottom: clamp(1.5rem, 2.6vw, 2.25rem);
+  }
+
+  .hero__grid {
+    grid-template-columns: minmax(320px, 1.02fr) minmax(260px, 0.78fr);
+    gap: clamp(22px, 2.8vw, 40px);
+  }
+
+  .hero__content {
+    max-width: 660px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 2.8vw, 3.05rem);
+    max-width: 14ch;
+  }
+
+  .hero p:not(.hero__tag) {
+    max-width: 50ch;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .hero__cta-row {
+    margin-top: 20px;
+    gap: 8px;
+  }
+
+  .btn {
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 0.88rem;
+  }
+
+  .section-scan-point.section-scan-point--hero {
+    min-height: 26px;
+    padding: 0 9px;
+    font-size: 0.76rem;
+  }
+
+  .hero-shot {
+    width: clamp(320px, 29vw, 500px);
+  }
+
+  .included-section h2,
+  .services-section h2,
+  .process-section h2 {
+    font-size: clamp(1.6rem, 1.95vw, 2.05rem);
+  }
+
+  .qna-section h2 {
+    font-size: clamp(1.55rem, 1.85vw, 1.95rem);
+  }
+
+  .packages-section h2,
+  .contact-section h2,
+  .legal-page h1 {
+    font-size: clamp(1.75rem, 2.25vw, 2.3rem);
+  }
+
+  .included-hint,
+  .services-hint,
+  .process-hint,
+  .packages-hint,
+  .contact-hint,
+  .legal-lead {
+    font-size: 0.94rem;
+  }
+
+  .qna-hint {
+    font-size: 0.93rem;
+  }
+
+  .process-summary {
+    font-size: 0.86rem;
+  }
+
+  .services-card h3,
+  .services-coming-soon-title {
+    font-size: clamp(1.1rem, 1.15vw, 1.22rem);
+  }
+
+  .services-price {
+    font-size: clamp(1.5rem, 1.7vw, 1.8rem);
+  }
+
+  .services-title-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
+  .services-title-icon-image {
+    width: 28px;
+    height: 28px;
+  }
+
+  .packages-card {
+    min-height: clamp(18.75rem, 25vw, 21.5rem);
+    padding: 16px 14px 12px;
+  }
+
+  .packages-card h3 {
+    font-size: clamp(1.55rem, 1.9vw, 2.05rem);
+  }
+
+  .packages-price {
+    font-size: clamp(1.75rem, 2vw, 2rem);
+  }
+
+  .packages-ideal,
+  .packages-scope li,
+  .packages-timeline {
+    font-size: 0.9rem;
+  }
+
+  .packages-cta--primary {
+    min-height: 42px;
+    font-size: 0.88rem;
+  }
+
+  .process-layout {
+    min-height: clamp(29rem, 48svh, 37rem);
+    padding-bottom: clamp(2rem, 2.8vw, 2.6rem);
+  }
+
+  .process-intro {
+    margin-bottom: 18px;
+    padding: 11px;
+  }
+
+  .process-role-line {
+    font-size: 0.86rem;
+  }
+
+  .process-intro-cta p {
+    font-size: 0.82rem;
+  }
+
+  .process-step-title {
+    font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+  }
+
+  .process-step-output-value {
+    font-size: 0.92rem;
+  }
+
+  .process-step-meta-line {
+    font-size: 0.76rem;
+  }
+
+  .contact-brief-card {
+    padding: clamp(0.82rem, 1.35vw, 0.98rem);
+    gap: clamp(0.56rem, 0.92vw, 0.72rem);
+  }
+
+  .site-footer__grid {
+    gap: 22px;
+  }
+
+  .site-footer__bottom-right a {
+    font-size: 0.92rem;
+  }
+
+  .legal-page {
+    padding-top: 112px;
+    font-size: 0.94rem;
+  }
+
+  .legal-page__inner {
+    padding: 20px;
+  }
+
+  .legal-page h2 {
+    font-size: clamp(1.08rem, 1.35vw, 1.28rem);
+  }
+
+  .legal-page section {
+    margin-top: 20px;
+    padding: 18px;
+  }
 }
 
 @media (max-width: 1200px) {
