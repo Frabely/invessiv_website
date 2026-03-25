@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TermsContent } from "@/components/legal/terms-content/terms-content";
 import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
-import {
-  COMPANY,
-  COMPANY_MAILTO,
-} from "@/config/company";
+import { COMPANY, COMPANY_MAILTO } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
 import {
@@ -21,7 +18,9 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: PrivacyPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PrivacyPageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
@@ -62,12 +61,14 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       title: privacy.sections.controller.title,
       body: (
         <>
+          <p>{COMPANY.brandName}</p>
           <p>
-            {COMPANY.legalName}, {privacy.sections.controller.ownerLabel}: {COMPANY.owner}
+            {privacy.sections.controller.ownerLabel}: {COMPANY.owner}
           </p>
           <p>{privacy.sections.controller.addressLine}</p>
           <p>
-            {privacy.sections.controller.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            {privacy.sections.controller.emailLabel}:{" "}
+            <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
           <p>
             {privacy.sections.controller.phoneLabel}:{" "}
@@ -92,29 +93,14 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.speedInsights.body}</p>,
     },
     {
-      id: "search-console",
-      title: privacy.sections.searchConsole.title,
-      body: <p>{privacy.sections.searchConsole.body}</p>,
+      id: "contact",
+      title: privacy.sections.contact.title,
+      body: <p>{privacy.sections.contact.body}</p>,
     },
     {
-      id: "contact-form",
-      title: privacy.sections.contactForm.title,
-      body: <p>{privacy.sections.contactForm.body}</p>,
-    },
-    {
-      id: "email-contact",
-      title: privacy.sections.emailContact.title,
-      body: <p>{privacy.sections.emailContact.body}</p>,
-    },
-    {
-      id: "calendly",
-      title: privacy.sections.calendly.title,
-      body: <p>{privacy.sections.calendly.body}</p>,
-    },
-    {
-      id: "zoom",
-      title: privacy.sections.zoom.title,
-      body: <p>{privacy.sections.zoom.body}</p>,
+      id: "appointments",
+      title: privacy.sections.appointments.title,
+      body: <p>{privacy.sections.appointments.body}</p>,
     },
     {
       id: "cookies",
@@ -145,16 +131,6 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       id: "complaints",
       title: privacy.sections.complaints.title,
       body: <p>{privacy.sections.complaints.body}</p>,
-    },
-    {
-      id: "data-provision",
-      title: privacy.sections.dataProvision.title,
-      body: <p>{privacy.sections.dataProvision.body}</p>,
-    },
-    {
-      id: "no-automated-decisions",
-      title: privacy.sections.noAutomatedDecisions.title,
-      body: <p>{privacy.sections.noAutomatedDecisions.body}</p>,
     },
   ];
 

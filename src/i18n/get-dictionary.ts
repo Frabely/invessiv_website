@@ -169,23 +169,11 @@ export type Dictionary = {
         title: string;
         body: string;
       };
-      searchConsole: {
+      contact: {
         title: string;
         body: string;
       };
-      contactForm: {
-        title: string;
-        body: string;
-      };
-      emailContact: {
-        title: string;
-        body: string;
-      };
-      calendly: {
-        title: string;
-        body: string;
-      };
-      zoom: {
+      appointments: {
         title: string;
         body: string;
       };
@@ -210,14 +198,6 @@ export type Dictionary = {
         body: string;
       };
       complaints: {
-        title: string;
-        body: string;
-      };
-      dataProvision: {
-        title: string;
-        body: string;
-      };
-      noAutomatedDecisions: {
         title: string;
         body: string;
       };
