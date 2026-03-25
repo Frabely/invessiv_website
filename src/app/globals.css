@@ -5596,11 +5596,12 @@ body {
 }
 
 .project-request-step {
+  --project-request-grid-gap: 12px;
   margin: 0;
   padding: 0;
   border: 0;
   display: grid;
-  gap: 12px;
+  gap: var(--project-request-grid-gap);
 }
 
 .project-request-step[hidden] {
@@ -5623,7 +5624,7 @@ body {
 
 .project-request-grid {
   display: grid;
-  gap: 12px;
+  gap: var(--project-request-grid-gap);
 }
 
 .project-request-grid--two {
@@ -5652,7 +5653,7 @@ body {
 }
 
 .project-request-field--offer {
-  max-width: min(100%, 24rem);
+  max-width: 100%;
 }
 
 .project-request-field input,
@@ -5673,14 +5674,26 @@ body {
 }
 
 .project-request-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.8rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M2 2L7 7L12 2' stroke='%23f4f7fd' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: calc(100% - 1rem) 50%;
+  background-repeat: no-repeat;
+  background-size: 0.82rem 0.54rem;
   color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+}
+
+[data-theme="light"] .project-request-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M2 2L7 7L12 2' stroke='%231a2436' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 .project-request-field--offer select {
   min-height: 44px;
   padding-top: 9px;
   padding-bottom: 9px;
-  background: color-mix(
+  background-color: color-mix(
     in srgb,
     var(--color-surface-1) 88%,
     var(--color-surface-2) 12%
@@ -6093,6 +6106,17 @@ body {
     .services-card-top
   ) {
   gap: clamp(0.625rem, 1.4vw, 0.95rem);
+}
+
+.marketing-main .project-request-step {
+  --project-request-grid-gap: clamp(0.625rem, 1.4vw, 0.95rem);
+}
+
+@media (min-width: 901px) {
+  .project-request-field--offer {
+    width: calc((100% - var(--project-request-grid-gap)) / 2);
+    max-width: calc((100% - var(--project-request-grid-gap)) / 2);
+  }
 }
 
 .marketing-main .packages-card {
