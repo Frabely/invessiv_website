@@ -42,7 +42,7 @@
   "servicesMoreItemsSingularLabel": "more item",
   "servicesOneTimeLabel": "one-time",
   "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesIntentTitle": "I want to …",
+  "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting offer.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "win more inquiries" },
     {

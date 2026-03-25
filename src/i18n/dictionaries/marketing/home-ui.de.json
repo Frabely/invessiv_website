@@ -42,7 +42,7 @@
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
   "servicesOneTimeLabel": "einmalig",
   "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesIntentTitle": "Ich will …",
+  "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Angebot.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "mehr Anfragen gewinnen" },
     {

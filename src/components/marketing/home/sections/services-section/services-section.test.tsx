@@ -81,7 +81,7 @@ function renderSection() {
       description="Leistungen als Richtwerte."
       fitLabel="Ideal für"
       goalOptions={goalOptions}
-      goalTitle="Ich will …"
+      goalTitle="Wähle dein Ziel – wir markieren das passendste Angebot."
       id="services"
       moreItemsPluralLabel="weitere Punkte"
       moreItemsSingularLabel="weiterer Punkt"
@@ -118,7 +118,11 @@ describe("ServicesSection", () => {
       container.querySelectorAll("[data-service-variant='secondary']"),
     );
 
-    expect(screen.getByText("Ich will …")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Wähle dein Ziel – wir markieren das passendste Angebot.",
+      ),
+    ).toBeTruthy();
     expect(
       screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
     ).toBeTruthy();
