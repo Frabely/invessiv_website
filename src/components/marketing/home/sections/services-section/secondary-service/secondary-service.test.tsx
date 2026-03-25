@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { SecondaryService } from "./secondary-service";
@@ -25,8 +25,6 @@ describe("SecondaryService", () => {
         ctaLabel="Wartung & Support anfragen"
         ctaProjectGoal="mehr Anfragen gewinnen"
         defaultDeliveryLabel="Reaktionszeit"
-        isSelected
-        onSelectAction={() => undefined}
       />,
     );
 
@@ -46,39 +44,11 @@ describe("SecondaryService", () => {
     expect(
       screen.getByRole("link", { name: "Wartung & Support anfragen" }),
     ).toBeTruthy();
-  });
-
-  it("calls the select action on click and keyboard confirmation", () => {
-    let selectionCount = 0;
-
-    render(
-      <SecondaryService
-        addonBadgeLabel="Add-on"
-        card={{
-          key: "upgrade",
-          title: "Website-Upgrade",
-          description: "Bestehendes verbessern.",
-          fit: "Für Seiten mit Potenzial.",
-          iconSrc: "/services/upgrade-icon.svg",
-          iconAlt: "Upgrade Icon",
-          highlight: "spürbare UX- und Speed-Verbesserung",
-          pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
-          delivery: "2-5 Tage",
-          included: ["Analyse"],
-        }}
-        ctaLabel="Upgrade anfragen"
-        defaultDeliveryLabel="Typisch"
-        onSelectAction={() => {
-          selectionCount += 1;
-        }}
-      />,
-    );
-
-    const article = screen.getByText("Website-Upgrade").closest("article");
-
-    fireEvent.click(article as HTMLElement);
-    fireEvent.keyDown(article as HTMLElement, { key: "Enter" });
-
-    expect(selectionCount).toBe(2);
+    expect(
+      screen
+        .getByText("Wartung & Support")
+        .closest("article")
+        ?.getAttribute("tabindex"),
+    ).toBeNull();
   });
 });

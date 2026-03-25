@@ -291,41 +291,6 @@ describe("ServicesSection", () => {
     ).toBe("true");
   });
 
-  it("keeps the top goal selection stable when a secondary card is chosen", () => {
-    renderSection();
-
-    fireEvent.click(
-      screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
-    );
-
-    const upgradeCard = screen.getByText("Website-Upgrade").closest("article");
-    expect(
-      within(upgradeCard as HTMLElement)
-        .getByRole("link", { name: "Upgrade anfragen" })
-        .getAttribute("data-project-offer"),
-    ).toBe("upgrade");
-    expect(
-      within(upgradeCard as HTMLElement)
-        .getByRole("link", { name: "Upgrade anfragen" })
-        .getAttribute("data-project-goal"),
-    ).toBe("mehr Anfragen gewinnen");
-    expect(
-      within(screen.getByText("Landingpages").closest("article") as HTMLElement)
-        .getByRole("link", { name: "Projekt anfragen" })
-        .getAttribute("data-project-offer"),
-    ).toBe("landing");
-    expect(
-      within(
-        screen.getByText("Wartung & Support").closest("article") as HTMLElement,
-      ).getByRole("link", { name: "Wartung & Support anfragen" }),
-    ).toBeTruthy();
-    expect(
-      screen
-        .getByRole("button", { name: "mehr Anfragen gewinnen" })
-        .getAttribute("aria-pressed"),
-    ).toBe("true");
-  });
-
   it("keeps both secondary text links visible even before a secondary card is selected", () => {
     renderSection();
 
@@ -344,6 +309,6 @@ describe("ServicesSection", () => {
         .getByText("Website-Upgrade")
         .closest("article")
         ?.getAttribute("data-selected"),
-    ).toBe("false");
+    ).toBeNull();
   });
 });

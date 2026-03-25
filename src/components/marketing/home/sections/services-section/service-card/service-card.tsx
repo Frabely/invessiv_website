@@ -57,6 +57,7 @@ export function ServiceCard({
   const detailsItems = card.details ?? [];
   const visibleBullets = card.included.slice(0, 3);
   const hiddenBullets = card.included.slice(3);
+  const expandedBullets = [...hiddenBullets, ...detailsItems];
   const hiddenBulletsCount = hiddenBullets.length;
   const hiddenDetailsCount = detailsItems.length;
   const hiddenItemsCount = hiddenBulletsCount + hiddenDetailsCount;
@@ -162,27 +163,16 @@ export function ServiceCard({
                 <li key={bullet}>{bullet}</li>
               ))}
               {isDetailsOpen
-                ? hiddenBullets.map((item) => <li key={item}>{item}</li>)
+                ? expandedBullets.map((item) => <li key={item}>{item}</li>)
                 : null}
             </ul>
 
-            {hasExpandableContent &&
-            (detailsItems.length > 0 || isDetailsOpen) ? (
+            {hasExpandableContent && isDetailsOpen ? (
               <div
                 className={`${styles.details} services-details-content`}
                 hidden={!isDetailsOpen}
                 id={detailsId}
-              >
-                {detailsItems.length ? (
-                  <ul
-                    className={`${styles.notes} services-details-list services-details-list--notes`}
-                  >
-                    {detailsItems.map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
+              />
             ) : null}
           </div>
 

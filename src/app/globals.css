@@ -1839,7 +1839,7 @@ main {
 }
 
 .services-list > li + li {
-  margin-top: 6px;
+  margin-top: 0;
 }
 
 .services-more-items {
@@ -1920,7 +1920,7 @@ main {
 }
 
 .services-details-list {
-  margin: 6px 0 0;
+  margin: 0;
   padding: 0 0 0 18px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.92rem;
@@ -1928,11 +1928,11 @@ main {
 }
 
 .services-details-list + .services-details-list {
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .services-details-list li + li {
-  margin-top: 6px;
+  margin-top: 0;
 }
 
 .services-details-actions {

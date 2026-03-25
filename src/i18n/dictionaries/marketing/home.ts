@@ -361,7 +361,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Zusätzliche Seiten und Mehrsprachigkeit planen wir vor Start verbindlich ein.",
-              "CMS-Integration erfolgt nur, wenn sie im gewählten Stack sinnvoll ist.",
               "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
             ],
           },
@@ -501,7 +500,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
             details: [
               "Additional pages and multilingual rollout are planned upfront.",
-              "CMS integration is included only when it fits the selected stack.",
               "Third-party licenses and external integrations are aligned separately when needed.",
             ],
           },

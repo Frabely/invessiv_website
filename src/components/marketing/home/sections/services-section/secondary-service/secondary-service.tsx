@@ -1,7 +1,5 @@
 "use client";
 
-import type { KeyboardEvent } from "react";
-
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -18,8 +16,6 @@ type SecondaryServiceProps = {
   ctaLabel: string;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
-  isSelected?: boolean;
-  onSelectAction: () => void;
 };
 
 export function SecondaryService({
@@ -28,31 +24,16 @@ export function SecondaryService({
   ctaLabel,
   ctaProjectGoal = "",
   defaultDeliveryLabel,
-  isSelected = false,
-  onSelectAction,
 }: SecondaryServiceProps) {
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
-    if (event.key !== "Enter" && event.key !== " ") {
-      return;
-    }
-
-    event.preventDefault();
-    onSelectAction();
-  };
 
   return (
     <article
       aria-label={card.title}
       className={styles.card}
       data-card-key={card.key}
-      data-selected={isSelected ? "true" : "false"}
       data-service-variant="secondary"
-      onClick={onSelectAction}
-      onKeyDown={handleKeyDown}
       role="listitem"
-      tabIndex={0}
     >
       <div className={styles.header}>
         <div className={styles.titleWrap}>

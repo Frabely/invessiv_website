@@ -90,15 +90,6 @@ export function ServicesSection({
     GOAL_TO_SERVICE[selectedGoalKey as keyof typeof GOAL_TO_SERVICE] ??
     "landing";
 
-  const [selectedSecondaryCardKey, setSelectedSecondaryCardKey] = useState<
-    string | null
-  >(null);
-
-  const selectedCard =
-    serviceCards.find((card) => card.key === selectedSecondaryCardKey) ??
-    serviceCards.find((card) => card.key === recommendedCardKey) ??
-    null;
-
   const selectedGoal =
     goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
   const selectedGoalLabel = selectedGoal?.label ?? "";
@@ -107,12 +98,12 @@ export function ServicesSection({
     window.dispatchEvent(
       new CustomEvent("invessiv:project-offer-change", {
         detail: {
-          offerKey: selectedCard?.key ?? recommendedCardKey,
+          offerKey: recommendedCardKey,
           projectGoal: selectedGoal?.label ?? "",
         },
       }),
     );
-  }, [recommendedCardKey, selectedCard?.key, selectedGoal?.label]);
+  }, [recommendedCardKey, selectedGoal?.label]);
 
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType !== "mouse") {
@@ -145,15 +136,10 @@ export function ServicesSection({
 
   const selectGoal = (goalKey: string) => {
     setSelectedGoalKey(goalKey);
-    setSelectedSecondaryCardKey(null);
     setOpenCardKey(null);
   };
 
   const handlePrimaryCardSelection = () => undefined;
-
-  const handleSecondaryCardSelection = (cardKey: string) => {
-    setSelectedSecondaryCardKey(cardKey);
-  };
 
   const getSecondaryCtaLabel = (cardKey: ServiceCardData["key"]) =>
     primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
@@ -232,9 +218,7 @@ export function ServicesSection({
               ctaLabel={getSecondaryCtaLabel(card.key)}
               ctaProjectGoal={selectedGoalLabel}
               defaultDeliveryLabel={deliveryLabel}
-              isSelected={selectedSecondaryCardKey === card.key}
               key={card.key}
-              onSelectAction={() => handleSecondaryCardSelection(card.key)}
             />
           ))}
         </div>
