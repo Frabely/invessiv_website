@@ -167,7 +167,7 @@ export function ServiceCard({
                 : null}
             </ul>
 
-            {hasExpandableContent && isDetailsOpen ? (
+            {hasExpandableContent ? (
               <div
                 className={`${styles.details} services-details-content`}
                 hidden={!isDetailsOpen}
