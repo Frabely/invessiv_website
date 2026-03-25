@@ -63,7 +63,7 @@ describe("SiteHeader", () => {
     );
 
     expect(screen.getAllByText("Was du bekommst").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Angebote & Preise").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Leistungsmodelle").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
   });
 
