@@ -1,15 +1,15 @@
 {
   "terms": {
     "meta": {
-      "title": "AGB (B2B)",
-      "description": "Allgemeine Geschäftsbedingungen (B2B) von Invessiv für Webentwicklung, Automatisierung und digitale Prozesslösungen.",
-      "openGraphTitle": "AGB (B2B) | Invessiv",
+      "title": "AGB",
+      "description": "Allgemeine Geschäftsbedingungen von Invessiv für projektbasierte digitale Leistungen, im Regelfall für Geschäftskunden.",
+      "openGraphTitle": "AGB | Invessiv",
       "openGraphLocale": "de_DE"
     },
     "page": {
-      "title": "Allgemeine Geschäftsbedingungen (B2B)",
-      "lead": "Diese AGB gelten ausschließlich gegenüber Unternehmern für Leistungen von Invessiv in den Bereichen Webentwicklung, Automatisierung und digitale Prozesslösungen.",
-      "updatedAt": "Zuletzt geändert: 8. März 2026.",
+      "title": "Allgemeine Geschäftsbedingungen",
+      "lead": "Diese Bedingungen gelten im Regelfall für Verträge mit Unternehmern. Verträge mit Verbrauchern schließt Invessiv nur im Einzelfall auf Grundlage individueller Angebote.",
+      "updatedAt": "Zuletzt geändert: 25. März 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Inhalt",
@@ -20,54 +20,61 @@
     "sections": {
       "provider": {
         "title": "1. Anbieter",
-        "contractPrefix": "Vertragspartner ist",
-        "representedByLabel": "vertreten durch",
-        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland",
-        "emailLabel": "E-Mail"
+        "labels": {
+          "company": "Geschäftsbezeichnung",
+          "owner": "Inhaber",
+          "address": "Adresse",
+          "email": "E-Mail"
+        },
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland"
       },
       "scope": {
         "title": "2. Geltungsbereich",
-        "body": "Diese AGB gelten für alle Angebote, Leistungen und Verträge zwischen Invessiv und Unternehmern im Sinne des § 14 BGB. Abweichende Bedingungen des Auftraggebers gelten nur, wenn ihnen ausdrücklich in Textform zugestimmt wurde."
+        "body": "Diese Bedingungen gelten für Angebote, Leistungen und Verträge von Invessiv. Das Leistungsangebot richtet sich im Regelfall an Unternehmer. Verträge mit Verbrauchern kommen nur im Einzelfall auf Grundlage individueller Angebote zustande. Entgegenstehende oder abweichende Bedingungen des Kunden gelten nur, wenn Invessiv ihnen ausdrücklich in Textform zugestimmt hat. Gegenüber Verbrauchern gelten diese Bedingungen nur insoweit, als ihnen keine zwingenden gesetzlichen Vorschriften entgegenstehen."
       },
       "contractConclusion": {
         "title": "3. Vertragsschluss",
-        "body": "Anfragen über Website, E-Mail oder Erstgespräch sind unverbindlich. Ein Vertrag kommt erst durch Angebot und Annahme in Textform oder durch Auftragsbestätigung in Textform zustande. Maßgeblich für Umfang und Inhalt der Leistung sind Angebot, Leistungsbeschreibung und ausdrücklich getroffene Abreden."
+        "body": "Die Darstellung von Leistungen auf der Website, in Erstgesprächen oder in sonstigen Informationen stellt noch kein verbindliches Angebot dar. Die Website ermöglicht keinen unmittelbaren verbindlichen Vertragsabschluss. Anfragen per Website, E-Mail oder Gespräch sind unverbindlich. Ein Vertrag kommt erst durch ein individuelles Angebot von Invessiv und dessen Annahme in Textform oder durch eine sonstige ausdrückliche Vereinbarung in Textform zustande. Maßgeblich für Umfang und Inhalt der Leistungen sind das jeweilige Angebot und die konkret getroffenen Abreden."
       },
       "servicesScope": {
-        "title": "4. Leistungen und Leistungsumfang",
-        "body": "Invessiv erbringt Leistungen insbesondere in den Bereichen Webentwicklung, digitale Prozesslösungen und damit verbundene Umsetzungs- und Beratungsleistungen. Der konkrete Leistungsumfang ergibt sich aus dem jeweiligen Angebot. Änderungs- oder Erweiterungswünsche nach Vertragsschluss sind gesondert zu vereinbaren und können zusätzlichen Aufwand und zusätzliche Vergütung auslösen."
+        "title": "4. Leistungen",
+        "body": "Invessiv erbringt insbesondere Projektleistungen in den Bereichen Webentwicklung, Automatisierung und digitale Prozesslösungen sowie laufende Leistungen wie Betreuung, Wartung, Support oder Weiterentwicklung. Der konkrete Leistungsumfang ergibt sich ausschließlich aus dem jeweiligen Angebot oder der laufenden Vereinbarung. Änderungs- und Erweiterungswünsche nach Vertragsschluss bedürfen einer gesonderten Abstimmung und können zusätzlichen Aufwand sowie zusätzliche Vergütung auslösen."
       },
       "clientCooperation": {
-        "title": "5. Mitwirkungspflichten des Auftraggebers",
-        "body": "Der Auftraggeber stellt notwendige Inhalte, Informationen, Zugänge, Ansprechpartner und Freigaben rechtzeitig zur Verfügung. Verzögerungen, die durch verspätete oder unvollständige Mitwirkung entstehen, verlängern vereinbarte Fristen angemessen. Entsteht hierdurch zusätzlicher Aufwand, kann dieser nach den vereinbarten Sätzen oder nach üblichem Aufwand berechnet werden."
+        "title": "5. Mitwirkung des Kunden",
+        "body": "Der Kunde stellt Inhalte, Informationen, Zugänge, Ansprechpartner, Freigaben und sonstige erforderliche Mitwirkungshandlungen rechtzeitig zur Verfügung. Verzögerungen oder Mehraufwand, die durch verspätete, unvollständige oder fehlerhafte Mitwirkung entstehen, gehen nicht zulasten von Invessiv und können vereinbarte Fristen angemessen verschieben. Zusätzlicher Aufwand kann gesondert berechnet werden, soweit dies sachlich veranlasst ist."
       },
       "payment": {
         "title": "6. Vergütung und Zahlungsbedingungen",
-        "body": "Es gelten die im Angebot vereinbarten Preise. Alle Preise verstehen sich netto zuzüglich gesetzlicher Umsatzsteuer, soweit diese anfällt. Rechnungen sind innerhalb von 14 Tagen ab Rechnungsdatum ohne Abzug fällig, sofern nichts anderes vereinbart wurde. Bei größeren Projekten können Teilabrechnungen oder Abschlagszahlungen vorgesehen werden, wenn dies im Angebot geregelt ist."
+        "body": "Die Vergütung, Preisangaben, steuerliche Behandlung, Abrechnungsmodalitäten und der konkrete Abrechnungszeitpunkt richten sich nach dem jeweiligen Angebot, der Rechnung oder der sonstigen Vereinbarung. Auf der Website genannte Preise oder Preisindikationen dienen, soweit nicht ausdrücklich anders bezeichnet, nur der unverbindlichen Orientierung. Sofern nichts Abweichendes vereinbart ist, sind Rechnungen innerhalb von 14 Tagen ab Rechnungsdatum ohne Abzug fällig."
+      },
+      "consumerContracts": {
+        "title": "7. Hinweise für Verbraucherverträge",
+        "body": "Soweit Invessiv ausnahmsweise Verträge mit Verbrauchern schließt, erfolgt dies ausschließlich auf Grundlage individueller Angebote. Zwingende Verbraucherschutzrechte und gesetzlich vorgeschriebene Informationen bleiben unberührt. Sofern für den konkreten Vertrag zusätzliche gesetzliche Hinweise, Widerrufsinformationen oder gesonderte Erklärungen erforderlich sind, werden diese im jeweiligen Angebots- oder Vertragsprozess gesondert bereitgestellt."
       },
       "acceptance": {
-        "title": "7. Abnahme",
-        "body": "Soweit die Leistung werkvertraglichen Charakter hat, wird der Auftraggeber das fertiggestellte Werk nach Bereitstellung zeitnah prüfen und abnehmen, sofern keine wesentlichen Mängel vorliegen. Unwesentliche Mängel hindern die Abnahme nicht. Wesentliche Mängel werden dokumentiert und innerhalb angemessener Frist nachgebessert. Soweit keine Abnahme geschuldet ist, gelten Dienstleistungen mit Erbringung als vertragsgemäß erbracht."
+        "title": "8. Review, Freigabe und Fertigstellung",
+        "body": "Bei abgegrenzten Projektleistungen stellt Invessiv Arbeitsergebnisse zur Prüfung und Freigabe bereit. Der Kunde prüft diese zeitnah und teilt wesentliche Abweichungen nachvollziehbar mit. Berechtigte wesentliche Abweichungen werden innerhalb angemessener Frist nachgebessert. Laufende Leistungen, Support und sonstige Dienstleistungen unterliegen keiner förmlichen Abnahme, sofern nicht ausdrücklich etwas anderes vereinbart ist."
       },
       "usageRights": {
-        "title": "8. Nutzungsrechte",
-        "body": "Bis zur vollständigen Zahlung verbleiben sämtliche Nutzungsrechte bei Invessiv. Nach vollständiger Zahlung erhält der Auftraggeber die für den vertraglich vereinbarten Zweck erforderlichen Nutzungsrechte an den erbrachten Arbeitsergebnissen. Die Weitergabe von offenen Projektdateien, Quellcode, Editierdateien oder sonstigen Rohdaten ist nur geschuldet, wenn dies ausdrücklich vereinbart wurde. Rechte an Open-Source-Bestandteilen, Drittanbieter-Assets, externen Bibliotheken, Plugins, Schriftarten oder sonstigen Fremdbestandteilen richten sich nach den jeweiligen Lizenzbedingungen."
+        "title": "9. Nutzungsrechte",
+        "body": "Bis zur vollständigen Zahlung verbleiben sämtliche Nutzungsrechte an den von Invessiv erstellten Arbeitsergebnissen bei Invessiv, soweit nicht zwingendes Recht entgegensteht. Nach vollständiger Zahlung erhält der Kunde die für den vertraglich vereinbarten Zweck erforderlichen Nutzungsrechte an den vereinbarten Ergebnissen. Die Übergabe von offenem Quellcode, editierbaren Projektdateien, Rohdaten oder sonstigen nicht ausdrücklich geschuldeten Ausgangsdateien erfolgt nur, wenn dies im Angebot oder in einer sonstigen Vereinbarung ausdrücklich vorgesehen ist. Rechte an Open-Source-Bestandteilen, Drittanbieter-Assets, externen Bibliotheken, Plugins, Schriftarten oder sonstigen Fremdbestandteilen richten sich nach den jeweiligen Lizenzbedingungen."
       },
       "thirdPartyServices": {
-        "title": "9. Drittanbieter und Fremdleistungen",
-        "body": "Leistungen und Kosten für Hosting, Domains, Fremdsoftware, APIs, Drittanbieter-Tools, externe Plattformen oder sonstige Leistungen Dritter sind nur dann Bestandteil des Vertrags, wenn sie ausdrücklich im Angebot enthalten sind. Soweit im Angebot nichts anderes geregelt ist, erfolgt Hosting typischerweise über Vercel Pro; Domains und ggf. Mail können über IONOS bezogen werden. Invessiv ist berechtigt, zur Leistungserbringung geeignete Dritte als Subunternehmer einzusetzen."
+        "title": "10. Drittanbieter und Fremdleistungen",
+        "body": "Hosting, Domains, externe Software, APIs, Drittanbieter-Tools, Plattformen, Lizenzen und sonstige Leistungen Dritter sind nur dann Bestandteil der Leistungen von Invessiv, wenn dies ausdrücklich vereinbart wurde. Solche Leistungen können gesonderten Bedingungen, Kosten und Lizenzvorgaben der jeweiligen Anbieter unterliegen. Invessiv ist berechtigt, geeignete Subunternehmer oder technische Dienstleister zur Leistungserbringung einzusetzen."
       },
       "liability": {
-        "title": "10. Haftung",
-        "body": "Es gelten die gesetzlichen Gewährleistungsrechte, soweit in diesen AGB nichts anderes wirksam geregelt ist. Invessiv haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten haftet Invessiv nur auf den vertragstypischen, vorhersehbaren Schaden. Im Übrigen ist die Haftung bei leichter Fahrlässigkeit ausgeschlossen, soweit gesetzlich zulässig."
+        "title": "11. Haftung",
+        "body": "Invessiv haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten haftet Invessiv nur auf den vertragstypischen, vorhersehbaren Schaden. Im Übrigen ist die Haftung bei leichter Fahrlässigkeit ausgeschlossen, soweit gesetzlich zulässig. Zwingende gesetzliche Haftungsvorschriften, insbesondere nach dem Produkthaftungsgesetz oder zugunsten von Verbrauchern, bleiben unberührt."
       },
       "confidentiality": {
-        "title": "11. Vertraulichkeit",
-        "body": "Beide Parteien behandeln ihnen im Rahmen der Zusammenarbeit bekannt gewordene vertrauliche Informationen der jeweils anderen Partei vertraulich."
+        "title": "12. Vertraulichkeit",
+        "body": "Beide Parteien behandeln vertrauliche Informationen der jeweils anderen Partei, die ihnen im Zusammenhang mit Angebot, Vertrag oder Zusammenarbeit bekannt werden, vertraulich und verwenden sie nur für die Durchführung des jeweiligen Vertragsverhältnisses."
       },
       "finalProvisions": {
-        "title": "12. Schlussbestimmungen",
-        "body": "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts, soweit zulässig. Ist der Auftraggeber Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen, ist Gerichtsstand der Sitz von Invessiv, soweit gesetzlich zulässig. Individuelle Vereinbarungen haben Vorrang vor diesen AGB."
+        "title": "13. Schlussbestimmungen",
+        "body": "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts, soweit gesetzlich zulässig. Gegenüber Unternehmern, juristischen Personen des öffentlichen Rechts oder öffentlich-rechtlichen Sondervermögen ist, soweit gesetzlich zulässig, der Sitz von Invessiv Gerichtsstand. Individuelle Vereinbarungen im Angebot oder Vertrag gehen diesen Bedingungen vor."
       }
     }
   }

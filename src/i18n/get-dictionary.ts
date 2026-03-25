@@ -74,10 +74,13 @@ export type Dictionary = {
     sections: {
       provider: {
         title: string;
-        contractPrefix: string;
-        representedByLabel: string;
+        labels: {
+          company: string;
+          owner: string;
+          address: string;
+          email: string;
+        };
         addressLine: string;
-        emailLabel: string;
       };
       scope: {
         title: string;
@@ -96,6 +99,10 @@ export type Dictionary = {
         body: string;
       };
       payment: {
+        title: string;
+        body: string;
+      };
+      consumerContracts: {
         title: string;
         body: string;
       };

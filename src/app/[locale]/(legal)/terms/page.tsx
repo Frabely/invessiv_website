@@ -15,7 +15,10 @@ type TermsPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-type TermsSectionKey = Exclude<keyof Dictionary["terms"]["sections"], "provider">;
+type TermsSectionKey = Exclude<
+  keyof Dictionary["terms"]["sections"],
+  "provider"
+>;
 
 const TERMS_SECTION_CONFIG: Array<{ id: string; key: TermsSectionKey }> = [
   { id: "scope", key: "scope" },
@@ -23,6 +26,7 @@ const TERMS_SECTION_CONFIG: Array<{ id: string; key: TermsSectionKey }> = [
   { id: "services-scope", key: "servicesScope" },
   { id: "client-cooperation", key: "clientCooperation" },
   { id: "payment", key: "payment" },
+  { id: "consumer-contracts", key: "consumerContracts" },
   { id: "acceptance", key: "acceptance" },
   { id: "usage-rights", key: "usageRights" },
   { id: "third-party-services", key: "thirdPartyServices" },
@@ -35,7 +39,9 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: TermsPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: TermsPageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
@@ -76,11 +82,20 @@ export default async function TermsPage({ params }: TermsPageProps) {
       body: (
         <>
           <p>
-            {terms.sections.provider.contractPrefix} {COMPANY.brandName}, {terms.sections.provider.representedByLabel}{" "}
-            {COMPANY.owner}, {terms.sections.provider.addressLine}.
+            <strong>{terms.sections.provider.labels.company}:</strong>{" "}
+            {COMPANY.brandName}
           </p>
           <p>
-            {terms.sections.provider.emailLabel}: <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
+            <strong>{terms.sections.provider.labels.owner}:</strong>{" "}
+            {COMPANY.owner}
+          </p>
+          <p>
+            <strong>{terms.sections.provider.labels.address}:</strong>{" "}
+            {terms.sections.provider.addressLine}
+          </p>
+          <p>
+            <strong>{terms.sections.provider.labels.email}:</strong>{" "}
+            <a href={COMPANY_MAILTO}>{COMPANY.contact.email}</a>
           </p>
         </>
       ),
