@@ -108,6 +108,31 @@
   font-size: 0.94rem;
 }
 
+.ctaSlot {
+  min-height: 24px;
+}
+
+.ctaLink {
+  width: fit-content;
+  color: color-mix(in srgb, var(--color-cta) 72%, var(--color-text) 28%);
+  font-weight: 600;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
+  text-underline-offset: 0.16em;
+}
+
+.ctaLink:hover {
+  color: var(--color-cta-hover);
+}
+
+.ctaLink:focus-visible {
+  outline-offset: 3px;
+}
+
+.ctaLinkPlaceholder {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 @media (max-width: 759px) {
   .titleWrap {
     grid-template-columns: 1fr;

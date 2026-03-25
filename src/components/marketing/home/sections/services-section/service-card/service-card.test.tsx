@@ -11,7 +11,7 @@ describe("ServiceCard", () => {
     cleanup();
   });
 
-  it("renders the fit text under the title and reveals details without inline CTAs", () => {
+  it("renders the fit text under the title and keeps the primary CTA inside the card", () => {
     function ServiceCardHarness() {
       const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -39,9 +39,12 @@ describe("ServiceCard", () => {
             ],
           }}
           cardClassName="card-shell"
+          ctaLabel="Landingpage anfragen"
+          ctaProjectGoal="mehr Anfragen gewinnen"
           defaultDeliveryLabel="Lieferzeit"
           detailsCtaLabel="Mehr Infos"
           fitLabel="Ideal für"
+          isCtaActive
           isDetailsOpen={isDetailsOpen}
           isRecommended
           moreItemsPluralLabel="weitere Punkte"
@@ -76,8 +79,14 @@ describe("ServiceCard", () => {
 
     expect(detailsButton.getAttribute("aria-expanded")).toBe("true");
     expect(detailsPanel?.hasAttribute("hidden")).toBe(false);
-    expect(screen.queryByRole("link", { name: "Projekt anfragen" })).toBeNull();
-    expect(screen.queryByRole("link", { name: "Fragen?" })).toBeNull();
+    expect(
+      screen.getByRole("link", { name: "Landingpage anfragen" }),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByRole("link", { name: "Landingpage anfragen" })
+        .getAttribute("data-project-goal"),
+    ).toBe("mehr Anfragen gewinnen");
 
     fireEvent.keyDown(article as HTMLElement, { key: "Escape" });
 
@@ -98,6 +107,7 @@ describe("ServiceCard", () => {
           delivery: "1-2 Wochen",
           included: ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"],
         }}
+        ctaProjectGoal=""
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         fitLabel="Best for"
@@ -114,5 +124,6 @@ describe("ServiceCard", () => {
     );
 
     expect(screen.getByText("+ 1 more item")).toBeTruthy();
+    expect(screen.queryByRole("link")).toBeNull();
   });
 });

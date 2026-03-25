@@ -14,6 +14,9 @@ type SecondaryServiceCard = NonNullable<
 type SecondaryServiceProps = {
   addonBadgeLabel: string;
   card: SecondaryServiceCard;
+  ctaLabel?: string;
+  isCtaActive?: boolean;
+  ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
   isSelected?: boolean;
   onSelectAction: () => void;
@@ -22,6 +25,9 @@ type SecondaryServiceProps = {
 export function SecondaryService({
   addonBadgeLabel,
   card,
+  ctaLabel,
+  isCtaActive = false,
+  ctaProjectGoal = "",
   defaultDeliveryLabel,
   isSelected = false,
   onSelectAction,
@@ -71,6 +77,31 @@ export function SecondaryService({
       <div className={styles.copy}>
         <p className={styles.description}>{card.description}</p>
         {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+        {ctaLabel ? (
+          <div className={styles.ctaSlot}>
+            {isCtaActive ? (
+              <a
+                className={styles.ctaLink}
+                data-analytics-event="cta_click"
+                data-analytics-location="pricing"
+                data-analytics-target="form"
+                data-analytics-variant="secondary-link"
+                data-project-goal={ctaProjectGoal}
+                data-project-offer={card.key}
+                href="#contact"
+              >
+                {ctaLabel}
+              </a>
+            ) : (
+              <span
+                aria-hidden="true"
+                className={`${styles.ctaLink} ${styles.ctaLinkPlaceholder}`}
+              >
+                {ctaLabel}
+              </span>
+            )}
+          </div>
+        ) : null}
       </div>
     </article>
   );

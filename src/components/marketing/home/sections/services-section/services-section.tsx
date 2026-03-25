@@ -29,7 +29,10 @@ type ServicesSectionProps = {
   moreItemsSingularLabel: string;
   oneTimeLabel: string;
   primaryCtaLabel: string;
-  primaryCtaLabels: Record<"landing" | "process" | "upgrade" | "web", string>;
+  primaryCtaLabels: Record<
+    "landing" | "maintenance" | "process" | "upgrade" | "web",
+    string
+  >;
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardData[];
@@ -106,21 +109,8 @@ export function ServicesSection({
     goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
   const secondaryRecommendedCardKey =
     recommendedCardKey === "upgrade" ? "upgrade" : null;
-
-  const renderedPrimaryCards = useMemo(() => {
-    const recommendedPrimaryCard = primaryCards.find(
-      (card) => card.key === recommendedCardKey,
-    );
-
-    if (!recommendedPrimaryCard) {
-      return primaryCards;
-    }
-
-    return [
-      recommendedPrimaryCard,
-      ...primaryCards.filter((card) => card.key !== recommendedPrimaryCard.key),
-    ];
-  }, [primaryCards, recommendedCardKey]);
+  const activeCardKey = selectedCard?.key ?? recommendedCardKey;
+  const selectedGoalLabel = selectedGoal?.label ?? "";
 
   useEffect(() => {
     window.dispatchEvent(
@@ -174,9 +164,8 @@ export function ServicesSection({
     setSelectedSecondaryCardKey(cardKey);
   };
 
-  const ctaLabel =
-    (selectedCard?.key &&
-      primaryCtaLabels[selectedCard.key as keyof typeof primaryCtaLabels]) ||
+  const getCtaLabel = (cardKey: ServiceCardData["key"]) =>
+    primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
     primaryCtaLabel;
 
   return (
@@ -216,10 +205,13 @@ export function ServicesSection({
       </div>
 
       <div className={styles.primaryGrid} role="list">
-        {renderedPrimaryCards.map((card) => (
+        {primaryCards.map((card) => (
           <ServiceCard
             card={card}
             cardClassName={styles.primaryCard}
+            ctaLabel={getCtaLabel(card.key)}
+            isCtaActive={activeCardKey === card.key}
+            ctaProjectGoal={selectedGoalLabel}
             defaultDeliveryLabel={deliveryLabel}
             detailsCtaLabel={detailsCtaLabel}
             fitLabel={fitLabel}
@@ -250,6 +242,9 @@ export function ServicesSection({
             <SecondaryService
               addonBadgeLabel={addonBadgeLabel}
               card={card}
+              ctaLabel={getCtaLabel(card.key)}
+              isCtaActive={activeCardKey === card.key}
+              ctaProjectGoal={selectedGoalLabel}
               defaultDeliveryLabel={deliveryLabel}
               isSelected={
                 selectedSecondaryCardKey === card.key ||
@@ -261,25 +256,6 @@ export function ServicesSection({
           ))}
         </div>
       </div>
-
-      {selectedCard ? (
-        <div className={styles.sharedCta}>
-          <div className={styles.sharedCtaInner}>
-            <a
-              className={`btn btn--primary ${styles.sharedCtaButton}`}
-              data-analytics-event="cta_click"
-              data-analytics-location="pricing"
-              data-analytics-target="form"
-              data-analytics-variant="primary"
-              data-project-goal={selectedGoal?.label ?? ""}
-              data-project-offer={selectedCard.key}
-              href="#contact"
-            >
-              {ctaLabel}
-            </a>
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }

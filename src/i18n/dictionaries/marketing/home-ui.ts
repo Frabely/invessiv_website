@@ -32,6 +32,7 @@ export type HomeUiContent = {
   servicesPrimaryCtaHint?: string;
   servicesPrimaryCtaLabels: {
     landing: string;
+    maintenance: string;
     process: string;
     upgrade: string;
     web: string;

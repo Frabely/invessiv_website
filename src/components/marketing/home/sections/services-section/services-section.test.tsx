@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { ServicesSection } from "./services-section";
@@ -89,6 +95,7 @@ function renderSection() {
       primaryCtaLabel="Projekt anfragen"
       primaryCtaLabels={{
         landing: "Landingpage anfragen",
+        maintenance: "Wartung anfragen",
         process: "Prozess-Tool anfragen",
         upgrade: "Upgrade anfragen",
         web: "Webseite anfragen",
@@ -108,7 +115,7 @@ describe("ServicesSection", () => {
     cleanup();
   });
 
-  it("renders chips, three primary cards, two secondary cards, and defaults to landing", () => {
+  it("renders chips, three primary cards, two secondary cards, and defaults to landing without reordering the grid", () => {
     const { container } = renderSection();
 
     const primaryCards = Array.from(
@@ -130,20 +137,22 @@ describe("ServicesSection", () => {
     expect(secondaryCards).toHaveLength(2);
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["landing", "web", "process"]);
+    ).toEqual(["web", "landing", "process"]);
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["upgrade", "maintenance"]);
     expect(screen.getByText("Empfohlen")).toBeTruthy();
     expect(screen.queryByText("KI-Templates & Agents")).toBeNull();
+    const landingCard = screen.getByText("Landingpages").closest("article");
     expect(
-      screen
+      within(landingCard as HTMLElement)
         .getByRole("link", { name: "Landingpage anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
+    expect(screen.queryByRole("link", { name: "Upgrade anfragen" })).toBeNull();
   });
 
-  it("updates recommendation, CTA copy, and mobile-first DOM order when another goal is chosen", () => {
+  it("updates recommendation and CTA copy when another goal is chosen while keeping the card order stable", () => {
     const { container } = renderSection();
 
     fireEvent.click(
@@ -156,17 +165,29 @@ describe("ServicesSection", () => {
 
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["process", "web", "landing"]);
+    ).toEqual(["web", "landing", "process"]);
     expect(
-      screen
+      within(
+        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
+      )
         .getByRole("link", { name: "Prozess-Tool anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("process");
     expect(
-      screen
+      within(
+        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
+      ).getByText("Empfohlen"),
+    ).toBeTruthy();
+    expect(
+      within(
+        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
+      )
         .getByRole("link", { name: "Prozess-Tool anfragen" })
         .getAttribute("data-project-goal"),
     ).toBe("interne Abläufe vereinfachen");
+    expect(
+      screen.queryByRole("link", { name: "Landingpage anfragen" }),
+    ).toBeNull();
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
@@ -184,7 +205,7 @@ describe("ServicesSection", () => {
     expect(landingDetails?.hasAttribute("hidden")).toBe(false);
     expect(webDetails?.hasAttribute("hidden")).toBe(true);
     expect(
-      screen
+      within(landingArticle as HTMLElement)
         .getByRole("link", { name: "Landingpage anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
@@ -198,7 +219,7 @@ describe("ServicesSection", () => {
     expect(landingDetails?.hasAttribute("hidden")).toBe(true);
     expect(webDetails?.hasAttribute("hidden")).toBe(false);
     expect(
-      screen
+      within(screen.getByText("Landingpages").closest("article") as HTMLElement)
         .getByRole("link", { name: "Landingpage anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
@@ -216,16 +237,20 @@ describe("ServicesSection", () => {
       screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
     );
 
+    const upgradeCard = screen.getByText("Website-Upgrade").closest("article");
     expect(
-      screen
+      within(upgradeCard as HTMLElement)
         .getByRole("link", { name: "Upgrade anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("upgrade");
     expect(
-      screen
+      within(upgradeCard as HTMLElement)
         .getByRole("link", { name: "Upgrade anfragen" })
         .getAttribute("data-project-goal"),
     ).toBe("mehr Anfragen gewinnen");
+    expect(
+      screen.queryByRole("link", { name: "Landingpage anfragen" }),
+    ).toBeNull();
     expect(
       screen
         .getByRole("button", { name: "mehr Anfragen gewinnen" })
@@ -240,11 +265,15 @@ describe("ServicesSection", () => {
       screen.getByRole("button", { name: "etwas Bestehendes verbessern" }),
     );
 
+    const upgradeCard = screen.getByText("Website-Upgrade").closest("article");
     expect(
-      screen
+      within(upgradeCard as HTMLElement)
         .getByRole("link", { name: "Upgrade anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("upgrade");
+    expect(
+      screen.queryByRole("link", { name: "Landingpage anfragen" }),
+    ).toBeNull();
     expect(
       screen
         .getByText("Website-Upgrade")

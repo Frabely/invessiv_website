@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 import { SecondaryService } from "./secondary-service";
 
 describe("SecondaryService", () => {
-  it("renders a quieter secondary card without expand or CTA controls", () => {
+  it("renders a quieter secondary card with a text CTA instead of a button", () => {
     render(
       <SecondaryService
         addonBadgeLabel="Add-on"
@@ -21,7 +21,10 @@ describe("SecondaryService", () => {
           delivery: "24-72h",
           included: ["Bugfixes", "Checks", "Pflege"],
         }}
+        ctaLabel="Wartung anfragen"
+        ctaProjectGoal="mehr Anfragen gewinnen"
         defaultDeliveryLabel="Reaktionszeit"
+        isCtaActive
         isSelected
         onSelectAction={() => undefined}
       />,
@@ -37,7 +40,7 @@ describe("SecondaryService", () => {
       ),
     ).toBeTruthy();
     expect(screen.queryByRole("button")).toBeNull();
-    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.getByRole("link", { name: "Wartung anfragen" })).toBeTruthy();
   });
 
   it("calls the select action on click and keyboard confirmation", () => {

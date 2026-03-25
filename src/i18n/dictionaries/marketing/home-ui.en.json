@@ -63,7 +63,8 @@
     "landing": "Request landing page",
     "web": "Request website",
     "process": "Request process tool",
-    "upgrade": "Request upgrade"
+    "upgrade": "Request upgrade",
+    "maintenance": "Request maintenance"
   },
   "servicesPrimaryCtaHint": "Your selection will carry into the contact form",
   "servicesDetailsCta": "More details",

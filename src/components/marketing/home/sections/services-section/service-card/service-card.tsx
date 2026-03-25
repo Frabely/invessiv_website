@@ -13,6 +13,9 @@ type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 type ServiceCardProps = {
   card: ServiceCardCopy;
   cardClassName?: string;
+  ctaLabel?: string;
+  isCtaActive?: boolean;
+  ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
   fitLabel: string;
@@ -31,6 +34,9 @@ type ServiceCardProps = {
 export function ServiceCard({
   card,
   cardClassName,
+  ctaLabel,
+  isCtaActive = false,
+  ctaProjectGoal = "",
   defaultDeliveryLabel,
   detailsCtaLabel,
   fitLabel,
@@ -193,10 +199,32 @@ export function ServiceCard({
 
           <div className={`${styles.footer} services-card-actions-row`}>
             <div className={`${styles.actions} services-details-actions`}>
-              <span
-                aria-hidden="true"
-                className={`${styles.actionsSpacer} services-details-actions-spacer`}
-              />
+              {ctaLabel && isCtaActive ? (
+                <a
+                  className={`btn btn--primary services-details-cta ${styles.primaryCta}`}
+                  data-analytics-event="cta_click"
+                  data-analytics-location="pricing"
+                  data-analytics-target="form"
+                  data-analytics-variant="primary"
+                  data-project-goal={ctaProjectGoal}
+                  data-project-offer={card.key}
+                  href="#contact"
+                >
+                  {ctaLabel}
+                </a>
+              ) : ctaLabel ? (
+                <span
+                  aria-hidden="true"
+                  className={`btn btn--primary services-details-cta ${styles.primaryCta} ${styles.primaryCtaPlaceholder}`}
+                >
+                  {ctaLabel}
+                </span>
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className={`${styles.actionsSpacer} services-details-actions-spacer`}
+                />
+              )}
             </div>
 
             <div

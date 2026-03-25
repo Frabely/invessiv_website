@@ -110,7 +110,13 @@
 
 .actions {
 }
-.faqLink {
+.primaryCta {
+  width: fit-content;
+  max-width: 100%;
+}
+.primaryCtaPlaceholder {
+  visibility: hidden;
+  pointer-events: none;
 }
 .actionsSpacer {
 }
@@ -126,4 +132,11 @@
 .toggle {
 }
 .toggleArrow {
+}
+
+@media (max-width: 640px) {
+  .primaryCta {
+    width: 100%;
+    justify-content: center;
+  }
 }
