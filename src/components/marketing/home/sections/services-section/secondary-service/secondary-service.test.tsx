@@ -21,10 +21,9 @@ describe("SecondaryService", () => {
           delivery: "24-72h",
           included: ["Bugfixes", "Checks", "Pflege"],
         }}
-        ctaLabel="Wartung anfragen"
+        ctaLabel="Wartung & Support anfragen"
         ctaProjectGoal="mehr Anfragen gewinnen"
         defaultDeliveryLabel="Reaktionszeit"
-        isCtaActive
         isSelected
         onSelectAction={() => undefined}
       />,
@@ -40,7 +39,9 @@ describe("SecondaryService", () => {
       ),
     ).toBeTruthy();
     expect(screen.queryByRole("button")).toBeNull();
-    expect(screen.getByRole("link", { name: "Wartung anfragen" })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Wartung & Support anfragen" }),
+    ).toBeTruthy();
   });
 
   it("calls the select action on click and keyboard confirmation", () => {
@@ -60,6 +61,7 @@ describe("SecondaryService", () => {
           delivery: "2-5 Tage",
           included: ["Analyse"],
         }}
+        ctaLabel="Upgrade anfragen"
         defaultDeliveryLabel="Typisch"
         onSelectAction={() => {
           selectionCount += 1;

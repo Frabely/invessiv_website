@@ -108,6 +108,7 @@ describe("ServiceCard", () => {
           included: ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"],
         }}
         ctaProjectGoal=""
+        ctaLabel="Request process tool"
         defaultDeliveryLabel="Lieferzeit"
         detailsCtaLabel="Mehr Infos"
         fitLabel="Best for"

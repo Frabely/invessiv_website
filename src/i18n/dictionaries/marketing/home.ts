@@ -1,4 +1,4 @@
-import type { SectionId } from "@/config/site";
+import { SECTION_HREFS, type SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import {
   COMPANY,
@@ -620,7 +620,7 @@ const HOME_SECTIONS: LandingSection[] = [
         processCta: {
           label: "Projekt & Umfang anfragen",
           hint: "Unverbindlich. In der Regel Rückmeldung innerhalb von 24h.",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
         },
       },
       en: {
@@ -673,7 +673,7 @@ const HOME_SECTIONS: LandingSection[] = [
         processCta: {
           label: "Request project & outline",
           hint: "No commitment. Typically a reply within 24h.",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
         },
       },
     },
@@ -812,21 +812,21 @@ const HOME_SECTIONS: LandingSection[] = [
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
           label: "Jetzt Projekt anfragen",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
           label: "Angebote ansehen",
-          href: "#services",
+          href: SECTION_HREFS.services,
         },
         footerColumns: [
           {
             title: "Menü",
             links: [
-              { label: "Was du bekommst", href: "#included" },
-              { label: "Angebote & Preise", href: "#services" },
-              { label: "Prozess", href: "#process" },
-              { label: "Q&A", href: "#faq" },
-              { label: "Kontakt", href: "#contact" },
+              { label: "Was du bekommst", href: SECTION_HREFS.included },
+              { label: "Angebote & Preise", href: SECTION_HREFS.services },
+              { label: "Prozess", href: SECTION_HREFS.process },
+              { label: "Q&A", href: SECTION_HREFS.faq },
+              { label: "Kontakt", href: SECTION_HREFS.contact },
             ],
           },
           {
@@ -912,12 +912,12 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
           hint: "3 kurze Schritte, nur relevante Pflichtfelder und klare Rückmeldung.",
         },
         contactSecondaryCta: {
           label: "Angebote vergleichen",
-          href: "#services",
+          href: SECTION_HREFS.services,
           hint: "",
         },
         contactForm: {
@@ -1036,17 +1036,23 @@ const HOME_SECTIONS: LandingSection[] = [
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
           "Contact me and start your project with Invessiv.",
-        footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
-        footerHeroSecondaryCta: { label: "View offers", href: "#services" },
+        footerHeroPrimaryCta: {
+          label: "Start project now",
+          href: SECTION_HREFS.contact,
+        },
+        footerHeroSecondaryCta: {
+          label: "View offers",
+          href: SECTION_HREFS.services,
+        },
         footerColumns: [
           {
             title: "Menu",
             links: [
-              { label: "What you get", href: "#included" },
-              { label: "Offers & pricing", href: "#services" },
-              { label: "Process", href: "#process" },
-              { label: "Q&A", href: "#faq" },
-              { label: "Contact", href: "#contact" },
+              { label: "What you get", href: SECTION_HREFS.included },
+              { label: "Offers & pricing", href: SECTION_HREFS.services },
+              { label: "Process", href: SECTION_HREFS.process },
+              { label: "Q&A", href: SECTION_HREFS.faq },
+              { label: "Contact", href: SECTION_HREFS.contact },
             ],
           },
           {
@@ -1132,12 +1138,12 @@ const HOME_SECTIONS: LandingSection[] = [
         contactCta: {
           kicker: "Start directly",
           label: "Start project request",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
           hint: "3 short steps, only relevant required fields, and a clear reply.",
         },
         contactSecondaryCta: {
           label: "Compare offers",
-          href: "#services",
+          href: SECTION_HREFS.services,
           hint: "",
         },
         contactForm: {
@@ -1258,21 +1264,21 @@ const HOME_SECTIONS: LandingSection[] = [
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
           label: "Jetzt Projekt anfragen",
-          href: "#contact",
+          href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
           label: "Angebote ansehen",
-          href: "#services",
+          href: SECTION_HREFS.services,
         },
         footerColumns: [
           {
             title: "Menü",
             links: [
-              { label: "Was du bekommst", href: "#included" },
-              { label: "Angebote & Preise", href: "#services" },
-              { label: "Prozess", href: "#process" },
-              { label: "Q&A", href: "#faq" },
-              { label: "Kontakt", href: "#contact" },
+              { label: "Was du bekommst", href: SECTION_HREFS.included },
+              { label: "Angebote & Preise", href: SECTION_HREFS.services },
+              { label: "Prozess", href: SECTION_HREFS.process },
+              { label: "Q&A", href: SECTION_HREFS.faq },
+              { label: "Kontakt", href: SECTION_HREFS.contact },
             ],
           },
           {
@@ -1311,17 +1317,23 @@ const HOME_SECTIONS: LandingSection[] = [
         footerHeroTitle: "Ready for a new, productive website?",
         footerHeroDescription:
           "Contact me and start your project with Invessiv.",
-        footerHeroPrimaryCta: { label: "Start project now", href: "#contact" },
-        footerHeroSecondaryCta: { label: "View offers", href: "#services" },
+        footerHeroPrimaryCta: {
+          label: "Start project now",
+          href: SECTION_HREFS.contact,
+        },
+        footerHeroSecondaryCta: {
+          label: "View offers",
+          href: SECTION_HREFS.services,
+        },
         footerColumns: [
           {
             title: "Menu",
             links: [
-              { label: "What you get", href: "#included" },
-              { label: "Offers & pricing", href: "#services" },
-              { label: "Process", href: "#process" },
-              { label: "Q&A", href: "#faq" },
-              { label: "Contact", href: "#contact" },
+              { label: "What you get", href: SECTION_HREFS.included },
+              { label: "Offers & pricing", href: SECTION_HREFS.services },
+              { label: "Process", href: SECTION_HREFS.process },
+              { label: "Q&A", href: SECTION_HREFS.faq },
+              { label: "Contact", href: SECTION_HREFS.contact },
             ],
           },
           {

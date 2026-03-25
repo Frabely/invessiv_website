@@ -5,6 +5,7 @@ import {
   faLinkedinIn,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 type FooterColumn = NonNullable<LandingSectionCopy["footerColumns"]>[number];
@@ -68,7 +69,7 @@ export function FooterSection({
         "data-analytics-target": contactTarget,
       };
     }
-    if (href === "#contact") {
+    if (href === SECTION_HREFS.contact) {
       return {
         "data-analytics-event": "cta_click",
         "data-analytics-location": "footer",
@@ -149,7 +150,9 @@ export function FooterSection({
                         className="site-footer__social-link"
                         href={socialLink.href}
                       >
-                        <FontAwesomeIcon icon={getSocialIcon(socialLink.platform)} />
+                        <FontAwesomeIcon
+                          icon={getSocialIcon(socialLink.platform)}
+                        />
                       </a>
                     </li>
                   ))}
@@ -173,7 +176,9 @@ export function FooterSection({
                   <strong>{brand}</strong>
                 </span>
                 {bottomNote ? (
-                  <small className="site-footer__owner-note">{bottomNote}</small>
+                  <small className="site-footer__owner-note">
+                    {bottomNote}
+                  </small>
                 ) : null}
               </div>
             ) : null}

@@ -3,6 +3,7 @@
 import type { KeyboardEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./secondary-service.module.css";
@@ -14,8 +15,7 @@ type SecondaryServiceCard = NonNullable<
 type SecondaryServiceProps = {
   addonBadgeLabel: string;
   card: SecondaryServiceCard;
-  ctaLabel?: string;
-  isCtaActive?: boolean;
+  ctaLabel: string;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
   isSelected?: boolean;
@@ -26,7 +26,6 @@ export function SecondaryService({
   addonBadgeLabel,
   card,
   ctaLabel,
-  isCtaActive = false,
   ctaProjectGoal = "",
   defaultDeliveryLabel,
   isSelected = false,
@@ -77,31 +76,20 @@ export function SecondaryService({
       <div className={styles.copy}>
         <p className={styles.description}>{card.description}</p>
         {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
-        {ctaLabel ? (
-          <div className={styles.ctaSlot}>
-            {isCtaActive ? (
-              <a
-                className={styles.ctaLink}
-                data-analytics-event="cta_click"
-                data-analytics-location="pricing"
-                data-analytics-target="form"
-                data-analytics-variant="secondary-link"
-                data-project-goal={ctaProjectGoal}
-                data-project-offer={card.key}
-                href="#contact"
-              >
-                {ctaLabel}
-              </a>
-            ) : (
-              <span
-                aria-hidden="true"
-                className={`${styles.ctaLink} ${styles.ctaLinkPlaceholder}`}
-              >
-                {ctaLabel}
-              </span>
-            )}
-          </div>
-        ) : null}
+        <div className={styles.ctaSlot}>
+          <a
+            className={styles.ctaLink}
+            data-analytics-event="cta_click"
+            data-analytics-location="pricing"
+            data-analytics-target="form"
+            data-analytics-variant="secondary-link"
+            data-project-goal={ctaProjectGoal}
+            data-project-offer={card.key}
+            href={SECTION_HREFS.contact}
+          >
+            {ctaLabel}
+          </a>
+        </div>
       </div>
     </article>
   );

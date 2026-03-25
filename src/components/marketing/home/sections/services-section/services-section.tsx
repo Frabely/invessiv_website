@@ -45,7 +45,6 @@ const PRIMARY_ORDER = ["web", "landing", "process"] as const;
 const SECONDARY_ORDER = ["upgrade", "maintenance"] as const;
 const DEFAULT_GOAL_KEY = "more_inquiries";
 const GOAL_TO_SERVICE = {
-  improve_existing: "upgrade",
   more_inquiries: "landing",
   professional_presence: "web",
   simplify_workflows: "process",
@@ -107,9 +106,6 @@ export function ServicesSection({
 
   const selectedGoal =
     goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
-  const secondaryRecommendedCardKey =
-    recommendedCardKey === "upgrade" ? "upgrade" : null;
-  const activeCardKey = selectedCard?.key ?? recommendedCardKey;
   const selectedGoalLabel = selectedGoal?.label ?? "";
 
   useEffect(() => {
@@ -164,7 +160,7 @@ export function ServicesSection({
     setSelectedSecondaryCardKey(cardKey);
   };
 
-  const getCtaLabel = (cardKey: ServiceCardData["key"]) =>
+  const getSecondaryCtaLabel = (cardKey: ServiceCardData["key"]) =>
     primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
     primaryCtaLabel;
 
@@ -209,8 +205,8 @@ export function ServicesSection({
           <ServiceCard
             card={card}
             cardClassName={styles.primaryCard}
-            ctaLabel={getCtaLabel(card.key)}
-            isCtaActive={activeCardKey === card.key}
+            ctaLabel={primaryCtaLabel}
+            isCtaActive={recommendedCardKey === card.key}
             ctaProjectGoal={selectedGoalLabel}
             defaultDeliveryLabel={deliveryLabel}
             detailsCtaLabel={detailsCtaLabel}
@@ -242,14 +238,10 @@ export function ServicesSection({
             <SecondaryService
               addonBadgeLabel={addonBadgeLabel}
               card={card}
-              ctaLabel={getCtaLabel(card.key)}
-              isCtaActive={activeCardKey === card.key}
+              ctaLabel={getSecondaryCtaLabel(card.key)}
               ctaProjectGoal={selectedGoalLabel}
               defaultDeliveryLabel={deliveryLabel}
-              isSelected={
-                selectedSecondaryCardKey === card.key ||
-                secondaryRecommendedCardKey === card.key
-              }
+              isSelected={selectedSecondaryCardKey === card.key}
               key={card.key}
               onSelectAction={() => handleSecondaryCardSelection(card.key)}
             />

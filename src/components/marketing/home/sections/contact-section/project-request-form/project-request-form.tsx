@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { SECTION_HREFS } from "@/config/site";
 import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 import { useLanguage } from "@/components/providers/language-provider";
 
 const DEFAULT_SUBMIT_PATH = "/api/public/contact";
+const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
 const STEP_SEQUENCE = [1, 2, 3] as const;
 
 type FormStep = (typeof STEP_SEQUENCE)[number];
@@ -370,9 +372,7 @@ export function ProjectRequestForm({
       if (!(target instanceof Element)) {
         return;
       }
-      const contactAnchor = target.closest(
-        "a[href='#contact'][data-project-offer]",
-      );
+      const contactAnchor = target.closest(CONTACT_PROJECT_LINK_SELECTOR);
       if (!(contactAnchor instanceof HTMLAnchorElement)) {
         return;
       }

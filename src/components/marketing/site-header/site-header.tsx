@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
-import { ENABLE_THEME_SWITCH } from "@/config/site";
+import { ENABLE_THEME_SWITCH, SECTION_HREFS } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
@@ -22,8 +22,8 @@ type SiteHeaderProps = {
 };
 
 export function SiteHeader({
-  brandHref = "#hero",
-  ctaHref = "#contact",
+  brandHref = SECTION_HREFS.hero,
+  ctaHref = SECTION_HREFS.contact,
   navigation,
 }: SiteHeaderProps) {
   const { locale, setLocale, theme, toggleTheme } = useLanguage();
@@ -82,7 +82,7 @@ export function SiteHeader({
     return "site-header__locale-option";
   };
   const mobileNavigation = navigation.filter(
-    (item) => getLabelKey(item.href) !== "#contact",
+    (item) => getLabelKey(item.href) !== SECTION_HREFS.contact,
   );
 
   return (

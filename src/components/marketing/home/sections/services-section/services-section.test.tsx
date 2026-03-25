@@ -75,7 +75,6 @@ const goalOptions = [
   { key: "more_inquiries", label: "mehr Anfragen gewinnen" },
   { key: "professional_presence", label: "professionell online auftreten" },
   { key: "simplify_workflows", label: "interne Abläufe vereinfachen" },
-  { key: "improve_existing", label: "etwas Bestehendes verbessern" },
 ];
 
 function renderSection() {
@@ -94,11 +93,11 @@ function renderSection() {
       oneTimeLabel="einmalig"
       primaryCtaLabel="Projekt anfragen"
       primaryCtaLabels={{
-        landing: "Landingpage anfragen",
-        maintenance: "Wartung anfragen",
-        process: "Prozess-Tool anfragen",
+        landing: "Projekt anfragen",
+        maintenance: "Wartung & Support anfragen",
+        process: "Projekt anfragen",
         upgrade: "Upgrade anfragen",
-        web: "Webseite anfragen",
+        web: "Projekt anfragen",
       }}
       recommendedBadgeLabel="Empfohlen"
       sectionRef={{ current: null }}
@@ -133,6 +132,9 @@ describe("ServicesSection", () => {
     expect(
       screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
     ).toBeTruthy();
+    expect(
+      screen.queryByRole("button", { name: /Bestehendes verbessern/i }),
+    ).toBeNull();
     expect(primaryCards).toHaveLength(3);
     expect(secondaryCards).toHaveLength(2);
     expect(
@@ -146,10 +148,23 @@ describe("ServicesSection", () => {
     const landingCard = screen.getByText("Landingpages").closest("article");
     expect(
       within(landingCard as HTMLElement)
-        .getByRole("link", { name: "Landingpage anfragen" })
+        .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
-    expect(screen.queryByRole("link", { name: "Upgrade anfragen" })).toBeNull();
+    expect(
+      within(
+        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+      )
+        .getByRole("link", { name: "Upgrade anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("upgrade");
+    expect(
+      within(
+        screen.getByText("Wartung & Support").closest("article") as HTMLElement,
+      )
+        .getByRole("link", { name: "Wartung & Support anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("maintenance");
   });
 
   it("updates recommendation and CTA copy when another goal is chosen while keeping the card order stable", () => {
@@ -170,7 +185,7 @@ describe("ServicesSection", () => {
       within(
         screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
       )
-        .getByRole("link", { name: "Prozess-Tool anfragen" })
+        .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("process");
     expect(
@@ -182,12 +197,14 @@ describe("ServicesSection", () => {
       within(
         screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
       )
-        .getByRole("link", { name: "Prozess-Tool anfragen" })
+        .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
     ).toBe("interne Abläufe vereinfachen");
     expect(
-      screen.queryByRole("link", { name: "Landingpage anfragen" }),
-    ).toBeNull();
+      within(
+        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+      ).getByRole("link", { name: "Upgrade anfragen" }),
+    ).toBeTruthy();
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
@@ -206,7 +223,7 @@ describe("ServicesSection", () => {
     expect(webDetails?.hasAttribute("hidden")).toBe(true);
     expect(
       within(landingArticle as HTMLElement)
-        .getByRole("link", { name: "Landingpage anfragen" })
+        .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
     expect(
@@ -219,8 +236,13 @@ describe("ServicesSection", () => {
     expect(landingDetails?.hasAttribute("hidden")).toBe(true);
     expect(webDetails?.hasAttribute("hidden")).toBe(false);
     expect(
+      within(webArticle as HTMLElement)
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("web");
+    expect(
       within(screen.getByText("Landingpages").closest("article") as HTMLElement)
-        .getByRole("link", { name: "Landingpage anfragen" })
+        .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
     expect(
@@ -249,8 +271,15 @@ describe("ServicesSection", () => {
         .getAttribute("data-project-goal"),
     ).toBe("mehr Anfragen gewinnen");
     expect(
-      screen.queryByRole("link", { name: "Landingpage anfragen" }),
-    ).toBeNull();
+      within(screen.getByText("Landingpages").closest("article") as HTMLElement)
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("landing");
+    expect(
+      within(
+        screen.getByText("Wartung & Support").closest("article") as HTMLElement,
+      ).getByRole("link", { name: "Wartung & Support anfragen" }),
+    ).toBeTruthy();
     expect(
       screen
         .getByRole("button", { name: "mehr Anfragen gewinnen" })
@@ -258,27 +287,24 @@ describe("ServicesSection", () => {
     ).toBe("true");
   });
 
-  it("keeps the secondary block neutral while marking website upgrade for the improvement goal", () => {
+  it("keeps both secondary text links visible even before a secondary card is selected", () => {
     renderSection();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "etwas Bestehendes verbessern" }),
-    );
-
-    const upgradeCard = screen.getByText("Website-Upgrade").closest("article");
     expect(
-      within(upgradeCard as HTMLElement)
-        .getByRole("link", { name: "Upgrade anfragen" })
-        .getAttribute("data-project-offer"),
-    ).toBe("upgrade");
+      within(
+        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+      ).getByRole("link", { name: "Upgrade anfragen" }),
+    ).toBeTruthy();
     expect(
-      screen.queryByRole("link", { name: "Landingpage anfragen" }),
-    ).toBeNull();
+      within(
+        screen.getByText("Wartung & Support").closest("article") as HTMLElement,
+      ).getByRole("link", { name: "Wartung & Support anfragen" }),
+    ).toBeTruthy();
     expect(
       screen
         .getByText("Website-Upgrade")
         .closest("article")
         ?.getAttribute("data-selected"),
-    ).toBe("true");
+    ).toBe("false");
   });
 });

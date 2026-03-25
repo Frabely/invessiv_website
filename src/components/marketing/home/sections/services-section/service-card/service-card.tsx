@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./service-card.module.css";
@@ -13,7 +14,7 @@ type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 type ServiceCardProps = {
   card: ServiceCardCopy;
   cardClassName?: string;
-  ctaLabel?: string;
+  ctaLabel: string;
   isCtaActive?: boolean;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
@@ -69,6 +70,7 @@ export function ServiceCard({
     .replace(/\s*(einmalig|one-time)\s*$/i, "")
     .trim();
   const priceMeta = isHourlyPrice ? null : oneTimeLabel;
+  const showPrimaryCta = isCtaActive || isDetailsOpen;
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Escape" || !isDetailsOpen) {
@@ -191,15 +193,18 @@ export function ServiceCard({
             ) : null}
           </div>
 
-          {hiddenItemsCount > 0 && hasExpandableContent && !isDetailsOpen ? (
-            <p className={`${styles.moreItems} services-more-items`}>
+          {hiddenItemsCount > 0 && hasExpandableContent ? (
+            <p
+              aria-hidden={isDetailsOpen ? "true" : undefined}
+              className={`${styles.moreItems} services-more-items${isDetailsOpen ? ` ${styles.moreItemsPlaceholder}` : ""}`}
+            >
               + {hiddenItemsCount} {hiddenBulletsLabel}
             </p>
           ) : null}
 
           <div className={`${styles.footer} services-card-actions-row`}>
             <div className={`${styles.actions} services-details-actions`}>
-              {ctaLabel && isCtaActive ? (
+              {showPrimaryCta ? (
                 <a
                   className={`btn btn--primary services-details-cta ${styles.primaryCta}`}
                   data-analytics-event="cta_click"
@@ -208,22 +213,17 @@ export function ServiceCard({
                   data-analytics-variant="primary"
                   data-project-goal={ctaProjectGoal}
                   data-project-offer={card.key}
-                  href="#contact"
+                  href={SECTION_HREFS.contact}
                 >
                   {ctaLabel}
                 </a>
-              ) : ctaLabel ? (
+              ) : (
                 <span
                   aria-hidden="true"
                   className={`btn btn--primary services-details-cta ${styles.primaryCta} ${styles.primaryCtaPlaceholder}`}
                 >
                   {ctaLabel}
                 </span>
-              ) : (
-                <span
-                  aria-hidden="true"
-                  className={`${styles.actionsSpacer} services-details-actions-spacer`}
-                />
               )}
             </div>
 

@@ -129,6 +129,10 @@
   margin: 0;
 }
 
+.moreItemsPlaceholder {
+  visibility: hidden;
+}
+
 .toggle {
 }
 .toggleArrow {

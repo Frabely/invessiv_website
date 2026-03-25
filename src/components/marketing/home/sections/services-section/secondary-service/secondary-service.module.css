@@ -128,11 +128,6 @@
   outline-offset: 3px;
 }
 
-.ctaLinkPlaceholder {
-  visibility: hidden;
-  pointer-events: none;
-}
-
 @media (max-width: 759px) {
   .titleWrap {
     grid-template-columns: 1fr;

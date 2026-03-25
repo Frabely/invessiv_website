@@ -1,5 +1,6 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import { SECTION_HREFS } from "@/config/site";
 
 type HeroSectionProps = {
   description: string;
@@ -39,7 +40,7 @@ export function HeroSection({
           <div className="hero__cta-row">
             <a
               className="btn btn--primary"
-              href="#contact"
+              href={SECTION_HREFS.contact}
               data-analytics-event="cta_click"
               data-analytics-location="hero"
               data-analytics-variant="primary"
@@ -49,7 +50,7 @@ export function HeroSection({
             </a>
             <a
               className="btn btn--ghost"
-              href="#services"
+              href={SECTION_HREFS.services}
               data-analytics-event="cta_click"
               data-analytics-location="hero"
               data-analytics-variant="secondary"

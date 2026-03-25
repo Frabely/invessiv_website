@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
+import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
@@ -38,6 +39,8 @@ type ContactEntry = {
   description?: string;
   channel?: ContactChannel;
 };
+
+const CONTACT_SECTION_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}']`;
 
 export function ContactSection({
   contactCta,
@@ -136,7 +139,9 @@ export function ContactSection({
       "data-analytics-event": "cta_click",
       "data-analytics-location": "contact",
       "data-analytics-variant": "secondary",
-      ...(href === "#contact" ? { "data-analytics-target": "form" } : {}),
+      ...(href === SECTION_HREFS.contact
+        ? { "data-analytics-target": "form" }
+        : {}),
     };
   };
 
@@ -201,7 +206,7 @@ export function ContactSection({
     }
 
     const activateProjectEntry = () => {
-      if (window.location.hash === "#contact") {
+      if (window.location.hash === SECTION_HREFS.contact) {
         setSelectedEntryId("project");
       }
     };
@@ -212,7 +217,7 @@ export function ContactSection({
         return;
       }
 
-      const contactAnchor = target.closest("a[href='#contact']");
+      const contactAnchor = target.closest(CONTACT_SECTION_LINK_SELECTOR);
       if (contactAnchor) {
         setSelectedEntryId("project");
       }
