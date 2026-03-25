@@ -77,6 +77,7 @@ type ContactFormCopy = {
 };
 
 type ProjectRequestFormProps = {
+  bottomHint?: string;
   formCopy: ContactFormCopy;
   offerOptions: Array<{ key: string; title: string }>;
   privacyHref: string;
@@ -90,6 +91,7 @@ type ProjectOfferSyncDetail = {
 };
 
 export function ProjectRequestForm({
+  bottomHint,
   formCopy,
   offerOptions,
   privacyHref,
@@ -800,15 +802,20 @@ export function ProjectRequestForm({
               </p>
             ) : null}
 
-            <div className="project-request-step-actions project-request-step-actions--end">
-              <button
-                className="btn btn--primary contact-primary-cta--shimmer"
-                disabled={isSubmitting}
-                onClick={goToNextStep}
-                type="button"
-              >
-                {stepOneNextLabel}
-              </button>
+            <div className="project-request-step-actions">
+              {bottomHint ? (
+                <p className="project-request-panel-hint">{bottomHint}</p>
+              ) : null}
+              <div className="project-request-actions-buttons">
+                <button
+                  className="btn btn--primary contact-primary-cta--shimmer"
+                  disabled={isSubmitting}
+                  onClick={goToNextStep}
+                  type="button"
+                >
+                  {stepOneNextLabel}
+                </button>
+              </div>
             </div>
           </fieldset>
 
@@ -1016,22 +1023,27 @@ export function ProjectRequestForm({
             </label>
 
             <div className="project-request-step-actions">
-              <button
-                className="btn btn--ghost"
-                disabled={isSubmitting}
-                onClick={goToPreviousStep}
-                type="button"
-              >
-                {formCopy.previousStepLabel}
-              </button>
-              <button
-                className="btn btn--primary contact-primary-cta--shimmer"
-                disabled={isSubmitting}
-                onClick={goToNextStep}
-                type="button"
-              >
-                {stepTwoNextLabel}
-              </button>
+              {bottomHint ? (
+                <p className="project-request-panel-hint">{bottomHint}</p>
+              ) : null}
+              <div className="project-request-actions-buttons">
+                <button
+                  className="btn btn--ghost"
+                  disabled={isSubmitting}
+                  onClick={goToPreviousStep}
+                  type="button"
+                >
+                  {formCopy.previousStepLabel}
+                </button>
+                <button
+                  className="btn btn--primary contact-primary-cta--shimmer"
+                  disabled={isSubmitting}
+                  onClick={goToNextStep}
+                  type="button"
+                >
+                  {stepTwoNextLabel}
+                </button>
+              </div>
             </div>
           </fieldset>
 
@@ -1125,21 +1137,30 @@ export function ProjectRequestForm({
             ) : null}
 
             <div className="project-request-actions">
-              <button
-                className="btn btn--ghost"
-                disabled={isSubmitting}
-                onClick={goToPreviousStep}
-                type="button"
-              >
-                {formCopy.previousStepLabel}
-              </button>
-              <button
-                className="btn btn--primary contact-primary-cta--shimmer"
-                disabled={isSubmitting}
-                type="submit"
-              >
-                {isSubmitting ? formCopy.submittingLabel : formCopy.submitLabel}
-              </button>
+              <div className="project-request-actions-main">
+                {bottomHint ? (
+                  <p className="project-request-panel-hint">{bottomHint}</p>
+                ) : null}
+                <div className="project-request-actions-buttons">
+                  <button
+                    className="btn btn--ghost"
+                    disabled={isSubmitting}
+                    onClick={goToPreviousStep}
+                    type="button"
+                  >
+                    {formCopy.previousStepLabel}
+                  </button>
+                  <button
+                    className="btn btn--primary contact-primary-cta--shimmer"
+                    disabled={isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting
+                      ? formCopy.submittingLabel
+                      : formCopy.submitLabel}
+                  </button>
+                </div>
+              </div>
               <p className="project-request-required-hint">
                 {formCopy.requiredHint}
               </p>

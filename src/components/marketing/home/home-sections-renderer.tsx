@@ -62,7 +62,6 @@ export function HomeSectionsRenderer({
                   addonBadgeLabel={ui.servicesAddonBadgeLabel}
                   deliveryLabel={ui.servicesDeliveryLabel}
                   detailsCtaLabel={ui.servicesDetailsCta}
-                  description={section.description}
                   fitLabel={ui.servicesFitLabel}
                   goalOptions={ui.servicesIntentOptions}
                   goalTitle={ui.servicesIntentTitle}
@@ -77,7 +76,6 @@ export function HomeSectionsRenderer({
                   serviceCards={section.serviceCards ?? []}
                   serviceContextNote={section.serviceContextNote}
                   serviceSecondaryTitle={section.serviceSecondaryTitle}
-                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );

@@ -26,10 +26,6 @@ export function IncludedSection({ id, includedContent }: IncludedSectionProps) {
           <article className="included-card" key={card.title} role="listitem">
             <div className="included-card-head">
               <h3>{card.title}</h3>
-              <span className="included-badge">
-                <i aria-hidden="true" />
-                {card.tag}
-              </span>
             </div>
             <p>{card.description}</p>
           </article>

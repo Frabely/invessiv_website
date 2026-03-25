@@ -274,203 +274,197 @@ export function ContactSection({
 
   return (
     <section className="contact-section" id={id}>
-      <div className="contact-layout">
-        <div className="contact-brief-card">
-          <div className="contact-brief-head">
-            <h2>{title}</h2>
-            <p className="contact-decision-intro">
-              {contactDecisionIntro ?? description}
-            </p>
-          </div>
+      <div className="contact-section-stack">
+        <div className="contact-brief-head">
+          <h2>{title}</h2>
+          <p className="contact-decision-intro">
+            {contactDecisionIntro ?? description}
+          </p>
+        </div>
 
-          {entries.length ? (
-            <>
-              <div
-                className="contact-entry-picker"
-                role="tablist"
-                aria-label="Kontaktwege"
-              >
-                {entries.map((entry, entryIndex) => {
-                  const isActive = activeEntryId === entry.id;
-
-                  return (
-                    <button
-                      aria-controls={`contact-entry-panel-${entry.id}`}
-                      aria-selected={isActive}
-                      className={`contact-entry-trigger${isActive ? " is-active" : ""}`}
-                      id={`contact-entry-tab-${entry.id}`}
-                      key={entry.id}
-                      onKeyDown={(event) => {
-                        handleEntryKeyDown(event, entryIndex);
-                      }}
-                      onClick={() => setSelectedEntryId(entry.id)}
-                      role="tab"
-                      type="button"
-                    >
-                      {entry.kicker ? (
-                        <span className="contact-entry-trigger-kicker">
-                          {entry.kicker}
-                        </span>
-                      ) : null}
-                      <span className="contact-entry-trigger-title">
-                        {entry.label}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-              <p
-                className="contact-screen-reader-status"
-                role="status"
-                aria-live="polite"
-              >
-                {copyStatusMessage}
-              </p>
-
-              {entries.map((entry) => {
+        {entries.length ? (
+          <>
+            <div
+              className="contact-entry-picker"
+              role="tablist"
+              aria-label="Kontaktwege"
+            >
+              {entries.map((entry, entryIndex) => {
                 const isActive = activeEntryId === entry.id;
-                const channelMode =
-                  entry.kind === "channel" && entry.channel
-                    ? getChannelMode(entry.channel)
-                    : null;
-                const isExternalChannelLink =
-                  entry.kind === "channel" && entry.channel
-                    ? isExternalLink(entry.channel.href)
-                    : false;
 
                 return (
-                  <article
-                    aria-labelledby={`contact-entry-tab-${entry.id}`}
-                    className={`contact-entry-panel${entry.kind === "project" ? " contact-entry-panel--project" : ""}${channelMode ? ` contact-entry-panel--${channelMode}` : ""}`}
-                    hidden={!isActive}
-                    id={`contact-entry-panel-${entry.id}`}
-                    key={`panel-${entry.id}`}
-                    role="tabpanel"
+                  <button
+                    aria-controls={`contact-entry-panel-${entry.id}`}
+                    aria-selected={isActive}
+                    className={`contact-entry-trigger${isActive ? " is-active" : ""}`}
+                    id={`contact-entry-tab-${entry.id}`}
+                    key={entry.id}
+                    onKeyDown={(event) => {
+                      handleEntryKeyDown(event, entryIndex);
+                    }}
+                    onClick={() => setSelectedEntryId(entry.id)}
+                    role="tab"
+                    type="button"
                   >
-                    {entry.kind === "channel" ? (
-                      <h4 className="contact-entry-panel-title">
-                        {entry.label}
-                      </h4>
+                    {entry.kicker ? (
+                      <span className="contact-entry-trigger-kicker">
+                        {entry.kicker}
+                      </span>
                     ) : null}
-                    {entry.kind === "channel" && entry.description ? (
-                      <p className="contact-entry-panel-description">
-                        {entry.description}
-                      </p>
-                    ) : null}
-
-                    {entry.kind === "project" && primaryPath ? (
-                      <>
-                        <ProjectRequestForm
-                          formCopy={primaryPath.form}
-                          offerOptions={contactFormOffers}
-                          privacyHref={privacyHref}
-                          privacyLabel={primaryPath.form.privacyLabel}
-                        />
-                        {primaryPath.cta.hint ? (
-                          <p className="contact-entry-panel-hint">
-                            {primaryPath.cta.hint}
-                          </p>
-                        ) : null}
-                      </>
-                    ) : null}
-
-                    {entry.kind === "channel" && entry.channel ? (
-                      <>
-                        {channelMode === "email" ? (
-                          <div className="contact-channel-email-card">
-                            <div className="contact-channel-meta">
-                              <p className="contact-channel-meta-label">
-                                {entry.channel.metaLabel ?? "Kontakt"}
-                              </p>
-                              <p className="contact-channel-meta-value">
-                                {entry.channel.value}
-                              </p>
-                            </div>
-                            {entry.channel.copyValue ? (
-                              <button
-                                className="contact-channel-copy-button"
-                                onClick={() => copyChannelValue(entry)}
-                                type="button"
-                              >
-                                {copiedEntryId === entry.id
-                                  ? (entry.channel.copiedLabel ?? "Copied")
-                                  : (entry.channel.copyLabel ?? "Copy")}
-                              </button>
-                            ) : null}
-                          </div>
-                        ) : (
-                          <div className="contact-channel-call-card">
-                            <p className="contact-channel-meta-label">
-                              {entry.channel.metaLabel ?? "Format"}
-                            </p>
-                            <p className="contact-channel-meta-value">
-                              {entry.channel.metaValue ?? entry.channel.value}
-                            </p>
-                          </div>
-                        )}
-
-                        {entry.channel.helper ? (
-                          <p className="contact-entry-panel-helper">
-                            {entry.channel.helper}
-                          </p>
-                        ) : null}
-
-                        {entry.channel.detailPoints?.length ? (
-                          <ul className="contact-channel-detail-list">
-                            {entry.channel.detailPoints.map((point) => (
-                              <li key={`${entry.id}-${point}`}>{point}</li>
-                            ))}
-                          </ul>
-                        ) : null}
-
-                        <div className="contact-channel-footer">
-                          {entry.channel.hint ? (
-                            <p className="contact-entry-panel-hint">
-                              {entry.channel.hint}
-                            </p>
-                          ) : null}
-                          <div className="contact-channel-actions">
-                            <a
-                              className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
-                              href={entry.channel.href}
-                              rel={
-                                isExternalChannelLink
-                                  ? "noopener noreferrer"
-                                  : undefined
-                              }
-                              target={
-                                isExternalChannelLink ? "_blank" : undefined
-                              }
-                              data-analytics-event="contact_click"
-                              data-analytics-location="contact"
-                              data-analytics-target={
-                                getContactTarget(entry.channel.href) ?? "email"
-                              }
-                            >
-                              {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
-                            </a>
-                          </div>
-                        </div>
-                      </>
-                    ) : null}
-                  </article>
+                    <span className="contact-entry-trigger-title">
+                      {entry.label}
+                    </span>
+                  </button>
                 );
               })}
-            </>
-          ) : null}
-
-          {contactSecondaryCta ? (
-            <div className="contact-cta-wrap">
-              <a
-                className="contact-secondary-link"
-                href={contactSecondaryCta.href}
-                {...getSecondaryCtaAnalyticsProps(contactSecondaryCta.href)}
-              >
-                {contactSecondaryCta.label}
-              </a>
             </div>
-          ) : null}
-        </div>
+            <p
+              className="contact-screen-reader-status"
+              role="status"
+              aria-live="polite"
+            >
+              {copyStatusMessage}
+            </p>
+
+            {entries.map((entry) => {
+              const isActive = activeEntryId === entry.id;
+              const channelMode =
+                entry.kind === "channel" && entry.channel
+                  ? getChannelMode(entry.channel)
+                  : null;
+              const isExternalChannelLink =
+                entry.kind === "channel" && entry.channel
+                  ? isExternalLink(entry.channel.href)
+                  : false;
+
+              return (
+                <article
+                  aria-labelledby={`contact-entry-tab-${entry.id}`}
+                  className={`contact-entry-panel${entry.kind === "project" ? " contact-entry-panel--project" : ""}${channelMode ? ` contact-entry-panel--${channelMode}` : ""}`}
+                  hidden={!isActive}
+                  id={`contact-entry-panel-${entry.id}`}
+                  key={`panel-${entry.id}`}
+                  role="tabpanel"
+                >
+                  {entry.kind === "project" && primaryPath ? (
+                    <>
+                      <ProjectRequestForm
+                        bottomHint={primaryPath.cta.hint}
+                        formCopy={primaryPath.form}
+                        offerOptions={contactFormOffers}
+                        privacyHref={privacyHref}
+                        privacyLabel={primaryPath.form.privacyLabel}
+                      />
+                    </>
+                  ) : null}
+
+                  {entry.kind === "channel" && entry.channel ? (
+                    <div className="contact-channel-panel">
+                      <div className="contact-channel-panel-head">
+                        <h4 className="contact-entry-panel-title">
+                          {entry.label}
+                        </h4>
+                        {entry.description ? (
+                          <p className="contact-entry-panel-description">
+                            {entry.description}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      {channelMode === "email" ? (
+                        <div className="contact-channel-email-card">
+                          <div className="contact-channel-meta">
+                            <p className="contact-channel-meta-label">
+                              {entry.channel.metaLabel ?? "Kontakt"}
+                            </p>
+                            <p className="contact-channel-meta-value">
+                              {entry.channel.value}
+                            </p>
+                          </div>
+                          {entry.channel.copyValue ? (
+                            <button
+                              className="contact-channel-copy-button"
+                              onClick={() => copyChannelValue(entry)}
+                              type="button"
+                            >
+                              {copiedEntryId === entry.id
+                                ? (entry.channel.copiedLabel ?? "Copied")
+                                : (entry.channel.copyLabel ?? "Copy")}
+                            </button>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <div className="contact-channel-call-card">
+                          <p className="contact-channel-meta-label">
+                            {entry.channel.metaLabel ?? "Format"}
+                          </p>
+                          <p className="contact-channel-meta-value">
+                            {entry.channel.metaValue ?? entry.channel.value}
+                          </p>
+                        </div>
+                      )}
+
+                      {entry.channel.helper ? (
+                        <p className="contact-entry-panel-helper">
+                          {entry.channel.helper}
+                        </p>
+                      ) : null}
+
+                      {entry.channel.detailPoints?.length ? (
+                        <ul className="contact-channel-detail-list">
+                          {entry.channel.detailPoints.map((point) => (
+                            <li key={`${entry.id}-${point}`}>{point}</li>
+                          ))}
+                        </ul>
+                      ) : null}
+
+                      <div className="contact-channel-footer">
+                        {entry.channel.hint ? (
+                          <p className="contact-entry-panel-hint">
+                            {entry.channel.hint}
+                          </p>
+                        ) : null}
+                        <div className="contact-channel-actions">
+                          <a
+                            className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
+                            href={entry.channel.href}
+                            rel={
+                              isExternalChannelLink
+                                ? "noopener noreferrer"
+                                : undefined
+                            }
+                            target={
+                              isExternalChannelLink ? "_blank" : undefined
+                            }
+                            data-analytics-event="contact_click"
+                            data-analytics-location="contact"
+                            data-analytics-target={
+                              getContactTarget(entry.channel.href) ?? "email"
+                            }
+                          >
+                            {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
+          </>
+        ) : null}
+
+        {contactSecondaryCta ? (
+          <div className="contact-cta-wrap">
+            <a
+              className="contact-secondary-link"
+              href={contactSecondaryCta.href}
+              {...getSecondaryCtaAnalyticsProps(contactSecondaryCta.href)}
+            >
+              {contactSecondaryCta.label}
+            </a>
+          </div>
+        ) : null}
       </div>
     </section>
   );

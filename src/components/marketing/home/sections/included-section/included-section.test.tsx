@@ -27,5 +27,8 @@ describe("IncludedSection", () => {
         "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
       ),
     ).toBeTruthy();
+    expect(screen.queryByText("Setup")).toBeNull();
+    expect(screen.queryByText("Ablauf")).toBeNull();
+    expect(screen.queryByText("QA")).toBeNull();
   });
 });

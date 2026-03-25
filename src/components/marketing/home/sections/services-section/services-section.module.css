@@ -3,14 +3,14 @@
   gap: 28px;
 }
 
-.primaryHeader {
-  display: block;
-}
-
 .goalPicker {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   align-content: start;
+}
+
+.sectionTitle {
+  margin: 0 0 0px;
 }
 
 .contextNote {

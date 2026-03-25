@@ -5,7 +5,6 @@ import type { PointerEvent, RefObject } from "react";
 
 import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
 import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card/service-card";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./services-section.module.css";
@@ -20,7 +19,6 @@ type ServicesSectionProps = {
   addonBadgeLabel: string;
   deliveryLabel: string;
   detailsCtaLabel: string;
-  description: string;
   fitLabel: string;
   goalOptions: GoalOption[];
   goalTitle: string;
@@ -37,7 +35,6 @@ type ServicesSectionProps = {
   serviceCards: ServiceCardData[];
   serviceContextNote?: string;
   serviceSecondaryTitle?: string;
-  summaryPoints?: string[];
   title: string;
 };
 
@@ -53,7 +50,6 @@ export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
   detailsCtaLabel,
-  description,
   fitLabel,
   goalOptions,
   goalTitle,
@@ -67,7 +63,6 @@ export function ServicesSection({
   serviceCards,
   serviceContextNote,
   serviceSecondaryTitle,
-  summaryPoints,
   title,
 }: ServicesSectionProps) {
   const [openCardKey, setOpenCardKey] = useState<string | null>(null);
@@ -170,16 +165,8 @@ export function ServicesSection({
       id={id}
       ref={sectionRef}
     >
-      <div className={styles.primaryHeader}>
-        <h2>{title}</h2>
-        <SectionScanPoints
-          fallbackClassName="services-hint"
-          fallbackText={description}
-          points={summaryPoints}
-        />
-      </div>
-
       <div className={styles.goalPicker} aria-label={goalTitle} role="group">
+        <h2 className={styles.sectionTitle}>{title}</h2>
         <p className={styles.goalTitle}>{goalTitle}</p>
         <div className={styles.goalChips}>
           {goalOptions.map((option) => {

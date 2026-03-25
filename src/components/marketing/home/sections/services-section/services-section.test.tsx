@@ -88,7 +88,6 @@ function renderSection() {
       addonBadgeLabel="Add-on"
       deliveryLabel="Lieferzeit"
       detailsCtaLabel="Mehr Infos"
-      description="Leistungen als Richtwerte."
       fitLabel="Ideal für"
       goalOptions={goalOptions}
       goalTitle="Wähle dein Ziel – wir markieren das passendste Leistungsmodell."
@@ -108,7 +107,6 @@ function renderSection() {
       serviceCards={serviceCards}
       serviceContextNote="Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform."
       serviceSecondaryTitle="Schon etwas da?"
-      summaryPoints={["Umfang vor Start", "Klare Lieferfenster"]}
       title="Was brauchst du gerade?"
     />,
   );
@@ -140,8 +138,21 @@ describe("ServicesSection", () => {
       ),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Was brauchst du gerade?",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+      ),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
     ).toBeTruthy();
+    expect(screen.queryByText("Umfang vor Start")).toBeNull();
+    expect(screen.queryByText("Klare Lieferfenster")).toBeNull();
     expect(
       screen.queryByRole("button", { name: /Bestehendes verbessern/i }),
     ).toBeNull();
