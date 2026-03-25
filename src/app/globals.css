@@ -2474,7 +2474,6 @@ main {
 .contact-brief-head {
   display: grid;
   gap: 8px;
-  max-width: 54rem;
 }
 
 .contact-section-stack {
@@ -6432,10 +6431,20 @@ body {
     align-items: stretch;
   }
 
+  .project-request-actions-buttons {
+    width: 100%;
+    margin-left: 0;
+  }
+
   .project-request-step-actions .btn,
   .project-request-actions .btn {
     width: 100%;
     justify-content: center;
+  }
+
+  .contact-channel-actions {
+    width: 100%;
+    margin-left: 0;
   }
 
   .site-footer {
