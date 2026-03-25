@@ -23,7 +23,7 @@ describe("HeroSection", () => {
           "QA vor Go-live",
         ]}
         heroPrimaryCta="Projekt anfragen"
-        heroSecondaryCta="Angebote & Preise"
+        heroSecondaryCta="Leistungsmodelle"
         heroTag="KLARER AUFBAU, DIREKTE UMSETZUNG"
         heroVisualAriaLabel="Hero visual preview"
         title="Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel."
@@ -45,7 +45,7 @@ describe("HeroSection", () => {
     ).toBe("#contact");
     expect(
       screen
-        .getByRole("link", { name: "Angebote & Preise" })
+        .getByRole("link", { name: "Leistungsmodelle" })
         .getAttribute("href"),
     ).toBe("#services");
     expect(screen.queryByText("KI-Agenten-Workflow")).toBeNull();

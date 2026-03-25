@@ -144,3 +144,9 @@
     justify-content: center;
   }
 }
+
+@media (min-width: 760px) {
+  .header {
+    grid-template-rows: minmax(8.75rem, auto) auto;
+  }
+}

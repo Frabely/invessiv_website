@@ -6,7 +6,7 @@
     "QA before go-live"
   ],
   "heroPrimaryCta": "Request project",
-  "heroSecondaryCta": "Offers & pricing",
+  "heroSecondaryCta": "Service models",
   "heroTag": "CLEAR STRUCTURE, DIRECT EXECUTION",
   "heroVisualAriaLabel": "Live performance snapshot",
   "mappingWarning": "Navigation/section mapping is incomplete.",
@@ -40,7 +40,7 @@
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
-  "servicesOneTimeLabel": "one-time",
+  "servicesOneTimeLabel": "",
   "servicesRecommendedBadgeLabel": "Recommended",
   "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting offer.",
   "servicesIntentOptions": [

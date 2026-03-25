@@ -6,7 +6,7 @@
     "QA vor Go-live"
   ],
   "heroPrimaryCta": "Projekt anfragen",
-  "heroSecondaryCta": "Angebote & Preise",
+  "heroSecondaryCta": "Leistungsmodelle",
   "heroTag": "KLARER AUFBAU, DIREKTE UMSETZUNG",
   "heroVisualAriaLabel": "Live Performance Einblick",
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
@@ -40,7 +40,7 @@
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
-  "servicesOneTimeLabel": "einmalig",
+  "servicesOneTimeLabel": "",
   "servicesRecommendedBadgeLabel": "Empfohlen",
   "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Angebot.",
   "servicesIntentOptions": [

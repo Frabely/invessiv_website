@@ -302,11 +302,11 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Was brauchst du gerade?",
         description:
-          "Drei typische Einstiege – je nachdem, ob du Anfragen klarer führen, deinen Auftritt neu aufsetzen oder interne Abläufe vereinfachen willst.",
+          "Fünf typische Leistungsmodelle zur Orientierung – je nachdem, ob du Anfragen klarer führen, deinen Auftritt neu aufsetzen oder interne Abläufe vereinfachen willst. Umfang, Timing und Vergütung klären wir vor Start individuell.",
         summaryPoints: [
           "klarer Einstieg je Problem",
           "Umfang vor Start verbindlich",
-          "Lieferfenster und Preisanker sichtbar",
+          "Lieferfenster und typische Projektumfänge sichtbar",
         ],
         serviceSecondaryTitle:
           "Schon etwas da? Oder brauchst du Unterstützung danach?",
@@ -320,7 +320,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Landingpage mit klarer Angebotsstruktur, stärkerem CTA-Fluss und sauberer technischer Basis.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
             isRecommended: true,
-            price: "ab 990 € einmalig",
+            price: "auf Anfrage",
             delivery: "3–7 Tage",
             included: [
               "Klare Angebots- und CTA-Struktur für dein Hauptziel",
@@ -332,7 +332,7 @@ const HOME_SECTIONS: LandingSection[] = [
             details: [
               "Copy-Feinschliff oder Inhaltsproduktion als Zusatzleistung möglich.",
               "Ab der 3. Feedbackrunde kalkuliere ich transparent nach.",
-              "Hosting, Domain und externe Tool-Lizenzen sind nicht im Preis enthalten.",
+              "Hosting, Domain und externe Tool-Lizenzen werden bei Bedarf separat abgestimmt.",
             ],
           },
           {
@@ -343,7 +343,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Website-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
-            price: "ab 2.490 € einmalig",
+            price: "auf Anfrage",
             delivery: "7–14 Tage",
             included: [
               "Positionierung, Seitenstruktur und Navigation mit klarer Journey",
@@ -356,7 +356,7 @@ const HOME_SECTIONS: LandingSection[] = [
             details: [
               "Zusätzliche Seiten und Mehrsprachigkeit planen wir vor Start verbindlich ein.",
               "CMS-Integration erfolgt nur, wenn sie im gewählten Stack sinnvoll ist.",
-              "Drittanbieter-Lizenzen und externe Integrationen sind nicht im Grundpreis enthalten.",
+              "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
             ],
           },
           {
@@ -367,7 +367,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
-            price: "ab 3.490 € einmalig",
+            price: "auf Anfrage",
             delivery: "10–21 Tage",
             included: [
               "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
@@ -391,7 +391,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
-            price: "ab 750 € einmalig",
+            price: "auf Anfrage",
             delivery: "3–10 Tage",
             included: [
               "Priorisierte Quick Wins für Speed, UX und mobile Klarheit",
@@ -402,7 +402,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Vorher-Nachher-Check der wichtigsten Verbesserungen",
             ],
             details: [
-              "Optional im Stundenmodell: Entwicklung 70–85 €/h, Content/kleine Pflege 50–60 €/h.",
+              "Optional auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
               "Größere Rebuild-Themen werden separat empfohlen und geplant.",
               "Tiefe Backend-Refactorings sind nicht im Basis-Upgrade enthalten.",
             ],
@@ -415,18 +415,18 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Schnelle Weiterentwicklung, Bugfixes und Pflege für bestehende Seiten oder Tools.",
             fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
-            price: "70–85 € / h",
+            price: "nach Aufwand",
             delivery: "24–72h",
             deliveryLabel: "Typische Reaktionszeit",
             included: [
-              "Content- und Kleinpflege: 50–60 €/h",
-              "Entwicklung und Implementierung: 70–85 €/h",
+              "Content- und Kleinpflege nach abgestimmtem Umfang",
+              "Entwicklung und Implementierung nach Aufwand oder Vereinbarung",
               "Auf Wunsch regelmäßige Monitoring- und Qualitätschecks",
               "Wichtige Themen zuerst (nach Business-Impact)",
-              "Transparente Stundenpakete (z. B. 5 oder 10 Stunden)",
+              "Transparente Betreuungspakete oder Einzelabruf nach Bedarf",
             ],
             details: [
-              "Du zahlst nur den tatsächlichen Aufwand mit klarer Aufstellung.",
+              "Du zahlst nur den abgestimmten oder tatsächlich erfassten Aufwand mit klarer Aufstellung.",
               "Notfallanfragen priorisiere ich nach Verfügbarkeit.",
             ],
           },
@@ -435,11 +435,11 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "What do you need right now?",
         description:
-          "Three typical entry points, depending on whether you want to guide inquiries more clearly, rebuild your presence, or simplify internal workflows.",
+          "Five typical service models for orientation, depending on whether you want to guide inquiries more clearly, rebuild your presence, or simplify internal workflows. Scope, timing, and pricing are aligned individually before kickoff.",
         summaryPoints: [
           "clear entry point per problem",
           "service range aligned before kickoff",
-          "delivery window and price anchor visible",
+          "delivery window and typical project scope visible",
         ],
         serviceSecondaryTitle:
           "Already have something in place? Or need support afterward?",
@@ -453,7 +453,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Landing page with a clearer offer structure, stronger CTA flow, and a clean technical foundation.",
             fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
             isRecommended: true,
-            price: "from €990 one-time",
+            price: "on request",
             delivery: "3–7 days",
             included: [
               "Clear offer and CTA structure around your main goal",
@@ -465,7 +465,7 @@ const HOME_SECTIONS: LandingSection[] = [
             details: [
               "Copy refinement or content production is available as an add-on.",
               "From the 3rd feedback round onward, additional effort is outlined transparently.",
-              "Hosting, domain, and external tool licenses are not included.",
+              "Hosting, domain, and external tool licenses are aligned separately when needed.",
             ],
           },
           {
@@ -476,7 +476,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Company website or relaunch with clearer positioning and more obvious user paths.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
-            price: "from €2,490 one-time",
+            price: "on request",
             delivery: "7–14 days",
             included: [
               "Positioning, site structure, and navigation with a clearer journey",
@@ -489,7 +489,7 @@ const HOME_SECTIONS: LandingSection[] = [
             details: [
               "Additional pages and multilingual rollout are planned upfront.",
               "CMS integration is included only when it fits the selected stack.",
-              "Third-party licenses and external integrations are not included in the base price.",
+              "Third-party licenses and external integrations are aligned separately when needed.",
             ],
           },
           {
@@ -500,7 +500,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Small internal tool that reduces manual work and creates more transparency.",
             fit: "Teams that want to structure or partially automate recurring internal steps.",
-            price: "from €3,490 one-time",
+            price: "on request",
             delivery: "10–21 days",
             included: [
               "Compact planning workshop for goals, data, and roles",
@@ -524,7 +524,7 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "More speed, clearer UX, stronger CTAs, and more modern UI without a full rebuild.",
             fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
-            price: "from €750 one-time",
+            price: "on request",
             delivery: "3–10 days",
             included: [
               "Prioritized quick wins for speed, UX, and mobile clarity",
@@ -535,7 +535,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Before/after check of key improvements",
             ],
             details: [
-              "Optional hourly model: development at €70–85/h, content/small updates at €50–60/h.",
+              "Can also be planned as ongoing iteration or as a focused one-off improvement.",
               "Larger rebuild topics are recommended and planned separately.",
               "Deep backend refactoring is not included in the base upgrade.",
             ],
@@ -548,18 +548,18 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Fast iteration, bugfixes, and upkeep for existing websites or tools.",
             fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
-            price: "€70–85 / h",
+            price: "by effort",
             delivery: "24–72h",
             deliveryLabel: "Typical response time",
             included: [
-              "Content and minor updates: €50–60/h",
-              "Development and implementation: €70–85/h",
+              "Content and minor updates within an agreed scope",
+              "Development and implementation by effort or agreement",
               "Optional recurring monitoring and quality checks",
               "High-impact topics first (by business impact)",
-              "Transparent hour bundles (e.g. 5 or 10 hours)",
+              "Transparent retainers or ad-hoc support when needed",
             ],
             details: [
-              "You only pay for the actual effort with a clear breakdown.",
+              "You only pay for the agreed or actually logged effort with a clear breakdown.",
               "Urgent requests are prioritized by availability.",
             ],
           },
@@ -693,7 +693,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Angebot, den nächsten Schritt und ein transparentes Setup für die Umsetzung.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung.",
           },
           {
             question: "Kannst du meine bestehende Website überarbeiten?",
@@ -718,7 +718,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Wie viele Korrekturen sind enthalten?",
             answer:
-              "Die enthaltenen Korrekturen hängen vom Paket ab. Bei Landingpages sind in der Regel 1–2 Feedbackrunden enthalten. Weitere Korrekturen oder zusätzliche Schleifen stimmen wir vorab transparent als Zusatzaufwand ab.",
+              "Die enthaltenen Korrekturen hängen vom gewählten Leistungsmodell ab. Bei Landingpages sind in der Regel 1–2 Feedbackrunden enthalten. Weitere Korrekturen oder zusätzliche Schleifen stimmen wir vorab transparent als Zusatzaufwand ab.",
           },
           {
             question: "Wie gehst du mit Zusatzwünschen um?",
@@ -749,7 +749,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right offer, the next step, and a transparent setup for delivery.",
+              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right service model, the next step, and, where useful, an individual offer for delivery.",
           },
           {
             question: "Can you redesign my existing website?",
@@ -774,7 +774,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "How many revision rounds are included?",
             answer:
-              "Included revisions depend on the package. For landing pages, typically 1-2 feedback rounds are included. Any additional rounds are aligned transparently in advance as extra effort.",
+              "Included revisions depend on the selected service model. For landing pages, typically 1-2 feedback rounds are included. Any additional rounds are aligned transparently in advance as extra effort.",
           },
           {
             question: "How are additional requests handled?",
@@ -815,7 +815,7 @@ const HOME_SECTIONS: LandingSection[] = [
           href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
-          label: "Angebote ansehen",
+          label: "Leistungsmodelle ansehen",
           href: SECTION_HREFS.services,
         },
         footerColumns: [
@@ -823,7 +823,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Was du bekommst", href: SECTION_HREFS.included },
-              { label: "Angebote & Preise", href: SECTION_HREFS.services },
+              { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
               { label: "Kontakt", href: SECTION_HREFS.contact },
@@ -916,7 +916,7 @@ const HOME_SECTIONS: LandingSection[] = [
           hint: "3 kurze Schritte, nur relevante Pflichtfelder und klare Rückmeldung.",
         },
         contactSecondaryCta: {
-          label: "Angebote vergleichen",
+          label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
           hint: "",
         },
@@ -926,7 +926,7 @@ const HOME_SECTIONS: LandingSection[] = [
           intro:
             "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
-            "Je nach gewähltem Angebot zeige ich nur die wirklich relevanten Felder.",
+            "Je nach gewähltem Leistungsmodell zeige ich nur die wirklich relevanten Felder.",
           firstNameLabel: "Name",
           emailLabel: "E-Mail",
           phoneLabel: "Telefon",
@@ -935,8 +935,8 @@ const HOME_SECTIONS: LandingSection[] = [
           websiteLabel: "Aktuelle Website",
           websiteRequiredHint:
             "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
-          offerLabel: "Passendes Angebot",
-          offerPlaceholder: "Bitte Angebot wählen",
+          offerLabel: "Passendes Leistungsmodell",
+          offerPlaceholder: "Bitte Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
             { key: CONTACT_GOAL_KEYS[0], label: "Anfragen erhalten" },
@@ -1041,7 +1041,7 @@ const HOME_SECTIONS: LandingSection[] = [
           href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
-          label: "View offers",
+          label: "View service models",
           href: SECTION_HREFS.services,
         },
         footerColumns: [
@@ -1049,7 +1049,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "What you get", href: SECTION_HREFS.included },
-              { label: "Offers & pricing", href: SECTION_HREFS.services },
+              { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
               { label: "Contact", href: SECTION_HREFS.contact },
@@ -1142,7 +1142,7 @@ const HOME_SECTIONS: LandingSection[] = [
           hint: "3 short steps, only relevant required fields, and a clear reply.",
         },
         contactSecondaryCta: {
-          label: "Compare offers",
+          label: "Compare service models",
           href: SECTION_HREFS.services,
           hint: "",
         },
@@ -1153,7 +1153,7 @@ const HOME_SECTIONS: LandingSection[] = [
           intro:
             "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
           conditionalFieldHint:
-            "Based on your offer, I only show fields that are actually relevant.",
+            "Based on your selected service model, I only show fields that are actually relevant.",
           firstNameLabel: "Name",
           emailLabel: "Email",
           phoneLabel: "Phone",
@@ -1162,8 +1162,8 @@ const HOME_SECTIONS: LandingSection[] = [
           websiteLabel: "Current website",
           websiteRequiredHint:
             "For website upgrade, websites, and maintenance, the current website is required.",
-          offerLabel: "Relevant offer",
-          offerPlaceholder: "Select an offer",
+          offerLabel: "Relevant service model",
+          offerPlaceholder: "Select a service model",
           goalLabel: "Primary landing page goal",
           goalOptions: [
             { key: CONTACT_GOAL_KEYS[0], label: "Generate inquiries" },
@@ -1267,7 +1267,7 @@ const HOME_SECTIONS: LandingSection[] = [
           href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
-          label: "Angebote ansehen",
+          label: "Leistungsmodelle ansehen",
           href: SECTION_HREFS.services,
         },
         footerColumns: [
@@ -1275,7 +1275,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Was du bekommst", href: SECTION_HREFS.included },
-              { label: "Angebote & Preise", href: SECTION_HREFS.services },
+              { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
               { label: "Kontakt", href: SECTION_HREFS.contact },
@@ -1322,7 +1322,7 @@ const HOME_SECTIONS: LandingSection[] = [
           href: SECTION_HREFS.contact,
         },
         footerHeroSecondaryCta: {
-          label: "View offers",
+          label: "View service models",
           href: SECTION_HREFS.services,
         },
         footerColumns: [
@@ -1330,7 +1330,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "What you get", href: SECTION_HREFS.included },
-              { label: "Offers & pricing", href: SECTION_HREFS.services },
+              { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
               { label: "Contact", href: SECTION_HREFS.contact },
