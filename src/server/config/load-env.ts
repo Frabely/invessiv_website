@@ -17,6 +17,7 @@ export function loadLocalEnvFiles() {
 
   for (const envFile of envFiles) {
     loadDotenv({
+      quiet: true,
       override: false,
       path: path.join(cwd, envFile),
     });

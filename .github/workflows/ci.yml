@@ -30,3 +30,40 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  contact-e2e:
+    if: ${{ secrets.CONTACT_E2E_DATABASE_URL != '' && secrets.CONTACT_E2E_RESEND_API_KEY != '' && secrets.CONTACT_E2E_MAIL_FROM != '' && secrets.CONTACT_E2E_MAIL_TO != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ secrets.CONTACT_E2E_DATABASE_URL }}
+          CONTACT_MAIL_PROVIDER: resend
+          CONTACT_MAIL_FROM: ${{ secrets.CONTACT_E2E_MAIL_FROM }}
+          CONTACT_MAIL_TO: ${{ secrets.CONTACT_E2E_MAIL_TO }}
+          RESEND_API_KEY: ${{ secrets.CONTACT_E2E_RESEND_API_KEY }}
+
+      - name: Contact lead E2E
+        run: npm run test:e2e:contact
+        env:
+          DATABASE_URL: ${{ secrets.CONTACT_E2E_DATABASE_URL }}
+          CONTACT_MAIL_PROVIDER: resend
+          CONTACT_MAIL_FROM: ${{ secrets.CONTACT_E2E_MAIL_FROM }}
+          CONTACT_MAIL_TO: ${{ secrets.CONTACT_E2E_MAIL_TO }}
+          RESEND_API_KEY: ${{ secrets.CONTACT_E2E_RESEND_API_KEY }}

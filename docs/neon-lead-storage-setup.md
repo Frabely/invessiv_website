@@ -46,6 +46,12 @@ Erwartung:
 - Prüfen, dass `mail_status` nach erfolgreichem Versand auf `sent` steht.
 - Einen Mail-Fehlerfall nur kontrolliert testen; dabei muss der Lead gespeichert bleiben und `mail_status = failed` erhalten.
 
+## 7. E2E-Verifikation in der QA-Kette
+- Für den echten Browser- und DB-Check steht `npm run test:e2e:contact` zur Verfügung.
+- Der Test sendet eine reale Anfrage über das Kontaktformular, prüft den Datensatz in Neon und löscht den Test-Lead anschließend wieder.
+- Dieser Test sollte nur gegen eine dedizierte Development- oder Staging-Datenbank laufen, nicht gegen Production.
+- Falls CI den Test ausführen soll, sollten dafür separate E2E-Secrets und idealerweise eine eigene Test-Mailbox verwendet werden.
+
 ## Hinweise
 - Ohne `DATABASE_URL` bleibt der bestehende Mail-Flow aktiv, aber es erfolgt keine Lead-Persistierung.
 - Die Persistierung ist aktuell für das bestehende Projektanfrage-Formular umgesetzt und über `source_form = project_request` gekennzeichnet.

@@ -1,4 +1,5 @@
 import { COMPANY } from "@/config/company";
+import { loadLocalEnvFiles } from "@/server/config/load-env";
 
 export type ContactMailProvider = "disabled" | "resend";
 
@@ -11,6 +12,10 @@ export type ServerEnv = {
 };
 
 function readContactMailProvider(): ContactMailProvider {
+  if (!process.env.VITEST) {
+    loadLocalEnvFiles();
+  }
+
   const rawValue = process.env.CONTACT_MAIL_PROVIDER?.trim().toLowerCase();
   if (rawValue === "resend") {
     return "resend";
@@ -20,6 +25,10 @@ function readContactMailProvider(): ContactMailProvider {
 }
 
 export function getServerEnv(): ServerEnv {
+  if (!process.env.VITEST) {
+    loadLocalEnvFiles();
+  }
+
   const databaseUrl =
     process.env.DATABASE_URL?.trim() ||
     process.env.INVESSIV_DATABASE_DATABASE_URL?.trim() ||
