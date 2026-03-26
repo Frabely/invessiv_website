@@ -36,9 +36,14 @@ Erwartung:
 
 ## 5. Vercel konfigurieren
 - In Vercel `DATABASE_URL` für die relevanten Environments setzen:
+  - Development
   - Preview
   - Production
 - Darauf achten, dass die Werte zu den jeweiligen Neon-Datenbanken passen.
+- Aktueller empfohlener Zustand:
+  - `Development` zeigt auf einen dedizierten Neon-Branch `development`
+  - `Preview` zeigt auf einen dedizierten Neon-Branch `preview`
+  - `Production` bleibt auf der Live-Datenbank
 
 ## 6. Nach Deployment verifizieren
 - Nach dem Deploy ein Testformular absenden.
@@ -51,7 +56,9 @@ Erwartung:
 - Der Test sendet eine reale Anfrage über das Kontaktformular, prüft den Datensatz in Neon und löscht den Test-Lead anschließend wieder.
 - Dieser Test sollte nur gegen eine dedizierte Development- oder Staging-Datenbank laufen, nicht gegen Production.
 - Falls CI den Test ausführen soll, sollten dafür separate E2E-Secrets und idealerweise eine eigene Test-Mailbox verwendet werden.
+- Der lokale E2E-Pfad wurde gegen die getrennte `Development`-Datenbank erfolgreich verifiziert.
 
 ## Hinweise
 - Ohne `DATABASE_URL` bleibt der bestehende Mail-Flow aktiv, aber es erfolgt keine Lead-Persistierung.
 - Die Persistierung ist aktuell für das bestehende Projektanfrage-Formular umgesetzt und über `source_form = project_request` gekennzeichnet.
+- Die früheren integrationsverwalteten `INVESSIV_DATABASE_*`-Variablen können parallel existieren, der Code priorisiert jedoch `DATABASE_URL`.

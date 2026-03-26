@@ -340,7 +340,7 @@ Wenn die Umsetzung nicht in einer Session abgeschlossen wird, hier nach jedem Sc
 
 ### Einträge
 - Datum: 2026-03-26
-  - Abgeschlossen: Schritte 0 bis 6 im Code umgesetzt; Neon/Vercel-Setup dokumentiert, aber lokal noch nicht gegen eine echte DB ausgeführt
-  - Entscheidungen: Branch-Name `feat/implement-lead-table`, DB-Ansatz ohne ORM, Neon-HTTP-Client `@neondatabase/serverless`, Hybrid-Schema mit `leads` und `lead_project_requests`, Retention `24 Monate`, Legal-Versionen `2026-03-26`
-  - Offene Punkte: `DATABASE_URL` in Neon/Vercel setzen, `npm run db:migrate` und `npm run db:smoke` gegen die echte Datenbank ausführen, echten Formular-Submit gegen Neon verifizieren
-  - Nächster Schritt: DB lokal oder in Vercel anbinden und die neuen Setup-Commands ausführen
+  - Abgeschlossen: Schritte 0 bis 6 im Code umgesetzt; Neon/Vercel-Setup, Migrationen, Smoke-Test und echter Kontakt-E2E gegen die getrennte Development-Datenbank erfolgreich verifiziert
+  - Entscheidungen: Branch-Name `feat/implement-lead-table`, DB-Ansatz ohne ORM, Neon-HTTP-Client `@neondatabase/serverless`, Hybrid-Schema mit `leads` und `lead_project_requests`, Retention `24 Monate`, Legal-Versionen `2026-03-26`, `DATABASE_URL` als priorisierte Variable pro Vercel-Environment
+  - Offene Punkte: optional Preview/Production-Migrationspfad separat dokumentieren, separate CI-E2E-Secrets setzen, langfristige Retention-Automatisierung klären
+  - Nächster Schritt: bei Bedarf Infrastruktur-/CI-Secrets finalisieren oder mit dem nächsten Feature fortfahren
