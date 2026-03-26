@@ -7,6 +7,7 @@ export type ServerEnv = {
   contactMailFrom: string | null;
   contactMailProvider: ContactMailProvider;
   contactMailTo: string;
+  databaseUrl: string | null;
   resendApiKey: string | null;
 };
 
@@ -24,6 +25,7 @@ export function getServerEnv(): ServerEnv {
     contactMailFrom: process.env.CONTACT_MAIL_FROM?.trim() || null,
     contactMailProvider: readContactMailProvider(),
     contactMailTo: process.env.CONTACT_MAIL_TO?.trim() || COMPANY.contact.email,
+    databaseUrl: process.env.DATABASE_URL?.trim() || null,
     resendApiKey: process.env.RESEND_API_KEY?.trim() || null,
   };
 }

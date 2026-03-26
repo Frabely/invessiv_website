@@ -9,7 +9,7 @@
     "page": {
       "title": "Privacy Policy",
       "lead": "This Privacy Policy explains how personal data is processed in connection with this website and its available contact channels.",
-      "updatedAt": "Last updated: March 25, 2026.",
+      "updatedAt": "Last updated: March 26, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -40,7 +40,7 @@
       },
       "contact": {
         "title": "5. Contact by form and email",
-        "body": "If you contact us by contact form or email, we process the data you provide in order to handle your inquiry, communicate with you, and, where applicable, prepare or perform a contract. Depending on your input, this may include in particular your name, email address, phone number, company, role, requested service, website, project description, and optional details relating to budget, preferred start, page scope, or workflows. Form inquiries are transmitted technically to our mailbox via the email service Resend. After a successful form submission, a generic success event is also sent to Vercel Analytics; the form entries themselves are not transmitted to analytics. The legal basis is Art. 6 para. 1 lit. b GDPR where the processing is required for pre-contractual steps or contract performance and otherwise Art. 6 para. 1 lit. f GDPR for the efficient handling of inquiries. Required fields are marked in the form; without them, we may be unable to process your inquiry or may only be able to process it to a limited extent."
+        "body": "If you contact us by contact form or email, we process the data you provide in order to handle your inquiry, communicate with you, and, where applicable, prepare or perform a contract. Depending on your input, this may include in particular your name, email address, phone number, company, role, requested service, website, project description, and optional details relating to budget, preferred start, page scope, or workflows. Form inquiries are transmitted technically to our mailbox via the email service Resend and are also stored in a Postgres/Neon-based lead database used by us to document incoming inquiries, track processing status, and manage follow-up communication in a structured way. In particular, we store the time of receipt, the form or inquiry channel used, the processing and mail-delivery status, and the version of the privacy and terms notices applicable at the time of submission. After a successful form submission, a generic success event is also sent to Vercel Analytics; the form entries themselves are not transmitted to analytics. The legal basis is Art. 6 para. 1 lit. b GDPR where the processing is required for pre-contractual steps or contract performance and otherwise Art. 6 para. 1 lit. f GDPR for the efficient handling, documentation, and follow-up of inquiries. Required fields are marked in the form; without them, we may be unable to process your inquiry or may only be able to process it to a limited extent."
       },
       "appointments": {
         "title": "6. Appointment scheduling and online meetings",
@@ -52,15 +52,15 @@
       },
       "recipients": {
         "title": "8. Recipients and service providers",
-        "body": "Depending on the processing activity, personal data may in particular be received by: Vercel Inc. for hosting, Vercel Web Analytics, and Vercel Speed Insights, Resend / Plus Five Five, Inc. for the technical delivery of form inquiries by email, Calendly LLC for appointment scheduling, and Zoom Communications, Inc. for online meetings. Apart from that, we only disclose personal data where this is necessary to handle your inquiry, perform a contract, comply with legal obligations, or where you have provided consent."
+        "body": "Depending on the processing activity, personal data may in particular be received by: Vercel Inc. for hosting, Vercel Web Analytics, and Vercel Speed Insights, Resend / Plus Five Five, Inc. for the technical delivery of form inquiries by email, Neon for the technical storage of lead records in a managed Postgres database, Calendly LLC for appointment scheduling, and Zoom Communications, Inc. for online meetings. Apart from that, we only disclose personal data where this is necessary to handle your inquiry, perform a contract, comply with legal obligations, or where you have provided consent."
       },
       "storage": {
         "title": "9. Retention and deletion",
-        "body": "We store personal data only for as long as required for the relevant purposes. We retain contact inquiries and related communication for as long as needed to handle the inquiry, continue related communication, prepare a contract, or comply with statutory retention and evidence obligations. Technical log, analytics, and performance data is processed in accordance with the retention periods provided by the respective service and required for operation and is then deleted, anonymized, or no longer kept in a personally identifiable form."
+        "body": "We store personal data only for as long as required for the relevant purposes. We retain contact inquiries and related communication for as long as needed to handle the inquiry, continue related communication, prepare a contract, or comply with statutory retention and evidence obligations. Lead records from contact forms are generally deleted or anonymized after 24 months if no contractual relationship results from the inquiry and no longer statutory retention period applies. Technical log, analytics, and performance data is processed in accordance with the retention periods provided by the respective service and required for operation and is then deleted, anonymized, or no longer kept in a personally identifiable form."
       },
       "thirdCountryTransfers": {
         "title": "10. Third-country transfers",
-        "body": "When using Vercel, Resend, Calendly, and Zoom, it cannot be ruled out that personal data may also be processed in countries outside the EU or EEA, in particular in the United States. Where no directly applicable adequacy decision or other lawful transfer mechanism applies to such transfers, the providers state that they rely on appropriate safeguards, in particular standard contractual clauses. Further information can be found in the respective providers' privacy notices."
+        "body": "When using Vercel, Resend, Neon, Calendly, and Zoom, it cannot be ruled out that personal data may also be processed in countries outside the EU or EEA, in particular in the United States, or be administratively accessible from there. Where no directly applicable adequacy decision or other lawful transfer mechanism applies to such transfers, the providers state that they rely on appropriate safeguards, in particular standard contractual clauses. Further information can be found in the respective providers' privacy notices."
       },
       "rights": {
         "title": "11. Your rights",

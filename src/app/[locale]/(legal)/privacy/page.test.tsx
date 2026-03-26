@@ -96,6 +96,7 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" }),
     ).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 26. März 2026.")).toBeTruthy();
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.getByText("Inhaber: Moritz Hecht")).toBeTruthy();
     expect(screen.queryByText("Moritz Hecht – Invessiv")).toBeNull();
@@ -119,6 +120,8 @@ describe("PrivacyPage", () => {
         .getByRole("link", { name: "+49 1523 2070477" })
         .getAttribute("href"),
     ).toBe("tel:+4915232070477");
+    expect(screen.getByText(/Lead-Datenbank auf Postgres-\/Neon-Basis/)).toBeTruthy();
+    expect(screen.getByText(/grundsätzlich nach 24 Monaten gelöscht oder anonymisiert/)).toBeTruthy();
   });
 
   it("calls notFound for unsupported locales", async () => {

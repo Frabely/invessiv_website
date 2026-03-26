@@ -100,6 +100,7 @@ describe("TermsPage", () => {
         name: "Allgemeine Geschäftsbedingungen",
       }),
     ).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 26. März 2026.")).toBeTruthy();
     expect(
       screen.getByText(
         "Diese Bedingungen gelten im Regelfall für Verträge mit Unternehmern. Verträge mit Verbrauchern schließt Invessiv nur im Einzelfall auf Grundlage individueller Angebote.",
@@ -121,6 +122,9 @@ describe("TermsPage", () => {
       screen.getByText(
         /Die Website ermöglicht keinen unmittelbaren verbindlichen Vertragsabschluss\./,
       ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/eingehende Anfragen, zugehörige Kommunikationsdaten und Bearbeitungsstände intern zu dokumentieren/),
     ).toBeTruthy();
     expect(
       screen.getByText(/ausnahmsweise Verträge mit Verbrauchern/),
