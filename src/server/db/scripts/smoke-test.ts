@@ -1,7 +1,9 @@
 import { getServerEnv } from "../../config/env";
+import { loadLocalEnvFiles } from "../../config/load-env";
 import { getDatabaseClient } from "../client";
 
 async function run() {
+  loadLocalEnvFiles();
   const env = getServerEnv();
 
   if (!env.databaseUrl) {
@@ -12,21 +14,23 @@ async function run() {
 
   const sql = getDatabaseClient();
   const [
-    { databaseName, leadProjectRequestsTable, leadsTable, migrationCount },
+    { databaseName, leadProjectRequestsTableCount, leadsTableCount, migrationCount },
   ] = (await sql`
       SELECT
         current_database() AS "databaseName",
-        to_regclass('public.leads')::text AS "leadsTable",
-        to_regclass('public.lead_project_requests')::text AS "leadProjectRequestsTable",
+        COUNT(*) FILTER (WHERE tablename = 'leads')::int AS "leadsTableCount",
+        COUNT(*) FILTER (WHERE tablename = 'lead_project_requests')::int AS "leadProjectRequestsTableCount",
         (SELECT COUNT(*)::int FROM schema_migrations) AS "migrationCount"
+      FROM pg_tables
+      WHERE schemaname = 'public'
     `) as Array<{
       databaseName: string;
-      leadProjectRequestsTable: string | null;
-      leadsTable: string | null;
+      leadProjectRequestsTableCount: number;
+      leadsTableCount: number;
       migrationCount: number;
     }>;
 
-  if (!leadsTable || !leadProjectRequestsTable) {
+  if (!leadsTableCount || !leadProjectRequestsTableCount) {
     throw new Error(
       "Lead tables are missing. Run `npm run db:migrate` before `npm run db:smoke`.",
     );
@@ -35,7 +39,7 @@ async function run() {
   console.log("Database smoke test passed.");
   console.log(`Database: ${databaseName}`);
   console.log(`Applied migrations: ${migrationCount}`);
-  console.log(`Tables: ${leadsTable}, ${leadProjectRequestsTable}`);
+  console.log("Tables: leads, lead_project_requests");
 }
 
 run().catch((error: unknown) => {

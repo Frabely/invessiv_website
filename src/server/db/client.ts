@@ -1,4 +1,3 @@
-import "server-only";
 import { neon } from "@neondatabase/serverless";
 import { getServerEnv } from "@/server/config/env";
 

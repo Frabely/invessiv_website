@@ -1,5 +1,5 @@
-import "server-only";
 import { COMPANY } from "@/config/company";
+import { loadLocalEnvFiles } from "@/server/config/load-env";
 
 export type ContactMailProvider = "disabled" | "resend";
 
@@ -12,6 +12,7 @@ export type ServerEnv = {
 };
 
 function readContactMailProvider(): ContactMailProvider {
+  loadLocalEnvFiles();
   const rawValue = process.env.CONTACT_MAIL_PROVIDER?.trim().toLowerCase();
   if (rawValue === "resend") {
     return "resend";
@@ -21,11 +22,20 @@ function readContactMailProvider(): ContactMailProvider {
 }
 
 export function getServerEnv(): ServerEnv {
+  loadLocalEnvFiles();
+
+  const databaseUrl =
+    process.env.DATABASE_URL?.trim() ||
+    process.env.INVESSIV_DATABASE_DATABASE_URL?.trim() ||
+    process.env.INVESSIV_DATABASE_POSTGRES_URL?.trim() ||
+    process.env.POSTGRES_URL?.trim() ||
+    null;
+
   return {
     contactMailFrom: process.env.CONTACT_MAIL_FROM?.trim() || null,
     contactMailProvider: readContactMailProvider(),
     contactMailTo: process.env.CONTACT_MAIL_TO?.trim() || COMPANY.contact.email,
-    databaseUrl: process.env.DATABASE_URL?.trim() || null,
+    databaseUrl,
     resendApiKey: process.env.RESEND_API_KEY?.trim() || null,
   };
 }

@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getServerEnv } from "../../config/env";
+import { loadLocalEnvFiles } from "../../config/load-env";
 import { getDatabaseClient } from "../client";
 
 const MIGRATION_SPLIT_MARKER = /^-->\s*statement-breakpoint\s*$/gm;
@@ -69,6 +70,7 @@ async function applyMigration(filename: string) {
 }
 
 async function run() {
+  loadLocalEnvFiles();
   const env = getServerEnv();
 
   if (!env.databaseUrl) {
