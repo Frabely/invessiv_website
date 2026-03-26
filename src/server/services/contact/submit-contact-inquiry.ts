@@ -14,14 +14,18 @@ export async function submitContactInquiry(
   requestId: string,
 ) {
   const env = getServerEnv();
-  const submission = createContactLeadSubmission(payload, requestId);
+  const submission = createContactLeadSubmission(
+    payload,
+    requestId,
+    env.contactMailProvider,
+  );
   const persistenceResult = await persistContactLead(submission);
   const message = await mapContactToMail(payload, env.contactMailTo);
   const deliveryResult = await sendMail(message);
 
   if (!deliveryResult.ok) {
     if (persistenceResult.persisted) {
-      void updateContactLeadMailStatus(
+      await updateContactLeadMailStatus(
         persistenceResult.leadId,
         "failed",
         deliveryResult.reason,
@@ -35,7 +39,7 @@ export async function submitContactInquiry(
   }
 
   if (persistenceResult.persisted) {
-    void updateContactLeadMailStatus(persistenceResult.leadId, "sent");
+    await updateContactLeadMailStatus(persistenceResult.leadId, "sent");
   }
 
   return {

@@ -7,6 +7,7 @@ import {
   type ContactLeadMailStatus,
   type ContactLeadStatus,
 } from "@/server/config/contact-lead-storage";
+import type { ContactMailProvider } from "@/server/config/env";
 
 export type PreparedContactLeadSubmission = {
   lead: {
@@ -58,6 +59,7 @@ export function calculateLeadRetentionUntil(createdAt: Date) {
 export function createContactLeadSubmission(
   payload: ContactSubmitInput,
   requestId: string,
+  mailProvider: ContactMailProvider,
   createdAt = new Date(),
 ): PreparedContactLeadSubmission {
   const leadId = randomUUID();
@@ -74,7 +76,7 @@ export function createContactLeadSubmission(
       inquiryType: payload.offerKey,
       leadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
       locale: payload.locale,
-      mailProvider: CONTACT_LEAD_STORAGE.defaultMailProvider,
+      mailProvider,
       mailStatus: CONTACT_LEAD_STORAGE.defaultMailStatus,
       message: payload.projectDetails,
       phone: payload.phone,
