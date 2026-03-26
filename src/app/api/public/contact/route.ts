@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const submitResult = await submitContactInquiry(parsedPayload.data);
+    const submitResult = await submitContactInquiry(parsedPayload.data, requestId);
     if (!submitResult.ok) {
       return createContactErrorResponse(submitResult.code, requestId, 503);
     }
