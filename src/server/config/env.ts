@@ -2,14 +2,33 @@ import { COMPANY } from "@/config/company";
 import { loadLocalEnvFiles } from "@/server/config/load-env";
 
 export type ContactMailProvider = "disabled" | "resend";
+export type DeploymentEnvironment = "development" | "preview" | "production";
 
 export type ServerEnv = {
   contactMailFrom: string | null;
   contactMailProvider: ContactMailProvider;
   contactMailTo: string;
   databaseUrl: string | null;
+  deploymentEnvironment: DeploymentEnvironment;
   resendApiKey: string | null;
 };
+
+function readDeploymentEnvironment(): DeploymentEnvironment {
+  const rawEnvironment =
+    process.env.VERCEL_TARGET_ENV?.trim().toLowerCase() ||
+    process.env.VERCEL_ENV?.trim().toLowerCase() ||
+    "";
+
+  if (rawEnvironment === "preview") {
+    return "preview";
+  }
+
+  if (rawEnvironment === "production") {
+    return "production";
+  }
+
+  return "development";
+}
 
 function readContactMailProvider(): ContactMailProvider {
   if (!process.env.VITEST) {
@@ -41,6 +60,7 @@ export function getServerEnv(): ServerEnv {
     contactMailProvider: readContactMailProvider(),
     contactMailTo: process.env.CONTACT_MAIL_TO?.trim() || COMPANY.contact.email,
     databaseUrl,
+    deploymentEnvironment: readDeploymentEnvironment(),
     resendApiKey: process.env.RESEND_API_KEY?.trim() || null,
   };
 }

@@ -1,6 +1,8 @@
 import "server-only";
 import type { ContactSubmitInput } from "@/features/contact/contact.schema";
 import { getDictionary } from "@/i18n/get-dictionary";
+import type { DeploymentEnvironment } from "@/server/config/env";
+import { getServerEnv } from "@/server/config/env";
 
 type ContactNotificationMessage = {
   html: string;
@@ -43,13 +45,28 @@ function mapValue(
   return localeCopy.values[field]?.[value] ?? value;
 }
 
+function getEnvironmentSubjectPrefix(environment: DeploymentEnvironment) {
+  if (environment === "development") {
+    return "[DEV] ";
+  }
+
+  if (environment === "preview") {
+    return "[PREVIEW] ";
+  }
+
+  return "";
+}
+
 export async function createContactNotificationMessage(
   payload: ContactSubmitInput,
 ): Promise<ContactNotificationMessage> {
   const copy = (await getDictionary(payload.locale)).mail.contactNotification;
   const localizedOffer =
     mapValue("offerKey", payload.offerKey, copy) ?? payload.offerKey;
-  const subject = `[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.fullName)}`;
+  const environmentPrefix = getEnvironmentSubjectPrefix(
+    getServerEnv().deploymentEnvironment,
+  );
+  const subject = `${environmentPrefix}[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.fullName)}`;
   const rows = [
     [copy.labels.offerKey, mapValue("offerKey", payload.offerKey, copy)],
     [copy.labels.fullName, payload.fullName],
