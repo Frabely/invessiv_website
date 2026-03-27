@@ -4927,10 +4927,10 @@ body {
 .hero__title-gradient {
   background: linear-gradient(
     118deg,
-    #d6e4ff 0%,
-    #7fa8ea 34%,
-    #f0aa53 72%,
-    #ffd8ab 100%
+    #ffd8ab 0%,
+    #f0aa53 26%,
+    #d6e4ff 56%,
+    #7fa8ea 100%
   );
   background-size: 180% 180%;
   -webkit-background-clip: text;
