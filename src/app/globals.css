@@ -4927,10 +4927,10 @@ body {
 .hero__title-gradient {
   background: linear-gradient(
     118deg,
-    #ffd8ab 0%,
-    #f0aa53 30%,
-    #d6e4ff 62%,
-    #7fa8ea 100%
+    #d6e4ff 0%,
+    #7fa8ea 34%,
+    #f0aa53 72%,
+    #ffd8ab 100%
   );
   background-size: 180% 180%;
   -webkit-background-clip: text;
@@ -6633,6 +6633,7 @@ body {
 .hero__aurora,
 .hero__vignette,
 .hero__grid-overlay,
+.hero__bg-image,
 .hero__glow {
   position: absolute;
   pointer-events: none;
@@ -6670,10 +6671,22 @@ body {
   background-size: 58px 58px;
 }
 
+.hero__bg-image {
+  inset: 0;
+  z-index: 1;
+  opacity: 0.18;
+  background-image: url("/hero/hero-background.png");
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-position-y: -200%;
+  background-size: 92% 104%;
+  mix-blend-mode: screen;
+}
+
 .hero__glow {
   z-index: 1;
   filter: blur(68px);
-  opacity: 0.6;
+  opacity: 0.48;
   will-change: transform, opacity;
   animation: hero-glow-breathe 11s ease-in-out infinite alternate;
 }
@@ -6685,7 +6698,7 @@ body {
   top: clamp(20px, 12vh, 140px);
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-accent-warm) 38%, transparent) 0%,
+    color-mix(in srgb, var(--color-accent-warm) 28%, transparent) 0%,
     transparent 72%
   );
 }
@@ -6697,7 +6710,7 @@ body {
   top: clamp(20px, 8vh, 120px);
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-cta) 34%, transparent) 0%,
+    color-mix(in srgb, var(--color-cta) 26%, transparent) 0%,
     transparent 74%
   );
   animation-delay: 0.6s;
@@ -6760,6 +6773,7 @@ body {
 @media (max-width: 900px) {
   .hero__vignette,
   .hero__grid-overlay,
+  .hero__bg-image,
   .hero__glow {
     display: none;
   }
