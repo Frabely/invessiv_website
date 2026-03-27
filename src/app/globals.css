@@ -637,6 +637,7 @@ main {
   position: relative;
   width: clamp(380px, 45vw, 640px);
   max-width: 100%;
+  aspect-ratio: 560 / 340;
   border-radius: 20px;
   border: 1px solid rgba(201, 225, 255, 0.35);
   background: rgba(11, 20, 42, 0.62);
@@ -645,6 +646,52 @@ main {
   transform: rotate(-2deg);
   will-change: transform;
   transition: transform 140ms ease-out;
+  overflow: hidden;
+}
+
+.hero-shot__layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transition: transform 180ms ease-out;
+}
+
+.hero-shot__layer--backplate {
+  transform: translate3d(
+    calc(var(--hero-parallax-x, 0px) * -0.32),
+    calc(var(--hero-parallax-y, 0px) * -0.32),
+    0
+  );
+}
+
+.hero-shot__layer--content {
+  transform: translate3d(
+    calc(var(--hero-parallax-x, 0px) * 0.58),
+    calc(var(--hero-parallax-y, 0px) * 0.58),
+    0
+  );
+}
+
+.hero-shot__layer--highlights {
+  transform: translate3d(
+    calc(var(--hero-parallax-x, 0px) * 0.96),
+    calc(var(--hero-parallax-y, 0px) * 0.96),
+    0
+  );
+}
+
+.hero-shot__shine {
+  position: absolute;
+  inset: -20% -24%;
+  background: linear-gradient(
+    112deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.09) 48%,
+    rgba(255, 255, 255, 0.02) 62%,
+    transparent 74%
+  );
+  transform: translate3d(calc(var(--hero-parallax-x, 0px) * 1.25), 0, 0);
+  pointer-events: none;
 }
 
 .hero-shot svg {
@@ -3897,6 +3944,12 @@ main {
   .hero-shot {
     animation: none !important;
   }
+
+  .hero-shot__layer,
+  .hero-shot__shine {
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 .legal-page {
@@ -6713,6 +6766,16 @@ body {
 
   .hero__title {
     text-shadow: none;
+  }
+
+  .hero-shot__layer,
+  .hero-shot__shine {
+    transform: none;
+    transition: none;
+  }
+
+  .hero-shot__shine {
+    display: none;
   }
 }
 
