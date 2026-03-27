@@ -6633,7 +6633,6 @@ body {
 .hero__aurora,
 .hero__vignette,
 .hero__grid-overlay,
-.hero__bg-image,
 .hero__glow {
   position: absolute;
   pointer-events: none;
@@ -6669,18 +6668,6 @@ body {
       transparent 1px
     );
   background-size: 58px 58px;
-}
-
-.hero__bg-image {
-  inset: 0;
-  z-index: 1;
-  opacity: 0.18;
-  background-image: url("/hero/hero-background.png");
-  background-repeat: no-repeat;
-  background-position-x: center;
-  background-position-y: -200%;
-  background-size: 92% 104%;
-  mix-blend-mode: screen;
 }
 
 .hero__glow {
@@ -6773,7 +6760,6 @@ body {
 @media (max-width: 900px) {
   .hero__vignette,
   .hero__grid-overlay,
-  .hero__bg-image,
   .hero__glow {
     display: none;
   }

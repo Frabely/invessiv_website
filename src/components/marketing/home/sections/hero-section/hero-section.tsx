@@ -29,7 +29,6 @@ export function HeroSection({
       <div aria-hidden="true" className="hero__grid-overlay" />
       <div aria-hidden="true" className="hero__glow hero__glow--text" />
       <div aria-hidden="true" className="hero__glow hero__glow--visual" />
-      <div aria-hidden="true" className="hero__bg-image" />
       <div className="hero__noise" />
       <div className="hero__aurora hero__aurora--left" />
       <div className="hero__aurora hero__aurora--right" />

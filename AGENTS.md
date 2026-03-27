@@ -250,6 +250,8 @@ Outputs:
 - Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
 - Breadcrumbs werden immer über eine zentrale, wiederverwendbare Komponente umgesetzt; Seiten bauen Breadcrumb-Markup nicht lokal in `page.tsx`/Layouts nach
 - Styling für Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
+- `src/app/globals.css` bleibt bewusst schlank: nur globale Tokens, Reset/Base-Layer, Theme-Variablen und wirklich globale Utilities
+- Section-/Seiten-spezifische Styles (z. B. Hero, einzelne Landing-Sections, komponentenspezifische States) gehören in route- oder komponentennahe Style-Dateien; keine dauerhafte Ablage solcher Styles in `globals.css`
 - Logiknahe Tests gehören in die Nähe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
 - Route-Dateien (`page.tsx`) orchestrieren nur: keine großen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
 - Section-Mapping und Render-Verzweigungen in dedizierte Renderer-Komponenten auslagern (z. B. `home-sections-renderer`)
