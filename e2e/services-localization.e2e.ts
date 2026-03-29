@@ -1,15 +1,20 @@
 import { expect, test } from "@playwright/test";
 
 type LocaleExpectation = {
-  aiTitle: string;
   detailsLabel: string;
+  imprintPageTitle: string;
   imprintHref: "/de/imprint" | "/en/imprint";
   heading: string;
   htmlLang: "de" | "en";
   localePath: "/de" | "/en";
+  maintenanceTitle: string;
   navAriaLabel: string;
-  oneTimeLabel: string;
+  privacyPageTitle: string;
   privacyHref: "/de/privacy" | "/en/privacy";
+  processTitle: string;
+  secondarySectionTitle: string;
+  upgradeTitle: string;
+  webTitle: string;
   recommendedBadge: string;
   skipLinkLabel: string;
   termsHref: "/de/terms" | "/en/terms";
@@ -20,29 +25,41 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     localePath: "/de",
     htmlLang: "de",
     imprintHref: "/de/imprint",
-    heading: "Angebote & Einstiegspreise",
-    aiTitle: "KI-Templates & Agents",
+    imprintPageTitle: "Impressum",
+    heading: "Was brauchst du gerade?",
     detailsLabel: "Mehr Infos",
-    oneTimeLabel: "einmalig",
+    maintenanceTitle: "Wartung & Support",
+    processTitle: "Prozess-Tools",
     recommendedBadge: "Empfohlen",
+    secondarySectionTitle:
+      "Schon etwas da? Oder brauchst du Unterstützung danach?",
+    upgradeTitle: "Website-Upgrade",
     navAriaLabel: "Hauptnavigation",
+    privacyPageTitle: "Datenschutzerklärung",
     privacyHref: "/de/privacy",
     skipLinkLabel: "Direkt zum Hauptinhalt springen",
     termsHref: "/de/terms",
+    webTitle: "Webseiten",
   },
   {
     localePath: "/en",
     htmlLang: "en",
     imprintHref: "/en/imprint",
-    heading: "Offers & Starting Prices",
-    aiTitle: "AI templates & agents",
+    imprintPageTitle: "Legal Notice",
+    heading: "What do you need right now?",
     detailsLabel: "More details",
-    oneTimeLabel: "one-time",
+    maintenanceTitle: "Maintenance & support",
+    processTitle: "Process tools",
     recommendedBadge: "Recommended",
+    secondarySectionTitle:
+      "Already have something in place? Or need support afterward?",
+    upgradeTitle: "Website upgrade",
     navAriaLabel: "Primary navigation",
+    privacyPageTitle: "Privacy Policy",
     privacyHref: "/en/privacy",
     skipLinkLabel: "Skip to main content",
     termsHref: "/en/terms",
+    webTitle: "Websites",
   },
 ];
 
@@ -69,8 +86,8 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     expect(response.ok()).toBeTruthy();
     expect(html).toContain(`lang="${expectations.htmlLang}"`);
     expect(html).toContain('rel="canonical"');
-    expect(html).toContain("property=\"og:image\"");
-    expect(html).toContain("name=\"twitter:image\"");
+    expect(html).toContain('property="og:image"');
+    expect(html).toContain('name="twitter:image"');
     expect(html).toContain("/opengraph-image");
     expect(html).toContain('name="description"');
   });
@@ -89,15 +106,18 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       page.getByRole("navigation", { name: expectations.navAriaLabel }),
     ).toBeVisible();
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(
-      page.locator('link[rel="canonical"]'),
-    ).toHaveAttribute("href", new RegExp(`${expectations.localePath}$`));
-    await expect(
-      page.locator('meta[property="og:image"]'),
-    ).toHaveAttribute("content", /opengraph-image/);
-    await expect(
-      page.locator('meta[name="twitter:image"]'),
-    ).toHaveAttribute("content", /opengraph-image/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      new RegExp(`${expectations.localePath}$`),
+    );
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+      "content",
+      /opengraph-image/,
+    );
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
+      "content",
+      /opengraph-image/,
+    );
     await expect(
       page.locator(`#footer a[href="${expectations.imprintHref}"]`).first(),
     ).toBeVisible();
@@ -114,13 +134,24 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     await expect(servicesSection.getByRole("heading", { level: 2 })).toHaveText(
       expectations.heading,
     );
-    await expect(servicesSection.locator(".services-card")).toHaveCount(6);
+    await expect(servicesSection.locator(".services-card")).toHaveCount(3);
     await expect(
-      servicesSection.getByRole("heading", { name: expectations.aiTitle }),
+      servicesSection.getByRole("heading", { name: expectations.webTitle }),
     ).toBeVisible();
     await expect(
-      servicesSection.locator(".services-price-meta").first(),
-    ).toHaveText(expectations.oneTimeLabel);
+      servicesSection.getByRole("heading", { name: expectations.processTitle }),
+    ).toBeVisible();
+    await expect(
+      servicesSection.getByRole("heading", {
+        name: expectations.secondarySectionTitle,
+      }),
+    ).toBeVisible();
+    await expect(
+      servicesSection.getByText(expectations.upgradeTitle, { exact: true }),
+    ).toBeVisible();
+    await expect(
+      servicesSection.getByText(expectations.maintenanceTitle, { exact: true }),
+    ).toBeVisible();
     await expect(
       servicesSection.getByText(expectations.recommendedBadge, { exact: true }),
     ).toBeVisible();
@@ -130,14 +161,17 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       .getByRole("button", { name: expectations.detailsLabel })
       .click();
 
-    await expect(landingCard.locator('a[href="#contact"]').first()).toBeVisible();
-    await expect(landingCard.locator('a[href="#faq"]').first()).toBeVisible();
+    await expect(
+      landingCard.locator('a[href="#contact"]').first(),
+    ).toBeVisible();
 
     const missingAnchorTargets = await page.evaluate((localePath) => {
       const uniqueTargets = [
         ...new Set(
           Array.from(
-            document.querySelectorAll(`a[href^="#"], a[href^="${localePath}#"]`),
+            document.querySelectorAll(
+              `a[href^="#"], a[href^="${localePath}#"]`,
+            ),
           )
             .map((anchor) => anchor.getAttribute("href"))
             .filter((href): href is string => Boolean(href)),
@@ -145,7 +179,9 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       ];
 
       return uniqueTargets.filter((href) => {
-        const target = href.startsWith(localePath) ? href.slice(localePath.length) : href;
+        const target = href.startsWith(localePath)
+          ? href.slice(localePath.length)
+          : href;
         return Boolean(target) && !document.querySelector(target);
       });
     }, expectations.localePath);
@@ -176,7 +212,10 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       });
 
       expect(
-        Math.max(pageOverflow.bodyScrollWidth, pageOverflow.documentScrollWidth),
+        Math.max(
+          pageOverflow.bodyScrollWidth,
+          pageOverflow.documentScrollWidth,
+        ),
       ).toBeLessThanOrEqual(pageOverflow.innerWidth + 1);
 
       if (viewport.width === 390) {
@@ -196,8 +235,71 @@ for (const expectations of LOCALE_EXPECTATIONS) {
         );
 
         await mobileMenu.getByRole("link").first().click();
-        await expect(page.locator(".site-header__mobile-menu[open] ul")).toHaveCount(0);
+        await expect(
+          page.locator(".site-header__mobile-menu[open] ul"),
+        ).toHaveCount(0);
       }
+    }
+  });
+
+  test(`legal pages keep skip link targets, links, and mobile overflow stable for ${expectations.localePath}`, async ({
+    page,
+  }) => {
+    const legalPages = [
+      {
+        href: expectations.imprintHref,
+        title: expectations.imprintPageTitle,
+      },
+      {
+        href: expectations.privacyHref,
+        title: expectations.privacyPageTitle,
+      },
+    ];
+
+    for (const legalPage of legalPages) {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(legalPage.href);
+
+      await expect(page.locator("html")).toHaveAttribute(
+        "lang",
+        expectations.htmlLang,
+      );
+      await expect(page.locator("h1")).toHaveText(legalPage.title);
+      await expect(page.locator("#main-content")).toBeVisible();
+      await expect(
+        page.locator(`#footer a[href="${expectations.imprintHref}"]`).first(),
+      ).toBeVisible();
+      await expect(
+        page.locator(`#footer a[href="${expectations.privacyHref}"]`).first(),
+      ).toBeVisible();
+      await expect(
+        page.locator(`#footer a[href="${expectations.termsHref}"]`).first(),
+      ).toBeVisible();
+
+      await page.keyboard.press("Tab");
+      const skipLink = page.locator(".skip-link");
+      await expect(skipLink).toBeFocused();
+      await expect(skipLink).toHaveText(expectations.skipLinkLabel);
+      await skipLink.press("Enter");
+      await expect(page.locator("#main-content")).toBeFocused();
+
+      await page.locator(".site-header__mobile-menu > summary").click();
+      const mobileMenu = page.locator(".site-header__mobile-menu[open] ul");
+      await expect(mobileMenu).toBeVisible();
+      await expect(mobileMenu.getByRole("link").first()).toBeVisible();
+
+      const pageOverflow = await page.evaluate(() => ({
+        bodyScrollWidth: document.body.scrollWidth,
+        documentScrollWidth: document.documentElement.scrollWidth,
+        innerWidth: window.innerWidth,
+      }));
+
+      expect(
+        Math.max(
+          pageOverflow.bodyScrollWidth,
+          pageOverflow.documentScrollWidth,
+        ),
+      ).toBeLessThanOrEqual(pageOverflow.innerWidth + 1);
     }
   });
 }

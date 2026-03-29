@@ -300,6 +300,7 @@ Outputs:
 ## Content- und SEO-Workflow (Landing-spezifisch)
 
 - Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
+- Auch kleine, locale-spezifische Marketing-/SEO-Copy (z. B. OpenGraph-Text, Meta-Descriptions, Social-Preview-Copy) wird nicht inline in `.ts`/`.tsx` gepflegt, sondern in separaten locale-Dateien (`*.de.json`, `*.en.json` oder gleichwertig) mit schlankem Loader-Modul
 - Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
 - Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
 - OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten
@@ -337,6 +338,7 @@ Outputs:
 - High-Priority-Regel (verbindlich): Sämtliche sprachabhängigen UI-/Seitentexte liegen ausschließlich in Dictionaries; keine Inline-Texte in `page.tsx`, Layouts oder Komponenten
 - High-Priority-Regel (verbindlich): Wenn Dictionary-Dateien pro Sprache zu groß werden, müssen sie in mehrere, fachlich geschnittene Dateien aufgeteilt werden (z. B. `legal`, `home`, `services`, `footer`) statt ein monolithisches Sprachfile weiter anwachsen zu lassen
 - High-Priority-Regel (verbindlich): Neue Texte oder Textänderungen werden immer für alle unterstützten Sprachen parallel gepflegt; Merge mit veralteten Übersetzungsständen ist nicht erlaubt
+- High-Priority-Regel (verbindlich): Wenn Copy bearbeitet wird, ist aktiv zu prüfen, dass die Änderung in allen betroffenen Locale-Dateien erfolgt ist und keine sprachabhängige Rest-Copy inline in App-, SEO-, Lib- oder Komponenten-Dateien verbleibt
 - High-Priority-Regel (verbindlich): Keine locale-basierten Inline-Verzweigungen in `page.tsx` für sprachabhängige Werte (z. B. Adresse, Telefonnummer, Labels); diese Werte liegen im Dictionary je Locale mit identischen Keys
 - High-Priority-Regel (verbindlich): Keine binären Locale-Fallbacks für sprachabhängige Inhalte in App-, SEO-, Config-, Lib- oder Komponentenlogik (z. B. `locale === "de" ? deText : enText`); sprachabhängige Werte müssen so modelliert werden, dass sie ohne Code-Umbau für mehr als zwei Sprachen erweiterbar sind
 - High-Priority-Regel (verbindlich): Auch sprachabhängige SEO-/Structured-Data-Werte (z. B. `serviceType`, Meta-Descriptions, OpenGraph-Texte, Breadcrumb-Labels, Legal-Labels) werden nicht per hartem `de`/Fallback-Branch gepflegt, sondern über locale-basierte Dictionaries oder klar typisierte Locale-Mappings mit identischen Keys für alle unterstützten Sprachen
