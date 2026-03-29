@@ -4,6 +4,7 @@ import { ContactSection } from "@/components/marketing/home/sections/contact-sec
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { IncludedSection } from "@/components/marketing/home/sections/included-section/included-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
+import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
@@ -77,6 +78,25 @@ export function HomeSectionsRenderer({
                   serviceContextNote={section.serviceContextNote}
                   serviceSecondaryTitle={section.serviceSecondaryTitle}
                   title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "proof") {
+              return (
+                <ProofSection
+                  cta={section.proofCta}
+                  description={section.description}
+                  eyebrow={section.eyebrow}
+                  id={section.id}
+                  key={section.id}
+                  projectKicker={section.proofProjectKicker}
+                  projectLinkLabel={section.proofProjectLinkLabel}
+                  ratingAriaLabel={section.proofRatingAriaLabel}
+                  reviewLinkLabel={section.proofReviewLinkLabel}
+                  reviews={section.proofReviews ?? []}
+                  title={section.title}
+                  trustNote={section.proofTrustNote}
                 />
               );
             }

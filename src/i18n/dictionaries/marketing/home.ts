@@ -43,11 +43,35 @@ type ContactFormOption = {
   label: string;
 };
 
+type ProofReview = {
+  authorName: string;
+  context: string;
+  excerpt: string;
+  profileImageSrc: string;
+  projectHref: string;
+  projectPreviewAlt: string;
+  projectPreviewSrc: string;
+  projectTitle: string;
+  reviewHref: string;
+  sourceLabel: string;
+};
+
 export type LandingSectionCopy = {
   title: string;
   description: string;
+  eyebrow?: string;
   summaryPoints?: string[];
   cards?: Array<{ title: string; description: string; tag: string }>;
+  proofCta?: {
+    label: string;
+    href: string;
+  };
+  proofProjectKicker?: string;
+  proofProjectLinkLabel?: string;
+  proofRatingAriaLabel?: string;
+  proofReviewLinkLabel?: string;
+  proofReviews?: ProofReview[];
+  proofTrustNote?: string;
   serviceCards?: StandardServiceCard[];
   serviceSecondaryTitle?: string;
   serviceContextNote?: string;
@@ -293,6 +317,104 @@ const HOME_SECTIONS: LandingSection[] = [
             description:
               "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end.",
             tag: "QA",
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "proof",
+    copy: {
+      de: {
+        eyebrow: "Google Business",
+        title:
+          "Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein.",
+        description:
+          "Die Section ist so vorbereitet, dass hier später echte Google-Bewertungen mit direkter Referenz auf den Originaleintrag stehen. Vorerst siehst du zwei Beispielkarten für Aufbau, Tonalität und Darstellung.",
+        proofTrustNote:
+          "Sobald die ersten Bewertungen live sind, ersetze ich diese Beispieltexte 1:1 durch echte Google-Reviews und verlinke direkt auf die Originaleinträge.",
+        proofCta: {
+          label: "Google-Profil als Platzhalter öffnen",
+          href: "https://www.google.com/maps",
+        },
+        proofProjectKicker: "Projektbeispiel",
+        proofProjectLinkLabel: "Beispiel ansehen",
+        proofRatingAriaLabel: "5 von 5 Sternen",
+        proofReviewLinkLabel: "Bei Google ansehen",
+        proofReviews: [
+          {
+            authorName: "Name folgt",
+            context: "Beispiel für Webseiten-Projekt",
+            excerpt:
+              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+            profileImageSrc: "/blank-profile-picture.svg",
+            projectHref: "/services/02-websites-screen-no-stand.png",
+            projectPreviewAlt:
+              "Beispielhafte Website-Startseite mit klarer Hero-Struktur",
+            projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
+            projectTitle: "Beispiel: Hero einer Unternehmenswebsite",
+            reviewHref: "https://www.google.com/maps",
+            sourceLabel: "Quelle: Google Bewertung",
+          },
+          {
+            authorName: "Name folgt",
+            context: "Beispiel für Prozess-Tool",
+            excerpt:
+              "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
+            profileImageSrc: "/blank-profile-picture.svg",
+            projectHref: "/services/03-prozess-tools-gears.png",
+            projectPreviewAlt:
+              "Beispielhaftes Dashboard eines Prozess-Optimierungstools",
+            projectPreviewSrc: "/services/03-prozess-tools-gears.png",
+            projectTitle: "Beispiel: Dashboard für Prozessoptimierung",
+            reviewHref: "https://www.google.com/maps",
+            sourceLabel: "Quelle: Google Bewertung",
+          },
+        ],
+      },
+      en: {
+        eyebrow: "Google Business",
+        title: "Real feedback should be traceable directly on Google.",
+        description:
+          "This section is prepared so future Google reviews can be shown here with a direct reference to the original entry. For now, these two cards are example content for structure, tone, and presentation.",
+        proofTrustNote:
+          "As soon as the first reviews are live, these example texts will be replaced with real Google reviews and linked to the original entries.",
+        proofCta: {
+          label: "Open placeholder Google profile",
+          href: "https://www.google.com/maps",
+        },
+        proofProjectKicker: "Project example",
+        proofProjectLinkLabel: "View example",
+        proofRatingAriaLabel: "5 out of 5 stars",
+        proofReviewLinkLabel: "View on Google",
+        proofReviews: [
+          {
+            authorName: "Name pending",
+            context: "Example for a website project",
+            excerpt:
+              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
+            profileImageSrc: "/blank-profile-picture.svg",
+            projectHref: "/services/02-websites-screen-no-stand.png",
+            projectPreviewAlt:
+              "Example website homepage preview with a clear hero layout",
+            projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
+            projectTitle: "Example: company website hero",
+            reviewHref: "https://www.google.com/maps",
+            sourceLabel: "Source: Google review",
+          },
+          {
+            authorName: "Name pending",
+            context: "Example for a process tool",
+            excerpt:
+              "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
+            profileImageSrc: "/blank-profile-picture.svg",
+            projectHref: "/services/03-prozess-tools-gears.png",
+            projectPreviewAlt:
+              "Example dashboard preview for a process optimisation tool",
+            projectPreviewSrc: "/services/03-prozess-tools-gears.png",
+            projectTitle: "Example: process optimisation dashboard",
+            reviewHref: "https://www.google.com/maps",
+            sourceLabel: "Source: Google review",
           },
         ],
       },
@@ -838,6 +960,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Was du bekommst", href: SECTION_HREFS.included },
+              { label: "Ergebnisse", href: SECTION_HREFS.proof },
               { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
@@ -1064,6 +1187,7 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "What you get", href: SECTION_HREFS.included },
+              { label: "Results", href: SECTION_HREFS.proof },
               { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
