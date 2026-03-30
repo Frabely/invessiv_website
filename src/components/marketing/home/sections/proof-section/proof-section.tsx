@@ -44,7 +44,6 @@ type ProofSectionProps = {
 export function ProofSection({
   cta,
   description,
-  eyebrow,
   id,
   projectKicker = "Project example",
   projectLinkLabel = "View example",
@@ -52,7 +51,6 @@ export function ProofSection({
   reviewLinkLabel = "View on Google",
   reviews,
   title,
-  trustNote,
 }: ProofSectionProps) {
   const orderedReviews = [...reviews].reverse();
   const renderedReviews = orderedReviews.slice(0, 1);
@@ -61,7 +59,6 @@ export function ProofSection({
     <section className={styles.section} id={id}>
       <div className={styles.header}>
         <div className={styles.headerCopy}>
-          {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
           <h2 className={styles.title}>{title}</h2>
           <p className={styles.description}>{description}</p>
         </div>
@@ -147,18 +144,20 @@ export function ProofSection({
                 </div>
 
                 {review.previewExperience ? (
-                  <ProofPreviewExperience
-                    embedUrl={review.previewExperience.embedUrl}
-                    frameLabel={review.previewExperience.frameLabel}
-                    hint={review.previewExperience.hint}
-                    iframeTitle={review.previewExperience.iframeTitle}
-                    openLabel={review.previewExperience.openLabel}
-                    projectHref={review.projectHref}
-                    projectKicker={projectKicker}
-                    projectLinkLabel={projectLinkLabel}
-                    projectTitle={review.projectTitle}
-                    viewport={review.previewExperience.viewport}
-                  />
+                  <div className={styles.primaryPreview}>
+                    <ProofPreviewExperience
+                      embedUrl={review.previewExperience.embedUrl}
+                      frameLabel={review.previewExperience.frameLabel}
+                      hint={review.previewExperience.hint}
+                      iframeTitle={review.previewExperience.iframeTitle}
+                      openLabel={review.previewExperience.openLabel}
+                      projectHref={review.projectHref}
+                      projectKicker={projectKicker}
+                      projectLinkLabel={projectLinkLabel}
+                      projectTitle={review.projectTitle}
+                      viewport={review.previewExperience.viewport}
+                    />
+                  </div>
                 ) : (
                   <a
                     className={styles.projectPreview}
@@ -195,8 +194,6 @@ export function ProofSection({
           );
         })}
       </div>
-
-      {trustNote ? <p className={styles.trustNote}>{trustNote}</p> : null}
     </section>
   );
 }
