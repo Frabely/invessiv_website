@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProofPreviewExperience } from "./proof-preview-experience/proof-preview-experience";
 import styles from "./proof-section.module.css";
 
 type ProofReview = {
@@ -6,6 +7,23 @@ type ProofReview = {
   context: string;
   excerpt: string;
   profileImageSrc: string;
+  previewExperience?: {
+    desktopModeKey: string;
+    embedUrl: string;
+    hint: string;
+    iframeTitle: string;
+    mobileModeKey: string;
+    openLabel: string;
+    options: Array<{
+      badge?: string;
+      description: string;
+      frameLabel: string;
+      key: string;
+      label: string;
+      viewport: "app" | "desktop";
+    }>;
+    prompt: string;
+  };
   projectHref: string;
   projectPreviewAlt: string;
   projectPreviewSrc: string;
@@ -99,29 +117,48 @@ export function ProofSection({
               <p>{review.excerpt}</p>
             </blockquote>
 
-            <a
-              className={styles.projectPreview}
-              href={review.projectHref}
-              rel="noreferrer"
-              target="_blank"
-            >
-              <div className={styles.projectPreviewMedia}>
-                <Image
-                  alt={review.projectPreviewAlt}
-                  className={styles.projectPreviewImage}
-                  height={440}
-                  src={review.projectPreviewSrc}
-                  width={720}
-                />
-              </div>
-              <div className={styles.projectPreviewMeta}>
-                <div className={styles.projectPreviewCopy}>
-                  <span className={styles.projectKicker}>{projectKicker}</span>
-                  <p className={styles.projectTitle}>{review.projectTitle}</p>
+            {review.previewExperience ? (
+              <ProofPreviewExperience
+                desktopModeKey={review.previewExperience.desktopModeKey}
+                embedUrl={review.previewExperience.embedUrl}
+                hint={review.previewExperience.hint}
+                iframeTitle={review.previewExperience.iframeTitle}
+                mobileModeKey={review.previewExperience.mobileModeKey}
+                openLabel={review.previewExperience.openLabel}
+                options={review.previewExperience.options}
+                projectHref={review.projectHref}
+                projectKicker={projectKicker}
+                projectLinkLabel={projectLinkLabel}
+                projectTitle={review.projectTitle}
+                prompt={review.previewExperience.prompt}
+              />
+            ) : (
+              <a
+                className={styles.projectPreview}
+                href={review.projectHref}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <div className={styles.projectPreviewMedia}>
+                  <Image
+                    alt={review.projectPreviewAlt}
+                    className={styles.projectPreviewImage}
+                    height={440}
+                    src={review.projectPreviewSrc}
+                    width={720}
+                  />
                 </div>
-                <span className={styles.projectLink}>{projectLinkLabel}</span>
-              </div>
-            </a>
+                <div className={styles.projectPreviewMeta}>
+                  <div className={styles.projectPreviewCopy}>
+                    <span className={styles.projectKicker}>
+                      {projectKicker}
+                    </span>
+                    <p className={styles.projectTitle}>{review.projectTitle}</p>
+                  </div>
+                  <span className={styles.projectLink}>{projectLinkLabel}</span>
+                </div>
+              </a>
+            )}
 
             <div className={styles.cardFooter}>
               <span className={styles.source}>{review.sourceLabel}</span>

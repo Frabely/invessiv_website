@@ -48,6 +48,23 @@ type ProofReview = {
   context: string;
   excerpt: string;
   profileImageSrc: string;
+  previewExperience?: {
+    desktopModeKey: string;
+    embedUrl: string;
+    hint: string;
+    iframeTitle: string;
+    mobileModeKey: string;
+    openLabel: string;
+    options: Array<{
+      badge?: string;
+      description: string;
+      frameLabel: string;
+      key: string;
+      label: string;
+      viewport: "app" | "desktop";
+    }>;
+    prompt: string;
+  };
   projectHref: string;
   projectPreviewAlt: string;
   projectPreviewSrc: string;
@@ -55,6 +72,10 @@ type ProofReview = {
   reviewHref: string;
   sourceLabel: string;
 };
+
+const PROOF_PLACEHOLDER_URL =
+  "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
+const PROOF_LEFT_CARD_URL = "https://mywebpage-480c1.web.app";
 
 export type LandingSectionCopy = {
   title: string;
@@ -335,7 +356,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "Sobald die ersten Bewertungen live sind, ersetze ich diese Beispieltexte 1:1 durch echte Google-Reviews und verlinke direkt auf die Originaleinträge.",
         proofCta: {
           label: "Google-Profil als Platzhalter öffnen",
-          href: "https://www.google.com/maps",
+          href: PROOF_PLACEHOLDER_URL,
         },
         proofProjectKicker: "Projektbeispiel",
         proofProjectLinkLabel: "Beispiel ansehen",
@@ -348,12 +369,41 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/blank-profile-picture.svg",
-            projectHref: "/services/02-websites-screen-no-stand.png",
+            previewExperience: {
+              desktopModeKey: "desktop",
+              embedUrl: PROOF_LEFT_CARD_URL,
+              hint: "Auf Mobile startet die kompaktere Vorschau. Auf Desktop wird direkt die normale Website-Ansicht gezeigt.",
+              iframeTitle: "Live-Vorschau der Beispiel-Website",
+              mobileModeKey: "app",
+              openLabel: "Website direkt öffnen",
+              options: [
+                {
+                  badge: "Empfohlen für Mobile",
+                  description:
+                    "Zeigt die Zielseite in einem kompakteren Frame, um den ersten Eindruck mobiler Aufrufe besser nachzubilden.",
+                  frameLabel: "Kompakte Vorschau",
+                  key: "app",
+                  label: "Kompakt",
+                  viewport: "app",
+                },
+                {
+                  description:
+                    "Zeigt dieselbe URL in einer breiteren Browser-Ansicht, wie sie typischerweise auf Desktop sichtbar ist.",
+                  frameLabel: "Desktop-Webansicht",
+                  key: "desktop",
+                  label: "Als Website",
+                  viewport: "desktop",
+                },
+              ],
+              prompt:
+                "Wähle zuerst die passende Ansicht für die Beispiel-Website.",
+            },
+            projectHref: PROOF_LEFT_CARD_URL,
             projectPreviewAlt:
               "Beispielhafte Website-Startseite mit klarer Hero-Struktur",
             projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
             projectTitle: "Beispiel: Hero einer Unternehmenswebsite",
-            reviewHref: "https://www.google.com/maps",
+            reviewHref: PROOF_LEFT_CARD_URL,
             sourceLabel: "Quelle: Google Bewertung",
           },
           {
@@ -362,12 +412,41 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
             profileImageSrc: "/blank-profile-picture.svg",
-            projectHref: "/services/03-prozess-tools-gears.png",
+            previewExperience: {
+              desktopModeKey: "desktop",
+              embedUrl: "https://consumption-trial.invessiv.com",
+              hint: "Auf Mobile startet direkt die kompakte App-Ansicht. Auf Desktop wird zuerst die normale Webansicht gezeigt.",
+              iframeTitle: "Live-Vorschau des Prozessoptimierungstools",
+              mobileModeKey: "app",
+              openLabel: "Tool direkt öffnen",
+              options: [
+                {
+                  badge: "Empfohlen für das Tool",
+                  description:
+                    "Zeigt die Oberfläche in einem kompakten App-Frame, passend für mobile Nutzung und fokussierte Abläufe.",
+                  frameLabel: "App-Frame",
+                  key: "app",
+                  label: "Als App-Vorschau",
+                  viewport: "app",
+                },
+                {
+                  description:
+                    "Zeigt dieselbe URL in einer breiteren Browser-Ansicht, wie sie auf Desktop typischerweise genutzt wird.",
+                  frameLabel: "Desktop-Webansicht",
+                  key: "desktop",
+                  label: "Als Website",
+                  viewport: "desktop",
+                },
+              ],
+              prompt:
+                "Wähle zuerst die passende Ansicht für das Prozessoptimierungstool.",
+            },
+            projectHref: PROOF_PLACEHOLDER_URL,
             projectPreviewAlt:
               "Beispielhaftes Dashboard eines Prozess-Optimierungstools",
             projectPreviewSrc: "/services/03-prozess-tools-gears.png",
             projectTitle: "Beispiel: Dashboard für Prozessoptimierung",
-            reviewHref: "https://www.google.com/maps",
+            reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Quelle: Google Bewertung",
           },
         ],
@@ -381,7 +460,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "As soon as the first reviews are live, these example texts will be replaced with real Google reviews and linked to the original entries.",
         proofCta: {
           label: "Open placeholder Google profile",
-          href: "https://www.google.com/maps",
+          href: PROOF_PLACEHOLDER_URL,
         },
         proofProjectKicker: "Project example",
         proofProjectLinkLabel: "View example",
@@ -394,12 +473,40 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
             profileImageSrc: "/blank-profile-picture.svg",
-            projectHref: "/services/02-websites-screen-no-stand.png",
+            previewExperience: {
+              desktopModeKey: "desktop",
+              embedUrl: PROOF_LEFT_CARD_URL,
+              hint: "On mobile the preview starts in a more compact frame. On desktop it opens in the regular website view.",
+              iframeTitle: "Live preview of the example website",
+              mobileModeKey: "app",
+              openLabel: "Open website directly",
+              options: [
+                {
+                  badge: "Recommended for mobile",
+                  description:
+                    "Shows the destination page in a more compact frame to mirror the first mobile impression more closely.",
+                  frameLabel: "Compact preview",
+                  key: "app",
+                  label: "Compact",
+                  viewport: "app",
+                },
+                {
+                  description:
+                    "Shows the same URL in a wider browser layout, matching the typical desktop view.",
+                  frameLabel: "Desktop web view",
+                  key: "desktop",
+                  label: "As website",
+                  viewport: "desktop",
+                },
+              ],
+              prompt: "Choose the right view for the example website.",
+            },
+            projectHref: PROOF_LEFT_CARD_URL,
             projectPreviewAlt:
               "Example website homepage preview with a clear hero layout",
             projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
             projectTitle: "Example: company website hero",
-            reviewHref: "https://www.google.com/maps",
+            reviewHref: PROOF_LEFT_CARD_URL,
             sourceLabel: "Source: Google review",
           },
           {
@@ -408,12 +515,41 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
             profileImageSrc: "/blank-profile-picture.svg",
-            projectHref: "/services/03-prozess-tools-gears.png",
+            previewExperience: {
+              desktopModeKey: "desktop",
+              embedUrl: "https://consumption-trial.invessiv.com",
+              hint: "On mobile the compact app view is selected first. On desktop the preview starts in the regular web layout.",
+              iframeTitle: "Live preview of the process optimisation tool",
+              mobileModeKey: "app",
+              openLabel: "Open tool directly",
+              options: [
+                {
+                  badge: "Recommended for the tool",
+                  description:
+                    "Shows the interface inside a compact app frame, useful for mobile use and more focused workflows.",
+                  frameLabel: "App frame",
+                  key: "app",
+                  label: "As app preview",
+                  viewport: "app",
+                },
+                {
+                  description:
+                    "Shows the same URL in a wider browser layout, matching how it is typically used on desktop.",
+                  frameLabel: "Desktop web view",
+                  key: "desktop",
+                  label: "As website",
+                  viewport: "desktop",
+                },
+              ],
+              prompt:
+                "Choose the right view for the process optimisation tool.",
+            },
+            projectHref: PROOF_PLACEHOLDER_URL,
             projectPreviewAlt:
               "Example dashboard preview for a process optimisation tool",
             projectPreviewSrc: "/services/03-prozess-tools-gears.png",
             projectTitle: "Example: process optimisation dashboard",
-            reviewHref: "https://www.google.com/maps",
+            reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Source: Google review",
           },
         ],
