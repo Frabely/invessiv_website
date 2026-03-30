@@ -11,7 +11,7 @@
   border-radius: 0;
   background: transparent;
   padding-top: 18px;
-  border-top: 1px solid color-mix(in srgb, var(--accent) 58%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 88%, #ffd7aa 12%);
   position: relative;
 }
 
@@ -22,7 +22,7 @@
   left: 0;
   width: 96px;
   height: 1px;
-  background: color-mix(in srgb, var(--accent) 92%, #ffd7aa 8%);
+  background: color-mix(in srgb, var(--accent) 88%, #ffd7aa 12%);
 }
 
 .header {

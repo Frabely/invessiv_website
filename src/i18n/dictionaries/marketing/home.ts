@@ -78,6 +78,10 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
   };
+  proofPrimaryCta?: {
+    label: string;
+    href: string;
+  };
   proofProjectKicker?: string;
   proofProjectLinkLabel?: string;
   proofRatingAriaLabel?: string;
@@ -339,15 +343,23 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         eyebrow: "Google Business",
-        title:
-          "Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein.",
+        title: "Rückmeldungen, die Vertrauen schaffen.",
         description:
-          "Die Section ist so vorbereitet, dass hier später echte Google-Bewertungen mit direkter Referenz auf den Originaleintrag stehen. Vorerst siehst du zwei Beispielkarten für Aufbau, Tonalität und Darstellung.",
+          "Hier sollen echte Google-Bewertungen mit direktem Verweis auf den jeweiligen Originaleintrag erscheinen. Bis die ersten Reviews live sind, zeigen die beiden Karten beispielhaft, wie Aufbau, Ton und Darstellung in dieser Section später aussehen.",
+        summaryPoints: [
+          "echte Erfahrungen",
+          "klare Ergebnisse",
+          "direkt verständlich",
+        ],
         proofTrustNote:
           "Sobald die ersten Bewertungen live sind, ersetze ich diese Beispieltexte 1:1 durch echte Google-Reviews und verlinke direkt auf die Originaleinträge.",
         proofCta: {
-          label: "Google-Profil als Platzhalter öffnen",
+          label: "Platzhalter-Eintrag bei Google öffnen",
           href: PROOF_PLACEHOLDER_URL,
+        },
+        proofPrimaryCta: {
+          label: "Projekt anfragen",
+          href: SECTION_HREFS.contact,
         },
         proofProjectKicker: "Projektbeispiel",
         proofProjectLinkLabel: "Beispiel ansehen",
@@ -402,14 +414,19 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         eyebrow: "Google Business",
-        title: "Real feedback should be traceable directly on Google.",
+        title: "Reviews that build trust.",
         description:
-          "This section is prepared so future Google reviews can be shown here with a direct reference to the original entry. For now, these two cards are example content for structure, tone, and presentation.",
+          "This section is reserved for real Google reviews with a direct link back to each original entry. Until the first reviews are live, the two cards below show the intended structure, tone, and presentation.",
+        summaryPoints: ["real experiences", "clear outcomes", "easy to scan"],
         proofTrustNote:
           "As soon as the first reviews are live, these example texts will be replaced with real Google reviews and linked to the original entries.",
         proofCta: {
-          label: "Open placeholder Google profile",
+          label: "Open placeholder listing on Google",
           href: PROOF_PLACEHOLDER_URL,
+        },
+        proofPrimaryCta: {
+          label: "Start project request",
+          href: SECTION_HREFS.contact,
         },
         proofProjectKicker: "Project example",
         proofProjectLinkLabel: "View example",

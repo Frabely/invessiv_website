@@ -86,6 +86,7 @@ export function HomeSectionsRenderer({
               return (
                 <ProofSection
                   cta={section.proofCta}
+                  primaryCta={section.proofPrimaryCta}
                   description={section.description}
                   eyebrow={section.eyebrow}
                   id={section.id}
@@ -95,6 +96,7 @@ export function HomeSectionsRenderer({
                   ratingAriaLabel={section.proofRatingAriaLabel}
                   reviewLinkLabel={section.proofReviewLinkLabel}
                   reviews={section.proofReviews ?? []}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                   trustNote={section.proofTrustNote}
                 />

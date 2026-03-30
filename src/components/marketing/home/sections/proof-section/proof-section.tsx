@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { ProofPreviewExperience } from "./proof-preview-experience/proof-preview-experience";
 import { ProofReviewCard } from "./proof-review-card/proof-review-card";
 import styles from "./proof-section.module.css";
@@ -29,6 +30,10 @@ type ProofSectionProps = {
     label: string;
     href: string;
   };
+  primaryCta?: {
+    label: string;
+    href: string;
+  };
   description: string;
   eyebrow?: string;
   id: string;
@@ -37,12 +42,14 @@ type ProofSectionProps = {
   ratingAriaLabel?: string;
   reviewLinkLabel?: string;
   reviews: ProofReview[];
+  summaryPoints?: string[];
   title: string;
   trustNote?: string;
 };
 
 export function ProofSection({
   cta,
+  primaryCta,
   description,
   id,
   projectKicker = "Project example",
@@ -50,28 +57,28 @@ export function ProofSection({
   ratingAriaLabel = "5 out of 5 stars",
   reviewLinkLabel = "View on Google",
   reviews,
+  summaryPoints,
   title,
 }: ProofSectionProps) {
   const orderedReviews = [...reviews].reverse();
   const renderedReviews = orderedReviews.slice(0, 1);
+  const renderLinkAttributes = (href: string) =>
+    href.startsWith("http")
+      ? { rel: "noreferrer", target: "_blank" as const }
+      : {};
 
   return (
     <section className={styles.section} id={id}>
       <div className={styles.header}>
         <div className={styles.headerCopy}>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.description}>{description}</p>
+          <SectionScanPoints
+            ariaLabel="Proof section highlights"
+            fallbackClassName={styles.description}
+            fallbackText={description}
+            points={summaryPoints}
+          />
         </div>
-        {cta ? (
-          <a
-            className={styles.cta}
-            href={cta.href}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {cta.label}
-          </a>
-        ) : null}
       </div>
 
       <div className={styles.grid} role="list">
@@ -194,6 +201,29 @@ export function ProofSection({
           );
         })}
       </div>
+
+      {cta || primaryCta ? (
+        <div className={styles.actions}>
+          {primaryCta ? (
+            <a
+              className="btn btn--primary"
+              href={primaryCta.href}
+              {...renderLinkAttributes(primaryCta.href)}
+            >
+              {primaryCta.label}
+            </a>
+          ) : null}
+          {cta ? (
+            <a
+              className={`${styles.cta} btn btn--ghost`}
+              href={cta.href}
+              {...renderLinkAttributes(cta.href)}
+            >
+              {cta.label}
+            </a>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }
