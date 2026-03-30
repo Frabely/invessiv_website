@@ -118,7 +118,7 @@ describe("ProofSection", () => {
     ).toHaveLength(2);
     expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "Profil öffnen" })).toBeTruthy();
-    expect(screen.getByRole("radio", { name: /Kompakt/ })).toBeTruthy();
+    expect(screen.getAllByRole("radio", { name: /Kompakt/ })).toHaveLength(2);
     expect(
       screen.getByRole("radio", { name: /Als App-Vorschau/ }),
     ).toBeTruthy();
