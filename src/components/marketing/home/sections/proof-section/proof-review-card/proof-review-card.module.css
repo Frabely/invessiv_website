@@ -6,12 +6,23 @@
 
 .card[data-tone="nested"] {
   gap: 16px;
-  padding: 18px;
-  border: 1px solid color-mix(in srgb, var(--border) 54%, transparent);
-  border-radius: 22px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    rgba(19, 12, 9, 0.46);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 58%, transparent);
+  position: relative;
+}
+
+.card[data-tone="nested"]::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 96px;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 92%, #ffd7aa 8%);
 }
 
 .header {
@@ -95,6 +106,14 @@
   color: color-mix(in srgb, var(--accent) 74%, #ffe8cd 26%);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+@media (min-width: 760px) {
+  .card[data-tone="nested"]::before {
+    left: 0;
+    right: -26px;
+    width: auto;
+  }
 }
 
 @media (max-width: 759px) {

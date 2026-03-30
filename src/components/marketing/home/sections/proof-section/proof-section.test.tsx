@@ -10,7 +10,7 @@ const PROOF_LEFT_CARD_URL = "https://mywebpage-480c1.web.app";
 const TOOL_URL = "https://consumption-trial.invessiv.com";
 
 describe("ProofSection", () => {
-  it("renders the app card first and shows the website review again beneath the main review", () => {
+  it("renders a single app-led card with the migrated website review content embedded", () => {
     render(
       <ProofSection
         cta={{
@@ -76,11 +76,11 @@ describe("ProofSection", () => {
         name: "Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein.",
       }),
     ).toBeTruthy();
-    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(3);
+    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(2);
     expect(
       screen.getAllByRole("link", { name: "Bei Google ansehen" }),
-    ).toHaveLength(3);
-    expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(3);
+    ).toHaveLength(2);
+    expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "Profil öffnen" })).toBeTruthy();
     expect(screen.queryByRole("radio")).toBeNull();
     expect(
@@ -92,11 +92,11 @@ describe("ProofSection", () => {
     expect(screen.queryByText("Tool direkt öffnen")).toBeNull();
     expect(
       screen.getAllByTitle("Live-Vorschau der Beispiel-Website"),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
     expect(screen.getByTitle("Live-Vorschau des Tools")).toBeTruthy();
 
-    expect(screen.getAllByText("Projektstart")).toHaveLength(2);
-    expect(screen.getAllByText("Sehr strukturierter Ablauf.")).toHaveLength(2);
+    expect(screen.getAllByText("Projektstart")).toHaveLength(1);
+    expect(screen.getAllByText("Sehr strukturierter Ablauf.")).toHaveLength(1);
 
     const projectLinks = screen.getAllByRole("link", {
       name: "Beispiel ansehen",
@@ -104,7 +104,6 @@ describe("ProofSection", () => {
     expect(projectLinks.map((link) => link.getAttribute("href"))).toEqual([
       PROOF_LEFT_CARD_URL,
       TOOL_URL,
-      PROOF_LEFT_CARD_URL,
     ]);
   });
 });

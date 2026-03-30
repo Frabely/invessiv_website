@@ -16,6 +16,14 @@
   background: transparent;
 }
 
+.shellApp .projectMeta {
+  position: relative;
+  width: min(100%, 380px);
+  margin-inline: auto;
+  margin-top: 8px;
+  padding-bottom: 10px;
+}
+
 .shellCompact {
   gap: 10px;
   padding: 0;
@@ -26,18 +34,6 @@
 
 .shellCompact .projectMeta {
   padding-top: 0;
-}
-
-.shellCompact .projectKicker {
-  font-size: 0.68rem;
-}
-
-.shellCompact .projectTitle {
-  font-size: 0.9rem;
-}
-
-.shellCompact .projectLink {
-  font-size: 0.84rem;
 }
 
 .hint,
@@ -176,7 +172,7 @@
 
 .projectKicker {
   color: color-mix(in srgb, var(--text) 52%, var(--muted) 48%);
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -184,14 +180,14 @@
 
 .projectTitle {
   color: color-mix(in srgb, var(--text) 90%, var(--muted) 10%);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   line-height: 1.4;
 }
 
 .projectLink {
   color: color-mix(in srgb, var(--accent) 74%, #ffe8cd 26%);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -219,6 +215,12 @@
   .shellApp {
     padding: 0;
     border-radius: 0;
+  }
+
+  .shellApp .projectMeta {
+    width: min(100%, 340px);
+    margin-top: 6px;
+    padding-bottom: 8px;
   }
 
   .shellCompact {

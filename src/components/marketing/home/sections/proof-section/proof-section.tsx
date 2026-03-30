@@ -55,6 +55,7 @@ export function ProofSection({
   trustNote,
 }: ProofSectionProps) {
   const orderedReviews = [...reviews].reverse();
+  const renderedReviews = orderedReviews.slice(0, 1);
 
   return (
     <section className={styles.section} id={id}>
@@ -77,7 +78,7 @@ export function ProofSection({
       </div>
 
       <div className={styles.grid} role="list">
-        {orderedReviews.map((review, index) => {
+        {renderedReviews.map((review, index) => {
           const isAppLeadCard =
             index === 0 && review.previewExperience?.viewport === "app";
           const secondaryReview = isAppLeadCard ? orderedReviews[1] : undefined;
@@ -103,7 +104,7 @@ export function ProofSection({
                   />
 
                   {secondaryReview ? (
-                    <>
+                    <div className={styles.secondaryReview}>
                       <ProofReviewCard
                         authorName={secondaryReview.authorName}
                         context={secondaryReview.context}
@@ -141,7 +142,7 @@ export function ProofSection({
                           />
                         ) : null}
                       </ProofReviewCard>
-                    </>
+                    </div>
                   ) : null}
                 </div>
 
