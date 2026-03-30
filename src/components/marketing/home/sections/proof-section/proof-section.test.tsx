@@ -7,13 +7,14 @@ import { ProofSection } from "./proof-section";
 const PROOF_PLACEHOLDER_URL =
   "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
 const PROOF_LEFT_CARD_URL = "https://mywebpage-480c1.web.app";
+const TOOL_URL = "https://consumption-trial.invessiv.com";
 
 describe("ProofSection", () => {
-  it("renders two review cards with google references and external links", () => {
+  it("renders the app card first and shows the website review again beneath the main review", () => {
     render(
       <ProofSection
         cta={{
-          href: "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4",
+          href: PROOF_PLACEHOLDER_URL,
           label: "Profil öffnen",
         }}
         description="Beispielhafte Referenz auf Google-Bewertungen."
@@ -30,30 +31,12 @@ describe("ProofSection", () => {
             excerpt: "Sehr strukturierter Ablauf.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
               embedUrl: PROOF_LEFT_CARD_URL,
-              hint: "Auf Desktop startet die Webansicht.",
+              frameLabel: "Desktop-Webansicht",
+              hint: "Diese Karte zeigt die Vorschau immer direkt als Website.",
               iframeTitle: "Live-Vorschau der Beispiel-Website",
-              mobileModeKey: "app",
               openLabel: "Website direkt öffnen",
-              options: [
-                {
-                  badge: "Empfohlen",
-                  description: "Kompakte Vorschau.",
-                  frameLabel: "Kompakte Vorschau",
-                  key: "app",
-                  label: "Kompakt",
-                  viewport: "app",
-                },
-                {
-                  description: "Normale Webansicht.",
-                  frameLabel: "Desktop-Webansicht",
-                  key: "desktop",
-                  label: "Als Website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt: "Wähle zuerst die passende Ansicht.",
+              viewport: "desktop",
             },
             projectHref: PROOF_LEFT_CARD_URL,
             projectPreviewAlt: "Website Hero",
@@ -68,37 +51,18 @@ describe("ProofSection", () => {
             excerpt: "Klare Kommunikation und schnelles Feedback.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
-              embedUrl: "https://consumption-trial.invessiv.com",
-              hint: "Auf Desktop startet die Webansicht.",
+              embedUrl: TOOL_URL,
+              frameLabel: "App-Frame",
+              hint: "Diese Karte zeigt die Vorschau immer direkt als App.",
               iframeTitle: "Live-Vorschau des Tools",
-              mobileModeKey: "app",
               openLabel: "Tool direkt öffnen",
-              options: [
-                {
-                  badge: "Empfohlen",
-                  description: "Kompakte App-Ansicht.",
-                  frameLabel: "App-Frame",
-                  key: "app",
-                  label: "Als App-Vorschau",
-                  viewport: "app",
-                },
-                {
-                  description: "Normale Webansicht.",
-                  frameLabel: "Desktop-Webansicht",
-                  key: "desktop",
-                  label: "Als Website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt: "Wähle zuerst die passende Ansicht.",
+              viewport: "app",
             },
-            projectHref: PROOF_PLACEHOLDER_URL,
+            projectHref: TOOL_URL,
             projectPreviewAlt: "Dashboard",
             projectPreviewSrc: "/services/03-prozess-tools-gears.png",
             projectTitle: "Beispiel: Prozess-Dashboard",
-            reviewHref:
-              "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4",
+            reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Quelle: Google Bewertung",
           },
         ]}
@@ -112,19 +76,35 @@ describe("ProofSection", () => {
         name: "Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein.",
       }),
     ).toBeTruthy();
-    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(2);
+    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(3);
     expect(
       screen.getAllByRole("link", { name: "Bei Google ansehen" }),
-    ).toHaveLength(2);
-    expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(2);
+    ).toHaveLength(3);
+    expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(3);
     expect(screen.getByRole("link", { name: "Profil öffnen" })).toBeTruthy();
-    expect(screen.getAllByRole("radio", { name: /Kompakt/ })).toHaveLength(2);
+    expect(screen.queryByRole("radio")).toBeNull();
     expect(
-      screen.getByRole("radio", { name: /Als App-Vorschau/ }),
-    ).toBeTruthy();
+      screen.queryByText(
+        "Diese Karte zeigt die Vorschau immer direkt als App.",
+      ),
+    ).toBeNull();
+    expect(screen.queryByText("App-Frame")).toBeNull();
+    expect(screen.queryByText("Tool direkt öffnen")).toBeNull();
     expect(
-      screen.getByTitle("Live-Vorschau der Beispiel-Website"),
-    ).toBeTruthy();
+      screen.getAllByTitle("Live-Vorschau der Beispiel-Website"),
+    ).toHaveLength(2);
     expect(screen.getByTitle("Live-Vorschau des Tools")).toBeTruthy();
+
+    expect(screen.getAllByText("Projektstart")).toHaveLength(2);
+    expect(screen.getAllByText("Sehr strukturierter Ablauf.")).toHaveLength(2);
+
+    const projectLinks = screen.getAllByRole("link", {
+      name: "Beispiel ansehen",
+    });
+    expect(projectLinks.map((link) => link.getAttribute("href"))).toEqual([
+      PROOF_LEFT_CARD_URL,
+      TOOL_URL,
+      PROOF_LEFT_CARD_URL,
+    ]);
   });
 });

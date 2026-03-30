@@ -49,21 +49,12 @@ type ProofReview = {
   excerpt: string;
   profileImageSrc: string;
   previewExperience?: {
-    desktopModeKey: string;
     embedUrl: string;
+    frameLabel: string;
     hint: string;
     iframeTitle: string;
-    mobileModeKey: string;
     openLabel: string;
-    options: Array<{
-      badge?: string;
-      description: string;
-      frameLabel: string;
-      key: string;
-      label: string;
-      viewport: "app" | "desktop";
-    }>;
-    prompt: string;
+    viewport: "app" | "desktop";
   };
   projectHref: string;
   projectPreviewAlt: string;
@@ -370,33 +361,12 @@ const HOME_SECTIONS: LandingSection[] = [
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
               embedUrl: PROOF_LEFT_CARD_URL,
-              hint: "Auf Mobile startet die kompaktere Vorschau. Auf Desktop wird direkt die normale Website-Ansicht gezeigt.",
+              frameLabel: "Desktop-Webansicht",
+              hint: "Diese Karte zeigt die Vorschau immer direkt als Website.",
               iframeTitle: "Live-Vorschau der Beispiel-Website",
-              mobileModeKey: "app",
               openLabel: "Website direkt öffnen",
-              options: [
-                {
-                  badge: "Empfohlen für Mobile",
-                  description:
-                    "Zeigt die Zielseite in einem kompakteren Frame, um den ersten Eindruck mobiler Aufrufe besser nachzubilden.",
-                  frameLabel: "Kompakte Vorschau",
-                  key: "app",
-                  label: "Kompakt",
-                  viewport: "app",
-                },
-                {
-                  description:
-                    "Zeigt dieselbe URL in einer breiteren Browser-Ansicht, wie sie typischerweise auf Desktop sichtbar ist.",
-                  frameLabel: "Desktop-Webansicht",
-                  key: "desktop",
-                  label: "Als Website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt:
-                "Wähle zuerst die passende Ansicht für die Beispiel-Website.",
+              viewport: "desktop",
             },
             projectHref: PROOF_LEFT_CARD_URL,
             projectPreviewAlt:
@@ -413,35 +383,14 @@ const HOME_SECTIONS: LandingSection[] = [
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
               embedUrl: "https://consumption-trial.invessiv.com",
-              hint: "Auf Mobile startet direkt die kompakte App-Ansicht. Auf Desktop wird zuerst die normale Webansicht gezeigt.",
+              frameLabel: "App-Frame",
+              hint: "Diese Karte zeigt die Vorschau immer direkt als App.",
               iframeTitle: "Live-Vorschau des Prozessoptimierungstools",
-              mobileModeKey: "app",
               openLabel: "Tool direkt öffnen",
-              options: [
-                {
-                  badge: "Empfohlen für das Tool",
-                  description:
-                    "Zeigt die Oberfläche in einem kompakten App-Frame, passend für mobile Nutzung und fokussierte Abläufe.",
-                  frameLabel: "App-Frame",
-                  key: "app",
-                  label: "Als App-Vorschau",
-                  viewport: "app",
-                },
-                {
-                  description:
-                    "Zeigt dieselbe URL in einer breiteren Browser-Ansicht, wie sie auf Desktop typischerweise genutzt wird.",
-                  frameLabel: "Desktop-Webansicht",
-                  key: "desktop",
-                  label: "Als Website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt:
-                "Wähle zuerst die passende Ansicht für das Prozessoptimierungstool.",
+              viewport: "app",
             },
-            projectHref: PROOF_PLACEHOLDER_URL,
+            projectHref: "https://consumption-trial.invessiv.com",
             projectPreviewAlt:
               "Beispielhaftes Dashboard eines Prozess-Optimierungstools",
             projectPreviewSrc: "/services/03-prozess-tools-gears.png",
@@ -474,32 +423,12 @@ const HOME_SECTIONS: LandingSection[] = [
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
               embedUrl: PROOF_LEFT_CARD_URL,
-              hint: "On mobile the preview starts in a more compact frame. On desktop it opens in the regular website view.",
+              frameLabel: "Desktop web view",
+              hint: "This card always shows the preview directly as a website.",
               iframeTitle: "Live preview of the example website",
-              mobileModeKey: "app",
               openLabel: "Open website directly",
-              options: [
-                {
-                  badge: "Recommended for mobile",
-                  description:
-                    "Shows the destination page in a more compact frame to mirror the first mobile impression more closely.",
-                  frameLabel: "Compact preview",
-                  key: "app",
-                  label: "Compact",
-                  viewport: "app",
-                },
-                {
-                  description:
-                    "Shows the same URL in a wider browser layout, matching the typical desktop view.",
-                  frameLabel: "Desktop web view",
-                  key: "desktop",
-                  label: "As website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt: "Choose the right view for the example website.",
+              viewport: "desktop",
             },
             projectHref: PROOF_LEFT_CARD_URL,
             projectPreviewAlt:
@@ -516,35 +445,14 @@ const HOME_SECTIONS: LandingSection[] = [
               "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
             profileImageSrc: "/blank-profile-picture.svg",
             previewExperience: {
-              desktopModeKey: "desktop",
               embedUrl: "https://consumption-trial.invessiv.com",
-              hint: "On mobile the compact app view is selected first. On desktop the preview starts in the regular web layout.",
+              frameLabel: "App frame",
+              hint: "This card always shows the preview directly as an app.",
               iframeTitle: "Live preview of the process optimisation tool",
-              mobileModeKey: "app",
               openLabel: "Open tool directly",
-              options: [
-                {
-                  badge: "Recommended for the tool",
-                  description:
-                    "Shows the interface inside a compact app frame, useful for mobile use and more focused workflows.",
-                  frameLabel: "App frame",
-                  key: "app",
-                  label: "As app preview",
-                  viewport: "app",
-                },
-                {
-                  description:
-                    "Shows the same URL in a wider browser layout, matching how it is typically used on desktop.",
-                  frameLabel: "Desktop web view",
-                  key: "desktop",
-                  label: "As website",
-                  viewport: "desktop",
-                },
-              ],
-              prompt:
-                "Choose the right view for the process optimisation tool.",
+              viewport: "app",
             },
-            projectHref: PROOF_PLACEHOLDER_URL,
+            projectHref: "https://consumption-trial.invessiv.com",
             projectPreviewAlt:
               "Example dashboard preview for a process optimisation tool",
             projectPreviewSrc: "/services/03-prozess-tools-gears.png",

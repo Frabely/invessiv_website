@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ProofPreviewExperience } from "./proof-preview-experience/proof-preview-experience";
+import { ProofReviewCard } from "./proof-review-card/proof-review-card";
 import styles from "./proof-section.module.css";
 
 type ProofReview = {
@@ -8,21 +9,12 @@ type ProofReview = {
   excerpt: string;
   profileImageSrc: string;
   previewExperience?: {
-    desktopModeKey: string;
     embedUrl: string;
+    frameLabel: string;
     hint: string;
     iframeTitle: string;
-    mobileModeKey: string;
     openLabel: string;
-    options: Array<{
-      badge?: string;
-      description: string;
-      frameLabel: string;
-      key: string;
-      label: string;
-      viewport: "app" | "desktop";
-    }>;
-    prompt: string;
+    viewport: "app" | "desktop";
   };
   projectHref: string;
   projectPreviewAlt: string;
@@ -49,10 +41,6 @@ type ProofSectionProps = {
   trustNote?: string;
 };
 
-function renderStars() {
-  return "★★★★★";
-}
-
 export function ProofSection({
   cta,
   description,
@@ -66,6 +54,8 @@ export function ProofSection({
   title,
   trustNote,
 }: ProofSectionProps) {
+  const orderedReviews = [...reviews].reverse();
+
   return (
     <section className={styles.section} id={id}>
       <div className={styles.header}>
@@ -87,92 +77,122 @@ export function ProofSection({
       </div>
 
       <div className={styles.grid} role="list">
-        {reviews.map((review) => (
-          <article
-            className={styles.card}
-            key={`${review.authorName}-${review.context}`}
-            role="listitem"
-          >
-            <div className={styles.cardGlow} aria-hidden="true" />
-            <div className={styles.cardHeader}>
-              <div className={styles.profileWrap}>
-                <Image
-                  alt=""
-                  className={styles.profileImage}
-                  height={56}
-                  src={review.profileImageSrc}
-                  width={56}
-                />
-                <div className={styles.identity}>
-                  <p className={styles.author}>{review.authorName}</p>
-                  <p className={styles.context}>{review.context}</p>
-                </div>
-              </div>
-              <p aria-label={ratingAriaLabel} className={styles.rating}>
-                <span aria-hidden="true">{renderStars()}</span>
-              </p>
-            </div>
+        {orderedReviews.map((review, index) => {
+          const isAppLeadCard =
+            index === 0 && review.previewExperience?.viewport === "app";
+          const secondaryReview = isAppLeadCard ? orderedReviews[1] : undefined;
 
-            <blockquote className={styles.quote}>
-              <p>{review.excerpt}</p>
-            </blockquote>
-
-            {review.previewExperience ? (
-              <ProofPreviewExperience
-                desktopModeKey={review.previewExperience.desktopModeKey}
-                embedUrl={review.previewExperience.embedUrl}
-                hint={review.previewExperience.hint}
-                iframeTitle={review.previewExperience.iframeTitle}
-                mobileModeKey={review.previewExperience.mobileModeKey}
-                openLabel={review.previewExperience.openLabel}
-                options={review.previewExperience.options}
-                projectHref={review.projectHref}
-                projectKicker={projectKicker}
-                projectLinkLabel={projectLinkLabel}
-                projectTitle={review.projectTitle}
-                prompt={review.previewExperience.prompt}
-              />
-            ) : (
-              <a
-                className={styles.projectPreview}
-                href={review.projectHref}
-                rel="noreferrer"
-                target="_blank"
-              >
-                <div className={styles.projectPreviewMedia}>
-                  <Image
-                    alt={review.projectPreviewAlt}
-                    className={styles.projectPreviewImage}
-                    height={440}
-                    src={review.projectPreviewSrc}
-                    width={720}
+          return (
+            <article
+              className={`${styles.card}${isAppLeadCard ? ` ${styles.cardAppLead}` : ""}`}
+              key={`${review.authorName}-${review.context}`}
+              role="listitem"
+            >
+              <div className={styles.cardGlow} aria-hidden="true" />
+              <div className={styles.cardMain}>
+                <div className={styles.cardContent}>
+                  <ProofReviewCard
+                    authorName={review.authorName}
+                    context={review.context}
+                    excerpt={review.excerpt}
+                    profileImageSrc={review.profileImageSrc}
+                    ratingAriaLabel={ratingAriaLabel}
+                    reviewHref={review.reviewHref}
+                    reviewLinkLabel={reviewLinkLabel}
+                    sourceLabel={review.sourceLabel}
                   />
-                </div>
-                <div className={styles.projectPreviewMeta}>
-                  <div className={styles.projectPreviewCopy}>
-                    <span className={styles.projectKicker}>
-                      {projectKicker}
-                    </span>
-                    <p className={styles.projectTitle}>{review.projectTitle}</p>
-                  </div>
-                  <span className={styles.projectLink}>{projectLinkLabel}</span>
-                </div>
-              </a>
-            )}
 
-            <div className={styles.cardFooter}>
-              <span className={styles.source}>{review.sourceLabel}</span>
-              <a
-                className={styles.sourceLink}
-                href={review.reviewHref}
-                rel="noreferrer"
-                target="_blank"
-              >
-                {reviewLinkLabel}
-              </a>
-            </div>
-          </article>
-        ))}
+                  {secondaryReview ? (
+                    <>
+                      <ProofReviewCard
+                        authorName={secondaryReview.authorName}
+                        context={secondaryReview.context}
+                        excerpt={secondaryReview.excerpt}
+                        profileImageSrc={secondaryReview.profileImageSrc}
+                        ratingAriaLabel={ratingAriaLabel}
+                        reviewHref={secondaryReview.reviewHref}
+                        reviewLinkLabel={reviewLinkLabel}
+                        sourceLabel={secondaryReview.sourceLabel}
+                        tone="nested"
+                      >
+                        {secondaryReview.previewExperience ? (
+                          <ProofPreviewExperience
+                            compact
+                            embedUrl={
+                              secondaryReview.previewExperience.embedUrl
+                            }
+                            frameLabel={
+                              secondaryReview.previewExperience.frameLabel
+                            }
+                            hint={secondaryReview.previewExperience.hint}
+                            iframeTitle={
+                              secondaryReview.previewExperience.iframeTitle
+                            }
+                            openLabel={
+                              secondaryReview.previewExperience.openLabel
+                            }
+                            projectHref={secondaryReview.projectHref}
+                            projectKicker={projectKicker}
+                            projectLinkLabel={projectLinkLabel}
+                            projectTitle={secondaryReview.projectTitle}
+                            viewport={
+                              secondaryReview.previewExperience.viewport
+                            }
+                          />
+                        ) : null}
+                      </ProofReviewCard>
+                    </>
+                  ) : null}
+                </div>
+
+                {review.previewExperience ? (
+                  <ProofPreviewExperience
+                    embedUrl={review.previewExperience.embedUrl}
+                    frameLabel={review.previewExperience.frameLabel}
+                    hint={review.previewExperience.hint}
+                    iframeTitle={review.previewExperience.iframeTitle}
+                    openLabel={review.previewExperience.openLabel}
+                    projectHref={review.projectHref}
+                    projectKicker={projectKicker}
+                    projectLinkLabel={projectLinkLabel}
+                    projectTitle={review.projectTitle}
+                    viewport={review.previewExperience.viewport}
+                  />
+                ) : (
+                  <a
+                    className={styles.projectPreview}
+                    href={review.projectHref}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <div className={styles.projectPreviewMedia}>
+                      <Image
+                        alt={review.projectPreviewAlt}
+                        className={styles.projectPreviewImage}
+                        height={440}
+                        src={review.projectPreviewSrc}
+                        width={720}
+                      />
+                    </div>
+                    <div className={styles.projectPreviewMeta}>
+                      <div className={styles.projectPreviewCopy}>
+                        <span className={styles.projectKicker}>
+                          {projectKicker}
+                        </span>
+                        <p className={styles.projectTitle}>
+                          {review.projectTitle}
+                        </p>
+                      </div>
+                      <span className={styles.projectLink}>
+                        {projectLinkLabel}
+                      </span>
+                    </div>
+                  </a>
+                )}
+              </div>
+            </article>
+          );
+        })}
       </div>
 
       {trustNote ? <p className={styles.trustNote}>{trustNote}</p> : null}
