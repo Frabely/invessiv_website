@@ -23,10 +23,10 @@ describe("ProofSection", () => {
         }}
         id="proof"
         moreProjects={{
-          title: "Weitere Projekte ansehen",
+          title: "Weiteres Beispiel",
           description:
-            "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
-          ctaLabel: "Alle Projekte ansehen",
+            "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
+          ctaLabel: "Auch das zweite Projekt ansehen",
         }}
         ratingAriaLabel="5 von 5 Sternen"
         reviewLinkLabel="Bei Google ansehen"
@@ -99,17 +99,17 @@ describe("ProofSection", () => {
       screen.getByText("Umgesetzt für Kolja Wienigk"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Weitere Projekte ansehen"),
+      screen.getByText("Weiteres Beispiel"),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
+        "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
       ),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Alle Projekte ansehen" }),
+      screen.getByRole("link", { name: "Auch das zweite Projekt ansehen" }),
     ).toHaveAttribute("href", "#services");
-    expect(screen.getByText("Weitere Projekte ansehen")).toBeInTheDocument();
+    expect(screen.getByText("Weiteres Beispiel")).toBeInTheDocument();
     expect(screen.queryByText("Projektbeispiel")).not.toBeInTheDocument();
     expect(
       screen.queryByText(

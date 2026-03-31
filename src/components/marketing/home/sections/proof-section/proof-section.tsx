@@ -119,17 +119,19 @@ export function ProofSection({
       </div>
 
       <div className={styles.sectionFooter}>
-        <div className={styles.placeholderLead}>
-          <p className={styles.placeholderLeadTitle}>
-            {moreProjects?.title ?? "More projects"}
-          </p>
-          <p className={styles.placeholderLeadText}>
-            {moreProjects?.description ?? ""}
-          </p>
-        </div>
-        <div className={styles.placeholderActions}>
-          <a className={styles.placeholderLink} href={SECTION_HREFS.services}>
-            {moreProjects?.ctaLabel ?? "View all projects"}
+        <div className={styles.footerTransition}>
+          <div className={styles.footerTransitionCopy}>
+            <p className={styles.footerTransitionKicker}>
+              {moreProjects?.title ?? "More projects"}
+            </p>
+            <p className={styles.footerTransitionText}>
+              {moreProjects?.description ?? ""}
+            </p>
+          </div>
+          <a className={styles.footerTransitionLink} href={SECTION_HREFS.services}>
+            <span className={styles.footerTransitionLinkLabel}>
+              {moreProjects?.ctaLabel ?? "View all projects"}
+            </span>
           </a>
         </div>
       </div>

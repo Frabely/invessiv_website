@@ -351,10 +351,10 @@ const HOME_SECTIONS: LandingSection[] = [
           meta: "Umgesetzt für Kolja Wienigk",
         },
         proofMoreProjects: {
-          title: "Weitere Projekte ansehen",
+          title: "Weiteres Beispiel",
           description:
-            "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
-          ctaLabel: "Alle Projekte ansehen",
+            "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
+          ctaLabel: "Auch das zweite Projekt ansehen",
         },
         proofReviews: [
           {
@@ -396,10 +396,10 @@ const HOME_SECTIONS: LandingSection[] = [
           meta: "Delivered for Kolja Wienigk",
         },
         proofMoreProjects: {
-          title: "See more projects",
+          title: "Another example",
           description:
-            "These examples show how positioning, structure, and clear guidance can be translated into a convincing presence or a useful digital tool.",
-          ctaLabel: "View all projects",
+            "Alongside this project, there is currently one more delivered example.",
+          ctaLabel: "See the second project example",
         },
         proofReviews: [
           {
