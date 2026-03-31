@@ -83,57 +83,53 @@ export function ProofSection({
           className={`${styles.card} ${styles.placeholderCard}`}
           role="listitem"
         >
-          <div className={styles.placeholderInner}>
-            <div className={styles.websiteFrame}>
-              <div className={styles.websiteChrome} aria-hidden="true">
-                <span className={styles.chromeDot} />
-                <span className={styles.chromeDot} />
-                <span className={styles.chromeDot} />
-                <div className={styles.chromeBar} />
-              </div>
-              <div className={styles.websiteViewport}>
-                <Image
-                  alt=""
-                  className={styles.placeholderImage}
-                  height={1400}
-                  priority={false}
-                  src={reviewProjectImage}
-                  width={1400}
-                />
-              </div>
+          <div className={styles.websiteFrame}>
+            <div className={styles.websiteChrome} aria-hidden="true">
+              <span className={styles.chromeDot} />
+              <span className={styles.chromeDot} />
+              <span className={styles.chromeDot} />
+              <div className={styles.chromeBar} />
             </div>
-            <div className={styles.placeholderContent}>
-              <p className={styles.placeholderKicker}>
-                {featuredProject?.kicker ?? "Featured project"}
-              </p>
-              <h3 className={styles.placeholderTitle}>
-                {featuredProject?.title ?? ""}
-              </h3>
-              <p className={styles.placeholderText}>
-                {featuredProject?.description ?? ""}
-              </p>
-              <p className={styles.placeholderMeta}>{featuredProject?.meta ?? ""}</p>
+            <div className={styles.websiteViewport}>
+              <Image
+                alt=""
+                className={styles.placeholderImage}
+                height={1400}
+                priority={false}
+                src={reviewProjectImage}
+                width={1400}
+              />
             </div>
+          </div>
+          <div className={styles.placeholderContent}>
+            <p className={styles.placeholderKicker}>
+              {featuredProject?.kicker ?? "Featured project"}
+            </p>
+            <h3 className={styles.placeholderTitle}>
+              {featuredProject?.title ?? ""}
+            </h3>
+            <p className={styles.placeholderText}>
+              {featuredProject?.description ?? ""}
+            </p>
+            <p className={styles.placeholderMeta}>{featuredProject?.meta ?? ""}</p>
           </div>
         </article>
       </div>
 
       <div className={styles.sectionFooter}>
-        <div className={styles.footerTransition}>
-          <div className={styles.footerTransitionCopy}>
-            <p className={styles.footerTransitionKicker}>
-              {moreProjects?.title ?? "More projects"}
-            </p>
-            <p className={styles.footerTransitionText}>
-              {moreProjects?.description ?? ""}
-            </p>
-          </div>
-          <a className={styles.footerTransitionLink} href={SECTION_HREFS.services}>
-            <span className={styles.footerTransitionLinkLabel}>
-              {moreProjects?.ctaLabel ?? "View all projects"}
-            </span>
-          </a>
+        <div className={styles.footerTransitionCopy}>
+          <p className={styles.footerTransitionKicker}>
+            {moreProjects?.title ?? "More projects"}
+          </p>
+          <p className={styles.footerTransitionText}>
+            {moreProjects?.description ?? ""}
+          </p>
         </div>
+        <a className={styles.footerTransitionLink} href={SECTION_HREFS.services}>
+          <span className={styles.footerTransitionLinkLabel}>
+            {moreProjects?.ctaLabel ?? "View all projects"}
+          </span>
+        </a>
       </div>
     </section>
   );

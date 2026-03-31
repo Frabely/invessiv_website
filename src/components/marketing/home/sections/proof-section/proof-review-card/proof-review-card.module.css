@@ -1,9 +1,9 @@
 .card {
   position: relative;
   display: grid;
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
-  padding: 18px;
+  padding: 20px;
   border-radius: 26px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: linear-gradient(
@@ -44,13 +44,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 18px;
 }
 
 .profileWrap {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
   min-width: 0;
 }
 
@@ -76,7 +76,7 @@
 
 .identity {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
 }
 
@@ -90,12 +90,13 @@
 .author {
   font-size: 1rem;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .context {
   color: color-mix(in srgb, var(--text) 62%, var(--muted) 38%);
   font-size: 0.9rem;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .rating {
@@ -111,7 +112,7 @@
   z-index: 1;
   color: color-mix(in srgb, var(--text) 90%, var(--muted) 10%);
   font-size: 0.98rem;
-  line-height: 1.58;
+  line-height: 1.62;
 }
 
 .footer {
@@ -122,7 +123,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 12px;
+  padding-top: 14px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
 }
 
@@ -140,8 +141,14 @@
 }
 
 @media (max-width: 759px) {
+  .card {
+    gap: 15px;
+    padding: 18px;
+  }
+
   .header {
     flex-direction: column;
+    gap: 14px;
   }
 
   .footer {
