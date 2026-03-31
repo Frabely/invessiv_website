@@ -1,6 +1,7 @@
 import Image from "next/image";
+import reviewProjectImage from "../../../../../../assets/review-project.png";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import { ProofPreviewExperience } from "./proof-preview-experience/proof-preview-experience";
+import { SECTION_HREFS } from "@/config/site";
 import { ProofReviewCard } from "./proof-review-card/proof-review-card";
 import styles from "./proof-section.module.css";
 
@@ -8,65 +9,44 @@ type ProofReview = {
   authorName: string;
   context: string;
   excerpt: string;
-  profileImageSrc: string;
-  previewExperience?: {
-    embedUrl: string;
-    frameLabel: string;
-    hint: string;
-    iframeTitle: string;
-    openLabel: string;
-    viewport: "app" | "desktop";
-  };
-  projectHref: string;
-  projectPreviewAlt: string;
-  projectPreviewSrc: string;
-  projectTitle: string;
+  profileImageSrc?: string;
   reviewHref: string;
   sourceLabel: string;
 };
 
 type ProofSectionProps = {
-  cta?: {
-    label: string;
-    href: string;
-  };
-  primaryCta?: {
-    label: string;
-    href: string;
-  };
   description: string;
-  eyebrow?: string;
+  featuredProject?: {
+    ariaLabel: string;
+    kicker: string;
+    title: string;
+    description: string;
+    meta: string;
+  };
   id: string;
-  projectKicker?: string;
-  projectLinkLabel?: string;
+  moreProjects?: {
+    title: string;
+    description: string;
+    ctaLabel: string;
+  };
   ratingAriaLabel?: string;
   reviewLinkLabel?: string;
   reviews: ProofReview[];
   summaryPoints?: string[];
   title: string;
-  trustNote?: string;
 };
 
 export function ProofSection({
-  cta,
-  primaryCta,
   description,
+  featuredProject,
   id,
-  projectKicker = "Project example",
-  projectLinkLabel = "View example",
+  moreProjects,
   ratingAriaLabel = "5 out of 5 stars",
   reviewLinkLabel = "View on Google",
   reviews,
   summaryPoints,
   title,
 }: ProofSectionProps) {
-  const orderedReviews = [...reviews].reverse();
-  const renderedReviews = orderedReviews.slice(0, 1);
-  const renderLinkAttributes = (href: string) =>
-    href.startsWith("http")
-      ? { rel: "noreferrer", target: "_blank" as const }
-      : {};
-
   return (
     <section className={styles.section} id={id}>
       <div className={styles.header}>
@@ -82,148 +62,77 @@ export function ProofSection({
       </div>
 
       <div className={styles.grid} role="list">
-        {renderedReviews.map((review, index) => {
-          const isAppLeadCard =
-            index === 0 && review.previewExperience?.viewport === "app";
-          const secondaryReview = isAppLeadCard ? orderedReviews[1] : undefined;
-
-          return (
-            <article
-              className={`${styles.card}${isAppLeadCard ? ` ${styles.cardAppLead}` : ""}`}
+        <div className={styles.reviewColumn} role="presentation">
+          {reviews.map((review) => (
+            <ProofReviewCard
+              authorName={review.authorName}
+              context={review.context}
+              excerpt={review.excerpt}
               key={`${review.authorName}-${review.context}`}
-              role="listitem"
-            >
-              <div className={styles.cardGlow} aria-hidden="true" />
-              <div className={styles.cardMain}>
-                <div className={styles.cardContent}>
-                  <ProofReviewCard
-                    authorName={review.authorName}
-                    context={review.context}
-                    excerpt={review.excerpt}
-                    profileImageSrc={review.profileImageSrc}
-                    ratingAriaLabel={ratingAriaLabel}
-                    reviewHref={review.reviewHref}
-                    reviewLinkLabel={reviewLinkLabel}
-                    sourceLabel={review.sourceLabel}
-                  />
+              profileImageSrc={review.profileImageSrc}
+              ratingAriaLabel={ratingAriaLabel}
+              reviewHref={review.reviewHref}
+              reviewLinkLabel={reviewLinkLabel}
+              sourceLabel={review.sourceLabel}
+            />
+          ))}
+        </div>
 
-                  {secondaryReview ? (
-                    <div className={styles.secondaryReview}>
-                      <ProofReviewCard
-                        authorName={secondaryReview.authorName}
-                        context={secondaryReview.context}
-                        excerpt={secondaryReview.excerpt}
-                        profileImageSrc={secondaryReview.profileImageSrc}
-                        ratingAriaLabel={ratingAriaLabel}
-                        reviewHref={secondaryReview.reviewHref}
-                        reviewLinkLabel={reviewLinkLabel}
-                        sourceLabel={secondaryReview.sourceLabel}
-                        tone="nested"
-                      >
-                        {secondaryReview.previewExperience ? (
-                          <ProofPreviewExperience
-                            compact
-                            embedUrl={
-                              secondaryReview.previewExperience.embedUrl
-                            }
-                            frameLabel={
-                              secondaryReview.previewExperience.frameLabel
-                            }
-                            hint={secondaryReview.previewExperience.hint}
-                            iframeTitle={
-                              secondaryReview.previewExperience.iframeTitle
-                            }
-                            openLabel={
-                              secondaryReview.previewExperience.openLabel
-                            }
-                            projectHref={secondaryReview.projectHref}
-                            projectKicker={projectKicker}
-                            projectLinkLabel={projectLinkLabel}
-                            projectTitle={secondaryReview.projectTitle}
-                            viewport={
-                              secondaryReview.previewExperience.viewport
-                            }
-                          />
-                        ) : null}
-                      </ProofReviewCard>
-                    </div>
-                  ) : null}
-                </div>
-
-                {review.previewExperience ? (
-                  <div className={styles.primaryPreview}>
-                    <ProofPreviewExperience
-                      embedUrl={review.previewExperience.embedUrl}
-                      frameLabel={review.previewExperience.frameLabel}
-                      hint={review.previewExperience.hint}
-                      iframeTitle={review.previewExperience.iframeTitle}
-                      openLabel={review.previewExperience.openLabel}
-                      projectHref={review.projectHref}
-                      projectKicker={projectKicker}
-                      projectLinkLabel={projectLinkLabel}
-                      projectTitle={review.projectTitle}
-                      viewport={review.previewExperience.viewport}
-                    />
-                  </div>
-                ) : (
-                  <a
-                    className={styles.projectPreview}
-                    href={review.projectHref}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <div className={styles.projectPreviewMedia}>
-                      <Image
-                        alt={review.projectPreviewAlt}
-                        className={styles.projectPreviewImage}
-                        height={440}
-                        src={review.projectPreviewSrc}
-                        width={720}
-                      />
-                    </div>
-                    <div className={styles.projectPreviewMeta}>
-                      <div className={styles.projectPreviewCopy}>
-                        <span className={styles.projectKicker}>
-                          {projectKicker}
-                        </span>
-                        <p className={styles.projectTitle}>
-                          {review.projectTitle}
-                        </p>
-                      </div>
-                      <span className={styles.projectLink}>
-                        {projectLinkLabel}
-                      </span>
-                    </div>
-                  </a>
-                )}
+        <article
+          aria-label={featuredProject?.ariaLabel ?? "Featured project"}
+          className={`${styles.card} ${styles.placeholderCard}`}
+          role="listitem"
+        >
+          <div className={styles.placeholderInner}>
+            <div className={styles.websiteFrame}>
+              <div className={styles.websiteChrome} aria-hidden="true">
+                <span className={styles.chromeDot} />
+                <span className={styles.chromeDot} />
+                <span className={styles.chromeDot} />
+                <div className={styles.chromeBar} />
               </div>
-            </article>
-          );
-        })}
+              <div className={styles.websiteViewport}>
+                <Image
+                  alt=""
+                  className={styles.placeholderImage}
+                  height={1400}
+                  priority={false}
+                  src={reviewProjectImage}
+                  width={1400}
+                />
+              </div>
+            </div>
+            <div className={styles.placeholderContent}>
+              <p className={styles.placeholderKicker}>
+                {featuredProject?.kicker ?? "Featured project"}
+              </p>
+              <h3 className={styles.placeholderTitle}>
+                {featuredProject?.title ?? ""}
+              </h3>
+              <p className={styles.placeholderText}>
+                {featuredProject?.description ?? ""}
+              </p>
+              <p className={styles.placeholderMeta}>{featuredProject?.meta ?? ""}</p>
+            </div>
+          </div>
+        </article>
       </div>
 
-      {cta || primaryCta ? (
-        <div className={styles.actions}>
-          {primaryCta ? (
-            <a
-              className="btn btn--primary"
-              href={primaryCta.href}
-              {...renderLinkAttributes(primaryCta.href)}
-            >
-              {primaryCta.label}
-            </a>
-          ) : null}
-          {cta ? (
-            <a
-              className={`${styles.cta} btn btn--ghost`}
-              href={cta.href}
-              {...renderLinkAttributes(cta.href)}
-            >
-              {cta.label}
-            </a>
-          ) : null}
+      <div className={styles.sectionFooter}>
+        <div className={styles.placeholderLead}>
+          <p className={styles.placeholderLeadTitle}>
+            {moreProjects?.title ?? "More projects"}
+          </p>
+          <p className={styles.placeholderLeadText}>
+            {moreProjects?.description ?? ""}
+          </p>
         </div>
-      ) : null}
+        <div className={styles.placeholderActions}>
+          <a className={styles.placeholderLink} href={SECTION_HREFS.services}>
+            {moreProjects?.ctaLabel ?? "View all projects"}
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

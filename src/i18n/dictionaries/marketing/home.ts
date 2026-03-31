@@ -47,47 +47,38 @@ type ProofReview = {
   authorName: string;
   context: string;
   excerpt: string;
-  profileImageSrc: string;
-  previewExperience?: {
-    embedUrl: string;
-    frameLabel: string;
-    hint: string;
-    iframeTitle: string;
-    openLabel: string;
-    viewport: "app" | "desktop";
-  };
-  projectHref: string;
-  projectPreviewAlt: string;
-  projectPreviewSrc: string;
-  projectTitle: string;
+  profileImageSrc?: string;
   reviewHref: string;
   sourceLabel: string;
 };
 
+type ProofFeaturedProject = {
+  ariaLabel: string;
+  kicker: string;
+  title: string;
+  description: string;
+  meta: string;
+};
+
+type ProofMoreProjects = {
+  title: string;
+  description: string;
+  ctaLabel: string;
+};
+
 const PROOF_PLACEHOLDER_URL =
   "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
-const PROOF_LEFT_CARD_URL = "https://mywebpage-480c1.web.app";
 
 export type LandingSectionCopy = {
   title: string;
   description: string;
-  eyebrow?: string;
   summaryPoints?: string[];
   cards?: Array<{ title: string; description: string; tag: string }>;
-  proofCta?: {
-    label: string;
-    href: string;
-  };
-  proofPrimaryCta?: {
-    label: string;
-    href: string;
-  };
-  proofProjectKicker?: string;
-  proofProjectLinkLabel?: string;
   proofRatingAriaLabel?: string;
   proofReviewLinkLabel?: string;
   proofReviews?: ProofReview[];
-  proofTrustNote?: string;
+  proofFeaturedProject?: ProofFeaturedProject;
+  proofMoreProjects?: ProofMoreProjects;
   serviceCards?: StandardServiceCard[];
   serviceSecondaryTitle?: string;
   serviceContextNote?: string;
@@ -342,138 +333,90 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "proof",
     copy: {
       de: {
-        eyebrow: "Google Business",
-        title: "Rückmeldungen, die Vertrauen schaffen.",
-        description:
-          "Hier sollen echte Google-Bewertungen mit direktem Verweis auf den jeweiligen Originaleintrag erscheinen. Bis die ersten Reviews live sind, zeigen die beiden Karten beispielhaft, wie Aufbau, Ton und Darstellung in dieser Section später aussehen.",
+        title: "Was Kunden über die Zusammenarbeit sagen",
+        description: "aus realen Web- & Softwareprojekten",
         summaryPoints: [
-          "echte Erfahrungen",
+          "5,0 ★★★★★ bei Google",
+          "echte Kundenstimmen",
           "klare Ergebnisse",
-          "direkt verständlich",
         ],
-        proofTrustNote:
-          "Sobald die ersten Bewertungen live sind, ersetze ich diese Beispieltexte 1:1 durch echte Google-Reviews und verlinke direkt auf die Originaleinträge.",
-        proofCta: {
-          label: "Platzhalter-Eintrag bei Google öffnen",
-          href: PROOF_PLACEHOLDER_URL,
-        },
-        proofPrimaryCta: {
-          label: "Projekt anfragen",
-          href: SECTION_HREFS.contact,
-        },
-        proofProjectKicker: "Projektbeispiel",
-        proofProjectLinkLabel: "Beispiel ansehen",
         proofRatingAriaLabel: "5 von 5 Sternen",
         proofReviewLinkLabel: "Bei Google ansehen",
+        proofFeaturedProject: {
+          ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
+          kicker: "Umgesetztes Projekt",
+          title: "Neue Website für einen Finanzmakler mit klarer Positionierung",
+          description:
+            "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
+          meta: "Umgesetzt für Kolja Wienigk",
+        },
+        proofMoreProjects: {
+          title: "Weitere Projekte ansehen",
+          description:
+            "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
+          ctaLabel: "Alle Projekte ansehen",
+        },
         proofReviews: [
           {
-            authorName: "Name folgt",
-            context: "Beispiel für Webseiten-Projekt",
+            authorName: "Kolja Wienigk",
+            context: "Finanzmakler aus Dresden",
             excerpt:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: PROOF_LEFT_CARD_URL,
-              frameLabel: "Desktop-Webansicht",
-              hint: "Diese Karte zeigt die Vorschau immer direkt als Website.",
-              iframeTitle: "Live-Vorschau der Beispiel-Website",
-              openLabel: "Website direkt öffnen",
-              viewport: "desktop",
-            },
-            projectHref: PROOF_LEFT_CARD_URL,
-            projectPreviewAlt:
-              "Beispielhafte Website-Startseite mit klarer Hero-Struktur",
-            projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
-            projectTitle: "Beispiel: Hero einer Unternehmenswebsite",
-            reviewHref: PROOF_LEFT_CARD_URL,
+            profileImageSrc: "/assets/kolja.png",
+            reviewHref:
+              "https://mywebpage-480c1.web.app",
             sourceLabel: "Quelle: Google Bewertung",
           },
           {
-            authorName: "Name folgt",
-            context: "Beispiel für Prozess-Tool",
+            authorName: "Andreas H.",
+            context: "Chemnitz",
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: "https://consumption-trial.invessiv.com",
-              frameLabel: "App-Frame",
-              hint: "Diese Karte zeigt die Vorschau immer direkt als App.",
-              iframeTitle: "Live-Vorschau des Prozessoptimierungstools",
-              openLabel: "Tool direkt öffnen",
-              viewport: "app",
-            },
-            projectHref: "https://consumption-trial.invessiv.com",
-            projectPreviewAlt:
-              "Beispielhaftes Dashboard eines Prozess-Optimierungstools",
-            projectPreviewSrc: "/services/03-prozess-tools-gears.png",
-            projectTitle: "Beispiel: Dashboard für Prozessoptimierung",
             reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Quelle: Google Bewertung",
           },
         ],
       },
       en: {
-        eyebrow: "Google Business",
-        title: "Reviews that build trust.",
-        description:
-          "This section is reserved for real Google reviews with a direct link back to each original entry. Until the first reviews are live, the two cards below show the intended structure, tone, and presentation.",
-        summaryPoints: ["real experiences", "clear outcomes", "easy to scan"],
-        proofTrustNote:
-          "As soon as the first reviews are live, these example texts will be replaced with real Google reviews and linked to the original entries.",
-        proofCta: {
-          label: "Open placeholder listing on Google",
-          href: PROOF_PLACEHOLDER_URL,
-        },
-        proofPrimaryCta: {
-          label: "Start project request",
-          href: SECTION_HREFS.contact,
-        },
-        proofProjectKicker: "Project example",
-        proofProjectLinkLabel: "View example",
+        title: "What clients say about working together",
+        description: "from real web and software projects",
+        summaryPoints: [
+          "5.0 ★★★★★ on Google",
+          "real client reviews",
+          "clear outcomes",
+        ],
         proofRatingAriaLabel: "5 out of 5 stars",
         proofReviewLinkLabel: "View on Google",
+        proofFeaturedProject: {
+          ariaLabel: "Delivered project for Kolja Wienigk",
+          kicker: "Delivered project",
+          title: "New website for a financial broker with clear positioning",
+          description:
+            "This is the project delivered for Kolja: a calm, trustworthy presence with a clear offer structure, guided flow, and a homepage that makes the services easy to understand right away.",
+          meta: "Delivered for Kolja Wienigk",
+        },
+        proofMoreProjects: {
+          title: "See more projects",
+          description:
+            "These examples show how positioning, structure, and clear guidance can be translated into a convincing presence or a useful digital tool.",
+          ctaLabel: "View all projects",
+        },
         proofReviews: [
           {
-            authorName: "Name pending",
-            context: "Example for a website project",
+            authorName: "Kolja Wienigk",
+            context: "Financial broker from Dresden",
             excerpt:
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: PROOF_LEFT_CARD_URL,
-              frameLabel: "Desktop web view",
-              hint: "This card always shows the preview directly as a website.",
-              iframeTitle: "Live preview of the example website",
-              openLabel: "Open website directly",
-              viewport: "desktop",
-            },
-            projectHref: PROOF_LEFT_CARD_URL,
-            projectPreviewAlt:
-              "Example website homepage preview with a clear hero layout",
-            projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
-            projectTitle: "Example: company website hero",
-            reviewHref: PROOF_LEFT_CARD_URL,
+            profileImageSrc: "/assets/kolja.png",
+            reviewHref:
+              "https://mywebpage-480c1.web.app",
             sourceLabel: "Source: Google review",
           },
           {
-            authorName: "Name pending",
-            context: "Example for a process tool",
+            authorName: "Andreas H.",
+            context: "Chemnitz",
             excerpt:
               "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: "https://consumption-trial.invessiv.com",
-              frameLabel: "App frame",
-              hint: "This card always shows the preview directly as an app.",
-              iframeTitle: "Live preview of the process optimisation tool",
-              openLabel: "Open tool directly",
-              viewport: "app",
-            },
-            projectHref: "https://consumption-trial.invessiv.com",
-            projectPreviewAlt:
-              "Example dashboard preview for a process optimisation tool",
-            projectPreviewSrc: "/services/03-prozess-tools-gears.png",
-            projectTitle: "Example: process optimisation dashboard",
             reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Source: Google review",
           },
@@ -1021,7 +964,6 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menü",
             links: [
               { label: "Was du bekommst", href: SECTION_HREFS.included },
-              { label: "Ergebnisse", href: SECTION_HREFS.proof },
               { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
@@ -1248,7 +1190,6 @@ const HOME_SECTIONS: LandingSection[] = [
             title: "Menu",
             links: [
               { label: "What you get", href: SECTION_HREFS.included },
-              { label: "Results", href: SECTION_HREFS.proof },
               { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },

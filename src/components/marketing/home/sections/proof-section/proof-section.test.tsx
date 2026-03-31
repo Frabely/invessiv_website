@@ -1,109 +1,120 @@
 // @vitest-environment jsdom
 
+import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProofSection } from "./proof-section";
 
 const PROOF_PLACEHOLDER_URL =
   "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
-const PROOF_LEFT_CARD_URL = "https://mywebpage-480c1.web.app";
-const TOOL_URL = "https://consumption-trial.invessiv.com";
 
 describe("ProofSection", () => {
-  it("renders a single app-led card with the migrated website review content embedded", () => {
+  it("renders two review cards and a tall placeholder card", () => {
     render(
       <ProofSection
-        cta={{
-          href: PROOF_PLACEHOLDER_URL,
-          label: "Profil öffnen",
+        description="aus realen Web- & Softwareprojekten"
+        featuredProject={{
+          ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
+          kicker: "Umgesetztes Projekt",
+          title: "Neue Website für einen Finanzmakler mit klarer Positionierung",
+          description:
+            "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
+          meta: "Umgesetzt für Kolja Wienigk",
         }}
-        description="Beispielhafte Referenz auf Google-Bewertungen."
-        eyebrow="Google Business"
         id="proof"
-        projectKicker="Projektbeispiel"
-        projectLinkLabel="Beispiel ansehen"
+        moreProjects={{
+          title: "Weitere Projekte ansehen",
+          description:
+            "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
+          ctaLabel: "Alle Projekte ansehen",
+        }}
         ratingAriaLabel="5 von 5 Sternen"
         reviewLinkLabel="Bei Google ansehen"
         reviews={[
           {
-            authorName: "Name folgt",
-            context: "Projektstart",
-            excerpt: "Sehr strukturierter Ablauf.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: PROOF_LEFT_CARD_URL,
-              frameLabel: "Desktop-Webansicht",
-              hint: "Diese Karte zeigt die Vorschau immer direkt als Website.",
-              iframeTitle: "Live-Vorschau der Beispiel-Website",
-              openLabel: "Website direkt öffnen",
-              viewport: "desktop",
-            },
-            projectHref: PROOF_LEFT_CARD_URL,
-            projectPreviewAlt: "Website Hero",
-            projectPreviewSrc: "/services/02-websites-screen-no-stand.png",
-            projectTitle: "Beispiel: Hero einer Website",
-            reviewHref: PROOF_LEFT_CARD_URL,
+            authorName: "Kolja Wienigk",
+            context: "Finanzmakler aus Dresden",
+            excerpt:
+              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+            profileImageSrc: "/assets/kolja.png",
+            reviewHref: "https://mywebpage-480c1.web.app",
             sourceLabel: "Quelle: Google Bewertung",
           },
           {
-            authorName: "Name folgt",
-            context: "Ergebnis",
-            excerpt: "Klare Kommunikation und schnelles Feedback.",
-            profileImageSrc: "/blank-profile-picture.svg",
-            previewExperience: {
-              embedUrl: TOOL_URL,
-              frameLabel: "App-Frame",
-              hint: "Diese Karte zeigt die Vorschau immer direkt als App.",
-              iframeTitle: "Live-Vorschau des Tools",
-              openLabel: "Tool direkt öffnen",
-              viewport: "app",
-            },
-            projectHref: TOOL_URL,
-            projectPreviewAlt: "Dashboard",
-            projectPreviewSrc: "/services/03-prozess-tools-gears.png",
-            projectTitle: "Beispiel: Prozess-Dashboard",
+            authorName: "Andreas H.",
+            context: "Chemnitz",
+            excerpt:
+              "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
             reviewHref: PROOF_PLACEHOLDER_URL,
             sourceLabel: "Quelle: Google Bewertung",
           },
         ]}
-        title="Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein."
-        trustNote="Beispieltexte werden später ersetzt."
+        summaryPoints={[
+          "5,0 ★★★★★ bei Google",
+          "echte Kundenstimmen",
+          "klare Ergebnisse",
+        ]}
+        title="Was Kunden über die Zusammenarbeit sagen"
       />,
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Echte Rückmeldungen sollen direkt auf Google nachvollziehbar sein.",
+        name: "Was Kunden über die Zusammenarbeit sagen",
       }),
-    ).toBeTruthy();
-    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(2);
+    ).toBeInTheDocument();
+    expect(screen.getByText("5,0 ★★★★★ bei Google")).toBeInTheDocument();
+    expect(screen.getByText("echte Kundenstimmen")).toBeInTheDocument();
+    expect(screen.getByText("klare Ergebnisse")).toBeInTheDocument();
+    expect(screen.getByText("Kolja Wienigk")).toBeInTheDocument();
+    expect(screen.getByText("Finanzmakler aus Dresden")).toBeInTheDocument();
+    expect(screen.getByText("Andreas H.")).toBeInTheDocument();
+    expect(screen.getByText("Chemnitz")).toBeInTheDocument();
     expect(
-      screen.getAllByRole("link", { name: "Bei Google ansehen" }),
-    ).toHaveLength(2);
-    expect(screen.getAllByText("Beispiel ansehen")).toHaveLength(2);
-    expect(screen.getByRole("link", { name: "Profil öffnen" })).toBeTruthy();
-    expect(screen.queryByRole("radio")).toBeNull();
+      screen.getByText(
+        "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(2);
+    expect(screen.getAllByRole("link", { name: "Bei Google ansehen" })).toHaveLength(
+      2,
+    );
+    expect(
+      screen.getByRole("listitem", {
+        name: "Umgesetztes Projekt für Kolja Wienigk",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Umgesetztes Projekt")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Neue Website für einen Finanzmakler mit klarer Positionierung",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Umgesetzt für Kolja Wienigk"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Weitere Projekte ansehen"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Diese Beispiele zeigen, wie Positionierung, Struktur und klare Führung in einen überzeugenden Auftritt oder ein hilfreiches digitales Werkzeug übersetzt werden können.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Alle Projekte ansehen" }),
+    ).toHaveAttribute("href", "#services");
+    expect(screen.getByText("Weitere Projekte ansehen")).toBeInTheDocument();
+    expect(screen.queryByText("Projektbeispiel")).not.toBeInTheDocument();
     expect(
       screen.queryByText(
-        "Diese Karte zeigt die Vorschau immer direkt als App.",
+        "Erfassung und Auswertung von teschnische Daten und Verbräuchen",
       ),
-    ).toBeNull();
-    expect(screen.queryByText("App-Frame")).toBeNull();
-    expect(screen.queryByText("Tool direkt öffnen")).toBeNull();
-    expect(
-      screen.getAllByTitle("Live-Vorschau der Beispiel-Website"),
-    ).toHaveLength(1);
-    expect(screen.getByTitle("Live-Vorschau des Tools")).toBeTruthy();
-
-    expect(screen.getAllByText("Projektstart")).toHaveLength(1);
-    expect(screen.getAllByText("Sehr strukturierter Ablauf.")).toHaveLength(1);
-
-    const projectLinks = screen.getAllByRole("link", {
-      name: "Beispiel ansehen",
-    });
-    expect(projectLinks.map((link) => link.getAttribute("href"))).toEqual([
-      PROOF_LEFT_CARD_URL,
-      TOOL_URL,
-    ]);
+    ).not.toBeInTheDocument();
   });
 });

@@ -85,20 +85,16 @@ export function HomeSectionsRenderer({
             if (section.id === "proof") {
               return (
                 <ProofSection
-                  cta={section.proofCta}
-                  primaryCta={section.proofPrimaryCta}
                   description={section.description}
-                  eyebrow={section.eyebrow}
+                  featuredProject={section.proofFeaturedProject}
                   id={section.id}
                   key={section.id}
-                  projectKicker={section.proofProjectKicker}
-                  projectLinkLabel={section.proofProjectLinkLabel}
+                  moreProjects={section.proofMoreProjects}
                   ratingAriaLabel={section.proofRatingAriaLabel}
                   reviewLinkLabel={section.proofReviewLinkLabel}
                   reviews={section.proofReviews ?? []}
                   summaryPoints={section.summaryPoints}
                   title={section.title}
-                  trustNote={section.proofTrustNote}
                 />
               );
             }

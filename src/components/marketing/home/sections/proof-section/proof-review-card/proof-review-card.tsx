@@ -1,22 +1,36 @@
-import type { ReactNode } from "react";
 import Image from "next/image";
+import koljaProfile from "../../../../../../../assets/kolja.png";
 import styles from "./proof-review-card.module.css";
 
 type ProofReviewCardProps = {
   authorName: string;
   context: string;
   excerpt: string;
-  profileImageSrc: string;
+  profileImageSrc?: string;
   ratingAriaLabel: string;
   reviewHref: string;
   reviewLinkLabel: string;
   sourceLabel: string;
-  children?: ReactNode;
-  tone?: "nested" | "plain";
 };
 
 function renderStars() {
   return "\u2605\u2605\u2605\u2605\u2605";
+}
+
+function getAuthorInitials(authorName: string) {
+  const normalizedParts = authorName
+    .split(/\s+/)
+    .map((part) => part.replace(/[^A-Za-zÄÖÜäöüß]/g, ""))
+    .filter((part) => part.length > 0);
+
+  if (!normalizedParts.length) {
+    return "";
+  }
+
+  return normalizedParts
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");
 }
 
 export function ProofReviewCard({
@@ -28,20 +42,28 @@ export function ProofReviewCard({
   reviewHref,
   reviewLinkLabel,
   sourceLabel,
-  children,
-  tone = "plain",
 }: ProofReviewCardProps) {
+  const resolvedProfileImageSrc =
+    profileImageSrc === "/assets/kolja.png" ? koljaProfile : profileImageSrc;
+  const authorInitials = getAuthorInitials(authorName);
+
   return (
-    <div className={styles.card} data-tone={tone}>
+    <article className={styles.card} role="listitem">
       <div className={styles.header}>
         <div className={styles.profileWrap}>
-          <Image
-            alt=""
-            className={styles.profileImage}
-            height={56}
-            src={profileImageSrc}
-            width={56}
-          />
+          {resolvedProfileImageSrc ? (
+            <Image
+              alt=""
+              className={styles.profileImage}
+              height={56}
+              src={resolvedProfileImageSrc}
+              width={56}
+            />
+          ) : (
+            <span aria-hidden="true" className={styles.profileFallback}>
+              {authorInitials}
+            </span>
+          )}
           <div className={styles.identity}>
             <p className={styles.author}>{authorName}</p>
             <p className={styles.context}>{context}</p>
@@ -67,8 +89,6 @@ export function ProofReviewCard({
           {reviewLinkLabel}
         </a>
       </div>
-
-      {children}
-    </div>
+    </article>
   );
 }
