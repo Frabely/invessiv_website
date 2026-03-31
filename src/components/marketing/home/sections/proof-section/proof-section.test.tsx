@@ -23,10 +23,10 @@ describe("ProofSection", () => {
         }}
         id="proof"
         moreProjects={{
-          title: "Weiteres Beispiel",
+          title: "Projektübersicht",
           description:
-            "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
-          ctaLabel: "Auch das zweite Projekt ansehen",
+            "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
+          ctaLabel: "Projektübersicht öffnen",
         }}
         ratingAriaLabel="5 von 5 Sternen"
         reviewLinkLabel="Bei Google ansehen"
@@ -99,17 +99,17 @@ describe("ProofSection", () => {
       screen.getByText("Umgesetzt für Kolja Wienigk"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Weiteres Beispiel"),
+      screen.getByText("Projektübersicht"),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
+        "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
       ),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Auch das zweite Projekt ansehen" }),
+      screen.getByRole("link", { name: "Projektübersicht öffnen" }),
     ).toHaveAttribute("href", "#services");
-    expect(screen.getByText("Weiteres Beispiel")).toBeInTheDocument();
+    expect(screen.getByText("Projektübersicht")).toBeInTheDocument();
     expect(screen.queryByText("Projektbeispiel")).not.toBeInTheDocument();
     expect(
       screen.queryByText(

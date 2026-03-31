@@ -351,10 +351,10 @@ const HOME_SECTIONS: LandingSection[] = [
           meta: "Umgesetzt für Kolja Wienigk",
         },
         proofMoreProjects: {
-          title: "Weiteres Beispiel",
+          title: "Projektübersicht",
           description:
-            "Neben diesem Projekt gibt es aktuell noch ein weiteres umgesetztes Beispiel.",
-          ctaLabel: "Auch das zweite Projekt ansehen",
+            "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
+          ctaLabel: "Projektübersicht öffnen",
         },
         proofReviews: [
           {
@@ -396,10 +396,10 @@ const HOME_SECTIONS: LandingSection[] = [
           meta: "Delivered for Kolja Wienigk",
         },
         proofMoreProjects: {
-          title: "Another example",
+          title: "Project overview",
           description:
-            "Alongside this project, there is currently one more delivered example.",
-          ctaLabel: "See the second project example",
+            "In the project overview, there is currently one more delivered example.",
+          ctaLabel: "Open project overview",
         },
         proofReviews: [
           {
