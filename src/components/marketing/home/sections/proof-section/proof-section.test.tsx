@@ -38,7 +38,7 @@ describe("ProofSection", () => {
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/assets/kolja.png",
             reviewHref: "https://mywebpage-480c1.web.app",
-            sourceLabel: "Quelle: Google Bewertung",
+            sourceLabel: "Google Bewertung",
           },
           {
             authorName: "Andreas H.",
@@ -46,7 +46,7 @@ describe("ProofSection", () => {
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
             reviewHref: PROOF_PLACEHOLDER_URL,
-            sourceLabel: "Quelle: Google Bewertung",
+            sourceLabel: "Google Bewertung",
           },
         ]}
         summaryPoints={[
@@ -80,7 +80,7 @@ describe("ProofSection", () => {
         "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
       ),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("Quelle: Google Bewertung")).toHaveLength(2);
+    expect(screen.getAllByText("Google Bewertung")).toHaveLength(2);
     expect(screen.getAllByRole("link", { name: "Bei Google ansehen" })).toHaveLength(
       2,
     );

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import googleIcon from "../../../../../../../assets/google-icon-logo-svgrepo-com.svg";
 import koljaProfile from "../../../../../../../assets/kolja.png";
 import styles from "./proof-review-card.module.css";
 
@@ -79,7 +80,17 @@ export function ProofReviewCard({
       </blockquote>
 
       <div className={styles.footer}>
-        <span className={styles.source}>{sourceLabel}</span>
+        <span className={styles.source}>
+          <Image
+            alt=""
+            aria-hidden="true"
+            className={styles.sourceIcon}
+            height={18}
+            src={googleIcon}
+            width={18}
+          />
+          <span>{sourceLabel}</span>
+        </span>
         <a
           className={styles.sourceLink}
           href={reviewHref}

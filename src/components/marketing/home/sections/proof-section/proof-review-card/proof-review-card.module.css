@@ -128,16 +128,43 @@
 }
 
 .source {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   color: color-mix(in srgb, var(--text) 58%, var(--muted) 42%);
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.03em;
+  line-height: 1.2;
+  padding-right: 10px;
+}
+
+.sourceIcon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  opacity: 0.92;
 }
 
 .sourceLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   color: color-mix(in srgb, var(--accent) 78%, #ffe8cd 22%);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+.sourceLink::after {
+  content: "→";
+  font-size: 0.92em;
+  transition: transform 180ms ease;
+}
+
+.sourceLink:hover::after,
+.sourceLink:focus-visible::after {
+  transform: translateX(2px);
 }
 
 @media (max-width: 759px) {

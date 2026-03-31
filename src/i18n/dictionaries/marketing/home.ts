@@ -365,7 +365,7 @@ const HOME_SECTIONS: LandingSection[] = [
             profileImageSrc: "/assets/kolja.png",
             reviewHref:
               "https://mywebpage-480c1.web.app",
-            sourceLabel: "Quelle: Google Bewertung",
+            sourceLabel: "Google Bewertung",
           },
           {
             authorName: "Andreas H.",
@@ -373,7 +373,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
             reviewHref: PROOF_PLACEHOLDER_URL,
-            sourceLabel: "Quelle: Google Bewertung",
+            sourceLabel: "Google Bewertung",
           },
         ],
       },
@@ -410,7 +410,7 @@ const HOME_SECTIONS: LandingSection[] = [
             profileImageSrc: "/assets/kolja.png",
             reviewHref:
               "https://mywebpage-480c1.web.app",
-            sourceLabel: "Source: Google review",
+            sourceLabel: "Google review",
           },
           {
             authorName: "Andreas H.",
@@ -418,7 +418,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
             reviewHref: PROOF_PLACEHOLDER_URL,
-            sourceLabel: "Source: Google review",
+            sourceLabel: "Google review",
           },
         ],
       },
