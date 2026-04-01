@@ -61,9 +61,10 @@ type ProofFeaturedProject = {
 };
 
 type ProofMoreProjects = {
-  title: string;
-  description: string;
   ctaLabel: string;
+  description: string;
+  href: string;
+  title: string;
 };
 
 const PROOF_PLACEHOLDER_URL =
@@ -345,7 +346,8 @@ const HOME_SECTIONS: LandingSection[] = [
         proofFeaturedProject: {
           ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
           kicker: "Umgesetztes Projekt",
-          title: "Neue Website für einen Finanzmakler mit klarer Positionierung",
+          title:
+            "Neue Website für einen Finanzmakler mit klarer Positionierung",
           description:
             "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
           meta: "Umgesetzt für Kolja Wienigk",
@@ -355,6 +357,7 @@ const HOME_SECTIONS: LandingSection[] = [
           description:
             "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
           ctaLabel: "Projektübersicht öffnen",
+          href: "/de/projects",
         },
         proofReviews: [
           {
@@ -363,8 +366,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/assets/kolja.png",
-            reviewHref:
-              "https://mywebpage-480c1.web.app",
+            reviewHref: "https://mywebpage-480c1.web.app",
             sourceLabel: "Google Bewertung",
           },
           {
@@ -400,6 +402,7 @@ const HOME_SECTIONS: LandingSection[] = [
           description:
             "In the project overview, there is currently one more delivered example.",
           ctaLabel: "Open project overview",
+          href: "/en/projects",
         },
         proofReviews: [
           {
@@ -408,8 +411,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
             profileImageSrc: "/assets/kolja.png",
-            reviewHref:
-              "https://mywebpage-480c1.web.app",
+            reviewHref: "https://mywebpage-480c1.web.app",
             sourceLabel: "Google review",
           },
           {

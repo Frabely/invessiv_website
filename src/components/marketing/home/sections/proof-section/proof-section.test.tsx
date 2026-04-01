@@ -16,7 +16,8 @@ describe("ProofSection", () => {
         featuredProject={{
           ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
           kicker: "Umgesetztes Projekt",
-          title: "Neue Website für einen Finanzmakler mit klarer Positionierung",
+          title:
+            "Neue Website für einen Finanzmakler mit klarer Positionierung",
           description:
             "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
           meta: "Umgesetzt für Kolja Wienigk",
@@ -27,6 +28,7 @@ describe("ProofSection", () => {
           description:
             "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
           ctaLabel: "Projektübersicht öffnen",
+          href: "/de/projects",
         }}
         ratingAriaLabel="5 von 5 Sternen"
         reviewLinkLabel="Bei Google ansehen"
@@ -81,9 +83,9 @@ describe("ProofSection", () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getAllByText("Google Bewertung")).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: "Bei Google ansehen" })).toHaveLength(
-      2,
-    );
+    expect(
+      screen.getAllByRole("link", { name: "Bei Google ansehen" }),
+    ).toHaveLength(2);
     expect(
       screen.getByRole("listitem", {
         name: "Umgesetztes Projekt für Kolja Wienigk",
@@ -95,12 +97,8 @@ describe("ProofSection", () => {
         "Neue Website für einen Finanzmakler mit klarer Positionierung",
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("Umgesetzt für Kolja Wienigk"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Projektübersicht"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Umgesetzt für Kolja Wienigk")).toBeInTheDocument();
+    expect(screen.getByText("Projektübersicht")).toBeInTheDocument();
     expect(
       screen.getByText(
         "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
@@ -108,7 +106,7 @@ describe("ProofSection", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Projektübersicht öffnen" }),
-    ).toHaveAttribute("href", "#services");
+    ).toHaveAttribute("href", "/de/projects");
     expect(screen.getByText("Projektübersicht")).toBeInTheDocument();
     expect(screen.queryByText("Projektbeispiel")).not.toBeInTheDocument();
     expect(

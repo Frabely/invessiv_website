@@ -1,7 +1,6 @@
 import Image from "next/image";
 import reviewProjectImage from "../../../../../../assets/review-project.png";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import { SECTION_HREFS } from "@/config/site";
 import { ProofReviewCard } from "./proof-review-card/proof-review-card";
 import styles from "./proof-section.module.css";
 
@@ -25,9 +24,10 @@ type ProofSectionProps = {
   };
   id: string;
   moreProjects?: {
-    title: string;
-    description: string;
     ctaLabel: string;
+    description: string;
+    href: string;
+    title: string;
   };
   ratingAriaLabel?: string;
   reviewLinkLabel?: string;
@@ -111,7 +111,9 @@ export function ProofSection({
             <p className={styles.placeholderText}>
               {featuredProject?.description ?? ""}
             </p>
-            <p className={styles.placeholderMeta}>{featuredProject?.meta ?? ""}</p>
+            <p className={styles.placeholderMeta}>
+              {featuredProject?.meta ?? ""}
+            </p>
           </div>
         </article>
       </div>
@@ -125,7 +127,10 @@ export function ProofSection({
             {moreProjects?.description ?? ""}
           </p>
         </div>
-        <a className={styles.footerTransitionLink} href={SECTION_HREFS.services}>
+        <a
+          className={styles.footerTransitionLink}
+          href={moreProjects?.href ?? "/projects"}
+        >
           <span className={styles.footerTransitionLinkLabel}>
             {moreProjects?.ctaLabel ?? "View all projects"}
           </span>

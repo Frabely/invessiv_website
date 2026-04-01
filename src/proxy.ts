@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 const LEGACY_REDIRECTS: Record<string, string> = {
   "/": "/de",
   "/imprint": "/de/imprint",
+  "/projects": "/de/projects",
   "/privacy": "/de/privacy",
   "/terms": "/de/terms",
 };
@@ -22,5 +23,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/imprint", "/privacy", "/terms"],
+  matcher: ["/", "/imprint", "/projects", "/privacy", "/terms"],
 };

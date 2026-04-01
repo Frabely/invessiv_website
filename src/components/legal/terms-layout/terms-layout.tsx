@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
+import { Breadcumbs } from "@/components/legal/breadcumbs/breadcumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -66,24 +66,15 @@ export function TermsLayout({
         tabIndex={-1}
       >
         <div className={styles.inner}>
-          <nav
-            aria-label={breadcrumbAriaLabel}
-            className={styles.breadcrumbsWrap}
-          >
-            <ol className={styles.breadcrumbs}>
-              <li className={styles.breadcrumbItem}>
-                <Link href={`/${locale}`} className={styles.breadcrumbLink}>
-                  {homeLabel}
-                </Link>
-              </li>
-              <li
-                aria-current="page"
-                className={`${styles.breadcrumbItem} ${styles.breadcrumbCurrent}`}
-              >
-                <span>{title}</span>
-              </li>
-            </ol>
-          </nav>
+          <div className={styles.breadcrumbsWrap}>
+            <Breadcumbs
+              items={[
+                { href: `/${locale}`, isLink: true, label: homeLabel },
+                { isLink: false, label: title },
+              ]}
+              navLabel={breadcrumbAriaLabel}
+            />
+          </div>
 
           <header className={styles.intro}>
             <h1>{title}</h1>
