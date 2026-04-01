@@ -124,6 +124,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 <article
                   className={styles.projectCard}
                   data-layout={index % 2 === 1 ? "reverse" : "default"}
+                  data-project={project.imageKey}
                   key={project.title}
                 >
                   <div className={styles.projectLead}>
@@ -141,64 +142,139 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                     </div>
                   </div>
 
-                  <div className={styles.projectVisual}>
-                    <div className={styles.visualFrame}>
-                      <div className={styles.browserFrame}>
+                  {project.imageKey === "broker" ? (
+                    <div className={styles.projectMediaColumn}>
+                      <div className={styles.projectVisual}>
                         <div
-                          className={styles.browserChrome}
-                          aria-hidden="true"
+                          className={styles.browserFrame}
+                          data-device="browser"
                         >
-                          <span className={styles.chromeDot} />
-                          <span className={styles.chromeDot} />
-                          <span className={styles.chromeDot} />
-                          <div className={styles.chromeBar} />
+                          <div
+                            className={styles.browserChrome}
+                            aria-hidden="true"
+                          >
+                            <span className={styles.chromeDot} />
+                            <span className={styles.chromeDot} />
+                            <span className={styles.chromeDot} />
+                            <div className={styles.chromeBar} />
+                          </div>
+                          <div className={styles.browserViewport}>
+                            <Image
+                              alt={project.imageAlt}
+                              className={styles.projectImage}
+                              priority={index === 0}
+                              src={PROJECT_IMAGES[project.imageKey]}
+                            />
+                          </div>
                         </div>
-                        <div className={styles.browserViewport}>
-                          <Image
-                            alt={project.imageAlt}
-                            className={styles.projectImage}
-                            priority={index === 0}
-                            src={PROJECT_IMAGES[project.imageKey]}
+                      </div>
+                      <div className={styles.projectMeta}>
+                        <div className={styles.detailBlock}>
+                          <p className={styles.detailLabel}>
+                            {project.deliverablesLabel}
+                          </p>
+                          <ul className={styles.detailList}>
+                            {project.deliverables.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className={styles.detailBlock}>
+                          <p className={styles.detailLabel}>
+                            {project.outcomesLabel}
+                          </p>
+                          <ul className={styles.detailList}>
+                            {project.outcomes.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <a
+                          className={styles.projectLink}
+                          href={project.href}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          <span className={styles.projectLinkLabel}>
+                            {project.linkLabel}
+                          </span>
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className={styles.projectVisual}>
+                        <div
+                          className={styles.browserFrame}
+                          data-device="phone"
+                        >
+                          <div
+                            className={styles.browserChrome}
+                            aria-hidden="true"
+                          >
+                            <div className={styles.phoneStatusMeta}>
+                              <span className={styles.phoneTime}>09:41</span>
+                            </div>
+                            <div className={styles.phoneIsland} />
+                            <div className={styles.phoneStatusIcons}>
+                              <span className={styles.phoneSignal} />
+                              <span className={styles.phoneWifi} />
+                              <span className={styles.phoneBattery} />
+                            </div>
+                          </div>
+                          <div className={styles.browserViewport}>
+                            <Image
+                              alt={project.imageAlt}
+                              className={styles.projectImage}
+                              priority={index === 0}
+                              src={PROJECT_IMAGES[project.imageKey]}
+                            />
+                          </div>
+                          <div
+                            aria-hidden="true"
+                            className={styles.phoneHomeIndicator}
                           />
                         </div>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className={styles.projectMeta}>
-                    <div className={styles.detailBlock}>
-                      <p className={styles.detailLabel}>
-                        {project.deliverablesLabel}
-                      </p>
-                      <ul className={styles.detailList}>
-                        {project.deliverables.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                      <div className={styles.projectMeta}>
+                        <div className={styles.detailBlock}>
+                          <p className={styles.detailLabel}>
+                            {project.deliverablesLabel}
+                          </p>
+                          <ul className={styles.detailList}>
+                            {project.deliverables.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
 
-                    <div className={styles.detailBlock}>
-                      <p className={styles.detailLabel}>
-                        {project.outcomesLabel}
-                      </p>
-                      <ul className={styles.detailList}>
-                        {project.outcomes.map((item) => (
-                          <li key={item}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
+                        <div className={styles.detailBlock}>
+                          <p className={styles.detailLabel}>
+                            {project.outcomesLabel}
+                          </p>
+                          <ul className={styles.detailList}>
+                            {project.outcomes.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                        </div>
 
-                    <a
-                      className={styles.projectLink}
-                      href={project.href}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      <span className={styles.projectLinkLabel}>
-                        {project.linkLabel}
-                      </span>
-                    </a>
-                  </div>
+                        <a
+                          className={styles.projectLink}
+                          href={project.href}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          <span className={styles.projectLinkLabel}>
+                            {project.linkLabel}
+                          </span>
+                        </a>
+                      </div>
+                    </>
+                  )}
                 </article>
               ))}
             </div>
@@ -208,7 +284,6 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
               aria-labelledby="projects-cta-title"
             >
               <div className={styles.closingCopy}>
-                <p className={styles.sectionEyebrow}>{content.hero.kicker}</p>
                 <h2 className={styles.closingTitle} id="projects-cta-title">
                   {content.closingCta.title}
                 </h2>
@@ -218,13 +293,13 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
               </div>
               <div className={styles.closingActions}>
                 <Link
-                  className={styles.primaryAction}
+                  className="btn btn--primary"
                   href={content.closingCta.primaryHref}
                 >
                   {content.closingCta.primaryLabel}
                 </Link>
                 <Link
-                  className={styles.secondaryAction}
+                  className="btn btn--ghost"
                   href={content.closingCta.secondaryHref}
                 >
                   {content.closingCta.secondaryLabel}
