@@ -14,7 +14,7 @@ type BreadcumbsProps = {
 
 export function Breadcumbs({ items, navLabel }: BreadcumbsProps) {
   return (
-    <nav aria-label={navLabel}>
+    <nav aria-label={navLabel} className={styles.nav}>
       <ol className={styles.list}>
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

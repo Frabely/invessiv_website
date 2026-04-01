@@ -1,3 +1,7 @@
+.nav {
+  display: block;
+}
+
 .list {
   display: flex;
   flex-wrap: wrap;
@@ -24,8 +28,8 @@
   background: color-mix(in srgb, var(--color-border) 80%, transparent);
 }
 
-.link,
-.current {
+.nav .link,
+.nav .current {
   display: inline-flex;
   align-items: center;
   min-height: 30px;
@@ -33,10 +37,12 @@
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
+  border-bottom: 0;
+  box-shadow: none;
 }
 
-.link {
-  color: inherit;
+.nav .link {
+  color: var(--accent);
   text-decoration: none;
   transition:
     color 180ms ease,
@@ -44,14 +50,19 @@
     background-color 180ms ease;
 }
 
-.link:hover {
-  color: var(--accent);
+.nav .link:hover {
+  color: color-mix(in srgb, var(--accent) 84%, white 16%);
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+  border-bottom: 0;
+}
+
+.nav .link:focus-visible {
+  border-bottom: 0;
 }
 
 .item[aria-current="page"] .current {
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  color: var(--color-text);
 }
 
 @media (max-width: 900px) {
