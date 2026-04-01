@@ -35,12 +35,12 @@ describe("ProjectsPage", () => {
           hero: {
             kicker: "Ausgewählte Projekte",
             title:
-              "Websites und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
+              "Webseiten und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
             intro:
               "Die Projektseite zeigt bewusst nur zwei live einsehbare Beispiele.",
             highlights: [
               "2 live einsehbare Referenzen",
-              "Website + Software",
+              "Webseite + Software",
               "fokussiert statt überladen",
             ],
             supportingNote: "Die Mockups treten bewusst einen Schritt zurück.",
@@ -56,10 +56,10 @@ describe("ProjectsPage", () => {
             {
               imageKey: "broker",
               imageAlt:
-                "Vorschau einer Finanzmakler-Website mit klarer Struktur",
-              kicker: "Website-Projekt",
+                "Vorschau einer Finanzmakler-Webseite mit klarer Struktur",
+              kicker: "Webseiten-Projekt",
               category: "Positionierung & Anfragen",
-              title: "Finanzmakler-Website mit klarer Positionierung",
+              title: "Finanzmakler-Webseite mit klarer Positionierung",
               summary:
                 "Ein ruhiger, vertrauenswürdiger Auftritt für einen Finanzmakler.",
               focusLabel: "Projektfokus",
@@ -75,7 +75,7 @@ describe("ProjectsPage", () => {
                 "macht den Angebotsrahmen verständlicher",
                 "führt Anfragen nachvollziehbar in den Kontakt",
               ],
-              linkLabel: "Zur Website",
+              linkLabel: "Zur Webseite",
               href: "https://mywebpage-480c1.web.app",
             },
             {
@@ -109,7 +109,7 @@ describe("ProjectsPage", () => {
             title:
               "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
             supportingText:
-              "Ob neue Website, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build.",
+              "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build.",
             primaryLabel: "Projekt anfragen",
             primaryHref: "/de#contact",
             secondaryLabel: "Leistungsmodelle ansehen",
@@ -126,18 +126,18 @@ describe("ProjectsPage", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
-        name: "Websites und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
+        name: "Webseiten und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
       }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Finanzmakler-Website mit klarer Positionierung"),
+      screen.getByText("Finanzmakler-Webseite mit klarer Positionierung"),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
         "Consumption Trial zur strukturierten Erfassung von Verbrauchsdaten",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Zur Website" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Zur Webseite" })).toHaveAttribute(
       "href",
       "https://mywebpage-480c1.web.app",
     );

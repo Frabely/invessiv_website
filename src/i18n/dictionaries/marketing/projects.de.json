@@ -5,28 +5,28 @@
     "currentLabel": "Projekte"
   },
   "hero": {
-    "kicker": "Ausgewählte Projekte",
-    "title": "Websites und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
-    "intro": "Die Projektseite zeigt bewusst nur zwei live einsehbare Beispiele. Beide stehen für dieselbe Arbeitsweise: klare Führung, ruhige Struktur und eine Umsetzung, die im Alltag nachvollziehbar bleibt.",
+    "kicker": "Umgesetzte Projekte",
+    "title": "Webseiten und Tools, die sichtbar ordnen, statt nur gut auszusehen.",
+    "intro": "Hier sind umgesetzte Projekte zu sehen, die für dieselbe Arbeitsweise stehen: klare Führung, ruhige Struktur und eine Umsetzung, die im Alltag nachvollziehbar bleibt.",
     "highlights": [
-      "2 live einsehbare Referenzen",
-      "Website + Software",
-      "fokussiert statt überladen"
+      "2 live einsehbare Projekte",
+      "Webseite + Software",
+      "weitere folgen"
     ],
-    "supportingNote": "Die Mockups treten bewusst einen Schritt zurück. Entscheidend ist, wie Positionierung, Leseführung und Nutzbarkeit zusammenspielen."
+    "supportingNote": "Weitere Projekte werden hier ergänzt, sobald sie umgesetzt sind. Entscheidend ist, wie Positionierung, Leseführung und Nutzbarkeit zusammenspielen."
   },
   "sectionIntro": {
-    "eyebrow": "Kuratierte Übersicht",
-    "title": "Zwei Umsetzungen, zwei Kontexte, ein gemeinsamer Qualitätsanspruch.",
+    "eyebrow": "Projektübersicht",
+    "title": "Umgesetzte Projekte mit klarem Fokus auf Wirkung und Nutzbarkeit.",
     "description": "Jedes Projekt wird als kompakte Fallstudie dargestellt: mit Kontext, Fokus, konkreten Deliverables und dem Ergebnis, das die Seite oder das Tool im Einsatz klarer macht."
   },
   "projects": [
     {
       "imageKey": "broker",
-      "imageAlt": "Vorschau einer Finanzmakler-Website mit klarer Struktur",
-      "kicker": "Website-Projekt",
+      "imageAlt": "Vorschau einer Finanzmakler-Webseite mit klarer Struktur",
+      "kicker": "Webseiten-Projekt",
       "category": "Positionierung & Anfragen",
-      "title": "Finanzmakler-Website mit klarer Positionierung",
+      "title": "Finanzmakler-Webseite mit klarer Positionierung",
       "summary": "Ein ruhiger, vertrauenswürdiger Auftritt für einen Finanzmakler, der Leistungen schnell verständlich macht, relevante Einstiege klar setzt und Anfragen strukturiert vorbereitet.",
       "focusLabel": "Projektfokus",
       "focus": "Vertrauen aufbauen, Leistungen lesbar ordnen und Interessenten ohne Umwege zur passenden Anfrage führen.",
@@ -42,7 +42,7 @@
         "reduziert visuelle Unruhe zugunsten klarer Orientierung",
         "führt Anfragen nachvollziehbar in den Kontakt"
       ],
-      "linkLabel": "Zur Website",
+      "linkLabel": "Zur Webseite",
       "href": "https://mywebpage-480c1.web.app"
     },
     {
@@ -72,7 +72,7 @@
   ],
   "closingCta": {
     "title": "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
-    "supportingText": "Ob neue Website, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build, nicht mehr visuelle Lautstärke.",
+    "supportingText": "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build, nicht mehr visuelle Lautstärke.",
     "primaryLabel": "Projekt anfragen",
     "primaryHref": "/de#contact",
     "secondaryLabel": "Leistungsmodelle ansehen",

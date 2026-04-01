@@ -87,7 +87,7 @@ describe("ContactSection", () => {
           submitErrorValidation: "Validation error",
           validationSummaryPrefix: "Bitte prüfen:",
           fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorInvalidWebsite: "Ungültige Website",
+          fieldErrorInvalidWebsite: "Ungültige Webseite",
           fieldErrorRequired: "Pflichtfeld",
           fieldErrorProjectDetailsRequired: "Projekt erforderlich",
           fieldErrorPagesRequired: "Seiten erforderlich",
@@ -99,8 +99,8 @@ describe("ContactSection", () => {
           submittingLabel: "Wird gesendet",
           subtitle: "Projekt-Check",
           title: "Projektanfrage",
-          websiteLabel: "Website",
-          websiteRequiredHint: "Website erforderlich",
+          websiteLabel: "Webseite",
+          websiteRequiredHint: "Webseite erforderlich",
           workflowLabel: "Workflows",
           workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
           privacyLabel: "Datenschutzerklärung",
@@ -118,13 +118,13 @@ describe("ContactSection", () => {
         id="contact"
         privacyHref="/privacy"
         summaryPoints={["Fast reply", "Clear path"]}
-        title="Bereit für eine neue, produktive Website?"
+        title="Bereit für eine neue, produktive Webseite?"
       />,
     );
 
     expect(
       screen.getByRole("heading", {
-        name: "Bereit für eine neue, produktive Website?",
+        name: "Bereit für eine neue, produktive Webseite?",
       }),
     ).toBeTruthy();
     expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();

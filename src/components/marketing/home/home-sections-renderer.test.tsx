@@ -28,7 +28,7 @@ const sections: HomeSectionContent[] = [
       {
         key: "web",
         title: "Webseiten",
-        description: "Produktive Websites",
+        description: "Produktive Webseiten",
         highlight: "klarer professioneller Auftritt",
         pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
         delivery: "2-4 Wochen",
@@ -54,7 +54,7 @@ const sections: HomeSectionContent[] = [
       },
       {
         key: "upgrade",
-        title: "Website-Upgrade",
+        title: "Webseiten-Upgrade",
         description: "Bestehendes verbessern",
         highlight: "spürbare UX- und Speed-Verbesserung",
         pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
@@ -93,8 +93,8 @@ const sections: HomeSectionContent[] = [
       phoneLabel: "Telefon",
       companyLabel: "Unternehmen",
       roleLabel: "Rolle",
-      websiteLabel: "Website",
-      websiteRequiredHint: "Website erforderlich",
+      websiteLabel: "Webseite",
+      websiteRequiredHint: "Webseite erforderlich",
       offerLabel: "Angebot",
       offerPlaceholder: "Bitte wählen",
       goalLabel: "Ziel",
@@ -128,7 +128,7 @@ const sections: HomeSectionContent[] = [
       submitErrorGeneric: "Allgemeiner Fehler",
       validationSummaryPrefix: "Bitte prüfen:",
       fieldErrorInvalidEmail: "Ungültige E-Mail",
-      fieldErrorInvalidWebsite: "Ungültige Website",
+      fieldErrorInvalidWebsite: "Ungültige Webseite",
       fieldErrorRequired: "Pflichtfeld",
       fieldErrorProjectDetailsRequired: "Projekt erforderlich",
       fieldErrorPagesRequired: "Seiten erforderlich",
@@ -170,7 +170,7 @@ describe("HomeSectionsRenderer", () => {
     expect(screen.getByRole("option", { name: "Landingpages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Prozess-Tools" })).toBeTruthy();
     expect(
-      screen.getByRole("option", { name: "Website-Upgrade" }),
+      screen.getByRole("option", { name: "Webseiten-Upgrade" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Wartung & Support" }),

@@ -5,19 +5,19 @@
     "currentLabel": "Projects"
   },
   "hero": {
-    "kicker": "Selected projects",
+    "kicker": "Delivered projects",
     "title": "Websites and tools that create orientation instead of just looking polished.",
-    "intro": "This page intentionally keeps the selection compact. Both live examples reflect the same delivery standard: clear guidance, calm structure, and implementation that stays understandable in day-to-day use.",
+    "intro": "This page shows delivered projects that reflect the same delivery standard: clear guidance, calm structure, and implementation that stays understandable in day-to-day use.",
     "highlights": [
-      "2 live references",
+      "2 live projects",
       "website + software",
-      "focused instead of crowded"
+      "more to follow"
     ],
-    "supportingNote": "The mockups are intentionally quieter here. The stronger signal is how positioning, reading flow, and usability work together."
+    "supportingNote": "More projects will be added here as they are delivered. The stronger signal is how positioning, reading flow, and usability work together."
   },
   "sectionIntro": {
-    "eyebrow": "Curated overview",
-    "title": "Two deliveries, two contexts, one consistent quality bar.",
+    "eyebrow": "Project overview",
+    "title": "Delivered projects with a clear focus on usefulness and outcome.",
     "description": "Each project is framed as a compact case study with context, focus, concrete deliverables, and the outcome that makes the page or tool easier to use."
   },
   "projects": [

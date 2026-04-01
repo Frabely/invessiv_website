@@ -17,7 +17,7 @@ describe("ProofSection", () => {
           ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
           kicker: "Umgesetztes Projekt",
           title:
-            "Neue Website für einen Finanzmakler mit klarer Positionierung",
+            "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
           description:
             "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
           meta: "Umgesetzt für Kolja Wienigk",
@@ -94,7 +94,7 @@ describe("ProofSection", () => {
     expect(screen.getByText("Umgesetztes Projekt")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Neue Website für einen Finanzmakler mit klarer Positionierung",
+        "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
       ),
     ).toBeInTheDocument();
     expect(screen.getByText("Umgesetzt für Kolja Wienigk")).toBeInTheDocument();

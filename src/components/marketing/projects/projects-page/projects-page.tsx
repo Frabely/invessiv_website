@@ -68,8 +68,8 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
           <span className="page-noise" />
         </div>
 
-        <section className={styles.hero}>
-          <div className={styles.heroShell}>
+        <div className={`layout-shell ${styles.pageShell}`}>
+          <section className={styles.pageHero}>
             <div className={styles.breadcrumbs}>
               <Breadcumbs
                 items={[
@@ -116,10 +116,8 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 </p>
               </aside>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <div className="layout-shell">
           <section className={styles.projectsSection}>
             <div className={styles.projectsGrid}>
               {content.projects.map((project, index) => (

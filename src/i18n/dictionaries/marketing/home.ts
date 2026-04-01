@@ -347,7 +347,7 @@ const HOME_SECTIONS: LandingSection[] = [
           ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
           kicker: "Umgesetztes Projekt",
           title:
-            "Neue Website für einen Finanzmakler mit klarer Positionierung",
+            "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
           description:
             "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
           meta: "Umgesetzt für Kolja Wienigk",
@@ -474,7 +474,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
-              "Website-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
+              "Webseiten-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
             highlight: "klarer professioneller Auftritt",
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -520,8 +520,8 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Website-Upgrade Icon",
-            title: "Website-Upgrade",
+            iconAlt: "Webseiten-Upgrade Icon",
+            title: "Webseiten-Upgrade",
             description:
               "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
@@ -839,7 +839,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung.",
           },
           {
-            question: "Kannst du meine bestehende Website überarbeiten?",
+            question: "Kannst du meine bestehende Webseite überarbeiten?",
             answer:
               "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
           },
@@ -950,7 +950,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "In der Regel Rückmeldung innerhalb von 24h",
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
-        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
         footerHeroDescription:
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
@@ -1075,9 +1075,9 @@ const HOME_SECTIONS: LandingSection[] = [
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
-          websiteLabel: "Aktuelle Website",
+          websiteLabel: "Aktuelle Webseite",
           websiteRequiredHint:
-            "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
+            "Bei Webseiten-Upgrade, Webseiten und Wartung ist die aktuelle Webseite erforderlich.",
           offerLabel: "Passendes Leistungsmodell",
           offerPlaceholder: "Bitte Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
@@ -1152,7 +1152,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
           validationSummaryPrefix: "Bitte korrigiere dieses Feld",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorInvalidWebsite: "Bitte gib eine gültige Website-URL ein.",
+          fieldErrorInvalidWebsite: "Bitte gib eine gültige Webseiten-URL ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorProjectDetailsRequired:
             "Bitte gib eine kurze Projektbeschreibung ein.",
@@ -1402,7 +1402,7 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Footer",
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
-        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
         footerHeroDescription:
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
