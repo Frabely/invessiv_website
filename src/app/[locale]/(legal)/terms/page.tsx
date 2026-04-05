@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TermsContent } from "@/components/legal/terms-content/terms-content";
-import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
+import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
+import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import { COMPANY, COMPANY_MAILTO } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -108,7 +108,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
   ];
 
   return (
-    <TermsLayout
+    <LegalDocumentLayout
       breadcrumbAriaLabel={terms.page.breadcrumbAriaLabel}
       homeLabel={terms.page.homeLabel}
       lead={terms.page.lead}
@@ -116,12 +116,12 @@ export default async function TermsPage({ params }: TermsPageProps) {
       title={terms.page.title}
       updatedAt={terms.page.updatedAt}
     >
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel={terms.page.copySectionLinkLabel}
         sectionLinkCopiedLabel={terms.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={terms.page.tocLabel}
       />
-    </TermsLayout>
+    </LegalDocumentLayout>
   );
 }

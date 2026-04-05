@@ -1,12 +1,22 @@
 // @vitest-environment jsdom
 
-import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { TermsContent } from "./terms-content";
+import { LegalDocumentContent } from "./legal-document-content";
 
 const buildLongText = (seed: string) =>
   Array.from({ length: 20 })
-    .map((_, index) => `${seed} Satz ${index + 1} mit zusätzlichem Detail für lange Leseblöcke.`)
+    .map(
+      (_, index) =>
+        `${seed} Satz ${index + 1} mit zusätzlichem Detail für lange Leseblöcke.`,
+    )
     .join(" ");
 
 const sectionData = [
@@ -34,7 +44,7 @@ const createLongTocSections = (count: number) =>
     body: <p>{buildLongText(`Abschnitt ${index + 1}`)}</p>,
   }));
 
-describe("TermsContent", () => {
+describe("LegalDocumentContent", () => {
   const replaceStateSpy = vi.spyOn(window.history, "replaceState");
   const writeTextSpy = vi.fn(() => Promise.resolve());
   const matchMediaMock = vi.fn(() => ({
@@ -85,7 +95,9 @@ describe("TermsContent", () => {
         callback(0);
         return 1;
       });
-    cancelAnimationFrameMock = vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => undefined);
+    cancelAnimationFrameMock = vi
+      .spyOn(window, "cancelAnimationFrame")
+      .mockImplementation(() => undefined);
     replaceStateSpy.mockReset();
     writeTextSpy.mockClear();
     matchMediaMock.mockClear();
@@ -103,7 +115,7 @@ describe("TermsContent", () => {
 
   it("renders toc entries twice (mobile + desktop) and all long content sections", () => {
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -111,17 +123,25 @@ describe("TermsContent", () => {
       />,
     );
 
-    expect(screen.getAllByRole("navigation", { name: "Inhalt" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: "1. Anbieter" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: "2. Geltungsbereich" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: "3. Leistungen" })).toHaveLength(2);
+    expect(screen.getAllByRole("navigation", { name: "Inhalt" })).toHaveLength(
+      2,
+    );
+    expect(screen.getAllByRole("link", { name: "1. Anbieter" })).toHaveLength(
+      2,
+    );
+    expect(
+      screen.getAllByRole("link", { name: "2. Geltungsbereich" }),
+    ).toHaveLength(2);
+    expect(screen.getAllByRole("link", { name: "3. Leistungen" })).toHaveLength(
+      2,
+    );
     expect(screen.getByText(/Anbietertext Satz 20/)).toBeTruthy();
     expect(screen.getByText(/Leistungen Satz 19/)).toBeTruthy();
   });
 
   it("scrolls and updates hash when clicking a toc link", () => {
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -130,7 +150,9 @@ describe("TermsContent", () => {
     );
 
     const navs = screen.getAllByRole("navigation", { name: "Inhalt" });
-    const desktopLink = within(navs[1]).getByRole("link", { name: "2. Geltungsbereich" });
+    const desktopLink = within(navs[1]).getByRole("link", {
+      name: "2. Geltungsbereich",
+    });
 
     fireEvent.click(desktopLink);
 
@@ -157,7 +179,7 @@ describe("TermsContent", () => {
     });
 
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -175,7 +197,7 @@ describe("TermsContent", () => {
 
   it("copies section link and resets copied label after timeout", async () => {
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -183,31 +205,39 @@ describe("TermsContent", () => {
       />,
     );
 
-    const copyButton = screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" });
+    const copyButton = screen.getByRole("button", {
+      name: "Link kopieren: 2. Geltungsbereich",
+    });
     fireEvent.click(copyButton);
 
-    expect(writeTextSpy).toHaveBeenCalledWith(`${window.location.origin}/de/terms#scope`);
+    expect(writeTextSpy).toHaveBeenCalledWith(
+      `${window.location.origin}/de/terms#scope`,
+    );
     await act(async () => {
       await Promise.resolve();
     });
-    expect(screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" }).textContent).toBe(
-      "Kopiert",
-    );
+    expect(
+      screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" })
+        .textContent,
+    ).toBe("Kopiert");
     expect(replaceStateSpy).toHaveBeenCalledWith(null, "", "#scope");
 
     await act(async () => {
       vi.advanceTimersByTime(1800);
     });
-    expect(screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" }).textContent).toBe(
-      "Link kopieren",
-    );
+    expect(
+      screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" })
+        .textContent,
+    ).toBe("Link kopieren");
   });
 
   it("keeps copy label unchanged when clipboard write fails", async () => {
-    writeTextSpy.mockImplementationOnce(() => Promise.reject(new Error("clipboard blocked")));
+    writeTextSpy.mockImplementationOnce(() =>
+      Promise.reject(new Error("clipboard blocked")),
+    );
 
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -215,7 +245,9 @@ describe("TermsContent", () => {
       />,
     );
 
-    const copyButton = screen.getByRole("button", { name: "Link kopieren: 3. Leistungen" });
+    const copyButton = screen.getByRole("button", {
+      name: "Link kopieren: 3. Leistungen",
+    });
     fireEvent.click(copyButton);
     await Promise.resolve();
 
@@ -224,7 +256,7 @@ describe("TermsContent", () => {
 
   it("renders nothing when no sections are provided", () => {
     const { container } = render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={[]}
@@ -237,7 +269,7 @@ describe("TermsContent", () => {
 
   it("keeps desktop toc fixed under header while scrolling and pins it at content end", () => {
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={createLongTocSections(30)}
@@ -255,46 +287,50 @@ describe("TermsContent", () => {
     const columnLeft = 48;
     const columnWidth = 260;
 
-    const rectSpy = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
-      if (this === tocColumn) {
+    const rectSpy = vi
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        if (this === tocColumn) {
+          return {
+            x: columnLeft,
+            y: columnTopInDocument - mockScrollY,
+            top: columnTopInDocument - mockScrollY,
+            bottom: columnTopInDocument - mockScrollY + 600,
+            left: columnLeft,
+            right: columnLeft + columnWidth,
+            width: columnWidth,
+            height: 600,
+            toJSON: () => ({}),
+          };
+        }
+        if (this === article) {
+          return {
+            x: 340,
+            y: 220 - mockScrollY,
+            top: 220 - mockScrollY,
+            bottom: articleBottomInDocument - mockScrollY,
+            left: 340,
+            right: 1200,
+            width: 860,
+            height: articleBottomInDocument - 220,
+            toJSON: () => ({}),
+          };
+        }
         return {
-          x: columnLeft,
-          y: columnTopInDocument - mockScrollY,
-          top: columnTopInDocument - mockScrollY,
-          bottom: columnTopInDocument - mockScrollY + 600,
-          left: columnLeft,
-          right: columnLeft + columnWidth,
-          width: columnWidth,
-          height: 600,
+          x: 0,
+          y: 0,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: 0,
+          height: 0,
           toJSON: () => ({}),
         };
-      }
-      if (this === article) {
-        return {
-          x: 340,
-          y: 220 - mockScrollY,
-          top: 220 - mockScrollY,
-          bottom: articleBottomInDocument - mockScrollY,
-          left: 340,
-          right: 1200,
-          width: 860,
-          height: articleBottomInDocument - 220,
-          toJSON: () => ({}),
-        };
-      }
-      return {
-        x: 0,
-        y: 0,
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width: 0,
-        height: 0,
-        toJSON: () => ({}),
-      };
-    });
-    const offsetHeightSpy = vi.spyOn(desktopToc, "offsetHeight", "get").mockReturnValue(1200);
+      });
+    const offsetHeightSpy = vi
+      .spyOn(desktopToc, "offsetHeight", "get")
+      .mockReturnValue(1200);
 
     act(() => {
       window.dispatchEvent(new Event("resize"));
@@ -306,8 +342,15 @@ describe("TermsContent", () => {
     });
 
     expect(desktopToc.className).toContain("desktopTocBottom");
-    expect(desktopToc.style.getPropertyValue("--desktop-toc-max-height")).toBe("680px");
-    expect(Number.parseInt(desktopToc.style.getPropertyValue("--desktop-toc-bottom-top"), 10)).toBeGreaterThanOrEqual(0);
+    expect(desktopToc.style.getPropertyValue("--desktop-toc-max-height")).toBe(
+      "680px",
+    );
+    expect(
+      Number.parseInt(
+        desktopToc.style.getPropertyValue("--desktop-toc-bottom-top"),
+        10,
+      ),
+    ).toBeGreaterThanOrEqual(0);
 
     rectSpy.mockRestore();
     offsetHeightSpy.mockRestore();
@@ -320,7 +363,7 @@ describe("TermsContent", () => {
     });
 
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -330,7 +373,9 @@ describe("TermsContent", () => {
 
     const mobileSummary = screen
       .getAllByText("Inhalt")
-      .find((element) => element.tagName.toLowerCase() === "summary") as HTMLElement;
+      .find(
+        (element) => element.tagName.toLowerCase() === "summary",
+      ) as HTMLElement;
     const mobileToc = mobileSummary.closest("details") as HTMLElement;
     expect(mobileToc.className).not.toContain("mobileTocQuiet");
 
@@ -354,7 +399,7 @@ describe("TermsContent", () => {
     });
 
     render(
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel="Link kopieren"
         sectionLinkCopiedLabel="Kopiert"
         sections={sectionData}
@@ -364,7 +409,9 @@ describe("TermsContent", () => {
 
     const mobileSummary = screen
       .getAllByText("Inhalt")
-      .find((element) => element.tagName.toLowerCase() === "summary") as HTMLElement;
+      .find(
+        (element) => element.tagName.toLowerCase() === "summary",
+      ) as HTMLElement;
     const mobileToc = mobileSummary.closest("details") as HTMLElement;
 
     act(() => {

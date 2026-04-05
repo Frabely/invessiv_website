@@ -5,8 +5,9 @@ import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { getLocalizedSectionHref, PRIMARY_NAVIGATION } from "@/config/site";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
+import styles from "./legal-document-layout.module.css";
 
-type LegalLayoutProps = {
+type LegalDocumentLayoutProps = {
   breadcrumbAriaLabel: string;
   children: ReactNode;
   homeLabel: string;
@@ -16,7 +17,7 @@ type LegalLayoutProps = {
   updatedAt?: string;
 };
 
-export function LegalLayout({
+export function LegalDocumentLayout({
   breadcrumbAriaLabel,
   children,
   homeLabel,
@@ -24,7 +25,7 @@ export function LegalLayout({
   locale,
   title,
   updatedAt,
-}: LegalLayoutProps) {
+}: LegalDocumentLayoutProps) {
   const footerSection = getHomeSections(locale).find(
     (section) => section.id === "footer",
   );
@@ -59,20 +60,28 @@ export function LegalLayout({
         ctaHref={getLocalizedSectionHref(locale, "contact")}
         navigation={legalHeaderNavigation}
       />
-      <main className="legal-page">
-        <Breadcrumbs
-          items={[
-            { href: `/${locale}`, isLink: true, label: homeLabel },
-            { isLink: false, label: title },
-          ]}
-          navLabel={breadcrumbAriaLabel}
-        />
-        <div className="legal-page__inner">
-          <header className="legal-page__intro">
+      <main
+        className={`legal-page ${styles.page}`}
+        id="main-content"
+        tabIndex={-1}
+      >
+        <div className={styles.inner}>
+          <div className={styles.breadcrumbsWrap}>
+            <Breadcrumbs
+              items={[
+                { href: `/${locale}`, isLink: true, label: homeLabel },
+                { isLink: false, label: title },
+              ]}
+              navLabel={breadcrumbAriaLabel}
+            />
+          </div>
+
+          <header className={styles.intro}>
             <h1>{title}</h1>
-            <p className="legal-lead">{lead}</p>
-            {updatedAt ? <p className="legal-updated-at">{updatedAt}</p> : null}
+            <p className={styles.lead}>{lead}</p>
+            {updatedAt ? <p className={styles.updatedAt}>{updatedAt}</p> : null}
           </header>
+
           {children}
         </div>
       </main>

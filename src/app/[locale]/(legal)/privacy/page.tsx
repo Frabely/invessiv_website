@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TermsContent } from "@/components/legal/terms-content/terms-content";
-import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
+import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
+import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import { COMPANY, COMPANY_MAILTO } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -135,7 +135,7 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
   ];
 
   return (
-    <TermsLayout
+    <LegalDocumentLayout
       breadcrumbAriaLabel={privacy.page.breadcrumbAriaLabel}
       homeLabel={privacy.page.homeLabel}
       lead={privacy.page.lead}
@@ -143,12 +143,12 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       title={privacy.page.title}
       updatedAt={privacy.page.updatedAt}
     >
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel={privacy.page.copySectionLinkLabel}
         sectionLinkCopiedLabel={privacy.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={privacy.page.tocLabel}
       />
-    </TermsLayout>
+    </LegalDocumentLayout>
   );
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TermsContent } from "@/components/legal/terms-content/terms-content";
-import { TermsLayout } from "@/components/legal/terms-layout/terms-layout";
+import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
+import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import {
   COMPANY,
   COMPANY_MAILTO,
@@ -24,7 +24,9 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }
 
-export async function generateMetadata({ params }: ImprintPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ImprintPageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
@@ -64,13 +66,16 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       body: (
         <>
           <p>
-            <strong>{imprint.sections.provider.labels.company}:</strong> {COMPANY.brandName}
+            <strong>{imprint.sections.provider.labels.company}:</strong>{" "}
+            {COMPANY.brandName}
           </p>
           <p>
-            <strong>{imprint.sections.provider.labels.representedBy}:</strong> {COMPANY.owner}
+            <strong>{imprint.sections.provider.labels.representedBy}:</strong>{" "}
+            {COMPANY.owner}
           </p>
           <p>
-            <strong>{imprint.sections.provider.labels.address}:</strong> {imprint.values.addressLine}
+            <strong>{imprint.sections.provider.labels.address}:</strong>{" "}
+            {imprint.values.addressLine}
           </p>
           <p>
             <strong>{imprint.sections.contact.labels.phone}:</strong>{" "}
@@ -109,7 +114,7 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
   ];
 
   return (
-    <TermsLayout
+    <LegalDocumentLayout
       breadcrumbAriaLabel={imprint.page.breadcrumbAriaLabel}
       homeLabel={imprint.page.homeLabel}
       lead={imprint.page.lead}
@@ -117,12 +122,12 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       title={imprint.page.title}
       updatedAt={imprint.page.updatedAt}
     >
-      <TermsContent
+      <LegalDocumentContent
         copySectionLinkLabel={imprint.page.copySectionLinkLabel}
         sectionLinkCopiedLabel={imprint.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={imprint.page.tocLabel}
       />
-    </TermsLayout>
+    </LegalDocumentLayout>
   );
 }

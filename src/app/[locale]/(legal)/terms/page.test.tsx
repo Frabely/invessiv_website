@@ -4,49 +4,50 @@ import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { mockNotFound, mockTermsContent, mockTermsLayout } = vi.hoisted(() => ({
-  mockNotFound: vi.fn(() => {
-    throw new Error("notFound called");
-  }),
-  mockTermsLayout: vi.fn(
-    ({
-      children,
-      lead,
-      title,
-      updatedAt,
-    }: {
-      children: ReactNode;
-      lead: string;
-      title: string;
-      updatedAt: string;
-    }) => (
-      <div data-testid="terms-layout">
-        <h1>{title}</h1>
-        <p>{lead}</p>
-        <p>{updatedAt}</p>
-        {children}
-      </div>
+const { mockNotFound, mockLegalDocumentContent, mockLegalDocumentLayout } =
+  vi.hoisted(() => ({
+    mockNotFound: vi.fn(() => {
+      throw new Error("notFound called");
+    }),
+    mockLegalDocumentLayout: vi.fn(
+      ({
+        children,
+        lead,
+        title,
+        updatedAt,
+      }: {
+        children: ReactNode;
+        lead: string;
+        title: string;
+        updatedAt: string;
+      }) => (
+        <div data-testid="legal-document-layout">
+          <h1>{title}</h1>
+          <p>{lead}</p>
+          <p>{updatedAt}</p>
+          {children}
+        </div>
+      ),
     ),
-  ),
-  mockTermsContent: vi.fn(
-    ({
-      sections,
-      tocLabel,
-    }: {
-      sections: Array<{ id: string; title: string; body: ReactNode }>;
-      tocLabel: string;
-    }) => (
-      <div data-testid="terms-content" data-toc-label={tocLabel}>
-        {sections.map((section) => (
-          <section key={section.id} data-section-id={section.id}>
-            <h2>{section.title}</h2>
-            <div>{section.body}</div>
-          </section>
-        ))}
-      </div>
+    mockLegalDocumentContent: vi.fn(
+      ({
+        sections,
+        tocLabel,
+      }: {
+        sections: Array<{ id: string; title: string; body: ReactNode }>;
+        tocLabel: string;
+      }) => (
+        <div data-testid="legal-document-content" data-toc-label={tocLabel}>
+          {sections.map((section) => (
+            <section key={section.id} data-section-id={section.id}>
+              <h2>{section.title}</h2>
+              <div>{section.body}</div>
+            </section>
+          ))}
+        </div>
+      ),
     ),
-  ),
-}));
+  }));
 
 vi.mock("next/navigation", () => ({
   notFound: mockNotFound,
@@ -54,21 +55,27 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("server-only", () => ({}));
 
-vi.mock("@/components/legal/terms-layout/terms-layout", () => ({
-  TermsLayout: mockTermsLayout,
-}));
+vi.mock(
+  "@/components/legal/legal-document-layout/legal-document-layout",
+  () => ({
+    LegalDocumentLayout: mockLegalDocumentLayout,
+  }),
+);
 
-vi.mock("@/components/legal/terms-content/terms-content", () => ({
-  TermsContent: mockTermsContent,
-}));
+vi.mock(
+  "@/components/legal/legal-document-content/legal-document-content",
+  () => ({
+    LegalDocumentContent: mockLegalDocumentContent,
+  }),
+);
 
 import TermsPage from "./page";
 
 describe("TermsPage", () => {
   beforeEach(() => {
     mockNotFound.mockClear();
-    mockTermsLayout.mockClear();
-    mockTermsContent.mockClear();
+    mockLegalDocumentLayout.mockClear();
+    mockLegalDocumentContent.mockClear();
   });
 
   it("renders the terms structure as primarily B2B with consumer contracts only by individual offer", async () => {

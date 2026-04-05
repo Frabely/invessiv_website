@@ -2,31 +2,35 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import styles from "./terms-content.module.css";
+import styles from "./legal-document-content.module.css";
 
-type TermsSection = {
+type LegalDocumentSection = {
   body: ReactNode;
   id: string;
   title: string;
 };
 
-type TermsContentProps = {
+type LegalDocumentContentProps = {
   copySectionLinkLabel: string;
   sectionLinkCopiedLabel: string;
-  sections: TermsSection[];
+  sections: LegalDocumentSection[];
   tocLabel: string;
 };
 
-export function TermsContent({
+export function LegalDocumentContent({
   copySectionLinkLabel,
   sectionLinkCopiedLabel,
   sections,
   tocLabel,
-}: TermsContentProps) {
+}: LegalDocumentContentProps) {
   const [copiedSectionId, setCopiedSectionId] = useState<string>("");
   const [desktopTocTop, setDesktopTocTop] = useState<number>(108);
-  const [desktopTocMode, setDesktopTocMode] = useState<"static" | "fixed" | "bottom">("static");
-  const [mobileTocMode, setMobileTocMode] = useState<"static" | "fixed">("static");
+  const [desktopTocMode, setDesktopTocMode] = useState<
+    "static" | "fixed" | "bottom"
+  >("static");
+  const [mobileTocMode, setMobileTocMode] = useState<"static" | "fixed">(
+    "static",
+  );
   const [isMobileTocQuiet, setIsMobileTocQuiet] = useState<boolean>(false);
   const [isMobileTocOpen, setIsMobileTocOpen] = useState<boolean>(false);
   const [desktopTocMetrics, setDesktopTocMetrics] = useState({
@@ -46,7 +50,9 @@ export function TermsContent({
       return;
     }
 
-    const headerInner = document.querySelector<HTMLElement>(".site-header__inner");
+    const headerInner = document.querySelector<HTMLElement>(
+      ".site-header__inner",
+    );
     const header = document.querySelector<HTMLElement>(".site-header");
     const observedHeader = headerInner ?? header;
 
@@ -55,13 +61,17 @@ export function TermsContent({
     }
 
     const updateDesktopTocTop = () => {
-      const nextTop = Math.ceil(observedHeader.getBoundingClientRect().height + 12);
+      const nextTop = Math.ceil(
+        observedHeader.getBoundingClientRect().height + 12,
+      );
       setDesktopTocTop(nextTop);
     };
 
     updateDesktopTocTop();
     const hasResizeObserver = typeof ResizeObserver !== "undefined";
-    const resizeObserver = hasResizeObserver ? new ResizeObserver(updateDesktopTocTop) : null;
+    const resizeObserver = hasResizeObserver
+      ? new ResizeObserver(updateDesktopTocTop)
+      : null;
     if (resizeObserver) {
       resizeObserver.observe(observedHeader);
     }
@@ -101,7 +111,10 @@ export function TermsContent({
       const scrollY = window.scrollY;
       const columnTop = columnRect.top + scrollY;
       const articleBottom = articleRect.bottom + scrollY;
-      const maxHeight = Math.max(220, Math.floor(window.innerHeight - desktopTocTop - 12));
+      const maxHeight = Math.max(
+        220,
+        Math.floor(window.innerHeight - desktopTocTop - 12),
+      );
       const tocHeight = Math.min(desktopToc.offsetHeight, maxHeight);
       const maxFixedTopDocumentY = articleBottom - tocHeight - 12;
       const fixedTopDocumentY = scrollY + desktopTocTop;
@@ -144,10 +157,14 @@ export function TermsContent({
     };
 
     scheduleUpdateDesktopTocPosition();
-    window.addEventListener("scroll", scheduleUpdateDesktopTocPosition, { passive: true });
+    window.addEventListener("scroll", scheduleUpdateDesktopTocPosition, {
+      passive: true,
+    });
     window.addEventListener("resize", scheduleUpdateDesktopTocPosition);
     const hasResizeObserver = typeof ResizeObserver !== "undefined";
-    const resizeObserver = hasResizeObserver ? new ResizeObserver(scheduleUpdateDesktopTocPosition) : null;
+    const resizeObserver = hasResizeObserver
+      ? new ResizeObserver(scheduleUpdateDesktopTocPosition)
+      : null;
     if (resizeObserver && tocColumnRef.current) {
       resizeObserver.observe(tocColumnRef.current);
     }
@@ -200,7 +217,9 @@ export function TermsContent({
     };
 
     updateMobileTocQuietMode();
-    window.addEventListener("scroll", updateMobileTocQuietMode, { passive: true });
+    window.addEventListener("scroll", updateMobileTocQuietMode, {
+      passive: true,
+    });
     window.addEventListener("resize", updateMobileTocQuietMode);
 
     return () => {
@@ -241,8 +260,10 @@ export function TermsContent({
         return;
       }
 
-      const anchorTopInDocument = mobileAnchor.getBoundingClientRect().top + window.scrollY;
-      const shouldFix = window.scrollY + desktopTocTop + 6 >= anchorTopInDocument;
+      const anchorTopInDocument =
+        mobileAnchor.getBoundingClientRect().top + window.scrollY;
+      const shouldFix =
+        window.scrollY + desktopTocTop + 6 >= anchorTopInDocument;
       setMobileTocMode(shouldFix ? "fixed" : "static");
     };
 
@@ -273,7 +294,7 @@ export function TermsContent({
     desktopTocMode === "fixed"
       ? `${styles.desktopToc} ${styles.desktopTocFixed}`
       : desktopTocMode === "bottom"
-      ? `${styles.desktopToc} ${styles.desktopTocBottom}`
+        ? `${styles.desktopToc} ${styles.desktopTocBottom}`
         : styles.desktopToc;
   const mobileTocClassName =
     mobileTocMode === "fixed"
@@ -284,27 +305,32 @@ export function TermsContent({
         ? `${styles.mobileToc} ${styles.mobileTocQuiet}`
         : styles.mobileToc;
 
-  const smoothScrollToSection = useCallback((sectionId: string, updateHash: boolean) => {
-    if (typeof window === "undefined") {
-      return;
-    }
+  const smoothScrollToSection = useCallback(
+    (sectionId: string, updateHash: boolean) => {
+      if (typeof window === "undefined") {
+        return;
+      }
 
-    const target = document.getElementById(sectionId);
-    if (!target) {
-      return;
-    }
+      const target = document.getElementById(sectionId);
+      if (!target) {
+        return;
+      }
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.focus({ preventScroll: true });
-    target.scrollIntoView({
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-      block: "start",
-    });
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      target.focus({ preventScroll: true });
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
 
-    if (updateHash) {
-      window.history.replaceState(null, "", `#${sectionId}`);
-    }
-  }, []);
+      if (updateHash) {
+        window.history.replaceState(null, "", `#${sectionId}`);
+      }
+    },
+    [],
+  );
 
   const handleTocClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
@@ -355,7 +381,11 @@ export function TermsContent({
             <ol className={styles.tocList}>
               {sections.map((section) => (
                 <li key={`mobile-${section.id}`}>
-                  <a className={styles.tocLink} href={`#${section.id}`} onClick={(event) => handleTocClick(event, section.id)}>
+                  <a
+                    className={styles.tocLink}
+                    href={`#${section.id}`}
+                    onClick={(event) => handleTocClick(event, section.id)}
+                  >
                     {section.title}
                   </a>
                 </li>
@@ -364,12 +394,21 @@ export function TermsContent({
           </nav>
         </details>
 
-        <nav aria-label={tocLabel} className={desktopTocClassName} ref={desktopTocRef} style={desktopTocStyle}>
+        <nav
+          aria-label={tocLabel}
+          className={desktopTocClassName}
+          ref={desktopTocRef}
+          style={desktopTocStyle}
+        >
           <h2>{tocLabel}</h2>
           <ol className={styles.tocList}>
             {sections.map((section) => (
               <li key={section.id}>
-                <a className={styles.tocLink} href={`#${section.id}`} onClick={(event) => handleTocClick(event, section.id)}>
+                <a
+                  className={styles.tocLink}
+                  href={`#${section.id}`}
+                  onClick={(event) => handleTocClick(event, section.id)}
+                >
                   {section.title}
                 </a>
               </li>
@@ -396,7 +435,9 @@ export function TermsContent({
                     onClick={() => handleCopyLink(section.id)}
                     type="button"
                   >
-                    {copiedSectionId === section.id ? sectionLinkCopiedLabel : copySectionLinkLabel}
+                    {copiedSectionId === section.id
+                      ? sectionLinkCopiedLabel
+                      : copySectionLinkLabel}
                   </button>
                 </div>
               </div>
