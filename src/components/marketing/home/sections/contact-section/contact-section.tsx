@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
+import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
@@ -99,28 +100,6 @@ export function ContactSection({
   };
 
   const isExternalLink = (href: string) => /^https?:\/\//i.test(href);
-  const getContactTarget = (href: string) => {
-    const normalizedHref = href.toLowerCase();
-    if (normalizedHref.startsWith("mailto:")) {
-      return "email";
-    }
-    if (normalizedHref.startsWith("tel:")) {
-      return "phone";
-    }
-    if (
-      normalizedHref.includes("calendly.com") ||
-      normalizedHref.includes("/calendly")
-    ) {
-      return "calendly";
-    }
-    if (
-      normalizedHref.includes("wa.me/") ||
-      normalizedHref.includes("whatsapp.com/")
-    ) {
-      return "whatsapp";
-    }
-    return null;
-  };
   const getSecondaryCtaAnalyticsProps = (href: string) => {
     const contactTarget = getContactTarget(href);
     if (contactTarget) {

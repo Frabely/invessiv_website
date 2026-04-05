@@ -5,6 +5,7 @@ import {
   faLinkedinIn,
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
+import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
@@ -38,28 +39,6 @@ export function FooterSection({
 }: FooterSectionProps) {
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
-  const getContactTarget = (href: string) => {
-    const normalizedHref = href.toLowerCase();
-    if (normalizedHref.startsWith("mailto:")) {
-      return "email";
-    }
-    if (normalizedHref.startsWith("tel:")) {
-      return "phone";
-    }
-    if (
-      normalizedHref.includes("calendly.com") ||
-      normalizedHref.includes("/calendly")
-    ) {
-      return "calendly";
-    }
-    if (
-      normalizedHref.includes("wa.me/") ||
-      normalizedHref.includes("whatsapp.com/")
-    ) {
-      return "whatsapp";
-    }
-    return null;
-  };
   const getLinkAnalyticsProps = (href: string) => {
     const contactTarget = getContactTarget(href);
     if (contactTarget) {

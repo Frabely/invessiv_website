@@ -6,32 +6,7 @@ import {
   type ConversionEventName,
   type ConversionEventPayload,
 } from "@/lib/analytics/conversion-events";
-
-function getContactTarget(href: string | null): string | undefined {
-  if (!href) {
-    return undefined;
-  }
-  const normalizedHref = href.toLowerCase();
-  if (normalizedHref.startsWith("mailto:")) {
-    return "email";
-  }
-  if (normalizedHref.startsWith("tel:")) {
-    return "phone";
-  }
-  if (
-    normalizedHref.includes("calendly.com") ||
-    normalizedHref.includes("/calendly")
-  ) {
-    return "calendly";
-  }
-  if (
-    normalizedHref.includes("wa.me/") ||
-    normalizedHref.includes("whatsapp.com/")
-  ) {
-    return "whatsapp";
-  }
-  return undefined;
-}
+import { getContactTarget } from "@/lib/analytics/get-contact-target";
 
 function getPayloadFromElement(
   element: HTMLElement,
@@ -53,7 +28,9 @@ function getPayloadFromElement(
   }
   if (eventName === "contact_click") {
     const href =
-      element instanceof HTMLAnchorElement ? element.getAttribute("href") : null;
+      element instanceof HTMLAnchorElement
+        ? element.getAttribute("href")
+        : null;
     const contactTarget = getContactTarget(href);
     if (contactTarget) {
       payload.target = contactTarget;
@@ -69,16 +46,15 @@ export function ConversionClickTracker() {
       if (!(target instanceof Element)) {
         return;
       }
-      const trackedElement = target.closest<HTMLElement>("[data-analytics-event]");
+      const trackedElement = target.closest<HTMLElement>(
+        "[data-analytics-event]",
+      );
       if (!trackedElement) {
         return;
       }
 
       const rawEventName = trackedElement.dataset.analyticsEvent;
-      if (
-        rawEventName !== "cta_click" &&
-        rawEventName !== "contact_click"
-      ) {
+      if (rawEventName !== "cta_click" && rawEventName !== "contact_click") {
         return;
       }
 
