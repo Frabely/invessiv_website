@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import reviewProjectConsumptionImage from "../../../../../assets/review-project-consumption.png";
 import reviewProjectImage from "../../../../../assets/review-project.png";
-import { Breadcumbs } from "@/components/legal/breadcumbs/breadcumbs";
+import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -71,7 +71,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
         <div className={`layout-shell ${styles.pageShell}`}>
           <section className={styles.pageHero}>
             <div className={styles.breadcrumbs}>
-              <Breadcumbs
+              <Breadcrumbs
                 items={[
                   {
                     href: `/${locale}`,

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Breadcumbs } from "@/components/legal/breadcumbs/breadcumbs";
+import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -67,7 +67,7 @@ export function TermsLayout({
       >
         <div className={styles.inner}>
           <div className={styles.breadcrumbsWrap}>
-            <Breadcumbs
+            <Breadcrumbs
               items={[
                 { href: `/${locale}`, isLink: true, label: homeLabel },
                 { isLink: false, label: title },

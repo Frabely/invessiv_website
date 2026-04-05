@@ -1,18 +1,18 @@
 import Link from "next/link";
-import styles from "./breadcumbs.module.css";
+import styles from "./breadcrumbs.module.css";
 
-export type BreadcumbsItem = {
+export type BreadcrumbsItem = {
   href?: string;
   isLink: boolean;
   label: string;
 };
 
-type BreadcumbsProps = {
-  items: BreadcumbsItem[];
+type BreadcrumbsProps = {
+  items: BreadcrumbsItem[];
   navLabel: string;
 };
 
-export function Breadcumbs({ items, navLabel }: BreadcumbsProps) {
+export function Breadcrumbs({ items, navLabel }: BreadcrumbsProps) {
   return (
     <nav aria-label={navLabel} className={styles.nav}>
       <ol className={styles.list}>
