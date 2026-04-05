@@ -92,12 +92,25 @@ export function HomeSectionsRenderer({
               return (
                 <ProofSection
                   description={section.description}
+                  featuredProjectFallbackLabel={
+                    ui.proofFeaturedProjectFallbackLabel
+                  }
                   featuredProject={section.proofFeaturedProject}
+                  highlightsAriaLabel={ui.proofHighlightsAriaLabel}
                   id={section.id}
                   key={section.id}
+                  moreProjectsFallbackCtaLabel={
+                    ui.proofMoreProjectsFallbackCtaLabel
+                  }
+                  moreProjectsFallbackHref={ui.proofMoreProjectsFallbackHref}
+                  moreProjectsFallbackTitle={ui.proofMoreProjectsFallbackTitle}
                   moreProjects={section.proofMoreProjects}
-                  ratingAriaLabel={section.proofRatingAriaLabel}
-                  reviewLinkLabel={section.proofReviewLinkLabel}
+                  ratingAriaLabel={
+                    section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
+                  }
+                  reviewLinkLabel={
+                    section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
+                  }
                   reviews={section.proofReviews ?? []}
                   summaryPoints={section.summaryPoints}
                   title={section.title}

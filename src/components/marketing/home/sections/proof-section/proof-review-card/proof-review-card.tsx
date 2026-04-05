@@ -1,6 +1,5 @@
 import Image from "next/image";
 import googleIcon from "../../../../../../../assets/google-icon-logo-svgrepo-com.svg";
-import koljaProfile from "../../../../../../../assets/kolja.png";
 import styles from "./proof-review-card.module.css";
 
 type ProofReviewCardProps = {
@@ -44,20 +43,18 @@ export function ProofReviewCard({
   reviewLinkLabel,
   sourceLabel,
 }: ProofReviewCardProps) {
-  const resolvedProfileImageSrc =
-    profileImageSrc === "/assets/kolja.png" ? koljaProfile : profileImageSrc;
   const authorInitials = getAuthorInitials(authorName);
 
   return (
     <article className={styles.card} role="listitem">
       <div className={styles.header}>
         <div className={styles.profileWrap}>
-          {resolvedProfileImageSrc ? (
+          {profileImageSrc ? (
             <Image
               alt=""
               className={styles.profileImage}
               height={56}
-              src={resolvedProfileImageSrc}
+              src={profileImageSrc}
               width={56}
             />
           ) : (

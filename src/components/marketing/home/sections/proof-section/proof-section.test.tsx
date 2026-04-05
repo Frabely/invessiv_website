@@ -13,6 +13,7 @@ describe("ProofSection", () => {
     render(
       <ProofSection
         description="aus realen Web- & Softwareprojekten"
+        featuredProjectFallbackLabel="Umgesetztes Projekt"
         featuredProject={{
           ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
           kicker: "Umgesetztes Projekt",
@@ -22,7 +23,11 @@ describe("ProofSection", () => {
             "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
           meta: "Umgesetzt für Kolja Wienigk",
         }}
+        highlightsAriaLabel="Highlights der Referenzsektion"
         id="proof"
+        moreProjectsFallbackCtaLabel="Projektübersicht öffnen"
+        moreProjectsFallbackHref="/de/projects"
+        moreProjectsFallbackTitle="Projektübersicht"
         moreProjects={{
           title: "Projektübersicht",
           description:

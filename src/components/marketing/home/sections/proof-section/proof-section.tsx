@@ -15,6 +15,7 @@ type ProofReview = {
 
 type ProofSectionProps = {
   description: string;
+  featuredProjectFallbackLabel: string;
   featuredProject?: {
     ariaLabel: string;
     kicker: string;
@@ -22,15 +23,19 @@ type ProofSectionProps = {
     description: string;
     meta: string;
   };
+  highlightsAriaLabel: string;
   id: string;
+  moreProjectsFallbackCtaLabel: string;
+  moreProjectsFallbackHref: string;
+  moreProjectsFallbackTitle: string;
   moreProjects?: {
     ctaLabel: string;
     description: string;
     href: string;
     title: string;
   };
-  ratingAriaLabel?: string;
-  reviewLinkLabel?: string;
+  ratingAriaLabel: string;
+  reviewLinkLabel: string;
   reviews: ProofReview[];
   summaryPoints?: string[];
   title: string;
@@ -38,11 +43,16 @@ type ProofSectionProps = {
 
 export function ProofSection({
   description,
+  featuredProjectFallbackLabel,
   featuredProject,
+  highlightsAriaLabel,
   id,
+  moreProjectsFallbackCtaLabel,
+  moreProjectsFallbackHref,
+  moreProjectsFallbackTitle,
   moreProjects,
-  ratingAriaLabel = "5 out of 5 stars",
-  reviewLinkLabel = "View on Google",
+  ratingAriaLabel,
+  reviewLinkLabel,
   reviews,
   summaryPoints,
   title,
@@ -53,7 +63,7 @@ export function ProofSection({
         <div className={styles.headerCopy}>
           <h2 className={styles.title}>{title}</h2>
           <SectionScanPoints
-            ariaLabel="Proof section highlights"
+            ariaLabel={highlightsAriaLabel}
             fallbackClassName={styles.description}
             fallbackText={description}
             points={summaryPoints}
@@ -79,7 +89,9 @@ export function ProofSection({
         </div>
 
         <article
-          aria-label={featuredProject?.ariaLabel ?? "Featured project"}
+          aria-label={
+            featuredProject?.ariaLabel ?? featuredProjectFallbackLabel
+          }
           className={`${styles.card} ${styles.placeholderCard}`}
           role="listitem"
         >
@@ -103,7 +115,7 @@ export function ProofSection({
           </div>
           <div className={styles.placeholderContent}>
             <p className={styles.placeholderKicker}>
-              {featuredProject?.kicker ?? "Featured project"}
+              {featuredProject?.kicker ?? featuredProjectFallbackLabel}
             </p>
             <h3 className={styles.placeholderTitle}>
               {featuredProject?.title ?? ""}
@@ -121,7 +133,7 @@ export function ProofSection({
       <div className={styles.sectionFooter}>
         <div className={styles.footerTransitionCopy}>
           <p className={styles.footerTransitionKicker}>
-            {moreProjects?.title ?? "More projects"}
+            {moreProjects?.title ?? moreProjectsFallbackTitle}
           </p>
           <p className={styles.footerTransitionText}>
             {moreProjects?.description ?? ""}
@@ -129,10 +141,10 @@ export function ProofSection({
         </div>
         <a
           className={styles.footerTransitionLink}
-          href={moreProjects?.href ?? "/projects"}
+          href={moreProjects?.href ?? moreProjectsFallbackHref}
         >
           <span className={styles.footerTransitionLinkLabel}>
-            {moreProjects?.ctaLabel ?? "View all projects"}
+            {moreProjects?.ctaLabel ?? moreProjectsFallbackCtaLabel}
           </span>
         </a>
       </div>

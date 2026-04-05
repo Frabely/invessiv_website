@@ -302,6 +302,8 @@ Outputs:
 
 - Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
 - Auch kleine, locale-spezifische Marketing-/SEO-Copy (z. B. OpenGraph-Text, Meta-Descriptions, Social-Preview-Copy) wird nicht inline in `.ts`/`.tsx` gepflegt, sondern in separaten locale-Dateien (`*.de.json`, `*.en.json` oder gleichwertig) mit schlankem Loader-Modul
+- Metadata-Title-Konvention (verbindlich): Startseite standardmaessig `Brand | Kernversprechen` (z. B. `Invessiv | Webseiten, Landingpages, ...`), alle Subseiten standardmaessig `Content/Seitenthema | Brand` (z. B. `Projects | Invessiv`, `Privacy | Invessiv`)
+- Title-Struktur nicht zufaellig mischen: die Konvention ist projektweit konsistent umzusetzen; Abweichungen nur mit dokumentierter Begruendung (z. B. Kampagnen-/Brand-Test)
 - Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
 - Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
 - OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten
