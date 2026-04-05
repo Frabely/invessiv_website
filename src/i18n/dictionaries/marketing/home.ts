@@ -67,7 +67,6 @@ type ProofMoreProjects = {
   title: string;
 };
 
-const PROOF_PLACEHOLDER_URL = "https://Kolja-wienigk-finanzmakler.vercel.app";
 const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
 
 export type LandingSectionCopy = {
