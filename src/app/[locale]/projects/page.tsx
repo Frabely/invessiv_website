@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ProjectsPage } from "@/components/marketing/projects/projects-page/projects-page";
 import {
   type Locale,
   isSupportedLocale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
+import { isMarketingProofEnabled } from "@/config/marketing-launch";
 import { getProjectsMetaContent } from "@/i18n/dictionaries/marketing/projects-meta";
 import { getProjectsPageContent } from "@/i18n/dictionaries/marketing/projects";
 import {
@@ -27,6 +28,15 @@ export async function generateMetadata({
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
+  }
+
+  if (!isMarketingProofEnabled()) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
   }
 
   const { title, description, openGraphLocale } =
@@ -53,6 +63,10 @@ export default async function ProjectsLocalePage({
   }
 
   const activeLocale = locale as Locale;
+
+  if (!isMarketingProofEnabled()) {
+    redirect(`/${activeLocale}`);
+  }
 
   return (
     <ProjectsPage

@@ -16,6 +16,7 @@ import type { ValidationResult } from "@/lib/navigation/validate-navigation-sect
 type HomeSectionsRendererProps = {
   sections: HomeSectionContent[];
   servicesSectionRef: RefObject<HTMLElement | null>;
+  showProofSection: boolean;
   ui: HomeUiContent;
   validation: ValidationResult;
 };
@@ -23,6 +24,7 @@ type HomeSectionsRendererProps = {
 export function HomeSectionsRenderer({
   sections,
   servicesSectionRef,
+  showProofSection,
   ui,
   validation,
 }: HomeSectionsRendererProps) {
@@ -83,6 +85,10 @@ export function HomeSectionsRenderer({
             }
 
             if (section.id === "proof") {
+              if (!showProofSection) {
+                return null;
+              }
+
               return (
                 <ProofSection
                   description={section.description}

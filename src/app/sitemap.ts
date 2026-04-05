@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
+import { isMarketingProofEnabled } from "@/config/marketing-launch";
 import { SITE_URL } from "@/lib/site-metadata";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [
+  const entries: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}/de/imprint`,
       lastModified: now,
@@ -27,18 +28,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/de/projects`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${SITE_URL}/en/projects`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
     },
     {
       url: `${SITE_URL}/de/privacy`,
@@ -65,4 +54,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
   ];
+
+  if (isMarketingProofEnabled()) {
+    entries.splice(
+      4,
+      0,
+      {
+        url: `${SITE_URL}/de/projects`,
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.7,
+      },
+      {
+        url: `${SITE_URL}/en/projects`,
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.7,
+      },
+    );
+  }
+
+  return entries;
 }

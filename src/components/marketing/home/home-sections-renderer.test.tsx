@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import "@testing-library/jest-dom/vitest";
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -153,6 +154,7 @@ describe("HomeSectionsRenderer", () => {
       <HomeSectionsRenderer
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
+        showProofSection={true}
         ui={getHomeUiContent("de")}
         validation={{
           hasCompleteMapping: true,
@@ -176,5 +178,43 @@ describe("HomeSectionsRenderer", () => {
       screen.getByRole("option", { name: "Wartung & Support" }),
     ).toBeTruthy();
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
+  });
+
+  it("does not render the proof section while the launch flag is disabled", () => {
+    render(
+      <HomeSectionsRenderer
+        sections={[
+          ...sections,
+          {
+            id: "proof",
+            title: "Was Kunden über die Zusammenarbeit sagen",
+            description: "aus realen Projekten",
+            proofReviews: [
+              {
+                authorName: "Kolja Wienigk",
+                context: "Finanzmakler aus Dresden",
+                excerpt: "Klare Struktur.",
+                reviewHref: "https://example.com",
+                sourceLabel: "Google Bewertung",
+              },
+            ],
+          },
+        ]}
+        servicesSectionRef={createRef<HTMLElement>()}
+        showProofSection={false}
+        ui={getHomeUiContent("de")}
+        validation={{
+          hasCompleteMapping: true,
+          missingInNavigation: [],
+          missingInSections: [],
+        }}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Was Kunden über die Zusammenarbeit sagen",
+      }),
+    ).not.toBeInTheDocument();
   });
 });
