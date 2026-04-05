@@ -80,7 +80,7 @@ const formCopyFixture = {
   submitErrorValidation: "Bitte Eingaben prüfen",
   validationSummaryPrefix: "Bitte prüfen:",
   fieldErrorInvalidEmail: "Ungültige E-Mail",
-  fieldErrorInvalidWebsite: "Ungültige Website",
+  fieldErrorInvalidWebsite: "Ungültige Webseite",
   fieldErrorRequired: "Pflichtfeld",
   fieldErrorProjectDetailsRequired: "Projekt erforderlich",
   fieldErrorPagesRequired: "Seiten erforderlich",
@@ -92,8 +92,8 @@ const formCopyFixture = {
   submittingLabel: "Wird gesendet",
   subtitle: "Rahmen",
   title: "Projektanfrage",
-  websiteLabel: "Website",
-  websiteRequiredHint: "Website erforderlich",
+  websiteLabel: "Webseite",
+  websiteRequiredHint: "Webseite erforderlich",
   workflowLabel: "Workflows",
   workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
 };
@@ -187,7 +187,7 @@ describe("ProjectRequestForm", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Website\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Webseite\*/ }), {
       target: { value: "https://example.com" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {

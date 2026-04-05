@@ -43,11 +43,42 @@ type ContactFormOption = {
   label: string;
 };
 
+type ProofReview = {
+  authorName: string;
+  context: string;
+  excerpt: string;
+  profileImageSrc?: string;
+  reviewHref: string;
+  sourceLabel: string;
+};
+
+type ProofFeaturedProject = {
+  ariaLabel: string;
+  kicker: string;
+  title: string;
+  description: string;
+  meta: string;
+};
+
+type ProofMoreProjects = {
+  ctaLabel: string;
+  description: string;
+  href: string;
+  title: string;
+};
+
+const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
+
 export type LandingSectionCopy = {
   title: string;
   description: string;
   summaryPoints?: string[];
   cards?: Array<{ title: string; description: string; tag: string }>;
+  proofRatingAriaLabel?: string;
+  proofReviewLinkLabel?: string;
+  proofReviews?: ProofReview[];
+  proofFeaturedProject?: ProofFeaturedProject;
+  proofMoreProjects?: ProofMoreProjects;
   serviceCards?: StandardServiceCard[];
   serviceSecondaryTitle?: string;
   serviceContextNote?: string;
@@ -299,6 +330,102 @@ const HOME_SECTIONS: LandingSection[] = [
     },
   },
   {
+    id: "proof",
+    copy: {
+      de: {
+        title: "Was Kunden über die Zusammenarbeit sagen",
+        description: "aus realen Web- & Softwareprojekten",
+        summaryPoints: [
+          "5,0 ★★★★★ bei Google",
+          "echte Kundenstimmen",
+          "klare Ergebnisse",
+        ],
+        proofRatingAriaLabel: "5 von 5 Sternen",
+        proofReviewLinkLabel: "Bei Google ansehen",
+        proofFeaturedProject: {
+          ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
+          kicker: "Umgesetztes Projekt",
+          title:
+            "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
+          description:
+            "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
+          meta: "Umgesetzt für Kolja Wienigk",
+        },
+        proofMoreProjects: {
+          title: "Projektübersicht",
+          description:
+            "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
+          ctaLabel: "Projektübersicht öffnen",
+          href: "/de/projects",
+        },
+        proofReviews: [
+          {
+            authorName: "Kolja Wienigk",
+            context: "Finanzmakler aus Dresden",
+            excerpt:
+              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+            profileImageSrc: "/assets/kolja.png",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
+            sourceLabel: "Google Bewertung",
+          },
+          {
+            authorName: "Andreas H.",
+            context: "Chemnitz",
+            excerpt:
+              "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
+            sourceLabel: "Google Bewertung",
+          },
+        ],
+      },
+      en: {
+        title: "What clients say about working together",
+        description: "from real web and software projects",
+        summaryPoints: [
+          "5.0 ★★★★★ on Google",
+          "real client reviews",
+          "clear outcomes",
+        ],
+        proofRatingAriaLabel: "5 out of 5 stars",
+        proofReviewLinkLabel: "View on Google",
+        proofFeaturedProject: {
+          ariaLabel: "Delivered project for Kolja Wienigk",
+          kicker: "Delivered project",
+          title: "New website for a financial broker with clear positioning",
+          description:
+            "This is the project delivered for Kolja: a calm, trustworthy presence with a clear offer structure, guided flow, and a homepage that makes the services easy to understand right away.",
+          meta: "Delivered for Kolja Wienigk",
+        },
+        proofMoreProjects: {
+          title: "Project overview",
+          description:
+            "In the project overview, there is currently one more delivered example.",
+          ctaLabel: "Open project overview",
+          href: "/en/projects",
+        },
+        proofReviews: [
+          {
+            authorName: "Kolja Wienigk",
+            context: "Financial broker from Dresden",
+            excerpt:
+              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
+            profileImageSrc: "/assets/kolja.png",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
+            sourceLabel: "Google review",
+          },
+          {
+            authorName: "Andreas H.",
+            context: "Chemnitz",
+            excerpt:
+              "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
+            sourceLabel: "Google review",
+          },
+        ],
+      },
+    },
+  },
+  {
     id: "services",
     copy: {
       de: {
@@ -346,7 +473,7 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
             description:
-              "Website-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
+              "Webseiten-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
             highlight: "klarer professioneller Auftritt",
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -392,8 +519,8 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Website-Upgrade Icon",
-            title: "Website-Upgrade",
+            iconAlt: "Webseiten-Upgrade Icon",
+            title: "Webseiten-Upgrade",
             description:
               "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
@@ -711,7 +838,7 @@ const HOME_SECTIONS: LandingSection[] = [
               "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung.",
           },
           {
-            question: "Kannst du meine bestehende Website überarbeiten?",
+            question: "Kannst du meine bestehende Webseite überarbeiten?",
             answer:
               "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
           },
@@ -822,7 +949,7 @@ const HOME_SECTIONS: LandingSection[] = [
           "In der Regel Rückmeldung innerhalb von 24h",
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
-        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
         footerHeroDescription:
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {
@@ -947,9 +1074,9 @@ const HOME_SECTIONS: LandingSection[] = [
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
-          websiteLabel: "Aktuelle Website",
+          websiteLabel: "Aktuelle Webseite",
           websiteRequiredHint:
-            "Bei Website-Upgrade, Webseiten und Wartung ist die aktuelle Website erforderlich.",
+            "Bei Webseiten-Upgrade, Webseiten und Wartung ist die aktuelle Webseite erforderlich.",
           offerLabel: "Passendes Leistungsmodell",
           offerPlaceholder: "Bitte Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
@@ -1024,7 +1151,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
           validationSummaryPrefix: "Bitte korrigiere dieses Feld",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorInvalidWebsite: "Bitte gib eine gültige Website-URL ein.",
+          fieldErrorInvalidWebsite: "Bitte gib eine gültige Webseiten-URL ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorProjectDetailsRequired:
             "Bitte gib eine kurze Projektbeschreibung ein.",
@@ -1274,7 +1401,7 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Footer",
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
-        footerHeroTitle: "Bereit für eine neue, produktive Website?",
+        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
         footerHeroDescription:
           "Kontaktiere mich und starte dein Projekt mit Invessiv.",
         footerHeroPrimaryCta: {

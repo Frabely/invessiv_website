@@ -33,7 +33,7 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     recommendedBadge: "Empfohlen",
     secondarySectionTitle:
       "Schon etwas da? Oder brauchst du Unterstützung danach?",
-    upgradeTitle: "Website-Upgrade",
+    upgradeTitle: "Webseiten-Upgrade",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
     privacyHref: "/de/privacy",

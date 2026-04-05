@@ -14,7 +14,7 @@
         "phone": "Telefon",
         "preferredStartKey": "Gewünschter Start",
         "role": "Rolle",
-        "website": "Website",
+        "website": "Webseite",
         "workflowKey": "Anzahl Kern-Workflows"
       },
       "subjectPrefix": "Projektanfrage",
@@ -37,7 +37,7 @@
           "landing": "Landingpages",
           "maintenance": "Wartung & Support",
           "process": "Prozess-Tools",
-          "upgrade": "Website-Upgrade",
+          "upgrade": "Webseiten-Upgrade",
           "web": "Webseiten"
         },
         "pageKeys": {

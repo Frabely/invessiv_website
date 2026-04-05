@@ -1,0 +1,77 @@
+{
+  "breadcrumbs": {
+    "navLabel": "Breadcrumb navigation",
+    "homeLabel": "Home",
+    "currentLabel": "Projects"
+  },
+  "hero": {
+    "kicker": "Delivered projects",
+    "title": "Websites and tools that create orientation instead of just looking polished.",
+    "intro": "This page shows delivered projects that reflect the same delivery standard: clear guidance, calm structure, and implementation that stays understandable in day-to-day use.",
+    "highlights": ["2 live projects", "website + software", "more to follow"],
+    "supportingNote": "More projects will be added here as they are delivered. The stronger signal is how positioning, reading flow, and usability work together."
+  },
+  "sectionIntro": {
+    "eyebrow": "Project overview",
+    "title": "Delivered projects with a clear focus on usefulness and outcome.",
+    "description": "Each project is framed as a compact case study with context, focus, concrete deliverables, and the outcome that makes the page or tool easier to use."
+  },
+  "projects": [
+    {
+      "imageKey": "broker",
+      "imageAlt": "Preview of a financial broker website with clear structure",
+      "kicker": "Website project",
+      "category": "Positioning & inquiries",
+      "title": "Financial broker website with clear positioning",
+      "summary": "A calm, trustworthy presence for a financial broker that makes the service offer easy to understand, establishes clear entry points, and prepares inquiries in a structured way.",
+      "focusLabel": "Project focus",
+      "focus": "Build trust, organise the offer clearly, and guide visitors toward the right inquiry path without friction.",
+      "deliverablesLabel": "Delivery blocks",
+      "deliverables": [
+        "sharpened positioning and page entry",
+        "clear offer and CTA hierarchy",
+        "calm, mobile-ready reading flow"
+      ],
+      "outcomesLabel": "What the result improves",
+      "outcomes": [
+        "makes the offer easier to understand immediately",
+        "reduces visual noise in favour of orientation",
+        "guides inquiries into contact more clearly"
+      ],
+      "linkLabel": "Visit website",
+      "href": "https://mywebpage-480c1.web.app"
+    },
+    {
+      "imageKey": "consumption",
+      "imageAlt": "Preview of a tool for consumption data capture",
+      "kicker": "Software project",
+      "category": "Data capture & consumption",
+      "title": "Consumption trial for structured usage data capture",
+      "summary": "A focused tool that brings technical data and consumption figures into one clear interface, simplifies inputs, and makes the ongoing workflow easier to read.",
+      "focusLabel": "Project focus",
+      "focus": "Reduce friction in repeated inputs, surface status clearly, and turn technical data into a practical working interface.",
+      "deliverablesLabel": "Delivery blocks",
+      "deliverables": [
+        "compact input logic with less friction",
+        "clear interface for technical consumption data",
+        "better readability across the active workflow"
+      ],
+      "outcomesLabel": "What the result improves",
+      "outcomes": [
+        "cuts manual effort during capture",
+        "makes usage data faster to interpret",
+        "brings structure to the process in one clear UI"
+      ],
+      "linkLabel": "Open project",
+      "href": "https://consumption-trial.invessiv.com/"
+    }
+  ],
+  "closingCta": {
+    "title": "If your next project needs the same level of clarity, the next step stays short.",
+    "supportingText": "Whether it is a new website, a relaunch, or an internal tool, the strongest leverage comes from clear guidance before the first build, not louder visuals.",
+    "primaryLabel": "Start a project request",
+    "primaryHref": "/en#contact",
+    "secondaryLabel": "View service models",
+    "secondaryHref": "/en#services"
+  }
+}

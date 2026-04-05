@@ -15,7 +15,13 @@ import { useAnchorOffsetScroll } from "@/hooks/marketing/use-anchor-offset-scrol
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 
-export function MarketingHomePageClient() {
+type MarketingHomePageClientProps = {
+  showProofSection: boolean;
+};
+
+export function MarketingHomePageClient({
+  showProofSection,
+}: MarketingHomePageClientProps) {
   const { locale } = useLanguage();
   const servicesSectionRef = useRef<HTMLElement | null>(null);
   const sections = getHomeSections(locale);
@@ -54,6 +60,7 @@ export function MarketingHomePageClient() {
         <HomeSectionsRenderer
           sections={sections}
           servicesSectionRef={servicesSectionRef}
+          showProofSection={showProofSection}
           ui={ui}
           validation={validation}
         />

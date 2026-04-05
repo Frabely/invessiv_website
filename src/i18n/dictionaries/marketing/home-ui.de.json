@@ -10,6 +10,13 @@
   "heroTag": "KLARER AUFBAU, DIREKTE UMSETZUNG",
   "heroVisualAriaLabel": "Live Performance Einblick",
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
+  "proofFeaturedProjectFallbackLabel": "Umgesetztes Projekt",
+  "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
+  "proofMoreProjectsFallbackCtaLabel": "Projektübersicht öffnen",
+  "proofMoreProjectsFallbackHref": "/de/projects",
+  "proofMoreProjectsFallbackTitle": "Projektübersicht",
+  "proofRatingAriaLabel": "5 von 5 Sternen",
+  "proofReviewLinkLabel": "Bei Google ansehen",
   "includedContent": {
     "title": "Vom ersten Rahmen bis zur Übergabe",
     "summaryPoints": [

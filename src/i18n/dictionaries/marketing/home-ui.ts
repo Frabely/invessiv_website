@@ -17,6 +17,13 @@ export type HomeUiContent = {
   heroTag: string;
   heroVisualAriaLabel: string;
   mappingWarning: string;
+  proofFeaturedProjectFallbackLabel: string;
+  proofHighlightsAriaLabel: string;
+  proofMoreProjectsFallbackCtaLabel: string;
+  proofMoreProjectsFallbackHref: string;
+  proofMoreProjectsFallbackTitle: string;
+  proofRatingAriaLabel: string;
+  proofReviewLinkLabel: string;
   servicesAddonBadgeLabel: string;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;

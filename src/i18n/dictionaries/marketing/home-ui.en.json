@@ -10,6 +10,13 @@
   "heroTag": "CLEAR STRUCTURE, DIRECT EXECUTION",
   "heroVisualAriaLabel": "Live performance snapshot",
   "mappingWarning": "Navigation/section mapping is incomplete.",
+  "proofFeaturedProjectFallbackLabel": "Featured project",
+  "proofHighlightsAriaLabel": "Proof section highlights",
+  "proofMoreProjectsFallbackCtaLabel": "View all projects",
+  "proofMoreProjectsFallbackHref": "/en/projects",
+  "proofMoreProjectsFallbackTitle": "More projects",
+  "proofRatingAriaLabel": "5 out of 5 stars",
+  "proofReviewLinkLabel": "View on Google",
   "includedContent": {
     "title": "From first outline to handoff",
     "summaryPoints": [

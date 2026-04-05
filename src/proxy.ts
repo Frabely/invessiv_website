@@ -1,15 +1,20 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { isMarketingProofEnabled } from "@/config/marketing-launch";
 
 const LEGACY_REDIRECTS: Record<string, string> = {
   "/": "/de",
   "/imprint": "/de/imprint",
+  "/projects": "/de",
   "/privacy": "/de/privacy",
   "/terms": "/de/terms",
 };
 
 export function proxy(request: NextRequest) {
-  const targetPath = LEGACY_REDIRECTS[request.nextUrl.pathname];
+  const targetPath =
+    request.nextUrl.pathname === "/projects" && isMarketingProofEnabled()
+      ? "/de/projects"
+      : LEGACY_REDIRECTS[request.nextUrl.pathname];
 
   if (!targetPath) {
     return NextResponse.next();
@@ -22,5 +27,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/imprint", "/privacy", "/terms"],
+  matcher: ["/", "/imprint", "/projects", "/privacy", "/terms"],
 };

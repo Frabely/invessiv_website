@@ -4,6 +4,7 @@ import { ContactSection } from "@/components/marketing/home/sections/contact-sec
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { IncludedSection } from "@/components/marketing/home/sections/included-section/included-section";
 import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
+import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
@@ -15,6 +16,7 @@ import type { ValidationResult } from "@/lib/navigation/validate-navigation-sect
 type HomeSectionsRendererProps = {
   sections: HomeSectionContent[];
   servicesSectionRef: RefObject<HTMLElement | null>;
+  showProofSection: boolean;
   ui: HomeUiContent;
   validation: ValidationResult;
 };
@@ -22,6 +24,7 @@ type HomeSectionsRendererProps = {
 export function HomeSectionsRenderer({
   sections,
   servicesSectionRef,
+  showProofSection,
   ui,
   validation,
 }: HomeSectionsRendererProps) {
@@ -76,6 +79,40 @@ export function HomeSectionsRenderer({
                   serviceCards={section.serviceCards ?? []}
                   serviceContextNote={section.serviceContextNote}
                   serviceSecondaryTitle={section.serviceSecondaryTitle}
+                  title={section.title}
+                />
+              );
+            }
+
+            if (section.id === "proof") {
+              if (!showProofSection) {
+                return null;
+              }
+
+              return (
+                <ProofSection
+                  description={section.description}
+                  featuredProjectFallbackLabel={
+                    ui.proofFeaturedProjectFallbackLabel
+                  }
+                  featuredProject={section.proofFeaturedProject}
+                  highlightsAriaLabel={ui.proofHighlightsAriaLabel}
+                  id={section.id}
+                  key={section.id}
+                  moreProjectsFallbackCtaLabel={
+                    ui.proofMoreProjectsFallbackCtaLabel
+                  }
+                  moreProjectsFallbackHref={ui.proofMoreProjectsFallbackHref}
+                  moreProjectsFallbackTitle={ui.proofMoreProjectsFallbackTitle}
+                  moreProjects={section.proofMoreProjects}
+                  ratingAriaLabel={
+                    section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
+                  }
+                  reviewLinkLabel={
+                    section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
+                  }
+                  reviews={section.proofReviews ?? []}
+                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );

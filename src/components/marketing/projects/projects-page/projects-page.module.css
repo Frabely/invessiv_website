@@ -1,0 +1,709 @@
+.pageShell.pageShell {
+  padding-top: 106px;
+  padding-bottom: 56px;
+}
+
+.pageHero {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  padding-bottom: 12px;
+}
+
+.breadcrumbs {
+  margin-bottom: 2px;
+}
+
+.heroGrid {
+  display: grid;
+  gap: 22px;
+}
+
+.heroContent,
+.heroAside,
+.projectLead,
+.projectVisual,
+.projectMeta {
+  position: relative;
+  z-index: 1;
+}
+
+.heroContent {
+  display: grid;
+  gap: 18px;
+}
+
+.heroAside {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border) 84%);
+  border-radius: 24px;
+  background: color-mix(
+    in srgb,
+    var(--surface) 82%,
+    rgba(255, 255, 255, 0.03) 18%
+  );
+}
+
+.kicker,
+.title,
+.intro,
+.supportingNote,
+.sectionEyebrow,
+.sectionTitle,
+.sectionDescription,
+.projectKicker,
+.projectCategory,
+.projectTitle,
+.projectSummary,
+.detailLabel,
+.focusText,
+.closingTitle,
+.closingText {
+  margin: 0;
+}
+
+.kicker,
+.sectionEyebrow {
+  width: fit-content;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--accent) 14%, transparent),
+    color-mix(in srgb, var(--surface) 78%, transparent)
+  );
+  color: color-mix(in srgb, var(--text) 84%, var(--accent) 16%);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 32px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 5.3vw, 4.85rem);
+  line-height: 0.94;
+  letter-spacing: -0.058em;
+  text-wrap: balance;
+}
+
+.intro,
+.sectionDescription,
+.projectSummary,
+.focusText,
+.closingText {
+  color: color-mix(in srgb, var(--text) 78%, var(--muted) 22%);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.intro {
+  max-width: 62ch;
+}
+
+.supportingNote {
+  max-width: 58ch;
+  color: color-mix(in srgb, var(--text) 64%, var(--muted) 36%);
+  font-size: 0.94rem;
+  line-height: 1.62;
+}
+
+.sectionTitle,
+.closingTitle {
+  font-size: clamp(1.45rem, 2.4vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.pageHero :global(.section-scan-points--hero) {
+  margin: 0;
+}
+
+.projectsSection {
+  display: grid;
+  gap: 28px;
+  padding-bottom: 36px;
+}
+
+.projectsGrid {
+  display: grid;
+  gap: 24px;
+}
+
+.projectCard {
+  position: relative;
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+  border-radius: 32px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04), transparent 38%),
+    radial-gradient(
+      circle at top right,
+      rgba(240, 166, 43, 0.08),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--surface) 94%, rgba(255, 255, 255, 0.03) 6%),
+      color-mix(in srgb, #110b08 92%, rgba(255, 255, 255, 0.01) 8%)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 22px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.projectCard::before,
+.closingCta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05),
+    transparent 34%,
+    rgba(255, 255, 255, 0.01)
+  );
+  pointer-events: none;
+}
+
+.projectLead {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.projectHeader {
+  display: grid;
+  gap: 6px;
+}
+
+.projectKicker {
+  color: color-mix(in srgb, var(--accent) 76%, var(--text) 24%);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.projectCategory,
+.detailLabel {
+  color: color-mix(in srgb, var(--text) 62%, var(--muted) 38%);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.projectTitle {
+  max-width: 18ch;
+  font-size: clamp(1.55rem, 2.2vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.focusBlock,
+.detailBlock {
+  display: grid;
+  gap: 10px;
+}
+
+.projectVisual {
+  display: grid;
+  justify-items: center;
+}
+
+.projectMediaColumn {
+  display: grid;
+  gap: 12px;
+}
+
+.browserFrame {
+  position: relative;
+  display: grid;
+  width: min(100%, 360px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid
+    color-mix(in srgb, rgba(255, 255, 255, 0.2) 40%, transparent);
+  border-radius: 38px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #3c3027 74%, rgba(255, 255, 255, 0.08) 26%),
+    color-mix(in srgb, #120c09 94%, black 6%)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 40px rgba(0, 0, 0, 0.24);
+}
+
+.browserFrame[data-device="browser"] {
+  width: min(100%, 548px);
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0;
+  border: 1px solid
+    color-mix(in srgb, rgba(255, 255, 255, 0.12) 35%, var(--border) 65%);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #261913 88%, rgba(255, 255, 255, 0.03) 12%),
+    color-mix(in srgb, #16100d 96%, black 4%)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 22px 36px rgba(0, 0, 0, 0.2),
+    0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.browserFrame[data-device="browser"]::before {
+  content: "";
+  position: absolute;
+  inset: 1px 1px auto;
+  height: 14px;
+  border-radius: 17px 17px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
+.browserChrome {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 4px 10px 8px;
+}
+
+.browserFrame[data-device="browser"] .browserChrome {
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #261913 82%, rgba(255, 255, 255, 0.04) 18%),
+    color-mix(in srgb, #18110d 95%, rgba(255, 255, 255, 0.01) 5%)
+  );
+}
+
+.chromeDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f0a62b 88%, white 12%),
+    color-mix(in srgb, #9b5f16 84%, black 16%)
+  );
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.chromeBar {
+  position: relative;
+  width: min(100%, 210px);
+  height: 14px;
+  margin-left: 16px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, rgba(255, 255, 255, 0.08) 55%, #231914 45%),
+    color-mix(in srgb, #130d0a 92%, rgba(255, 255, 255, 0.02) 8%)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+}
+
+.chromeBar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 245, 236, 0.45);
+  transform: translateY(-50%);
+}
+
+.phoneStatusMeta,
+.phoneStatusIcons {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.phoneStatusMeta {
+  justify-self: start;
+}
+
+.phoneStatusIcons {
+  justify-self: end;
+  gap: 6px;
+}
+
+.phoneTime {
+  color: rgba(255, 245, 236, 0.92);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.phoneIsland {
+  justify-self: center;
+  width: 38%;
+  max-width: 118px;
+  min-width: 92px;
+  height: 22px;
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle at 30% 50%,
+      rgba(255, 255, 255, 0.08),
+      transparent 28%
+    ),
+    linear-gradient(180deg, rgba(37, 31, 29, 0.96), rgba(8, 8, 8, 0.98));
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.phoneSignal,
+.phoneWifi,
+.phoneBattery {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.phoneSignal {
+  width: 13px;
+  height: 10px;
+  background:
+    linear-gradient(rgba(255, 245, 236, 0.92), rgba(255, 245, 236, 0.92)) 0
+      100% / 2px 3px no-repeat,
+    linear-gradient(rgba(255, 245, 236, 0.92), rgba(255, 245, 236, 0.92)) 4px
+      100% / 2px 5px no-repeat,
+    linear-gradient(rgba(255, 245, 236, 0.92), rgba(255, 245, 236, 0.92)) 8px
+      100% / 2px 7px no-repeat,
+    linear-gradient(rgba(255, 245, 236, 0.92), rgba(255, 245, 236, 0.92)) 12px
+      100% / 2px 9px no-repeat;
+  border-radius: 1px;
+}
+
+.phoneWifi {
+  width: 13px;
+  height: 10px;
+  background: radial-gradient(
+      circle,
+      rgba(255, 245, 236, 0.92) 0 1.4px,
+      transparent 1.6px
+    )
+    50% 100% / 4px 4px no-repeat;
+}
+
+.phoneWifi::before,
+.phoneWifi::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  border: 1.6px solid rgba(255, 245, 236, 0.92);
+  border-radius: 999px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.phoneWifi::before {
+  bottom: 1px;
+  width: 10px;
+  height: 10px;
+}
+
+.phoneWifi::after {
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+}
+
+.phoneBattery {
+  width: 16px;
+  height: 9px;
+  border: 1.5px solid rgba(255, 245, 236, 0.88);
+  border-radius: 3px;
+}
+
+.phoneBattery::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -3px;
+  width: 2px;
+  height: 5px;
+  border-radius: 1px;
+  background: rgba(255, 245, 236, 0.88);
+}
+
+.phoneBattery::after {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  border-radius: 1.5px;
+  background: linear-gradient(90deg, #c4ff9f, #f5e9d8);
+}
+
+.browserViewport {
+  overflow: hidden;
+  margin: 0 2px;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(14, 9, 8, 0.72), rgba(14, 9, 8, 0.18)),
+    color-mix(in srgb, #130b07 92%, black 8%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.browserFrame[data-device="browser"] .browserViewport {
+  margin: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
+    color-mix(in srgb, #130b07 92%, black 8%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+}
+
+.projectImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.phoneHomeIndicator {
+  justify-self: center;
+  width: 34%;
+  max-width: 110px;
+  height: 5px;
+  margin: 10px 0 2px;
+  border-radius: 999px;
+  background: rgba(255, 245, 236, 0.88);
+  opacity: 0.92;
+}
+
+.projectMeta {
+  display: grid;
+  gap: 18px;
+  padding-top: 4px;
+}
+
+.detailList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.detailList li {
+  position: relative;
+  padding-left: 18px;
+  color: color-mix(in srgb, var(--text) 80%, var(--muted) 20%);
+  line-height: 1.6;
+}
+
+.detailList li::before {
+  content: "";
+  position: absolute;
+  top: 0.68em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), rgba(255, 232, 205, 0.7));
+  box-shadow: 0 0 0 4px rgba(240, 166, 43, 0.12);
+  transform: translateY(-50%);
+}
+
+.projectLink {
+  width: fit-content;
+  text-decoration: none;
+}
+
+.projectLink {
+  color: color-mix(in srgb, var(--accent) 82%, #ffe8cd 18%);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.projectLinkLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.projectLinkLabel::after {
+  content: "→";
+  font-size: 0.92em;
+  transition: transform 180ms ease;
+}
+
+.projectLink:hover .projectLinkLabel::after,
+.projectLink:focus-visible .projectLinkLabel::after {
+  transform: translateX(2px);
+}
+
+.closingCta {
+  display: grid;
+  gap: 24px;
+  padding: 0;
+}
+
+.closingCopy {
+  display: grid;
+  gap: 12px;
+  max-width: 60rem;
+}
+
+.closingActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+    align-items: end;
+    gap: 28px;
+  }
+
+  .projectCard {
+    grid-template-columns: minmax(0, 0.88fr) minmax(340px, 0.78fr) minmax(
+        0,
+        0.84fr
+      );
+    align-items: start;
+    gap: 26px;
+  }
+
+  .projectCard[data-layout="reverse"] {
+    grid-template-columns: minmax(0, 0.84fr) minmax(340px, 0.78fr) minmax(
+        0,
+        0.88fr
+      );
+  }
+
+  .projectCard[data-layout="reverse"] .projectLead {
+    order: 1;
+  }
+
+  .projectCard[data-layout="reverse"] .projectVisual {
+    order: 2;
+  }
+
+  .projectCard[data-layout="reverse"] .projectMeta {
+    order: 3;
+  }
+
+  .projectCard[data-project="broker"] {
+    grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
+    align-items: start;
+    column-gap: 28px;
+    row-gap: 24px;
+  }
+
+  .projectCard[data-project="broker"] .projectLead {
+    grid-column: 1;
+    padding-right: 8px;
+  }
+
+  .projectCard[data-project="broker"] .projectMediaColumn {
+    grid-column: 2;
+    align-content: start;
+  }
+
+  .projectCard[data-project="broker"] .projectVisual {
+    justify-items: stretch;
+  }
+
+  .projectCard[data-project="broker"] .browserFrame {
+    width: 100%;
+  }
+
+  .projectCard[data-project="broker"] .projectMeta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 24px;
+    align-items: start;
+    padding-top: 0;
+  }
+
+  .projectCard[data-project="broker"] .projectMeta .projectLink {
+    grid-column: 1 / -1;
+    margin-top: 2px;
+  }
+
+  .closingCta {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 32px;
+  }
+
+  .closingActions {
+    align-self: end;
+  }
+}
+
+@media (max-width: 900px) {
+  .pageShell.pageShell {
+    padding-top: 96px;
+  }
+
+  .pageHero {
+    padding-bottom: 0;
+  }
+
+  .heroGrid,
+  .projectCard {
+    padding: 20px;
+    border-radius: 26px;
+  }
+
+  .title {
+    max-width: 11ch;
+    font-size: clamp(2.1rem, 10vw, 3.4rem);
+  }
+
+  .projectTitle {
+    max-width: none;
+  }
+
+  .browserFrame {
+    width: min(100%, 320px);
+  }
+
+  .browserFrame[data-device="browser"] {
+    width: min(100%, 480px);
+  }
+}

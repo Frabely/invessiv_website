@@ -120,11 +120,13 @@ describe("TermsPage", () => {
     ).toBeTruthy();
     expect(
       screen.getByText(
-        /Die Website ermöglicht keinen unmittelbaren verbindlichen Vertragsabschluss\./,
+        /Die Webseite ermöglicht keinen unmittelbaren verbindlichen Vertragsabschluss\./,
       ),
     ).toBeTruthy();
     expect(
-      screen.getByText(/eingehende Anfragen, zugehörige Kommunikationsdaten und Bearbeitungsstände intern zu dokumentieren/),
+      screen.getByText(
+        /eingehende Anfragen, zugehörige Kommunikationsdaten und Bearbeitungsstände intern zu dokumentieren/,
+      ),
     ).toBeTruthy();
     expect(
       screen.getByText(/ausnahmsweise Verträge mit Verbrauchern/),

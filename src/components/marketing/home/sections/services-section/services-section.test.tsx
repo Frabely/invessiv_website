@@ -54,7 +54,7 @@ const serviceCards = [
     key: "upgrade" as const,
     iconSrc: "/services/upgrade-icon.svg",
     iconAlt: "Upgrade Icon",
-    title: "Website-Upgrade",
+    title: "Webseiten-Upgrade",
     description: "Bestehendes verbessern.",
     fit: "Für Seiten mit Potenzial.",
     highlight: "spürbare UX- und Speed-Verbesserung",
@@ -185,7 +185,7 @@ describe("ServicesSection", () => {
     ).toBe("landing");
     expect(
       within(
-        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+        screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
       )
         .getByRole("link", { name: "Upgrade anfragen" })
         .getAttribute("data-project-offer"),
@@ -241,7 +241,7 @@ describe("ServicesSection", () => {
     ).toBe("interne Abläufe vereinfachen");
     expect(
       within(
-        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+        screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
       ).getByRole("link", { name: "Upgrade anfragen" }),
     ).toBeTruthy();
   });
@@ -296,7 +296,7 @@ describe("ServicesSection", () => {
 
     expect(
       within(
-        screen.getByText("Website-Upgrade").closest("article") as HTMLElement,
+        screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
       ).getByRole("link", { name: "Upgrade anfragen" }),
     ).toBeTruthy();
     expect(
@@ -306,7 +306,7 @@ describe("ServicesSection", () => {
     ).toBeTruthy();
     expect(
       screen
-        .getByText("Website-Upgrade")
+        .getByText("Webseiten-Upgrade")
         .closest("article")
         ?.getAttribute("data-selected"),
     ).toBeNull();

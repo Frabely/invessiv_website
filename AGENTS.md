@@ -249,6 +249,7 @@ Outputs:
 - Pro Komponente im Ordner mindestens: `component-name.tsx`; bei eigenen Styles `component-name.css` (oder `.scss`), bei relevanter Logik `component-name.test.ts(x)`
 - Die Hauptdatei der Komponente nutzt denselben Namen wie der Ordner (z. B. `hero-section/hero-section.tsx`)
 - Breadcrumbs werden immer über eine zentrale, wiederverwendbare Komponente umgesetzt; Seiten bauen Breadcrumb-Markup nicht lokal in `page.tsx`/Layouts nach
+- Standard für das Projekt ist `src/components/legal/breadcumbs/breadcumbs.tsx`; neue oder überarbeitete Breadcrumbs müssen diese Komponente verwenden oder sie zentral erweitern, statt Varianten lokal neu zu bauen
 - Styling für Komponenten wird nicht im `.tsx` gepflegt, sondern immer in separaten Style-Dateien (`.css` oder `.scss`)
 - `src/app/globals.css` bleibt bewusst schlank: nur globale Tokens, Reset/Base-Layer, Theme-Variablen und wirklich globale Utilities
 - Section-/Seiten-spezifische Styles (z. B. Hero, einzelne Landing-Sections, komponentenspezifische States) gehören in route- oder komponentennahe Style-Dateien; keine dauerhafte Ablage solcher Styles in `globals.css`
@@ -301,6 +302,8 @@ Outputs:
 
 - Copy nicht direkt in Komponenten pflegen; Inhalte über strukturierte Content-Dateien oder klaren Config-Layer verwalten
 - Auch kleine, locale-spezifische Marketing-/SEO-Copy (z. B. OpenGraph-Text, Meta-Descriptions, Social-Preview-Copy) wird nicht inline in `.ts`/`.tsx` gepflegt, sondern in separaten locale-Dateien (`*.de.json`, `*.en.json` oder gleichwertig) mit schlankem Loader-Modul
+- Metadata-Title-Konvention (verbindlich): Startseite standardmaessig `Brand | Kernversprechen` (z. B. `Invessiv | Webseiten, Landingpages, ...`), alle Subseiten standardmaessig `Content/Seitenthema | Brand` (z. B. `Projects | Invessiv`, `Privacy | Invessiv`)
+- Title-Struktur nicht zufaellig mischen: die Konvention ist projektweit konsistent umzusetzen; Abweichungen nur mit dokumentierter Begruendung (z. B. Kampagnen-/Brand-Test)
 - Jede Landing erhält ein primäres Keyword-Cluster und eine klare Suchintention (informational/commercial)
 - Genau eine H1 pro Seite; H2/H3 nur zur inhaltlichen Gliederung, nicht rein für visuelle Größen
 - OG-Bilder pro Template/Offer vorsehen (Fallback erlaubt), um Shares konsistent zu halten

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 
+import "@testing-library/jest-dom/vitest";
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -28,7 +29,7 @@ const sections: HomeSectionContent[] = [
       {
         key: "web",
         title: "Webseiten",
-        description: "Produktive Websites",
+        description: "Produktive Webseiten",
         highlight: "klarer professioneller Auftritt",
         pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
         delivery: "2-4 Wochen",
@@ -54,7 +55,7 @@ const sections: HomeSectionContent[] = [
       },
       {
         key: "upgrade",
-        title: "Website-Upgrade",
+        title: "Webseiten-Upgrade",
         description: "Bestehendes verbessern",
         highlight: "spürbare UX- und Speed-Verbesserung",
         pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
@@ -93,8 +94,8 @@ const sections: HomeSectionContent[] = [
       phoneLabel: "Telefon",
       companyLabel: "Unternehmen",
       roleLabel: "Rolle",
-      websiteLabel: "Website",
-      websiteRequiredHint: "Website erforderlich",
+      websiteLabel: "Webseite",
+      websiteRequiredHint: "Webseite erforderlich",
       offerLabel: "Angebot",
       offerPlaceholder: "Bitte wählen",
       goalLabel: "Ziel",
@@ -128,7 +129,7 @@ const sections: HomeSectionContent[] = [
       submitErrorGeneric: "Allgemeiner Fehler",
       validationSummaryPrefix: "Bitte prüfen:",
       fieldErrorInvalidEmail: "Ungültige E-Mail",
-      fieldErrorInvalidWebsite: "Ungültige Website",
+      fieldErrorInvalidWebsite: "Ungültige Webseite",
       fieldErrorRequired: "Pflichtfeld",
       fieldErrorProjectDetailsRequired: "Projekt erforderlich",
       fieldErrorPagesRequired: "Seiten erforderlich",
@@ -153,6 +154,7 @@ describe("HomeSectionsRenderer", () => {
       <HomeSectionsRenderer
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
+        showProofSection={true}
         ui={getHomeUiContent("de")}
         validation={{
           hasCompleteMapping: true,
@@ -170,11 +172,49 @@ describe("HomeSectionsRenderer", () => {
     expect(screen.getByRole("option", { name: "Landingpages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Prozess-Tools" })).toBeTruthy();
     expect(
-      screen.getByRole("option", { name: "Website-Upgrade" }),
+      screen.getByRole("option", { name: "Webseiten-Upgrade" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Wartung & Support" }),
     ).toBeTruthy();
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
+  });
+
+  it("does not render the proof section while the launch flag is disabled", () => {
+    render(
+      <HomeSectionsRenderer
+        sections={[
+          ...sections,
+          {
+            id: "proof",
+            title: "Was Kunden über die Zusammenarbeit sagen",
+            description: "aus realen Projekten",
+            proofReviews: [
+              {
+                authorName: "Kolja Wienigk",
+                context: "Finanzmakler aus Dresden",
+                excerpt: "Klare Struktur.",
+                reviewHref: "https://example.com",
+                sourceLabel: "Google Bewertung",
+              },
+            ],
+          },
+        ]}
+        servicesSectionRef={createRef<HTMLElement>()}
+        showProofSection={false}
+        ui={getHomeUiContent("de")}
+        validation={{
+          hasCompleteMapping: true,
+          missingInNavigation: [],
+          missingInSections: [],
+        }}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("heading", {
+        name: "Was Kunden über die Zusammenarbeit sagen",
+      }),
+    ).not.toBeInTheDocument();
   });
 });

@@ -18,7 +18,7 @@ describe("QAndASection", () => {
               "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
           },
           {
-            question: "Könnt ihr meine alte Website überarbeiten?",
+            question: "Könnt ihr meine alte Webseite überarbeiten?",
             answer: "Ja, ich kann bestehende Seiten gezielt modernisieren.",
           },
         ]}
@@ -47,7 +47,7 @@ describe("QAndASection", () => {
       ),
     ).toBeTruthy();
     expect(
-      screen.getByText("Könnt ihr meine alte Website überarbeiten?"),
+      screen.getByText("Könnt ihr meine alte Webseite überarbeiten?"),
     ).toBeTruthy();
     expect(
       screen.getByText("Ja, ich kann bestehende Seiten gezielt modernisieren."),

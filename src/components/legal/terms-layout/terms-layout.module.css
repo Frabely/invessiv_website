@@ -14,61 +14,6 @@
   margin-bottom: 20px;
 }
 
-.breadcrumbs {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.breadcrumbItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: 0.82rem;
-  line-height: 1;
-}
-
-.breadcrumbItem:not(:last-child)::after {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-border) 80%, transparent);
-}
-
-.breadcrumbLink,
-.breadcrumbCurrent span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
-}
-
-.breadcrumbLink {
-  transition:
-    color 180ms ease,
-    border-color 180ms ease,
-    background-color 180ms ease;
-}
-
-.breadcrumbLink:hover {
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
-}
-
-.breadcrumbCurrent span {
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-}
-
 .intro {
   display: flex;
   flex-direction: column;
