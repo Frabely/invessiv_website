@@ -67,8 +67,8 @@ type ProofMoreProjects = {
   title: string;
 };
 
-const PROOF_PLACEHOLDER_URL =
-  "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
+const PROOF_PLACEHOLDER_URL = "https://Kolja-wienigk-finanzmakler.vercel.app";
+const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
 
 export type LandingSectionCopy = {
   title: string;
@@ -366,7 +366,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/assets/kolja.png",
-            reviewHref: "https://mywebpage-480c1.web.app",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google Bewertung",
           },
           {
@@ -374,7 +374,7 @@ const HOME_SECTIONS: LandingSection[] = [
             context: "Chemnitz",
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
-            reviewHref: PROOF_PLACEHOLDER_URL,
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google Bewertung",
           },
         ],
@@ -411,7 +411,7 @@ const HOME_SECTIONS: LandingSection[] = [
             excerpt:
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
             profileImageSrc: "/assets/kolja.png",
-            reviewHref: "https://mywebpage-480c1.web.app",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google review",
           },
           {
@@ -419,7 +419,7 @@ const HOME_SECTIONS: LandingSection[] = [
             context: "Chemnitz",
             excerpt:
               "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
-            reviewHref: PROOF_PLACEHOLDER_URL,
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google review",
           },
         ],

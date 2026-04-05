@@ -5,8 +5,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProofSection } from "./proof-section";
 
-const PROOF_PLACEHOLDER_URL =
-  "https://Kolja-wienigk-finanzmakler.vercel.app?user=kolja&password=M2mBZwUrFgBKaqRyx2g4";
+const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
 
 describe("ProofSection", () => {
   it("renders two review cards and a tall placeholder card", () => {
@@ -44,7 +43,7 @@ describe("ProofSection", () => {
             excerpt:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
             profileImageSrc: "/assets/kolja.png",
-            reviewHref: "https://mywebpage-480c1.web.app",
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google Bewertung",
           },
           {
@@ -52,7 +51,7 @@ describe("ProofSection", () => {
             context: "Chemnitz",
             excerpt:
               "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
-            reviewHref: PROOF_PLACEHOLDER_URL,
+            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
             sourceLabel: "Google Bewertung",
           },
         ]}
