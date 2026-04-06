@@ -37,7 +37,7 @@
 - [x] Schritt 09: Hero-Section migrieren
 - [x] Schritt 10: Hero Visual migrieren
 - [x] Schritt 11: Services Section Shell bereinigen
-- [ ] Schritt 12: Service Card und Secondary Service bereinigen
+- [x] Schritt 12: Service Card und Secondary Service bereinigen
 - [ ] Schritt 13: Process Section migrieren
 - [ ] Schritt 14: Contact Section Shell migrieren
 - [ ] Schritt 15: Project Request Form Layout migrieren
