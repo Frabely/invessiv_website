@@ -65,9 +65,8 @@ export function HeroSection({
 
           <SectionScanPoints
             ariaLabel={heroBenefitsAriaLabel}
-            fallbackClassName="hero__tags-fallback"
+            className="hero__scan-points"
             points={heroChipTags}
-            variant="hero"
           />
         </div>
 

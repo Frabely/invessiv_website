@@ -570,6 +570,10 @@ main {
   gap: 12px;
 }
 
+.hero .hero__scan-points {
+  margin-top: 24px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -601,27 +605,6 @@ main {
   min-height: 360px;
   pointer-events: none;
   z-index: 1;
-}
-
-.section-scan-points.section-scan-points--hero {
-  margin-top: 24px;
-  width: fit-content;
-  max-width: 100%;
-  flex-wrap: nowrap;
-  gap: 8px;
-}
-
-.section-scan-point.section-scan-point--hero {
-  min-height: 28px;
-  padding: 0 12px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-.hero__tags-fallback {
-  margin-top: 18px;
 }
 
 .blob {
@@ -1047,83 +1030,12 @@ main {
   letter-spacing: -0.03em;
 }
 
-.included-section .section-scan-points {
-  display: flex;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-  clear: both;
-}
-
 .included-hint {
   margin: 0 0 14px;
   color: #d6b39a;
   max-width: 760px;
   font-size: 1.03rem;
   line-height: 1.65;
-}
-
-.section-scan-points {
-  margin: 0 0 18px;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  max-width: 920px;
-}
-
-.section-scan-point {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 28px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0.005em;
-}
-
-.section-scan-point::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    rgba(231, 154, 73, 0.96),
-    rgba(209, 126, 49, 0.9)
-  );
-  box-shadow: 0 0 0 4px rgba(231, 154, 73, 0.14);
-  flex: 0 0 auto;
-}
-
-@media (max-width: 640px) {
-  .section-scan-points {
-    margin-bottom: 14px;
-    gap: 6px;
-  }
-
-  .section-scan-points.section-scan-points--hero {
-    flex-wrap: wrap;
-  }
-
-  .section-scan-point {
-    min-height: 26px;
-    padding: 0 10px;
-    font-size: 0.76rem;
-  }
-
-  .section-scan-point::before {
-    width: 7px;
-    height: 7px;
-  }
 }
 
 .included-cards {
@@ -2308,13 +2220,9 @@ main {
 }
 
 .qna-section h2 {
-  margin: 0;
+  margin: 0 0 10px;
   font-size: clamp(1.8rem, 3vw, 2.4rem);
   letter-spacing: -0.03em;
-}
-
-.qna-section .section-scan-points {
-  margin: 10px 0 12px;
 }
 
 .qna-hint {
@@ -3831,21 +3739,13 @@ main {
     gap: 10px;
   }
 
+  .hero .hero__scan-points {
+    margin-top: 18px;
+  }
+
   .hero .btn {
     min-height: 42px;
     padding-inline: 16px;
-  }
-
-  .section-scan-points.section-scan-points--hero {
-    margin-top: 18px;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .section-scan-point.section-scan-point--hero {
-    min-height: 26px;
-    padding: 0 10px;
-    font-size: 0.76rem;
   }
 
   .hero__visual {
@@ -6257,12 +6157,6 @@ body {
     min-height: 42px;
     padding: 0 15px;
     font-size: 0.88rem;
-  }
-
-  .section-scan-point.section-scan-point--hero {
-    min-height: 26px;
-    padding: 0 9px;
-    font-size: 0.76rem;
   }
 
   .hero-shot {

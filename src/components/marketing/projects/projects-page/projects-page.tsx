@@ -94,10 +94,10 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 <p className={styles.intro}>{content.hero.intro}</p>
                 <SectionScanPoints
                   ariaLabel={content.hero.kicker}
+                  className={styles.heroHighlights}
                   fallbackClassName={styles.intro}
                   fallbackText={content.hero.intro}
                   points={content.hero.highlights}
-                  variant="hero"
                 />
                 <p className={styles.supportingNote}>
                   {content.hero.supportingNote}
