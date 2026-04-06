@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
@@ -808,7 +809,7 @@ export function ProjectRequestForm({
               ) : null}
               <div className="project-request-actions-buttons">
                 <button
-                  className="btn btn--primary contact-primary-cta--shimmer"
+                  className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
@@ -1028,7 +1029,7 @@ export function ProjectRequestForm({
               ) : null}
               <div className="project-request-actions-buttons">
                 <button
-                  className="btn btn--ghost"
+                  className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                   disabled={isSubmitting}
                   onClick={goToPreviousStep}
                   type="button"
@@ -1036,7 +1037,7 @@ export function ProjectRequestForm({
                   {formCopy.previousStepLabel}
                 </button>
                 <button
-                  className="btn btn--primary contact-primary-cta--shimmer"
+                  className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
@@ -1143,7 +1144,7 @@ export function ProjectRequestForm({
                 ) : null}
                 <div className="project-request-actions-buttons">
                   <button
-                    className="btn btn--ghost"
+                    className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                     disabled={isSubmitting}
                     onClick={goToPreviousStep}
                     type="button"
@@ -1151,7 +1152,7 @@ export function ProjectRequestForm({
                     {formCopy.previousStepLabel}
                   </button>
                   <button
-                    className="btn btn--primary contact-primary-cta--shimmer"
+                    className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
                     disabled={isSubmitting}
                     type="submit"
                   >

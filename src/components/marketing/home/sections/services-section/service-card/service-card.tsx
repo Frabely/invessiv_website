@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
@@ -189,7 +190,7 @@ export function ServiceCard({
             <div className={`${styles.actions} services-details-actions`}>
               {showPrimaryCta ? (
                 <a
-                  className={`btn btn--primary services-details-cta ${styles.primaryCta}`}
+                  className={`${buttonStyles.button} ${buttonStyles.primary} services-details-cta ${styles.primaryCta}`}
                   data-analytics-event="cta_click"
                   data-analytics-location="pricing"
                   data-analytics-target="form"
@@ -203,7 +204,7 @@ export function ServiceCard({
               ) : (
                 <span
                   aria-hidden="true"
-                  className={`btn btn--primary services-details-cta ${styles.primaryCta} ${styles.primaryCtaPlaceholder}`}
+                  className={`${buttonStyles.button} ${buttonStyles.primary} services-details-cta ${styles.primaryCta} ${styles.primaryCtaPlaceholder}`}
                 >
                   {ctaLabel}
                 </span>

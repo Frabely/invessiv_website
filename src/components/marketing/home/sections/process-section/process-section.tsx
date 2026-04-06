@@ -4,6 +4,7 @@ import { useRef } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
@@ -110,7 +111,7 @@ export function ProcessSection({
         />
         {processCta ? (
           <a
-            className="menu-cta process-end-cta"
+            className={`${buttonStyles.button} ${buttonStyles.primary} process-end-cta`}
             href={processCta.href}
             ref={endCtaRef}
             data-analytics-event="cta_click"

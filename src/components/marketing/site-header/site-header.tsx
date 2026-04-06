@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { ENABLE_THEME_SWITCH, SECTION_HREFS } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
@@ -14,6 +15,7 @@ import {
   createLocaleScrollRestoreState,
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
 } from "@/lib/navigation/locale-scroll-restoration";
+import styles from "./site-header.module.css";
 
 type SiteHeaderProps = {
   brandHref?: string;
@@ -114,7 +116,7 @@ export function SiteHeader({
         <div className="site-header__actions" aria-label={ui.actionsAriaLabel}>
           {ENABLE_THEME_SWITCH ? (
             <button
-              className="theme-switch"
+              className={styles.themeSwitch}
               onClick={toggleTheme}
               type="button"
             >
@@ -157,7 +159,7 @@ export function SiteHeader({
             </div>
           </details>
           <a
-            className="menu-cta"
+            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta}`}
             href={ctaHref}
             data-analytics-event="cta_click"
             data-analytics-location="nav"
@@ -206,7 +208,7 @@ export function SiteHeader({
           </details>
           <a
             aria-label={ui.ctaLabel}
-            className="menu-cta site-header__mobile-cta"
+            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta} site-header__mobile-cta`}
             href={ctaHref}
             title={ui.ctaLabel}
             data-analytics-event="cta_click"
@@ -256,7 +258,7 @@ export function SiteHeader({
               {ENABLE_THEME_SWITCH ? (
                 <li>
                   <button
-                    className="theme-switch theme-switch--mobile"
+                    className={`${styles.themeSwitch} ${styles.themeSwitchMobile}`}
                     onClick={toggleTheme}
                     type="button"
                   >
@@ -273,7 +275,7 @@ export function SiteHeader({
               ))}
               <li>
                 <a
-                  className="mobile-menu-cta"
+                  className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.mobileMenuCta}`}
                   href={ctaHref}
                   onClick={handleMobileMenuLinkClick}
                   data-analytics-event="cta_click"

@@ -1,0 +1,36 @@
+.themeSwitch {
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.themeSwitchMobile {
+  width: 100%;
+  min-height: 38px;
+}
+
+.navCta {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+}
+
+.mobileMenuCta {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 6px;
+  border-radius: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 901px) {
+  :global(.site-header) .navCta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(31, 70, 137, 0.38);
+  }
+}

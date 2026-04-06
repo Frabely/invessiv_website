@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { getLocalizedSectionHref, type NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
@@ -293,13 +294,13 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
               </div>
               <div className={styles.closingActions}>
                 <Link
-                  className="btn btn--primary"
+                  className={`${buttonStyles.button} ${buttonStyles.primary}`}
                   href={content.closingCta.primaryHref}
                 >
                   {content.closingCta.primaryLabel}
                 </Link>
                 <Link
-                  className="btn btn--ghost"
+                  className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                   href={content.closingCta.secondaryHref}
                 >
                   {content.closingCta.secondaryLabel}

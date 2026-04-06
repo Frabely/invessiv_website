@@ -1,0 +1,57 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease;
+}
+
+.primary {
+  border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
+  background: linear-gradient(
+    125deg,
+    var(--color-cta-hover) 0%,
+    var(--color-cta) 46%,
+    var(--color-cta-active) 100%
+  );
+  color: var(--color-on-cta);
+  box-shadow: 0 10px 24px rgba(31, 70, 137, 0.3);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background: linear-gradient(
+    125deg,
+    var(--color-cta-hover) 0%,
+    var(--color-cta) 52%,
+    var(--color-cta-active) 100%
+  );
+  filter: none;
+}
+
+.ghost {
+  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .button {
+    min-height: 42px;
+    padding: 0 15px;
+    font-size: 0.88rem;
+  }
+}
