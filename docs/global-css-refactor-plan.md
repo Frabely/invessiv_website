@@ -46,7 +46,7 @@
 - [x] Schritt 18: Footer migrieren
 - [x] Schritt 19: Legal- und Projects-Reste bereinigen
 - [x] Schritt 20: Dead CSS loeschen
-- [ ] Schritt 21: Dubletten konsolidieren
+- [x] Schritt 21: Dubletten konsolidieren
 - [ ] Schritt 22: Finale Schlankheitsrunde fuer `globals.css`
 - [ ] Schritt 23: Primaere CTA-Komponente vereinheitlichen
 

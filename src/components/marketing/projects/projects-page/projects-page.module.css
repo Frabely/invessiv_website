@@ -162,8 +162,7 @@
   overflow: hidden;
 }
 
-.projectCard::before,
-.closingCta::before {
+.projectCard::before {
   content: "";
   position: absolute;
   inset: 0;
