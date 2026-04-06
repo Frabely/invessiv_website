@@ -221,8 +221,6 @@ main {
 
 [data-theme="light"] .included-card,
 [data-theme="light"] .packages-card,
-[data-theme="light"] .contact-channel-card,
-[data-theme="light"] .contact-entry-panel,
 [data-theme="light"] .site-footer {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(162, 101, 69, 0.24);
@@ -240,10 +238,6 @@ main {
 [data-theme="light"] .packages-hint,
 [data-theme="light"] .packages-ideal,
 [data-theme="light"] .packages-timeline,
-[data-theme="light"] .contact-decision-intro,
-[data-theme="light"] .contact-entry-panel-hint,
-[data-theme="light"] .contact-entry-panel-description,
-[data-theme="light"] .contact-cta-wrap p,
 [data-theme="light"] .site-footer__hint,
 [data-theme="light"] .site-footer__bottom {
   color: #76503c;
@@ -252,8 +246,6 @@ main {
 [data-theme="light"] .services-tag,
 [data-theme="light"] .packages-badge,
 [data-theme="light"] .services-example-btn,
-[data-theme="light"] .contact-channel-action-link,
-[data-theme="light"] .contact-copy-btn,
 [data-theme="light"] .included-badge {
   background: rgba(255, 245, 234, 0.86);
   border-color: rgba(162, 101, 69, 0.24);
@@ -293,15 +285,6 @@ main {
   color: #74503b;
 }
 
-[data-theme="light"] .contact-entry-trigger-kicker {
-  color: #8a604a;
-}
-
-[data-theme="light"] .contact-channel-link {
-  color: #5f3521;
-  text-decoration-color: rgba(195, 103, 45, 0.38);
-}
-
 [data-theme="light"] .site-footer__col {
   background: transparent;
 }
@@ -335,11 +318,6 @@ main {
   border-color: rgba(162, 101, 69, 0.28);
   background: rgba(255, 255, 255, 0.86);
   color: #84553e;
-}
-
-[data-theme="light"] .contact-channel-action-link:focus-visible,
-[data-theme="light"] .contact-copy-btn:focus-visible {
-  outline-color: rgba(194, 104, 45, 0.74);
 }
 
 [data-theme="light"] .packages-cta:focus-visible {
@@ -979,39 +957,6 @@ main {
   }
 }
 
-.contact-section {
-  margin-top: 30px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  text-align: left;
-}
-
-.contact-section h2 {
-  margin: 0;
-  font-size: clamp(1.95rem, 3.2vw, 2.85rem);
-  letter-spacing: -0.03em;
-}
-
-.contact-brief-head {
-  display: grid;
-  gap: 8px;
-}
-
-.contact-section-stack {
-  display: grid;
-  gap: 14px;
-}
-
-.contact-cta-actions {
-  margin-top: 18px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 .site-footer {
   margin-top: 56px;
   padding: 10px 0 24px;
@@ -1289,31 +1234,11 @@ main {
     align-items: center;
   }
 
-  .contact-section {
-    padding: 24px 14px 16px;
-  }
-
-  .contact-cta-actions {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .contact-cta-actions .btn {
-    width: 100%;
-    min-width: 0;
-  }
-
   .packages-actions {
     flex-direction: column;
   }
 
   .packages-cta {
-    width: 100%;
-  }
-
-  .contact-channel-action-link,
-  .contact-copy-btn {
     width: 100%;
   }
 
@@ -1771,7 +1696,6 @@ body {
 .packages-scope li,
 .qna-hint,
 .qna-answer,
-.contact-hint,
 .site-footer__bottom,
 .site-footer__bottom-right a {
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
@@ -1802,7 +1726,6 @@ body {
 .packages-card h3,
 .packages-price,
 .qna-question,
-.contact-section h2,
 .site-footer__col h3,
 .site-footer__bottom-left strong {
   color: var(--color-text);
@@ -1833,31 +1756,18 @@ body {
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
 }
 
-.contact-channel-link {
-  color: color-mix(in srgb, var(--color-text) 80%, var(--color-cta) 20%);
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 46%, transparent);
-}
-
-.contact-channel-link:hover {
-  color: var(--color-cta-hover);
-}
-
 .legal-page a {
   color: #f0a62b;
   text-decoration: none;
   border-bottom-color: rgba(240, 166, 43, 0.62);
 }
 
-.contact-channel-action-link:focus-visible,
-.contact-copy-btn:focus-visible,
 .packages-cta:focus-visible,
 .site-footer__col a:focus-visible,
 .site-footer__social-link:focus-visible {
   outline-color: var(--color-focus);
 }
 
-[data-theme="light"] .contact-channel-action-link:focus-visible,
-[data-theme="light"] .contact-copy-btn:focus-visible,
 [data-theme="light"] .packages-cta:focus-visible {
   outline-color: var(--color-focus);
 }
@@ -1877,8 +1787,6 @@ body {
 
 [data-theme="light"] .services-tag,
 [data-theme="light"] .services-example-btn,
-[data-theme="light"] .contact-channel-action-link,
-[data-theme="light"] .contact-copy-btn,
 [data-theme="light"] .included-badge,
 [data-theme="light"] .packages-cta--ghost,
 [data-theme="light"] .site-footer__social-link {
@@ -1904,7 +1812,6 @@ body {
 [data-theme="light"] .packages-scope,
 [data-theme="light"] .qna-hint,
 [data-theme="light"] .qna-answer,
-[data-theme="light"] .contact-hint,
 [data-theme="light"] .site-footer__bottom,
 [data-theme="light"] .site-footer__bottom-right a {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
@@ -1914,7 +1821,6 @@ body {
 [data-theme="light"] .included-card h3,
 [data-theme="light"] .packages-card h3,
 [data-theme="light"] .packages-price,
-[data-theme="light"] .contact-section h2,
 [data-theme="light"] .site-footer__col h3,
 [data-theme="light"] .site-footer__bottom-left strong {
   color: var(--color-text);
@@ -2051,481 +1957,10 @@ body {
   min-height: 428px;
 }
 
-.contact-decision-intro {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.94rem;
-  line-height: 1.58;
-  max-width: 60ch;
-}
-
-.contact-entry-picker {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-  align-items: stretch;
-}
-
-.contact-entry-trigger {
-  width: 100%;
-  min-height: 58px;
-  border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  padding: 11px 14px 12px;
-  display: grid;
-  justify-items: start;
-  align-content: center;
-  gap: 3px;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    box-shadow 180ms ease;
-}
-
-.contact-entry-trigger:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 30%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
-}
-
-.contact-entry-trigger.is-active {
-  border-color: color-mix(in srgb, var(--color-cta) 46%, transparent);
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--color-cta) 16%, var(--color-surface-1) 84%),
-    color-mix(in srgb, var(--color-surface-2) 88%, transparent)
-  );
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--color-cta) 16%, transparent);
-}
-
-.contact-entry-trigger:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-}
-
-.contact-entry-trigger-kicker {
-  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.64rem;
-  font-weight: 620;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.contact-entry-trigger-title {
-  color: inherit;
-  font-size: 0.86rem;
-  font-weight: 720;
-  line-height: 1.35;
-}
-
-.contact-entry-panel {
-  padding-top: 16px;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  display: grid;
-  gap: 12px;
-}
-
-.contact-entry-panel[hidden] {
-  display: none !important;
-}
-
-.contact-entry-panel--project {
-  padding-top: 18px;
-}
-
-.contact-entry-panel-title {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 0.98rem;
-  line-height: 1.4;
-}
-
-.contact-entry-panel-description {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.contact-entry-panel-hint {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.84rem;
-  line-height: 1.44;
-}
-
-.contact-entry-panel-helper {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.86rem;
-  line-height: 1.5;
-}
-
-.contact-entry-panel--project .project-request {
-  margin-top: 0;
-}
-
-.contact-entry-panel--project .project-request-panel {
-  margin-top: 0;
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 18%,
-    var(--color-border) 82%
-  );
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--color-surface-1) 90%, var(--color-cta) 10%),
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
-  );
-  box-shadow: 0 10px 24px rgba(5, 8, 12, 0.08);
-}
-
-.contact-channel-panel {
-  margin-top: 0;
-  border-radius: 20px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
-  );
-  box-shadow: 0 12px 28px rgba(5, 8, 12, 0.1);
-  padding: clamp(1rem, 1.8vw, 1.3rem);
-  display: grid;
-  gap: 12px;
-}
-
-.contact-channel-panel-head {
-  display: grid;
-  gap: 8px;
-}
-
-.contact-channel-email-card,
-.contact-channel-call-card {
-  border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
-  padding: 14px;
-}
-
-.contact-channel-email-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.contact-channel-meta {
-  min-width: 0;
-  display: grid;
-  gap: 4px;
-}
-
-.contact-channel-meta-label {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.contact-channel-meta-value {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 0.94rem;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.contact-channel-copy-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  padding: 0 12px;
-  border-radius: 8px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  font-size: 0.78rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.contact-channel-copy-button:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
-}
-
-.contact-channel-copy-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-}
-
-.contact-channel-detail-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 6px;
-}
-
-.contact-channel-detail-list li {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 8px;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.84rem;
-  line-height: 1.4;
-}
-
-.contact-channel-detail-list li::before {
-  content: "\2713";
-  display: inline-block;
-  margin-top: 0.08rem;
-  color: var(--color-accent-warm);
-  font-size: 0.74rem;
-  font-weight: 800;
-  line-height: 1;
-  flex: 0 0 auto;
-}
-
-.contact-channel-footer {
-  margin-top: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.contact-channel-actions {
-  display: flex;
-  align-items: center;
-  width: auto;
-  margin-left: auto;
-}
-
-.contact-channel-action-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  width: 100%;
-  padding: 0 16px;
-  border-radius: 10px;
-  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  font-size: 0.94rem;
-  font-weight: 700;
-  line-height: 1;
-  transition:
-    transform 180ms ease,
-    border-color 220ms ease,
-    background-color 220ms ease,
-    box-shadow 220ms ease,
-    color 220ms ease;
-}
-
-.contact-channel-action-link:hover {
-  color: inherit;
-}
-
-.contact-channel-action-link--email {
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 58%, var(--color-border) 42%);
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 60%,
-      var(--color-surface-2) 40%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 46%, var(--color-surface-1) 54%)
-  );
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  box-shadow: 0 4px 12px
-    color-mix(in srgb, var(--color-accent-warm) 16%, transparent);
-}
-
-.contact-channel-action-link--call {
-  border: 1px solid
-    color-mix(in srgb, var(--color-cta) 52%, var(--color-border) 48%);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-cta) 10%);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 6%, transparent);
-}
-
-.contact-channel-action-link--email:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 66%, #ffffff 10%);
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 64%,
-      var(--color-surface-2) 36%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 50%, var(--color-surface-1) 50%)
-  );
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-text-muted) 8%);
-  box-shadow: 0 6px 14px
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
-  transform: translateY(-1px);
-}
-
-.contact-channel-action-link--call:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 68%, #ffffff 10%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-cta) 36%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 24%, transparent);
-  transform: translateY(-1px);
-}
-
-.contact-channel-action-link--email:active,
-.contact-channel-action-link--call:active {
-  transform: translateY(1px);
-}
-
-[data-theme="light"] .contact-channel-action-link--email {
-  border-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 52%,
-    var(--color-border) 48%
-  );
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 46%,
-      var(--color-surface-2) 54%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 34%, #ffffff 66%)
-  );
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-  box-shadow: 0 4px 10px
-    color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
-}
-
-.contact-channel-action-link--email.contact-primary-cta--shimmer::after {
-  background: linear-gradient(
-    105deg,
-    transparent 32%,
-    color-mix(in srgb, #ffffff 18%, transparent) 50%,
-    transparent 68%
-  );
-}
-
-[data-theme="light"] .contact-channel-action-link--call {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 56%,
-    var(--color-border) 44%
-  );
-  background: color-mix(in srgb, var(--color-surface-2) 84%, transparent);
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
-}
-
-[data-theme="light"] .contact-channel-action-link--call:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 70%,
-    var(--color-cta) 30%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 20%, transparent);
-}
-
-.contact-channel-action-link:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 68%, #ffffff 12%);
-  outline-offset: 2px;
-}
-
-.contact-screen-reader-status {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.contact-cta-wrap {
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.contact-secondary-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-accent-warm);
-  font-size: 0.82rem;
-  font-weight: 650;
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
-}
-
-.contact-secondary-link::after {
-  content: "\2192";
-  font-size: 0.88rem;
-  line-height: 1;
-}
-
-.contact-secondary-link:hover {
-  color: color-mix(in srgb, var(--color-accent-warm) 82%, #fff 18%);
-}
-
-.contact-secondary-link:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
-  outline-offset: 2px;
-}
-
-@media (min-width: 760px) {
-  .contact-entry-picker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .contact-entry-trigger {
-    width: auto;
-    min-width: clamp(11rem, 17vw, 13rem);
-    max-width: min(100%, 14.5rem);
-    min-height: 52px;
-  }
-}
-
-@media (min-width: 901px) {
-  .contact-channel-actions {
-    justify-content: flex-end;
-  }
-
-  .contact-channel-action-link {
-    width: auto;
-    min-width: 198px;
-  }
-}
-
 .project-request {
   width: 100%;
 }
 
-.contact-primary-cta,
 .contact-primary-cta--shimmer {
   position: relative;
   overflow: hidden;
@@ -3037,22 +2472,17 @@ body {
   --section-card-gap: clamp(0.625rem, 1.2vw, 0.95rem);
 }
 
-.marketing-main :is(.qna-section, .contact-section) {
+.marketing-main .qna-section {
   margin-top: 0;
 }
 
 .marketing-main
-  :is(.included-cards, .packages-track, .qna-list, .contact-entry-picker) {
+  :is(.included-cards, .packages-track, .qna-list) {
   gap: var(--section-grid-gap);
 }
 
 .marketing-main
-  :is(
-    .packages-card,
-    .included-card,
-    .project-request-panel,
-    .contact-entry-panel
-  ) {
+  :is(.packages-card, .included-card, .project-request-panel) {
   gap: var(--section-card-gap);
 }
 
@@ -3064,8 +2494,6 @@ body {
     .project-request-stepper,
     .project-request-step-actions,
     .project-request-actions,
-    .contact-channel-actions,
-    .contact-channel-detail-list,
     .packages-actions
   ) {
   gap: clamp(0.625rem, 1.4vw, 0.95rem);
@@ -3118,14 +2546,12 @@ body {
   }
 
   .packages-section h2,
-  .contact-section h2,
   .legal-page h1 {
     font-size: clamp(1.75rem, 2.25vw, 2.3rem);
   }
 
   .included-hint,
   .packages-hint,
-  .contact-hint,
   .legal-lead {
     font-size: 0.94rem;
   }
@@ -3212,19 +2638,6 @@ body {
     min-height: 0;
   }
 
-  .contact-channel-email-card {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .contact-channel-copy-button {
-    width: 100%;
-  }
-
-  .contact-channel-detail-list {
-    gap: 5px;
-  }
-
   .project-request-grid--two,
   .project-request-grid--three {
     grid-template-columns: 1fr;
@@ -3248,11 +2661,6 @@ body {
   .project-request-actions-buttons > button {
     width: 100%;
     justify-content: center;
-  }
-
-  .contact-channel-actions {
-    width: 100%;
-    margin-left: 0;
   }
 
   .site-footer {
@@ -3286,10 +2694,6 @@ body {
 
   .legal-page {
     --legal-shell-pad-inline: 16px;
-  }
-
-  .marketing-main .contact-section {
-    padding: 0;
   }
 
   .marketing-main .packages-card {
