@@ -38,7 +38,10 @@ export function HomeSectionsRenderer({
     <>
       <LayoutShell>
         {!validation.hasCompleteMapping ? (
-          <p className="phase-zero-warning" role="status">
+          <p
+            className="mb-6 rounded-xl border border-amber-300 bg-amber-100 px-4 py-3 text-amber-950"
+            role="status"
+          >
             {ui.mappingWarning}
           </p>
         ) : null}

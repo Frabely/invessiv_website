@@ -6,11 +6,12 @@
  * - theme tokens and app-wide custom properties
  * - reset/base element defaults
  * - global accessibility utilities and interaction defaults
+ * - shared page-level surfaces and spacing tokens
  *
- * Component, section, and route-specific styles must not be added above the
- * legacy migration boundary further below.
+ * Component, section, and route-specific styles must not be added here.
  */
 
+/* Theme tokens */
 :root {
   color-scheme: light dark;
   --color-bg: #1d1a18;
@@ -60,6 +61,7 @@
   --accent: var(--color-accent-warm);
 }
 
+/* Base reset and document defaults */
 *,
 *::before,
 *::after {
@@ -202,12 +204,7 @@ a {
   outline-offset: 2px;
 }
 
-/*
- * Legacy migration boundary:
- * Component, section, and route-specific styles below are temporary and must
- * be moved into local CSS Modules or static Tailwind utilities step by step.
- */
-
+/* Shared page-level surfaces */
 main {
   position: relative;
   isolation: isolate;
@@ -263,15 +260,6 @@ main {
   background-size: 2px 2px;
 }
 
-.phase-zero-warning {
-  margin: 0 0 24px;
-  padding: 12px 16px;
-  border: 1px solid #e6c95e;
-  border-radius: 12px;
-  background: #fff4ce;
-  color: #6a4b00;
-}
-
 @media (max-width: 900px) {
   :root {
     --section-space: clamp(1.625rem, 5.1vw, 2.75rem);
@@ -291,6 +279,7 @@ main {
   }
 }
 
+/* Shared page motion */
 @keyframes drift-a {
   from {
     transform: translate(0, 0);
@@ -317,7 +306,7 @@ main {
   }
 }
 
-/* Unified responsive section spacing */
+/* Shared responsive section spacing */
 .marketing-main {
   --section-shell-pad-inline: 0px;
   --section-shell-pad-top: clamp(1.25rem, 2.6vw, 2.25rem);
