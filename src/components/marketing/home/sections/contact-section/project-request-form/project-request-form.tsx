@@ -7,6 +7,7 @@ import { SECTION_HREFS } from "@/config/site";
 import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 import { useLanguage } from "@/components/providers/language-provider";
+import styles from "./project-request-form.module.css";
 
 const DEFAULT_SUBMIT_PATH = "/api/public/contact";
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
@@ -330,11 +331,9 @@ export function ProjectRequestForm({
         }
       }
 
-      if (step === 2 && !validatePagesSelection()) {
-        return false;
-      }
+      return !(step === 2 && !validatePagesSelection());
 
-      return true;
+
     },
     [validatePagesSelection],
   );
@@ -633,36 +632,35 @@ export function ProjectRequestForm({
   };
 
   return (
-    <div className="project-request">
+    <div className={styles.root} data-project-request="true">
       <div
-        className="project-request-panel"
+        className={styles.panel}
+        data-project-request-panel="true"
         role="region"
         aria-label={formCopy.title}
       >
-        <div className="project-request-head project-request-head--close-only">
-          <div className="project-request-head-copy">
+        <div className={`${styles.head} ${styles.headCloseOnly}`}>
+          <div className={styles.headCopy}>
             <h3>{formCopy.title}</h3>
-            <p className="project-request-intro">{formCopy.intro}</p>
+            <p className={styles.intro}>{formCopy.intro}</p>
           </div>
         </div>
 
-        <ol
-          aria-label={formCopy.stepNavigationLabel}
-          className="project-request-stepper"
-        >
+        <ol aria-label={formCopy.stepNavigationLabel} className={styles.stepper}>
           {stepTitles.map((title, index) => {
             const step = STEP_SEQUENCE[index];
             const isDone = step < currentStep;
             const isCurrent = step === currentStep;
+            const stepperItemClassName = `${styles.stepperItem}${isDone ? ` ${styles.stepperItemDone}` : ""}${isCurrent ? ` ${styles.stepperItemCurrent}` : ""}`;
 
             return (
               <li
-                className={`project-request-stepper-item${isDone ? " is-done" : ""}${isCurrent ? " is-current" : ""}`}
+                className={stepperItemClassName}
                 key={`${title}-${step}`}
               >
                 <button
                   aria-current={isCurrent ? "step" : undefined}
-                  className="project-request-stepper-trigger"
+                  className={styles.stepperTrigger}
                   disabled={step > currentStep || isSubmitting}
                   onClick={() => {
                     if (step < currentStep) {
@@ -671,8 +669,8 @@ export function ProjectRequestForm({
                   }}
                   type="button"
                 >
-                  <span className="project-request-stepper-index">{step}</span>
-                  <span className="project-request-stepper-copy">
+                  <span className={styles.stepperIndex}>{step}</span>
+                  <span className={styles.stepperCopy}>
                     <small>
                       {formCopy.stepLabel} {step}
                     </small>
@@ -684,12 +682,7 @@ export function ProjectRequestForm({
           })}
         </ol>
 
-        <form
-          className="project-request-form"
-          ref={formRef}
-          onSubmit={handleSubmit}
-          noValidate
-        >
+        <form className={styles.form} ref={formRef} onSubmit={handleSubmit} noValidate>
           <input
             aria-hidden="true"
             autoComplete="off"
@@ -699,14 +692,10 @@ export function ProjectRequestForm({
             type="text"
           />
 
-          <fieldset
-            className="project-request-step"
-            data-step="1"
-            hidden={currentStep !== 1}
-          >
+          <fieldset className={styles.step} data-step="1" hidden={currentStep !== 1}>
             <legend>{formCopy.stepOneTitle}</legend>
 
-            <div className="project-request-grid project-request-grid--two">
+            <div className={`${styles.grid} ${styles.gridTwo}`}>
               <label className="project-request-field">
                 <span>
                   {formCopy.firstNameLabel}
@@ -759,7 +748,9 @@ export function ProjectRequestForm({
               </label>
             </div>
 
-            <label className="project-request-field project-request-field--offer">
+            <label
+              className={`project-request-field project-request-field--offer ${styles.fieldOfferLayout}`}
+            >
               <span>
                 {formCopy.offerLabel}
                 <strong className="project-request-required-marker">*</strong>
@@ -803,11 +794,11 @@ export function ProjectRequestForm({
               </p>
             ) : null}
 
-            <div className="project-request-step-actions">
+            <div className={styles.stepActions}>
               {bottomHint ? (
-                <p className="project-request-panel-hint">{bottomHint}</p>
+                <p className={styles.panelHint}>{bottomHint}</p>
               ) : null}
-              <div className="project-request-actions-buttons">
+              <div className={styles.actionsButtons}>
                 <button
                   className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
                   disabled={isSubmitting}
@@ -820,11 +811,7 @@ export function ProjectRequestForm({
             </div>
           </fieldset>
 
-          <fieldset
-            className="project-request-step"
-            data-step="2"
-            hidden={currentStep !== 2}
-          >
+          <fieldset className={styles.step} data-step="2" hidden={currentStep !== 2}>
             <legend>{formCopy.stepTwoTitle}</legend>
 
             {fieldRules.requiresWebsite ? (
@@ -1023,11 +1010,11 @@ export function ProjectRequestForm({
               ) : null}
             </label>
 
-            <div className="project-request-step-actions">
+            <div className={styles.stepActions}>
               {bottomHint ? (
-                <p className="project-request-panel-hint">{bottomHint}</p>
+                <p className={styles.panelHint}>{bottomHint}</p>
               ) : null}
-              <div className="project-request-actions-buttons">
+              <div className={styles.actionsButtons}>
                 <button
                   className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                   disabled={isSubmitting}
@@ -1048,14 +1035,10 @@ export function ProjectRequestForm({
             </div>
           </fieldset>
 
-          <fieldset
-            className="project-request-step"
-            data-step="3"
-            hidden={currentStep !== 3}
-          >
+          <fieldset className={styles.step} data-step="3" hidden={currentStep !== 3}>
             <legend>{formCopy.stepThreeTitle}</legend>
 
-            <div className="project-request-grid project-request-grid--two">
+            <div className={`${styles.grid} ${styles.gridTwo}`}>
               <label className="project-request-field">
                 <span>{formCopy.companyLabel}</span>
                 <input
@@ -1081,7 +1064,7 @@ export function ProjectRequestForm({
               <input autoComplete="tel" name="phone" type="tel" />
             </label>
 
-            <div className="project-request-grid project-request-grid--two">
+            <div className={`${styles.grid} ${styles.gridTwo}`}>
               <label className="project-request-field">
                 <span>{formCopy.budgetLabel}</span>
                 <select defaultValue="" name="budgetKey">
@@ -1137,12 +1120,12 @@ export function ProjectRequestForm({
               </p>
             ) : null}
 
-            <div className="project-request-actions">
-              <div className="project-request-actions-main">
+            <div className={styles.actions}>
+              <div className={styles.actionsMain}>
                 {bottomHint ? (
-                  <p className="project-request-panel-hint">{bottomHint}</p>
+                  <p className={styles.panelHint}>{bottomHint}</p>
                 ) : null}
-                <div className="project-request-actions-buttons">
+                <div className={styles.actionsButtons}>
                   <button
                     className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                     disabled={isSubmitting}
@@ -1162,7 +1145,7 @@ export function ProjectRequestForm({
                   </button>
                 </div>
               </div>
-              <p className="project-request-required-hint">
+              <p className={styles.requiredHint}>
                 {formCopy.requiredHint}
               </p>
             </div>

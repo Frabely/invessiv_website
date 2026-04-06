@@ -40,7 +40,7 @@
 - [x] Schritt 12: Service Card und Secondary Service bereinigen
 - [x] Schritt 13: Process Section migrieren
 - [x] Schritt 14: Contact Section Shell migrieren
-- [ ] Schritt 15: Project Request Form Layout migrieren
+- [x] Schritt 15: Project Request Form Layout migrieren
 - [ ] Schritt 16: Project Request Form Feldzustaende migrieren
 - [ ] Schritt 17: Included, Q&A und Placeholder migrieren
 - [ ] Schritt 18: Footer migrieren

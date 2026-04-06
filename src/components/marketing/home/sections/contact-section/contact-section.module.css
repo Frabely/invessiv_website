@@ -150,11 +150,7 @@
   line-height: 1.5;
 }
 
-.entryPanelProject :global(.project-request) {
-  margin-top: 0;
-}
-
-.entryPanelProject :global(.project-request-panel) {
+.entryPanelProject :global([data-project-request-panel="true"]) {
   margin-top: 0;
   border-color: color-mix(
     in srgb,
