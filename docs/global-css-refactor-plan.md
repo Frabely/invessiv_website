@@ -33,7 +33,7 @@
 - [x] Schritt 05: Shared `SectionScanPoints` lokalisieren
 - [x] Schritt 06: Shared Button-System lokalisieren
 - [x] Schritt 07: Shared Layout-Shell lokalisieren
-- [ ] Schritt 08: Header und Legal Language Switch migrieren
+- [x] Schritt 08: Header und Legal Language Switch migrieren
 - [ ] Schritt 09: Hero-Section migrieren
 - [ ] Schritt 10: Hero Visual migrieren
 - [ ] Schritt 11: Services Section Shell bereinigen

@@ -5,6 +5,7 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import buttonStyles from "@/components/shared/button/button.module.css";
+import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ENABLE_THEME_SWITCH, SECTION_HREFS } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
@@ -77,20 +78,17 @@ export function SiteHeader({
     const hashIndex = href.indexOf("#");
     return hashIndex >= 0 ? href.slice(hashIndex) : href;
   };
-  const getLocaleOptionClassName = (targetLocale: Locale) => {
-    if (locale === targetLocale) {
-      return "site-header__locale-option is-active";
-    }
-    return "site-header__locale-option";
-  };
   const mobileNavigation = navigation.filter(
     (item) => getLabelKey(item.href) !== SECTION_HREFS.contact,
   );
+  const headerClassName = isScrolled
+    ? `${styles.header} ${styles.headerScrolled} site-header is-scrolled`
+    : `${styles.header} site-header`;
 
   return (
-    <header className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
-      <div className="site-header__inner">
-        <a className="site-header__brand" href={brandHref}>
+    <header className={headerClassName}>
+      <div className={`${styles.inner} site-header__inner`}>
+        <a className={`${styles.brand} site-header__brand`} href={brandHref}>
           <Image
             src="/brand/icon.png"
             alt={ui.brandLogoAlt}
@@ -101,11 +99,11 @@ export function SiteHeader({
           <span>Invessiv</span>
         </a>
 
-        <nav aria-label={ui.navAriaLabel} className="site-header__desktop-nav">
-          <ul className="site-header__nav">
+        <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>
+          <ul className={styles.navList}>
             {navigation.map((item) => (
               <li key={item.href}>
-                <a href={item.href}>
+                <a className={styles.navLink} href={item.href}>
                   {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                 </a>
               </li>
@@ -113,7 +111,7 @@ export function SiteHeader({
           </ul>
         </nav>
 
-        <div className="site-header__actions" aria-label={ui.actionsAriaLabel}>
+        <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
           {ENABLE_THEME_SWITCH ? (
             <button
               className={styles.themeSwitch}
@@ -123,41 +121,13 @@ export function SiteHeader({
               {themeToggleLabel}
             </button>
           ) : null}
-          <details className="site-header__locale site-header__locale--desktop">
-            <summary aria-label={ui.localeMenuLabel}>
-              <span aria-hidden="true" className="site-header__locale-icon">
-                <svg fill="none" viewBox="0 0 24 24">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-                  <path d="M3 12h18" />
-                  <path d="M12 3a15.5 15.5 0 0 1 0 18" />
-                  <path d="M12 3a15.5 15.5 0 0 0 0 18" />
-                </svg>
-              </span>
-              <span className="site-header__locale-code">
-                {locale.toUpperCase()}
-              </span>
-            </summary>
-            <div
-              aria-label={ui.localeSwitchLabel}
-              className="site-header__locale-popover"
-              role="group"
-            >
-              <button
-                className={getLocaleOptionClassName("de")}
-                onClick={(event) => handleLocaleSelect("de", event)}
-                type="button"
-              >
-                DE
-              </button>
-              <button
-                className={getLocaleOptionClassName("en")}
-                onClick={(event) => handleLocaleSelect("en", event)}
-                type="button"
-              >
-                EN
-              </button>
-            </div>
-          </details>
+          <LocaleSwitch
+            locale={locale}
+            localeMenuLabel={ui.localeMenuLabel}
+            localeSwitchLabel={ui.localeSwitchLabel}
+            onSelect={handleLocaleSelect}
+            variant="desktop"
+          />
           <a
             className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta}`}
             href={ctaHref}
@@ -170,45 +140,17 @@ export function SiteHeader({
           </a>
         </div>
 
-        <div className="site-header__mobile-actions">
-          <details className="site-header__locale site-header__locale--mobile">
-            <summary aria-label={ui.localeMenuLabel}>
-              <span aria-hidden="true" className="site-header__locale-icon">
-                <svg fill="none" viewBox="0 0 24 24">
-                  <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-                  <path d="M3 12h18" />
-                  <path d="M12 3a15.5 15.5 0 0 1 0 18" />
-                  <path d="M12 3a15.5 15.5 0 0 0 0 18" />
-                </svg>
-              </span>
-              <span className="site-header__locale-code">
-                {locale.toUpperCase()}
-              </span>
-            </summary>
-            <div
-              aria-label={ui.localeSwitchLabel}
-              className="site-header__locale-popover"
-              role="group"
-            >
-              <button
-                className={getLocaleOptionClassName("de")}
-                onClick={(event) => handleLocaleSelect("de", event)}
-                type="button"
-              >
-                DE
-              </button>
-              <button
-                className={getLocaleOptionClassName("en")}
-                onClick={(event) => handleLocaleSelect("en", event)}
-                type="button"
-              >
-                EN
-              </button>
-            </div>
-          </details>
+        <div className={styles.mobileActions}>
+          <LocaleSwitch
+            locale={locale}
+            localeMenuLabel={ui.localeMenuLabel}
+            localeSwitchLabel={ui.localeSwitchLabel}
+            onSelect={handleLocaleSelect}
+            variant="mobile"
+          />
           <a
             aria-label={ui.ctaLabel}
-            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta} site-header__mobile-cta`}
+            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta} ${styles.mobileCta}`}
             href={ctaHref}
             title={ui.ctaLabel}
             data-analytics-event="cta_click"
@@ -216,7 +158,7 @@ export function SiteHeader({
             data-analytics-variant="primary"
             data-analytics-target="form"
           >
-            <span aria-hidden="true" className="site-header__mobile-cta-icon">
+            <span aria-hidden="true" className={styles.mobileCtaIcon}>
               <svg fill="none" viewBox="0 0 24 24">
                 <path d="M7.5 19.5 3 21l1.5-4.5" />
                 <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
@@ -245,18 +187,18 @@ export function SiteHeader({
             </span>
             <span className="sr-only">{ui.ctaLabel}</span>
           </a>
-          <details className="site-header__mobile-menu">
-            <summary aria-label={ui.mobileMenuLabel}>
+          <details className={`${styles.mobileMenu} site-header__mobile-menu`}>
+            <summary aria-label={ui.mobileMenuLabel} className={styles.mobileMenuSummary}>
               <span className="sr-only">{ui.mobileMenuLabel}</span>
-              <span aria-hidden="true" className="mobile-menu-icon">
-                <span />
-                <span />
-                <span />
+              <span aria-hidden="true" className={styles.mobileMenuIcon}>
+                <span className={styles.mobileMenuIconLine} />
+                <span className={styles.mobileMenuIconLine} />
+                <span className={styles.mobileMenuIconLine} />
               </span>
             </summary>
-            <ul>
+            <ul className={styles.mobileMenuList}>
               {ENABLE_THEME_SWITCH ? (
-                <li>
+                <li className={styles.mobileMenuListItem}>
                   <button
                     className={`${styles.themeSwitch} ${styles.themeSwitchMobile}`}
                     onClick={toggleTheme}
@@ -267,13 +209,17 @@ export function SiteHeader({
                 </li>
               ) : null}
               {mobileNavigation.map((item) => (
-                <li key={item.href}>
-                  <a href={item.href} onClick={handleMobileMenuLinkClick}>
+                <li className={styles.mobileMenuListItem} key={item.href}>
+                  <a
+                    className={styles.mobileMenuLink}
+                    href={item.href}
+                    onClick={handleMobileMenuLinkClick}
+                  >
                     {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
                   </a>
                 </li>
               ))}
-              <li>
+              <li className={styles.mobileMenuListItem}>
                 <a
                   className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.mobileMenuCta}`}
                   href={ctaHref}
