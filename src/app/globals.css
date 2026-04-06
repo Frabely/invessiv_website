@@ -264,7 +264,6 @@ main {
 
 [data-theme="light"] .services-tag,
 [data-theme="light"] .packages-badge,
-[data-theme="light"] .services-chip,
 [data-theme="light"] .services-example-btn,
 [data-theme="light"] .contact-channel-action-link,
 [data-theme="light"] .contact-copy-btn,
@@ -337,7 +336,6 @@ main {
   );
 }
 
-[data-theme="light"] .services-chip i,
 [data-theme="light"] .included-badge i {
   background: linear-gradient(
     135deg,
@@ -629,34 +627,11 @@ main {
   filter: blur(0.15px);
 }
 
-.services-section {
-  margin-top: 30px;
-}
-
-.services-section h2 {
-  margin: 0;
-  font-size: clamp(1.9rem, 3.1vw, 2.55rem);
-  letter-spacing: -0.03em;
-}
-
 .services-hint {
   margin: 0 0 18px;
   color: #bf9b83;
   max-width: 860px;
   font-size: 1.03rem;
-}
-
-.services-bento {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-  align-items: stretch;
-}
-
-@media (min-width: 760px) {
-  .services-bento {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 759px) {
@@ -670,13 +645,6 @@ main {
 }
 
 @media (min-width: 1120px) {
-  .services-bento {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-areas:
-      "upgrade landing process"
-      "web maintenance ai";
-  }
-
   .services-card--ai {
     grid-area: ai;
   }
@@ -3325,7 +3293,6 @@ body {
 }
 
 .services-tag,
-.services-chip,
 .included-badge,
 .process-step-phase,
 .process-step-number {
@@ -3368,7 +3335,6 @@ body {
   );
 }
 
-.services-chip i,
 .included-badge i {
   background: linear-gradient(
     135deg,
@@ -3534,7 +3500,6 @@ body {
 }
 
 [data-theme="light"] .services-tag,
-[data-theme="light"] .services-chip,
 [data-theme="light"] .services-example-btn,
 [data-theme="light"] .contact-channel-action-link,
 [data-theme="light"] .contact-copy-btn,
@@ -3548,7 +3513,6 @@ body {
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
 }
 
-[data-theme="light"] .services-chip i,
 [data-theme="light"] .included-badge i {
   background: linear-gradient(
     135deg,
@@ -3705,16 +3669,6 @@ body {
 .services-card {
   opacity: 1;
   transform: none;
-}
-
-.services-section--reveal-enabled .services-card {
-  opacity: 0;
-  transform: translateY(18px) scale(0.985);
-}
-
-.services-section--reveal-enabled .services-card.is-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
 .packages-viewport {
@@ -4867,13 +4821,12 @@ body {
 }
 
 .marketing-main
-  :is(.services-section, .process-section, .qna-section, .contact-section) {
+  :is(.process-section, .qna-section, .contact-section) {
   margin-top: 0;
 }
 
 .marketing-main
   :is(
-    .services-bento,
     .included-cards,
     .packages-track,
     .qna-list,
@@ -4959,7 +4912,6 @@ body {
   }
 
   .included-section h2,
-  .services-section h2,
   .process-section h2 {
     font-size: clamp(1.6rem, 1.95vw, 2.05rem);
   }
