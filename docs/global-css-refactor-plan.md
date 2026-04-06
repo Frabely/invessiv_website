@@ -35,7 +35,7 @@
 - [x] Schritt 07: Shared Layout-Shell lokalisieren
 - [x] Schritt 08: Header und Legal Language Switch migrieren
 - [x] Schritt 09: Hero-Section migrieren
-- [ ] Schritt 10: Hero Visual migrieren
+- [x] Schritt 10: Hero Visual migrieren
 - [ ] Schritt 11: Services Section Shell bereinigen
 - [ ] Schritt 12: Service Card und Secondary Service bereinigen
 - [ ] Schritt 13: Process Section migrieren

@@ -1,4 +1,5 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
+import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
@@ -27,13 +28,23 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <section className={`${styles.root} hero`} id="hero">
-      <div aria-hidden="true" className="hero__vignette" />
-      <div aria-hidden="true" className="hero__grid-overlay" />
-      <div aria-hidden="true" className="hero__glow hero__glow--text" />
-      <div aria-hidden="true" className="hero__glow hero__glow--visual" />
-      <div className="hero__noise" />
-      <div className="hero__aurora hero__aurora--left" />
-      <div className="hero__aurora hero__aurora--right" />
+      <div aria-hidden="true" className={heroVisualStyles.vignette} />
+      <div aria-hidden="true" className={heroVisualStyles.gridOverlay} />
+      <div
+        aria-hidden="true"
+        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowText}`}
+      />
+      <div
+        aria-hidden="true"
+        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowVisual}`}
+      />
+      <div className={heroVisualStyles.noise} />
+      <div
+        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraLeft}`}
+      />
+      <div
+        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraRight}`}
+      />
 
       <div className={styles.grid}>
         <div className={styles.content}>

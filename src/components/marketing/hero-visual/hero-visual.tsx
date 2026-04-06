@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useHeroVisualTilt } from "@/hooks/marketing/use-hero-visual-tilt";
+import styles from "./hero-visual.module.css";
 
 type HeroVisualProps = {
   ariaLabel: string;
@@ -12,12 +13,12 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
   useHeroVisualTilt(shotRef);
 
   return (
-    <aside aria-label={ariaLabel} className="hero__visual">
-      <div className="blob b1" />
-      <div className="blob b2" />
-      <div className="blob b3" />
-      <div className="hero-shot" ref={shotRef}>
-        <div className="hero-shot__layer hero-shot__layer--backplate">
+    <aside aria-label={ariaLabel} className={styles.visual}>
+      <div className={`${styles.blob} ${styles.blobOne}`} />
+      <div className={`${styles.blob} ${styles.blobTwo}`} />
+      <div className={`${styles.blob} ${styles.blobThree}`} />
+      <div className={styles.shot} ref={shotRef}>
+        <div className={`${styles.layer} ${styles.layerBackplate}`}>
           <svg
             fill="none"
             viewBox="0 0 560 340"
@@ -57,7 +58,7 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
           </svg>
         </div>
 
-        <div className="hero-shot__layer hero-shot__layer--content">
+        <div className={`${styles.layer} ${styles.layerContent}`}>
           <svg
             fill="none"
             viewBox="0 0 560 340"
@@ -112,7 +113,7 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
           </svg>
         </div>
 
-        <div className="hero-shot__layer hero-shot__layer--highlights">
+        <div className={`${styles.layer} ${styles.layerHighlights}`}>
           <svg
             fill="none"
             viewBox="0 0 560 340"
@@ -124,7 +125,7 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
           </svg>
         </div>
 
-        <div className="hero-shot__shine" />
+        <div className={styles.shine} />
       </div>
     </aside>
   );
