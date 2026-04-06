@@ -43,7 +43,7 @@
 - [x] Schritt 15: Project Request Form Layout migrieren
 - [x] Schritt 16: Project Request Form Feldzustaende migrieren
 - [x] Schritt 17: Included, Q&A und Placeholder migrieren
-- [ ] Schritt 18: Footer migrieren
+- [x] Schritt 18: Footer migrieren
 - [ ] Schritt 19: Legal- und Projects-Reste bereinigen
 - [ ] Schritt 20: Dead CSS loeschen
 - [ ] Schritt 21: Dubletten konsolidieren
