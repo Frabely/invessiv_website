@@ -8,6 +8,7 @@ import { ProofSection } from "@/components/marketing/home/sections/proof-section
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
+import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SECTION_IDS } from "@/config/site";
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
 import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
@@ -35,7 +36,7 @@ export function HomeSectionsRenderer({
 
   return (
     <>
-      <div className="layout-shell">
+      <LayoutShell>
         {!validation.hasCompleteMapping ? (
           <p className="phase-zero-warning" role="status">
             {ui.mappingWarning}
@@ -189,7 +190,7 @@ export function HomeSectionsRenderer({
             );
           },
         )}
-      </div>
+      </LayoutShell>
 
       {footerSection ? (
         <FooterSection

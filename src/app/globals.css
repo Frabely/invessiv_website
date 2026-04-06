@@ -687,12 +687,6 @@ main {
   background-size: 2px 2px;
 }
 
-.layout-shell {
-  max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: 32px 0 40px;
-}
-
 .phase-zero-warning {
   margin: 0 0 24px;
   padding: 12px 16px;
@@ -702,25 +696,6 @@ main {
   color: #6a4b00;
 }
 
-.content-section {
-  margin-top: 24px;
-  padding: 24px;
-  border: 1px solid rgba(226, 166, 111, 0.24);
-  border-radius: 20px;
-  background: rgba(45, 24, 14, 0.64);
-}
-
-.content-section h2 {
-  margin: 0;
-}
-
-.content-section p {
-  margin: 10px 0 0;
-  color: var(--muted);
-  line-height: 1.65;
-}
-
-[data-theme="light"] .content-section,
 [data-theme="light"] .included-card,
 [data-theme="light"] .packages-card,
 [data-theme="light"] .contact-channel-card,
@@ -759,8 +734,7 @@ main {
 [data-theme="light"] .process-summary,
 [data-theme="light"] .process-role-line,
 [data-theme="light"] .process-intro-cta p,
-[data-theme="light"] .process-step-description,
-[data-theme="light"] .content-section p {
+[data-theme="light"] .process-step-description {
   color: #76503c;
 }
 
@@ -944,10 +918,6 @@ main {
 
 [data-theme="light"] .packages-cta:focus-visible {
   outline-color: rgba(194, 104, 45, 0.74);
-}
-
-.content-section--tall {
-  min-height: 260px;
 }
 
 .included-section {
@@ -3320,10 +3290,6 @@ main {
     display: none;
   }
 
-  .layout-shell {
-    padding: 24px 16px 64px;
-  }
-
   .included-cards {
     grid-template-columns: 1fr;
   }
@@ -4336,7 +4302,6 @@ body {
 .packages-card,
 .process-intro,
 .process-step,
-.content-section,
 .site-footer {
   border-color: color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
@@ -4362,24 +4327,6 @@ body {
       transparent 62%
     ),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
-}
-
-.layout-shell > section {
-  margin-top: 20px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.layout-shell > section:nth-of-type(even) {
-  background: transparent;
-}
-
-.layout-shell > .services-section,
-.layout-shell > .packages-section {
-  margin-top: 24px;
 }
 
 .site-footer a {
@@ -4447,15 +4394,10 @@ body {
 [data-theme="light"] .packages-card,
 [data-theme="light"] .process-intro,
 [data-theme="light"] .process-step,
-[data-theme="light"] .content-section,
 [data-theme="light"] .site-footer {
   background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
   border-color: var(--color-border);
   box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
-}
-
-[data-theme="light"] .layout-shell > section:nth-of-type(even) {
-  background: transparent;
 }
 
 .qna-arrow,
@@ -5845,24 +5787,6 @@ body {
     clamp(2rem, 4vw, 3rem);
 }
 
-.marketing-main .layout-shell {
-  padding: var(--section-shell-pad-top) var(--section-shell-pad-inline)
-    var(--section-shell-pad-bottom);
-}
-
-.marketing-main .layout-shell > section {
-  margin-top: var(--section-space);
-}
-
-.marketing-main .layout-shell > section:first-of-type {
-  margin-top: clamp(1rem, 2.1vw, 1.5rem);
-}
-
-.marketing-main .layout-shell > .services-section,
-.marketing-main .layout-shell > .packages-section {
-  margin-top: var(--section-space);
-}
-
 .marketing-main
   :is(.services-section, .process-section, .qna-section, .contact-section) {
   margin-top: 0;
@@ -5948,8 +5872,7 @@ body {
   }
 
   .site-header__inner,
-  .site-footer__inner,
-  .layout-shell {
+  .site-footer__inner {
     padding-inline: var(--wide-monitor-inline-frame);
   }
 
@@ -6144,8 +6067,7 @@ body {
 
 @media (max-width: 1200px) {
   .site-header__inner,
-  .site-footer__inner,
-  .layout-shell {
+  .site-footer__inner {
     padding-inline: 20px;
   }
 
