@@ -4,7 +4,7 @@ import { useRef } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
-import buttonStyles from "@/components/shared/button/button.module.css";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 import styles from "./process-section.module.css";
 
@@ -83,11 +83,7 @@ export function ProcessSection({
         className={`${styles.layout} ${styles.layoutHasJourneyCtaGate}`}
         ref={layoutRef}
       >
-        <svg
-          aria-hidden="true"
-          className={styles.journeySvg}
-          focusable="false"
-        >
+        <svg aria-hidden="true" className={styles.journeySvg} focusable="false">
           <defs>
             <linearGradient
               id="processJourneyGradient"
@@ -96,10 +92,7 @@ export function ProcessSection({
               y1="0%"
               y2="100%"
             >
-              <stop
-                offset="0%"
-                className={styles.journeyGradientStart}
-              />
+              <stop offset="0%" className={styles.journeyGradientStart} />
               <stop offset="100%" className={styles.journeyGradientEnd} />
             </linearGradient>
           </defs>
@@ -116,8 +109,8 @@ export function ProcessSection({
           ref={leaderRef}
         />
         {processCta ? (
-          <a
-            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.endCta}`}
+          <PrimaryCtaLink
+            className={styles.endCta}
             data-journey-active="false"
             data-journey-visible="false"
             href={processCta.href}
@@ -128,7 +121,7 @@ export function ProcessSection({
             data-analytics-target="form"
           >
             {processCta.label}
-          </a>
+          </PrimaryCtaLink>
         ) : null}
         <div className={styles.steps} ref={stepsRef} role="list">
           {processSteps.map((step, index) => {

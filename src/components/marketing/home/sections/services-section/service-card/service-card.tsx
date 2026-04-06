@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -78,13 +79,6 @@ export function ServiceCard({
   const moreItemsClasses = [
     styles.moreItems,
     isDetailsOpen ? styles.moreItemsPlaceholder : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const primaryCtaClasses = [
-    buttonStyles.button,
-    buttonStyles.primary,
-    styles.primaryCta,
   ]
     .filter(Boolean)
     .join(" ");
@@ -210,8 +204,8 @@ export function ServiceCard({
           <div className={styles.footer}>
             <div className={styles.actions}>
               {showPrimaryCta ? (
-                <a
-                  className={primaryCtaClasses}
+                <PrimaryCtaLink
+                  className={styles.primaryCta}
                   data-analytics-event="cta_click"
                   data-analytics-location="pricing"
                   data-analytics-target="form"
@@ -221,7 +215,7 @@ export function ServiceCard({
                   href={SECTION_HREFS.contact}
                 >
                   {ctaLabel}
-                </a>
+                </PrimaryCtaLink>
               ) : (
                 <span aria-hidden="true" className={placeholderCtaClasses}>
                   {ctaLabel}

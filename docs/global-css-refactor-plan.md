@@ -48,7 +48,7 @@
 - [x] Schritt 20: Dead CSS loeschen
 - [x] Schritt 21: Dubletten konsolidieren
 - [x] Schritt 22: Finale Schlankheitsrunde fuer `globals.css`
-- [ ] Schritt 23: Primaere CTA-Komponente vereinheitlichen
+- [x] Schritt 23: Primaere CTA-Komponente vereinheitlichen
 
 ## Regeln für jeden Schritt
 

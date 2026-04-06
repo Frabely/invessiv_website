@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
@@ -137,7 +138,6 @@ export function ProjectRequestForm({
   const stepTwoNextLabel =
     formCopy.nextStepProjectLabel ??
     `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
-  const primaryButtonClassName = `${buttonStyles.button} ${buttonStyles.primary}`;
   const ghostButtonClassName = `${buttonStyles.button} ${buttonStyles.ghost}`;
   const fieldOfferClassName = `${styles.field} ${styles.fieldOffer} ${styles.fieldOfferLayout}`;
   const pagesCustomFieldClassName = `${styles.field} ${styles.pagesCustom}`;
@@ -336,8 +336,6 @@ export function ProjectRequestForm({
       }
 
       return !(step === 2 && !validatePagesSelection());
-
-
     },
     [validatePagesSelection],
   );
@@ -650,7 +648,10 @@ export function ProjectRequestForm({
           </div>
         </div>
 
-        <ol aria-label={formCopy.stepNavigationLabel} className={styles.stepper}>
+        <ol
+          aria-label={formCopy.stepNavigationLabel}
+          className={styles.stepper}
+        >
           {stepTitles.map((title, index) => {
             const step = STEP_SEQUENCE[index];
             const isDone = step < currentStep;
@@ -658,10 +659,7 @@ export function ProjectRequestForm({
             const stepperItemClassName = `${styles.stepperItem}${isDone ? ` ${styles.stepperItemDone}` : ""}${isCurrent ? ` ${styles.stepperItemCurrent}` : ""}`;
 
             return (
-              <li
-                className={stepperItemClassName}
-                key={`${title}-${step}`}
-              >
+              <li className={stepperItemClassName} key={`${title}-${step}`}>
                 <button
                   aria-current={isCurrent ? "step" : undefined}
                   className={styles.stepperTrigger}
@@ -686,7 +684,12 @@ export function ProjectRequestForm({
           })}
         </ol>
 
-        <form className={styles.form} ref={formRef} onSubmit={handleSubmit} noValidate>
+        <form
+          className={styles.form}
+          ref={formRef}
+          onSubmit={handleSubmit}
+          noValidate
+        >
           <input
             aria-hidden="true"
             autoComplete="off"
@@ -696,7 +699,11 @@ export function ProjectRequestForm({
             type="text"
           />
 
-          <fieldset className={styles.step} data-step="1" hidden={currentStep !== 1}>
+          <fieldset
+            className={styles.step}
+            data-step="1"
+            hidden={currentStep !== 1}
+          >
             <legend>{formCopy.stepOneTitle}</legend>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
@@ -801,19 +808,22 @@ export function ProjectRequestForm({
                 <p className={styles.panelHint}>{bottomHint}</p>
               ) : null}
               <div className={styles.actionsButtons}>
-                <button
-                  className={primaryButtonClassName}
+                <PrimaryCtaButton
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
                 >
                   {stepOneNextLabel}
-                </button>
+                </PrimaryCtaButton>
               </div>
             </div>
           </fieldset>
 
-          <fieldset className={styles.step} data-step="2" hidden={currentStep !== 2}>
+          <fieldset
+            className={styles.step}
+            data-step="2"
+            hidden={currentStep !== 2}
+          >
             <legend>{formCopy.stepTwoTitle}</legend>
 
             {fieldRules.requiresWebsite ? (
@@ -1026,19 +1036,22 @@ export function ProjectRequestForm({
                 >
                   {formCopy.previousStepLabel}
                 </button>
-                <button
-                  className={primaryButtonClassName}
+                <PrimaryCtaButton
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
                 >
                   {stepTwoNextLabel}
-                </button>
+                </PrimaryCtaButton>
               </div>
             </div>
           </fieldset>
 
-          <fieldset className={styles.step} data-step="3" hidden={currentStep !== 3}>
+          <fieldset
+            className={styles.step}
+            data-step="3"
+            hidden={currentStep !== 3}
+          >
             <legend>{formCopy.stepThreeTitle}</legend>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
@@ -1141,20 +1154,14 @@ export function ProjectRequestForm({
                   >
                     {formCopy.previousStepLabel}
                   </button>
-                  <button
-                    className={primaryButtonClassName}
-                    disabled={isSubmitting}
-                    type="submit"
-                  >
+                  <PrimaryCtaButton disabled={isSubmitting} type="submit">
                     {isSubmitting
                       ? formCopy.submittingLabel
                       : formCopy.submitLabel}
-                  </button>
+                  </PrimaryCtaButton>
                 </div>
               </div>
-              <p className={styles.requiredHint}>
-                {formCopy.requiredHint}
-              </p>
+              <p className={styles.requiredHint}>{formCopy.requiredHint}</p>
             </div>
           </fieldset>
 

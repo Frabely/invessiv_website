@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
-import buttonStyles from "@/components/shared/button/button.module.css";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ENABLE_THEME_SWITCH, SECTION_HREFS } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
@@ -128,8 +128,8 @@ export function SiteHeader({
             onSelect={handleLocaleSelect}
             variant="desktop"
           />
-          <a
-            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta}`}
+          <PrimaryCtaLink
+            className={styles.navCta}
             href={ctaHref}
             data-analytics-event="cta_click"
             data-analytics-location="nav"
@@ -137,7 +137,7 @@ export function SiteHeader({
             data-analytics-target="form"
           >
             {ui.ctaLabel}
-          </a>
+          </PrimaryCtaLink>
         </div>
 
         <div className={styles.mobileActions}>
@@ -148,9 +148,9 @@ export function SiteHeader({
             onSelect={handleLocaleSelect}
             variant="mobile"
           />
-          <a
+          <PrimaryCtaLink
             aria-label={ui.ctaLabel}
-            className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.navCta} ${styles.mobileCta}`}
+            className={`${styles.navCta} ${styles.mobileCta}`}
             href={ctaHref}
             title={ui.ctaLabel}
             data-analytics-event="cta_click"
@@ -186,9 +186,12 @@ export function SiteHeader({
               </svg>
             </span>
             <span className="sr-only">{ui.ctaLabel}</span>
-          </a>
+          </PrimaryCtaLink>
           <details className={`${styles.mobileMenu} site-header__mobile-menu`}>
-            <summary aria-label={ui.mobileMenuLabel} className={styles.mobileMenuSummary}>
+            <summary
+              aria-label={ui.mobileMenuLabel}
+              className={styles.mobileMenuSummary}
+            >
               <span className="sr-only">{ui.mobileMenuLabel}</span>
               <span aria-hidden="true" className={styles.mobileMenuIcon}>
                 <span className={styles.mobileMenuIconLine} />
@@ -220,8 +223,8 @@ export function SiteHeader({
                 </li>
               ))}
               <li className={styles.mobileMenuListItem}>
-                <a
-                  className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.mobileMenuCta}`}
+                <PrimaryCtaLink
+                  className={styles.mobileMenuCta}
                   href={ctaHref}
                   onClick={handleMobileMenuLinkClick}
                   data-analytics-event="cta_click"
@@ -230,7 +233,7 @@ export function SiteHeader({
                   data-analytics-target="form"
                 >
                   {ui.ctaLabel}
-                </a>
+                </PrimaryCtaLink>
               </li>
             </ul>
           </details>

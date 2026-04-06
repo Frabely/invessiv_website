@@ -1,6 +1,7 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import styles from "./hero-section.module.css";
@@ -55,8 +56,8 @@ export function HeroSection({
           <p className={styles.description}>{description}</p>
 
           <div className={styles.ctaRow}>
-            <a
-              className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.ctaButton} ${styles.primaryCta}`}
+            <PrimaryCtaLink
+              className={`${styles.ctaButton} ${styles.primaryCta}`}
               href={SECTION_HREFS.contact}
               data-analytics-event="cta_click"
               data-analytics-location="hero"
@@ -64,7 +65,7 @@ export function HeroSection({
               data-analytics-target="form"
             >
               {heroPrimaryCta}
-            </a>
+            </PrimaryCtaLink>
             <a
               className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
               href={SECTION_HREFS.services}
