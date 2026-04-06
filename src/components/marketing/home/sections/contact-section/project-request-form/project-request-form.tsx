@@ -137,6 +137,10 @@ export function ProjectRequestForm({
   const stepTwoNextLabel =
     formCopy.nextStepProjectLabel ??
     `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
+  const primaryButtonClassName = `${buttonStyles.button} ${buttonStyles.primary}`;
+  const ghostButtonClassName = `${buttonStyles.button} ${buttonStyles.ghost}`;
+  const fieldOfferClassName = `${styles.field} ${styles.fieldOffer} ${styles.fieldOfferLayout}`;
+  const pagesCustomFieldClassName = `${styles.field} ${styles.pagesCustom}`;
 
   const fieldRules = useMemo(() => {
     const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
@@ -696,10 +700,10 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepOneTitle}</legend>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>
                   {formCopy.firstNameLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </span>
                 <input
                   aria-describedby={
@@ -722,10 +726,10 @@ export function ProjectRequestForm({
                   </small>
                 ) : null}
               </label>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>
                   {formCopy.emailLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </span>
                 <input
                   aria-describedby={
@@ -748,12 +752,10 @@ export function ProjectRequestForm({
               </label>
             </div>
 
-            <label
-              className={`project-request-field project-request-field--offer ${styles.fieldOfferLayout}`}
-            >
+            <label className={fieldOfferClassName}>
               <span>
                 {formCopy.offerLabel}
-                <strong className="project-request-required-marker">*</strong>
+                <strong className={styles.requiredMarker}>*</strong>
               </span>
               <select
                 aria-describedby={
@@ -789,7 +791,7 @@ export function ProjectRequestForm({
             </label>
 
             {selectedOfferKey ? (
-              <p className="project-request-conditional-hint">
+              <p className={styles.conditionalHint}>
                 {formCopy.conditionalFieldHint}
               </p>
             ) : null}
@@ -800,7 +802,7 @@ export function ProjectRequestForm({
               ) : null}
               <div className={styles.actionsButtons}>
                 <button
-                  className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
+                  className={primaryButtonClassName}
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
@@ -815,10 +817,10 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepTwoTitle}</legend>
 
             {fieldRules.requiresWebsite ? (
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>
                   {formCopy.websiteLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </span>
                 <input
                   aria-describedby={
@@ -834,7 +836,7 @@ export function ProjectRequestForm({
                   required
                   type="url"
                 />
-                <small className="project-request-field-hint">
+                <small className={styles.fieldHint}>
                   {formCopy.websiteRequiredHint}
                 </small>
                 {fieldErrors.website ? (
@@ -846,10 +848,10 @@ export function ProjectRequestForm({
             ) : null}
 
             {fieldRules.requiresGoal ? (
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>
                   {formCopy.goalLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </span>
                 <select
                   aria-describedby={
@@ -883,22 +885,23 @@ export function ProjectRequestForm({
 
             {fieldRules.requiresPages ? (
               <div
-                className="project-request-pages"
+                className={styles.pages}
                 ref={pagesOptionsContainerRef}
                 tabIndex={-1}
               >
-                <p className="project-request-pages-label">
+                <p className={styles.pagesLabel}>
                   {formCopy.pagesLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </p>
-                <div className="project-request-pages-options">
+                <div className={styles.pagesOptions}>
                   {formCopy.pagesOptions?.map((option) => {
                     const isSelected = selectedPageKeys.includes(option.key);
+                    const pageOptionClassName = `${styles.pageOption}${isSelected ? ` ${styles.pageOptionSelected}` : ""}`;
 
                     return (
                       <button
                         aria-pressed={isSelected}
-                        className={`project-request-page-option${isSelected ? " is-selected" : ""}`}
+                        className={pageOptionClassName}
                         key={option.key}
                         onClick={() => togglePageOption(option.key)}
                         type="button"
@@ -908,7 +911,7 @@ export function ProjectRequestForm({
                     );
                   })}
                 </div>
-                <label className="project-request-field project-request-pages-custom">
+                <label className={pagesCustomFieldClassName}>
                   <span>
                     {formCopy.pagesCustomLabel ?? "Weitere Seiten (optional)"}
                   </span>
@@ -935,7 +938,7 @@ export function ProjectRequestForm({
                 {pagesSelectionError || fieldErrors.pageKeys ? (
                   <p
                     id="project-request-pageKeys-error"
-                    className="project-request-pages-error"
+                    className={styles.pagesError}
                     role="alert"
                   >
                     {pagesSelectionError ??
@@ -946,10 +949,10 @@ export function ProjectRequestForm({
             ) : null}
 
             {fieldRules.requiresWorkflow ? (
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>
                   {formCopy.workflowLabel}
-                  <strong className="project-request-required-marker">*</strong>
+                  <strong className={styles.requiredMarker}>*</strong>
                 </span>
                 <select
                   aria-describedby={
@@ -981,10 +984,10 @@ export function ProjectRequestForm({
               </label>
             ) : null}
 
-            <label className="project-request-field">
+            <label className={styles.field}>
               <span>
                 {formCopy.projectDetailsLabel}
-                <strong className="project-request-required-marker">*</strong>
+                <strong className={styles.requiredMarker}>*</strong>
               </span>
               <textarea
                 aria-describedby={
@@ -1016,7 +1019,7 @@ export function ProjectRequestForm({
               ) : null}
               <div className={styles.actionsButtons}>
                 <button
-                  className={`${buttonStyles.button} ${buttonStyles.ghost}`}
+                  className={ghostButtonClassName}
                   disabled={isSubmitting}
                   onClick={goToPreviousStep}
                   type="button"
@@ -1024,7 +1027,7 @@ export function ProjectRequestForm({
                   {formCopy.previousStepLabel}
                 </button>
                 <button
-                  className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
+                  className={primaryButtonClassName}
                   disabled={isSubmitting}
                   onClick={goToNextStep}
                   type="button"
@@ -1039,7 +1042,7 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepThreeTitle}</legend>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>{formCopy.companyLabel}</span>
                 <input
                   autoCapitalize="words"
@@ -1048,7 +1051,7 @@ export function ProjectRequestForm({
                   type="text"
                 />
               </label>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>{formCopy.roleLabel}</span>
                 <input
                   autoCapitalize="words"
@@ -1059,13 +1062,13 @@ export function ProjectRequestForm({
               </label>
             </div>
 
-            <label className="project-request-field">
+            <label className={styles.field}>
               <span>{formCopy.phoneLabel}</span>
               <input autoComplete="tel" name="phone" type="tel" />
             </label>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>{formCopy.budgetLabel}</span>
                 <select defaultValue="" name="budgetKey">
                   <option value="">-</option>
@@ -1076,7 +1079,7 @@ export function ProjectRequestForm({
                   ))}
                 </select>
               </label>
-              <label className="project-request-field">
+              <label className={styles.field}>
                 <span>{formCopy.startLabel}</span>
                 <select defaultValue="" name="startKey">
                   <option value="">-</option>
@@ -1089,7 +1092,7 @@ export function ProjectRequestForm({
               </label>
             </div>
 
-            <label className="project-request-consent">
+            <label className={styles.consent}>
               <input
                 aria-describedby={
                   fieldErrors.consentAccepted
@@ -1108,11 +1111,15 @@ export function ProjectRequestForm({
                 <a href={privacyHref} target="_self">
                   {privacyLabel}
                 </a>
-                <strong className="project-request-required-marker">*</strong>
+                <strong className={styles.requiredMarker}>*</strong>
               </span>
             </label>
             {fieldErrors.consentAccepted ? (
-              <p id="project-request-consent-error" role="alert">
+              <p
+                className={styles.consentError}
+                id="project-request-consent-error"
+                role="alert"
+              >
                 {getFieldErrorText(
                   "consentAccepted",
                   fieldErrors.consentAccepted,
@@ -1127,7 +1134,7 @@ export function ProjectRequestForm({
                 ) : null}
                 <div className={styles.actionsButtons}>
                   <button
-                    className={`${buttonStyles.button} ${buttonStyles.ghost}`}
+                    className={ghostButtonClassName}
                     disabled={isSubmitting}
                     onClick={goToPreviousStep}
                     type="button"
@@ -1135,7 +1142,7 @@ export function ProjectRequestForm({
                     {formCopy.previousStepLabel}
                   </button>
                   <button
-                    className={`${buttonStyles.button} ${buttonStyles.primary} contact-primary-cta--shimmer`}
+                    className={primaryButtonClassName}
                     disabled={isSubmitting}
                     type="submit"
                   >
@@ -1152,7 +1159,7 @@ export function ProjectRequestForm({
           </fieldset>
 
           {statusMessage ? (
-            <p className="project-request-status" role="status">
+            <p className={styles.status} role="status">
               {statusMessage}
             </p>
           ) : null}

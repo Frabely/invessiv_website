@@ -41,13 +41,14 @@
 - [x] Schritt 13: Process Section migrieren
 - [x] Schritt 14: Contact Section Shell migrieren
 - [x] Schritt 15: Project Request Form Layout migrieren
-- [ ] Schritt 16: Project Request Form Feldzustaende migrieren
+- [x] Schritt 16: Project Request Form Feldzustaende migrieren
 - [ ] Schritt 17: Included, Q&A und Placeholder migrieren
 - [ ] Schritt 18: Footer migrieren
 - [ ] Schritt 19: Legal- und Projects-Reste bereinigen
 - [ ] Schritt 20: Dead CSS loeschen
 - [ ] Schritt 21: Dubletten konsolidieren
 - [ ] Schritt 22: Finale Schlankheitsrunde fuer `globals.css`
+- [ ] Schritt 23: Primaere CTA-Komponente vereinheitlichen
 
 ## Regeln für jeden Schritt
 
@@ -232,3 +233,11 @@
 - keine absichtslosen CSS-Dubletten mehr
 - Home, Projects und Legal funktionieren und sehen auf Mobile, Tablet und Desktop korrekt aus
 - Dark/Light, Fokus-Zustände, Touch-Bedienung und Reduced-Motion sind pro betroffenem Bereich geprüft
+
+## Offener Folgeschritt
+
+- Schritt 23: Primäre CTA-Komponente vereinheitlichen
+- Ziel: alle primären CTAs über eine einzige Shared-Komponente rendern
+- Dateien: `src/components/shared/button/*` oder dedizierte `cta-button/*`
+- Betroffene Consumer: Header, Hero, Services, Process, Contact und Projects
+- Inhalt: zentrale primäre CTA-Komponente für Link und Button definieren, CTA-Label immer über Props übergeben, lokale `primaryCta`-/`navCta`-Sonderpfade auf echte Modifier reduzieren
