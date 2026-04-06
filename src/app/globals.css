@@ -72,35 +72,38 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background-color: #1d1a18;
   background:
     radial-gradient(
-      1280px 760px at 8% -8%,
-      rgba(231, 154, 73, 0.28),
-      transparent 60%
-    ),
+        1280px 760px at 8% -8%,
+        rgba(231, 154, 73, 0.28),
+        transparent 60%
+      )
+      fixed,
     radial-gradient(
-      980px 660px at 92% 10%,
-      rgba(124, 156, 208, 0.12),
-      transparent 66%
-    ),
+        980px 660px at 92% 10%,
+        rgba(124, 156, 208, 0.12),
+        transparent 66%
+      )
+      fixed,
     radial-gradient(
-      1020px 700px at 52% 104%,
-      rgba(211, 112, 45, 0.18),
-      transparent 66%
-    ),
+        1020px 700px at 52% 104%,
+        rgba(211, 112, 45, 0.18),
+        transparent 66%
+      )
+      fixed,
     radial-gradient(
-      920px 580px at 88% 86%,
-      rgba(216, 132, 54, 0.13),
-      transparent 66%
-    ),
+        920px 580px at 88% 86%,
+        rgba(216, 132, 54, 0.13),
+        transparent 66%
+      )
+      fixed,
     radial-gradient(
-      900px 540px at 16% 82%,
-      rgba(221, 129, 57, 0.09),
-      transparent 66%
-    ),
-    linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%);
-  background-attachment: fixed, fixed, fixed;
+        900px 540px at 16% 82%,
+        rgba(221, 129, 57, 0.09),
+        transparent 66%
+      )
+      fixed,
+    linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) fixed #1d1a18;
   color: var(--color-text);
   font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
   overflow-x: hidden;
@@ -115,34 +118,38 @@ section[id] {
 }
 
 [data-theme="light"] body {
-  background-color: #f5f7fb;
   background:
     radial-gradient(
-      1220px 720px at 8% -2%,
-      rgba(216, 132, 54, 0.24),
-      transparent 62%
-    ),
+        1220px 720px at 8% -2%,
+        rgba(216, 132, 54, 0.24),
+        transparent 62%
+      )
+      fixed,
     radial-gradient(
-      940px 620px at 94% 8%,
-      rgba(120, 152, 202, 0.1),
-      transparent 64%
-    ),
+        940px 620px at 94% 8%,
+        rgba(120, 152, 202, 0.1),
+        transparent 64%
+      )
+      fixed,
     radial-gradient(
-      980px 620px at 50% 104%,
-      rgba(226, 146, 76, 0.17),
-      transparent 66%
-    ),
+        980px 620px at 50% 104%,
+        rgba(226, 146, 76, 0.17),
+        transparent 66%
+      )
+      fixed,
     radial-gradient(
-      880px 520px at 86% 84%,
-      rgba(231, 158, 93, 0.11),
-      transparent 66%
-    ),
+        880px 520px at 86% 84%,
+        rgba(231, 158, 93, 0.11),
+        transparent 66%
+      )
+      fixed,
     radial-gradient(
-      840px 480px at 18% 82%,
-      rgba(224, 149, 83, 0.08),
-      transparent 66%
-    ),
-    linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%);
+        840px 480px at 18% 82%,
+        rgba(224, 149, 83, 0.08),
+        transparent 66%
+      )
+      fixed,
+    linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) fixed #f5f7fb;
 }
 
 a {
@@ -253,11 +260,11 @@ main {
   position: absolute;
   inset: 0;
   opacity: 0.006;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.18) 0.6px,
-    transparent 0.6px
-  );
-  background-size: 2px 2px;
+  background: radial-gradient(
+      rgba(255, 255, 255, 0.18) 0.6px,
+      transparent 0.6px
+    )
+    0 0 / 2px 2px;
 }
 
 @media (max-width: 900px) {
@@ -270,7 +277,75 @@ main {
 
   html,
   body {
-    background-attachment: scroll, scroll, scroll;
+    background:
+      radial-gradient(
+          1280px 760px at 8% -8%,
+          rgba(231, 154, 73, 0.28),
+          transparent 60%
+        )
+        scroll,
+      radial-gradient(
+          980px 660px at 92% 10%,
+          rgba(124, 156, 208, 0.12),
+          transparent 66%
+        )
+        scroll,
+      radial-gradient(
+          1020px 700px at 52% 104%,
+          rgba(211, 112, 45, 0.18),
+          transparent 66%
+        )
+        scroll,
+      radial-gradient(
+          920px 580px at 88% 86%,
+          rgba(216, 132, 54, 0.13),
+          transparent 66%
+        )
+        scroll,
+      radial-gradient(
+          900px 540px at 16% 82%,
+          rgba(221, 129, 57, 0.09),
+          transparent 66%
+        )
+        scroll,
+      linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) scroll
+        #1d1a18;
+  }
+
+  [data-theme="light"] body {
+    background:
+      radial-gradient(
+          1220px 720px at 8% -2%,
+          rgba(216, 132, 54, 0.24),
+          transparent 62%
+        )
+        scroll,
+      radial-gradient(
+          940px 620px at 94% 8%,
+          rgba(120, 152, 202, 0.1),
+          transparent 64%
+        )
+        scroll,
+      radial-gradient(
+          980px 620px at 50% 104%,
+          rgba(226, 146, 76, 0.17),
+          transparent 66%
+        )
+        scroll,
+      radial-gradient(
+          880px 520px at 86% 84%,
+          rgba(231, 158, 93, 0.11),
+          transparent 66%
+        )
+        scroll,
+      radial-gradient(
+          840px 480px at 18% 82%,
+          rgba(224, 149, 83, 0.08),
+          transparent 66%
+        )
+        scroll,
+      linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) scroll
+        #f5f7fb;
   }
 
   .page-aurora {
