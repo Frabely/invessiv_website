@@ -44,8 +44,8 @@
 - [x] Schritt 16: Project Request Form Feldzustaende migrieren
 - [x] Schritt 17: Included, Q&A und Placeholder migrieren
 - [x] Schritt 18: Footer migrieren
-- [ ] Schritt 19: Legal- und Projects-Reste bereinigen
-- [ ] Schritt 20: Dead CSS loeschen
+- [x] Schritt 19: Legal- und Projects-Reste bereinigen
+- [x] Schritt 20: Dead CSS loeschen
 - [ ] Schritt 21: Dubletten konsolidieren
 - [ ] Schritt 22: Finale Schlankheitsrunde fuer `globals.css`
 - [ ] Schritt 23: Primaere CTA-Komponente vereinheitlichen
