@@ -2,6 +2,7 @@ import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
+import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {
   description: string;
@@ -25,7 +26,7 @@ export function HeroSection({
   title,
 }: HeroSectionProps) {
   return (
-    <section className="hero" id="hero">
+    <section className={`${styles.root} hero`} id="hero">
       <div aria-hidden="true" className="hero__vignette" />
       <div aria-hidden="true" className="hero__grid-overlay" />
       <div aria-hidden="true" className="hero__glow hero__glow--text" />
@@ -34,17 +35,17 @@ export function HeroSection({
       <div className="hero__aurora hero__aurora--left" />
       <div className="hero__aurora hero__aurora--right" />
 
-      <div className="hero__grid">
-        <div className="hero__content">
-          <p className="hero__tag">{heroTag}</p>
-          <h1 className="hero__title">
-            <span className="hero__title-gradient">{title}</span>
+      <div className={styles.grid}>
+        <div className={styles.content}>
+          <p className={styles.tag}>{heroTag}</p>
+          <h1 className={styles.title}>
+            <span className={styles.titleGradient}>{title}</span>
           </h1>
-          <p>{description}</p>
+          <p className={styles.description}>{description}</p>
 
-          <div className="hero__cta-row">
+          <div className={styles.ctaRow}>
             <a
-              className={`${buttonStyles.button} ${buttonStyles.primary} hero__cta-button hero__primary-cta`}
+              className={`${buttonStyles.button} ${buttonStyles.primary} ${styles.ctaButton} ${styles.primaryCta}`}
               href={SECTION_HREFS.contact}
               data-analytics-event="cta_click"
               data-analytics-location="hero"
@@ -54,7 +55,7 @@ export function HeroSection({
               {heroPrimaryCta}
             </a>
             <a
-              className={`${buttonStyles.button} ${buttonStyles.ghost} hero__cta-button`}
+              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
               href={SECTION_HREFS.services}
               data-analytics-event="cta_click"
               data-analytics-location="hero"
@@ -66,7 +67,7 @@ export function HeroSection({
 
           <SectionScanPoints
             ariaLabel={heroBenefitsAriaLabel}
-            className="hero__scan-points"
+            className={styles.scanPoints}
             points={heroChipTags}
           />
         </div>
