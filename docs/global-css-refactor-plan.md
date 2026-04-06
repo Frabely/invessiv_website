@@ -24,6 +24,31 @@
 - Bereits modularisiert sind nur Teile von `legal`, `projects`, `proof` und `services`
 - Header, Hero, Contact, Process, Footer, Q&A, Included und mehrere Shared-Primitives hängen noch direkt an globalen Klassen
 
+## Fortschritt
+
+- [x] Schritt 01: `AGENTS.md` haerten
+- [x] Schritt 02: CSS-Audit dokumentieren
+- [x] Schritt 03: Tailwind sauber als Basis aktivieren
+- [x] Schritt 04: Globalen Vertrag in `globals.css` herstellen
+- [x] Schritt 05: Shared `SectionScanPoints` lokalisieren
+- [x] Schritt 06: Shared Button-System lokalisieren
+- [ ] Schritt 07: Shared Layout-Shell lokalisieren
+- [ ] Schritt 08: Header und Legal Language Switch migrieren
+- [ ] Schritt 09: Hero-Section migrieren
+- [ ] Schritt 10: Hero Visual migrieren
+- [ ] Schritt 11: Services Section Shell bereinigen
+- [ ] Schritt 12: Service Card und Secondary Service bereinigen
+- [ ] Schritt 13: Process Section migrieren
+- [ ] Schritt 14: Contact Section Shell migrieren
+- [ ] Schritt 15: Project Request Form Layout migrieren
+- [ ] Schritt 16: Project Request Form Feldzustaende migrieren
+- [ ] Schritt 17: Included, Q&A und Placeholder migrieren
+- [ ] Schritt 18: Footer migrieren
+- [ ] Schritt 19: Legal- und Projects-Reste bereinigen
+- [ ] Schritt 20: Dead CSS loeschen
+- [ ] Schritt 21: Dubletten konsolidieren
+- [ ] Schritt 22: Finale Schlankheitsrunde fuer `globals.css`
+
 ## Regeln für jeden Schritt
 
 - Genau ein thematisch klarer Commit pro Schritt

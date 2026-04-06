@@ -225,6 +225,35 @@ for (const expectations of LOCALE_EXPECTATIONS) {
         await expect(mobileMenu).toBeVisible();
         await expect(mobileMenu.getByRole("link").first()).toBeVisible();
 
+        const mobileHeaderLayout = await page.evaluate(() => {
+          const header = document.querySelector<HTMLElement>(".site-header");
+          const brand = document.querySelector<HTMLElement>(".site-header__brand");
+          const menu = document.querySelector<HTMLElement>(
+            ".site-header__mobile-menu[open] ul",
+          );
+
+          if (!(header && brand && menu)) {
+            throw new Error("Expected mobile header, brand, and menu to exist");
+          }
+
+          const headerRect = header.getBoundingClientRect();
+          const menuRect = menu.getBoundingClientRect();
+          const brandStyle = window.getComputedStyle(brand);
+
+          return {
+            brandOpacity: Number(brandStyle.opacity),
+            brandPointerEvents: brandStyle.pointerEvents,
+            headerBottom: Math.round(headerRect.bottom),
+            menuTop: Math.round(menuRect.top),
+          };
+        });
+
+        expect(mobileHeaderLayout.brandOpacity).toBeGreaterThan(0.95);
+        expect(mobileHeaderLayout.brandPointerEvents).not.toBe("none");
+        expect(mobileHeaderLayout.menuTop).toBeGreaterThanOrEqual(
+          mobileHeaderLayout.headerBottom,
+        );
+
         const menuOverflow = await mobileMenu.evaluate((menu) => ({
           clientWidth: menu.clientWidth,
           scrollWidth: menu.scrollWidth,
