@@ -41,9 +41,9 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #f2f5fa;
+  --color-bg: #eef4fb;
   --color-surface-1: #ffffff;
-  --color-surface-2: #e8eef6;
+  --color-surface-2: #e2ebf6;
   --color-text: #162033;
   --color-text-muted: #445775;
   --color-border: rgba(42, 64, 102, 0.24);
@@ -121,13 +121,13 @@ section[id] {
   background:
     radial-gradient(
         1220px 720px at 8% -2%,
-        rgba(203, 119, 40, 0.12),
+        rgba(205, 126, 49, 0.11),
         transparent 58%
       )
       fixed,
     radial-gradient(
         940px 620px at 94% 8%,
-        rgba(82, 122, 190, 0.09),
+        rgba(86, 129, 203, 0.11),
         transparent 60%
       )
       fixed,
@@ -145,11 +145,11 @@ section[id] {
       fixed,
     radial-gradient(
         840px 480px at 18% 82%,
-        rgba(194, 122, 58, 0.035),
+        rgba(194, 122, 58, 0.03),
         transparent 62%
       )
       fixed,
-    linear-gradient(180deg, #f2f5fa 0%, #e8eef6 48%, #f4efe8 100%) fixed #f2f5fa;
+    linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) fixed #eef4fb;
 }
 
 a {
@@ -288,13 +288,13 @@ main {
     background:
       radial-gradient(
           1220px 720px at 8% -2%,
-          rgba(203, 119, 40, 0.12),
+          rgba(205, 126, 49, 0.11),
           transparent 58%
         )
         scroll,
       radial-gradient(
           940px 620px at 94% 8%,
-          rgba(82, 122, 190, 0.09),
+          rgba(86, 129, 203, 0.11),
           transparent 60%
         )
         scroll,
@@ -312,12 +312,12 @@ main {
         scroll,
       radial-gradient(
           840px 480px at 18% 82%,
-          rgba(194, 122, 58, 0.035),
+          rgba(194, 122, 58, 0.03),
           transparent 62%
         )
         scroll,
-      linear-gradient(180deg, #f2f5fa 0%, #e8eef6 48%, #f4efe8 100%) scroll
-        #f2f5fa;
+      linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) scroll
+        #eef4fb;
   }
 }
 
