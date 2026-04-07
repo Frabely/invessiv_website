@@ -75,7 +75,7 @@ body {
   background:
     radial-gradient(
         1280px 760px at 8% -8%,
-        rgba(231, 154, 73, 0.28),
+        rgba(231, 154, 73, 0.18),
         transparent 60%
       )
       fixed,
@@ -87,19 +87,19 @@ body {
       fixed,
     radial-gradient(
         1020px 700px at 52% 104%,
-        rgba(211, 112, 45, 0.18),
+        rgba(211, 112, 45, 0.11),
         transparent 66%
       )
       fixed,
     radial-gradient(
         920px 580px at 88% 86%,
-        rgba(216, 132, 54, 0.13),
+        rgba(216, 132, 54, 0.08),
         transparent 66%
       )
       fixed,
     radial-gradient(
         900px 540px at 16% 82%,
-        rgba(221, 129, 57, 0.09),
+        rgba(221, 129, 57, 0.05),
         transparent 66%
       )
       fixed,
@@ -121,7 +121,7 @@ section[id] {
   background:
     radial-gradient(
         1220px 720px at 8% -2%,
-        rgba(216, 132, 54, 0.24),
+        rgba(216, 132, 54, 0.15),
         transparent 62%
       )
       fixed,
@@ -133,19 +133,19 @@ section[id] {
       fixed,
     radial-gradient(
         980px 620px at 50% 104%,
-        rgba(226, 146, 76, 0.17),
+        rgba(226, 146, 76, 0.1),
         transparent 66%
       )
       fixed,
     radial-gradient(
         880px 520px at 86% 84%,
-        rgba(231, 158, 93, 0.11),
+        rgba(231, 158, 93, 0.07),
         transparent 66%
       )
       fixed,
     radial-gradient(
         840px 480px at 18% 82%,
-        rgba(224, 149, 83, 0.08),
+        rgba(224, 149, 83, 0.04),
         transparent 66%
       )
       fixed,
@@ -227,7 +227,7 @@ main {
 .page-aurora {
   position: absolute;
   filter: blur(74px);
-  opacity: 0.28;
+  opacity: 0.18;
 }
 
 .page-aurora--left {
@@ -237,7 +237,7 @@ main {
   top: 20vh;
   background: radial-gradient(
     circle,
-    rgba(231, 154, 73, 0.42) 0%,
+    rgba(231, 154, 73, 0.28) 0%,
     transparent 72%
   );
   animation: drift-a 16s ease-in-out infinite alternate;
@@ -250,7 +250,7 @@ main {
   top: 58vh;
   background: radial-gradient(
     circle,
-    rgba(216, 132, 54, 0.33) 0%,
+    rgba(216, 132, 54, 0.22) 0%,
     transparent 74%
   );
   animation: drift-b 18s ease-in-out infinite alternate;
@@ -280,7 +280,7 @@ main {
     background:
       radial-gradient(
           1280px 760px at 8% -8%,
-          rgba(231, 154, 73, 0.28),
+          rgba(231, 154, 73, 0.18),
           transparent 60%
         )
         scroll,
@@ -292,19 +292,19 @@ main {
         scroll,
       radial-gradient(
           1020px 700px at 52% 104%,
-          rgba(211, 112, 45, 0.18),
+          rgba(211, 112, 45, 0.11),
           transparent 66%
         )
         scroll,
       radial-gradient(
           920px 580px at 88% 86%,
-          rgba(216, 132, 54, 0.13),
+          rgba(216, 132, 54, 0.08),
           transparent 66%
         )
         scroll,
       radial-gradient(
           900px 540px at 16% 82%,
-          rgba(221, 129, 57, 0.09),
+          rgba(221, 129, 57, 0.05),
           transparent 66%
         )
         scroll,
@@ -316,7 +316,7 @@ main {
     background:
       radial-gradient(
           1220px 720px at 8% -2%,
-          rgba(216, 132, 54, 0.24),
+          rgba(216, 132, 54, 0.15),
           transparent 62%
         )
         scroll,
@@ -328,19 +328,19 @@ main {
         scroll,
       radial-gradient(
           980px 620px at 50% 104%,
-          rgba(226, 146, 76, 0.17),
+          rgba(226, 146, 76, 0.1),
           transparent 66%
         )
         scroll,
       radial-gradient(
           880px 520px at 86% 84%,
-          rgba(231, 158, 93, 0.11),
+          rgba(231, 158, 93, 0.07),
           transparent 66%
         )
         scroll,
       radial-gradient(
           840px 480px at 18% 82%,
-          rgba(224, 149, 83, 0.08),
+          rgba(224, 149, 83, 0.04),
           transparent 66%
         )
         scroll,
@@ -350,7 +350,7 @@ main {
 
   .page-aurora {
     filter: blur(60px);
-    opacity: 0.34;
+    opacity: 0.22;
   }
 }
 
