@@ -39,15 +39,15 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
               </linearGradient>
             </defs>
             <rect
-              fill="rgba(255,255,255,0.05)"
+              className={styles.backplateFrame}
               height="300"
               rx="18"
-              stroke="rgba(255,255,255,0.14)"
               width="524"
               x="18"
               y="20"
             />
             <rect
+              className={styles.backplateBar}
               fill="url(#hero-backplate-gradient)"
               height="18"
               rx="9"
@@ -65,7 +65,7 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
             xmlns="http://www.w3.org/2000/svg"
           >
             <rect
-              fill="rgba(255,255,255,0.10)"
+              className={styles.metricLinePrimary}
               height="12"
               rx="6"
               width="220"
@@ -73,7 +73,7 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
               y="86"
             />
             <rect
-              fill="rgba(255,255,255,0.08)"
+              className={styles.metricLineSecondary}
               height="12"
               rx="6"
               width="360"
@@ -81,32 +81,30 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
               y="112"
             />
             <rect
-              fill="rgba(142,167,205,0.12)"
+              className={styles.panelPrimary}
               height="112"
               rx="14"
-              stroke="rgba(153,178,214,0.34)"
               width="200"
               x="42"
               y="164"
             />
             <rect
-              fill="rgba(122,148,189,0.1)"
+              className={styles.panelSecondary}
               height="112"
               rx="14"
-              stroke="rgba(134,161,201,0.3)"
               width="260"
               x="258"
               y="164"
             />
             <path
+              className={styles.chartLineWarm}
               d="M110 250c24-12 48-12 72 0"
-              stroke="rgba(153,178,214,0.55)"
               strokeLinecap="round"
               strokeWidth="7"
             />
             <path
+              className={styles.chartLineCool}
               d="M300 250c28-16 58-16 86 0"
-              stroke="rgba(130,157,198,0.58)"
               strokeLinecap="round"
               strokeWidth="7"
             />
@@ -119,9 +117,9 @@ export function HeroVisual({ ariaLabel }: HeroVisualProps) {
             viewBox="0 0 560 340"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="496" cy="60" fill="rgba(231,154,73,0.52)" r="10" />
-            <circle cx="464" cy="60" fill="rgba(157,182,218,0.72)" r="10" />
-            <circle cx="432" cy="60" fill="rgba(130,157,198,0.62)" r="10" />
+            <circle className={styles.statusWarm} cx="496" cy="60" r="10" />
+            <circle className={styles.statusSoft} cx="464" cy="60" r="10" />
+            <circle className={styles.statusCool} cx="432" cy="60" r="10" />
           </svg>
         </div>
 

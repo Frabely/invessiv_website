@@ -127,6 +127,49 @@
   height: auto;
 }
 
+.backplateFrame {
+  fill: rgba(255, 255, 255, 0.05);
+  stroke: rgba(255, 255, 255, 0.14);
+}
+
+.metricLinePrimary {
+  fill: rgba(255, 255, 255, 0.1);
+}
+
+.metricLineSecondary {
+  fill: rgba(255, 255, 255, 0.08);
+}
+
+.panelPrimary {
+  fill: rgba(142, 167, 205, 0.12);
+  stroke: rgba(153, 178, 214, 0.34);
+}
+
+.panelSecondary {
+  fill: rgba(122, 148, 189, 0.1);
+  stroke: rgba(134, 161, 201, 0.3);
+}
+
+.chartLineWarm {
+  stroke: rgba(153, 178, 214, 0.55);
+}
+
+.chartLineCool {
+  stroke: rgba(130, 157, 198, 0.58);
+}
+
+.statusWarm {
+  fill: rgba(231, 154, 73, 0.52);
+}
+
+.statusSoft {
+  fill: rgba(157, 182, 218, 0.72);
+}
+
+.statusCool {
+  fill: rgba(130, 157, 198, 0.62);
+}
+
 .noise,
 .vignette,
 .gridOverlay {
@@ -178,6 +221,103 @@
 
 [data-theme="light"] .noise {
   opacity: 0.003;
+}
+
+[data-theme="light"] .blob {
+  opacity: 0.42;
+}
+
+[data-theme="light"] .blobOne {
+  background: radial-gradient(
+    circle,
+    rgba(88, 128, 198, 0.18) 0%,
+    transparent 74%
+  );
+}
+
+[data-theme="light"] .blobTwo {
+  background: radial-gradient(
+    circle,
+    rgba(203, 119, 40, 0.2) 0%,
+    transparent 74%
+  );
+}
+
+[data-theme="light"] .blobThree {
+  background: radial-gradient(
+    circle,
+    rgba(110, 146, 205, 0.18) 0%,
+    transparent 74%
+  );
+}
+
+[data-theme="light"] .shot {
+  border-color: color-mix(in srgb, var(--color-border) 82%, #ffffff 18%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(233, 240, 250, 0.94) 100%
+  );
+  box-shadow:
+    0 28px 56px rgba(31, 60, 110, 0.14),
+    0 0 0 1px color-mix(in srgb, var(--color-border) 74%, #ffffff 26%);
+}
+
+[data-theme="light"] .shine {
+  background: linear-gradient(
+    112deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.62) 48%,
+    rgba(110, 146, 205, 0.08) 60%,
+    transparent 76%
+  );
+}
+
+[data-theme="light"] .backplateFrame {
+  fill: rgba(255, 255, 255, 0.78);
+  stroke: rgba(92, 122, 178, 0.28);
+}
+
+[data-theme="light"] .backplateBar {
+  opacity: 0.92;
+}
+
+[data-theme="light"] .metricLinePrimary {
+  fill: rgba(73, 100, 148, 0.18);
+}
+
+[data-theme="light"] .metricLineSecondary {
+  fill: rgba(73, 100, 148, 0.11);
+}
+
+[data-theme="light"] .panelPrimary {
+  fill: rgba(96, 134, 198, 0.16);
+  stroke: rgba(76, 111, 173, 0.3);
+}
+
+[data-theme="light"] .panelSecondary {
+  fill: rgba(203, 119, 40, 0.12);
+  stroke: rgba(170, 98, 35, 0.24);
+}
+
+[data-theme="light"] .chartLineWarm {
+  stroke: rgba(74, 111, 173, 0.68);
+}
+
+[data-theme="light"] .chartLineCool {
+  stroke: rgba(170, 98, 35, 0.64);
+}
+
+[data-theme="light"] .statusWarm {
+  fill: rgba(203, 119, 40, 0.78);
+}
+
+[data-theme="light"] .statusSoft {
+  fill: rgba(96, 134, 198, 0.7);
+}
+
+[data-theme="light"] .statusCool {
+  fill: rgba(52, 95, 193, 0.82);
 }
 
 [data-theme="light"] .vignette {

@@ -115,6 +115,7 @@
   background-size: 180% 180%;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   white-space: pre-line;
   filter: drop-shadow(0 5px 16px rgba(8, 12, 24, 0.22));
@@ -158,6 +159,39 @@
 
 .scanPoints {
   margin-top: 24px;
+}
+
+[data-theme="light"] .tag {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 38%, rgba(92, 122, 178, 0.16));
+  background: linear-gradient(
+    120deg,
+    rgba(255, 247, 238, 0.94) 0%,
+    rgba(236, 242, 252, 0.9) 100%
+  );
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-accent-warm) 12%);
+}
+
+[data-theme="light"] .tag::before {
+  box-shadow: 0 0 0 4px rgba(203, 119, 40, 0.12);
+}
+
+[data-theme="light"] .title {
+  text-shadow: none;
+}
+
+[data-theme="light"] .titleGradient {
+  background: linear-gradient(
+    116deg,
+    #8f4714 0%,
+    #b7601f 24%,
+    #1f52ab 58%,
+    #3f73cf 100%
+  );
+  filter: none;
+}
+
+[data-theme="light"] .description {
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
 }
 
 @keyframes titleFlow {
