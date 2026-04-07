@@ -1,7 +1,7 @@
 .section {
   display: grid;
   gap: 28px;
-  margin-top: 30px;
+  margin-top: 0;
 }
 
 .goalPicker {
@@ -47,8 +47,7 @@
   justify-content: center;
   min-height: 38px;
   padding: 0 15px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);

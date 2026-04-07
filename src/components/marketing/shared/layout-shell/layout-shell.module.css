@@ -17,7 +17,3 @@
   background: transparent;
   box-shadow: none;
 }
-
-.marketing > section:first-of-type {
-  margin-top: clamp(1rem, 2.1vw, 1.5rem);
-}
