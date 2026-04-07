@@ -1,4 +1,5 @@
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import styles from "./included-section.module.css";
 
 type IncludedContent = {
   bridge?: string;
@@ -14,26 +15,26 @@ type IncludedSectionProps = {
 
 export function IncludedSection({ id, includedContent }: IncludedSectionProps) {
   return (
-    <section className="included-section" id={id}>
-      <h2>{includedContent.title}</h2>
+    <section className={styles.section} id={id}>
+      <h2 className={styles.title}>{includedContent.title}</h2>
       <SectionScanPoints
-        fallbackClassName="included-hint"
+        fallbackClassName={styles.hint}
         points={includedContent.summaryPoints}
       />
 
-      <div className="included-cards" role="list">
+      <div className={styles.cards} role="list">
         {includedContent.cards.map((card) => (
-          <article className="included-card" key={card.title} role="listitem">
-            <div className="included-card-head">
-              <h3>{card.title}</h3>
+          <article className={styles.card} key={card.title} role="listitem">
+            <div className={styles.cardHead}>
+              <h3 className={styles.cardTitle}>{card.title}</h3>
             </div>
-            <p>{card.description}</p>
+            <p className={styles.cardDescription}>{card.description}</p>
           </article>
         ))}
       </div>
 
       {includedContent.bridge ? (
-        <p className="included-bridge">{includedContent.bridge}</p>
+        <p className={styles.bridge}>{includedContent.bridge}</p>
       ) : null}
     </section>
   );

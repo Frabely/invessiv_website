@@ -31,7 +31,7 @@
   letter-spacing: -0.01em;
 }
 
-.headerCopy :global(.section-scan-points) {
+.highlights.highlights {
   margin: 0;
 }
 

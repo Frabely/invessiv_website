@@ -1,19 +1,19 @@
-type SectionScanPointsVariant = "default" | "hero";
+import styles from "./section-scan-points.module.css";
 
 type SectionScanPointsProps = {
   ariaLabel?: string;
-  fallbackClassName: string;
+  className?: string;
+  fallbackClassName?: string;
   fallbackText?: string;
   points?: string[];
-  variant?: SectionScanPointsVariant;
 };
 
 export function SectionScanPoints({
   ariaLabel,
+  className,
   fallbackClassName,
   fallbackText,
   points,
-  variant = "default",
 }: SectionScanPointsProps) {
   const normalizedPoints =
     points?.map((point) => point.trim()).filter((point) => point.length > 0) ??
@@ -27,14 +27,10 @@ export function SectionScanPoints({
     return <p className={fallbackClassName}>{fallbackText}</p>;
   }
 
-  const pointsClassName =
-    variant === "hero"
-      ? "section-scan-points section-scan-points--hero"
-      : "section-scan-points";
-  const pointClassName =
-    variant === "hero"
-      ? "section-scan-point section-scan-point--hero"
-      : "section-scan-point";
+  const pointsClassName = className
+    ? `${styles.list} ${className}`
+    : styles.list;
+  const pointClassName = styles.item;
 
   return (
     <ul aria-label={ariaLabel} className={pointsClassName}>

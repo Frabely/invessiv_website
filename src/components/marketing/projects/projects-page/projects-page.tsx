@@ -5,7 +5,10 @@ import reviewProjectImage from "../../../../../assets/review-project.png";
 import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { getLocalizedSectionHref, type NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
@@ -68,7 +71,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
           <span className="page-noise" />
         </div>
 
-        <div className={`layout-shell ${styles.pageShell}`}>
+        <LayoutShell className={styles.pageShell}>
           <section className={styles.pageHero}>
             <div className={styles.breadcrumbs}>
               <Breadcrumbs
@@ -94,10 +97,10 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 <p className={styles.intro}>{content.hero.intro}</p>
                 <SectionScanPoints
                   ariaLabel={content.hero.kicker}
+                  className={styles.heroHighlights}
                   fallbackClassName={styles.intro}
                   fallbackText={content.hero.intro}
                   points={content.hero.highlights}
-                  variant="hero"
                 />
                 <p className={styles.supportingNote}>
                   {content.hero.supportingNote}
@@ -292,14 +295,14 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 </p>
               </div>
               <div className={styles.closingActions}>
-                <Link
-                  className="btn btn--primary"
+                <PrimaryCtaLink
                   href={content.closingCta.primaryHref}
+                  useNextLink
                 >
                   {content.closingCta.primaryLabel}
-                </Link>
+                </PrimaryCtaLink>
                 <Link
-                  className="btn btn--ghost"
+                  className={`${buttonStyles.button} ${buttonStyles.ghost}`}
                   href={content.closingCta.secondaryHref}
                 >
                   {content.closingCta.secondaryLabel}
@@ -307,7 +310,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
               </div>
             </section>
           </section>
-        </div>
+        </LayoutShell>
       </main>
 
       {footerSection ? (

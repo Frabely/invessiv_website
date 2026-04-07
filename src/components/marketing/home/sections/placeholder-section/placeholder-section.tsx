@@ -1,3 +1,5 @@
+import styles from "./placeholder-section.module.css";
+
 type PlaceholderSectionProps = {
   description: string;
   id: string;
@@ -11,13 +13,16 @@ export function PlaceholderSection({
   isTall = false,
   title,
 }: PlaceholderSectionProps) {
+  const sectionClassName = isTall
+    ? `${styles.section} ${styles.tall}`
+    : styles.section;
+
   return (
-    <section
-      className={`content-section ${isTall ? "content-section--tall" : ""}`}
-      id={id}
-    >
-      <h2>{title}</h2>
-      <p>{description}</p>
+    <section aria-labelledby={`${id}-title`} className={sectionClassName} id={id}>
+      <h2 className={styles.title} id={`${id}-title`}>
+        {title}
+      </h2>
+      <p className={styles.description}>{description}</p>
     </section>
   );
 }

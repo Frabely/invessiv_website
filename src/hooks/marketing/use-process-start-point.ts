@@ -47,13 +47,10 @@ export function useProcessStartPoint({
       };
 
       const cards = Array.from(
-        steps.querySelectorAll<HTMLElement>(".process-step"),
+        steps.querySelectorAll<HTMLElement>("[data-process-step='true']"),
       );
       const firstCard = cards[0];
       const lastCard = cards[cards.length - 1];
-      const upperCard = layout
-        .closest(".process-section")
-        ?.querySelector<HTMLElement>(".process-intro");
       if (!firstCard || !lastCard) {
         return;
       }
@@ -89,8 +86,7 @@ export function useProcessStartPoint({
       const firstCenter = { x: firstMetrics.centerX, y: firstMetrics.centerY };
       const lastCenter = { x: lastMetrics.centerX, y: lastMetrics.centerY };
       const lastBottom = lastMetrics.bottom;
-      const horizontalViewWidth =
-        upperCard?.getBoundingClientRect().width ?? layoutRect.width;
+      const horizontalViewWidth = layoutRect.width;
       // Keep the requested horizontal offset formula stable for both endpoints.
       const startShift =
         (horizontalViewWidth - firstRect.width) / 4 + firstRect.width / 2;
@@ -240,10 +236,10 @@ export function useProcessStartPoint({
           prefersReducedMotion || progress >= ctaRevealProgress;
         const isFinished =
           !prefersReducedMotion && progress >= ctaPulseProgress;
-        leader.classList.toggle("is-finished", isFinished);
+        leader.dataset.finished = isFinished ? "true" : "false";
         if (endCta) {
-          endCta.classList.toggle("is-journey-visible", isCtaVisible);
-          endCta.classList.toggle("is-journey-active", isFinished);
+          endCta.dataset.journeyVisible = isCtaVisible ? "true" : "false";
+          endCta.dataset.journeyActive = isFinished ? "true" : "false";
         }
       }
     };

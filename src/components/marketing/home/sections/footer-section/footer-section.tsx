@@ -8,6 +8,7 @@ import {
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import styles from "./footer-section.module.css";
 
 type FooterColumn = NonNullable<LandingSectionCopy["footerColumns"]>[number];
 type FooterLegalLink = NonNullable<
@@ -80,6 +81,32 @@ export function FooterSection({
   const visibleSocialLinks = socialLinks.filter(
     (link) => !isPlaceholderHref(link.href),
   );
+  const getColumnClassName = (columnTitle: string, index: number) => {
+    const classNames = [styles.column];
+
+    if (columnTitle === legalColumnTitle) {
+      classNames.push(styles.legalColumn);
+    }
+
+    if (index === footerColumnsWithLegal.length - 1) {
+      classNames.push(styles.endColumn);
+    }
+
+    return classNames.join(" ");
+  };
+  const getListClassName = (columnTitle: string, index: number) => {
+    const classNames = [styles.linkList];
+
+    if (columnTitle === legalColumnTitle) {
+      classNames.push(styles.legalLinkList);
+    }
+
+    if (index === footerColumnsWithLegal.length - 1) {
+      classNames.push(styles.endLinkList);
+    }
+
+    return classNames.join(" ");
+  };
 
   const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
     if (platform === "linkedin") {
@@ -92,24 +119,24 @@ export function FooterSection({
   };
 
   return (
-    <footer className="site-footer" id={id}>
-      <div className="site-footer__inner">
-        <div className="site-footer__grid" role="list">
-          {footerColumnsWithLegal.map((column) => (
+    <footer className={styles.footer} id={id}>
+      <div className={styles.inner}>
+        <div className={styles.grid} role="list">
+          {footerColumnsWithLegal.map((column, index) => (
             <section
-              className={`site-footer__col${column.title === legalColumnTitle ? " site-footer__col--legal" : ""}`}
+              className={getColumnClassName(column.title, index)}
               key={column.title}
               role="listitem"
             >
-              <h3>{column.title}</h3>
-              <ul>
+              <h3 className={styles.heading}>{column.title}</h3>
+              <ul className={getListClassName(column.title, index)}>
                 {column.links.map((link) => (
                   <li key={`${column.title}-${link.label}`}>
                     <a
                       className={
                         isPlaceholderHref(link.href)
-                          ? "is-placeholder-link"
-                          : undefined
+                          ? `${styles.link} ${styles.placeholderLink}`
+                          : styles.link
                       }
                       href={link.href}
                       {...getLinkAnalyticsProps(link.href)}
@@ -121,12 +148,14 @@ export function FooterSection({
               </ul>
               {(column.title === "Kontakt" || column.title === "Contact") &&
               visibleSocialLinks.length ? (
-                <ul className="site-footer__socials">
+                <ul
+                  className={`${styles.socials} ${index === footerColumnsWithLegal.length - 1 ? styles.endSocials : ""}`.trim()}
+                >
                   {visibleSocialLinks.map((socialLink) => (
                     <li key={socialLink.platform}>
                       <a
                         aria-label={socialLink.label}
-                        className="site-footer__social-link"
+                        className={styles.socialLink}
                         href={socialLink.href}
                       >
                         <FontAwesomeIcon
@@ -141,11 +170,11 @@ export function FooterSection({
           ))}
         </div>
 
-        <div className="site-footer__bottom">
-          <div className="site-footer__bottom-left">
+        <div className={styles.bottom}>
+          <div className={styles.bottomLeft}>
             {brand ? (
-              <div className="site-footer__brand-wrap">
-                <span className="site-footer__brand">
+              <div className={styles.brandWrap}>
+                <span className={styles.brand}>
                   <Image
                     src="/brand/icon.png"
                     alt="Invessiv Logo"
@@ -155,9 +184,7 @@ export function FooterSection({
                   <strong>{brand}</strong>
                 </span>
                 {bottomNote ? (
-                  <small className="site-footer__owner-note">
-                    {bottomNote}
-                  </small>
+                  <small className={styles.ownerNote}>{bottomNote}</small>
                 ) : null}
               </div>
             ) : null}

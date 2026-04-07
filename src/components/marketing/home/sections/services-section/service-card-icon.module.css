@@ -1,0 +1,79 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 68%,
+    var(--color-text) 32%
+  );
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.iconImage {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex: 0 0 auto;
+}
+
+.iconImageMask {
+  --service-icon-mask: none;
+  background-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 72%,
+    var(--color-text) 28%
+  );
+  -webkit-mask-image: var(--service-icon-mask);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-image: var(--service-icon-mask);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+:global([data-theme="light"]) .icon {
+  border-color: color-mix(
+    in srgb,
+    var(--color-border) 74%,
+    var(--color-accent-warm) 26%
+  );
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 88%,
+    var(--color-accent-warm) 12%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 60%,
+    var(--color-text) 40%
+  );
+}
+
+@media (max-width: 900px) {
+  .iconImage {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+  }
+
+  .iconImage {
+    width: 28px;
+    height: 28px;
+  }
+}

@@ -1,0 +1,19 @@
+.shell {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+
+.marketing {
+  padding: var(--section-shell-pad-top) var(--section-shell-pad-inline)
+    var(--section-shell-pad-bottom);
+}
+
+.marketing > section {
+  margin-top: var(--section-space);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}

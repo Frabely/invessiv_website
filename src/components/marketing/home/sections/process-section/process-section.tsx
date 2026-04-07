@@ -4,7 +4,9 @@ import { useRef } from "react";
 
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
+import styles from "./process-section.module.css";
 
 type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
 type ProcessCta = NonNullable<LandingSectionCopy["processCta"]>;
@@ -68,20 +70,20 @@ export function ProcessSection({
   });
 
   return (
-    <section className="process-section" id={id}>
-      <h2>{title}</h2>
+    <section className={styles.section} data-process-section="true" id={id}>
+      <h2 className={styles.title}>{title}</h2>
       <SectionScanPoints
-        fallbackClassName="process-hint"
+        className={styles.scanPoints}
+        fallbackClassName={styles.hint}
         fallbackText={description}
         points={summaryPoints}
       />
 
-      <div className="process-layout has-journey-cta-gate" ref={layoutRef}>
-        <svg
-          aria-hidden="true"
-          className="process-journey-svg"
-          focusable="false"
-        >
+      <div
+        className={`${styles.layout} ${styles.layoutHasJourneyCtaGate}`}
+        ref={layoutRef}
+      >
+        <svg aria-hidden="true" className={styles.journeySvg} focusable="false">
           <defs>
             <linearGradient
               id="processJourneyGradient"
@@ -90,27 +92,27 @@ export function ProcessSection({
               y1="0%"
               y2="100%"
             >
-              <stop
-                offset="0%"
-                style={{ stopColor: "var(--color-accent-warm)" }}
-              />
-              <stop offset="100%" style={{ stopColor: "var(--color-cta)" }} />
+              <stop offset="0%" className={styles.journeyGradientStart} />
+              <stop offset="100%" className={styles.journeyGradientEnd} />
             </linearGradient>
           </defs>
-          <path className="process-journey-progress" d="" ref={pathRef} />
+          <path className={styles.journeyProgress} d="" ref={pathRef} />
         </svg>
         <span
           aria-hidden="true"
-          className="process-path-point process-path-point--start"
+          className={`${styles.pathPoint} ${styles.pathPointStart}`}
         />
         <span
           aria-hidden="true"
-          className="process-path-point process-path-point--leader"
+          className={`${styles.pathPoint} ${styles.pathPointLeader}`}
+          data-finished="false"
           ref={leaderRef}
         />
         {processCta ? (
-          <a
-            className="menu-cta process-end-cta"
+          <PrimaryCtaLink
+            className={styles.endCta}
+            data-journey-active="false"
+            data-journey-visible="false"
             href={processCta.href}
             ref={endCtaRef}
             data-analytics-event="cta_click"
@@ -119,60 +121,61 @@ export function ProcessSection({
             data-analytics-target="form"
           >
             {processCta.label}
-          </a>
+          </PrimaryCtaLink>
         ) : null}
-        <div className="process-steps" ref={stepsRef} role="list">
+        <div className={styles.steps} ref={stepsRef} role="list">
           {processSteps.map((step, index) => {
             const parsedOutput = parseProcessField(step.result);
             const parsedMeta = parseProcessField(step.effort);
 
             return (
               <article
-                className="process-step"
+                className={styles.step}
+                data-process-step="true"
                 key={step.step}
                 role="listitem"
                 style={{
                   ["--process-step-delay" as string]: `${index * 80}ms`,
                 }}
               >
-                <div className="process-step-inner">
-                  <header className="process-step-head">
-                    <div className="process-step-title-row">
-                      <p className="process-step-number">{step.step}</p>
-                      <h3 className="process-step-title">{step.title}</h3>
+                <div className={styles.stepInner}>
+                  <header className={styles.stepHead}>
+                    <div className={styles.stepTitleRow}>
+                      <p className={styles.stepNumber}>{step.step}</p>
+                      <h3 className={styles.stepTitle}>{step.title}</h3>
                     </div>
                     {step.deliverable ? (
-                      <p className="process-step-phase">{step.deliverable}</p>
+                      <p className={styles.stepPhase}>{step.deliverable}</p>
                     ) : null}
                   </header>
 
                   {parsedOutput ? (
-                    <section className="process-step-output">
+                    <section className={styles.stepOutput}>
                       {parsedOutput.label ? (
-                        <p className="process-step-output-label">
+                        <p className={styles.stepOutputLabel}>
                           {parsedOutput.label}
                         </p>
                       ) : null}
-                      <p className="process-step-output-value">
+                      <p className={styles.stepOutputValue}>
                         {parsedOutput.value}
                       </p>
                     </section>
                   ) : null}
 
                   {parsedMeta ? (
-                    <p className="process-step-meta-line">
+                    <p className={styles.stepMetaLine}>
                       {parsedMeta.label ? (
-                        <span className="process-step-meta-key">
+                        <span className={styles.stepMetaKey}>
                           {parsedMeta.label}
                         </span>
                       ) : null}
-                      <span className="process-step-meta-value">
+                      <span className={styles.stepMetaValue}>
                         {parsedMeta.value}
                       </span>
                     </p>
                   ) : null}
 
-                  <p className="process-step-description">{step.description}</p>
+                  <p className={styles.stepDescription}>{step.description}</p>
                 </div>
               </article>
             );

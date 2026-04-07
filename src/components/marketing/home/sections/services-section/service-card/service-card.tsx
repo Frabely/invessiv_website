@@ -4,6 +4,8 @@ import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
+import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
@@ -66,6 +68,28 @@ export function ServiceCard({
     hiddenItemsCount === 1 ? moreItemsSingularLabel : moreItemsPluralLabel;
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
   const showPrimaryCta = isCtaActive || isDetailsOpen;
+  const cardClasses = [
+    styles.card,
+    hasExpandableContent ? styles.cardExpandable : "",
+    isRecommended ? styles.cardRecommended : "",
+    cardClassName ?? "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const moreItemsClasses = [
+    styles.moreItems,
+    isDetailsOpen ? styles.moreItemsPlaceholder : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const placeholderCtaClasses = [
+    buttonStyles.button,
+    buttonStyles.primary,
+    styles.primaryCta,
+    styles.primaryCtaPlaceholder,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const handleCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key !== "Escape" || !isDetailsOpen) {
@@ -104,7 +128,7 @@ export function ServiceCard({
     >
       <article
         aria-label={card.title}
-        className={`${styles.card} services-card${hasExpandableContent ? " services-card--expandable" : ""}${isRecommended ? ` ${styles.cardRecommended}` : ""}${cardClassName ? ` ${cardClassName}` : ""}`}
+        className={cardClasses}
         data-service-card="true"
         data-visible="false"
         onClick={handleCardClick}
@@ -112,11 +136,11 @@ export function ServiceCard({
         onPointerLeave={onPointerLeave}
         onPointerMove={onPointerMove}
       >
-        <div className={`${styles.surface} services-card-top`}>
+        <div className={styles.surface}>
           <div className={styles.header}>
-            <div className={`${styles.titleWrap} services-title-wrap`}>
-              <div className={`${styles.titleRow} services-title-row`}>
-                <h3 className={`${styles.title} services-title`}>
+            <div className={styles.titleWrap}>
+              <div className={styles.titleRow}>
+                <h3 className={styles.title}>
                   <ServiceCardIcon
                     iconAlt={card.iconAlt}
                     iconSrc={card.iconSrc}
@@ -124,19 +148,13 @@ export function ServiceCard({
                   <span>{card.title}</span>
                 </h3>
                 {isRecommended ? (
-                  <span
-                    className={`${styles.badge} services-title-badge services-title-badge--recommended`}
-                  >
-                    {recommendedBadgeLabel}
-                  </span>
+                  <span className={styles.badge}>{recommendedBadgeLabel}</span>
                 ) : null}
               </div>
 
               {card.fit ? (
-                <p className={`${styles.fitNote} services-fit-note`}>
-                  <span className={`${styles.fitLabel} services-fit-label`}>
-                    {fitLabel}
-                  </span>
+                <p className={styles.fitNote}>
+                  <span className={styles.fitLabel}>{fitLabel}</span>
                   <span>{card.fit}</span>
                 </p>
               ) : null}
@@ -147,9 +165,7 @@ export function ServiceCard({
                 <span className={styles.highlightText}>{card.highlight}</span>
               </p>
               <div className={styles.metaInfo}>
-                <p
-                  className={`${styles.deliveryBadge} services-delivery-badge`}
-                >
+                <p className={styles.deliveryBadge}>
                   {deliveryLabel}: {card.delivery}
                 </p>
                 <p className={styles.pricingHint}>{card.pricingHint}</p>
@@ -158,7 +174,7 @@ export function ServiceCard({
           </div>
 
           <div className={styles.body}>
-            <ul className={`${styles.list} services-list`}>
+            <ul className={styles.list}>
               {visibleBullets.map((bullet) => (
                 <li key={bullet}>{bullet}</li>
               ))}
@@ -169,7 +185,7 @@ export function ServiceCard({
 
             {hasExpandableContent ? (
               <div
-                className={`${styles.details} services-details-content`}
+                className={styles.details}
                 hidden={!isDetailsOpen}
                 id={detailsId}
               />
@@ -179,17 +195,17 @@ export function ServiceCard({
           {hiddenItemsCount > 0 && hasExpandableContent ? (
             <p
               aria-hidden={isDetailsOpen ? "true" : undefined}
-              className={`${styles.moreItems} services-more-items${isDetailsOpen ? ` ${styles.moreItemsPlaceholder}` : ""}`}
+              className={moreItemsClasses}
             >
               + {hiddenItemsCount} {hiddenBulletsLabel}
             </p>
           ) : null}
 
-          <div className={`${styles.footer} services-card-actions-row`}>
-            <div className={`${styles.actions} services-details-actions`}>
+          <div className={styles.footer}>
+            <div className={styles.actions}>
               {showPrimaryCta ? (
-                <a
-                  className={`btn btn--primary services-details-cta ${styles.primaryCta}`}
+                <PrimaryCtaLink
+                  className={styles.primaryCta}
                   data-analytics-event="cta_click"
                   data-analytics-location="pricing"
                   data-analytics-target="form"
@@ -199,25 +215,20 @@ export function ServiceCard({
                   href={SECTION_HREFS.contact}
                 >
                   {ctaLabel}
-                </a>
+                </PrimaryCtaLink>
               ) : (
-                <span
-                  aria-hidden="true"
-                  className={`btn btn--primary services-details-cta ${styles.primaryCta} ${styles.primaryCtaPlaceholder}`}
-                >
+                <span aria-hidden="true" className={placeholderCtaClasses}>
                   {ctaLabel}
                 </span>
               )}
             </div>
 
-            <div
-              className={`${styles.footerMeta} services-details-toggle-wrap`}
-            >
+            <div className={styles.footerMeta}>
               {hasExpandableContent ? (
                 <button
                   aria-controls={detailsId}
                   aria-expanded={isDetailsOpen}
-                  className={`${styles.toggle} services-details-toggle`}
+                  className={styles.toggle}
                   onClick={() => {
                     onCardSelectAction();
                     onDetailsToggleAction(!isDetailsOpen);

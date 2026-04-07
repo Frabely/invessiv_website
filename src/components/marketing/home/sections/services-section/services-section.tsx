@@ -146,11 +146,7 @@ export function ServicesSection({
     primaryCtaLabel;
 
   return (
-    <section
-      className={`${styles.section} services-section`}
-      id={id}
-      ref={sectionRef}
-    >
+    <section className={styles.section} id={id} ref={sectionRef}>
       <div className={styles.goalPicker} aria-label={goalTitle} role="group">
         <h2 className={styles.sectionTitle}>{title}</h2>
         <p className={styles.goalTitle}>{goalTitle}</p>
@@ -161,7 +157,7 @@ export function ServicesSection({
             return (
               <button
                 aria-pressed={isActive}
-                className={`services-chip ${styles.goalChip}${isActive ? ` ${styles.goalChipActive}` : ""}`}
+                className={`${styles.goalChip}${isActive ? ` ${styles.goalChipActive}` : ""}`}
                 key={option.key}
                 onClick={() => selectGoal(option.key)}
                 type="button"

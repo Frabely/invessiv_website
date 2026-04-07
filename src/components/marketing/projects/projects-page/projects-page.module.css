@@ -122,7 +122,7 @@
   text-wrap: balance;
 }
 
-.pageHero :global(.section-scan-points--hero) {
+.heroHighlights.heroHighlights {
   margin: 0;
 }
 
@@ -162,8 +162,7 @@
   overflow: hidden;
 }
 
-.projectCard::before,
-.closingCta::before {
+.projectCard::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -684,7 +683,6 @@
     padding-bottom: 0;
   }
 
-  .heroGrid,
   .projectCard {
     padding: 20px;
     border-radius: 26px;

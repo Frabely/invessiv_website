@@ -1,5 +1,6 @@
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
+import styles from "./q-and-a-section.module.css";
 
 type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
 type QnaSecondaryContact = NonNullable<
@@ -24,23 +25,23 @@ export function QAndASection({
   title,
 }: QAndASectionProps) {
   return (
-    <section className="qna-section" id={id}>
-      <h2>{title}</h2>
+    <section className={styles.section} id={id}>
+      <h2 className={styles.title}>{title}</h2>
       <SectionScanPoints
-        fallbackClassName="qna-hint"
+        fallbackClassName={styles.hint}
         fallbackText={description}
         points={summaryPoints}
       />
 
-      <ul aria-label={title} className="qna-list">
+      <ul aria-label={title} className={styles.list}>
         {items.map((item, index) => {
           const questionId = `${id}-question-${index + 1}`;
           return (
-            <li className="qna-item" key={questionId}>
-              <details className="qna-disclosure">
-                <summary className="qna-summary" id={questionId}>
-                  <span className="qna-question">{item.question}</span>
-                  <span className="qna-arrow" aria-hidden="true">
+            <li className={styles.item} key={questionId}>
+              <details className={styles.disclosure}>
+                <summary className={styles.summary} id={questionId}>
+                  <span className={styles.question}>{item.question}</span>
+                  <span className={styles.arrow} aria-hidden="true">
                     <svg viewBox="0 0 16 16">
                       <path
                         d="M4 6.5 8 10.5 12 6.5"
@@ -55,10 +56,10 @@ export function QAndASection({
                 </summary>
                 <div
                   aria-labelledby={questionId}
-                  className="qna-answer-wrap"
+                  className={styles.answerWrap}
                   role="region"
                 >
-                  <p className="qna-answer">{item.answer}</p>
+                  <p className={styles.answer}>{item.answer}</p>
                 </div>
               </details>
             </li>
@@ -67,10 +68,10 @@ export function QAndASection({
       </ul>
 
       {secondaryContact ? (
-        <p className="qna-secondary-contact">
+        <p className={styles.secondaryContact}>
           <span>{secondaryContact.hint} </span>
           <a
-            className="qna-secondary-contact-link"
+            className={styles.secondaryContactLink}
             href={secondaryContact.href}
             data-analytics-event="contact_click"
             data-analytics-location="qna"

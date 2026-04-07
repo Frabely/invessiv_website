@@ -6,6 +6,7 @@ import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
+import styles from "./contact-section.module.css";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
 type ContactChannel = NonNullable<
@@ -252,11 +253,11 @@ export function ContactSection({
   };
 
   return (
-    <section className="contact-section" id={id}>
-      <div className="contact-section-stack">
-        <div className="contact-brief-head">
-          <h2>{title}</h2>
-          <p className="contact-decision-intro">
+    <section className={styles.section} id={id}>
+      <div className={styles.stack}>
+        <div className={styles.briefHead}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.decisionIntro}>
             {contactDecisionIntro ?? description}
           </p>
         </div>
@@ -264,7 +265,7 @@ export function ContactSection({
         {entries.length ? (
           <>
             <div
-              className="contact-entry-picker"
+              className={styles.entryPicker}
               role="tablist"
               aria-label="Kontaktwege"
             >
@@ -275,7 +276,7 @@ export function ContactSection({
                   <button
                     aria-controls={`contact-entry-panel-${entry.id}`}
                     aria-selected={isActive}
-                    className={`contact-entry-trigger${isActive ? " is-active" : ""}`}
+                    className={`${styles.entryTrigger}${isActive ? ` ${styles.entryTriggerActive}` : ""}`}
                     id={`contact-entry-tab-${entry.id}`}
                     key={entry.id}
                     onKeyDown={(event) => {
@@ -286,11 +287,11 @@ export function ContactSection({
                     type="button"
                   >
                     {entry.kicker ? (
-                      <span className="contact-entry-trigger-kicker">
+                      <span className={styles.entryTriggerKicker}>
                         {entry.kicker}
                       </span>
                     ) : null}
-                    <span className="contact-entry-trigger-title">
+                    <span className={styles.entryTriggerTitle}>
                       {entry.label}
                     </span>
                   </button>
@@ -298,7 +299,7 @@ export function ContactSection({
               })}
             </div>
             <p
-              className="contact-screen-reader-status"
+              className={styles.screenReaderStatus}
               role="status"
               aria-live="polite"
             >
@@ -319,7 +320,7 @@ export function ContactSection({
               return (
                 <article
                   aria-labelledby={`contact-entry-tab-${entry.id}`}
-                  className={`contact-entry-panel${entry.kind === "project" ? " contact-entry-panel--project" : ""}${channelMode ? ` contact-entry-panel--${channelMode}` : ""}`}
+                  className={`${styles.entryPanel}${entry.kind === "project" ? ` ${styles.entryPanelProject}` : ""}`}
                   hidden={!isActive}
                   id={`contact-entry-panel-${entry.id}`}
                   key={`panel-${entry.id}`}
@@ -338,31 +339,31 @@ export function ContactSection({
                   ) : null}
 
                   {entry.kind === "channel" && entry.channel ? (
-                    <div className="contact-channel-panel">
-                      <div className="contact-channel-panel-head">
-                        <h4 className="contact-entry-panel-title">
+                    <div className={styles.channelPanel}>
+                      <div className={styles.channelPanelHead}>
+                        <h4 className={styles.entryPanelTitle}>
                           {entry.label}
                         </h4>
                         {entry.description ? (
-                          <p className="contact-entry-panel-description">
+                          <p className={styles.entryPanelDescription}>
                             {entry.description}
                           </p>
                         ) : null}
                       </div>
 
                       {channelMode === "email" ? (
-                        <div className="contact-channel-email-card">
-                          <div className="contact-channel-meta">
-                            <p className="contact-channel-meta-label">
+                        <div className={styles.channelEmailCard}>
+                          <div className={styles.channelMeta}>
+                            <p className={styles.channelMetaLabel}>
                               {entry.channel.metaLabel ?? "Kontakt"}
                             </p>
-                            <p className="contact-channel-meta-value">
+                            <p className={styles.channelMetaValue}>
                               {entry.channel.value}
                             </p>
                           </div>
                           {entry.channel.copyValue ? (
                             <button
-                              className="contact-channel-copy-button"
+                              className={styles.channelCopyButton}
                               onClick={() => copyChannelValue(entry)}
                               type="button"
                             >
@@ -373,39 +374,39 @@ export function ContactSection({
                           ) : null}
                         </div>
                       ) : (
-                        <div className="contact-channel-call-card">
-                          <p className="contact-channel-meta-label">
+                        <div className={styles.channelCallCard}>
+                          <p className={styles.channelMetaLabel}>
                             {entry.channel.metaLabel ?? "Format"}
                           </p>
-                          <p className="contact-channel-meta-value">
+                          <p className={styles.channelMetaValue}>
                             {entry.channel.metaValue ?? entry.channel.value}
                           </p>
                         </div>
                       )}
 
                       {entry.channel.helper ? (
-                        <p className="contact-entry-panel-helper">
+                        <p className={styles.entryPanelHelper}>
                           {entry.channel.helper}
                         </p>
                       ) : null}
 
                       {entry.channel.detailPoints?.length ? (
-                        <ul className="contact-channel-detail-list">
+                        <ul className={styles.channelDetailList}>
                           {entry.channel.detailPoints.map((point) => (
                             <li key={`${entry.id}-${point}`}>{point}</li>
                           ))}
                         </ul>
                       ) : null}
 
-                      <div className="contact-channel-footer">
+                      <div className={styles.channelFooter}>
                         {entry.channel.hint ? (
-                          <p className="contact-entry-panel-hint">
+                          <p className={styles.entryPanelHint}>
                             {entry.channel.hint}
                           </p>
                         ) : null}
-                        <div className="contact-channel-actions">
+                        <div className={styles.channelActions}>
                           <a
-                            className={`contact-channel-action-link ${channelMode === "call" ? "contact-channel-action-link--call" : "contact-channel-action-link--email contact-primary-cta--shimmer"}`}
+                            className={`${styles.channelActionLink} ${channelMode === "call" ? styles.channelActionCall : `${styles.channelActionEmail} ${styles.channelActionShimmer}`}`}
                             href={entry.channel.href}
                             rel={
                               isExternalChannelLink
@@ -434,9 +435,9 @@ export function ContactSection({
         ) : null}
 
         {contactSecondaryCta ? (
-          <div className="contact-cta-wrap">
+          <div className={styles.ctaWrap}>
             <a
-              className="contact-secondary-link"
+              className={styles.secondaryLink}
               href={contactSecondaryCta.href}
               {...getSecondaryCtaAnalyticsProps(contactSecondaryCta.href)}
             >
