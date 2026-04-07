@@ -13,22 +13,21 @@ type ContactChannel = NonNullable<
   LandingSectionCopy["contactChannels"]
 >[number];
 type ContactForm = NonNullable<LandingSectionCopy["contactForm"]>;
+type ContactSecondaryCta = NonNullable<
+  LandingSectionCopy["contactSecondaryCta"]
+>;
 type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
   contactCta?: ContactCta;
   contactChannels: ContactChannel[];
-  contactChecklist: string[];
-  contactChecklistHint?: string;
-  contactChecklistTitle?: string;
   contactDecisionIntro?: string;
   contactForm?: ContactForm;
   contactFormOffers: Array<{ key: string; title: string }>;
-  contactSecondaryCta?: ContactCta;
+  contactSecondaryCta?: ContactSecondaryCta;
   description: string;
   id: string;
   privacyHref: string;
-  summaryPoints?: string[];
   title: string;
 };
 

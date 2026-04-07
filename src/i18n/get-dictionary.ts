@@ -25,7 +25,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      sectionLinkLabel: string;
       copySectionLinkLabel: string;
       sectionLinkCopiedLabel: string;
     };
@@ -67,7 +66,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      sectionLinkLabel: string;
       copySectionLinkLabel: string;
       sectionLinkCopiedLabel: string;
     };
@@ -146,7 +144,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      sectionLinkLabel: string;
       copySectionLinkLabel: string;
       sectionLinkCopiedLabel: string;
     };

@@ -68,7 +68,6 @@
     "upgrade": "Request upgrade",
     "maintenance": "Request maintenance & support"
   },
-  "servicesPrimaryCtaHint": "Your selection will carry into the contact form",
   "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Typical"
 }

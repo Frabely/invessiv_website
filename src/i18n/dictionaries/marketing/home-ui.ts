@@ -35,7 +35,6 @@ export type HomeUiContent = {
   servicesIntentOptions: Array<{ key: string; label: string }>;
   servicesIntentTitle: string;
   servicesPrimaryCta: string;
-  servicesPrimaryCtaHint?: string;
   servicesPrimaryCtaLabels: {
     landing: string;
     maintenance: string;

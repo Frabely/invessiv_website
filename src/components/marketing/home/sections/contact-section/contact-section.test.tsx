@@ -44,9 +44,6 @@ describe("ContactSection", () => {
             value: "15-20 Min. Orientierungsgespräch",
           },
         ]}
-        contactChecklist={["Ziel", "Deadline", "Assets"]}
-        contactChecklistHint="Dauert ca. 2 Minuten."
-        contactChecklistTitle="Was du direkt erwarten kannst"
         contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
         contactForm={{
           budgetLabel: "Budgetrahmen",
@@ -110,14 +107,12 @@ describe("ContactSection", () => {
           { key: "web", title: "Webseiten" },
         ]}
         contactSecondaryCta={{
-          hint: "",
           href: "#services",
           label: "Leistungen ansehen",
         }}
         description="Kontaktiere uns und starte dein Projekt mit Invessiv."
         id="contact"
         privacyHref="/privacy"
-        summaryPoints={["Fast reply", "Clear path"]}
         title="Bereit für eine neue, produktive Webseite?"
       />,
     );

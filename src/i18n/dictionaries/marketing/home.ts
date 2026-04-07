@@ -73,7 +73,6 @@ export type LandingSectionCopy = {
   title: string;
   description: string;
   summaryPoints?: string[];
-  cards?: Array<{ title: string; description: string; tag: string }>;
   proofRatingAriaLabel?: string;
   proofReviewLinkLabel?: string;
   proofReviews?: ProofReview[];
@@ -92,7 +91,6 @@ export type LandingSectionCopy = {
   }>;
   processCta?: {
     label: string;
-    hint: string;
     href: string;
   };
   qnaItems?: Array<{
@@ -122,9 +120,6 @@ export type LandingSectionCopy = {
     metaLabel?: string;
     metaValue?: string;
   }>;
-  contactChecklist?: string[];
-  contactChecklistTitle?: string;
-  contactChecklistHint?: string;
   contactCta?: {
     kicker?: string;
     label: string;
@@ -135,7 +130,6 @@ export type LandingSectionCopy = {
   contactSecondaryCta?: {
     label: string;
     href: string;
-    hint: string;
   };
   contactForm?: {
     title: string;
@@ -204,17 +198,6 @@ export type LandingSectionCopy = {
       href: string;
     }>;
   }>;
-  footerHeroTitle?: string;
-  footerHeroDescription?: string;
-  footerHeroPrimaryCta?: { label: string; href: string };
-  footerHeroSecondaryCta?: { label: string; href: string };
-  footerNewsletter?: {
-    title: string;
-    description: string;
-    inputPlaceholder: string;
-    buttonLabel: string;
-    consentLabel: string;
-  };
   footerBrand?: string;
   footerCopyright?: string;
   footerSocialLinks?: Array<{
@@ -276,26 +259,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "kurze Abstimmung",
           "QA & Übergabe",
         ],
-        cards: [
-          {
-            title: "Passender Einstieg vor Projektbeginn",
-            description:
-              "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht.",
-            tag: "Setup",
-          },
-          {
-            title: "Kurze Wege im Projekt",
-            description:
-              "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig.",
-            tag: "Ablauf",
-          },
-          {
-            title: "Launch sauber vorbereitet",
-            description:
-              "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss.",
-            tag: "QA",
-          },
-        ],
       },
       en: {
         title: "From first outline to handoff",
@@ -305,26 +268,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "recommendation before kickoff",
           "short feedback loops",
           "QA & handover",
-        ],
-        cards: [
-          {
-            title: "Right entry point before kickoff",
-            description:
-              "After the inquiry, we sort the goal, project range, and offer format before implementation begins.",
-            tag: "Setup",
-          },
-          {
-            title: "Short paths during execution",
-            description:
-              "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving.",
-            tag: "Workflow",
-          },
-          {
-            title: "Launch prepared from the start",
-            description:
-              "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end.",
-            tag: "QA",
-          },
         ],
       },
     },
@@ -761,7 +704,6 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Projekt & Umfang anfragen",
-          hint: "Unverbindlich. In der Regel Rückmeldung innerhalb von 24h.",
           href: SECTION_HREFS.contact,
         },
       },
@@ -814,7 +756,6 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
         processCta: {
           label: "Request project & outline",
-          hint: "No commitment. Typically a reply within 24h.",
           href: SECTION_HREFS.contact,
         },
       },
@@ -949,57 +890,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "In der Regel Rückmeldung innerhalb von 24h",
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
-        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
-        footerHeroDescription:
-          "Kontaktiere mich und starte dein Projekt mit Invessiv.",
-        footerHeroPrimaryCta: {
-          label: "Jetzt Projekt anfragen",
-          href: SECTION_HREFS.contact,
-        },
-        footerHeroSecondaryCta: {
-          label: "Leistungsmodelle ansehen",
-          href: SECTION_HREFS.services,
-        },
-        footerColumns: [
-          {
-            title: "Menü",
-            links: [
-              { label: "Was du bekommst", href: SECTION_HREFS.included },
-              { label: "Leistungsmodelle", href: SECTION_HREFS.services },
-              { label: "Prozess", href: SECTION_HREFS.process },
-              { label: "Q&A", href: SECTION_HREFS.faq },
-              { label: "Kontakt", href: SECTION_HREFS.contact },
-            ],
-          },
-          {
-            title: "Kontakt",
-            links: [
-              { label: "Invessiv", href: "/imprint#company-details" },
-              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
-              { label: COMPANY.contact.phoneDisplayDe, href: COMPANY_TEL },
-            ],
-          },
-        ],
-        footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
-        footerSocialLinks: [
-          {
-            platform: "linkedin",
-            href: COMPANY_SOCIAL_LINKEDIN,
-            label: "LinkedIn",
-          },
-          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
-          {
-            platform: "instagram",
-            href: COMPANY_SOCIAL_INSTAGRAM,
-            label: "Instagram",
-          },
-        ],
-        footerLegalLinks: [
-          { label: "Impressum", href: "/imprint" },
-          { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/terms" },
-        ],
         contactDecisionIntro:
           "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
         contactChannels: [
@@ -1046,11 +936,6 @@ const HOME_SECTIONS: LandingSection[] = [
             metaValue: "Asynchroner Schnellkontakt",
           },
         ],
-        contactChecklist: [
-          "Klare Empfehlung",
-          "Direkter Kontakt",
-          "Umfang, Timing, Aufwand",
-        ],
         contactCta: {
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
@@ -1060,7 +945,6 @@ const HOME_SECTIONS: LandingSection[] = [
         contactSecondaryCta: {
           label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
-          hint: "",
         },
         contactForm: {
           title: "Projektanfrage für konkrete Vorhaben",
@@ -1175,57 +1059,6 @@ const HOME_SECTIONS: LandingSection[] = [
           "Typically a reply within 24h",
           "Direct contact without sales handoff",
         ],
-        footerHeroTitle: "Ready for a new, productive website?",
-        footerHeroDescription:
-          "Contact me and start your project with Invessiv.",
-        footerHeroPrimaryCta: {
-          label: "Start project now",
-          href: SECTION_HREFS.contact,
-        },
-        footerHeroSecondaryCta: {
-          label: "View service models",
-          href: SECTION_HREFS.services,
-        },
-        footerColumns: [
-          {
-            title: "Menu",
-            links: [
-              { label: "What you get", href: SECTION_HREFS.included },
-              { label: "Service models", href: SECTION_HREFS.services },
-              { label: "Process", href: SECTION_HREFS.process },
-              { label: "Q&A", href: SECTION_HREFS.faq },
-              { label: "Contact", href: SECTION_HREFS.contact },
-            ],
-          },
-          {
-            title: "Contact",
-            links: [
-              { label: "Invessiv", href: "/imprint#company-details" },
-              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
-              { label: COMPANY.contact.phoneDisplayEn, href: COMPANY_TEL },
-            ],
-          },
-        ],
-        footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. All rights reserved.",
-        footerSocialLinks: [
-          {
-            platform: "linkedin",
-            href: COMPANY_SOCIAL_LINKEDIN,
-            label: "LinkedIn",
-          },
-          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
-          {
-            platform: "instagram",
-            href: COMPANY_SOCIAL_INSTAGRAM,
-            label: "Instagram",
-          },
-        ],
-        footerLegalLinks: [
-          { label: "Imprint", href: "/imprint" },
-          { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
-        ],
         contactDecisionIntro:
           "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
         contactChannels: [
@@ -1272,11 +1105,6 @@ const HOME_SECTIONS: LandingSection[] = [
             metaValue: "Asynchronous quick contact",
           },
         ],
-        contactChecklist: [
-          "Clear recommendation",
-          "Direct contact",
-          "Range, timing, effort",
-        ],
         contactCta: {
           kicker: "Start directly",
           label: "Start project request",
@@ -1286,7 +1114,6 @@ const HOME_SECTIONS: LandingSection[] = [
         contactSecondaryCta: {
           label: "Compare service models",
           href: SECTION_HREFS.services,
-          hint: "",
         },
         contactForm: {
           title: "Project request for concrete requirements",
@@ -1401,17 +1228,6 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Footer",
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
-        footerHeroTitle: "Bereit für eine neue, produktive Webseite?",
-        footerHeroDescription:
-          "Kontaktiere mich und starte dein Projekt mit Invessiv.",
-        footerHeroPrimaryCta: {
-          label: "Jetzt Projekt anfragen",
-          href: SECTION_HREFS.contact,
-        },
-        footerHeroSecondaryCta: {
-          label: "Leistungsmodelle ansehen",
-          href: SECTION_HREFS.services,
-        },
         footerColumns: [
           {
             title: "Menü",
@@ -1456,17 +1272,6 @@ const HOME_SECTIONS: LandingSection[] = [
       en: {
         title: "Footer",
         description: "Quick access to core pages and contact options.",
-        footerHeroTitle: "Ready for a new, productive website?",
-        footerHeroDescription:
-          "Contact me and start your project with Invessiv.",
-        footerHeroPrimaryCta: {
-          label: "Start project now",
-          href: SECTION_HREFS.contact,
-        },
-        footerHeroSecondaryCta: {
-          label: "View service models",
-          href: SECTION_HREFS.services,
-        },
         footerColumns: [
           {
             title: "Menu",

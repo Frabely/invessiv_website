@@ -77,7 +77,6 @@ const sections: HomeSectionContent[] = [
     id: "contact",
     title: "Kontakt",
     description: "Projektanfrage",
-    contactChecklist: ["Ziel"],
     contactChannels: [],
     contactCta: {
       href: "#contact",

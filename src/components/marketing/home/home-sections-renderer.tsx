@@ -165,9 +165,6 @@ export function HomeSectionsRenderer({
                 <ContactSection
                   contactCta={section.contactCta}
                   contactChannels={section.contactChannels ?? []}
-                  contactChecklist={section.contactChecklist ?? []}
-                  contactChecklistHint={section.contactChecklistHint}
-                  contactChecklistTitle={section.contactChecklistTitle}
                   contactDecisionIntro={section.contactDecisionIntro}
                   contactForm={section.contactForm}
                   contactFormOffers={contactFormOffers}
@@ -176,7 +173,6 @@ export function HomeSectionsRenderer({
                   id={section.id}
                   key={section.id}
                   privacyHref={privacyHref}
-                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
