@@ -7,8 +7,15 @@ import { describe, expect, it, vi } from "vitest";
 import { ProjectsPage } from "./projects-page";
 
 vi.mock("next/image", () => ({
-  // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
-  default: (props: ImgHTMLAttributes<HTMLImageElement>) => <img {...props} />,
+  default: (
+    props: ImgHTMLAttributes<HTMLImageElement> & { priority?: boolean },
+  ) => {
+    const { priority, ...imgProps } = props;
+    void priority;
+
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img alt={imgProps.alt ?? ""} {...imgProps} />;
+  },
 }));
 
 vi.mock("@/components/marketing/site-header/site-header", () => ({

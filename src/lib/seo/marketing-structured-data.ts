@@ -61,14 +61,6 @@ export function createMarketingStructuredData(
         areaServed: "DE",
         availableLanguage: ["de", "en"],
         description,
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "EUR",
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            minPrice: 99,
-          },
-        },
       },
     ],
   };
