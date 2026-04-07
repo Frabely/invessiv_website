@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/config/i18n";
-import { ENABLE_THEME_SWITCH } from "@/config/site";
+import { LANGUAGE_PROVIDER_MISSING_ERROR } from "@/components/providers/provider-errors";
 import {
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
   matchesLocaleScrollRestoreState,
@@ -12,21 +12,15 @@ import {
 } from "@/lib/navigation/locale-scroll-restoration";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 
-type Theme = "dark" | "light";
-
 type LanguageContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   toggleLocale: () => void;
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
-  toggleTheme: () => void;
 };
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 const STORAGE_KEY = "invessiv-locale";
-const THEME_STORAGE_KEY = "invessiv-theme";
 
 const getLocaleFromPathname = (pathname: string | null): Locale | null => {
   if (!pathname) {
@@ -46,7 +40,6 @@ export function LanguageProvider({
   const pathname = usePathname();
   const pathnameLocale = getLocaleFromPathname(pathname);
   const [localOverride, setLocalOverride] = useState<Locale | null>(null);
-  const [theme, setThemeState] = useState<Theme>("dark");
 
   const locale = pathnameLocale ?? localOverride ?? initialLocale;
 
@@ -54,15 +47,6 @@ export function LanguageProvider({
     window.localStorage.setItem(STORAGE_KEY, locale);
     document.documentElement.lang = locale;
   }, [locale]);
-
-  useEffect(() => {
-    const activeTheme: Theme = ENABLE_THEME_SWITCH ? theme : "dark";
-    if (ENABLE_THEME_SWITCH) {
-      window.localStorage.setItem(THEME_STORAGE_KEY, activeTheme);
-    }
-    document.documentElement.dataset.theme = activeTheme;
-    document.documentElement.style.colorScheme = activeTheme;
-  }, [theme]);
 
   useEffect(() => {
     const restoreState = parseLocaleScrollRestoreState(
@@ -98,21 +82,8 @@ export function LanguageProvider({
           const activeLocale = current ?? locale;
           return activeLocale === "de" ? "en" : "de";
         }),
-      theme,
-      setTheme: (nextTheme) => {
-        if (!ENABLE_THEME_SWITCH) {
-          return;
-        }
-        setThemeState(nextTheme);
-      },
-      toggleTheme: () => {
-        if (!ENABLE_THEME_SWITCH) {
-          return;
-        }
-        setThemeState((current) => (current === "dark" ? "light" : "dark"));
-      },
     }),
-    [locale, theme],
+    [locale],
   );
 
   return (
@@ -125,7 +96,7 @@ export function LanguageProvider({
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error("useLanguage must be used within LanguageProvider");
+    throw new Error(LANGUAGE_PROVIDER_MISSING_ERROR);
   }
   return context;
 }

@@ -4,9 +4,11 @@ import Image from "next/image";
 import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
+import { useTheme } from "@/components/providers/theme-provider";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ENABLE_THEME_SWITCH, SECTION_HREFS } from "@/config/site";
+import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
+import { SECTION_HREFS } from "@/config/site";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
@@ -29,14 +31,21 @@ export function SiteHeader({
   ctaHref = SECTION_HREFS.contact,
   navigation,
 }: SiteHeaderProps) {
-  const { locale, setLocale, theme, toggleTheme } = useLanguage();
+  const { locale, setLocale } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
   const isScrolled = useScrolledHeader(14);
   useMobileViewportHeight();
   const ui = getSiteHeaderUiContent(locale);
-  const themeToggleLabel =
-    theme === "dark" ? ui.themeToggleLabel.dark : ui.themeToggleLabel.light;
+  const themeSwitchCopy =
+    theme === "dark"
+      ? {
+          actionLabel: ui.themeSwitch.actionLabel.dark,
+        }
+      : {
+          actionLabel: ui.themeSwitch.actionLabel.light,
+        };
 
   const handleLocaleSelect = (
     nextLocale: Locale,
@@ -112,15 +121,11 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          {ENABLE_THEME_SWITCH ? (
-            <button
-              className={styles.themeSwitch}
-              onClick={toggleTheme}
-              type="button"
-            >
-              {themeToggleLabel}
-            </button>
-          ) : null}
+          <ThemeSwitch
+            copy={themeSwitchCopy}
+            onToggle={toggleTheme}
+            theme={theme}
+          />
           <LocaleSwitch
             locale={locale}
             localeMenuLabel={ui.localeMenuLabel}
@@ -200,17 +205,14 @@ export function SiteHeader({
               </span>
             </summary>
             <ul className={styles.mobileMenuList}>
-              {ENABLE_THEME_SWITCH ? (
-                <li className={styles.mobileMenuListItem}>
-                  <button
-                    className={`${styles.themeSwitch} ${styles.themeSwitchMobile}`}
-                    onClick={toggleTheme}
-                    type="button"
-                  >
-                    {themeToggleLabel}
-                  </button>
-                </li>
-              ) : null}
+              <li className={styles.mobileMenuListItem}>
+                <ThemeSwitch
+                  copy={themeSwitchCopy}
+                  onToggle={toggleTheme}
+                  theme={theme}
+                  variant="mobile"
+                />
+              </li>
               {mobileNavigation.map((item) => (
                 <li className={styles.mobileMenuListItem} key={item.href}>
                   <a

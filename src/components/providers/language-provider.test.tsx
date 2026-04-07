@@ -19,12 +19,27 @@ describe("LanguageProvider", () => {
   beforeEach(() => {
     mockUsePathname.mockReturnValue("/en");
     window.sessionStorage.clear();
+    window.localStorage.clear();
     window.history.replaceState({}, "", "/en");
     vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
       callback(0);
       return 1;
     });
     vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      writable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === "(prefers-color-scheme: light)",
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
   });
 
   afterEach(() => {

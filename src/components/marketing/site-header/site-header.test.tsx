@@ -13,6 +13,7 @@ import { SiteHeader } from "./site-header";
 import { LOCALE_SCROLL_RESTORE_STORAGE_KEY } from "@/lib/navigation/locale-scroll-restoration";
 
 const mockUseLanguage = vi.fn();
+const mockUseTheme = vi.fn();
 const mockUseScrolledHeader = vi.fn();
 const mockRouterReplace = vi.fn();
 
@@ -29,6 +30,10 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/components/providers/language-provider", () => ({
   useLanguage: () => mockUseLanguage(),
+}));
+
+vi.mock("@/components/providers/theme-provider", () => ({
+  useTheme: () => mockUseTheme(),
 }));
 
 vi.mock("@/hooks/marketing/use-scrolled-header", () => ({
@@ -52,6 +57,8 @@ describe("SiteHeader", () => {
     mockUseLanguage.mockReturnValue({
       locale: "de",
       setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
       theme: "dark",
       toggleTheme: vi.fn(),
     });
@@ -69,11 +76,14 @@ describe("SiteHeader", () => {
 
   it("triggers locale and theme actions", () => {
     const setLocale = vi.fn();
+    const toggleTheme = vi.fn();
     mockUseLanguage.mockReturnValue({
       locale: "de",
       setLocale,
+    });
+    mockUseTheme.mockReturnValue({
       theme: "dark",
-      toggleTheme: vi.fn(),
+      toggleTheme,
     });
 
     render(
@@ -83,8 +93,12 @@ describe("SiteHeader", () => {
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
+    fireEvent.click(
+      screen.getAllByRole("button", { name: "Zu Light wechseln" })[0],
+    );
 
     expect(setLocale).toHaveBeenCalledWith("en");
+    expect(toggleTheme).toHaveBeenCalledTimes(1);
     expect(mockRouterReplace).toHaveBeenCalledWith("/en/imprint", {
       scroll: false,
     });
@@ -95,6 +109,8 @@ describe("SiteHeader", () => {
     mockUseLanguage.mockReturnValue({
       locale: "de",
       setLocale,
+    });
+    mockUseTheme.mockReturnValue({
       theme: "dark",
       toggleTheme: vi.fn(),
     });
@@ -120,6 +136,8 @@ describe("SiteHeader", () => {
     mockUseLanguage.mockReturnValue({
       locale: "de",
       setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
       theme: "dark",
       toggleTheme: vi.fn(),
     });
