@@ -11,14 +11,14 @@ const VIEWPORTS = [
   { name: "wide-desktop", width: 1728, height: 1117 },
 ];
 
-const SECTION_IDS = [
+const SECTION_IDS: string[] = [
   "included",
   "services",
   "proof",
   "process",
   "faq",
   "contact",
-] as const;
+];
 
 test.describe("home section heading rhythm", () => {
   for (const viewport of VIEWPORTS) {
@@ -32,7 +32,7 @@ test.describe("home section heading rhythm", () => {
 
       await page.goto("/de");
 
-      const spacing = await page.evaluate((sectionIds) => {
+      const spacing = await page.evaluate((sectionIds: string[]) => {
         const sections = Array.from(
           document.querySelectorAll("main section[id]"),
         ).filter(
