@@ -161,37 +161,27 @@
   margin-top: 24px;
 }
 
-[data-theme="light"] .tag {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 38%, rgba(92, 122, 178, 0.16));
-  background: linear-gradient(
-    120deg,
-    rgba(255, 247, 238, 0.94) 0%,
-    rgba(236, 242, 252, 0.9) 100%
-  );
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-accent-warm) 12%);
-}
-
-[data-theme="light"] .tag::before {
-  box-shadow: 0 0 0 4px rgba(203, 119, 40, 0.12);
-}
-
 [data-theme="light"] .title {
   text-shadow: none;
 }
 
 [data-theme="light"] .titleGradient {
+  display: inline-block;
   background: linear-gradient(
-    116deg,
-    #8f4714 0%,
-    #b7601f 24%,
-    #1f52ab 58%,
-    #3f73cf 100%
+    118deg,
+    #8b4b17 0%,
+    #a95b1f 24%,
+    #1d4897 58%,
+    #3464bb 100%
   );
+  background-size: 180% 180%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   filter: none;
-}
-
-[data-theme="light"] .description {
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  animation: titleFlow 5s ease-in-out infinite alternate;
 }
 
 @keyframes titleFlow {
