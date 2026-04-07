@@ -41,18 +41,18 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #f5f7fb;
+  --color-bg: #f2f5fa;
   --color-surface-1: #ffffff;
-  --color-surface-2: #eef2f8;
-  --color-text: #1a2436;
-  --color-text-muted: #506282;
-  --color-border: rgba(54, 74, 107, 0.2);
-  --color-accent-warm: #d88433;
-  --color-cta: #2f66c8;
-  --color-cta-hover: #4078da;
-  --color-focus: rgba(64, 120, 218, 0.58);
-  --color-cta-active: #2555af;
-  --color-on-cta: #f7faff;
+  --color-surface-2: #e8eef6;
+  --color-text: #162033;
+  --color-text-muted: #445775;
+  --color-border: rgba(42, 64, 102, 0.24);
+  --color-accent-warm: #cb7728;
+  --color-cta: #285fc1;
+  --color-cta-hover: #346ed4;
+  --color-focus: rgba(52, 110, 212, 0.48);
+  --color-cta-active: #1f50a8;
+  --color-on-cta: #f5f8ff;
   --bg: var(--color-bg);
   --surface: var(--color-surface-1);
   --text: var(--color-text);
@@ -121,35 +121,35 @@ section[id] {
   background:
     radial-gradient(
         1220px 720px at 8% -2%,
-        rgba(216, 132, 54, 0.15),
-        transparent 62%
+        rgba(203, 119, 40, 0.12),
+        transparent 58%
       )
       fixed,
     radial-gradient(
         940px 620px at 94% 8%,
-        rgba(120, 152, 202, 0.1),
-        transparent 64%
+        rgba(82, 122, 190, 0.09),
+        transparent 60%
       )
       fixed,
     radial-gradient(
         980px 620px at 50% 104%,
-        rgba(226, 146, 76, 0.1),
-        transparent 66%
+        rgba(213, 137, 67, 0.08),
+        transparent 62%
       )
       fixed,
     radial-gradient(
         880px 520px at 86% 84%,
-        rgba(231, 158, 93, 0.07),
-        transparent 66%
+        rgba(218, 144, 84, 0.05),
+        transparent 62%
       )
       fixed,
     radial-gradient(
         840px 480px at 18% 82%,
-        rgba(224, 149, 83, 0.04),
-        transparent 66%
+        rgba(194, 122, 58, 0.035),
+        transparent 62%
       )
       fixed,
-    linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) fixed #f5f7fb;
+    linear-gradient(180deg, #f2f5fa 0%, #e8eef6 48%, #f4efe8 100%) fixed #f2f5fa;
 }
 
 a {
@@ -226,7 +226,6 @@ main {
 
 .page-aurora {
   position: absolute;
-  filter: blur(74px);
   opacity: 0.18;
 }
 
@@ -265,6 +264,14 @@ main {
       transparent 0.6px
     )
     0 0 / 2px 2px;
+}
+
+[data-theme="light"] .page-aurora {
+  opacity: 0.12;
+}
+
+[data-theme="light"] .page-noise {
+  opacity: 0.004;
 }
 
 @media (max-width: 900px) {
@@ -316,40 +323,39 @@ main {
     background:
       radial-gradient(
           1220px 720px at 8% -2%,
-          rgba(216, 132, 54, 0.15),
-          transparent 62%
+          rgba(203, 119, 40, 0.12),
+          transparent 58%
         )
         scroll,
       radial-gradient(
           940px 620px at 94% 8%,
-          rgba(120, 152, 202, 0.1),
-          transparent 64%
+          rgba(82, 122, 190, 0.09),
+          transparent 60%
         )
         scroll,
       radial-gradient(
           980px 620px at 50% 104%,
-          rgba(226, 146, 76, 0.1),
-          transparent 66%
+          rgba(213, 137, 67, 0.08),
+          transparent 62%
         )
         scroll,
       radial-gradient(
           880px 520px at 86% 84%,
-          rgba(231, 158, 93, 0.07),
-          transparent 66%
+          rgba(218, 144, 84, 0.05),
+          transparent 62%
         )
         scroll,
       radial-gradient(
           840px 480px at 18% 82%,
-          rgba(224, 149, 83, 0.04),
-          transparent 66%
+          rgba(194, 122, 58, 0.035),
+          transparent 62%
         )
         scroll,
-      linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) scroll
-        #f5f7fb;
+      linear-gradient(180deg, #f2f5fa 0%, #e8eef6 48%, #f4efe8 100%) scroll
+        #f2f5fa;
   }
 
   .page-aurora {
-    filter: blur(60px);
     opacity: 0.22;
   }
 }

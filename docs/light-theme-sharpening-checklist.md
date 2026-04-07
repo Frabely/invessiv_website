@@ -461,21 +461,29 @@ FÃ¼r jeden Schritt dokumentieren:
 - jede Marketing-Section geprÃ¼ft und dokumentiert
 - Projects-Route im Light Theme vollstÃ¤ndig nachgezogen
 
-## Schritt 15: Legal-Check für Theme-Cookie
+## Schritt 15: Legal-Check fï¿½r Theme-Cookie
 
 ### Ziel
 
-Prüfen, ob das Lesen/Setzen des Theme-Cookies in der Datenschutzerklärung ergänzt werden muss und ob dadurch ein Cookie-Banner erforderlich ist.
+Prï¿½fen, ob das Lesen/Setzen des Theme-Cookies in der Datenschutzerklï¿½rung ergï¿½nzt werden muss und ob dadurch ein Cookie-Banner erforderlich ist.
 
-### Prüfen
+### Prï¿½fen
 
-- Datenschutzerklärung bezüglich Theme-Switch und Theme-Cookie
-- Rechtsgrundlage für das Speichern der Theme-Präferenz
+- Datenschutzerklï¿½rung bezï¿½glich Theme-Switch und Theme-Cookie
+- Rechtsgrundlage fï¿½r das Speichern der Theme-Prï¿½ferenz
 - Abgrenzung zwischen technisch erforderlich und einwilligungspflichtig
-- Bedarf für Cookie-Banner oder Preference-Hinweis
+- Bedarf fï¿½r Cookie-Banner oder Preference-Hinweis
 
 ### Abnahme
 
 - Entscheidung dokumentiert
-- Datenschutzerklärung bei Bedarf erweitert
-- klar, ob für das Theme-Cookie ein Cookie-Banner nötig ist oder nicht
+- Datenschutzerklï¿½rung bei Bedarf erweitert
+- klar, ob fï¿½r das Theme-Cookie ein Cookie-Banner nï¿½tig ist oder nicht
+
+### Aktuelle Einschï¿½tzung
+
+- Theme-Cookie aktuell als Prï¿½ferenz-Cookie einordnen
+- Datenschutzerklï¿½rung sehr wahrscheinlich kurz um Theme-Switch bzw. Theme-Cookie ergï¿½nzen
+- Cookie-Banner nur wegen dieses Cookies eher wahrscheinlich nicht
+- rechtlich sensibler Punkt: das Cookie wird nicht nur nach aktivem Switch-Klick, sondern bereits im laufenden Seitengebrauch gesetzt bzw. fortgeschrieben
+- finalen Legal-Check und konkrete Datenschutz-Anpassung bewusst als letzten Schritt vor Go-Live durchfï¿½hren

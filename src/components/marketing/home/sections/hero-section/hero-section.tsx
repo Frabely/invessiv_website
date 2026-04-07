@@ -29,23 +29,11 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <section className={`${styles.root} hero`} id="hero">
-      <div aria-hidden="true" className={heroVisualStyles.vignette} />
-      <div aria-hidden="true" className={heroVisualStyles.gridOverlay} />
-      <div
-        aria-hidden="true"
-        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowText}`}
-      />
-      <div
-        aria-hidden="true"
-        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowVisual}`}
-      />
-      <div className={heroVisualStyles.noise} />
-      <div
-        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraLeft}`}
-      />
-      <div
-        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraRight}`}
-      />
+      <div aria-hidden="true" className={styles.backgroundLayers}>
+        <div className={heroVisualStyles.vignette} />
+        <div className={heroVisualStyles.gridOverlay} />
+        <div className={heroVisualStyles.noise} />
+      </div>
 
       <div className={styles.grid}>
         <div className={styles.content}>

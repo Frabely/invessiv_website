@@ -11,9 +11,8 @@
 .blob {
   position: absolute;
   border-radius: 999px;
-  filter: blur(30px);
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.56;
   transform: translate3d(0, 0, 0);
   will-change: transform;
 }
@@ -129,10 +128,8 @@
 }
 
 .noise,
-.aurora,
 .vignette,
-.gridOverlay,
-.glow {
+.gridOverlay {
   position: absolute;
   pointer-events: none;
 }
@@ -145,37 +142,6 @@
     transparent 0.6px
   );
   background-size: 2px 2px;
-}
-
-.aurora {
-  opacity: 0.44;
-  filter: blur(62px);
-}
-
-.auroraLeft {
-  width: 42vw;
-  height: 42vw;
-  left: -9vw;
-  top: -13vw;
-  background: radial-gradient(
-    circle,
-    rgba(231, 154, 73, 0.3) 0%,
-    transparent 74%
-  );
-  animation: heroAuroraDriftLeft 12s ease-in-out infinite alternate;
-}
-
-.auroraRight {
-  width: 46vw;
-  height: 46vw;
-  right: -12vw;
-  top: -16vw;
-  background: radial-gradient(
-    circle,
-    rgba(124, 155, 203, 0.24) 0%,
-    transparent 74%
-  );
-  animation: heroAuroraDriftRight 14s ease-in-out infinite alternate;
 }
 
 .vignette {
@@ -210,55 +176,29 @@
   background-size: 58px 58px;
 }
 
-.glow {
-  z-index: 1;
-  filter: blur(68px);
-  opacity: 0.48;
-  will-change: transform, opacity;
-  animation: heroGlowBreathe 11s ease-in-out infinite alternate;
+[data-theme="light"] .noise {
+  opacity: 0.003;
 }
 
-.glowText {
-  width: clamp(360px, 52vw, 760px);
-  height: clamp(260px, 44vw, 620px);
-  left: clamp(-180px, -10vw, -90px);
-  top: clamp(20px, 12vh, 140px);
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-accent-warm) 28%, transparent) 0%,
-    transparent 72%
-  );
+[data-theme="light"] .vignette {
+  background:
+    radial-gradient(
+      136% 118% at 50% 40%,
+      rgba(255, 255, 255, 0) 48%,
+      rgba(74, 96, 138, 0.035) 84%,
+      rgba(27, 39, 63, 0.06) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.035) 28%,
+      rgba(255, 255, 255, 0) 68%
+    );
 }
 
-.glowVisual {
-  width: clamp(320px, 40vw, 620px);
-  height: clamp(320px, 40vw, 620px);
-  right: clamp(-170px, -9vw, -80px);
-  top: clamp(20px, 8vh, 120px);
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-cta) 26%, transparent) 0%,
-    transparent 74%
-  );
-  animation-delay: 0.6s;
-}
-
-@keyframes heroAuroraDriftLeft {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(8vw, 6vw);
-  }
-}
-
-@keyframes heroAuroraDriftRight {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(-8vw, 7vw);
-  }
+[data-theme="light"] .gridOverlay {
+  opacity: 0.07;
+  mask-image: radial-gradient(circle at 48% 42%, #000 42%, transparent 86%);
 }
 
 @keyframes heroBlobDriftA {
@@ -288,17 +228,6 @@
   }
 }
 
-@keyframes heroGlowBreathe {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.55;
-  }
-  to {
-    transform: translate3d(0, -10px, 0) scale(1.045);
-    opacity: 0.72;
-  }
-}
-
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .shot {
     width: clamp(320px, 29vw, 500px);
@@ -317,11 +246,9 @@
 
 @media (max-width: 900px) {
   .visual,
-  .aurora,
   .noise,
   .vignette,
-  .gridOverlay,
-  .glow {
+  .gridOverlay {
     display: none;
   }
 
@@ -337,11 +264,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora,
-  .blob,
-  .glow,
-  .glowText,
-  .glowVisual {
+  .blob {
     animation: none;
   }
 

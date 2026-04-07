@@ -41,8 +41,6 @@ export function MarketingHomePageClient({
 
       <main className="marketing-main" id="main-content" tabIndex={-1}>
         <div aria-hidden="true" className="page-accents">
-          <span className="page-aurora page-aurora--left" />
-          <span className="page-aurora page-aurora--right" />
           <span className="page-noise" />
         </div>
 
