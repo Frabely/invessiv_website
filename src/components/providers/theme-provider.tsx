@@ -1,13 +1,17 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
+import {
+  ThemeProvider as NextThemesProvider,
+  useTheme as useNextTheme,
+} from "next-themes";
 import { THEME_PROVIDER_MISSING_ERROR } from "@/components/providers/provider-errors";
 import {
   DEFAULT_THEME,
-  resolveStoredTheme,
   THEME_COOKIE_MAX_AGE_SECONDS,
   THEME_STORAGE_KEY,
+  resolveStoredTheme,
   type Theme,
 } from "@/lib/theme/theme";
 
@@ -17,55 +21,59 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const ThemeContext = createContext<ThemeContextValue | null>(null);
+const ThemeInitialContext = createContext<Theme | null>(null);
 
-function getDocumentTheme(): Theme {
-  if (typeof document === "undefined") {
-    return DEFAULT_THEME;
-  }
-
-  const activeTheme = resolveStoredTheme(
-    document.documentElement.dataset.theme,
-  );
-  return activeTheme ?? DEFAULT_THEME;
-}
-
-function persistTheme(nextTheme: Theme) {
-  document.documentElement.dataset.theme = nextTheme;
-  document.documentElement.style.colorScheme = nextTheme;
-  window.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-  document.cookie = `${THEME_STORAGE_KEY}=${nextTheme}; Path=/; Max-Age=${THEME_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
-}
-
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(getDocumentTheme);
-
-  useEffect(() => {
-    persistTheme(theme);
-  }, [theme]);
-
-  const value = useMemo<ThemeContextValue>(
-    () => ({
-      theme,
-      setTheme: (nextTheme) => {
-        setThemeState(nextTheme);
-      },
-      toggleTheme: () => {
-        setThemeState((current) => (current === "dark" ? "light" : "dark"));
-      },
-    }),
-    [theme],
-  );
-
+export function ThemeProvider({
+  children,
+  initialTheme,
+}: {
+  children: ReactNode;
+  initialTheme: Theme;
+}) {
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeInitialContext.Provider value={initialTheme}>
+      <NextThemesProvider
+        attribute="data-theme"
+        defaultTheme={initialTheme}
+        disableTransitionOnChange
+        enableColorScheme
+        enableSystem={false}
+        storageKey={THEME_STORAGE_KEY}
+        themes={["dark", "light"]}
+      >
+        {children}
+      </NextThemesProvider>
+    </ThemeInitialContext.Provider>
   );
 }
 
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) {
+export function useTheme(): ThemeContextValue {
+  const { resolvedTheme, setTheme } = useNextTheme();
+  const initialTheme = useContext(ThemeInitialContext);
+  if (!initialTheme) {
     throw new Error(THEME_PROVIDER_MISSING_ERROR);
   }
-  return context;
+
+  const documentTheme =
+    typeof document === "undefined"
+      ? null
+      : resolveStoredTheme(document.documentElement.dataset.theme);
+  const theme =
+    resolvedTheme === "light" || resolvedTheme === "dark"
+      ? resolvedTheme
+      : documentTheme ?? initialTheme ?? DEFAULT_THEME;
+
+  useEffect(() => {
+    document.cookie = `${THEME_STORAGE_KEY}=${theme}; Path=/; Max-Age=${THEME_COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
+  }, [theme]);
+
+  return {
+    theme,
+    setTheme: (nextTheme) => {
+      setTheme(nextTheme);
+    },
+    toggleTheme: () => {
+      setTheme(theme === "dark" ? "light" : "dark");
+    },
+  };
 }

@@ -1,7 +1,6 @@
 import "../globals.css";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { VercelAnalytics } from "@/app/analytics";
@@ -10,8 +9,7 @@ import { AppProviders } from "@/components/providers/app-providers";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
-import { createThemeBootstrapInlineScript } from "@/lib/theme/theme-bootstrap-script";
-import { resolveStoredTheme, THEME_STORAGE_KEY } from "@/lib/theme/theme";
+import { DEFAULT_THEME, resolveStoredTheme, THEME_STORAGE_KEY } from "@/lib/theme/theme";
 
 const googleSiteVerification =
   process.env.GOOGLE_SITE_VERIFICATION ??
@@ -65,28 +63,18 @@ export default async function LocaleLayout({
   const cookieStore = await cookies();
   const activeLocale = locale as Locale;
   const initialTheme =
-    resolveStoredTheme(cookieStore.get(THEME_STORAGE_KEY)?.value) ?? "dark";
+    resolveStoredTheme(cookieStore.get(THEME_STORAGE_KEY)?.value) ?? DEFAULT_THEME;
   const ui = getSiteHeaderUiContent(activeLocale);
 
   return (
-    <html
-      data-theme={initialTheme}
-      lang={activeLocale}
-      style={{ colorScheme: initialTheme }}
-      suppressHydrationWarning
-    >
+    <html lang={activeLocale} suppressHydrationWarning>
       <body>
-        <Script
-          dangerouslySetInnerHTML={{
-            __html: createThemeBootstrapInlineScript(),
-          }}
-          id="theme-bootstrap"
-          strategy="beforeInteractive"
-        />
         <a className="skip-link" href="#main-content">
           {ui.skipLinkLabel}
         </a>
-        <AppProviders initialLocale={activeLocale}>{children}</AppProviders>
+        <AppProviders initialLocale={activeLocale} initialTheme={initialTheme}>
+          {children}
+        </AppProviders>
         <VercelAnalytics />
         <Insights />
       </body>

@@ -59,6 +59,7 @@ describe("SiteHeader", () => {
       setLocale: vi.fn(),
     });
     mockUseTheme.mockReturnValue({
+      isMounted: true,
       theme: "dark",
       toggleTheme: vi.fn(),
     });
@@ -82,6 +83,7 @@ describe("SiteHeader", () => {
       setLocale,
     });
     mockUseTheme.mockReturnValue({
+      isMounted: true,
       theme: "dark",
       toggleTheme,
     });
@@ -111,6 +113,7 @@ describe("SiteHeader", () => {
       setLocale,
     });
     mockUseTheme.mockReturnValue({
+      isMounted: true,
       theme: "dark",
       toggleTheme: vi.fn(),
     });
@@ -138,6 +141,7 @@ describe("SiteHeader", () => {
       setLocale: vi.fn(),
     });
     mockUseTheme.mockReturnValue({
+      isMounted: true,
       theme: "dark",
       toggleTheme: vi.fn(),
     });

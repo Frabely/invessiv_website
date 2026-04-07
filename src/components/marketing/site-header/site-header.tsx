@@ -121,11 +121,7 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          <ThemeSwitch
-            copy={themeSwitchCopy}
-            onToggle={toggleTheme}
-            theme={theme}
-          />
+          <ThemeSwitch copy={themeSwitchCopy} onToggle={toggleTheme} theme={theme} />
           <LocaleSwitch
             locale={locale}
             localeMenuLabel={ui.localeMenuLabel}
