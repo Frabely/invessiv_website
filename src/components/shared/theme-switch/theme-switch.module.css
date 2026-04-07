@@ -3,6 +3,7 @@
   display: inline-grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
+  cursor: pointer;
   min-height: 40px;
   width: 78px;
   padding: 4px;
