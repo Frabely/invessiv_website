@@ -106,9 +106,6 @@ describe("ImprintPage", () => {
     expect(
       screen.getByRole("link", { name: "LinkedIn" }).getAttribute("href"),
     ).toBe("https://www.linkedin.com/company/invessiv");
-    expect(screen.getByRole("link", { name: "X" }).getAttribute("href")).toBe(
-      "https://x.com/invessiv",
-    );
     expect(
       screen.getByRole("link", { name: "Instagram" }).getAttribute("href"),
     ).toBe("https://www.instagram.com/invessiv/");

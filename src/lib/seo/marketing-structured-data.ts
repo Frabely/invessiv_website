@@ -2,7 +2,6 @@ import {
   COMPANY,
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
-  COMPANY_SOCIAL_X,
 } from "@/config/company";
 import type { Locale } from "@/config/i18n";
 import { SITE_URL } from "@/lib/site-metadata";
@@ -36,11 +35,7 @@ export function createMarketingStructuredData(
         logo: `${SITE_URL}/brand/icon.png`,
         email: COMPANY.contact.email,
         telephone: phoneDisplay,
-        sameAs: [
-          COMPANY_SOCIAL_LINKEDIN,
-          COMPANY_SOCIAL_X,
-          COMPANY_SOCIAL_INSTAGRAM,
-        ],
+        sameAs: [COMPANY_SOCIAL_LINKEDIN, COMPANY_SOCIAL_INSTAGRAM],
       },
       {
         "@type": "WebSite",

@@ -1,10 +1,6 @@
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faInstagram,
-  faLinkedinIn,
-  faXTwitter,
-} from "@fortawesome/free-brands-svg-icons";
+import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -112,10 +108,7 @@ export function FooterSection({
     if (platform === "linkedin") {
       return faLinkedinIn;
     }
-    if (platform === "instagram") {
-      return faInstagram;
-    }
-    return faXTwitter;
+    return faInstagram;
   };
 
   return (

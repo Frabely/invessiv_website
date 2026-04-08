@@ -6,7 +6,6 @@ import {
   COMPANY_MAILTO,
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
-  COMPANY_SOCIAL_X,
   COMPANY_TEL,
 } from "@/config/company";
 import {
@@ -1256,7 +1255,6 @@ const HOME_SECTIONS: LandingSection[] = [
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
             href: COMPANY_SOCIAL_INSTAGRAM,
@@ -1300,7 +1298,6 @@ const HOME_SECTIONS: LandingSection[] = [
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
-          { platform: "x", href: COMPANY_SOCIAL_X, label: "X" },
           {
             platform: "instagram",
             href: COMPANY_SOCIAL_INSTAGRAM,

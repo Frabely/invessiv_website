@@ -7,7 +7,6 @@ import {
   COMPANY_MAILTO,
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
-  COMPANY_SOCIAL_X,
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -96,11 +95,6 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
           <li>
             <a href={COMPANY_SOCIAL_LINKEDIN} rel="noreferrer" target="_blank">
               LinkedIn
-            </a>
-          </li>
-          <li>
-            <a href={COMPANY_SOCIAL_X} rel="noreferrer" target="_blank">
-              X
             </a>
           </li>
           <li>
