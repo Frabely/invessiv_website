@@ -53,7 +53,6 @@
 .nav .link:hover {
   color: color-mix(in srgb, var(--accent) 84%, white 16%);
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
   border-bottom: 0;
 }
 

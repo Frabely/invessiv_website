@@ -8,6 +8,7 @@ import { SectionScanPoints } from "@/components/marketing/home/shared/section-sc
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { getLocalizedSectionHref, type NavigationItem } from "@/config/site";
 import type { Locale } from "@/config/i18n";
@@ -90,7 +91,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
 
             <div className={styles.heroGrid}>
               <div className={styles.heroContent}>
-                <p className={styles.kicker}>{content.hero.kicker}</p>
+                <EyebrowPill>{content.hero.kicker}</EyebrowPill>
                 <h1 className={styles.title}>{content.hero.title}</h1>
                 <p className={styles.intro}>{content.hero.intro}</p>
                 <SectionScanPoints
@@ -106,9 +107,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
               </div>
 
               <aside className={styles.heroAside}>
-                <p className={styles.sectionEyebrow}>
-                  {content.sectionIntro.eyebrow}
-                </p>
+                <EyebrowPill>{content.sectionIntro.eyebrow}</EyebrowPill>
                 <h2 className={styles.sectionTitle}>
                   {content.sectionIntro.title}
                 </h2>
@@ -130,10 +129,16 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 >
                   <div className={styles.projectLead}>
                     <div className={styles.projectHeader}>
-                      <p className={styles.projectKicker}>{project.kicker}</p>
-                      <p className={styles.projectCategory}>
-                        {project.category}
-                      </p>
+                      <div className={styles.projectMetaLine}>
+                        <p className={styles.projectKicker}>{project.kicker}</p>
+                        <span
+                          aria-hidden="true"
+                          className={styles.projectMetaDivider}
+                        />
+                        <p className={styles.projectCategory}>
+                          {project.category}
+                        </p>
+                      </div>
                     </div>
                     <h2 className={styles.projectTitle}>{project.title}</h2>
                     <p className={styles.projectSummary}>{project.summary}</p>

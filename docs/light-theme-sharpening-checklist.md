@@ -383,7 +383,7 @@ Footer soll im Light Theme bewusst gestaltet wirken und nicht wie ein invertiert
 - Footer fühlt sich als echter Teil des Light Themes an
 - Links und rechtliche Navigation sind klar lesbar
 
-## Schritt 13: Projects Route
+## Schritt 13: Projects Route [Abgeschlossen]
 
 ### Ziel
 

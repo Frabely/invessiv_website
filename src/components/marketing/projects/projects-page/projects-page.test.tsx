@@ -119,7 +119,7 @@ describe("ProjectsPage", () => {
               "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build.",
             primaryLabel: "Projekt anfragen",
             primaryHref: "/de#contact",
-            secondaryLabel: "Leistungsmodelle ansehen",
+            secondaryLabel: "Leistungsmodelle",
             secondaryHref: "/de#services",
           },
         }}

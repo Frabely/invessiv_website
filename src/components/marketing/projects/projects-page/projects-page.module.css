@@ -6,8 +6,8 @@
 .pageHero {
   position: relative;
   display: grid;
-  gap: 22px;
-  padding-bottom: 12px;
+  gap: 18px;
+  padding-bottom: 10px;
 }
 
 .breadcrumbs {
@@ -16,7 +16,7 @@
 
 .heroGrid {
   display: grid;
-  gap: 22px;
+  gap: 18px;
 }
 
 .heroContent,
@@ -30,14 +30,14 @@
 
 .heroContent {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .heroAside {
   display: grid;
   align-content: start;
-  gap: 12px;
-  padding: 18px;
+  gap: 10px;
+  padding: 17px;
   border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border) 84%);
   border-radius: 24px;
   background: color-mix(
@@ -51,7 +51,6 @@
 .title,
 .intro,
 .supportingNote,
-.sectionEyebrow,
 .sectionTitle,
 .sectionDescription,
 .projectKicker,
@@ -65,31 +64,11 @@
   margin: 0;
 }
 
-.kicker,
-.sectionEyebrow {
-  width: fit-content;
-  min-height: 32px;
-  padding: 0 12px;
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  border-radius: 999px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--accent) 14%, transparent),
-    color-mix(in srgb, var(--surface) 78%, transparent)
-  );
-  color: color-mix(in srgb, var(--text) 84%, var(--accent) 16%);
-  font-size: 0.76rem;
-  font-weight: 700;
-  line-height: 32px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
 .title {
   max-width: 12ch;
-  font-size: clamp(2.5rem, 5.3vw, 4.85rem);
-  line-height: 0.94;
-  letter-spacing: -0.058em;
+  font-size: clamp(2.2rem, 4.4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
   text-wrap: balance;
 }
 
@@ -104,14 +83,14 @@
 }
 
 .intro {
-  max-width: 62ch;
+  max-width: 58ch;
 }
 
 .supportingNote {
-  max-width: 58ch;
+  max-width: 54ch;
   color: color-mix(in srgb, var(--text) 64%, var(--muted) 36%);
-  font-size: 0.94rem;
-  line-height: 1.62;
+  font-size: 0.9rem;
+  line-height: 1.56;
 }
 
 .sectionTitle,
@@ -128,7 +107,7 @@
 
 .projectsSection {
   display: grid;
-  gap: 28px;
+  gap: 26px;
   padding-bottom: 36px;
 }
 
@@ -145,20 +124,24 @@
   border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
   border-radius: 32px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.04), transparent 38%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, #ffffff 6%, transparent),
+      transparent 38%
+    ),
     radial-gradient(
       circle at top right,
-      rgba(240, 166, 43, 0.08),
-      transparent 30%
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      transparent 34%
     ),
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--surface) 94%, rgba(255, 255, 255, 0.03) 6%),
-      color-mix(in srgb, #110b08 92%, rgba(255, 255, 255, 0.01) 8%)
+      color-mix(in srgb, var(--color-surface-1) 96%, transparent),
+      color-mix(in srgb, var(--color-surface-2) 88%, var(--color-surface-1) 12%)
     );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 22px 40px rgba(0, 0, 0, 0.18);
+    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
+    0 18px 34px rgba(0, 0, 0, 0.18);
   overflow: hidden;
 }
 
@@ -169,9 +152,9 @@
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.05),
+    color-mix(in srgb, #ffffff 5%, transparent),
     transparent 34%,
-    rgba(255, 255, 255, 0.01)
+    color-mix(in srgb, var(--color-cta) 4%, transparent)
   );
   pointer-events: none;
 }
@@ -179,35 +162,55 @@
 .projectLead {
   display: grid;
   align-content: start;
-  gap: 14px;
+  gap: 16px;
 }
 
 .projectHeader {
   display: grid;
-  gap: 6px;
+  gap: 8px;
+}
+
+.projectMetaLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.projectMetaDivider {
+  width: 22px;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent) 40%, var(--border) 60%);
 }
 
 .projectKicker {
-  color: color-mix(in srgb, var(--accent) 76%, var(--text) 24%);
-  font-size: 0.73rem;
+  color: color-mix(in srgb, var(--accent) 82%, var(--text) 18%);
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.projectCategory,
+.projectCategory {
+  color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
+  font-size: 0.8rem;
+  font-weight: 760;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .detailLabel {
-  color: color-mix(in srgb, var(--text) 62%, var(--muted) 38%);
-  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--text) 68%, var(--muted) 32%);
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .projectTitle {
   max-width: 18ch;
-  font-size: clamp(1.55rem, 2.2vw, 2.5rem);
-  line-height: 1.04;
+  font-size: clamp(1.5rem, 2vw, 2.28rem);
+  line-height: 1.08;
   letter-spacing: -0.045em;
   text-wrap: balance;
 }
@@ -216,6 +219,17 @@
 .detailBlock {
   display: grid;
   gap: 10px;
+  padding: 14px 15px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 92%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 86%, var(--color-surface-1) 14%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 5%, transparent),
+    0 10px 22px rgba(0, 0, 0, 0.1);
 }
 
 .projectVisual {
@@ -235,17 +249,16 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
   padding: 10px;
-  border: 1px solid
-    color-mix(in srgb, rgba(255, 255, 255, 0.2) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   border-radius: 38px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, #3c3027 74%, rgba(255, 255, 255, 0.08) 26%),
-    color-mix(in srgb, #120c09 94%, black 6%)
+    color-mix(in srgb, var(--color-surface-2) 92%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 90%, black 10%)
   );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #ffffff 4%, transparent),
     0 24px 40px rgba(0, 0, 0, 0.24);
 }
 
@@ -253,16 +266,15 @@
   width: min(100%, 548px);
   grid-template-rows: auto minmax(0, 1fr);
   padding: 0;
-  border: 1px solid
-    color-mix(in srgb, rgba(255, 255, 255, 0.12) 35%, var(--border) 65%);
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   border-radius: 18px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, #261913 88%, rgba(255, 255, 255, 0.03) 12%),
-    color-mix(in srgb, #16100d 96%, black 4%)
+    color-mix(in srgb, var(--color-surface-2) 90%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%)
   );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
     0 22px 36px rgba(0, 0, 0, 0.2),
     0 8px 18px rgba(0, 0, 0, 0.12);
 }
@@ -275,8 +287,8 @@
   border-radius: 17px 17px 0 0;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0)
+    color-mix(in srgb, #ffffff 5%, transparent),
+    transparent
   );
   pointer-events: none;
 }
@@ -298,8 +310,8 @@
   border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, #261913 82%, rgba(255, 255, 255, 0.04) 18%),
-    color-mix(in srgb, #18110d 95%, rgba(255, 255, 255, 0.01) 5%)
+    color-mix(in srgb, var(--color-surface-2) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 92%, black 8%)
   );
 }
 
@@ -309,10 +321,10 @@
   border-radius: 999px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, #f0a62b 88%, white 12%),
-    color-mix(in srgb, #9b5f16 84%, black 16%)
+    color-mix(in srgb, var(--accent) 86%, #fff3e1 14%),
+    color-mix(in srgb, var(--accent) 70%, #7b4510 30%)
   );
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 1px color-mix(in srgb, #ffffff 5%, transparent);
 }
 
 .chromeBar {
@@ -323,12 +335,12 @@
   border-radius: 999px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, rgba(255, 255, 255, 0.08) 55%, #231914 45%),
-    color-mix(in srgb, #130d0a 92%, rgba(255, 255, 255, 0.02) 8%)
+    color-mix(in srgb, var(--color-surface-2) 80%, #ffffff 20%),
+    color-mix(in srgb, var(--color-surface-1) 92%, black 8%)
   );
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
 }
 
 .chromeBar::before {
@@ -339,7 +351,7 @@
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(255, 245, 236, 0.45);
+  background: color-mix(in srgb, var(--accent) 34%, #ffffff 66%);
   transform: translateY(-50%);
 }
 
@@ -376,13 +388,17 @@
   background:
     radial-gradient(
       circle at 30% 50%,
-      rgba(255, 255, 255, 0.08),
+      color-mix(in srgb, #ffffff 8%, transparent),
       transparent 28%
     ),
-    linear-gradient(180deg, rgba(37, 31, 29, 0.96), rgba(8, 8, 8, 0.98));
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-2) 96%, black 4%),
+      rgba(8, 8, 8, 0.98)
+    );
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.08),
-    0 1px 0 rgba(255, 255, 255, 0.04);
+    inset 0 1px 1px color-mix(in srgb, #ffffff 8%, transparent),
+    0 1px 0 color-mix(in srgb, #ffffff 4%, transparent);
 }
 
 .phoneSignal,
@@ -474,22 +490,30 @@
   margin: 0 2px;
   border-radius: 28px;
   background:
-    linear-gradient(180deg, rgba(14, 9, 8, 0.72), rgba(14, 9, 8, 0.18)),
-    color-mix(in srgb, #130b07 92%, black 8%);
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 2%, transparent),
+      color-mix(in srgb, #000000 16%, transparent)
+    ),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 0 0 1px rgba(255, 255, 255, 0.03);
+    inset 0 1px 0 color-mix(in srgb, #ffffff 4%, transparent),
+    0 0 0 1px color-mix(in srgb, #ffffff 3%, transparent);
 }
 
 .browserFrame[data-device="browser"] .browserViewport {
   margin: 0;
   border-radius: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0)),
-    color-mix(in srgb, #130b07 92%, black 8%);
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 2%, transparent),
+      transparent
+    ),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.015);
+    inset 0 1px 0 color-mix(in srgb, #ffffff 3%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, #ffffff 1.5%, transparent);
 }
 
 .projectImage {
@@ -543,6 +567,277 @@
   transform: translateY(-50%);
 }
 
+:global([data-theme="light"]) .pageHero {
+  gap: 20px;
+}
+
+:global([data-theme="light"]) .heroAside {
+  border-color: color-mix(in srgb, var(--color-cta) 18%, var(--border) 82%);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 94%, #ffffff 6%),
+    color-mix(in srgb, var(--color-surface-2) 68%, var(--surface) 32%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 72%, transparent),
+    0 16px 30px color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+:global([data-theme="light"]) .closingCta {
+  border-top-color: color-mix(in srgb, var(--color-cta) 12%, var(--border) 88%);
+}
+
+:global([data-theme="light"]) .sectionTitle,
+:global([data-theme="light"]) .projectTitle,
+:global([data-theme="light"]) .closingTitle {
+  color: color-mix(in srgb, var(--text) 92%, var(--color-cta) 8%);
+}
+
+:global([data-theme="light"]) .supportingNote,
+:global([data-theme="light"]) .sectionDescription,
+:global([data-theme="light"]) .projectSummary,
+:global([data-theme="light"]) .focusText,
+:global([data-theme="light"]) .closingText,
+:global([data-theme="light"]) .detailList li {
+  color: color-mix(in srgb, var(--text) 82%, var(--muted) 18%);
+}
+
+:global([data-theme="light"]) .projectCard {
+  border-color: color-mix(in srgb, var(--color-cta) 18%, var(--border) 82%);
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, #ffffff 94%, var(--color-cta) 6%),
+      color-mix(in srgb, var(--color-surface-2) 54%, var(--surface) 46%)
+    ),
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 34%
+    );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 72%, transparent),
+    0 18px 34px color-mix(in srgb, var(--color-cta) 10%, transparent);
+}
+
+:global([data-theme="light"]) .projectCard::before {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #ffffff 78%, transparent),
+    transparent 30%,
+    color-mix(in srgb, var(--color-cta) 5%, transparent)
+  );
+}
+
+:global([data-theme="light"]) .projectMetaDivider {
+  background: color-mix(in srgb, var(--color-cta) 26%, var(--border) 74%);
+}
+
+:global([data-theme="light"]) .projectKicker {
+  color: color-mix(in srgb, var(--accent) 78%, var(--text) 22%);
+}
+
+:global([data-theme="light"]) .projectCategory {
+  color: color-mix(in srgb, var(--text) 82%, var(--color-cta) 18%);
+}
+
+:global([data-theme="light"]) .detailLabel {
+  color: color-mix(in srgb, var(--text) 72%, var(--color-cta) 28%);
+}
+
+:global([data-theme="light"]) .focusBlock,
+:global([data-theme="light"]) .detailBlock {
+  border-color: color-mix(in srgb, var(--color-cta) 12%, var(--border) 88%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 90%, var(--color-cta) 10%),
+    color-mix(in srgb, var(--color-surface-2) 42%, var(--surface) 58%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 84%, transparent),
+    0 10px 22px color-mix(in srgb, var(--color-cta) 6%, transparent);
+}
+
+:global([data-theme="light"]) .browserFrame {
+  border-color: color-mix(in srgb, var(--color-cta) 22%, var(--border) 78%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #eef4fb 86%, #dfe8f3 14%),
+    color-mix(in srgb, #d7e2ef 84%, #cbd8e8 16%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    0 18px 34px color-mix(in srgb, #98add0 20%, transparent);
+}
+
+:global([data-theme="light"]) .browserFrame[data-device="browser"] {
+  border-color: color-mix(in srgb, var(--color-cta) 24%, var(--border) 76%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f6faff 88%, #e2ebf6 12%),
+    color-mix(in srgb, #e5edf8 88%, #d7e3f2 12%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 92%, transparent),
+    0 16px 30px color-mix(in srgb, #98add0 16%, transparent);
+}
+
+:global([data-theme="light"]) .browserFrame[data-device="browser"]::before {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 72%, transparent),
+    transparent
+  );
+}
+
+:global([data-theme="light"])
+  .browserFrame[data-device="browser"]
+  .browserChrome {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--color-cta) 14%,
+    var(--border) 86%
+  );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f8fbff 92%, #e7eff8 8%),
+    color-mix(in srgb, #edf3fa 86%, #dde7f3 14%)
+  );
+}
+
+:global([data-theme="light"]) .chromeDot {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 72%, #ffffff 28%),
+    color-mix(in srgb, var(--accent) 56%, #b5671e 44%)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, #ffffff 65%, transparent);
+}
+
+:global([data-theme="light"]) .chromeBar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 90%, #dce6f3 10%),
+    color-mix(in srgb, #e2ebf6 84%, #d1dced 16%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 86%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #b9c8de 28%, transparent);
+}
+
+:global([data-theme="light"]) .chromeBar::before {
+  background: color-mix(in srgb, var(--color-cta) 34%, #ffffff 66%);
+}
+
+:global([data-theme="light"]) .browserViewport {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 74%, transparent),
+      color-mix(in srgb, #eef4fb 20%, transparent)
+    ),
+    color-mix(in srgb, #edf3fa 90%, #dce5f1 10%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    0 0 0 1px color-mix(in srgb, #b7c7dc 26%, transparent);
+}
+
+:global([data-theme="light"])
+  .browserFrame[data-device="browser"]
+  .browserViewport {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 82%, transparent),
+      color-mix(in srgb, #eef4fb 18%, transparent)
+    ),
+    color-mix(in srgb, #f4f8fd 92%, #dde6f2 8%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, #bccbdf 20%, transparent);
+}
+
+:global([data-theme="light"]) .phoneTime,
+:global([data-theme="light"]) .phoneSignal,
+:global([data-theme="light"]) .phoneWifi,
+:global([data-theme="light"]) .phoneBattery {
+  color: color-mix(in srgb, var(--text) 78%, var(--color-cta) 22%);
+}
+
+:global([data-theme="light"]) .phoneTime {
+  color: color-mix(in srgb, var(--text) 78%, var(--color-cta) 22%);
+}
+
+:global([data-theme="light"]) .phoneIsland {
+  background:
+    radial-gradient(
+      circle at 30% 50%,
+      color-mix(in srgb, #ffffff 82%, transparent),
+      transparent 28%
+    ),
+    linear-gradient(180deg, #233248, #101924);
+}
+
+:global([data-theme="light"]) .phoneSignal {
+  background:
+    linear-gradient(
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%),
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%)
+      )
+      0 100% / 2px 3px no-repeat,
+    linear-gradient(
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%),
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%)
+      )
+      4px 100% / 2px 5px no-repeat,
+    linear-gradient(
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%),
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%)
+      )
+      8px 100% / 2px 7px no-repeat,
+    linear-gradient(
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%),
+        color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%)
+      )
+      12px 100% / 2px 9px no-repeat;
+}
+
+:global([data-theme="light"]) .phoneWifi {
+  background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%) 0 1.4px,
+      transparent 1.6px
+    )
+    50% 100% / 4px 4px no-repeat;
+}
+
+:global([data-theme="light"]) .phoneWifi::before,
+:global([data-theme="light"]) .phoneWifi::after {
+  border-color: color-mix(in srgb, var(--text) 76%, var(--color-cta) 24%);
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+:global([data-theme="light"]) .phoneBattery {
+  border-color: color-mix(in srgb, var(--text) 74%, var(--color-cta) 26%);
+}
+
+:global([data-theme="light"]) .phoneBattery::before {
+  background: color-mix(in srgb, var(--text) 74%, var(--color-cta) 26%);
+}
+
+:global([data-theme="light"]) .phoneBattery::after {
+  background: linear-gradient(90deg, #9acb78, #e7f1ff);
+}
+
+:global([data-theme="light"]) .phoneHomeIndicator {
+  background: color-mix(in srgb, var(--text) 24%, #ffffff 76%);
+}
+
+:global([data-theme="light"]) .projectLink {
+  color: color-mix(in srgb, var(--color-cta) 76%, var(--accent) 24%);
+}
+
 .projectLink {
   width: fit-content;
   text-decoration: none;
@@ -574,14 +869,15 @@
 
 .closingCta {
   display: grid;
-  gap: 24px;
-  padding: 0;
+  gap: 18px;
+  padding: 18px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
 }
 
 .closingCopy {
   display: grid;
-  gap: 12px;
-  max-width: 60rem;
+  gap: 10px;
+  max-width: 52rem;
 }
 
 .closingActions {
