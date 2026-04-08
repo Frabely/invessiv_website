@@ -7,7 +7,7 @@ Ziel: Alle offenen Punkte schließen, damit die Landingpage technisch, inhaltlic
 
 - [ ] **Rechtstexte ohne Platzhalter finalisieren** (`imprint`, `privacy`, `terms`): alle `[PLATZHALTER: ...]` entfernen und juristisch prüfen.
 - [ ] **KI-Transparenzhinweis klären und festhalten**: falls rechtlich, vertraglich oder compliance-seitig notwendig, sichtbar dokumentieren, dass die Seite mit KI-Unterstützung erstellt wurde (z. B. im Footer, Impressum oder in der Projektdokumentation).
-- [ ] **Social-Links final setzen**: LinkedIn/X/Instagram dürfen nicht mehr auf `placeholder`-Anker zeigen.
+- [ ] **Social-Links final setzen**: LinkedIn/Instagram dürfen nicht mehr auf `placeholder`-Anker zeigen.
 - [ ] **Kontaktdaten final verifizieren**: Telefonnummer und Mail konsistent in Landingpage, Impressum, Privacy, JSON-LD.
 - [ ] **Alle CTAs mit echtem Ziel verknüpfen**: kein „Self-Link“ ohne Mehrwert (z. B. Discovery/Kickoff-Call aktuell auf `#contact`).
 - [ ] **Mobile Icon-Bug beheben**: `.services-title-icon-image` ist auf Mobile aktuell zu groß (`104px`) und muss auf mobile-gerechte Größe reduziert werden.
