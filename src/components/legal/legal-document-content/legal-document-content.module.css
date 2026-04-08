@@ -117,42 +117,23 @@
   position: relative;
   display: block;
   border-radius: 12px;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--color-border) 18%, transparent);
   padding: 10px 12px;
   font-size: 0.89rem;
   line-height: 1.35;
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  background: color-mix(in srgb, var(--color-surface-2) 18%, transparent);
   transition:
+    background-color 180ms ease,
     color 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease;
-  overflow: hidden;
-}
-
-.tocLink::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-120%);
-  background: linear-gradient(
-    110deg,
-    transparent 16%,
-    color-mix(in srgb, var(--accent) 18%, transparent) 50%,
-    transparent 84%
-  );
-  pointer-events: none;
-}
-
-.tocLink:hover::after,
-.tocLink:focus-visible::after {
-  transform: translateX(120%);
-  transition: transform 580ms ease;
+    border-color 180ms ease;
 }
 
 .tocLink:hover,
 .tocLink:focus-visible {
   color: color-mix(in srgb, var(--color-text) 92%, var(--color-surface-1) 8%);
   border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--color-surface-2) 91%);
 }
 
 .article {

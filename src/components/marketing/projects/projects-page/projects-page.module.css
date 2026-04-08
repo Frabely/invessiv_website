@@ -807,10 +807,6 @@
     inset 0 0 0 1px color-mix(in srgb, #bccbdf 20%, transparent);
 }
 
-:global([data-theme="light"]) .projectLink {
-  color: color-mix(in srgb, var(--color-cta) 76%, var(--accent) 24%);
-}
-
 .projectLink {
   width: fit-content;
   text-decoration: none;
@@ -838,6 +834,10 @@
 .projectLink:hover .projectLinkLabel::after,
 .projectLink:focus-visible .projectLinkLabel::after {
   transform: translateX(2px);
+}
+
+:global([data-theme="light"]) .projectLink {
+  color: color-mix(in srgb, var(--accent) 58%, var(--color-text) 42%);
 }
 
 .closingCta {
