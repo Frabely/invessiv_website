@@ -9,7 +9,7 @@
     "page": {
       "title": "Datenschutzerklärung",
       "lead": "Diese Datenschutzerklärung informiert über die Verarbeitung personenbezogener Daten im Zusammenhang mit dieser Webseite und den angebotenen Kontaktwegen.",
-      "updatedAt": "Zuletzt geändert: 26. März 2026.",
+      "updatedAt": "Zuletzt geändert: 8. April 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Start",
       "tocLabel": "Inhalt",
@@ -47,7 +47,7 @@
       },
       "cookies": {
         "title": "7. Cookies und ähnliche Technologien",
-        "body": "Wir setzen derzeit keine zustimmungspflichtigen Tracking- oder Marketing-Cookies ein. Die Webseite nutzt jedoch technisch erforderliche Browser-Speichermechanismen: localStorage zur Speicherung der gewählten Sprache und sessionStorage zur temporären Wiederherstellung der Scroll-Position bei Sprachwechseln. Diese Speicherungen dienen ausschließlich der Funktionsfähigkeit und Nutzerführung der Webseite. Soweit hierbei Informationen auf deinem Endgerät gespeichert oder ausgelesen werden, geschieht dies nur für technisch erforderliche Zwecke; die anschließende Verarbeitung personenbezogener Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO."
+        "body": "Wir setzen derzeit keine zustimmungspflichtigen Tracking- oder Marketing-Cookies ein. Die Webseite nutzt jedoch technisch erforderliche Speichermechanismen, um die von dir gewünschte Darstellung und Bedienung bereitzustellen. Dazu gehören localStorage zur Speicherung der gewählten Sprache, sessionStorage zur temporären Wiederherstellung der Scroll-Position bei Sprachwechseln sowie ein First-Party-Cookie mit dem Namen \"invessiv-theme\", das die von dir gewählte Theme-Präferenz (Dark oder Light) für bis zu 12 Monate speichert. Diese Speicherungen dienen ausschließlich der Funktionsfähigkeit, Nutzerführung und konsistenten Darstellung der Webseite. Soweit hierbei Informationen auf deinem Endgerät gespeichert oder ausgelesen werden, geschieht dies nur für technisch erforderliche Zwecke. Rechtsgrundlage für die anschließende Verarbeitung personenbezogener Daten ist Art. 6 Abs. 1 lit. f DSGVO. Ein Cookie-Banner ist allein wegen dieser technisch erforderlichen Speicherungen derzeit nicht vorgesehen."
       },
       "recipients": {
         "title": "8. Empfänger und Dienstleister",

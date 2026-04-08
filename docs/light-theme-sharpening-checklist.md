@@ -461,29 +461,35 @@ Für jeden Schritt dokumentieren:
 - jede Marketing-Section geprüft und dokumentiert
 - Projects-Route im Light Theme vollständig nachgezogen
 
-## Schritt 15: Legal-Check f�r Theme-Cookie
+## Schritt 15: Legal-Check für Theme-Cookie [Abgeschlossen]
 
 ### Ziel
 
-Pr�fen, ob das Lesen/Setzen des Theme-Cookies in der Datenschutzerkl�rung erg�nzt werden muss und ob dadurch ein Cookie-Banner erforderlich ist.
+Prüfen, ob das Lesen/Setzen des Theme-Cookies in der Datenschutzerklärung ergänzt werden muss und ob dadurch ein Cookie-Banner erforderlich ist.
 
-### Pr�fen
+### Prüfen
 
-- Datenschutzerkl�rung bez�glich Theme-Switch und Theme-Cookie
-- Rechtsgrundlage f�r das Speichern der Theme-Pr�ferenz
+- Datenschutzerklärung bezüglich Theme-Switch und Theme-Cookie
+- Rechtsgrundlage für das Speichern der Theme-Präferenz
 - Abgrenzung zwischen technisch erforderlich und einwilligungspflichtig
-- Bedarf f�r Cookie-Banner oder Preference-Hinweis
+- Bedarf für Cookie-Banner oder Preference-Hinweis
 
 ### Abnahme
 
 - Entscheidung dokumentiert
-- Datenschutzerkl�rung bei Bedarf erweitert
-- klar, ob f�r das Theme-Cookie ein Cookie-Banner n�tig ist oder nicht
+- Datenschutzerklärung bei Bedarf erweitert
+- klar, ob für das Theme-Cookie ein Cookie-Banner nötig ist oder nicht
 
-### Aktuelle Einsch�tzung
+### Entscheidung
 
-- Theme-Cookie aktuell als Pr�ferenz-Cookie einordnen
-- Datenschutzerkl�rung sehr wahrscheinlich kurz um Theme-Switch bzw. Theme-Cookie erg�nzen
+- Theme-Cookie (`invessiv-theme`) wird als technisch erforderliches Präferenz-Cookie eingeordnet, soweit es ausschließlich die vom Nutzer gewünschte Darstellung der Webseite speichert.
+- Datenschutzerklärung wurde um Theme-Cookie, Zweck, Speicherdauer und Banner-Einordnung ergänzt.
+- Ein Cookie-Banner ist allein wegen dieses Cookies aktuell nicht vorgesehen.
+
+### Vorherige Einschätzung
+
+- Theme-Cookie aktuell als Präferenz-Cookie einordnen
+- Datenschutzerklärung sehr wahrscheinlich kurz um Theme-Switch bzw. Theme-Cookie ergänzen
 - Cookie-Banner nur wegen dieses Cookies eher wahrscheinlich nicht
 - rechtlich sensibler Punkt: das Cookie wird nicht nur nach aktivem Switch-Klick, sondern bereits im laufenden Seitengebrauch gesetzt bzw. fortgeschrieben
-- finalen Legal-Check und konkrete Datenschutz-Anpassung bewusst als letzten Schritt vor Go-Live durchf�hren
+- finalen Legal-Check und konkrete Datenschutz-Anpassung bewusst als letzten Schritt vor Go-Live durchführen

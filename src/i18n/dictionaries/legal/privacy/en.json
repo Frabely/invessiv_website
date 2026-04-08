@@ -9,7 +9,7 @@
     "page": {
       "title": "Privacy Policy",
       "lead": "This Privacy Policy explains how personal data is processed in connection with this website and its available contact channels.",
-      "updatedAt": "Last updated: March 26, 2026.",
+      "updatedAt": "Last updated: April 8, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents",
@@ -47,7 +47,7 @@
       },
       "cookies": {
         "title": "7. Cookies and similar technologies",
-        "body": "We currently do not use consent-based tracking or marketing cookies. However, the website uses technically necessary browser storage mechanisms: localStorage to store the selected language and sessionStorage to temporarily restore the scroll position during language changes. These storage operations are used exclusively for the functionality and user guidance of the website. Where information is stored on or read from your device in this context, this is done only for technically necessary purposes; any subsequent processing of personal data is based on Art. 6 para. 1 lit. f GDPR."
+        "body": "We currently do not use consent-based tracking or marketing cookies. However, the website uses technically necessary storage mechanisms to provide the display and interaction settings you request. This includes localStorage to store the selected language, sessionStorage to temporarily restore scroll position during language changes, and a first-party cookie named \"invessiv-theme\" that stores your selected theme preference (dark or light) for up to 12 months. These storage operations are used exclusively for the functionality, user guidance, and consistent presentation of the website. Where information is stored on or read from your device in this context, this is done only for technically necessary purposes. The legal basis for any subsequent processing of personal data is Art. 6 para. 1 lit. f GDPR. A cookie banner is currently not used solely because of these technically necessary storage operations."
       },
       "recipients": {
         "title": "8. Recipients and service providers",

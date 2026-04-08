@@ -103,7 +103,7 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" }),
     ).toBeTruthy();
-    expect(screen.getByText("Zuletzt geändert: 26. März 2026.")).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 8. April 2026.")).toBeTruthy();
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.getByText("Inhaber: Moritz Hecht")).toBeTruthy();
     expect(screen.queryByText("Moritz Hecht – Invessiv")).toBeNull();
@@ -135,6 +135,7 @@ describe("PrivacyPage", () => {
         /grundsätzlich nach 24 Monaten gelöscht oder anonymisiert/,
       ),
     ).toBeTruthy();
+    expect(screen.getByText(/invessiv-theme/)).toBeTruthy();
   });
 
   it("calls notFound for unsupported locales", async () => {
