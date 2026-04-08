@@ -34,7 +34,7 @@ Es geht ausschließlich um:
 6. Projects-Route separat als eigene Light-Review behandeln.
 7. Abschluss-Audit auf verbleibende Light-Lücken.
 
-## Schritt 1: Theme-Bootstrap und Persistenz
+## Schritt 1: Theme-Bootstrap und Persistenz [Abgeschlossen]
 
 ### Ziel
 
@@ -63,7 +63,7 @@ Light Theme darf bei Reload oder Seitenwechsel nicht kurz als Dark erscheinen.
 - Light bleibt beim Seitenwechsel stabil
 - Dark-Verhalten bleibt unverändert
 
-## Schritt 2: Theme-Switch modernisieren
+## Schritt 2: Theme-Switch modernisieren [Abgeschlossen]
 
 ### Ziel
 
@@ -93,7 +93,7 @@ Der vorhandene Switch bleibt funktional gleich, wirkt aber visuell aktueller und
 - Fokus und Tastaturbedienung bleiben sauber
 - Mobile und Desktop verhalten sich konsistent
 
-## Schritt 3: Globale Light-Tokens schärfen
+## Schritt 3: Globale Light-Tokens schärfen [Abgeschlossen]
 
 ### Ziel
 
@@ -125,7 +125,7 @@ Light Theme soll klarer, kontrastreicher und präziser wirken, ohne das Dark The
 - Komponenten brauchen weniger Light-Sonderfälle
 - Dark-Tokens bleiben unverändert
 
-## Schritt 4: Header / Menu
+## Schritt 4: Header / Menu [Abgeschlossen]
 
 ### Ziel
 
@@ -157,7 +157,7 @@ Header und Navigation im Light Theme müssen präzise, kontrastklar und nicht au
 - Scroll-Zustand ist im Light Theme präzise und hochwertig
 - Mobile Menu wirkt nicht wie Dark-UI mit hellem Overlay
 
-## Schritt 5: Hero
+## Schritt 5: Hero [Abgeschlossen]
 
 ### Ziel
 
@@ -190,7 +190,7 @@ Hero bleibt strukturell gleich, die Überschriftenanimation bleibt erhalten, abe
 - Hero wirkt im Light Theme klar und hochwertig
 - Dark Hero bleibt exakt wie bisher
 
-## Schritt 6: Included Section
+## Schritt 6: Included Section [Abgeschlossen]
 
 ### Ziel
 
@@ -217,7 +217,7 @@ Cards und Content im Light Theme müssen klar getrennt und scharf lesbar sein.
 - Text ist sofort lesbar
 - keine unnötige Unschärfe mehr
 
-## Schritt 7: Proof Section
+## Schritt 7: Proof Section [Abgeschlossen]
 
 ### Ziel
 
@@ -244,7 +244,7 @@ Proof-Elemente im Light Theme sollen hochwertig und ruhig wirken, nicht milchig 
 - Karten lesen sich ohne Anstrengung
 - keine verwaschenen Flächen
 
-## Schritt 8: Services Section
+## Schritt 8: Services Section [Abgeschlossen]
 
 ### Ziel
 
@@ -272,7 +272,7 @@ Service Cards und deren Hierarchie müssen im Light Theme sauber und kontrollier
 - Recommended- und Active-States sind auf einen Blick verständlich
 - keine Stellen mehr, die wie unfertige Dark-zu-Light-Portierungen aussehen
 
-## Schritt 9: Process Section
+## Schritt 9: Process Section [Abgeschlossen]
 
 ### Ziel
 
@@ -300,7 +300,7 @@ Die Prozessdarstellung soll im Light Theme dieselbe Klarheit haben wie im Dark T
 - Light Theme wirkt strukturiert, nicht blass
 - CTA-Endpunkt ist klar erkennbar
 
-## Schritt 10: FAQ / Q&A
+## Schritt 10: FAQ / Q&A [Abgeschlossen]
 
 ### Ziel
 
@@ -326,7 +326,7 @@ FAQ im Light Theme soll ruhig und präzise sein.
 - Expanded State ist klar
 - keine blassen Textflächen
 
-## Schritt 11: Contact Section
+## Schritt 11: Contact Section [Abgeschlossen]
 
 ### Ziel
 
@@ -357,7 +357,7 @@ Contact muss im Light Theme besonders vertrauenswürdig und klar wirken.
 - Eingabefelder haben klare Zustände
 - keine Light-Stellen mehr mit zu schwacher Trennung
 
-## Schritt 12: Footer
+## Schritt 12: Footer [Abgeschlossen]
 
 ### Ziel
 
