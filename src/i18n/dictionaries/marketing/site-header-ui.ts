@@ -12,9 +12,11 @@ export type SiteHeaderUiContent = {
   mobileMenuLabel: string;
   navAriaLabel: string;
   skipLinkLabel: string;
-  themeToggleLabel: {
-    dark: string;
-    light: string;
+  themeSwitch: {
+    actionLabel: {
+      dark: string;
+      light: string;
+    };
   };
 };
 

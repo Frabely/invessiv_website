@@ -228,6 +228,10 @@
   transform: translateX(2px);
 }
 
+:global([data-theme="light"]) .footerTransitionLink {
+  color: color-mix(in srgb, var(--accent) 58%, var(--color-text) 42%);
+}
+
 @media (min-width: 760px) {
   .header {
     grid-template-columns: minmax(0, 1fr);

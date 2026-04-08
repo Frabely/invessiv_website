@@ -41,18 +41,18 @@
 }
 
 [data-theme="light"] {
-  --color-bg: #f5f7fb;
+  --color-bg: #eef4fb;
   --color-surface-1: #ffffff;
-  --color-surface-2: #eef2f8;
-  --color-text: #1a2436;
-  --color-text-muted: #506282;
-  --color-border: rgba(54, 74, 107, 0.2);
-  --color-accent-warm: #d88433;
-  --color-cta: #2f66c8;
-  --color-cta-hover: #4078da;
-  --color-focus: rgba(64, 120, 218, 0.58);
-  --color-cta-active: #2555af;
-  --color-on-cta: #f7faff;
+  --color-surface-2: #e2ebf6;
+  --color-text: #162033;
+  --color-text-muted: #445775;
+  --color-border: rgba(42, 64, 102, 0.24);
+  --color-accent-warm: #cb7728;
+  --color-cta: #285fc1;
+  --color-cta-hover: #346ed4;
+  --color-focus: rgba(52, 110, 212, 0.48);
+  --color-cta-active: #1f50a8;
+  --color-on-cta: #f5f8ff;
   --bg: var(--color-bg);
   --surface: var(--color-surface-1);
   --text: var(--color-text);
@@ -121,35 +121,35 @@ section[id] {
   background:
     radial-gradient(
         1220px 720px at 8% -2%,
-        rgba(216, 132, 54, 0.15),
-        transparent 62%
+        rgba(205, 126, 49, 0.11),
+        transparent 58%
       )
       fixed,
     radial-gradient(
         940px 620px at 94% 8%,
-        rgba(120, 152, 202, 0.1),
-        transparent 64%
+        rgba(86, 129, 203, 0.11),
+        transparent 60%
       )
       fixed,
     radial-gradient(
         980px 620px at 50% 104%,
-        rgba(226, 146, 76, 0.1),
-        transparent 66%
+        rgba(213, 137, 67, 0.08),
+        transparent 62%
       )
       fixed,
     radial-gradient(
         880px 520px at 86% 84%,
-        rgba(231, 158, 93, 0.07),
-        transparent 66%
+        rgba(218, 144, 84, 0.05),
+        transparent 62%
       )
       fixed,
     radial-gradient(
         840px 480px at 18% 82%,
-        rgba(224, 149, 83, 0.04),
-        transparent 66%
+        rgba(194, 122, 58, 0.03),
+        transparent 62%
       )
       fixed,
-    linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) fixed #f5f7fb;
+    linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) fixed #eef4fb;
 }
 
 a {
@@ -224,38 +224,6 @@ main {
   z-index: -1;
 }
 
-.page-aurora {
-  position: absolute;
-  filter: blur(74px);
-  opacity: 0.18;
-}
-
-.page-aurora--left {
-  width: 48vw;
-  height: 48vw;
-  left: -16vw;
-  top: 20vh;
-  background: radial-gradient(
-    circle,
-    rgba(231, 154, 73, 0.28) 0%,
-    transparent 72%
-  );
-  animation: drift-a 16s ease-in-out infinite alternate;
-}
-
-.page-aurora--right {
-  width: 52vw;
-  height: 52vw;
-  right: -18vw;
-  top: 58vh;
-  background: radial-gradient(
-    circle,
-    rgba(216, 132, 54, 0.22) 0%,
-    transparent 74%
-  );
-  animation: drift-b 18s ease-in-out infinite alternate;
-}
-
 .page-noise {
   position: absolute;
   inset: 0;
@@ -265,6 +233,10 @@ main {
       transparent 0.6px
     )
     0 0 / 2px 2px;
+}
+
+[data-theme="light"] .page-noise {
+  opacity: 0.004;
 }
 
 @media (max-width: 900px) {
@@ -316,68 +288,36 @@ main {
     background:
       radial-gradient(
           1220px 720px at 8% -2%,
-          rgba(216, 132, 54, 0.15),
-          transparent 62%
+          rgba(205, 126, 49, 0.11),
+          transparent 58%
         )
         scroll,
       radial-gradient(
           940px 620px at 94% 8%,
-          rgba(120, 152, 202, 0.1),
-          transparent 64%
+          rgba(86, 129, 203, 0.11),
+          transparent 60%
         )
         scroll,
       radial-gradient(
           980px 620px at 50% 104%,
-          rgba(226, 146, 76, 0.1),
-          transparent 66%
+          rgba(213, 137, 67, 0.08),
+          transparent 62%
         )
         scroll,
       radial-gradient(
           880px 520px at 86% 84%,
-          rgba(231, 158, 93, 0.07),
-          transparent 66%
+          rgba(218, 144, 84, 0.05),
+          transparent 62%
         )
         scroll,
       radial-gradient(
           840px 480px at 18% 82%,
-          rgba(224, 149, 83, 0.04),
-          transparent 66%
+          rgba(194, 122, 58, 0.03),
+          transparent 62%
         )
         scroll,
-      linear-gradient(180deg, #f5f7fb 0%, #edf2f9 50%, #f7f3ef 100%) scroll
-        #f5f7fb;
-  }
-
-  .page-aurora {
-    filter: blur(60px);
-    opacity: 0.22;
-  }
-}
-
-/* Shared page motion */
-@keyframes drift-a {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(8vw, 6vw);
-  }
-}
-
-@keyframes drift-b {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(-8vw, 7vw);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-aurora,
-  .page-aurora--left,
-  .page-aurora--right {
-    animation: none !important;
+      linear-gradient(180deg, #eef4fb 0%, #e2ebf6 48%, #f7f1e9 100%) scroll
+        #eef4fb;
   }
 }
 

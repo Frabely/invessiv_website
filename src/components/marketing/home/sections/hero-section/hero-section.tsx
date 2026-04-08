@@ -2,6 +2,7 @@ import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import styles from "./hero-section.module.css";
@@ -29,27 +30,15 @@ export function HeroSection({
 }: HeroSectionProps) {
   return (
     <section className={`${styles.root} hero`} id="hero">
-      <div aria-hidden="true" className={heroVisualStyles.vignette} />
-      <div aria-hidden="true" className={heroVisualStyles.gridOverlay} />
-      <div
-        aria-hidden="true"
-        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowText}`}
-      />
-      <div
-        aria-hidden="true"
-        className={`${heroVisualStyles.glow} ${heroVisualStyles.glowVisual}`}
-      />
-      <div className={heroVisualStyles.noise} />
-      <div
-        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraLeft}`}
-      />
-      <div
-        className={`${heroVisualStyles.aurora} ${heroVisualStyles.auroraRight}`}
-      />
+      <div aria-hidden="true" className={styles.backgroundLayers}>
+        <div className={heroVisualStyles.vignette} />
+        <div className={heroVisualStyles.gridOverlay} />
+        <div className={heroVisualStyles.noise} />
+      </div>
 
       <div className={styles.grid}>
         <div className={styles.content}>
-          <p className={styles.tag}>{heroTag}</p>
+          <EyebrowPill className={styles.tag}>{heroTag}</EyebrowPill>
           <h1 className={styles.title}>
             <span className={styles.titleGradient}>{title}</span>
           </h1>

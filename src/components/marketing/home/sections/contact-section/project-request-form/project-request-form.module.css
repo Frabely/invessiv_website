@@ -22,7 +22,8 @@
   align-items: start;
   gap: 10px;
   padding-bottom: 12px;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 66%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 66%, transparent);
 }
 
 .headCloseOnly {
@@ -186,7 +187,8 @@
   width: 100%;
   margin: 0 0 8px;
   padding: 0 0 10px;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 68%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
   font-size: 0.94rem;
   font-weight: 700;
@@ -264,11 +266,6 @@
   min-height: 44px;
   padding-top: 9px;
   padding-bottom: 9px;
-  background-color: color-mix(
-    in srgb,
-    var(--color-surface-1) 88%,
-    var(--color-surface-2) 12%
-  );
 }
 
 .fieldOffer select[data-empty="true"] {

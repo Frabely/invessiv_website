@@ -139,7 +139,6 @@
     0 0 0 1px color-mix(in srgb, var(--color-accent-warm) 10%, transparent),
     0 0 12px color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
     0 0 20px color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
-  filter: blur(0.2px);
 }
 
 .bridge::after {
@@ -154,7 +153,6 @@
   );
   box-shadow: 0 0 8px
     color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
-  filter: blur(0.15px);
 }
 
 [data-theme="light"] .card {

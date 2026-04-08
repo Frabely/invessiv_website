@@ -167,6 +167,55 @@
   transform: translateX(2px);
 }
 
+[data-theme="light"] .card {
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 96%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 44%, var(--color-surface-1) 56%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 82%, transparent),
+    0 12px 26px rgba(36, 55, 90, 0.1);
+}
+
+[data-theme="light"] .card::before {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #ffffff 72%, transparent),
+    transparent 38%,
+    color-mix(in srgb, var(--color-cta) 5%, transparent) 100%
+  );
+}
+
+[data-theme="light"] .profileImage {
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 42%, transparent);
+}
+
+[data-theme="light"] .profileFallback {
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--color-surface-1) 88%);
+  color: color-mix(in srgb, var(--accent) 72%, var(--color-text) 28%);
+}
+
+[data-theme="light"] .context,
+[data-theme="light"] .source {
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
+}
+
+[data-theme="light"] .quote {
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
+}
+
+[data-theme="light"] .footer {
+  border-top-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+}
+
+[data-theme="light"] .sourceLink {
+  color: color-mix(in srgb, var(--color-cta) 74%, var(--accent) 26%);
+}
+
 @media (max-width: 759px) {
   .card {
     gap: 15px;

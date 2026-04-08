@@ -46,5 +46,3 @@ export const PRIMARY_NAVIGATION: NavigationItem[] =
   PRIMARY_NAVIGATION_SECTION_IDS.map((sectionId) => ({
     href: getSectionHref(sectionId),
   }));
-
-export const ENABLE_THEME_SWITCH = false;

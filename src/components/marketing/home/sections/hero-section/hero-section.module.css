@@ -9,6 +9,29 @@
   isolation: isolate;
 }
 
+.backgroundLayers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 74%,
+    rgba(0, 0, 0, 0.82) 84%,
+    rgba(0, 0, 0, 0.38) 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 74%,
+    rgba(0, 0, 0, 0.82) 84%,
+    rgba(0, 0, 0, 0.38) 93%,
+    transparent 100%
+  );
+}
+
 .grid {
   position: relative;
   z-index: 2;
@@ -29,44 +52,6 @@
 
 .tag {
   margin: 0 0 clamp(1.25rem, 2.4vw, 1.75rem);
-  width: fit-content;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 0 12px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 46%, transparent);
-  border-radius: 999px;
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent),
-    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
-  );
-  color: color-mix(
-    in srgb,
-    var(--color-text) 86%,
-    var(--color-accent-warm) 14%
-  );
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.tag::before {
-  content: "";
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--color-accent-warm) 90%, #fff 10%),
-    color-mix(in srgb, var(--color-cta) 78%, #000 22%)
-  );
-  box-shadow: 0 0 0 4px
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
-  flex: 0 0 auto;
 }
 
 .title {
@@ -92,6 +77,7 @@
   background-size: 180% 180%;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   white-space: pre-line;
   filter: drop-shadow(0 5px 16px rgba(8, 12, 24, 0.22));
@@ -137,9 +123,32 @@
   margin-top: 24px;
 }
 
+[data-theme="light"] .title {
+  text-shadow: none;
+}
+
+[data-theme="light"] .titleGradient {
+  display: inline-block;
+  background: linear-gradient(
+    118deg,
+    #8b4b17 0%,
+    #a95b1f 24%,
+    #1d4897 58%,
+    #3464bb 100%
+  );
+  background-size: 180% 180%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: none;
+  animation: titleFlow 5s ease-in-out infinite alternate;
+}
+
 @keyframes titleFlow {
   0% {
-    background-position: 0% 45%;
+    background-position: 0 45%;
   }
   100% {
     background-position: 100% 55%;

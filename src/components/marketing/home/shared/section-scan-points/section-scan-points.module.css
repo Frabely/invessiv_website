@@ -39,6 +39,18 @@
   flex: 0 0 auto;
 }
 
+[data-theme="light"] .item {
+  border-color: color-mix(in srgb, var(--color-border) 88%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.06);
+}
+
+[data-theme="light"] .item::before {
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-accent-warm) 16%, transparent);
+}
+
 @media (max-width: 640px) {
   .list {
     margin-bottom: 14px;

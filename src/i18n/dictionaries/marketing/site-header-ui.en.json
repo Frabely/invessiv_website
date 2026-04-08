@@ -14,8 +14,10 @@
   "mobileMenuLabel": "Menu",
   "navAriaLabel": "Primary navigation",
   "skipLinkLabel": "Skip to main content",
-  "themeToggleLabel": {
-    "dark": "Light",
-    "light": "Dark"
+  "themeSwitch": {
+    "actionLabel": {
+      "dark": "Switch to light",
+      "light": "Switch to dark"
+    }
   }
 }

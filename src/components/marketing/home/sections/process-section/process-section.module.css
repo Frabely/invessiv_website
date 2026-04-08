@@ -389,6 +389,48 @@
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
 }
 
+:global([data-theme="light"]) .journeyGradientStart {
+  stop-color: color-mix(in srgb, var(--color-accent-warm) 72%, #ffffff 28%);
+}
+
+:global([data-theme="light"]) .journeyGradientEnd {
+  stop-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 28%);
+}
+
+:global([data-theme="light"]) .journeyProgress {
+  filter: drop-shadow(
+      0 0 10px color-mix(in srgb, var(--color-accent-warm) 24%, transparent)
+    )
+    drop-shadow(0 0 12px color-mix(in srgb, var(--color-cta) 22%, transparent));
+}
+
+:global([data-theme="light"]) .pathPoint {
+  border-color: rgba(255, 255, 255, 0.96);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%),
+    color-mix(in srgb, var(--color-cta) 34%, #ffffff 66%)
+  );
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--color-accent-warm) 16%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-accent-warm) 24%, transparent);
+}
+
+:global([data-theme="light"]) .pathPointStart {
+  background: color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%);
+}
+
+:global([data-theme="light"]) .pathPointLeader {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
+    color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
+  );
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
+    0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
+}
+
 @keyframes processLeaderPulse {
   0% {
     transform: translate(
