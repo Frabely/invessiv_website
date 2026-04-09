@@ -1,9 +1,9 @@
 # Upgrade Contact Form
 
-Status: step 4 completed  
+Status: step 5 completed  
 Last updated: 2026-04-09
 
-Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handler und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
+Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handlern und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
 
 ## Zielbild
 
@@ -18,19 +18,19 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
   - sichtbare Inline-Fehler
 - Ein Frontend-Service verarbeitet den Submit und erhaelt ein klares DTO.
 - Eine oeffentliche REST-Route nimmt Requests entgegen.
-- Die Route delegiert intern an getrennte Backend-Commands / Handler.
-- Die Backend-Handler validieren fachlich mit `zod`.
+- Die Route delegiert intern an getrennte Backend-Command-Handler.
+- Die Backend-Command-Handler validieren fachlich mit `zod`.
 - Persistenz und Mailversand werden unterhalb des Handlers sauber getrennt organisiert.
 - Bestehende Shared-UI-Komponenten duerfen wiederverwendet oder vereinfacht werden, wenn sie zum Zielbild passen.
 
 ## Architekturfluss
 
-`UI + leichte Validation -> Frontend Service -> REST API Route -> Backend Command Handler + Validation -> Repository / DB`
+`UI + leichte Validation -> Frontend Service -> REST API Route -> Backend Command-Handler + Validation -> Repository / DB`
 
 ## Verbindliche Architekturentscheidungen
 
 - Transport: oeffentliche REST-Route
-- API-Schnitt: ein oeffentlicher Endpoint, intern Dispatch auf zwei Commands
+- API-Schnitt: ein oeffentlicher Endpoint, intern Dispatch auf zwei Command-Handler
 - DTO-Schnitt:
   - `ProjectRequestDto`
   - `QuickContactDto`
@@ -79,13 +79,11 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 
 ### Server / Contact Domain
 
-- `src/server/contact/commands/`
 - `src/server/contact/handlers/`
 - `src/server/contact/repositories/`
 - `src/server/contact/services/`
 - Geplante Verantwortlichkeiten:
-  - Commands definieren den auszufuehrenden Use Case
-  - Handler validieren DTOs fachlich und orchestrieren den Ablauf
+  - Command-Handler validieren DTOs fachlich und orchestrieren den Ablauf
   - Repositories kapseln DB-Zugriffe
   - Services kapseln Mail, Anti-Abuse und technische Nebendienste
 
@@ -166,14 +164,14 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 ### Schritt 4 [Abgeschlossen]
 
 - Oeffentliche Contact-Route auf Adapter-Rolle zuschneiden
-- Request-Typ erkennen und an den passenden Command dispatchen
+- Request-Typ erkennen und an den passenden Command-Handler dispatchen
 
-### Schritt 5
+### Schritt 5 [Abgeschlossen]
 
-- Zwei getrennte Backend-Commands / Handler definieren:
+- Zwei getrennte Backend-Command-Handler definieren:
   - Projektanfrage
   - Kurze E-Mail
-- Fachliche Validation und Orchestrierung in die Handler legen
+- Fachliche Validation und Orchestrierung in die Command-Handler legen
 
 ### Schritt 6
 
@@ -244,12 +242,9 @@ src/
 
   server/
     contact/
-      commands/
-        submit-project-request.command.ts
-        submit-quick-contact.command.ts
       handlers/
-        submit-project-request.handler.ts
-        submit-quick-contact.handler.ts
+        submit-project-request.command-handler.ts
+        submit-quick-contact.command-handler.ts
       repositories/
         contact-lead.repository.ts
       services/
@@ -268,8 +263,6 @@ src/
   - Contracts, Discriminants, Option-Keys, gemeinsam genutzte Schemas
 - `app/api/public/contact/route.ts`
   - reiner HTTP-Adapter und Dispatch
-- `server/contact/commands`
-  - Use-Case-Eingaben pro Submit-Typ
 - `server/contact/handlers`
   - fachliche Zod-Validierung, Orchestrierung, Persistenz- und Mail-Aufruf
 - `server/contact/repositories`
@@ -304,7 +297,7 @@ src/
 - `src/app/api/public/contact/route.ts`
   - auf HTTP-Adapter und Dispatch reduzieren
 - `src/server/services/contact/submit-contact-inquiry.ts`
-  - in Commands, Handler, Repository-Aufrufe und Mail-Orchestrierung zerlegen
+  - in Handler, Repository-Aufrufe und Mail-Orchestrierung zerlegen
 - `src/server/services/contact/contact-lead-metadata.ts`
   - in neue `server/contact/services`-Struktur verschieben
 
@@ -379,8 +372,23 @@ src/
 ## Schritt 4 Entscheidungen
 
 - Der Request-Discriminant wird bereits in den Client-DTOs mitgefuehrt, damit Route und Client dieselbe API-Sprache sprechen.
-- Die tiefergehende Aufteilung in echte Commands und Handler folgt weiterhin erst in Schritt 5; Schritt 4 fuehrt nur den sauberen API-Dispatch ein.
+- Die tiefergehende Aufteilung in echte Handler folgt weiterhin erst in Schritt 5; Schritt 4 fuehrt nur den sauberen API-Dispatch ein.
 - Der neue `quick_contact`-Serverpfad ist bewusst klein gehalten und dient als Uebergangsadapter, bis die Backend-Domaene im naechsten Schritt sauber getrennt wird.
+
+## Schritt 5 Ergebnis: Command-Handler-Layer
+
+- Unter `src/server/contact/handlers/` existieren jetzt getrennte Command-Handler fuer:
+  - Projektanfrage
+  - Kurze E-Mail
+- Die Command-Handler uebernehmen jetzt die DTO-nahe Backend-Validation mit `zod`.
+- Die Route delegiert nicht mehr direkt an die alten Services, sondern an die passenden Command-Handler.
+- Die bestehenden Services unter `src/server/services/contact/` bleiben vorerst als darunterliegende Legacy-Orchestrierung erhalten und werden erst in Schritt 6 weiter aufgeteilt.
+
+## Schritt 5 Entscheidungen
+
+- Der neue Command-Handler-Layer validiert bewusst noch gegen die bestehenden Contact-Schemas, statt bereits eine zweite parallele Server-Validation-Struktur aufzubauen.
+- Die alten `submit-*`-Services bleiben als technische Ausfuehrungsschicht zunaechst erhalten, damit Schritt 5 die Verantwortlichkeiten trennt, ohne Schritt 6 vorweg halb umzubauen.
+- Validierungsfehler kommen jetzt aus den Command-Handlern zur Route zurueck; die Route selbst bleibt dadurch wieder naeh an HTTP-Parsing, Rate-Limit und Response-Mapping.
 
 ## Testplan
 
@@ -403,8 +411,8 @@ src/
   - invalid content-type
   - invalid json
   - payload too large
-  - Dispatch zum richtigen Command
-- Backend-Handler:
+  - Dispatch zum richtigen Command-Handler
+- Backend-Command-Handler:
   - `zod`-Validation
   - Cross-Field-Regeln
   - Persistenzaufrufe
@@ -431,7 +439,7 @@ Vor der eigentlichen Neuimplementierung sollen etablierte Patterns beruecksichti
 Diese Punkte sollen dokumentiert, aber nicht in diesem Neustart-Plan umgesetzt werden:
 
 - bestehende Contact-Ordnerstruktur zwischen `features/contact`, `server/services/contact` und Route langfristig bereinigen
-- alte gemischte Services in sauberere Commands / Handler / Repository-Grenzen zerlegen
+- alte gemischte Services in sauberere Handler- / Repository-Grenzen zerlegen
 - Altbestand konsistent in die neue Zielstruktur ueberfuehren, falls ausserhalb des unmittelbaren Form-Neustarts noetig
 
 ## Annahmen

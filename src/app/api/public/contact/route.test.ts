@@ -183,11 +183,14 @@ describe("POST /api/public/contact", () => {
   });
 
   it("returns internal_error when submission orchestration throws unexpectedly", async () => {
-    vi.doMock("@/server/services/contact/submit-contact-inquiry", () => ({
-      submitContactInquiry: vi
-        .fn()
-        .mockRejectedValue(new Error("unexpected_failure")),
-    }));
+    vi.doMock(
+      "@/server/contact/handlers/submit-project-request.command-handler",
+      () => ({
+        submitProjectRequestCommandHandler: vi
+          .fn()
+          .mockRejectedValue(new Error("unexpected_failure")),
+      }),
+    );
 
     const { POST } = await import("./route");
     const response = await POST(

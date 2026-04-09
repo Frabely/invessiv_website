@@ -122,7 +122,6 @@ export const contactSubmitSchema = z.discriminatedUnion("kind", [
 
 export type ProjectRequestSubmitInput = z.infer<typeof projectRequestSchema>;
 export type QuickContactSubmitInput = z.infer<typeof quickContactSchema>;
-export type ContactSubmitInput = z.infer<typeof contactSubmitSchema>;
 
 export function flattenContactFieldErrors(issues: z.core.$ZodIssue[]) {
   return issues.reduce<Record<string, string[]>>((fieldErrors, issue) => {

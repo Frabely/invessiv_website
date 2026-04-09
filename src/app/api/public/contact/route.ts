@@ -1,19 +1,23 @@
 import type { NextRequest } from "next/server";
-import {
-  flattenContactFieldErrors,
-  contactSubmitSchema,
-  type ContactSubmitInput,
-} from "@/features/contact/contact.schema";
+import { z } from "zod";
+import type {
+  ProjectRequestSubmitRequest,
+  QuickContactSubmitRequest,
+} from "@/features/contact/contact.contract";
+import { CONTACT_REQUEST_KINDS } from "@/features/contact/contact-request-kind";
 import {
   createContactErrorResponse,
   createContactSuccessResponse,
   createRequestId,
 } from "@/server/http/api-response";
+import { submitProjectRequestCommandHandler } from "@/server/contact/handlers/submit-project-request.command-handler";
+import { submitQuickContactCommandHandler } from "@/server/contact/handlers/submit-quick-contact.command-handler";
 import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit";
-import { submitContactInquiry } from "@/server/services/contact/submit-contact-inquiry";
-import { submitQuickContactInquiry } from "@/server/services/contact/submit-quick-contact-inquiry";
 
 const MAX_BODY_SIZE = 20_000;
+const contactRequestKindSchema = z.object({
+  kind: z.enum(CONTACT_REQUEST_KINDS),
+});
 
 export const runtime = "nodejs";
 
@@ -35,15 +39,26 @@ function hasPayloadWithinLimit(contentLength: string | null) {
   return Number.isFinite(numericLength) && numericLength <= MAX_BODY_SIZE;
 }
 
-async function dispatchContactSubmit(
-  payload: ContactSubmitInput,
-  requestId: string,
-) {
-  if (payload.kind === "project_request") {
-    return submitContactInquiry(payload, requestId);
+async function dispatchContactSubmit(payload: unknown, requestId: string) {
+  const parsedKind = contactRequestKindSchema.safeParse(payload);
+  if (!parsedKind.success) {
+    return {
+      code: "validation_error" as const,
+      fieldErrors: {
+        kind: ["invalid_request_kind"],
+      },
+      ok: false as const,
+    };
   }
 
-  return submitQuickContactInquiry(payload);
+  if (parsedKind.data.kind === "project_request") {
+    return submitProjectRequestCommandHandler(
+      payload as ProjectRequestSubmitRequest,
+      requestId,
+    );
+  }
+
+  return submitQuickContactCommandHandler(payload as QuickContactSubmitRequest);
 }
 
 export async function POST(request: NextRequest) {
@@ -65,17 +80,6 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse("invalid_json", requestId, 400);
   }
 
-  const parsedPayload = contactSubmitSchema.safeParse(payload);
-  if (!parsedPayload.success) {
-    const fieldErrors = flattenContactFieldErrors(parsedPayload.error.issues);
-    const issueCodes = new Set(Object.values(fieldErrors).flat());
-    const code = issueCodes.has("spam_detected")
-      ? "spam_detected"
-      : "validation_error";
-
-    return createContactErrorResponse(code, requestId, 400, fieldErrors);
-  }
-
   const rateLimitResult = checkContactRateLimit(
     getRateLimitIdentifier(request),
   );
@@ -94,12 +98,20 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const submitResult = await dispatchContactSubmit(
-      parsedPayload.data,
-      requestId,
-    );
+    const submitResult = await dispatchContactSubmit(payload, requestId);
     if (!submitResult.ok) {
-      return createContactErrorResponse(submitResult.code, requestId, 503);
+      const status =
+        submitResult.code === "validation_error" ||
+        submitResult.code === "spam_detected"
+          ? 400
+          : 503;
+
+      return createContactErrorResponse(
+        submitResult.code,
+        requestId,
+        status,
+        submitResult.fieldErrors,
+      );
     }
   } catch {
     return createContactErrorResponse("internal_error", requestId, 500);
