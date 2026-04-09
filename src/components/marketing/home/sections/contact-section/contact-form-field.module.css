@@ -19,6 +19,11 @@
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
   font-size: 0.78rem;
   font-weight: 650;
+  min-height: 1.1rem;
+}
+
+.errorHidden {
+  visibility: hidden;
 }
 
 .control :global(input),

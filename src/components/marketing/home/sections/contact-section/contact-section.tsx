@@ -7,6 +7,7 @@ import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
+import { QuickContactForm } from "@/components/marketing/home/sections/contact-section/quick-contact-form/quick-contact-form";
 import styles from "./contact-section.module.css";
 
 type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
@@ -17,6 +18,7 @@ type ContactForm = NonNullable<LandingSectionCopy["contactForm"]>;
 type ContactSecondaryCta = NonNullable<
   LandingSectionCopy["contactSecondaryCta"]
 >;
+type QuickContactFormCopy = NonNullable<LandingSectionCopy["quickContactForm"]>;
 type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
@@ -25,6 +27,7 @@ type ContactSectionProps = {
   contactDecisionIntro?: string;
   contactForm?: ContactForm;
   contactFormOffers: Array<{ key: string; title: string }>;
+  quickContactForm?: QuickContactFormCopy;
   contactSecondaryCta?: ContactSecondaryCta;
   description: string;
   id: string;
@@ -49,6 +52,7 @@ export function ContactSection({
   contactDecisionIntro,
   contactForm,
   contactFormOffers,
+  quickContactForm,
   contactSecondaryCta,
   description,
   id,
@@ -97,7 +101,7 @@ export function ContactSection({
     if (channel.mode) {
       return channel.mode;
     }
-    return channel.href.startsWith("tel:") ? "call" : "email";
+    return channel.href.startsWith("mailto:") ? "email" : "call";
   };
 
   const isExternalLink = (href: string) => /^https?:\/\//i.test(href);
@@ -339,94 +343,102 @@ export function ContactSection({
                   ) : null}
 
                   {entry.kind === "channel" && entry.channel ? (
-                    <div className={styles.channelPanel}>
-                      <div className={styles.channelPanelHead}>
-                        <h4 className={styles.entryPanelTitle}>
-                          {entry.label}
-                        </h4>
-                        {entry.description ? (
-                          <p className={styles.entryPanelDescription}>
-                            {entry.description}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      {channelMode === "email" ? (
-                        <div className={styles.channelEmailCard}>
-                          <div className={styles.channelMeta}>
-                            <p className={styles.channelMetaLabel}>
-                              {entry.channel.metaLabel ?? "Kontakt"}
+                    channelMode === "email" && quickContactForm ? (
+                      <QuickContactForm
+                        channel={entry.channel}
+                        formCopy={quickContactForm}
+                        privacyHref={privacyHref}
+                      />
+                    ) : (
+                      <div className={styles.channelPanel}>
+                        <div className={styles.channelPanelHead}>
+                          <h4 className={styles.entryPanelTitle}>
+                            {entry.label}
+                          </h4>
+                          {entry.description ? (
+                            <p className={styles.entryPanelDescription}>
+                              {entry.description}
                             </p>
-                            <p className={styles.channelMetaValue}>
-                              {entry.channel.value}
-                            </p>
-                          </div>
-                          {entry.channel.copyValue ? (
-                            <button
-                              className={styles.channelCopyButton}
-                              onClick={() => copyChannelValue(entry)}
-                              type="button"
-                            >
-                              {copiedEntryId === entry.id
-                                ? (entry.channel.copiedLabel ?? "Copied")
-                                : (entry.channel.copyLabel ?? "Copy")}
-                            </button>
                           ) : null}
                         </div>
-                      ) : (
-                        <div className={styles.channelCallCard}>
-                          <p className={styles.channelMetaLabel}>
-                            {entry.channel.metaLabel ?? "Format"}
-                          </p>
-                          <p className={styles.channelMetaValue}>
-                            {entry.channel.metaValue ?? entry.channel.value}
-                          </p>
-                        </div>
-                      )}
 
-                      {entry.channel.helper ? (
-                        <p className={styles.entryPanelHelper}>
-                          {entry.channel.helper}
-                        </p>
-                      ) : null}
+                        {channelMode === "email" ? (
+                          <div className={styles.channelEmailCard}>
+                            <div className={styles.channelMeta}>
+                              <p className={styles.channelMetaLabel}>
+                                {entry.channel.metaLabel ?? "Kontakt"}
+                              </p>
+                              <p className={styles.channelMetaValue}>
+                                {entry.channel.value}
+                              </p>
+                            </div>
+                            {entry.channel.copyValue ? (
+                              <button
+                                className={styles.channelCopyButton}
+                                onClick={() => copyChannelValue(entry)}
+                                type="button"
+                              >
+                                {copiedEntryId === entry.id
+                                  ? (entry.channel.copiedLabel ?? "Copied")
+                                  : (entry.channel.copyLabel ?? "Copy")}
+                              </button>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <div className={styles.channelCallCard}>
+                            <p className={styles.channelMetaLabel}>
+                              {entry.channel.metaLabel ?? "Format"}
+                            </p>
+                            <p className={styles.channelMetaValue}>
+                              {entry.channel.metaValue ?? entry.channel.value}
+                            </p>
+                          </div>
+                        )}
 
-                      {entry.channel.detailPoints?.length ? (
-                        <ul className={styles.channelDetailList}>
-                          {entry.channel.detailPoints.map((point) => (
-                            <li key={`${entry.id}-${point}`}>{point}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-
-                      <div className={styles.channelFooter}>
-                        {entry.channel.hint ? (
-                          <p className={styles.entryPanelHint}>
-                            {entry.channel.hint}
+                        {entry.channel.helper ? (
+                          <p className={styles.entryPanelHelper}>
+                            {entry.channel.helper}
                           </p>
                         ) : null}
-                        <div className={styles.channelActions}>
-                          <PrimaryCtaLink
-                            className={`${styles.channelPrimaryCta}${channelMode === "email" ? ` ${styles.channelActionShimmer}` : ""}`}
-                            href={entry.channel.href}
-                            rel={
-                              isExternalChannelLink
-                                ? "noopener noreferrer"
-                                : undefined
-                            }
-                            target={
-                              isExternalChannelLink ? "_blank" : undefined
-                            }
-                            data-analytics-event="contact_click"
-                            data-analytics-location="contact"
-                            data-analytics-target={
-                              getContactTarget(entry.channel.href) ?? "email"
-                            }
-                          >
-                            {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
-                          </PrimaryCtaLink>
+
+                        {entry.channel.detailPoints?.length ? (
+                          <ul className={styles.channelDetailList}>
+                            {entry.channel.detailPoints.map((point) => (
+                              <li key={`${entry.id}-${point}`}>{point}</li>
+                            ))}
+                          </ul>
+                        ) : null}
+
+                        <div className={styles.channelFooter}>
+                          {entry.channel.hint ? (
+                            <p className={styles.entryPanelHint}>
+                              {entry.channel.hint}
+                            </p>
+                          ) : null}
+                          <div className={styles.channelActions}>
+                            <PrimaryCtaLink
+                              className={`${styles.channelPrimaryCta}${channelMode === "email" ? ` ${styles.channelActionShimmer}` : ""}`}
+                              href={entry.channel.href}
+                              rel={
+                                isExternalChannelLink
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              }
+                              target={
+                                isExternalChannelLink ? "_blank" : undefined
+                              }
+                              data-analytics-event="contact_click"
+                              data-analytics-location="contact"
+                              data-analytics-target={
+                                getContactTarget(entry.channel.href) ?? "email"
+                              }
+                            >
+                              {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
+                            </PrimaryCtaLink>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )
                   ) : null}
                 </article>
               );

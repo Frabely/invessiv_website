@@ -131,7 +131,7 @@ describe("ProjectRequestForm", () => {
     ).toBeTruthy();
   });
 
-  it("preselects the offer and seeds the project goal when opened from a service CTA", () => {
+  it("preselects the offer and seeds the project goal when opened from a service CTA", async () => {
     render(
       <>
         <a
@@ -167,13 +167,18 @@ describe("ProjectRequestForm", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
-    expect(
-      (screen.getByRole("textbox", { name: "Projekt*" }) as HTMLTextAreaElement)
-        .value,
-    ).toBe("professionell online auftreten");
+    await waitFor(() => {
+      expect(
+        (
+          screen.getByRole("textbox", {
+            name: "Projekt*",
+          }) as HTMLTextAreaElement
+        ).value,
+      ).toBe("professionell online auftreten");
+    });
   });
 
-  it("requires at least one selected page in step two for web projects", () => {
+  it("requires at least one selected page in step two for web projects", async () => {
     renderForm();
 
     fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
@@ -187,6 +192,10 @@ describe("ProjectRequestForm", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
+    await waitFor(() => {
+      expect(screen.getByRole("textbox", { name: /Webseite\*/ })).toBeTruthy();
+    });
+
     fireEvent.change(screen.getByRole("textbox", { name: /Webseite\*/ }), {
       target: { value: "https://example.com" },
     });
@@ -196,14 +205,18 @@ describe("ProjectRequestForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
 
-    expect(screen.getByRole("alert")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeTruthy();
+    });
     expect(
       screen.getByText("Bitte mindestens eine Seite wählen."),
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
-    expect(screen.getByRole("checkbox")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByRole("checkbox")).toBeTruthy();
+    });
   });
 
   it("submits the normalized payload to the API and shows success", async () => {
@@ -228,6 +241,10 @@ describe("ProjectRequestForm", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
+    await waitFor(() => {
+      expect(screen.getByRole("combobox", { name: "Ziel*" })).toBeTruthy();
+    });
+
     fireEvent.change(screen.getByRole("combobox", { name: "Ziel*" }), {
       target: { value: "generate_inquiries" },
     });
@@ -237,6 +254,10 @@ describe("ProjectRequestForm", () => {
       },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("checkbox")).toBeTruthy();
+    });
 
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("button", { name: "Senden" }));

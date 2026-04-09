@@ -1,0 +1,152 @@
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+}
+
+.gridTwo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fieldControl,
+.messageField textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
+  color: var(--color-text);
+  font-size: 0.93rem;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
+.messageField textarea {
+  min-height: 136px;
+  resize: vertical;
+}
+
+.fieldControl::placeholder,
+.messageField textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
+}
+
+.fieldControl:focus-visible,
+.messageField textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
+}
+
+.metaCard {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid
+    color-mix(in srgb, var(--color-cta) 36%, var(--color-border) 64%);
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 78%,
+    var(--color-cta) 22%
+  );
+}
+
+.metaLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.metaValue {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.helper {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.detailList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.detailList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.detailList li::before {
+  content: "\2713";
+  flex: 0 0 auto;
+  color: var(--color-accent-warm);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 4px;
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.consent input {
+  margin: 0;
+  accent-color: var(--color-cta);
+  align-self: center;
+}
+
+.consent a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.consentError {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
+}
+
+.form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .gridTwo {
+    grid-template-columns: 1fr;
+  }
+}

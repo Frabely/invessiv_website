@@ -1,3 +1,11 @@
+.text {
+  display: inline-block;
+}
+
+.errorHidden {
+  visibility: hidden;
+}
+
 .link {
   color: var(--accent);
   text-decoration: none;

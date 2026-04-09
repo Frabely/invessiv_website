@@ -22,18 +22,21 @@ export function ContactConsentText({
 }: ContactConsentTextProps) {
   return (
     <>
-      <span>
+      <span className={styles.text}>
         {consentLabel}{" "}
         <a className={styles.link} href={privacyHref} target="_self">
           {privacyLabel}
         </a>
         <ContactRequiredMarker />
       </span>
-      {errorMessage ? (
-        <p className={errorClassName} id={errorId} role="alert">
-          {errorMessage}
-        </p>
-      ) : null}
+      <p
+        aria-hidden={errorMessage ? undefined : "true"}
+        className={`${errorClassName}${errorMessage ? "" : ` ${styles.errorHidden}`}`}
+        id={errorId}
+        role={errorMessage ? "alert" : undefined}
+      >
+        {errorMessage ?? "\u00A0"}
+      </p>
     </>
   );
 }

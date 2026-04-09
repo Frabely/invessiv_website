@@ -1,6 +1,6 @@
 # Upgrade Contact Form
 
-Status: step 1 in progress  
+Status: step 2 completed  
 Last updated: 2026-04-09
 
 Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handler und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
@@ -136,13 +136,13 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 
 ## Geplanter Neustart-Ablauf
 
-### Schritt 0
+### Schritt 0 [Abgeschlossen]
 
 - Diese Datei als neue Planbasis ueberschreiben
 - Den bisherigen Zwischenstand ausdruecklich als verworfenen Refactor markieren
 - Festhalten, dass bestehende Shared-UI-Bausteine weiterverwendet werden duerfen
 
-### Schritt 1
+### Schritt 1 [Abgeschlossen]
 
 - Ziel-Ordnungsstruktur im Projekt konkret festziehen
 - Bestehende Contact-bezogene Dateien in Kategorien einordnen:
@@ -151,7 +151,7 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
   - spaeteres Architektur-Todo
 - Noch keine funktionale Neuimplementierung
 
-### Schritt 2
+### Schritt 2 [Abgeschlossen]
 
 - Form-State-Ansatz mit `react-hook-form` fuer Form 1 und Form 3 festziehen
 - Shared-Field-Komponenten auf Kompatibilitaet pruefen und ggf. vereinfachen
@@ -316,6 +316,23 @@ src/
 - Die oeffentliche API bleibt ein Endpoint, unterscheidet intern aber ueber einen expliziten Request-Kind-Discriminant.
 - `contact.schema.ts` bleibt nicht monolithisch, sondern wird in gemeinsame und submit-typspezifische Zod-Schemas aufgeteilt.
 - UI-Shared-Komponenten bleiben bewusst klein; es wird kein generisches Form-Framework im Component-Layer aufgebaut.
+
+## Schritt 2 Ergebnis: UI-Form-State festgezogen
+
+- `react-hook-form` ist als verbindlicher UI-Form-State-Ansatz eingebaut.
+- `project-request-form.tsx` nutzt keinen `FormData`-/DOM-Scan-Flow mehr fuer Step-Validation und Submit, sondern `watch`, `trigger`, `setValue`, `setError`, `handleSubmit`.
+- Form 3 existiert jetzt als eigene `quick-contact-form` mit kleinem `react-hook-form`-State statt als reines E-Mail-Link-Panel.
+- Form 2 bleibt CTA-only und rendert weiterhin keinen Submit-Flow.
+- `contact-form-field.tsx` wurde als Shared-Field-Huelle erweitert, damit Label, Hint und Inline-Fehler in Form 1 und Form 3 konsistent verwendet werden koennen.
+
+## Schritt 2 Entscheidungen
+
+- Frontend-Validation bleibt bewusst leichtgewichtig:
+  - required / presence
+  - einfache E-Mail-/URL-Syntax
+  - Step-Gating nur dort, wo die UI es fuer Navigation braucht
+- Die eigentliche API-/DTO-Abkopplung folgt erst in Schritt 3; Schritt 2 zieht nur den Form-State und die UI-Verantwortung gerade.
+- Form 3 verwendet bis Schritt 3 noch einen vorbereiteten `mailto`-Flow als Uebergang, bleibt aber bereits als eigene Formular-Komponente geschnitten.
 
 ## Testplan
 

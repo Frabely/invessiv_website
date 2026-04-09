@@ -106,6 +106,27 @@ describe("ContactSection", () => {
           { key: "landing", title: "Landing pages" },
           { key: "web", title: "Webseiten" },
         ]}
+        quickContactForm={{
+          title: "Kurze E-Mail",
+          subtitle: "Schneller Kontakt",
+          intro: "Kurz reicht.",
+          metaLabel: "E-Mail",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Nachricht",
+          messagePlaceholder: "Schreib kurz dein Anliegen.",
+          consentLabel: "Ich stimme gemÃ¤ÃŸ",
+          privacyLabel: "DatenschutzerklÃ¤rung",
+          mailSubject: "Kurze Anfrage",
+          mailIntro: "Hallo",
+          submitLabel: "E-Mail vorbereiten",
+          submittingLabel: "Wird vorbereitet",
+          submitSuccess: "Mail wird geÃ¶ffnet",
+          fieldErrorInvalidEmail: "UngÃ¼ltige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
         contactSecondaryCta={{
           href: "#services",
           label: "Leistungen ansehen",
@@ -133,17 +154,13 @@ describe("ContactSection", () => {
     expect(screen.queryByText("Deadline")).toBeNull();
     expect(screen.queryByText("Fast reply")).toBeNull();
 
-    expect(
-      screen.queryByRole("link", { name: "Kurze E-Mail senden" }),
-    ).toBeNull();
+    expect(screen.queryByRole("textbox", { name: "Nachricht*" })).toBeNull();
     expect(
       screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeNull();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kurze E-Mail/ }));
-    expect(
-      screen.getByRole("link", { name: "Kurze E-Mail senden" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Nachricht*" })).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
     const callLink = screen.getByRole("link", {

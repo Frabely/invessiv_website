@@ -1,4 +1,4 @@
-import { SECTION_HREFS, type SectionId } from "@/config/site";
+﻿import { SECTION_HREFS, type SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import {
   COMPANY,
@@ -189,6 +189,27 @@ export type LandingSectionCopy = {
     fieldErrorConsentRequired: string;
     requiredHint: string;
     closeLabel?: string;
+  };
+  quickContactForm?: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    metaLabel: string;
+    fullNameLabel: string;
+    emailLabel: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    consentLabel: string;
+    privacyLabel: string;
+    mailSubject: string;
+    mailIntro: string;
+    submitLabel: string;
+    submittingLabel: string;
+    submitSuccess: string;
+    fieldErrorInvalidEmail: string;
+    fieldErrorRequired: string;
+    fieldErrorConsentRequired: string;
+    requiredHint: string;
   };
   footerColumns?: Array<{
     title: string;
@@ -1048,6 +1069,30 @@ const HOME_SECTIONS: LandingSection[] = [
           requiredHint: "* Pflichtfelder",
           closeLabel: "Formular schließen",
         },
+        quickContactForm: {
+          title: "Kurze E-Mail für den nächsten Schritt",
+          subtitle: "Für schnellen Erstkontakt ohne komplettes Briefing.",
+          intro:
+            "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst. Der Mailclient wird mit deiner Nachricht vorbereitet.",
+          metaLabel: "E-Mail",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Nachricht",
+          messagePlaceholder:
+            "2-4 Sätze genügen: Worum geht es, was ist der Kontext, und was brauchst du als Nächstes?",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          mailSubject: "Kurze Anfrage über invessiv.de",
+          mailIntro: "Hallo, hier ist eine kurze Anfrage über die Website.",
+          submitLabel: "E-Mail vorbereiten",
+          submittingLabel: "Wird vorbereitet ...",
+          submitSuccess: "Dein E-Mail-Entwurf wird geöffnet.",
+          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+          fieldErrorRequired: "Dieses Feld ist erforderlich.",
+          fieldErrorConsentRequired:
+            "Bitte bestätige die Datenschutzerklärung.",
+          requiredHint: "* Pflichtfelder",
+        },
       },
       en: {
         title: "Choose the right entry point for your project",
@@ -1216,6 +1261,30 @@ const HOME_SECTIONS: LandingSection[] = [
           fieldErrorConsentRequired: "Please confirm the privacy policy.",
           requiredHint: "* Required fields",
           closeLabel: "Close form",
+        },
+        quickContactForm: {
+          title: "Short email for the next step",
+          subtitle: "Best for quick first contact without a full brief.",
+          intro:
+            "A few lines are enough: goal, context, and what you need next. Your mail app opens with the draft prepared.",
+          metaLabel: "Email",
+          fullNameLabel: "Name",
+          emailLabel: "Email",
+          messageLabel: "Message",
+          messagePlaceholder:
+            "2-4 lines are enough: what this is about, the context, and what you need next.",
+          consentLabel:
+            "I agree to the processing of my information according to the",
+          privacyLabel: "privacy policy.",
+          mailSubject: "Short inquiry via invessiv.de",
+          mailIntro: "Hello, here is a short inquiry from the website.",
+          submitLabel: "Prepare email",
+          submittingLabel: "Preparing ...",
+          submitSuccess: "Your email draft is opening.",
+          fieldErrorInvalidEmail: "Please enter a valid email address.",
+          fieldErrorRequired: "This field is required.",
+          fieldErrorConsentRequired: "Please confirm the privacy policy.",
+          requiredHint: "* Required fields",
         },
       },
     },
