@@ -1,104 +1,377 @@
 # Upgrade Contact Form
 
-Status: in progress  
+Status: step 1 in progress  
 Last updated: 2026-04-09
 
-Ziel dieses Refactors ist eine wartbare, wiederverwendbare Contact-Form-Architektur mit drei dedizierten Formular-Komponenten, einem gemeinsamen Struktur-Wrapper, klar extrahierten Shared-Teilen und vollständiger Dark-/Light-Mode-Unterstützung. Form 3 wird strukturell aus `mockups/contactForm3.png` umgesetzt. Form 1 und Form 2 bleiben im Erscheinungsbild so nah wie möglich am aktuellen Zustand.
-
-## Umsetzungsregeln
-
-- In kleinen, reviewbaren Schritten arbeiten.
-- Nach jedem abgeschlossenen Schritt Status im Dokument aktualisieren.
-- Keine Folgeänderung beginnen, bevor der aktuelle Schritt nachvollziehbar umgesetzt ist.
-- Form 1 und Form 2 nur dort visuell ändern, wo Konsistenz oder Shared-Components es erfordern.
-- Form 3 strukturell eng am Mockup ausrichten.
-- Alle Shared-Components und Form-Komponenten müssen in Dark und Light Mode funktionieren.
+Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handler und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
 
 ## Zielbild
 
-- Drei Tabs rendern drei dedizierte Formular-Komponenten.
-- `ContactSection` orchestriert nur noch Tabs, gemeinsame Section-Logik, Analytics und Rendering.
-- Wiederkehrende Bausteine werden in Shared-Components ausgelagert.
-- Consent-/Legal-Link, Required-Marker und wiederkehrende Feldmuster sind konsistent.
-- Eine gemeinsame Abschlusszone sorgt für ein stimmiges System über alle drei Formulare hinweg.
-- Primäre CTAs sollen überall auf der gemeinsamen CTA-Komponente basieren; solange Form 2 und Form 3 noch in der Legacy-Panel-Struktur von `ContactSection` leben, darf die CTA-Komponente dort direkt verwendet werden. Im Zielzustand laufen diese CTAs über `ContactFormActions` innerhalb der dedizierten Form-Komponenten.
+- Drei separate Contact-Wege bleiben bestehen:
+  - Form 1: Projektanfrage
+  - Form 2: Kennenlern-Call als CTA-only
+  - Form 3: Kurze E-Mail
+- Die Form-Komponenten bleiben moeglichst schlank.
+- UI validiert nur:
+  - required / presence
+  - einfache E-Mail-/URL-Syntax
+  - sichtbare Inline-Fehler
+- Ein Frontend-Service verarbeitet den Submit und erhaelt ein klares DTO.
+- Eine oeffentliche REST-Route nimmt Requests entgegen.
+- Die Route delegiert intern an getrennte Backend-Commands / Handler.
+- Die Backend-Handler validieren fachlich mit `zod`.
+- Persistenz und Mailversand werden unterhalb des Handlers sauber getrennt organisiert.
+- Bestehende Shared-UI-Komponenten duerfen wiederverwendet oder vereinfacht werden, wenn sie zum Zielbild passen.
 
-## Reviewbare Schritte
+## Architekturfluss
+
+`UI + leichte Validation -> Frontend Service -> REST API Route -> Backend Command Handler + Validation -> Repository / DB`
+
+## Verbindliche Architekturentscheidungen
+
+- Transport: oeffentliche REST-Route
+- API-Schnitt: ein oeffentlicher Endpoint, intern Dispatch auf zwei Commands
+- DTO-Schnitt:
+  - `ProjectRequestDto`
+  - `QuickContactDto`
+- Kennenlern-Call bleibt CTA-only und nimmt nicht an Submit/Persistenz teil
+- Backend-Validation erfolgt mit `zod`
+- Frontend soll fuer Form-State und UI-nahe Validation auf `react-hook-form` ausgelegt werden
+
+## Zielstruktur
+
+### UI / Components
+
+- `src/components/.../contact-section/...`
+- Enthaelt nur:
+  - Wrapper / Layout
+  - Shared-Field-Komponenten
+  - die drei Contact-Wege als UI
+  - `react-hook-form`-Anbindung
+  - Anzeigen von Inline-Fehlern
+- Keine API-Details, keine Business-Logik, keine komplexe DTO-Orchestrierung in den Formular-Komponenten
+
+### Client / Feature Layer
+
+- `src/features/contact/client/`
+- Geplante Inhalte:
+  - `project-request.dto.ts`
+  - `quick-contact.dto.ts`
+  - `project-request-form.schema.ts`
+  - `quick-contact-form.schema.ts`
+  - `contact-form-service.ts`
+  - optionale Mapper von Form-Values auf DTOs
+- Verantwortlich fuer:
+  - DTO-Erstellung
+  - Request-Absendung
+  - schlanke Response-/Error-Normalisierung fuer die UI
+
+### Shared Contact Layer
+
+- `src/features/contact/shared/`
+- Geplante Inhalte:
+  - Contracts
+  - Option Keys / diskrete Select-Werte
+  - gemeinsame Contact-Typen
+  - gemeinsame Schema-Bausteine nur bei echter Wiederverwendung
+- Ziel:
+  - keine Vermischung von Client-Only- und Server-Only-Code
+
+### Server / Contact Domain
+
+- `src/server/contact/commands/`
+- `src/server/contact/handlers/`
+- `src/server/contact/repositories/`
+- `src/server/contact/services/`
+- Geplante Verantwortlichkeiten:
+  - Commands definieren den auszufuehrenden Use Case
+  - Handler validieren DTOs fachlich und orchestrieren den Ablauf
+  - Repositories kapseln DB-Zugriffe
+  - Services kapseln Mail, Anti-Abuse und technische Nebendienste
+
+### API Route
+
+- `src/app/api/public/contact/route.ts`
+- Verantwortlich nur fuer:
+  - HTTP-Parsing
+  - Content-Type / Payload-Limits
+  - Dispatch anhand des Request-Typs
+  - normierte API-Responses
+- Keine Business-Orchestrierung direkt in der Route
+
+## DTO-Plan
+
+### `ProjectRequestDto`
+
+- nur Felder fuer Form 1
+- enthaelt einen Typ-/Discriminant-Wert fuer den API-Dispatch
+- enthaelt alle fuer Projektanfrage noetigen Eingaben
+
+### `QuickContactDto`
+
+- nur Felder fuer Form 3
+- enthaelt ebenfalls einen Typ-/Discriminant-Wert
+- bleibt bewusst klein und getrennt von Form 1
+
+## Validation-Regeln
+
+### Frontend
+
+- required / leer
+- E-Mail-/URL-Grundsyntax
+- touched/errors
+- Inline-Fehler direkt am Feld
+- keine fachliche Cross-Field-Validierung im UI, ausser wenn fuer Step-Navigation zwingend noetig
+
+### Backend
+
+- vollstaendige DTO-Validierung mit `zod`
+- fachliche und Cross-Field-Regeln liegen im Backend-Flow
+- Backend ist die Wahrheitsquelle
+
+### Datenbank
+
+- keine Business-Logik
+- nur Persistenz / Statuspflege
+
+## Geplanter Neustart-Ablauf
 
 ### Schritt 0
 
-- [x] `upgrade-contact-form.md` anlegen
-- [x] Plan und Checkliste eintragen
-- [x] Ausgangszustand dokumentieren
+- Diese Datei als neue Planbasis ueberschreiben
+- Den bisherigen Zwischenstand ausdruecklich als verworfenen Refactor markieren
+- Festhalten, dass bestehende Shared-UI-Bausteine weiterverwendet werden duerfen
 
 ### Schritt 1
 
-- [x] Shared UX/UI-Bausteine identifizieren
-- [x] Ziel-Zuschnitt für Shared-Components festhalten
-- [x] Erste kleine Shared-Components umsetzen
+- Ziel-Ordnungsstruktur im Projekt konkret festziehen
+- Bestehende Contact-bezogene Dateien in Kategorien einordnen:
+  - wiederverwenden
+  - neu schneiden
+  - spaeteres Architektur-Todo
+- Noch keine funktionale Neuimplementierung
 
 ### Schritt 2
 
-- [x] Gemeinsamen Form-Wrapper umsetzen
-- [x] Slots/Props für Titel, Subheadline, Meta-Zone und Abschlusszone definieren
-- [x] Dark-/Light-Mode im Wrapper absichern
+- Form-State-Ansatz mit `react-hook-form` fuer Form 1 und Form 3 festziehen
+- Shared-Field-Komponenten auf Kompatibilitaet pruefen und ggf. vereinfachen
+- Ziel: Form-Komponenten nur fuer Values, Register, Errors, Submit
 
 ### Schritt 3
 
-- [ ] Form 1 in eigene dedizierte Komponente überführen
-- [ ] Multi-Step-Logik erhalten
-- [ ] Required-Hint auf Schritt 1 und Schritt 2 ergänzen
-- [ ] Tests für Form 1 verifizieren
+- Frontend-DTOs und `contact-form-service.ts` definieren
+- Mapping aus den Formularen in den Client-Layer verlagern
+- Form-Komponenten kennen keine API-Details mehr
 
 ### Schritt 4
 
-- [ ] Form 2 in eigene dedizierte Komponente überführen
-- [ ] Kompakten Charakter beibehalten
-- [ ] Shared-Teile anbinden ohne visuelle Regression
-- [ ] Tests für Form 2 verifizieren
+- Oeffentliche Contact-Route auf Adapter-Rolle zuschneiden
+- Request-Typ erkennen und an den passenden Command dispatchen
 
 ### Schritt 5
 
-- [ ] Form 3 aus `mockups/contactForm3.png` umsetzen
-- [ ] Eigene dedizierte Komponente bauen
-- [ ] Gemeinsame Abschlusszone und Shared-Teile integrieren
-- [ ] Dark-/Light-Mode absichern
-- [ ] Tests für Form 3 ergänzen
+- Zwei getrennte Backend-Commands / Handler definieren:
+  - Projektanfrage
+  - Kurze E-Mail
+- Fachliche Validation und Orchestrierung in die Handler legen
 
 ### Schritt 6
 
-- [ ] `ContactSection` auf drei dedizierte Form-Komponenten umbauen
-- [ ] Alte Inline-Panel-Struktur entfernen
-- [ ] ContactSection-Tests anpassen und verifizieren
+- Repository-/Service-Schnitt fuer Persistenz und Mail klar schneiden
+- DB-Schreiben und Mail-Status technisch sauber kapseln
 
 ### Schritt 7
 
-- [ ] Konsistenz-Pass über alle drei Formulare
-- [ ] Tote Styles und Altcode entfernen
-- [ ] Dark-/Light-Mode visuell prüfen
+- Form 1 und Form 3 neu und schlank aufbauen
+- Form 2 sauber als CTA-only daneben halten
+- UI-Konsistenz in Dark und Light Mode pruefen
 
-## Entscheidungsstand
+## Schritt 1 Ergebnis: Ziel-Ordnungsstruktur
 
-- Alle drei Tabs werden als dedizierte Formular-Komponenten behandelt.
-- Form 3 wird strukturell eng am Mockup umgesetzt.
-- Die Formulare sollen kompakt und ruhig bleiben.
-- Die Abschlusszone folgt einem gemeinsamen Muster.
-- Form 3 soll klar zur Familie von Form 1 und Form 2 gehören.
+### Verbindlicher Zielbaum
 
-## Ausgangszustand
+```text
+src/
+  components/
+    marketing/home/sections/contact-section/
+      contact-section.tsx
+      contact-section.module.css
+      contact-consent-text.tsx
+      contact-consent-text.module.css
+      contact-required-marker.tsx
+      contact-required-marker.module.css
+      contact-field-label.tsx
+      project-request-form/
+        project-request-form.tsx
+        project-request-form.module.css
+      quick-contact-form/
+        quick-contact-form.tsx
+        quick-contact-form.module.css
+      discovery-call-panel/
+        discovery-call-panel.tsx
+        discovery-call-panel.module.css
 
-- Form 1 existiert aktuell als dedizierte `ProjectRequestForm`-Komponente.
-- Form 2 und Form 3 sind noch als Inline-Panel-Struktur in `ContactSection` umgesetzt.
-- `ContactSection` enthält aktuell sowohl Tab-Orchestrierung als auch Formular-/Panel-Markup.
-- Mehrere UI-Bausteine sind dupliziert oder nur lose vereinheitlicht:
-  - Consent-/Legal-Link
-  - Required-Marker
-  - Headline-/Intro-/Footer-Zonen
-  - Kanal-/Abschlussinformationen
+  features/
+    contact/
+      client/
+        project-request.dto.ts
+        quick-contact.dto.ts
+        project-request-form.schema.ts
+        quick-contact-form.schema.ts
+        contact-form-service.ts
+        map-project-request-form-to-dto.ts
+        map-quick-contact-form-to-dto.ts
+      shared/
+        contact.contract.ts
+        contact-options.ts
+        contact-request-kind.ts
+        contact-base.schema.ts
+        project-request.schema.ts
+        quick-contact.schema.ts
 
-## Änderungsprotokoll
+  app/
+    api/public/contact/
+      route.ts
 
-- 2026-04-09: Dokument angelegt, Plan eingetragen, Ausgangszustand festgehalten.
-- 2026-04-09: Schritt 1 umgesetzt: erste Shared-Bausteine für Required-Marker, Feld-Label, Consent-Text und ein gemeinsames Input-/Field-Primitive angelegt.
-- 2026-04-09: Vor Schritt 2 weitere Shared-Bausteine ergänzt: Form-Shell, Actions-Zone und Status-Komponente; Form 1 Validierung auf Inline-Fehler statt Browser-Popup umgestellt.
-- 2026-04-09: Schritt 2 abgeschlossen: `ContactFormShell` auf Subtitle-/Meta-/Footer-Slots erweitert, Dark-/Light-Mode im Wrapper abgesichert und Form 1 an die gemeinsame Abschlusszone angebunden.
+  server/
+    contact/
+      commands/
+        submit-project-request.command.ts
+        submit-quick-contact.command.ts
+      handlers/
+        submit-project-request.handler.ts
+        submit-quick-contact.handler.ts
+      repositories/
+        contact-lead.repository.ts
+      services/
+        contact-mail.service.ts
+        contact-rate-limit.service.ts
+        contact-lead-metadata.service.ts
+```
+
+### Verantwortlichkeit pro Schicht
+
+- `components/.../contact-section`
+  - nur UI, Layout, `react-hook-form`-Binding, Inline-Fehler, CTA-Rendering
+- `features/contact/client`
+  - Form-spezifische DTOs, leichte Frontend-Schemas, Mapper, Submit-Service
+- `features/contact/shared`
+  - Contracts, Discriminants, Option-Keys, gemeinsam genutzte Schemas
+- `app/api/public/contact/route.ts`
+  - reiner HTTP-Adapter und Dispatch
+- `server/contact/commands`
+  - Use-Case-Eingaben pro Submit-Typ
+- `server/contact/handlers`
+  - fachliche Zod-Validierung, Orchestrierung, Persistenz- und Mail-Aufruf
+- `server/contact/repositories`
+  - DB-Zugriffe
+- `server/contact/services`
+  - technische Nebendienste ohne UI-/HTTP-Verantwortung
+
+## Schritt 1 Ergebnis: Einordnung des aktuellen Bestands
+
+### Wiederverwenden
+
+- `src/components/marketing/home/sections/contact-section/contact-consent-text.tsx`
+- `src/components/marketing/home/sections/contact-section/contact-consent-text.module.css`
+- `src/components/marketing/home/sections/contact-section/contact-required-marker.tsx`
+- `src/components/marketing/home/sections/contact-section/contact-required-marker.module.css`
+- `src/components/marketing/home/sections/contact-section/contact-field-label.tsx`
+- `src/features/contact/contact-options.ts`
+- `src/features/contact/contact.contract.ts`
+- `src/features/contact/contact.schema.ts`
+- `src/app/api/public/contact/route.ts`
+
+### Neu schneiden
+
+- `src/components/marketing/home/sections/contact-section/contact-section.tsx`
+- `src/components/marketing/home/sections/contact-section/contact-section.module.css`
+- `src/components/marketing/home/sections/contact-section/contact-section.test.tsx`
+- `src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.tsx`
+- `src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.module.css`
+- `src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.test.tsx`
+- `src/features/contact/contact.schema.ts`
+  - in gemeinsame und submit-typspezifische Schemas aufteilen
+- `src/app/api/public/contact/route.ts`
+  - auf HTTP-Adapter und Dispatch reduzieren
+- `src/server/services/contact/submit-contact-inquiry.ts`
+  - in Commands, Handler, Repository-Aufrufe und Mail-Orchestrierung zerlegen
+- `src/server/services/contact/contact-lead-metadata.ts`
+  - in neue `server/contact/services`-Struktur verschieben
+
+### Spaeteres Architektur-Todo
+
+- `src/server/db/contact-leads.ts`
+  - langfristig an `server/contact/repositories/contact-lead.repository.ts` angleichen
+- `src/server/services/contact/*`
+  - komplette Contact-Domaene aus `server/services` in `server/contact` ueberfuehren
+- `src/features/contact/*`
+  - Altbestand vollstaendig in `client/` und `shared/` schneiden
+- bestehende Testlandschaft
+  - Contact-Tests schichtbezogen statt komponentenuebergreifend neu ordnen
+
+## Schritt 1 Entscheidungen
+
+- `discovery-call-form` wird im Zielzustand als `discovery-call-panel` gefuehrt, da dieser Pfad kein Submit-Formular ist.
+- Die oeffentliche API bleibt ein Endpoint, unterscheidet intern aber ueber einen expliziten Request-Kind-Discriminant.
+- `contact.schema.ts` bleibt nicht monolithisch, sondern wird in gemeinsame und submit-typspezifische Zod-Schemas aufgeteilt.
+- UI-Shared-Komponenten bleiben bewusst klein; es wird kein generisches Form-Framework im Component-Layer aufgebaut.
+
+## Testplan
+
+- Form 1:
+  - Pflichtfelder pro Step
+  - Step-Wechsel nur bei gueltigem Mindestzustand
+  - Inline-Fehler korrekt sichtbar
+  - DTO korrekt erzeugt
+- Form 3:
+  - nur relevante Pflichtfelder
+  - Inline-Fehler statt Browser-Popup
+  - DTO korrekt erzeugt
+- Form 2:
+  - bleibt CTA-only
+  - keine Submit-Logik
+- Frontend-Service:
+  - sendet richtigen DTO-Typ
+  - normalisiert Fehlerzustaende sauber
+- API-Route:
+  - invalid content-type
+  - invalid json
+  - payload too large
+  - Dispatch zum richtigen Command
+- Backend-Handler:
+  - `zod`-Validation
+  - Cross-Field-Regeln
+  - Persistenzaufrufe
+  - Mail-/Statusverhalten
+- Regression:
+  - Dark Mode
+  - Light Mode
+  - Shared-UI-Bausteine konsistent
+
+## Skills / Referenzen
+
+Vor der eigentlichen Neuimplementierung sollen etablierte Patterns beruecksichtigt werden:
+
+- `react-hook-form`
+- `zod`
+- Skills.sh Kandidaten mit hoher Reife / Proof:
+  - `vercel-react-best-practices`
+  - `next-best-practices`
+  - `frontend-design`
+  - `webapp-testing`
+
+## Separate Architektur-Todos ausserhalb dieses Plans
+
+Diese Punkte sollen dokumentiert, aber nicht in diesem Neustart-Plan umgesetzt werden:
+
+- bestehende Contact-Ordnerstruktur zwischen `features/contact`, `server/services/contact` und Route langfristig bereinigen
+- alte gemischte Services in sauberere Commands / Handler / Repository-Grenzen zerlegen
+- Altbestand konsistent in die neue Zielstruktur ueberfuehren, falls ausserhalb des unmittelbaren Form-Neustarts noetig
+
+## Annahmen
+
+- Die aktuell im Changeset liegenden dedizierten Form-Implementierungen werden verworfen.
+- Bereits gebaute Shared-Komponenten duerfen als Ausgangsbasis erhalten bleiben.
+- Die neue Zielarchitektur soll implementierungsfest sein, bevor erneut Form-Logik aufgebaut wird.
+- Die neue Ordnerstruktur ist wichtiger als kurzfristiges Wiederverwenden halb passender Logik.
