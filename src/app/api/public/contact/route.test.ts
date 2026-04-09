@@ -38,6 +38,7 @@ describe("POST /api/public/contact", () => {
           email: "max@example.com",
           fullName: "Max Mustermann",
           goalKey: "generate_inquiries",
+          kind: "project_request",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -68,6 +69,7 @@ describe("POST /api/public/contact", () => {
           consentAccepted: false,
           email: "invalid",
           fullName: "",
+          kind: "project_request",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Zu kurz",
@@ -107,6 +109,7 @@ describe("POST /api/public/contact", () => {
           email: "max@example.com",
           fullName: "Max Mustermann",
           goalKey: "generate_inquiries",
+          kind: "project_request",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -158,6 +161,7 @@ describe("POST /api/public/contact", () => {
           email: "max@example.com",
           fullName: "Max Mustermann",
           goalKey: "generate_inquiries",
+          kind: "project_request",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -193,6 +197,7 @@ describe("POST /api/public/contact", () => {
           email: "max@example.com",
           fullName: "Max Mustermann",
           goalKey: "generate_inquiries",
+          kind: "project_request",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -211,5 +216,34 @@ describe("POST /api/public/contact", () => {
     expect(response.status).toBe(500);
     expect(payload.ok).toBe(false);
     expect(payload.code).toBe("internal_error");
+  });
+
+  it("dispatches quick_contact requests separately", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/public/contact", {
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          fullName: "Max Mustermann",
+          kind: "quick_contact",
+          locale: "de",
+          message: "Kurze erste Anfrage mit zwei Saetzen.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }) as NextRequest,
+    );
+
+    const payload = (await response.json()) as {
+      ok: boolean;
+      requestId: string;
+    };
+
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(payload.requestId).toBeTruthy();
   });
 });

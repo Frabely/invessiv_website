@@ -1,6 +1,6 @@
 # Upgrade Contact Form
 
-Status: step 3 completed  
+Status: step 4 completed  
 Last updated: 2026-04-09
 
 Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handler und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
@@ -163,7 +163,7 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 - Mapping aus den Formularen in den Client-Layer verlagern
 - Form-Komponenten kennen keine API-Details mehr
 
-### Schritt 4
+### Schritt 4 [Abgeschlossen]
 
 - Oeffentliche Contact-Route auf Adapter-Rolle zuschneiden
 - Request-Typ erkennen und an den passenden Command dispatchen
@@ -360,6 +360,27 @@ src/
 - Der aktuelle oeffentliche Submit-Pfad bleibt fuer Form 1 vorerst unveraendert; der Client-Service kapselt nur den Zugriff und normalisiert offensichtliche Client-/Netzwerkfehler.
 - Form 3 bleibt in Schritt 3 bewusst noch ein `mailto`-basierter Flow, nutzt dafuer aber bereits denselben Client-Layer-Ansatz mit DTO und Service.
 - Die tatsaechliche API-Dispatch-Umstellung auf getrennte Request-Typen folgt erst in Schritt 4.
+
+## Schritt 4 Ergebnis: Route als Adapter und Dispatch
+
+- Die Contact-API arbeitet jetzt ueber einen expliziten Request-Discriminant `kind`.
+- `contact.schema.ts` validiert nicht mehr nur einen monolithischen Payload, sondern eine diskriminierte Union fuer:
+  - `project_request`
+  - `quick_contact`
+- `route.ts` ist auf die Adapter-Rolle zugeschnitten:
+  - HTTP-Parsing
+  - Payload-Limit
+  - Schema-Validation
+  - Rate-Limit
+  - Dispatch zum passenden Submit-Pfad anhand von `kind`
+- Projektanfragen werden weiterhin ueber den bestehenden Legacy-Submit-Pfad abgewickelt.
+- Fuer `quick_contact` existiert jetzt ein eigener kleiner Legacy-Submit-Pfad, damit die Route bereits zwei Typen sauber unterscheiden kann.
+
+## Schritt 4 Entscheidungen
+
+- Der Request-Discriminant wird bereits in den Client-DTOs mitgefuehrt, damit Route und Client dieselbe API-Sprache sprechen.
+- Die tiefergehende Aufteilung in echte Commands und Handler folgt weiterhin erst in Schritt 5; Schritt 4 fuehrt nur den sauberen API-Dispatch ein.
+- Der neue `quick_contact`-Serverpfad ist bewusst klein gehalten und dient als Uebergangsadapter, bis die Backend-Domaene im naechsten Schritt sauber getrennt wird.
 
 ## Testplan
 

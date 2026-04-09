@@ -8,6 +8,7 @@ import { ContactFormField } from "@/components/marketing/home/sections/contact-s
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { useLanguage } from "@/components/providers/language-provider";
 import { openQuickContactMailDraft } from "@/features/contact/client/contact-form-service";
 import { mapQuickContactFormToDto } from "@/features/contact/client/map-quick-contact-form-to-dto";
 import {
@@ -33,6 +34,7 @@ export function QuickContactForm({
   formCopy,
   privacyHref,
 }: QuickContactFormProps) {
+  const { locale } = useLanguage();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const {
     register,
@@ -58,7 +60,7 @@ export function QuickContactForm({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    const dto = mapQuickContactFormToDto(values);
+    const dto = mapQuickContactFormToDto(values, locale);
 
     setStatusMessage(formCopy.submitSuccess);
     reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);

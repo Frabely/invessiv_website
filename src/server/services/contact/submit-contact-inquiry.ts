@@ -1,5 +1,5 @@
 import "server-only";
-import type { ContactSubmitInput } from "@/features/contact/contact.schema";
+import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
 import {
   persistContactLead,
   updateContactLeadMailStatus,
@@ -10,7 +10,7 @@ import { mapContactToMail } from "@/server/services/mail/mappers/map-contact-to-
 import { sendMail } from "@/server/services/mail/mail-service";
 
 export async function submitContactInquiry(
-  payload: ContactSubmitInput,
+  payload: ProjectRequestSubmitInput,
   requestId: string,
 ) {
   const env = getServerEnv();

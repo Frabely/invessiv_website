@@ -1,8 +1,12 @@
 import "server-only";
-import type { ContactSubmitInput } from "@/features/contact/contact.schema";
+import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
 import { getDictionary } from "@/i18n/get-dictionary";
-import type { DeploymentEnvironment } from "@/server/config/env";
 import { getServerEnv } from "@/server/config/env";
+import {
+  escapeHtml,
+  getEnvironmentSubjectPrefix,
+  sanitizeLine,
+} from "@/server/services/mail/templates/template-utils";
 
 type ContactNotificationMessage = {
   html: string;
@@ -13,19 +17,6 @@ type ContactNotificationMessage = {
 type ContactNotificationCopy = Awaited<
   ReturnType<typeof getDictionary>
 >["mail"]["contactNotification"];
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function sanitizeLine(value: string) {
-  return value.replace(/[\r\n]+/g, " ").trim();
-}
 
 function mapValue(
   field: string,
@@ -45,20 +36,8 @@ function mapValue(
   return localeCopy.values[field]?.[value] ?? value;
 }
 
-function getEnvironmentSubjectPrefix(environment: DeploymentEnvironment) {
-  if (environment === "development") {
-    return "[DEV] ";
-  }
-
-  if (environment === "preview") {
-    return "[PREVIEW] ";
-  }
-
-  return "";
-}
-
 export async function createContactNotificationMessage(
-  payload: ContactSubmitInput,
+  payload: ProjectRequestSubmitInput,
 ): Promise<ContactNotificationMessage> {
   const copy = (await getDictionary(payload.locale)).mail.contactNotification;
   const localizedOffer =

@@ -1,4 +1,5 @@
 import type { Locale } from "@/config/i18n";
+import type { ContactRequestKind } from "@/features/contact/contact-request-kind";
 import type {
   ContactBudgetKey,
   ContactGoalKey,
@@ -8,13 +9,14 @@ import type {
   ContactWorkflowKey,
 } from "@/features/contact/contact-options";
 
-export type ContactSubmitRequest = {
+export type ProjectRequestSubmitRequest = {
   budgetKey?: ContactBudgetKey;
   company?: string;
   consentAccepted: boolean;
   email: string;
   fullName: string;
   goalKey?: ContactGoalKey;
+  kind: Extract<ContactRequestKind, "project_request">;
   locale: Locale;
   offerKey: ContactOfferKey;
   pagesCustom?: string;
@@ -28,6 +30,19 @@ export type ContactSubmitRequest = {
   websiteTrap?: string;
   workflowKey?: ContactWorkflowKey;
 };
+
+export type QuickContactSubmitRequest = {
+  consentAccepted: boolean;
+  email: string;
+  fullName: string;
+  kind: Extract<ContactRequestKind, "quick_contact">;
+  locale: Locale;
+  message: string;
+};
+
+export type ContactSubmitRequest =
+  | ProjectRequestSubmitRequest
+  | QuickContactSubmitRequest;
 
 export type ContactSubmitErrorCode =
   | "delivery_unavailable"

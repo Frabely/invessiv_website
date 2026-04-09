@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import {
   flattenContactFieldErrors,
   contactSubmitSchema,
+  type ContactSubmitInput,
 } from "@/features/contact/contact.schema";
 import {
   createContactErrorResponse,
@@ -10,6 +11,7 @@ import {
 } from "@/server/http/api-response";
 import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit";
 import { submitContactInquiry } from "@/server/services/contact/submit-contact-inquiry";
+import { submitQuickContactInquiry } from "@/server/services/contact/submit-quick-contact-inquiry";
 
 const MAX_BODY_SIZE = 20_000;
 
@@ -31,6 +33,17 @@ function hasPayloadWithinLimit(contentLength: string | null) {
 
   const numericLength = Number(contentLength);
   return Number.isFinite(numericLength) && numericLength <= MAX_BODY_SIZE;
+}
+
+async function dispatchContactSubmit(
+  payload: ContactSubmitInput,
+  requestId: string,
+) {
+  if (payload.kind === "project_request") {
+    return submitContactInquiry(payload, requestId);
+  }
+
+  return submitQuickContactInquiry(payload);
 }
 
 export async function POST(request: NextRequest) {
@@ -81,7 +94,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const submitResult = await submitContactInquiry(parsedPayload.data, requestId);
+    const submitResult = await dispatchContactSubmit(
+      parsedPayload.data,
+      requestId,
+    );
     if (!submitResult.ok) {
       return createContactErrorResponse(submitResult.code, requestId, 503);
     }

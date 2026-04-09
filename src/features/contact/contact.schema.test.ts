@@ -5,6 +5,7 @@ const validBasePayload = {
   consentAccepted: true,
   email: "max@example.com",
   fullName: "Max Mustermann",
+  kind: "project_request",
   locale: "de",
   offerKey: "landing",
   projectDetails:
@@ -42,5 +43,18 @@ describe("contactSubmitSchema", () => {
     expect(
       parsed.error?.issues.some((issue) => issue.message === "pages_required"),
     ).toBe(true);
+  });
+
+  it("accepts a valid quick contact payload", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      consentAccepted: true,
+      email: "max@example.com",
+      fullName: "Max Mustermann",
+      kind: "quick_contact",
+      locale: "de",
+      message: "Kurze erste Anfrage.",
+    });
+
+    expect(parsed.success).toBe(true);
   });
 });

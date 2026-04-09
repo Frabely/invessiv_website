@@ -3,11 +3,14 @@ import type { QuickContactFormValues } from "@/features/contact/client/quick-con
 
 export function mapQuickContactFormToDto(
   values: QuickContactFormValues,
+  locale: QuickContactDto["locale"],
 ): QuickContactDto {
   return {
     consentAccepted: values.consentAccepted,
     email: values.email.trim(),
     fullName: values.fullName.trim(),
+    kind: "quick_contact",
+    locale,
     message: values.message.trim(),
   };
 }

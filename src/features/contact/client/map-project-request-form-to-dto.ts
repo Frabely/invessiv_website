@@ -30,6 +30,7 @@ export function mapProjectRequestFormToDto(
     email: values.email.trim(),
     fullName: values.fullName.trim(),
     goalKey: (values.goalKey || undefined) as ContactGoalKey | undefined,
+    kind: "project_request",
     locale,
     offerKey: values.offerKey as ProjectRequestDto["offerKey"],
     pageKeys:

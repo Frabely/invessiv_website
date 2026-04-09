@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { ContactSubmitInput } from "@/features/contact/contact.schema";
+import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
 import {
   CONTACT_LEAD_STORAGE,
   LEGAL_DOCUMENT_VERSIONS,
@@ -17,9 +17,9 @@ export type PreparedContactLeadSubmission = {
     email: string;
     fullName: string;
     id: string;
-    inquiryType: ContactSubmitInput["offerKey"];
+    inquiryType: ProjectRequestSubmitInput["offerKey"];
     leadStatus: ContactLeadStatus;
-    locale: ContactSubmitInput["locale"];
+    locale: ProjectRequestSubmitInput["locale"];
     mailProvider: string;
     mailStatus: ContactLeadMailStatus;
     message: string;
@@ -34,16 +34,16 @@ export type PreparedContactLeadSubmission = {
     updatedAt: string;
   };
   projectRequest: {
-    budgetKey?: ContactSubmitInput["budgetKey"];
+    budgetKey?: ProjectRequestSubmitInput["budgetKey"];
     createdAt: string;
-    goalKey?: ContactSubmitInput["goalKey"];
+    goalKey?: ProjectRequestSubmitInput["goalKey"];
     leadId: string;
-    pageKeys?: ContactSubmitInput["pageKeys"];
+    pageKeys?: ProjectRequestSubmitInput["pageKeys"];
     pagesCustom?: string;
-    preferredStartKey?: ContactSubmitInput["preferredStartKey"];
+    preferredStartKey?: ProjectRequestSubmitInput["preferredStartKey"];
     updatedAt: string;
     website?: string;
-    workflowKey?: ContactSubmitInput["workflowKey"];
+    workflowKey?: ProjectRequestSubmitInput["workflowKey"];
   };
 };
 
@@ -57,7 +57,7 @@ export function calculateLeadRetentionUntil(createdAt: Date) {
 }
 
 export function createContactLeadSubmission(
-  payload: ContactSubmitInput,
+  payload: ProjectRequestSubmitInput,
   requestId: string,
   mailProvider: ContactMailProvider,
   createdAt = new Date(),
