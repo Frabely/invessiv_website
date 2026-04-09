@@ -173,9 +173,9 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
   - Kurze E-Mail
 - Fachliche Validation und Orchestrierung in die Command-Handler legen
 
-### Schritt 6
+### Schritt 6 [Abgeschlossen]
 
-- Repository-/Service-Schnitt fuer Persistenz und Mail klar schneiden
+- Persistenz und Mail technisch sauber im Command-Handler schneiden
 - DB-Schreiben und Mail-Status technisch sauber kapseln
 
 ### Schritt 7
@@ -243,10 +243,8 @@ src/
   server/
     contact/
       handlers/
-        submit-project-request.command-handler.ts
-        submit-quick-contact.command-handler.ts
-      repositories/
-        contact-lead.repository.ts
+      submit-project-request.command-handler.ts
+      submit-quick-contact.command-handler.ts
       services/
         contact-mail.service.ts
         contact-rate-limit.service.ts
@@ -265,8 +263,6 @@ src/
   - reiner HTTP-Adapter und Dispatch
 - `server/contact/handlers`
   - fachliche Zod-Validierung, Orchestrierung, Persistenz- und Mail-Aufruf
-- `server/contact/repositories`
-  - DB-Zugriffe
 - `server/contact/services`
   - technische Nebendienste ohne UI-/HTTP-Verantwortung
 
@@ -296,17 +292,15 @@ src/
   - in gemeinsame und submit-typspezifische Schemas aufteilen
 - `src/app/api/public/contact/route.ts`
   - auf HTTP-Adapter und Dispatch reduzieren
-- `src/server/services/contact/submit-contact-inquiry.ts`
-  - in Handler, Repository-Aufrufe und Mail-Orchestrierung zerlegen
+- `src/server/contact/handlers/submit-*.command-handler.ts`
+  - direkte Orchestrierung inklusive einmalig genutzter Persistenzlogik uebernehmen
 - `src/server/services/contact/contact-lead-metadata.ts`
-  - in neue `server/contact/services`-Struktur verschieben
+  - als technischer Builder in eine spaetere Zielstruktur ueberfuehren
 
 ### Spaeteres Architektur-Todo
 
-- `src/server/db/contact-leads.ts`
-  - langfristig an `server/contact/repositories/contact-lead.repository.ts` angleichen
 - `src/server/services/contact/*`
-  - komplette Contact-Domaene aus `server/services` in `server/contact` ueberfuehren
+  - nur verbleibende technische Hilfen schrittweise in die Contact-Domaene ueberfuehren
 - `src/features/contact/*`
   - Altbestand vollstaendig in `client/` und `shared/` schneiden
 - bestehende Testlandschaft
