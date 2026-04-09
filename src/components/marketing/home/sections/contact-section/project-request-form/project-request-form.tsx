@@ -736,7 +736,12 @@ export function ProjectRequestForm({
   };
 
   return (
-    <ContactFormShell intro={formCopy.intro} title={formCopy.title}>
+    <ContactFormShell
+      footer={<ContactFormStatus message={statusMessage} />}
+      intro={formCopy.intro}
+      subtitle={formCopy.subtitle}
+      title={formCopy.title}
+    >
       <div data-project-request="true">
         <ol
           aria-label={formCopy.stepNavigationLabel}
@@ -1230,8 +1235,6 @@ export function ProjectRequestForm({
               requiredHint={formCopy.requiredHint}
             />
           </fieldset>
-
-          <ContactFormStatus message={statusMessage} />
         </form>
       </div>
     </ContactFormShell>

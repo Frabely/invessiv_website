@@ -39,9 +39,9 @@ Ziel dieses Refactors ist eine wartbare, wiederverwendbare Contact-Form-Architek
 
 ### Schritt 2
 
-- [ ] Gemeinsamen Form-Wrapper umsetzen
-- [ ] Slots/Props für Titel, Subheadline, Meta-Zone und Abschlusszone definieren
-- [ ] Dark-/Light-Mode im Wrapper absichern
+- [x] Gemeinsamen Form-Wrapper umsetzen
+- [x] Slots/Props für Titel, Subheadline, Meta-Zone und Abschlusszone definieren
+- [x] Dark-/Light-Mode im Wrapper absichern
 
 ### Schritt 3
 
@@ -101,3 +101,4 @@ Ziel dieses Refactors ist eine wartbare, wiederverwendbare Contact-Form-Architek
 - 2026-04-09: Dokument angelegt, Plan eingetragen, Ausgangszustand festgehalten.
 - 2026-04-09: Schritt 1 umgesetzt: erste Shared-Bausteine für Required-Marker, Feld-Label, Consent-Text und ein gemeinsames Input-/Field-Primitive angelegt.
 - 2026-04-09: Vor Schritt 2 weitere Shared-Bausteine ergänzt: Form-Shell, Actions-Zone und Status-Komponente; Form 1 Validierung auf Inline-Fehler statt Browser-Popup umgestellt.
+- 2026-04-09: Schritt 2 abgeschlossen: `ContactFormShell` auf Subtitle-/Meta-/Footer-Slots erweitert, Dark-/Light-Mode im Wrapper abgesichert und Form 1 an die gemeinsame Abschlusszone angebunden.

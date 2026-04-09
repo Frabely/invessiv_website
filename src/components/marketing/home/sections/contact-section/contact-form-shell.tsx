@@ -5,13 +5,19 @@ import styles from "./contact-form-shell.module.css";
 
 type ContactFormShellProps = {
   children: ReactNode;
+  footer?: ReactNode;
   intro: string;
+  meta?: ReactNode;
+  subtitle?: string;
   title: string;
 };
 
 export function ContactFormShell({
   children,
+  footer,
   intro,
+  meta,
+  subtitle,
   title,
 }: ContactFormShellProps) {
   return (
@@ -21,9 +27,12 @@ export function ContactFormShell({
           <div className={styles.headCopy}>
             <h3 className={styles.title}>{title}</h3>
             <p className={styles.intro}>{intro}</p>
+            {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
           </div>
+          {meta ? <div className={styles.meta}>{meta}</div> : null}
         </div>
-        {children}
+        <div className={styles.body}>{children}</div>
+        {footer ? <div className={styles.footer}>{footer}</div> : null}
       </div>
     </div>
   );
