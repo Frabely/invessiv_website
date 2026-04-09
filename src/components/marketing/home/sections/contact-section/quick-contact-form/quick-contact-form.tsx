@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
+import { ContactHelperList } from "@/components/marketing/home/sections/contact-section/components/contact-helper-list";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -35,6 +36,8 @@ export function QuickContactForm({
   privacyHref,
 }: QuickContactFormProps) {
   const { locale } = useLanguage();
+  const canCopy = typeof navigator !== "undefined" && !!navigator.clipboard;
+  const [isCopied, setIsCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const {
     register,
@@ -44,6 +47,15 @@ export function QuickContactForm({
   } = useForm<QuickContactFormValues>({
     defaultValues: DEFAULT_QUICK_CONTACT_FORM_VALUES,
   });
+
+  useEffect(() => {
+    if (!isCopied) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => setIsCopied(false), 1800);
+    return () => window.clearTimeout(timeoutId);
+  }, [isCopied]);
 
   const getErrorMessage = (fieldName: keyof QuickContactFormValues) => {
     const code = errors[fieldName]?.message ?? errors[fieldName]?.type;
@@ -57,6 +69,22 @@ export function QuickContactForm({
     }
 
     return formCopy.fieldErrorRequired;
+  };
+
+  const copyChannelValue = async () => {
+    if (!canCopy) {
+      setIsCopied(false);
+      return;
+    }
+
+    const valueToCopy = channel.copyValue ?? channel.value;
+
+    try {
+      await navigator.clipboard.writeText(valueToCopy);
+      setIsCopied(true);
+    } catch {
+      setIsCopied(false);
+    }
   };
 
   const onSubmit = handleSubmit(async (values) => {
@@ -79,10 +107,22 @@ export function QuickContactForm({
       intro={formCopy.intro}
       meta={
         <div className={styles.metaCard}>
-          <p className={styles.metaLabel}>
-            {channel.metaLabel ?? formCopy.metaLabel}
-          </p>
-          <p className={styles.metaValue}>{channel.value}</p>
+          <div className={styles.metaCopy}>
+            <p className={styles.metaLabel}>
+              {channel.metaLabel ?? formCopy.metaLabel}
+            </p>
+            <p className={styles.metaValue}>{channel.value}</p>
+          </div>
+          <button
+            className={styles.copyButton}
+            disabled={!canCopy}
+            onClick={copyChannelValue}
+            type="button"
+          >
+            {isCopied
+              ? (channel.copiedLabel ?? "Kopiert")
+              : (channel.copyLabel ?? "E-Mail kopieren")}
+          </button>
         </div>
       }
       subtitle={formCopy.subtitle}
@@ -94,11 +134,7 @@ export function QuickContactForm({
         ) : null}
 
         {channel.detailPoints?.length ? (
-          <ul className={styles.detailList}>
-            {channel.detailPoints.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
+          <ContactHelperList items={channel.detailPoints} />
         ) : null}
 
         <div className={`${styles.grid} ${styles.gridTwo}`}>

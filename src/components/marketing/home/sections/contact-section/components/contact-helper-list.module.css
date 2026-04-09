@@ -1,0 +1,27 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: clamp(0.625rem, 1.4vw, 0.95rem);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-warm);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1;
+}

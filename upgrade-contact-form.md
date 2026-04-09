@@ -178,7 +178,7 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 - Persistenz und Mail technisch sauber im Command-Handler schneiden
 - DB-Schreiben und Mail-Status technisch sauber kapseln
 
-### Schritt 7
+### Schritt 7 [Abgeschlossen]
 
 - Form 1 und Form 3 neu und schlank aufbauen
 - Form 2 sauber als CTA-only daneben halten
@@ -296,15 +296,6 @@ src/
   - direkte Orchestrierung inklusive einmalig genutzter Persistenzlogik uebernehmen
 - `src/server/services/contact/contact-lead-metadata.ts`
   - als technischer Builder in eine spaetere Zielstruktur ueberfuehren
-
-### Spaeteres Architektur-Todo
-
-- `src/server/services/contact/*`
-  - nur verbleibende technische Hilfen schrittweise in die Contact-Domaene ueberfuehren
-- `src/features/contact/*`
-  - Altbestand vollstaendig in `client/` und `shared/` schneiden
-- bestehende Testlandschaft
-  - Contact-Tests schichtbezogen statt komponentenuebergreifend neu ordnen
 
 ## Schritt 1 Entscheidungen
 
@@ -427,14 +418,6 @@ Vor der eigentlichen Neuimplementierung sollen etablierte Patterns beruecksichti
   - `next-best-practices`
   - `frontend-design`
   - `webapp-testing`
-
-## Separate Architektur-Todos ausserhalb dieses Plans
-
-Diese Punkte sollen dokumentiert, aber nicht in diesem Neustart-Plan umgesetzt werden:
-
-- bestehende Contact-Ordnerstruktur zwischen `features/contact`, `server/services/contact` und Route langfristig bereinigen
-- alte gemischte Services in sauberere Handler- / Repository-Grenzen zerlegen
-- Altbestand konsistent in die neue Zielstruktur ueberfuehren, falls ausserhalb des unmittelbaren Form-Neustarts noetig
 
 ## Annahmen
 

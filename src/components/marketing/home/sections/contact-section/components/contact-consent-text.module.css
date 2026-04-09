@@ -8,15 +8,17 @@
 
 .link {
   color: var(--accent);
-  text-decoration: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
   padding-bottom: 1px;
 }
 
 .link:hover,
 .link:focus-visible {
-  color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
-  border-bottom-color: color-mix(in srgb, var(--accent) 82%, transparent);
+  color: var(--accent);
+  border-bottom-color: color-mix(in srgb, var(--accent) 72%, transparent);
 }
 
 :global([data-theme="light"]) .link {

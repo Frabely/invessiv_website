@@ -643,7 +643,10 @@ export function ProjectRequestForm({
                   errors.fullName ? getFieldErrorText("fullName") : undefined
                 }
                 inputProps={{
-                  ...register("fullName", { required: "required" }),
+                  ...register("fullName", {
+                    onChange: () => clearErrors("fullName"),
+                    required: "required",
+                  }),
                   "aria-invalid": errors.fullName ? "true" : undefined,
                   autoCapitalize: "words",
                   autoComplete: "name",
@@ -659,6 +662,7 @@ export function ProjectRequestForm({
                 }
                 inputProps={{
                   ...register("email", {
+                    onChange: () => clearErrors("email"),
                     pattern: {
                       message: "invalid_email",
                       value: EMAIL_PATTERN,
@@ -696,7 +700,7 @@ export function ProjectRequestForm({
                 ...register("offerKey", {
                   onChange: (event) => {
                     applyOfferSelection(event.target.value);
-                    clearErrors("offerKey");
+                    clearErrors(["offerKey", "goalKey", "pageKeys", "website"]);
                   },
                   required: "required",
                 }),

@@ -219,6 +219,30 @@ describe("ProjectRequestForm", () => {
     });
   });
 
+  it("clears step one validation errors as soon as the fields are corrected", async () => {
+    renderForm();
+
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("Pflichtfeld").length).toBeGreaterThan(0);
+    });
+
+    fireEvent.change(screen.getByRole("textbox", { name: /^Name\*/ }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail\*/ }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: /^Angebot\*/ }), {
+      target: { value: "landing" },
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Pflichtfeld")).toBeNull();
+    });
+  });
+
   it("submits the normalized payload to the API and shows success", async () => {
     const fetchMock = vi.mocked(fetch);
     fetchMock.mockResolvedValueOnce(

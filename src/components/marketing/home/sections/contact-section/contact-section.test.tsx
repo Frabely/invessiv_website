@@ -29,6 +29,8 @@ describe("ContactSection", () => {
         contactChannels={[
           {
             actionLabel: "Kurze E-Mail senden",
+            copyLabel: "E-Mail kopieren",
+            copyValue: "service@invessiv.com",
             description: "Für mittlere Leads mit grobem Vorhaben.",
             href: "mailto:hi@invessiv.de",
             kicker: "Erst grob anfragen",
@@ -161,6 +163,9 @@ describe("ContactSection", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: /Kurze E-Mail/ }));
     expect(screen.getByRole("textbox", { name: "Nachricht*" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "E-Mail kopieren" }),
+    ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
     const callLink = screen.getByRole("link", {

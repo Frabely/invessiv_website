@@ -318,12 +318,6 @@
   align-self: center;
 }
 
-.consent a {
-  color: var(--color-text);
-  text-decoration: underline;
-  text-underline-offset: 0.16em;
-}
-
 .consentError,
 .status {
   margin: 2px 0 0;

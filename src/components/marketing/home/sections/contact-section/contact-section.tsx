@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import { DiscoveryCallPanel } from "@/components/marketing/home/sections/contact-section/discovery-call-panel/discovery-call-panel";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 import { QuickContactForm } from "@/components/marketing/home/sections/contact-section/quick-contact-form/quick-contact-form";
 import styles from "./contact-section.module.css";
@@ -59,9 +59,6 @@ export function ContactSection({
   privacyHref,
   title,
 }: ContactSectionProps) {
-  const [copiedEntryId, setCopiedEntryId] = useState<string | null>(null);
-  const [copyStatusMessage, setCopyStatusMessage] = useState("");
-
   const primaryPath = useMemo(
     () =>
       contactCta && contactForm ? { cta: contactCta, form: contactForm } : null,
@@ -104,7 +101,6 @@ export function ContactSection({
     return channel.href.startsWith("mailto:") ? "email" : "call";
   };
 
-  const isExternalLink = (href: string) => /^https?:\/\//i.test(href);
   const getSecondaryCtaAnalyticsProps = (href: string) => {
     const contactTarget = getContactTarget(href);
     if (contactTarget) {
@@ -134,50 +130,6 @@ export function ContactSection({
     );
     return hasSelectedEntry ? selectedEntryId : entries[0].id;
   }, [entries, selectedEntryId]);
-
-  useEffect(() => {
-    if (!copiedEntryId) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setCopiedEntryId((previous) =>
-        previous === copiedEntryId ? null : previous,
-      );
-    }, 1800);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [copiedEntryId]);
-
-  const copyChannelValue = async (entry: ContactEntry) => {
-    if (!entry.channel?.copyValue) {
-      return;
-    }
-
-    const valueToCopy = entry.channel.copyValue;
-
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(valueToCopy);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = valueToCopy;
-        textarea.setAttribute("readonly", "true");
-        textarea.style.position = "absolute";
-        textarea.style.left = "-9999px";
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-      }
-
-      setCopiedEntryId(entry.id);
-      setCopyStatusMessage(entry.channel.copiedLabel ?? "Copied");
-    } catch {
-      setCopiedEntryId(null);
-      setCopyStatusMessage(entry.channel.copyLabel ?? "Copy unavailable");
-    }
-  };
 
   useEffect(() => {
     if (!primaryPath) {
@@ -302,24 +254,12 @@ export function ContactSection({
                 );
               })}
             </div>
-            <p
-              className={styles.screenReaderStatus}
-              role="status"
-              aria-live="polite"
-            >
-              {copyStatusMessage}
-            </p>
-
             {entries.map((entry) => {
               const isActive = activeEntryId === entry.id;
               const channelMode =
                 entry.kind === "channel" && entry.channel
                   ? getChannelMode(entry.channel)
                   : null;
-              const isExternalChannelLink =
-                entry.kind === "channel" && entry.channel
-                  ? isExternalLink(entry.channel.href)
-                  : false;
 
               return (
                 <article
@@ -349,96 +289,9 @@ export function ContactSection({
                         formCopy={quickContactForm}
                         privacyHref={privacyHref}
                       />
-                    ) : (
-                      <div className={styles.channelPanel}>
-                        <div className={styles.channelPanelHead}>
-                          <h4 className={styles.entryPanelTitle}>
-                            {entry.label}
-                          </h4>
-                          {entry.description ? (
-                            <p className={styles.entryPanelDescription}>
-                              {entry.description}
-                            </p>
-                          ) : null}
-                        </div>
-
-                        {channelMode === "email" ? (
-                          <div className={styles.channelEmailCard}>
-                            <div className={styles.channelMeta}>
-                              <p className={styles.channelMetaLabel}>
-                                {entry.channel.metaLabel ?? "Kontakt"}
-                              </p>
-                              <p className={styles.channelMetaValue}>
-                                {entry.channel.value}
-                              </p>
-                            </div>
-                            {entry.channel.copyValue ? (
-                              <button
-                                className={styles.channelCopyButton}
-                                onClick={() => copyChannelValue(entry)}
-                                type="button"
-                              >
-                                {copiedEntryId === entry.id
-                                  ? (entry.channel.copiedLabel ?? "Copied")
-                                  : (entry.channel.copyLabel ?? "Copy")}
-                              </button>
-                            ) : null}
-                          </div>
-                        ) : (
-                          <div className={styles.channelCallCard}>
-                            <p className={styles.channelMetaLabel}>
-                              {entry.channel.metaLabel ?? "Format"}
-                            </p>
-                            <p className={styles.channelMetaValue}>
-                              {entry.channel.metaValue ?? entry.channel.value}
-                            </p>
-                          </div>
-                        )}
-
-                        {entry.channel.helper ? (
-                          <p className={styles.entryPanelHelper}>
-                            {entry.channel.helper}
-                          </p>
-                        ) : null}
-
-                        {entry.channel.detailPoints?.length ? (
-                          <ul className={styles.channelDetailList}>
-                            {entry.channel.detailPoints.map((point) => (
-                              <li key={`${entry.id}-${point}`}>{point}</li>
-                            ))}
-                          </ul>
-                        ) : null}
-
-                        <div className={styles.channelFooter}>
-                          {entry.channel.hint ? (
-                            <p className={styles.entryPanelHint}>
-                              {entry.channel.hint}
-                            </p>
-                          ) : null}
-                          <div className={styles.channelActions}>
-                            <PrimaryCtaLink
-                              className={`${styles.channelPrimaryCta}${channelMode === "email" ? ` ${styles.channelActionShimmer}` : ""}`}
-                              href={entry.channel.href}
-                              rel={
-                                isExternalChannelLink
-                                  ? "noopener noreferrer"
-                                  : undefined
-                              }
-                              target={
-                                isExternalChannelLink ? "_blank" : undefined
-                              }
-                              data-analytics-event="contact_click"
-                              data-analytics-location="contact"
-                              data-analytics-target={
-                                getContactTarget(entry.channel.href) ?? "email"
-                              }
-                            >
-                              {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
-                            </PrimaryCtaLink>
-                          </div>
-                        </div>
-                      </div>
-                    )
+                    ) : channelMode === "call" ? (
+                      <DiscoveryCallPanel channel={entry.channel} />
+                    ) : null
                   ) : null}
                 </article>
               );
