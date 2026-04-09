@@ -8,6 +8,12 @@ import { ContactFormField } from "@/components/marketing/home/sections/contact-s
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { openQuickContactMailDraft } from "@/features/contact/client/contact-form-service";
+import { mapQuickContactFormToDto } from "@/features/contact/client/map-quick-contact-form-to-dto";
+import {
+  DEFAULT_QUICK_CONTACT_FORM_VALUES,
+  type QuickContactFormValues,
+} from "@/features/contact/client/quick-contact-form.schema";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import styles from "./quick-contact-form.module.css";
 
@@ -16,24 +22,10 @@ type ContactChannel = NonNullable<
 >[number];
 type QuickContactFormCopy = NonNullable<LandingSectionCopy["quickContactForm"]>;
 
-type QuickContactFormValues = {
-  consentAccepted: boolean;
-  email: string;
-  fullName: string;
-  message: string;
-};
-
 type QuickContactFormProps = {
   channel: ContactChannel;
   formCopy: QuickContactFormCopy;
   privacyHref: string;
-};
-
-const DEFAULT_VALUES: QuickContactFormValues = {
-  consentAccepted: false,
-  email: "",
-  fullName: "",
-  message: "",
 };
 
 export function QuickContactForm({
@@ -48,7 +40,7 @@ export function QuickContactForm({
     reset,
     formState: { errors, isSubmitting },
   } = useForm<QuickContactFormValues>({
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: DEFAULT_QUICK_CONTACT_FORM_VALUES,
   });
 
   const getErrorMessage = (fieldName: keyof QuickContactFormValues) => {
@@ -66,17 +58,17 @@ export function QuickContactForm({
   };
 
   const onSubmit = handleSubmit(async (values) => {
-    const subject = encodeURIComponent(formCopy.mailSubject);
-    const body = encodeURIComponent(
-      `${formCopy.mailIntro}\n\n${formCopy.fullNameLabel}: ${values.fullName}\n${formCopy.emailLabel}: ${values.email}\n\n${values.message}`,
-    );
+    const dto = mapQuickContactFormToDto(values);
 
     setStatusMessage(formCopy.submitSuccess);
-    reset(DEFAULT_VALUES);
-    const mailtoHref = `mailto:${channel.value}?subject=${subject}&body=${body}`;
-    const link = document.createElement("a");
-    link.href = mailtoHref;
-    link.click();
+    reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);
+    openQuickContactMailDraft(dto, {
+      channelValue: channel.value,
+      emailLabel: formCopy.emailLabel,
+      fullNameLabel: formCopy.fullNameLabel,
+      intro: formCopy.mailIntro,
+      subject: formCopy.mailSubject,
+    });
   });
 
   return (
@@ -167,6 +159,7 @@ export function QuickContactForm({
             {...register("consentAccepted", {
               validate: (value) => value || "consent_required",
             })}
+            aria-describedby="quick-contact-consent-error"
             aria-invalid={errors.consentAccepted ? "true" : undefined}
             type="checkbox"
           />

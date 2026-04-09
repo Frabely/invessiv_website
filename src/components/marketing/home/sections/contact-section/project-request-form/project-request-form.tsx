@@ -11,11 +11,19 @@ import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { SECTION_HREFS } from "@/config/site";
+import {
+  DEFAULT_CONTACT_SUBMIT_PATH,
+  submitProjectRequest,
+} from "@/features/contact/client/contact-form-service";
+import { mapProjectRequestFormToDto } from "@/features/contact/client/map-project-request-form-to-dto";
+import {
+  DEFAULT_PROJECT_REQUEST_FORM_VALUES,
+  type ProjectRequestFormValues,
+} from "@/features/contact/client/project-request-form.schema";
 import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 import styles from "./project-request-form.module.css";
 
-const DEFAULT_SUBMIT_PATH = "/api/public/contact";
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
 const STEP_SEQUENCE = [1, 2, 3] as const;
 const WEBSITE_PATTERN = /^https?:\/\/.+/i;
@@ -100,51 +108,13 @@ type ProjectOfferSyncDetail = {
   projectGoal?: string;
 };
 
-type ProjectRequestFormValues = {
-  budgetKey: string;
-  company: string;
-  consentAccepted: boolean;
-  email: string;
-  fullName: string;
-  goalKey: string;
-  offerKey: string;
-  pageKeys: string[];
-  pagesCustom: string;
-  phone: string;
-  preferredStartKey: string;
-  projectDetails: string;
-  role: string;
-  website: string;
-  websiteTrap: string;
-  workflowKey: string;
-};
-
-const DEFAULT_VALUES: ProjectRequestFormValues = {
-  budgetKey: "",
-  company: "",
-  consentAccepted: false,
-  email: "",
-  fullName: "",
-  goalKey: "",
-  offerKey: "",
-  pageKeys: [],
-  pagesCustom: "",
-  phone: "",
-  preferredStartKey: "",
-  projectDetails: "",
-  role: "",
-  website: "",
-  websiteTrap: "",
-  workflowKey: "",
-};
-
 export function ProjectRequestForm({
   bottomHint,
   formCopy,
   offerOptions,
   privacyHref,
   privacyLabel,
-  submitPath = DEFAULT_SUBMIT_PATH,
+  submitPath = DEFAULT_CONTACT_SUBMIT_PATH,
 }: ProjectRequestFormProps) {
   const { locale } = useLanguage();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -164,7 +134,7 @@ export function ProjectRequestForm({
     trigger,
     formState: { errors, isSubmitting },
   } = useForm<ProjectRequestFormValues>({
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: DEFAULT_PROJECT_REQUEST_FORM_VALUES,
   });
 
   const selectedOfferKey = useWatch({
@@ -475,7 +445,7 @@ export function ProjectRequestForm({
       );
       const nextProjectGoal = contactAnchor.dataset.projectGoal ?? "";
 
-      reset(DEFAULT_VALUES);
+      reset(DEFAULT_PROJECT_REQUEST_FORM_VALUES);
       setProjectGoalSeed("");
       setStartedAt(new Date().toISOString());
       setStatusMessage(null);
@@ -550,40 +520,18 @@ export function ProjectRequestForm({
       }
     }
 
-    const payloadBody = {
-      budgetKey: values.budgetKey || undefined,
-      company: values.company.trim() || undefined,
-      consentAccepted: values.consentAccepted,
-      email: values.email.trim(),
-      fullName: values.fullName.trim(),
-      goalKey: values.goalKey || undefined,
+    const dto = mapProjectRequestFormToDto(values, {
       locale,
-      offerKey: values.offerKey,
-      pageKeys: values.pageKeys.length > 0 ? values.pageKeys : undefined,
-      pagesCustom: values.pagesCustom.trim() || undefined,
-      phone: values.phone.trim() || undefined,
-      preferredStartKey: values.preferredStartKey || undefined,
-      projectDetails: values.projectDetails.trim(),
-      role: values.role.trim() || undefined,
       startedAt,
-      website: values.website.trim() || undefined,
-      websiteTrap: values.websiteTrap.trim() || undefined,
-      workflowKey: values.workflowKey || undefined,
-    };
+    });
 
     setStatusMessage(formCopy.submittingLabel);
 
     try {
-      const response = await fetch(submitPath, {
-        body: JSON.stringify(payloadBody),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
+      const payload = await submitProjectRequest(dto, {
+        submitPath,
       });
-
-      const payload = (await response.json()) as ContactSubmitResponse;
-      if (!response.ok || !payload.ok) {
+      if (!payload.ok) {
         if (!payload.ok && payload.fieldErrors) {
           const firstInvalidField = Object.keys(payload.fieldErrors)[0];
           if (firstInvalidField) {
@@ -619,7 +567,7 @@ export function ProjectRequestForm({
       });
       setStatusMessage(formCopy.submitSuccess);
       setProjectGoalSeed("");
-      reset(DEFAULT_VALUES);
+      reset(DEFAULT_PROJECT_REQUEST_FORM_VALUES);
       setCurrentStep(1);
       setStartedAt(new Date().toISOString());
       window.requestAnimationFrame(() => setFocus("fullName"));

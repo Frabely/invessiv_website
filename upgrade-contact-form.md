@@ -1,6 +1,6 @@
 # Upgrade Contact Form
 
-Status: step 2 completed  
+Status: step 3 completed  
 Last updated: 2026-04-09
 
 Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-Architektur mit drei separaten Formular-/Kontaktwegen, klarer Verantwortlichkeit zwischen UI, Frontend-Service, API-Route, Backend-Command-Handler und Persistenz. Bereits sinnvolle Shared-UI-Bausteine koennen weiterverwendet werden. Die aktuell im laufenden Changeset entstandenen dedizierten Form-Implementierungen und deren Logik gelten nicht als Zielzustand und werden verworfen.
@@ -157,7 +157,7 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 - Shared-Field-Komponenten auf Kompatibilitaet pruefen und ggf. vereinfachen
 - Ziel: Form-Komponenten nur fuer Values, Register, Errors, Submit
 
-### Schritt 3
+### Schritt 3 [Abgeschlossen]
 
 - Frontend-DTOs und `contact-form-service.ts` definieren
 - Mapping aus den Formularen in den Client-Layer verlagern
@@ -194,13 +194,22 @@ Ziel dieses Neustarts ist eine deutlich schlankere und wartbarere Contact-Form-A
 src/
   components/
     marketing/home/sections/contact-section/
+      components/
+        contact-consent-text.tsx
+        contact-consent-text.module.css
+        contact-required-marker.tsx
+        contact-required-marker.module.css
+        contact-field-label.tsx
+        contact-form-actions.tsx
+        contact-form-actions.module.css
+        contact-form-field.tsx
+        contact-form-field.module.css
+        contact-form-shell.tsx
+        contact-form-shell.module.css
+        contact-form-status.tsx
+        contact-form-status.module.css
       contact-section.tsx
       contact-section.module.css
-      contact-consent-text.tsx
-      contact-consent-text.module.css
-      contact-required-marker.tsx
-      contact-required-marker.module.css
-      contact-field-label.tsx
       project-request-form/
         project-request-form.tsx
         project-request-form.module.css
@@ -333,6 +342,24 @@ src/
   - Step-Gating nur dort, wo die UI es fuer Navigation braucht
 - Die eigentliche API-/DTO-Abkopplung folgt erst in Schritt 3; Schritt 2 zieht nur den Form-State und die UI-Verantwortung gerade.
 - Form 3 verwendet bis Schritt 3 noch einen vorbereiteten `mailto`-Flow als Uebergang, bleibt aber bereits als eigene Formular-Komponente geschnitten.
+
+## Schritt 3 Ergebnis: Client-Layer fuer DTOs und Submit
+
+- Unter `src/features/contact/client/` liegen jetzt form-nahe Client-Dateien fuer:
+  - `ProjectRequestDto`
+  - `QuickContactDto`
+  - Form-Value-Typen und Default-Values
+  - Mapper von Form-Values auf DTOs
+  - `contact-form-service.ts`
+- `project-request-form.tsx` baut das API-Payload nicht mehr selbst, sondern mappt die Form-Values ueber den Client-Layer und delegiert den Submit an den Service.
+- `quick-contact-form.tsx` baut den `mailto:`-Link nicht mehr selbst, sondern mappt die Form-Values auf ein `QuickContactDto` und delegiert die Link-Erzeugung an den Client-Service.
+- Die Form-Komponenten enthalten damit keine direkte Payload-Orchestrierung und kein eigenes Fetch-/`mailto`-Assembly mehr.
+
+## Schritt 3 Entscheidungen
+
+- Der aktuelle oeffentliche Submit-Pfad bleibt fuer Form 1 vorerst unveraendert; der Client-Service kapselt nur den Zugriff und normalisiert offensichtliche Client-/Netzwerkfehler.
+- Form 3 bleibt in Schritt 3 bewusst noch ein `mailto`-basierter Flow, nutzt dafuer aber bereits denselben Client-Layer-Ansatz mit DTO und Service.
+- Die tatsaechliche API-Dispatch-Umstellung auf getrennte Request-Typen folgt erst in Schritt 4.
 
 ## Testplan
 
