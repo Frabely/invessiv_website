@@ -6,7 +6,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/contact-field-label";
+import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/components/contact-field-label";
 import styles from "./contact-form-field.module.css";
 
 type FieldOption = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ContactRequiredMarker } from "@/components/marketing/home/sections/contact-section/contact-required-marker";
+import { ContactRequiredMarker } from "@/components/marketing/home/sections/contact-section/components/contact-required-marker";
 
 type ContactFieldLabelProps = {
   label: string;

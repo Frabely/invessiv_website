@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/contact-consent-text";
-import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/contact-form-actions";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/contact-form-field";
-import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/contact-form-shell";
-import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/contact-form-status";
+import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
+import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
+import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
+import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
+import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
