@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/contact-consent-text";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/contact-form-actions";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/contact-form-field";
@@ -150,9 +150,10 @@ export function ProjectRequestForm({
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
-  const projectGoalSeedRef = useRef("");
+  const [projectGoalSeed, setProjectGoalSeed] = useState("");
   const {
     clearErrors,
+    control,
     getValues,
     handleSubmit,
     register,
@@ -161,14 +162,19 @@ export function ProjectRequestForm({
     setFocus,
     setValue,
     trigger,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<ProjectRequestFormValues>({
     defaultValues: DEFAULT_VALUES,
   });
 
-  const selectedOfferKey = watch("offerKey");
-  const selectedPageKeys = watch("pageKeys");
+  const selectedOfferKey = useWatch({
+    control,
+    name: "offerKey",
+  });
+  const selectedPageKeys = useWatch({
+    control,
+    name: "pageKeys",
+  });
 
   const stepTitles = useMemo(
     () => [
@@ -269,10 +275,8 @@ export function ProjectRequestForm({
     return 3;
   };
 
-  const getFieldErrorText = useCallback(
-    (fieldName: string) => {
-      const fieldError = errors[fieldName as keyof ProjectRequestFormValues];
-      const code = fieldError?.message ?? fieldError?.type;
+  const getFieldErrorTextByCode = useCallback(
+    (code: string | undefined) => {
       const mappedMessages: Record<string, string> = {
         consent_required: formCopy.fieldErrorConsentRequired,
         goal_required: formCopy.fieldErrorRequired,
@@ -289,7 +293,6 @@ export function ProjectRequestForm({
       return mappedMessages[String(code)] ?? formCopy.fieldErrorRequired;
     },
     [
-      errors,
       formCopy.fieldErrorConsentRequired,
       formCopy.fieldErrorInvalidEmail,
       formCopy.fieldErrorInvalidWebsite,
@@ -298,6 +301,15 @@ export function ProjectRequestForm({
       formCopy.fieldErrorRequired,
       formCopy.pagesRequiredHint,
     ],
+  );
+
+  const getFieldErrorText = useCallback(
+    (fieldName: string) => {
+      const fieldError = errors[fieldName as keyof ProjectRequestFormValues];
+      const code = fieldError?.message ?? fieldError?.type;
+      return getFieldErrorTextByCode(code);
+    },
+    [errors, getFieldErrorTextByCode],
   );
 
   const validatePagesSelection = useCallback(() => {
@@ -395,22 +407,22 @@ export function ProjectRequestForm({
     (nextProjectGoal: string) => {
       const normalizedGoal = nextProjectGoal.trim();
       const currentValue = getValues("projectDetails").trim();
-      const previousSeed = projectGoalSeedRef.current.trim();
+      const previousSeed = projectGoalSeed.trim();
 
       if (!normalizedGoal) {
         if (currentValue === previousSeed) {
           setValue("projectDetails", "");
         }
-        projectGoalSeedRef.current = "";
+        setProjectGoalSeed("");
         return;
       }
 
       if (!currentValue || currentValue === previousSeed) {
         setValue("projectDetails", normalizedGoal);
-        projectGoalSeedRef.current = normalizedGoal;
+        setProjectGoalSeed(normalizedGoal);
       }
     },
-    [getValues, setValue],
+    [getValues, projectGoalSeed, setValue],
   );
 
   const togglePageOption = (optionKey: string) => {
@@ -464,7 +476,7 @@ export function ProjectRequestForm({
       const nextProjectGoal = contactAnchor.dataset.projectGoal ?? "";
 
       reset(DEFAULT_VALUES);
-      projectGoalSeedRef.current = "";
+      setProjectGoalSeed("");
       setStartedAt(new Date().toISOString());
       setStatusMessage(null);
       setCurrentStep(1);
@@ -586,7 +598,7 @@ export function ProjectRequestForm({
 
             setStep(getFieldStep(firstInvalidField));
             setStatusMessage(
-              `${formCopy.validationSummaryPrefix}: ${getFieldErrorText(firstInvalidField)}`,
+              `${formCopy.validationSummaryPrefix}: ${getFieldErrorTextByCode(payload.fieldErrors[firstInvalidField]?.[0])}`,
             );
             return;
           }
@@ -606,7 +618,7 @@ export function ProjectRequestForm({
         variant: "primary",
       });
       setStatusMessage(formCopy.submitSuccess);
-      projectGoalSeedRef.current = "";
+      setProjectGoalSeed("");
       reset(DEFAULT_VALUES);
       setCurrentStep(1);
       setStartedAt(new Date().toISOString());
@@ -1000,6 +1012,7 @@ export function ProjectRequestForm({
 
             <label className={styles.consent}>
               <input
+                aria-describedby="project-request-consent-error"
                 aria-invalid={errors.consentAccepted ? "true" : undefined}
                 type="checkbox"
                 {...register("consentAccepted", {
