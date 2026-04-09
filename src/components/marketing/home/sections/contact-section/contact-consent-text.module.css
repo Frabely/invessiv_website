@@ -1,0 +1,17 @@
+.link {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 62%, transparent);
+  padding-bottom: 1px;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
+  border-bottom-color: color-mix(in srgb, var(--accent) 82%, transparent);
+}
+
+:global([data-theme="light"]) .link {
+  color: var(--accent);
+  border-bottom-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}

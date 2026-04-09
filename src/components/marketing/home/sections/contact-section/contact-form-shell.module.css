@@ -1,0 +1,48 @@
+.root {
+  width: 100%;
+  margin-top: 0;
+}
+
+.panel {
+  margin-top: 0;
+  padding: clamp(1rem, 1.8vw, 1.3rem);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 20px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 12px 28px rgba(5, 8, 12, 0.1);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 66%, transparent);
+}
+
+.headCopy {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.title {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 94%, var(--color-text-muted) 6%);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+}
+
+.intro {
+  margin: 0;
+  justify-self: start;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: 0.9rem;
+  line-height: 1.54;
+  text-align: left;
+}

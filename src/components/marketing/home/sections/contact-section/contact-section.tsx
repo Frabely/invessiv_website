@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -404,8 +405,8 @@ export function ContactSection({
                           </p>
                         ) : null}
                         <div className={styles.channelActions}>
-                          <a
-                            className={`${styles.channelActionLink} ${channelMode === "call" ? styles.channelActionCall : `${styles.channelActionEmail} ${styles.channelActionShimmer}`}`}
+                          <PrimaryCtaLink
+                            className={`${styles.channelPrimaryCta}${channelMode === "email" ? ` ${styles.channelActionShimmer}` : ""}`}
                             href={entry.channel.href}
                             rel={
                               isExternalChannelLink
@@ -422,7 +423,7 @@ export function ContactSection({
                             }
                           >
                             {entry.channel.actionLabel ?? "Kontakt aufnehmen"}
-                          </a>
+                          </PrimaryCtaLink>
                         </div>
                       </div>
                     </div>

@@ -312,94 +312,8 @@
   margin-left: auto;
 }
 
-.channelActionLink {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  width: 100%;
-  padding: 0 16px;
-  border-radius: 10px;
-  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  font-size: 0.94rem;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-  transition:
-    transform 180ms ease,
-    border-color 220ms ease,
-    background-color 220ms ease,
-    box-shadow 220ms ease,
-    color 220ms ease;
-}
-
-.channelActionLink:hover {
-  color: inherit;
-}
-
-.channelActionEmail {
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 58%, var(--color-border) 42%);
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 60%,
-      var(--color-surface-2) 40%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 46%, var(--color-surface-1) 54%)
-  );
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  box-shadow: 0 4px 12px
-    color-mix(in srgb, var(--color-accent-warm) 16%, transparent);
-}
-
-.channelActionCall {
-  border: 1px solid
-    color-mix(in srgb, var(--color-cta) 52%, var(--color-border) 48%);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-cta) 10%);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 6%, transparent);
-}
-
-.channelActionEmail:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 66%, #ffffff 10%);
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 64%,
-      var(--color-surface-2) 36%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 50%, var(--color-surface-1) 50%)
-  );
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-text-muted) 8%);
-  box-shadow: 0 6px 14px
-    color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
-  transform: translateY(-1px);
-}
-
-.channelActionCall:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 68%, #ffffff 10%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-cta) 36%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 24%, transparent);
-  transform: translateY(-1px);
-}
-
-.channelActionEmail:active,
-.channelActionCall:active {
-  transform: translateY(1px);
-}
-
-.channelActionLink:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 68%, #ffffff 12%);
-  outline-offset: 2px;
+.channelPrimaryCta {
+  min-width: 198px;
 }
 
 .channelActionShimmer {
@@ -543,48 +457,6 @@
   box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 14%, transparent);
 }
 
-:global([data-theme="light"]) .channelActionEmail {
-  border-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 52%,
-    var(--color-border) 48%
-  );
-  background: linear-gradient(
-    135deg,
-    color-mix(
-      in srgb,
-      var(--color-accent-warm) 46%,
-      var(--color-surface-2) 54%
-    ),
-    color-mix(in srgb, var(--color-accent-warm) 34%, #ffffff 66%)
-  );
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-  box-shadow: 0 4px 10px
-    color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
-}
-
-:global([data-theme="light"]) .channelActionCall {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 56%,
-    var(--color-border) 44%
-  );
-  background: color-mix(in srgb, var(--color-surface-2) 84%, transparent);
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 55%, transparent);
-}
-
-:global([data-theme="light"]) .channelActionCall:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 72%, #ffffff 8%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 70%,
-    var(--color-cta) 30%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 20%, transparent);
-}
-
 @media (min-width: 760px) {
   .entryPicker {
     display: flex;
@@ -605,9 +477,8 @@
     justify-content: flex-end;
   }
 
-  .channelActionLink {
+  .channelPrimaryCta {
     width: auto;
-    min-width: 198px;
   }
 }
 

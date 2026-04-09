@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/contact-consent-text";
+import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/contact-field-label";
+import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/contact-form-actions";
+import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/contact-form-shell";
+import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
@@ -19,6 +24,7 @@ type FormOption = {
   key: string;
   label: string;
 };
+type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
 type ContactFormCopy = {
   budgetLabel: string;
@@ -141,6 +147,10 @@ export function ProjectRequestForm({
   const ghostButtonClassName = `${buttonStyles.button} ${buttonStyles.ghost}`;
   const fieldOfferClassName = `${styles.field} ${styles.fieldOffer} ${styles.fieldOfferLayout}`;
   const pagesCustomFieldClassName = `${styles.field} ${styles.pagesCustom}`;
+  const getFormFieldName = (control: Element) =>
+    control.getAttribute("name") === "consent"
+      ? "consentAccepted"
+      : (control.getAttribute("name") ?? "");
 
   const fieldRules = useMemo(() => {
     const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
@@ -240,6 +250,92 @@ export function ProjectRequestForm({
     });
   }, []);
 
+  const getClientFieldError = useCallback(
+    (
+      fieldName: string,
+      validity: ValidityState,
+      value: string,
+    ): string[] | undefined => {
+      if (fieldName === "consentAccepted" && validity.valueMissing) {
+        return ["consent_required"];
+      }
+      if (fieldName === "fullName" && validity.valueMissing) {
+        return ["full_name_required"];
+      }
+      if (fieldName === "email") {
+        if (validity.valueMissing) {
+          return ["required"];
+        }
+        if (validity.typeMismatch) {
+          return ["invalid_email"];
+        }
+      }
+      if (fieldName === "website") {
+        if (validity.valueMissing) {
+          return ["website_required"];
+        }
+        if (validity.typeMismatch || validity.patternMismatch) {
+          return ["invalid_website"];
+        }
+      }
+      if (fieldName === "goalKey" && validity.valueMissing) {
+        return ["goal_required"];
+      }
+      if (fieldName === "workflowKey" && validity.valueMissing) {
+        return ["workflow_required"];
+      }
+      if (fieldName === "projectDetails") {
+        if (validity.valueMissing || !value.trim()) {
+          return ["project_details_required"];
+        }
+      }
+      if (validity.valueMissing) {
+        return ["required"];
+      }
+      return undefined;
+    },
+    [],
+  );
+
+  const validateControls = useCallback(
+    (
+      controls: FormControl[],
+    ): {
+      firstInvalidControl: FormControl | null;
+      nextErrors: Record<string, string[]>;
+    } => {
+      const nextErrors: Record<string, string[]> = {};
+      let firstInvalidControl: FormControl | null = null;
+
+      controls.forEach((control) => {
+        if (control.disabled || control.classList.contains("sr-only")) {
+          return;
+        }
+
+        const fieldName = getFormFieldName(control);
+        if (!fieldName) {
+          return;
+        }
+
+        const fieldError = getClientFieldError(
+          fieldName,
+          control.validity,
+          "value" in control ? String(control.value ?? "") : "",
+        );
+
+        if (fieldError) {
+          nextErrors[fieldName] = fieldError;
+          if (!firstInvalidControl) {
+            firstInvalidControl = control;
+          }
+        }
+      });
+
+      return { firstInvalidControl, nextErrors };
+    },
+    [getClientFieldError],
+  );
+
   const applyOfferSelection = useCallback((nextOfferKey: string) => {
     setSelectedOfferKey(nextOfferKey);
 
@@ -323,21 +419,16 @@ export function ProjectRequestForm({
         ),
       );
 
-      for (const control of controls) {
-        if (control.disabled || control.classList.contains("sr-only")) {
-          continue;
-        }
-
-        if (!control.checkValidity()) {
-          control.reportValidity();
-          control.focus();
-          return false;
-        }
+      const { firstInvalidControl, nextErrors } = validateControls(controls);
+      if (Object.keys(nextErrors).length > 0) {
+        setFieldErrors((previous) => ({ ...previous, ...nextErrors }));
+        firstInvalidControl?.focus();
+        return false;
       }
 
       return !(step === 2 && !validatePagesSelection());
     },
-    [validatePagesSelection],
+    [validateControls, validatePagesSelection],
   );
 
   const setStep = useCallback(
@@ -537,8 +628,19 @@ export function ProjectRequestForm({
       }
     }
 
-    if (!form.checkValidity() || isSubmitting) {
-      form.reportValidity();
+    if (isSubmitting) {
+      return;
+    }
+
+    const controls = Array.from(
+      form.querySelectorAll<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >("input, select, textarea"),
+    );
+    const { firstInvalidControl, nextErrors } = validateControls(controls);
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors((previous) => ({ ...previous, ...nextErrors }));
+      firstInvalidControl?.focus();
       return;
     }
 
@@ -634,20 +736,8 @@ export function ProjectRequestForm({
   };
 
   return (
-    <div className={styles.root} data-project-request="true">
-      <div
-        className={styles.panel}
-        data-project-request-panel="true"
-        role="region"
-        aria-label={formCopy.title}
-      >
-        <div className={`${styles.head} ${styles.headCloseOnly}`}>
-          <div className={styles.headCopy}>
-            <h3>{formCopy.title}</h3>
-            <p className={styles.intro}>{formCopy.intro}</p>
-          </div>
-        </div>
-
+    <ContactFormShell intro={formCopy.intro} title={formCopy.title}>
+      <div data-project-request="true">
         <ol
           aria-label={formCopy.stepNavigationLabel}
           className={styles.stepper}
@@ -708,10 +798,7 @@ export function ProjectRequestForm({
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
               <label className={styles.field}>
-                <span>
-                  {formCopy.firstNameLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
-                </span>
+                <ContactFieldLabel label={formCopy.firstNameLabel} required />
                 <input
                   aria-describedby={
                     fieldErrors.fullName
@@ -734,10 +821,7 @@ export function ProjectRequestForm({
                 ) : null}
               </label>
               <label className={styles.field}>
-                <span>
-                  {formCopy.emailLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
-                </span>
+                <ContactFieldLabel label={formCopy.emailLabel} required />
                 <input
                   aria-describedby={
                     fieldErrors.email
@@ -760,10 +844,7 @@ export function ProjectRequestForm({
             </div>
 
             <label className={fieldOfferClassName}>
-              <span>
-                {formCopy.offerLabel}
-                <strong className={styles.requiredMarker}>*</strong>
-              </span>
+              <ContactFieldLabel label={formCopy.offerLabel} required />
               <select
                 aria-describedby={
                   fieldErrors.offerKey
@@ -803,11 +884,8 @@ export function ProjectRequestForm({
               </p>
             ) : null}
 
-            <div className={styles.stepActions}>
-              {bottomHint ? (
-                <p className={styles.panelHint}>{bottomHint}</p>
-              ) : null}
-              <div className={styles.actionsButtons}>
+            <ContactFormActions
+              buttons={
                 <PrimaryCtaButton
                   disabled={isSubmitting}
                   onClick={goToNextStep}
@@ -815,8 +893,10 @@ export function ProjectRequestForm({
                 >
                   {stepOneNextLabel}
                 </PrimaryCtaButton>
-              </div>
-            </div>
+              }
+              panelHint={bottomHint}
+              requiredHint={formCopy.requiredHint}
+            />
           </fieldset>
 
           <fieldset
@@ -828,10 +908,7 @@ export function ProjectRequestForm({
 
             {fieldRules.requiresWebsite ? (
               <label className={styles.field}>
-                <span>
-                  {formCopy.websiteLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
-                </span>
+                <ContactFieldLabel label={formCopy.websiteLabel} required />
                 <input
                   aria-describedby={
                     fieldErrors.website
@@ -859,10 +936,7 @@ export function ProjectRequestForm({
 
             {fieldRules.requiresGoal ? (
               <label className={styles.field}>
-                <span>
-                  {formCopy.goalLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
-                </span>
+                <ContactFieldLabel label={formCopy.goalLabel} required />
                 <select
                   aria-describedby={
                     fieldErrors.goalKey
@@ -900,8 +974,7 @@ export function ProjectRequestForm({
                 tabIndex={-1}
               >
                 <p className={styles.pagesLabel}>
-                  {formCopy.pagesLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
+                  <ContactFieldLabel label={formCopy.pagesLabel} required />
                 </p>
                 <div className={styles.pagesOptions}>
                   {formCopy.pagesOptions?.map((option) => {
@@ -960,10 +1033,7 @@ export function ProjectRequestForm({
 
             {fieldRules.requiresWorkflow ? (
               <label className={styles.field}>
-                <span>
-                  {formCopy.workflowLabel}
-                  <strong className={styles.requiredMarker}>*</strong>
-                </span>
+                <ContactFieldLabel label={formCopy.workflowLabel} required />
                 <select
                   aria-describedby={
                     fieldErrors.workflowKey
@@ -995,10 +1065,10 @@ export function ProjectRequestForm({
             ) : null}
 
             <label className={styles.field}>
-              <span>
-                {formCopy.projectDetailsLabel}
-                <strong className={styles.requiredMarker}>*</strong>
-              </span>
+              <ContactFieldLabel
+                label={formCopy.projectDetailsLabel}
+                required
+              />
               <textarea
                 aria-describedby={
                   fieldErrors.projectDetails
@@ -1023,28 +1093,29 @@ export function ProjectRequestForm({
               ) : null}
             </label>
 
-            <div className={styles.stepActions}>
-              {bottomHint ? (
-                <p className={styles.panelHint}>{bottomHint}</p>
-              ) : null}
-              <div className={styles.actionsButtons}>
-                <button
-                  className={ghostButtonClassName}
-                  disabled={isSubmitting}
-                  onClick={goToPreviousStep}
-                  type="button"
-                >
-                  {formCopy.previousStepLabel}
-                </button>
-                <PrimaryCtaButton
-                  disabled={isSubmitting}
-                  onClick={goToNextStep}
-                  type="button"
-                >
-                  {stepTwoNextLabel}
-                </PrimaryCtaButton>
-              </div>
-            </div>
+            <ContactFormActions
+              buttons={
+                <>
+                  <button
+                    className={ghostButtonClassName}
+                    disabled={isSubmitting}
+                    onClick={goToPreviousStep}
+                    type="button"
+                  >
+                    {formCopy.previousStepLabel}
+                  </button>
+                  <PrimaryCtaButton
+                    disabled={isSubmitting}
+                    onClick={goToNextStep}
+                    type="button"
+                  >
+                    {stepTwoNextLabel}
+                  </PrimaryCtaButton>
+                </>
+              }
+              panelHint={bottomHint}
+              requiredHint={formCopy.requiredHint}
+            />
           </fieldset>
 
           <fieldset
@@ -1119,33 +1190,26 @@ export function ProjectRequestForm({
                 required
                 type="checkbox"
               />
-              <span>
-                {formCopy.consentLabel}{" "}
-                <a href={privacyHref} target="_self">
-                  {privacyLabel}
-                </a>
-                <strong className={styles.requiredMarker}>*</strong>
-              </span>
+              <ContactConsentText
+                consentLabel={formCopy.consentLabel}
+                errorClassName={styles.consentError}
+                errorId="project-request-consent-error"
+                errorMessage={
+                  fieldErrors.consentAccepted
+                    ? getFieldErrorText(
+                        "consentAccepted",
+                        fieldErrors.consentAccepted,
+                      )
+                    : undefined
+                }
+                privacyHref={privacyHref}
+                privacyLabel={privacyLabel}
+              />
             </label>
-            {fieldErrors.consentAccepted ? (
-              <p
-                className={styles.consentError}
-                id="project-request-consent-error"
-                role="alert"
-              >
-                {getFieldErrorText(
-                  "consentAccepted",
-                  fieldErrors.consentAccepted,
-                )}
-              </p>
-            ) : null}
 
-            <div className={styles.actions}>
-              <div className={styles.actionsMain}>
-                {bottomHint ? (
-                  <p className={styles.panelHint}>{bottomHint}</p>
-                ) : null}
-                <div className={styles.actionsButtons}>
+            <ContactFormActions
+              buttons={
+                <>
                   <button
                     className={ghostButtonClassName}
                     disabled={isSubmitting}
@@ -1159,19 +1223,17 @@ export function ProjectRequestForm({
                       ? formCopy.submittingLabel
                       : formCopy.submitLabel}
                   </PrimaryCtaButton>
-                </div>
-              </div>
-              <p className={styles.requiredHint}>{formCopy.requiredHint}</p>
-            </div>
+                </>
+              }
+              layout="stacked"
+              panelHint={bottomHint}
+              requiredHint={formCopy.requiredHint}
+            />
           </fieldset>
 
-          {statusMessage ? (
-            <p className={styles.status} role="status">
-              {statusMessage}
-            </p>
-          ) : null}
+          <ContactFormStatus message={statusMessage} />
         </form>
       </div>
-    </div>
+    </ContactFormShell>
   );
 }
