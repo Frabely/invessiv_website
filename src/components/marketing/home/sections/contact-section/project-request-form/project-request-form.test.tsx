@@ -201,10 +201,10 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("textbox", { name: /Webseite\*/ })).toBeTruthy();
+      expect(screen.getByRole("textbox", { name: "Webseite" })).toBeTruthy();
     });
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Webseite\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: "Webseite" }), {
       target: { value: "https://example.com" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {

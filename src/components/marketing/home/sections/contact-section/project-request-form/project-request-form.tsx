@@ -171,6 +171,7 @@ export function ProjectRequestForm({
       requiresWebsite: websiteRequiredKeys.includes(selectedOfferKey),
       showsWebsite:
         selectedOfferKey === "landing" ||
+        selectedOfferKey === "web" ||
         websiteRequiredKeys.includes(selectedOfferKey),
       requiresWorkflow: selectedOfferKey === "process",
     };
