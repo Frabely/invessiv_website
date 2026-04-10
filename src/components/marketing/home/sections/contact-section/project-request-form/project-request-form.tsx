@@ -6,6 +6,7 @@ import { ContactConsentText } from "@/components/marketing/home/sections/contact
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
 import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/contact-identity-fields";
+import sharedStyles from "@/components/marketing/home/sections/contact-section/components/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -617,7 +618,11 @@ export function ProjectRequestForm({
           })}
         </ol>
 
-        <form className={styles.form} noValidate onSubmit={onSubmit}>
+        <form
+          className={`${sharedStyles.form} ${styles.form}`}
+          noValidate
+          onSubmit={onSubmit}
+        >
           <input
             aria-hidden="true"
             autoComplete="off"
@@ -634,7 +639,9 @@ export function ProjectRequestForm({
           >
             <legend>{formCopy.stepOneTitle}</legend>
 
-            <div className={`${styles.grid} ${styles.gridTwo}`}>
+            <div
+              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
+            >
               <ContactIdentityFields
                 copy={{
                   emailLabel: formCopy.emailLabel,
@@ -871,7 +878,9 @@ export function ProjectRequestForm({
           >
             <legend>{formCopy.stepThreeTitle}</legend>
 
-            <div className={`${styles.grid} ${styles.gridTwo}`}>
+            <div
+              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
+            >
               <ContactFormField
                 inputProps={{
                   ...register("company"),
@@ -902,7 +911,9 @@ export function ProjectRequestForm({
               label={formCopy.phoneLabel}
             />
 
-            <div className={`${styles.grid} ${styles.gridTwo}`}>
+            <div
+              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
+            >
               <ContactFormField
                 kind="select"
                 label={formCopy.budgetLabel}
@@ -930,7 +941,7 @@ export function ProjectRequestForm({
               />
             </div>
 
-            <label className={styles.consent}>
+            <label className={sharedStyles.consent}>
               <input
                 aria-describedby="project-request-consent-error"
                 aria-invalid={errors.consentAccepted ? "true" : undefined}
@@ -941,7 +952,7 @@ export function ProjectRequestForm({
               />
               <ContactConsentText
                 consentLabel={formCopy.consentLabel}
-                errorClassName={styles.consentError}
+                errorClassName={sharedStyles.consentError}
                 errorId="project-request-consent-error"
                 errorMessage={
                   errors.consentAccepted

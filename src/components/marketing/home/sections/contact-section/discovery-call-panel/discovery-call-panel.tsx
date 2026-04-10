@@ -8,6 +8,7 @@ import { ContactFormActions } from "@/components/marketing/home/sections/contact
 import { ContactHelperList } from "@/components/marketing/home/sections/contact-section/components/contact-helper-list";
 import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/contact-identity-fields";
 import { ContactMessageField } from "@/components/marketing/home/sections/contact-section/components/contact-message-field";
+import sharedStyles from "@/components/marketing/home/sections/contact-section/components/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -20,7 +21,6 @@ import {
 } from "@/features/contact/client/discovery-call-form.schema";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
-import styles from "./discovery-call-panel.module.css";
 
 type ContactChannel = NonNullable<
   LandingSectionCopy["contactChannels"]
@@ -104,14 +104,14 @@ export function DiscoveryCallPanel({
       subtitle={formCopy.subtitle}
       title={formCopy.title}
     >
-      <form className={styles.form} noValidate onSubmit={handleCalendlySubmit}>
+      <form className={sharedStyles.form} noValidate onSubmit={handleCalendlySubmit}>
         {channel.detailPoints?.length ? (
           <ContactHelperList items={channel.detailPoints} />
         ) : null}
 
-        <div className={`${styles.grid} ${styles.gridTwo}`}>
+        <div className={`${sharedStyles.grid} ${sharedStyles.gridTwo}`}>
           <ContactIdentityFields
-            controlClassName={styles.fieldControl}
+            controlClassName={sharedStyles.fieldControl}
             copy={formCopy}
             errors={errors}
             getErrorMessage={getErrorMessage}
@@ -120,7 +120,7 @@ export function DiscoveryCallPanel({
         </div>
 
         <ContactMessageField
-          className={styles.messageField}
+          className={sharedStyles.messageField}
           copy={formCopy}
           errors={errors}
           getErrorMessage={getErrorMessage}
@@ -128,7 +128,7 @@ export function DiscoveryCallPanel({
           required={false}
         />
 
-        <label className={styles.consent}>
+        <label className={sharedStyles.consent}>
           <input
             {...register("consentAccepted", {
               validate: (value) => value || "consent_required",
@@ -139,7 +139,7 @@ export function DiscoveryCallPanel({
           />
           <ContactConsentText
             consentLabel={formCopy.consentLabel}
-            errorClassName={styles.consentError}
+            errorClassName={sharedStyles.consentError}
             errorId="discovery-call-consent-error"
             errorMessage={
               errors.consentAccepted
