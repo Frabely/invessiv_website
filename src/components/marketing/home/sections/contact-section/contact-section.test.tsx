@@ -117,14 +117,32 @@ describe("ContactSection", () => {
           emailLabel: "E-Mail",
           messageLabel: "Nachricht",
           messagePlaceholder: "Schreib kurz dein Anliegen.",
-          consentLabel: "Ich stimme gemÃ¤ÃŸ",
-          privacyLabel: "DatenschutzerklÃ¤rung",
+          consentLabel: "Ich stimme gemäß",
+          privacyLabel: "Datenschutzerklärung",
           mailSubject: "Kurze Anfrage",
           mailIntro: "Hallo",
           submitLabel: "E-Mail vorbereiten",
           submittingLabel: "Wird vorbereitet",
-          submitSuccess: "Mail wird geÃ¶ffnet",
-          fieldErrorInvalidEmail: "UngÃ¼ltige E-Mail",
+          submitSuccess: "Mail wird geöffnet",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        discoveryCallForm={{
+          title: "Kennenlern-Call",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Kurz vorbereiten und dann Termin wählen.",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen.",
+          consentLabel: "Ich stimme gemäß",
+          privacyLabel: "Datenschutzerklärung",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
           fieldErrorRequired: "Pflichtfeld",
           fieldErrorConsentRequired: "Zustimmung erforderlich",
           requiredHint: "* Pflichtfelder",
@@ -152,9 +170,6 @@ describe("ContactSection", () => {
         .getByRole("link", { name: "Leistungen ansehen" })
         .getAttribute("href"),
     ).toBe("#services");
-    expect(screen.queryByText("Was du direkt erwarten kannst")).toBeNull();
-    expect(screen.queryByText("Deadline")).toBeNull();
-    expect(screen.queryByText("Fast reply")).toBeNull();
 
     expect(screen.queryByRole("textbox", { name: "Nachricht*" })).toBeNull();
     expect(
@@ -168,11 +183,9 @@ describe("ContactSection", () => {
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    const callLink = screen.getByRole("link", {
-      name: "Kennenlern-Call starten",
-    });
-    expect(callLink).toBeTruthy();
-    expect(callLink.getAttribute("target")).toBe("_blank");
-    expect(callLink.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "E-Mail*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Anliegen" })).toBeTruthy();
+    expect(screen.getByRole("checkbox")).toBeTruthy();
   });
 });

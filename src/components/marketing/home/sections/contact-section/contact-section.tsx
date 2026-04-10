@@ -19,6 +19,9 @@ type ContactSecondaryCta = NonNullable<
   LandingSectionCopy["contactSecondaryCta"]
 >;
 type QuickContactFormCopy = NonNullable<LandingSectionCopy["quickContactForm"]>;
+type DiscoveryCallFormCopy = NonNullable<
+  LandingSectionCopy["discoveryCallForm"]
+>;
 type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
@@ -27,6 +30,7 @@ type ContactSectionProps = {
   contactDecisionIntro?: string;
   contactForm?: ContactForm;
   contactFormOffers: Array<{ key: string; title: string }>;
+  discoveryCallForm?: DiscoveryCallFormCopy;
   quickContactForm?: QuickContactFormCopy;
   contactSecondaryCta?: ContactSecondaryCta;
   description: string;
@@ -52,6 +56,7 @@ export function ContactSection({
   contactDecisionIntro,
   contactForm,
   contactFormOffers,
+  discoveryCallForm,
   quickContactForm,
   contactSecondaryCta,
   description,
@@ -273,7 +278,6 @@ export function ContactSection({
                   {entry.kind === "project" && primaryPath ? (
                     <>
                       <ProjectRequestForm
-                        bottomHint={primaryPath.cta.hint}
                         formCopy={primaryPath.form}
                         offerOptions={contactFormOffers}
                         privacyHref={privacyHref}
@@ -289,8 +293,12 @@ export function ContactSection({
                         formCopy={quickContactForm}
                         privacyHref={privacyHref}
                       />
-                    ) : channelMode === "call" ? (
-                      <DiscoveryCallPanel channel={entry.channel} />
+                    ) : channelMode === "call" && discoveryCallForm ? (
+                      <DiscoveryCallPanel
+                        channel={entry.channel}
+                        formCopy={discoveryCallForm}
+                        privacyHref={privacyHref}
+                      />
                     ) : null
                   ) : null}
                 </article>

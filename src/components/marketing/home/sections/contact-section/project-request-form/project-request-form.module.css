@@ -136,92 +136,8 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.gridThree {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .fieldOfferLayout {
   max-width: 100%;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-}
-
-.field > span {
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.8rem;
-  font-weight: 650;
-}
-
-.field input,
-.field select,
-.field textarea {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-surface-1) 36%
-  );
-  color: var(--color-text);
-  font-size: 0.93rem;
-  line-height: 1.45;
-  padding: 10px 12px;
-}
-
-.field select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding-right: 2.8rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M2 2L7 7L12 2' stroke='%23f4f7fd' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-position: calc(100% - 1rem) 50%;
-  background-repeat: no-repeat;
-  background-size: 0.82rem 0.54rem;
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-}
-
-[data-theme="light"] .field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M2 2L7 7L12 2' stroke='%231a2436' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-
-.fieldOffer select {
-  min-height: 44px;
-  padding-top: 9px;
-  padding-bottom: 9px;
-}
-
-.fieldOffer select[data-empty="true"] {
-  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-}
-
-.fieldOffer select[data-empty="false"] {
-  color: var(--color-text);
-}
-
-.field textarea {
-  resize: vertical;
-  min-height: 132px;
-}
-
-.field input::placeholder,
-.field textarea::placeholder {
-  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
-}
-
-.fieldHint {
-  color: color-mix(in srgb, var(--color-text) 63%, var(--color-text-muted) 37%);
-  font-size: 0.76rem;
-}
-
-.field > small[role="alert"] {
-  margin: -2px 0 0;
-  color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
-  font-size: 0.78rem;
-  font-weight: 650;
 }
 
 .pages {
@@ -268,29 +184,13 @@
   color: var(--color-text);
 }
 
-.pageOption:focus-visible,
-.field input:focus-visible,
-.field select:focus-visible,
-.field textarea:focus-visible {
+.pageOption:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
   outline-offset: 2px;
 }
 
-.field input:focus-visible,
-.field select:focus-visible,
-.field textarea:focus-visible {
-  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
-}
-
 .pagesCustom {
   margin-top: 2px;
-}
-
-.pagesError {
-  margin: -2px 0 0;
-  color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
-  font-size: 0.78rem;
-  font-weight: 650;
 }
 
 .conditionalHint {
@@ -318,16 +218,11 @@
   align-self: center;
 }
 
-.consentError,
-.status {
-  margin: 2px 0 0;
-  font-size: 0.78rem;
-  font-weight: 650;
-}
-
 .consentError {
   grid-column: 1 / -1;
-  margin-top: 0;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
 }
 
@@ -344,8 +239,7 @@
 }
 
 @media (max-width: 900px) {
-  .gridTwo,
-  .gridThree {
+  .gridTwo {
     grid-template-columns: 1fr;
   }
 

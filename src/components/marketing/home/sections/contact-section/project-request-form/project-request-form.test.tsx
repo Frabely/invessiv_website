@@ -125,6 +125,7 @@ describe("ProjectRequestForm", () => {
     expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
+    expect(screen.getByText("Dynamische Pflichtfelder")).toBeTruthy();
     expect(offerSelect.dataset.empty).toBe("true");
     expect(
       screen.getByRole("button", { name: "Weiter zu Projekt" }),

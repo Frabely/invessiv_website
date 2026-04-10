@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
 import { ContactHelperList } from "@/components/marketing/home/sections/contact-section/components/contact-helper-list";
+import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/contact-identity-fields";
+import { ContactMessageField } from "@/components/marketing/home/sections/contact-section/components/contact-message-field";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -127,67 +128,26 @@ export function QuickContactForm({
       title={formCopy.title}
     >
       <form className={styles.form} noValidate onSubmit={onSubmit}>
-        {channel.helper ? (
-          <p className={styles.helper}>{channel.helper}</p>
-        ) : null}
-
         {channel.detailPoints?.length ? (
           <ContactHelperList items={channel.detailPoints} />
         ) : null}
 
         <div className={`${styles.grid} ${styles.gridTwo}`}>
-          <ContactFormField
+          <ContactIdentityFields
             controlClassName={styles.fieldControl}
-            errorMessage={
-              errors.fullName ? getErrorMessage("fullName") : undefined
-            }
-            inputProps={{
-              ...register("fullName", { required: "required" }),
-              "aria-invalid": errors.fullName ? "true" : undefined,
-              autoCapitalize: "words",
-              autoComplete: "name",
-            }}
-            kind="text"
-            label={formCopy.fullNameLabel}
-            required
-          />
-
-          <ContactFormField
-            controlClassName={styles.fieldControl}
-            errorMessage={errors.email ? getErrorMessage("email") : undefined}
-            inputProps={{
-              ...register("email", {
-                required: "required",
-                pattern: {
-                  message: "invalid_email",
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                },
-              }),
-              "aria-invalid": errors.email ? "true" : undefined,
-              autoComplete: "email",
-            }}
-            kind="email"
-            label={formCopy.emailLabel}
-            required
+            copy={formCopy}
+            errors={errors}
+            getErrorMessage={getErrorMessage}
+            register={register}
           />
         </div>
 
-        <ContactFormField
+        <ContactMessageField
           className={styles.messageField}
-          errorMessage={errors.message ? getErrorMessage("message") : undefined}
-          kind="textarea"
-          label={formCopy.messageLabel}
-          required
-          textareaProps={{
-            ...register("message", {
-              required: "message_required",
-              validate: (value) =>
-                value.trim().length > 0 || "message_required",
-            }),
-            "aria-invalid": errors.message ? "true" : undefined,
-            placeholder: formCopy.messagePlaceholder,
-            rows: 5,
-          }}
+          copy={formCopy}
+          errors={errors}
+          getErrorMessage={getErrorMessage}
+          register={register}
         />
 
         <label className={styles.consent}>
@@ -220,7 +180,6 @@ export function QuickContactForm({
             </PrimaryCtaButton>
           }
           layout="stacked"
-          panelHint={channel.hint}
           requiredHint={formCopy.requiredHint}
         />
       </form>

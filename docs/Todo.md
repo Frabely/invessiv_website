@@ -31,3 +31,7 @@
 - Die bestehende Contact-Ordnerstruktur zwischen `features/contact`, `server/services/contact` und der Route langfristig bereinigen.
 - Alte gemischte Services weiter in klarere Handler- und Infrastruktur-Grenzen zerlegen, falls nach dem aktuellen Upgrade noch noetig.
 - Den verbleibenden Contact-Altbestand konsistent in die Zielstruktur ueberfuehren, aber als separates Nachfolge-Rework behandeln.
+
+## CRM DB felder für Stueer
+
+- vier Felder einbauen: Land, B2B/B2C, Firma ja/nein, USt-IdNr.

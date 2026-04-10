@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import styles from "./contact-form-shell.module.css";
 
 type ContactFormShellProps = {
@@ -26,8 +27,13 @@ export function ContactFormShell({
         <div className={styles.head}>
           <div className={styles.headCopy}>
             <h3 className={styles.title}>{title}</h3>
+            {subtitle ? (
+              <SectionScanPoints
+                className={styles.summaryPoints}
+                points={[subtitle]}
+              />
+            ) : null}
             <p className={styles.intro}>{intro}</p>
-            {subtitle ? <p className={styles.subtitle}>{subtitle}</p> : null}
           </div>
           {meta ? <div className={styles.meta}>{meta}</div> : null}
         </div>

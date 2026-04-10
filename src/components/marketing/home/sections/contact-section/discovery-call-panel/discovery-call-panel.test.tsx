@@ -1,0 +1,193 @@
+// @vitest-environment jsdom
+
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { DiscoveryCallPanel } from "./discovery-call-panel";
+
+const createCalendlyPrefillHrefMock = vi.fn();
+
+vi.mock("@/features/contact/client/contact-form-service", () => ({
+  createCalendlyPrefillHref: (...args: unknown[]) =>
+    createCalendlyPrefillHrefMock(...args),
+}));
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  createCalendlyPrefillHrefMock.mockReset();
+});
+
+describe("DiscoveryCallPanel", () => {
+  it("opens Calendly from the original submit gesture with prefilled values", async () => {
+    createCalendlyPrefillHrefMock.mockReturnValue(
+      "https://calendly.com/service-invessiv-cxf5/30min?name=Max+Mustermann&email=max%40example.com",
+    );
+    const replaceMock = vi.fn();
+    const openMock = vi.spyOn(window, "open").mockReturnValue({
+      location: { replace: replaceMock },
+      opener: null,
+    } as unknown as Window);
+
+    render(
+      <DiscoveryCallPanel
+        channel={{
+          actionLabel: "Termin wählen",
+          description: "Für kurze Abstimmung.",
+          detailPoints: ["15-20 Minuten", "Klare Empfehlung danach"],
+          href: "https://calendly.com/service-invessiv-cxf5/30min",
+          hint: "Direkt der passende nächste Schritt.",
+          label: "Kennenlern-Call",
+          mode: "call",
+          value: "15-20 Minuten",
+        }}
+        formCopy={{
+          title: "Kennenlern-Call",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Name und E-Mail werden in Calendly vorbefüllt.",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Termin wählen" }));
+
+    await waitFor(() => {
+      expect(openMock).toHaveBeenCalledWith("", "_blank");
+      expect(createCalendlyPrefillHrefMock).toHaveBeenCalledWith(
+        {
+          consentAccepted: true,
+          email: "max@example.com",
+          fullName: "Max Mustermann",
+          message: "",
+        },
+        {
+          calendlyUrl: "https://calendly.com/service-invessiv-cxf5/30min",
+          concernAnswerSlot: 1,
+        },
+      );
+      expect(replaceMock).toHaveBeenCalledWith(
+        "https://calendly.com/service-invessiv-cxf5/30min?name=Max+Mustermann&email=max%40example.com",
+      );
+    });
+
+    expect(screen.getByText("Calendly wird geöffnet")).toBeTruthy();
+  });
+
+  it("closes the pre-opened window again when validation fails", async () => {
+    const closeMock = vi.fn();
+    vi.spyOn(window, "open").mockReturnValue({
+      close: closeMock,
+      location: { replace: vi.fn() },
+      opener: null,
+    } as unknown as Window);
+
+    render(
+      <DiscoveryCallPanel
+        channel={{
+          actionLabel: "Termin wählen",
+          description: "Für kurze Abstimmung.",
+          href: "https://calendly.com/service-invessiv-cxf5/30min",
+          label: "Kennenlern-Call",
+          mode: "call",
+          value: "15-20 Minuten",
+        }}
+        formCopy={{
+          title: "Kennenlern-Call",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Name und E-Mail werden in Calendly vorbefüllt.",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Termin wählen" }));
+
+    await waitFor(() => {
+      expect(closeMock).toHaveBeenCalled();
+    });
+  });
+
+  it("shows the consent validation error when the checkbox is not checked", async () => {
+    vi.spyOn(window, "open").mockReturnValue({
+      close: vi.fn(),
+      location: { replace: vi.fn() },
+      opener: null,
+    } as unknown as Window);
+
+    render(
+      <DiscoveryCallPanel
+        channel={{
+          actionLabel: "Termin wÃ¤hlen",
+          href: "https://calendly.com/service-invessiv-cxf5/30min",
+          label: "Kennenlern-Call",
+          mode: "call",
+          value: "15-20 Minuten",
+        }}
+        formCopy={{
+          title: "Kennenlern-Call",
+          subtitle: "FÃ¼r direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Name und E-Mail werden in Calendly vorbefÃ¼llt.",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemÃ¤ÃŸ",
+          privacyLabel: "DatenschutzerklÃ¤rung zu.",
+          submitLabel: "Termin wÃ¤hlen",
+          submittingLabel: "Wird geÃ¶ffnet",
+          submitSuccess: "Calendly wird geÃ¶ffnet",
+          fieldErrorInvalidEmail: "UngÃ¼ltige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Termin wÃ¤hlen" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Zustimmung erforderlich")).toBeTruthy();
+    });
+  });
+});

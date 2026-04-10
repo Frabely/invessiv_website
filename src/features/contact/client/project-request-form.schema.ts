@@ -1,3 +1,5 @@
+import { DEFAULT_CONTACT_IDENTITY_FIELDS_VALUES } from "@/features/contact/client/base-contact-fields";
+
 export type ProjectRequestFormValues = {
   budgetKey: string;
   company: string;
@@ -21,8 +23,7 @@ export const DEFAULT_PROJECT_REQUEST_FORM_VALUES: ProjectRequestFormValues = {
   budgetKey: "",
   company: "",
   consentAccepted: false,
-  email: "",
-  fullName: "",
+  ...DEFAULT_CONTACT_IDENTITY_FIELDS_VALUES,
   goalKey: "",
   offerKey: "",
   pageKeys: [],

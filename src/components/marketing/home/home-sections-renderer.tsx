@@ -169,6 +169,7 @@ export function HomeSectionsRenderer({
                   contactForm={section.contactForm}
                   contactFormOffers={contactFormOffers}
                   quickContactForm={section.quickContactForm}
+                  discoveryCallForm={section.discoveryCallForm}
                   contactSecondaryCta={section.contactSecondaryCta}
                   description={section.description}
                   id={section.id}

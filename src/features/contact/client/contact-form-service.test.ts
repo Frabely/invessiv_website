@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  createCalendlyPrefillHref,
   createQuickContactMailtoHref,
   submitProjectRequest,
 } from "./contact-form-service";
@@ -78,5 +79,43 @@ describe("contact-form-service", () => {
     );
     expect(mailtoHref).toContain("Name%3A%20Max%20Mustermann");
     expect(mailtoHref).toContain("E-Mail%3A%20max%40example.com");
+  });
+
+  it("creates a Calendly prefill href with name, email, and the first custom answer", () => {
+    const calendlyHref = createCalendlyPrefillHref(
+      {
+        email: "max@example.com",
+        fullName: "Max Mustermann",
+        message: "Wir wollen den Umfang kurz einordnen.",
+      },
+      {
+        calendlyUrl: "https://calendly.com/service-invessiv-cxf5/30min",
+      },
+    );
+
+    expect(calendlyHref).toContain("name=Max+Mustermann");
+    expect(calendlyHref).toContain("email=max%40example.com");
+    expect(calendlyHref).toContain(
+      "a1=Wir+wollen+den+Umfang+kurz+einordnen.",
+    );
+  });
+
+  it("keeps existing Calendly query params and omits a1 when concern is empty", () => {
+    const calendlyHref = createCalendlyPrefillHref(
+      {
+        email: "max@example.com",
+        fullName: "Max Mustermann",
+        message: "   ",
+      },
+      {
+        calendlyUrl:
+          "https://calendly.com/service-invessiv-cxf5/30min?month=2026-04",
+      },
+    );
+
+    expect(calendlyHref).toContain("month=2026-04");
+    expect(calendlyHref).toContain("name=Max+Mustermann");
+    expect(calendlyHref).toContain("email=max%40example.com");
+    expect(calendlyHref).not.toContain("a1=");
   });
 });

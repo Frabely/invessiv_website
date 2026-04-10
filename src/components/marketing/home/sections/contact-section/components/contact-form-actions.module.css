@@ -6,11 +6,6 @@
   flex-wrap: wrap;
 }
 
-.actions {
-  display: grid;
-  gap: clamp(0.625rem, 1.4vw, 0.95rem);
-}
-
 .actionsMain {
   display: flex;
   align-items: center;
@@ -27,14 +22,6 @@
   margin-left: auto;
 }
 
-.panelHint {
-  flex: 1 1 18rem;
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.84rem;
-  line-height: 1.44;
-}
-
 .requiredHint {
   margin: 0;
   color: var(--color-cta);
@@ -44,8 +31,12 @@
 
 @media (max-width: 900px) {
   .stepActions,
-  .actions {
+  .actionsMain {
     align-items: stretch;
+  }
+
+  .requiredHint {
+    order: -1;
   }
 
   .actionsButtons {

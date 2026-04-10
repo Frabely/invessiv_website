@@ -124,7 +124,7 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
     description?: string;
-    hint: string;
+    hint?: string;
   };
   contactSecondaryCta?: {
     label: string;
@@ -203,6 +203,24 @@ export type LandingSectionCopy = {
     privacyLabel: string;
     mailSubject: string;
     mailIntro: string;
+    submitLabel: string;
+    submittingLabel: string;
+    submitSuccess: string;
+    fieldErrorInvalidEmail: string;
+    fieldErrorRequired: string;
+    fieldErrorConsentRequired: string;
+    requiredHint: string;
+  };
+  discoveryCallForm?: {
+    title: string;
+    subtitle: string;
+    intro: string;
+    fullNameLabel: string;
+    emailLabel: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    consentLabel: string;
+    privacyLabel: string;
     submitLabel: string;
     submittingLabel: string;
     submitSuccess: string;
@@ -921,17 +939,12 @@ const HOME_SECTIONS: LandingSection[] = [
               "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
             value: "15-20 Minuten Abstimmung",
             href: COMPANY_CALENDLY,
-            helper:
-              "In 15-20 Minuten klären wir Ziel, Prioritäten und den sinnvollsten nächsten Schritt.",
-            hint: "Terminweg mit klarer Empfehlung im Anschluss.",
             actionLabel: "Termin auswählen",
             detailPoints: [
               "15-20 Minuten fokussiert",
               "Umfang und Aufwand grob einordnen",
               "Konkreter nächster Schritt danach",
             ],
-            metaLabel: "Format",
-            metaValue: "Kurzer Abstimmungstermin (Telefon/Video)",
           },
           {
             mode: "email",
@@ -941,9 +954,6 @@ const HOME_SECTIONS: LandingSection[] = [
               "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            helper:
-              "2-4 Sätze reichen: Ziel, Kontext und was du als Nächstes brauchst.",
-            hint: "Du erhältst eine klare Einschätzung und einen konkreten nächsten Schritt.",
             actionLabel: "E-Mail senden",
             copyValue: COMPANY.contact.email,
             copyLabel: "Adresse kopieren",
@@ -960,7 +970,6 @@ const HOME_SECTIONS: LandingSection[] = [
           kicker: "Direkt starten",
           label: "Projektanfrage starten",
           href: SECTION_HREFS.contact,
-          hint: "3 kurze Schritte, nur relevante Pflichtfelder und klare Rückmeldung.",
         },
         contactSecondaryCta: {
           label: "Leistungsmodelle vergleichen",
@@ -1093,6 +1102,27 @@ const HOME_SECTIONS: LandingSection[] = [
             "Bitte bestätige die Datenschutzerklärung.",
           requiredHint: "* Pflichtfelder",
         },
+        discoveryCallForm: {
+          title: "Kennenlerncall mit kurzer Vorbereitung",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro:
+            "Trag kurz deine Kontaktdaten ein und gib optional dein Anliegen mit, damit der Termin fokussierter starten kann.",
+          fullNameLabel: "Name",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder:
+            "Optional: Worum geht es grob, was soll im Termin geklärt werden?",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Terminübersicht wird geöffnet ...",
+          submitSuccess: "Die Terminübersicht wird mit deinen Angaben geöffnet.",
+          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
+          fieldErrorRequired: "Dieses Feld ist erforderlich.",
+          fieldErrorConsentRequired:
+            "Bitte bestätige die Datenschutzerklärung.",
+          requiredHint: "* Pflichtfelder",
+        },
       },
       en: {
         title: "Choose the right entry point for your project",
@@ -1114,17 +1144,12 @@ const HOME_SECTIONS: LandingSection[] = [
               "Best for live alignment when project range and effort need quick discussion.",
             value: "15-20 minute alignment call",
             href: COMPANY_CALENDLY,
-            helper:
-              "In 15-20 minutes we align on goals, priorities, and the strongest next step.",
-            hint: "Scheduling path with a clear recommendation afterward.",
             actionLabel: "Choose a time",
             detailPoints: [
               "15-20 minutes focused",
               "Roughly map range & effort",
               "Leave with a concrete next step",
             ],
-            metaLabel: "Format",
-            metaValue: "Short call (phone/video)",
           },
           {
             mode: "email",
@@ -1134,9 +1159,6 @@ const HOME_SECTIONS: LandingSection[] = [
               "Best for fast async contact when you want to clarify the next step in writing.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
-            helper:
-              "2-4 lines are enough: goal, context, and what you need next.",
-            hint: "You get a clear assessment and a concrete next step.",
             actionLabel: "Send email",
             copyValue: COMPANY.contact.email,
             copyLabel: "Copy address",
@@ -1153,7 +1175,6 @@ const HOME_SECTIONS: LandingSection[] = [
           kicker: "Start directly",
           label: "Start project request",
           href: SECTION_HREFS.contact,
-          hint: "3 short steps, only relevant required fields, and a clear reply.",
         },
         contactSecondaryCta: {
           label: "Compare service models",
@@ -1281,6 +1302,27 @@ const HOME_SECTIONS: LandingSection[] = [
           submitLabel: "Prepare email",
           submittingLabel: "Preparing ...",
           submitSuccess: "Your email draft is opening.",
+          fieldErrorInvalidEmail: "Please enter a valid email address.",
+          fieldErrorRequired: "This field is required.",
+          fieldErrorConsentRequired: "Please confirm the privacy policy.",
+          requiredHint: "* Required fields",
+        },
+        discoveryCallForm: {
+          title: "Discovery call with a short prep note",
+          subtitle: "Best for live alignment with a bit of context before the call.",
+          intro:
+            "Add your contact details and, if useful, a short note so the call can start with clearer context.",
+          fullNameLabel: "Name",
+          emailLabel: "Email",
+          messageLabel: "Topic",
+          messagePlaceholder:
+            "Optional: what is this roughly about and what should the call clarify?",
+          consentLabel:
+            "I agree to the processing of my information according to the",
+          privacyLabel: "privacy policy.",
+          submitLabel: "Choose a time",
+          submittingLabel: "Opening the schedule ...",
+          submitSuccess: "The schedule is opening with your details.",
           fieldErrorInvalidEmail: "Please enter a valid email address.",
           fieldErrorRequired: "This field is required.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",

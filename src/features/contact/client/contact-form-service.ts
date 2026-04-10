@@ -2,6 +2,7 @@ import type {
   ContactSubmitErrorCode,
   ContactSubmitResponse,
 } from "@/features/contact/contact.contract";
+import type { BaseContactFieldsValues } from "@/features/contact/client/base-contact-fields";
 import type { ProjectRequestDto } from "@/features/contact/client/project-request.dto";
 import type { QuickContactDto } from "@/features/contact/client/quick-contact.dto";
 
@@ -17,6 +18,11 @@ type OpenQuickContactMailDraftOptions = {
   fullNameLabel: string;
   intro: string;
   subject: string;
+};
+
+type CalendlyPrefillOptions = {
+  calendlyUrl: string;
+  concernAnswerSlot?: number;
 };
 
 function createClientErrorResponse(
@@ -99,4 +105,38 @@ export function openQuickContactMailDraft(
   link.href = mailtoHref;
   link.click();
   return mailtoHref;
+}
+
+export function createCalendlyPrefillHref(
+  values: BaseContactFieldsValues,
+  { calendlyUrl, concernAnswerSlot = 1 }: CalendlyPrefillOptions,
+) {
+  const url = new URL(calendlyUrl);
+  const normalizedName = values.fullName.trim();
+  const normalizedEmail = values.email.trim();
+  const normalizedConcern = values.message.trim();
+
+  url.searchParams.set("name", normalizedName);
+  url.searchParams.set("email", normalizedEmail);
+
+  if (normalizedConcern) {
+    url.searchParams.set(`a${concernAnswerSlot}`, normalizedConcern);
+  } else {
+    url.searchParams.delete(`a${concernAnswerSlot}`);
+  }
+
+  return url.toString();
+}
+
+export function openCalendlyPrefillLink(
+  values: BaseContactFieldsValues,
+  options: CalendlyPrefillOptions,
+) {
+  const calendlyHref = createCalendlyPrefillHref(values, options);
+  const link = document.createElement("a");
+  link.href = calendlyHref;
+  link.rel = "noopener noreferrer";
+  link.target = "_blank";
+  link.click();
+  return calendlyHref;
 }

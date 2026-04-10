@@ -5,6 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
+import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/contact-identity-fields";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -27,8 +28,6 @@ import styles from "./project-request-form.module.css";
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
 const STEP_SEQUENCE = [1, 2, 3] as const;
 const WEBSITE_PATTERN = /^https?:\/\/.+/i;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 type FormStep = (typeof STEP_SEQUENCE)[number];
 type FormOption = {
   key: string;
@@ -95,7 +94,6 @@ type ContactFormCopy = {
 };
 
 type ProjectRequestFormProps = {
-  bottomHint?: string;
   formCopy: ContactFormCopy;
   offerOptions: Array<{ key: string; title: string }>;
   privacyHref: string;
@@ -109,7 +107,6 @@ type ProjectOfferSyncDetail = {
 };
 
 export function ProjectRequestForm({
-  bottomHint,
   formCopy,
   offerOptions,
   privacyHref,
@@ -638,43 +635,18 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepOneTitle}</legend>
 
             <div className={`${styles.grid} ${styles.gridTwo}`}>
-              <ContactFormField
-                errorMessage={
-                  errors.fullName ? getFieldErrorText("fullName") : undefined
-                }
-                inputProps={{
-                  ...register("fullName", {
-                    onChange: () => clearErrors("fullName"),
-                    required: "required",
-                  }),
-                  "aria-invalid": errors.fullName ? "true" : undefined,
-                  autoCapitalize: "words",
-                  autoComplete: "name",
+              <ContactIdentityFields
+                copy={{
+                  emailLabel: formCopy.emailLabel,
+                  fullNameLabel: formCopy.firstNameLabel,
                 }}
-                kind="text"
-                label={formCopy.firstNameLabel}
-                required
-              />
-
-              <ContactFormField
-                errorMessage={
-                  errors.email ? getFieldErrorText("email") : undefined
-                }
-                inputProps={{
-                  ...register("email", {
-                    onChange: () => clearErrors("email"),
-                    pattern: {
-                      message: "invalid_email",
-                      value: EMAIL_PATTERN,
-                    },
-                    required: "required",
-                  }),
-                  "aria-invalid": errors.email ? "true" : undefined,
-                  autoComplete: "email",
+                errors={errors}
+                getErrorMessage={(fieldName) => getFieldErrorText(fieldName)}
+                onFieldChange={{
+                  email: () => clearErrors("email"),
+                  fullName: () => clearErrors("fullName"),
                 }}
-                kind="email"
-                label={formCopy.emailLabel}
-                required
+                register={register}
               />
             </div>
 
@@ -709,11 +681,9 @@ export function ProjectRequestForm({
               }}
             />
 
-            {selectedOfferKey ? (
-              <p className={styles.conditionalHint}>
-                {formCopy.conditionalFieldHint}
-              </p>
-            ) : null}
+            <p className={styles.conditionalHint}>
+              {formCopy.conditionalFieldHint}
+            </p>
 
             <ContactFormActions
               buttons={
@@ -725,7 +695,6 @@ export function ProjectRequestForm({
                   {stepOneNextLabel}
                 </PrimaryCtaButton>
               }
-              panelHint={bottomHint}
               requiredHint={formCopy.requiredHint}
             />
           </fieldset>
@@ -891,7 +860,6 @@ export function ProjectRequestForm({
                   </PrimaryCtaButton>
                 </>
               }
-              panelHint={bottomHint}
               requiredHint={formCopy.requiredHint}
             />
           </fieldset>
@@ -1004,7 +972,6 @@ export function ProjectRequestForm({
                 </>
               }
               layout="stacked"
-              panelHint={bottomHint}
               requiredHint={formCopy.requiredHint}
             />
           </fieldset>

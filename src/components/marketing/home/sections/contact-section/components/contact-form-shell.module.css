@@ -49,11 +49,13 @@
   text-align: left;
 }
 
-.subtitle {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: 0.9rem;
-  line-height: 1.54;
+.summaryPoints {
+  margin: 2px 0 0;
+  max-width: none;
+}
+
+.summaryPoints li {
+  min-height: 30px;
 }
 
 .meta {
