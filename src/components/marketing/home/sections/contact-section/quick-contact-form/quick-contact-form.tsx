@@ -36,7 +36,6 @@ export function QuickContactForm({
   privacyHref,
 }: QuickContactFormProps) {
   const { locale } = useLanguage();
-  const canCopy = typeof navigator !== "undefined" && !!navigator.clipboard;
   const [isCopied, setIsCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const {
@@ -72,7 +71,7 @@ export function QuickContactForm({
   };
 
   const copyChannelValue = async () => {
-    if (!canCopy) {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
       setIsCopied(false);
       return;
     }
@@ -115,7 +114,6 @@ export function QuickContactForm({
           </div>
           <button
             className={styles.copyButton}
-            disabled={!canCopy}
             onClick={copyChannelValue}
             type="button"
           >
