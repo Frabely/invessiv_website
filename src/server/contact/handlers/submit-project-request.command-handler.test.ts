@@ -2,26 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   mapContactToMailMock,
-  getDatabaseClientMock,
-  hasDatabaseConnectionStringMock,
   sendMailMock,
-  sqlMock,
 } = vi.hoisted(() => ({
   mapContactToMailMock: vi.fn(),
-  getDatabaseClientMock: vi.fn(),
-  hasDatabaseConnectionStringMock: vi.fn(),
   sendMailMock: vi.fn(),
-  sqlMock: Object.assign(vi.fn(), {
-    transaction: vi.fn(),
-  }),
 }));
 
 vi.mock("server-only", () => ({}));
-
-vi.mock("@/server/db/client", () => ({
-  getDatabaseClient: getDatabaseClientMock,
-  hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
-}));
 
 vi.mock("@/server/services/mail/mappers/map-contact-to-mail", () => ({
   mapContactToMail: mapContactToMailMock,
@@ -36,10 +23,6 @@ describe("submitProjectRequestCommandHandler", () => {
     vi.clearAllMocks();
     vi.stubEnv("CONTACT_MAIL_PROVIDER", "resend");
     vi.stubEnv("CONTACT_MAIL_TO", "service@invessiv.com");
-    hasDatabaseConnectionStringMock.mockReturnValue(true);
-    getDatabaseClientMock.mockReturnValue(sqlMock);
-    sqlMock.mockReturnValue({});
-    sqlMock.transaction.mockResolvedValue(undefined);
   });
 
   it("returns validation errors from handler-side zod validation", async () => {
@@ -66,12 +49,11 @@ describe("submitProjectRequestCommandHandler", () => {
     }
     expect(result.code).toBe("validation_error");
     expect(result.fieldErrors?.email).toContain("invalid_email");
-    expect(sqlMock.transaction).not.toHaveBeenCalled();
     expect(mapContactToMailMock).not.toHaveBeenCalled();
     expect(sendMailMock).not.toHaveBeenCalled();
   });
 
-  it("persists project requests and marks the lead as sent after mail delivery", async () => {
+  it("sends the project request mail after successful validation", async () => {
     mapContactToMailMock.mockResolvedValueOnce({
       html: "<p>mail</p>",
       subject: "Subject",
@@ -99,13 +81,11 @@ describe("submitProjectRequestCommandHandler", () => {
     );
 
     expect(result).toEqual({ ok: true });
-    expect(sqlMock.transaction).toHaveBeenCalledTimes(1);
     expect(mapContactToMailMock).toHaveBeenCalledTimes(1);
     expect(sendMailMock).toHaveBeenCalledTimes(1);
-    expect(sqlMock).toHaveBeenCalledTimes(3);
   });
 
-  it("marks persisted leads as failed when mail delivery fails", async () => {
+  it("returns the delivery error when mail delivery fails", async () => {
     mapContactToMailMock.mockResolvedValueOnce({
       html: "<p>mail</p>",
       subject: "Subject",
@@ -139,6 +119,5 @@ describe("submitProjectRequestCommandHandler", () => {
       code: "delivery_unavailable",
       ok: false,
     });
-    expect(sqlMock).toHaveBeenCalledTimes(3);
   });
 });
