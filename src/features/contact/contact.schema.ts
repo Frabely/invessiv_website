@@ -16,6 +16,12 @@ const optionalTrimmedString = z
   .optional()
   .transform((value) => value || undefined);
 
+const optionalTrimmedStringArray = z
+  .array(z.string().trim().min(1, "required").max(120, "too_long"))
+  .max(12, "too_many_pages")
+  .optional()
+  .transform((value) => (value && value.length > 0 ? value : undefined));
+
 const isoDateTimeSchema = z
   .string()
   .refine((value) => !Number.isNaN(Date.parse(value)), "invalid_started_at");
@@ -49,11 +55,8 @@ export const projectRequestSchema = z
     lastName: nameStringSchema,
     locale: localeSchema,
     offerKey: z.enum(CONTACT_OFFER_KEYS),
-    pagesCustom: optionalTrimmedString,
-    pageKeys: z
-      .array(z.enum(CONTACT_PAGE_KEYS))
-      .max(12, "too_many_pages")
-      .optional(),
+    customPageNames: optionalTrimmedStringArray,
+    pageKeys: z.array(z.enum(CONTACT_PAGE_KEYS)).optional(),
     phone: optionalTrimmedString,
     preferredStartKey: z.enum(CONTACT_START_KEYS).optional(),
     projectDetails: z
@@ -68,9 +71,7 @@ export const projectRequestSchema = z
     workflowKey: z.enum(CONTACT_WORKFLOW_KEYS).optional(),
   })
   .superRefine((value, context) => {
-    const requiresWebsite = ["upgrade", "web", "maintenance"].includes(
-      value.offerKey,
-    );
+    const requiresWebsite = ["upgrade", "maintenance"].includes(value.offerKey);
 
     if (value.offerKey === "landing" && !value.goalKey) {
       context.addIssue({
@@ -89,7 +90,9 @@ export const projectRequestSchema = z
     }
 
     if (value.offerKey === "web") {
-      const hasPages = Boolean(value.pageKeys?.length || value.pagesCustom);
+      const hasPages = Boolean(
+        value.pageKeys?.length || value.customPageNames?.length,
+      );
       if (!hasPages) {
         context.addIssue({
           code: "custom",

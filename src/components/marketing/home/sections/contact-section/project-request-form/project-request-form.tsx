@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
+import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/components/contact-field-label";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
 import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/contact-identity-fields";
@@ -44,6 +45,7 @@ type ContactFormCopy = {
   emailLabel: string;
   firstNameLabel: string;
   lastNameLabel: string;
+  addPageLabel: string;
   goalLabel: string;
   goalOptions: FormOption[];
   intro: string;
@@ -51,6 +53,7 @@ type ContactFormCopy = {
   offerPlaceholder: string;
   pagesCustomLabel?: string;
   pagesCustomPlaceholder?: string;
+  pagesCustomRemoveLabel?: string;
   pagesLabel: string;
   pagesOptions?: FormOption[];
   pagesPlaceholder: string;
@@ -78,6 +81,7 @@ type ContactFormCopy = {
   fieldErrorRequired: string;
   fieldErrorProjectDetailsRequired: string;
   fieldErrorPagesRequired: string;
+  fieldErrorTooManyPages: string;
   fieldErrorGoalRequired: string;
   fieldErrorWorkflowRequired: string;
   fieldErrorConsentRequired: string;
@@ -115,6 +119,7 @@ export function ProjectRequestForm({
   submitPath = DEFAULT_CONTACT_SUBMIT_PATH,
 }: ProjectRequestFormProps) {
   const { locale } = useLanguage();
+  const [customPageDraft, setCustomPageDraft] = useState("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
@@ -142,6 +147,10 @@ export function ProjectRequestForm({
   const selectedPageKeys = useWatch({
     control,
     name: "pageKeys",
+  });
+  const customPageNames = useWatch({
+    control,
+    name: "customPageNames",
   });
 
   const stepTitles = useMemo(
@@ -211,10 +220,6 @@ export function ProjectRequestForm({
             setFocus("goalKey");
             return;
           }
-          if (fieldRules.requiresPages) {
-            setFocus("pagesCustom");
-            return;
-          }
           if (fieldRules.requiresWorkflow) {
             setFocus("workflowKey");
             return;
@@ -238,7 +243,6 @@ export function ProjectRequestForm({
       [
         "goalKey",
         "pageKeys",
-        "pagesCustom",
         "projectDetails",
         "website",
         "workflowKey",
@@ -259,6 +263,7 @@ export function ProjectRequestForm({
         invalid_website: formCopy.fieldErrorInvalidWebsite,
         pages_required:
           formCopy.pagesRequiredHint ?? formCopy.fieldErrorPagesRequired,
+        too_many_pages: formCopy.fieldErrorTooManyPages,
         project_details_required: formCopy.fieldErrorProjectDetailsRequired,
         required: formCopy.fieldErrorRequired,
         website_required: formCopy.fieldErrorRequired,
@@ -273,6 +278,7 @@ export function ProjectRequestForm({
       formCopy.fieldErrorInvalidWebsite,
       formCopy.fieldErrorPagesRequired,
       formCopy.fieldErrorProjectDetailsRequired,
+      formCopy.fieldErrorTooManyPages,
       formCopy.fieldErrorRequired,
       formCopy.pagesRequiredHint,
     ],
@@ -295,7 +301,7 @@ export function ProjectRequestForm({
 
     const hasSelectedPages =
       (getValues("pageKeys")?.length ?? 0) > 0 ||
-      getValues("pagesCustom").trim().length > 0;
+      (getValues("customPageNames")?.length ?? 0) > 0;
 
     if (hasSelectedPages) {
       clearErrors("pageKeys");
@@ -323,7 +329,7 @@ export function ProjectRequestForm({
       const stepFields = [...fieldsByStep[step]];
 
       if (step === 2) {
-        if (fieldRules.requiresWebsite) {
+        if (fieldRules.showsWebsite) {
           stepFields.push("website");
         }
         if (fieldRules.requiresGoal) {
@@ -367,7 +373,8 @@ export function ProjectRequestForm({
 
       if (nextOfferKey !== "web") {
         setValue("pageKeys", []);
-        setValue("pagesCustom", "");
+        setValue("customPageNames", []);
+        setCustomPageDraft("");
         clearErrors("pageKeys");
       }
 
@@ -376,6 +383,57 @@ export function ProjectRequestForm({
       }
     },
     [clearErrors, setValue],
+  );
+
+  const addCustomPage = useCallback(() => {
+    const normalizedValue = customPageDraft.trim().replace(/\s+/g, " ");
+
+    if (!normalizedValue) {
+      return;
+    }
+
+    const currentValues = getValues("customPageNames") ?? [];
+    if (currentValues.length >= 12) {
+      setError("pageKeys", {
+        message: "too_many_pages",
+        type: "too_many_pages",
+      });
+      return;
+    }
+
+    const alreadyExists = currentValues.some(
+      (value) =>
+        value.toLocaleLowerCase() === normalizedValue.toLocaleLowerCase(),
+    );
+
+    if (alreadyExists) {
+      setCustomPageDraft("");
+      clearErrors("pageKeys");
+      return;
+    }
+
+    setValue("customPageNames", [...currentValues, normalizedValue], {
+      shouldDirty: true,
+      shouldValidate: false,
+    });
+    setCustomPageDraft("");
+    clearErrors("pageKeys");
+  }, [clearErrors, customPageDraft, getValues, setError, setValue]);
+
+  const removeCustomPage = useCallback(
+    (pageName: string) => {
+      setValue(
+        "customPageNames",
+        (getValues("customPageNames") ?? []).filter(
+          (value) => value !== pageName,
+        ),
+        {
+          shouldDirty: true,
+          shouldValidate: false,
+        },
+      );
+    },
+    [getValues, setValue],
   );
 
   const applyProjectGoalSeed = useCallback(
@@ -401,7 +459,8 @@ export function ProjectRequestForm({
   );
 
   const togglePageOption = (optionKey: string) => {
-    const nextSelection = selectedPageKeys.includes(optionKey)
+    const isSelected = selectedPageKeys.includes(optionKey);
+    const nextSelection = isSelected
       ? selectedPageKeys.filter((item) => item !== optionKey)
       : [...selectedPageKeys, optionKey];
 
@@ -770,7 +829,9 @@ export function ProjectRequestForm({
 
             {fieldRules.requiresPages ? (
               <div className={styles.pages} tabIndex={-1}>
-                <p className={styles.pagesLabel}>{formCopy.pagesLabel}*</p>
+                <p className={styles.pagesLabel}>
+                  <ContactFieldLabel label={formCopy.pagesLabel} required />
+                </p>
                 <div className={styles.pagesOptions}>
                   {formCopy.pagesOptions?.map((option) => {
                     const isSelected = selectedPageKeys.includes(option.key);
@@ -790,25 +851,72 @@ export function ProjectRequestForm({
                   })}
                 </div>
 
-                <ContactFormField
-                  className={pagesCustomFieldClassName}
-                  errorMessage={
-                    errors.pageKeys ? getFieldErrorText("pageKeys") : undefined
-                  }
-                  inputProps={{
-                    ...register("pagesCustom", {
-                      onChange: () => clearErrors("pageKeys"),
-                    }),
-                    "aria-invalid": errors.pageKeys ? "true" : undefined,
-                    placeholder:
-                      formCopy.pagesCustomPlaceholder ??
-                      formCopy.pagesPlaceholder,
-                  }}
-                  kind="text"
-                  label={
-                    formCopy.pagesCustomLabel ?? "Weitere Seiten (optional)"
-                  }
-                />
+                {customPageNames.length > 0 ? (
+                  <div className={styles.pagesOptions}>
+                    {customPageNames.map((pageName) => (
+                      <button
+                        className={`${styles.pageOption} ${styles.pageOptionSelected} ${styles.customPageOption}`}
+                        key={pageName}
+                        onClick={() => removeCustomPage(pageName)}
+                        type="button"
+                      >
+                        <span>{pageName}</span>
+                        <span
+                          aria-hidden="true"
+                          className={styles.customPageRemove}
+                        >
+                          ×
+                        </span>
+                        <span className="sr-only">
+                          {formCopy.pagesCustomRemoveLabel ??
+                            `Seite entfernen: ${pageName}`}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+
+                <div className={styles.customPageComposer}>
+                  <ContactFormField
+                    className={pagesCustomFieldClassName}
+                    errorMessage={
+                      errors.pageKeys
+                        ? getFieldErrorText("pageKeys")
+                        : undefined
+                    }
+                    inputProps={{
+                      "aria-invalid": errors.pageKeys ? "true" : undefined,
+                      id: "project-request-custom-page-input",
+                      onChange: (event) => {
+                        setCustomPageDraft(event.target.value);
+                        clearErrors("pageKeys");
+                      },
+                      onKeyDown: (event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          addCustomPage();
+                        }
+                      },
+                      placeholder:
+                        formCopy.pagesCustomPlaceholder ??
+                        formCopy.pagesPlaceholder,
+                      value: customPageDraft,
+                    }}
+                    kind="text"
+                    label={
+                      formCopy.pagesCustomLabel ??
+                      "Weitere Seite hinzufügen (optional)"
+                    }
+                  />
+                  <button
+                    className={styles.addPageButton}
+                    disabled={!customPageDraft.trim()}
+                    onClick={addCustomPage}
+                    type="button"
+                  >
+                    {formCopy.addPageLabel}
+                  </button>
+                </div>
               </div>
             ) : null}
 

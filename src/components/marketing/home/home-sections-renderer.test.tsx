@@ -138,6 +138,7 @@ const sections: HomeSectionContent[] = [
       fieldErrorRequired: "Pflichtfeld",
       fieldErrorProjectDetailsRequired: "Projekt erforderlich",
       fieldErrorPagesRequired: "Seiten erforderlich",
+      fieldErrorTooManyPages: "Zu viele Seiten",
       fieldErrorGoalRequired: "Ziel erforderlich",
       fieldErrorWorkflowRequired: "Workflow erforderlich",
       fieldErrorConsentRequired: "Zustimmung erforderlich",

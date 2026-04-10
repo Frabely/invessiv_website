@@ -186,6 +186,7 @@ export type LandingSectionCopy = {
     fieldErrorRequired: string;
     fieldErrorProjectDetailsRequired: string;
     fieldErrorPagesRequired: string;
+    fieldErrorTooManyPages: string;
     fieldErrorGoalRequired: string;
     fieldErrorWorkflowRequired: string;
     fieldErrorConsentRequired: string;
@@ -1093,6 +1094,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Bitte gib eine kurze Projektbeschreibung ein.",
           fieldErrorPagesRequired:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
+          fieldErrorTooManyPages: "Bitte füge maximal 12 eigene Seiten hinzu.",
           fieldErrorGoalRequired: "Bitte wähle ein Ziel für die Landingpage.",
           fieldErrorWorkflowRequired: "Bitte wähle die Art des Vorhabens.",
           fieldErrorConsentRequired:
@@ -1320,6 +1322,7 @@ const HOME_SECTIONS: LandingSection[] = [
             "Please add a short project description.",
           fieldErrorPagesRequired:
             "Please select at least one page or add your own.",
+          fieldErrorTooManyPages: "Please add no more than 12 custom pages.",
           fieldErrorGoalRequired: "Please select a landing page goal.",
           fieldErrorWorkflowRequired: "Please select the type of request.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",

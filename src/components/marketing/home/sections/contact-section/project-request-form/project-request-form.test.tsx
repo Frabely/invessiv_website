@@ -87,6 +87,7 @@ const formCopyFixture = {
   fieldErrorRequired: "Pflichtfeld",
   fieldErrorProjectDetailsRequired: "Projekt erforderlich",
   fieldErrorPagesRequired: "Seiten erforderlich",
+  fieldErrorTooManyPages: "Maximal 12 eigene Seiten erlaubt",
   fieldErrorGoalRequired: "Ziel erforderlich",
   fieldErrorWorkflowRequired: "Workflow erforderlich",
   fieldErrorConsentRequired: "Zustimmung erforderlich",
@@ -234,6 +235,80 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
     await waitFor(() => {
       expect(screen.getByRole("checkbox")).toBeTruthy();
+    });
+  });
+
+  it("validates an optional website when a value is entered for web projects", async () => {
+    renderForm();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+      target: { value: "Max" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+      target: { value: "Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+      target: { value: "web" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("textbox", { name: "Webseite" })).toBeTruthy();
+    });
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Webseite" }), {
+      target: { value: "keine-url" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+      target: { value: "Wir brauchen eine neue Seitenstruktur." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Ungültige Webseite")).toBeTruthy();
+    });
+  });
+
+  it("limits web projects to 12 custom pages", async () => {
+    renderForm();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+      target: { value: "Max" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+      target: { value: "Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+      target: { value: "web" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("textbox", { name: "Projekt*" })).toBeTruthy();
+    });
+
+    const customPageInput = screen.getByPlaceholderText("z. B. Sponsoren");
+    for (let index = 1; index <= 12; index += 1) {
+      fireEvent.change(customPageInput, {
+        target: { value: `Zusatzseite ${index}` },
+      });
+      fireEvent.click(screen.getByRole("button", { name: /Seite hinzuf/i }));
+    }
+
+    fireEvent.change(customPageInput, {
+      target: { value: "Zusatzseite 13" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Seite hinzuf/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Maximal 12 eigene Seiten erlaubt")).toBeTruthy();
     });
   });
 

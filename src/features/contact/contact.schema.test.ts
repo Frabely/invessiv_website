@@ -56,6 +56,33 @@ describe("contactSubmitSchema", () => {
     expect(parsed.success).toBe(true);
   });
 
+  it("rejects web payloads with more than 12 custom pages", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      ...validBasePayload,
+      customPageNames: [
+        "One",
+        "Two",
+        "Three",
+        "Four",
+        "Five",
+        "Six",
+        "Seven",
+        "Eight",
+        "Nine",
+        "Ten",
+        "Eleven",
+        "Twelve",
+        "Thirteen",
+      ],
+      offerKey: "web",
+    });
+
+    expect(parsed.success).toBe(false);
+    expect(
+      parsed.error?.issues.some((issue) => issue.message === "too_many_pages"),
+    ).toBe(true);
+  });
+
   it("accepts a valid quick contact payload", () => {
     const parsed = contactSubmitSchema.safeParse({
       consentAccepted: true,
