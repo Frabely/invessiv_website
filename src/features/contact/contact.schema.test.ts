@@ -4,8 +4,9 @@ import { contactSubmitSchema } from "@/features/contact/contact.schema";
 const validBasePayload = {
   consentAccepted: true,
   email: "max@example.com",
-  fullName: "Max Mustermann",
+  firstName: "Max",
   kind: "project_request",
+  lastName: "Mustermann",
   locale: "de",
   offerKey: "landing",
   projectDetails:
@@ -49,8 +50,9 @@ describe("contactSubmitSchema", () => {
     const parsed = contactSubmitSchema.safeParse({
       consentAccepted: true,
       email: "max@example.com",
-      fullName: "Max Mustermann",
+      firstName: "Max",
       kind: "quick_contact",
+      lastName: "Mustermann",
       locale: "de",
       message: "Kurze erste Anfrage.",
     });

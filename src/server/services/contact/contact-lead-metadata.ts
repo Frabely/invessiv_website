@@ -15,9 +15,10 @@ export type PreparedContactLeadSubmission = {
     consentAcceptedAt: string;
     createdAt: string;
     email: string;
-    fullName: string;
+    firstName: string;
     id: string;
     inquiryType: ProjectRequestSubmitInput["offerKey"];
+    lastName: string;
     leadStatus: ContactLeadStatus;
     locale: ProjectRequestSubmitInput["locale"];
     mailProvider: string;
@@ -71,9 +72,10 @@ export function createContactLeadSubmission(
       consentAcceptedAt: submittedAt,
       createdAt: submittedAt,
       email: payload.email,
-      fullName: payload.fullName,
+      firstName: payload.firstName,
       id: leadId,
       inquiryType: payload.offerKey,
+      lastName: payload.lastName,
       leadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
       locale: payload.locale,
       mailProvider,

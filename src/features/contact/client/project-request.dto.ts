@@ -14,9 +14,10 @@ export type ProjectRequestDto = {
   company?: string;
   consentAccepted: boolean;
   email: string;
-  fullName: string;
+  firstName: string;
   goalKey?: ContactGoalKey;
   kind: Extract<ContactRequestKind, "project_request">;
+  lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;
   pageKeys?: ContactPageKey[];

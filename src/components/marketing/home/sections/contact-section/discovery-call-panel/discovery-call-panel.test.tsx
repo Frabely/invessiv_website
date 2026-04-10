@@ -44,7 +44,8 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -62,8 +63,11 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
-      target: { value: "Max Mustermann" },
+    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+      target: { value: "Max" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+      target: { value: "Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
       target: { value: "max@example.com" },
@@ -77,7 +81,8 @@ describe("DiscoveryCallPanel", () => {
         {
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
+          lastName: "Mustermann",
           message: "",
         },
         {
@@ -115,7 +120,8 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -160,7 +166,8 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "FÃ¼r direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefÃ¼llt.",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -178,8 +185,11 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Name*" }), {
-      target: { value: "Max Mustermann" },
+    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+      target: { value: "Max" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+      target: { value: "Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
       target: { value: "max@example.com" },

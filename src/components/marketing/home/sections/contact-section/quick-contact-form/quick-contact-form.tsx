@@ -96,8 +96,9 @@ export function QuickContactForm({
     openQuickContactMailDraft(dto, {
       channelValue: channel.value,
       emailLabel: formCopy.emailLabel,
-      fullNameLabel: formCopy.fullNameLabel,
+      firstNameLabel: formCopy.firstNameLabel,
       intro: formCopy.mailIntro,
+      lastNameLabel: formCopy.lastNameLabel,
       subject: formCopy.mailSubject,
     });
   });

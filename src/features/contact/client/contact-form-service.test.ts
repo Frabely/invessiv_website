@@ -20,8 +20,9 @@ describe("contact-form-service", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        fullName: "Max Mustermann",
+        firstName: "Max",
         kind: "project_request",
+        lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
         projectDetails: "Landingpage fuer qualifizierte Leads.",
@@ -39,8 +40,9 @@ describe("contact-form-service", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Landingpage fuer qualifizierte Leads.",
@@ -59,16 +61,18 @@ describe("contact-form-service", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        fullName: "Max Mustermann",
+        firstName: "Max",
         kind: "quick_contact",
+        lastName: "Mustermann",
         locale: "de",
         message: "Wir brauchen eine kurze Einschaetzung.",
       },
       {
         channelValue: "hi@invessiv.de",
         emailLabel: "E-Mail",
-        fullNameLabel: "Name",
+        firstNameLabel: "Vorname",
         intro: "Hallo, hier ist eine kurze Anfrage ueber die Website.",
+        lastNameLabel: "Nachname",
         subject: "Kurze Anfrage ueber invessiv.de",
       },
     );
@@ -77,7 +81,8 @@ describe("contact-form-service", () => {
     expect(mailtoHref).toContain(
       "subject=Kurze%20Anfrage%20ueber%20invessiv.de",
     );
-    expect(mailtoHref).toContain("Name%3A%20Max%20Mustermann");
+    expect(mailtoHref).toContain("Vorname%3A%20Max");
+    expect(mailtoHref).toContain("Nachname%3A%20Mustermann");
     expect(mailtoHref).toContain("E-Mail%3A%20max%40example.com");
   });
 
@@ -85,7 +90,8 @@ describe("contact-form-service", () => {
     const calendlyHref = createCalendlyPrefillHref(
       {
         email: "max@example.com",
-        fullName: "Max Mustermann",
+        firstName: "Max",
+        lastName: "Mustermann",
         message: "Wir wollen den Umfang kurz einordnen.",
       },
       {
@@ -104,7 +110,8 @@ describe("contact-form-service", () => {
     const calendlyHref = createCalendlyPrefillHref(
       {
         email: "max@example.com",
-        fullName: "Max Mustermann",
+        firstName: "Max",
+        lastName: "Mustermann",
         message: "   ",
       },
       {

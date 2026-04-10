@@ -5,7 +5,8 @@ export type ProjectRequestFormValues = {
   company: string;
   consentAccepted: boolean;
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   goalKey: string;
   offerKey: string;
   pageKeys: string[];

@@ -43,6 +43,7 @@ type ContactFormCopy = {
   consentLabel: string;
   emailLabel: string;
   firstNameLabel: string;
+  lastNameLabel: string;
   goalLabel: string;
   goalOptions: FormOption[];
   intro: string;
@@ -191,7 +192,10 @@ export function ProjectRequestForm({
     (step: FormStep) => {
       window.requestAnimationFrame(() => {
         if (step === 1) {
-          setFocus(getValues("fullName") ? "offerKey" : "fullName");
+          const hasIdentity =
+            getValues("firstName").trim().length > 0 &&
+            getValues("lastName").trim().length > 0;
+          setFocus(hasIdentity ? "offerKey" : "firstName");
           return;
         }
 
@@ -223,7 +227,7 @@ export function ProjectRequestForm({
   );
 
   const getFieldStep = (fieldName: string): FormStep => {
-    if (["fullName", "email", "offerKey"].includes(fieldName)) {
+    if (["firstName", "lastName", "email", "offerKey"].includes(fieldName)) {
       return 1;
     }
 
@@ -308,7 +312,7 @@ export function ProjectRequestForm({
         FormStep,
         Array<keyof ProjectRequestFormValues>
       > = {
-        1: ["fullName", "email", "offerKey"],
+        1: ["firstName", "lastName", "email", "offerKey"],
         2: ["projectDetails"],
         3: ["consentAccepted"],
       };
@@ -568,7 +572,7 @@ export function ProjectRequestForm({
       reset(DEFAULT_PROJECT_REQUEST_FORM_VALUES);
       setCurrentStep(1);
       setStartedAt(new Date().toISOString());
-      window.requestAnimationFrame(() => setFocus("fullName"));
+      window.requestAnimationFrame(() => setFocus("firstName"));
     } catch {
       setStatusMessage(formCopy.submitErrorGeneric);
     }
@@ -645,13 +649,15 @@ export function ProjectRequestForm({
               <ContactIdentityFields
                 copy={{
                   emailLabel: formCopy.emailLabel,
-                  fullNameLabel: formCopy.firstNameLabel,
+                  firstNameLabel: formCopy.firstNameLabel,
+                  lastNameLabel: formCopy.lastNameLabel,
                 }}
                 errors={errors}
                 getErrorMessage={(fieldName) => getFieldErrorText(fieldName)}
                 onFieldChange={{
                   email: () => clearErrors("email"),
-                  fullName: () => clearErrors("fullName"),
+                  firstName: () => clearErrors("firstName"),
+                  lastName: () => clearErrors("lastName"),
                 }}
                 register={register}
               />

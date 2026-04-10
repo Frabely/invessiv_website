@@ -3,8 +3,9 @@
     "quickContactNotification": {
       "detailsLabel": "Nachricht",
       "emailLabel": "E-Mail",
+      "firstNameLabel": "Vorname",
       "heading": "Neue kurze Anfrage",
-      "nameLabel": "Name",
+      "lastNameLabel": "Nachname",
       "subjectPrefix": "Kurze Anfrage"
     }
   }

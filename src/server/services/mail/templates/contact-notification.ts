@@ -45,10 +45,11 @@ export async function createContactNotificationMessage(
   const environmentPrefix = getEnvironmentSubjectPrefix(
     getServerEnv().deploymentEnvironment,
   );
-  const subject = `${environmentPrefix}[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.fullName)}`;
+  const subject = `${environmentPrefix}[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.firstName)} ${sanitizeLine(payload.lastName)}`;
   const rows = [
     [copy.labels.offerKey, mapValue("offerKey", payload.offerKey, copy)],
-    [copy.labels.fullName, payload.fullName],
+    [copy.labels.firstName, payload.firstName],
+    [copy.labels.lastName, payload.lastName],
     [copy.labels.email, payload.email],
     [copy.labels.company, payload.company],
     [copy.labels.role, payload.role],

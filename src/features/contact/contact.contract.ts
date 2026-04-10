@@ -14,9 +14,10 @@ export type ProjectRequestSubmitRequest = {
   company?: string;
   consentAccepted: boolean;
   email: string;
-  fullName: string;
+  firstName: string;
   goalKey?: ContactGoalKey;
   kind: Extract<ContactRequestKind, "project_request">;
+  lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;
   pagesCustom?: string;
@@ -34,8 +35,9 @@ export type ProjectRequestSubmitRequest = {
 export type QuickContactSubmitRequest = {
   consentAccepted: boolean;
   email: string;
-  fullName: string;
+  firstName: string;
   kind: Extract<ContactRequestKind, "quick_contact">;
+  lastName: string;
   locale: Locale;
   message: string;
 };

@@ -8,8 +8,9 @@ export function mapQuickContactFormToDto(
   return {
     consentAccepted: values.consentAccepted,
     email: values.email.trim(),
-    fullName: values.fullName.trim(),
+    firstName: values.firstName.trim(),
     kind: "quick_contact",
+    lastName: values.lastName.trim(),
     locale,
     message: values.message.trim(),
   };

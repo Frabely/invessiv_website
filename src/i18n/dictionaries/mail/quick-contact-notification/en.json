@@ -3,8 +3,9 @@
     "quickContactNotification": {
       "detailsLabel": "Message",
       "emailLabel": "Email",
+      "firstNameLabel": "First name",
       "heading": "New quick inquiry",
-      "nameLabel": "Name",
+      "lastNameLabel": "Last name",
       "subjectPrefix": "Quick inquiry"
     }
   }

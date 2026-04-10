@@ -25,25 +25,45 @@ export function ContactIdentityFields<
   register,
   onFieldChange,
 }: ContactIdentityFieldsProps<TValues>) {
-  const fullNameField = "fullName" as Path<TValues>;
+  const firstNameField = "firstName" as Path<TValues>;
+  const lastNameField = "lastName" as Path<TValues>;
   const emailField = "email" as Path<TValues>;
 
   return (
     <>
       <ContactFormField
         controlClassName={controlClassName}
-        errorMessage={errors.fullName ? getErrorMessage("fullName") : undefined}
+        errorMessage={
+          errors.firstName ? getErrorMessage("firstName") : undefined
+        }
         inputProps={{
-          ...register(fullNameField, {
-            onChange: onFieldChange?.fullName,
+          ...register(firstNameField, {
+            onChange: onFieldChange?.firstName,
             required: "required",
           }),
-          "aria-invalid": errors.fullName ? "true" : undefined,
+          "aria-invalid": errors.firstName ? "true" : undefined,
           autoCapitalize: "words",
-          autoComplete: "name",
+          autoComplete: "given-name",
         }}
         kind="text"
-        label={copy.fullNameLabel}
+        label={copy.firstNameLabel}
+        required
+      />
+
+      <ContactFormField
+        controlClassName={controlClassName}
+        errorMessage={errors.lastName ? getErrorMessage("lastName") : undefined}
+        inputProps={{
+          ...register(lastNameField, {
+            onChange: onFieldChange?.lastName,
+            required: "required",
+          }),
+          "aria-invalid": errors.lastName ? "true" : undefined,
+          autoCapitalize: "words",
+          autoComplete: "family-name",
+        }}
+        kind="text"
+        label={copy.lastNameLabel}
         required
       />
 

@@ -15,8 +15,9 @@ type SubmitProjectRequestOptions = {
 type OpenQuickContactMailDraftOptions = {
   channelValue: string;
   emailLabel: string;
-  fullNameLabel: string;
+  firstNameLabel: string;
   intro: string;
+  lastNameLabel: string;
   subject: string;
 };
 
@@ -83,14 +84,15 @@ export function createQuickContactMailtoHref(
   {
     channelValue,
     emailLabel,
-    fullNameLabel,
+    firstNameLabel,
     intro,
+    lastNameLabel,
     subject,
   }: OpenQuickContactMailDraftOptions,
 ) {
   const encodedSubject = encodeURIComponent(subject);
   const encodedBody = encodeURIComponent(
-    `${intro}\n\n${fullNameLabel}: ${dto.fullName}\n${emailLabel}: ${dto.email}\n\n${dto.message}`,
+    `${intro}\n\n${firstNameLabel}: ${dto.firstName}\n${lastNameLabel}: ${dto.lastName}\n${emailLabel}: ${dto.email}\n\n${dto.message}`,
   );
 
   return `mailto:${channelValue}?subject=${encodedSubject}&body=${encodedBody}`;
@@ -112,7 +114,8 @@ export function createCalendlyPrefillHref(
   { calendlyUrl, concernAnswerSlot = 1 }: CalendlyPrefillOptions,
 ) {
   const url = new URL(calendlyUrl);
-  const normalizedName = values.fullName.trim();
+  const normalizedName =
+    `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
   const normalizedEmail = values.email.trim();
   const normalizedConcern = values.message.trim();
 
@@ -126,17 +129,4 @@ export function createCalendlyPrefillHref(
   }
 
   return url.toString();
-}
-
-export function openCalendlyPrefillLink(
-  values: BaseContactFieldsValues,
-  options: CalendlyPrefillOptions,
-) {
-  const calendlyHref = createCalendlyPrefillHref(values, options);
-  const link = document.createElement("a");
-  link.href = calendlyHref;
-  link.rel = "noopener noreferrer";
-  link.target = "_blank";
-  link.click();
-  return calendlyHref;
 }

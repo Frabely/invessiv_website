@@ -1,6 +1,7 @@
 export type ContactIdentityFieldsValues = {
   email: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
 };
 
 export type BaseContactFieldsValues = ContactIdentityFieldsValues & {
@@ -10,7 +11,8 @@ export type BaseContactFieldsValues = ContactIdentityFieldsValues & {
 export const DEFAULT_CONTACT_IDENTITY_FIELDS_VALUES: ContactIdentityFieldsValues =
   {
     email: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
   };
 
 export const DEFAULT_BASE_CONTACT_FIELDS_VALUES: BaseContactFieldsValues = {
@@ -22,7 +24,8 @@ export const CONTACT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export type ContactIdentityFieldsCopy = {
   emailLabel: string;
-  fullNameLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
 };
 
 export type ContactMessageFieldCopy = {

@@ -36,9 +36,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
           kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -68,8 +69,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: false,
           email: "invalid",
-          fullName: "",
+          firstName: "",
           kind: "project_request",
+          lastName: "",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Zu kurz",
@@ -107,9 +109,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
           kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -159,9 +162,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
           kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -198,9 +202,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
           kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -228,8 +233,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           kind: "quick_contact",
+          lastName: "Mustermann",
           locale: "de",
           message: "Kurze erste Anfrage mit zwei Saetzen.",
         }),

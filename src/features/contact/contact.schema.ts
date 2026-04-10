@@ -31,6 +31,11 @@ const optionalUrlString = z
   .refine((value) => !value || URL.canParse(value), "invalid_website");
 
 const localeSchema = z.enum(["de", "en"]);
+const nameStringSchema = z
+  .string()
+  .trim()
+  .min(2, "required")
+  .max(120, "too_long");
 
 export const projectRequestSchema = z
   .object({
@@ -38,13 +43,10 @@ export const projectRequestSchema = z
     company: optionalTrimmedString,
     consentAccepted: z.boolean().refine((value) => value, "consent_required"),
     email: emailStringSchema,
-    fullName: z
-      .string()
-      .trim()
-      .min(2, "full_name_required")
-      .max(120, "too_long"),
+    firstName: nameStringSchema,
     goalKey: z.enum(CONTACT_GOAL_KEYS).optional(),
     kind: z.literal(CONTACT_REQUEST_KINDS[0]),
+    lastName: nameStringSchema,
     locale: localeSchema,
     offerKey: z.enum(CONTACT_OFFER_KEYS),
     pagesCustom: optionalTrimmedString,
@@ -109,8 +111,9 @@ export const projectRequestSchema = z
 export const quickContactSchema = z.object({
   consentAccepted: z.boolean().refine((value) => value, "consent_required"),
   email: emailStringSchema,
-  fullName: z.string().trim().min(2, "full_name_required").max(120, "too_long"),
+  firstName: nameStringSchema,
   kind: z.literal(CONTACT_REQUEST_KINDS[1]),
+  lastName: nameStringSchema,
   locale: localeSchema,
   message: z.string().trim().min(1, "message_required").max(5000, "too_long"),
 });

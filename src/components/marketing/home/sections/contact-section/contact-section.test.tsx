@@ -58,6 +58,7 @@ describe("ContactSection", () => {
           consentLabel: "Ich stimme gemäß",
           emailLabel: "E-Mail",
           firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           goalLabel: "Ziel",
           goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
           intro: "Kurzbeschreibung",
@@ -113,7 +114,8 @@ describe("ContactSection", () => {
           subtitle: "Schneller Kontakt",
           intro: "Kurz reicht.",
           metaLabel: "E-Mail",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Nachricht",
           messagePlaceholder: "Schreib kurz dein Anliegen.",
@@ -133,7 +135,8 @@ describe("ContactSection", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Kurz vorbereiten und dann Termin wählen.",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen.",
@@ -183,7 +186,7 @@ describe("ContactSection", () => {
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    expect(screen.getByRole("textbox", { name: "Name*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "E-Mail*" })).toBeTruthy();
     expect(screen.getByRole("textbox", { name: "Anliegen" })).toBeTruthy();
     expect(screen.getByRole("checkbox")).toBeTruthy();

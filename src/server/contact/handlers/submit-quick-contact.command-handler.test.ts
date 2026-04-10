@@ -28,8 +28,9 @@ describe("submitQuickContactCommandHandler", () => {
     const result = await submitQuickContactCommandHandler({
       consentAccepted: false,
       email: "invalid",
-      fullName: "",
+      firstName: "",
       kind: "quick_contact",
+      lastName: "",
       locale: "de",
       message: "",
     });
@@ -59,8 +60,9 @@ describe("submitQuickContactCommandHandler", () => {
     const result = await submitQuickContactCommandHandler({
       consentAccepted: true,
       email: "max@example.com",
-      fullName: "Max Mustermann",
+      firstName: "Max",
       kind: "quick_contact",
+      lastName: "Mustermann",
       locale: "de",
       message: "Kurze erste Anfrage.",
     });
@@ -88,8 +90,9 @@ describe("submitQuickContactCommandHandler", () => {
     const result = await submitQuickContactCommandHandler({
       consentAccepted: true,
       email: "max@example.com",
-      fullName: "Max Mustermann",
+      firstName: "Max",
       kind: "quick_contact",
+      lastName: "Mustermann",
       locale: "de",
       message: "Kurze erste Anfrage.",
     });

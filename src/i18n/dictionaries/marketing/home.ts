@@ -136,6 +136,7 @@ export type LandingSectionCopy = {
     intro: string;
     conditionalFieldHint: string;
     firstNameLabel: string;
+    lastNameLabel: string;
     emailLabel: string;
     phoneLabel: string;
     companyLabel: string;
@@ -195,7 +196,8 @@ export type LandingSectionCopy = {
     subtitle: string;
     intro: string;
     metaLabel: string;
-    fullNameLabel: string;
+    firstNameLabel: string;
+    lastNameLabel: string;
     emailLabel: string;
     messageLabel: string;
     messagePlaceholder: string;
@@ -215,7 +217,8 @@ export type LandingSectionCopy = {
     title: string;
     subtitle: string;
     intro: string;
-    fullNameLabel: string;
+    firstNameLabel: string;
+    lastNameLabel: string;
     emailLabel: string;
     messageLabel: string;
     messagePlaceholder: string;
@@ -982,7 +985,8 @@ const HOME_SECTIONS: LandingSection[] = [
             "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
             "Je nach gewähltem Leistungsmodell zeige ich nur die wirklich relevanten Felder.",
-          firstNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
@@ -1084,7 +1088,8 @@ const HOME_SECTIONS: LandingSection[] = [
           intro:
             "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst. Der Mailclient wird mit deiner Nachricht vorbereitet.",
           metaLabel: "E-Mail",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Nachricht",
           messagePlaceholder:
@@ -1107,7 +1112,8 @@ const HOME_SECTIONS: LandingSection[] = [
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro:
             "Trag kurz deine Kontaktdaten ein und gib optional dein Anliegen mit, damit der Termin fokussierter starten kann.",
-          fullNameLabel: "Name",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder:
@@ -1188,7 +1194,8 @@ const HOME_SECTIONS: LandingSection[] = [
             "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
           conditionalFieldHint:
             "Based on your selected service model, I only show fields that are actually relevant.",
-          firstNameLabel: "Name",
+          firstNameLabel: "First name",
+          lastNameLabel: "Last name",
           emailLabel: "Email",
           phoneLabel: "Phone",
           companyLabel: "Company",
@@ -1289,7 +1296,8 @@ const HOME_SECTIONS: LandingSection[] = [
           intro:
             "A few lines are enough: goal, context, and what you need next. Your mail app opens with the draft prepared.",
           metaLabel: "Email",
-          fullNameLabel: "Name",
+          firstNameLabel: "First name",
+          lastNameLabel: "Last name",
           emailLabel: "Email",
           messageLabel: "Message",
           messagePlaceholder:
@@ -1312,7 +1320,8 @@ const HOME_SECTIONS: LandingSection[] = [
           subtitle: "Best for live alignment with a bit of context before the call.",
           intro:
             "Add your contact details and, if useful, a short note so the call can start with clearer context.",
-          fullNameLabel: "Name",
+          firstNameLabel: "First name",
+          lastNameLabel: "Last name",
           emailLabel: "Email",
           messageLabel: "Topic",
           messagePlaceholder:
