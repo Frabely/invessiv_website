@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS lead_project_requests (
   phone TEXT,
   website TEXT,
   page_keys TEXT[],
-  pages_custom TEXT,
+  custom_page_names TEXT[],
   project_details TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

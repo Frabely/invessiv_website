@@ -6,6 +6,7 @@
       "labels": {
         "budgetKey": "Budget range",
         "company": "Company",
+        "customPageNames": "Additional pages",
         "email": "Email",
         "firstName": "First name",
         "goalKey": "Primary goal",
@@ -49,7 +50,6 @@
           "contact": "Contact",
           "home": "Home",
           "landing_page": "Landing page",
-          "other": "Other",
           "services": "Services"
         },
         "preferredStartKey": {

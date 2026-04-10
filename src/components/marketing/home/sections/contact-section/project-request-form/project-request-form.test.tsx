@@ -43,6 +43,7 @@ const formCopyFixture = {
   emailLabel: "E-Mail",
   firstNameLabel: "Vorname",
   lastNameLabel: "Nachname",
+  addPageLabel: "Seite hinzufügen",
   goalLabel: "Ziel",
   goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
   intro: "Kurz",
@@ -51,8 +52,9 @@ const formCopyFixture = {
   nextStepProjectLabel: "Weiter zu Rahmen",
   offerLabel: "Angebot",
   offerPlaceholder: "Auswählen",
-  pagesCustomLabel: "Weitere Seiten",
-  pagesCustomPlaceholder: "z. B. Q&A",
+  pagesCustomLabel: "Weitere Seite hinzufügen",
+  pagesCustomPlaceholder: "z. B. Sponsoren",
+  pagesCustomRemoveLabel: "Seite entfernen",
   pagesLabel: "Seiten",
   pagesOptions: [
     { key: "home", label: "Start" },
@@ -95,7 +97,12 @@ const formCopyFixture = {
   title: "Projektanfrage",
   websiteLabel: "Webseite",
   workflowLabel: "Workflows",
-  workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
+  workflowOptions: [
+    {
+      key: "digitize_existing_process",
+      label: "Bestehenden Ablauf digitalisieren",
+    },
+  ],
 };
 
 const offerOptionsFixture = [
@@ -220,7 +227,10 @@ describe("ProjectRequestForm", () => {
       screen.getByText("Bitte mindestens eine Seite wählen."),
     ).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Start" }));
+    fireEvent.change(screen.getByPlaceholderText("z. B. Sponsoren"), {
+      target: { value: "Sponsoren" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Seite hinzufügen" }));
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
     await waitFor(() => {
       expect(screen.getByRole("checkbox")).toBeTruthy();

@@ -138,6 +138,7 @@ export type LandingSectionCopy = {
     firstNameLabel: string;
     lastNameLabel: string;
     emailLabel: string;
+    addPageLabel: string;
     phoneLabel: string;
     companyLabel: string;
     roleLabel: string;
@@ -151,6 +152,7 @@ export type LandingSectionCopy = {
     pagesOptions?: ContactFormOption[];
     pagesCustomLabel?: string;
     pagesCustomPlaceholder?: string;
+    pagesCustomRemoveLabel?: string;
     pagesRequiredHint?: string;
     workflowLabel: string;
     workflowOptions: ContactFormOption[];
@@ -987,6 +989,7 @@ const HOME_SECTIONS: LandingSection[] = [
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
+          addPageLabel: "Seite hinzufügen",
           phoneLabel: "Telefon",
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
@@ -1011,10 +1014,10 @@ const HOME_SECTIONS: LandingSection[] = [
             { key: CONTACT_PAGE_KEYS[4], label: "Karriere" },
             { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
             { key: CONTACT_PAGE_KEYS[6], label: "Landingpage" },
-            { key: CONTACT_PAGE_KEYS[7], label: "Sonstiges" },
           ],
-          pagesCustomLabel: "Weitere Seiten (optional)",
-          pagesCustomPlaceholder: "z. B. Team, FAQ, Karriere",
+          pagesCustomLabel: "Weitere Seite hinzufügen",
+          pagesCustomPlaceholder: "z. B. Sponsoren",
+          pagesCustomRemoveLabel: "Seite entfernen",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           workflowLabel: "Art des Vorhabens",
@@ -1213,6 +1216,7 @@ const HOME_SECTIONS: LandingSection[] = [
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
           emailLabel: "Email",
+          addPageLabel: "Add page",
           phoneLabel: "Phone",
           companyLabel: "Company",
           roleLabel: "Role",
@@ -1237,10 +1241,10 @@ const HOME_SECTIONS: LandingSection[] = [
             { key: CONTACT_PAGE_KEYS[4], label: "Careers" },
             { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
             { key: CONTACT_PAGE_KEYS[6], label: "Landing page" },
-            { key: CONTACT_PAGE_KEYS[7], label: "Other" },
           ],
-          pagesCustomLabel: "Additional pages (optional)",
-          pagesCustomPlaceholder: "e.g. Team, FAQ, Careers",
+          pagesCustomLabel: "Add another page",
+          pagesCustomPlaceholder: "e.g. Sponsors",
+          pagesCustomRemoveLabel: "Remove page",
           pagesRequiredHint: "Please select at least one page or add your own.",
           workflowLabel: "Type of request",
           workflowOptions: [

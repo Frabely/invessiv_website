@@ -6,6 +6,7 @@
       "labels": {
         "budgetKey": "Budgetrahmen",
         "company": "Unternehmen",
+        "customPageNames": "Weitere Seiten",
         "email": "E-Mail",
         "firstName": "Vorname",
         "goalKey": "Hauptziel",
@@ -49,7 +50,6 @@
           "contact": "Kontakt",
           "home": "Start",
           "landing_page": "Landingpage",
-          "other": "Sonstiges",
           "services": "Leistungen"
         },
         "preferredStartKey": {

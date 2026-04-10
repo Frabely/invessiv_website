@@ -36,11 +36,11 @@ export type PreparedContactLeadSubmission = {
   };
   projectRequest: {
     budgetKey?: ProjectRequestSubmitInput["budgetKey"];
+    customPageNames?: string[];
     createdAt: string;
     goalKey?: ProjectRequestSubmitInput["goalKey"];
     leadId: string;
     pageKeys?: ProjectRequestSubmitInput["pageKeys"];
-    pagesCustom?: string;
     preferredStartKey?: ProjectRequestSubmitInput["preferredStartKey"];
     updatedAt: string;
     website?: string;
@@ -93,11 +93,13 @@ export function createContactLeadSubmission(
     },
     projectRequest: {
       budgetKey: payload.budgetKey,
+      customPageNames: payload.customPageNames?.length
+        ? payload.customPageNames
+        : undefined,
       createdAt: submittedAt,
       goalKey: payload.goalKey,
       leadId,
       pageKeys: payload.pageKeys?.length ? payload.pageKeys : undefined,
-      pagesCustom: payload.pagesCustom,
       preferredStartKey: payload.preferredStartKey,
       updatedAt: submittedAt,
       website: payload.website,

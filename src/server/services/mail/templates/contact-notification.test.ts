@@ -10,6 +10,7 @@ describe("createContactNotificationMessage", () => {
     const message = await createContactNotificationMessage({
       company: undefined,
       consentAccepted: true,
+      customPageNames: undefined,
       email: "max@example.com",
       firstName: "Max",
       goalKey: "generate_inquiries",
@@ -17,7 +18,6 @@ describe("createContactNotificationMessage", () => {
       lastName: "Mustermann",
       locale: "de",
       offerKey: "landing",
-      pagesCustom: undefined,
       pageKeys: ["home", "contact"],
       phone: undefined,
       projectDetails: "Kurzbeschreibung",
@@ -37,6 +37,7 @@ describe("createContactNotificationMessage", () => {
     const message = await createContactNotificationMessage({
       company: undefined,
       consentAccepted: true,
+      customPageNames: undefined,
       email: "max@example.com",
       firstName: "Max",
       goalKey: "generate_inquiries",
@@ -44,7 +45,6 @@ describe("createContactNotificationMessage", () => {
       lastName: "Mustermann",
       locale: "de",
       offerKey: "landing",
-      pagesCustom: undefined,
       pageKeys: ["home", "contact"],
       phone: undefined,
       projectDetails: "Kurzbeschreibung",
@@ -64,6 +64,7 @@ describe("createContactNotificationMessage", () => {
     const message = await createContactNotificationMessage({
       company: undefined,
       consentAccepted: true,
+      customPageNames: ["Sponsoren"],
       email: "max@example.com",
       firstName: "Max",
       goalKey: "generate_inquiries",
@@ -71,7 +72,6 @@ describe("createContactNotificationMessage", () => {
       lastName: "Mustermann",
       locale: "de",
       offerKey: "landing",
-      pagesCustom: undefined,
       pageKeys: ["home", "contact"],
       phone: undefined,
       projectDetails: "Kurzbeschreibung",
@@ -83,7 +83,8 @@ describe("createContactNotificationMessage", () => {
     expect(message.subject).not.toMatch(/^\[(DEV|PREVIEW)\]/);
     expect(message.subject).toContain("Landingpages");
     expect(message.text).toContain('"Angebot": Landingpages');
-    expect(message.text).toContain('"Benötigte Seiten": Start, Kontakt');
+    expect(message.text).toContain("Start, Kontakt");
+    expect(message.text).toContain('"Weitere Seiten": Sponsoren');
     expect(message.html).toContain('"Angebot":');
 
     vi.unstubAllEnvs();

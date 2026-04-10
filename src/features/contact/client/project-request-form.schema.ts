@@ -9,8 +9,8 @@ export type ProjectRequestFormValues = {
   lastName: string;
   goalKey: string;
   offerKey: string;
+  customPageNames: string[];
   pageKeys: string[];
-  pagesCustom: string;
   phone: string;
   preferredStartKey: string;
   projectDetails: string;
@@ -27,8 +27,8 @@ export const DEFAULT_PROJECT_REQUEST_FORM_VALUES: ProjectRequestFormValues = {
   ...DEFAULT_CONTACT_IDENTITY_FIELDS_VALUES,
   goalKey: "",
   offerKey: "",
+  customPageNames: [],
   pageKeys: [],
-  pagesCustom: "",
   phone: "",
   preferredStartKey: "",
   projectDetails: "",

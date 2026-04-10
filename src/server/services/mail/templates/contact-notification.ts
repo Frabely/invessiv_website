@@ -57,6 +57,7 @@ export async function createContactNotificationMessage(
     [copy.labels.website, payload.website],
     [copy.labels.goalKey, mapValue("goalKey", payload.goalKey, copy)],
     [copy.labels.pageKeys, mapValue("pageKeys", payload.pageKeys, copy)],
+    [copy.labels.customPageNames, payload.customPageNames?.join(", ")],
     [copy.labels.budgetKey, mapValue("budgetKey", payload.budgetKey, copy)],
     [
       copy.labels.preferredStartKey,

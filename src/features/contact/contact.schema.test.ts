@@ -33,7 +33,7 @@ describe("contactSubmitSchema", () => {
     ).toBe(true);
   });
 
-  it("rejects web payloads without pages or custom pages", () => {
+  it("rejects web payloads without pages or custom page names", () => {
     const parsed = contactSubmitSchema.safeParse({
       ...validBasePayload,
       offerKey: "web",
@@ -44,6 +44,16 @@ describe("contactSubmitSchema", () => {
     expect(
       parsed.error?.issues.some((issue) => issue.message === "pages_required"),
     ).toBe(true);
+  });
+
+  it("accepts web payloads with custom page names", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      ...validBasePayload,
+      customPageNames: ["Sponsoren"],
+      offerKey: "web",
+    });
+
+    expect(parsed.success).toBe(true);
   });
 
   it("accepts a valid quick contact payload", () => {

@@ -20,7 +20,7 @@ export type ProjectRequestSubmitRequest = {
   lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;
-  pagesCustom?: string;
+  customPageNames?: string[];
   pageKeys?: ContactPageKey[];
   phone?: string;
   preferredStartKey?: ContactStartKey;
@@ -41,10 +41,6 @@ export type QuickContactSubmitRequest = {
   locale: Locale;
   message: string;
 };
-
-export type ContactSubmitRequest =
-  | ProjectRequestSubmitRequest
-  | QuickContactSubmitRequest;
 
 export type ContactSubmitErrorCode =
   | "delivery_unavailable"

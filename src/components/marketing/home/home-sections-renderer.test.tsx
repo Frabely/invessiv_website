@@ -91,6 +91,7 @@ const sections: HomeSectionContent[] = [
       firstNameLabel: "Vorname",
       lastNameLabel: "Nachname",
       emailLabel: "E-Mail",
+      addPageLabel: "Seite hinzufügen",
       phoneLabel: "Telefon",
       companyLabel: "Unternehmen",
       roleLabel: "Rolle",
@@ -103,7 +104,12 @@ const sections: HomeSectionContent[] = [
       pagesPlaceholder: "Start, Kontakt",
       pagesOptions: [{ key: "home", label: "Start" }],
       workflowLabel: "Workflows",
-      workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
+      workflowOptions: [
+        {
+          key: "digitize_existing_process",
+          label: "Bestehenden Ablauf digitalisieren",
+        },
+      ],
       stepNavigationLabel: "Fortschritt",
       stepLabel: "Schritt",
       stepOneTitle: "Kontakt",

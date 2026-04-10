@@ -186,6 +186,55 @@
   margin-top: 2px;
 }
 
+.customPageComposer {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: min(100%, 34rem);
+}
+
+.customPageComposer > :first-child {
+  flex: 1 1 auto;
+}
+
+.addPageButton {
+  margin-top: 28px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: 0.82rem;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.addPageButton:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
+}
+
+.addPageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.addPageButton:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+}
+
+.customPageOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customPageRemove {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .conditionalHint {
   margin: -2px 0 0;
   border-left: 3px solid color-mix(in srgb, var(--color-cta) 40%, transparent);
@@ -205,5 +254,13 @@
   .stepper {
     grid-template-columns: 1fr;
     padding: 0;
+  }
+
+  .customPageComposer {
+    width: 100%;
+  }
+
+  .addPageButton {
+    margin-top: 0;
   }
 }

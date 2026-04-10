@@ -28,7 +28,7 @@ describe("contact lead metadata", () => {
         lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
-        pagesCustom: "Karriereseite",
+        customPageNames: ["Karriereseite"],
         pageKeys: ["home", "contact"],
         phone: "+49 151 23456789",
         preferredStartKey: "within_two_weeks",
@@ -50,6 +50,9 @@ describe("contact lead metadata", () => {
     expect(submission.lead.privacyVersion).toBe("2026-03-26");
     expect(submission.lead.termsVersion).toBe("2026-03-26");
     expect(submission.projectRequest.leadId).toBe(submission.lead.id);
+    expect(submission.projectRequest.customPageNames).toEqual([
+      "Karriereseite",
+    ]);
     expect(submission.projectRequest.pageKeys).toEqual(["home", "contact"]);
     expect(submission.lead.retentionUntil).toBe("2028-03-26T09:30:00.000Z");
   });
@@ -67,7 +70,7 @@ describe("contact lead metadata", () => {
         lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
-        pagesCustom: undefined,
+        customPageNames: undefined,
         pageKeys: undefined,
         phone: undefined,
         preferredStartKey: undefined,

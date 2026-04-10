@@ -19,6 +19,12 @@ function toOptionalTrimmedString(value: string) {
   return trimmedValue || undefined;
 }
 
+function toOptionalCustomPageNames(values: string[]) {
+  const normalizedValues = values.map((value) => value.trim()).filter(Boolean);
+
+  return normalizedValues.length > 0 ? normalizedValues : undefined;
+}
+
 export function mapProjectRequestFormToDto(
   values: ProjectRequestFormValues,
   { locale, startedAt }: MapProjectRequestFormToDtoOptions,
@@ -34,11 +40,11 @@ export function mapProjectRequestFormToDto(
     lastName: values.lastName.trim(),
     locale,
     offerKey: values.offerKey as ProjectRequestDto["offerKey"],
+    customPageNames: toOptionalCustomPageNames(values.customPageNames),
     pageKeys:
       values.pageKeys.length > 0
         ? (values.pageKeys as ContactPageKey[])
         : undefined,
-    pagesCustom: toOptionalTrimmedString(values.pagesCustom),
     phone: toOptionalTrimmedString(values.phone),
     preferredStartKey: (values.preferredStartKey || undefined) as
       | ContactStartKey

@@ -22,7 +22,6 @@ export const CONTACT_PAGE_KEYS = [
   "careers",
   "blog",
   "landing_page",
-  "other",
 ] as const;
 
 export const CONTACT_WORKFLOW_KEYS = [

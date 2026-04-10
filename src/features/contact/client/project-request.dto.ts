@@ -20,8 +20,8 @@ export type ProjectRequestDto = {
   lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;
+  customPageNames?: string[];
   pageKeys?: ContactPageKey[];
-  pagesCustom?: string;
   phone?: string;
   preferredStartKey?: ContactStartKey;
   projectDetails: string;

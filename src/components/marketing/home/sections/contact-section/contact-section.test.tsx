@@ -58,6 +58,7 @@ describe("ContactSection", () => {
           consentLabel: "Ich stimme gemäß",
           emailLabel: "E-Mail",
           firstNameLabel: "Vorname",
+          addPageLabel: "Seite hinzufügen",
           lastNameLabel: "Nachname",
           goalLabel: "Ziel",
           goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
@@ -101,7 +102,12 @@ describe("ContactSection", () => {
           title: "Projektanfrage",
           websiteLabel: "Webseite",
           workflowLabel: "Workflows",
-          workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
+          workflowOptions: [
+            {
+              key: "digitize_existing_process",
+              label: "Bestehenden Ablauf digitalisieren",
+            },
+          ],
           privacyLabel: "Datenschutzerklärung",
         }}
         contactFormOffers={[
