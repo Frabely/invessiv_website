@@ -3,6 +3,7 @@ import type {
   ContactSubmitResponse,
 } from "@/features/contact/contact.contract";
 import type { BaseContactFieldsValues } from "@/features/contact/client/base-contact-fields";
+import type { DiscoveryCallDto } from "@/features/contact/client/discovery-call.dto";
 import type { ProjectRequestDto } from "@/features/contact/client/project-request.dto";
 import type { QuickContactDto } from "@/features/contact/client/quick-contact.dto";
 
@@ -10,15 +11,6 @@ export const DEFAULT_CONTACT_SUBMIT_PATH = "/api/public/contact";
 
 type SubmitProjectRequestOptions = {
   submitPath?: string;
-};
-
-type OpenQuickContactMailDraftOptions = {
-  channelValue: string;
-  emailLabel: string;
-  firstNameLabel: string;
-  intro: string;
-  lastNameLabel: string;
-  subject: string;
 };
 
 type CalendlyPrefillOptions = {
@@ -51,6 +43,13 @@ function isContactSubmitResponse(
 
 export async function submitProjectRequest(
   dto: ProjectRequestDto,
+  options?: SubmitProjectRequestOptions,
+): Promise<ContactSubmitResponse> {
+  return submitContact(dto, options);
+}
+
+async function submitContact(
+  dto: ProjectRequestDto | QuickContactDto | DiscoveryCallDto,
   {
     submitPath = DEFAULT_CONTACT_SUBMIT_PATH,
   }: SubmitProjectRequestOptions = {},
@@ -79,34 +78,18 @@ export async function submitProjectRequest(
   }
 }
 
-export function createQuickContactMailtoHref(
+export function submitQuickContact(
   dto: QuickContactDto,
-  {
-    channelValue,
-    emailLabel,
-    firstNameLabel,
-    intro,
-    lastNameLabel,
-    subject,
-  }: OpenQuickContactMailDraftOptions,
+  options?: SubmitProjectRequestOptions,
 ) {
-  const encodedSubject = encodeURIComponent(subject);
-  const encodedBody = encodeURIComponent(
-    `${intro}\n\n${firstNameLabel}: ${dto.firstName}\n${lastNameLabel}: ${dto.lastName}\n${emailLabel}: ${dto.email}\n\n${dto.message}`,
-  );
-
-  return `mailto:${channelValue}?subject=${encodedSubject}&body=${encodedBody}`;
+  return submitContact(dto, options);
 }
 
-export function openQuickContactMailDraft(
-  dto: QuickContactDto,
-  options: OpenQuickContactMailDraftOptions,
+export function submitDiscoveryCall(
+  dto: DiscoveryCallDto,
+  options?: SubmitProjectRequestOptions,
 ) {
-  const mailtoHref = createQuickContactMailtoHref(dto, options);
-  const link = document.createElement("a");
-  link.href = mailtoHref;
-  link.click();
-  return mailtoHref;
+  return submitContact(dto, options);
 }
 
 export function createCalendlyPrefillHref(

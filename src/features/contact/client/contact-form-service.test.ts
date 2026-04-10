@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   createCalendlyPrefillHref,
-  createQuickContactMailtoHref,
+  submitDiscoveryCall,
+  submitQuickContact,
   submitProjectRequest,
 } from "./contact-form-service";
 
@@ -56,8 +57,17 @@ describe("contact-form-service", () => {
     );
   });
 
-  it("creates the quick-contact mailto href from the dto", () => {
-    const mailtoHref = createQuickContactMailtoHref(
+  it("submits a quick contact dto as json", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, requestId: "req_456" }), {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await submitQuickContact(
       {
         consentAccepted: true,
         email: "max@example.com",
@@ -68,22 +78,75 @@ describe("contact-form-service", () => {
         message: "Wir brauchen eine kurze Einschaetzung.",
       },
       {
-        channelValue: "hi@invessiv.de",
-        emailLabel: "E-Mail",
-        firstNameLabel: "Vorname",
-        intro: "Hallo, hier ist eine kurze Anfrage ueber die Website.",
-        lastNameLabel: "Nachname",
-        subject: "Kurze Anfrage ueber invessiv.de",
+        submitPath: "/api/public/contact",
       },
     );
 
-    expect(mailtoHref).toContain("mailto:hi@invessiv.de");
-    expect(mailtoHref).toContain(
-      "subject=Kurze%20Anfrage%20ueber%20invessiv.de",
+    expect(response).toEqual({ ok: true, requestId: "req_456" });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/public/contact",
+      expect.objectContaining({
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "quick_contact",
+          lastName: "Mustermann",
+          locale: "de",
+          message: "Wir brauchen eine kurze Einschaetzung.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }),
     );
-    expect(mailtoHref).toContain("Vorname%3A%20Max");
-    expect(mailtoHref).toContain("Nachname%3A%20Mustermann");
-    expect(mailtoHref).toContain("E-Mail%3A%20max%40example.com");
+  });
+
+  it("submits a discovery call dto as json", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ ok: true, requestId: "req_789" }), {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      }),
+    );
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await submitDiscoveryCall(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        firstName: "Max",
+        kind: "discovery_call",
+        lastName: "Mustermann",
+        locale: "de",
+        message: "Wir wollen den Umfang kurz einordnen.",
+      },
+      {
+        submitPath: "/api/public/contact",
+      },
+    );
+
+    expect(response).toEqual({ ok: true, requestId: "req_789" });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/public/contact",
+      expect.objectContaining({
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "discovery_call",
+          lastName: "Mustermann",
+          locale: "de",
+          message: "Wir wollen den Umfang kurz einordnen.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }),
+    );
   });
 
   it("creates a Calendly prefill href with name, email, and the first custom answer", () => {
@@ -101,9 +164,7 @@ describe("contact-form-service", () => {
 
     expect(calendlyHref).toContain("name=Max+Mustermann");
     expect(calendlyHref).toContain("email=max%40example.com");
-    expect(calendlyHref).toContain(
-      "a1=Wir+wollen+den+Umfang+kurz+einordnen.",
-    );
+    expect(calendlyHref).toContain("a1=Wir+wollen+den+Umfang+kurz+einordnen.");
   });
 
   it("keeps existing Calendly query params and omits a1 when concern is empty", () => {

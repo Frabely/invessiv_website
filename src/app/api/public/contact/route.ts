@@ -1,10 +1,12 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import type {
+  DiscoveryCallSubmitRequest,
   ProjectRequestSubmitRequest,
   QuickContactSubmitRequest,
 } from "@/features/contact/contact.contract";
 import { CONTACT_REQUEST_KINDS } from "@/features/contact/contact-request-kind";
+import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,
   createContactSuccessResponse,
@@ -58,7 +60,17 @@ async function dispatchContactSubmit(payload: unknown, requestId: string) {
     );
   }
 
-  return submitQuickContactCommandHandler(payload as QuickContactSubmitRequest);
+  if (parsedKind.data.kind === "quick_contact") {
+    return submitQuickContactCommandHandler(
+      payload as QuickContactSubmitRequest,
+      requestId,
+    );
+  }
+
+  return submitDiscoveryCallCommandHandler(
+    payload as DiscoveryCallSubmitRequest,
+    requestId,
+  );
 }
 
 export async function POST(request: NextRequest) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { ComponentProps } from "react";
 import { useForm } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/contact-consent-text";
 import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/contact-form-actions";
@@ -12,13 +12,17 @@ import sharedStyles from "@/components/marketing/home/sections/contact-section/c
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { useLanguage } from "@/components/providers/language-provider";
 import {
   createCalendlyPrefillHref,
+  submitDiscoveryCall,
 } from "@/features/contact/client/contact-form-service";
 import {
   DEFAULT_DISCOVERY_CALL_FORM_VALUES,
   type DiscoveryCallFormValues,
 } from "@/features/contact/client/discovery-call-form.schema";
+import { mapDiscoveryCallFormToDto } from "@/features/contact/client/map-discovery-call-form-to-dto";
+import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 
@@ -33,13 +37,16 @@ type DiscoveryCallPanelProps = {
   channel: ContactChannel;
   formCopy: DiscoveryCallFormCopy;
   privacyHref: string;
+  submitPath?: string;
 };
 
 export function DiscoveryCallPanel({
   channel,
   formCopy,
   privacyHref,
+  submitPath,
 }: DiscoveryCallPanelProps) {
+  const { locale } = useLanguage();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const {
     handleSubmit,
@@ -66,13 +73,26 @@ export function DiscoveryCallPanel({
     return formCopy.fieldErrorRequired;
   };
 
-  const handleCalendlySubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleCalendlySubmit: NonNullable<
+    ComponentProps<"form">["onSubmit"]
+  > = (event) => {
     event.preventDefault();
 
     const pendingWindow = window.open("", "_blank");
 
     const submit = handleSubmit(
       async (values) => {
+        const response = await submitDiscoveryCall(
+          mapDiscoveryCallFormToDto(values, locale),
+          { submitPath },
+        );
+
+        if (!response.ok) {
+          pendingWindow?.close();
+          setStatusMessage(getSubmitErrorMessage(response));
+          return;
+        }
+
         const calendlyHref = createCalendlyPrefillHref(values, {
           calendlyUrl: channel.href,
           concernAnswerSlot: 1,
@@ -97,6 +117,16 @@ export function DiscoveryCallPanel({
     void submit(event);
   };
 
+  const getSubmitErrorMessage = (
+    response: Extract<ContactSubmitResponse, { ok: false }>,
+  ): string => {
+    if (response.code === "rate_limited") {
+      return formCopy.submitErrorRateLimited;
+    }
+
+    return formCopy.submitErrorGeneric;
+  };
+
   return (
     <ContactFormShell
       footer={<ContactFormStatus message={statusMessage} />}
@@ -104,7 +134,11 @@ export function DiscoveryCallPanel({
       subtitle={formCopy.subtitle}
       title={formCopy.title}
     >
-      <form className={sharedStyles.form} noValidate onSubmit={handleCalendlySubmit}>
+      <form
+        className={sharedStyles.form}
+        noValidate
+        onSubmit={handleCalendlySubmit}
+      >
         {channel.detailPoints?.length ? (
           <ContactHelperList items={channel.detailPoints} />
         ) : null}

@@ -205,11 +205,12 @@ export type LandingSectionCopy = {
     messagePlaceholder: string;
     consentLabel: string;
     privacyLabel: string;
-    mailSubject: string;
-    mailIntro: string;
     submitLabel: string;
     submittingLabel: string;
     submitSuccess: string;
+    submitErrorRateLimited: string;
+    submitErrorDelivery: string;
+    submitErrorGeneric: string;
     fieldErrorInvalidEmail: string;
     fieldErrorRequired: string;
     fieldErrorConsentRequired: string;
@@ -229,6 +230,8 @@ export type LandingSectionCopy = {
     submitLabel: string;
     submittingLabel: string;
     submitSuccess: string;
+    submitErrorRateLimited: string;
+    submitErrorGeneric: string;
     fieldErrorInvalidEmail: string;
     fieldErrorRequired: string;
     fieldErrorConsentRequired: string;
@@ -1105,8 +1108,7 @@ const HOME_SECTIONS: LandingSection[] = [
         quickContactForm: {
           title: "Kurze E-Mail für den nächsten Schritt",
           subtitle: "Für schnellen Erstkontakt ohne komplettes Briefing.",
-          intro:
-            "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst. Der Mailclient wird mit deiner Nachricht vorbereitet.",
+          intro: "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst.",
           metaLabel: "E-Mail",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
@@ -1116,11 +1118,15 @@ const HOME_SECTIONS: LandingSection[] = [
             "2-4 Sätze genügen: Worum geht es, was ist der Kontext, und was brauchst du als Nächstes?",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
           privacyLabel: "Datenschutzerklärung zu.",
-          mailSubject: "Kurze Anfrage über invessiv.de",
-          mailIntro: "Hallo, hier ist eine kurze Anfrage über die Website.",
-          submitLabel: "E-Mail vorbereiten",
-          submittingLabel: "Wird vorbereitet ...",
-          submitSuccess: "Dein E-Mail-Entwurf wird geöffnet.",
+          submitLabel: "E-Mail senden",
+          submittingLabel: "Wird gesendet ...",
+          submitSuccess: "Deine Anfrage wurde gesendet.",
+          submitErrorRateLimited:
+            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
+          submitErrorDelivery:
+            "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuche es später erneut.",
+          submitErrorGeneric:
+            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es später erneut.",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorConsentRequired:
@@ -1144,6 +1150,10 @@ const HOME_SECTIONS: LandingSection[] = [
           submittingLabel: "Terminübersicht wird geöffnet ...",
           submitSuccess:
             "Die Terminübersicht wird mit deinen Angaben geöffnet.",
+          submitErrorRateLimited:
+            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
+          submitErrorGeneric:
+            "Die Terminübersicht konnte gerade nicht geöffnet werden. Bitte versuche es später erneut.",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorConsentRequired:
@@ -1333,7 +1343,7 @@ const HOME_SECTIONS: LandingSection[] = [
           title: "Short email for the next step",
           subtitle: "Best for quick first contact without a full brief.",
           intro:
-            "A few lines are enough: goal, context, and what you need next. Your mail app opens with the draft prepared.",
+            "A few lines are enough: goal, context, and what you need next.",
           metaLabel: "Email",
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
@@ -1344,11 +1354,15 @@ const HOME_SECTIONS: LandingSection[] = [
           consentLabel:
             "I agree to the processing of my information according to the",
           privacyLabel: "privacy policy.",
-          mailSubject: "Short inquiry via invessiv.de",
-          mailIntro: "Hello, here is a short inquiry from the website.",
-          submitLabel: "Prepare email",
-          submittingLabel: "Preparing ...",
-          submitSuccess: "Your email draft is opening.",
+          submitLabel: "Send email",
+          submittingLabel: "Sending ...",
+          submitSuccess: "Your inquiry has been sent.",
+          submitErrorRateLimited:
+            "Too many requests in a short time. Please try again in a moment.",
+          submitErrorDelivery:
+            "The message could not be delivered right now. Please try again later.",
+          submitErrorGeneric:
+            "The inquiry could not be sent right now. Please try again later.",
           fieldErrorInvalidEmail: "Please enter a valid email address.",
           fieldErrorRequired: "This field is required.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",
@@ -1372,6 +1386,10 @@ const HOME_SECTIONS: LandingSection[] = [
           submitLabel: "Choose a time",
           submittingLabel: "Opening the schedule ...",
           submitSuccess: "The schedule is opening with your details.",
+          submitErrorRateLimited:
+            "Too many requests in a short time. Please try again in a moment.",
+          submitErrorGeneric:
+            "The schedule could not be opened right now. Please try again later.",
           fieldErrorInvalidEmail: "Please enter a valid email address.",
           fieldErrorRequired: "This field is required.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",

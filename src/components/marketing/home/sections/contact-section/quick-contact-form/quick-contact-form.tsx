@@ -12,12 +12,13 @@ import { ContactFormShell } from "@/components/marketing/home/sections/contact-s
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { useLanguage } from "@/components/providers/language-provider";
-import { openQuickContactMailDraft } from "@/features/contact/client/contact-form-service";
+import { submitQuickContact } from "@/features/contact/client/contact-form-service";
 import { mapQuickContactFormToDto } from "@/features/contact/client/map-quick-contact-form-to-dto";
 import {
   DEFAULT_QUICK_CONTACT_FORM_VALUES,
   type QuickContactFormValues,
 } from "@/features/contact/client/quick-contact-form.schema";
+import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import styles from "./quick-contact-form.module.css";
 
@@ -30,12 +31,14 @@ type QuickContactFormProps = {
   channel: ContactChannel;
   formCopy: QuickContactFormCopy;
   privacyHref: string;
+  submitPath?: string;
 };
 
 export function QuickContactForm({
   channel,
   formCopy,
   privacyHref,
+  submitPath,
 }: QuickContactFormProps) {
   const { locale } = useLanguage();
   const [isCopied, setIsCopied] = useState(false);
@@ -90,18 +93,35 @@ export function QuickContactForm({
 
   const onSubmit = handleSubmit(async (values) => {
     const dto = mapQuickContactFormToDto(values, locale);
+    setStatusMessage(formCopy.submittingLabel);
 
-    setStatusMessage(formCopy.submitSuccess);
-    reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);
-    openQuickContactMailDraft(dto, {
-      channelValue: channel.value,
-      emailLabel: formCopy.emailLabel,
-      firstNameLabel: formCopy.firstNameLabel,
-      intro: formCopy.mailIntro,
-      lastNameLabel: formCopy.lastNameLabel,
-      subject: formCopy.mailSubject,
-    });
+    try {
+      const response = await submitQuickContact(dto, { submitPath });
+      if (!response.ok) {
+        setStatusMessage(getSubmitErrorMessage(response));
+        return;
+      }
+
+      setStatusMessage(formCopy.submitSuccess);
+      reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);
+    } catch {
+      setStatusMessage(formCopy.submitErrorGeneric);
+    }
   });
+
+  const getSubmitErrorMessage = (
+    response: Extract<ContactSubmitResponse, { ok: false }>,
+  ): string => {
+    if (response.code === "rate_limited") {
+      return formCopy.submitErrorRateLimited;
+    }
+
+    if (response.code === "delivery_unavailable") {
+      return formCopy.submitErrorDelivery;
+    }
+
+    return formCopy.submitErrorGeneric;
+  };
 
   return (
     <ContactFormShell

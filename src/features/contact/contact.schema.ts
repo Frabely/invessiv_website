@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SUPPORTED_LOCALES } from "@/config/i18n";
 import { CONTACT_REQUEST_KINDS } from "@/features/contact/contact-request-kind";
 import {
   CONTACT_BUDGET_KEYS,
@@ -36,7 +37,7 @@ const optionalUrlString = z
   .transform((value) => value || undefined)
   .refine((value) => !value || URL.canParse(value), "invalid_website");
 
-const localeSchema = z.enum(["de", "en"]);
+const localeSchema = z.enum(SUPPORTED_LOCALES);
 const nameStringSchema = z
   .string()
   .trim()
@@ -121,13 +122,25 @@ export const quickContactSchema = z.object({
   message: z.string().trim().min(1, "message_required").max(5000, "too_long"),
 });
 
+export const discoveryCallSchema = z.object({
+  consentAccepted: z.boolean().refine((value) => value, "consent_required"),
+  email: emailStringSchema,
+  firstName: nameStringSchema,
+  kind: z.literal(CONTACT_REQUEST_KINDS[2]),
+  lastName: nameStringSchema,
+  locale: localeSchema,
+  message: optionalTrimmedString,
+});
+
 export const contactSubmitSchema = z.discriminatedUnion("kind", [
   projectRequestSchema,
   quickContactSchema,
+  discoveryCallSchema,
 ]);
 
 export type ProjectRequestSubmitInput = z.infer<typeof projectRequestSchema>;
 export type QuickContactSubmitInput = z.infer<typeof quickContactSchema>;
+export type DiscoveryCallSubmitInput = z.infer<typeof discoveryCallSchema>;
 
 export function flattenContactFieldErrors(issues: z.core.$ZodIssue[]) {
   return issues.reduce<Record<string, string[]>>((fieldErrors, issue) => {

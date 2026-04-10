@@ -96,4 +96,18 @@ describe("contactSubmitSchema", () => {
 
     expect(parsed.success).toBe(true);
   });
+
+  it("accepts a valid discovery call payload", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      consentAccepted: true,
+      email: "max@example.com",
+      firstName: "Max",
+      kind: "discovery_call",
+      lastName: "Mustermann",
+      locale: "de",
+      message: "Wir wollen den Umfang kurz einordnen.",
+    });
+
+    expect(parsed.success).toBe(true);
+  });
 });

@@ -1,109 +1,214 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
-import {
-  CONTACT_LEAD_STORAGE,
-  LEGAL_DOCUMENT_VERSIONS,
-  type ContactLeadMailStatus,
-  type ContactLeadStatus,
-} from "@/server/config/contact-lead-storage";
-import type { ContactMailProvider } from "@/server/config/env";
+import type {
+  DiscoveryCallSubmitInput,
+  ProjectRequestSubmitInput,
+  QuickContactSubmitInput,
+} from "@/features/contact/contact.schema";
+import type { ContactSubmissionChannel } from "@/features/contact/contact-request-kind";
 
-export type PreparedContactLeadSubmission = {
-  lead: {
-    company?: string;
-    consentAcceptedAt: string;
-    createdAt: string;
-    email: string;
-    firstName: string;
-    id: string;
-    inquiryType: ProjectRequestSubmitInput["offerKey"];
-    lastName: string;
-    leadStatus: ContactLeadStatus;
-    locale: ProjectRequestSubmitInput["locale"];
-    mailProvider: string;
-    mailStatus: ContactLeadMailStatus;
-    message: string;
-    phone?: string;
-    privacyVersion: string;
-    requestId: string;
-    retentionUntil: string;
-    role?: string;
-    sourceForm: string;
-    submissionStartedAt: string;
-    termsVersion: string;
-    updatedAt: string;
-  };
+const DEFAULT_LEAD_STATUS = "new" as const;
+
+type PreparedLeadRecord = {
+  createdAt: string;
+  email: string;
+  firstName: string;
+  id: string;
+  lastName: string;
+  leadStatus: typeof DEFAULT_LEAD_STATUS;
+  updatedAt: string;
+};
+
+type PreparedLeadSubmissionRecord = {
+  channel: ContactSubmissionChannel;
+  consentAcceptedAt: string;
+  createdAt: string;
+  id: string;
+  locale: string;
+  requestId: string;
+  submissionStartedAt?: string;
+  updatedAt: string;
+};
+
+export type PreparedProjectRequestLeadWrite = {
+  lead: PreparedLeadRecord;
   projectRequest: {
+    offerKey: ProjectRequestSubmitInput["offerKey"];
     budgetKey?: ProjectRequestSubmitInput["budgetKey"];
-    customPageNames?: string[];
+    company?: string;
     createdAt: string;
+    customPageNames?: string[];
     goalKey?: ProjectRequestSubmitInput["goalKey"];
-    leadId: string;
+    id: string;
+    leadSubmissionId: string;
     pageKeys?: ProjectRequestSubmitInput["pageKeys"];
+    phone?: string;
     preferredStartKey?: ProjectRequestSubmitInput["preferredStartKey"];
+    projectDetails: string;
+    role?: string;
     updatedAt: string;
     website?: string;
     workflowKey?: ProjectRequestSubmitInput["workflowKey"];
   };
+  submission: PreparedLeadSubmissionRecord;
 };
 
-export function calculateLeadRetentionUntil(createdAt: Date) {
-  const retentionUntil = new Date(createdAt);
-  retentionUntil.setUTCMonth(
-    retentionUntil.getUTCMonth() + CONTACT_LEAD_STORAGE.retentionMonths,
-  );
+export type PreparedQuickContactLeadWrite = {
+  emailContact: {
+    createdAt: string;
+    id: string;
+    leadSubmissionId: string;
+    message: string;
+    updatedAt: string;
+  };
+  lead: PreparedLeadRecord;
+  submission: PreparedLeadSubmissionRecord;
+};
 
-  return retentionUntil;
-}
+export type PreparedDiscoveryCallLeadWrite = {
+  callContact: {
+    createdAt: string;
+    id: string;
+    leadSubmissionId: string;
+    message?: string;
+    updatedAt: string;
+  };
+  lead: PreparedLeadRecord;
+  submission: PreparedLeadSubmissionRecord;
+};
 
-export function createContactLeadSubmission(
-  payload: ProjectRequestSubmitInput,
-  requestId: string,
-  mailProvider: ContactMailProvider,
-  createdAt = new Date(),
-): PreparedContactLeadSubmission {
-  const leadId = randomUUID();
-  const submittedAt = createdAt.toISOString();
+function createLeadRecord(
+  payload: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  },
+  createdAt: Date,
+): PreparedLeadRecord {
+  const timestamp = createdAt.toISOString();
 
   return {
-    lead: {
-      company: payload.company,
-      consentAcceptedAt: submittedAt,
-      createdAt: submittedAt,
-      email: payload.email,
-      firstName: payload.firstName,
-      id: leadId,
-      inquiryType: payload.offerKey,
-      lastName: payload.lastName,
-      leadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
-      locale: payload.locale,
-      mailProvider,
-      mailStatus: CONTACT_LEAD_STORAGE.defaultMailStatus,
-      message: payload.projectDetails,
-      phone: payload.phone,
-      privacyVersion: LEGAL_DOCUMENT_VERSIONS.privacy,
-      requestId,
-      retentionUntil: calculateLeadRetentionUntil(createdAt).toISOString(),
-      role: payload.role,
-      sourceForm: CONTACT_LEAD_STORAGE.sourceForm,
-      submissionStartedAt: payload.startedAt,
-      termsVersion: LEGAL_DOCUMENT_VERSIONS.terms,
-      updatedAt: submittedAt,
-    },
+    createdAt: timestamp,
+    email: payload.email.trim(),
+    firstName: payload.firstName.trim(),
+    id: randomUUID(),
+    lastName: payload.lastName.trim(),
+    leadStatus: DEFAULT_LEAD_STATUS,
+    updatedAt: timestamp,
+  };
+}
+
+function createSubmissionRecord(
+  payload: {
+    locale: string;
+    startedAt?: string;
+  },
+  requestId: string,
+  channel: ContactSubmissionChannel,
+  createdAt: Date,
+): PreparedLeadSubmissionRecord {
+  const timestamp = createdAt.toISOString();
+
+  return {
+    channel,
+    consentAcceptedAt: timestamp,
+    createdAt: timestamp,
+    id: randomUUID(),
+    locale: payload.locale,
+    requestId,
+    submissionStartedAt: payload.startedAt,
+    updatedAt: timestamp,
+  };
+}
+
+export function createProjectRequestLeadWrite(
+  payload: ProjectRequestSubmitInput,
+  requestId: string,
+  createdAt = new Date(),
+): PreparedProjectRequestLeadWrite {
+  const lead = createLeadRecord(payload, createdAt);
+  const submission = createSubmissionRecord(
+    payload,
+    requestId,
+    "project_request",
+    createdAt,
+  );
+
+  return {
+    lead,
     projectRequest: {
+      offerKey: payload.offerKey,
       budgetKey: payload.budgetKey,
+      company: payload.company,
+      createdAt: submission.createdAt,
       customPageNames: payload.customPageNames?.length
         ? payload.customPageNames
         : undefined,
-      createdAt: submittedAt,
       goalKey: payload.goalKey,
-      leadId,
+      id: randomUUID(),
+      leadSubmissionId: submission.id,
       pageKeys: payload.pageKeys?.length ? payload.pageKeys : undefined,
+      phone: payload.phone,
       preferredStartKey: payload.preferredStartKey,
-      updatedAt: submittedAt,
+      projectDetails: payload.projectDetails.trim(),
+      role: payload.role,
+      updatedAt: submission.updatedAt,
       website: payload.website,
       workflowKey: payload.workflowKey,
     },
+    submission,
+  };
+}
+
+export function createQuickContactLeadWrite(
+  payload: QuickContactSubmitInput,
+  requestId: string,
+  createdAt = new Date(),
+): PreparedQuickContactLeadWrite {
+  const lead = createLeadRecord(payload, createdAt);
+  const submission = createSubmissionRecord(
+    payload,
+    requestId,
+    "quick_contact",
+    createdAt,
+  );
+
+  return {
+    emailContact: {
+      createdAt: submission.createdAt,
+      id: randomUUID(),
+      leadSubmissionId: submission.id,
+      message: payload.message.trim(),
+      updatedAt: submission.updatedAt,
+    },
+    lead,
+    submission,
+  };
+}
+
+export function createDiscoveryCallLeadWrite(
+  payload: DiscoveryCallSubmitInput,
+  requestId: string,
+  createdAt = new Date(),
+): PreparedDiscoveryCallLeadWrite {
+  const lead = createLeadRecord(payload, createdAt);
+  const submission = createSubmissionRecord(
+    payload,
+    requestId,
+    "discovery_call",
+    createdAt,
+  );
+  const message = payload.message?.trim();
+
+  return {
+    callContact: {
+      createdAt: submission.createdAt,
+      id: randomUUID(),
+      leadSubmissionId: submission.id,
+      message: message || undefined,
+      updatedAt: submission.updatedAt,
+    },
+    lead,
+    submission,
   };
 }

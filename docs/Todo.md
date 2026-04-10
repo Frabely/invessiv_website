@@ -31,6 +31,8 @@
 - Die bestehende Contact-Ordnerstruktur zwischen `features/contact`, `server/services/contact` und der Route langfristig bereinigen.
 - Alte gemischte Services weiter in klarere Handler- und Infrastruktur-Grenzen zerlegen, falls nach dem aktuellen Upgrade noch noetig.
 - Den verbleibenden Contact-Altbestand konsistent in die Zielstruktur ueberfuehren, aber als separates Nachfolge-Rework behandeln.
+- `src/server/services/contact/contact-lead-metadata.ts` als komplette Datei spaeter gezielt reviewen, besonders die Typen, Prepared-Write-Strukturen und die Trennung zwischen fachlichem Modell und DB-Insert-Vorbereitung.
+- In `src/server/services/contact/contact-lead-metadata.ts` und angrenzenden Persistenzpfaden `createdAt` und `updatedAt` spaeter von ISO-Strings auf `Date` umstellen; aktuell funktioniert der Insert so, aber intern waeren `Date`-Werte semantisch und typseitig sauberer.
 
 ## CRM DB felder für Stueer
 

@@ -4,6 +4,9 @@ const { mapQuickContactToMailMock, sendMailMock } = vi.hoisted(() => ({
   mapQuickContactToMailMock: vi.fn(),
   sendMailMock: vi.fn(),
 }));
+const { persistQuickContactLeadMock } = vi.hoisted(() => ({
+  persistQuickContactLeadMock: vi.fn(),
+}));
 
 vi.mock("server-only", () => ({}));
 
@@ -15,25 +18,33 @@ vi.mock("@/server/services/mail/mail-service", () => ({
   sendMail: sendMailMock,
 }));
 
+vi.mock("@/server/services/contact/persist-contact-lead", () => ({
+  persistQuickContactLead: persistQuickContactLeadMock,
+}));
+
 describe("submitQuickContactCommandHandler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("CONTACT_MAIL_TO", "service@invessiv.com");
+    persistQuickContactLeadMock.mockResolvedValue({ persisted: true });
   });
 
   it("returns validation errors from handler-side zod validation", async () => {
     const { submitQuickContactCommandHandler } =
       await import("@/server/contact/handlers/submit-quick-contact.command-handler");
 
-    const result = await submitQuickContactCommandHandler({
-      consentAccepted: false,
-      email: "invalid",
-      firstName: "",
-      kind: "quick_contact",
-      lastName: "",
-      locale: "de",
-      message: "",
-    });
+    const result = await submitQuickContactCommandHandler(
+      {
+        consentAccepted: false,
+        email: "invalid",
+        firstName: "",
+        kind: "quick_contact",
+        lastName: "",
+        locale: "de",
+        message: "",
+      },
+      "req_123",
+    );
 
     expect(result.ok).toBe(false);
     if (result.ok) {
@@ -41,6 +52,7 @@ describe("submitQuickContactCommandHandler", () => {
     }
     expect(result.code).toBe("validation_error");
     expect(result.fieldErrors?.email).toContain("invalid_email");
+    expect(persistQuickContactLeadMock).not.toHaveBeenCalled();
     expect(mapQuickContactToMailMock).not.toHaveBeenCalled();
     expect(sendMailMock).not.toHaveBeenCalled();
   });
@@ -57,17 +69,21 @@ describe("submitQuickContactCommandHandler", () => {
     const { submitQuickContactCommandHandler } =
       await import("@/server/contact/handlers/submit-quick-contact.command-handler");
 
-    const result = await submitQuickContactCommandHandler({
-      consentAccepted: true,
-      email: "max@example.com",
-      firstName: "Max",
-      kind: "quick_contact",
-      lastName: "Mustermann",
-      locale: "de",
-      message: "Kurze erste Anfrage.",
-    });
+    const result = await submitQuickContactCommandHandler(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        firstName: "Max",
+        kind: "quick_contact",
+        lastName: "Mustermann",
+        locale: "de",
+        message: "Kurze erste Anfrage.",
+      },
+      "req_123",
+    );
 
     expect(result).toEqual({ ok: true });
+    expect(persistQuickContactLeadMock).toHaveBeenCalledTimes(1);
     expect(mapQuickContactToMailMock).toHaveBeenCalledTimes(1);
     expect(sendMailMock).toHaveBeenCalledTimes(1);
   });
@@ -87,15 +103,18 @@ describe("submitQuickContactCommandHandler", () => {
     const { submitQuickContactCommandHandler } =
       await import("@/server/contact/handlers/submit-quick-contact.command-handler");
 
-    const result = await submitQuickContactCommandHandler({
-      consentAccepted: true,
-      email: "max@example.com",
-      firstName: "Max",
-      kind: "quick_contact",
-      lastName: "Mustermann",
-      locale: "de",
-      message: "Kurze erste Anfrage.",
-    });
+    const result = await submitQuickContactCommandHandler(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        firstName: "Max",
+        kind: "quick_contact",
+        lastName: "Mustermann",
+        locale: "de",
+        message: "Kurze erste Anfrage.",
+      },
+      "req_123",
+    );
 
     expect(result).toEqual({
       code: "delivery_unavailable",

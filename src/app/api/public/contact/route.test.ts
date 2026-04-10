@@ -255,4 +255,34 @@ describe("POST /api/public/contact", () => {
     expect(payload.ok).toBe(true);
     expect(payload.requestId).toBeTruthy();
   });
+
+  it("dispatches discovery_call requests separately", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/public/contact", {
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "discovery_call",
+          lastName: "Mustermann",
+          locale: "de",
+          message: "Wir wollen den Umfang kurz einordnen.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }) as NextRequest,
+    );
+
+    const payload = (await response.json()) as {
+      ok: boolean;
+      requestId: string;
+    };
+
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(payload.requestId).toBeTruthy();
+  });
 });

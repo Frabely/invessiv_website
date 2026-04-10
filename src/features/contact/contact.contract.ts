@@ -42,6 +42,16 @@ export type QuickContactSubmitRequest = {
   message: string;
 };
 
+export type DiscoveryCallSubmitRequest = {
+  consentAccepted: boolean;
+  email: string;
+  firstName: string;
+  kind: Extract<ContactRequestKind, "discovery_call">;
+  lastName: string;
+  locale: Locale;
+  message?: string;
+};
+
 export type ContactSubmitErrorCode =
   | "delivery_unavailable"
   | "internal_error"

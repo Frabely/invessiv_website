@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const {
-  mapContactToMailMock,
-  sendMailMock,
-} = vi.hoisted(() => ({
+const { mapContactToMailMock, sendMailMock } = vi.hoisted(() => ({
   mapContactToMailMock: vi.fn(),
   sendMailMock: vi.fn(),
+}));
+const { persistProjectRequestLeadMock } = vi.hoisted(() => ({
+  persistProjectRequestLeadMock: vi.fn(),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -18,11 +18,16 @@ vi.mock("@/server/services/mail/mail-service", () => ({
   sendMail: sendMailMock,
 }));
 
+vi.mock("@/server/services/contact/persist-contact-lead", () => ({
+  persistProjectRequestLead: persistProjectRequestLeadMock,
+}));
+
 describe("submitProjectRequestCommandHandler", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("CONTACT_MAIL_PROVIDER", "resend");
     vi.stubEnv("CONTACT_MAIL_TO", "service@invessiv.com");
+    persistProjectRequestLeadMock.mockResolvedValue({ persisted: true });
   });
 
   it("returns validation errors from handler-side zod validation", async () => {
@@ -50,6 +55,7 @@ describe("submitProjectRequestCommandHandler", () => {
     }
     expect(result.code).toBe("validation_error");
     expect(result.fieldErrors?.email).toContain("invalid_email");
+    expect(persistProjectRequestLeadMock).not.toHaveBeenCalled();
     expect(mapContactToMailMock).not.toHaveBeenCalled();
     expect(sendMailMock).not.toHaveBeenCalled();
   });
@@ -83,6 +89,7 @@ describe("submitProjectRequestCommandHandler", () => {
     );
 
     expect(result).toEqual({ ok: true });
+    expect(persistProjectRequestLeadMock).toHaveBeenCalledTimes(1);
     expect(mapContactToMailMock).toHaveBeenCalledTimes(1);
     expect(sendMailMock).toHaveBeenCalledTimes(1);
   });
