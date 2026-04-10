@@ -100,7 +100,6 @@ describe("ContactSection", () => {
           subtitle: "Projekt-Check",
           title: "Projektanfrage",
           websiteLabel: "Webseite",
-          websiteRequiredHint: "Webseite erforderlich",
           workflowLabel: "Workflows",
           workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
           privacyLabel: "Datenschutzerklärung",

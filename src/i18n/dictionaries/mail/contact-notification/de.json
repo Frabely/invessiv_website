@@ -16,7 +16,7 @@
         "preferredStartKey": "Gewünschter Start",
         "role": "Rolle",
         "website": "Webseite",
-        "workflowKey": "Anzahl Kern-Workflows"
+        "workflowKey": "Art des Vorhabens"
       },
       "subjectPrefix": "Projektanfrage",
       "values": {
@@ -29,9 +29,10 @@
           "open": "Noch offen"
         },
         "goalKey": {
-          "generate_inquiries": "Anfragen erhalten",
-          "grow_newsletter": "Newsletter-Anmeldungen",
-          "increase_bookings": "Terminbuchungen erhöhen",
+          "generate_inquiries": "Anfragen gewinnen",
+          "grow_newsletter": "Kontakte aufbauen",
+          "increase_bookings": "Termine buchen lassen",
+          "other_goal": "Anderes Ziel",
           "sell_product": "Produkt verkaufen"
         },
         "offerKey": {
@@ -58,9 +59,12 @@
           "within_two_weeks": "Innerhalb von 2 Wochen"
         },
         "workflowKey": {
-          "one_workflow": "1 Workflow",
-          "three_plus_workflows": "3+ Workflows",
-          "two_workflows": "2 Workflows"
+          "build_internal_tool": "Internes Tool für ein Team bauen",
+          "connect_data_or_systems": "Daten oder Systeme verbinden",
+          "digitize_existing_process": "Bestehenden Ablauf digitalisieren",
+          "improve_existing_tool": "Bestehendes Tool oder System verbessern",
+          "other_process": "Anderes Vorhaben",
+          "simplify_manual_process": "Manuellen Prozess vereinfachen"
         }
       }
     }

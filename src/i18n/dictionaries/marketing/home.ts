@@ -142,7 +142,6 @@ export type LandingSectionCopy = {
     companyLabel: string;
     roleLabel: string;
     websiteLabel: string;
-    websiteRequiredHint: string;
     offerLabel: string;
     offerPlaceholder: string;
     goalLabel: string;
@@ -992,16 +991,15 @@ const HOME_SECTIONS: LandingSection[] = [
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
           websiteLabel: "Aktuelle Webseite",
-          websiteRequiredHint:
-            "Bei Webseiten-Upgrade, Webseiten und Wartung ist die aktuelle Webseite erforderlich.",
           offerLabel: "Passendes Leistungsmodell",
           offerPlaceholder: "Bitte Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
-            { key: CONTACT_GOAL_KEYS[0], label: "Anfragen erhalten" },
-            { key: CONTACT_GOAL_KEYS[1], label: "Terminbuchungen erhöhen" },
+            { key: CONTACT_GOAL_KEYS[0], label: "Anfragen gewinnen" },
+            { key: CONTACT_GOAL_KEYS[1], label: "Termine buchen lassen" },
             { key: CONTACT_GOAL_KEYS[2], label: "Produkt verkaufen" },
-            { key: CONTACT_GOAL_KEYS[3], label: "Newsletter-Anmeldungen" },
+            { key: CONTACT_GOAL_KEYS[3], label: "Kontakte aufbauen" },
+            { key: CONTACT_GOAL_KEYS[4], label: "Anderes Ziel" },
           ],
           pagesLabel: "Benötigte Seiten",
           pagesPlaceholder: "z. B. Team, FAQ, Karriere",
@@ -1019,11 +1017,29 @@ const HOME_SECTIONS: LandingSection[] = [
           pagesCustomPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          workflowLabel: "Anzahl Kern-Workflows",
+          workflowLabel: "Art des Vorhabens",
           workflowOptions: [
-            { key: CONTACT_WORKFLOW_KEYS[0], label: "1 Workflow" },
-            { key: CONTACT_WORKFLOW_KEYS[1], label: "2 Workflows" },
-            { key: CONTACT_WORKFLOW_KEYS[2], label: "3+ Workflows" },
+            {
+              key: CONTACT_WORKFLOW_KEYS[0],
+              label: "Bestehenden Ablauf digitalisieren",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[1],
+              label: "Manuellen Prozess vereinfachen",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[2],
+              label: "Daten oder Systeme verbinden",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[3],
+              label: "Internes Tool für ein Team bauen",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[4],
+              label: "Bestehendes Tool oder System verbessern",
+            },
+            { key: CONTACT_WORKFLOW_KEYS[5], label: "Anderes Vorhaben" },
           ],
           stepNavigationLabel: "Anfragefortschritt",
           stepLabel: "Schritt",
@@ -1075,8 +1091,7 @@ const HOME_SECTIONS: LandingSection[] = [
           fieldErrorPagesRequired:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           fieldErrorGoalRequired: "Bitte wähle ein Ziel für die Landingpage.",
-          fieldErrorWorkflowRequired:
-            "Bitte wähle die Anzahl der Kern-Workflows.",
+          fieldErrorWorkflowRequired: "Bitte wähle die Art des Vorhabens.",
           fieldErrorConsentRequired:
             "Bitte bestätige die Datenschutzerklärung.",
           requiredHint: "* Pflichtfelder",
@@ -1122,7 +1137,8 @@ const HOME_SECTIONS: LandingSection[] = [
           privacyLabel: "Datenschutzerklärung zu.",
           submitLabel: "Termin wählen",
           submittingLabel: "Terminübersicht wird geöffnet ...",
-          submitSuccess: "Die Terminübersicht wird mit deinen Angaben geöffnet.",
+          submitSuccess:
+            "Die Terminübersicht wird mit deinen Angaben geöffnet.",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorConsentRequired:
@@ -1201,16 +1217,15 @@ const HOME_SECTIONS: LandingSection[] = [
           companyLabel: "Company",
           roleLabel: "Role",
           websiteLabel: "Current website",
-          websiteRequiredHint:
-            "For website upgrade, websites, and maintenance, the current website is required.",
           offerLabel: "Relevant service model",
           offerPlaceholder: "Select a service model",
           goalLabel: "Primary landing page goal",
           goalOptions: [
             { key: CONTACT_GOAL_KEYS[0], label: "Generate inquiries" },
-            { key: CONTACT_GOAL_KEYS[1], label: "Increase booked calls" },
+            { key: CONTACT_GOAL_KEYS[1], label: "Book more calls" },
             { key: CONTACT_GOAL_KEYS[2], label: "Sell a product" },
-            { key: CONTACT_GOAL_KEYS[3], label: "Grow newsletter sign-ups" },
+            { key: CONTACT_GOAL_KEYS[3], label: "Build a contact list" },
+            { key: CONTACT_GOAL_KEYS[4], label: "Other goal" },
           ],
           pagesLabel: "Required pages",
           pagesPlaceholder: "e.g. Team, FAQ, Careers",
@@ -1227,11 +1242,29 @@ const HOME_SECTIONS: LandingSection[] = [
           pagesCustomLabel: "Additional pages (optional)",
           pagesCustomPlaceholder: "e.g. Team, FAQ, Careers",
           pagesRequiredHint: "Please select at least one page or add your own.",
-          workflowLabel: "Number of core workflows",
+          workflowLabel: "Type of request",
           workflowOptions: [
-            { key: CONTACT_WORKFLOW_KEYS[0], label: "1 workflow" },
-            { key: CONTACT_WORKFLOW_KEYS[1], label: "2 workflows" },
-            { key: CONTACT_WORKFLOW_KEYS[2], label: "3+ workflows" },
+            {
+              key: CONTACT_WORKFLOW_KEYS[0],
+              label: "Digitize an existing process",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[1],
+              label: "Simplify a manual process",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[2],
+              label: "Connect data or systems",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[3],
+              label: "Build an internal tool for a team",
+            },
+            {
+              key: CONTACT_WORKFLOW_KEYS[4],
+              label: "Improve an existing tool or system",
+            },
+            { key: CONTACT_WORKFLOW_KEYS[5], label: "Other request" },
           ],
           stepNavigationLabel: "Request progress",
           stepLabel: "Step",
@@ -1284,8 +1317,7 @@ const HOME_SECTIONS: LandingSection[] = [
           fieldErrorPagesRequired:
             "Please select at least one page or add your own.",
           fieldErrorGoalRequired: "Please select a landing page goal.",
-          fieldErrorWorkflowRequired:
-            "Please select the number of core workflows.",
+          fieldErrorWorkflowRequired: "Please select the type of request.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",
           requiredHint: "* Required fields",
           closeLabel: "Close form",
@@ -1317,7 +1349,8 @@ const HOME_SECTIONS: LandingSection[] = [
         },
         discoveryCallForm: {
           title: "Discovery call with a short prep note",
-          subtitle: "Best for live alignment with a bit of context before the call.",
+          subtitle:
+            "Best for live alignment with a bit of context before the call.",
           intro:
             "Add your contact details and, if useful, a short note so the call can start with clearer context.",
           firstNameLabel: "First name",

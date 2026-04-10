@@ -87,7 +87,6 @@ type ContactFormCopy = {
   subtitle: string;
   title: string;
   websiteLabel: string;
-  websiteRequiredHint: string;
   workflowLabel: string;
   workflowOptions: FormOption[];
   nextStepLabel: string;
@@ -165,11 +164,14 @@ export function ProjectRequestForm({
   const pagesCustomFieldClassName = `${styles.pagesCustom}`;
 
   const fieldRules = useMemo(() => {
-    const websiteRequiredKeys = ["upgrade", "web", "maintenance"];
+    const websiteRequiredKeys = ["upgrade", "maintenance"];
     return {
       requiresGoal: selectedOfferKey === "landing",
       requiresPages: selectedOfferKey === "web",
       requiresWebsite: websiteRequiredKeys.includes(selectedOfferKey),
+      showsWebsite:
+        selectedOfferKey === "landing" ||
+        websiteRequiredKeys.includes(selectedOfferKey),
       requiresWorkflow: selectedOfferKey === "process",
     };
   }, [selectedOfferKey]);
@@ -719,26 +721,27 @@ export function ProjectRequestForm({
           >
             <legend>{formCopy.stepTwoTitle}</legend>
 
-            {fieldRules.requiresWebsite ? (
+            {fieldRules.showsWebsite ? (
               <ContactFormField
                 errorMessage={
                   errors.website ? getFieldErrorText("website") : undefined
                 }
-                hint={formCopy.websiteRequiredHint}
                 inputProps={{
                   ...register("website", {
                     pattern: {
                       message: "invalid_website",
                       value: WEBSITE_PATTERN,
                     },
-                    required: "website_required",
+                    required: fieldRules.requiresWebsite
+                      ? "website_required"
+                      : false,
                   }),
                   "aria-invalid": errors.website ? "true" : undefined,
                   autoComplete: "url",
                 }}
                 kind="url"
                 label={formCopy.websiteLabel}
-                required
+                required={fieldRules.requiresWebsite}
               />
             ) : null}
 

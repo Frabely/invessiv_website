@@ -95,7 +95,6 @@ const sections: HomeSectionContent[] = [
       companyLabel: "Unternehmen",
       roleLabel: "Rolle",
       websiteLabel: "Webseite",
-      websiteRequiredHint: "Webseite erforderlich",
       offerLabel: "Angebot",
       offerPlaceholder: "Bitte wählen",
       goalLabel: "Ziel",

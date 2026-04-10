@@ -11,6 +11,7 @@ export const CONTACT_GOAL_KEYS = [
   "increase_bookings",
   "sell_product",
   "grow_newsletter",
+  "other_goal",
 ] as const;
 
 export const CONTACT_PAGE_KEYS = [
@@ -25,9 +26,12 @@ export const CONTACT_PAGE_KEYS = [
 ] as const;
 
 export const CONTACT_WORKFLOW_KEYS = [
-  "one_workflow",
-  "two_workflows",
-  "three_plus_workflows",
+  "digitize_existing_process",
+  "simplify_manual_process",
+  "connect_data_or_systems",
+  "build_internal_tool",
+  "improve_existing_tool",
+  "other_process",
 ] as const;
 
 export const CONTACT_BUDGET_KEYS = [

@@ -16,7 +16,7 @@
         "preferredStartKey": "Preferred start",
         "role": "Role",
         "website": "Website",
-        "workflowKey": "Core workflows"
+        "workflowKey": "Type of request"
       },
       "subjectPrefix": "Project request",
       "values": {
@@ -30,8 +30,9 @@
         },
         "goalKey": {
           "generate_inquiries": "Generate inquiries",
-          "grow_newsletter": "Grow newsletter sign-ups",
-          "increase_bookings": "Increase booked calls",
+          "grow_newsletter": "Build a contact list",
+          "increase_bookings": "Book more calls",
+          "other_goal": "Other goal",
           "sell_product": "Sell a product"
         },
         "offerKey": {
@@ -58,9 +59,12 @@
           "within_two_weeks": "Within 2 weeks"
         },
         "workflowKey": {
-          "one_workflow": "1 workflow",
-          "three_plus_workflows": "3+ workflows",
-          "two_workflows": "2 workflows"
+          "build_internal_tool": "Build an internal tool for a team",
+          "connect_data_or_systems": "Connect data or systems",
+          "digitize_existing_process": "Digitize an existing process",
+          "improve_existing_tool": "Improve an existing tool or system",
+          "other_process": "Other request",
+          "simplify_manual_process": "Simplify a manual process"
         }
       }
     }

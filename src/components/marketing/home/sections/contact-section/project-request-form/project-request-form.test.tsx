@@ -94,7 +94,6 @@ const formCopyFixture = {
   subtitle: "Rahmen",
   title: "Projektanfrage",
   websiteLabel: "Webseite",
-  websiteRequiredHint: "Webseite erforderlich",
   workflowLabel: "Workflows",
   workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
 };
