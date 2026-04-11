@@ -11,6 +11,12 @@ import {
   type PersistSubmissionResult,
 } from "@/server/db/contact/submission-persistence";
 
+type TransactionExecutor = (
+  callback: (
+    tx: NeonQueryFunctionInTransaction<boolean, boolean>,
+  ) => Promise<void>,
+) => Promise<void>;
+
 export async function persistDiscoveryCallLead(
   write: DiscoveryCallPersistInput,
 ): Promise<PersistSubmissionResult> {
@@ -19,8 +25,9 @@ export async function persistDiscoveryCallLead(
   }
 
   const sql = getDatabaseClient();
+  const runTransaction = sql.transaction as unknown as TransactionExecutor;
 
-  await sql.transaction(
+  await runTransaction(
     async (tx: NeonQueryFunctionInTransaction<boolean, boolean>) => {
       const leadResult = await persistLead(tx, write.lead);
       const leadId = leadResult.leadId ?? write.lead.id;
