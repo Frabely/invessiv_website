@@ -9,7 +9,7 @@ import type {
   ContactWorkflowKey,
 } from "@/common/contracts/contact/keys/contact-option-keys";
 
-export type ProjectRequestDto = {
+export type SaveProjectRequestDto = {
   budgetKey?: ContactBudgetKey;
   company?: string;
   consentAccepted: boolean;

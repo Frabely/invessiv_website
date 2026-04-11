@@ -1,6 +1,6 @@
 import "server-only";
-import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
 import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
+import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import { getServerEnv } from "@/server/config/env";
 import { persistProjectRequestLead } from "@/server/db/contact/persist-project-request";
 import { projectRequestValidationService } from "@/server/contact/validation/project-request/project-request-validation-service";
@@ -9,7 +9,7 @@ import { mapContactToMail } from "@/server/services/mail/mappers/map-contact-to-
 import { sendMail } from "@/server/services/mail/mail-service";
 
 export async function submitProjectRequestCommandHandler(
-  payload: ProjectRequestSubmitRequest,
+  payload: SaveProjectRequestDto,
   requestId: string,
 ): Promise<ContactCommandHandlerResult> {
   const validationResult = projectRequestValidationService.validate(payload);

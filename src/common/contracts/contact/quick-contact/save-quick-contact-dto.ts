@@ -1,7 +1,7 @@
 import type { Locale } from "@/config/i18n";
 import type { ContactRequestKind } from "@/common/contracts/contact/keys/contact-request-kind";
 
-export type QuickContactDto = {
+export type SaveQuickContactDto = {
   consentAccepted: boolean;
   email: string;
   firstName: string;

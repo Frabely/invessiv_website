@@ -3,11 +3,11 @@ import type {
   ContactSubmitResponse,
 } from "@/common/contracts/contact/submit/contact-submit";
 import type { BaseContactFieldsValues } from "@/common/contracts/contact/fields/base-contact-fields-values";
-import type { DiscoveryCallDto } from "@/common/contracts/contact/dtos/discovery-call-dto";
-import type { ProjectRequestDto } from "@/common/contracts/contact/dtos/project-request-dto";
-import type { QuickContactDto } from "@/common/contracts/contact/dtos/quick-contact-dto";
+import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import type { CalendlyPrefillOptions } from "@/common/contracts/contact/options/calendly-prefill-options";
 import type { ContactSubmitOptions } from "@/common/contracts/contact/options/contact-submit-options";
+import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
+import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
 
 function createClientErrorResponse(
@@ -34,14 +34,14 @@ function isContactSubmitResponse(
 }
 
 export async function submitProjectRequest(
-  dto: ProjectRequestDto,
+  dto: SaveProjectRequestDto,
   options?: ContactSubmitOptions,
 ): Promise<ContactSubmitResponse> {
   return submitContact(dto, options);
 }
 
 async function submitContact(
-  dto: ProjectRequestDto | QuickContactDto | DiscoveryCallDto,
+  dto: SaveProjectRequestDto | SaveQuickContactDto | SaveDiscoveryCallDto,
   { submitPath = DEFAULT_CONTACT_SUBMIT_PATH }: ContactSubmitOptions = {},
 ): Promise<ContactSubmitResponse> {
   try {
@@ -69,14 +69,14 @@ async function submitContact(
 }
 
 export function submitQuickContact(
-  dto: QuickContactDto,
+  dto: SaveQuickContactDto,
   options?: ContactSubmitOptions,
 ) {
   return submitContact(dto, options);
 }
 
 export function submitDiscoveryCall(
-  dto: DiscoveryCallDto,
+  dto: SaveDiscoveryCallDto,
   options?: ContactSubmitOptions,
 ) {
   return submitContact(dto, options);

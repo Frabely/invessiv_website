@@ -1,19 +1,19 @@
-import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
+import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import type { TimestampedRecord } from "@/common/contracts/contact/records/timestamped-record";
 
 export type ProjectRequestRecord = TimestampedRecord & {
-  offerKey: ProjectRequestSubmitRequest["offerKey"];
-  budgetKey?: ProjectRequestSubmitRequest["budgetKey"];
+  offerKey: SaveProjectRequestDto["offerKey"];
+  budgetKey?: SaveProjectRequestDto["budgetKey"];
   company?: string;
   customPageNames?: string[];
-  goalKey?: ProjectRequestSubmitRequest["goalKey"];
+  goalKey?: SaveProjectRequestDto["goalKey"];
   id: string;
   leadSubmissionId: string;
-  pageKeys?: ProjectRequestSubmitRequest["pageKeys"];
+  pageKeys?: SaveProjectRequestDto["pageKeys"];
   phone?: string;
-  preferredStartKey?: ProjectRequestSubmitRequest["preferredStartKey"];
+  preferredStartKey?: SaveProjectRequestDto["preferredStartKey"];
   projectDetails: string;
   role?: string;
   website?: string;
-  workflowKey?: ProjectRequestSubmitRequest["workflowKey"];
+  workflowKey?: SaveProjectRequestDto["workflowKey"];
 };

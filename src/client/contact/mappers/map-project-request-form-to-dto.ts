@@ -1,6 +1,6 @@
-import type { ProjectRequestDto } from "@/common/contracts/contact/dtos/project-request-dto";
 import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
 import type { MapProjectRequestFormToDtoOptions } from "@/common/contracts/contact/options/map-project-request-form-to-dto-options";
+import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import type {
   ContactBudgetKey,
   ContactGoalKey,
@@ -23,7 +23,7 @@ function toOptionalCustomPageNames(values: string[]) {
 export function mapProjectRequestFormToDto(
   values: ProjectRequestFormValues,
   { locale, startedAt }: MapProjectRequestFormToDtoOptions,
-): ProjectRequestDto {
+): SaveProjectRequestDto {
   return {
     budgetKey: (values.budgetKey || undefined) as ContactBudgetKey | undefined,
     company: toOptionalTrimmedString(values.company),
@@ -34,7 +34,7 @@ export function mapProjectRequestFormToDto(
     kind: "project_request",
     lastName: values.lastName.trim(),
     locale,
-    offerKey: values.offerKey as ProjectRequestDto["offerKey"],
+    offerKey: values.offerKey as SaveProjectRequestDto["offerKey"],
     customPageNames: toOptionalCustomPageNames(values.customPageNames),
     pageKeys:
       values.pageKeys.length > 0

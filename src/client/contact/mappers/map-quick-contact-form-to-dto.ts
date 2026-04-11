@@ -1,10 +1,10 @@
-import type { QuickContactDto } from "@/common/contracts/contact/dtos/quick-contact-dto";
 import type { QuickContactFormValues } from "@/common/contracts/contact/forms/quick-contact-form-values";
+import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 
 export function mapQuickContactFormToDto(
   values: QuickContactFormValues,
-  locale: QuickContactDto["locale"],
-): QuickContactDto {
+  locale: SaveQuickContactDto["locale"],
+): SaveQuickContactDto {
   return {
     consentAccepted: values.consentAccepted,
     email: values.email.trim(),

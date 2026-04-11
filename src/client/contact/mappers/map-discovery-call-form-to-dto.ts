@@ -1,10 +1,10 @@
-import type { DiscoveryCallDto } from "@/common/contracts/contact/dtos/discovery-call-dto";
 import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
+import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 
 export function mapDiscoveryCallFormToDto(
   values: DiscoveryCallFormValues,
-  locale: DiscoveryCallDto["locale"],
-): DiscoveryCallDto {
+  locale: SaveDiscoveryCallDto["locale"],
+): SaveDiscoveryCallDto {
   const message = values.message.trim();
 
   return {

@@ -1,5 +1,5 @@
 import "server-only";
-import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
+import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getServerEnv } from "@/server/config/env";
 import {
@@ -37,7 +37,7 @@ function mapValue(
 }
 
 export async function createContactNotificationMessage(
-  payload: ProjectRequestSubmitRequest,
+  payload: SaveProjectRequestDto,
 ): Promise<ContactNotificationMessage> {
   const copy = (await getDictionary(payload.locale)).mail.contactNotification;
   const localizedOffer =

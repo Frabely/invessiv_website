@@ -1,5 +1,5 @@
 import "server-only";
-import type { QuickContactSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
+import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getServerEnv } from "@/server/config/env";
 import type { MailMessage } from "@/server/services/mail/mail-provider";
@@ -20,7 +20,7 @@ type QuickContactNotificationCopy = Awaited<
 >["mail"]["quickContactNotification"];
 
 export async function createQuickContactNotificationMessage(
-  payload: QuickContactSubmitRequest,
+  payload: SaveQuickContactDto,
 ): Promise<QuickContactNotificationMessage> {
   const copy: QuickContactNotificationCopy = (
     await getDictionary(payload.locale)
@@ -55,7 +55,7 @@ export async function createQuickContactNotificationMessage(
 }
 
 export async function mapQuickContactToMail(
-  payload: QuickContactSubmitRequest,
+  payload: SaveQuickContactDto,
   to: string,
 ): Promise<MailMessage> {
   const message = await createQuickContactNotificationMessage(payload);
