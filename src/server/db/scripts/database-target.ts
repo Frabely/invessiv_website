@@ -1,5 +1,6 @@
+import fs from "node:fs";
 import path from "node:path";
-import { config as loadDotenv } from "dotenv";
+import { parse as parseDotenv } from "dotenv";
 import { loadLocalEnvFiles } from "../../config/load-env";
 
 export const DATABASE_TARGETS = [
@@ -39,23 +40,31 @@ function resolveDatabaseUrlForTarget(target: DatabaseTarget): string | null {
   return process.env[envKeyByTarget[target]]?.trim() || null;
 }
 
-function loadTargetEnvFile(target: DatabaseTarget) {
+function getTargetEnvFile(target: DatabaseTarget): string | null {
   const envFileByTarget: Record<DatabaseTarget, string | null> = {
     development: ".env.development.local",
     preview: ".env.preview.local",
     production: ".env.production.local",
   };
 
-  const envFile = envFileByTarget[target];
+  return envFileByTarget[target];
+}
+
+function readDatabaseUrlFromTargetEnvFile(
+  target: DatabaseTarget,
+): string | null {
+  const envFile = getTargetEnvFile(target);
   if (!envFile) {
-    return;
+    return null;
   }
 
-  loadDotenv({
-    override: true,
-    path: path.join(process.cwd(), envFile),
-    quiet: true,
-  });
+  const envFilePath = path.join(process.cwd(), envFile);
+  if (!fs.existsSync(envFilePath)) {
+    return null;
+  }
+
+  const parsed = parseDotenv(fs.readFileSync(envFilePath, "utf8"));
+  return parsed.DATABASE_URL?.trim() || null;
 }
 
 export function configureDatabaseUrlFromTarget(target: DatabaseTarget | null) {
@@ -65,10 +74,13 @@ export function configureDatabaseUrlFromTarget(target: DatabaseTarget | null) {
     return;
   }
 
-  loadTargetEnvFile(target);
+  const inheritedDatabaseUrl = process.env.DATABASE_URL?.trim() || null;
+  const targetEnvDatabaseUrl = readDatabaseUrlFromTargetEnvFile(target);
 
   const databaseUrl =
-    process.env.DATABASE_URL?.trim() || resolveDatabaseUrlForTarget(target);
+    targetEnvDatabaseUrl ||
+    resolveDatabaseUrlForTarget(target) ||
+    inheritedDatabaseUrl;
 
   if (!databaseUrl) {
     throw new Error(

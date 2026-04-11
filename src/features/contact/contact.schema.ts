@@ -23,6 +23,14 @@ const optionalTrimmedStringArray = z
   .optional()
   .transform((value) => (value && value.length > 0 ? value : undefined));
 
+function hasUniqueValues(values: readonly string[] | undefined) {
+  if (!values) {
+    return true;
+  }
+
+  return new Set(values).size === values.length;
+}
+
 const isoDateTimeSchema = z
   .string()
   .refine((value) => !Number.isNaN(Date.parse(value)), "invalid_started_at");
@@ -101,6 +109,22 @@ export const projectRequestSchema = z
           path: ["pageKeys"],
         });
       }
+    }
+
+    if (!hasUniqueValues(value.pageKeys)) {
+      context.addIssue({
+        code: "custom",
+        message: "duplicate_page_keys",
+        path: ["pageKeys"],
+      });
+    }
+
+    if (!hasUniqueValues(value.customPageNames)) {
+      context.addIssue({
+        code: "custom",
+        message: "duplicate_custom_page_names",
+        path: ["customPageNames"],
+      });
     }
 
     if (requiresWebsite && !value.website) {

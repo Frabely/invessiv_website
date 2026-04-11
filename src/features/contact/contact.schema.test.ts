@@ -83,6 +83,37 @@ describe("contactSubmitSchema", () => {
     ).toBe(true);
   });
 
+  it("rejects duplicate page keys before persistence", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      ...validBasePayload,
+      offerKey: "web",
+      pageKeys: ["home", "home"],
+      website: "https://example.com",
+    });
+
+    expect(parsed.success).toBe(false);
+    expect(
+      parsed.error?.issues.some(
+        (issue) => issue.message === "duplicate_page_keys",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects duplicate custom page names before persistence", () => {
+    const parsed = contactSubmitSchema.safeParse({
+      ...validBasePayload,
+      customPageNames: ["Sponsoren", "Sponsoren"],
+      offerKey: "web",
+    });
+
+    expect(parsed.success).toBe(false);
+    expect(
+      parsed.error?.issues.some(
+        (issue) => issue.message === "duplicate_custom_page_names",
+      ),
+    ).toBe(true);
+  });
+
   it("accepts a valid quick contact payload", () => {
     const parsed = contactSubmitSchema.safeParse({
       consentAccepted: true,
