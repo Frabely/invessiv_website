@@ -1,9 +1,12 @@
 import { getServerEnv } from "../../config/env";
-import { loadLocalEnvFiles } from "../../config/load-env";
 import { getDatabaseClient } from "../client";
+import {
+  configureDatabaseUrlFromTarget,
+  parseDatabaseTarget,
+} from "./database-target";
 
 async function run() {
-  loadLocalEnvFiles();
+  configureDatabaseUrlFromTarget(parseDatabaseTarget(process.argv));
   const env = getServerEnv();
 
   if (!env.databaseUrl) {

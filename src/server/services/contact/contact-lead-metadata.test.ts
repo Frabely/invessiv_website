@@ -39,8 +39,8 @@ describe("contact lead metadata", () => {
     expect(write.lead.leadStatus).toBe("new");
     expect(write.submission.requestId).toBe("request_123");
     expect(write.submission.channel).toBe("project_request");
-    expect(write.submission.submissionStartedAt).toBe(
-      "2026-03-26T09:00:00.000Z",
+    expect(write.submission.submissionStartedAt).toEqual(
+      new Date("2026-03-26T09:00:00.000Z"),
     );
     expect(write.projectRequest.leadSubmissionId).toBe(write.submission.id);
     expect(write.projectRequest.customPageNames).toEqual(["Karriereseite"]);

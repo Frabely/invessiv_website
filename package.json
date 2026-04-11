@@ -4,7 +4,13 @@
   "private": true,
   "scripts": {
     "db:migrate": "tsx src/server/db/scripts/run-migrations.ts",
+    "db:migrate:dev": "tsx src/server/db/scripts/run-migrations.ts development",
+    "db:migrate:preview": "tsx src/server/db/scripts/run-migrations.ts preview",
+    "db:migrate:prod": "tsx src/server/db/scripts/run-migrations.ts production",
     "db:smoke": "tsx src/server/db/scripts/smoke-test.ts",
+    "db:smoke:dev": "tsx src/server/db/scripts/smoke-test.ts development",
+    "db:smoke:preview": "tsx src/server/db/scripts/smoke-test.ts preview",
+    "db:smoke:prod": "tsx src/server/db/scripts/smoke-test.ts production",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
