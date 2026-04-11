@@ -17,6 +17,11 @@ const currentFilePath = fileURLToPath(import.meta.url);
 const migrationsDirectory = path.dirname(currentFilePath);
 const migrationPath = path.join(
   migrationsDirectory,
+  "..",
+  "..",
+  "..",
+  "db",
+  "migrations",
   "0002_restructure_lead_storage.sql",
 );
 
