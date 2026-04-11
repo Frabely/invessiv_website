@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
-import type { DiscoveryCallPersistInput } from "@/common/contracts/contact/discovery-call/discovery-call-persist-input";
+import type { DiscoveryCallPersistInput } from "@/server/db/records/contact/discovery-call-persist-input";
 import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import {
   mapLeadApiToDb,

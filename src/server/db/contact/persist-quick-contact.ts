@@ -4,7 +4,7 @@ import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { QuickContactPersistInput } from "@/common/contracts/contact/quick-contact/quick-contact-persist-input";
+import type { QuickContactPersistInput } from "@/server/db/records/contact/quick-contact-persist-input";
 import { persistLead } from "@/server/db/contact/lead-persistence";
 import {
   persistSubmission,

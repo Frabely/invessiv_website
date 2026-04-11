@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
-import type { ProjectRequestPersistInput } from "@/common/contracts/contact/project-request/project-request-persist-input";
+import type { ProjectRequestPersistInput } from "@/server/db/records/contact/project-request-persist-input";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import {
   mapLeadApiToDb,

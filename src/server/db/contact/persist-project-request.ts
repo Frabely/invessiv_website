@@ -4,7 +4,7 @@ import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { ProjectRequestPersistInput } from "@/common/contracts/contact/project-request/project-request-persist-input";
+import type { ProjectRequestPersistInput } from "@/server/db/records/contact/project-request-persist-input";
 import { persistLead } from "@/server/db/contact/lead-persistence";
 import {
   persistSubmission,

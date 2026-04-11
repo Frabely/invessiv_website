@@ -1,5 +1,5 @@
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
-import type { TimestampedRecord } from "@/common/contracts/contact/records/timestamped-record";
+import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type ProjectRequestRecord = TimestampedRecord & {
   offerKey: SaveProjectRequestDto["offerKey"];

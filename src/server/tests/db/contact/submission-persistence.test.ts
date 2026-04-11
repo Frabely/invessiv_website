@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { PreparedLeadSubmissionRecord } from "@/common/contracts/contact/records/prepared-lead-submission-record";
+import type { PreparedLeadSubmissionRecord } from "@/server/db/records/contact/prepared-lead-submission-record";
 
 vi.mock("server-only", () => ({}));
 

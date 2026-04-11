@@ -4,7 +4,7 @@ import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { DiscoveryCallPersistInput } from "@/common/contracts/contact/discovery-call/discovery-call-persist-input";
+import type { DiscoveryCallPersistInput } from "@/server/db/records/contact/discovery-call-persist-input";
 import { persistLead } from "@/server/db/contact/lead-persistence";
 import {
   persistSubmission,

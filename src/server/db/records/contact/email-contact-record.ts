@@ -1,4 +1,4 @@
-import type { TimestampedRecord } from "@/common/contracts/contact/records/timestamped-record";
+import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type EmailContactRecord = TimestampedRecord & {
   id: string;

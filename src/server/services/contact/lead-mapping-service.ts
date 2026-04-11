@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { PreparedLeadRecord } from "@/common/contracts/contact/records/prepared-lead-record";
+import type { PreparedLeadRecord } from "@/server/db/records/contact/prepared-lead-record";
 import type { ContactLeadStatus } from "@/server/config/contact-lead-storage";
 
 export type ApiToDbMapperOptions = {

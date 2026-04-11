@@ -1,6 +1,6 @@
 import "server-only";
 import type { NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
-import type { PreparedLeadRecord } from "@/common/contracts/contact/records/prepared-lead-record";
+import type { PreparedLeadRecord } from "@/server/db/records/contact/prepared-lead-record";
 
 export type PersistLeadResult = {
   persisted: boolean;
