@@ -13,10 +13,10 @@ import { ContactFormStatus } from "@/components/marketing/home/sections/contact-
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
+import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
+import { submitProjectRequest } from "@/client/contact/services/contact-form-service";
 import { SECTION_HREFS } from "@/config/site";
 import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
-import { submitProjectRequest } from "@/features/contact/client/contact-form-service";
-import { mapProjectRequestFormToDto } from "@/features/contact/client/map-project-request-form-to-dto";
 import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/project-request-form-values";
 import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";

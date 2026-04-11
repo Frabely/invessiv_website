@@ -16,10 +16,10 @@ import { useLanguage } from "@/components/providers/language-provider";
 import {
   createCalendlyPrefillHref,
   submitDiscoveryCall,
-} from "@/features/contact/client/contact-form-service";
+} from "@/client/contact/services/contact-form-service";
 import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@/common/defaults/contact/discovery-call-form-values";
 import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
-import { mapDiscoveryCallFormToDto } from "@/features/contact/client/map-discovery-call-form-to-dto";
+import { mapDiscoveryCallFormToDto } from "@/client/contact/mappers/map-discovery-call-form-to-dto";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";

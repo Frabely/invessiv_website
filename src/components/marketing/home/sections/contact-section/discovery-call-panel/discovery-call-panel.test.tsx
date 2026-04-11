@@ -19,7 +19,7 @@ vi.mock("@/components/providers/language-provider", () => ({
   }),
 }));
 
-vi.mock("@/features/contact/client/contact-form-service", () => ({
+vi.mock("@/client/contact/services/contact-form-service", () => ({
   createCalendlyPrefillHref: (...args: unknown[]) =>
     createCalendlyPrefillHrefMock(...args),
   submitDiscoveryCall: (...args: unknown[]) => submitDiscoveryCallMock(...args),

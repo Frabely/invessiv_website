@@ -12,8 +12,8 @@ import { ContactFormShell } from "@/components/marketing/home/sections/contact-s
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { useLanguage } from "@/components/providers/language-provider";
-import { submitQuickContact } from "@/features/contact/client/contact-form-service";
-import { mapQuickContactFormToDto } from "@/features/contact/client/map-quick-contact-form-to-dto";
+import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-contact-form-to-dto";
+import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { DEFAULT_QUICK_CONTACT_FORM_VALUES } from "@/common/defaults/contact/quick-contact-form-values";
 import type { QuickContactFormValues } from "@/common/contracts/contact/forms/quick-contact-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
