@@ -101,7 +101,7 @@ describe("POST /api/public/contact", () => {
     vi.setSystemTime(new Date("2026-03-20T10:00:10.000Z"));
     const { POST } = await import("./route");
     const { resetContactRateLimitStore } =
-      await import("@/server/services/anti-abuse/contact-rate-limit");
+      await import("@/server/services/anti-abuse/contact-rate-limit-service");
     resetContactRateLimitStore();
 
     const createRequest = () =>

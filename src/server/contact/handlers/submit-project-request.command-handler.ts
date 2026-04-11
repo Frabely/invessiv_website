@@ -1,11 +1,11 @@
 import "server-only";
 import { projectRequestSchema } from "@/features/contact/contact.schema";
 import type { ProjectRequestSubmitRequest } from "@/features/contact/contact.contract";
-import type { ContactCommandHandlerResult } from "@/server/contact/handlers/contact-command-handler-result";
-import { validateCommandPayload } from "@/server/contact/handlers/validate-command-payload";
+import type { ContactCommandHandlerResult } from "@/server/common/contracts/contact/contact-command-handler-result";
+import { validateCommandPayload } from "@/server/contact/validators/validate-command-payload";
 import { getServerEnv } from "@/server/config/env";
-import { createProjectRequestLeadWrite } from "@/server/services/contact/contact-lead-metadata";
-import { persistProjectRequestLead } from "@/server/services/contact/persist-contact-lead";
+import { persistProjectRequestLead } from "@/server/db/contact/persist-project-request";
+import { mapProjectRequestApiToDb } from "@/server/services/contact/project-request/project-request-mapping-service";
 import { mapContactToMail } from "@/server/services/mail/mappers/map-contact-to-mail";
 import { sendMail } from "@/server/services/mail/mail-service";
 
@@ -18,9 +18,9 @@ export async function submitProjectRequestCommandHandler(
     payload,
     async (validatedPayload) => {
       const env = getServerEnv();
-      const leadWrite = createProjectRequestLeadWrite(
+      const leadWrite = mapProjectRequestApiToDb(
         validatedPayload,
-        requestId,
+        { requestId },
       );
       await persistProjectRequestLead(leadWrite);
 

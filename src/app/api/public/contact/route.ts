@@ -14,7 +14,7 @@ import {
 } from "@/server/http/api-response";
 import { submitProjectRequestCommandHandler } from "@/server/contact/handlers/submit-project-request.command-handler";
 import { submitQuickContactCommandHandler } from "@/server/contact/handlers/submit-quick-contact.command-handler";
-import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit";
+import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit-service";
 
 const MAX_BODY_SIZE = 20_000;
 const contactRequestKindSchema = z.object({

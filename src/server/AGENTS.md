@@ -40,6 +40,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 - SQL- und Tabellenwissen nach `src/server/db`.
 - Reines Mapping nicht in `src/server/db`.
 - Orchestrierung nicht in `src/server/db`.
+- Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.
 
 ## Sprachregel
 

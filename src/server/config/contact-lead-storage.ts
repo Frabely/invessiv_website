@@ -8,11 +8,6 @@ export const CONTACT_LEAD_STORAGE = {
   sourceForm: "project_request",
 } as const;
 
-export const LEGAL_DOCUMENT_VERSIONS = {
-  privacy: "2026-03-26",
-  terms: "2026-03-26",
-} as const;
-
 export type ContactLeadStatus =
   | "new"
   | "contacted"
@@ -20,5 +15,3 @@ export type ContactLeadStatus =
   | "won"
   | "lost"
   | "archived";
-
-export type ContactLeadMailStatus = "pending" | "sent" | "failed";

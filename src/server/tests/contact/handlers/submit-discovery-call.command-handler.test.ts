@@ -6,7 +6,7 @@ const { persistDiscoveryCallLeadMock } = vi.hoisted(() => ({
 
 vi.mock("server-only", () => ({}));
 
-vi.mock("@/server/services/contact/persist-contact-lead", () => ({
+vi.mock("@/server/db/contact/persist-discovery-call", () => ({
   persistDiscoveryCallLead: persistDiscoveryCallLeadMock,
 }));
 

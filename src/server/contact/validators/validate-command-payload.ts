@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { flattenContactFieldErrors } from "@/features/contact/contact.schema";
-import type { ContactCommandHandlerResult } from "@/server/contact/handlers/contact-command-handler-result";
+import type { ContactCommandHandlerResult } from "@/server/common/contracts/contact/contact-command-handler-result";
 
 export async function validateCommandPayload<TOutput>(
   schema: z.ZodType<TOutput>,
