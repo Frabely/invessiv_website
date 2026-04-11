@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { SUPPORTED_LOCALES } from "@/config/i18n";
-import { CONTACT_REQUEST_KINDS } from "@/features/contact/contact-request-kind";
+import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
 import {
   CONTACT_BUDGET_KEYS,
   CONTACT_GOAL_KEYS,
@@ -8,7 +8,7 @@ import {
   CONTACT_PAGE_KEYS,
   CONTACT_START_KEYS,
   CONTACT_WORKFLOW_KEYS,
-} from "@/features/contact/contact-options";
+} from "@/common/constants/contact/contact-options";
 
 const optionalTrimmedString = z
   .string()
@@ -161,10 +161,6 @@ export const contactSubmitSchema = z.discriminatedUnion("kind", [
   quickContactSchema,
   discoveryCallSchema,
 ]);
-
-export type ProjectRequestSubmitInput = z.infer<typeof projectRequestSchema>;
-export type QuickContactSubmitInput = z.infer<typeof quickContactSchema>;
-export type DiscoveryCallSubmitInput = z.infer<typeof discoveryCallSchema>;
 
 export function flattenContactFieldErrors(issues: z.core.$ZodIssue[]) {
   return issues.reduce<Record<string, string[]>>((fieldErrors, issue) => {

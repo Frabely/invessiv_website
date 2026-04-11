@@ -1,5 +1,5 @@
-import type { DiscoveryCallDto } from "@/features/contact/client/discovery-call.dto";
-import type { DiscoveryCallFormValues } from "@/features/contact/client/discovery-call-form.schema";
+import type { DiscoveryCallDto } from "@/common/contracts/contact/dtos/discovery-call-dto";
+import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
 
 export function mapDiscoveryCallFormToDto(
   values: DiscoveryCallFormValues,

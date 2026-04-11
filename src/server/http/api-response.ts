@@ -3,7 +3,7 @@ import type {
   ContactSubmitErrorCode,
   ContactSubmitErrorResponse,
   ContactSubmitSuccessResponse,
-} from "@/features/contact/contact.contract";
+} from "@/common/contracts/contact/submit/contact-submit";
 
 export function createRequestId() {
   return crypto.randomUUID();

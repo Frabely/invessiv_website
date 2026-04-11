@@ -14,7 +14,7 @@ import {
   CONTACT_PAGE_KEYS,
   CONTACT_START_KEYS,
   CONTACT_WORKFLOW_KEYS,
-} from "@/features/contact/contact-options";
+} from "@/common/constants/contact/contact-options";
 
 type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
 

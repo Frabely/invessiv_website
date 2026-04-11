@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { PreparedLeadRecord } from "@/server/common/contracts/contact/prepared-lead-record";
+import type { PreparedLeadRecord } from "@/common/contracts/contact/records/prepared-lead-record";
 
 vi.mock("server-only", () => ({}));
 
@@ -7,9 +7,8 @@ describe("persistLead", () => {
   it("inserts the lead upsert with the provided values", async () => {
     const tx = vi.fn().mockResolvedValue([{ id: "lead-db-id" }]);
 
-    const { persistLead } = await import(
-      "@/server/db/contact/lead-persistence"
-    );
+    const { persistLead } =
+      await import("@/server/db/contact/lead-persistence");
 
     const lead: PreparedLeadRecord = {
       createdAt: new Date("2026-03-26T09:30:00.000Z"),

@@ -1,7 +1,7 @@
 import "server-only";
 import { projectRequestSchema } from "@/features/contact/contact.schema";
-import type { ProjectRequestSubmitRequest } from "@/features/contact/contact.contract";
-import type { ContactCommandHandlerResult } from "@/server/common/contracts/contact/contact-command-handler-result";
+import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
 import { validateCommandPayload } from "@/server/contact/validators/validate-command-payload";
 import { getServerEnv } from "@/server/config/env";
 import { persistProjectRequestLead } from "@/server/db/contact/persist-project-request";
@@ -18,10 +18,9 @@ export async function submitProjectRequestCommandHandler(
     payload,
     async (validatedPayload) => {
       const env = getServerEnv();
-      const leadWrite = mapProjectRequestApiToDb(
-        validatedPayload,
-        { requestId },
-      );
+      const leadWrite = mapProjectRequestApiToDb(validatedPayload, {
+        requestId,
+      });
       await persistProjectRequestLead(leadWrite);
 
       const message = await mapContactToMail(

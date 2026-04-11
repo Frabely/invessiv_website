@@ -1,10 +1,8 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/contact-form-field";
-import {
-  CONTACT_EMAIL_PATTERN,
-  type ContactIdentityFieldsCopy,
-  type ContactIdentityFieldsValues,
-} from "@/features/contact/client/base-contact-fields";
+import type { ContactIdentityFieldsCopy } from "@/common/contracts/contact/copy/contact-field-copy";
+import type { ContactIdentityFieldsValues } from "@/common/contracts/contact/fields/contact-identity-fields-values";
+import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
 
 type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
   controlClassName?: string;
@@ -12,7 +10,9 @@ type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
   errors: FieldErrors<TValues>;
   getErrorMessage: (fieldName: keyof ContactIdentityFieldsValues) => string;
   register: UseFormRegister<TValues>;
-  onFieldChange?: Partial<Record<keyof ContactIdentityFieldsValues, () => void>>;
+  onFieldChange?: Partial<
+    Record<keyof ContactIdentityFieldsValues, () => void>
+  >;
 };
 
 export function ContactIdentityFields<

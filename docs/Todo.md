@@ -1,5 +1,10 @@
 # Todo
 
+## Stack Rework
+
+- Next.js + Prisma als saubere Zielarchitektur fuer Datenzugriff und DB-Modelle umsetzen.
+- Dabei die Datenmodelle klar von UI und Route-Logik trennen und den bestehenden Code schrittweise migrieren.
+
 ## I18n Dictionary Rework
 
 - `src/i18n/dictionaries/marketing/home.ts` und ggf. weitere verbleibende Dictionary-`*.ts`-Dateien auf das JSON-Schema umstellen.

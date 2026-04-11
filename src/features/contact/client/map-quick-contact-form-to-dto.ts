@@ -1,5 +1,5 @@
-import type { QuickContactDto } from "@/features/contact/client/quick-contact.dto";
-import type { QuickContactFormValues } from "@/features/contact/client/quick-contact-form.schema";
+import type { QuickContactDto } from "@/common/contracts/contact/dtos/quick-contact-dto";
+import type { QuickContactFormValues } from "@/common/contracts/contact/forms/quick-contact-form-values";
 
 export function mapQuickContactFormToDto(
   values: QuickContactFormValues,

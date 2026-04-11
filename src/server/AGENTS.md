@@ -24,7 +24,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 - Orchestrierung in `src/server/contact`
 - Mapping in `src/server/services/contact`
 - Persistenz in `src/server/db`
-- Gemeinsame Contracts in `src/server/common/contracts/contact`
+- Gemeinsame Contracts in `src/common/contracts/contact`
 
 ## Benennung
 

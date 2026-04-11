@@ -10,8 +10,8 @@ import {
   CONTACT_PAGE_KEYS,
   CONTACT_START_KEYS,
   CONTACT_WORKFLOW_KEYS,
-} from "@/features/contact/contact-options";
-import { CONTACT_SUBMISSION_CHANNELS } from "@/features/contact/contact-request-kind";
+} from "@/common/constants/contact/contact-options";
+import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
 
 const currentFilePath = fileURLToPath(import.meta.url);
 const migrationsDirectory = path.dirname(currentFilePath);
@@ -85,7 +85,7 @@ describe("0002 lead storage constraint drift", () => {
 
   it("keeps submission channels in sync with contact request constants", () => {
     expect(extractCheckList(sql, "channel")).toEqual([
-      ...CONTACT_SUBMISSION_CHANNELS,
+      ...CONTACT_REQUEST_KINDS,
     ]);
   });
 

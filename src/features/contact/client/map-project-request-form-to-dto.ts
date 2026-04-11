@@ -1,18 +1,13 @@
-import type { Locale } from "@/config/i18n";
-import type { ProjectRequestDto } from "@/features/contact/client/project-request.dto";
-import type { ProjectRequestFormValues } from "@/features/contact/client/project-request-form.schema";
+import type { ProjectRequestDto } from "@/common/contracts/contact/dtos/project-request-dto";
+import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
+import type { MapProjectRequestFormToDtoOptions } from "@/common/contracts/contact/options/map-project-request-form-to-dto-options";
 import type {
   ContactBudgetKey,
   ContactGoalKey,
   ContactPageKey,
   ContactStartKey,
   ContactWorkflowKey,
-} from "@/features/contact/contact-options";
-
-type MapProjectRequestFormToDtoOptions = {
-  locale: Locale;
-  startedAt: string;
-};
+} from "@/common/contracts/contact/keys/contact-option-keys";
 
 function toOptionalTrimmedString(value: string) {
   const trimmedValue = value.trim();

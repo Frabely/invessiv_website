@@ -1,8 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { DiscoveryCallSubmitInput } from "@/features/contact/contact.schema";
+import type { DiscoveryCallSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
 import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
-import type { DiscoveryCallPersistInput } from "@/server/common/contracts/contact/discovery-call/discovery-call-persist-input";
+import type { DiscoveryCallPersistInput } from "@/common/contracts/contact/discovery-call/discovery-call-persist-input";
 import {
   mapLeadApiToDb,
   type ApiToDbMapperOptions,
@@ -10,14 +10,12 @@ import {
 import { mapSubmissionApiToDb } from "@/server/services/contact/submission-mapping-service";
 
 export function mapDiscoveryCallApiToDb(
-  payload: DiscoveryCallSubmitInput,
+  payload: DiscoveryCallSubmitRequest,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): DiscoveryCallPersistInput {
-  const lead = mapLeadApiToDb(
-    payload,
-    createdAt,
-    { defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus },
-  );
+  const lead = mapLeadApiToDb(payload, createdAt, {
+    defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
+  });
   const submission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,

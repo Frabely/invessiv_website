@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import type { PreparedLeadSubmissionRecord } from "@/server/common/contracts/contact/prepared-lead-submission-record";
+import type { PreparedLeadSubmissionRecord } from "@/common/contracts/contact/records/prepared-lead-submission-record";
 
 vi.mock("server-only", () => ({}));
 
@@ -7,9 +7,8 @@ describe("persistSubmission", () => {
   it("inserts the submission row with the provided lead id", async () => {
     const tx = vi.fn().mockResolvedValue([]);
 
-    const { persistSubmission } = await import(
-      "@/server/db/contact/submission-persistence"
-    );
+    const { persistSubmission } =
+      await import("@/server/db/contact/submission-persistence");
 
     const submission: PreparedLeadSubmissionRecord = {
       channel: "project_request",
@@ -22,7 +21,11 @@ describe("persistSubmission", () => {
       updatedAt: new Date("2026-03-26T09:30:00.000Z"),
     };
 
-    const result = await persistSubmission(tx as never, "lead-db-id", submission);
+    const result = await persistSubmission(
+      tx as never,
+      "lead-db-id",
+      submission,
+    );
 
     expect(result).toEqual({
       persisted: true,

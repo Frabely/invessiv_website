@@ -1,6 +1,10 @@
 import "server-only";
-import { getDatabaseClient, hasDatabaseConnectionString } from "@/server/db/client";
-import type { DiscoveryCallPersistInput } from "@/server/common/contracts/contact/discovery-call/discovery-call-persist-input";
+import type { NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
+import {
+  getDatabaseClient,
+  hasDatabaseConnectionString,
+} from "@/server/db/client";
+import type { DiscoveryCallPersistInput } from "@/common/contracts/contact/discovery-call/discovery-call-persist-input";
 import { persistLead } from "@/server/db/contact/lead-persistence";
 import {
   persistSubmission,
@@ -16,12 +20,13 @@ export async function persistDiscoveryCallLead(
 
   const sql = getDatabaseClient();
 
-  await (sql.transaction as any)(async (tx: any) => {
-    const leadResult = await persistLead(tx, write.lead);
-    const leadId = leadResult.leadId ?? write.lead.id;
+  await sql.transaction(
+    async (tx: NeonQueryFunctionInTransaction<boolean, boolean>) => {
+      const leadResult = await persistLead(tx, write.lead);
+      const leadId = leadResult.leadId ?? write.lead.id;
 
-    await persistSubmission(tx, leadId, write.submission);
-    await tx`
+      await persistSubmission(tx, leadId, write.submission);
+      await tx`
       INSERT INTO lead_call_contacts (
         id,
         lead_submission_id,
@@ -37,7 +42,8 @@ export async function persistDiscoveryCallLead(
         ${write.callContact.updatedAt}
       )
     `;
-  });
+    },
+  );
 
   return {
     persisted: true,

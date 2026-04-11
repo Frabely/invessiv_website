@@ -1,6 +1,10 @@
 import "server-only";
-import { getDatabaseClient, hasDatabaseConnectionString } from "@/server/db/client";
-import type { QuickContactPersistInput } from "@/server/common/contracts/contact/quick-contact/quick-contact-persist-input";
+import type { NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
+import {
+  getDatabaseClient,
+  hasDatabaseConnectionString,
+} from "@/server/db/client";
+import type { QuickContactPersistInput } from "@/common/contracts/contact/quick-contact/quick-contact-persist-input";
 import { persistLead } from "@/server/db/contact/lead-persistence";
 import {
   persistSubmission,
@@ -16,12 +20,13 @@ export async function persistQuickContactLead(
 
   const sql = getDatabaseClient();
 
-  await (sql.transaction as any)(async (tx: any) => {
-    const leadResult = await persistLead(tx, write.lead);
-    const leadId = leadResult.leadId ?? write.lead.id;
+  await sql.transaction(
+    async (tx: NeonQueryFunctionInTransaction<boolean, boolean>) => {
+      const leadResult = await persistLead(tx, write.lead);
+      const leadId = leadResult.leadId ?? write.lead.id;
 
-    await persistSubmission(tx, leadId, write.submission);
-    await tx`
+      await persistSubmission(tx, leadId, write.submission);
+      await tx`
       INSERT INTO lead_email_contacts (
         id,
         lead_submission_id,
@@ -37,7 +42,8 @@ export async function persistQuickContactLead(
         ${write.emailContact.updatedAt}
       )
     `;
-  });
+    },
+  );
 
   return {
     persisted: true,

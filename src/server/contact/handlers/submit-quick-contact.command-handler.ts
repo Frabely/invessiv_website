@@ -1,7 +1,7 @@
 import "server-only";
 import { quickContactSchema } from "@/features/contact/contact.schema";
-import type { QuickContactSubmitRequest } from "@/features/contact/contact.contract";
-import type { ContactCommandHandlerResult } from "@/server/common/contracts/contact/contact-command-handler-result";
+import type { QuickContactSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
 import { validateCommandPayload } from "@/server/contact/validators/validate-command-payload";
 import { getServerEnv } from "@/server/config/env";
 import { persistQuickContactLead } from "@/server/db/contact/persist-quick-contact";
@@ -18,10 +18,7 @@ export async function submitQuickContactCommandHandler(
     payload,
     async (validatedPayload) => {
       const env = getServerEnv();
-      const leadWrite = mapQuickContactApiToDb(
-        validatedPayload,
-        { requestId },
-      );
+      const leadWrite = mapQuickContactApiToDb(validatedPayload, { requestId });
       await persistQuickContactLead(leadWrite);
       const message = await mapQuickContactToMail(
         validatedPayload,

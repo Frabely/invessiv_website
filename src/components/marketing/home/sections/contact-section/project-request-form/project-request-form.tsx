@@ -19,11 +19,9 @@ import {
   submitProjectRequest,
 } from "@/features/contact/client/contact-form-service";
 import { mapProjectRequestFormToDto } from "@/features/contact/client/map-project-request-form-to-dto";
-import {
-  DEFAULT_PROJECT_REQUEST_FORM_VALUES,
-  type ProjectRequestFormValues,
-} from "@/features/contact/client/project-request-form.schema";
-import type { ContactSubmitResponse } from "@/features/contact/contact.contract";
+import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/project-request-form-values";
+import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
+import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 import styles from "./project-request-form.module.css";
 

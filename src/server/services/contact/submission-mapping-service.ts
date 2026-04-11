@@ -1,8 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { Locale } from "@/config/i18n";
-import type { ContactSubmissionChannel } from "@/features/contact/contact-request-kind";
-import type { PreparedLeadSubmissionRecord } from "@/server/common/contracts/contact/prepared-lead-submission-record";
+import type { ContactSubmissionChannel } from "@/common/contracts/contact/keys/contact-request-kind";
+import type { PreparedLeadSubmissionRecord } from "@/common/contracts/contact/records/prepared-lead-submission-record";
 
 export type SubmissionApiToDbMapperInput = {
   locale: Locale;

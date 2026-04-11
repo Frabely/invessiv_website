@@ -1,8 +1,8 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
+import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
 import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
-import type { ProjectRequestPersistInput } from "@/server/common/contracts/contact/project-request/project-request-persist-input";
+import type { ProjectRequestPersistInput } from "@/common/contracts/contact/project-request/project-request-persist-input";
 import {
   mapLeadApiToDb,
   type ApiToDbMapperOptions,
@@ -10,14 +10,12 @@ import {
 import { mapSubmissionApiToDb } from "@/server/services/contact/submission-mapping-service";
 
 export function mapProjectRequestApiToDb(
-  payload: ProjectRequestSubmitInput,
+  payload: ProjectRequestSubmitRequest,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): ProjectRequestPersistInput {
-  const lead = mapLeadApiToDb(
-    payload,
-    createdAt,
-    { defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus },
-  );
+  const lead = mapLeadApiToDb(payload, createdAt, {
+    defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
+  });
   const submission = mapSubmissionApiToDb(
     {
       locale: payload.locale,

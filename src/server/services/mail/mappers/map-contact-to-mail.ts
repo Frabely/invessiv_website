@@ -1,9 +1,9 @@
-import type { ProjectRequestSubmitInput } from "@/features/contact/contact.schema";
+import type { ProjectRequestSubmitRequest } from "@/common/contracts/contact/submit/contact-submit";
 import type { MailMessage } from "@/server/services/mail/mail-provider";
 import { createContactNotificationMessage } from "@/server/services/mail/templates/contact-notification";
 
 export async function mapContactToMail(
-  payload: ProjectRequestSubmitInput,
+  payload: ProjectRequestSubmitRequest,
   to: string,
 ): Promise<MailMessage> {
   const message = await createContactNotificationMessage(payload);

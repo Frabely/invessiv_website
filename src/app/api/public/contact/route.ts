@@ -4,8 +4,8 @@ import type {
   DiscoveryCallSubmitRequest,
   ProjectRequestSubmitRequest,
   QuickContactSubmitRequest,
-} from "@/features/contact/contact.contract";
-import { CONTACT_REQUEST_KINDS } from "@/features/contact/contact-request-kind";
+} from "@/common/contracts/contact/submit/contact-submit";
+import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,

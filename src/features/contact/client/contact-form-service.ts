@@ -1,22 +1,14 @@
 import type {
   ContactSubmitErrorCode,
   ContactSubmitResponse,
-} from "@/features/contact/contact.contract";
-import type { BaseContactFieldsValues } from "@/features/contact/client/base-contact-fields";
-import type { DiscoveryCallDto } from "@/features/contact/client/discovery-call.dto";
-import type { ProjectRequestDto } from "@/features/contact/client/project-request.dto";
-import type { QuickContactDto } from "@/features/contact/client/quick-contact.dto";
-
-export const DEFAULT_CONTACT_SUBMIT_PATH = "/api/public/contact";
-
-type SubmitProjectRequestOptions = {
-  submitPath?: string;
-};
-
-type CalendlyPrefillOptions = {
-  calendlyUrl: string;
-  concernAnswerSlot?: number;
-};
+} from "@/common/contracts/contact/submit/contact-submit";
+import type { BaseContactFieldsValues } from "@/common/contracts/contact/fields/base-contact-fields-values";
+import type { DiscoveryCallDto } from "@/common/contracts/contact/dtos/discovery-call-dto";
+import type { ProjectRequestDto } from "@/common/contracts/contact/dtos/project-request-dto";
+import type { QuickContactDto } from "@/common/contracts/contact/dtos/quick-contact-dto";
+import type { CalendlyPrefillOptions } from "@/common/contracts/contact/options/calendly-prefill-options";
+import type { ContactSubmitOptions } from "@/common/contracts/contact/options/contact-submit-options";
+import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
 
 function createClientErrorResponse(
   code: ContactSubmitErrorCode = "internal_error",
@@ -43,16 +35,14 @@ function isContactSubmitResponse(
 
 export async function submitProjectRequest(
   dto: ProjectRequestDto,
-  options?: SubmitProjectRequestOptions,
+  options?: ContactSubmitOptions,
 ): Promise<ContactSubmitResponse> {
   return submitContact(dto, options);
 }
 
 async function submitContact(
   dto: ProjectRequestDto | QuickContactDto | DiscoveryCallDto,
-  {
-    submitPath = DEFAULT_CONTACT_SUBMIT_PATH,
-  }: SubmitProjectRequestOptions = {},
+  { submitPath = DEFAULT_CONTACT_SUBMIT_PATH }: ContactSubmitOptions = {},
 ): Promise<ContactSubmitResponse> {
   try {
     const response = await fetch(submitPath, {
@@ -80,14 +70,14 @@ async function submitContact(
 
 export function submitQuickContact(
   dto: QuickContactDto,
-  options?: SubmitProjectRequestOptions,
+  options?: ContactSubmitOptions,
 ) {
   return submitContact(dto, options);
 }
 
 export function submitDiscoveryCall(
   dto: DiscoveryCallDto,
-  options?: SubmitProjectRequestOptions,
+  options?: ContactSubmitOptions,
 ) {
   return submitContact(dto, options);
 }
