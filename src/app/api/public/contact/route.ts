@@ -1,9 +1,6 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
-import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
-import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
-import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,
@@ -51,23 +48,14 @@ async function dispatchContactSubmit(payload: unknown, requestId: string) {
   }
 
   if (parsedKind.data.kind === "project_request") {
-    return submitProjectRequestCommandHandler(
-      payload as SaveProjectRequestDto,
-      requestId,
-    );
+    return submitProjectRequestCommandHandler(payload, requestId);
   }
 
   if (parsedKind.data.kind === "quick_contact") {
-    return submitQuickContactCommandHandler(
-      payload as SaveQuickContactDto,
-      requestId,
-    );
+    return submitQuickContactCommandHandler(payload, requestId);
   }
 
-  return submitDiscoveryCallCommandHandler(
-    payload as SaveDiscoveryCallDto,
-    requestId,
-  );
+  return submitDiscoveryCallCommandHandler(payload, requestId);
 }
 
 export async function POST(request: NextRequest) {

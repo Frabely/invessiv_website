@@ -1,6 +1,5 @@
 import "server-only";
 import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
-import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { getServerEnv } from "@/server/config/env";
 import { persistQuickContactLead } from "@/server/db/contact/persist-quick-contact";
 import { quickContactValidationService } from "@/server/contact/validation/quick-contact/quick-contact-validation-service";
@@ -9,7 +8,7 @@ import { mapQuickContactToMail } from "@/server/services/mail/templates/quick-co
 import { sendMail } from "@/server/services/mail/mail-service";
 
 export async function submitQuickContactCommandHandler(
-  payload: SaveQuickContactDto,
+  payload: unknown,
   requestId: string,
 ): Promise<ContactCommandHandlerResult> {
   const validationResult = quickContactValidationService.validate(payload);
