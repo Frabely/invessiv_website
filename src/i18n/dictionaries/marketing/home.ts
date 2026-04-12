@@ -1091,7 +1091,8 @@ const HOME_SECTIONS: LandingSection[] = [
             "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
           validationSummaryPrefix: "Bitte korrigiere dieses Feld",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorInvalidWebsite: "Bitte gib eine gültige Webseiten-URL ein.",
+          fieldErrorInvalidWebsite:
+            "Bitte gib eine gültige Webseiten-URL ein, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorProjectDetailsRequired:
             "Bitte gib eine kurze Projektbeschreibung ein.",
@@ -1326,7 +1327,8 @@ const HOME_SECTIONS: LandingSection[] = [
             "The request could not be sent right now. Please try again.",
           validationSummaryPrefix: "Please fix this field",
           fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorInvalidWebsite: "Please enter a valid website URL.",
+          fieldErrorInvalidWebsite:
+            "Please enter a valid website URL, for example https://www.website.com. www.website.com is invalid without the protocol.",
           fieldErrorRequired: "This field is required.",
           fieldErrorProjectDetailsRequired:
             "Please add a short project description.",

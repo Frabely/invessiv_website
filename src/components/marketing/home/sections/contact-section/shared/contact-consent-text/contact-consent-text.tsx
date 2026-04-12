@@ -1,6 +1,6 @@
 "use client";
 
-import { ContactRequiredMarker } from "@/components/marketing/home/sections/contact-section/components/shared/contact-required-marker/contact-required-marker";
+import { ContactRequiredMarker } from "@/components/marketing/home/sections/contact-section/shared/contact-required-marker/contact-required-marker";
 import styles from "./contact-consent-text.module.css";
 
 type ContactConsentTextProps = {

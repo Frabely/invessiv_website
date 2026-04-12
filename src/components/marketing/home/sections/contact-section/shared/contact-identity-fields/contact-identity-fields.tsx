@@ -1,5 +1,5 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-field/contact-form-field";
+import { ContactFormField } from "@/components/marketing/home/sections/contact-section/shared/contact-form-field/contact-form-field";
 import type { ContactIdentityFieldsCopy } from "@/common/contracts/contact/copy/contact-field-copy";
 import type { ContactIdentityFieldsValues } from "@/common/contracts/contact/fields/contact-identity-fields-values";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";

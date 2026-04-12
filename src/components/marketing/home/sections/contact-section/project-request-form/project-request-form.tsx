@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/components/shared/contact-consent-text/contact-consent-text";
-import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/components/shared/contact-field-label/contact-field-label";
-import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-actions/contact-form-actions";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-field/contact-form-field";
-import sharedStyles from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-primitives.module.css";
-import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-shell/contact-form-shell";
-import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/components/shared/contact-form-status/contact-form-status";
-import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/components/shared/contact-identity-fields/contact-identity-fields";
+import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
+import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/shared/contact-field-label/contact-field-label";
+import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/shared/contact-form-actions/contact-form-actions";
+import { ContactFormField } from "@/components/marketing/home/sections/contact-section/shared/contact-form-field/contact-form-field";
+import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
+import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
+import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/shared/contact-form-status/contact-form-status";
+import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/shared/contact-identity-fields/contact-identity-fields";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";

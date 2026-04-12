@@ -83,7 +83,8 @@ const formCopyFixture = {
   submitErrorValidation: "Bitte Eingaben prüfen",
   validationSummaryPrefix: "Bitte prüfen:",
   fieldErrorInvalidEmail: "Ungültige E-Mail",
-  fieldErrorInvalidWebsite: "Ungültige Webseite",
+  fieldErrorInvalidWebsite:
+    "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
   fieldErrorRequired: "Pflichtfeld",
   fieldErrorProjectDetailsRequired: "Projekt erforderlich",
   fieldErrorPagesRequired: "Seiten erforderlich",
@@ -269,7 +270,11 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Ungültige Webseite")).toBeTruthy();
+      expect(
+        screen.getByText(
+          "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
+        ),
+      ).toBeTruthy();
     });
   });
 

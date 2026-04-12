@@ -88,7 +88,8 @@ describe("ContactSection", () => {
           submitErrorValidation: "Validation error",
           validationSummaryPrefix: "Bitte prüfen:",
           fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorInvalidWebsite: "Ungültige Webseite",
+          fieldErrorInvalidWebsite:
+            "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
           fieldErrorRequired: "Pflichtfeld",
           fieldErrorProjectDetailsRequired: "Projekt erforderlich",
           fieldErrorPagesRequired: "Seiten erforderlich",
