@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
+import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
 import type { ProjectRequestPersistInput } from "@/server/db/records/contact/project-request-persist-input";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import {
@@ -14,7 +14,7 @@ export function mapProjectRequestApiToDb(
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): ProjectRequestPersistInput {
   const lead = mapLeadApiToDb(payload, createdAt, {
-    defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
+    defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS,
   });
   const submission = mapSubmissionApiToDb(
     {

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { CONTACT_LEAD_STORAGE } from "@/server/config/contact-lead-storage";
+import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
 
 const { randomUUIDMock } = vi.hoisted(() => ({
   randomUUIDMock: vi.fn(),
@@ -14,9 +14,8 @@ describe("mapLeadApiToDb", () => {
   it("trims name fields and assigns the default lead status", async () => {
     randomUUIDMock.mockReturnValueOnce("lead-id-1");
 
-    const { mapLeadApiToDb } = await import(
-      "@/server/services/contact/lead-mapping-service"
-    );
+    const { mapLeadApiToDb } =
+      await import("@/server/services/contact/lead-mapping-service");
 
     const createdAt = new Date("2026-03-26T09:30:00.000Z");
     const result = mapLeadApiToDb(
@@ -26,7 +25,7 @@ describe("mapLeadApiToDb", () => {
         lastName: " Mustermann ",
       },
       createdAt,
-      { defaultLeadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus },
+      { defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS },
     );
 
     expect(result).toEqual({
@@ -35,7 +34,7 @@ describe("mapLeadApiToDb", () => {
       firstName: "Max",
       id: "lead-id-1",
       lastName: "Mustermann",
-      leadStatus: CONTACT_LEAD_STORAGE.defaultLeadStatus,
+      leadStatus: DEFAULT_CONTACT_LEAD_STATUS,
       updatedAt: createdAt,
     });
   });

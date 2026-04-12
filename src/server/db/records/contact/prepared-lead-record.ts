@@ -1,4 +1,4 @@
-import type { ContactLeadStatus } from "@/server/config/contact-lead-storage";
+import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type PreparedLeadRecord = TimestampedRecord & {

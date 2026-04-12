@@ -5,10 +5,6 @@ import type {
   ContactSubmitSuccessResponse,
 } from "@/common/contracts/contact/submit/contact-submit";
 
-export function createRequestId() {
-  return crypto.randomUUID();
-}
-
 export function createContactSuccessResponse(requestId: string, status = 200) {
   const body: ContactSubmitSuccessResponse = {
     ok: true,

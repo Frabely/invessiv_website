@@ -8,8 +8,7 @@ import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/sub
 import {
   createContactErrorResponse,
   createContactSuccessResponse,
-  createRequestId,
-} from "@/server/http/api-response";
+} from "@/server/services/contact/response-builder-service";
 import { submitProjectRequestCommandHandler } from "@/server/contact/handlers/submit-project-request.command-handler";
 import { submitQuickContactCommandHandler } from "@/server/contact/handlers/submit-quick-contact.command-handler";
 import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit-service";
@@ -72,7 +71,7 @@ async function dispatchContactSubmit(payload: unknown, requestId: string) {
 }
 
 export async function POST(request: NextRequest) {
-  const requestId = createRequestId();
+  const requestId = crypto.randomUUID();
   const contentType = request.headers.get("content-type");
 
   if (!contentType?.includes("application/json")) {
