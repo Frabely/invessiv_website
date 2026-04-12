@@ -16,12 +16,11 @@ describe("mapDiscoveryCallApiToDb", () => {
       .mockReturnValueOnce("submission-id-1")
       .mockReturnValueOnce("call-contact-id-1");
 
-    const { mapDiscoveryCallApiToDb } = await import(
-      "@/server/services/contact/discovery-call/discovery-call-mapping-service"
-    );
+    const { mapDiscoveryCallDtoToDbPersistInput } =
+      await import("@/server/services/contact/discovery-call/discovery-call-mapping-service");
 
     const createdAt = new Date("2026-03-26T09:30:00.000Z");
-    const result = mapDiscoveryCallApiToDb(
+    const result = mapDiscoveryCallDtoToDbPersistInput(
       {
         consentAccepted: true,
         email: "max@example.com",

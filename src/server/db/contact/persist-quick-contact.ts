@@ -1,59 +1,52 @@
 import "server-only";
-import type { NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
 import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
 import type { QuickContactPersistInput } from "@/server/db/records/contact/quick-contact-persist-input";
-import { persistLead } from "@/server/db/contact/lead-persistence";
-import {
-  persistSubmission,
-  type PersistSubmissionResult,
-} from "@/server/db/contact/submission-persistence";
-
-type TransactionExecutor = (
-  callback: (
-    tx: NeonQueryFunctionInTransaction<boolean, boolean>,
-  ) => Promise<void>,
-) => Promise<void>;
+import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
+import { buildSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 
 export async function persistQuickContactLead(
-  write: QuickContactPersistInput,
+  quickContactPersistInput: QuickContactPersistInput,
 ): Promise<PersistSubmissionResult> {
   if (!hasDatabaseConnectionString()) {
     return { persisted: false };
   }
 
   const sql = getDatabaseClient();
-  const runTransaction = sql.transaction as unknown as TransactionExecutor;
+  const sharedLeadSubmission = buildSharedLeadSubmission({
+    lead: quickContactPersistInput.lead,
+    submission: quickContactPersistInput.submission,
+  });
+  const params = [...sharedLeadSubmission.params];
+  const addParam = (value: unknown) => {
+    params.push(value);
+    return `$${params.length}`;
+  };
 
-  await runTransaction(
-    async (tx: NeonQueryFunctionInTransaction<boolean, boolean>) => {
-      const leadResult = await persistLead(tx, write.lead);
-      const leadId = leadResult.leadId ?? write.lead.id;
+  const query = `
+    WITH ${sharedLeadSubmission.sql}
+    INSERT INTO lead_email_contacts (
+      id,
+      lead_submission_id,
+      message,
+      created_at,
+      updated_at
+    )
+    SELECT
+      ${addParam(quickContactPersistInput.emailContact.id)},
+      ${sharedLeadSubmission.submissionSource}.id,
+      ${addParam(quickContactPersistInput.emailContact.message)},
+      ${addParam(quickContactPersistInput.emailContact.createdAt)},
+      ${addParam(quickContactPersistInput.emailContact.updatedAt)}
+    FROM ${sharedLeadSubmission.submissionSource}
+  `;
 
-      await persistSubmission(tx, leadId, write.submission);
-      await tx`
-      INSERT INTO lead_email_contacts (
-        id,
-        lead_submission_id,
-        message,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${write.emailContact.id},
-        ${write.emailContact.leadSubmissionId},
-        ${write.emailContact.message},
-        ${write.emailContact.createdAt},
-        ${write.emailContact.updatedAt}
-      )
-    `;
-    },
-  );
+  await sql.query(query, params);
 
   return {
     persisted: true,
-    submissionId: write.submission.id,
+    submissionId: quickContactPersistInput.submission.id,
   };
 }

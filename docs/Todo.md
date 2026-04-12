@@ -37,6 +37,7 @@
 ## Contact Form Follow-Up
 
 - Die Form-Bezeichnungen im Code sind an mindestens einer Stelle vertauscht: Form 2 soll fachlich die E-Mail-Form sein, Form 3 der Call-Pfad. Das spaeter gezielt konsistent bereinigen, aber nicht im laufenden Schritt mit umbauen.
+- Pruefen, ob `CONTACT_REQUEST_KINDS` statt als `as const`-Array kuenftig besser als `const`-Objekt mit abgeleiteter Liste modelliert werden sollte, um lesbarere Zugriffe wie `ContactRequestKind.ProjectRequest` zu ermoeglichen, ohne ein echtes TypeScript-`enum` einzufuehren.
 - `src/server/services/contact/*` als verbleibende technische Hilfen schrittweise in eine saubere Contact-Domaenenstruktur ueberfuehren.
 - `src/features/contact/*` den Altbestand vollstaendig in `client/` und `shared/` schneiden.
 - Die Contact-Testlandschaft schichtbezogen statt komponentenuebergreifend neu ordnen.

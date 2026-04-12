@@ -16,12 +16,11 @@ describe("mapProjectRequestApiToDb", () => {
       .mockReturnValueOnce("submission-id-1")
       .mockReturnValueOnce("project-request-id-1");
 
-    const { mapProjectRequestApiToDb } = await import(
-      "@/server/services/contact/project-request/project-request-mapping-service"
-    );
+    const { mapProjectRequestDtoToDbPersistInput } =
+      await import("@/server/services/contact/project-request/project-request-mapping-service");
 
     const createdAt = new Date("2026-03-26T09:30:00.000Z");
-    const result = mapProjectRequestApiToDb(
+    const result = mapProjectRequestDtoToDbPersistInput(
       {
         budgetKey: "between_2500_5000",
         company: "Invessiv GmbH",

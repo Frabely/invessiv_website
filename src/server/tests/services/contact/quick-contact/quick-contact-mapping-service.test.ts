@@ -16,12 +16,11 @@ describe("mapQuickContactApiToDb", () => {
       .mockReturnValueOnce("submission-id-1")
       .mockReturnValueOnce("email-contact-id-1");
 
-    const { mapQuickContactApiToDb } = await import(
-      "@/server/services/contact/quick-contact/quick-contact-mapping-service"
-    );
+    const { mapQuickContactDtoToDbPersistInput } =
+      await import("@/server/services/contact/quick-contact/quick-contact-mapping-service");
 
     const createdAt = new Date("2026-03-26T09:30:00.000Z");
-    const result = mapQuickContactApiToDb(
+    const result = mapQuickContactDtoToDbPersistInput(
       {
         consentAccepted: true,
         email: "max@example.com",

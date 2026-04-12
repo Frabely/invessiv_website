@@ -9,7 +9,7 @@ import {
 } from "@/server/services/contact/lead-mapping-service";
 import { mapSubmissionApiToDb } from "@/server/services/contact/submission-mapping-service";
 
-export function mapQuickContactApiToDb(
+export function mapQuickContactDtoToDbPersistInput(
   payload: SaveQuickContactDto,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): QuickContactPersistInput {

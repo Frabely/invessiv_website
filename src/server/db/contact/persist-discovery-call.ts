@@ -1,59 +1,52 @@
 import "server-only";
-import type { NeonQueryFunctionInTransaction } from "@neondatabase/serverless";
 import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
 import type { DiscoveryCallPersistInput } from "@/server/db/records/contact/discovery-call-persist-input";
-import { persistLead } from "@/server/db/contact/lead-persistence";
-import {
-  persistSubmission,
-  type PersistSubmissionResult,
-} from "@/server/db/contact/submission-persistence";
-
-type TransactionExecutor = (
-  callback: (
-    tx: NeonQueryFunctionInTransaction<boolean, boolean>,
-  ) => Promise<void>,
-) => Promise<void>;
+import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
+import { buildSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 
 export async function persistDiscoveryCallLead(
-  write: DiscoveryCallPersistInput,
+  discoveryCallPersistInput: DiscoveryCallPersistInput,
 ): Promise<PersistSubmissionResult> {
   if (!hasDatabaseConnectionString()) {
     return { persisted: false };
   }
 
   const sql = getDatabaseClient();
-  const runTransaction = sql.transaction as unknown as TransactionExecutor;
+  const sharedLeadSubmission = buildSharedLeadSubmission({
+    lead: discoveryCallPersistInput.lead,
+    submission: discoveryCallPersistInput.submission,
+  });
+  const params = [...sharedLeadSubmission.params];
+  const addParam = (value: unknown) => {
+    params.push(value);
+    return `$${params.length}`;
+  };
 
-  await runTransaction(
-    async (tx: NeonQueryFunctionInTransaction<boolean, boolean>) => {
-      const leadResult = await persistLead(tx, write.lead);
-      const leadId = leadResult.leadId ?? write.lead.id;
+  const query = `
+    WITH ${sharedLeadSubmission.sql}
+    INSERT INTO lead_call_contacts (
+      id,
+      lead_submission_id,
+      message,
+      created_at,
+      updated_at
+    )
+    SELECT
+      ${addParam(discoveryCallPersistInput.callContact.id)},
+      ${sharedLeadSubmission.submissionSource}.id,
+      ${addParam(discoveryCallPersistInput.callContact.message ?? null)},
+      ${addParam(discoveryCallPersistInput.callContact.createdAt)},
+      ${addParam(discoveryCallPersistInput.callContact.updatedAt)}
+    FROM ${sharedLeadSubmission.submissionSource}
+  `;
 
-      await persistSubmission(tx, leadId, write.submission);
-      await tx`
-      INSERT INTO lead_call_contacts (
-        id,
-        lead_submission_id,
-        message,
-        created_at,
-        updated_at
-      )
-      VALUES (
-        ${write.callContact.id},
-        ${write.callContact.leadSubmissionId},
-        ${write.callContact.message ?? null},
-        ${write.callContact.createdAt},
-        ${write.callContact.updatedAt}
-      )
-    `;
-    },
-  );
+  await sql.query(query, params);
 
   return {
     persisted: true,
-    submissionId: write.submission.id,
+    submissionId: discoveryCallPersistInput.submission.id,
   };
 }
