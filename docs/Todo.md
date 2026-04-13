@@ -50,3 +50,7 @@
 ## CRM DB felder für Stueer
 
 - vier Felder einbauen: Land, B2B/B2C, Firma ja/nein, USt-IdNr.
+
+## Hero visual Verbesserung
+
+- im hero visual die maus als "Lampe" anzeigen und beim visual shatten einfügen abhängig von der maus position
