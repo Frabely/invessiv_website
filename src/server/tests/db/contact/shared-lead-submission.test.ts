@@ -5,52 +5,29 @@ import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-subm
 vi.mock("server-only", () => ({}));
 
 function createTxMock(existingLeadId?: string) {
-  const limitMock = vi
-    .fn()
-    .mockResolvedValue(existingLeadId ? [{ id: existingLeadId }] : []);
-  const whereSelectMock = vi.fn().mockReturnValue({
-    limit: limitMock,
+  const executeMock = vi.fn().mockResolvedValue({
+    rows: [{ id: existingLeadId ?? "lead-api-id" }],
   });
-  const fromMock = vi.fn().mockReturnValue({
-    where: whereSelectMock,
-  });
-  const selectMock = vi.fn().mockReturnValue({
-    from: fromMock,
-  });
-
   const insertValuesMock = vi.fn().mockResolvedValue(undefined);
   const insertMock = vi.fn().mockReturnValue({
     values: insertValuesMock,
   });
 
-  const updateWhereMock = vi.fn().mockResolvedValue(undefined);
-  const updateSetMock = vi.fn().mockReturnValue({
-    where: updateWhereMock,
-  });
-  const updateMock = vi.fn().mockReturnValue({
-    set: updateSetMock,
-  });
-
   return {
     tx: {
+      execute: executeMock,
       insert: insertMock,
-      select: selectMock,
-      update: updateMock,
     },
     mocks: {
+      executeMock,
       insertMock,
       insertValuesMock,
-      limitMock,
-      selectMock,
-      updateMock,
-      updateSetMock,
-      updateWhereMock,
     },
   };
 }
 
 describe("persistSharedLeadSubmission", () => {
-  it("inserts lead and submission when no lead exists for the normalized email", async () => {
+  it("runs one atomic lead upsert and reuses its returned id for the submission", async () => {
     const { persistSharedLeadSubmission } =
       await import("@/server/db/contact/shared/shared-lead-submission");
 
@@ -88,19 +65,9 @@ describe("persistSharedLeadSubmission", () => {
       leadId: "lead-api-id",
       submissionId: "submission-api-id",
     });
-    expect(mocks.selectMock).toHaveBeenCalledTimes(1);
-    expect(mocks.updateMock).not.toHaveBeenCalled();
-    expect(mocks.insertMock).toHaveBeenCalledTimes(2);
-    expect(mocks.insertValuesMock).toHaveBeenNthCalledWith(1, {
-      created_at: new Date("2026-03-26T09:30:00.000Z"),
-      email: "max@example.com",
-      first_name: "Max",
-      id: "lead-api-id",
-      last_name: "Mustermann",
-      lead_status: "new",
-      updated_at: new Date("2026-03-26T09:30:00.000Z"),
-    });
-    expect(mocks.insertValuesMock).toHaveBeenNthCalledWith(2, {
+    expect(mocks.executeMock).toHaveBeenCalledTimes(1);
+    expect(mocks.insertMock).toHaveBeenCalledTimes(1);
+    expect(mocks.insertValuesMock).toHaveBeenCalledWith({
       channel: "project_request",
       consent_accepted_at: new Date("2026-03-26T09:30:00.000Z"),
       created_at: new Date("2026-03-26T09:30:00.000Z"),
@@ -113,7 +80,7 @@ describe("persistSharedLeadSubmission", () => {
     });
   });
 
-  it("updates the existing lead and reuses its id for the submission", async () => {
+  it("uses the id returned from the atomic upsert for an existing normalized email", async () => {
     const { persistSharedLeadSubmission } =
       await import("@/server/db/contact/shared/shared-lead-submission");
 
@@ -147,13 +114,7 @@ describe("persistSharedLeadSubmission", () => {
       leadId: "existing-lead-id",
       submissionId: "submission-api-id",
     });
-    expect(mocks.updateMock).toHaveBeenCalledTimes(1);
-    expect(mocks.updateSetMock).toHaveBeenCalledWith({
-      email: "max@example.com",
-      first_name: "Max",
-      last_name: "Mustermann",
-      updated_at: new Date("2026-03-26T09:35:00.000Z"),
-    });
+    expect(mocks.executeMock).toHaveBeenCalledTimes(1);
     expect(mocks.insertMock).toHaveBeenCalledTimes(1);
     expect(mocks.insertValuesMock).toHaveBeenCalledWith({
       channel: "quick_contact",
