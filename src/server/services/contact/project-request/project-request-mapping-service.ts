@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import type { ProjectRequestPersistInput } from "@/server/db/records/contact/project-request-persist-input";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import {
@@ -22,7 +23,7 @@ export function mapProjectRequestDtoToDbPersistInput(
       startedAt: new Date(payload.startedAt),
     },
     requestId,
-    "project_request",
+    CONTACT_REQUEST_KIND.ProjectRequest,
     createdAt,
   );
 

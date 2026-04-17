@@ -1,6 +1,9 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
-import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
+import {
+  CONTACT_REQUEST_KIND,
+  CONTACT_REQUEST_KINDS,
+} from "@/common/constants/contact/contact-request-kind";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,
@@ -47,11 +50,11 @@ async function dispatchContactSubmit(payload: unknown, requestId: string) {
     };
   }
 
-  if (parsedKind.data.kind === "project_request") {
+  if (parsedKind.data.kind === CONTACT_REQUEST_KIND.ProjectRequest) {
     return submitProjectRequestCommandHandler(payload, requestId);
   }
 
-  if (parsedKind.data.kind === "quick_contact") {
+  if (parsedKind.data.kind === CONTACT_REQUEST_KIND.QuickContact) {
     return submitQuickContactCommandHandler(payload, requestId);
   }
 

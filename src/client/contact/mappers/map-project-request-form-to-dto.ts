@@ -8,6 +8,7 @@ import type {
   ContactStartKey,
   ContactWorkflowKey,
 } from "@/common/contracts/contact/keys/contact-option-keys";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 
 function toOptionalTrimmedString(value: string) {
   const trimmedValue = value.trim();
@@ -31,7 +32,7 @@ export function mapProjectRequestFormToDto(
     email: values.email.trim(),
     firstName: values.firstName.trim(),
     goalKey: (values.goalKey || undefined) as ContactGoalKey | undefined,
-    kind: "project_request",
+    kind: CONTACT_REQUEST_KIND.ProjectRequest,
     lastName: values.lastName.trim(),
     locale,
     offerKey: values.offerKey as SaveProjectRequestDto["offerKey"],

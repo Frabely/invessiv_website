@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import type { QuickContactPersistInput } from "@/server/db/records/contact/quick-contact-persist-input";
 import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import {
@@ -19,7 +20,7 @@ export function mapQuickContactDtoToDbPersistInput(
   const submission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,
-    "quick_contact",
+    CONTACT_REQUEST_KIND.QuickContact,
     createdAt,
   );
 

@@ -8,11 +8,11 @@ import {
   COMPANY_SOCIAL_LINKEDIN,
   COMPANY_TEL,
 } from "@/config/company";
-import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
-import { CONTACT_PAGE_KEYS } from "@/common/constants/contact/contact-page-keys";
-import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
+import { CONTACT_BUDGET_KEY } from "@/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEY } from "@/common/constants/contact/contact-goal-keys";
+import { CONTACT_PAGE_KEY } from "@/common/constants/contact/contact-page-keys";
+import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
 
 type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
 
@@ -1000,22 +1000,31 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Bitte Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
-            { key: CONTACT_GOAL_KEYS[0], label: "Anfragen gewinnen" },
-            { key: CONTACT_GOAL_KEYS[1], label: "Termine buchen lassen" },
-            { key: CONTACT_GOAL_KEYS[2], label: "Produkt verkaufen" },
-            { key: CONTACT_GOAL_KEYS[3], label: "Kontakte aufbauen" },
-            { key: CONTACT_GOAL_KEYS[4], label: "Anderes Ziel" },
+            {
+              key: CONTACT_GOAL_KEY.GenerateInquiries,
+              label: "Anfragen gewinnen",
+            },
+            {
+              key: CONTACT_GOAL_KEY.IncreaseBookings,
+              label: "Termine buchen lassen",
+            },
+            { key: CONTACT_GOAL_KEY.SellProduct, label: "Produkt verkaufen" },
+            {
+              key: CONTACT_GOAL_KEY.GrowNewsletter,
+              label: "Kontakte aufbauen",
+            },
+            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Anderes Ziel" },
           ],
           pagesLabel: "Benötigte Seiten",
           pagesPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesOptions: [
-            { key: CONTACT_PAGE_KEYS[0], label: "Start" },
-            { key: CONTACT_PAGE_KEYS[1], label: "Leistungen" },
-            { key: CONTACT_PAGE_KEYS[2], label: "Über uns" },
-            { key: CONTACT_PAGE_KEYS[3], label: "Kontakt" },
-            { key: CONTACT_PAGE_KEYS[4], label: "Karriere" },
-            { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
-            { key: CONTACT_PAGE_KEYS[6], label: "Landingpage" },
+            { key: CONTACT_PAGE_KEY.Home, label: "Start" },
+            { key: CONTACT_PAGE_KEY.Services, label: "Leistungen" },
+            { key: CONTACT_PAGE_KEY.About, label: "Über uns" },
+            { key: CONTACT_PAGE_KEY.Contact, label: "Kontakt" },
+            { key: CONTACT_PAGE_KEY.Careers, label: "Karriere" },
+            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
+            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landingpage" },
           ],
           pagesCustomLabel: "Weitere Seite hinzufügen",
           pagesCustomPlaceholder: "z. B. Sponsoren",
@@ -1025,26 +1034,29 @@ const HOME_SECTIONS: LandingSection[] = [
           workflowLabel: "Art des Vorhabens",
           workflowOptions: [
             {
-              key: CONTACT_WORKFLOW_KEYS[0],
+              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
               label: "Bestehenden Ablauf digitalisieren",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[1],
+              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
               label: "Manuellen Prozess vereinfachen",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[2],
+              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
               label: "Daten oder Systeme verbinden",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[3],
+              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
               label: "Internes Tool für ein Team bauen",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[4],
+              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
               label: "Bestehendes Tool oder System verbessern",
             },
-            { key: CONTACT_WORKFLOW_KEYS[5], label: "Anderes Vorhaben" },
+            {
+              key: CONTACT_WORKFLOW_KEY.OtherProcess,
+              label: "Anderes Vorhaben",
+            },
           ],
           stepNavigationLabel: "Anfragefortschritt",
           stepLabel: "Schritt",
@@ -1057,19 +1069,37 @@ const HOME_SECTIONS: LandingSection[] = [
           nextStepProjectLabel: "Weiter zu Rahmen & Versand",
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
-            { key: CONTACT_BUDGET_KEYS[0], label: "Unter 1.000 €" },
-            { key: CONTACT_BUDGET_KEYS[1], label: "1.000 € - 2.500 €" },
-            { key: CONTACT_BUDGET_KEYS[2], label: "2.500 € - 5.000 €" },
-            { key: CONTACT_BUDGET_KEYS[3], label: "5.000 € - 10.000 €" },
-            { key: CONTACT_BUDGET_KEYS[4], label: "10.000 €+" },
-            { key: CONTACT_BUDGET_KEYS[5], label: "Noch offen" },
+            { key: CONTACT_BUDGET_KEY.Below1000, label: "Unter 1.000 €" },
+            {
+              key: CONTACT_BUDGET_KEY.Between1000And2500,
+              label: "1.000 € - 2.500 €",
+            },
+            {
+              key: CONTACT_BUDGET_KEY.Between2500And5000,
+              label: "2.500 € - 5.000 €",
+            },
+            {
+              key: CONTACT_BUDGET_KEY.Between5000And10000,
+              label: "5.000 € - 10.000 €",
+            },
+            { key: CONTACT_BUDGET_KEY.Above10000, label: "10.000 €+" },
+            { key: CONTACT_BUDGET_KEY.Open, label: "Noch offen" },
           ],
           startLabel: "Gewünschter Start",
           startOptions: [
-            { key: CONTACT_START_KEYS[0], label: "Sofort" },
-            { key: CONTACT_START_KEYS[1], label: "Innerhalb von 2 Wochen" },
-            { key: CONTACT_START_KEYS[2], label: "Innerhalb von 1 Monat" },
-            { key: CONTACT_START_KEYS[3], label: "Später / flexibel" },
+            { key: CONTACT_START_KEY.Immediately, label: "Sofort" },
+            {
+              key: CONTACT_START_KEY.WithinTwoWeeks,
+              label: "Innerhalb von 2 Wochen",
+            },
+            {
+              key: CONTACT_START_KEY.WithinOneMonth,
+              label: "Innerhalb von 1 Monat",
+            },
+            {
+              key: CONTACT_START_KEY.LaterFlexible,
+              label: "Später / flexibel",
+            },
           ],
           projectDetailsLabel: "Projektziel und Anforderungen",
           projectDetailsPlaceholder:
@@ -1236,22 +1266,31 @@ const HOME_SECTIONS: LandingSection[] = [
           offerPlaceholder: "Select a service model",
           goalLabel: "Primary landing page goal",
           goalOptions: [
-            { key: CONTACT_GOAL_KEYS[0], label: "Generate inquiries" },
-            { key: CONTACT_GOAL_KEYS[1], label: "Book more calls" },
-            { key: CONTACT_GOAL_KEYS[2], label: "Sell a product" },
-            { key: CONTACT_GOAL_KEYS[3], label: "Build a contact list" },
-            { key: CONTACT_GOAL_KEYS[4], label: "Other goal" },
+            {
+              key: CONTACT_GOAL_KEY.GenerateInquiries,
+              label: "Generate inquiries",
+            },
+            {
+              key: CONTACT_GOAL_KEY.IncreaseBookings,
+              label: "Book more calls",
+            },
+            { key: CONTACT_GOAL_KEY.SellProduct, label: "Sell a product" },
+            {
+              key: CONTACT_GOAL_KEY.GrowNewsletter,
+              label: "Build a contact list",
+            },
+            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Other goal" },
           ],
           pagesLabel: "Required pages",
           pagesPlaceholder: "e.g. Team, FAQ, Careers",
           pagesOptions: [
-            { key: CONTACT_PAGE_KEYS[0], label: "Home" },
-            { key: CONTACT_PAGE_KEYS[1], label: "Services" },
-            { key: CONTACT_PAGE_KEYS[2], label: "About" },
-            { key: CONTACT_PAGE_KEYS[3], label: "Contact" },
-            { key: CONTACT_PAGE_KEYS[4], label: "Careers" },
-            { key: CONTACT_PAGE_KEYS[5], label: "Blog" },
-            { key: CONTACT_PAGE_KEYS[6], label: "Landing page" },
+            { key: CONTACT_PAGE_KEY.Home, label: "Home" },
+            { key: CONTACT_PAGE_KEY.Services, label: "Services" },
+            { key: CONTACT_PAGE_KEY.About, label: "About" },
+            { key: CONTACT_PAGE_KEY.Contact, label: "Contact" },
+            { key: CONTACT_PAGE_KEY.Careers, label: "Careers" },
+            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
+            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landing page" },
           ],
           pagesCustomLabel: "Add another page",
           pagesCustomPlaceholder: "e.g. Sponsors",
@@ -1260,26 +1299,26 @@ const HOME_SECTIONS: LandingSection[] = [
           workflowLabel: "Type of request",
           workflowOptions: [
             {
-              key: CONTACT_WORKFLOW_KEYS[0],
+              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
               label: "Digitize an existing process",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[1],
+              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
               label: "Simplify a manual process",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[2],
+              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
               label: "Connect data or systems",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[3],
+              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
               label: "Build an internal tool for a team",
             },
             {
-              key: CONTACT_WORKFLOW_KEYS[4],
+              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
               label: "Improve an existing tool or system",
             },
-            { key: CONTACT_WORKFLOW_KEYS[5], label: "Other request" },
+            { key: CONTACT_WORKFLOW_KEY.OtherProcess, label: "Other request" },
           ],
           stepNavigationLabel: "Request progress",
           stepLabel: "Step",
@@ -1292,19 +1331,28 @@ const HOME_SECTIONS: LandingSection[] = [
           nextStepProjectLabel: "Continue to timing & send",
           budgetLabel: "Budget range",
           budgetOptions: [
-            { key: CONTACT_BUDGET_KEYS[0], label: "Below €1,000" },
-            { key: CONTACT_BUDGET_KEYS[1], label: "€1,000 - €2,500" },
-            { key: CONTACT_BUDGET_KEYS[2], label: "€2,500 - €5,000" },
-            { key: CONTACT_BUDGET_KEYS[3], label: "€5,000 - €10,000" },
-            { key: CONTACT_BUDGET_KEYS[4], label: "€10,000+" },
-            { key: CONTACT_BUDGET_KEYS[5], label: "Not defined yet" },
+            { key: CONTACT_BUDGET_KEY.Below1000, label: "Below €1,000" },
+            {
+              key: CONTACT_BUDGET_KEY.Between1000And2500,
+              label: "€1,000 - €2,500",
+            },
+            {
+              key: CONTACT_BUDGET_KEY.Between2500And5000,
+              label: "€2,500 - €5,000",
+            },
+            {
+              key: CONTACT_BUDGET_KEY.Between5000And10000,
+              label: "€5,000 - €10,000",
+            },
+            { key: CONTACT_BUDGET_KEY.Above10000, label: "€10,000+" },
+            { key: CONTACT_BUDGET_KEY.Open, label: "Not defined yet" },
           ],
           startLabel: "Preferred start",
           startOptions: [
-            { key: CONTACT_START_KEYS[0], label: "Immediately" },
-            { key: CONTACT_START_KEYS[1], label: "Within 2 weeks" },
-            { key: CONTACT_START_KEYS[2], label: "Within 1 month" },
-            { key: CONTACT_START_KEYS[3], label: "Later / flexible" },
+            { key: CONTACT_START_KEY.Immediately, label: "Immediately" },
+            { key: CONTACT_START_KEY.WithinTwoWeeks, label: "Within 2 weeks" },
+            { key: CONTACT_START_KEY.WithinOneMonth, label: "Within 1 month" },
+            { key: CONTACT_START_KEY.LaterFlexible, label: "Later / flexible" },
           ],
           projectDetailsLabel: "Notes, requirements, and project description",
           projectDetailsPlaceholder:

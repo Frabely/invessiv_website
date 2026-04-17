@@ -1,5 +1,5 @@
-import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
+import type { ContactRequestKind } from "@/common/constants/contact/contact-request-kind";
 
-export type ContactRequestKind = (typeof CONTACT_REQUEST_KINDS)[number];
+export type { ContactRequestKind };
 
 export type ContactSubmissionChannel = ContactRequestKind;

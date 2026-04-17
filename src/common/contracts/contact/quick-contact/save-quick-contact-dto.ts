@@ -1,11 +1,11 @@
 import type { Locale } from "@/config/i18n";
-import type { ContactRequestKind } from "@/common/contracts/contact/keys/contact-request-kind";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 
 export type SaveQuickContactDto = {
   consentAccepted: boolean;
   email: string;
   firstName: string;
-  kind: Extract<ContactRequestKind, "quick_contact">;
+  kind: typeof CONTACT_REQUEST_KIND.QuickContact;
   lastName: string;
   locale: Locale;
   message: string;

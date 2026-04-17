@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import type { DiscoveryCallPersistInput } from "@/server/db/records/contact/discovery-call-persist-input";
 import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import {
@@ -19,7 +20,7 @@ export function mapDiscoveryCallDtoToDbPersistInput(
   const submission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,
-    "discovery_call",
+    CONTACT_REQUEST_KIND.DiscoveryCall,
     createdAt,
   );
   const message = payload.message?.trim();

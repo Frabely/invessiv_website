@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import {
   emailStringSchema,
   localeSchema,
@@ -13,7 +13,7 @@ export const discoveryCallSchema = z
     consentAccepted: z.boolean().refine((value) => value, "consent_required"),
     email: emailStringSchema,
     firstName: nameStringSchema,
-    kind: z.literal(CONTACT_REQUEST_KINDS[2]),
+    kind: z.literal(CONTACT_REQUEST_KIND.DiscoveryCall),
     lastName: nameStringSchema,
     locale: localeSchema,
     message: optionalTrimmedString,

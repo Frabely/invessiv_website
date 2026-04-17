@@ -1,5 +1,5 @@
 import type { Locale } from "@/config/i18n";
-import type { ContactRequestKind } from "@/common/contracts/contact/keys/contact-request-kind";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import type {
   ContactBudgetKey,
   ContactGoalKey,
@@ -16,7 +16,7 @@ export type SaveProjectRequestDto = {
   email: string;
   firstName: string;
   goalKey?: ContactGoalKey;
-  kind: Extract<ContactRequestKind, "project_request">;
+  kind: typeof CONTACT_REQUEST_KIND.ProjectRequest;
   lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;

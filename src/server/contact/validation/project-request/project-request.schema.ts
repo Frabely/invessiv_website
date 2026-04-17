@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
 import { CONTACT_OFFER_KEYS } from "@/common/constants/contact/contact-offer-keys";
@@ -25,7 +25,7 @@ export const projectRequestSchema = z
     email: emailStringSchema,
     firstName: nameStringSchema,
     goalKey: z.enum(CONTACT_GOAL_KEYS).optional(),
-    kind: z.literal(CONTACT_REQUEST_KINDS[0]),
+    kind: z.literal(CONTACT_REQUEST_KIND.ProjectRequest),
     lastName: nameStringSchema,
     locale: localeSchema,
     offerKey: z.enum(CONTACT_OFFER_KEYS),
