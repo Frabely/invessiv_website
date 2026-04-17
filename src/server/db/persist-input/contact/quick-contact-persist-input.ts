@@ -1,9 +1,11 @@
-import type { LeadEmailContactRecord } from "@/server/db/records/contact/lead-email-contact-record";
-import type { LeadRecord } from "@/server/db/records/contact/lead-record";
-import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
+import type {
+  ContactLeadEmailPersistRecord,
+  ContactLeadPersistRecord,
+  ContactLeadSubmissionPersistRecord,
+} from "@/server/db/persist-input/contact/contact-persist-types";
 
 export type QuickContactPersistInput = {
-  lead: LeadRecord;
-  lead_email_contact: LeadEmailContactRecord;
-  lead_submission: LeadSubmissionRecord;
+  lead: ContactLeadPersistRecord;
+  lead_email_contact: ContactLeadEmailPersistRecord;
+  lead_submission: ContactLeadSubmissionPersistRecord;
 };

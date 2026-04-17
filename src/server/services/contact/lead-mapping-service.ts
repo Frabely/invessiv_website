@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
-import type { LeadRecord } from "@/server/db/records/contact/lead-record";
+import type { ContactLeadPersistRecord } from "@/server/db/persist-input/contact/contact-persist-types";
 
 export type ApiToDbMapperOptions = {
   createdAt?: Date;
@@ -22,7 +22,7 @@ export function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
   { defaultLeadStatus }: MapperDependencies,
-): LeadRecord {
+): ContactLeadPersistRecord {
   return {
     created_at: createdAt,
     email: payload.email.trim(),

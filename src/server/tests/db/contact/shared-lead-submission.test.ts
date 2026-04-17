@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import type { LeadRecord } from "@/server/db/records/contact/lead-record";
-import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
+import type {
+  ContactLeadPersistRecord,
+  ContactLeadSubmissionPersistRecord,
+} from "@/server/db/persist-input/contact/contact-persist-types";
 
 vi.mock("server-only", () => ({}));
 
@@ -31,7 +33,7 @@ describe("persistSharedLeadSubmission", () => {
     const { persistSharedLeadSubmission } =
       await import("@/server/db/contact/shared/shared-lead-submission");
 
-    const lead: LeadRecord = {
+    const lead: ContactLeadPersistRecord = {
       created_at: new Date("2026-03-26T09:30:00.000Z"),
       email: "max@example.com",
       first_name: "Max",
@@ -42,7 +44,7 @@ describe("persistSharedLeadSubmission", () => {
       updated_at: new Date("2026-03-26T09:30:00.000Z"),
     };
 
-    const submission: LeadSubmissionRecord = {
+    const submission: ContactLeadSubmissionPersistRecord = {
       channel: "project_request",
       consent_accepted_at: new Date("2026-03-26T09:30:00.000Z"),
       created_at: new Date("2026-03-26T09:30:00.000Z"),

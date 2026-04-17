@@ -1,9 +1,11 @@
 import "server-only";
 import { sql } from "drizzle-orm";
 import type { ContactDatabaseTransaction } from "@/server/db/client";
+import type {
+  ContactLeadPersistRecord,
+  ContactLeadSubmissionPersistRecord,
+} from "@/server/db/persist-input/contact/contact-persist-types";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
-import type { LeadRecord } from "@/server/db/records/contact/lead-record";
-import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
 
 export type PersistedSharedLeadSubmission = {
   leadId: string;
@@ -13,8 +15,8 @@ export type PersistedSharedLeadSubmission = {
 export async function persistSharedLeadSubmission(
   tx: ContactDatabaseTransaction,
   input: {
-    lead: LeadRecord;
-    submission: LeadSubmissionRecord;
+    lead: ContactLeadPersistRecord;
+    submission: ContactLeadSubmissionPersistRecord;
   },
 ): Promise<PersistedSharedLeadSubmission> {
   const leadUpsertResult = await tx.execute<{ id: string }>(sql`

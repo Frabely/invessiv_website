@@ -115,6 +115,10 @@ Done wenn:
 - Persistenz-Inputs nicht mehr unnoetig dieselbe Struktur wie das DB-Modell doppeln
 - Mapping- und Persistenzschicht klar getrennte Verantwortungen haben
 
+Status:
+
+- erledigt
+
 ## Testplan
 
 - `npm run typecheck`

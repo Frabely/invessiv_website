@@ -1,9 +1,11 @@
-import type { LeadProjectRequestRecord } from "@/server/db/records/contact/lead-project-request-record";
-import type { LeadRecord } from "@/server/db/records/contact/lead-record";
-import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
+import type {
+  ContactLeadPersistRecord,
+  ContactLeadProjectRequestPersistRecord,
+  ContactLeadSubmissionPersistRecord,
+} from "@/server/db/persist-input/contact/contact-persist-types";
 
 export type ProjectRequestPersistInput = {
-  lead: LeadRecord;
-  lead_project_request: LeadProjectRequestRecord;
-  lead_submission: LeadSubmissionRecord;
+  lead: ContactLeadPersistRecord;
+  lead_project_request: ContactLeadProjectRequestPersistRecord;
+  lead_submission: ContactLeadSubmissionPersistRecord;
 };
