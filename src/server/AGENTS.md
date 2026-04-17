@@ -39,6 +39,8 @@ Für Contact-bezogenen Code gilt die Trennung:
 - Pro Datei möglichst nur eine Verantwortung.
 - SQL- und Tabellenwissen nach `src/server/db`.
 - Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in `src/common/**` gehalten.
+- Persistenz-Inputs werden serverseitig unter `src/server/db/persist-input/**` abgelegt und nicht unter `records/**` gemischt.
+- `records/**` enthält nur DB-nahe Record-/Row-Shapes; zusammengesetzte Persistenz-Payloads liegen ausschließlich unter `persist-input/**`.
 - Reines Mapping nicht in `src/server/db`.
 - Orchestrierung nicht in `src/server/db`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.

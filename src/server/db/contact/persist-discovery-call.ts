@@ -3,7 +3,7 @@ import {
   getDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { DiscoveryCallPersistInput } from "@/server/db/records/contact/discovery-call-persist-input";
+import type { DiscoveryCallPersistInput } from "@/server/db/persist-input/contact/discovery-call-persist-input";
 import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
 import { buildSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 
