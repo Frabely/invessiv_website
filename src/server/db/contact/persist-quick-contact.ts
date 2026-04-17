@@ -17,7 +17,7 @@ export async function persistQuickContactLead(
   const sql = getDatabaseClient();
   const sharedLeadSubmission = buildSharedLeadSubmission({
     lead: quickContactPersistInput.lead,
-    submission: quickContactPersistInput.submission,
+    submission: quickContactPersistInput.lead_submission,
   });
   const params = [...sharedLeadSubmission.params];
   const addParam = (value: unknown) => {
@@ -35,11 +35,11 @@ export async function persistQuickContactLead(
       updated_at
     )
     SELECT
-      ${addParam(quickContactPersistInput.emailContact.id)},
+      ${addParam(quickContactPersistInput.lead_email_contact.id)},
       ${sharedLeadSubmission.submissionSource}.id,
-      ${addParam(quickContactPersistInput.emailContact.message)},
-      ${addParam(quickContactPersistInput.emailContact.createdAt)},
-      ${addParam(quickContactPersistInput.emailContact.updatedAt)}
+      ${addParam(quickContactPersistInput.lead_email_contact.message)},
+      ${addParam(quickContactPersistInput.lead_email_contact.created_at)},
+      ${addParam(quickContactPersistInput.lead_email_contact.updated_at)}
     FROM ${sharedLeadSubmission.submissionSource}
   `;
 
@@ -47,6 +47,6 @@ export async function persistQuickContactLead(
 
   return {
     persisted: true,
-    submissionId: quickContactPersistInput.submission.id,
+    submissionId: quickContactPersistInput.lead_submission.id,
   };
 }

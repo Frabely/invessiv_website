@@ -32,7 +32,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 - `map<Thing>ApiToDb` für API-zu-DB-Mapping verwenden.
 - `map<Thing>DbToApi` später für die Gegenrichtung verwenden.
 - `persist-*.ts` für Datenbank-Persistenzfunktionen verwenden.
-- `*-record.ts` und `*-persist-input.ts` für gemeinsame Contact-Contracts verwenden.
+- `*-record.ts` und `*-persist-input.ts` für gemeinsame serverseitige Persistenz-Contracts verwenden.
 
 ## Strukturregeln
 
@@ -41,6 +41,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 - Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in `src/common/**` gehalten.
 - Persistenz-Inputs werden serverseitig unter `src/server/db/persist-input/**` abgelegt und nicht unter `records/**` gemischt.
 - `records/**` enthält nur DB-nahe Record-/Row-Shapes; zusammengesetzte Persistenz-Payloads liegen ausschließlich unter `persist-input/**`.
+- Record-Typen unter `src/server/db/records/**` spiegeln die aktuelle DB-Struktur direkt: Tabellennahe Dateinamen, Spaltennamen in `snake_case` und keine app-nahen `camelCase`-Aliasfelder.
 - Reines Mapping nicht in `src/server/db`.
 - Orchestrierung nicht in `src/server/db`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.

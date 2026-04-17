@@ -1,6 +1,6 @@
 import "server-only";
-import type { PreparedLeadRecord } from "@/server/db/records/contact/prepared-lead-record";
-import type { PreparedLeadSubmissionRecord } from "@/server/db/records/contact/prepared-lead-submission-record";
+import type { LeadRecord } from "@/server/db/records/contact/lead-record";
+import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
 
 export type SharedLeadSubmission = {
   params: unknown[];
@@ -9,8 +9,8 @@ export type SharedLeadSubmission = {
 };
 
 export function buildSharedLeadSubmission(input: {
-  lead: PreparedLeadRecord;
-  submission: PreparedLeadSubmissionRecord;
+  lead: LeadRecord;
+  submission: LeadSubmissionRecord;
 }): SharedLeadSubmission {
   const params: unknown[] = [];
 
@@ -35,12 +35,12 @@ export function buildSharedLeadSubmission(input: {
       )
       VALUES (
         ${addParam(input.lead.id)},
-        ${addParam(input.lead.firstName)},
-        ${addParam(input.lead.lastName)},
+        ${addParam(input.lead.first_name)},
+        ${addParam(input.lead.last_name)},
         ${addParam(input.lead.email)},
-        ${addParam(input.lead.leadStatus)},
-        ${addParam(input.lead.createdAt)},
-        ${addParam(input.lead.updatedAt)}
+        ${addParam(input.lead.lead_status)},
+        ${addParam(input.lead.created_at)},
+        ${addParam(input.lead.updated_at)}
       )
       ON CONFLICT ((LOWER(BTRIM(email))))
       DO UPDATE SET
@@ -65,13 +65,13 @@ export function buildSharedLeadSubmission(input: {
       SELECT
         ${addParam(input.submission.id)},
         ${leadSource}.id,
-        ${addParam(input.submission.requestId)},
+        ${addParam(input.submission.request_id)},
         ${addParam(input.submission.channel)},
         ${addParam(input.submission.locale)},
-        ${addParam(input.submission.consentAcceptedAt)},
-        ${addParam(input.submission.submissionStartedAt ?? null)},
-        ${addParam(input.submission.createdAt)},
-        ${addParam(input.submission.updatedAt)}
+        ${addParam(input.submission.consent_accepted_at)},
+        ${addParam(input.submission.submission_started_at ?? null)},
+        ${addParam(input.submission.created_at)},
+        ${addParam(input.submission.updated_at)}
       FROM ${leadSource}
       RETURNING id
     )

@@ -46,10 +46,16 @@ describe("mapProjectRequestApiToDb", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.submission.id).toBe("submission-id-1");
-    expect(result.projectRequest.id).toBe("project-request-id-1");
-    expect(result.projectRequest.leadSubmissionId).toBe(result.submission.id);
-    expect(result.projectRequest.pageKeys).toEqual(["home", "contact"]);
-    expect(result.projectRequest.customPageNames).toEqual(["Karriereseite"]);
+    expect(result.lead.owner).toBeUndefined();
+    expect(result.lead_submission.id).toBe("submission-id-1");
+    expect(result.lead_submission.lead_id).toBe(result.lead.id);
+    expect(result.lead_project_request.id).toBe("project-request-id-1");
+    expect(result.lead_project_request.lead_submission_id).toBe(
+      result.lead_submission.id,
+    );
+    expect(result.lead_project_request.page_keys).toEqual(["home", "contact"]);
+    expect(result.lead_project_request.custom_page_names).toEqual([
+      "Karriereseite",
+    ]);
   });
 });

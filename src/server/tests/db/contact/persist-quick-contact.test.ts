@@ -25,31 +25,33 @@ describe("persistQuickContactLead", () => {
       await import("@/server/db/contact/persist-quick-contact");
 
     const result = await persistQuickContactLead({
-      emailContact: {
-        createdAt: new Date("2026-03-26T09:30:00.000Z"),
+      lead_email_contact: {
+        created_at: new Date("2026-03-26T09:30:00.000Z"),
         id: "email-contact-id",
-        leadSubmissionId: "submission-id",
+        lead_submission_id: "submission-id",
         message: "Kurze erste Anfrage.",
-        updatedAt: new Date("2026-03-26T09:30:00.000Z"),
+        updated_at: new Date("2026-03-26T09:30:00.000Z"),
       },
       lead: {
-        createdAt: new Date("2026-03-26T09:30:00.000Z"),
+        created_at: new Date("2026-03-26T09:30:00.000Z"),
         email: "max@example.com",
-        firstName: "Max",
+        first_name: "Max",
         id: "lead-api-id",
-        lastName: "Mustermann",
-        leadStatus: "new",
-        updatedAt: new Date("2026-03-26T09:30:00.000Z"),
+        last_name: "Mustermann",
+        lead_status: "new",
+        owner: undefined,
+        updated_at: new Date("2026-03-26T09:30:00.000Z"),
       },
-      submission: {
+      lead_submission: {
         channel: "quick_contact",
-        consentAcceptedAt: new Date("2026-03-26T09:30:00.000Z"),
-        createdAt: new Date("2026-03-26T09:30:00.000Z"),
+        consent_accepted_at: new Date("2026-03-26T09:30:00.000Z"),
+        created_at: new Date("2026-03-26T09:30:00.000Z"),
         id: "submission-id",
+        lead_id: "lead-api-id",
         locale: "de",
-        requestId: "request_123",
-        submissionStartedAt: new Date("2026-03-26T09:00:00.000Z"),
-        updatedAt: new Date("2026-03-26T09:30:00.000Z"),
+        request_id: "request_123",
+        submission_started_at: new Date("2026-03-26T09:00:00.000Z"),
+        updated_at: new Date("2026-03-26T09:30:00.000Z"),
       },
     });
 

@@ -17,23 +17,24 @@ export function mapDiscoveryCallDtoToDbPersistInput(
   const lead = mapLeadApiToDb(payload, createdAt, {
     defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS,
   });
-  const submission = mapSubmissionApiToDb(
+  const leadSubmission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,
     CONTACT_REQUEST_KIND.DiscoveryCall,
+    lead.id,
     createdAt,
   );
   const message = payload.message?.trim();
 
   return {
-    callContact: {
-      createdAt: submission.createdAt,
+    call_contact: {
+      created_at: leadSubmission.created_at,
       id: randomUUID(),
-      leadSubmissionId: submission.id,
+      lead_submission_id: leadSubmission.id,
       message: message || undefined,
-      updatedAt: submission.updatedAt,
+      updated_at: leadSubmission.updated_at,
     },
     lead,
-    submission,
+    lead_submission: leadSubmission,
   };
 }

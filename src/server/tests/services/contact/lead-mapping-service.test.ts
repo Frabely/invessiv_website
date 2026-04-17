@@ -29,13 +29,14 @@ describe("mapLeadApiToDb", () => {
     );
 
     expect(result).toEqual({
-      createdAt,
+      created_at: createdAt,
       email: "max@example.com",
-      firstName: "Max",
+      first_name: "Max",
       id: "lead-id-1",
-      lastName: "Mustermann",
-      leadStatus: DEFAULT_CONTACT_LEAD_STATUS,
-      updatedAt: createdAt,
+      last_name: "Mustermann",
+      lead_status: DEFAULT_CONTACT_LEAD_STATUS,
+      owner: undefined,
+      updated_at: createdAt,
     });
   });
 });

@@ -17,7 +17,7 @@ export async function persistProjectRequestLead(
   const sql = getDatabaseClient();
   const sharedLeadSubmission = buildSharedLeadSubmission({
     lead: projectRequestPersistInput.lead,
-    submission: projectRequestPersistInput.submission,
+    submission: projectRequestPersistInput.lead_submission,
   });
   const params = [...sharedLeadSubmission.params];
   const addParam = (value: unknown) => {
@@ -46,22 +46,22 @@ export async function persistProjectRequestLead(
       updated_at
     )
     SELECT
-      ${addParam(projectRequestPersistInput.projectRequest.id)},
+      ${addParam(projectRequestPersistInput.lead_project_request.id)},
       ${sharedLeadSubmission.submissionSource}.id,
-      ${addParam(projectRequestPersistInput.projectRequest.offerKey)},
-      ${addParam(projectRequestPersistInput.projectRequest.goalKey ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.workflowKey ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.budgetKey ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.preferredStartKey ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.company ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.role ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.phone ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.website ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.pageKeys ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.customPageNames ?? null)},
-      ${addParam(projectRequestPersistInput.projectRequest.projectDetails)},
-      ${addParam(projectRequestPersistInput.projectRequest.createdAt)},
-      ${addParam(projectRequestPersistInput.projectRequest.updatedAt)}
+      ${addParam(projectRequestPersistInput.lead_project_request.offer_key)},
+      ${addParam(projectRequestPersistInput.lead_project_request.goal_key ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.workflow_key ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.budget_key ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.preferred_start_key ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.company ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.role ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.phone ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.website ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.page_keys ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.custom_page_names ?? null)},
+      ${addParam(projectRequestPersistInput.lead_project_request.project_details)},
+      ${addParam(projectRequestPersistInput.lead_project_request.created_at)},
+      ${addParam(projectRequestPersistInput.lead_project_request.updated_at)}
     FROM ${sharedLeadSubmission.submissionSource}
   `;
 
@@ -69,6 +69,6 @@ export async function persistProjectRequestLead(
 
   return {
     persisted: true,
-    submissionId: projectRequestPersistInput.submission.id,
+    submissionId: projectRequestPersistInput.lead_submission.id,
   };
 }

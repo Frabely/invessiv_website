@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
-import type { PreparedLeadRecord } from "@/server/db/records/contact/prepared-lead-record";
+import type { LeadRecord } from "@/server/db/records/contact/lead-record";
 
 export type ApiToDbMapperOptions = {
   createdAt?: Date;
@@ -22,14 +22,15 @@ export function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
   { defaultLeadStatus }: MapperDependencies,
-): PreparedLeadRecord {
+): LeadRecord {
   return {
-    createdAt,
+    created_at: createdAt,
     email: payload.email.trim(),
-    firstName: payload.firstName.trim(),
+    first_name: payload.firstName.trim(),
     id: randomUUID(),
-    lastName: payload.lastName.trim(),
-    leadStatus: defaultLeadStatus,
-    updatedAt: createdAt,
+    last_name: payload.lastName.trim(),
+    lead_status: defaultLeadStatus,
+    owner: undefined,
+    updated_at: createdAt,
   };
 }

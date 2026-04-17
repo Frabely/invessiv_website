@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { Locale } from "@/config/i18n";
 import type { ContactSubmissionChannel } from "@/common/contracts/contact/keys/contact-request-kind";
-import type { PreparedLeadSubmissionRecord } from "@/server/db/records/contact/prepared-lead-submission-record";
+import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
 
 export type SubmissionApiToDbMapperInput = {
   locale: Locale;
@@ -13,16 +13,18 @@ export function mapSubmissionApiToDb(
   payload: SubmissionApiToDbMapperInput,
   requestId: string,
   channel: ContactSubmissionChannel,
+  leadId: string,
   createdAt: Date,
-): PreparedLeadSubmissionRecord {
+): LeadSubmissionRecord {
   return {
     channel,
-    consentAcceptedAt: createdAt,
-    createdAt,
+    consent_accepted_at: createdAt,
+    created_at: createdAt,
     id: randomUUID(),
+    lead_id: leadId,
     locale: payload.locale,
-    requestId,
-    submissionStartedAt: payload.startedAt,
-    updatedAt: createdAt,
+    request_id: requestId,
+    submission_started_at: payload.startedAt,
+    updated_at: createdAt,
   };
 }

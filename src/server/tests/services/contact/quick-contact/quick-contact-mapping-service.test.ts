@@ -34,9 +34,12 @@ describe("mapQuickContactApiToDb", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.submission.id).toBe("submission-id-1");
-    expect(result.emailContact.id).toBe("email-contact-id-1");
-    expect(result.emailContact.leadSubmissionId).toBe(result.submission.id);
-    expect(result.emailContact.message).toBe("Kurze erste Anfrage.");
+    expect(result.lead_submission.id).toBe("submission-id-1");
+    expect(result.lead_submission.lead_id).toBe(result.lead.id);
+    expect(result.lead_email_contact.id).toBe("email-contact-id-1");
+    expect(result.lead_email_contact.lead_submission_id).toBe(
+      result.lead_submission.id,
+    );
+    expect(result.lead_email_contact.message).toBe("Kurze erste Anfrage.");
   });
 });

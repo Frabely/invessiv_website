@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import type { PreparedLeadRecord } from "@/server/db/records/contact/prepared-lead-record";
-import type { PreparedLeadSubmissionRecord } from "@/server/db/records/contact/prepared-lead-submission-record";
+import type { LeadRecord } from "@/server/db/records/contact/lead-record";
+import type { LeadSubmissionRecord } from "@/server/db/records/contact/lead-submission-record";
 
 vi.mock("server-only", () => ({}));
 
@@ -9,25 +9,27 @@ describe("buildSharedLeadSubmission", () => {
     const { buildSharedLeadSubmission } =
       await import("@/server/db/contact/shared/shared-lead-submission");
 
-    const lead: PreparedLeadRecord = {
-      createdAt: new Date("2026-03-26T09:30:00.000Z"),
+    const lead: LeadRecord = {
+      created_at: new Date("2026-03-26T09:30:00.000Z"),
       email: "max@example.com",
-      firstName: "Max",
+      first_name: "Max",
       id: "lead-api-id",
-      lastName: "Mustermann",
-      leadStatus: "new",
-      updatedAt: new Date("2026-03-26T09:30:00.000Z"),
+      last_name: "Mustermann",
+      lead_status: "new",
+      owner: undefined,
+      updated_at: new Date("2026-03-26T09:30:00.000Z"),
     };
 
-    const submission: PreparedLeadSubmissionRecord = {
+    const submission: LeadSubmissionRecord = {
       channel: "project_request",
-      consentAcceptedAt: new Date("2026-03-26T09:30:00.000Z"),
-      createdAt: new Date("2026-03-26T09:30:00.000Z"),
+      consent_accepted_at: new Date("2026-03-26T09:30:00.000Z"),
+      created_at: new Date("2026-03-26T09:30:00.000Z"),
       id: "submission-api-id",
+      lead_id: "lead-api-id",
       locale: "de",
-      requestId: "request_123",
-      submissionStartedAt: new Date("2026-03-26T09:00:00.000Z"),
-      updatedAt: new Date("2026-03-26T09:30:00.000Z"),
+      request_id: "request_123",
+      submission_started_at: new Date("2026-03-26T09:00:00.000Z"),
+      updated_at: new Date("2026-03-26T09:30:00.000Z"),
     };
 
     const result = buildSharedLeadSubmission({

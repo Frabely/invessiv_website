@@ -1,7 +1,7 @@
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
-export type CallContactRecord = TimestampedRecord & {
+export type LeadCallContactRecord = TimestampedRecord & {
   id: string;
-  leadSubmissionId: string;
+  lead_submission_id: string;
   message?: string;
 };

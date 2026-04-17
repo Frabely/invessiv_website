@@ -34,10 +34,13 @@ describe("mapDiscoveryCallApiToDb", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.submission.id).toBe("submission-id-1");
-    expect(result.callContact.id).toBe("call-contact-id-1");
-    expect(result.callContact.leadSubmissionId).toBe(result.submission.id);
-    expect(result.callContact.message).toBe(
+    expect(result.lead_submission.id).toBe("submission-id-1");
+    expect(result.lead_submission.lead_id).toBe(result.lead.id);
+    expect(result.call_contact.id).toBe("call-contact-id-1");
+    expect(result.call_contact.lead_submission_id).toBe(
+      result.lead_submission.id,
+    );
+    expect(result.call_contact.message).toBe(
       "Wir wollen den Umfang kurz einordnen.",
     );
   });

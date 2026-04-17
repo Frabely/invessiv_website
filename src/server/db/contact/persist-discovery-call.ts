@@ -17,7 +17,7 @@ export async function persistDiscoveryCallLead(
   const sql = getDatabaseClient();
   const sharedLeadSubmission = buildSharedLeadSubmission({
     lead: discoveryCallPersistInput.lead,
-    submission: discoveryCallPersistInput.submission,
+    submission: discoveryCallPersistInput.lead_submission,
   });
   const params = [...sharedLeadSubmission.params];
   const addParam = (value: unknown) => {
@@ -35,11 +35,11 @@ export async function persistDiscoveryCallLead(
       updated_at
     )
     SELECT
-      ${addParam(discoveryCallPersistInput.callContact.id)},
+      ${addParam(discoveryCallPersistInput.call_contact.id)},
       ${sharedLeadSubmission.submissionSource}.id,
-      ${addParam(discoveryCallPersistInput.callContact.message ?? null)},
-      ${addParam(discoveryCallPersistInput.callContact.createdAt)},
-      ${addParam(discoveryCallPersistInput.callContact.updatedAt)}
+      ${addParam(discoveryCallPersistInput.call_contact.message ?? null)},
+      ${addParam(discoveryCallPersistInput.call_contact.created_at)},
+      ${addParam(discoveryCallPersistInput.call_contact.updated_at)}
     FROM ${sharedLeadSubmission.submissionSource}
   `;
 
@@ -47,6 +47,6 @@ export async function persistDiscoveryCallLead(
 
   return {
     persisted: true,
-    submissionId: discoveryCallPersistInput.submission.id,
+    submissionId: discoveryCallPersistInput.lead_submission.id,
   };
 }

@@ -17,22 +17,23 @@ export function mapQuickContactDtoToDbPersistInput(
   const lead = mapLeadApiToDb(payload, createdAt, {
     defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS,
   });
-  const submission = mapSubmissionApiToDb(
+  const leadSubmission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,
     CONTACT_REQUEST_KIND.QuickContact,
+    lead.id,
     createdAt,
   );
 
   return {
-    emailContact: {
-      createdAt: submission.createdAt,
-      id: randomUUID(),
-      leadSubmissionId: submission.id,
-      message: payload.message.trim(),
-      updatedAt: submission.updatedAt,
-    },
     lead,
-    submission,
+    lead_email_contact: {
+      created_at: leadSubmission.created_at,
+      id: randomUUID(),
+      lead_submission_id: leadSubmission.id,
+      message: payload.message.trim(),
+      updated_at: leadSubmission.updated_at,
+    },
+    lead_submission: leadSubmission,
   };
 }
