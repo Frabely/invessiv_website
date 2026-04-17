@@ -1,4 +1,5 @@
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
+import { LEAD_PROJECT_REQUEST_COLUMNS } from "@/server/db/record-configuration/lead-project-requests";
 import { defineDatabaseRecord } from "@/server/db/records/shared/database-record-definition";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
@@ -21,23 +22,6 @@ export type LeadProjectRequestRecord = TimestampedRecord & {
 
 export const DATABASE_RECORD_DEFINITION =
   defineDatabaseRecord<LeadProjectRequestRecord>()({
-    columns: [
-      "id",
-      "lead_submission_id",
-      "offer_key",
-      "goal_key",
-      "workflow_key",
-      "budget_key",
-      "preferred_start_key",
-      "company",
-      "role",
-      "phone",
-      "website",
-      "page_keys",
-      "custom_page_names",
-      "project_details",
-      "created_at",
-      "updated_at",
-    ],
+    columns: LEAD_PROJECT_REQUEST_COLUMNS,
     tableName: "lead_project_requests",
   });

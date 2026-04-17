@@ -2,11 +2,14 @@
 
 ## Stack Rework
 
-- Next.js + Drizzle als saubere Zielarchitektur fuer Datenzugriff und DB-Modelle evaluieren und bei wachsender serverseitiger Persistenz schrittweise einfuehren.
-- Zielbild: Drizzle-Schema als Runtime-Quelle fuer Tabellen-/Spalten-Contracts statt separater Record-Metadaten.
-- Migrationspfad klein halten: zuerst nur die Contact-Tabellen im Schema abbilden, bestehende SQL-Migrationen und Raw-SQL-Persistenz vorerst beibehalten.
-- Danach pruefen, ob DB-Contract-Tests und Record-Definitionen auf das Drizzle-Schema umgehaengt werden koennen, bevor Queries und Mappings vollstaendig migriert werden.
-- Dabei die Datenmodelle klar von UI und Route-Logik trennen und den bestehenden Code schrittweise migrieren.
+1. Contact-Tabellen im Drizzle-Schema abbilden und Drizzle als Runtime-Quelle fuer Tabellen-/Spalten-Contracts vorbereiten. (erledigt)
+
+Offen danach:
+
+- DB-Contract-Tests und Record-Definitionen auf das Drizzle-Schema umhaengen.
+- Queries und Mappings schrittweise von Raw-SQL auf Drizzle migrieren.
+- Datenmodelle klar von UI und Route-Logik trennen.
+- Die weitergehende Next.js + Drizzle Zielarchitektur nur noch entlang der realen Persistenzschritte ausbauen.
 
 ## I18n Dictionary Rework
 
