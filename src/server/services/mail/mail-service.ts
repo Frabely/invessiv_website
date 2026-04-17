@@ -1,4 +1,5 @@
 import "server-only";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
 import { getServerEnv } from "@/server/config/env";
 import type {
   MailMessage,
@@ -28,7 +29,7 @@ export async function sendMail(message: MailMessage) {
   if (!provider) {
     return {
       ok: false as const,
-      reason: "delivery_unavailable" as const,
+      reason: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
     };
   }
 
@@ -37,7 +38,7 @@ export async function sendMail(message: MailMessage) {
   } catch {
     return {
       ok: false as const,
-      reason: "delivery_unavailable" as const,
+      reason: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
     };
   }
 

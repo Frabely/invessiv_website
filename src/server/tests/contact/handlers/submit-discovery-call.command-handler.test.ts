@@ -1,3 +1,6 @@
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { persistDiscoveryCallLeadMock } = vi.hoisted(() => ({
@@ -25,7 +28,7 @@ describe("submitDiscoveryCallCommandHandler", () => {
         consentAccepted: false,
         email: "invalid",
         firstName: "",
-        kind: "discovery_call",
+        kind: CONTACT_REQUEST_KIND.DiscoveryCall,
         lastName: "",
         locale: "de",
         message: "Test",
@@ -37,8 +40,10 @@ describe("submitDiscoveryCallCommandHandler", () => {
     if (result.ok) {
       throw new Error("expected validation failure");
     }
-    expect(result.code).toBe("validation_error");
-    expect(result.fieldErrors?.email).toContain("invalid_email");
+    expect(result.code).toBe(CONTACT_SUBMIT_ERROR_CODE.ValidationError);
+    expect(result.fieldErrors?.email).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.InvalidEmail,
+    );
     expect(persistDiscoveryCallLeadMock).not.toHaveBeenCalled();
   });
 
@@ -51,7 +56,7 @@ describe("submitDiscoveryCallCommandHandler", () => {
         consentAccepted: true,
         email: "max@example.com",
         firstName: "Max",
-        kind: "discovery_call",
+        kind: CONTACT_REQUEST_KIND.DiscoveryCall,
         lastName: "Mustermann",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",

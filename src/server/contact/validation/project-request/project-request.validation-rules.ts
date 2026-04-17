@@ -1,4 +1,6 @@
 import type { RefinementCtx } from "zod";
+import { CONTACT_OFFER_KEY } from "@/common/constants/contact/contact-offer-keys";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 
 type ProjectRequestValidationShape = {
   customPageNames?: readonly string[];
@@ -21,32 +23,34 @@ export function applyProjectRequestValidationRules(
   value: ProjectRequestValidationShape,
   context: RefinementCtx,
 ) {
-  const requiresWebsite = ["upgrade", "maintenance"].includes(value.offerKey);
+  const requiresWebsite =
+    value.offerKey === CONTACT_OFFER_KEY.Upgrade ||
+    value.offerKey === CONTACT_OFFER_KEY.Maintenance;
 
-  if (value.offerKey === "landing" && !value.goalKey) {
+  if (value.offerKey === CONTACT_OFFER_KEY.Landing && !value.goalKey) {
     context.addIssue({
       code: "custom",
-      message: "goal_required",
+      message: CONTACT_VALIDATION_FIELD_ERROR_CODE.GoalRequired,
       path: ["goalKey"],
     });
   }
 
-  if (value.offerKey === "process" && !value.workflowKey) {
+  if (value.offerKey === CONTACT_OFFER_KEY.Process && !value.workflowKey) {
     context.addIssue({
       code: "custom",
-      message: "workflow_required",
+      message: CONTACT_VALIDATION_FIELD_ERROR_CODE.WorkflowRequired,
       path: ["workflowKey"],
     });
   }
 
-  if (value.offerKey === "web") {
+  if (value.offerKey === CONTACT_OFFER_KEY.Web) {
     const hasPages = Boolean(
       value.pageKeys?.length || value.customPageNames?.length,
     );
     if (!hasPages) {
       context.addIssue({
         code: "custom",
-        message: "pages_required",
+        message: CONTACT_VALIDATION_FIELD_ERROR_CODE.PagesRequired,
         path: ["pageKeys"],
       });
     }
@@ -55,7 +59,7 @@ export function applyProjectRequestValidationRules(
   if (!hasUniqueValues(value.pageKeys)) {
     context.addIssue({
       code: "custom",
-      message: "duplicate_page_keys",
+      message: CONTACT_VALIDATION_FIELD_ERROR_CODE.DuplicatePageKeys,
       path: ["pageKeys"],
     });
   }
@@ -63,7 +67,7 @@ export function applyProjectRequestValidationRules(
   if (!hasUniqueValues(value.customPageNames)) {
     context.addIssue({
       code: "custom",
-      message: "duplicate_custom_page_names",
+      message: CONTACT_VALIDATION_FIELD_ERROR_CODE.DuplicateCustomPageNames,
       path: ["customPageNames"],
     });
   }
@@ -71,7 +75,7 @@ export function applyProjectRequestValidationRules(
   if (requiresWebsite && !value.website) {
     context.addIssue({
       code: "custom",
-      message: "website_required",
+      message: CONTACT_VALIDATION_FIELD_ERROR_CODE.WebsiteRequired,
       path: ["website"],
     });
   }

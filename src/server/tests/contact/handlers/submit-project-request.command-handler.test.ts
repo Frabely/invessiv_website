@@ -1,3 +1,6 @@
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mapContactToMailMock, sendMailMock } = vi.hoisted(() => ({
@@ -39,7 +42,7 @@ describe("submitProjectRequestCommandHandler", () => {
         consentAccepted: false,
         email: "invalid",
         firstName: "",
-        kind: "project_request",
+        kind: CONTACT_REQUEST_KIND.ProjectRequest,
         lastName: "",
         locale: "de",
         offerKey: "landing",
@@ -53,8 +56,10 @@ describe("submitProjectRequestCommandHandler", () => {
     if (result.ok) {
       throw new Error("expected validation failure");
     }
-    expect(result.code).toBe("validation_error");
-    expect(result.fieldErrors?.email).toContain("invalid_email");
+    expect(result.code).toBe(CONTACT_SUBMIT_ERROR_CODE.ValidationError);
+    expect(result.fieldErrors?.email).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.InvalidEmail,
+    );
     expect(persistProjectRequestLeadMock).not.toHaveBeenCalled();
     expect(mapContactToMailMock).not.toHaveBeenCalled();
     expect(sendMailMock).not.toHaveBeenCalled();
@@ -78,7 +83,7 @@ describe("submitProjectRequestCommandHandler", () => {
         email: "max@example.com",
         firstName: "Max",
         goalKey: "generate_inquiries",
-        kind: "project_request",
+        kind: CONTACT_REQUEST_KIND.ProjectRequest,
         lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
@@ -103,7 +108,7 @@ describe("submitProjectRequestCommandHandler", () => {
     });
     sendMailMock.mockResolvedValueOnce({
       ok: false,
-      reason: "delivery_unavailable",
+      reason: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
     });
 
     const { submitProjectRequestCommandHandler } =
@@ -115,7 +120,7 @@ describe("submitProjectRequestCommandHandler", () => {
         email: "max@example.com",
         firstName: "Max",
         goalKey: "generate_inquiries",
-        kind: "project_request",
+        kind: CONTACT_REQUEST_KIND.ProjectRequest,
         lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
@@ -126,7 +131,7 @@ describe("submitProjectRequestCommandHandler", () => {
     );
 
     expect(result).toEqual({
-      code: "delivery_unavailable",
+      code: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
       ok: false,
     });
   });

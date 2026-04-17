@@ -1,9 +1,13 @@
+export const CONTACT_SUBMIT_ERROR_CODE = {
+  DeliveryUnavailable: "delivery_unavailable",
+  InternalError: "internal_error",
+  InvalidJson: "invalid_json",
+  MethodNotAllowed: "method_not_allowed",
+  PayloadTooLarge: "payload_too_large",
+  RateLimited: "rate_limited",
+  SpamDetected: "spam_detected",
+  ValidationError: "validation_error",
+} as const;
+
 export type ContactSubmitErrorCode =
-  | "delivery_unavailable"
-  | "internal_error"
-  | "invalid_json"
-  | "method_not_allowed"
-  | "payload_too_large"
-  | "rate_limited"
-  | "spam_detected"
-  | "validation_error";
+  (typeof CONTACT_SUBMIT_ERROR_CODE)[keyof typeof CONTACT_SUBMIT_ERROR_CODE];

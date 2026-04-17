@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
 import { projectRequestValidationService } from "@/server/contact/validation/project-request/project-request-validation-service";
 import { quickContactValidationService } from "@/server/contact/validation/quick-contact/quick-contact-validation-service";
@@ -7,7 +10,7 @@ const validProjectRequestPayload = {
   consentAccepted: true,
   email: "max@example.com",
   firstName: "Max",
-  kind: "project_request",
+  kind: CONTACT_REQUEST_KIND.ProjectRequest,
   lastName: "Mustermann",
   locale: "de",
   offerKey: "landing",
@@ -35,7 +38,9 @@ describe("contact validation services", () => {
     if (parsed.ok) {
       throw new Error("expected validation failure");
     }
-    expect(parsed.fieldErrors.goalKey).toContain("goal_required");
+    expect(parsed.fieldErrors.goalKey).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.GoalRequired,
+    );
   });
 
   it("rejects web payloads without pages or custom page names", () => {
@@ -49,7 +54,9 @@ describe("contact validation services", () => {
     if (parsed.ok) {
       throw new Error("expected validation failure");
     }
-    expect(parsed.fieldErrors.pageKeys).toContain("pages_required");
+    expect(parsed.fieldErrors.pageKeys).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.PagesRequired,
+    );
   });
 
   it("accepts web payloads with custom page names", () => {
@@ -87,7 +94,9 @@ describe("contact validation services", () => {
     if (parsed.ok) {
       throw new Error("expected validation failure");
     }
-    expect(parsed.fieldErrors.customPageNames).toContain("too_many_pages");
+    expect(parsed.fieldErrors.customPageNames).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.TooManyPages,
+    );
   });
 
   it("rejects duplicate page keys before persistence", () => {
@@ -102,7 +111,9 @@ describe("contact validation services", () => {
     if (parsed.ok) {
       throw new Error("expected validation failure");
     }
-    expect(parsed.fieldErrors.pageKeys).toContain("duplicate_page_keys");
+    expect(parsed.fieldErrors.pageKeys).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.DuplicatePageKeys,
+    );
   });
 
   it("rejects duplicate custom page names before persistence", () => {
@@ -117,7 +128,24 @@ describe("contact validation services", () => {
       throw new Error("expected validation failure");
     }
     expect(parsed.fieldErrors.customPageNames).toContain(
-      "duplicate_custom_page_names",
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.DuplicateCustomPageNames,
+    );
+  });
+
+  it("classifies spam trap hits as spam_detected", () => {
+    const parsed = projectRequestValidationService.validate({
+      ...validProjectRequestPayload,
+      goalKey: "generate_inquiries",
+      websiteTrap: "bot-filled",
+    });
+
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) {
+      throw new Error("expected validation failure");
+    }
+    expect(parsed.code).toBe(CONTACT_SUBMIT_ERROR_CODE.SpamDetected);
+    expect(parsed.fieldErrors.websiteTrap).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.SpamDetected,
     );
   });
 
@@ -126,7 +154,7 @@ describe("contact validation services", () => {
       consentAccepted: true,
       email: "max@example.com",
       firstName: "Max",
-      kind: "quick_contact",
+      kind: CONTACT_REQUEST_KIND.QuickContact,
       lastName: "Mustermann",
       locale: "de",
       message: "Kurze erste Anfrage.",
@@ -140,7 +168,7 @@ describe("contact validation services", () => {
       consentAccepted: true,
       email: "max@example.com",
       firstName: "Max",
-      kind: "discovery_call",
+      kind: CONTACT_REQUEST_KIND.DiscoveryCall,
       lastName: "Mustermann",
       locale: "de",
       message: "Wir wollen den Umfang kurz einordnen.",

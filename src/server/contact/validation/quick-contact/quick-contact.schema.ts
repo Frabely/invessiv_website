@@ -5,17 +5,27 @@ import {
   localeSchema,
   nameStringSchema,
 } from "@/server/contact/validation/shared/contact-field-schemas";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { applyQuickContactValidationRules } from "@/server/contact/validation/quick-contact/quick-contact.validation-rules";
 
 export const quickContactSchema = z
   .object({
-    consentAccepted: z.boolean().refine((value) => value, "consent_required"),
+    consentAccepted: z
+      .boolean()
+      .refine(
+        (value) => value,
+        CONTACT_VALIDATION_FIELD_ERROR_CODE.ConsentRequired,
+      ),
     email: emailStringSchema,
     firstName: nameStringSchema,
     kind: z.literal(CONTACT_REQUEST_KIND.QuickContact),
     lastName: nameStringSchema,
     locale: localeSchema,
-    message: z.string().trim().min(1, "message_required").max(5000, "too_long"),
+    message: z
+      .string()
+      .trim()
+      .min(1, CONTACT_VALIDATION_FIELD_ERROR_CODE.MessageRequired)
+      .max(5000, CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong),
   })
   .superRefine(applyQuickContactValidationRules);
 

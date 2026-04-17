@@ -1,3 +1,6 @@
+import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { mapQuickContactToMailMock, sendMailMock } = vi.hoisted(() => ({
@@ -38,7 +41,7 @@ describe("submitQuickContactCommandHandler", () => {
         consentAccepted: false,
         email: "invalid",
         firstName: "",
-        kind: "quick_contact",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         lastName: "",
         locale: "de",
         message: "",
@@ -50,8 +53,10 @@ describe("submitQuickContactCommandHandler", () => {
     if (result.ok) {
       throw new Error("expected validation failure");
     }
-    expect(result.code).toBe("validation_error");
-    expect(result.fieldErrors?.email).toContain("invalid_email");
+    expect(result.code).toBe(CONTACT_SUBMIT_ERROR_CODE.ValidationError);
+    expect(result.fieldErrors?.email).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.InvalidEmail,
+    );
     expect(persistQuickContactLeadMock).not.toHaveBeenCalled();
     expect(mapQuickContactToMailMock).not.toHaveBeenCalled();
     expect(sendMailMock).not.toHaveBeenCalled();
@@ -74,7 +79,7 @@ describe("submitQuickContactCommandHandler", () => {
         consentAccepted: true,
         email: "max@example.com",
         firstName: "Max",
-        kind: "quick_contact",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         lastName: "Mustermann",
         locale: "de",
         message: "Kurze erste Anfrage.",
@@ -97,7 +102,7 @@ describe("submitQuickContactCommandHandler", () => {
     });
     sendMailMock.mockResolvedValueOnce({
       ok: false,
-      reason: "delivery_unavailable",
+      reason: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
     });
 
     const { submitQuickContactCommandHandler } =
@@ -108,7 +113,7 @@ describe("submitQuickContactCommandHandler", () => {
         consentAccepted: true,
         email: "max@example.com",
         firstName: "Max",
-        kind: "quick_contact",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         lastName: "Mustermann",
         locale: "de",
         message: "Kurze erste Anfrage.",
@@ -117,7 +122,7 @@ describe("submitQuickContactCommandHandler", () => {
     );
 
     expect(result).toEqual({
-      code: "delivery_unavailable",
+      code: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
       ok: false,
     });
   });

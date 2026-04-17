@@ -15,13 +15,19 @@ import {
   optionalTrimmedStringArray,
   optionalUrlString,
 } from "@/server/contact/validation/shared/contact-field-schemas";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { applyProjectRequestValidationRules } from "@/server/contact/validation/project-request/project-request.validation-rules";
 
 export const projectRequestSchema = z
   .object({
     budgetKey: z.enum(CONTACT_BUDGET_KEYS).optional(),
     company: optionalTrimmedString,
-    consentAccepted: z.boolean().refine((value) => value, "consent_required"),
+    consentAccepted: z
+      .boolean()
+      .refine(
+        (value) => value,
+        CONTACT_VALIDATION_FIELD_ERROR_CODE.ConsentRequired,
+      ),
     email: emailStringSchema,
     firstName: nameStringSchema,
     goalKey: z.enum(CONTACT_GOAL_KEYS).optional(),
@@ -36,12 +42,16 @@ export const projectRequestSchema = z
     projectDetails: z
       .string()
       .trim()
-      .min(5, "project_details_required")
-      .max(5000, "too_long"),
+      .min(5, CONTACT_VALIDATION_FIELD_ERROR_CODE.ProjectDetailsRequired)
+      .max(5000, CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong),
     role: optionalTrimmedString,
     startedAt: isoDateTimeSchema,
     website: optionalUrlString,
-    websiteTrap: z.string().trim().max(0, "spam_detected").optional(),
+    websiteTrap: z
+      .string()
+      .trim()
+      .max(0, CONTACT_VALIDATION_FIELD_ERROR_CODE.SpamDetected)
+      .optional(),
     workflowKey: z.enum(CONTACT_WORKFLOW_KEYS).optional(),
   })
   .superRefine(applyProjectRequestValidationRules);

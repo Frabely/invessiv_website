@@ -6,11 +6,17 @@ import {
   nameStringSchema,
   optionalTrimmedString,
 } from "@/server/contact/validation/shared/contact-field-schemas";
+import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { applyDiscoveryCallValidationRules } from "@/server/contact/validation/discovery-call/discovery-call.validation-rules";
 
 export const discoveryCallSchema = z
   .object({
-    consentAccepted: z.boolean().refine((value) => value, "consent_required"),
+    consentAccepted: z
+      .boolean()
+      .refine(
+        (value) => value,
+        CONTACT_VALIDATION_FIELD_ERROR_CODE.ConsentRequired,
+      ),
     email: emailStringSchema,
     firstName: nameStringSchema,
     kind: z.literal(CONTACT_REQUEST_KIND.DiscoveryCall),
