@@ -1,6 +1,4 @@
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
-import { leadProjectRequests } from "@/server/db/record-configuration/lead-project-requests";
-import { defineDatabaseRecordFromTable } from "@/server/db/records/shared/database-record-definition";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type LeadProjectRequestRecord = TimestampedRecord & {
@@ -19,8 +17,3 @@ export type LeadProjectRequestRecord = TimestampedRecord & {
   website?: string;
   workflow_key?: SaveProjectRequestDto["workflowKey"];
 };
-
-export const DATABASE_RECORD_DEFINITION =
-  defineDatabaseRecordFromTable<LeadProjectRequestRecord>()(
-    leadProjectRequests,
-  );

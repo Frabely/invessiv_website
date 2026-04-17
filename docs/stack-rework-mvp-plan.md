@@ -98,6 +98,10 @@ Done wenn:
 - Tests und Persistenz nicht mehr von parallel gepflegten Tabelleninformationen abhaengen
 - Das Drizzle-Modell klar die einzige DB-Strukturquelle ist
 
+Status:
+
+- erledigt
+
 ## Schritt 7: Contracts und Persistenz-Inputs pruefen und gezielt migrieren
 
 Ziel:
