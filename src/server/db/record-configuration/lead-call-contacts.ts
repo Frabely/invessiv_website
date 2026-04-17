@@ -1,14 +1,6 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
 
-export const LEAD_CALL_CONTACT_COLUMNS = [
-  "id",
-  "lead_submission_id",
-  "message",
-  "created_at",
-  "updated_at",
-] as const;
-
 export const leadCallContacts = pgTable("lead_call_contacts", {
   id: uuid("id").primaryKey(),
   lead_submission_id: uuid("lead_submission_id")

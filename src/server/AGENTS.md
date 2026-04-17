@@ -38,10 +38,13 @@ Für Contact-bezogenen Code gilt die Trennung:
 
 - Pro Datei möglichst nur eine Verantwortung.
 - SQL- und Tabellenwissen nach `src/server/db`.
+- `src/server/db/record-configuration/**` ist die kanonische Quelle fuer DB-Modelle auf Basis von `pgTable`.
+- In `record-configuration/**` liegt pro Tabelle genau ein Modellfile; Sammeldateien oder parallele Modellvarianten werden dort nicht neu eingefuehrt.
 - Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in `src/common/**` gehalten.
 - Persistenz-Inputs werden serverseitig unter `src/server/db/persist-input/**` abgelegt und nicht unter `records/**` gemischt.
 - `records/**` enthält nur DB-nahe Record-/Row-Shapes; zusammengesetzte Persistenz-Payloads liegen ausschließlich unter `persist-input/**`.
 - Record-Typen unter `src/server/db/records/**` spiegeln die aktuelle DB-Struktur direkt: Tabellennahe Dateinamen, Spaltennamen in `snake_case` und keine app-nahen `camelCase`-Aliasfelder.
+- Doppelte Tabellenmetadaten sind zu vermeiden: Spaltenlisten, Tabellennamen und aehnliche DB-Strukturinfos werden nicht parallel manuell neben dem `pgTable`-Modell gepflegt.
 - Reines Mapping nicht in `src/server/db`.
 - Orchestrierung nicht in `src/server/db`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.

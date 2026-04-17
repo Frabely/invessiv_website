@@ -48,6 +48,10 @@ Done wenn:
 - DB-Contract-Tests gegen das Modell laufen
 - Record-Definitionen nur noch als dünner Kompatibilitätslayer übrig sind oder ganz entfallen
 
+Status:
+
+- erledigt
+
 ## Schritt 3: `AGENTS.md` auf die neue DB-Struktur ausrichten
 
 Ziel:
@@ -59,6 +63,10 @@ Done wenn:
 
 - Die neue Ablage ist in den Regeln dokumentiert
 - Keine widersprüchlichen Pfadangaben zur DB-Struktur mehr existieren
+
+Status:
+
+- erledigt
 
 ## Schritt 4: Nachfolgearbeit dokumentieren
 

@@ -8,18 +8,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-import { LEAD_STATUS_VALUES } from "@/server/db/record-configuration/shared";
-
-export const LEAD_COLUMNS = [
-  "id",
-  "first_name",
-  "last_name",
-  "email",
-  "lead_status",
-  "owner",
-  "created_at",
-  "updated_at",
-] as const;
+import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
 
 export const leads = pgTable(
   "leads",
@@ -28,7 +17,7 @@ export const leads = pgTable(
     first_name: text("first_name").notNull(),
     last_name: text("last_name").notNull(),
     email: text("email").notNull(),
-    lead_status: text("lead_status", { enum: LEAD_STATUS_VALUES })
+    lead_status: text("lead_status", { enum: CONTACT_LEAD_STATUS_VALUES })
       .notNull()
       .default("new"),
     owner: text("owner"),

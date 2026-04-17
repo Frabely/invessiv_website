@@ -1,6 +1,6 @@
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
-import { LEAD_PROJECT_REQUEST_COLUMNS } from "@/server/db/record-configuration/lead-project-requests";
-import { defineDatabaseRecord } from "@/server/db/records/shared/database-record-definition";
+import { leadProjectRequests } from "@/server/db/record-configuration/lead-project-requests";
+import { defineDatabaseRecordFromTable } from "@/server/db/records/shared/database-record-definition";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type LeadProjectRequestRecord = TimestampedRecord & {
@@ -21,7 +21,6 @@ export type LeadProjectRequestRecord = TimestampedRecord & {
 };
 
 export const DATABASE_RECORD_DEFINITION =
-  defineDatabaseRecord<LeadProjectRequestRecord>()({
-    columns: LEAD_PROJECT_REQUEST_COLUMNS,
-    tableName: "lead_project_requests",
-  });
+  defineDatabaseRecordFromTable<LeadProjectRequestRecord>()(
+    leadProjectRequests,
+  );

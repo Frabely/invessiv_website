@@ -275,6 +275,7 @@ Outputs:
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
 - Feature-Flags für unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
 - Öffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur für wirklich Öffentliche Werte)
+- Für serverseitige DB-Modelle ist `src/server/db/record-configuration/**` die kanonische Modellquelle; Tabellenstruktur wird dort über `pgTable` gepflegt und nicht parallel über manuelle Spaltenlisten oder zusätzliche Modellkopien dupliziert
 
 ## Performance- und Rendering-Standards (ergänzend)
 

@@ -1,4 +1,9 @@
 import { sql } from "drizzle-orm";
+import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
+import { CONTACT_OFFER_KEYS } from "@/common/constants/contact/contact-offer-keys";
+import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
 import {
   check,
   index,
@@ -7,33 +12,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import {
-  PROJECT_REQUEST_BUDGET_KEYS,
-  PROJECT_REQUEST_GOAL_KEYS,
-  PROJECT_REQUEST_OFFER_KEYS,
-  PROJECT_REQUEST_PREFERRED_START_KEYS,
-  PROJECT_REQUEST_WORKFLOW_KEYS,
-} from "@/server/db/record-configuration/shared";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
-
-export const LEAD_PROJECT_REQUEST_COLUMNS = [
-  "id",
-  "lead_submission_id",
-  "offer_key",
-  "goal_key",
-  "workflow_key",
-  "budget_key",
-  "preferred_start_key",
-  "company",
-  "role",
-  "phone",
-  "website",
-  "page_keys",
-  "custom_page_names",
-  "project_details",
-  "created_at",
-  "updated_at",
-] as const;
 
 export const leadProjectRequests = pgTable(
   "lead_project_requests",
@@ -42,14 +21,12 @@ export const leadProjectRequests = pgTable(
     lead_submission_id: uuid("lead_submission_id")
       .notNull()
       .references(() => leadSubmissions.id, { onDelete: "cascade" }),
-    offer_key: text("offer_key", {
-      enum: PROJECT_REQUEST_OFFER_KEYS,
-    }).notNull(),
-    goal_key: text("goal_key", { enum: PROJECT_REQUEST_GOAL_KEYS }),
-    workflow_key: text("workflow_key", { enum: PROJECT_REQUEST_WORKFLOW_KEYS }),
-    budget_key: text("budget_key", { enum: PROJECT_REQUEST_BUDGET_KEYS }),
+    offer_key: text("offer_key", { enum: CONTACT_OFFER_KEYS }).notNull(),
+    goal_key: text("goal_key", { enum: CONTACT_GOAL_KEYS }),
+    workflow_key: text("workflow_key", { enum: CONTACT_WORKFLOW_KEYS }),
+    budget_key: text("budget_key", { enum: CONTACT_BUDGET_KEYS }),
     preferred_start_key: text("preferred_start_key", {
-      enum: PROJECT_REQUEST_PREFERRED_START_KEYS,
+      enum: CONTACT_START_KEYS,
     }),
     company: text("company"),
     role: text("role"),

@@ -1,7 +1,7 @@
 import type { Locale } from "@/config/i18n";
 import type { ContactSubmissionChannel } from "@/common/contracts/contact/keys/contact-request-kind";
-import { LEAD_SUBMISSION_COLUMNS } from "@/server/db/record-configuration/lead-submissions";
-import { defineDatabaseRecord } from "@/server/db/records/shared/database-record-definition";
+import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
+import { defineDatabaseRecordFromTable } from "@/server/db/records/shared/database-record-definition";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type LeadSubmissionRecord = TimestampedRecord & {
@@ -15,7 +15,4 @@ export type LeadSubmissionRecord = TimestampedRecord & {
 };
 
 export const DATABASE_RECORD_DEFINITION =
-  defineDatabaseRecord<LeadSubmissionRecord>()({
-    columns: LEAD_SUBMISSION_COLUMNS,
-    tableName: "lead_submissions",
-  });
+  defineDatabaseRecordFromTable<LeadSubmissionRecord>()(leadSubmissions);

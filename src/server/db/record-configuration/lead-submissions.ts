@@ -7,23 +7,8 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import {
-  CONTACT_LOCALE_VALUES,
-  CONTACT_SUBMISSION_CHANNEL_VALUES,
-} from "@/server/db/record-configuration/shared";
+import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
 import { leads } from "@/server/db/record-configuration/leads";
-
-export const LEAD_SUBMISSION_COLUMNS = [
-  "id",
-  "lead_id",
-  "request_id",
-  "channel",
-  "locale",
-  "consent_accepted_at",
-  "submission_started_at",
-  "created_at",
-  "updated_at",
-] as const;
 
 export const leadSubmissions = pgTable(
   "lead_submissions",
@@ -34,9 +19,9 @@ export const leadSubmissions = pgTable(
       .references(() => leads.id, { onDelete: "cascade" }),
     request_id: text("request_id").notNull(),
     channel: text("channel", {
-      enum: CONTACT_SUBMISSION_CHANNEL_VALUES,
+      enum: CONTACT_REQUEST_KINDS,
     }).notNull(),
-    locale: text("locale", { enum: CONTACT_LOCALE_VALUES }).notNull(),
+    locale: text("locale", { enum: ["de", "en"] }).notNull(),
     consent_accepted_at: timestamp("consent_accepted_at", {
       withTimezone: true,
     }).notNull(),
