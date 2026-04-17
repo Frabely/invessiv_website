@@ -1,3 +1,4 @@
+import { defineDatabaseRecord } from "@/server/db/records/shared/database-record-definition";
 import type { TimestampedRecord } from "@/server/db/records/shared/timestamped-record";
 
 export type LeadCallContactRecord = TimestampedRecord & {
@@ -5,3 +6,15 @@ export type LeadCallContactRecord = TimestampedRecord & {
   lead_submission_id: string;
   message?: string;
 };
+
+export const DATABASE_RECORD_DEFINITION =
+  defineDatabaseRecord<LeadCallContactRecord>()({
+    columns: [
+      "id",
+      "lead_submission_id",
+      "message",
+      "created_at",
+      "updated_at",
+    ],
+    tableName: "lead_call_contacts",
+  });
