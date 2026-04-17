@@ -8,13 +8,11 @@ import {
   COMPANY_SOCIAL_LINKEDIN,
   COMPANY_TEL,
 } from "@/config/company";
-import {
-  CONTACT_BUDGET_KEYS,
-  CONTACT_GOAL_KEYS,
-  CONTACT_PAGE_KEYS,
-  CONTACT_START_KEYS,
-  CONTACT_WORKFLOW_KEYS,
-} from "@/common/constants/contact/contact-options";
+import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
+import { CONTACT_PAGE_KEYS } from "@/common/constants/contact/contact-page-keys";
+import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
 
 type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
 

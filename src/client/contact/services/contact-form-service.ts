@@ -1,7 +1,5 @@
-import type {
-  ContactSubmitErrorCode,
-  ContactSubmitResponse,
-} from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit-error-code";
 import type { BaseContactFieldsValues } from "@/common/contracts/contact/fields/base-contact-fields-values";
 import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import type { CalendlyPrefillOptions } from "@/common/contracts/contact/options/calendly-prefill-options";

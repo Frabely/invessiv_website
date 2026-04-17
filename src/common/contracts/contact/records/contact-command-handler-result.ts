@@ -1,4 +1,4 @@
-import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit-error-code";
 
 export type ContactCommandHandlerSuccessResult = {
   ok: true;

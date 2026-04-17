@@ -3,8 +3,3 @@ export type ContactIdentityFieldsCopy = {
   firstNameLabel: string;
   lastNameLabel: string;
 };
-
-export type ContactMessageFieldCopy = {
-  messageLabel: string;
-  messagePlaceholder: string;
-};
