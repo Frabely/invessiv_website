@@ -1,25 +1,43 @@
 import { describe, expect, it, vi } from "vitest";
 
-const { getDatabaseClientMock, hasDatabaseConnectionStringMock } = vi.hoisted(
-  () => ({
-    getDatabaseClientMock: vi.fn(),
-    hasDatabaseConnectionStringMock: vi.fn(),
-  }),
-);
+const {
+  getDrizzleDatabaseClientMock,
+  hasDatabaseConnectionStringMock,
+  persistSharedLeadSubmissionMock,
+} = vi.hoisted(() => ({
+  getDrizzleDatabaseClientMock: vi.fn(),
+  hasDatabaseConnectionStringMock: vi.fn(),
+  persistSharedLeadSubmissionMock: vi.fn(),
+}));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/db/client", () => ({
-  getDatabaseClient: getDatabaseClientMock,
+  getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
+}));
+vi.mock("@/server/db/contact/shared/shared-lead-submission", () => ({
+  persistSharedLeadSubmission: persistSharedLeadSubmissionMock,
 }));
 
 describe("persistDiscoveryCallLead", () => {
-  it("executes one query with shared lead and submission CTEs", async () => {
-    const queryMock = vi.fn().mockResolvedValue([]);
-    getDatabaseClientMock.mockReturnValue({
-      query: queryMock,
+  it("runs the shared submission flow and inserts the call contact in one transaction", async () => {
+    const valuesMock = vi.fn().mockResolvedValue(undefined);
+    const tx = {
+      insert: vi.fn().mockReturnValue({
+        values: valuesMock,
+      }),
+    };
+    const transactionMock = vi.fn().mockImplementation(async (callback) => {
+      await callback(tx);
+    });
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      transaction: transactionMock,
     });
     hasDatabaseConnectionStringMock.mockReturnValue(true);
+    persistSharedLeadSubmissionMock.mockResolvedValue({
+      leadId: "lead-api-id",
+      submissionId: "submission-id",
+    });
 
     const { persistDiscoveryCallLead } =
       await import("@/server/db/contact/persist-discovery-call");
@@ -59,9 +77,23 @@ describe("persistDiscoveryCallLead", () => {
       persisted: true,
       submissionId: "submission-id",
     });
-    expect(queryMock).toHaveBeenCalledTimes(1);
-    const query = queryMock.mock.calls[0]?.[0].replace(/\s+/g, " ").trim();
-    expect(query).toContain("WITH upserted_lead AS");
-    expect(query).toContain("INSERT INTO lead_call_contacts");
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+    expect(persistSharedLeadSubmissionMock).toHaveBeenCalledWith(tx, {
+      lead: expect.objectContaining({
+        email: "max@example.com",
+        id: "lead-api-id",
+      }),
+      submission: expect.objectContaining({
+        channel: "discovery_call",
+        id: "submission-id",
+      }),
+    });
+    expect(valuesMock).toHaveBeenCalledWith({
+      created_at: new Date("2026-03-26T09:30:00.000Z"),
+      id: "call-contact-id",
+      lead_submission_id: "submission-id",
+      message: "Wir wollen den Umfang kurz einordnen.",
+      updated_at: new Date("2026-03-26T09:30:00.000Z"),
+    });
   });
 });

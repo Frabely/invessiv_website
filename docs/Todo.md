@@ -10,6 +10,7 @@ Offen danach:
 - Queries und Mappings schrittweise von Raw-SQL auf Drizzle migrieren.
 - Datenmodelle klar von UI und Route-Logik trennen.
 - Die weitergehende Next.js + Drizzle Zielarchitektur nur noch entlang der realen Persistenzschritte ausbauen.
+- Als letzter Cleanup-Schritt `getDatabaseClient()` nur noch repo-weit pruefen und entfernen, sobald keine Migrations-, Smoke- oder Altpfade mehr den rohen Neon-Client brauchen.
 
 ## I18n Dictionary Rework
 

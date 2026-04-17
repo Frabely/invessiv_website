@@ -68,18 +68,6 @@ Status:
 
 - erledigt
 
-## Schritt 4: Nachfolgearbeit dokumentieren
-
-Ziel:
-
-- Klar festhalten, was im MVP bewusst offen bleibt
-
-Offen danach:
-
-- Raw-SQL-Persistenz auf Drizzle-Queries umstellen
-- Record-Kompatibilitätsschicht weiter abbauen
-- Eventuell spätere Migration von Contracts und Persistenz-Inputs
-
 ## Schritt 5: Raw-SQL-Persistenz auf Drizzle-Queries umstellen
 
 Ziel:
@@ -92,6 +80,10 @@ Done wenn:
 - `INSERT`- und spaetere `UPDATE`-Pfade fuer Contact-Persistenz auf Drizzle laufen
 - Das Laufzeitverhalten gegenueber heute unveraendert bleibt
 - Bestehende Contact-Persistenztests weiter gruen sind
+
+Status:
+
+- erledigt
 
 ## Schritt 6: Record-Kompatibilitaetsschicht weiter abbauen
 

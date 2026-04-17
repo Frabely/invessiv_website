@@ -1,11 +1,12 @@
 import "server-only";
 import {
-  getDatabaseClient,
+  getDrizzleDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
 import type { DiscoveryCallPersistInput } from "@/server/db/persist-input/contact/discovery-call-persist-input";
 import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
-import { buildSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
+import { persistSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
+import { leadCallContacts } from "@/server/db/record-configuration/lead-call-contacts";
 
 export async function persistDiscoveryCallLead(
   discoveryCallPersistInput: DiscoveryCallPersistInput,
@@ -14,36 +15,22 @@ export async function persistDiscoveryCallLead(
     return { persisted: false };
   }
 
-  const sql = getDatabaseClient();
-  const sharedLeadSubmission = buildSharedLeadSubmission({
-    lead: discoveryCallPersistInput.lead,
-    submission: discoveryCallPersistInput.lead_submission,
+  const db = getDrizzleDatabaseClient();
+
+  await db.transaction(async (tx) => {
+    const { submissionId } = await persistSharedLeadSubmission(tx, {
+      lead: discoveryCallPersistInput.lead,
+      submission: discoveryCallPersistInput.lead_submission,
+    });
+
+    await tx.insert(leadCallContacts).values({
+      created_at: discoveryCallPersistInput.call_contact.created_at,
+      id: discoveryCallPersistInput.call_contact.id,
+      lead_submission_id: submissionId,
+      message: discoveryCallPersistInput.call_contact.message ?? null,
+      updated_at: discoveryCallPersistInput.call_contact.updated_at,
+    });
   });
-  const params = [...sharedLeadSubmission.params];
-  const addParam = (value: unknown) => {
-    params.push(value);
-    return `$${params.length}`;
-  };
-
-  const query = `
-    WITH ${sharedLeadSubmission.sql}
-    INSERT INTO lead_call_contacts (
-      id,
-      lead_submission_id,
-      message,
-      created_at,
-      updated_at
-    )
-    SELECT
-      ${addParam(discoveryCallPersistInput.call_contact.id)},
-      ${sharedLeadSubmission.submissionSource}.id,
-      ${addParam(discoveryCallPersistInput.call_contact.message ?? null)},
-      ${addParam(discoveryCallPersistInput.call_contact.created_at)},
-      ${addParam(discoveryCallPersistInput.call_contact.updated_at)}
-    FROM ${sharedLeadSubmission.submissionSource}
-  `;
-
-  await sql.query(query, params);
 
   return {
     persisted: true,

@@ -1,25 +1,43 @@
 import { describe, expect, it, vi } from "vitest";
 
-const { getDatabaseClientMock, hasDatabaseConnectionStringMock } = vi.hoisted(
-  () => ({
-    getDatabaseClientMock: vi.fn(),
-    hasDatabaseConnectionStringMock: vi.fn(),
-  }),
-);
+const {
+  getDrizzleDatabaseClientMock,
+  hasDatabaseConnectionStringMock,
+  persistSharedLeadSubmissionMock,
+} = vi.hoisted(() => ({
+  getDrizzleDatabaseClientMock: vi.fn(),
+  hasDatabaseConnectionStringMock: vi.fn(),
+  persistSharedLeadSubmissionMock: vi.fn(),
+}));
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/db/client", () => ({
-  getDatabaseClient: getDatabaseClientMock,
+  getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
+}));
+vi.mock("@/server/db/contact/shared/shared-lead-submission", () => ({
+  persistSharedLeadSubmission: persistSharedLeadSubmissionMock,
 }));
 
 describe("persistProjectRequestLead", () => {
-  it("executes one query with shared lead and submission CTEs", async () => {
-    const queryMock = vi.fn().mockResolvedValue([]);
-    getDatabaseClientMock.mockReturnValue({
-      query: queryMock,
+  it("runs the shared submission flow and inserts the project request in one transaction", async () => {
+    const valuesMock = vi.fn().mockResolvedValue(undefined);
+    const tx = {
+      insert: vi.fn().mockReturnValue({
+        values: valuesMock,
+      }),
+    };
+    const transactionMock = vi.fn().mockImplementation(async (callback) => {
+      await callback(tx);
+    });
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      transaction: transactionMock,
     });
     hasDatabaseConnectionStringMock.mockReturnValue(true);
+    persistSharedLeadSubmissionMock.mockResolvedValue({
+      leadId: "lead-api-id",
+      submissionId: "submission-id",
+    });
 
     const { persistProjectRequestLead } =
       await import("@/server/db/contact/persist-project-request");
@@ -70,10 +88,35 @@ describe("persistProjectRequestLead", () => {
       persisted: true,
       submissionId: "submission-id",
     });
-    expect(queryMock).toHaveBeenCalledTimes(1);
-    const query = queryMock.mock.calls[0]?.[0].replace(/\s+/g, " ").trim();
-    expect(query).toContain("WITH upserted_lead AS");
-    expect(query).toContain("inserted_submission AS");
-    expect(query).toContain("INSERT INTO lead_project_requests");
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+    expect(persistSharedLeadSubmissionMock).toHaveBeenCalledWith(tx, {
+      lead: expect.objectContaining({
+        email: "max@example.com",
+        id: "lead-api-id",
+      }),
+      submission: expect.objectContaining({
+        channel: "project_request",
+        id: "submission-id",
+      }),
+    });
+    expect(tx.insert).toHaveBeenCalledTimes(1);
+    expect(valuesMock).toHaveBeenCalledWith({
+      budget_key: "between_2500_5000",
+      company: "Invessiv GmbH",
+      created_at: new Date("2026-03-26T09:30:00.000Z"),
+      custom_page_names: ["Karriereseite"],
+      goal_key: "generate_inquiries",
+      id: "project-request-id",
+      lead_submission_id: "submission-id",
+      offer_key: "landing",
+      page_keys: ["home", "contact"],
+      phone: "+49 151 23456789",
+      preferred_start_key: "within_two_weeks",
+      project_details: "Eine Landingpage fuer qualifizierte Leads.",
+      role: "Founder",
+      updated_at: new Date("2026-03-26T09:30:00.000Z"),
+      website: "https://example.com",
+      workflow_key: undefined,
+    });
   });
 });
