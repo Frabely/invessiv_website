@@ -2,15 +2,9 @@
 
 ## Stack Rework
 
-1. Contact-Tabellen im Drizzle-Schema abbilden und Drizzle als Runtime-Quelle fuer Tabellen-/Spalten-Contracts vorbereiten. (erledigt)
-
-Offen danach:
-
-- DB-Contract-Tests und Record-Definitionen auf das Drizzle-Schema umhaengen.
-- Queries und Mappings schrittweise von Raw-SQL auf Drizzle migrieren.
-- Datenmodelle klar von UI und Route-Logik trennen.
-- Die weitergehende Next.js + Drizzle Zielarchitektur nur noch entlang der realen Persistenzschritte ausbauen.
-- Als letzter Cleanup-Schritt `getDatabaseClient()` nur noch repo-weit pruefen und entfernen, sobald keine Migrations-, Smoke- oder Altpfade mehr den rohen Neon-Client brauchen.
+- Das Contact-DB-MVP ist abgeschlossen.
+- Folgearbeit nur noch entlang von [docs/stack-rework-mvp-plan.md](/abs/path/C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/docs/stack-rework-mvp-plan.md) schneiden.
+- Naechster konkrete Slice: verbleibende Raw-Neon-Nutzung um `getDatabaseClient()` pruefen und bereinigen.
 
 ## I18n Dictionary Rework
 

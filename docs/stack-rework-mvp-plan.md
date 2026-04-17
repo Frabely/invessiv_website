@@ -1,132 +1,80 @@
-# Stack Rework MVP Plan
+# Stack Rework Folgeplan
+
+## Ausgangslage
+
+Das Contact-DB-MVP ist abgeschlossen:
+
+- `record-configuration/**` ist die kanonische Modellquelle
+- Contact-Persistenz laeuft ueber Drizzle
+- redundante Record-Metadaten sind entfernt
+- Persistenz-Inputs haengen direkt an den Drizzle-Insert-Shapes
+
+Der naechste Teil ist kein weiteres MVP mehr, sondern ein separates Post-MVP-Folge-Rework.
 
 ## Ziel
 
-Das MVP soll die Contact-DB auf ein korrektes Modell mit `pgTable` stellen, ohne unnötigen Umbaustress.
+Die verbleibenden Contact- und DB-Raender nach dem MVP gezielt bereinigen, ohne den bereits stabilisierten Persistenzpfad wieder aufzureissen.
 
-Wichtig:
-
-- Das Modell ist die Quelle der Wahrheit.
-- Die bestehende Raw-SQL-Persistenz bleibt im MVP noch bestehen.
-- Es wird in kleinen, reviewbaren Schritten gearbeitet.
-
-## Nicht im MVP
-
-- Vollständige Migration aller Queries auf Drizzle
-- Umbau der Contact-API oder UI
-- Zusätzliche neue Tabellen außerhalb des Contact-Schemas
-- Größere Architekturrefactors neben dem DB-Modell
-
-## Schritt 1: `record-configuration` anlegen
+## Schritt 1: `getDatabaseClient()` und Raw-Neon-Reste bereinigen
 
 Ziel:
 
-- `src/server/db/record-configuration` als zentrale Modellablage einführen
-- Pro Tabelle genau ein File
-- Jede Datei exportiert das echte `pgTable`-Modell
+- repo-weit pruefen, wo der rohe Neon-Client noch gebraucht wird
+- den verbleibenden Einsatz bewusst behalten oder gezielt abbauen
+
+Pruefpfade:
+
+- `src/server/db/scripts/run-migrations.ts`
+- `src/server/db/scripts/smoke-test.ts`
+- `src/server/tests/db/records/contact-record-shape.test.ts`
+- `src/server/db/client.ts`
 
 Done wenn:
 
-- `leads`, `lead_submissions`, `lead_project_requests`, `lead_email_contacts`, `lead_call_contacts` dort als eigene Files liegen
-- Tabellenname, Spalten, Defaults, Checks, Relations und Indizes direkt im Modell stehen
-- Das Modell die bestehende SQL-Struktur semantisch abbildet
+- klar dokumentiert ist, welche Pfade bewusst raw SQL bleiben
+- oder diese Pfade auf die neue Struktur umgestellt sind
+- `getDatabaseClient()` entfernt wird, falls es danach keinen sinnvollen Einsatz mehr gibt
 
-Status:
-
-- erledigt
-
-## Schritt 2: Doppelte Spaltenlisten abbauen
+## Schritt 2: Contact-Server-Struktur nach dem DB-Rework neu schneiden
 
 Ziel:
 
-- `*_COLUMNS`-Konstanten schrittweise entfernen
-- Record-Definitionen und Tests direkt vom Drizzle-Modell ableiten
+- die verbleibenden Contact-Helfer unter `src/server/services/contact/**` auf ihre echte Verantwortung reduzieren
+- technische Altgrenzen zwischen Mapping, Persistenzvorbereitung und Handlern bereinigen
+
+Pruefpfade:
+
+- `src/server/services/contact/**`
+- `src/server/contact/handlers/**`
+- angrenzende Tests unter `src/server/tests/services/contact/**`
 
 Done wenn:
 
-- Keine manuell gepflegten Spaltenlisten mehr als Dauerlösung existieren
-- DB-Contract-Tests gegen das Modell laufen
-- Record-Definitionen nur noch als dünner Kompatibilitätslayer übrig sind oder ganz entfallen
+- Mapping, Handler und DB-nahe Vorbereitung klarer getrennt sind
+- verbleibende Sammelmodule oder technische Altpfade reduziert sind
+- neue Grenzen in kleinen, reviewbaren Schritten testbar bleiben
 
-Status:
-
-- erledigt
-
-## Schritt 3: `AGENTS.md` auf die neue DB-Struktur ausrichten
+## Schritt 3: Contact-Altbestand ausserhalb der DB-Schicht bereinigen
 
 Ziel:
 
-- Root-`AGENTS.md` um den Hinweis auf die neue Modellablage ergänzen
-- `src/server/AGENTS.md` so anpassen, dass `record-configuration` als kanonische DB-Modellquelle gilt
+- die restliche Contact-Struktur zwischen Client, Route und Server konsistent in die Zielstruktur ueberfuehren
+
+Pruefpfade:
+
+- `src/features/contact/**`
+- `src/app/api/public/contact/**`
+- kontaktbezogene Tests ausserhalb von `src/server/db/**`
 
 Done wenn:
 
-- Die neue Ablage ist in den Regeln dokumentiert
-- Keine widersprüchlichen Pfadangaben zur DB-Struktur mehr existieren
+- alte Mischgrenzen zwischen Feature-, Route- und Server-Schicht reduziert sind
+- die Contact-Testlandschaft schichtbezogener geschnitten ist
+- bekannte Benennungs- und Strukturaltlasten nicht mehr quer verteilt liegen
 
-Status:
+## Nicht Teil dieses Folgeplans
 
-- erledigt
-
-## Schritt 5: Raw-SQL-Persistenz auf Drizzle-Queries umstellen
-
-Ziel:
-
-- Die bestehenden Persistenzpfade unter `src/server/db/contact/**` nicht mehr ueber handgebaute SQL-Strings schreiben
-- Schreibzugriffe direkt ueber die `pgTable`-Modelle ausfuehren
-
-Done wenn:
-
-- `INSERT`- und spaetere `UPDATE`-Pfade fuer Contact-Persistenz auf Drizzle laufen
-- Das Laufzeitverhalten gegenueber heute unveraendert bleibt
-- Bestehende Contact-Persistenztests weiter gruen sind
-
-Status:
-
-- erledigt
-
-## Schritt 6: Record-Kompatibilitaetsschicht weiter abbauen
-
-Ziel:
-
-- Doppelte Modellrepraesentationen zwischen `record-configuration` und `records/**` reduzieren
-- Nur die Schicht behalten, die fachlich oder testseitig noch wirklich gebraucht wird
-
-Done wenn:
-
-- Redundante Record-Metadaten entfernt oder auf eine minimale Kompatibilitaetsschicht reduziert sind
-- Tests und Persistenz nicht mehr von parallel gepflegten Tabelleninformationen abhaengen
-- Das Drizzle-Modell klar die einzige DB-Strukturquelle ist
-
-Status:
-
-- erledigt
-
-## Schritt 7: Contracts und Persistenz-Inputs pruefen und gezielt migrieren
-
-Ziel:
-
-- Danach erst entscheiden, welche Typen unter `records/**` und `persist-input/**` noch sinnvoll sind
-- Grenzen zwischen DB-Modell, fachlichem Input und Persistenz-Payload sauber neu schneiden
-
-Done wenn:
-
-- Nur noch die fachlich sinnvollen Contracts uebrig sind
-- Persistenz-Inputs nicht mehr unnoetig dieselbe Struktur wie das DB-Modell doppeln
-- Mapping- und Persistenzschicht klar getrennte Verantwortungen haben
-
-Status:
-
-- erledigt
-
-## Testplan
-
-- `npm run typecheck`
-- DB-Contract-Test gegen das Modell
-- Bestehende Contact-Persistenztests weiterlaufen lassen
-
-## Annahmen
-
-- Das MVP bleibt bewusst klein und ändert keine User-Flows.
-- Modellkorrektheit hat Vorrang vor einer vollständigen ORM-Migration.
-- Die neue Struktur soll später ohne erneuten Umbau auf mehr Tabellen erweitert werden können.
+- neue Contact-Tabellen oder neue CRM-Felder
+- UI- oder Form-UX-Umbauten
+- allgemeines `src`-Struktur-Rework ausserhalb des Contact-Kontexts
+- i18n- oder Marketing-Strukturthemen
