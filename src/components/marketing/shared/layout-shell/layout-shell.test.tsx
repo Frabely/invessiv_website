@@ -7,7 +7,7 @@ import styles from "./layout-shell.module.css";
 import { LayoutShell } from "./layout-shell";
 
 describe("LayoutShell", () => {
-  it("renders the shared shell classes and preserves custom classes", () => {
+  it("renders the shared shell rail and preserves custom classes", () => {
     render(
       <LayoutShell className="custom-shell">
         <section aria-label="First section" />
@@ -16,12 +16,14 @@ describe("LayoutShell", () => {
     );
 
     const firstSection = screen.getByRole("region", { name: "First section" });
-    const shell = firstSection.parentElement;
+    const marketingShell = firstSection.parentElement;
+    const railShell = marketingShell?.parentElement;
 
-    expect(shell).not.toBeNull();
-    expect(shell?.className).toContain(styles.shell);
-    expect(shell?.className).toContain(styles.marketing);
-    expect(shell?.className).toContain("custom-shell");
+    expect(marketingShell).not.toBeNull();
+    expect(marketingShell?.className).toContain(styles.marketing);
+    expect(marketingShell?.className).toContain("custom-shell");
+    expect(railShell).not.toBeNull();
+    expect(railShell?.className).toContain(styles.shell);
     expect(screen.getByRole("region", { name: "Second section" })).toBeTruthy();
   });
 });

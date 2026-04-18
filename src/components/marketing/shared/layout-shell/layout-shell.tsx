@@ -8,9 +8,13 @@ type LayoutShellProps = {
 };
 
 export function LayoutShell({ children, className }: LayoutShellProps) {
-  const shellClassName = className
-    ? `${styles.shell} ${styles.marketing} ${className}`
-    : `${styles.shell} ${styles.marketing}`;
+  const marketingClassName = className
+    ? `${styles.marketing} ${className}`
+    : styles.marketing;
 
-  return <div className={shellClassName}>{children}</div>;
+  return (
+    <div className={styles.shell}>
+      <div className={marketingClassName}>{children}</div>
+    </div>
+  );
 }

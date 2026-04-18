@@ -44,7 +44,7 @@
 
 ## Schritt-fuer-Schritt-Umsetzung
 
-### 1. Baseline und Tokens festziehen
+### 1. Baseline und Tokens festziehen [erledigt]
 
 - Bestehende Breitenlogik zentral inventarisieren:
   - `src/app/globals.css`
@@ -60,7 +60,7 @@
   - bestehende Verengung auf `1140px` entfernen
   - grosse Screens nicht schmaler, sondern sinnvoll breiter behandeln
 
-### 2. Shared Layout Shell zuerst korrigieren
+### 2. Shared Layout Shell zuerst korrigieren [erledigt]
 
 - `LayoutShell` zur kanonischen Desktop-Schiene machen
 - Logik so umbauen, dass Marketing-Seiten ab Desktop eine konsistente Aussenkante bekommen

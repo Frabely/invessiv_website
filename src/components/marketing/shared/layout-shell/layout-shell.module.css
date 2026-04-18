@@ -1,12 +1,15 @@
 .shell {
+  --layout-shell-max-width: var(--max-content-width);
+  --layout-shell-inline-gutter: var(--page-inline-gutter);
   width: min(
-    calc(100% - (var(--page-inline-gutter) * 2)),
-    var(--max-content-width)
+    calc(100% - (var(--layout-shell-inline-gutter) * 2)),
+    var(--layout-shell-max-width)
   );
   margin: 0 auto;
 }
 
 .marketing {
+  width: 100%;
   padding: var(--section-shell-pad-top) var(--section-shell-pad-inline)
     var(--section-shell-pad-bottom);
 }
