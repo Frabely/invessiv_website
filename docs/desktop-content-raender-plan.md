@@ -96,9 +96,9 @@
 ### 5. Home-Sections einzeln abarbeiten
 
 - Reihenfolge:
-  1. `included`
+  1. `included` [erledigt]
   2. `services`
-  3. `proof`
+  3. `proof` [erledigt]
   4. `process`
   5. `faq`
   6. `contact`
