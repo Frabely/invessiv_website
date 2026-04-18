@@ -1,5 +1,9 @@
 # Todo
 
+## Cleanup Agents.md files
+
+- check and cleanup AGENTS.md files
+
 ## Stack Rework
 
 - Das Contact-DB-MVP ist abgeschlossen.
