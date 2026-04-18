@@ -7,13 +7,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--scan-point-gap);
-  max-width: 920px;
+  max-width: 52rem;
 }
 
 .item {
   --scan-point-min-height: 28px;
   --scan-point-padding-inline: 12px;
-  --scan-point-font-size: 0.86rem;
+  --scan-point-font-size: var(--font-size-ui-xs);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -59,12 +59,13 @@
   .list {
     margin-bottom: 14px;
     --scan-point-gap: 6px;
+    max-width: 100%;
   }
 
   .item {
     --scan-point-min-height: 26px;
     --scan-point-padding-inline: 10px;
-    --scan-point-font-size: 0.8rem;
+    --scan-point-font-size: 0.82rem;
   }
 
   .item::before {

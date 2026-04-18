@@ -23,6 +23,10 @@
   - Aussenrand gleich
   - innere Komposition unterschiedlich
   - Hero/Proof/Projects duerfen visuell grosszuegiger sein, aber ihre Content-Ausrichtung bleibt an derselben Desktop-Schiene
+- Default-Regel fuer die laufende Umsetzung:
+  - bestehendes Section-Design bleibt erhalten, solange nicht ausdruecklich ein Redesign angefragt wird
+  - ohne explizite Freigabe werden nur Groessen, Abstaende, Padding, Textmasse und Typografie kalibriert
+  - Section-Headings und vorhandene Summary-/Scan-Chips sollen ueber die Home-Sections hinweg konsistent aussehen
 
 ## Skills und Recherchebasis
 
@@ -104,11 +108,13 @@
   2. innere Grids/Spalten an neue Desktop-Breite anpassen
   3. Textmasse auf Lesbarkeit begrenzen
   4. Medien-/Card-Grids breiter nutzen, ohne Text mitzuziehen
+  5. bestehendes visuelles Design beibehalten; nur spacing-, size- und typo-basierte Kalibrierung, ausser ein Redesign wird explizit angefragt
 - Besondere Pruefungen:
   - `proof`: Review-/Project-Grid soll breiter wirken, Text aber kompakt bleiben
   - `process`: narrative Mittelachse und Step-Layout bei mehr Breite nicht zerfallen lassen
   - `contact`: Formular- und Info-Spalten auf Desktop balancieren
   - `footer`: Footer-Inhalt auf dieselbe Aussenkante wie Header/Home ausrichten
+  - Headings und vorhandene Summary-/Chip-Elemente section-uebergreifend auf eine gemeinsame visuelle Sprache kalibrieren
 
 ### 6. Projects-Seite separat umbauen
 
