@@ -52,8 +52,8 @@ describe("ServiceCard", () => {
           moreItemsSingularLabel="weiterer Punkt"
           onCardSelectAction={vi.fn()}
           onDetailsToggleAction={setIsDetailsOpen}
-          onPointerLeave={vi.fn()}
-          onPointerMove={vi.fn()}
+          onPointerLeaveAction={vi.fn()}
+          onPointerMoveAction={vi.fn()}
           recommendedBadgeLabel="Empfohlen"
         />
       );
@@ -124,8 +124,8 @@ describe("ServiceCard", () => {
         moreItemsSingularLabel="more item"
         onCardSelectAction={vi.fn()}
         onDetailsToggleAction={vi.fn()}
-        onPointerLeave={vi.fn()}
-        onPointerMove={vi.fn()}
+        onPointerLeaveAction={vi.fn()}
+        onPointerMoveAction={vi.fn()}
         recommendedBadgeLabel="Recommended"
       />,
     );

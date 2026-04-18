@@ -11,7 +11,10 @@ type LocaleSwitchProps = {
   localeMenuLabel: string;
   localeSwitchLabel: string;
   locales?: readonly Locale[];
-  onSelect: (nextLocale: Locale, event: MouseEvent<HTMLButtonElement>) => void;
+  onSelectAction: (
+    nextLocale: Locale,
+    event: MouseEvent<HTMLButtonElement>,
+  ) => void;
   variant?: "desktop" | "mobile";
 };
 
@@ -21,7 +24,7 @@ export function LocaleSwitch({
   localeMenuLabel,
   localeSwitchLabel,
   locales = SUPPORTED_LOCALES,
-  onSelect,
+  onSelectAction,
   variant = "desktop",
 }: LocaleSwitchProps) {
   const rootClassName = className
@@ -56,7 +59,7 @@ export function LocaleSwitch({
             <button
               className={optionClassName}
               key={supportedLocale}
-              onClick={(event) => onSelect(supportedLocale, event)}
+              onClick={(event) => onSelectAction(supportedLocale, event)}
               type="button"
             >
               {supportedLocale.toUpperCase()}
