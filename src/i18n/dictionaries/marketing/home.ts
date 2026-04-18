@@ -280,14 +280,14 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title: "Webseiten,\ndie führen.\nTools,\ndie entlasten.",
+        title: "Webseiten, die führen.\nTools, die entlasten.",
         description:
-          "Für Unternehmen, die online klarer auftreten, schneller live gehen und intern weniger manuell nacharbeiten wollen.",
+          "Für Unternehmen, die online klarer auftreten und intern weniger manuell nacharbeiten wollen.",
       },
       en: {
-        title: "Websites,\nthat lead.\nTools,\nthat lighten the load.",
+        title: "Websites that lead.\nTools that lighten the load.",
         description:
-          "From landing page to process tool: with a clean setup, direct feedback, and a result that is reviewed before launch.",
+          "For companies that want to show up more clearly online and reduce manual follow-up work internally.",
       },
     },
   },

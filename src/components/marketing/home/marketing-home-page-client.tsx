@@ -46,8 +46,6 @@ export function MarketingHomePageClient({
 
         <HeroSection
           description={sections[0]?.description ?? ""}
-          heroBenefitsAriaLabel={ui.heroBenefitsAriaLabel}
-          heroChipTags={ui.heroChipTags}
           heroPrimaryCta={ui.heroPrimaryCta}
           heroSecondaryCta={ui.heroSecondaryCta}
           heroTag={ui.heroTag}

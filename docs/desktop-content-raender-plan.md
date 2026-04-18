@@ -77,7 +77,7 @@
   - Desktop bei `1920` nicht zu mittig-kompakt
   - Desktop bei `2560` nicht verloren oder ueberdehnt
 
-### 4. Hero separat anpassen
+### 4. Hero separat anpassen [erledigt]
 
 - Hero nicht blind auf Textbreite begrenzen, sondern in zwei Ebenen fuehren:
   - Aussenkante/Content-Grid an die neue gemeinsame Desktop-Schiene

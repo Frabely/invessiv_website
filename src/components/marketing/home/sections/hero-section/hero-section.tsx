@@ -1,6 +1,5 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
@@ -9,8 +8,6 @@ import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {
   description: string;
-  heroBenefitsAriaLabel: string;
-  heroChipTags: string[];
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
@@ -20,8 +17,6 @@ type HeroSectionProps = {
 
 export function HeroSection({
   description,
-  heroBenefitsAriaLabel,
-  heroChipTags,
   heroPrimaryCta,
   heroSecondaryCta,
   heroTag,
@@ -65,12 +60,6 @@ export function HeroSection({
               {heroSecondaryCta}
             </a>
           </div>
-
-          <SectionScanPoints
-            ariaLabel={heroBenefitsAriaLabel}
-            className={styles.scanPoints}
-            points={heroChipTags}
-          />
         </div>
 
         <HeroVisual ariaLabel={heroVisualAriaLabel} />

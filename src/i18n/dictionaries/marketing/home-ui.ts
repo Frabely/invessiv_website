@@ -10,8 +10,6 @@ type IncludedContent = {
 };
 
 export type HomeUiContent = {
-  heroBenefitsAriaLabel: string;
-  heroChipTags: string[];
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;

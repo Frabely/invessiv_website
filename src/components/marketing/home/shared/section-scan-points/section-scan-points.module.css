@@ -1,25 +1,29 @@
 .list {
+  --scan-point-gap: 8px;
   margin: 0 0 18px;
   padding: 0;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--scan-point-gap);
   max-width: 920px;
 }
 
 .item {
+  --scan-point-min-height: 28px;
+  --scan-point-padding-inline: 12px;
+  --scan-point-font-size: 0.86rem;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 28px;
-  padding: 0 12px;
+  min-height: var(--scan-point-min-height);
+  padding: 0 var(--scan-point-padding-inline);
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.86rem;
+  font-size: var(--scan-point-font-size);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.005em;
@@ -54,13 +58,13 @@
 @media (max-width: 640px) {
   .list {
     margin-bottom: 14px;
-    gap: 6px;
+    --scan-point-gap: 6px;
   }
 
   .item {
-    min-height: 26px;
-    padding: 0 10px;
-    font-size: 0.8rem;
+    --scan-point-min-height: 26px;
+    --scan-point-padding-inline: 10px;
+    --scan-point-font-size: 0.8rem;
   }
 
   .item::before {

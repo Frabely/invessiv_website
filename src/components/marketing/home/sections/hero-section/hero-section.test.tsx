@@ -16,12 +16,6 @@ describe("HeroSection", () => {
     render(
       <HeroSection
         description="Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist."
-        heroBenefitsAriaLabel="Kurzvorteile"
-        heroChipTags={[
-          "Transparente Aufwandseinschaetzung",
-          "Ein Ansprechpartner",
-          "QA vor Go-live",
-        ]}
         heroPrimaryCta="Projekt anfragen"
         heroSecondaryCta="Leistungsmodelle"
         heroTag="KLARER AUFBAU, DIREKTE UMSETZUNG"
@@ -35,9 +29,6 @@ describe("HeroSection", () => {
         name: "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
       }),
     ).toBeTruthy();
-    expect(screen.getByText("Transparente Aufwandseinschaetzung")).toBeTruthy();
-    expect(screen.getByText("Ein Ansprechpartner")).toBeTruthy();
-    expect(screen.getByText("QA vor Go-live")).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: "Projekt anfragen" })
