@@ -29,6 +29,8 @@ describe("ContactSection", () => {
         contactChannels={[
           {
             actionLabel: "Kurze E-Mail senden",
+            copyLabel: "E-Mail kopieren",
+            copyValue: "service@invessiv.com",
             description: "Für mittlere Leads mit grobem Vorhaben.",
             href: "mailto:hi@invessiv.de",
             kicker: "Erst grob anfragen",
@@ -56,6 +58,8 @@ describe("ContactSection", () => {
           consentLabel: "Ich stimme gemäß",
           emailLabel: "E-Mail",
           firstNameLabel: "Vorname",
+          addPageLabel: "Seite hinzufügen",
+          lastNameLabel: "Nachname",
           goalLabel: "Ziel",
           goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
           intro: "Kurzbeschreibung",
@@ -84,10 +88,12 @@ describe("ContactSection", () => {
           submitErrorValidation: "Validation error",
           validationSummaryPrefix: "Bitte prüfen:",
           fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorInvalidWebsite: "Ungültige Webseite",
+          fieldErrorInvalidWebsite:
+            "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
           fieldErrorRequired: "Pflichtfeld",
           fieldErrorProjectDetailsRequired: "Projekt erforderlich",
           fieldErrorPagesRequired: "Seiten erforderlich",
+          fieldErrorTooManyPages: "Zu viele Seiten",
           fieldErrorGoalRequired: "Ziel erforderlich",
           fieldErrorWorkflowRequired: "Workflow erforderlich",
           fieldErrorConsentRequired: "Zustimmung erforderlich",
@@ -97,15 +103,63 @@ describe("ContactSection", () => {
           subtitle: "Projekt-Check",
           title: "Projektanfrage",
           websiteLabel: "Webseite",
-          websiteRequiredHint: "Webseite erforderlich",
           workflowLabel: "Workflows",
-          workflowOptions: [{ key: "one_workflow", label: "1 Workflow" }],
+          workflowOptions: [
+            {
+              key: "digitize_existing_process",
+              label: "Bestehenden Ablauf digitalisieren",
+            },
+          ],
           privacyLabel: "Datenschutzerklärung",
         }}
         contactFormOffers={[
           { key: "landing", title: "Landing pages" },
           { key: "web", title: "Webseiten" },
         ]}
+        quickContactForm={{
+          title: "Kurze E-Mail",
+          subtitle: "Schneller Kontakt",
+          intro: "Kurz reicht.",
+          metaLabel: "E-Mail",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
+          emailLabel: "E-Mail",
+          messageLabel: "Nachricht",
+          messagePlaceholder: "Schreib kurz dein Anliegen.",
+          consentLabel: "Ich stimme gemäß",
+          privacyLabel: "Datenschutzerklärung",
+          submitLabel: "E-Mail senden",
+          submittingLabel: "Wird gesendet",
+          submitErrorRateLimited: "Rate limited",
+          submitErrorDelivery: "Delivery error",
+          submitErrorGeneric: "Generic error",
+          submitSuccess: "Mail wird geöffnet",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        discoveryCallForm={{
+          title: "Kennenlern-Call",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Kurz vorbereiten und dann Termin wählen.",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen.",
+          consentLabel: "Ich stimme gemäß",
+          privacyLabel: "Datenschutzerklärung",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
+          submitErrorRateLimited: "Rate limited",
+          submitErrorGeneric: "Generic error",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
         contactSecondaryCta={{
           href: "#services",
           label: "Leistungen ansehen",
@@ -129,28 +183,22 @@ describe("ContactSection", () => {
         .getByRole("link", { name: "Leistungen ansehen" })
         .getAttribute("href"),
     ).toBe("#services");
-    expect(screen.queryByText("Was du direkt erwarten kannst")).toBeNull();
-    expect(screen.queryByText("Deadline")).toBeNull();
-    expect(screen.queryByText("Fast reply")).toBeNull();
 
-    expect(
-      screen.queryByRole("link", { name: "Kurze E-Mail senden" }),
-    ).toBeNull();
+    expect(screen.queryByRole("textbox", { name: "Nachricht*" })).toBeNull();
     expect(
       screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeNull();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kurze E-Mail/ }));
+    expect(screen.getByRole("textbox", { name: "Nachricht*" })).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: "Kurze E-Mail senden" }),
+      screen.getByRole("button", { name: "E-Mail kopieren" }),
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    const callLink = screen.getByRole("link", {
-      name: "Kennenlern-Call starten",
-    });
-    expect(callLink).toBeTruthy();
-    expect(callLink.getAttribute("target")).toBe("_blank");
-    expect(callLink.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "E-Mail*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: "Anliegen" })).toBeTruthy();
+    expect(screen.getByRole("checkbox")).toBeTruthy();
   });
 });

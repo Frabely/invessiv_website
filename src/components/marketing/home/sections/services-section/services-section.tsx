@@ -194,8 +194,8 @@ export function ServicesSection({
             onDetailsToggleAction={(nextOpenState) =>
               toggleCardDetails(card.key, nextOpenState)
             }
-            onPointerLeave={resetCardSpotlight}
-            onPointerMove={setCardSpotlight}
+            onPointerLeaveAction={resetCardSpotlight}
+            onPointerMoveAction={setCardSpotlight}
             recommendedBadgeLabel={recommendedBadgeLabel}
           />
         ))}

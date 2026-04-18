@@ -1,0 +1,12 @@
+{
+  "mail": {
+    "quickContactNotification": {
+      "detailsLabel": "Nachricht",
+      "emailLabel": "E-Mail",
+      "firstNameLabel": "Vorname",
+      "heading": "Neue kurze Anfrage",
+      "lastNameLabel": "Nachname",
+      "subjectPrefix": "Kurze Anfrage"
+    }
+  }
+}

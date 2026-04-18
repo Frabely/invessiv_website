@@ -16,7 +16,7 @@ Zweck: Offene, bewusst verschobene Architekturverstöße werden hier verbindlich
 ## Aktuell offene Punkte
 
 - Datum: 2026-03-21
-- Datei/Ort: [contact-rate-limit.ts](C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/services/anti-abuse/contact-rate-limit.ts)
+- Datei/Ort: [contact-rate-limit-service.ts](C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/services/anti-abuse/contact-rate-limit.ts)
 - Betroffene AGENTS.md-Regel: Monitoring- und Betriebsstandards / Backend-Architektur auf Vercel skalierbar halten
 - Problem: Das Contact-Rate-Limit liegt aktuell in einer In-Memory-Map pro Prozess. Auf Vercel ist das nicht instanzübergreifend konsistent und schützt nur begrenzt gegen verteilte oder kalte Requests.
 - Risiko: Uneinheitliches Abuse-Verhalten zwischen Instanzen, schwächerer Schutz unter Last, schwerer reproduzierbare Limits.

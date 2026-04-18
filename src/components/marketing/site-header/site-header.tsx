@@ -121,12 +121,16 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          <ThemeSwitch copy={themeSwitchCopy} onToggle={toggleTheme} theme={theme} />
+          <ThemeSwitch
+            copy={themeSwitchCopy}
+            onToggle={toggleTheme}
+            theme={theme}
+          />
           <LocaleSwitch
             locale={locale}
             localeMenuLabel={ui.localeMenuLabel}
             localeSwitchLabel={ui.localeSwitchLabel}
-            onSelect={handleLocaleSelect}
+            onSelectAction={handleLocaleSelect}
             variant="desktop"
           />
           <PrimaryCtaLink
@@ -146,7 +150,7 @@ export function SiteHeader({
             locale={locale}
             localeMenuLabel={ui.localeMenuLabel}
             localeSwitchLabel={ui.localeSwitchLabel}
-            onSelect={handleLocaleSelect}
+            onSelectAction={handleLocaleSelect}
             variant="mobile"
           />
           <PrimaryCtaLink

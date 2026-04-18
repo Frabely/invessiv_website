@@ -36,8 +36,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
+          kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -67,7 +69,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: false,
           email: "invalid",
-          fullName: "",
+          firstName: "",
+          kind: "project_request",
+          lastName: "",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Zu kurz",
@@ -97,7 +101,7 @@ describe("POST /api/public/contact", () => {
     vi.setSystemTime(new Date("2026-03-20T10:00:10.000Z"));
     const { POST } = await import("./route");
     const { resetContactRateLimitStore } =
-      await import("@/server/services/anti-abuse/contact-rate-limit");
+      await import("@/server/services/anti-abuse/contact-rate-limit-service");
     resetContactRateLimitStore();
 
     const createRequest = () =>
@@ -105,8 +109,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
+          kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -156,8 +162,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
+          kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -179,11 +187,14 @@ describe("POST /api/public/contact", () => {
   });
 
   it("returns internal_error when submission orchestration throws unexpectedly", async () => {
-    vi.doMock("@/server/services/contact/submit-contact-inquiry", () => ({
-      submitContactInquiry: vi
-        .fn()
-        .mockRejectedValue(new Error("unexpected_failure")),
-    }));
+    vi.doMock(
+      "@/server/contact/handlers/submit-project-request.command-handler",
+      () => ({
+        submitProjectRequestCommandHandler: vi
+          .fn()
+          .mockRejectedValue(new Error("unexpected_failure")),
+      }),
+    );
 
     const { POST } = await import("./route");
     const response = await POST(
@@ -191,8 +202,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          fullName: "Max Mustermann",
+          firstName: "Max",
           goalKey: "generate_inquiries",
+          kind: "project_request",
+          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -211,5 +224,65 @@ describe("POST /api/public/contact", () => {
     expect(response.status).toBe(500);
     expect(payload.ok).toBe(false);
     expect(payload.code).toBe("internal_error");
+  });
+
+  it("dispatches quick_contact requests separately", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/public/contact", {
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "quick_contact",
+          lastName: "Mustermann",
+          locale: "de",
+          message: "Kurze erste Anfrage mit zwei Saetzen.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }) as NextRequest,
+    );
+
+    const payload = (await response.json()) as {
+      ok: boolean;
+      requestId: string;
+    };
+
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(payload.requestId).toBeTruthy();
+  });
+
+  it("dispatches discovery_call requests separately", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      new Request("http://localhost/api/public/contact", {
+        body: JSON.stringify({
+          consentAccepted: true,
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "discovery_call",
+          lastName: "Mustermann",
+          locale: "de",
+          message: "Wir wollen den Umfang kurz einordnen.",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }) as NextRequest,
+    );
+
+    const payload = (await response.json()) as {
+      ok: boolean;
+      requestId: string;
+    };
+
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(payload.requestId).toBeTruthy();
   });
 });

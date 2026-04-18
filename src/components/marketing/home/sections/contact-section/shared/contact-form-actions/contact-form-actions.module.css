@@ -1,0 +1,51 @@
+.stepActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.625rem, 1.4vw, 0.95rem);
+  flex-wrap: wrap;
+}
+
+.actionsMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.actionsButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.requiredHint {
+  margin: 0;
+  color: var(--color-cta);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .stepActions,
+  .actionsMain {
+    align-items: stretch;
+  }
+
+  .requiredHint {
+    order: -1;
+  }
+
+  .actionsButtons {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .actionsButtons > :global(*) {
+    width: 100%;
+    justify-content: center;
+  }
+}

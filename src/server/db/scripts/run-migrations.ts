@@ -2,8 +2,11 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getServerEnv } from "../../config/env";
-import { loadLocalEnvFiles } from "../../config/load-env";
 import { getDatabaseClient } from "../client";
+import {
+  configureDatabaseUrlFromTarget,
+  parseDatabaseTarget,
+} from "./database-target";
 
 const MIGRATION_SPLIT_MARKER = /^-->\s*statement-breakpoint\s*$/gm;
 
@@ -25,7 +28,9 @@ function getMigrationsDirectory() {
 
 async function listMigrationFiles() {
   const migrationsDirectory = getMigrationsDirectory();
-  const entries = await fs.readdir(migrationsDirectory, { withFileTypes: true });
+  const entries = await fs.readdir(migrationsDirectory, {
+    withFileTypes: true,
+  });
 
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".sql"))
@@ -70,7 +75,7 @@ async function applyMigration(filename: string) {
 }
 
 async function run() {
-  loadLocalEnvFiles();
+  configureDatabaseUrlFromTarget(parseDatabaseTarget(process.argv));
   const env = getServerEnv();
 
   if (!env.databaseUrl) {

@@ -1,0 +1,5 @@
+.marker {
+  margin-left: 4px;
+  color: var(--color-cta);
+  font-weight: 800;
+}

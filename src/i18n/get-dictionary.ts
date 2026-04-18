@@ -10,6 +10,14 @@ export type Dictionary = {
       subjectPrefix: string;
       values: Record<string, Record<string, string>>;
     };
+    quickContactNotification: {
+      detailsLabel: string;
+      emailLabel: string;
+      firstNameLabel: string;
+      heading: string;
+      lastNameLabel: string;
+      subjectPrefix: string;
+    };
   };
   imprint: {
     meta: {
@@ -205,15 +213,19 @@ export type Dictionary = {
 };
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const [mail, imprint, terms, privacy] = await Promise.all([
+  const [mail, quickContactMail, imprint, terms, privacy] = await Promise.all([
     import(`./dictionaries/mail/contact-notification/${locale}.json`),
+    import(`./dictionaries/mail/quick-contact-notification/${locale}.json`),
     import(`./dictionaries/legal/imprint/${locale}.json`),
     import(`./dictionaries/legal/terms/${locale}.json`),
     import(`./dictionaries/legal/privacy/${locale}.json`),
   ]);
 
   return {
-    mail: mail.default.mail,
+    mail: {
+      ...mail.default.mail,
+      ...quickContactMail.default.mail,
+    },
     imprint: imprint.default.imprint,
     terms: terms.default.terms,
     privacy: privacy.default.privacy,

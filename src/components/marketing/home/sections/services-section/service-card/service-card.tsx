@@ -29,8 +29,8 @@ type ServiceCardProps = {
   moreItemsSingularLabel: string;
   onCardSelectAction: () => void;
   onDetailsToggleAction: (nextOpenState: boolean) => void;
-  onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
-  onPointerMove: (event: PointerEvent<HTMLElement>) => void;
+  onPointerLeaveAction: (event: PointerEvent<HTMLElement>) => void;
+  onPointerMoveAction: (event: PointerEvent<HTMLElement>) => void;
   recommendedBadgeLabel: string;
 };
 
@@ -50,8 +50,8 @@ export function ServiceCard({
   moreItemsSingularLabel,
   onCardSelectAction,
   onDetailsToggleAction,
-  onPointerLeave,
-  onPointerMove,
+  onPointerLeaveAction,
+  onPointerMoveAction,
   recommendedBadgeLabel,
 }: ServiceCardProps) {
   const detailsId = `services-details-${card.key}`;
@@ -133,8 +133,8 @@ export function ServiceCard({
         data-visible="false"
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
-        onPointerLeave={onPointerLeave}
-        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeaveAction}
+        onPointerMove={onPointerMoveAction}
       >
         <div className={styles.surface}>
           <div className={styles.header}>

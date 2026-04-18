@@ -17,6 +17,14 @@ Die Website speichert validierte Kontaktanfragen zusätzlich zum Mailversand in 
 - Bevorzugt die aktuellen Development-Variablen aus Vercel ziehen:
   - `vercel env pull .env.development.local --yes`
 - Alternativ lokal `DATABASE_URL=...` in `.env.local` oder `.env.development.local` setzen.
+- Empfohlene lokale Zuordnung bei getrennten Datenbanken:
+  - `.env.development.local` für Development
+  - `.env.preview.local` für Preview
+  - `.env.local` oder `.env.production.local` für Production
+- Falls lokal gezielt gegen unterschiedliche Datenbanken migriert oder getestet werden soll, diese Variablen setzen:
+  - `DATABASE_URL_DEVELOPMENT=...`
+  - `DATABASE_URL_PREVIEW=...`
+  - `DATABASE_URL_PRODUCTION=...`
 - Falls noch nicht geschehen, bestehende Mail-Variablen gesetzt lassen:
   - `CONTACT_MAIL_PROVIDER`
   - `CONTACT_MAIL_FROM`
@@ -26,6 +34,10 @@ Die Website speichert validierte Kontaktanfragen zusätzlich zum Mailversand in 
 ## 3. Migrationen ausführen
 
 - `npm run db:migrate`
+- Optional direkt pro Zielumgebung:
+  - `npm run db:migrate:dev`
+  - `npm run db:migrate:preview`
+  - `npm run db:migrate:prod`
 
 Erwartung:
 
@@ -36,6 +48,10 @@ Erwartung:
 ## 4. DB-Smoketest ausführen
 
 - `npm run db:smoke`
+- Optional direkt pro Zielumgebung:
+  - `npm run db:smoke:dev`
+  - `npm run db:smoke:preview`
+  - `npm run db:smoke:prod`
 
 Erwartung:
 
@@ -73,5 +89,7 @@ Erwartung:
 ## Hinweise
 
 - Ohne `DATABASE_URL` bleibt der bestehende Mail-Flow aktiv, aber es erfolgt keine Lead-Persistierung.
+- Die zielgerichteten npm-Skripte setzen intern `DATABASE_URL` aus `DATABASE_URL_DEVELOPMENT`, `DATABASE_URL_PREVIEW` oder `DATABASE_URL_PRODUCTION`.
+- Bevorzugt lesen die zielgerichteten npm-Skripte `DATABASE_URL` direkt aus der passenden lokalen Env-Datei des Ziel-Deployments.
 - Die Persistierung ist aktuell für das bestehende Projektanfrage-Formular umgesetzt und über `source_form = project_request` gekennzeichnet.
 - Die früheren integrationsverwalteten `INVESSIV_DATABASE_*`-Variablen können parallel existieren, der Code priorisiert jedoch `DATABASE_URL`.
