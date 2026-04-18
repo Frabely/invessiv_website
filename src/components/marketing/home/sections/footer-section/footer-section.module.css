@@ -7,7 +7,10 @@
 }
 
 .inner {
-  width: min(var(--max-content-width), 100%);
+  width: min(
+    calc(100% - (var(--page-inline-gutter) * 2)),
+    var(--max-content-width)
+  );
   margin: 0 auto;
   padding: 0;
   border: 0;
@@ -239,18 +242,8 @@
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
-  .inner {
-    padding-inline: var(--wide-monitor-inline-frame);
-  }
-
   .grid {
     gap: 22px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .inner {
-    padding-inline: 20px;
   }
 }
 
@@ -258,10 +251,6 @@
   .footer {
     margin-top: 18px;
     padding-top: 14px;
-  }
-
-  .inner {
-    padding-inline: 16px;
   }
 
   .grid {
@@ -315,10 +304,6 @@
 }
 
 @media (max-width: 640px) {
-  .inner {
-    padding-inline: 14px;
-  }
-
   .grid {
     gap: 18px;
   }

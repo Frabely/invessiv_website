@@ -1,6 +1,8 @@
 .shell {
-  width: 100%;
-  max-width: var(--max-content-width);
+  width: min(
+    calc(100% - (var(--page-inline-gutter) * 2)),
+    var(--max-content-width)
+  );
   margin: 0 auto;
 }
 
