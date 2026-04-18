@@ -1,9 +1,9 @@
 .card {
   position: relative;
   display: grid;
-  gap: 16px;
+  gap: 20px;
   min-width: 0;
-  padding: 20px;
+  padding: clamp(18px, 1.5vw, 24px);
   border-radius: 26px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: linear-gradient(
@@ -50,11 +50,13 @@
 .profileWrap {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
   min-width: 0;
 }
 
 .profileImage {
+  width: 64px;
+  height: 64px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 86%, transparent);
   background: rgba(255, 255, 255, 0.04);
@@ -64,19 +66,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent);
   background: color-mix(in srgb, var(--accent) 18%, var(--color-surface-2) 82%);
   color: color-mix(in srgb, var(--accent) 72%, var(--color-text) 28%);
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 700;
 }
 
 .identity {
   display: grid;
-  gap: 5px;
+  gap: 7px;
   min-width: 0;
 }
 
@@ -88,22 +90,22 @@
 }
 
 .author {
-  font-size: 1rem;
+  font-size: clamp(1.08rem, 1.1vw, 1.2rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.18;
 }
 
 .context {
   color: color-mix(in srgb, var(--text) 62%, var(--muted) 38%);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: clamp(0.98rem, 0.95vw, 1.05rem);
+  line-height: 1.42;
 }
 
 .rating {
   margin: 0;
   color: color-mix(in srgb, var(--accent) 68%, var(--color-text) 32%);
-  font-size: 1rem;
-  letter-spacing: 0.16em;
+  font-size: clamp(1.18rem, 1.25vw, 1.34rem);
+  letter-spacing: 0.18em;
   white-space: nowrap;
 }
 
@@ -111,7 +113,7 @@
   position: relative;
   z-index: 1;
   color: color-mix(in srgb, var(--text) 90%, var(--muted) 10%);
-  font-size: 0.98rem;
+  font-size: clamp(1.04rem, 1.02vw, 1.12rem);
   line-height: 1.62;
 }
 
@@ -122,8 +124,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-top: 14px;
+  gap: 14px;
+  padding-top: 12px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
 }
 
@@ -131,9 +133,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   color: color-mix(in srgb, var(--text) 58%, var(--muted) 42%);
-  font-size: 0.8rem;
+  font-size: clamp(0.98rem, 0.95vw, 1.04rem);
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1.2;
@@ -142,17 +144,17 @@
 
 .sourceIcon {
   display: block;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   opacity: 0.92;
 }
 
 .sourceLink {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   color: color-mix(in srgb, var(--accent) 78%, #ffe8cd 22%);
-  font-size: 0.9rem;
+  font-size: clamp(1rem, 0.98vw, 1.08rem);
   font-weight: 700;
 }
 
@@ -218,13 +220,38 @@
 
 @media (max-width: 759px) {
   .card {
-    gap: 15px;
+    gap: 18px;
     padding: 18px;
   }
 
   .header {
     flex-direction: column;
     gap: 14px;
+  }
+
+  .profileImage,
+  .profileFallback {
+    width: 58px;
+    height: 58px;
+  }
+
+  .author {
+    font-size: 1.02rem;
+  }
+
+  .context,
+  .source,
+  .sourceLink {
+    font-size: 0.94rem;
+  }
+
+  .rating {
+    font-size: 1.1rem;
+  }
+
+  .quote {
+    font-size: 0.98rem;
+    line-height: 1.58;
   }
 
   .footer {

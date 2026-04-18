@@ -53,9 +53,9 @@ export function ProofReviewCard({
             <Image
               alt=""
               className={styles.profileImage}
-              height={56}
+              height={64}
               src={profileImageSrc}
-              width={56}
+              width={64}
             />
           ) : (
             <span aria-hidden="true" className={styles.profileFallback}>
@@ -82,9 +82,9 @@ export function ProofReviewCard({
             alt=""
             aria-hidden="true"
             className={styles.sourceIcon}
-            height={18}
+            height={22}
             src={googleIcon}
-            width={18}
+            width={22}
           />
           <span>{sourceLabel}</span>
         </span>

@@ -64,7 +64,6 @@ export function ProofSection({
           <h2 className={styles.title}>{title}</h2>
           <SectionScanPoints
             ariaLabel={highlightsAriaLabel}
-            className={styles.highlights}
             fallbackClassName={styles.description}
             fallbackText={description}
             points={summaryPoints}
@@ -93,7 +92,7 @@ export function ProofSection({
           aria-label={
             featuredProject?.ariaLabel ?? featuredProjectFallbackLabel
           }
-          className={`${styles.card} ${styles.placeholderCard}`}
+          className={styles.placeholderCard}
           role="listitem"
         >
           <div className={styles.websiteFrame}>
