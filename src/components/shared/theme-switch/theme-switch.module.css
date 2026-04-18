@@ -4,11 +4,7 @@
     var(--color-border) 84%,
     transparent
   );
-  --theme-switch-bg: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-surface-1) 92%, #ffffff 8%),
-    color-mix(in srgb, var(--color-surface-2) 88%, transparent)
-  );
+  --theme-switch-bg: var(--header-control-surface);
   --theme-switch-shadow:
     inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent),
     0 10px 22px rgba(8, 10, 15, 0.14);
@@ -149,11 +145,7 @@
     var(--color-border) 88%,
     transparent
   );
-  --theme-switch-bg: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-surface-1) 94%, #ffffff 6%),
-    color-mix(in srgb, var(--color-surface-2) 80%, transparent)
-  );
+  --theme-switch-bg: var(--header-control-surface);
   --theme-switch-shadow:
     inset 0 1px 0 color-mix(in srgb, #ffffff 78%, transparent),
     0 8px 18px rgba(36, 55, 90, 0.08);

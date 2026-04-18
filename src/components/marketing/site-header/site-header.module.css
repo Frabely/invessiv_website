@@ -29,8 +29,8 @@
 
 .inner {
   width: min(
-    calc(100% - (var(--page-inline-gutter) * 2)),
-    var(--max-content-width)
+    calc(100% - (var(--layout-rail-inline-gutter) * 2)),
+    var(--layout-rail-max-width)
   );
   margin: 0 auto;
   min-height: 76px;
@@ -52,7 +52,7 @@
   gap: 10px;
   justify-self: start;
   color: var(--color-text);
-  font-size: 1.12rem;
+  font-size: var(--font-size-brand);
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -228,7 +228,7 @@
   }
 
   .brand {
-    font-size: 1.08rem;
+    font-size: var(--font-size-brand-wide);
   }
 
   .navList {

@@ -68,7 +68,7 @@
 - Ergebnis dieses Schritts:
   - Home-Sections, die `LayoutShell` nutzen, erben die neue Breite sofort kontrolliert
 
-### 3. Header separat ausrichten
+### 3. Header separat ausrichten [erledigt]
 
 - `site-header` auf dieselbe Desktop-Aussenkante wie die Content-Schiene bringen
 - Header visuell vollbreit lassen, aber die innere Navigation/Brand/CTA exakt an die neue Grid-Schiene koppeln

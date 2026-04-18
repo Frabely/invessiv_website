@@ -1,9 +1,7 @@
 .shell {
-  --layout-shell-max-width: var(--max-content-width);
-  --layout-shell-inline-gutter: var(--page-inline-gutter);
   width: min(
-    calc(100% - (var(--layout-shell-inline-gutter) * 2)),
-    var(--layout-shell-max-width)
+    calc(100% - (var(--layout-rail-inline-gutter) * 2)),
+    var(--layout-rail-max-width)
   );
   margin: 0 auto;
 }
