@@ -42,7 +42,7 @@
 
 .intro h1 {
   margin: 0;
-  font-size: clamp(1.7rem, 3.8vw, 2.5rem);
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
   line-height: 1.15;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -51,7 +51,7 @@
 .lead {
   margin: 16px 0 0;
   max-width: var(--measure-text);
-  font-size: 1rem;
+  font-size: var(--font-size-body-md);
   line-height: 1.72;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
 }
@@ -81,14 +81,14 @@
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .page {
     padding-top: 112px;
-    font-size: 0.94rem;
+    font-size: 1rem;
   }
 
   .intro h1 {
-    font-size: clamp(1.75rem, 2.25vw, 2.3rem);
+    font-size: clamp(2rem, 2.45vw, 2.8rem);
   }
 
   .lead {
-    font-size: 0.94rem;
+    font-size: 1.02rem;
   }
 }

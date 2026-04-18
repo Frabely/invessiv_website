@@ -5,19 +5,19 @@
 
 .label {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 650;
 }
 
 .hint {
   color: color-mix(in srgb, var(--color-text) 63%, var(--color-text-muted) 37%);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
 }
 
 .error {
   margin: -2px 0 0;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 650;
   min-height: 1.1rem;
 }
@@ -38,7 +38,7 @@
     var(--color-surface-1) 36%
   );
   color: var(--color-text);
-  font-size: 0.93rem;
+  font-size: 0.96rem;
   line-height: 1.45;
   padding: 10px 12px;
 }

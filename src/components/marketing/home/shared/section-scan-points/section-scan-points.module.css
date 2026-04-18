@@ -19,7 +19,7 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: 0.005em;
@@ -60,7 +60,7 @@
   .item {
     min-height: 26px;
     padding: 0 10px;
-    font-size: 0.76rem;
+    font-size: 0.8rem;
   }
 
   .item::before {

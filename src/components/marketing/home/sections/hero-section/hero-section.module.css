@@ -58,7 +58,7 @@
   margin: 0;
   max-width: 16ch;
   color: var(--color-text);
-  font-size: clamp(2rem, 5.2vw, 4rem);
+  font-size: var(--font-size-hero-title);
   line-height: 1.04;
   text-wrap: balance;
   position: relative;
@@ -88,6 +88,7 @@
   margin: 16px 0 0;
   max-width: 58ch;
   color: color-mix(in srgb, var(--color-text-muted) 70%, var(--color-text) 30%);
+  font-size: var(--font-size-body-md);
   line-height: 1.6;
   text-wrap: pretty;
 }
@@ -172,12 +173,12 @@
 
   .title {
     max-width: 15ch;
-    font-size: clamp(2.35rem, 3vw, 3.35rem);
+    font-size: var(--font-size-hero-title-wide);
   }
 
   .description {
     max-width: 56ch;
-    font-size: 1rem;
+    font-size: var(--font-size-body-md-wide);
     line-height: 1.6;
   }
 

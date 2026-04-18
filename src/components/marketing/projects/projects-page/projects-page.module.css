@@ -66,7 +66,7 @@
 
 .title {
   max-width: 12ch;
-  font-size: clamp(2.2rem, 4.4vw, 4rem);
+  font-size: clamp(2.55rem, 5vw, 4.35rem);
   line-height: 0.98;
   letter-spacing: -0.05em;
   text-wrap: balance;
@@ -78,7 +78,7 @@
 .focusText,
 .closingText {
   color: color-mix(in srgb, var(--text) 78%, var(--muted) 22%);
-  font-size: 1rem;
+  font-size: var(--font-size-body-md);
   line-height: 1.72;
 }
 
@@ -89,13 +89,13 @@
 .supportingNote {
   max-width: 54ch;
   color: color-mix(in srgb, var(--text) 64%, var(--muted) 36%);
-  font-size: 0.9rem;
+  font-size: var(--font-size-ui-sm);
   line-height: 1.56;
 }
 
 .sectionTitle,
 .closingTitle {
-  font-size: clamp(1.45rem, 2.4vw, 2.35rem);
+  font-size: var(--font-size-section-title);
   line-height: 1.08;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -201,7 +201,7 @@
 
 .projectKicker {
   color: color-mix(in srgb, var(--accent) 82%, var(--text) 18%);
-  font-size: 0.72rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -209,7 +209,7 @@
 
 .projectCategory {
   color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
-  font-size: 0.8rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 760;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -217,7 +217,7 @@
 
 .detailLabel {
   color: color-mix(in srgb, var(--text) 68%, var(--muted) 32%);
-  font-size: 0.8rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -225,7 +225,7 @@
 
 .projectTitle {
   max-width: 18ch;
-  font-size: clamp(1.5rem, 2vw, 2.28rem);
+  font-size: var(--font-size-section-subtitle);
   line-height: 1.08;
   letter-spacing: -0.045em;
   text-wrap: balance;
@@ -389,7 +389,7 @@
 
 .phoneTime {
   color: var(--project-device-status-ink);
-  font-size: 0.73rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -814,7 +814,7 @@
 
 .projectLink {
   color: color-mix(in srgb, var(--accent) 82%, #ffe8cd 18%);
-  font-size: 0.92rem;
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   line-height: 1.3;
 }

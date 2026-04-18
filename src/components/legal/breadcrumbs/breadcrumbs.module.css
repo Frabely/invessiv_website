@@ -17,7 +17,7 @@
   align-items: center;
   gap: 10px;
   color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   line-height: 1;
 }
 
@@ -71,7 +71,7 @@
 
   .item {
     gap: 8px;
-    font-size: 0.76rem;
+    font-size: 0.8rem;
   }
 
   .link,

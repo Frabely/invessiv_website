@@ -13,7 +13,7 @@
 .sectionTitle {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.9rem, 3.1vw, 2.55rem);
+  font-size: var(--font-size-section-title);
   letter-spacing: -0.03em;
 }
 
@@ -21,7 +21,7 @@
   margin: -4px 0 0;
   max-width: min(100%, 54rem);
   color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
-  font-size: 0.92rem;
+  font-size: var(--font-size-body-md);
   font-weight: 600;
   line-height: 1.55;
   letter-spacing: -0.01em;
@@ -29,7 +29,7 @@
 
 .goalTitle {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   letter-spacing: 0.01em;
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
@@ -51,7 +51,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.96rem;
+  font-size: var(--font-size-button);
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -145,7 +145,7 @@
 
 .secondaryTitle {
   margin: 0;
-  font-size: clamp(1.24rem, 2vw, 1.58rem);
+  font-size: var(--font-size-section-subtitle);
   line-height: 1.15;
   letter-spacing: -0.03em;
   color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
@@ -192,7 +192,7 @@
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .sectionTitle {
-    font-size: clamp(1.6rem, 1.95vw, 2.05rem);
+    font-size: var(--font-size-section-title-wide);
   }
 }
 
