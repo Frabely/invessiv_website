@@ -3,8 +3,8 @@ import {
   getDrizzleDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { ProjectRequestPersistInput } from "@/server/db/persist-input/contact/project-request-persist-input";
-import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
+import type { ProjectRequestPersistInput } from "@/server/db/contracts/contact/project-request-persist-input";
+import { type PersistSubmissionResult } from "@/server/db/contracts/contact/contact-persist-result";
 import { persistSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 import { leadProjectRequests } from "@/server/db/record-configuration/lead-project-requests";
 

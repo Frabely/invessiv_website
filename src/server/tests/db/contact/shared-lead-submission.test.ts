@@ -1,8 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import type {
-  ContactLeadPersistRecord,
-  ContactLeadSubmissionPersistRecord,
-} from "@/server/db/persist-input/contact/contact-persist-types";
+import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
+import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 
 vi.mock("server-only", () => ({}));
 

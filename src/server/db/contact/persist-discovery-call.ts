@@ -3,8 +3,8 @@ import {
   getDrizzleDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { DiscoveryCallPersistInput } from "@/server/db/persist-input/contact/discovery-call-persist-input";
-import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
+import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/discovery-call-persist-input";
+import { type PersistSubmissionResult } from "@/server/db/contracts/contact/contact-persist-result";
 import { persistSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 import { leadCallContacts } from "@/server/db/record-configuration/lead-call-contacts";
 

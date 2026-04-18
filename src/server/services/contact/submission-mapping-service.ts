@@ -2,7 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import type { Locale } from "@/config/i18n";
 import type { ContactSubmissionChannel } from "@/common/contracts/contact/keys/contact-request-kind";
-import type { ContactLeadSubmissionPersistRecord } from "@/server/db/persist-input/contact/contact-persist-types";
+import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 
 export type SubmissionApiToDbMapperInput = {
   locale: Locale;

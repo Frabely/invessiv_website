@@ -3,8 +3,8 @@ import {
   getDrizzleDatabaseClient,
   hasDatabaseConnectionString,
 } from "@/server/db/client";
-import type { QuickContactPersistInput } from "@/server/db/persist-input/contact/quick-contact-persist-input";
-import { type PersistSubmissionResult } from "@/server/db/contact/submission-persistence";
+import type { QuickContactPersistInput } from "@/server/db/contracts/contact/quick-contact-persist-input";
+import { type PersistSubmissionResult } from "@/server/db/contracts/contact/contact-persist-result";
 import { persistSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";
 import { leadEmailContacts } from "@/server/db/record-configuration/lead-email-contacts";
 
