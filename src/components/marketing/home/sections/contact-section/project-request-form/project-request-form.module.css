@@ -1,10 +1,10 @@
 .stepper {
-  margin: 0.2rem 0 0;
+  margin: 0.35rem 0 0;
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.7rem, 1.2vw, 1rem);
+  gap: clamp(0.9rem, 1.45vw, 1.15rem);
 }
 
 .stepperItem {
@@ -13,8 +13,8 @@
 
 .stepperTrigger {
   width: 100%;
-  min-height: 72px;
-  padding: 0.8rem 0.9rem;
+  min-height: 78px;
+  padding: 0.92rem 1rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   border-radius: 16px;
   background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
@@ -59,8 +59,8 @@
 }
 
 .stepperIndex {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
@@ -68,7 +68,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: var(--font-size-ui-xs);
+  font-size: 0.88rem;
   font-weight: 700;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .stepperCheck {
-  font-size: 0.88rem;
+  font-size: 1.02rem;
   font-weight: 900;
   line-height: 1;
 }
@@ -100,13 +100,13 @@
 .stepperCopy {
   min-width: 0;
   display: grid;
-  gap: 2px;
+  gap: 0.18rem;
 }
 
 .stepperCopy small {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.78rem;
-  line-height: 1.2;
+  font-size: 0.82rem;
+  line-height: 1.25;
   letter-spacing: 0.03em;
 }
 
@@ -120,9 +120,9 @@
 
 .stepperCopy strong {
   color: inherit;
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   font-weight: 760;
-  line-height: 1.25;
+  line-height: 1.28;
 }
 
 .stepperItemDone .stepperCopy strong {
@@ -130,7 +130,7 @@
 }
 
 .form {
-  margin-top: 1.15rem;
+  margin-top: 1.35rem;
 }
 
 .step {
@@ -149,12 +149,12 @@
 .step > legend {
   display: block;
   width: 100%;
-  margin: 0 0 0.8rem;
-  padding: 0 0 0.75rem;
+  margin: 0 0 1rem;
+  padding: 0 0 0.9rem;
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
-  font-size: 0.98rem;
+  font-size: 1.02rem;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -176,7 +176,7 @@
 .pagesLabel {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 680;
 }
 
@@ -187,13 +187,13 @@
 }
 
 .pageOption {
-  min-height: 40px;
-  padding: 0 0.95rem;
+  min-height: 42px;
+  padding: 0 1rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   font-weight: 670;
 }
 
@@ -272,10 +272,10 @@
 .conditionalHint {
   margin: -2px 0 0;
   border-left: 3px solid color-mix(in srgb, var(--color-cta) 40%, transparent);
-  padding: 0.45rem 0 0.45rem 0.8rem;
+  padding: 0.55rem 0 0.55rem 0.9rem;
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: 0.88rem;
-  line-height: 1.5;
+  font-size: 0.93rem;
+  line-height: 1.58;
 }
 
 @media (min-width: 901px) {
@@ -287,32 +287,32 @@
 
 @media (min-width: 1100px) {
   .stepper {
-    gap: 0.9rem;
+    gap: 1rem;
   }
 
   .stepperTrigger {
-    min-height: 82px;
-    padding: 0.95rem 1rem;
+    min-height: 88px;
+    padding: 1rem 1.08rem;
     border-radius: 18px;
   }
 
   .stepperIndex {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
   }
 
   .stepperCopy strong {
-    font-size: 1.02rem;
+    font-size: 1.06rem;
   }
 
   .form {
-    margin-top: 1.25rem;
+    margin-top: 1.5rem;
   }
 
   .step > legend {
-    margin-bottom: 0.9rem;
-    padding-bottom: 0.8rem;
-    font-size: 1rem;
+    margin-bottom: 1.1rem;
+    padding-bottom: 0.95rem;
+    font-size: 1.06rem;
   }
 
   .pagesOptions {

@@ -1,11 +1,11 @@
 .form {
   display: grid;
-  gap: clamp(0.95rem, 1.4vw, 1.15rem);
+  gap: clamp(1.05rem, 1.6vw, 1.35rem);
 }
 
 .grid {
   display: grid;
-  gap: clamp(0.9rem, 1.3vw, 1.1rem);
+  gap: clamp(1rem, 1.5vw, 1.25rem);
 }
 
 .gridTwo {
@@ -15,8 +15,8 @@
 .fieldControl,
 .messageField textarea {
   width: 100%;
-  min-height: 48px;
-  border-radius: 14px;
+  min-height: 50px;
+  border-radius: 15px;
   border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
   background: color-mix(
     in srgb,
@@ -24,13 +24,13 @@
     var(--color-surface-1) 36%
   );
   color: var(--color-text);
-  font-size: clamp(0.95rem, 0.18vw + 0.92rem, 1rem);
-  line-height: 1.5;
-  padding: 0.8rem 0.95rem;
+  font-size: clamp(0.98rem, 0.2vw + 0.95rem, 1.03rem);
+  line-height: 1.55;
+  padding: 0.9rem 1rem;
 }
 
 .messageField textarea {
-  min-height: 152px;
+  min-height: 164px;
   resize: vertical;
 }
 
@@ -50,17 +50,17 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: start;
-  column-gap: 10px;
-  row-gap: 6px;
+  column-gap: 12px;
+  row-gap: 8px;
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: 0.88rem;
-  line-height: 1.52;
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .consent input {
-  width: 1rem;
-  height: 1rem;
-  margin: 0.15rem 0 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0.18rem 0 0;
   accent-color: var(--color-cta);
   align-self: center;
 }
@@ -68,7 +68,7 @@
 .consentError {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 650;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
 }
@@ -86,20 +86,20 @@
 
 @media (min-width: 1100px) {
   .form {
-    gap: 1.1rem;
+    gap: 1.25rem;
   }
 
   .grid {
-    gap: 1rem;
+    gap: 1.1rem;
   }
 
   .fieldControl,
   .messageField textarea {
-    min-height: 52px;
-    padding: 0.9rem 1rem;
+    min-height: 54px;
+    padding: 0.96rem 1.06rem;
   }
 
   .messageField textarea {
-    min-height: 168px;
+    min-height: 180px;
   }
 }
