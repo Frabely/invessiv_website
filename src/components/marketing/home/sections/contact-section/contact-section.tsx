@@ -240,6 +240,7 @@ export function ContactSection({
                     aria-controls={`contact-entry-panel-${entry.id}`}
                     aria-selected={isActive}
                     className={`${styles.entryTrigger}${isActive ? ` ${styles.entryTriggerActive}` : ""}`}
+                    data-entry-id={entry.id}
                     id={`contact-entry-tab-${entry.id}`}
                     key={entry.id}
                     onKeyDown={(event) => {
