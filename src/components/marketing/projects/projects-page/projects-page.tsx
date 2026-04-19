@@ -101,9 +101,6 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                   fallbackText={content.hero.intro}
                   points={content.hero.highlights}
                 />
-                <p className={styles.supportingNote}>
-                  {content.hero.supportingNote}
-                </p>
               </div>
 
               <aside className={styles.heroAside}>
@@ -116,6 +113,10 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
                 </p>
               </aside>
             </div>
+
+            <p className={styles.supportingNote}>
+              {content.hero.supportingNote}
+            </p>
           </section>
 
           <section className={styles.projectsSection}>

@@ -1,22 +1,22 @@
 .pageShell.pageShell {
-  padding-top: 106px;
-  padding-bottom: 56px;
+  padding-top: 110px;
+  padding-bottom: 72px;
 }
 
 .pageHero {
   position: relative;
   display: grid;
-  gap: 18px;
-  padding-bottom: 10px;
+  gap: 28px;
+  padding-bottom: 18px;
 }
 
 .breadcrumbs {
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .heroGrid {
   display: grid;
-  gap: 18px;
+  gap: 28px;
 }
 
 .heroContent,
@@ -30,16 +30,16 @@
 
 .heroContent {
   display: grid;
-  gap: 14px;
+  gap: 18px;
 }
 
 .heroAside {
   display: grid;
   align-content: start;
-  gap: 10px;
-  padding: 17px;
+  gap: 14px;
+  padding: 24px;
   border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border) 84%);
-  border-radius: 24px;
+  border-radius: 28px;
   background: color-mix(
     in srgb,
     var(--surface) 82%,
@@ -65,9 +65,9 @@
 }
 
 .title {
-  max-width: 12ch;
-  font-size: clamp(2.55rem, 5vw, 4.35rem);
-  line-height: 0.98;
+  max-width: 18ch;
+  font-size: var(--font-size-hero-title);
+  line-height: 0.96;
   letter-spacing: -0.05em;
   text-wrap: balance;
 }
@@ -78,7 +78,7 @@
 .focusText,
 .closingText {
   color: color-mix(in srgb, var(--text) 78%, var(--muted) 22%);
-  font-size: var(--font-size-body-md);
+  font-size: var(--font-size-body-lg);
   line-height: 1.72;
 }
 
@@ -87,15 +87,19 @@
 }
 
 .supportingNote {
-  max-width: 54ch;
-  color: color-mix(in srgb, var(--text) 64%, var(--muted) 36%);
-  font-size: var(--font-size-ui-sm);
-  line-height: 1.56;
+  max-width: min(72ch, 100%);
+  padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 20px;
+  color: color-mix(in srgb, var(--text) 70%, var(--muted) 30%);
+  font-size: var(--font-size-body-md);
+  line-height: 1.7;
+  background: color-mix(in srgb, var(--color-surface-1) 86%, transparent);
 }
 
 .sectionTitle,
 .closingTitle {
-  font-size: var(--font-size-section-title);
+  font-size: var(--font-size-section-subtitle);
   line-height: 1.08;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -107,13 +111,13 @@
 
 .projectsSection {
   display: grid;
-  gap: 26px;
-  padding-bottom: 36px;
+  gap: 44px;
+  padding-bottom: 52px;
 }
 
 .projectsGrid {
   display: grid;
-  gap: 24px;
+  gap: 0;
 }
 
 .projectCard {
@@ -135,61 +139,39 @@
   --project-detail-dot-glow: rgba(240, 166, 43, 0.12);
   position: relative;
   display: grid;
-  gap: 24px;
-  padding: 24px;
-  border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
-  border-radius: 32px;
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, #ffffff 6%, transparent),
-      transparent 38%
-    ),
-    radial-gradient(
-      circle at top right,
-      color-mix(in srgb, var(--accent) 12%, transparent),
-      transparent 34%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-surface-1) 96%, transparent),
-      color-mix(in srgb, var(--color-surface-2) 88%, var(--color-surface-1) 12%)
-    );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
-    0 18px 34px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
+  gap: 0;
+  padding: 0;
+  padding-bottom: 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.projectCard + .projectCard {
+  padding-top: 42px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 58%, transparent);
 }
 
 .projectCard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, #ffffff 5%, transparent),
-    transparent 34%,
-    color-mix(in srgb, var(--color-cta) 4%, transparent)
-  );
-  pointer-events: none;
+  content: none;
 }
 
 .projectLead {
   display: grid;
   align-content: start;
-  gap: 16px;
+  gap: 24px;
 }
 
 .projectHeader {
   display: grid;
-  gap: 8px;
+  gap: 12px;
 }
 
 .projectMetaLine {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -201,7 +183,7 @@
 
 .projectKicker {
   color: color-mix(in srgb, var(--accent) 82%, var(--text) 18%);
-  font-size: var(--font-size-ui-xs);
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -209,7 +191,7 @@
 
 .projectCategory {
   color: color-mix(in srgb, var(--text) 78%, var(--accent) 22%);
-  font-size: var(--font-size-ui-xs);
+  font-size: var(--font-size-ui-sm);
   font-weight: 760;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -217,7 +199,7 @@
 
 .detailLabel {
   color: color-mix(in srgb, var(--text) 68%, var(--muted) 32%);
-  font-size: var(--font-size-ui-xs);
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -225,7 +207,7 @@
 
 .projectTitle {
   max-width: 18ch;
-  font-size: var(--font-size-section-subtitle);
+  font-size: var(--font-size-section-title);
   line-height: 1.08;
   letter-spacing: -0.045em;
   text-wrap: balance;
@@ -234,10 +216,11 @@
 .focusBlock,
 .detailBlock {
   display: grid;
-  gap: 10px;
-  padding: 14px 15px;
+  gap: 16px;
+  padding: 20px 20px 19px;
+  width: 100%;
   border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
-  border-radius: 18px;
+  border-radius: 20px;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--color-surface-1) 92%, transparent),
@@ -250,12 +233,13 @@
 
 .projectVisual {
   display: grid;
+  width: 100%;
   justify-items: center;
 }
 
 .projectMediaColumn {
   display: grid;
-  gap: 12px;
+  gap: 24px;
 }
 
 .browserFrame {
@@ -553,8 +537,9 @@
 
 .projectMeta {
   display: grid;
-  gap: 18px;
-  padding-top: 4px;
+  gap: 24px;
+  padding-top: 0;
+  width: 100%;
 }
 
 .detailList {
@@ -562,14 +547,15 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .detailList li {
   position: relative;
   padding-left: 18px;
   color: color-mix(in srgb, var(--text) 80%, var(--muted) 20%);
-  line-height: 1.6;
+  font-size: var(--font-size-body-md);
+  line-height: 1.72;
 }
 
 .detailList li::before {
@@ -653,21 +639,12 @@
     var(--color-cta) 12%,
     transparent
   );
-  border-color: color-mix(in srgb, var(--color-cta) 18%, var(--border) 82%);
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(in srgb, #ffffff 94%, var(--color-cta) 6%),
-      color-mix(in srgb, var(--color-surface-2) 54%, var(--surface) 46%)
-    ),
-    radial-gradient(
-      circle at top right,
-      color-mix(in srgb, var(--accent) 10%, transparent),
-      transparent 34%
-    );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 72%, transparent),
-    0 18px 34px color-mix(in srgb, var(--color-cta) 10%, transparent);
+  background: transparent;
+  box-shadow: none;
+}
+
+:global([data-theme="light"]) .projectCard + .projectCard {
+  border-top-color: color-mix(in srgb, var(--color-cta) 12%, var(--border) 88%);
 }
 
 :global([data-theme="light"]) .projectCard::before {
@@ -836,34 +813,38 @@
   transform: translateX(2px);
 }
 
+.projectLinkLabel::after {
+  content: "\2192";
+}
+
 :global([data-theme="light"]) .projectLink {
   color: color-mix(in srgb, var(--accent) 58%, var(--color-text) 42%);
 }
 
 .closingCta {
   display: grid;
-  gap: 18px;
-  padding: 18px 0 0;
+  gap: 24px;
+  padding: 28px 0 0;
   border-top: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
 }
 
 .closingCopy {
   display: grid;
-  gap: 10px;
+  gap: 14px;
   max-width: 52rem;
 }
 
 .closingActions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
 }
 
 @media (min-width: 900px) {
   .heroGrid {
     grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
     align-items: end;
-    gap: 28px;
+    gap: 44px;
   }
 
   .projectCard {
@@ -872,7 +853,7 @@
         0.84fr
       );
     align-items: start;
-    gap: 26px;
+    gap: 0;
   }
 
   .projectCard[data-layout="reverse"] {
@@ -897,13 +878,12 @@
   .projectCard[data-project="broker"] {
     grid-template-columns: minmax(280px, 0.82fr) minmax(0, 1.18fr);
     align-items: start;
-    column-gap: 28px;
+    column-gap: 42px;
     row-gap: 24px;
   }
 
   .projectCard[data-project="broker"] .projectLead {
     grid-column: 1;
-    padding-right: 8px;
   }
 
   .projectCard[data-project="broker"] .projectMediaColumn {
@@ -922,20 +902,20 @@
   .projectCard[data-project="broker"] .projectMeta {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 24px;
+    gap: 24px;
     align-items: start;
     padding-top: 0;
   }
 
   .projectCard[data-project="broker"] .projectMeta .projectLink {
     grid-column: 1 / -1;
-    margin-top: 2px;
+    margin-top: 0;
   }
 
   .closingCta {
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: end;
-    gap: 32px;
+    gap: 42px;
   }
 
   .closingActions {
@@ -945,25 +925,68 @@
 
 @media (max-width: 900px) {
   .pageShell.pageShell {
-    padding-top: 96px;
+    padding-top: 98px;
+    padding-bottom: 56px;
   }
 
   .pageHero {
     padding-bottom: 0;
+    gap: 22px;
+  }
+
+  .heroGrid {
+    gap: 20px;
+  }
+
+  .heroAside {
+    padding: 20px;
   }
 
   .projectCard {
-    padding: 20px;
-    border-radius: 26px;
+    gap: 0;
+    padding: 0 0 16px;
   }
 
   .title {
-    max-width: 11ch;
-    font-size: clamp(2.1rem, 10vw, 3.4rem);
+    max-width: 15ch;
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
   }
 
   .projectTitle {
     max-width: none;
+  }
+
+  .projectsSection {
+    gap: 34px;
+    padding-bottom: 40px;
+  }
+
+  .projectsGrid {
+    gap: 0;
+  }
+
+  .projectCard + .projectCard {
+    padding-top: 30px;
+  }
+
+  .projectLead,
+  .projectMeta {
+    gap: 24px;
+  }
+
+  .focusBlock,
+  .detailBlock {
+    gap: 14px;
+    padding: 18px 16px;
+  }
+
+  .closingCta {
+    gap: 18px;
+    padding-top: 22px;
+  }
+
+  .supportingNote {
+    padding: 16px;
   }
 
   .browserFrame {
@@ -972,5 +995,24 @@
 
   .browserFrame[data-device="browser"] {
     width: min(100%, 480px);
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .title {
+    font-size: var(--font-size-hero-title-wide);
+  }
+
+  .projectsGrid {
+    gap: 0;
+  }
+
+  .projectCard {
+    gap: 0;
+    padding: 0 0 20px;
+  }
+
+  .title {
+    max-width: 19ch;
   }
 }
