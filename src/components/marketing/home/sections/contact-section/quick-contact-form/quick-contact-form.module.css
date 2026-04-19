@@ -27,7 +27,7 @@
 .metaLabel {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.8rem;
+  font-size: var(--font-size-eyebrow);
   font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -36,7 +36,7 @@
 .metaValue {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1rem, 0.24vw + 0.97rem, 1.08rem);
+  font-size: var(--font-size-body-md);
   font-weight: 700;
   line-height: 1.42;
   white-space: nowrap;
@@ -53,7 +53,7 @@
   border-radius: 10px;
   background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  font-size: 0.86rem;
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;

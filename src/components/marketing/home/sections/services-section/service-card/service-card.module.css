@@ -158,7 +158,7 @@
     color-mix(in srgb, var(--accent) 44%, var(--color-surface-1) 56%)
   );
   color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  font-size: 0.78rem;
+  font-size: var(--font-size-badge);
   font-weight: 700;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -169,7 +169,7 @@
   display: grid;
   gap: 6px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.88rem;
+  font-size: var(--font-size-label-sm);
   line-height: 1.5;
 }
 
@@ -179,7 +179,7 @@
     var(--color-accent-warm) 76%,
     var(--color-text) 24%
   );
-  font-size: 0.75rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -224,14 +224,14 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.78rem;
+  font-size: var(--font-size-badge);
   font-weight: 600;
 }
 
 .pricingHint {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.85rem;
+  font-size: var(--font-size-caption);
   line-height: 1.5;
 }
 
@@ -247,7 +247,7 @@
   list-style: disc;
   list-style-position: outside;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.96rem;
+  font-size: var(--font-size-body-sm);
   line-height: 1.58;
 }
 
@@ -294,7 +294,7 @@
 .primaryCta {
   min-height: 44px;
   padding-inline: 16px;
-  font-size: 0.96rem;
+  font-size: var(--font-size-body-sm);
   width: fit-content;
   max-width: 100%;
 }
@@ -314,7 +314,7 @@
 .moreItems {
   margin: -2px 0 0;
   color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: 0.84rem;
+  font-size: var(--font-size-caption);
   font-weight: 600;
 }
 
@@ -333,7 +333,7 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-size: 0.83rem;
+  font-size: var(--font-size-ui-xs);
   font-weight: 600;
   transition:
     border-color 150ms ease,
@@ -491,13 +491,13 @@
   .badge {
     min-height: 30px;
     padding-inline: 14px;
-    font-size: 0.82rem;
+    font-size: var(--font-size-ui-xs);
   }
 
   .fitNote {
     margin-top: 8px;
     gap: 6px;
-    font-size: 0.88rem;
+    font-size: var(--font-size-label-sm);
   }
 
   .highlightText {
@@ -507,11 +507,11 @@
   .deliveryBadge {
     min-height: 28px;
     padding-inline: 12px;
-    font-size: 0.8rem;
+    font-size: var(--font-size-eyebrow);
   }
 
   .pricingHint {
-    font-size: 0.86rem;
+    font-size: var(--font-size-ui-sm);
     line-height: 1.52;
   }
 
@@ -521,7 +521,7 @@
 
   .list {
     padding-left: 22px;
-    font-size: 0.96rem;
+    font-size: var(--font-size-body-sm);
     line-height: 1.62;
   }
 
@@ -534,17 +534,17 @@
   .primaryCta {
     min-height: 46px;
     padding-inline: 18px;
-    font-size: 1rem;
+    font-size: var(--font-size-body-md);
   }
 
   .toggle {
     min-height: 40px;
     padding: 0 13px 0 15px;
-    font-size: 0.86rem;
+    font-size: var(--font-size-ui-sm);
   }
 
   .moreItems {
-    font-size: 0.88rem;
+    font-size: var(--font-size-label-sm);
   }
 }
 
@@ -558,7 +558,7 @@
   }
 
   .fitNote {
-    font-size: 0.9rem;
+    font-size: var(--font-size-label-md);
   }
 
   .highlightText {
@@ -566,11 +566,11 @@
   }
 
   .pricingHint {
-    font-size: 0.88rem;
+    font-size: var(--font-size-label-sm);
   }
 
   .list {
-    font-size: 0.98rem;
+    font-size: var(--font-size-body-md);
     line-height: 1.64;
   }
 }

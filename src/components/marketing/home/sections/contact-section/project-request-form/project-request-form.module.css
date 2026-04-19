@@ -68,7 +68,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 0.88rem;
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
 }
 
@@ -105,7 +105,7 @@
 
 .stepperCopy small {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.82rem;
+  font-size: var(--font-size-ui-xs);
   line-height: 1.25;
   letter-spacing: 0.03em;
 }
@@ -120,7 +120,7 @@
 
 .stepperCopy strong {
   color: inherit;
-  font-size: 1.02rem;
+  font-size: var(--font-size-body-md);
   font-weight: 760;
   line-height: 1.28;
 }
@@ -154,7 +154,7 @@
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
-  font-size: 1.02rem;
+  font-size: var(--font-size-body-md);
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -176,7 +176,7 @@
 .pagesLabel {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.95rem;
+  font-size: var(--font-size-label-md);
   font-weight: 680;
 }
 
@@ -193,7 +193,7 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  font-size: 0.9rem;
+  font-size: var(--font-size-label-md);
   font-weight: 670;
 }
 
@@ -274,7 +274,7 @@
   border-left: 3px solid color-mix(in srgb, var(--color-cta) 40%, transparent);
   padding: 0.55rem 0 0.55rem 0.9rem;
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: 0.93rem;
+  font-size: var(--font-size-label-md);
   line-height: 1.58;
 }
 
@@ -302,7 +302,7 @@
   }
 
   .stepperCopy strong {
-    font-size: 1.06rem;
+    font-size: var(--font-size-body-lg);
   }
 
   .form {
@@ -312,7 +312,7 @@
   .step > legend {
     margin-bottom: 1.1rem;
     padding-bottom: 0.95rem;
-    font-size: 1.06rem;
+    font-size: var(--font-size-body-lg);
   }
 
   .pagesOptions {

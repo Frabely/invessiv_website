@@ -18,7 +18,7 @@
   margin: 0;
   max-width: 66ch;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: clamp(1.02rem, 1vw, 1.14rem);
+  font-size: var(--font-size-body-lg);
   font-weight: 560;
   line-height: 1.58;
 }
@@ -99,7 +99,7 @@
     transparent 100%
   );
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
-  font-size: clamp(1.02rem, 1vw, 1.14rem);
+  font-size: var(--font-size-body-lg);
   font-weight: 640;
   letter-spacing: -0.01em;
   line-height: 1.62;
@@ -202,7 +202,7 @@
 
   .hint {
     max-width: 34ch;
-    font-size: 0.98rem;
+    font-size: var(--font-size-body-sm);
     line-height: 1.55;
   }
 
@@ -221,12 +221,12 @@
 
   .cardDescription {
     max-width: none;
-    font-size: 0.96rem;
+    font-size: var(--font-size-body-sm);
     line-height: 1.56;
   }
 
   .bridge {
     padding: 1.1rem 1.15rem;
-    font-size: 0.96rem;
+    font-size: var(--font-size-body-sm);
   }
 }

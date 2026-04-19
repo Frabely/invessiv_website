@@ -110,7 +110,7 @@
   margin: 0;
   max-width: 34ch;
   color: var(--color-text);
-  font-size: clamp(1.04rem, 1vw, 1.12rem);
+  font-size: var(--font-size-heading-md);
   font-weight: 700;
   line-height: 1.48;
   letter-spacing: -0.015em;
@@ -177,7 +177,7 @@
   max-width: 46ch;
   padding-top: 0;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: clamp(0.94rem, 0.94vw, 1rem);
+  font-size: var(--font-size-body-md);
   font-weight: 500;
   line-height: 1.72;
 }
@@ -213,7 +213,7 @@
   }
 
   .question {
-    font-size: 1.12rem;
+    font-size: var(--font-size-heading-md);
   }
 }
 
@@ -227,7 +227,7 @@
 
   .question {
     max-width: none;
-    font-size: 1rem;
+    font-size: var(--font-size-body-md);
   }
 
   .answerWrap {
@@ -239,7 +239,7 @@
   }
 
   .answer {
-    font-size: 0.91rem;
+    font-size: var(--font-size-label-md);
     line-height: 1.64;
   }
 }

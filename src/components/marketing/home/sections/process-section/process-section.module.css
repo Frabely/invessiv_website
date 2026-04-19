@@ -17,7 +17,7 @@
   margin: 0 0 18px;
   max-width: 860px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 1.03rem;
+  font-size: var(--font-size-body-lg);
 }
 
 .scanPoints {
@@ -276,7 +276,7 @@
     var(--color-text) 82%,
     var(--color-accent-warm) 18%
   );
-  font-size: 0.8rem;
+  font-size: var(--font-size-eyebrow);
   font-weight: 800;
   letter-spacing: 0.05em;
 }
@@ -284,7 +284,7 @@
 .stepTitle {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.02rem, 1.5vw, 1.18rem);
+  font-size: var(--font-size-heading-md);
   letter-spacing: -0.01em;
   line-height: 1.28;
 }
@@ -302,7 +302,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-2) 62%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.74rem;
+  font-size: var(--font-size-badge);
   font-weight: 650;
   letter-spacing: 0.02em;
   line-height: 1.25;
@@ -317,7 +317,7 @@
 .stepOutputLabel {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -326,7 +326,7 @@
 .stepOutputValue {
   margin: 5px 0 0;
   color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm) 8%);
-  font-size: 1rem;
+  font-size: var(--font-size-body-md);
   font-weight: 720;
   line-height: 1.42;
 }
@@ -337,7 +337,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  font-size: 0.8rem;
+  font-size: var(--font-size-eyebrow);
   line-height: 1.35;
 }
 
@@ -505,7 +505,7 @@
   }
 
   .hint {
-    font-size: 0.94rem;
+    font-size: var(--font-size-body-sm);
   }
 
   .layout {
@@ -514,15 +514,15 @@
   }
 
   .stepTitle {
-    font-size: clamp(0.98rem, 1.15vw, 1.08rem);
+    font-size: var(--font-size-heading-sm);
   }
 
   .stepOutputValue {
-    font-size: 0.92rem;
+    font-size: var(--font-size-label-md);
   }
 
   .stepMetaLine {
-    font-size: 0.76rem;
+    font-size: var(--font-size-ui-xs);
   }
 }
 
@@ -555,7 +555,7 @@
   }
 
   .stepTitle {
-    font-size: clamp(1.08rem, 1rem + 0.34vw, 1.26rem);
+    font-size: clamp(1.1rem, 1rem + 0.34vw, 1.26rem);
   }
 
   .stepOutput {
@@ -563,16 +563,16 @@
   }
 
   .stepOutputValue {
-    font-size: 1.04rem;
+    font-size: var(--font-size-body-lg);
   }
 
   .stepMetaLine {
-    font-size: 0.83rem;
+    font-size: var(--font-size-caption);
   }
 
   .stepDescription {
     max-width: 60ch;
-    font-size: 0.98rem;
+    font-size: var(--font-size-body-sm);
   }
 }
 
@@ -618,12 +618,12 @@
     width: 31px;
     height: 31px;
     border-radius: 9px;
-    font-size: 0.76rem;
+    font-size: var(--font-size-ui-xs);
   }
 
   .stepPhase {
     min-height: 25px;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
   }
 
   .stepOutput {
@@ -631,15 +631,15 @@
   }
 
   .stepOutputValue {
-    font-size: 0.92rem;
+    font-size: var(--font-size-label-md);
   }
 
   .stepMetaLine {
-    font-size: 0.76rem;
+    font-size: var(--font-size-ui-xs);
   }
 
   .stepDescription {
-    font-size: 0.93rem;
+    font-size: var(--font-size-label-md);
   }
 }
 
@@ -667,13 +667,13 @@
   }
 
   .stepTitle {
-    font-size: 0.99rem;
+    font-size: var(--font-size-body-md);
   }
 
   .stepNumber {
     width: 29px;
     height: 29px;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
   }
 
   .stepOutput {
@@ -681,11 +681,11 @@
   }
 
   .stepOutputLabel {
-    font-size: 0.64rem;
+    font-size: 0.68rem;
   }
 
   .stepOutputValue {
-    font-size: 0.9rem;
+    font-size: var(--font-size-label-md);
     line-height: 1.38;
   }
 
@@ -693,7 +693,7 @@
     min-height: 40px;
     padding-inline: 14px;
     border-radius: 10px;
-    font-size: 0.82rem;
+    font-size: var(--font-size-ui-xs);
   }
 }
 

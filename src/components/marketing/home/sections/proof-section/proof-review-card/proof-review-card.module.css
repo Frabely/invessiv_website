@@ -90,14 +90,14 @@
 }
 
 .author {
-  font-size: clamp(1.08rem, 1.1vw, 1.2rem);
+  font-size: var(--font-size-heading-md);
   font-weight: 700;
   line-height: 1.18;
 }
 
 .context {
   color: color-mix(in srgb, var(--text) 62%, var(--muted) 38%);
-  font-size: clamp(0.98rem, 0.95vw, 1.05rem);
+  font-size: var(--font-size-body-md);
   line-height: 1.42;
 }
 
@@ -113,7 +113,7 @@
   position: relative;
   z-index: 1;
   color: color-mix(in srgb, var(--text) 90%, var(--muted) 10%);
-  font-size: clamp(1.04rem, 1.02vw, 1.12rem);
+  font-size: var(--font-size-body-lg);
   line-height: 1.62;
 }
 
@@ -135,7 +135,7 @@
   justify-content: center;
   gap: 10px;
   color: color-mix(in srgb, var(--text) 58%, var(--muted) 42%);
-  font-size: clamp(0.98rem, 0.95vw, 1.04rem);
+  font-size: var(--font-size-body-md);
   font-weight: 600;
   letter-spacing: 0.03em;
   line-height: 1.2;
@@ -154,7 +154,7 @@
   align-items: center;
   gap: 8px;
   color: color-mix(in srgb, var(--accent) 78%, #ffe8cd 22%);
-  font-size: clamp(1rem, 0.98vw, 1.08rem);
+  font-size: var(--font-size-body-md);
   font-weight: 700;
 }
 
@@ -236,13 +236,13 @@
   }
 
   .author {
-    font-size: 1.02rem;
+    font-size: var(--font-size-body-lg);
   }
 
   .context,
   .source,
   .sourceLink {
-    font-size: 0.94rem;
+    font-size: var(--font-size-body-sm);
   }
 
   .rating {
@@ -250,7 +250,7 @@
   }
 
   .quote {
-    font-size: 0.98rem;
+    font-size: var(--font-size-body-md);
     line-height: 1.58;
   }
 

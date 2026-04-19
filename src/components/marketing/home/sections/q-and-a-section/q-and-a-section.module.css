@@ -62,7 +62,7 @@
   width: fit-content;
   max-width: 100%;
   color: color-mix(in srgb, var(--color-cta) 76%, var(--color-text) 24%);
-  font-size: 0.98rem;
+  font-size: var(--font-size-body-md);
   font-weight: 700;
   line-height: 1.4;
   text-decoration-color: color-mix(in srgb, var(--color-cta) 42%, transparent);
@@ -126,6 +126,6 @@
   }
 
   .secondaryContactLink {
-    font-size: 0.94rem;
+    font-size: var(--font-size-body-sm);
   }
 }

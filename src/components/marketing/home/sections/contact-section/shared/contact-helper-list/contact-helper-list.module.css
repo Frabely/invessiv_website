@@ -12,7 +12,7 @@
   align-items: center;
   gap: 0.85rem;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: clamp(0.98rem, 0.24vw + 0.94rem, 1.04rem);
+  font-size: var(--font-size-body-md);
   line-height: 1.55;
 }
 

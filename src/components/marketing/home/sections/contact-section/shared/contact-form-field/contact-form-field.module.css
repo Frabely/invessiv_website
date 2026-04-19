@@ -5,7 +5,7 @@
 
 .label {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.92rem;
+  font-size: var(--font-size-label-md);
   font-weight: 700;
   line-height: 1.4;
 }
@@ -13,7 +13,7 @@
 .error {
   margin: -2px 0 0;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
-  font-size: 0.84rem;
+  font-size: var(--font-size-caption);
   font-weight: 650;
   min-height: 1.1rem;
 }
@@ -35,7 +35,7 @@
     var(--color-surface-1) 36%
   );
   color: var(--color-text);
-  font-size: clamp(0.98rem, 0.2vw + 0.95rem, 1.03rem);
+  font-size: var(--font-size-body-md);
   line-height: 1.55;
   padding: 0.9rem 1rem;
 }

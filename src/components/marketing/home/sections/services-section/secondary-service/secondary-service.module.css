@@ -62,7 +62,7 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 86%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   padding: 8px 12px;
-  font-size: 0.78rem;
+  font-size: var(--font-size-badge);
   line-height: 1.2;
 }
 
@@ -87,7 +87,7 @@
 
 .highlight {
   color: color-mix(in srgb, var(--accent) 72%, var(--color-text) 28%);
-  font-size: 0.96rem;
+  font-size: var(--font-size-body-sm);
   font-weight: 700;
   line-height: 1.24;
   letter-spacing: -0.02em;
@@ -102,12 +102,12 @@
 
 .description {
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
-  font-size: 0.96rem;
+  font-size: var(--font-size-body-sm);
 }
 
 .fit {
   color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.96rem;
+  font-size: var(--font-size-body-sm);
   padding-top: 2px;
 }
 
@@ -116,7 +116,7 @@
   padding-top: 10px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: 0.84rem;
+  font-size: var(--font-size-caption);
   line-height: 1.5;
 }
 
@@ -130,7 +130,7 @@
   gap: 0.45rem;
   width: fit-content;
   color: color-mix(in srgb, var(--color-text) 34%, var(--color-cta) 66%);
-  font-size: 0.94rem;
+  font-size: var(--font-size-ui-sm);
   font-weight: 700;
   text-decoration-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
   text-underline-offset: 0.16em;
@@ -187,26 +187,26 @@
   .badge,
   .metaChip {
     padding: 9px 13px;
-    font-size: 0.82rem;
+    font-size: var(--font-size-ui-xs);
   }
 
   .highlight {
-    font-size: 1rem;
+    font-size: var(--font-size-body-md);
   }
 
   .description,
   .fit {
-    font-size: 1rem;
+    font-size: var(--font-size-body-md);
   }
 
   .pricingHint {
     padding-top: 12px;
-    font-size: 0.86rem;
+    font-size: var(--font-size-ui-sm);
     line-height: 1.52;
   }
 
   .ctaLink {
-    font-size: 0.98rem;
+    font-size: var(--font-size-body-sm);
   }
 }
 
@@ -229,11 +229,11 @@
 
   .description,
   .fit {
-    font-size: 1.03rem;
+    font-size: var(--font-size-body-lg);
   }
 
   .pricingHint,
   .ctaLink {
-    font-size: 0.9rem;
+    font-size: var(--font-size-label-md);
   }
 }
