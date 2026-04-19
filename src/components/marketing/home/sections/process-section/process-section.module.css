@@ -1,12 +1,16 @@
 .section {
+  display: grid;
+  gap: clamp(1.1rem, 2vw, 1.6rem);
   margin-top: 0;
 }
 
 .title {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.9rem, 3.1vw, 2.55rem);
-  letter-spacing: -0.03em;
+  font-size: var(--font-size-section-title);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
 }
 
 .hint {
@@ -17,14 +21,14 @@
 }
 
 .scanPoints {
-  margin-bottom: 18px;
+  margin-bottom: 0;
   max-width: 860px;
 }
 
 .layout {
   position: relative;
   min-height: clamp(36rem, 62svh, 46rem);
-  padding-bottom: clamp(2.75rem, 4.5vw, 3.75rem);
+  padding-bottom: clamp(3rem, 4.8vw, 4rem);
   --process-highlight-border: color-mix(
     in srgb,
     var(--color-accent-warm) 28%,
@@ -191,7 +195,7 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(1.25rem, 3.5vw, 2.625rem);
+  gap: clamp(1.5rem, 3.8vw, 2.9rem);
   padding-bottom: 0;
 }
 
@@ -199,13 +203,13 @@
   position: relative;
   overflow: hidden;
   --process-step-delay: 0ms;
-  width: min(920px, 82%);
+  width: min(1040px, 86%);
   margin-inline: auto;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 18px;
+  border-radius: 22px;
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
-  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
+  box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
   opacity: 1;
   transform: translateY(0) scale(1);
   transition:
@@ -219,37 +223,36 @@
   content: "";
   position: absolute;
   inset: -20% -30% auto auto;
-  width: 260px;
-  height: 180px;
+  width: 220px;
+  height: 160px;
   background: radial-gradient(
     circle,
     var(--process-highlight-card) 0%,
     transparent 72%
   );
-  opacity: 0.44;
+  opacity: 0.28;
   pointer-events: none;
 }
 
 .stepInner {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 14px;
+  gap: 14px;
+  padding: 20px 20px 18px;
 }
 
 .stepHead {
   display: grid;
-  gap: 8px;
-  padding: 11px 12px 12px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  border-radius: 13px;
-  background: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
+  gap: 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 82%, transparent);
 }
 
 .stepTitleRow {
   display: flex;
-  align-items: center;
-  gap: 11px;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .stepNumber {
@@ -260,10 +263,19 @@
   flex: 0 0 auto;
   width: 34px;
   height: 34px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 30%, var(--color-border) 70%);
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 10%,
+    var(--color-surface-2) 90%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-text) 82%,
+    var(--color-accent-warm) 18%
+  );
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.05em;
@@ -286,9 +298,9 @@
   min-height: 27px;
   margin: 0;
   padding: 0 10px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 62%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.74rem;
   font-weight: 650;
@@ -297,16 +309,9 @@
 }
 
 .stepOutput {
-  padding: 11px 12px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border) 72%);
-  border-radius: 13px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 12%, transparent),
-    color-mix(in srgb, var(--color-surface-2) 92%, transparent)
-  );
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 8%, transparent);
+  padding: 0 0 0 15px;
+  border-left: 2px solid
+    color-mix(in srgb, var(--color-accent-warm) 48%, var(--color-border) 52%);
 }
 
 .stepOutputLabel {
@@ -319,9 +324,9 @@
 }
 
 .stepOutputValue {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm) 8%);
-  font-size: 0.97rem;
+  font-size: 1rem;
   font-weight: 720;
   line-height: 1.42;
 }
@@ -332,7 +337,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  font-size: 0.79rem;
+  font-size: 0.8rem;
   line-height: 1.35;
 }
 
@@ -350,9 +355,8 @@
 
 .stepDescription {
   margin: 0;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  line-height: 1.54;
-  padding-top: 2px;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  line-height: 1.6;
 }
 
 :global([data-theme="light"]) .layout {
@@ -381,8 +385,20 @@
 :global([data-theme="light"]) .stepNumber,
 :global([data-theme="light"]) .stepPhase {
   border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+}
+
+:global([data-theme="light"]) .stepNumber {
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, #ffffff 90%);
+  color: color-mix(
+    in srgb,
+    var(--color-text) 82%,
+    var(--color-accent-warm) 18%
+  );
+}
+
+:global([data-theme="light"]) .stepPhase {
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
 }
 
 :global([data-theme="light"]) .stepDescription {
@@ -485,7 +501,7 @@
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .title {
-    font-size: clamp(1.6rem, 1.95vw, 2.05rem);
+    font-size: var(--font-size-section-title-wide);
   }
 
   .hint {
@@ -507,6 +523,56 @@
 
   .stepMetaLine {
     font-size: 0.76rem;
+  }
+}
+
+@media (min-width: 1120px) {
+  .title {
+    white-space: nowrap;
+  }
+
+  .layout {
+    margin-inline: clamp(-0.75rem, -1vw, -1.5rem);
+    min-height: clamp(34rem, 56svh, 43rem);
+  }
+
+  .steps {
+    gap: clamp(1.9rem, 3.2vw, 3.2rem);
+  }
+
+  .step {
+    width: min(1120px, 88%);
+  }
+
+  .stepInner {
+    gap: 16px;
+    padding: 24px 24px 22px;
+  }
+
+  .stepHead {
+    gap: 12px;
+    padding-bottom: 14px;
+  }
+
+  .stepTitle {
+    font-size: clamp(1.08rem, 1rem + 0.34vw, 1.26rem);
+  }
+
+  .stepOutput {
+    padding-left: 17px;
+  }
+
+  .stepOutputValue {
+    font-size: 1.04rem;
+  }
+
+  .stepMetaLine {
+    font-size: 0.83rem;
+  }
+
+  .stepDescription {
+    max-width: 60ch;
+    font-size: 0.98rem;
   }
 }
 
@@ -536,12 +602,12 @@
 
   .stepInner {
     gap: 10px;
-    padding: 13px;
+    padding: 16px 16px 15px;
   }
 
   .stepHead {
     gap: 8px;
-    padding: 10px;
+    padding: 0 0 10px;
   }
 
   .stepTitleRow {
@@ -561,7 +627,7 @@
   }
 
   .stepOutput {
-    padding: 10px 11px;
+    padding: 0 0 0 13px;
   }
 
   .stepOutputValue {
@@ -573,7 +639,6 @@
   }
 
   .stepDescription {
-    padding-top: 4px;
     font-size: 0.93rem;
   }
 }
@@ -594,11 +659,11 @@
 
   .stepInner {
     gap: 9px;
-    padding: 12px;
+    padding: 14px 14px 13px;
   }
 
   .stepHead {
-    padding: 9px 10px 10px;
+    padding: 0 0 9px;
   }
 
   .stepTitle {
@@ -612,7 +677,7 @@
   }
 
   .stepOutput {
-    padding: 9px 10px;
+    padding: 0 0 0 12px;
   }
 
   .stepOutputLabel {

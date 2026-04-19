@@ -4,8 +4,11 @@
 
 .title {
   margin: 0 0 10px;
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  letter-spacing: -0.03em;
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
 }
 
 .hint {
@@ -187,7 +190,7 @@
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .title {
-    font-size: clamp(1.55rem, 1.85vw, 1.95rem);
+    font-size: var(--font-size-section-title-wide);
   }
 
   .hint {
