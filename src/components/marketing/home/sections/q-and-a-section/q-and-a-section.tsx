@@ -1,4 +1,5 @@
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import { QAndAAccordion } from "@/components/marketing/home/shared/q-and-a-accordion/q-and-a-accordion";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import styles from "./q-and-a-section.module.css";
 
@@ -26,61 +27,40 @@ export function QAndASection({
 }: QAndASectionProps) {
   return (
     <section className={styles.section} id={id}>
-      <h2 className={styles.title}>{title}</h2>
-      <SectionScanPoints
-        fallbackClassName={styles.hint}
-        fallbackText={description}
-        points={summaryPoints}
-      />
+      <div className={styles.inner}>
+        <div className={styles.overview}>
+          <h2 className={styles.title}>{title}</h2>
+          <SectionScanPoints
+            ariaLabel={title}
+            className={styles.summaryPoints}
+            fallbackClassName={styles.hint}
+            fallbackText={description}
+            points={summaryPoints}
+          />
+          {description ? (
+            <p className={styles.description}>{description}</p>
+          ) : null}
 
-      <ul aria-label={title} className={styles.list}>
-        {items.map((item, index) => {
-          const questionId = `${id}-question-${index + 1}`;
-          return (
-            <li className={styles.item} key={questionId}>
-              <details className={styles.disclosure}>
-                <summary className={styles.summary} id={questionId}>
-                  <span className={styles.question}>{item.question}</span>
-                  <span className={styles.arrow} aria-hidden="true">
-                    <svg viewBox="0 0 16 16">
-                      <path
-                        d="M4 6.5 8 10.5 12 6.5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.8"
-                      />
-                    </svg>
-                  </span>
-                </summary>
-                <div
-                  aria-labelledby={questionId}
-                  className={styles.answerWrap}
-                  role="region"
-                >
-                  <p className={styles.answer}>{item.answer}</p>
-                </div>
-              </details>
-            </li>
-          );
-        })}
-      </ul>
+          {secondaryContact ? (
+            <aside className={styles.contactCard}>
+              <p className={styles.contactHint}>{secondaryContact.hint}</p>
+              <a
+                className={styles.secondaryContactLink}
+                href={secondaryContact.href}
+                data-analytics-event="contact_click"
+                data-analytics-location="qna"
+                data-analytics-target="email"
+              >
+                {secondaryContact.label}
+              </a>
+            </aside>
+          ) : null}
+        </div>
 
-      {secondaryContact ? (
-        <p className={styles.secondaryContact}>
-          <span>{secondaryContact.hint} </span>
-          <a
-            className={styles.secondaryContactLink}
-            href={secondaryContact.href}
-            data-analytics-event="contact_click"
-            data-analytics-location="qna"
-            data-analytics-target="email"
-          >
-            {secondaryContact.label}
-          </a>
-        </p>
-      ) : null}
+        <div className={styles.board}>
+          <QAndAAccordion ariaLabel={title} id={id} items={items} />
+        </div>
+      </div>
     </section>
   );
 }

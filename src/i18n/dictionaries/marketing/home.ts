@@ -810,7 +810,13 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Q&A",
-        description: "",
+        description:
+          "Die wichtigsten Fragen vor dem Projektstart sind hier bewusst knapp, konkret und ohne Vertriebssprache beantwortet.",
+        summaryPoints: [
+          "Typische Projektfragen",
+          "Kurz, klar, direkt beantwortet",
+          "Sonderfall? Direkter Mailkontakt",
+        ],
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -866,7 +872,13 @@ const HOME_SECTIONS: LandingSection[] = [
       },
       en: {
         title: "Q&A",
-        description: "",
+        description:
+          "The most relevant pre-project questions are answered here in a concise, direct format without sales fluff.",
+        summaryPoints: [
+          "Common project questions",
+          "Short, clear, directly answered",
+          "Different case? Direct email",
+        ],
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",

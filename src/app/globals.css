@@ -26,6 +26,46 @@
   --color-focus: rgba(104, 153, 240, 0.78);
   --color-cta-active: #3d6fcb;
   --color-on-cta: #0f1b32;
+  --color-faq-open-surface: color-mix(
+    in srgb,
+    var(--color-cta) 38%,
+    var(--color-bg) 62%
+  );
+  --color-faq-open-surface-strong: color-mix(
+    in srgb,
+    var(--color-bg) 88%,
+    var(--color-surface-1) 12%
+  );
+  --color-faq-open-text: color-mix(
+    in srgb,
+    var(--color-text) 96%,
+    var(--color-cta) 4%
+  );
+  --color-faq-open-muted: color-mix(
+    in srgb,
+    var(--color-text) 86%,
+    var(--color-text-muted) 14%
+  );
+  --color-faq-open-chip-surface: color-mix(
+    in srgb,
+    var(--color-bg) 82%,
+    var(--color-cta) 18%
+  );
+  --color-faq-open-chip-border: color-mix(
+    in srgb,
+    var(--color-cta) 48%,
+    transparent
+  );
+  --color-faq-open-divider: color-mix(
+    in srgb,
+    var(--color-cta) 20%,
+    transparent
+  );
+  --color-faq-open-arrow: color-mix(
+    in srgb,
+    var(--color-text) 90%,
+    var(--color-cta) 10%
+  );
   --bg: var(--color-bg);
   --surface: var(--color-surface-1);
   --text: var(--color-text);
@@ -80,6 +120,46 @@
   --color-focus: rgba(52, 110, 212, 0.48);
   --color-cta-active: #1f50a8;
   --color-on-cta: #f5f8ff;
+  --color-faq-open-surface: color-mix(
+    in srgb,
+    var(--color-cta) 18%,
+    var(--color-surface-1) 82%
+  );
+  --color-faq-open-surface-strong: color-mix(
+    in srgb,
+    var(--color-surface-2) 72%,
+    var(--color-surface-1) 28%
+  );
+  --color-faq-open-text: color-mix(
+    in srgb,
+    var(--color-text) 94%,
+    var(--color-cta) 6%
+  );
+  --color-faq-open-muted: color-mix(
+    in srgb,
+    var(--color-text) 86%,
+    var(--color-text-muted) 14%
+  );
+  --color-faq-open-chip-surface: color-mix(
+    in srgb,
+    var(--color-surface-2) 72%,
+    var(--color-cta) 28%
+  );
+  --color-faq-open-chip-border: color-mix(
+    in srgb,
+    var(--color-cta) 44%,
+    transparent
+  );
+  --color-faq-open-divider: color-mix(
+    in srgb,
+    var(--color-cta) 24%,
+    transparent
+  );
+  --color-faq-open-arrow: color-mix(
+    in srgb,
+    var(--color-text) 86%,
+    var(--color-cta) 14%
+  );
   --bg: var(--color-bg);
   --surface: var(--color-surface-1);
   --text: var(--color-text);

@@ -99,8 +99,8 @@
   1. `included` [erledigt]
   2. `services` [erledigt]
   3. `proof` [erledigt]
-  4. `process`
-  5. `faq`
+  4. `process` [erledigt]
+  5. `faq` [erledigt]
   6. `contact`
   7. `footer`
 - Fuer jede Section derselbe Ablauf:
@@ -113,6 +113,7 @@
   - `services`: Frage-Antwort-Modul sichtbar als Entscheidungsfrage inszenieren, Antwort-Chips deutlich groesser und mit mehr Luft, Cards auf Desktop praesent und scanbar statt kompakt
   - `proof`: Review-/Project-Grid soll breiter wirken, Text aber kompakt bleiben
   - `process`: narrative Mittelachse und Step-Layout bei mehr Breite nicht zerfallen lassen
+  - `faq`: nicht als volle Einspalter-Flaeche ueber die gesamte Shell laufen lassen; stattdessen schmalere Einfuehrung + kompakteres Antwort-Board
   - `contact`: Formular- und Info-Spalten auf Desktop balancieren
   - `footer`: Footer-Inhalt auf dieselbe Aussenkante wie Header/Home ausrichten
   - Headings und vorhandene Summary-/Chip-Elemente section-uebergreifend auf eine gemeinsame visuelle Sprache kalibrieren
@@ -165,6 +166,53 @@
   - Die Primaer-Karten fuehlen sich groesser, ruhiger und besser lesbar an
   - Die empfohlene Karte ist ohne Suchen sofort identifizierbar
   - Der bestehende visuelle Charakter der Section bleibt erhalten; geaendert werden nur Hierarchie, Groessen und Abstaende
+
+#### 5.5 `faq` konkret [erledigt]
+
+- Verwendete Skill-Basis:
+  - `frontend-design` fuer ein bewusst editoriales, hochwertigeres FAQ-Layout statt Standard-Accordion ueber volle Breite
+  - `ux-design` fuer bessere Scanbarkeit, klarere Informationshierarchie und kontrollierte Textmasse
+- Recherchebasis fuer die Umgestaltung:
+  - Baymard: Accordion-Inhalte duerfen nicht unklar oder zwischen anderem Content verstreut sein; Zustand und Zugehoerigkeit muessen eindeutig lesbar bleiben
+  - Baymard / Lesbarkeit: Antworten muessen schnell scanbar bleiben; Zeilenlaengen nicht unnnoetig aufblasen
+  - web.dev / responsive layout: Komponenten sollen auf verfuegbaren Raum reagieren, statt stumpf auf eine einzige breite Desktop-Zeile zu strecken
+  - Links:
+    - https://baymard.com/blog/accordion-and-tab-design
+    - https://baymard.com/blog/line-length-readability
+    - https://web.dev/articles/new-responsive
+- Vorhandene Effektbibliothek aktiv nutzen:
+  - direkter Fit als Basis: `toggle_morph_microinteraction`
+  - visueller Oberflaechen-Fit: `gradient_border_grain`
+  - Begruendung: Die FAQ lebt von klarer Toggle-Rueckmeldung und einem wertigen Card-Rahmen, nicht von Show-Motion; beide Effekte unterstuetzen genau diese Aufgabe, ohne die Section zu ueberladen
+- Zielbild fuer die Section:
+  - Die FAQ wirkt auf Desktop nicht wie ein langer Antwort-Stack, sondern wie ein kompaktes Vertrauensmodul kurz vor dem Kontakt
+  - Links steht eine bewusst schmal gehaltene Einfuehrung mit kurzem Kontext und direktem Kontaktpfad
+  - Rechts liegt ein kontrolliertes Antwort-Board, das die verfuegbare Breite besser nutzt, aber nicht in volle Shell-Breite ausfranst
+  - Geoeffnete Fragen behalten den bestehenden Blau->Schwarz-Verlauf, werden aber klarer und praesent erlebbar
+- Desktop-Layout-Plan:
+  - die gesamte Section innerhalb der Layout-Shell nochmals einziehen; Ziel ist eine innere FAQ-Breite von grob `1180-1360px`, nicht die volle Shell
+  - ab Desktop zweigeteilt:
+    - linke Spalte fuer Titel, Kurzkontext, Summary-Points und sekundaeren Kontakt
+    - rechte Spalte fuer das eigentliche FAQ-Board
+  - ab grossem Desktop wird das FAQ-Board selbst zweispaltig, damit Fragen kuerzer, ruhiger und besser scanbar bleiben
+  - keine vollbreite Einspalter-Akkordeon-Linie mehr ueber die ganze Section
+- Typografie- und Spacing-Plan:
+  - Title bleibt gross, aber die eigentliche Leseflaeche wird bewusst enger gefasst
+  - Frage-Titel groesser und mit staerkerer Gewichtung, damit jede Karte auch geschlossen klar lesbar ist
+  - Antworttext enger auf Lesemass halten statt ueber breite Desktop-Zeilen zu laufen
+  - mehr Innenabstand und deutlichere Oberflaechenstufung pro Karte
+- Interaktions-Plan:
+  - erste Frage initial geoeffnet, damit die Section sofort nach Antwortmodul aussieht statt nach geschlossenen UI-Kacheln
+  - Icon von Plus zu Minus morphen statt nur ein kleiner Chevron
+  - Hover/Fokus staerker ueber Karte und nicht nur ueber das Icon kommunizieren
+- Mobile/Tablet-Regel:
+  - mobil bleibt die Section einspaltig und klar fokussiert
+  - die Desktop-Zweiteilung bricht frueh genug zurueck, damit weder Intro noch FAQ gequetscht werden
+- Abnahme fuer `faq`:
+  - auf `1920x1080` wirkt die Section sichtbar kompakter und hochwertiger als die bisherige Vollbreiten-Liste
+  - Fragen und Antworten bleiben schnell scanbar; keine langen, ausufernden Textzeilen
+  - das Blau->Schwarz im offenen Zustand bleibt erhalten und wird zum klaren Aktiv-Zustand
+  - die linke Kontextspalte stuetzt Orientierung und Kontakt, ohne die FAQ selbst zu verdraengen
 
 ### 6. Projects-Seite separat umbauen
 

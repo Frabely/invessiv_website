@@ -6,10 +6,10 @@ import { describe, expect, it } from "vitest";
 import { QAndASection } from "./q-and-a-section";
 
 describe("QAndASection", () => {
-  it("renders accordion items and toggles answers", () => {
+  it("lets users close an open FAQ by clicking the whole card", () => {
     render(
       <QAndASection
-        description=""
+        description="Die wichtigsten Fragen vor dem Projektstart werden hier direkt beantwortet."
         id="faq"
         items={[
           {
@@ -27,31 +27,29 @@ describe("QAndASection", () => {
           href: "mailto:service@invessiv.com",
           label: "Schreib mir direkt per Mail.",
         }}
+        summaryPoints={[
+          "Typische Projektfragen",
+          "Kurz, klar, direkt beantwortet",
+        ]}
         title="Q&A"
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Q&A" })).toBeTruthy();
+    const firstCard = screen.getByRole("button", {
+      name: /Wie läuft der Projektstart ab\?/i,
+    });
+    const secondCard = screen.getByRole("button", {
+      name: /Könnt ihr meine alte Webseite überarbeiten\?/i,
+    });
 
-    const firstQuestion = screen.getByText("Wie läuft der Projektstart ab?");
-    const firstDisclosure = firstQuestion.closest("details");
-    expect(firstDisclosure).toBeTruthy();
-    expect(firstDisclosure?.hasAttribute("open")).toBe(false);
+    expect(firstCard.getAttribute("aria-expanded")).toBe("true");
+    expect(secondCard.getAttribute("aria-expanded")).toBe("false");
 
-    fireEvent.click(firstQuestion.closest("summary") as HTMLElement);
-    expect(firstDisclosure?.hasAttribute("open")).toBe(true);
+    fireEvent.click(firstCard);
+    expect(firstCard.getAttribute("aria-expanded")).toBe("false");
 
-    expect(
-      screen.getByText(
-        "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
-      ),
-    ).toBeTruthy();
-    expect(
-      screen.getByText("Könnt ihr meine alte Webseite überarbeiten?"),
-    ).toBeTruthy();
-    expect(
-      screen.getByText("Ja, ich kann bestehende Seiten gezielt modernisieren."),
-    ).toBeTruthy();
+    fireEvent.click(secondCard);
+    expect(secondCard.getAttribute("aria-expanded")).toBe("true");
 
     const secondaryContactLink = screen.getByRole("link", {
       name: "Schreib mir direkt per Mail.",

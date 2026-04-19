@@ -2,177 +2,70 @@
   margin-top: 0;
 }
 
+.inner {
+  display: grid;
+  gap: clamp(22px, 3vw, 38px);
+}
+
+.overview {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
 .title {
-  margin: 0 0 10px;
+  margin: 0;
+  max-width: 10ch;
   color: var(--color-text);
   font-size: var(--font-size-section-title);
-  line-height: 1.08;
-  letter-spacing: -0.04em;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
   text-wrap: balance;
 }
 
-.hint {
-  margin: 8px 0 0;
-  max-width: 900px;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 1rem;
-}
-
-.list {
-  margin: 10px 0 0;
-  width: 100%;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: var(--section-grid-gap, 10px);
-}
-
-.item {
-  padding: 0;
-}
-
-.disclosure {
-  width: 100%;
-  display: block;
-  overflow: hidden;
-  border-radius: 16px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-text) 9%, transparent),
-    0 8px 20px rgba(8, 10, 15, 0.16);
-  transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    box-shadow 220ms ease;
-}
-
-.disclosure:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 32%,
-    var(--color-border) 68%
-  );
-  background: color-mix(in srgb, var(--color-surface-1) 95%, transparent);
-}
-
-.disclosure:focus-within {
-  border-color: color-mix(in srgb, var(--color-focus) 46%, transparent);
-}
-
-.disclosure[open] {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 48%,
-    var(--color-border) 52%
-  );
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-cta) 14%, transparent),
-      transparent 48%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 96%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-text) 16%, transparent),
-    0 12px 28px rgba(8, 10, 15, 0.22);
-}
-
-.disclosure[open] .arrow {
-  transform: rotate(180deg);
-  color: color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%);
-}
-
-.summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 18px;
-  align-items: center;
-  gap: 14px;
-  min-height: 62px;
-  padding: 14px 18px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.summary::-webkit-details-marker {
-  display: none;
-}
-
-.summary:focus-visible {
-  border-radius: 12px;
-  outline-offset: 3px;
-}
-
-.question {
+.summaryPoints {
   margin: 0;
-  color: var(--color-text);
-  font-size: clamp(0.98rem, 1.1vw, 1.04rem);
-  font-weight: 680;
-  line-height: 1.42;
-  letter-spacing: -0.01em;
+  max-width: 32rem;
 }
 
-.answerWrap {
-  display: grid;
-  grid-template-rows: 0fr;
-  padding: 0 18px;
-  opacity: 0.74;
-  transition:
-    grid-template-rows 220ms ease,
-    opacity 200ms ease,
-    padding 200ms ease;
-}
-
-.disclosure[open] .answerWrap {
-  grid-template-rows: 1fr;
-  padding: 0 18px 16px;
-  opacity: 1;
-}
-
-.answer {
+.hint,
+.description,
+.contactHint {
   margin: 0;
-  min-height: 0;
-  overflow: hidden;
-  max-width: 72ch;
-  padding-top: 0;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: clamp(0.92rem, 1vw, 0.98rem);
-  font-weight: 500;
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  font-size: var(--font-size-body-md);
   line-height: 1.68;
 }
 
-.disclosure[open] .answer {
-  padding-top: 12px;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+.description {
+  max-width: 42ch;
 }
 
-.arrow {
-  width: 16px;
-  height: 16px;
-  color: color-mix(in srgb, var(--color-cta) 58%, #d7e3ff 42%);
-  transition:
-    transform 220ms ease,
-    color 200ms ease;
+.contactCard {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 64%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 92%, transparent)
+  );
 }
 
-.arrow svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.secondaryContact {
-  margin: 12px 2px 0;
-  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
-  font-size: 0.92rem;
-  line-height: 1.55;
+.board {
+  position: relative;
 }
 
 .secondaryContactLink {
-  color: color-mix(in srgb, var(--color-cta) 72%, var(--color-text) 28%);
-  font-weight: 600;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
-  text-underline-offset: 0.16em;
+  color: color-mix(in srgb, var(--color-cta) 76%, var(--color-text) 24%);
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 42%, transparent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
 }
 
 .secondaryContactLink:hover {
@@ -180,12 +73,32 @@
 }
 
 .secondaryContactLink:focus-visible {
-  outline-offset: 3px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+[data-theme="light"] .contactCard {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent),
+    0 16px 34px color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 [data-theme="light"] .hint,
-[data-theme="light"] .answer {
+[data-theme="light"] .description,
+[data-theme="light"] .contactHint {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+}
+
+@media (min-width: 960px) {
+  .inner {
+    grid-template-columns: minmax(280px, 0.84fr) minmax(0, 1.26fr);
+    align-items: start;
+  }
+
+  .overview {
+    position: sticky;
+    top: 110px;
+  }
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
@@ -193,51 +106,25 @@
     font-size: var(--font-size-section-title-wide);
   }
 
-  .hint {
-    font-size: 0.93rem;
+  .description,
+  .hint,
+  .contactHint {
+    font-size: var(--font-size-body-md-wide);
   }
 }
 
-@media (max-width: 900px) {
-  .list {
-    gap: 8px;
-  }
-
-  .summary {
-    min-height: 58px;
-    padding: 12px 14px;
-    gap: 12px;
-  }
-
-  .answerWrap {
-    padding: 0 14px;
-  }
-
-  .disclosure[open] .answerWrap {
-    padding: 0 14px 14px;
+@media (max-width: 959px) {
+  .title {
+    max-width: none;
   }
 }
 
 @media (max-width: 640px) {
-  .question {
-    font-size: 0.95rem;
+  .contactCard {
+    border-radius: 22px;
   }
 
-  .answer {
-    font-size: 0.9rem;
-    line-height: 1.62;
-  }
-
-  .secondaryContact {
-    font-size: 0.88rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .disclosure,
-  .summary,
-  .answerWrap,
-  .arrow {
-    transition: none;
+  .secondaryContactLink {
+    font-size: 0.94rem;
   }
 }
