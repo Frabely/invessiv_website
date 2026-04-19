@@ -38,7 +38,7 @@
 - `included`: umgesetzt
 - `proof`: offen
 - `services`: offen
-- `process`: offen
+- `process`: ausgenommen, da ohnehin ueberarbeitet
 - `q&a` / `faq`: offen
 - `contact`: offen
 - `projects`: offen

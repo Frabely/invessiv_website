@@ -38,9 +38,6 @@ export function QAndAAccordion({ ariaLabel, id, items }: QAndAAccordionProps) {
               type="button"
             >
               <span className={styles.summary} id={questionId}>
-                <span className={styles.index} aria-hidden="true">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
                 <span className={styles.question}>{item.question}</span>
                 <span className={styles.arrow} aria-hidden="true">
                   <svg viewBox="0 0 16 16">
