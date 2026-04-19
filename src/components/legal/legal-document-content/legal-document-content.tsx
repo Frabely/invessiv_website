@@ -11,19 +11,14 @@ type LegalDocumentSection = {
 };
 
 type LegalDocumentContentProps = {
-  copySectionLinkLabel: string;
-  sectionLinkCopiedLabel: string;
   sections: LegalDocumentSection[];
   tocLabel: string;
 };
 
 export function LegalDocumentContent({
-  copySectionLinkLabel,
-  sectionLinkCopiedLabel,
   sections,
   tocLabel,
 }: LegalDocumentContentProps) {
-  const [copiedSectionId, setCopiedSectionId] = useState<string>("");
   const [desktopTocTop, setDesktopTocTop] = useState<number>(108);
   const [desktopTocMode, setDesktopTocMode] = useState<
     "static" | "fixed" | "bottom"
@@ -345,24 +340,6 @@ export function LegalDocumentContent({
     [smoothScrollToSection],
   );
 
-  const handleCopyLink = useCallback(async (sectionId: string) => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const url = `${window.location.origin}${window.location.pathname}#${sectionId}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopiedSectionId(sectionId);
-      window.history.replaceState(null, "", `#${sectionId}`);
-      setTimeout(() => {
-        setCopiedSectionId((current) => (current === sectionId ? "" : current));
-      }, 1800);
-    } catch {
-      setCopiedSectionId("");
-    }
-  }, []);
-
   if (!sections.length) {
     return null;
   }
@@ -429,17 +406,6 @@ export function LegalDocumentContent({
             >
               <div className={styles.sectionHeader}>
                 <h2 id={`${section.id}-heading`}>{section.title}</h2>
-                <div className={styles.sectionActions}>
-                  <button
-                    aria-label={`${copySectionLinkLabel}: ${section.title}`}
-                    onClick={() => handleCopyLink(section.id)}
-                    type="button"
-                  >
-                    {copiedSectionId === section.id
-                      ? sectionLinkCopiedLabel
-                      : copySectionLinkLabel}
-                  </button>
-                </div>
               </div>
               <div className={styles.sectionBody}>{section.body}</div>
             </section>

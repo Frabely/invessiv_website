@@ -46,7 +46,6 @@ const createLongTocSections = (count: number) =>
 
 describe("LegalDocumentContent", () => {
   const replaceStateSpy = vi.spyOn(window.history, "replaceState");
-  const writeTextSpy = vi.fn(() => Promise.resolve());
   const matchMediaMock = vi.fn(() => ({
     matches: false,
     addEventListener: vi.fn(),
@@ -67,10 +66,6 @@ describe("LegalDocumentContent", () => {
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: matchMediaMock,
-    });
-    Object.defineProperty(navigator, "clipboard", {
-      configurable: true,
-      value: { writeText: writeTextSpy },
     });
     Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
       configurable: true,
@@ -99,7 +94,6 @@ describe("LegalDocumentContent", () => {
       .spyOn(window, "cancelAnimationFrame")
       .mockImplementation(() => undefined);
     replaceStateSpy.mockReset();
-    writeTextSpy.mockClear();
     matchMediaMock.mockClear();
     scrollIntoViewMock.mockClear();
     window.history.replaceState(null, "", "/de/terms");
@@ -114,14 +108,7 @@ describe("LegalDocumentContent", () => {
   });
 
   it("renders toc entries twice (mobile + desktop) and all long content sections", () => {
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
+    render(<LegalDocumentContent sections={sectionData} tocLabel="Inhalt" />);
 
     expect(screen.getAllByRole("navigation", { name: "Inhalt" })).toHaveLength(
       2,
@@ -140,14 +127,7 @@ describe("LegalDocumentContent", () => {
   });
 
   it("scrolls and updates hash when clicking a toc link", () => {
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
+    render(<LegalDocumentContent sections={sectionData} tocLabel="Inhalt" />);
 
     const navs = screen.getAllByRole("navigation", { name: "Inhalt" });
     const desktopLink = within(navs[1]).getByRole("link", {
@@ -178,14 +158,7 @@ describe("LegalDocumentContent", () => {
       dispatchEvent: vi.fn(),
     });
 
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
+    render(<LegalDocumentContent sections={sectionData} tocLabel="Inhalt" />);
 
     fireEvent.click(screen.getAllByRole("link", { name: "3. Leistungen" })[0]);
 
@@ -195,73 +168,9 @@ describe("LegalDocumentContent", () => {
     });
   });
 
-  it("copies section link and resets copied label after timeout", async () => {
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
-
-    const copyButton = screen.getByRole("button", {
-      name: "Link kopieren: 2. Geltungsbereich",
-    });
-    fireEvent.click(copyButton);
-
-    expect(writeTextSpy).toHaveBeenCalledWith(
-      `${window.location.origin}/de/terms#scope`,
-    );
-    await act(async () => {
-      await Promise.resolve();
-    });
-    expect(
-      screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" })
-        .textContent,
-    ).toBe("Kopiert");
-    expect(replaceStateSpy).toHaveBeenCalledWith(null, "", "#scope");
-
-    await act(async () => {
-      vi.advanceTimersByTime(1800);
-    });
-    expect(
-      screen.getByRole("button", { name: "Link kopieren: 2. Geltungsbereich" })
-        .textContent,
-    ).toBe("Link kopieren");
-  });
-
-  it("keeps copy label unchanged when clipboard write fails", async () => {
-    writeTextSpy.mockImplementationOnce(() =>
-      Promise.reject(new Error("clipboard blocked")),
-    );
-
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
-
-    const copyButton = screen.getByRole("button", {
-      name: "Link kopieren: 3. Leistungen",
-    });
-    fireEvent.click(copyButton);
-    await Promise.resolve();
-
-    expect(copyButton.textContent).toBe("Link kopieren");
-  });
-
   it("renders nothing when no sections are provided", () => {
     const { container } = render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={[]}
-        tocLabel="Inhalt"
-      />,
+      <LegalDocumentContent sections={[]} tocLabel="Inhalt" />,
     );
 
     expect(container.firstChild).toBeNull();
@@ -270,8 +179,6 @@ describe("LegalDocumentContent", () => {
   it("keeps desktop toc fixed under header while scrolling and pins it at content end", () => {
     render(
       <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
         sections={createLongTocSections(30)}
         tocLabel="Inhalt"
       />,
@@ -362,14 +269,7 @@ describe("LegalDocumentContent", () => {
       value: 390,
     });
 
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
+    render(<LegalDocumentContent sections={sectionData} tocLabel="Inhalt" />);
 
     const mobileSummary = screen
       .getAllByText("Inhalt")
@@ -398,14 +298,7 @@ describe("LegalDocumentContent", () => {
       value: 390,
     });
 
-    render(
-      <LegalDocumentContent
-        copySectionLinkLabel="Link kopieren"
-        sectionLinkCopiedLabel="Kopiert"
-        sections={sectionData}
-        tocLabel="Inhalt"
-      />,
-    );
+    render(<LegalDocumentContent sections={sectionData} tocLabel="Inhalt" />);
 
     const mobileSummary = screen
       .getAllByText("Inhalt")

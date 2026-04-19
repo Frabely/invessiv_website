@@ -17,7 +17,7 @@
   align-items: center;
   gap: 10px;
   color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: 0.86rem;
+  font-size: var(--font-size-ui-sm);
   line-height: 1;
 }
 
@@ -32,11 +32,11 @@
 .nav .current {
   display: inline-flex;
   align-items: center;
-  min-height: 30px;
-  padding: 0 12px;
+  min-height: 32px;
+  padding: 0 13px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-  background: color-mix(in srgb, var(--color-surface-1) 90%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   border-bottom: 0;
   box-shadow: none;
 }
@@ -71,7 +71,7 @@
 
   .item {
     gap: 8px;
-    font-size: 0.8rem;
+    font-size: var(--font-size-ui-xs);
   }
 
   .link,

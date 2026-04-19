@@ -117,8 +117,6 @@ export default async function ImprintPage({ params }: ImprintPageProps) {
       updatedAt={imprint.page.updatedAt}
     >
       <LegalDocumentContent
-        copySectionLinkLabel={imprint.page.copySectionLinkLabel}
-        sectionLinkCopiedLabel={imprint.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={imprint.page.tocLabel}
       />

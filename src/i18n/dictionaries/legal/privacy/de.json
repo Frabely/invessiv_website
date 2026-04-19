@@ -12,9 +12,7 @@
       "updatedAt": "Zuletzt geändert: 8. April 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Start",
-      "tocLabel": "Inhalt",
-      "copySectionLinkLabel": "Link kopieren",
-      "sectionLinkCopiedLabel": "Kopiert"
+      "tocLabel": "Inhalt"
     },
     "sections": {
       "controller": {

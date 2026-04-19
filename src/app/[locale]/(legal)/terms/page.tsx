@@ -117,8 +117,6 @@ export default async function TermsPage({ params }: TermsPageProps) {
       updatedAt={terms.page.updatedAt}
     >
       <LegalDocumentContent
-        copySectionLinkLabel={terms.page.copySectionLinkLabel}
-        sectionLinkCopiedLabel={terms.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={terms.page.tocLabel}
       />

@@ -15,16 +15,16 @@
 ## Arbeitsreihenfolge
 
 - [x] `included`
-- [ ] `proof`
-- [ ] `services`
-- [ ] `process`
-- [ ] `q&a` / `faq`
-- [ ] `contact`
+- [x] `proof`
+- [x] `services`
+- [ ] `process` (ausgenommen)
+- [x] `q&a` / `faq`
+- [x] `contact`
 
 ## Erweiterter Scope
 
 - [ ] `projects`
-- [ ] `legal` (`imprint`, `privacy`, `terms`)
+- [x] `legal` (`imprint`, `privacy`, `terms`)
 
 ## Umsetzungsregel pro Section
 
@@ -36,10 +36,10 @@
 ## Status
 
 - `included`: umgesetzt
-- `proof`: offen
-- `services`: offen
+- `proof`: umgesetzt
+- `services`: umgesetzt
 - `process`: ausgenommen, da ohnehin ueberarbeitet
-- `q&a` / `faq`: offen
-- `contact`: offen
+- `q&a` / `faq`: umgesetzt
+- `contact`: umgesetzt
 - `projects`: offen
-- `legal`: offen
+- `legal`: umgesetzt

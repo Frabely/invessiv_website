@@ -33,8 +33,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      copySectionLinkLabel: string;
-      sectionLinkCopiedLabel: string;
     };
     sections: {
       provider: {
@@ -74,8 +72,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      copySectionLinkLabel: string;
-      sectionLinkCopiedLabel: string;
     };
     sections: {
       provider: {
@@ -152,8 +148,6 @@ export type Dictionary = {
       breadcrumbAriaLabel: string;
       homeLabel: string;
       tocLabel: string;
-      copySectionLinkLabel: string;
-      sectionLinkCopiedLabel: string;
     };
     sections: {
       controller: {

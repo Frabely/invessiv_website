@@ -144,8 +144,6 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       updatedAt={privacy.page.updatedAt}
     >
       <LegalDocumentContent
-        copySectionLinkLabel={privacy.page.copySectionLinkLabel}
-        sectionLinkCopiedLabel={privacy.page.sectionLinkCopiedLabel}
         sections={sections}
         tocLabel={privacy.page.tocLabel}
       />

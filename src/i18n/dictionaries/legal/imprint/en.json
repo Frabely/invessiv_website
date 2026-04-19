@@ -12,9 +12,7 @@
       "updatedAt": "Last updated: March 25, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
-      "tocLabel": "Contents",
-      "copySectionLinkLabel": "Copy link",
-      "sectionLinkCopiedLabel": "Copied"
+      "tocLabel": "Contents"
     },
     "sections": {
       "provider": {
