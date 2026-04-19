@@ -16,7 +16,9 @@ describe("FooterSection", () => {
             title: "Navigation",
           },
           {
-            links: [{ href: "mailto:info@invessiv.de", label: "info@invessiv.de" }],
+            links: [
+              { href: "mailto:info@invessiv.de", label: "info@invessiv.de" },
+            ],
             title: "Kontakt",
           },
         ]}
@@ -28,8 +30,12 @@ describe("FooterSection", () => {
       />,
     );
 
-    expect(screen.getByRole("link", { name: "Ergebnisse" }).getAttribute("href")).toBe("#proof");
+    expect(
+      screen.getByRole("link", { name: "Ergebnisse" }).getAttribute("href"),
+    ).toBe("#proof");
     expect(screen.getByRole("link", { name: "Instagram" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Impressum" })).toBeTruthy();
+    expect(screen.getAllByRole("link", { name: "Impressum" })).toHaveLength(1);
+    expect(screen.getByText("Schnellzugriff")).toBeTruthy();
+    expect(screen.getByText("(c) 2024")).toBeTruthy();
   });
 });

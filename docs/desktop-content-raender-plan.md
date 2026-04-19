@@ -102,7 +102,7 @@
   4. `process` [erledigt]
   5. `faq` [erledigt]
   6. `contact`
-  7. `footer`
+  7. `footer` [erledigt]
 - Fuer jede Section derselbe Ablauf:
   1. pruefen, ob sie die gemeinsame Shell korrekt nutzt
   2. innere Grids/Spalten an neue Desktop-Breite anpassen
@@ -213,6 +213,40 @@
   - Fragen und Antworten bleiben schnell scanbar; keine langen, ausufernden Textzeilen
   - das Blau->Schwarz im offenen Zustand bleibt erhalten und wird zum klaren Aktiv-Zustand
   - die linke Kontextspalte stuetzt Orientierung und Kontakt, ohne die FAQ selbst zu verdraengen
+
+#### 5.7 `footer` konkret [erledigt]
+
+- Verwendete Skill-Basis:
+  - `frontend-design` fuer eine hochwertigere, ruhigere Abschlusskomposition statt rein technischem Link-Block
+  - `ux-design` fuer klarere Informationshierarchie und besseren Schnellzugriff im letzten Screenbereich
+- Vorhandene Effektbibliothek aktiv nutzen:
+  - passender Oberflaechen-Fit: `gradient_border_grain`
+  - passender Interaktions-Fit: `magnetic_cta` nur als Denkmodell fuer praesentere, aber kontrollierte Link-/Icon-Zustaende, ohne echten Magnet-Effekt zu uebernehmen
+  - Begruendung: Der Footer soll wertiger wirken, aber ruhig bleiben; Fokus liegt auf Hierarchie, Grid und Link-Praesenz, nicht auf neuer Show-Motion
+- Zielbild fuer den Footer:
+  - Footer schliesst die Seite als klare, breit ausgerichtete Abschlusszone ab statt als lose Link-Sammlung
+  - Links steht ein kompakter Brand-/Kontaktblock mit kurzer Einordnung
+  - Rechts liegt ein sauberes Link-Grid mit gleichmaessiger Desktop-Ausnutzung
+  - Ganz unten trennt eine Meta-Zeile Copyright und rechtliche Direktlinks kontrolliert vom Hauptinhalt
+- Desktop-Layout-Plan:
+  - keine auto-fit-Inseln mit Links-/Mitte-/Rechts-Sonderausrichtung mehr
+  - stattdessen zweigeteiltes Oberlayout:
+    - linke Spalte fuer Brand, Kurzbeschreibung und Social Links
+    - rechte Spalte fuer Footer-Linkspalten
+  - rechtliche Links bleiben zusaetzlich in einer unteren Meta-Zeile sichtbar, damit der Footer-Abschluss klarer wirkt
+- Typografie- und Spacing-Plan:
+  - Brand groesser und praesenter als bisher
+  - Footer-Description als kurze Lesespur statt zentriertem Streutext
+  - Spaltenueberschriften kompakter, Linklisten ruhiger und konsistenter links ausgerichtet
+  - mehr Abstand zwischen Hauptlayout und Bottom-Bar, damit der Footer nicht wie ein einziger Textblock wirkt
+- Mobile/Tablet-Regel:
+  - unter `900px` bricht der Footer wieder sauber einspaltig
+  - Bottom-Meta folgt unter den Hauptinhalten und bleibt links ausgerichtet statt gequetscht
+- Abnahme fuer `footer`:
+  - auf Desktop teilt der Footer dieselbe Aussenkante wie Header und Main
+  - der Brand-/Kontaktblock gibt dem Footer einen klaren Auftakt
+  - Linkspalten wirken ruhiger und besser verteilt als im bisherigen Auto-Fit-Layout
+  - Copyright und rechtliche Direktlinks sind unten schneller auffindbar
 
 ### 6. Projects-Seite separat umbauen
 

@@ -1,9 +1,8 @@
 .footer {
-  margin-top: 24px;
-  padding: 18px 0 20px;
+  margin-top: 28px;
+  padding: 22px 0 24px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   background: transparent;
-  box-shadow: none;
 }
 
 .inner {
@@ -12,152 +11,69 @@
     var(--max-content-width)
   );
   margin: 0 auto;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
 }
 
-.grid {
-  margin-top: 8px;
+.shell {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 28px;
+  gap: 24px;
+  padding: clamp(18px, 2vw, 24px) 0 0;
 }
 
-.column {
-  width: 100%;
-  padding: 4px 0;
-  text-align: left;
-  justify-self: stretch;
-}
-
-.legalColumn {
-  text-align: center;
-}
-
-.endColumn {
-  text-align: right;
-}
-
-.heading {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.2rem;
-  letter-spacing: -0.01em;
-}
-
-.linkList {
+.layout {
   display: grid;
-  gap: 7px;
-  justify-items: start;
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
+  grid-template-columns: minmax(260px, 0.92fr) minmax(0, 1.5fr);
+  gap: clamp(28px, 4vw, 52px);
+  align-items: start;
 }
 
-.legalLinkList {
-  justify-items: center;
+.identity {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  max-width: 34rem;
 }
 
-.endLinkList {
-  justify-items: end;
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-  font-size: 1.1rem;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.link:hover {
-  color: var(--color-text);
-}
-
-.link:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: 5px;
-}
-
-.placeholderLink {
-  color: #ff7d85;
-}
-
-:global([data-theme="light"]) .placeholderLink {
-  color: #bf1f2b;
-}
-
-.bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin: 20px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-}
-
-.bottomLeft {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  width: 100%;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.83rem;
-  text-align: center;
-  overflow-wrap: anywhere;
+.brandWrap {
+  display: grid;
+  gap: 4px;
+  align-content: start;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .brand strong {
   color: var(--color-text);
-  font-size: 1.5rem;
-}
-
-.brandWrap {
-  display: inline-flex;
-  max-width: 100%;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  font-size: clamp(1.55rem, 1.8vw, 1.9rem);
+  letter-spacing: -0.03em;
 }
 
 .ownerNote {
-  padding-left: 0;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: 0.74rem;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  text-align: center;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.76rem;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  margin: 0;
+  max-width: 34ch;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: clamp(0.98rem, 0.95vw, 1.04rem);
+  line-height: 1.72;
 }
 
 .socials {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  margin-top: 10px;
+  gap: 10px;
+  margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.endSocials {
-  justify-content: flex-end;
 }
 
 .socials li {
@@ -168,8 +84,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border: 1px solid
     color-mix(in srgb, var(--color-cta) 32%, var(--color-border) 68%);
   border-radius: 999px;
@@ -179,7 +95,7 @@
     var(--color-cta) 18%
   );
   color: color-mix(in srgb, var(--color-text) 84%, var(--color-cta) 16%);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1;
   transition:
     border-color 180ms ease,
@@ -190,7 +106,11 @@
 }
 
 .socialLink:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 56%, #ffffff 8%);
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 52%,
+    var(--color-border) 48%
+  );
   background: color-mix(
     in srgb,
     var(--color-surface-2) 64%,
@@ -208,9 +128,89 @@
 
 .socialLink svg {
   display: block;
-  width: 0.82rem;
-  height: 0.82rem;
+  width: 0.84rem;
+  height: 0.84rem;
   flex: 0 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2vw, 28px);
+}
+
+.column {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.linkList {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column:nth-child(2) .linkList {
+  gap: 9px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  font-size: 1rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  transition: color 160ms ease;
+}
+
+.link:hover {
+  color: var(--color-text);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 5px;
+}
+
+.placeholderLink {
+  color: color-mix(in srgb, var(--color-accent-warm) 72%, #ff7d85 28%);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+}
+
+.bottomMeta {
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+:global([data-theme="light"]) .description,
+:global([data-theme="light"]) .ownerNote,
+:global([data-theme="light"]) .bottomMeta {
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
 }
 
 :global([data-theme="light"]) .socialLink {
@@ -242,77 +242,60 @@
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
-  .grid {
-    gap: 22px;
+  .layout {
+    gap: clamp(36px, 4.2vw, 64px);
+  }
+
+  .brand strong {
+    font-size: 1.95rem;
   }
 }
 
 @media (max-width: 900px) {
   .footer {
-    margin-top: 18px;
-    padding-top: 14px;
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .identity {
+    max-width: none;
+  }
+
+  .description {
+    max-width: 40ch;
   }
 
   .grid {
     grid-template-columns: 1fr;
-    justify-items: stretch;
-    width: 100%;
-  }
-
-  .column,
-  .legalColumn,
-  .endColumn {
-    text-align: center;
-  }
-
-  .linkList,
-  .legalLinkList,
-  .endLinkList {
-    width: 100%;
-    justify-items: stretch;
-  }
-
-  .link {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-
-  .socials,
-  .endSocials {
-    justify-content: center;
-  }
-
-  .socialLink {
-    width: 30px;
-    min-width: 30px;
-    height: 30px;
-    flex: 0 0 30px;
+    gap: 18px;
   }
 
   .bottom {
     flex-direction: column;
-    align-items: stretch;
-  }
-
-  .bottomLeft {
-    justify-content: center;
-    width: 100%;
-    padding-inline: 0;
-    text-align: center;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 640px) {
-  .grid {
-    gap: 18px;
-  }
-
-  .link {
-    font-size: 1rem;
+  .shell {
+    gap: 20px;
+    padding-top: 14px;
   }
 
   .brand strong {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
+  }
+
+  .description {
+    font-size: 0.94rem;
+  }
+
+  .link {
+    font-size: 0.94rem;
   }
 }

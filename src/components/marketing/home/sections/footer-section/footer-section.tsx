@@ -30,6 +30,7 @@ export function FooterSection({
   brand,
   columns,
   copyright,
+  description,
   id,
   legalLinks = [],
   socialLinks = [],
@@ -55,15 +56,15 @@ export function FooterSection({
     }
     return {};
   };
-  const legalColumnTitle = legalLinks.some((link) => link.label === "Impressum")
-    ? "Rechtliches"
-    : "Legal";
   const linkColumns = columns
     .map((column) => ({
       ...column,
       links: column.links.filter((link) => !isPlaceholderHref(link.href)),
     }))
     .filter((column) => column.links.length > 0);
+  const legalColumnTitle = legalLinks.some((link) => link.label === "Impressum")
+    ? "Rechtliches"
+    : "Legal";
   const footerColumnsWithLegal = legalLinks.length
     ? [
         ...linkColumns.slice(0, 1),
@@ -77,32 +78,6 @@ export function FooterSection({
   const visibleSocialLinks = socialLinks.filter(
     (link) => !isPlaceholderHref(link.href),
   );
-  const getColumnClassName = (columnTitle: string, index: number) => {
-    const classNames = [styles.column];
-
-    if (columnTitle === legalColumnTitle) {
-      classNames.push(styles.legalColumn);
-    }
-
-    if (index === footerColumnsWithLegal.length - 1) {
-      classNames.push(styles.endColumn);
-    }
-
-    return classNames.join(" ");
-  };
-  const getListClassName = (columnTitle: string, index: number) => {
-    const classNames = [styles.linkList];
-
-    if (columnTitle === legalColumnTitle) {
-      classNames.push(styles.legalLinkList);
-    }
-
-    if (index === footerColumnsWithLegal.length - 1) {
-      classNames.push(styles.endLinkList);
-    }
-
-    return classNames.join(" ");
-  };
 
   const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
     if (platform === "linkedin") {
@@ -114,36 +89,30 @@ export function FooterSection({
   return (
     <footer className={styles.footer} id={id}>
       <div className={styles.inner}>
-        <div className={styles.grid} role="list">
-          {footerColumnsWithLegal.map((column, index) => (
-            <section
-              className={getColumnClassName(column.title, index)}
-              key={column.title}
-              role="listitem"
-            >
-              <h3 className={styles.heading}>{column.title}</h3>
-              <ul className={getListClassName(column.title, index)}>
-                {column.links.map((link) => (
-                  <li key={`${column.title}-${link.label}`}>
-                    <a
-                      className={
-                        isPlaceholderHref(link.href)
-                          ? `${styles.link} ${styles.placeholderLink}`
-                          : styles.link
-                      }
-                      href={link.href}
-                      {...getLinkAnalyticsProps(link.href)}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              {(column.title === "Kontakt" || column.title === "Contact") &&
-              visibleSocialLinks.length ? (
-                <ul
-                  className={`${styles.socials} ${index === footerColumnsWithLegal.length - 1 ? styles.endSocials : ""}`.trim()}
-                >
+        <div className={styles.shell}>
+          <div className={styles.layout}>
+            <section className={styles.identity}>
+              {brand ? (
+                <div className={styles.brandWrap}>
+                  <span className={styles.brand}>
+                    <Image
+                      src="/brand/icon.png"
+                      alt="Invessiv Logo"
+                      width={24}
+                      height={24}
+                    />
+                    <strong>{brand}</strong>
+                  </span>
+                  {bottomNote ? (
+                    <small className={styles.ownerNote}>{bottomNote}</small>
+                  ) : null}
+                </div>
+              ) : null}
+
+              <p className={styles.description}>{description}</p>
+
+              {visibleSocialLinks.length ? (
+                <ul className={styles.socials} aria-label="Social links">
                   {visibleSocialLinks.map((socialLink) => (
                     <li key={socialLink.platform}>
                       <a
@@ -160,28 +129,41 @@ export function FooterSection({
                 </ul>
               ) : null}
             </section>
-          ))}
-        </div>
 
-        <div className={styles.bottom}>
-          <div className={styles.bottomLeft}>
-            {brand ? (
-              <div className={styles.brandWrap}>
-                <span className={styles.brand}>
-                  <Image
-                    src="/brand/icon.png"
-                    alt="Invessiv Logo"
-                    width={24}
-                    height={24}
-                  />
-                  <strong>{brand}</strong>
-                </span>
-                {bottomNote ? (
-                  <small className={styles.ownerNote}>{bottomNote}</small>
-                ) : null}
-              </div>
-            ) : null}
-            {copyright ? <span>{copyright}</span> : null}
+            <div className={styles.grid} role="list">
+              {footerColumnsWithLegal.map((column) => (
+                <section
+                  className={styles.column}
+                  key={column.title}
+                  role="listitem"
+                >
+                  <h3 className={styles.heading}>{column.title}</h3>
+                  <ul className={styles.linkList}>
+                    {column.links.map((link) => (
+                      <li key={`${column.title}-${link.label}`}>
+                        <a
+                          className={
+                            isPlaceholderHref(link.href)
+                              ? `${styles.link} ${styles.placeholderLink}`
+                              : styles.link
+                          }
+                          href={link.href}
+                          {...getLinkAnalyticsProps(link.href)}
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.bottom}>
+            <div className={styles.bottomMeta}>
+              {copyright ? <span>{copyright}</span> : null}
+            </div>
           </div>
         </div>
       </div>
