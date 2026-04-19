@@ -14,8 +14,8 @@
   flex-direction: column;
   height: 100%;
   min-height: 100%;
-  padding: 18px;
-  border-radius: 22px;
+  padding: 20px;
+  border-radius: 24px;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
@@ -113,13 +113,13 @@
 
 .header {
   display: grid;
-  gap: 14px;
+  gap: 16px;
 }
 
 .titleWrap {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -134,21 +134,21 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 12px;
-  min-height: 44px;
+  column-gap: 14px;
+  min-height: 48px;
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.2rem, 1.55vw, 1.34rem);
+  font-size: clamp(1.24rem, 1.45vw, 1.42rem);
   font-weight: 800;
   letter-spacing: -0.01em;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  min-height: 26px;
-  padding: 0 11px;
+  min-height: 28px;
+  padding: 0 12px;
   border-radius: 999px;
   border: 1px solid
     color-mix(in srgb, var(--accent) 54%, var(--color-border) 46%);
@@ -158,19 +158,19 @@
     color-mix(in srgb, var(--accent) 44%, var(--color-surface-1) 56%)
   );
   color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
 .fitNote {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   display: grid;
-  gap: 4px;
+  gap: 5px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.84rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .fitLabel {
@@ -179,7 +179,7 @@
     var(--color-accent-warm) 76%,
     var(--color-text) 24%
   );
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -187,7 +187,7 @@
 
 .metaStack {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   align-content: start;
 }
 
@@ -199,15 +199,15 @@
 .highlightText {
   display: block;
   color: color-mix(in srgb, var(--accent) 78%, var(--color-text) 22%);
-  font-size: clamp(0.9rem, 1.02vw, 1rem);
+  font-size: clamp(0.96rem, 0.96rem + 0.2vw, 1.08rem);
   font-weight: 760;
-  line-height: 1.12;
+  line-height: 1.18;
   letter-spacing: -0.02em;
 }
 
 .metaInfo {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   align-content: start;
 }
 
@@ -218,37 +218,37 @@
   align-self: flex-start;
   width: fit-content;
   max-width: 100%;
-  min-height: 26px;
-  padding: 0 10px;
+  min-height: 28px;
+  padding: 0 12px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
 .pricingHint {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 .body {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   align-content: start;
 }
 
 .list {
-  margin: 4px 0 0;
-  padding: 0 0 0 18px;
+  margin: 6px 0 0;
+  padding: 0 0 0 20px;
   list-style: disc;
   list-style-position: outside;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.92rem;
-  line-height: 1.48;
+  font-size: 0.96rem;
+  line-height: 1.55;
 }
 
 .list > li {
@@ -275,12 +275,12 @@
 
 .footer {
   margin-top: auto;
-  padding-top: 12px;
+  padding-top: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  min-height: 40px;
+  gap: 14px;
+  min-height: 44px;
 }
 
 .actions {
@@ -288,13 +288,13 @@
   align-items: center;
   flex: 1 1 auto;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 12px;
 }
 
 .primaryCta {
-  min-height: 40px;
-  padding-inline: 14px;
-  font-size: 0.94rem;
+  min-height: 44px;
+  padding-inline: 16px;
+  font-size: 0.96rem;
   width: fit-content;
   max-width: 100%;
 }
@@ -314,7 +314,7 @@
 .moreItems {
   margin: -2px 0 0;
   color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   font-weight: 600;
 }
 
@@ -323,17 +323,17 @@
 }
 
 .toggle {
-  min-height: 34px;
-  padding: 0 10px 0 12px;
+  min-height: 38px;
+  padding: 0 12px 0 14px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: transparent;
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
-  font-size: 0.79rem;
+  font-size: 0.83rem;
   font-weight: 600;
   transition:
     border-color 150ms ease,
@@ -342,9 +342,16 @@
 }
 
 .toggle:hover {
-  color: var(--color-cta);
-  border-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
-  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-cta) 16%);
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 38%,
+    var(--color-border) 62%
+  );
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent),
+    0 8px 18px color-mix(in srgb, rgba(8, 10, 15, 0.16) 100%, transparent);
 }
 
 .toggle:focus-visible {
@@ -421,6 +428,14 @@
   background: transparent;
 }
 
+:global([data-theme="light"]) .toggle:hover {
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-cta) 14%);
+  background: color-mix(in srgb, #ffffff 92%, var(--color-cta) 8%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 60%, transparent),
+    0 8px 18px color-mix(in srgb, var(--color-cta) 10%, transparent);
+}
+
 @media (max-width: 640px) {
   .footer {
     flex-wrap: wrap;
@@ -445,11 +460,11 @@
 
 @media (min-width: 760px) {
   .header {
-    grid-template-rows: minmax(8.75rem, auto) minmax(3.7rem, auto);
+    grid-template-rows: minmax(9.5rem, auto) minmax(4.2rem, auto);
   }
 
   .metaStack {
-    grid-template-rows: minmax(1.3rem, auto) auto;
+    grid-template-rows: minmax(1.5rem, auto) auto;
   }
 
   .highlightText {
@@ -457,9 +472,113 @@
   }
 }
 
+@media (min-width: 1120px) {
+  .card {
+    padding: 26px;
+    border-radius: 28px;
+  }
+
+  .surface {
+    gap: 1rem;
+  }
+
+  .header {
+    gap: 18px;
+  }
+
+  .title {
+    column-gap: 16px;
+    min-height: 54px;
+    font-size: clamp(1.34rem, 1rem + 0.52vw, 1.62rem);
+  }
+
+  .badge {
+    min-height: 30px;
+    padding-inline: 14px;
+    font-size: 0.82rem;
+  }
+
+  .fitNote {
+    margin-top: 12px;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+
+  .highlightText {
+    font-size: clamp(1rem, 0.88rem + 0.34vw, 1.16rem);
+  }
+
+  .deliveryBadge {
+    min-height: 30px;
+    padding-inline: 14px;
+    font-size: 0.84rem;
+  }
+
+  .pricingHint {
+    font-size: 0.92rem;
+  }
+
+  .body {
+    gap: 18px;
+  }
+
+  .list {
+    padding-left: 22px;
+    font-size: 1rem;
+  }
+
+  .footer {
+    padding-top: 18px;
+    gap: 16px;
+    min-height: 48px;
+  }
+
+  .primaryCta {
+    min-height: 46px;
+    padding-inline: 18px;
+    font-size: 1rem;
+  }
+
+  .toggle {
+    min-height: 40px;
+    padding: 0 13px 0 15px;
+    font-size: 0.86rem;
+  }
+
+  .moreItems {
+    font-size: 0.88rem;
+  }
+}
+
+@media (min-width: 1500px) {
+  .card {
+    padding: 30px;
+  }
+
+  .title {
+    font-size: clamp(1.42rem, 1.12rem + 0.4vw, 1.72rem);
+  }
+
+  .fitNote {
+    font-size: 0.96rem;
+  }
+
+  .highlightText {
+    font-size: 1.12rem;
+  }
+
+  .pricingHint {
+    font-size: 0.96rem;
+  }
+
+  .list {
+    font-size: 1.03rem;
+  }
+}
+
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .title {
-    font-size: clamp(1.1rem, 1.15vw, 1.22rem);
+    font-size: clamp(1.42rem, 1.08rem + 0.34vw, 1.68rem);
   }
 }
 

@@ -110,11 +110,61 @@
   4. Medien-/Card-Grids breiter nutzen, ohne Text mitzuziehen
   5. bestehendes visuelles Design beibehalten; nur spacing-, size- und typo-basierte Kalibrierung, ausser ein Redesign wird explizit angefragt
 - Besondere Pruefungen:
+  - `services`: Frage-Antwort-Modul sichtbar als Entscheidungsfrage inszenieren, Antwort-Chips deutlich groesser und mit mehr Luft, Cards auf Desktop praesent und scanbar statt kompakt
   - `proof`: Review-/Project-Grid soll breiter wirken, Text aber kompakt bleiben
   - `process`: narrative Mittelachse und Step-Layout bei mehr Breite nicht zerfallen lassen
   - `contact`: Formular- und Info-Spalten auf Desktop balancieren
   - `footer`: Footer-Inhalt auf dieselbe Aussenkante wie Header/Home ausrichten
   - Headings und vorhandene Summary-/Chip-Elemente section-uebergreifend auf eine gemeinsame visuelle Sprache kalibrieren
+
+#### 5.2 `services` konkret [naechster Schritt]
+
+- Verwendete Skill-Basis:
+  - `frontend-design` fuer praesentere Desktop-Komposition, Typo-Skalierung und bewusst grosszuegige Card-Praesenz
+  - `ux-design` fuer die klare Frage-Antwort-Fuehrung und die sofort lesbare Entscheidungshilfe
+- Vorhandene Effektbibliothek aktiv nutzen:
+  - bestehender Fit: `cursor_spotlight_cards`
+  - Begruendung: passt bereits zum Servicekarten-Layout, ist fuer Desktop vorgesehen und verstaerkt die Kartenpraesenz ohne die Informationsarchitektur umzubauen
+  - Einsatzregel: Effekt nur dekorativ lassen; Fokus fuer diesen Schritt liegt auf Hierarchie, Spacing und Typografie, nicht auf mehr Motion
+- Zielbild fuer die Section:
+  - Die Section soll auf Desktop nicht wie ein enger Kartenblock wirken, sondern wie ein bewusst gesetztes Beratungsmodul mit klarer Leitfrage
+  - Die Frage `Wähle dein Ziel – wir markieren das passendste Leistungsmodell.` muss sofort als beantwortbare Nutzerfrage lesbar sein, nicht nur wie eine kleine UI-Beschriftung
+  - Die drei Antwortoptionen muessen direkt als Auswahl wahrgenommen werden, mit genug Hoehe, Innenabstand und Schriftgroesse fuer schnellen Scan
+  - Die empfohlene Karte soll als direkte Reaktion auf die Auswahl sofort erfassbar sein
+- Desktop-Layout-Plan:
+  - oberen Section-Einstieg grosszuegiger staffeln: `section title` -> `Frage` -> `Antwort-Chips` -> `context note` -> Kartenraster
+  - zwischen H2 und Frage mehr vertikale Trennung geben, damit die Frage als eigener Conversion-Moment lesbar wird
+  - Antwort-Chips auf Desktop nicht zu frueh umbrechen lassen; bei genug Breite als ruhige horizontale Gruppe fuehren
+  - Primaer-Karten visuell staerker in die Breite stellen; Grid darf die neue Desktop-Schiene sichtbar nutzen
+  - Sekundaer-Karten darunter mit klarer Distanz anschliessen, damit Primary vs. Add-on sauber getrennt bleibt
+- Typografie-Plan fuer Desktop:
+  - `sectionTitle` leicht groesser und mit mehr Abstand zur Frage kalibrieren, damit die gesamte Section mehr Auftakt bekommt
+  - `goalTitle` deutlich groesser setzen und eher wie eine kurze Leitfrage behandeln statt wie Kleingedrucktes
+  - Ziel fuer `goalTitle`: eher kleiner Subheadline-Charakter als UI-Label
+  - `goalChip`-Labels spuerbar vergroessern; sie sollen auf Desktop nicht wie Tags, sondern wie Antwortoptionen wirken
+  - Service-Card-Titel, Highlight-Zeile und Listen/Meta-Texte jeweils leicht anheben, damit die Cards bei mehr Flaeche nicht typografisch untergewichtet wirken
+  - Sekundaer-Ueberschrift (`secondaryTitle`) ebenfalls etwas praesenter auslegen, damit der Block nicht wie Restinhalt wirkt
+- Spacing-Plan fuer Desktop:
+  - mehr Abstand zwischen `goalTitle` und `goalChips`
+  - Chips mit groesserer Mindesthoehe, mehr horizontalem Padding und etwas mehr Zeilen-/Reihenabstand
+  - mehr Abstand zwischen Frage-Modul und `contextNote`, damit beides nicht optisch zusammenschmilzt
+  - `primaryGrid`-Gap vergroessern, damit die Karten bei breiterer Schiene hochwertiger und weniger gequetscht wirken
+  - Card-Interior vergroessern: mehr Innenpadding, mehr Luft zwischen Header, Highlight, Meta und Listenbereich
+  - Footer-/CTA-Zone innerhalb der Cards staerker vom Content absetzen, damit der Abschluss kontrollierter wirkt
+- Inhaltliche UX-Regel fuer die Frage:
+  - Die Formulierung bleibt als direkte Frage/Entscheidungshilfe lesbar
+  - Die Antworten bleiben kurz, konkret und handlungsnah
+  - Die Nutzerwahrnehmung soll sein: `Hier beantworte ich kurz mein Ziel und bekomme direkt die passende Empfehlung`
+- Konkrete Kalibrierungsrichtung fuer die Implementierung:
+  - Desktop ab ca. `1120px`: merklich grosszuegiger
+  - Wide Desktop ab ca. `1500px`: nochmal etwas mehr Luft und groessere Typo, aber keine neue enge Sonderbreite
+  - Mobile/Tablet bleiben funktional gleich; nur Desktop-Hierarchie und Desktop-Grosszuegigkeit werden nachgezogen
+- Abnahme fuer `services`:
+  - Auf `1920x1080` ist die Leitfrage auf den ersten Blick als Frage erkennbar
+  - Die Antwort-Chips wirken wie echte Auswahloptionen und nicht wie kleine Filter-Tags
+  - Die Primaer-Karten fuehlen sich groesser, ruhiger und besser lesbar an
+  - Die empfohlene Karte ist ohne Suchen sofort identifizierbar
+  - Der bestehende visuelle Charakter der Section bleibt erhalten; geaendert werden nur Hierarchie, Groessen und Abstaende
 
 ### 6. Projects-Seite separat umbauen
 

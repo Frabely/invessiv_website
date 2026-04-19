@@ -149,7 +149,7 @@ export function ServicesSection({
     <section className={styles.section} id={id} ref={sectionRef}>
       <div className={styles.goalPicker} aria-label={goalTitle} role="group">
         <h2 className={styles.sectionTitle}>{title}</h2>
-        <p className={styles.goalTitle}>{goalTitle}</p>
+        <h3 className={styles.goalTitle}>{goalTitle}</h3>
         <div className={styles.goalChips}>
           {goalOptions.map((option) => {
             const isActive = option.key === selectedGoalKey;
