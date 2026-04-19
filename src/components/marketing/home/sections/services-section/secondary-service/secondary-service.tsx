@@ -55,8 +55,10 @@ export function SecondaryService({
       </div>
 
       <div className={styles.copy}>
-        <p className={styles.description}>{card.description}</p>
-        {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+        <div className={styles.copyBlock}>
+          <p className={styles.description}>{card.description}</p>
+          {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+        </div>
         <p className={styles.pricingHint}>{card.pricingHint}</p>
         <div className={styles.ctaSlot}>
           <a

@@ -14,9 +14,10 @@
 
 .hint {
   margin: 0 0 18px;
-  max-width: 58ch;
+  max-width: 66ch;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: var(--font-size-body-md);
+  font-size: clamp(1.02rem, 1vw, 1.14rem);
+  font-weight: 560;
   line-height: 1.58;
 }
 
@@ -65,7 +66,7 @@
 .cardTitle {
   margin: 0;
   color: var(--color-text);
-  max-width: 18ch;
+  max-width: none;
   font-size: var(--font-size-section-subtitle);
   line-height: 1.12;
   letter-spacing: -0.03em;
@@ -84,8 +85,8 @@
   --included-bridge-frame-width: min(calc(100vw - 48px), 1100px);
   position: relative;
   margin: 20px auto 0;
-  max-width: 60ch;
-  padding: 18px 22px;
+  max-width: min(100%, 92ch);
+  padding: 20px 24px;
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -96,10 +97,10 @@
     transparent 100%
   );
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
-  font-size: var(--font-size-body-md);
-  font-weight: 600;
+  font-size: clamp(1.02rem, 1vw, 1.14rem);
+  font-weight: 640;
   letter-spacing: -0.01em;
-  line-height: 1.58;
+  line-height: 1.62;
   text-align: center;
   text-wrap: balance;
 }
@@ -184,6 +185,10 @@
   }
 
   .cardDescription {
+    font-size: var(--font-size-body-md-wide);
+  }
+
+  .bridge {
     font-size: var(--font-size-body-md-wide);
   }
 }

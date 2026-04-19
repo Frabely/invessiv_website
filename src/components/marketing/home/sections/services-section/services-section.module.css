@@ -245,6 +245,7 @@
 
   .secondaryTitle {
     max-width: 36rem;
+    white-space: nowrap;
   }
 
   .secondaryGrid {
@@ -274,6 +275,12 @@
 
   .secondaryGrid {
     gap: 24px;
+  }
+}
+
+@media (max-width: 1119px) {
+  .secondaryTitle {
+    white-space: normal;
   }
 }
 

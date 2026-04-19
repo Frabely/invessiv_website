@@ -30,10 +30,20 @@
   gap: 14px;
 }
 
+.copy {
+  align-content: start;
+}
+
+.copyBlock {
+  display: grid;
+  gap: 10px;
+}
+
 .titleWrap {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 12px;
+  align-content: start;
 }
 
 .title {
@@ -67,6 +77,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  align-items: center;
+  min-height: 2.4rem;
 }
 
 .metaChip {
@@ -85,7 +97,7 @@
 .description,
 .fit {
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .description {
@@ -96,10 +108,13 @@
 .fit {
   color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
   font-size: 0.96rem;
+  padding-top: 2px;
 }
 
 .pricingHint {
   margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
   font-size: 0.88rem;
   line-height: 1.5;
@@ -114,10 +129,10 @@
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-cta) 28%);
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-cta) 42%);
   font-size: 0.94rem;
   font-weight: 600;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 36%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
   text-underline-offset: 0.16em;
 }
 
@@ -125,12 +140,12 @@
   content: "›";
   font-size: 1em;
   line-height: 1;
-  color: color-mix(in srgb, var(--color-cta) 58%, var(--color-text) 42%);
+  color: color-mix(in srgb, var(--color-cta) 68%, var(--color-text) 32%);
 }
 
 .ctaLink:hover {
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 52%, transparent);
+  color: color-mix(in srgb, var(--color-text) 48%, var(--color-cta) 52%);
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 58%, transparent);
 }
 
 .ctaLink:focus-visible {
@@ -155,6 +170,14 @@
     gap: 16px;
   }
 
+  .copyBlock {
+    gap: 12px;
+  }
+
+  .metaRow {
+    min-height: 2.55rem;
+  }
+
   .title {
     font-size: clamp(1.2rem, 1.06rem + 0.26vw, 1.34rem);
   }
@@ -175,6 +198,7 @@
   }
 
   .pricingHint {
+    padding-top: 14px;
     font-size: 0.92rem;
   }
 
@@ -186,6 +210,10 @@
 @media (min-width: 1500px) {
   .card {
     padding: 30px 30px 32px;
+  }
+
+  .metaRow {
+    min-height: 2.7rem;
   }
 
   .title {
