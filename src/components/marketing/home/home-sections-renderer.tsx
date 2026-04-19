@@ -144,7 +144,6 @@ export function HomeSectionsRenderer({
                   items={section.qnaItems ?? []}
                   key={section.id}
                   secondaryContact={section.qnaSecondaryContact}
-                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
