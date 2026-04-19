@@ -1,8 +1,8 @@
 .card {
   display: grid;
-  gap: 20px;
+  gap: 16px;
   min-height: 100%;
-  padding: 24px 24px 26px;
+  padding: 22px;
   border-radius: 26px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: linear-gradient(
@@ -27,7 +27,7 @@
 .titleWrap,
 .copy {
   display: grid;
-  gap: 14px;
+  gap: 15px;
 }
 
 .copy {
@@ -42,14 +42,14 @@
 .titleWrap {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  gap: 12px;
+  gap: 11px;
   align-content: start;
 }
 
 .title {
   display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   margin: 0;
   font-size: clamp(1.14rem, 1rem + 0.24vw, 1.26rem);
   line-height: 1.2;
@@ -76,7 +76,7 @@
 .metaRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   min-height: 2.4rem;
 }
@@ -113,10 +113,10 @@
 
 .pricingHint {
   margin: 0;
-  padding-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   line-height: 1.5;
 }
 
@@ -129,10 +129,10 @@
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  color: color-mix(in srgb, var(--color-text) 58%, var(--color-cta) 42%);
+  color: color-mix(in srgb, var(--color-text) 34%, var(--color-cta) 66%);
   font-size: 0.94rem;
-  font-weight: 600;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
+  font-weight: 700;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
   text-underline-offset: 0.16em;
 }
 
@@ -140,16 +140,18 @@
   content: "›";
   font-size: 1em;
   line-height: 1;
-  color: color-mix(in srgb, var(--color-cta) 68%, var(--color-text) 32%);
+  color: color-mix(in srgb, var(--color-cta) 82%, var(--color-text) 18%);
 }
 
 .ctaLink:hover {
-  color: color-mix(in srgb, var(--color-text) 48%, var(--color-cta) 52%);
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 58%, transparent);
+  color: color-mix(in srgb, var(--color-text) 22%, var(--color-cta) 78%);
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 74%, transparent);
 }
 
 .ctaLink:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 42%, transparent);
   outline-offset: 3px;
+  border-radius: 6px;
 }
 
 @media (max-width: 759px) {
@@ -160,8 +162,8 @@
 
 @media (min-width: 1120px) {
   .card {
-    gap: 22px;
-    padding: 28px 28px 30px;
+    gap: 18px;
+    padding: 24px;
   }
 
   .header,
@@ -171,7 +173,7 @@
   }
 
   .copyBlock {
-    gap: 12px;
+    gap: 10px;
   }
 
   .metaRow {
@@ -198,8 +200,9 @@
   }
 
   .pricingHint {
-    padding-top: 14px;
-    font-size: 0.92rem;
+    padding-top: 12px;
+    font-size: 0.86rem;
+    line-height: 1.52;
   }
 
   .ctaLink {
@@ -209,7 +212,7 @@
 
 @media (min-width: 1500px) {
   .card {
-    padding: 30px 30px 32px;
+    padding: 26px;
   }
 
   .metaRow {
@@ -231,6 +234,6 @@
 
   .pricingHint,
   .ctaLink {
-    font-size: 0.96rem;
+    font-size: 0.9rem;
   }
 }

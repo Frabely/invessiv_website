@@ -224,7 +224,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-areas: "web landing process";
     align-items: stretch;
-    gap: 24px;
+    gap: 38px;
   }
 
   .primaryGrid > [data-card-key="web"] {
@@ -249,7 +249,7 @@
   }
 
   .secondaryGrid {
-    gap: 20px;
+    gap: 38px;
   }
 }
 
@@ -270,11 +270,11 @@
   }
 
   .primaryGrid {
-    gap: 28px;
+    gap: 44px;
   }
 
   .secondaryGrid {
-    gap: 24px;
+    gap: 44px;
   }
 }
 

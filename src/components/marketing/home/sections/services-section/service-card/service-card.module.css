@@ -14,7 +14,7 @@
   flex-direction: column;
   height: 100%;
   min-height: 100%;
-  padding: 20px;
+  padding: 22px;
   border-radius: 24px;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
@@ -107,19 +107,19 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: clamp(0.625rem, 1.4vw, 0.95rem);
+  gap: clamp(0.8rem, 1.35vw, 1rem);
   height: 100%;
 }
 
 .header {
   display: grid;
-  gap: 16px;
+  gap: 15px;
 }
 
 .titleWrap {
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 11px;
   width: 100%;
 }
 
@@ -134,8 +134,8 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 14px;
-  min-height: 48px;
+  column-gap: 12px;
+  min-height: 44px;
   margin: 0;
   color: var(--color-text);
   font-size: clamp(1.24rem, 1.45vw, 1.42rem);
@@ -165,9 +165,9 @@
 }
 
 .fitNote {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   display: grid;
-  gap: 5px;
+  gap: 6px;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.88rem;
   line-height: 1.5;
@@ -218,20 +218,20 @@
   align-self: flex-start;
   width: fit-content;
   max-width: 100%;
-  min-height: 28px;
-  padding: 0 12px;
+  min-height: 26px;
+  padding: 0 10px;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
 }
 
 .pricingHint {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 
@@ -242,13 +242,13 @@
 }
 
 .list {
-  margin: 6px 0 0;
+  margin: 2px 0 0;
   padding: 0 0 0 20px;
   list-style: disc;
   list-style-position: outside;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: 0.96rem;
-  line-height: 1.55;
+  line-height: 1.58;
 }
 
 .list > li {
@@ -264,7 +264,7 @@
 }
 
 .list > li + li {
-  margin-top: 0;
+  margin-top: 0.3rem;
 }
 
 .details {
@@ -279,7 +279,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
   min-height: 44px;
 }
 
@@ -470,21 +470,21 @@
 
 @media (min-width: 1120px) {
   .card {
-    padding: 26px;
+    padding: 24px;
     border-radius: 28px;
   }
 
   .surface {
-    gap: 1rem;
+    gap: 0.95rem;
   }
 
   .header {
-    gap: 18px;
+    gap: 16px;
   }
 
   .title {
-    column-gap: 16px;
-    min-height: 54px;
+    column-gap: 14px;
+    min-height: 48px;
     font-size: clamp(1.34rem, 1rem + 0.52vw, 1.62rem);
   }
 
@@ -495,9 +495,9 @@
   }
 
   .fitNote {
-    margin-top: 12px;
+    margin-top: 8px;
     gap: 6px;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
   }
 
   .highlightText {
@@ -505,13 +505,14 @@
   }
 
   .deliveryBadge {
-    min-height: 30px;
-    padding-inline: 14px;
-    font-size: 0.84rem;
+    min-height: 28px;
+    padding-inline: 12px;
+    font-size: 0.8rem;
   }
 
   .pricingHint {
-    font-size: 0.92rem;
+    font-size: 0.86rem;
+    line-height: 1.52;
   }
 
   .body {
@@ -520,12 +521,13 @@
 
   .list {
     padding-left: 22px;
-    font-size: 1rem;
+    font-size: 0.96rem;
+    line-height: 1.62;
   }
 
   .footer {
     padding-top: 18px;
-    gap: 16px;
+    gap: 12px;
     min-height: 48px;
   }
 
@@ -548,7 +550,7 @@
 
 @media (min-width: 1500px) {
   .card {
-    padding: 30px;
+    padding: 26px;
   }
 
   .title {
@@ -556,7 +558,7 @@
   }
 
   .fitNote {
-    font-size: 0.96rem;
+    font-size: 0.9rem;
   }
 
   .highlightText {
@@ -564,11 +566,12 @@
   }
 
   .pricingHint {
-    font-size: 0.96rem;
+    font-size: 0.88rem;
   }
 
   .list {
-    font-size: 1.03rem;
+    font-size: 0.98rem;
+    line-height: 1.64;
   }
 }
 
