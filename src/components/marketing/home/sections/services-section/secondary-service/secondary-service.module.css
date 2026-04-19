@@ -110,16 +110,27 @@
 }
 
 .ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   width: fit-content;
-  color: color-mix(in srgb, var(--color-cta) 72%, var(--color-text) 28%);
-  font-size: 0.96rem;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-cta) 28%);
+  font-size: 0.94rem;
   font-weight: 600;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 48%, transparent);
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 36%, transparent);
   text-underline-offset: 0.16em;
 }
 
+.ctaLink::after {
+  content: "›";
+  font-size: 1em;
+  line-height: 1;
+  color: color-mix(in srgb, var(--color-cta) 58%, var(--color-text) 42%);
+}
+
 .ctaLink:hover {
-  color: var(--color-cta-hover);
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 52%, transparent);
 }
 
 .ctaLink:focus-visible {
@@ -168,7 +179,7 @@
   }
 
   .ctaLink {
-    font-size: 1rem;
+    font-size: 0.98rem;
   }
 }
 

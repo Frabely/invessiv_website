@@ -97,7 +97,7 @@
 
 - Reihenfolge:
   1. `included` [erledigt]
-  2. `services`
+  2. `services` [erledigt]
   3. `proof` [erledigt]
   4. `process`
   5. `faq`
@@ -117,7 +117,7 @@
   - `footer`: Footer-Inhalt auf dieselbe Aussenkante wie Header/Home ausrichten
   - Headings und vorhandene Summary-/Chip-Elemente section-uebergreifend auf eine gemeinsame visuelle Sprache kalibrieren
 
-#### 5.2 `services` konkret [naechster Schritt]
+#### 5.2 `services` konkret [erledigt]
 
 - Verwendete Skill-Basis:
   - `frontend-design` fuer praesentere Desktop-Komposition, Typo-Skalierung und bewusst grosszuegige Card-Praesenz

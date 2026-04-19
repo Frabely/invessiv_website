@@ -136,10 +136,6 @@
   gap: 20px;
 }
 
-.primaryCard {
-  min-height: 100%;
-}
-
 .secondaryBlock {
   display: grid;
   gap: 20px;

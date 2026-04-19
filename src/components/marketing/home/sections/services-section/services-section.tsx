@@ -167,17 +167,15 @@ export function ServicesSection({
             );
           })}
         </div>
+        {serviceContextNote ? (
+          <p className={styles.contextNote}>{serviceContextNote}</p>
+        ) : null}
       </div>
-
-      {serviceContextNote ? (
-        <p className={styles.contextNote}>{serviceContextNote}</p>
-      ) : null}
 
       <div className={styles.primaryGrid} role="list">
         {primaryCards.map((card) => (
           <ServiceCard
             card={card}
-            cardClassName={styles.primaryCard}
             ctaLabel={primaryCtaLabel}
             isCtaActive={recommendedCardKey === card.key}
             ctaProjectGoal={selectedGoalLabel}

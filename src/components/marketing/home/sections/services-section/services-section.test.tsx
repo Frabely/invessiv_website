@@ -112,6 +112,19 @@ function renderSection() {
   );
 }
 
+function getArticleByTitle(title: string) {
+  const matchingElements = screen.getAllByText(title);
+  const article = matchingElements.find((element) =>
+    element.closest("article"),
+  );
+
+  if (!article) {
+    throw new Error(`No article found for title: ${title}`);
+  }
+
+  return article.closest("article") as HTMLElement;
+}
+
 describe("ServicesSection", () => {
   afterEach(() => {
     cleanup();
@@ -171,15 +184,17 @@ describe("ServicesSection", () => {
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["upgrade", "maintenance"]);
-    expect(screen.getByText("Empfohlen")).toBeTruthy();
+    expect(
+      within(getArticleByTitle("Landingpages")).getByText("Empfohlen"),
+    ).toBeTruthy();
     expect(screen.getByText("klarer professioneller Auftritt")).toBeTruthy();
     expect(
       screen.getByText("Angebot nach Ziel, Umfang und Feedbackbedarf"),
     ).toBeTruthy();
     expect(screen.queryByText("KI-Templates & Agents")).toBeNull();
-    const landingCard = screen.getByText("Landingpages").closest("article");
+    const landingCard = getArticleByTitle("Landingpages");
     expect(
-      within(landingCard as HTMLElement)
+      within(landingCard)
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
@@ -221,21 +236,15 @@ describe("ServicesSection", () => {
     );
     expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(
-      within(
-        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
-      )
+      within(getArticleByTitle("Prozess-Tools"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("process");
     expect(
-      within(
-        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
-      ).getByText("Empfohlen"),
+      within(getArticleByTitle("Prozess-Tools")).getByText("Empfohlen"),
     ).toBeTruthy();
     expect(
-      within(
-        screen.getByText("Prozess-Tools").closest("article") as HTMLElement,
-      )
+      within(getArticleByTitle("Prozess-Tools"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
     ).toBe("interne Abläufe vereinfachen");
@@ -249,8 +258,8 @@ describe("ServicesSection", () => {
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
     renderSection();
 
-    const landingArticle = screen.getByText("Landingpages").closest("article");
-    const webArticle = screen.getByText("Webseiten").closest("article");
+    const landingArticle = getArticleByTitle("Landingpages");
+    const webArticle = getArticleByTitle("Webseiten");
     const landingDetails = document.getElementById("services-details-landing");
     const webDetails = document.getElementById("services-details-web");
 
@@ -280,7 +289,7 @@ describe("ServicesSection", () => {
         .getAttribute("data-project-offer"),
     ).toBe("web");
     expect(
-      within(screen.getByText("Landingpages").closest("article") as HTMLElement)
+      within(getArticleByTitle("Landingpages"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
