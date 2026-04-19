@@ -53,9 +53,10 @@ export function ProofReviewCard({
             <Image
               alt=""
               className={styles.profileImage}
-              height={64}
+              height={112}
+              sizes="(max-width: 759px) 90px, 112px"
               src={profileImageSrc}
-              width={64}
+              width={112}
             />
           ) : (
             <span aria-hidden="true" className={styles.profileFallback}>

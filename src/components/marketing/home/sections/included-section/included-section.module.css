@@ -1,10 +1,12 @@
 .section {
+  display: grid;
+  gap: clamp(1.4rem, 2.3vw, 2rem);
   margin-top: 0;
   padding-left: 0;
 }
 
 .title {
-  margin: 0 0 12px;
+  margin: 0;
   color: var(--color-text);
   font-size: var(--font-size-section-title);
   line-height: 1.08;
@@ -13,7 +15,7 @@
 }
 
 .hint {
-  margin: 0 0 18px;
+  margin: 0;
   max-width: 66ch;
   color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
   font-size: clamp(1.02rem, 1vw, 1.14rem);
@@ -22,19 +24,19 @@
 }
 
 .cards {
-  margin-top: 22px;
+  margin-top: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(14px, 1.4vw, 20px);
+  gap: clamp(1.8rem, 3vw, 2.9rem);
 }
 
 .card {
   position: relative;
   display: grid;
   align-content: start;
-  gap: clamp(0.8rem, 1vw, 1rem);
+  gap: clamp(0.95rem, 1.15vw, 1.15rem);
   overflow: hidden;
-  padding: clamp(18px, 1.5vw, 24px);
+  padding: clamp(1.35rem, 1.8vw, 1.75rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   border-radius: 22px;
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
@@ -84,9 +86,9 @@
 .bridge {
   --included-bridge-frame-width: min(calc(100vw - 48px), 1100px);
   position: relative;
-  margin: 20px auto 0;
+  margin: 0 auto;
   max-width: min(100%, 92ch);
-  padding: 20px 24px;
+  padding: clamp(1.35rem, 1.8vw, 1.8rem) clamp(1.5rem, 2vw, 2rem);
   background: linear-gradient(
     90deg,
     transparent 0%,
@@ -209,7 +211,7 @@
   }
 
   .card {
-    padding: 18px;
+    padding: 1.2rem;
   }
 
   .cardTitle {
@@ -224,8 +226,7 @@
   }
 
   .bridge {
-    margin-top: 18px;
-    padding: 16px 18px;
+    padding: 1.1rem 1.15rem;
     font-size: 0.96rem;
   }
 }
