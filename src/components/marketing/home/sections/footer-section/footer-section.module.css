@@ -264,10 +264,24 @@
 
   .identity {
     max-width: none;
+    justify-items: center;
+    text-align: center;
   }
 
   .description {
     max-width: 40ch;
+  }
+
+  .brandWrap {
+    justify-items: center;
+  }
+
+  .brand {
+    justify-content: center;
+  }
+
+  .socials {
+    justify-content: center;
   }
 
   .grid {
@@ -275,9 +289,24 @@
     gap: 18px;
   }
 
+  .column {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .linkList {
+    justify-items: center;
+  }
+
+  .link {
+    justify-content: center;
+    text-align: center;
+  }
+
   .bottom {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
   }
 }
 
