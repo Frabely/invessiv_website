@@ -149,6 +149,8 @@ const sections: HomeSectionContent[] = [
       subtitle: "Schneller Kontakt",
       intro: "Kurz reicht.",
       metaLabel: "E-Mail",
+      copyActionLabel: "E-Mail kopieren",
+      copiedActionLabel: "E-Mail kopiert",
       firstNameLabel: "Vorname",
       lastNameLabel: "Nachname",
       emailLabel: "E-Mail",

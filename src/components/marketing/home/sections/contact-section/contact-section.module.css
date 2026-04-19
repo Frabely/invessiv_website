@@ -9,12 +9,13 @@
 
 .stack {
   display: grid;
-  gap: var(--section-grid-gap, 14px);
+  gap: clamp(1rem, 1.8vw, 1.35rem);
 }
 
 .briefHead {
   display: grid;
-  gap: 8px;
+  gap: clamp(0.6rem, 1vw, 0.95rem);
+  max-width: 70rem;
 }
 
 .title {
@@ -27,43 +28,45 @@
 }
 
 .decisionIntro {
-  max-width: 60ch;
+  max-width: 67ch;
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: var(--font-size-body-md);
-  line-height: 1.58;
+  font-size: clamp(1rem, 0.55vw + 0.92rem, 1.08rem);
+  line-height: 1.64;
 }
 
 .entryPicker {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--section-grid-gap, 8px);
+  gap: clamp(0.7rem, 1.2vw, 1rem);
   align-items: stretch;
 }
 
 .entryTrigger {
   width: 100%;
-  min-height: 58px;
-  padding: 11px 14px 12px;
+  min-height: 68px;
+  padding: 0.95rem 1rem 1rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 16px;
+  border-radius: 18px;
   background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
   display: grid;
   justify-items: start;
   align-content: center;
-  gap: 3px;
+  gap: 4px;
   text-align: left;
   cursor: pointer;
   transition:
     border-color 180ms ease,
     background-color 180ms ease,
-    box-shadow 180ms ease;
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .entryTrigger:hover {
   border-color: color-mix(in srgb, var(--color-cta) 30%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
+  transform: translateY(-1px);
 }
 
 .entryTriggerActive {
@@ -85,7 +88,7 @@
 
 .entryTriggerKicker {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 620;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -93,15 +96,15 @@
 
 .entryTriggerTitle {
   color: inherit;
-  font-size: 0.92rem;
+  font-size: clamp(0.98rem, 0.36vw + 0.92rem, 1.08rem);
   font-weight: 720;
-  line-height: 1.35;
+  line-height: 1.28;
 }
 
 .entryPanel {
   display: grid;
-  gap: var(--section-card-gap, 12px);
-  padding-top: 16px;
+  gap: clamp(0.9rem, 1.4vw, 1.2rem);
+  padding-top: clamp(1rem, 1.8vw, 1.45rem);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
@@ -110,7 +113,7 @@
 }
 
 .entryPanelProject {
-  padding-top: 18px;
+  padding-top: clamp(1.1rem, 1.8vw, 1.55rem);
 }
 
 .entryPanelProject :global([data-project-request-panel="true"]) {
@@ -121,8 +124,8 @@
     var(--color-border) 82%
   );
   background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--color-surface-1) 90%, var(--color-cta) 10%),
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
     color-mix(in srgb, var(--color-surface-1) 98%, transparent)
   );
   box-shadow: 0 10px 24px rgba(5, 8, 12, 0.08);
@@ -221,16 +224,45 @@
 
 @media (min-width: 760px) {
   .entryPicker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .entryTrigger {
-    width: auto;
-    min-width: clamp(11rem, 17vw, 13rem);
-    max-width: min(100%, 14.5rem);
-    min-height: 52px;
+    min-height: 80px;
+    padding: 1rem 1.1rem 1.05rem;
+  }
+
+  .ctaWrap {
+    margin-top: 0.2rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .stack {
+    gap: clamp(1.2rem, 1.8vw, 1.55rem);
+  }
+
+  .briefHead {
+    gap: 0.9rem;
+    max-width: 74rem;
+  }
+
+  .decisionIntro {
+    max-width: 72ch;
+  }
+
+  .entryTrigger {
+    min-height: 88px;
+    padding: 1.1rem 1.2rem 1.12rem;
+    border-radius: 20px;
+  }
+
+  .entryTriggerTitle {
+    max-width: 18ch;
+  }
+
+  .entryPanel {
+    padding-top: 1.35rem;
   }
 }
 

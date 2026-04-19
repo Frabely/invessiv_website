@@ -1,10 +1,10 @@
 .stepper {
-  margin: 14px 0 0;
+  margin: 0.2rem 0 0;
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(0.625rem, 1.4vw, 0.95rem);
+  gap: clamp(0.7rem, 1.2vw, 1rem);
 }
 
 .stepperItem {
@@ -13,30 +13,39 @@
 
 .stepperTrigger {
   width: 100%;
-  min-height: 58px;
-  padding: 9px 10px;
+  min-height: 72px;
+  padding: 0.8rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 14px;
+  border-radius: 16px;
   background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.7rem;
   text-align: left;
 }
 
 .stepperItemCurrent .stepperTrigger {
   border-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 68%,
-    var(--color-cta) 32%
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-surface-2) 62%, var(--color-cta) 38%),
+    color-mix(in srgb, var(--color-surface-1) 82%, var(--color-cta) 18%)
   );
   color: var(--color-text);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-cta) 16%, transparent),
+    0 14px 30px color-mix(in srgb, var(--color-cta) 10%, transparent);
 }
 
 .stepperItemDone .stepperTrigger {
   border-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-surface-2) 68%, var(--color-cta) 32%),
+    color-mix(in srgb, var(--color-surface-1) 86%, var(--color-cta) 14%)
+  );
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 .stepperTrigger:disabled {
@@ -50,8 +59,8 @@
 }
 
 .stepperIndex {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
@@ -72,6 +81,22 @@
   );
 }
 
+.stepperItemDone .stepperIndex {
+  border-color: color-mix(in srgb, var(--color-cta) 74%, transparent);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-cta) 78%, #ffffff 22%),
+    color-mix(in srgb, var(--color-cta) 62%, var(--color-surface-1) 38%)
+  );
+  color: #08111d;
+}
+
+.stepperCheck {
+  font-size: 0.88rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
 .stepperCopy {
   min-width: 0;
   display: grid;
@@ -80,23 +105,32 @@
 
 .stepperCopy small {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   line-height: 1.2;
+  letter-spacing: 0.03em;
 }
 
 .stepperItemCurrent .stepperCopy small {
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
 }
 
+.stepperItemDone .stepperCopy small {
+  color: color-mix(in srgb, var(--color-cta) 72%, var(--color-text-muted) 28%);
+}
+
 .stepperCopy strong {
   color: inherit;
-  font-size: 0.92rem;
+  font-size: 0.98rem;
   font-weight: 760;
-  line-height: 1.2;
+  line-height: 1.25;
+}
+
+.stepperItemDone .stepperCopy strong {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
 }
 
 .form {
-  margin-top: 16px;
+  margin-top: 1.15rem;
 }
 
 .step {
@@ -115,12 +149,12 @@
 .step > legend {
   display: block;
   width: 100%;
-  margin: 0 0 8px;
-  padding: 0 0 10px;
+  margin: 0 0 0.8rem;
+  padding: 0 0 0.75rem;
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 68%, transparent);
   color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
-  font-size: var(--font-size-ui-sm);
+  font-size: 0.98rem;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -135,32 +169,32 @@
 
 .pages {
   display: grid;
-  gap: 10px;
+  gap: 0.75rem;
   outline: none;
 }
 
 .pagesLabel {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 650;
+  font-size: 0.9rem;
+  font-weight: 680;
 }
 
 .pagesOptions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.65rem;
 }
 
 .pageOption {
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 40px;
+  padding: 0 0.95rem;
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
-  font-size: var(--font-size-ui-xs);
-  font-weight: 650;
+  font-size: 0.84rem;
+  font-weight: 670;
 }
 
 .pageOption:hover {
@@ -189,8 +223,8 @@
 .customPageComposer {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  width: min(100%, 34rem);
+  gap: 0.75rem;
+  width: min(100%, 38rem);
 }
 
 .customPageComposer > :first-child {
@@ -199,8 +233,8 @@
 
 .addPageButton {
   margin-top: 28px;
-  height: 44px;
-  padding: 0 14px;
+  height: 48px;
+  padding: 0 1rem;
   border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
@@ -238,15 +272,56 @@
 .conditionalHint {
   margin: -2px 0 0;
   border-left: 3px solid color-mix(in srgb, var(--color-cta) 40%, transparent);
-  padding: 6px 0 6px 10px;
+  padding: 0.45rem 0 0.45rem 0.8rem;
   color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: var(--font-size-ui-sm);
+  font-size: 0.88rem;
+  line-height: 1.5;
 }
 
 @media (min-width: 901px) {
   .fieldOfferLayout {
     width: calc((100% - var(--project-request-grid-gap)) / 2);
     max-width: calc((100% - var(--project-request-grid-gap)) / 2);
+  }
+}
+
+@media (min-width: 1100px) {
+  .stepper {
+    gap: 0.9rem;
+  }
+
+  .stepperTrigger {
+    min-height: 82px;
+    padding: 0.95rem 1rem;
+    border-radius: 18px;
+  }
+
+  .stepperIndex {
+    width: 28px;
+    height: 28px;
+  }
+
+  .stepperCopy strong {
+    font-size: 1.02rem;
+  }
+
+  .form {
+    margin-top: 1.25rem;
+  }
+
+  .step > legend {
+    margin-bottom: 0.9rem;
+    padding-bottom: 0.8rem;
+    font-size: 1rem;
+  }
+
+  .pagesOptions {
+    gap: 0.72rem;
+  }
+
+  .pageOption {
+    min-height: 42px;
+    padding-inline: 1rem;
   }
 }
 

@@ -128,6 +128,7 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
   };
+  contactTablistLabel?: string;
   contactForm?: {
     title: string;
     subtitle: string;
@@ -196,6 +197,8 @@ export type LandingSectionCopy = {
     subtitle: string;
     intro: string;
     metaLabel: string;
+    copyActionLabel: string;
+    copiedActionLabel: string;
     firstNameLabel: string;
     lastNameLabel: string;
     emailLabel: string;
@@ -993,6 +996,7 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
         },
+        contactTablistLabel: "Kontaktwege",
         contactForm: {
           title: "Projektanfrage für konkrete Vorhaben",
           subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
@@ -1151,6 +1155,8 @@ const HOME_SECTIONS: LandingSection[] = [
           subtitle: "Für schnellen Erstkontakt ohne komplettes Briefing.",
           intro: "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst.",
           metaLabel: "E-Mail",
+          copyActionLabel: "Adresse kopieren",
+          copiedActionLabel: "Adresse kopiert",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
@@ -1258,6 +1264,7 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Compare service models",
           href: SECTION_HREFS.services,
         },
+        contactTablistLabel: "Contact paths",
         contactForm: {
           title: "Project request for concrete requirements",
           subtitle:
@@ -1405,6 +1412,8 @@ const HOME_SECTIONS: LandingSection[] = [
           intro:
             "A few lines are enough: goal, context, and what you need next.",
           metaLabel: "Email",
+          copyActionLabel: "Copy address",
+          copiedActionLabel: "Address copied",
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
           emailLabel: "Email",

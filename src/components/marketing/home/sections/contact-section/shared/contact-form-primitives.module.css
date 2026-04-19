@@ -1,11 +1,11 @@
 .form {
   display: grid;
-  gap: 14px;
+  gap: clamp(0.95rem, 1.4vw, 1.15rem);
 }
 
 .grid {
   display: grid;
-  gap: 14px;
+  gap: clamp(0.9rem, 1.3vw, 1.1rem);
 }
 
 .gridTwo {
@@ -15,7 +15,8 @@
 .fieldControl,
 .messageField textarea {
   width: 100%;
-  border-radius: 12px;
+  min-height: 48px;
+  border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
   background: color-mix(
     in srgb,
@@ -23,13 +24,13 @@
     var(--color-surface-1) 36%
   );
   color: var(--color-text);
-  font-size: 0.93rem;
-  line-height: 1.45;
-  padding: 10px 12px;
+  font-size: clamp(0.95rem, 0.18vw + 0.92rem, 1rem);
+  line-height: 1.5;
+  padding: 0.8rem 0.95rem;
 }
 
 .messageField textarea {
-  min-height: 136px;
+  min-height: 152px;
   resize: vertical;
 }
 
@@ -48,16 +49,18 @@
 .consent {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  column-gap: 8px;
-  row-gap: 4px;
+  align-items: start;
+  column-gap: 10px;
+  row-gap: 6px;
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: 0.86rem;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  line-height: 1.52;
 }
 
 .consent input {
-  margin: 0;
+  width: 1rem;
+  height: 1rem;
+  margin: 0.15rem 0 0;
   accent-color: var(--color-cta);
   align-self: center;
 }
@@ -78,5 +81,25 @@
 @media (max-width: 900px) {
   .gridTwo {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .form {
+    gap: 1.1rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  .fieldControl,
+  .messageField textarea {
+    min-height: 52px;
+    padding: 0.9rem 1rem;
+  }
+
+  .messageField textarea {
+    min-height: 168px;
   }
 }

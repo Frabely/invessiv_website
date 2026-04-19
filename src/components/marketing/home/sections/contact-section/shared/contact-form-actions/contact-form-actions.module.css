@@ -2,13 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(0.625rem, 1.4vw, 0.95rem);
+  gap: clamp(0.75rem, 1.3vw, 1rem);
   flex-wrap: wrap;
 }
 
 .actionsMain {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
@@ -25,8 +25,19 @@
 .requiredHint {
   margin: 0;
   color: var(--color-cta);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
+  line-height: 1.4;
+}
+
+@media (min-width: 1100px) {
+  .actionsMain {
+    align-items: center;
+  }
+
+  .actionsButtons {
+    gap: 0.85rem;
+  }
 }
 
 @media (max-width: 900px) {

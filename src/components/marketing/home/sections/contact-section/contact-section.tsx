@@ -30,6 +30,7 @@ type ContactSectionProps = {
   contactDecisionIntro?: string;
   contactForm?: ContactForm;
   contactFormOffers: Array<{ key: string; title: string }>;
+  contactTablistLabel?: string;
   discoveryCallForm?: DiscoveryCallFormCopy;
   quickContactForm?: QuickContactFormCopy;
   contactSecondaryCta?: ContactSecondaryCta;
@@ -56,6 +57,7 @@ export function ContactSection({
   contactDecisionIntro,
   contactForm,
   contactFormOffers,
+  contactTablistLabel,
   discoveryCallForm,
   quickContactForm,
   contactSecondaryCta,
@@ -228,7 +230,7 @@ export function ContactSection({
             <div
               className={styles.entryPicker}
               role="tablist"
-              aria-label="Kontaktwege"
+              aria-label={contactTablistLabel}
             >
               {entries.map((entry, entryIndex) => {
                 const isActive = activeEntryId === entry.id;

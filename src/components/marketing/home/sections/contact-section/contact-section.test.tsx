@@ -47,6 +47,7 @@ describe("ContactSection", () => {
           },
         ]}
         contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
+        contactTablistLabel="Kontaktwege"
         contactForm={{
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
@@ -121,6 +122,8 @@ describe("ContactSection", () => {
           subtitle: "Schneller Kontakt",
           intro: "Kurz reicht.",
           metaLabel: "E-Mail",
+          copyActionLabel: "E-Mail kopieren",
+          copiedActionLabel: "E-Mail kopiert",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "E-Mail",

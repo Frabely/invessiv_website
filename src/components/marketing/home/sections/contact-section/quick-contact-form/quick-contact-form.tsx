@@ -139,8 +139,8 @@ export function QuickContactForm({
             type="button"
           >
             {isCopied
-              ? (channel.copiedLabel ?? "Kopiert")
-              : (channel.copyLabel ?? "E-Mail kopieren")}
+              ? (channel.copiedLabel ?? formCopy.copiedActionLabel)
+              : (channel.copyLabel ?? formCopy.copyActionLabel)}
           </button>
         </div>
       }

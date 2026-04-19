@@ -643,7 +643,7 @@ export function ProjectRequestForm({
       subtitle={formCopy.subtitle}
       title={formCopy.title}
     >
-      <div data-project-request="true">
+      <div data-project-request="true" data-project-request-panel="true">
         <ol
           aria-label={formCopy.stepNavigationLabel}
           className={styles.stepper}
@@ -667,7 +667,15 @@ export function ProjectRequestForm({
                   }}
                   type="button"
                 >
-                  <span className={styles.stepperIndex}>{step}</span>
+                  <span className={styles.stepperIndex}>
+                    {isDone ? (
+                      <span aria-hidden="true" className={styles.stepperCheck}>
+                        ✓
+                      </span>
+                    ) : (
+                      step
+                    )}
+                  </span>
                   <span className={styles.stepperCopy}>
                     <small>
                       {formCopy.stepLabel} {step}
