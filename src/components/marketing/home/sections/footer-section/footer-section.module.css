@@ -1,5 +1,5 @@
 .footer {
-  margin-top: 28px;
+  margin-top: var(--section-space);
   padding: 22px 0 24px;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   background: transparent;
@@ -253,7 +253,7 @@
 
 @media (max-width: 900px) {
   .footer {
-    margin-top: 20px;
+    margin-top: var(--section-space);
     padding-top: 16px;
   }
 

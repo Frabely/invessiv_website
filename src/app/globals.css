@@ -110,7 +110,7 @@
     var(--color-surface-1) 88%,
     var(--color-surface-2) 12%
   );
-  --section-space: clamp(2rem, 3.9vw, 3.75rem);
+  --section-space: clamp(5.5rem, 9.6vw, 9.5rem);
   --anchor-scroll-offset: calc(64px + var(--section-space));
   --mobile-viewport-height: 100dvh;
   --mobile-safe-top: env(safe-area-inset-top, 0px);
@@ -363,7 +363,7 @@ main {
 
 @media (max-width: 900px) {
   :root {
-    --section-space: clamp(1.625rem, 5.1vw, 2.75rem);
+    --section-space: clamp(4.5rem, 11.6vw, 7rem);
     --anchor-scroll-offset: calc(
       64px + var(--mobile-safe-top) + var(--section-space)
     );
@@ -456,7 +456,7 @@ main {
   :root {
     --max-content-width: 1500px;
     --page-inline-gutter: clamp(136px, 7vw, 172px);
-    --section-space: clamp(1.75rem, 1.9vw, 2.6rem);
+    --section-space: clamp(6rem, 6vw, 8.5rem);
   }
 
   .marketing-main {
@@ -500,7 +500,7 @@ main {
 @media (max-width: 640px) {
   :root {
     --page-inline-gutter: 14px;
-    --section-space: clamp(1.375rem, 6vw, 2.125rem);
+    --section-space: clamp(4rem, 12vw, 6rem);
   }
 
   .marketing-main {
