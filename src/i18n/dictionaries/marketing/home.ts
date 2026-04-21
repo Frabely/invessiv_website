@@ -283,14 +283,14 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title: "Webseiten, die führen.\nTools, die entlasten.",
+        title: "Landingpages und Webseiten,\ndie Anfragen erzeugen.",
         description:
-          "Für Unternehmen, die online klarer auftreten und intern weniger manuell nacharbeiten wollen.",
+          "Für Unternehmen, die online klarer auftreten, mehr passende Anfragen gewinnen und ihre Website als Vertriebsfläche nutzen wollen.",
       },
       en: {
-        title: "Websites that lead.\nTools that lighten the load.",
+        title: "Landing pages and websites\nthat generate inquiries.",
         description:
-          "For companies that want to show up more clearly online and reduce manual follow-up work internally.",
+          "For companies that want to show up more clearly online, win more relevant inquiries, and use the website as a sales surface.",
       },
     },
   },
@@ -421,7 +421,7 @@ const HOME_SECTIONS: LandingSection[] = [
       de: {
         title: "Was brauchst du gerade?",
         description:
-          "Fünf typische Leistungsmodelle zur Orientierung – je nachdem, ob du Anfragen klarer führen, deinen Auftritt neu aufsetzen oder interne Abläufe vereinfachen willst. Umfang, Timing und Vergütung klären wir vor Start individuell.",
+          "Fünf typische Leistungsmodelle zur Orientierung – mit klarem Einstieg über Landingpages, Webseiten und gezielte Upgrades, wenn du Anfragen besser führen oder deinen Auftritt neu aufsetzen willst. Umfang, Timing und Vergütung klären wir vor Start individuell.",
         summaryPoints: [
           "klarer Einstieg je Problem",
           "Umfang vor Start verbindlich",
@@ -482,31 +482,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
           },
           {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Prozess-Tools Icon",
-            title: "Prozess-Tools",
-            description:
-              "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
-            fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
-            highlight: "weniger manuelle Schritte im Alltag",
-            pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
-            delivery: "10–21 Tage",
-            included: [
-              "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
-              "MVP mit einem Kern-Workflow, der spürbar entlastet",
-              "Status- oder Dashboard-Ansicht für mehr Transparenz",
-              "Integrationen je nach Umfang (Webhooks, APIs)",
-              "Basis für Login- und Rechtekonzept",
-              "Übergabe inkl. Kurz-Dokumentation",
-            ],
-            details: [
-              "Weitere Workflows setzen wir als Folgepakete um.",
-              "Enterprise-Authentifizierung (z. B. SSO) ist nicht im Basis-MVP enthalten.",
-              "Betrieb, Monitoring und laufender Support sind separat buchbar.",
-            ],
-          },
-          {
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Webseiten-Upgrade Icon",
@@ -555,12 +530,37 @@ const HOME_SECTIONS: LandingSection[] = [
               "Notfallanfragen priorisiere ich nach Verfügbarkeit.",
             ],
           },
+          {
+            key: "process",
+            iconSrc: "/services/process-icon.svg",
+            iconAlt: "Prozess-Tools Icon",
+            title: "Prozess-Tools",
+            description:
+              "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
+            fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
+            highlight: "weniger manuelle Schritte im Alltag",
+            pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
+            delivery: "10–21 Tage",
+            included: [
+              "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
+              "MVP mit einem Kern-Workflow, der spürbar entlastet",
+              "Status- oder Dashboard-Ansicht für mehr Transparenz",
+              "Integrationen je nach Umfang (Webhooks, APIs)",
+              "Basis für Login- und Rechtekonzept",
+              "Übergabe inkl. Kurz-Dokumentation",
+            ],
+            details: [
+              "Weitere Workflows setzen wir als Folgepakete um.",
+              "Enterprise-Authentifizierung (z. B. SSO) ist nicht im Basis-MVP enthalten.",
+              "Betrieb, Monitoring und laufender Support sind separat buchbar.",
+            ],
+          },
         ],
       },
       en: {
         title: "What do you need right now?",
         description:
-          "Five typical service models for orientation, depending on whether you want to guide inquiries more clearly, rebuild your presence, or simplify internal workflows. Scope, timing, and pricing are aligned individually before kickoff.",
+          "Five typical service models for orientation, with a clear entry point through landing pages, websites, and targeted upgrades if you want to guide inquiries better or rebuild your presence. Scope, timing, and pricing are aligned individually before kickoff.",
         summaryPoints: [
           "clear entry point per problem",
           "service range aligned before kickoff",
@@ -621,31 +621,6 @@ const HOME_SECTIONS: LandingSection[] = [
             ],
           },
           {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Process tools icon",
-            title: "Process tools",
-            description:
-              "Small internal tool that reduces manual work and creates more transparency.",
-            fit: "Teams that want to structure or partially automate recurring internal steps.",
-            highlight: "fewer manual steps in daily work",
-            pricingHint: "Calculated by workflow, data, and integrations",
-            delivery: "10–21 days",
-            included: [
-              "Compact planning workshop for goals, data, and roles",
-              "MVP with one core workflow that removes friction",
-              "Status or dashboard view for more transparency",
-              "Integrations by project range (webhooks, APIs)",
-              "Foundation for login and access roles",
-              "Handover including short documentation",
-            ],
-            details: [
-              "Additional workflows are delivered as follow-up modules.",
-              "Enterprise authentication (e.g. SSO) is not part of the base MVP.",
-              "Operations, monitoring, and ongoing support are available separately.",
-            ],
-          },
-          {
             key: "upgrade",
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
@@ -693,6 +668,31 @@ const HOME_SECTIONS: LandingSection[] = [
             details: [
               "You only pay for the agreed or actually logged effort with a clear breakdown.",
               "Urgent requests are prioritized by availability.",
+            ],
+          },
+          {
+            key: "process",
+            iconSrc: "/services/process-icon.svg",
+            iconAlt: "Process tools icon",
+            title: "Process tools",
+            description:
+              "Small internal tool that reduces manual work and creates more transparency.",
+            fit: "Teams that want to structure or partially automate recurring internal steps.",
+            highlight: "fewer manual steps in daily work",
+            pricingHint: "Calculated by workflow, data, and integrations",
+            delivery: "10–21 days",
+            included: [
+              "Compact planning workshop for goals, data, and roles",
+              "MVP with one core workflow that removes friction",
+              "Status or dashboard view for more transparency",
+              "Integrations by project range (webhooks, APIs)",
+              "Foundation for login and access roles",
+              "Handover including short documentation",
+            ],
+            details: [
+              "Additional workflows are delivered as follow-up modules.",
+              "Enterprise authentication (e.g. SSO) is not part of the base MVP.",
+              "Operations, monitoring, and ongoing support are available separately.",
             ],
           },
         ],

@@ -38,8 +38,8 @@ type ServicesSectionProps = {
   title: string;
 };
 
-const PRIMARY_ORDER = ["web", "landing", "process"] as const;
-const SECONDARY_ORDER = ["upgrade", "maintenance"] as const;
+const PRIMARY_ORDER = ["landing", "web", "upgrade"] as const;
+const SECONDARY_ORDER = ["maintenance", "process"] as const;
 const DEFAULT_GOAL_KEY = "more_inquiries";
 const GOAL_TO_SERVICE = {
   more_inquiries: "landing",

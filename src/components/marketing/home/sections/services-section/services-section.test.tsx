@@ -157,11 +157,6 @@ describe("ServicesSection", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByText(
-        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
-      ),
-    ).toBeTruthy();
-    expect(
       screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
     ).toBeTruthy();
     expect(screen.queryByText("Umfang vor Start")).toBeNull();
@@ -173,17 +168,17 @@ describe("ServicesSection", () => {
     expect(secondaryCards).toHaveLength(2);
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["web", "landing", "process"]);
-    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+    ).toEqual(["landing", "web", "upgrade"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
-    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["upgrade", "maintenance"]);
+    ).toEqual(["maintenance", "process"]);
     expect(
       within(getArticleByTitle("Landingpages")).getByText("Empfohlen"),
     ).toBeTruthy();
@@ -201,10 +196,8 @@ describe("ServicesSection", () => {
     expect(
       within(
         screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      )
-        .getByRole("link", { name: "Upgrade anfragen" })
-        .getAttribute("data-project-offer"),
-    ).toBe("upgrade");
+      ).queryByRole("link", { name: "Projekt anfragen" }),
+    ).toBeNull();
     expect(
       within(
         screen.getByText("Wartung & Support").closest("article") as HTMLElement,
@@ -227,32 +220,26 @@ describe("ServicesSection", () => {
 
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["web", "landing", "process"]);
+    ).toEqual(["landing", "web", "upgrade"]);
     expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
     expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
-    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
     expect(
       within(getArticleByTitle("Prozess-Tools"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("process");
     expect(
-      within(getArticleByTitle("Prozess-Tools")).getByText("Empfohlen"),
-    ).toBeTruthy();
-    expect(
       within(getArticleByTitle("Prozess-Tools"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
     ).toBe("interne Abläufe vereinfachen");
-    expect(
-      within(
-        screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      ).getByRole("link", { name: "Upgrade anfragen" }),
-    ).toBeTruthy();
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
@@ -306,8 +293,8 @@ describe("ServicesSection", () => {
     expect(
       within(
         screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      ).getByRole("link", { name: "Upgrade anfragen" }),
-    ).toBeTruthy();
+      ).queryByRole("link", { name: "Projekt anfragen" }),
+    ).toBeNull();
     expect(
       within(
         screen.getByText("Wartung & Support").closest("article") as HTMLElement,

@@ -15,20 +15,18 @@ describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Von Landingpage bis Prozess-Tool: mit sauberem Setup, direkter Abstimmung und einem Ergebnis, das vor dem Launch geprüft ist."
+        description="Für Unternehmen, die online klarer auftreten, mehr passende Anfragen gewinnen und ihre Website als Vertriebsfläche nutzen wollen."
         heroPrimaryCta="Projekt anfragen"
         heroSecondaryCta="Leistungsmodelle"
         heroTag="KLARER AUFBAU, DIREKTE UMSETZUNG"
         heroVisualAriaLabel="Hero visual preview"
-        title="Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel."
+        title="Landingpages und Webseiten,\ndie Anfragen erzeugen."
       />,
     );
 
-    expect(
-      screen.getByRole("heading", {
-        name: "Webseiten und Prozess-Tools mit durchdachtem Aufbau und direktem Weg zum Ziel.",
-      }),
-    ).toBeTruthy();
+    const heroHeading = screen.getByRole("heading", { level: 1 });
+    expect(heroHeading.textContent).toContain("Landingpages und Webseiten,");
+    expect(heroHeading.textContent).toContain("die Anfragen erzeugen.");
     expect(
       screen
         .getByRole("link", { name: "Projekt anfragen" })
