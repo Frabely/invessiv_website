@@ -42,16 +42,16 @@
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
   "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+  "servicesIntentTitle": "Wähle dein Ziel. Die passende Leistung wird hervorgehoben.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "mehr Anfragen gewinnen" },
     {
-      "key": "professional_presence",
-      "label": "professionell online auftreten"
+      "key": "improve_existing_site",
+      "label": "mehr aus der bestehenden Seite holen"
     },
     {
-      "key": "simplify_workflows",
-      "label": "interne Abläufe vereinfachen"
+      "key": "plan_new_website",
+      "label": "neue Website wirksam starten"
     }
   ],
   "servicesPrimaryCta": "Projekt anfragen",
@@ -63,5 +63,5 @@
     "maintenance": "Wartung & Support anfragen"
   },
   "servicesDetailsCta": "Mehr Infos",
-  "servicesDeliveryLabel": "Typisch"
+  "servicesDeliveryLabel": "Zeitrahmen"
 }

@@ -39,7 +39,6 @@ describe("ServiceCard", () => {
               "Hosting, Domain und externe Tool-Lizenzen sind nicht enthalten.",
             ],
           }}
-          cardClassName="card-shell"
           ctaLabel="Landingpage anfragen"
           ctaProjectGoal="mehr Anfragen gewinnen"
           defaultDeliveryLabel="Lieferzeit"
@@ -132,5 +131,82 @@ describe("ServiceCard", () => {
 
     expect(screen.getByText("+ 1 more item")).toBeTruthy();
     expect(screen.queryByRole("link")).toBeNull();
+  });
+
+  it("keeps compact primary card content in the DOM while gating the CTA", () => {
+    function CompactCardHarness({ isCtaActive = false }) {
+      const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+      return (
+        <ServiceCard
+          card={{
+            key: "upgrade",
+            title: "Website upgrade",
+            description: "Improve an existing site.",
+            fit: "Existing sites with a solid base.",
+            iconSrc: "/services/upgrade-icon.svg",
+            iconAlt: "Upgrade icon",
+            highlight: "Noticeable UX and speed improvement",
+            pricingHint: "Calculated by current state and intervention depth",
+            delivery: "3-10 days",
+            included: ["Analysis", "UX", "Performance", "Handover"],
+          }}
+          ctaProjectGoal="improve an existing site"
+          ctaLabel="Request project"
+          defaultDeliveryLabel="Typical"
+          detailsCtaLabel="More info"
+          fitLabel="Ideal for"
+          isCompact
+          isCtaActive={isCtaActive}
+          isDetailsOpen={isDetailsOpen}
+          moreItemsPluralLabel="more items"
+          moreItemsSingularLabel="more item"
+          onCardSelectAction={vi.fn()}
+          onDetailsToggleAction={setIsDetailsOpen}
+          onPointerLeaveAction={vi.fn()}
+          onPointerMoveAction={vi.fn()}
+          recommendedBadgeLabel="Recommended"
+        />
+      );
+    }
+
+    const { rerender } = render(<CompactCardHarness />);
+
+    expect(screen.getByText("Website upgrade")).toBeTruthy();
+    expect(screen.getByText("Ideal for")).toBeTruthy();
+    expect(screen.getByText("Existing sites with a solid base.")).toBeTruthy();
+    expect(
+      screen.getByText("Noticeable UX and speed improvement"),
+    ).toBeTruthy();
+    expect(screen.getByText("Typical: 3-10 days")).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Request project" })).toBeNull();
+    expect(screen.getByRole("button", { name: /More info/i })).toBeTruthy();
+    expect(
+      screen.getByText("Calculated by current state and intervention depth"),
+    ).toBeTruthy();
+    expect(screen.getByText("Analysis")).toBeTruthy();
+    expect(screen.getByText("+ 1 more item")).toBeTruthy();
+    expect(
+      document
+        .querySelector("[data-card-key='upgrade']")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("false");
+
+    rerender(<CompactCardHarness isCtaActive />);
+
+    expect(screen.getByRole("link", { name: "Request project" })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /More info/i }));
+
+    expect(
+      document
+        .querySelector("[data-card-key='upgrade']")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("true");
+    expect(
+      screen.getByText("Calculated by current state and intervention depth"),
+    ).toBeTruthy();
+    expect(screen.getByText("Analysis")).toBeTruthy();
+    expect(screen.getByText("+ 1 more item")).toBeTruthy();
   });
 });

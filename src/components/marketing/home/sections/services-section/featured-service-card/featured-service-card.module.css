@@ -19,13 +19,12 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
-  transform: none;
+  overflow: hidden;
   transition:
     border-color 180ms ease,
     background 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
-  overflow: hidden;
 }
 
 .card::before {
@@ -76,22 +75,6 @@
     inset 0 1px 0 rgba(255, 233, 210, 0.14),
     0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
     0 0 18px color-mix(in srgb, var(--accent) 14%, transparent);
-  transform: none;
-}
-
-.cardRecommended:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 78%, #ffffff 22%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-1) 86%,
-    var(--color-cta) 14%
-  );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 24%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 10px 24px color-mix(in srgb, var(--color-cta) 20%, transparent);
-  transform: translateY(-2px);
 }
 
 .surface {
@@ -100,18 +83,24 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: clamp(0.8rem, 1.35vw, 1rem);
+  gap: clamp(0.9rem, 1.4vw, 1.12rem);
   height: 100%;
 }
 
-.header {
+.header,
+.titleWrap,
+.metaStack,
+.metaInfo,
+.body {
   display: grid;
+  align-content: start;
+}
+
+.header {
   gap: 15px;
 }
 
 .titleWrap {
-  display: grid;
-  align-content: start;
   gap: 11px;
   width: 100%;
 }
@@ -133,7 +122,6 @@
   color: var(--color-text);
   font-size: clamp(1.24rem, 1.45vw, 1.42rem);
   font-weight: 800;
-  letter-spacing: -0.01em;
   line-height: 1.2;
 }
 
@@ -178,30 +166,22 @@
   text-transform: uppercase;
 }
 
-.metaStack {
-  display: grid;
+.metaStack,
+.metaInfo {
   gap: 10px;
-  align-content: start;
 }
 
 .highlight {
   margin: 0;
-  min-height: 1.3rem;
 }
 
 .highlightText {
   display: block;
   color: color-mix(in srgb, var(--accent) 78%, var(--color-text) 22%);
-  font-size: clamp(0.96rem, 0.96rem + 0.2vw, 1.08rem);
+  font-size: clamp(1.05rem, 0.94rem + 0.28vw, 1.22rem);
   font-weight: 760;
   line-height: 1.18;
   letter-spacing: -0.02em;
-}
-
-.metaInfo {
-  display: grid;
-  gap: 10px;
-  align-content: start;
 }
 
 .deliveryBadge {
@@ -229,9 +209,7 @@
 }
 
 .body {
-  display: grid;
   gap: 16px;
-  align-content: start;
 }
 
 .list {
@@ -260,6 +238,17 @@
   margin-top: 0.3rem;
 }
 
+.moreItems {
+  margin: -2px 0 0;
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+}
+
+.moreItemsPlaceholder {
+  visibility: hidden;
+}
+
 .footer {
   margin-top: auto;
   padding-top: 16px;
@@ -268,14 +257,6 @@
   justify-content: space-between;
   gap: 12px;
   min-height: 44px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
 .primaryCta {
@@ -289,24 +270,6 @@
 .primaryCtaPlaceholder {
   visibility: hidden;
   pointer-events: none;
-}
-
-.footerMeta {
-  display: flex;
-  justify-content: flex-end;
-  margin-left: auto;
-  flex: 0 0 auto;
-}
-
-.moreItems {
-  margin: -2px 0 0;
-  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: var(--font-size-caption);
-  font-weight: 600;
-}
-
-.moreItemsPlaceholder {
-  visibility: hidden;
 }
 
 .toggle {
@@ -336,9 +299,6 @@
     var(--color-border) 62%
   );
   background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent),
-    0 8px 18px color-mix(in srgb, rgba(8, 10, 15, 0.16) 100%, transparent);
 }
 
 .toggle:focus-visible {
@@ -357,22 +317,6 @@
   box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
 }
 
-:global([data-theme="light"]) .card:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 58%,
-    var(--color-border) 42%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-1) 86%,
-    var(--color-cta) 14%
-  );
-  box-shadow:
-    0 10px 24px color-mix(in srgb, var(--color-cta) 14%, transparent),
-    inset 0 1px 0 color-mix(in srgb, #ffffff 36%, transparent);
-}
-
 :global([data-theme="light"]) .fitNote,
 :global([data-theme="light"]) .list {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
@@ -381,42 +325,6 @@
 :global([data-theme="light"]) .deliveryBadge,
 :global([data-theme="light"]) .moreItems {
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
-}
-
-:global([data-theme="light"]) .cardRecommended {
-  border: 2px solid
-    color-mix(in srgb, var(--accent) 80%, var(--color-border) 20%);
-  background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 0 20px color-mix(in srgb, var(--accent) 12%, transparent);
-}
-
-:global([data-theme="light"]) .cardRecommended:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 78%, #ffffff 22%);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-1) 86%,
-    var(--color-cta) 14%
-  );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 36%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 24%, transparent),
-    0 0 24px color-mix(in srgb, var(--color-cta) 14%, transparent),
-    0 10px 24px color-mix(in srgb, var(--color-cta) 14%, transparent);
-}
-
-:global([data-theme="light"]) .toggle {
-  background: transparent;
-}
-
-:global([data-theme="light"]) .toggle:hover {
-  color: color-mix(in srgb, var(--color-text) 86%, var(--color-cta) 14%);
-  background: color-mix(in srgb, #ffffff 92%, var(--color-cta) 8%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 60%, transparent),
-    0 8px 18px color-mix(in srgb, var(--color-cta) 10%, transparent);
 }
 
 @media (max-width: 640px) {
@@ -430,16 +338,6 @@
     align-items: flex-start;
   }
 
-  .actions {
-    width: 100%;
-  }
-
-  .footerMeta {
-    justify-content: flex-start;
-    margin-left: 0;
-    width: 100%;
-  }
-
   .primaryCta {
     width: 100%;
     justify-content: center;
@@ -450,221 +348,112 @@
   }
 }
 
-@media (min-width: 760px) {
-  .header {
-    grid-template-rows: minmax(9.5rem, auto) minmax(4.2rem, auto);
-  }
-
-  .metaStack {
-    grid-template-rows: minmax(1.5rem, auto) auto;
-  }
-}
-
 @media (min-width: 1120px) {
   .card {
-    padding: 24px;
+    --service-icon-size: 68px;
+    --service-icon-image-size: 50px;
+    --service-icon-image-size-mobile: 24px;
+    --service-icon-radius: 18px;
+    --service-icon-size-wide: 68px;
+    --service-icon-image-size-wide: 50px;
+    --service-icon-radius-wide: 18px;
+    padding: clamp(1.54rem, 1.88vw, 2.08rem);
     border-radius: 28px;
   }
 
-  .shell[data-service-density="compact"] .card {
-    --service-icon-size: 58px;
-    --service-icon-image-size: 42px;
-    --service-icon-image-size-mobile: 24px;
-    --service-icon-radius: 16px;
-    --service-icon-size-wide: 58px;
-    --service-icon-image-size-wide: 42px;
-    --service-icon-radius-wide: 16px;
-    padding: 20px 22px;
-    border-radius: 24px;
-  }
-
-  .shell[data-service-density="compact"] .surface {
-    gap: 0.82rem;
-  }
-
-  .shell[data-service-density="compact"] .header {
-    grid-template-rows: auto auto;
-    gap: 12px;
-  }
-
-  .shell[data-service-density="compact"] .titleRow {
-    align-items: center;
-    gap: 16px;
-  }
-
-  .shell[data-service-density="compact"] .title {
-    min-height: 58px;
-    column-gap: 16px;
-    font-size: clamp(1.52rem, 1.22rem + 0.46vw, 1.82rem);
-    line-height: 1.08;
-  }
-
-  .shell[data-service-density="compact"] .badge {
-    min-height: 34px;
-    padding-inline: 16px;
-    font-size: var(--font-size-ui-sm);
-  }
-
-  .shell[data-service-density="compact"] .fitNote {
-    margin-top: 4px;
-    gap: 7px;
-    font-size: clamp(1.06rem, 0.96rem + 0.18vw, 1.16rem);
-    line-height: 1.5;
-  }
-
-  .shell[data-service-density="compact"] .fitLabel {
-    font-size: var(--font-size-ui-sm);
-  }
-
-  .shell[data-service-density="compact"] .highlightText {
-    font-size: clamp(1.18rem, 1.02rem + 0.28vw, 1.34rem);
-    line-height: 1.2;
-  }
-
-  .shell[data-service-density="compact"] .pricingHint {
-    font-size: var(--font-size-ui-sm);
-    line-height: 1.5;
-  }
-
-  .shell[data-service-density="compact"] .deliveryBadge {
-    margin-top: 2px;
-    min-height: 31px;
-    padding-inline: 13px;
-    font-size: var(--font-size-body-sm);
-  }
-
-  .shell[data-service-density="compact"] .metaStack,
-  .shell[data-service-density="compact"] .metaInfo {
-    gap: 11px;
-  }
-
-  .shell[data-service-density="compact"][data-service-expanded="false"]
-    .pricingHint,
-  .shell[data-service-density="compact"][data-service-expanded="false"] .body,
-  .shell[data-service-density="compact"][data-service-expanded="false"]
-    .moreItems {
-    display: none;
-  }
-
-  .shell[data-service-density="compact"] .list {
-    font-size: var(--font-size-body-md);
-    line-height: 1.5;
-  }
-
-  .shell[data-service-density="compact"] .footer {
-    padding-top: 10px;
-    min-height: 46px;
-  }
-
-  .shell[data-service-density="compact"] .primaryCta,
-  .shell[data-service-density="compact"] .toggle {
-    font-size: var(--font-size-body-md);
-  }
-
   .surface {
-    gap: 0.95rem;
+    gap: clamp(0.94rem, 1.24vw, 1.36rem);
   }
 
   .header {
-    gap: 16px;
+    grid-template-rows: auto auto;
+    gap: 17px;
+  }
+
+  .titleWrap {
+    gap: 13px;
   }
 
   .title {
-    column-gap: 14px;
-    min-height: 48px;
-    font-size: clamp(1.34rem, 1rem + 0.52vw, 1.62rem);
-  }
-
-  .badge {
-    min-height: 30px;
-    padding-inline: 14px;
-    font-size: var(--font-size-ui-xs);
+    min-height: 56px;
+    column-gap: 20px;
+    font-size: clamp(2.32rem, 1.5rem + 1.48vw, 3.1rem);
+    line-height: 1.04;
   }
 
   .fitNote {
-    margin-top: 8px;
-    gap: 6px;
-    font-size: var(--font-size-label-sm);
+    gap: 7px;
+    font-size: clamp(1.08rem, 0.98rem + 0.26vw, 1.22rem);
+    line-height: 1.5;
+  }
+
+  .fitLabel {
+    font-size: var(--font-size-ui-sm);
   }
 
   .highlightText {
-    font-size: clamp(1rem, 0.88rem + 0.34vw, 1.16rem);
+    font-size: clamp(1.46rem, 1.08rem + 0.78vw, 1.92rem);
+    line-height: 1.16;
   }
 
   .deliveryBadge {
-    min-height: 28px;
-    padding-inline: 12px;
-    font-size: var(--font-size-eyebrow);
+    min-height: 36px;
+    padding-inline: 16px;
+    font-size: var(--font-size-body-sm);
   }
 
   .pricingHint {
-    font-size: var(--font-size-ui-sm);
-    line-height: 1.52;
+    font-size: clamp(1.06rem, 0.98rem + 0.18vw, 1.16rem);
+    line-height: 1.5;
+  }
+
+  .list {
+    padding-left: 26px;
+    font-size: clamp(1.12rem, 1.02rem + 0.28vw, 1.28rem);
+    line-height: 1.58;
+  }
+
+  .list > li + li {
+    margin-top: 0.34rem;
   }
 
   .body {
-    gap: 18px;
-  }
-
-  .list {
-    padding-left: 22px;
-    font-size: var(--font-size-body-sm);
-    line-height: 1.62;
-  }
-
-  .footer {
-    padding-top: 18px;
-    gap: 12px;
-    min-height: 48px;
-  }
-
-  .primaryCta {
-    min-height: 46px;
-    padding-inline: 18px;
-    font-size: var(--font-size-body-md);
-  }
-
-  .toggle {
-    min-height: 40px;
-    padding: 0 13px 0 15px;
-    font-size: var(--font-size-ui-sm);
+    gap: 17px;
   }
 
   .moreItems {
-    font-size: var(--font-size-label-sm);
-  }
-}
-
-@media (min-width: 1500px) {
-  .card {
-    padding: 26px;
-  }
-
-  .title {
-    font-size: clamp(1.42rem, 1.12rem + 0.4vw, 1.72rem);
-  }
-
-  .fitNote {
-    font-size: var(--font-size-label-md);
-  }
-
-  .highlightText {
-    font-size: 1.12rem;
-  }
-
-  .pricingHint {
-    font-size: var(--font-size-label-sm);
-  }
-
-  .list {
     font-size: var(--font-size-body-md);
-    line-height: 1.64;
   }
-}
 
-@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
-  .title {
-    font-size: clamp(1.42rem, 1.08rem + 0.34vw, 1.68rem);
+  .metaStack {
+    gap: 12px;
+  }
+
+  .metaInfo {
+    gap: 10px;
+  }
+
+  .footer {
+    padding-top: 8px;
+    min-height: 52px;
+  }
+
+  .primaryCta {
+    min-height: 52px;
+    padding-inline: 24px;
+    font-size: var(--font-size-body-lg);
+  }
+
+  .toggle {
+    min-height: 46px;
+    padding-inline: 18px 16px;
+    font-size: var(--font-size-body-sm);
+  }
+
+  .badge {
+    min-height: 38px;
+    padding-inline: 18px;
+    font-size: var(--font-size-body-sm);
   }
 }
 

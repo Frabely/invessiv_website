@@ -78,8 +78,11 @@ const serviceCards = [
 
 const goalOptions = [
   { key: "more_inquiries", label: "mehr Anfragen gewinnen" },
-  { key: "professional_presence", label: "professionell online auftreten" },
-  { key: "simplify_workflows", label: "interne Abläufe vereinfachen" },
+  {
+    key: "improve_existing_site",
+    label: "mehr aus der bestehenden Seite holen",
+  },
+  { key: "plan_new_website", label: "neue Website wirksam starten" },
 ];
 
 function renderSection() {
@@ -159,16 +162,35 @@ describe("ServicesSection", () => {
     expect(
       screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
     ).toBeTruthy();
+    expect(
+      within(screen.getByRole("group"))
+        .getAllByRole("button")
+        .map((button) => button.textContent),
+    ).toEqual([
+      "mehr Anfragen gewinnen",
+      "mehr aus der bestehenden Seite holen",
+      "neue Website wirksam starten",
+    ]);
+    expect(
+      screen.getByRole("button", {
+        name: "mehr aus der bestehenden Seite holen",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "neue Website wirksam starten" }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("button", {
+        name: "interne Abläufe vereinfachen",
+      }),
+    ).toBeNull();
     expect(screen.queryByText("Umfang vor Start")).toBeNull();
     expect(screen.queryByText("Klare Lieferfenster")).toBeNull();
-    expect(
-      screen.queryByRole("button", { name: /Bestehendes verbessern/i }),
-    ).toBeNull();
     expect(primaryCards).toHaveLength(3);
     expect(secondaryCards).toHaveLength(2);
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["landing", "web", "upgrade"]);
+    ).toEqual(["landing", "upgrade", "web"]);
     expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
       "default",
@@ -207,11 +229,13 @@ describe("ServicesSection", () => {
     ).toBe("maintenance");
   });
 
-  it("updates recommendation and CTA copy when another goal is chosen while keeping the desktop card order stable", () => {
+  it("recommends the upgrade service when improving an existing site while keeping the desktop card order stable", () => {
     const { container } = renderSection();
 
     fireEvent.click(
-      screen.getByRole("button", { name: "interne Abläufe vereinfachen" }),
+      screen.getByRole("button", {
+        name: "mehr aus der bestehenden Seite holen",
+      }),
     );
 
     const primaryCards = Array.from(
@@ -220,26 +244,62 @@ describe("ServicesSection", () => {
 
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["landing", "web", "upgrade"]);
+    ).toEqual(["landing", "upgrade", "web"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(
+      within(getArticleByTitle("Webseiten-Upgrade"))
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("upgrade");
+    expect(
+      within(getArticleByTitle("Webseiten-Upgrade"))
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-goal"),
+    ).toBe("mehr aus der bestehenden Seite holen");
+    expect(
+      within(getArticleByTitle("Prozess-Tools")).queryByRole("link", {
+        name: "Projekt anfragen",
+      }),
+    ).toBeTruthy();
+  });
+
+  it("recommends the website service when planning a new website", () => {
+    const { container } = renderSection();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "neue Website wirksam starten" }),
+    );
+
+    const primaryCards = Array.from(
+      container.querySelectorAll("[data-service-variant='primary']"),
+    );
+
+    expect(
+      primaryCards.map((card) => card.getAttribute("data-card-key")),
+    ).toEqual(["landing", "upgrade", "web"]);
     expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
     expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
-    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
-      "default",
-    );
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(
-      within(getArticleByTitle("Prozess-Tools"))
+      within(getArticleByTitle("Webseiten"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
-    ).toBe("process");
+    ).toBe("web");
     expect(
-      within(getArticleByTitle("Prozess-Tools"))
+      within(getArticleByTitle("Webseiten"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("interne Abläufe vereinfachen");
+    ).toBe("neue Website wirksam starten");
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {

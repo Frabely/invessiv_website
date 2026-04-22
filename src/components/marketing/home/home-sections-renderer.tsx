@@ -95,7 +95,7 @@ export function HomeSectionsRenderer({
 
               return (
                 <ProofSection
-                  description={section.description}
+                  description={section.description ?? ""}
                   featuredProjectFallbackLabel={
                     ui.proofFeaturedProjectFallbackLabel
                   }
@@ -125,7 +125,7 @@ export function HomeSectionsRenderer({
             if (section.id === "process") {
               return (
                 <ProcessSection
-                  description={section.description}
+                  description={section.description ?? ""}
                   id={section.id}
                   key={section.id}
                   processCta={section.processCta}
@@ -139,7 +139,7 @@ export function HomeSectionsRenderer({
             if (section.id === "faq") {
               return (
                 <QAndASection
-                  description={section.description}
+                  description={section.description ?? ""}
                   id={section.id}
                   items={section.qnaItems ?? []}
                   key={section.id}
@@ -170,7 +170,7 @@ export function HomeSectionsRenderer({
                   quickContactForm={section.quickContactForm}
                   discoveryCallForm={section.discoveryCallForm}
                   contactSecondaryCta={section.contactSecondaryCta}
-                  description={section.description}
+                  description={section.description ?? ""}
                   id={section.id}
                   key={section.id}
                   privacyHref={privacyHref}
@@ -181,7 +181,7 @@ export function HomeSectionsRenderer({
 
             return (
               <PlaceholderSection
-                description={section.description}
+                description={section.description ?? ""}
                 id={section.id}
                 isTall={false}
                 key={section.id}
@@ -198,7 +198,7 @@ export function HomeSectionsRenderer({
           brand={footerSection.footerBrand}
           columns={footerSection.footerColumns ?? []}
           copyright={footerSection.footerCopyright}
-          description={footerSection.description}
+          description={footerSection.description ?? ""}
           id="footer"
           legalLinks={footerSection.footerLegalLinks}
           socialLinks={footerSection.footerSocialLinks}

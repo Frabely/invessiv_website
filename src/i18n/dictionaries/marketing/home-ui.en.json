@@ -42,16 +42,16 @@
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
   "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting service model.",
+  "servicesIntentTitle": "Choose your goal. The matching service will be highlighted.",
   "servicesIntentOptions": [
     { "key": "more_inquiries", "label": "win more inquiries" },
     {
-      "key": "professional_presence",
-      "label": "show up professionally online"
+      "key": "improve_existing_site",
+      "label": "get more from your current site"
     },
     {
-      "key": "simplify_workflows",
-      "label": "simplify internal workflows"
+      "key": "plan_new_website",
+      "label": "launch a website with clear value"
     }
   ],
   "servicesPrimaryCta": "Request project",
@@ -63,5 +63,5 @@
     "maintenance": "Request maintenance & support"
   },
   "servicesDetailsCta": "More details",
-  "servicesDeliveryLabel": "Typical"
+  "servicesDeliveryLabel": "Timeframe"
 }
