@@ -283,14 +283,14 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "hero",
     copy: {
       de: {
-        title: "Landingpages und Webseiten,\ndie Anfragen erzeugen.",
+        title: "Landingpages und Webseiten,\ndie Anfragen bringen.",
         description:
-          "Für Unternehmen, die online klarer auftreten, mehr passende Anfragen gewinnen und ihre Website als Vertriebsfläche nutzen wollen.",
+          "Für Unternehmen, die online klar auftreten, passende Anfragen gewinnen und ihre Website als verlässlichen Vertriebskanal nutzen wollen.",
       },
       en: {
-        title: "Landing pages and websites\nthat generate inquiries.",
+        title: "Landing pages and websites\nthat bring in inquiries.",
         description:
-          "For companies that want to show up more clearly online, win more relevant inquiries, and use the website as a sales surface.",
+          "For companies that want to show up clearly online, win relevant inquiries, and use their website as a reliable sales channel.",
       },
     },
   },
