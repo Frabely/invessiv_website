@@ -17,7 +17,8 @@
   - `web-design-guidelines` für UI- und Interaction-Checks gegen Web-Interface-Standards.
   - `web-quality-audit` für die abschließende Website-Prüfung über Performance, A11y, SEO und Best Practices.
   - `core-web-vitals` für LCP, CLS und INP auf den conversionkritischen Seiten.
-- Copy wird ohne dedizierte Copywriting-Skill über `ux-design` + `seo` geführt, damit die Textarbeit eng an Conversion und Suchintention bleibt.
+- `copywriting` für sichtbare Website-Texte, CTA-Mikrocopy und klare Conversion-Argumentation.
+- Copy wird über `copywriting` + `ux-design` + `seo` geführt, damit Texte klar, glaubwürdig, suchintentionnah und leadorientiert bleiben.
 - Wenn sich eine Entscheidung zwischen Designwirkung und Klarheit ergibt, hat Klarheit für die Lead-Generierung Vorrang.
 
 ## Zielbild für die Website
@@ -97,13 +98,37 @@
 - Der erste visuelle Eindruck der Services muss das Einstiegsangebot stützen.
 - Zusätzliche Details nur dort zeigen, wo sie Entscheidungssicherheit erhöhen.
 
-### 4) Proof früher und stärker einsetzen
+### 4) Trust-/Outcome-Bridge aufbauen und Proof nach Services verschieben
 
-- Skills: `seo`, `frontend-design`, `web-quality-audit`
-- Die Startseite soll den Vertrauensbeweis vor oder direkt nach den Services führen.
-- Die Projektübersicht klar als konkretes Referenzzentrum positionieren.
-- Reviews sollen Nutzen, Qualität und Arbeitsweise glaubwürdig bestätigen.
-- Wenn Sections dafür ersetzt werden, die alte Variante zuerst als Legacy-Version erhalten.
+- Skills: `copywriting`, `frontend-design`, `ux-design`, `seo`, `web-quality-audit`
+- Ziel-Lesepfad für die Startseite festziehen:
+  - `Hero -> Trust-/Outcome-Bridge -> Services -> Proof -> Contact`
+- Die aktuelle `IncludedSection` nicht als große Leistungs- oder Prozess-Section weiterführen, sondern fachlich neu benennen und verschlanken:
+  - alte Variante vor Umbau als `LegacyIncludedSection` sichern
+  - neue Variante als `TrustOutcomeBridgeSection` oder `LeadBridgeSection` aufbauen
+  - Section-ID nur ändern, wenn Navigation, Anchors, Tests und interne Links im selben Schritt sauber angepasst werden
+- Die Bridge soll direkt unter dem Hero stehen und nur eine Aufgabe erfüllen: den Besucher vom Hero in die passende Service-Auswahl führen.
+- Inhaltliche Richtung der Bridge:
+  - klares Outcome statt Feature-Liste
+  - kurze Orientierung, welches Format passt: `Landingpage`, `Webseite`, `Webseiten-Upgrade`
+  - 2-3 Trust-Signale, aber keine vollständige Proof-Section
+  - keine zweite Card-Wand und keine ausführliche Prozess-Erklärung
+- Beispiel-Copy für die Bridge:
+  - Headline: `Klarer Einstieg. Saubere Umsetzung. Ein nächster Schritt, der passt.`
+  - Body: `Landingpage, Webseite oder Upgrade: Nach deiner Anfrage bekommst du eine kurze Einschätzung und ein klares Angebot vor Start.`
+  - Trust-Zeile: `5,0 Google Bewertung · echte Projekte · transparente Abstimmung`
+- Design-Richtung:
+  - schmale, ruhige Zwischen-Section statt vollwertiger Großsection
+  - visuell als Verbindung zwischen Hero und Services lesen lassen
+  - Desktop: kompakte horizontale Trust-/Outcome-Leiste oder asymmetrische Text-/Signal-Komposition
+  - Mobile: kurze gestapelte Blöcke mit sehr schneller Scanbarkeit
+  - keine dominante Animation; maximal dezente Reveal- oder Spotlight-Details, wenn sie die Orientierung verbessern
+- Die Proof-Section nach den Services platzieren, damit der Vertrauensbeweis die gerade verstandenen Angebote bestätigt.
+- Proof stärker als konkretes Referenzzentrum positionieren:
+  - Projektübersicht klar als Nachweis für echte Umsetzung
+  - Reviews als Bestätigung von Nutzen, Qualität und Arbeitsweise
+  - CTA aus Proof in Richtung `Projekt anfragen` oder Projektübersicht bewusst setzen
+- Wenn Proof oder Bridge visuell stark umgebaut werden, die alte Variante zuerst als Legacy-Version erhalten.
 
 ### 5) Contact Flow vereinfachen
 
@@ -119,7 +144,7 @@
 - Title/Description auf Lead-Intention und Hauptangebot prüfen.
 - Structured Data und Canonical-Logik unverändert lassen, solange sie korrekt sind.
 - CTA-Events, Form-Start und Form-Submit müssen messbar bleiben.
-- Interne Verlinkung so setzen, dass Hero -> Services -> Proof -> Contact als Lesepfad erkennbar ist.
+- Interne Verlinkung so setzen, dass Hero -> Trust-/Outcome-Bridge -> Services -> Proof -> Contact als Lesepfad erkennbar ist.
 
 ### 7) Animationen und Interaktionen gezielt einsetzen
 
@@ -145,8 +170,9 @@
 ## Konkrete Deliverables in Woche 1
 
 - Überarbeitete Hero-Copy mit klarem Lead-Fokus.
+- Schlanke Trust-/Outcome-Bridge als Ersatz oder Weiterentwicklung der bisherigen `IncludedSection`.
 - Neu sortierte Services mit Einstiegsangebot an erster Stelle.
-- Sichtbarere Proof-Struktur mit Projektübersicht und Reviews.
+- Proof nach Services verschoben und sichtbarer als Projekt-/Review-Nachweis strukturiert.
 - Vereinfachter Contact Flow mit eindeutigem Hauptpfad.
 - Dokumentierte Legacy-Sicherung für ersetzte Sections.
 - Kurzprüfung der wichtigsten SEO-, Accessibility- und Performance-Punkte auf der Website.
