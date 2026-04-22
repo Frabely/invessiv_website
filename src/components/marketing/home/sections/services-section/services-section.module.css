@@ -227,7 +227,7 @@
       "landing upgrade"
       "landing web";
     align-items: stretch;
-    gap: 8px 28px;
+    gap: 24px 28px;
   }
 
   .primaryGrid > [data-card-key="landing"] {
@@ -253,7 +253,8 @@
   }
 
   .secondaryGrid {
-    gap: clamp(2.2rem, 2.6vw, 3rem);
+    grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
+    gap: clamp(2.2rem, 2.6vw, 3rem) 28px;
   }
 }
 
@@ -276,11 +277,12 @@
   .primaryGrid {
     grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
     grid-template-rows: repeat(2, minmax(clamp(13.5rem, 17vh, 16.25rem), auto));
-    gap: 10px 34px;
+    gap: 30px 34px;
   }
 
   .secondaryGrid {
-    gap: clamp(2.2rem, 2.6vw, 3rem);
+    grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
+    gap: clamp(2.2rem, 2.6vw, 3rem) 34px;
   }
 }
 
