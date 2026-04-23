@@ -250,7 +250,7 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const bridgeHeading = screen.getByRole("heading", {
-      name: "Klarer Einstieg. Saubere Umsetzung. Ein nächster Schritt, der passt.",
+      name: "Landingpages zuerst. Webseiten oder Tools nur, wenn sie sinnvoll ergänzen.",
     });
     const servicesHeading = screen.getByRole("heading", {
       name: "Services",

@@ -4,15 +4,15 @@
   "heroTag": "KLARER AUFTRITT, MEHR ANFRAGEN",
   "heroVisualAriaLabel": "Live Performance Einblick",
   "leadBridgeContent": {
-    "kicker": "Startpunkt",
-    "title": "Klarer Einstieg. Saubere Umsetzung. Ein nächster Schritt, der passt.",
+    "kicker": "STARTPUNKT",
+    "title": "Landingpages zuerst. Webseiten oder Tools nur, wenn sie sinnvoll ergänzen.",
     "signalAriaLabel": "Vertrauenssignale und nächster Ablauf",
     "summaryPoints": [
-      "Einschätzung zu Landingpage, Webseite oder Upgrade",
-      "Transparentes Angebot vor Start",
-      "Echte Projekte und 5,0 Google Bewertung"
+      "Ehrliche Einschätzung vor dem Start",
+      "Landingpages mit klarem Conversion-Ziel",
+      "Webseiten oder Tools nur bei Bedarf"
     ],
-    "bridge": "Landingpage, Webseite oder Upgrade: Nach deiner Anfrage bekommst du eine kurze Einschätzung und ein klares Angebot vor Start."
+    "bridge": "Ich entwickle vor allem Landingpages, die Angebote klar vermitteln und Anfragen auslösen. Webseiten, Relaunches oder kleine Tools kommen nur dann dazu, wenn sie den nächsten Schritt unterstützen."
   },
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
   "proofFeaturedProjectFallbackLabel": "Umgesetztes Projekt",

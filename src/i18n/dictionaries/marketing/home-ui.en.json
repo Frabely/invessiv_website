@@ -4,15 +4,15 @@
   "heroTag": "CLEARER PRESENCE, MORE INQUIRIES",
   "heroVisualAriaLabel": "Live performance snapshot",
   "leadBridgeContent": {
-    "kicker": "Start point",
-    "title": "A clear entry point. Clean delivery. A next step that fits.",
+    "kicker": "START POINT",
+    "title": "Landing pages first. Websites or tools only when they add value.",
     "signalAriaLabel": "Trust signals and next flow",
     "summaryPoints": [
-      "Recommendation for landing page, website, or upgrade",
-      "Transparent offer before kickoff",
-      "Real projects and a 5.0 Google rating"
+      "Honest assessment before kickoff",
+      "Landing pages with a clear conversion goal",
+      "Websites or tools only when needed"
     ],
-    "bridge": "Landing page, website, or upgrade: after your inquiry, you get a short recommendation and a clear offer before work starts."
+    "bridge": "I mainly build landing pages that communicate offers clearly and generate inquiries. Websites, relaunches, or small tools are added only when they support the next step."
   },
   "mappingWarning": "Navigation/section mapping is incomplete.",
   "proofFeaturedProjectFallbackLabel": "Featured project",
