@@ -12,7 +12,7 @@ const VIEWPORTS = [
 ];
 
 const SECTION_IDS: string[] = [
-  "included",
+  "lead-bridge",
   "services",
   "proof",
   "process",

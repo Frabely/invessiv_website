@@ -14,7 +14,7 @@
 
 ## Arbeitsreihenfolge
 
-- [x] `included`
+- [x] `lead-bridge`
 - [x] `proof`
 - [x] `services`
 - [ ] `process` (ausgenommen)
@@ -35,7 +35,7 @@
 
 ## Status
 
-- `included`: umgesetzt
+- `lead-bridge`: umgesetzt
 - `proof`: umgesetzt
 - `services`: umgesetzt
 - `process`: ausgenommen, da ohnehin ueberarbeitet

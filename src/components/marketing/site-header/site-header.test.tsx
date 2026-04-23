@@ -66,11 +66,11 @@ describe("SiteHeader", () => {
 
     render(
       <SiteHeader
-        navigation={[{ href: "#included" }, { href: "#services" }]}
+        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
       />,
     );
 
-    expect(screen.getAllByText("Was du bekommst").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Einstieg").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Leistungsmodelle").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
   });
@@ -90,7 +90,7 @@ describe("SiteHeader", () => {
 
     render(
       <SiteHeader
-        navigation={[{ href: "#included" }, { href: "#services" }]}
+        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
       />,
     );
 
@@ -121,7 +121,7 @@ describe("SiteHeader", () => {
 
     render(
       <SiteHeader
-        navigation={[{ href: "#included" }, { href: "#services" }]}
+        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
       />,
     );
 
@@ -148,7 +148,7 @@ describe("SiteHeader", () => {
 
     const { container } = render(
       <SiteHeader
-        navigation={[{ href: "#included" }, { href: "#services" }]}
+        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
       />,
     );
 
@@ -159,9 +159,7 @@ describe("SiteHeader", () => {
 
     mobileMenu.setAttribute("open", "");
 
-    fireEvent.click(
-      within(mobileMenu).getByRole("link", { name: "Was du bekommst" }),
-    );
+    fireEvent.click(within(mobileMenu).getByRole("link", { name: "Einstieg" }));
 
     expect(mobileMenu.hasAttribute("open")).toBe(false);
   });

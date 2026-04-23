@@ -104,7 +104,7 @@
 - Ziel-Lesepfad für die Startseite festziehen:
   - `Hero -> Trust-/Outcome-Bridge -> Services -> Proof -> Contact`
 - Die aktuelle `IncludedSection` nicht als große Leistungs- oder Prozess-Section weiterführen, sondern fachlich neu benennen und verschlanken:
-  - alte Variante vor Umbau als `LegacyIncludedSection` sichern
+  - alte Variante vor Umbau als `LeadBridgeSection` sichern
   - neue Variante als `TrustOutcomeBridgeSection` oder `LeadBridgeSection` aufbauen
   - Section-ID nur ändern, wenn Navigation, Anchors, Tests und interne Links im selben Schritt sauber angepasst werden
 - Die Bridge soll direkt unter dem Hero stehen und nur eine Aufgabe erfüllen: den Besucher vom Hero in die passende Service-Auswahl führen.
@@ -163,7 +163,7 @@
 - Wenn eine bestehende Section ersetzt oder stark umgebaut wird, zuerst die alte Variante unter `Legacy<AlterSectionName>` sichern.
 - Die Legacy-Variante bleibt wiederverwendbar und wird nicht sofort gelöscht.
 - Beispiel:
-  - `IncludedSection` -> `LegacyIncludedSection`
+  - `LeadBridgeSection` -> `LegacyLeadBridgeSection`
   - `FAQ` -> `LegacyFaqSection`
 - Erst nach QA und Freigabe darf der Traffic vollständig auf die neue Variante umgestellt werden.
 

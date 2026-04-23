@@ -19,7 +19,7 @@ type FooterSectionProps = {
   brand?: string;
   columns: FooterColumn[];
   copyright?: string;
-  description: string;
+  description?: string;
   id: string;
   legalLinks?: FooterLegalLink[];
   socialLinks?: FooterSocialLink[];
@@ -109,7 +109,9 @@ export function FooterSection({
                 </div>
               ) : null}
 
-              <p className={styles.description}>{description}</p>
+              {description ? (
+                <p className={styles.description}>{description}</p>
+              ) : null}
 
               {visibleSocialLinks.length ? (
                 <ul className={styles.socials} aria-label="Social links">

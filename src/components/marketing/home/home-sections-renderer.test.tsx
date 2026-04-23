@@ -2,8 +2,8 @@
 
 import "@testing-library/jest-dom/vitest";
 import { createRef } from "react";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HomeSectionsRenderer } from "./home-sections-renderer";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
@@ -19,7 +19,16 @@ vi.mock("@/lib/analytics/conversion-events", () => ({
   trackConversionEvent: vi.fn(),
 }));
 
+afterEach(() => {
+  cleanup();
+});
+
 const sections: HomeSectionContent[] = [
+  {
+    id: "lead-bridge",
+    title: "Bridge",
+    description: "Einstieg",
+  },
   {
     id: "services",
     title: "Services",
@@ -70,6 +79,20 @@ const sections: HomeSectionContent[] = [
         pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
         delivery: "24-72h",
         included: ["Bugfixes"],
+      },
+    ],
+  },
+  {
+    id: "proof",
+    title: "Was Kunden über die Zusammenarbeit sagen",
+    description: "aus realen Projekten",
+    proofReviews: [
+      {
+        authorName: "Kolja Wienigk",
+        context: "Finanzmakler aus Dresden",
+        excerpt: "Klare Struktur.",
+        reviewHref: "https://example.com",
+        sourceLabel: "Google Bewertung",
       },
     ],
   },
@@ -211,26 +234,45 @@ describe("HomeSectionsRenderer", () => {
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
   });
 
+  it("renders the lead bridge before services and proof after services", () => {
+    render(
+      <HomeSectionsRenderer
+        sections={sections}
+        servicesSectionRef={createRef<HTMLElement>()}
+        showProofSection={true}
+        ui={getHomeUiContent("de")}
+        validation={{
+          hasCompleteMapping: true,
+          missingInNavigation: [],
+          missingInSections: [],
+        }}
+      />,
+    );
+
+    const bridgeHeading = screen.getByRole("heading", {
+      name: "Klarer Einstieg. Saubere Umsetzung. Ein nächster Schritt, der passt.",
+    });
+    const servicesHeading = screen.getByRole("heading", {
+      name: "Services",
+    });
+    const proofHeading = screen.getByRole("heading", {
+      name: "Was Kunden über die Zusammenarbeit sagen",
+    });
+
+    expect(
+      bridgeHeading.compareDocumentPosition(servicesHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      servicesHeading.compareDocumentPosition(proofHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it("does not render the proof section while the launch flag is disabled", () => {
     render(
       <HomeSectionsRenderer
-        sections={[
-          ...sections,
-          {
-            id: "proof",
-            title: "Was Kunden über die Zusammenarbeit sagen",
-            description: "aus realen Projekten",
-            proofReviews: [
-              {
-                authorName: "Kolja Wienigk",
-                context: "Finanzmakler aus Dresden",
-                excerpt: "Klare Struktur.",
-                reviewHref: "https://example.com",
-                sourceLabel: "Google Bewertung",
-              },
-            ],
-          },
-        ]}
+        sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={false}
         ui={getHomeUiContent("de")}

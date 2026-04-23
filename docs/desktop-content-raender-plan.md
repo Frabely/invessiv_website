@@ -96,7 +96,7 @@
 ### 5. Home-Sections einzeln abarbeiten
 
 - Reihenfolge:
-  1. `included` [erledigt]
+  1. `lead-bridge` [erledigt]
   2. `services` [erledigt]
   3. `proof` [erledigt]
   4. `process` [erledigt]

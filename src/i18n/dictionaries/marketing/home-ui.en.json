@@ -3,6 +3,17 @@
   "heroSecondaryCta": "Review service models",
   "heroTag": "CLEARER PRESENCE, MORE INQUIRIES",
   "heroVisualAriaLabel": "Live performance snapshot",
+  "leadBridgeContent": {
+    "kicker": "Start point",
+    "title": "A clear entry point. Clean delivery. A next step that fits.",
+    "signalAriaLabel": "Trust signals and next flow",
+    "summaryPoints": [
+      "Recommendation for landing page, website, or upgrade",
+      "Transparent offer before kickoff",
+      "Real projects and a 5.0 Google rating"
+    ],
+    "bridge": "Landing page, website, or upgrade: after your inquiry, you get a short recommendation and a clear offer before work starts."
+  },
   "mappingWarning": "Navigation/section mapping is incomplete.",
   "proofFeaturedProjectFallbackLabel": "Featured project",
   "proofHighlightsAriaLabel": "Proof section highlights",
@@ -11,32 +22,6 @@
   "proofMoreProjectsFallbackTitle": "More projects",
   "proofRatingAriaLabel": "5 out of 5 stars",
   "proofReviewLinkLabel": "View on Google",
-  "includedContent": {
-    "title": "From first outline to handoff",
-    "summaryPoints": [
-      "recommendation before kickoff",
-      "short feedback loops",
-      "QA & handover"
-    ],
-    "cards": [
-      {
-        "title": "Right entry point before kickoff",
-        "tag": "Setup",
-        "description": "After the inquiry, we sort the goal, project range, and offer format before implementation begins."
-      },
-      {
-        "title": "Short paths during execution",
-        "tag": "Workflow",
-        "description": "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving."
-      },
-      {
-        "title": "Launch prepared from the start",
-        "tag": "QA",
-        "description": "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end."
-      }
-    ],
-    "bridge": "After the inquiry, you know which entry point makes sense and how the next step looks."
-  },
   "servicesAddonBadgeLabel": "Add-on",
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",

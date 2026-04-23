@@ -295,26 +295,27 @@ const HOME_SECTIONS: LandingSection[] = [
     },
   },
   {
-    id: "included",
+    id: "lead-bridge",
     copy: {
       de: {
-        title: "Vom ersten Rahmen bis zur Übergabe",
+        title:
+          "Klarer Einstieg für Landingpages, Webseiten und Webseiten-Upgrades",
         description:
-          "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
+          "Nach der Anfrage wird sichtbar, welches Format zu deinem Ziel passt und wie der nächste Schritt aussieht.",
         summaryPoints: [
-          "Empfehlung vor Start",
-          "kurze Abstimmung",
-          "QA & Übergabe",
+          "5,0 Google Bewertung",
+          "echte Projekte",
+          "transparentes Angebot vor Start",
         ],
       },
       en: {
-        title: "From first outline to handoff",
+        title: "A clear entry point for landing pages, websites, and upgrades",
         description:
-          "After the inquiry, you know which entry point makes sense and how the next step looks.",
+          "After your inquiry, it becomes clear which format fits your goal and what the next step looks like.",
         summaryPoints: [
-          "recommendation before kickoff",
-          "short feedback loops",
-          "QA & handover",
+          "5.0 Google rating",
+          "real projects",
+          "transparent offer before kickoff",
         ],
       },
     },
@@ -1465,7 +1466,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Menü",
             links: [
-              { label: "Was du bekommst", href: SECTION_HREFS.included },
+              { label: "Einstieg", href: SECTION_HREFS["lead-bridge"] },
               { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
@@ -1508,7 +1509,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             title: "Menu",
             links: [
-              { label: "What you get", href: SECTION_HREFS.included },
+              { label: "Start point", href: SECTION_HREFS["lead-bridge"] },
               { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },

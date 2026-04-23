@@ -3,6 +3,17 @@
   "heroSecondaryCta": "Leistungsmodelle prüfen",
   "heroTag": "KLARER AUFTRITT, MEHR ANFRAGEN",
   "heroVisualAriaLabel": "Live Performance Einblick",
+  "leadBridgeContent": {
+    "kicker": "Startpunkt",
+    "title": "Klarer Einstieg. Saubere Umsetzung. Ein nächster Schritt, der passt.",
+    "signalAriaLabel": "Vertrauenssignale und nächster Ablauf",
+    "summaryPoints": [
+      "Einschätzung zu Landingpage, Webseite oder Upgrade",
+      "Transparentes Angebot vor Start",
+      "Echte Projekte und 5,0 Google Bewertung"
+    ],
+    "bridge": "Landingpage, Webseite oder Upgrade: Nach deiner Anfrage bekommst du eine kurze Einschätzung und ein klares Angebot vor Start."
+  },
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
   "proofFeaturedProjectFallbackLabel": "Umgesetztes Projekt",
   "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
@@ -11,32 +22,6 @@
   "proofMoreProjectsFallbackTitle": "Projektübersicht",
   "proofRatingAriaLabel": "5 von 5 Sternen",
   "proofReviewLinkLabel": "Bei Google ansehen",
-  "includedContent": {
-    "title": "Vom ersten Rahmen bis zur Übergabe",
-    "summaryPoints": [
-      "Empfehlung vor Start",
-      "kurze Abstimmung",
-      "QA & Übergabe"
-    ],
-    "cards": [
-      {
-        "title": "Passender Einstieg vor Projektbeginn",
-        "tag": "Setup",
-        "description": "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht."
-      },
-      {
-        "title": "Kurze Wege im Projekt",
-        "tag": "Ablauf",
-        "description": "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig."
-      },
-      {
-        "title": "Launch sauber vorbereitet",
-        "tag": "QA",
-        "description": "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss."
-      }
-    ],
-    "bridge": "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht."
-  },
   "servicesAddonBadgeLabel": "Zusatzleistung",
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
