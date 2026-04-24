@@ -9,7 +9,6 @@ import { ContactFormField } from "@/components/marketing/home/sections/contact-s
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
 import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/shared/contact-form-status/contact-form-status";
-import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/shared/contact-identity-fields/contact-identity-fields";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -20,6 +19,7 @@ import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-
 import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/project-request-form-values";
 import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
+import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
 import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 import styles from "./project-request-form.module.css";
 
@@ -710,59 +710,113 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepOneTitle}</legend>
 
             <div
-              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
+              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid} ${styles.stepOneGrid}`}
             >
-              <ContactIdentityFields
-                copy={{
-                  emailLabel: formCopy.emailLabel,
-                  firstNameLabel: formCopy.firstNameLabel,
-                  lastNameLabel: formCopy.lastNameLabel,
+              <ContactFormField
+                errorMessage={
+                  errors.firstName ? getFieldErrorText("firstName") : undefined
+                }
+                inputProps={{
+                  ...register("firstName", {
+                    onChange: () => clearErrors("firstName"),
+                    required: "required",
+                  }),
+                  "aria-invalid": errors.firstName ? "true" : undefined,
+                  autoCapitalize: "words",
+                  autoComplete: "given-name",
                 }}
-                errors={errors}
-                getErrorMessage={(fieldName) => getFieldErrorText(fieldName)}
-                onFieldChange={{
-                  email: () => clearErrors("email"),
-                  firstName: () => clearErrors("firstName"),
-                  lastName: () => clearErrors("lastName"),
-                }}
-                register={register}
+                kind="text"
+                label={formCopy.firstNameLabel}
+                required
               />
+
+              <ContactFormField
+                errorMessage={
+                  errors.lastName ? getFieldErrorText("lastName") : undefined
+                }
+                inputProps={{
+                  ...register("lastName", {
+                    onChange: () => clearErrors("lastName"),
+                    required: "required",
+                  }),
+                  "aria-invalid": errors.lastName ? "true" : undefined,
+                  autoCapitalize: "words",
+                  autoComplete: "family-name",
+                }}
+                kind="text"
+                label={formCopy.lastNameLabel}
+                required
+              />
+
+              <div className={styles.stepOneEmailStack}>
+                <ContactFormField
+                  errorMessage={
+                    errors.email ? getFieldErrorText("email") : undefined
+                  }
+                  inputProps={{
+                    ...register("email", {
+                      onChange: () => clearErrors("email"),
+                      pattern: {
+                        message: "invalid_email",
+                        value: CONTACT_EMAIL_PATTERN,
+                      },
+                      required: "required",
+                    }),
+                    "aria-invalid": errors.email ? "true" : undefined,
+                    autoComplete: "email",
+                  }}
+                  kind="email"
+                  label={formCopy.emailLabel}
+                  required
+                />
+
+                <p className={styles.stepOneRequiredHint}>
+                  {formCopy.requiredHint}
+                </p>
+              </div>
+
+              <div className={styles.stepOneOfferStack}>
+                <ContactFormField
+                  className={fieldOfferClassName}
+                  errorMessage={
+                    errors.offerKey ? getFieldErrorText("offerKey") : undefined
+                  }
+                  kind="select"
+                  label={formCopy.offerLabel}
+                  options={[
+                    {
+                      label: formCopy.offerPlaceholder,
+                      value: "",
+                    },
+                    ...offerOptions.map((option) => ({
+                      label: option.title,
+                      value: option.key,
+                    })),
+                  ]}
+                  required
+                  selectProps={{
+                    ...register("offerKey", {
+                      onChange: (event) => {
+                        applyOfferSelection(event.target.value);
+                        clearErrors([
+                          "offerKey",
+                          "goalKey",
+                          "pageKeys",
+                          "website",
+                        ]);
+                      },
+                      required: "required",
+                    }),
+                    "aria-invalid": errors.offerKey ? "true" : undefined,
+                    "data-empty": selectedOfferKey ? "false" : "true",
+                  }}
+                />
+
+                <p className={styles.conditionalHint}>
+                  {formCopy.conditionalFieldHint}
+                </p>
+              </div>
             </div>
-
-            <ContactFormField
-              className={fieldOfferClassName}
-              errorMessage={
-                errors.offerKey ? getFieldErrorText("offerKey") : undefined
-              }
-              kind="select"
-              label={formCopy.offerLabel}
-              options={[
-                {
-                  label: formCopy.offerPlaceholder,
-                  value: "",
-                },
-                ...offerOptions.map((option) => ({
-                  label: option.title,
-                  value: option.key,
-                })),
-              ]}
-              required
-              selectProps={{
-                ...register("offerKey", {
-                  onChange: (event) => {
-                    applyOfferSelection(event.target.value);
-                    clearErrors(["offerKey", "goalKey", "pageKeys", "website"]);
-                  },
-                  required: "required",
-                }),
-                "aria-invalid": errors.offerKey ? "true" : undefined,
-                "data-empty": selectedOfferKey ? "false" : "true",
-              }}
-            />
-
-            <p className={styles.conditionalHint}>
-              {formCopy.conditionalFieldHint}
-            </p>
 
             <ContactFormActions
               buttons={
@@ -774,7 +828,6 @@ export function ProjectRequestForm({
                   {stepOneNextLabel}
                 </PrimaryCtaButton>
               }
-              requiredHint={formCopy.requiredHint}
             />
           </fieldset>
 
