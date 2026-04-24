@@ -14,9 +14,7 @@ type QAndAAccordionProps = {
 };
 
 export function QAndAAccordion({ ariaLabel, id, items }: QAndAAccordionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(
-    items.length > 0 ? 0 : null,
-  );
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <ul aria-label={ariaLabel} className={styles.list}>
