@@ -38,7 +38,7 @@ Aktueller Befund:
 
 ### 1) UI-Optimierung Contact Flow ohne Logikänderung
 
-- Status: [ ]
+- Status: [x]
 - Skills: `frontend-design`, `ux-design`, `copywriting`, `accessibility`, `web-design-guidelines`, `core-web-vitals`
 - Ziel: Den bestehenden Contact Flow deutlich kompakter, klarer und conversionstärker darstellen, ohne Formularlogik, Validierung, DTOs, API, Lead-Erstellung, Mailversand oder Tracking umzubauen.
 - Änderung:

@@ -9,13 +9,13 @@
 
 .stack {
   display: grid;
-  gap: clamp(1rem, 1.8vw, 1.35rem);
+  gap: clamp(0.85rem, 1.4vw, 1.1rem);
 }
 
 .briefHead {
   display: grid;
-  gap: clamp(0.6rem, 1vw, 0.95rem);
-  max-width: 70rem;
+  gap: clamp(0.5rem, 0.8vw, 0.75rem);
+  max-width: 64rem;
 }
 
 .title {
@@ -28,32 +28,36 @@
 }
 
 .decisionIntro {
-  max-width: 67ch;
+  max-width: 62ch;
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
   font-size: var(--font-size-body-lg);
-  line-height: 1.64;
+  line-height: 1.54;
 }
 
 .entryPicker {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(0.7rem, 1.2vw, 1rem);
+  gap: 0.45rem;
   align-items: stretch;
+  padding: 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--color-surface-1) 58%, transparent);
 }
 
 .entryTrigger {
   width: 100%;
-  min-height: 68px;
-  padding: 0.95rem 1rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--color-surface-2) 68%, transparent);
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
+  min-height: 58px;
+  padding: 0.72rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
   display: grid;
   justify-items: start;
   align-content: center;
-  gap: 4px;
+  gap: 2px;
   text-align: left;
   cursor: pointer;
   transition:
@@ -64,21 +68,22 @@
 }
 
 .entryTrigger:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 30%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 74%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 22%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 52%, transparent);
   transform: translateY(-1px);
 }
 
 .entryTriggerActive {
-  border-color: color-mix(in srgb, var(--color-cta) 46%, transparent);
+  border-color: color-mix(in srgb, var(--color-cta) 42%, transparent);
   background: linear-gradient(
     145deg,
-    color-mix(in srgb, var(--color-cta) 16%, var(--color-surface-1) 84%),
-    color-mix(in srgb, var(--color-surface-2) 88%, transparent)
+    color-mix(in srgb, var(--color-cta) 18%, var(--color-surface-1) 82%),
+    color-mix(in srgb, var(--color-surface-2) 74%, transparent)
   );
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-cta) 8%);
   box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--color-cta) 16%, transparent),
-    0 10px 24px color-mix(in srgb, var(--color-cta) 12%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--color-cta) 14%, transparent),
+    0 8px 18px color-mix(in srgb, var(--color-cta) 9%, transparent);
 }
 
 .entryTrigger:focus-visible {
@@ -90,21 +95,21 @@
   color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
   font-size: var(--font-size-eyebrow);
   font-weight: 620;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .entryTriggerTitle {
   color: inherit;
-  font-size: var(--font-size-heading-sm);
+  font-size: var(--font-size-body-md);
   font-weight: 720;
   line-height: 1.28;
 }
 
 .entryPanel {
   display: grid;
-  gap: clamp(0.9rem, 1.4vw, 1.2rem);
-  padding-top: clamp(1rem, 1.8vw, 1.45rem);
+  gap: clamp(0.75rem, 1.1vw, 1rem);
+  padding-top: clamp(0.8rem, 1.2vw, 1.1rem);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
@@ -113,7 +118,7 @@
 }
 
 .entryPanelProject {
-  padding-top: clamp(1.1rem, 1.8vw, 1.55rem);
+  padding-top: clamp(0.85rem, 1.3vw, 1.15rem);
 }
 
 .entryPanelProject :global([data-project-request-panel="true"]) {
@@ -128,7 +133,7 @@
     color-mix(in srgb, var(--color-surface-1) 94%, transparent),
     color-mix(in srgb, var(--color-surface-1) 98%, transparent)
   );
-  box-shadow: 0 10px 24px rgba(5, 8, 12, 0.08);
+  box-shadow: 0 8px 20px rgba(5, 8, 12, 0.07);
 }
 
 .ctaWrap {
@@ -174,31 +179,23 @@
 }
 
 :global([data-theme="light"]) .entryTrigger {
-  border-color: color-mix(
-    in srgb,
-    var(--color-border) 80%,
-    var(--color-cta) 20%
-  );
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--color-surface-1) 96%, transparent),
-    color-mix(in srgb, var(--color-surface-2) 84%, transparent)
-  );
+  border-color: transparent;
+  background: transparent;
   color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
 }
 
 :global([data-theme="light"]) .entryTrigger:hover {
   border-color: color-mix(
     in srgb,
-    var(--color-cta) 42%,
-    var(--color-border) 58%
+    var(--color-cta) 30%,
+    var(--color-border) 70%
   );
   background: linear-gradient(
     160deg,
-    color-mix(in srgb, var(--color-surface-1) 88%, var(--color-cta) 12%),
-    color-mix(in srgb, var(--color-surface-2) 78%, var(--color-cta) 22%)
+    color-mix(in srgb, var(--color-surface-1) 92%, var(--color-cta) 8%),
+    color-mix(in srgb, var(--color-surface-2) 84%, var(--color-cta) 16%)
   );
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--color-cta) 10%, transparent);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 :global([data-theme="light"]) .entryTriggerActive {
@@ -215,7 +212,7 @@
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
   box-shadow:
     inset 0 0 0 1px color-mix(in srgb, var(--color-cta) 22%, transparent),
-    0 14px 32px color-mix(in srgb, var(--color-cta) 16%, transparent);
+    0 10px 24px color-mix(in srgb, var(--color-cta) 12%, transparent);
 }
 
 :global([data-theme="light"]) .entryTriggerActive .entryTriggerTitle {
@@ -224,12 +221,12 @@
 
 @media (min-width: 760px) {
   .entryPicker {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 0.82fr));
   }
 
   .entryTrigger {
-    min-height: 80px;
-    padding: 1rem 1.1rem 1.05rem;
+    min-height: 58px;
+    padding: 0.72rem 0.9rem;
   }
 
   .ctaWrap {
@@ -239,22 +236,22 @@
 
 @media (min-width: 1100px) {
   .stack {
-    gap: clamp(1.2rem, 1.8vw, 1.55rem);
+    gap: clamp(0.9rem, 1.25vw, 1.15rem);
   }
 
   .briefHead {
-    gap: 0.9rem;
-    max-width: 74rem;
+    gap: 0.72rem;
+    max-width: 68rem;
   }
 
   .decisionIntro {
-    max-width: 72ch;
+    max-width: 64ch;
   }
 
   .entryTrigger {
-    min-height: 88px;
-    padding: 1.1rem 1.2rem 1.12rem;
-    border-radius: 20px;
+    min-height: 58px;
+    padding: 0.74rem 0.95rem;
+    border-radius: 14px;
   }
 
   .entryTriggerTitle {
@@ -263,16 +260,16 @@
 
   .entryTrigger[data-entry-id="project"] .entryTriggerTitle {
     max-width: none;
-    font-size: var(--font-size-body-md);
+    font-size: var(--font-size-body-lg);
   }
 
   .entryPanel {
-    padding-top: 1.35rem;
+    padding-top: 0.95rem;
   }
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .title {
-    font-size: var(--font-size-section-title-wide);
+    font-size: var(--font-size-section-title);
   }
 }

@@ -938,11 +938,11 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
         contactDecisionIntro:
-          "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
+          "Starte mit der Projektanfrage. Wenn dein Anliegen noch kurz ist, reicht eine Nachricht.",
         contactChannels: [
           {
             mode: "call",
-            kicker: "Synchron abstimmen",
+            kicker: "Optional",
             label: "Kennenlern-Call",
             description:
               "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
@@ -957,8 +957,8 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             mode: "email",
-            kicker: "Asynchron & schnell",
-            label: "Kurze E-Mail",
+            kicker: "Kurz",
+            label: "Kurze Nachricht",
             description:
               "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
             value: COMPANY.contact.email,
@@ -986,12 +986,12 @@ const HOME_SECTIONS: LandingSection[] = [
         },
         contactTablistLabel: "Kontaktwege",
         contactForm: {
-          title: "Projektanfrage für konkrete Vorhaben",
-          subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
+          title: "Projekt einschätzen lassen",
+          subtitle: "Für konkrete Vorhaben mit klarer nächster Entscheidung.",
           intro:
-            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
+            "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
-            "Je nach gewähltem Leistungsmodell zeige ich nur die wirklich relevanten Felder.",
+            "Die Zusatzfragen passen sich an dein gewähltes Leistungsmodell an.",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
@@ -1001,7 +1001,7 @@ const HOME_SECTIONS: LandingSection[] = [
           roleLabel: "Rolle",
           websiteLabel: "Aktuelle Webseite",
           offerLabel: "Passendes Leistungsmodell",
-          offerPlaceholder: "Bitte Leistungsmodell wählen",
+          offerPlaceholder: "Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
             {
@@ -1206,11 +1206,11 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direct contact without sales handoff",
         ],
         contactDecisionIntro:
-          "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
+          "Start with the project request. If your request is still short, send a quick message.",
         contactChannels: [
           {
             mode: "call",
-            kicker: "Sync alignment",
+            kicker: "Optional",
             label: "Discovery call",
             description:
               "Best for live alignment when project range and effort need quick discussion.",
@@ -1225,8 +1225,8 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             mode: "email",
-            kicker: "Async & low effort",
-            label: "Short email",
+            kicker: "Short",
+            label: "Quick message",
             description:
               "Best for fast async contact when you want to clarify the next step in writing.",
             value: COMPANY.contact.email,
@@ -1254,13 +1254,12 @@ const HOME_SECTIONS: LandingSection[] = [
         },
         contactTablistLabel: "Contact paths",
         contactForm: {
-          title: "Project request for concrete requirements",
-          subtitle:
-            "Best when direction is clear and you want to move directly.",
+          title: "Get a project estimate",
+          subtitle: "For concrete requirements with a clear next decision.",
           intro:
-            "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
+            "Share the key facts. You get a clear view on scope, timing, and budget range.",
           conditionalFieldHint:
-            "Based on your selected service model, I only show fields that are actually relevant.",
+            "The follow-up questions adapt to your selected service model.",
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
           emailLabel: "Email",
@@ -1270,7 +1269,7 @@ const HOME_SECTIONS: LandingSection[] = [
           roleLabel: "Role",
           websiteLabel: "Current website",
           offerLabel: "Relevant service model",
-          offerPlaceholder: "Select a service model",
+          offerPlaceholder: "Choose a service model",
           goalLabel: "Primary landing page goal",
           goalOptions: [
             {
