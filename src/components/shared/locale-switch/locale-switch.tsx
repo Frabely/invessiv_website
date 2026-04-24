@@ -33,7 +33,11 @@ export function LocaleSwitch({
 
   return (
     <details className={rootClassName}>
-      <summary aria-label={localeMenuLabel} className={styles.summary}>
+      <summary
+        aria-label={localeMenuLabel}
+        className={styles.summary}
+        data-cursor-kind="switch"
+      >
         <span aria-hidden="true" className={styles.icon}>
           <svg fill="none" viewBox="0 0 24 24">
             <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
@@ -58,6 +62,7 @@ export function LocaleSwitch({
           return (
             <button
               className={optionClassName}
+              data-cursor-kind="switch"
               key={supportedLocale}
               onClick={(event) => onSelectAction(supportedLocale, event)}
               type="button"

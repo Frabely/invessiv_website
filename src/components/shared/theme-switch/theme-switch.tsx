@@ -29,6 +29,7 @@ export function ThemeSwitch({
       aria-label={copy.actionLabel}
       className={rootClassName}
       data-theme-state={theme}
+      data-cursor-kind="switch"
       onClick={onToggle}
       type="button"
     >

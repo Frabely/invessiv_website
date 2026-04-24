@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Cursor</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, Arial, sans-serif;
+        background: #efede8;
+        color: #111;
+        cursor: none;
+      }
+
+      a,
+      button {
+        cursor: none;
+      }
+
+      .page {
+        min-height: 100vh;
+        padding: 40px;
+        display: grid;
+        place-items: center;
+      }
+
+      .wrap {
+        width: min(100%, 1000px);
+      }
+
+      .intro {
+        margin-bottom: 28px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 7vw, 84px);
+        line-height: 0.95;
+        letter-spacing: -0.06em;
+        margin: 0 0 18px;
+        max-width: 760px;
+      }
+
+      p {
+        max-width: 600px;
+        font-size: 18px;
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .projects {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-top: 36px;
+      }
+
+      .project {
+        min-height: 260px;
+        padding: 24px;
+        border-radius: 26px;
+        text-decoration: none;
+        color: inherit;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.07);
+        transition: transform 180ms ease;
+      }
+
+      .project:hover {
+        transform: translateY(-4px);
+      }
+
+      .project span {
+        font-size: 14px;
+        color: #777;
+      }
+
+      .project strong {
+        font-size: 28px;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+
+      .custom-cursor {
+        width: 8px;
+        height: 8px;
+        background: #111;
+        border-radius: 50%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        transition:
+          width 180ms ease,
+          height 180ms ease,
+          border-radius 180ms ease,
+          background 180ms ease;
+      }
+
+      .custom-cursor::after {
+        content: "";
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+
+      .custom-cursor.is-hovering {
+        width: 58px;
+        height: 32px;
+        border-radius: 999px;
+        background: #111;
+      }
+
+      .custom-cursor.is-hovering::after {
+        content: "View";
+        opacity: 1;
+      }
+
+      @media (max-width: 780px) {
+        .projects {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (pointer: coarse) {
+        body,
+        a,
+        button {
+          cursor: auto;
+        }
+
+        .custom-cursor {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="custom-cursor"></div>
+
+    <main class="page">
+      <div class="wrap">
+        <section class="intro">
+          <h1>Aus Besuchern werden Kunden.</h1>
+          <p>
+            Landing Pages für Selbstständige und Unternehmen, die online besser
+            wirken und mehr qualifizierte Anfragen gewinnen wollen.
+          </p>
+        </section>
+
+        <section class="projects">
+          <a href="#" class="project">
+            <span>Case Study 01</span>
+            <strong>Coach Landing Page</strong>
+          </a>
+
+          <a href="#" class="project">
+            <span>Case Study 02</span>
+            <strong>SaaS Website</strong>
+          </a>
+
+          <a href="#" class="project">
+            <span>Case Study 03</span>
+            <strong>Local Business</strong>
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const cursor = document.querySelector(".custom-cursor");
+      const hoverElements = document.querySelectorAll("a, button");
+
+      window.addEventListener("mousemove", (event) => {
+        cursor.style.left = `${event.clientX}px`;
+        cursor.style.top = `${event.clientY}px`;
+      });
+
+      hoverElements.forEach((element) => {
+        element.addEventListener("mouseenter", () => {
+          cursor.classList.add("is-hovering");
+        });
+
+        element.addEventListener("mouseleave", () => {
+          cursor.classList.remove("is-hovering");
+        });
+      });
+    </script>
+  </body>
+</html>

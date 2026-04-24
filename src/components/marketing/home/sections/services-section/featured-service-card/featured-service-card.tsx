@@ -9,14 +9,15 @@ import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
 
-import styles from "./service-card.module.css";
+import styles from "./featured-service-card.module.css";
 
-type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
+type FeaturedServiceCardCopy = NonNullable<
+  LandingSectionCopy["serviceCards"]
+>[number];
 
-type ServiceCardProps = {
-  card: ServiceCardCopy;
+type FeaturedServiceCardProps = {
+  card: FeaturedServiceCardCopy;
   ctaLabel: string;
-  isCtaActive?: boolean;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
   detailsCtaLabel: string;
@@ -24,7 +25,6 @@ type ServiceCardProps = {
   isDetailsOpen: boolean;
   isMobilePriority?: boolean;
   isRecommended?: boolean;
-  isCompact?: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
   onCardSelectAction: () => void;
@@ -34,10 +34,9 @@ type ServiceCardProps = {
   recommendedBadgeLabel: string;
 };
 
-export function ServiceCard({
+export function FeaturedServiceCard({
   card,
   ctaLabel,
-  isCtaActive = false,
   ctaProjectGoal = "",
   defaultDeliveryLabel,
   detailsCtaLabel,
@@ -45,7 +44,6 @@ export function ServiceCard({
   isDetailsOpen,
   isMobilePriority = false,
   isRecommended = false,
-  isCompact = false,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
   onCardSelectAction,
@@ -53,21 +51,19 @@ export function ServiceCard({
   onPointerLeaveAction,
   onPointerMoveAction,
   recommendedBadgeLabel,
-}: ServiceCardProps) {
+}: FeaturedServiceCardProps) {
   const detailsId = `services-details-${card.key}`;
   const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
   const detailsItems = card.details ?? [];
-  const visibleBullets = card.included.slice(0, 3);
-  const hiddenBullets = card.included.slice(3);
+  const visibleBullets = card.included.slice(0, 4);
+  const hiddenBullets = card.included.slice(4);
   const expandedBullets = [...hiddenBullets, ...detailsItems];
-  const hiddenBulletsCount = hiddenBullets.length;
-  const hiddenDetailsCount = detailsItems.length;
-  const hiddenItemsCount = hiddenBulletsCount + hiddenDetailsCount;
-  const hasExpandableContent = hiddenBulletsCount > 0 || hiddenDetailsCount > 0;
+  const hiddenItemsCount = hiddenBullets.length + detailsItems.length;
+  const hasExpandableContent = hiddenItemsCount > 0;
   const hiddenBulletsLabel =
     hiddenItemsCount === 1 ? moreItemsSingularLabel : moreItemsPluralLabel;
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
-  const showPrimaryCta = isCtaActive || isDetailsOpen;
+  const showPrimaryCta = isRecommended || isDetailsOpen;
   const cardClasses = [
     styles.card,
     hasExpandableContent ? styles.cardExpandable : "",
@@ -123,7 +119,6 @@ export function ServiceCard({
       data-card-key={card.key}
       data-mobile-priority={isMobilePriority ? "top" : "default"}
       data-service-expanded={isDetailsOpen ? "true" : "false"}
-      data-service-density={isCompact ? "compact" : "default"}
       data-service-variant="primary"
       role="listitem"
     >
@@ -204,47 +199,43 @@ export function ServiceCard({
           ) : null}
 
           <div className={styles.footer}>
-            <div className={styles.actions}>
-              {showPrimaryCta ? (
-                <PrimaryCtaLink
-                  className={styles.primaryCta}
-                  data-analytics-event="cta_click"
-                  data-analytics-location="pricing"
-                  data-analytics-target="form"
-                  data-analytics-variant="primary"
-                  data-project-goal={ctaProjectGoal}
-                  data-project-offer={card.key}
-                  href={SECTION_HREFS.contact}
-                >
-                  {ctaLabel}
-                </PrimaryCtaLink>
-              ) : (
-                <span aria-hidden="true" className={placeholderCtaClasses}>
-                  {ctaLabel}
-                </span>
-              )}
-            </div>
+            {showPrimaryCta ? (
+              <PrimaryCtaLink
+                className={styles.primaryCta}
+                data-analytics-event="cta_click"
+                data-analytics-location="pricing"
+                data-analytics-target="form"
+                data-analytics-variant="primary"
+                data-project-goal={ctaProjectGoal}
+                data-project-offer={card.key}
+                href={SECTION_HREFS.contact}
+              >
+                {ctaLabel}
+              </PrimaryCtaLink>
+            ) : (
+              <span aria-hidden="true" className={placeholderCtaClasses}>
+                {ctaLabel}
+              </span>
+            )}
 
-            <div className={styles.footerMeta}>
-              {hasExpandableContent ? (
-                <button
-                  aria-controls={detailsId}
-                  aria-expanded={isDetailsOpen}
-                  className={styles.toggle}
-                  onClick={() => {
-                    onCardSelectAction();
-                    onDetailsToggleAction(!isDetailsOpen);
-                  }}
-                  ref={detailsButtonRef}
-                  type="button"
-                >
-                  {detailsCtaLabel}
-                  <span aria-hidden="true" className={styles.toggleArrow}>
-                    &rsaquo;
-                  </span>
-                </button>
-              ) : null}
-            </div>
+            {hasExpandableContent ? (
+              <button
+                aria-controls={detailsId}
+                aria-expanded={isDetailsOpen}
+                className={styles.toggle}
+                onClick={() => {
+                  onCardSelectAction();
+                  onDetailsToggleAction(!isDetailsOpen);
+                }}
+                ref={detailsButtonRef}
+                type="button"
+              >
+                {detailsCtaLabel}
+                <span aria-hidden="true" className={styles.toggleArrow}>
+                  &rsaquo;
+                </span>
+              </button>
+            ) : null}
           </div>
         </div>
       </article>

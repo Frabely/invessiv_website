@@ -135,6 +135,7 @@ export function QuickContactForm({
           </div>
           <button
             className={styles.copyButton}
+            data-cursor-kind="copy"
             onClick={copyChannelValue}
             type="button"
           >

@@ -513,3 +513,19 @@ main {
     display: none;
   }
 }
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-custom-cursor="enabled"] body,
+  html[data-custom-cursor="enabled"] a,
+  html[data-custom-cursor="enabled"] button,
+  html[data-custom-cursor="enabled"] summary,
+  html[data-custom-cursor="enabled"] input,
+  html[data-custom-cursor="enabled"] textarea,
+  html[data-custom-cursor="enabled"] select,
+  html[data-custom-cursor="enabled"] [role="button"],
+  html[data-custom-cursor="enabled"] [role="link"],
+  html[data-custom-cursor="enabled"] [role="tab"],
+  html[data-custom-cursor="enabled"] [contenteditable="true"] {
+    cursor: none;
+  }
+}

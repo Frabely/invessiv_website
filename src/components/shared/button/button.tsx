@@ -44,14 +44,26 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
 
     if (useNextLink) {
       return (
-        <Link {...props} className={buttonClassName} href={href} ref={ref}>
+        <Link
+          {...props}
+          className={buttonClassName}
+          data-cursor-variant={variant}
+          href={href}
+          ref={ref}
+        >
           {children}
         </Link>
       );
     }
 
     return (
-      <a {...props} className={buttonClassName} href={href} ref={ref}>
+      <a
+        {...props}
+        className={buttonClassName}
+        data-cursor-variant={variant}
+        href={href}
+        ref={ref}
+      >
         {children}
       </a>
     );
@@ -67,6 +79,7 @@ export const ButtonControl = forwardRef<HTMLButtonElement, ButtonControlProps>(
       <button
         {...props}
         className={getButtonClassName(variant, className)}
+        data-cursor-variant={variant}
         ref={ref}
       >
         {children}

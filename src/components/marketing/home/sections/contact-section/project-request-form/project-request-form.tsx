@@ -974,6 +974,7 @@ export function ProjectRequestForm({
                 <>
                   <button
                     className={ghostButtonClassName}
+                    data-cursor-variant="ghost"
                     disabled={isSubmitting}
                     onClick={goToPreviousStep}
                     type="button"
@@ -1091,6 +1092,7 @@ export function ProjectRequestForm({
                 <>
                   <button
                     className={ghostButtonClassName}
+                    data-cursor-variant="ghost"
                     disabled={isSubmitting}
                     onClick={goToPreviousStep}
                     type="button"

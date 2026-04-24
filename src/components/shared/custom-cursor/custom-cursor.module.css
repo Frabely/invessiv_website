@@ -1,0 +1,110 @@
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  --cursor-scale: 1;
+  transform: translate3d(var(--cursor-x, 0px), var(--cursor-y, 0px), 0)
+    translate(-50%, -50%) scale(var(--cursor-scale));
+  will-change: transform, opacity;
+  background: var(--color-cta);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-cta) 18%, transparent);
+}
+
+.root[data-state="visible"] {
+  opacity: 1;
+}
+
+.root[data-state="hidden"] {
+  opacity: 0;
+}
+
+.root[data-tone="cta"],
+.root[data-tone="submit"] {
+  --cursor-scale: 1.55;
+  background: var(--color-accent-warm);
+  box-shadow: 0 0 0 8px
+    color-mix(in srgb, var(--color-accent-warm) 24%, transparent);
+}
+
+.root[data-tone="view"],
+.root[data-tone="open"] {
+  --cursor-scale: 1.18;
+  background: var(--color-accent-warm);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
+}
+
+.root[data-tone="more"],
+.root[data-tone="select"],
+.root[data-tone="switch"] {
+  --cursor-scale: 1.22;
+  background: var(--color-accent-warm);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
+}
+
+.root[data-tone="copy"] {
+  --cursor-scale: 1.22;
+  background: var(--color-accent-warm);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 16%, transparent);
+}
+
+.root[data-tone="type"] {
+  --cursor-scale: 1.16;
+  background: var(--color-accent-warm);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
+}
+
+:global([data-theme="dark"]) .root[data-tone="cta"],
+:global([data-theme="dark"]) .root[data-tone="submit"] {
+  background: color-mix(in srgb, var(--color-accent-warm) 94%, #ffffff 6%);
+}
+
+:global([data-theme="light"]) .root[data-tone="cta"],
+:global([data-theme="light"]) .root[data-tone="submit"] {
+  background: color-mix(in srgb, var(--color-accent-warm) 86%, #8f4f16 14%);
+  box-shadow: 0 0 0 8px
+    color-mix(in srgb, var(--color-accent-warm) 18%, transparent);
+}
+
+:global([data-theme="dark"]) .root[data-tone="view"],
+:global([data-theme="dark"]) .root[data-tone="open"],
+:global([data-theme="dark"]) .root[data-tone="more"],
+:global([data-theme="dark"]) .root[data-tone="select"],
+:global([data-theme="dark"]) .root[data-tone="switch"],
+:global([data-theme="dark"]) .root[data-tone="copy"],
+:global([data-theme="dark"]) .root[data-tone="type"] {
+  background: color-mix(in srgb, var(--color-accent-warm) 94%, #ffffff 6%);
+}
+
+:global([data-theme="light"]) .root[data-tone="view"],
+:global([data-theme="light"]) .root[data-tone="open"],
+:global([data-theme="light"]) .root[data-tone="more"],
+:global([data-theme="light"]) .root[data-tone="select"],
+:global([data-theme="light"]) .root[data-tone="switch"],
+:global([data-theme="light"]) .root[data-tone="copy"],
+:global([data-theme="light"]) .root[data-tone="type"] {
+  background: color-mix(in srgb, var(--color-accent-warm) 86%, #8f4f16 14%);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 16%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :global([data-custom-cursor="enabled"]) * {
+    cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}
