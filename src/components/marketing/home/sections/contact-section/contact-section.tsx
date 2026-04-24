@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { KeyboardEvent } from "react";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
@@ -26,11 +25,11 @@ type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
   contactCta?: ContactCta;
+  contactAlternativeLabel?: string;
   contactChannels: ContactChannel[];
   contactDecisionIntro?: string;
   contactForm?: ContactForm;
   contactFormOffers: Array<{ key: string; title: string }>;
-  contactTablistLabel?: string;
   discoveryCallForm?: DiscoveryCallFormCopy;
   quickContactForm?: QuickContactFormCopy;
   contactSecondaryCta?: ContactSecondaryCta;
@@ -40,24 +39,15 @@ type ContactSectionProps = {
   title: string;
 };
 
-type ContactEntry = {
-  id: string;
-  kind: "project" | "channel";
-  label: string;
-  kicker?: string;
-  description?: string;
-  channel?: ContactChannel;
-};
-
 const CONTACT_SECTION_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}']`;
 
 export function ContactSection({
   contactCta,
+  contactAlternativeLabel,
   contactChannels,
   contactDecisionIntro,
   contactForm,
   contactFormOffers,
-  contactTablistLabel,
   discoveryCallForm,
   quickContactForm,
   contactSecondaryCta,
@@ -72,34 +62,9 @@ export function ContactSection({
     [contactCta, contactForm],
   );
 
-  const entries = useMemo(() => {
-    const nextEntries: ContactEntry[] = [];
-
-    if (primaryPath) {
-      nextEntries.push({
-        id: "project",
-        kind: "project",
-        label: primaryPath.form.title,
-        kicker: primaryPath.cta.kicker,
-        description: primaryPath.cta.description ?? primaryPath.form.subtitle,
-      });
-    }
-
-    contactChannels.forEach((channel, index) => {
-      nextEntries.push({
-        id: `channel-${index}`,
-        kind: "channel",
-        label: channel.label,
-        kicker: channel.kicker,
-        description: channel.description,
-        channel,
-      });
-    });
-
-    return nextEntries;
-  }, [contactChannels, primaryPath]);
-
-  const [selectedEntryId, setSelectedEntryId] = useState(entries[0]?.id ?? "");
+  const [selectedChannelIndex, setSelectedChannelIndex] = useState<
+    number | null
+  >(null);
 
   const getChannelMode = (channel: ContactChannel): ChannelMode => {
     if (channel.mode) {
@@ -127,16 +92,10 @@ export function ContactSection({
     };
   };
 
-  const activeEntryId = useMemo(() => {
-    if (!entries.length) {
-      return "";
-    }
-
-    const hasSelectedEntry = entries.some(
-      (entry) => entry.id === selectedEntryId,
-    );
-    return hasSelectedEntry ? selectedEntryId : entries[0].id;
-  }, [entries, selectedEntryId]);
+  const selectedChannel =
+    selectedChannelIndex === null
+      ? null
+      : (contactChannels[selectedChannelIndex] ?? null);
 
   useEffect(() => {
     if (!primaryPath) {
@@ -145,7 +104,7 @@ export function ContactSection({
 
     const activateProjectEntry = () => {
       if (window.location.hash === SECTION_HREFS.contact) {
-        setSelectedEntryId("project");
+        setSelectedChannelIndex(null);
       }
     };
 
@@ -157,7 +116,7 @@ export function ContactSection({
 
       const contactAnchor = target.closest(CONTACT_SECTION_LINK_SELECTOR);
       if (contactAnchor) {
-        setSelectedEntryId("project");
+        setSelectedChannelIndex(null);
       }
     };
 
@@ -171,50 +130,6 @@ export function ContactSection({
     };
   }, [primaryPath]);
 
-  const handleEntryKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) => {
-    if (!entries.length) {
-      return;
-    }
-
-    if (
-      event.key !== "ArrowRight" &&
-      event.key !== "ArrowLeft" &&
-      event.key !== "Home" &&
-      event.key !== "End"
-    ) {
-      return;
-    }
-
-    event.preventDefault();
-
-    let nextIndex = index;
-    if (event.key === "ArrowRight") {
-      nextIndex = (index + 1) % entries.length;
-    } else if (event.key === "ArrowLeft") {
-      nextIndex = (index - 1 + entries.length) % entries.length;
-    } else if (event.key === "Home") {
-      nextIndex = 0;
-    } else if (event.key === "End") {
-      nextIndex = entries.length - 1;
-    }
-
-    const nextEntry = entries[nextIndex];
-    if (!nextEntry) {
-      return;
-    }
-
-    setSelectedEntryId(nextEntry.id);
-    const nextButton = document.getElementById(
-      `contact-entry-tab-${nextEntry.id}`,
-    );
-    if (nextButton instanceof HTMLButtonElement) {
-      nextButton.focus();
-    }
-  };
-
   return (
     <section className={styles.section} id={id}>
       <div className={styles.stack}>
@@ -225,89 +140,82 @@ export function ContactSection({
           </p>
         </div>
 
-        {entries.length ? (
-          <>
-            <div
-              className={styles.entryPicker}
-              role="tablist"
-              aria-label={contactTablistLabel}
-            >
-              {entries.map((entry, entryIndex) => {
-                const isActive = activeEntryId === entry.id;
+        {primaryPath ? (
+          <article
+            className={`${styles.entryPanel} ${styles.entryPanelProject}`}
+          >
+            <ProjectRequestForm
+              formCopy={primaryPath.form}
+              offerOptions={contactFormOffers}
+              privacyHref={privacyHref}
+              privacyLabel={primaryPath.form.privacyLabel}
+            />
+          </article>
+        ) : null}
+
+        {contactChannels.length ? (
+          <aside className={styles.secondaryPaths}>
+            <div className={styles.secondaryPathsIntro}>
+              <p>{contactAlternativeLabel}</p>
+            </div>
+            <div className={styles.secondaryPathGrid}>
+              {contactChannels.map((channel, index) => {
+                const channelId = `contact-channel-${index}`;
+                const isActive = selectedChannelIndex === index;
 
                 return (
                   <button
-                    aria-controls={`contact-entry-panel-${entry.id}`}
-                    aria-selected={isActive}
-                    className={`${styles.entryTrigger}${isActive ? ` ${styles.entryTriggerActive}` : ""}`}
-                    data-entry-id={entry.id}
-                    id={`contact-entry-tab-${entry.id}`}
-                    key={entry.id}
-                    onKeyDown={(event) => {
-                      handleEntryKeyDown(event, entryIndex);
-                    }}
-                    onClick={() => setSelectedEntryId(entry.id)}
-                    role="tab"
+                    aria-controls={`${channelId}-panel`}
+                    aria-expanded={isActive}
+                    className={`${styles.secondaryPathTrigger}${isActive ? ` ${styles.secondaryPathTriggerActive}` : ""}`}
+                    key={channelId}
+                    onClick={() =>
+                      setSelectedChannelIndex(isActive ? null : index)
+                    }
                     type="button"
                   >
-                    {entry.kicker ? (
-                      <span className={styles.entryTriggerKicker}>
-                        {entry.kicker}
+                    {channel.kicker ? (
+                      <span className={styles.secondaryPathKicker}>
+                        {channel.kicker}
                       </span>
                     ) : null}
-                    <span className={styles.entryTriggerTitle}>
-                      {entry.label}
+                    <span className={styles.secondaryPathTitle}>
+                      {channel.label}
                     </span>
+                    {channel.description ? (
+                      <span className={styles.secondaryPathDescription}>
+                        {channel.description}
+                      </span>
+                    ) : null}
                   </button>
                 );
               })}
             </div>
-            {entries.map((entry) => {
-              const isActive = activeEntryId === entry.id;
-              const channelMode =
-                entry.kind === "channel" && entry.channel
-                  ? getChannelMode(entry.channel)
-                  : null;
 
-              return (
-                <article
-                  aria-labelledby={`contact-entry-tab-${entry.id}`}
-                  className={`${styles.entryPanel}${entry.kind === "project" ? ` ${styles.entryPanelProject}` : ""}`}
-                  hidden={!isActive}
-                  id={`contact-entry-panel-${entry.id}`}
-                  key={`panel-${entry.id}`}
-                  role="tabpanel"
-                >
-                  {entry.kind === "project" && primaryPath ? (
-                    <>
-                      <ProjectRequestForm
-                        formCopy={primaryPath.form}
-                        offerOptions={contactFormOffers}
-                        privacyHref={privacyHref}
-                        privacyLabel={primaryPath.form.privacyLabel}
-                      />
-                    </>
-                  ) : null}
-
-                  {entry.kind === "channel" && entry.channel ? (
-                    channelMode === "email" && quickContactForm ? (
-                      <QuickContactForm
-                        channel={entry.channel}
-                        formCopy={quickContactForm}
-                        privacyHref={privacyHref}
-                      />
-                    ) : channelMode === "call" && discoveryCallForm ? (
-                      <DiscoveryCallPanel
-                        channel={entry.channel}
-                        formCopy={discoveryCallForm}
-                        privacyHref={privacyHref}
-                      />
-                    ) : null
-                  ) : null}
-                </article>
-              );
-            })}
-          </>
+            {selectedChannel ? (
+              <div
+                className={styles.secondaryPathPanel}
+                id={`contact-channel-${selectedChannelIndex}-panel`}
+              >
+                {getChannelMode(selectedChannel) === "email" &&
+                quickContactForm ? (
+                  <QuickContactForm
+                    channel={selectedChannel}
+                    formCopy={quickContactForm}
+                    privacyHref={privacyHref}
+                  />
+                ) : null}
+                {getChannelMode(selectedChannel) === "call" &&
+                discoveryCallForm ? (
+                  <DiscoveryCallPanel
+                    channel={selectedChannel}
+                    formCopy={discoveryCallForm}
+                    privacyHref={privacyHref}
+                  />
+                ) : null}
+              </div>
+            ) : null}
+          </aside>
         ) : null}
 
         {contactSecondaryCta ? (

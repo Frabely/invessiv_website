@@ -100,6 +100,7 @@ export type LandingSectionCopy = {
     href: string;
   };
   contactDecisionIntro?: string;
+  contactAlternativeLabel?: string;
   contactChannels?: Array<{
     mode?: "email" | "call";
     kicker?: string;
@@ -128,7 +129,6 @@ export type LandingSectionCopy = {
     label: string;
     href: string;
   };
-  contactTablistLabel?: string;
   contactForm?: {
     title: string;
     subtitle: string;
@@ -938,7 +938,8 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direkter Kontakt ohne Vertriebsschleife",
         ],
         contactDecisionIntro:
-          "Starte mit der Projektanfrage. Wenn dein Anliegen noch kurz ist, reicht eine Nachricht.",
+          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und helfen, dein Projekt sauber einzuschätzen.",
+        contactAlternativeLabel: "Falls es noch kürzer sein soll",
         contactChannels: [
           {
             mode: "call",
@@ -984,7 +985,6 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
         },
-        contactTablistLabel: "Kontaktwege",
         contactForm: {
           title: "Projekt einschätzen lassen",
           subtitle: "Für konkrete Vorhaben mit klarer nächster Entscheidung.",
@@ -1206,7 +1206,8 @@ const HOME_SECTIONS: LandingSection[] = [
           "Direct contact without sales handoff",
         ],
         contactDecisionIntro:
-          "Start with the project request. If your request is still short, send a quick message.",
+          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and help turn it into a clear next step.",
+        contactAlternativeLabel: "If you need a shorter path",
         contactChannels: [
           {
             mode: "call",
@@ -1252,7 +1253,6 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Compare service models",
           href: SECTION_HREFS.services,
         },
-        contactTablistLabel: "Contact paths",
         contactForm: {
           title: "Get a project estimate",
           subtitle: "For concrete requirements with a clear next decision.",

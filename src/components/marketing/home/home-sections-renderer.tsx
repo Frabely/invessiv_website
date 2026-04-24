@@ -162,6 +162,7 @@ export function HomeSectionsRenderer({
 
               return (
                 <ContactSection
+                  contactAlternativeLabel={section.contactAlternativeLabel}
                   contactCta={section.contactCta}
                   contactChannels={section.contactChannels ?? []}
                   contactDecisionIntro={section.contactDecisionIntro}

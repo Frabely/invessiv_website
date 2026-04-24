@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ContactSection } from "./contact-section";
 
@@ -15,10 +21,15 @@ vi.mock("@/lib/analytics/conversion-events", () => ({
   trackConversionEvent: vi.fn(),
 }));
 
+afterEach(() => {
+  cleanup();
+});
+
 describe("ContactSection", () => {
   it("renders contact entry picker and shows only the active path panel", () => {
     render(
       <ContactSection
+        contactAlternativeLabel="Weitere Kontaktwege"
         contactCta={{
           description: "Für warme Leads mit klarem Rahmen.",
           hint: "Antwort in 24h.",
@@ -47,7 +58,6 @@ describe("ContactSection", () => {
           },
         ]}
         contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
-        contactTablistLabel="Kontaktwege"
         contactForm={{
           budgetLabel: "Budgetrahmen",
           budgetOptions: [
@@ -191,17 +201,75 @@ describe("ContactSection", () => {
     expect(
       screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeNull();
-
-    fireEvent.click(screen.getByRole("tab", { name: /Kurze E-Mail/ }));
-    expect(screen.getByRole("textbox", { name: "Nachricht*" })).toBeTruthy();
+    expect(screen.getAllByText("Weitere Kontaktwege").length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getByRole("button", { name: /Kurze E-Mail/ })).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "E-Mail kopieren" }),
+      screen.getByRole("button", { name: /Kennenlern-Call/ }),
     ).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("tab", { name: /Kennenlern-Call/ }));
-    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "E-Mail*" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "Anliegen" })).toBeTruthy();
-    expect(screen.getByRole("checkbox")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: /Kurze E-Mail/ }));
+    const emailPanel = screen.getByRole("region", { name: "Kurze E-Mail" });
+    expect(
+      within(emailPanel).getByRole("textbox", { name: "Nachricht*" }),
+    ).toBeTruthy();
+    expect(
+      within(emailPanel).getByRole("button", { name: "E-Mail kopieren" }),
+    ).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: /Kurze E-Mail/ }));
+    expect(screen.queryByRole("region", { name: "Kurze E-Mail" })).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: /Kennenlern-Call/ }));
+    const callPanel = screen.getByRole("region", { name: "Kennenlern-Call" });
+    expect(
+      within(callPanel).getByRole("textbox", { name: "Vorname*" }),
+    ).toBeTruthy();
+    expect(
+      within(callPanel).getByRole("textbox", { name: "E-Mail*" }),
+    ).toBeTruthy();
+    expect(
+      within(callPanel).getByRole("textbox", { name: "Anliegen" }),
+    ).toBeTruthy();
+    expect(within(callPanel).getByRole("checkbox")).toBeTruthy();
+  });
+
+  it("renders contact channels even without a primary project form", () => {
+    render(
+      <ContactSection
+        contactAlternativeLabel="Weitere Kontaktwege"
+        contactChannels={[
+          {
+            actionLabel: "Kurze E-Mail senden",
+            description: "Für schnellen Erstkontakt.",
+            href: "mailto:hi@invessiv.de",
+            kicker: "Kurz",
+            label: "Kurze E-Mail",
+            value: "hi@invessiv.de",
+          },
+        ]}
+        contactDecisionIntro="Wähle den passenden Kontaktweg."
+        contactSecondaryCta={{
+          href: "#services",
+          label: "Leistungen ansehen",
+        }}
+        description="Kontaktiere uns und starte dein Projekt mit Invessiv."
+        id="contact"
+        privacyHref="/privacy"
+        title="Kontakt"
+      />,
+    );
+
+    expect(screen.getAllByText("Weitere Kontaktwege").length).toBeGreaterThan(
+      0,
+    );
+    expect(
+      screen.getAllByRole("button", { name: /Kurze E-Mail/ }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByRole("link", { name: "Leistungen ansehen" }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.queryByRole("region", { name: "Projektanfrage" })).toBeNull();
   });
 });
