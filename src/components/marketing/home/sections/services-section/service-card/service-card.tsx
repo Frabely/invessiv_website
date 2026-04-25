@@ -7,11 +7,9 @@ import { ServiceCardIcon } from "@/components/marketing/home/sections/services-s
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./service-card.module.css";
-
-type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
 
 type ServiceCardProps = {
   card: ServiceCardCopy;

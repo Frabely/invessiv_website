@@ -6,7 +6,9 @@ describe("home-meta", () => {
   it("keeps the German homepage metadata brand-first", () => {
     const content = getHomeMetaContent("de");
 
-    expect(content.title).toBe("Invessiv | Webseiten, Landingpages & Prozess-Tools");
+    expect(content.title).toBe(
+      "Invessiv | Landingpages für mehr passende Anfragen",
+    );
     expect(content.description).toContain("Invessiv");
     expect(content.description).not.toContain("Moritz Hecht");
   });
@@ -14,7 +16,9 @@ describe("home-meta", () => {
   it("keeps the English homepage metadata brand-first", () => {
     const content = getHomeMetaContent("en");
 
-    expect(content.title).toBe("Invessiv | Websites, Landing Pages & Process Tools");
+    expect(content.title).toBe(
+      "Invessiv | Landing Pages for Relevant Inquiries",
+    );
     expect(content.description).toContain("Invessiv");
     expect(content.description).not.toContain("Moritz Hecht");
   });

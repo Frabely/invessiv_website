@@ -6,11 +6,24 @@ import type { PointerEvent, RefObject } from "react";
 import { FeaturedServiceCard } from "@/components/marketing/home/sections/services-section/featured-service-card/featured-service-card";
 import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
 import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card/service-card";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./services-section.module.css";
 
-type ServiceCardData = NonNullable<LandingSectionCopy["serviceCards"]>[number];
+const PRIMARY_ORDER = ["landing", "upgrade", "web"] as const;
+const SECONDARY_ORDER = ["maintenance", "process"] as const;
+const DEFAULT_GOAL_KEY = "more_inquiries";
+const GOAL_TO_SERVICE = {
+  more_inquiries: "landing",
+  improve_existing_site: "upgrade",
+  plan_new_website: "web",
+} as const;
+
+type ServiceCardData = ServiceCardCopy;
+type SecondaryServiceCardData = Extract<
+  ServiceCardData,
+  { key: (typeof SECONDARY_ORDER)[number] }
+>;
 type GoalOption = {
   key: string;
   label: string;
@@ -39,14 +52,6 @@ type ServicesSectionProps = {
   title: string;
 };
 
-const PRIMARY_ORDER = ["landing", "upgrade", "web"] as const;
-const SECONDARY_ORDER = ["maintenance", "process"] as const;
-const DEFAULT_GOAL_KEY = "more_inquiries";
-const GOAL_TO_SERVICE = {
-  more_inquiries: "landing",
-  improve_existing_site: "upgrade",
-  plan_new_website: "web",
-} as const;
 export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
@@ -83,7 +88,7 @@ export function ServicesSection({
     () =>
       SECONDARY_ORDER.map((key) =>
         serviceCards.find((card) => card.key === key),
-      ).filter((card): card is ServiceCardData => Boolean(card)),
+      ).filter((card): card is SecondaryServiceCardData => Boolean(card)),
     [serviceCards],
   );
 

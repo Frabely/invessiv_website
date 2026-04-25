@@ -5,13 +5,14 @@ import type { MouseEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./secondary-service.module.css";
 
-type SecondaryServiceCard = NonNullable<
-  LandingSectionCopy["serviceCards"]
->[number];
+type SecondaryServiceCard = Extract<
+  ServiceCardCopy,
+  { key: "maintenance" | "process" }
+>;
 
 type SecondaryServiceProps = {
   addonBadgeLabel: string;

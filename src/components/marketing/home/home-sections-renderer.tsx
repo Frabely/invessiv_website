@@ -2,7 +2,6 @@ import type { RefObject } from "react";
 
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
-import { PlaceholderSection } from "@/components/marketing/home/sections/placeholder-section/placeholder-section";
 import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
@@ -29,10 +28,18 @@ export function HomeSectionsRenderer({
   ui,
   validation,
 }: HomeSectionsRendererProps) {
-  const getSectionById = (sectionId: (typeof SECTION_IDS)[number]) =>
-    sections.find((section) => section.id === sectionId);
+  type ContentSectionId = HomeSectionContent["id"];
+  const getSectionById = <Id extends ContentSectionId>(sectionId: Id) =>
+    sections.find(
+      (section): section is Extract<HomeSectionContent, { id: Id }> =>
+        section.id === sectionId,
+    );
   const servicesSection = getSectionById("services");
   const footerSection = getSectionById("footer");
+
+  if (!servicesSection || !footerSection) {
+    throw new Error("Expected services and footer sections to be available.");
+  }
 
   return (
     <>
@@ -48,19 +55,19 @@ export function HomeSectionsRenderer({
 
         {SECTION_IDS.filter((id) => id !== "hero" && id !== "footer").map(
           (id) => {
-            const section = getSectionById(id);
-            if (!section) {
-              return null;
-            }
-
-            if (section.id === "lead-bridge") {
+            if (id === "lead-bridge") {
               return (
                 <TrustOutcomeBridgeSection
                   content={ui.leadBridgeContent}
-                  id={section.id}
-                  key={section.id}
+                  id={id}
+                  key={id}
                 />
               );
+            }
+
+            const section = getSectionById(id);
+            if (!section) {
+              return null;
             }
 
             if (section.id === "services") {
@@ -80,7 +87,7 @@ export function HomeSectionsRenderer({
                   primaryCtaLabels={ui.servicesPrimaryCtaLabels}
                   recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
                   sectionRef={servicesSectionRef}
-                  serviceCards={section.serviceCards ?? []}
+                  serviceCards={section.serviceCards}
                   serviceContextNote={section.serviceContextNote}
                   serviceSecondaryTitle={section.serviceSecondaryTitle}
                   title={section.title}
@@ -95,19 +102,11 @@ export function HomeSectionsRenderer({
 
               return (
                 <ProofSection
-                  description={section.description ?? ""}
-                  featuredProjectFallbackLabel={
-                    ui.proofFeaturedProjectFallbackLabel
-                  }
+                  description={section.description}
                   featuredProject={section.proofFeaturedProject}
                   highlightsAriaLabel={ui.proofHighlightsAriaLabel}
                   id={section.id}
                   key={section.id}
-                  moreProjectsFallbackCtaLabel={
-                    ui.proofMoreProjectsFallbackCtaLabel
-                  }
-                  moreProjectsFallbackHref={ui.proofMoreProjectsFallbackHref}
-                  moreProjectsFallbackTitle={ui.proofMoreProjectsFallbackTitle}
                   moreProjects={section.proofMoreProjects}
                   ratingAriaLabel={
                     section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
@@ -115,7 +114,7 @@ export function HomeSectionsRenderer({
                   reviewLinkLabel={
                     section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
                   }
-                  reviews={section.proofReviews ?? []}
+                  reviews={section.proofReviews}
                   summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
@@ -125,11 +124,11 @@ export function HomeSectionsRenderer({
             if (section.id === "process") {
               return (
                 <ProcessSection
-                  description={section.description ?? ""}
+                  description={section.description}
                   id={section.id}
                   key={section.id}
                   processCta={section.processCta}
-                  processSteps={section.processSteps ?? []}
+                  processSteps={section.processSteps}
                   summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
@@ -139,9 +138,9 @@ export function HomeSectionsRenderer({
             if (section.id === "faq") {
               return (
                 <QAndASection
-                  description={section.description ?? ""}
+                  description={section.description}
                   id={section.id}
-                  items={section.qnaItems ?? []}
+                  items={section.qnaItems}
                   key={section.id}
                   secondaryContact={section.qnaSecondaryContact}
                   title={section.title}
@@ -150,28 +149,33 @@ export function HomeSectionsRenderer({
             }
 
             if (section.id === "contact") {
-              const contactFormOffers =
-                servicesSection?.serviceCards?.map((card) => ({
+              const contactFormOffers = servicesSection.serviceCards.map(
+                (card) => ({
                   key: card.key,
                   title: card.title,
-                })) ?? [];
-              const privacyHref =
-                footerSection?.footerLegalLinks?.find((link) =>
-                  /privacy|datenschutz/i.test(link.label),
-                )?.href ?? "/privacy";
+                }),
+              );
+              const privacyHref = footerSection.footerLegalLinks.find((link) =>
+                /privacy|datenschutz/i.test(link.label),
+              )?.href;
+
+              if (!privacyHref) {
+                throw new Error(
+                  "Expected footer privacy link for contact form.",
+                );
+              }
 
               return (
                 <ContactSection
                   contactAlternativeLabel={section.contactAlternativeLabel}
                   contactCta={section.contactCta}
-                  contactChannels={section.contactChannels ?? []}
+                  contactChannels={section.contactChannels}
                   contactDecisionIntro={section.contactDecisionIntro}
                   contactForm={section.contactForm}
                   contactFormOffers={contactFormOffers}
                   quickContactForm={section.quickContactForm}
                   discoveryCallForm={section.discoveryCallForm}
                   contactSecondaryCta={section.contactSecondaryCta}
-                  description={section.description ?? ""}
                   id={section.id}
                   key={section.id}
                   privacyHref={privacyHref}
@@ -180,31 +184,21 @@ export function HomeSectionsRenderer({
               );
             }
 
-            return (
-              <PlaceholderSection
-                description={section.description ?? ""}
-                id={section.id}
-                isTall={false}
-                key={section.id}
-                title={section.title}
-              />
-            );
+            return null;
           },
         )}
       </LayoutShell>
 
-      {footerSection ? (
-        <FooterSection
-          bottomNote={footerSection.footerBottomNote}
-          brand={footerSection.footerBrand}
-          columns={footerSection.footerColumns ?? []}
-          copyright={footerSection.footerCopyright}
-          description={footerSection.description ?? ""}
-          id="footer"
-          legalLinks={footerSection.footerLegalLinks}
-          socialLinks={footerSection.footerSocialLinks}
-        />
-      ) : null}
+      <FooterSection
+        bottomNote={footerSection.footerBottomNote}
+        brand={footerSection.footerBrand}
+        columns={footerSection.footerColumns}
+        copyright={footerSection.footerCopyright}
+        description={footerSection.description}
+        id="footer"
+        legalLinks={footerSection.footerLegalLinks}
+        socialLinks={footerSection.footerSocialLinks}
+      />
     </>
   );
 }

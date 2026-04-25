@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { QnaItemCopy } from "@/i18n/dictionaries/marketing/home";
 import styles from "./q-and-a-accordion.module.css";
 
-type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
+type QnaItem = QnaItemCopy;
 
 type QAndAAccordionProps = {
   ariaLabel: string;

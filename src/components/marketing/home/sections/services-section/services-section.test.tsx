@@ -17,7 +17,6 @@ const serviceCards = [
     iconSrc: "/services/coding-icon.svg",
     iconAlt: "Web Icon",
     title: "Webseiten",
-    description: "Webseiten Paket.",
     fit: "Relaunches mit mehreren Kernseiten.",
     highlight: "klarer professioneller Auftritt",
     pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -30,7 +29,6 @@ const serviceCards = [
     iconSrc: "/services/website-layout-icon.svg",
     iconAlt: "Landing Icon",
     title: "Landingpages",
-    description: "Landingpage Paket.",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
     highlight: "schnell live & conversion-fokussiert",
     pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
@@ -42,7 +40,7 @@ const serviceCards = [
     key: "process" as const,
     iconSrc: "/services/process-icon.svg",
     iconAlt: "Process Icon",
-    title: "Prozess-Tools",
+    title: "Prozessoptimierungs-Tools",
     description: "Workflows digitalisieren.",
     fit: "Teams mit klaren Routineabläufen.",
     highlight: "weniger manuelle Schritte im Alltag",
@@ -55,7 +53,6 @@ const serviceCards = [
     iconSrc: "/services/upgrade-icon.svg",
     iconAlt: "Upgrade Icon",
     title: "Webseiten-Upgrade",
-    description: "Bestehendes verbessern.",
     fit: "Für Seiten mit Potenzial.",
     highlight: "spürbare UX- und Speed-Verbesserung",
     pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
@@ -77,12 +74,15 @@ const serviceCards = [
 ];
 
 const goalOptions = [
-  { key: "more_inquiries", label: "mehr Anfragen gewinnen" },
+  { key: "more_inquiries", label: "Besucher zu Anfragen führen" },
   {
     key: "improve_existing_site",
-    label: "mehr aus der bestehenden Seite holen",
+    label: "bestehende Seite klarer ausrichten",
   },
-  { key: "plan_new_website", label: "neue Website wirksam starten" },
+  {
+    key: "plan_new_website",
+    label: "neue Website mit klarem Anfrageweg starten",
+  },
 ];
 
 function renderSection() {
@@ -93,7 +93,7 @@ function renderSection() {
       detailsCtaLabel="Mehr Infos"
       fitLabel="Ideal für"
       goalOptions={goalOptions}
-      goalTitle="Wähle dein Ziel – wir markieren das passendste Leistungsmodell."
+      goalTitle="Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben."
       id="services"
       moreItemsPluralLabel="weitere Punkte"
       moreItemsSingularLabel="weiterer Punkt"
@@ -145,7 +145,7 @@ describe("ServicesSection", () => {
 
     expect(
       screen.getByText(
-        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+        "Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben.",
       ),
     ).toBeTruthy();
     expect(
@@ -160,24 +160,26 @@ describe("ServicesSection", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
+      screen.getByRole("button", { name: "Besucher zu Anfragen führen" }),
     ).toBeTruthy();
     expect(
       within(screen.getByRole("group"))
         .getAllByRole("button")
         .map((button) => button.textContent),
     ).toEqual([
-      "mehr Anfragen gewinnen",
-      "mehr aus der bestehenden Seite holen",
-      "neue Website wirksam starten",
+      "Besucher zu Anfragen führen",
+      "bestehende Seite klarer ausrichten",
+      "neue Website mit klarem Anfrageweg starten",
     ]);
     expect(
       screen.getByRole("button", {
-        name: "mehr aus der bestehenden Seite holen",
+        name: "bestehende Seite klarer ausrichten",
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "neue Website wirksam starten" }),
+      screen.getByRole("button", {
+        name: "neue Website mit klarem Anfrageweg starten",
+      }),
     ).toBeTruthy();
     expect(
       screen.queryByRole("button", {
@@ -234,7 +236,7 @@ describe("ServicesSection", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "mehr aus der bestehenden Seite holen",
+        name: "bestehende Seite klarer ausrichten",
       }),
     );
 
@@ -261,11 +263,14 @@ describe("ServicesSection", () => {
       within(getArticleByTitle("Webseiten-Upgrade"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("mehr aus der bestehenden Seite holen");
+    ).toBe("bestehende Seite klarer ausrichten");
     expect(
-      within(getArticleByTitle("Prozess-Tools")).queryByRole("link", {
-        name: "Projekt anfragen",
-      }),
+      within(getArticleByTitle("Prozessoptimierungs-Tools")).queryByRole(
+        "link",
+        {
+          name: "Projekt anfragen",
+        },
+      ),
     ).toBeTruthy();
   });
 
@@ -273,7 +278,9 @@ describe("ServicesSection", () => {
     const { container } = renderSection();
 
     fireEvent.click(
-      screen.getByRole("button", { name: "neue Website wirksam starten" }),
+      screen.getByRole("button", {
+        name: "neue Website mit klarem Anfrageweg starten",
+      }),
     );
 
     const primaryCards = Array.from(
@@ -299,7 +306,7 @@ describe("ServicesSection", () => {
       within(getArticleByTitle("Webseiten"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("neue Website wirksam starten");
+    ).toBe("neue Website mit klarem Anfrageweg starten");
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
@@ -323,7 +330,7 @@ describe("ServicesSection", () => {
     ).toBe("landing");
     expect(
       screen
-        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getByRole("button", { name: "Besucher zu Anfragen führen" })
         .getAttribute("aria-pressed"),
     ).toBe("true");
 
@@ -342,7 +349,7 @@ describe("ServicesSection", () => {
     ).toBe("landing");
     expect(
       screen
-        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getByRole("button", { name: "Besucher zu Anfragen führen" })
         .getAttribute("aria-pressed"),
     ).toBe("true");
   });

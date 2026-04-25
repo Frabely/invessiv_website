@@ -177,7 +177,6 @@ describe("ContactSection", () => {
           href: "#services",
           label: "Leistungen ansehen",
         }}
-        description="Kontaktiere uns und starte dein Projekt mit Invessiv."
         id="contact"
         privacyHref="/privacy"
         title="Bereit für eine neue, produktive Webseite?"
@@ -250,11 +249,11 @@ describe("ContactSection", () => {
           },
         ]}
         contactDecisionIntro="Wähle den passenden Kontaktweg."
+        contactFormOffers={[]}
         contactSecondaryCta={{
           href: "#services",
           label: "Leistungen ansehen",
         }}
-        description="Kontaktiere uns und starte dein Projekt mit Invessiv."
         id="contact"
         privacyHref="/privacy"
         title="Kontakt"

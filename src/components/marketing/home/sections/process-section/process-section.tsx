@@ -2,14 +2,17 @@
 
 import { useRef } from "react";
 
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  ProcessCtaCopy,
+  ProcessStepCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessStartPoint } from "@/hooks/marketing/use-process-start-point";
 import styles from "./process-section.module.css";
 
-type ProcessStep = NonNullable<LandingSectionCopy["processSteps"]>[number];
-type ProcessCta = NonNullable<LandingSectionCopy["processCta"]>;
+type ProcessStep = ProcessStepCopy;
+type ProcessCta = ProcessCtaCopy;
 type ProcessField = { label: string | null; value: string };
 
 type ProcessSectionProps = {

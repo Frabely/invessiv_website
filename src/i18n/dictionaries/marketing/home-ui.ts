@@ -17,11 +17,7 @@ export type HomeUiContent = {
   heroVisualAriaLabel: string;
   leadBridgeContent: LeadBridgeContent;
   mappingWarning: string;
-  proofFeaturedProjectFallbackLabel: string;
   proofHighlightsAriaLabel: string;
-  proofMoreProjectsFallbackCtaLabel: string;
-  proofMoreProjectsFallbackHref: string;
-  proofMoreProjectsFallbackTitle: string;
   proofRatingAriaLabel: string;
   proofReviewLinkLabel: string;
   servicesAddonBadgeLabel: string;

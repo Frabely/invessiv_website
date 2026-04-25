@@ -31,10 +31,6 @@ describe("QAndASection", () => {
           href: "mailto:service@invessiv.com",
           label: "Schreib mir direkt per Mail.",
         }}
-        summaryPoints={[
-          "Typische Projektfragen",
-          "Kurz, klar, direkt beantwortet",
-        ]}
         title="Q&A"
       />,
     );
@@ -71,10 +67,6 @@ describe("QAndASection", () => {
           href: "mailto:service@invessiv.com",
           label: "Schreib mir direkt per Mail.",
         }}
-        summaryPoints={[
-          "Typische Projektfragen",
-          "Kurz, klar, direkt beantwortet",
-        ]}
         title="Q&A"
       />,
     );

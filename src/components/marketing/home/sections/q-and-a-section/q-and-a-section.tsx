@@ -1,11 +1,12 @@
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  QnaItemCopy,
+  QnaSecondaryContactCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import { QAndAAccordion } from "@/components/marketing/home/shared/q-and-a-accordion/q-and-a-accordion";
 import styles from "./q-and-a-section.module.css";
 
-type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
-type QnaSecondaryContact = NonNullable<
-  LandingSectionCopy["qnaSecondaryContact"]
->;
+type QnaItem = QnaItemCopy;
+type QnaSecondaryContact = QnaSecondaryContactCopy;
 
 type QAndASectionProps = {
   description: string;

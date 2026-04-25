@@ -14,19 +14,20 @@ import { CONTACT_PAGE_KEY } from "@/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
 
-type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
+type PrimaryServiceCardKey = "landing" | "web" | "upgrade";
+type SecondaryServiceCardKey = "process" | "maintenance";
+type ServiceCardKey = PrimaryServiceCardKey | SecondaryServiceCardKey;
 
 type BaseServiceCard = {
   key: ServiceCardKey;
   iconSrc?: string;
   iconAlt?: string;
   title: string;
-  description: string;
   fit?: string;
   isRecommended?: boolean;
 };
 
-type StandardServiceCard = BaseServiceCard & {
+type StandardServiceCardBase = BaseServiceCard & {
   highlight: string;
   pricingHint: string;
   delivery: string;
@@ -34,6 +35,17 @@ type StandardServiceCard = BaseServiceCard & {
   included: string[];
   details?: string[];
 };
+
+type PrimaryServiceCard = StandardServiceCardBase & {
+  key: PrimaryServiceCardKey;
+};
+
+type SecondaryServiceCard = StandardServiceCardBase & {
+  key: SecondaryServiceCardKey;
+  description: string;
+};
+
+export type ServiceCardCopy = PrimaryServiceCard | SecondaryServiceCard;
 
 type ContactFormOption = {
   key: string;
@@ -66,204 +78,286 @@ type ProofMoreProjects = {
 
 const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
 
-export type LandingSectionCopy = {
+export type ProcessStepCopy = {
+  step: string;
   title: string;
+  deliverable: string;
+  effort: string;
+  result: string;
+  description: string;
+};
+
+export type ProcessCtaCopy = {
+  label: string;
+  href: string;
+};
+
+export type QnaItemCopy = {
+  question: string;
+  answer: string;
+};
+
+export type QnaSecondaryContactCopy = {
+  hint: string;
+  label: string;
+  href: string;
+};
+
+export type ContactChannelCopy = {
+  mode?: "email" | "call";
+  kicker?: string;
+  label: string;
   description?: string;
-  summaryPoints?: string[];
-  proofRatingAriaLabel?: string;
-  proofReviewLinkLabel?: string;
-  proofReviews?: ProofReview[];
-  proofFeaturedProject?: ProofFeaturedProject;
-  proofMoreProjects?: ProofMoreProjects;
-  serviceCards?: StandardServiceCard[];
-  serviceSecondaryTitle?: string;
-  serviceContextNote?: string;
-  processSteps?: Array<{
-    step: string;
-    title: string;
-    deliverable?: string;
-    effort?: string;
-    result?: string;
-    description: string;
+  value: string;
+  href: string;
+  hint?: string;
+  actionLabel?: string;
+  copyValue?: string;
+  copyLabel?: string;
+  copiedLabel?: string;
+  helper?: string;
+  detailPoints?: string[];
+  metaLabel?: string;
+  metaValue?: string;
+};
+
+export type ContactCtaCopy = {
+  kicker?: string;
+  label: string;
+  href: string;
+  description?: string;
+  hint?: string;
+};
+
+export type ContactSecondaryCtaCopy = {
+  label: string;
+  href: string;
+};
+
+export type ContactFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  conditionalFieldHint: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  addPageLabel: string;
+  phoneLabel: string;
+  companyLabel: string;
+  roleLabel: string;
+  websiteLabel: string;
+  offerLabel: string;
+  offerPlaceholder: string;
+  goalLabel: string;
+  goalOptions: ContactFormOption[];
+  pagesLabel: string;
+  pagesPlaceholder: string;
+  pagesOptions?: ContactFormOption[];
+  pagesCustomLabel?: string;
+  pagesCustomPlaceholder?: string;
+  pagesCustomRemoveLabel?: string;
+  pagesRequiredHint?: string;
+  workflowLabel: string;
+  workflowOptions: ContactFormOption[];
+  stepNavigationLabel: string;
+  stepLabel: string;
+  stepOneTitle: string;
+  stepTwoTitle: string;
+  stepThreeTitle: string;
+  previousStepLabel: string;
+  nextStepLabel: string;
+  nextStepContactLabel?: string;
+  nextStepProjectLabel?: string;
+  budgetLabel: string;
+  budgetOptions: ContactFormOption[];
+  startLabel: string;
+  startOptions: ContactFormOption[];
+  projectDetailsLabel: string;
+  projectDetailsPlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorValidation: string;
+  submitErrorRateLimited: string;
+  submitErrorDelivery: string;
+  submitErrorGeneric: string;
+  validationSummaryPrefix: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorInvalidWebsite: string;
+  fieldErrorRequired: string;
+  fieldErrorProjectDetailsRequired: string;
+  fieldErrorPagesRequired: string;
+  fieldErrorTooManyPages: string;
+  fieldErrorGoalRequired: string;
+  fieldErrorWorkflowRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+  closeLabel?: string;
+};
+
+export type QuickContactFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  metaLabel: string;
+  copyActionLabel: string;
+  copiedActionLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorRateLimited: string;
+  submitErrorDelivery: string;
+  submitErrorGeneric: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+};
+
+export type DiscoveryCallFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorRateLimited: string;
+  submitErrorGeneric: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+};
+
+export type FooterColumnCopy = {
+  title: string;
+  links: Array<{
+    label: string;
+    href: string;
   }>;
-  processCta?: {
-    label: string;
-    href: string;
-  };
-  qnaItems?: Array<{
-    question: string;
-    answer: string;
-  }>;
-  qnaSecondaryContact?: {
-    hint: string;
-    label: string;
-    href: string;
-  };
-  contactDecisionIntro?: string;
-  contactAlternativeLabel?: string;
-  contactChannels?: Array<{
-    mode?: "email" | "call";
-    kicker?: string;
-    label: string;
-    description?: string;
-    value: string;
-    href: string;
-    hint?: string;
-    actionLabel?: string;
-    copyValue?: string;
-    copyLabel?: string;
-    copiedLabel?: string;
-    helper?: string;
-    detailPoints?: string[];
-    metaLabel?: string;
-    metaValue?: string;
-  }>;
-  contactCta?: {
-    kicker?: string;
-    label: string;
-    href: string;
-    description?: string;
-    hint?: string;
-  };
-  contactSecondaryCta?: {
-    label: string;
-    href: string;
-  };
-  contactForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    conditionalFieldHint: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    addPageLabel: string;
-    phoneLabel: string;
-    companyLabel: string;
-    roleLabel: string;
-    websiteLabel: string;
-    offerLabel: string;
-    offerPlaceholder: string;
-    goalLabel: string;
-    goalOptions: ContactFormOption[];
-    pagesLabel: string;
-    pagesPlaceholder: string;
-    pagesOptions?: ContactFormOption[];
-    pagesCustomLabel?: string;
-    pagesCustomPlaceholder?: string;
-    pagesCustomRemoveLabel?: string;
-    pagesRequiredHint?: string;
-    workflowLabel: string;
-    workflowOptions: ContactFormOption[];
-    stepNavigationLabel: string;
-    stepLabel: string;
-    stepOneTitle: string;
-    stepTwoTitle: string;
-    stepThreeTitle: string;
-    previousStepLabel: string;
-    nextStepLabel: string;
-    nextStepContactLabel?: string;
-    nextStepProjectLabel?: string;
-    budgetLabel: string;
-    budgetOptions: ContactFormOption[];
-    startLabel: string;
-    startOptions: ContactFormOption[];
-    projectDetailsLabel: string;
-    projectDetailsPlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorValidation: string;
-    submitErrorRateLimited: string;
-    submitErrorDelivery: string;
-    submitErrorGeneric: string;
-    validationSummaryPrefix: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorInvalidWebsite: string;
-    fieldErrorRequired: string;
-    fieldErrorProjectDetailsRequired: string;
-    fieldErrorPagesRequired: string;
-    fieldErrorTooManyPages: string;
-    fieldErrorGoalRequired: string;
-    fieldErrorWorkflowRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-    closeLabel?: string;
-  };
-  quickContactForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    metaLabel: string;
-    copyActionLabel: string;
-    copiedActionLabel: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    messageLabel: string;
-    messagePlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorRateLimited: string;
-    submitErrorDelivery: string;
-    submitErrorGeneric: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-  };
-  discoveryCallForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    messageLabel: string;
-    messagePlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorRateLimited: string;
-    submitErrorGeneric: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-  };
-  footerColumns?: Array<{
-    title: string;
-    links: Array<{
-      label: string;
-      href: string;
-    }>;
-  }>;
-  footerBrand?: string;
-  footerCopyright?: string;
-  footerSocialLinks?: Array<{
-    platform: "linkedin" | "x" | "instagram";
-    href: string;
-    label: string;
-  }>;
-  footerLegalLinks?: Array<{ label: string; href: string }>;
+};
+
+export type FooterSocialLinkCopy = {
+  platform: "linkedin" | "x" | "instagram";
+  href: string;
+  label: string;
+};
+
+export type FooterLegalLinkCopy = {
+  label: string;
+  href: string;
+};
+
+type HeroSectionCopy = {
+  title: string;
+  description: string;
+};
+
+type ServicesSectionCopy = {
+  title: string;
+  serviceCards: ServiceCardCopy[];
+  serviceSecondaryTitle: string;
+  serviceContextNote: string;
+};
+
+type ProofSectionCopy = {
+  title: string;
+  description: string;
+  summaryPoints: string[];
+  proofRatingAriaLabel: string;
+  proofReviewLinkLabel: string;
+  proofReviews: ProofReview[];
+  proofFeaturedProject: ProofFeaturedProject;
+  proofMoreProjects: ProofMoreProjects;
+};
+
+type ProcessSectionCopy = {
+  title: string;
+  description: string;
+  summaryPoints: string[];
+  processSteps: ProcessStepCopy[];
+  processCta: ProcessCtaCopy;
+};
+
+type QnaSectionCopy = {
+  title: string;
+  description: string;
+  qnaItems: QnaItemCopy[];
+  qnaSecondaryContact: QnaSecondaryContactCopy;
+};
+
+type ContactSectionCopy = {
+  title: string;
+  contactDecisionIntro: string;
+  contactAlternativeLabel: string;
+  contactChannels: ContactChannelCopy[];
+  contactCta: ContactCtaCopy;
+  contactSecondaryCta: ContactSecondaryCtaCopy;
+  contactForm: ContactFormCopy;
+  quickContactForm: QuickContactFormCopy;
+  discoveryCallForm: DiscoveryCallFormCopy;
+};
+
+type FooterSectionCopy = {
+  description: string;
+  footerColumns: FooterColumnCopy[];
+  footerBrand: string;
+  footerCopyright: string;
+  footerSocialLinks: FooterSocialLinkCopy[];
+  footerLegalLinks: FooterLegalLinkCopy[];
   footerBottomNote?: string;
 };
 
-export type LandingSection = {
-  id: SectionId;
-  copy: Record<Locale, LandingSectionCopy>;
+export type LandingSectionCopy =
+  | HeroSectionCopy
+  | ServicesSectionCopy
+  | ProofSectionCopy
+  | ProcessSectionCopy
+  | QnaSectionCopy
+  | ContactSectionCopy
+  | FooterSectionCopy;
+
+type ContentSectionMap = {
+  hero: HeroSectionCopy;
+  services: ServicesSectionCopy;
+  proof: ProofSectionCopy;
+  process: ProcessSectionCopy;
+  faq: QnaSectionCopy;
+  contact: ContactSectionCopy;
+  footer: FooterSectionCopy;
 };
 
+type ContentSectionId = Exclude<SectionId, "lead-bridge">;
+
+type LocalizedLandingSection<Id extends ContentSectionId> = {
+  id: Id;
+  copy: Record<Locale, ContentSectionMap[Id]>;
+};
+
+export type LandingSection = {
+  [Id in ContentSectionId]: LocalizedLandingSection<Id>;
+}[ContentSectionId];
+
 export type HomeSectionContent = {
-  id: SectionId;
-} & LandingSectionCopy;
+  [Id in ContentSectionId]: { id: Id } & ContentSectionMap[Id];
+}[ContentSectionId];
 
 const LEGAL_PAGE_HREFS = {
   de: {
@@ -278,45 +372,19 @@ const LEGAL_PAGE_HREFS = {
   },
 } as const;
 
-const HOME_SECTIONS: LandingSection[] = [
+const HOME_SECTIONS = [
   {
     id: "hero",
     copy: {
       de: {
-        title: "Landingpages und Webseiten,\ndie Anfragen bringen.",
+        title: "Landingpages,\ndie passende Anfragen bringen.",
         description:
-          "Für Unternehmen, die online klar auftreten, passende Anfragen gewinnen und ihre Website als verlässlichen Vertriebskanal nutzen wollen.",
+          "Für lokale und regionale Unternehmen, die ihr Angebot klar erklären, Vertrauen aufbauen und Besucher gezielt zur Projektanfrage führen wollen.",
       },
       en: {
-        title: "Landing pages and websites\nthat bring in inquiries.",
+        title: "Landing pages\nthat bring in relevant inquiries.",
         description:
-          "For companies that want to show up clearly online, win relevant inquiries, and use their website as a reliable sales channel.",
-      },
-    },
-  },
-  {
-    id: "lead-bridge",
-    copy: {
-      de: {
-        title:
-          "Klarer Einstieg für Landingpages, Webseiten und Webseiten-Upgrades",
-        description:
-          "Nach der Anfrage wird sichtbar, welches Format zu deinem Ziel passt und wie der nächste Schritt aussieht.",
-        summaryPoints: [
-          "5,0 Google Bewertung",
-          "echte Projekte",
-          "transparentes Angebot vor Start",
-        ],
-      },
-      en: {
-        title: "A clear entry point for landing pages, websites, and upgrades",
-        description:
-          "After your inquiry, it becomes clear which format fits your goal and what the next step looks like.",
-        summaryPoints: [
-          "5.0 Google rating",
-          "real projects",
-          "transparent offer before kickoff",
-        ],
+          "For local and regional businesses that want to explain their offer clearly, build trust, and guide visitors toward a project request.",
       },
     },
   },
@@ -430,8 +498,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
-            description:
-              "Fokussierte Angebotsseite, die Nutzen, Angebot und nächsten Schritt klar auf den Punkt bringt.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
             isRecommended: true,
             highlight:
@@ -456,8 +522,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
-            description:
-              "Unternehmensseite oder Relaunch mit klarer Positionierung, verständlicher Seitenstruktur und besserer Kontaktführung.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
             highlight: "professioneller Auftritt mit klaren Wegen zur Anfrage",
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -480,8 +544,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Webseiten-Upgrade Icon",
             title: "Webseiten-Upgrade",
-            description:
-              "Gezielte Verbesserung einer bestehenden Website, wenn Struktur, Geschwindigkeit, mobile Nutzung oder Anfrageführung nicht mehr passen.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
             highlight:
               "klarer, schneller und leichter nutzbar ohne kompletten Neubau",
@@ -528,10 +590,10 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Prozess-Tools Icon",
-            title: "Prozess-Tools",
+            iconAlt: "Prozessoptimierungs-Tools Icon",
+            title: "Prozessoptimierungs-Tools",
             description:
-              "Kleines internes Tool oder schlanke Automatisierung, die wiederkehrende Arbeit reduziert.",
+              "Kleines internes Tool oder schlanke Automatisierung, wenn nach der Website wiederkehrende Arbeit reduziert werden soll.",
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
             highlight: "weniger manuelle Schritte und klarere Abläufe",
             pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
@@ -563,8 +625,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
-            description:
-              "Focused offer page that makes the value, offer, and next step easy to understand.",
             fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
             isRecommended: true,
             highlight:
@@ -589,8 +649,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Websites icon",
             title: "Websites",
-            description:
-              "Company website or relaunch with clear positioning, understandable page structure, and better paths to contact.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
             highlight: "a professional presence with clear paths to contact",
             pricingHint: "Individual quote based on page scope and depth",
@@ -613,8 +671,6 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
             title: "Website upgrade",
-            description:
-              "Targeted improvement for an existing website when structure, speed, mobile use, or paths to contact no longer work well.",
             fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
             highlight:
               "clearer, faster, and easier to use without a full rebuild",
@@ -662,10 +718,10 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Process tools icon",
-            title: "Process tools",
+            iconAlt: "Process optimization tools icon",
+            title: "Process optimization tools",
             description:
-              "Small internal tool or lean automation that reduces recurring work.",
+              "Small internal tool or lean automation when recurring work should be reduced after the website path is clear.",
             fit: "Teams that want to structure or partially automate recurring internal steps.",
             highlight: "fewer manual steps and clearer workflows",
             pricingHint: "Calculated by workflow, data, and integrations",
@@ -691,9 +747,9 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "Vom ersten Rahmen bis zum Launch in vier klaren Schritten",
+        title: "Von der Anfrage zur klaren Entscheidung in vier Schritten",
         description:
-          "Der Ablauf ist so angelegt, dass du früh Orientierung bekommst, schnell eine erste Richtung siehst und vor dem Launch keine unklaren Übergaben hast.",
+          "Der Ablauf reduziert Risiko vor dem Start: Du bekommst schnell Klarheit zu Ziel, Umfang, Timing und dem nächsten sinnvollen Schritt.",
         summaryPoints: [
           "Ziel, Angebot und Umfang früh geklärt",
           "erste Richtung schnell sichtbar",
@@ -707,7 +763,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Aufwand: ca. 30 Min",
             result: "Ergebnis: klarer Rahmen + Prioritäten",
             description:
-              "Wir klären Ziel, Material und Rahmen. Danach bekommst du eine klare Empfehlung und ein passendes Angebot.",
+              "Wir klären Ziel, Zielgruppe, vorhandenes Material und Rahmen. Danach bekommst du eine Empfehlung, welches Leistungsmodell wirklich passt.",
           },
           {
             step: "02",
@@ -716,7 +772,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
             result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
             description:
-              "Ich entwickle die Struktur, Seitenlogik oder den ersten Prototypen. So ist früh sichtbar, wie das Projekt aufgebaut wird.",
+              "Ich entwickle die Seitenlogik oder den ersten Prototypen. So siehst du früh, ob Angebot, Inhalte und Anfrageweg zusammenpassen.",
           },
           {
             step: "03",
@@ -743,9 +799,9 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "From first outline to launch in four clear steps",
+        title: "From request to clear decision in four steps",
         description:
-          "The flow is designed so you get orientation early, see the first direction quickly, and avoid fuzzy handoffs before launch.",
+          "The flow reduces risk before kickoff: you quickly get clarity on goal, scope, timing, and the next sensible step.",
         summaryPoints: [
           "goal, offer, and project range clarified early",
           "first direction visible quickly",
@@ -759,7 +815,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Effort: about 30 min",
             result: "Outcome: clear frame + priorities",
             description:
-              "We align on the goal, materials, and project frame. After that, you get a clear recommendation and a fitting offer.",
+              "We align on the goal, audience, available materials, and frame. After that, you get a recommendation on the service model that actually fits.",
           },
           {
             step: "02",
@@ -768,7 +824,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Delivery: visible early in the project",
             result: "Outcome: page structure or core workflow",
             description:
-              "I develop the structure, page logic, or the first prototype. That makes the project setup visible early.",
+              "I develop the page logic or first prototype. This shows early whether the offer, content, and inquiry path work together.",
           },
           {
             step: "03",
@@ -803,11 +859,6 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "Die wichtigsten Fragen vor dem Projektstart sind hier bewusst knapp, konkret und ohne Vertriebssprache beantwortet.",
-        summaryPoints: [
-          "Typische Projektfragen",
-          "Kurz, klar, direkt beantwortet",
-          "Sonderfall? Direkter Mailkontakt",
-        ],
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -865,11 +916,6 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "The most relevant pre-project questions are answered here in a concise, direct format without sales fluff.",
-        summaryPoints: [
-          "Common project questions",
-          "Short, clear, directly answered",
-          "Different case? Direct email",
-        ],
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",
@@ -929,16 +975,9 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "contact",
     copy: {
       de: {
-        title: "Wähle den passenden Einstieg für dein Projekt",
-        description:
-          "Drei Wege, ein Ziel: schnell den sinnvollsten nächsten Schritt für dein Vorhaben finden.",
-        summaryPoints: [
-          "3 Wege je nach Projektstand",
-          "In der Regel Rückmeldung innerhalb von 24h",
-          "Direkter Kontakt ohne Vertriebsschleife",
-        ],
+        title: "Starte mit einer Projektanfrage",
         contactDecisionIntro:
-          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und helfen, dein Projekt sauber einzuschätzen.",
+          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und machen dein Vorhaben schneller einschätzbar.",
         contactAlternativeLabel: "Falls es noch kürzer sein soll",
         contactChannels: [
           {
@@ -946,7 +985,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Optional",
             label: "Kennenlern-Call",
             description:
-              "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
+              "Für direkte Abstimmung, wenn du noch unsicher bist, welcher Leistungsweg passt.",
             value: "15-20 Minuten Abstimmung",
             href: COMPANY_CALENDLY,
             actionLabel: "Termin auswählen",
@@ -961,7 +1000,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Kurz",
             label: "Kurze Nachricht",
             description:
-              "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
+              "Für schnelle Rückfragen, wenn eine vollständige Projektanfrage noch zu früh ist.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             actionLabel: "E-Mail senden",
@@ -1197,16 +1236,9 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "Choose the right entry point for your project",
-        description:
-          "Three paths, one goal: move to the most practical next step quickly.",
-        summaryPoints: [
-          "3 paths based on project clarity",
-          "Typically a reply within 24h",
-          "Direct contact without sales handoff",
-        ],
+        title: "Start with a project request",
         contactDecisionIntro:
-          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and help turn it into a clear next step.",
+          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and make the request easier to estimate.",
         contactAlternativeLabel: "If you need a shorter path",
         contactChannels: [
           {
@@ -1214,7 +1246,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Optional",
             label: "Discovery call",
             description:
-              "Best for live alignment when project range and effort need quick discussion.",
+              "Best for live alignment when you are still unsure which service path fits.",
             value: "15-20 minute alignment call",
             href: COMPANY_CALENDLY,
             actionLabel: "Choose a time",
@@ -1229,7 +1261,7 @@ const HOME_SECTIONS: LandingSection[] = [
             kicker: "Short",
             label: "Quick message",
             description:
-              "Best for fast async contact when you want to clarify the next step in writing.",
+              "Best for quick questions when a full project request feels too early.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             actionLabel: "Send email",
@@ -1458,7 +1490,6 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "footer",
     copy: {
       de: {
-        title: "Footer",
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
         footerColumns: [
@@ -1502,7 +1533,6 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "Footer",
         description: "Quick access to core pages and contact options.",
         footerColumns: [
           {
@@ -1546,7 +1576,7 @@ const HOME_SECTIONS: LandingSection[] = [
       },
     },
   },
-];
+] satisfies LandingSection[];
 
 export function getHomeSections(locale: Locale): HomeSectionContent[] {
   const localizeLegalHref = (href: string) => {
@@ -1560,7 +1590,14 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
       .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
   };
 
-  return HOME_SECTIONS.map((section) => {
+  return HOME_SECTIONS.map((section): HomeSectionContent => {
+    if (section.id !== "footer") {
+      return {
+        id: section.id,
+        ...section.copy[locale],
+      } as HomeSectionContent;
+    }
+
     const localizedSection = {
       id: section.id,
       ...section.copy[locale],
@@ -1568,18 +1605,18 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
 
     return {
       ...localizedSection,
-      footerColumns: localizedSection.footerColumns?.map((column) => ({
+      footerColumns: localizedSection.footerColumns.map((column) => ({
         ...column,
         links: column.links.map((link) => ({
           ...link,
           href: localizeLegalHref(link.href),
         })),
       })),
-      footerSocialLinks: localizedSection.footerSocialLinks?.map((link) => ({
+      footerSocialLinks: localizedSection.footerSocialLinks.map((link) => ({
         ...link,
         href: localizeLegalHref(link.href),
       })),
-      footerLegalLinks: localizedSection.footerLegalLinks?.map((link) => ({
+      footerLegalLinks: localizedSection.footerLegalLinks.map((link) => ({
         ...link,
         href: localizeLegalHref(link.href),
       })),

@@ -15,18 +15,18 @@ describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Für Unternehmen, die online klarer auftreten, mehr passende Anfragen gewinnen und ihre Website als Vertriebsfläche nutzen wollen."
+        description="Für lokale und regionale Unternehmen, die ihr Angebot klar erklären, Vertrauen aufbauen und Besucher gezielt zur Projektanfrage führen wollen."
         heroPrimaryCta="Projekt anfragen"
-        heroSecondaryCta="Leistungsmodelle prüfen"
+        heroSecondaryCta="Leistung passend einschätzen"
         heroTag="KLARER AUFTRITT, MEHR ANFRAGEN"
         heroVisualAriaLabel="Hero visual preview"
-        title="Landingpages und Webseiten,\ndie Anfragen bringen."
+        title="Landingpages,\ndie passende Anfragen bringen."
       />,
     );
 
     const heroHeading = screen.getByRole("heading", { level: 1 });
-    expect(heroHeading.textContent).toContain("Landingpages und Webseiten,");
-    expect(heroHeading.textContent).toContain("die Anfragen bringen.");
+    expect(heroHeading.textContent).toContain("Landingpages,");
+    expect(heroHeading.textContent).toContain("die passende Anfragen bringen.");
     expect(
       screen
         .getByRole("link", { name: "Projekt anfragen" })
@@ -34,7 +34,7 @@ describe("HeroSection", () => {
     ).toBe("#contact");
     expect(
       screen
-        .getByRole("link", { name: "Leistungsmodelle prüfen" })
+        .getByRole("link", { name: "Leistung passend einschätzen" })
         .getAttribute("href"),
     ).toBe("#services");
     expect(screen.queryByText("KI-Agenten-Workflow")).toBeNull();

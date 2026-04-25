@@ -3,26 +3,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  FooterColumnCopy,
+  FooterLegalLinkCopy,
+  FooterSocialLinkCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import styles from "./footer-section.module.css";
 
-type FooterColumn = NonNullable<LandingSectionCopy["footerColumns"]>[number];
-type FooterLegalLink = NonNullable<
-  LandingSectionCopy["footerLegalLinks"]
->[number];
-type FooterSocialLink = NonNullable<
-  LandingSectionCopy["footerSocialLinks"]
->[number];
+type FooterColumn = FooterColumnCopy;
+type FooterLegalLink = FooterLegalLinkCopy;
+type FooterSocialLink = FooterSocialLinkCopy;
 
 type FooterSectionProps = {
   bottomNote?: string;
-  brand?: string;
+  brand: string;
   columns: FooterColumn[];
-  copyright?: string;
-  description?: string;
+  copyright: string;
+  description: string;
   id: string;
-  legalLinks?: FooterLegalLink[];
-  socialLinks?: FooterSocialLink[];
+  legalLinks: FooterLegalLink[];
+  socialLinks: FooterSocialLink[];
 };
 
 export function FooterSection({
@@ -32,8 +32,8 @@ export function FooterSection({
   copyright,
   description,
   id,
-  legalLinks = [],
-  socialLinks = [],
+  legalLinks,
+  socialLinks,
 }: FooterSectionProps) {
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
@@ -92,26 +92,22 @@ export function FooterSection({
         <div className={styles.shell}>
           <div className={styles.layout}>
             <section className={styles.identity}>
-              {brand ? (
-                <div className={styles.brandWrap}>
-                  <span className={styles.brand}>
-                    <Image
-                      src="/brand/icon.png"
-                      alt="Invessiv Logo"
-                      width={24}
-                      height={24}
-                    />
-                    <strong>{brand}</strong>
-                  </span>
-                  {bottomNote ? (
-                    <small className={styles.ownerNote}>{bottomNote}</small>
-                  ) : null}
-                </div>
-              ) : null}
+              <div className={styles.brandWrap}>
+                <span className={styles.brand}>
+                  <Image
+                    src="/brand/icon.png"
+                    alt="Invessiv Logo"
+                    width={24}
+                    height={24}
+                  />
+                  <strong>{brand}</strong>
+                </span>
+                {bottomNote ? (
+                  <small className={styles.ownerNote}>{bottomNote}</small>
+                ) : null}
+              </div>
 
-              {description ? (
-                <p className={styles.description}>{description}</p>
-              ) : null}
+              <p className={styles.description}>{description}</p>
 
               {visibleSocialLinks.length ? (
                 <ul className={styles.socials} aria-label="Social links">
@@ -164,7 +160,7 @@ export function FooterSection({
 
           <div className={styles.bottom}>
             <div className={styles.bottomMeta}>
-              {copyright ? <span>{copyright}</span> : null}
+              <span>{copyright}</span>
             </div>
           </div>
         </div>

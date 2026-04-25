@@ -24,7 +24,6 @@ describe("FeaturedServiceCard", () => {
           card={{
             key: "landing",
             title: "Landingpages",
-            description: "Conversion-optimierte One-Pager.",
             fit: "Angebotsseiten mit klarer Conversion-Aktion.",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",

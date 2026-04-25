@@ -20,7 +20,6 @@ describe("ServiceCard", () => {
           card={{
             key: "landing",
             title: "Landingpages",
-            description: "Conversion-optimierte One-Pager.",
             fit: "Angebotsseiten mit klarer Conversion-Aktion.",
             iconSrc: "/services/01_landingpages.png",
             iconAlt: "Landingpages Icon",
@@ -70,7 +69,6 @@ describe("ServiceCard", () => {
     expect(
       screen.getByText("Angebot nach Ziel, Umfang und Feedbackbedarf"),
     ).toBeTruthy();
-    expect(screen.queryByText("Conversion-optimierte One-Pager.")).toBeNull();
     expect(screen.getByText("+ 4 weitere Punkte")).toBeTruthy();
 
     const article = container.querySelector("article");
@@ -103,9 +101,8 @@ describe("ServiceCard", () => {
     render(
       <ServiceCard
         card={{
-          key: "process",
-          title: "Prozess-Tools",
-          description: "Kurzbeschreibung.",
+          key: "upgrade",
+          title: "Webseiten-Upgrade",
           iconSrc: "/services/process-icon.svg",
           iconAlt: "Process icon",
           highlight: "Fewer manual steps in daily work",
@@ -142,7 +139,6 @@ describe("ServiceCard", () => {
           card={{
             key: "upgrade",
             title: "Website upgrade",
-            description: "Improve an existing site.",
             fit: "Existing sites with a solid base.",
             iconSrc: "/services/upgrade-icon.svg",
             iconAlt: "Upgrade icon",

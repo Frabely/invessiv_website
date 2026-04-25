@@ -3,37 +3,31 @@
 import { useEffect, useMemo, useState } from "react";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  ContactChannelCopy,
+  ContactCtaCopy,
+  ContactFormCopy,
+  ContactSecondaryCtaCopy,
+  DiscoveryCallFormCopy,
+  QuickContactFormCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import { DiscoveryCallPanel } from "@/components/marketing/home/sections/contact-section/discovery-call-panel/discovery-call-panel";
 import { ProjectRequestForm } from "@/components/marketing/home/sections/contact-section/project-request-form/project-request-form";
 import { QuickContactForm } from "@/components/marketing/home/sections/contact-section/quick-contact-form/quick-contact-form";
 import styles from "./contact-section.module.css";
 
-type ContactCta = NonNullable<LandingSectionCopy["contactCta"]>;
-type ContactChannel = NonNullable<
-  LandingSectionCopy["contactChannels"]
->[number];
-type ContactForm = NonNullable<LandingSectionCopy["contactForm"]>;
-type ContactSecondaryCta = NonNullable<
-  LandingSectionCopy["contactSecondaryCta"]
->;
-type QuickContactFormCopy = NonNullable<LandingSectionCopy["quickContactForm"]>;
-type DiscoveryCallFormCopy = NonNullable<
-  LandingSectionCopy["discoveryCallForm"]
->;
 type ChannelMode = "email" | "call";
 
 type ContactSectionProps = {
-  contactCta?: ContactCta;
+  contactCta?: ContactCtaCopy;
   contactAlternativeLabel?: string;
-  contactChannels: ContactChannel[];
-  contactDecisionIntro?: string;
-  contactForm?: ContactForm;
+  contactChannels: ContactChannelCopy[];
+  contactDecisionIntro: string;
+  contactForm?: ContactFormCopy;
   contactFormOffers: Array<{ key: string; title: string }>;
   discoveryCallForm?: DiscoveryCallFormCopy;
   quickContactForm?: QuickContactFormCopy;
-  contactSecondaryCta?: ContactSecondaryCta;
-  description: string;
+  contactSecondaryCta?: ContactSecondaryCtaCopy;
   id: string;
   privacyHref: string;
   title: string;
@@ -51,7 +45,6 @@ export function ContactSection({
   discoveryCallForm,
   quickContactForm,
   contactSecondaryCta,
-  description,
   id,
   privacyHref,
   title,
@@ -66,7 +59,7 @@ export function ContactSection({
     number | null
   >(null);
 
-  const getChannelMode = (channel: ContactChannel): ChannelMode => {
+  const getChannelMode = (channel: ContactChannelCopy): ChannelMode => {
     if (channel.mode) {
       return channel.mode;
     }
@@ -135,9 +128,7 @@ export function ContactSection({
       <div className={styles.stack}>
         <div className={styles.briefHead}>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.decisionIntro}>
-            {contactDecisionIntro ?? description}
-          </p>
+          <p className={styles.decisionIntro}>{contactDecisionIntro}</p>
         </div>
 
         {primaryPath ? (

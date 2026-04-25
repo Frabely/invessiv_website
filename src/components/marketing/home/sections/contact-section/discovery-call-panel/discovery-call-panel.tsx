@@ -21,15 +21,13 @@ import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@/common/defaults/contact/di
 import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
 import { mapDiscoveryCallFormToDto } from "@/client/contact/mappers/map-discovery-call-form-to-dto";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  ContactChannelCopy,
+  DiscoveryCallFormCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 
-type ContactChannel = NonNullable<
-  LandingSectionCopy["contactChannels"]
->[number];
-type DiscoveryCallFormCopy = NonNullable<
-  LandingSectionCopy["discoveryCallForm"]
->;
+type ContactChannel = ContactChannelCopy;
 
 type DiscoveryCallPanelProps = {
   channel: ContactChannel;
