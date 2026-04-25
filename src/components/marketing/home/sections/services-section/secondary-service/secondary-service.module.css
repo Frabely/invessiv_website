@@ -1,4 +1,11 @@
 .card {
+  --service-icon-size: 44px;
+  --service-icon-image-size: 32px;
+  --service-icon-image-size-mobile: 24px;
+  --service-icon-radius: 12px;
+  --service-icon-size-wide: 40px;
+  --service-icon-image-size-wide: 28px;
+  --service-icon-radius-wide: 11px;
   display: grid;
   gap: 16px;
   min-height: 100%;
@@ -32,6 +39,11 @@
 
 .copy {
   align-content: start;
+}
+
+.copyDetails {
+  display: grid;
+  gap: 10px;
 }
 
 .copyBlock {
@@ -124,6 +136,46 @@
   min-height: 28px;
 }
 
+.detailsToggle {
+  display: none;
+  min-height: 38px;
+  width: fit-content;
+  padding: 0 12px 0 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: transparent;
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+  transition:
+    border-color 150ms ease,
+    color 150ms ease,
+    background 150ms ease;
+}
+
+.detailsToggle:hover {
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-cta) 16%);
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 38%,
+    var(--color-border) 62%
+  );
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+}
+
+.detailsToggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.toggleArrow {
+  font-size: 0.96rem;
+  line-height: 1;
+}
+
 .ctaLink {
   display: inline-flex;
   align-items: center;
@@ -155,8 +207,16 @@
 }
 
 @media (max-width: 759px) {
+  .card[data-service-expanded="false"] .copyDetails {
+    display: none;
+  }
+
   .titleWrap {
     grid-template-columns: 1fr;
+  }
+
+  .detailsToggle {
+    display: inline-flex;
   }
 }
 

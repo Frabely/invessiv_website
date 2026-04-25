@@ -5,8 +5,8 @@ import { validateNavigationSections } from "./validate-navigation-sections";
 describe("validateNavigationSections", () => {
   it("reports complete mapping when each section has a nav anchor", () => {
     const result = validateNavigationSections({
-      navigationHrefs: ["#included", "#services", "#process"],
-      sectionIds: ["included", "services", "process"],
+      navigationHrefs: ["#lead-bridge", "#services", "#process"],
+      sectionIds: ["lead-bridge", "services", "process"],
     });
 
     expect(result.hasCompleteMapping).toBe(true);
@@ -16,8 +16,8 @@ describe("validateNavigationSections", () => {
 
   it("reports missing anchors and missing sections", () => {
     const result = validateNavigationSections({
-      navigationHrefs: ["#included", "#faq"],
-      sectionIds: ["included", "services"],
+      navigationHrefs: ["#lead-bridge", "#faq"],
+      sectionIds: ["lead-bridge", "services"],
     });
 
     expect(result.hasCompleteMapping).toBe(false);

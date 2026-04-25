@@ -7,15 +7,12 @@ import { ServiceCardIcon } from "@/components/marketing/home/sections/services-s
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./service-card.module.css";
 
-type ServiceCardCopy = NonNullable<LandingSectionCopy["serviceCards"]>[number];
-
 type ServiceCardProps = {
   card: ServiceCardCopy;
-  cardClassName?: string;
   ctaLabel: string;
   isCtaActive?: boolean;
   ctaProjectGoal?: string;
@@ -25,6 +22,7 @@ type ServiceCardProps = {
   isDetailsOpen: boolean;
   isMobilePriority?: boolean;
   isRecommended?: boolean;
+  isCompact?: boolean;
   moreItemsPluralLabel: string;
   moreItemsSingularLabel: string;
   onCardSelectAction: () => void;
@@ -36,7 +34,6 @@ type ServiceCardProps = {
 
 export function ServiceCard({
   card,
-  cardClassName,
   ctaLabel,
   isCtaActive = false,
   ctaProjectGoal = "",
@@ -46,6 +43,7 @@ export function ServiceCard({
   isDetailsOpen,
   isMobilePriority = false,
   isRecommended = false,
+  isCompact = false,
   moreItemsPluralLabel,
   moreItemsSingularLabel,
   onCardSelectAction,
@@ -72,7 +70,6 @@ export function ServiceCard({
     styles.card,
     hasExpandableContent ? styles.cardExpandable : "",
     isRecommended ? styles.cardRecommended : "",
-    cardClassName ?? "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -123,6 +120,8 @@ export function ServiceCard({
       className={styles.shell}
       data-card-key={card.key}
       data-mobile-priority={isMobilePriority ? "top" : "default"}
+      data-service-expanded={isDetailsOpen ? "true" : "false"}
+      data-service-density={isCompact ? "compact" : "default"}
       data-service-variant="primary"
       role="listitem"
     >
@@ -130,7 +129,6 @@ export function ServiceCard({
         aria-label={card.title}
         className={cardClasses}
         data-service-card="true"
-        data-visible="false"
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
         onPointerLeave={onPointerLeaveAction}
@@ -178,17 +176,18 @@ export function ServiceCard({
               {visibleBullets.map((bullet) => (
                 <li key={bullet}>{bullet}</li>
               ))}
-              {isDetailsOpen
-                ? expandedBullets.map((item) => <li key={item}>{item}</li>)
-                : null}
             </ul>
 
             {hasExpandableContent ? (
-              <div
-                className={styles.details}
-                hidden={!isDetailsOpen}
-                id={detailsId}
-              />
+              <div hidden={!isDetailsOpen} id={detailsId}>
+                {isDetailsOpen ? (
+                  <ul className={styles.list}>
+                    {expandedBullets.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             ) : null}
           </div>
 

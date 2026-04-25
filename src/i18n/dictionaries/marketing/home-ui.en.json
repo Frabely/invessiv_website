@@ -1,57 +1,38 @@
 {
   "heroPrimaryCta": "Request project",
-  "heroSecondaryCta": "Service models",
-  "heroTag": "CLEAR STRUCTURE, DIRECT EXECUTION",
+  "heroSecondaryCta": "Find the right service",
+  "heroTag": "CLEARER PRESENCE, MORE INQUIRIES",
   "heroVisualAriaLabel": "Live performance snapshot",
+  "leadBridgeContent": {
+    "kicker": "START POINT",
+    "title": "Landing pages first. Websites, upgrades, or tools only when they add value.",
+    "signalAriaLabel": "Trust signals and next flow",
+    "summaryPoints": [
+      "Honest assessment before kickoff",
+      "Landing pages with a clear conversion goal",
+      "Website, upgrade, or tool only when needed"
+    ],
+    "bridge": "I mainly build landing pages that communicate offers clearly and guide visitors toward an inquiry. Websites, upgrades, or process optimization tools are added only when they truly support the next step."
+  },
   "mappingWarning": "Navigation/section mapping is incomplete.",
-  "proofFeaturedProjectFallbackLabel": "Featured project",
   "proofHighlightsAriaLabel": "Proof section highlights",
-  "proofMoreProjectsFallbackCtaLabel": "View all projects",
-  "proofMoreProjectsFallbackHref": "/en/projects",
-  "proofMoreProjectsFallbackTitle": "More projects",
   "proofRatingAriaLabel": "5 out of 5 stars",
   "proofReviewLinkLabel": "View on Google",
-  "includedContent": {
-    "title": "From first outline to handoff",
-    "summaryPoints": [
-      "recommendation before kickoff",
-      "short feedback loops",
-      "QA & handover"
-    ],
-    "cards": [
-      {
-        "title": "Right entry point before kickoff",
-        "tag": "Setup",
-        "description": "After the inquiry, we sort the goal, project range, and offer format before implementation begins."
-      },
-      {
-        "title": "Short paths during execution",
-        "tag": "Workflow",
-        "description": "Questions, feedback, and priorities move without detours between us. That cuts extra loops and keeps decisions moving."
-      },
-      {
-        "title": "Launch prepared from the start",
-        "tag": "QA",
-        "description": "Responsive checks, technical SEO, QA, and handover are planned in from the start instead of being added at the end."
-      }
-    ],
-    "bridge": "After the inquiry, you know which entry point makes sense and how the next step looks."
-  },
   "servicesAddonBadgeLabel": "Add-on",
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
   "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesIntentTitle": "Choose your goal and we will highlight the best-fitting service model.",
+  "servicesIntentTitle": "Choose your visitor goal. The matching service will be highlighted.",
   "servicesIntentOptions": [
-    { "key": "more_inquiries", "label": "win more inquiries" },
+    { "key": "more_inquiries", "label": "turn visitors into inquiries" },
     {
-      "key": "professional_presence",
-      "label": "show up professionally online"
+      "key": "improve_existing_site",
+      "label": "make the current site clearer"
     },
     {
-      "key": "simplify_workflows",
-      "label": "simplify internal workflows"
+      "key": "plan_new_website",
+      "label": "launch a website with a clear inquiry path"
     }
   ],
   "servicesPrimaryCta": "Request project",
@@ -63,5 +44,5 @@
     "maintenance": "Request maintenance & support"
   },
   "servicesDetailsCta": "More details",
-  "servicesDeliveryLabel": "Typical"
+  "servicesDeliveryLabel": "Timeframe"
 }

@@ -17,7 +17,6 @@ const serviceCards = [
     iconSrc: "/services/coding-icon.svg",
     iconAlt: "Web Icon",
     title: "Webseiten",
-    description: "Webseiten Paket.",
     fit: "Relaunches mit mehreren Kernseiten.",
     highlight: "klarer professioneller Auftritt",
     pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -30,7 +29,6 @@ const serviceCards = [
     iconSrc: "/services/website-layout-icon.svg",
     iconAlt: "Landing Icon",
     title: "Landingpages",
-    description: "Landingpage Paket.",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
     highlight: "schnell live & conversion-fokussiert",
     pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
@@ -42,7 +40,7 @@ const serviceCards = [
     key: "process" as const,
     iconSrc: "/services/process-icon.svg",
     iconAlt: "Process Icon",
-    title: "Prozess-Tools",
+    title: "Prozessoptimierungs-Tools",
     description: "Workflows digitalisieren.",
     fit: "Teams mit klaren Routineabläufen.",
     highlight: "weniger manuelle Schritte im Alltag",
@@ -55,7 +53,6 @@ const serviceCards = [
     iconSrc: "/services/upgrade-icon.svg",
     iconAlt: "Upgrade Icon",
     title: "Webseiten-Upgrade",
-    description: "Bestehendes verbessern.",
     fit: "Für Seiten mit Potenzial.",
     highlight: "spürbare UX- und Speed-Verbesserung",
     pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
@@ -77,9 +74,15 @@ const serviceCards = [
 ];
 
 const goalOptions = [
-  { key: "more_inquiries", label: "mehr Anfragen gewinnen" },
-  { key: "professional_presence", label: "professionell online auftreten" },
-  { key: "simplify_workflows", label: "interne Abläufe vereinfachen" },
+  { key: "more_inquiries", label: "Besucher zu Anfragen führen" },
+  {
+    key: "improve_existing_site",
+    label: "bestehende Seite klarer ausrichten",
+  },
+  {
+    key: "plan_new_website",
+    label: "neue Website mit klarem Anfrageweg starten",
+  },
 ];
 
 function renderSection() {
@@ -90,7 +93,7 @@ function renderSection() {
       detailsCtaLabel="Mehr Infos"
       fitLabel="Ideal für"
       goalOptions={goalOptions}
-      goalTitle="Wähle dein Ziel – wir markieren das passendste Leistungsmodell."
+      goalTitle="Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben."
       id="services"
       moreItemsPluralLabel="weitere Punkte"
       moreItemsSingularLabel="weiterer Punkt"
@@ -142,7 +145,7 @@ describe("ServicesSection", () => {
 
     expect(
       screen.getByText(
-        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+        "Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben.",
       ),
     ).toBeTruthy();
     expect(
@@ -157,33 +160,49 @@ describe("ServicesSection", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByText(
-        "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
-      ),
+      screen.getByRole("button", { name: "Besucher zu Anfragen führen" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "mehr Anfragen gewinnen" }),
+      within(screen.getByRole("group"))
+        .getAllByRole("button")
+        .map((button) => button.textContent),
+    ).toEqual([
+      "Besucher zu Anfragen führen",
+      "bestehende Seite klarer ausrichten",
+      "neue Website mit klarem Anfrageweg starten",
+    ]);
+    expect(
+      screen.getByRole("button", {
+        name: "bestehende Seite klarer ausrichten",
+      }),
     ).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: "neue Website mit klarem Anfrageweg starten",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("button", {
+        name: "interne Abläufe vereinfachen",
+      }),
+    ).toBeNull();
     expect(screen.queryByText("Umfang vor Start")).toBeNull();
     expect(screen.queryByText("Klare Lieferfenster")).toBeNull();
-    expect(
-      screen.queryByRole("button", { name: /Bestehendes verbessern/i }),
-    ).toBeNull();
     expect(primaryCards).toHaveLength(3);
     expect(secondaryCards).toHaveLength(2);
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["web", "landing", "process"]);
-    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+    ).toEqual(["landing", "upgrade", "web"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
-    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
     expect(
       secondaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["upgrade", "maintenance"]);
+    ).toEqual(["maintenance", "process"]);
     expect(
       within(getArticleByTitle("Landingpages")).getByText("Empfohlen"),
     ).toBeTruthy();
@@ -201,10 +220,8 @@ describe("ServicesSection", () => {
     expect(
       within(
         screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      )
-        .getByRole("link", { name: "Upgrade anfragen" })
-        .getAttribute("data-project-offer"),
-    ).toBe("upgrade");
+      ).queryByRole("link", { name: "Projekt anfragen" }),
+    ).toBeNull();
     expect(
       within(
         screen.getByText("Wartung & Support").closest("article") as HTMLElement,
@@ -214,11 +231,13 @@ describe("ServicesSection", () => {
     ).toBe("maintenance");
   });
 
-  it("updates recommendation and CTA copy when another goal is chosen while keeping the desktop card order stable", () => {
+  it("recommends the upgrade service when improving an existing site while keeping the desktop card order stable", () => {
     const { container } = renderSection();
 
     fireEvent.click(
-      screen.getByRole("button", { name: "interne Abläufe vereinfachen" }),
+      screen.getByRole("button", {
+        name: "bestehende Seite klarer ausrichten",
+      }),
     );
 
     const primaryCards = Array.from(
@@ -227,7 +246,50 @@ describe("ServicesSection", () => {
 
     expect(
       primaryCards.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["web", "landing", "process"]);
+    ).toEqual(["landing", "upgrade", "web"]);
+    expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(primaryCards[1]?.getAttribute("data-mobile-priority")).toBe("top");
+    expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe(
+      "default",
+    );
+    expect(
+      within(getArticleByTitle("Webseiten-Upgrade"))
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-offer"),
+    ).toBe("upgrade");
+    expect(
+      within(getArticleByTitle("Webseiten-Upgrade"))
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("data-project-goal"),
+    ).toBe("bestehende Seite klarer ausrichten");
+    expect(
+      within(getArticleByTitle("Prozessoptimierungs-Tools")).queryByRole(
+        "link",
+        {
+          name: "Projekt anfragen",
+        },
+      ),
+    ).toBeTruthy();
+  });
+
+  it("recommends the website service when planning a new website", () => {
+    const { container } = renderSection();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "neue Website mit klarem Anfrageweg starten",
+      }),
+    );
+
+    const primaryCards = Array.from(
+      container.querySelectorAll("[data-service-variant='primary']"),
+    );
+
+    expect(
+      primaryCards.map((card) => card.getAttribute("data-card-key")),
+    ).toEqual(["landing", "upgrade", "web"]);
     expect(primaryCards[0]?.getAttribute("data-mobile-priority")).toBe(
       "default",
     );
@@ -236,23 +298,15 @@ describe("ServicesSection", () => {
     );
     expect(primaryCards[2]?.getAttribute("data-mobile-priority")).toBe("top");
     expect(
-      within(getArticleByTitle("Prozess-Tools"))
+      within(getArticleByTitle("Webseiten"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
-    ).toBe("process");
+    ).toBe("web");
     expect(
-      within(getArticleByTitle("Prozess-Tools")).getByText("Empfohlen"),
-    ).toBeTruthy();
-    expect(
-      within(getArticleByTitle("Prozess-Tools"))
+      within(getArticleByTitle("Webseiten"))
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("interne Abläufe vereinfachen");
-    expect(
-      within(
-        screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      ).getByRole("link", { name: "Upgrade anfragen" }),
-    ).toBeTruthy();
+    ).toBe("neue Website mit klarem Anfrageweg starten");
   });
 
   it("keeps only one primary card expanded at a time without changing the top selection", () => {
@@ -276,7 +330,7 @@ describe("ServicesSection", () => {
     ).toBe("landing");
     expect(
       screen
-        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getByRole("button", { name: "Besucher zu Anfragen führen" })
         .getAttribute("aria-pressed"),
     ).toBe("true");
 
@@ -295,7 +349,7 @@ describe("ServicesSection", () => {
     ).toBe("landing");
     expect(
       screen
-        .getByRole("button", { name: "mehr Anfragen gewinnen" })
+        .getByRole("button", { name: "Besucher zu Anfragen führen" })
         .getAttribute("aria-pressed"),
     ).toBe("true");
   });
@@ -306,8 +360,8 @@ describe("ServicesSection", () => {
     expect(
       within(
         screen.getByText("Webseiten-Upgrade").closest("article") as HTMLElement,
-      ).getByRole("link", { name: "Upgrade anfragen" }),
-    ).toBeTruthy();
+      ).queryByRole("link", { name: "Projekt anfragen" }),
+    ).toBeNull();
     expect(
       within(
         screen.getByText("Wartung & Support").closest("article") as HTMLElement,

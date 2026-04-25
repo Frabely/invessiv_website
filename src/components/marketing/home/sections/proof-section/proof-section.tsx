@@ -15,8 +15,7 @@ type ProofReview = {
 
 type ProofSectionProps = {
   description: string;
-  featuredProjectFallbackLabel: string;
-  featuredProject?: {
+  featuredProject: {
     ariaLabel: string;
     kicker: string;
     title: string;
@@ -25,10 +24,7 @@ type ProofSectionProps = {
   };
   highlightsAriaLabel: string;
   id: string;
-  moreProjectsFallbackCtaLabel: string;
-  moreProjectsFallbackHref: string;
-  moreProjectsFallbackTitle: string;
-  moreProjects?: {
+  moreProjects: {
     ctaLabel: string;
     description: string;
     href: string;
@@ -43,13 +39,9 @@ type ProofSectionProps = {
 
 export function ProofSection({
   description,
-  featuredProjectFallbackLabel,
   featuredProject,
   highlightsAriaLabel,
   id,
-  moreProjectsFallbackCtaLabel,
-  moreProjectsFallbackHref,
-  moreProjectsFallbackTitle,
   moreProjects,
   ratingAriaLabel,
   reviewLinkLabel,
@@ -89,9 +81,7 @@ export function ProofSection({
         </div>
 
         <article
-          aria-label={
-            featuredProject?.ariaLabel ?? featuredProjectFallbackLabel
-          }
+          aria-label={featuredProject.ariaLabel}
           className={styles.placeholderCard}
           role="listitem"
         >
@@ -114,37 +104,26 @@ export function ProofSection({
             </div>
           </div>
           <div className={styles.placeholderContent}>
-            <p className={styles.placeholderKicker}>
-              {featuredProject?.kicker ?? featuredProjectFallbackLabel}
-            </p>
-            <h3 className={styles.placeholderTitle}>
-              {featuredProject?.title ?? ""}
-            </h3>
+            <p className={styles.placeholderKicker}>{featuredProject.kicker}</p>
+            <h3 className={styles.placeholderTitle}>{featuredProject.title}</h3>
             <p className={styles.placeholderText}>
-              {featuredProject?.description ?? ""}
+              {featuredProject.description}
             </p>
-            <p className={styles.placeholderMeta}>
-              {featuredProject?.meta ?? ""}
-            </p>
+            <p className={styles.placeholderMeta}>{featuredProject.meta}</p>
           </div>
         </article>
       </div>
 
       <div className={styles.sectionFooter}>
         <div className={styles.footerTransitionCopy}>
-          <p className={styles.footerTransitionKicker}>
-            {moreProjects?.title ?? moreProjectsFallbackTitle}
-          </p>
+          <p className={styles.footerTransitionKicker}>{moreProjects.title}</p>
           <p className={styles.footerTransitionText}>
-            {moreProjects?.description ?? ""}
+            {moreProjects.description}
           </p>
         </div>
-        <a
-          className={styles.footerTransitionLink}
-          href={moreProjects?.href ?? moreProjectsFallbackHref}
-        >
+        <a className={styles.footerTransitionLink} href={moreProjects.href}>
           <span className={styles.footerTransitionLinkLabel}>
-            {moreProjects?.ctaLabel ?? moreProjectsFallbackCtaLabel}
+            {moreProjects.ctaLabel}
           </span>
         </a>
       </div>

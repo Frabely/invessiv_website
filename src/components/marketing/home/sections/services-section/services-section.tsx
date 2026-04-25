@@ -3,13 +3,27 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PointerEvent, RefObject } from "react";
 
+import { FeaturedServiceCard } from "@/components/marketing/home/sections/services-section/featured-service-card/featured-service-card";
 import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
 import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card/service-card";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./services-section.module.css";
 
-type ServiceCardData = NonNullable<LandingSectionCopy["serviceCards"]>[number];
+const PRIMARY_ORDER = ["landing", "upgrade", "web"] as const;
+const SECONDARY_ORDER = ["maintenance", "process"] as const;
+const DEFAULT_GOAL_KEY = "more_inquiries";
+const GOAL_TO_SERVICE = {
+  more_inquiries: "landing",
+  improve_existing_site: "upgrade",
+  plan_new_website: "web",
+} as const;
+
+type ServiceCardData = ServiceCardCopy;
+type SecondaryServiceCardData = Extract<
+  ServiceCardData,
+  { key: (typeof SECONDARY_ORDER)[number] }
+>;
 type GoalOption = {
   key: string;
   label: string;
@@ -38,14 +52,6 @@ type ServicesSectionProps = {
   title: string;
 };
 
-const PRIMARY_ORDER = ["web", "landing", "process"] as const;
-const SECONDARY_ORDER = ["upgrade", "maintenance"] as const;
-const DEFAULT_GOAL_KEY = "more_inquiries";
-const GOAL_TO_SERVICE = {
-  more_inquiries: "landing",
-  professional_presence: "web",
-  simplify_workflows: "process",
-} as const;
 export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
@@ -82,7 +88,7 @@ export function ServicesSection({
     () =>
       SECONDARY_ORDER.map((key) =>
         serviceCards.find((card) => card.key === key),
-      ).filter((card): card is ServiceCardData => Boolean(card)),
+      ).filter((card): card is SecondaryServiceCardData => Boolean(card)),
     [serviceCards],
   );
 
@@ -173,30 +179,55 @@ export function ServicesSection({
       </div>
 
       <div className={styles.primaryGrid} role="list">
-        {primaryCards.map((card) => (
-          <ServiceCard
-            card={card}
-            ctaLabel={primaryCtaLabel}
-            isCtaActive={recommendedCardKey === card.key}
-            ctaProjectGoal={selectedGoalLabel}
-            defaultDeliveryLabel={deliveryLabel}
-            detailsCtaLabel={detailsCtaLabel}
-            fitLabel={fitLabel}
-            isDetailsOpen={openCardKey === card.key}
-            isMobilePriority={card.key === recommendedCardKey}
-            isRecommended={card.key === recommendedCardKey}
-            key={card.key}
-            moreItemsPluralLabel={moreItemsPluralLabel}
-            moreItemsSingularLabel={moreItemsSingularLabel}
-            onCardSelectAction={handlePrimaryCardSelection}
-            onDetailsToggleAction={(nextOpenState) =>
-              toggleCardDetails(card.key, nextOpenState)
-            }
-            onPointerLeaveAction={resetCardSpotlight}
-            onPointerMoveAction={setCardSpotlight}
-            recommendedBadgeLabel={recommendedBadgeLabel}
-          />
-        ))}
+        {primaryCards.map((card) =>
+          card.key === "landing" ? (
+            <FeaturedServiceCard
+              card={card}
+              ctaLabel={primaryCtaLabel}
+              ctaProjectGoal={selectedGoalLabel}
+              defaultDeliveryLabel={deliveryLabel}
+              detailsCtaLabel={detailsCtaLabel}
+              fitLabel={fitLabel}
+              isDetailsOpen={openCardKey === card.key}
+              isMobilePriority={card.key === recommendedCardKey}
+              isRecommended={card.key === recommendedCardKey}
+              key={card.key}
+              moreItemsPluralLabel={moreItemsPluralLabel}
+              moreItemsSingularLabel={moreItemsSingularLabel}
+              onCardSelectAction={handlePrimaryCardSelection}
+              onDetailsToggleAction={(nextOpenState) =>
+                toggleCardDetails(card.key, nextOpenState)
+              }
+              onPointerLeaveAction={resetCardSpotlight}
+              onPointerMoveAction={setCardSpotlight}
+              recommendedBadgeLabel={recommendedBadgeLabel}
+            />
+          ) : (
+            <ServiceCard
+              card={card}
+              ctaLabel={primaryCtaLabel}
+              isCompact
+              isCtaActive={recommendedCardKey === card.key}
+              ctaProjectGoal={selectedGoalLabel}
+              defaultDeliveryLabel={deliveryLabel}
+              detailsCtaLabel={detailsCtaLabel}
+              fitLabel={fitLabel}
+              isDetailsOpen={openCardKey === card.key}
+              isMobilePriority={card.key === recommendedCardKey}
+              isRecommended={card.key === recommendedCardKey}
+              key={card.key}
+              moreItemsPluralLabel={moreItemsPluralLabel}
+              moreItemsSingularLabel={moreItemsSingularLabel}
+              onCardSelectAction={handlePrimaryCardSelection}
+              onDetailsToggleAction={(nextOpenState) =>
+                toggleCardDetails(card.key, nextOpenState)
+              }
+              onPointerLeaveAction={resetCardSpotlight}
+              onPointerMoveAction={setCardSpotlight}
+              recommendedBadgeLabel={recommendedBadgeLabel}
+            />
+          ),
+        )}
       </div>
 
       <div className={styles.secondaryBlock}>
@@ -212,6 +243,7 @@ export function ServicesSection({
               ctaLabel={getSecondaryCtaLabel(card.key)}
               ctaProjectGoal={selectedGoalLabel}
               defaultDeliveryLabel={deliveryLabel}
+              detailsCtaLabel={detailsCtaLabel}
               key={card.key}
             />
           ))}

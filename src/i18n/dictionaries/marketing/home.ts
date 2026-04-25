@@ -14,19 +14,20 @@ import { CONTACT_PAGE_KEY } from "@/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
 
-type ServiceCardKey = "landing" | "process" | "web" | "upgrade" | "maintenance";
+type PrimaryServiceCardKey = "landing" | "web" | "upgrade";
+type SecondaryServiceCardKey = "process" | "maintenance";
+type ServiceCardKey = PrimaryServiceCardKey | SecondaryServiceCardKey;
 
 type BaseServiceCard = {
   key: ServiceCardKey;
   iconSrc?: string;
   iconAlt?: string;
   title: string;
-  description: string;
   fit?: string;
   isRecommended?: boolean;
 };
 
-type StandardServiceCard = BaseServiceCard & {
+type StandardServiceCardBase = BaseServiceCard & {
   highlight: string;
   pricingHint: string;
   delivery: string;
@@ -34,6 +35,17 @@ type StandardServiceCard = BaseServiceCard & {
   included: string[];
   details?: string[];
 };
+
+type PrimaryServiceCard = StandardServiceCardBase & {
+  key: PrimaryServiceCardKey;
+};
+
+type SecondaryServiceCard = StandardServiceCardBase & {
+  key: SecondaryServiceCardKey;
+  description: string;
+};
+
+export type ServiceCardCopy = PrimaryServiceCard | SecondaryServiceCard;
 
 type ContactFormOption = {
   key: string;
@@ -66,204 +78,286 @@ type ProofMoreProjects = {
 
 const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
 
-export type LandingSectionCopy = {
+export type ProcessStepCopy = {
+  step: string;
+  title: string;
+  deliverable: string;
+  effort: string;
+  result: string;
+  description: string;
+};
+
+export type ProcessCtaCopy = {
+  label: string;
+  href: string;
+};
+
+export type QnaItemCopy = {
+  question: string;
+  answer: string;
+};
+
+export type QnaSecondaryContactCopy = {
+  hint: string;
+  label: string;
+  href: string;
+};
+
+export type ContactChannelCopy = {
+  mode?: "email" | "call";
+  kicker?: string;
+  label: string;
+  description?: string;
+  value: string;
+  href: string;
+  hint?: string;
+  actionLabel?: string;
+  copyValue?: string;
+  copyLabel?: string;
+  copiedLabel?: string;
+  helper?: string;
+  detailPoints?: string[];
+  metaLabel?: string;
+  metaValue?: string;
+};
+
+export type ContactCtaCopy = {
+  kicker?: string;
+  label: string;
+  href: string;
+  description?: string;
+  hint?: string;
+};
+
+export type ContactSecondaryCtaCopy = {
+  label: string;
+  href: string;
+};
+
+export type ContactFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  conditionalFieldHint: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  addPageLabel: string;
+  phoneLabel: string;
+  companyLabel: string;
+  roleLabel: string;
+  websiteLabel: string;
+  offerLabel: string;
+  offerPlaceholder: string;
+  goalLabel: string;
+  goalOptions: ContactFormOption[];
+  pagesLabel: string;
+  pagesPlaceholder: string;
+  pagesOptions?: ContactFormOption[];
+  pagesCustomLabel?: string;
+  pagesCustomPlaceholder?: string;
+  pagesCustomRemoveLabel?: string;
+  pagesRequiredHint?: string;
+  workflowLabel: string;
+  workflowOptions: ContactFormOption[];
+  stepNavigationLabel: string;
+  stepLabel: string;
+  stepOneTitle: string;
+  stepTwoTitle: string;
+  stepThreeTitle: string;
+  previousStepLabel: string;
+  nextStepLabel: string;
+  nextStepContactLabel?: string;
+  nextStepProjectLabel?: string;
+  budgetLabel: string;
+  budgetOptions: ContactFormOption[];
+  startLabel: string;
+  startOptions: ContactFormOption[];
+  projectDetailsLabel: string;
+  projectDetailsPlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorValidation: string;
+  submitErrorRateLimited: string;
+  submitErrorDelivery: string;
+  submitErrorGeneric: string;
+  validationSummaryPrefix: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorInvalidWebsite: string;
+  fieldErrorRequired: string;
+  fieldErrorProjectDetailsRequired: string;
+  fieldErrorPagesRequired: string;
+  fieldErrorTooManyPages: string;
+  fieldErrorGoalRequired: string;
+  fieldErrorWorkflowRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+  closeLabel?: string;
+};
+
+export type QuickContactFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  metaLabel: string;
+  copyActionLabel: string;
+  copiedActionLabel: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorRateLimited: string;
+  submitErrorDelivery: string;
+  submitErrorGeneric: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+};
+
+export type DiscoveryCallFormCopy = {
+  title: string;
+  subtitle: string;
+  intro: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  messagePlaceholder: string;
+  consentLabel: string;
+  privacyLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submitSuccess: string;
+  submitErrorRateLimited: string;
+  submitErrorGeneric: string;
+  fieldErrorInvalidEmail: string;
+  fieldErrorRequired: string;
+  fieldErrorConsentRequired: string;
+  requiredHint: string;
+};
+
+export type FooterColumnCopy = {
+  title: string;
+  links: Array<{
+    label: string;
+    href: string;
+  }>;
+};
+
+export type FooterSocialLinkCopy = {
+  platform: "linkedin" | "x" | "instagram";
+  href: string;
+  label: string;
+};
+
+export type FooterLegalLinkCopy = {
+  label: string;
+  href: string;
+};
+
+type HeroSectionCopy = {
   title: string;
   description: string;
-  summaryPoints?: string[];
-  proofRatingAriaLabel?: string;
-  proofReviewLinkLabel?: string;
-  proofReviews?: ProofReview[];
-  proofFeaturedProject?: ProofFeaturedProject;
-  proofMoreProjects?: ProofMoreProjects;
-  serviceCards?: StandardServiceCard[];
-  serviceSecondaryTitle?: string;
-  serviceContextNote?: string;
-  processSteps?: Array<{
-    step: string;
-    title: string;
-    deliverable?: string;
-    effort?: string;
-    result?: string;
-    description: string;
-  }>;
-  processCta?: {
-    label: string;
-    href: string;
-  };
-  qnaItems?: Array<{
-    question: string;
-    answer: string;
-  }>;
-  qnaSecondaryContact?: {
-    hint: string;
-    label: string;
-    href: string;
-  };
-  contactDecisionIntro?: string;
-  contactChannels?: Array<{
-    mode?: "email" | "call";
-    kicker?: string;
-    label: string;
-    description?: string;
-    value: string;
-    href: string;
-    hint?: string;
-    actionLabel?: string;
-    copyValue?: string;
-    copyLabel?: string;
-    copiedLabel?: string;
-    helper?: string;
-    detailPoints?: string[];
-    metaLabel?: string;
-    metaValue?: string;
-  }>;
-  contactCta?: {
-    kicker?: string;
-    label: string;
-    href: string;
-    description?: string;
-    hint?: string;
-  };
-  contactSecondaryCta?: {
-    label: string;
-    href: string;
-  };
-  contactTablistLabel?: string;
-  contactForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    conditionalFieldHint: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    addPageLabel: string;
-    phoneLabel: string;
-    companyLabel: string;
-    roleLabel: string;
-    websiteLabel: string;
-    offerLabel: string;
-    offerPlaceholder: string;
-    goalLabel: string;
-    goalOptions: ContactFormOption[];
-    pagesLabel: string;
-    pagesPlaceholder: string;
-    pagesOptions?: ContactFormOption[];
-    pagesCustomLabel?: string;
-    pagesCustomPlaceholder?: string;
-    pagesCustomRemoveLabel?: string;
-    pagesRequiredHint?: string;
-    workflowLabel: string;
-    workflowOptions: ContactFormOption[];
-    stepNavigationLabel: string;
-    stepLabel: string;
-    stepOneTitle: string;
-    stepTwoTitle: string;
-    stepThreeTitle: string;
-    previousStepLabel: string;
-    nextStepLabel: string;
-    nextStepContactLabel?: string;
-    nextStepProjectLabel?: string;
-    budgetLabel: string;
-    budgetOptions: ContactFormOption[];
-    startLabel: string;
-    startOptions: ContactFormOption[];
-    projectDetailsLabel: string;
-    projectDetailsPlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorValidation: string;
-    submitErrorRateLimited: string;
-    submitErrorDelivery: string;
-    submitErrorGeneric: string;
-    validationSummaryPrefix: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorInvalidWebsite: string;
-    fieldErrorRequired: string;
-    fieldErrorProjectDetailsRequired: string;
-    fieldErrorPagesRequired: string;
-    fieldErrorTooManyPages: string;
-    fieldErrorGoalRequired: string;
-    fieldErrorWorkflowRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-    closeLabel?: string;
-  };
-  quickContactForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    metaLabel: string;
-    copyActionLabel: string;
-    copiedActionLabel: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    messageLabel: string;
-    messagePlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorRateLimited: string;
-    submitErrorDelivery: string;
-    submitErrorGeneric: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-  };
-  discoveryCallForm?: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    firstNameLabel: string;
-    lastNameLabel: string;
-    emailLabel: string;
-    messageLabel: string;
-    messagePlaceholder: string;
-    consentLabel: string;
-    privacyLabel: string;
-    submitLabel: string;
-    submittingLabel: string;
-    submitSuccess: string;
-    submitErrorRateLimited: string;
-    submitErrorGeneric: string;
-    fieldErrorInvalidEmail: string;
-    fieldErrorRequired: string;
-    fieldErrorConsentRequired: string;
-    requiredHint: string;
-  };
-  footerColumns?: Array<{
-    title: string;
-    links: Array<{
-      label: string;
-      href: string;
-    }>;
-  }>;
-  footerBrand?: string;
-  footerCopyright?: string;
-  footerSocialLinks?: Array<{
-    platform: "linkedin" | "x" | "instagram";
-    href: string;
-    label: string;
-  }>;
-  footerLegalLinks?: Array<{ label: string; href: string }>;
+};
+
+type ServicesSectionCopy = {
+  title: string;
+  serviceCards: ServiceCardCopy[];
+  serviceSecondaryTitle: string;
+  serviceContextNote: string;
+};
+
+type ProofSectionCopy = {
+  title: string;
+  description: string;
+  summaryPoints: string[];
+  proofRatingAriaLabel: string;
+  proofReviewLinkLabel: string;
+  proofReviews: ProofReview[];
+  proofFeaturedProject: ProofFeaturedProject;
+  proofMoreProjects: ProofMoreProjects;
+};
+
+type ProcessSectionCopy = {
+  title: string;
+  description: string;
+  summaryPoints: string[];
+  processSteps: ProcessStepCopy[];
+  processCta: ProcessCtaCopy;
+};
+
+type QnaSectionCopy = {
+  title: string;
+  description: string;
+  qnaItems: QnaItemCopy[];
+  qnaSecondaryContact: QnaSecondaryContactCopy;
+};
+
+type ContactSectionCopy = {
+  title: string;
+  contactDecisionIntro: string;
+  contactAlternativeLabel: string;
+  contactChannels: ContactChannelCopy[];
+  contactCta: ContactCtaCopy;
+  contactSecondaryCta: ContactSecondaryCtaCopy;
+  contactForm: ContactFormCopy;
+  quickContactForm: QuickContactFormCopy;
+  discoveryCallForm: DiscoveryCallFormCopy;
+};
+
+type FooterSectionCopy = {
+  description: string;
+  footerColumns: FooterColumnCopy[];
+  footerBrand: string;
+  footerCopyright: string;
+  footerSocialLinks: FooterSocialLinkCopy[];
+  footerLegalLinks: FooterLegalLinkCopy[];
   footerBottomNote?: string;
 };
 
-export type LandingSection = {
-  id: SectionId;
-  copy: Record<Locale, LandingSectionCopy>;
+export type LandingSectionCopy =
+  | HeroSectionCopy
+  | ServicesSectionCopy
+  | ProofSectionCopy
+  | ProcessSectionCopy
+  | QnaSectionCopy
+  | ContactSectionCopy
+  | FooterSectionCopy;
+
+type ContentSectionMap = {
+  hero: HeroSectionCopy;
+  services: ServicesSectionCopy;
+  proof: ProofSectionCopy;
+  process: ProcessSectionCopy;
+  faq: QnaSectionCopy;
+  contact: ContactSectionCopy;
+  footer: FooterSectionCopy;
 };
 
+type ContentSectionId = Exclude<SectionId, "lead-bridge">;
+
+type LocalizedLandingSection<Id extends ContentSectionId> = {
+  id: Id;
+  copy: Record<Locale, ContentSectionMap[Id]>;
+};
+
+export type LandingSection = {
+  [Id in ContentSectionId]: LocalizedLandingSection<Id>;
+}[ContentSectionId];
+
 export type HomeSectionContent = {
-  id: SectionId;
-} & LandingSectionCopy;
+  [Id in ContentSectionId]: { id: Id } & ContentSectionMap[Id];
+}[ContentSectionId];
 
 const LEGAL_PAGE_HREFS = {
   de: {
@@ -278,44 +372,19 @@ const LEGAL_PAGE_HREFS = {
   },
 } as const;
 
-const HOME_SECTIONS: LandingSection[] = [
+const HOME_SECTIONS = [
   {
     id: "hero",
     copy: {
       de: {
-        title: "Webseiten, die führen.\nTools, die entlasten.",
+        title: "Landingpages,\ndie passende Anfragen bringen.",
         description:
-          "Für Unternehmen, die online klarer auftreten und intern weniger manuell nacharbeiten wollen.",
+          "Für lokale und regionale Unternehmen, die ihr Angebot klar erklären, Vertrauen aufbauen und Besucher gezielt zur Projektanfrage führen wollen.",
       },
       en: {
-        title: "Websites that lead.\nTools that lighten the load.",
+        title: "Landing pages\nthat bring in relevant inquiries.",
         description:
-          "For companies that want to show up more clearly online and reduce manual follow-up work internally.",
-      },
-    },
-  },
-  {
-    id: "included",
-    copy: {
-      de: {
-        title: "Vom ersten Rahmen bis zur Übergabe",
-        description:
-          "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht.",
-        summaryPoints: [
-          "Empfehlung vor Start",
-          "kurze Abstimmung",
-          "QA & Übergabe",
-        ],
-      },
-      en: {
-        title: "From first outline to handoff",
-        description:
-          "After the inquiry, you know which entry point makes sense and how the next step looks.",
-        summaryPoints: [
-          "recommendation before kickoff",
-          "short feedback loops",
-          "QA & handover",
-        ],
+          "For local and regional businesses that want to explain their offer clearly, build trust, and guide visitors toward a project request.",
       },
     },
   },
@@ -420,41 +489,32 @@ const HOME_SECTIONS: LandingSection[] = [
     copy: {
       de: {
         title: "Was brauchst du gerade?",
-        description:
-          "Fünf typische Leistungsmodelle zur Orientierung – je nachdem, ob du Anfragen klarer führen, deinen Auftritt neu aufsetzen oder interne Abläufe vereinfachen willst. Umfang, Timing und Vergütung klären wir vor Start individuell.",
-        summaryPoints: [
-          "klarer Einstieg je Problem",
-          "Umfang vor Start verbindlich",
-          "Lieferfenster und typische Projektumfänge sichtbar",
-        ],
         serviceContextNote:
-          "Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform.",
-        serviceSecondaryTitle:
-          "Schon etwas da? Oder brauchst du Unterstützung danach?",
+          "Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten.",
+        serviceSecondaryTitle: "Ergänzende Leistungen für Betrieb und Abläufe",
         serviceCards: [
           {
             key: "landing",
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
-            description:
-              "Landingpage mit klarer Angebotsstruktur, stärkerem CTA-Fluss und sauberer technischer Basis.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
             isRecommended: true,
-            highlight: "schnell live & conversion-fokussiert",
+            highlight:
+              "schnell live und klar auf Anfragen, Buchungen oder Verkäufe ausgerichtet",
             pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
-            delivery: "3–7 Tage",
+            delivery: "3–10 Tage",
             included: [
-              "Klare Angebots- und CTA-Struktur für dein Hauptziel",
-              "Mobile-first Design mit sauberer Leseführung",
-              "Technische Basis für SEO, Open Graph und Indexierung",
-              "Performance-Optimierung mit Fokus auf Core Web Vitals",
+              "Klare Angebotsstruktur mit einem eindeutigen nächsten Schritt",
+              "Mobile Gestaltung mit schneller Orientierung",
+              "Abschnitte für Nutzen, Vertrauen, Ablauf und Kontakt",
+              "Saubere Grundlage für Auffindbarkeit, Vorschau beim Teilen und schnelle Ladezeiten",
               "1–2 Feedbackrunden inklusive",
             ],
             details: [
-              "Copy-Feinschliff oder Inhaltsproduktion als Zusatzleistung möglich.",
-              "Ab der 3. Feedbackrunde kalkuliere ich transparent nach.",
-              "Hosting, Domain und externe Tool-Lizenzen werden bei Bedarf separat abgestimmt.",
+              "Copy-Feinschliff oder Inhaltsproduktion kann ergänzt werden.",
+              "Ab der 3. Feedbackrunde wird zusätzlicher Aufwand transparent kalkuliert.",
+              "Hosting, Domain und externe Tools stimmen wir bei Bedarf separat ab.",
             ],
           },
           {
@@ -462,48 +522,21 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
-            description:
-              "Webseiten-Relaunch oder Unternehmensseite mit besserer Positionierung und klareren Nutzerwegen.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
-            highlight: "klarer professioneller Auftritt",
+            highlight: "professioneller Auftritt mit klaren Wegen zur Anfrage",
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
-            delivery: "7–14 Tage",
-            included: [
-              "Positionierung, Seitenstruktur und Navigation mit klarer Journey",
-              "Erweiterbares Design-System statt Einmal-Layout",
-              "CMS-Setup bzw. pflegeleichte Struktur je nach Stack",
-              "Performance- und technische SEO-Basics",
-              "Kontakt- bzw. Lead-Flow inkl. Formular",
-              "Deployment/Go-Live Support",
-            ],
-            details: [
-              "Zusätzliche Seiten und Mehrsprachigkeit planen wir vor Start verbindlich ein.",
-              "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
-            ],
-          },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Prozess-Tools Icon",
-            title: "Prozess-Tools",
-            description:
-              "Kleines Tool, das manuelle Arbeit reduziert und interne Schritte transparenter macht.",
-            fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
-            highlight: "weniger manuelle Schritte im Alltag",
-            pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
             delivery: "10–21 Tage",
             included: [
-              "Kompakter Rahmen-Workshop zu Ziel, Daten und Rollen",
-              "MVP mit einem Kern-Workflow, der spürbar entlastet",
-              "Status- oder Dashboard-Ansicht für mehr Transparenz",
-              "Integrationen je nach Umfang (Webhooks, APIs)",
-              "Basis für Login- und Rechtekonzept",
-              "Übergabe inkl. Kurz-Dokumentation",
+              "Positionierung und Seitenstruktur vor der Umsetzung geklärt",
+              "Startseite und Kernseiten mit einheitlicher Gestaltung",
+              "Navigation, Inhalte und Kontaktwege logisch aufgebaut",
+              "Inhalte so aufgebaut, dass spätere Änderungen leichter möglich sind",
+              "Technische Grundlagen für SEO, Performance und mobile Nutzung",
+              "Kontakt- oder Anfrageformular inklusive",
             ],
             details: [
-              "Weitere Workflows setzen wir als Folgepakete um.",
-              "Enterprise-Authentifizierung (z. B. SSO) ist nicht im Basis-MVP enthalten.",
-              "Betrieb, Monitoring und laufender Support sind separat buchbar.",
+              "Sprachen, zusätzliche Seiten und Integrationen werden vor Start als eigener Umfang eingeplant.",
+              "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
             ],
           },
           {
@@ -511,24 +544,23 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Webseiten-Upgrade Icon",
             title: "Webseiten-Upgrade",
-            description:
-              "Mehr Speed, bessere UX, klarere CTAs und moderneres UI ohne kompletten Neubau.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
-            highlight: "spürbare UX- und Speed-Verbesserung",
+            highlight:
+              "klarer, schneller und leichter nutzbar ohne kompletten Neubau",
             pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
-            delivery: "3–10 Tage",
+            delivery: "3–14 Tage",
             included: [
-              "Priorisierte Quick Wins für Speed, UX und mobile Klarheit",
-              "Gezielter Refresh für Hierarchie, CTA und Leseführung",
-              "Technische SEO-Basics (Indexierung, Struktur)",
-              "Responsive- und Accessibility-Basics",
-              "Code- und CSS-Cleanup, wo sinnvoll",
-              "Vorher-Nachher-Check der wichtigsten Verbesserungen",
+              "Kurzanalyse der größten Bremsen in UX, Inhalt und Technik",
+              "Bessere Hierarchie für Inhalte, Kontaktwege und Leseführung",
+              "Mobile Darstellung und grundlegende Barrierefreiheit geprüft",
+              "Technische SEO-Grundlagen für Struktur und Indexierung",
+              "Code- und CSS-Aufräumen dort, wo es sichtbar hilft",
+              "Vorher-Nachher-Check der wichtigsten Änderungen",
             ],
             details: [
-              "Optional auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
+              "Auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
               "Größere Rebuild-Themen werden separat empfohlen und geplant.",
-              "Tiefe Backend-Refactorings sind nicht im Basis-Upgrade enthalten.",
+              "Größere Umbauten im Hintergrund der Anwendung sind nicht Teil des Basis-Upgrades.",
             ],
           },
           {
@@ -537,63 +569,79 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Wartung und Support Icon",
             title: "Wartung & Support",
             description:
-              "Schnelle Weiterentwicklung, Bugfixes und Pflege für bestehende Seiten oder Tools.",
+              "Planbare Pflege, kleine Weiterentwicklungen und Bugfixes für bestehende Seiten oder Tools.",
             fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
-            highlight: "schnelle Hilfe für laufende Themen",
+            highlight: "verlässliche Hilfe für laufende Anpassungen",
             pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
-            delivery: "24–72h",
+            delivery: "24–72h Antwortzeit",
             deliveryLabel: "Typische Reaktionszeit",
             included: [
-              "Content- und Kleinpflege nach abgestimmtem Umfang",
-              "Entwicklung und Implementierung nach Aufwand oder Vereinbarung",
-              "Auf Wunsch regelmäßige Monitoring- und Qualitätschecks",
-              "Wichtige Themen zuerst (nach Business-Impact)",
-              "Transparente Betreuungspakete oder Einzelabruf nach Bedarf",
+              "Kleine Inhalts- und Layoutänderungen",
+              "Bugfixes und technische Korrekturen",
+              "Kleinere Erweiterungen nach Aufwand",
+              "Optional regelmäßige Qualitäts- und Funktionschecks",
+              "Priorisierung nach Dringlichkeit und Business-Nutzen",
             ],
             details: [
               "Du zahlst nur den abgestimmten oder tatsächlich erfassten Aufwand mit klarer Aufstellung.",
-              "Notfallanfragen priorisiere ich nach Verfügbarkeit.",
+              "Notfallanfragen werden nach Verfügbarkeit priorisiert; feste Reaktionszeiten nur mit abgestimmtem Support-Paket.",
+            ],
+          },
+          {
+            key: "process",
+            iconSrc: "/services/process-icon.svg",
+            iconAlt: "Prozessoptimierungs-Tools Icon",
+            title: "Prozessoptimierungs-Tools",
+            description:
+              "Kleines internes Tool oder schlanke Automatisierung, wenn nach der Website wiederkehrende Arbeit reduziert werden soll.",
+            fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
+            highlight: "weniger manuelle Schritte und klarere Abläufe",
+            pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
+            delivery: "stark projektabhängig, nach kurzer Klärung einschätzbar",
+            included: [
+              "Kurze Klärung von Ziel, Nutzern, Daten und Ablauf",
+              "Erste nutzbare Version für einen konkreten Workflow",
+              "Eingaben, Status oder Übersichten passend zum Ablauf",
+              "Anbindungen an bestehende Tools, wenn sinnvoll",
+              "Rollen oder Zugriff nur, wenn sie für den Start nötig sind",
+              "Übergabe mit kurzer Dokumentation",
+            ],
+            details: [
+              "Weitere Workflows setzen wir als Folgepakete um.",
+              "Login, Rechte, Integrationen und Betrieb hängen vom konkreten Ablauf ab und werden vor Start eingegrenzt.",
             ],
           },
         ],
       },
       en: {
         title: "What do you need right now?",
-        description:
-          "Five typical service models for orientation, depending on whether you want to guide inquiries more clearly, rebuild your presence, or simplify internal workflows. Scope, timing, and pricing are aligned individually before kickoff.",
-        summaryPoints: [
-          "clear entry point per problem",
-          "service range aligned before kickoff",
-          "delivery window and typical project scope visible",
-        ],
         serviceContextNote:
-          "Every project is calculated individually. You receive a binding written offer before delivery starts.",
+          "Before kickoff, you receive a clear offer with scope, timeline, and cost.",
         serviceSecondaryTitle:
-          "Already have something in place? Or need support afterward?",
+          "Additional services for operations and workflows",
         serviceCards: [
           {
             key: "landing",
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
-            description:
-              "Landing page with a clearer offer structure, stronger CTA flow, and a clean technical foundation.",
             fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
             isRecommended: true,
-            highlight: "live quickly and tuned for conversion",
+            highlight:
+              "live quickly and clearly aimed at inquiries, bookings, or sales",
             pricingHint: "Quote based on goal, scope, and feedback depth",
-            delivery: "3–7 days",
+            delivery: "3–10 days",
             included: [
-              "Clear offer and CTA structure around your main goal",
-              "Mobile-first design with cleaner reading flow",
-              "Technical setup for SEO, Open Graph, and indexability",
-              "Performance optimization focused on Core Web Vitals",
+              "Clear offer structure with one obvious next step",
+              "Mobile design with fast orientation",
+              "Sections for value, trust, process, and contact",
+              "Clean foundation for discoverability, share previews, and fast load times",
               "1–2 feedback rounds included",
             ],
             details: [
-              "Copy refinement or content production is available as an add-on.",
-              "From the 3rd feedback round onward, additional effort is outlined transparently.",
-              "Hosting, domain, and external tool licenses are aligned separately when needed.",
+              "Copy refinement or content production can be added.",
+              "From the 3rd feedback round onward, additional effort is quoted transparently.",
+              "Hosting, domain, and external tools are aligned separately when needed.",
             ],
           },
           {
@@ -601,48 +649,21 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Websites icon",
             title: "Websites",
-            description:
-              "Company website or relaunch with clearer positioning and more obvious user paths.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
-            highlight: "a clearer professional presence",
+            highlight: "a professional presence with clear paths to contact",
             pricingHint: "Individual quote based on page scope and depth",
-            delivery: "7–14 days",
-            included: [
-              "Positioning, site structure, and navigation with a clearer journey",
-              "Extendable design system instead of a one-off layout",
-              "CMS setup or low-maintenance content structure by stack",
-              "Performance and technical SEO basics",
-              "Contact or lead flow including form",
-              "Deployment/go-live support",
-            ],
-            details: [
-              "Additional pages and multilingual rollout are planned upfront.",
-              "Third-party licenses and external integrations are aligned separately when needed.",
-            ],
-          },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Process tools icon",
-            title: "Process tools",
-            description:
-              "Small internal tool that reduces manual work and creates more transparency.",
-            fit: "Teams that want to structure or partially automate recurring internal steps.",
-            highlight: "fewer manual steps in daily work",
-            pricingHint: "Calculated by workflow, data, and integrations",
             delivery: "10–21 days",
             included: [
-              "Compact planning workshop for goals, data, and roles",
-              "MVP with one core workflow that removes friction",
-              "Status or dashboard view for more transparency",
-              "Integrations by project range (webhooks, APIs)",
-              "Foundation for login and access roles",
-              "Handover including short documentation",
+              "Positioning and page structure clarified before implementation",
+              "Homepage and core pages with consistent design",
+              "Navigation, content, and contact paths structured logically",
+              "Content structured so later updates are easier",
+              "Technical foundations for SEO, performance, and mobile use",
+              "Contact or inquiry form included",
             ],
             details: [
-              "Additional workflows are delivered as follow-up modules.",
-              "Enterprise authentication (e.g. SSO) is not part of the base MVP.",
-              "Operations, monitoring, and ongoing support are available separately.",
+              "Languages, additional pages, and integrations are planned as their own scope before kickoff.",
+              "Third-party licenses and external integrations are aligned separately when needed.",
             ],
           },
           {
@@ -650,25 +671,24 @@ const HOME_SECTIONS: LandingSection[] = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
             title: "Website upgrade",
-            description:
-              "More speed, clearer UX, stronger CTAs, and more modern UI without a full rebuild.",
             fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
-            highlight: "noticeable UX and speed gains",
+            highlight:
+              "clearer, faster, and easier to use without a full rebuild",
             pricingHint:
               "Quote based on the current state and depth of intervention",
-            delivery: "3–10 days",
+            delivery: "3–14 days",
             included: [
-              "Prioritized quick wins for speed, UX, and mobile clarity",
-              "Targeted refresh for hierarchy, CTA, and reading flow",
-              "Technical SEO basics (indexing, structure)",
-              "Responsiveness and accessibility basics",
-              "Code and CSS cleanup where it adds value",
-              "Before/after check of key improvements",
+              "Short analysis of the biggest blockers in UX, content, and tech",
+              "Better hierarchy for content, contact paths, and reading flow",
+              "Mobile presentation and basic accessibility checked",
+              "Technical SEO foundations for structure and indexing",
+              "Code and CSS cleanup where it visibly helps",
+              "Before/after check of the most important changes",
             ],
             details: [
-              "Can also be planned as ongoing iteration or as a focused one-off improvement.",
+              "Can also be planned as ongoing improvement or a focused one-off service.",
               "Larger rebuild topics are recommended and planned separately.",
-              "Deep backend refactoring is not included in the base upgrade.",
+              "Larger changes behind the application are not part of the base upgrade.",
             ],
           },
           {
@@ -677,22 +697,46 @@ const HOME_SECTIONS: LandingSection[] = [
             iconAlt: "Maintenance and support icon",
             title: "Maintenance & support",
             description:
-              "Fast iteration, bugfixes, and upkeep for existing websites or tools.",
+              "Planned maintenance, small improvements, and bugfixes for existing websites or tools.",
             fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
-            highlight: "fast help for ongoing priorities",
+            highlight: "reliable help for ongoing changes",
             pricingHint: "By effort or an agreed support retainer",
-            delivery: "24–72h",
+            delivery: "24–72h response time",
             deliveryLabel: "Typical response time",
             included: [
-              "Content and minor updates within an agreed scope",
-              "Development and implementation by effort or agreement",
-              "Optional recurring monitoring and quality checks",
-              "High-impact topics first (by business impact)",
-              "Transparent retainers or ad-hoc support when needed",
+              "Small content and layout changes",
+              "Bugfixes and technical corrections",
+              "Smaller extensions by effort",
+              "Optional recurring quality and function checks",
+              "Prioritization by urgency and business value",
             ],
             details: [
               "You only pay for the agreed or actually logged effort with a clear breakdown.",
-              "Urgent requests are prioritized by availability.",
+              "Urgent requests are prioritized by availability; fixed response times require an agreed support package.",
+            ],
+          },
+          {
+            key: "process",
+            iconSrc: "/services/process-icon.svg",
+            iconAlt: "Process optimization tools icon",
+            title: "Process optimization tools",
+            description:
+              "Small internal tool or lean automation when recurring work should be reduced after the website path is clear.",
+            fit: "Teams that want to structure or partially automate recurring internal steps.",
+            highlight: "fewer manual steps and clearer workflows",
+            pricingHint: "Calculated by workflow, data, and integrations",
+            delivery: "highly project-dependent, estimated after short scoping",
+            included: [
+              "Short clarification of goal, users, data, and workflow",
+              "First usable version for one concrete workflow",
+              "Inputs, status, or overviews matched to the workflow",
+              "Connections to existing tools where useful",
+              "Roles or access only where needed for the first step",
+              "Handover with short documentation",
+            ],
+            details: [
+              "Additional workflows are delivered as follow-up modules.",
+              "Login, permissions, integrations, and operations depend on the concrete workflow and are scoped before kickoff.",
             ],
           },
         ],
@@ -703,9 +747,9 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "process",
     copy: {
       de: {
-        title: "Vom ersten Rahmen bis zum Launch in vier klaren Schritten",
+        title: "Von der Anfrage zur klaren Entscheidung in vier Schritten",
         description:
-          "Der Ablauf ist so angelegt, dass du früh Orientierung bekommst, schnell eine erste Richtung siehst und vor dem Launch keine unklaren Übergaben hast.",
+          "Der Ablauf reduziert Risiko vor dem Start: Du bekommst schnell Klarheit zu Ziel, Umfang, Timing und dem nächsten sinnvollen Schritt.",
         summaryPoints: [
           "Ziel, Angebot und Umfang früh geklärt",
           "erste Richtung schnell sichtbar",
@@ -719,7 +763,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Aufwand: ca. 30 Min",
             result: "Ergebnis: klarer Rahmen + Prioritäten",
             description:
-              "Wir klären Ziel, Material und Rahmen. Danach bekommst du eine klare Empfehlung und ein passendes Angebot.",
+              "Wir klären Ziel, Zielgruppe, vorhandenes Material und Rahmen. Danach bekommst du eine Empfehlung, welches Leistungsmodell wirklich passt.",
           },
           {
             step: "02",
@@ -728,7 +772,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
             result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
             description:
-              "Ich entwickle die Struktur, Seitenlogik oder den ersten Prototypen. So ist früh sichtbar, wie das Projekt aufgebaut wird.",
+              "Ich entwickle die Seitenlogik oder den ersten Prototypen. So siehst du früh, ob Angebot, Inhalte und Anfrageweg zusammenpassen.",
           },
           {
             step: "03",
@@ -755,9 +799,9 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "From first outline to launch in four clear steps",
+        title: "From request to clear decision in four steps",
         description:
-          "The flow is designed so you get orientation early, see the first direction quickly, and avoid fuzzy handoffs before launch.",
+          "The flow reduces risk before kickoff: you quickly get clarity on goal, scope, timing, and the next sensible step.",
         summaryPoints: [
           "goal, offer, and project range clarified early",
           "first direction visible quickly",
@@ -771,7 +815,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Effort: about 30 min",
             result: "Outcome: clear frame + priorities",
             description:
-              "We align on the goal, materials, and project frame. After that, you get a clear recommendation and a fitting offer.",
+              "We align on the goal, audience, available materials, and frame. After that, you get a recommendation on the service model that actually fits.",
           },
           {
             step: "02",
@@ -780,7 +824,7 @@ const HOME_SECTIONS: LandingSection[] = [
             effort: "Delivery: visible early in the project",
             result: "Outcome: page structure or core workflow",
             description:
-              "I develop the structure, page logic, or the first prototype. That makes the project setup visible early.",
+              "I develop the page logic or first prototype. This shows early whether the offer, content, and inquiry path work together.",
           },
           {
             step: "03",
@@ -815,11 +859,6 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "Die wichtigsten Fragen vor dem Projektstart sind hier bewusst knapp, konkret und ohne Vertriebssprache beantwortet.",
-        summaryPoints: [
-          "Typische Projektfragen",
-          "Kurz, klar, direkt beantwortet",
-          "Sonderfall? Direkter Mailkontakt",
-        ],
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -839,7 +878,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Welche Tools setzt du ein?",
             answer:
-              "Ich arbeite mit einem modernen Web-Stack rund um Next.js, Tailwind und passenden Analyse- bzw. Automatisierungs-Tools. Schnelle Build-Workflows nutze ich dort, wo sie sinnvoll sind, die Verantwortung für Architektur, Review und QA bleibt aber bei mir.",
+              "Ich arbeite mit einem modernen Projekt-Setup rund um Next.js, Tailwind und passenden Analyse- bzw. Automatisierungs-Tools. Schnelle Build-Workflows nutze ich dort, wo sie sinnvoll sind, die Verantwortung für Architektur, Review und QA bleibt aber bei mir.",
           },
           {
             question: "Gibt es versteckte Kosten?",
@@ -877,11 +916,6 @@ const HOME_SECTIONS: LandingSection[] = [
         title: "Q&A",
         description:
           "The most relevant pre-project questions are answered here in a concise, direct format without sales fluff.",
-        summaryPoints: [
-          "Common project questions",
-          "Short, clear, directly answered",
-          "Different case? Direct email",
-        ],
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",
@@ -901,7 +935,7 @@ const HOME_SECTIONS: LandingSection[] = [
           {
             question: "Which tools do you use?",
             answer:
-              "I work with a modern web stack around Next.js, Tailwind, and suitable analytics or automation tools. Where fast build workflows help, I use them, but architecture, review, and QA stay under my responsibility.",
+              "I work with a modern project setup around Next.js, Tailwind, and suitable analytics or automation tools. Where fast build workflows help, I use them, but architecture, review, and QA stay under my responsibility.",
           },
           {
             question: "Are there any hidden costs?",
@@ -941,23 +975,17 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "contact",
     copy: {
       de: {
-        title: "Wähle den passenden Einstieg für dein Projekt",
-        description:
-          "Drei Wege, ein Ziel: schnell den sinnvollsten nächsten Schritt für dein Vorhaben finden.",
-        summaryPoints: [
-          "3 Wege je nach Projektstand",
-          "In der Regel Rückmeldung innerhalb von 24h",
-          "Direkter Kontakt ohne Vertriebsschleife",
-        ],
+        title: "Starte mit einer Projektanfrage",
         contactDecisionIntro:
-          "Wähle den Einstieg, der jetzt passt: Projektanfrage, kurze E-Mail oder ein 15-20-Minuten-Kennenlerntermin.",
+          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und machen dein Vorhaben schneller einschätzbar.",
+        contactAlternativeLabel: "Falls es noch kürzer sein soll",
         contactChannels: [
           {
             mode: "call",
-            kicker: "Synchron abstimmen",
+            kicker: "Optional",
             label: "Kennenlern-Call",
             description:
-              "Für direkte Abstimmung, wenn Umfang und Aufwand im Termin geklärt werden sollen.",
+              "Für direkte Abstimmung, wenn du noch unsicher bist, welcher Leistungsweg passt.",
             value: "15-20 Minuten Abstimmung",
             href: COMPANY_CALENDLY,
             actionLabel: "Termin auswählen",
@@ -969,10 +997,10 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             mode: "email",
-            kicker: "Asynchron & schnell",
-            label: "Kurze E-Mail",
+            kicker: "Kurz",
+            label: "Kurze Nachricht",
             description:
-              "Für schnellen Erstkontakt, wenn du den nächsten Schritt kurz per Text klären willst.",
+              "Für schnelle Rückfragen, wenn eine vollständige Projektanfrage noch zu früh ist.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             actionLabel: "E-Mail senden",
@@ -996,14 +1024,13 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
         },
-        contactTablistLabel: "Kontaktwege",
         contactForm: {
-          title: "Projektanfrage für konkrete Vorhaben",
-          subtitle: "Für Vorhaben mit klarer Richtung und Startbereitschaft.",
+          title: "Projekt einschätzen lassen",
+          subtitle: "Für konkrete Vorhaben mit klarer nächster Entscheidung.",
           intro:
-            "Du gibst die wichtigsten Eckdaten an, ich antworte mit einem klaren Vorschlag zu Umfang, Timing und Budgetrahmen.",
+            "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
-            "Je nach gewähltem Leistungsmodell zeige ich nur die wirklich relevanten Felder.",
+            "Die Zusatzfragen passen sich an dein gewähltes Leistungsmodell an.",
           firstNameLabel: "Vorname",
           lastNameLabel: "Nachname",
           emailLabel: "E-Mail",
@@ -1013,7 +1040,7 @@ const HOME_SECTIONS: LandingSection[] = [
           roleLabel: "Rolle",
           websiteLabel: "Aktuelle Webseite",
           offerLabel: "Passendes Leistungsmodell",
-          offerPlaceholder: "Bitte Leistungsmodell wählen",
+          offerPlaceholder: "Leistungsmodell wählen",
           goalLabel: "Hauptziel der Landingpage",
           goalOptions: [
             {
@@ -1209,23 +1236,17 @@ const HOME_SECTIONS: LandingSection[] = [
         },
       },
       en: {
-        title: "Choose the right entry point for your project",
-        description:
-          "Three paths, one goal: move to the most practical next step quickly.",
-        summaryPoints: [
-          "3 paths based on project clarity",
-          "Typically a reply within 24h",
-          "Direct contact without sales handoff",
-        ],
+        title: "Start with a project request",
         contactDecisionIntro:
-          "Pick the path that fits now: project request, short email, or a focused 15-20 minute call.",
+          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and make the request easier to estimate.",
+        contactAlternativeLabel: "If you need a shorter path",
         contactChannels: [
           {
             mode: "call",
-            kicker: "Sync alignment",
+            kicker: "Optional",
             label: "Discovery call",
             description:
-              "Best for live alignment when project range and effort need quick discussion.",
+              "Best for live alignment when you are still unsure which service path fits.",
             value: "15-20 minute alignment call",
             href: COMPANY_CALENDLY,
             actionLabel: "Choose a time",
@@ -1237,10 +1258,10 @@ const HOME_SECTIONS: LandingSection[] = [
           },
           {
             mode: "email",
-            kicker: "Async & low effort",
-            label: "Short email",
+            kicker: "Short",
+            label: "Quick message",
             description:
-              "Best for fast async contact when you want to clarify the next step in writing.",
+              "Best for quick questions when a full project request feels too early.",
             value: COMPANY.contact.email,
             href: COMPANY_MAILTO,
             actionLabel: "Send email",
@@ -1264,15 +1285,13 @@ const HOME_SECTIONS: LandingSection[] = [
           label: "Compare service models",
           href: SECTION_HREFS.services,
         },
-        contactTablistLabel: "Contact paths",
         contactForm: {
-          title: "Project request for concrete requirements",
-          subtitle:
-            "Best when direction is clear and you want to move directly.",
+          title: "Get a project estimate",
+          subtitle: "For concrete requirements with a clear next decision.",
           intro:
-            "Share the key project facts and I reply with a practical range, timing, and budget recommendation.",
+            "Share the key facts. You get a clear view on scope, timing, and budget range.",
           conditionalFieldHint:
-            "Based on your selected service model, I only show fields that are actually relevant.",
+            "The follow-up questions adapt to your selected service model.",
           firstNameLabel: "First name",
           lastNameLabel: "Last name",
           emailLabel: "Email",
@@ -1282,7 +1301,7 @@ const HOME_SECTIONS: LandingSection[] = [
           roleLabel: "Role",
           websiteLabel: "Current website",
           offerLabel: "Relevant service model",
-          offerPlaceholder: "Select a service model",
+          offerPlaceholder: "Choose a service model",
           goalLabel: "Primary landing page goal",
           goalOptions: [
             {
@@ -1471,14 +1490,13 @@ const HOME_SECTIONS: LandingSection[] = [
     id: "footer",
     copy: {
       de: {
-        title: "Footer",
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
         footerColumns: [
           {
             title: "Menü",
             links: [
-              { label: "Was du bekommst", href: SECTION_HREFS.included },
+              { label: "Einstieg", href: SECTION_HREFS["lead-bridge"] },
               { label: "Leistungsmodelle", href: SECTION_HREFS.services },
               { label: "Prozess", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
@@ -1515,13 +1533,12 @@ const HOME_SECTIONS: LandingSection[] = [
         ],
       },
       en: {
-        title: "Footer",
         description: "Quick access to core pages and contact options.",
         footerColumns: [
           {
             title: "Menu",
             links: [
-              { label: "What you get", href: SECTION_HREFS.included },
+              { label: "Start point", href: SECTION_HREFS["lead-bridge"] },
               { label: "Service models", href: SECTION_HREFS.services },
               { label: "Process", href: SECTION_HREFS.process },
               { label: "Q&A", href: SECTION_HREFS.faq },
@@ -1559,7 +1576,7 @@ const HOME_SECTIONS: LandingSection[] = [
       },
     },
   },
-];
+] satisfies LandingSection[];
 
 export function getHomeSections(locale: Locale): HomeSectionContent[] {
   const localizeLegalHref = (href: string) => {
@@ -1573,7 +1590,14 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
       .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
   };
 
-  return HOME_SECTIONS.map((section) => {
+  return HOME_SECTIONS.map((section): HomeSectionContent => {
+    if (section.id !== "footer") {
+      return {
+        id: section.id,
+        ...section.copy[locale],
+      } as HomeSectionContent;
+    }
+
     const localizedSection = {
       id: section.id,
       ...section.copy[locale],
@@ -1581,18 +1605,18 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
 
     return {
       ...localizedSection,
-      footerColumns: localizedSection.footerColumns?.map((column) => ({
+      footerColumns: localizedSection.footerColumns.map((column) => ({
         ...column,
         links: column.links.map((link) => ({
           ...link,
           href: localizeLegalHref(link.href),
         })),
       })),
-      footerSocialLinks: localizedSection.footerSocialLinks?.map((link) => ({
+      footerSocialLinks: localizedSection.footerSocialLinks.map((link) => ({
         ...link,
         href: localizeLegalHref(link.href),
       })),
-      footerLegalLinks: localizedSection.footerLegalLinks?.map((link) => ({
+      footerLegalLinks: localizedSection.footerLegalLinks.map((link) => ({
         ...link,
         href: localizeLegalHref(link.href),
       })),

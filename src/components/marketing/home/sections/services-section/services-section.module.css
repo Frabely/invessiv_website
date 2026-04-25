@@ -153,7 +153,7 @@
 
 .secondaryGrid {
   display: grid;
-  gap: 18px;
+  gap: clamp(2rem, 2.8vw, 2.75rem);
 }
 
 @media (min-width: 760px) {
@@ -221,22 +221,26 @@
   }
 
   .primaryGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-areas: "web landing process";
+    grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
+    grid-template-rows: repeat(2, minmax(clamp(13.25rem, 17vh, 16rem), auto));
+    grid-template-areas:
+      "landing upgrade"
+      "landing web";
     align-items: stretch;
-    gap: 38px;
-  }
-
-  .primaryGrid > [data-card-key="web"] {
-    grid-area: web;
+    gap: 24px 28px;
   }
 
   .primaryGrid > [data-card-key="landing"] {
     grid-area: landing;
+    align-self: stretch;
   }
 
-  .primaryGrid > [data-card-key="process"] {
-    grid-area: process;
+  .primaryGrid > [data-card-key="upgrade"] {
+    grid-area: upgrade;
+  }
+
+  .primaryGrid > [data-card-key="web"] {
+    grid-area: web;
   }
 
   .secondaryBlock {
@@ -249,7 +253,8 @@
   }
 
   .secondaryGrid {
-    gap: 38px;
+    grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
+    gap: clamp(2.2rem, 2.6vw, 3rem) 28px;
   }
 }
 
@@ -270,11 +275,14 @@
   }
 
   .primaryGrid {
-    gap: 44px;
+    grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
+    grid-template-rows: repeat(2, minmax(clamp(13.5rem, 17vh, 16.25rem), auto));
+    gap: 30px 34px;
   }
 
   .secondaryGrid {
-    gap: 44px;
+    grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
+    gap: clamp(2.2rem, 2.6vw, 3rem) 34px;
   }
 }
 

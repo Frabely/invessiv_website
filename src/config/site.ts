@@ -2,9 +2,9 @@ import type { Locale } from "@/config/i18n";
 
 export const SECTION_IDS = [
   "hero",
-  "included",
-  "proof",
+  "lead-bridge",
   "services",
+  "proof",
   "process",
   "faq",
   "contact",
@@ -16,7 +16,7 @@ export type SectionHref = `#${SectionId}`;
 
 export const SECTION_HREFS = {
   hero: "#hero",
-  included: "#included",
+  "lead-bridge": "#lead-bridge",
   proof: "#proof",
   services: "#services",
   process: "#process",
@@ -36,7 +36,7 @@ export const getLocalizedSectionHref = (locale: Locale, sectionId: SectionId) =>
   `/${locale}${getSectionHref(sectionId)}`;
 
 export const PRIMARY_NAVIGATION_SECTION_IDS = [
-  "included",
+  "lead-bridge",
   "services",
   "process",
   "faq",

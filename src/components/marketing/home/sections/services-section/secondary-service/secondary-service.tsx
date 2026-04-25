@@ -1,14 +1,18 @@
 "use client";
 
+import { useState } from "react";
+import type { MouseEvent } from "react";
+
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { SECTION_HREFS } from "@/config/site";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./secondary-service.module.css";
 
-type SecondaryServiceCard = NonNullable<
-  LandingSectionCopy["serviceCards"]
->[number];
+type SecondaryServiceCard = Extract<
+  ServiceCardCopy,
+  { key: "maintenance" | "process" }
+>;
 
 type SecondaryServiceProps = {
   addonBadgeLabel: string;
@@ -16,6 +20,7 @@ type SecondaryServiceProps = {
   ctaLabel: string;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
+  detailsCtaLabel: string;
 };
 
 export function SecondaryService({
@@ -24,15 +29,33 @@ export function SecondaryService({
   ctaLabel,
   ctaProjectGoal = "",
   defaultDeliveryLabel,
+  detailsCtaLabel,
 }: SecondaryServiceProps) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
+  const detailsId = `services-secondary-details-${card.key}`;
+  const toggleDetails = () => setIsDetailsOpen((currentState) => !currentState);
+
+  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
+    const target = event.target;
+    if (
+      target instanceof Element &&
+      target.closest("button, a, input, select, textarea, summary")
+    ) {
+      return;
+    }
+
+    toggleDetails();
+  };
 
   return (
     <article
       aria-label={card.title}
       className={styles.card}
       data-card-key={card.key}
+      data-service-expanded={isDetailsOpen ? "true" : "false"}
       data-service-variant="secondary"
+      onClick={handleCardClick}
       role="listitem"
     >
       <div className={styles.header}>
@@ -55,11 +78,25 @@ export function SecondaryService({
       </div>
 
       <div className={styles.copy}>
-        <div className={styles.copyBlock}>
-          <p className={styles.description}>{card.description}</p>
-          {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+        <div className={styles.copyDetails} id={detailsId}>
+          <div className={styles.copyBlock}>
+            <p className={styles.description}>{card.description}</p>
+            {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
+          </div>
+          <p className={styles.pricingHint}>{card.pricingHint}</p>
         </div>
-        <p className={styles.pricingHint}>{card.pricingHint}</p>
+        <button
+          aria-controls={detailsId}
+          aria-expanded={isDetailsOpen}
+          className={styles.detailsToggle}
+          onClick={toggleDetails}
+          type="button"
+        >
+          {detailsCtaLabel}
+          <span aria-hidden="true" className={styles.toggleArrow}>
+            &rsaquo;
+          </span>
+        </button>
         <div className={styles.ctaSlot}>
           <a
             className={styles.ctaLink}

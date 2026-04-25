@@ -2,9 +2,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: var(--service-icon-size, 44px);
+  height: var(--service-icon-size, 44px);
+  border-radius: var(--service-icon-radius, 12px);
   border: 1px solid var(--color-border);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(
@@ -17,8 +17,8 @@
 }
 
 .iconImage {
-  width: 32px;
-  height: 32px;
+  width: var(--service-icon-image-size, 32px);
+  height: var(--service-icon-image-size, 32px);
   display: block;
   flex: 0 0 auto;
 }
@@ -60,20 +60,26 @@
 
 @media (max-width: 900px) {
   .iconImage {
-    width: 24px;
-    height: 24px;
+    width: var(--service-icon-image-size-mobile, 24px);
+    height: var(--service-icon-image-size-mobile, 24px);
   }
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
+    width: var(--service-icon-size-wide, var(--service-icon-size, 40px));
+    height: var(--service-icon-size-wide, var(--service-icon-size, 40px));
+    border-radius: var(--service-icon-radius-wide, 11px);
   }
 
   .iconImage {
-    width: 28px;
-    height: 28px;
+    width: var(
+      --service-icon-image-size-wide,
+      var(--service-icon-image-size, 28px)
+    );
+    height: var(
+      --service-icon-image-size-wide,
+      var(--service-icon-image-size, 28px)
+    );
   }
 }

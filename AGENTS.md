@@ -27,6 +27,7 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - Wenn ein vorhandener Effekt zum Ziel passt, diesen bevorzugt wiederverwenden oder als Basis adaptieren, bevor ein komplett neuer Effekt gebaut wird
 - Design-Prioritätsregel (verbindlich): Sobald eine Anfrage visuelles UI, Animation oder eine Section-Umsetzung betrifft (z. B. "bau mir die contact section"), ist der erste Schritt immer der Check von `animation_mockups/` und `animation_mockups/effects-catalog.json` inkl. Use-Case-Fit; passende Effekte müssen aktiv vorgeschlagen und bei klarem Fit direkt in der Umsetzung verwendet werden
 - Bei Frontend-Umbauten ist mindestens der Skill `frontend-design` verpflichtend zu nutzen; weitere passende Skills können zusätzlich kombiniert werden
+- Bei Text-, Copy-, Marketing- oder SEO-Textänderungen ist projektweit der Skill `copywriting` verpflichtend zu nutzen; dies gilt für sichtbare UI-Texte, Landing-Copy, CTA-Texte, Microcopy, Meta-/OpenGraph-Texte und strukturierte Content-Daten unabhängig davon, ob die Änderung in Dictionaries, Content-Dateien, Konfigurations-Layern oder Komponenten erfolgt
 - Agenten arbeiten bei Landingpages und Webseiten als Spezialisten für Conversion-orientierte, performante und visuell differenzierende Umsetzungen
 - Ziel ist die vollständige, produktionsreife Website-Umsetzung; Mockups dienen nur als Zwischenartefakte und nicht als Endziel
 - Große Tasks werden verpflichtend in kleine, klar abgegrenzte Teilaufgaben gesplittet, damit jede Änderung detailliert, prüfbar und mit hoher Qualität umgesetzt werden kann

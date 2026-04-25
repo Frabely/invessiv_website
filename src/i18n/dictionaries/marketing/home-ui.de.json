@@ -1,57 +1,38 @@
 {
   "heroPrimaryCta": "Projekt anfragen",
-  "heroSecondaryCta": "Leistungsmodelle",
-  "heroTag": "KLARER AUFBAU, DIREKTE UMSETZUNG",
+  "heroSecondaryCta": "Leistung passend einschätzen",
+  "heroTag": "KLARER AUFTRITT, MEHR ANFRAGEN",
   "heroVisualAriaLabel": "Live Performance Einblick",
+  "leadBridgeContent": {
+    "kicker": "STARTPUNKT",
+    "title": "Landingpages zuerst. Webseiten, Upgrades oder Tools nur, wenn sie sinnvoll ergänzen.",
+    "signalAriaLabel": "Vertrauenssignale und nächster Ablauf",
+    "summaryPoints": [
+      "Ehrliche Einschätzung vor dem Start",
+      "Landingpages mit klarem Conversion-Ziel",
+      "Website, Upgrade oder Tool nur bei Bedarf"
+    ],
+    "bridge": "Ich entwickle vor allem Landingpages, die Angebote klar vermitteln und Besucher zur Anfrage führen. Webseiten, Upgrades oder Prozessoptimierungs-Tools kommen nur dazu, wenn sie den nächsten Schritt wirklich unterstützen."
+  },
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
-  "proofFeaturedProjectFallbackLabel": "Umgesetztes Projekt",
   "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
-  "proofMoreProjectsFallbackCtaLabel": "Projektübersicht öffnen",
-  "proofMoreProjectsFallbackHref": "/de/projects",
-  "proofMoreProjectsFallbackTitle": "Projektübersicht",
   "proofRatingAriaLabel": "5 von 5 Sternen",
   "proofReviewLinkLabel": "Bei Google ansehen",
-  "includedContent": {
-    "title": "Vom ersten Rahmen bis zur Übergabe",
-    "summaryPoints": [
-      "Empfehlung vor Start",
-      "kurze Abstimmung",
-      "QA & Übergabe"
-    ],
-    "cards": [
-      {
-        "title": "Passender Einstieg vor Projektbeginn",
-        "tag": "Setup",
-        "description": "Nach der Anfrage sortieren wir Ziel, Umfang und Angebotsform, bevor die Umsetzung losgeht."
-      },
-      {
-        "title": "Kurze Wege im Projekt",
-        "tag": "Ablauf",
-        "description": "Fragen, Feedback und Prioritäten laufen ohne Umwege zwischen uns. Das spart Schleifen und hält Entscheidungen zügig."
-      },
-      {
-        "title": "Launch sauber vorbereitet",
-        "tag": "QA",
-        "description": "Responsive Checks, technische SEO, QA und Übergabe sind von Anfang an eingeplant statt erst kurz vor Schluss."
-      }
-    ],
-    "bridge": "Nach der Anfrage weißt du, welcher Einstieg sinnvoll ist und wie es konkret weitergeht."
-  },
   "servicesAddonBadgeLabel": "Zusatzleistung",
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
   "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesIntentTitle": "Wähle dein Ziel – wir markieren das passendste Leistungsmodell.",
+  "servicesIntentTitle": "Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben.",
   "servicesIntentOptions": [
-    { "key": "more_inquiries", "label": "mehr Anfragen gewinnen" },
+    { "key": "more_inquiries", "label": "Besucher zu Anfragen führen" },
     {
-      "key": "professional_presence",
-      "label": "professionell online auftreten"
+      "key": "improve_existing_site",
+      "label": "bestehende Seite klarer ausrichten"
     },
     {
-      "key": "simplify_workflows",
-      "label": "interne Abläufe vereinfachen"
+      "key": "plan_new_website",
+      "label": "neue Website mit klarem Anfrageweg starten"
     }
   ],
   "servicesPrimaryCta": "Projekt anfragen",
@@ -63,5 +44,5 @@
     "maintenance": "Wartung & Support anfragen"
   },
   "servicesDetailsCta": "Mehr Infos",
-  "servicesDeliveryLabel": "Typisch"
+  "servicesDeliveryLabel": "Zeitrahmen"
 }

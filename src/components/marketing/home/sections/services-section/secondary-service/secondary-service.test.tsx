@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
 import { SecondaryService } from "./secondary-service";
@@ -25,6 +25,7 @@ describe("SecondaryService", () => {
         ctaLabel="Wartung & Support anfragen"
         ctaProjectGoal="mehr Anfragen gewinnen"
         defaultDeliveryLabel="Reaktionszeit"
+        detailsCtaLabel="Mehr Infos"
       />,
     );
 
@@ -40,10 +41,50 @@ describe("SecondaryService", () => {
         "Sinnvoll, wenn bestehende Seiten laufend angepasst werden sollen.",
       ),
     ).toBeTruthy();
-    expect(screen.queryByRole("button")).toBeNull();
+    expect(
+      screen
+        .getByRole("button", { name: /Mehr Infos/i })
+        .getAttribute("aria-expanded"),
+    ).toBe("false");
+    expect(
+      screen
+        .getByText("Wartung & Support")
+        .closest("article")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("false");
     expect(
       screen.getByRole("link", { name: "Wartung & Support anfragen" }),
     ).toBeTruthy();
+    const article = screen.getByText("Wartung & Support").closest("article");
+
+    fireEvent.click(article as HTMLElement);
+    expect(
+      screen
+        .getByRole("button", { name: /Mehr Infos/i })
+        .getAttribute("aria-expanded"),
+    ).toBe("true");
+    expect(
+      screen
+        .getByText("Wartung & Support")
+        .closest("article")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("true");
+    fireEvent.click(
+      screen.getByRole("link", { name: "Wartung & Support anfragen" }),
+    );
+    expect(
+      screen
+        .getByText("Wartung & Support")
+        .closest("article")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: /Mehr Infos/i }));
+    expect(
+      screen
+        .getByText("Wartung & Support")
+        .closest("article")
+        ?.getAttribute("data-service-expanded"),
+    ).toBe("false");
     expect(
       screen
         .getByText("Wartung & Support")

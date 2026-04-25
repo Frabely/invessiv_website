@@ -19,13 +19,13 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
-  opacity: 1;
   transform: none;
   transition:
     border-color 180ms ease,
     background 180ms ease,
     box-shadow 180ms ease,
     transform 180ms ease;
+  overflow: hidden;
 }
 
 .card::before {
@@ -69,19 +69,14 @@
 }
 
 .cardRecommended {
-  border: 2px solid
-    color-mix(in srgb, var(--accent) 84%, var(--color-border) 16%);
+  border: 1px solid
+    color-mix(in srgb, var(--accent) 78%, var(--color-border) 22%);
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
   box-shadow:
     inset 0 1px 0 rgba(255, 233, 210, 0.14),
     0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent),
     0 0 18px color-mix(in srgb, var(--accent) 14%, transparent);
   transform: none;
-}
-
-.cardRecommended::before {
-  background: none;
-  opacity: 0;
 }
 
 .cardRecommended:hover {
@@ -99,11 +94,9 @@
   transform: translateY(-2px);
 }
 
-.cardRecommended:hover::before {
-  opacity: 0;
-}
-
 .surface {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
@@ -267,12 +260,6 @@
   margin-top: 0.3rem;
 }
 
-.details {
-  margin-top: 0;
-  display: grid;
-  gap: 0;
-}
-
 .footer {
   margin-top: auto;
   padding-top: 16px;
@@ -364,10 +351,6 @@
   line-height: 1;
 }
 
-.details[hidden] {
-  display: none;
-}
-
 :global([data-theme="light"]) .card {
   background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
   border-color: var(--color-border);
@@ -437,6 +420,11 @@
 }
 
 @media (max-width: 640px) {
+  .shell[data-service-expanded="false"] .body,
+  .shell[data-service-expanded="false"] .moreItems {
+    display: none;
+  }
+
   .footer {
     flex-wrap: wrap;
     align-items: flex-start;
@@ -456,6 +444,10 @@
     width: 100%;
     justify-content: center;
   }
+
+  .primaryCtaPlaceholder {
+    display: none;
+  }
 }
 
 @media (min-width: 760px) {
@@ -472,6 +464,101 @@
   .card {
     padding: 24px;
     border-radius: 28px;
+  }
+
+  .shell[data-service-density="compact"] .card {
+    --service-icon-size: 58px;
+    --service-icon-image-size: 42px;
+    --service-icon-image-size-mobile: 24px;
+    --service-icon-radius: 16px;
+    --service-icon-size-wide: 58px;
+    --service-icon-image-size-wide: 42px;
+    --service-icon-radius-wide: 16px;
+    padding: 17px 20px;
+    border-radius: 24px;
+  }
+
+  .shell[data-service-density="compact"] .surface {
+    gap: 0.68rem;
+  }
+
+  .shell[data-service-density="compact"] .header {
+    grid-template-rows: auto auto;
+    gap: 10px;
+  }
+
+  .shell[data-service-density="compact"] .titleRow {
+    align-items: center;
+    gap: 16px;
+  }
+
+  .shell[data-service-density="compact"] .title {
+    min-height: 54px;
+    column-gap: 16px;
+    font-size: clamp(1.52rem, 1.22rem + 0.46vw, 1.82rem);
+    line-height: 1.08;
+  }
+
+  .shell[data-service-density="compact"] .badge {
+    min-height: 34px;
+    padding-inline: 16px;
+    font-size: var(--font-size-ui-sm);
+  }
+
+  .shell[data-service-density="compact"] .fitNote {
+    margin-top: 2px;
+    gap: 5px;
+    font-size: clamp(1.06rem, 0.96rem + 0.18vw, 1.16rem);
+    line-height: 1.5;
+  }
+
+  .shell[data-service-density="compact"] .fitLabel {
+    font-size: var(--font-size-ui-sm);
+  }
+
+  .shell[data-service-density="compact"] .highlightText {
+    font-size: clamp(1.18rem, 1.02rem + 0.28vw, 1.34rem);
+    line-height: 1.2;
+  }
+
+  .shell[data-service-density="compact"] .pricingHint {
+    font-size: var(--font-size-ui-sm);
+    line-height: 1.5;
+  }
+
+  .shell[data-service-density="compact"] .deliveryBadge {
+    margin-top: 2px;
+    min-height: 31px;
+    padding-inline: 13px;
+    font-size: var(--font-size-body-sm);
+  }
+
+  .shell[data-service-density="compact"] .metaStack,
+  .shell[data-service-density="compact"] .metaInfo {
+    gap: 9px;
+  }
+
+  .shell[data-service-density="compact"][data-service-expanded="false"]
+    .pricingHint,
+  .shell[data-service-density="compact"][data-service-expanded="false"] .body,
+  .shell[data-service-density="compact"][data-service-expanded="false"]
+    .moreItems {
+    display: none;
+  }
+
+  .shell[data-service-density="compact"] .list {
+    font-size: var(--font-size-body-md);
+    line-height: 1.5;
+  }
+
+  .shell[data-service-density="compact"] .footer {
+    padding-top: 6px;
+    min-height: 46px;
+  }
+
+  .shell[data-service-density="compact"] .primaryCta,
+  .shell[data-service-density="compact"] .toggle {
+    font-size: var(--font-size-body-md);
   }
 
   .surface {

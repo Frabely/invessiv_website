@@ -70,6 +70,7 @@
 
 .titleGradient {
   display: block;
+  padding-bottom: 0.22em;
   background: linear-gradient(
       118deg,
       #ffd8ab 0%,

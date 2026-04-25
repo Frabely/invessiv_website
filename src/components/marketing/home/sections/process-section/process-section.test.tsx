@@ -16,11 +16,15 @@ describe("ProcessSection", () => {
       (section) => section.id === "process",
     );
     if (!processSection) {
-      throw new Error("Expected process section to be available in home dictionary.");
+      throw new Error(
+        "Expected process section to be available in home dictionary.",
+      );
     }
-    const firstStep = processSection.processSteps?.[0];
-    if (!firstStep || !processSection.processCta) {
-      throw new Error("Expected process section to include CTA and steps.");
+    const firstStep = processSection.processSteps[0];
+    if (!firstStep || !processSection.processCta || !processSection.title) {
+      throw new Error(
+        "Expected process section to include title, CTA and steps.",
+      );
     }
 
     render(
@@ -28,15 +32,17 @@ describe("ProcessSection", () => {
         description={processSection.description}
         id="process"
         processCta={processSection.processCta}
-        processSteps={processSection.processSteps ?? []}
+        processSteps={processSection.processSteps}
         summaryPoints={processSection.summaryPoints}
         title={processSection.title}
       />,
     );
 
-    expect(screen.getByRole("heading", { name: processSection.title })).toBeTruthy();
-    expect(screen.getByText(processSection.summaryPoints?.[0] ?? "")).toBeTruthy();
-    expect(screen.getByText(firstStep.deliverable ?? "")).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: processSection.title }),
+    ).toBeTruthy();
+    expect(screen.getByText(processSection.summaryPoints[0])).toBeTruthy();
+    expect(screen.getByText(firstStep.deliverable)).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: processSection.processCta.label })

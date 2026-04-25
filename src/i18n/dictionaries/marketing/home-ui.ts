@@ -2,9 +2,10 @@ import type { Locale } from "@/config/i18n";
 import de from "./home-ui.de.json";
 import en from "./home-ui.en.json";
 
-type IncludedContent = {
-  bridge?: string;
-  cards: Array<{ description: string; tag: string; title: string }>;
+type LeadBridgeContent = {
+  bridge: string;
+  kicker: string;
+  signalAriaLabel: string;
   summaryPoints: string[];
   title: string;
 };
@@ -14,12 +15,9 @@ export type HomeUiContent = {
   heroSecondaryCta: string;
   heroTag: string;
   heroVisualAriaLabel: string;
+  leadBridgeContent: LeadBridgeContent;
   mappingWarning: string;
-  proofFeaturedProjectFallbackLabel: string;
   proofHighlightsAriaLabel: string;
-  proofMoreProjectsFallbackCtaLabel: string;
-  proofMoreProjectsFallbackHref: string;
-  proofMoreProjectsFallbackTitle: string;
   proofRatingAriaLabel: string;
   proofReviewLinkLabel: string;
   servicesAddonBadgeLabel: string;
@@ -27,7 +25,6 @@ export type HomeUiContent = {
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;
   servicesRecommendedBadgeLabel: string;
-  includedContent: IncludedContent;
   servicesDeliveryLabel: string;
   servicesDetailsCta: string;
   servicesIntentOptions: Array<{ key: string; label: string }>;

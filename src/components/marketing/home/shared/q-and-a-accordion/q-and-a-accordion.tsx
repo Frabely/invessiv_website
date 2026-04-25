@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type { QnaItemCopy } from "@/i18n/dictionaries/marketing/home";
 import styles from "./q-and-a-accordion.module.css";
 
-type QnaItem = NonNullable<LandingSectionCopy["qnaItems"]>[number];
+type QnaItem = QnaItemCopy;
 
 type QAndAAccordionProps = {
   ariaLabel: string;
@@ -14,9 +14,7 @@ type QAndAAccordionProps = {
 };
 
 export function QAndAAccordion({ ariaLabel, id, items }: QAndAAccordionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(
-    items.length > 0 ? 0 : null,
-  );
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <ul aria-label={ariaLabel} className={styles.list}>

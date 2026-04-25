@@ -26,6 +26,11 @@ export function MarketingHomePageClient({
   const servicesSectionRef = useRef<HTMLElement | null>(null);
   const sections = getHomeSections(locale);
   const ui = getHomeUiContent(locale);
+  const heroSection = sections.find((section) => section.id === "hero");
+
+  if (!heroSection) {
+    throw new Error("Expected home hero section to be available.");
+  }
 
   const validation = validateNavigationSections({
     navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
@@ -45,12 +50,12 @@ export function MarketingHomePageClient({
         </div>
 
         <HeroSection
-          description={sections[0]?.description ?? ""}
+          description={heroSection.description}
           heroPrimaryCta={ui.heroPrimaryCta}
           heroSecondaryCta={ui.heroSecondaryCta}
           heroTag={ui.heroTag}
           heroVisualAriaLabel={ui.heroVisualAriaLabel}
-          title={sections[0]?.title ?? ""}
+          title={heroSection.title}
         />
 
         <HomeSectionsRenderer

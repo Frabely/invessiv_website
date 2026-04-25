@@ -17,13 +17,13 @@ import { submitQuickContact } from "@/client/contact/services/contact-form-servi
 import { DEFAULT_QUICK_CONTACT_FORM_VALUES } from "@/common/defaults/contact/quick-contact-form-values";
 import type { QuickContactFormValues } from "@/common/contracts/contact/forms/quick-contact-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
-import type { LandingSectionCopy } from "@/i18n/dictionaries/marketing/home";
+import type {
+  ContactChannelCopy,
+  QuickContactFormCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import styles from "./quick-contact-form.module.css";
 
-type ContactChannel = NonNullable<
-  LandingSectionCopy["contactChannels"]
->[number];
-type QuickContactFormCopy = NonNullable<LandingSectionCopy["quickContactForm"]>;
+type ContactChannel = ContactChannelCopy;
 
 type QuickContactFormProps = {
   channel: ContactChannel;
