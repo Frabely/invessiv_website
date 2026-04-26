@@ -38,6 +38,9 @@ describe("LandingPage", () => {
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#problem"]'),
     ).toBeTruthy();
+    expect(
+      screen.getByTestId("site-header").querySelector('a[href="#solution"]'),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
       "Mehr Anfragen",
     );
@@ -55,10 +58,24 @@ describe("LandingPage", () => {
     await waitFor(() => {
       expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
     });
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: /Eine Landingpage führt Besucher gezielt zur Anfrage/,
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/Sie erklärt verständlich, was du anbietest/),
+    ).toBeTruthy();
+    expect(screen.queryByText("Anfrage auslösen")).toBeNull();
+    expect(screen.queryByText(/keine überladene Website/)).toBeNull();
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
     expect(screen.getByRole("contentinfo")).toBeTruthy();
     expect(
       screen.getByRole("contentinfo").querySelector('a[href="#problem"]'),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("contentinfo").querySelector('a[href="#solution"]'),
     ).toBeTruthy();
   });
 });

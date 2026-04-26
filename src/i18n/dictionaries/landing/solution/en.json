@@ -1,0 +1,30 @@
+{
+  "body": "Instead of spreading information across multiple pages, a landing page focuses on one concrete offer. It clearly explains what you offer, why it matters, and how prospects can take the next step.",
+  "eyebrow": "Solution",
+  "graphic": {
+    "browserLabel": "Clear message",
+    "buttonLabel": "Request a non-binding check",
+    "formButton": "Send inquiry",
+    "formFields": [
+      "Your name",
+      "Email address",
+      "Your request",
+      "Short description (optional)"
+    ],
+    "formLabel": "Send inquiry",
+    "formSecurity": "Secure. Non-binding. Fast.",
+    "formTitle": "Tell us about your project.",
+    "heroTitle": "Your offer. One clear benefit.",
+    "rating": "4.9 out of 5 stars",
+    "steps": [
+      "Catch attention",
+      "Communicate value",
+      "Build trust",
+      "Guide to inquiry"
+    ],
+    "trustLabel": "Trust creates decisions",
+    "valueLabel": "Your benefits",
+    "valueTiles": ["Clearly explained", "Relevant value", "Clear next step"]
+  },
+  "title": "A landing page guides visitors toward an inquiry."
+}

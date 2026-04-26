@@ -7,7 +7,7 @@
 - [x] Hero mit Hero Visual umgesetzt
 - [x] Footer für die Landingpage umgesetzt
 - [x] Problem-Section
-- [ ] Lösung-Section
+- [x] Lösung-Section
 - [ ] Was-enthalten-ist-Section
 - [ ] Für-wen-Section
 - [ ] Ablauf-Section
@@ -95,7 +95,7 @@ Die Landingpage sollte aus diesen Sektionen bestehen:
 
 1. [x] Hero
 2. [x] Problem
-3. [ ] Lösung
+3. [x] Lösung
 4. [ ] Was enthalten ist
 5. [ ] Für wen
 6. [ ] Ablauf
@@ -821,7 +821,7 @@ Enthalten:
 
 1. [x] Hero
 2. [x] Problem
-3. [ ] Lösung
+3. [x] Lösung
 4. [ ] Was enthalten ist
 5. [ ] Ablauf
 6. [ ] Angebot / Preis

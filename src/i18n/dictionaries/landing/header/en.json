@@ -4,7 +4,8 @@
   "ctaLabel": "Request a check",
   "labelsByHref": {
     "#hero": "Start",
-    "#problem": "Problem"
+    "#problem": "Problem",
+    "#solution": "Solution"
   },
   "localeMenuLabel": "Open language menu",
   "localeSwitchLabel": "Choose language",

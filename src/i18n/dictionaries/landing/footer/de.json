@@ -12,6 +12,10 @@
         {
           "label": "Problem",
           "href": "#problem"
+        },
+        {
+          "label": "Lösung",
+          "href": "#solution"
         }
       ]
     },

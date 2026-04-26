@@ -1,0 +1,34 @@
+{
+  "body": "Statt viele Informationen auf mehrere Seiten zu verteilen, fokussiert sich eine Landingpage auf ein konkretes Angebot. Sie erklärt verständlich, was du anbietest, warum es relevant ist und wie Interessenten den nächsten Schritt machen.",
+  "eyebrow": "Lösung",
+  "graphic": {
+    "browserLabel": "Klare Botschaft",
+    "buttonLabel": "Jetzt unverbindlich anfragen",
+    "formButton": "Anfrage senden",
+    "formFields": [
+      "Dein Name",
+      "E-Mail-Adresse",
+      "Dein Anliegen",
+      "Kurzbeschreibung (optional)"
+    ],
+    "formLabel": "Anfrage stellen",
+    "formSecurity": "Sicher. Unverbindlich. Schnell.",
+    "formTitle": "Erzähl uns von deinem Projekt.",
+    "heroTitle": "Dein Angebot. Ein klarer Nutzen.",
+    "rating": "4,9 von 5 Sternen",
+    "steps": [
+      "Aufmerksamkeit wecken",
+      "Nutzen vermitteln",
+      "Vertrauen aufbauen",
+      "Zur Anfrage führen"
+    ],
+    "trustLabel": "Vertrauen schafft Entscheidung",
+    "valueLabel": "Deine Vorteile",
+    "valueTiles": [
+      "Verständlich erklärt",
+      "Relevanter Nutzen",
+      "Nächster Schritt klar"
+    ]
+  },
+  "title": "Eine Landingpage führt Besucher gezielt zur Anfrage."
+}
