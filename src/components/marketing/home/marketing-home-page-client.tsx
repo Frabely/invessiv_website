@@ -8,6 +8,7 @@ import { useLanguage } from "@/components/providers/language-provider";
 import {
   PRIMARY_NAVIGATION,
   PRIMARY_NAVIGATION_SECTION_IDS,
+  SECTION_HREFS,
 } from "@/config/site";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
@@ -55,7 +56,12 @@ export function MarketingHomePageClient({
           heroSecondaryCta={ui.heroSecondaryCta}
           heroTag={ui.heroTag}
           heroVisualAriaLabel={ui.heroVisualAriaLabel}
+          primaryCtaAnalyticsTarget="form"
+          primaryCtaHref={SECTION_HREFS.contact}
+          secondaryCtaAnalyticsTarget="services"
+          secondaryCtaHref={SECTION_HREFS.services}
           title={heroSection.title}
+          trackingLocation="hero"
         />
 
         <HomeSectionsRenderer

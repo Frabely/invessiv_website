@@ -1,0 +1,19 @@
+{
+  "actionsAriaLabel": "Language and primary action",
+  "brandLogoAlt": "Invessiv logo",
+  "ctaLabel": "Request a check",
+  "labelsByHref": {
+    "#hero": "Start"
+  },
+  "localeMenuLabel": "Open language menu",
+  "localeSwitchLabel": "Choose language",
+  "mobileMenuLabel": "Menu",
+  "navAriaLabel": "Landing page navigation",
+  "skipLinkLabel": "Skip to main content",
+  "themeSwitch": {
+    "actionLabel": {
+      "dark": "Switch to light",
+      "light": "Switch to dark"
+    }
+  }
+}

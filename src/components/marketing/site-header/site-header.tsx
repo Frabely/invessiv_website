@@ -9,7 +9,10 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import { SECTION_HREFS } from "@/config/site";
-import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
+import {
+  getSiteHeaderUiContent,
+  type SiteHeaderUiContent,
+} from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { NavigationItem } from "@/config/site";
@@ -24,12 +27,16 @@ type SiteHeaderProps = {
   brandHref?: string;
   ctaHref?: string;
   navigation: NavigationItem[];
+  showThemeSwitch?: boolean;
+  uiContent?: SiteHeaderUiContent;
 };
 
 export function SiteHeader({
   brandHref = SECTION_HREFS.hero,
   ctaHref = SECTION_HREFS.contact,
   navigation,
+  showThemeSwitch = true,
+  uiContent,
 }: SiteHeaderProps) {
   const { locale, setLocale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
@@ -37,7 +44,7 @@ export function SiteHeader({
   const router = useRouter();
   const isScrolled = useScrolledHeader(14);
   useMobileViewportHeight();
-  const ui = getSiteHeaderUiContent(locale);
+  const ui = uiContent ?? getSiteHeaderUiContent(locale);
   const themeSwitchCopy =
     theme === "dark"
       ? {
@@ -121,11 +128,13 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          <ThemeSwitch
-            copy={themeSwitchCopy}
-            onToggle={toggleTheme}
-            theme={theme}
-          />
+          {showThemeSwitch ? (
+            <ThemeSwitch
+              copy={themeSwitchCopy}
+              onToggle={toggleTheme}
+              theme={theme}
+            />
+          ) : null}
           <LocaleSwitch
             locale={locale}
             localeMenuLabel={ui.localeMenuLabel}
@@ -205,14 +214,16 @@ export function SiteHeader({
               </span>
             </summary>
             <ul className={styles.mobileMenuList}>
-              <li className={styles.mobileMenuListItem}>
-                <ThemeSwitch
-                  copy={themeSwitchCopy}
-                  onToggle={toggleTheme}
-                  theme={theme}
-                  variant="mobile"
-                />
-              </li>
+              {showThemeSwitch ? (
+                <li className={styles.mobileMenuListItem}>
+                  <ThemeSwitch
+                    copy={themeSwitchCopy}
+                    onToggle={toggleTheme}
+                    theme={theme}
+                    variant="mobile"
+                  />
+                </li>
+              ) : null}
               {mobileNavigation.map((item) => (
                 <li className={styles.mobileMenuListItem} key={item.href}>
                   <a

@@ -8,7 +8,17 @@ import { QAndASection } from "@/components/marketing/home/sections/q-and-a-secti
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
 import { TrustOutcomeBridgeSection } from "@/components/marketing/home/sections/trust-outcome-bridge-section/trust-outcome-bridge-section";
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
-import { SECTION_IDS } from "@/config/site";
+import {
+  CONTACT_SECTION_ID,
+  FAQ_SECTION_ID,
+  FOOTER_SECTION_ID,
+  HERO_SECTION_ID,
+  LEAD_BRIDGE_SECTION_ID,
+  PROCESS_SECTION_ID,
+  PROOF_SECTION_ID,
+  SECTION_IDS,
+  SERVICES_SECTION_ID,
+} from "@/config/site";
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
 import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
@@ -34,8 +44,8 @@ export function HomeSectionsRenderer({
       (section): section is Extract<HomeSectionContent, { id: Id }> =>
         section.id === sectionId,
     );
-  const servicesSection = getSectionById("services");
-  const footerSection = getSectionById("footer");
+  const servicesSection = getSectionById(SERVICES_SECTION_ID);
+  const footerSection = getSectionById(FOOTER_SECTION_ID);
 
   if (!servicesSection || !footerSection) {
     throw new Error("Expected services and footer sections to be available.");
@@ -53,140 +63,138 @@ export function HomeSectionsRenderer({
           </p>
         ) : null}
 
-        {SECTION_IDS.filter((id) => id !== "hero" && id !== "footer").map(
-          (id) => {
-            if (id === "lead-bridge") {
-              return (
-                <TrustOutcomeBridgeSection
-                  content={ui.leadBridgeContent}
-                  id={id}
-                  key={id}
-                />
-              );
-            }
+        {SECTION_IDS.filter(
+          (id) => id !== HERO_SECTION_ID && id !== FOOTER_SECTION_ID,
+        ).map((id) => {
+          if (id === LEAD_BRIDGE_SECTION_ID) {
+            return (
+              <TrustOutcomeBridgeSection
+                content={ui.leadBridgeContent}
+                id={id}
+                key={id}
+              />
+            );
+          }
 
-            const section = getSectionById(id);
-            if (!section) {
+          const section = getSectionById(id);
+          if (!section) {
+            return null;
+          }
+
+          if (section.id === SERVICES_SECTION_ID) {
+            return (
+              <ServicesSection
+                addonBadgeLabel={ui.servicesAddonBadgeLabel}
+                deliveryLabel={ui.servicesDeliveryLabel}
+                detailsCtaLabel={ui.servicesDetailsCta}
+                fitLabel={ui.servicesFitLabel}
+                goalOptions={ui.servicesIntentOptions}
+                goalTitle={ui.servicesIntentTitle}
+                id={section.id}
+                key={section.id}
+                moreItemsPluralLabel={ui.servicesMoreItemsPluralLabel}
+                moreItemsSingularLabel={ui.servicesMoreItemsSingularLabel}
+                primaryCtaLabel={ui.servicesPrimaryCta}
+                primaryCtaLabels={ui.servicesPrimaryCtaLabels}
+                recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
+                sectionRef={servicesSectionRef}
+                serviceCards={section.serviceCards}
+                serviceContextNote={section.serviceContextNote}
+                serviceSecondaryTitle={section.serviceSecondaryTitle}
+                title={section.title}
+              />
+            );
+          }
+
+          if (section.id === PROOF_SECTION_ID) {
+            if (!showProofSection) {
               return null;
             }
 
-            if (section.id === "services") {
-              return (
-                <ServicesSection
-                  addonBadgeLabel={ui.servicesAddonBadgeLabel}
-                  deliveryLabel={ui.servicesDeliveryLabel}
-                  detailsCtaLabel={ui.servicesDetailsCta}
-                  fitLabel={ui.servicesFitLabel}
-                  goalOptions={ui.servicesIntentOptions}
-                  goalTitle={ui.servicesIntentTitle}
-                  id={section.id}
-                  key={section.id}
-                  moreItemsPluralLabel={ui.servicesMoreItemsPluralLabel}
-                  moreItemsSingularLabel={ui.servicesMoreItemsSingularLabel}
-                  primaryCtaLabel={ui.servicesPrimaryCta}
-                  primaryCtaLabels={ui.servicesPrimaryCtaLabels}
-                  recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
-                  sectionRef={servicesSectionRef}
-                  serviceCards={section.serviceCards}
-                  serviceContextNote={section.serviceContextNote}
-                  serviceSecondaryTitle={section.serviceSecondaryTitle}
-                  title={section.title}
-                />
-              );
+            return (
+              <ProofSection
+                description={section.description}
+                featuredProject={section.proofFeaturedProject}
+                highlightsAriaLabel={ui.proofHighlightsAriaLabel}
+                id={section.id}
+                key={section.id}
+                moreProjects={section.proofMoreProjects}
+                ratingAriaLabel={
+                  section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
+                }
+                reviewLinkLabel={
+                  section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
+                }
+                reviews={section.proofReviews}
+                summaryPoints={section.summaryPoints}
+                title={section.title}
+              />
+            );
+          }
+
+          if (section.id === PROCESS_SECTION_ID) {
+            return (
+              <ProcessSection
+                description={section.description}
+                id={section.id}
+                key={section.id}
+                processCta={section.processCta}
+                processSteps={section.processSteps}
+                summaryPoints={section.summaryPoints}
+                title={section.title}
+              />
+            );
+          }
+
+          if (section.id === FAQ_SECTION_ID) {
+            return (
+              <QAndASection
+                description={section.description}
+                id={section.id}
+                items={section.qnaItems}
+                key={section.id}
+                secondaryContact={section.qnaSecondaryContact}
+                title={section.title}
+              />
+            );
+          }
+
+          if (section.id === CONTACT_SECTION_ID) {
+            const contactFormOffers = servicesSection.serviceCards.map(
+              (card) => ({
+                key: card.key,
+                title: card.title,
+              }),
+            );
+            const privacyHref = footerSection.footerLegalLinks.find((link) =>
+              /privacy|datenschutz/i.test(link.label),
+            )?.href;
+
+            if (!privacyHref) {
+              throw new Error("Expected footer privacy link for contact form.");
             }
 
-            if (section.id === "proof") {
-              if (!showProofSection) {
-                return null;
-              }
+            return (
+              <ContactSection
+                contactAlternativeLabel={section.contactAlternativeLabel}
+                contactCta={section.contactCta}
+                contactChannels={section.contactChannels}
+                contactDecisionIntro={section.contactDecisionIntro}
+                contactForm={section.contactForm}
+                contactFormOffers={contactFormOffers}
+                quickContactForm={section.quickContactForm}
+                discoveryCallForm={section.discoveryCallForm}
+                contactSecondaryCta={section.contactSecondaryCta}
+                id={section.id}
+                key={section.id}
+                privacyHref={privacyHref}
+                title={section.title}
+              />
+            );
+          }
 
-              return (
-                <ProofSection
-                  description={section.description}
-                  featuredProject={section.proofFeaturedProject}
-                  highlightsAriaLabel={ui.proofHighlightsAriaLabel}
-                  id={section.id}
-                  key={section.id}
-                  moreProjects={section.proofMoreProjects}
-                  ratingAriaLabel={
-                    section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
-                  }
-                  reviewLinkLabel={
-                    section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
-                  }
-                  reviews={section.proofReviews}
-                  summaryPoints={section.summaryPoints}
-                  title={section.title}
-                />
-              );
-            }
-
-            if (section.id === "process") {
-              return (
-                <ProcessSection
-                  description={section.description}
-                  id={section.id}
-                  key={section.id}
-                  processCta={section.processCta}
-                  processSteps={section.processSteps}
-                  summaryPoints={section.summaryPoints}
-                  title={section.title}
-                />
-              );
-            }
-
-            if (section.id === "faq") {
-              return (
-                <QAndASection
-                  description={section.description}
-                  id={section.id}
-                  items={section.qnaItems}
-                  key={section.id}
-                  secondaryContact={section.qnaSecondaryContact}
-                  title={section.title}
-                />
-              );
-            }
-
-            if (section.id === "contact") {
-              const contactFormOffers = servicesSection.serviceCards.map(
-                (card) => ({
-                  key: card.key,
-                  title: card.title,
-                }),
-              );
-              const privacyHref = footerSection.footerLegalLinks.find((link) =>
-                /privacy|datenschutz/i.test(link.label),
-              )?.href;
-
-              if (!privacyHref) {
-                throw new Error(
-                  "Expected footer privacy link for contact form.",
-                );
-              }
-
-              return (
-                <ContactSection
-                  contactAlternativeLabel={section.contactAlternativeLabel}
-                  contactCta={section.contactCta}
-                  contactChannels={section.contactChannels}
-                  contactDecisionIntro={section.contactDecisionIntro}
-                  contactForm={section.contactForm}
-                  contactFormOffers={contactFormOffers}
-                  quickContactForm={section.quickContactForm}
-                  discoveryCallForm={section.discoveryCallForm}
-                  contactSecondaryCta={section.contactSecondaryCta}
-                  id={section.id}
-                  key={section.id}
-                  privacyHref={privacyHref}
-                  title={section.title}
-                />
-              );
-            }
-
-            return null;
-          },
-        )}
+          return null;
+        })}
       </LayoutShell>
 
       <FooterSection
@@ -195,7 +203,7 @@ export function HomeSectionsRenderer({
         columns={footerSection.footerColumns}
         copyright={footerSection.footerCopyright}
         description={footerSection.description}
-        id="footer"
+        id={FOOTER_SECTION_ID}
         legalLinks={footerSection.footerLegalLinks}
         socialLinks={footerSection.footerSocialLinks}
       />

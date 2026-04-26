@@ -3,6 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { SocialPlatform } from "@/common/constants/social/social-platforms";
 import { FooterSection } from "./footer-section";
 
 describe("FooterSection", () => {
@@ -26,7 +27,9 @@ describe("FooterSection", () => {
         description="Schnellzugriff"
         id="footer"
         legalLinks={[{ href: "#", label: "Impressum" }]}
-        socialLinks={[{ href: "#", label: "Instagram", platform: "instagram" }]}
+        socialLinks={[
+          { href: "#", label: "Instagram", platform: SocialPlatform.Instagram },
+        ]}
       />,
     );
 

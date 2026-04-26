@@ -10,7 +10,11 @@ import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
-import { getLocalizedSectionHref, type NavigationItem } from "@/config/site";
+import {
+  FOOTER_SECTION_ID,
+  getLocalizedSectionHref,
+  type NavigationItem,
+} from "@/config/site";
 import type { Locale } from "@/config/i18n";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import type { ProjectsPageContent } from "@/i18n/dictionaries/marketing/projects";
@@ -34,7 +38,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
     { href: getLocalizedSectionHref(locale, "faq") },
   ];
   const footerSection = getHomeSections(locale).find(
-    (section) => section.id === "footer",
+    (section) => section.id === FOOTER_SECTION_ID,
   );
   const localizeFooterHref = (href: string) => {
     if (href.startsWith("#")) {
@@ -324,7 +328,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
           columns={localizedFooterColumns}
           copyright={footerSection.footerCopyright}
           description={footerSection.description}
-          id="footer"
+          id={FOOTER_SECTION_ID}
           legalLinks={localizedFooterLegalLinks}
           socialLinks={footerSection.footerSocialLinks}
         />

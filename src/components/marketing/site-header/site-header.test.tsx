@@ -106,6 +106,24 @@ describe("SiteHeader", () => {
     });
   });
 
+  it("can hide the theme switch for focused landing pages", () => {
+    mockUseLanguage.mockReturnValue({
+      locale: "de",
+      setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
+      isMounted: true,
+      theme: "dark",
+      toggleTheme: vi.fn(),
+    });
+
+    render(<SiteHeader navigation={[]} showThemeSwitch={false} />);
+
+    expect(
+      screen.queryByRole("button", { name: "Zu Light wechseln" }),
+    ).toBeNull();
+  });
+
   it("does not carry a stale section hash into the locale switch", () => {
     const setLocale = vi.fn();
     mockUseLanguage.mockReturnValue({

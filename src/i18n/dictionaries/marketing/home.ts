@@ -1,5 +1,6 @@
 ﻿import { SECTION_HREFS, type SectionId } from "@/config/site";
 import type { Locale } from "@/config/i18n";
+import { SocialPlatform } from "@/common/constants/social/social-platforms";
 import {
   COMPANY,
   COMPANY_CALENDLY,
@@ -255,7 +256,7 @@ export type FooterColumnCopy = {
 };
 
 export type FooterSocialLinkCopy = {
-  platform: "linkedin" | "x" | "instagram";
+  platform: SocialPlatform;
   href: string;
   label: string;
 };
@@ -1516,12 +1517,12 @@ const HOME_SECTIONS = [
         footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
-            platform: "linkedin",
+            platform: SocialPlatform.LinkedIn,
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
           {
-            platform: "instagram",
+            platform: SocialPlatform.Instagram,
             href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
@@ -1558,12 +1559,12 @@ const HOME_SECTIONS = [
         footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
-            platform: "linkedin",
+            platform: SocialPlatform.LinkedIn,
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
           {
-            platform: "instagram",
+            platform: SocialPlatform.Instagram,
             href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },

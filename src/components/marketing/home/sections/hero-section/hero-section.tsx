@@ -3,28 +3,40 @@ import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.mod
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
-import { SECTION_HREFS } from "@/config/site";
+import { HERO_SECTION_ID } from "@/config/site";
 import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {
   description: string;
+  primaryCtaAnalyticsTarget: string;
+  primaryCtaHref: string;
+  secondaryCtaAnalyticsTarget: string;
+  secondaryCtaHref: string;
+  trackingLocation: string;
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroTrustLine?: string;
   heroVisualAriaLabel: string;
   title: string;
 };
 
 export function HeroSection({
   description,
+  primaryCtaAnalyticsTarget,
+  primaryCtaHref,
+  secondaryCtaAnalyticsTarget,
+  secondaryCtaHref,
+  trackingLocation,
   heroPrimaryCta,
   heroSecondaryCta,
   heroTag,
+  heroTrustLine,
   heroVisualAriaLabel,
   title,
 }: HeroSectionProps) {
   return (
-    <section className={`${styles.root} hero`} id="hero">
+    <section className={`${styles.root} hero`} id={HERO_SECTION_ID}>
       <div aria-hidden="true" className={styles.backgroundLayers}>
         <div className={heroVisualStyles.vignette} />
         <div className={heroVisualStyles.gridOverlay} />
@@ -42,24 +54,29 @@ export function HeroSection({
           <div className={styles.ctaRow}>
             <PrimaryCtaLink
               className={`${styles.ctaButton} ${styles.primaryCta}`}
-              href={SECTION_HREFS.contact}
+              href={primaryCtaHref}
               data-analytics-event="cta_click"
-              data-analytics-location="hero"
+              data-analytics-location={trackingLocation}
               data-analytics-variant="primary"
-              data-analytics-target="form"
+              data-analytics-target={primaryCtaAnalyticsTarget}
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
             <a
               className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
-              href={SECTION_HREFS.services}
+              href={secondaryCtaHref}
               data-analytics-event="cta_click"
-              data-analytics-location="hero"
+              data-analytics-location={trackingLocation}
               data-analytics-variant="secondary"
+              data-analytics-target={secondaryCtaAnalyticsTarget}
             >
               {heroSecondaryCta}
             </a>
           </div>
+
+          {heroTrustLine ? (
+            <p className={styles.trustLine}>{heroTrustLine}</p>
+          ) : null}
         </div>
 
         <HeroVisual ariaLabel={heroVisualAriaLabel} />

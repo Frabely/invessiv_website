@@ -14,6 +14,17 @@ export const SECTION_IDS = [
 export type SectionId = (typeof SECTION_IDS)[number];
 export type SectionHref = `#${SectionId}`;
 
+export const [
+  HERO_SECTION_ID,
+  LEAD_BRIDGE_SECTION_ID,
+  SERVICES_SECTION_ID,
+  PROOF_SECTION_ID,
+  PROCESS_SECTION_ID,
+  FAQ_SECTION_ID,
+  CONTACT_SECTION_ID,
+  FOOTER_SECTION_ID,
+] = SECTION_IDS;
+
 export const SECTION_HREFS = {
   hero: "#hero",
   "lead-bridge": "#lead-bridge",

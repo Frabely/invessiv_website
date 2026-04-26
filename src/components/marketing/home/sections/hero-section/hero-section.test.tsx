@@ -20,7 +20,12 @@ describe("HeroSection", () => {
         heroSecondaryCta="Leistung passend einschätzen"
         heroTag="KLARER AUFTRITT, MEHR ANFRAGEN"
         heroVisualAriaLabel="Hero visual preview"
+        primaryCtaAnalyticsTarget="form"
+        primaryCtaHref="#contact"
+        secondaryCtaAnalyticsTarget="services"
+        secondaryCtaHref="#services"
         title="Landingpages,\ndie passende Anfragen bringen."
+        trackingLocation="hero"
       />,
     );
 
@@ -32,11 +37,39 @@ describe("HeroSection", () => {
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("href"),
     ).toBe("#contact");
-    expect(
-      screen
-        .getByRole("link", { name: "Leistung passend einschätzen" })
-        .getAttribute("href"),
-    ).toBe("#services");
+    const secondaryLink = screen.getByRole("link", {
+      name: "Leistung passend einschätzen",
+    });
+    expect(secondaryLink.getAttribute("href")).toBe("#services");
+    expect(secondaryLink.dataset.analyticsTarget).toBe("services");
     expect(screen.queryByText("KI-Agenten-Workflow")).toBeNull();
+  });
+
+  it("supports custom CTA targets for route-specific hero reuse", () => {
+    render(
+      <HeroSection
+        description="Kurze Beschreibung"
+        heroPrimaryCta="Check anfragen"
+        heroSecondaryCta="Footer ansehen"
+        heroTag="Landing"
+        heroVisualAriaLabel="Hero visual preview"
+        primaryCtaHref="#footer"
+        secondaryCtaHref="#footer"
+        trackingLocation="landing_hero"
+        primaryCtaAnalyticsTarget="footer"
+        secondaryCtaAnalyticsTarget="footer"
+        title="Landingpages"
+      />,
+    );
+
+    const primaryLink = screen.getByRole("link", { name: "Check anfragen" });
+    const secondaryLink = screen.getByRole("link", { name: "Footer ansehen" });
+
+    expect(primaryLink.getAttribute("href")).toBe("#footer");
+    expect(primaryLink.dataset.analyticsLocation).toBe("landing_hero");
+    expect(primaryLink.dataset.analyticsTarget).toBe("footer");
+    expect(secondaryLink.getAttribute("href")).toBe("#footer");
+    expect(secondaryLink.dataset.analyticsLocation).toBe("landing_hero");
+    expect(secondaryLink.dataset.analyticsTarget).toBe("footer");
   });
 });

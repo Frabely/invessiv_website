@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { SocialPlatform } from "@/common/constants/social/social-platforms";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/site";
 import type {
@@ -80,7 +81,7 @@ export function FooterSection({
   );
 
   const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
-    if (platform === "linkedin") {
+    if (platform === SocialPlatform.LinkedIn) {
       return faLinkedinIn;
     }
     return faInstagram;
