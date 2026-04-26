@@ -17,40 +17,6 @@
   transform: translateY(0);
 }
 
-.graphic::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  border-radius: 34px;
-  background-image:
-    linear-gradient(
-      color-mix(in srgb, var(--color-border) 24%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--color-border) 22%, transparent) 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle at 82% 58%,
-      rgba(55, 122, 255, 0.18),
-      transparent 17rem
-    ),
-    radial-gradient(
-      circle at 22% 44%,
-      rgba(224, 139, 49, 0.18),
-      transparent 15rem
-    );
-  background-size:
-    2.75rem 2.75rem,
-    2.75rem 2.75rem,
-    auto,
-    auto;
-  opacity: 0.62;
-}
-
 .browser {
   position: absolute;
   inset: clamp(0.25rem, 1vw, 0.8rem) auto auto 0;
