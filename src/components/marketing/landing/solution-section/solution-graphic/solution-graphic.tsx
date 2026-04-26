@@ -41,9 +41,8 @@ export function SolutionGraphic({ content }: SolutionGraphicProps) {
         <div className={styles.valueGroup}>
           <span className={styles.miniLabel}>{content.valueLabel}</span>
           <div className={styles.valueTiles}>
-            {content.valueTiles.map((tile, index) => (
+            {content.valueTiles.map((tile) => (
               <div className={styles.valueTile} key={tile}>
-                <span className={styles.valueIcon} data-icon-index={index} />
                 <strong>{tile}</strong>
                 <span />
                 <span />

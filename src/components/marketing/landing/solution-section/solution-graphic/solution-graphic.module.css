@@ -279,74 +279,6 @@
   );
 }
 
-.valueIcon {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 1.7rem;
-  height: 1.7rem;
-  border-radius: 999px;
-  background: radial-gradient(
-    circle at 32% 30%,
-    #efa258 0%,
-    #d98b38 48%,
-    #a76524 100%
-  );
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 900;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 0 0 1px rgba(217, 139, 56, 0.18),
-    0 0 18px rgba(217, 139, 56, 0.32);
-}
-
-.valueIcon::before,
-.valueIcon::after {
-  content: "";
-  display: block;
-}
-
-.valueIcon[data-icon-index="0"]::before {
-  width: 0.78rem;
-  height: 0.42rem;
-  border-bottom: 2.2px solid #ffffff;
-  border-left: 2.2px solid #ffffff;
-  border-bottom-left-radius: 1px;
-  transform: translateY(-0.1rem) rotate(-45deg);
-}
-
-.valueIcon[data-icon-index="1"]::before {
-  width: 0.82rem;
-  height: 0.82rem;
-  border: 2.2px solid #ffffff;
-  border-radius: 999px;
-}
-
-.valueIcon[data-icon-index="1"]::after {
-  position: absolute;
-  width: 0.26rem;
-  height: 0.26rem;
-  border-radius: 999px;
-  background: #ffffff;
-}
-
-.valueIcon[data-icon-index="2"]::before {
-  width: 0.62rem;
-  height: 1rem;
-  background: #ffffff;
-  clip-path: polygon(
-    52% 0,
-    100% 0,
-    62% 44%,
-    96% 44%,
-    32% 100%,
-    50% 56%,
-    8% 56%
-  );
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
-}
-
 .valueTile strong {
   color: #f2f1ef;
   font-size: clamp(0.52rem, 0.49rem + 0.14vw, 0.64rem);
@@ -429,8 +361,8 @@
 
 .formCard {
   position: absolute;
-  top: clamp(0.35rem, 1vw, 0.9rem);
-  right: clamp(3rem, 8vw, 6.25rem);
+  top: clamp(0.35rem, 4vw, 5rem);
+  right: clamp(3rem, 10vw, 50.25rem);
   display: grid;
   gap: 0.65rem;
   width: min(30.5%, 13.4rem);
