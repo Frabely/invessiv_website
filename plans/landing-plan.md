@@ -8,7 +8,7 @@
 - [x] Footer für die Landingpage umgesetzt
 - [x] Problem-Section
 - [x] Lösung-Section
-- [ ] Was-enthalten-ist-Section
+- [x] Was-enthalten-ist-Section
 - [ ] Für-wen-Section
 - [ ] Ablauf-Section
 - [ ] Angebot-/Preisrahmen-Section
@@ -96,7 +96,7 @@ Die Landingpage sollte aus diesen Sektionen bestehen:
 1. [x] Hero
 2. [x] Problem
 3. [x] Lösung
-4. [ ] Was enthalten ist
+4. [x] Was enthalten ist
 5. [ ] Für wen
 6. [ ] Ablauf
 7. [ ] Angebot / Preisrahmen
@@ -822,7 +822,7 @@ Enthalten:
 1. [x] Hero
 2. [x] Problem
 3. [x] Lösung
-4. [ ] Was enthalten ist
+4. [x] Was enthalten ist
 5. [ ] Ablauf
 6. [ ] Angebot / Preis
 7. [ ] FAQ

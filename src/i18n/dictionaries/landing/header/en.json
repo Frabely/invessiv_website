@@ -5,7 +5,8 @@
   "labelsByHref": {
     "#hero": "Start",
     "#problem": "Problem",
-    "#solution": "Solution"
+    "#solution": "Solution",
+    "#inclusions": "What's included"
   },
   "localeMenuLabel": "Open language menu",
   "localeSwitchLabel": "Choose language",

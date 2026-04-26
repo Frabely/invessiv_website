@@ -41,6 +41,9 @@ describe("LandingPage", () => {
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#solution"]'),
     ).toBeTruthy();
+    expect(
+      screen.getByTestId("site-header").querySelector('a[href="#inclusions"]'),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
       "Mehr Anfragen",
     );
@@ -69,6 +72,17 @@ describe("LandingPage", () => {
     ).toBeTruthy();
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();
     expect(screen.queryByText(/keine überladene Website/)).toBeNull();
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: /Was du bekommst/,
+      }),
+    ).toBeTruthy();
+    expect(screen.getByText("Klare Seitenstruktur")).toBeTruthy();
+    expect(screen.getByText("Launch-Unterstützung")).toBeTruthy();
+    expect(
+      screen.getByText(/Du musst keine fertigen Texte mitbringen/),
+    ).toBeTruthy();
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
     expect(screen.getByRole("contentinfo")).toBeTruthy();
     expect(
@@ -76,6 +90,9 @@ describe("LandingPage", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("contentinfo").querySelector('a[href="#solution"]'),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("contentinfo").querySelector('a[href="#inclusions"]'),
     ).toBeTruthy();
   });
 });

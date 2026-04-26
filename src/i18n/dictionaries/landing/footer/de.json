@@ -16,6 +16,10 @@
         {
           "label": "Lösung",
           "href": "#solution"
+        },
+        {
+          "label": "Was enthalten ist",
+          "href": "#inclusions"
         }
       ]
     },
