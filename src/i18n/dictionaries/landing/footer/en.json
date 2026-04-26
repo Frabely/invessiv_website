@@ -8,6 +8,10 @@
         {
           "label": "Start",
           "href": "#hero"
+        },
+        {
+          "label": "Problem",
+          "href": "#problem"
         }
       ]
     },

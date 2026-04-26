@@ -3,7 +3,8 @@
   "brandLogoAlt": "Invessiv Logo",
   "ctaLabel": "Check anfragen",
   "labelsByHref": {
-    "#hero": "Start"
+    "#hero": "Start",
+    "#problem": "Problem"
   },
   "localeMenuLabel": "Sprache öffnen",
   "localeSwitchLabel": "Sprache wählen",

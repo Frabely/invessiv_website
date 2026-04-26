@@ -1,5 +1,20 @@
 # Landingpage-Plan für `invessiv.com/landing`
 
+## Umsetzungsstatus
+
+- [x] Locale-basierte Landing-Route (`/de/landing`, `/en/landing`) angelegt
+- [x] Header für die Landingpage umgesetzt
+- [x] Hero mit Hero Visual umgesetzt
+- [x] Footer für die Landingpage umgesetzt
+- [x] Problem-Section
+- [ ] Lösung-Section
+- [ ] Was-enthalten-ist-Section
+- [ ] Für-wen-Section
+- [ ] Ablauf-Section
+- [ ] Angebot-/Preisrahmen-Section
+- [ ] FAQ-Section
+- [ ] Abschluss-CTA/Formular
+
 ## Ziel der Seite
 
 Diese Seite soll nicht erklären, was Invessiv alles kann.  
@@ -78,15 +93,15 @@ Empfehlung: Einen Einstiegspreis nennen. Das filtert schlechte Leads und macht d
 
 Die Landingpage sollte aus diesen Sektionen bestehen:
 
-1. Hero
-2. Problem
-3. Lösung
-4. Was enthalten ist
-5. Für wen
-6. Ablauf
-7. Angebot / Preisrahmen
-8. FAQ
-9. Abschluss-CTA / Formular
+1. [x] Hero
+2. [x] Problem
+3. [ ] Lösung
+4. [ ] Was enthalten ist
+5. [ ] Für wen
+6. [ ] Ablauf
+7. [ ] Angebot / Preisrahmen
+8. [ ] FAQ
+9. [ ] Abschluss-CTA / Formular
 
 Optional:
 
@@ -804,14 +819,14 @@ Schnell bauen. Nicht perfektionieren.
 
 Enthalten:
 
-1. Hero
-2. Problem
-3. Lösung
-4. Was enthalten ist
-5. Ablauf
-6. Angebot / Preis
-7. FAQ
-8. Formular
+1. [x] Hero
+2. [x] Problem
+3. [ ] Lösung
+4. [ ] Was enthalten ist
+5. [ ] Ablauf
+6. [ ] Angebot / Preis
+7. [ ] FAQ
+8. [ ] Formular
 
 ## Version 2
 
@@ -1053,10 +1068,10 @@ Button:
 
 Vor Veröffentlichung prüfen:
 
-- [ ] Hero erklärt Angebot, Zielgruppe und Ergebnis sofort
-- [ ] Haupt-CTA ist sichtbar ohne Scrollen
-- [ ] CTA lautet nicht nur „Kontakt“, sondern konkreter
-- [ ] Seite spricht hauptsächlich über Landingpages
+- [x] Hero erklärt Angebot, Zielgruppe und Ergebnis sofort
+- [x] Haupt-CTA ist sichtbar ohne Scrollen
+- [x] CTA lautet nicht nur „Kontakt“, sondern konkreter
+- [x] Seite spricht hauptsächlich über Landingpages
 - [ ] Keine Ablenkung durch Prozess-Tools oder allgemeine Webdesign-Leistungen
 - [ ] Angebot ist klar beschrieben
 - [ ] Preisrahmen ist vorhanden

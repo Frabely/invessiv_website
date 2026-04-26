@@ -1,11 +1,19 @@
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { ProblemSection } from "@/components/marketing/landing/problem-section/problem-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
-import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/site";
+import {
+  FOOTER_SECTION_ID,
+  SECTION_HREFS,
+  type NavigationItem,
+} from "@/config/site";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
+import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
+
+const LANDING_NAVIGATION: NavigationItem[] = [{ href: "#problem" }];
 
 type LandingPageProps = {
   locale: Locale;
@@ -15,12 +23,13 @@ export function LandingPage({ locale }: LandingPageProps) {
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
+  const problem = getLandingProblemContent(locale);
 
   return (
     <>
       <SiteHeader
         ctaHref={SECTION_HREFS.footer}
-        navigation={[]}
+        navigation={LANDING_NAVIGATION}
         showThemeSwitch={false}
         uiContent={header}
       />
@@ -44,6 +53,8 @@ export function LandingPage({ locale }: LandingPageProps) {
           title={hero.title}
           trackingLocation="landing_hero"
         />
+
+        <ProblemSection id="problem" locale={locale} {...problem} />
 
         <FooterSection
           bottomNote={footer.bottomNote}
