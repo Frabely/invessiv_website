@@ -361,8 +361,8 @@
 
 .formCard {
   position: absolute;
-  top: clamp(0.35rem, 4vw, 5rem);
-  right: clamp(3rem, 10vw, 50.25rem);
+  top: clamp(0.75rem, 4vw, 4.75rem);
+  right: clamp(1rem, 6vw, 10rem);
   display: grid;
   gap: 0.65rem;
   width: min(30.5%, 13.4rem);
@@ -422,7 +422,7 @@
   position: absolute;
   top: 50%;
   left: calc(100% + 0.55rem);
-  width: clamp(12rem, 26vw, 18.5rem);
+  width: clamp(12rem, 26vw, 22.5rem);
   height: 2px;
   background: linear-gradient(90deg, rgba(223, 139, 55, 0.08), #df8b37);
   box-shadow: 0 0 16px rgba(223, 139, 55, 0.82);
