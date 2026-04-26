@@ -46,6 +46,7 @@ next-env.d.ts
 .idea/
 .vscode/
 .serena/
+.claude/
 
 # local scratch / one-off artifacts
 command_chatgpt.txt
