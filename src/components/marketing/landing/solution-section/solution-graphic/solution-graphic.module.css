@@ -2,7 +2,7 @@
   --reveal-delay: 0ms;
 
   position: relative;
-  min-height: clamp(28rem, 44vw, 35rem);
+  min-height: clamp(25rem, 40vw, 31.5rem);
   isolation: isolate;
   opacity: 0;
   transform: translateY(18px);
@@ -54,9 +54,9 @@
 .browser {
   position: absolute;
   inset: clamp(0.25rem, 1vw, 0.8rem) auto auto 0;
-  width: min(66.5%, 30rem);
-  min-height: clamp(24rem, 37vw, 30rem);
-  padding: 0 1.25rem 1.2rem;
+  width: min(68%, 30rem);
+  min-height: clamp(22rem, 34vw, 27.5rem);
+  padding: 0 1.1rem 1rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
   border-radius: 18px;
   background:
@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  height: 3rem;
+  height: 2.6rem;
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 28%, transparent);
 }
@@ -116,10 +116,10 @@
 
 .browserHero {
   display: grid;
-  grid-template-columns: 1fr 1.08fr;
-  gap: clamp(1rem, 2vw, 1.45rem);
+  grid-template-columns: 1fr 1.05fr;
+  gap: clamp(0.85rem, 1.6vw, 1.2rem);
   align-items: center;
-  padding: 1.55rem 0 1.35rem;
+  padding: 1.15rem 0 1rem;
 }
 
 .browserCopy {
@@ -187,6 +187,7 @@
 }
 
 .blueButton {
+  position: relative;
   width: max-content;
   margin-top: 0.2rem;
   padding: 0.58rem 0.78rem;
@@ -195,88 +196,80 @@
 .imageCard {
   position: relative;
   overflow: hidden;
-  min-height: 9.5rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  align-self: start;
+  margin-top: -0.6rem;
+  min-height: 8rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: 0.62rem;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.08),
-    rgba(255, 255, 255, 0.02)
-  );
+  background:
+    radial-gradient(
+      circle at 78% 38%,
+      rgba(217, 139, 56, 0.12),
+      transparent 60%
+    ),
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.012)
+    ),
+    rgba(14, 15, 16, 0.55);
 }
 
 .imageLine,
 .imageLineShort {
   position: absolute;
-  left: 0.9rem;
-  height: 0.42rem;
+  left: 0.85rem;
+  height: 0.34rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .imageLine {
-  top: 1.28rem;
-  width: 35%;
+  top: 1rem;
+  width: 38%;
 }
 
 .imageLineShort {
-  top: 2.58rem;
-  width: 46%;
+  top: 1.95rem;
+  width: 28%;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .imageSun {
   position: absolute;
-  top: 1.9rem;
-  right: 1.05rem;
-  width: 1.78rem;
-  height: 1.78rem;
+  top: 1.45rem;
+  right: 1rem;
+  width: 1.55rem;
+  height: 1.55rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, #d98b38, #a96825);
-  box-shadow: 0 0 24px rgba(217, 139, 56, 0.28);
-}
-
-.imageMountain {
-  position: absolute;
-  inset: auto 0.55rem 0.45rem 1.05rem;
-  height: 4.65rem;
-  background:
-    radial-gradient(
-      circle at 86% 14%,
-      rgba(255, 255, 255, 0.08) 0 16%,
-      transparent 17%
-    ),
-    linear-gradient(
-      135deg,
-      transparent 0 25%,
-      rgba(255, 255, 255, 0.1) 26% 62%,
-      transparent 63%
-    ),
-    linear-gradient(
-      135deg,
-      transparent 0 54%,
-      rgba(255, 255, 255, 0.08) 55% 88%,
-      transparent 89%
-    );
-  clip-path: polygon(0 100%, 47% 18%, 67% 55%, 82% 32%, 100% 48%, 100% 100%);
+  background: radial-gradient(
+    circle at 35% 35%,
+    #f0a258 0%,
+    #d98b38 45%,
+    #a86524 100%
+  );
+  box-shadow:
+    0 0 0 2px rgba(217, 139, 56, 0.12),
+    0 0 26px rgba(217, 139, 56, 0.45);
 }
 
 .valueGroup {
   display: grid;
-  gap: 0.9rem;
-  margin-top: 0.15rem;
+  gap: 0.7rem;
+  margin-top: 0.1rem;
 }
 
 .valueTiles {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
+  gap: 0.7rem;
 }
 
 .valueTile {
   display: grid;
-  gap: 0.58rem;
-  min-height: 6.25rem;
-  padding: 0.9rem 0.75rem 0.78rem;
+  gap: 0.5rem;
+  min-height: 5.4rem;
+  padding: 0.78rem 0.7rem 0.7rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 52%, transparent);
   border-radius: 0.55rem;
   background: linear-gradient(
@@ -290,14 +283,22 @@
   position: relative;
   display: inline-grid;
   place-items: center;
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 1.7rem;
+  height: 1.7rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, #d99440, #ae6d24);
+  background: radial-gradient(
+    circle at 32% 30%,
+    #efa258 0%,
+    #d98b38 48%,
+    #a76524 100%
+  );
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 900;
-  box-shadow: 0 0 22px rgba(217, 139, 56, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 0 1px rgba(217, 139, 56, 0.18),
+    0 0 18px rgba(217, 139, 56, 0.32);
 }
 
 .valueIcon::before,
@@ -307,41 +308,43 @@
 }
 
 .valueIcon[data-icon-index="0"]::before {
-  width: 0.72rem;
+  width: 0.78rem;
   height: 0.42rem;
-  border-bottom: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  transform: translateY(-0.08rem) rotate(-45deg);
+  border-bottom: 2.2px solid #ffffff;
+  border-left: 2.2px solid #ffffff;
+  border-bottom-left-radius: 1px;
+  transform: translateY(-0.1rem) rotate(-45deg);
 }
 
 .valueIcon[data-icon-index="1"]::before {
-  width: 0.78rem;
-  height: 0.78rem;
-  border: 2px solid #ffffff;
+  width: 0.82rem;
+  height: 0.82rem;
+  border: 2.2px solid #ffffff;
   border-radius: 999px;
 }
 
 .valueIcon[data-icon-index="1"]::after {
   position: absolute;
-  width: 0.24rem;
-  height: 0.24rem;
+  width: 0.26rem;
+  height: 0.26rem;
   border-radius: 999px;
   background: #ffffff;
 }
 
 .valueIcon[data-icon-index="2"]::before {
-  width: 0.48rem;
-  height: 0.95rem;
+  width: 0.62rem;
+  height: 1rem;
   background: #ffffff;
   clip-path: polygon(
-    55% 0,
+    52% 0,
     100% 0,
-    66% 42%,
-    100% 42%,
-    35% 100%,
-    48% 56%,
-    0 56%
+    62% 44%,
+    96% 44%,
+    32% 100%,
+    50% 56%,
+    8% 56%
   );
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
 }
 
 .valueTile strong {
@@ -363,9 +366,9 @@
 
 .trustPanel {
   display: grid;
-  gap: 0.72rem;
-  margin-top: 1.05rem;
-  padding: 0.82rem 0.95rem;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: 0.55rem;
   background: rgba(255, 255, 255, 0.026);
@@ -384,8 +387,8 @@
 }
 
 .avatarRow span {
-  width: 1.58rem;
-  height: 1.58rem;
+  width: 1.4rem;
+  height: 1.4rem;
   border-radius: 999px;
   background: linear-gradient(
     145deg,
@@ -426,13 +429,13 @@
 
 .formCard {
   position: absolute;
-  top: clamp(6.4rem, 9.8vw, 8.25rem);
-  right: 0.35rem;
+  top: clamp(0.35rem, 1vw, 0.9rem);
+  right: clamp(3rem, 8vw, 6.25rem);
   display: grid;
-  gap: 0.78rem;
-  width: min(31.5%, 13.8rem);
-  min-width: 11.6rem;
-  padding: 1.05rem;
+  gap: 0.65rem;
+  width: min(30.5%, 13.4rem);
+  min-width: 11.4rem;
+  padding: 0.95rem;
   border: 1px solid rgba(63, 123, 226, 0.46);
   border-radius: 0.75rem;
   background:
@@ -452,13 +455,13 @@
 
 .formFields {
   display: grid;
-  gap: 0.42rem;
+  gap: 0.36rem;
 }
 
 .formFields span {
   display: flex;
   align-items: center;
-  min-height: 1.75rem;
+  min-height: 1.55rem;
   padding: 0 0.55rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 52%, transparent);
   border-radius: 0.36rem;
@@ -469,8 +472,8 @@
 
 .formFields .textarea {
   align-items: flex-start;
-  min-height: 3.95rem;
-  padding-top: 0.55rem;
+  min-height: 3.4rem;
+  padding-top: 0.5rem;
 }
 
 .submitButton {
@@ -485,12 +488,13 @@
 
 .flowLine {
   position: absolute;
-  top: clamp(13.6rem, 19.4vw, 16.4rem);
-  left: min(34.5%, 15.8rem);
-  width: min(34%, 15.2rem);
+  top: 50%;
+  left: calc(100% + 0.55rem);
+  width: clamp(12rem, 26vw, 18.5rem);
   height: 2px;
   background: linear-gradient(90deg, rgba(223, 139, 55, 0.08), #df8b37);
   box-shadow: 0 0 16px rgba(223, 139, 55, 0.82);
+  transform: translateY(-50%);
 }
 
 .flowLine::before {
@@ -519,7 +523,7 @@
 
 .timeline {
   position: absolute;
-  inset: auto 0 -1.45rem 0;
+  inset: auto 0 -2.6rem 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(0.75rem, 2vw, 1.5rem);

@@ -27,6 +27,7 @@ export function SolutionGraphic({ content }: SolutionGraphicProps) {
             <span className={styles.blueButton}>
               {content.buttonLabel}
               <span aria-hidden="true">-&gt;</span>
+              <span className={styles.flowLine} />
             </span>
           </div>
 
@@ -34,7 +35,6 @@ export function SolutionGraphic({ content }: SolutionGraphicProps) {
             <span className={styles.imageLine} />
             <span className={styles.imageLineShort} />
             <span className={styles.imageSun} />
-            <span className={styles.imageMountain} />
           </div>
         </div>
 
@@ -75,8 +75,6 @@ export function SolutionGraphic({ content }: SolutionGraphicProps) {
           </div>
         </div>
       </div>
-
-      <span className={styles.flowLine} />
 
       <div className={styles.formCard}>
         <span className={styles.miniLabel}>{content.formLabel}</span>
