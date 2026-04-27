@@ -34,7 +34,7 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByTestId("site-header").getAttribute("data-cta-href"),
-    ).toBe("#footer");
+    ).toBe("#contact");
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#problem"]'),
     ).toBeTruthy();
@@ -79,20 +79,27 @@ describe("LandingPage", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText("Klare Seitenstruktur")).toBeTruthy();
-    expect(screen.getByText("Launch-Unterstützung")).toBeTruthy();
+    expect(screen.getAllByText("Launch-Unterstützung").length).toBeGreaterThan(
+      0,
+    );
     expect(
       screen.getByText(/Du musst keine fertigen Texte mitbringen/),
     ).toBeTruthy();
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
-    expect(screen.getByRole("contentinfo")).toBeTruthy();
     expect(
-      screen.getByRole("contentinfo").querySelector('a[href="#problem"]'),
+      screen.getByRole("heading", {
+        level: 2,
+        name: /Lass uns deine Landingpage angehen/,
+      }),
     ).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Check anfragen/ })).toBeTruthy();
     expect(
-      screen.getByRole("contentinfo").querySelector('a[href="#solution"]'),
+      screen.getByLabelText(/Was möchtest du mit der Landingpage erreichen/),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("contentinfo").querySelector('a[href="#inclusions"]'),
-    ).toBeTruthy();
+    const pageFooter = document.getElementById("footer");
+    expect(pageFooter).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#problem"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#inclusions"]')).toBeTruthy();
   });
 });

@@ -1,5 +1,6 @@
 import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
+import { FinalCtaSection } from "@/components/marketing/landing/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
@@ -10,12 +11,14 @@ import { SolutionSection } from "@/components/marketing/landing/solution-section
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import {
+  CONTACT_SECTION_ID,
   FOOTER_SECTION_ID,
   SECTION_HREFS,
   type NavigationItem,
 } from "@/config/site";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
+import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
@@ -42,6 +45,7 @@ type LandingPageProps = {
 export function LandingPage({ locale }: LandingPageProps) {
   const audience = getLandingAudienceContent(locale);
   const faq = getLandingFaqContent(locale);
+  const finalCta = getLandingFinalCtaContent(locale);
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
@@ -54,7 +58,7 @@ export function LandingPage({ locale }: LandingPageProps) {
   return (
     <>
       <SiteHeader
-        ctaHref={SECTION_HREFS.footer}
+        ctaHref={SECTION_HREFS.contact}
         navigation={LANDING_NAVIGATION}
         showThemeSwitch={false}
         uiContent={header}
@@ -72,10 +76,10 @@ export function LandingPage({ locale }: LandingPageProps) {
           heroTag={hero.tag}
           heroTrustLine={hero.trustLine}
           heroVisualAriaLabel={hero.visualAriaLabel}
-          primaryCtaAnalyticsTarget={FOOTER_SECTION_ID}
-          primaryCtaHref={SECTION_HREFS.footer}
-          secondaryCtaAnalyticsTarget={FOOTER_SECTION_ID}
-          secondaryCtaHref={SECTION_HREFS.footer}
+          primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
+          primaryCtaHref={SECTION_HREFS.contact}
+          secondaryCtaAnalyticsTarget="process"
+          secondaryCtaHref={SECTION_HREFS.process}
           title={hero.title}
           trackingLocation="landing_hero"
         />
@@ -91,13 +95,19 @@ export function LandingPage({ locale }: LandingPageProps) {
         <ProcessSection id="process" locale={locale} {...process} />
 
         <PricingSection
-          ctaHref={SECTION_HREFS.footer}
+          ctaHref={SECTION_HREFS.contact}
           id="pricing"
           locale={locale}
           {...pricing}
         />
 
         <FaqSection id="faq" locale={locale} {...faq} />
+
+        <FinalCtaSection
+          id={CONTACT_SECTION_ID}
+          locale={locale}
+          {...finalCta}
+        />
 
         <FooterSection
           bottomNote={footer.bottomNote}

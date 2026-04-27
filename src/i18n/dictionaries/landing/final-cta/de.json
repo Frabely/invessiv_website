@@ -1,0 +1,48 @@
+{
+  "eyebrow": "Anfrage",
+  "title": "Lass uns deine Landingpage angehen.",
+  "body": "Erzähl mir kurz, was du erreichen willst. Du bekommst eine ehrliche Einschätzung — auch dann, wenn eine Landingpage gerade nicht das Richtige für dich ist.",
+  "form": {
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Vor- und Nachname",
+        "autocomplete": "name"
+      },
+      "email": {
+        "label": "E-Mail",
+        "placeholder": "name@beispiel.de",
+        "autocomplete": "email"
+      },
+      "website": {
+        "label": "Website",
+        "hint": "Falls vorhanden.",
+        "placeholder": "https://…",
+        "autocomplete": "url"
+      },
+      "goal": {
+        "label": "Was möchtest du mit der Landingpage erreichen?",
+        "placeholder": "Worum geht es? Welches Angebot, welche Zielgruppe, welcher Anlass?"
+      },
+      "honeypot": {
+        "label": "Bitte nicht ausfüllen"
+      }
+    },
+    "consentLabel": "Ich bin mit der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage einverstanden.",
+    "privacyLabel": "Datenschutz",
+    "privacyHref": "/de/privacy",
+    "requiredHint": "Pflichtfelder sind mit * markiert.",
+    "submitLabel": "Check anfragen",
+    "submittingLabel": "Wird gesendet …",
+    "successTitle": "Danke für deine Anfrage.",
+    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir — meistens innerhalb von 24 Stunden.",
+    "errorRequired": "Bitte ausfüllen.",
+    "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
+    "errorWebsite": "Bitte eine gültige URL angeben (z. B. https://beispiel.de).",
+    "errorConsent": "Ohne deine Einwilligung kann ich die Anfrage nicht bearbeiten.",
+    "errorRateLimited": "Zu viele Anfragen in kurzer Zeit. Bitte versuch es in ein paar Minuten erneut.",
+    "errorDelivery": "Die Anfrage konnte gerade nicht zugestellt werden. Bitte versuch es noch einmal.",
+    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail."
+  },
+  "trustLine": "Antwort in der Regel innerhalb von 24 Stunden."
+}
