@@ -1,4 +1,5 @@
 import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
+import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
@@ -14,6 +15,7 @@ import {
   type NavigationItem,
 } from "@/config/site";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
+import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
@@ -30,6 +32,7 @@ const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#audience" },
   { href: "#process" },
   { href: "#pricing" },
+  { href: "#faq" },
 ];
 
 type LandingPageProps = {
@@ -38,6 +41,7 @@ type LandingPageProps = {
 
 export function LandingPage({ locale }: LandingPageProps) {
   const audience = getLandingAudienceContent(locale);
+  const faq = getLandingFaqContent(locale);
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
@@ -92,6 +96,8 @@ export function LandingPage({ locale }: LandingPageProps) {
           locale={locale}
           {...pricing}
         />
+
+        <FaqSection id="faq" locale={locale} {...faq} />
 
         <FooterSection
           bottomNote={footer.bottomNote}
