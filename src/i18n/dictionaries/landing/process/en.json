@@ -1,0 +1,31 @@
+{
+  "body": "Four steps, clearly separated — so you always know where we are and what comes next.",
+  "eyebrow": "Process",
+  "steps": [
+    {
+      "iconKey": "target",
+      "numeral": "01",
+      "title": "Goal",
+      "description": "Short briefing: your offer, your audience, the result the page should deliver."
+    },
+    {
+      "iconKey": "structure",
+      "numeral": "02",
+      "title": "Structure",
+      "description": "Sections, content flow and the inquiry form tailored to your offer — you see a preview before design starts."
+    },
+    {
+      "iconKey": "build",
+      "numeral": "03",
+      "title": "Build",
+      "description": "I build the page — design, code and copy from one set of hands. You give feedback, I ship it."
+    },
+    {
+      "iconKey": "launch",
+      "numeral": "04",
+      "title": "Launch",
+      "description": "Domain connected, tracking in place, live. Within 3–7 days, not 3–7 weeks."
+    }
+  ],
+  "title": "How your landing page comes together."
+}
