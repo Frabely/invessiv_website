@@ -1,3 +1,4 @@
+import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
@@ -10,6 +11,7 @@ import {
   SECTION_HREFS,
   type NavigationItem,
 } from "@/config/site";
+import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
@@ -21,6 +23,7 @@ const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#problem" },
   { href: "#solution" },
   { href: "#inclusions" },
+  { href: "#audience" },
 ];
 
 type LandingPageProps = {
@@ -28,6 +31,7 @@ type LandingPageProps = {
 };
 
 export function LandingPage({ locale }: LandingPageProps) {
+  const audience = getLandingAudienceContent(locale);
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
@@ -69,6 +73,8 @@ export function LandingPage({ locale }: LandingPageProps) {
         <SolutionSection id="solution" locale={locale} {...solution} />
 
         <InclusionsSection id="inclusions" locale={locale} {...inclusions} />
+
+        <AudienceSection id="audience" locale={locale} {...audience} />
 
         <FooterSection
           bottomNote={footer.bottomNote}

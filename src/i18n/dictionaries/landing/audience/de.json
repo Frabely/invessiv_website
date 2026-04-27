@@ -1,0 +1,42 @@
+{
+  "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein konkretes Angebot online besser präsentieren und mehr Anfragen bekommen wollen.",
+  "eyebrow": "Für wen",
+  "items": [
+    {
+      "iconKey": "hammer",
+      "label": "Handwerker",
+      "scenario": "Saubere Seite für ein Gewerk — vom ersten Bild bis zur Anfrage."
+    },
+    {
+      "iconKey": "coach",
+      "label": "Coaches",
+      "scenario": "Ein Programm klar erklärt — damit Erstgespräche kein Zufall sind."
+    },
+    {
+      "iconKey": "consultant",
+      "label": "Berater",
+      "scenario": "Positionierung, Nutzen, Ablauf — auf einer Seite verständlich."
+    },
+    {
+      "iconKey": "camera",
+      "label": "Fotografen",
+      "scenario": "Bildstark präsentiert, ohne dass die Seite die Arbeit überstrahlt."
+    },
+    {
+      "iconKey": "pin",
+      "label": "Lokale Dienstleister",
+      "scenario": "Direkt erkennbar, was du anbietest — und wie man dich erreicht."
+    },
+    {
+      "iconKey": "building",
+      "label": "Kleine B2B-Anbieter",
+      "scenario": "Konkretes Angebot, klare Ansprache, ein nächster Schritt."
+    },
+    {
+      "iconKey": "spark",
+      "label": "Agenturen mit Kampagnenbedarf",
+      "scenario": "Eine fokussierte Kampagnen-Seite — schnell live, sauber gebaut."
+    }
+  ],
+  "title": "Erkennst du dich wieder?"
+}

@@ -6,7 +6,8 @@
     "#hero": "Start",
     "#problem": "Problem",
     "#solution": "Lösung",
-    "#inclusions": "Was enthalten ist"
+    "#inclusions": "Was enthalten ist",
+    "#audience": "Für wen"
   },
   "localeMenuLabel": "Sprache öffnen",
   "localeSwitchLabel": "Sprache wählen",

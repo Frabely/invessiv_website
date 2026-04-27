@@ -1,0 +1,42 @@
+{
+  "body": "For service providers, freelancers and small businesses that want to present one concrete offer better online — and turn more visitors into inquiries.",
+  "eyebrow": "Who it's for",
+  "items": [
+    {
+      "iconKey": "hammer",
+      "label": "Skilled trades",
+      "scenario": "A clean page for one trade — from first photo to inquiry."
+    },
+    {
+      "iconKey": "coach",
+      "label": "Coaches",
+      "scenario": "One programme, clearly explained — so first calls aren't a matter of chance."
+    },
+    {
+      "iconKey": "consultant",
+      "label": "Consultants",
+      "scenario": "Positioning, value and process — clear on a single page."
+    },
+    {
+      "iconKey": "camera",
+      "label": "Photographers",
+      "scenario": "Bold imagery up front — without the page upstaging your work."
+    },
+    {
+      "iconKey": "pin",
+      "label": "Local service providers",
+      "scenario": "Instantly clear what you do — and how to reach you."
+    },
+    {
+      "iconKey": "building",
+      "label": "Small B2B providers",
+      "scenario": "A concrete offer, sharp messaging, one obvious next step."
+    },
+    {
+      "iconKey": "spark",
+      "label": "Agencies running campaigns",
+      "scenario": "A focused campaign page — live quickly, built cleanly."
+    }
+  ],
+  "title": "See yourself in here?"
+}
