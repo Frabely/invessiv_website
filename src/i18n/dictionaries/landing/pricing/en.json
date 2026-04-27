@@ -1,0 +1,25 @@
+{
+  "eyebrow": "Offer",
+  "title": "One landing page. One clear price.",
+  "body": "A concrete entry point instead of an open-ended agency quote — you know up front what you get and what it costs.",
+  "card": {
+    "planLabel": "Starter",
+    "planTitle": "Landing Page Starter",
+    "planDescription": "For a concrete offer, service or campaign — from structure to launch, from one set of hands.",
+    "itemsLabel": "Included",
+    "items": [
+      "1 landing page",
+      "Structure & copy foundation",
+      "Design & build",
+      "Inquiry form",
+      "Mobile optimisation",
+      "Launch support"
+    ],
+    "durationLabel": "Built in",
+    "durationValue": "3–7 days",
+    "priceLabel": "Price",
+    "priceValue": "from €799"
+  },
+  "hint": "Different scope on request.",
+  "ctaLabel": "Request a free landing page check"
+}

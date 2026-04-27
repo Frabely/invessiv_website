@@ -8,7 +8,8 @@
     "#solution": "Solution",
     "#inclusions": "What's included",
     "#audience": "Who it's for",
-    "#process": "Process"
+    "#process": "Process",
+    "#pricing": "Offer"
   },
   "localeMenuLabel": "Open language menu",
   "localeSwitchLabel": "Choose language",

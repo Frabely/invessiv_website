@@ -3,6 +3,7 @@ import { FooterSection } from "@/components/marketing/home/sections/footer-secti
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
 import { ProblemSection } from "@/components/marketing/landing/problem-section/problem-section";
+import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
 import { SolutionSection } from "@/components/marketing/landing/solution-section/solution-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -17,6 +18,7 @@ import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
 import { getLandingInclusionsContent } from "@/i18n/dictionaries/landing/inclusions";
+import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingSolutionContent } from "@/i18n/dictionaries/landing/solution";
@@ -27,6 +29,7 @@ const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#inclusions" },
   { href: "#audience" },
   { href: "#process" },
+  { href: "#pricing" },
 ];
 
 type LandingPageProps = {
@@ -39,6 +42,7 @@ export function LandingPage({ locale }: LandingPageProps) {
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
   const inclusions = getLandingInclusionsContent(locale);
+  const pricing = getLandingPricingContent(locale);
   const problem = getLandingProblemContent(locale);
   const process = getLandingProcessContent(locale);
   const solution = getLandingSolutionContent(locale);
@@ -81,6 +85,13 @@ export function LandingPage({ locale }: LandingPageProps) {
         <AudienceSection id="audience" locale={locale} {...audience} />
 
         <ProcessSection id="process" locale={locale} {...process} />
+
+        <PricingSection
+          ctaHref={SECTION_HREFS.footer}
+          id="pricing"
+          locale={locale}
+          {...pricing}
+        />
 
         <FooterSection
           bottomNote={footer.bottomNote}

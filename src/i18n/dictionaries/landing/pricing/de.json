@@ -1,0 +1,25 @@
+{
+  "eyebrow": "Angebot",
+  "title": "Eine Landingpage. Ein klarer Preis.",
+  "body": "Ein konkreter Einstieg statt offenem Agentur-Kostenrahmen — du weißt vorher, was du bekommst und was es kostet.",
+  "card": {
+    "planLabel": "Starter",
+    "planTitle": "Landingpage Starter",
+    "planDescription": "Für ein konkretes Angebot, eine Dienstleistung oder eine Kampagne — von Struktur bis Launch aus einer Hand.",
+    "itemsLabel": "Enthalten",
+    "items": [
+      "1 Landingpage",
+      "Struktur & Text-Grundlage",
+      "Design & Umsetzung",
+      "Anfrageformular",
+      "Mobile Optimierung",
+      "Launch-Unterstützung"
+    ],
+    "durationLabel": "Umsetzung",
+    "durationValue": "3–7 Tage",
+    "priceLabel": "Preisrahmen",
+    "priceValue": "ab 799 €"
+  },
+  "hint": "Andere Umfänge auf Anfrage.",
+  "ctaLabel": "Kostenlosen Landingpage-Check anfragen"
+}
