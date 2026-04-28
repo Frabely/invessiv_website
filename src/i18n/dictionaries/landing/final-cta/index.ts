@@ -20,6 +20,7 @@ export type LandingFinalCtaFormCopy = {
   consentLabel: string;
   privacyLabel: string;
   privacyHref: string;
+  payloadContext: string;
   requiredHint: string;
   submitLabel: string;
   submittingLabel: string;

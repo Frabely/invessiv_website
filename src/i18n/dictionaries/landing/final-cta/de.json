@@ -1,7 +1,7 @@
 {
   "eyebrow": "Anfrage",
   "title": "Lass uns deine Landingpage angehen.",
-  "body": "Erzähl mir kurz, was du erreichen willst. Du bekommst eine ehrliche Einschätzung — auch dann, wenn eine Landingpage gerade nicht das Richtige für dich ist.",
+  "body": "Der Check ist eine kurze Einschätzung von Angebot, Zielgruppe und sinnvoller Seitenstruktur vor der Umsetzung. Schreib kurz, ob du eine bestehende Seite prüfen lassen oder direkt eine neue Landingpage starten möchtest.",
   "form": {
     "fields": {
       "name": {
@@ -22,7 +22,7 @@
       },
       "goal": {
         "label": "Was möchtest du mit der Landingpage erreichen?",
-        "placeholder": "Worum geht es? Welches Angebot, welche Zielgruppe, welcher Anlass?"
+        "placeholder": "Ich möchte eine neue Landingpage für ... / Bitte prüfe meine bestehende Seite ..."
       },
       "honeypot": {
         "label": "Bitte nicht ausfüllen"
@@ -32,10 +32,11 @@
     "privacyLabel": "Datenschutz",
     "privacyHref": "/de/privacy",
     "requiredHint": "Pflichtfelder sind mit * markiert.",
-    "submitLabel": "Check anfragen",
-    "submittingLabel": "Wird gesendet …",
+    "submitLabel": "Kostenlosen Landingpage-Check anfragen",
+    "submittingLabel": "Wird gesendet ...",
+    "payloadContext": "Landingpage-Check Anfrage",
     "successTitle": "Danke für deine Anfrage.",
-    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir — meistens innerhalb von 24 Stunden.",
+    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir - meistens innerhalb von 24 Stunden.",
     "errorRequired": "Bitte ausfüllen.",
     "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
     "errorWebsite": "Bitte eine gültige URL angeben (z. B. https://beispiel.de).",

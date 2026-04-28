@@ -50,13 +50,23 @@ function splitName(input: string): { firstName: string; lastName: string } {
   };
 }
 
-function buildMessage(goal: string, website: string): string {
+function buildMessage(
+  goal: string,
+  website: string,
+  payloadContext: string,
+): string {
   const trimmedWebsite = website.trim();
   const trimmedGoal = goal.trim();
+  const trimmedContext = payloadContext.trim();
+  const messageParts = trimmedContext ? [trimmedContext] : [];
+
   if (!trimmedWebsite) {
-    return trimmedGoal;
+    messageParts.push(trimmedGoal);
+    return messageParts.join("\n\n");
   }
-  return `Website: ${trimmedWebsite}\n\n${trimmedGoal}`;
+
+  messageParts.push(`Website: ${trimmedWebsite}`, trimmedGoal);
+  return messageParts.join("\n\n");
 }
 
 export function FinalCtaSection({
@@ -123,7 +133,7 @@ export function FinalCtaSection({
         email: values.email,
         firstName,
         lastName,
-        message: buildMessage(values.goal, values.website),
+        message: buildMessage(values.goal, values.website, form.payloadContext),
       },
       locale,
     );

@@ -1,0 +1,69 @@
+// @vitest-environment jsdom
+
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
+import { submitQuickContact } from "@/client/contact/services/contact-form-service";
+import { FinalCtaSection } from "./final-cta-section";
+
+vi.mock("@/client/contact/services/contact-form-service", () => ({
+  submitQuickContact: vi
+    .fn()
+    .mockResolvedValue({ ok: true, requestId: "req_1" }),
+}));
+
+describe("FinalCtaSection", () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("submits quick contact with landing context and website in the message", async () => {
+    render(
+      <FinalCtaSection
+        id="contact"
+        locale="de"
+        {...getLandingFinalCtaContent("de")}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /^Website/ }), {
+      target: { value: "https://example.com" },
+    });
+    fireEvent.change(
+      screen.getByRole("textbox", {
+        name: /Was möchtest du mit der Landingpage erreichen/,
+      }),
+      {
+        target: {
+          value: "Ich möchte direkt eine neue Landingpage für mein Angebot.",
+        },
+      },
+    );
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Kostenlosen Landingpage-Check anfragen",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(submitQuickContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: "max@example.com",
+          firstName: "Max",
+          kind: "quick_contact",
+          lastName: "Mustermann",
+          locale: "de",
+          message:
+            "Landingpage-Check Anfrage\n\nWebsite: https://example.com\n\nIch möchte direkt eine neue Landingpage für mein Angebot.",
+        }),
+      );
+    });
+  });
+});

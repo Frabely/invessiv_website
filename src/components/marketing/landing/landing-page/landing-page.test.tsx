@@ -92,14 +92,32 @@ describe("LandingPage", () => {
         name: /Lass uns deine Landingpage angehen/,
       }),
     ).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Check anfragen/ })).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: /Kostenlosen Landingpage-Check anfragen/,
+      }),
+    ).toBeTruthy();
     expect(
       screen.getByLabelText(/Was möchtest du mit der Landingpage erreichen/),
     ).toBeTruthy();
     const pageFooter = document.getElementById("footer");
     expect(pageFooter).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#contact"]')?.textContent).toBe(
+      "Kostenlosen Landingpage-Check anfragen",
+    );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#inclusions"]')).toBeTruthy();
+    expect(
+      pageFooter?.querySelector('a[href="/de/imprint#company-details"]')
+        ?.textContent,
+    ).toBe("Invessiv");
+    expect(
+      pageFooter?.querySelector('a[href="mailto:service@invessiv.com"]')
+        ?.textContent,
+    ).toBe("service@invessiv.com");
+    expect(
+      pageFooter?.querySelector('a[href="tel:+4915232070477"]')?.textContent,
+    ).toBe("+49 1523 2070477");
   });
 });
