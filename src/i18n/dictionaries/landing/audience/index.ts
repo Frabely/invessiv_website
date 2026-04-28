@@ -24,6 +24,7 @@ export type LandingAudienceContent = {
   body: string;
   eyebrow: string;
   items: LandingAudienceItem[];
+  reassurance: string;
   title: string;
 };
 

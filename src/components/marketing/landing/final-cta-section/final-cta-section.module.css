@@ -1,8 +1,7 @@
 .section {
   --reveal-delay: 0ms;
   --form-radius: 24px;
-  --form-border-thickness: 1.5px;
-  --form-max-width: 44rem;
+  --form-border-thickness: 2px;
 
   position: relative;
   display: grid;
@@ -37,8 +36,8 @@
       color-mix(in srgb, var(--color-accent-warm) 22%, transparent),
       transparent 64%
     );
-  filter: blur(26px);
-  opacity: 0.5;
+  filter: blur(30px);
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -98,19 +97,19 @@
 .formCard {
   position: relative;
   display: grid;
-  width: min(100%, var(--form-max-width));
+  width: min(100%, var(--focus-lane-max));
   gap: clamp(1rem, 1.8vw, 1.35rem);
   padding: clamp(1.5rem, 3vw, 2.4rem);
   border-radius: var(--form-radius);
   border: var(--form-border-thickness) solid transparent;
   background:
-    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(var(--surface), var(--surface)) padding-box,
     linear-gradient(135deg, var(--color-cta), var(--color-accent-warm))
       border-box;
   box-shadow:
-    0 30px 80px -50px color-mix(in srgb, var(--color-cta) 45%, transparent),
-    0 12px 30px -20px
-      color-mix(in srgb, var(--color-accent-warm) 35%, transparent);
+    0 36px 90px -50px color-mix(in srgb, var(--color-cta) 55%, transparent),
+    0 16px 36px -22px
+      color-mix(in srgb, var(--color-accent-warm) 42%, transparent);
   text-align: left;
 }
 
@@ -279,18 +278,18 @@
   display: grid;
   justify-items: center;
   gap: 0.85rem;
-  width: min(100%, var(--form-max-width));
+  width: min(100%, var(--focus-lane-max));
   padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.4rem);
   border-radius: var(--form-radius);
   border: var(--form-border-thickness) solid transparent;
   background:
-    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(var(--surface), var(--surface)) padding-box,
     linear-gradient(135deg, var(--color-cta), var(--color-accent-warm))
       border-box;
   box-shadow:
-    0 30px 80px -50px color-mix(in srgb, var(--color-cta) 45%, transparent),
-    0 12px 30px -20px
-      color-mix(in srgb, var(--color-accent-warm) 35%, transparent);
+    0 36px 90px -50px color-mix(in srgb, var(--color-cta) 55%, transparent),
+    0 16px 36px -22px
+      color-mix(in srgb, var(--color-accent-warm) 42%, transparent);
   text-align: center;
 }
 
@@ -338,9 +337,9 @@
     linear-gradient(135deg, var(--color-cta), var(--color-accent-warm))
       border-box;
   box-shadow:
-    0 30px 70px -50px color-mix(in srgb, var(--color-cta) 30%, transparent),
-    0 14px 28px -22px
-      color-mix(in srgb, var(--color-accent-warm) 25%, transparent);
+    0 36px 90px -50px color-mix(in srgb, var(--color-cta) 40%, transparent),
+    0 16px 36px -22px
+      color-mix(in srgb, var(--color-accent-warm) 32%, transparent);
 }
 
 @media (max-width: 720px) {
@@ -351,7 +350,7 @@
   .spotlight {
     transform: translate(-50%, -38%);
     filter: blur(28px);
-    opacity: 0.42;
+    opacity: 0.48;
   }
 
   .fieldGrid {

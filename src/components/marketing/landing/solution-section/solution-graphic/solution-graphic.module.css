@@ -2,7 +2,7 @@
   --reveal-delay: 0ms;
 
   position: relative;
-  min-height: clamp(25rem, 40vw, 31.5rem);
+  min-height: clamp(26rem, 42vw, 33rem);
   isolation: isolate;
   opacity: 0;
   transform: translateY(18px);

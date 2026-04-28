@@ -2,7 +2,6 @@
   --reveal-delay: 0ms;
   --card-radius: 24px;
   --card-border-thickness: 1.5px;
-  --card-max-width: 44rem;
 
   position: relative;
   display: grid;
@@ -98,12 +97,12 @@
 
 .card {
   position: relative;
-  width: min(100%, var(--card-max-width));
+  width: min(100%, var(--focus-lane-max));
   display: grid;
   border-radius: var(--card-radius);
   border: var(--card-border-thickness) solid transparent;
   background:
-    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(var(--surface), var(--surface)) padding-box,
     linear-gradient(135deg, var(--color-accent-warm), var(--color-cta))
       border-box;
   box-shadow:

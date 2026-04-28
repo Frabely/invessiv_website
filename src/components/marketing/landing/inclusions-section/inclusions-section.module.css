@@ -20,7 +20,7 @@
 .section::before {
   content: "";
   position: absolute;
-  inset: 6% auto auto -6%;
+  inset: 6% -6% auto auto;
   z-index: -1;
   width: min(28rem, 70vw);
   height: min(28rem, 70vw);

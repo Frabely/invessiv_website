@@ -27,6 +27,8 @@ export function SolutionSection({
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
+      <SolutionGraphic content={graphic} />
+
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
@@ -34,8 +36,6 @@ export function SolutionSection({
           {body}
         </p>
       </div>
-
-      <SolutionGraphic content={graphic} />
     </section>
   );
 }

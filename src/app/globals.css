@@ -74,6 +74,8 @@
   --accent: var(--color-accent-warm);
   --max-content-width: 1520px;
   --page-inline-gutter: clamp(20px, 3vw, 36px);
+  --focus-lane-max: 44rem;
+  --focus-lane-wide: 50rem;
   --layout-rail-max-width: var(--max-content-width);
   --layout-rail-inline-gutter: var(--page-inline-gutter);
   --measure-text: 72ch;

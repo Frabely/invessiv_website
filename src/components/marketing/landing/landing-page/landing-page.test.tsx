@@ -94,7 +94,7 @@ describe("LandingPage", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("button", {
-        name: /Kostenlosen Landingpage-Check anfragen/,
+        name: /Check anfragen/,
       }),
     ).toBeTruthy();
     expect(
@@ -103,7 +103,7 @@ describe("LandingPage", () => {
     const pageFooter = document.getElementById("footer");
     expect(pageFooter).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#contact"]')?.textContent).toBe(
-      "Kostenlosen Landingpage-Check anfragen",
+      "Check anfragen",
     );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();

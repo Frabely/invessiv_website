@@ -31,7 +31,7 @@ export function FaqSection({
       ref={sectionRef}
     >
       <span aria-hidden="true" className={styles.dotGrid} />
-      <div className={styles.heading}>
+      <div className={styles.heading} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title} id={`${id}-title`}>
           {title}

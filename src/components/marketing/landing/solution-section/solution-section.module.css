@@ -3,7 +3,7 @@
 
   position: relative;
   display: grid;
-  grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr);
   gap: clamp(1.75rem, 4vw, 4.75rem);
   align-items: center;
   width: min(
@@ -17,7 +17,7 @@
 .section::before {
   content: "";
   position: absolute;
-  inset: 8% 0 auto auto;
+  inset: auto auto -8% -8%;
   z-index: -1;
   width: min(34rem, 70vw);
   height: min(34rem, 70vw);
@@ -88,6 +88,7 @@
   }
 
   .intro {
+    order: -1;
     max-width: min(70%, 34rem);
   }
 
