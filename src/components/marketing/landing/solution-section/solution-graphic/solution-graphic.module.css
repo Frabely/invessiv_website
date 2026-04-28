@@ -21,6 +21,7 @@
   position: absolute;
   inset: clamp(0.25rem, 1vw, 0.8rem) auto auto 0;
   width: min(68%, 30rem);
+  max-width: calc(100% - 14.25rem);
   min-height: clamp(22rem, 34vw, 27.5rem);
   padding: 0 1.1rem 1rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
@@ -328,11 +329,10 @@
 .formCard {
   position: absolute;
   top: clamp(0.75rem, 4vw, 4.75rem);
-  right: clamp(1rem, 6vw, 10rem);
+  right: clamp(0.5rem, 1.5vw, 1.25rem);
   display: grid;
   gap: 0.65rem;
-  width: min(30.5%, 13.4rem);
-  min-width: 11.4rem;
+  width: clamp(10.4rem, 30.5%, 13.4rem);
   padding: 0.95rem;
   border: 1px solid rgba(63, 123, 226, 0.46);
   border-radius: 0.75rem;
@@ -482,13 +482,31 @@
 
 @media (max-width: 960px) {
   .graphic {
-    min-height: clamp(26rem, 68vw, 34rem);
+    min-height: clamp(24rem, 58vw, 32rem);
+  }
+
+  .browser {
+    width: 64%;
+    max-width: none;
+  }
+
+  .formCard {
+    right: 0;
+    width: clamp(10rem, 31%, 13rem);
+    padding: clamp(0.78rem, 2vw, 0.95rem);
+  }
+
+  .flowLine {
+    width: clamp(7rem, 20vw, 14rem);
   }
 }
 
 @media (max-width: 640px) {
   .graphic {
-    min-height: 46rem;
+    display: grid;
+    gap: 0.85rem;
+    min-height: 0;
+    overflow: visible;
   }
 
   .browser,
@@ -501,29 +519,59 @@
 
   .browser {
     min-height: auto;
+    padding: 0 0.9rem 0.9rem;
   }
 
-  .browserHero,
-  .valueTiles,
+  .browserHero {
+    grid-template-columns: minmax(0, 1fr) minmax(6.5rem, 0.82fr);
+    gap: 0.75rem;
+    padding: 0.95rem 0 0;
+  }
+
+  .imageCard {
+    min-height: clamp(5.6rem, 28vw, 7rem);
+    margin-top: 0;
+  }
+
+  .valueGroup,
+  .trustPanel,
   .timeline {
-    grid-template-columns: 1fr;
+    display: none;
   }
 
   .formCard {
-    margin-top: 1rem;
+    margin-top: 0;
+  }
+
+  .formFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .formFields .textarea {
+    grid-column: 1 / -1;
+    min-height: 2.8rem;
   }
 
   .flowLine {
     display: none;
   }
+}
 
-  .timeline {
-    position: relative;
-    margin-top: 1.25rem;
+@media (max-width: 420px) {
+  .browserHero {
+    grid-template-columns: 1fr;
   }
 
-  .timeline::before {
+  .imageCard {
     display: none;
+  }
+
+  .formFields {
+    grid-template-columns: 1fr;
+  }
+
+  .formFields .textarea {
+    grid-column: auto;
   }
 }
 
