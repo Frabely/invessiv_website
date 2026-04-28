@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { SectionMarker } from "@/components/marketing/landing/section-marker/section-marker";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
@@ -30,9 +30,13 @@ export function FaqSection({
       id={id}
       ref={sectionRef}
     >
-      <span aria-hidden="true" className={styles.dotGrid} />
       <div className={styles.heading}>
-        <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
+        <SectionMarker
+          className={styles.marker}
+          index="07"
+          label={eyebrow}
+          total="09"
+        />
         <h2 className={styles.title} id={`${id}-title`}>
           {title}
         </h2>

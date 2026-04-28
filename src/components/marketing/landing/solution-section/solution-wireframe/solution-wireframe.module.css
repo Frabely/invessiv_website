@@ -1,0 +1,83 @@
+.wireframe {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  color: var(--color-text-muted);
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 520ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.wireframe[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.path {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: drawWireframe 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-play-state: paused;
+}
+
+.wireframe[data-visible="true"] .path {
+  animation-play-state: running;
+}
+
+.cta {
+  opacity: 0;
+  animation: fadeCta 320ms ease forwards;
+  animation-delay: 480ms;
+  animation-play-state: paused;
+}
+
+.wireframe[data-visible="true"] .cta {
+  animation-play-state: running;
+}
+
+@keyframes drawWireframe {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fadeCta {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .wireframe {
+    max-width: 360px;
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wireframe {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .cta {
+    opacity: 1;
+    animation: none;
+  }
+}

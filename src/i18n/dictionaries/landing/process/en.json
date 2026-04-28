@@ -5,24 +5,28 @@
     {
       "iconKey": "target",
       "numeral": "01",
+      "dayLabel": "Day 1",
       "title": "Goal",
       "description": "Short briefing: your offer, your audience, the result the page should deliver."
     },
     {
       "iconKey": "structure",
       "numeral": "02",
+      "dayLabel": "Day 2–3",
       "title": "Structure",
       "description": "Sections, content flow and the inquiry form tailored to your offer — you see a preview before design starts."
     },
     {
       "iconKey": "build",
       "numeral": "03",
+      "dayLabel": "Day 4–5",
       "title": "Build",
       "description": "I build the page — design, code and copy from one set of hands. You give feedback, I ship it."
     },
     {
       "iconKey": "launch",
       "numeral": "04",
+      "dayLabel": "Day 6–7",
       "title": "Launch",
       "description": "Domain connected, tracking in place, live. Within 3–7 days, not 3–7 weeks."
     }

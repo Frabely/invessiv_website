@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { SectionMarker } from "@/components/marketing/landing/section-marker/section-marker";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -32,10 +32,13 @@ export function PricingSection({
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <span aria-hidden="true" className={styles.spotlight} />
-
       <div className={styles.intro} data-reveal-item="true">
-        <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
+        <SectionMarker
+          className={styles.marker}
+          index="06"
+          label={eyebrow}
+          total="09"
+        />
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.body}>{body}</p>
       </div>

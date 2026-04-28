@@ -15,6 +15,7 @@ export const AUDIENCE_ICON_KEYS = [
 export type AudienceIconKey = (typeof AUDIENCE_ICON_KEYS)[number];
 
 export type LandingAudienceItem = {
+  example: string;
   iconKey: AudienceIconKey;
   label: string;
   scenario: string;
@@ -23,6 +24,7 @@ export type LandingAudienceItem = {
 export type LandingAudienceContent = {
   body: string;
   eyebrow: string;
+  fillerLabel: string;
   items: LandingAudienceItem[];
   title: string;
 };

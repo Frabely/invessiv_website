@@ -1,23 +1,39 @@
 import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
+import { HeroQuickEntry } from "@/components/marketing/landing/hero-quick-entry/hero-quick-entry";
+import { SectionMarker } from "@/components/marketing/landing/section-marker/section-marker";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { HERO_SECTION_ID } from "@/config/site";
 import styles from "./hero-section.module.css";
 
+type HeroQuickEntryConfig = {
+  placeholder: string;
+  submitAriaLabel: string;
+  targetHref: string;
+};
+
+type HeroSectionMarkerConfig = {
+  index: string;
+  label: string;
+  total: string;
+};
+
 type HeroSectionProps = {
   description: string;
   primaryCtaAnalyticsTarget: string;
   primaryCtaHref: string;
-  secondaryCtaAnalyticsTarget: string;
-  secondaryCtaHref: string;
+  secondaryCtaAnalyticsTarget?: string;
+  secondaryCtaHref?: string;
   trackingLocation: string;
   heroPrimaryCta: string;
-  heroSecondaryCta: string;
+  heroSecondaryCta?: string;
   heroTag: string;
   heroTrustLine?: string;
   heroVisualAriaLabel: string;
+  quickEntry?: HeroQuickEntryConfig;
+  sectionMarker?: HeroSectionMarkerConfig;
   title: string;
 };
 
@@ -33,6 +49,8 @@ export function HeroSection({
   heroTag,
   heroTrustLine,
   heroVisualAriaLabel,
+  quickEntry,
+  sectionMarker,
   title,
 }: HeroSectionProps) {
   return (
@@ -45,6 +63,14 @@ export function HeroSection({
 
       <div className={styles.grid}>
         <div className={styles.content}>
+          {sectionMarker ? (
+            <SectionMarker
+              className={styles.marker}
+              index={sectionMarker.index}
+              label={sectionMarker.label}
+              total={sectionMarker.total}
+            />
+          ) : null}
           <EyebrowPill className={styles.tag}>{heroTag}</EyebrowPill>
           <h1 className={styles.title}>
             <span className={styles.titleGradient}>{title}</span>
@@ -62,16 +88,24 @@ export function HeroSection({
             >
               {heroPrimaryCta}
             </PrimaryCtaLink>
-            <a
-              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
-              href={secondaryCtaHref}
-              data-analytics-event="cta_click"
-              data-analytics-location={trackingLocation}
-              data-analytics-variant="secondary"
-              data-analytics-target={secondaryCtaAnalyticsTarget}
-            >
-              {heroSecondaryCta}
-            </a>
+            {quickEntry ? (
+              <HeroQuickEntry
+                placeholder={quickEntry.placeholder}
+                submitAriaLabel={quickEntry.submitAriaLabel}
+                targetHref={quickEntry.targetHref}
+              />
+            ) : heroSecondaryCta && secondaryCtaHref ? (
+              <a
+                className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
+                href={secondaryCtaHref}
+                data-analytics-event="cta_click"
+                data-analytics-location={trackingLocation}
+                data-analytics-variant="secondary"
+                data-analytics-target={secondaryCtaAnalyticsTarget}
+              >
+                {heroSecondaryCta}
+              </a>
+            ) : null}
           </div>
 
           {heroTrustLine ? (

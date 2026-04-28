@@ -1,8 +1,18 @@
 // @vitest-environment jsdom
 
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { LandingPage } from "./landing-page";
+
+afterEach(() => {
+  cleanup();
+});
 
 vi.mock("@/components/marketing/site-header/site-header", () => ({
   SiteHeader: ({
@@ -70,8 +80,6 @@ describe("LandingPage", () => {
     expect(
       screen.getByText(/Sie erklärt verständlich, was du anbietest/),
     ).toBeTruthy();
-    expect(screen.queryByText("Anfrage auslösen")).toBeNull();
-    expect(screen.queryByText(/keine überladene Website/)).toBeNull();
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -79,9 +87,7 @@ describe("LandingPage", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText("Klare Seitenstruktur")).toBeTruthy();
-    expect(screen.getAllByText("Launch-Unterstützung").length).toBeGreaterThan(
-      0,
-    );
+    expect(screen.getAllByText("Mobile Optimierung").length).toBeGreaterThan(0);
     expect(
       screen.getByText(/Du musst keine fertigen Texte mitbringen/),
     ).toBeTruthy();
@@ -119,5 +125,17 @@ describe("LandingPage", () => {
     expect(
       pageFooter?.querySelector('a[href="tel:+4915232070477"]')?.textContent,
     ).toBe("+49 1523 2070477");
+  });
+
+  it("changes the audience example when a different pill is selected", () => {
+    render(<LandingPage locale="de" />);
+
+    const coachPill = screen.getByRole("button", { name: "Coach" });
+    fireEvent.click(coachPill);
+
+    expect(coachPill.getAttribute("aria-pressed")).toBe("true");
+    expect(
+      screen.getByText(/z\.B\. eine Seite für ein 6-Wochen-Coaching/),
+    ).toBeTruthy();
   });
 });

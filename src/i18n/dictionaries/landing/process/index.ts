@@ -12,6 +12,7 @@ export const PROCESS_ICON_KEYS = [
 export type ProcessIconKey = (typeof PROCESS_ICON_KEYS)[number];
 
 export type LandingProcessStep = {
+  dayLabel: string;
   description: string;
   iconKey: ProcessIconKey;
   numeral: string;

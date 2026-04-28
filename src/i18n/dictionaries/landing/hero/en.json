@@ -2,6 +2,10 @@
   "description": "I build fast, modern landing pages for service providers, solo businesses, and small companies — including structure, copy foundation, design, technical setup, and inquiry form.",
   "primaryCta": "Request a free landing page check",
   "secondaryCta": "See the process",
+  "quickEntry": {
+    "placeholder": "Your website or offer in one sentence",
+    "submitAriaLabel": "Start request"
+  },
   "tag": "LANDING PAGE STARTER",
   "title": "More inquiries with a clear landing page in 3–7 days.",
   "trustLine": "No oversized website. No unnecessary scope. One clear page with one goal: more inquiries.",

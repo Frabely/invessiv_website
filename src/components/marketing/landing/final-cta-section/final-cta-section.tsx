@@ -1,10 +1,10 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
-import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { SectionMarker } from "@/components/marketing/landing/section-marker/section-marker";
 import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-contact-form-to-dto";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
@@ -12,6 +12,8 @@ import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import styles from "./final-cta-section.module.css";
+
+const HERO_PROMPT_STORAGE_KEY = "invessiv:landing:hero-prompt";
 
 type FinalCtaSectionProps = LandingFinalCtaContent & {
   id: string;
@@ -99,10 +101,24 @@ export function FinalCtaSection({
     handleSubmit,
     register,
     reset,
+    setFocus,
+    setValue,
   } = useForm<FormValues>({
     defaultValues: DEFAULT_FORM_VALUES,
     mode: "onSubmit",
   });
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const stored = window.sessionStorage.getItem(HERO_PROMPT_STORAGE_KEY);
+    if (!stored) {
+      return;
+    }
+    setValue("goal", stored);
+    setFocus("name");
+  }, [setFocus, setValue]);
 
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
@@ -149,6 +165,9 @@ export function FinalCtaSection({
       }
       setSubmitState({ kind: "success" });
       reset(DEFAULT_FORM_VALUES);
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem(HERO_PROMPT_STORAGE_KEY);
+      }
     } catch {
       setSubmitState({ kind: "error", message: form.errorGeneric });
     }
@@ -163,10 +182,13 @@ export function FinalCtaSection({
       id={id}
       ref={sectionRef}
     >
-      <span aria-hidden="true" className={styles.spotlight} />
-
       <div className={styles.intro} data-reveal-item="true">
-        <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
+        <SectionMarker
+          className={styles.marker}
+          index="08"
+          label={eyebrow}
+          total="09"
+        />
         <h2 className={styles.title} id={`${id}-title`}>
           {title}
         </h2>

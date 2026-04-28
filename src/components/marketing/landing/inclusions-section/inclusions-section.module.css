@@ -3,12 +3,7 @@
 
   position: relative;
   display: grid;
-  grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
-  grid-template-areas:
-    "intro deliverables"
-    "reassurance reassurance";
-  gap: clamp(1.75rem, 4vw, 4.5rem) clamp(1.75rem, 4vw, 4.5rem);
-  align-items: start;
+  gap: clamp(2rem, 4vw, 3rem);
   width: min(
     calc(100% - (var(--page-inline-gutter) * 2)),
     var(--max-content-width)
@@ -17,32 +12,28 @@
   padding: clamp(4.5rem, 8vw, 7.5rem) 0;
 }
 
-.section::before {
+.section::before,
+.section::after {
   content: "";
   position: absolute;
-  inset: 6% auto auto -6%;
-  z-index: -1;
-  width: min(28rem, 70vw);
-  height: min(28rem, 70vw);
-  border-radius: 999px;
-  background:
-    radial-gradient(
-      circle at 35% 35%,
-      color-mix(in srgb, var(--color-cta) 18%, transparent),
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 65% 70%,
-      color-mix(in srgb, var(--color-accent-warm) 16%, transparent),
-      transparent 64%
-    );
-  filter: blur(20px);
-  opacity: 0.62;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hairline);
+  pointer-events: none;
+}
+
+.section::before {
+  top: 0;
+}
+
+.section::after {
+  bottom: 0;
 }
 
 .intro,
-.deliverables,
-.item,
+.bento,
+.tile,
 .reassurance {
   opacity: 0;
   transform: translateY(18px);
@@ -53,29 +44,26 @@
 }
 
 .intro[data-visible="true"],
-.deliverables[data-visible="true"],
-.item[data-visible="true"],
+.bento[data-visible="true"],
+.tile[data-visible="true"],
 .reassurance[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
 }
 
 .intro {
-  grid-area: intro;
-  position: sticky;
-  top: clamp(6rem, 10vw, 8rem);
   display: grid;
   gap: clamp(0.9rem, 1.8vw, 1.35rem);
-  max-width: 26rem;
+  max-width: 36rem;
 }
 
-.eyebrow {
+.marker {
   margin-bottom: 0.15rem;
 }
 
 .title {
   margin: 0;
-  max-width: 13ch;
+  max-width: 14ch;
   color: var(--color-text);
   font-size: clamp(2.05rem, 4vw, 4.25rem);
   line-height: 0.98;
@@ -90,127 +78,99 @@
   line-height: 1.6;
 }
 
-.deliverables {
-  grid-area: deliverables;
+.bento {
   display: grid;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "hero hero a b"
+    "hero hero c d";
+  gap: 1px;
+  background: var(--hairline);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
 }
 
-.deliverablesLabel {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text) 20%);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.itemList {
+.tile {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.55rem, 1.1vw, 0.85rem);
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(0.6rem, 1.2vw, 0.85rem);
+  padding: clamp(1.25rem, 2.4vw, 1.85rem);
+  background: var(--color-bg);
 }
 
-.item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: clamp(0.7rem, 1.4vw, 1rem);
-  padding: clamp(0.85rem, 1.6vw, 1.1rem) clamp(1rem, 1.8vw, 1.25rem);
-  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--color-surface-2) 38%, transparent 62%);
+.heroTile {
+  grid-area: hero;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
 }
 
-.itemIndex {
-  display: inline-grid;
-  place-items: center;
-  min-width: 2.25rem;
-  padding: 0.25rem 0.4rem;
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-cta) 88%, transparent),
-    color-mix(in srgb, var(--color-accent-warm) 80%, transparent)
-  );
-  color: var(--color-on-cta, #fff);
-  font-feature-settings: "tnum" 1;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+.bento .tile:nth-of-type(2) {
+  grid-area: a;
 }
 
-.itemLabel {
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.12rem);
+.bento .tile:nth-of-type(3) {
+  grid-area: b;
+}
+
+.bento .tile:nth-of-type(4) {
+  grid-area: c;
+}
+
+.bento .tile:nth-of-type(5) {
+  grid-area: d;
+}
+
+.tileNumber {
+  display: inline-block;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
   font-weight: 600;
-  line-height: 1.35;
+  letter-spacing: 0.16em;
+  font-feature-settings: "tnum" 1;
+}
+
+.tileHeadline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.05rem, 0.95rem + 0.6vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.heroTile .tileHeadline {
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.1rem);
+  max-width: 16ch;
+}
+
+.tileDetail {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, var(--color-text) 10%);
+  font-size: clamp(0.96rem, 0.92rem + 0.22vw, 1.05rem);
+  line-height: 1.55;
+  max-width: 38ch;
 }
 
 .reassurance {
-  grid-area: reassurance;
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(0.75rem, 1.4vw, 1rem);
   margin: 0;
-  padding: clamp(1rem, 2vw, 1.4rem) clamp(1.1rem, 2.2vw, 1.6rem);
-  border: 1px solid
-    color-mix(in srgb, var(--color-cta) 32%, var(--color-border) 68%);
-  border-radius: 18px;
-  background: color-mix(
-    in srgb,
-    var(--color-cta) 9%,
-    var(--color-surface-2) 91%
-  );
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
-  font-size: clamp(1.02rem, 0.96rem + 0.26vw, 1.18rem);
-  font-weight: 600;
-  line-height: 1.5;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: clamp(0.92rem, 0.88rem + 0.2vw, 1rem);
+  line-height: 1.55;
 }
 
-.reassuranceIcon {
-  display: inline-grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
-  margin-top: 0.1rem;
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-cta) 90%, transparent),
-    color-mix(in srgb, var(--color-accent-warm) 80%, transparent)
-  );
-  color: var(--color-on-cta, #fff);
-}
-
-:global([data-theme="light"]) .item {
-  background: color-mix(in srgb, #ffffff 86%, var(--color-surface-2) 14%);
-}
-
-@media (max-width: 960px) {
-  .section {
+@media (max-width: 900px) {
+  .bento {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
     grid-template-areas:
-      "intro"
-      "deliverables"
-      "reassurance";
-    gap: clamp(2rem, 6vw, 3rem);
-    padding-block: clamp(4rem, 11vw, 6rem);
-  }
-
-  .intro {
-    position: relative;
-    top: auto;
-    max-width: min(70%, 34rem);
-  }
-
-  .title {
-    max-width: 14ch;
-    font-size: clamp(2.05rem, 8.2vw, 3.45rem);
+      "hero"
+      "a"
+      "b"
+      "c"
+      "d";
   }
 }
 
@@ -218,34 +178,12 @@
   .section {
     width: calc(100% - (var(--page-inline-gutter) * 2));
   }
-
-  .section::before {
-    display: none;
-  }
-
-  .intro {
-    max-width: 100%;
-  }
-
-  .itemList {
-    grid-template-columns: 1fr;
-  }
-
-  .item {
-    padding: 0.85rem 1rem;
-    border-radius: 14px;
-  }
-
-  .reassurance {
-    border-radius: 14px;
-    font-size: clamp(0.98rem, 3.8vw, 1.05rem);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .intro,
-  .deliverables,
-  .item,
+  .bento,
+  .tile,
   .reassurance {
     opacity: 1;
     transform: none;

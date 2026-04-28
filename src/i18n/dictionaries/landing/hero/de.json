@@ -2,6 +2,10 @@
   "description": "Ich baue schnelle, moderne Landingpages für Dienstleister, Selbstständige und kleine Unternehmen — inklusive Struktur, Text, Design, Technik und Anfrageformular.",
   "primaryCta": "Kostenlosen Landingpage-Check anfragen",
   "secondaryCta": "Ablauf ansehen",
+  "quickEntry": {
+    "placeholder": "Deine Website oder dein Angebot in einem Satz",
+    "submitAriaLabel": "Anfrage starten"
+  },
   "tag": "LANDINGPAGE STARTER",
   "title": "Mehr Anfragen mit einer klaren Landingpage in 3–7 Tagen.",
   "trustLine": "Keine große Website. Kein unnötiger Umfang. Eine klare Seite mit einem Ziel: mehr Anfragen.",

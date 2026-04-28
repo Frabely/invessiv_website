@@ -1,41 +1,49 @@
 {
   "body": "For service providers, freelancers and small businesses that want to present one concrete offer better online — and turn more visitors into inquiries.",
   "eyebrow": "Who it's for",
+  "fillerLabel": "I'm a",
   "items": [
     {
       "iconKey": "hammer",
-      "label": "Skilled trades",
-      "scenario": "A clean page for one trade — from first photo to inquiry."
+      "label": "skilled trade",
+      "scenario": "A clean page for one trade — from first photo to inquiry.",
+      "example": "e.g. a page for bathroom renovation in Hamburg — clear scope, price range, inquiry button. Instead of an all-purpose site with ten topics."
     },
     {
       "iconKey": "coach",
-      "label": "Coaches",
-      "scenario": "One programme, clearly explained — so first calls aren't a matter of chance."
+      "label": "coach",
+      "scenario": "One programme, clearly explained — so first calls aren't a matter of chance.",
+      "example": "e.g. a page for a 6-week coaching — clear promise, step-by-step process, booking button. Instead of a generic about-me page."
     },
     {
       "iconKey": "consultant",
-      "label": "Consultants",
-      "scenario": "Positioning, value and process — clear on a single page."
+      "label": "consultant",
+      "scenario": "Positioning, value and process — clear on a single page.",
+      "example": "e.g. a page for a strategy consulting offer — problem, approach, next step. Instead of a list page with twelve services."
     },
     {
       "iconKey": "camera",
-      "label": "Photographers",
-      "scenario": "Bold imagery up front — without the page upstaging your work."
+      "label": "photographer",
+      "scenario": "Bold imagery up front — without the page upstaging your work.",
+      "example": "e.g. a page for wedding photography — strong images, clear packages, inquiry form. Instead of a gallery without any conversion path."
     },
     {
       "iconKey": "pin",
-      "label": "Local service providers",
-      "scenario": "Instantly clear what you do — and how to reach you."
+      "label": "local service provider",
+      "scenario": "Instantly clear what you do — and how to reach you.",
+      "example": "e.g. a page for a local cleaning service — offer, area, call button. Instead of a phone number you have to dig for."
     },
     {
       "iconKey": "building",
-      "label": "Small B2B providers",
-      "scenario": "A concrete offer, sharp messaging, one obvious next step."
+      "label": "B2B provider",
+      "scenario": "A concrete offer, sharp messaging, one obvious next step.",
+      "example": "e.g. a page for a software audit — value, process, demo request. Instead of a corporate site with glossary and news."
     },
     {
       "iconKey": "spark",
-      "label": "Agencies running campaigns",
-      "scenario": "A focused campaign page — live quickly, built cleanly."
+      "label": "agency",
+      "scenario": "A focused campaign page — live quickly, built cleanly.",
+      "example": "e.g. a campaign page for a client offer — one message, one form, live fast. Instead of weeks lost in CMS templates."
     }
   ],
   "title": "See yourself in here?"

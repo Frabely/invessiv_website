@@ -7,6 +7,7 @@ import { InclusionsSection } from "@/components/marketing/landing/inclusions-sec
 import { ProblemSection } from "@/components/marketing/landing/problem-section/problem-section";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
+import { ReadingProgress } from "@/components/marketing/landing/reading-progress/reading-progress";
 import { SolutionSection } from "@/components/marketing/landing/solution-section/solution-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -63,6 +64,7 @@ export function LandingPage({ locale }: LandingPageProps) {
         showThemeSwitch={false}
         uiContent={header}
       />
+      <ReadingProgress />
 
       <main className="marketing-main" id="main-content" tabIndex={-1}>
         <div aria-hidden="true" className="page-accents">
@@ -72,14 +74,21 @@ export function LandingPage({ locale }: LandingPageProps) {
         <HeroSection
           description={hero.description}
           heroPrimaryCta={hero.primaryCta}
-          heroSecondaryCta={hero.secondaryCta}
           heroTag={hero.tag}
           heroTrustLine={hero.trustLine}
           heroVisualAriaLabel={hero.visualAriaLabel}
           primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
           primaryCtaHref={SECTION_HREFS.contact}
-          secondaryCtaAnalyticsTarget="process"
-          secondaryCtaHref={SECTION_HREFS.process}
+          quickEntry={{
+            placeholder: hero.quickEntry.placeholder,
+            submitAriaLabel: hero.quickEntry.submitAriaLabel,
+            targetHref: SECTION_HREFS.contact,
+          }}
+          sectionMarker={{
+            index: "00",
+            label: "Invessiv",
+            total: "09",
+          }}
           title={hero.title}
           trackingLocation="landing_hero"
         />

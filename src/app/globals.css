@@ -115,6 +115,16 @@
   --mobile-viewport-height: 100dvh;
   --mobile-safe-top: env(safe-area-inset-top, 0px);
   --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-mono:
+    "JetBrains Mono", "Fira Mono", ui-monospace, SFMono-Regular, monospace;
+  --section-marker-size: 0.82rem;
+  --hairline: color-mix(in srgb, var(--color-text) 14%, transparent);
+  --hairline-strong: color-mix(in srgb, var(--color-text) 22%, transparent);
+  --accent-solo: var(--color-accent-warm);
+  --accent-duo-from: var(--color-accent-warm);
+  --accent-duo-to: var(--color-cta);
+  --focus-lane-max: 44rem;
+  --focus-lane-wide: 50rem;
 }
 
 [data-theme="light"] {

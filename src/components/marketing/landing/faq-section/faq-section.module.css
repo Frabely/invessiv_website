@@ -1,12 +1,6 @@
 .section {
   --reveal-delay: 0ms;
   --faq-max-width: 48.75rem;
-  --faq-border-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 38%,
-    transparent
-  );
-  --faq-border-color-end: color-mix(in srgb, var(--color-cta) 38%, transparent);
 
   position: relative;
   display: grid;
@@ -19,25 +13,23 @@
   padding: clamp(4.5rem, 8vw, 7.5rem) 0;
 }
 
-.dotGrid {
+.section::before,
+.section::after {
+  content: "";
   position: absolute;
-  inset: clamp(2rem, 5vw, 4rem) 0;
-  z-index: -1;
-  background-image: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-text) 60%, transparent) 1px,
-    transparent 1.4px
-  );
-  background-size: 24px 24px;
-  background-position: 0 0;
-  opacity: 0.04;
-  mask-image: radial-gradient(ellipse at center, #000 35%, transparent 78%);
-  -webkit-mask-image: radial-gradient(
-    ellipse at center,
-    #000 35%,
-    transparent 78%
-  );
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--hairline);
   pointer-events: none;
+}
+
+.section::before {
+  top: 0;
+}
+
+.section::after {
+  bottom: 0;
 }
 
 .heading {
@@ -67,7 +59,7 @@
   margin: 0 auto;
   padding: 0;
   list-style: none;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-top: 1px solid var(--hairline);
 }
 
 .item {
@@ -92,12 +84,7 @@
   right: 0;
   bottom: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    var(--faq-border-color),
-    var(--faq-border-color-end)
-  );
-  opacity: 0.35;
+  background: var(--hairline);
   pointer-events: none;
 }
 
@@ -153,14 +140,9 @@
   width: 2.1rem;
   height: 2.1rem;
   border-radius: 999px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 32%, var(--color-border) 68%);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 14%, transparent),
-    color-mix(in srgb, var(--color-cta) 12%, transparent)
-  );
-  color: var(--color-accent-warm);
+  border: 1px solid var(--hairline-strong);
+  background: color-mix(in srgb, var(--accent-solo) 8%, transparent);
+  color: var(--accent-solo);
   flex-shrink: 0;
   transition:
     transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -184,7 +166,7 @@
 
 .details[open] .plus {
   transform: rotate(45deg);
-  border-color: color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
+  border-color: color-mix(in srgb, var(--accent-solo) 60%, transparent);
 }
 
 .answerWrapper {

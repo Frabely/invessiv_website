@@ -2,15 +2,22 @@
   "body": "Eine komplette Landingpage für ein konkretes Angebot — von Struktur bis Launch.",
   "eyebrow": "Was enthalten ist",
   "items": [
-    "Klare Seitenstruktur",
-    "Angebots- und Textgrundlage",
-    "Modernes responsives Design",
-    "Umsetzung mit sauberer Technik",
-    "Anfrage- oder Kontaktformular",
-    "Mobile Optimierung",
-    "Technische SEO-Basis",
-    "Performance-Basis",
-    "Launch-Unterstützung"
+    {
+      "headline": "Klare Seitenstruktur",
+      "detail": "Eine Seite, die genau ein Angebot erklärt — Aufbau, Reihenfolge, Lesefluss. Kein generisches Template."
+    },
+    {
+      "headline": "Angebots- und Textgrundlage"
+    },
+    {
+      "headline": "Modernes responsives Design"
+    },
+    {
+      "headline": "Anfrageformular"
+    },
+    {
+      "headline": "Mobile Optimierung"
+    }
   ],
   "itemsLabel": "Enthalten sind",
   "reassurance": "Du musst keine fertigen Texte mitbringen. Ich helfe dabei, dein Angebot klar und verständlich auf den Punkt zu bringen.",

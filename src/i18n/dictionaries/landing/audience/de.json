@@ -1,41 +1,49 @@
 {
   "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein konkretes Angebot online besser präsentieren und mehr Anfragen bekommen wollen.",
   "eyebrow": "Für wen",
+  "fillerLabel": "Ich bin",
   "items": [
     {
       "iconKey": "hammer",
       "label": "Handwerker",
-      "scenario": "Saubere Seite für ein Gewerk — vom ersten Bild bis zur Anfrage."
+      "scenario": "Saubere Seite für ein Gewerk — vom ersten Bild bis zur Anfrage.",
+      "example": "z.B. eine Seite für Badsanierung in Hamburg — klare Leistung, Preisrahmen, Anfrage-Button. Statt Allround-Webseite mit zehn Themen."
     },
     {
       "iconKey": "coach",
-      "label": "Coaches",
-      "scenario": "Ein Programm klar erklärt — damit Erstgespräche kein Zufall sind."
+      "label": "Coach",
+      "scenario": "Ein Programm klar erklärt — damit Erstgespräche kein Zufall sind.",
+      "example": "z.B. eine Seite für ein 6-Wochen-Coaching — klares Versprechen, Ablauf in Schritten, Buchungs-Button. Statt allgemeiner Über-mich-Seite."
     },
     {
       "iconKey": "consultant",
       "label": "Berater",
-      "scenario": "Positionierung, Nutzen, Ablauf — auf einer Seite verständlich."
+      "scenario": "Positionierung, Nutzen, Ablauf — auf einer Seite verständlich.",
+      "example": "z.B. eine Seite für eine Strategie-Beratung — Problem, Vorgehen, nächster Schritt. Statt Listen-Seite mit zwölf Leistungen."
     },
     {
       "iconKey": "camera",
-      "label": "Fotografen",
-      "scenario": "Bildstark präsentiert, ohne dass die Seite die Arbeit überstrahlt."
+      "label": "Fotograf",
+      "scenario": "Bildstark präsentiert, ohne dass die Seite die Arbeit überstrahlt.",
+      "example": "z.B. eine Seite für Hochzeitsfotografie — starke Bilder, klare Pakete, Anfrage-Formular. Statt Galerie ohne Conversion-Pfad."
     },
     {
       "iconKey": "pin",
-      "label": "Lokale Dienstleister",
-      "scenario": "Direkt erkennbar, was du anbietest — und wie man dich erreicht."
+      "label": "lokaler Dienstleister",
+      "scenario": "Direkt erkennbar, was du anbietest — und wie man dich erreicht.",
+      "example": "z.B. eine Seite für einen Reinigungsdienst im Umkreis — Leistung, Region, Anruf-Button. Statt schwer auffindbarer Telefonnummer."
     },
     {
       "iconKey": "building",
-      "label": "Kleine B2B-Anbieter",
-      "scenario": "Konkretes Angebot, klare Ansprache, ein nächster Schritt."
+      "label": "B2B-Anbieter",
+      "scenario": "Konkretes Angebot, klare Ansprache, ein nächster Schritt.",
+      "example": "z.B. eine Seite für ein Software-Audit — Nutzen, Ablauf, Demo-Anfrage. Statt Corporate-Site mit Glossar und News."
     },
     {
       "iconKey": "spark",
-      "label": "Agenturen mit Kampagnenbedarf",
-      "scenario": "Eine fokussierte Kampagnen-Seite — schnell live, sauber gebaut."
+      "label": "Agentur",
+      "scenario": "Eine fokussierte Kampagnen-Seite — schnell live, sauber gebaut.",
+      "example": "z.B. eine Kampagnen-Seite für ein Kundenangebot — eine Botschaft, ein Formular, schnell live. Statt Wochen in CMS-Templates."
     }
   ],
   "title": "Erkennst du dich wieder?"
