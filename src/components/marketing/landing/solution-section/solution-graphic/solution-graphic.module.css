@@ -519,6 +519,7 @@
 
   .browser {
     min-height: auto;
+    margin-bottom: 0.75rem;
     padding: 0 0.9rem 0.9rem;
   }
 
@@ -552,8 +553,42 @@
     min-height: 2.8rem;
   }
 
+  .blueButton {
+    width: 100%;
+    min-height: 2.25rem;
+    padding-inline: 0.72rem;
+    text-align: center;
+  }
+
   .flowLine {
-    display: none;
+    top: calc(100% + 0.34rem);
+    left: 50%;
+    display: block;
+    width: 2px;
+    height: 1.25rem;
+    background: linear-gradient(180deg, rgba(223, 139, 55, 0.1), #df8b37);
+    transform: translateX(-50%);
+  }
+
+  .flowLine::before {
+    left: 50%;
+    top: -0.18rem;
+    width: 0.42rem;
+    height: 0.42rem;
+    transform: translateX(-50%);
+  }
+
+  .flowLine::after {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: -0.22rem;
+    width: 0.56rem;
+    height: 0.56rem;
+    border-top: 0;
+    border-right: 2px solid #e3a15b;
+    border-bottom: 2px solid #e3a15b;
+    transform: translateX(-50%) rotate(45deg);
   }
 }
 
