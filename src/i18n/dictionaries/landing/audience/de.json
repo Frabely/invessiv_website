@@ -1,43 +1,36 @@
 {
-  "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein konkretes Angebot online besser präsentieren und mehr Anfragen bekommen wollen.",
+  "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein klares Angebot online besser verkaufen wollen.",
   "eyebrow": "Für wen",
   "items": [
     {
       "iconKey": "hammer",
-      "label": "Handwerker",
-      "scenario": "Saubere Seite für ein Gewerk — vom ersten Bild bis zur Anfrage."
+      "label": "Handwerker"
     },
     {
       "iconKey": "coach",
-      "label": "Coaches",
-      "scenario": "Ein Programm klar erklärt — damit Erstgespräche kein Zufall sind."
+      "label": "Coaches"
     },
     {
       "iconKey": "consultant",
-      "label": "Berater",
-      "scenario": "Positionierung, Nutzen, Ablauf — auf einer Seite verständlich."
+      "label": "Berater"
     },
     {
       "iconKey": "camera",
-      "label": "Fotografen",
-      "scenario": "Bildstark präsentiert, ohne dass die Seite die Arbeit überstrahlt."
+      "label": "Fotografen"
     },
     {
       "iconKey": "pin",
-      "label": "Lokale Dienstleister",
-      "scenario": "Direkt erkennbar, was du anbietest — und wie man dich erreicht."
+      "label": "Lokale Dienstleister"
     },
     {
       "iconKey": "building",
-      "label": "Kleine B2B-Anbieter",
-      "scenario": "Konkretes Angebot, klare Ansprache, ein nächster Schritt."
+      "label": "Kleine B2B-Anbieter"
     },
     {
       "iconKey": "spark",
-      "label": "Agenturen mit Kampagnenbedarf",
-      "scenario": "Eine fokussierte Kampagnen-Seite — schnell live, sauber gebaut."
+      "label": "Agenturen mit Kampagnenbedarf"
     }
   ],
-  "reassurance": "Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder gerade ein neues Angebot testen möchtest.",
+  "reassurance": "Besonders sinnvoll, wenn dein Angebot klar ist oder du ein neues testen möchtest.",
   "title": "Erkennst du dich wieder?"
 }

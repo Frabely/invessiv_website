@@ -23,12 +23,19 @@ import {
 } from "@/lib/navigation/locale-scroll-restoration";
 import styles from "./site-header.module.css";
 
+type SiteHeaderContent = Omit<
+  SiteHeaderUiContent,
+  "skipLinkLabel" | "themeSwitch"
+> & {
+  themeSwitch?: SiteHeaderUiContent["themeSwitch"];
+};
+
 type SiteHeaderProps = {
   brandHref?: string;
   ctaHref?: string;
   navigation: NavigationItem[];
   showThemeSwitch?: boolean;
-  uiContent?: SiteHeaderUiContent;
+  uiContent?: SiteHeaderContent;
 };
 
 export function SiteHeader({
@@ -45,14 +52,15 @@ export function SiteHeader({
   const isScrolled = useScrolledHeader(14);
   useMobileViewportHeight();
   const ui = uiContent ?? getSiteHeaderUiContent(locale);
-  const themeSwitchCopy =
-    theme === "dark"
+  const themeSwitchCopy = ui.themeSwitch
+    ? theme === "dark"
       ? {
           actionLabel: ui.themeSwitch.actionLabel.dark,
         }
       : {
           actionLabel: ui.themeSwitch.actionLabel.light,
-        };
+        }
+    : undefined;
 
   const handleLocaleSelect = (
     nextLocale: Locale,
@@ -128,7 +136,7 @@ export function SiteHeader({
         </nav>
 
         <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          {showThemeSwitch ? (
+          {showThemeSwitch && themeSwitchCopy ? (
             <ThemeSwitch
               copy={themeSwitchCopy}
               onToggle={toggleTheme}
@@ -214,7 +222,7 @@ export function SiteHeader({
               </span>
             </summary>
             <ul className={styles.mobileMenuList}>
-              {showThemeSwitch ? (
+              {showThemeSwitch && themeSwitchCopy ? (
                 <li className={styles.mobileMenuListItem}>
                   <ThemeSwitch
                     copy={themeSwitchCopy}

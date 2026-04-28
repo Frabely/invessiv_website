@@ -11,13 +11,6 @@ export type LandingHeaderContent = {
   localeSwitchLabel: string;
   mobileMenuLabel: string;
   navAriaLabel: string;
-  skipLinkLabel: string;
-  themeSwitch: {
-    actionLabel: {
-      dark: string;
-      light: string;
-    };
-  };
 };
 
 const LANDING_HEADER_CONTENT: Record<Locale, LandingHeaderContent> = {

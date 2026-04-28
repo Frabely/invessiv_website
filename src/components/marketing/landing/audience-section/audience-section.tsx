@@ -38,12 +38,7 @@ export function AudienceSection({
 
       <ul className={styles.pillList} data-reveal-item="true">
         {items.map((item) => (
-          <li
-            className={styles.pill}
-            data-reveal-item="true"
-            key={item.label}
-            title={item.scenario}
-          >
+          <li className={styles.pill} data-reveal-item="true" key={item.label}>
             <span aria-hidden="true" className={styles.pillIcon}>
               <AudienceIcon iconKey={item.iconKey} />
             </span>

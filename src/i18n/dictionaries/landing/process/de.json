@@ -1,30 +1,30 @@
 {
-  "body": "Vier Schritte, klar getrennt — damit du jederzeit weißt, wo wir stehen und was als Nächstes kommt.",
+  "body": "Vier klare Schritte, damit du jederzeit weißt, was als Nächstes kommt.",
   "eyebrow": "Ablauf",
   "steps": [
     {
       "iconKey": "target",
       "numeral": "01",
       "title": "Ziel",
-      "description": "Kurzes Briefing: dein Angebot, deine Zielgruppe, das Ergebnis, das die Seite bringen soll."
+      "description": "Kurzes Briefing zu Angebot, Zielgruppe und gewünschtem Ergebnis."
     },
     {
       "iconKey": "structure",
       "numeral": "02",
       "title": "Struktur",
-      "description": "Sektionen, Inhaltslogik und Anfrageformular auf dein Angebot zugeschnitten — du siehst eine Vorschau, bevor's ins Design geht."
+      "description": "Sektionen, Inhaltslogik und Formular passend zu deinem Angebot."
     },
     {
       "iconKey": "build",
       "numeral": "03",
       "title": "Aufbau",
-      "description": "Ich baue die Seite — Design, Code und Texte aus einer Hand. Du gibst Feedback, ich setze es direkt um."
+      "description": "Ich baue Design, Code und Texte. Du gibst Feedback, ich setze es um."
     },
     {
       "iconKey": "launch",
       "numeral": "04",
       "title": "Launch",
-      "description": "Domain anbinden, Tracking einrichten, online gehen. Innerhalb von 3–7 Tagen, nicht 3–7 Wochen."
+      "description": "Domain anbinden, Tracking einrichten, live gehen — in 3–7 Tagen."
     }
   ],
   "title": "So entsteht deine Landingpage."

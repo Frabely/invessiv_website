@@ -3,23 +3,16 @@
   "brandLogoAlt": "Invessiv Logo",
   "ctaLabel": "Check anfragen",
   "labelsByHref": {
-    "#hero": "Start",
     "#problem": "Problem",
     "#solution": "Lösung",
     "#inclusions": "Was enthalten ist",
     "#audience": "Für wen",
     "#process": "Ablauf",
-    "#pricing": "Angebot"
+    "#pricing": "Angebot",
+    "#faq": "FAQ"
   },
   "localeMenuLabel": "Sprache öffnen",
   "localeSwitchLabel": "Sprache wählen",
   "mobileMenuLabel": "Menü",
-  "navAriaLabel": "Landingpage-Navigation",
-  "skipLinkLabel": "Direkt zum Hauptinhalt springen",
-  "themeSwitch": {
-    "actionLabel": {
-      "dark": "Zu Light wechseln",
-      "light": "Zu Dark wechseln"
-    }
-  }
+  "navAriaLabel": "Landingpage-Navigation"
 }

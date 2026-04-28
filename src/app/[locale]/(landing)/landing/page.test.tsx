@@ -53,5 +53,7 @@ describe("LandingRoute", () => {
     expect(metadata.alternates?.canonical).toBe(
       "https://www.invessiv.com/de/landing",
     );
+    expect(metadata.title).toBe("Landingpages für mehr passende Anfragen");
+    expect(metadata.description).toContain("Fokussierte Landingpages");
   });
 });

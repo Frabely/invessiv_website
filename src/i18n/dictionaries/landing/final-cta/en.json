@@ -1,7 +1,7 @@
 {
   "eyebrow": "Inquire",
   "title": "Let's get your landing page going.",
-  "body": "The check is a short assessment of your offer, audience, and sensible page structure before implementation. Write whether you want an existing page reviewed or want to start a new landing page.",
+  "body": "The check clarifies your offer, audience, and page structure. Tell me whether to review an existing page or start a new landing page.",
   "form": {
     "fields": {
       "name": {
@@ -22,7 +22,7 @@
       },
       "goal": {
         "label": "What do you want to achieve with the landing page?",
-        "placeholder": "I want a new landing page for ... / Please review my existing page ..."
+        "placeholder": "New landing page for ... / Please review my existing page ..."
       },
       "honeypot": {
         "label": "Please leave empty"

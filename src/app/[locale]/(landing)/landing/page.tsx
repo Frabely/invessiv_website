@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/components/marketing/landing/landing-page/landing-page";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
-import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
+import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
 import {
   createLocaleAlternates,
   createPageMetadata,
@@ -24,7 +24,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const { title, description, openGraphLocale } = getHomeMetaContent(locale);
+  const { title, description, openGraphLocale } = getLandingMetaContent(locale);
   return createPageMetadata({
     title,
     description,

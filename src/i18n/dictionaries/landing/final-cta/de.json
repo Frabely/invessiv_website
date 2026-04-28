@@ -1,7 +1,7 @@
 {
   "eyebrow": "Anfrage",
   "title": "Lass uns deine Landingpage angehen.",
-  "body": "Der Check ist eine kurze Einschätzung von Angebot, Zielgruppe und sinnvoller Seitenstruktur vor der Umsetzung. Schreib kurz, ob du eine bestehende Seite prüfen lassen oder direkt eine neue Landingpage starten möchtest.",
+  "body": "Der Check klärt Angebot, Zielgruppe und sinnvolle Seitenstruktur. Schreib kurz, ob ich eine bestehende Seite prüfen oder eine neue Landingpage starten soll.",
   "form": {
     "fields": {
       "name": {
@@ -22,7 +22,7 @@
       },
       "goal": {
         "label": "Was möchtest du mit der Landingpage erreichen?",
-        "placeholder": "Ich möchte eine neue Landingpage für ... / Bitte prüfe meine bestehende Seite ..."
+        "placeholder": "Neue Landingpage für ... / Bitte prüfe meine bestehende Seite ..."
       },
       "honeypot": {
         "label": "Bitte nicht ausfüllen"

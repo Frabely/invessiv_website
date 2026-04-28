@@ -17,7 +17,6 @@ export type AudienceIconKey = (typeof AUDIENCE_ICON_KEYS)[number];
 export type LandingAudienceItem = {
   iconKey: AudienceIconKey;
   label: string;
-  scenario: string;
 };
 
 export type LandingAudienceContent = {

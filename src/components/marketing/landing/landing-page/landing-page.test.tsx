@@ -67,9 +67,7 @@ describe("LandingPage", () => {
         name: /Eine Landingpage führt Besucher gezielt zur Anfrage/,
       }),
     ).toBeTruthy();
-    expect(
-      screen.getByText(/Sie erklärt verständlich, was du anbietest/),
-    ).toBeTruthy();
+    expect(screen.getByText(/Eine Landingpage bündelt/)).toBeTruthy();
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();
     expect(screen.queryByText(/keine überladene Website/)).toBeNull();
     expect(
@@ -82,9 +80,7 @@ describe("LandingPage", () => {
     expect(screen.getAllByText("Launch-Unterstützung").length).toBeGreaterThan(
       0,
     );
-    expect(
-      screen.getByText(/Du musst keine fertigen Texte mitbringen/),
-    ).toBeTruthy();
+    expect(screen.getByText(/Du brauchst keine fertigen Texte/)).toBeTruthy();
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
     expect(
       screen.getByRole("heading", {
