@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { HomeSectionsRenderer } from "@/components/marketing/home/home-sections-renderer";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
 import {
@@ -12,7 +13,6 @@ import {
 } from "@/config/site";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
-import { useAnchorOffsetScroll } from "@/hooks/marketing/use-anchor-offset-scroll";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 
@@ -38,11 +38,11 @@ export function MarketingHomePageClient({
     sectionIds: [...PRIMARY_NAVIGATION_SECTION_IDS],
   });
 
-  useAnchorOffsetScroll();
   useServicesCardReveal(servicesSectionRef, locale);
 
   return (
     <>
+      <AnchorOffsetScroll />
       <SiteHeader navigation={PRIMARY_NAVIGATION} />
 
       <main className="marketing-main" id="main-content" tabIndex={-1}>

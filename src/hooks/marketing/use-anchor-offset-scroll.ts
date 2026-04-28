@@ -74,6 +74,10 @@ function scrollToHashTarget(hash: string, behavior: ScrollBehavior) {
   return true;
 }
 
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function useAnchorOffsetScroll() {
   useEffect(() => {
     const handleAnchorClick = (event: MouseEvent) => {
@@ -98,12 +102,19 @@ export function useAnchorOffsetScroll() {
         return;
       }
 
+      if (anchor.classList.contains("skip-link")) {
+        return;
+      }
+
       const hash = getHashHref(anchor.getAttribute("href"));
       if (!hash) {
         return;
       }
 
-      const didScroll = scrollToHashTarget(hash, "smooth");
+      const didScroll = scrollToHashTarget(
+        hash,
+        prefersReducedMotion() ? "auto" : "smooth",
+      );
       if (!didScroll) {
         return;
       }

@@ -8,6 +8,7 @@ import { ProblemSection } from "@/components/marketing/landing/problem-section/p
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
 import { SolutionSection } from "@/components/marketing/landing/solution-section/solution-section";
+import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import {
@@ -57,6 +58,7 @@ export function LandingPage({ locale }: LandingPageProps) {
 
   return (
     <>
+      <AnchorOffsetScroll />
       <SiteHeader
         ctaHref={SECTION_HREFS.contact}
         navigation={LANDING_NAVIGATION}
