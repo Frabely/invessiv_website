@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 
+import { ButtonLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -16,6 +17,7 @@ type AudienceSectionProps = LandingAudienceContent & {
 
 export function AudienceSection({
   body,
+  cta,
   eyebrow,
   id,
   items,
@@ -50,6 +52,23 @@ export function AudienceSection({
       <p className={styles.reassurance} data-reveal-item="true">
         {reassurance}
       </p>
+
+      {cta ? (
+        <div className={styles.ctaWrap} data-reveal-item="true">
+          {cta.helper ? <p className={styles.ctaHelper}>{cta.helper}</p> : null}
+          <ButtonLink
+            className={styles.cta}
+            data-analytics-event="cta_click"
+            data-analytics-location="audience"
+            data-analytics-target={cta.analyticsTarget}
+            data-analytics-variant={cta.analyticsVariant ?? "soft"}
+            href={cta.href}
+            variant="ghost"
+          >
+            {cta.label}
+          </ButtonLink>
+        </div>
+      ) : null}
     </section>
   );
 }

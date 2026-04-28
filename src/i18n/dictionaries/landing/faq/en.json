@@ -1,4 +1,10 @@
 {
+  "cta": {
+    "analyticsTarget": "contact",
+    "analyticsVariant": "soft",
+    "href": "#contact",
+    "label": "Still unsure? Send a short note about what you are planning."
+  },
   "eyebrow": "Frequently asked",
   "title": "What you might be wondering right now.",
   "items": [

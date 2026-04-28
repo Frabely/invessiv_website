@@ -12,7 +12,8 @@
   grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.75fr);
   grid-template-areas: "list heading";
   align-items: start;
-  gap: clamp(2rem, 5vw, 5.5rem);
+  column-gap: clamp(2rem, 5vw, 5.5rem);
+  row-gap: clamp(2rem, 1vw, 5.5rem);
   width: min(
     calc(100% - (var(--page-inline-gutter) * 2)),
     var(--max-content-width)
@@ -87,7 +88,8 @@
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
-.item {
+.item,
+.ctaLine {
   position: relative;
   opacity: 0;
   transform: translateY(14px);
@@ -97,7 +99,8 @@
   transition-delay: var(--reveal-delay, 0ms);
 }
 
-.item[data-visible="true"] {
+.item[data-visible="true"],
+.ctaLine[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
 }
@@ -254,6 +257,45 @@
   border-radius: 2px;
 }
 
+.ctaLine {
+  grid-column: 1;
+  grid-row: 2;
+  margin: clamp(1.25rem, 1vw, 1.75rem) 0 0;
+  padding-inline: clamp(0.9rem, 1.6vw, 1.25rem);
+}
+
+.ctaLink {
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  font-size: clamp(0.98rem, 0.94rem + 0.18vw, 1.04rem);
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 44%,
+    transparent
+  );
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+  transition:
+    color 200ms ease,
+    text-decoration-color 200ms ease,
+    text-decoration-thickness 200ms ease;
+}
+
+.ctaLink:hover,
+.ctaLink:focus-visible {
+  color: var(--color-accent-warm);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+}
+
+.ctaLink:focus-visible {
+  outline: 2px solid var(--color-accent-warm);
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+
 @media (max-width: 960px) {
   .section {
     grid-template-columns: 1fr;
@@ -277,6 +319,12 @@
   .title {
     max-width: 14ch;
     font-size: clamp(2.05rem, 8.2vw, 3.45rem);
+  }
+
+  .ctaLine {
+    grid-column: 1;
+    grid-row: auto;
+    padding-inline: 0;
   }
 }
 
@@ -309,7 +357,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .heading,
-  .item {
+  .item,
+  .ctaLine {
     opacity: 1;
     transform: none;
     transition: none;

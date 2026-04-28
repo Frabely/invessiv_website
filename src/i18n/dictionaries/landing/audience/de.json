@@ -1,5 +1,12 @@
 {
   "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein klares Angebot online besser verkaufen wollen.",
+  "cta": {
+    "analyticsTarget": "contact",
+    "analyticsVariant": "soft",
+    "helper": "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
+    "href": "#contact",
+    "label": "Angebot kurz prüfen lassen"
+  },
   "eyebrow": "Für wen",
   "items": [
     {

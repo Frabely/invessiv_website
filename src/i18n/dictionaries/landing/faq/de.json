@@ -1,4 +1,10 @@
 {
+  "cta": {
+    "analyticsTarget": "contact",
+    "analyticsVariant": "soft",
+    "href": "#contact",
+    "label": "Noch unsicher? Schreib kurz, was du vorhast."
+  },
   "eyebrow": "Häufige Fragen",
   "title": "Was du dich jetzt vielleicht fragst.",
   "items": [

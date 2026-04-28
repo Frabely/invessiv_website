@@ -42,7 +42,8 @@
 .intro,
 .pillList,
 .pill,
-.reassurance {
+.reassurance,
+.ctaWrap {
   opacity: 0;
   transform: translateY(18px);
   transition:
@@ -54,7 +55,8 @@
 .intro[data-visible="true"],
 .pillList[data-visible="true"],
 .pill[data-visible="true"],
-.reassurance[data-visible="true"] {
+.reassurance[data-visible="true"],
+.ctaWrap[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
 }
@@ -164,6 +166,24 @@
   line-height: 1.6;
 }
 
+.ctaWrap {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+  margin-top: -0.6rem;
+}
+
+.ctaHelper {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 86%, transparent);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.cta {
+  min-height: 42px;
+}
+
 :global([data-theme="light"]) .pill {
   background: color-mix(in srgb, #ffffff 78%, var(--color-surface-2) 22%);
   border-color: color-mix(in srgb, var(--color-text) 14%, transparent);
@@ -212,7 +232,8 @@
   .intro,
   .pillList,
   .pill,
-  .reassurance {
+  .reassurance,
+  .ctaWrap {
     opacity: 1;
     transform: none;
     transition: none;

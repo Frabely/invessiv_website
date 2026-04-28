@@ -1,4 +1,5 @@
 import type { Locale } from "@/config/i18n";
+import type { LandingSectionCtaContent } from "@/i18n/dictionaries/landing/types";
 import de from "./de.json";
 import en from "./en.json";
 
@@ -21,6 +22,7 @@ export type LandingAudienceItem = {
 
 export type LandingAudienceContent = {
   body: string;
+  cta?: LandingSectionCtaContent;
   eyebrow: string;
   items: LandingAudienceItem[];
   reassurance: string;

@@ -14,6 +14,7 @@ type FaqSectionProps = LandingFaqContent & {
 };
 
 export function FaqSection({
+  cta,
   eyebrow,
   id,
   items,
@@ -67,6 +68,21 @@ export function FaqSection({
           </li>
         ))}
       </ol>
+
+      {cta ? (
+        <p className={styles.ctaLine} data-reveal-item="true">
+          <a
+            className={styles.ctaLink}
+            data-analytics-event="cta_click"
+            data-analytics-location="faq"
+            data-analytics-target={cta.analyticsTarget}
+            data-analytics-variant={cta.analyticsVariant ?? "soft"}
+            href={cta.href}
+          >
+            {cta.label}
+          </a>
+        </p>
+      ) : null}
     </section>
   );
 }

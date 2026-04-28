@@ -113,7 +113,8 @@
     var(--color-surface-2) 12%
   );
   --section-space: clamp(5.5rem, 9.6vw, 9.5rem);
-  --anchor-scroll-offset: calc(64px + var(--section-space));
+  --anchor-scroll-gap: clamp(0.5rem, 0.8vw, 0.75rem);
+  --anchor-scroll-offset: calc(64px + var(--anchor-scroll-gap));
   --mobile-viewport-height: 100dvh;
   --mobile-safe-top: env(safe-area-inset-top, 0px);
   --mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -367,7 +368,7 @@ main {
   :root {
     --section-space: clamp(4.5rem, 11.6vw, 7rem);
     --anchor-scroll-offset: calc(
-      64px + var(--mobile-safe-top) + var(--section-space)
+      64px + var(--mobile-safe-top) + var(--anchor-scroll-gap)
     );
   }
 

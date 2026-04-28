@@ -71,6 +71,9 @@ describe("LandingPage", () => {
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();
     expect(screen.queryByText(/keine überladene Website/)).toBeNull();
     expect(
+      screen.queryByRole("link", { name: "Was ist enthalten?" }),
+    ).toBeNull();
+    expect(
       screen.getByRole("heading", {
         level: 2,
         name: /Was du bekommst/,
@@ -81,6 +84,25 @@ describe("LandingPage", () => {
       0,
     );
     expect(screen.getByText(/Du brauchst keine fertigen Texte/)).toBeTruthy();
+    expect(
+      screen.getByText(
+        "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
+      ),
+    ).toBeTruthy();
+    const audienceSoftCta = screen.getByRole("link", {
+      name: "Angebot kurz prüfen lassen",
+    });
+    expect(audienceSoftCta.getAttribute("href")).toBe("#contact");
+    expect(audienceSoftCta.dataset.analyticsEvent).toBe("cta_click");
+    expect(audienceSoftCta.dataset.analyticsTarget).toBe("contact");
+    expect(audienceSoftCta.dataset.analyticsVariant).toBe("soft");
+    const faqSoftCta = screen.getByRole("link", {
+      name: "Noch unsicher? Schreib kurz, was du vorhast.",
+    });
+    expect(faqSoftCta.getAttribute("href")).toBe("#contact");
+    expect(faqSoftCta.dataset.analyticsEvent).toBe("cta_click");
+    expect(faqSoftCta.dataset.analyticsTarget).toBe("contact");
+    expect(faqSoftCta.dataset.analyticsVariant).toBe("soft");
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
     expect(
       screen.getByRole("heading", {

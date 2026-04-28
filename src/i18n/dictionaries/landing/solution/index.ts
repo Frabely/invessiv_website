@@ -26,8 +26,8 @@ export type LandingSolutionContent = {
 };
 
 const LANDING_SOLUTION_CONTENT: Record<Locale, LandingSolutionContent> = {
-  de,
-  en,
+  de: de as LandingSolutionContent,
+  en: en as LandingSolutionContent,
 };
 
 export function getLandingSolutionContent(
