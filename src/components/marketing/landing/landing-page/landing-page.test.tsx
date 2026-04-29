@@ -104,7 +104,7 @@ describe("LandingPage", () => {
       ),
     ).toBeTruthy();
     const softCtas = screen
-      .getAllByRole("link", { name: "Check anfragen" })
+      .getAllByRole("link", { name: "Kostenlosen Check anfragen" })
       .filter((link) => link.dataset.analyticsVariant === "soft");
     expect(softCtas.length).toBeGreaterThanOrEqual(2);
     softCtas.forEach((cta) => {
@@ -121,7 +121,7 @@ describe("LandingPage", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("button", {
-        name: /Check anfragen/,
+        name: /Kostenlosen Check anfragen/,
       }),
     ).toBeTruthy();
     expect(
@@ -130,7 +130,7 @@ describe("LandingPage", () => {
     const pageFooter = document.getElementById("footer");
     expect(pageFooter).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#contact"]')?.textContent).toBe(
-      "Check anfragen",
+      "Kostenlosen Check anfragen",
     );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();

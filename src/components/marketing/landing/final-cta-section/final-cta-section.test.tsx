@@ -61,7 +61,7 @@ describe("FinalCtaSection", () => {
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Check anfragen",
+        name: "Kostenlosen Check anfragen",
       }),
     );
 
