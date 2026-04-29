@@ -118,16 +118,6 @@
     background-color 180ms ease;
 }
 
-.pill:hover {
-  transform: scale(1.02);
-  border-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 42%,
-    var(--color-border) 58%
-  );
-  background: color-mix(in srgb, var(--color-surface-2) 70%, transparent 30%);
-}
-
 .pillIcon {
   display: inline-grid;
   place-items: center;
@@ -187,15 +177,6 @@
 :global([data-theme="light"]) .pill {
   background: color-mix(in srgb, #ffffff 78%, var(--color-surface-2) 22%);
   border-color: color-mix(in srgb, var(--color-text) 14%, transparent);
-}
-
-:global([data-theme="light"]) .pill:hover {
-  background: color-mix(in srgb, #ffffff 88%, var(--color-surface-2) 12%);
-  border-color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 46%,
-    var(--color-border) 54%
-  );
 }
 
 @media (max-width: 640px) {
