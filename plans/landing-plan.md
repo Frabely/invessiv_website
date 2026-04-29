@@ -355,7 +355,7 @@ Zum Beispiel:
 Optionaler Zusatz:
 
 ```md
-Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder gerade ein neues Angebot testen möchtest.
+Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder ein neues sauber auf den Markt bringen möchtest.
 ```
 
 Fertiger Block:
@@ -375,7 +375,7 @@ Zum Beispiel:
 - kleine B2B-Anbieter
 - Agenturen mit Kampagnenbedarf
 
-Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder gerade ein neues Angebot testen möchtest.
+Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder ein neues sauber auf den Markt bringen möchtest.
 ```
 
 ---
@@ -952,7 +952,7 @@ Zum Beispiel:
 - kleine B2B-Anbieter
 - Agenturen mit Kampagnenbedarf
 
-Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder gerade ein neues Angebot testen möchtest.
+Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder ein neues sauber auf den Markt bringen möchtest.
 ```
 
 ---

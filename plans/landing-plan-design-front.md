@@ -234,7 +234,7 @@ gap: clamp(1.75rem, 4vw, 4.75rem);
 - Hover: scale(1.02) + border-color verstärken — minimal, kein Glow
 - Reveal: Stagger pro Pille (80ms via Hook)
 
-**Reassurance-Satz**: zentriert unter den Pills, max-width 50ch, muted, font-size body-md — der heute optionale Satz "Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder gerade ein neues Angebot testen möchtest" wird hier prominent platziert.
+**Reassurance-Satz**: zentriert unter den Pills, max-width 50ch, muted, font-size body-md — der heute optionale Satz "Besonders sinnvoll ist eine Landingpage, wenn du bereits ein klares Angebot hast oder ein neues sauber auf den Markt bringen möchtest" wird hier prominent platziert.
 
 **Mobile (≤640px)**:
 
