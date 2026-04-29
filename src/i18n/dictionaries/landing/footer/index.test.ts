@@ -20,4 +20,23 @@ describe("landing footer dictionary", () => {
       );
     },
   );
+
+  it("keeps a secondary homepage link in the landing footer", () => {
+    expect(
+      getLandingFooterContent("de")
+        .columns.flatMap((column) => column.links)
+        .find((link) => link.href === "/de"),
+    ).toEqual({
+      href: "/de",
+      label: "Mehr über Invessiv",
+    });
+    expect(
+      getLandingFooterContent("en")
+        .columns.flatMap((column) => column.links)
+        .find((link) => link.href === "/en"),
+    ).toEqual({
+      href: "/en",
+      label: "More about Invessiv",
+    });
+  });
 });

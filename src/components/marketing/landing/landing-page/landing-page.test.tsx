@@ -126,6 +126,9 @@ describe("LandingPage", () => {
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#inclusions"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="/de"]')?.textContent).toBe(
+      "Mehr über Invessiv",
+    );
     expect(
       pageFooter?.querySelector('a[href="/de/imprint#company-details"]')
         ?.textContent,

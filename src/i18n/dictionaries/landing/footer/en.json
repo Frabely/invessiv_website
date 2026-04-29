@@ -6,6 +6,15 @@
       "title": "Landing page"
     },
     {
+      "title": "Invessiv",
+      "links": [
+        {
+          "label": "More about Invessiv",
+          "href": "/en"
+        }
+      ]
+    },
+    {
       "title": "Contact",
       "links": [
         {
