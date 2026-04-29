@@ -29,8 +29,17 @@ export async function generateMetadata({
     return {};
   }
 
-  const { title, description, openGraphLocale } = getLandingMetaContent(locale);
+  const {
+    title,
+    description,
+    imageAlt,
+    imageHeight,
+    imageUrl,
+    imageWidth,
+    openGraphLocale,
+  } = getLandingMetaContent(locale);
   return createPageMetadata({
+    absoluteTitle: true,
     title,
     description,
     canonicalPath: `/${locale}/landing`,
@@ -39,6 +48,12 @@ export async function generateMetadata({
       en: "/en/landing",
     }),
     openGraphLocale,
+    socialImage: {
+      alt: imageAlt,
+      height: imageHeight,
+      url: imageUrl,
+      width: imageWidth,
+    },
   });
 }
 

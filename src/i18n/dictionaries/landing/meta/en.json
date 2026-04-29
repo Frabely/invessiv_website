@@ -1,5 +1,9 @@
 {
-  "title": "Landing Pages for Relevant Inquiries | Invessiv",
-  "description": "Focused landing pages for service providers, solo businesses, and small companies that want to explain their offer clearly and win more relevant inquiries.",
-  "openGraphLocale": "en_US"
+  "title": "More inquiries with a clear landing page | Invessiv",
+  "description": "Landing pages for solo businesses and small companies – clear, fast, and optimized for inquiries.",
+  "openGraphLocale": "en_US",
+  "imageUrl": "https://www.invessiv.com/og/landing.png",
+  "imageWidth": 1200,
+  "imageHeight": 630,
+  "imageAlt": "Invessiv landing page offer for solo businesses and small companies"
 }

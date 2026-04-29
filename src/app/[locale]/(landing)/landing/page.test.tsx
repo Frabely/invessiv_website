@@ -56,9 +56,40 @@ describe("LandingRoute", () => {
     expect(metadata.alternates?.canonical).toBe(
       "https://www.invessiv.com/de/landing",
     );
-    expect(metadata.title).toBe(
-      "Landingpages für mehr passende Anfragen | Invessiv",
+    expect(metadata.title).toEqual({
+      absolute: "Mehr Anfragen mit einer klaren Landingpage | Invessiv",
+    });
+    expect(metadata.description).toBe(
+      "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und auf Anfragen optimiert.",
     );
-    expect(metadata.description).toContain("Fokussierte Landingpages");
+    expect(metadata.openGraph).toMatchObject({
+      description:
+        "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und auf Anfragen optimiert.",
+      locale: "de_DE",
+      siteName: "Invessiv",
+      title: "Mehr Anfragen mit einer klaren Landingpage | Invessiv",
+      type: "website",
+      url: "https://www.invessiv.com/de/landing",
+    });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
+        height: 630,
+        url: "https://www.invessiv.com/og/landing.png",
+        width: 1200,
+      },
+    ]);
+    expect(metadata.twitter).toMatchObject({
+      card: "summary_large_image",
+      description:
+        "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und auf Anfragen optimiert.",
+      images: [
+        {
+          alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
+          url: "https://www.invessiv.com/og/landing.png",
+        },
+      ],
+      title: "Mehr Anfragen mit einer klaren Landingpage | Invessiv",
+    });
   });
 });

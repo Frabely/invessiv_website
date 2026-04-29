@@ -4,6 +4,10 @@ import en from "./en.json";
 
 export type LandingMetaContent = {
   description: string;
+  imageAlt: string;
+  imageHeight: number;
+  imageUrl: string;
+  imageWidth: number;
   openGraphLocale: string;
   title: string;
 };

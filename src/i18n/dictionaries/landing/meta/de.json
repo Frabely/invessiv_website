@@ -1,5 +1,9 @@
 {
-  "title": "Landingpages für mehr passende Anfragen | Invessiv",
-  "description": "Fokussierte Landingpages für Dienstleister, Selbstständige und kleine Unternehmen, die ihr Angebot klar erklären und mehr passende Anfragen gewinnen wollen.",
-  "openGraphLocale": "de_DE"
+  "title": "Mehr Anfragen mit einer klaren Landingpage | Invessiv",
+  "description": "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und auf Anfragen optimiert.",
+  "openGraphLocale": "de_DE",
+  "imageUrl": "https://www.invessiv.com/og/landing.png",
+  "imageWidth": 1200,
+  "imageHeight": 630,
+  "imageAlt": "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen"
 }
