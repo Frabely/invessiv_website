@@ -3,7 +3,7 @@
     "analyticsTarget": "contact",
     "analyticsVariant": "soft",
     "href": "#contact",
-    "label": "Still unsure? Send a short note about what you are planning."
+    "label": "Request a check"
   },
   "eyebrow": "Frequently asked",
   "title": "What you might be wondering right now.",
@@ -27,6 +27,10 @@
     {
       "question": "Do I need to run ads right away?",
       "answer": "No. You can also use it for outreach, referrals, social media, or direct contacts."
+    },
+    {
+      "question": "What is included from €999?",
+      "answer": "The starting price applies to a landing page with up to 6 content sections, responsive implementation, contact form, and launch support. Larger scopes, additional pages, or custom functions are calculated separately."
     },
     {
       "question": "Who is this not for?",

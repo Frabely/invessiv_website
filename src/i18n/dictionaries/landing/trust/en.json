@@ -2,12 +2,24 @@
   "body": "No agency, no open-ended scope. One point of contact, from structure to launch.",
   "eyebrow": "How I work",
   "items": [
-    "One dedicated point of contact",
-    "Transparent starting price from €999",
-    "Reply usually within 24 hours",
-    "No unnecessary website bundle"
+    {
+      "title": "Transparent start",
+      "body": "You know what to expect before I start."
+    },
+    {
+      "title": "Fast launch",
+      "body": "Built in 3–7 days when the offer and feedback are clear."
+    },
+    {
+      "title": "One point of contact",
+      "body": "No agency back-and-forth, no unnecessary coordination loops."
+    },
+    {
+      "title": "Honest assessment",
+      "body": "If a landing page does not make sense for your offer, I will tell you openly."
+    }
   ],
   "itemsLabel": "What to expect",
-  "reassurance": "If a landing page doesn't make sense, I'll say so — instead of selling something that won't help.",
-  "title": "What to expect when we work together."
+  "reassurance": "The check stays intentionally lean: understand first, assess clearly, then decide.",
+  "title": "What to expect when you work with me."
 }

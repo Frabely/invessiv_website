@@ -38,7 +38,11 @@ export function TrustSection({
 
           <ul className={styles.signals} aria-label={itemsLabel}>
             {items.map((item) => (
-              <li className={styles.signal} data-reveal-item="true" key={item}>
+              <li
+                className={styles.signal}
+                data-reveal-item="true"
+                key={item.title}
+              >
                 <span aria-hidden="true" className={styles.signalIcon}>
                   <svg
                     fill="none"
@@ -56,7 +60,10 @@ export function TrustSection({
                     />
                   </svg>
                 </span>
-                <span className={styles.signalText}>{item}</span>
+                <span className={styles.signalText}>
+                  <span className={styles.signalTitle}>{item.title}</span>
+                  <span className={styles.signalBody}>{item.body}</span>
+                </span>
               </li>
             ))}
           </ul>

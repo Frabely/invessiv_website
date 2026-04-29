@@ -8,11 +8,11 @@
     "planDescription": "Für ein Angebot, eine Dienstleistung oder eine Kampagne — von Struktur bis Launch.",
     "itemsLabel": "Enthalten",
     "items": [
-      "1 Landingpage",
-      "Struktur & Text-Grundlage",
-      "Design & Umsetzung",
-      "Anfrageformular",
-      "Mobile Optimierung",
+      "1 Landingpage mit bis zu 6 Sektionen",
+      "Angebotsstruktur & Textgrundlage",
+      "Responsives Design & Umsetzung",
+      "Kontaktformular für Anfragen",
+      "Mobile-optimierte Darstellung",
       "Launch-Unterstützung"
     ],
     "durationLabel": "Umsetzung",
@@ -20,6 +20,6 @@
     "priceLabel": "Preisrahmen",
     "priceValue": "ab 999 €"
   },
-  "hint": "Andere Umfänge auf Anfrage.",
+  "hint": "Du bekommst vor dem Start eine klare Einschätzung zu Umfang, Ablauf und Preis.",
   "ctaLabel": "Check anfragen"
 }

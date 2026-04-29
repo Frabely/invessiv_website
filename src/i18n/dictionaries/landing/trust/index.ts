@@ -5,7 +5,10 @@ import en from "./en.json";
 export type LandingTrustContent = {
   body: string;
   eyebrow: string;
-  items: string[];
+  items: Array<{
+    body: string;
+    title: string;
+  }>;
   itemsLabel: string;
   reassurance: string;
   title: string;

@@ -3,7 +3,7 @@
   "eyebrow": "Lösung",
   "graphic": {
     "browserLabel": "Klare Botschaft",
-    "buttonLabel": "Jetzt unverbindlich anfragen",
+    "buttonLabel": "Check anfragen",
     "formButton": "Anfrage senden",
     "formFields": [
       "Dein Name",
@@ -13,7 +13,7 @@
     ],
     "formLabel": "Anfrage stellen",
     "formSecurity": "Sicher. Unverbindlich. Schnell.",
-    "formTitle": "Erzähl uns von deinem Projekt.",
+    "formTitle": "Erzähl mir kurz von deinem Projekt.",
     "heroTitle": "Dein Angebot. Ein klarer Nutzen.",
     "rating": "4,9 von 5 Sternen",
     "trustLabel": "Vertrauen schafft Entscheidung",

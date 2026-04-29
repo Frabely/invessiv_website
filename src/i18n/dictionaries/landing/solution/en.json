@@ -3,7 +3,7 @@
   "eyebrow": "Solution",
   "graphic": {
     "browserLabel": "Clear message",
-    "buttonLabel": "Request a non-binding check",
+    "buttonLabel": "Request a check",
     "formButton": "Send inquiry",
     "formFields": [
       "Your name",
@@ -13,7 +13,7 @@
     ],
     "formLabel": "Send inquiry",
     "formSecurity": "Secure. Non-binding. Fast.",
-    "formTitle": "Tell us about your project.",
+    "formTitle": "Tell me briefly about your project.",
     "heroTitle": "Your offer. One clear benefit.",
     "rating": "4.9 out of 5 stars",
     "trustLabel": "Trust creates decisions",
