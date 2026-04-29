@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LandingPage } from "@/components/marketing/landing/landing-page/landing-page";
-import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import {
+  type Locale,
+  isSupportedLocale,
+  SUPPORTED_LOCALES,
+} from "@/config/i18n";
 import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
+import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
 import {
   createLocaleAlternates,
   createPageMetadata,
@@ -43,5 +48,22 @@ export default async function LandingRoute({ params }: LandingRouteProps) {
     notFound();
   }
 
-  return <LandingPage locale={locale} />;
+  const activeLocale = locale as Locale;
+  const { description } = getLandingMetaContent(activeLocale);
+  const landingStructuredData = createMarketingStructuredData(
+    activeLocale,
+    description,
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(landingStructuredData),
+        }}
+      />
+      <LandingPage locale={activeLocale} />
+    </>
+  );
 }

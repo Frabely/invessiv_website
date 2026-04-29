@@ -27,7 +27,7 @@ describe("LandingRoute", () => {
   });
 
   it("renders the landing page for supported locales", async () => {
-    render(
+    const { container } = render(
       await LandingRoute({
         params: Promise.resolve({ locale: "de" }),
       }),
@@ -35,6 +35,9 @@ describe("LandingRoute", () => {
 
     expect(screen.getByTestId("landing-page")).toBeTruthy();
     expect(mockLandingPage).toHaveBeenCalledWith({ locale: "de" }, undefined);
+    expect(
+      container.querySelector('script[type="application/ld+json"]'),
+    ).toBeTruthy();
   });
 
   it("returns notFound for unsupported locales", async () => {
@@ -53,7 +56,9 @@ describe("LandingRoute", () => {
     expect(metadata.alternates?.canonical).toBe(
       "https://www.invessiv.com/de/landing",
     );
-    expect(metadata.title).toBe("Landingpages für mehr passende Anfragen");
+    expect(metadata.title).toBe(
+      "Landingpages für mehr passende Anfragen | Invessiv",
+    );
     expect(metadata.description).toContain("Fokussierte Landingpages");
   });
 });
