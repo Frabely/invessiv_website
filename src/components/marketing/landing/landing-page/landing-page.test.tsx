@@ -44,6 +44,9 @@ describe("LandingPage", () => {
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#inclusions"]'),
     ).toBeTruthy();
+    expect(
+      screen.getByTestId("site-header").querySelector('a[href="#audience"]'),
+    ).toBeNull();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
       "Mehr Anfragen",
     );

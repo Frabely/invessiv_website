@@ -8,10 +8,11 @@ import { ProblemSection } from "@/components/marketing/landing/problem-section/p
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
 import { SolutionSection } from "@/components/marketing/landing/solution-section/solution-section";
+import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
-import { LANDING_NAVIGATION } from "@/config/navigation/landing";
+import { LANDING_HEADER_NAVIGATION } from "@/config/navigation/landing";
 import {
   CONTACT_SECTION_ID,
   FOOTER_SECTION_ID,
@@ -28,6 +29,7 @@ import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingSolutionContent } from "@/i18n/dictionaries/landing/solution";
+import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
 
 type LandingPageProps = {
   locale: Locale;
@@ -45,13 +47,14 @@ export function LandingPage({ locale }: LandingPageProps) {
   const problem = getLandingProblemContent(locale);
   const process = getLandingProcessContent(locale);
   const solution = getLandingSolutionContent(locale);
+  const trust = getLandingTrustContent(locale);
 
   return (
     <>
       <AnchorOffsetScroll />
       <SiteHeader
         ctaHref={SECTION_HREFS.contact}
-        navigation={LANDING_NAVIGATION}
+        navigation={LANDING_HEADER_NAVIGATION}
         showThemeSwitch={false}
         uiContent={header}
       />
@@ -85,6 +88,8 @@ export function LandingPage({ locale }: LandingPageProps) {
         <SolutionSection id="solution" locale={locale} {...solution} />
 
         <InclusionsSection id="inclusions" locale={locale} {...inclusions} />
+
+        <TrustSection id="trust" locale={locale} {...trust} />
 
         <AudienceSection id="audience" locale={locale} {...audience} />
 

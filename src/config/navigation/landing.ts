@@ -8,3 +8,6 @@ export const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#pricing" },
   { href: "#faq" },
 ];
+
+export const LANDING_HEADER_NAVIGATION: NavigationItem[] =
+  LANDING_NAVIGATION.filter((item) => item.href !== "#audience");
