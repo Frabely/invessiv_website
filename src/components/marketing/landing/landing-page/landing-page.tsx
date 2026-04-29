@@ -56,7 +56,11 @@ export function LandingPage({ locale }: LandingPageProps) {
         uiContent={header}
       />
 
-      <main className="marketing-main" id="main-content" tabIndex={-1}>
+      <main
+        className="marketing-main landing-main"
+        id="main-content"
+        tabIndex={-1}
+      >
         <div aria-hidden="true" className="page-accents">
           <span className="page-noise" />
         </div>
