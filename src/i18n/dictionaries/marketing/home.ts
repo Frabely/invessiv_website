@@ -1,4 +1,8 @@
-﻿import { SECTION_HREFS, type SectionId } from "@/config/site";
+﻿import {
+  PRIMARY_NAVIGATION,
+  SECTION_HREFS,
+  type SectionId,
+} from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
 import { SocialPlatform } from "@/common/constants/social/social-platforms";
 import {
@@ -14,6 +18,7 @@ import { CONTACT_GOAL_KEY } from "@/common/constants/contact/contact-goal-keys";
 import { CONTACT_PAGE_KEY } from "@/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
+import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "web" | "upgrade";
 type SecondaryServiceCardKey = "process" | "maintenance";
@@ -325,15 +330,6 @@ type FooterSectionCopy = {
   footerLegalLinks: FooterLegalLinkCopy[];
   footerBottomNote?: string;
 };
-
-export type LandingSectionCopy =
-  | HeroSectionCopy
-  | ServicesSectionCopy
-  | ProofSectionCopy
-  | ProcessSectionCopy
-  | QnaSectionCopy
-  | ContactSectionCopy
-  | FooterSectionCopy;
 
 type ContentSectionMap = {
   hero: HeroSectionCopy;
@@ -1496,13 +1492,7 @@ const HOME_SECTIONS = [
         footerColumns: [
           {
             title: "Menü",
-            links: [
-              { label: "Einstieg", href: SECTION_HREFS["lead-bridge"] },
-              { label: "Leistungsmodelle", href: SECTION_HREFS.services },
-              { label: "Prozess", href: SECTION_HREFS.process },
-              { label: "Q&A", href: SECTION_HREFS.faq },
-              { label: "Kontakt", href: SECTION_HREFS.contact },
-            ],
+            links: [],
           },
           {
             title: "Kontakt",
@@ -1538,13 +1528,7 @@ const HOME_SECTIONS = [
         footerColumns: [
           {
             title: "Menu",
-            links: [
-              { label: "Start point", href: SECTION_HREFS["lead-bridge"] },
-              { label: "Service models", href: SECTION_HREFS.services },
-              { label: "Process", href: SECTION_HREFS.process },
-              { label: "Q&A", href: SECTION_HREFS.faq },
-              { label: "Contact", href: SECTION_HREFS.contact },
-            ],
+            links: [],
           },
           {
             title: "Contact",
@@ -1580,6 +1564,12 @@ const HOME_SECTIONS = [
 ] satisfies LandingSection[];
 
 export function getHomeSections(locale: Locale): HomeSectionContent[] {
+  const siteHeaderUi = getSiteHeaderUiContent(locale);
+  const primaryNavigationLinks = PRIMARY_NAVIGATION.map((item) => ({
+    href: item.href,
+    label: siteHeaderUi.labelsByHref[item.href] ?? item.href,
+  }));
+
   const localizeLegalHref = (href: string) => {
     if (!href.startsWith("/")) {
       return href;
@@ -1603,10 +1593,21 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
       id: section.id,
       ...section.copy[locale],
     };
+    const [menuColumn, ...footerColumns] = localizedSection.footerColumns;
+
+    if (!menuColumn) {
+      throw new Error("Expected footer menu column to be available.");
+    }
 
     return {
       ...localizedSection,
-      footerColumns: localizedSection.footerColumns.map((column) => ({
+      footerColumns: [
+        {
+          ...menuColumn,
+          links: primaryNavigationLinks,
+        },
+        ...footerColumns,
+      ].map((column) => ({
         ...column,
         links: column.links.map((link) => ({
           ...link,

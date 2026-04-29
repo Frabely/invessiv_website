@@ -1,9 +1,12 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
-import { getLocalizedSectionHref, PRIMARY_NAVIGATION } from "@/config/site";
+import {
+  getLocalizedSectionHref,
+  PRIMARY_NAVIGATION,
+} from "@/config/navigation/home";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import styles from "./legal-document-layout.module.css";
 

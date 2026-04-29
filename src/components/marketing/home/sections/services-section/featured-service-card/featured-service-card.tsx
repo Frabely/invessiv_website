@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
@@ -6,7 +6,7 @@ import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
-import { SECTION_HREFS } from "@/config/site";
+import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./featured-service-card.module.css";

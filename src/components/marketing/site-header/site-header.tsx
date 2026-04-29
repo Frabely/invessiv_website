@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import type { MouseEvent } from "react";
@@ -8,14 +8,14 @@ import { useTheme } from "@/components/providers/theme-provider";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
-import { SECTION_HREFS } from "@/config/site";
+import { SECTION_HREFS } from "@/config/navigation/home";
 import {
   getSiteHeaderUiContent,
   type SiteHeaderUiContent,
 } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
-import type { NavigationItem } from "@/config/site";
+import type { NavigationItem } from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
 import {
   createLocaleScrollRestoreState,

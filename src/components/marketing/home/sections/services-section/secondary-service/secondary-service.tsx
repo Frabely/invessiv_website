@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import type { MouseEvent } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
-import { SECTION_HREFS } from "@/config/site";
+import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./secondary-service.module.css";

@@ -1,4 +1,4 @@
-import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
+﻿import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
 import { FinalCtaSection } from "@/components/marketing/landing/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
@@ -11,12 +11,12 @@ import { SolutionSection } from "@/components/marketing/landing/solution-section
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
+import { LANDING_NAVIGATION } from "@/config/navigation/landing";
 import {
   CONTACT_SECTION_ID,
   FOOTER_SECTION_ID,
   SECTION_HREFS,
-  type NavigationItem,
-} from "@/config/site";
+} from "@/config/navigation/home";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -28,16 +28,6 @@ import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingSolutionContent } from "@/i18n/dictionaries/landing/solution";
-
-const LANDING_NAVIGATION: NavigationItem[] = [
-  { href: "#problem" },
-  { href: "#solution" },
-  { href: "#inclusions" },
-  { href: "#audience" },
-  { href: "#process" },
-  { href: "#pricing" },
-  { href: "#faq" },
-];
 
 type LandingPageProps = {
   locale: Locale;

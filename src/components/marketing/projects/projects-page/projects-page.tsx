@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import reviewProjectConsumptionImage from "../../../../../assets/review-project-consumption.png";
 import reviewProjectImage from "../../../../../assets/review-project.png";
@@ -14,7 +14,7 @@ import {
   FOOTER_SECTION_ID,
   getLocalizedSectionHref,
   type NavigationItem,
-} from "@/config/site";
+} from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import type { ProjectsPageContent } from "@/i18n/dictionaries/marketing/projects";

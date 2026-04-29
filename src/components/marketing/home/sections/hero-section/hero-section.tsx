@@ -1,9 +1,9 @@
-import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
+﻿import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
 import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
-import { HERO_SECTION_ID } from "@/config/site";
+import { HERO_SECTION_ID } from "@/config/navigation/home";
 import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {

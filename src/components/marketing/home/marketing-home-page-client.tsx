@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import { HomeSectionsRenderer } from "@/components/marketing/home/home-sections-renderer";
@@ -10,7 +10,7 @@ import {
   PRIMARY_NAVIGATION,
   PRIMARY_NAVIGATION_SECTION_IDS,
   SECTION_HREFS,
-} from "@/config/site";
+} from "@/config/navigation/home";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";

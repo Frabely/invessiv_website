@@ -3,25 +3,7 @@
   "brand": "Invessiv",
   "columns": [
     {
-      "title": "Landing page",
-      "links": [
-        {
-          "label": "Start",
-          "href": "#hero"
-        },
-        {
-          "label": "Problem",
-          "href": "#problem"
-        },
-        {
-          "label": "Solution",
-          "href": "#solution"
-        },
-        {
-          "label": "What's included",
-          "href": "#inclusions"
-        }
-      ]
+      "title": "Landing page"
     },
     {
       "title": "Contact",

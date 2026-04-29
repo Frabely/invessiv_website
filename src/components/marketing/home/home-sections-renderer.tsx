@@ -1,4 +1,4 @@
-import type { RefObject } from "react";
+﻿import type { RefObject } from "react";
 
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
@@ -18,7 +18,7 @@ import {
   PROOF_SECTION_ID,
   SECTION_IDS,
   SERVICES_SECTION_ID,
-} from "@/config/site";
+} from "@/config/navigation/home";
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
 import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";

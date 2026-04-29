@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
-import { SECTION_HREFS } from "@/config/site";
+import { SECTION_HREFS } from "@/config/navigation/home";
 import type {
   ContactChannelCopy,
   ContactCtaCopy,
