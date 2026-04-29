@@ -103,7 +103,7 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" }),
     ).toBeTruthy();
-    expect(screen.getByText("Zuletzt geändert: 8. April 2026.")).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 29. April 2026.")).toBeTruthy();
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.getByText("Inhaber: Moritz Hecht")).toBeTruthy();
     expect(screen.queryByText("Moritz Hecht – Invessiv")).toBeNull();
@@ -130,6 +130,8 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByText(/Lead-Datenbank auf Postgres-\/Neon-Basis/),
     ).toBeTruthy();
+    expect(screen.getAllByText(/Formularstart/).length).toBeGreaterThan(1);
+    expect(screen.getByText(/Sprach- und Theme-Wechsel/)).toBeTruthy();
     expect(
       screen.getByText(
         /grundsätzlich nach 24 Monaten gelöscht oder anonymisiert/,
