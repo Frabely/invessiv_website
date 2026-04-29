@@ -3,7 +3,6 @@
 export const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#solution" },
   { href: "#inclusions" },
-  { href: "#audience" },
   { href: "#process" },
   { href: "#pricing" },
   { href: "#faq" },
