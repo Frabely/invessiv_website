@@ -98,20 +98,6 @@ export function SolutionGraphic({ content }: SolutionGraphicProps) {
         </span>
         <span className={styles.security}>{content.formSecurity}</span>
       </div>
-
-      <div className={styles.timeline}>
-        {content.steps.map((step, index) => (
-          <span
-            className={
-              index === content.steps.length - 1 ? styles.activeStep : undefined
-            }
-            key={step}
-          >
-            <i />
-            {step}
-          </span>
-        ))}
-      </div>
     </div>
   );
 }

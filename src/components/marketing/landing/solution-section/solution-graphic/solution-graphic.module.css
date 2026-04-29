@@ -1,7 +1,11 @@
 .graphic {
   --reveal-delay: 0ms;
+  --form-card-offset: clamp(0.5rem, 1.5cqw, 1.25rem);
+  --form-card-width: clamp(10.4rem, 30.5cqw, 13.4rem);
+  --mockup-gap: clamp(1.25rem, 4cqw, 2.25rem);
 
   position: relative;
+  container-type: inline-size;
   min-height: clamp(26rem, 42vw, 33rem);
   isolation: isolate;
   opacity: 0;
@@ -20,7 +24,14 @@
 .browser {
   position: absolute;
   inset: clamp(0.25rem, 1vw, 0.8rem) auto auto 0;
-  width: min(68%, 30rem);
+  width: min(
+    68%,
+    30rem,
+    calc(
+      100% - var(--form-card-width) - var(--form-card-offset) -
+        var(--mockup-gap)
+    )
+  );
   max-width: calc(100% - 14.25rem);
   min-height: clamp(22rem, 34vw, 27.5rem);
   padding: 0 1.1rem 1rem;
@@ -155,6 +166,7 @@
 
 .blueButton {
   position: relative;
+  z-index: 2;
   width: max-content;
   margin-top: 0.2rem;
   padding: 0.58rem 0.78rem;
@@ -329,10 +341,10 @@
 .formCard {
   position: absolute;
   top: clamp(0.75rem, 4vw, 4.75rem);
-  right: clamp(0.5rem, 1.5vw, 1.25rem);
+  right: var(--form-card-offset);
   display: grid;
   gap: 0.65rem;
-  width: clamp(10.4rem, 30.5%, 13.4rem);
+  width: var(--form-card-width);
   padding: 0.95rem;
   border: 1px solid rgba(63, 123, 226, 0.46);
   border-radius: 0.75rem;
@@ -385,14 +397,25 @@
 }
 
 .flowLine {
+  --flow-line-gap: 0.55rem;
+  --flow-line-length: clamp(7rem, 34cqw, 15rem);
+
   position: absolute;
   top: 50%;
-  left: calc(100% + 0.55rem);
-  width: clamp(12rem, 26vw, 22.5rem);
+  left: calc(100% + var(--flow-line-gap));
+  width: var(--flow-line-length);
   height: 2px;
+  z-index: 1;
   background: linear-gradient(90deg, rgba(223, 139, 55, 0.08), #df8b37);
   box-shadow: 0 0 16px rgba(223, 139, 55, 0.82);
-  transform: translateY(-50%);
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: left center;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 620ms;
+}
+
+.graphic[data-visible="true"] .flowLine {
+  transform: translateY(-50%) scaleX(1);
 }
 
 .flowLine::before {
@@ -419,60 +442,6 @@
   transform: rotate(45deg);
 }
 
-.timeline {
-  position: absolute;
-  inset: auto 0 -2.6rem 0;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(0.75rem, 2vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.45);
-  font-size: clamp(0.54rem, 0.48rem + 0.22vw, 0.68rem);
-  font-weight: 800;
-  line-height: 1.25;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.timeline::before {
-  content: "";
-  position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 0.45rem;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.14),
-    transparent
-  );
-}
-
-.timeline span {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 0.8rem;
-}
-
-.timeline i {
-  width: 0.62rem;
-  height: 0.62rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.28);
-}
-
-.timeline .activeStep {
-  color: rgba(255, 255, 255, 0.68);
-}
-
-.timeline .activeStep i {
-  background: #4d8cff;
-  box-shadow:
-    0 0 0 5px rgba(77, 140, 255, 0.14),
-    0 0 18px rgba(77, 140, 255, 0.88);
-}
-
 :global([data-theme="light"]) .browser,
 :global([data-theme="light"]) .formCard {
   background:
@@ -480,8 +449,44 @@
     #181817;
 }
 
+@container (max-width: 42rem) {
+  .flowLine {
+    --flow-line-gap: 0.42rem;
+    --flow-line-length: clamp(5rem, 28cqw, 9.75rem);
+  }
+}
+
+@container (min-width: 44rem) {
+  .flowLine {
+    --flow-line-length: clamp(14rem, 40cqw, 19rem);
+  }
+}
+
+@container (min-width: 52rem) {
+  .flowLine {
+    --flow-line-length: clamp(19rem, 46cqw, 24rem);
+  }
+}
+
+@container (min-width: 36rem) and (max-width: 42rem) {
+  .flowLine {
+    --flow-line-length: clamp(6rem, 30cqw, 11rem);
+  }
+}
+
+@container (max-width: 34rem) {
+  .flowLine {
+    --flow-line-gap: 0.32rem;
+    --flow-line-length: clamp(3rem, 18cqw, 6rem);
+  }
+}
+
 @media (max-width: 960px) {
   .graphic {
+    --form-card-offset: 0rem;
+    --form-card-width: clamp(10rem, 31cqw, 13rem);
+    --mockup-gap: clamp(1rem, 4cqw, 2rem);
+
     min-height: clamp(24rem, 58vw, 32rem);
   }
 
@@ -491,13 +496,7 @@
   }
 
   .formCard {
-    right: 0;
-    width: clamp(10rem, 31%, 13rem);
     padding: clamp(0.78rem, 2vw, 0.95rem);
-  }
-
-  .flowLine {
-    width: clamp(7rem, 20vw, 14rem);
   }
 }
 
@@ -535,8 +534,7 @@
   }
 
   .valueGroup,
-  .trustPanel,
-  .timeline {
+  .trustPanel {
     display: none;
   }
 
@@ -561,13 +559,22 @@
   }
 
   .flowLine {
+    --flow-line-gap: 0;
+    --flow-line-length: 1.25rem;
+
     top: calc(100% + 0.34rem);
     left: 50%;
     display: block;
     width: 2px;
     height: 1.25rem;
+    z-index: 1;
     background: linear-gradient(180deg, rgba(223, 139, 55, 0.1), #df8b37);
-    transform: translateX(-50%);
+    transform: translateX(-50%) scaleY(0);
+    transform-origin: top center;
+  }
+
+  .graphic[data-visible="true"] .flowLine {
+    transform: translateX(-50%) scaleY(1);
   }
 
   .flowLine::before {
@@ -614,6 +621,10 @@
   .graphic {
     opacity: 1;
     transform: none;
+    transition: none;
+  }
+
+  .flowLine {
     transition: none;
   }
 }

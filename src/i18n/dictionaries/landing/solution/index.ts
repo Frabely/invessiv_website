@@ -12,7 +12,6 @@ export type LandingSolutionGraphicContent = {
   formTitle: string;
   heroTitle: string;
   rating: string;
-  steps: string[];
   trustLabel: string;
   valueLabel: string;
   valueTiles: string[];

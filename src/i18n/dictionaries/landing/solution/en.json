@@ -16,12 +16,6 @@
     "formTitle": "Tell us about your project.",
     "heroTitle": "Your offer. One clear benefit.",
     "rating": "4.9 out of 5 stars",
-    "steps": [
-      "Catch attention",
-      "Communicate value",
-      "Build trust",
-      "Guide to inquiry"
-    ],
     "trustLabel": "Trust creates decisions",
     "valueLabel": "Your benefits",
     "valueTiles": ["Clearly explained", "Relevant value", "Clear next step"]

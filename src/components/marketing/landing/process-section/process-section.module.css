@@ -92,7 +92,7 @@
   transform-origin: left center;
   transform: scaleX(0);
   transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 240ms;
+  transition-delay: 620ms;
   pointer-events: none;
 }
 
