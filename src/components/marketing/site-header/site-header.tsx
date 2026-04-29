@@ -5,6 +5,7 @@ import type { MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
+import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
@@ -111,6 +112,7 @@ export function SiteHeader({
 
   return (
     <header className={headerClassName}>
+      <ReadingProgress />
       <div className={`${styles.inner} site-header__inner`}>
         <a className={`${styles.brand} site-header__brand`} href={brandHref}>
           <Image

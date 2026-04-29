@@ -40,6 +40,13 @@ vi.mock("@/hooks/marketing/use-scrolled-header", () => ({
   useScrolledHeader: (...args: unknown[]) => mockUseScrolledHeader(...args),
 }));
 
+vi.mock(
+  "@/components/marketing/shared/reading-progress/reading-progress",
+  () => ({
+    ReadingProgress: () => <div data-testid="reading-progress" />,
+  }),
+);
+
 describe("SiteHeader", () => {
   afterEach(() => {
     cleanup();
@@ -73,6 +80,7 @@ describe("SiteHeader", () => {
     expect(screen.getAllByText("Einstieg").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Leistungsmodelle").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
+    expect(screen.getByTestId("reading-progress")).toBeTruthy();
   });
 
   it("triggers locale and theme actions", () => {
