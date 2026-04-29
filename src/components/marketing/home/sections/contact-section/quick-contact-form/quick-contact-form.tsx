@@ -21,6 +21,8 @@ import type {
   ContactChannelCopy,
   QuickContactFormCopy,
 } from "@/i18n/dictionaries/marketing/home";
+import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import styles from "./quick-contact-form.module.css";
 
 type ContactChannel = ContactChannelCopy;
@@ -41,6 +43,16 @@ export function QuickContactForm({
   const { locale } = useLanguage();
   const [isCopied, setIsCopied] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const {
+    resetFormAnalytics,
+    trackFormStart,
+    trackSubmitAttempt,
+    trackSubmitError,
+    trackSubmitSuccess,
+  } = useContactFormAnalytics({
+    formId: "quick_contact",
+    location: "contact",
+  });
   const {
     register,
     handleSubmit,
@@ -89,23 +101,33 @@ export function QuickContactForm({
     }
   };
 
-  const onSubmit = handleSubmit(async (values) => {
-    const dto = mapQuickContactFormToDto(values, locale);
-    setStatusMessage(formCopy.submittingLabel);
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const dto = mapQuickContactFormToDto(values, locale);
+      setStatusMessage(formCopy.submittingLabel);
+      trackSubmitAttempt();
 
-    try {
-      const response = await submitQuickContact(dto, { submitPath });
-      if (!response.ok) {
-        setStatusMessage(getSubmitErrorMessage(response));
-        return;
+      try {
+        const response = await submitQuickContact(dto, { submitPath });
+        if (!response.ok) {
+          setStatusMessage(getSubmitErrorMessage(response));
+          trackSubmitError(getContactSubmitAnalyticsErrorType(response));
+          return;
+        }
+
+        trackSubmitSuccess();
+        setStatusMessage(formCopy.submitSuccess);
+        reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);
+        resetFormAnalytics();
+      } catch {
+        setStatusMessage(formCopy.submitErrorGeneric);
+        trackSubmitError("generic");
       }
-
-      setStatusMessage(formCopy.submitSuccess);
-      reset(DEFAULT_QUICK_CONTACT_FORM_VALUES);
-    } catch {
-      setStatusMessage(formCopy.submitErrorGeneric);
-    }
-  });
+    },
+    () => {
+      trackSubmitError("validation");
+    },
+  );
 
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
@@ -147,7 +169,12 @@ export function QuickContactForm({
       subtitle={formCopy.subtitle}
       title={formCopy.title}
     >
-      <form className={sharedStyles.form} noValidate onSubmit={onSubmit}>
+      <form
+        className={sharedStyles.form}
+        noValidate
+        onFocusCapture={() => trackFormStart()}
+        onSubmit={onSubmit}
+      >
         {channel.detailPoints?.length ? (
           <ContactHelperList items={channel.detailPoints} />
         ) : null}

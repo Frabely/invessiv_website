@@ -9,6 +9,8 @@ import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-con
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
 import type { Locale } from "@/config/i18n";
+import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import styles from "./final-cta-section.module.css";
@@ -93,6 +95,16 @@ export function FinalCtaSection({
     kind: "idle" | "error" | "success";
     message?: string;
   }>({ kind: "idle" });
+  const {
+    resetFormAnalytics,
+    trackFormStart,
+    trackSubmitAttempt,
+    trackSubmitError,
+    trackSubmitSuccess,
+  } = useContactFormAnalytics({
+    formId: "landing_final_cta",
+    location: "landing_final_cta",
+  });
 
   const {
     formState: { errors, isSubmitting },
@@ -116,43 +128,57 @@ export function FinalCtaSection({
     return form.errorGeneric;
   };
 
-  const onSubmit = handleSubmit(async (values) => {
-    if (values.honeypot.trim()) {
-      setSubmitState({
-        kind: "success",
-        message: form.successBody,
-      });
-      reset(DEFAULT_FORM_VALUES);
-      return;
-    }
-
-    const { firstName, lastName } = splitName(values.name);
-    const dto = mapQuickContactFormToDto(
-      {
-        consentAccepted: values.consentAccepted,
-        email: values.email,
-        firstName,
-        lastName,
-        message: buildMessage(values.goal, values.website, form.payloadContext),
-      },
-      locale,
-    );
-
-    try {
-      const response = await submitQuickContact(dto);
-      if (!response.ok) {
+  const onSubmit = handleSubmit(
+    async (values) => {
+      if (values.honeypot.trim()) {
         setSubmitState({
-          kind: "error",
-          message: getSubmitErrorMessage(response),
+          kind: "success",
+          message: form.successBody,
         });
+        reset(DEFAULT_FORM_VALUES);
         return;
       }
-      setSubmitState({ kind: "success" });
-      reset(DEFAULT_FORM_VALUES);
-    } catch {
-      setSubmitState({ kind: "error", message: form.errorGeneric });
-    }
-  });
+
+      trackSubmitAttempt();
+      const { firstName, lastName } = splitName(values.name);
+      const dto = mapQuickContactFormToDto(
+        {
+          consentAccepted: values.consentAccepted,
+          email: values.email,
+          firstName,
+          lastName,
+          message: buildMessage(
+            values.goal,
+            values.website,
+            form.payloadContext,
+          ),
+        },
+        locale,
+      );
+
+      try {
+        const response = await submitQuickContact(dto);
+        if (!response.ok) {
+          setSubmitState({
+            kind: "error",
+            message: getSubmitErrorMessage(response),
+          });
+          trackSubmitError(getContactSubmitAnalyticsErrorType(response));
+          return;
+        }
+        trackSubmitSuccess();
+        setSubmitState({ kind: "success" });
+        reset(DEFAULT_FORM_VALUES);
+        resetFormAnalytics();
+      } catch {
+        setSubmitState({ kind: "error", message: form.errorGeneric });
+        trackSubmitError("generic");
+      }
+    },
+    () => {
+      trackSubmitError("validation");
+    },
+  );
 
   const isSuccess = submitState.kind === "success";
 
@@ -201,6 +227,7 @@ export function FinalCtaSection({
             className={styles.formCard}
             data-analytics-location="landing_final_cta"
             noValidate
+            onFocusCapture={() => trackFormStart()}
             onSubmit={onSubmit}
           >
             <div className={styles.fieldGrid}>

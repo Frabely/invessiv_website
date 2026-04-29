@@ -25,7 +25,10 @@ import type {
   ContactChannelCopy,
   DiscoveryCallFormCopy,
 } from "@/i18n/dictionaries/marketing/home";
+import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
+import { trackDiscoveryCallCalendarClick } from "@/lib/analytics/events/discovery-call-events";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
+import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 
 type ContactChannel = ContactChannelCopy;
 
@@ -44,6 +47,17 @@ export function DiscoveryCallPanel({
 }: DiscoveryCallPanelProps) {
   const { locale } = useLanguage();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const {
+    resetFormAnalytics,
+    trackFormStart,
+    trackSubmitAttempt,
+    trackSubmitError,
+    trackSubmitSuccess,
+  } = useContactFormAnalytics({
+    formId: "discovery_call",
+    location: "contact",
+    target: "calendly",
+  });
   const {
     handleSubmit,
     register,
@@ -78,6 +92,7 @@ export function DiscoveryCallPanel({
 
     const submit = handleSubmit(
       async (values) => {
+        trackSubmitAttempt();
         const response = await submitDiscoveryCall(
           mapDiscoveryCallFormToDto(values, locale),
           { submitPath },
@@ -86,6 +101,7 @@ export function DiscoveryCallPanel({
         if (!response.ok) {
           pendingWindow?.close();
           setStatusMessage(getSubmitErrorMessage(response));
+          trackSubmitError(getContactSubmitAnalyticsErrorType(response));
           return;
         }
 
@@ -95,6 +111,8 @@ export function DiscoveryCallPanel({
         });
 
         setStatusMessage(formCopy.submitSuccess);
+        trackSubmitSuccess();
+        trackDiscoveryCallCalendarClick();
 
         if (pendingWindow) {
           pendingWindow.opener = null;
@@ -104,9 +122,11 @@ export function DiscoveryCallPanel({
         }
 
         reset(DEFAULT_DISCOVERY_CALL_FORM_VALUES);
+        resetFormAnalytics();
       },
       async () => {
         pendingWindow?.close();
+        trackSubmitError("validation");
       },
     );
 
@@ -133,6 +153,7 @@ export function DiscoveryCallPanel({
       <form
         className={sharedStyles.form}
         noValidate
+        onFocusCapture={() => trackFormStart()}
         onSubmit={handleCalendlySubmit}
       >
         {channel.detailPoints?.length ? (

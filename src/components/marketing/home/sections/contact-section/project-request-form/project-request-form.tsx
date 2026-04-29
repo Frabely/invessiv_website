@@ -20,7 +20,8 @@ import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/p
 import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
-import { trackConversionEvent } from "@/lib/analytics/conversion-events";
+import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import styles from "./project-request-form.module.css";
 
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
@@ -120,6 +121,16 @@ export function ProjectRequestForm({
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [startedAt, setStartedAt] = useState(() => new Date().toISOString());
   const [projectGoalSeed, setProjectGoalSeed] = useState("");
+  const {
+    resetFormAnalytics,
+    trackFormStart,
+    trackSubmitAttempt,
+    trackSubmitError,
+    trackSubmitSuccess,
+  } = useContactFormAnalytics({
+    formId: "project_request",
+    location: "contact",
+  });
   const {
     clearErrors,
     control,
@@ -506,6 +517,7 @@ export function ProjectRequestForm({
       const nextProjectGoal = contactAnchor.dataset.projectGoal ?? "";
 
       reset(DEFAULT_PROJECT_REQUEST_FORM_VALUES);
+      resetFormAnalytics();
       setProjectGoalSeed("");
       setStartedAt(new Date().toISOString());
       setStatusMessage(null);
@@ -523,6 +535,7 @@ export function ProjectRequestForm({
     focusStep,
     getValidOfferKey,
     reset,
+    resetFormAnalytics,
   ]);
 
   useEffect(() => {
@@ -575,6 +588,7 @@ export function ProjectRequestForm({
     for (const step of STEP_SEQUENCE) {
       const isStepValid = await validateStep(step);
       if (!isStepValid) {
+        trackSubmitError("validation", { step: String(step) });
         setStep(step);
         return;
       }
@@ -586,6 +600,7 @@ export function ProjectRequestForm({
     });
 
     setStatusMessage(formCopy.submittingLabel);
+    trackSubmitAttempt({ step: String(currentStep) });
 
     try {
       const payload = await submitProjectRequest(dto, {
@@ -608,6 +623,9 @@ export function ProjectRequestForm({
             setStatusMessage(
               `${formCopy.validationSummaryPrefix}: ${getFieldErrorTextByCode(payload.fieldErrors[firstInvalidField]?.[0])}`,
             );
+            trackSubmitError("validation", {
+              step: String(getFieldStep(firstInvalidField)),
+            });
             return;
           }
         }
@@ -617,22 +635,21 @@ export function ProjectRequestForm({
             ? formCopy.submitErrorGeneric
             : getSubmitErrorMessage(payload),
         );
+        trackSubmitError(getContactSubmitAnalyticsErrorType(payload));
         return;
       }
 
-      trackConversionEvent("lead_submit_success", {
-        location: "contact",
-        target: "form",
-        variant: "primary",
-      });
+      trackSubmitSuccess({ step: String(currentStep) });
       setStatusMessage(formCopy.submitSuccess);
       setProjectGoalSeed("");
       reset(DEFAULT_PROJECT_REQUEST_FORM_VALUES);
+      resetFormAnalytics();
       setCurrentStep(1);
       setStartedAt(new Date().toISOString());
       window.requestAnimationFrame(() => setFocus("firstName"));
     } catch {
       setStatusMessage(formCopy.submitErrorGeneric);
+      trackSubmitError("generic");
     }
   });
 
@@ -691,6 +708,7 @@ export function ProjectRequestForm({
         <form
           className={`${sharedStyles.form} ${styles.form}`}
           noValidate
+          onFocusCapture={() => trackFormStart({ step: String(currentStep) })}
           onSubmit={onSubmit}
         >
           <input

@@ -22,6 +22,11 @@ import {
   createLocaleScrollRestoreState,
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
 } from "@/lib/navigation/locale-scroll-restoration";
+import {
+  trackSiteHeaderLanguageSwitch,
+  trackSiteHeaderThemeSwitch,
+} from "@/lib/analytics/events/site-header-events";
+import { getNextTheme } from "@/lib/theme/theme";
 import styles from "./site-header.module.css";
 
 type SiteHeaderContent = Omit<
@@ -67,6 +72,12 @@ export function SiteHeader({
     nextLocale: Locale,
     event: MouseEvent<HTMLButtonElement>,
   ) => {
+    const localeMenu = event.currentTarget.closest("details");
+    if (nextLocale === locale) {
+      localeMenu?.removeAttribute("open");
+      return;
+    }
+
     const normalizedPath = pathname || "/";
     const nextPathname = (() => {
       if (normalizedPath === "/") {
@@ -89,9 +100,15 @@ export function SiteHeader({
       );
     }
 
+    trackSiteHeaderLanguageSwitch(nextLocale);
     setLocale(nextLocale);
     router.replace(nextUrl, { scroll: false });
-    event.currentTarget.closest("details")?.removeAttribute("open");
+    localeMenu?.removeAttribute("open");
+  };
+  const handleThemeToggle = () => {
+    const nextTheme = getNextTheme(theme);
+    trackSiteHeaderThemeSwitch(nextTheme);
+    toggleTheme();
   };
   const handleMobileMenuLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.currentTarget
@@ -141,7 +158,7 @@ export function SiteHeader({
           {showThemeSwitch && themeSwitchCopy ? (
             <ThemeSwitch
               copy={themeSwitchCopy}
-              onToggle={toggleTheme}
+              onToggle={handleThemeToggle}
               theme={theme}
             />
           ) : null}
@@ -228,7 +245,7 @@ export function SiteHeader({
                 <li className={styles.mobileMenuListItem}>
                   <ThemeSwitch
                     copy={themeSwitchCopy}
-                    onToggle={toggleTheme}
+                    onToggle={handleThemeToggle}
                     theme={theme}
                     variant="mobile"
                   />

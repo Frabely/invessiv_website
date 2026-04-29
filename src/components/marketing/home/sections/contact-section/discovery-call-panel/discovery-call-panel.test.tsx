@@ -12,6 +12,7 @@ import { DiscoveryCallPanel } from "./discovery-call-panel";
 
 const createCalendlyPrefillHrefMock = vi.fn();
 const submitDiscoveryCallMock = vi.fn();
+const mockTrackConversionEvent = vi.fn();
 
 vi.mock("@/components/providers/language-provider", () => ({
   useLanguage: () => ({
@@ -25,11 +26,23 @@ vi.mock("@/client/contact/services/contact-form-service", () => ({
   submitDiscoveryCall: (...args: unknown[]) => submitDiscoveryCallMock(...args),
 }));
 
+vi.mock("@/lib/analytics/conversion-events", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/lib/analytics/conversion-events")>();
+
+  return {
+    ...actual,
+    trackConversionEvent: (...args: unknown[]) =>
+      mockTrackConversionEvent(...args),
+  };
+});
+
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
   createCalendlyPrefillHrefMock.mockReset();
   submitDiscoveryCallMock.mockReset();
+  mockTrackConversionEvent.mockReset();
 });
 
 describe("DiscoveryCallPanel", () => {
@@ -126,6 +139,36 @@ describe("DiscoveryCallPanel", () => {
       expect(replaceMock).toHaveBeenCalledWith(
         "https://calendly.com/service-invessiv-cxf5/30min?name=Max+Mustermann&email=max%40example.com",
       );
+      expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
+        form_id: "discovery_call",
+        location: "contact",
+        target: "calendly",
+        variant: "primary",
+      });
+      expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+        "form_submit_attempt",
+        {
+          form_id: "discovery_call",
+          location: "contact",
+          target: "calendly",
+          variant: "primary",
+        },
+      );
+      expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+        "lead_submit_success",
+        {
+          form_id: "discovery_call",
+          location: "contact",
+          target: "calendly",
+          variant: "primary",
+        },
+      );
+      expect(mockTrackConversionEvent).toHaveBeenCalledWith("calendar_click", {
+        form_id: "discovery_call",
+        location: "contact",
+        target: "calendly",
+        variant: "primary",
+      });
     });
 
     expect(screen.getByText("Calendly wird geöffnet")).toBeTruthy();

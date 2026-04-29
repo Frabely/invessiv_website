@@ -418,12 +418,31 @@ describe("ProjectRequestForm", () => {
       expect(screen.getByText("Erfolg")).toBeTruthy();
     });
 
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
+      form_id: "project_request",
+      location: "contact",
+      target: "form",
+      variant: "primary",
+      step: "3",
+    });
     expect(mockTrackConversionEvent).toHaveBeenCalledWith(
-      "lead_submit_success",
+      "form_submit_attempt",
       {
+        form_id: "project_request",
         location: "contact",
         target: "form",
         variant: "primary",
+        step: "3",
+      },
+    );
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "lead_submit_success",
+      {
+        form_id: "project_request",
+        location: "contact",
+        target: "form",
+        variant: "primary",
+        step: "3",
       },
     );
   });

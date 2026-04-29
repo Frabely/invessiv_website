@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import {
+  isClickTrackedEventName,
+  isConversionEventName,
   trackConversionEvent,
   type ConversionEventName,
   type ConversionEventPayload,
@@ -54,13 +56,16 @@ export function ConversionClickTracker() {
       }
 
       const rawEventName = trackedElement.dataset.analyticsEvent;
-      if (rawEventName !== "cta_click" && rawEventName !== "contact_click") {
+      if (!isConversionEventName(rawEventName)) {
         return;
       }
 
-      const eventName = rawEventName as ConversionEventName;
-      const payload = getPayloadFromElement(trackedElement, eventName);
-      trackConversionEvent(eventName, payload);
+      if (!isClickTrackedEventName(rawEventName)) {
+        return;
+      }
+
+      const payload = getPayloadFromElement(trackedElement, rawEventName);
+      trackConversionEvent(rawEventName, payload);
     };
 
     document.addEventListener("click", handleClick, true);

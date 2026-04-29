@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  Analytics,
-  type BeforeSendEvent,
-} from "@vercel/analytics/react";
-import { ConversionClickTracker } from "@/components/analytics/conversion-click-tracker";
+import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
+import { ConversionClickTracker } from "@/components/shared/analytics/conversion-click-tracker/conversion-click-tracker";
 
 const SENSITIVE_ROUTE_PREFIXES = ["/api/", "/admin", "/dashboard", "/preview"];
 const SENSITIVE_QUERY_PARTS = [
@@ -20,7 +17,7 @@ const SENSITIVE_QUERY_PARTS = [
   "signature",
 ];
 
-function sanitizeAnalyticsUrl(rawUrl: string): string | null {
+export function sanitizeAnalyticsUrl(rawUrl: string): string | null {
   const parsedUrl = new URL(rawUrl, window.location.origin);
   if (
     SENSITIVE_ROUTE_PREFIXES.some((prefix) =>
@@ -43,7 +40,9 @@ function sanitizeAnalyticsUrl(rawUrl: string): string | null {
   return parsedUrl.toString();
 }
 
-function handleBeforeSend(event: BeforeSendEvent): BeforeSendEvent | null {
+export function handleBeforeSend(
+  event: BeforeSendEvent,
+): BeforeSendEvent | null {
   const sanitizedUrl = sanitizeAnalyticsUrl(event.url);
   if (!sanitizedUrl) {
     return null;

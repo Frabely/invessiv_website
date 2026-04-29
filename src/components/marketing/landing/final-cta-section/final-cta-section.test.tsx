@@ -6,11 +6,24 @@ import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { FinalCtaSection } from "./final-cta-section";
 
+const mockTrackConversionEvent = vi.fn();
+
 vi.mock("@/client/contact/services/contact-form-service", () => ({
   submitQuickContact: vi
     .fn()
     .mockResolvedValue({ ok: true, requestId: "req_1" }),
 }));
+
+vi.mock("@/lib/analytics/conversion-events", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@/lib/analytics/conversion-events")>();
+
+  return {
+    ...actual,
+    trackConversionEvent: (...args: unknown[]) =>
+      mockTrackConversionEvent(...args),
+  };
+});
 
 describe("FinalCtaSection", () => {
   afterEach(() => {
@@ -65,5 +78,30 @@ describe("FinalCtaSection", () => {
         }),
       );
     });
+
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
+      form_id: "landing_final_cta",
+      location: "landing_final_cta",
+      target: "form",
+      variant: "primary",
+    });
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "form_submit_attempt",
+      {
+        form_id: "landing_final_cta",
+        location: "landing_final_cta",
+        target: "form",
+        variant: "primary",
+      },
+    );
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "lead_submit_success",
+      {
+        form_id: "landing_final_cta",
+        location: "landing_final_cta",
+        target: "form",
+        variant: "primary",
+      },
+    );
   });
 });
