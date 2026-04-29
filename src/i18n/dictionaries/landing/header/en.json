@@ -3,12 +3,11 @@
   "brandLogoAlt": "Invessiv logo",
   "ctaLabel": "Request a check",
   "labelsByHref": {
-    "#problem": "Problem",
     "#solution": "Solution",
-    "#inclusions": "What's included",
-    "#audience": "Who it's for",
+    "#inclusions": "Scope",
+    "#audience": "Audience",
     "#process": "Process",
-    "#pricing": "Offer",
+    "#pricing": "Pricing",
     "#faq": "FAQ"
   },
   "localeMenuLabel": "Open language menu",

@@ -123,6 +123,31 @@ describe("useAnchorOffsetScroll", () => {
     });
   });
 
+  it("prefers the target scroll margin when a section defines a tighter anchor offset", () => {
+    render(<AnchorScrollHarness />);
+
+    const processSection = screen.getByText("Process");
+    processSection.style.scrollMarginTop = "32px";
+    vi.spyOn(processSection, "getBoundingClientRect").mockReturnValue({
+      top: 420,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: 0,
+      height: 0,
+      x: 0,
+      y: 420,
+      toJSON: () => ({}),
+    });
+
+    fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
+
+    expect(window.scrollTo).toHaveBeenCalledWith({
+      top: 388,
+      behavior: "smooth",
+    });
+  });
+
   it("leaves the skip link to native browser behavior", () => {
     render(<AnchorScrollHarness />);
 

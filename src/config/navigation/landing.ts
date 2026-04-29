@@ -1,7 +1,6 @@
 ﻿import type { NavigationItem } from "@/config/navigation/home";
 
 export const LANDING_NAVIGATION: NavigationItem[] = [
-  { href: "#problem" },
   { href: "#solution" },
   { href: "#inclusions" },
   { href: "#audience" },

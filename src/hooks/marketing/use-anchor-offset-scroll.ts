@@ -32,7 +32,20 @@ function resolveRootLengthPx(expression: string) {
   return resolvedPixels;
 }
 
-function getAnchorOffset() {
+function getTargetScrollMarginTop(targetElement: HTMLElement) {
+  const scrollMarginTop = parsePixelValue(
+    window.getComputedStyle(targetElement).scrollMarginTop,
+  );
+
+  return scrollMarginTop > 0 ? Math.round(scrollMarginTop) : 0;
+}
+
+function getAnchorOffset(targetElement: HTMLElement) {
+  const targetScrollMarginTop = getTargetScrollMarginTop(targetElement);
+  if (targetScrollMarginTop > 0) {
+    return targetScrollMarginTop;
+  }
+
   const rootStyles = window.getComputedStyle(document.documentElement);
   const rawAnchorOffset = rootStyles
     .getPropertyValue("--anchor-scroll-offset")
@@ -63,7 +76,7 @@ function scrollToHashTarget(hash: string, behavior: ScrollBehavior) {
   const targetTop = getAnchorScrollTop(
     targetElement.getBoundingClientRect().top,
     window.scrollY,
-    getAnchorOffset(),
+    getAnchorOffset(targetElement),
   );
 
   window.scrollTo({

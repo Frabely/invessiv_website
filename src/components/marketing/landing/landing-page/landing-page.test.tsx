@@ -37,7 +37,7 @@ describe("LandingPage", () => {
     ).toBe("#contact");
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#problem"]'),
-    ).toBeTruthy();
+    ).toBeNull();
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#solution"]'),
     ).toBeTruthy();
@@ -123,7 +123,7 @@ describe("LandingPage", () => {
     expect(pageFooter?.querySelector('a[href="#contact"]')?.textContent).toBe(
       "Check anfragen",
     );
-    expect(pageFooter?.querySelector('a[href="#problem"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#inclusions"]')).toBeTruthy();
     expect(

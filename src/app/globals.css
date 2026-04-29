@@ -242,6 +242,10 @@ section[id] {
   scroll-margin-top: var(--anchor-scroll-offset);
 }
 
+.marketing-main section[id] {
+  scroll-margin-top: clamp(0.35rem, 1vw, 0.75rem);
+}
+
 [data-theme="light"] body {
   background:
     radial-gradient(
