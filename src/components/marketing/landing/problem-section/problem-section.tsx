@@ -17,6 +17,7 @@ export function ProblemSection({
   body,
   eyebrow,
   id,
+  issueHeading,
   locale,
   points,
   summary,
@@ -34,7 +35,8 @@ export function ProblemSection({
       </div>
 
       <div className={styles.issuePanel} data-reveal-item="true">
-        <ul className={styles.issueList} aria-label={summary}>
+        <h3 className={styles.issueHeading}>{issueHeading}</h3>
+        <ul className={styles.issueList} aria-label={issueHeading}>
           {points.map((point) => (
             <li
               className={styles.issueItem}

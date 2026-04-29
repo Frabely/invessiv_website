@@ -59,8 +59,19 @@ describe("LandingPage", () => {
         name: /Viele Websites sehen okay aus/,
       }),
     ).toBeTruthy();
-    const firstProblemItem = screen.getByText("Was genau angeboten wird");
+    expect(
+      screen.getByRole("heading", {
+        level: 3,
+        name: /Typische Fehler/,
+      }),
+    ).toBeTruthy();
+    const firstProblemItem = screen.getByText(
+      "Das Angebot bleibt zu allgemein.",
+    );
     expect(firstProblemItem).toBeTruthy();
+    expect(
+      screen.getByText("Eine gute Landingpage räumt diese Hürden aus dem Weg."),
+    ).toBeTruthy();
     await waitFor(() => {
       expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
     });

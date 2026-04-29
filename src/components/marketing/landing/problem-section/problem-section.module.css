@@ -85,8 +85,20 @@
   position: relative;
   overflow: visible;
   display: grid;
-  gap: clamp(1.25rem, 2.2vw, 1.8rem);
+  gap: clamp(1rem, 1.8vw, 1.35rem);
   align-self: end;
+}
+
+.issueHeading {
+  position: relative;
+  z-index: 1;
+  max-width: 34rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  font-size: clamp(1rem, 0.95rem + 0.34vw, 1.18rem);
+  font-weight: 620;
+  line-height: 1.35;
+  text-wrap: balance;
 }
 
 .issueList {
@@ -190,6 +202,10 @@
   .issueItem {
     min-height: 30px;
     font-size: clamp(0.96rem, 3.7vw, 1.04rem);
+  }
+
+  .issueHeading {
+    font-size: clamp(0.98rem, 3.7vw, 1.06rem);
   }
 
   .issueItem::before {

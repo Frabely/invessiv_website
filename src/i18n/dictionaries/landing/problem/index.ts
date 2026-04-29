@@ -5,6 +5,7 @@ import en from "./en.json";
 export type LandingProblemContent = {
   body: string;
   eyebrow: string;
+  issueHeading: string;
   points: string[];
   summary: string;
   title: string;
