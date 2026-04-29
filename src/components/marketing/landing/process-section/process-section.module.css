@@ -48,6 +48,14 @@
   margin-bottom: 0.15rem;
 }
 
+.stepContent {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: clamp(0.65rem, 0.7vw, 0.9rem);
+  row-gap: 0.45rem;
+}
+
 .title {
   margin: 0;
   max-width: 18ch;
@@ -131,8 +139,8 @@
 .icon {
   display: inline-grid;
   place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.15rem;
+  height: 2.15rem;
   border-radius: 12px;
   border: 1px solid
     color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border) 72%);

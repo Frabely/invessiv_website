@@ -46,9 +46,10 @@ export function ProcessIcon({ iconKey }: ProcessIconProps) {
     case "launch":
       return (
         <svg {...SVG_PROPS}>
-          <path d="M5 19c1.5-4 4-7 8-9l4-1.5-1.5 4c-2 4-5 6.5-9 8z" />
-          <path d="M5 19l3-3" />
-          <circle cx="14.5" cy="9.5" r="1.4" />
+          <rect height="13" rx="2" width="16" x="4" y="5.5" />
+          <path d="M4 9.5h16" />
+          <path d="M8 13h8" />
+          <path d="M8 16h5" />
         </svg>
       );
   }

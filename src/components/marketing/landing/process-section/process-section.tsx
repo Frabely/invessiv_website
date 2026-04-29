@@ -43,13 +43,16 @@ export function ProcessSection({
               key={step.numeral}
             >
               <span aria-hidden="true" className={styles.node} />
-              <span aria-hidden="true" className={styles.icon}>
-                <ProcessIcon iconKey={step.iconKey} />
-              </span>
+
               <span aria-hidden="true" className={styles.numeral}>
                 {step.numeral}
               </span>
-              <h3 className={styles.stepTitle}>{step.title}</h3>
+              <span className={styles.stepContent}>
+                <span aria-hidden="true" className={styles.icon}>
+                  <ProcessIcon iconKey={step.iconKey} />
+                </span>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+              </span>
               <p className={styles.stepBody}>{step.description}</p>
             </li>
           ))}
