@@ -94,22 +94,35 @@
   display: none;
 }
 
-.mobileCta {
-  min-height: 40px;
-  width: 40px;
+.navCta.mobileCta {
+  flex: 0 0 44px;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
   padding: 0;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .mobileCtaIcon {
-  width: 16px;
-  height: 16px;
   display: inline-flex;
+  flex: 0 0 22px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  min-height: 22px;
+  line-height: 0;
 }
 
 .mobileCtaIcon svg {
+  display: block;
+  flex: 0 0 22px;
   width: 100%;
+  min-width: 22px;
   height: 100%;
+  min-height: 22px;
   stroke: currentColor;
   stroke-width: 1.9;
   stroke-linecap: round;
