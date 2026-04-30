@@ -55,6 +55,9 @@ Diese Skills sind für Claude und Codex als gemeinsame Arbeits-/Review-Leitplank
 
 - Standard: Es wird immer nur **ein einzelnes Ticket** oder ein klar abgegrenzter Teilschritt ausgeführt.
 - Mehrere Tickets dürfen nur zusammen umgesetzt werden, wenn der Nutzer das ausdrücklich sagt, z. B. "Tickets 2-4 umsetzen" oder "den kompletten Plan ausführen".
+- Vor jedem Ticket geht das genutzte Modell zuerst in den Plan-Modus und erstellt einen kurzen Umsetzungsplan direkt im Chat. Dieser Plan ist kein eigenes `.md`-Artefakt.
+- Der Plan-Modus startet mit dem konkreten Ticket-Input aus Abschnitt 13, gleicht Scope, Akzeptanzkriterien, Risiken und benötigte Skills ab und stellt Rückfragen, falls Entscheidungen oder Zugangsdaten fehlen.
+- Erst nachdem der Umsetzungsplan bestätigt oder die offenen Punkte ausreichend geklärt sind, wird in die Umsetzung des Tickets gewechselt.
 - Nach jedem Ticket wird kurz dokumentiert, was geändert wurde, welche Tests/Gates gelaufen sind und welches Ticket als Nächstes sinnvoll wäre.
 - Wenn ein Ticket während der Umsetzung in größere unabhängige Aufgaben zerfällt, wird es in kleinere Schritte aufgeteilt, bevor weiter implementiert wird.
 - Dokumentations- oder Planänderungen dürfen mehrere spätere Tickets betreffen, zählen aber nicht als technische Umsetzung dieser Tickets.
