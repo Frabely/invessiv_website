@@ -17,6 +17,14 @@
 - Vor einer Umstellung prüfen, welche Loader-, Typisierungs- und Importpfade in `src/i18n/get-dictionary.ts` sowie den aufrufenden Modulen angepasst werden muessen.
 - Dieses Thema jetzt nicht im laufenden Contact-Form-Task umsetzen, sondern als separates Rework behandeln.
 
+## Default-Locale Redirect Rework
+
+- `src/proxy.ts` spaeter so umbauen, dass locale-lose oeffentliche Seiten generisch auf die Default-Locale weitergeleitet werden.
+- Ziel: statt einzelner harter Redirect-Ziele wie `/imprint -> /de/imprint` eine zentrale `DEFAULT_LOCALE` plus kontrollierte Liste lokalisierbarer Public Routes nutzen.
+- Beispiel: `/` -> `/de`, `/imprint` -> `/de/imprint`, `/privacy` -> `/de/privacy`, `/terms` -> `/de/terms`.
+- Nicht blind alle Pfade prefixen: `_next`, `api`, Assets aus `public`, `favicon.ico`, `robots.txt`, `sitemap.xml`, Clerk-/Webhook-/Systemrouten muessen ausgespart bleiben.
+- Bestehendes Verhalten fuer `/projects` und `ENABLE_MARKETING_PROOF` beim Rework explizit mit Tests absichern.
+
 ## Src-Struktur Rework
 
 - Die Ordnerstruktur in `src` insgesamt neu schneiden.
