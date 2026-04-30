@@ -24,5 +24,5 @@ This directory contains only Next.js App Router entry points and route orchestra
 - `page.tsx` files orchestrate only — no large render switches, no inline business logic, no locale-specific string objects
 - Route-local helpers only if they are truly exclusive to that single route
 - Route file names must match the path segment they serve
-- Route groups use parentheses to separate concerns: `(landing)`, `(legal)` — add `(app)` when authenticated flows arrive
+- Route groups use parentheses to separate concerns: `(landing)`, `(legal)`, `(auth)`, `(dashboard)`. Public Clerk sign-in/sign-up routes belong in `(auth)`; protected authenticated dashboard flows belong in `(dashboard)`.
 - All locale-dependent text comes from dictionaries loaded via `src/i18n/get-dictionary.ts`; never inline translated strings in page files

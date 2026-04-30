@@ -27,10 +27,14 @@ Pre-merge gates: `npm run lint` and `npm run build` must pass green.
 ```
 src/
 ├── app/[locale]/         # Route entries only — page.tsx orchestrates, no logic here
+│   ├── (auth)/           # Public Clerk sign-in/sign-up routes
+│   ├── (dashboard)/      # Protected dashboard route group
 │   ├── (landing)/        # Landing page route group
 │   └── (legal)/          # Legal pages route group
 ├── app/api/              # API route handlers (POST /api/public/contact)
 ├── components/
+│   ├── auth/             # Auth frame components for Clerk pages
+│   ├── dashboard/        # Protected dashboard UI components
 │   ├── marketing/        # Landing page sections (hero, services, proof, process, contact, footer)
 │   ├── legal/            # Legal page components
 │   └── shared/           # Reusable UI (button, locale-switch, theme-switch, breadcrumbs)
@@ -47,6 +51,17 @@ src/
     └── patterns/         # Shared utility patterns
 ```
 
+### Scoped guidance files
+
+Read the closest scoped guidance file before changing files in that area. Root rules still apply; scoped files add or tighten local conventions.
+
+| File                                     | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/(auth)/AGENTS.md`      | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
+| `src/app/[locale]/(auth)/CLAUDE.md`      | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
+| `src/app/[locale]/(dashboard)/AGENTS.md` | Agent/Codex rules for the protected dashboard: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for dashboard routes, dashboard layout, auth/permission checks, dashboard dictionaries, or protected dashboard components.                      |
+| `src/app/[locale]/(dashboard)/CLAUDE.md` | Architecture knowledge for the dashboard: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/dashboard`, `requireDashboardAccess`, allowlist changes, role-model planning, or dashboard shell work.                           |
+
 ### Routing
 
 Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Static generation via `generateStaticParams()`. URL slugs are always English (`/terms`, `/privacy`, `/imprint`) even when UI text is German.
@@ -56,7 +71,7 @@ Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Sta
 - All UI/page text lives exclusively in `src/i18n/dictionaries/<section>/{de,en}.json` — never inline in `.tsx`
 - Loaded server-side via `src/i18n/get-dictionary.ts` (marked `server-only`)
 - When editing copy, always update **all** supported locale files in the same commit
-- No `locale === "de" ? … : …` branching in app/config/lib code — use locale-keyed dictionary lookups so adding a third language never requires code changes
+- No `locale === "de" ? … : …` branching in app/config/lib/provider/component code. This also applies to provider configuration and third-party localization objects such as Clerk `deDE`/`enUS`. Use typed locale-keyed dictionaries or `Record<SupportedLocale, ...>` mappings so adding a third language never requires structural code changes.
 - Key namespace convention: `meta`, `page`, `sections`, `labels`, `values` within each section namespace
 
 ### Contact API pattern

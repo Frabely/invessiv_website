@@ -17,6 +17,17 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 - In jedem Ordner gilt zuerst die `AGENTS.md` im jeweiligen Ordner oder in einem Elternordner; die spezifischste Datei im Pfad hat Vorrang.
 - Wenn mehrere `AGENTS.md`-Dateien im Pfad liegen, sind sie von außen nach innen zu lesen und die engere Ordnerdatei ergänzt oder präzisiert die allgemeinere Regel.
 
+## Bereichsspezifische Agenten- und Architekturdateien
+
+Zusätzlich zu dieser Root-Datei gibt es bereichsspezifische `AGENTS.md`- und `CLAUDE.md`-Dateien. Sie sind zu lesen, sobald eine Änderung Dateien im jeweiligen Scope betrifft.
+
+| Pfad                                     | Was darin steht                                                                                                                                   | Wann nutzen                                                                                                                                         |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/(auth)/AGENTS.md`      | Codex-/Agent-Regeln für öffentliche Clerk-Auth-Routen, i18n, Komponentenstruktur, Security-Grenzen und erforderliche Skills.                      | Bei Arbeiten an Sign-in/Sign-up-Routen, Auth-Frame, Auth-Metadata, Auth-Dictionaries oder Clerk-UI im `(auth)`-Bereich.                             |
+| `src/app/[locale]/(auth)/CLAUDE.md`      | Architekturwissen für den öffentlichen Auth-Bereich: Zweck, Clerk-Stack, Routing, Redirects, i18n, Security und geplante Erweiterungen.           | Bei Planung, Review oder Umsetzung von `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk Appearance, Auth-Redirects oder Auth-E2E-Smokes.             |
+| `src/app/[locale]/(dashboard)/AGENTS.md` | Codex-/Agent-Regeln für den geschützten Dashboard-Bereich: Auth-Gate, Allowlist, noindex/dynamic Rendering, Permission-Grenzen, Tests und Skills. | Bei Arbeiten an Dashboard-Routen, Dashboard-Layout, Auth-/Permission-Checks, Dashboard-Dictionaries oder geschützten UI-Komponenten.                |
+| `src/app/[locale]/(dashboard)/CLAUDE.md` | Architekturwissen für das Dashboard: Defense-in-Depth, Clerk/Allowlist-Mechanik, Routing-Konvention, kritische Dateien und spätere Erweiterungen. | Bei Planung, Review oder Umsetzung von `/[locale]/dashboard`, `requireDashboardAccess`, Allowlist-Erweiterungen, Rollenmodell oder Dashboard-Shell. |
+
 ## Branding & Variation (verbindlich)
 
 - Logo ist Pflichtinput
@@ -356,8 +367,9 @@ Outputs:
 - High-Priority-Regel (verbindlich): Neue Texte oder Textänderungen werden immer für alle unterstützten Sprachen parallel gepflegt; Merge mit veralteten Übersetzungsständen ist nicht erlaubt
 - High-Priority-Regel (verbindlich): Wenn Copy bearbeitet wird, ist aktiv zu prüfen, dass die Änderung in allen betroffenen Locale-Dateien erfolgt ist und keine sprachabhängige Rest-Copy inline in App-, SEO-, Lib- oder Komponenten-Dateien verbleibt
 - High-Priority-Regel (verbindlich): Keine locale-basierten Inline-Verzweigungen in `page.tsx` für sprachabhängige Werte (z. B. Adresse, Telefonnummer, Labels); diese Werte liegen im Dictionary je Locale mit identischen Keys
-- High-Priority-Regel (verbindlich): Keine binären Locale-Fallbacks für sprachabhängige Inhalte in App-, SEO-, Config-, Lib- oder Komponentenlogik (z. B. `locale === "de" ? deText : enText`); sprachabhängige Werte müssen so modelliert werden, dass sie ohne Code-Umbau für mehr als zwei Sprachen erweiterbar sind
+- High-Priority-Regel (verbindlich): Keine binären Locale-Fallbacks für sprachabhängige Inhalte oder Konfigurationen in App-, SEO-, Config-, Lib-, Provider- oder Komponentenlogik (z. B. `locale === "de" ? deText : enText` oder `locale === "de" ? deDE : enUS`); sprachabhängige Werte müssen über locale-keyed Dictionaries oder typisierte Locale-Mappings modelliert werden, damit mehr als zwei Sprachen ohne strukturellen Code-Umbau erweiterbar sind
 - High-Priority-Regel (verbindlich): Auch sprachabhängige SEO-/Structured-Data-Werte (z. B. `serviceType`, Meta-Descriptions, OpenGraph-Texte, Breadcrumb-Labels, Legal-Labels) werden nicht per hartem `de`/Fallback-Branch gepflegt, sondern über locale-basierte Dictionaries oder klar typisierte Locale-Mappings mit identischen Keys für alle unterstützten Sprachen
+- High-Priority-Regel (verbindlich): Auch Drittanbieter-Lokalisierungen, Theme-/Provider-Konfigurationen und Framework-Objekte (z. B. Clerk `deDE`/`enUS`) werden über zentrale `Record<SupportedLocale, ...>`-Mappings oder gleichwertige Lookup-Strukturen aufgelöst; kein `if`/ternary pro Sprache.
 - Key-Konvention:
   - Namespace pro Seite/Domain (z. B. `imprint`)
   - Unterteilung in `meta`, `page`, `sections`, `labels`, `values` konsistent halten
