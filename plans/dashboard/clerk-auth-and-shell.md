@@ -530,7 +530,7 @@ Status: erledigt durch diesen Plan, Auth-/Dashboard-Scope-Dateien und Root-Verwe
 - Vercel Production/Preview/Development ENV-Vars setzen (durch Owner)
 - **Acceptance**: `npm run typecheck` grün, `.env.example` ist entweder vollständig committet oder die Entscheidung gegen eine Vorlage ist dokumentiert, lokal `.env.local` gesetzt.
 
-### Ticket 3 — `<ClerkProvider>` integrieren
+### Ticket 3 — `<ClerkProvider>` integrieren [erledigt]
 
 - `src/components/providers/app-providers.tsx` erweitern: `<ClerkProvider>` als äußerster Wrapper, `localization` über typisiertes `Record<SupportedLocale, ...>`-Mapping.
 - Bestehende `AppProviders`-API beibehalten: `initialLocale` und `initialTheme` bleiben Props.
