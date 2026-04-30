@@ -29,6 +29,8 @@
     "*.{json,md,css,scss,html,yml,yaml}": "prettier --write"
   },
   "dependencies": {
+    "@clerk/localizations": "^4.5.6",
+    "@clerk/nextjs": "^7.2.8",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
