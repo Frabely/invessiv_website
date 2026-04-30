@@ -58,6 +58,8 @@ Diese Skills sind für Claude und Codex als gemeinsame Arbeits-/Review-Leitplank
 - Vor jedem Ticket geht das genutzte Modell zuerst in den Plan-Modus und erstellt einen kurzen Umsetzungsplan direkt im Chat. Dieser Plan ist kein eigenes `.md`-Artefakt.
 - Der Plan-Modus startet mit dem konkreten Ticket-Input aus Abschnitt 13, gleicht Scope, Akzeptanzkriterien, Risiken und benötigte Skills ab und stellt Rückfragen, falls Entscheidungen oder Zugangsdaten fehlen.
 - Erst nachdem der Umsetzungsplan bestätigt oder die offenen Punkte ausreichend geklärt sind, wird in die Umsetzung des Tickets gewechselt.
+- Sobald ein Ticket fertig umgesetzt und geprüft ist, wird es im Plan in Abschnitt 13 als `[erledigt]` markiert.
+- Nach Ticket-Abschluss nicht automatisch committen. Commits erfolgen nur, wenn der Nutzer ausdrücklich zum Commit auffordert.
 - Nach jedem Ticket wird kurz dokumentiert, was geändert wurde, welche Tests/Gates gelaufen sind und welches Ticket als Nächstes sinnvoll wäre.
 - Wenn ein Ticket während der Umsetzung in größere unabhängige Aufgaben zerfällt, wird es in kleinere Schritte aufgeteilt, bevor weiter implementiert wird.
 - Dokumentations- oder Planänderungen dürfen mehrere spätere Tickets betreffen, zählen aber nicht als technische Umsetzung dieser Tickets.
@@ -520,7 +522,7 @@ Status: erledigt durch diesen Plan, Auth-/Dashboard-Scope-Dateien und Root-Verwe
 - Root `AGENTS.md` und Root `CLAUDE.md` mit Scope-Index
 - `src/app/CLAUDE.md` mit korrigierter Route-Group-Konvention für `(auth)` und `(dashboard)`
 
-### Ticket 2 — Clerk Dependency + ENV vorbereiten
+### Ticket 2 — Clerk Dependency + ENV vorbereiten [erledigt]
 
 - `npm install @clerk/nextjs @clerk/localizations`
 - Falls eine `.env.example` angelegt wird: vollständig mit allen Key-Namen aus Abschnitt 7, plus neuen Clerk-/Dashboard-Keys, nur mit Platzhalterwerten
