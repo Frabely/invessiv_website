@@ -537,7 +537,7 @@ Status: erledigt durch diesen Plan, Auth-/Dashboard-Scope-Dateien und Root-Verwe
 - `src/app/[locale]/layout.tsx`: `activeLocale` weiterhin als `initialLocale` an `<AppProviders>` durchreichen.
 - **Acceptance**: App startet (`npm run dev`), keine Hydration-Warnings, Theme + Language weiterhin funktionsfähig.
 
-### Ticket 4 — Auth-/Permission-Helper
+### Ticket 4 — Auth-/Permission-Helper [erledigt]
 
 - `src/lib/auth/allowlist.ts` + `allowlist.test.ts` (Vitest)
 - `src/lib/auth/permissions.ts` (`requireDashboardAccess`)
