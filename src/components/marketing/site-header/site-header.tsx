@@ -139,7 +139,7 @@ export function SiteHeader({
             height={26}
             priority
           />
-          <span>Invessiv</span>
+          <span>{ui.brandLabel}</span>
         </a>
 
         <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>

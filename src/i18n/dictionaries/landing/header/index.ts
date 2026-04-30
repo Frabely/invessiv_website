@@ -4,6 +4,7 @@ import en from "./en.json";
 
 export type LandingHeaderContent = {
   actionsAriaLabel: string;
+  brandLabel: string;
   brandLogoAlt: string;
   ctaLabel: string;
   labelsByHref: Record<string, string>;

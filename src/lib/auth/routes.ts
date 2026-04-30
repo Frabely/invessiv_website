@@ -7,6 +7,8 @@ export const DASHBOARD_PATH = SITE_ROUTES.dashboard;
 
 export const REDIRECT_URL_QUERY_PARAM = "redirect_url";
 
+export type AuthRouteKind = "signIn" | "signUp";
+
 export function signInPathFor(locale: Locale): string {
   return `/${locale}${SIGN_IN_PATH}`;
 }
