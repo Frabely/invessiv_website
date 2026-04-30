@@ -19,6 +19,7 @@ const SECTION_IDS: string[] = [
   "faq",
   "contact",
 ];
+const INTENTIONAL_LARGE_TRANSITION_SECTION_IDS = ["services"];
 
 test.describe("home section heading rhythm", () => {
   for (const viewport of VIEWPORTS) {
@@ -62,7 +63,14 @@ test.describe("home section heading rhythm", () => {
         });
       }, SECTION_IDS);
 
-      const gaps = spacing.map((entry) => entry.gap);
+      const standardSpacing = spacing.filter(
+        (entry) =>
+          !INTENTIONAL_LARGE_TRANSITION_SECTION_IDS.includes(entry.sectionId),
+      );
+      const largeTransitions = spacing.filter((entry) =>
+        INTENTIONAL_LARGE_TRANSITION_SECTION_IDS.includes(entry.sectionId),
+      );
+      const gaps = standardSpacing.map((entry) => entry.gap);
       const minGap = Math.min(...gaps);
       const maxGap = Math.max(...gaps);
 
@@ -70,6 +78,13 @@ test.describe("home section heading rhythm", () => {
         maxGap - minGap,
         `Expected consistent spacing on ${viewport.name}, got ${JSON.stringify(spacing)}`,
       ).toBeLessThanOrEqual(1.5);
+
+      for (const transition of largeTransitions) {
+        expect(
+          transition.gap,
+          `Expected intentional larger transition before ${transition.sectionId} on ${viewport.name}, got ${JSON.stringify(spacing)}`,
+        ).toBeGreaterThan(maxGap);
+      }
     });
   }
 });

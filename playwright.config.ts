@@ -1,7 +1,12 @@
+import { config as loadDotenv } from "dotenv";
 import { defineConfig, devices } from "@playwright/test";
 
+loadDotenv({ path: ".env.local", override: false, quiet: true });
+loadDotenv({ path: ".env.development.local", override: false, quiet: true });
+loadDotenv({ path: ".env.production.local", override: false, quiet: true });
+
 const PORT = 4173;
-const localBaseUrl = `http://127.0.0.1:${PORT}`;
+const localBaseUrl = `http://localhost:${PORT}`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -17,7 +22,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: `npm run start -- --hostname 127.0.0.1 --port ${PORT}`,
+        command: `npm run start -- --hostname localhost --port ${PORT}`,
         port: PORT,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
