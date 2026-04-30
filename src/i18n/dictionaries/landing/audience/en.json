@@ -2,7 +2,7 @@
   "body": "For service providers, freelancers, and small businesses that want to sell one clear offer better online.",
   "cta": {
     "analyticsTarget": "contact",
-    "analyticsVariant": "soft",
+    "analyticsVariant": "primary",
     "helper": "Not sure whether a landing page fits your offer?",
     "href": "#contact",
     "label": "Request a free check"

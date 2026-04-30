@@ -103,15 +103,14 @@ describe("LandingPage", () => {
         "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
       ),
     ).toBeTruthy();
-    const softCtas = screen
+    const audienceCta = screen
       .getAllByRole("link", { name: "Kostenlosen Check anfragen" })
-      .filter((link) => link.dataset.analyticsVariant === "soft");
-    expect(softCtas.length).toBeGreaterThanOrEqual(2);
-    softCtas.forEach((cta) => {
-      expect(cta.getAttribute("href")).toBe("#contact");
-      expect(cta.dataset.analyticsEvent).toBe("cta_click");
-      expect(cta.dataset.analyticsTarget).toBe("contact");
-    });
+      .find((link) => link.dataset.analyticsLocation === "audience");
+    expect(audienceCta).toBeTruthy();
+    expect(audienceCta!.getAttribute("href")).toBe("#contact");
+    expect(audienceCta!.dataset.analyticsEvent).toBe("cta_click");
+    expect(audienceCta!.dataset.analyticsTarget).toBe("contact");
+    expect(audienceCta!.dataset.analyticsVariant).toBe("primary");
     expect(screen.getByTestId("hero-visual")).toBeTruthy();
     expect(
       screen.getByRole("heading", {

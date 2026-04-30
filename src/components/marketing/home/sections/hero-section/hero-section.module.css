@@ -224,10 +224,12 @@
   }
 
   .ctaRow {
+    display: grid;
     gap: 10px;
   }
 
   .ctaButton {
+    width: 100%;
     min-height: 42px;
     padding-inline: 16px;
   }
