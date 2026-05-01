@@ -12,7 +12,7 @@ Diese Datei gilt für `src/app/[locale]/workspace/` und alle Subroutes darunter.
 
 ## Status und Zweck
 
-- Status: Workspace-Skelett. Auth-Setup und leere Shell sind im Implementierungsplan `plans/dashboard/clerk-auth-and-shell.md` beschrieben.
+- Status: Workspace-Skelett. Auth-Setup und leere Shell sind im Implementierungsplan `plans/workspace/clerk-auth-and-workspace-shell.md` beschrieben.
 - Zweck: privater, allowlist-geschützter Bereich für administrative oder interne Funktionen.
 - Phase 1: nur Owner-Zugriff.
 - Phase 2: kleine Gruppe berechtigter Nutzer.
@@ -87,14 +87,14 @@ Layer 2 fängt Fälle ab, die Layer 1 nicht vollständig abdecken kann:
 
 ## Routing-Konvention
 
-| Route-Group | Pfad                                                        | Zweck               | Geschützt? |
+| Bereich     | Pfad                                                        | Zweck               | Geschützt? |
 | ----------- | ----------------------------------------------------------- | ------------------- | ---------- |
 | `(landing)` | `/[locale]`, `/[locale]/landing/*`                          | Marketing           | nein       |
 | `(legal)`   | `/[locale]/imprint`, `/[locale]/privacy`, `/[locale]/terms` | Legal               | nein       |
 | `(auth)`    | `/[locale]/sign-in`, `/[locale]/sign-up`                    | Clerk-Forms         | nein       |
 | `workspace` | `/[locale]/workspace`, später mehr                          | Geschützter Bereich | ja         |
 
-Alles unter `workspace/` ist geschützt. Sign-in und Sign-up unter `(auth)/` sind öffentlich. `workspace` und `(auth)` bleiben getrennte Route-Groups.
+Alles unter `workspace/` ist geschützt. Sign-in und Sign-up unter `(auth)/` sind öffentlich. `workspace` ist ein echtes URL-Segment; `(auth)` bleibt eine pfadlose Route-Group.
 
 ## i18n-Struktur
 
@@ -122,7 +122,7 @@ src/i18n/dictionaries/workspace/
 
 ## Workflow für neue Workspace-Features
 
-1. Plan in `plans/dashboard/<feature-name>.md` schreiben oder bestehenden Plan aktualisieren.
+1. Plan in `plans/workspace/<feature-name>.md` schreiben oder bestehenden Plan aktualisieren.
 2. Dictionaries unter `src/i18n/dictionaries/workspace/<section>/` für DE und EN im selben Commit anlegen.
 3. UI unter `src/components/workspace/<component-name>/<component-name>.tsx` bauen, mit getrenntem Styling und typisierten Props.
 4. Page unter `workspace/<route>/page.tsx` dünn halten: orchestrieren, Content laden, Komponenten zusammensetzen.
@@ -180,4 +180,4 @@ src/i18n/dictionaries/workspace/
 - `src/app/AGENTS.md`: App-Router-Konventionen.
 - `src/components/AGENTS.md`: Komponenten-Konventionen.
 - `src/i18n/AGENTS.md`: Dictionary-Regeln.
-- Implementierungsplan: `plans/dashboard/clerk-auth-and-shell.md`.
+- Implementierungsplan: `plans/workspace/clerk-auth-and-workspace-shell.md`.

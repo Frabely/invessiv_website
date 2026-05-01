@@ -1,6 +1,6 @@
 # CLAUDE - Auth / `(auth)` Route Group
 
-Architektur-Wissen für den öffentlichen Auth-Bereich der Invessiv-Website. Diese Datei ergänzt die Repo-Root `CLAUDE.md`, `src/app/CLAUDE.md` und den Workspace-Plan `plans/dashboard/clerk-auth-and-shell.md`. Sie gilt für alle Routen unter `src/app/[locale]/(auth)/`.
+Architektur-Wissen für den öffentlichen Auth-Bereich der Invessiv-Website. Diese Datei ergänzt die Repo-Root `CLAUDE.md`, `src/app/CLAUDE.md` und den Workspace-Plan `plans/workspace/clerk-auth-and-workspace-shell.md`. Sie gilt für alle Routen unter `src/app/[locale]/(auth)/`.
 
 > **Status:** Geplant im Rahmen des Clerk-Auth- und Workspace-Shell-Plans. `(auth)` ist die öffentliche Route-Group für Clerk Sign-in und Sign-up, nicht der geschützte App-Bereich.
 
@@ -133,7 +133,7 @@ Auth-Seiten sind keine Landingpages. Metadata soll eindeutig sein, aber nicht au
 | Feature                 | Trigger                                                 | Ort                                                                    |
 | ----------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Custom Clerk Appearance | Wenn Default-Light nicht zum Brand passt                | `<ClerkProvider appearance={...}>` oder lokale Auth-Page-Konfiguration |
-| Sign-up deaktivieren    | Wenn Registrierung nur manuell über Clerk erfolgen soll | Clerk Workspace, möglichst ohne Code-Änderung                          |
+| Sign-up deaktivieren    | Wenn Registrierung nur manuell über Clerk erfolgen soll | Clerk Dashboard, möglichst ohne Code-Änderung                          |
 | UserButton im Header    | Wenn Login öffentlich sichtbar werden soll              | `src/components/marketing/site-header/` mit `<SignedIn>`-Wrapper       |
 | Auth E2E-Smoke          | Sobald Auth-Flows stabil umgesetzt sind                 | `e2e/auth.e2e.ts` oder workspace-auth E2E                              |
 

@@ -28,13 +28,13 @@ Pre-merge gates: `npm run lint` and `npm run build` must pass green.
 src/
 ├── app/[locale]/         # Route entries only — page.tsx orchestrates, no logic here
 │   ├── (auth)/           # Public Clerk sign-in/sign-up routes
-│   ├── (dashboard)/      # Protected dashboard route group
+│   ├── workspace/      # Protected workspace route group
 │   ├── (landing)/        # Landing page route group
 │   └── (legal)/          # Legal pages route group
 ├── app/api/              # API route handlers (POST /api/public/contact)
 ├── components/
 │   ├── auth/             # Auth frame components for Clerk pages
-│   ├── dashboard/        # Protected dashboard UI components
+│   ├── workspace/        # Protected workspace UI components
 │   ├── marketing/        # Landing page sections (hero, services, proof, process, contact, footer)
 │   ├── legal/            # Legal page components
 │   └── shared/           # Reusable UI (button, locale-switch, theme-switch, breadcrumbs)
@@ -55,12 +55,12 @@ src/
 
 Read the closest scoped guidance file before changing files in that area. Root rules still apply; scoped files add or tighten local conventions.
 
-| File                                     | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/[locale]/(auth)/AGENTS.md`      | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
-| `src/app/[locale]/(auth)/CLAUDE.md`      | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
-| `src/app/[locale]/(dashboard)/AGENTS.md` | Agent/Codex rules for the protected dashboard: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for dashboard routes, dashboard layout, auth/permission checks, dashboard dictionaries, or protected dashboard components.                      |
-| `src/app/[locale]/(dashboard)/CLAUDE.md` | Architecture knowledge for the dashboard: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/dashboard`, `requireDashboardAccess`, allowlist changes, role-model planning, or dashboard shell work.                           |
+| File                                   | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/(auth)/AGENTS.md`    | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
+| `src/app/[locale]/(auth)/CLAUDE.md`    | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
+| `src/app/[locale]/workspace/AGENTS.md` | Agent/Codex rules for the protected workspace: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for workspace routes, workspace layout, auth/permission checks, workspace dictionaries, or protected workspace components.                      |
+| `src/app/[locale]/workspace/CLAUDE.md` | Architecture knowledge for the workspace: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/workspace`, `requireWorkspaceAccess`, allowlist changes, role-model planning, or workspace shell work.                           |
 
 ### Routing
 

@@ -2,7 +2,7 @@
 
 Architektur-Wissen für den geschützten Workspace-Bereich der Invessiv-Website. Diese Datei ergänzt die Repo-Root `CLAUDE.md` und die `src/app/CLAUDE.md` und gilt für alle Routen unter `src/app/[locale]/workspace/`.
 
-> **Status:** Skelett. Auth-Setup und leere Shell sind im Implementierungsplan `plans/dashboard/clerk-auth-and-shell.md` beschrieben. Echte Workspace-Inhalte folgen in späteren Tickets.
+> **Status:** Skelett. Auth-Setup und leere Shell sind im Implementierungsplan `plans/workspace/clerk-auth-and-workspace-shell.md` beschrieben. Echte Workspace-Inhalte folgen in späteren Tickets.
 
 ## Zweck
 
@@ -55,14 +55,14 @@ Layer 2 fängt zwei Fälle ab, die Layer 1 nicht abdecken kann:
 
 ## Routing-Konvention
 
-| Route-Group     | Pfad                                      | Zweck                   | Geschützt? |
+| Bereich         | Pfad                                      | Zweck                   | Geschützt? |
 | --------------- | ----------------------------------------- | ----------------------- | ---------- |
 | `(landing)`     | `/[locale]`, `/[locale]/landing/*`        | Marketing               | nein       |
 | `(legal)`       | `/[locale]/imprint`, `/privacy`, `/terms` | Legal                   | nein       |
 | `(auth)`        | `/[locale]/sign-in`, `/sign-up`           | Clerk-Forms             | nein       |
 | **`workspace`** | **`/[locale]/workspace`**, später mehr    | **Geschützter Bereich** | **ja**     |
 
-Alles unter `workspace/` ist geschützt. Sign-in/Sign-up unter `(auth)/` sind öffentlich. `workspace` und `(auth)` sind getrennte Route-Groups.
+Alles unter `workspace/` ist geschützt. Sign-in/Sign-up unter `(auth)/` sind öffentlich. `workspace` ist ein echtes URL-Segment; `(auth)` bleibt eine pfadlose Route-Group.
 
 ## i18n
 
@@ -129,4 +129,4 @@ src/i18n/dictionaries/workspace/
 - `src/app/CLAUDE.md` — App-Router-Konventionen
 - `src/components/CLAUDE.md` — Komponenten-Konventionen
 - `src/i18n/CLAUDE.md` — Dictionary-Regeln
-- Implementierungs-Plan: `plans/dashboard/clerk-auth-and-shell.md`
+- Implementierungs-Plan: `plans/workspace/clerk-auth-and-workspace-shell.md`

@@ -4,7 +4,7 @@ Diese Datei gilt für `src/app/[locale]/(auth)/` und alle Subroutes darunter. Si
 
 ## Codex-Arbeitsweise
 
-- Bestehende Auth-Architektur zuerst lesen: `plans/dashboard/clerk-auth-and-shell.md`, `src/app/[locale]/workspace/AGENTS.md` und `src/app/[locale]/workspace/CLAUDE.md`.
+- Bestehende Auth-Architektur zuerst lesen: `plans/workspace/clerk-auth-and-workspace-shell.md`, `src/app/[locale]/workspace/AGENTS.md` und `src/app/[locale]/workspace/CLAUDE.md`.
 - Standardmäßig nur ein Ticket oder einen klar abgegrenzten Schritt bearbeiten, sofern der Nutzer nicht ausdrücklich mehr beauftragt.
 - Keine eigene Auth-Logik einführen. Clerk bleibt die einzige Auth-Quelle.
 - Sichtbare Texte und localeabhängige Konfigurationen immer über Dictionaries oder typisierte Locale-Mappings pflegen; keine binären `de`/Fallback-Branches.
