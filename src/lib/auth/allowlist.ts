@@ -1,6 +1,6 @@
 import "server-only";
 
-const ALLOWED_EMAILS_ENV_KEY = "DASHBOARD_ALLOWED_EMAILS";
+const ALLOWED_EMAILS_ENV_KEY = "WORKSPACE_ALLOWED_EMAILS";
 
 export function parseAllowedEmails(raw: string | undefined): Set<string> {
   return new Set(

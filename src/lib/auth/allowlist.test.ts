@@ -44,7 +44,7 @@ describe("parseAllowedEmails", () => {
 describe("isEmailAllowed", () => {
   beforeEach(() => {
     vi.stubEnv(
-      "DASHBOARD_ALLOWED_EMAILS",
+      "WORKSPACE_ALLOWED_EMAILS",
       "owner@example.com, Second@Invessiv.com",
     );
   });
@@ -73,14 +73,14 @@ describe("isEmailAllowed", () => {
   it("re-reads the ENV value when it changes between calls", () => {
     expect(isEmailAllowed("owner@example.com")).toBe(true);
 
-    vi.stubEnv("DASHBOARD_ALLOWED_EMAILS", "different@example.com");
+    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", "different@example.com");
 
     expect(isEmailAllowed("owner@example.com")).toBe(false);
     expect(isEmailAllowed("different@example.com")).toBe(true);
   });
 
   it("denies access when the ENV is empty", () => {
-    vi.stubEnv("DASHBOARD_ALLOWED_EMAILS", "");
+    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", "");
 
     expect(isEmailAllowed("owner@example.com")).toBe(false);
   });

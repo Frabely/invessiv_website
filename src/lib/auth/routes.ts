@@ -3,7 +3,7 @@ import { SITE_ROUTES } from "@/config/routes";
 
 export const SIGN_IN_PATH = SITE_ROUTES.signIn;
 export const SIGN_UP_PATH = SITE_ROUTES.signUp;
-export const DASHBOARD_PATH = SITE_ROUTES.dashboard;
+export const WORKSPACE_PATH = SITE_ROUTES.workspace;
 
 export const REDIRECT_URL_QUERY_PARAM = "redirect_url";
 
@@ -17,8 +17,8 @@ export function signUpPathFor(locale: Locale): string {
   return `/${locale}${SIGN_UP_PATH}`;
 }
 
-export function dashboardPathFor(locale: Locale): string {
-  return `/${locale}${DASHBOARD_PATH}`;
+export function workspacePathFor(locale: Locale): string {
+  return `/${locale}${WORKSPACE_PATH}`;
 }
 
 export function signInPathWithRedirect(

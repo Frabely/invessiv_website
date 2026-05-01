@@ -6,20 +6,20 @@ import { notFound, redirect } from "next/navigation";
 import type { Locale } from "@/config/i18n";
 
 import { isEmailAllowed } from "./allowlist";
-import { dashboardPathFor, signInPathWithRedirect } from "./routes";
+import { workspacePathFor, signInPathWithRedirect } from "./routes";
 
-export type DashboardAccess = {
+export type WorkspaceAccess = {
   userId: string;
   email: string;
 };
 
-export async function requireDashboardAccess(
+export async function requireWorkspaceAccess(
   locale: Locale,
-): Promise<DashboardAccess> {
+): Promise<WorkspaceAccess> {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect(signInPathWithRedirect(locale, dashboardPathFor(locale)));
+    redirect(signInPathWithRedirect(locale, workspacePathFor(locale)));
   }
 
   const user = await currentUser();

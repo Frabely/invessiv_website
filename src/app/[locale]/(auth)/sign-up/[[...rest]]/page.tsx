@@ -5,7 +5,7 @@ import { AuthClerkPage } from "@/components/auth/auth-clerk-page/auth-clerk-page
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getAuthContent } from "@/i18n/dictionaries/auth";
 import {
-  dashboardPathFor,
+  workspacePathFor,
   signInPathFor,
   signUpPathFor,
 } from "@/lib/auth/routes";
@@ -44,7 +44,7 @@ export default async function SignUpPage({ params }: SignUpPageProps) {
       footerHref={signInPathFor(activeLocale)}
     >
       <SignUp
-        fallbackRedirectUrl={dashboardPathFor(activeLocale)}
+        fallbackRedirectUrl={workspacePathFor(activeLocale)}
         path={signUpPathFor(activeLocale)}
         routing="path"
         signInUrl={signInPathFor(activeLocale)}

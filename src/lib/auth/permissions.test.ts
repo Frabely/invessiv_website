@@ -25,7 +25,7 @@ vi.mock("next/navigation", () => ({
   notFound: mockNotFound,
 }));
 
-import { requireDashboardAccess } from "./permissions";
+import { requireWorkspaceAccess } from "./permissions";
 
 const ALLOWED_EMAIL = "owner@example.com";
 
@@ -39,9 +39,9 @@ function buildClerkUser(options: {
   };
 }
 
-describe("requireDashboardAccess", () => {
+describe("requireWorkspaceAccess", () => {
   beforeEach(() => {
-    vi.stubEnv("DASHBOARD_ALLOWED_EMAILS", ALLOWED_EMAIL);
+    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
     mockAuth.mockReset();
     mockCurrentUser.mockReset();
     mockRedirect.mockClear();
@@ -55,12 +55,12 @@ describe("requireDashboardAccess", () => {
   it("redirects unauthenticated visitors to the locale-aware sign-in page", async () => {
     mockAuth.mockResolvedValue({ userId: null });
 
-    await expect(requireDashboardAccess("de")).rejects.toThrow(
-      "REDIRECT:/de/sign-in?redirect_url=%2Fde%2Fdashboard",
+    await expect(requireWorkspaceAccess("de")).rejects.toThrow(
+      "REDIRECT:/de/sign-in?redirect_url=%2Fde%2Fworkspace",
     );
 
     expect(mockRedirect).toHaveBeenCalledWith(
-      "/de/sign-in?redirect_url=%2Fde%2Fdashboard",
+      "/de/sign-in?redirect_url=%2Fde%2Fworkspace",
     );
     expect(mockCurrentUser).not.toHaveBeenCalled();
     expect(mockNotFound).not.toHaveBeenCalled();
@@ -69,8 +69,8 @@ describe("requireDashboardAccess", () => {
   it("uses the requested locale for the redirect target", async () => {
     mockAuth.mockResolvedValue({ userId: null });
 
-    await expect(requireDashboardAccess("en")).rejects.toThrow(
-      "REDIRECT:/en/sign-in?redirect_url=%2Fen%2Fdashboard",
+    await expect(requireWorkspaceAccess("en")).rejects.toThrow(
+      "REDIRECT:/en/sign-in?redirect_url=%2Fen%2Fworkspace",
     );
   });
 
@@ -83,7 +83,7 @@ describe("requireDashboardAccess", () => {
       }),
     );
 
-    await expect(requireDashboardAccess("de")).rejects.toThrow("NOT_FOUND");
+    await expect(requireWorkspaceAccess("de")).rejects.toThrow("NOT_FOUND");
 
     expect(mockNotFound).toHaveBeenCalledTimes(1);
     expect(mockRedirect).not.toHaveBeenCalled();
@@ -98,7 +98,7 @@ describe("requireDashboardAccess", () => {
       }),
     );
 
-    await expect(requireDashboardAccess("de")).rejects.toThrow("NOT_FOUND");
+    await expect(requireWorkspaceAccess("de")).rejects.toThrow("NOT_FOUND");
 
     expect(mockNotFound).toHaveBeenCalledTimes(1);
   });
@@ -115,7 +115,7 @@ describe("requireDashboardAccess", () => {
       }),
     );
 
-    const access = await requireDashboardAccess("de");
+    const access = await requireWorkspaceAccess("de");
 
     expect(access).toEqual({ userId: "user_123", email: ALLOWED_EMAIL });
     expect(mockRedirect).not.toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe("requireDashboardAccess", () => {
       }),
     );
 
-    const access = await requireDashboardAccess("en");
+    const access = await requireWorkspaceAccess("en");
 
     expect(access).toEqual({ userId: "user_123", email: "OWNER@Example.com" });
   });

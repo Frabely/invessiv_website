@@ -2,8 +2,9 @@
 
 import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 import { ConversionClickTracker } from "@/components/shared/analytics/conversion-click-tracker/conversion-click-tracker";
+import { isSupportedLocale } from "@/config/i18n";
 
-const SENSITIVE_ROUTE_PREFIXES = ["/api/", "/admin", "/dashboard", "/preview"];
+const SENSITIVE_ROUTE_PREFIXES = ["/api/", "/workspace"];
 const SENSITIVE_QUERY_PARTS = [
   "token",
   "email",
@@ -17,12 +18,20 @@ const SENSITIVE_QUERY_PARTS = [
   "signature",
 ];
 
+function pathnameWithoutLocale(pathname: string): string {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments[0] && isSupportedLocale(segments[0])) {
+    return `/${segments.slice(1).join("/")}`;
+  }
+
+  return pathname;
+}
+
 export function sanitizeAnalyticsUrl(rawUrl: string): string | null {
   const parsedUrl = new URL(rawUrl, window.location.origin);
+  const routePathname = pathnameWithoutLocale(parsedUrl.pathname);
   if (
-    SENSITIVE_ROUTE_PREFIXES.some((prefix) =>
-      parsedUrl.pathname.startsWith(prefix),
-    )
+    SENSITIVE_ROUTE_PREFIXES.some((prefix) => routePathname.startsWith(prefix))
   ) {
     return null;
   }

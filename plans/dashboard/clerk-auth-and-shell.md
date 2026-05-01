@@ -11,7 +11,7 @@ Die öffentliche Marketing-Seite invessiv.com soll um einen privaten Dashboard-B
 - Eingeloggte User ohne Allowlist-Eintrag → `notFound()` (HTTP 404)
 - Allowlistete User sehen einen leeren Dashboard-Placeholder
 - `<ClerkProvider>` + Locale-aware Sign-in/Sign-up-Routen
-- ENV-basierte Allowlist (`DASHBOARD_ALLOWED_EMAILS`), erweiterbar ohne Code-Änderung
+- ENV-basierte Allowlist (`WORKSPACE_ALLOWED_EMAILS`), erweiterbar ohne Code-Änderung
 - Dashboard-spezifische `AGENTS.md` + `CLAUDE.md` auf Route-Group-Ebene
 
 **Was bewusst NICHT implementiert wird:**
@@ -91,7 +91,7 @@ Diese Skills sind für Claude und Codex als gemeinsame Arbeits-/Review-Leitplank
 | Frage                        | Entscheidung                                                                                                                                                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Sign-in Routing              | Eigene Routes `/[locale]/sign-in` + `/sign-up` mit Clerks `<SignIn />` / `<SignUp />` Components                                                             |
-| Allowlist                    | ENV-Variable `DASHBOARD_ALLOWED_EMAILS` (Komma-getrennt, lower-case-normalisiert)                                                                            |
+| Allowlist                    | ENV-Variable `WORKSPACE_ALLOWED_EMAILS` (Komma-getrennt, lower-case-normalisiert)                                                                            |
 | Nicht eingeloggt → Dashboard | Redirect zu `/[locale]/sign-in?redirect_url=...`                                                                                                             |
 | Eingeloggt, nicht erlaubt    | `notFound()` → HTTP 404                                                                                                                                      |
 | Nav-Visibility               | **Komplett versteckt** — kein Link in Header/Footer, nur Direkt-URL                                                                                          |
@@ -148,7 +148,7 @@ src/
 │
 ├── lib/
 │   └── auth/                                # NEU — server-only auth helpers
-│       ├── allowlist.ts                     # parses DASHBOARD_ALLOWED_EMAILS, exports isEmailAllowed()
+│       ├── allowlist.ts                     # parses WORKSPACE_ALLOWED_EMAILS, exports isEmailAllowed()
 │       ├── allowlist.test.ts                # Unit-Tests für Parser/Normalisierung
 │       ├── permissions.ts                   # requireDashboardAccess() — auth() + allowlist + redirect/notFound
 │       └── routes.ts                        # Konstanten: SIGN_IN_PATH, DASHBOARD_PATH, AFTER_SIGN_IN_PATH (locale-aware)
@@ -217,7 +217,7 @@ src/
 | `NEXT_PUBLIC_CLERK_SIGN_UP_URL`                   | `.env.local`, Vercel                            | `/sign-up`                                           |
 | `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | `.env.local`, Vercel                            | `/dashboard`                                         |
 | `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | `.env.local`, Vercel                            | `/dashboard`                                         |
-| `DASHBOARD_ALLOWED_EMAILS`                        | `.env.local`, Vercel (alle Envs)                | Komma-Liste, Start: `moritz-hecht@gmx.net`           |
+| `WORKSPACE_ALLOWED_EMAILS`                        | `.env.local`, Vercel (alle Envs)                | Komma-Liste, Start: `moritz-hecht@gmx.net`           |
 
 **`.env.example` (falls neu angelegt, vollständig, ohne Geheimnisse, im Repo committet):**
 
@@ -240,7 +240,7 @@ NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/dashboard
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/dashboard
 
 # Dashboard Allowlist (Komma-getrennt, lowercase, ohne Whitespace)
-DASHBOARD_ALLOWED_EMAILS=you@example.com
+WORKSPACE_ALLOWED_EMAILS=you@example.com
 
 # Existing project keys from .env*.local files (placeholders only)
 DATABASE_URL=postgresql://user:password@host:5432/database
@@ -389,7 +389,7 @@ Aufruf in `src/app/[locale]/(dashboard)/layout.tsx` — gilt damit für alle Das
 
 ```ts
 // Pseudo-Code
-const raw = process.env.DASHBOARD_ALLOWED_EMAILS ?? "";
+const raw = process.env.WORKSPACE_ALLOWED_EMAILS ?? "";
 const allowed = new Set(
   raw
     .split(",")
@@ -407,7 +407,7 @@ Wird **server-only** benutzt. Niemals in einem `"use client"`-File importieren (
 
 ### 8.5 Spätere Erweiterung (vorbereiten, NICHT bauen)
 
-- **Mehr Owner**: Komma-Liste in `DASHBOARD_ALLOWED_EMAILS` ergänzen → Vercel Redeploy → fertig.
+- **Mehr Owner**: Komma-Liste in `WORKSPACE_ALLOWED_EMAILS` ergänzen → Vercel Redeploy → fertig.
 - **Rollen** (z. B. `admin`, `viewer`): Migration auf Clerk `publicMetadata.role`. `permissions.ts` bekommt `requireRole(role)`-Variante. Schema im Dashboard-CLAUDE.md vorgemerkt.
 - **DB-basierte ACL**: Wenn >5 User oder dynamische Permissions: Drizzle-Tabelle `dashboard_access` in `src/server/db/record-configuration/`. Erst dann nötig.
 

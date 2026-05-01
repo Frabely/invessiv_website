@@ -3,7 +3,7 @@
     "header": {
       "brandLabel": "Invessiv",
       "brandLogoAlt": "Invessiv logo",
-      "brandHomeAriaLabel": "Back to dashboard home",
+      "brandHomeAriaLabel": "Back to workspace",
       "search": {
         "label": "Search leads",
         "placeholder": "Search leads…",
@@ -23,7 +23,7 @@
       "mobileMenuCloseLabel": "Close navigation"
     },
     "sidebar": {
-      "navAriaLabel": "Dashboard navigation",
+      "navAriaLabel": "Workspace navigation",
       "comingSoonBadge": "Coming soon",
       "items": {
         "leads": "Leads",
@@ -31,7 +31,7 @@
       }
     },
     "main": {
-      "ariaLabel": "Dashboard content"
+      "ariaLabel": "Workspace content"
     }
   }
 }

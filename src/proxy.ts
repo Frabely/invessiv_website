@@ -36,13 +36,13 @@ function getLocaleFromPathname(pathname: string) {
   return locale && isSupportedLocale(locale) ? locale : null;
 }
 
-export function isDashboardRoute(request: NextRequest) {
+export function isWorkspaceRoute(request: NextRequest) {
   const [, locale, segment] = request.nextUrl.pathname.split("/");
 
-  return isSupportedLocale(locale) && segment === "dashboard";
+  return isSupportedLocale(locale) && segment === "workspace";
 }
 
-export function buildDashboardUnauthenticatedUrl(request: NextRequest) {
+export function buildWorkspaceUnauthenticatedUrl(request: NextRequest) {
   const locale = getLocaleFromPathname(request.nextUrl.pathname);
 
   if (!locale) {
@@ -65,8 +65,8 @@ export async function proxyHandler(
     return legacyRedirect;
   }
 
-  if (isDashboardRoute(request)) {
-    const unauthenticatedUrl = buildDashboardUnauthenticatedUrl(request);
+  if (isWorkspaceRoute(request)) {
+    const unauthenticatedUrl = buildWorkspaceUnauthenticatedUrl(request);
 
     if (unauthenticatedUrl) {
       await auth.protect({ unauthenticatedUrl });

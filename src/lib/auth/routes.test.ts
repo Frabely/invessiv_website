@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  DASHBOARD_PATH,
+  WORKSPACE_PATH,
   REDIRECT_URL_QUERY_PARAM,
   SIGN_IN_PATH,
   SIGN_UP_PATH,
-  dashboardPathFor,
+  workspacePathFor,
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
@@ -15,7 +15,7 @@ describe("auth routes", () => {
   it("exposes locale-less segments for Clerk ENV-Vars", () => {
     expect(SIGN_IN_PATH).toBe("/sign-in");
     expect(SIGN_UP_PATH).toBe("/sign-up");
-    expect(DASHBOARD_PATH).toBe("/dashboard");
+    expect(WORKSPACE_PATH).toBe("/workspace");
   });
 
   it("builds locale-prefixed paths for every supported locale", () => {
@@ -23,29 +23,29 @@ describe("auth routes", () => {
     expect(signInPathFor("en")).toBe("/en/sign-in");
     expect(signUpPathFor("de")).toBe("/de/sign-up");
     expect(signUpPathFor("en")).toBe("/en/sign-up");
-    expect(dashboardPathFor("de")).toBe("/de/dashboard");
-    expect(dashboardPathFor("en")).toBe("/en/dashboard");
+    expect(workspacePathFor("de")).toBe("/de/workspace");
+    expect(workspacePathFor("en")).toBe("/en/workspace");
   });
 
   it("appends an encoded redirect_url query parameter", () => {
-    const target = signInPathWithRedirect("de", "/de/dashboard");
+    const target = signInPathWithRedirect("de", "/de/workspace");
 
     const url = new URL(target, "https://invessiv.com");
     expect(url.pathname).toBe("/de/sign-in");
     expect(url.searchParams.get(REDIRECT_URL_QUERY_PARAM)).toBe(
-      "/de/dashboard",
+      "/de/workspace",
     );
   });
 
   it("encodes complex redirect targets without losing characters", () => {
     const target = signInPathWithRedirect(
       "en",
-      "/en/dashboard?step=welcome&ref=email",
+      "/en/workspace?step=welcome&ref=email",
     );
 
     const url = new URL(target, "https://invessiv.com");
     expect(url.searchParams.get(REDIRECT_URL_QUERY_PARAM)).toBe(
-      "/en/dashboard?step=welcome&ref=email",
+      "/en/workspace?step=welcome&ref=email",
     );
   });
 });

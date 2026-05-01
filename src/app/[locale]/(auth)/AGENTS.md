@@ -1,10 +1,10 @@
 # AGENTS.md - Auth / `(auth)` Route Group
 
-Diese Datei gilt für `src/app/[locale]/(auth)/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md` und `src/app/AGENTS.md`. Ziel ist ein sauberer, öffentlicher Auth-Bereich für Clerk-Formulare, getrennt vom geschützten Dashboard.
+Diese Datei gilt für `src/app/[locale]/(auth)/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md` und `src/app/AGENTS.md`. Ziel ist ein sauberer, öffentlicher Auth-Bereich für Clerk-Formulare, getrennt vom geschützten Workspace.
 
 ## Codex-Arbeitsweise
 
-- Bestehende Auth-Architektur zuerst lesen: `plans/dashboard/clerk-auth-and-shell.md`, `src/app/[locale]/(dashboard)/AGENTS.md` und `src/app/[locale]/(dashboard)/CLAUDE.md`.
+- Bestehende Auth-Architektur zuerst lesen: `plans/dashboard/clerk-auth-and-shell.md`, `src/app/[locale]/workspace/AGENTS.md` und `src/app/[locale]/workspace/CLAUDE.md`.
 - Standardmäßig nur ein Ticket oder einen klar abgegrenzten Schritt bearbeiten, sofern der Nutzer nicht ausdrücklich mehr beauftragt.
 - Keine eigene Auth-Logik einführen. Clerk bleibt die einzige Auth-Quelle.
 - Sichtbare Texte und localeabhängige Konfigurationen immer über Dictionaries oder typisierte Locale-Mappings pflegen; keine binären `de`/Fallback-Branches.
@@ -17,7 +17,7 @@ Diese Datei gilt für `src/app/[locale]/(auth)/` und alle Subroutes darunter. Si
 - `/[locale]/sign-in`
 - `/[locale]/sign-up`
 
-Diese Route-Group ist öffentlich erreichbar, aber fachlich klar von `(dashboard)` getrennt. Sie dient nur dem Login-/Registrierungs-Frame und darf keine geschützten Dashboard-Inhalte enthalten.
+Diese Route-Group ist öffentlich erreichbar, aber fachlich klar von `workspace` getrennt. Sie dient nur dem Login-/Registrierungs-Frame und darf keine geschützten Workspace-Inhalte enthalten.
 
 ## Mandatorische Regeln
 
@@ -25,7 +25,7 @@ Diese Route-Group ist öffentlich erreichbar, aber fachlich klar von `(dashboard
 
 2. **Öffentlich, aber minimal.** Auth-Routen sind öffentlich zugänglich. Sie bekommen keinen Marketing-Header, keine Footer-Navigation und keine ablenkenden Landing-Sections.
 
-3. **Keine Dashboard-Berechtigungen hier prüfen.** Allowlist- und Role-Checks gehören nach `src/lib/auth/permissions.ts` und ins `(dashboard)`-Layout. `(auth)` rendert nur den Auth-Einstieg.
+3. **Keine Workspace-Berechtigungen hier prüfen.** Allowlist- und Role-Checks gehören nach `src/lib/auth/permissions.ts` und ins `workspace`-Layout. `(auth)` rendert nur den Auth-Einstieg.
 
 4. **Locale-aware Routing.** Routen liegen unter `[locale]`. Redirects und Fallback-URLs müssen locale-aware gebaut werden, z. B. über Helper aus `src/lib/auth/routes.ts`.
 
@@ -89,7 +89,7 @@ src/i18n/dictionaries/auth/
 
 ## Was hier nicht hingehört
 
-- Geschützte Dashboard-Seiten oder interne Admin-Funktionen.
+- Geschützte Workspace-Seiten oder interne Admin-Funktionen.
 - Allowlist-, Rollen- oder Permission-Logik in Pages.
 - Marketing-Sections, Pricing, FAQ oder Conversion-Landing-Inhalte.
 - Legal-Seiten.

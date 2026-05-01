@@ -1,28 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DashboardShell } from "@/components/dashboard/dashboard-shell/dashboard-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import {
-  getDashboardMetaContent,
-  getDashboardPageContent,
-} from "@/i18n/dictionaries/dashboard";
+import { getWorkspaceMetaContent } from "@/i18n/dictionaries/workspace";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type DashboardPageProps = {
+type WorkspacePageProps = {
   params: Promise<{ locale: string }>;
 };
 
 export async function generateMetadata({
   params,
-}: DashboardPageProps): Promise<Metadata> {
+}: WorkspacePageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
   }
 
-  const content = getDashboardMetaContent(locale as Locale);
+  const content = getWorkspaceMetaContent(locale as Locale);
   return {
     title: content.title,
     description: content.description,
@@ -30,12 +26,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function DashboardPage({ params }: DashboardPageProps) {
+export default async function WorkspacePage({ params }: WorkspacePageProps) {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     notFound();
   }
 
-  const content = getDashboardPageContent(locale as Locale);
-  return <DashboardShell content={content} />;
+  return null;
 }

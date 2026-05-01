@@ -4,10 +4,10 @@ import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
 import { SUPPORTED_LOCALES } from "@/config/i18n";
 
 import {
-  buildDashboardUnauthenticatedUrl,
+  buildWorkspaceUnauthenticatedUrl,
   config,
   handleLegacyRedirect,
-  isDashboardRoute,
+  isWorkspaceRoute,
   proxyHandler,
 } from "./proxy";
 
@@ -68,21 +68,21 @@ describe("proxy matcher config", () => {
   });
 });
 
-describe("proxy dashboard auth", () => {
+describe("proxy workspace auth", () => {
   it.each(SUPPORTED_LOCALES)(
-    "matches the dashboard route for supported locale %s",
+    "matches the workspace route for supported locale %s",
     (locale) => {
-      expect(isDashboardRoute(createRequest(`/${locale}/dashboard`))).toBe(
+      expect(isWorkspaceRoute(createRequest(`/${locale}/workspace`))).toBe(
         true,
       );
       expect(
-        isDashboardRoute(createRequest(`/${locale}/dashboard/reports`)),
+        isWorkspaceRoute(createRequest(`/${locale}/workspace/leads`)),
       ).toBe(true);
     },
   );
 
-  it("does not match dashboard-like public paths", () => {
-    expect(isDashboardRoute(createRequest("/de/dashboard-preview"))).toBe(
+  it("does not match workspace-like public paths", () => {
+    expect(isWorkspaceRoute(createRequest("/de/workspace-preview"))).toBe(
       false,
     );
   });
@@ -91,20 +91,20 @@ describe("proxy dashboard auth", () => {
     "builds a locale-aware unauthenticated URL for %s",
     (locale) => {
       expect(
-        buildDashboardUnauthenticatedUrl(createRequest(`/${locale}/dashboard`)),
-      ).toBe(`/${locale}/sign-in?redirect_url=%2F${locale}%2Fdashboard`);
+        buildWorkspaceUnauthenticatedUrl(createRequest(`/${locale}/workspace`)),
+      ).toBe(`/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`);
     },
   );
 
   it.each(SUPPORTED_LOCALES)(
-    "protects %s dashboard with Clerk",
+    "protects %s workspace with Clerk",
     async (locale) => {
       const auth = createAuth();
 
-      await proxyHandler(auth, createRequest(`/${locale}/dashboard`));
+      await proxyHandler(auth, createRequest(`/${locale}/workspace`));
 
       expect(auth.protect).toHaveBeenCalledWith({
-        unauthenticatedUrl: `/${locale}/sign-in?redirect_url=%2F${locale}%2Fdashboard`,
+        unauthenticatedUrl: `/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`,
       });
     },
   );
@@ -120,23 +120,23 @@ describe("proxy dashboard auth", () => {
     },
   );
 
-  it("does not protect unsupported locale dashboard paths", async () => {
+  it("does not protect unsupported locale workspace paths", async () => {
     const auth = createAuth();
 
-    await proxyHandler(auth, createRequest("/fr/dashboard"));
+    await proxyHandler(auth, createRequest("/fr/workspace"));
 
     expect(auth.protect).not.toHaveBeenCalled();
   });
 
-  it("does not protect dashboard-like public paths", async () => {
+  it("does not protect workspace-like public paths", async () => {
     const auth = createAuth();
 
-    await proxyHandler(auth, createRequest("/de/dashboard-preview"));
+    await proxyHandler(auth, createRequest("/de/workspace-preview"));
 
     expect(auth.protect).not.toHaveBeenCalled();
   });
 
-  it("keeps legacy redirects before dashboard auth checks", async () => {
+  it("keeps legacy redirects before workspace auth checks", async () => {
     const auth = createAuth();
 
     const response = await proxyHandler(auth, createRequest("/"));
@@ -145,13 +145,11 @@ describe("proxy dashboard auth", () => {
     expect(auth.protect).not.toHaveBeenCalled();
   });
 
-  it("includes the full dashboard path and query in the redirect target", () => {
+  it("includes the full workspace path and query in the redirect target", () => {
     expect(
-      buildDashboardUnauthenticatedUrl(
-        createRequest("/en/dashboard/reports?tab=leads"),
+      buildWorkspaceUnauthenticatedUrl(
+        createRequest("/en/workspace?tab=leads"),
       ),
-    ).toBe(
-      "/en/sign-in?redirect_url=%2Fen%2Fdashboard%2Freports%3Ftab%3Dleads",
-    );
+    ).toBe("/en/sign-in?redirect_url=%2Fen%2Fworkspace%3Ftab%3Dleads");
   });
 });

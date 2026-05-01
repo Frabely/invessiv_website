@@ -1,5 +1,5 @@
 export const SITE_ROUTES = {
-  dashboard: "/dashboard",
+  workspace: "/workspace",
   signIn: "/sign-in",
   signUp: "/sign-up",
 } as const;
