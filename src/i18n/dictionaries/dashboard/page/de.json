@@ -1,4 +1,37 @@
 {
-  "headline": "Invessiv Dashboard",
-  "subCopy": "Dieser Bereich wird vorbereitet."
+  "shell": {
+    "header": {
+      "brandLabel": "Invessiv",
+      "brandLogoAlt": "Invessiv Logo",
+      "brandHomeAriaLabel": "Zum Dashboard-Start",
+      "search": {
+        "label": "Leads suchen",
+        "placeholder": "Leads suchen…",
+        "comingSoonBadge": "Bald verfügbar",
+        "disabledHint": "Lead-Suche kommt mit dem nächsten Release."
+      },
+      "localeMenuLabel": "Sprache wählen",
+      "localeSwitchLabel": "Sprache wechseln",
+      "themeSwitch": {
+        "actionLabel": {
+          "dark": "Hellen Modus aktivieren",
+          "light": "Dunklen Modus aktivieren"
+        }
+      },
+      "userMenuLabel": "Konto und Abmelden",
+      "mobileMenuOpenLabel": "Navigation öffnen",
+      "mobileMenuCloseLabel": "Navigation schließen"
+    },
+    "sidebar": {
+      "navAriaLabel": "Dashboard-Navigation",
+      "comingSoonBadge": "Bald verfügbar",
+      "items": {
+        "leads": "Leads",
+        "overview": "Übersicht"
+      }
+    },
+    "main": {
+      "ariaLabel": "Dashboard-Inhalt"
+    }
+  }
 }
