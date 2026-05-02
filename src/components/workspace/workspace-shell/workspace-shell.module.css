@@ -1,4 +1,5 @@
 .shell {
+  --workspace-header-height: 68px;
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -75,7 +76,7 @@
     calc(100% - (var(--layout-rail-inline-gutter) * 2)),
     var(--layout-rail-max-width)
   );
-  min-height: calc(100dvh - 68px);
+  min-height: calc(100dvh - var(--workspace-header-height));
   margin: 0 auto;
   padding: clamp(2.5rem, 8vw, 5rem) 0 clamp(3rem, 9vw, 6rem);
   scroll-margin-top: 88px;
@@ -121,8 +122,12 @@
 }
 
 @media (max-width: 760px) {
+  .shell {
+    --workspace-header-height: 64px;
+  }
+
   .main {
-    min-height: calc(100dvh - 64px);
+    min-height: calc(100dvh - var(--workspace-header-height));
     padding-top: clamp(1.75rem, 7vw, 3rem);
   }
 
