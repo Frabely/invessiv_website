@@ -75,7 +75,7 @@ src/
   - Lib-Pick: `papaparse` (klein, browser+node) — falls CSV simpel genug, zero-dep eigener Parser akzeptabel
   - Pro Row: Validate via Zod → Map auf `CreateLeadInput`:
     - Status `Neu`/`new` → `new`; andere bekannte Werte → entsprechendes Enum; unbekannt → `new` + Warning im Report
-    - Score-String → Int (0–10), out-of-range → Validation-Error
+    - Score-String → Int (0–100), out-of-range → Validation-Error
     - `Nachname / Firma` → Heuristik:
       - Wenn `Vorname` gesetzt: Wert = `last_name`
       - Sonst: Wert = `company_name`
@@ -93,7 +93,7 @@ src/
   - Pro Row Try-Insert in Transaction
   - Conflict auf `external_guid` Unique-Index → skip
   - Conflict auf `email-lower` → skip
-  - Aktivität `type=import` (mit Metadata `{ source_file, row_index }`) pro neu angelegtem Lead
+  - Aktivität `type=import` (mit Metadata `{ import_batch_id, row_index }`) pro neu angelegtem Lead; keine Dateinamen, E-Mails oder Kontaktwerte in Activity-Metadata speichern
   - Return Summary: `{ imported, skipped: { byEmail, byGuid }, errors: [{ row, message }] }`
 - **Akzeptanz:** Test mit doppeltem Email → übersprungen; Test mit invalidem Score → Error im Report; Test mit Mix
 - **Aufwand:** 2h
@@ -160,10 +160,10 @@ src/
 
 ## Reuse-Punkte
 
-- `withWorkspaceApiAuth` (aus P1-T13) — alle neuen API-Routen
-- `lead-filter-service` (aus P1-T7) — Export-Filter
-- `lead-validation-service` (aus P1-T6) — pro Row Validation
-- `append-lead-activity` (aus P1-T10) — Import-Activity-Log
+- `withWorkspaceApiAuth` (aus P1-T17) — alle neuen API-Routen
+- `lead-filter-service` (aus P1-T11) — Export-Filter
+- `lead-validation-service` (aus P1-T10) — pro Row Validation
+- `lead-activity-service.appendLeadActivity()` (aus P1-T14) — Import-Activity-Log
 - `getDrizzleDatabaseClient` + Transaction-Pattern
 
 ## Skill-Übersicht (Phase 2)

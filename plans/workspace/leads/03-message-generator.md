@@ -142,11 +142,11 @@ src/
 
 ## Reuse-Punkte
 
-- `withWorkspaceApiAuth` (aus P1-T13)
-- `getLeadById` (aus P1-T9)
-- `append-lead-activity` (aus P1-T10)
-- `lead-detail-panel` (aus P1-T23) — Erweiterung um "Generate message"-Button
-- i18n-Pattern aus `src/i18n/dictionaries/workspace/leads/` (aus P1-T17) — Texte für Modal/Toast
+- `withWorkspaceApiAuth` (aus P1-T17)
+- `getLeadById` (aus P1-T13)
+- `lead-activity-service.appendLeadActivity()` (aus P1-T14)
+- `lead-detail-panel` (aus P1-T27) — Erweiterung um "Generate message"-Button
+- i18n-Pattern aus `src/i18n/dictionaries/workspace/leads/` (aus P1-T21) — Texte für Modal/Toast
 
 ## Skill-Übersicht (Phase 3)
 

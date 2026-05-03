@@ -45,7 +45,7 @@ phone              text NULL          -- NEU
 website_url        text NULL          -- NEU
 category_id        uuid NULL          -- NEU FK -> lead_categories(id)
 score              integer NULL       -- NEU (CHECK 0..100)
-source             text NOT NULL      -- NEU enum(webform|manual|import) DEFAULT 'manual'
+source             text NOT NULL      -- NEU CHECK webform|manual|import; kein DB-Default
 lead_status        text NOT NULL      -- bleibt, Constants um 'proposal' erweitert
 owner              text NULL          -- bleibt
 notes              text NULL          -- NEU
@@ -57,21 +57,22 @@ updated_at         timestamptz NOT NULL DEFAULT NOW()
 
 **Constraints/Indizes neu:**
 
-- `CHECK (last_name IS NOT NULL OR company_name IS NOT NULL)`
+- `CHECK (NULLIF(BTRIM(last_name), '') IS NOT NULL OR NULLIF(BTRIM(company_name), '') IS NOT NULL)`
 - `CHECK (score IS NULL OR (score >= 0 AND score <= 100))`
+- `CHECK (source IN ('webform', 'manual', 'import'))`
 - Bestehender Email-Unique-Index bleibt (`leads_email_lower_uidx`)
 - Neuer Index `leads_source_created_at_idx` auf `(source, created_at DESC)`
 - Neuer Index `leads_category_created_at_idx` auf `(category_id, created_at DESC)`
 - Neuer Partial-Unique-Index `leads_external_guid_uidx` auf `external_guid WHERE external_guid IS NOT NULL`
 - `updated_at` wird bei jedem Command explizit im App-Code gesetzt; kein DB-Trigger in P1.
-- Bestehende Webform-Persistenz setzt `source='webform'` explizit. Der DB-Default `manual` bleibt nur als Fallback für manuelle P1-Writes und darf Inbound-/Import-Pfade nicht ersetzen.
+- `source` hat keinen DB-Default. Manuelle Leads setzen `source='manual'`, Webforms setzen `source='webform'`, spätere Imports setzen `source='import'` explizit.
 
 **Tabelle `lead_categories` (neu):**
 
 ```
 id                 uuid PK
 slug               text NOT NULL UNIQUE
-label              text NOT NULL
+label_key          text NOT NULL
 description        text NULL
 is_active          boolean NOT NULL DEFAULT TRUE
 sort_order         integer NOT NULL DEFAULT 0
@@ -81,7 +82,7 @@ updated_at         timestamptz NOT NULL DEFAULT NOW()
 
 - Initiale Seed-Kategorien aus vorhandenen CSV-Werten: `coaches`, `handwerker`, `lokale-dienstleister`, `kleine-b2b-anbieter`, `berater`, `fotografen`
 - `sort_order` wird fachlich in 10er-Schritten vergeben (`10`, `20`, `30`, ...), damit Kategorien später ohne Umnummerierung dazwischen einsortiert werden können.
-- UI-Labels für Kategorien werden über Dictionaries anhand des `slug` gerendert; `lead_categories.label` dient nur als internes/Fallback-Label und wird nicht als primäre sichtbare i18n-Copy genutzt.
+- UI-Labels für Kategorien werden über Dictionaries anhand von `label_key` gerendert; `slug` bleibt stabile technische Identität.
 - Import normalisiert freie CSV-Kategorien auf `slug`; unbekannte Kategorien werden in Phase 2 beim Import entweder angelegt oder als Import-Fehler gemeldet.
 
 **Tabelle `lead_social_profiles` (neu):**
@@ -119,6 +120,7 @@ created_at         timestamptz NOT NULL DEFAULT NOW()
 - Index `lead_activities_lead_id_occurred_at_idx` auf `(lead_id, occurred_at DESC)`
 - `lead_activities` speichert Timeline-/Audit-Ereignisse, aber keinen vollständigen Nachrichtenverkehr. Echte Outbound-/Inbound-Messages werden im Folgeplan `03-message-generator.md` separat modelliert, z. B. über eine eigene `lead_messages`-Tabelle.
 - `metadata` und Actor-Felder dürfen keine E-Mail-Adressen, Telefonnummern oder andere PII enthalten; vollständige Lead-Daten bleiben in den fachlichen Lead-/Submission-Tabellen.
+- Erlaubte `metadata`-Keys in P1: `previous_status`, `next_status`, `submission_id`, `import_batch_id`. Keine freien Lead-Felder oder Kopien von Kontaktinformationen.
 
 > **Hinweis:** Das Drizzle-Schema verwendet `text("lead_status", { enum: CONSTANT_ARRAY })` (kein PG-ENUM-Typ). Trotzdem existiert in der aktuellen SQL-Migration ein DB-`CHECK` auf die Statuswerte; dieser Check muss in P1-T7 so ersetzt werden, dass `proposal` DB-seitig akzeptiert wird.
 
@@ -191,6 +193,7 @@ src/
 │   │   └── services/
 │   │       ├── lead-activity-service.ts
 │   │       ├── lead-validation-service.ts
+│   │       ├── lead-url-normalization-service.ts
 │   │       └── lead-filter-service.ts
 │   └── db/
 │       ├── record-configuration/
@@ -217,6 +220,7 @@ src/
 │       ├── update-lead.dto.ts
 │       └── lead-filter.dto.ts
 ├── server/tests/workspace/leads/
+│   ├── api/
 │   ├── command-handler/
 │   ├── query-handler/
 │   └── services/
@@ -242,7 +246,7 @@ src/
 - **DTO-Regel:** `create-lead.dto.ts` und `update-lead.dto.ts` bleiben getrennt; gemeinsam genutzte schreibbare Felder liegen in `lead-write-fields.dto.ts`, kein generisches `save-lead.dto.ts`.
 - **Contract-Grenze:** `src/common/contracts/leads/**` enthält nur API-/Client-shared DTOs. DB-nahe Records liegen bei Bedarf unter `src/server/db/records/leads/**` und spiegeln direkte DB-Row-Shapes. Persistenz-Inputs liegen nur dann unter `src/server/db/contracts/leads/**`, wenn sie von DB-Persistenzfunktionen konsumiert werden; command-spezifische Inputs bleiben bei `src/server/workspace/leads/**`.
 - **Skills:** keine
-- **Akzeptanz:** Alle sieben Dateien existieren; `AGENTS.md`-Dateien sind auf Deutsch; UI-Doku referenziert Repo-Root-`CLAUDE.md` + Workspace-Parent-Docs; API-README beschreibt die Routen kompakt genug für Client-/Test-Implementierung; Komponenten-Doku erlaubt die gruppierte Leads-Struktur bewusst als Scope-spezifische Präzisierung
+- **Akzeptanz:** Alle sieben Markdown-Dateien existieren; `AGENTS.md`-Dateien sind auf Deutsch; UI-Doku referenziert Repo-Root-`CLAUDE.md` + Workspace-Parent-Docs; API-README beschreibt die Routen kompakt genug für Client-/Test-Implementierung; Komponenten-Doku erlaubt die gruppierte Leads-Struktur bewusst als Scope-spezifische Präzisierung
 - **Aufwand:** 1h
 
 ### DB & Schema
@@ -270,9 +274,9 @@ src/
 #### P1-T3 — Drizzle-Schema `lead-categories.ts` neu
 
 - **Files:** `src/server/db/record-configuration/lead-categories.ts`, `src/server/db/client.ts` (Edit: in `contactSchema` registrieren)
-- **Inhalt:** Lookup-Tabelle für filterbare Lead-Kategorien mit `slug`, `label`, `description`, `is_active`, `sort_order`
+- **Inhalt:** Lookup-Tabelle für filterbare Lead-Kategorien mit `slug`, `label_key`, `description`, `is_active`, `sort_order`; sichtbare Labels kommen aus Dictionaries, nicht aus der DB
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Type-Inference funktioniert; `slug` ist unique
+- **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Type-Inference funktioniert; `slug` ist unique; `label_key` ist verpflichtend und wird als Dictionary-Key genutzt
 - **Aufwand:** 1h
 
 #### P1-T4 — Drizzle-Schema `lead-social-profiles.ts` neu
@@ -280,7 +284,7 @@ src/
 - **Files:** `src/server/db/record-configuration/lead-social-profiles.ts`, `src/server/db/client.ts` (Edit: in `contactSchema` registrieren)
 - **Inhalt:** Social-Profile pro Lead mit fester Plattform-Checkliste (`linkedin`, `instagram`, `youtube`) und `normalized_url`
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Unique-Constraint auf `(lead_id, platform, normalized_url)` funktioniert
+- **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Unique-Constraint auf `(lead_id, platform, normalized_url)` funktioniert; `normalized_url` wird vor Insert/Update über den URL-Normalization-Service berechnet
 - **Aufwand:** 1h
 
 #### P1-T5 — Drizzle-Schema `lead-activities.ts` neu
@@ -293,17 +297,17 @@ src/
 #### P1-T6 — SQL-Migration `0003_create_lead_categories.sql`
 
 - **Files:** `src/server/db/migrations/0003_create_lead_categories.sql`
-- **Inhalt:** `CREATE TABLE IF NOT EXISTS lead_categories` + Unique-Index auf `slug` + Seed der initialen Kategorien mit `sort_order` in 10er-Schritten
-- **Akzeptanz:** Migration läuft idempotent; Seed-Kategorien sind vorhanden, können gefiltert werden, nutzen `sort_order`-Werte `10`, `20`, `30`, ... und UI-Labels werden später aus Dictionaries per `slug` aufgelöst
+- **Inhalt:** `CREATE TABLE IF NOT EXISTS lead_categories` + Unique-Index auf `slug` + Seed der initialen Kategorien mit `label_key` und `sort_order` in 10er-Schritten
+- **Akzeptanz:** Migration läuft idempotent; Seed-Kategorien sind vorhanden, können gefiltert werden, nutzen `sort_order`-Werte `10`, `20`, `30`, ... und UI-Labels werden später aus Dictionaries per `label_key` aufgelöst
 - **Aufwand:** 1h
 
 #### P1-T7 — SQL-Migration `0004_extend_leads_for_crm.sql`
 
 - **Files:** `src/server/db/migrations/0004_extend_leads_for_crm.sql`
-- **Inhalt:** `ALTER TABLE leads` für nullable + neue Spalten inklusive `category_id` FK zu `lead_categories(id)` + Score-Check `0..100` + `source`-Check + aktualisierter `lead_status`-Check inklusive `proposal` + Indizes (idempotent mit `IF NOT EXISTS` / `DROP CONSTRAINT IF EXISTS … ADD CONSTRAINT`)
+- **Inhalt:** `ALTER TABLE leads` für nullable + neue Spalten inklusive `category_id` FK zu `lead_categories(id)` + Score-Check `0..100` + `source`-Check ohne DB-Default + aktualisierter `lead_status`-Check inklusive `proposal` + getrimmter Personen/Firmenname-Check + Indizes (idempotent mit `IF NOT EXISTS` / `DROP CONSTRAINT IF EXISTS … ADD CONSTRAINT`)
 - **Stilvorbild:** `src/server/db/migrations/0002_restructure_lead_storage.sql` (`statement-breakpoint`-Splits)
 - **Skills:** `superpowers:verification-before-completion`
-- **Akzeptanz:** `npm run db:migrate:dev` läuft ohne Fehler durch; idempotent (zweiter Lauf macht nichts); bestehender `lead_status`-CHECK wird so ersetzt, dass `proposal` DB-seitig akzeptiert wird; bestehende `leads` erhalten `source='webform'` oder eine bewusst dokumentierte Fallback-Quelle; `persistSharedLeadSubmission()` setzt bei künftigen Inbound-Upserts `source='webform'` explizit und der bestehende Contact-Persistenz-Test bleibt grün
+- **Akzeptanz:** `npm run db:migrate:dev` läuft ohne Fehler durch; idempotent (zweiter Lauf macht nichts); bestehender `lead_status`-CHECK wird so ersetzt, dass `proposal` DB-seitig akzeptiert wird; `source` hat keinen DB-Default und alle bestehenden `leads` erhalten explizit `source='webform'` oder eine bewusst dokumentierte Fallback-Quelle; `persistSharedLeadSubmission()` setzt bei künftigen Inbound-Upserts `source='webform'` explizit und der bestehende Contact-Persistenz-Test bleibt grün
 - **Aufwand:** 1,5h
 
 #### P1-T8 — SQL-Migration `0005_create_lead_social_profiles.sql`
@@ -322,15 +326,16 @@ src/
 
 ### Server-Layer
 
-#### P1-T10 — Lead-Validation-Service
+#### P1-T10 — Lead-Validation- und URL-Normalization-Services
 
-- **Files:** `src/server/workspace/leads/services/lead-validation-service.ts`
+- **Files:** `src/server/workspace/leads/services/lead-validation-service.ts`, `src/server/workspace/leads/services/lead-url-normalization-service.ts`
 - **Inhalt:** Zod-Schemas `createLeadSchema`, `updateLeadSchema`, `leadFilterSchema`
-  - Refinement: mindestens `last_name` ODER `company_name`
+  - Refinement: mindestens getrimmtes `last_name` ODER getrimmtes `company_name`
   - Email-Format, Score 0–100, URL-Format für `website_url` und Social-Profil-URLs
   - `category_id` muss UUID sein; Social-Profile validieren `platform` gegen die feste Plattformliste `linkedin | instagram | youtube`
+  - `normalizeLeadProfileUrl()` erzeugt `normalized_url` deterministisch aus Social-Profil-URLs (trim, lowercase host, entfernte Tracking-Parameter und trailing slash)
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Unit-Tests für jedes Schema (valid + invalid Inputs) unter `src/server/tests/workspace/leads/services/lead-validation-service.test.ts`
+- **Akzeptanz:** Unit-Tests für jedes Schema (valid + invalid Inputs) unter `src/server/tests/workspace/leads/services/lead-validation-service.test.ts`; URL-Normalisierung ist unter `src/server/tests/workspace/leads/services/lead-url-normalization-service.test.ts` gegen Dubletten-/Tracking-Parameter-Fälle getestet
 - **Aufwand:** 2h
 
 #### P1-T11 — Filter-Service
@@ -338,9 +343,10 @@ src/
 - **Files:** `src/server/workspace/leads/services/lead-filter-service.ts`
 - **Inhalt:** Query-Param → Drizzle-`where`-Conditions
   - Filter: status, source, category, score-min, date-range (`from`/`to`), free-text-search (auf email/last_name/company_name/owner)
+  - Standardliste schließt `archived` aus; archivierte Leads werden nur bei explizitem `status=archived` berücksichtigt
   - Pagination + Sort (default `created_at DESC`)
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Unit-Tests für jeden Filter-Pfad + Kombinationen unter `src/server/tests/workspace/leads/services/lead-filter-service.test.ts`
+- **Akzeptanz:** Unit-Tests für jeden Filter-Pfad + Kombinationen unter `src/server/tests/workspace/leads/services/lead-filter-service.test.ts`; Test belegt, dass `archived` ohne expliziten Statusfilter ausgeschlossen ist
 - **Aufwand:** 2h
 
 #### P1-T12 — Query: `list-leads.query-handler.ts`
@@ -362,17 +368,17 @@ src/
 #### P1-T14 — Command: `create-lead.command-handler.ts`
 
 - **Files:** `src/server/workspace/leads/command-handler/create-lead.command-handler.ts`, `src/server/workspace/leads/services/lead-activity-service.ts`
-- **Inhalt:** Validate → Insert Lead mit explizit gesetztem `source='manual'`, `lead_status='new'`, `created_at` und `updated_at` → Insert Social-Profile in derselben Transaction → Activity über `appendLeadActivity()` im `lead-activity-service` loggen (`type=note`, `body="Lead manually created"`) → Return DTO
+- **Inhalt:** Validate → Insert Lead mit explizit gesetztem `source='manual'`, `lead_status='new'`, optionalen `improvements`, `created_at` und `updated_at` → Insert Social-Profile mit berechnetem `normalized_url` in derselben Transaction → Activity über `appendLeadActivity()` im `lead-activity-service` loggen (`type=note`, `body="Lead manually created"`) → Return DTO
 - **Konflikt:** Email-Duplicate → `{ ok: false, code: 'EMAIL_EXISTS' }`
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/create-lead.command-handler.test.ts` für valid create mit Kategorie/Social-Profil, duplicate email, missing required field; Activity-Test prüft, dass `metadata` und Actor-Felder keine E-Mail/PII enthalten
+- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/create-lead.command-handler.test.ts` für valid create mit Kategorie/Social-Profil/Improvements, duplicate email, missing required field; Activity-Test prüft, dass `metadata` und Actor-Felder keine E-Mail/PII enthalten
 - **Aufwand:** 2h
 
 #### P1-T15 — Command: `update-lead` + `update-lead-status`
 
 - **Files:** `src/server/workspace/leads/command-handler/update-lead.command-handler.ts`, `src/server/workspace/leads/command-handler/update-lead-status.command-handler.ts`
-- **Inhalt:** Lead-Stammdaten inklusive `category_id` aktualisieren und `updated_at` explizit setzen; Social-Profile per Replace-Set in Transaction synchronisieren; Status-Change setzt ebenfalls `updated_at` und loggt Activity (`type=status_change`, `body="<old> → <new>"`)
-- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/update-lead.command-handler.test.ts` und `update-lead-status.command-handler.test.ts` für valid update mit Kategorie/Social-Profil, status-change-activity wird angelegt, 404 wenn Lead nicht existiert
+- **Inhalt:** Lead-Stammdaten inklusive `category_id`, `notes` und `improvements` aktualisieren und `updated_at` explizit setzen; Social-Profile per Replace-Set in Transaction synchronisieren; Status-Change setzt ebenfalls `updated_at` und loggt Activity (`type=status_change`, `body="<old> → <new>"`)
+- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/update-lead.command-handler.test.ts` und `update-lead-status.command-handler.test.ts` für valid update mit Kategorie/Social-Profil/Improvements, status-change-activity wird angelegt, 404 wenn Lead nicht existiert
 - **Aufwand:** 1,5h
 
 #### P1-T16 — Bulk-Commands
@@ -399,7 +405,7 @@ src/
 - **Files:** `src/app/api/workspace/leads/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
 - **Inhalt:**
   - GET: Filter aus Query-Params parsen → `listLeads()` → JSON
-  - POST: Body inklusive `category_id` und `social_profiles[]` validieren → `createLead()` → JSON
+  - POST: Body inklusive `category_id`, `improvements[]` und `social_profiles[]` validieren → `createLead()` → JSON
 - **Skills:** `superpowers:test-driven-development`
 - **Akzeptanz:** Vitest-Route-Tests grün unter `src/server/tests/workspace/leads/api/leads-route.test.ts`; API-README dokumentiert Query-Params, Create-Body, Success-Response und Fehlercodes
 - **Aufwand:** 1,5h
@@ -407,7 +413,7 @@ src/
 #### P1-T19 — Route: `GET/PATCH/DELETE /api/workspace/leads/[id]`
 
 - **Files:** `src/app/api/workspace/leads/[id]/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
-- **Akzeptanz:** Tests für jeden Verb-Pfad unter `src/server/tests/workspace/leads/api/lead-id-route.test.ts`; `DELETE` setzt `lead_status='archived'` statt physisch zu löschen; API-README dokumentiert Read-/Patch-/Soft-Delete-Verhalten inklusive 404/Validation-Fehler
+- **Akzeptanz:** Tests für jeden Verb-Pfad unter `src/server/tests/workspace/leads/api/lead-id-route.test.ts`; `PATCH` kann `improvements` ergänzen/bearbeiten; `DELETE` setzt `lead_status='archived'` statt physisch zu löschen und antwortet mit `{ ok: true, status: 'archived' }` statt `204`; API-README dokumentiert Read-/Patch-/Soft-Delete-Verhalten inklusive 404/Validation-Fehler
 - **Aufwand:** 1h
 
 #### P1-T20 — Route: `POST /api/workspace/leads/bulk`
@@ -425,7 +431,7 @@ src/
   - `src/i18n/dictionaries/workspace/leads/meta/{de,en}.json`: title, description (mit `noindex`)
   - `src/i18n/dictionaries/workspace/leads/page/{de,en}.json`: header, toolbar (tabs, filters, category-filter, search-placeholder), table-columns, status-labels, source-labels, category-labels, social-platform-labels, empty-state, pagination, bulk-bar, detail-panel (sections, labels), add-dialog (form-labels, errors)
   - `src/i18n/dictionaries/workspace/leads/index.ts`: `getLeadsMetaContent(locale)`, `getLeadsPageContent(locale)`
-- **Akzeptanz:** DE und EN parallel komplett, kein inline-String in Komponenten; Kategorie-Labels werden per `slug` in `category-labels` aufgelöst, nicht direkt aus `lead_categories.label` gerendert
+- **Akzeptanz:** DE und EN parallel komplett, kein inline-String in Komponenten; Kategorie-Labels werden per `label_key` in `category-labels` aufgelöst, nicht direkt aus der DB gerendert
 - **Aufwand:** 2h
 
 ### UI-Komponenten
@@ -486,7 +492,7 @@ src/
 - **Files:** `src/components/workspace/leads/detail/lead-detail-panel/`
 - **Inhalt:**
   - Server-Component, lädt via `getLeadById(searchParams.selected)`
-  - Sektionen: Header (Logo+Name+Status), Contact-Block (Email, Phone, Company, Website), Kategorie, Social-Profile, Notes (editierbar), Tags-List, Activities-Stream
+  - Sektionen: Header (Logo+Name+Status), Contact-Block (Email, Phone, Company, Website), Kategorie, Social-Profile, Improvements (ergänzbar und editierbar), Notes (editierbar), Activities-Stream
   - Close-Button entfernt `?selected=`
   - "View full profile" als Disabled-Placeholder (Roadmap)
 - **Skills:** `frontend-design:frontend-design`
@@ -503,9 +509,9 @@ src/
 #### P1-T29 — Add-Lead-Dialog
 
 - **Files:** `src/components/workspace/leads/form/add-lead-dialog/`
-- **Inhalt:** Modal mit Form (Felder: first_name, last_name, company_name, email\*, phone, website_url, category_id, score, owner, notes, social_profiles[]; Server setzt explizit `source='manual'`); Client-Side Validation gegen Zod-Schema (geteilt mit Server); Submit → POST → on success: schließt Dialog, refresh Liste, optional `?selected=<newId>`
+- **Inhalt:** Modal mit Form (Felder: first_name, last_name, company_name, email\*, phone, website_url, category_id, score, owner, notes, improvements[], social_profiles[]; Server setzt explizit `source='manual'`); Client-Side Validation gegen Zod-Schema (geteilt mit Server); Submit → POST → on success: schließt Dialog, refresh Liste, optional `?selected=<newId>`
 - **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Form rendert, Kategorie-Select lädt aktive Kategorien, Social-Profile können mit Plattform + URL erfasst werden, Errors werden inline angezeigt (z.B. "Email or company required"), Email-Duplicate-Error wird sauber gemeldet
+- **Akzeptanz:** Form rendert, Kategorie-Select lädt aktive Kategorien, Improvements können ergänzt/bearbeitet werden, Social-Profile können mit Plattform + URL erfasst werden, Errors werden inline angezeigt (z.B. "Email or company required"), Email-Duplicate-Error wird sauber gemeldet
 - **Aufwand:** 3h
 
 #### P1-T30 — Status- / Source- / Score-Visuals
@@ -534,7 +540,7 @@ src/
 #### P1-T32 — E2E-Smoke-Test
 
 - **Files:** `e2e/workspace-leads.e2e.ts`
-- **Inhalt:** Login (mocked oder Test-Allowlist), Navigate zu `/de/workspace/leads`, "Add lead" → Form mit Kategorie, Score `80` und LinkedIn-Profil ausfüllen → Submit → Lead in Liste sichtbar → Click Row → Detail-Panel öffnet mit Kategorie/Social-Profil → Status ändern → Reload → Status persistiert
+- **Inhalt:** Login (mocked oder Test-Allowlist), Navigate zu `/de/workspace/leads`, "Add lead" → Form mit Kategorie, Score `80`, Improvement und LinkedIn-Profil ausfüllen → Submit → Lead in Liste sichtbar → Click Row → Detail-Panel öffnet mit Kategorie/Social-Profil/Improvement → Improvement bearbeiten → Status ändern → Reload → Status und Improvement persistieren → Lead archivieren → aus Standardliste weg, per Statusfilter `archived` sichtbar
 - **Skills:** `superpowers:verification-before-completion`
 - **Akzeptanz:** Test grün lokal + CI
 - **Aufwand:** 2h
@@ -561,6 +567,7 @@ src/
    - Bulk: 2 Leads selektieren → Archive (mit Confirm) → aus Standardliste weg, per Statusfilter `archived` sichtbar
    - Klick auf Row → Detail-Panel öffnet rechts mit korrekten Daten
    - Detail-Panel zeigt Kategorie und Social-Profile korrekt
+   - Detail-Panel zeigt Improvements und erlaubt Ergänzen/Bearbeiten
    - Activity-Stream zeigt Status-Change-Eintrag
    - URL `?selected=<id>` direkt aufrufbar (deep-link)
    - Browser-Back schließt Detail-Panel
