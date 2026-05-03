@@ -237,16 +237,17 @@ src/
 
 ### Pre-Flight
 
-#### P1-T0 — Scoped Docs anlegen
+#### P1-T0 — Scoped Docs anlegen ✅
 
-- **Files:** `src/app/[locale]/workspace/leads/CLAUDE.md`, `src/app/[locale]/workspace/leads/AGENTS.md`, `src/app/api/workspace/leads/CLAUDE.md`, `src/app/api/workspace/leads/AGENTS.md`, `src/app/api/workspace/leads/README.md`, `src/components/workspace/leads/AGENTS.md`, `src/components/workspace/leads/README.md`
+- **Files:** `src/app/[locale]/workspace/leads/CLAUDE.md`, `src/app/[locale]/workspace/leads/AGENTS.md`, `src/app/api/workspace/leads/CLAUDE.md`, `src/app/api/workspace/leads/AGENTS.md`, `src/app/api/workspace/leads/README.md`, `src/components/workspace/leads/AGENTS.md`
 - **Inhalt UI-Doku:** Auth-Vererbung vom Parent-Layout, Routing, Filter via Query-Params, SSR-Datenfluss, i18n-Section `leads`, kritische Pfade, Reuse-Punkte
 - **Inhalt API-Doku:** API-Auth über `withWorkspaceApiAuth`, erlaubte Endpunkte, Request-/Response-DTOs, Fehlerformat, Statuscodes, No-PII-Logging, Tests und Server-Layer-Reuse
-- **Inhalt Komponenten-Doku:** begründet die Unterteilung `shell/`, `toolbar/`, `table/`, `detail/`, `form/`, `shared/`, legt Komponentenordner-Dateinamen fest und verweist auf lokale `*.module.css` statt globale Styles
+- **Inhalt Komponenten-Doku:** `AGENTS.md` begründet die Unterteilung `shell/`, `toolbar/`, `table/`, `detail/`, `form/`, `shared/`, legt Komponentenordner-Dateinamen fest, verweist auf lokale `*.module.css` statt globale Styles und enthält die forward-looking Regeln für künftige Lead-Komponenten
+- **Forward-looking AGENTS:** Alle drei `AGENTS.md` formulieren ihre Regeln so, dass sie über Phase 1 hinaus für künftige Lead-Erweiterungen (Import/Export, Outbound-Messaging, weitere Sub-Views) gelten — ohne Plan- oder Ticket-Spezifika
 - **DTO-Regel:** `create-lead.dto.ts` und `update-lead.dto.ts` bleiben getrennt; gemeinsam genutzte schreibbare Felder liegen in `lead-write-fields.dto.ts`, kein generisches `save-lead.dto.ts`.
 - **Contract-Grenze:** `src/common/contracts/leads/**` enthält nur API-/Client-shared DTOs. DB-nahe Records liegen bei Bedarf unter `src/server/db/records/leads/**` und spiegeln direkte DB-Row-Shapes. Persistenz-Inputs liegen nur dann unter `src/server/db/contracts/leads/**`, wenn sie von DB-Persistenzfunktionen konsumiert werden; command-spezifische Inputs bleiben bei `src/server/workspace/leads/**`.
 - **Skills:** keine
-- **Akzeptanz:** Alle sieben Markdown-Dateien existieren; `AGENTS.md`-Dateien sind auf Deutsch; UI-Doku referenziert Repo-Root-`CLAUDE.md` + Workspace-Parent-Docs; API-README beschreibt die Routen kompakt genug für Client-/Test-Implementierung; Komponenten-Doku erlaubt die gruppierte Leads-Struktur bewusst als Scope-spezifische Präzisierung
+- **Akzeptanz:** Alle sechs Markdown-Dateien existieren; `AGENTS.md`-Dateien sind auf Deutsch und forward-looking formuliert; UI-Doku referenziert Repo-Root-`CLAUDE.md` + Workspace-Parent-Docs; API-README beschreibt die Routen kompakt genug für Client-/Test-Implementierung; Komponenten-`AGENTS.md` erlaubt die gruppierte Leads-Struktur bewusst als Scope-spezifische Präzisierung
 - **Aufwand:** 1h
 
 ### DB & Schema
