@@ -252,7 +252,7 @@ src/
 
 ### DB & Schema
 
-#### P1-T1 — Constants & Enums
+#### P1-T1 — Constants & Enums ✅
 
 - **Files:**
   - `src/common/constants/contact/contact-lead-statuses.ts` (Edit: `proposal` ergänzen, Position zwischen `qualified` und `won`)
@@ -305,10 +305,10 @@ src/
 #### P1-T7 — SQL-Migration `0004_extend_leads_for_crm.sql`
 
 - **Files:** `src/server/db/migrations/0004_extend_leads_for_crm.sql`
-- **Inhalt:** `ALTER TABLE leads` für nullable + neue Spalten inklusive `category_id` FK zu `lead_categories(id)` + Score-Check `0..100` + `source`-Check ohne DB-Default + aktualisierter `lead_status`-Check inklusive `proposal` + getrimmter Personen/Firmenname-Check + Indizes (idempotent mit `IF NOT EXISTS` / `DROP CONSTRAINT IF EXISTS … ADD CONSTRAINT`)
+- **Inhalt:** `ALTER TABLE leads` für nullable + neue Spalten inklusive `category_id` FK zu `lead_categories(id)` + Score-Check `0..100` + `source`-Check ohne DB-Default + aktualisierter `lead_status`-Check inklusive `proposal` und `on_hold` + getrimmter Personen/Firmenname-Check + Indizes (idempotent mit `IF NOT EXISTS` / `DROP CONSTRAINT IF EXISTS … ADD CONSTRAINT`)
 - **Stilvorbild:** `src/server/db/migrations/0002_restructure_lead_storage.sql` (`statement-breakpoint`-Splits)
 - **Skills:** `superpowers:verification-before-completion`
-- **Akzeptanz:** `npm run db:migrate:dev` läuft ohne Fehler durch; idempotent (zweiter Lauf macht nichts); bestehender `lead_status`-CHECK wird so ersetzt, dass `proposal` DB-seitig akzeptiert wird; `source` hat keinen DB-Default und alle bestehenden `leads` erhalten explizit `source='webform'` oder eine bewusst dokumentierte Fallback-Quelle; `persistSharedLeadSubmission()` setzt bei künftigen Inbound-Upserts `source='webform'` explizit und der bestehende Contact-Persistenz-Test bleibt grün
+- **Akzeptanz:** `npm run db:migrate:dev` läuft ohne Fehler durch; idempotent (zweiter Lauf macht nichts); bestehender `lead_status`-CHECK wird so ersetzt, dass `proposal` und `on_hold` DB-seitig akzeptiert werden; `source` hat keinen DB-Default und alle bestehenden `leads` erhalten explizit `source='webform'` oder eine bewusst dokumentierte Fallback-Quelle; `persistSharedLeadSubmission()` setzt bei künftigen Inbound-Upserts `source='webform'` explizit und der bestehende Contact-Persistenz-Test bleibt grün
 - **Aufwand:** 1,5h
 
 #### P1-T8 — SQL-Migration `0005_create_lead_social_profiles.sql`

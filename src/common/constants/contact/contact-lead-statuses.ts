@@ -4,6 +4,8 @@ export const CONTACT_LEAD_STATUS_VALUES = [
   "new",
   "contacted",
   "qualified",
+  "proposal",
+  "on_hold",
   "won",
   "lost",
   "archived",
