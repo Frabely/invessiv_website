@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getServerEnv } from "../../config/env";
-import { getDatabaseClient } from "../client";
+import { getDatabaseClient } from "../core";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,

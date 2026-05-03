@@ -2,7 +2,7 @@ import "server-only";
 import {
   getDrizzleDatabaseClient,
   hasDatabaseConnectionString,
-} from "@/server/db/client";
+} from "@/server/db/core";
 import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/discovery-call-persist-input";
 import { type PersistSubmissionResult } from "@/server/db/contracts/contact/contact-persist-result";
 import { persistSharedLeadSubmission } from "@/server/db/contact/shared/shared-lead-submission";

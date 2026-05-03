@@ -1,5 +1,5 @@
 import { getServerEnv } from "../../config/env";
-import { getDatabaseClient } from "../client";
+import { getDatabaseClient } from "../core";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,

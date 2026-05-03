@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { LEAD_SOURCES } from "@/common/constants/leads/lead-sources";
+import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
 import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-types";
+import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
+import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
 import { LEAD_STATUS_TABS } from "@/common/constants/leads/lead-status-tabs";
 import {
   LEAD_LIST_PAGE_SIZE,
@@ -9,11 +11,11 @@ import {
 
 describe("LEAD_SOURCES", () => {
   it("contains exactly webform, manual, import", () => {
-    expect(LEAD_SOURCES).toEqual(["webform", "manual", "import"]);
+    expect(LEAD_SOURCES_VALUES).toEqual(["webform", "manual", "import"]);
   });
 
   it("has no duplicates", () => {
-    expect(new Set(LEAD_SOURCES).size).toBe(LEAD_SOURCES.length);
+    expect(new Set(LEAD_SOURCES_VALUES).size).toBe(LEAD_SOURCES_VALUES.length);
   });
 });
 
@@ -45,6 +47,34 @@ describe("LEAD_STATUS_TABS", () => {
 
   it("has no duplicates", () => {
     expect(new Set(LEAD_STATUS_TABS).size).toBe(LEAD_STATUS_TABS.length);
+  });
+});
+
+describe("LEAD_ACTOR_TYPES", () => {
+  it("contains exactly system, user", () => {
+    expect(LEAD_ACTOR_TYPE_VALUES).toEqual(["system", "user"]);
+  });
+
+  it("has no duplicates", () => {
+    expect(new Set(LEAD_ACTOR_TYPE_VALUES).size).toBe(
+      LEAD_ACTOR_TYPE_VALUES.length,
+    );
+  });
+});
+
+describe("LEAD_SOCIAL_PLATFORMS", () => {
+  it("contains exactly linkedin, instagram, youtube", () => {
+    expect(LEAD_SOCIAL_PLATFORMS_VALUES).toEqual([
+      "linkedin",
+      "instagram",
+      "youtube",
+    ]);
+  });
+
+  it("has no duplicates", () => {
+    expect(new Set(LEAD_SOCIAL_PLATFORMS_VALUES).size).toBe(
+      LEAD_SOCIAL_PLATFORMS_VALUES.length,
+    );
   });
 });
 

@@ -538,7 +538,32 @@ src/
 
 ### QA & Tests
 
-#### P1-T32 — E2E-Smoke-Test
+#### P1-T32 — DB-Enum-Constraint-Paritätstest
+
+- **Files:** `src/server/tests/db/records/lead-enum-constraints.test.ts`
+- **Inhalt:** Live-DB-Test (analog zu `contact-record-shape.test.ts`), der für jede Spalte mit einem `CHECK (col IN (...))` die tatsächliche DB-Constraint-Definition gegen das zugehörige TypeScript-Const-Array prüft. Schlägt fehl, wenn beide Listen nicht deckungsgleich sind — Migration und Konstante sind dann nicht synchron.
+
+  Zu prüfende Paare:
+
+  | Tabelle                | Spalte        | TS-Konstante                   |
+  | ---------------------- | ------------- | ------------------------------ |
+  | `leads`                | `source`      | `LEAD_SOURCES_VALUES`          |
+  | `leads`                | `lead_status` | `CONTACT_LEAD_STATUS_VALUES`   |
+  | `lead_social_profiles` | `platform`    | `LEAD_SOCIAL_PLATFORMS_VALUES` |
+  | `lead_activities`      | `type`        | `LEAD_ACTIVITY_TYPES`          |
+  | `lead_activities`      | `actor_type`  | `LEAD_ACTOR_TYPE_VALUES`       |
+
+  Implementierungshinweise:
+  - DB-Seite: `pg_get_constraintdef(oid)` auf `pg_constraint` (Typ `c`) für die jeweilige Tabelle/Spalte aufrufen; aus dem zurückgegebenen String (z. B. `CHECK (platform = ANY (ARRAY['linkedin'::text, ...]))` oder `CHECK ((platform = ANY (ARRAY[...])))`) die Werte per Regex extrahieren und als sortiertes `string[]` normalisieren.
+  - TS-Seite: Das jeweilige `_VALUES`-Array direkt importieren, `[...values].sort()` verwenden.
+  - Fehlertext muss klar benennen, welche Tabelle/Spalte abweicht und welche Werte fehlen oder überzählig sind, damit nach einer Migration sofort erkennbar ist, welche Konstante nachgezogen werden muss.
+  - Test überspringt sich selbst mit `skip` (oder wirft verständliche Message), wenn `DATABASE_URL` nicht gesetzt ist, damit CI ohne DB-Verbindung nicht rot wird.
+
+- **Skills:** `superpowers:verification-before-completion`
+- **Akzeptanz:** Test ist grün wenn alle fünf Paare übereinstimmen; wird rot wenn z. B. `LEAD_SOCIAL_PLATFORMS_VALUES` einen Wert enthält, der im DB-CHECK fehlt, oder umgekehrt; `npm run test` läuft ohne DB-Verbindung durch (skip-Pfad)
+- **Aufwand:** 1h
+
+#### P1-T33 — E2E-Smoke-Test
 
 - **Files:** `e2e/workspace-leads.e2e.ts`
 - **Inhalt:** Login (mocked oder Test-Allowlist), Navigate zu `/de/workspace/leads`, "Add lead" → Form mit Kategorie, Score `80`, Improvement und LinkedIn-Profil ausfüllen → Submit → Lead in Liste sichtbar → Click Row → Detail-Panel öffnet mit Kategorie/Social-Profil/Improvement → Improvement bearbeiten → Status ändern → Reload → Status und Improvement persistieren → Lead archivieren → aus Standardliste weg, per Statusfilter `archived` sichtbar
@@ -546,7 +571,7 @@ src/
 - **Akzeptanz:** Test grün lokal + CI
 - **Aufwand:** 2h
 
-#### P1-T33 — Pre-Merge-Gate
+#### P1-T34 — Pre-Merge-Gate
 
 - **Inhalt:** `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` alle grün; manueller Smoke-Test im Browser (Mockup-Vergleich); Code-Review per `superpowers:requesting-code-review`
 - **Aufwand:** 1h
@@ -591,7 +616,7 @@ src/
 | Skill                                        | Tickets                                                         |
 | -------------------------------------------- | --------------------------------------------------------------- |
 | `superpowers:test-driven-development`        | T1, T2, T3, T4, T5, T10, T11, T12, T13, T14, T15, T16, T17, T18 |
-| `superpowers:verification-before-completion` | T2, T6, T7, T8, T9, T17, T32, T33                               |
+| `superpowers:verification-before-completion` | T2, T6, T7, T8, T9, T17, T32, T33, T34                          |
 | `superpowers:requesting-code-review`         | T33                                                             |
 | `frontend-design:frontend-design`            | T22, T23, T24, T25, T26, T27, T29, T30                          |
 | `superpowers:systematic-debugging`           | bei Bugs während Implementation                                 |

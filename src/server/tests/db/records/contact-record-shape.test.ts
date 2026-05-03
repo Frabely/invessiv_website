@@ -3,7 +3,7 @@ import { loadLocalEnvFiles } from "@/server/config/load-env";
 import {
   getDatabaseClient,
   hasDatabaseConnectionString,
-} from "@/server/db/client";
+} from "@/server/db/core";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import { leadCallContacts } from "@/server/db/record-configuration/lead-call-contacts";
 import { leadEmailContacts } from "@/server/db/record-configuration/lead-email-contacts";

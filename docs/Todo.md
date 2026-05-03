@@ -47,6 +47,18 @@
 - Die Root-`AGENTS.md` als globale Übersicht und Verweis auf die Bereichsdateien behalten.
 - Dieses Thema nicht implizit nebenbei weiter umbauen, sondern als eigenes Struktur-Rework behandeln.
 
+## Const-Objekt-Pattern für alle String-Konstanten
+
+Das in `src/common/constants/leads/` etablierte Muster (`const Foo = { Bar: "bar" } as const` + abgeleiteter Type + `FOO_VALUES`-Array) muss projektweit umgesetzt werden.
+
+- `src/common/constants/contact/` vollständig prüfen und umstellen — `CONTACT_REQUEST_KINDS`, `CONTACT_LEAD_STATUS_VALUES`, `CONTACT_BUDGET_KEYS`, `CONTACT_GOAL_KEYS` usw. (Einstieg: bestehender Eintrag zu `CONTACT_REQUEST_KINDS` in "Contact Form Follow-Up")
+- Alle weiteren `src/common/constants/**`-Dateien prüfen; jedes `as const`-Array, das string-Literale als Union-Typ exponiert, auf das Const-Objekt-Pattern umstellen
+- Andere Ordner auf vergleichbare String-Literal-Arrays oder manuelle Union-Typen prüfen, insbesondere:
+  - `src/lib/`
+  - `src/server/db/record-configuration/` (inline-ENUMs in Drizzle-Spalten ohne zugehörige Konstante)
+  - `src/i18n/` (falls Key-Listen als Array modelliert sind)
+- Nicht als Teil laufender Feature-Tasks umsetzen; als eigenständiges Konsolidierungs-Rework behandeln
+
 ## Contact Form Follow-Up
 
 - Die Form-Bezeichnungen im Code sind an mindestens einer Stelle vertauscht: Form 2 soll fachlich die E-Mail-Form sein, Form 3 der Call-Pfad. Das spaeter gezielt konsistent bereinigen, aber nicht im laufenden Schritt mit umbauen.

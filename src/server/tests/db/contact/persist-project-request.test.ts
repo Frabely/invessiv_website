@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { LeadSource } from "@/common/constants/leads/lead-sources";
 
 const {
   getDrizzleDatabaseClientMock,
@@ -51,6 +52,7 @@ describe("persistProjectRequestLead", () => {
         last_name: "Mustermann",
         lead_status: "new",
         owner: undefined,
+        source: LeadSource.Webform,
         updated_at: new Date("2026-03-26T09:30:00.000Z"),
       },
       lead_project_request: {

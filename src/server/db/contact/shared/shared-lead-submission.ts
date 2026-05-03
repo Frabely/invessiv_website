@@ -1,6 +1,6 @@
 import "server-only";
 import { sql } from "drizzle-orm";
-import type { ContactDatabaseTransaction } from "@/server/db/client";
+import type { ContactDatabaseTransaction } from "@/server/db/core";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";

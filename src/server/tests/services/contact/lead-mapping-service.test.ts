@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { LeadSource } from "@/common/constants/leads/lead-sources";
 
 const { randomUUIDMock } = vi.hoisted(() => ({
   randomUUIDMock: vi.fn(),
@@ -36,6 +37,7 @@ describe("mapLeadApiToDb", () => {
       last_name: "Mustermann",
       lead_status: DEFAULT_CONTACT_LEAD_STATUS,
       owner: undefined,
+      source: LeadSource.Webform,
       updated_at: createdAt,
     });
   });

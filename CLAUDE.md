@@ -82,6 +82,20 @@ Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Sta
 
 Canonical model source: `src/server/db/record-configuration/`. Schema defined with Drizzle `pgTable`; never duplicate column lists elsewhere. Connection is a cached singleton.
 
+### Constants & Enums
+
+- String union types always use the **const object + derived type** pattern — never TypeScript `enum`:
+  ```ts
+  export const FooKind = { Bar: "bar", Baz: "baz" } as const;
+  export type FooKind = (typeof FooKind)[keyof typeof FooKind];
+  ```
+- Keys use **PascalCase** (`LeadSource.Webform`, not `LeadSource.WEBFORM`)
+- When iteration is needed (Drizzle `{ enum: [...] }`, `sqlCheckIn`), export a separate `FOO_KIND_VALUES` array derived from the object — string literals appear **exactly once**, in the const object:
+  ```ts
+  export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
+  ```
+- Each constant group lives in its own file under `src/common/constants/<domain>/`
+
 ### Component conventions
 
 - Each component lives in its own folder: `component-name/component-name.tsx`

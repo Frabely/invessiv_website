@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
+import { LeadSource } from "@/common/constants/leads/lead-sources";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 
 export type ApiToDbMapperOptions = {
@@ -31,6 +32,7 @@ export function mapLeadApiToDb(
     last_name: payload.lastName.trim(),
     lead_status: defaultLeadStatus,
     owner: undefined,
+    source: LeadSource.Webform,
     updated_at: createdAt,
   };
 }
