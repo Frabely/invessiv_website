@@ -12,7 +12,7 @@ const {
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/client", () => ({
+vi.mock("@/server/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
 }));
