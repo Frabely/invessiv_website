@@ -23,6 +23,7 @@ export async function persistSharedLeadSubmission(
       first_name,
       last_name,
       email,
+      source,
       lead_status,
       created_at,
       updated_at
@@ -32,6 +33,7 @@ export async function persistSharedLeadSubmission(
       ${input.lead.first_name},
       ${input.lead.last_name},
       ${input.lead.email},
+      ${input.lead.source},
       ${input.lead.lead_status},
       ${input.lead.created_at},
       ${input.lead.updated_at}

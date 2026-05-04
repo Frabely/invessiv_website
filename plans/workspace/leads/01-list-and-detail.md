@@ -80,7 +80,8 @@ created_at         timestamptz NOT NULL DEFAULT NOW()
 updated_at         timestamptz NOT NULL DEFAULT NOW()
 ```
 
-- Initiale Seed-Kategorien aus vorhandenen CSV-Werten: `coaches`, `handwerker`, `lokale-dienstleister`, `kleine-b2b-anbieter`, `berater`, `fotografen`
+- Initiale Seed-Kategorien: `coaches`, `craftspeople`, `local-service-providers`, `small-b2b-providers`, `consultants`,
+  `photographers`
 - `sort_order` wird fachlich in 10er-Schritten vergeben (`10`, `20`, `30`, ...), damit Kategorien später ohne Umnummerierung dazwischen einsortiert werden können.
 - UI-Labels für Kategorien werden über Dictionaries anhand von `label_key` gerendert; `slug` bleibt stabile technische Identität.
 - Import normalisiert freie CSV-Kategorien auf `slug`; unbekannte Kategorien werden in Phase 2 beim Import entweder angelegt oder als Import-Fehler gemeldet.
@@ -190,11 +191,20 @@ src/
 │   │   ├── query-handler/
 │   │   │   ├── list-leads.query-handler.ts
 │   │   │   └── get-lead-by-id.query-handler.ts
-│   │   └── services/
-│   │       ├── lead-activity-service.ts
-│   │       ├── lead-validation-service.ts
-│   │       ├── lead-url-normalization-service.ts
-│   │       └── lead-filter-service.ts
+│   │   ├── services/
+│   │   │   ├── shared/
+│   │   │   │   ├── lead-schema.ts                   # leadSchema-Objekt (Zod-Felder)
+│   │   │   │   └── lead-social-profile.schema.ts    # socialProfileSchema
+│   │   │   ├── create-lead/
+│   │   │   │   ├── create-lead.schema.ts            # createLeadSchema + Refinement
+│   │   │   │   └── create-lead-validation-service.ts
+│   │   │   ├── update-lead/
+│   │   │   │   ├── update-lead.schema.ts            # updateLeadSchema + Refinement
+│   │   │   │   └── update-lead-validation-service.ts
+│   │   │   └── lead-filter/
+│   │   │       └── lead-filter.schema.ts
+│   │   └── utils/
+│   │       └── lead-url-normalization-service.ts
 │   └── db/
 │       ├── record-configuration/
 │       │   ├── leads.ts                 # ERWEITERT
@@ -223,7 +233,8 @@ src/
 │   ├── api/
 │   ├── command-handler/
 │   ├── query-handler/
-│   └── services/
+│   ├── services/
+│   └── utils/
 ├── i18n/dictionaries/workspace/leads/
 │   ├── meta/{de,en}.json
 │   ├── page/{de,en}.json
@@ -329,14 +340,29 @@ src/
 
 #### P1-T10 — Lead-Validation- und URL-Normalization-Services
 
-- **Files:** `src/server/workspace/leads/services/lead-validation-service.ts`, `src/server/workspace/leads/services/lead-url-normalization-service.ts`
+Schemas und Refinements liegen je Operation in einer Datei (`*.schema.ts`), ohne separates `*.validation-rules.ts`.
+Gemeinsame Zod-Bausteine leben in `shared/`.
+
+- **Files:**
+  - `src/server/workspace/leads/utils/lead-url-normalization-service.ts`
+  - `src/common/constants/leads/lead-tracking-params.ts`
+  - `src/server/workspace/leads/services/shared/lead-schema.ts`
+  - `src/server/workspace/leads/services/shared/lead-social-profile.schema.ts`
+  - `src/server/workspace/leads/services/create-lead/create-lead.schema.ts`
+  - `src/server/workspace/leads/services/create-lead/create-lead-validation-service.ts`
+  - `src/server/workspace/leads/services/update-lead/update-lead.schema.ts`
+  - `src/server/workspace/leads/services/update-lead/update-lead-validation-service.ts`
+  - `src/server/workspace/leads/services/lead-filter/lead-filter.schema.ts`
 - **Inhalt:** Zod-Schemas `createLeadSchema`, `updateLeadSchema`, `leadFilterSchema`
   - Refinement: mindestens getrimmtes `last_name` ODER getrimmtes `company_name`
   - Email-Format, Score 0–100, URL-Format für `website_url` und Social-Profil-URLs
   - `category_id` muss UUID sein; Social-Profile validieren `platform` gegen die feste Plattformliste `linkedin | instagram | youtube`
   - `normalizeLeadProfileUrl()` erzeugt `normalized_url` deterministisch aus Social-Profil-URLs (trim, lowercase host, entfernte Tracking-Parameter und trailing slash)
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Unit-Tests für jedes Schema (valid + invalid Inputs) unter `src/server/tests/workspace/leads/services/lead-validation-service.test.ts`; URL-Normalisierung ist unter `src/server/tests/workspace/leads/services/lead-url-normalization-service.test.ts` gegen Dubletten-/Tracking-Parameter-Fälle getestet
+- **Akzeptanz:** Unit-Tests für jedes Schema (valid + invalid Inputs) unter
+  `src/server/tests/workspace/leads/services/lead-validation-service.test.ts`; URL-Normalisierung ist unter
+  `src/server/tests/workspace/leads/utils/lead-url-normalization-service.test.ts` gegen
+  Dubletten-/Tracking-Parameter-Fälle getestet
 - **Aufwand:** 2h
 
 #### P1-T11 — Filter-Service
