@@ -61,9 +61,44 @@ export const LEAD_LIST_PAGE_SIZE = 25;
 ## Contracts
 
 - Nur TypeScript-Interfaces und Typen — keine Laufzeitlogik
-- DTOs, die zwischen API-Route und Client geteilt werden: `contracts/<domain>/`
-- DB-nahe Row-Shapes (`snake_case`-Felder) gehören in `src/server/db/records/`, nicht hierher
+- Pro Domain ein Unterordner (`contracts/<domain>/`); innerhalb davon drei Unterordner für konzeptionell
+  unterschiedliche Contract-Typen:
+
+| Unterordner                   | Inhalt                             | Feldnamen  |
+| ----------------------------- | ---------------------------------- | ---------- |
+| `contracts/<domain>/` (Root)  | API-DTOs (`*.dto.ts`)              | camelCase  |
+| `contracts/<domain>/rows/`    | DB-Query-Row-Shapes (`*-row.ts`)   | snake_case |
+| `contracts/<domain>/results/` | Query-Result-Typen (`*-result.ts`) | camelCase  |
+
+- `rows/` enthält ausschließlich typisierte Abbilder von SELECT-Ergebnissen; keine Laufzeitlogik, keine
+  Drizzle-Referenzen
+- `results/` enthält zusammengesetzte Handler-Rückgabetypen (z. B. `ListLeadsResult`); dürfen nur camelCase-DTOs
+  importieren
 - Persistenz-Inputs und Command-Outputs gehören in `src/server/db/contracts/` oder `src/server/workspace/<domain>/`
+
+### DTO-Feldnamen: immer camelCase
+
+Alle Felder in `contracts/**/*.dto.ts` und `contracts/**/*.ts` verwenden **camelCase** — kein `snake_case`, kein
+`PascalCase` für Feldnamen.
+
+```ts
+// ✅ korrekt
+export interface LeadSummaryDto {
+  firstName: string | null;
+  leadStatus: ContactLeadStatus;
+  createdAt: Date;
+}
+
+// ❌ falsch — snake_case gehört in DB-Records, nicht in DTOs
+export interface LeadSummaryDto {
+  first_name: string | null;
+  lead_status: ContactLeadStatus;
+  created_at: Date;
+}
+```
+
+Der Mapper in der Query-/Command-Handler-Schicht übersetzt zwischen DB-snake_case und DTO-camelCase. DTOs berühren die
+DB-Spaltenform nie direkt.
 
 ## Offene Migrationsarbeit
 

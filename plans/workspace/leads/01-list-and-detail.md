@@ -384,20 +384,38 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
   expliziten Statusfilter ausgeschlossen ist; alle 331 Tests im Projekt grün
 - **Aufwand:** 2h
 
-#### P1-T12 — Query: `list-leads.query-handler.ts`
+#### P1-T12 — Query: `list-leads.query-handler.ts` ✅
 
-- **Files:** `src/server/workspace/leads/query-handler/list-leads.query-handler.ts`
-- **Inhalt:** `listLeads(filter): Promise<{ rows, total, page, perPage }>`; Count + Select in Transaction; DTO-Mapping nach `LeadSummaryDto`
+- **Files:**
+  - `src/server/workspace/leads/query-handler/list-leads.query-handler.ts`
+  - `src/common/contracts/leads/lead-summary.dto.ts`
+- **Inhalt:** `listLeads(filter): Promise<ListLeadsResult>` — `Promise.all` aus COUNT + SELECT mit LEFT JOIN auf
+  `lead_categories`; DTO-Mapping nach `LeadSummaryDto` (inkl. `category: { id, slug, label_key } | null`)
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Integration-Test gegen Test-DB (oder Mock) unter `src/server/tests/workspace/leads/query-handler/list-leads.query-handler.test.ts`; Pagination korrekt
+- **Akzeptanz:** ✅ 8 Unit-Tests mit gemocktem Drizzle-Client unter
+  `src/server/tests/workspace/leads/query-handler/list-leads.query-handler.test.ts`; Lead mit/ohne Kategorie korrekt
+  gemappt; Pagination und Total korrekt; alle 341 Tests im Projekt grün
 - **Aufwand:** 1,5h
 
-#### P1-T13 — Query: `get-lead-by-id.query-handler.ts`
+#### P1-T13 — Query: `get-lead-by-id.query-handler.ts` ✅
 
-- **Files:** `src/server/workspace/leads/query-handler/get-lead-by-id.query-handler.ts`
-- **Inhalt:** Lädt Lead + Kategorie + Social-Profile + Activities (sortiert by `occurred_at DESC`) + verknüpfte `lead_submissions`; Mapping nach `LeadDetailDto`
+- **Files:**
+  - `src/server/workspace/leads/query-handler/get-lead-by-id.query-handler.ts`
+  - `src/server/workspace/leads/services/lead-detail/lead-detail-mapping-service.ts`
+  - `src/server/workspace/leads/services/lead-category/lead-category-mapping-service.ts` (extrahiert —
+    `lead-summary-mapping-service.ts` nutzt jetzt `mapCategoryRowToDto`)
+  - `src/common/contracts/leads/lead-detail.dto.ts` (inkl. `LeadSocialProfileDto`, `LeadActivityDto`,
+    `LeadSubmissionDto`)
+- **Inhalt:** Lädt Lead + Kategorie + Social-Profile + Activities (sortiert by `occurred_at DESC`) + verknüpfte
+  `lead_submissions`; Mapping nach `LeadDetailDto` in eigenem Mapping-Service; Category-Join-Logik in
+  `lead-category-mapping-service.ts` auslagern (zweiter Callsite → Extraktion fällig)
+- **Mapping-Regel:** Kein Mapping-Code im Query-Handler; alle DB-Row → DTO-Transformationen in
+  `services/<konzept>/*-mapping-service.ts` (siehe `src/server/AGENTS.md`)
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Test unter `src/server/tests/workspace/leads/query-handler/get-lead-by-id.query-handler.test.ts` mit Lead, der Kategorie, Social-Profil, Activity und Submission hat
+- **Akzeptanz:** ✅ 9 Unit-Tests unter
+  `src/server/tests/workspace/leads/query-handler/get-lead-by-id.query-handler.test.ts`; null bei nicht existentem Lead;
+  Lead mit Kategorie, Social-Profil, Activity und Submission korrekt gemappt; `lead-summary-mapping-service.ts` nutzt
+  jetzt `mapCategoryRowToDto` aus `lead-category-mapping-service.ts`; alle 350 Tests im Projekt grün
 - **Aufwand:** 1,5h
 
 #### P1-T14 — Command: `create-lead.command-handler.ts`

@@ -15,7 +15,7 @@ Inhalte von `AGENTS.md`-Dateien in diesem Projekt immer auf Deutsch pflegen.
 
 ## Was hier nicht hingehört
 
-- Serverseitige DB-Records, Persistenz-Inputs oder Command-Outputs → `src/server/`
+- Serverseitige Persistenz-Inputs oder Command-Outputs → `src/server/`
 - UI-Komponenten oder Hooks → `src/components/`, `src/hooks/`
 - i18n-Dictionaries → `src/i18n/`
 - Konfiguration oder Umgebungsvariablen → `src/server/config/` oder `src/lib/`
@@ -45,11 +45,43 @@ export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
 
 Alle bestehenden `as const`-Arrays in `src/common/constants/**`, die String-Literale als Union-Typ exponieren, sind schrittweise auf dieses Pattern umzustellen (siehe `docs/Todo.md`).
 
+## Contract-Felder: immer camelCase
+
+Alle Felder in `contracts/**/*.dto.ts` verwenden **camelCase** — nie `snake_case`.
+
+```ts
+// ✅
+firstName: string | null;
+leadStatus: ContactLeadStatus;
+createdAt: Date;
+
+// ❌
+first_name: string | null;
+lead_status: ContactLeadStatus;
+created_at: Date;
+```
+
+Der Mapper in der Query-/Command-Handler-Schicht übersetzt DB-`snake_case` → DTO-`camelCase`. DTOs berühren die
+DB-Spaltenform nie direkt.
+
 ## Datei- und Ordnerstruktur
 
 - Pro Domain ein Unterordner (`contact/`, `leads/`, `marketing/`, …)
 - Pro Konstantengruppe eine eigene Datei; keine Sammeldateien für mehrere fachlich unverwandte Gruppen
 - Dateinamen in `kebab-case`; Exportnamen für Const-Objekte in `PascalCase`, für Arrays in `SCREAMING_SNAKE_CASE`
+
+### Contracts-Unterstruktur pro Domain
+
+Innerhalb eines Domain-Ordners in `contracts/` gibt es drei konzeptionell getrennte Ebenen:
+
+| Pfad                          | Inhalt                                                     | Feldnamen  |
+| ----------------------------- | ---------------------------------------------------------- | ---------- |
+| `contracts/<domain>/`         | API-DTOs (`*.dto.ts`) — Client/Server shared               | camelCase  |
+| `contracts/<domain>/rows/`    | DB-Row-Shapes (`*-row.ts`) — Abbild von SELECT-Ergebnissen | snake_case |
+| `contracts/<domain>/results/` | Handler-Rückgabetypen (`*-result.ts`)                      | camelCase  |
+
+Diese Trennung stellt sicher, dass DB-nahe snake_case-Typen nicht mit API-DTOs vermischt werden, aber dennoch isomorph
+in `src/common` liegen und von beiden Seiten importiert werden können.
 
 ## Tests
 

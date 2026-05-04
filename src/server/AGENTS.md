@@ -30,9 +30,42 @@ Für Contact-bezogenen Code gilt die Trennung:
 
 - `*-mapping-service.ts` für Transformations-Services verwenden.
 - `map<Thing>ApiToDb` für API-zu-DB-Mapping verwenden.
-- `map<Thing>DbToApi` später für die Gegenrichtung verwenden.
+- `map<Thing>RowToDto` / `map<Thing>DbToApi` für DB-Row-zu-DTO-Richtung verwenden.
 - `persist-*.ts` für Datenbank-Persistenzfunktionen verwenden.
 - `*-record.ts` und `*-persist-input.ts` für gemeinsame serverseitige Persistenz-Contracts verwenden.
+
+## Mapping-Services — Tests (Pflicht)
+
+Jeder Mapping-Service bekommt eine eigene Testdatei. Die Datei liegt unter
+`src/server/tests/workspace/<domain>/services/<konzept>-mapping-service.test.ts` und spiegelt damit die Server-Struktur.
+
+Tests für Mapping-Services:
+
+- importieren die Mapping-Funktion direkt — keine DB-Mocks, keine `vi.mock`-Aufrufe nötig
+- decken mindestens ab: alle camelCase-Felder korrekt gemappt, Nullable-Felder (null → null), `category: null` wenn
+  Kategorie-Felder fehlen, leere Arrays für `socialProfiles`, `activities`, `submissions` wenn keine vorhanden
+
+Diese Regel gilt ab sofort für jeden neuen und jeden nachträglich extrahierten Mapping-Service.
+
+## Mapping-Services — Pflichtstruktur
+
+Mapping-Logik (DB-Row → DTO) gehört **nie** inline in Query- oder Command-Handler. Sie lebt in einer eigenen
+`*-mapping-service.ts`-Datei unter `services/<konzept>/` der jeweiligen Domain:
+
+```
+src/server/workspace/leads/services/
+  lead-summary/
+    lead-summary-mapping-service.ts   ← mapLeadRowToSummaryDto
+  lead-category/
+    lead-category-mapping-service.ts  ← auslagern, sobald ein zweiter Handler denselben Join mappt
+```
+
+**Faustregel für Teil-Mapper** (z. B. Category-Join): Ein einziger Callsite bleibt inline im übergeordneten
+Mapping-Service. Sobald ein zweiter Handler dieselbe Join-Logik braucht, wird der Teil-Mapper in eine eigene Datei
+extrahiert.
+
+**Row-Typen** (`LeadSummaryRow`, `LeadDetailRow` …) liegen in `src/common/contracts/<domain>/rows/` — nicht im
+Mapping-Service selbst und nicht im Query-Handler.
 
 ## Strukturregeln
 
