@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createLeadSchema } from "@/server/workspace/leads/services/create-lead/create-lead.schema";
-import { leadFilterSchema } from "../../../../workspace/leads/services/lead-filter/lead-filter.schema";
+import { leadFilterSchema } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { updateLeadSchema } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
 
 describe("createLeadSchema", () => {
@@ -328,5 +328,25 @@ describe("leadFilterSchema", () => {
     expect(leadFilterSchema.safeParse({ category: "not-a-uuid" }).success).toBe(
       false,
     );
+  });
+
+  it("accepts each valid sort value", () => {
+    for (const sort of [
+      "created_desc",
+      "score_asc",
+      "score_desc",
+      "name_asc",
+      "name_desc",
+    ]) {
+      expect(
+        leadFilterSchema.safeParse({ sort }).success,
+        `sort ${sort} should be accepted`,
+      ).toBe(true);
+    }
+  });
+
+  it("rejects an unknown sort value", () => {
+    expect(leadFilterSchema.safeParse({ sort: "q" }).success).toBe(false);
+    expect(leadFilterSchema.safeParse({ sort: "random" }).success).toBe(false);
   });
 });

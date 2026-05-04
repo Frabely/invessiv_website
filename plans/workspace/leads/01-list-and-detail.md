@@ -127,15 +127,15 @@ created_at         timestamptz NOT NULL DEFAULT NOW()
 
 ### Routing & URL-Konvention
 
-| Route                                                                          | Zweck                                                                            |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| `/[locale]/workspace/leads`                                                    | List-Page (server-rendered)                                                      |
-| `/[locale]/workspace/leads?status=&source=&category=&q=&from=&to=&page=&sort=` | Alle Filter über Query-Params, SSR-friendly, shareable                           |
-| `/[locale]/workspace/leads?selected=<id>`                                      | Detail-Side-Panel öffnet rechts (Server-Component, kein eigenes Routing-Segment) |
-| `GET /api/workspace/leads`                                                     | List                                                                             |
-| `POST /api/workspace/leads`                                                    | Create                                                                           |
-| `GET/PATCH/DELETE /api/workspace/leads/[id]`                                   | Read/Update/Soft-Delete (`archived`)                                             |
-| `POST /api/workspace/leads/bulk`                                               | Bulk Status / Soft-Delete (`archived`)                                           |
+| Route                                                                                         | Zweck                                                                            |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `/[locale]/workspace/leads`                                                                   | List-Page (server-rendered)                                                      |
+| `/[locale]/workspace/leads?status=&source=&category=&search=&date_from=&date_to=&page=&sort=` | Alle Filter über Query-Params, SSR-friendly, shareable                           |
+| `/[locale]/workspace/leads?selected=<id>`                                                     | Detail-Side-Panel öffnet rechts (Server-Component, kein eigenes Routing-Segment) |
+| `GET /api/workspace/leads`                                                                    | List                                                                             |
+| `POST /api/workspace/leads`                                                                   | Create                                                                           |
+| `GET/PATCH/DELETE /api/workspace/leads/[id]`                                                  | Read/Update/Soft-Delete (`archived`)                                             |
+| `POST /api/workspace/leads/bulk`                                                              | Bulk Status / Soft-Delete (`archived`)                                           |
 
 **Auth:** UI-Routen unter `/[locale]/workspace/*` nutzen weiterhin `requireWorkspaceAccess(locale)` über das Workspace-Layout. API-Routen unter `/api/workspace/*` nutzen einen separaten JSON-Helper `withWorkspaceApiAuth`, der ohne Locale-Redirect-Semantik authentifiziert und bei fehlender Auth/Allowlist JSON-Fehler (`401`/`404`) zurückgibt. `proxy.ts` wird nur dann für `/api/workspace/(.*)` erweitert, wenn die Middleware für API-Requests nachweislich kein Redirect-/HTML-Verhalten erzeugt; andernfalls bleibt der HOC der maßgebliche API-Schutz.
 
@@ -189,6 +189,7 @@ src/
 │   │   │   ├── bulk-update-status.command-handler.ts
 │   │   │   └── bulk-archive-leads.command-handler.ts
 │   │   ├── query-handler/
+│   │   │   ├── lead-filter.query-handler.ts
 │   │   │   ├── list-leads.query-handler.ts
 │   │   │   └── get-lead-by-id.query-handler.ts
 │   │   ├── services/
@@ -365,15 +366,22 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
   Dubletten-/Tracking-Parameter-Fälle getestet
 - **Aufwand:** 2h
 
-#### P1-T11 — Filter-Service
+#### P1-T11 — Filter-Query-Handler ✅
 
-- **Files:** `src/server/workspace/leads/services/lead-filter-service.ts`
-- **Inhalt:** Query-Param → Drizzle-`where`-Conditions
-  - Filter: status, source, category, score-min, date-range (`from`/`to`), free-text-search (auf email/last_name/company_name/owner)
-  - Standardliste schließt `archived` aus; archivierte Leads werden nur bei explizitem `status=archived` berücksichtigt
-  - Pagination + Sort (default `created_at DESC`)
+- **Files:** `src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`
+- **Inhalt:** `buildLeadFilter(filter: LeadFilterInput): LeadFilterResult` — Query-Param → Drizzle-`where`-Conditions +
+  Pagination + Sort
+  - Filter: status, source, category, score-min, date-range (`date_from`/`date_to`), free-text-search `search` (auf
+    email/last_name/company_name/owner via `ilike`)
+  - Standardliste schließt `archived` aus (`ne(lead_status, "archived")`); archivierte Leads werden nur bei explizitem
+    `status=archived` berücksichtigt
+  - Pagination: `limit` = `LEAD_LIST_PAGE_SIZE`, `offset` = `(page - 1) * perPage`, Default page 1
+  - Sort: `score_asc`, `score_desc`, `name_asc`, `name_desc`, Default `created_at DESC`
+  - Rückgabewert `LeadFilterResult`: `{ where, orderBy, limit, offset, page, perPage }`
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Unit-Tests für jeden Filter-Pfad + Kombinationen unter `src/server/tests/workspace/leads/services/lead-filter-service.test.ts`; Test belegt, dass `archived` ohne expliziten Statusfilter ausgeschlossen ist
+- **Akzeptanz:** ✅ 31 Unit-Tests für jeden Filter-Pfad + Kombinationen unter
+  `src/server/tests/workspace/leads/query-handler/lead-filter.query-handler.test.ts`; Test belegt, dass `archived` ohne
+  expliziten Statusfilter ausgeschlossen ist; alle 331 Tests im Projekt grün
 - **Aufwand:** 2h
 
 #### P1-T12 — Query: `list-leads.query-handler.ts`
