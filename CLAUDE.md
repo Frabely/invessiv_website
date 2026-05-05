@@ -96,6 +96,55 @@ Canonical model source: `src/server/db/record-configuration/`. Schema defined wi
   ```
 - Each constant group lives in its own file under `src/common/constants/<domain>/`
 
+### Error Codes & Messages
+
+Error codes are constants like any other string union. Human-readable message text is mapped in exactly one place and
+never duplicated inline across call sites. This convention applies both server-side (API responses) and client-side (
+form validation errors, toasts, inline error text).
+
+**Pattern:**
+
+```ts
+// 1. Error codes in src/common/constants/<domain>/<domain>-error-codes.ts
+export const FooErrorCode = {
+  NotFound: "NOT_FOUND",
+  ValidationError: "VALIDATION_ERROR",
+  Internal: "INTERNAL",
+} as const;
+export type FooErrorCode = (typeof FooErrorCode)[keyof typeof FooErrorCode];
+
+// 2. Message map + helper co-located with the layer that uses it (e.g. src/app/api/.../foo-error.ts)
+const MESSAGES: Record<FooErrorCode, string> = {
+  [FooErrorCode.NotFound]: "Not found",
+  [FooErrorCode.ValidationError]: "Validation failed",
+  [FooErrorCode.Internal]: "Unexpected server error",
+};
+
+export function fooError(
+  code: FooErrorCode,
+  status: number,
+  details?: unknown,
+): Response {
+  return Response.json(
+    {
+      error: code,
+      message: MESSAGES[code],
+      ...(details !== undefined ? { details } : {}),
+    },
+    { status },
+  );
+}
+```
+
+**Rules:**
+
+- Each error code string literal appears **exactly once** — in the const object.
+- Message text appears **exactly once** — in the `MESSAGES` map of the layer's `*-error.ts` file.
+- Route/component files call the helper (`fooError(FooErrorCode.NotFound, 404)`) — no inline `Response.json` with
+  hardcoded strings.
+- `MESSAGES` is **not exported** unless external code (e.g. a test or i18n layer) needs individual messages directly.
+- Client-side equivalent: a `fooErrorMessage(code: FooErrorCode): string` lookup function, same pattern.
+
 ### Types & Contracts
 
 Exported TypeScript types and interfaces are never defined inline in service or handler files. They live in dedicated

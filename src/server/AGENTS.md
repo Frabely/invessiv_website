@@ -94,6 +94,17 @@ eigenen Dateien außerhalb definiert:
 
 Die Service-/Handler-Datei importiert den Typ direkt aus der jeweiligen Contract-Datei.
 
+## Error-Code & Message-Konvention
+
+- Error-Codes kommen immer aus dem zugehörigen `*ErrorCode`-Const-Objekt in `src/common/constants/<domain>/`. Kein
+  Handler oder Service schreibt `"NOT_FOUND"` oder `"INTERNAL"` als String-Literal in eine Response.
+- Message-Texte werden in einer einzigen `*-error.ts`-Datei auf Route-Ebene (oder äquivalenter Layer-Ebene) als
+  `Record<FooErrorCode, string>` gemappt — nicht in Server-Handlern, nicht verteilt über mehrere Dateien.
+- Die `MESSAGES`-Map innerhalb des Helpers ist **nicht exportiert**, solange kein externer Code (z. B. Tests oder
+  i18n-Layer) auf einzelne Nachrichten zugreifen muss.
+- Server-Handler und Command-Handler liefern strukturierte Ergebnis-Typen (`ok: true/false`, `code`, ggf. `errors`). Die
+  Übersetzung in HTTP-Status und Message-Text passiert ausschließlich in der Route/Layer, die den Helper nutzt.
+
 ## Sprachregel
 
 - Inhalte von `AGENTS.md` in diesem Projekt immer auf Deutsch pflegen.

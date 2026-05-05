@@ -4,6 +4,7 @@ import {
   CONTACT_REQUEST_KIND,
   CONTACT_REQUEST_KINDS,
 } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,
@@ -42,7 +43,7 @@ async function dispatchContactSubmit(payload: unknown, requestId: string) {
   const parsedKind = contactRequestKindSchema.safeParse(payload);
   if (!parsedKind.success) {
     return {
-      code: "validation_error" as const,
+      code: CONTACT_SUBMIT_ERROR_CODE.ValidationError,
       fieldErrors: {
         kind: ["invalid_request_kind"],
       },
@@ -66,18 +67,30 @@ export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type");
 
   if (!contentType?.includes("application/json")) {
-    return createContactErrorResponse("invalid_json", requestId, 400);
+    return createContactErrorResponse(
+      CONTACT_SUBMIT_ERROR_CODE.InvalidJson,
+      requestId,
+      400,
+    );
   }
 
   if (!hasPayloadWithinLimit(request.headers.get("content-length"))) {
-    return createContactErrorResponse("payload_too_large", requestId, 413);
+    return createContactErrorResponse(
+      CONTACT_SUBMIT_ERROR_CODE.PayloadTooLarge,
+      requestId,
+      413,
+    );
   }
 
   let payload: unknown;
   try {
     payload = await request.json();
   } catch {
-    return createContactErrorResponse("invalid_json", requestId, 400);
+    return createContactErrorResponse(
+      CONTACT_SUBMIT_ERROR_CODE.InvalidJson,
+      requestId,
+      400,
+    );
   }
 
   const rateLimitResult = checkContactRateLimit(
@@ -85,7 +98,7 @@ export async function POST(request: NextRequest) {
   );
   if (!rateLimitResult.allowed) {
     return createContactErrorResponse(
-      "rate_limited",
+      CONTACT_SUBMIT_ERROR_CODE.RateLimited,
       requestId,
       429,
       undefined,
@@ -101,8 +114,8 @@ export async function POST(request: NextRequest) {
     const submitResult = await dispatchContactSubmit(payload, requestId);
     if (!submitResult.ok) {
       const status =
-        submitResult.code === "validation_error" ||
-        submitResult.code === "spam_detected"
+        submitResult.code === CONTACT_SUBMIT_ERROR_CODE.ValidationError ||
+        submitResult.code === CONTACT_SUBMIT_ERROR_CODE.SpamDetected
           ? 400
           : 503;
 
@@ -114,7 +127,11 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch {
-    return createContactErrorResponse("internal_error", requestId, 500);
+    return createContactErrorResponse(
+      CONTACT_SUBMIT_ERROR_CODE.InternalError,
+      requestId,
+      500,
+    );
   }
 
   return createContactSuccessResponse(requestId);

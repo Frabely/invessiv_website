@@ -83,6 +83,24 @@ Innerhalb eines Domain-Ordners in `contracts/` gibt es drei konzeptionell getren
 Diese Trennung stellt sicher, dass DB-nahe snake_case-Typen nicht mit API-DTOs vermischt werden, aber dennoch isomorph
 in `src/common` liegen und von beiden Seiten importiert werden können.
 
+## Error-Code-Konstanten
+
+Error-Codes folgen dem Const-Objekt-Pattern wie alle anderen String-Unions:
+
+```ts
+export const FooErrorCode = {
+  NotFound: "NOT_FOUND",
+  ValidationError: "VALIDATION_ERROR",
+  Internal: "INTERNAL",
+} as const;
+export type FooErrorCode = (typeof FooErrorCode)[keyof typeof FooErrorCode];
+```
+
+Der **Message-Text** gehört **nicht** in `src/common/constants/` — er liegt ausschließlich in einem co-located
+`*-error.ts`-Helper in der jeweiligen Nutzungsschicht (API-Route, Client-Komponente). Damit bleibt er pro Kontext
+überschreibbar und i18n-fähig, ohne dass `src/common` von serverseitigen oder clientseitigen Abhängigkeiten infiziert
+wird.
+
 ## Tests
 
 - Konstanten-Tests co-located mit der Domäne (z. B. `leads/leads-constants.test.ts`)

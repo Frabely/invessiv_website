@@ -7,6 +7,7 @@ import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { createLead } from "@/server/workspace/leads/command-handler/create-lead.command-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
 import { leadFilterSchema } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
+import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
 
 export const runtime = "nodejs";
 
@@ -31,13 +32,10 @@ export const GET = withWorkspaceApiAuth(async (request: NextRequest) => {
 
   const parsed = leadFilterSchema.safeParse(rawFilter);
   if (!parsed.success) {
-    return Response.json(
-      {
-        error: "VALIDATION_ERROR",
-        message: "Invalid filter parameters",
-        details: parsed.error.issues,
-      },
-      { status: 400 },
+    return leadApiError(
+      LeadErrorCode.ValidationError,
+      400,
+      parsed.error.issues,
     );
   }
 
@@ -50,40 +48,21 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
   try {
     body = await request.json();
   } catch {
-    return Response.json(
-      { error: "VALIDATION_ERROR", message: "Invalid JSON body" },
-      { status: 400 },
-    );
+    return leadApiError(LeadErrorCode.ValidationError, 400);
   }
 
   let result;
   try {
     result = await createLead(body);
   } catch {
-    return Response.json(
-      { error: "INTERNAL", message: "Unexpected server error" },
-      { status: 500 },
-    );
+    return leadApiError(LeadErrorCode.Internal, 500);
   }
 
   if (!result.ok) {
     if (result.code === LeadErrorCode.EmailExists) {
-      return Response.json(
-        {
-          error: "EMAIL_EXISTS",
-          message: "A lead with this email already exists",
-        },
-        { status: 409 },
-      );
+      return leadApiError(LeadErrorCode.EmailExists, 409);
     }
-    return Response.json(
-      {
-        error: "VALIDATION_ERROR",
-        message: "Validation failed",
-        details: result.errors,
-      },
-      { status: 400 },
-    );
+    return leadApiError(LeadErrorCode.ValidationError, 400, result.errors);
   }
 
   return Response.json({ lead: result.lead }, { status: 201 });

@@ -289,6 +289,13 @@ Outputs:
   ```
 - Keys im Const-Objekt verwenden **PascalCase** (`LeadSource.Webform`, nicht `LeadSource.WEBFORM`)
 - Wenn Iteration benötigt wird (z. B. Drizzle `{ enum: [...] }`, `sqlCheckIn`), wird ein separates `FOO_KIND_VALUES`-Array exportiert, das ausschließlich aus dem Const-Objekt abgeleitet wird; String-Literale erscheinen **genau einmal**, im Const-Objekt
+- **Error-Code & Message-Konvention (verbindlich):** Error-Codes sind Konstanten nach dem Const-Objekt-Pattern in
+  `src/common/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen** `*-error.ts`
+  -Datei auf Ebene der nutzenden Layer (API-Route, Client-Komponente) gemappt — nie inline in Route- oder
+  Komponenten-Dateien verstreut. Call-Sites rufen ausschließlich den Helper auf (z. B.
+  `fooError(FooErrorCode.NotFound, 404)`). Das Pattern gilt server-seitig (API-Responses) und client-seitig (
+  Form-Validation, Toast, Inline-Errors) gleichermaßen. Vollständige Spezifikation: Root `CLAUDE.md` → „Error Codes &
+  Messages".
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
