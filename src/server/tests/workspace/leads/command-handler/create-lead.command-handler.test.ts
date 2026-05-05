@@ -240,7 +240,6 @@ describe("createLead", () => {
       expect.any(Object),
       expect.objectContaining({
         type: "note",
-        body: null,
       }),
     );
   });

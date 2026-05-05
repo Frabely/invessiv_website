@@ -185,9 +185,7 @@ src/
 │   │   ├── command-handler/
 │   │   │   ├── create-lead.command-handler.ts
 │   │   │   ├── update-lead.command-handler.ts
-│   │   │   ├── update-lead-status.command-handler.ts
-│   │   │   ├── bulk-update-status.command-handler.ts
-│   │   │   └── bulk-archive-leads.command-handler.ts
+│   │   │   └── bulk-edit-leads.command-handler.ts
 │   │   ├── query-handler/
 │   │   │   ├── lead-filter.query-handler.ts
 │   │   │   ├── list-leads.query-handler.ts
@@ -427,19 +425,29 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 - **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/create-lead.command-handler.test.ts` für valid create mit Kategorie/Social-Profil/Improvements, duplicate email, missing required field; Activity-Test prüft, dass `metadata` und Actor-Felder keine E-Mail/PII enthalten
 - **Aufwand:** 2h
 
-#### P1-T15 — Command: `update-lead` + `update-lead-status`
+#### P1-T15 — Command: `update-lead` ✅
 
-- **Files:** `src/server/workspace/leads/command-handler/update-lead.command-handler.ts`, `src/server/workspace/leads/command-handler/update-lead-status.command-handler.ts`
-- **Inhalt:** Lead-Stammdaten inklusive `category_id`, `notes` und `improvements` aktualisieren und `updated_at` explizit setzen; Social-Profile per Replace-Set in Transaction synchronisieren; Status-Change setzt ebenfalls `updated_at` und loggt Activity (`type=status_change`, `body="<old> → <new>"`)
-- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/update-lead.command-handler.test.ts` und `update-lead-status.command-handler.test.ts` für valid update mit Kategorie/Social-Profil/Improvements, status-change-activity wird angelegt, 404 wenn Lead nicht existiert
+- **Files:** `src/server/workspace/leads/command-handler/update-lead.command-handler.ts`
+- **Inhalt:** Alle editierbaren Felder (`first_name`, `last_name`, `company_name`, `email`, `phone`, `website_url`,
+  `category_id`, `score`, `lead_status`, `owner`, `notes`, `improvements`) aktualisieren und `updated_at` explizit
+  setzen; Social-Profile per Replace-Set in Transaction synchronisieren; bei tatsächlicher Status-Änderung (
+  `old !== new`) eine `status_change`-Activity (`body="<old> → <new>"`) im selben Transaction-Scope loggen.
+  `lead_status` liegt nur im `updateLeadSchema`, nicht im shared `leadSchema` (create immer `new`).
+- **Akzeptanz:** ✅ 10 Tests unter `src/server/tests/workspace/leads/command-handler/update-lead.command-handler.test.ts`
+  für valid update mit Kategorie/Social-Profil/Improvements, status-change-activity nur bei tatsächlicher Änderung, 404
+  wenn Lead nicht existiert
 - **Aufwand:** 1,5h
 
-#### P1-T16 — Bulk-Commands
+#### P1-T16 — Command: `bulk-edit-leads` ✅
 
-- **Files:** `src/server/workspace/leads/command-handler/bulk-update-status.command-handler.ts`, `src/server/workspace/leads/command-handler/bulk-archive-leads.command-handler.ts`
-- **Inhalt:** Eingaben `{ ids: string[], status?: LeadStatus }` bzw. `{ ids: string[] }`; Transaction; Activity-Log pro Lead bei Status-Bulk; Soft-Delete setzt `lead_status='archived'` und `updated_at`, keine Zeilen werden physisch gelöscht
+- **Files:** `src/server/workspace/leads/command-handler/bulk-edit-leads.command-handler.ts`
+- **Inhalt:** Eingabe `{ ids: string[], status: LeadStatus }`; Batch-SELECT der alten Status; Batch-UPDATE
+  `lead_status` + `updated_at`; Activity-Log pro Lead (`type=status_change`); Transaction-atomar. Archive ist über
+  `status: 'archived'` abgedeckt — kein separater Handler.
 - **Skills:** `superpowers:test-driven-development`
-- **Akzeptanz:** Tests unter `src/server/tests/workspace/leads/command-handler/bulk-update-status.command-handler.test.ts` und `bulk-archive-leads.command-handler.test.ts` mit gemischten valid/invalid IDs (atomic: alles oder nichts); archivierte Leads bleiben in der DB und sind über Statusfilter `archived` auffindbar
+- **Akzeptanz:** ✅ 5 Tests unter
+  `src/server/tests/workspace/leads/command-handler/bulk-edit-leads.command-handler.test.ts`; Activity-Bodies korrekt
+  per Lead; Archive-Use-Case über `status='archived'` abgedeckt; leere `ids` → `VALIDATION_ERROR`
 - **Aufwand:** 1,5h
 
 ### API-Routes
@@ -472,7 +480,8 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 #### P1-T20 — Route: `POST /api/workspace/leads/bulk`
 
 - **Files:** `src/app/api/workspace/leads/bulk/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
-- **Inhalt:** Action-Discriminator im Body: `{ action: 'set_status' | 'archive', ids, status? }`
+- **Inhalt:** Action-Discriminator im Body: `{ action: 'set_status' | 'archive', ids, status? }`. Beide Actions
+  delegieren an `bulkEditLeads()`: `set_status` → `{ ids, status }`, `archive` → `{ ids, status: 'archived' }`.
 - **Akzeptanz:** Tests für beide Actions unter `src/server/tests/workspace/leads/api/leads-bulk-route.test.ts`; API-README dokumentiert Atomicity, erlaubte Actions, Soft-Delete-Semantik und Fehlerfälle
 - **Aufwand:** 1h
 
