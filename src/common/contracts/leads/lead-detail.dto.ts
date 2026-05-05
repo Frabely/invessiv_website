@@ -20,8 +20,8 @@ export interface LeadDetailDto {
   notes: string | null;
   improvements: string[] | null;
   externalGuid: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   category: LeadCategoryDto | null;
   socialProfiles: LeadSocialProfileDto[];
   activities: LeadActivityDto[];

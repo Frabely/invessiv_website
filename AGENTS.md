@@ -275,7 +275,8 @@ Outputs:
 - Section-/Seiten-spezifische Styles (z. B. Hero, einzelne Landing-Sections, komponentenspezifische States) gehören in route- oder komponentennahe Style-Dateien; keine dauerhafte Ablage solcher Styles in `globals.css`
 - Neue produktive Komponenten nutzen standardmäßig ein lokales `*.module.css` oder, wenn der Styling-Bedarf trivial ist, statische Tailwind-Utilities direkt im JSX; neue globale Komponentenklassen sind nicht erlaubt
 - Wenn Styles aus `src/app/globals.css` in lokale Komponenten-Styles migriert werden, müssen die zugehörigen globalen Regeln im selben Commit entfernt werden; "temporär doppelt" ist kein zulässiger Dauerzustand
-- Ausnahmen von diesen CSS-Regeln werden nicht stillschweigend eingeführt: vor dem Merge entweder sofort beheben oder mit Dateipfad, Begründung, Risiko und Folgeschritt in `architecture-open-items.md` dokumentieren
+- Ausnahmen von diesen CSS-Regeln werden nicht stillschweigend eingeführt: vor dem Merge entweder sofort beheben oder
+  mit Dateipfad, Begründung, Risiko und Folgeschritt dokumentieren
 - Logiknahe Tests gehören in die Nähe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
 - Route-Dateien (`page.tsx`) orchestrieren nur: keine großen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
 - Section-Mapping und Render-Verzweigungen in dedizierte Renderer-Komponenten auslagern (z. B. `home-sections-renderer`)
@@ -370,7 +371,8 @@ Outputs:
 - Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test für kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
 - Architektur-Gate (verbindlich): Beim Entwickeln, Refactoring und Code-Durchlauf ist aktiv zu prüfen, ob die Regeln in `AGENTS.md` eingehalten sind.
 - Falls eine geplante oder gefundene Änderung gegen eine Architekturregel verstößt, wird nicht stillschweigend weitergebaut: zuerst den Nutzer fragen, ob der Verstoß sofort behoben oder bewusst verschoben werden soll.
-- Wenn eine Behebung verschoben wird, muss die konkrete Stelle mit Dateipfad, Regelbezug, Risiko und nächstem Schritt in `architecture-open-items.md` dokumentiert werden, damit sie nicht vergessen wird.
+- Wenn eine Behebung verschoben wird, muss die konkrete Stelle mit Dateipfad, Regelbezug, Risiko und nächstem Schritt
+  dokumentiert werden, damit sie nicht vergessen wird.
 
 ## i18n / Dictionaries (verbindlich)
 

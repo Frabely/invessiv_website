@@ -47,6 +47,9 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
       if (result.code === LeadErrorCode.NotFound) {
         return leadApiError(LeadErrorCode.NotFound, 404);
       }
+      if (result.code === LeadErrorCode.EmailExists) {
+        return leadApiError(LeadErrorCode.EmailExists, 409);
+      }
       return leadApiError(LeadErrorCode.ValidationError, 400, result.errors);
     }
 

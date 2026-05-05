@@ -49,7 +49,7 @@ describe("withWorkspaceApiAuth", () => {
 
     expect(response.status).toBe(401);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: false });
+    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
     expect(mockCurrentUser).not.toHaveBeenCalled();
   });
 
@@ -62,7 +62,7 @@ describe("withWorkspaceApiAuth", () => {
 
     expect(response.status).toBe(401);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: false });
+    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
   });
 
   it("returns 401 JSON when the user has no primary email", async () => {
@@ -76,7 +76,7 @@ describe("withWorkspaceApiAuth", () => {
 
     expect(response.status).toBe(401);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: false });
+    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
   });
 
   it("returns 404 JSON when the primary email is not on the allowlist", async () => {
@@ -93,7 +93,7 @@ describe("withWorkspaceApiAuth", () => {
 
     expect(response.status).toBe(404);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: false });
+    expect(body).toMatchObject({ ok: false, error: "NOT_FOUND" });
   });
 
   it("calls the inner handler and returns its response when authenticated and allowed", async () => {

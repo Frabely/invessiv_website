@@ -7,7 +7,7 @@ export interface LeadActivityDto {
   title: string | null;
   body: string | null;
   metadata: unknown;
-  occurredAt: Date;
+  occurredAt: string;
   actorType: LeadActorType;
   actorId: string | null;
   actorLabel: string | null;

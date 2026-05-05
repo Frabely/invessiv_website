@@ -8,7 +8,7 @@ JSON-API für die Workspace-Leads-UI unter `/[locale]/workspace/leads`. Server-o
 
 Jeder Handler ist mit `withWorkspaceApiAuth(handler)` aus `src/lib/auth/api.ts` gewrappt:
 
-1. Clerk `auth()` → kein `userId` ⇒ `401 UNAUTHENTICATED`.
+1. Clerk `auth()` → kein `userId` ⇒ `401 UNAUTHORIZED`.
 2. `currentUser()` → primäre E-Mail (lowercase, trim).
 3. `isEmailAllowed(email)` aus `src/lib/auth/allowlist.ts` → `false` ⇒ `404 NOT_FOUND`.
 
@@ -23,10 +23,9 @@ Allowlist via ENV `WORKSPACE_ALLOWED_EMAILS` (Komma-getrennt). API-Antworten sin
 | Status | `error`-Code       | Bedeutung                                              |
 | ------ | ------------------ | ------------------------------------------------------ |
 | 400    | `VALIDATION_ERROR` | Zod-Validation. `details` enthält Feld-Pfade           |
-| 401    | `UNAUTHENTICATED`  | Kein Clerk-User                                        |
+| 401    | `UNAUTHORIZED`     | Kein Clerk-User                                        |
 | 404    | `NOT_FOUND`        | Lead existiert nicht **oder** User nicht auf Allowlist |
-| 409    | `EMAIL_EXISTS`     | Duplicate Email beim Create                            |
-| 422    | `BUSINESS_RULE`    | Z.B. `last_name` und `company_name` beide leer         |
+| 409    | `EMAIL_EXISTS`     | Duplicate Email beim Create oder Update                |
 | 500    | `INTERNAL`         | Unerwarteter Fehler. Stacktrace nur im Server-Log      |
 
 `message` ist auf Englisch, knapp, ohne PII. `details` enthält keine E-Mails, Telefonnummern oder Lead-Inhalte.
@@ -39,18 +38,17 @@ Listet Leads gefiltert, sortiert und paginiert.
 
 ### Query-Params
 
-| Param       | Typ                                                                                                 | Default           | Notiz                                                         |
-| ----------- | --------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------- |
-| `status`    | `'new' \| 'contacted' \| 'qualified' \| 'proposal' \| 'won' \| 'lost' \| 'archived'`                | —                 | Standard schließt `archived` aus, wenn nicht explizit gesetzt |
-| `source`    | `'webform' \| 'manual' \| 'import'`                                                                 | —                 |                                                               |
-| `category`  | `string` (UUID oder Slug aus `lead_categories`)                                                     | —                 |                                                               |
-| `q`         | `string`                                                                                            | —                 | Free-Text auf `email`, `last_name`, `company_name`, `owner`   |
-| `score_min` | `number` (0–100)                                                                                    | —                 |                                                               |
-| `from`      | `string` (ISO-Date)                                                                                 | —                 | Inklusive `created_at >= from`                                |
-| `to`        | `string` (ISO-Date)                                                                                 | —                 | Exklusive `created_at < to`                                   |
-| `page`      | `number`                                                                                            | `1`               | 1-basiert                                                     |
-| `per_page`  | `number`                                                                                            | `25`              | Max `100`                                                     |
-| `sort`      | `'created_at:desc' \| 'created_at:asc' \| 'name:asc' \| 'name:desc' \| 'score:desc' \| 'score:asc'` | `created_at:desc` |                                                               |
+| Param       | Typ                                                                                                        | Default        | Notiz                                                                     |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------- |
+| `status`    | `'all' \| 'new' \| 'contacted' \| 'qualified' \| 'proposal' \| 'on_hold' \| 'won' \| 'lost' \| 'archived'` | —              | Standard schließt `archived` aus, wenn nicht explizit gesetzt             |
+| `source`    | `'webform' \| 'manual' \| 'import'`                                                                        | —              |                                                                           |
+| `category`  | `string` (UUID aus `lead_categories.id`)                                                                   | —              | Slugs werden aktuell nicht akzeptiert                                     |
+| `search`    | `string`                                                                                                   | —              | Free-Text auf `email`, `first_name`, `last_name`, `company_name`, `owner` |
+| `score_min` | `number` (0-100)                                                                                           | —              |                                                                           |
+| `date_from` | `string`                                                                                                   | —              | Inklusive `created_at >= date_from`                                       |
+| `date_to`   | `string`                                                                                                   | —              | Inklusive `created_at <= date_to`                                         |
+| `page`      | `number`                                                                                                   | `1`            | 1-basiert                                                                 |
+| `sort`      | `'created_desc' \| 'score_asc' \| 'score_desc' \| 'name_asc' \| 'name_desc'`                               | `created_desc` |                                                                           |
 
 ### Response `200`
 
@@ -75,7 +73,7 @@ Listet Leads gefiltert, sortiert und paginiert.
 
 Legt einen Lead manuell an. Server setzt explizit `source='manual'` und `lead_status='new'`. Activity-Eintrag (`type='note'`) wird im selben Transaktions-Schritt erzeugt.
 
-### Body — `CreateLeadDto`
+### Body — Create-Input
 
 ```jsonc
 {
@@ -110,7 +108,6 @@ Legt einen Lead manuell an. Server setzt explizit `source='manual'` und `lead_st
 
 - `400 VALIDATION_ERROR` — Zod-Fehler.
 - `409 EMAIL_EXISTS` — bestehender Lead mit gleicher E-Mail (unique über `leads_email_lower_uidx`).
-- `422 BUSINESS_RULE` — z.B. `last_name` und `company_name` beide leer/whitespace.
 
 ---
 
@@ -134,9 +131,10 @@ Lädt Lead inklusive Kategorie, Social-Profile, Activities (sortiert `occurred_a
 
 Aktualisiert Lead-Stammdaten, Status, Notes, Improvements und/oder Social-Profile. Setzt `updated_at` explizit. Bei Status-Änderung wird ein Activity-Eintrag (`type='status_change'`) erzeugt. Social-Profile werden per Replace-Set in derselben Transaktion synchronisiert.
 
-### Body — `UpdateLeadDto`
+### Body — Update-Input
 
-Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie bei `CreateLeadDto`, zusätzlich `lead_status`. `source` und `email` sind im PATCH **nicht** veränderbar.
+Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie beim Create-Input, zusätzlich `lead_status`.`source`
+ist im PATCH **nicht** veränderbar; `email` ist veränderbar und kollidierende E-Mails liefern`409 EMAIL_EXISTS`.
 
 ```jsonc
 {
@@ -147,7 +145,7 @@ Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie bei `CreateL
   "website_url": "string (URL) | null",
   "category_id": "uuid | null",
   "score": "number 0..100 | null",
-  "lead_status": "new | contacted | qualified | proposal | won | lost | archived",
+  "lead_status": "new | contacted | qualified | proposal | on_hold | won | lost | archived",
   "owner": "string | null",
   "notes": "string | null",
   "improvements": ["string", ...] | null,
@@ -165,7 +163,7 @@ Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie bei `CreateL
 
 ### Fehler
 
-- `400 VALIDATION_ERROR`, `404 NOT_FOUND`, `422 BUSINESS_RULE` (Personen-/Firmenname-Check).
+- `400 VALIDATION_ERROR`, `404 NOT_FOUND`, `409 EMAIL_EXISTS`.
 
 ---
 
@@ -204,19 +202,15 @@ Atomic Bulk-Aktion. Action-Discriminator im Body.
 ### Response `200`
 
 ```json
-{ "updated": 3 }
-```
-
-oder
-
-```json
-{ "archived": 2 }
+{
+  "ok": true,
+  "updatedCount": 3
+}
 ```
 
 ### Fehler
 
 - `400 VALIDATION_ERROR` — Body-Form, ungültige `status`, leere `ids`.
-- `404 NOT_FOUND` — mindestens eine ID existiert nicht. Transaktion wird zurückgerollt, kein Lead wird verändert.
 
 ---
 
@@ -240,29 +234,28 @@ Routen rufen ausschließlich Handler aus `src/server/workspace/leads/**` auf:
 - `query-handler/get-lead-by-id.query-handler.ts`
 - `command-handler/create-lead.command-handler.ts`
 - `command-handler/update-lead.command-handler.ts`
-- `command-handler/update-lead-status.command-handler.ts`
-- `command-handler/bulk-update-status.command-handler.ts`
-- `command-handler/bulk-archive-leads.command-handler.ts`
+- `command-handler/bulk-edit-leads.command-handler.ts`
 
 Validation und Filter:
 
-- `services/lead-validation-service.ts`
-- `services/lead-filter-service.ts`
-- `services/lead-url-normalization-service.ts`
+- `services/create-lead/create-lead-validation-service.ts`
+- `services/update-lead/update-lead-validation-service.ts`
+- `services/lead-filter/lead-filter.schema.ts`
+- `utils/lead-url-normalization-service.ts`
 - `services/lead-activity-service.ts`
 
-Persistenz: `getDrizzleDatabaseClient()` + `ContactDatabaseTransaction` aus `src/server/db/client.ts`.
+Persistenz: `getDrizzleDatabaseClient()` + `ContactDatabaseTransaction` aus `src/server/db/core`.
 
 ## DTO-Verweise
 
-| DTO                  | Datei                                                 |
-| -------------------- | ----------------------------------------------------- |
-| `LeadSummaryDto`     | `src/common/contracts/leads/lead-summary.dto.ts`      |
-| `LeadDetailDto`      | `src/common/contracts/leads/lead-detail.dto.ts`       |
-| `LeadWriteFieldsDto` | `src/common/contracts/leads/lead-write-fields.dto.ts` |
-| `CreateLeadDto`      | `src/common/contracts/leads/create-lead.dto.ts`       |
-| `UpdateLeadDto`      | `src/common/contracts/leads/update-lead.dto.ts`       |
-| `LeadFilterDto`      | `src/common/contracts/leads/lead-filter.dto.ts`       |
+| Contract             | Datei                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| `LeadSummaryDto`     | `src/common/contracts/leads/lead-summary.dto.ts`           |
+| `LeadDetailDto`      | `src/common/contracts/leads/lead-detail.dto.ts`            |
+| `CreateLeadResult`   | `src/common/contracts/leads/results/create-lead-result.ts` |
+| `UpdateLeadResult`   | `src/common/contracts/leads/results/update-lead-result.ts` |
+| `ListLeadsResult`    | `src/common/contracts/leads/results/list-leads-result.ts`  |
+| `BulkEditLeadsInput` | `src/common/contracts/leads/bulk-edit-leads-input.ts`      |
 
 ## Hinweise
 
@@ -273,7 +266,5 @@ Persistenz: `getDrizzleDatabaseClient()` + `ContactDatabaseTransaction` aus `src
 
 ## Verweise
 
-- `CLAUDE.md` (gleicher Ordner) — Architektur und Server-Layer-Reuse.
-- `AGENTS.md` (gleicher Ordner) — mandatorische Regeln.
 - `src/app/[locale]/workspace/leads/CLAUDE.md` — UI-Pendant.
 - `plans/workspace/leads/01-list-and-detail.md` — Implementierungsplan.

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createLeadSchema } from "@/server/workspace/leads/services/create-lead/create-lead.schema";
 import { leadFilterSchema } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { updateLeadSchema } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
+import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 
 describe("createLeadSchema", () => {
   describe("valid inputs", () => {
@@ -241,6 +242,48 @@ describe("updateLeadSchema", () => {
         company_name: "   ",
       }).success,
     ).toBe(false);
+  });
+});
+
+describe("updateLeadValidationService", () => {
+  const existingLead = {
+    companyName: null,
+    email: "max@example.com",
+    lastName: "Mustermann",
+  };
+
+  it("rejects a patch that would clear the only remaining name field", () => {
+    const result = updateLeadValidationService.validate(
+      { last_name: "" },
+      existingLead,
+    );
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts clearing last_name when company_name remains present", () => {
+    const result = updateLeadValidationService.validate(
+      { last_name: "" },
+      {
+        companyName: "ACME GmbH",
+        email: "max@example.com",
+        lastName: "Mustermann",
+      },
+    );
+
+    expect(result.success).toBe(true);
+  });
+
+  it("removes email from parsed data when the patch keeps the same email", () => {
+    const result = updateLeadValidationService.validate(
+      { email: " MAX@example.com " },
+      existingLead,
+    );
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data).not.toHaveProperty("email");
+    }
   });
 });
 

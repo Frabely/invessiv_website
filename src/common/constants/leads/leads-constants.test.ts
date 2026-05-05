@@ -5,9 +5,15 @@ import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-type
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
 import { LEAD_STATUS_TABS } from "@/common/constants/leads/lead-status-tabs";
 import {
-  LEAD_LIST_PAGE_SIZE,
   LEAD_LIST_MAX_PAGE_SIZE,
+  LEAD_LIST_PAGE_SIZE,
 } from "@/common/constants/leads/lead-list-defaults";
+import {
+  LEAD_ERROR_CODE_VALUES,
+  LEAD_VALIDATION_ISSUE_CODE_VALUES,
+  LeadErrorCode,
+  LeadValidationIssueCode,
+} from "@/common/constants/leads/lead-error-codes";
 
 describe("LEAD_SOURCES", () => {
   it("contains exactly webform, manual, import", () => {
@@ -89,5 +95,30 @@ describe("lead list defaults", () => {
 
   it("PAGE_SIZE is less than MAX_PAGE_SIZE", () => {
     expect(LEAD_LIST_PAGE_SIZE).toBeLessThan(LEAD_LIST_MAX_PAGE_SIZE);
+  });
+});
+
+describe("LeadErrorCode", () => {
+  it("contains the expected API error codes without duplicates", () => {
+    expect(LEAD_ERROR_CODE_VALUES).toEqual([
+      LeadErrorCode.EmailExists,
+      LeadErrorCode.ValidationError,
+      LeadErrorCode.NotFound,
+      LeadErrorCode.Internal,
+    ]);
+    expect(new Set(LEAD_ERROR_CODE_VALUES).size).toBe(
+      LEAD_ERROR_CODE_VALUES.length,
+    );
+  });
+});
+
+describe("LeadValidationIssueCode", () => {
+  it("contains the expected validation issue codes without duplicates", () => {
+    expect(LEAD_VALIDATION_ISSUE_CODE_VALUES).toEqual([
+      LeadValidationIssueCode.LastNameOrCompanyNameRequired,
+    ]);
+    expect(new Set(LEAD_VALIDATION_ISSUE_CODE_VALUES).size).toBe(
+      LEAD_VALIDATION_ISSUE_CODE_VALUES.length,
+    );
   });
 });

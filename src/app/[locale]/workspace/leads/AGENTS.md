@@ -8,7 +8,8 @@ Diese Datei gilt für `src/app/[locale]/workspace/leads/` und alle Subroutes dar
 - Keine vorhandene Auth-, i18n-, SEO-/Caching-, Persistenz- oder Sicherheitslogik entfernen, nur weil ein neuer Weg einfacher wirkt.
 - Änderungen klein und reviewbar halten: erst Scope, Abhängigkeiten und Risiken klären, dann gezielt implementieren.
 - Bei Unsicherheit über Security, Auth, Caching oder Datenzugriff stoppen und den Nutzer fragen, bevor produktive Schutzmechanismen abgeschwächt werden.
-- Wenn eine Architekturregel nicht sofort eingehalten werden kann, die konkrete Stelle mit Pfad, Regelbezug, Risiko und nächstem Schritt in `architecture-open-items.md` dokumentieren.
+- Wenn eine Architekturregel nicht sofort eingehalten werden kann, die konkrete Stelle mit Pfad, Regelbezug, Risiko und
+  nächstem Schritt dokumentieren.
 
 ## Zweck und Geltungsbereich
 

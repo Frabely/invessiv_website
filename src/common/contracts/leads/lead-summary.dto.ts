@@ -13,7 +13,7 @@ export interface LeadSummaryDto {
   source: LeadSource;
   leadStatus: ContactLeadStatus;
   owner: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   category: LeadCategoryDto | null;
 }

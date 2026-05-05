@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { PostgresErrorCode } from "@/server/db/core";
 
 const {
   getDrizzleDatabaseClientMock,
@@ -41,8 +42,8 @@ const mockLeadDto = {
   notes: null,
   improvements: null,
   externalGuid: null,
-  createdAt: NOW,
-  updatedAt: NOW,
+  createdAt: NOW.toISOString(),
+  updatedAt: NOW.toISOString(),
   category: null,
   socialProfiles: [],
   activities: [],
@@ -202,6 +203,7 @@ describe("updateLead", () => {
 
   it("returns VALIDATION_ERROR when both last_name and company_name are empty strings", async () => {
     vi.resetModules();
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
@@ -216,7 +218,48 @@ describe("updateLead", () => {
     });
   });
 
-  it("logs status_change activity with body '<old> → <new>' when lead_status changes", async () => {
+  it("returns VALIDATION_ERROR when clearing last_name would leave the lead without a name", async () => {
+    vi.resetModules();
+    getLeadByIdMock.mockResolvedValueOnce({
+      ...mockLeadDto,
+      lastName: "Mustermann",
+      companyName: null,
+    });
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+    getDrizzleDatabaseClientMock.mockClear();
+
+    const result = await updateLead("lead-existing-uuid", {
+      last_name: "",
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      code: LeadErrorCode.ValidationError,
+    });
+    expect(getDrizzleDatabaseClientMock).not.toHaveBeenCalled();
+  });
+
+  it("returns EMAIL_EXISTS when the updated email already exists", async () => {
+    vi.resetModules();
+    const duplicateError = Object.assign(new Error("duplicate key value"), {
+      code: PostgresErrorCode.UniqueViolation,
+    });
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      transaction: vi.fn().mockRejectedValue(duplicateError),
+    });
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+
+    const result = await updateLead("lead-existing-uuid", {
+      email: "existing@example.com",
+    });
+
+    expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
+  });
+
+  it("logs status_change activity with body '<old> -> <new>' when lead_status changes", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
@@ -242,7 +285,7 @@ describe("updateLead", () => {
       expect.any(Object),
       expect.objectContaining({
         type: "status_change",
-        body: "new → qualified",
+        body: "new -> qualified",
       }),
     );
   });

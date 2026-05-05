@@ -1,12 +1,13 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
+import { getDrizzleDatabaseClient, PostgresErrorCode } from "@/server/db/core";
 import { leads, leadSocialProfiles } from "@/server/db/record-configuration";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
 import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
+import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
@@ -15,7 +16,12 @@ export async function updateLead(
   leadId: string,
   input: unknown,
 ): Promise<UpdateLeadResult> {
-  const validation = updateLeadValidationService.validate(input);
+  const existing = await getLeadById(leadId);
+  if (!existing) {
+    return { ok: false, code: LeadErrorCode.NotFound };
+  }
+
+  const validation = updateLeadValidationService.validate(input, existing);
   if (!validation.success) {
     return {
       ok: false,
@@ -24,12 +30,7 @@ export async function updateLead(
     };
   }
 
-  const existing = await getLeadById(leadId);
-  if (!existing) {
-    return { ok: false, code: LeadErrorCode.NotFound };
-  }
-
-  const data = validation.data;
+  const data: UpdateLeadInput = validation.data;
   const db = getDrizzleDatabaseClient();
   const now = new Date();
 
@@ -52,41 +53,57 @@ export async function updateLead(
   const isStatusChange =
     data.lead_status !== undefined && data.lead_status !== existing.leadStatus;
 
-  await db.transaction(async (tx) => {
-    await tx.update(leads).set(setFields).where(eq(leads.id, leadId));
+  try {
+    await db.transaction(async (tx) => {
+      await tx.update(leads).set(setFields).where(eq(leads.id, leadId));
 
-    if (isStatusChange) {
-      await createLeadActivity(tx, {
-        leadId,
-        type: LeadActivityType.StatusChange,
-        body: `${existing.leadStatus} → ${data.lead_status}`,
-        actorType: LeadActorType.System,
-      });
-    }
-
-    if (data.social_profiles !== undefined) {
-      await tx
-        .delete(leadSocialProfiles)
-        .where(eq(leadSocialProfiles.lead_id, leadId));
-
-      if (data.social_profiles.length > 0) {
-        await tx.insert(leadSocialProfiles).values(
-          data.social_profiles.map((p) => ({
-            id: crypto.randomUUID(),
-            lead_id: leadId,
-            platform: p.platform,
-            profile_url: p.profile_url,
-            normalized_url: normalizeLeadProfileUrl(p.profile_url),
-            created_at: now,
-            updated_at: now,
-          })),
-        );
+      if (isStatusChange) {
+        await createLeadActivity(tx, {
+          leadId,
+          type: LeadActivityType.StatusChange,
+          body: `${existing.leadStatus} -> ${data.lead_status}`,
+          actorType: LeadActorType.System,
+        });
       }
+
+      if (data.social_profiles !== undefined) {
+        await tx
+          .delete(leadSocialProfiles)
+          .where(eq(leadSocialProfiles.lead_id, leadId));
+
+        if (data.social_profiles.length > 0) {
+          await tx.insert(leadSocialProfiles).values(
+            data.social_profiles.map((p) => ({
+              id: crypto.randomUUID(),
+              lead_id: leadId,
+              platform: p.platform,
+              profile_url: p.profile_url,
+              normalized_url: normalizeLeadProfileUrl(p.profile_url),
+              created_at: now,
+              updated_at: now,
+            })),
+          );
+        }
+      }
+    });
+  } catch (error) {
+    if (isDuplicateEmailError(error)) {
+      return { ok: false, code: LeadErrorCode.EmailExists };
     }
-  });
+    throw error;
+  }
 
   const updated = await getLeadById(leadId);
   if (!updated) throw new Error(`Lead ${leadId} not found after update`);
 
   return { ok: true, lead: updated };
+}
+
+function isDuplicateEmailError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: string }).code === PostgresErrorCode.UniqueViolation
+  );
 }

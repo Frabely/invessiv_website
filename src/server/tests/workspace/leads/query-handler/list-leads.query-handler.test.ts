@@ -114,8 +114,8 @@ describe("listLeads", () => {
       source: "webform",
       leadStatus: "new",
       owner: null,
-      createdAt: NOW,
-      updatedAt: NOW,
+      createdAt: NOW.toISOString(),
+      updatedAt: NOW.toISOString(),
       category: {
         id: "cat-uuid-1",
         slug: "coaches",

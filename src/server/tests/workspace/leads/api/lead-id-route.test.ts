@@ -47,8 +47,8 @@ const STUB_LEAD: LeadDetailDto = {
   notes: null,
   improvements: null,
   externalGuid: null,
-  createdAt: new Date("2025-01-01T00:00:00Z"),
-  updatedAt: new Date("2025-01-01T00:00:00Z"),
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-01T00:00:00.000Z",
   category: null,
   socialProfiles: [],
   activities: [],
@@ -245,6 +245,27 @@ describe("PATCH /api/workspace/leads/[id]", () => {
     const body = await response.json();
     expect(body).toMatchObject({ error: "VALIDATION_ERROR" });
     expect(body).toHaveProperty("details");
+  });
+
+  it("returns 409 when updateLead reports an existing email", async () => {
+    setupAuthenticatedUser();
+    mockUpdateLead.mockResolvedValue({
+      ok: false,
+      code: LeadErrorCode.EmailExists,
+    });
+
+    const response = await PATCH(
+      makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: "existing@example.com" }),
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: "EMAIL_EXISTS" });
   });
 
   it("returns 400 when the request body is not valid JSON", async () => {

@@ -5,6 +5,8 @@ import type { NextRequest } from "next/server";
 
 import type { WorkspaceAccess } from "./permissions";
 import { isEmailAllowed } from "./allowlist";
+import { AuthErrorCode } from "@/common/constants/auth/auth-error-codes";
+import { authApiError } from "./auth-api-error";
 
 type WorkspaceApiHandler = (
   request: NextRequest,
@@ -16,10 +18,7 @@ export function withWorkspaceApiAuth(handler: WorkspaceApiHandler) {
     const { userId } = await auth();
 
     if (!userId) {
-      return Response.json(
-        { ok: false, error: "UNAUTHORIZED" },
-        { status: 401 },
-      );
+      return authApiError(AuthErrorCode.Unauthorized, 401);
     }
 
     const user = await currentUser();
@@ -28,14 +27,11 @@ export function withWorkspaceApiAuth(handler: WorkspaceApiHandler) {
     )?.emailAddress;
 
     if (!primaryEmail) {
-      return Response.json(
-        { ok: false, error: "UNAUTHORIZED" },
-        { status: 401 },
-      );
+      return authApiError(AuthErrorCode.Unauthorized, 401);
     }
 
     if (!isEmailAllowed(primaryEmail)) {
-      return Response.json({ ok: false, error: "NOT_FOUND" }, { status: 404 });
+      return authApiError(AuthErrorCode.NotFound, 404);
     }
 
     return handler(request, { userId, email: primaryEmail });

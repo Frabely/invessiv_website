@@ -5,7 +5,7 @@ export interface LeadSubmissionDto {
   requestId: string;
   channel: ContactRequestKind;
   locale: string;
-  consentAcceptedAt: Date;
-  submissionStartedAt: Date | null;
-  createdAt: Date;
+  consentAcceptedAt: string;
+  submissionStartedAt: string | null;
+  createdAt: string;
 }

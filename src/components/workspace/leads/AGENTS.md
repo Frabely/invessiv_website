@@ -8,7 +8,8 @@ Diese Datei gilt für `src/components/workspace/leads/` und alle Subordner darun
 - Komponenten klein, fokussiert und reviewbar halten. Keine Mega-Components.
 - Server Components sind Default; `"use client"` nur, wenn echte Interaktivität (URL-Sync, Selection-State, Dialog, Form, Live-Updates) das erzwingt.
 - Bei Unsicherheit über Datenfluss, Auth, Persistenz oder Caching stoppen und den Nutzer fragen, bevor Schutzmechanismen oder Architektur-Grenzen aufgeweicht werden.
-- Wenn eine Architekturregel nicht sofort eingehalten werden kann, die konkrete Stelle mit Pfad, Regelbezug, Risiko und nächstem Schritt in `architecture-open-items.md` dokumentieren.
+- Wenn eine Architekturregel nicht sofort eingehalten werden kann, die konkrete Stelle mit Pfad, Regelbezug, Risiko und
+  nächstem Schritt dokumentieren.
 
 ## Zweck und Geltungsbereich
 

@@ -138,8 +138,8 @@ describe("getLeadById", () => {
       notes: "Interessante Kundin",
       improvements: ["Mehr Social Proof", "Klarere CTA"],
       externalGuid: null,
-      createdAt: NOW,
-      updatedAt: NOW,
+      createdAt: NOW.toISOString(),
+      updatedAt: NOW.toISOString(),
     });
   });
 
@@ -213,7 +213,7 @@ describe("getLeadById", () => {
         title: "Erstes Gespräch",
         body: "Sehr gutes Gespräch gehabt.",
         metadata: null,
-        occurredAt: NOW,
+        occurredAt: NOW.toISOString(),
         actorType: "user",
         actorId: "clerk-user-1",
         actorLabel: "Moritz",
@@ -235,9 +235,9 @@ describe("getLeadById", () => {
         requestId: "req-abc-123",
         channel: "quick_contact",
         locale: "de",
-        consentAcceptedAt: NOW,
-        submissionStartedAt: LATER,
-        createdAt: NOW,
+        consentAcceptedAt: NOW.toISOString(),
+        submissionStartedAt: LATER.toISOString(),
+        createdAt: NOW.toISOString(),
       },
     ]);
   });

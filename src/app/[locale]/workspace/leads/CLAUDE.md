@@ -43,8 +43,10 @@ page.tsx (Server-Component)
 
 ## Filter via Query-Params
 
-- Erlaubte Keys: `status`, `source`, `category`, `q`, `score_min`, `from`, `to`, `page`, `sort`.
-- Keys werden zentral in `src/common/constants/leads/lead-list-defaults.ts` und in `lead-filter.dto.ts` typisiert. **Keine** ad-hoc-Strings in Komponenten.
+- Erlaubte Keys: `status`, `source`, `category`, `search`, `score_min`, `date_from`, `date_to`, `page`, `sort`.
+- Keys werden zentral in `src/common/constants/leads/lead-list-defaults.ts` und in
+  `src/server/workspace/leads/services/lead-filter/lead-filter.schema.ts` typisiert. **Keine** ad-hoc-Strings in
+  Komponenten.
 - Standardliste schließt `archived` aus. Archivierte Leads sind nur über `?status=archived` sichtbar.
 - `PAGE_SIZE = 25`, `MAX_PAGE_SIZE = 100`. Default-Sort `created_at DESC`.
 
@@ -81,10 +83,11 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 - `src/common/contracts/leads/**` enthält **nur** API-/Client-shared DTOs:
   - `lead-summary.dto.ts` — Listenzeile (für `<LeadsTable>`)
   - `lead-detail.dto.ts` — vollständiger Datensatz inkl. Kategorie, Social-Profile, Activities, Submissions
-  - `lead-write-fields.dto.ts` — gemeinsam genutzte schreibbare Felder
-  - `create-lead.dto.ts`, `update-lead.dto.ts` — bleiben **getrennt**, kein generisches `save-lead.dto.ts`
-  - `lead-filter.dto.ts` — typisierter Query-Filter
-- DB-nahe Row-Shapes liegen bei Bedarf unter `src/server/db/records/leads/**` und werden nur server-intern konsumiert.
+  - `bulk-edit-leads-input.ts` — Bulk-Action-Input
+  - `results/*.ts` — Command-/Query-Result-Typen
+  - `rows/*.ts` — DB-nahe SELECT-Shapes für serverseitige Mapper
+- Persistenznahe Record-Shapes liegen bei Bedarf unter `src/server/db/records/leads/**` und werden nur server-intern
+  konsumiert.
 - Persistenz-Inputs liegen nur dann unter `src/server/db/contracts/leads/**`, wenn sie von DB-Persistenzfunktionen konsumiert werden. Command-spezifische Inputs bleiben unter `src/server/workspace/leads/**`.
 - UI darf ausschließlich `src/common/contracts/leads/**` importieren, nie `src/server/**` oder `src/server/db/**`.
 
@@ -106,7 +109,7 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 ## Reuse-Punkte
 
 - `requireWorkspaceAccess(locale)` aus `src/lib/auth/permissions.ts` — bereits im Parent-Layout aktiv, nicht doppeln.
-- `getDrizzleDatabaseClient` + `ContactDatabaseTransaction` aus `src/server/db/client.ts` — DB-Singleton.
+- `getDrizzleDatabaseClient` + `ContactDatabaseTransaction` aus `src/server/db/core` — DB-Singleton.
 - Bestehendes `lead_submissions`-Pattern — wird im Detail-Panel als Inbound-Stream gemerged, **nicht** dupliziert.
 - Workspace-Shell-Komponenten (`workspace-shell`, `workspace-header`, `workspace-sidebar`) — keine Änderungen außer Sidebar-Item-Aktivierung in P1-T31.
 - `next-themes` und `globals.css`-Tokens — keine neuen globalen Tokens nötig.

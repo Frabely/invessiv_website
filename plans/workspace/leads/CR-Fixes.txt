@@ -1,26 +1,3 @@
-Critical — muss sofort behoben werden
-
-  C1 — shared-lead-submission.ts fehlt source in raw SQL INSERT
-  - Datei: src/server/db/contact/shared/shared-lead-submission.ts:20–46
-  - Der rohe SQL-INSERT listet die Spalten explizit auf, hat aber source nicht drin. Nach Migration T7 ist source TEXT NOT NULL ohne DB-Default — jede eingehende Kontaktformular-Submission crasht mit einem Postgres NOT NULL Violation.
-  - lead-mapping-service.ts setzt source: LeadSource.Webform korrekt, aber der sql\`Bypass ist für Drizzles Typsystem unsichtbar. Tests mockentx.execute` ohne den SQL-String zu prüfen — daher kein Compile- oder Test-Fehler.
-  - Fix: source zur Spaltenliste und ${input.lead.source} zur Values-Liste hinzufügen.
-
-  ---
-  Important — vor T10+ beheben
-
-  I1 — Seed-Slugs sind englisch, Plan fordert deutsche CSV-Werte
-  - src/server/db/migrations/0003_create_lead_categories.sql:15–22
-  - Plan: coaches, handwerker, lokale-dienstleister usw. Implementiert: coaches, craftspeople, local-service-providers usw.
-  - Der Phase-2-Import normalisiert CSV-Kategorien auf Slugs — wenn die falsche Sprache drin ist, schlägt jede Kategorie-Auflösung fehl.
-
-  I2 — on_hold in Migration, aber nicht im Plan-Schema
-  - Migration T7 enthält on_hold im CHECK; der Plan listet nur new, contacted, qualified, proposal, won, lost, archived.
-  - Das Plan-Dokument muss aktualisiert werden, bevor T21 (i18n) und T23 (Toolbar) implementiert werden.
-
-  I3 — contact-lead-statuses.ts noch im alten Bare-Array-Pattern
-  - Datei wurde in diesem Commit angefasst, folgt aber noch nicht dem const object + derived type Pattern aus CLAUDE.md. Ist in docs/Todo.md als deferred dokumentiert — trotzdem sichtbare Inkonsistenz direkt neben neuem Code.
-
   ---
   Minor
 

@@ -26,7 +26,7 @@ function mapActivityRowToDto(row: LeadActivityRow): LeadActivityDto {
     title: row.title,
     body: row.body,
     metadata: row.metadata,
-    occurredAt: row.occurred_at,
+    occurredAt: row.occurred_at.toISOString(),
     actorType: row.actor_type,
     actorId: row.actor_id,
     actorLabel: row.actor_label,
@@ -39,9 +39,9 @@ function mapSubmissionRowToDto(row: LeadSubmissionRow): LeadSubmissionDto {
     requestId: row.request_id,
     channel: row.channel,
     locale: row.locale,
-    consentAcceptedAt: row.consent_accepted_at,
-    submissionStartedAt: row.submission_started_at,
-    createdAt: row.created_at,
+    consentAcceptedAt: row.consent_accepted_at.toISOString(),
+    submissionStartedAt: row.submission_started_at?.toISOString() ?? null,
+    createdAt: row.created_at.toISOString(),
   };
 }
 
@@ -66,8 +66,8 @@ export function mapLeadDetailRowToDto(
     notes: mainRow.notes,
     improvements: mainRow.improvements,
     externalGuid: mainRow.external_guid,
-    createdAt: mainRow.created_at,
-    updatedAt: mainRow.updated_at,
+    createdAt: mainRow.created_at.toISOString(),
+    updatedAt: mainRow.updated_at.toISOString(),
     category: mapCategoryRowToDto(mainRow),
     socialProfiles: socialProfileRows.map(mapSocialProfileRowToDto),
     activities: activityRows.map(mapActivityRowToDto),

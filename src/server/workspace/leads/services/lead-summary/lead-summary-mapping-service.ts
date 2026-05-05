@@ -14,8 +14,8 @@ export function mapLeadRowToSummaryDto(row: LeadSummaryRow): LeadSummaryDto {
     source: row.source,
     leadStatus: row.lead_status,
     owner: row.owner,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    createdAt: row.created_at.toISOString(),
+    updatedAt: row.updated_at.toISOString(),
     category: mapCategoryRowToDto(row),
   };
 }

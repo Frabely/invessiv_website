@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import {
+  LeadErrorCode,
+  LeadValidationIssueCode,
+} from "@/common/constants/leads/lead-error-codes";
 import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import { GET, POST } from "@/app/api/workspace/leads/route";
@@ -48,8 +51,8 @@ const STUB_LEAD: LeadDetailDto = {
   notes: null,
   improvements: null,
   externalGuid: null,
-  createdAt: new Date("2025-01-01T00:00:00Z"),
-  updatedAt: new Date("2025-01-01T00:00:00Z"),
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-01T00:00:00.000Z",
   category: null,
   socialProfiles: [],
   activities: [],
@@ -221,7 +224,7 @@ describe("POST /api/workspace/leads", () => {
       errors: [
         {
           code: "custom",
-          message: "last_name_or_company_name_required",
+          message: LeadValidationIssueCode.LastNameOrCompanyNameRequired,
           path: ["last_name"],
         },
       ],

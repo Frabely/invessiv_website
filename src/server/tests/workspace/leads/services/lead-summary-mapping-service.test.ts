@@ -38,8 +38,8 @@ describe("mapLeadRowToSummaryDto", () => {
       source: "manual",
       leadStatus: "qualified",
       owner: "Moritz",
-      createdAt: NOW,
-      updatedAt: NOW,
+      createdAt: NOW.toISOString(),
+      updatedAt: NOW.toISOString(),
       category: null,
     });
   });
