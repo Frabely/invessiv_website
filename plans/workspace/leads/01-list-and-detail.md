@@ -241,8 +241,15 @@ src/
 │   ├── services/
 │   └── utils/
 ├── i18n/dictionaries/workspace/leads/
-│   ├── meta/{de,en}.json
-│   ├── page/{de,en}.json
+│   ├── meta/{de,en}.json          # SEO-Daten (title, description)
+│   ├── shared/{de,en}.json        # Status-, Source-, Kategorie-, Plattform-Labels (mehrere Komponenten)
+│   ├── shell/{de,en}.json         # Page-Header: Titel, Beschreibung, Privacy-Badge, Add-Button
+│   ├── toolbar/{de,en}.json       # Tabs, Filter-Labels, Search-Placeholder, Date-Range
+│   ├── table/{de,en}.json         # Spalten-Header, Sort-Labels
+│   ├── bulk/{de,en}.json          # Bulk-Bar: Action-Labels, Confirm-Dialog
+│   ├── pagination/{de,en}.json    # Prev/Next/Showing-X-of-Y
+│   ├── detail/{de,en}.json        # Detail-Panel: Sections, Labels, Activity-Labels
+│   ├── form/{de,en}.json          # Add-Dialog: Feld-Labels, Validation-Errors, Buttons
 │   └── index.ts
 └── lib/auth/api.ts                      # NEU: withWorkspaceApiAuth
 ```
@@ -491,117 +498,230 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 - **Akzeptanz:** Tests für beide Actions unter `src/server/tests/workspace/leads/api/leads-bulk-route.test.ts`; API-README dokumentiert Atomicity, erlaubte Actions, Soft-Delete-Semantik und Fehlerfälle
 - **Aufwand:** 1h
 
-### i18n
-
-#### P1-T21 — Workspace-Leads-Dictionaries
-
-- **Files:**
-  - `src/i18n/dictionaries/workspace/leads/meta/{de,en}.json`: title, description (mit `noindex`)
-  - `src/i18n/dictionaries/workspace/leads/page/{de,en}.json`: header, toolbar (tabs, filters, category-filter, search-placeholder), table-columns, status-labels, source-labels, category-labels, social-platform-labels, empty-state, pagination, bulk-bar, detail-panel (sections, labels), add-dialog (form-labels, errors)
-  - `src/i18n/dictionaries/workspace/leads/index.ts`: `getLeadsMetaContent(locale)`, `getLeadsPageContent(locale)`
-- **Akzeptanz:** DE und EN parallel komplett, kein inline-String in Komponenten; Kategorie-Labels werden per `label_key` in `category-labels` aufgelöst, nicht direkt aus der DB gerendert
-- **Aufwand:** 2h
-
 ### UI-Komponenten
 
-#### P1-T22 — Page-Shell + Page-Header
+> **Reihenfolge:** Jedes Ticket liefert einen in sich testbaren Zustand der Page. Kein Ticket bricht den vorherigen
+> Stand.
+
+#### P1-T22 — Shell + Sidebar-Aktivierung
+
+_Testbarer Zustand danach:_ Route `/de/workspace/leads` ist aufrufbar, zeigt korrekte Seitenstruktur mit Header und
+Placeholder-Slots für Toolbar, Tabelle und Detail-Panel. Sidebar-Link aktiv und hervorgehoben.
 
 - **Files:**
-  - `src/app/[locale]/workspace/leads/page.tsx` (Server-Component, lädt Filter aus `searchParams`, ruft `listLeads()`)
-  - `src/app/[locale]/workspace/leads/loading.tsx` (initialer Page-Skeleton für Route-Load; kein Tabellen-Refresh-State)
-  - `src/components/workspace/leads/shell/leads-page-shell/` (wrapped Header + Toolbar + Bulk-Bar + Tabelle + Pagination + Detail-Panel-Slot)
-  - `src/components/workspace/leads/shell/leads-page-header/` (Title h1, Privacy-Badge, Description, "Add Lead"-Button)
+  - `src/app/[locale]/workspace/leads/page.tsx` (Server-Component; Slots für Toolbar, Tabelle, Pagination, Detail-Panel
+    als `null`/Placeholder)
+  - `src/app/[locale]/workspace/leads/loading.tsx` (initialer Page-Skeleton mit Header-/Toolbar-/Table-Struktur)
+  - `src/components/workspace/leads/shell/leads-page-shell/` (Layout-Wrapper: Header + Toolbar-Slot + Content-Slot +
+    Detail-Panel-Slot)
+  - `src/components/workspace/leads/shell/leads-page-header/` (Title h1, Privacy-Badge, Description, "Add Lead"-Button —
+    Button vorerst disabled)
+  - `src/components/workspace/workspace-sidebar/workspace-sidebar.tsx` (Edit: `aria-disabled` + "Bald verfügbar"-Badge
+    entfernen, `<Link href="/[locale]/workspace/leads">`)
+  - `src/components/workspace/workspace-sidebar/workspace-sidebar-items.ts` (ggf. Disabled-Flag entfernen)
+  - `src/i18n/dictionaries/workspace/leads/meta/{de,en}.json`: title, description (mit `noindex`)
+  - `src/i18n/dictionaries/workspace/leads/shell/{de,en}.json`: Seitentitel, Beschreibung, Privacy-Badge-Text, "Add
+    Lead"-Button-Label
+  - `src/i18n/dictionaries/workspace/leads/index.ts`: `getLeadsMetaDictionary(locale)`,
+    `getLeadsShellDictionary(locale)`
 - **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Page rendert ohne Daten (empty state), Mockup-Layout sichtbar; initialer Route-Load zeigt Page-Skeleton mit Header-/Toolbar-/Table-Struktur; Page setzt `export const dynamic = "force-dynamic"` und `metadata.robots = { index: false, follow: false, nocache: true }`
+- **Akzeptanz:** Route erreichbar und per Sidebar-Link navigierbar; Layout-Struktur entspricht Mockup-Proportionen;
+  Skeleton beim Route-Load sichtbar; `export const dynamic = "force-dynamic"` und
+  `metadata.robots = { index: false, follow: false, nocache: true }` gesetzt; kein inline-String; DE und EN komplett
 - **Aufwand:** 2,5h
 
-#### P1-T23 — Toolbar + Filter
+---
 
-- **Files:** `src/components/workspace/leads/toolbar/leads-toolbar/`
-- **Inhalt:** Tabs (All/New/Qualified/Proposal/Won), Search-Input (debounced, URL-sync via `next/navigation`), Status-Select, Source-Select, Category-Select, Score-Range-Select (z.B. ≥70), Date-Range-Picker. Alle setzen Query-Params via `router.push()`
+#### P1-T23 — Shared Visuals: Status-, Source-, Score-Badges
+
+_Testbarer Zustand danach:_ Badge- und Score-Komponenten existieren und können isoliert in der Shell/Page temporär
+eingebettet werden, um alle Farb-Tokens + Label-Varianten visuell zu prüfen. Noch nicht in der Tabelle.
+
+- **Files:**
+  - `src/components/workspace/leads/shared/lead-status-badge/`
+  - `src/components/workspace/leads/shared/lead-source-badge/`
+  - `src/components/workspace/leads/shared/lead-score-bar/`
+  - `src/i18n/dictionaries/workspace/leads/shared/{de,en}.json`: Status-Labels (new, contacted, qualified, proposal,
+    won, lost, archived), Source-Labels (webform, manual, import), Kategorie-Labels (per `label_key`, z.B. `coaches`,
+    `craftspeople`, …), Social-Platform-Labels (linkedin, instagram, youtube), Score-Aria-Label
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsSharedDictionary(locale)` ergänzen)
+- **Inhalt:**
+  - `<LeadStatusBadge>`: 7 Status, konsistente Farb-Tokens (new=neutral, contacted=info, qualified=accent-warm,
+    proposal=cta, won=success-green, lost/archived=muted)
+  - `<LeadSourceBadge>`: 3 Source-Werte mit Icons
+  - `<LeadScoreBar>`: 0–100 als gefüllte Bar + Zahl; Farb-Schwellenwerte (z.B. ≥70 grün, ≥40 gelb, <40 rot)
 - **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** URL ändert sich auf Filter, SSR-Page rendert neu, alle Filter funktional, browser-back funktioniert
-- **Aufwand:** 3h
+- **Akzeptanz:** Alle Status/Source-Varianten korrekt gerendert; Score-Bar visuell bei 0, 50, 100 testbar;
+  Kategorie-Labels werden per `label_key` aus `shared/` aufgelöst; kein inline-String; DE und EN komplett
+- **Aufwand:** 2h
+
+---
 
 #### P1-T24 — Tabelle + Row + Selection + Sort
 
-- **Files:** `src/components/workspace/leads/table/leads-table/`, `src/components/workspace/leads/table/leads-table-row/`, `src/components/workspace/leads/table/leads-table-loading-state/`
-- **Inhalt:**
-  - `<LeadsTable>` Server-Component für initial render
-  - `<LeadsTableSelectionProvider>` als Client-Wrapper für Selection-State
-  - `<LeadsTableLoadingState>` für lokale Tabellen-Refreshes bei Filter/Search/Pagination/Sort; Toolbar, Header, Bulk-Bar und Detail-Panel bleiben sichtbar und bedienbar
-  - Spalten: Checkbox, Lead (Avatar/Initial + Name + URL klein darunter), Kategorie, Stage (Status-Badge), Source (Badge), Owner, Score (Bar), Created (last-touch), Next-Step (Platzhalter)
-  - Row-Click → `?selected=<id>` (öffnet Side-Panel); Click auf Checkbox stoppt Propagation
-  - Sortable Columns: Lead-Name, Score, Created (ASC/DESC via `?sort=…`)
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Klick auf Row öffnet Detail; Checkbox-Selection wird beim Filter-Change cleared; Sort funktioniert; Tabellen-Refresh zeigt Row-Skeletons oder dezentes Table-Overlay statt Full-Page-Spinner
-- **Aufwand:** 4h
-
-#### P1-T25 — Bulk-Action-Bar
-
-- **Files:** `src/components/workspace/leads/table/leads-bulk-action-bar/`
-- **Inhalt:** Sticky am unteren Rand wenn Selection > 0; Actions "Mark as …" (Status-Dropdown), "Archive" (Confirm-Dialog); Sendet an `/api/workspace/leads/bulk`; Refresh via `router.refresh()`
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Bei Status-Wechsel updaten Rows; bei Archive verschwinden Leads aus der Standardliste, bleiben aber über Statusfilter `archived` auffindbar
-- **Aufwand:** 2h
-
-#### P1-T26 — Pagination + Empty-State
-
-- **Files:** `src/components/workspace/leads/table/leads-pagination/`, `src/components/workspace/leads/table/leads-empty-state/`
-- **Inhalt:**
-  - Pagination: First/Prev/[1..n]/Next/Last + "Showing X–Y of Z"
-  - EmptyState (zwei Varianten): "noch keine Leads" (CTA "Add lead") und "0 Filter-Treffer" (CTA "Filter zurücksetzen")
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Pagination ändert `?page=`, EmptyState zeigt korrekten Text basierend auf `hasFilters`
-- **Aufwand:** 1,5h
-
-#### P1-T27 — Detail-Side-Panel
-
-- **Files:** `src/components/workspace/leads/detail/lead-detail-panel/`
-- **Inhalt:**
-  - Server-Component, lädt via `getLeadById(searchParams.selected)`
-  - Sektionen: Header (Logo+Name+Status), Contact-Block (Email, Phone, Company, Website), Kategorie, Social-Profile, Improvements (ergänzbar und editierbar), Notes (editierbar), Activities-Stream
-  - Close-Button entfernt `?selected=`
-  - "View full profile" als Disabled-Placeholder (Roadmap)
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Panel öffnet/schließt via URL; alle Sektionen rendern; bei nicht-existentem `selected` zeigt Panel "Not found"
-- **Aufwand:** 3h
-
-#### P1-T28 — Activities-Stream-Komponente
-
-- **Files:** `src/components/workspace/leads/detail/lead-detail-activities/`
-- **Inhalt:** Mergt Timeline-/Audit-Einträge aus `lead_activities` + Inbound-Ereignisse aus `lead_submissions` (sortiert nach `occurred_at`/`created_at` DESC); rendert mit Type-Icon + Title + Body + Owner + Datum
-- **Akzeptanz:** Lead mit Inbound-Submission UND manueller Activity zeigt beide chronologisch
-- **Aufwand:** 1,5h
-
-#### P1-T29 — Add-Lead-Dialog
-
-- **Files:** `src/components/workspace/leads/form/add-lead-dialog/`
-- **Inhalt:** Modal mit Form (Felder: first_name, last_name, company_name, email\*, phone, website_url, category_id, score, owner, notes, improvements[], social_profiles[]; Server setzt explizit `source='manual'`); Client-Side Validation gegen Zod-Schema (geteilt mit Server); Submit → POST → on success: schließt Dialog, refresh Liste, optional `?selected=<newId>`
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Form rendert, Kategorie-Select lädt aktive Kategorien, Improvements können ergänzt/bearbeitet werden, Social-Profile können mit Plattform + URL erfasst werden, Errors werden inline angezeigt (z.B. "Email or company required"), Email-Duplicate-Error wird sauber gemeldet
-- **Aufwand:** 3h
-
-#### P1-T30 — Status- / Source- / Score-Visuals
-
-- **Files:** `src/components/workspace/leads/shared/lead-status-badge/`, `src/components/workspace/leads/shared/lead-source-badge/`, `src/components/workspace/leads/shared/lead-score-bar/`
-- **Inhalt:**
-  - `<LeadStatusBadge>`: 7 Status mit konsistenten Farb-Tokens (z.B. new=neutral, qualified=accent-warm, proposal=cta, won=success-green, lost/archived=muted)
-  - `<LeadSourceBadge>`: 3 Source-Werte
-  - `<LeadScoreBar>`: 0–100 als gefüllte Bar + Zahl
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Visuell konsistent über Tabelle + Detail-Panel
-- **Aufwand:** 2h
-
-### Sidebar-Aktivierung
-
-#### P1-T31 — Workspace-Sidebar `leads`-Eintrag aktivieren
+_Testbarer Zustand danach:_ Echte Leads aus der DB werden tabellarisch dargestellt. Alle Spalten inkl. Badges sichtbar.
+Row-Klick setzt `?selected=` (Panel noch nicht vorhanden). Checkboxes und Sort funktionieren. Kein
+Filtering/Pagination/Bulk noch.
 
 - **Files:**
-  - `src/components/workspace/workspace-sidebar/workspace-sidebar.tsx` (Edit: `aria-disabled` + "Bald verfügbar"-Badge entfernen, `<Link href="/[locale]/workspace/leads">`)
-  - `src/components/workspace/workspace-sidebar/workspace-sidebar-items.ts` (ggf. minimal anpassen falls Disabled-Flag dort liegt)
-- **Akzeptanz:** Klick führt zur Page; aktiver Tab visuell hervorgehoben
-- **Aufwand:** 0,5h
+  - `src/components/workspace/leads/table/leads-table/`
+  - `src/components/workspace/leads/table/leads-table-row/`
+  - `src/components/workspace/leads/table/leads-table-loading-state/`
+  - `src/i18n/dictionaries/workspace/leads/table/{de,en}.json`: Spalten-Header (Lead, Kategorie, Stage, Source, Owner,
+    Score, Created, Next-Step), Sort-Richtungs-Labels, Checkbox-Aria-Label
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsTableDictionary(locale)` ergänzen)
+  - `src/app/[locale]/workspace/leads/page.tsx` (Edit: Tabellen-Slot mit echten `listLeads()`-Daten befüllen; kein
+    Filter/Pagination/Sort-State noch)
+- **Inhalt:**
+  - `<LeadsTable>` als Server-Component für initial render
+  - `<LeadsTableSelectionProvider>` als Client-Wrapper für Checkbox-Selection-State
+  - `<LeadsTableLoadingState>` für lokale Refreshes (Row-Skeletons oder dezentes Overlay)
+  - Spalten: Checkbox · Lead (Avatar/Initial + Name + URL) · Kategorie · Stage (StatusBadge) · Source (SourceBadge) ·
+    Owner · Score (ScoreBar) · Created · Next-Step (Platzhalter)
+  - Row-Click → `?selected=<id>`; Checkbox-Click stoppt Propagation
+  - Sortable Columns: Name, Score, Created (ASC/DESC via `?sort=`)
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Tabelle zeigt Leads; Sort ändert `?sort=` und Page rendert neu; Checkbox-Selection State lokal korrekt;
+  Tabellen-Refresh zeigt Skeleton/Overlay statt Full-Page-Spinner; kein inline-String; DE und EN komplett
+- **Aufwand:** 4h
+
+---
+
+#### P1-T25 — Pagination + Empty-State
+
+_Testbarer Zustand danach:_ Vollständige Listenerfahrung ohne Filter. Bei leerer DB: passender Empty-State. Bei >25
+Leads: Navigation über Seiten. "Add Lead"-Button noch disabled.
+
+- **Files:**
+  - `src/components/workspace/leads/table/leads-pagination/`
+  - `src/components/workspace/leads/table/leads-empty-state/`
+  - `src/i18n/dictionaries/workspace/leads/pagination/{de,en}.json`: First/Prev/Next/Last-Labels, "Showing X–Y of Z"
+    -Template, Seiten-Aria-Labels; Empty-State-Texte: "noch keine Leads" (CTA "Add lead") + "0 Filter-Treffer" (CTA "
+    Filter zurücksetzen")
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsPaginationDictionary(locale)` ergänzen)
+  - `src/app/[locale]/workspace/leads/page.tsx` (Edit: `?page=` aus `searchParams` lesen, Pagination-Slot befüllen; bei
+    0 Ergebnissen EmptyState statt Tabelle)
+- **Inhalt:**
+  - Pagination: First/Prev/[1..n]/Next/Last + "Showing X–Y of Z"; deaktiviert wenn nur 1 Seite
+  - EmptyState Variante A (`total === 0 && !hasFilters`): "noch keine Leads" + "Add Lead"-CTA (vorerst Platzhalter)
+  - EmptyState Variante B (`total === 0 && hasFilters`): "Keine Ergebnisse für diese Filter" + "Filter zurücksetzen"-CTA
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** `?page=` ändert sich, korrekte Leads-Range sichtbar; beide Empty-State-Varianten prüfbar; kein
+  inline-String; DE und EN komplett
+- **Aufwand:** 1,5h
+
+---
+
+#### P1-T26 — Bulk-Action-Bar
+
+_Testbarer Zustand danach:_ Leads selektieren → Bar erscheint → Status-Bulk-Wechsel und Archive (mit Confirm)
+funktionieren und reflektieren sich in der Liste.
+
+- **Files:**
+  - `src/components/workspace/leads/table/leads-bulk-action-bar/`
+  - `src/i18n/dictionaries/workspace/leads/bulk/{de,en}.json`: "Mark as …"-Label, Status-Dropdown-Labels, "Archive"
+    -Button, Confirm-Dialog-Titel/-Text/-Bestätigen/-Abbrechen, Anzahl-Anzeige ("X Leads ausgewählt")
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsBulkDictionary(locale)` ergänzen)
+- **Inhalt:** Sticky am unteren Rand wenn Selection > 0; "Mark as …" (Status-Dropdown) + "Archive" (Confirm-Dialog);
+  POST an `/api/workspace/leads/bulk`; Refresh via `router.refresh()`; Selection wird nach Action gecleared
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Status-Wechsel sichtbar in Tabellen-Rows nach Refresh; Archivierte Leads verschwinden aus
+  Standardliste; Checkbox-Selection beim Filter-Change gecleared; kein inline-String; DE und EN komplett
+- **Aufwand:** 2h
+
+---
+
+#### P1-T27 — Toolbar + Filter
+
+_Testbarer Zustand danach:_ Vollständige Listenseite — Tabs, Suche, alle Selects und Date-Range filtern korrekt.
+Browser-Back funktioniert. Tabelle, Pagination, Bulk-Bar reagieren auf Filter. Noch kein Detail-Panel.
+
+- **Files:**
+  - `src/components/workspace/leads/toolbar/leads-toolbar/`
+  - `src/i18n/dictionaries/workspace/leads/toolbar/{de,en}.json`: Tab-Labels (All/New/Qualified/Proposal/Won),
+    Search-Placeholder, Filter-Labels (Status, Source, Kategorie, Score-Range, Date-Range), Date-Range-Button-Labels, "
+    Filter zurücksetzen"-Label
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsToolbarDictionary(locale)` ergänzen)
+  - `src/app/[locale]/workspace/leads/page.tsx` (Edit: alle Filter-Params aus `searchParams` lesen, an Toolbar +
+    `buildLeadFilter()` weitergeben)
+- **Inhalt:** Tabs (All/New/Qualified/Proposal/Won), Search-Input (debounced, URL-sync), Status-Select, Source-Select,
+  Category-Select, Score-Range-Select (≥70 etc.), Date-Range-Picker — alle via `router.push()` auf Query-Params
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Jeder Filter ändert URL und Page rendert neu mit passenden Ergebnissen; Kombination von 2+ Filtern
+  korrekt; Browser-Back stellt Filter wieder her; `hasFilters` steuert EmptyState-Variante (T25); kein inline-String; DE
+  und EN komplett
+- **Aufwand:** 3h
+
+---
+
+#### P1-T28 — Detail-Side-Panel
+
+_Testbarer Zustand danach:_ Row-Klick öffnet Panel rechts mit allen Lead-Daten. Close-Button und Browser-Back schließen
+Panel. Deep-Link `?selected=<id>` direkt aufrufbar. Noch kein Activity-Stream.
+
+- **Files:**
+  - `src/components/workspace/leads/detail/lead-detail-panel/`
+  - `src/i18n/dictionaries/workspace/leads/detail/{de,en}.json`: Sektions-Überschriften (Contact, Kategorie,
+    Social-Profile, Improvements, Notes), Feld-Labels (Email, Phone, Company, Website), Close-Button-Label, "View full
+    profile"-Placeholder, "Not found"-Text, Edit-/Save-/Cancel-Labels
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsDetailDictionary(locale)` ergänzen)
+  - `src/app/[locale]/workspace/leads/page.tsx` (Edit: `searchParams.selected` → `getLeadById()` → Detail-Panel-Slot
+    befüllen)
+- **Inhalt:**
+  - Server-Component, lädt via `getLeadById(searchParams.selected)`
+  - Sektionen: Header (Initial-Avatar + Name + StatusBadge), Contact-Block (Email, Phone, Company, Website), Kategorie,
+    Social-Profile (mit Plattform-Icon + URL), Improvements (editierbar), Notes (editierbar), Activities-Slot (
+    Platzhalter bis T29)
+  - Close-Button entfernt `?selected=`; "View full profile" als Disabled-Placeholder
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Panel öffnet/schließt via URL; alle Sektionen rendern korrekt; bei nicht-existentem `selected` zeigt
+  Panel "Not found"; Inline-Edit für Notes und Improvements funktioniert; kein inline-String; DE und EN komplett
+- **Aufwand:** 3h
+
+---
+
+#### P1-T29 — Activities-Stream
+
+_Testbarer Zustand danach:_ Detail-Panel vollständig — Timeline mit `lead_activities` und `lead_submissions`
+chronologisch zusammengeführt sichtbar.
+
+- **Files:**
+  - `src/components/workspace/leads/detail/lead-detail-activities/`
+  - `src/i18n/dictionaries/workspace/leads/detail/{de,en}.json` (Edit: Activity-Keys ergänzen): Abschnitts-Titel "
+    Activities", Activity-Typ-Labels (note, status_change, inbound_submission, import), Actor-Typ-Labels (system, user),
+    leere-Timeline-Text
+- **Inhalt:** Mergt `lead_activities` + `lead_submissions` (sortiert nach `occurred_at`/`created_at` DESC); rendert mit
+  Typ-Icon + Title + Body + Actor-Label + Datum; leere Timeline zeigt Placeholder
+- **Akzeptanz:** Lead mit Inbound-Submission UND manueller Activity zeigt beide chronologisch; leere Timeline zeigt
+  sinnvollen Text; kein inline-String; DE und EN komplett
+- **Aufwand:** 1,5h
+
+---
+
+#### P1-T30 — Add-Lead-Dialog
+
+_Testbarer Zustand danach:_ Vollständige Page — "Add Lead"-Button öffnet Dialog, Lead anlegen, Liste aktualisiert sich,
+Detail-Panel öffnet optional für den neuen Lead. Gesamter P1-Flow end-to-end testbar.
+
+- **Files:**
+  - `src/components/workspace/leads/form/add-lead-dialog/`
+  - `src/i18n/dictionaries/workspace/leads/form/{de,en}.json`: Dialog-Titel, Feld-Labels (First Name, Last Name,
+    Company, Email, Phone, Website, Kategorie, Score, Owner, Notes, Improvements, Social-Profile, Plattform, URL),
+    Placeholder-Texte, Validation-Error-Meldungen ("Email oder Firma erforderlich", "Ungültige E-Mail", "Score muss
+    0–100 sein", "E-Mail bereits vorhanden", …), Submit-/Cancel-Labels, "Improvement hinzufügen"-/"Profil hinzufügen"
+    -Labels
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsFormDictionary(locale)` ergänzen)
+  - `src/components/workspace/leads/shell/leads-page-header/` (Edit: "Add Lead"-Button aktivieren, Dialog verknüpfen)
+  - `src/components/workspace/leads/table/leads-empty-state/` (Edit: EmptyState-CTA mit Dialog verknüpfen)
+- **Inhalt:** Modal mit Form: first_name, last_name, company_name, email\*, phone, website_url, category_id, score,
+  owner, notes, improvements[], social_profiles[]; Server setzt explizit `source='manual'`; Client-Side Validation via
+  Zod (geteilt mit Server); Submit → POST → on success: Dialog schließen + Liste refreshen + optional
+  `?selected=<newId>`
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Kategorie-Select lädt aktive Kategorien; Improvements und Social-Profile dynamisch ergänzbar; alle
+  Validation-Errors inline; Email-Duplicate-Error sauber gemeldet; EmptyState-CTA und Header-Button öffnen denselben
+  Dialog; kein inline-String; DE und EN komplett
+- **Aufwand:** 3h
 
 ### QA & Tests
 
@@ -685,5 +805,5 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 | `superpowers:test-driven-development`        | T1, T2, T3, T4, T5, T10, T11, T12, T13, T14, T15, T16, T17, T18 |
 | `superpowers:verification-before-completion` | T2, T6, T7, T8, T9, T17, T32, T33, T34                          |
 | `superpowers:requesting-code-review`         | T33                                                             |
-| `frontend-design:frontend-design`            | T22, T23, T24, T25, T26, T27, T29, T30                          |
+| `frontend-design:frontend-design`            | T22, T23, T24, T25, T26, T27, T28, T29, T30                     |
 | `superpowers:systematic-debugging`           | bei Bugs während Implementation                                 |
