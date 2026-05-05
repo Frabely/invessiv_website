@@ -297,6 +297,13 @@ Outputs:
   `fooError(FooErrorCode.NotFound, 404)`). Das Pattern gilt server-seitig (API-Responses) und client-seitig (
   Form-Validation, Toast, Inline-Errors) gleichermaßen. Vollständige Spezifikation: Root `CLAUDE.md` → „Error Codes &
   Messages".
+- **URL-Pfadkonstruktion aus Konstanten (verbindlich):** URL-Pfade werden nie durch direkte String-Literale mehrerer
+  Segmente zusammengebaut (z. B. `\`/${locale}/workspace${item.path}\`
+  `), sondern ausschließlich aus typisierten Konstanten (`SITE_ROUTES.\*`aus`src/config/routes.ts
+  `) oder dedizierten Pfad-Helper-Funktionen zusammengesetzt. Routen-String-Literale erscheinen genau einmal — in `
+  src/config/routes.ts`— und werden von dort importiert. Client-Komponenten importieren`SITE_ROUTES
+  `direkt; server-only Helfer (z. B.`workspacePathFor`) bleiben in `src/lib/auth/routes.ts`und dürfen nicht in`"use
+  client"`-Dateien importiert werden.
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen

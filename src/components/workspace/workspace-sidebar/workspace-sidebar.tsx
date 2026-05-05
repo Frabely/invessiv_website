@@ -1,5 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { Locale } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
 import { WORKSPACE_SIDEBAR_ITEMS } from "./workspace-sidebar-items";
 import styles from "./workspace-sidebar.module.css";
@@ -7,17 +11,20 @@ import styles from "./workspace-sidebar.module.css";
 type WorkspaceSidebarProps = {
   content: WorkspacePageContent;
   isOpen: boolean;
+  locale: Locale;
   onCloseAction: () => void;
 };
 
 export function WorkspaceSidebar({
   content,
   isOpen,
+  locale,
   onCloseAction,
 }: WorkspaceSidebarProps) {
   const sidebarContent = content.shell.sidebar;
   const headerContent = content.shell.header;
   const dataOpen = isOpen ? "true" : "false";
+  const pathname = usePathname();
 
   return (
     <>
@@ -59,37 +66,63 @@ export function WorkspaceSidebar({
         </button>
         <nav aria-label={sidebarContent.navAriaLabel} className={styles.nav}>
           <ul className={styles.list}>
-            {WORKSPACE_SIDEBAR_ITEMS.map((item) => (
-              <li className={styles.item} key={item.id}>
-                <a
-                  aria-disabled="true"
-                  className={styles.link}
-                  role="link"
-                  tabIndex={-1}
-                >
-                  <span aria-hidden="true" className={styles.linkIcon}>
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.7}
-                      viewBox={item.iconViewBox}
+            {WORKSPACE_SIDEBAR_ITEMS.map((item) => {
+              const isDisabled = item.path === null;
+              const href = `/${locale}${SITE_ROUTES.workspace}${item.path ?? ""}`;
+              const isActive =
+                !isDisabled &&
+                (pathname === href || pathname.startsWith(`${href}/`));
+
+              const icon = (
+                <span aria-hidden="true" className={styles.linkIcon}>
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.7}
+                    viewBox={item.iconViewBox}
+                  >
+                    {item.iconPaths.map((d) => (
+                      <path d={d} key={d} />
+                    ))}
+                  </svg>
+                </span>
+              );
+
+              return (
+                <li className={styles.item} key={item.id}>
+                  {isDisabled ? (
+                    <a
+                      aria-disabled="true"
+                      className={styles.link}
+                      role="link"
+                      tabIndex={-1}
                     >
-                      {item.iconPaths.map((d) => (
-                        <path d={d} key={d} />
-                      ))}
-                    </svg>
-                  </span>
-                  <span className={styles.linkLabel}>
-                    {sidebarContent.items[item.labelKey]}
-                  </span>
-                  <span aria-hidden="true" className={styles.linkBadge}>
-                    {sidebarContent.comingSoonBadge}
-                  </span>
-                </a>
-              </li>
-            ))}
+                      {icon}
+                      <span className={styles.linkLabel}>
+                        {sidebarContent.items[item.labelKey]}
+                      </span>
+                      <span aria-hidden="true" className={styles.linkBadge}>
+                        {sidebarContent.comingSoonBadge}
+                      </span>
+                    </a>
+                  ) : (
+                    <Link
+                      aria-current={isActive ? "page" : undefined}
+                      className={styles.link}
+                      data-active={isActive ? "true" : "false"}
+                      href={href}
+                    >
+                      {icon}
+                      <span className={styles.linkLabel}>
+                        {sidebarContent.items[item.labelKey]}
+                      </span>
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </nav>
       </aside>

@@ -1,0 +1,48 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.toolbarSlot {
+  padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.contentRow {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(1.25rem, 2vw, 2rem);
+  align-items: flex-start;
+  min-height: 0;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.contentSlot {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.detailPanelSlot {
+  flex: 0 0 min(420px, 38vw);
+  position: sticky;
+  top: calc(var(--workspace-header-height, 68px) + 1.5rem);
+  max-height: calc(100dvh - var(--workspace-header-height, 68px) - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1024px) {
+  .contentRow {
+    flex-direction: column;
+  }
+
+  .detailPanelSlot {
+    flex: none;
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+}

@@ -72,13 +72,11 @@
 .main {
   position: relative;
   z-index: 1;
-  width: min(
-    calc(100% - (var(--layout-rail-inline-gutter) * 2)),
-    var(--layout-rail-max-width)
-  );
+  width: 100%;
   min-height: calc(100dvh - var(--workspace-header-height));
-  margin: 0 auto;
-  padding: clamp(2.5rem, 8vw, 5rem) 0 clamp(3rem, 9vw, 6rem);
+  margin: 0;
+  padding: clamp(2.5rem, 8vw, 5rem) var(--layout-rail-inline-gutter)
+    clamp(3rem, 9vw, 6rem);
   scroll-margin-top: 88px;
 }
 

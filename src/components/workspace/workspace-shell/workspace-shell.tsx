@@ -37,6 +37,7 @@ export function WorkspaceShell({
       <WorkspaceSidebar
         content={content}
         isOpen={isOpen}
+        locale={locale}
         onCloseAction={close}
       />
       <main

@@ -506,7 +506,9 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 #### P1-T22 — Shell + Sidebar-Aktivierung
 
 _Testbarer Zustand danach:_ Route `/de/workspace/leads` ist aufrufbar, zeigt korrekte Seitenstruktur mit Header und
-Placeholder-Slots für Toolbar, Tabelle und Detail-Panel. Sidebar-Link aktiv und hervorgehoben.
+Placeholder-Slots für Toolbar, Tabelle und Detail-Panel. Die Lead-Section nutzt die volle verfügbare Breite
+(abzüglich sinnvollem Padding), damit die spätere Tabelle nicht unnötig eingeengt wird. Sidebar-Link aktiv und
+hervorgehoben.
 
 - **Files:**
   - `src/app/[locale]/workspace/leads/page.tsx` (Server-Component; Slots für Toolbar, Tabelle, Pagination, Detail-Panel
