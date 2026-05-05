@@ -22,6 +22,8 @@ const CONTACT_TABLE_SCHEMAS = [
   { table: leadActivities, tableName: "lead_activities" },
 ] as const;
 
+const normalizeSql = (sql: string) => sql.replace(/\s+/g, " ").trim();
+
 describe("contact drizzle schema", () => {
   it.each(CONTACT_TABLE_SCHEMAS)(
     "exposes the expected table config for $tableName",
@@ -63,14 +65,21 @@ describe("contact drizzle schema", () => {
       "utf8",
     );
 
-    expect(createMigrationSql).toContain("id UUID PRIMARY KEY DEFAULT");
-    expect(createMigrationSql).toContain(
+    const normalizedCreateMigrationSql = normalizeSql(createMigrationSql);
+    const normalizedRemoveDefaultsMigrationSql = normalizeSql(
+      removeDefaultsMigrationSql,
+    );
+
+    expect(normalizedCreateMigrationSql).toContain(
+      "id UUID PRIMARY KEY DEFAULT",
+    );
+    expect(normalizedCreateMigrationSql).toContain(
       "sort_order INTEGER NOT NULL DEFAULT 0 CHECK (sort_order >= 0)",
     );
-    expect(removeDefaultsMigrationSql).toContain(
+    expect(normalizedRemoveDefaultsMigrationSql).toContain(
       "ALTER COLUMN id DROP DEFAULT",
     );
-    expect(removeDefaultsMigrationSql).toContain(
+    expect(normalizedRemoveDefaultsMigrationSql).toContain(
       "ALTER COLUMN sort_order DROP DEFAULT",
     );
   });
