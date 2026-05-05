@@ -28,6 +28,7 @@ Critical — muss sofort behoben werden
   - M2: Kein .defaultRandom() auf PKs der neuen Tabellen — konsistent mit bestehendem Code, aber T14–T16-Implementierer müssen id: randomUUID() immer explizit setzen
   - M3: label_key = slug-Strings sind nicht als Dictionary-Lookup-Keys dokumentiert — T21-Implementierer hat keinen schriftlichen Mapping-Hinweis
   - M4: sort_order-Default ist 0 (sortiert vor allen Seed-Kategorien) — Intention sollte dokumentiert oder Default auf einen Tail-Sentinel geändert werden
+  - M5: schema aus bulk edit in extra file & action string aus const enum action: z.literal("archive"),
 
   ---
   Fazit: Die Gesamtqualität ist hoch. C1 muss vor dem ersten Test gegen die migrierte DB behoben werden — sonst crasht jede Contact-Form-Submission. Die Important-Issues sollten vor T10 adressiert werden.
