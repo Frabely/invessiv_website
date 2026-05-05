@@ -1,4 +1,4 @@
-import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
+import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { LeadSource } from "@/common/constants/leads/lead-sources";
 import type { LeadCategoryDto } from "./lead-category.dto";
 import type { LeadSocialProfileDto } from "./lead-social-profile.dto";

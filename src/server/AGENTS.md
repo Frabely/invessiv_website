@@ -82,6 +82,18 @@ Mapping-Service selbst und nicht im Query-Handler.
 - Orchestrierung nicht in `src/server/db`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.
 
+## Typen-Regel (verbindlich)
+
+Exported TypeScript-Typen und Interfaces gehören **nicht** inline in Service- oder Handler-Dateien. Sie werden immer in
+eigenen Dateien außerhalb definiert:
+
+- **Client/Server-shared** (Input-Shapes, Result-Shapes ohne Server-only-Imports): `src/common/contracts/<domain>/`
+  — z. B. `create-lead-result.ts` unter `results/`, `create-lead-activity-input.ts` im Domain-Root
+- **Rein serverseitig** (enthält `server-only`-Imports oder DB-Typen): eigene `*-types.ts`-Datei innerhalb
+  `src/server/workspace/<domain>/`
+
+Die Service-/Handler-Datei importiert den Typ direkt aus der jeweiligen Contract-Datei.
+
 ## Sprachregel
 
 - Inhalte von `AGENTS.md` in diesem Projekt immer auf Deutsch pflegen.

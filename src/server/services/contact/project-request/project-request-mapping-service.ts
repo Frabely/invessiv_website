@@ -1,12 +1,12 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import type { ProjectRequestPersistInput } from "@/server/db/contracts/contact/project-request-persist-input";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import {
-  mapLeadApiToDb,
   type ApiToDbMapperOptions,
+  mapLeadApiToDb,
 } from "@/server/services/contact/lead-mapping-service";
 import { mapSubmissionApiToDb } from "@/server/services/contact/submission-mapping-service";
 
@@ -15,7 +15,7 @@ export function mapProjectRequestDtoToDbPersistInput(
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): ProjectRequestPersistInput {
   const lead = mapLeadApiToDb(payload, createdAt, {
-    defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS,
+    defaultLeadStatus: ContactLeadStatus.New,
   });
   const leadSubmission = mapSubmissionApiToDb(
     {

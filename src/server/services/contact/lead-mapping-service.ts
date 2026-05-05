@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
+import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadSource } from "@/common/constants/leads/lead-sources";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 

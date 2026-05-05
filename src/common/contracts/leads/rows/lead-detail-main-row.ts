@@ -1,4 +1,4 @@
-import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
+import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { LeadSource } from "@/common/constants/leads/lead-sources";
 import type { LeadCategoryRow } from "./lead-category-row";
 

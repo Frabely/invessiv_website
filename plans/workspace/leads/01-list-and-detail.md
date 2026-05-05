@@ -418,7 +418,7 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
   jetzt `mapCategoryRowToDto` aus `lead-category-mapping-service.ts`; alle 350 Tests im Projekt grün
 - **Aufwand:** 1,5h
 
-#### P1-T14 — Command: `create-lead.command-handler.ts`
+#### P1-T14 — Command: `create-lead.command-handler.ts` ✅
 
 - **Files:** `src/server/workspace/leads/command-handler/create-lead.command-handler.ts`, `src/server/workspace/leads/services/lead-activity-service.ts`
 - **Inhalt:** Validate → Insert Lead mit explizit gesetztem `source='manual'`, `lead_status='new'`, optionalen `improvements`, `created_at` und `updated_at` → Insert Social-Profile mit berechnetem `normalized_url` in derselben Transaction → Activity über `appendLeadActivity()` im `lead-activity-service` loggen (`type=note`, `body="Lead manually created"`) → Return DTO

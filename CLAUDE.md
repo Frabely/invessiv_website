@@ -96,6 +96,17 @@ Canonical model source: `src/server/db/record-configuration/`. Schema defined wi
   ```
 - Each constant group lives in its own file under `src/common/constants/<domain>/`
 
+### Types & Contracts
+
+Exported TypeScript types and interfaces are never defined inline in service or handler files. They live in dedicated
+files:
+
+- **Shared between client and server** (input shapes, result shapes, DTOs): `src/common/contracts/<domain>/`
+- **Server-internal only** (contains server-only imports or DB types): dedicated `*-types.ts` file within
+  `src/server/workspace/<domain>/`
+
+The service or handler file imports directly from the contract file — no re-exporting.
+
 ### Component conventions
 
 - Each component lives in its own folder: `component-name/component-name.tsx`

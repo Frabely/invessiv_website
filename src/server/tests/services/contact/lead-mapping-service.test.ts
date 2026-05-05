@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { DEFAULT_CONTACT_LEAD_STATUS } from "@/common/constants/contact/default-contact-lead-status";
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadSource } from "@/common/constants/leads/lead-sources";
 
 const { randomUUIDMock } = vi.hoisted(() => ({
@@ -26,7 +26,7 @@ describe("mapLeadApiToDb", () => {
         lastName: " Mustermann ",
       },
       createdAt,
-      { defaultLeadStatus: DEFAULT_CONTACT_LEAD_STATUS },
+      { defaultLeadStatus: ContactLeadStatus.New },
     );
 
     expect(result).toEqual({
@@ -35,7 +35,7 @@ describe("mapLeadApiToDb", () => {
       first_name: "Max",
       id: "lead-id-1",
       last_name: "Mustermann",
-      lead_status: DEFAULT_CONTACT_LEAD_STATUS,
+      lead_status: ContactLeadStatus.New,
       owner: undefined,
       source: LeadSource.Webform,
       updated_at: createdAt,

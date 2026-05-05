@@ -1,12 +1,24 @@
-import type { ContactLeadStatus } from "@/common/contracts/contact/records/contact-lead-status";
+export const ContactLeadStatus = {
+  New: "new",
+  Contacted: "contacted",
+  Qualified: "qualified",
+  Proposal: "proposal",
+  OnHold: "on_hold",
+  Won: "won",
+  Lost: "lost",
+  Archived: "archived",
+} as const;
+
+export type ContactLeadStatus =
+  (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
 
 export const CONTACT_LEAD_STATUS_VALUES = [
-  "new",
-  "contacted",
-  "qualified",
-  "proposal",
-  "on_hold",
-  "won",
-  "lost",
-  "archived",
-] as const satisfies readonly ContactLeadStatus[];
+  ContactLeadStatus.New,
+  ContactLeadStatus.Contacted,
+  ContactLeadStatus.Qualified,
+  ContactLeadStatus.Proposal,
+  ContactLeadStatus.OnHold,
+  ContactLeadStatus.Won,
+  ContactLeadStatus.Lost,
+  ContactLeadStatus.Archived,
+] as const;
