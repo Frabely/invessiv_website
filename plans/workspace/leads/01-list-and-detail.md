@@ -260,7 +260,7 @@ src/
 - **Akzeptanz:** Alle sechs Markdown-Dateien existieren; `AGENTS.md`-Dateien sind auf Deutsch und forward-looking formuliert; UI-Doku referenziert Repo-Root-`CLAUDE.md` + Workspace-Parent-Docs; API-README beschreibt die Routen kompakt genug für Client-/Test-Implementierung; Komponenten-`AGENTS.md` erlaubt die gruppierte Leads-Struktur bewusst als Scope-spezifische Präzisierung
 - **Aufwand:** 1h
 
-### DB & Schema
+### DB & Schema ✅
 
 #### P1-T1 — Constants & Enums ✅
 
@@ -274,7 +274,7 @@ src/
 - **Akzeptanz:** Alle Constants als `as const`-Arrays mit `satisfies`-Type-Check; Bestand kompiliert
 - **Aufwand:** 1h
 
-#### P1-T2 — Drizzle-Schema `leads.ts` erweitern
+#### P1-T2 — Drizzle-Schema `leads.ts` erweitern ✅
 
 - **Files:** `src/server/db/record-configuration/leads.ts`
 - **Inhalt:** `first_name`/`last_name` nullable, neue Spalten anlegen, `category_id` FK zu `lead_categories`, Score-Check `0..100`, neue CHECKs + Indizes (siehe Schema oben)
@@ -282,7 +282,7 @@ src/
 - **Akzeptanz:** `npm run typecheck` grün; bestehende Persist-Funktionen kompilieren
 - **Aufwand:** 1,5h
 
-#### P1-T3 — Drizzle-Schema `lead-categories.ts` neu
+#### P1-T3 — Drizzle-Schema `lead-categories.ts` neu ✅
 
 - **Files:** `src/server/db/record-configuration/lead-categories.ts`, `src/server/db/client.ts` (Edit: in `contactSchema` registrieren)
 - **Inhalt:** Lookup-Tabelle für filterbare Lead-Kategorien mit `slug`, `label_key`, `description`, `is_active`, `sort_order`; sichtbare Labels kommen aus Dictionaries, nicht aus der DB
@@ -290,7 +290,7 @@ src/
 - **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Type-Inference funktioniert; `slug` ist unique; `label_key` ist verpflichtend und wird als Dictionary-Key genutzt
 - **Aufwand:** 1h
 
-#### P1-T4 — Drizzle-Schema `lead-social-profiles.ts` neu
+#### P1-T4 — Drizzle-Schema `lead-social-profiles.ts` neu ✅
 
 - **Files:** `src/server/db/record-configuration/lead-social-profiles.ts`, `src/server/db/client.ts` (Edit: in `contactSchema` registrieren)
 - **Inhalt:** Social-Profile pro Lead mit fester Plattform-Checkliste (`linkedin`, `instagram`, `youtube`) und `normalized_url`
@@ -298,21 +298,21 @@ src/
 - **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Unique-Constraint auf `(lead_id, platform, normalized_url)` funktioniert; `normalized_url` wird vor Insert/Update über den URL-Normalization-Service berechnet
 - **Aufwand:** 1h
 
-#### P1-T5 — Drizzle-Schema `lead-activities.ts` neu
+#### P1-T5 — Drizzle-Schema `lead-activities.ts` neu ✅
 
 - **Files:** `src/server/db/record-configuration/lead-activities.ts`, `src/server/db/client.ts` (Edit: in `contactSchema` registrieren)
 - **Skills:** `superpowers:test-driven-development`
 - **Akzeptanz:** Tabelle in `contactSchema`-Objekt; Type-Inference funktioniert
 - **Aufwand:** 1h
 
-#### P1-T6 — SQL-Migration `0003_create_lead_categories.sql`
+#### P1-T6 — SQL-Migration `0003_create_lead_categories.sql` ✅
 
 - **Files:** `src/server/db/migrations/0003_create_lead_categories.sql`
 - **Inhalt:** `CREATE TABLE IF NOT EXISTS lead_categories` + Unique-Index auf `slug` + Seed der initialen Kategorien mit `label_key` und `sort_order` in 10er-Schritten
 - **Akzeptanz:** Migration läuft idempotent; Seed-Kategorien sind vorhanden, können gefiltert werden, nutzen `sort_order`-Werte `10`, `20`, `30`, ... und UI-Labels werden später aus Dictionaries per `label_key` aufgelöst
 - **Aufwand:** 1h
 
-#### P1-T7 — SQL-Migration `0004_extend_leads_for_crm.sql`
+#### P1-T7 — SQL-Migration `0004_extend_leads_for_crm.sql` ✅
 
 - **Files:** `src/server/db/migrations/0004_extend_leads_for_crm.sql`
 - **Inhalt:** `ALTER TABLE leads` für nullable + neue Spalten inklusive `category_id` FK zu `lead_categories(id)` + Score-Check `0..100` + `source`-Check ohne DB-Default + aktualisierter `lead_status`-Check inklusive `proposal` und `on_hold` + getrimmter Personen/Firmenname-Check + Indizes (idempotent mit `IF NOT EXISTS` / `DROP CONSTRAINT IF EXISTS … ADD CONSTRAINT`)
@@ -321,23 +321,23 @@ src/
 - **Akzeptanz:** `npm run db:migrate:dev` läuft ohne Fehler durch; idempotent (zweiter Lauf macht nichts); bestehender `lead_status`-CHECK wird so ersetzt, dass `proposal` und `on_hold` DB-seitig akzeptiert werden; `source` hat keinen DB-Default und alle bestehenden `leads` erhalten explizit `source='webform'` oder eine bewusst dokumentierte Fallback-Quelle; `persistSharedLeadSubmission()` setzt bei künftigen Inbound-Upserts `source='webform'` explizit und der bestehende Contact-Persistenz-Test bleibt grün
 - **Aufwand:** 1,5h
 
-#### P1-T8 — SQL-Migration `0005_create_lead_social_profiles.sql`
+#### P1-T8 — SQL-Migration `0005_create_lead_social_profiles.sql` ✅
 
 - **Files:** `src/server/db/migrations/0005_create_lead_social_profiles.sql`
 - **Inhalt:** `CREATE TABLE IF NOT EXISTS lead_social_profiles` + `CHECK (platform IN ('linkedin', 'instagram', 'youtube'))` + Index + Unique-Index
 - **Akzeptanz:** Migration läuft idempotent; mehrere erlaubte Plattformen pro Lead sind möglich, Dubletten pro Plattform/URL nicht; nicht erlaubte Plattformen werden DB-seitig abgelehnt
 - **Aufwand:** 1h
 
-#### P1-T9 — SQL-Migration `0006_create_lead_activities.sql`
+#### P1-T9 — SQL-Migration `0006_create_lead_activities.sql` ✅
 
 - **Files:** `src/server/db/migrations/0006_create_lead_activities.sql`
 - **Inhalt:** `CREATE TABLE IF NOT EXISTS lead_activities` + Type-Check für `note`, `status_change`, `inbound_submission`, `import` + Actor-Felder `actor_type`, `actor_id`, `actor_label` + Index + FK
 - **Akzeptanz:** Migration läuft, Tabelle in Neon sichtbar; manueller Insert-Test passt
 - **Aufwand:** 1h
 
-### Server-Layer
+### Server-Layer ✅
 
-#### P1-T10 — Lead-Validation- und URL-Normalization-Services
+#### P1-T10 — Lead-Validation- und URL-Normalization-Services ✅
 
 Schemas und Refinements liegen je Operation in einer Datei (`*.schema.ts`), ohne separates `*.validation-rules.ts`.
 Gemeinsame Zod-Bausteine leben in `shared/`.
@@ -450,9 +450,9 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
   per Lead; Archive-Use-Case über `status='archived'` abgedeckt; leere `ids` → `VALIDATION_ERROR`
 - **Aufwand:** 1,5h
 
-### API-Routes
+### API-Routes ✅
 
-#### P1-T17 — Auth-Helper für Workspace-API
+#### P1-T17 — Auth-Helper für Workspace-API ✅
 
 - **Files:**
   - `src/lib/auth/api.ts` (NEU: `withWorkspaceApiAuth(handler)` HOC; nutzt Clerk `auth()`/`currentUser()` + Allowlist-Prüfung ohne Locale-Redirect und gibt 401/404 als JSON)
@@ -461,7 +461,7 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 - **Akzeptanz:** Unit-Tests für authed/unauthed/non-allowlisted Calls; API-Helper importiert keine locale-aware Redirect-Helper und ruft nicht `requireWorkspaceAccess(locale)` auf; falls `proxy.ts` erweitert wird, ist ein Test/Smoke dokumentiert, dass API-Requests JSON-Fehler statt HTML/Redirect erhalten
 - **Aufwand:** 2h
 
-#### P1-T18 — Route: `GET/POST /api/workspace/leads`
+#### P1-T18 — Route: `GET/POST /api/workspace/leads` ✅
 
 - **Files:** `src/app/api/workspace/leads/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
 - **Inhalt:**
@@ -471,13 +471,13 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 - **Akzeptanz:** Vitest-Route-Tests grün unter `src/server/tests/workspace/leads/api/leads-route.test.ts`; API-README dokumentiert Query-Params, Create-Body, Success-Response und Fehlercodes
 - **Aufwand:** 1,5h
 
-#### P1-T19 — Route: `GET/PATCH/DELETE /api/workspace/leads/[id]`
+#### P1-T19 — Route: `GET/PATCH/DELETE /api/workspace/leads/[id]` ✅
 
 - **Files:** `src/app/api/workspace/leads/[id]/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
 - **Akzeptanz:** Tests für jeden Verb-Pfad unter `src/server/tests/workspace/leads/api/lead-id-route.test.ts`; `PATCH` kann `improvements` ergänzen/bearbeiten; `DELETE` setzt `lead_status='archived'` statt physisch zu löschen und antwortet mit `{ ok: true, status: 'archived' }` statt `204`; API-README dokumentiert Read-/Patch-/Soft-Delete-Verhalten inklusive 404/Validation-Fehler
 - **Aufwand:** 1h
 
-#### P1-T20 — Route: `POST /api/workspace/leads/bulk`
+#### P1-T20 — Route: `POST /api/workspace/leads/bulk` ✅
 
 - **Files:** `src/app/api/workspace/leads/bulk/route.ts`, `src/app/api/workspace/leads/README.md` (bei Contract-Details aktualisieren)
 - **Inhalt:** Action-Discriminator im Body: `{ action: 'set_status' | 'archive', ids, status? }`. Beide Actions
