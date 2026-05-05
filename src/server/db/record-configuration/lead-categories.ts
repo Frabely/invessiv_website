@@ -18,7 +18,7 @@ export const leadCategories = pgTable(
     label_key: text("label_key").notNull(),
     description: text("description"),
     is_active: boolean("is_active").notNull().default(true),
-    sort_order: integer("sort_order").notNull().default(0),
+    sort_order: integer("sort_order").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

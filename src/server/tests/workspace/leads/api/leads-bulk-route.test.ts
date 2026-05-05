@@ -3,6 +3,10 @@ import type { NextRequest } from "next/server";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
+import {
+  LeadBulkAction,
+  leadBulkActionSchema,
+} from "@/app/api/workspace/leads/bulk/bulk-action-schema";
 
 vi.mock("server-only", () => ({}));
 
@@ -56,7 +60,11 @@ describe("POST /api/workspace/leads/bulk", () => {
     mockAuth.mockResolvedValue({ userId: null });
 
     const response = await POST(
-      makeRequest({ action: "set_status", ids: ["id-1"], status: "new" }),
+      makeRequest({
+        action: LeadBulkAction.SetStatus,
+        ids: ["id-1"],
+        status: ContactLeadStatus.New,
+      }),
     );
 
     expect(response.status).toBe(401);
@@ -71,7 +79,7 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: "set_status",
+        action: LeadBulkAction.SetStatus,
         ids: ["id-1", "id-2", "id-3"],
         status: ContactLeadStatus.Qualified,
       }),
@@ -88,7 +96,7 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     await POST(
       makeRequest({
-        action: "set_status",
+        action: LeadBulkAction.SetStatus,
         ids: ["id-a", "id-b"],
         status: ContactLeadStatus.Contacted,
       }),
@@ -105,7 +113,7 @@ describe("POST /api/workspace/leads/bulk", () => {
     mockBulkEditLeads.mockResolvedValue({ ok: true, updatedCount: 2 });
 
     const response = await POST(
-      makeRequest({ action: "archive", ids: ["id-1", "id-2"] }),
+      makeRequest({ action: LeadBulkAction.Archive, ids: ["id-1", "id-2"] }),
     );
 
     expect(response.status).toBe(200);
@@ -122,7 +130,7 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: "set_status",
+        action: LeadBulkAction.SetStatus,
         ids: [],
         status: ContactLeadStatus.New,
       }),
@@ -151,7 +159,7 @@ describe("POST /api/workspace/leads/bulk", () => {
     setupAuthenticatedUser();
 
     const response = await POST(
-      makeRequest({ action: "set_status", ids: ["id-1"] }),
+      makeRequest({ action: LeadBulkAction.SetStatus, ids: ["id-1"] }),
     );
 
     expect(response.status).toBe(400);
@@ -183,7 +191,7 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: "set_status",
+        action: LeadBulkAction.SetStatus,
         ids: ["id-1"],
         status: ContactLeadStatus.New,
       }),
@@ -192,5 +200,21 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(response.status).toBe(500);
     const body = await response.json();
     expect(body).toMatchObject({ error: LeadErrorCode.Internal });
+  });
+
+  it("accepts both documented actions through the extracted schema", () => {
+    expect(
+      leadBulkActionSchema.safeParse({
+        action: LeadBulkAction.SetStatus,
+        ids: ["id-1"],
+        status: ContactLeadStatus.New,
+      }).success,
+    ).toBe(true);
+    expect(
+      leadBulkActionSchema.safeParse({
+        action: LeadBulkAction.Archive,
+        ids: ["id-1"],
+      }).success,
+    ).toBe(true);
   });
 });

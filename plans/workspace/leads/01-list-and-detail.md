@@ -75,15 +75,21 @@ slug               text NOT NULL UNIQUE
 label_key          text NOT NULL
 description        text NULL
 is_active          boolean NOT NULL DEFAULT TRUE
-sort_order         integer NOT NULL DEFAULT 0
+sort_order         integer NOT NULL
 created_at         timestamptz NOT NULL DEFAULT NOW()
 updated_at         timestamptz NOT NULL DEFAULT NOW()
 ```
 
 - Initiale Seed-Kategorien: `coaches`, `craftspeople`, `local-service-providers`, `small-b2b-providers`, `consultants`,
   `photographers`
+- IDs werden application-owned vergeben. Da `0003_create_lead_categories.sql` bereits auf Dev angewendet wurde, bleibt
+  diese Seed-Migration unverändert und erzeugt Seed-UUIDs über ihren damaligen `id`-Default. Die Forward-Migration
+  `0007_remove_lead_category_defaults.sql` entfernt danach die Defaults; Server-Inserts setzen IDs per
+  `crypto.randomUUID()`.
+- `sort_order` hat keinen DB-Default und muss bei Seeds/Inserts explizit gesetzt werden.
 - `sort_order` wird fachlich in 10er-Schritten vergeben (`10`, `20`, `30`, ...), damit Kategorien später ohne Umnummerierung dazwischen einsortiert werden können.
-- UI-Labels für Kategorien werden über Dictionaries anhand von `label_key` gerendert; `slug` bleibt stabile technische Identität.
+- `label_key` ist slug-kompatibel und bleibt ein stabiler Dictionary-Lookup-Key. UI-Labels für Kategorien werden
+  locale-spezifisch über Dictionaries anhand von `label_key` gerendert; `slug` bleibt stabile technische Identität.
 - Import normalisiert freie CSV-Kategorien auf `slug`; unbekannte Kategorien werden in Phase 2 beim Import entweder angelegt oder als Import-Fehler gemeldet.
 
 **Tabelle `lead_social_profiles` (neu):**

@@ -1,0 +1,5 @@
+ALTER TABLE lead_categories
+    ALTER COLUMN id DROP DEFAULT,
+ALTER
+COLUMN sort_order DROP
+DEFAULT;

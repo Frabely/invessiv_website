@@ -1,4 +1,6 @@
 import { getTableConfig } from "drizzle-orm/pg-core";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { leadActivities } from "@/server/db/record-configuration/lead-activities";
 import { leadCallContacts } from "@/server/db/record-configuration/lead-call-contacts";
@@ -30,4 +32,46 @@ describe("contact drizzle schema", () => {
       expect(tableConfig.columns.length).toBeGreaterThan(0);
     },
   );
+
+  it("keeps lead category ids application-owned and sort_order explicit", () => {
+    const tableConfig = getTableConfig(leadCategories);
+    const idColumn = tableConfig.columns.find((column) => column.name === "id");
+    const sortOrderColumn = tableConfig.columns.find(
+      (column) => column.name === "sort_order",
+    );
+
+    expect(idColumn).toMatchObject({ notNull: true, hasDefault: false });
+    expect(sortOrderColumn).toMatchObject({
+      notNull: true,
+      hasDefault: false,
+    });
+  });
+
+  it("keeps the lead category forward migration dropping implicit defaults", () => {
+    const createMigrationSql = readFileSync(
+      join(
+        process.cwd(),
+        "src/server/db/migrations/0003_create_lead_categories.sql",
+      ),
+      "utf8",
+    );
+    const removeDefaultsMigrationSql = readFileSync(
+      join(
+        process.cwd(),
+        "src/server/db/migrations/0007_remove_lead_category_defaults.sql",
+      ),
+      "utf8",
+    );
+
+    expect(createMigrationSql).toContain("id UUID PRIMARY KEY DEFAULT");
+    expect(createMigrationSql).toContain(
+      "sort_order INTEGER NOT NULL DEFAULT 0 CHECK (sort_order >= 0)",
+    );
+    expect(removeDefaultsMigrationSql).toContain(
+      "ALTER COLUMN id DROP DEFAULT",
+    );
+    expect(removeDefaultsMigrationSql).toContain(
+      "ALTER COLUMN sort_order DROP DEFAULT",
+    );
+  });
 });

@@ -63,6 +63,10 @@ Listet Leads gefiltert, sortiert und paginiert.
 
 `LeadSummaryDto` → `src/common/contracts/leads/lead-summary.dto.ts`.
 
+Kategorien liefern stabile technische Werte aus `lead_categories`: `id`, `slug` und `label_key`. Die API gibt keine
+lokalisierten Kategorie-Labels aus; die Workspace-UI löst `label_key` locale-spezifisch über Dictionaries auf.
+`label_key` bleibt slug-kompatibel und ist ein stabiler Lookup-Key, kein sichtbarer Label-Text.
+
 ### Fehler
 
 - `400 VALIDATION_ERROR` bei ungültigen Query-Param-Werten.
@@ -95,6 +99,9 @@ Legt einen Lead manuell an. Server setzt explizit `source='manual'` und `lead_st
 ```
 
 `source` wird **nicht** vom Client gesetzt; der Server erzwingt `manual`.
+Neue Persistenz-Records verwenden application-owned IDs: Server-Code setzt `id` explizit per `crypto.randomUUID()`;
+DB-Defaults für neue Workspace-Leads-Tabellen sind im finalen Schema nicht vorgesehen. `0003` bleibt als bereits
+angewendete Seed-Migration unverändert; `0007` entfernt die dort benötigten Defaults nachträglich.
 
 ### Response `201`
 
