@@ -1,15 +1,23 @@
 import type { Locale } from "@/config/i18n";
 import metaDe from "./meta/de.json";
 import metaEn from "./meta/en.json";
+import sharedDe from "./shared/de.json";
+import sharedEn from "./shared/en.json";
 import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
+export type LeadsSharedDictionary = typeof sharedDe;
 export type LeadsShellDictionary = typeof shellDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
   en: metaEn,
+};
+
+const LEADS_SHARED: Record<Locale, LeadsSharedDictionary> = {
+  de: sharedDe,
+  en: sharedEn,
 };
 
 const LEADS_SHELL: Record<Locale, LeadsShellDictionary> = {
@@ -19,6 +27,12 @@ const LEADS_SHELL: Record<Locale, LeadsShellDictionary> = {
 
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
   return LEADS_META[locale];
+}
+
+export function getLeadsSharedDictionary(
+  locale: Locale,
+): LeadsSharedDictionary {
+  return LEADS_SHARED[locale];
 }
 
 export function getLeadsShellDictionary(locale: Locale): LeadsShellDictionary {

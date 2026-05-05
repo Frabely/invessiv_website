@@ -1,0 +1,76 @@
+.root {
+  --source-accent: var(--color-cta);
+  --source-border: color-mix(in srgb, var(--source-accent) 30%, transparent);
+  --source-bg: color-mix(
+    in srgb,
+    var(--source-accent) 14%,
+    var(--color-surface-2) 86%
+  );
+  --source-text: color-mix(
+    in srgb,
+    var(--color-text) 88%,
+    var(--source-accent) 12%
+  );
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  min-height: 32px;
+  padding: 0 0.84rem 0 0.72rem;
+  border: 1px solid var(--source-border);
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--source-bg) 78%, var(--color-surface-1) 22%),
+    color-mix(in srgb, var(--color-surface-2) 90%, transparent)
+  );
+  color: var(--source-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.icon {
+  display: inline-flex;
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  color: var(--source-accent);
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.label {
+  transform: translateY(0.01em);
+}
+
+.root[data-source="webform"] {
+  --source-accent: var(--color-cta);
+}
+
+.root[data-source="manual"] {
+  --source-accent: var(--color-accent-warm);
+}
+
+.root[data-source="import"] {
+  --source-accent: #36b37e;
+}
+
+[data-theme="light"] .root {
+  --source-bg: color-mix(
+    in srgb,
+    var(--source-accent) 10%,
+    var(--color-surface-1) 90%
+  );
+  --source-text: color-mix(
+    in srgb,
+    var(--color-text) 84%,
+    var(--source-accent) 16%
+  );
+}

@@ -54,8 +54,9 @@ page.tsx (Server-Component)
 
 - Alle UI-/Page-Texte liegen in `src/i18n/dictionaries/workspace/leads/`:
   - `meta/{de,en}.json` — `title`, `description` (mit `noindex`)
-  - `page/{de,en}.json` — Header, Toolbar, Tabellen-Spalten, Status-/Source-/Kategorie-Labels, Social-Plattform-Labels, Empty-State, Pagination, Bulk-Bar, Detail-Panel, Add-Dialog
-  - `index.ts` — `getLeadsMetaContent(locale)`, `getLeadsPageContent(locale)`
+  - `shell/{de,en}.json` — Header- und Shell-Texte
+  - `shared/{de,en}.json` — Status-/Source-/Kategorie-/Plattform-Labels, Score-Aria-Label
+  - `index.ts` — `getLeadsMetaDictionary(locale)`, `getLeadsSharedDictionary(locale)`, `getLeadsShellDictionary(locale)`
 - DE und EN immer im selben Commit pflegen.
 - Keine `locale === "de" ? ... : ...`-Branches; auch nicht für Kategorie-Labels. Kategorien werden über ihren `label_key` aus dem Dictionary aufgelöst — nicht direkt aus der DB.
 
@@ -93,18 +94,18 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 
 ## Kritische Dateien
 
-| Pfad                                                                       | Zweck                                            |
-| -------------------------------------------------------------------------- | ------------------------------------------------ |
-| `src/app/[locale]/workspace/leads/page.tsx`                                | SSR-Page, lädt Filter aus `searchParams`         |
-| `src/app/[locale]/workspace/leads/loading.tsx`                             | Initialer Route-Skeleton                         |
-| `src/app/[locale]/workspace/layout.tsx`                                    | Auth-Gate (Layer 2, Parent)                      |
-| `src/proxy.ts`                                                             | Edge-Auth (Layer 1)                              |
-| `src/components/workspace/leads/`                                          | Gruppierte Lead-Komponenten                      |
-| `src/server/workspace/leads/query-handler/list-leads.query-handler.ts`     | Listen-Loader                                    |
-| `src/server/workspace/leads/query-handler/get-lead-by-id.query-handler.ts` | Detail-Loader                                    |
-| `src/server/workspace/leads/services/lead-filter-service.ts`               | Query-Param → Drizzle-Where                      |
-| `src/i18n/dictionaries/workspace/leads/`                                   | Texte für Page, Toolbar, Tabelle, Detail, Dialog |
-| `src/common/contracts/leads/`                                              | API-/Client-shared DTOs                          |
+| Pfad                                                                       | Zweck                                    |
+| -------------------------------------------------------------------------- | ---------------------------------------- |
+| `src/app/[locale]/workspace/leads/page.tsx`                                | SSR-Page, lädt Filter aus `searchParams` |
+| `src/app/[locale]/workspace/leads/loading.tsx`                             | Initialer Route-Skeleton                 |
+| `src/app/[locale]/workspace/layout.tsx`                                    | Auth-Gate (Layer 2, Parent)              |
+| `src/proxy.ts`                                                             | Edge-Auth (Layer 1)                      |
+| `src/components/workspace/leads/`                                          | Gruppierte Lead-Komponenten              |
+| `src/server/workspace/leads/query-handler/list-leads.query-handler.ts`     | Listen-Loader                            |
+| `src/server/workspace/leads/query-handler/get-lead-by-id.query-handler.ts` | Detail-Loader                            |
+| `src/server/workspace/leads/services/lead-filter-service.ts`               | Query-Param → Drizzle-Where              |
+| `src/i18n/dictionaries/workspace/leads/`                                   | Texte für Meta, Shell und Shared-Visuals |
+| `src/common/contracts/leads/`                                              | API-/Client-shared DTOs                  |
 
 ## Reuse-Punkte
 

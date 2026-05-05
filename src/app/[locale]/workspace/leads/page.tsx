@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
+import { LeadsVisualsPreview } from "@/components/workspace/leads/shared";
 import {
   getLeadsMetaDictionary,
+  getLeadsSharedDictionary,
   getLeadsShellDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
@@ -37,6 +39,12 @@ export default async function LeadsPage({ params }: LeadsPageProps) {
   }
 
   const shellContent = getLeadsShellDictionary(locale as Locale);
+  const sharedContent = getLeadsSharedDictionary(locale as Locale);
 
-  return <LeadsPageShell header={<LeadsPageHeader content={shellContent} />} />;
+  return (
+    <LeadsPageShell
+      content={<LeadsVisualsPreview content={sharedContent} />}
+      header={<LeadsPageHeader content={shellContent} />}
+    />
+  );
 }
