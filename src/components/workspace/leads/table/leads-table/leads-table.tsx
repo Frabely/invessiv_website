@@ -5,6 +5,7 @@ import type {
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { LeadsEmptyState } from "../leads-empty-state/leads-empty-state";
 import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/leads-table-select-all-checkbox";
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
@@ -16,6 +17,13 @@ type LeadsTableProps = {
   locale: Locale;
   queryString: string;
   rows: LeadSummaryDto[];
+  emptyState?: {
+    actionHref?: string;
+    actionLabel: string;
+    description: string;
+    title: string;
+    variant: "empty" | "filtered";
+  };
   sharedContent: LeadsSharedDictionary;
   tableContent: LeadsTableDictionary;
 };
@@ -30,11 +38,13 @@ export function LeadsTable({
   locale,
   queryString,
   rows,
+  emptyState,
   sharedContent,
   tableContent,
 }: LeadsTableProps) {
   const activeSort = getActiveSort(queryString);
   const rowIds = rows.map((row) => row.id);
+  const columnCount = 9;
 
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
@@ -104,17 +114,31 @@ export function LeadsTable({
               </tr>
             </thead>
             <tbody>
-              {rows.map((lead) => (
-                <LeadsTableRow
-                  basePath={basePath}
-                  currentQueryString={queryString}
-                  key={lead.id}
-                  lead={lead}
-                  locale={locale}
-                  sharedContent={sharedContent}
-                  tableContent={tableContent}
-                />
-              ))}
+              {rows.length > 0 ? (
+                rows.map((lead) => (
+                  <LeadsTableRow
+                    basePath={basePath}
+                    currentQueryString={queryString}
+                    key={lead.id}
+                    lead={lead}
+                    locale={locale}
+                    sharedContent={sharedContent}
+                    tableContent={tableContent}
+                  />
+                ))
+              ) : emptyState ? (
+                <tr className={styles.emptyStateRow}>
+                  <td className={styles.emptyStateCell} colSpan={columnCount}>
+                    <LeadsEmptyState
+                      actionHref={emptyState.actionHref}
+                      actionLabel={emptyState.actionLabel}
+                      description={emptyState.description}
+                      title={emptyState.title}
+                      variant={emptyState.variant}
+                    />
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>

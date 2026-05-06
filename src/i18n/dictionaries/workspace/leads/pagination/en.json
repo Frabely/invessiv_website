@@ -1,0 +1,19 @@
+{
+  "pagination": {
+    "ariaLabel": "Leads pagination",
+    "first": "First",
+    "previous": "Previous",
+    "next": "Next",
+    "last": "Last",
+    "page": "Page {page}",
+    "showing": "Showing {from}–{to} of {total}"
+  },
+  "emptyState": {
+    "noLeadsTitle": "No leads yet",
+    "noLeadsDescription": "New leads will appear here once they are created or imported.",
+    "noLeadsAction": "Add lead",
+    "noResultsTitle": "No results for these filters",
+    "noResultsDescription": "Adjust the filters to show leads again.",
+    "noResultsAction": "Reset filters"
+  }
+}

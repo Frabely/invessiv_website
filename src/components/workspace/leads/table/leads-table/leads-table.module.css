@@ -47,6 +47,15 @@
   white-space: nowrap;
 }
 
+.emptyStateRow td {
+  padding: 1rem;
+}
+
+.emptyStateCell {
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+}
+
 [data-theme="light"] .tableScroll {
   box-shadow:
     0 20px 42px rgba(28, 41, 67, 0.08),
