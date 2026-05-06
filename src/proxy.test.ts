@@ -92,7 +92,9 @@ describe("proxy workspace auth", () => {
     (locale) => {
       expect(
         buildWorkspaceUnauthenticatedUrl(createRequest(`/${locale}/workspace`)),
-      ).toBe(`/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`);
+      ).toBe(
+        `https://invessiv.com/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`,
+      );
     },
   );
 
@@ -104,7 +106,7 @@ describe("proxy workspace auth", () => {
       await proxyHandler(auth, createRequest(`/${locale}/workspace`));
 
       expect(auth.protect).toHaveBeenCalledWith({
-        unauthenticatedUrl: `/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`,
+        unauthenticatedUrl: `https://invessiv.com/${locale}/sign-in?redirect_url=%2F${locale}%2Fworkspace`,
       });
     },
   );
@@ -150,6 +152,8 @@ describe("proxy workspace auth", () => {
       buildWorkspaceUnauthenticatedUrl(
         createRequest("/en/workspace?tab=leads"),
       ),
-    ).toBe("/en/sign-in?redirect_url=%2Fen%2Fworkspace%3Ftab%3Dleads");
+    ).toBe(
+      "https://invessiv.com/en/sign-in?redirect_url=%2Fen%2Fworkspace%3Ftab%3Dleads",
+    );
   });
 });

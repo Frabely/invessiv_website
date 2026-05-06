@@ -101,17 +101,10 @@
 }
 
 .leadText {
-  display: grid;
-  gap: 0.3rem;
-  min-width: 0;
-}
-
-.leadTitleRow {
   display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
+  flex-direction: column;
+  gap: 0.125rem;
   min-width: 0;
-  flex-wrap: wrap;
 }
 
 .leadTitle {
@@ -121,22 +114,24 @@
   color: var(--color-text);
 }
 
-.leadMeta,
-.leadUrl {
-  font-size: var(--font-size-ui-sm);
+.leadEmail {
   color: var(--color-text-muted);
-}
-
-.leadUrl {
+  font-size: 0.8125rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .categoryCell,
-.createdCell {
+.createdCell,
+.updatedCell {
   font-size: var(--font-size-body-sm);
   color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.socialCell {
+  white-space: nowrap;
 }
 
 .stageCell,

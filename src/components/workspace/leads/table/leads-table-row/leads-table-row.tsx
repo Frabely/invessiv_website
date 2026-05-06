@@ -10,15 +10,16 @@ import type {
 } from "@/i18n/dictionaries/workspace/leads";
 import {
   LeadScoreBar,
+  LeadSocialProfiles,
   LeadSourceBadge,
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
+import { formatRelativeTime } from "@/lib/format-relative-time";
 import {
   buildLeadHref,
   formatLeadCreatedAt,
   getLeadDisplayName,
   getLeadInitials,
-  getLeadSecondaryLabel,
 } from "../lead-table-utils";
 import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
 import styles from "./leads-table-row.module.css";
@@ -66,8 +67,18 @@ export function LeadsTableRow({
   const selected = isSelected(lead.id);
   const displayName = getLeadDisplayName(lead);
   const initials = getLeadInitials(lead);
-  const secondaryLabel = getLeadSecondaryLabel(lead);
-  const createdAt = formatLeadCreatedAt(locale, lead.createdAt);
+  const createdRelative = formatRelativeTime(
+    locale,
+    lead.createdAt,
+    tableContent.relativeTime,
+  );
+  const updatedRelative = formatRelativeTime(
+    locale,
+    lead.updatedAt,
+    tableContent.relativeTime,
+  );
+  const createdAbsolute = formatLeadCreatedAt(locale, lead.createdAt);
+  const updatedAbsolute = formatLeadCreatedAt(locale, lead.updatedAt);
   const categoryLabel = getCategoryLabel(
     sharedContent,
     tableContent.placeholders.empty,
@@ -118,13 +129,8 @@ export function LeadsTableRow({
           {initials}
         </div>
         <div className={styles.leadText}>
-          <div className={styles.leadTitleRow}>
-            <span className={styles.leadTitle}>{displayName}</span>
-            <span className={styles.leadMeta}>{secondaryLabel}</span>
-          </div>
-          <span className={styles.leadUrl}>
-            {lead.websiteUrl ?? lead.email}
-          </span>
+          <span className={styles.leadTitle}>{displayName}</span>
+          <span className={styles.leadEmail}>{lead.email}</span>
         </div>
       </td>
 
@@ -144,7 +150,23 @@ export function LeadsTableRow({
         />
       </td>
 
-      <td className={styles.createdCell}>{createdAt}</td>
+      <td className={styles.socialCell}>
+        <LeadSocialProfiles
+          emptyLabel={tableContent.placeholders.empty}
+          labels={sharedContent.socialIconLabel}
+          phone={lead.phone}
+          profiles={lead.socialProfiles}
+          websiteUrl={lead.websiteUrl}
+        />
+      </td>
+
+      <td className={styles.createdCell} title={createdAbsolute}>
+        {createdRelative}
+      </td>
+
+      <td className={styles.updatedCell} title={updatedAbsolute}>
+        {updatedRelative}
+      </td>
 
       <td className={styles.sourceCell}>
         <LeadSourceBadge

@@ -3,6 +3,7 @@ import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
 import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-types";
 import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
+import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
 import { LEAD_STATUS_TABS } from "@/common/constants/leads/lead-status-tabs";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
@@ -81,6 +82,25 @@ describe("LEAD_SOCIAL_PLATFORMS", () => {
     expect(new Set(LEAD_SOCIAL_PLATFORMS_VALUES).size).toBe(
       LEAD_SOCIAL_PLATFORMS_VALUES.length,
     );
+  });
+});
+
+describe("LEAD_SORT_VALUES", () => {
+  it("contains the expected sort values in order", () => {
+    expect(LEAD_SORT_VALUES).toEqual([
+      "created_asc",
+      "created_desc",
+      "updated_asc",
+      "updated_desc",
+      "score_asc",
+      "score_desc",
+      "name_asc",
+      "name_desc",
+    ]);
+  });
+
+  it("has no duplicates", () => {
+    expect(new Set(LEAD_SORT_VALUES).size).toBe(LEAD_SORT_VALUES.length);
   });
 });
 

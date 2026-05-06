@@ -228,6 +228,18 @@ describe("buildLeadFilter", () => {
       expect(sql.toLowerCase()).toContain("asc");
     });
 
+    it("sorts by updated_at ASC when sort=updated_asc", () => {
+      const sql = toOrderSQL(buildLeadFilter({ sort: "updated_asc" }).orderBy);
+      expect(sql).toContain("updated_at");
+      expect(sql.toLowerCase()).toContain("asc");
+    });
+
+    it("sorts by updated_at DESC when sort=updated_desc", () => {
+      const sql = toOrderSQL(buildLeadFilter({ sort: "updated_desc" }).orderBy);
+      expect(sql).toContain("updated_at");
+      expect(sql.toLowerCase()).toContain("desc");
+    });
+
     it("sorts by created_at DESC when sort is absent", () => {
       const sql = toOrderSQL(buildLeadFilter({}).orderBy);
       expect(sql).toContain("created_at");

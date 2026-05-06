@@ -6,7 +6,9 @@
     "stage": "Stage",
     "source": "Source",
     "score": "Score",
-    "created": "Created"
+    "social": "Profiles",
+    "created": "Created",
+    "updated": "Updated"
   },
   "sort": {
     "nameAsc": "Name A-Z",
@@ -14,7 +16,9 @@
     "scoreAsc": "Score ascending",
     "scoreDesc": "Score descending",
     "createdAsc": "Oldest first",
-    "createdDesc": "Newest first"
+    "createdDesc": "Newest first",
+    "updatedAsc": "Recently updated (oldest)",
+    "updatedDesc": "Recently updated (newest)"
   },
   "selection": {
     "selectAll": "Select all visible leads",
@@ -24,6 +28,11 @@
   },
   "row": {
     "open": "Open lead"
+  },
+  "relativeTime": {
+    "justNow": "just now",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
   },
   "placeholders": {
     "empty": "—"

@@ -1,6 +1,11 @@
-import { count, eq } from "drizzle-orm";
+import { count, eq, inArray } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leadCategories, leads } from "@/server/db/record-configuration";
+import {
+  leadCategories,
+  leads,
+  leadSocialProfiles,
+} from "@/server/db/record-configuration";
+import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { mapLeadRowToSummaryDto } from "@/server/workspace/leads/services/lead-summary/lead-summary-mapping-service";
 import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
@@ -22,6 +27,7 @@ export async function listLeads(
         last_name: leads.last_name,
         company_name: leads.company_name,
         email: leads.email,
+        phone: leads.phone,
         website_url: leads.website_url,
         score: leads.score,
         source: leads.source,
@@ -41,8 +47,36 @@ export async function listLeads(
       .offset(offset),
   ]);
 
+  const leadIds = rows.map((row) => row.id);
+  const socialProfileRows = leadIds.length
+    ? await db
+        .select({
+          id: leadSocialProfiles.id,
+          lead_id: leadSocialProfiles.lead_id,
+          platform: leadSocialProfiles.platform,
+          profile_url: leadSocialProfiles.profile_url,
+          normalized_url: leadSocialProfiles.normalized_url,
+        })
+        .from(leadSocialProfiles)
+        .where(inArray(leadSocialProfiles.lead_id, leadIds))
+    : [];
+
+  const socialProfilesByLead = new Map<string, LeadSocialProfileDto[]>();
+  for (const row of socialProfileRows) {
+    const list = socialProfilesByLead.get(row.lead_id) ?? [];
+    list.push({
+      id: row.id,
+      platform: row.platform,
+      profileUrl: row.profile_url,
+      normalizedUrl: row.normalized_url,
+    });
+    socialProfilesByLead.set(row.lead_id, list);
+  }
+
   return {
-    rows: rows.map(mapLeadRowToSummaryDto),
+    rows: rows.map((row) =>
+      mapLeadRowToSummaryDto(row, socialProfilesByLead.get(row.id) ?? []),
+    ),
     total: Number(countRows[0]?.count ?? 0),
     page,
     perPage,

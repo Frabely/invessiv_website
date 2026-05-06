@@ -8,6 +8,7 @@ export type LeadSummaryRow = {
   last_name: string | null;
   company_name: string | null;
   email: string;
+  phone: string | null;
   website_url: string | null;
   score: number | null;
   source: LeadSource;

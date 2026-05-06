@@ -1,6 +1,7 @@
 import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { LeadSource } from "@/common/constants/leads/lead-sources";
 import type { LeadCategoryDto } from "./lead-category.dto";
+import type { LeadSocialProfileDto } from "./lead-social-profile.dto";
 
 export interface LeadSummaryDto {
   id: string;
@@ -8,6 +9,7 @@ export interface LeadSummaryDto {
   lastName: string | null;
   companyName: string | null;
   email: string;
+  phone: string | null;
   websiteUrl: string | null;
   score: number | null;
   source: LeadSource;
@@ -16,4 +18,5 @@ export interface LeadSummaryDto {
   createdAt: string;
   updatedAt: string;
   category: LeadCategoryDto | null;
+  socialProfiles: LeadSocialProfileDto[];
 }

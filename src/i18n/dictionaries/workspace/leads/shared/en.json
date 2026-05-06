@@ -27,6 +27,13 @@
     "instagram": "Instagram",
     "youtube": "YouTube"
   },
+  "socialIconLabel": {
+    "website": "Open website",
+    "linkedin": "Open LinkedIn profile",
+    "instagram": "Open Instagram profile",
+    "youtube": "Open YouTube channel",
+    "phone": "Call"
+  },
   "score": {
     "ariaLabel": "Score"
   }

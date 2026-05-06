@@ -1,10 +1,10 @@
+import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { isMarketingProofEnabled } from "@/config/marketing-launch";
 import { isSupportedLocale } from "@/config/i18n";
 import { signInPathWithRedirect } from "@/lib/auth/routes";
-import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
 
 const LEGACY_REDIRECTS: Record<string, string> = {
   "/": "/de",
@@ -49,10 +49,12 @@ export function buildWorkspaceUnauthenticatedUrl(request: NextRequest) {
     return null;
   }
 
-  return signInPathWithRedirect(
+  const relativeUrl = signInPathWithRedirect(
     locale,
     `${request.nextUrl.pathname}${request.nextUrl.search}`,
   );
+
+  return new URL(relativeUrl, request.nextUrl.origin).toString();
 }
 
 export async function proxyHandler(

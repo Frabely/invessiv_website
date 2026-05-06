@@ -1,14 +1,19 @@
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
 import type { LeadSummaryRow } from "@/common/contracts/leads/rows/lead-summary-row";
 import { mapCategoryRowToDto } from "@/server/workspace/leads/services/lead-category/lead-category-mapping-service";
 
-export function mapLeadRowToSummaryDto(row: LeadSummaryRow): LeadSummaryDto {
+export function mapLeadRowToSummaryDto(
+  row: LeadSummaryRow,
+  socialProfiles: LeadSocialProfileDto[] = [],
+): LeadSummaryDto {
   return {
     id: row.id,
     firstName: row.first_name,
     lastName: row.last_name,
     companyName: row.company_name,
     email: row.email,
+    phone: row.phone,
     websiteUrl: row.website_url,
     score: row.score,
     source: row.source,
@@ -17,5 +22,6 @@ export function mapLeadRowToSummaryDto(row: LeadSummaryRow): LeadSummaryDto {
     createdAt: row.created_at.toISOString(),
     updatedAt: row.updated_at.toISOString(),
     category: mapCategoryRowToDto(row),
+    socialProfiles,
   };
 }

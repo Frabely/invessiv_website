@@ -75,6 +75,9 @@ export function LeadsTable({
                   sortAsc={LeadSort.ScoreAsc}
                   sortDesc={LeadSort.ScoreDesc}
                 />
+                <th className={styles.header} scope="col">
+                  {tableContent.columns.social}
+                </th>
                 <SortableHeader
                   activeSort={activeSort}
                   ascLabel={tableContent.sort.createdAsc}
@@ -84,6 +87,16 @@ export function LeadsTable({
                   queryString={queryString}
                   sortAsc={LeadSort.CreatedAsc}
                   sortDesc={LeadSort.CreatedDesc}
+                />
+                <SortableHeader
+                  activeSort={activeSort}
+                  ascLabel={tableContent.sort.updatedAsc}
+                  basePath={basePath}
+                  descLabel={tableContent.sort.updatedDesc}
+                  label={tableContent.columns.updated}
+                  queryString={queryString}
+                  sortAsc={LeadSort.UpdatedAsc}
+                  sortDesc={LeadSort.UpdatedDesc}
                 />
                 <th className={styles.header} scope="col">
                   {tableContent.columns.source}

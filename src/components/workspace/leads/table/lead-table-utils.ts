@@ -58,10 +58,6 @@ export function getLeadInitials(lead: LeadSummaryDto): string {
   return initials || "L";
 }
 
-export function getLeadSecondaryLabel(lead: LeadSummaryDto): string {
-  return lead.websiteUrl ?? lead.email;
-}
-
 export function formatLeadCreatedAt(locale: string, createdAt: string): string {
   return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",

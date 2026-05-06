@@ -38,6 +38,7 @@ const leadWithCategory = {
   last_name: "Mustermann",
   company_name: null,
   email: "max@example.com",
+  phone: "+49 30 111111",
   website_url: "https://example.com",
   score: 80,
   source: "webform" as const,
@@ -56,6 +57,7 @@ const leadWithoutCategory = {
   last_name: null,
   company_name: "ACME GmbH",
   email: "info@acme.de",
+  phone: null,
   website_url: null,
   score: null,
   source: "manual" as const,
@@ -68,20 +70,31 @@ const leadWithoutCategory = {
   category_label_key: null,
 };
 
-function mockDb(countValue: number, rows: unknown[]) {
+const socialProfileRow = {
+  id: "social-1",
+  lead_id: "lead-1",
+  platform: "linkedin" as const,
+  profile_url: "https://linkedin.com/in/max",
+  normalized_url: "linkedin.com/in/max",
+};
+
+function mockDb(
+  countValue: number,
+  rows: unknown[],
+  socialRows: unknown[] = [],
+) {
   let callIndex = 0;
+  const responses = [[{ count: countValue }], rows, socialRows];
   getDrizzleDatabaseClientMock.mockReturnValue({
     select: vi.fn().mockImplementation(() => {
-      return callIndex++ === 0
-        ? drizzleChain([{ count: countValue }])
-        : drizzleChain(rows);
+      return drizzleChain(responses[callIndex++] ?? []);
     }),
   });
 }
 
 describe("listLeads", () => {
   it("returns the correct result shape", async () => {
-    mockDb(1, [leadWithCategory]);
+    mockDb(1, [leadWithCategory], [socialProfileRow]);
     const { listLeads } =
       await import("@/server/workspace/leads/query-handler/list-leads.query-handler");
 
@@ -97,7 +110,7 @@ describe("listLeads", () => {
 
   it("maps a lead with category to LeadSummaryDto", async () => {
     vi.resetModules();
-    mockDb(1, [leadWithCategory]);
+    mockDb(1, [leadWithCategory], [socialProfileRow]);
     const { listLeads } =
       await import("@/server/workspace/leads/query-handler/list-leads.query-handler");
 
@@ -109,6 +122,7 @@ describe("listLeads", () => {
       lastName: "Mustermann",
       companyName: null,
       email: "max@example.com",
+      phone: "+49 30 111111",
       websiteUrl: "https://example.com",
       score: 80,
       source: "webform",
@@ -121,6 +135,14 @@ describe("listLeads", () => {
         slug: "coaches",
         labelKey: "leads.categories.coaches",
       },
+      socialProfiles: [
+        {
+          id: "social-1",
+          platform: "linkedin",
+          profileUrl: "https://linkedin.com/in/max",
+          normalizedUrl: "linkedin.com/in/max",
+        },
+      ],
     });
   });
 
@@ -136,6 +158,7 @@ describe("listLeads", () => {
       id: "lead-2",
       companyName: "ACME GmbH",
       category: null,
+      socialProfiles: [],
     });
   });
 
@@ -175,7 +198,7 @@ describe("listLeads", () => {
 
   it("returns multiple rows in order", async () => {
     vi.resetModules();
-    mockDb(2, [leadWithCategory, leadWithoutCategory]);
+    mockDb(2, [leadWithCategory, leadWithoutCategory], [socialProfileRow]);
     const { listLeads } =
       await import("@/server/workspace/leads/query-handler/list-leads.query-handler");
 
@@ -197,5 +220,23 @@ describe("listLeads", () => {
 
     expect(rows).toHaveLength(0);
     expect(total).toBe(0);
+  });
+
+  it("returns social profiles per lead", async () => {
+    vi.resetModules();
+    mockDb(1, [leadWithCategory], [socialProfileRow]);
+    const { listLeads } =
+      await import("@/server/workspace/leads/query-handler/list-leads.query-handler");
+
+    const { rows } = await listLeads({});
+
+    expect(rows[0].socialProfiles).toEqual([
+      {
+        id: "social-1",
+        platform: "linkedin",
+        profileUrl: "https://linkedin.com/in/max",
+        normalizedUrl: "linkedin.com/in/max",
+      },
+    ]);
   });
 });

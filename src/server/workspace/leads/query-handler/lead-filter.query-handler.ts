@@ -75,6 +75,10 @@ function buildOrderBy(sort?: LeadSort): SQL {
   switch (sort) {
     case LeadSort.CreatedAsc:
       return asc(leads.created_at);
+    case LeadSort.UpdatedAsc:
+      return asc(leads.updated_at);
+    case LeadSort.UpdatedDesc:
+      return desc(leads.updated_at);
     case LeadSort.ScoreAsc:
       return asc(leads.score);
     case LeadSort.ScoreDesc:
