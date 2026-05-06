@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState, useTransition } from "react";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -95,11 +95,7 @@ export function LeadsToolbar({
   sharedContent,
 }: LeadsToolbarProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const searchParams = useMemo(
-    () => getSearchParams(currentQueryString),
-    [currentQueryString],
-  );
+  const searchParams = getSearchParams(currentQueryString);
   const currentStatus = getQueryValue(searchParams, LeadListQueryParam.Status);
   const currentSource = getQueryValue(searchParams, LeadListQueryParam.Source);
   const currentCategory = getQueryValue(
@@ -146,28 +142,17 @@ export function LeadsToolbar({
           : undefined,
       });
 
-      startTransition(() => {
-        router.replace(href, { scroll: false });
-      });
+      router.replace(href, { scroll: false });
     }, SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [
-    basePath,
-    currentQueryString,
-    currentSearch,
-    router,
-    searchValue,
-    startTransition,
-  ]);
+  }, [basePath, currentQueryString, currentSearch, router, searchValue]);
 
   function commitFilter(overrides: Record<string, string | undefined>) {
     const href = buildFilterHref(basePath, currentQueryString, overrides);
-    startTransition(() => {
-      router.push(href, { scroll: false });
-    });
+    router.push(href, { scroll: false });
   }
 
   function resetFilters() {
@@ -184,247 +169,237 @@ export function LeadsToolbar({
 
   return (
     <section className={styles.toolbar}>
-      <div id={collapsePanelId} hidden={isCollapsed}>
-        <div className={styles.filterStack}>
-          <div className={styles.primaryRow}>
-            <label className={styles.searchField}>
-              <span className={styles.fieldLabel}>{content.search.label}</span>
-              <span className={styles.searchInputWrap}>
-                <span aria-hidden="true" className={styles.searchIcon}>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+      <div id={collapsePanelId} hidden={isCollapsed} className={styles.panel}>
+        <div className={styles.primaryFilters}>
+          <label className={styles.searchField}>
+            <span className={styles.fieldLabel}>{content.search.label}</span>
+            <span className={styles.searchInputWrap}>
+              <span aria-hidden="true" className={styles.searchIcon}>
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </span>
+              <input
+                aria-label={content.search.label}
+                className={styles.searchInput}
+                onChange={(event) => {
+                  setSearchValue(event.target.value);
+                }}
+                placeholder={content.search.placeholder}
+                type="search"
+                value={searchValue}
+              />
+            </span>
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>{content.filters.score}</span>
+            <select
+              className={styles.select}
+              onChange={(event) => {
+                const value = event.target.value || undefined;
+                commitFilter({ [LeadListQueryParam.ScoreMin]: value });
+              }}
+              value={currentScore || "all"}
+            >
+              {getScoreOptions(content).map((option) => (
+                <option key={option.label} value={option.value ?? "all"}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className={styles.dateRange}>
+            <span className={styles.fieldLabel}>
+              {content.filters.dateRange}
+            </span>
+            <div className={styles.dateInputs}>
+              <label className={styles.dateField}>
+                <span className={styles.srOnly}>
+                  {content.filters.dateFrom}
                 </span>
                 <input
-                  aria-label={content.search.label}
-                  className={styles.searchInput}
+                  className={styles.dateInput}
+                  max={currentDateTo || undefined}
                   onChange={(event) => {
-                    setSearchValue(event.target.value);
+                    commitFilter({
+                      [LeadListQueryParam.DateFrom]:
+                        event.target.value || undefined,
+                    });
                   }}
-                  placeholder={content.search.placeholder}
-                  type="search"
-                  value={searchValue}
+                  type="date"
+                  value={currentDateFrom}
                 />
-              </span>
-            </label>
+              </label>
 
-            <label className={styles.field}>
-              <span className={styles.fieldLabel}>{content.filters.score}</span>
-              <select
-                className={styles.select}
-                onChange={(event) => {
-                  const value = event.target.value || undefined;
-                  commitFilter({ [LeadListQueryParam.ScoreMin]: value });
-                }}
-                value={currentScore || "all"}
-              >
-                {getScoreOptions(content).map((option) => (
-                  <option key={option.label} value={option.value ?? "all"}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className={styles.dateRange}>
-              <span className={styles.fieldLabel}>
-                {content.filters.dateRange}
-              </span>
-              <div className={styles.dateGrid}>
-                <label className={styles.dateField}>
-                  <span className={styles.srOnly}>
-                    {content.filters.dateFrom}
-                  </span>
-                  <input
-                    className={styles.dateInput}
-                    max={currentDateTo || undefined}
-                    onChange={(event) => {
-                      commitFilter({
-                        [LeadListQueryParam.DateFrom]:
-                          event.target.value || undefined,
-                      });
-                    }}
-                    type="date"
-                    value={currentDateFrom}
-                  />
-                </label>
-
-                <label className={styles.dateField}>
-                  <span className={styles.srOnly}>
-                    {content.filters.dateTo}
-                  </span>
-                  <input
-                    className={styles.dateInput}
-                    min={currentDateFrom || undefined}
-                    onChange={(event) => {
-                      commitFilter({
-                        [LeadListQueryParam.DateTo]:
-                          event.target.value || undefined,
-                      });
-                    }}
-                    type="date"
-                    value={currentDateTo}
-                  />
-                </label>
-              </div>
+              <label className={styles.dateField}>
+                <span className={styles.srOnly}>{content.filters.dateTo}</span>
+                <input
+                  className={styles.dateInput}
+                  min={currentDateFrom || undefined}
+                  onChange={(event) => {
+                    commitFilter({
+                      [LeadListQueryParam.DateTo]:
+                        event.target.value || undefined,
+                    });
+                  }}
+                  type="date"
+                  value={currentDateTo}
+                />
+              </label>
             </div>
           </div>
+        </div>
 
-          <div className={styles.facetPanel}>
-            <div className={styles.facetGrid}>
-              <div className={styles.facetGroup}>
-                <span className={styles.fieldLabel}>
-                  {content.filters.status}
-                </span>
-                <div
-                  aria-label={content.filters.status}
-                  className={styles.chipRow}
-                  role="toolbar"
-                >
+        <div className={styles.facetGroups}>
+          <div className={styles.facetGroup}>
+            <span className={styles.fieldLabel}>{content.filters.status}</span>
+            <div
+              aria-label={content.filters.status}
+              className={styles.chipRow}
+              role="toolbar"
+            >
+              <button
+                aria-pressed={isAllStatusActive}
+                className={styles.badgeButton}
+                data-active={isAllStatusActive ? "true" : "false"}
+                onClick={() => {
+                  commitFilter({ [LeadListQueryParam.Status]: undefined });
+                }}
+                type="button"
+              >
+                <LeadStatusBadge
+                  className={styles.badge}
+                  label={allStatusLabel}
+                  status="all"
+                />
+              </button>
+
+              {CONTACT_LEAD_STATUS_VALUES.map((status) => {
+                const isActive = currentStatus === status;
+                const label = sharedContent.status[status];
+
+                return (
                   <button
-                    aria-pressed={isAllStatusActive}
+                    aria-pressed={isActive}
                     className={styles.badgeButton}
-                    data-active={isAllStatusActive ? "true" : "false"}
+                    data-active={isActive ? "true" : "false"}
+                    key={`status-${status}`}
                     onClick={() => {
-                      commitFilter({ [LeadListQueryParam.Status]: undefined });
+                      commitFilter({ [LeadListQueryParam.Status]: status });
                     }}
                     type="button"
                   >
                     <LeadStatusBadge
                       className={styles.badge}
-                      label={allStatusLabel}
-                      status="all"
+                      label={label}
+                      status={status}
                     />
                   </button>
+                );
+              })}
+            </div>
+          </div>
 
-                  {CONTACT_LEAD_STATUS_VALUES.map((status) => {
-                    const isActive = currentStatus === status;
-                    const label = sharedContent.status[status];
+          <div className={styles.facetGroup}>
+            <span className={styles.fieldLabel}>
+              {content.filters.category}
+            </span>
+            <div
+              aria-label={content.filters.category}
+              className={styles.chipRow}
+              role="toolbar"
+            >
+              <button
+                aria-pressed={!currentCategory}
+                className={styles.badgeButton}
+                data-active={!currentCategory ? "true" : "false"}
+                onClick={() => {
+                  commitFilter({
+                    [LeadListQueryParam.Category]: undefined,
+                  });
+                }}
+                type="button"
+              >
+                <LeadCategoryBadge
+                  className={styles.badge}
+                  label={content.filters.allCategories}
+                />
+              </button>
 
-                    return (
-                      <button
-                        aria-pressed={isActive}
-                        className={styles.badgeButton}
-                        data-active={isActive ? "true" : "false"}
-                        key={`status-${status}`}
-                        onClick={() => {
-                          commitFilter({ [LeadListQueryParam.Status]: status });
-                        }}
-                        type="button"
-                      >
-                        <LeadStatusBadge
-                          className={styles.badge}
-                          label={label}
-                          status={status}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              {categories.map((category) => {
+                const isActive = currentCategory === category.id;
 
-              <div className={styles.facetGroup}>
-                <span className={styles.fieldLabel}>
-                  {content.filters.source}
-                </span>
-                <div
-                  aria-label={content.filters.source}
-                  className={styles.chipRow}
-                  role="toolbar"
-                >
+                return (
                   <button
-                    aria-pressed={!currentSource}
+                    aria-pressed={isActive}
                     className={styles.badgeButton}
-                    data-active={!currentSource ? "true" : "false"}
-                    onClick={() => {
-                      commitFilter({ [LeadListQueryParam.Source]: undefined });
-                    }}
-                    type="button"
-                  >
-                    <LeadBadge
-                      className={styles.badge}
-                      icon={faLayerGroup}
-                      kind="source"
-                      label={content.filters.allSources}
-                      tone="neutral"
-                    />
-                  </button>
-
-                  {LEAD_SOURCES_VALUES.map((source) => {
-                    const isActive = currentSource === source;
-
-                    return (
-                      <button
-                        aria-pressed={isActive}
-                        className={styles.badgeButton}
-                        data-active={isActive ? "true" : "false"}
-                        key={`source-${source}`}
-                        onClick={() => {
-                          commitFilter({ [LeadListQueryParam.Source]: source });
-                        }}
-                        type="button"
-                      >
-                        <LeadSourceBadge
-                          className={styles.badge}
-                          label={getSourceLabel(sharedContent, source)}
-                          source={source}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className={styles.facetGroup}>
-                <span className={styles.fieldLabel}>
-                  {content.filters.category}
-                </span>
-                <div
-                  aria-label={content.filters.category}
-                  className={styles.chipRow}
-                  role="toolbar"
-                >
-                  <button
-                    aria-pressed={!currentCategory}
-                    className={styles.badgeButton}
-                    data-active={!currentCategory ? "true" : "false"}
+                    data-active={isActive ? "true" : "false"}
+                    key={`category-${category.id}`}
                     onClick={() => {
                       commitFilter({
-                        [LeadListQueryParam.Category]: undefined,
+                        [LeadListQueryParam.Category]: category.id,
                       });
                     }}
                     type="button"
                   >
                     <LeadCategoryBadge
+                      categoryKey={category.labelKey}
                       className={styles.badge}
-                      label={content.filters.allCategories}
+                      label={category.label}
                     />
                   </button>
+                );
+              })}
+            </div>
+          </div>
 
-                  {categories.map((category) => {
-                    const isActive = currentCategory === category.id;
+          <div className={`${styles.facetGroup} ${styles.sourceFacetGroup}`}>
+            <span className={styles.fieldLabel}>{content.filters.source}</span>
+            <div
+              aria-label={content.filters.source}
+              className={styles.chipRow}
+              role="toolbar"
+            >
+              <button
+                aria-pressed={!currentSource}
+                className={styles.badgeButton}
+                data-active={!currentSource ? "true" : "false"}
+                onClick={() => {
+                  commitFilter({ [LeadListQueryParam.Source]: undefined });
+                }}
+                type="button"
+              >
+                <LeadBadge
+                  className={styles.badge}
+                  icon={faLayerGroup}
+                  kind="source"
+                  label={content.filters.allSources}
+                  tone="neutral"
+                />
+              </button>
 
-                    return (
-                      <button
-                        aria-pressed={isActive}
-                        className={styles.badgeButton}
-                        data-active={isActive ? "true" : "false"}
-                        key={`category-${category.id}`}
-                        onClick={() => {
-                          commitFilter({
-                            [LeadListQueryParam.Category]: category.id,
-                          });
-                        }}
-                        type="button"
-                      >
-                        <LeadCategoryBadge
-                          categoryKey={category.labelKey}
-                          className={styles.badge}
-                          label={category.label}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              {LEAD_SOURCES_VALUES.map((source) => {
+                const isActive = currentSource === source;
+
+                return (
+                  <button
+                    aria-pressed={isActive}
+                    className={styles.badgeButton}
+                    data-active={isActive ? "true" : "false"}
+                    key={`source-${source}`}
+                    onClick={() => {
+                      commitFilter({ [LeadListQueryParam.Source]: source });
+                    }}
+                    type="button"
+                  >
+                    <LeadSourceBadge
+                      className={styles.badge}
+                      label={getSourceLabel(sharedContent, source)}
+                      source={source}
+                    />
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -433,7 +408,7 @@ export function LeadsToolbar({
       <footer className={styles.utilityRow}>
         <button
           className={styles.resetButton}
-          disabled={isPending || !hasActiveFilters}
+          disabled={!hasActiveFilters}
           onClick={resetFilters}
           type="button"
         >
