@@ -73,6 +73,8 @@ export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
 
 function buildOrderBy(sort?: LeadSort): SQL {
   switch (sort) {
+    case LeadSort.CreatedAsc:
+      return asc(leads.created_at);
     case LeadSort.ScoreAsc:
       return asc(leads.score);
     case LeadSort.ScoreDesc:

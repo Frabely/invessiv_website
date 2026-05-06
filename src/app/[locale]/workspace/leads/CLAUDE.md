@@ -34,7 +34,7 @@ page.tsx (Server-Component)
   ├─ buildWhere(filter)                   → Drizzle-Conditions (lead-filter-service)
   ├─ listLeads({ where, page, perPage })  → { rows: LeadSummaryDto[], total, page, perPage }
   ├─ optional: getLeadById(searchParams.selected) → LeadDetailDto | null
-  └─ render <LeadsPageShell summary detail dictionary />
+  └─ render <LeadsPageShell>...</LeadsPageShell> with header and table children
 ```
 
 - `page.tsx` ist eine Server-Component und orchestriert nur. Alle Datenmengen kommen aus `src/server/workspace/leads/query-handler/*`.
@@ -56,7 +56,9 @@ page.tsx (Server-Component)
   - `meta/{de,en}.json` — `title`, `description` (mit `noindex`)
   - `shell/{de,en}.json` — Header- und Shell-Texte
   - `shared/{de,en}.json` — Status-/Source-/Kategorie-/Plattform-Labels, Score-Aria-Label
-  - `index.ts` — `getLeadsMetaDictionary(locale)`, `getLeadsSharedDictionary(locale)`, `getLeadsShellDictionary(locale)`
+  - `table/{de,en}.json` — Tabellen-Header, Sort-Labels, Selection-Labels, Platzhalter
+  - `index.ts` — `getLeadsMetaDictionary(locale)`, `getLeadsSharedDictionary(locale)`,
+    `getLeadsTableDictionary(locale)`, `getLeadsShellDictionary(locale)`
 - DE und EN immer im selben Commit pflegen.
 - Keine `locale === "de" ? ... : ...`-Branches; auch nicht für Kategorie-Labels. Kategorien werden über ihren `label_key` aus dem Dictionary aufgelöst — nicht direkt aus der DB.
 

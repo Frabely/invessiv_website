@@ -1,0 +1,9 @@
+Full review comments:
+
+  - [P1] Forward all lead-list query params into the server query — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\app[locale]\workspace\leads\page.tsx:68-68
+    When this page is opened with any of the documented lead-list params (status, source, category, search, score_min, date_from, date_to, page), they are now ignored because only sort is passed to listLeads. That breaks deep links and any future filter/pagination UI, since the page will keep rendering the
+    default unfiltered first page instead of the requested result set.
+  - [P1] Render the selected-lead detail panel again — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\app[locale]\workspace\leads\page.tsx:71-80
+    Row clicks still push ?selected=<id>, but this page no longer reads searchParams.selected or renders any detail-panel component. In practice, clicking a lead just changes the URL and re-renders the same table, so the documented "open lead details" flow no longer works.
+  - [P2] Stop checkbox clicks from bubbling to the row link — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\components\workspace\leads\table\leads-table-row\leads-table-row.tsx:92-101
+    The propagation stop is attached to the hidden <input> only, so clicks on the visible checkbox box/label still bubble to <tr onClick> and navigate to the lead. That makes row selection unreliable, because users will often open the detail view instead of just toggling the checkbox.

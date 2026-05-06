@@ -18,6 +18,9 @@ Dieser Ordner ist für wiederverwendbare UI-Komponenten gedacht.
 
 - Aussagekräftige, domänenbezogene Komponentennamen bevorzugen.
 - Datei- und Ordnernamen sollen zum Zweck der Komponente passen.
+- Pro Datei darf genau eine React-Komponente definiert sein.
+- Jede produktive Komponente erhält eine eigene `*.module.css`-Datei, sofern sie eigene Styles benötigt. Eine CSS-Datei
+  bleibt ausnahmsweise nur dann weg, wenn die Komponente wirklich keine eigenen Styles braucht.
 
 ## Error-Darstellung (Client)
 

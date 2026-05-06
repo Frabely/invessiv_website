@@ -375,6 +375,7 @@ describe("leadFilterSchema", () => {
 
   it("accepts each valid sort value", () => {
     for (const sort of [
+      "created_asc",
       "created_desc",
       "score_asc",
       "score_desc",

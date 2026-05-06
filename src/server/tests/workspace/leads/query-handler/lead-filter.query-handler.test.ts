@@ -222,6 +222,12 @@ describe("buildLeadFilter", () => {
       expect(sql.toLowerCase()).toContain("desc");
     });
 
+    it("sorts by created_at ASC when sort=created_asc", () => {
+      const sql = toOrderSQL(buildLeadFilter({ sort: "created_asc" }).orderBy);
+      expect(sql).toContain("created_at");
+      expect(sql.toLowerCase()).toContain("asc");
+    });
+
     it("sorts by created_at DESC when sort is absent", () => {
       const sql = toOrderSQL(buildLeadFilter({}).orderBy);
       expect(sql).toContain("created_at");

@@ -32,29 +32,60 @@ Diese Gruppierung ist eine Scope-spezifische Präzisierung der Standardregel und
 
 2. **Komponentenordner-Konvention bleibt gleich.** Innerhalb einer Gruppe gilt die Standardregel: jede Komponente lebt in `src/components/workspace/leads/<group>/<component-name>/<component-name>.tsx`. Die Hauptdatei trägt den Ordnernamen.
 
-3. **Lokales Styling über `*.module.css`.** Styles gehören in eine separate `<component-name>.module.css`-Datei neben der `.tsx`. Keine Inline-Styles in `.tsx`. Keine globalen Klassen in `globals.css` für lead-spezifische Komponenten. `globals.css` enthält nur Tailwind-Import, globale Tokens/Reset und Theme-Variablen.
+3. **Ein Datei, eine Komponente.** Pro produktiver `.tsx`-Datei darf genau eine React-Komponente definiert sein.
+   Hilfsfunktionen sind erlaubt, solange sie nur diese Komponente unterstützen. Mehrere Komponenten in einer Datei sind
+   nicht zulässig.
 
-4. **Server vs. Client.** Server Components sind Default. `"use client"` ist auf Komponenten beschränkt, die echte Interaktivität brauchen (URL-Sync via `next/navigation`, Selection-Provider, Dialog-Open-State, Form-State, Live-Updates). Animations-/Scroll-/Observer-Logik gehört nach `src/hooks/`, nicht in Render-Dateien.
+4. **Lokales Styling über `*.module.css`.** Styles gehören in eine separate `<component-name>.module.css`-Datei neben
+   der `.tsx`. Keine Inline-Styles in `.tsx`. Keine globalen Klassen in `globals.css` für lead-spezifische Komponenten.
+   `globals.css` enthält nur Tailwind-Import, globale Tokens/Reset und Theme-Variablen. Wenn eine Komponente eigene
+   Styles braucht, bekommt sie auch eine eigene CSS-Datei; nur vollständig stilfreie Komponenten dürfen ohne CSS
+   bleiben.
 
-5. **i18n ist Pflicht.** Alle sichtbaren Strings kommen aus `src/i18n/dictionaries/workspace/leads/`. Keine Inline-Strings in `.tsx`, keine `locale === "de" ? ... : ...`-Branches. Lookup-/Enum-Werte (Status, Kategorien, Plattformen, Aktivitätstypen) werden über stabile Schlüssel im Dictionary aufgelöst, nicht direkt aus der DB. Komponenten erhalten vorbereitete Inhalte als Props oder über Server-Component-Loader, nicht hartkodiert.
+5. **Server vs. Client.** Server Components sind Default. `"use client"` ist auf Komponenten beschränkt, die echte
+   Interaktivität brauchen (URL-Sync via `next/navigation`, Selection-Provider, Dialog-Open-State, Form-State,
+   Live-Updates). Animations-/Scroll-/Observer-Logik gehört nach `src/hooks/`, nicht in Render-Dateien.
 
-6. **Kontrakt-Grenzen.** Komponenten importieren nur aus `src/common/contracts/leads/**` für DTOs und aus `src/i18n/dictionaries/workspace/leads/` für Texte. **Kein** Import aus `src/server/**` oder `src/server/db/**`.
+6. **i18n ist Pflicht.** Alle sichtbaren Strings kommen aus `src/i18n/dictionaries/workspace/leads/`. Keine
+   Inline-Strings in `.tsx`, keine `locale === "de" ? ... : ...`-Branches. Lookup-/Enum-Werte (Status, Kategorien,
+   Plattformen, Aktivitätstypen) werden über stabile Schlüssel im Dictionary aufgelöst, nicht direkt aus der DB.
+   Komponenten erhalten vorbereitete Inhalte als Props oder über Server-Component-Loader, nicht hartkodiert.
 
-7. **Mutationen über die API.** Client-Komponenten rufen `/api/workspace/leads/...` per `fetch` auf, nicht direkt Server-Actions oder DB-Funktionen. Nach erfolgreicher Mutation wird `router.refresh()` aufgerufen, damit der Server neu rendert. Optimistische Updates sind nur dort zulässig, wo das Risiko einer fehlenden Server-Bestätigung explizit vertretbar ist.
+7. **Kontrakt-Grenzen.** Komponenten importieren nur aus `src/common/contracts/leads/**` für DTOs und aus
+   `src/i18n/dictionaries/workspace/leads/` für Texte. **Kein** Import aus `src/server/**` oder `src/server/db/**`.
 
-8. **Filter-State lebt in der URL.** Toolbar-Komponenten setzen Query-Params via `router.push()`/`router.replace()` aus `next/navigation`. Keine Insellösungen mit `useState` für Filter-, Such-, Pagination-, Sort- oder vergleichbaren Sub-View-State, die die URL umgehen.
+8. **Mutationen über die API.** Client-Komponenten rufen `/api/workspace/leads/...` per `fetch` auf, nicht direkt
+   Server-Actions oder DB-Funktionen. Nach erfolgreicher Mutation wird `router.refresh()` aufgerufen, damit der Server
+   neu rendert. Optimistische Updates sind nur dort zulässig, wo das Risiko einer fehlenden Server-Bestätigung explizit
+   vertretbar ist.
 
-9. **Detail-Panel-State lebt in der URL.** Tabellenzeilen öffnen das Panel via `?selected=<id>`. Schließen entfernt den Param. Kein eigener Modal-Provider, kein Layout-State für das Panel. Vergleichbare Side-Panel-/Drawer-UIs für andere Lead-Operationen folgen demselben URL-getriebenen Muster.
+9. **Filter-State lebt in der URL.** Toolbar-Komponenten setzen Query-Params via `router.push()`/`router.replace()` aus
+   `next/navigation`. Keine Insellösungen mit `useState` für Filter-, Such-, Pagination-, Sort- oder vergleichbaren
+   Sub-View-State, die die URL umgehen.
 
-10. **Loading-States differenzieren.** Innerhalb der Page laufende Refreshes (Filter-Change, Such-Input, Pagination, Sort, Sub-View-Wechsel) zeigen lokale Loading-States (Row-Skeletons, dezente Overlays), damit umgebende UI sichtbar und bedienbar bleibt. Der initiale Route-Skeleton lebt in `loading.tsx` der Page.
+10. **Detail-Panel-State lebt in der URL.** Tabellenzeilen öffnen das Panel via `?selected=<id>`. Schließen entfernt den
+    Param. Kein eigener Modal-Provider, kein Layout-State für das Panel. Vergleichbare Side-Panel-/Drawer-UIs für andere
+    Lead-Operationen folgen demselben URL-getriebenen Muster.
 
-11. **Selection-State zentral.** Bulk-Selection wird in einem dedizierten Client-Provider gehalten. Bei Filter-/Sort-/Sub-View-Wechsel wird die Selection geleert. Checkbox-Klicks stoppen Propagation, damit Row-Click-Handler nicht parallel feuern.
+11. **Loading-States differenzieren.** Innerhalb der Page laufende Refreshes (Filter-Change, Such-Input, Pagination,
+    Sort, Sub-View-Wechsel) zeigen lokale Loading-States (Row-Skeletons, dezente Overlays), damit umgebende UI sichtbar
+    und bedienbar bleibt. Der initiale Route-Skeleton lebt in `loading.tsx` der Page.
 
-12. **Keine PII in Logs oder URLs.** E-Mails, Telefonnummern, Klartextnachrichten und Lead-Namen dürfen nicht in `console.*`-Aufrufen oder Query-Params landen. Lead-Daten kommen ausschließlich über DTOs in die Komponente.
+12. **Selection-State zentral.** Bulk-Selection wird in einem dedizierten Client-Provider gehalten. Bei
+    Filter-/Sort-/Sub-View-Wechsel wird die Selection geleert. Checkbox-Klicks stoppen Propagation, damit
+    Row-Click-Handler nicht parallel feuern.
 
-13. **Tests bei interaktiven Komponenten.** Komponenten mit Interaktionslogik (Selection-Provider, Toolbar mit URL-Sync, Forms mit Client-Side-Validation, Bulk-Aktionen, Live-Updates) bekommen co-locatete Tests (`<component-name>.test.tsx`). Reine Präsentationskomponenten (Badges, Score-Bar, Empty-State) brauchen keine eigenen Tests, sofern sie via E2E abgedeckt sind.
+13. **Keine PII in Logs oder URLs.** E-Mails, Telefonnummern, Klartextnachrichten und Lead-Namen dürfen nicht in
+    `console.*`-Aufrufen oder Query-Params landen. Lead-Daten kommen ausschließlich über DTOs in die Komponente.
 
-14. **Reuse vor Neuanlage.** Visuals und Bausteine in `shared/` werden über die gesamte Lead-UI hinweg wiederverwendet (Tabelle, Detail-Panel, Activity-Stream, künftige Views). Keine doppelten Implementierungen in unterschiedlichen Subfoldern; bei wiederkehrendem Bedarf gehört der Baustein nach `shared/`.
+14. **Tests bei interaktiven Komponenten.** Komponenten mit Interaktionslogik (Selection-Provider, Toolbar mit URL-Sync,
+    Forms mit Client-Side-Validation, Bulk-Aktionen, Live-Updates) bekommen co-locatete Tests (
+    `<component-name>.test.tsx`). Reine Präsentationskomponenten (Badges, Score-Bar, Empty-State) brauchen keine eigenen
+    Tests, sofern sie via E2E abgedeckt sind.
+
+15. **Reuse vor Neuanlage.** Visuals und Bausteine in `shared/` werden über die gesamte Lead-UI hinweg wiederverwendet (
+    Tabelle, Detail-Panel, Activity-Stream, künftige Views). Keine doppelten Implementierungen in unterschiedlichen
+    Subfoldern; bei wiederkehrendem Bedarf gehört der Baustein nach `shared/`.
 
 ## Subfolder-Übersicht (Stand)
 

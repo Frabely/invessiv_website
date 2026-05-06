@@ -3,11 +3,14 @@ import metaDe from "./meta/de.json";
 import metaEn from "./meta/en.json";
 import sharedDe from "./shared/de.json";
 import sharedEn from "./shared/en.json";
+import tableDe from "./table/de.json";
+import tableEn from "./table/en.json";
 import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsSharedDictionary = typeof sharedDe;
+export type LeadsTableDictionary = typeof tableDe;
 export type LeadsShellDictionary = typeof shellDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
@@ -18,6 +21,11 @@ const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
 const LEADS_SHARED: Record<Locale, LeadsSharedDictionary> = {
   de: sharedDe,
   en: sharedEn,
+};
+
+const LEADS_TABLE: Record<Locale, LeadsTableDictionary> = {
+  de: tableDe,
+  en: tableEn,
 };
 
 const LEADS_SHELL: Record<Locale, LeadsShellDictionary> = {
@@ -33,6 +41,10 @@ export function getLeadsSharedDictionary(
   locale: Locale,
 ): LeadsSharedDictionary {
   return LEADS_SHARED[locale];
+}
+
+export function getLeadsTableDictionary(locale: Locale): LeadsTableDictionary {
+  return LEADS_TABLE[locale];
 }
 
 export function getLeadsShellDictionary(locale: Locale): LeadsShellDictionary {

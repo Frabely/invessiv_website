@@ -1,0 +1,31 @@
+{
+  "columns": {
+    "select": "Auswählen",
+    "lead": "Lead",
+    "category": "Kategorie",
+    "stage": "Stage",
+    "source": "Source",
+    "score": "Score",
+    "created": "Created"
+  },
+  "sort": {
+    "nameAsc": "Name A-Z",
+    "nameDesc": "Name Z-A",
+    "scoreAsc": "Score aufsteigend",
+    "scoreDesc": "Score absteigend",
+    "createdAsc": "Älteste zuerst",
+    "createdDesc": "Neueste zuerst"
+  },
+  "selection": {
+    "selectAll": "Alle sichtbaren Leads auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "row": "Lead auswählen",
+    "selectedCount": "Leads ausgewählt"
+  },
+  "row": {
+    "open": "Lead öffnen"
+  },
+  "placeholders": {
+    "empty": "—"
+  }
+}
