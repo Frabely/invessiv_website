@@ -7,7 +7,7 @@ type LeadsPageShellProps = {
 
 export function LeadsPageShell({ children }: LeadsPageShellProps) {
   return (
-    <div className={styles.shell}>
+    <div className={styles.shell} data-workspace-page="leads">
       <div className={styles.contentSlot}>{children}</div>
     </div>
   );

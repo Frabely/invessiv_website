@@ -70,13 +70,16 @@
 }
 
 .main {
+  --workspace-main-padding-block-start: clamp(2.5rem, 8vw, 5rem);
+  --workspace-main-padding-block-end: clamp(3rem, 9vw, 6rem);
   position: relative;
   z-index: 1;
   width: 100%;
   min-height: calc(100dvh - var(--workspace-header-height));
   margin: 0;
-  padding: clamp(2.5rem, 8vw, 5rem) var(--layout-rail-inline-gutter)
-    clamp(3rem, 9vw, 6rem);
+  padding: var(--workspace-main-padding-block-start)
+    var(--workspace-main-padding-inline, var(--layout-rail-inline-gutter))
+    var(--workspace-main-padding-block-end);
   scroll-margin-top: 88px;
 }
 
@@ -84,6 +87,13 @@
   display: block;
   content: "";
   min-height: clamp(16rem, 44vh, 30rem);
+}
+
+.main:has([data-workspace-page="leads"]) {
+  --workspace-leads-main-padding: clamp(1.5rem, 2.8vw, 2.4rem);
+  --workspace-main-padding-block-start: var(--workspace-leads-main-padding);
+  --workspace-main-padding-block-end: var(--workspace-leads-main-padding);
+  --workspace-main-padding-inline: var(--workspace-leads-main-padding);
 }
 
 [data-theme="light"] .grid {
@@ -125,8 +135,12 @@
   }
 
   .main {
+    --workspace-main-padding-block-start: clamp(1.75rem, 7vw, 3rem);
     min-height: calc(100dvh - var(--workspace-header-height));
-    padding-top: clamp(1.75rem, 7vw, 3rem);
+  }
+
+  .main:has([data-workspace-page="leads"]) {
+    --workspace-leads-main-padding: clamp(1.15rem, 4.4vw, 1.6rem);
   }
 
   .blobOrange,

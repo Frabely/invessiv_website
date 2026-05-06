@@ -1,6 +1,6 @@
 .pagination {
-  margin-top: 1rem;
-  padding: 0.85rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   border-radius: 18px;
   background: linear-gradient(

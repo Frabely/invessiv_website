@@ -1,10 +1,15 @@
 .shell {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
   width: 100%;
 }
 
 .tableScroll {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
-  overflow-x: auto;
+  overflow: auto;
   border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
   border-radius: 22px;
   background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);

@@ -51,7 +51,7 @@
   grid-template-columns: minmax(150px, auto) minmax(220px, 480px) auto;
   align-items: center;
   gap: clamp(0.75rem, 2vw, 1.4rem);
-  min-height: 68px;
+  min-height: calc(var(--workspace-header-height, 68px) - 1px);
   width: 100%;
   padding: 0 var(--workspace-header-inline-padding);
   box-sizing: border-box;
@@ -200,7 +200,6 @@
 @media (max-width: 760px) {
   .inner {
     grid-template-columns: minmax(0, 1fr) auto;
-    min-height: 64px;
   }
 
   .searchSlot {

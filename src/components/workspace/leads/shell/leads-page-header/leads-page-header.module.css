@@ -4,10 +4,10 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: clamp(1rem, 2vw, 1.5rem);
-  padding-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  padding-bottom: clamp(0.75rem, 1.4vw, 1rem);
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 80%, transparent);
-  margin-bottom: clamp(1.25rem, 2.5vw, 1.75rem);
+  margin-bottom: clamp(0.75rem, 1.4vw, 1rem);
   flex-wrap: wrap;
 }
 
