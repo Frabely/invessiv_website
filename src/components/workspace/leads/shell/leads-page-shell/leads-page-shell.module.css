@@ -18,10 +18,11 @@
   display: flex;
   flex-direction: row;
   gap: clamp(1.25rem, 2vw, 2rem);
-  align-items: flex-start;
+  align-items: stretch;
   min-height: 0;
   flex: 1 1 auto;
   width: 100%;
+  overflow: hidden;
 }
 
 .contentSlot {
@@ -31,26 +32,25 @@
   min-width: 0;
   min-height: 0;
   width: 100%;
+  overflow: hidden;
 }
 
 .detailPanelSlot {
   flex: 0 0 min(420px, 38vw);
-  position: sticky;
-  top: calc(var(--workspace-header-height, 68px) + 1.5rem);
-  max-height: calc(100dvh - var(--workspace-header-height, 68px) - 3rem);
-  overflow-y: auto;
-  scrollbar-width: thin;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 @media (max-width: 1024px) {
   .contentRow {
     flex-direction: column;
+    overflow: visible;
   }
 
   .detailPanelSlot {
     flex: none;
     width: 100%;
-    position: static;
     max-height: none;
   }
 }

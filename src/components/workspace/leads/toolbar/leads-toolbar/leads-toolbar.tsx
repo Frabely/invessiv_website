@@ -353,7 +353,7 @@ export function LeadsToolbar({
             </div>
           </div>
 
-          <div className={`${styles.facetGroup} ${styles.sourceFacetGroup}`}>
+          <div className={styles.facetGroup}>
             <span className={styles.fieldLabel}>{content.filters.source}</span>
             <div
               aria-label={content.filters.source}

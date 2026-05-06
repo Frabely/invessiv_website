@@ -2,6 +2,20 @@ import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-par
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
 
+type SearchParamsInput = Record<string, string | string[] | undefined>;
+
+const LEAD_LIST_CLOSE_QUERY_PARAMS = [
+  LeadListQueryParam.Status,
+  LeadListQueryParam.Source,
+  LeadListQueryParam.Category,
+  LeadListQueryParam.Search,
+  LeadListQueryParam.DateFrom,
+  LeadListQueryParam.DateTo,
+  LeadListQueryParam.Page,
+  LeadListQueryParam.Sort,
+  LeadListQueryParam.ScoreMin,
+] as const;
+
 export function buildLeadListQueryString(
   filters: LeadFilterInput,
   page: number,
@@ -41,4 +55,34 @@ export function buildLeadListQueryString(
   params.set(LeadListQueryParam.Sort, sort);
 
   return params.toString();
+}
+
+export function buildLeadListCloseHref(
+  basePath: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = new URLSearchParams();
+  const supportedParams = new Set<string>(LEAD_LIST_CLOSE_QUERY_PARAMS);
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (
+      key === LeadListQueryParam.Selected ||
+      !supportedParams.has(key) ||
+      value === undefined
+    ) {
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        params.append(key, item);
+      }
+      continue;
+    }
+
+    params.set(key, value);
+  }
+
+  const queryString = params.toString();
+  return queryString ? `${basePath}?${queryString}` : basePath;
 }

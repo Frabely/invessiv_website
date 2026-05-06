@@ -33,7 +33,7 @@ page.tsx (Server-Component)
   ├─ parseLeadFilter(searchParams)        → Zod-validierter Filter (lead-validation-service)
   ├─ buildWhere(filter)                   → Drizzle-Conditions (lead-filter-service)
   ├─ listLeads({ where, page, perPage })  → { rows: LeadSummaryDto[], total, page, perPage }
-  ├─ optional: getLeadById(searchParams.selected) → LeadDetailDto | null
+  ├─ optional: getLeadById(searchParams.selected) → LeadDetailDto oder Redirect ohne selected
   └─ render <LeadsPageShell>...</LeadsPageShell> with header and table children
 ```
 

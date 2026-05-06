@@ -84,8 +84,19 @@ function isValidDateString(value: string): boolean {
   return !Number.isNaN(new Date(`${value}T00:00:00.000Z`).getTime());
 }
 
-function isUuid(value: string): boolean {
+export function isUuid(value: string): boolean {
   return z.uuid().safeParse(value).success;
+}
+
+export function parseSelectedLeadId(
+  searchParams: SearchParamsInput,
+): string | undefined {
+  const selected = getTrimmedSearchParam(
+    searchParams,
+    LeadListQueryParam.Selected,
+  );
+
+  return selected && isUuid(selected) ? selected : undefined;
 }
 
 export function parseLeadListFilters(

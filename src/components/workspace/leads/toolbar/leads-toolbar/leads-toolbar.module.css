@@ -5,7 +5,7 @@
   margin-bottom: 0.75rem;
   padding: 1rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 16px;
+  border-radius: 8px;
   background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-shadow) 8%, transparent);
 }
@@ -34,10 +34,8 @@
 .facetGroup {
   display: grid;
   gap: 0.45rem;
-}
-
-.sourceFacetGroup {
   align-self: start;
+  align-content: start;
 }
 
 .field,

@@ -123,6 +123,8 @@
 }
 
 .categoryCell,
+.stageCell,
+.sourceCell,
 .createdCell,
 .updatedCell {
   font-size: var(--font-size-body-sm);
@@ -130,12 +132,16 @@
   white-space: nowrap;
 }
 
+.categoryCell,
+.stageCell,
+.sourceCell {
+  padding-right: 1.35rem;
+}
+
 .socialCell {
   white-space: nowrap;
 }
 
-.stageCell,
-.sourceCell,
 .scoreCell {
   min-width: 0;
 }
@@ -150,6 +156,7 @@
   }
 
   .row:focus-visible {
-    outline: none;
+    outline: 2px solid var(--color-focus);
+    outline-offset: -2px;
   }
 }

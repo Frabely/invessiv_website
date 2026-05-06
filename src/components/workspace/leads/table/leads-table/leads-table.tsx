@@ -50,98 +50,111 @@ export function LeadsTable({
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
       <LeadsTableSelectionProvider rowIds={rowIds}>
-        <div className={styles.tableScroll}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className={styles.selectHeader} scope="col">
-                  <LeadsTableSelectAllCheckbox
-                    ariaLabel={tableContent.selection.selectAll}
-                  />
-                </th>
-                <SortableHeader
-                  activeSort={activeSort}
-                  ascLabel={tableContent.sort.nameAsc}
-                  basePath={basePath}
-                  descLabel={tableContent.sort.nameDesc}
-                  label={tableContent.columns.lead}
-                  queryString={queryString}
-                  sortAsc={LeadSort.NameAsc}
-                  sortDesc={LeadSort.NameDesc}
-                />
-                <th className={styles.header} scope="col">
-                  {tableContent.columns.category}
-                </th>
-                <th className={styles.header} scope="col">
-                  {tableContent.columns.stage}
-                </th>
-
-                <SortableHeader
-                  activeSort={activeSort}
-                  ascLabel={tableContent.sort.scoreAsc}
-                  basePath={basePath}
-                  descLabel={tableContent.sort.scoreDesc}
-                  label={tableContent.columns.score}
-                  queryString={queryString}
-                  sortAsc={LeadSort.ScoreAsc}
-                  sortDesc={LeadSort.ScoreDesc}
-                />
-                <th className={styles.header} scope="col">
-                  {tableContent.columns.social}
-                </th>
-                <SortableHeader
-                  activeSort={activeSort}
-                  ascLabel={tableContent.sort.createdAsc}
-                  basePath={basePath}
-                  descLabel={tableContent.sort.createdDesc}
-                  label={tableContent.columns.created}
-                  queryString={queryString}
-                  sortAsc={LeadSort.CreatedAsc}
-                  sortDesc={LeadSort.CreatedDesc}
-                />
-                <SortableHeader
-                  activeSort={activeSort}
-                  ascLabel={tableContent.sort.updatedAsc}
-                  basePath={basePath}
-                  descLabel={tableContent.sort.updatedDesc}
-                  label={tableContent.columns.updated}
-                  queryString={queryString}
-                  sortAsc={LeadSort.UpdatedAsc}
-                  sortDesc={LeadSort.UpdatedDesc}
-                />
-                <th className={styles.header} scope="col">
-                  {tableContent.columns.source}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.length > 0 ? (
-                rows.map((lead) => (
-                  <LeadsTableRow
-                    basePath={basePath}
-                    currentQueryString={queryString}
-                    key={lead.id}
-                    lead={lead}
-                    locale={locale}
-                    sharedContent={sharedContent}
-                    tableContent={tableContent}
-                  />
-                ))
-              ) : emptyState ? (
-                <tr className={styles.emptyStateRow}>
-                  <td className={styles.emptyStateCell} colSpan={columnCount}>
-                    <LeadsEmptyState
-                      actionHref={emptyState.actionHref}
-                      actionLabel={emptyState.actionLabel}
-                      description={emptyState.description}
-                      title={emptyState.title}
-                      variant={emptyState.variant}
+        <div className={styles.tableFrame}>
+          <div className={styles.tableScroll}>
+            <table className={styles.table}>
+              <colgroup>
+                <col className={styles.selectColumn} />
+                <col className={styles.leadColumn} />
+                <col className={styles.categoryColumn} />
+                <col className={styles.stageColumn} />
+                <col className={styles.scoreColumn} />
+                <col className={styles.socialColumn} />
+                <col className={styles.dateColumn} />
+                <col className={styles.dateColumn} />
+                <col className={styles.sourceColumn} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th className={styles.selectHeader} scope="col">
+                    <LeadsTableSelectAllCheckbox
+                      ariaLabel={tableContent.selection.selectAll}
                     />
-                  </td>
+                  </th>
+                  <SortableHeader
+                    activeSort={activeSort}
+                    ascLabel={tableContent.sort.nameAsc}
+                    basePath={basePath}
+                    descLabel={tableContent.sort.nameDesc}
+                    label={tableContent.columns.lead}
+                    queryString={queryString}
+                    sortAsc={LeadSort.NameAsc}
+                    sortDesc={LeadSort.NameDesc}
+                  />
+                  <th className={styles.header} scope="col">
+                    {tableContent.columns.category}
+                  </th>
+                  <th className={styles.header} scope="col">
+                    {tableContent.columns.stage}
+                  </th>
+
+                  <SortableHeader
+                    activeSort={activeSort}
+                    ascLabel={tableContent.sort.scoreAsc}
+                    basePath={basePath}
+                    descLabel={tableContent.sort.scoreDesc}
+                    label={tableContent.columns.score}
+                    queryString={queryString}
+                    sortAsc={LeadSort.ScoreAsc}
+                    sortDesc={LeadSort.ScoreDesc}
+                  />
+                  <th className={styles.header} scope="col">
+                    {tableContent.columns.social}
+                  </th>
+                  <SortableHeader
+                    activeSort={activeSort}
+                    ascLabel={tableContent.sort.createdAsc}
+                    basePath={basePath}
+                    descLabel={tableContent.sort.createdDesc}
+                    label={tableContent.columns.created}
+                    queryString={queryString}
+                    sortAsc={LeadSort.CreatedAsc}
+                    sortDesc={LeadSort.CreatedDesc}
+                  />
+                  <SortableHeader
+                    activeSort={activeSort}
+                    ascLabel={tableContent.sort.updatedAsc}
+                    basePath={basePath}
+                    descLabel={tableContent.sort.updatedDesc}
+                    label={tableContent.columns.updated}
+                    queryString={queryString}
+                    sortAsc={LeadSort.UpdatedAsc}
+                    sortDesc={LeadSort.UpdatedDesc}
+                  />
+                  <th className={styles.header} scope="col">
+                    {tableContent.columns.source}
+                  </th>
                 </tr>
-              ) : null}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {rows.length > 0 ? (
+                  rows.map((lead) => (
+                    <LeadsTableRow
+                      basePath={basePath}
+                      currentQueryString={queryString}
+                      key={lead.id}
+                      lead={lead}
+                      locale={locale}
+                      sharedContent={sharedContent}
+                      tableContent={tableContent}
+                    />
+                  ))
+                ) : emptyState ? (
+                  <tr className={styles.emptyStateRow}>
+                    <td className={styles.emptyStateCell} colSpan={columnCount}>
+                      <LeadsEmptyState
+                        actionHref={emptyState.actionHref}
+                        actionLabel={emptyState.actionLabel}
+                        description={emptyState.description}
+                        title={emptyState.title}
+                        variant={emptyState.variant}
+                      />
+                    </td>
+                  </tr>
+                ) : null}
+              </tbody>
+            </table>
+          </div>
         </div>
       </LeadsTableSelectionProvider>
     </section>

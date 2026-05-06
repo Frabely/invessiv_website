@@ -11,6 +11,8 @@ import tableDe from "./table/de.json";
 import tableEn from "./table/en.json";
 import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
+import detailDe from "./detail/de.json";
+import detailEn from "./detail/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsToolbarDictionary = typeof toolbarDe;
@@ -18,6 +20,7 @@ export type LeadsPaginationDictionary = typeof paginationDe;
 export type LeadsSharedDictionary = typeof sharedDe;
 export type LeadsTableDictionary = typeof tableDe;
 export type LeadsShellDictionary = typeof shellDe;
+export type LeadsDetailDictionary = typeof detailDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
@@ -49,6 +52,11 @@ const LEADS_SHELL: Record<Locale, LeadsShellDictionary> = {
   en: shellEn,
 };
 
+const LEADS_DETAIL: Record<Locale, LeadsDetailDictionary> = {
+  de: detailDe,
+  en: detailEn,
+};
+
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
   return LEADS_META[locale];
 }
@@ -77,4 +85,10 @@ export function getLeadsTableDictionary(locale: Locale): LeadsTableDictionary {
 
 export function getLeadsShellDictionary(locale: Locale): LeadsShellDictionary {
   return LEADS_SHELL[locale];
+}
+
+export function getLeadsDetailDictionary(
+  locale: Locale,
+): LeadsDetailDictionary {
+  return LEADS_DETAIL[locale];
 }

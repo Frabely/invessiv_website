@@ -5,25 +5,66 @@
   width: 100%;
 }
 
-.tableScroll {
+.tableFrame {
   flex: 1 1 auto;
+  display: flex;
   min-height: 0;
   width: 100%;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
-  border-radius: 22px;
+  border-radius: 8px;
   background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
   box-shadow:
     0 20px 52px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
-.table {
+.tableScroll {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
-  min-width: 1460px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: max(100%, 1640px);
+  min-width: 1640px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
+}
+
+.selectColumn {
+  width: 52px;
+}
+
+.leadColumn {
+  width: 300px;
+}
+
+.categoryColumn {
+  width: 220px;
+}
+
+.stageColumn {
+  width: 220px;
+}
+
+.scoreColumn {
+  width: 160px;
+}
+
+.socialColumn {
+  width: 180px;
+}
+
+.dateColumn {
+  width: 150px;
+}
+
+.sourceColumn {
+  width: 205px;
 }
 
 .table thead th {
@@ -61,7 +102,7 @@
   padding-bottom: 1.1rem;
 }
 
-[data-theme="light"] .tableScroll {
+[data-theme="light"] .tableFrame {
   box-shadow:
     0 20px 42px rgba(28, 41, 67, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);

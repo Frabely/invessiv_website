@@ -3,6 +3,7 @@
 import type { KeyboardEvent, MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/config/i18n";
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsSharedDictionary,
@@ -63,7 +64,7 @@ export function LeadsTableRow({
   const router = useRouter();
   const { isSelected, toggleRow } = useLeadsTableSelection();
   const href = buildLeadHref(basePath, currentQueryString, {
-    selected: lead.id,
+    [LeadListQueryParam.Selected]: lead.id,
   });
   const selected = isSelected(lead.id);
   const displayName = getLeadDisplayName(lead);

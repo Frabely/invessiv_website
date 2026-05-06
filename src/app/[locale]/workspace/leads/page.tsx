@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
@@ -9,6 +9,7 @@ import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
 import {
+  getLeadsDetailDictionary,
   getLeadsMetaDictionary,
   getLeadsPaginationDictionary,
   getLeadsSharedDictionary,
@@ -17,12 +18,17 @@ import {
   getLeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
+import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
 import { LEADS_BASE_PATH } from "./page-constants";
-import { buildLeadListQueryString } from "./utils/lead-list-query-string";
+import {
+  buildLeadListCloseHref,
+  buildLeadListQueryString,
+} from "./utils/lead-list-query-string";
 import {
   hasActiveLeadFilters,
   parseLeadListFilters,
+  parseSelectedLeadId,
 } from "./utils/lead-list-search-params";
 
 export const dynamic = "force-dynamic";
@@ -63,7 +69,9 @@ export default async function LeadsPage({
   const paginationContent = getLeadsPaginationDictionary(locale as Locale);
   const sharedContent = getLeadsSharedDictionary(locale as Locale);
   const tableContent = getLeadsTableDictionary(locale as Locale);
+  const detailContent = getLeadsDetailDictionary(locale as Locale);
   const parsedFilters = parseLeadListFilters(resolvedSearchParams);
+  const selectedLeadId = parseSelectedLeadId(resolvedSearchParams);
   const resolvedSort = parsedFilters.sort ?? LeadSort.CreatedDesc;
   const requestedPage = parsedFilters.page ?? 1;
   let leadList = await listLeads({
@@ -91,6 +99,27 @@ export default async function LeadsPage({
   const hasFilters = hasActiveLeadFilters(parsedFilters);
   const categories = await getLeadCategories();
   const basePath = `/${locale}${LEADS_BASE_PATH}`;
+  const selectedLead = selectedLeadId
+    ? await getLeadById(selectedLeadId)
+    : null;
+  const detailCloseHref = buildLeadListCloseHref(
+    basePath,
+    resolvedSearchParams,
+  );
+
+  if (selectedLeadId && !selectedLead) {
+    redirect(detailCloseHref);
+  }
+
+  const detailPanelProps = selectedLead
+    ? {
+        closeHref: detailCloseHref,
+        content: detailContent,
+        lead: selectedLead,
+        locale: locale as Locale,
+        sharedContent,
+      }
+    : undefined;
   const categoryOptions = categories.map((category: LeadCategoryDto) => ({
     id: category.id,
     labelKey: category.labelKey,
@@ -101,7 +130,7 @@ export default async function LeadsPage({
   }));
 
   return (
-    <LeadsPageShell>
+    <LeadsPageShell detailPanelProps={detailPanelProps}>
       <LeadsPageHeader content={shellContent} />
       <LeadsToolbar
         basePath={basePath}

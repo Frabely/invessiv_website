@@ -2,7 +2,7 @@
   margin-top: 0.75rem;
   padding: 0.7rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 18px;
+  border-radius: 8px;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--color-surface-1) 92%, transparent),

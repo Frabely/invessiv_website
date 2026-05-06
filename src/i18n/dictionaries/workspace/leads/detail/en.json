@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "contact": "Contact",
+    "category": "Category",
+    "socialProfiles": "Social profiles",
+    "improvements": "Improvements",
+    "notes": "Notes",
+    "activity": "Activity"
+  },
+  "fields": {
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "website": "Website",
+    "owner": "Owner",
+    "source": "Source",
+    "score": "Score",
+    "created": "Created",
+    "updated": "Updated",
+    "status": "Status"
+  },
+  "actions": {
+    "close": "Close detail panel",
+    "viewFullProfile": "Full profile planned"
+  },
+  "empty": {
+    "phone": "No phone number",
+    "website": "No website",
+    "category": "No category",
+    "socialProfiles": "No social profiles",
+    "notes": "No notes yet",
+    "improvements": "No improvements yet",
+    "owner": "No owner",
+    "company": "No company",
+    "score": "No score"
+  },
+  "activity": {
+    "placeholder": "Activity stream follows in P1-T29."
+  }
+}
