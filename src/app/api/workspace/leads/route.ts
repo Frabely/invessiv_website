@@ -3,6 +3,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { createLead } from "@/server/workspace/leads/command-handler/create-lead.command-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
@@ -15,18 +16,25 @@ export const GET = withWorkspaceApiAuth(async (request: NextRequest) => {
   const searchParams = new URL(request.url).searchParams;
 
   const rawFilter = {
-    status: searchParams.get("status") ?? undefined,
-    source: searchParams.get("source") ?? undefined,
-    category: searchParams.get("category") ?? undefined,
-    search: searchParams.get("search") ?? undefined,
-    date_from: searchParams.get("date_from") ?? undefined,
-    date_to: searchParams.get("date_to") ?? undefined,
-    sort: searchParams.get("sort") ?? undefined,
-    page: searchParams.has("page")
-      ? Number(searchParams.get("page"))
+    [LeadListQueryParam.Status]:
+      searchParams.get(LeadListQueryParam.Status) ?? undefined,
+    [LeadListQueryParam.Source]:
+      searchParams.get(LeadListQueryParam.Source) ?? undefined,
+    [LeadListQueryParam.Category]:
+      searchParams.get(LeadListQueryParam.Category) ?? undefined,
+    [LeadListQueryParam.Search]:
+      searchParams.get(LeadListQueryParam.Search) ?? undefined,
+    [LeadListQueryParam.DateFrom]:
+      searchParams.get(LeadListQueryParam.DateFrom) ?? undefined,
+    [LeadListQueryParam.DateTo]:
+      searchParams.get(LeadListQueryParam.DateTo) ?? undefined,
+    [LeadListQueryParam.Sort]:
+      searchParams.get(LeadListQueryParam.Sort) ?? undefined,
+    [LeadListQueryParam.Page]: searchParams.has(LeadListQueryParam.Page)
+      ? Number(searchParams.get(LeadListQueryParam.Page))
       : undefined,
-    score_min: searchParams.has("score_min")
-      ? Number(searchParams.get("score_min"))
+    [LeadListQueryParam.ScoreMin]: searchParams.has(LeadListQueryParam.ScoreMin)
+      ? Number(searchParams.get(LeadListQueryParam.ScoreMin))
       : undefined,
   };
 

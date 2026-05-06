@@ -614,7 +614,7 @@ Leads: Navigation über Seiten. "Add Lead"-Button noch disabled.
 
 ---
 
-#### P1-T27 — Toolbar + Filter
+#### P1-T27 — Toolbar + Filter ✅
 
 _Testbarer Zustand danach:_ Vollständige Listenseite — Tabs, Suche, alle Selects und Date-Range filtern korrekt.
 Browser-Back funktioniert. Tabelle, Pagination, Bulk-Bar reagieren auf Filter. Noch kein Detail-Panel.
@@ -630,9 +630,10 @@ Browser-Back funktioniert. Tabelle, Pagination, Bulk-Bar reagieren auf Filter. N
 - **Inhalt:** Tabs (All/New/Qualified/Proposal/Won), Search-Input (debounced, URL-sync), Status-Select, Source-Select,
   Category-Select, Score-Range-Select (≥70 etc.), Date-Range-Picker — alle via `router.push()` auf Query-Params
 - **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Jeder Filter ändert URL und Page rendert neu mit passenden Ergebnissen; Kombination von 2+ Filtern
+- **Akzeptanz:** ✅ Jeder Filter ändert URL und Page rendert neu mit passenden Ergebnissen; Kombination von 2+ Filtern
   korrekt; Browser-Back stellt Filter wieder her; `hasFilters` steuert EmptyState-Variante (T25); kein inline-String; DE
-  und EN komplett
+  und EN komplett; Toolbar-Test und Category-Query-Handler-Test grün, dazu `npm run typecheck`, `npm run lint` und
+  `npm run build` erfolgreich
 - **Aufwand:** 3h
 
 ---

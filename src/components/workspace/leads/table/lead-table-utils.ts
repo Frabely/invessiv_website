@@ -1,26 +1,5 @@
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 
-type SearchParamsInput = Record<string, string | string[] | undefined>;
-
-export function buildQueryStringFromSearchParams(
-  searchParams: SearchParamsInput,
-): string {
-  const params = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(searchParams)) {
-    if (key === "selected") {
-      continue;
-    }
-
-    const normalizedValue = Array.isArray(value) ? value[0] : value;
-    if (normalizedValue) {
-      params.set(key, normalizedValue);
-    }
-  }
-
-  return params.toString();
-}
-
 export function buildLeadHref(
   basePath: string,
   queryString: string,

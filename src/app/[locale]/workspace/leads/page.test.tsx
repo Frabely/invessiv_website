@@ -7,6 +7,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import LeadsPage from "./page";
 
 const mockListLeads = vi.hoisted(() => vi.fn());
+const mockGetLeadCategories = vi.hoisted(() => vi.fn());
+const mockRouter = vi.hoisted(() => ({
+  push: vi.fn(),
+  replace: vi.fn(),
+}));
 const mockLeadsPageShell = vi.hoisted(() =>
   vi.fn(({ children }: { children: ReactNode }) => (
     <div data-testid="leads-shell">{children}</div>
@@ -29,6 +34,7 @@ const mockLeadsPagination = vi.hoisted(() =>
 );
 
 vi.mock("next/navigation", () => ({
+  useRouter: () => mockRouter,
   notFound: vi.fn(() => {
     throw new Error("notFound called");
   }),
@@ -66,9 +72,19 @@ vi.mock(
   }),
 );
 
+vi.mock(
+  "@/server/workspace/leads/query-handler/list-lead-categories.query-handler",
+  () => ({
+    getLeadCategories: mockGetLeadCategories,
+  }),
+);
+
 describe("LeadsPage", () => {
   beforeEach(() => {
     mockListLeads.mockReset();
+    mockGetLeadCategories.mockReset();
+    mockRouter.push.mockReset();
+    mockRouter.replace.mockReset();
     mockLeadsPageShell.mockClear();
     mockLeadsPageHeader.mockClear();
     mockLeadsTable.mockClear();
@@ -82,6 +98,7 @@ describe("LeadsPage", () => {
       rows: [],
       total: 0,
     });
+    mockGetLeadCategories.mockResolvedValue([]);
 
     render(
       await LeadsPage({

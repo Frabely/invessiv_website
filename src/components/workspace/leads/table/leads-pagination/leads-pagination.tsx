@@ -11,6 +11,7 @@ import {
   buildPaginationHref,
   getPaginationItems,
 } from "./leads-pagination.utils";
+import { PaginationItemKind } from "@/common/constants/leads/lead-pagination-item-kinds";
 import styles from "./leads-pagination.module.css";
 
 type LeadsPaginationProps = {
@@ -167,7 +168,7 @@ export function LeadsPagination({
 
           <div className={styles.pageStrip}>
             {items.map((item) =>
-              item.kind === "ellipsis" ? (
+              item.kind === PaginationItemKind.Ellipsis ? (
                 <span
                   aria-hidden="true"
                   className={styles.ellipsis}

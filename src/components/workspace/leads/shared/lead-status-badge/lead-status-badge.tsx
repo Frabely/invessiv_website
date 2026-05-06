@@ -1,10 +1,72 @@
-import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import styles from "./lead-status-badge.module.css";
+import {
+  faArchive,
+  faCircleCheck,
+  faCirclePause,
+  faCirclePlus,
+  faCircleXmark,
+  faComments,
+  faFileSignature,
+  faLayerGroup,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
+import { LeadBadgeKind } from "@/common/constants/leads/lead-badge-kinds";
+import type { LeadBadgeTone as LeadBadgeToneValue } from "@/common/constants/leads/lead-badge-tones";
+import { LeadBadgeTone } from "@/common/constants/leads/lead-badge-tones";
+import { LeadBadge } from "../lead-badge";
+
+export type LeadStatusBadgeStatus = ContactLeadStatus | "all";
 
 type LeadStatusBadgeProps = {
   className?: string;
   label: string;
-  status: ContactLeadStatus;
+  status: LeadStatusBadgeStatus;
+};
+
+const STATUS_CONFIG: Record<
+  LeadStatusBadgeStatus,
+  {
+    icon: IconDefinition;
+    tone: LeadBadgeToneValue;
+  }
+> = {
+  all: {
+    icon: faLayerGroup,
+    tone: LeadBadgeTone.Neutral,
+  },
+  [ContactLeadStatus.New]: {
+    icon: faCirclePlus,
+    tone: LeadBadgeTone.Info,
+  },
+  [ContactLeadStatus.Contacted]: {
+    icon: faComments,
+    tone: LeadBadgeTone.Primary,
+  },
+  [ContactLeadStatus.Qualified]: {
+    icon: faCircleCheck,
+    tone: LeadBadgeTone.Warning,
+  },
+  [ContactLeadStatus.Proposal]: {
+    icon: faFileSignature,
+    tone: LeadBadgeTone.Purple,
+  },
+  [ContactLeadStatus.OnHold]: {
+    icon: faCirclePause,
+    tone: LeadBadgeTone.Neutral,
+  },
+  [ContactLeadStatus.Won]: {
+    icon: faTrophy,
+    tone: LeadBadgeTone.Success,
+  },
+  [ContactLeadStatus.Lost]: {
+    icon: faCircleXmark,
+    tone: LeadBadgeTone.Danger,
+  },
+  [ContactLeadStatus.Archived]: {
+    icon: faArchive,
+    tone: LeadBadgeTone.Neutral,
+  },
 };
 
 export function LeadStatusBadge({
@@ -12,12 +74,15 @@ export function LeadStatusBadge({
   label,
   status,
 }: LeadStatusBadgeProps) {
-  const rootClassName = className ? `${styles.root} ${className}` : styles.root;
+  const { icon, tone } = STATUS_CONFIG[status];
 
   return (
-    <span className={rootClassName} data-status={status}>
-      <span aria-hidden="true" className={styles.marker} />
-      <span className={styles.label}>{label}</span>
-    </span>
+    <LeadBadge
+      className={className}
+      icon={icon}
+      kind={LeadBadgeKind.Status}
+      label={label}
+      tone={tone}
+    />
   );
 }

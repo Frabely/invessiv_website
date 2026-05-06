@@ -1,4 +1,5 @@
 import type { Locale } from "@/config/i18n";
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
@@ -30,7 +31,7 @@ type LeadsTableProps = {
 
 function getActiveSort(queryString: string): string | undefined {
   const params = new URLSearchParams(queryString);
-  return params.get("sort") ?? undefined;
+  return params.get(LeadListQueryParam.Sort) ?? undefined;
 }
 
 export function LeadsTable({

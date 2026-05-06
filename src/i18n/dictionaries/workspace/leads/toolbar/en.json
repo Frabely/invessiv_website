@@ -1,0 +1,35 @@
+{
+  "tabs": {
+    "all": "All",
+    "new": "New",
+    "qualified": "Qualified",
+    "proposal": "Proposal",
+    "won": "Won"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Search name, company, or email"
+  },
+  "filters": {
+    "status": "Status",
+    "source": "Source",
+    "category": "Category",
+    "score": "Score",
+    "dateRange": "Date range",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "allStatuses": "All statuses",
+    "allSources": "All sources",
+    "allCategories": "All categories"
+  },
+  "scoreOptions": {
+    "any": "Any score",
+    "atLeast90": "90 or more",
+    "atLeast80": "80 or more",
+    "atLeast70": "70 or more",
+    "atLeast50": "50 or more"
+  },
+  "actions": {
+    "reset": "Reset filters"
+  }
+}

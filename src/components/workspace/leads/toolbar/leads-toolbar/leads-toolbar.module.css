@@ -1,0 +1,261 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 88%, transparent)
+  );
+  box-shadow: 0 10px 30px
+    color-mix(in srgb, var(--color-shadow) 18%, transparent);
+}
+
+[data-theme="light"] .toolbar {
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-shadow) 10%, transparent);
+}
+
+.topRow {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.statusGroup,
+.sourceGroup,
+.categoryGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.badgeButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.badgeButton:hover,
+.badgeButton:focus-visible {
+  border-color: color-mix(in srgb, var(--color-border-strong) 62%, transparent);
+  outline: none;
+}
+
+.badgeButton[data-active="true"] {
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--color-cta) 16%, transparent);
+}
+
+.badge {
+  pointer-events: none;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: min(100%, 340px);
+  flex: 1 1 320px;
+}
+
+.fieldLabel {
+  font-size: var(--font-size-caption);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+}
+
+.searchInputWrap {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 0.9rem 0 2.15rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.searchInput::placeholder {
+  color: color-mix(in srgb, var(--color-text-muted) 85%, transparent);
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.filterRow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.select,
+.dateInput {
+  width: 100%;
+  height: 40px;
+  padding: 0 0.8rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.select:focus-visible,
+.dateInput:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.dateRange {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.dateField {
+  display: block;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+}
+
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 40px;
+  padding: 0 0.95rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.resetButton:hover,
+.resetButton:focus-visible {
+  border-color: color-mix(in srgb, var(--color-cta) 42%, transparent);
+  outline: none;
+}
+
+.resetButton:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.resetIcon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 1120px) {
+  .filterRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    padding: 0.85rem;
+  }
+
+  .topRow {
+    align-items: stretch;
+  }
+
+  .searchField {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+
+  .filterRow {
+    grid-template-columns: 1fr;
+  }
+
+  .dateGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .resetButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

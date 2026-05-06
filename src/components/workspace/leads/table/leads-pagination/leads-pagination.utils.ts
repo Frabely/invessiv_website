@@ -1,12 +1,17 @@
-export type PaginationItem =
-  | {
-      kind: "page";
-      page: number;
-    }
-  | {
-      kind: "ellipsis";
-      id: string;
-    };
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { PaginationItemKind } from "@/common/constants/leads/lead-pagination-item-kinds";
+
+export type PaginationItemPage = {
+  kind: typeof PaginationItemKind.Page;
+  page: number;
+};
+
+export type PaginationItemEllipsis = {
+  kind: typeof PaginationItemKind.Ellipsis;
+  id: string;
+};
+
+export type PaginationItem = PaginationItemPage | PaginationItemEllipsis;
 
 const PAGINATION_START_PAGE = 1;
 const PAGINATION_EMPTY_PAGE_COUNT = 0;
@@ -21,7 +26,7 @@ export function buildPaginationHref(
   page: number,
 ): string {
   const params = new URLSearchParams(queryString);
-  params.set("page", String(page));
+  params.set(LeadListQueryParam.Page, String(page));
 
   const nextQuery = params.toString();
   return nextQuery ? `${basePath}?${nextQuery}` : basePath;
@@ -37,7 +42,7 @@ export function getPaginationItems(
 
   if (totalPages <= PAGINATION_MAX_COMPACT_PAGES) {
     return Array.from({ length: totalPages }, (_, index) => ({
-      kind: "page" as const,
+      kind: PaginationItemKind.Page,
       page: index + PAGINATION_START_PAGE,
     }));
   }
@@ -66,13 +71,13 @@ export function getPaginationItems(
       page - previousPage > PAGINATION_GAP_THRESHOLD
     ) {
       items.push({
-        kind: "ellipsis",
+        kind: PaginationItemKind.Ellipsis,
         id: `ellipsis-${previousPage}-${page}`,
       });
     }
 
     items.push({
-      kind: "page",
+      kind: PaginationItemKind.Page,
       page,
     });
   });

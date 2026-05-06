@@ -9,6 +9,7 @@ import type {
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import {
+  LeadCategoryBadge,
   LeadScoreBar,
   LeadSocialProfiles,
   LeadSourceBadge,
@@ -134,7 +135,12 @@ export function LeadsTableRow({
         </div>
       </td>
 
-      <td className={styles.categoryCell}>{categoryLabel}</td>
+      <td className={styles.categoryCell}>
+        <LeadCategoryBadge
+          categoryKey={lead.category?.labelKey}
+          label={categoryLabel}
+        />
+      </td>
 
       <td className={styles.stageCell}>
         <LeadStatusBadge

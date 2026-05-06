@@ -4,6 +4,18 @@ import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-type
 import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
+import {
+  LEAD_BADGE_KIND_VALUES,
+  LeadBadgeKind,
+} from "@/common/constants/leads/lead-badge-kinds";
+import {
+  LEAD_BADGE_TONE_VALUES,
+  LeadBadgeTone,
+} from "@/common/constants/leads/lead-badge-tones";
+import {
+  LEAD_LIST_QUERY_PARAM_VALUES,
+  LeadListQueryParam,
+} from "@/common/constants/leads/lead-list-query-params";
 import { LEAD_STATUS_TABS } from "@/common/constants/leads/lead-status-tabs";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
@@ -101,6 +113,56 @@ describe("LEAD_SORT_VALUES", () => {
 
   it("has no duplicates", () => {
     expect(new Set(LEAD_SORT_VALUES).size).toBe(LEAD_SORT_VALUES.length);
+  });
+});
+
+describe("LeadListQueryParam", () => {
+  it("contains the expected query param keys without duplicates", () => {
+    expect(LEAD_LIST_QUERY_PARAM_VALUES).toEqual([
+      LeadListQueryParam.Category,
+      LeadListQueryParam.DateFrom,
+      LeadListQueryParam.DateTo,
+      LeadListQueryParam.Page,
+      LeadListQueryParam.ScoreMin,
+      LeadListQueryParam.Search,
+      LeadListQueryParam.Selected,
+      LeadListQueryParam.Sort,
+      LeadListQueryParam.Source,
+      LeadListQueryParam.Status,
+    ]);
+    expect(new Set(LEAD_LIST_QUERY_PARAM_VALUES).size).toBe(
+      LEAD_LIST_QUERY_PARAM_VALUES.length,
+    );
+  });
+});
+
+describe("LeadBadgeTone", () => {
+  it("contains the expected badge tones without duplicates", () => {
+    expect(LEAD_BADGE_TONE_VALUES).toEqual([
+      LeadBadgeTone.Danger,
+      LeadBadgeTone.Info,
+      LeadBadgeTone.Neutral,
+      LeadBadgeTone.Primary,
+      LeadBadgeTone.Purple,
+      LeadBadgeTone.Success,
+      LeadBadgeTone.Warning,
+    ]);
+    expect(new Set(LEAD_BADGE_TONE_VALUES).size).toBe(
+      LEAD_BADGE_TONE_VALUES.length,
+    );
+  });
+});
+
+describe("LeadBadgeKind", () => {
+  it("contains the expected badge kinds without duplicates", () => {
+    expect(LEAD_BADGE_KIND_VALUES).toEqual([
+      LeadBadgeKind.Category,
+      LeadBadgeKind.Source,
+      LeadBadgeKind.Status,
+    ]);
+    expect(new Set(LEAD_BADGE_KIND_VALUES).size).toBe(
+      LEAD_BADGE_KIND_VALUES.length,
+    );
   });
 });
 
