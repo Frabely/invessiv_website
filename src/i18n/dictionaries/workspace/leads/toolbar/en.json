@@ -30,6 +30,8 @@
     "atLeast50": "50 or more"
   },
   "actions": {
+    "collapseFilters": "Collapse filters",
+    "expandFilters": "Expand filters",
     "reset": "Reset filters"
   }
 }

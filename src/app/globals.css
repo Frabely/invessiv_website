@@ -20,6 +20,8 @@
   --color-text: #f4f7fd;
   --color-text-muted: #d2dae8;
   --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.18);
+  --color-shadow: rgba(0, 0, 0, 0.42);
   --color-accent-warm: #e79a49;
   --color-cta: #4e83e6;
   --color-cta-hover: #6899f0;
@@ -127,6 +129,8 @@
   --color-text: #162033;
   --color-text-muted: #445775;
   --color-border: rgba(42, 64, 102, 0.24);
+  --color-border-strong: rgba(42, 64, 102, 0.36);
+  --color-shadow: rgba(28, 41, 67, 0.18);
   --color-accent-warm: #cb7728;
   --color-cta: #285fc1;
   --color-cta-hover: #346ed4;

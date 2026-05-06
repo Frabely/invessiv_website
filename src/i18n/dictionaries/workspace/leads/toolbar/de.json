@@ -30,6 +30,8 @@
     "atLeast50": "50 oder mehr"
   },
   "actions": {
+    "collapseFilters": "Filterbereich einklappen",
+    "expandFilters": "Filterbereich ausklappen",
     "reset": "Filter zurücksetzen"
   }
 }

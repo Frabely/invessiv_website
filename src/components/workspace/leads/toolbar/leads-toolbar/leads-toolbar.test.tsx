@@ -61,6 +61,20 @@ describe("LeadsToolbar", () => {
       />,
     );
 
+    expect(screen.getByLabelText("Suche")).toHaveValue("acme");
+    expect(screen.getByRole("toolbar", { name: "Quelle" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("toolbar", { name: "Kategorie" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("toolbar", { name: "Status" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Filter zurücksetzen" }),
+    ).toBeEnabled();
+    expect(
+      screen
+        .getByRole("button", { name: "Filter zurücksetzen" })
+        .closest("footer"),
+    ).toBeTruthy();
     expect(
       screen.getByRole("button", { name: "Qualifiziert" }),
     ).toHaveAttribute("data-active", "true");
@@ -133,7 +147,6 @@ describe("LeadsToolbar", () => {
     expect(
       screen.getByText("Coaches").closest("[data-category-key='coaches']"),
     ).toBeTruthy();
-    expect(screen.getByLabelText("Suche")).toHaveValue("acme");
 
     fireEvent.click(screen.getByRole("button", { name: "Webformular" }));
     expect(pushMock).toHaveBeenCalledWith(
@@ -159,5 +172,64 @@ describe("LeadsToolbar", () => {
     expect(new URLSearchParams(href.split("?")[1] ?? "").has("search")).toBe(
       false,
     );
+  });
+
+  it("can collapse and expand the filter area", () => {
+    render(
+      <LeadsToolbar
+        basePath="/de/workspace/leads"
+        categories={[]}
+        content={getLeadsToolbarDictionary("de")}
+        currentQueryString=""
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    const toggleButton = screen.getByRole("button", {
+      name: "Filterbereich einklappen",
+    });
+
+    expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByLabelText("Suche")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Filter zurücksetzen" }),
+    ).toBeDisabled();
+
+    fireEvent.click(toggleButton);
+
+    expect(
+      screen.getByRole("button", { name: "Filterbereich ausklappen" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("searchbox", { name: "Suche" })).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "Filter zurücksetzen" }),
+    ).toBeDisabled();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Filterbereich ausklappen" }),
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Filterbereich einklappen" }),
+    ).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("searchbox", { name: "Suche" }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps reset disabled when no filters are active", () => {
+    render(
+      <LeadsToolbar
+        basePath="/de/workspace/leads"
+        categories={[]}
+        content={getLeadsToolbarDictionary("de")}
+        currentQueryString=""
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Filter zurücksetzen" }),
+    ).toBeDisabled();
   });
 });
