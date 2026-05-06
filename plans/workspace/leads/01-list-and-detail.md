@@ -614,25 +614,6 @@ Leads: Navigation über Seiten. "Add Lead"-Button noch disabled.
 
 ---
 
-#### P1-T26 — Bulk-Action-Bar
-
-_Testbarer Zustand danach:_ Leads selektieren → Bar erscheint → Status-Bulk-Wechsel und Archive (mit Confirm)
-funktionieren und reflektieren sich in der Liste.
-
-- **Files:**
-  - `src/components/workspace/leads/table/leads-bulk-action-bar/`
-  - `src/i18n/dictionaries/workspace/leads/bulk/{de,en}.json`: "Mark as …"-Label, Status-Dropdown-Labels, "Archive"
-    -Button, Confirm-Dialog-Titel/-Text/-Bestätigen/-Abbrechen, Anzahl-Anzeige ("X Leads ausgewählt")
-  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsBulkDictionary(locale)` ergänzen)
-- **Inhalt:** Sticky am unteren Rand wenn Selection > 0; "Mark as …" (Status-Dropdown) + "Archive" (Confirm-Dialog);
-  POST an `/api/workspace/leads/bulk`; Refresh via `router.refresh()`; Selection wird nach Action gecleared
-- **Skills:** `frontend-design:frontend-design`
-- **Akzeptanz:** Status-Wechsel sichtbar in Tabellen-Rows nach Refresh; Archivierte Leads verschwinden aus
-  Standardliste; Checkbox-Selection beim Filter-Change gecleared; kein inline-String; DE und EN komplett
-- **Aufwand:** 2h
-
----
-
 #### P1-T27 — Toolbar + Filter
 
 _Testbarer Zustand danach:_ Vollständige Listenseite — Tabs, Suche, alle Selects und Date-Range filtern korrekt.
@@ -724,6 +705,25 @@ Detail-Panel öffnet optional für den neuen Lead. Gesamter P1-Flow end-to-end t
   Validation-Errors inline; Email-Duplicate-Error sauber gemeldet; EmptyState-CTA und Header-Button öffnen denselben
   Dialog; kein inline-String; DE und EN komplett
 - **Aufwand:** 3h
+
+#### P1-T31 — Bulk-Action-Bar
+
+_Testbarer Zustand danach:_ Leads selektieren → Bar erscheint → Status-Bulk-Wechsel und Archive (mit Confirm)
+funktionieren und reflektieren sich in der Liste.
+
+- **Files:**
+  - `src/components/workspace/leads/table/leads-bulk-action-bar/`
+  - `src/i18n/dictionaries/workspace/leads/bulk/{de,en}.json`: "Mark as …"-Label, Status-Dropdown-Labels, "Archive"
+    -Button, Confirm-Dialog-Titel/-Text/-Bestätigen/-Abbrechen, Anzahl-Anzeige ("X Leads ausgewählt")
+  - `src/i18n/dictionaries/workspace/leads/index.ts` (Edit: `getLeadsBulkDictionary(locale)` ergänzen)
+- **Inhalt:** Sticky am unteren Rand wenn Selection > 0; "Mark as …" (Status-Dropdown) + "Archive" (Confirm-Dialog);
+  POST an `/api/workspace/leads/bulk`; Refresh via `router.refresh()`; Selection wird nach Action gecleared
+- **Skills:** `frontend-design:frontend-design`
+- **Akzeptanz:** Status-Wechsel sichtbar in Tabellen-Rows nach Refresh; Archivierte Leads verschwinden aus
+  Standardliste; Checkbox-Selection beim Filter-Change gecleared; kein inline-String; DE und EN komplett
+- **Aufwand:** 2h
+
+---
 
 ### QA & Tests
 
