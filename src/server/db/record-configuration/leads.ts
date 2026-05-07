@@ -11,6 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
+import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
 import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
 import { sqlCheckIn } from "@/server/db/core";
 import { leadCategories } from "@/server/db/record-configuration/lead-categories";
@@ -51,7 +52,16 @@ export const leads = pgTable(
     ),
     check(
       "leads_score_check",
-      sql`${table.score} is null or (${table.score} >= 0 and ${table.score} <= 100)`,
+      sql`${table.score}
+        is null or (
+        ${table.score}
+        >=
+        ${LeadFieldLimits.ScoreMin}
+        and
+        ${table.score}
+        <=
+        ${LeadFieldLimits.ScoreMax}
+        )`,
     ),
     check("leads_source_check", sqlCheckIn(table.source, LEAD_SOURCES_VALUES)),
     check(

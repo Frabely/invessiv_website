@@ -1,0 +1,70 @@
+{
+  "title": "Lead hinzufügen",
+  "description": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+  "sections": {
+    "identity": "Kontakt",
+    "details": "Kontext",
+    "socialProfiles": "Social Profiles",
+    "improvements": "Verbesserungen",
+    "notes": "Notizen"
+  },
+  "fields": {
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "companyName": "Unternehmen",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "websiteUrl": "Website",
+    "category": "Kategorie",
+    "score": "Score",
+    "owner": "Owner",
+    "notes": "Notizen",
+    "improvement": "Verbesserung",
+    "platform": "Plattform",
+    "profileUrl": "Profil-URL"
+  },
+  "placeholders": {
+    "firstName": "Vorname",
+    "lastName": "Nachname oder Ansprechpartner",
+    "companyName": "Unternehmen oder Marke",
+    "email": "name@firma.de",
+    "phone": "+49 ...",
+    "websiteUrl": "https://...",
+    "category": "Kategorie wählen",
+    "score": "0 bis 100",
+    "owner": "Zuständige Person",
+    "notes": "Kurze Notiz zum Lead",
+    "improvement": "z. B. Klarere CTA",
+    "platform": "Plattform wählen",
+    "profileUrl": "https://..."
+  },
+  "buttons": {
+    "submit": "Lead speichern",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "addImprovement": "Verbesserung hinzufügen",
+    "addProfile": "Profil hinzufügen",
+    "remove": "Entfernen"
+  },
+  "validation": {
+    "nameRequired": "Nachname oder Unternehmen erforderlich",
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Ungültige E-Mail",
+    "scoreInvalid": "Score muss 0–100 sein",
+    "urlInvalid": "Ungültige URL",
+    "categoryInvalid": "Ungültige Kategorie",
+    "emailExists": "E-Mail bereits vorhanden",
+    "generic": "Lead konnte nicht gespeichert werden",
+    "socialProfileRequired": "Plattform und URL sind erforderlich",
+    "improvementRequired": "Verbesserung darf nicht leer sein"
+  },
+  "help": {
+    "requiredHint": "Pflichtfelder sind mit * markiert.",
+    "scoreHint": "Optional. Werte von 0 bis 100.",
+    "improvementsHint": "Optional. Mehrere Verbesserungen sind möglich.",
+    "socialProfilesHint": "Optional. LinkedIn, Instagram oder YouTube."
+  },
+  "status": {
+    "saving": "Lead wird gespeichert..."
+  }
+}

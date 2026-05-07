@@ -15,5 +15,3 @@ function validateLeadName(value: LeadNameShape, context: RefinementCtx) {
 export const createLeadSchema = z
   .object(leadSchema)
   .superRefine(validateLeadName);
-
-export type CreateLeadInput = z.infer<typeof createLeadSchema>;

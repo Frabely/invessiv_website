@@ -7,6 +7,7 @@ import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-par
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { createLead } from "@/server/workspace/leads/command-handler/create-lead.command-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
+import { createLeadSchema } from "@/server/workspace/leads/services/create-lead/create-lead.schema";
 import { leadFilterSchema } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
 
@@ -59,9 +60,18 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
     return leadApiError(LeadErrorCode.ValidationError, 400);
   }
 
+  const parsed = createLeadSchema.safeParse(body);
+  if (!parsed.success) {
+    return leadApiError(
+      LeadErrorCode.ValidationError,
+      400,
+      parsed.error.issues,
+    );
+  }
+
   let result;
   try {
-    result = await createLead(body);
+    result = await createLead(parsed.data);
   } catch {
     return leadApiError(LeadErrorCode.Internal, 500);
   }

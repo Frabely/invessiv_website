@@ -1,0 +1,70 @@
+{
+  "title": "Add lead",
+  "description": "Create a manual contact or company directly in the workspace.",
+  "sections": {
+    "identity": "Contact",
+    "details": "Context",
+    "socialProfiles": "Social profiles",
+    "improvements": "Improvements",
+    "notes": "Notes"
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "companyName": "Company",
+    "email": "Email",
+    "phone": "Phone",
+    "websiteUrl": "Website",
+    "category": "Category",
+    "score": "Score",
+    "owner": "Owner",
+    "notes": "Notes",
+    "improvement": "Improvement",
+    "platform": "Platform",
+    "profileUrl": "Profile URL"
+  },
+  "placeholders": {
+    "firstName": "First name",
+    "lastName": "Last name or contact person",
+    "companyName": "Company or brand",
+    "email": "name@company.com",
+    "phone": "+1 ...",
+    "websiteUrl": "https://...",
+    "category": "Choose a category",
+    "score": "0 to 100",
+    "owner": "Responsible person",
+    "notes": "Short note about the lead",
+    "improvement": "e.g. Clearer CTA",
+    "platform": "Choose a platform",
+    "profileUrl": "https://..."
+  },
+  "buttons": {
+    "submit": "Save lead",
+    "cancel": "Cancel",
+    "close": "Close",
+    "addImprovement": "Add improvement",
+    "addProfile": "Add profile",
+    "remove": "Remove"
+  },
+  "validation": {
+    "nameRequired": "Last name or company is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "scoreInvalid": "Score must be 0-100",
+    "urlInvalid": "Invalid URL",
+    "categoryInvalid": "Invalid category",
+    "emailExists": "Email already exists",
+    "generic": "Lead could not be saved",
+    "socialProfileRequired": "Platform and URL are required",
+    "improvementRequired": "Improvement cannot be empty"
+  },
+  "help": {
+    "requiredHint": "Required fields are marked with *.",
+    "scoreHint": "Optional. Values from 0 to 100.",
+    "improvementsHint": "Optional. Multiple improvements are supported.",
+    "socialProfilesHint": "Optional. LinkedIn, Instagram or YouTube."
+  },
+  "status": {
+    "saving": "Saving lead..."
+  }
+}

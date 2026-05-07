@@ -1,9 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import {
-  LeadErrorCode,
-  LeadValidationIssueCode,
-} from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import { GET, POST } from "@/app/api/workspace/leads/route";
@@ -196,18 +194,21 @@ describe("POST /api/workspace/leads", () => {
     setupAuthenticatedUser();
     mockCreateLead.mockResolvedValue({ ok: true, lead: STUB_LEAD });
 
+    const requestBody: CreateLeadRequestDto = {
+      email: "max@example.com",
+      last_name: "Mustermann",
+    };
+
     const response = await POST(
       makeRequest("http://localhost/api/workspace/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "max@example.com",
-          last_name: "Mustermann",
-        }),
+        body: JSON.stringify(requestBody),
       }),
     );
 
     expect(response.status).toBe(201);
+    expect(mockCreateLead).toHaveBeenCalledWith(requestBody);
     const body = await response.json();
     expect(body).toHaveProperty("lead");
     expect(body.lead).toMatchObject({
@@ -216,25 +217,14 @@ describe("POST /api/workspace/leads", () => {
     });
   });
 
-  it("returns 400 when createLead reports a validation error", async () => {
+  it("returns 400 when the request body fails DTO validation", async () => {
     setupAuthenticatedUser();
-    mockCreateLead.mockResolvedValue({
-      ok: false,
-      code: LeadErrorCode.ValidationError,
-      errors: [
-        {
-          code: "custom",
-          message: LeadValidationIssueCode.LastNameOrCompanyNameRequired,
-          path: ["last_name"],
-        },
-      ],
-    });
 
     const response = await POST(
       makeRequest("http://localhost/api/workspace/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "x@example.com" }),
+        body: JSON.stringify({ last_name: "X" }),
       }),
     );
 
@@ -242,6 +232,7 @@ describe("POST /api/workspace/leads", () => {
     const body = await response.json();
     expect(body).toMatchObject({ error: "VALIDATION_ERROR" });
     expect(body).toHaveProperty("details");
+    expect(mockCreateLead).not.toHaveBeenCalled();
   });
 
   it("returns 409 when the email already exists", async () => {

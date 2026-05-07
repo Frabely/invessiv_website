@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import LeadsPage from "./page";
 
 const mockListLeads = vi.hoisted(() => vi.fn());
@@ -45,6 +46,9 @@ const mockLeadsTable = vi.hoisted(() =>
 const mockLeadsPagination = vi.hoisted(() =>
   vi.fn(() => <div data-testid="leads-pagination" />),
 );
+const mockAddLeadDialog = vi.hoisted(() =>
+  vi.fn(() => <div data-testid="add-lead-dialog" />),
+);
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
   redirect: mockRedirect,
@@ -71,6 +75,13 @@ vi.mock(
   "@/components/workspace/leads/table/leads-pagination/leads-pagination",
   () => ({
     LeadsPagination: mockLeadsPagination,
+  }),
+);
+
+vi.mock(
+  "@/components/workspace/leads/form/add-lead-dialog/add-lead-dialog",
+  () => ({
+    AddLeadDialog: mockAddLeadDialog,
   }),
 );
 
@@ -111,6 +122,7 @@ describe("LeadsPage", () => {
     mockLeadsPageHeader.mockClear();
     mockLeadsTable.mockClear();
     mockLeadsPagination.mockClear();
+    mockAddLeadDialog.mockClear();
   });
 
   afterEach(() => {
@@ -136,6 +148,16 @@ describe("LeadsPage", () => {
     expect(screen.getByTestId("leads-pagination")).toBeInTheDocument();
     expect(screen.getByTestId("empty-state")).toHaveTextContent(
       "Noch keine Leads",
+    );
+    expect(mockLeadsPageHeader).toHaveBeenCalledWith(
+      expect.objectContaining({
+        addLeadHref: `/de/workspace/leads?${LeadListQueryParam.Create}=`,
+      }),
+      undefined,
+    );
+    expect(mockAddLeadDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ open: false }),
+      undefined,
     );
     expect(mockLeadsPagination).toHaveBeenCalledWith(
       expect.objectContaining({ total: 0, currentPage: 1 }),

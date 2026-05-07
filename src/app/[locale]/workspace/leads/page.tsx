@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
+import { AddLeadDialog } from "@/components/workspace/leads/form/add-lead-dialog/add-lead-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
 import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
+import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
 import {
   getLeadsDetailDictionary,
+  getLeadsFormDictionary,
   getLeadsMetaDictionary,
   getLeadsPaginationDictionary,
   getLeadsSharedDictionary,
@@ -22,6 +25,7 @@ import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
+  buildLeadCreateHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
 } from "./utils/lead-list-query-string";
@@ -66,6 +70,7 @@ export default async function LeadsPage({
   const resolvedSearchParams = await searchParams;
   const shellContent = getLeadsShellDictionary(locale as Locale);
   const toolbarContent = getLeadsToolbarDictionary(locale as Locale);
+  const formContent = getLeadsFormDictionary(locale as Locale);
   const paginationContent = getLeadsPaginationDictionary(locale as Locale);
   const sharedContent = getLeadsSharedDictionary(locale as Locale);
   const tableContent = getLeadsTableDictionary(locale as Locale);
@@ -99,6 +104,7 @@ export default async function LeadsPage({
   const hasFilters = hasActiveLeadFilters(parsedFilters);
   const categories = await getLeadCategories();
   const basePath = `/${locale}${LEADS_BASE_PATH}`;
+  const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
   const selectedLead = selectedLeadId
     ? await getLeadById(selectedLeadId)
     : null;
@@ -128,50 +134,62 @@ export default async function LeadsPage({
         category.labelKey as keyof typeof sharedContent.category
       ] ?? category.labelKey,
   }));
+  const addLeadDialogOpen = Object.prototype.hasOwnProperty.call(
+    resolvedSearchParams,
+    LeadListQueryParam.Create,
+  );
 
   return (
-    <LeadsPageShell detailPanelProps={detailPanelProps}>
-      <LeadsPageHeader content={shellContent} />
-      <LeadsToolbar
-        basePath={basePath}
+    <>
+      <LeadsPageShell detailPanelProps={detailPanelProps}>
+        <LeadsPageHeader addLeadHref={addLeadHref} content={shellContent} />
+        <LeadsToolbar
+          basePath={basePath}
+          categories={categoryOptions}
+          content={toolbarContent}
+          currentQueryString={queryString}
+          sharedContent={sharedContent}
+        />
+        <LeadsTable
+          basePath={basePath}
+          emptyState={
+            leadList.total === 0
+              ? {
+                  actionHref: hasFilters ? basePath : addLeadHref,
+                  actionLabel: hasFilters
+                    ? paginationContent.emptyState.noResultsAction
+                    : paginationContent.emptyState.noLeadsAction,
+                  description: hasFilters
+                    ? paginationContent.emptyState.noResultsDescription
+                    : paginationContent.emptyState.noLeadsDescription,
+                  title: hasFilters
+                    ? paginationContent.emptyState.noResultsTitle
+                    : paginationContent.emptyState.noLeadsTitle,
+                  variant: hasFilters ? "filtered" : "empty",
+                }
+              : undefined
+          }
+          locale={locale as Locale}
+          queryString={queryString}
+          rows={leadList.rows}
+          sharedContent={sharedContent}
+          tableContent={tableContent}
+        />
+        <LeadsPagination
+          basePath={basePath}
+          content={paginationContent}
+          currentPage={currentPage}
+          perPage={leadList.perPage}
+          queryString={queryString}
+          total={leadList.total}
+        />
+      </LeadsPageShell>
+      <AddLeadDialog
         categories={categoryOptions}
-        content={toolbarContent}
-        currentQueryString={queryString}
+        content={formContent}
+        open={addLeadDialogOpen}
         sharedContent={sharedContent}
       />
-      <LeadsTable
-        basePath={basePath}
-        emptyState={
-          leadList.total === 0
-            ? {
-                actionHref: hasFilters ? basePath : undefined,
-                actionLabel: hasFilters
-                  ? paginationContent.emptyState.noResultsAction
-                  : paginationContent.emptyState.noLeadsAction,
-                description: hasFilters
-                  ? paginationContent.emptyState.noResultsDescription
-                  : paginationContent.emptyState.noLeadsDescription,
-                title: hasFilters
-                  ? paginationContent.emptyState.noResultsTitle
-                  : paginationContent.emptyState.noLeadsTitle,
-                variant: hasFilters ? "filtered" : "empty",
-              }
-            : undefined
-        }
-        locale={locale as Locale}
-        queryString={queryString}
-        rows={leadList.rows}
-        sharedContent={sharedContent}
-        tableContent={tableContent}
-      />
-      <LeadsPagination
-        basePath={basePath}
-        content={paginationContent}
-        currentPage={currentPage}
-        perPage={leadList.perPage}
-        queryString={queryString}
-        total={leadList.total}
-      />
-    </LeadsPageShell>
+    </>
   );
 }

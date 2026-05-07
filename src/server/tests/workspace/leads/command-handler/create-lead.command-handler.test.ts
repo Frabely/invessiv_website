@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import { PostgresErrorCode } from "@/server/db/core";
 
 const {
@@ -216,7 +217,9 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({ last_name: "Mustermann" });
+    const result = await createLead({
+      last_name: "Mustermann",
+    } as CreateLeadRequestDto);
 
     expect(result).toMatchObject({
       ok: false,

@@ -6,13 +6,16 @@ import { LeadSource } from "@/common/constants/leads/lead-sources";
 import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
-export async function createLead(input: unknown): Promise<CreateLeadResult> {
+export async function createLead(
+  input: CreateLeadRequestDto,
+): Promise<CreateLeadResult> {
   const validation = createLeadValidationService.validate(input);
   if (!validation.success) {
     return {

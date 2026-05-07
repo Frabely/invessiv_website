@@ -86,3 +86,30 @@ export function buildLeadListCloseHref(
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;
 }
+
+export function buildLeadCreateHref(
+  basePath: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (key === LeadListQueryParam.Create || value === undefined) {
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        params.append(key, item);
+      }
+      continue;
+    }
+
+    params.set(key, value);
+  }
+
+  params.set(LeadListQueryParam.Create, "");
+
+  const queryString = params.toString();
+  return queryString ? `${basePath}?${queryString}` : basePath;
+}

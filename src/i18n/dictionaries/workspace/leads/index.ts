@@ -13,6 +13,8 @@ import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
 import detailDe from "./detail/de.json";
 import detailEn from "./detail/en.json";
+import formDe from "./form/de.json";
+import formEn from "./form/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsToolbarDictionary = typeof toolbarDe;
@@ -21,6 +23,7 @@ export type LeadsSharedDictionary = typeof sharedDe;
 export type LeadsTableDictionary = typeof tableDe;
 export type LeadsShellDictionary = typeof shellDe;
 export type LeadsDetailDictionary = typeof detailDe;
+export type LeadsFormDictionary = typeof formDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
@@ -57,6 +60,11 @@ const LEADS_DETAIL: Record<Locale, LeadsDetailDictionary> = {
   en: detailEn,
 };
 
+const LEADS_FORM: Record<Locale, LeadsFormDictionary> = {
+  de: formDe,
+  en: formEn,
+};
+
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
   return LEADS_META[locale];
 }
@@ -91,4 +99,8 @@ export function getLeadsDetailDictionary(
   locale: Locale,
 ): LeadsDetailDictionary {
   return LEADS_DETAIL[locale];
+}
+
+export function getLeadsFormDictionary(locale: Locale): LeadsFormDictionary {
+  return LEADS_FORM[locale];
 }

@@ -22,6 +22,13 @@ Dieser Ordner ist für wiederverwendbare UI-Komponenten gedacht.
 - Jede produktive Komponente erhält eine eigene `*.module.css`-Datei, sofern sie eigene Styles benötigt. Eine CSS-Datei
   bleibt ausnahmsweise nur dann weg, wenn die Komponente wirklich keine eigenen Styles braucht.
 
+## Icons
+
+- Wenn für ein UI-Icon ein passendes FontAwesome-Icon verfügbar ist, ist `FontAwesomeIcon` gegenüber einem selbst
+  gebauten SVG zu bevorzugen.
+- Eigene SVGs nur dann verwenden, wenn es kein passendes FontAwesome-Icon gibt oder ein Icon bewusst als
+  projektspezifisches Sonderzeichen gestaltet werden soll.
+
 ## Error-Darstellung (Client)
 
 Wenn eine Komponente Fehlerzustände anzeigt (Form-Validation, Toast, Inline-Error), gilt dieselbe Konvention wie
