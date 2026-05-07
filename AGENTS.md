@@ -1,4 +1,4 @@
-# AGENTS.md - Invessiv (GPT Codex Agents)
+﻿# AGENTS.md - Invessiv (GPT Codex Agents)
 
 ## Ziel
 
@@ -304,6 +304,10 @@ Outputs:
   src/config/routes.ts`— und werden von dort importiert. Client-Komponenten importieren`SITE_ROUTES
   `direkt; server-only Helfer (z. B.`workspacePathFor`) bleiben in `src/lib/auth/routes.ts`und dürfen nicht in`"use
   client"`-Dateien importiert werden.
+- API-Request-Bodies werden immer als Shared DTO in `src/common/contracts/<domain>/` modelliert. Form-State,
+  Request-DTO, serverinterner Persistenz-Input und Result-DTO sind getrennte Rollen und dürfen nicht vermischt werden.
+  Route-Handler validieren den Body an der HTTP-Grenze gegen das DTO-Schema und reichen danach nur noch typisierte
+  DTO-Objekte an Command-Handler weiter.
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen

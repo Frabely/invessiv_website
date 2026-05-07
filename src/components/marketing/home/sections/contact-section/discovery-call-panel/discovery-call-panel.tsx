@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import type { ComponentProps } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
-import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/shared/contact-form-actions/contact-form-actions";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
-import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/shared/contact-form-status/contact-form-status";
 import { ContactHelperList } from "@/components/marketing/home/sections/contact-section/shared/contact-helper-list/contact-helper-list";
 import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/shared/contact-identity-fields/contact-identity-fields";
 import { ContactMessageField } from "@/components/marketing/home/sections/contact-section/shared/contact-message-field/contact-message-field";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { FormActions } from "@/components/shared/form/form-actions/form-actions";
+import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { useLanguage } from "@/components/providers/language-provider";
 import {
   createCalendlyPrefillHref,
@@ -145,7 +145,7 @@ export function DiscoveryCallPanel({
 
   return (
     <ContactFormShell
-      footer={<ContactFormStatus message={statusMessage} />}
+      footer={<FormStatus message={statusMessage} />}
       intro={formCopy.intro}
       subtitle={formCopy.subtitle}
       title={formCopy.title}
@@ -202,7 +202,7 @@ export function DiscoveryCallPanel({
           />
         </label>
 
-        <ContactFormActions
+        <FormActions
           buttons={
             <PrimaryCtaButton
               data-analytics-event="contact_click"

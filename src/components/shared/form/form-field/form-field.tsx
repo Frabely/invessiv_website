@@ -6,15 +6,16 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/shared/contact-field-label/contact-field-label";
-import styles from "./contact-form-field.module.css";
+import { useId } from "react";
+import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
+import styles from "./form-field.module.css";
 
 type FieldOption = {
   label: string;
   value: string;
 };
 
-type BaseContactFormFieldProps = {
+type BaseFormFieldProps = {
   className?: string;
   controlClassName?: string;
   errorMessage?: string;
@@ -25,7 +26,7 @@ type BaseContactFormFieldProps = {
   required?: boolean;
 };
 
-type SelectFieldProps = BaseContactFormFieldProps & {
+type SelectFieldProps = BaseFormFieldProps & {
   kind: "select";
   options: FieldOption[];
   selectProps?: SelectHTMLAttributes<HTMLSelectElement> & {
@@ -33,22 +34,22 @@ type SelectFieldProps = BaseContactFormFieldProps & {
   };
 };
 
-type TextFieldProps = BaseContactFormFieldProps & {
+type TextFieldProps = BaseFormFieldProps & {
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
-  kind: "email" | "tel" | "text" | "url";
+  kind: "email" | "number" | "tel" | "text" | "url";
 };
 
-type TextareaFieldProps = BaseContactFormFieldProps & {
+type TextareaFieldProps = BaseFormFieldProps & {
   kind: "textarea";
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 
-export type ContactFormFieldProps =
+export type FormFieldProps =
   | SelectFieldProps
   | TextFieldProps
   | TextareaFieldProps;
 
-export function ContactFormField(props: ContactFormFieldProps) {
+export function FormField(props: FormFieldProps) {
   const {
     className,
     controlClassName,
@@ -60,6 +61,9 @@ export function ContactFormField(props: ContactFormFieldProps) {
     required = false,
   } = props;
 
+  const generatedId = useId();
+  const resolvedErrorId = errorMessageId ?? `${generatedId}-error`;
+  const resolvedHintId = hintId ?? (hint ? `${generatedId}-hint` : undefined);
   const rootClassName = className
     ? `${styles.field} ${className}`
     : styles.field;
@@ -67,28 +71,43 @@ export function ContactFormField(props: ContactFormFieldProps) {
   return (
     <label className={rootClassName}>
       <span className={styles.label}>
-        <ContactFieldLabel label={label} required={required} />
+        <FormFieldLabel label={label} required={required} />
       </span>
       <span className={styles.control}>
         {props.kind === "textarea"
-          ? renderTextarea(props, controlClassName, errorMessageId, hintId)
+          ? renderTextarea(
+              props,
+              controlClassName,
+              resolvedErrorId,
+              resolvedHintId,
+            )
           : null}
         {props.kind === "select"
-          ? renderSelect(props, controlClassName, errorMessageId, hintId)
+          ? renderSelect(
+              props,
+              controlClassName,
+              resolvedErrorId,
+              resolvedHintId,
+            )
           : null}
         {props.kind !== "textarea" && props.kind !== "select"
-          ? renderInput(props, controlClassName, errorMessageId, hintId)
+          ? renderInput(
+              props,
+              controlClassName,
+              resolvedErrorId,
+              resolvedHintId,
+            )
           : null}
       </span>
       {hint ? (
-        <small className={styles.hint} id={hintId}>
+        <small className={styles.hint} id={resolvedHintId}>
           {hint}
         </small>
       ) : null}
       <small
         aria-hidden={errorMessage ? undefined : "true"}
         className={`${styles.error}${errorMessage ? "" : ` ${styles.errorHidden}`}`}
-        id={errorMessageId}
+        id={resolvedErrorId}
         role={errorMessage ? "alert" : undefined}
       >
         {errorMessage ?? "\u00A0"}
@@ -106,7 +125,7 @@ function renderInput(
   const describedBy = [
     props.inputProps?.["aria-describedby"],
     hintId,
-    errorMessageId,
+    props.errorMessage ? errorMessageId : undefined,
   ]
     .filter(Boolean)
     .join(" ");
@@ -118,6 +137,10 @@ function renderInput(
     <input
       {...props.inputProps}
       aria-describedby={describedBy || undefined}
+      aria-invalid={
+        props.inputProps?.["aria-invalid"] ??
+        (props.errorMessage ? "true" : undefined)
+      }
       className={className || undefined}
       type={props.kind}
     />
@@ -133,7 +156,7 @@ function renderTextarea(
   const describedBy = [
     props.textareaProps?.["aria-describedby"],
     hintId,
-    errorMessageId,
+    props.errorMessage ? errorMessageId : undefined,
   ]
     .filter(Boolean)
     .join(" ");
@@ -145,6 +168,10 @@ function renderTextarea(
     <textarea
       {...props.textareaProps}
       aria-describedby={describedBy || undefined}
+      aria-invalid={
+        props.textareaProps?.["aria-invalid"] ??
+        (props.errorMessage ? "true" : undefined)
+      }
       className={className || undefined}
     />
   );
@@ -159,7 +186,7 @@ function renderSelect(
   const describedBy = [
     props.selectProps?.["aria-describedby"],
     hintId,
-    errorMessageId,
+    props.errorMessage ? errorMessageId : undefined,
   ]
     .filter(Boolean)
     .join(" ");
@@ -171,6 +198,10 @@ function renderSelect(
     <select
       {...props.selectProps}
       aria-describedby={describedBy || undefined}
+      aria-invalid={
+        props.selectProps?.["aria-invalid"] ??
+        (props.errorMessage ? "true" : undefined)
+      }
       className={className || undefined}
     >
       {props.options.map((option) => (

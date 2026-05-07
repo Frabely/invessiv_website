@@ -1,4 +1,4 @@
-# AGENTS.md — Komponenten Workspace Leads
+﻿# AGENTS.md — Komponenten Workspace Leads
 
 Diese Datei gilt für `src/components/workspace/leads/` und alle Subordner darunter. Sie ergänzt die Repo-Root `AGENTS.md`, `src/components/AGENTS.md` und `src/components/CLAUDE.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
@@ -99,6 +99,13 @@ Diese Gruppierung ist eine Scope-spezifische Präzisierung der Standardregel und
 | `shared/`  | Status-/Source-/Plattform-Badges, Score-Bar, weitere lead-übergreifend wiederverwendbare Visuals |
 
 Neue Subfolder-Gruppen (z. B. `import/`, `messaging/`, `analytics/`) werden plan-getrieben eingeführt und in dieser Tabelle ergänzt.
+
+## Form-DTO-Regel
+
+- Form-Komponenten in `form/` mappen ihren UI-State vor dem `fetch` auf explizite Request-DTOs aus
+  `src/common/contracts/leads/`.
+- Der Mapper benennt die Zielrolle klar, zum Beispiel `mapAddLeadFormValuesToCreateLeadRequestDto`.
+- Serverinterne Persistenz-Shapes, DB-Records und Handler-Inputs werden nicht direkt im Client gebaut.
 
 ## Workflow für neue Lead-Komponenten
 

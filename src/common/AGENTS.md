@@ -1,4 +1,4 @@
-# AGENTS.md — src/common
+﻿# AGENTS.md — src/common
 
 Dieser Ordner enthält alles, was Client und Server **gemeinsam** nutzen: Konstanten, Contracts (DTOs/Interfaces), Defaults und Patterns. Kein serverseitiger, kein clientseitiger Code gehört hier hinein.
 

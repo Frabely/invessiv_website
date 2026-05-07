@@ -4,6 +4,18 @@
 
 - check and cleanup AGENTS.md files
 
+## Lead DTO / Form Contracts Follow-Up
+
+- `AddLeadFormValues` und die übrigen Lead-Form-State-Typen in `src/common/contracts/leads/forms/` weiter sauber
+  strukturieren und bei Bedarf in weitere fachliche Teiltypen aufteilen.
+- Prüfen, ob für weitere Lead-Formen ein konsistentes `forms/`, `requests/` und `results/`-Layout im
+  Common-Contract-Layer
+  sinnvoll ist.
+- Bestehende Lead-API-Endpunkte schrittweise überarbeiten und korrigieren, damit alle Bodies, Responses und
+  Handler-Inputs
+  konsistent auf Shared DTOs und die gleiche Contract-Struktur umgestellt sind.
+- Das ist ein separater Struktur-Schritt und kein Teil des laufenden Feature-Flows.
+
 ## Stack Rework
 
 - Das Contact-DB-MVP ist abgeschlossen.

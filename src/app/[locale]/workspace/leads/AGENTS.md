@@ -1,4 +1,4 @@
-# AGENTS.md — Workspace Leads (UI)
+﻿# AGENTS.md — Workspace Leads (UI)
 
 Diese Datei gilt für `src/app/[locale]/workspace/leads/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md`, `src/app/AGENTS.md` und `src/app/[locale]/workspace/AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 

@@ -1,4 +1,4 @@
-# Server
+﻿# Server
 
 Dieser Ordner ist für Backend-Logik, Orchestrierung, Persistenz und gemeinsame serverseitige Contracts gedacht.
 
@@ -93,6 +93,14 @@ eigenen Dateien außerhalb definiert:
   `src/server/workspace/<domain>/`
 
 Die Service-/Handler-Datei importiert den Typ direkt aus der jeweiligen Contract-Datei.
+
+## HTTP- und DTO-Grenze
+
+- `unknown` ist nur an der äußersten HTTP- bzw. Route-Grenze zulässig. Ab dort wird der Request gegen ein
+  explizites DTO-Schema validiert und nur noch als typisiertes DTO weitergereicht.
+- Command-Handler erhalten keine untyped Payloads als Fachmodell. Ihr Input ist ein Shared DTO aus
+  `src/common/contracts/<domain>/` oder ein klar serverseitiger Persistenz-/Result-Input aus `src/server/**`.
+- Wenn ein Handler noch mit `unknown` arbeitet, ist das ein Architektur-Debt und keine neue Normalform.
 
 ## Error-Code & Message-Konvention
 

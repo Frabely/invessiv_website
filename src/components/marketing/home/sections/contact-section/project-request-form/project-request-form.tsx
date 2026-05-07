@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
-import { ContactFieldLabel } from "@/components/marketing/home/sections/contact-section/shared/contact-field-label/contact-field-label";
-import { ContactFormActions } from "@/components/marketing/home/sections/contact-section/shared/contact-form-actions/contact-form-actions";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/shared/contact-form-field/contact-form-field";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
-import { ContactFormStatus } from "@/components/marketing/home/sections/contact-section/shared/contact-form-status/contact-form-status";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { FormActions } from "@/components/shared/form/form-actions/form-actions";
+import { FormField } from "@/components/shared/form/form-field/form-field";
+import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
+import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
@@ -655,7 +655,7 @@ export function ProjectRequestForm({
 
   return (
     <ContactFormShell
-      footer={<ContactFormStatus message={statusMessage} />}
+      footer={<FormStatus message={statusMessage} />}
       intro={formCopy.intro}
       subtitle={formCopy.subtitle}
       title={formCopy.title}
@@ -730,7 +730,7 @@ export function ProjectRequestForm({
             <div
               className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid} ${styles.stepOneGrid}`}
             >
-              <ContactFormField
+              <FormField
                 errorMessage={
                   errors.firstName ? getFieldErrorText("firstName") : undefined
                 }
@@ -748,7 +748,7 @@ export function ProjectRequestForm({
                 required
               />
 
-              <ContactFormField
+              <FormField
                 errorMessage={
                   errors.lastName ? getFieldErrorText("lastName") : undefined
                 }
@@ -767,7 +767,7 @@ export function ProjectRequestForm({
               />
 
               <div className={styles.stepOneEmailStack}>
-                <ContactFormField
+                <FormField
                   errorMessage={
                     errors.email ? getFieldErrorText("email") : undefined
                   }
@@ -794,7 +794,7 @@ export function ProjectRequestForm({
               </div>
 
               <div className={styles.stepOneOfferStack}>
-                <ContactFormField
+                <FormField
                   className={fieldOfferClassName}
                   errorMessage={
                     errors.offerKey ? getFieldErrorText("offerKey") : undefined
@@ -836,7 +836,7 @@ export function ProjectRequestForm({
               </div>
             </div>
 
-            <ContactFormActions
+            <FormActions
               buttons={
                 <PrimaryCtaButton
                   disabled={isSubmitting}
@@ -857,7 +857,7 @@ export function ProjectRequestForm({
             <legend>{formCopy.stepTwoTitle}</legend>
 
             {fieldRules.showsWebsite ? (
-              <ContactFormField
+              <FormField
                 errorMessage={
                   errors.website ? getFieldErrorText("website") : undefined
                 }
@@ -881,7 +881,7 @@ export function ProjectRequestForm({
             ) : null}
 
             {fieldRules.requiresGoal ? (
-              <ContactFormField
+              <FormField
                 errorMessage={
                   errors.goalKey ? getFieldErrorText("goalKey") : undefined
                 }
@@ -905,7 +905,7 @@ export function ProjectRequestForm({
             {fieldRules.requiresPages ? (
               <div className={styles.pages} tabIndex={-1}>
                 <p className={styles.pagesLabel}>
-                  <ContactFieldLabel label={formCopy.pagesLabel} required />
+                  <FormFieldLabel label={formCopy.pagesLabel} required />
                 </p>
                 <div className={styles.pagesOptions}>
                   {formCopy.pagesOptions?.map((option) => {
@@ -952,7 +952,7 @@ export function ProjectRequestForm({
                 ) : null}
 
                 <div className={styles.customPageComposer}>
-                  <ContactFormField
+                  <FormField
                     className={pagesCustomFieldClassName}
                     errorMessage={
                       errors.pageKeys
@@ -996,7 +996,7 @@ export function ProjectRequestForm({
             ) : null}
 
             {fieldRules.requiresWorkflow ? (
-              <ContactFormField
+              <FormField
                 errorMessage={
                   errors.workflowKey
                     ? getFieldErrorText("workflowKey")
@@ -1019,7 +1019,7 @@ export function ProjectRequestForm({
               />
             ) : null}
 
-            <ContactFormField
+            <FormField
               errorMessage={
                 errors.projectDetails
                   ? getFieldErrorText("projectDetails")
@@ -1040,7 +1040,7 @@ export function ProjectRequestForm({
               }}
             />
 
-            <ContactFormActions
+            <FormActions
               buttons={
                 <>
                   <button
@@ -1074,7 +1074,7 @@ export function ProjectRequestForm({
             <div
               className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
             >
-              <ContactFormField
+              <FormField
                 inputProps={{
                   ...register("company"),
                   autoCapitalize: "words",
@@ -1084,7 +1084,7 @@ export function ProjectRequestForm({
                 label={formCopy.companyLabel}
               />
 
-              <ContactFormField
+              <FormField
                 inputProps={{
                   ...register("role"),
                   autoCapitalize: "words",
@@ -1095,7 +1095,7 @@ export function ProjectRequestForm({
               />
             </div>
 
-            <ContactFormField
+            <FormField
               inputProps={{
                 ...register("phone"),
                 autoComplete: "tel",
@@ -1107,7 +1107,7 @@ export function ProjectRequestForm({
             <div
               className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
             >
-              <ContactFormField
+              <FormField
                 kind="select"
                 label={formCopy.budgetLabel}
                 options={[
@@ -1120,7 +1120,7 @@ export function ProjectRequestForm({
                 selectProps={register("budgetKey")}
               />
 
-              <ContactFormField
+              <FormField
                 kind="select"
                 label={formCopy.startLabel}
                 options={[
@@ -1157,7 +1157,7 @@ export function ProjectRequestForm({
               />
             </label>
 
-            <ContactFormActions
+            <FormActions
               buttons={
                 <>
                   <button

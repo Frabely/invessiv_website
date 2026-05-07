@@ -1,4 +1,4 @@
-# AGENTS.md - Workspace / CRM-Bereich
+﻿# AGENTS.md - Workspace / CRM-Bereich
 
 Diese Datei gilt für `src/app/[locale]/workspace/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md` und `src/app/AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 

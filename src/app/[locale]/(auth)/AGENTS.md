@@ -1,4 +1,4 @@
-# AGENTS.md - Auth / `(auth)` Route Group
+﻿# AGENTS.md - Auth / `(auth)` Route Group
 
 Diese Datei gilt für `src/app/[locale]/(auth)/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md` und `src/app/AGENTS.md`. Ziel ist ein sauberer, öffentlicher Auth-Bereich für Clerk-Formulare, getrennt vom geschützten Workspace.
 

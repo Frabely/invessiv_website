@@ -77,26 +77,34 @@ lokalisierten Kategorie-Labels aus; die Workspace-UI löst `label_key` locale-sp
 
 Legt einen Lead manuell an. Server setzt explizit `source='manual'` und `lead_status='new'`. Activity-Eintrag (`type='note'`) wird im selben Transaktions-Schritt erzeugt.
 
-### Body — Create-Input
+Der Request-Body ist das Shared DTO `CreateLeadRequestDto` aus `src/common/contracts/leads/create-lead-request.dto.ts`.
+`FormValues` aus der UI werden vor dem `fetch` dorthin gemappt; serverintern bleibt Persistenz-Input ein eigener,
+separater
+Layer.
+
+### Body — `CreateLeadRequestDto`
 
 ```jsonc
 {
-  "first_name": "string | null",
-  "last_name": "string | null",        // CHECK: last_name ODER company_name muss gesetzt sein
-  "company_name": "string | null",
+  "first_name": "string",
+  "last_name": "string",               // CHECK: last_name ODER company_name muss gesetzt sein
+  "company_name": "string",
   "email": "string (E-Mail-Format)",   // pflichtig, eindeutig
-  "phone": "string | null",
-  "website_url": "string (URL) | null",
-  "category_id": "uuid | null",
-  "score": "number 0..100 | null",
-  "owner": "string | null",
-  "notes": "string | null",
-  "improvements": ["string", ...] | null,
+  "phone": "string",
+  "website_url": "string (URL)",
+  "category_id": "uuid",
+  "score": "number 0..100",
+  "owner": "string",
+  "notes": "string",
+  "improvements": ["string", ...],
   "social_profiles": [
     { "platform": "linkedin" | "instagram" | "youtube", "profile_url": "string (URL)" }
-  ] | null
+  ]
 }
 ```
+
+Alle Felder außer `email` sind optional und werden von der UI nur bei vorhandenem Wert gesendet. Der Request akzeptiert
+keine serverinternen Persistenz-Shapes und keine `null`-Werte als Platzhalter für leere Felder.
 
 `source` wird **nicht** vom Client gesetzt; der Server erzwingt `manual`.
 Neue Persistenz-Records verwenden application-owned IDs: Server-Code setzt `id` explizit per `crypto.randomUUID()`;
@@ -140,7 +148,8 @@ Aktualisiert Lead-Stammdaten, Status, Notes, Improvements und/oder Social-Profil
 
 ### Body — Update-Input
 
-Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie beim Create-Input, zusätzlich `lead_status`.`source`
+Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie beim `CreateLeadRequestDto`, zusätzlich
+`lead_status`.`source`
 ist im PATCH **nicht** veränderbar; `email` ist veränderbar und kollidierende E-Mails liefern`409 EMAIL_EXISTS`.
 
 ```jsonc
@@ -251,18 +260,23 @@ Validation und Filter:
 - `utils/lead-url-normalization-service.ts`
 - `services/lead-activity-service.ts`
 
+Create-Lead-Datenfluss:
+
+`AddLeadFormValues -> CreateLeadRequestDto -> createLead(...) -> serverinterner PersistenceInput -> DB`
+
 Persistenz: `getDrizzleDatabaseClient()` + `ContactDatabaseTransaction` aus `src/server/db/core`.
 
 ## DTO-Verweise
 
-| Contract             | Datei                                                      |
-| -------------------- | ---------------------------------------------------------- |
-| `LeadSummaryDto`     | `src/common/contracts/leads/lead-summary.dto.ts`           |
-| `LeadDetailDto`      | `src/common/contracts/leads/lead-detail.dto.ts`            |
-| `CreateLeadResult`   | `src/common/contracts/leads/results/create-lead-result.ts` |
-| `UpdateLeadResult`   | `src/common/contracts/leads/results/update-lead-result.ts` |
-| `ListLeadsResult`    | `src/common/contracts/leads/results/list-leads-result.ts`  |
-| `BulkEditLeadsInput` | `src/common/contracts/leads/bulk-edit-leads-input.ts`      |
+| Contract               | Datei                                                      |
+| ---------------------- | ---------------------------------------------------------- |
+| `LeadSummaryDto`       | `src/common/contracts/leads/lead-summary.dto.ts`           |
+| `LeadDetailDto`        | `src/common/contracts/leads/lead-detail.dto.ts`            |
+| `CreateLeadRequestDto` | `src/common/contracts/leads/create-lead-request.dto.ts`    |
+| `CreateLeadResult`     | `src/common/contracts/leads/results/create-lead-result.ts` |
+| `UpdateLeadResult`     | `src/common/contracts/leads/results/update-lead-result.ts` |
+| `ListLeadsResult`      | `src/common/contracts/leads/results/list-leads-result.ts`  |
+| `BulkEditLeadsInput`   | `src/common/contracts/leads/bulk-edit-leads-input.ts`      |
 
 ## Hinweise
 

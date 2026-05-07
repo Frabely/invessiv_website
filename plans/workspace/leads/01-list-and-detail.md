@@ -503,7 +503,7 @@ Gemeinsame Zod-Bausteine leben in `shared/`.
 > **Reihenfolge:** Jedes Ticket liefert einen in sich testbaren Zustand der Page. Kein Ticket bricht den vorherigen
 > Stand.
 
-#### P1-T22 — Shell + Sidebar-Aktivierung
+#### P1-T22 — Shell + Sidebar-Aktivierung ✅
 
 _Testbarer Zustand danach:_ Route `/de/workspace/leads` ist aufrufbar, zeigt korrekte Seitenstruktur mit Header und
 Placeholder-Slots für Toolbar, Tabelle und Detail-Panel. Die Lead-Section nutzt die volle verfügbare Breite
@@ -534,7 +534,7 @@ hervorgehoben.
 
 ---
 
-#### P1-T23 — Shared Visuals: Status-, Source-, Score-Badges
+#### P1-T23 — Shared Visuals: Status-, Source-, Score-Badges ✅
 
 _Testbarer Zustand danach:_ Badge- und Score-Komponenten existieren und können isoliert in der Shell/Page temporär
 eingebettet werden, um alle Farb-Tokens + Label-Varianten visuell zu prüfen. Noch nicht in der Tabelle.
@@ -559,7 +559,7 @@ eingebettet werden, um alle Farb-Tokens + Label-Varianten visuell zu prüfen. No
 
 ---
 
-#### P1-T24 — Tabelle + Row + Selection + Sort
+#### P1-T24 — Tabelle + Row + Selection + Sort ✅
 
 _Testbarer Zustand danach:_ Echte Leads aus der DB werden tabellarisch dargestellt. Alle Spalten inkl. Badges sichtbar.
 Row-Klick setzt `?selected=` (Panel noch nicht vorhanden). Checkboxes und Sort funktionieren. Kein
@@ -589,7 +589,7 @@ Filtering/Pagination/Bulk noch.
 
 ---
 
-#### P1-T25 — Pagination + Empty-State
+#### P1-T25 — Pagination + Empty-State ✅
 
 _Testbarer Zustand danach:_ Vollständige Listenerfahrung ohne Filter. Bei leerer DB: passender Empty-State. Bei >25
 Leads: Navigation über Seiten. "Add Lead"-Button noch disabled.
@@ -638,7 +638,7 @@ Browser-Back funktioniert. Tabelle, Pagination, Bulk-Bar reagieren auf Filter. N
 
 ---
 
-#### P1-T28 — Detail-Side-Panel
+#### P1-T28 — Detail-Side-Panel ✅
 
 _Testbarer Zustand danach:_ Row-Klick öffnet Panel rechts mit allen Lead-Daten. Close-Button und Browser-Back schließen
 Panel. Deep-Link `?selected=<id>` direkt aufrufbar. Noch kein Activity-Stream.

@@ -1,4 +1,4 @@
-# App Router
+﻿# App Router
 
 Dieser Ordner ist für Next.js-App-Router-Einstiegspunkte und die Routen-Orchestrierung gedacht.
 
