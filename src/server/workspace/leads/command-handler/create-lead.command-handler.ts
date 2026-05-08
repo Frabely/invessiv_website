@@ -1,5 +1,5 @@
 import "server-only";
-import { getDrizzleDatabaseClient, PostgresErrorCode } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads, leadSocialProfiles } from "@/server/db/record-configuration";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadSource } from "@/common/constants/leads/lead-sources";
@@ -10,6 +10,7 @@ import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
+import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
@@ -83,13 +84,4 @@ export async function createLead(
     throw new Error(`Created lead ${newLeadId} not found after insert`);
 
   return { ok: true, lead };
-}
-
-function isDuplicateEmailError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code: string }).code === PostgresErrorCode.UniqueViolation
-  );
 }

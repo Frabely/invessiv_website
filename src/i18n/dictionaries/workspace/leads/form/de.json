@@ -44,25 +44,29 @@
     "close": "Schließen",
     "addImprovement": "Verbesserung hinzufügen",
     "addProfile": "Profil hinzufügen",
+    "confirmAdd": "Hinzufügen",
     "remove": "Entfernen"
   },
   "validation": {
     "nameRequired": "Nachname oder Unternehmen erforderlich",
     "emailRequired": "E-Mail ist erforderlich",
     "emailInvalid": "Ungültige E-Mail",
-    "scoreInvalid": "Score muss 0–100 sein",
+    "phoneInvalid": "Ungültige Telefonnummer",
+    "scoreInvalid": "Score muss 0-100 sein",
     "urlInvalid": "Ungültige URL",
     "categoryInvalid": "Ungültige Kategorie",
-    "emailExists": "E-Mail bereits vorhanden",
+    "emailExists": "Diese E-Mail ist bereits einem bestehenden Lead zugeordnet.",
     "generic": "Lead konnte nicht gespeichert werden",
     "socialProfileRequired": "Plattform und URL sind erforderlich",
+    "socialProfileDuplicate": "Diese Plattform wurde bereits hinzugefügt",
     "improvementRequired": "Verbesserung darf nicht leer sein"
   },
   "help": {
     "requiredHint": "Pflichtfelder sind mit * markiert.",
-    "scoreHint": "Optional. Werte von 0 bis 100.",
-    "improvementsHint": "Optional. Mehrere Verbesserungen sind möglich.",
-    "socialProfilesHint": "Optional. LinkedIn, Instagram oder YouTube."
+    "improvementsHint": "Optional. Mehrere Hinweise sind möglich und werden mit dem Lead gespeichert.",
+    "improvementsEmptyState": "Noch keine Verbesserungen. Wird erst mit dem Lead gespeichert.",
+    "socialProfilesHint": "Optional. Profile werden mit dem Lead gespeichert.",
+    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen."
   },
   "status": {
     "saving": "Lead wird gespeichert..."

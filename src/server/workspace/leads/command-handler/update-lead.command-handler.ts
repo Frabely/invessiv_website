@@ -1,6 +1,6 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDrizzleDatabaseClient, PostgresErrorCode } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads, leadSocialProfiles } from "@/server/db/record-configuration";
 import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
@@ -9,6 +9,7 @@ import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-l
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
+import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
@@ -97,13 +98,4 @@ export async function updateLead(
   if (!updated) throw new Error(`Lead ${leadId} not found after update`);
 
   return { ok: true, lead: updated };
-}
-
-function isDuplicateEmailError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as { code: string }).code === PostgresErrorCode.UniqueViolation
-  );
 }

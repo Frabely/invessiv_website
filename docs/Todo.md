@@ -16,6 +16,13 @@
   konsistent auf Shared DTOs und die gleiche Contract-Struktur umgestellt sind.
 - Das ist ein separater Struktur-Schritt und kein Teil des laufenden Feature-Flows.
 
+## Zod Issue Typen Follow-Up
+
+- Die verbliebenen `ZodIssue`-Verwendungen im Repo schrittweise auf das aktuelle Zod-Pattern mit
+  `z.core.$ZodIssue` umstellen.
+- Betroffene Stellen dabei gezielt aktualisieren und die jeweiligen Tests mitziehen.
+- Das ist eine separate technische Bereinigung und kein Teil des aktuellen Leads-Refactors.
+
 ## Stack Rework
 
 - Das Contact-DB-MVP ist abgeschlossen.

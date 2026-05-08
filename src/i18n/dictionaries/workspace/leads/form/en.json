@@ -44,25 +44,29 @@
     "close": "Close",
     "addImprovement": "Add improvement",
     "addProfile": "Add profile",
+    "confirmAdd": "Add",
     "remove": "Remove"
   },
   "validation": {
     "nameRequired": "Last name or company is required",
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email",
+    "phoneInvalid": "Invalid phone number",
     "scoreInvalid": "Score must be 0-100",
     "urlInvalid": "Invalid URL",
     "categoryInvalid": "Invalid category",
-    "emailExists": "Email already exists",
+    "emailExists": "This email is already assigned to an existing lead.",
     "generic": "Lead could not be saved",
     "socialProfileRequired": "Platform and URL are required",
+    "socialProfileDuplicate": "This platform has already been added",
     "improvementRequired": "Improvement cannot be empty"
   },
   "help": {
     "requiredHint": "Required fields are marked with *.",
-    "scoreHint": "Optional. Values from 0 to 100.",
-    "improvementsHint": "Optional. Multiple improvements are supported.",
-    "socialProfilesHint": "Optional. LinkedIn, Instagram or YouTube."
+    "improvementsHint": "Optional. You can add multiple notes and they are saved with the lead.",
+    "improvementsEmptyState": "No improvements yet. Saved only when the lead is saved.",
+    "socialProfilesHint": "Optional. Profiles are saved with the lead.",
+    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube."
   },
   "status": {
     "saving": "Saving lead..."

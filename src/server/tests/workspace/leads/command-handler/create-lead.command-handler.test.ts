@@ -183,7 +183,9 @@ describe("createLead", () => {
   it("returns EMAIL_EXISTS when the email already exists", async () => {
     vi.resetModules();
     const duplicateError = Object.assign(new Error("duplicate key value"), {
-      code: PostgresErrorCode.UniqueViolation,
+      cause: {
+        code: PostgresErrorCode.UniqueViolation,
+      },
     });
     getDrizzleDatabaseClientMock.mockReturnValue({
       transaction: vi.fn().mockRejectedValue(duplicateError),
