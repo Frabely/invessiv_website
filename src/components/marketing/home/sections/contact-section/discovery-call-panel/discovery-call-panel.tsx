@@ -65,6 +65,8 @@ export function DiscoveryCallPanel({
     formState: { errors, isSubmitting },
   } = useForm<DiscoveryCallFormValues>({
     defaultValues: DEFAULT_DISCOVERY_CALL_FORM_VALUES,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
 
   const getErrorMessage = (

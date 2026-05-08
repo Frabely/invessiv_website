@@ -97,13 +97,13 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -275,13 +275,13 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -334,19 +334,64 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Termin wÃ¤hlen" }));
 
     await waitFor(() => {
       expect(screen.getByText("Zustimmung erforderlich")).toBeTruthy();
+    });
+  });
+
+  it("shows the email validation error on blur", async () => {
+    render(
+      <DiscoveryCallPanel
+        channel={{
+          actionLabel: "Termin wählen",
+          href: "https://calendly.com/service-invessiv-cxf5/30min",
+          label: "Kennenlern-Call",
+          mode: "call",
+          value: "15-20 Minuten",
+        }}
+        formCopy={{
+          title: "Kennenlern-Call",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Name und E-Mail werden in Calendly vorbefüllt.",
+          firstNameLabel: "Vorname",
+          lastNameLabel: "Nachname",
+          emailLabel: "E-Mail",
+          messageLabel: "Anliegen",
+          messagePlaceholder: "Optionales Anliegen",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
+          submitErrorRateLimited: "Zu viele Anfragen",
+          submitErrorGeneric: "Allgemeiner Fehler",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
+          fieldErrorRequired: "Pflichtfeld",
+          fieldErrorConsentRequired: "Zustimmung erforderlich",
+          requiredHint: "* Pflichtfelder",
+        }}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
+      target: { value: "keine-mail" },
+    });
+    fireEvent.blur(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Ungültige E-Mail")).toBeTruthy();
     });
   });
 });

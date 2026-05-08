@@ -145,6 +145,8 @@ export function ProjectRequestForm({
     formState: { errors, isSubmitting },
   } = useForm<ProjectRequestFormValues>({
     defaultValues: DEFAULT_PROJECT_REQUEST_FORM_VALUES,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
 
   const selectedOfferKey = useWatch({

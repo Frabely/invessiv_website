@@ -60,6 +60,8 @@ export function QuickContactForm({
     formState: { errors, isSubmitting },
   } = useForm<QuickContactFormValues>({
     defaultValues: DEFAULT_QUICK_CONTACT_FORM_VALUES,
+    mode: "onBlur",
+    reValidateMode: "onBlur",
   });
 
   useEffect(() => {
