@@ -55,6 +55,7 @@
     "scoreInvalid": "Score must be 0-100",
     "urlInvalid": "Invalid URL",
     "categoryInvalid": "Invalid category",
+    "improvementTooLong": "Improvement can be at most 500 characters long",
     "emailExists": "This email is already assigned to an existing lead.",
     "generic": "Lead could not be saved",
     "socialProfileRequired": "Platform and URL are required",

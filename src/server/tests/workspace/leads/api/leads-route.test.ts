@@ -272,6 +272,27 @@ describe("POST /api/workspace/leads", () => {
     expect(mockCreateLead).not.toHaveBeenCalled();
   });
 
+  it("returns 400 when the request body contains an invalid phone number", async () => {
+    setupAuthenticatedUser();
+
+    const response = await POST(
+      makeRequest("http://localhost/api/workspace/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: "valid@example.com",
+          last_name: "X",
+          phone: "abc123",
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: "VALIDATION_ERROR" });
+    expect(mockCreateLead).not.toHaveBeenCalled();
+  });
+
   it("returns 500 when createLead throws an unexpected error", async () => {
     setupAuthenticatedUser();
     mockCreateLead.mockRejectedValue(new Error("database is down"));

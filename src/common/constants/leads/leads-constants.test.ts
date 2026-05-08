@@ -27,6 +27,10 @@ import {
   LeadErrorCode,
   LeadValidationIssueCode,
 } from "@/common/constants/leads/lead-error-codes";
+import {
+  LEAD_VALIDATION_MESSAGE_CODE_VALUES,
+  LeadValidationMessageCode,
+} from "@/common/constants/leads/lead-form-validation";
 
 describe("LEAD_SOURCES", () => {
   it("contains exactly webform, manual, import", () => {
@@ -120,6 +124,7 @@ describe("LeadListQueryParam", () => {
   it("contains the expected query param keys without duplicates", () => {
     expect(LEAD_LIST_QUERY_PARAM_VALUES).toEqual([
       LeadListQueryParam.Category,
+      LeadListQueryParam.Create,
       LeadListQueryParam.DateFrom,
       LeadListQueryParam.DateTo,
       LeadListQueryParam.Page,
@@ -201,6 +206,24 @@ describe("LeadValidationIssueCode", () => {
     ]);
     expect(new Set(LEAD_VALIDATION_ISSUE_CODE_VALUES).size).toBe(
       LEAD_VALIDATION_ISSUE_CODE_VALUES.length,
+    );
+  });
+});
+
+describe("LeadValidationMessageCode", () => {
+  it("contains the expected validation message codes without duplicates", () => {
+    expect(LEAD_VALIDATION_MESSAGE_CODE_VALUES).toEqual([
+      LeadValidationMessageCode.CategoryInvalid,
+      LeadValidationMessageCode.EmailInvalid,
+      LeadValidationMessageCode.EmailRequired,
+      LeadValidationMessageCode.ImprovementRequired,
+      LeadValidationMessageCode.PhoneInvalid,
+      LeadValidationMessageCode.ScoreInvalid,
+      LeadValidationMessageCode.SocialProfileRequired,
+      LeadValidationMessageCode.UrlInvalid,
+    ]);
+    expect(new Set(LEAD_VALIDATION_MESSAGE_CODE_VALUES).size).toBe(
+      LEAD_VALIDATION_MESSAGE_CODE_VALUES.length,
     );
   });
 });

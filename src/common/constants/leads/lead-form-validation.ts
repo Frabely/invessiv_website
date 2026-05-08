@@ -3,6 +3,7 @@ export const LeadValidationMessageCode = {
   EmailInvalid: "email_invalid",
   EmailRequired: "email_required",
   ImprovementRequired: "improvement_required",
+  PhoneInvalid: "phone_invalid",
   ScoreInvalid: "score_invalid",
   SocialProfileRequired: "social_profile_required",
   UrlInvalid: "url_invalid",
@@ -10,6 +11,17 @@ export const LeadValidationMessageCode = {
 
 export type LeadValidationMessageCode =
   (typeof LeadValidationMessageCode)[keyof typeof LeadValidationMessageCode];
+
+export const LEAD_VALIDATION_MESSAGE_CODE_VALUES = [
+  LeadValidationMessageCode.CategoryInvalid,
+  LeadValidationMessageCode.EmailInvalid,
+  LeadValidationMessageCode.EmailRequired,
+  LeadValidationMessageCode.ImprovementRequired,
+  LeadValidationMessageCode.PhoneInvalid,
+  LeadValidationMessageCode.ScoreInvalid,
+  LeadValidationMessageCode.SocialProfileRequired,
+  LeadValidationMessageCode.UrlInvalid,
+] as const;
 
 export const LeadZodIssueCode = {
   Custom: "custom",

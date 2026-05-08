@@ -1,5 +1,7 @@
 import { z } from "zod";
 import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
+import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
+import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
 import { socialProfileSchema } from "@/server/workspace/leads/services/shared/lead-social-profile.schema";
 
 const optionalName = z
@@ -13,7 +15,17 @@ export const leadSchema = {
   last_name: optionalName,
   company_name: optionalName,
   email: z.string().trim().pipe(z.email()),
-  phone: z.string().trim().max(LeadFieldLimits.PhoneMaxLength).optional(),
+  phone: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (value) =>
+        value === undefined || value.length === 0 || isValidContactPhone(value),
+      {
+        message: LeadValidationMessageCode.PhoneInvalid,
+      },
+    ),
   website_url: z.string().trim().pipe(z.url()).optional(),
   category_id: z.uuid().optional(),
   score: z

@@ -94,6 +94,16 @@ describe("createLeadSchema", () => {
       ).toBe(true);
     });
 
+    it("accepts a valid phone number", () => {
+      expect(
+        createLeadSchema.safeParse({
+          email: "a@b.com",
+          last_name: "X",
+          phone: "+49 30 1234567",
+        }).success,
+      ).toBe(true);
+    });
+
     it("accepts improvements as an array of strings", () => {
       expect(
         createLeadSchema.safeParse({
@@ -180,6 +190,16 @@ describe("createLeadSchema", () => {
           email: "a@b.com",
           last_name: "X",
           website_url: "not-a-url",
+        }).success,
+      ).toBe(false);
+    });
+
+    it("rejects an invalid phone number", () => {
+      expect(
+        createLeadSchema.safeParse({
+          email: "a@b.com",
+          last_name: "X",
+          phone: "abc123",
         }).success,
       ).toBe(false);
     });
