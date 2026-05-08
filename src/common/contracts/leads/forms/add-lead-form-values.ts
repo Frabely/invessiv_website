@@ -1,3 +1,5 @@
+import type { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
+
 export type AddLeadFormValues = {
   first_name: string;
   last_name: string;
@@ -11,7 +13,7 @@ export type AddLeadFormValues = {
   notes: string;
   improvements: Array<{ value: string }>;
   social_profiles: Array<{
-    platform: string;
+    platform: LeadSocialPlatform;
     profile_url: string;
   }>;
 };
