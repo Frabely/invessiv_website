@@ -3,25 +3,18 @@ import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import { PostgresErrorCode } from "@/server/db/core";
 
-const {
-  getDrizzleDatabaseClientMock,
-  getLeadByIdMock,
-  createLeadActivityMock,
-} = vi.hoisted(() => ({
-  getDrizzleDatabaseClientMock: vi.fn(),
-  getLeadByIdMock: vi.fn(),
-  createLeadActivityMock: vi.fn().mockResolvedValue(undefined),
-}));
+const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
+  () => ({
+    getDrizzleDatabaseClientMock: vi.fn(),
+    createLeadActivityMock: vi.fn().mockResolvedValue(undefined),
+  }),
+);
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/server/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
-vi.mock(
-  "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler",
-  () => ({ getLeadById: getLeadByIdMock }),
-);
 vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
   createLeadActivity: createLeadActivityMock,
 }));
@@ -55,8 +48,64 @@ type InsertCapture = { tableArg: unknown; valuesArg: unknown };
 
 function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
   const capturedInserts: InsertCapture[] = [];
+  const leadRow = {
+    id: mockLeadDto.id,
+    first_name: mockLeadDto.firstName,
+    last_name: mockLeadDto.lastName,
+    company_name: mockLeadDto.companyName,
+    email: mockLeadDto.email,
+    phone: mockLeadDto.phone,
+    website_url: mockLeadDto.websiteUrl,
+    score: mockLeadDto.score,
+    source: mockLeadDto.source,
+    lead_status: mockLeadDto.leadStatus,
+    owner: mockLeadDto.owner,
+    notes: mockLeadDto.notes,
+    improvements: mockLeadDto.improvements,
+    external_guid: mockLeadDto.externalGuid,
+    created_at: NOW,
+    updated_at: NOW,
+    category_id: null,
+    category_slug: null,
+    category_label_key: null,
+  };
+
+  let selectCallIndex = 0;
+  const selectMock = vi.fn().mockImplementation(() => {
+    const callIndex = selectCallIndex;
+    selectCallIndex += 1;
+
+    if (callIndex === 0) {
+      return {
+        from: vi.fn().mockReturnValue({
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              limit: vi.fn().mockResolvedValue([leadRow]),
+            }),
+          }),
+        }),
+      };
+    }
+
+    if (callIndex === 1) {
+      return {
+        from: vi.fn().mockReturnValue({
+          where: vi.fn().mockResolvedValue([]),
+        }),
+      };
+    }
+
+    return {
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockReturnValue({
+          orderBy: vi.fn().mockResolvedValue([]),
+        }),
+      }),
+    };
+  });
 
   const txMock = {
+    select: selectMock,
     insert: vi.fn().mockImplementation((tableArg: unknown) => ({
       values: vi.fn().mockImplementation((valuesArg: unknown) => {
         capturedInserts.push({ tableArg, valuesArg });
@@ -69,7 +118,7 @@ function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
     transaction: vi
       .fn()
       .mockImplementation(async (cb: (tx: unknown) => Promise<void>) => {
-        await cb(txMock);
+        return cb(txMock);
       }),
   });
 
@@ -79,7 +128,6 @@ function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
 describe("createLead", () => {
   it("returns ok:true with a LeadDetailDto on valid create", async () => {
     setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -95,7 +143,6 @@ describe("createLead", () => {
     vi.resetModules();
     createLeadActivityMock.mockResolvedValue(undefined);
     const { capturedInserts } = setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -110,7 +157,6 @@ describe("createLead", () => {
     vi.resetModules();
     createLeadActivityMock.mockResolvedValue(undefined);
     const { capturedInserts } = setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -144,7 +190,6 @@ describe("createLead", () => {
     vi.resetModules();
     createLeadActivityMock.mockResolvedValue(undefined);
     const { capturedInserts } = setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -163,7 +208,6 @@ describe("createLead", () => {
     vi.resetModules();
     createLeadActivityMock.mockResolvedValue(undefined);
     const { capturedInserts } = setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -234,7 +278,6 @@ describe("createLead", () => {
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
     setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
@@ -254,7 +297,6 @@ describe("createLead", () => {
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
     setupSuccessfulDb();
-    getLeadByIdMock.mockResolvedValue(mockLeadDto);
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 

@@ -1,4 +1,5 @@
 import { PostgresErrorCode } from "@/server/db/core";
+import { DuplicateEmailError } from "@/server/workspace/leads/services/create-lead-core/duplicate-email-error";
 
 const DUPLICATE_ERROR_KEYS = [
   "cause",
@@ -21,10 +22,12 @@ export function isDuplicateEmailError(error: unknown): boolean {
     }
     visited.add(current);
 
-    if (
+    const isDuplicateDbError =
       "code" in current &&
-      (current as { code?: unknown }).code === PostgresErrorCode.UniqueViolation
-    ) {
+      (current as { code?: unknown }).code ===
+        PostgresErrorCode.UniqueViolation;
+
+    if (current instanceof DuplicateEmailError || isDuplicateDbError) {
       return true;
     }
 

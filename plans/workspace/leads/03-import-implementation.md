@@ -133,7 +133,7 @@ Vor jeder Änderung **die scoped AGENTS.md / CLAUDE.md im jeweiligen Verzeichnis
 
 ---
 
-## Step 1 — Constants, Activity-Type-Migration, Status-Synonyms
+## Step 1 — Constants, Activity-Type-Migration, Status-Synonyms ✅
 
 **Ziel:** Reine Type-/Const-Foundation. Kein Code, der Logik ausführt.
 
@@ -176,7 +176,7 @@ Vor jeder Änderung **die scoped AGENTS.md / CLAUDE.md im jeweiligen Verzeichnis
 
 ---
 
-## Step 2 — Import-DTOs (shared contracts)
+## Step 2 — Import-DTOs (shared contracts) ✅
 
 **Ziel:** Typsichere Brücke zwischen Server, API und UI.
 
@@ -221,7 +221,7 @@ Vor jeder Änderung **die scoped AGENTS.md / CLAUDE.md im jeweiligen Verzeichnis
 
 ---
 
-## Step 3 — Zero-Dep CSV-Parser
+## Step 3 — Zero-Dep CSV-Parser ✅
 
 **Ziel:** Robuster, abhängigkeitsfreier Parser mit klar abgegrenzter Responsibility.
 
@@ -262,7 +262,7 @@ Vor jeder Änderung **die scoped AGENTS.md / CLAUDE.md im jeweiligen Verzeichnis
 
 ---
 
-## Step 4 — Mapping- und Validation-Service
+## Step 4 — Mapping- und Validation-Service ✅
 
 **Ziel:** Aus rohen Header+Row-Tupeln typisierte, validierte `RawLeadImportRow`-Datensätze inklusive sauberem
 Issue-Report bauen.
@@ -325,7 +325,7 @@ Issue-Report bauen.
 
 ---
 
-## Step 5 — Shared `createLeadCoreInTransaction` (Refactor)
+## Step 5 — Shared `createLeadCoreInTransaction` (Refactor) ✅
 
 **Ziel:** DRY-Persistenz für manuellen Create und Import.
 
