@@ -1,4 +1,4 @@
-import type { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
+import type { LeadImportSocialProfileDto } from "./lead-import-social-profile.dto";
 
 export interface LeadImportRowDto {
   email: string;
@@ -17,8 +17,5 @@ export interface LeadImportRowDto {
   score?: number;
   status?: string;
   improvements?: string[];
-  socialProfiles?: Array<{
-    platform: LeadSocialPlatform;
-    profileUrl: string;
-  }>;
+  socialProfiles?: LeadImportSocialProfileDto[];
 }
