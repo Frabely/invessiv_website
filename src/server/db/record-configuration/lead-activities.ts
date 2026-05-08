@@ -8,7 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-types";
+import { LEAD_ACTIVITY_TYPE_VALUES } from "@/common/constants/leads/lead-activity-types";
 import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
 import { sqlCheckIn } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration/leads";
@@ -20,7 +20,7 @@ export const leadActivities = pgTable(
     lead_id: uuid("lead_id")
       .notNull()
       .references(() => leads.id, { onDelete: "cascade" }),
-    type: text("type", { enum: LEAD_ACTIVITY_TYPES }).notNull(),
+    type: text("type", { enum: LEAD_ACTIVITY_TYPE_VALUES }).notNull(),
     title: text("title"),
     body: text("body"),
     metadata: jsonb("metadata"),
@@ -37,7 +37,7 @@ export const leadActivities = pgTable(
   (table) => [
     check(
       "lead_activities_type_check",
-      sqlCheckIn(table.type, LEAD_ACTIVITY_TYPES),
+      sqlCheckIn(table.type, LEAD_ACTIVITY_TYPE_VALUES),
     ),
     check(
       "lead_activities_actor_type_check",

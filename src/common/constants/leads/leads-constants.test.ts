@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
-import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-types";
+import { LEAD_ACTIVITY_TYPE_VALUES } from "@/common/constants/leads/lead-activity-types";
 import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
@@ -42,9 +42,9 @@ describe("LEAD_SOURCES", () => {
   });
 });
 
-describe("LEAD_ACTIVITY_TYPES", () => {
+describe("LEAD_ACTIVITY_TYPE_VALUES", () => {
   it("contains exactly the four activity types", () => {
-    expect(LEAD_ACTIVITY_TYPES).toEqual([
+    expect(LEAD_ACTIVITY_TYPE_VALUES).toEqual([
       "note",
       "status_change",
       "inbound_submission",
@@ -53,7 +53,9 @@ describe("LEAD_ACTIVITY_TYPES", () => {
   });
 
   it("has no duplicates", () => {
-    expect(new Set(LEAD_ACTIVITY_TYPES).size).toBe(LEAD_ACTIVITY_TYPES.length);
+    expect(new Set(LEAD_ACTIVITY_TYPE_VALUES).size).toBe(
+      LEAD_ACTIVITY_TYPE_VALUES.length,
+    );
   });
 });
 
