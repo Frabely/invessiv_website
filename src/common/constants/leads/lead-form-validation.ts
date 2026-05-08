@@ -5,6 +5,7 @@ export const LeadValidationMessageCode = {
   ImprovementRequired: "improvement_required",
   PhoneInvalid: "phone_invalid",
   ScoreInvalid: "score_invalid",
+  SocialProfileInvalid: "social_profile_invalid",
   SocialProfileRequired: "social_profile_required",
   UrlInvalid: "url_invalid",
 } as const;
@@ -19,6 +20,7 @@ export const LEAD_VALIDATION_MESSAGE_CODE_VALUES = [
   LeadValidationMessageCode.ImprovementRequired,
   LeadValidationMessageCode.PhoneInvalid,
   LeadValidationMessageCode.ScoreInvalid,
+  LeadValidationMessageCode.SocialProfileInvalid,
   LeadValidationMessageCode.SocialProfileRequired,
   LeadValidationMessageCode.UrlInvalid,
 ] as const;

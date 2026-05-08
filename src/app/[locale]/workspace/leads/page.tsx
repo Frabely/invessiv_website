@@ -7,6 +7,7 @@ import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-sh
 import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
+import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
 import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
@@ -126,14 +127,16 @@ export default async function LeadsPage({
         sharedContent,
       }
     : undefined;
-  const categoryOptions = categories.map((category: LeadCategoryDto) => ({
-    id: category.id,
-    labelKey: category.labelKey,
-    label:
-      sharedContent.category[
-        category.labelKey as keyof typeof sharedContent.category
-      ] ?? category.labelKey,
-  }));
+  const categoryOptions: LeadCategoryOption[] = categories.map(
+    (category: LeadCategoryDto) => ({
+      id: category.id,
+      labelKey: category.labelKey,
+      label:
+        sharedContent.category[
+          category.labelKey as keyof typeof sharedContent.category
+        ] ?? category.labelKey,
+    }),
+  );
   const addLeadDialogOpen = Object.prototype.hasOwnProperty.call(
     resolvedSearchParams,
     LeadListQueryParam.Create,

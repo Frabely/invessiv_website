@@ -219,6 +219,7 @@ describe("LeadValidationMessageCode", () => {
       LeadValidationMessageCode.ImprovementRequired,
       LeadValidationMessageCode.PhoneInvalid,
       LeadValidationMessageCode.ScoreInvalid,
+      LeadValidationMessageCode.SocialProfileInvalid,
       LeadValidationMessageCode.SocialProfileRequired,
       LeadValidationMessageCode.UrlInvalid,
     ]);
