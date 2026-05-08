@@ -184,6 +184,7 @@ src/
   - `src/common/contracts/leads/import/lead-import-row.dto.ts`
   - `src/common/contracts/leads/import/lead-import-report.dto.ts`
   - `plans/workspace/leads/lead-import-example.csv`
+- **Skills:** `best-practices`
 - **Inhalt:**
   - Const-Objekt `LeadImportColumnKey` exakt wie oben
   - Type `LeadImportColumnKey`
@@ -199,6 +200,7 @@ src/
 ### P2-T2 - Zero-Dependency CSV-Parser
 
 - **Files:** `src/server/workspace/leads/services/import/lead-csv-parser.ts`
+- **Skills:** `best-practices`, `performance`
 - **Inhalt:**
   - UTF-8 Textinput mit optionalem BOM
   - Separator-Erkennung für `;` und `,`
@@ -217,6 +219,7 @@ src/
 - **Files:**
   - `src/server/workspace/leads/services/import/lead-csv-import-mapping-service.ts`
   - `src/server/workspace/leads/services/import/lead-import-validation-service.ts`
+- **Skills:** `best-practices`
 - **Inhalt:**
   - Nur exakt bekannte Header mappen
   - `email` required
@@ -240,6 +243,7 @@ src/
 ### P2-T4 - Shared Create-Core für Manual und Import
 
 - **Files:** `src/server/workspace/leads/services/create-lead-core/`
+- **Skills:** `best-practices`
 - **Inhalt:**
   - Bestehende manuelle Lead-Erstellung auf Shared Core zurückführen
   - Import kann denselben Core mit `source=import`, optionalem `external_guid`, Status, Owner, Notes, Improvements und
@@ -253,6 +257,7 @@ src/
 ### P2-T5 - Import-Command mit Skip- und Konflikt-Report
 
 - **Files:** `src/server/workspace/leads/command-handler/import-leads.command-handler.ts`
+- **Skills:** `best-practices`
 - **Inhalt:**
   - Partial Import
   - pro valide Row Insert versuchen
@@ -273,6 +278,7 @@ src/
 ### P2-T6 - API-Route `POST /api/workspace/leads/import`
 
 - **Files:** `src/app/api/workspace/leads/import/route.ts`
+- **Skills:** `best-practices`
 - **Inhalt:**
   - `multipart/form-data` mit genau einer Datei
   - File-Check per Name, MIME-Type und Parsebarkeit
@@ -291,6 +297,7 @@ src/
 ### P2-T7 - UI: `<ImportLeadsDialog>`
 
 - **Files:** `src/components/workspace/leads/import-leads-dialog/`
+- **Skills:** `frontend-design`, `copywriting`, `accessibility`, `web-design-guidelines`
 - **Inhalt:**
   - Trigger in Toolbar
   - File Picker
@@ -316,6 +323,7 @@ src/
   - `npm run typecheck`
   - `npm run test`
   - `npm run build`
+- **Skills:** `best-practices`, `web-quality-audit`
 - **Akzeptanz:**
   - Alle Gates grün
   - Manueller Smoke: Beispiel-CSV importieren, reimportieren, Skips prüfen
