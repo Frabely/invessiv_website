@@ -1,23 +1,26 @@
 import type { Metadata } from "next";
 import {
   isSupportedLocale,
-  SUPPORTED_LOCALES,
   type Locale,
+  SUPPORTED_LOCALES,
 } from "@/config/i18n";
 import { getAuthContent } from "@/i18n/dictionaries/auth";
-import {
-  type AuthRouteKind,
-  signInPathFor,
-  signUpPathFor,
-} from "@/lib/auth/routes";
+import { signInPathFor, signUpPathFor } from "@/lib/auth/routes";
 import {
   createLocaleAlternates,
   createPageMetadata,
 } from "@/lib/seo/page-metadata";
 
+export const AuthRouteKind = {
+  SignIn: "signIn",
+  SignUp: "signUp",
+} as const;
+
+export type AuthRouteKind = (typeof AuthRouteKind)[keyof typeof AuthRouteKind];
+
 const authRoutePathByKind: Record<AuthRouteKind, (locale: Locale) => string> = {
-  signIn: signInPathFor,
-  signUp: signUpPathFor,
+  [AuthRouteKind.SignIn]: signInPathFor,
+  [AuthRouteKind.SignUp]: signUpPathFor,
 };
 
 export function generateAuthStaticParams() {

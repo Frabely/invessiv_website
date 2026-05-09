@@ -5,11 +5,12 @@ import { AuthClerkPage } from "@/components/auth/auth-clerk-page/auth-clerk-page
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getAuthContent } from "@/i18n/dictionaries/auth";
 import {
-  workspacePathFor,
   signInPathFor,
   signUpPathFor,
+  workspacePathFor,
 } from "@/lib/auth/routes";
 import {
+  AuthRouteKind,
   generateAuthMetadata,
   generateAuthStaticParams,
 } from "../../auth-route-metadata";
@@ -26,7 +27,7 @@ export async function generateMetadata({
   params,
 }: SignUpPageProps): Promise<Metadata> {
   const { locale } = await params;
-  return generateAuthMetadata(locale, "signUp");
+  return generateAuthMetadata(locale, AuthRouteKind.SignUp);
 }
 
 export default async function SignUpPage({ params }: SignUpPageProps) {
