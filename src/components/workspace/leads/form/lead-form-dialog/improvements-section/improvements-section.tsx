@@ -14,14 +14,14 @@ import {
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
-import type { AddLeadFormValues } from "@/common/contracts/leads/forms/add-lead-form-values";
+import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type { LeadsFormDictionary } from "@/i18n/dictionaries/workspace/leads";
 import styles from "./improvements-section.module.css";
 
 type ImprovementsSectionProps = {
-  clearErrorsAction: UseFormClearErrors<AddLeadFormValues>;
+  clearErrorsAction: UseFormClearErrors<LeadFormValues>;
   content: LeadsFormDictionary;
-  control: Control<AddLeadFormValues>;
+  control: Control<LeadFormValues>;
   onInteractionAction: () => void;
 };
 

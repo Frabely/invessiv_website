@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
 import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
 import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
@@ -40,4 +41,5 @@ export const leadSchema = {
     .array(z.string().trim().min(1).max(LeadFieldLimits.ImprovementMaxLength))
     .optional(),
   social_profiles: z.array(socialProfileSchema).optional(),
+  lead_status: z.enum(CONTACT_LEAD_STATUS_VALUES).optional(),
 };

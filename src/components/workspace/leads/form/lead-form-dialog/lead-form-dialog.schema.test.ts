@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
-import { addLeadFormSchema } from "./add-lead-dialog.schema";
+import { leadFormSchema } from "./lead-form-dialog.schema";
+
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 
 const baseFormValues = {
   category_id: "",
@@ -9,6 +11,7 @@ const baseFormValues = {
   first_name: "",
   improvements: [],
   last_name: "Meyer",
+  lead_status: ContactLeadStatus.New,
   notes: "",
   owner: "",
   phone: "",
@@ -17,9 +20,9 @@ const baseFormValues = {
   website_url: "",
 };
 
-describe("addLeadFormSchema", () => {
+describe("leadFormSchema", () => {
   it("rejects an invalid social platform with the dedicated validation code", () => {
-    const result = addLeadFormSchema.safeParse({
+    const result = leadFormSchema.safeParse({
       ...baseFormValues,
       social_profiles: [
         {
@@ -46,7 +49,7 @@ describe("addLeadFormSchema", () => {
 
   it("accepts supported social platforms", () => {
     expect(
-      addLeadFormSchema.safeParse({
+      leadFormSchema.safeParse({
         ...baseFormValues,
         social_profiles: [
           {

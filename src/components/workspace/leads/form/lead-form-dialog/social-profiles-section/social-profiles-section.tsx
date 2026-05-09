@@ -17,7 +17,7 @@ import {
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
-import type { AddLeadFormValues } from "@/common/contracts/leads/forms/add-lead-form-values";
+import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type {
   LeadsFormDictionary,
   LeadsSharedDictionary,
@@ -25,9 +25,9 @@ import type {
 import styles from "./social-profiles-section.module.css";
 
 type SocialProfilesSectionProps = {
-  clearErrorsAction: UseFormClearErrors<AddLeadFormValues>;
+  clearErrorsAction: UseFormClearErrors<LeadFormValues>;
   content: LeadsFormDictionary;
-  control: Control<AddLeadFormValues>;
+  control: Control<LeadFormValues>;
   onInteractionAction: () => void;
   sharedContent: LeadsSharedDictionary;
 };

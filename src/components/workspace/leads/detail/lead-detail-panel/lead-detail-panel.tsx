@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
@@ -22,6 +24,7 @@ import styles from "./lead-detail-panel.module.css";
 export type LeadDetailPanelProps = {
   closeHref: string;
   content: LeadsDetailDictionary;
+  editHref: string;
   lead: LeadDetailDto;
   locale: Locale;
   sharedContent: LeadsSharedDictionary;
@@ -80,6 +83,7 @@ function getPhoneHref(phone: string | null): string | undefined {
 export function LeadDetailPanel({
   closeHref,
   content,
+  editHref,
   lead,
   locale,
   sharedContent,
@@ -110,6 +114,15 @@ export function LeadDetailPanel({
 
         <Link className={styles.closeButton} href={closeHref}>
           {content.actions.close}
+        </Link>
+
+        <Link
+          aria-label={content.actions.edit}
+          className={styles.editIconLink}
+          href={editHref}
+          title={content.actions.edit}
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
         </Link>
       </header>
 

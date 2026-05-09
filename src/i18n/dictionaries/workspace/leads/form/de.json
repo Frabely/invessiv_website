@@ -24,6 +24,7 @@
     "category": "Kategorie",
     "score": "Score",
     "owner": "Owner",
+    "status": "Status",
     "notes": "Notizen",
     "improvement": "Verbesserung",
     "platform": "Plattform",

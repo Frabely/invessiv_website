@@ -44,7 +44,7 @@ export async function createLead(
         category_id: data.category_id ?? null,
         score: data.score ?? null,
         source: LeadSource.Manual,
-        lead_status: ContactLeadStatus.New,
+        lead_status: data.lead_status ?? ContactLeadStatus.New,
         owner: data.owner ?? null,
         notes: data.notes ?? null,
         improvements: data.improvements ?? null,

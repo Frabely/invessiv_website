@@ -28,8 +28,8 @@
 }
 
 .table {
-  width: max(100%, 1640px);
-  min-width: 1640px;
+  width: max(100%, 1696px);
+  min-width: 1696px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -37,6 +37,10 @@
 
 .selectColumn {
   width: 52px;
+}
+
+.actionsColumn {
+  width: 56px;
 }
 
 .leadColumn {
@@ -70,7 +74,7 @@
 .table thead th {
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
   background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
   backdrop-filter: blur(8px);
   color: var(--color-text-muted);
@@ -90,6 +94,26 @@
 
 .header {
   text-align: left;
+  white-space: nowrap;
+}
+
+.table thead th.actionsHeader {
+  right: 0;
+  z-index: 3;
+  text-align: center;
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  box-shadow: -1px 0 0 color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  overflow: hidden;
   white-space: nowrap;
 }
 

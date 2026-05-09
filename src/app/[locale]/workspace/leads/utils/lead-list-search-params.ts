@@ -99,6 +99,14 @@ export function parseSelectedLeadId(
   return selected && isUuid(selected) ? selected : undefined;
 }
 
+export function parseEditLeadId(
+  searchParams: SearchParamsInput,
+): string | undefined {
+  const edit = getTrimmedSearchParam(searchParams, LeadListQueryParam.Edit);
+
+  return edit && isUuid(edit) ? edit : undefined;
+}
+
 export function parseLeadListFilters(
   searchParams: SearchParamsInput,
 ): LeadFilterInput {

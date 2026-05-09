@@ -131,6 +131,7 @@ describe("LeadListQueryParam", () => {
       LeadListQueryParam.Create,
       LeadListQueryParam.DateFrom,
       LeadListQueryParam.DateTo,
+      LeadListQueryParam.Edit,
       LeadListQueryParam.Page,
       LeadListQueryParam.ScoreMin,
       LeadListQueryParam.Search,

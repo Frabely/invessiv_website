@@ -11,6 +11,7 @@ import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
 import { SortableHeader } from "../sortable-header/sortable-header";
+import { LEADS_TABLE_COLUMN_COUNT } from "./leads-table.constants";
 import styles from "./leads-table.module.css";
 
 type LeadsTableProps = {
@@ -45,7 +46,6 @@ export function LeadsTable({
 }: LeadsTableProps) {
   const activeSort = getActiveSort(queryString);
   const rowIds = rows.map((row) => row.id);
-  const columnCount = 9;
 
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
@@ -63,6 +63,7 @@ export function LeadsTable({
                 <col className={styles.dateColumn} />
                 <col className={styles.dateColumn} />
                 <col className={styles.sourceColumn} />
+                <col className={styles.actionsColumn} />
               </colgroup>
               <thead>
                 <tr>
@@ -124,6 +125,11 @@ export function LeadsTable({
                   <th className={styles.header} scope="col">
                     {tableContent.columns.source}
                   </th>
+                  <th className={styles.actionsHeader} scope="col">
+                    <span className={styles.visuallyHidden}>
+                      {tableContent.actions.label}
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -141,7 +147,10 @@ export function LeadsTable({
                   ))
                 ) : emptyState ? (
                   <tr className={styles.emptyStateRow}>
-                    <td className={styles.emptyStateCell} colSpan={columnCount}>
+                    <td
+                      className={styles.emptyStateCell}
+                      colSpan={LEADS_TABLE_COLUMN_COUNT}
+                    >
                       <LeadsEmptyState
                         actionHref={emptyState.actionHref}
                         actionLabel={emptyState.actionLabel}

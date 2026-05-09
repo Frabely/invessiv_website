@@ -23,6 +23,7 @@ import {
   getLeadDisplayName,
   getLeadInitials,
 } from "../lead-table-utils";
+import { LeadsTableRowActions } from "../leads-table-row-actions/leads-table-row-actions";
 import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
 import styles from "./leads-table-row.module.css";
 
@@ -65,6 +66,11 @@ export function LeadsTableRow({
   const { isSelected, toggleRow } = useLeadsTableSelection();
   const href = buildLeadHref(basePath, currentQueryString, {
     [LeadListQueryParam.Selected]: lead.id,
+  });
+  const editHref = buildLeadHref(basePath, currentQueryString, {
+    [LeadListQueryParam.Edit]: lead.id,
+    [LeadListQueryParam.Selected]: undefined,
+    [LeadListQueryParam.Create]: undefined,
   });
   const selected = isSelected(lead.id);
   const displayName = getLeadDisplayName(lead);
@@ -181,6 +187,11 @@ export function LeadsTableRow({
           source={lead.source}
         />
       </td>
+
+      <LeadsTableRowActions
+        editHref={editHref}
+        editLabel={tableContent.actions.edit}
+      />
     </tr>
   );
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
 import {
   LeadAddLeadFormFieldPath,
@@ -27,7 +28,7 @@ const socialProfileSchema = z.object({
   profile_url: z.string().trim(),
 });
 
-export const addLeadFormSchema = z
+export const leadFormSchema = z
   .object({
     first_name: optionalTrimmedString(LeadFieldLimits.NameMaxLength),
     last_name: optionalTrimmedString(LeadFieldLimits.NameMaxLength),
@@ -77,6 +78,7 @@ export const addLeadFormSchema = z
       ),
     owner: optionalTrimmedString(LeadFieldLimits.OwnerMaxLength),
     notes: optionalTrimmedString(LeadFieldLimits.NotesMaxLength),
+    lead_status: z.enum(CONTACT_LEAD_STATUS_VALUES),
     improvements: z.array(
       z.object({
         value: z
