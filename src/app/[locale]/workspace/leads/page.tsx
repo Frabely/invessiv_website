@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { AddLeadDialog } from "@/components/workspace/leads/form/add-lead-dialog/add-lead-dialog";
+import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
 import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
@@ -10,6 +10,7 @@ import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
 import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadFormDialogMode } from "@/common/constants/leads/lead-form-dialog-modes";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
 import {
   getLeadsDetailDictionary,
@@ -27,11 +28,14 @@ import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.que
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
   buildLeadCreateHref,
+  buildLeadDialogCloseHref,
+  buildLeadEditHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
 } from "./utils/lead-list-query-string";
 import {
   hasActiveLeadFilters,
+  parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
 } from "./utils/lead-list-search-params";
@@ -109,7 +113,13 @@ export default async function LeadsPage({
   const selectedLead = selectedLeadId
     ? await getLeadById(selectedLeadId)
     : null;
+  const editLeadId = parseEditLeadId(resolvedSearchParams);
+  const editLead = editLeadId ? await getLeadById(editLeadId) : null;
   const detailCloseHref = buildLeadListCloseHref(
+    basePath,
+    resolvedSearchParams,
+  );
+  const dialogCloseHref = buildLeadDialogCloseHref(
     basePath,
     resolvedSearchParams,
   );
@@ -118,10 +128,19 @@ export default async function LeadsPage({
     redirect(detailCloseHref);
   }
 
+  if (editLeadId && !editLead) {
+    redirect(dialogCloseHref);
+  }
+
   const detailPanelProps = selectedLead
     ? {
         closeHref: detailCloseHref,
         content: detailContent,
+        editHref: buildLeadEditHref(
+          basePath,
+          selectedLead.id,
+          resolvedSearchParams,
+        ),
         lead: selectedLead,
         locale: locale as Locale,
         sharedContent,
@@ -141,6 +160,10 @@ export default async function LeadsPage({
     resolvedSearchParams,
     LeadListQueryParam.Create,
   );
+  const dialogMode = editLead
+    ? LeadFormDialogMode.Edit
+    : LeadFormDialogMode.Create;
+  const dialogOpen = addLeadDialogOpen || Boolean(editLead);
 
   return (
     <>
@@ -187,10 +210,13 @@ export default async function LeadsPage({
           total={leadList.total}
         />
       </LeadsPageShell>
-      <AddLeadDialog
+      <LeadFormDialog
         categories={categoryOptions}
         content={formContent}
-        open={addLeadDialogOpen}
+        editLeadId={editLead?.id}
+        initialLead={editLead ?? undefined}
+        mode={dialogMode}
+        open={dialogOpen}
         sharedContent={sharedContent}
       />
     </>

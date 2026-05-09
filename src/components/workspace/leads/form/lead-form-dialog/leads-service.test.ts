@@ -3,7 +3,6 @@ import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
 import { leadsService } from "./leads-service";
 
@@ -176,46 +175,6 @@ describe("leadsService.updateLead", () => {
       code: LeadErrorCode.EmailExists,
       ok: false,
     });
-  });
-});
-
-describe("leadsService.getLeadById", () => {
-  const leadId = "123e4567-e89b-12d3-a456-426614174000";
-
-  it("loads a lead through the API", async () => {
-    const lead: Pick<LeadDetailDto, "id"> = { id: leadId };
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        lead,
-      }),
-      ok: true,
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(leadsService.getLeadById(leadId)).resolves.toEqual(lead);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      `/api/workspace/leads/${leadId}`,
-      expect.objectContaining({
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "GET",
-      }),
-    );
-  });
-
-  it("returns null when the lead is not found", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        error: LeadErrorCode.NotFound,
-      }),
-      ok: false,
-      status: 404,
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(leadsService.getLeadById(leadId)).resolves.toBeNull();
   });
 });
 

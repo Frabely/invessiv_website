@@ -47,7 +47,7 @@ const mockLeadsPagination = vi.hoisted(() =>
   vi.fn(() => <div data-testid="leads-pagination" />),
 );
 const mockAddLeadDialog = vi.hoisted(() =>
-  vi.fn(() => <div data-testid="add-lead-dialog" />),
+  vi.fn(() => <div data-testid="lead-form-dialog" />),
 );
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -79,9 +79,9 @@ vi.mock(
 );
 
 vi.mock(
-  "@/components/workspace/leads/form/add-lead-dialog/add-lead-dialog",
+  "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog",
   () => ({
-    AddLeadDialog: mockAddLeadDialog,
+    LeadFormDialog: mockAddLeadDialog,
   }),
 );
 

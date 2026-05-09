@@ -16,7 +16,7 @@ import {
   getLeadsFormDictionary,
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
-import { AddLeadDialog } from "./add-lead-dialog";
+import { LeadFormDialog } from "./lead-form-dialog";
 
 const replaceMock = vi.fn();
 
@@ -38,10 +38,10 @@ beforeEach(() => {
   replaceMock.mockReset();
 });
 
-describe("AddLeadDialog", () => {
+describe("LeadFormDialog", () => {
   it("shows validation errors for empty submit and closes via the create query param", async () => {
     const { rerender } = render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -50,6 +50,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -81,7 +82,7 @@ describe("AddLeadDialog", () => {
     });
 
     rerender(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -90,13 +91,14 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open={false}
         sharedContent={getLeadsSharedDictionary("de")}
       />,
     );
 
     rerender(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -105,6 +107,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -122,7 +125,7 @@ describe("AddLeadDialog", () => {
 
   it("shows email and name validation errors only after blur", async () => {
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -131,6 +134,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -167,7 +171,7 @@ describe("AddLeadDialog", () => {
     const content = getLeadsFormDictionary("de");
 
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -176,6 +180,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={content}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -201,7 +206,7 @@ describe("AddLeadDialog", () => {
 
   it("wraps focus from the last focusable element back to the close button", () => {
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -210,6 +215,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -227,7 +233,7 @@ describe("AddLeadDialog", () => {
 
   it("adds confirmed dynamic rows, clears the entry panels, and blocks duplicate social platforms", async () => {
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -236,6 +242,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -327,7 +334,7 @@ describe("AddLeadDialog", () => {
     const content = getLeadsFormDictionary("de");
 
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -336,6 +343,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={content}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -361,7 +369,7 @@ describe("AddLeadDialog", () => {
 
   it("shows a profile URL validation error when the draft field loses focus", async () => {
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -370,6 +378,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -399,7 +408,7 @@ describe("AddLeadDialog", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -408,6 +417,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,
@@ -478,7 +488,7 @@ describe("AddLeadDialog", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     render(
-      <AddLeadDialog
+      <LeadFormDialog
         categories={[
           {
             id: "cat-1",
@@ -487,6 +497,7 @@ describe("AddLeadDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
       />,

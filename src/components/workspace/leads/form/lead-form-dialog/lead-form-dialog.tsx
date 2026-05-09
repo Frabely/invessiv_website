@@ -5,15 +5,24 @@ import {
   type MouseEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
+  CONTACT_LEAD_STATUS_VALUES,
+  ContactLeadStatus,
+} from "@/common/constants/contact/contact-lead-statuses";
+import {
   LeadErrorCode,
   LeadValidationIssueCode,
 } from "@/common/constants/leads/lead-error-codes";
+import {
+  LeadFormDialogMode,
+  type LeadFormDialogMode as LeadFormDialogModeValue,
+} from "@/common/constants/leads/lead-form-dialog-modes";
 import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
 import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
@@ -25,28 +34,51 @@ import {
 import { FormActions } from "@/components/shared/form/form-actions/form-actions";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { mapAddLeadFormValuesToCreateLeadRequestDto } from "@/client/leads/mappers/map-add-lead-form-to-create-lead-request-dto";
+import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
+import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsFormDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import type { z } from "zod";
-import type { AddLeadFormValues } from "@/common/contracts/leads/forms/add-lead-form-values";
-import { addLeadFormSchema } from "./add-lead-dialog.schema";
+import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
+import { leadFormSchema } from "./lead-form-dialog.schema";
 import { leadsService } from "./leads-service";
-import styles from "./add-lead-dialog.module.css";
+import styles from "./lead-form-dialog.module.css";
 
-type AddLeadDialogProps = {
+type LeadFormDialogProps = {
   categories: ReadonlyArray<LeadCategoryOption>;
   content: LeadsFormDictionary;
+  editLeadId?: string;
+  initialLead?: LeadDetailDto;
+  mode: LeadFormDialogModeValue;
   open: boolean;
   sharedContent: LeadsSharedDictionary;
 };
 
-const DEFAULT_VALUES: AddLeadFormValues = {
+type LeadFormDialogModeContent = {
+  dialogDescription: string;
+  dialogTitle: string;
+  savingLabel: string;
+  submitLabel: string;
+};
+
+type LeadMutationResult =
+  | { ok: true; lead: LeadDetailDto }
+  | {
+      code:
+        | typeof LeadErrorCode.EmailExists
+        | typeof LeadErrorCode.Internal
+        | typeof LeadErrorCode.NotFound
+        | typeof LeadErrorCode.ValidationError;
+      errors?: z.core.$ZodIssue[];
+      ok: false;
+    };
+
+const DEFAULT_VALUES: LeadFormValues = {
   first_name: "",
   last_name: "",
   company_name: "",
@@ -57,16 +89,18 @@ const DEFAULT_VALUES: AddLeadFormValues = {
   score: "",
   owner: "",
   notes: "",
+  lead_status: ContactLeadStatus.New,
   improvements: [],
   social_profiles: [],
 };
 
-const AddLeadDialogField = {
+const LeadFormDialogField = {
   CategoryId: "category_id",
   CompanyName: "company_name",
   Email: "email",
   FirstName: "first_name",
   LastName: "last_name",
+  LeadStatus: "lead_status",
   Notes: "notes",
   Owner: "owner",
   Phone: "phone",
@@ -74,12 +108,93 @@ const AddLeadDialogField = {
   WebsiteUrl: "website_url",
 } as const;
 
-const AddLeadDialogId = {
-  ContactSection: "add-lead-contact",
-  DetailsSection: "add-lead-details",
-  Description: "add-lead-dialog-description",
-  Dialog: "add-lead-dialog-title",
+const LeadFormDialogId = {
+  ContactSection: "lead-form-contact",
+  DetailsSection: "lead-form-details",
+  Description: "lead-form-dialog-description",
+  Dialog: "lead-form-dialog-title",
 } as const;
+
+function getLeadFormDialogModeContent(
+  mode: LeadFormDialogModeValue,
+  content: LeadsFormDictionary,
+): LeadFormDialogModeContent {
+  if (mode === LeadFormDialogMode.Edit) {
+    return {
+      dialogDescription: content.description.edit,
+      dialogTitle: content.title.edit,
+      savingLabel: content.status.savingEdit,
+      submitLabel: content.buttons.submit.edit,
+    };
+  }
+
+  return {
+    dialogDescription: content.description.create,
+    dialogTitle: content.title.create,
+    savingLabel: content.status.savingCreate,
+    submitLabel: content.buttons.submit.create,
+  };
+}
+
+type LeadMutationFailureResult =
+  | { code: typeof LeadErrorCode.EmailExists; ok: false }
+  | { code: typeof LeadErrorCode.Internal; ok: false }
+  | {
+      code:
+        | typeof LeadErrorCode.ValidationError
+        | typeof LeadErrorCode.NotFound;
+      errors?: z.core.$ZodIssue[];
+      ok: false;
+    };
+
+function handleLeadMutationFailure(
+  result: LeadMutationFailureResult,
+  onEmailExists: () => void,
+  onValidationError: (errors: z.core.$ZodIssue[]) => void,
+  onNotFound?: () => void,
+): boolean {
+  if (result.code === LeadErrorCode.EmailExists) {
+    onEmailExists();
+    return true;
+  }
+
+  if (result.code === LeadErrorCode.ValidationError) {
+    if (!result.errors) {
+      return false;
+    }
+
+    onValidationError(result.errors);
+    return true;
+  }
+
+  if (result.code === LeadErrorCode.NotFound && onNotFound) {
+    onNotFound();
+    return true;
+  }
+
+  return false;
+}
+
+async function submitLeadMutation(
+  mode: LeadFormDialogModeValue,
+  editLeadId: string | undefined,
+  values: LeadFormValues,
+): Promise<LeadMutationResult | null> {
+  if (mode === LeadFormDialogMode.Edit) {
+    if (!editLeadId) {
+      return null;
+    }
+
+    return leadsService.updateLead(
+      editLeadId,
+      leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto(values),
+    );
+  }
+
+  return leadsService.createLead(
+    leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto(values),
+  );
+}
 
 function getValidationMessage(
   code: string | undefined,
@@ -133,17 +248,31 @@ function getFocusableElements(container: HTMLElement): HTMLElement[] {
   );
 }
 
-export function AddLeadDialog({
+export function LeadFormDialog({
   categories,
   content,
+  editLeadId,
+  initialLead,
+  mode,
   open,
   sharedContent,
-}: AddLeadDialogProps) {
+}: LeadFormDialogProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const isEditMode = mode === LeadFormDialogMode.Edit;
+  const { dialogDescription, dialogTitle, savingLabel, submitLabel } =
+    getLeadFormDialogModeContent(mode, content);
+
+  const initialValues = useMemo<LeadFormValues>(
+    () =>
+      isEditMode && initialLead
+        ? leadMapperService.mapLeadDetailDtoToLeadFormValues(initialLead)
+        : DEFAULT_VALUES,
+    [initialLead, isEditMode],
+  );
 
   const {
     clearErrors,
@@ -154,13 +283,13 @@ export function AddLeadDialog({
     reset,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<AddLeadFormValues>({
-    defaultValues: DEFAULT_VALUES,
+  } = useForm<LeadFormValues>({
+    defaultValues: initialValues,
     mode: "onSubmit",
   });
 
   const validateEmailField = useCallback(() => {
-    const emailValue = getValues(AddLeadDialogField.Email).trim();
+    const emailValue = getValues(LeadFormDialogField.Email).trim();
 
     if (errors.email?.message === content.validation.emailExists) {
       return;
@@ -169,7 +298,7 @@ export function AddLeadDialog({
     setStatusMessage(null);
 
     if (!emailValue) {
-      setError(AddLeadDialogField.Email, {
+      setError(LeadFormDialogField.Email, {
         message: content.validation.emailRequired,
         type: "manual",
       });
@@ -177,14 +306,14 @@ export function AddLeadDialog({
     }
 
     if (!CONTACT_EMAIL_PATTERN.test(emailValue)) {
-      setError(AddLeadDialogField.Email, {
+      setError(LeadFormDialogField.Email, {
         message: content.validation.emailInvalid,
         type: "manual",
       });
       return;
     }
 
-    clearErrors(AddLeadDialogField.Email);
+    clearErrors(LeadFormDialogField.Email);
   }, [
     clearErrors,
     content.validation.emailInvalid,
@@ -196,69 +325,69 @@ export function AddLeadDialog({
   ]);
 
   const validateLeadNameFields = useCallback(() => {
-    const lastNameValue = getValues(AddLeadDialogField.LastName).trim();
-    const companyNameValue = getValues(AddLeadDialogField.CompanyName).trim();
+    const lastNameValue = getValues(LeadFormDialogField.LastName).trim();
+    const companyNameValue = getValues(LeadFormDialogField.CompanyName).trim();
     setStatusMessage(null);
 
     if (lastNameValue || companyNameValue) {
       clearErrors([
-        AddLeadDialogField.LastName,
-        AddLeadDialogField.CompanyName,
+        LeadFormDialogField.LastName,
+        LeadFormDialogField.CompanyName,
       ]);
       return;
     }
 
-    setError(AddLeadDialogField.LastName, {
+    setError(LeadFormDialogField.LastName, {
       message: content.validation.nameRequired,
       type: "manual",
     });
-    setError(AddLeadDialogField.CompanyName, {
+    setError(LeadFormDialogField.CompanyName, {
       message: content.validation.nameRequired,
       type: "manual",
     });
   }, [clearErrors, content.validation.nameRequired, getValues, setError]);
 
   const validatePhoneField = useCallback(() => {
-    const phoneValue = getValues(AddLeadDialogField.Phone).trim();
+    const phoneValue = getValues(LeadFormDialogField.Phone).trim();
     setStatusMessage(null);
 
     if (!phoneValue) {
-      clearErrors(AddLeadDialogField.Phone);
+      clearErrors(LeadFormDialogField.Phone);
       return;
     }
 
     if (!isValidContactPhone(phoneValue)) {
-      setError(AddLeadDialogField.Phone, {
+      setError(LeadFormDialogField.Phone, {
         message: content.validation.phoneInvalid,
         type: "manual",
       });
       return;
     }
 
-    clearErrors(AddLeadDialogField.Phone);
+    clearErrors(LeadFormDialogField.Phone);
   }, [clearErrors, content.validation.phoneInvalid, getValues, setError]);
 
   const validateWebsiteField = useCallback(() => {
-    const websiteValue = getValues(AddLeadDialogField.WebsiteUrl).trim();
+    const websiteValue = getValues(LeadFormDialogField.WebsiteUrl).trim();
     setStatusMessage(null);
 
     if (!websiteValue) {
-      clearErrors(AddLeadDialogField.WebsiteUrl);
+      clearErrors(LeadFormDialogField.WebsiteUrl);
       return;
     }
 
     try {
       const parsedUrl = new URL(websiteValue);
       if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
-        setError(AddLeadDialogField.WebsiteUrl, {
+        setError(LeadFormDialogField.WebsiteUrl, {
           message: content.validation.urlInvalid,
           type: "manual",
         });
         return;
       }
-      clearErrors(AddLeadDialogField.WebsiteUrl);
+      clearErrors(LeadFormDialogField.WebsiteUrl);
     } catch {
-      setError(AddLeadDialogField.WebsiteUrl, {
+      setError(LeadFormDialogField.WebsiteUrl, {
         message: content.validation.urlInvalid,
         type: "manual",
       });
@@ -266,11 +395,11 @@ export function AddLeadDialog({
   }, [clearErrors, content.validation.urlInvalid, getValues, setError]);
 
   const validateScoreField = useCallback(() => {
-    const scoreValue = getValues(AddLeadDialogField.Score).trim();
+    const scoreValue = getValues(LeadFormDialogField.Score).trim();
     setStatusMessage(null);
 
     if (!scoreValue) {
-      clearErrors(AddLeadDialogField.Score);
+      clearErrors(LeadFormDialogField.Score);
       return;
     }
 
@@ -279,14 +408,14 @@ export function AddLeadDialog({
       Number.isInteger(parsedScore) && parsedScore >= 0 && parsedScore <= 100;
 
     if (!isValidScore) {
-      setError(AddLeadDialogField.Score, {
+      setError(LeadFormDialogField.Score, {
         message: content.validation.scoreInvalid,
         type: "manual",
       });
       return;
     }
 
-    clearErrors(AddLeadDialogField.Score);
+    clearErrors(LeadFormDialogField.Score);
   }, [clearErrors, content.validation.scoreInvalid, getValues, setError]);
 
   function focusFirstAvailableField() {
@@ -303,15 +432,17 @@ export function AddLeadDialog({
 
   useEffect(() => {
     if (open) {
+      reset(initialValues);
+      clearErrors();
       window.requestAnimationFrame(() => {
         focusFirstAvailableField();
       });
       return;
     }
 
-    reset(DEFAULT_VALUES);
+    reset(initialValues);
     clearErrors();
-  }, [clearErrors, open, reset]);
+  }, [clearErrors, initialValues, open, reset]);
 
   useEffect(() => {
     if (!open) {
@@ -333,6 +464,7 @@ export function AddLeadDialog({
   function buildHref(withSelectedLeadId?: string): string {
     const params = new URLSearchParams(searchParams.toString());
     params.delete(LeadListQueryParam.Create);
+    params.delete(LeadListQueryParam.Edit);
 
     if (withSelectedLeadId) {
       params.set(LeadListQueryParam.Selected, withSelectedLeadId);
@@ -343,7 +475,7 @@ export function AddLeadDialog({
   }
 
   function closeDialog() {
-    reset(DEFAULT_VALUES);
+    reset(initialValues);
     clearErrors();
     setStatusMessage(null);
     router.replace(buildHref(), { scroll: false });
@@ -388,7 +520,10 @@ export function AddLeadDialog({
   }
 
   function clearLeadNameValidationMessages() {
-    clearErrors([AddLeadDialogField.LastName, AddLeadDialogField.CompanyName]);
+    clearErrors([
+      LeadFormDialogField.LastName,
+      LeadFormDialogField.CompanyName,
+    ]);
     resetValidationMessages();
   }
 
@@ -406,11 +541,11 @@ export function AddLeadDialog({
       if (
         issue.message === LeadValidationIssueCode.LastNameOrCompanyNameRequired
       ) {
-        setError(AddLeadDialogField.LastName, {
+        setError(LeadFormDialogField.LastName, {
           message: content.validation.nameRequired,
           type: "manual",
         });
-        setError(AddLeadDialogField.CompanyName, {
+        setError(LeadFormDialogField.CompanyName, {
           message: content.validation.nameRequired,
           type: "manual",
         });
@@ -429,37 +564,60 @@ export function AddLeadDialog({
   }
 
   const onSubmit = handleSubmit(async (values) => {
-    const validation = addLeadFormSchema.safeParse(values);
+    const validation = leadFormSchema.safeParse(values);
     if (!validation.success) {
       applyValidationIssues(validation.error.issues);
       setStatusMessage(null);
       return;
     }
 
-    setStatusMessage(content.status.saving);
+    setStatusMessage(savingLabel);
 
     try {
-      const result = await leadsService.createLead(
-        mapAddLeadFormValuesToCreateLeadRequestDto(validation.data),
+      const result = await submitLeadMutation(
+        mode,
+        editLeadId,
+        validation.data,
       );
 
-      if (!result.ok) {
-        if (result.code === LeadErrorCode.EmailExists) {
-          setError(AddLeadDialogField.Email, {
-            message: content.validation.emailExists,
-            type: "manual",
-          });
-          setStatusMessage(null);
-          return;
-        }
+      if (!result) {
+        setStatusMessage(content.validation.generic);
+        return;
+      }
 
-        if (result.code === LeadErrorCode.ValidationError) {
-          applyValidationIssues(result.errors);
-          setStatusMessage(null);
+      if (!result.ok) {
+        const handled = handleLeadMutationFailure(
+          result,
+          () => {
+            setError(LeadFormDialogField.Email, {
+              message: content.validation.emailExists,
+              type: "manual",
+            });
+            setStatusMessage(null);
+          },
+          (errors) => {
+            applyValidationIssues(errors);
+            setStatusMessage(null);
+          },
+          isEditMode
+            ? () => {
+                setStatusMessage(content.validation.generic);
+              }
+            : undefined,
+        );
+
+        if (handled) {
           return;
         }
 
         setStatusMessage(content.validation.generic);
+        return;
+      }
+
+      if (isEditMode) {
+        setStatusMessage(content.status.successEdit);
+        router.replace(buildHref(result.lead.id), { scroll: false });
+        router.refresh();
         return;
       }
 
@@ -481,8 +639,8 @@ export function AddLeadDialog({
       role="presentation"
     >
       <div
-        aria-describedby={AddLeadDialogId.Description}
-        aria-labelledby={AddLeadDialogId.Dialog}
+        aria-describedby={LeadFormDialogId.Description}
+        aria-labelledby={LeadFormDialogId.Dialog}
         aria-modal="true"
         className={styles.dialog}
         onKeyDown={handleKeyDown}
@@ -492,11 +650,11 @@ export function AddLeadDialog({
         <header className={styles.header}>
           <div className={styles.heading}>
             <p className={styles.kicker}>{content.sections.identity}</p>
-            <h2 className={styles.title} id={AddLeadDialogId.Dialog}>
-              {content.title}
+            <h2 className={styles.title} id={LeadFormDialogId.Dialog}>
+              {dialogTitle}
             </h2>
-            <p className={styles.description} id={AddLeadDialogId.Description}>
-              {content.description}
+            <p className={styles.description} id={LeadFormDialogId.Description}>
+              {dialogDescription}
             </p>
           </div>
 
@@ -515,12 +673,12 @@ export function AddLeadDialog({
         <form className={styles.form} noValidate onSubmit={onSubmit}>
           <section
             className={styles.section}
-            aria-labelledby={AddLeadDialogId.ContactSection}
+            aria-labelledby={LeadFormDialogId.ContactSection}
           >
             <div className={styles.sectionHeader}>
               <h3
                 className={styles.sectionTitle}
-                id={AddLeadDialogId.ContactSection}
+                id={LeadFormDialogId.ContactSection}
               >
                 {content.sections.identity}
               </h3>
@@ -531,9 +689,9 @@ export function AddLeadDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 inputProps={{
-                  ...register(AddLeadDialogField.FirstName, {
+                  ...register(LeadFormDialogField.FirstName, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.FirstName);
+                      clearErrors(LeadFormDialogField.FirstName);
                       resetValidationMessages();
                     },
                   }),
@@ -549,7 +707,7 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.last_name?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.LastName, {
+                  ...register(LeadFormDialogField.LastName, {
                     onChange: () => {
                       clearLeadNameValidationMessages();
                     },
@@ -567,7 +725,7 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.company_name?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.CompanyName, {
+                  ...register(LeadFormDialogField.CompanyName, {
                     onChange: () => {
                       clearLeadNameValidationMessages();
                     },
@@ -585,9 +743,9 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.email?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.Email, {
+                  ...register(LeadFormDialogField.Email, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.Email);
+                      clearErrors(LeadFormDialogField.Email);
                       resetValidationMessages();
                     },
                     onBlur: validateEmailField,
@@ -604,12 +762,12 @@ export function AddLeadDialog({
 
           <section
             className={styles.section}
-            aria-labelledby={AddLeadDialogId.DetailsSection}
+            aria-labelledby={LeadFormDialogId.DetailsSection}
           >
             <div className={styles.sectionHeader}>
               <h3
                 className={styles.sectionTitle}
-                id={AddLeadDialogId.DetailsSection}
+                id={LeadFormDialogId.DetailsSection}
               >
                 {content.sections.details}
               </h3>
@@ -621,9 +779,9 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.phone?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.Phone, {
+                  ...register(LeadFormDialogField.Phone, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.Phone);
+                      clearErrors(LeadFormDialogField.Phone);
                       resetValidationMessages();
                     },
                     onBlur: validatePhoneField,
@@ -640,9 +798,9 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.website_url?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.WebsiteUrl, {
+                  ...register(LeadFormDialogField.WebsiteUrl, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.WebsiteUrl);
+                      clearErrors(LeadFormDialogField.WebsiteUrl);
                       resetValidationMessages();
                     },
                     onBlur: validateWebsiteField,
@@ -668,9 +826,9 @@ export function AddLeadDialog({
                   })),
                 ]}
                 selectProps={{
-                  ...register(AddLeadDialogField.CategoryId, {
+                  ...register(LeadFormDialogField.CategoryId, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.CategoryId);
+                      clearErrors(LeadFormDialogField.CategoryId);
                       resetValidationMessages();
                     },
                   }),
@@ -682,9 +840,9 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.score?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.Score, {
+                  ...register(LeadFormDialogField.Score, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.Score);
+                      clearErrors(LeadFormDialogField.Score);
                       resetValidationMessages();
                     },
                     onBlur: validateScoreField,
@@ -701,9 +859,9 @@ export function AddLeadDialog({
                 controlClassName={styles.input}
                 errorMessage={errors.owner?.message}
                 inputProps={{
-                  ...register(AddLeadDialogField.Owner, {
+                  ...register(LeadFormDialogField.Owner, {
                     onChange: () => {
-                      clearErrors(AddLeadDialogField.Owner);
+                      clearErrors(LeadFormDialogField.Owner);
                       resetValidationMessages();
                     },
                   }),
@@ -712,6 +870,26 @@ export function AddLeadDialog({
                 }}
                 kind="text"
                 label={content.fields.owner}
+              />
+
+              <FormField
+                className={styles.field}
+                controlClassName={styles.input}
+                errorMessage={errors.lead_status?.message}
+                kind="select"
+                label={content.fields.status}
+                options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
+                  label: sharedContent.status[status],
+                  value: status,
+                }))}
+                selectProps={{
+                  ...register(LeadFormDialogField.LeadStatus, {
+                    onChange: () => {
+                      clearErrors(LeadFormDialogField.LeadStatus);
+                      resetValidationMessages();
+                    },
+                  }),
+                }}
               />
             </div>
           </section>
@@ -722,9 +900,9 @@ export function AddLeadDialog({
               controlClassName={styles.textarea}
               errorMessage={errors.notes?.message}
               textareaProps={{
-                ...register(AddLeadDialogField.Notes, {
+                ...register(LeadFormDialogField.Notes, {
                   onChange: () => {
-                    clearErrors(AddLeadDialogField.Notes);
+                    clearErrors(LeadFormDialogField.Notes);
                     resetValidationMessages();
                   },
                 }),
@@ -763,9 +941,7 @@ export function AddLeadDialog({
                     {content.buttons.cancel}
                   </ButtonControl>
                   <PrimaryCtaButton disabled={isSubmitting} type="submit">
-                    {isSubmitting
-                      ? content.status.saving
-                      : content.buttons.submit}
+                    {isSubmitting ? savingLabel : submitLabel}
                   </PrimaryCtaButton>
                 </>
               }

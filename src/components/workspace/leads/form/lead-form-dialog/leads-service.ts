@@ -36,8 +36,6 @@ type UpdateLeadServiceResult =
   | UpdateLeadResult
   | { ok: false; code: typeof LeadErrorCode.Internal };
 
-type LeadByIdServiceResult = LeadDetailDto | null;
-
 type DeleteLeadServiceResult =
   | { ok: true; status: typeof ContactLeadStatus.Archived }
   | { ok: false; code: typeof LeadErrorCode.NotFound }
@@ -89,31 +87,6 @@ async function createLead(
     return { ok: false, code: LeadErrorCode.Internal };
   } catch {
     return { ok: false, code: LeadErrorCode.Internal };
-  }
-}
-
-async function getLeadById(leadId: string): Promise<LeadByIdServiceResult> {
-  try {
-    const response = await fetch(`${LEAD_API_PATH}/${leadId}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "GET",
-    });
-
-    const payload = (await response.json().catch(() => null)) as unknown;
-
-    if (!response.ok) {
-      return null;
-    }
-
-    if (isLeadApiErrorPayload(payload) && isLeadDetailDto(payload.lead)) {
-      return payload.lead;
-    }
-
-    return null;
-  } catch {
-    return null;
   }
 }
 
@@ -270,6 +243,5 @@ export const leadsService = {
   bulkEditLeads,
   createLead,
   deleteLead,
-  getLeadById,
   updateLead,
 };
