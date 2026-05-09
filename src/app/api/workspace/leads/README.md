@@ -104,7 +104,14 @@ Layer.
 ```
 
 Alle Felder außer `email` sind optional und werden von der UI nur bei vorhandenem Wert gesendet. Der Request akzeptiert
-keine serverinternen Persistenz-Shapes und keine `null`-Werte als Platzhalter für leere Felder.
+keine serverinternen Persistenz-Shapes. Beim PATCH gilt die Semantik:
+
+- `undefined` = keine Änderung
+- `null` = Feld leeren
+- `[]` = alle Listen-Einträge entfernen
+
+`email` bleibt dabei nicht leerbar; leere Eingaben werden clientseitig verhindert und serverseitig nicht als `null`
+akzeptiert.
 
 `source` wird **nicht** vom Client gesetzt; der Server erzwingt `manual`.
 Neue Persistenz-Records verwenden application-owned IDs: Server-Code setzt `id` explizit per `crypto.randomUUID()`;
@@ -149,8 +156,8 @@ Aktualisiert Lead-Stammdaten, Status, Notes, Improvements und/oder Social-Profil
 ### Body — Update-Input
 
 Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie beim `CreateLeadRequestDto`, zusätzlich
-`lead_status`.`source`
-ist im PATCH **nicht** veränderbar; `email` ist veränderbar und kollidierende E-Mails liefern`409 EMAIL_EXISTS`.
+`lead_status`. `source` ist im PATCH **nicht** veränderbar; `email` ist veränderbar und kollidierende E-Mails liefern
+`409 EMAIL_EXISTS`.
 
 ```jsonc
 {
@@ -164,12 +171,15 @@ ist im PATCH **nicht** veränderbar; `email` ist veränderbar und kollidierende 
   "lead_status": "new | contacted | qualified | proposal | on_hold | won | lost | archived",
   "owner": "string | null",
   "notes": "string | null",
-  "improvements": ["string", ...] | null,
+  "improvements": ["string", ...],
   "social_profiles": [
     { "platform": "linkedin" | "instagram" | "youtube", "profile_url": "string (URL)" }
-  ] | null
+  ]
 }
 ```
+
+Leere Listen werden als Lösch-Intent interpretiert. Wenn der Client keine Änderung senden möchte, lässt er das Feld
+weg.
 
 ### Response `200`
 

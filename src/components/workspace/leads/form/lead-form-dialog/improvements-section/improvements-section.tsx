@@ -22,6 +22,8 @@ type ImprovementsSectionProps = {
   clearErrorsAction: UseFormClearErrors<LeadFormValues>;
   content: LeadsFormDictionary;
   control: Control<LeadFormValues>;
+  initialItemCount: number;
+  isEditMode: boolean;
   onInteractionAction: () => void;
 };
 
@@ -33,6 +35,8 @@ export function ImprovementsSection({
   clearErrorsAction,
   content,
   control,
+  initialItemCount,
+  isEditMode,
   onInteractionAction,
 }: ImprovementsSectionProps) {
   const improvements = useFieldArray({
@@ -148,21 +152,29 @@ export function ImprovementsSection({
         </div>
       ) : null}
 
-      <div className={styles.stack}>
-        {improvements.fields.map((field, index) => (
-          <div className={styles.row} key={field.id}>
-            <span className={styles.listItemText}>{field.value}</span>
+      {improvements.fields.length === 0 ? (
+        <p className={styles.emptyState}>
+          {isEditMode && initialItemCount > 0
+            ? content.help.improvementsClearedState
+            : content.help.improvementsEmptyState}
+        </p>
+      ) : (
+        <div className={styles.stack}>
+          {improvements.fields.map((field, index) => (
+            <div className={styles.row} key={field.id}>
+              <span className={styles.listItemText}>{field.value}</span>
 
-            <ButtonControl
-              onClick={() => removeImprovement(index)}
-              type="button"
-              variant="ghost"
-            >
-              {content.buttons.remove}
-            </ButtonControl>
-          </div>
-        ))}
-      </div>
+              <ButtonControl
+                onClick={() => removeImprovement(index)}
+                type="button"
+                variant="ghost"
+              >
+                {content.buttons.remove}
+              </ButtonControl>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

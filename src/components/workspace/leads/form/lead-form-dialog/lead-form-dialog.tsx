@@ -3,6 +3,7 @@
 import {
   type KeyboardEvent,
   type MouseEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -10,7 +11,7 @@ import {
   useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
@@ -273,6 +274,8 @@ export function LeadFormDialog({
         : DEFAULT_VALUES,
     [initialLead, isEditMode],
   );
+  const initialImprovementsCount = initialValues.improvements.length;
+  const initialSocialProfilesCount = initialValues.social_profiles.length;
 
   const {
     clearErrors,
@@ -286,6 +289,10 @@ export function LeadFormDialog({
   } = useForm<LeadFormValues>({
     defaultValues: initialValues,
     mode: "onSubmit",
+  });
+  const currentValues = useWatch({
+    control,
+    defaultValue: initialValues,
   });
 
   const validateEmailField = useCallback(() => {
@@ -417,6 +424,39 @@ export function LeadFormDialog({
 
     clearErrors(LeadFormDialogField.Score);
   }, [clearErrors, content.validation.scoreInvalid, getValues, setError]);
+
+  function getFieldEditState(
+    currentValue: string | undefined,
+    initialValue: string,
+    options?: { required?: boolean },
+  ): ReactNode | null {
+    if (!isEditMode) {
+      return null;
+    }
+
+    const currentTrimmed = (currentValue ?? "").trim();
+    const initialTrimmed = initialValue.trim();
+
+    let stateText = content.help.fieldStateUnchanged;
+    let tone = styles.fieldStateMuted;
+
+    if (currentTrimmed.length === 0 && initialTrimmed.length === 0) {
+      stateText = content.help.fieldStatePristineEmpty;
+    } else if (currentTrimmed.length === 0 && initialTrimmed.length > 0) {
+      if (options?.required) {
+        stateText = content.help.fieldStateRequired;
+        tone = styles.fieldStateWarning;
+      } else {
+        stateText = content.help.fieldStateCleared;
+        tone = styles.fieldStateWarning;
+      }
+    } else if (currentTrimmed !== initialTrimmed) {
+      stateText = content.help.fieldStateSet;
+      tone = styles.fieldStateAccent;
+    }
+
+    return <span className={`${styles.fieldState} ${tone}`}>{stateText}</span>;
+  }
 
   function focusFirstAvailableField() {
     const container = dialogRef.current;
@@ -688,6 +728,10 @@ export function LeadFormDialog({
               <FormField
                 className={styles.field}
                 controlClassName={styles.input}
+                hint={getFieldEditState(
+                  currentValues.first_name,
+                  initialValues.first_name,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.FirstName, {
                     onChange: () => {
@@ -706,6 +750,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.last_name?.message}
+                hint={getFieldEditState(
+                  currentValues.last_name,
+                  initialValues.last_name,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.LastName, {
                     onChange: () => {
@@ -724,6 +772,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.company_name?.message}
+                hint={getFieldEditState(
+                  currentValues.company_name,
+                  initialValues.company_name,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.CompanyName, {
                     onChange: () => {
@@ -742,6 +794,13 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.email?.message}
+                hint={getFieldEditState(
+                  currentValues.email,
+                  initialValues.email,
+                  {
+                    required: true,
+                  },
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.Email, {
                     onChange: () => {
@@ -778,6 +837,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.phone?.message}
+                hint={getFieldEditState(
+                  currentValues.phone,
+                  initialValues.phone,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.Phone, {
                     onChange: () => {
@@ -797,6 +860,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.website_url?.message}
+                hint={getFieldEditState(
+                  currentValues.website_url,
+                  initialValues.website_url,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.WebsiteUrl, {
                     onChange: () => {
@@ -816,6 +883,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.category_id?.message}
+                hint={getFieldEditState(
+                  currentValues.category_id,
+                  initialValues.category_id,
+                )}
                 kind="select"
                 label={content.fields.category}
                 options={[
@@ -839,6 +910,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.score?.message}
+                hint={getFieldEditState(
+                  currentValues.score,
+                  initialValues.score,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.Score, {
                     onChange: () => {
@@ -858,6 +933,10 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.owner?.message}
+                hint={getFieldEditState(
+                  currentValues.owner,
+                  initialValues.owner,
+                )}
                 inputProps={{
                   ...register(LeadFormDialogField.Owner, {
                     onChange: () => {
@@ -899,6 +978,7 @@ export function LeadFormDialog({
               className={styles.field}
               controlClassName={styles.textarea}
               errorMessage={errors.notes?.message}
+              hint={getFieldEditState(currentValues.notes, initialValues.notes)}
               textareaProps={{
                 ...register(LeadFormDialogField.Notes, {
                   onChange: () => {
@@ -918,6 +998,8 @@ export function LeadFormDialog({
             clearErrorsAction={clearErrors}
             content={content}
             control={control}
+            initialItemCount={initialImprovementsCount}
+            isEditMode={isEditMode}
             onInteractionAction={resetValidationMessages}
           />
 
@@ -925,6 +1007,8 @@ export function LeadFormDialog({
             clearErrorsAction={clearErrors}
             content={content}
             control={control}
+            initialItemCount={initialSocialProfilesCount}
+            isEditMode={isEditMode}
             onInteractionAction={resetValidationMessages}
             sharedContent={sharedContent}
           />

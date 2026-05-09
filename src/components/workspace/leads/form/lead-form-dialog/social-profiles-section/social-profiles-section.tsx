@@ -28,6 +28,8 @@ type SocialProfilesSectionProps = {
   clearErrorsAction: UseFormClearErrors<LeadFormValues>;
   content: LeadsFormDictionary;
   control: Control<LeadFormValues>;
+  initialItemCount: number;
+  isEditMode: boolean;
   onInteractionAction: () => void;
   sharedContent: LeadsSharedDictionary;
 };
@@ -40,6 +42,8 @@ export function SocialProfilesSection({
   clearErrorsAction,
   content,
   control,
+  initialItemCount,
+  isEditMode,
   onInteractionAction,
   sharedContent,
 }: SocialProfilesSectionProps) {
@@ -254,24 +258,32 @@ export function SocialProfilesSection({
         </div>
       ) : null}
 
-      <div className={styles.stack}>
-        {socialProfiles.fields.map((field, index) => (
-          <div className={styles.socialRow} key={field.id}>
-            <span className={styles.listItemText}>
-              {sharedContent.platform[field.platform as LeadSocialPlatform]}
-            </span>
-            <span className={styles.listItemMeta}>{field.profile_url}</span>
+      {socialProfiles.fields.length === 0 ? (
+        <p className={styles.emptyState}>
+          {isEditMode && initialItemCount > 0
+            ? content.help.socialProfilesClearedState
+            : content.help.socialProfilesEmptyState}
+        </p>
+      ) : (
+        <div className={styles.stack}>
+          {socialProfiles.fields.map((field, index) => (
+            <div className={styles.socialRow} key={field.id}>
+              <span className={styles.listItemText}>
+                {sharedContent.platform[field.platform as LeadSocialPlatform]}
+              </span>
+              <span className={styles.listItemMeta}>{field.profile_url}</span>
 
-            <ButtonControl
-              onClick={() => removeSocialProfile(index)}
-              type="button"
-              variant="ghost"
-            >
-              {content.buttons.remove}
-            </ButtonControl>
-          </div>
-        ))}
-      </div>
+              <ButtonControl
+                onClick={() => removeSocialProfile(index)}
+                type="button"
+                variant="ghost"
+              >
+                {content.buttons.remove}
+              </ButtonControl>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

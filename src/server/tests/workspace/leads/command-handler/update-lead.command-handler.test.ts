@@ -132,6 +132,29 @@ describe("updateLead", () => {
     expect(updateCaptures[0].improvements).toEqual(["Mehr Social Proof"]);
   });
 
+  it("writes null for cleared scalar fields and keeps empty arrays explicit", async () => {
+    vi.resetModules();
+    const { updateCaptures, getDeleteCount } = setupSuccessfulDb();
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+
+    await updateLead("lead-existing-uuid", {
+      company_name: null,
+      last_name: "Mustermann",
+      notes: null,
+      improvements: [],
+      social_profiles: [],
+    });
+
+    expect(updateCaptures).toHaveLength(1);
+    expect(updateCaptures[0].company_name).toBeNull();
+    expect(updateCaptures[0].notes).toBeNull();
+    expect(updateCaptures[0].improvements).toEqual([]);
+    expect(getDeleteCount()).toBe(1);
+  });
+
   it("sets updated_at explicitly in the update payload", async () => {
     vi.resetModules();
     const { updateCaptures } = setupSuccessfulDb();

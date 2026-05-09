@@ -5,10 +5,19 @@ import { LeadRequestField } from "@/common/constants/leads/lead-request-fields";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
 
 type LeadOptionalRequestFields = Omit<CreateLeadRequestDto, LeadRequestField>;
+type LeadUpdateRequestFields = Omit<
+  UpdateLeadRequestDto,
+  typeof LeadRequestField.Email
+>;
 
 function toOptionalTrimmedString(value: string): string | undefined {
   const trimmedValue = value.trim();
   return trimmedValue.length > 0 ? trimmedValue : undefined;
+}
+
+function toNullableTrimmedString(value: string): string | null {
+  const trimmedValue = value.trim();
+  return trimmedValue.length > 0 ? trimmedValue : null;
 }
 
 function buildOptionalLeadRequestFields(
@@ -50,6 +59,30 @@ function buildOptionalLeadRequestFields(
   return fields;
 }
 
+function buildUpdateLeadRequestFields(
+  values: LeadFormValues,
+): LeadUpdateRequestFields {
+  return {
+    first_name: toNullableTrimmedString(values.first_name),
+    last_name: toNullableTrimmedString(values.last_name),
+    company_name: toNullableTrimmedString(values.company_name),
+    phone: toNullableTrimmedString(values.phone),
+    website_url: toNullableTrimmedString(values.website_url),
+    category_id: toNullableTrimmedString(values.category_id),
+    score: values.score.trim().length > 0 ? Number(values.score.trim()) : null,
+    owner: toNullableTrimmedString(values.owner),
+    notes: toNullableTrimmedString(values.notes),
+    improvements: values.improvements
+      .map((item) => item.value.trim())
+      .filter((item) => item.length > 0),
+    social_profiles: values.social_profiles.map((profile) => ({
+      platform: profile.platform,
+      profile_url: profile.profile_url.trim(),
+    })),
+    lead_status: values.lead_status,
+  };
+}
+
 function mapAddLeadFormValuesToCreateLeadRequestDto(
   values: LeadFormValues,
 ): CreateLeadRequestDto {
@@ -64,10 +97,10 @@ function mapLeadFormValuesToUpdateLeadRequestDto(
   values: LeadFormValues,
 ): UpdateLeadRequestDto {
   const email = toOptionalTrimmedString(values.email);
+
   return {
-    [LeadRequestField.LeadStatus]: values.lead_status,
+    ...buildUpdateLeadRequestFields(values),
     ...(email ? { email } : {}),
-    ...buildOptionalLeadRequestFields(values),
   };
 }
 

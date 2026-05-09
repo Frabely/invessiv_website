@@ -104,6 +104,7 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
     ).toEqual({
       email: "anna@example.com",
       first_name: "Anna",
+      company_name: null,
       last_name: "Meyer",
       phone: "+49 123 456 789",
       website_url: "https://example.com",
@@ -122,7 +123,7 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
     });
   });
 
-  it("omits email and other empty optional fields", () => {
+  it("maps cleared scalar fields to null and keeps empty lists explicit", () => {
     const values: LeadFormValues = {
       first_name: "",
       last_name: "Meyer",
@@ -142,8 +143,18 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
     expect(
       leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto(values),
     ).toEqual({
+      first_name: null,
       last_name: "Meyer",
+      company_name: null,
       lead_status: ContactLeadStatus.New,
+      phone: null,
+      website_url: null,
+      category_id: null,
+      score: null,
+      owner: null,
+      notes: null,
+      improvements: [],
+      social_profiles: [],
     });
   });
 });

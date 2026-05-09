@@ -201,6 +201,32 @@ describe("PATCH /api/workspace/leads/[id]", () => {
     expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, { score: 80 });
   });
 
+  it("forwards nullable and empty-array update payloads", async () => {
+    setupAuthenticatedUser();
+    mockUpdateLead.mockResolvedValue({ ok: true, lead: STUB_LEAD });
+
+    await PATCH(
+      makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_name: null,
+          improvements: [],
+          notes: null,
+          social_profiles: [],
+        }),
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, {
+      company_name: null,
+      improvements: [],
+      notes: null,
+      social_profiles: [],
+    });
+  });
+
   it("returns 404 when the lead does not exist", async () => {
     setupAuthenticatedUser();
     mockUpdateLead.mockResolvedValue({

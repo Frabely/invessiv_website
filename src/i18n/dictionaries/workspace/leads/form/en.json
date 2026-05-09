@@ -77,8 +77,15 @@
     "requiredHint": "Required fields are marked with *.",
     "improvementsHint": "Optional. You can add multiple notes and they are saved with the lead.",
     "improvementsEmptyState": "No improvements yet. Saved only when the lead is saved.",
+    "improvementsClearedState": "All previous improvements were removed. The list will be cleared when saved.",
     "socialProfilesHint": "Optional. Profiles are saved with the lead.",
-    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube."
+    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube.",
+    "socialProfilesClearedState": "All previous social profiles were removed. The list will be cleared when saved.",
+    "fieldStateUnchanged": "Unchanged",
+    "fieldStateCleared": "Will be cleared on save",
+    "fieldStateRequired": "Required",
+    "fieldStateSet": "Changed",
+    "fieldStatePristineEmpty": "Originally empty"
   },
   "status": {
     "savingCreate": "Saving lead...",

@@ -77,8 +77,15 @@
     "requiredHint": "Pflichtfelder sind mit * markiert.",
     "improvementsHint": "Optional. Mehrere Hinweise sind möglich und werden mit dem Lead gespeichert.",
     "improvementsEmptyState": "Noch keine Verbesserungen. Wird erst mit dem Lead gespeichert.",
+    "improvementsClearedState": "Alle bisherigen Verbesserungen wurden entfernt. Die Liste wird beim Speichern geleert.",
     "socialProfilesHint": "Optional. Profile werden mit dem Lead gespeichert.",
-    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen."
+    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen.",
+    "socialProfilesClearedState": "Alle bisherigen Social Profiles wurden entfernt. Die Liste wird beim Speichern geleert.",
+    "fieldStateUnchanged": "Unverändert",
+    "fieldStateCleared": "Beim Speichern geleert",
+    "fieldStateRequired": "Pflichtfeld",
+    "fieldStateSet": "Geändert",
+    "fieldStatePristineEmpty": "Ursprünglich leer"
   },
   "status": {
     "savingCreate": "Lead wird gespeichert...",

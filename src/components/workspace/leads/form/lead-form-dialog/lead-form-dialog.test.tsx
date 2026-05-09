@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
 
@@ -12,6 +12,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
 import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsFormDictionary,
   getLeadsSharedDictionary,
@@ -39,6 +40,29 @@ beforeEach(() => {
 });
 
 describe("LeadFormDialog", () => {
+  const EDIT_LEAD: LeadDetailDto = {
+    id: "lead-edit-123",
+    firstName: "Anna",
+    lastName: "Meyer",
+    companyName: "Meyer Studio",
+    email: "anna@example.com",
+    phone: null,
+    websiteUrl: null,
+    score: null,
+    source: "manual",
+    leadStatus: "new",
+    owner: null,
+    notes: null,
+    improvements: ["Mehr Proof"],
+    externalGuid: null,
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z",
+    category: null,
+    socialProfiles: [],
+    activities: [],
+    submissions: [],
+  };
+
   it("shows validation errors for empty submit and closes via the create query param", async () => {
     const { rerender } = render(
       <LeadFormDialog
@@ -247,25 +271,6 @@ describe("LeadFormDialog", () => {
         sharedContent={getLeadsSharedDictionary("de")}
       />,
     );
-
-    expect(
-      screen.queryByText(
-        "Optional. Mehrere Hinweise sind möglich und werden mit dem Lead gespeichert.",
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("Optional. Profile werden mit dem Lead gespeichert."),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Noch keine Verbesserungen. Wird erst mit dem Lead gespeichert.",
-      ),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(
-        "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen.",
-      ),
-    ).not.toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole("button", { name: "Verbesserung hinzufügen" }),
@@ -522,5 +527,103 @@ describe("LeadFormDialog", () => {
     ).not.toBeInTheDocument();
     expect(replaceMock).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows edit-state hints for populated fields and clears generic fields when emptied", async () => {
+    const content = getLeadsFormDictionary("de");
+
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={content}
+        editLeadId={EDIT_LEAD.id}
+        initialLead={EDIT_LEAD}
+        mode="edit"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    const companyInput = screen.getByRole("textbox", { name: /Unternehmen/ });
+    const companyField = companyInput.closest("label");
+    expect(companyField).not.toBeNull();
+    expect(companyField).toHaveTextContent(content.help.fieldStateUnchanged);
+
+    fireEvent.change(companyInput, {
+      target: { value: "" },
+    });
+
+    await waitFor(() => {
+      expect(companyField).toHaveTextContent(content.help.fieldStateCleared);
+    });
+  });
+
+  it("shows the email field as required instead of cleared when emptied in edit mode", async () => {
+    const content = getLeadsFormDictionary("de");
+
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={content}
+        editLeadId={EDIT_LEAD.id}
+        initialLead={EDIT_LEAD}
+        mode="edit"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    const emailInput = screen.getByPlaceholderText("name@firma.de");
+    const emailField = emailInput.closest("label");
+    expect(emailField).not.toBeNull();
+    expect(emailField).toHaveTextContent(content.help.fieldStateUnchanged);
+
+    fireEvent.change(emailInput, {
+      target: { value: "" },
+    });
+
+    await waitFor(() => {
+      expect(emailField).toHaveTextContent(content.help.fieldStateRequired);
+    });
+  });
+
+  it("shows a cleared-list empty state after removing the last improvement in edit mode", async () => {
+    const content = getLeadsFormDictionary("de");
+
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={content}
+        editLeadId={EDIT_LEAD.id}
+        initialLead={EDIT_LEAD}
+        mode="edit"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Entfernen" }));
+
+    expect(
+      await screen.findByText(content.help.improvementsClearedState),
+    ).toBeInTheDocument();
   });
 });
