@@ -486,19 +486,6 @@ export function LeadFormDialog({
     clearErrors();
   }, [clearErrors, initialValues, open, reset]);
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [open]);
-
   if (!open) {
     return null;
   }

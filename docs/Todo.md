@@ -14,6 +14,10 @@
   Handler-Inputs konsistent auf Shared DTOs und dieselbe Contract-Struktur umgestellt sind.
 - Das ist ein separater Struktur-Schritt und kein Teil des laufenden Feature-Flows.
 
+## Workspace Mobile Usability
+
+- Den Workspace so weiterentwickeln, dass er auf Mobile nutzbar und sauber bedienbar ist.
+
 ## Follow-up zu Zod-Issue-Typen
 
 - Die verbliebenen `ZodIssue`-Verwendungen im Repo schrittweise auf das aktuelle Zod-Pattern mit `z.core.$ZodIssue`

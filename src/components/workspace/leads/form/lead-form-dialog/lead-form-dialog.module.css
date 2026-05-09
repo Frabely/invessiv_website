@@ -288,17 +288,30 @@ select.input {
 
 @media (max-width: 640px) {
   .overlay {
-    padding: calc(var(--workspace-header-height, 60px) + 0.75rem) 0.5rem 0.5rem;
+    inset: var(--workspace-header-height, 60px) 0 0;
+    padding: 0;
+    align-items: stretch;
   }
 
   .dialog {
-    max-height: calc(100dvh - var(--workspace-header-height, 60px) - 1.25rem);
-    border-radius: 12px;
+    width: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
   }
 
   .header {
+    position: relative;
     flex-direction: column;
     padding: 1rem;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
   }
 
   .form {

@@ -213,8 +213,7 @@
     gap: 0.55rem;
   }
 
-  .brandLabel,
-  .themeSwitch {
+  .brandLabel {
     display: none;
   }
 
