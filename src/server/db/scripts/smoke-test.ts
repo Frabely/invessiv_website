@@ -1,6 +1,6 @@
 import { getServerEnv } from "../../config/env";
 import { getDatabaseClient } from "../core";
-import { getContactTableNames } from "./contact-table-names";
+import { getTableNames } from "./contact-table-names";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,
@@ -26,7 +26,7 @@ async function run() {
   }
 
   const sql = getDatabaseClient();
-  const contactTableNames = getContactTableNames();
+  const contactTableNames = getTableNames();
   const [databaseSummaryRows, actualTableRows] = (await Promise.all([
     sql`
       SELECT

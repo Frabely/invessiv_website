@@ -1,8 +1,8 @@
 import "server-only";
 import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
+import { leadMapperService } from "@/server/contact/mapper/contact-lead-mapper-service";
 import { persistDiscoveryCallLead } from "@/server/db/contact/persist-discovery-call";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
-import { mapDiscoveryCallDtoToDbPersistInput } from "@/server/services/contact/discovery-call/discovery-call-mapping-service";
 
 export async function submitDiscoveryCallCommandHandler(
   payload: unknown,
@@ -13,12 +13,13 @@ export async function submitDiscoveryCallCommandHandler(
     return validationResult;
   }
 
-  const discoveryCallPersistInput = mapDiscoveryCallDtoToDbPersistInput(
-    validationResult.data,
-    {
-      requestId,
-    },
-  );
+  const discoveryCallPersistInput =
+    leadMapperService.mapDiscoveryCallDtoToDbPersistInput(
+      validationResult.data,
+      {
+        requestId,
+      },
+    );
   await persistDiscoveryCallLead(discoveryCallPersistInput);
 
   return {

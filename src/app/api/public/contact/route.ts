@@ -9,7 +9,7 @@ import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/sub
 import {
   createContactErrorResponse,
   createContactSuccessResponse,
-} from "@/server/services/contact/response-builder-service";
+} from "@/server/contact/response-builder-service";
 import { submitProjectRequestCommandHandler } from "@/server/contact/handlers/submit-project-request.command-handler";
 import { submitQuickContactCommandHandler } from "@/server/contact/handlers/submit-quick-contact.command-handler";
 import { checkContactRateLimit } from "@/server/services/anti-abuse/contact-rate-limit-service";
