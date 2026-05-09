@@ -5,9 +5,9 @@ import { SITE_ROUTES } from "./routes";
 describe("site routes", () => {
   it("keeps global route segments outside domain-specific helpers", () => {
     expect(SITE_ROUTES).toEqual({
-      workspace: "/workspace",
-      signIn: "/sign-in",
-      signUp: "/sign-up",
+      WORKSPACE: "/workspace",
+      SIGN_IN: "/sign-in",
+      SIGN_UP: "/sign-up",
     });
   });
 });
