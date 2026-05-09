@@ -5,9 +5,12 @@ import type { NextRequest } from "next/server";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
-import { bulkEditLeads } from "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
-import { LeadBulkAction, leadBulkActionSchema } from "./bulk-action-schema";
+import { bulkEditLeads } from "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler";
+import {
+  LeadBulkAction,
+  leadBulkActionSchema,
+} from "@/server/workspace/leads/api/bulk-action-schema";
 
 export const runtime = "nodejs";
 

@@ -6,7 +6,7 @@ import { POST } from "@/app/api/workspace/leads/bulk/route";
 import {
   LeadBulkAction,
   leadBulkActionSchema,
-} from "@/app/api/workspace/leads/bulk/bulk-action-schema";
+} from "@/server/workspace/leads/api/bulk-action-schema";
 
 vi.mock("server-only", () => ({}));
 

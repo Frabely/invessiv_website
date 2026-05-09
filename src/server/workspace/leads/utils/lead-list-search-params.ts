@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
+  CONTACT_LEAD_STATUS_ALL,
   CONTACT_LEAD_STATUS_VALUES,
-  type ContactLeadStatus,
 } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import {
@@ -17,14 +17,11 @@ import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-fil
 
 type SearchParamsInput = Record<string, string | string[] | undefined>;
 
-const FILTER_STATUS_ALL = "all" as const;
 const FILTER_STATUS_VALUES = [
-  FILTER_STATUS_ALL,
+  CONTACT_LEAD_STATUS_ALL,
   ...CONTACT_LEAD_STATUS_VALUES,
 ] as const;
-type FilterStatusValue = ContactLeadStatus | typeof FILTER_STATUS_ALL;
-type FilterSourceValue = LeadSource;
-type FilterSortValue = LeadSortType;
+type FilterStatusValue = (typeof FILTER_STATUS_VALUES)[number];
 
 function getSingleSearchParam(
   searchParams: SearchParamsInput,
@@ -129,13 +126,13 @@ export function parseLeadListFilters(
   if (
     status &&
     (FILTER_STATUS_VALUES as readonly string[]).includes(status) &&
-    status !== FILTER_STATUS_ALL
+    status !== CONTACT_LEAD_STATUS_ALL
   ) {
     filters.status = status as FilterStatusValue;
   }
 
   if (source && (LEAD_SOURCES_VALUES as readonly string[]).includes(source)) {
-    filters.source = source as FilterSourceValue;
+    filters.source = source as LeadSource;
   }
 
   if (category && isUuid(category)) {
@@ -165,7 +162,7 @@ export function parseLeadListFilters(
   }
 
   if (sort && (LEAD_SORT_VALUES as readonly string[]).includes(sort)) {
-    filters.sort = sort as FilterSortValue;
+    filters.sort = sort as LeadSortType;
   } else if (sort === LeadSort.CreatedDesc) {
     filters.sort = LeadSort.CreatedDesc;
   }

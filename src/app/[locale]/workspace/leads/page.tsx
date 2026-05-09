@@ -11,6 +11,10 @@ import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
+import {
+  LeadsEmptyStateVariant,
+  type LeadsEmptyStateVariant as LeadsEmptyStateVariantValue,
+} from "@/common/constants/leads/list/lead-empty-state-variants";
 import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import {
   getLeadsDetailDictionary,
@@ -32,13 +36,13 @@ import {
   buildLeadEditHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
-} from "./utils/lead-list-query-string";
+} from "@/lib/workspace/leads/lead-list-query-string";
 import {
   hasActiveLeadFilters,
   parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
-} from "./utils/lead-list-search-params";
+} from "@/server/workspace/leads/utils/lead-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -107,6 +111,9 @@ export default async function LeadsPage({
     resolvedSort,
   );
   const hasFilters = hasActiveLeadFilters(parsedFilters);
+  const emptyStateVariant: LeadsEmptyStateVariantValue = hasFilters
+    ? LeadsEmptyStateVariant.Filtered
+    : LeadsEmptyStateVariant.Empty;
   const categories = await getLeadCategories();
   const basePath = `/${locale}${LEADS_BASE_PATH}`;
   const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
@@ -191,7 +198,7 @@ export default async function LeadsPage({
                   title: hasFilters
                     ? paginationContent.emptyState.noResultsTitle
                     : paginationContent.emptyState.noLeadsTitle,
-                  variant: hasFilters ? "filtered" : "empty",
+                  variant: emptyStateVariant,
                 }
               : undefined
           }
