@@ -1,6 +1,12 @@
 {
-  "title": "Lead hinzufügen",
-  "description": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+  "title": {
+    "create": "Lead hinzufügen",
+    "edit": "Lead bearbeiten"
+  },
+  "description": {
+    "create": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+    "edit": "Bestehende Stammdaten dieses Leads anpassen."
+  },
   "sections": {
     "identity": "Kontakt",
     "details": "Kontext",
@@ -39,7 +45,10 @@
     "profileUrl": "https://..."
   },
   "buttons": {
-    "submit": "Lead speichern",
+    "submit": {
+      "create": "Lead speichern",
+      "edit": "Änderungen speichern"
+    },
     "cancel": "Abbrechen",
     "close": "Schließen",
     "addImprovement": "Verbesserung hinzufügen",
@@ -71,6 +80,8 @@
     "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen."
   },
   "status": {
-    "saving": "Lead wird gespeichert..."
+    "savingCreate": "Lead wird gespeichert...",
+    "savingEdit": "Änderungen werden gespeichert...",
+    "successEdit": "Lead wurde aktualisiert."
   }
 }

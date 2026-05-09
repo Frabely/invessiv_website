@@ -1,6 +1,12 @@
 {
-  "title": "Add lead",
-  "description": "Create a manual contact or company directly in the workspace.",
+  "title": {
+    "create": "Add lead",
+    "edit": "Edit lead"
+  },
+  "description": {
+    "create": "Create a manual contact or company directly in the workspace.",
+    "edit": "Update the existing details of this lead."
+  },
   "sections": {
     "identity": "Contact",
     "details": "Context",
@@ -39,7 +45,10 @@
     "profileUrl": "https://..."
   },
   "buttons": {
-    "submit": "Save lead",
+    "submit": {
+      "create": "Save lead",
+      "edit": "Save changes"
+    },
     "cancel": "Cancel",
     "close": "Close",
     "addImprovement": "Add improvement",
@@ -71,6 +80,8 @@
     "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube."
   },
   "status": {
-    "saving": "Saving lead..."
+    "savingCreate": "Saving lead...",
+    "savingEdit": "Saving changes...",
+    "successEdit": "Lead has been updated."
   }
 }

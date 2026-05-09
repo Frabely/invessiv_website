@@ -29,6 +29,10 @@
   "row": {
     "open": "Open lead"
   },
+  "actions": {
+    "label": "Actions",
+    "edit": "Edit lead"
+  },
   "relativeTime": {
     "justNow": "just now",
     "hoursAgo": "{count}h ago",

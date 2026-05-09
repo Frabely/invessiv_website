@@ -21,6 +21,7 @@
   },
   "actions": {
     "close": "Detail-Panel schließen",
+    "edit": "Lead bearbeiten",
     "viewFullProfile": "Vollprofil geplant"
   },
   "empty": {

@@ -21,6 +21,7 @@
   },
   "actions": {
     "close": "Close detail panel",
+    "edit": "Edit lead",
     "viewFullProfile": "Full profile planned"
   },
   "empty": {

@@ -664,7 +664,7 @@ Panel. Deep-Link `?selected=<id>` direkt aufrufbar. Noch kein Activity-Stream.
 
 ---
 
-#### P1-T29 — Activities-Stream
+#### P1-T29 — Activities-Stream ✅
 
 _Testbarer Zustand danach:_ Detail-Panel vollständig — Timeline mit `lead_activities` und `lead_submissions`
 chronologisch zusammengeführt sichtbar.
