@@ -267,7 +267,7 @@ describe("createLead", () => {
     const serialized = JSON.stringify(activityInput);
     expect(serialized).not.toContain("pii@secret.com");
     expect(
-      activityInput.metadata == null || activityInput.metadata === undefined,
+      activityInput.metadata === null || activityInput.metadata === undefined,
     ).toBe(true);
   });
 });
