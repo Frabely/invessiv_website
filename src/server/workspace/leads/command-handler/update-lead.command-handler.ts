@@ -62,7 +62,11 @@ export async function updateLead(
         await createLeadActivity(tx, {
           leadId,
           type: LeadActivityType.StatusChange,
-          body: `${existing.leadStatus} -> ${data.lead_status}`,
+          body: `${existing.leadStatus} → ${data.lead_status}`,
+          metadata: {
+            previous_status: existing.leadStatus,
+            next_status: data.lead_status,
+          },
           actorType: LeadActorType.System,
         });
       }

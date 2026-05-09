@@ -284,7 +284,7 @@ describe("updateLead", () => {
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
   });
 
-  it("logs status_change activity with body '<old> -> <new>' when lead_status changes", async () => {
+  it("logs status_change activity with body '<old> → <new>' and transition metadata when lead_status changes", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
@@ -310,7 +310,11 @@ describe("updateLead", () => {
       expect.any(Object),
       expect.objectContaining({
         type: "status_change",
-        body: "new -> qualified",
+        body: "new → qualified",
+        metadata: {
+          previous_status: "new",
+          next_status: "qualified",
+        },
       }),
     );
   });

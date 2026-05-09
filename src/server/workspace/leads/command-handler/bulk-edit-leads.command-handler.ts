@@ -44,6 +44,10 @@ export async function bulkEditLeads(
         leadId: row.id,
         type: LeadActivityType.StatusChange,
         body: `${row.lead_status} → ${input.status}`,
+        metadata: {
+          previous_status: row.lead_status,
+          next_status: input.status,
+        },
         actorType: LeadActorType.System,
       });
     }

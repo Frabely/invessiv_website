@@ -2,6 +2,7 @@
 
 import { render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import ProjectsLocalePage, { generateMetadata } from "./page";
 
 const { mockNotFound, mockRedirect, mockProjectsPage } = vi.hoisted(() => ({
   mockNotFound: vi.fn(() => {
@@ -21,8 +22,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/components/marketing/projects/projects-page/projects-page", () => ({
   ProjectsPage: mockProjectsPage,
 }));
-
-import ProjectsLocalePage from "./page";
 
 describe("ProjectsLocalePage", () => {
   beforeEach(() => {
@@ -55,5 +54,21 @@ describe("ProjectsLocalePage", () => {
 
     expect(mockProjectsPage).toHaveBeenCalledTimes(1);
     expect(mockRedirect).not.toHaveBeenCalled();
+  });
+
+  it("creates locale-specific projects metadata with the brand in the title", async () => {
+    vi.stubEnv("ENABLE_MARKETING_PROOF", "true");
+
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ locale: "de" }),
+    });
+
+    expect(metadata.title).toBe("Projekte");
+    expect(metadata.description).toBe(
+      "Ausgewählte Projekte von Invessiv: eine klar positionierte Finanzmakler-Webseite und ein fokussiertes Consumption-Tool mit ruhiger, nutzbarer Oberfläche.",
+    );
+    expect(metadata.alternates?.canonical).toBe(
+      "https://www.invessiv.com/de/projects",
+    );
   });
 });
