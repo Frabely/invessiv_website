@@ -51,7 +51,7 @@
       "edit": "Save changes"
     },
     "cancel": "Cancel",
-    "close": "Close",
+    "closeAriaLabel": "Close",
     "addImprovement": "Add improvement",
     "addProfile": "Add profile",
     "confirmAdd": "Add",

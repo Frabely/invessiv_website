@@ -12,6 +12,8 @@ import {
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
@@ -698,8 +700,15 @@ export function LeadFormDialog({
             </p>
           </div>
 
-          <ButtonControl onClick={closeDialog} type="button" variant="ghost">
-            {content.buttons.close}
+          <ButtonControl
+            aria-label={content.buttons.closeAriaLabel}
+            className={styles.closeButton}
+            onClick={closeDialog}
+            title={content.buttons.closeAriaLabel}
+            type="button"
+            variant="ghost"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
           </ButtonControl>
         </header>
 

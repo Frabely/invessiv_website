@@ -51,7 +51,7 @@
       "edit": "Änderungen speichern"
     },
     "cancel": "Abbrechen",
-    "close": "Schließen",
+    "closeAriaLabel": "Schließen",
     "addImprovement": "Verbesserung hinzufügen",
     "addProfile": "Profil hinzufügen",
     "confirmAdd": "Hinzufügen",

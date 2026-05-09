@@ -20,7 +20,7 @@
     "status": "Status"
   },
   "actions": {
-    "close": "Detail-Panel schließen",
+    "closeAriaLabel": "Detail-Panel schließen",
     "edit": "Lead bearbeiten",
     "viewFullProfile": "Vollprofil geplant"
   },

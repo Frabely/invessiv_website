@@ -46,6 +46,14 @@
   background: rgba(34, 29, 26, 0.72);
 }
 
+.closeButton {
+  flex: 0 0 auto;
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0;
+  border-radius: 999px;
+}
+
 .heading {
   display: flex;
   flex-direction: column;

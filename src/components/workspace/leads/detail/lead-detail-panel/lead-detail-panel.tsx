@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
@@ -112,8 +112,13 @@ export function LeadDetailPanel({
           </a>
         </div>
 
-        <Link className={styles.closeButton} href={closeHref}>
-          {content.actions.close}
+        <Link
+          aria-label={content.actions.closeAriaLabel}
+          className={styles.closeButton}
+          href={closeHref}
+          title={content.actions.closeAriaLabel}
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
         </Link>
 
         <Link
