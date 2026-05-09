@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 
@@ -39,6 +40,7 @@ describe("persistSharedLeadSubmission", () => {
       last_name: "Mustermann",
       lead_status: "new",
       owner: undefined,
+      source: LeadSource.Webform,
       updated_at: new Date("2026-03-26T09:30:00.000Z"),
     };
 
@@ -95,6 +97,7 @@ describe("persistSharedLeadSubmission", () => {
         last_name: "Mustermann",
         lead_status: "new",
         owner: undefined,
+        source: LeadSource.Webform,
         updated_at: new Date("2026-03-26T09:35:00.000Z"),
       },
       submission: {

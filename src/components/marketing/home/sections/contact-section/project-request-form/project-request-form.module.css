@@ -240,18 +240,17 @@
 }
 
 .customPageComposer {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
+  display: grid;
+  gap: 0.5rem;
   width: min(100%, 38rem);
 }
 
 .customPageComposer > :first-child {
-  flex: 1 1 auto;
+  width: 100%;
 }
 
 .addPageButton {
-  margin-top: 25px;
+  margin-top: 0;
   height: 42px;
   padding: 0 0.85rem;
   border-radius: 12px;
@@ -260,7 +259,7 @@
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
   font-size: var(--font-size-ui-sm);
   font-weight: 700;
-  flex: 0 0 auto;
+  justify-self: start;
 }
 
 .addPageButton:hover:not(:disabled) {
@@ -377,9 +376,5 @@
 
   .customPageComposer {
     width: 100%;
-  }
-
-  .addPageButton {
-    margin-top: 0;
   }
 }

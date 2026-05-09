@@ -1,5 +1,14 @@
 # Invessiv Website
 
+## Auth and Workspace Scope
+
+The Clerk auth routes and the protected workspace shell are documented in the scoped guidance files:
+
+- `src/app/[locale]/(auth)/AGENTS.md` and `src/app/[locale]/(auth)/CLAUDE.md`
+- `src/app/[locale]/workspace/AGENTS.md` and `src/app/[locale]/workspace/CLAUDE.md`
+
+Manual workspace auth checks for Ticket 8 are tracked in `docs/workspace-auth-manual-test-report.md`.
+
 ## Lead Database Setup
 
 The contact flow can persist validated leads into Neon/Postgres in addition to sending the existing email notification.

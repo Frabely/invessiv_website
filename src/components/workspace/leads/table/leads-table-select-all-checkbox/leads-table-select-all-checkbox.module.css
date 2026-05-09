@@ -1,0 +1,56 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.box {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 86%, transparent);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.input:checked + .box,
+.input:indeterminate + .box {
+  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-cta) 28%,
+    var(--color-surface-1) 72%
+  );
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-cta) 16%, transparent);
+}
+
+.input:checked + .box {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-cta-hover) 88%, white 12%),
+    var(--color-cta)
+  );
+}
+
+.input:focus-visible + .box {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+[data-theme="light"] .box {
+  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+}

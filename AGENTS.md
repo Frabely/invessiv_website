@@ -1,4 +1,4 @@
-# AGENTS.md - Invessiv (GPT Codex Agents)
+﻿# AGENTS.md - Invessiv (GPT Codex Agents)
 
 ## Ziel
 
@@ -21,12 +21,12 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 
 Zusätzlich zu dieser Root-Datei gibt es bereichsspezifische `AGENTS.md`- und `CLAUDE.md`-Dateien. Sie sind zu lesen, sobald eine Änderung Dateien im jeweiligen Scope betrifft.
 
-| Pfad                                     | Was darin steht                                                                                                                                   | Wann nutzen                                                                                                                                         |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/[locale]/(auth)/AGENTS.md`      | Codex-/Agent-Regeln für öffentliche Clerk-Auth-Routen, i18n, Komponentenstruktur, Security-Grenzen und erforderliche Skills.                      | Bei Arbeiten an Sign-in/Sign-up-Routen, Auth-Frame, Auth-Metadata, Auth-Dictionaries oder Clerk-UI im `(auth)`-Bereich.                             |
-| `src/app/[locale]/(auth)/CLAUDE.md`      | Architekturwissen für den öffentlichen Auth-Bereich: Zweck, Clerk-Stack, Routing, Redirects, i18n, Security und geplante Erweiterungen.           | Bei Planung, Review oder Umsetzung von `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk Appearance, Auth-Redirects oder Auth-E2E-Smokes.             |
-| `src/app/[locale]/(dashboard)/AGENTS.md` | Codex-/Agent-Regeln für den geschützten Dashboard-Bereich: Auth-Gate, Allowlist, noindex/dynamic Rendering, Permission-Grenzen, Tests und Skills. | Bei Arbeiten an Dashboard-Routen, Dashboard-Layout, Auth-/Permission-Checks, Dashboard-Dictionaries oder geschützten UI-Komponenten.                |
-| `src/app/[locale]/(dashboard)/CLAUDE.md` | Architekturwissen für das Dashboard: Defense-in-Depth, Clerk/Allowlist-Mechanik, Routing-Konvention, kritische Dateien und spätere Erweiterungen. | Bei Planung, Review oder Umsetzung von `/[locale]/dashboard`, `requireDashboardAccess`, Allowlist-Erweiterungen, Rollenmodell oder Dashboard-Shell. |
+| Pfad                                   | Was darin steht                                                                                                                                   | Wann nutzen                                                                                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/(auth)/AGENTS.md`    | Codex-/Agent-Regeln für öffentliche Clerk-Auth-Routen, i18n, Komponentenstruktur, Security-Grenzen und erforderliche Skills.                      | Bei Arbeiten an Sign-in/Sign-up-Routen, Auth-Frame, Auth-Metadata, Auth-Dictionaries oder Clerk-UI im `(auth)`-Bereich.                             |
+| `src/app/[locale]/(auth)/CLAUDE.md`    | Architekturwissen für den öffentlichen Auth-Bereich: Zweck, Clerk-Stack, Routing, Redirects, i18n, Security und geplante Erweiterungen.           | Bei Planung, Review oder Umsetzung von `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk Appearance, Auth-Redirects oder Auth-E2E-Smokes.             |
+| `src/app/[locale]/workspace/AGENTS.md` | Codex-/Agent-Regeln für den geschützten Workspace-Bereich: Auth-Gate, Allowlist, noindex/dynamic Rendering, Permission-Grenzen, Tests und Skills. | Bei Arbeiten an Workspace-Routen, Workspace-Layout, Auth-/Permission-Checks, Workspace-Dictionaries oder geschützten UI-Komponenten.                |
+| `src/app/[locale]/workspace/CLAUDE.md` | Architekturwissen für das Workspace: Defense-in-Depth, Clerk/Allowlist-Mechanik, Routing-Konvention, kritische Dateien und spätere Erweiterungen. | Bei Planung, Review oder Umsetzung von `/[locale]/workspace`, `requireWorkspaceAccess`, Allowlist-Erweiterungen, Rollenmodell oder Workspace-Shell. |
 
 ## Branding & Variation (verbindlich)
 
@@ -275,13 +275,39 @@ Outputs:
 - Section-/Seiten-spezifische Styles (z. B. Hero, einzelne Landing-Sections, komponentenspezifische States) gehören in route- oder komponentennahe Style-Dateien; keine dauerhafte Ablage solcher Styles in `globals.css`
 - Neue produktive Komponenten nutzen standardmäßig ein lokales `*.module.css` oder, wenn der Styling-Bedarf trivial ist, statische Tailwind-Utilities direkt im JSX; neue globale Komponentenklassen sind nicht erlaubt
 - Wenn Styles aus `src/app/globals.css` in lokale Komponenten-Styles migriert werden, müssen die zugehörigen globalen Regeln im selben Commit entfernt werden; "temporär doppelt" ist kein zulässiger Dauerzustand
-- Ausnahmen von diesen CSS-Regeln werden nicht stillschweigend eingeführt: vor dem Merge entweder sofort beheben oder mit Dateipfad, Begründung, Risiko und Folgeschritt in `architecture-open-items.md` dokumentieren
+- Ausnahmen von diesen CSS-Regeln werden nicht stillschweigend eingeführt: vor dem Merge entweder sofort beheben oder
+  mit Dateipfad, Begründung, Risiko und Folgeschritt dokumentieren
 - Logiknahe Tests gehören in die Nähe der Komponente/Logik und werden nicht in Sammeldateien fern der Implementierung versteckt
 - Route-Dateien (`page.tsx`) orchestrieren nur: keine großen Render-Switches, keine umfangreiche lokale Daten-/Textlogik
 - Section-Mapping und Render-Verzweigungen in dedizierte Renderer-Komponenten auslagern (z. B. `home-sections-renderer`)
 - Locale- und UI-Textbausteine zentral in `src/content/**` pflegen; Komponenten konsumieren nur bereits aufbereitete Inhalte
 - Wiederkehrende UI-Interaktionslogik (Scroll, Pointer, Observer, Motion) konsequent in Hooks kapseln (`src/hooks/**`)
 - Keine Business-Logik in UI-Komponenten verstecken; Logik in klar benannte Funktionen/Module auslagern
+- String-Union-Typen werden ausschließlich über das **const-Objekt + abgeleiteter Type**-Pattern definiert; TypeScript `enum` wird im Projekt nicht verwendet:
+  ```ts
+  export const FooKind = { Bar: "bar", Baz: "baz" } as const;
+  export type FooKind = (typeof FooKind)[keyof typeof FooKind];
+  ```
+- Keys im Const-Objekt verwenden **PascalCase** (`LeadSource.Webform`, nicht `LeadSource.WEBFORM`)
+- Wenn Iteration benötigt wird (z. B. Drizzle `{ enum: [...] }`, `sqlCheckIn`), wird ein separates `FOO_KIND_VALUES`-Array exportiert, das ausschließlich aus dem Const-Objekt abgeleitet wird; String-Literale erscheinen **genau einmal**, im Const-Objekt
+- **Error-Code & Message-Konvention (verbindlich):** Error-Codes sind Konstanten nach dem Const-Objekt-Pattern in
+  `src/common/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen** `*-error.ts`
+  -Datei auf Ebene der nutzenden Layer (API-Route, Client-Komponente) gemappt — nie inline in Route- oder
+  Komponenten-Dateien verstreut. Call-Sites rufen ausschließlich den Helper auf (z. B.
+  `fooError(FooErrorCode.NotFound, 404)`). Das Pattern gilt server-seitig (API-Responses) und client-seitig (
+  Form-Validation, Toast, Inline-Errors) gleichermaßen. Vollständige Spezifikation: Root `CLAUDE.md` → „Error Codes &
+  Messages".
+- **URL-Pfadkonstruktion aus Konstanten (verbindlich):** URL-Pfade werden nie durch direkte String-Literale mehrerer
+  Segmente zusammengebaut (z. B. `\`/${locale}/workspace${item.path}\`
+  `), sondern ausschließlich aus typisierten Konstanten (`SITE_ROUTES.\*`aus`src/config/routes.ts
+  `) oder dedizierten Pfad-Helper-Funktionen zusammengesetzt. Routen-String-Literale erscheinen genau einmal — in `
+  src/config/routes.ts`— und werden von dort importiert. Client-Komponenten importieren`SITE_ROUTES
+  `direkt; server-only Helfer (z. B.`workspacePathFor`) bleiben in `src/lib/auth/routes.ts`und dürfen nicht in`"use
+  client"`-Dateien importiert werden.
+- API-Request-Bodies werden immer als Shared DTO in `src/common/contracts/<domain>/` modelliert. Form-State,
+  Request-DTO, serverinterner Persistenz-Input und Result-DTO sind getrennte Rollen und dürfen nicht vermischt werden.
+  Route-Handler validieren den Body an der HTTP-Grenze gegen das DTO-Schema und reichen danach nur noch typisierte
+  DTO-Objekte an Command-Handler weiter.
 - Strikte Typisierung nutzen: keine `any`-Workarounds ohne dokumentierten Grund
 - Komplexe Logik (z. B. Pfad-, Scroll- oder Layout-Berechnungen) immer mit klaren Variablennamen aufbauen und bei nicht offensichtlichen Schritten mit kurzen, zielgerichteten Kommentaren dokumentieren
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
@@ -356,7 +382,8 @@ Outputs:
 - Neue interaktive Komponenten erhalten mindestens einen `jsdom`-Test für kritische User-Interaktionen (z. B. Click, Toggle, Locale-Wechsel)
 - Architektur-Gate (verbindlich): Beim Entwickeln, Refactoring und Code-Durchlauf ist aktiv zu prüfen, ob die Regeln in `AGENTS.md` eingehalten sind.
 - Falls eine geplante oder gefundene Änderung gegen eine Architekturregel verstößt, wird nicht stillschweigend weitergebaut: zuerst den Nutzer fragen, ob der Verstoß sofort behoben oder bewusst verschoben werden soll.
-- Wenn eine Behebung verschoben wird, muss die konkrete Stelle mit Dateipfad, Regelbezug, Risiko und nächstem Schritt in `architecture-open-items.md` dokumentiert werden, damit sie nicht vergessen wird.
+- Wenn eine Behebung verschoben wird, muss die konkrete Stelle mit Dateipfad, Regelbezug, Risiko und nächstem Schritt
+  dokumentiert werden, damit sie nicht vergessen wird.
 
 ## i18n / Dictionaries (verbindlich)
 

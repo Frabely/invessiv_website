@@ -1,6 +1,6 @@
 "use client";
 
-import { ContactRequiredMarker } from "@/components/marketing/home/sections/contact-section/shared/contact-required-marker/contact-required-marker";
+import { FormRequiredMarker } from "@/components/shared/form/form-required-marker/form-required-marker";
 import styles from "./contact-consent-text.module.css";
 
 type ContactConsentTextProps = {
@@ -27,7 +27,7 @@ export function ContactConsentText({
         <a className={styles.link} href={privacyHref} target="_self">
           {privacyLabel}
         </a>
-        <ContactRequiredMarker />
+        <FormRequiredMarker />
       </span>
       <p
         aria-hidden={errorMessage ? undefined : "true"}

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 
 const {
   getDrizzleDatabaseClientMock,
@@ -11,7 +12,7 @@ const {
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/client", () => ({
+vi.mock("@/server/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
 }));
@@ -58,6 +59,7 @@ describe("persistQuickContactLead", () => {
         last_name: "Mustermann",
         lead_status: "new",
         owner: undefined,
+        source: LeadSource.Webform,
         updated_at: new Date("2026-03-26T09:30:00.000Z"),
       },
       lead_submission: {

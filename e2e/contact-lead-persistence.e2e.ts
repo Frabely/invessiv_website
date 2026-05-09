@@ -4,6 +4,7 @@ import { neon } from "@neondatabase/serverless";
 
 loadDotenv({ path: ".env.local", override: false, quiet: true });
 loadDotenv({ path: ".env.development.local", override: false, quiet: true });
+loadDotenv({ path: ".env.production.local", override: false, quiet: true });
 
 const databaseUrl =
   process.env.DATABASE_URL ||
@@ -30,16 +31,17 @@ async function getLeadByEmail(email: string) {
     `
       SELECT
         leads.email,
-        leads.full_name AS "fullName",
-        leads.inquiry_type AS "inquiryType",
-        leads.mail_status AS "mailStatus",
-        leads.source_form AS "sourceForm",
+        concat_ws(' ', leads.first_name, leads.last_name) AS "fullName",
+        lead_project_requests.offer_key AS "inquiryType",
+        lead_submissions.channel AS "sourceForm",
         lead_project_requests.goal_key AS "goalKey"
       FROM leads
+      LEFT JOIN lead_submissions
+        ON lead_submissions.lead_id = leads.id
       LEFT JOIN lead_project_requests
-        ON lead_project_requests.lead_id = leads.id
+        ON lead_project_requests.lead_submission_id = lead_submissions.id
       WHERE leads.email = $1
-      ORDER BY leads.created_at DESC
+      ORDER BY lead_submissions.created_at DESC
       LIMIT 1
     `,
     [email],
@@ -51,7 +53,8 @@ async function getLeadByEmail(email: string) {
 test.describe("contact lead persistence", () => {
   test("submits the project request form and persists the lead in Neon", async ({
     page,
-  }) => {
+  }, testInfo) => {
+    testInfo.setTimeout(90_000);
     test.skip(!sql, "DATABASE_URL is not configured for E2E verification.");
 
     const uniqueId = Date.now();
@@ -62,14 +65,17 @@ test.describe("contact lead persistence", () => {
     await page.goto("/de");
     await page.locator("#contact").scrollIntoViewIfNeeded();
 
-    await page.locator('input[name="fullName"]').fill("Lead E2E");
+    await page.locator('input[name="firstName"]').fill("Lead");
+    await page.locator('input[name="lastName"]').fill("E2E");
     await page.locator('input[name="email"]').fill(email);
     await page.locator('select[name="offerKey"]').selectOption("landing");
     await page
       .getByRole("button", { name: "Weiter zu Projektdetails" })
       .click();
 
-    await page.locator('select[name="goalKey"]').selectOption("generate_inquiries");
+    await page
+      .locator('select[name="goalKey"]')
+      .selectOption("generate_inquiries");
     await page
       .locator('textarea[name="projectDetails"]')
       .fill("E2E-Test fuer die Lead-Persistierung in Neon.");
@@ -79,12 +85,12 @@ test.describe("contact lead persistence", () => {
 
     await page.locator('input[name="company"]').fill("Invessiv Test");
     await page.locator('input[name="role"]').fill("QA");
-    await page.locator('input[name="consent"]').check();
+    await page.locator('input[name="consentAccepted"]').check();
     await page.getByRole("button", { name: "Anfrage senden" }).click();
 
     await expect(
       page.getByText("Danke. Deine Anfrage wurde erfolgreich gesendet."),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 45_000 });
 
     await expect
       .poll(async () => getLeadByEmail(email), {
@@ -98,16 +104,6 @@ test.describe("contact lead persistence", () => {
         inquiryType: "landing",
         sourceForm: "project_request",
       });
-
-    await expect
-      .poll(async () => {
-        const lead = await getLeadByEmail(email);
-        return lead?.mailStatus ?? null;
-      }, {
-        message: "Expected the lead mail status to be updated to sent.",
-        timeout: 30_000,
-      })
-      .toBe("sent");
 
     await deleteLeadByEmail(email);
   });

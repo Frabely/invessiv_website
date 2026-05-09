@@ -28,13 +28,13 @@ Pre-merge gates: `npm run lint` and `npm run build` must pass green.
 src/
 ├── app/[locale]/         # Route entries only — page.tsx orchestrates, no logic here
 │   ├── (auth)/           # Public Clerk sign-in/sign-up routes
-│   ├── (dashboard)/      # Protected dashboard route group
+│   ├── workspace/      # Protected workspace route group
 │   ├── (landing)/        # Landing page route group
 │   └── (legal)/          # Legal pages route group
 ├── app/api/              # API route handlers (POST /api/public/contact)
 ├── components/
 │   ├── auth/             # Auth frame components for Clerk pages
-│   ├── dashboard/        # Protected dashboard UI components
+│   ├── workspace/        # Protected workspace UI components
 │   ├── marketing/        # Landing page sections (hero, services, proof, process, contact, footer)
 │   ├── legal/            # Legal page components
 │   └── shared/           # Reusable UI (button, locale-switch, theme-switch, breadcrumbs)
@@ -55,12 +55,12 @@ src/
 
 Read the closest scoped guidance file before changing files in that area. Root rules still apply; scoped files add or tighten local conventions.
 
-| File                                     | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/[locale]/(auth)/AGENTS.md`      | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
-| `src/app/[locale]/(auth)/CLAUDE.md`      | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
-| `src/app/[locale]/(dashboard)/AGENTS.md` | Agent/Codex rules for the protected dashboard: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for dashboard routes, dashboard layout, auth/permission checks, dashboard dictionaries, or protected dashboard components.                      |
-| `src/app/[locale]/(dashboard)/CLAUDE.md` | Architecture knowledge for the dashboard: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/dashboard`, `requireDashboardAccess`, allowlist changes, role-model planning, or dashboard shell work.                           |
+| File                                   | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/[locale]/(auth)/AGENTS.md`    | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
+| `src/app/[locale]/(auth)/CLAUDE.md`    | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
+| `src/app/[locale]/workspace/AGENTS.md` | Agent/Codex rules for the protected workspace: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for workspace routes, workspace layout, auth/permission checks, workspace dictionaries, or protected workspace components.                      |
+| `src/app/[locale]/workspace/CLAUDE.md` | Architecture knowledge for the workspace: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/workspace`, `requireWorkspaceAccess`, allowlist changes, role-model planning, or workspace shell work.                           |
 
 ### Routing
 
@@ -81,6 +81,80 @@ Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Sta
 ### Database
 
 Canonical model source: `src/server/db/record-configuration/`. Schema defined with Drizzle `pgTable`; never duplicate column lists elsewhere. Connection is a cached singleton.
+
+### Constants & Enums
+
+- String union types always use the **const object + derived type** pattern — never TypeScript `enum`:
+  ```ts
+  export const FooKind = { Bar: "bar", Baz: "baz" } as const;
+  export type FooKind = (typeof FooKind)[keyof typeof FooKind];
+  ```
+- Keys use **PascalCase** (`LeadSource.Webform`, not `LeadSource.WEBFORM`)
+- When iteration is needed (Drizzle `{ enum: [...] }`, `sqlCheckIn`), export a separate `FOO_KIND_VALUES` array derived from the object — string literals appear **exactly once**, in the const object:
+  ```ts
+  export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
+  ```
+- Each constant group lives in its own file under `src/common/constants/<domain>/`
+
+### Error Codes & Messages
+
+Error codes are constants like any other string union. Human-readable message text is mapped in exactly one place and
+never duplicated inline across call sites. This convention applies both server-side (API responses) and client-side (
+form validation errors, toasts, inline error text).
+
+**Pattern:**
+
+```ts
+// 1. Error codes in src/common/constants/<domain>/<domain>-error-codes.ts
+export const FooErrorCode = {
+  NotFound: "NOT_FOUND",
+  ValidationError: "VALIDATION_ERROR",
+  Internal: "INTERNAL",
+} as const;
+export type FooErrorCode = (typeof FooErrorCode)[keyof typeof FooErrorCode];
+
+// 2. Message map + helper co-located with the layer that uses it (e.g. src/app/api/.../foo-error.ts)
+const MESSAGES: Record<FooErrorCode, string> = {
+  [FooErrorCode.NotFound]: "Not found",
+  [FooErrorCode.ValidationError]: "Validation failed",
+  [FooErrorCode.Internal]: "Unexpected server error",
+};
+
+export function fooError(
+  code: FooErrorCode,
+  status: number,
+  details?: unknown,
+): Response {
+  return Response.json(
+    {
+      error: code,
+      message: MESSAGES[code],
+      ...(details !== undefined ? { details } : {}),
+    },
+    { status },
+  );
+}
+```
+
+**Rules:**
+
+- Each error code string literal appears **exactly once** — in the const object.
+- Message text appears **exactly once** — in the `MESSAGES` map of the layer's `*-error.ts` file.
+- Route/component files call the helper (`fooError(FooErrorCode.NotFound, 404)`) — no inline `Response.json` with
+  hardcoded strings.
+- `MESSAGES` is **not exported** unless external code (e.g. a test or i18n layer) needs individual messages directly.
+- Client-side equivalent: a `fooErrorMessage(code: FooErrorCode): string` lookup function, same pattern.
+
+### Types & Contracts
+
+Exported TypeScript types and interfaces are never defined inline in service or handler files. They live in dedicated
+files:
+
+- **Shared between client and server** (input shapes, result shapes, DTOs): `src/common/contracts/<domain>/`
+- **Server-internal only** (contains server-only imports or DB types): dedicated `*-types.ts` file within
+  `src/server/workspace/<domain>/`
+
+The service or handler file imports directly from the contract file — no re-exporting.
 
 ### Component conventions
 

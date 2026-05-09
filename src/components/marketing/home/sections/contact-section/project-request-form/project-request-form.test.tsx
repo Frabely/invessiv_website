@@ -127,12 +127,12 @@ describe("ProjectRequestForm", () => {
     renderForm();
 
     const offerSelect = screen.getByRole("combobox", {
-      name: "Angebot*",
+      name: /Angebot\s*\*/,
     }) as HTMLSelectElement;
 
     expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "Vorname*" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: "Nachname*" })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: /Vorname\s*\*/ })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: /Nachname\s*\*/ })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landing pages" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
     expect(screen.getByText("Dynamische Pflichtfelder")).toBeTruthy();
@@ -164,19 +164,19 @@ describe("ProjectRequestForm", () => {
     fireEvent.click(screen.getByRole("link", { name: "Aus Service öffnen" }));
 
     const offerSelect = screen.getByRole("combobox", {
-      name: "Angebot*",
+      name: /Angebot\s*\*/,
     }) as HTMLSelectElement;
 
     expect(offerSelect.value).toBe("web");
     expect(offerSelect.dataset.empty).toBe("false");
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
@@ -185,7 +185,7 @@ describe("ProjectRequestForm", () => {
       expect(
         (
           screen.getByRole("textbox", {
-            name: "Projekt*",
+            name: /Projekt\s*\*/,
           }) as HTMLTextAreaElement
         ).value,
       ).toBe("professionell online auftreten");
@@ -195,16 +195,16 @@ describe("ProjectRequestForm", () => {
   it("requires at least one selected page in step two for web projects", async () => {
     renderForm();
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Angebot\s*\*/ }), {
       target: { value: "web" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
@@ -216,7 +216,7 @@ describe("ProjectRequestForm", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Webseite" }), {
       target: { value: "https://example.com" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Projekt\s*\*/ }), {
       target: { value: "Wir brauchen einen Relaunch mit besserer Struktur." },
     });
 
@@ -242,16 +242,16 @@ describe("ProjectRequestForm", () => {
   it("validates an optional website when a value is entered for web projects", async () => {
     renderForm();
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Angebot\s*\*/ }), {
       target: { value: "web" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
@@ -263,7 +263,7 @@ describe("ProjectRequestForm", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Webseite" }), {
       target: { value: "keine-url" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Projekt\s*\*/ }), {
       target: { value: "Wir brauchen eine neue Seitenstruktur." },
     });
     fireEvent.click(screen.getByRole("button", { name: "Start" }));
@@ -281,22 +281,24 @@ describe("ProjectRequestForm", () => {
   it("limits web projects to 12 custom pages", async () => {
     renderForm();
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Angebot\s*\*/ }), {
       target: { value: "web" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("textbox", { name: "Projekt*" })).toBeTruthy();
+      expect(
+        screen.getByRole("textbox", { name: /Projekt\s*\*/ }),
+      ).toBeTruthy();
     });
 
     const customPageInput = screen.getByPlaceholderText("z. B. Sponsoren");
@@ -326,21 +328,31 @@ describe("ProjectRequestForm", () => {
       expect(screen.getAllByText("Pflichtfeld").length).toBeGreaterThan(0);
     });
 
-    fireEvent.change(screen.getByRole("textbox", { name: /^Vorname\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: /^Nachname\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: /^E-Mail\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: /^Angebot\*/ }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Angebot\s*\*/ }), {
       target: { value: "landing" },
     });
 
     await waitFor(() => {
       expect(screen.queryByText("Pflichtfeld")).toBeNull();
+    });
+  });
+
+  it("shows step one validation errors on blur", async () => {
+    renderForm();
+
+    fireEvent.blur(screen.getByRole("textbox", { name: /Vorname\s*\*/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Pflichtfeld")).toBeTruthy();
     });
   });
 
@@ -355,28 +367,28 @@ describe("ProjectRequestForm", () => {
 
     renderForm();
 
-    fireEvent.change(screen.getByRole("textbox", { name: "Vorname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
       target: { value: "Max" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Nachname*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
       target: { value: "Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.change(screen.getByRole("combobox", { name: "Angebot*" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Angebot\s*\*/ }), {
       target: { value: "landing" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Projekt" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("combobox", { name: "Ziel*" })).toBeTruthy();
+      expect(screen.getByRole("combobox", { name: /Ziel\s*\*/ })).toBeTruthy();
     });
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Ziel*" }), {
+    fireEvent.change(screen.getByRole("combobox", { name: /Ziel\s*\*/ }), {
       target: { value: "generate_inquiries" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: "Projekt*" }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Projekt\s*\*/ }), {
       target: {
         value: "Eine Landingpage für qualifizierte Leads mit klarem CTA.",
       },

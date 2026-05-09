@@ -1,0 +1,26 @@
+Full review comments:
+
+  - [P1] Forward all lead-list query params into the server query — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\app[locale]\workspace\leads\page.tsx:68-68
+    When this page is opened with any of the documented lead-list params (status, source, category, search, score_min, date_from, date_to, page), they are now ignored because only sort is passed to listLeads. That breaks deep links and any future filter/pagination UI, since the page will keep rendering the
+    default unfiltered first page instead of the requested result set.
+  - [P1] Render the selected-lead detail panel again — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\app[locale]\workspace\leads\page.tsx:71-80
+    Row clicks still push ?selected=<id>, but this page no longer reads searchParams.selected or renders any detail-panel component. In practice, clicking a lead just changes the URL and re-renders the same table, so the documented "open lead details" flow no longer works.
+  - [P2] Stop checkbox clicks from bubbling to the row link — C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\src\components\workspace\leads\table\leads-table-row\leads-table-row.tsx:92-101
+    The propagation stop is attached to the hidden <input> only, so clicks on the visible checkbox box/label still bubble to <tr onClick> and navigate to the lead. That makes row selection unreliable, because users will often open the detail view instead of just toggling the checkbox.
+
+Findings
+
+      1. Medium: formatRelativeTime depends on Date.now() during render, and LeadsTableRow is a client component. Around thresholds like 59:59 -> 60:01 minutes, server-rendered text can be "gerade eben" while hydration renders "vor 1 Std.", causing hydration mismatch/flaky UI. Use a stable now value passed from
+         the server or make the formatter accept nowMs.
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/lib/format-relative-time.ts:32
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/components/workspace/leads/table/leads-table-row/leads-table-row.tsx:70
+      2. Medium: The new/expanded sort paths can become expensive because listLeads always runs count(*) plus a paginated query, while updated_at, score, and last_name sorts have no matching indexes in the shown schema. The social-profile query itself is acceptable: one indexed IN (...) query over max 25 lead
+         IDs. The bigger performance risk is the list/count/sort path. Consider targeted indexes for supported sort/filter combinations or deferring/approximating count if this table grows.
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/workspace/leads/query-handler/list-leads.query-handler.ts:21
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts:78
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/db/record-configuration/leads.ts:63
+      3. Low: listLeads tests verify mapped output, but the DB mock is call-order based and does not assert that the social-profile query is skipped for empty pages or constrained to the paginated lead IDs. Add assertions around select call count / query builder calls, plus a multi-lead, multi-profile case to
+         protect the grouping behavior.
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/server/tests/workspace/leads/query-handler/list-leads.query-handler.test.ts:81
+      4. Low: formatRelativeTime tests cover happy-path buckets, but not exact boundaries, invalid input, future dates, or the hydration-risk scenario caused by render-time Date.now(). Boundary tests at exactly 60 minutes, 24 hours, and 30 days would catch off-by-one regressions.
+         /C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/src/lib/format-relative-time.test.ts:19

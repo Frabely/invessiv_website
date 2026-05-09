@@ -11,6 +11,9 @@
     "db:smoke:dev": "tsx src/server/db/scripts/smoke-test.ts development",
     "db:smoke:preview": "tsx src/server/db/scripts/smoke-test.ts preview",
     "db:smoke:prod": "tsx src/server/db/scripts/smoke-test.ts production",
+    "db:seed:leads": "tsx src/server/db/scripts/seed-leads-fixture.ts",
+    "db:seed:leads:dev": "tsx src/server/db/scripts/seed-leads-fixture.ts development",
+    "db:seed:leads:preview": "tsx src/server/db/scripts/seed-leads-fixture.ts preview",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -29,8 +32,11 @@
     "*.{json,md,css,scss,html,yml,yaml}": "prettier --write"
   },
   "dependencies": {
+    "@clerk/localizations": "^4.5.6",
+    "@clerk/nextjs": "^7.2.8",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/analytics": "^1.6.1",

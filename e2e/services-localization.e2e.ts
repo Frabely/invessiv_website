@@ -29,10 +29,9 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     heading: "Was brauchst du gerade?",
     detailsLabel: "Mehr Infos",
     maintenanceTitle: "Wartung & Support",
-    processTitle: "Prozess-Tools",
+    processTitle: "Prozessoptimierungs-Tools",
     recommendedBadge: "Empfohlen",
-    secondarySectionTitle:
-      "Schon etwas da? Oder brauchst du Unterstützung danach?",
+    secondarySectionTitle: "Ergänzende Leistungen für Betrieb und Abläufe",
     upgradeTitle: "Webseiten-Upgrade",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
@@ -49,10 +48,9 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     heading: "What do you need right now?",
     detailsLabel: "More details",
     maintenanceTitle: "Maintenance & support",
-    processTitle: "Process tools",
+    processTitle: "Process optimization tools",
     recommendedBadge: "Recommended",
-    secondarySectionTitle:
-      "Already have something in place? Or need support afterward?",
+    secondarySectionTitle: "Additional services for operations and workflows",
     upgradeTitle: "Website upgrade",
     navAriaLabel: "Primary navigation",
     privacyPageTitle: "Privacy Policy",
@@ -88,7 +86,7 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     expect(html).toContain('rel="canonical"');
     expect(html).toContain('property="og:image"');
     expect(html).toContain('name="twitter:image"');
-    expect(html).toContain("/opengraph-image");
+    expect(html).toContain("/og/landing.png");
     expect(html).toContain('name="description"');
   });
 
@@ -112,11 +110,11 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     );
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       "content",
-      /opengraph-image/,
+      /\/og\/landing\.png$/,
     );
     await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute(
       "content",
-      /opengraph-image/,
+      /\/og\/landing\.png$/,
     );
     await expect(
       page.locator(`#footer a[href="${expectations.imprintHref}"]`).first(),
@@ -134,12 +132,18 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     await expect(servicesSection.getByRole("heading", { level: 2 })).toHaveText(
       expectations.heading,
     );
-    await expect(servicesSection.locator(".services-card")).toHaveCount(3);
     await expect(
-      servicesSection.getByRole("heading", { name: expectations.webTitle }),
+      servicesSection.locator('[data-service-card="true"]'),
+    ).toHaveCount(3);
+    await expect(
+      servicesSection
+        .locator('[data-card-key="web"]')
+        .getByText(expectations.webTitle, { exact: true }),
     ).toBeVisible();
     await expect(
-      servicesSection.getByRole("heading", { name: expectations.processTitle }),
+      servicesSection
+        .locator('[data-card-key="process"]')
+        .getByText(expectations.processTitle, { exact: true }),
     ).toBeVisible();
     await expect(
       servicesSection.getByRole("heading", {
@@ -156,7 +160,9 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       servicesSection.getByText(expectations.recommendedBadge, { exact: true }),
     ).toBeVisible();
 
-    const landingCard = servicesSection.locator(".services-card").first();
+    const landingCard = servicesSection
+      .locator('[data-service-card="true"]')
+      .first();
     await landingCard
       .getByRole("button", { name: expectations.detailsLabel })
       .click();
@@ -227,7 +233,9 @@ for (const expectations of LOCALE_EXPECTATIONS) {
 
         const mobileHeaderLayout = await page.evaluate(() => {
           const header = document.querySelector<HTMLElement>(".site-header");
-          const brand = document.querySelector<HTMLElement>(".site-header__brand");
+          const brand = document.querySelector<HTMLElement>(
+            ".site-header__brand",
+          );
           const menu = document.querySelector<HTMLElement>(
             ".site-header__mobile-menu[open] ul",
           );

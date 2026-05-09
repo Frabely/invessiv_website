@@ -1,0 +1,37 @@
+{
+  "shell": {
+    "header": {
+      "brandLabel": "Invessiv",
+      "brandLogoAlt": "Invessiv logo",
+      "brandHomeAriaLabel": "Back to workspace",
+      "search": {
+        "label": "Search leads",
+        "placeholder": "Search leads…",
+        "comingSoonBadge": "Coming soon",
+        "disabledHint": "Lead search arrives with the next release."
+      },
+      "localeMenuLabel": "Select language",
+      "localeSwitchLabel": "Switch language",
+      "themeSwitch": {
+        "actionLabel": {
+          "dark": "Switch to light mode",
+          "light": "Switch to dark mode"
+        }
+      },
+      "userMenuLabel": "Account and sign out",
+      "mobileMenuOpenLabel": "Open navigation",
+      "mobileMenuCloseLabel": "Close navigation"
+    },
+    "sidebar": {
+      "navAriaLabel": "Workspace navigation",
+      "comingSoonBadge": "Coming soon",
+      "items": {
+        "leads": "Leads",
+        "overview": "Overview"
+      }
+    },
+    "main": {
+      "ariaLabel": "Workspace content"
+    }
+  }
+}

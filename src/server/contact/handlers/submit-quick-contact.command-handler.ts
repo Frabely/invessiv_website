@@ -1,9 +1,9 @@
 import "server-only";
 import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
 import { getServerEnv } from "@/server/config/env";
+import { leadMapperService } from "@/server/contact/mapper/contact-lead-mapper-service";
 import { persistQuickContactLead } from "@/server/db/contact/persist-quick-contact";
 import { quickContactValidationService } from "@/server/contact/validation/quick-contact/quick-contact-validation-service";
-import { mapQuickContactDtoToDbPersistInput } from "@/server/services/contact/quick-contact/quick-contact-mapping-service";
 import { mapQuickContactToMail } from "@/server/services/mail/templates/quick-contact-notification";
 import { sendMail } from "@/server/services/mail/mail-service";
 
@@ -17,12 +17,13 @@ export async function submitQuickContactCommandHandler(
   }
 
   const env = getServerEnv();
-  const quickContactPersistInput = mapQuickContactDtoToDbPersistInput(
-    validationResult.data,
-    {
-      requestId,
-    },
-  );
+  const quickContactPersistInput =
+    leadMapperService.mapQuickContactDtoToDbPersistInput(
+      validationResult.data,
+      {
+        requestId,
+      },
+    );
   await persistQuickContactLead(quickContactPersistInput);
   const message = await mapQuickContactToMail(
     validationResult.data,

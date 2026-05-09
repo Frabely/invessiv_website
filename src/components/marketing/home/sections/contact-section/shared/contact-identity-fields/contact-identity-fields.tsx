@@ -1,8 +1,8 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
-import { ContactFormField } from "@/components/marketing/home/sections/contact-section/shared/contact-form-field/contact-form-field";
 import type { ContactIdentityFieldsCopy } from "@/common/contracts/contact/copy/contact-identity-fields-copy";
 import type { ContactIdentityFieldsValues } from "@/common/contracts/contact/fields/contact-identity-fields-values";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
+import { FormField } from "@/components/shared/form/form-field/form-field";
 
 type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
   controlClassName?: string;
@@ -31,7 +31,7 @@ export function ContactIdentityFields<
 
   return (
     <>
-      <ContactFormField
+      <FormField
         controlClassName={controlClassName}
         errorMessage={
           errors.firstName ? getErrorMessage("firstName") : undefined
@@ -50,7 +50,7 @@ export function ContactIdentityFields<
         required
       />
 
-      <ContactFormField
+      <FormField
         controlClassName={controlClassName}
         errorMessage={errors.lastName ? getErrorMessage("lastName") : undefined}
         inputProps={{
@@ -67,7 +67,7 @@ export function ContactIdentityFields<
         required
       />
 
-      <ContactFormField
+      <FormField
         controlClassName={controlClassName}
         errorMessage={errors.email ? getErrorMessage("email") : undefined}
         inputProps={{

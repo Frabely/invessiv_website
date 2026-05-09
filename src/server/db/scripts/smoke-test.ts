@@ -1,9 +1,19 @@
 import { getServerEnv } from "../../config/env";
-import { getDatabaseClient } from "../client";
+import { getDatabaseClient } from "../core";
+import { getTableNames } from "./contact-table-names";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,
 } from "./database-target";
+
+type DatabaseSummaryRow = {
+  databaseName: string;
+  migrationCount: number;
+};
+
+type TableNameRow = {
+  tablename: string;
+};
 
 async function run() {
   configureDatabaseUrlFromTarget(parseDatabaseTarget(process.argv));
@@ -16,55 +26,39 @@ async function run() {
   }
 
   const sql = getDatabaseClient();
-  const [
-    {
-      databaseName,
-      leadCallContactsTableCount,
-      leadEmailContactsTableCount,
-      leadProjectRequestsTableCount,
-      leadSubmissionsTableCount,
-      leadsTableCount,
-      migrationCount,
-    },
-  ] = (await sql`
+  const contactTableNames = getTableNames();
+  const [databaseSummaryRows, actualTableRows] = (await Promise.all([
+    sql`
       SELECT
         current_database() AS "databaseName",
-        COUNT(*) FILTER (WHERE tablename = 'leads')::int AS "leadsTableCount",
-        COUNT(*) FILTER (WHERE tablename = 'lead_submissions')::int AS "leadSubmissionsTableCount",
-        COUNT(*) FILTER (WHERE tablename = 'lead_project_requests')::int AS "leadProjectRequestsTableCount",
-        COUNT(*) FILTER (WHERE tablename = 'lead_email_contacts')::int AS "leadEmailContactsTableCount",
-        COUNT(*) FILTER (WHERE tablename = 'lead_call_contacts')::int AS "leadCallContactsTableCount",
         (SELECT COUNT(*)::int FROM schema_migrations) AS "migrationCount"
+    `,
+    sql`
+      SELECT tablename
       FROM pg_tables
       WHERE schemaname = 'public'
-    `) as Array<{
-    databaseName: string;
-    leadCallContactsTableCount: number;
-    leadEmailContactsTableCount: number;
-    leadProjectRequestsTableCount: number;
-    leadSubmissionsTableCount: number;
-    leadsTableCount: number;
-    migrationCount: number;
-  }>;
+      ORDER BY tablename
+    `,
+  ])) as [DatabaseSummaryRow[], TableNameRow[]];
 
-  if (
-    !leadsTableCount ||
-    !leadSubmissionsTableCount ||
-    !leadProjectRequestsTableCount ||
-    !leadEmailContactsTableCount ||
-    !leadCallContactsTableCount
-  ) {
+  const [{ databaseName, migrationCount }] = databaseSummaryRows;
+
+  const actualTableNames = actualTableRows.map((row) => row.tablename);
+
+  const missingTables = contactTableNames.filter(
+    (tableName) => !actualTableNames.includes(tableName),
+  );
+
+  if (missingTables.length > 0) {
     throw new Error(
-      "Lead tables are missing. Run `npm run db:migrate` before `npm run db:smoke`.",
+      `Contact tables are missing: ${missingTables.join(", ")}. Run \`npm run db:migrate\` before \`npm run db:smoke\`.`,
     );
   }
 
   console.log("Database smoke test passed.");
   console.log(`Database: ${databaseName}`);
   console.log(`Applied migrations: ${migrationCount}`);
-  console.log(
-    "Tables: leads, lead_submissions, lead_project_requests, lead_email_contacts, lead_call_contacts",
-  );
+  console.log(`Tables: ${contactTableNames.join(", ")}`);
 }
 
 run().catch((error: unknown) => {

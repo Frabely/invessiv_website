@@ -1,0 +1,40 @@
+{
+  "status": {
+    "new": "Neu",
+    "contacted": "Kontaktiert",
+    "qualified": "Qualifiziert",
+    "proposal": "Angebot",
+    "on_hold": "Pausiert",
+    "won": "Gewonnen",
+    "lost": "Verloren",
+    "archived": "Archiviert"
+  },
+  "source": {
+    "webform": "Webformular",
+    "manual": "Manuell",
+    "import": "Import"
+  },
+  "category": {
+    "coaches": "Coaches",
+    "craftspeople": "Handwerker",
+    "local-service-providers": "Lokale Dienstleister",
+    "small-b2b-providers": "Kleine B2B-Anbieter",
+    "consultants": "Berater",
+    "photographers": "Fotografen"
+  },
+  "platform": {
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "youtube": "YouTube"
+  },
+  "socialIconLabel": {
+    "website": "Website öffnen",
+    "linkedin": "LinkedIn-Profil öffnen",
+    "instagram": "Instagram-Profil öffnen",
+    "youtube": "YouTube-Kanal öffnen",
+    "phone": "Anrufen"
+  },
+  "score": {
+    "ariaLabel": "Score"
+  }
+}

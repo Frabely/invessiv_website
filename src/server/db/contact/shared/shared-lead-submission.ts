@@ -1,6 +1,6 @@
 import "server-only";
 import { sql } from "drizzle-orm";
-import type { ContactDatabaseTransaction } from "@/server/db/client";
+import type { ContactDatabaseTransaction } from "@/server/db/core";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
@@ -23,6 +23,7 @@ export async function persistSharedLeadSubmission(
       first_name,
       last_name,
       email,
+      source,
       lead_status,
       created_at,
       updated_at
@@ -32,6 +33,7 @@ export async function persistSharedLeadSubmission(
       ${input.lead.first_name},
       ${input.lead.last_name},
       ${input.lead.email},
+      ${input.lead.source},
       ${input.lead.lead_status},
       ${input.lead.created_at},
       ${input.lead.updated_at}

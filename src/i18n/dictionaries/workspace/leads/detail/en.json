@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "contact": "Contact",
+    "category": "Category",
+    "socialProfiles": "Social profiles",
+    "improvements": "Improvements",
+    "notes": "Notes",
+    "activity": "Activities"
+  },
+  "fields": {
+    "email": "Email",
+    "phone": "Phone",
+    "company": "Company",
+    "website": "Website",
+    "owner": "Owner",
+    "source": "Source",
+    "score": "Score",
+    "created": "Created",
+    "updated": "Updated",
+    "status": "Status"
+  },
+  "actions": {
+    "closeAriaLabel": "Close detail panel",
+    "edit": "Edit lead",
+    "viewFullProfile": "Full profile planned"
+  },
+  "empty": {
+    "phone": "No phone number",
+    "website": "No website",
+    "category": "No category",
+    "socialProfiles": "No social profiles",
+    "notes": "No notes yet",
+    "improvements": "No improvements yet",
+    "owner": "No owner",
+    "company": "No company",
+    "score": "No score"
+  },
+  "activity": {
+    "empty": "No activities yet",
+    "types": {
+      "note": "Note",
+      "status_change": "Status changed",
+      "inbound_submission": "Inbound submission",
+      "import": "Import"
+    },
+    "actor": {
+      "system": "System",
+      "user": "User"
+    },
+    "channels": {
+      "quick_contact": "Quick contact",
+      "project_request": "Project request",
+      "discovery_call": "Discovery call"
+    },
+    "submission": {
+      "fallbackTitle": "Incoming form submission"
+    },
+    "statusChange": {
+      "fallbackBody": "The status was updated.",
+      "separator": "→"
+    }
+  }
+}

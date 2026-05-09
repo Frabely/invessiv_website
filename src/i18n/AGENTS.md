@@ -1,4 +1,4 @@
-# I18n
+﻿# I18n
 
 Dieser Ordner ist für Sprachdaten, Wörterbücher und Übersetzungshilfen gedacht.
 

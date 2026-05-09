@@ -46,7 +46,7 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const offerSelect = screen.getByRole("combobox", {
-      name: "Passendes Leistungsmodell*",
+      name: /Passendes Leistungsmodell\s*\*/,
     });
 
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();

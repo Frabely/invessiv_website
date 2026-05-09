@@ -1,8 +1,8 @@
 # CLAUDE - Auth / `(auth)` Route Group
 
-Architektur-Wissen für den öffentlichen Auth-Bereich der Invessiv-Website. Diese Datei ergänzt die Repo-Root `CLAUDE.md`, `src/app/CLAUDE.md` und den Dashboard-Plan `plans/dashboard/clerk-auth-and-shell.md`. Sie gilt für alle Routen unter `src/app/[locale]/(auth)/`.
+Architektur-Wissen für den öffentlichen Auth-Bereich der Invessiv-Website. Diese Datei ergänzt die Repo-Root `CLAUDE.md`, `src/app/CLAUDE.md` und den Workspace-Plan `plans/workspace/clerk-auth-and-workspace-shell.md`. Sie gilt für alle Routen unter `src/app/[locale]/(auth)/`.
 
-> **Status:** Geplant im Rahmen des Clerk-Auth- und Dashboard-Shell-Plans. `(auth)` ist die öffentliche Route-Group für Clerk Sign-in und Sign-up, nicht der geschützte App-Bereich.
+> **Status:** Geplant im Rahmen des Clerk-Auth- und Workspace-Shell-Plans. `(auth)` ist die öffentliche Route-Group für Clerk Sign-in und Sign-up, nicht der geschützte App-Bereich.
 
 ## Zweck
 
@@ -11,7 +11,7 @@ Architektur-Wissen für den öffentlichen Auth-Bereich der Invessiv-Website. Die
 - `/[locale]/sign-in`
 - `/[locale]/sign-up`
 
-Die Seiten rendern Clerk-Komponenten in einem schlanken Invessiv-Frame. Sie sind bewusst vom Dashboard getrennt: Login und Registrierung sind öffentlich, Dashboard-Zugriff wird erst in `(dashboard)` geprüft.
+Die Seiten rendern Clerk-Komponenten in einem schlanken Invessiv-Frame. Sie sind bewusst vom Workspace getrennt: Login und Registrierung sind öffentlich, Workspace-Zugriff wird erst in `workspace` geprüft.
 
 ## Auth-Stack
 
@@ -21,14 +21,14 @@ Die Seiten rendern Clerk-Komponenten in einem schlanken Invessiv-Frame. Sie sind
 - **Routing:** locale-aware über `[locale]`
 - **Eigene Auth-Logik:** keine JWTs, keine eigenen Sessions, keine Passwort-Hashes, keine Login-Endpoints
 
-## Abgrenzung zu `(dashboard)`
+## Abgrenzung zu `workspace`
 
-| Route-Group   | Pfad                                     | Zweck                        | Zugriff                 |
-| ------------- | ---------------------------------------- | ---------------------------- | ----------------------- |
-| `(auth)`      | `/[locale]/sign-in`, `/[locale]/sign-up` | Öffentliche Clerk-Forms      | öffentlich              |
-| `(dashboard)` | `/[locale]/dashboard`                    | Geschützter interner Bereich | Clerk-Login + Allowlist |
+| Route-Group | Pfad                                     | Zweck                        | Zugriff                 |
+| ----------- | ---------------------------------------- | ---------------------------- | ----------------------- |
+| `(auth)`    | `/[locale]/sign-in`, `/[locale]/sign-up` | Öffentliche Clerk-Forms      | öffentlich              |
+| `workspace` | `/[locale]/workspace`                    | Geschützter interner Bereich | Clerk-Login + Allowlist |
 
-`(auth)` prüft nicht, ob ein User auf der Dashboard-Allowlist steht. Diese Prüfung bleibt in `src/lib/auth/permissions.ts` und im `(dashboard)/layout.tsx`.
+`(auth)` prüft nicht, ob ein User auf der Workspace-Allowlist steht. Diese Prüfung bleibt in `src/lib/auth/permissions.ts` und im `workspace/layout.tsx`.
 
 ## Erwartete Dateien
 
@@ -100,7 +100,7 @@ Locale-aware Auth-Pfade sollen zentral über `src/lib/auth/routes.ts` erzeugt we
 
 - `signInPathFor(locale)`
 - `signUpPathFor(locale)`
-- `dashboardPathFor(locale)`
+- `workspacePathFor(locale)`
 
 Clerk-ENV-Werte wie `NEXT_PUBLIC_CLERK_SIGN_IN_URL` und `NEXT_PUBLIC_CLERK_SIGN_UP_URL` können pfadneutral ohne Locale-Prefix bleiben. Locale-spezifische Redirects werden in App-Code oder Proxy-Logik sauber ergänzt.
 
@@ -108,7 +108,7 @@ Clerk-ENV-Werte wie `NEXT_PUBLIC_CLERK_SIGN_IN_URL` und `NEXT_PUBLIC_CLERK_SIGN_
 
 - `CLERK_SECRET_KEY` ist server-only.
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` ist öffentlich und darf im Client verwendet werden.
-- `DASHBOARD_ALLOWED_EMAILS` gehört nicht in `(auth)` und darf nie ins Client-Bundle gelangen.
+- `WORKSPACE_ALLOWED_EMAILS` gehört nicht in `(auth)` und darf nie ins Client-Bundle gelangen.
 - Keine User-E-Mails oder Clerk-IDs in normalen Logs ausgeben.
 - Keine Auth-Checks clientseitig als Sicherheitsgrenze verwenden.
 
@@ -135,11 +135,11 @@ Auth-Seiten sind keine Landingpages. Metadata soll eindeutig sein, aber nicht au
 | Custom Clerk Appearance | Wenn Default-Light nicht zum Brand passt                | `<ClerkProvider appearance={...}>` oder lokale Auth-Page-Konfiguration |
 | Sign-up deaktivieren    | Wenn Registrierung nur manuell über Clerk erfolgen soll | Clerk Dashboard, möglichst ohne Code-Änderung                          |
 | UserButton im Header    | Wenn Login öffentlich sichtbar werden soll              | `src/components/marketing/site-header/` mit `<SignedIn>`-Wrapper       |
-| Auth E2E-Smoke          | Sobald Auth-Flows stabil umgesetzt sind                 | `e2e/auth.e2e.ts` oder dashboard-auth E2E                              |
+| Auth E2E-Smoke          | Sobald Auth-Flows stabil umgesetzt sind                 | `e2e/auth.e2e.ts` oder workspace-auth E2E                              |
 
 ## Was hier nicht hingehört
 
-- Dashboard-Content, Sidebar, Widgets oder interne Admin-Funktionen.
+- Workspace-Content, Sidebar, Widgets oder interne Admin-Funktionen.
 - Allowlist- oder Rollenlogik in Pages.
 - Public API Routes.
 - Marketing-, Legal- oder Pricing-Seiten.

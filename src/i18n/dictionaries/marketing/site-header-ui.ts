@@ -4,6 +4,7 @@ import en from "./site-header-ui.en.json";
 
 export type SiteHeaderUiContent = {
   actionsAriaLabel: string;
+  brandLabel: string;
   brandLogoAlt: string;
   ctaLabel: string;
   labelsByHref: Record<string, string>;

@@ -1,0 +1,95 @@
+{
+  "title": {
+    "create": "Add lead",
+    "edit": "Edit lead"
+  },
+  "description": {
+    "create": "Create a manual contact or company directly in the workspace.",
+    "edit": "Update the existing details of this lead."
+  },
+  "sections": {
+    "identity": "Contact",
+    "details": "Context",
+    "socialProfiles": "Social profiles",
+    "improvements": "Improvements",
+    "notes": "Notes"
+  },
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "companyName": "Company",
+    "email": "Email",
+    "phone": "Phone",
+    "websiteUrl": "Website",
+    "category": "Category",
+    "score": "Score",
+    "owner": "Owner",
+    "status": "Status",
+    "notes": "Notes",
+    "improvement": "Improvement",
+    "platform": "Platform",
+    "profileUrl": "Profile URL"
+  },
+  "placeholders": {
+    "firstName": "First name",
+    "lastName": "Last name or contact person",
+    "companyName": "Company or brand",
+    "email": "name@company.com",
+    "phone": "+1 ...",
+    "websiteUrl": "https://...",
+    "category": "Choose a category",
+    "score": "0 to 100",
+    "owner": "Responsible person",
+    "notes": "Short note about the lead",
+    "improvement": "e.g. Clearer CTA",
+    "platform": "Choose a platform",
+    "profileUrl": "https://..."
+  },
+  "buttons": {
+    "submit": {
+      "create": "Save lead",
+      "edit": "Save changes"
+    },
+    "cancel": "Cancel",
+    "closeAriaLabel": "Close",
+    "addImprovement": "Add improvement",
+    "addProfile": "Add profile",
+    "confirmAdd": "Add",
+    "remove": "Remove"
+  },
+  "validation": {
+    "nameRequired": "Last name or company is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email",
+    "phoneInvalid": "Invalid phone number",
+    "scoreInvalid": "Score must be 0-100",
+    "urlInvalid": "Invalid URL",
+    "categoryInvalid": "Invalid category",
+    "improvementTooLong": "Improvement can be at most 500 characters long",
+    "emailExists": "This email is already assigned to an existing lead.",
+    "generic": "Lead could not be saved",
+    "socialProfileInvalid": "Invalid platform",
+    "socialProfileRequired": "Platform and URL are required",
+    "socialProfileDuplicate": "This platform has already been added",
+    "improvementRequired": "Improvement cannot be empty"
+  },
+  "help": {
+    "requiredHint": "Required fields are marked with *.",
+    "improvementsHint": "Optional. You can add multiple notes and they are saved with the lead.",
+    "improvementsEmptyState": "No improvements yet. Saved only when the lead is saved.",
+    "improvementsClearedState": "All previous improvements were removed. The list will be cleared when saved.",
+    "socialProfilesHint": "Optional. Profiles are saved with the lead.",
+    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube.",
+    "socialProfilesClearedState": "All previous social profiles were removed. The list will be cleared when saved.",
+    "fieldStateUnchanged": "Unchanged",
+    "fieldStateCleared": "Will be cleared on save",
+    "fieldStateRequired": "Required",
+    "fieldStateSet": "Changed",
+    "fieldStatePristineEmpty": "Originally empty"
+  },
+  "status": {
+    "savingCreate": "Saving lead...",
+    "savingEdit": "Saving changes...",
+    "successEdit": "Lead has been updated."
+  }
+}

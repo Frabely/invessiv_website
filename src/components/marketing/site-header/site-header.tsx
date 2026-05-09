@@ -22,6 +22,7 @@ import {
   createLocaleScrollRestoreState,
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
 } from "@/lib/navigation/locale-scroll-restoration";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import {
   trackSiteHeaderLanguageSwitch,
   trackSiteHeaderThemeSwitch,
@@ -78,18 +79,7 @@ export function SiteHeader({
       return;
     }
 
-    const normalizedPath = pathname || "/";
-    const nextPathname = (() => {
-      if (normalizedPath === "/") {
-        return `/${nextLocale}`;
-      }
-      const segments = normalizedPath.split("/").filter(Boolean);
-      if (segments[0] === "de" || segments[0] === "en") {
-        segments[0] = nextLocale;
-        return `/${segments.join("/")}`;
-      }
-      return `/${nextLocale}${normalizedPath}`;
-    })();
+    const nextPathname = createLocalePathname(pathname, nextLocale);
     const search = typeof window !== "undefined" ? window.location.search : "";
     const nextUrl = `${nextPathname}${search}`;
 
@@ -139,7 +129,7 @@ export function SiteHeader({
             height={26}
             priority
           />
-          <span>Invessiv</span>
+          <span>{ui.brandLabel}</span>
         </a>
 
         <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>
