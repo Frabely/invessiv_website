@@ -6,7 +6,6 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { useId } from "react";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import styles from "./form-field.module.css";
 
@@ -61,9 +60,9 @@ export function FormField(props: FormFieldProps) {
     required = false,
   } = props;
 
-  const generatedId = useId();
-  const resolvedErrorId = errorMessageId ?? `${generatedId}-error`;
-  const resolvedHintId = hintId ?? (hint ? `${generatedId}-hint` : undefined);
+  const fieldBaseId = getFieldBaseId(props);
+  const resolvedErrorId = errorMessageId ?? `${fieldBaseId}-error`;
+  const resolvedHintId = hintId ?? (hint ? `${fieldBaseId}-hint` : undefined);
   const rootClassName = className
     ? `${styles.field} ${className}`
     : styles.field;
@@ -114,6 +113,41 @@ export function FormField(props: FormFieldProps) {
       </small>
     </label>
   );
+}
+
+function getFieldBaseId(props: FormFieldProps): string {
+  if (props.kind === "textarea") {
+    return (
+      props.textareaProps?.id ??
+      props.textareaProps?.name ??
+      slugifyFieldLabel(props.label, props.kind)
+    );
+  }
+
+  if (props.kind === "select") {
+    return (
+      props.selectProps?.id ??
+      props.selectProps?.name ??
+      slugifyFieldLabel(props.label, props.kind)
+    );
+  }
+
+  return (
+    props.inputProps?.id ??
+    props.inputProps?.name ??
+    slugifyFieldLabel(props.label, props.kind)
+  );
+}
+
+function slugifyFieldLabel(label: string, kind: string): string {
+  const normalizedLabel = label
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+
+  return normalizedLabel ? `${normalizedLabel}-${kind}` : kind;
 }
 
 function renderInput(

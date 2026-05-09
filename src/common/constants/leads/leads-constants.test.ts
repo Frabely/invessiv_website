@@ -5,6 +5,10 @@ import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-type
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
 import {
+  LEAD_DETAIL_ENTRY_KIND_VALUES,
+  LeadDetailEntryKind,
+} from "@/common/constants/leads/lead-detail-entry-kinds";
+import {
   LEAD_BADGE_KIND_VALUES,
   LeadBadgeKind,
 } from "@/common/constants/leads/lead-badge-kinds";
@@ -167,6 +171,18 @@ describe("LeadBadgeKind", () => {
     ]);
     expect(new Set(LEAD_BADGE_KIND_VALUES).size).toBe(
       LEAD_BADGE_KIND_VALUES.length,
+    );
+  });
+});
+
+describe("LeadDetailEntryKind", () => {
+  it("contains the expected timeline entry kinds without duplicates", () => {
+    expect(LEAD_DETAIL_ENTRY_KIND_VALUES).toEqual([
+      LeadDetailEntryKind.Activity,
+      LeadDetailEntryKind.Submission,
+    ]);
+    expect(new Set(LEAD_DETAIL_ENTRY_KIND_VALUES).size).toBe(
+      LEAD_DETAIL_ENTRY_KIND_VALUES.length,
     );
   });
 });

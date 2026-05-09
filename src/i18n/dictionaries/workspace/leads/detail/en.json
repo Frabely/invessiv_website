@@ -5,7 +5,7 @@
     "socialProfiles": "Social profiles",
     "improvements": "Improvements",
     "notes": "Notes",
-    "activity": "Activity"
+    "activity": "Activities"
   },
   "fields": {
     "email": "Email",
@@ -35,6 +35,28 @@
     "score": "No score"
   },
   "activity": {
-    "placeholder": "Activity stream follows in P1-T29."
+    "empty": "No activities yet",
+    "types": {
+      "note": "Note",
+      "status_change": "Status changed",
+      "inbound_submission": "Inbound submission",
+      "import": "Import"
+    },
+    "actor": {
+      "system": "System",
+      "user": "User"
+    },
+    "channels": {
+      "quick_contact": "Quick contact",
+      "project_request": "Project request",
+      "discovery_call": "Discovery call"
+    },
+    "submission": {
+      "fallbackTitle": "Incoming form submission"
+    },
+    "statusChange": {
+      "fallbackBody": "The status was updated.",
+      "separator": "→"
+    }
   }
 }

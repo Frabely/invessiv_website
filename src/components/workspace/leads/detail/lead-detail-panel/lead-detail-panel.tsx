@@ -16,6 +16,7 @@ import {
   formatLeadCreatedAt,
   getLeadDisplayName,
 } from "@/components/workspace/leads/table/lead-table-utils";
+import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
 
 export type LeadDetailPanelProps = {
@@ -261,7 +262,13 @@ export function LeadDetailPanel({
           </button>
         </div>
 
-        <p className={styles.emptyText}>{content.activity.placeholder}</p>
+        <LeadDetailActivities
+          activities={lead.activities}
+          content={content}
+          locale={locale}
+          sharedContent={sharedContent}
+          submissions={lead.submissions}
+        />
       </section>
     </aside>
   );

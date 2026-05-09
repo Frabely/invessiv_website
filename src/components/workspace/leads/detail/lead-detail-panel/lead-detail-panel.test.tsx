@@ -109,5 +109,6 @@ describe("LeadDetailPanel", () => {
     expect(screen.getByText("No notes yet")).toBeInTheDocument();
     expect(screen.getByText("No improvements yet")).toBeInTheDocument();
     expect(screen.getByText("No social profiles")).toBeInTheDocument();
+    expect(screen.getByText("No activities yet")).toBeInTheDocument();
   });
 });

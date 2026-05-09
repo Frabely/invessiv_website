@@ -682,7 +682,7 @@ chronologisch zusammengeführt sichtbar.
 
 ---
 
-#### P1-T30 — Add-Lead-Dialog
+#### P1-T30 — Add-Lead-Dialog ✅
 
 _Testbarer Zustand danach:_ Vollständige Page — "Add Lead"-Button öffnet Dialog, Lead anlegen, Liste aktualisiert sich,
 Detail-Panel öffnet optional für den neuen Lead. Gesamter P1-Flow end-to-end testbar.

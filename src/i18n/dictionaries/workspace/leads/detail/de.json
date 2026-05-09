@@ -5,7 +5,7 @@
     "socialProfiles": "Social Profiles",
     "improvements": "Verbesserungen",
     "notes": "Notizen",
-    "activity": "Aktivität"
+    "activity": "Aktivitäten"
   },
   "fields": {
     "email": "E-Mail",
@@ -35,6 +35,28 @@
     "score": "Kein Score"
   },
   "activity": {
-    "placeholder": "Der Activity Stream folgt in P1-T29."
+    "empty": "Noch keine Aktivitäten",
+    "types": {
+      "note": "Notiz",
+      "status_change": "Status geändert",
+      "inbound_submission": "Eingehende Anfrage",
+      "import": "Import"
+    },
+    "actor": {
+      "system": "System",
+      "user": "Benutzer"
+    },
+    "channels": {
+      "quick_contact": "Schnellkontakt",
+      "project_request": "Projektanfrage",
+      "discovery_call": "Erstgespräch"
+    },
+    "submission": {
+      "fallbackTitle": "Eingang über Formular"
+    },
+    "statusChange": {
+      "fallbackBody": "Der Status wurde aktualisiert.",
+      "separator": "→"
+    }
   }
 }
