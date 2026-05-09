@@ -13,7 +13,7 @@ import {
   LeadBadgeTone,
   type LeadBadgeTone as LeadBadgeToneValue,
 } from "@/common/constants/leads/lead-badge-tones";
-import { LeadBadge } from "../lead-badge";
+import { LeadBadge } from "../lead-badge/lead-badge";
 
 type LeadCategoryBadgeProps = {
   className?: string;

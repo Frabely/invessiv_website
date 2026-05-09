@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LeadsEmptyStateVariant } from "@/common/constants/leads/lead-empty-state-variants";
 import styles from "./leads-empty-state.module.css";
 
 type LeadsEmptyStateProps = {
@@ -6,11 +7,11 @@ type LeadsEmptyStateProps = {
   actionLabel: string;
   description: string;
   title: string;
-  variant: "empty" | "filtered";
+  variant: LeadsEmptyStateVariant;
 };
 
-function getIconPath(variant: "empty" | "filtered") {
-  return variant === "filtered"
+function getIconPath(variant: LeadsEmptyStateVariant) {
+  return variant === LeadsEmptyStateVariant.Filtered
     ? "M4 6h16M7 12h10M10 18h4"
     : "M12 5v14M5 12h14";
 }
@@ -18,7 +19,7 @@ function getIconPath(variant: "empty" | "filtered") {
 function renderAction(
   actionHref: string | undefined,
   actionLabel: string,
-  variant: "empty" | "filtered",
+  variant: LeadsEmptyStateVariant,
 ) {
   const commonContent = (
     <>

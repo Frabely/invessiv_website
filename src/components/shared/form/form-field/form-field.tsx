@@ -6,6 +6,7 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import styles from "./form-field.module.css";
 
@@ -35,7 +36,7 @@ type SelectFieldProps = BaseFormFieldProps & {
 
 type TextFieldProps = BaseFormFieldProps & {
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
-  kind: "email" | "number" | "tel" | "text" | "url";
+  kind: FormFieldKind;
 };
 
 type TextareaFieldProps = BaseFormFieldProps & {

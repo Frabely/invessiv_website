@@ -20,7 +20,7 @@ import {
   LEAD_LIST_QUERY_PARAM_VALUES,
   LeadListQueryParam,
 } from "@/common/constants/leads/lead-list-query-params";
-import { LEAD_STATUS_TABS } from "@/common/constants/leads/lead-status-tabs";
+import { CONTACT_LEAD_STATUS_ALL } from "@/common/constants/contact/contact-lead-statuses";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
   LEAD_LIST_PAGE_SIZE,
@@ -61,22 +61,6 @@ describe("LEAD_ACTIVITY_TYPES", () => {
   });
 });
 
-describe("LEAD_STATUS_TABS", () => {
-  it("contains all, new, qualified, proposal, won in order", () => {
-    expect(LEAD_STATUS_TABS).toEqual([
-      "all",
-      "new",
-      "qualified",
-      "proposal",
-      "won",
-    ]);
-  });
-
-  it("has no duplicates", () => {
-    expect(new Set(LEAD_STATUS_TABS).size).toBe(LEAD_STATUS_TABS.length);
-  });
-});
-
 describe("LEAD_ACTOR_TYPES", () => {
   it("contains exactly system, user", () => {
     expect(LEAD_ACTOR_TYPE_VALUES).toEqual(["system", "user"]);
@@ -86,6 +70,12 @@ describe("LEAD_ACTOR_TYPES", () => {
     expect(new Set(LEAD_ACTOR_TYPE_VALUES).size).toBe(
       LEAD_ACTOR_TYPE_VALUES.length,
     );
+  });
+});
+
+describe("CONTACT_LEAD_STATUS_ALL", () => {
+  it("exposes the all filter value", () => {
+    expect(CONTACT_LEAD_STATUS_ALL).toBe("all");
   });
 });
 

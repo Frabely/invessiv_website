@@ -1,5 +1,9 @@
 import type { SQL } from "drizzle-orm";
 import { and, asc, desc, eq, gte, ilike, lte, ne, or } from "drizzle-orm";
+import {
+  CONTACT_LEAD_STATUS_ALL,
+  ContactLeadStatus,
+} from "@/common/constants/contact/contact-lead-statuses";
 import { leads } from "@/server/db/record-configuration";
 import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/lead-list-defaults";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
@@ -17,12 +21,12 @@ export type LeadFilterResult = {
 export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
   const conditions: (SQL | undefined)[] = [];
 
-  if (filter.status === "archived") {
-    conditions.push(eq(leads.lead_status, "archived"));
-  } else if (filter.status && filter.status !== "all") {
+  if (filter.status === ContactLeadStatus.Archived) {
+    conditions.push(eq(leads.lead_status, ContactLeadStatus.Archived));
+  } else if (filter.status && filter.status !== CONTACT_LEAD_STATUS_ALL) {
     conditions.push(eq(leads.lead_status, filter.status));
   } else {
-    conditions.push(ne(leads.lead_status, "archived"));
+    conditions.push(ne(leads.lead_status, ContactLeadStatus.Archived));
   }
 
   if (filter.source) {

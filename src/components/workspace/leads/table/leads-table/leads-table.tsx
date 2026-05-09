@@ -1,5 +1,6 @@
 import type { Locale } from "@/config/i18n";
 import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadsEmptyStateVariant } from "@/common/constants/leads/lead-empty-state-variants";
 import { LeadSort } from "@/common/constants/leads/lead-sort";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
@@ -24,7 +25,7 @@ type LeadsTableProps = {
     actionLabel: string;
     description: string;
     title: string;
-    variant: "empty" | "filtered";
+    variant: LeadsEmptyStateVariant;
   };
   sharedContent: LeadsSharedDictionary;
   tableContent: LeadsTableDictionary;

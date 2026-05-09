@@ -1,21 +1,24 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { FormActionsLayout } from "@/common/constants/form/form-actions-layout";
 import styles from "./form-actions.module.css";
 
 type FormActionsProps = {
   buttons: ReactNode;
-  layout?: "inline" | "stacked";
+  layout?: FormActionsLayout;
   requiredHint?: string;
 };
 
 export function FormActions({
   buttons,
-  layout = "inline",
+  layout = FormActionsLayout.Inline,
   requiredHint,
 }: FormActionsProps) {
   const rootClassName =
-    layout === "stacked" ? styles.actionsMain : styles.stepActions;
+    layout === FormActionsLayout.Stacked
+      ? styles.actionsMain
+      : styles.stepActions;
 
   return (
     <div className={rootClassName}>

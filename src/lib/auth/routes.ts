@@ -1,24 +1,20 @@
 import type { Locale } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
 
-export const SIGN_IN_PATH = SITE_ROUTES.signIn;
-export const SIGN_UP_PATH = SITE_ROUTES.signUp;
-export const WORKSPACE_PATH = SITE_ROUTES.workspace;
-
 export const REDIRECT_URL_QUERY_PARAM = "redirect_url";
 
 export type AuthRouteKind = "signIn" | "signUp";
 
 export function signInPathFor(locale: Locale): string {
-  return `/${locale}${SIGN_IN_PATH}`;
+  return `/${locale}${SITE_ROUTES.SIGN_IN}`;
 }
 
 export function signUpPathFor(locale: Locale): string {
-  return `/${locale}${SIGN_UP_PATH}`;
+  return `/${locale}${SITE_ROUTES.SIGN_UP}`;
 }
 
 export function workspacePathFor(locale: Locale): string {
-  return `/${locale}${WORKSPACE_PATH}`;
+  return `/${locale}${SITE_ROUTES.WORKSPACE}`;
 }
 
 export function signInPathWithRedirect(

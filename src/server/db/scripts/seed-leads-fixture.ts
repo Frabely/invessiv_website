@@ -16,6 +16,7 @@ import {
   leadSocialProfiles,
   leadSubmissions,
 } from "../record-configuration";
+import type { ContactLeadStatus as ContactLeadStatusValue } from "@/common/constants/contact/contact-lead-statuses";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { CONTACT_BUDGET_KEY } from "@/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@/common/constants/contact/contact-goal-keys";
@@ -59,7 +60,7 @@ type LeadFixture = {
   firstName: string;
   improvements: string[];
   lastName: string;
-  leadStatus: (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
+  leadStatus: ContactLeadStatusValue;
   notes: string;
   owner: string;
   phone?: string;
@@ -103,7 +104,7 @@ type LeadRow = {
   first_name: string;
   improvements: string[];
   id: string;
-  lead_status: (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
+  lead_status: ContactLeadStatusValue;
   last_name: string;
   notes: string;
   owner: string;
