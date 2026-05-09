@@ -4,8 +4,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import type { LeadActivityDto } from "@/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@/common/contracts/leads/lead-submission.dto";
 import {

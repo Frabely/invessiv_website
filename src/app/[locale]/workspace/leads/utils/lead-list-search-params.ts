@@ -3,16 +3,16 @@ import {
   CONTACT_LEAD_STATUS_VALUES,
   type ContactLeadStatus,
 } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import {
   LEAD_SOURCES_VALUES,
   type LeadSource,
-} from "@/common/constants/leads/lead-sources";
+} from "@/common/constants/leads/sources/lead-sources";
 import {
   LEAD_SORT_VALUES,
   LeadSort,
   type LeadSort as LeadSortType,
-} from "@/common/constants/leads/lead-sort";
+} from "@/common/constants/leads/list/lead-sort";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 
 type SearchParamsInput = Record<string, string | string[] | undefined>;

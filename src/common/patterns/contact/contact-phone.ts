@@ -1,4 +1,4 @@
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 
 const CONTACT_PHONE_ALLOWED_PATTERN = /^[+0-9\s()./-]+$/;
 

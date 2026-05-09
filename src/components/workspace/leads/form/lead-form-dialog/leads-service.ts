@@ -1,4 +1,4 @@
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";

@@ -11,7 +11,7 @@ import {
   buildPaginationHref,
   getPaginationItems,
 } from "./leads-pagination.utils";
-import { PaginationItemKind } from "@/common/constants/leads/lead-pagination-item-kinds";
+import { PaginationItemKind } from "@/common/constants/leads/list/lead-pagination-item-kinds";
 import styles from "./leads-pagination.module.css";
 
 type LeadsPaginationProps = {

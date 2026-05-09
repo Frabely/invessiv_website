@@ -1,4 +1,4 @@
-﻿import { SocialPlatform } from "@/common/constants/social/social-platforms";
+import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 import type { Locale } from "@/config/i18n";
 import { LANDING_NAVIGATION } from "@/config/navigation/landing";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
@@ -30,7 +30,7 @@ export type LandingFooterContent = {
     href: string;
   }>;
   socialLinks: Array<{
-    platform: SocialPlatform;
+    platform: LeadSocialPlatform;
     href: string;
     label: string;
   }>;

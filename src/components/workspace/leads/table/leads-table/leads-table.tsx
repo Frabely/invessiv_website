@@ -1,7 +1,7 @@
 import type { Locale } from "@/config/i18n";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
-import { LeadsEmptyStateVariant } from "@/common/constants/leads/lead-empty-state-variants";
-import { LeadSort } from "@/common/constants/leads/lead-sort";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
+import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsSharedDictionary,

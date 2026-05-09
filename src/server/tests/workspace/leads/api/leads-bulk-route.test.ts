@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
 import {
   LeadBulkAction,

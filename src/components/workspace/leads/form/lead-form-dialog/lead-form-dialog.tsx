@@ -21,13 +21,13 @@ import {
 import {
   LeadErrorCode,
   LeadValidationIssueCode,
-} from "@/common/constants/leads/lead-error-codes";
+} from "@/common/constants/leads/errors/lead-error-codes";
 import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
-} from "@/common/constants/leads/lead-form-dialog-modes";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
-import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
+} from "@/common/constants/leads/forms/lead-form-dialog-modes";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
 import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
 import {

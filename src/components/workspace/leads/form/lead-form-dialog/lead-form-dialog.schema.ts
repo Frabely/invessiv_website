@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import {
   LeadAddLeadFormFieldPath,
   LeadValidationMessageCode,
   LeadZodIssueCode,
-} from "@/common/constants/leads/lead-form-validation";
-import { LeadValidationIssueCode } from "@/common/constants/leads/lead-error-codes";
-import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
+} from "@/common/constants/leads/forms/lead-form-validation";
+import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/social/lead-social-platforms";
 import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
 
 const EMAIL_PATTERN = z.string().trim().pipe(z.email());

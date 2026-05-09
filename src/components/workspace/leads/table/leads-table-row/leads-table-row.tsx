@@ -3,7 +3,7 @@
 import type { KeyboardEvent, MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/config/i18n";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsSharedDictionary,

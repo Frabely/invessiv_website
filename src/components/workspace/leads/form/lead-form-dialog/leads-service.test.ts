@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";

@@ -6,7 +6,7 @@ import type { ContactSubmissionChannel } from "@/common/contracts/contact/keys/c
 import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
-import { LeadSource } from "@/common/constants/leads/lead-sources";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/discovery-call-persist-input";

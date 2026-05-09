@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import { PostgresErrorCode } from "@/server/db/core";
 

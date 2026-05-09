@@ -1,7 +1,7 @@
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
-import { LeadRequestField } from "@/common/constants/leads/lead-request-fields";
+import { LeadRequestField } from "@/common/constants/leads/forms/lead-request-fields";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
 
 type LeadOptionalRequestFields = Omit<CreateLeadRequestDto, LeadRequestField>;

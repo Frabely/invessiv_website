@@ -1,5 +1,5 @@
-import type { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import type { LeadActorType } from "@/common/constants/leads/lead-actor-types";
+import type { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import type { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 
 export type CreateLeadActivityInput = {
   leadId: string;

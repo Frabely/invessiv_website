@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
 import type { LeadDetailMainRow } from "@/common/contracts/leads/rows/lead-detail-main-row";
 import type { LeadSocialProfileRow } from "@/common/contracts/leads/rows/lead-social-profile-row";

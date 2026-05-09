@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import type { SQL } from "drizzle-orm";
 import { buildLeadFilter } from "@/server/workspace/leads/query-handler/lead-filter.query-handler";
-import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/lead-list-defaults";
+import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/list/lead-list-defaults";
 import * as schema from "@/server/db/record-configuration";
 import { leads } from "@/server/db/record-configuration";
 

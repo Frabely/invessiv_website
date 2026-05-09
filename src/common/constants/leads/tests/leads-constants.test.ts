@@ -1,40 +1,40 @@
 import { describe, expect, it } from "vitest";
-import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
-import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/lead-activity-types";
-import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/lead-actor-types";
-import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/lead-social-platforms";
-import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
+import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/sources/lead-sources";
+import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/activity/lead-activity-types";
+import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/activity/lead-actor-types";
+import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/social/lead-social-platforms";
+import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
 import {
   LEAD_DETAIL_ENTRY_KIND_VALUES,
   LeadDetailEntryKind,
-} from "@/common/constants/leads/lead-detail-entry-kinds";
+} from "@/common/constants/leads/activity/lead-detail-entry-kinds";
 import {
   LEAD_BADGE_KIND_VALUES,
   LeadBadgeKind,
-} from "@/common/constants/leads/lead-badge-kinds";
+} from "@/common/constants/leads/badges/lead-badge-kinds";
 import {
   LEAD_BADGE_TONE_VALUES,
   LeadBadgeTone,
-} from "@/common/constants/leads/lead-badge-tones";
+} from "@/common/constants/leads/badges/lead-badge-tones";
 import {
   LEAD_LIST_QUERY_PARAM_VALUES,
   LeadListQueryParam,
-} from "@/common/constants/leads/lead-list-query-params";
+} from "@/common/constants/leads/list/lead-list-query-params";
 import { CONTACT_LEAD_STATUS_ALL } from "@/common/constants/contact/contact-lead-statuses";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
   LEAD_LIST_PAGE_SIZE,
-} from "@/common/constants/leads/lead-list-defaults";
+} from "@/common/constants/leads/list/lead-list-defaults";
 import {
   LEAD_ERROR_CODE_VALUES,
   LEAD_VALIDATION_ISSUE_CODE_VALUES,
   LeadErrorCode,
   LeadValidationIssueCode,
-} from "@/common/constants/leads/lead-error-codes";
+} from "@/common/constants/leads/errors/lead-error-codes";
 import {
   LEAD_VALIDATION_MESSAGE_CODE_VALUES,
   LeadValidationMessageCode,
-} from "@/common/constants/leads/lead-form-validation";
+} from "@/common/constants/leads/forms/lead-form-validation";
 
 describe("LEAD_SOURCES", () => {
   it("contains exactly webform, manual, import", () => {

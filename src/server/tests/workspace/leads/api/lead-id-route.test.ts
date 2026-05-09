@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import { DELETE, GET, PATCH } from "@/app/api/workspace/leads/[id]/route";
 

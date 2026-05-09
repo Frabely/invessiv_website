@@ -14,9 +14,9 @@ import {
   CONTACT_LEAD_STATUS_ALL,
   ContactLeadStatus,
 } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadBadgeKind } from "@/common/constants/leads/lead-badge-kinds";
-import type { LeadBadgeTone as LeadBadgeToneValue } from "@/common/constants/leads/lead-badge-tones";
-import { LeadBadgeTone } from "@/common/constants/leads/lead-badge-tones";
+import { LeadBadgeKind } from "@/common/constants/leads/badges/lead-badge-kinds";
+import type { LeadBadgeTone as LeadBadgeToneValue } from "@/common/constants/leads/badges/lead-badge-tones";
+import { LeadBadgeTone } from "@/common/constants/leads/badges/lead-badge-tones";
 import { LeadBadge } from "../lead-badge/lead-badge";
 
 export type LeadStatusBadgeStatus =

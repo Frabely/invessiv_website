@@ -5,8 +5,8 @@ import {
   ContactLeadStatus,
 } from "@/common/constants/contact/contact-lead-statuses";
 import { leads } from "@/server/db/record-configuration";
-import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/lead-list-defaults";
-import { LeadSort } from "@/common/constants/leads/lead-sort";
+import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/list/lead-list-defaults";
+import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 
 export type LeadFilterResult = {

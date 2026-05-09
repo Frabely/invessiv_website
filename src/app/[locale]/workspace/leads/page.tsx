@@ -9,9 +9,9 @@ import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagina
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
-import { LeadFormDialogMode } from "@/common/constants/leads/lead-form-dialog-modes";
-import { LeadSort } from "@/common/constants/leads/lead-sort";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
+import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import {
   getLeadsDetailDictionary,
   getLeadsFormDictionary,

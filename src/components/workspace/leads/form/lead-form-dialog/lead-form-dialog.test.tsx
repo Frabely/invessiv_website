@@ -10,8 +10,8 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsFormDictionary,

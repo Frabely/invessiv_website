@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
-import { LeadValidationMessageCode } from "@/common/constants/leads/lead-form-validation";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
 import { leadSchema } from "@/server/workspace/leads/services/shared/lead-schema";
 import {
   addMissingLeadNameIssue,

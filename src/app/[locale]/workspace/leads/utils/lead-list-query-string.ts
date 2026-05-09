@@ -1,6 +1,6 @@
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
-import { LEAD_SORT_VALUES } from "@/common/constants/leads/lead-sort";
+import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
 
 type SearchParamsInput = Record<string, string | string[] | undefined>;
 

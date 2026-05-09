@@ -2,7 +2,7 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { updateLead } from "@/server/workspace/leads/command-handler/update-lead.command-handler";

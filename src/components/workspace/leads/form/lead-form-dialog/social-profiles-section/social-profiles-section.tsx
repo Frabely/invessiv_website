@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   LEAD_SOCIAL_PLATFORMS_VALUES,
   type LeadSocialPlatform,
-} from "@/common/constants/leads/lead-social-platforms";
+} from "@/common/constants/leads/social/lead-social-platforms";
 import {
   ButtonControl,
   PrimaryCtaButton,

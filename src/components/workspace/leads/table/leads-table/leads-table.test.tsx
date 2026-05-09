@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
-import { LeadsEmptyStateVariant } from "@/common/constants/leads/lead-empty-state-variants";
+import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
 import {
   getLeadsSharedDictionary,
   getLeadsTableDictionary,

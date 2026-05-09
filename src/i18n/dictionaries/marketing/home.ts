@@ -4,7 +4,7 @@
   type SectionId,
 } from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
-import { SocialPlatform } from "@/common/constants/social/social-platforms";
+import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 import {
   COMPANY,
   COMPANY_CALENDLY,
@@ -261,7 +261,7 @@ export type FooterColumnCopy = {
 };
 
 export type FooterSocialLinkCopy = {
-  platform: SocialPlatform;
+  platform: LeadSocialPlatform;
   href: string;
   label: string;
 };
@@ -1507,12 +1507,12 @@ const HOME_SECTIONS = [
         footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
         footerSocialLinks: [
           {
-            platform: SocialPlatform.LinkedIn,
+            platform: LeadSocialPlatform.Linkedin,
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
           {
-            platform: SocialPlatform.Instagram,
+            platform: LeadSocialPlatform.Instagram,
             href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },
@@ -1543,12 +1543,12 @@ const HOME_SECTIONS = [
         footerCopyright: "© 2026 Invessiv. All rights reserved.",
         footerSocialLinks: [
           {
-            platform: SocialPlatform.LinkedIn,
+            platform: LeadSocialPlatform.Linkedin,
             href: COMPANY_SOCIAL_LINKEDIN,
             label: "LinkedIn",
           },
           {
-            platform: SocialPlatform.Instagram,
+            platform: LeadSocialPlatform.Instagram,
             href: COMPANY_SOCIAL_INSTAGRAM,
             label: "Instagram",
           },

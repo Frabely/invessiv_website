@@ -16,11 +16,11 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import {
   LEAD_SOURCES_VALUES,
   type LeadSource,
-} from "@/common/constants/leads/lead-sources";
+} from "@/common/constants/leads/sources/lead-sources";
 import type {
   LeadsSharedDictionary,
   LeadsToolbarDictionary,

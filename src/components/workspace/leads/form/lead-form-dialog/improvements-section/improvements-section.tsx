@@ -8,7 +8,7 @@ import {
 } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import {
   ButtonControl,
   PrimaryCtaButton,

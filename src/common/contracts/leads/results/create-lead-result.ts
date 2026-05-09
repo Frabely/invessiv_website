@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 
 export type CreateLeadResult =

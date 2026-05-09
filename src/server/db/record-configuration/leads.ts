@@ -11,8 +11,8 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/lead-field-limits";
-import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/sources/lead-sources";
 import { sqlCheckIn } from "@/server/db/core";
 import { leadCategories } from "@/server/db/record-configuration/lead-categories";
 
