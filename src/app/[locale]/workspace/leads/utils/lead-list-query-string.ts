@@ -67,6 +67,7 @@ export function buildLeadListCloseHref(
   for (const [key, value] of Object.entries(searchParams)) {
     if (
       key === LeadListQueryParam.Selected ||
+      key === LeadListQueryParam.Edit ||
       !supportedParams.has(key) ||
       value === undefined
     ) {
@@ -87,14 +88,15 @@ export function buildLeadListCloseHref(
   return queryString ? `${basePath}?${queryString}` : basePath;
 }
 
-export function buildLeadCreateHref(
-  basePath: string,
-  searchParams: SearchParamsInput,
-): string {
+function withoutDialogParams(searchParams: SearchParamsInput): URLSearchParams {
   const params = new URLSearchParams();
 
   for (const [key, value] of Object.entries(searchParams)) {
-    if (key === LeadListQueryParam.Create || value === undefined) {
+    if (
+      key === LeadListQueryParam.Create ||
+      key === LeadListQueryParam.Edit ||
+      value === undefined
+    ) {
       continue;
     }
 
@@ -108,8 +110,36 @@ export function buildLeadCreateHref(
     params.set(key, value);
   }
 
-  params.set(LeadListQueryParam.Create, "");
+  return params;
+}
 
+function buildHref(basePath: string, params: URLSearchParams): string {
   const queryString = params.toString();
   return queryString ? `${basePath}?${queryString}` : basePath;
+}
+
+export function buildLeadCreateHref(
+  basePath: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = withoutDialogParams(searchParams);
+  params.set(LeadListQueryParam.Create, "");
+  return buildHref(basePath, params);
+}
+
+export function buildLeadEditHref(
+  basePath: string,
+  leadId: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = withoutDialogParams(searchParams);
+  params.set(LeadListQueryParam.Edit, leadId);
+  return buildHref(basePath, params);
+}
+
+export function buildLeadDialogCloseHref(
+  basePath: string,
+  searchParams: SearchParamsInput,
+): string {
+  return buildHref(basePath, withoutDialogParams(searchParams));
 }

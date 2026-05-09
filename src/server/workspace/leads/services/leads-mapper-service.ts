@@ -1,11 +1,13 @@
+import type { LeadActivityDto } from "@/common/contracts/leads/lead-activity.dto";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
-import type { LeadActivityDto } from "@/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@/common/contracts/leads/lead-submission.dto";
 import type { LeadDetailMainRow } from "@/common/contracts/leads/rows/lead-detail-main-row";
 import type { LeadSocialProfileRow } from "@/common/contracts/leads/rows/lead-social-profile-row";
 import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
 import type { LeadSubmissionRow } from "@/common/contracts/leads/rows/lead-submission-row";
+import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import type { LeadSummaryRow } from "@/common/contracts/leads/rows/lead-summary-row";
 import { mapCategoryRowToDto } from "@/server/workspace/leads/services/lead-category/lead-category-mapping-service";
 
 function mapSocialProfileRowToDto(
@@ -45,7 +47,30 @@ function mapSubmissionRowToDto(row: LeadSubmissionRow): LeadSubmissionDto {
   };
 }
 
-export function mapLeadDetailRowToDto(
+function mapLeadRowToSummaryDto(
+  row: LeadSummaryRow,
+  socialProfiles: LeadSocialProfileDto[] = [],
+): LeadSummaryDto {
+  return {
+    id: row.id,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    companyName: row.company_name,
+    email: row.email,
+    phone: row.phone,
+    websiteUrl: row.website_url,
+    score: row.score,
+    source: row.source,
+    leadStatus: row.lead_status,
+    owner: row.owner,
+    createdAt: row.created_at.toISOString(),
+    updatedAt: row.updated_at.toISOString(),
+    category: mapCategoryRowToDto(row),
+    socialProfiles,
+  };
+}
+
+function mapLeadDetailRowToDto(
   mainRow: LeadDetailMainRow,
   socialProfileRows: LeadSocialProfileRow[],
   activityRows: LeadActivityRow[],
@@ -74,3 +99,8 @@ export function mapLeadDetailRowToDto(
     submissions: submissionRows.map(mapSubmissionRowToDto),
   };
 }
+
+export const leadsMapperService = {
+  mapLeadDetailRowToDto,
+  mapLeadRowToSummaryDto,
+};

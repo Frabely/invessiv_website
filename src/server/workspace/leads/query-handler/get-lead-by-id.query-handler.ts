@@ -8,7 +8,7 @@ import {
   leadSubmissions,
 } from "@/server/db/record-configuration";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import { mapLeadDetailRowToDto } from "@/server/workspace/leads/services/lead-detail/lead-detail-mapping-service";
+import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 
 export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
   const db = getDrizzleDatabaseClient();
@@ -84,7 +84,7 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
   const leadRow = leadRows[0];
   if (!leadRow) return null;
 
-  return mapLeadDetailRowToDto(
+  return leadsMapperService.mapLeadDetailRowToDto(
     leadRow,
     socialProfiles,
     activities,
