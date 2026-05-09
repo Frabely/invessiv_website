@@ -23,10 +23,6 @@ const authRoutePathByKind: Record<AuthRouteKind, (locale: Locale) => string> = {
   [AuthRouteKind.SignUp]: signUpPathFor,
 };
 
-export function generateAuthStaticParams() {
-  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
-}
-
 export async function generateAuthMetadata(
   locale: string,
   routeKind: AuthRouteKind,

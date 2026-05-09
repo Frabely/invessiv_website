@@ -9,19 +9,14 @@ import {
   signUpPathFor,
   workspacePathFor,
 } from "@/lib/auth/routes";
-import {
-  AuthRouteKind,
-  generateAuthMetadata,
-  generateAuthStaticParams,
-} from "../../auth-route-metadata";
+import { AuthRouteKind, generateAuthMetadata } from "../../auth-route-metadata";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type SignInPageProps = {
   params: Promise<{ locale: string; rest?: string[] }>;
 };
-
-export function generateStaticParams() {
-  return generateAuthStaticParams();
-}
 
 export async function generateMetadata({
   params,
