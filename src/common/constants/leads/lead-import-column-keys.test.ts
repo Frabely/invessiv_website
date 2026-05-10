@@ -19,6 +19,7 @@ describe("LeadImportColumnKey", () => {
       LeadImportColumnKey.LinkedinUrl,
       LeadImportColumnKey.InstagramUrl,
       LeadImportColumnKey.YoutubeUrl,
+      LeadImportColumnKey.Category,
       LeadImportColumnKey.CategoryId,
       LeadImportColumnKey.Score,
       LeadImportColumnKey.Status,

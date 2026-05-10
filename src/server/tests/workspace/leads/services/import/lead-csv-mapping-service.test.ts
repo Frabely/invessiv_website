@@ -24,10 +24,10 @@ describe("mapHeadersToColumns", () => {
       null,
       LeadImportColumnKey.FirstName,
       null,
-      null,
+      LeadImportColumnKey.Category,
       LeadImportColumnKey.Status,
     ]);
-    expect(result.ignored).toEqual(["Email", "email", "category"]);
+    expect(result.ignored).toEqual(["Email", "email"]);
   });
 });
 
@@ -65,6 +65,7 @@ describe("mapRowToRaw", () => {
       linkedin_url: undefined,
       instagram_url: undefined,
       youtube_url: undefined,
+      category: undefined,
       category_id: undefined,
       score: undefined,
       status: undefined,

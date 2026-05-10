@@ -11,6 +11,7 @@ export interface RawLeadImportRow {
   linkedin_url?: string;
   instagram_url?: string;
   youtube_url?: string;
+  category?: string;
   category_id?: string;
   score?: string;
   status?: string;

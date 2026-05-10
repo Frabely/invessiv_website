@@ -75,6 +75,7 @@ export const leadImportRowSchema = z.object({
   linkedin_url: leadOptionalTextSchema,
   instagram_url: leadOptionalTextSchema,
   youtube_url: leadOptionalTextSchema,
+  category: leadOptionalTextSchema,
   category_id: leadOptionalTextSchema,
   score: leadOptionalTextSchema,
   status: leadOptionalTextSchema,
@@ -160,6 +161,7 @@ function buildValidatedRow(
     rowIndex,
     LeadImportColumnKey.CategoryId,
   );
+  const categorySlug = trimOptionalValue(raw.category);
   const scoreResult = validateImportOptionalScore(raw.score, rowIndex);
   const improvements = parseImprovements(raw.improvements, rowIndex, issues);
   const statusResult = validateImportStatus(raw.status, rowIndex);
@@ -204,6 +206,7 @@ function buildValidatedRow(
     notes,
     external_guid: externalGuidResult.value,
     website_url: trimOptionalValue(raw.website_url),
+    category_slug: categorySlug?.toLowerCase(),
     category_id: categoryIdResult.value,
     score: scoreResult.value,
     status: statusResult.value,

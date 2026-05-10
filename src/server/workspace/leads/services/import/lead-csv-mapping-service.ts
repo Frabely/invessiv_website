@@ -84,6 +84,7 @@ export function mapRowToRaw(
     linkedin_url: raw.linkedin_url,
     instagram_url: raw.instagram_url,
     youtube_url: raw.youtube_url,
+    category: raw.category,
     category_id: raw.category_id,
     score: raw.score,
     status: raw.status,

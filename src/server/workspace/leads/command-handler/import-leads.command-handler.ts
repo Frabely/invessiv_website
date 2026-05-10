@@ -113,6 +113,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
 
   let existingKeys: Awaited<ReturnType<typeof loadExistingKeys>>;
   let categoryIdSet: Set<string>;
+  let categorySlugToId: Map<string, string>;
 
   try {
     const [keys, categories] = await Promise.all([
@@ -121,6 +122,9 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
     ]);
     existingKeys = keys;
     categoryIdSet = new Set(categories.map((c) => c.id));
+    categorySlugToId = new Map(
+      categories.map((c) => [c.slug.toLowerCase(), c.id]),
+    );
   } catch {
     return { ok: false, error: LeadImportErrorCode.Internal };
   }
@@ -142,9 +146,16 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
     const { rowIndex, emailLower, externalGuid, validatedValue, issues } =
       entry;
 
+    const resolvedCategoryId =
+      validatedValue.category_id ??
+      (validatedValue.category_slug !== undefined
+        ? categorySlugToId.get(validatedValue.category_slug)
+        : undefined);
+
     if (
+      resolvedCategoryId !== undefined &&
       validatedValue.category_id !== undefined &&
-      !categoryIdSet.has(validatedValue.category_id)
+      !categoryIdSet.has(resolvedCategoryId)
     ) {
       allRowIssues.push(
         ...issues,
@@ -205,7 +216,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
             company_name: validatedValue.company_name,
             phone: validatedValue.phone,
             website_url: validatedValue.website_url,
-            category_id: validatedValue.category_id,
+            category_id: resolvedCategoryId,
             score: validatedValue.score,
             owner: validatedValue.owner,
             notes: validatedValue.notes,

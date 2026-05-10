@@ -131,7 +131,7 @@ describe("importLeads", () => {
     }
   });
 
-  it("imports 3 leads from example CSV and reports ignored 'category' column", async () => {
+  it("imports 3 leads from example CSV, category column is recognized (not ignored)", async () => {
     vi.resetModules();
     setupEmptyDb();
     const { importLeads } =
@@ -147,7 +147,7 @@ describe("importLeads", () => {
     expect(report.importedCount).toBe(3);
     expect(report.skippedCount).toBe(0);
     expect(report.errorCount).toBe(0);
-    expect(report.ignoredColumns).toContain("category");
+    expect(report.ignoredColumns).not.toContain("category");
     expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(3);
   });
 

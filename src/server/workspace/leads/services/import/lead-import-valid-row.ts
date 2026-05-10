@@ -11,6 +11,7 @@ export interface ValidatedLeadImportRow {
   notes?: string;
   external_guid?: string;
   website_url?: string;
+  category_slug?: string;
   category_id?: string;
   score?: number;
   status?: ContactLeadStatus;

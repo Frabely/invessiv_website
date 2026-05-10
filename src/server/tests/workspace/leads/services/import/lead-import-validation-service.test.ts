@@ -13,11 +13,12 @@ import type { RawLeadImportRow } from "@/server/workspace/leads/services/import/
 
 vi.mock("server-only", () => ({}));
 
-function createContext() {
+function createContext(categorySlugToId = new Map<string, string>()) {
   return {
     rowIndex: 1,
     seenEmails: new Set<string>(),
     seenExternalGuids: new Set<string>(),
+    categorySlugToId,
   };
 }
 
