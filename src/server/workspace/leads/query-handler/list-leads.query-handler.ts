@@ -7,7 +7,7 @@ import {
 } from "@/server/db/record-configuration";
 import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
-import { mapLeadRowToSummaryDto } from "@/server/workspace/leads/services/lead-summary/lead-summary-mapping-service";
+import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
 import { buildLeadFilter } from "./lead-filter.query-handler";
 
@@ -75,7 +75,10 @@ export async function listLeads(
 
   return {
     rows: rows.map((row) =>
-      mapLeadRowToSummaryDto(row, socialProfilesByLead.get(row.id) ?? []),
+      leadsMapperService.mapLeadRowToSummaryDto(
+        row,
+        socialProfilesByLead.get(row.id) ?? [],
+      ),
     ),
     total: Number(countRows[0]?.count ?? 0),
     page,

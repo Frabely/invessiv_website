@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
+import {
+  CONTACT_LEAD_STATUS_ALL,
+  CONTACT_LEAD_STATUS_VALUES,
+} from "@/common/constants/contact/contact-lead-statuses";
 
 describe("CONTACT_LEAD_STATUS_VALUES", () => {
   it("contains all 8 statuses", () => {
@@ -42,5 +45,11 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
     for (const status of expected) {
       expect(CONTACT_LEAD_STATUS_VALUES).toContain(status);
     }
+  });
+});
+
+describe("CONTACT_LEAD_STATUS_ALL", () => {
+  it("exposes the all filter value", () => {
+    expect(CONTACT_LEAD_STATUS_ALL).toBe("all");
   });
 });

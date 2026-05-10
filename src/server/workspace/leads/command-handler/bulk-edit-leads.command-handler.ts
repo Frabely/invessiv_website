@@ -2,8 +2,8 @@ import "server-only";
 import { inArray } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { BulkEditLeadsResult } from "@/common/contracts/leads/results/bulk-edit-leads-result";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
@@ -44,6 +44,10 @@ export async function bulkEditLeads(
         leadId: row.id,
         type: LeadActivityType.StatusChange,
         body: `${row.lead_status} → ${input.status}`,
+        metadata: {
+          previous_status: row.lead_status,
+          next_status: input.status,
+        },
         actorType: LeadActorType.System,
       });
     }

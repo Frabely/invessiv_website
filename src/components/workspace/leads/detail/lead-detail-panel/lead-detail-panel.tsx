@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
@@ -16,11 +18,13 @@ import {
   formatLeadCreatedAt,
   getLeadDisplayName,
 } from "@/components/workspace/leads/table/lead-table-utils";
+import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
 
 export type LeadDetailPanelProps = {
   closeHref: string;
   content: LeadsDetailDictionary;
+  editHref: string;
   lead: LeadDetailDto;
   locale: Locale;
   sharedContent: LeadsSharedDictionary;
@@ -79,6 +83,7 @@ function getPhoneHref(phone: string | null): string | undefined {
 export function LeadDetailPanel({
   closeHref,
   content,
+  editHref,
   lead,
   locale,
   sharedContent,
@@ -107,8 +112,22 @@ export function LeadDetailPanel({
           </a>
         </div>
 
-        <Link className={styles.closeButton} href={closeHref}>
-          {content.actions.close}
+        <Link
+          aria-label={content.actions.closeAriaLabel}
+          className={styles.closeButton}
+          href={closeHref}
+          title={content.actions.closeAriaLabel}
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+        </Link>
+
+        <Link
+          aria-label={content.actions.edit}
+          className={styles.editIconLink}
+          href={editHref}
+          title={content.actions.edit}
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
         </Link>
       </header>
 
@@ -261,7 +280,13 @@ export function LeadDetailPanel({
           </button>
         </div>
 
-        <p className={styles.emptyText}>{content.activity.placeholder}</p>
+        <LeadDetailActivities
+          activities={lead.activities}
+          content={content}
+          locale={locale}
+          sharedContent={sharedContent}
+          submissions={lead.submissions}
+        />
       </section>
     </aside>
   );

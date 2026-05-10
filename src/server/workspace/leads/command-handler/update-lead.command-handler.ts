@@ -2,9 +2,9 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads, leadSocialProfiles } from "@/server/db/record-configuration";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
@@ -62,7 +62,11 @@ export async function updateLead(
         await createLeadActivity(tx, {
           leadId,
           type: LeadActivityType.StatusChange,
-          body: `${existing.leadStatus} -> ${data.lead_status}`,
+          body: `${existing.leadStatus} → ${data.lead_status}`,
+          metadata: {
+            previous_status: existing.leadStatus,
+            next_status: data.lead_status,
+          },
           actorType: LeadActorType.System,
         });
       }

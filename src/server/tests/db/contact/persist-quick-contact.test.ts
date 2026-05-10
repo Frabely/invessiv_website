@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadSource } from "@/common/constants/leads/lead-sources";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 
 const {
   getDrizzleDatabaseClientMock,

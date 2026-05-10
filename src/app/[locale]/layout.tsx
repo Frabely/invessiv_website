@@ -15,6 +15,9 @@ import {
   THEME_STORAGE_KEY,
 } from "@/lib/theme/theme";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const googleSiteVerification =
   process.env.GOOGLE_SITE_VERIFICATION ??
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;

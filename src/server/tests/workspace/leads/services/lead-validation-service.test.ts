@@ -223,6 +223,21 @@ describe("updateLeadSchema", () => {
     expect(updateLeadSchema.safeParse({}).success).toBe(true);
   });
 
+  it("accepts null for nullable scalar fields", () => {
+    expect(
+      updateLeadSchema.safeParse({
+        first_name: null,
+        last_name: null,
+        notes: null,
+        owner: null,
+        phone: null,
+        score: null,
+        website_url: null,
+        company_name: "ACME GmbH",
+      }).success,
+    ).toBe(true);
+  });
+
   it("accepts a partial update with only email", () => {
     expect(
       updateLeadSchema.safeParse({ email: "new@example.com" }).success,
@@ -245,13 +260,20 @@ describe("updateLeadSchema", () => {
     );
   });
 
+  it("rejects null email in a partial update", () => {
+    expect(updateLeadSchema.safeParse({ email: null }).success).toBe(false);
+  });
+
   it("rejects score out of range in a partial update", () => {
     expect(updateLeadSchema.safeParse({ score: 101 }).success).toBe(false);
   });
 
   it("rejects explicitly clearing both last_name and company_name", () => {
     expect(
-      updateLeadSchema.safeParse({ last_name: "", company_name: "" }).success,
+      updateLeadSchema.safeParse({
+        last_name: null,
+        company_name: null,
+      }).success,
     ).toBe(false);
   });
 
@@ -274,7 +296,7 @@ describe("updateLeadValidationService", () => {
 
   it("rejects a patch that would clear the only remaining name field", () => {
     const result = updateLeadValidationService.validate(
-      { last_name: "" },
+      { last_name: null },
       existingLead,
     );
 
@@ -283,7 +305,7 @@ describe("updateLeadValidationService", () => {
 
   it("accepts clearing last_name when company_name remains present", () => {
     const result = updateLeadValidationService.validate(
-      { last_name: "" },
+      { last_name: null },
       {
         companyName: "ACME GmbH",
         email: "max@example.com",

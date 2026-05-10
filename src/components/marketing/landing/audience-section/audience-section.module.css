@@ -189,6 +189,10 @@
     font-size: clamp(1.85rem, 7vw, 2.6rem);
   }
 
+  .ctaWrap {
+    width: 100%;
+  }
+
   .pillList {
     gap: 0.5rem;
   }
@@ -206,6 +210,10 @@
 
   .pillLabel {
     white-space: normal;
+  }
+
+  .cta {
+    width: 100%;
   }
 }
 

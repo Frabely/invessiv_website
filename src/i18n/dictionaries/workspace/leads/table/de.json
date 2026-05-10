@@ -29,6 +29,10 @@
   "row": {
     "open": "Lead öffnen"
   },
+  "actions": {
+    "label": "Aktionen",
+    "edit": "Lead bearbeiten"
+  },
   "relativeTime": {
     "justNow": "gerade eben",
     "hoursAgo": "vor {count} Std.",

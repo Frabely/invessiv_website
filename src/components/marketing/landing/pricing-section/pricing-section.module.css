@@ -360,6 +360,14 @@
   .price {
     justify-items: start;
   }
+
+  .afterCard {
+    width: 100%;
+  }
+
+  .cta {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {

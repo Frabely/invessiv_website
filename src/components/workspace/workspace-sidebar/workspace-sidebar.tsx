@@ -68,7 +68,7 @@ export function WorkspaceSidebar({
           <ul className={styles.list}>
             {WORKSPACE_SIDEBAR_ITEMS.map((item) => {
               const isDisabled = item.path === null;
-              const href = `/${locale}${SITE_ROUTES.workspace}${item.path ?? ""}`;
+              const href = `/${locale}${SITE_ROUTES.WORKSPACE}${item.path ?? ""}`;
               const isActive =
                 !isDisabled &&
                 (pathname === href || pathname.startsWith(`${href}/`));

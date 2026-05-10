@@ -12,6 +12,8 @@ export const ContactLeadStatus = {
 export type ContactLeadStatus =
   (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
 
+export const CONTACT_LEAD_STATUS_ALL = "all" as const;
+
 export const CONTACT_LEAD_STATUS_VALUES = [
   ContactLeadStatus.New,
   ContactLeadStatus.Contacted,

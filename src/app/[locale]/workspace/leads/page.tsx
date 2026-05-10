@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { AddLeadDialog } from "@/components/workspace/leads/form/add-lead-dialog/add-lead-dialog";
+import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
 import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
@@ -9,8 +9,12 @@ import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagina
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
-import { LeadSort } from "@/common/constants/leads/lead-sort";
+import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
+import {
+  LeadsEmptyStateVariant,
+  type LeadsEmptyStateVariant as LeadsEmptyStateVariantValue,
+} from "@/common/constants/leads/list/lead-empty-state-variants";
+import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import {
   getLeadsDetailDictionary,
   getLeadsFormDictionary,
@@ -27,14 +31,18 @@ import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.que
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
   buildLeadCreateHref,
+  buildLeadDetailPanelEditHref,
+  buildLeadDialogCloseHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
-} from "./utils/lead-list-query-string";
+  getLeadFormDialogMode,
+} from "@/lib/workspace/leads/lead-list-query-string";
 import {
   hasActiveLeadFilters,
+  parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
-} from "./utils/lead-list-search-params";
+} from "@/server/workspace/leads/utils/lead-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -103,13 +111,22 @@ export default async function LeadsPage({
     resolvedSort,
   );
   const hasFilters = hasActiveLeadFilters(parsedFilters);
+  const emptyStateVariant: LeadsEmptyStateVariantValue = hasFilters
+    ? LeadsEmptyStateVariant.Filtered
+    : LeadsEmptyStateVariant.Empty;
   const categories = await getLeadCategories();
   const basePath = `/${locale}${LEADS_BASE_PATH}`;
   const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
   const selectedLead = selectedLeadId
     ? await getLeadById(selectedLeadId)
     : null;
+  const editLeadId = parseEditLeadId(resolvedSearchParams);
+  const editLead = editLeadId ? await getLeadById(editLeadId) : null;
   const detailCloseHref = buildLeadListCloseHref(
+    basePath,
+    resolvedSearchParams,
+  );
+  const dialogCloseHref = buildLeadDialogCloseHref(
     basePath,
     resolvedSearchParams,
   );
@@ -118,10 +135,19 @@ export default async function LeadsPage({
     redirect(detailCloseHref);
   }
 
+  if (editLeadId && !editLead) {
+    redirect(dialogCloseHref);
+  }
+
   const detailPanelProps = selectedLead
     ? {
         closeHref: detailCloseHref,
         content: detailContent,
+        editHref: buildLeadDetailPanelEditHref(
+          basePath,
+          selectedLead.id,
+          resolvedSearchParams,
+        ),
         lead: selectedLead,
         locale: locale as Locale,
         sharedContent,
@@ -137,10 +163,13 @@ export default async function LeadsPage({
         ] ?? category.labelKey,
     }),
   );
-  const addLeadDialogOpen = Object.prototype.hasOwnProperty.call(
-    resolvedSearchParams,
-    LeadListQueryParam.Create,
-  );
+  const requestedDialogMode = getLeadFormDialogMode(resolvedSearchParams);
+  const dialogMode = editLead
+    ? LeadFormDialogMode.Edit
+    : LeadFormDialogMode.Create;
+  const dialogOpen =
+    requestedDialogMode === LeadFormDialogMode.Create ||
+    (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead));
 
   return (
     <>
@@ -168,12 +197,13 @@ export default async function LeadsPage({
                   title: hasFilters
                     ? paginationContent.emptyState.noResultsTitle
                     : paginationContent.emptyState.noLeadsTitle,
-                  variant: hasFilters ? "filtered" : "empty",
+                  variant: emptyStateVariant,
                 }
               : undefined
           }
           locale={locale as Locale}
           queryString={queryString}
+          currentSearchParams={resolvedSearchParams}
           rows={leadList.rows}
           sharedContent={sharedContent}
           tableContent={tableContent}
@@ -187,10 +217,13 @@ export default async function LeadsPage({
           total={leadList.total}
         />
       </LeadsPageShell>
-      <AddLeadDialog
+      <LeadFormDialog
         categories={categoryOptions}
         content={formContent}
-        open={addLeadDialogOpen}
+        editLeadId={editLead?.id}
+        initialLead={editLead ?? undefined}
+        mode={dialogMode}
+        open={dialogOpen}
         sharedContent={sharedContent}
       />
     </>

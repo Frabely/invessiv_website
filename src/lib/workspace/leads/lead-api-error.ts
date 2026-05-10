@@ -1,4 +1,4 @@
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 
 const MESSAGES: Record<LeadErrorCode, string> = {
   [LeadErrorCode.NotFound]: "Lead not found",

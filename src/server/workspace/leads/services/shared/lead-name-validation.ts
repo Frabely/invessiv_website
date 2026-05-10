@@ -1,5 +1,5 @@
 import { type RefinementCtx, z } from "zod";
-import { LeadValidationIssueCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { LeadNameShape } from "@/common/contracts/leads/validation/lead-name-shape";
 
 const ZOD_CUSTOM_ISSUE_CODE = "custom" as const;

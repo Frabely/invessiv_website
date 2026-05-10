@@ -54,6 +54,7 @@ describe("LeadDetailPanel", () => {
       <LeadDetailPanel
         closeHref="/de/workspace/leads?status=qualified&page=2"
         content={getLeadsDetailDictionary("de")}
+        editHref={`/de/workspace/leads?status=qualified&page=2&mode=edit&edit=${leadFixture.id}`}
         lead={leadFixture}
         locale="de"
         sharedContent={getLeadsSharedDictionary("de")}
@@ -83,6 +84,7 @@ describe("LeadDetailPanel", () => {
       <LeadDetailPanel
         closeHref="/en/workspace/leads"
         content={getLeadsDetailDictionary("en")}
+        editHref={`/en/workspace/leads?mode=edit&edit=${leadFixture.id}`}
         lead={{
           ...leadFixture,
           firstName: null,
@@ -109,5 +111,6 @@ describe("LeadDetailPanel", () => {
     expect(screen.getByText("No notes yet")).toBeInTheDocument();
     expect(screen.getByText("No improvements yet")).toBeInTheDocument();
     expect(screen.getByText("No social profiles")).toBeInTheDocument();
+    expect(screen.getByText("No activities yet")).toBeInTheDocument();
   });
 });

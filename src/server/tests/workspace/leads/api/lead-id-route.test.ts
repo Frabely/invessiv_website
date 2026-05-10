@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import { DELETE, GET, PATCH } from "@/app/api/workspace/leads/[id]/route";
 
@@ -199,6 +199,32 @@ describe("PATCH /api/workspace/leads/[id]", () => {
     );
 
     expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, { score: 80 });
+  });
+
+  it("forwards nullable and empty-array update payloads", async () => {
+    setupAuthenticatedUser();
+    mockUpdateLead.mockResolvedValue({ ok: true, lead: STUB_LEAD });
+
+    await PATCH(
+      makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_name: null,
+          improvements: [],
+          notes: null,
+          social_profiles: [],
+        }),
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, {
+      company_name: null,
+      improvements: [],
+      notes: null,
+      social_profiles: [],
+    });
   });
 
   it("returns 404 when the lead does not exist", async () => {

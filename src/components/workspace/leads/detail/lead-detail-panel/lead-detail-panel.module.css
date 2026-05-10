@@ -75,6 +75,33 @@
   backdrop-filter: blur(14px);
 }
 
+.editIconLink {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+  color: var(--lead-detail-text-muted);
+  text-decoration: none;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.editIconLink:hover {
+  color: var(--lead-detail-text);
+  background: color-mix(in srgb, var(--lead-detail-accent) 14%, transparent);
+}
+
+.editIconLink:focus-visible {
+  outline: 2px solid var(--lead-detail-focus);
+  outline-offset: 2px;
+}
+
 .heading {
   min-width: 0;
 }
@@ -212,7 +239,25 @@
   outline-offset: 2px;
 }
 
-.closeButton,
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  min-height: 2rem;
+  padding: 0;
+  border: 1px solid var(--lead-detail-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--lead-detail-text);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
 .disabledButton {
   display: inline-flex;
   align-items: center;
@@ -296,6 +341,17 @@
 
   .dateFields {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .panel {
+    height: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    box-shadow: none;
   }
 }
 

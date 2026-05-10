@@ -5,28 +5,24 @@ import { AuthClerkPage } from "@/components/auth/auth-clerk-page/auth-clerk-page
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getAuthContent } from "@/i18n/dictionaries/auth";
 import {
-  workspacePathFor,
   signInPathFor,
   signUpPathFor,
+  workspacePathFor,
 } from "@/lib/auth/routes";
-import {
-  generateAuthMetadata,
-  generateAuthStaticParams,
-} from "../../auth-route-metadata";
+import { AuthRouteKind, generateAuthMetadata } from "../../auth-route-metadata";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type SignInPageProps = {
   params: Promise<{ locale: string; rest?: string[] }>;
 };
 
-export function generateStaticParams() {
-  return generateAuthStaticParams();
-}
-
 export async function generateMetadata({
   params,
 }: SignInPageProps): Promise<Metadata> {
   const { locale } = await params;
-  return generateAuthMetadata(locale, "signIn");
+  return generateAuthMetadata(locale, AuthRouteKind.SignIn);
 }
 
 export default async function SignInPage({ params }: SignInPageProps) {

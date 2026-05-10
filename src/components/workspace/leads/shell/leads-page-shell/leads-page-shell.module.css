@@ -43,14 +43,32 @@
 }
 
 @media (max-width: 1024px) {
+  .shell {
+    height: auto;
+  }
+
   .contentRow {
     flex-direction: column;
     overflow: visible;
+    flex: none;
   }
 
+  .contentSlot,
   .detailPanelSlot {
     flex: none;
     width: 100%;
     max-height: none;
+  }
+
+  .contentSlot {
+    overflow: visible;
+  }
+
+  .detailPanelSlot {
+    position: fixed;
+    inset: var(--workspace-header-height, 64px) 0 0;
+    z-index: 15;
+    overflow: hidden;
+    background: var(--color-bg);
   }
 }

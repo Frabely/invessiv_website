@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { PostgresErrorCode } from "@/server/db/core";
 
 const {
@@ -132,6 +132,29 @@ describe("updateLead", () => {
     expect(updateCaptures[0].improvements).toEqual(["Mehr Social Proof"]);
   });
 
+  it("writes null for cleared scalar fields and keeps empty arrays explicit", async () => {
+    vi.resetModules();
+    const { updateCaptures, getDeleteCount } = setupSuccessfulDb();
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+
+    await updateLead("lead-existing-uuid", {
+      company_name: null,
+      last_name: "Mustermann",
+      notes: null,
+      improvements: [],
+      social_profiles: [],
+    });
+
+    expect(updateCaptures).toHaveLength(1);
+    expect(updateCaptures[0].company_name).toBeNull();
+    expect(updateCaptures[0].notes).toBeNull();
+    expect(updateCaptures[0].improvements).toEqual([]);
+    expect(getDeleteCount()).toBe(1);
+  });
+
   it("sets updated_at explicitly in the update payload", async () => {
     vi.resetModules();
     const { updateCaptures } = setupSuccessfulDb();
@@ -261,7 +284,7 @@ describe("updateLead", () => {
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
   });
 
-  it("logs status_change activity with body '<old> -> <new>' when lead_status changes", async () => {
+  it("logs status_change activity with body '<old> → <new>' and transition metadata when lead_status changes", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
@@ -287,7 +310,11 @@ describe("updateLead", () => {
       expect.any(Object),
       expect.objectContaining({
         type: "status_change",
-        body: "new -> qualified",
+        body: "new → qualified",
+        metadata: {
+          previous_status: "new",
+          next_status: "qualified",
+        },
       }),
     );
   });

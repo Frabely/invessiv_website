@@ -4,6 +4,9 @@ import { AuthFrame } from "@/components/auth/auth-frame/auth-frame";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getAuthContent } from "@/i18n/dictionaries/auth";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type AuthLayoutProps = {
   children: ReactNode;
   params: Promise<{ locale: string }>;

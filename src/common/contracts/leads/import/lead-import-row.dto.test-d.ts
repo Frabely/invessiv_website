@@ -1,4 +1,4 @@
-import type { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
+import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 import type { LeadImportRowDto } from "./lead-import-row.dto";
 
 type Expect<T extends true> = T;

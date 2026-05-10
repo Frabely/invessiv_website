@@ -3,7 +3,7 @@ import "server-only";
 import { desc, eq } from "drizzle-orm";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import type { CreateLeadActivityInput } from "@/common/contracts/leads/create-lead-activity-input";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
@@ -19,7 +19,7 @@ import {
   leadSubmissions,
 } from "@/server/db/record-configuration";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
-import { mapLeadDetailRowToDto } from "@/server/workspace/leads/services/lead-detail/lead-detail-mapping-service";
+import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
 import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
 
@@ -106,7 +106,7 @@ async function loadLeadDetailInTransaction(
     throw new Error(`Created lead ${leadId} not found after insert`);
   }
 
-  return mapLeadDetailRowToDto(
+  return leadsMapperService.mapLeadDetailRowToDto(
     leadRow as LeadDetailMainRow,
     socialProfiles as LeadSocialProfileRow[],
     activities as LeadActivityRow[],

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/lead-list-defaults";
+import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/list/lead-list-defaults";
 
 const { getDrizzleDatabaseClientMock } = vi.hoisted(() => ({
   getDrizzleDatabaseClientMock: vi.fn(),

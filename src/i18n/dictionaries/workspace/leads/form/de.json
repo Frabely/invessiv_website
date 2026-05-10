@@ -1,6 +1,12 @@
 {
-  "title": "Lead hinzufügen",
-  "description": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+  "title": {
+    "create": "Lead hinzufügen",
+    "edit": "Lead bearbeiten"
+  },
+  "description": {
+    "create": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+    "edit": "Bestehende Stammdaten dieses Leads anpassen."
+  },
   "sections": {
     "identity": "Kontakt",
     "details": "Kontext",
@@ -18,6 +24,7 @@
     "category": "Kategorie",
     "score": "Score",
     "owner": "Owner",
+    "status": "Status",
     "notes": "Notizen",
     "improvement": "Verbesserung",
     "platform": "Plattform",
@@ -39,9 +46,12 @@
     "profileUrl": "https://..."
   },
   "buttons": {
-    "submit": "Lead speichern",
+    "submit": {
+      "create": "Lead speichern",
+      "edit": "Änderungen speichern"
+    },
     "cancel": "Abbrechen",
-    "close": "Schließen",
+    "closeAriaLabel": "Schließen",
     "addImprovement": "Verbesserung hinzufügen",
     "addProfile": "Profil hinzufügen",
     "confirmAdd": "Hinzufügen",
@@ -67,10 +77,19 @@
     "requiredHint": "Pflichtfelder sind mit * markiert.",
     "improvementsHint": "Optional. Mehrere Hinweise sind möglich und werden mit dem Lead gespeichert.",
     "improvementsEmptyState": "Noch keine Verbesserungen. Wird erst mit dem Lead gespeichert.",
+    "improvementsClearedState": "Alle bisherigen Verbesserungen wurden entfernt. Die Liste wird beim Speichern geleert.",
     "socialProfilesHint": "Optional. Profile werden mit dem Lead gespeichert.",
-    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen."
+    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen.",
+    "socialProfilesClearedState": "Alle bisherigen Social Profiles wurden entfernt. Die Liste wird beim Speichern geleert.",
+    "fieldStateUnchanged": "Unverändert",
+    "fieldStateCleared": "Beim Speichern geleert",
+    "fieldStateRequired": "Pflichtfeld",
+    "fieldStateSet": "Geändert",
+    "fieldStatePristineEmpty": "Ursprünglich leer"
   },
   "status": {
-    "saving": "Lead wird gespeichert..."
+    "savingCreate": "Lead wird gespeichert...",
+    "savingEdit": "Änderungen werden gespeichert...",
+    "successEdit": "Lead wurde aktualisiert."
   }
 }

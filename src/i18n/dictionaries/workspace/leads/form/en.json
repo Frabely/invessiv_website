@@ -1,6 +1,12 @@
 {
-  "title": "Add lead",
-  "description": "Create a manual contact or company directly in the workspace.",
+  "title": {
+    "create": "Add lead",
+    "edit": "Edit lead"
+  },
+  "description": {
+    "create": "Create a manual contact or company directly in the workspace.",
+    "edit": "Update the existing details of this lead."
+  },
   "sections": {
     "identity": "Contact",
     "details": "Context",
@@ -18,6 +24,7 @@
     "category": "Category",
     "score": "Score",
     "owner": "Owner",
+    "status": "Status",
     "notes": "Notes",
     "improvement": "Improvement",
     "platform": "Platform",
@@ -39,9 +46,12 @@
     "profileUrl": "https://..."
   },
   "buttons": {
-    "submit": "Save lead",
+    "submit": {
+      "create": "Save lead",
+      "edit": "Save changes"
+    },
     "cancel": "Cancel",
-    "close": "Close",
+    "closeAriaLabel": "Close",
     "addImprovement": "Add improvement",
     "addProfile": "Add profile",
     "confirmAdd": "Add",
@@ -67,10 +77,19 @@
     "requiredHint": "Required fields are marked with *.",
     "improvementsHint": "Optional. You can add multiple notes and they are saved with the lead.",
     "improvementsEmptyState": "No improvements yet. Saved only when the lead is saved.",
+    "improvementsClearedState": "All previous improvements were removed. The list will be cleared when saved.",
     "socialProfilesHint": "Optional. Profiles are saved with the lead.",
-    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube."
+    "socialProfilesEmptyState": "No profile yet. Add LinkedIn, Instagram, or YouTube.",
+    "socialProfilesClearedState": "All previous social profiles were removed. The list will be cleared when saved.",
+    "fieldStateUnchanged": "Unchanged",
+    "fieldStateCleared": "Will be cleared on save",
+    "fieldStateRequired": "Required",
+    "fieldStateSet": "Changed",
+    "fieldStatePristineEmpty": "Originally empty"
   },
   "status": {
-    "saving": "Saving lead..."
+    "savingCreate": "Saving lead...",
+    "savingEdit": "Saving changes...",
+    "successEdit": "Lead has been updated."
   }
 }

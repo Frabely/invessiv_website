@@ -16,6 +16,7 @@ import {
   leadSocialProfiles,
   leadSubmissions,
 } from "../record-configuration";
+import type { ContactLeadStatus as ContactLeadStatusValue } from "@/common/constants/contact/contact-lead-statuses";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { CONTACT_BUDGET_KEY } from "@/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@/common/constants/contact/contact-goal-keys";
@@ -23,10 +24,10 @@ import { CONTACT_OFFER_KEY } from "@/common/constants/contact/contact-offer-keys
 import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
 import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
-import { LeadActorType } from "@/common/constants/leads/lead-actor-types";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
-import { LeadSource } from "@/common/constants/leads/lead-sources";
+import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
 
 const FIXTURE_PREFIX = "fixture:workspace-leads:";
@@ -59,7 +60,7 @@ type LeadFixture = {
   firstName: string;
   improvements: string[];
   lastName: string;
-  leadStatus: (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
+  leadStatus: ContactLeadStatusValue;
   notes: string;
   owner: string;
   phone?: string;
@@ -103,7 +104,7 @@ type LeadRow = {
   first_name: string;
   improvements: string[];
   id: string;
-  lead_status: (typeof ContactLeadStatus)[keyof typeof ContactLeadStatus];
+  lead_status: ContactLeadStatusValue;
   last_name: string;
   notes: string;
   owner: string;

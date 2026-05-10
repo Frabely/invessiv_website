@@ -8,7 +8,7 @@ import { leadProjectRequests } from "@/server/db/record-configuration/lead-proje
 import { leadSocialProfiles } from "@/server/db/record-configuration/lead-social-profiles";
 import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
 import { leads } from "@/server/db/record-configuration/leads";
-import { getContactTableNames } from "@/server/db/scripts/contact-table-names";
+import { getTableNames } from "@/server/db/scripts/contact-table-names";
 
 describe("contact table names", () => {
   it("lists every contact table from the canonical schema", () => {
@@ -25,6 +25,6 @@ describe("contact table names", () => {
       .map((table) => getTableConfig(table).name)
       .sort((left, right) => left.localeCompare(right));
 
-    expect(getContactTableNames()).toEqual(expectedTableNames);
+    expect(getTableNames()).toEqual(expectedTableNames);
   });
 });

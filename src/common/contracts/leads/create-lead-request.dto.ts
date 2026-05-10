@@ -1,4 +1,5 @@
-import type { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
+import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
+import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 
 export type CreateLeadRequestDto = {
   first_name?: string;
@@ -16,4 +17,5 @@ export type CreateLeadRequestDto = {
     platform: LeadSocialPlatform;
     profile_url: string;
   }>;
+  lead_status?: ContactLeadStatus;
 };

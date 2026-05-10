@@ -1,8 +1,9 @@
 import "server-only";
+
 import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { LeadSource } from "@/common/constants/leads/lead-sources";
-import { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import { LeadErrorCode } from "@/common/constants/leads/lead-error-codes";
+import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";

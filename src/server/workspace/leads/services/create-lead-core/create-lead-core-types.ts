@@ -1,7 +1,7 @@
 import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { LeadActivityType } from "@/common/constants/leads/lead-activity-types";
-import type { LeadSource } from "@/common/constants/leads/lead-sources";
-import type { LeadSocialPlatform } from "@/common/constants/leads/lead-social-platforms";
+import type { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import type { LeadSource } from "@/common/constants/leads/sources/lead-sources";
+import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 
 export interface CreateLeadCoreSocialProfileInput {
   platform: LeadSocialPlatform;

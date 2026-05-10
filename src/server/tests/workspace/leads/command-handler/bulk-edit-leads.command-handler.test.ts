@@ -92,7 +92,13 @@ describe("bulkEditLeads", () => {
     expect(createLeadActivityMock).toHaveBeenCalledOnce();
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       expect.any(Object),
-      expect.objectContaining({ body: "new → qualified" }),
+      expect.objectContaining({
+        body: "new → qualified",
+        metadata: {
+          previous_status: "new",
+          next_status: "qualified",
+        },
+      }),
     );
   });
 
@@ -109,7 +115,7 @@ describe("bulkEditLeads", () => {
     expect(updateCaptures[0].updated_at).toBeInstanceOf(Date);
   });
 
-  it("logs a status_change activity per lead with body '<old> → <new>'", async () => {
+  it("logs a status_change activity per lead with body '<old> → <new>' and transition metadata", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
     createLeadActivityMock.mockResolvedValue(undefined);
@@ -128,6 +134,10 @@ describe("bulkEditLeads", () => {
       expect.objectContaining({
         type: "status_change",
         body: "new → qualified",
+        metadata: {
+          previous_status: "new",
+          next_status: "qualified",
+        },
       }),
     );
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -135,6 +145,10 @@ describe("bulkEditLeads", () => {
       expect.objectContaining({
         type: "status_change",
         body: "contacted → qualified",
+        metadata: {
+          previous_status: "contacted",
+          next_status: "qualified",
+        },
       }),
     );
   });
@@ -152,7 +166,13 @@ describe("bulkEditLeads", () => {
     expect(result).toEqual({ ok: true, updatedCount: 1 });
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       expect.any(Object),
-      expect.objectContaining({ body: "new → archived" }),
+      expect.objectContaining({
+        body: "new → archived",
+        metadata: {
+          previous_status: "new",
+          next_status: "archived",
+        },
+      }),
     );
   });
 

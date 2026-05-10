@@ -114,6 +114,11 @@
   min-width: 0;
 }
 
+.dateInput {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .chipRow {
   display: flex;
   flex-wrap: wrap;
@@ -292,6 +297,11 @@
 
   .dateInputs {
     grid-template-columns: 1fr;
+  }
+
+  .dateField,
+  .dateInput {
+    width: 100%;
   }
 
   .utilityRow {

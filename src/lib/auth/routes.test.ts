@@ -1,21 +1,19 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  WORKSPACE_PATH,
   REDIRECT_URL_QUERY_PARAM,
-  SIGN_IN_PATH,
-  SIGN_UP_PATH,
-  workspacePathFor,
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
+  workspacePathFor,
 } from "./routes";
+import { SITE_ROUTES } from "@/config/routes";
 
 describe("auth routes", () => {
   it("exposes locale-less segments for Clerk ENV-Vars", () => {
-    expect(SIGN_IN_PATH).toBe("/sign-in");
-    expect(SIGN_UP_PATH).toBe("/sign-up");
-    expect(WORKSPACE_PATH).toBe("/workspace");
+    expect(SITE_ROUTES.SIGN_IN).toBe("/sign-in");
+    expect(SITE_ROUTES.SIGN_UP).toBe("/sign-up");
+    expect(SITE_ROUTES.WORKSPACE).toBe("/workspace");
   });
 
   it("builds locale-prefixed paths for every supported locale", () => {

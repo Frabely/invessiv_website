@@ -1,0 +1,325 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(var(--workspace-header-height, 60px) + 2.25rem)
+    clamp(0.75rem, 2vw, 2rem) 1.25rem;
+  overflow: hidden;
+  background: rgba(12, 10, 9, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(980px, 100%);
+  max-height: calc(100dvh - var(--workspace-header-height, 60px) - 3rem);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 88% 0%,
+      rgba(245, 158, 11, 0.08),
+      transparent 32%
+    ),
+    linear-gradient(180deg, #2b2522 0%, #211d1a 100%);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(34, 29, 26, 0.72);
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0;
+  border-radius: 999px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.kicker {
+  width: fit-content;
+  margin: 0;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f5a742;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #f7f2ec;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.description {
+  margin: 0;
+  max-width: 68ch;
+  color: rgba(247, 242, 236, 0.68);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.statusBanner {
+  margin: 1rem 1.25rem 0;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(245, 158, 11, 0.26);
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f7f2ec;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.form {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.form::-webkit-scrollbar {
+  width: 12px;
+}
+
+.form::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.form::-webkit-scrollbar-thumb {
+  border: 3px solid #211d1a;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 12px;
+  background: rgba(24, 21, 19, 0.64);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #f7f2ec;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  min-width: 0;
+}
+
+.fieldState {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.22rem 0.52rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.fieldStateMuted {
+  border-color: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(247, 242, 236, 0.62);
+}
+
+.fieldStateWarning {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.1);
+  color: #f5b14b;
+}
+
+.fieldStateAccent {
+  border-color: rgba(96, 148, 255, 0.36);
+  background: rgba(96, 148, 255, 0.12);
+  color: #90b4ff;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  border-radius: 8px;
+  background: rgba(18, 16, 15, 0.82);
+  color: #f7f2ec;
+  font: inherit;
+  font-size: 0.9rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.input {
+  min-height: 40px;
+  padding: 0.62rem 0.75rem;
+}
+
+.textarea {
+  min-height: 104px;
+  padding: 0.75rem;
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(247, 242, 236, 0.38);
+}
+
+.input:hover,
+.textarea:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  border-color: rgba(76, 127, 240, 0.85);
+  background: rgba(16, 15, 14, 0.95);
+  box-shadow:
+    0 0 0 3px rgba(76, 127, 240, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+select.input {
+  cursor: pointer;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 -1.25rem;
+  padding: 0.9rem 1.25rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    180deg,
+    rgba(33, 29, 26, 0.82),
+    rgba(33, 29, 26, 0.98)
+  );
+  backdrop-filter: blur(8px);
+}
+
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer,
+  .sectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer :global(button) {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    inset: var(--workspace-header-height, 60px) 0 0;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .dialog {
+    width: 100%;
+    max-height: none;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .header {
+    position: relative;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .closeButton {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+  }
+
+  .form {
+    padding-inline: 1rem;
+  }
+
+  .footer {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+}

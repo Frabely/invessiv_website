@@ -8,12 +8,12 @@ import {
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { LeadBadgeKind } from "@/common/constants/leads/lead-badge-kinds";
+import { LeadBadgeKind } from "@/common/constants/leads/badges/lead-badge-kinds";
 import {
   LeadBadgeTone,
   type LeadBadgeTone as LeadBadgeToneValue,
-} from "@/common/constants/leads/lead-badge-tones";
-import { LeadBadge } from "../lead-badge";
+} from "@/common/constants/leads/badges/lead-badge-tones";
+import { LeadBadge } from "../lead-badge/lead-badge";
 
 type LeadCategoryBadgeProps = {
   className?: string;

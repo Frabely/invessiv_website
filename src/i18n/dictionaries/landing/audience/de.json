@@ -2,7 +2,7 @@
   "body": "Für Dienstleister, Selbstständige und kleine Unternehmen, die ein klares Angebot online besser verkaufen wollen.",
   "cta": {
     "analyticsTarget": "contact",
-    "analyticsVariant": "soft",
+    "analyticsVariant": "primary",
     "helper": "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
     "href": "#contact",
     "label": "Kostenlosen Check anfragen"

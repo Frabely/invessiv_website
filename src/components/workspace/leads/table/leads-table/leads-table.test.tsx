@@ -5,6 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
 import {
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
@@ -32,10 +33,11 @@ describe("LeadsTable", () => {
           actionLabel: "Filter zurücksetzen",
           description: "Keine Leads gefunden.",
           title: "Keine Treffer",
-          variant: "filtered",
+          variant: LeadsEmptyStateVariant.Filtered,
         }}
         locale="de"
         queryString="search=abc"
+        currentSearchParams={{ search: "abc" }}
         rows={[]}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}
@@ -79,6 +81,7 @@ describe("LeadsTable", () => {
         basePath="/de/workspace/leads"
         locale="de"
         queryString=""
+        currentSearchParams={{}}
         rows={rows}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}

@@ -3,12 +3,13 @@
 import type { KeyboardEvent, MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/config/i18n";
-import { LeadListQueryParam } from "@/common/constants/leads/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { buildLeadTableRowEditHref } from "@/lib/workspace/leads/lead-list-query-string";
 import {
   LeadCategoryBadge,
   LeadScoreBar,
@@ -23,12 +24,14 @@ import {
   getLeadDisplayName,
   getLeadInitials,
 } from "../lead-table-utils";
+import { LeadsTableRowActions } from "../leads-table-row-actions/leads-table-row-actions";
 import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
 import styles from "./leads-table-row.module.css";
 
 type LeadsTableRowProps = {
   basePath: string;
   currentQueryString: string;
+  currentSearchParams: Record<string, string | string[] | undefined>;
   lead: LeadSummaryDto;
   locale: Locale;
   sharedContent: LeadsSharedDictionary;
@@ -56,6 +59,7 @@ function getCategoryLabel(
 export function LeadsTableRow({
   basePath,
   currentQueryString,
+  currentSearchParams,
   lead,
   locale,
   sharedContent,
@@ -66,6 +70,11 @@ export function LeadsTableRow({
   const href = buildLeadHref(basePath, currentQueryString, {
     [LeadListQueryParam.Selected]: lead.id,
   });
+  const editHref = buildLeadTableRowEditHref(
+    basePath,
+    lead.id,
+    currentSearchParams,
+  );
   const selected = isSelected(lead.id);
   const displayName = getLeadDisplayName(lead);
   const initials = getLeadInitials(lead);
@@ -181,6 +190,11 @@ export function LeadsTableRow({
           source={lead.source}
         />
       </td>
+
+      <LeadsTableRowActions
+        editHref={editHref}
+        editLabel={tableContent.actions.edit}
+      />
     </tr>
   );
 }

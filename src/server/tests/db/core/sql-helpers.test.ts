@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { describe, expect, it } from "vitest";
-import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/lead-sources";
+import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/sources/lead-sources";
 import { sqlCheckIn } from "@/server/db/core";
 import * as schema from "@/server/db/record-configuration";
 import { leads } from "@/server/db/record-configuration";
