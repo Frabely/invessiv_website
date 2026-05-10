@@ -151,7 +151,7 @@ describe("LeadsPage", () => {
     );
     expect(mockLeadsPageHeader).toHaveBeenCalledWith(
       expect.objectContaining({
-        addLeadHref: `/de/workspace/leads?${LeadListQueryParam.Create}=`,
+        addLeadHref: `/de/workspace/leads?${LeadListQueryParam.Mode}=create`,
       }),
       undefined,
     );
@@ -250,6 +250,57 @@ describe("LeadsPage", () => {
 
     expect(mockGetLeadById).not.toHaveBeenCalled();
     expect(screen.queryByTestId("detail-slot")).not.toBeInTheDocument();
+  });
+
+  it("opens the create dialog when mode=create is present", async () => {
+    mockListLeads.mockResolvedValue({
+      page: 1,
+      perPage: 20,
+      rows: [],
+      total: 0,
+    });
+    mockGetLeadCategories.mockResolvedValue([]);
+
+    render(
+      await LeadsPage({
+        params: Promise.resolve({ locale: "en" }),
+        searchParams: Promise.resolve({
+          mode: "create",
+        }),
+      }),
+    );
+
+    expect(mockAddLeadDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ open: true }),
+      undefined,
+    );
+  });
+
+  it("opens the edit dialog when mode=edit and a valid edit id are present", async () => {
+    const editId = "2b3d2f33-f3d7-4f8a-8ff6-6ac5df6c9b01";
+    mockListLeads.mockResolvedValue({
+      page: 1,
+      perPage: 20,
+      rows: [],
+      total: 0,
+    });
+    mockGetLeadCategories.mockResolvedValue([]);
+    mockGetLeadById.mockResolvedValue({ id: editId });
+
+    render(
+      await LeadsPage({
+        params: Promise.resolve({ locale: "en" }),
+        searchParams: Promise.resolve({
+          edit: editId,
+          mode: "edit",
+        }),
+      }),
+    );
+
+    expect(mockAddLeadDialog).toHaveBeenCalledWith(
+      expect.objectContaining({ open: true, mode: "edit" }),
+      undefined,
+    );
   });
 
   it("does not query detail data for invalid selected", async () => {

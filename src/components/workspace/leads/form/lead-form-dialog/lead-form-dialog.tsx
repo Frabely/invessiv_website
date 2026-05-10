@@ -492,8 +492,8 @@ export function LeadFormDialog({
 
   function buildHref(withSelectedLeadId?: string): string {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete(LeadListQueryParam.Create);
-    params.delete(LeadListQueryParam.Edit);
+    params.delete(LeadListQueryParam.Mode);
+    params.delete(LeadListQueryParam.TargetLeadId);
 
     if (withSelectedLeadId) {
       params.set(LeadListQueryParam.Selected, withSelectedLeadId);

@@ -27,7 +27,7 @@ vi.mock("next/navigation", () => ({
     replace: replaceMock,
   }),
   useSearchParams: () =>
-    new URLSearchParams(`${LeadListQueryParam.Create}=&status=qualified`),
+    new URLSearchParams(`${LeadListQueryParam.Mode}=create&status=qualified`),
 }));
 
 afterEach(() => {
@@ -63,7 +63,7 @@ describe("LeadFormDialog", () => {
     submissions: [],
   };
 
-  it("shows validation errors for empty submit and closes via the create query param", async () => {
+  it("shows validation errors for empty submit and closes via the create mode query param", async () => {
     const { rerender } = render(
       <LeadFormDialog
         categories={[

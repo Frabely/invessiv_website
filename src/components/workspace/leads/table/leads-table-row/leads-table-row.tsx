@@ -9,6 +9,7 @@ import type {
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { buildLeadTableRowEditHref } from "@/lib/workspace/leads/lead-list-query-string";
 import {
   LeadCategoryBadge,
   LeadScoreBar,
@@ -30,6 +31,7 @@ import styles from "./leads-table-row.module.css";
 type LeadsTableRowProps = {
   basePath: string;
   currentQueryString: string;
+  currentSearchParams: Record<string, string | string[] | undefined>;
   lead: LeadSummaryDto;
   locale: Locale;
   sharedContent: LeadsSharedDictionary;
@@ -57,6 +59,7 @@ function getCategoryLabel(
 export function LeadsTableRow({
   basePath,
   currentQueryString,
+  currentSearchParams,
   lead,
   locale,
   sharedContent,
@@ -67,11 +70,11 @@ export function LeadsTableRow({
   const href = buildLeadHref(basePath, currentQueryString, {
     [LeadListQueryParam.Selected]: lead.id,
   });
-  const editHref = buildLeadHref(basePath, currentQueryString, {
-    [LeadListQueryParam.Edit]: lead.id,
-    [LeadListQueryParam.Selected]: undefined,
-    [LeadListQueryParam.Create]: undefined,
-  });
+  const editHref = buildLeadTableRowEditHref(
+    basePath,
+    lead.id,
+    currentSearchParams,
+  );
   const selected = isSelected(lead.id);
   const displayName = getLeadDisplayName(lead);
   const initials = getLeadInitials(lead);

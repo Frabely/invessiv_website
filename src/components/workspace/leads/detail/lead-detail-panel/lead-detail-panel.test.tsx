@@ -54,7 +54,7 @@ describe("LeadDetailPanel", () => {
       <LeadDetailPanel
         closeHref="/de/workspace/leads?status=qualified&page=2"
         content={getLeadsDetailDictionary("de")}
-        editHref={`/de/workspace/leads?status=qualified&page=2&edit=${leadFixture.id}`}
+        editHref={`/de/workspace/leads?status=qualified&page=2&mode=edit&edit=${leadFixture.id}`}
         lead={leadFixture}
         locale="de"
         sharedContent={getLeadsSharedDictionary("de")}
@@ -84,7 +84,7 @@ describe("LeadDetailPanel", () => {
       <LeadDetailPanel
         closeHref="/en/workspace/leads"
         content={getLeadsDetailDictionary("en")}
-        editHref={`/en/workspace/leads?edit=${leadFixture.id}`}
+        editHref={`/en/workspace/leads?mode=edit&edit=${leadFixture.id}`}
         lead={{
           ...leadFixture,
           firstName: null,

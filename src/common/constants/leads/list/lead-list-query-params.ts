@@ -1,9 +1,9 @@
 export const LeadListQueryParam = {
   Category: "category",
-  Create: "create",
   DateFrom: "date_from",
   DateTo: "date_to",
-  Edit: "edit",
+  Mode: "mode",
+  TargetLeadId: "edit",
   Page: "page",
   ScoreMin: "score_min",
   Search: "search",
@@ -18,10 +18,10 @@ export type LeadListQueryParam =
 
 export const LEAD_LIST_QUERY_PARAM_VALUES = [
   LeadListQueryParam.Category,
-  LeadListQueryParam.Create,
   LeadListQueryParam.DateFrom,
   LeadListQueryParam.DateTo,
-  LeadListQueryParam.Edit,
+  LeadListQueryParam.Mode,
+  LeadListQueryParam.TargetLeadId,
   LeadListQueryParam.Page,
   LeadListQueryParam.ScoreMin,
   LeadListQueryParam.Search,

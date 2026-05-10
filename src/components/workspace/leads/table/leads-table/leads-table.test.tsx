@@ -37,6 +37,7 @@ describe("LeadsTable", () => {
         }}
         locale="de"
         queryString="search=abc"
+        searchParams={{ search: "abc" }}
         rows={[]}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}
@@ -80,6 +81,7 @@ describe("LeadsTable", () => {
         basePath="/de/workspace/leads"
         locale="de"
         queryString=""
+        searchParams={{}}
         rows={rows}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}

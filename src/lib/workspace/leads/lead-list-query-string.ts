@@ -1,4 +1,8 @@
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import {
+  LeadFormDialogMode,
+  type LeadFormDialogMode as LeadFormDialogModeValue,
+} from "@/common/constants/leads/forms/lead-form-dialog-modes";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
 
@@ -67,7 +71,8 @@ export function buildLeadListCloseHref(
   for (const [key, value] of Object.entries(searchParams)) {
     if (
       key === LeadListQueryParam.Selected ||
-      key === LeadListQueryParam.Edit ||
+      key === LeadListQueryParam.Mode ||
+      key === LeadListQueryParam.TargetLeadId ||
       !supportedParams.has(key) ||
       value === undefined
     ) {
@@ -93,8 +98,8 @@ function withoutDialogParams(searchParams: SearchParamsInput): URLSearchParams {
 
   for (const [key, value] of Object.entries(searchParams)) {
     if (
-      key === LeadListQueryParam.Create ||
-      key === LeadListQueryParam.Edit ||
+      key === LeadListQueryParam.Mode ||
+      key === LeadListQueryParam.TargetLeadId ||
       value === undefined
     ) {
       continue;
@@ -123,7 +128,7 @@ export function buildLeadCreateHref(
   searchParams: SearchParamsInput,
 ): string {
   const params = withoutDialogParams(searchParams);
-  params.set(LeadListQueryParam.Create, "");
+  params.set(LeadListQueryParam.Mode, LeadFormDialogMode.Create);
   return buildHref(basePath, params);
 }
 
@@ -133,8 +138,17 @@ export function buildLeadEditHref(
   searchParams: SearchParamsInput,
 ): string {
   const params = withoutDialogParams(searchParams);
-  params.set(LeadListQueryParam.Edit, leadId);
+  params.set(LeadListQueryParam.Mode, LeadFormDialogMode.Edit);
+  params.set(LeadListQueryParam.TargetLeadId, leadId);
   return buildHref(basePath, params);
+}
+
+export function buildLeadTableRowEditHref(
+  basePath: string,
+  leadId: string,
+  searchParams: SearchParamsInput,
+): string {
+  return buildLeadEditHref(basePath, leadId, searchParams);
 }
 
 export function buildLeadDialogCloseHref(
@@ -142,4 +156,20 @@ export function buildLeadDialogCloseHref(
   searchParams: SearchParamsInput,
 ): string {
   return buildHref(basePath, withoutDialogParams(searchParams));
+}
+
+export function getLeadFormDialogMode(
+  searchParams: SearchParamsInput,
+): LeadFormDialogModeValue | undefined {
+  const mode = searchParams[LeadListQueryParam.Mode];
+  const rawMode = Array.isArray(mode) ? mode[0] : mode;
+
+  if (
+    rawMode === LeadFormDialogMode.Create ||
+    rawMode === LeadFormDialogMode.Edit
+  ) {
+    return rawMode;
+  }
+
+  return undefined;
 }

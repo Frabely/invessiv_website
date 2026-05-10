@@ -18,6 +18,7 @@ import styles from "./leads-table.module.css";
 type LeadsTableProps = {
   basePath: string;
   locale: Locale;
+  searchParams: Record<string, string | string[] | undefined>;
   queryString: string;
   rows: LeadSummaryDto[];
   emptyState?: {
@@ -39,6 +40,7 @@ function getActiveSort(queryString: string): string | undefined {
 export function LeadsTable({
   basePath,
   locale,
+  searchParams,
   queryString,
   rows,
   emptyState,
@@ -139,6 +141,7 @@ export function LeadsTable({
                     <LeadsTableRow
                       basePath={basePath}
                       currentQueryString={queryString}
+                      currentSearchParams={searchParams}
                       key={lead.id}
                       lead={lead}
                       locale={locale}

@@ -118,10 +118,10 @@ describe("LeadListQueryParam", () => {
   it("contains the expected query param keys without duplicates", () => {
     expect(LEAD_LIST_QUERY_PARAM_VALUES).toEqual([
       LeadListQueryParam.Category,
-      LeadListQueryParam.Create,
       LeadListQueryParam.DateFrom,
       LeadListQueryParam.DateTo,
-      LeadListQueryParam.Edit,
+      LeadListQueryParam.Mode,
+      LeadListQueryParam.TargetLeadId,
       LeadListQueryParam.Page,
       LeadListQueryParam.ScoreMin,
       LeadListQueryParam.Search,

@@ -9,7 +9,6 @@ import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagina
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
 import {
   LeadsEmptyStateVariant,
@@ -36,6 +35,7 @@ import {
   buildLeadEditHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
+  getLeadFormDialogMode,
 } from "@/lib/workspace/leads/lead-list-query-string";
 import {
   hasActiveLeadFilters,
@@ -163,14 +163,13 @@ export default async function LeadsPage({
         ] ?? category.labelKey,
     }),
   );
-  const addLeadDialogOpen = Object.prototype.hasOwnProperty.call(
-    resolvedSearchParams,
-    LeadListQueryParam.Create,
-  );
+  const requestedDialogMode = getLeadFormDialogMode(resolvedSearchParams);
   const dialogMode = editLead
     ? LeadFormDialogMode.Edit
     : LeadFormDialogMode.Create;
-  const dialogOpen = addLeadDialogOpen || Boolean(editLead);
+  const dialogOpen =
+    requestedDialogMode === LeadFormDialogMode.Create ||
+    (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead));
 
   return (
     <>
@@ -204,6 +203,7 @@ export default async function LeadsPage({
           }
           locale={locale as Locale}
           queryString={queryString}
+          searchParams={resolvedSearchParams}
           rows={leadList.rows}
           sharedContent={sharedContent}
           tableContent={tableContent}
