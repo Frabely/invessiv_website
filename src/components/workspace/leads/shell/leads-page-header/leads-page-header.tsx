@@ -1,17 +1,23 @@
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faPlus } from "@fortawesome/free-solid-svg-icons";
-import type { LeadsShellDictionary } from "@/i18n/dictionaries/workspace/leads";
+import type {
+  LeadsImportDictionary,
+  LeadsShellDictionary,
+} from "@/i18n/dictionaries/workspace/leads";
+import { ImportLeadsDialog } from "@/components/workspace/leads/form/import-leads-dialog/import-leads-dialog";
 import styles from "./leads-page-header.module.css";
 
 type LeadsPageHeaderProps = {
   content: LeadsShellDictionary;
   addLeadHref: string;
+  importContent?: LeadsImportDictionary;
 };
 
 export function LeadsPageHeader({
   addLeadHref,
   content,
+  importContent,
 }: LeadsPageHeaderProps) {
   return (
     <header className={styles.header}>
@@ -28,6 +34,7 @@ export function LeadsPageHeader({
         <p className={styles.description}>{content.description}</p>
       </div>
       <div className={styles.actionsRow}>
+        {importContent && <ImportLeadsDialog content={importContent} />}
         <Link className={styles.addButton} href={addLeadHref} scroll={false}>
           <span aria-hidden="true" className={styles.addButtonIcon}>
             <FontAwesomeIcon icon={faPlus} />

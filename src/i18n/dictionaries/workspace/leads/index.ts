@@ -15,6 +15,8 @@ import detailDe from "./detail/de.json";
 import detailEn from "./detail/en.json";
 import formDe from "./form/de.json";
 import formEn from "./form/en.json";
+import importDe from "./import/de.json";
+import importEn from "./import/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsToolbarDictionary = typeof toolbarDe;
@@ -24,6 +26,7 @@ export type LeadsTableDictionary = typeof tableDe;
 export type LeadsShellDictionary = typeof shellDe;
 export type LeadsDetailDictionary = typeof detailDe;
 export type LeadsFormDictionary = typeof formDe;
+export type LeadsImportDictionary = typeof importDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
@@ -65,6 +68,11 @@ const LEADS_FORM: Record<Locale, LeadsFormDictionary> = {
   en: formEn,
 };
 
+const LEADS_IMPORT: Record<Locale, LeadsImportDictionary> = {
+  de: importDe,
+  en: importEn,
+};
+
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
   return LEADS_META[locale];
 }
@@ -103,4 +111,10 @@ export function getLeadsDetailDictionary(
 
 export function getLeadsFormDictionary(locale: Locale): LeadsFormDictionary {
   return LEADS_FORM[locale];
+}
+
+export function getLeadsImportDictionary(
+  locale: Locale,
+): LeadsImportDictionary {
+  return LEADS_IMPORT[locale];
 }
