@@ -3,6 +3,7 @@ import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dia
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import {
   buildLeadCreateHref,
+  buildLeadDetailPanelEditHref,
   buildLeadDialogCloseHref,
   buildLeadEditHref,
   buildLeadTableRowEditHref,
@@ -45,6 +46,28 @@ describe("lead list dialog query helpers", () => {
       selected: "lead-999",
       status: "qualified",
     });
+    const url = new URL(href, "https://invessiv.com");
+
+    expect(url.pathname).toBe("/de/workspace/leads");
+    expect(url.searchParams.get(LeadListQueryParam.Mode)).toBe(
+      LeadFormDialogMode.Edit,
+    );
+    expect(url.searchParams.get(LeadListQueryParam.TargetLeadId)).toBe(
+      "lead-123",
+    );
+    expect(url.searchParams.get(LeadListQueryParam.Selected)).toBe("lead-999");
+    expect(url.searchParams.get(LeadListQueryParam.Status)).toBe("qualified");
+  });
+
+  it("builds a detail-panel edit dialog URL from the current query string", () => {
+    const href = buildLeadDetailPanelEditHref(
+      "/de/workspace/leads",
+      "lead-123",
+      {
+        selected: "lead-999",
+        status: "qualified",
+      },
+    );
     const url = new URL(href, "https://invessiv.com");
 
     expect(url.pathname).toBe("/de/workspace/leads");

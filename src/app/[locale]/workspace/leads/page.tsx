@@ -31,8 +31,8 @@ import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.que
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
   buildLeadCreateHref,
+  buildLeadDetailPanelEditHref,
   buildLeadDialogCloseHref,
-  buildLeadEditHref,
   buildLeadListCloseHref,
   buildLeadListQueryString,
   getLeadFormDialogMode,
@@ -143,7 +143,7 @@ export default async function LeadsPage({
     ? {
         closeHref: detailCloseHref,
         content: detailContent,
-        editHref: buildLeadEditHref(
+        editHref: buildLeadDetailPanelEditHref(
           basePath,
           selectedLead.id,
           resolvedSearchParams,
@@ -203,7 +203,7 @@ export default async function LeadsPage({
           }
           locale={locale as Locale}
           queryString={queryString}
-          searchParams={resolvedSearchParams}
+          currentSearchParams={resolvedSearchParams}
           rows={leadList.rows}
           sharedContent={sharedContent}
           tableContent={tableContent}

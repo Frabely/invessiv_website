@@ -151,6 +151,14 @@ export function buildLeadTableRowEditHref(
   return buildLeadEditHref(basePath, leadId, searchParams);
 }
 
+export function buildLeadDetailPanelEditHref(
+  basePath: string,
+  leadId: string,
+  searchParams: SearchParamsInput,
+): string {
+  return buildLeadEditHref(basePath, leadId, searchParams);
+}
+
 export function buildLeadDialogCloseHref(
   basePath: string,
   searchParams: SearchParamsInput,

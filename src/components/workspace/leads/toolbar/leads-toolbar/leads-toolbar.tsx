@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -43,6 +43,7 @@ type LeadsToolbarProps = {
 };
 
 const SEARCH_DEBOUNCE_MS = 250;
+const LEADS_TOOLBAR_PANEL_ID = "leads-toolbar-panel";
 
 function getSearchParams(queryString: string) {
   return new URLSearchParams(queryString);
@@ -111,7 +112,6 @@ export function LeadsToolbar({
   const currentScore =
     getQueryValue(searchParams, LeadListQueryParam.ScoreMin) ?? "";
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const collapsePanelId = useId();
   const hasActiveFilters =
     Boolean(currentStatus) ||
     Boolean(currentSource) ||
@@ -169,7 +169,11 @@ export function LeadsToolbar({
 
   return (
     <section className={styles.toolbar}>
-      <div id={collapsePanelId} hidden={isCollapsed} className={styles.panel}>
+      <div
+        id={LEADS_TOOLBAR_PANEL_ID}
+        hidden={isCollapsed}
+        className={styles.panel}
+      >
         <div className={styles.primaryFilters}>
           <label className={styles.searchField}>
             <span className={styles.fieldLabel}>{content.search.label}</span>
@@ -420,7 +424,7 @@ export function LeadsToolbar({
           <span className={styles.resetLabel}>{content.actions.reset}</span>
         </button>
         <button
-          aria-controls={collapsePanelId}
+          aria-controls={LEADS_TOOLBAR_PANEL_ID}
           aria-expanded={!isCollapsed}
           className={styles.collapseButton}
           onClick={() => {
