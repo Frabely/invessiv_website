@@ -33,12 +33,15 @@ Add a "Nachricht generieren" feature to the Lead Detail Panel in the workspace C
 ┌─────────────────────────────────────────────┐
 │ Nachricht generieren            [×]          │
 │                                             │
+│ Modell                                      │
+│ [● Ollama (lokal)]  [○ OpenAI]              │
+│   (disabled/loading während Provider-Check) │
+│                                             │
 │ Kanal                                       │
 │ [LinkedIn]  [Instagram]  [WhatsApp]         │
 │                                             │
 │ [✓] Improvements einbeziehen               │
-│     (nur verfügbar wenn Lead Improvements   │
-│     hat, sonst grayed out)                  │
+│     (disabled + Tooltip wenn keine vorhanden)│
 │                                             │
 │ Zusätzlicher Kontext (optional)             │
 │ ┌─────────────────────────────────────────┐ │
@@ -51,37 +54,86 @@ Add a "Nachricht generieren" feature to the Lead Detail Panel in the workspace C
 
 ### Dialog Content (Result State)
 
+Form-Elemente bleiben sichtbar und änderbar. Es gibt keinen separaten "Neu generieren"-Button — der Action-Button
+zeigt im Result-State `Neu generieren` statt `Generieren`. Einstellungen ändern + erneut klicken = neue Nachricht.
+
 ```
 ┌─────────────────────────────────────────────┐
-│ Nachricht generieren  [LinkedIn] [×]         │
+│ Nachricht generieren            [×]          │
+│                                             │
+│ Modell: [● Ollama (lokal)]  [○ OpenAI]      │
+│ Kanal:  [LinkedIn]  [Instagram]  [WhatsApp] │
+│ [✓] Improvements einbeziehen               │
+│ Kontext: [................................] │
 │                                             │
 │ ┌─────────────────────────────────────────┐ │
 │ │ Hallo Susan, ich bin Moritz von...      │ │
 │ │ [editierbares Textarea, auto-resize]    │ │
 │ └─────────────────────────────────────────┘ │
 │                                             │
-│ [Kopieren]          [Neu generieren]        │
+│ [Kopieren]             [Neu generieren →]   │
 └─────────────────────────────────────────────┘
 ```
 
 ### UX Details
 
-- Channel-Auswahl als segmentierter Button (nicht Dropdown) — 3 Optionen = überschaubar
-- "Improvements einbeziehen"-Checkbox: wenn Lead keine Improvements hat → disabled + Tooltip "Keine Improvements hinterlegt"
-- Kontext-Feld: optional, kein Placeholder-Text als Pflichthinweis, max. 200 Zeichen
-- Textarea im Result-State: auto-resize, user kann Text vor dem Kopieren direkt bearbeiten
-- "Kopieren"-Button: nach erfolgreichem Kopieren kurz zu "Kopiert ✓" wechseln (2 s), dann zurück
-- "Neu generieren": schickt denselben Request erneut (mit gleichen Einstellungen), ersetzt vorherigen Text
+- **Modell-Selector:** Beim Öffnen läuft sofort `GET /api/workspace/outreach/providers`. Während des Checks
+  sind Radio-Buttons disabled mit Lade-Indikator. Ollama-Radio aktiv wenn erreichbar, sonst deaktiviert (Tooltip
+  "Ollama nicht erreichbar — lokalen Server starten"). Wenn nur ein Provider → kein Selector, nur Label. Wenn
+  kein Provider verfügbar → Fehlermeldung direkt, Generieren nicht möglich.
+- **Channel-Auswahl:** Segmentierter Button, 3 Optionen, immer sichtbar
+- **"Improvements einbeziehen"-Checkbox:** disabled + Tooltip wenn Lead keine Improvements hat
+- **Kontext-Feld:** optional, max. 200 Zeichen, kein Pflichthinweis im Placeholder
+- **Textarea im Result-State:** auto-resize, direkt editierbar vor dem Kopieren
+- **"Kopieren"-Button:** wechselt 2 s zu "Kopiert ✓", dann zurück
+- **Loading-State:** Action-Button zeigt Spinner, alle Inputs gesperrt
 
 ---
 
 ## 3. Channel-spezifische Vorgaben
 
-| Kanal     | Max. Zeichen | Tonalität                | Format                            |
-| --------- | ------------ | ------------------------ | --------------------------------- |
-| LinkedIn  | ~300         | Professionell-persönlich | Kurze Absätze, Siezen             |
-| Instagram | ~500         | Lockerer, direkt         | Ein Block, Du/Sie je nach Branche |
-| WhatsApp  | ~160         | Sehr direkt, informell   | Ein Absatz                        |
+| Kanal     | Max. Zeichen | Anrede | Tonalität                                   | Website-Referenz              |
+| --------- | ------------ | ------ | ------------------------------------------- | ----------------------------- |
+| LinkedIn  | 300          | Siezen | Professionell, sachlich, unaufdringlich     | „Ihre Website"                |
+| Instagram | 500          | Duzen  | Persönlicher, wärmer, aber weiterhin seriös | „deine Website / dein Profil" |
+| WhatsApp  | 160          | Duzen  | Ultra-kurz, direkt, freundlich, informell   | „deine Website"               |
+
+### LinkedIn
+
+- Sprache: Siezen durchgehend (`Ihre Website`, `Ihnen die kurz schicke`, `Wäre es okay`)
+- Länge: max. 300 Zeichen — entspricht einer kurzen Connection-Request-Nachricht oder einer DM-Eröffnung
+- Stil: ruhig, professionell, kein Verkaufsdruck
+- Struktur: alle 6 Prompt-Schritte vollständig, kompakt formuliert
+- Abschluss: `Viele Grüße, {owner} von Invessiv`
+
+**Beispiel:**
+
+> Hallo Susan, ich bin Moritz von Invessiv und habe gerade Ihre Website gesehen. Mir sind ein paar kleine Punkte aufgefallen, die es Besuchern eventuell schwerer machen könnten, den nächsten Schritt zur Anfrage zu finden. Wäre es okay, wenn ich Ihnen die kurz schicke? Viele Grüße, Moritz von Invessiv
+
+### Instagram
+
+- Sprache: Duzen (`deine Website`, `dir die kurz schicken`, `Wäre das okay für dich?`)
+- Länge: max. 500 Zeichen — mehr Raum für eine persönlichere Ansprache
+- Stil: wärmer, direkter, trotzdem professionell und nicht aufdringlich
+- Struktur: alle 6 Prompt-Schritte — Formulierungen lockerer als LinkedIn
+- Kein `Viele Grüße` nötig, ein einfaches `Liebe Grüße, {owner} von Invessiv` ist passender
+- **Hinweis:** WhatsApp hat Vorrang für ultra-kurze Nachrichten; Instagram bietet mehr Spielraum
+
+**Beispiel:**
+
+> Hallo Susan, ich bin Moritz von Invessiv — ich habe gerade deine Website gesehen. Mir sind ein paar kleine Punkte aufgefallen, die es Besuchern eventuell schwerer machen könnten, den nächsten Schritt zur Anfrage zu finden. Wäre es okay, wenn ich dir die kurz schicke? Liebe Grüße, Moritz von Invessiv
+
+### WhatsApp _(optional, nur bei vorhanden Telefonnummer)_
+
+- Sprache: Duzen, sehr direkt
+- Länge: max. 160 Zeichen — eine SMS-Länge, kein Satz zu viel
+- Stil: freundlich-informell, fühlt sich wie eine persönliche Nachricht an
+- Struktur: komprimiert — Anrede + kurze Vorstellung + Kernaussage + CTA; Grußformel kann entfallen oder auf `Moritz` gekürzt werden
+- **Hinweis:** WhatsApp-Kaltakquise ist in Deutschland regulatorisch sensibel. Der Button zeigt einen Hinweis-Tooltip: "Nur bei bestehender Geschäftsbeziehung rechtlich unbedenklich."
+
+**Beispiel:**
+
+> Hallo Susan, ich bin Moritz von Invessiv. Habe deine Website gesehen — darf ich dir kurz ein paar Punkte schicken, die mehr Anfragen bringen könnten? Moritz
 
 ---
 
@@ -101,17 +153,45 @@ Das Modell muss immer diesem Muster folgen:
 
 > Hallo Susan, ich bin Moritz von Invessiv und habe gerade Ihre Website gesehen. Mir sind ein paar kleine Punkte aufgefallen, die es Besuchern eventuell schwerer machen könnten, den nächsten Schritt zur Anfrage zu finden. Wäre es okay, wenn ich Ihnen die kurz schicke? Viele Grüße, Moritz von Invessiv
 
-### System-Prompt (Struktur)
+### System-Prompt (final, unveränderlich)
 
 ```
-Du bist {owner} von Invessiv – einer Full-Service-Digitalagentur.
-Du schreibst eine kurze Erst-Kontakt-Nachricht auf {channel}.
-Halte dich exakt an dieses Muster: [Anrede] → [Website-Referenz] → [Werthinweis] → [Weicher CTA] → [Grußformel mit "{owner} von Invessiv"].
-Tonalität: professionell-persönlich, kein Sales-Blabla.
-Sprache: Deutsch. Keine Emojis. Keine generischen Floskeln.
+Du bist {owner} von Invessiv, einer Full-Service-Digitalagentur.
+
+Schreibe eine kurze, professionelle Erstkontakt-Nachricht auf Deutsch für {channel}.
+
+Die Nachricht soll exakt dieser Struktur folgen:
+1. Persönliche Anrede mit Vornamen: "Hallo {firstName},"
+2. Kurze Vorstellung: "ich bin {owner} von Invessiv"
+3. Website-Referenz: erwähne, dass du gerade die Website gesehen hast
+4. Dezenter Werthinweis: sage, dass dir ein paar kleine Punkte aufgefallen sind,
+   die es Besuchern eventuell schwerer machen könnten, den nächsten Schritt zur
+   Anfrage zu finden
+5. Weicher CTA: frage, ob es okay wäre, diese Punkte kurz zu schicken
+6. Grußformel: "{closingGreeting}, {owner} von Invessiv"
+
+Tonalität:
+professionell-persönlich, ruhig, unaufdringlich, kein Sales-Blabla.
+
+Vermeide:
+Emojis, Ausrufezeichen, Marketing-Floskeln, Fachbegriffe wie Conversion,
+Funnel, SEO, Leadgenerierung, Audit oder Optimierung.
+
 Maximale Länge: {maxChars} Zeichen.
-Ausgabe: nur der Nachrichtentext, keine Erklärungen, kein Prefix.
+
+Ausgabe:
+Nur den fertigen Nachrichtentext. Keine Erklärung. Kein Prefix. Keine Varianten.
 ```
+
+**Prompt-Variablen je Channel:**
+
+| Variable            | LinkedIn      | Instagram     | WhatsApp                |
+| ------------------- | ------------- | ------------- | ----------------------- |
+| `{channel}`         | `LinkedIn`    | `Instagram`   | `WhatsApp`              |
+| `{maxChars}`        | `300`         | `500`         | `160`                   |
+| `{closingGreeting}` | `Viele Grüße` | `Liebe Grüße` | _(entfällt / nur Name)_ |
+
+Anrede (Siezen/Duzen) wird implizit durch Channel-spezifische Beispiele und die Tonalitätsvorgabe gesteuert — der Prompt-Builder fügt keine separate Anrede-Instruktion hinzu, da das Beispiel-Output-Muster im Invessiv-Template eindeutig ist.
 
 ### User-Prompt — gesendete Lead-Daten (DSGVO-minimiert)
 
@@ -143,24 +223,48 @@ src/
 │   │   ├── outreach-channels.ts              # OutreachChannel const object + type + VALUES
 │   │   └── outreach-error-codes.ts           # OutreachErrorCode const object + type
 │   └── contracts/outreach/
-│       └── generate-outreach-request.dto.ts  # { leadId, channel, includeImprovements, contextNote? }
+│       ├── generate-outreach-request.dto.ts  # { leadId, channel, provider, includeImprovements, contextNote? }
+│       └── outreach-providers-result.dto.ts  # { ollama: boolean, openai: boolean }
 │
-├── server/
-│   └── services/outreach/
-│       ├── outreach-ai-service.ts            # Provider-Abstraktion: Ollama-first, OpenAI-Fallback
-│       ├── outreach-prompt-service.ts        # Prompt-Builder: System + User-Prompt aus LeadDetailDto
+├── server/workspace/outreach/
+│   ├── services/
+│   │   ├── generate-outreach/
+│   │   │   └── generate-outreach-request.schema.ts  # Zod-Schema (analog zu create-lead.schema.ts)
+│   │   ├── outreach-ai-service.ts            # Provider-Abstraktion: Ollama-first, OpenAI-Fallback
+│   │   └── outreach-prompt-service.ts        # Prompt-Builder: System + User-Prompt aus LeadDetailDto
+│   └── command-handler/
 │       └── generate-outreach-command-handler.ts  # Koordiniert: DB-Fetch → Prompt → AI → Result
 │
 └── app/api/workspace/outreach/
-    └── generate/route.ts                     # POST handler: Auth + Zod-Validation → Command-Handler
+    ├── generate/route.ts                     # POST: Auth + Schema-Validation → Command-Handler
+    └── providers/route.ts                    # GET: Ollama-Ping + OpenAI-Key-Check → { ollama, openai }
 ```
 
 ### API Route: `POST /api/workspace/outreach/generate`
 
-- Auth via `requireWorkspaceAccess()` (bestehender Helper)
-- Zod-Validation: `{ leadId: string, channel: OutreachChannel, includeImprovements: boolean, contextNote?: string }`
+- Auth via `withWorkspaceApiAuth()` (analog zu bestehenden Lead-Routes)
+- Zod-Validation via `generateOutreachRequestSchema` aus `generate-outreach-request.schema.ts`
+- Schema: `{ leadId: string, channel: OutreachChannel, provider: OutreachProvider, includeImprovements: boolean, contextNote?: string }`
 - Ruft `generateOutreachCommandHandler(input)` auf
 - Gibt `{ message: string }` zurück oder strukturiertes Error-Objekt
+
+### API Route: `GET /api/workspace/outreach/providers`
+
+- Auth via `withWorkspaceApiAuth()`
+- Prüft: Ollama erreichbar (HTTP GET `{OLLAMA_BASE_URL}/api/tags` mit 2 s Timeout), OpenAI-Key gesetzt
+- Gibt `{ ollama: boolean, openai: boolean }` zurück
+- Timeout-Fehler → `ollama: false` (kein Fehler-Status, nur Availability-Flag)
+- Wird beim Öffnen des Dialogs gecalled; kein Caching (User kann Ollama zwischenzeitlich starten)
+
+### `OutreachProvider` Konstante
+
+Neues Const-Objekt in `src/common/constants/outreach/outreach-providers.ts`:
+
+```ts
+export const OutreachProvider = { Ollama: "ollama", OpenAi: "openai" } as const;
+export type OutreachProvider =
+  (typeof OutreachProvider)[keyof typeof OutreachProvider];
+```
 
 ### `outreach-ai-service.ts`
 
@@ -208,7 +312,8 @@ src/components/workspace/leads/detail/
 ```
 
 - Props: `{ lead: LeadDetailDto, content: LeadsDetailDictionary }`
-- State: `channel`, `includeImprovements`, `contextNote`, `dialogState: 'idle'|'loading'|'result'|'error'`, `generatedMessage`
+- State: `provider`, `channel`, `includeImprovements`, `contextNote`, `dialogState: 'idle'|'loading'|'result'|'error'`, `generatedMessage`, `availableProviders: { ollama: boolean, openai: boolean } | null`
+- Provider-Check via `GET /api/workspace/outreach/providers` beim Öffnen (eigener `useEffect`)
 - Kein direktes DB-Zugriff — alles via API-Route
 
 ### Integration in `LeadDetailPanel`
@@ -228,9 +333,17 @@ Neue Keys in `src/i18n/dictionaries/workspace/leads/detail/{de,en}.json`:
   "outreach": {
     "buttonLabel": "Nachricht generieren",
     "dialogTitle": "Nachricht generieren",
+    "modelLabel": "Modell",
+    "modelOllama": "Ollama (lokal)",
+    "modelOpenAi": "OpenAI",
+    "modelChecking": "Verfügbare Modelle werden geprüft...",
+    "modelOllamaUnavailable": "Ollama nicht erreichbar — lokalen Server starten",
+    "noProviderAvailable": "Kein KI-Dienst verfügbar. Bitte Ollama starten oder OpenAI-Key setzen.",
+    "channelLabel": "Kanal",
     "channelLinkedin": "LinkedIn",
     "channelInstagram": "Instagram",
     "channelWhatsapp": "WhatsApp",
+    "whatsappLegalHint": "Nur bei bestehender Geschäftsbeziehung rechtlich unbedenklich.",
     "includeImprovements": "Verbesserungshinweise einbeziehen",
     "noImprovementsTooltip": "Keine Verbesserungshinweise hinterlegt",
     "contextLabel": "Zusätzlicher Kontext",
