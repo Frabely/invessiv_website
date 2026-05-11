@@ -31,12 +31,14 @@ import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads"
 import {
   getLeadImportErrorMessage,
   getLeadImportRowIssueMessage,
-} from "./import-leads-error-message";
-import { submitLeadImport } from "./import-leads-service";
+} from "../import-leads-error-message";
+import { importLeadsService } from "../import-leads-service";
 import {
-  getFocusableElements,
+  focusFirstDialogElement,
   trapDialogFocus,
-} from "../shared/dialog-focus-trap";
+} from "../../form/shared/dialog-focus-trap";
+import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
+import { DialogFooter } from "../dialog-footer/dialog-footer";
 import styles from "./import-leads-dialog.module.css";
 
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
@@ -93,58 +95,6 @@ function getSeverityClass(severity: LeadImportRowIssueSeverity): string {
   return "";
 }
 
-type ColumnPillGroupProps = {
-  columns: string[];
-  label: string;
-  pillClass: string;
-};
-
-function ColumnPillGroup({ columns, label, pillClass }: ColumnPillGroupProps) {
-  if (columns.length === 0) return null;
-  return (
-    <div className={styles.columnGroup}>
-      <p className={styles.columnGroupLabel}>{label}</p>
-      <div className={styles.columnPills}>
-        {columns.map((col) => (
-          <span className={pillClass} key={col}>
-            {col}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type DialogFooterAction = {
-  label: string;
-  onClick: () => void;
-  className: string;
-  disabled?: boolean;
-};
-
-type DialogFooterProps = {
-  className: string;
-  actions: DialogFooterAction[];
-};
-
-function DialogFooter({ className, actions }: DialogFooterProps) {
-  return (
-    <footer className={className}>
-      {actions.map((action) => (
-        <button
-          key={action.label}
-          className={action.className}
-          disabled={action.disabled}
-          onClick={action.onClick}
-          type="button"
-        >
-          {action.label}
-        </button>
-      ))}
-    </footer>
-  );
-}
-
 export function ImportLeadsDialog({ content }: Props) {
   const router = useRouter();
   const fileInputId = useId();
@@ -178,10 +128,7 @@ export function ImportLeadsDialog({ content }: Props) {
   useEffect(() => {
     if (!open) return;
     window.requestAnimationFrame(() => {
-      const focusable = dialogRef.current
-        ? getFocusableElements(dialogRef.current)
-        : [];
-      focusable[0]?.focus();
+      focusFirstDialogElement(dialogRef.current);
     });
   }, [open]);
 
@@ -267,7 +214,7 @@ export function ImportLeadsDialog({ content }: Props) {
 
     setPhase({ tag: LeadImportDialogPhaseTag.Submitting });
 
-    const result = await submitLeadImport(file);
+    const result = await importLeadsService.submitImport(file);
 
     if (result.ok) {
       if (result.report.importedCount > 0) {
@@ -286,11 +233,6 @@ export function ImportLeadsDialog({ content }: Props) {
   function handleRetry() {
     resetState();
   }
-
-  const DialogId = {
-    Title: "import-leads-dialog-title",
-    Description: "import-leads-dialog-description",
-  } as const;
 
   return (
     <>
@@ -312,8 +254,8 @@ export function ImportLeadsDialog({ content }: Props) {
           role="presentation"
         >
           <div
-            aria-describedby={DialogId.Description}
-            aria-labelledby={DialogId.Title}
+            aria-describedby={content.dialog.aria.descriptionId}
+            aria-labelledby={content.dialog.aria.titleId}
             aria-modal="true"
             className={styles.dialog}
             onKeyDown={handleKeyDown}
@@ -322,10 +264,13 @@ export function ImportLeadsDialog({ content }: Props) {
           >
             <header className={styles.header}>
               <div className={styles.heading}>
-                <h2 className={styles.title} id={DialogId.Title}>
+                <h2 className={styles.title} id={content.dialog.aria.titleId}>
                   {content.dialog.title}
                 </h2>
-                <p className={styles.description} id={DialogId.Description}>
+                <p
+                  className={styles.description}
+                  id={content.dialog.aria.descriptionId}
+                >
                   {content.dialog.description}
                 </p>
               </div>
@@ -353,6 +298,9 @@ export function ImportLeadsDialog({ content }: Props) {
                 <div className={styles.pickingPhase}>
                   <div
                     className={`${styles.dropzone} ${isDropActive ? styles.dropzoneActive : ""}`}
+                    aria-describedby={`${content.dialog.aria.dropzoneLabelId} ${content.dialog.aria.dropzoneHintId}`}
+                    aria-labelledby={content.dialog.aria.dropzoneLabelId}
+                    role="group"
                     onDragEnter={handleDropZoneDragEnter}
                     onDragLeave={handleDropZoneDragLeave}
                     onDragOver={handleDropZoneDragOver}
@@ -360,6 +308,7 @@ export function ImportLeadsDialog({ content }: Props) {
                   >
                     <label
                       className={styles.dropzoneLabelWrapper}
+                      id={content.dialog.aria.dropzoneLabelId}
                       htmlFor={fileInputId}
                     >
                       <span aria-hidden="true" className={styles.dropzoneIcon}>
@@ -368,7 +317,10 @@ export function ImportLeadsDialog({ content }: Props) {
                       <span className={styles.dropzoneLabel}>
                         {content.dialog.dropzoneLabel}
                       </span>
-                      <span className={styles.dropzoneHint}>
+                      <span
+                        className={styles.dropzoneHint}
+                        id={content.dialog.aria.dropzoneHintId}
+                      >
                         {content.dialog.dropzoneHint}
                       </span>
                     </label>
@@ -404,13 +356,23 @@ export function ImportLeadsDialog({ content }: Props) {
 
                   <ColumnPillGroup
                     columns={phase.preview.recognized}
+                    classNames={{
+                      group: styles.columnGroup,
+                      label: styles.columnGroupLabel,
+                      pills: styles.columnPills,
+                      pill: styles.columnPillRecognized,
+                    }}
                     label={content.preview.recognizedColumns}
-                    pillClass={styles.columnPillRecognized}
                   />
                   <ColumnPillGroup
                     columns={phase.preview.ignored}
+                    classNames={{
+                      group: styles.columnGroup,
+                      label: styles.columnGroupLabel,
+                      pills: styles.columnPills,
+                      pill: styles.columnPillIgnored,
+                    }}
                     label={content.preview.ignoredColumns}
-                    pillClass={styles.columnPillIgnored}
                   />
 
                   <DialogFooter
@@ -490,8 +452,13 @@ export function ImportLeadsDialog({ content }: Props) {
 
                   <ColumnPillGroup
                     columns={phase.report.ignoredColumns}
+                    classNames={{
+                      group: styles.columnGroup,
+                      label: styles.columnGroupLabel,
+                      pills: styles.columnPills,
+                      pill: styles.columnPillIgnored,
+                    }}
                     label={content.summary.ignoredColumns}
-                    pillClass={styles.columnPillIgnored}
                   />
 
                   {phase.report.rowIssues.length > 0 && (

@@ -53,3 +53,12 @@ export function trapDialogFocus(
     first.focus();
   }
 }
+
+export function focusFirstDialogElement(container: HTMLElement | null): void {
+  if (!container) {
+    return;
+  }
+
+  const focusable = getFocusableElements(container);
+  focusable[0]?.focus();
+}

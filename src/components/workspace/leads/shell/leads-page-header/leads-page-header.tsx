@@ -5,7 +5,7 @@ import type {
   LeadsImportDictionary,
   LeadsShellDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
-import { ImportLeadsDialog } from "@/components/workspace/leads/form/import-leads-dialog/import-leads-dialog";
+import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import styles from "./leads-page-header.module.css";
 
 type LeadsPageHeaderProps = {

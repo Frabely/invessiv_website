@@ -5,6 +5,12 @@
   "dialog": {
     "title": "Leads importieren",
     "description": "CSV-Datei hochladen und Leads automatisch anlegen.",
+    "aria": {
+      "titleId": "import-leads-dialog-title",
+      "descriptionId": "import-leads-dialog-description",
+      "dropzoneLabelId": "import-leads-dropzone-label",
+      "dropzoneHintId": "import-leads-dropzone-hint"
+    },
     "close": "Schließen",
     "cancel": "Abbrechen",
     "submit": "Importieren",

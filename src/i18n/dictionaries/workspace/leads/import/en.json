@@ -5,6 +5,12 @@
   "dialog": {
     "title": "Import leads",
     "description": "Upload a CSV file to automatically create leads.",
+    "aria": {
+      "titleId": "import-leads-dialog-title",
+      "descriptionId": "import-leads-dialog-description",
+      "dropzoneLabelId": "import-leads-dropzone-label",
+      "dropzoneHintId": "import-leads-dropzone-hint"
+    },
     "close": "Close",
     "cancel": "Cancel",
     "submit": "Import",
