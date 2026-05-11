@@ -4,8 +4,8 @@ import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-ur
 import { leadUrlSchema } from "@/server/workspace/leads/shared/lead-validation-core";
 import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
-import type { RawLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-row";
-import type { ValidatedLeadImportSocialProfile } from "@/server/workspace/leads/services/import/lead-import-social-profile";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
+import type { ValidatedLeadImportSocialProfile } from "@/common/contracts/leads/import/lead-import-social-profile";
 
 function trimOptionalValue(value: string | undefined): string | undefined {
   if (value === undefined) {

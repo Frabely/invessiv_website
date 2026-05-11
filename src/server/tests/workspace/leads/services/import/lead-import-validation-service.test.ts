@@ -9,7 +9,7 @@ import {
   leadImportRowSchema,
   validateRow,
 } from "@/server/workspace/leads/services/import/lead-import-validation-service";
-import type { RawLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-row";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 
 vi.mock("server-only", () => ({}));
 

@@ -2,11 +2,18 @@ import "server-only";
 
 import type { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
 import { LEAD_IMPORT_COLUMN_KEY_VALUES } from "@/common/constants/leads/import/lead-import-column-keys";
-import type { RawLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-row";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 
 const LEAD_IMPORT_COLUMN_KEY_SET = new Set<string>(
   LEAD_IMPORT_COLUMN_KEY_VALUES,
 );
+
+function normalizeHeader(header: string): string {
+  return header
+    .trim()
+    .replace(/^["']|["']$/g, "")
+    .trim();
+}
 
 function trimCell(value: string | undefined): string | undefined {
   if (value === undefined) {
@@ -30,13 +37,15 @@ export function mapHeadersToColumns(headers: string[]): {
   const seenColumns = new Set<LeadImportColumnKey>();
 
   for (const header of headers) {
-    if (!LEAD_IMPORT_COLUMN_KEY_SET.has(header)) {
+    const normalizedHeader = normalizeHeader(header);
+
+    if (!LEAD_IMPORT_COLUMN_KEY_SET.has(normalizedHeader)) {
       columns.push(null);
       ignored.push(header);
       continue;
     }
 
-    const column = header as LeadImportColumnKey;
+    const column = normalizedHeader as LeadImportColumnKey;
     if (seenColumns.has(column)) {
       columns.push(null);
       ignored.push(header);

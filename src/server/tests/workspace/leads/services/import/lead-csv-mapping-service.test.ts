@@ -29,6 +29,23 @@ describe("mapHeadersToColumns", () => {
     ]);
     expect(result.ignored).toEqual(["Email", "email"]);
   });
+
+  it("normalizes quoted and whitespace-padded headers", () => {
+    const result = mapHeadersToColumns([
+      ' "email" ',
+      " first_name ",
+      "'last_name'",
+      "unknown",
+    ]);
+
+    expect(result.columns).toEqual([
+      LeadImportColumnKey.Email,
+      LeadImportColumnKey.FirstName,
+      LeadImportColumnKey.LastName,
+      null,
+    ]);
+    expect(result.ignored).toEqual(["unknown"]);
+  });
 });
 
 describe("mapRowToRaw", () => {

@@ -1,5 +1,5 @@
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
-import type { ValidatedLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-valid-row";
+import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/lead-import-valid-row";
 
 export interface LeadImportValidationSuccess {
   ok: true;

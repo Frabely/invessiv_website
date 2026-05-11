@@ -1,5 +1,5 @@
 import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { ValidatedLeadImportSocialProfile } from "@/server/workspace/leads/services/import/lead-import-social-profile";
+import type { ValidatedLeadImportSocialProfile } from "@/common/contracts/leads/import/lead-import-social-profile";
 
 export interface ValidatedLeadImportRow {
   email: string;

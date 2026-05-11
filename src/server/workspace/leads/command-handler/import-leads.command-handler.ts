@@ -26,7 +26,7 @@ import { loadExistingKeys } from "@/server/workspace/leads/services/import/lead-
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
-import type { ValidatedLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-valid-row";
+import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/lead-import-valid-row";
 import { isDuplicateExternalGuidError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
 const MAX_DATA_ROWS = 500;

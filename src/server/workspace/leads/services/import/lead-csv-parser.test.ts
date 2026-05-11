@@ -65,6 +65,25 @@ describe("parseLeadCsv", () => {
     expect(result.rows).toEqual([["anna@example.com", "Schmidt", ""]]);
   });
 
+  it("throws InvalidCsv when a data row has more columns than the header", () => {
+    expect(() =>
+      parseLeadCsv("email;last_name\nanna@example.com;Schmidt;extra\n", {
+        maxDataRows: 500,
+      }),
+    ).toThrowError(LeadCsvParseError);
+
+    try {
+      parseLeadCsv("email;last_name\nanna@example.com;Schmidt;extra\n", {
+        maxDataRows: 500,
+      });
+    } catch (error) {
+      expect(error).toBeInstanceOf(LeadCsvParseError);
+      expect((error as LeadCsvParseError).code).toBe(
+        LeadImportErrorCode.InvalidCsv,
+      );
+    }
+  });
+
   it("accepts mixed CRLF and LF line endings", () => {
     const result = parseLeadCsv(
       "email;last_name\r\nanna@example.com;Schmidt\nmax@example.com;Mustermann\r\n",

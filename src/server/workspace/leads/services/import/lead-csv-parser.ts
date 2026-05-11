@@ -162,6 +162,10 @@ function normalizeRow(row: string[], width: number): string[] {
   return [...row, ...Array.from({ length: width - row.length }, () => "")];
 }
 
+function hasMeaningfulOverflow(row: string[], width: number): boolean {
+  return row.slice(width).some((cell) => cell.trim().length > 0);
+}
+
 function parseRows(input: string, separator: LeadCsvSeparator): string[][] {
   const rows: string[][] = [];
   const state = createRowState();
@@ -297,6 +301,13 @@ export function parseLeadCsv(
 
   if (dataRows.length > options.maxDataRows) {
     throw createParseError(LeadImportErrorCode.TooManyRows, normalizedInput);
+  }
+
+  const hasOverlongRow = dataRows.some((row) =>
+    hasMeaningfulOverflow(row, headers.length),
+  );
+  if (hasOverlongRow) {
+    throw createParseError(LeadImportErrorCode.InvalidCsv, normalizedInput);
   }
 
   return {
