@@ -2,6 +2,7 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
@@ -43,13 +44,13 @@ export const GET = withWorkspaceApiAuth(async (request: NextRequest) => {
   if (!parsed.success) {
     return leadApiError(
       LeadErrorCode.ValidationError,
-      400,
+      HttpResponseCode.BadRequest,
       parsed.error.issues,
     );
   }
 
   const result = await listLeads(parsed.data);
-  return Response.json(result, { status: 200 });
+  return Response.json(result, { status: HttpResponseCode.Ok });
 });
 
 export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
@@ -57,14 +58,17 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
   try {
     body = await request.json();
   } catch {
-    return leadApiError(LeadErrorCode.ValidationError, 400);
+    return leadApiError(
+      LeadErrorCode.ValidationError,
+      HttpResponseCode.BadRequest,
+    );
   }
 
   const parsed = createLeadSchema.safeParse(body);
   if (!parsed.success) {
     return leadApiError(
       LeadErrorCode.ValidationError,
-      400,
+      HttpResponseCode.BadRequest,
       parsed.error.issues,
     );
   }
@@ -73,15 +77,25 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
   try {
     result = await createLead(parsed.data);
   } catch {
-    return leadApiError(LeadErrorCode.Internal, 500);
+    return leadApiError(
+      LeadErrorCode.Internal,
+      HttpResponseCode.InternalServerError,
+    );
   }
 
   if (!result.ok) {
     if (result.code === LeadErrorCode.EmailExists) {
-      return leadApiError(LeadErrorCode.EmailExists, 409);
+      return leadApiError(LeadErrorCode.EmailExists, HttpResponseCode.Conflict);
     }
-    return leadApiError(LeadErrorCode.ValidationError, 400, result.errors);
+    return leadApiError(
+      LeadErrorCode.ValidationError,
+      HttpResponseCode.BadRequest,
+      result.errors,
+    );
   }
 
-  return Response.json({ lead: result.lead }, { status: 201 });
+  return Response.json(
+    { lead: result.lead },
+    { status: HttpResponseCode.Created },
+  );
 });

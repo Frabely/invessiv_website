@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LeadCsvSeparator } from "@/common/constants/leads/import/lead-csv-separator";
+import { LeadCsvSeparator } from "@/common/constants/leads/import/csv/lead-csv-separator";
 
 describe("LeadCsvSeparator", () => {
   it("contains the expected separator values without duplicates", () => {

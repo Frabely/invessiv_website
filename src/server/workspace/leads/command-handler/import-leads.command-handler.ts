@@ -1,8 +1,8 @@
 import "server-only";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";

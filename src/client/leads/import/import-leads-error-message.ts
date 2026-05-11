@@ -1,6 +1,6 @@
-import type { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
-import type { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
-import type { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
+import type { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
+import type { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import type { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
 import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads";
 
 export const LeadImportClientErrorCode = {

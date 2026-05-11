@@ -4,6 +4,7 @@ import {
   CONTACT_REQUEST_KIND,
   CONTACT_REQUEST_KINDS,
 } from "@/common/constants/contact/contact-request-kind";
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
@@ -70,7 +71,7 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse(
       CONTACT_SUBMIT_ERROR_CODE.InvalidJson,
       requestId,
-      400,
+      HttpResponseCode.BadRequest,
     );
   }
 
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse(
       CONTACT_SUBMIT_ERROR_CODE.PayloadTooLarge,
       requestId,
-      413,
+      HttpResponseCode.PayloadTooLarge,
     );
   }
 
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse(
       CONTACT_SUBMIT_ERROR_CODE.InvalidJson,
       requestId,
-      400,
+      HttpResponseCode.BadRequest,
     );
   }
 
@@ -100,7 +101,7 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse(
       CONTACT_SUBMIT_ERROR_CODE.RateLimited,
       requestId,
-      429,
+      HttpResponseCode.TooManyRequests,
       undefined,
       {
         "Retry-After": String(
@@ -116,8 +117,8 @@ export async function POST(request: NextRequest) {
       const status =
         submitResult.code === CONTACT_SUBMIT_ERROR_CODE.ValidationError ||
         submitResult.code === CONTACT_SUBMIT_ERROR_CODE.SpamDetected
-          ? 400
-          : 503;
+          ? HttpResponseCode.BadRequest
+          : HttpResponseCode.ServiceUnavailable;
 
       return createContactErrorResponse(
         submitResult.code,
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
     return createContactErrorResponse(
       CONTACT_SUBMIT_ERROR_CODE.InternalError,
       requestId,
-      500,
+      HttpResponseCode.InternalServerError,
     );
   }
 

@@ -1,4 +1,5 @@
-import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
 
 const MESSAGES: Record<LeadImportErrorCode, string> = {
   [LeadImportErrorCode.FileTooLarge]: "File exceeds the 2 MB size limit",
@@ -12,7 +13,7 @@ const MESSAGES: Record<LeadImportErrorCode, string> = {
 
 export function leadImportApiError(
   code: LeadImportErrorCode,
-  status: number,
+  status: HttpResponseCode,
   details?: unknown,
 ): Response {
   return Response.json(

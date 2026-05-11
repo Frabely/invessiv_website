@@ -1,11 +1,11 @@
-import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
 import type { LeadImportResultDto } from "@/common/contracts/leads/import/lead-import-result.dto";
 
 import {
   ImportLeadReportField,
   ImportLeadServiceValue,
-} from "@/common/constants/leads/import/import-leads-service.constants";
+} from "@/common/constants/leads/import/service/import-leads-service.constants";
 
 function isObjectWithStringField(
   value: unknown,

@@ -1,8 +1,8 @@
-import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
-import { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
-import { LEAD_IMPORT_STATUS_SYNONYMS } from "@/common/constants/leads/import/lead-import-status-synonyms";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import { LEAD_IMPORT_STATUS_SYNONYMS } from "@/common/constants/leads/import/status/lead-import-status-synonyms";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
 import {

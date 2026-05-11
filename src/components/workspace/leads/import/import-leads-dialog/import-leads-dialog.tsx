@@ -20,8 +20,8 @@ import {
 import {
   LEAD_IMPORT_COLUMN_KEY_VALUES,
   LeadImportColumnKey,
-} from "@/common/constants/leads/import/lead-import-column-keys";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
+} from "@/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type {
   LeadImportCsvPreview,
   LeadImportDialogPhase,

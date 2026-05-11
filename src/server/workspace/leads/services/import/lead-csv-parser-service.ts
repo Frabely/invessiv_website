@@ -1,7 +1,7 @@
 import "server-only";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
-import type { LeadCsvSeparator } from "@/common/constants/leads/import/lead-csv-separator";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
+import type { LeadCsvSeparator } from "@/common/constants/leads/import/csv/lead-csv-separator";
 import type { LeadCsvParseErrorDetails } from "@/common/contracts/leads/import/lead-csv-parse-error-details";
 import type { LeadCsvParseResult } from "@/common/contracts/leads/import/lead-csv-parse-result";
 import type { LeadCsvParserOptions } from "@/common/contracts/leads/import/lead-csv-parser-options";

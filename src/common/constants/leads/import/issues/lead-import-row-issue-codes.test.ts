@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   LEAD_IMPORT_ROW_ISSUE_CODE_VALUES,
   LeadImportRowIssueCode,
-} from "@/common/constants/leads/import/lead-import-row-issue-codes";
+} from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
 
 describe("LeadImportRowIssueCode", () => {
   it("contains the expected row issue codes without duplicates", () => {

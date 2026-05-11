@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
 import { leadCsvMappingService } from "@/server/workspace/leads/services/import/lead-csv-mapping-service";
 
 vi.mock("server-only", () => ({}));

@@ -1,9 +1,9 @@
-import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
 import { leadUrlSchema } from "@/server/workspace/leads/shared/lead-validation-core";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 import type { ValidatedLeadImportSocialProfile } from "@/common/contracts/leads/import/lead-import-social-profile";
 

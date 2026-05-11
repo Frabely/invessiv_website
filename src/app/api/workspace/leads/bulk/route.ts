@@ -3,6 +3,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
@@ -19,14 +20,17 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
   try {
     body = await request.json();
   } catch {
-    return leadApiError(LeadErrorCode.ValidationError, 400);
+    return leadApiError(
+      LeadErrorCode.ValidationError,
+      HttpResponseCode.BadRequest,
+    );
   }
 
   const parsed = leadBulkActionSchema.safeParse(body);
   if (!parsed.success) {
     return leadApiError(
       LeadErrorCode.ValidationError,
-      400,
+      HttpResponseCode.BadRequest,
       parsed.error.issues,
     );
   }
@@ -40,9 +44,12 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
     const result = await bulkEditLeads(input);
     return Response.json(
       { ok: result.ok, updatedCount: result.updatedCount },
-      { status: 200 },
+      { status: HttpResponseCode.Ok },
     );
   } catch {
-    return leadApiError(LeadErrorCode.Internal, 500);
+    return leadApiError(
+      LeadErrorCode.Internal,
+      HttpResponseCode.InternalServerError,
+    );
   }
 });

@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
-import { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
 import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
 import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 

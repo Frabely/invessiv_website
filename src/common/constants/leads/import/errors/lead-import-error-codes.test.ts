@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   LEAD_IMPORT_ERROR_CODE_VALUES,
   LeadImportErrorCode,
-} from "@/common/constants/leads/import/lead-import-error-codes";
+} from "@/common/constants/leads/import/errors/lead-import-error-codes";
 
 describe("LeadImportErrorCode", () => {
   it("contains the expected import error codes without duplicates", () => {
