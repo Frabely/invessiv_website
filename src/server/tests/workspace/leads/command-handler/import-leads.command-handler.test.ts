@@ -4,6 +4,7 @@ import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import
 import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
+import { PostgresErrorCode } from "@/server/db/core";
 
 // ── Mocks (hoisted so vi.mock can reference them) ─────────────────────────────
 
@@ -134,6 +135,9 @@ describe("importLeads", () => {
   it("imports 3 leads from example CSV, category column is recognized (not ignored)", async () => {
     vi.resetModules();
     setupEmptyDb();
+    getLeadCategoriesMock.mockResolvedValue([
+      { id: "cat-consulting", slug: "consulting", labelKey: "consulting" },
+    ]);
     const { importLeads } =
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
@@ -154,6 +158,9 @@ describe("importLeads", () => {
   it("skips all 3 rows on re-import (DuplicateEmail)", async () => {
     vi.resetModules();
     setupEmptyDb();
+    getLeadCategoriesMock.mockResolvedValue([
+      { id: "cat-consulting", slug: "consulting", labelKey: "consulting" },
+    ]);
     loadExistingKeysMock.mockResolvedValue({
       emailToLeadId: new Map([
         ["anna.schmidt@example.com", "lead-1"],
@@ -181,9 +188,66 @@ describe("importLeads", () => {
     expect(createLeadCoreInTransactionMock).not.toHaveBeenCalled();
   });
 
+  it("skips duplicate emails within the same file and only imports the first row", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = [
+      "email;last_name",
+      "same@example.com;First",
+      "same@example.com;Second",
+    ].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.importedCount).toBe(1);
+    expect(result.report.skippedCount).toBe(1);
+    expect(
+      result.report.rowIssues.some(
+        (i) => i.code === LeadImportRowIssueCode.DuplicateEmailInFile,
+      ),
+    ).toBe(true);
+    expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("skips duplicate external guids within the same file and only imports the first row", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = [
+      "email;last_name;external_guid",
+      "one@example.com;First;guid-001",
+      "two@example.com;Second;guid-001",
+    ].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.importedCount).toBe(1);
+    expect(result.report.skippedCount).toBe(1);
+    expect(
+      result.report.rowIssues.some(
+        (i) => i.code === LeadImportRowIssueCode.DuplicateExternalGuidInFile,
+      ),
+    ).toBe(true);
+    expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(1);
+  });
+
   it("records ConflictEmailGuidMismatch when email → Lead A but guid → Lead B", async () => {
     vi.resetModules();
     setupEmptyDb();
+    getLeadCategoriesMock.mockResolvedValue([
+      { id: "cat-consulting", slug: "consulting", labelKey: "consulting" },
+    ]);
     loadExistingKeysMock.mockResolvedValue({
       emailToLeadId: new Map([["anna.schmidt@example.com", "lead-A"]]),
       guidToLeadId: new Map([["linkedin-001", "lead-B"]]),
@@ -252,6 +316,35 @@ describe("importLeads", () => {
     );
     expect(catIssue).toBeDefined();
     expect(catIssue?.severity).toBe(LeadImportRowIssueSeverity.Error);
+  });
+
+  it("records UnknownCategoryId error for row with unrecognised category slug", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    getLeadCategoriesMock.mockResolvedValue([
+      { id: "known-cat-id", slug: "coaches", labelKey: "coaches" },
+    ]);
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = [
+      "email;last_name;category",
+      "test@example.com;Test;missing-category",
+    ].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.errorCount).toBe(1);
+    expect(result.report.importedCount).toBe(0);
+    const catIssue = result.report.rowIssues.find(
+      (i) => i.code === LeadImportRowIssueCode.UnknownCategoryId,
+    );
+    expect(catIssue).toBeDefined();
+    expect(catIssue?.severity).toBe(LeadImportRowIssueSeverity.Error);
+    expect(createLeadCoreInTransactionMock).not.toHaveBeenCalled();
   });
 
   it("handles race condition: loader returns empty, core throws DuplicateEmailError → Skip", async () => {
@@ -342,6 +435,38 @@ describe("importLeads", () => {
     expect(result.ok).toBe(true);
     if (!result.ok) return;
 
+    expect(result.report.skippedCount).toBe(1);
+    const dupGuidIssue = result.report.rowIssues.find(
+      (i) => i.code === LeadImportRowIssueCode.DuplicateExternalGuid,
+    );
+    expect(dupGuidIssue?.severity).toBe(LeadImportRowIssueSeverity.Skip);
+  });
+
+  it("skips row when createLeadCore hits an external_guid unique violation", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    createLeadCoreInTransactionMock.mockRejectedValueOnce(
+      Object.assign(new Error("duplicate key value"), {
+        cause: {
+          code: PostgresErrorCode.UniqueViolation,
+          constraint: "leads_external_guid_uidx",
+        },
+      }),
+    );
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = [
+      "email;last_name;external_guid",
+      "new@example.com;NewUser;guid-unique",
+    ].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.importedCount).toBe(0);
     expect(result.report.skippedCount).toBe(1);
     const dupGuidIssue = result.report.rowIssues.find(
       (i) => i.code === LeadImportRowIssueCode.DuplicateExternalGuid,

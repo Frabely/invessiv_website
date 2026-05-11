@@ -27,6 +27,7 @@ import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-l
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/services/create-lead-core/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/services/create-lead-core/duplicate-email-error";
 import type { ValidatedLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-valid-row";
+import { isDuplicateExternalGuidError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
 
 const MAX_DATA_ROWS = 500;
 
@@ -101,7 +102,6 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
     .filter((g): g is string => g !== undefined);
 
   let existingKeys: Awaited<ReturnType<typeof loadExistingKeys>>;
-  let categoryIdSet: Set<string>;
   let categorySlugToId: Map<string, string>;
 
   try {
@@ -110,7 +110,6 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
       getLeadCategories(),
     ]);
     existingKeys = keys;
-    categoryIdSet = new Set(categories.map((c) => c.id));
     categorySlugToId = new Map(
       categories.map((c) => [c.slug.toLowerCase(), c.id]),
     );
@@ -135,16 +134,26 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
     const { rowIndex, emailLower, externalGuid, validatedValue, issues } =
       entry;
 
+    const hasSkipIssue = issues.some(
+      (issue) => issue.severity === LeadImportRowIssueSeverity.Skip,
+    );
+    if (hasSkipIssue) {
+      allRowIssues.push(...issues);
+      skippedCount += 1;
+      continue;
+    }
+
+    const categorySlug = validatedValue.category_slug;
     const resolvedCategoryId =
       validatedValue.category_id ??
-      (validatedValue.category_slug !== undefined
-        ? categorySlugToId.get(validatedValue.category_slug)
+      (categorySlug !== undefined
+        ? categorySlugToId.get(categorySlug)
         : undefined);
 
     if (
-      resolvedCategoryId !== undefined &&
-      validatedValue.category_id !== undefined &&
-      !categoryIdSet.has(resolvedCategoryId)
+      validatedValue.category_id === undefined &&
+      categorySlug !== undefined &&
+      resolvedCategoryId === undefined
     ) {
       allRowIssues.push(
         ...issues,
@@ -232,6 +241,12 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
         allRowIssues.push(
           ...issues,
           makeSkipIssue(rowIndex, LeadImportRowIssueCode.DuplicateEmail),
+        );
+        skippedCount += 1;
+      } else if (isDuplicateExternalGuidError(error)) {
+        allRowIssues.push(
+          ...issues,
+          makeSkipIssue(rowIndex, LeadImportRowIssueCode.DuplicateExternalGuid),
         );
         skippedCount += 1;
       } else {
