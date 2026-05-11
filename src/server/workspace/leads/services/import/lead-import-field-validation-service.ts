@@ -27,12 +27,9 @@ function createIssue(
   };
 }
 
-export function validateImportEmail(
-  rawEmail: string | undefined,
-  rowIndex: number,
-) {
+function validateImportEmail(rawEmail: string | undefined, rowIndex: number) {
   const email = rawEmail?.trim();
-  if (email === undefined) {
+  if (email === undefined || email.length === 0) {
     return {
       issue: createIssue(
         rowIndex,
@@ -57,7 +54,7 @@ export function validateImportEmail(
   return { email };
 }
 
-export function validateImportOptionalUuid(
+function validateImportOptionalUuid(
   value: string | undefined,
   rowIndex: number,
   column: LeadImportColumnKey,
@@ -81,7 +78,7 @@ export function validateImportOptionalUuid(
   return { value: trimmed };
 }
 
-export function validateImportOptionalScore(
+function validateImportOptionalScore(
   value: string | undefined,
   rowIndex: number,
 ) {
@@ -104,7 +101,7 @@ export function validateImportOptionalScore(
   return { value: Number(trimmed) };
 }
 
-export function validateImportStatus(
+function validateImportStatus(
   value: string | undefined,
   rowIndex: number,
 ): { value?: ContactLeadStatus; issue?: LeadImportRowIssueDto } {
@@ -128,3 +125,10 @@ export function validateImportStatus(
     ),
   };
 }
+
+export const leadImportFieldValidationService = {
+  validateImportEmail,
+  validateImportOptionalUuid,
+  validateImportOptionalScore,
+  validateImportStatus,
+};

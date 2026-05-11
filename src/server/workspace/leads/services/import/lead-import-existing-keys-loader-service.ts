@@ -10,7 +10,7 @@ export interface ExistingLeadKeys {
   guidToLeadId: Map<string, string>;
 }
 
-export async function loadExistingKeys(
+async function loadExistingKeys(
   emails: string[],
   guids: string[],
 ): Promise<ExistingLeadKeys> {
@@ -31,9 +31,9 @@ export async function loadExistingKeys(
           .where(
             inArray(
               sql`lower(btrim(
-                ${leads.email}
-                )
-                )`,
+                        ${leads.email}
+                        )
+                        )`,
               emails,
             ),
           )
@@ -58,3 +58,7 @@ export async function loadExistingKeys(
 
   return { emailToLeadId, guidToLeadId };
 }
+
+export const leadImportExistingKeysLoaderService = {
+  loadExistingKeys,
+};

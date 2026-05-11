@@ -28,8 +28,13 @@ vi.mock("@/server/db/core", async (importOriginal) => ({
 }));
 
 vi.mock(
-  "@/server/workspace/leads/services/import/lead-import-existing-keys-loader",
-  () => ({ loadExistingKeys: loadExistingKeysMock }),
+  "@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service",
+  () => ({
+    leadImportExistingKeysLoaderService: {
+      loadExistingKeys: loadExistingKeysMock,
+    },
+    loadExistingKeys: loadExistingKeysMock,
+  }),
 );
 
 vi.mock(

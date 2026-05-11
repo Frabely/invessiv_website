@@ -75,7 +75,7 @@ function mapProfile(
   };
 }
 
-export function mapImportSocialProfiles(
+function mapImportSocialProfiles(
   row: RawLeadImportRow,
   rowIndex: number,
 ): {
@@ -123,3 +123,7 @@ export function mapImportSocialProfiles(
 
   return { socialProfiles, issues };
 }
+
+export const leadImportSocialProfileMapperService = {
+  mapImportSocialProfiles,
+};

@@ -33,10 +33,13 @@ function drizzleChain(value: unknown) {
 
 describe("loadExistingKeys", () => {
   it("returns empty maps when both inputs are empty", async () => {
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys([], []);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      [],
+      [],
+    );
 
     expect(result.emailToLeadId.size).toBe(0);
     expect(result.guidToLeadId.size).toBe(0);
@@ -52,10 +55,13 @@ describe("loadExistingKeys", () => {
       );
     getDrizzleDatabaseClientMock.mockReturnValue({ select: selectMock });
 
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys(["anna@example.com"], []);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      ["anna@example.com"],
+      [],
+    );
 
     expect(result.emailToLeadId.get("anna@example.com")).toBe("lead-1");
     expect(result.guidToLeadId.size).toBe(0);
@@ -70,10 +76,13 @@ describe("loadExistingKeys", () => {
       );
     getDrizzleDatabaseClientMock.mockReturnValue({ select: selectMock });
 
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys([], ["ext-guid-abc"]);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      [],
+      ["ext-guid-abc"],
+    );
 
     expect(result.guidToLeadId.get("ext-guid-abc")).toBe("lead-2");
     expect(result.emailToLeadId.size).toBe(0);
@@ -88,10 +97,13 @@ describe("loadExistingKeys", () => {
       );
     getDrizzleDatabaseClientMock.mockReturnValue({ select: selectMock });
 
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys(["max.mustermann@example.de"], []);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      ["max.mustermann@example.de"],
+      [],
+    );
 
     expect(result.emailToLeadId.get("max.mustermann@example.de")).toBe(
       "lead-3",
@@ -111,10 +123,13 @@ describe("loadExistingKeys", () => {
     });
     getDrizzleDatabaseClientMock.mockReturnValue({ select: selectMock });
 
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys(["test@example.com"], ["guid-xyz"]);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      ["test@example.com"],
+      ["guid-xyz"],
+    );
 
     expect(result.emailToLeadId.get("test@example.com")).toBe("lead-email");
     expect(result.guidToLeadId.get("guid-xyz")).toBe("lead-guid");
@@ -129,10 +144,13 @@ describe("loadExistingKeys", () => {
       );
     getDrizzleDatabaseClientMock.mockReturnValue({ select: selectMock });
 
-    const { loadExistingKeys } =
-      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader");
+    const { leadImportExistingKeysLoaderService } =
+      await import("@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service");
 
-    const result = await loadExistingKeys([], ["guid-xyz"]);
+    const result = await leadImportExistingKeysLoaderService.loadExistingKeys(
+      [],
+      ["guid-xyz"],
+    );
 
     expect(result.guidToLeadId.size).toBe(0);
   });

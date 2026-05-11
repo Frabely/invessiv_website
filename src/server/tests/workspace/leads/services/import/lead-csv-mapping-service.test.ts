@@ -1,16 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
-import {
-  mapHeadersToColumns,
-  mapRowToRaw,
-} from "@/server/workspace/leads/services/import/lead-csv-mapping-service";
+import { leadCsvMappingService } from "@/server/workspace/leads/services/import/lead-csv-mapping-service";
 
 vi.mock("server-only", () => ({}));
 
 describe("mapHeadersToColumns", () => {
   it("maps exact headers and ignores unknown or duplicate headers", () => {
-    const result = mapHeadersToColumns([
+    const result = leadCsvMappingService.mapHeadersToColumns([
       "email",
       "Email",
       "first_name",
@@ -31,7 +28,7 @@ describe("mapHeadersToColumns", () => {
   });
 
   it("normalizes quoted and whitespace-padded headers", () => {
-    const result = mapHeadersToColumns([
+    const result = leadCsvMappingService.mapHeadersToColumns([
       ' "email" ',
       " first_name ",
       "'last_name'",
@@ -46,11 +43,18 @@ describe("mapHeadersToColumns", () => {
     ]);
     expect(result.ignored).toEqual(["unknown"]);
   });
+
+  it("does not accept mismatched quotes as a valid header wrapper", () => {
+    const result = leadCsvMappingService.mapHeadersToColumns(["'email"]);
+
+    expect(result.columns).toEqual([null]);
+    expect(result.ignored).toEqual(["'email"]);
+  });
 });
 
 describe("mapRowToRaw", () => {
   it("trims values, keeps the original email casing and drops empty optional cells", () => {
-    const raw = mapRowToRaw(
+    const raw = leadCsvMappingService.mapRowToRaw(
       [
         LeadImportColumnKey.Email,
         LeadImportColumnKey.FirstName,

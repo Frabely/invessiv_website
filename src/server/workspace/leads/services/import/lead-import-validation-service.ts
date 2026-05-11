@@ -11,13 +11,8 @@ import {
   leadOptionalTextSchema,
   leadTextSchema,
 } from "@/server/workspace/leads/shared/lead-validation-core";
-import { mapImportSocialProfiles } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper";
-import {
-  validateImportEmail,
-  validateImportOptionalScore,
-  validateImportOptionalUuid,
-  validateImportStatus,
-} from "@/server/workspace/leads/services/import/lead-import-field-validation";
+import { leadImportSocialProfileMapperService } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper-service";
+import { leadImportFieldValidationService } from "@/server/workspace/leads/services/import/lead-import-field-validation-service";
 import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 import type { LeadImportValidationContext } from "@/common/contracts/leads/import/lead-import-validation-context";
 import type { LeadImportValidationResult } from "@/common/contracts/leads/import/lead-import-validation-result";
@@ -62,7 +57,7 @@ function parseDelimitedTokens(value: string | undefined): {
   return { tokens, emptyTokenCount };
 }
 
-export const leadImportRowSchema = z.object({
+const leadImportRowSchema = z.object({
   email: leadTextSchema,
   first_name: leadOptionalTextSchema,
   last_name: leadOptionalTextSchema,
@@ -156,16 +151,25 @@ function buildValidatedRow(
     raw.external_guid,
     rowIndex,
   );
-  const categoryIdResult = validateImportOptionalUuid(
-    raw.category_id,
-    rowIndex,
-    LeadImportColumnKey.CategoryId,
-  );
+  const categoryIdResult =
+    leadImportFieldValidationService.validateImportOptionalUuid(
+      raw.category_id,
+      rowIndex,
+      LeadImportColumnKey.CategoryId,
+    );
   const categorySlug = trimOptionalValue(raw.category);
-  const scoreResult = validateImportOptionalScore(raw.score, rowIndex);
+  const scoreResult =
+    leadImportFieldValidationService.validateImportOptionalScore(
+      raw.score,
+      rowIndex,
+    );
   const improvements = parseImprovements(raw.improvements, rowIndex, issues);
-  const statusResult = validateImportStatus(raw.status, rowIndex);
-  const socialProfilesResult = mapImportSocialProfiles(raw, rowIndex);
+  const statusResult = leadImportFieldValidationService.validateImportStatus(
+    raw.status,
+    rowIndex,
+  );
+  const socialProfilesResult =
+    leadImportSocialProfileMapperService.mapImportSocialProfiles(raw, rowIndex);
 
   if (categoryIdResult.issue) {
     issues.push(categoryIdResult.issue);
@@ -223,7 +227,7 @@ function createDuplicateIssue(
   return createIssue(rowIndex, code, LeadImportRowIssueSeverity.Skip, column);
 }
 
-export function validateRow(
+function validateRow(
   raw: RawLeadImportRow,
   ctx: LeadImportValidationContext,
 ): LeadImportValidationResult {
@@ -233,7 +237,10 @@ export function validateRow(
   }
 
   const issues: LeadImportRowIssueDto[] = [];
-  const emailResult = validateImportEmail(parsed.data.email, ctx.rowIndex);
+  const emailResult = leadImportFieldValidationService.validateImportEmail(
+    parsed.data.email,
+    ctx.rowIndex,
+  );
   if (emailResult.issue) {
     issues.push(emailResult.issue);
   }
@@ -288,5 +295,6 @@ export function validateRow(
 }
 
 export const leadImportValidationService = {
+  leadImportRowSchema,
   validateRow,
 };

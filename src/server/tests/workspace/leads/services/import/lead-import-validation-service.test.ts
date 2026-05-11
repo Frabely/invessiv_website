@@ -5,10 +5,7 @@ import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import
 import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
 import { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
-import {
-  leadImportRowSchema,
-  validateRow,
-} from "@/server/workspace/leads/services/import/lead-import-validation-service";
+import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
 import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
 
 vi.mock("server-only", () => ({}));
@@ -44,13 +41,19 @@ const validRawRow: RawLeadImportRow = {
 
 describe("leadImportRowSchema", () => {
   it("accepts the mapped raw import row shape", () => {
-    expect(leadImportRowSchema.safeParse(validRawRow).success).toBe(true);
+    expect(
+      leadImportValidationService.leadImportRowSchema.safeParse(validRawRow)
+        .success,
+    ).toBe(true);
   });
 });
 
 describe("validateRow", () => {
   it("returns a validated row with normalized social profiles and parsed status", () => {
-    const result = validateRow(validRawRow, createContext());
+    const result = leadImportValidationService.validateRow(
+      validRawRow,
+      createContext(),
+    );
 
     expect(result.ok).toBe(true);
     if (!result.ok) {
@@ -98,7 +101,7 @@ describe("validateRow", () => {
   });
 
   it("accepts minimal email and last_name", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "max@example.com",
         last_name: "Mustermann",
@@ -117,7 +120,7 @@ describe("validateRow", () => {
   });
 
   it("accepts minimal email and company_name", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "kontakt@example.com",
         company_name: "Beispiel GmbH",
@@ -135,7 +138,7 @@ describe("validateRow", () => {
   });
 
   it("returns an error when neither last_name nor company_name is provided", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         first_name: "Anna",
@@ -154,7 +157,7 @@ describe("validateRow", () => {
   });
 
   it("returns an error for invalid score values", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -173,7 +176,7 @@ describe("validateRow", () => {
   });
 
   it("falls back to New for unknown status and emits a warning", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -199,7 +202,7 @@ describe("validateRow", () => {
   });
 
   it("splits improvements and warns about empty tokens", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -227,7 +230,7 @@ describe("validateRow", () => {
   it("skips duplicate emails within the same file", () => {
     const context = createContext();
 
-    const first = validateRow(
+    const first = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -237,7 +240,7 @@ describe("validateRow", () => {
     expect(first.ok).toBe(true);
 
     context.rowIndex = 2;
-    const second = validateRow(
+    const second = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -259,7 +262,7 @@ describe("validateRow", () => {
   });
 
   it("returns an error for invalid category ids", () => {
-    const result = validateRow(
+    const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
         last_name: "Schmidt",
@@ -274,6 +277,24 @@ describe("validateRow", () => {
       code: LeadImportRowIssueCode.UnknownCategoryId,
       severity: LeadImportRowIssueSeverity.Error,
       column: LeadImportColumnKey.CategoryId,
+    });
+  });
+
+  it("returns MissingEmail when the mapped email cell is empty", () => {
+    const result = leadImportValidationService.validateRow(
+      {
+        email: "",
+        last_name: "Schmidt",
+      },
+      createContext(),
+    );
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      rowIndex: 1,
+      code: LeadImportRowIssueCode.MissingEmail,
+      severity: LeadImportRowIssueSeverity.Error,
+      column: LeadImportColumnKey.Email,
     });
   });
 });

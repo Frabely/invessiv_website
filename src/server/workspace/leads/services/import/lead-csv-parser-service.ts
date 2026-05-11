@@ -285,7 +285,7 @@ function parseRows(input: string, separator: LeadCsvSeparator): string[][] {
   return rows;
 }
 
-export function parseLeadCsv(
+function parseLeadCsv(
   input: string,
   options: LeadCsvParserOptions,
 ): LeadCsvParseResult {
@@ -315,3 +315,7 @@ export function parseLeadCsv(
     rows: dataRows.map((row) => normalizeRow(row, headers.length)),
   };
 }
+
+export const leadCsvParserService = {
+  parseLeadCsv,
+};

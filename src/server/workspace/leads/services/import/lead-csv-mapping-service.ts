@@ -9,10 +9,19 @@ const LEAD_IMPORT_COLUMN_KEY_SET = new Set<string>(
 );
 
 function normalizeHeader(header: string): string {
-  return header
-    .trim()
-    .replace(/^["']|["']$/g, "")
-    .trim();
+  const trimmed = header.trim();
+  const firstCharacter = trimmed[0];
+  const lastCharacter = trimmed[trimmed.length - 1];
+
+  if (
+    trimmed.length >= 2 &&
+    ((firstCharacter === '"' && lastCharacter === '"') ||
+      (firstCharacter === "'" && lastCharacter === "'"))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+
+  return trimmed;
 }
 
 function trimCell(value: string | undefined): string | undefined {
@@ -28,7 +37,7 @@ function normalizeRequiredCell(value: string | undefined): string {
   return value?.trim() ?? "";
 }
 
-export function mapHeadersToColumns(headers: string[]): {
+function mapHeadersToColumns(headers: string[]): {
   columns: (LeadImportColumnKey | null)[];
   ignored: string[];
 } {
@@ -59,7 +68,7 @@ export function mapHeadersToColumns(headers: string[]): {
   return { columns, ignored };
 }
 
-export function mapRowToRaw(
+function mapRowToRaw(
   columns: (LeadImportColumnKey | null)[],
   row: string[],
 ): RawLeadImportRow {
@@ -100,3 +109,8 @@ export function mapRowToRaw(
     improvements: raw.improvements,
   };
 }
+
+export const leadCsvMappingService = {
+  mapHeadersToColumns,
+  mapRowToRaw,
+};

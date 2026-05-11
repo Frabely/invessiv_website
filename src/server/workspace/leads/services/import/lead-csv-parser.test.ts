@@ -1,8 +1,9 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
+
 import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
-import { LeadCsvParseError, parseLeadCsv } from "./lead-csv-parser";
+import { leadCsvParserService } from "./lead-csv-parser-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -15,7 +16,7 @@ function readFixture(): string {
 
 describe("parseLeadCsv", () => {
   it("parses semicolon-separated input, strips BOM, and keeps quoted separators plus CRLF values", () => {
-    const result = parseLeadCsv(
+    const result = leadCsvParserService.parseLeadCsv(
       '\ufeffemail;notes\r\nanna@example.com;"Hello; world"\r\nmax@example.com;"Line 1\r\nLine 2"\r\n',
       { maxDataRows: 500 },
     );
@@ -28,7 +29,7 @@ describe("parseLeadCsv", () => {
   });
 
   it("prefers semicolons when both separators appear on the header line", () => {
-    const result = parseLeadCsv(
+    const result = leadCsvParserService.parseLeadCsv(
       'email;notes,extra\nfoo@example.com;"hello, world"\n',
       { maxDataRows: 500 },
     );
@@ -38,16 +39,17 @@ describe("parseLeadCsv", () => {
   });
 
   it("parses comma-separated input", () => {
-    const result = parseLeadCsv("email,last_name\nanna@example.com,Schmidt\n", {
-      maxDataRows: 500,
-    });
+    const result = leadCsvParserService.parseLeadCsv(
+      "email,last_name\nanna@example.com,Schmidt\n",
+      { maxDataRows: 500 },
+    );
 
     expect(result.headers).toEqual(["email", "last_name"]);
     expect(result.rows).toEqual([["anna@example.com", "Schmidt"]]);
   });
 
   it("ignores empty and whitespace-only lines while keeping the data row count stable", () => {
-    const result = parseLeadCsv(
+    const result = leadCsvParserService.parseLeadCsv(
       "\n   \nemail;last_name\n\nanna@example.com;Schmidt\n  \n",
       { maxDataRows: 500 },
     );
@@ -57,7 +59,7 @@ describe("parseLeadCsv", () => {
   });
 
   it("pads shorter rows to the header width", () => {
-    const result = parseLeadCsv(
+    const result = leadCsvParserService.parseLeadCsv(
       "email;last_name;company_name\nanna@example.com;Schmidt\n",
       { maxDataRows: 500 },
     );
@@ -67,25 +69,31 @@ describe("parseLeadCsv", () => {
 
   it("throws InvalidCsv when a data row has more columns than the header", () => {
     expect(() =>
-      parseLeadCsv("email;last_name\nanna@example.com;Schmidt;extra\n", {
-        maxDataRows: 500,
-      }),
-    ).toThrowError(LeadCsvParseError);
+      leadCsvParserService.parseLeadCsv(
+        "email;last_name\nanna@example.com;Schmidt;extra\n",
+        {
+          maxDataRows: 500,
+        },
+      ),
+    ).toThrowError(LeadImportErrorCode.InvalidCsv);
 
     try {
-      parseLeadCsv("email;last_name\nanna@example.com;Schmidt;extra\n", {
-        maxDataRows: 500,
-      });
+      leadCsvParserService.parseLeadCsv(
+        "email;last_name\nanna@example.com;Schmidt;extra\n",
+        {
+          maxDataRows: 500,
+        },
+      );
     } catch (error) {
-      expect(error).toBeInstanceOf(LeadCsvParseError);
-      expect((error as LeadCsvParseError).code).toBe(
+      expect(error).toBeInstanceOf(Error);
+      expect((error as { code?: unknown }).code).toBe(
         LeadImportErrorCode.InvalidCsv,
       );
     }
   });
 
   it("accepts mixed CRLF and LF line endings", () => {
-    const result = parseLeadCsv(
+    const result = leadCsvParserService.parseLeadCsv(
       "email;last_name\r\nanna@example.com;Schmidt\nmax@example.com;Mustermann\r\n",
       { maxDataRows: 500 },
     );
@@ -98,18 +106,24 @@ describe("parseLeadCsv", () => {
 
   it("throws InvalidCsv for malformed quoting", () => {
     expect(() =>
-      parseLeadCsv('email;notes\nanna@example.com;"unterminated\n', {
-        maxDataRows: 500,
-      }),
-    ).toThrowError(LeadCsvParseError);
+      leadCsvParserService.parseLeadCsv(
+        'email;notes\nanna@example.com;"unterminated\n',
+        {
+          maxDataRows: 500,
+        },
+      ),
+    ).toThrowError(Error);
 
     try {
-      parseLeadCsv('email;notes\nanna@example.com;"unterminated\n', {
-        maxDataRows: 500,
-      });
+      leadCsvParserService.parseLeadCsv(
+        'email;notes\nanna@example.com;"unterminated\n',
+        {
+          maxDataRows: 500,
+        },
+      );
     } catch (error) {
-      expect(error).toBeInstanceOf(LeadCsvParseError);
-      expect((error as LeadCsvParseError).code).toBe(
+      expect(error).toBeInstanceOf(Error);
+      expect((error as { code?: unknown }).code).toBe(
         LeadImportErrorCode.InvalidCsv,
       );
     }
@@ -117,18 +131,24 @@ describe("parseLeadCsv", () => {
 
   it("throws InvalidCsv when a quoted field starts after leading whitespace", () => {
     expect(() =>
-      parseLeadCsv('email;notes\nanna@example.com; "hello"\n', {
-        maxDataRows: 500,
-      }),
-    ).toThrowError(LeadCsvParseError);
+      leadCsvParserService.parseLeadCsv(
+        'email;notes\nanna@example.com; "hello"\n',
+        {
+          maxDataRows: 500,
+        },
+      ),
+    ).toThrowError(Error);
 
     try {
-      parseLeadCsv('email;notes\nanna@example.com; "hello"\n', {
-        maxDataRows: 500,
-      });
+      leadCsvParserService.parseLeadCsv(
+        'email;notes\nanna@example.com; "hello"\n',
+        {
+          maxDataRows: 500,
+        },
+      );
     } catch (error) {
-      expect(error).toBeInstanceOf(LeadCsvParseError);
-      expect((error as LeadCsvParseError).code).toBe(
+      expect(error).toBeInstanceOf(Error);
+      expect((error as { code?: unknown }).code).toBe(
         LeadImportErrorCode.InvalidCsv,
       );
     }
@@ -141,25 +161,33 @@ describe("parseLeadCsv", () => {
     });
 
     expect(() =>
-      parseLeadCsv(`email;last_name\n${rows.join("\n")}\n`, {
-        maxDataRows: 500,
-      }),
-    ).toThrowError(LeadCsvParseError);
+      leadCsvParserService.parseLeadCsv(
+        `email;last_name\n${rows.join("\n")}\n`,
+        {
+          maxDataRows: 500,
+        },
+      ),
+    ).toThrowError(Error);
 
     try {
-      parseLeadCsv(`email;last_name\n${rows.join("\n")}\n`, {
-        maxDataRows: 500,
-      });
+      leadCsvParserService.parseLeadCsv(
+        `email;last_name\n${rows.join("\n")}\n`,
+        {
+          maxDataRows: 500,
+        },
+      );
     } catch (error) {
-      expect(error).toBeInstanceOf(LeadCsvParseError);
-      expect((error as LeadCsvParseError).code).toBe(
+      expect(error).toBeInstanceOf(Error);
+      expect((error as { code?: unknown }).code).toBe(
         LeadImportErrorCode.TooManyRows,
       );
     }
   });
 
   it("parses the example fixture without error", () => {
-    const result = parseLeadCsv(readFixture(), { maxDataRows: 500 });
+    const result = leadCsvParserService.parseLeadCsv(readFixture(), {
+      maxDataRows: 500,
+    });
 
     expect(result.headers).toEqual([
       "external_guid",

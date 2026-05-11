@@ -15,14 +15,11 @@ import type {
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import {
   LeadCsvParseError,
-  parseLeadCsv,
-} from "@/server/workspace/leads/services/import/lead-csv-parser";
-import {
-  mapHeadersToColumns,
-  mapRowToRaw,
-} from "@/server/workspace/leads/services/import/lead-csv-mapping-service";
+  leadCsvParserService,
+} from "@/server/workspace/leads/services/import/lead-csv-parser-service";
+import { leadCsvMappingService } from "@/server/workspace/leads/services/import/lead-csv-mapping-service";
 import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
-import { loadExistingKeys } from "@/server/workspace/leads/services/import/lead-import-existing-keys-loader";
+import { leadImportExistingKeysLoaderService } from "@/server/workspace/leads/services/import/lead-import-existing-keys-loader-service";
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
@@ -52,7 +49,9 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
   let rows: string[][];
 
   try {
-    const parsed = parseLeadCsv(text, { maxDataRows: MAX_DATA_ROWS });
+    const parsed = leadCsvParserService.parseLeadCsv(text, {
+      maxDataRows: MAX_DATA_ROWS,
+    });
     headers = parsed.headers;
     rows = parsed.rows;
   } catch (error) {
@@ -63,7 +62,8 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
   }
 
   const totalRows = rows.length;
-  const { columns, ignored: ignoredColumns } = mapHeadersToColumns(headers);
+  const { columns, ignored: ignoredColumns } =
+    leadCsvMappingService.mapHeadersToColumns(headers);
 
   const seenEmails = new Set<string>();
   const seenExternalGuids = new Set<string>();
@@ -71,7 +71,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
   const validationEntries: RowEntry<ValidatedLeadImportRow>[] = rows.map(
     (row, index) => {
       const rowIndex = index + 1;
-      const raw = mapRowToRaw(columns, row);
+      const raw = leadCsvMappingService.mapRowToRaw(columns, row);
       const result = leadImportValidationService.validateRow(raw, {
         rowIndex,
         seenEmails,
@@ -101,12 +101,17 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
     .map((e) => e.externalGuid)
     .filter((g): g is string => g !== undefined);
 
-  let existingKeys: Awaited<ReturnType<typeof loadExistingKeys>>;
+  let existingKeys: Awaited<
+    ReturnType<typeof leadImportExistingKeysLoaderService.loadExistingKeys>
+  >;
   let categorySlugToId: Map<string, string>;
 
   try {
     const [keys, categories] = await Promise.all([
-      loadExistingKeys(validEmails, validGuids),
+      leadImportExistingKeysLoaderService.loadExistingKeys(
+        validEmails,
+        validGuids,
+      ),
       getLeadCategories(),
     ]);
     existingKeys = keys;
