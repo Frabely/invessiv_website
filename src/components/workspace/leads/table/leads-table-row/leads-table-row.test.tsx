@@ -2,7 +2,7 @@
 
 import "@testing-library/jest-dom/vitest";
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
@@ -93,18 +93,19 @@ describe("LeadsTableRow", () => {
       </table>,
     );
 
-    const editLink = screen.getByRole("link", {
+    const editButton = screen.getByRole("button", {
       name: getLeadsTableDictionary("de").actions.edit,
     });
-    const url = new URL(
-      editLink.getAttribute("href") ?? "",
+    fireEvent.click(editButton);
+
+    const calledUrl = new URL(
+      pushMock.mock.calls[0][0],
       "https://invessiv.com",
     );
-
-    expect(url.pathname).toBe("/de/workspace/leads");
-    expect(url.searchParams.get("mode")).toBe("edit");
-    expect(url.searchParams.get("edit")).toBe("lead-123");
-    expect(url.searchParams.get("selected")).toBe("lead-999");
-    expect(url.searchParams.get("status")).toBe("qualified");
+    expect(calledUrl.pathname).toBe("/de/workspace/leads");
+    expect(calledUrl.searchParams.get("mode")).toBe("edit");
+    expect(calledUrl.searchParams.get("edit")).toBe("lead-123");
+    expect(calledUrl.searchParams.get("selected")).toBe("lead-999");
+    expect(calledUrl.searchParams.get("status")).toBe("qualified");
   });
 });

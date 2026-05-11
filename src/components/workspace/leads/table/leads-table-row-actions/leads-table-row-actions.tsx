@@ -1,9 +1,10 @@
 "use client";
 
 import type { MouseEvent } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import styles from "./leads-table-row-actions.module.css";
 
 type LeadsTableRowActionsProps = {
@@ -19,21 +20,27 @@ export function LeadsTableRowActions({
   editHref,
   editLabel,
 }: LeadsTableRowActionsProps) {
+  const router = useRouter();
+  const startTransition = useNavigationContext();
+
   return (
     <td
       className={styles.cell}
       onClick={stopRowPropagation}
       onMouseDown={stopRowPropagation}
     >
-      <Link
+      <button
         aria-label={editLabel}
         className={styles.button}
-        href={editHref}
-        onClick={stopRowPropagation}
+        onClick={(event) => {
+          stopRowPropagation(event);
+          startTransition(() => router.push(editHref));
+        }}
         title={editLabel}
+        type="button"
       >
         <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-      </Link>
+      </button>
     </td>
   );
 }
