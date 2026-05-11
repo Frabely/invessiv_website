@@ -1,5 +1,5 @@
 import { PostgresErrorCode } from "@/server/db/core";
-import { DuplicateEmailError } from "@/server/workspace/leads/services/create-lead-core/duplicate-email-error";
+import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 
 const DUPLICATE_ERROR_KEYS = [
   "cause",

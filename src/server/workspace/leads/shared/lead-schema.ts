@@ -11,7 +11,7 @@ import {
   leadScoreSchema,
   leadUrlSchema,
   leadUuidSchema,
-} from "@/server/workspace/leads/services/shared/lead-validation-core";
+} from "@/server/workspace/leads/shared/lead-validation-core";
 
 const optionalName = leadOptionalTextSchema.refine(
   (value) =>

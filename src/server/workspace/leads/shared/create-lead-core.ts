@@ -4,6 +4,8 @@ import { desc, eq } from "drizzle-orm";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import type { CreateLeadCoreInput } from "@/common/contracts/leads/create-lead-core-input";
+import type { CreateLeadCoreOptions } from "@/common/contracts/leads/create-lead-core-options";
 import type { CreateLeadActivityInput } from "@/common/contracts/leads/create-lead-activity-input";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
@@ -20,14 +22,10 @@ import {
 } from "@/server/db/record-configuration";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
-import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
-import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
+import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
+import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
-import { DuplicateEmailError } from "./duplicate-email-error";
-import type {
-  CreateLeadCoreInput,
-  CreateLeadCoreOptions,
-} from "./create-lead-core-types";
+import { DuplicateEmailError } from "./duplicate-email-error.class";
 
 async function loadLeadDetailInTransaction(
   tx: ContactDatabaseTransaction,

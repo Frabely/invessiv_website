@@ -9,7 +9,7 @@ import {
   leadEmailSchema,
   leadScoreSchema,
   leadUuidSchema,
-} from "@/server/workspace/leads/services/shared/lead-validation-core";
+} from "@/server/workspace/leads/shared/lead-validation-core";
 
 function createIssue(
   rowIndex: number,

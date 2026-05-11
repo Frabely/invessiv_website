@@ -43,7 +43,7 @@ import {
   parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
-} from "@/server/workspace/leads/utils/lead-list-search-params";
+} from "@/server/workspace/leads/shared/lead-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

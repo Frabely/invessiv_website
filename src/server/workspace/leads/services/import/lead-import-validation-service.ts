@@ -10,7 +10,7 @@ import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
 import {
   leadOptionalTextSchema,
   leadTextSchema,
-} from "@/server/workspace/leads/services/shared/lead-validation-core";
+} from "@/server/workspace/leads/shared/lead-validation-core";
 import { mapImportSocialProfiles } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper";
 import {
   validateImportEmail,

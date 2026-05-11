@@ -7,8 +7,8 @@ import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes"
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
-import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
-import { createLeadCoreInTransaction } from "@/server/workspace/leads/services/create-lead-core/create-lead-core";
+import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
+import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 
 export async function createLead(
   input: CreateLeadRequestDto,

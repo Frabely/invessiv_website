@@ -37,10 +37,9 @@ vi.mock(
   () => ({ getLeadCategories: getLeadCategoriesMock }),
 );
 
-vi.mock(
-  "@/server/workspace/leads/services/create-lead-core/create-lead-core",
-  () => ({ createLeadCoreInTransaction: createLeadCoreInTransactionMock }),
-);
+vi.mock("@/server/workspace/leads/shared/create-lead-core", () => ({
+  createLeadCoreInTransaction: createLeadCoreInTransactionMock,
+}));
 
 // ── Shared helpers ─────────────────────────────────────────────────────────────
 
@@ -351,7 +350,7 @@ describe("importLeads", () => {
     vi.resetModules();
     setupEmptyDb();
     const { DuplicateEmailError } =
-      await import("@/server/workspace/leads/services/create-lead-core/duplicate-email-error");
+      await import("@/server/workspace/leads/shared/duplicate-email-error.class");
     createLeadCoreInTransactionMock.mockRejectedValue(
       new DuplicateEmailError(),
     );

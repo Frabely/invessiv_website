@@ -4,7 +4,7 @@ import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statu
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import { PostgresErrorCode } from "@/server/db/core";
-import { DuplicateEmailError } from "@/server/workspace/leads/services/create-lead-core/duplicate-email-error";
+import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 
 const createLeadActivityMock = vi.fn().mockResolvedValue(undefined);
 
@@ -124,7 +124,7 @@ describe("createLeadCoreInTransaction", () => {
   it("creates a manual lead with manual defaults", async () => {
     const { txMock, capturedInserts } = createTxMock();
     const { createLeadCoreInTransaction } =
-      await import("@/server/workspace/leads/services/create-lead-core/create-lead-core");
+      await import("@/server/workspace/leads/shared/create-lead-core");
 
     const result = await createLeadCoreInTransaction(
       txMock as never,
@@ -148,7 +148,7 @@ describe("createLeadCoreInTransaction", () => {
   it("applies import overrides for source, status, owner, external_guid and activity metadata", async () => {
     const { txMock, capturedInserts } = createTxMock();
     const { createLeadCoreInTransaction } =
-      await import("@/server/workspace/leads/services/create-lead-core/create-lead-core");
+      await import("@/server/workspace/leads/shared/create-lead-core");
 
     const result = await createLeadCoreInTransaction(
       txMock as never,
@@ -200,7 +200,7 @@ describe("createLeadCoreInTransaction", () => {
       duplicateEmailError: duplicateError,
     });
     const { createLeadCoreInTransaction } =
-      await import("@/server/workspace/leads/services/create-lead-core/create-lead-core");
+      await import("@/server/workspace/leads/shared/create-lead-core");
 
     await expect(
       createLeadCoreInTransaction(

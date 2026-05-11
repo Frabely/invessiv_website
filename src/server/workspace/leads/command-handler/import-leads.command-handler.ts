@@ -24,10 +24,10 @@ import {
 import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
 import { loadExistingKeys } from "@/server/workspace/leads/services/import/lead-import-existing-keys-loader";
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
-import { createLeadCoreInTransaction } from "@/server/workspace/leads/services/create-lead-core/create-lead-core";
-import { DuplicateEmailError } from "@/server/workspace/leads/services/create-lead-core/duplicate-email-error";
+import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
+import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 import type { ValidatedLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-valid-row";
-import { isDuplicateExternalGuidError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
+import { isDuplicateExternalGuidError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
 const MAX_DATA_ROWS = 500;
 
