@@ -2,13 +2,17 @@
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getLeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadsPagination } from "./leads-pagination";
 import {
   buildPaginationHref,
   getPaginationItems,
 } from "./leads-pagination.utils";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 afterEach(() => {
   cleanup();
@@ -51,10 +55,7 @@ describe("LeadsPagination", () => {
     );
 
     expect(screen.getByText("Zeige 21–40 von 40")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Seite 1" })).toHaveAttribute(
-      "href",
-      "/de/workspace/leads?sort=created_desc&page=1",
-    );
+    expect(screen.getByRole("button", { name: "Seite 1" })).toBeInTheDocument();
     expect(screen.getByText("2")).toHaveAttribute("aria-current", "page");
   });
 });
