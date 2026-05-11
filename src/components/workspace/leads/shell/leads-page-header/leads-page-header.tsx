@@ -1,10 +1,14 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faPlus } from "@fortawesome/free-solid-svg-icons";
 import type {
   LeadsImportDictionary,
   LeadsShellDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import styles from "./leads-page-header.module.css";
 
@@ -19,6 +23,9 @@ export function LeadsPageHeader({
   content,
   importContent,
 }: LeadsPageHeaderProps) {
+  const router = useRouter();
+  const startTransition = useNavigationContext();
+
   return (
     <header className={styles.header}>
       <div className={styles.top}>
@@ -35,12 +42,17 @@ export function LeadsPageHeader({
       </div>
       <div className={styles.actionsRow}>
         {importContent && <ImportLeadsDialog content={importContent} />}
-        <Link className={styles.addButton} href={addLeadHref} scroll={false}>
+        <PrimaryCtaButton
+          className={styles.addButton}
+          onClick={() =>
+            startTransition(() => router.push(addLeadHref, { scroll: false }))
+          }
+        >
           <span aria-hidden="true" className={styles.addButtonIcon}>
             <FontAwesomeIcon icon={faPlus} />
           </span>
           {content.addLeadButton}
-        </Link>
+        </PrimaryCtaButton>
       </div>
     </header>
   );

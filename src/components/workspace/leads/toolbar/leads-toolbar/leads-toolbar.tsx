@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRotateLeft,
@@ -96,6 +97,7 @@ export function LeadsToolbar({
   sharedContent,
 }: LeadsToolbarProps) {
   const router = useRouter();
+  const startTransition = useNavigationContext();
   const searchParams = getSearchParams(currentQueryString);
   const currentStatus = getQueryValue(searchParams, LeadListQueryParam.Status);
   const currentSource = getQueryValue(searchParams, LeadListQueryParam.Source);
@@ -142,17 +144,24 @@ export function LeadsToolbar({
           : undefined,
       });
 
-      router.replace(href, { scroll: false });
+      startTransition(() => router.replace(href, { scroll: false }));
     }, SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [basePath, currentQueryString, currentSearch, router, searchValue]);
+  }, [
+    basePath,
+    currentQueryString,
+    currentSearch,
+    router,
+    searchValue,
+    startTransition,
+  ]);
 
   function commitFilter(overrides: Record<string, string | undefined>) {
     const href = buildFilterHref(basePath, currentQueryString, overrides);
-    router.push(href, { scroll: false });
+    startTransition(() => router.push(href, { scroll: false }));
   }
 
   function resetFilters() {

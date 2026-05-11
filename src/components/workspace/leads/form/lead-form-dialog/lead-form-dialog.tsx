@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { useForm, useWatch } from "react-hook-form";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -240,6 +241,7 @@ export function LeadFormDialog({
   sharedContent,
 }: LeadFormDialogProps) {
   const router = useRouter();
+  const startTransition = useNavigationContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -486,7 +488,7 @@ export function LeadFormDialog({
     reset(initialValues);
     clearErrors();
     setStatusMessage(null);
-    router.replace(buildHref(), { scroll: false });
+    startTransition(() => router.replace(buildHref(), { scroll: false }));
   }
 
   function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
@@ -600,13 +602,17 @@ export function LeadFormDialog({
 
       if (isEditMode) {
         setStatusMessage(content.status.successEdit);
-        router.replace(buildHref(result.lead.id), { scroll: false });
+        startTransition(() =>
+          router.replace(buildHref(result.lead.id), { scroll: false }),
+        );
         router.refresh();
         return;
       }
 
       reset(DEFAULT_VALUES);
-      router.replace(buildHref(result.lead.id), { scroll: false });
+      startTransition(() =>
+        router.replace(buildHref(result.lead.id), { scroll: false }),
+      );
     } catch {
       setStatusMessage(content.validation.generic);
     }

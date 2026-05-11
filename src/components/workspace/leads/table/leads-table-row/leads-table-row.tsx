@@ -2,6 +2,7 @@
 
 import type { KeyboardEvent, MouseEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
@@ -66,6 +67,7 @@ export function LeadsTableRow({
   tableContent,
 }: LeadsTableRowProps) {
   const router = useRouter();
+  const startTransition = useNavigationContext();
   const { isSelected, toggleRow } = useLeadsTableSelection();
   const href = buildLeadHref(basePath, currentQueryString, {
     [LeadListQueryParam.Selected]: lead.id,
@@ -97,13 +99,13 @@ export function LeadsTableRow({
   );
 
   function handleRowClick() {
-    router.push(href);
+    startTransition(() => router.push(href));
   }
 
   function handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      router.push(href);
+      startTransition(() => router.push(href));
     }
   }
 

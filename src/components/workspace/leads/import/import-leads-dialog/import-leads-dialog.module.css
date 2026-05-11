@@ -1,33 +1,5 @@
 .triggerButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 0.45rem;
-  height: 38px;
-  padding: 0 1.1rem;
-  border-radius: 10px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-button);
-  font-weight: 600;
-  letter-spacing: 0.005em;
-  cursor: pointer;
-  transition:
-    border-color 150ms,
-    color 150ms,
-    background-color 150ms;
-}
-
-.triggerButton:hover {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--color-accent-warm) 7%, transparent);
-}
-
-.triggerButton:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }
 
 .triggerIcon {

@@ -1,7 +1,10 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsDetailDictionary,
@@ -88,6 +91,8 @@ export function LeadDetailPanel({
   locale,
   sharedContent,
 }: LeadDetailPanelProps) {
+  const router = useRouter();
+  const startTransition = useNavigationContext();
   const displayName = getLeadDisplayName(lead);
   const categoryLabel = getCategoryLabel(
     lead,
@@ -112,23 +117,25 @@ export function LeadDetailPanel({
           </a>
         </div>
 
-        <Link
+        <button
           aria-label={content.actions.closeAriaLabel}
           className={styles.closeButton}
-          href={closeHref}
+          onClick={() => startTransition(() => router.push(closeHref))}
           title={content.actions.closeAriaLabel}
+          type="button"
         >
           <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-        </Link>
+        </button>
 
-        <Link
+        <button
           aria-label={content.actions.edit}
           className={styles.editIconLink}
-          href={editHref}
+          onClick={() => startTransition(() => router.push(editHref))}
           title={content.actions.edit}
+          type="button"
         >
           <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-        </Link>
+        </button>
       </header>
 
       <div className={styles.badgeRow}>

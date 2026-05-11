@@ -33,6 +33,7 @@ import {
   getLeadImportRowIssueMessage,
 } from "@/client/leads/import/import-leads-error-message";
 import { importLeadsService } from "@/client/leads/import/import-leads-service";
+import { ButtonControl } from "@/components/shared/button/button";
 import {
   focusFirstDialogElement,
   trapDialogFocus,
@@ -236,16 +237,16 @@ export function ImportLeadsDialog({ content }: Props) {
 
   return (
     <>
-      <button
+      <ButtonControl
         className={styles.triggerButton}
         onClick={handleTriggerClick}
-        type="button"
+        variant="ghost"
       >
         <span aria-hidden="true" className={styles.triggerIcon}>
           <FontAwesomeIcon icon={faArrowUpFromBracket} />
         </span>
         {content.trigger.label}
-      </button>
+      </ButtonControl>
 
       {open && (
         <div
