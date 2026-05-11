@@ -6,7 +6,7 @@ import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/l
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
 import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
-import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
 
 vi.mock("server-only", () => ({}));
 

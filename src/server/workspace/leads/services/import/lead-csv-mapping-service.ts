@@ -2,7 +2,7 @@ import "server-only";
 
 import type { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
 import { LEAD_IMPORT_COLUMN_KEY_VALUES } from "@/common/constants/leads/import/columns/lead-import-column-keys";
-import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
 
 const LEAD_IMPORT_COLUMN_KEY_SET = new Set<string>(
   LEAD_IMPORT_COLUMN_KEY_VALUES,

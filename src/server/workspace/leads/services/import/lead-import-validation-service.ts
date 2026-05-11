@@ -13,10 +13,10 @@ import {
 } from "@/server/workspace/leads/shared/lead-validation-core";
 import { leadImportSocialProfileMapperService } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper-service";
 import { leadImportFieldValidationService } from "@/server/workspace/leads/services/import/lead-import-field-validation-service";
-import type { RawLeadImportRow } from "@/common/contracts/leads/import/lead-import-raw-row";
-import type { LeadImportValidationContext } from "@/common/contracts/leads/import/lead-import-validation-context";
-import type { LeadImportValidationResult } from "@/common/contracts/leads/import/lead-import-validation-result";
-import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/lead-import-valid-row";
+import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
+import type { LeadImportValidationContext } from "@/common/contracts/leads/import/validation/lead-import-validation-context";
+import type { LeadImportValidationResult } from "@/common/contracts/leads/import/validation/lead-import-validation-result";
+import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/validation/lead-import-valid-row";
 
 type LeadImportRowSchemaInput = z.infer<typeof leadImportRowSchema>;
 type LeadImportIssueCode =
