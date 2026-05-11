@@ -8,7 +8,7 @@ export const LeadActivityType = {
 export type LeadActivityType =
   (typeof LeadActivityType)[keyof typeof LeadActivityType];
 
-export const LEAD_ACTIVITY_TYPES = [
+export const LEAD_ACTIVITY_TYPE_VALUES = [
   LeadActivityType.Note,
   LeadActivityType.StatusChange,
   LeadActivityType.InboundSubmission,

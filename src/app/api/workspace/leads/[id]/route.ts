@@ -2,6 +2,7 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
@@ -19,9 +20,9 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   return withWorkspaceApiAuth(async () => {
     const lead = await getLeadById(id);
     if (!lead) {
-      return leadApiError(LeadErrorCode.NotFound, 404);
+      return leadApiError(LeadErrorCode.NotFound, HttpResponseCode.NotFound);
     }
-    return Response.json({ lead }, { status: 200 });
+    return Response.json({ lead }, { status: HttpResponseCode.Ok });
   })(request);
 }
 
@@ -33,27 +34,43 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
     try {
       body = await req.json();
     } catch {
-      return leadApiError(LeadErrorCode.ValidationError, 400);
+      return leadApiError(
+        LeadErrorCode.ValidationError,
+        HttpResponseCode.BadRequest,
+      );
     }
 
     let result;
     try {
       result = await updateLead(id, body);
     } catch {
-      return leadApiError(LeadErrorCode.Internal, 500);
+      return leadApiError(
+        LeadErrorCode.Internal,
+        HttpResponseCode.InternalServerError,
+      );
     }
 
     if (!result.ok) {
       if (result.code === LeadErrorCode.NotFound) {
-        return leadApiError(LeadErrorCode.NotFound, 404);
+        return leadApiError(LeadErrorCode.NotFound, HttpResponseCode.NotFound);
       }
       if (result.code === LeadErrorCode.EmailExists) {
-        return leadApiError(LeadErrorCode.EmailExists, 409);
+        return leadApiError(
+          LeadErrorCode.EmailExists,
+          HttpResponseCode.Conflict,
+        );
       }
-      return leadApiError(LeadErrorCode.ValidationError, 400, result.errors);
+      return leadApiError(
+        LeadErrorCode.ValidationError,
+        HttpResponseCode.BadRequest,
+        result.errors,
+      );
     }
 
-    return Response.json({ lead: result.lead }, { status: 200 });
+    return Response.json(
+      { lead: result.lead },
+      { status: HttpResponseCode.Ok },
+    );
   })(request);
 }
 
@@ -67,16 +84,19 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
         lead_status: ContactLeadStatus.Archived,
       });
     } catch {
-      return leadApiError(LeadErrorCode.Internal, 500);
+      return leadApiError(
+        LeadErrorCode.Internal,
+        HttpResponseCode.InternalServerError,
+      );
     }
 
     if (!result.ok) {
-      return leadApiError(LeadErrorCode.NotFound, 404);
+      return leadApiError(LeadErrorCode.NotFound, HttpResponseCode.NotFound);
     }
 
     return Response.json(
       { ok: true, status: ContactLeadStatus.Archived },
-      { status: 200 },
+      { status: HttpResponseCode.Ok },
     );
   })(request);
 }

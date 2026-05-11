@@ -1,3 +1,4 @@
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 
 const MESSAGES: Record<LeadErrorCode, string> = {
@@ -9,7 +10,7 @@ const MESSAGES: Record<LeadErrorCode, string> = {
 
 export function leadApiError(
   code: LeadErrorCode,
-  status: number,
+  status: HttpResponseCode,
   details?: unknown,
 ): Response {
   return Response.json(

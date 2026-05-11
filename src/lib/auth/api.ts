@@ -3,6 +3,7 @@ import "server-only";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import type { WorkspaceAccess } from "./permissions";
 import { isEmailAllowed } from "./allowlist";
 import { AuthErrorCode } from "@/common/constants/auth/auth-error-codes";
@@ -18,7 +19,10 @@ export function withWorkspaceApiAuth(handler: WorkspaceApiHandler) {
     const { userId } = await auth();
 
     if (!userId) {
-      return authApiError(AuthErrorCode.Unauthorized, 401);
+      return authApiError(
+        AuthErrorCode.Unauthorized,
+        HttpResponseCode.Unauthorized,
+      );
     }
 
     const user = await currentUser();
@@ -27,11 +31,14 @@ export function withWorkspaceApiAuth(handler: WorkspaceApiHandler) {
     )?.emailAddress;
 
     if (!primaryEmail) {
-      return authApiError(AuthErrorCode.Unauthorized, 401);
+      return authApiError(
+        AuthErrorCode.Unauthorized,
+        HttpResponseCode.Unauthorized,
+      );
     }
 
     if (!isEmailAllowed(primaryEmail)) {
-      return authApiError(AuthErrorCode.NotFound, 404);
+      return authApiError(AuthErrorCode.NotFound, HttpResponseCode.NotFound);
     }
 
     return handler(request, { userId, email: primaryEmail });

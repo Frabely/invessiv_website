@@ -1,5 +1,5 @@
 import { type RefinementCtx, z } from "zod";
-import { leadSchema } from "@/server/workspace/leads/services/shared/lead-schema";
+import { leadSchema } from "@/server/workspace/leads/shared/lead-schema";
 import {
   addMissingLeadNameIssue,
   hasAtLeastOneLeadName,

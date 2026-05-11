@@ -4,8 +4,12 @@ import type {
   ContactSubmitSuccessResponse,
 } from "@/common/contracts/contact/submit/contact-submit";
 import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 
-export function createContactSuccessResponse(requestId: string, status = 200) {
+export function createContactSuccessResponse(
+  requestId: string,
+  status: HttpResponseCode = HttpResponseCode.Ok,
+) {
   const body: ContactSubmitSuccessResponse = {
     ok: true,
     requestId,
@@ -22,7 +26,7 @@ export function createContactSuccessResponse(requestId: string, status = 200) {
 export function createContactErrorResponse(
   code: ContactSubmitErrorCode,
   requestId: string,
-  status: number,
+  status: HttpResponseCode,
   fieldErrors?: Record<string, string[]>,
   headers?: HeadersInit,
 ) {

@@ -8,8 +8,8 @@ import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-type
 import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
-import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
-import { isDuplicateEmailError } from "@/server/workspace/leads/utils/is-duplicate-email-error";
+import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
+import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 

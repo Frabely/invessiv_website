@@ -1,3 +1,4 @@
+import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { AuthErrorCode } from "@/common/constants/auth/auth-error-codes";
 
 const MESSAGES: Record<AuthErrorCode, string> = {
@@ -5,7 +6,10 @@ const MESSAGES: Record<AuthErrorCode, string> = {
   [AuthErrorCode.Unauthorized]: "Authentication required",
 };
 
-export function authApiError(code: AuthErrorCode, status: number): Response {
+export function authApiError(
+  code: AuthErrorCode,
+  status: HttpResponseCode,
+): Response {
   return Response.json(
     {
       ok: false,

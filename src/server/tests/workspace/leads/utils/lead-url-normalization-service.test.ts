@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
+import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
 
 describe("normalizeLeadProfileUrl", () => {
   it("removes utm_* tracking parameters", () => {

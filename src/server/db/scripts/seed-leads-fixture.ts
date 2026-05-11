@@ -28,7 +28,7 @@ import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-type
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
-import { normalizeLeadProfileUrl } from "@/server/workspace/leads/utils/lead-url-normalization-service";
+import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
 
 const FIXTURE_PREFIX = "fixture:workspace-leads:";
 const ALLOWED_SEED_TARGETS: DatabaseTarget[] = ["development", "preview"];

@@ -1,0 +1,2 @@
+row_key,first_name,last_name,company_name,email,phone,website_url,category_id,category_slug,category_label_key,score,owner,notes,lead_status,improvements_json,social_profiles_json
+lead-001,Anna,Meyer,ACME Webdesign,anna@example.com,+49 30 1234567,https://www.acme-webdesign.de,,coaches,,82,Moritz,"First test lead for the temporary CSV import.",new,"[""Fast response"",""SEO""]","[{""platform"":""linkedin"",""profile_url"":""https://www.linkedin.com/in/anna-meyer/?utm_source=newsletter"",""normalized_url"":""https://www.linkedin.com/in/anna-meyer""}]"

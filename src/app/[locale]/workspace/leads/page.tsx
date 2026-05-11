@@ -18,6 +18,7 @@ import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import {
   getLeadsDetailDictionary,
   getLeadsFormDictionary,
+  getLeadsImportDictionary,
   getLeadsMetaDictionary,
   getLeadsPaginationDictionary,
   getLeadsSharedDictionary,
@@ -42,7 +43,7 @@ import {
   parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
-} from "@/server/workspace/leads/utils/lead-list-search-params";
+} from "@/server/workspace/leads/shared/lead-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -78,6 +79,7 @@ export default async function LeadsPage({
 
   const resolvedSearchParams = await searchParams;
   const shellContent = getLeadsShellDictionary(locale as Locale);
+  const importContent = getLeadsImportDictionary(locale as Locale);
   const toolbarContent = getLeadsToolbarDictionary(locale as Locale);
   const formContent = getLeadsFormDictionary(locale as Locale);
   const paginationContent = getLeadsPaginationDictionary(locale as Locale);
@@ -174,7 +176,11 @@ export default async function LeadsPage({
   return (
     <>
       <LeadsPageShell detailPanelProps={detailPanelProps}>
-        <LeadsPageHeader addLeadHref={addLeadHref} content={shellContent} />
+        <LeadsPageHeader
+          addLeadHref={addLeadHref}
+          content={shellContent}
+          importContent={importContent}
+        />
         <LeadsToolbar
           basePath={basePath}
           categories={categoryOptions}

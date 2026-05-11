@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/sources/lead-sources";
-import { LEAD_ACTIVITY_TYPES } from "@/common/constants/leads/activity/lead-activity-types";
+import { LEAD_ACTIVITY_TYPE_VALUES } from "@/common/constants/leads/activity/lead-activity-types";
 import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/activity/lead-actor-types";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/social/lead-social-platforms";
 import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
@@ -48,7 +48,7 @@ describe("LEAD_SOURCES", () => {
 
 describe("LEAD_ACTIVITY_TYPES", () => {
   it("contains exactly the four activity types", () => {
-    expect(LEAD_ACTIVITY_TYPES).toEqual([
+    expect(LEAD_ACTIVITY_TYPE_VALUES).toEqual([
       "note",
       "status_change",
       "inbound_submission",
@@ -57,7 +57,9 @@ describe("LEAD_ACTIVITY_TYPES", () => {
   });
 
   it("has no duplicates", () => {
-    expect(new Set(LEAD_ACTIVITY_TYPES).size).toBe(LEAD_ACTIVITY_TYPES.length);
+    expect(new Set(LEAD_ACTIVITY_TYPE_VALUES).size).toBe(
+      LEAD_ACTIVITY_TYPE_VALUES.length,
+    );
   });
 });
 
@@ -114,6 +116,18 @@ describe("LEAD_SORT_VALUES", () => {
   });
 });
 
+describe("LeadDetailEntryKind", () => {
+  it("contains the expected timeline entry kinds without duplicates", () => {
+    expect(LEAD_DETAIL_ENTRY_KIND_VALUES).toEqual([
+      LeadDetailEntryKind.Activity,
+      LeadDetailEntryKind.Submission,
+    ]);
+    expect(new Set(LEAD_DETAIL_ENTRY_KIND_VALUES).size).toBe(
+      LEAD_DETAIL_ENTRY_KIND_VALUES.length,
+    );
+  });
+});
+
 describe("LeadListQueryParam", () => {
   it("contains the expected query param keys without duplicates", () => {
     expect(LEAD_LIST_QUERY_PARAM_VALUES).toEqual([
@@ -162,18 +176,6 @@ describe("LeadBadgeKind", () => {
     ]);
     expect(new Set(LEAD_BADGE_KIND_VALUES).size).toBe(
       LEAD_BADGE_KIND_VALUES.length,
-    );
-  });
-});
-
-describe("LeadDetailEntryKind", () => {
-  it("contains the expected timeline entry kinds without duplicates", () => {
-    expect(LEAD_DETAIL_ENTRY_KIND_VALUES).toEqual([
-      LeadDetailEntryKind.Activity,
-      LeadDetailEntryKind.Submission,
-    ]);
-    expect(new Set(LEAD_DETAIL_ENTRY_KIND_VALUES).size).toBe(
-      LEAD_DETAIL_ENTRY_KIND_VALUES.length,
     );
   });
 });

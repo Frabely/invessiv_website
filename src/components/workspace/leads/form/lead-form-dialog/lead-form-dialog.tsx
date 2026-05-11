@@ -40,6 +40,7 @@ import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
+import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
@@ -227,28 +228,6 @@ function getValidationMessage(
     default:
       return content.validation.generic;
   }
-}
-
-function getFocusableElements(container: HTMLElement): HTMLElement[] {
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(
-      [
-        "a[href]",
-        "button:not([disabled])",
-        "input:not([disabled])",
-        "select:not([disabled])",
-        "textarea:not([disabled])",
-        "summary",
-        "[contenteditable='true']",
-        "[tabindex]:not([tabindex='-1'])",
-      ].join(","),
-    ),
-  ).filter(
-    (element) =>
-      !element.hasAttribute("disabled") &&
-      element.tabIndex >= 0 &&
-      !element.hidden,
-  );
 }
 
 export function LeadFormDialog({
@@ -517,31 +496,7 @@ export function LeadFormDialog({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeDialog();
-      return;
-    }
-
-    if (event.key !== "Tab") {
-      return;
-    }
-
-    const focusable = getFocusableElements(event.currentTarget);
-    if (focusable.length === 0) {
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    trapDialogFocus(event, event.currentTarget, closeDialog);
   }
 
   function resetValidationMessages() {
