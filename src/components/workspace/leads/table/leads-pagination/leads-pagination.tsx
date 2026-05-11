@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAnglesLeft,
@@ -7,6 +9,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import type { LeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
+import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import {
   buildPaginationHref,
   getPaginationItems,
@@ -63,6 +66,8 @@ export function LeadsPagination({
   queryString,
   total,
 }: LeadsPaginationProps) {
+  const router = useRouter();
+  const startTransition = useNavigationContext();
   const isEmpty = total === 0;
   const totalPages = isEmpty ? 1 : Math.max(1, Math.ceil(total / perPage));
   const effectivePage = Math.min(Math.max(currentPage, 1), totalPages);
@@ -107,9 +112,13 @@ export function LeadsPagination({
     }
 
     return (
-      <Link className={styles.navButton} href={href}>
+      <button
+        className={styles.navButton}
+        onClick={() => startTransition(() => router.push(href))}
+        type="button"
+      >
         {commonContent}
-      </Link>
+      </button>
     );
   }
 
@@ -132,14 +141,19 @@ export function LeadsPagination({
     }
 
     return (
-      <Link
+      <button
         aria-label={getPageLabel(content.pagination.page, page)}
         className={styles.pageButton}
-        href={buildPaginationHref(basePath, queryString, page)}
         key={page}
+        onClick={() =>
+          startTransition(() =>
+            router.push(buildPaginationHref(basePath, queryString, page)),
+          )
+        }
+        type="button"
       >
         {page}
-      </Link>
+      </button>
     );
   }
 
