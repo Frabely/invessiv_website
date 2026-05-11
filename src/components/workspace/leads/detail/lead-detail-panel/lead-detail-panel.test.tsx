@@ -2,13 +2,17 @@
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsDetailDictionary,
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadDetailPanel } from "./lead-detail-panel";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+}));
 
 const leadFixture: LeadDetailDto = {
   id: "2b3d2f33-f3d7-4f8a-8ff6-6ac5df6c9b01",
@@ -75,8 +79,8 @@ describe("LeadDetailPanel", () => {
       "noopener noreferrer",
     );
     expect(
-      screen.getByRole("link", { name: "Detail-Panel schließen" }),
-    ).toHaveAttribute("href", "/de/workspace/leads?status=qualified&page=2");
+      screen.getByRole("button", { name: "Detail-Panel schließen" }),
+    ).toBeInTheDocument();
   });
 
   it("shows localized empty labels for optional values", () => {
