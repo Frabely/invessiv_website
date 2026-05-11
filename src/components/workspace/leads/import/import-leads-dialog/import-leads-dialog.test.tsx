@@ -25,7 +25,7 @@ const { mockSubmitLeadImport } = vi.hoisted(() => ({
   mockSubmitLeadImport: vi.fn(),
 }));
 
-vi.mock("../import-leads-service", () => ({
+vi.mock("@/client/leads/import/import-leads-service", () => ({
   importLeadsService: {
     submitImport: mockSubmitLeadImport,
   },

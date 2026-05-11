@@ -3,8 +3,15 @@ import type { LeadImportRowIssueCode } from "@/common/constants/leads/import/lea
 import type { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
 import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads";
 
+export const LeadImportClientErrorCode = {
+  ClientTooLarge: "client_too_large",
+} as const;
+
+export type LeadImportClientErrorCode =
+  (typeof LeadImportClientErrorCode)[keyof typeof LeadImportClientErrorCode];
+
 export function getLeadImportErrorMessage(
-  code: LeadImportErrorCode | "client_too_large",
+  code: LeadImportErrorCode | LeadImportClientErrorCode,
   dict: LeadsImportDictionary,
 ): string {
   const key = code as keyof typeof dict.errors;

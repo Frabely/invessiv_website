@@ -31,12 +31,12 @@ import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads"
 import {
   getLeadImportErrorMessage,
   getLeadImportRowIssueMessage,
-} from "../import-leads-error-message";
-import { importLeadsService } from "../import-leads-service";
+} from "@/client/leads/import/import-leads-error-message";
+import { importLeadsService } from "@/client/leads/import/import-leads-service";
 import {
   focusFirstDialogElement,
   trapDialogFocus,
-} from "../../form/shared/dialog-focus-trap";
+} from "../../shared/dialog-focus-trap";
 import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
 import { DialogFooter } from "../dialog-footer/dialog-footer";
 import styles from "./import-leads-dialog.module.css";

@@ -5,7 +5,7 @@ import type { LeadImportResultDto } from "@/common/contracts/leads/import/lead-i
 import {
   ImportLeadReportField,
   ImportLeadServiceValue,
-} from "./import-leads-service.constants";
+} from "@/common/constants/leads/import/import-leads-service.constants";
 
 function isObjectWithStringField(
   value: unknown,

@@ -40,7 +40,7 @@ import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
-import { trapDialogFocus } from "../shared/dialog-focus-trap";
+import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {

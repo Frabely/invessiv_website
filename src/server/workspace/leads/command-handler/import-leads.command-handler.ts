@@ -8,6 +8,10 @@ import { LeadActivityType } from "@/common/constants/leads/activity/lead-activit
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
 import type { LeadImportResultDto } from "@/common/contracts/leads/import/lead-import-result.dto";
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
+import type {
+  RowEntry,
+  ValidatedRowEntry,
+} from "@/common/contracts/leads/import/lead-import-row-entry";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import {
   LeadCsvParseError,
@@ -25,23 +29,6 @@ import { DuplicateEmailError } from "@/server/workspace/leads/services/create-le
 import type { ValidatedLeadImportRow } from "@/server/workspace/leads/services/import/lead-import-valid-row";
 
 const MAX_DATA_ROWS = 500;
-
-interface ValidatedRowEntry {
-  ok: true;
-  rowIndex: number;
-  emailLower: string;
-  externalGuid: string | undefined;
-  validatedValue: ValidatedLeadImportRow;
-  issues: LeadImportRowIssueDto[];
-}
-
-interface InvalidRowEntry {
-  ok: false;
-  rowIndex: number;
-  issues: LeadImportRowIssueDto[];
-}
-
-type RowEntry = ValidatedRowEntry | InvalidRowEntry;
 
 function makeSkipIssue(
   rowIndex: number,
@@ -80,31 +67,33 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
   const seenEmails = new Set<string>();
   const seenExternalGuids = new Set<string>();
 
-  const validationEntries: RowEntry[] = rows.map((row, index) => {
-    const rowIndex = index + 1;
-    const raw = mapRowToRaw(columns, row);
-    const result = leadImportValidationService.validateRow(raw, {
-      rowIndex,
-      seenEmails,
-      seenExternalGuids,
-    });
+  const validationEntries: RowEntry<ValidatedLeadImportRow>[] = rows.map(
+    (row, index) => {
+      const rowIndex = index + 1;
+      const raw = mapRowToRaw(columns, row);
+      const result = leadImportValidationService.validateRow(raw, {
+        rowIndex,
+        seenEmails,
+        seenExternalGuids,
+      });
 
-    if (!result.ok) {
-      return { ok: false, rowIndex, issues: result.issues };
-    }
+      if (!result.ok) {
+        return { ok: false, rowIndex, issues: result.issues };
+      }
 
-    return {
-      ok: true,
-      rowIndex,
-      emailLower: result.value.email.toLowerCase().trim(),
-      externalGuid: result.value.external_guid,
-      validatedValue: result.value,
-      issues: result.issues,
-    };
-  });
+      return {
+        ok: true,
+        rowIndex,
+        emailLower: result.value.email.toLowerCase().trim(),
+        externalGuid: result.value.external_guid,
+        validatedValue: result.value,
+        issues: result.issues,
+      };
+    },
+  );
 
   const successEntries = validationEntries.filter(
-    (e): e is ValidatedRowEntry => e.ok,
+    (e): e is ValidatedRowEntry<ValidatedLeadImportRow> => e.ok,
   );
   const validEmails = successEntries.map((e) => e.emailLower);
   const validGuids = successEntries
