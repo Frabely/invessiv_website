@@ -1,4 +1,4 @@
-import { LeadImportErrorCode } from "@/common/constants/leads/lead-import-error-codes";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
 
 const MESSAGES: Record<LeadImportErrorCode, string> = {
   [LeadImportErrorCode.FileTooLarge]: "File exceeds the 2 MB size limit",

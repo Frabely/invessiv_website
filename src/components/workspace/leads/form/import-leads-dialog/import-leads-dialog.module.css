@@ -188,9 +188,24 @@
   text-align: center;
 }
 
+.dropzoneActive {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 72%, transparent);
+  background: rgba(245, 158, 11, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.12);
+}
+
 .dropzone:hover {
   border-color: color-mix(in srgb, var(--color-accent-warm) 50%, transparent);
   background: rgba(245, 158, 11, 0.05);
+}
+
+.dropzoneLabelWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  cursor: pointer;
 }
 
 .dropzoneIcon {

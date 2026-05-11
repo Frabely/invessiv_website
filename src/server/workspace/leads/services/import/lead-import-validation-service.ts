@@ -2,10 +2,10 @@ import "server-only";
 
 import { z } from "zod";
 
-import { LeadImportColumnKey } from "@/common/constants/leads/lead-import-column-keys";
-import { LeadImportWarningCode } from "@/common/constants/leads/lead-import-warning-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/lead-import-row-issue-severities";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
+import { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
 import {
   leadOptionalTextSchema,

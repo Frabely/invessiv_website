@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { LeadImportErrorCode } from "@/common/constants/leads/lead-import-error-codes";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
 import { LeadCsvParseError, parseLeadCsv } from "./lead-csv-parser";
 
 vi.mock("server-only", () => ({}));

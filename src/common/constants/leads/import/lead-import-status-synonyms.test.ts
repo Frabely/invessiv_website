@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LEAD_IMPORT_STATUS_SYNONYMS } from "@/common/constants/leads/lead-import-status-synonyms";
+import { LEAD_IMPORT_STATUS_SYNONYMS } from "@/common/constants/leads/import/lead-import-status-synonyms";
 
 vi.mock("server-only", () => ({}));
 

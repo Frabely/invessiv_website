@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   LEAD_IMPORT_COLUMN_KEY_VALUES,
   LeadImportColumnKey,
-} from "@/common/constants/leads/lead-import-column-keys";
+} from "@/common/constants/leads/import/lead-import-column-keys";
 
 describe("LeadImportColumnKey", () => {
   it("contains the expected CSV column keys without duplicates", () => {

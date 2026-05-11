@@ -1,4 +1,4 @@
-import { LeadImportErrorCode } from "@/common/constants/leads/lead-import-error-codes";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
 import type { LeadImportResultDto } from "@/common/contracts/leads/import/lead-import-result.dto";
 

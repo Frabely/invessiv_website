@@ -46,6 +46,16 @@ function makeValidCsvFile(): File {
   });
 }
 
+function makeBomCsvFile(): File {
+  return new File(
+    ["\ufeffemail;last_name\ntest@test.com;Test"],
+    "leads-bom.csv",
+    {
+      type: "text/csv",
+    },
+  );
+}
+
 function makeOversizedFile(): File {
   const file = new File(["x"], "big.csv", { type: "text/csv" });
   Object.defineProperty(file, "size", {
@@ -63,6 +73,17 @@ function triggerFileChange(file: File): void {
     configurable: true,
   });
   fireEvent.change(input);
+}
+
+function getDropzone(
+  content: ReturnType<typeof getLeadsImportDictionary>,
+): HTMLDivElement {
+  const label = screen.getByText(content.dialog.dropzoneLabel).closest("label");
+  if (!label || !label.parentElement) {
+    throw new Error("dropzone not found");
+  }
+
+  return label.parentElement as HTMLDivElement;
 }
 
 afterEach(() => {
@@ -128,6 +149,53 @@ describe("ImportLeadsDialog", () => {
 
       expect(mockSubmitLeadImport).not.toHaveBeenCalled();
       expect(screen.queryByText(content.dialog.submit)).not.toBeInTheDocument();
+    });
+  });
+
+  describe("drag and drop", () => {
+    it("accepts a csv file dropped on the dropzone and shows the preview", async () => {
+      const content = getLeadsImportDictionary("de");
+      render(<ImportLeadsDialog content={content} />);
+
+      fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
+      await waitFor(() => screen.getByRole("dialog"));
+
+      const dropzone = getDropzone(content);
+      const file = makeValidCsvFile();
+
+      fireEvent.dragEnter(dropzone, {
+        dataTransfer: { files: [file], types: ["Files"] },
+      });
+      fireEvent.dragOver(dropzone, {
+        dataTransfer: { files: [file], types: ["Files"] },
+      });
+      fireEvent.drop(dropzone, {
+        dataTransfer: { files: [file], types: ["Files"] },
+      });
+
+      await waitFor(() =>
+        screen.getByRole("button", { name: content.dialog.submit }),
+      );
+    });
+
+    it("accepts a csv file with bom dropped on the dropzone and still recognizes headers", async () => {
+      const content = getLeadsImportDictionary("de");
+      render(<ImportLeadsDialog content={content} />);
+
+      fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
+      await waitFor(() => screen.getByRole("dialog"));
+
+      const dropzone = getDropzone(content);
+      const file = makeBomCsvFile();
+
+      fireEvent.drop(dropzone, {
+        dataTransfer: { files: [file], types: ["Files"] },
+      });
+
+      await waitFor(() =>
+        expect(screen.getByText("email")).toBeInTheDocument(),
+      );
+      expect(screen.getByText("last_name")).toBeInTheDocument();
     });
   });
 

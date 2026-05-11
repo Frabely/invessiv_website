@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/lead-import-error-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/lead-import-row-issue-severities";
+import { LeadImportErrorCode } from "@/common/constants/leads/import/lead-import-error-codes";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
 import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
 
 // ── Mocks (hoisted so vi.mock can reference them) ─────────────────────────────

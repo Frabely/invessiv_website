@@ -2,6 +2,7 @@
 
 import {
   type ChangeEvent,
+  type DragEvent,
   type KeyboardEvent,
   type MouseEvent,
   useCallback,
@@ -19,30 +20,26 @@ import {
 import {
   LEAD_IMPORT_COLUMN_KEY_VALUES,
   LeadImportColumnKey,
-} from "@/common/constants/leads/lead-import-column-keys";
-import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
+} from "@/common/constants/leads/import/lead-import-column-keys";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
+import type {
+  LeadImportCsvPreview,
+  LeadImportDialogPhase,
+} from "@/common/contracts/leads/import/lead-import-dialog-phase";
+import { LeadImportDialogPhaseTag } from "@/common/contracts/leads/import/lead-import-dialog-phase";
 import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads";
 import {
   getLeadImportErrorMessage,
   getLeadImportRowIssueMessage,
 } from "./import-leads-error-message";
 import { submitLeadImport } from "./import-leads-service";
+import {
+  getFocusableElements,
+  trapDialogFocus,
+} from "../shared/dialog-focus-trap";
 import styles from "./import-leads-dialog.module.css";
 
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
-
-type CsvPreview = {
-  recognized: string[];
-  ignored: string[];
-  hasRequiredColumns: boolean;
-};
-
-type DialogPhase =
-  | { tag: "picking" }
-  | { tag: "previewing"; preview: CsvPreview }
-  | { tag: "submitting" }
-  | { tag: "result"; report: LeadImportReportDto }
-  | { tag: "error"; message: string };
 
 type Props = {
   content: LeadsImportDictionary;
@@ -54,10 +51,14 @@ function detectSeparator(line: string): ";" | "," {
   return semicolons >= commas ? ";" : ",";
 }
 
-async function buildCsvPreview(file: File): Promise<CsvPreview> {
+function stripBom(text: string): string {
+  return text.charCodeAt(0) === 0xfeff ? text.slice(1) : text;
+}
+
+async function buildCsvPreview(file: File): Promise<LeadImportCsvPreview> {
   const slice = file.slice(0, 2048);
   const text = await slice.text();
-  const stripped = text.startsWith("﻿") ? text.slice(1) : text;
+  const stripped = stripBom(text);
   const firstLine =
     stripped.split(/\r?\n/).find((l) => l.trim().length > 0) ?? "";
 
@@ -83,25 +84,12 @@ async function buildCsvPreview(file: File): Promise<CsvPreview> {
   return { recognized, ignored, hasRequiredColumns };
 }
 
-function getFocusable(container: HTMLElement): HTMLElement[] {
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(
-      [
-        "a[href]",
-        "button:not([disabled])",
-        "input:not([disabled])",
-        "select:not([disabled])",
-        "textarea:not([disabled])",
-        "[tabindex]:not([tabindex='-1'])",
-      ].join(","),
-    ),
-  ).filter((el) => !el.hidden && el.tabIndex >= 0);
-}
-
-function getSeverityClass(severity: string): string {
-  if (severity === "error") return styles.severityError;
-  if (severity === "warning") return styles.severityWarning;
-  if (severity === "skip") return styles.severitySkip;
+function getSeverityClass(severity: LeadImportRowIssueSeverity): string {
+  if (severity === LeadImportRowIssueSeverity.Error)
+    return styles.severityError;
+  if (severity === LeadImportRowIssueSeverity.Warning)
+    return styles.severityWarning;
+  if (severity === LeadImportRowIssueSeverity.Skip) return styles.severitySkip;
   return "";
 }
 
@@ -127,20 +115,56 @@ function ColumnPillGroup({ columns, label, pillClass }: ColumnPillGroupProps) {
   );
 }
 
+type DialogFooterAction = {
+  label: string;
+  onClick: () => void;
+  className: string;
+  disabled?: boolean;
+};
+
+type DialogFooterProps = {
+  className: string;
+  actions: DialogFooterAction[];
+};
+
+function DialogFooter({ className, actions }: DialogFooterProps) {
+  return (
+    <footer className={className}>
+      {actions.map((action) => (
+        <button
+          key={action.label}
+          className={action.className}
+          disabled={action.disabled}
+          onClick={action.onClick}
+          type="button"
+        >
+          {action.label}
+        </button>
+      ))}
+    </footer>
+  );
+}
+
 export function ImportLeadsDialog({ content }: Props) {
   const router = useRouter();
   const fileInputId = useId();
   const [open, setOpen] = useState(false);
-  const [phase, setPhase] = useState<DialogPhase>({ tag: "picking" });
+  const [phase, setPhase] = useState<LeadImportDialogPhase>({
+    tag: LeadImportDialogPhaseTag.Picking,
+  });
   const [file, setFile] = useState<File | null>(null);
   const [fileSizeError, setFileSizeError] = useState<string | null>(null);
+  const [isDropActive, setIsDropActive] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragCounterRef = useRef(0);
 
   function resetState() {
-    setPhase({ tag: "picking" });
+    setPhase({ tag: LeadImportDialogPhaseTag.Picking });
     setFile(null);
     setFileSizeError(null);
+    setIsDropActive(false);
+    dragCounterRef.current = 0;
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -155,7 +179,7 @@ export function ImportLeadsDialog({ content }: Props) {
     if (!open) return;
     window.requestAnimationFrame(() => {
       const focusable = dialogRef.current
-        ? getFocusable(dialogRef.current)
+        ? getFocusableElements(dialogRef.current)
         : [];
       focusable[0]?.focus();
     });
@@ -171,36 +195,7 @@ export function ImportLeadsDialog({ content }: Props) {
     }
   }
 
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeDialog();
-      return;
-    }
-
-    if (event.key !== "Tab" || !dialogRef.current) {
-      return;
-    }
-
-    const focusable = getFocusable(dialogRef.current);
-    if (focusable.length === 0) {
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  }
-
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const selected = event.target.files?.[0];
+  async function handleSelectedFile(selected: File | null | undefined) {
     if (!selected) {
       return;
     }
@@ -208,6 +203,7 @@ export function ImportLeadsDialog({ content }: Props) {
     if (selected.size > MAX_FILE_BYTES) {
       setFileSizeError(content.errors.client_too_large);
       setFile(null);
+      setIsDropActive(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -216,13 +212,52 @@ export function ImportLeadsDialog({ content }: Props) {
 
     setFileSizeError(null);
     setFile(selected);
+    setIsDropActive(false);
 
     try {
       const preview = await buildCsvPreview(selected);
-      setPhase({ tag: "previewing", preview });
+      setPhase({ tag: LeadImportDialogPhaseTag.Previewing, preview });
     } catch {
-      setPhase({ tag: "error", message: content.errors.generic });
+      setPhase({
+        tag: LeadImportDialogPhaseTag.Error,
+        message: content.errors.generic,
+      });
     }
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    trapDialogFocus(event, dialogRef.current, closeDialog);
+  }
+
+  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    await handleSelectedFile(event.target.files?.[0]);
+  }
+
+  function handleDropZoneDragEnter(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounterRef.current += 1;
+    setIsDropActive(true);
+  }
+
+  function handleDropZoneDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+    setIsDropActive(true);
+  }
+
+  function handleDropZoneDragLeave(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounterRef.current = Math.max(0, dragCounterRef.current - 1);
+    if (dragCounterRef.current === 0) {
+      setIsDropActive(false);
+    }
+  }
+
+  async function handleDropZoneDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounterRef.current = 0;
+    setIsDropActive(false);
+    await handleSelectedFile(event.dataTransfer.files?.[0]);
   }
 
   async function handleSubmit() {
@@ -230,7 +265,7 @@ export function ImportLeadsDialog({ content }: Props) {
       return;
     }
 
-    setPhase({ tag: "submitting" });
+    setPhase({ tag: LeadImportDialogPhaseTag.Submitting });
 
     const result = await submitLeadImport(file);
 
@@ -238,12 +273,12 @@ export function ImportLeadsDialog({ content }: Props) {
       if (result.report.importedCount > 0) {
         router.refresh();
       }
-      setPhase({ tag: "result", report: result.report });
+      setPhase({ tag: LeadImportDialogPhaseTag.Result, report: result.report });
       return;
     }
 
     setPhase({
-      tag: "error",
+      tag: LeadImportDialogPhaseTag.Error,
       message: getLeadImportErrorMessage(result.error, content),
     });
   }
@@ -314,19 +349,30 @@ export function ImportLeadsDialog({ content }: Props) {
                 type="file"
               />
 
-              {phase.tag === "picking" && (
+              {phase.tag === LeadImportDialogPhaseTag.Picking && (
                 <div className={styles.pickingPhase}>
-                  <label className={styles.dropzone} htmlFor={fileInputId}>
-                    <span aria-hidden="true" className={styles.dropzoneIcon}>
-                      <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                    </span>
-                    <span className={styles.dropzoneLabel}>
-                      {content.dialog.dropzoneLabel}
-                    </span>
-                    <span className={styles.dropzoneHint}>
-                      {content.dialog.dropzoneHint}
-                    </span>
-                  </label>
+                  <div
+                    className={`${styles.dropzone} ${isDropActive ? styles.dropzoneActive : ""}`}
+                    onDragEnter={handleDropZoneDragEnter}
+                    onDragLeave={handleDropZoneDragLeave}
+                    onDragOver={handleDropZoneDragOver}
+                    onDrop={handleDropZoneDrop}
+                  >
+                    <label
+                      className={styles.dropzoneLabelWrapper}
+                      htmlFor={fileInputId}
+                    >
+                      <span aria-hidden="true" className={styles.dropzoneIcon}>
+                        <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                      </span>
+                      <span className={styles.dropzoneLabel}>
+                        {content.dialog.dropzoneLabel}
+                      </span>
+                      <span className={styles.dropzoneHint}>
+                        {content.dialog.dropzoneHint}
+                      </span>
+                    </label>
+                  </div>
 
                   {fileSizeError && (
                     <p className={styles.inlineError} role="alert">
@@ -336,7 +382,7 @@ export function ImportLeadsDialog({ content }: Props) {
                 </div>
               )}
 
-              {phase.tag === "previewing" && (
+              {phase.tag === LeadImportDialogPhaseTag.Previewing && (
                 <div className={styles.previewingPhase}>
                   <div className={styles.fileInfo}>
                     <span className={styles.fileName}>{file?.name}</span>
@@ -367,27 +413,26 @@ export function ImportLeadsDialog({ content }: Props) {
                     pillClass={styles.columnPillIgnored}
                   />
 
-                  <footer className={styles.previewFooter}>
-                    <button
-                      className={styles.cancelButton}
-                      onClick={closeDialog}
-                      type="button"
-                    >
-                      {content.dialog.cancel}
-                    </button>
-                    <button
-                      className={styles.submitButton}
-                      disabled={!phase.preview.hasRequiredColumns}
-                      onClick={handleSubmit}
-                      type="button"
-                    >
-                      {content.dialog.submit}
-                    </button>
-                  </footer>
+                  <DialogFooter
+                    className={styles.previewFooter}
+                    actions={[
+                      {
+                        label: content.dialog.cancel,
+                        onClick: closeDialog,
+                        className: styles.cancelButton,
+                      },
+                      {
+                        label: content.dialog.submit,
+                        onClick: handleSubmit,
+                        className: styles.submitButton,
+                        disabled: !phase.preview.hasRequiredColumns,
+                      },
+                    ]}
+                  />
                 </div>
               )}
 
-              {phase.tag === "submitting" && (
+              {phase.tag === LeadImportDialogPhaseTag.Submitting && (
                 <div className={styles.submittingPhase}>
                   <div
                     aria-live="polite"
@@ -402,7 +447,7 @@ export function ImportLeadsDialog({ content }: Props) {
                 </div>
               )}
 
-              {phase.tag === "result" && (
+              {phase.tag === LeadImportDialogPhaseTag.Result && (
                 <div className={styles.resultPhase}>
                   <h3 className={styles.resultTitle}>
                     {content.summary.title}
@@ -481,39 +526,39 @@ export function ImportLeadsDialog({ content }: Props) {
                     </details>
                   )}
 
-                  <footer className={styles.resultFooter}>
-                    <button
-                      className={styles.submitButton}
-                      onClick={closeDialog}
-                      type="button"
-                    >
-                      {content.dialog.close}
-                    </button>
-                  </footer>
+                  <DialogFooter
+                    className={styles.resultFooter}
+                    actions={[
+                      {
+                        label: content.dialog.close,
+                        onClick: closeDialog,
+                        className: styles.submitButton,
+                      },
+                    ]}
+                  />
                 </div>
               )}
 
-              {phase.tag === "error" && (
+              {phase.tag === LeadImportDialogPhaseTag.Error && (
                 <div className={styles.errorPhase}>
                   <p className={styles.errorMessage} role="alert">
                     {phase.message}
                   </p>
-                  <footer className={styles.errorFooter}>
-                    <button
-                      className={styles.cancelButton}
-                      onClick={closeDialog}
-                      type="button"
-                    >
-                      {content.dialog.close}
-                    </button>
-                    <button
-                      className={styles.submitButton}
-                      onClick={handleRetry}
-                      type="button"
-                    >
-                      {content.dialog.chooseFile}
-                    </button>
-                  </footer>
+                  <DialogFooter
+                    className={styles.errorFooter}
+                    actions={[
+                      {
+                        label: content.dialog.close,
+                        onClick: closeDialog,
+                        className: styles.cancelButton,
+                      },
+                      {
+                        label: content.dialog.chooseFile,
+                        onClick: handleRetry,
+                        className: styles.submitButton,
+                      },
+                    ]}
+                  />
                 </div>
               )}
             </div>

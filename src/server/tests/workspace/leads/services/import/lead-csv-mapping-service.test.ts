@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { LeadImportColumnKey } from "@/common/constants/leads/lead-import-column-keys";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
 import {
   mapHeadersToColumns,
   mapRowToRaw,

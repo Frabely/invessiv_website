@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadImportColumnKey } from "@/common/constants/leads/lead-import-column-keys";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/lead-import-row-issue-severities";
-import { LeadImportWarningCode } from "@/common/constants/leads/lead-import-warning-codes";
+import { LeadImportColumnKey } from "@/common/constants/leads/import/lead-import-column-keys";
+import { LeadImportRowIssueCode } from "@/common/constants/leads/import/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/lead-import-row-issue-severities";
+import { LeadImportWarningCode } from "@/common/constants/leads/import/lead-import-warning-codes";
 import {
   leadImportRowSchema,
   validateRow,

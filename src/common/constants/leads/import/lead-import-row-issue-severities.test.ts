@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   LEAD_IMPORT_ROW_ISSUE_SEVERITY_VALUES,
   LeadImportRowIssueSeverity,
-} from "@/common/constants/leads/lead-import-row-issue-severities";
+} from "@/common/constants/leads/import/lead-import-row-issue-severities";
 
 describe("LeadImportRowIssueSeverity", () => {
   it("contains the expected severity values without duplicates", () => {
