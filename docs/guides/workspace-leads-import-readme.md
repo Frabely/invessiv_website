@@ -32,25 +32,43 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 
 ## Spaltenreferenz
 
-| Spalte          | Pflicht | Typ            | Beschreibung                                                                                                                    | Beispiel                               |
-| --------------- | ------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `email`         | **Ja**  | E-Mail         | Eindeutige E-Mail-Adresse des Leads. Muss eine gültige E-Mail sein.                                                             | `anna.weber@beispiel.de`               |
-| `last_name`     | Bedingt | Text           | Nachname. Pflicht, wenn `company_name` leer.                                                                                    | `Weber`                                |
-| `company_name`  | Bedingt | Text           | Firmenname. Pflicht, wenn `last_name` leer.                                                                                     | `Muster GmbH`                          |
-| `first_name`    | Nein    | Text           | Vorname.                                                                                                                        | `Anna`                                 |
-| `phone`         | Nein    | Text           | Telefonnummer in beliebigem Format.                                                                                             | `+49 30 123456`                        |
-| `website_url`   | Nein    | URL            | Vollständige URL inkl. `https://`. Muss eine gültige URL sein.                                                                  | `https://beispiel.de`                  |
-| `linkedin_url`  | Nein    | URL            | LinkedIn-Profilseite. Muss eine gültige URL sein.                                                                               | `https://linkedin.com/in/anna-weber`   |
-| `instagram_url` | Nein    | URL            | Instagram-Profilseite. Muss eine gültige URL sein.                                                                              | `https://instagram.com/anna.weber`     |
-| `youtube_url`   | Nein    | URL            | YouTube-Kanal. Muss eine gültige URL sein.                                                                                      | `https://youtube.com/@annakanal`       |
-| `score`         | Nein    | Ganzzahl 0–100 | Priorisierungspunktzahl. Muss eine ganze Zahl zwischen 0 und 100 sein.                                                          | `72`                                   |
-| `status`        | Nein    | Statuswert     | Aktueller Stand im Akquiseprozess. Siehe gültige Werte unten. Leer = `new`.                                                     | `qualified`                            |
-| `category`      | Nein    | Text           | Kategoriename (Slug). Wird nur ausgewertet, wenn `category_id` leer ist.                                                        | `Bestandskunde`                        |
-| `category_id`   | Nein    | UUID           | UUID einer bestehenden Kategorie im System. Hat Vorrang vor `category`.                                                         | `3fa85f64-5717-4562-b3fc-2c963f66afa6` |
-| `owner`         | Nein    | Text           | Interner Verantwortlicher (Name der Person im Team).                                                                            | `Moritz`                               |
-| `notes`         | Nein    | Text           | Interne Notizen. Freitext.                                                                                                      | `Erstkontakt über Webinar.`            |
-| `improvements`  | Nein    | Pipe-Liste     | Konkrete Verbesserungsvorschläge für die Website des Leads. Mehrere Einträge mit `\|` (Leerzeichen, Pipe, Leerzeichen) trennen. | `Hero schärfen \| CTA verbessern`      |
-| `external_guid` | Nein    | Text/UUID      | Eindeutiger Bezeichner aus einem externen System. Muss pro Datei eindeutig sein, wenn gesetzt.                                  | `ext-001`                              |
+| Spalte          | Pflicht | Typ            | Beschreibung                                                                                                                                                          | Beispiel                               |
+| --------------- | ------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `email`         | **Ja**  | E-Mail         | Eindeutige E-Mail-Adresse des Leads. Muss eine gültige E-Mail sein.                                                                                                   | `anna.weber@beispiel.de`               |
+| `last_name`     | Bedingt | Text           | Nachname. Pflicht, wenn `company_name` leer.                                                                                                                          | `Weber`                                |
+| `company_name`  | Bedingt | Text           | Firmenname. Pflicht, wenn `last_name` leer.                                                                                                                           | `Muster GmbH`                          |
+| `first_name`    | Nein    | Text           | Vorname.                                                                                                                                                              | `Anna`                                 |
+| `phone`         | Nein    | Text           | Telefonnummer in beliebigem Format.                                                                                                                                   | `+49 30 123456`                        |
+| `website_url`   | Nein    | URL            | Vollständige URL inkl. `https://`. Muss eine gültige URL sein.                                                                                                        | `https://beispiel.de`                  |
+| `linkedin_url`  | Nein    | URL            | LinkedIn-Profilseite. Muss eine gültige URL sein.                                                                                                                     | `https://linkedin.com/in/anna-weber`   |
+| `instagram_url` | Nein    | URL            | Instagram-Profilseite. Muss eine gültige URL sein.                                                                                                                    | `https://instagram.com/anna.weber`     |
+| `youtube_url`   | Nein    | URL            | YouTube-Kanal. Muss eine gültige URL sein.                                                                                                                            | `https://youtube.com/@annakanal`       |
+| `score`         | Nein    | Ganzzahl 0–100 | Priorisierungspunktzahl. Muss eine ganze Zahl zwischen 0 und 100 sein.                                                                                                | `72`                                   |
+| `status`        | Nein    | Statuswert     | Aktueller Stand im Akquiseprozess. Siehe gültige Werte unten. Leer = `new`.                                                                                           | `qualified`                            |
+| `category`      | Nein    | Text           | Kategorie-Slug. Wird nur ausgewertet, wenn `category_id` leer ist. Unbekannte Slugs führen zu einem Fehler (Zeile wird nicht importiert). Groß-/Kleinschreibung egal. | `coaches`                              |
+| `category_id`   | Nein    | UUID           | UUID einer bestehenden Kategorie im System. Hat Vorrang vor `category`.                                                                                               | `3fa85f64-5717-4562-b3fc-2c963f66afa6` |
+| `owner`         | Nein    | Text           | Interner Verantwortlicher (Name der Person im Team).                                                                                                                  | `Moritz`                               |
+| `notes`         | Nein    | Text           | Interne Notizen. Freitext.                                                                                                                                            | `Erstkontakt über Webinar.`            |
+| `improvements`  | Nein    | Pipe-Liste     | Konkrete Verbesserungsvorschläge für die Website des Leads. Mehrere Einträge mit `\|` (Leerzeichen, Pipe, Leerzeichen) trennen.                                       | `Hero schärfen \| CTA verbessern`      |
+| `external_guid` | Nein    | Text/UUID      | Eindeutiger Bezeichner aus einem externen System. Muss pro Datei eindeutig sein, wenn gesetzt.                                                                        | `ext-001`                              |
+
+---
+
+## Gültige Kategoriewerte
+
+Das Feld `category` akzeptiert folgende Slugs (case-sensitive):
+
+| Slug                      | Bezeichnung (DE)     | Bezeichnung (EN)        |
+| ------------------------- | -------------------- | ----------------------- |
+| `coaches`                 | Coaches              | Coaches                 |
+| `craftspeople`            | Handwerker           | Craftspeople            |
+| `local-service-providers` | Lokale Dienstleister | Local Service Providers |
+| `small-b2b-providers`     | Kleine B2B-Anbieter  | Small B2B Providers     |
+| `consultants`             | Berater              | Consultants             |
+| `photographers`           | Fotografen           | Photographers           |
+
+Ein unbekannter Slug ist ein **Fehler** — die betroffene Zeile wird nicht importiert und im Report ausgewiesen.
+Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vor `category`.
 
 ---
 
