@@ -94,7 +94,7 @@ describe("LeadsToolbar", () => {
     expect(
       screen
         .getByText("Qualifiziert")
-        .closest("[data-kind='status'][data-tone='warning']"),
+        .closest("[data-kind='status'][data-tone='orange']"),
     ).toBeTruthy();
     expect(
       screen

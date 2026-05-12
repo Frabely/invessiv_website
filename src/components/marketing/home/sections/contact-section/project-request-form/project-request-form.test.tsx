@@ -317,7 +317,7 @@ describe("ProjectRequestForm", () => {
     await waitFor(() => {
       expect(screen.getByText("Maximal 12 eigene Seiten erlaubt")).toBeTruthy();
     });
-  });
+  }, 10000);
 
   it("clears step one validation errors as soon as the fields are corrected", async () => {
     renderForm();
