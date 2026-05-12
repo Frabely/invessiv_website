@@ -147,6 +147,43 @@ describe("LeadFormDialog", () => {
     });
   });
 
+  it("ignores backdrop clicks and still triggers close on Escape", () => {
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={getLeadsFormDictionary("de")}
+        mode="create"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    const dialog = screen.getByRole("dialog");
+    const overlay = dialog.parentElement;
+
+    if (!overlay) {
+      throw new Error("dialog overlay not found");
+    }
+
+    fireEvent.click(overlay);
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(replaceMock).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(dialog, { key: "Escape" });
+
+    expect(replaceMock).toHaveBeenCalledWith(
+      "/de/workspace/leads?status=qualified",
+      { scroll: false },
+    );
+  });
+
   it("shows email and name validation errors only after blur", async () => {
     render(
       <LeadFormDialog

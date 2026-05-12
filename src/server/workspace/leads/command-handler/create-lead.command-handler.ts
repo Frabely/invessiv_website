@@ -30,6 +30,7 @@ export async function createLead(
       createLeadCoreInTransaction(tx, data, {
         source: LeadSource.Manual,
         activityType: LeadActivityType.Note,
+        statusOverride: data.lead_status,
       }),
     );
 

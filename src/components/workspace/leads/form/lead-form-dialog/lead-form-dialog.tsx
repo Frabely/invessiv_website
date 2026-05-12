@@ -2,7 +2,6 @@
 
 import {
   type KeyboardEvent,
-  type MouseEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -491,12 +490,6 @@ export function LeadFormDialog({
     startTransition(() => router.replace(buildHref(), { scroll: false }));
   }
 
-  function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
-    if (event.target === event.currentTarget) {
-      closeDialog();
-    }
-  }
-
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     trapDialogFocus(event, event.currentTarget, closeDialog);
   }
@@ -625,7 +618,6 @@ export function LeadFormDialog({
     <div
       aria-hidden={!open ? "true" : undefined}
       className={styles.overlay}
-      onClick={handleOverlayClick}
       role="presentation"
     >
       <div

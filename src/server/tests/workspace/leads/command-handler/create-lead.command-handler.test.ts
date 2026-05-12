@@ -153,6 +153,23 @@ describe("createLead", () => {
     expect(leadValues.lead_status).toBe("new");
   });
 
+  it("persists an explicitly provided lead_status", async () => {
+    vi.resetModules();
+    createLeadActivityMock.mockResolvedValue(undefined);
+    const { capturedInserts } = setupSuccessfulDb();
+    const { createLead } =
+      await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
+
+    await createLead({
+      last_name: "Mustermann",
+      email: "max@example.com",
+      lead_status: "qualified",
+    });
+
+    const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
+    expect(leadValues.lead_status).toBe("qualified");
+  });
+
   it("inserts social profiles with normalized_url stripped of tracking params", async () => {
     vi.resetModules();
     createLeadActivityMock.mockResolvedValue(undefined);
