@@ -12,7 +12,7 @@ vi.mock("node:crypto", () => ({
 }));
 
 describe("leadMapperService", () => {
-  it("maps the lead api payload to db and sets the default lead status", async () => {
+  it("maps the lead api payload to db and sets the pending_review default lead status", async () => {
     randomUUIDMock.mockReturnValueOnce("lead-id-1");
 
     const { leadMapperService } =
@@ -34,7 +34,7 @@ describe("leadMapperService", () => {
       first_name: "Max",
       id: "lead-id-1",
       last_name: "Mustermann",
-      lead_status: ContactLeadStatus.New,
+      lead_status: ContactLeadStatus.PendingReview,
       owner: undefined,
       source: LeadSource.Webform,
       updated_at: createdAt,
@@ -65,7 +65,7 @@ describe("leadMapperService", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.lead.lead_status).toBe(ContactLeadStatus.New);
+    expect(result.lead.lead_status).toBe(ContactLeadStatus.PendingReview);
     expect(result.lead_submission.id).toBe("submission-id-1");
     expect(result.lead_submission.lead_id).toBe(result.lead.id);
     expect(result.lead_email_contact.id).toBe("email-contact-id-1");
@@ -111,7 +111,7 @@ describe("leadMapperService", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.lead.lead_status).toBe(ContactLeadStatus.New);
+    expect(result.lead.lead_status).toBe(ContactLeadStatus.PendingReview);
     expect(result.lead.owner).toBeUndefined();
     expect(result.lead_submission.id).toBe("submission-id-1");
     expect(result.lead_submission.lead_id).toBe(result.lead.id);
@@ -149,7 +149,7 @@ describe("leadMapperService", () => {
     );
 
     expect(result.lead.id).toBe("lead-id-1");
-    expect(result.lead.lead_status).toBe(ContactLeadStatus.New);
+    expect(result.lead.lead_status).toBe(ContactLeadStatus.PendingReview);
     expect(result.lead_submission.id).toBe("submission-id-1");
     expect(result.lead_submission.lead_id).toBe(result.lead.id);
     expect(result.call_contact.id).toBe("call-contact-id-1");

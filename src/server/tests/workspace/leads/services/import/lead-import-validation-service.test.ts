@@ -190,7 +190,7 @@ describe("validateRow", () => {
       throw new Error("expected success");
     }
 
-    expect(result.value.status).toBe(ContactLeadStatus.New);
+    expect(result.value.status).toBe(ContactLeadStatus.PendingReview);
     expect(result.issues).toEqual([
       {
         rowIndex: 1,

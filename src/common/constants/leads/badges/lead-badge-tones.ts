@@ -5,6 +5,7 @@ export const LeadBadgeTone = {
   Primary: "primary",
   Purple: "purple",
   Success: "success",
+  Orange: "orange",
   Warning: "warning",
 } as const;
 
@@ -17,5 +18,6 @@ export const LEAD_BADGE_TONE_VALUES = [
   LeadBadgeTone.Primary,
   LeadBadgeTone.Purple,
   LeadBadgeTone.Success,
+  LeadBadgeTone.Orange,
   LeadBadgeTone.Warning,
 ] as const;

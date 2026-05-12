@@ -1,6 +1,7 @@
 {
   "status": {
     "new": "Neu",
+    "pending_review": "Zu prüfen",
     "contacted": "Kontaktiert",
     "qualified": "Qualifiziert",
     "proposal": "Angebot",

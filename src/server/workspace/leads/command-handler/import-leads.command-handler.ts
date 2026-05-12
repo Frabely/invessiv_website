@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
 import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
@@ -234,7 +235,8 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
               row_index: rowIndex,
             },
             externalGuid,
-            statusOverride: validatedValue.status,
+            statusOverride:
+              validatedValue.status ?? ContactLeadStatus.PendingReview,
           },
         ),
       );

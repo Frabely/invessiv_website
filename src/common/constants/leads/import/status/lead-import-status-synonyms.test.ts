@@ -7,6 +7,9 @@ vi.mock("server-only", () => ({}));
 describe("LEAD_IMPORT_STATUS_SYNONYMS", () => {
   it("contains lower-cased DE and EN status labels", () => {
     expect(LEAD_IMPORT_STATUS_SYNONYMS).toEqual({
+      "zu prüfen": ContactLeadStatus.PendingReview,
+      "pending review": ContactLeadStatus.PendingReview,
+      pending_review: ContactLeadStatus.PendingReview,
       neu: ContactLeadStatus.New,
       new: ContactLeadStatus.New,
       kontaktiert: ContactLeadStatus.Contacted,

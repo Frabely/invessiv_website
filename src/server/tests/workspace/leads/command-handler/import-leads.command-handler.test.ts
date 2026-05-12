@@ -159,6 +159,30 @@ describe("importLeads", () => {
     expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(3);
   });
 
+  it("imports a row with pending_review status and preserves the status override", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = [
+      "email;last_name;status",
+      "review@example.com;Review;pending_review",
+    ].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.importedCount).toBe(1);
+    expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(1);
+    const options = createLeadCoreInTransactionMock.mock.calls[0][2] as {
+      statusOverride?: string;
+    };
+    expect(options.statusOverride).toBe("pending_review");
+  });
+
   it("skips all 3 rows on re-import (DuplicateEmail)", async () => {
     vi.resetModules();
     setupEmptyDb();

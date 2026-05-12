@@ -64,8 +64,12 @@
   --badge-accent: #36b37e;
 }
 
+.root[data-tone="orange"] {
+  --badge-accent: var(--color-accent-orange);
+}
+
 .root[data-tone="warning"] {
-  --badge-accent: var(--color-accent-warm);
+  --badge-accent: var(--color-accent-gold);
 }
 
 .root[data-tone="purple"] {

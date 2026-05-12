@@ -3,6 +3,9 @@ import "server-only";
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 
 export const LEAD_IMPORT_STATUS_SYNONYMS: Record<string, ContactLeadStatus> = {
+  "zu prüfen": ContactLeadStatus.PendingReview,
+  "pending review": ContactLeadStatus.PendingReview,
+  pending_review: ContactLeadStatus.PendingReview,
   neu: ContactLeadStatus.New,
   new: ContactLeadStatus.New,
   kontaktiert: ContactLeadStatus.Contacted,

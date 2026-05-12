@@ -1,6 +1,7 @@
 {
   "status": {
     "new": "New",
+    "pending_review": "Pending Review",
     "contacted": "Contacted",
     "qualified": "Qualified",
     "proposal": "Proposal",

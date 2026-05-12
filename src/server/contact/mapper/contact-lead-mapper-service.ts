@@ -40,7 +40,7 @@ export function mapLeadApiToDb(
     first_name: payload.firstName.trim(),
     id: randomUUID(),
     last_name: payload.lastName.trim(),
-    lead_status: ContactLeadStatus.New,
+    lead_status: ContactLeadStatus.PendingReview,
     owner: undefined,
     source: LeadSource.Webform,
     updated_at: createdAt,

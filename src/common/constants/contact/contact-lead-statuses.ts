@@ -1,5 +1,6 @@
 export const ContactLeadStatus = {
   New: "new",
+  PendingReview: "pending_review",
   Contacted: "contacted",
   Qualified: "qualified",
   Proposal: "proposal",
@@ -16,6 +17,7 @@ export const CONTACT_LEAD_STATUS_ALL = "all" as const;
 
 export const CONTACT_LEAD_STATUS_VALUES = [
   ContactLeadStatus.New,
+  ContactLeadStatus.PendingReview,
   ContactLeadStatus.Contacted,
   ContactLeadStatus.Qualified,
   ContactLeadStatus.Proposal,

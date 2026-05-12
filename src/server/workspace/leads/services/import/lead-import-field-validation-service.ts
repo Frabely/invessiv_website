@@ -116,7 +116,7 @@ function validateImportStatus(
   }
 
   return {
-    value: ContactLeadStatus.New,
+    value: ContactLeadStatus.PendingReview,
     issue: createIssue(
       rowIndex,
       LeadImportWarningCode.UnknownStatusFallback,

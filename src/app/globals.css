@@ -23,6 +23,8 @@
   --color-border-strong: rgba(255, 255, 255, 0.18);
   --color-shadow: rgba(0, 0, 0, 0.42);
   --color-accent-warm: #e79a49;
+  --color-accent-gold: #c8ad59;
+  --color-accent-orange: #dd8a3c;
   --color-cta: #4e83e6;
   --color-cta-hover: #6899f0;
   --color-focus: rgba(104, 153, 240, 0.78);
@@ -132,6 +134,8 @@
   --color-border-strong: rgba(42, 64, 102, 0.36);
   --color-shadow: rgba(28, 41, 67, 0.18);
   --color-accent-warm: #cb7728;
+  --color-accent-gold: #b68f2a;
+  --color-accent-orange: #c97322;
   --color-cta: #285fc1;
   --color-cta-hover: #346ed4;
   --color-focus: rgba(52, 110, 212, 0.48);

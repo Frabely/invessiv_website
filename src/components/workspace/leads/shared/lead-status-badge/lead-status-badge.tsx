@@ -6,6 +6,7 @@ import {
   faCircleXmark,
   faComments,
   faFileSignature,
+  faHourglassHalf,
   faLayerGroup,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
@@ -44,13 +45,17 @@ const STATUS_CONFIG: Record<
     icon: faCirclePlus,
     tone: LeadBadgeTone.Info,
   },
+  [ContactLeadStatus.PendingReview]: {
+    icon: faHourglassHalf,
+    tone: LeadBadgeTone.Warning,
+  },
   [ContactLeadStatus.Contacted]: {
     icon: faComments,
     tone: LeadBadgeTone.Primary,
   },
   [ContactLeadStatus.Qualified]: {
     icon: faCircleCheck,
-    tone: LeadBadgeTone.Warning,
+    tone: LeadBadgeTone.Orange,
   },
   [ContactLeadStatus.Proposal]: {
     icon: faFileSignature,
