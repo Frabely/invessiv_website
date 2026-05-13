@@ -8,7 +8,7 @@ describe("LeadImportRowIssueCode", () => {
   it("contains the expected row issue codes without duplicates", () => {
     expect(LEAD_IMPORT_ROW_ISSUE_CODE_VALUES).toEqual([
       LeadImportRowIssueCode.MissingEmail,
-      LeadImportRowIssueCode.MissingNameOrCompany,
+      LeadImportRowIssueCode.MissingDisplayName,
       LeadImportRowIssueCode.InvalidEmail,
       LeadImportRowIssueCode.InvalidUrl,
       LeadImportRowIssueCode.InvalidScore,

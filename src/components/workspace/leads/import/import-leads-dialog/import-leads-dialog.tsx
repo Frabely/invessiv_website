@@ -81,6 +81,7 @@ async function buildCsvPreview(file: File): Promise<LeadImportCsvPreview> {
   const ignored = headers.filter((h) => !validColumns.has(h));
   const hasRequiredColumns =
     recognized.includes(LeadImportColumnKey.DisplayName) ||
+    recognized.includes(LeadImportColumnKey.FirstName) ||
     recognized.includes(LeadImportColumnKey.LastName) ||
     recognized.includes(LeadImportColumnKey.CompanyName);
 

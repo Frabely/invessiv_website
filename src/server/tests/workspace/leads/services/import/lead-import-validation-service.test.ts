@@ -20,6 +20,7 @@ function createContext(categorySlugToId = new Map<string, string>()) {
 }
 
 const validRawRow: RawLeadImportRow = {
+  display_name: undefined,
   email: "Anna.Schmidt@example.com",
   first_name: "Anna",
   last_name: "Schmidt",
@@ -62,6 +63,7 @@ describe("validateRow", () => {
 
     expect(result.issues).toEqual([]);
     expect(result.value).toEqual({
+      displayName: "Anna Schmidt",
       email: "Anna.Schmidt@example.com",
       first_name: "Anna",
       last_name: "Schmidt",
@@ -100,6 +102,24 @@ describe("validateRow", () => {
     });
   });
 
+  it("accepts display_name without email and keeps email undefined", () => {
+    const result = leadImportValidationService.validateRow(
+      {
+        display_name: "Display Only",
+      },
+      createContext(),
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error("expected success");
+    }
+
+    expect(result.issues).toEqual([]);
+    expect(result.value.displayName).toBe("Display Only");
+    expect(result.value.email).toBeUndefined();
+  });
+
   it("accepts minimal email and last_name", () => {
     const result = leadImportValidationService.validateRow(
       {
@@ -117,6 +137,7 @@ describe("validateRow", () => {
     expect(result.issues).toEqual([]);
     expect(result.value.improvements).toEqual([]);
     expect(result.value.status).toBeUndefined();
+    expect(result.value.displayName).toBe("Mustermann");
   });
 
   it("accepts minimal email and company_name", () => {
@@ -135,9 +156,10 @@ describe("validateRow", () => {
 
     expect(result.issues).toEqual([]);
     expect(result.value.company_name).toBe("Beispiel GmbH");
+    expect(result.value.displayName).toBe("Beispiel GmbH");
   });
 
-  it("returns an error when neither last_name nor company_name is provided", () => {
+  it("derives the display name from first_name when last_name is absent", () => {
     const result = leadImportValidationService.validateRow(
       {
         email: "anna@example.com",
@@ -146,11 +168,28 @@ describe("validateRow", () => {
       createContext(),
     );
 
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error("expected success");
+    }
+
+    expect(result.value.displayName).toBe("Anna");
+    expect(result.issues).toEqual([]);
+  });
+
+  it("returns an error when no name fields are provided", () => {
+    const result = leadImportValidationService.validateRow(
+      {
+        email: "anna@example.com",
+      },
+      createContext(),
+    );
+
     expect(result.ok).toBe(false);
     expect(result.issues).toEqual([
       {
         rowIndex: 1,
-        code: LeadImportRowIssueCode.MissingNameOrCompany,
+        code: LeadImportRowIssueCode.MissingDisplayName,
         severity: LeadImportRowIssueSeverity.Error,
       },
     ]);
@@ -280,7 +319,7 @@ describe("validateRow", () => {
     });
   });
 
-  it("returns MissingEmail when the mapped email cell is empty", () => {
+  it("accepts an empty mapped email cell when a name is present", () => {
     const result = leadImportValidationService.validateRow(
       {
         email: "",
@@ -289,12 +328,12 @@ describe("validateRow", () => {
       createContext(),
     );
 
-    expect(result.ok).toBe(false);
-    expect(result.issues).toContainEqual({
-      rowIndex: 1,
-      code: LeadImportRowIssueCode.MissingEmail,
-      severity: LeadImportRowIssueSeverity.Error,
-      column: LeadImportColumnKey.Email,
-    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error("expected success");
+    }
+
+    expect(result.issues).toEqual([]);
+    expect(result.value.email).toBeUndefined();
   });
 });

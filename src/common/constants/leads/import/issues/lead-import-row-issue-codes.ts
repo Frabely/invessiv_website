@@ -1,6 +1,6 @@
 export const LeadImportRowIssueCode = {
   MissingEmail: "missing_email",
-  MissingNameOrCompany: "missing_name_or_company",
+  MissingDisplayName: "missing_display_name",
   InvalidEmail: "invalid_email",
   InvalidUrl: "invalid_url",
   InvalidScore: "invalid_score",
@@ -19,7 +19,7 @@ export type LeadImportRowIssueCode =
 
 export const LEAD_IMPORT_ROW_ISSUE_CODE_VALUES = [
   LeadImportRowIssueCode.MissingEmail,
-  LeadImportRowIssueCode.MissingNameOrCompany,
+  LeadImportRowIssueCode.MissingDisplayName,
   LeadImportRowIssueCode.InvalidEmail,
   LeadImportRowIssueCode.InvalidUrl,
   LeadImportRowIssueCode.InvalidScore,

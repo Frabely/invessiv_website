@@ -18,10 +18,7 @@ import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
 } from "@/common/constants/contact/contact-lead-statuses";
-import {
-  LeadErrorCode,
-  LeadValidationIssueCode,
-} from "@/common/constants/leads/errors/lead-error-codes";
+import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
@@ -75,6 +72,7 @@ type LeadMutationResult =
   | {
       code:
         | typeof LeadErrorCode.EmailExists
+        | typeof LeadErrorCode.CompanyNameExists
         | typeof LeadErrorCode.Internal
         | typeof LeadErrorCode.NotFound
         | typeof LeadErrorCode.ValidationError;
@@ -83,6 +81,7 @@ type LeadMutationResult =
     };
 
 const DEFAULT_VALUES: LeadFormValues = {
+  displayName: "",
   first_name: "",
   last_name: "",
   company_name: "",
@@ -101,6 +100,7 @@ const DEFAULT_VALUES: LeadFormValues = {
 const LeadFormDialogField = {
   CategoryId: "category_id",
   CompanyName: "company_name",
+  DisplayName: "displayName",
   Email: "email",
   FirstName: "first_name",
   LastName: "last_name",
@@ -142,6 +142,7 @@ function getLeadFormDialogModeContent(
 
 type LeadMutationFailureResult =
   | { code: typeof LeadErrorCode.EmailExists; ok: false }
+  | { code: typeof LeadErrorCode.CompanyNameExists; ok: false }
   | { code: typeof LeadErrorCode.Internal; ok: false }
   | {
       code:
@@ -159,6 +160,11 @@ function handleLeadMutationFailure(
 ): boolean {
   if (result.code === LeadErrorCode.EmailExists) {
     onEmailExists();
+    return true;
+  }
+
+  if (result.code === LeadErrorCode.CompanyNameExists) {
+    onValidationError([]);
     return true;
   }
 
@@ -205,8 +211,8 @@ function getValidationMessage(
   content: LeadsFormDictionary,
 ): string {
   switch (code) {
-    case LeadValidationMessageCode.EmailRequired:
-      return content.validation.emailRequired;
+    case LeadValidationMessageCode.DisplayNameRequired:
+      return content.validation.displayNameRequired;
     case LeadValidationMessageCode.EmailInvalid:
       return content.validation.emailInvalid;
     case LeadValidationMessageCode.ScoreInvalid:
@@ -223,8 +229,6 @@ function getValidationMessage(
       return content.validation.socialProfileRequired;
     case LeadValidationMessageCode.ImprovementRequired:
       return content.validation.improvementRequired;
-    case LeadValidationIssueCode.LastNameOrCompanyNameRequired:
-      return content.validation.nameRequired;
     default:
       return content.validation.generic;
   }
@@ -287,10 +291,7 @@ export function LeadFormDialog({
     setStatusMessage(null);
 
     if (!emailValue) {
-      setError(LeadFormDialogField.Email, {
-        message: content.validation.emailRequired,
-        type: "manual",
-      });
+      clearErrors(LeadFormDialogField.Email);
       return;
     }
 
@@ -307,34 +308,30 @@ export function LeadFormDialog({
     clearErrors,
     content.validation.emailInvalid,
     content.validation.emailExists,
-    content.validation.emailRequired,
     errors.email?.message,
     getValues,
     setError,
   ]);
 
-  const validateLeadNameFields = useCallback(() => {
-    const lastNameValue = getValues(LeadFormDialogField.LastName).trim();
-    const companyNameValue = getValues(LeadFormDialogField.CompanyName).trim();
+  const validateDisplayNameField = useCallback(() => {
+    const displayNameValue = getValues(LeadFormDialogField.DisplayName).trim();
     setStatusMessage(null);
 
-    if (lastNameValue || companyNameValue) {
-      clearErrors([
-        LeadFormDialogField.LastName,
-        LeadFormDialogField.CompanyName,
-      ]);
+    if (!displayNameValue) {
+      setError(LeadFormDialogField.DisplayName, {
+        message: content.validation.displayNameRequired,
+        type: "manual",
+      });
       return;
     }
 
-    setError(LeadFormDialogField.LastName, {
-      message: content.validation.nameRequired,
-      type: "manual",
-    });
-    setError(LeadFormDialogField.CompanyName, {
-      message: content.validation.nameRequired,
-      type: "manual",
-    });
-  }, [clearErrors, content.validation.nameRequired, getValues, setError]);
+    clearErrors(LeadFormDialogField.DisplayName);
+  }, [
+    clearErrors,
+    content.validation.displayNameRequired,
+    getValues,
+    setError,
+  ]);
 
   const validatePhoneField = useCallback(() => {
     const phoneValue = getValues(LeadFormDialogField.Phone).trim();
@@ -498,14 +495,6 @@ export function LeadFormDialog({
     setStatusMessage(null);
   }
 
-  function clearLeadNameValidationMessages() {
-    clearErrors([
-      LeadFormDialogField.LastName,
-      LeadFormDialogField.CompanyName,
-    ]);
-    resetValidationMessages();
-  }
-
   function applyValidationIssues(issues: z.core.$ZodIssue[]) {
     clearErrors();
 
@@ -516,20 +505,6 @@ export function LeadFormDialog({
             typeof part === "string" || typeof part === "number",
         )
         .join(".");
-
-      if (
-        issue.message === LeadValidationIssueCode.LastNameOrCompanyNameRequired
-      ) {
-        setError(LeadFormDialogField.LastName, {
-          message: content.validation.nameRequired,
-          type: "manual",
-        });
-        setError(LeadFormDialogField.CompanyName, {
-          message: content.validation.nameRequired,
-          type: "manual",
-        });
-        continue;
-      }
 
       if (!fieldPath) {
         continue;
@@ -575,7 +550,14 @@ export function LeadFormDialog({
             setStatusMessage(null);
           },
           (errors) => {
-            applyValidationIssues(errors);
+            if (result.code === LeadErrorCode.CompanyNameExists) {
+              setError(LeadFormDialogField.CompanyName, {
+                message: content.validation.companyNameExists,
+                type: "manual",
+              });
+            } else {
+              applyValidationIssues(errors);
+            }
             setStatusMessage(null);
           },
           isEditMode
@@ -677,6 +659,34 @@ export function LeadFormDialog({
               <FormField
                 className={styles.field}
                 controlClassName={styles.input}
+                errorMessage={errors.displayName?.message}
+                hint={getFieldEditState(
+                  currentValues.displayName,
+                  initialValues.displayName,
+                  {
+                    required: true,
+                  },
+                )}
+                inputProps={{
+                  ...register(LeadFormDialogField.DisplayName, {
+                    onChange: () => {
+                      clearErrors(LeadFormDialogField.DisplayName);
+                      resetValidationMessages();
+                    },
+                    onBlur: validateDisplayNameField,
+                  }),
+                  autoComplete: "organization",
+                  placeholder: content.placeholders.displayName,
+                }}
+                kind="text"
+                label={content.fields.displayName}
+                required
+              />
+
+              <FormField
+                className={styles.field}
+                controlClassName={styles.input}
+                errorMessage={errors.first_name?.message}
                 hint={getFieldEditState(
                   currentValues.first_name,
                   initialValues.first_name,
@@ -706,9 +716,9 @@ export function LeadFormDialog({
                 inputProps={{
                   ...register(LeadFormDialogField.LastName, {
                     onChange: () => {
-                      clearLeadNameValidationMessages();
+                      clearErrors(LeadFormDialogField.LastName);
+                      resetValidationMessages();
                     },
-                    onBlur: validateLeadNameFields,
                   }),
                   autoComplete: "family-name",
                   placeholder: content.placeholders.lastName,
@@ -728,9 +738,9 @@ export function LeadFormDialog({
                 inputProps={{
                   ...register(LeadFormDialogField.CompanyName, {
                     onChange: () => {
-                      clearLeadNameValidationMessages();
+                      clearErrors(LeadFormDialogField.CompanyName);
+                      resetValidationMessages();
                     },
-                    onBlur: validateLeadNameFields,
                   }),
                   autoComplete: "organization",
                   placeholder: content.placeholders.companyName,
@@ -746,9 +756,6 @@ export function LeadFormDialog({
                 hint={getFieldEditState(
                   currentValues.email,
                   initialValues.email,
-                  {
-                    required: true,
-                  },
                 )}
                 inputProps={{
                   ...register(LeadFormDialogField.Email, {
@@ -763,7 +770,6 @@ export function LeadFormDialog({
                 }}
                 kind="email"
                 label={content.fields.email}
-                required
               />
             </div>
           </section>

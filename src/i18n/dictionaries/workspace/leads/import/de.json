@@ -25,7 +25,7 @@
     "recognizedColumns": "Erkannte Spalten",
     "ignoredColumns": "Ignorierte Spalten",
     "missingRequiredTitle": "Pflichtfelder fehlen",
-    "missingRequiredHint": "Die Datei muss mindestens eine der Spalten \"display_name\", \"last_name\" oder \"company_name\" enthalten."
+    "missingRequiredHint": "Die Datei muss mindestens eine der Spalten \"display_name\", \"first_name\", \"last_name\" oder \"company_name\" enthalten."
   },
   "summary": {
     "title": "Import-Ergebnis",
@@ -52,7 +52,7 @@
   },
   "row_issues": {
     "missing_email": "E-Mail-Adresse fehlt",
-    "missing_name_or_company": "Nachname oder Firmenname fehlt",
+    "missing_display_name": "Anzeigename fehlt",
     "invalid_email": "Ungültige E-Mail-Adresse",
     "invalid_url": "Ungültige URL",
     "invalid_score": "Ungültiger Score (0–100, ganze Zahl erwartet)",

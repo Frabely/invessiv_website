@@ -1,22 +1,6 @@
 import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import type { CreateLeadCoreInput } from "./create-lead-core-input";
 
-export type CreateLeadRequestDto = {
-  displayName: string;
-  first_name?: string;
-  last_name?: string;
-  company_name?: string;
-  email?: string;
-  phone?: string;
-  website_url?: string;
-  category_id?: string;
-  score?: number;
-  owner?: string;
-  notes?: string;
-  improvements?: string[];
-  social_profiles?: Array<{
-    platform: LeadSocialPlatform;
-    profile_url: string;
-  }>;
+export interface CreateLeadRequestDto extends CreateLeadCoreInput {
   lead_status?: ContactLeadStatus;
-};
+}

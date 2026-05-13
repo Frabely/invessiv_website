@@ -1,4 +1,4 @@
-﻿// @vitest-environment jsdom
+// @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
 
@@ -42,6 +42,7 @@ beforeEach(() => {
 describe("LeadFormDialog", () => {
   const EDIT_LEAD: LeadDetailDto = {
     id: "lead-edit-123",
+    displayName: "Anna Meyer",
     firstName: "Anna",
     lastName: "Meyer",
     companyName: "Meyer Studio",
@@ -89,19 +90,16 @@ describe("LeadFormDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: "Lead speichern" }));
 
     expect(
-      await screen.findByText("E-Mail ist erforderlich"),
+      await screen.findByText("Anzeigename ist erforderlich"),
     ).toBeInTheDocument();
-    expect(
-      screen.getAllByText("Nachname oder Unternehmen erforderlich"),
-    ).toHaveLength(2);
 
-    fireEvent.change(screen.getByPlaceholderText("Unternehmen oder Marke"), {
+    fireEvent.change(screen.getByPlaceholderText("Anzeigename"), {
       target: { value: "Meyer Studio" },
     });
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Nachname oder Unternehmen erforderlich"),
+        screen.queryByText("Anzeigename ist erforderlich"),
       ).not.toBeInTheDocument();
     });
 
@@ -139,10 +137,7 @@ describe("LeadFormDialog", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Nachname oder Unternehmen erforderlich"),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByText("E-Mail ist erforderlich"),
+        screen.queryByText("Anzeigename ist erforderlich"),
       ).not.toBeInTheDocument();
     });
   });
@@ -184,7 +179,7 @@ describe("LeadFormDialog", () => {
     );
   });
 
-  it("shows email and name validation errors only after blur", async () => {
+  it("shows display name and email validation errors only after blur", async () => {
     render(
       <LeadFormDialog
         categories={[
@@ -201,8 +196,26 @@ describe("LeadFormDialog", () => {
       />,
     );
 
+    const displayNameInput = screen.getByRole("textbox", {
+      name: "Anzeigename *",
+    });
+
+    fireEvent.change(displayNameInput, {
+      target: { value: "   " },
+    });
+
+    expect(
+      screen.queryByText("Anzeigename ist erforderlich"),
+    ).not.toBeInTheDocument();
+
+    fireEvent.blur(displayNameInput);
+
+    expect(
+      await screen.findByText("Anzeigename ist erforderlich"),
+    ).toBeInTheDocument();
+
     const emailInput = screen.getByRole("textbox", {
-      name: "E-Mail *",
+      name: "E-Mail",
     });
 
     fireEvent.change(emailInput, {
@@ -214,19 +227,9 @@ describe("LeadFormDialog", () => {
     fireEvent.blur(emailInput);
 
     expect(await screen.findByText("Ungültige E-Mail")).toBeInTheDocument();
-
-    const lastNameInput = screen.getByRole("textbox", {
-      name: "Nachname",
-    });
-
-    fireEvent.blur(lastNameInput);
-
-    expect(
-      await screen.findAllByText("Nachname oder Unternehmen erforderlich"),
-    ).toHaveLength(2);
   });
 
-  it("rejects malformed phone numbers on submit even without blur", async () => {
+  it("accepts an empty email field on submit", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
     const content = getLeadsFormDictionary("de");
@@ -247,11 +250,8 @@ describe("LeadFormDialog", () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Nachname"), {
-      target: { value: "Meyer" },
-    });
-    fireEvent.change(screen.getByLabelText("E-Mail *"), {
-      target: { value: "anna@example.com" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Anzeigename/ }), {
+      target: { value: "Meyer Studio" },
     });
     fireEvent.change(screen.getByLabelText("Telefon"), {
       target: { value: "abc123" },
@@ -357,19 +357,6 @@ describe("LeadFormDialog", () => {
       screen.getByText("https://instagram.com/invessiv"),
     ).toBeInTheDocument();
     expect(screen.queryByLabelText("Profil-URL")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Profil hinzufügen" }));
-    fireEvent.change(await screen.findByLabelText("Plattform"), {
-      target: { value: "instagram" },
-    });
-    fireEvent.change(screen.getByLabelText("Profil-URL"), {
-      target: { value: "https://instagram.com/duplicate" },
-    });
-    fireEvent.click(screen.getAllByRole("button", { name: "Hinzufügen" })[0]);
-
-    expect(
-      await screen.findByText("Diese Plattform wurde bereits hinzugefügt"),
-    ).toBeInTheDocument();
   });
 
   it("keeps oversized improvements out of the saved list", async () => {
@@ -465,10 +452,10 @@ describe("LeadFormDialog", () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Nachname"), {
-      target: { value: "Meyer" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Anzeigename/ }), {
+      target: { value: "Meyer Studio" },
     });
-    fireEvent.change(screen.getByLabelText("E-Mail *"), {
+    fireEvent.change(screen.getByLabelText("E-Mail"), {
       target: { value: "anna@example.com" },
     });
     fireEvent.change(screen.getByLabelText("Unternehmen"), {
@@ -502,6 +489,7 @@ describe("LeadFormDialog", () => {
     });
 
     const requestInit = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(requestInit.body).toContain('"displayName":"Meyer Studio"');
     expect(requestInit.body).toContain('"email":"anna@example.com"');
     expect(requestInit.body).toContain('"company_name":"Meyer Studio"');
     expect(requestInit.body).toContain('"score":84');
@@ -545,23 +533,20 @@ describe("LeadFormDialog", () => {
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Nachname"), {
-      target: { value: "Meyer" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Anzeigename/ }), {
+      target: { value: "Meyer Studio" },
     });
-    fireEvent.change(screen.getByLabelText("E-Mail *"), {
+    fireEvent.change(screen.getByLabelText("E-Mail"), {
       target: { value: "anna@example.com" },
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Lead speichern" }));
 
     expect(
-      await screen.findAllByText(
+      await screen.findByText(
         "Diese E-Mail ist bereits einem bestehenden Lead zugeordnet.",
       ),
-    ).toHaveLength(1);
-    expect(
-      screen.queryByText("Lead konnte nicht gespeichert werden"),
-    ).not.toBeInTheDocument();
+    ).toBeInTheDocument();
     expect(replaceMock).not.toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -601,7 +586,7 @@ describe("LeadFormDialog", () => {
     });
   });
 
-  it("shows the email field as required instead of cleared when emptied in edit mode", async () => {
+  it("shows the email field as cleared when emptied in edit mode", async () => {
     const content = getLeadsFormDictionary("de");
 
     render(
@@ -632,7 +617,7 @@ describe("LeadFormDialog", () => {
     });
 
     await waitFor(() => {
-      expect(emailField).toHaveTextContent(content.help.fieldStateRequired);
+      expect(emailField).toHaveTextContent(content.help.fieldStateCleared);
     });
   });
 

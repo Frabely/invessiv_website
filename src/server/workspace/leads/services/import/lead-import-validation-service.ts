@@ -7,12 +7,10 @@ import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/
 import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
-import {
-  leadOptionalTextSchema,
-  leadTextSchema,
-} from "@/server/workspace/leads/shared/lead-validation-core";
+import { leadOptionalTextSchema } from "@/server/workspace/leads/shared/lead-validation-core";
 import { leadImportSocialProfileMapperService } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper-service";
 import { leadImportFieldValidationService } from "@/server/workspace/leads/services/import/lead-import-field-validation-service";
+import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
 import type { LeadImportValidationContext } from "@/common/contracts/leads/import/validation/lead-import-validation-context";
 import type { LeadImportValidationResult } from "@/common/contracts/leads/import/validation/lead-import-validation-result";
@@ -58,7 +56,8 @@ function parseDelimitedTokens(value: string | undefined): {
 }
 
 const leadImportRowSchema = z.object({
-  email: leadTextSchema,
+  display_name: leadOptionalTextSchema,
+  email: leadOptionalTextSchema,
   first_name: leadOptionalTextSchema,
   last_name: leadOptionalTextSchema,
   company_name: leadOptionalTextSchema,
@@ -140,7 +139,8 @@ function buildValidatedRow(
   rowIndex: number,
   issues: LeadImportRowIssueDto[],
 ): ValidatedLeadImportRow {
-  const email = trimOptionalValue(raw.email) ?? "";
+  const explicitDisplayName = trimOptionalValue(raw.display_name);
+  const email = trimOptionalValue(raw.email);
   const firstName = trimOptionalValue(raw.first_name);
   const lastName = trimOptionalValue(raw.last_name);
   const companyName = trimOptionalValue(raw.company_name);
@@ -189,18 +189,27 @@ function buildValidatedRow(
 
   issues.push(...socialProfilesResult.issues);
 
-  const hasName = Boolean(lastName) || Boolean(companyName);
-  if (!hasName) {
+  const displayName =
+    explicitDisplayName ??
+    deriveLeadDisplayName({
+      companyName,
+      firstName,
+      lastName,
+    }) ??
+    "";
+
+  if (!displayName) {
     issues.push(
       createIssue(
         rowIndex,
-        LeadImportRowIssueCode.MissingNameOrCompany,
+        LeadImportRowIssueCode.MissingDisplayName,
         LeadImportRowIssueSeverity.Error,
       ),
     );
   }
 
   return {
+    displayName,
     email,
     first_name: firstName,
     last_name: lastName,
