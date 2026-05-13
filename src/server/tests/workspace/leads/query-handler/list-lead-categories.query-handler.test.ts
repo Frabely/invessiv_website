@@ -43,6 +43,11 @@ describe("listLeadCategories", () => {
             slug: "consultants",
             label_key: "consultants",
           },
+          {
+            id: "cat-3",
+            slug: "other",
+            label_key: "other",
+          },
         ]),
       ),
     });
@@ -62,6 +67,11 @@ describe("listLeadCategories", () => {
         id: "cat-2",
         slug: "consultants",
         labelKey: "consultants",
+      },
+      {
+        id: "cat-3",
+        slug: "other",
+        labelKey: "other",
       },
     ]);
   });

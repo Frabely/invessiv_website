@@ -2,6 +2,7 @@ import {
   faBriefcase,
   faCamera,
   faChalkboardUser,
+  faCircleQuestion,
   faHammer,
   faLayerGroup,
   faLocationDot,
@@ -48,6 +49,10 @@ const CATEGORY_CONFIG: Record<
   photographers: {
     icon: faCamera,
     tone: LeadBadgeTone.Info,
+  },
+  other: {
+    icon: faCircleQuestion,
+    tone: LeadBadgeTone.Orange,
   },
 };
 

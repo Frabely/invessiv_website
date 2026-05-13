@@ -49,6 +49,7 @@ const CATEGORY_FIXTURES = [
     sortOrder: 30,
   },
   { slug: "craftspeople", labelKey: "craftspeople", sortOrder: 20 },
+  { slug: "other", labelKey: "other", sortOrder: 70 },
 ] as const;
 
 type CategorySlug = (typeof CATEGORY_FIXTURES)[number]["slug"];
@@ -413,7 +414,7 @@ function buildLeadFixtures(): LeadFixture[] {
       websiteUrl: "https://keller-atelier.example.com",
     },
     {
-      categorySlug: "small-b2b-providers",
+      categorySlug: "other",
       companyName: "Reinhardt Web",
       email: "paul.reinhardt.fixture@invessiv.test",
       externalGuid: `${FIXTURE_PREFIX}10`,

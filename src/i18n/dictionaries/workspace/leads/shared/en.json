@@ -21,7 +21,8 @@
     "local-service-providers": "Local Service Providers",
     "small-b2b-providers": "Small B2B Providers",
     "consultants": "Consultants",
-    "photographers": "Photographers"
+    "photographers": "Photographers",
+    "other": "Other"
   },
   "platform": {
     "linkedin": "LinkedIn",

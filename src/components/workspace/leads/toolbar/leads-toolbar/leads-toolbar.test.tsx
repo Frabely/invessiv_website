@@ -54,6 +54,11 @@ describe("LeadsToolbar", () => {
             label: "Fotografen",
             labelKey: "photographers",
           },
+          {
+            id: "cat-5",
+            label: "Andere",
+            labelKey: "other",
+          },
         ]}
         content={getLeadsToolbarDictionary("de")}
         currentQueryString="status=qualified&source=manual&category=cat-1&search=acme&score_min=70&date_from=2024-01-01&date_to=2024-01-31&page=2&sort=created_desc"
@@ -140,6 +145,11 @@ describe("LeadsToolbar", () => {
       screen
         .getByText("Fotografen")
         .closest("[data-kind='category'][data-tone='info']"),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByText("Andere")
+        .closest("[data-kind='category'][data-tone='orange']"),
     ).toBeTruthy();
     expect(
       screen.getByText("Coaches").closest("button[data-active='true']"),
