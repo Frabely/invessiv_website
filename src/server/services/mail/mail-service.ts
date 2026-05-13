@@ -10,6 +10,14 @@ import { ResendMailProvider } from "@/server/services/mail/providers/resend-prov
 function resolveMailProvider(): MailProvider | null {
   const env = getServerEnv();
 
+  if (env.contactMailProvider === "noop") {
+    return {
+      async send() {
+        return { externalId: "noop" };
+      },
+    };
+  }
+
   if (
     env.contactMailProvider === "resend" &&
     env.contactMailFrom &&
