@@ -6,7 +6,13 @@ import {
   useFieldArray,
   type UseFormClearErrors,
 } from "react-hook-form";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faInstagram,
+  faLinkedinIn,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
+import { faGlobe, faPlus } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   LEAD_SOCIAL_PLATFORMS_VALUES,
@@ -17,6 +23,7 @@ import {
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
+import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type {
   LeadsFormDictionary,
@@ -37,6 +44,31 @@ type SocialProfilesSectionProps = {
 const SocialProfilesSectionField = {
   SocialProfiles: "social_profiles",
 } as const;
+
+const SOCIAL_PLATFORM_ICONS: Record<LeadSocialPlatform, IconDefinition> = {
+  linkedin: faLinkedinIn,
+  instagram: faInstagram,
+  youtube: faYoutube,
+};
+
+function getPlatformIcon(platform: LeadSocialPlatform | ""): IconDefinition {
+  if (platform && platform in SOCIAL_PLATFORM_ICONS) {
+    return SOCIAL_PLATFORM_ICONS[platform as LeadSocialPlatform];
+  }
+
+  return faGlobe;
+}
+
+function getPlatformActionLabel(
+  platform: LeadSocialPlatform | "",
+  labels: LeadsSharedDictionary["socialIconLabel"],
+): string {
+  if (platform && platform in labels) {
+    return labels[platform as LeadSocialPlatform];
+  }
+
+  return labels.website;
+}
 
 export function SocialProfilesSection({
   clearErrorsAction,
@@ -206,6 +238,9 @@ export function SocialProfilesSection({
     editingIndex === null
       ? content.buttons.confirmAdd
       : content.buttons.confirmEdit;
+  const selectedPlatformIcon = getPlatformIcon(platformDraft);
+  const canOpenDraftProfileUrl =
+    Boolean(platformDraft) && isOpenableUrl(profileUrlDraft);
 
   const allSocialProfilesAdded =
     socialProfiles.fields.length >= LEAD_SOCIAL_PLATFORMS_VALUES.length;
@@ -281,6 +316,24 @@ export function SocialProfilesSection({
               kind="url"
               label={content.fields.profileUrl}
             />
+            <ButtonControl
+              aria-label={getPlatformActionLabel(
+                platformDraft,
+                sharedContent.socialIconLabel,
+              )}
+              className={styles.iconActionButton}
+              data-platform={platformDraft || "website"}
+              disabled={!canOpenDraftProfileUrl}
+              onClick={() => openExternalUrl(profileUrlDraft)}
+              title={getPlatformActionLabel(
+                platformDraft,
+                sharedContent.socialIconLabel,
+              )}
+              type="button"
+              variant="ghost"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={selectedPlatformIcon} />
+            </ButtonControl>
             <ButtonControl onClick={resetEditor} type="button" variant="ghost">
               {content.buttons.cancel}
             </ButtonControl>
@@ -307,6 +360,27 @@ export function SocialProfilesSection({
               <span className={styles.listItemMeta}>{field.profile_url}</span>
 
               <div className={styles.rowActions}>
+                <ButtonControl
+                  aria-label={getPlatformActionLabel(
+                    field.platform as LeadSocialPlatform,
+                    sharedContent.socialIconLabel,
+                  )}
+                  className={styles.iconActionButton}
+                  data-platform={field.platform}
+                  disabled={!isOpenableUrl(field.profile_url)}
+                  onClick={() => openExternalUrl(field.profile_url)}
+                  title={getPlatformActionLabel(
+                    field.platform as LeadSocialPlatform,
+                    sharedContent.socialIconLabel,
+                  )}
+                  type="button"
+                  variant="ghost"
+                >
+                  <FontAwesomeIcon
+                    aria-hidden="true"
+                    icon={getPlatformIcon(field.platform as LeadSocialPlatform)}
+                  />
+                </ButtonControl>
                 <ButtonControl
                   onClick={() => beginEdit(index)}
                   type="button"

@@ -360,6 +360,80 @@ describe("LeadFormDialog", () => {
     expect(screen.queryByLabelText("Profil-URL")).not.toBeInTheDocument();
   });
 
+  it("opens website and social profile links from the dialog icons only when URLs are valid", async () => {
+    const openMock = vi.fn();
+    vi.stubGlobal("open", openMock);
+    const content = getLeadsFormDictionary("de");
+
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={content}
+        mode="create"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    const websiteInput = screen.getByLabelText("Website");
+    const websiteButton = screen.getByRole("button", {
+      name: "Website öffnen",
+    });
+
+    expect(websiteButton).toBeDisabled();
+
+    fireEvent.change(websiteInput, {
+      target: { value: "not-a-url" },
+    });
+
+    expect(websiteButton).toBeDisabled();
+
+    fireEvent.change(websiteInput, {
+      target: { value: "https://example.com" },
+    });
+
+    expect(websiteButton).toBeEnabled();
+    fireEvent.click(websiteButton);
+    expect(openMock).toHaveBeenCalledWith(
+      "https://example.com",
+      "_blank",
+      "noopener,noreferrer",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Profil hinzufügen" }));
+
+    const platformSelect = await screen.findByLabelText("Plattform");
+    const profileUrlInput = screen.getByLabelText("Profil-URL");
+    fireEvent.change(platformSelect, {
+      target: { value: "linkedin" },
+    });
+
+    const profileButton = screen.getByRole("button", {
+      name: "LinkedIn-Profil öffnen",
+    });
+
+    expect(profileButton).toBeDisabled();
+
+    fireEvent.change(profileUrlInput, {
+      target: { value: "https://linkedin.com/in/invessiv" },
+    });
+
+    expect(profileButton).toBeEnabled();
+    fireEvent.click(profileButton);
+
+    expect(openMock).toHaveBeenCalledWith(
+      "https://linkedin.com/in/invessiv",
+      "_blank",
+      "noopener,noreferrer",
+    );
+  });
+
   it("lets already added improvements and social profiles be edited before submit", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       json: async () => ({

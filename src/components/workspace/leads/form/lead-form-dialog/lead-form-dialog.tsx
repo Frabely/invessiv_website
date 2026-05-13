@@ -12,7 +12,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { useForm, useWatch } from "react-hook-form";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faGlobe, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   CONTACT_LEAD_STATUS_VALUES,
@@ -35,6 +35,7 @@ import { FormActions } from "@/components/shared/form/form-actions/form-actions"
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
+import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
@@ -595,6 +596,8 @@ export function LeadFormDialog({
 
   const rootErrorMessage =
     typeof errors.root?.message === "string" ? errors.root?.message : null;
+  const websiteUrlValue = currentValues.website_url ?? "";
+  const canOpenWebsiteUrl = isOpenableUrl(websiteUrlValue);
 
   return (
     <div
@@ -814,6 +817,19 @@ export function LeadFormDialog({
               <FormField
                 className={styles.field}
                 controlClassName={styles.input}
+                inputSuffix={
+                  <ButtonControl
+                    aria-label={sharedContent.socialIconLabel.website}
+                    className={styles.iconActionButton}
+                    disabled={!canOpenWebsiteUrl}
+                    onClick={() => openExternalUrl(websiteUrlValue)}
+                    title={sharedContent.socialIconLabel.website}
+                    type="button"
+                    variant="ghost"
+                  >
+                    <FontAwesomeIcon aria-hidden="true" icon={faGlobe} />
+                  </ButtonControl>
+                }
                 errorMessage={errors.website_url?.message}
                 hint={getFieldEditState(
                   currentValues.website_url,

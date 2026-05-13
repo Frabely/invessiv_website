@@ -31,7 +31,7 @@
 
 .socialEditorRow {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr) auto auto;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr) auto auto auto;
   gap: 0.65rem;
   align-items: center;
 }
@@ -91,6 +91,29 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
+}
+
+.iconActionButton {
+  min-width: 2.6rem;
+  min-height: 2.6rem;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.iconActionButton[data-platform="website"] {
+  color: rgba(247, 242, 236, 0.64);
+}
+
+.iconActionButton[data-platform="linkedin"] {
+  color: #0a66c2;
+}
+
+.iconActionButton[data-platform="instagram"] {
+  color: #e4405f;
+}
+
+.iconActionButton[data-platform="youtube"] {
+  color: #ff0000;
 }
 
 .socialRow:last-child {

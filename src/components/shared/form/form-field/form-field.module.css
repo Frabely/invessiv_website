@@ -14,6 +14,21 @@
   display: block;
 }
 
+.inputShell {
+  position: relative;
+  display: block;
+}
+
+.endAdornment {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+}
+
 .hint {
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
@@ -50,6 +65,10 @@
   font-size: var(--font-size-body-md);
   line-height: 1.55;
   padding: 0.9rem 1rem;
+}
+
+.inputShell :global(input) {
+  padding-right: 3rem;
 }
 
 .control :global(textarea) {

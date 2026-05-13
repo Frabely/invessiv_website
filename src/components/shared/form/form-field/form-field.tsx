@@ -20,6 +20,7 @@ type BaseFormFieldProps = {
   controlClassName?: string;
   errorMessage?: string;
   errorMessageId?: string;
+  inputSuffix?: ReactNode;
   hint?: ReactNode;
   hintId?: string;
   label: string;
@@ -55,6 +56,7 @@ export function FormField(props: FormFieldProps) {
     controlClassName,
     errorMessage,
     errorMessageId,
+    inputSuffix,
     hint,
     hintId,
     label,
@@ -96,6 +98,7 @@ export function FormField(props: FormFieldProps) {
               controlClassName,
               resolvedErrorId,
               resolvedHintId,
+              inputSuffix,
             )
           : null}
       </span>
@@ -156,6 +159,7 @@ function renderInput(
   controlClassName?: string,
   errorMessageId?: string,
   hintId?: string,
+  inputSuffix?: ReactNode,
 ) {
   const describedBy = [
     props.inputProps?.["aria-describedby"],
@@ -169,16 +173,21 @@ function renderInput(
     .join(" ");
 
   return (
-    <input
-      {...props.inputProps}
-      aria-describedby={describedBy || undefined}
-      aria-invalid={
-        props.inputProps?.["aria-invalid"] ??
-        (props.errorMessage ? "true" : undefined)
-      }
-      className={className || undefined}
-      type={props.kind}
-    />
+    <span className={styles.inputShell}>
+      <input
+        {...props.inputProps}
+        aria-describedby={describedBy || undefined}
+        aria-invalid={
+          props.inputProps?.["aria-invalid"] ??
+          (props.errorMessage ? "true" : undefined)
+        }
+        className={className || undefined}
+        type={props.kind}
+      />
+      {inputSuffix ? (
+        <span className={styles.endAdornment}>{inputSuffix}</span>
+      ) : null}
+    </span>
   );
 }
 
