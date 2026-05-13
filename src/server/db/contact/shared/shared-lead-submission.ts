@@ -39,8 +39,8 @@ export async function persistSharedLeadSubmission(
       ${input.lead.lead_status},
       ${input.lead.created_at},
       ${input.lead.updated_at}
-    )
-    on conflict ((lower(btrim(email))))
+    ) on conflict ((lower(btrim(email))))
+    where email is not null
     do update set
       display_name = excluded.display_name,
       first_name = excluded.first_name,
