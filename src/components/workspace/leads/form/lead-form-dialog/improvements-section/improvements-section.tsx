@@ -45,6 +45,7 @@ export function ImprovementsSection({
   });
   const editorRef = useRef<HTMLDivElement>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [draft, setDraft] = useState("");
   const [draftError, setDraftError] = useState<string | null>(null);
 
@@ -62,18 +63,29 @@ export function ImprovementsSection({
 
   function resetEditor() {
     setEditorOpen(false);
+    setEditingIndex(null);
     setDraft("");
     setDraftError(null);
   }
 
   function openEditor() {
-    if (editorOpen) {
+    if (editorOpen && editingIndex === null) {
       resetEditor();
       onInteractionAction();
       return;
     }
 
     setEditorOpen(true);
+    setEditingIndex(null);
+    setDraft("");
+    setDraftError(null);
+    onInteractionAction();
+  }
+
+  function beginEdit(index: number) {
+    setEditorOpen(true);
+    setEditingIndex(index);
+    setDraft(improvements.fields[index]?.value ?? "");
     setDraftError(null);
     onInteractionAction();
   }
@@ -90,7 +102,11 @@ export function ImprovementsSection({
       return;
     }
 
-    improvements.append({ value });
+    if (editingIndex === null) {
+      improvements.append({ value });
+    } else {
+      improvements.update(editingIndex, { value });
+    }
     clearErrorsAction(ImprovementsSectionField.Improvements);
     resetEditor();
     onInteractionAction();
@@ -98,9 +114,19 @@ export function ImprovementsSection({
 
   function removeImprovement(index: number) {
     improvements.remove(index);
+    if (editingIndex === index) {
+      resetEditor();
+    } else if (editingIndex !== null && editingIndex > index) {
+      setEditingIndex((current) => (current === null ? null : current - 1));
+    }
     clearErrorsAction(ImprovementsSectionField.Improvements);
     onInteractionAction();
   }
+
+  const confirmButtonLabel =
+    editingIndex === null
+      ? content.buttons.confirmAdd
+      : content.buttons.confirmEdit;
 
   return (
     <section className={styles.section} aria-labelledby="add-lead-improvements">
@@ -146,7 +172,7 @@ export function ImprovementsSection({
               {content.buttons.cancel}
             </ButtonControl>
             <PrimaryCtaButton onClick={confirmDraft} type="button">
-              {content.buttons.confirmAdd}
+              {confirmButtonLabel}
             </PrimaryCtaButton>
           </div>
         </div>
@@ -164,13 +190,22 @@ export function ImprovementsSection({
             <div className={styles.row} key={field.id}>
               <span className={styles.listItemText}>{field.value}</span>
 
-              <ButtonControl
-                onClick={() => removeImprovement(index)}
-                type="button"
-                variant="ghost"
-              >
-                {content.buttons.remove}
-              </ButtonControl>
+              <div className={styles.rowActions}>
+                <ButtonControl
+                  onClick={() => beginEdit(index)}
+                  type="button"
+                  variant="ghost"
+                >
+                  {content.buttons.edit}
+                </ButtonControl>
+                <ButtonControl
+                  onClick={() => removeImprovement(index)}
+                  type="button"
+                  variant="ghost"
+                >
+                  {content.buttons.remove}
+                </ButtonControl>
+              </div>
             </div>
           ))}
         </div>

@@ -87,6 +87,12 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.075);
 }
 
+.rowActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .row:last-child {
   border-bottom: 0;
 }
@@ -161,5 +167,9 @@
 
   .row {
     grid-template-columns: 1fr;
+  }
+
+  .rowActions {
+    justify-content: flex-start;
   }
 }

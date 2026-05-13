@@ -87,6 +87,12 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.075);
 }
 
+.rowActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .socialRow:last-child {
   border-bottom: 0;
 }
@@ -168,5 +174,9 @@
   .socialRow {
     display: flex;
     flex-direction: column;
+  }
+
+  .rowActions {
+    justify-content: flex-start;
   }
 }

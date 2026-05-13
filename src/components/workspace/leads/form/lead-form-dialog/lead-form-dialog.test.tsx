@@ -8,6 +8,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
@@ -357,6 +358,113 @@ describe("LeadFormDialog", () => {
       screen.getByText("https://instagram.com/invessiv"),
     ).toBeInTheDocument();
     expect(screen.queryByLabelText("Profil-URL")).not.toBeInTheDocument();
+  });
+
+  it("lets already added improvements and social profiles be edited before submit", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        lead: { id: "lead-new-123" },
+      }),
+      ok: true,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const content = getLeadsFormDictionary("de");
+
+    render(
+      <LeadFormDialog
+        categories={[
+          {
+            id: "cat-1",
+            label: "Coaches",
+            labelKey: "coaches",
+          },
+        ]}
+        content={content}
+        mode="create"
+        open
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: /Anzeigename/ }), {
+      target: { value: "Meyer Studio" },
+    });
+    fireEvent.change(screen.getByLabelText("E-Mail"), {
+      target: { value: "anna@example.com" },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Verbesserung hinzufügen" }),
+    );
+    fireEvent.change(screen.getByLabelText("Verbesserung"), {
+      target: { value: "Klarere CTA" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Hinzufügen" }));
+
+    const improvementsSection = screen.getByRole("heading", {
+      name: "Verbesserungen",
+    }).parentElement?.parentElement;
+    if (!improvementsSection) {
+      throw new Error("improvements section not found");
+    }
+
+    fireEvent.click(
+      within(improvementsSection).getByRole("button", { name: "Bearbeiten" }),
+    );
+
+    const improvementInput = await screen.findByLabelText("Verbesserung");
+    expect(improvementInput).toHaveValue("Klarere CTA");
+
+    fireEvent.change(improvementInput, {
+      target: { value: "Stärkerer CTA" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
+
+    expect(await screen.findByText("Stärkerer CTA")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Profil hinzufügen" }));
+    fireEvent.change(screen.getByLabelText("Plattform"), {
+      target: { value: "linkedin" },
+    });
+    fireEvent.change(screen.getByLabelText("Profil-URL"), {
+      target: { value: "https://linkedin.com/in/anna-meyer" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Hinzufügen" }));
+
+    const socialProfilesSection = screen.getByRole("heading", {
+      name: "Social Profiles",
+    }).parentElement?.parentElement;
+    if (!socialProfilesSection) {
+      throw new Error("social profiles section not found");
+    }
+
+    fireEvent.click(
+      within(socialProfilesSection).getByRole("button", { name: "Bearbeiten" }),
+    );
+
+    const profileUrlInput = await screen.findByLabelText("Profil-URL");
+    expect(profileUrlInput).toHaveValue("https://linkedin.com/in/anna-meyer");
+
+    fireEvent.change(profileUrlInput, {
+      target: { value: "https://linkedin.com/in/anna-meyer-updated" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
+
+    expect(
+      await screen.findByText("https://linkedin.com/in/anna-meyer-updated"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Lead speichern" }));
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    const requestInit = fetchMock.mock.calls[0][1] as RequestInit;
+    expect(requestInit.body).toContain('"improvements":["Stärkerer CTA"]');
+    expect(requestInit.body).toContain(
+      '"social_profiles":[{"platform":"linkedin","profile_url":"https://linkedin.com/in/anna-meyer-updated"}]',
+    );
   });
 
   it("keeps oversized improvements out of the saved list", async () => {

@@ -57,6 +57,8 @@
     "addImprovement": "Verbesserung hinzufügen",
     "addProfile": "Profil hinzufügen",
     "confirmAdd": "Hinzufügen",
+    "confirmEdit": "Speichern",
+    "edit": "Bearbeiten",
     "remove": "Entfernen"
   },
   "validation": {

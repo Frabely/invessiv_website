@@ -57,6 +57,8 @@
     "addImprovement": "Add improvement",
     "addProfile": "Add profile",
     "confirmAdd": "Add",
+    "confirmEdit": "Save",
+    "edit": "Edit",
     "remove": "Remove"
   },
   "validation": {

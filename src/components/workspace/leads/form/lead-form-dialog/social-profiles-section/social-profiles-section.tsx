@@ -53,6 +53,7 @@ export function SocialProfilesSection({
   });
   const editorRef = useRef<HTMLDivElement>(null);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [platformDraft, setPlatformDraft] = useState<LeadSocialPlatform | "">(
     "",
   );
@@ -82,6 +83,7 @@ export function SocialProfilesSection({
 
   function resetEditor() {
     setEditorOpen(false);
+    setEditingIndex(null);
     setPlatformDraft("");
     setProfileUrlDraft("");
     setPlatformDraftError(null);
@@ -89,13 +91,27 @@ export function SocialProfilesSection({
   }
 
   function openEditor() {
-    if (editorOpen) {
+    if (editorOpen && editingIndex === null) {
       resetEditor();
       onInteractionAction();
       return;
     }
 
     setEditorOpen(true);
+    setEditingIndex(null);
+    setPlatformDraft("");
+    setProfileUrlDraft("");
+    setPlatformDraftError(null);
+    setProfileUrlDraftError(null);
+    onInteractionAction();
+  }
+
+  function beginEdit(index: number) {
+    const profile = socialProfiles.fields[index];
+    setEditorOpen(true);
+    setEditingIndex(index);
+    setPlatformDraft((profile?.platform as LeadSocialPlatform | "") ?? "");
+    setProfileUrlDraft(profile?.profile_url ?? "");
     setPlatformDraftError(null);
     setProfileUrlDraftError(null);
     onInteractionAction();
@@ -138,7 +154,8 @@ export function SocialProfilesSection({
       hasError = true;
     } else if (
       socialProfiles.fields.some(
-        (profile) => profile.platform === selectedPlatform,
+        (profile, index) =>
+          profile.platform === selectedPlatform && index !== editingIndex,
       )
     ) {
       setPlatformDraftError(content.validation.socialProfileDuplicate);
@@ -159,10 +176,16 @@ export function SocialProfilesSection({
       return;
     }
 
-    socialProfiles.append({
+    const nextProfile = {
       platform: selectedPlatform,
       profile_url: profileUrl,
-    });
+    };
+
+    if (editingIndex === null) {
+      socialProfiles.append(nextProfile);
+    } else {
+      socialProfiles.update(editingIndex, nextProfile);
+    }
     clearErrorsAction(SocialProfilesSectionField.SocialProfiles);
     resetEditor();
     onInteractionAction();
@@ -170,9 +193,19 @@ export function SocialProfilesSection({
 
   function removeSocialProfile(index: number) {
     socialProfiles.remove(index);
+    if (editingIndex === index) {
+      resetEditor();
+    } else if (editingIndex !== null && editingIndex > index) {
+      setEditingIndex((current) => (current === null ? null : current - 1));
+    }
     clearErrorsAction(SocialProfilesSectionField.SocialProfiles);
     onInteractionAction();
   }
+
+  const confirmButtonLabel =
+    editingIndex === null
+      ? content.buttons.confirmAdd
+      : content.buttons.confirmEdit;
 
   const allSocialProfilesAdded =
     socialProfiles.fields.length >= LEAD_SOCIAL_PLATFORMS_VALUES.length;
@@ -252,7 +285,7 @@ export function SocialProfilesSection({
               {content.buttons.cancel}
             </ButtonControl>
             <PrimaryCtaButton onClick={confirmDraft} type="button">
-              {content.buttons.confirmAdd}
+              {confirmButtonLabel}
             </PrimaryCtaButton>
           </div>
         </div>
@@ -273,13 +306,22 @@ export function SocialProfilesSection({
               </span>
               <span className={styles.listItemMeta}>{field.profile_url}</span>
 
-              <ButtonControl
-                onClick={() => removeSocialProfile(index)}
-                type="button"
-                variant="ghost"
-              >
-                {content.buttons.remove}
-              </ButtonControl>
+              <div className={styles.rowActions}>
+                <ButtonControl
+                  onClick={() => beginEdit(index)}
+                  type="button"
+                  variant="ghost"
+                >
+                  {content.buttons.edit}
+                </ButtonControl>
+                <ButtonControl
+                  onClick={() => removeSocialProfile(index)}
+                  type="button"
+                  variant="ghost"
+                >
+                  {content.buttons.remove}
+                </ButtonControl>
+              </div>
             </div>
           ))}
         </div>
