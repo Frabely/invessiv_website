@@ -116,25 +116,27 @@ export function LeadDetailPanel({
           ) : null}
         </div>
 
-        <button
-          aria-label={content.actions.closeAriaLabel}
-          className={styles.closeButton}
-          onClick={() => startTransition(() => router.push(closeHref))}
-          title={content.actions.closeAriaLabel}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-        </button>
+        <div className={styles.actions}>
+          <button
+            aria-label={content.actions.edit}
+            className={styles.editIconLink}
+            onClick={() => startTransition(() => router.push(editHref))}
+            title={content.actions.edit}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+          </button>
 
-        <button
-          aria-label={content.actions.edit}
-          className={styles.editIconLink}
-          onClick={() => startTransition(() => router.push(editHref))}
-          title={content.actions.edit}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-        </button>
+          <button
+            aria-label={content.actions.closeAriaLabel}
+            className={styles.closeButton}
+            onClick={() => startTransition(() => router.push(closeHref))}
+            title={content.actions.closeAriaLabel}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+          </button>
+        </div>
       </header>
 
       <div className={styles.badgeRow}>
