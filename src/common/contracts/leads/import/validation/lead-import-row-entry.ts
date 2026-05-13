@@ -3,7 +3,7 @@ import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
 export interface ValidatedRowEntry<TValidatedValue = unknown> {
   ok: true;
   rowIndex: number;
-  emailLower: string;
+  emailLower: string | undefined;
   externalGuid: string | undefined;
   validatedValue: TValidatedValue;
   issues: LeadImportRowIssueDto[];

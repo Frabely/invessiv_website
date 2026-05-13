@@ -25,7 +25,10 @@ import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-l
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/validation/lead-import-valid-row";
-import { isDuplicateExternalGuidError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
+import {
+  isDuplicateCompanyNameError,
+  isDuplicateExternalGuidError,
+} from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
 const MAX_DATA_ROWS = 500;
 
@@ -86,7 +89,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
       return {
         ok: true,
         rowIndex,
-        emailLower: result.value.email.toLowerCase().trim(),
+        emailLower: result.value.email?.toLowerCase().trim(),
         externalGuid: result.value.external_guid,
         validatedValue: result.value,
         issues: result.issues,
@@ -97,7 +100,9 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
   const successEntries = validationEntries.filter(
     (e): e is ValidatedRowEntry<ValidatedLeadImportRow> => e.ok,
   );
-  const validEmails = successEntries.map((e) => e.emailLower);
+  const validEmails = successEntries
+    .map((e) => e.emailLower)
+    .filter((email): email is string => email !== undefined);
   const validGuids = successEntries
     .map((e) => e.externalGuid)
     .filter((g): g is string => g !== undefined);
@@ -169,7 +174,10 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
       continue;
     }
 
-    const existingByEmail = existingKeys.emailToLeadId.get(emailLower);
+    const existingByEmail =
+      emailLower !== undefined
+        ? existingKeys.emailToLeadId.get(emailLower)
+        : undefined;
     const existingByGuid =
       externalGuid !== undefined
         ? existingKeys.guidToLeadId.get(externalGuid)
@@ -214,6 +222,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
         createLeadCoreInTransaction(
           tx,
           {
+            displayName: validatedValue.displayName,
             email: validatedValue.email,
             first_name: validatedValue.first_name,
             last_name: validatedValue.last_name,
@@ -248,6 +257,12 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
         allRowIssues.push(
           ...issues,
           makeSkipIssue(rowIndex, LeadImportRowIssueCode.DuplicateEmail),
+        );
+        skippedCount += 1;
+      } else if (isDuplicateCompanyNameError(error)) {
+        allRowIssues.push(
+          ...issues,
+          makeSkipIssue(rowIndex, LeadImportRowIssueCode.DuplicateCompanyName),
         );
         skippedCount += 1;
       } else if (isDuplicateExternalGuidError(error)) {

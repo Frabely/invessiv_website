@@ -13,6 +13,7 @@ import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/di
 import type { ProjectRequestPersistInput } from "@/server/db/contracts/contact/project-request-persist-input";
 import type { QuickContactPersistInput } from "@/server/db/contracts/contact/quick-contact-persist-input";
 import type { Locale } from "@/config/i18n";
+import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 
 export type ApiToDbMapperOptions = {
   createdAt?: Date;
@@ -34,8 +35,16 @@ export function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
 ): ContactLeadPersistRecord {
+  const displayName =
+    deriveLeadDisplayName({
+      company_name: undefined,
+      first_name: payload.firstName,
+      last_name: payload.lastName,
+    }) ?? `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
+
   return {
     created_at: createdAt,
+    display_name: displayName,
     email: payload.email.trim(),
     first_name: payload.firstName.trim(),
     id: randomUUID(),

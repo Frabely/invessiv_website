@@ -55,6 +55,7 @@ describe("LeadsTable", () => {
     const rows: LeadSummaryDto[] = [
       {
         id: "lead-1",
+        displayName: "Anna Meyer",
         firstName: "Anna",
         lastName: "Meyer",
         companyName: "Acme",

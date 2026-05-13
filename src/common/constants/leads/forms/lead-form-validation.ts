@@ -1,7 +1,7 @@
 export const LeadValidationMessageCode = {
   CategoryInvalid: "category_invalid",
+  DisplayNameRequired: "display_name_required",
   EmailInvalid: "email_invalid",
-  EmailRequired: "email_required",
   ImprovementRequired: "improvement_required",
   PhoneInvalid: "phone_invalid",
   ScoreInvalid: "score_invalid",
@@ -15,8 +15,8 @@ export type LeadValidationMessageCode =
 
 export const LEAD_VALIDATION_MESSAGE_CODE_VALUES = [
   LeadValidationMessageCode.CategoryInvalid,
+  LeadValidationMessageCode.DisplayNameRequired,
   LeadValidationMessageCode.EmailInvalid,
-  LeadValidationMessageCode.EmailRequired,
   LeadValidationMessageCode.ImprovementRequired,
   LeadValidationMessageCode.PhoneInvalid,
   LeadValidationMessageCode.ScoreInvalid,
@@ -35,6 +35,7 @@ export type LeadZodIssueCode =
 export const LeadAddLeadFormFieldPath = {
   CategoryId: () => ["category_id"],
   CompanyName: () => ["company_name"],
+  DisplayName: () => ["displayName"],
   Email: () => ["email"],
   LastName: () => ["last_name"],
   Score: () => ["score"],

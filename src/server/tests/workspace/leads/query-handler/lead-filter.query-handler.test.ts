@@ -141,13 +141,13 @@ describe("buildLeadFilter", () => {
   });
 
   describe("free-text search (search)", () => {
-    it("searches email, last_name, company_name, owner with ilike", () => {
+    it("searches display_name, email, company_name, owner with ilike", () => {
       const { sql, params } = toSQLFull(
         buildLeadFilter({ search: "acme" }).where,
       );
       expect(sql.toLowerCase()).toContain("ilike");
+      expect(sql).toContain("display_name");
       expect(sql).toContain("email");
-      expect(sql).toContain("last_name");
       expect(sql).toContain("company_name");
       expect(sql).toContain("owner");
       expect(params.some((p) => String(p).includes("acme"))).toBe(true);
@@ -204,15 +204,15 @@ describe("buildLeadFilter", () => {
       expect(sql.toLowerCase()).toContain("asc");
     });
 
-    it("sorts by last_name ASC when sort=name_asc", () => {
+    it("sorts by display_name ASC when sort=name_asc", () => {
       const sql = toOrderSQL(buildLeadFilter({ sort: "name_asc" }).orderBy);
-      expect(sql).toContain("last_name");
+      expect(sql).toContain("display_name");
       expect(sql.toLowerCase()).toContain("asc");
     });
 
-    it("sorts by last_name DESC when sort=name_desc", () => {
+    it("sorts by display_name DESC when sort=name_desc", () => {
       const sql = toOrderSQL(buildLeadFilter({ sort: "name_desc" }).orderBy);
-      expect(sql).toContain("last_name");
+      expect(sql).toContain("display_name");
       expect(sql.toLowerCase()).toContain("desc");
     });
 

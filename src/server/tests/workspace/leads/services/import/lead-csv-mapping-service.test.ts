@@ -56,6 +56,7 @@ describe("mapRowToRaw", () => {
   it("trims values, keeps the original email casing and drops empty optional cells", () => {
     const raw = leadCsvMappingService.mapRowToRaw(
       [
+        LeadImportColumnKey.DisplayName,
         LeadImportColumnKey.Email,
         LeadImportColumnKey.FirstName,
         LeadImportColumnKey.LastName,
@@ -64,6 +65,7 @@ describe("mapRowToRaw", () => {
         LeadImportColumnKey.Improvements,
       ],
       [
+        " Anna Schmidt ",
         " Anna.Schmidt@example.com ",
         " Anna ",
         " Schmidt ",
@@ -74,6 +76,7 @@ describe("mapRowToRaw", () => {
     );
 
     expect(raw).toEqual({
+      display_name: "Anna Schmidt",
       email: "Anna.Schmidt@example.com",
       first_name: "Anna",
       last_name: "Schmidt",

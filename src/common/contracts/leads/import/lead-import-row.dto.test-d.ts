@@ -7,7 +7,12 @@ type Equal<A, B> =
     ? true
     : false;
 
-export type _EmailIsRequired = Expect<Equal<LeadImportRowDto["email"], string>>;
+export type _EmailIsOptional = Expect<
+  Equal<LeadImportRowDto["email"], string | undefined>
+>;
+export type _DisplayNameIsOptional = Expect<
+  Equal<LeadImportRowDto["displayName"], string | undefined>
+>;
 export type _FirstNameIsOptional = Expect<
   Equal<LeadImportRowDto["firstName"], string | undefined>
 >;

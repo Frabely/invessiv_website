@@ -6,7 +6,6 @@ import {
   LeadValidationMessageCode,
   LeadZodIssueCode,
 } from "@/common/constants/leads/forms/lead-form-validation";
-import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@/common/constants/leads/social/lead-social-platforms";
 import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
 
@@ -30,6 +29,7 @@ const socialProfileSchema = z.object({
 
 export const leadFormSchema = z
   .object({
+    displayName: z.string().trim(),
     first_name: optionalTrimmedString(LeadFieldLimits.NameMaxLength),
     last_name: optionalTrimmedString(LeadFieldLimits.NameMaxLength),
     company_name: optionalTrimmedString(LeadFieldLimits.NameMaxLength),
@@ -93,30 +93,22 @@ export const leadFormSchema = z
     social_profiles: z.array(socialProfileSchema),
   })
   .superRefine((data, context) => {
-    if (!data.email.trim()) {
+    if (!data.displayName.trim()) {
       context.addIssue({
         code: LeadZodIssueCode.Custom,
-        message: LeadValidationMessageCode.EmailRequired,
-        path: LeadAddLeadFormFieldPath.Email(),
+        message: LeadValidationMessageCode.DisplayNameRequired,
+        path: LeadAddLeadFormFieldPath.DisplayName(),
       });
-    } else if (!EMAIL_PATTERN.safeParse(data.email).success) {
+    }
+
+    if (
+      data.email.trim().length > 0 &&
+      !EMAIL_PATTERN.safeParse(data.email).success
+    ) {
       context.addIssue({
         code: LeadZodIssueCode.Custom,
         message: LeadValidationMessageCode.EmailInvalid,
         path: LeadAddLeadFormFieldPath.Email(),
-      });
-    }
-
-    if (!data.last_name.trim() && !data.company_name.trim()) {
-      context.addIssue({
-        code: LeadZodIssueCode.Custom,
-        message: LeadValidationIssueCode.LastNameOrCompanyNameRequired,
-        path: LeadAddLeadFormFieldPath.LastName(),
-      });
-      context.addIssue({
-        code: LeadZodIssueCode.Custom,
-        message: LeadValidationIssueCode.LastNameOrCompanyNameRequired,
-        path: LeadAddLeadFormFieldPath.CompanyName(),
       });
     }
 

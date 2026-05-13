@@ -6,19 +6,18 @@ import { updateLeadValidationService } from "@/server/workspace/leads/services/u
 
 describe("createLeadSchema", () => {
   describe("valid inputs", () => {
-    it("accepts email with last_name", () => {
+    it("accepts a display name with optional email", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "max@example.com",
-          last_name: "Mustermann",
+          displayName: "Max Mustermann",
         }).success,
       ).toBe(true);
     });
 
-    it("accepts email with company_name and no last_name", () => {
+    it("accepts displayName with company_name", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "max@example.com",
+          displayName: "ACME GmbH",
           company_name: "ACME GmbH",
         }).success,
       ).toBe(true);
@@ -27,8 +26,7 @@ describe("createLeadSchema", () => {
     it("accepts score at lower boundary 0", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           score: 0,
         }).success,
       ).toBe(true);
@@ -37,8 +35,7 @@ describe("createLeadSchema", () => {
     it("accepts score at upper boundary 100", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           score: 100,
         }).success,
       ).toBe(true);
@@ -47,8 +44,7 @@ describe("createLeadSchema", () => {
     it("accepts a valid UUID as category_id", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           category_id: "123e4567-e89b-12d3-a456-426614174000",
         }).success,
       ).toBe(true);
@@ -57,8 +53,7 @@ describe("createLeadSchema", () => {
     it("accepts a valid linkedin social profile", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           social_profiles: [
             {
               platform: "linkedin",
@@ -73,8 +68,7 @@ describe("createLeadSchema", () => {
       for (const platform of ["linkedin", "instagram", "youtube"] as const) {
         expect(
           createLeadSchema.safeParse({
-            email: "a@b.com",
-            last_name: "X",
+            displayName: "Max Mustermann",
             social_profiles: [
               { platform, profile_url: "https://example.com/profile" },
             ],
@@ -87,8 +81,7 @@ describe("createLeadSchema", () => {
     it("accepts a valid website URL", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           website_url: "https://example.com",
         }).success,
       ).toBe(true);
@@ -97,8 +90,7 @@ describe("createLeadSchema", () => {
     it("accepts a valid phone number", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           phone: "+49 30 1234567",
         }).success,
       ).toBe(true);
@@ -107,8 +99,7 @@ describe("createLeadSchema", () => {
     it("accepts improvements as an array of strings", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           improvements: ["Bessere SEO", "Klarere Navigation"],
         }).success,
       ).toBe(true);
@@ -116,49 +107,20 @@ describe("createLeadSchema", () => {
   });
 
   describe("invalid inputs", () => {
-    it("rejects missing email", () => {
-      expect(
-        createLeadSchema.safeParse({ last_name: "Mustermann" }).success,
-      ).toBe(false);
+    it("rejects missing displayName", () => {
+      expect(createLeadSchema.safeParse({}).success).toBe(false);
     });
 
-    it("rejects invalid email format", () => {
-      expect(
-        createLeadSchema.safeParse({
-          email: "not-an-email",
-          last_name: "Mustermann",
-        }).success,
-      ).toBe(false);
-    });
-
-    it("rejects when both last_name and company_name are absent", () => {
-      expect(createLeadSchema.safeParse({ email: "a@b.com" }).success).toBe(
+    it("rejects whitespace-only displayName", () => {
+      expect(createLeadSchema.safeParse({ displayName: "   " }).success).toBe(
         false,
       );
-    });
-
-    it("rejects whitespace-only last_name when company_name is absent", () => {
-      expect(
-        createLeadSchema.safeParse({ email: "a@b.com", last_name: "   " })
-          .success,
-      ).toBe(false);
-    });
-
-    it("rejects whitespace-only values for both name fields", () => {
-      expect(
-        createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "   ",
-          company_name: "   ",
-        }).success,
-      ).toBe(false);
     });
 
     it("rejects score below 0", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           score: -1,
         }).success,
       ).toBe(false);
@@ -167,8 +129,7 @@ describe("createLeadSchema", () => {
     it("rejects score above 100", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           score: 101,
         }).success,
       ).toBe(false);
@@ -177,8 +138,7 @@ describe("createLeadSchema", () => {
     it("rejects a non-UUID category_id", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           category_id: "not-a-uuid",
         }).success,
       ).toBe(false);
@@ -187,8 +147,7 @@ describe("createLeadSchema", () => {
     it("rejects an invalid website URL", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           website_url: "not-a-url",
         }).success,
       ).toBe(false);
@@ -197,8 +156,7 @@ describe("createLeadSchema", () => {
     it("rejects an invalid phone number", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           phone: "abc123",
         }).success,
       ).toBe(false);
@@ -207,8 +165,7 @@ describe("createLeadSchema", () => {
     it("rejects an unsupported social platform", () => {
       expect(
         createLeadSchema.safeParse({
-          email: "a@b.com",
-          last_name: "X",
+          displayName: "Max Mustermann",
           social_profiles: [
             { platform: "twitter", profile_url: "https://twitter.com/max" },
           ],
@@ -226,6 +183,7 @@ describe("updateLeadSchema", () => {
   it("accepts null for nullable scalar fields", () => {
     expect(
       updateLeadSchema.safeParse({
+        displayName: "ACME GmbH",
         first_name: null,
         last_name: null,
         notes: null,
@@ -260,28 +218,18 @@ describe("updateLeadSchema", () => {
     );
   });
 
-  it("rejects null email in a partial update", () => {
-    expect(updateLeadSchema.safeParse({ email: null }).success).toBe(false);
+  it("accepts null email in a partial update to clear the email", () => {
+    expect(updateLeadSchema.safeParse({ email: null }).success).toBe(true);
   });
 
   it("rejects score out of range in a partial update", () => {
     expect(updateLeadSchema.safeParse({ score: 101 }).success).toBe(false);
   });
 
-  it("rejects explicitly clearing both last_name and company_name", () => {
+  it("rejects whitespace-only displayName in a partial update", () => {
     expect(
       updateLeadSchema.safeParse({
-        last_name: null,
-        company_name: null,
-      }).success,
-    ).toBe(false);
-  });
-
-  it("rejects whitespace-only values for both name fields when both are present", () => {
-    expect(
-      updateLeadSchema.safeParse({
-        last_name: "   ",
-        company_name: "   ",
+        displayName: "   ",
       }).success,
     ).toBe(false);
   });
@@ -290,31 +238,10 @@ describe("updateLeadSchema", () => {
 describe("updateLeadValidationService", () => {
   const existingLead = {
     companyName: null,
+    displayName: "Max Mustermann",
     email: "max@example.com",
     lastName: "Mustermann",
   };
-
-  it("rejects a patch that would clear the only remaining name field", () => {
-    const result = updateLeadValidationService.validate(
-      { last_name: null },
-      existingLead,
-    );
-
-    expect(result.success).toBe(false);
-  });
-
-  it("accepts clearing last_name when company_name remains present", () => {
-    const result = updateLeadValidationService.validate(
-      { last_name: null },
-      {
-        companyName: "ACME GmbH",
-        email: "max@example.com",
-        lastName: "Mustermann",
-      },
-    );
-
-    expect(result.success).toBe(true);
-  });
 
   it("removes email from parsed data when the patch keeps the same email", () => {
     const result = updateLeadValidationService.validate(

@@ -33,10 +33,6 @@ function trimCell(value: string | undefined): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
-function normalizeRequiredCell(value: string | undefined): string {
-  return value?.trim() ?? "";
-}
-
 function mapHeadersToColumns(headers: string[]): {
   columns: (LeadImportColumnKey | null)[];
   ignored: string[];
@@ -81,16 +77,12 @@ function mapRowToRaw(
     }
 
     const cell = row[index];
-    if (column === "email") {
-      raw[column] = normalizeRequiredCell(cell);
-      continue;
-    }
-
     raw[column] = trimCell(cell);
   }
 
   return {
-    email: raw.email ?? "",
+    display_name: raw.display_name,
+    email: raw.email,
     first_name: raw.first_name,
     last_name: raw.last_name,
     company_name: raw.company_name,

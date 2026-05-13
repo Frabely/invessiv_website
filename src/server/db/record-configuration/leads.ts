@@ -20,10 +20,11 @@ export const leads = pgTable(
   "leads",
   {
     id: uuid("id").primaryKey(),
+    display_name: text("display_name").notNull(),
     first_name: text("first_name"),
     last_name: text("last_name"),
     company_name: text("company_name"),
-    email: text("email").notNull(),
+    email: text("email"),
     phone: text("phone"),
     website_url: text("website_url"),
     category_id: uuid("category_id").references(() => leadCategories.id, {
@@ -47,10 +48,6 @@ export const leads = pgTable(
   },
   (table) => [
     check(
-      "leads_last_name_or_company_name_check",
-      sql`nullif(btrim(${table.last_name}), '') is not null or nullif(btrim(${table.company_name}), '') is not null`,
-    ),
-    check(
       "leads_score_check",
       sql`${table.score}
         is null or (
@@ -68,8 +65,16 @@ export const leads = pgTable(
       "leads_lead_status_check",
       sqlCheckIn(table.lead_status, CONTACT_LEAD_STATUS_VALUES),
     ),
-    check("leads_email_check", sql`btrim(${table.email}) <> ''`),
-    uniqueIndex("leads_email_lower_uidx").on(sql`lower(btrim(${table.email}))`),
+    uniqueIndex("leads_email_lower_uidx").on(sql`lower(btrim(
+          ${table.email}
+          )
+          )`).where(sql`${table.email}
+          is not null`),
+    uniqueIndex("leads_company_name_lower_uidx").on(sql`lower(btrim(
+          ${table.company_name}
+          )
+          )`).where(sql`${table.company_name}
+          is not null`),
     index("leads_source_created_at_idx").on(
       table.source,
       table.created_at.desc(),

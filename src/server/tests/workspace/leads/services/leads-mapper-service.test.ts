@@ -15,6 +15,7 @@ const NOW = new Date("2024-03-01T12:00:00Z");
 
 const baseRow = {
   id: "lead-uuid-1",
+  display_name: "Anna Beispiel",
   first_name: "Anna",
   last_name: "Beispiel",
   company_name: null,
@@ -52,6 +53,7 @@ describe("leadsMapperService.mapLeadRowToSummaryDto", () => {
 
     expect(result).toEqual({
       id: "lead-uuid-1",
+      displayName: "Anna Beispiel",
       firstName: "Anna",
       lastName: "Beispiel",
       companyName: null,
@@ -154,6 +156,7 @@ const DETAIL_LATER = new Date("2024-03-02T08:00:00Z");
 
 const detailMainRow = {
   id: "lead-uuid-1",
+  display_name: "Anna Beispiel",
   first_name: "Anna",
   last_name: "Beispiel",
   company_name: null,
@@ -214,6 +217,7 @@ describe("leadsMapperService.mapLeadDetailRowToDto", () => {
 
     expect(result).toMatchObject({
       id: "lead-uuid-1",
+      displayName: "Anna Beispiel",
       firstName: "Anna",
       lastName: "Beispiel",
       companyName: null,

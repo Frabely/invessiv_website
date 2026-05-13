@@ -53,6 +53,7 @@ function mapLeadRowToSummaryDto(
 ): LeadSummaryDto {
   return {
     id: row.id,
+    displayName: row.display_name,
     firstName: row.first_name,
     lastName: row.last_name,
     companyName: row.company_name,
@@ -78,6 +79,7 @@ function mapLeadDetailRowToDto(
 ): LeadDetailDto {
   return {
     id: mainRow.id,
+    displayName: mainRow.display_name,
     firstName: mainRow.first_name,
     lastName: mainRow.last_name,
     companyName: mainRow.company_name,

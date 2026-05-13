@@ -19,12 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatRelativeTime } from "@/lib/format-relative-time";
-import {
-  buildLeadHref,
-  formatLeadCreatedAt,
-  getLeadDisplayName,
-  getLeadInitials,
-} from "../lead-table-utils";
+import { buildLeadHref, formatLeadCreatedAt } from "../lead-table-utils";
 import { LeadsTableRowActions } from "../leads-table-row-actions/leads-table-row-actions";
 import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
 import styles from "./leads-table-row.module.css";
@@ -78,8 +73,7 @@ export function LeadsTableRow({
     currentSearchParams,
   );
   const selected = isSelected(lead.id);
-  const displayName = getLeadDisplayName(lead);
-  const initials = getLeadInitials(lead);
+  const displayName = lead.displayName;
   const createdRelative = formatRelativeTime(
     locale,
     lead.createdAt,
@@ -138,12 +132,11 @@ export function LeadsTableRow({
       </td>
 
       <td className={styles.leadCell}>
-        <div aria-hidden="true" className={styles.avatar}>
-          {initials}
-        </div>
         <div className={styles.leadText}>
           <span className={styles.leadTitle}>{displayName}</span>
-          <span className={styles.leadEmail}>{lead.email}</span>
+          {lead.email ? (
+            <span className={styles.leadEmail}>{lead.email}</span>
+          ) : null}
         </div>
       </td>
 

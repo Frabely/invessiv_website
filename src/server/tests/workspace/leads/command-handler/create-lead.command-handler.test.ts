@@ -23,6 +23,7 @@ const NOW = new Date("2024-03-01T12:00:00Z");
 
 const mockLeadDto = {
   id: "lead-new-uuid",
+  displayName: "Max Mustermann",
   firstName: "Max",
   lastName: "Mustermann",
   companyName: null,
@@ -50,6 +51,7 @@ function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
   const capturedInserts: InsertCapture[] = [];
   const leadRow = {
     id: mockLeadDto.id,
+    display_name: mockLeadDto.displayName,
     first_name: mockLeadDto.firstName,
     last_name: mockLeadDto.lastName,
     company_name: mockLeadDto.companyName,
@@ -132,6 +134,7 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     const result = await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "max@example.com",
     });
@@ -146,7 +149,11 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({ last_name: "Mustermann", email: "max@example.com" });
+    await createLead({
+      displayName: "Max Mustermann",
+      last_name: "Mustermann",
+      email: "max@example.com",
+    });
 
     const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
     expect(leadValues.source).toBe("manual");
@@ -161,6 +168,7 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "max@example.com",
       lead_status: "qualified",
@@ -178,6 +186,7 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "max@example.com",
       social_profiles: [
@@ -212,6 +221,7 @@ describe("createLead", () => {
 
     const categoryId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
     await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "max@example.com",
       category_id: categoryId,
@@ -229,6 +239,7 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "max@example.com",
       improvements: ["Mehr Social Proof", "Klarere CTA"],
@@ -255,6 +266,7 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     const result = await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       email: "existing@example.com",
     });
@@ -262,12 +274,15 @@ describe("createLead", () => {
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
   });
 
-  it("returns VALIDATION_ERROR when neither last_name nor company_name is provided", async () => {
+  it("returns VALIDATION_ERROR when displayName is missing", async () => {
     vi.resetModules();
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({ email: "max@example.com" });
+    const result = await createLead({
+      last_name: "Mustermann",
+      email: "max@example.com",
+    } as CreateLeadRequestDto);
 
     expect(result).toMatchObject({
       ok: false,
@@ -275,18 +290,36 @@ describe("createLead", () => {
     });
   });
 
-  it("returns VALIDATION_ERROR when email is missing", async () => {
+  it("accepts a missing email when displayName is present", async () => {
     vi.resetModules();
+    setupSuccessfulDb();
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     const result = await createLead({
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
-    } as CreateLeadRequestDto);
+    });
 
-    expect(result).toMatchObject({
-      ok: false,
-      code: LeadErrorCode.ValidationError,
+    expect(result).toMatchObject({ ok: true });
+  });
+
+  it("accepts displayName as the only identity field", async () => {
+    vi.resetModules();
+    const { capturedInserts } = setupSuccessfulDb();
+    const { createLead } =
+      await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
+
+    const result = await createLead({
+      displayName: "test",
+    });
+
+    expect(result).toMatchObject({ ok: true });
+    expect(capturedInserts[0].valuesArg).toMatchObject({
+      display_name: "test",
+      company_name: null,
+      email: null,
+      last_name: null,
     });
   });
 
@@ -298,7 +331,11 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({ last_name: "Mustermann", email: "max@example.com" });
+    await createLead({
+      displayName: "Max Mustermann",
+      last_name: "Mustermann",
+      email: "max@example.com",
+    });
 
     expect(createLeadActivityMock).toHaveBeenCalledOnce();
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -317,7 +354,11 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({ last_name: "Mustermann", email: "pii@secret.com" });
+    await createLead({
+      displayName: "Max Mustermann",
+      last_name: "Mustermann",
+      email: "pii@secret.com",
+    });
 
     const activityInput = createLeadActivityMock.mock.calls[0][1] as Record<
       string,

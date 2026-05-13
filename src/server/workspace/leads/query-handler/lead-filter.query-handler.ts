@@ -53,6 +53,7 @@ export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
     const term = `%${filter.search}%`;
     conditions.push(
       or(
+        ilike(leads.display_name, term),
         ilike(leads.email, term),
         ilike(leads.first_name, term),
         ilike(leads.last_name, term),
@@ -88,9 +89,9 @@ function buildOrderBy(sort?: LeadSort): SQL {
     case LeadSort.ScoreDesc:
       return desc(leads.score);
     case LeadSort.NameAsc:
-      return asc(leads.last_name);
+      return asc(leads.display_name);
     case LeadSort.NameDesc:
-      return desc(leads.last_name);
+      return desc(leads.display_name);
     case LeadSort.CreatedDesc:
     default:
       return desc(leads.created_at);

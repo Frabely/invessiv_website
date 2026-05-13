@@ -63,6 +63,7 @@ function buildUpdateLeadRequestFields(
   values: LeadFormValues,
 ): LeadUpdateRequestFields {
   return {
+    displayName: toOptionalTrimmedString(values.displayName),
     first_name: toNullableTrimmedString(values.first_name),
     last_name: toNullableTrimmedString(values.last_name),
     company_name: toNullableTrimmedString(values.company_name),
@@ -86,9 +87,12 @@ function buildUpdateLeadRequestFields(
 function mapAddLeadFormValuesToCreateLeadRequestDto(
   values: LeadFormValues,
 ): CreateLeadRequestDto {
+  const email = toOptionalTrimmedString(values.email);
+
   return {
-    [LeadRequestField.Email]: values.email.trim(),
+    [LeadRequestField.DisplayName]: values.displayName.trim(),
     [LeadRequestField.LeadStatus]: values.lead_status,
+    ...(email ? { [LeadRequestField.Email]: email } : {}),
     ...buildOptionalLeadRequestFields(values),
   };
 }
@@ -96,11 +100,9 @@ function mapAddLeadFormValuesToCreateLeadRequestDto(
 function mapLeadFormValuesToUpdateLeadRequestDto(
   values: LeadFormValues,
 ): UpdateLeadRequestDto {
-  const email = toOptionalTrimmedString(values.email);
-
   return {
     ...buildUpdateLeadRequestFields(values),
-    ...(email ? { email } : {}),
+    email: toNullableTrimmedString(values.email),
   };
 }
 
@@ -110,10 +112,11 @@ function mapLeadDetailDtoToLeadFormValues(lead: LeadDetailDto): LeadFormValues {
   }
 
   return {
+    displayName: lead.displayName,
     first_name: toFormString(lead.firstName),
     last_name: toFormString(lead.lastName),
     company_name: toFormString(lead.companyName),
-    email: lead.email,
+    email: lead.email ?? "",
     phone: toFormString(lead.phone),
     website_url: toFormString(lead.websiteUrl),
     category_id: lead.category?.id ?? "",

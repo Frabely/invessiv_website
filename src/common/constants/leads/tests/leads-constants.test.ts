@@ -199,6 +199,7 @@ describe("LeadErrorCode", () => {
   it("contains the expected API error codes without duplicates", () => {
     expect(LEAD_ERROR_CODE_VALUES).toEqual([
       LeadErrorCode.EmailExists,
+      LeadErrorCode.CompanyNameExists,
       LeadErrorCode.ValidationError,
       LeadErrorCode.NotFound,
       LeadErrorCode.Internal,
@@ -224,8 +225,8 @@ describe("LeadValidationMessageCode", () => {
   it("contains the expected validation message codes without duplicates", () => {
     expect(LEAD_VALIDATION_MESSAGE_CODE_VALUES).toEqual([
       LeadValidationMessageCode.CategoryInvalid,
+      LeadValidationMessageCode.DisplayNameRequired,
       LeadValidationMessageCode.EmailInvalid,
-      LeadValidationMessageCode.EmailRequired,
       LeadValidationMessageCode.ImprovementRequired,
       LeadValidationMessageCode.PhoneInvalid,
       LeadValidationMessageCode.ScoreInvalid,

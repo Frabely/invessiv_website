@@ -6,6 +6,7 @@ import { leadMapperService } from "./lead-mapper-service";
 describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {
   it("maps UI form state into the API request DTO", () => {
     const values: LeadFormValues = {
+      displayName: "Anna Meyer",
       first_name: " Anna ",
       last_name: " Meyer ",
       company_name: "",
@@ -29,6 +30,7 @@ describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {
     expect(
       leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto(values),
     ).toEqual({
+      displayName: "Anna Meyer",
       first_name: "Anna",
       last_name: "Meyer",
       email: "anna@example.com",
@@ -49,8 +51,9 @@ describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {
     });
   });
 
-  it("omits empty optional fields and leaves email trimmed", () => {
+  it("omits empty optional fields and leaves email trimmed when present", () => {
     const values: LeadFormValues = {
+      displayName: "Anna Meyer",
       first_name: "",
       last_name: "Meyer",
       company_name: "",
@@ -69,8 +72,35 @@ describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {
     expect(
       leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto(values),
     ).toEqual({
+      displayName: "Anna Meyer",
       email: "anna@example.com",
       last_name: "Meyer",
+      lead_status: ContactLeadStatus.New,
+    });
+  });
+
+  it("omits empty email on create because email is nullable", () => {
+    const values: LeadFormValues = {
+      displayName: "Anna Meyer",
+      first_name: "",
+      last_name: "",
+      company_name: "",
+      email: "   ",
+      phone: "",
+      website_url: "",
+      category_id: "",
+      score: "",
+      owner: "",
+      notes: "",
+      lead_status: ContactLeadStatus.New,
+      improvements: [],
+      social_profiles: [],
+    };
+
+    expect(
+      leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto(values),
+    ).toEqual({
+      displayName: "Anna Meyer",
       lead_status: ContactLeadStatus.New,
     });
   });
@@ -79,6 +109,7 @@ describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {
 describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
   it("maps all filled fields into the update DTO", () => {
     const values: LeadFormValues = {
+      displayName: "Anna Meyer",
       first_name: " Anna ",
       last_name: " Meyer ",
       company_name: "",
@@ -102,6 +133,7 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
     expect(
       leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto(values),
     ).toEqual({
+      displayName: "Anna Meyer",
       email: "anna@example.com",
       first_name: "Anna",
       company_name: null,
@@ -125,6 +157,7 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
 
   it("maps cleared scalar fields to null and keeps empty lists explicit", () => {
     const values: LeadFormValues = {
+      displayName: "Anna Meyer",
       first_name: "",
       last_name: "Meyer",
       company_name: "",
@@ -143,6 +176,8 @@ describe("leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto", () => {
     expect(
       leadMapperService.mapLeadFormValuesToUpdateLeadRequestDto(values),
     ).toEqual({
+      displayName: "Anna Meyer",
+      email: null,
       first_name: null,
       last_name: "Meyer",
       company_name: null,

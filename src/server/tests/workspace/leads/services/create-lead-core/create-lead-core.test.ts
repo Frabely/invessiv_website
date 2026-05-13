@@ -17,6 +17,7 @@ const NOW = new Date("2024-03-01T12:00:00Z");
 
 const mockLeadDto = {
   id: "lead-new-uuid",
+  displayName: "Max Mustermann",
   firstName: "Max",
   lastName: "Mustermann",
   companyName: null,
@@ -47,6 +48,7 @@ function createTxMock(options?: { duplicateEmailError?: unknown }) {
   const leadRow = {
     id: mockLeadDto.id,
     first_name: mockLeadDto.firstName,
+    display_name: mockLeadDto.displayName,
     last_name: mockLeadDto.lastName,
     company_name: mockLeadDto.companyName,
     email: mockLeadDto.email,
@@ -129,6 +131,7 @@ describe("createLeadCoreInTransaction", () => {
     const result = await createLeadCoreInTransaction(
       txMock as never,
       {
+        displayName: "Max Mustermann",
         last_name: "Mustermann",
         email: "max@example.com",
       },
@@ -153,6 +156,7 @@ describe("createLeadCoreInTransaction", () => {
     const result = await createLeadCoreInTransaction(
       txMock as never,
       {
+        displayName: "Max Mustermann",
         last_name: "Mustermann",
         email: "import@example.com",
         owner: "jane.doe",
@@ -206,6 +210,7 @@ describe("createLeadCoreInTransaction", () => {
       createLeadCoreInTransaction(
         txMock as never,
         {
+          displayName: "Max Mustermann",
           last_name: "Mustermann",
           email: "duplicate@example.com",
         },

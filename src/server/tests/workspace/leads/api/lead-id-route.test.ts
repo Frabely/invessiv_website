@@ -34,6 +34,7 @@ const LEAD_ID = "lead-uuid-123";
 
 const STUB_LEAD: LeadDetailDto = {
   id: LEAD_ID,
+  displayName: "Max Mustermann",
   firstName: "Max",
   lastName: "Mustermann",
   companyName: null,
@@ -292,6 +293,30 @@ describe("PATCH /api/workspace/leads/[id]", () => {
     expect(response.status).toBe(409);
     const body = await response.json();
     expect(body).toMatchObject({ error: "EMAIL_EXISTS" });
+  });
+
+  it("returns 409 when updateLead reports an existing company name", async () => {
+    setupAuthenticatedUser();
+    mockUpdateLead.mockResolvedValue({
+      ok: false,
+      code: LeadErrorCode.CompanyNameExists,
+    });
+
+    const response = await PATCH(
+      makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName: "ACME GmbH",
+          company_name: "ACME GmbH",
+        }),
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: "COMPANY_NAME_EXISTS" });
   });
 
   it("returns 400 when the request body is not valid JSON", async () => {

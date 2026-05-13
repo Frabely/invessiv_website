@@ -2,7 +2,8 @@ import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-
 import type { ValidatedLeadImportSocialProfile } from "@/common/contracts/leads/import/validation/lead-import-social-profile";
 
 export interface ValidatedLeadImportRow {
-  email: string;
+  displayName: string;
+  email?: string;
   first_name?: string;
   last_name?: string;
   company_name?: string;

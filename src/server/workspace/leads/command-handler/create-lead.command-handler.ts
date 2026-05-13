@@ -7,6 +7,7 @@ import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes"
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
+import { DuplicateCompanyNameError } from "@/server/workspace/leads/shared/duplicate-company-name-error.class";
 import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 
@@ -38,6 +39,9 @@ export async function createLead(
   } catch (error) {
     if (isDuplicateEmailError(error)) {
       return { ok: false, code: LeadErrorCode.EmailExists };
+    }
+    if (error instanceof DuplicateCompanyNameError) {
+      return { ok: false, code: LeadErrorCode.CompanyNameExists };
     }
     throw error;
   }

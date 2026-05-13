@@ -60,6 +60,12 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
           HttpResponseCode.Conflict,
         );
       }
+      if (result.code === LeadErrorCode.CompanyNameExists) {
+        return leadApiError(
+          LeadErrorCode.CompanyNameExists,
+          HttpResponseCode.Conflict,
+        );
+      }
       return leadApiError(
         LeadErrorCode.ValidationError,
         HttpResponseCode.BadRequest,

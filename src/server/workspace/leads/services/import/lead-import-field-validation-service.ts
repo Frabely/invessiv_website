@@ -30,14 +30,7 @@ function createIssue(
 function validateImportEmail(rawEmail: string | undefined, rowIndex: number) {
   const email = rawEmail?.trim();
   if (email === undefined || email.length === 0) {
-    return {
-      issue: createIssue(
-        rowIndex,
-        LeadImportRowIssueCode.MissingEmail,
-        LeadImportRowIssueSeverity.Error,
-        LeadImportColumnKey.Email,
-      ),
-    };
+    return {};
   }
 
   if (!leadEmailSchema.safeParse(email).success) {

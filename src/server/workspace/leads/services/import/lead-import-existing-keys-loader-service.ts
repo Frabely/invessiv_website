@@ -47,7 +47,9 @@ async function loadExistingKeys(
   ]);
 
   for (const row of emailRows) {
-    emailToLeadId.set(row.email.toLowerCase().trim(), row.id);
+    if (row.email) {
+      emailToLeadId.set(row.email.toLowerCase().trim(), row.id);
+    }
   }
 
   for (const row of guidRows) {

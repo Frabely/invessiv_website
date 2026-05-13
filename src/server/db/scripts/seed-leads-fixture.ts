@@ -29,6 +29,7 @@ import { LeadActivityType } from "@/common/constants/leads/activity/lead-activit
 import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
+import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 
 const FIXTURE_PREFIX = "fixture:workspace-leads:";
 const ALLOWED_SEED_TARGETS: DatabaseTarget[] = ["development", "preview"];
@@ -96,6 +97,7 @@ type LeadFixture = {
 };
 
 type LeadRow = {
+  display_name: string;
   category_id: string;
   company_name: string;
   created_at: Date;
@@ -446,6 +448,12 @@ function createLeadRows(
     const updatedAt = minutesAfter(createdAt, 20);
 
     return {
+      display_name:
+        deriveLeadDisplayName({
+          company_name: fixture.companyName,
+          first_name: fixture.firstName,
+          last_name: fixture.lastName,
+        }) ?? fixture.companyName,
       category_id: categoryIdsBySlug[fixture.categorySlug],
       company_name: fixture.companyName,
       created_at: createdAt,

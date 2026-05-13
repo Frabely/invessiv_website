@@ -5,6 +5,7 @@ const MESSAGES: Record<LeadErrorCode, string> = {
   [LeadErrorCode.NotFound]: "Lead not found",
   [LeadErrorCode.ValidationError]: "Validation failed",
   [LeadErrorCode.EmailExists]: "A lead with this email already exists",
+  [LeadErrorCode.CompanyNameExists]: "A lead with this company already exists",
   [LeadErrorCode.Internal]: "Unexpected server error",
 };
 

@@ -23,6 +23,13 @@ export default defineConfig({
     ? undefined
     : {
         command: `npm run start -- --hostname localhost --port ${PORT}`,
+        env: {
+          ...process.env,
+          CONTACT_MAIL_PROVIDER:
+            process.env.PLAYWRIGHT_CONTACT_MAIL_PROVIDER ?? "noop",
+          VERCEL_ENV: process.env.VERCEL_ENV ?? "development",
+          VERCEL_TARGET_ENV: process.env.VERCEL_TARGET_ENV ?? "development",
+        },
         port: PORT,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

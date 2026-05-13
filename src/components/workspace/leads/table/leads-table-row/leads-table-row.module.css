@@ -81,25 +81,6 @@
   min-width: 0;
 }
 
-.avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2) 78%),
-    color-mix(in srgb, var(--color-accent-warm) 18%, var(--color-surface-1) 82%)
-  );
-  color: var(--color-text);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 750;
-  letter-spacing: 0.04em;
-}
-
 .leadText {
   display: flex;
   flex-direction: column;

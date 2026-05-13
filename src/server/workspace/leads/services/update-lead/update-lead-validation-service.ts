@@ -1,8 +1,4 @@
 import { updateLeadSchema } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
-import {
-  hasAtLeastOneLeadName,
-  missingLeadNameError,
-} from "@/server/workspace/leads/services/shared/lead-name-validation";
 import type { ExistingLeadValidationState } from "@/common/contracts/leads/validation/existing-lead-validation-state";
 
 function validate(input: unknown, existingLead: ExistingLeadValidationState) {
@@ -11,29 +7,10 @@ function validate(input: unknown, existingLead: ExistingLeadValidationState) {
     return parsed;
   }
 
-  const nextLastName =
-    parsed.data.last_name !== undefined
-      ? parsed.data.last_name
-      : existingLead.lastName;
-  const nextCompanyName =
-    parsed.data.company_name !== undefined
-      ? parsed.data.company_name
-      : existingLead.companyName;
-
-  if (
-    !hasAtLeastOneLeadName({
-      company_name: nextCompanyName,
-      last_name: nextLastName,
-    })
-  ) {
-    return {
-      success: false as const,
-      error: missingLeadNameError(),
-    };
-  }
-
   if (
     parsed.data.email !== undefined &&
+    parsed.data.email !== null &&
+    existingLead.email !== null &&
     parsed.data.email.trim().toLowerCase() ===
       existingLead.email.trim().toLowerCase()
   ) {

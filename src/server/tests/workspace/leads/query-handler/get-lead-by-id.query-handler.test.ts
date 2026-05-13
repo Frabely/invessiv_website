@@ -33,6 +33,7 @@ const LATER = new Date("2024-03-02T08:00:00Z");
 
 const mainRow = {
   id: "lead-uuid-1",
+  display_name: "Anna Beispiel",
   first_name: "Anna",
   last_name: "Beispiel",
   company_name: null,
@@ -125,6 +126,7 @@ describe("getLeadById", () => {
 
     expect(result).toMatchObject({
       id: "lead-uuid-1",
+      displayName: "Anna Beispiel",
       firstName: "Anna",
       lastName: "Beispiel",
       companyName: null,

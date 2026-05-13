@@ -25,7 +25,7 @@
     "recognizedColumns": "Erkannte Spalten",
     "ignoredColumns": "Ignorierte Spalten",
     "missingRequiredTitle": "Pflichtfelder fehlen",
-    "missingRequiredHint": "Die Datei muss mindestens die Spalten \"email\" und \"last_name\" oder \"company_name\" enthalten."
+    "missingRequiredHint": "Die Datei muss mindestens eine der Spalten \"display_name\", \"last_name\" oder \"company_name\" enthalten."
   },
   "summary": {
     "title": "Import-Ergebnis",
@@ -61,6 +61,7 @@
     "duplicate_email_in_file": "E-Mail in dieser Datei mehrfach vorhanden",
     "duplicate_external_guid_in_file": "Externe GUID in dieser Datei mehrfach vorhanden",
     "duplicate_email": "Lead mit dieser E-Mail existiert bereits (übersprungen)",
+    "duplicate_company_name": "Lead mit diesem Firmennamen existiert bereits (übersprungen)",
     "duplicate_external_guid": "Lead mit dieser externen GUID existiert bereits (übersprungen)",
     "conflict_email_guid_mismatch": "E-Mail und externe GUID verweisen auf unterschiedliche Leads (übersprungen)"
   },

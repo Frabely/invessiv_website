@@ -18,6 +18,7 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
       db
         .select({
           id: leads.id,
+          display_name: leads.display_name,
           first_name: leads.first_name,
           last_name: leads.last_name,
           company_name: leads.company_name,

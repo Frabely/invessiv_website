@@ -23,6 +23,7 @@ describe("leadsService.createLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const request: CreateLeadRequestDto = {
+      displayName: "Anna Meyer",
       email: "anna@example.com",
     };
 
@@ -57,7 +58,10 @@ describe("leadsService.createLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(
-      leadsService.createLead({ email: "anna@example.com" }),
+      leadsService.createLead({
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
     ).resolves.toEqual({
       code: LeadErrorCode.ValidationError,
       errors: [{ message: "Invalid", path: ["email"], code: "custom" }],
@@ -76,9 +80,33 @@ describe("leadsService.createLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(
-      leadsService.createLead({ email: "anna@example.com" }),
+      leadsService.createLead({
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
     ).resolves.toEqual({
       code: LeadErrorCode.EmailExists,
+      ok: false,
+    });
+  });
+
+  it("maps duplicate company errors from the API response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        error: LeadErrorCode.CompanyNameExists,
+      }),
+      ok: false,
+      status: 409,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      leadsService.createLead({
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
+    ).resolves.toEqual({
+      code: LeadErrorCode.CompanyNameExists,
       ok: false,
     });
   });
@@ -99,6 +127,7 @@ describe("leadsService.updateLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const request: UpdateLeadRequestDto = {
+      displayName: "Anna Meyer",
       first_name: "Anna",
     };
 
@@ -133,7 +162,10 @@ describe("leadsService.updateLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(
-      leadsService.updateLead(leadId, { email: "anna@example.com" }),
+      leadsService.updateLead(leadId, {
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
     ).resolves.toEqual({
       code: LeadErrorCode.ValidationError,
       errors: [{ message: "Invalid", path: ["email"], code: "custom" }],
@@ -152,7 +184,7 @@ describe("leadsService.updateLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(
-      leadsService.updateLead(leadId, { first_name: "Anna" }),
+      leadsService.updateLead(leadId, { displayName: "Anna Meyer" }),
     ).resolves.toEqual({
       code: LeadErrorCode.NotFound,
       ok: false,
@@ -170,9 +202,30 @@ describe("leadsService.updateLead", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     await expect(
-      leadsService.updateLead(leadId, { email: "anna@example.com" }),
+      leadsService.updateLead(leadId, {
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
     ).resolves.toEqual({
       code: LeadErrorCode.EmailExists,
+      ok: false,
+    });
+  });
+
+  it("maps duplicate company errors from the API response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        error: LeadErrorCode.CompanyNameExists,
+      }),
+      ok: false,
+      status: 409,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      leadsService.updateLead(leadId, { displayName: "Anna Meyer" }),
+    ).resolves.toEqual({
+      code: LeadErrorCode.CompanyNameExists,
       ok: false,
     });
   });

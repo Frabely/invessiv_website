@@ -17,10 +17,7 @@ import {
   LeadSourceBadge,
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
-import {
-  formatLeadCreatedAt,
-  getLeadDisplayName,
-} from "@/components/workspace/leads/table/lead-table-utils";
+import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
 
@@ -93,7 +90,7 @@ export function LeadDetailPanel({
 }: LeadDetailPanelProps) {
   const router = useRouter();
   const startTransition = useNavigationContext();
-  const displayName = getLeadDisplayName(lead);
+  const displayName = lead.displayName;
   const categoryLabel = getCategoryLabel(
     lead,
     sharedContent,
@@ -112,9 +109,11 @@ export function LeadDetailPanel({
           <h2 className={styles.title} id="lead-detail-title">
             {displayName}
           </h2>
-          <a className={styles.emailLink} href={`mailto:${lead.email}`}>
-            {lead.email}
-          </a>
+          {lead.email ? (
+            <a className={styles.emailLink} href={`mailto:${lead.email}`}>
+              {lead.email}
+            </a>
+          ) : null}
         </div>
 
         <button
@@ -156,9 +155,13 @@ export function LeadDetailPanel({
 
         <dl className={styles.fieldGrid}>
           <DetailField label={content.fields.email}>
-            <a className={styles.textLink} href={`mailto:${lead.email}`}>
-              {lead.email}
-            </a>
+            {lead.email ? (
+              <a className={styles.textLink} href={`mailto:${lead.email}`}>
+                {lead.email}
+              </a>
+            ) : (
+              <span className={styles.emptyText}>{content.empty.email}</span>
+            )}
           </DetailField>
 
           <DetailField label={content.fields.phone}>

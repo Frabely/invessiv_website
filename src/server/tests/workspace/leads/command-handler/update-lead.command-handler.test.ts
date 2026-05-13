@@ -29,6 +29,7 @@ const NOW = new Date("2024-03-01T12:00:00Z");
 
 const mockLeadDto = {
   id: "lead-existing-uuid",
+  displayName: "Max Mustermann",
   firstName: "Max",
   lastName: "Mustermann",
   companyName: null,
@@ -104,6 +105,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     const result = await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
     });
 
@@ -120,6 +122,7 @@ describe("updateLead", () => {
 
     const categoryId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
     await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       category_id: categoryId,
       notes: "Guter Prospect",
@@ -141,6 +144,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       company_name: null,
       last_name: "Mustermann",
       notes: null,
@@ -177,6 +181,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       social_profiles: [
         {
@@ -203,6 +208,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       social_profiles: [],
     });
@@ -231,6 +237,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     const result = await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "",
       company_name: "",
     });
@@ -241,7 +248,7 @@ describe("updateLead", () => {
     });
   });
 
-  it("returns VALIDATION_ERROR when clearing last_name would leave the lead without a name", async () => {
+  it("returns VALIDATION_ERROR when displayName is empty in the update input", async () => {
     vi.resetModules();
     getLeadByIdMock.mockResolvedValueOnce({
       ...mockLeadDto,
@@ -253,7 +260,8 @@ describe("updateLead", () => {
     getDrizzleDatabaseClientMock.mockClear();
 
     const result = await updateLead("lead-existing-uuid", {
-      last_name: "",
+      displayName: "",
+      last_name: "Mustermann",
     });
 
     expect(result).toMatchObject({
@@ -278,10 +286,37 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     const result = await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       email: "existing@example.com",
     });
 
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
+  });
+
+  it("returns COMPANY_NAME_EXISTS on raw company_name unique violation", async () => {
+    vi.resetModules();
+    const duplicateError = Object.assign(new Error("duplicate key value"), {
+      cause: {
+        code: PostgresErrorCode.UniqueViolation,
+        constraint: "leads_company_name_lower_uidx",
+      },
+    });
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      transaction: vi.fn().mockRejectedValue(duplicateError),
+    });
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+
+    const result = await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
+      company_name: "Existing GmbH",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: LeadErrorCode.CompanyNameExists,
+    });
   });
 
   it("logs status_change activity with body '<old> → <new>' and transition metadata when lead_status changes", async () => {
@@ -301,6 +336,7 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
       last_name: "Mustermann",
       lead_status: "qualified",
     });

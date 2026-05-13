@@ -5,10 +5,11 @@ import type { LeadSocialProfileDto } from "./lead-social-profile.dto";
 
 export interface LeadSummaryDto {
   id: string;
+  displayName: string;
   firstName: string | null;
   lastName: string | null;
   companyName: string | null;
-  email: string;
+  email: string | null;
   phone: string | null;
   websiteUrl: string | null;
   score: number | null;

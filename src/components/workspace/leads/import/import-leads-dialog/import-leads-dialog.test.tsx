@@ -58,6 +58,12 @@ function makeBomCsvFile(): File {
   );
 }
 
+function makeDisplayNameOnlyCsvFile(): File {
+  return new File(["display_name\nDisplay Only"], "leads-display-name.csv", {
+    type: "text/csv",
+  });
+}
+
 function makeOversizedFile(): File {
   const file = new File(["x"], "big.csv", { type: "text/csv" });
   Object.defineProperty(file, "size", {
@@ -198,6 +204,25 @@ describe("ImportLeadsDialog", () => {
         expect(screen.getByText("email")).toBeInTheDocument(),
       );
       expect(screen.getByText("last_name")).toBeInTheDocument();
+    });
+
+    it("accepts display_name as the only required preview column", async () => {
+      const content = getLeadsImportDictionary("de");
+      render(<ImportLeadsDialog content={content} />);
+
+      fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
+      await waitFor(() => screen.getByRole("dialog"));
+
+      triggerFileChange(makeDisplayNameOnlyCsvFile());
+
+      await waitFor(() =>
+        screen.getByRole("button", { name: content.dialog.submit }),
+      );
+
+      expect(screen.getByText("display_name")).toBeInTheDocument();
+      expect(
+        screen.queryByText(content.preview.missingRequiredHint),
+      ).not.toBeInTheDocument();
     });
   });
 

@@ -22,9 +22,14 @@ import {
 } from "@/server/db/record-configuration";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
+import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
-import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
+import {
+  isDuplicateCompanyNameError,
+  isDuplicateEmailError,
+} from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
+import { DuplicateCompanyNameError } from "./duplicate-company-name-error.class";
 import { DuplicateEmailError } from "./duplicate-email-error.class";
 
 async function loadLeadDetailInTransaction(
@@ -36,6 +41,7 @@ async function loadLeadDetailInTransaction(
       tx
         .select({
           id: leads.id,
+          display_name: leads.display_name,
           first_name: leads.first_name,
           last_name: leads.last_name,
           company_name: leads.company_name,
@@ -121,14 +127,23 @@ export async function createLeadCoreInTransaction(
   const leadId = crypto.randomUUID();
   const owner = options.ownerOverride ?? input.owner ?? null;
   const leadStatus = options.statusOverride ?? ContactLeadStatus.New;
+  const displayName =
+    input.displayName.trim() ||
+    deriveLeadDisplayName({
+      company_name: input.company_name,
+      first_name: input.first_name,
+      last_name: input.last_name,
+    }) ||
+    "";
 
   try {
     await tx.insert(leads).values({
       id: leadId,
+      display_name: displayName,
       first_name: input.first_name ?? null,
       last_name: input.last_name ?? null,
       company_name: input.company_name ?? null,
-      email: input.email,
+      email: input.email ?? null,
       phone: input.phone ?? null,
       website_url: input.website_url ?? null,
       category_id: input.category_id ?? null,
@@ -169,6 +184,10 @@ export async function createLeadCoreInTransaction(
   } catch (error) {
     if (isDuplicateEmailError(error)) {
       throw new DuplicateEmailError();
+    }
+
+    if (isDuplicateCompanyNameError(error)) {
+      throw new DuplicateCompanyNameError();
     }
 
     throw error;

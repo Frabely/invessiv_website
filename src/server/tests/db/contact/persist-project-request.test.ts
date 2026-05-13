@@ -46,6 +46,7 @@ describe("persistProjectRequestLead", () => {
     const result = await persistProjectRequestLead({
       lead: {
         created_at: new Date("2026-03-26T09:30:00.000Z"),
+        display_name: "Max Mustermann",
         email: "max@example.com",
         first_name: "Max",
         id: "lead-api-id",

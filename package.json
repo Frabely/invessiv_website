@@ -7,6 +7,7 @@
     "db:migrate:dev": "tsx src/server/db/scripts/run-migrations.ts development",
     "db:migrate:preview": "tsx src/server/db/scripts/run-migrations.ts preview",
     "db:migrate:prod": "tsx src/server/db/scripts/run-migrations.ts production",
+    "db:reset:dev": "tsx src/server/db/scripts/reset-development-db.ts",
     "db:smoke": "tsx src/server/db/scripts/smoke-test.ts",
     "db:smoke:dev": "tsx src/server/db/scripts/smoke-test.ts development",
     "db:smoke:preview": "tsx src/server/db/scripts/smoke-test.ts preview",

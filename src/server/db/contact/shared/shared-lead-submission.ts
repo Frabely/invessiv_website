@@ -20,6 +20,7 @@ export async function persistSharedLeadSubmission(
   const leadUpsertResult = await tx.execute<{ id: string }>(sql`
     insert into leads (
       id,
+      display_name,
       first_name,
       last_name,
       email,
@@ -30,6 +31,7 @@ export async function persistSharedLeadSubmission(
     )
     values (
       ${input.lead.id},
+      ${input.lead.display_name},
       ${input.lead.first_name},
       ${input.lead.last_name},
       ${input.lead.email},
@@ -40,6 +42,7 @@ export async function persistSharedLeadSubmission(
     )
     on conflict ((lower(btrim(email))))
     do update set
+      display_name = excluded.display_name,
       first_name = excluded.first_name,
       last_name = excluded.last_name,
       email = excluded.email,

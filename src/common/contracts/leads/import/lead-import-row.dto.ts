@@ -1,7 +1,8 @@
 import type { LeadImportSocialProfileDto } from "./lead-import-social-profile.dto";
 
 export interface LeadImportRowDto {
-  email: string;
+  displayName?: string;
+  email?: string;
   firstName?: string;
   lastName?: string;
   companyName?: string;

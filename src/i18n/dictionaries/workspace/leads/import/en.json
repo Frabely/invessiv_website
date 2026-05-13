@@ -25,7 +25,7 @@
     "recognizedColumns": "Recognized columns",
     "ignoredColumns": "Ignored columns",
     "missingRequiredTitle": "Required columns missing",
-    "missingRequiredHint": "The file must contain at least the columns \"email\" and \"last_name\" or \"company_name\"."
+    "missingRequiredHint": "The file must contain at least one of \"display_name\", \"last_name\", or \"company_name\"."
   },
   "summary": {
     "title": "Import result",
@@ -61,6 +61,7 @@
     "duplicate_email_in_file": "Email appears multiple times in this file",
     "duplicate_external_guid_in_file": "External GUID appears multiple times in this file",
     "duplicate_email": "Lead with this email already exists (skipped)",
+    "duplicate_company_name": "Lead with this company name already exists (skipped)",
     "duplicate_external_guid": "Lead with this external GUID already exists (skipped)",
     "conflict_email_guid_mismatch": "Email and external GUID refer to different leads (skipped)"
   },

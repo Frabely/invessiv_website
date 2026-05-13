@@ -4,10 +4,11 @@ import type { LeadCategoryRow } from "./lead-category-row";
 
 export type LeadSummaryRow = {
   id: string;
+  display_name: string;
   first_name: string | null;
   last_name: string | null;
   company_name: string | null;
-  email: string;
+  email: string | null;
   phone: string | null;
   website_url: string | null;
   score: number | null;

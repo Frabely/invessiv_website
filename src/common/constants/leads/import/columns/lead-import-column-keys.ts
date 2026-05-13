@@ -1,4 +1,5 @@
 export const LeadImportColumnKey = {
+  DisplayName: "display_name",
   Email: "email",
   FirstName: "first_name",
   LastName: "last_name",
@@ -22,6 +23,7 @@ export type LeadImportColumnKey =
   (typeof LeadImportColumnKey)[keyof typeof LeadImportColumnKey];
 
 export const LEAD_IMPORT_COLUMN_KEY_VALUES = [
+  LeadImportColumnKey.DisplayName,
   LeadImportColumnKey.Email,
   LeadImportColumnKey.FirstName,
   LeadImportColumnKey.LastName,

@@ -2,10 +2,11 @@ import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-
 import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 
 export type CreateLeadRequestDto = {
+  displayName: string;
   first_name?: string;
   last_name?: string;
   company_name?: string;
-  email: string;
+  email?: string;
   phone?: string;
   website_url?: string;
   category_id?: string;

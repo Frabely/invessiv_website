@@ -9,7 +9,10 @@ import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-l
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
-import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
+import {
+  isDuplicateCompanyNameError,
+  isDuplicateEmailError,
+} from "@/server/workspace/leads/shared/is-duplicate-email-error";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
@@ -36,6 +39,7 @@ export async function updateLead(
   const now = new Date();
 
   const setFields: Record<string, unknown> = { updated_at: now };
+  if (data.displayName !== undefined) setFields.display_name = data.displayName;
   if (data.first_name !== undefined) setFields.first_name = data.first_name;
   if (data.last_name !== undefined) setFields.last_name = data.last_name;
   if (data.company_name !== undefined)
@@ -94,6 +98,9 @@ export async function updateLead(
   } catch (error) {
     if (isDuplicateEmailError(error)) {
       return { ok: false, code: LeadErrorCode.EmailExists };
+    }
+    if (isDuplicateCompanyNameError(error)) {
+      return { ok: false, code: LeadErrorCode.CompanyNameExists };
     }
     throw error;
   }

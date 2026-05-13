@@ -54,6 +54,7 @@ describe("LeadsTableRow", () => {
   it("builds the edit action link with mode=edit", () => {
     const lead: LeadSummaryDto = {
       id: "lead-123",
+      displayName: "Anna Meyer",
       firstName: "Anna",
       lastName: "Meyer",
       companyName: "Acme",

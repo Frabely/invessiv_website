@@ -34,6 +34,7 @@ const NOW = new Date("2024-03-01T12:00:00Z");
 
 const leadWithCategory = {
   id: "lead-1",
+  display_name: "Max Mustermann",
   first_name: "Max",
   last_name: "Mustermann",
   company_name: null,
@@ -53,6 +54,7 @@ const leadWithCategory = {
 
 const leadWithoutCategory = {
   id: "lead-2",
+  display_name: "ACME GmbH",
   first_name: null,
   last_name: null,
   company_name: "ACME GmbH",
@@ -118,6 +120,7 @@ describe("listLeads", () => {
 
     expect(rows[0]).toEqual({
       id: "lead-1",
+      displayName: "Max Mustermann",
       firstName: "Max",
       lastName: "Mustermann",
       companyName: null,
@@ -156,6 +159,7 @@ describe("listLeads", () => {
 
     expect(rows[0]).toMatchObject({
       id: "lead-2",
+      displayName: "ACME GmbH",
       companyName: "ACME GmbH",
       category: null,
       socialProfiles: [],

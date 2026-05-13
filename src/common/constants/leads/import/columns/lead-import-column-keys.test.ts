@@ -7,6 +7,7 @@ import {
 describe("LeadImportColumnKey", () => {
   it("contains the expected CSV column keys without duplicates", () => {
     expect(LEAD_IMPORT_COLUMN_KEY_VALUES).toEqual([
+      LeadImportColumnKey.DisplayName,
       LeadImportColumnKey.Email,
       LeadImportColumnKey.FirstName,
       LeadImportColumnKey.LastName,

@@ -19,10 +19,15 @@ const optionalName = leadOptionalTextSchema.refine(
 );
 
 export const leadSchema = {
+  displayName: z
+    .string()
+    .trim()
+    .min(1, { message: LeadValidationMessageCode.DisplayNameRequired })
+    .max(LeadFieldLimits.NameMaxLength),
   first_name: optionalName,
   last_name: optionalName,
   company_name: optionalName,
-  email: leadEmailSchema,
+  email: leadEmailSchema.optional(),
   phone: z
     .string()
     .trim()

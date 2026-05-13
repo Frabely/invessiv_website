@@ -7,10 +7,11 @@ import type { LeadSubmissionDto } from "./lead-submission.dto";
 
 export interface LeadDetailDto {
   id: string;
+  displayName: string;
   firstName: string | null;
   lastName: string | null;
   companyName: string | null;
-  email: string;
+  email: string | null;
   phone: string | null;
   websiteUrl: string | null;
   score: number | null;

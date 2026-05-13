@@ -7,6 +7,7 @@ import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statu
 const baseFormValues = {
   category_id: "",
   company_name: "",
+  displayName: "Anna Meyer",
   email: "anna@example.com",
   first_name: "",
   improvements: [],
@@ -21,6 +22,39 @@ const baseFormValues = {
 };
 
 describe("leadFormSchema", () => {
+  it("rejects a blank display name with the dedicated validation code", () => {
+    const result = leadFormSchema.safeParse({
+      ...baseFormValues,
+      displayName: "   ",
+      email: "",
+      last_name: "",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message: LeadValidationMessageCode.DisplayNameRequired,
+          path: ["displayName"],
+        }),
+      ]),
+    );
+  });
+
+  it("accepts empty email when display name is present", () => {
+    expect(
+      leadFormSchema.safeParse({
+        ...baseFormValues,
+        email: "",
+        last_name: "",
+      }).success,
+    ).toBe(true);
+  });
+
   it("rejects an invalid social platform with the dedicated validation code", () => {
     const result = leadFormSchema.safeParse({
       ...baseFormValues,

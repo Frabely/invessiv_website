@@ -87,6 +87,12 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
     if (result.code === LeadErrorCode.EmailExists) {
       return leadApiError(LeadErrorCode.EmailExists, HttpResponseCode.Conflict);
     }
+    if (result.code === LeadErrorCode.CompanyNameExists) {
+      return leadApiError(
+        LeadErrorCode.CompanyNameExists,
+        HttpResponseCode.Conflict,
+      );
+    }
     return leadApiError(
       LeadErrorCode.ValidationError,
       HttpResponseCode.BadRequest,

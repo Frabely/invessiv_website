@@ -22,6 +22,15 @@ const migrationPath = path.join(
   "migrations",
   "0002_restructure_lead_storage.sql",
 );
+const leadDisplayNameMigrationPath = path.join(
+  migrationsDirectory,
+  "..",
+  "..",
+  "..",
+  "db",
+  "migrations",
+  "0010_add_lead_display_name_and_nullable_email.sql",
+);
 
 function getSqlListItems(block: string) {
   return [...block.matchAll(/'([^']+)'/g)].map((match) => match[1]);
@@ -50,9 +59,11 @@ function extractPageKeys(sql: string) {
 
 describe("0002 lead storage constraint drift", () => {
   let sql = "";
+  let displayNameSql = "";
 
   beforeAll(async () => {
     sql = await fs.readFile(migrationPath, "utf8");
+    displayNameSql = await fs.readFile(leadDisplayNameMigrationPath, "utf8");
   });
 
   it("keeps offer keys in sync with contact options", () => {
@@ -93,5 +104,18 @@ describe("0002 lead storage constraint drift", () => {
 
   it("keeps page keys in sync with contact options", () => {
     expect(extractPageKeys(sql)).toEqual([...CONTACT_PAGE_KEYS]);
+  });
+
+  it("backfills display_name and relaxes email uniqueness in the new migration", () => {
+    expect(displayNameSql).toContain("UPDATE leads");
+    expect(displayNameSql).toContain("SET display_name = COALESCE");
+    expect(displayNameSql).toContain("ALTER COLUMN email DROP NOT NULL");
+    expect(displayNameSql).toContain(
+      "duplicate normalized company_name values exist",
+    );
+    expect(displayNameSql).toContain(
+      "DROP CONSTRAINT IF EXISTS leads_last_name_or_company_name_check",
+    );
+    expect(displayNameSql).toContain("leads_company_name_lower_uidx");
   });
 });

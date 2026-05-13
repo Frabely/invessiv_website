@@ -1,3 +1,4 @@
+import type { LeadErrorCode as LeadErrorCodeType } from "@/common/constants/leads/errors/lead-error-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
@@ -30,25 +31,38 @@ type BulkEditLeadsSuccessPayload = {
 
 type CreateLeadServiceResult =
   | CreateLeadResult
-  | { ok: false; code: typeof LeadErrorCode.Internal };
+  | { ok: false; code: LeadErrorCodeType };
 
 type UpdateLeadServiceResult =
   | UpdateLeadResult
-  | { ok: false; code: typeof LeadErrorCode.Internal };
+  | { ok: false; code: LeadErrorCodeType };
 
 type DeleteLeadServiceResult =
   | { ok: true; status: typeof ContactLeadStatus.Archived }
-  | { ok: false; code: typeof LeadErrorCode.NotFound }
-  | { ok: false; code: typeof LeadErrorCode.Internal };
+  | { ok: false; code: LeadErrorCodeType };
 
 type BulkEditLeadsServiceResult =
   | BulkEditLeadsResult
   | {
       ok: false;
-      code: typeof LeadErrorCode.ValidationError;
+      code: LeadErrorCodeType;
       errors: z.core.$ZodIssue[];
     }
-  | { ok: false; code: typeof LeadErrorCode.Internal };
+  | { ok: false; code: LeadErrorCodeType };
+
+function mapLeadMutationConflictCode(
+  payload: unknown,
+  fallbackCode: LeadErrorCodeType,
+): LeadErrorCodeType {
+  if (
+    isLeadApiErrorPayload(payload) &&
+    payload.error === LeadErrorCode.CompanyNameExists
+  ) {
+    return LeadErrorCode.CompanyNameExists;
+  }
+
+  return fallbackCode;
+}
 
 async function createLead(
   request: CreateLeadRequestDto,
@@ -66,7 +80,10 @@ async function createLead(
 
     if (!response.ok) {
       if (response.status === 409) {
-        return { ok: false, code: LeadErrorCode.EmailExists };
+        return {
+          ok: false,
+          code: mapLeadMutationConflictCode(payload, LeadErrorCode.EmailExists),
+        };
       }
 
       if (isLeadApiErrorPayload(payload) && Array.isArray(payload.details)) {
@@ -140,7 +157,10 @@ async function updateLead(
       }
 
       if (response.status === 409) {
-        return { ok: false, code: LeadErrorCode.EmailExists };
+        return {
+          ok: false,
+          code: mapLeadMutationConflictCode(payload, LeadErrorCode.EmailExists),
+        };
       }
 
       if (isLeadApiErrorPayload(payload) && Array.isArray(payload.details)) {

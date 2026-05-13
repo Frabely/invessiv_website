@@ -36,6 +36,7 @@ const ALLOWED_EMAIL = "owner@example.com";
 
 const STUB_LEAD: LeadDetailDto = {
   id: "lead-uuid-1",
+  displayName: "Max Mustermann",
   firstName: "Max",
   lastName: "Mustermann",
   companyName: null,
@@ -182,7 +183,11 @@ describe("POST /api/workspace/leads", () => {
       makeRequest("http://localhost/api/workspace/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "x@example.com", last_name: "X" }),
+        body: JSON.stringify({
+          displayName: "X Example",
+          email: "x@example.com",
+          last_name: "X",
+        }),
       }),
     );
 
@@ -195,6 +200,7 @@ describe("POST /api/workspace/leads", () => {
     mockCreateLead.mockResolvedValue({ ok: true, lead: STUB_LEAD });
 
     const requestBody: CreateLeadRequestDto = {
+      displayName: "Max Mustermann",
       email: "max@example.com",
       last_name: "Mustermann",
     };
@@ -246,13 +252,40 @@ describe("POST /api/workspace/leads", () => {
       makeRequest("http://localhost/api/workspace/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "existing@example.com", last_name: "X" }),
+        body: JSON.stringify({
+          displayName: "X Example",
+          email: "existing@example.com",
+          last_name: "X",
+        }),
       }),
     );
 
     expect(response.status).toBe(409);
     const body = await response.json();
     expect(body).toMatchObject({ error: "EMAIL_EXISTS" });
+  });
+
+  it("returns 409 when the company name already exists", async () => {
+    setupAuthenticatedUser();
+    mockCreateLead.mockResolvedValue({
+      ok: false,
+      code: LeadErrorCode.CompanyNameExists,
+    });
+
+    const response = await POST(
+      makeRequest("http://localhost/api/workspace/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          displayName: "ACME GmbH",
+          company_name: "ACME GmbH",
+        }),
+      }),
+    );
+
+    expect(response.status).toBe(409);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: "COMPANY_NAME_EXISTS" });
   });
 
   it("returns 400 when the request body is not valid JSON", async () => {
@@ -301,7 +334,11 @@ describe("POST /api/workspace/leads", () => {
       makeRequest("http://localhost/api/workspace/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: "x@example.com", last_name: "X" }),
+        body: JSON.stringify({
+          displayName: "X Example",
+          email: "x@example.com",
+          last_name: "X",
+        }),
       }),
     );
 

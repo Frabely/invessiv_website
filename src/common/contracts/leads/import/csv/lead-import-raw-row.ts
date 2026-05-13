@@ -1,5 +1,6 @@
 export interface RawLeadImportRow {
-  email: string;
+  display_name?: string;
+  email?: string;
   first_name?: string;
   last_name?: string;
   company_name?: string;

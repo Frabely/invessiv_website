@@ -17,6 +17,7 @@ describe("LeadImportRowIssueCode", () => {
       LeadImportRowIssueCode.DuplicateEmailInFile,
       LeadImportRowIssueCode.DuplicateExternalGuidInFile,
       LeadImportRowIssueCode.DuplicateEmail,
+      LeadImportRowIssueCode.DuplicateCompanyName,
       LeadImportRowIssueCode.DuplicateExternalGuid,
       LeadImportRowIssueCode.ConflictEmailGuidMismatch,
     ]);

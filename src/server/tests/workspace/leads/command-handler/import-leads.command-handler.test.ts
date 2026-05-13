@@ -183,6 +183,29 @@ describe("importLeads", () => {
     expect(options.statusOverride).toBe("pending_review");
   });
 
+  it("imports display_name-only rows without email", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const result = await importLeads(
+      makeFile(["display_name", "Display Only"].join("\n")),
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.importedCount).toBe(1);
+    expect(result.report.skippedCount).toBe(0);
+    expect(loadExistingKeysMock).toHaveBeenCalledWith([], []);
+    expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(1);
+    expect(createLeadCoreInTransactionMock.mock.calls[0][1]).toMatchObject({
+      displayName: "Display Only",
+      email: undefined,
+    });
+  });
+
   it("skips all 3 rows on re-import (DuplicateEmail)", async () => {
     vi.resetModules();
     setupEmptyDb();
@@ -398,6 +421,33 @@ describe("importLeads", () => {
     expect(result.report.importedCount).toBe(0);
     const dupIssue = result.report.rowIssues.find(
       (i) => i.code === LeadImportRowIssueCode.DuplicateEmail,
+    );
+    expect(dupIssue?.severity).toBe(LeadImportRowIssueSeverity.Skip);
+  });
+
+  it("handles race condition: core throws DuplicateCompanyNameError and skips the row", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    const { DuplicateCompanyNameError } =
+      await import("@/server/workspace/leads/shared/duplicate-company-name-error.class");
+    createLeadCoreInTransactionMock.mockRejectedValue(
+      new DuplicateCompanyNameError(),
+    );
+
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const csv = ["company_name", "Existing GmbH"].join("\n");
+
+    const result = await importLeads(makeFile(csv));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+
+    expect(result.report.skippedCount).toBe(1);
+    expect(result.report.importedCount).toBe(0);
+    const dupIssue = result.report.rowIssues.find(
+      (i) => i.code === LeadImportRowIssueCode.DuplicateCompanyName,
     );
     expect(dupIssue?.severity).toBe(LeadImportRowIssueSeverity.Skip);
   });

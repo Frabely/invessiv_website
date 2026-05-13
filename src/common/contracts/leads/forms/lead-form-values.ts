@@ -2,6 +2,7 @@ import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-
 import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
 
 export type LeadFormValues = {
+  displayName: string;
   first_name: string;
   last_name: string;
   company_name: string;

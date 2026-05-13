@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => ({
 
 const leadFixture: LeadDetailDto = {
   id: "2b3d2f33-f3d7-4f8a-8ff6-6ac5df6c9b01",
+  displayName: "Anna Meyer",
   firstName: "Anna",
   lastName: "Meyer",
   companyName: "Acme",
@@ -91,6 +92,7 @@ describe("LeadDetailPanel", () => {
         editHref={`/en/workspace/leads?mode=edit&edit=${leadFixture.id}`}
         lead={{
           ...leadFixture,
+          email: null,
           firstName: null,
           lastName: null,
           companyName: null,
@@ -109,6 +111,7 @@ describe("LeadDetailPanel", () => {
     );
 
     expect(screen.getByText("No phone number")).toBeInTheDocument();
+    expect(screen.getByText("No email")).toBeInTheDocument();
     expect(screen.getByText("No website")).toBeInTheDocument();
     expect(screen.getByText("No company")).toBeInTheDocument();
     expect(screen.getByText("No owner")).toBeInTheDocument();

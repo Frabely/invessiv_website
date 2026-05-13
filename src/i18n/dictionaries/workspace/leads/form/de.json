@@ -15,6 +15,7 @@
     "notes": "Notizen"
   },
   "fields": {
+    "displayName": "Anzeigename",
     "firstName": "Vorname",
     "lastName": "Nachname",
     "companyName": "Unternehmen",
@@ -31,6 +32,7 @@
     "profileUrl": "Profil-URL"
   },
   "placeholders": {
+    "displayName": "Anzeigename",
     "firstName": "Vorname",
     "lastName": "Nachname oder Ansprechpartner",
     "companyName": "Unternehmen oder Marke",
@@ -58,8 +60,7 @@
     "remove": "Entfernen"
   },
   "validation": {
-    "nameRequired": "Nachname oder Unternehmen erforderlich",
-    "emailRequired": "E-Mail ist erforderlich",
+    "displayNameRequired": "Anzeigename ist erforderlich",
     "emailInvalid": "Ungültige E-Mail",
     "phoneInvalid": "Ungültige Telefonnummer",
     "scoreInvalid": "Score muss 0-100 sein",
@@ -67,6 +68,7 @@
     "categoryInvalid": "Ungültige Kategorie",
     "improvementTooLong": "Verbesserung darf maximal 500 Zeichen lang sein",
     "emailExists": "Diese E-Mail ist bereits einem bestehenden Lead zugeordnet.",
+    "companyNameExists": "Dieses Unternehmen ist bereits einem bestehenden Lead zugeordnet.",
     "generic": "Lead konnte nicht gespeichert werden",
     "socialProfileInvalid": "Ungültige Plattform",
     "socialProfileRequired": "Plattform und URL sind erforderlich",

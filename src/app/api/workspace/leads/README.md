@@ -20,13 +20,14 @@ Allowlist via ENV `WORKSPACE_ALLOWED_EMAILS` (Komma-getrennt). API-Antworten sin
 { "error": "<MACHINE_CODE>", "message": "<human-readable>", "details": <optional> }
 ```
 
-| Status | `error`-Code       | Bedeutung                                              |
-| ------ | ------------------ | ------------------------------------------------------ |
-| 400    | `VALIDATION_ERROR` | Zod-Validation. `details` enthält Feld-Pfade           |
-| 401    | `UNAUTHORIZED`     | Kein Clerk-User                                        |
-| 404    | `NOT_FOUND`        | Lead existiert nicht **oder** User nicht auf Allowlist |
-| 409    | `EMAIL_EXISTS`     | Duplicate Email beim Create oder Update                |
-| 500    | `INTERNAL`         | Unerwarteter Fehler. Stacktrace nur im Server-Log      |
+| Status | `error`-Code          | Bedeutung                                              |
+| ------ | --------------------- | ------------------------------------------------------ |
+| 400    | `VALIDATION_ERROR`    | Zod-Validation. `details` enthält Feld-Pfade           |
+| 401    | `UNAUTHORIZED`        | Kein Clerk-User                                        |
+| 404    | `NOT_FOUND`           | Lead existiert nicht **oder** User nicht auf Allowlist |
+| 409    | `EMAIL_EXISTS`        | Duplicate Email beim Create oder Update                |
+| 409    | `COMPANY_NAME_EXISTS` | Duplicate company name beim Create oder Update         |
+| 500    | `INTERNAL`            | Unerwarteter Fehler. Stacktrace nur im Server-Log      |
 
 `message` ist auf Englisch, knapp, ohne PII. `details` enthält keine E-Mails, Telefonnummern oder Lead-Inhalte.
 
@@ -38,17 +39,17 @@ Listet Leads gefiltert, sortiert und paginiert.
 
 ### Query-Params
 
-| Param       | Typ                                                                                                        | Default        | Notiz                                                                     |
-| ----------- | ---------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------- |
-| `status`    | `'all' \| 'new' \| 'contacted' \| 'qualified' \| 'proposal' \| 'on_hold' \| 'won' \| 'lost' \| 'archived'` | —              | Standard schließt `archived` aus, wenn nicht explizit gesetzt             |
-| `source`    | `'webform' \| 'manual' \| 'import'`                                                                        | —              |                                                                           |
-| `category`  | `string` (UUID aus `lead_categories.id`)                                                                   | —              | Slugs werden aktuell nicht akzeptiert                                     |
-| `search`    | `string`                                                                                                   | —              | Free-Text auf `email`, `first_name`, `last_name`, `company_name`, `owner` |
-| `score_min` | `number` (0-100)                                                                                           | —              |                                                                           |
-| `date_from` | `string`                                                                                                   | —              | Inklusive `created_at >= date_from`                                       |
-| `date_to`   | `string`                                                                                                   | —              | Inklusive `created_at <= date_to`                                         |
-| `page`      | `number`                                                                                                   | `1`            | 1-basiert                                                                 |
-| `sort`      | `'created_desc' \| 'score_asc' \| 'score_desc' \| 'name_asc' \| 'name_desc'`                               | `created_desc` |                                                                           |
+| Param       | Typ                                                                                                        | Default        | Notiz                                                                                     |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------- |
+| `status`    | `'all' \| 'new' \| 'contacted' \| 'qualified' \| 'proposal' \| 'on_hold' \| 'won' \| 'lost' \| 'archived'` | —              | Standard schließt `archived` aus, wenn nicht explizit gesetzt                             |
+| `source`    | `'webform' \| 'manual' \| 'import'`                                                                        | —              |                                                                                           |
+| `category`  | `string` (UUID aus `lead_categories.id`)                                                                   | —              | Slugs werden aktuell nicht akzeptiert                                                     |
+| `search`    | `string`                                                                                                   | —              | Free-Text auf `display_name`, `email`, `first_name`, `last_name`, `company_name`, `owner` |
+| `score_min` | `number` (0-100)                                                                                           | —              |                                                                                           |
+| `date_from` | `string`                                                                                                   | —              | Inklusive `created_at >= date_from`                                                       |
+| `date_to`   | `string`                                                                                                   | —              | Inklusive `created_at <= date_to`                                                         |
+| `page`      | `number`                                                                                                   | `1`            | 1-basiert                                                                                 |
+| `sort`      | `'created_desc' \| 'score_asc' \| 'score_desc' \| 'name_asc' \| 'name_desc'`                               | `created_desc` |                                                                                           |
 
 ### Response `200`
 
@@ -86,10 +87,11 @@ Layer.
 
 ```jsonc
 {
+  "displayName": "string",             // pflichtig
   "first_name": "string",
-  "last_name": "string",               // CHECK: last_name ODER company_name muss gesetzt sein
-  "company_name": "string",
-  "email": "string (E-Mail-Format)",   // pflichtig, eindeutig
+  "last_name": "string",
+  "company_name": "string",            // optional, wenn gesetzt eindeutig
+  "email": "string (E-Mail-Format)",   // optional, wenn gesetzt eindeutig
   "phone": "string",
   "website_url": "string (URL)",
   "category_id": "uuid",
@@ -103,15 +105,15 @@ Layer.
 }
 ```
 
-Alle Felder außer `email` sind optional und werden von der UI nur bei vorhandenem Wert gesendet. Der Request akzeptiert
+Alle Felder außer `displayName` sind optional und werden von der UI nur bei vorhandenem Wert gesendet. Der Request
+akzeptiert
 keine serverinternen Persistenz-Shapes. Beim PATCH gilt die Semantik:
 
 - `undefined` = keine Änderung
 - `null` = Feld leeren
 - `[]` = alle Listen-Einträge entfernen
 
-`email` bleibt dabei nicht leerbar; leere Eingaben werden clientseitig verhindert und serverseitig nicht als `null`
-akzeptiert.
+`email` ist optional. Leere Eingaben werden clientseitig verhindert und serverseitig als `null` gespeichert.
 
 `source` wird **nicht** vom Client gesetzt; der Server erzwingt `manual`.
 Neue Persistenz-Records verwenden application-owned IDs: Server-Code setzt `id` explizit per `crypto.randomUUID()`;
@@ -130,6 +132,7 @@ angewendete Seed-Migration unverändert; `0007` entfernt die dort benötigten De
 
 - `400 VALIDATION_ERROR` — Zod-Fehler.
 - `409 EMAIL_EXISTS` — bestehender Lead mit gleicher E-Mail (unique über `leads_email_lower_uidx`).
+- `409 COMPANY_NAME_EXISTS` — bestehender Lead mit gleichem Firmennamen (unique über `leads_company_name_lower_uidx`).
 
 ---
 
@@ -161,6 +164,7 @@ Alle Felder optional. Erlaubte Keys: gleiche schreibbare Felder wie beim `Create
 
 ```jsonc
 {
+  "displayName": "string",
   "first_name": "string | null",
   "last_name": "string | null",
   "company_name": "string | null",
@@ -189,7 +193,7 @@ weg.
 
 ### Fehler
 
-- `400 VALIDATION_ERROR`, `404 NOT_FOUND`, `409 EMAIL_EXISTS`.
+- `400 VALIDATION_ERROR`, `404 NOT_FOUND`, `409 EMAIL_EXISTS`, `409 COMPANY_NAME_EXISTS`.
 
 ---
 
