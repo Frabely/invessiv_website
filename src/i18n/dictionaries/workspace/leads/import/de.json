@@ -25,7 +25,7 @@
     "recognizedColumns": "Erkannte Spalten",
     "ignoredColumns": "Ignorierte Spalten",
     "missingRequiredTitle": "Pflichtfelder fehlen",
-    "missingRequiredHint": "Die Datei muss mindestens eine der Spalten \"display_name\", \"first_name\", \"last_name\" oder \"company_name\" enthalten."
+    "missingRequiredHint": "Die Datei muss die Spalte \"display_name\" enthalten."
   },
   "summary": {
     "title": "Import-Ergebnis",

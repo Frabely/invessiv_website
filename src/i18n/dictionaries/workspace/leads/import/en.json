@@ -25,7 +25,7 @@
     "recognizedColumns": "Recognized columns",
     "ignoredColumns": "Ignored columns",
     "missingRequiredTitle": "Required columns missing",
-    "missingRequiredHint": "The file must contain at least one of \"display_name\", \"first_name\", \"last_name\", or \"company_name\"."
+    "missingRequiredHint": "The file must contain the \"display_name\" column."
   },
   "summary": {
     "title": "Import result",

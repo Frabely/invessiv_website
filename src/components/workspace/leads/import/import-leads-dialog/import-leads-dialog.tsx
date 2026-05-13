@@ -79,11 +79,9 @@ async function buildCsvPreview(file: File): Promise<LeadImportCsvPreview> {
   const validColumns = new Set<string>(LEAD_IMPORT_COLUMN_KEY_VALUES);
   const recognized = headers.filter((h) => validColumns.has(h));
   const ignored = headers.filter((h) => !validColumns.has(h));
-  const hasRequiredColumns =
-    recognized.includes(LeadImportColumnKey.DisplayName) ||
-    recognized.includes(LeadImportColumnKey.FirstName) ||
-    recognized.includes(LeadImportColumnKey.LastName) ||
-    recognized.includes(LeadImportColumnKey.CompanyName);
+  const hasRequiredColumns = recognized.includes(
+    LeadImportColumnKey.DisplayName,
+  );
 
   return { recognized, ignored, hasRequiredColumns };
 }

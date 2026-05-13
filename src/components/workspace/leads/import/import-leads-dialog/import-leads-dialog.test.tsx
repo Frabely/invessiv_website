@@ -64,12 +64,6 @@ function makeDisplayNameOnlyCsvFile(): File {
   });
 }
 
-function makeFirstNameOnlyCsvFile(): File {
-  return new File(["first_name\nAnna"], "leads-first-name.csv", {
-    type: "text/csv",
-  });
-}
-
 function makeOversizedFile(): File {
   const file = new File(["x"], "big.csv", { type: "text/csv" });
   Object.defineProperty(file, "size", {
@@ -231,23 +225,23 @@ describe("ImportLeadsDialog", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("accepts first_name as a display-name source in the preview", async () => {
+    it("shows the required-columns warning when display_name is missing", async () => {
       const content = getLeadsImportDictionary("de");
       render(<ImportLeadsDialog content={content} />);
 
       fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
       await waitFor(() => screen.getByRole("dialog"));
 
-      triggerFileChange(makeFirstNameOnlyCsvFile());
+      triggerFileChange(makeValidCsvFile());
 
       await waitFor(() =>
         screen.getByRole("button", { name: content.dialog.submit }),
       );
 
-      expect(screen.getByText("first_name")).toBeInTheDocument();
+      expect(screen.getByText("last_name")).toBeInTheDocument();
       expect(
-        screen.queryByText(content.preview.missingRequiredHint),
-      ).not.toBeInTheDocument();
+        screen.getByText(content.preview.missingRequiredHint),
+      ).toBeInTheDocument();
     });
   });
 
@@ -260,7 +254,7 @@ describe("ImportLeadsDialog", () => {
       fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
       await waitFor(() => screen.getByRole("dialog"));
 
-      triggerFileChange(makeValidCsvFile());
+      triggerFileChange(makeDisplayNameOnlyCsvFile());
 
       await waitFor(() =>
         screen.getByRole("button", { name: content.dialog.submit }),
@@ -286,7 +280,7 @@ describe("ImportLeadsDialog", () => {
       fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
       await waitFor(() => screen.getByRole("dialog"));
 
-      triggerFileChange(makeValidCsvFile());
+      triggerFileChange(makeDisplayNameOnlyCsvFile());
       await waitFor(() =>
         screen.getByRole("button", {
           name: getLeadsImportDictionary("de").dialog.submit,
@@ -316,7 +310,7 @@ describe("ImportLeadsDialog", () => {
       fireEvent.click(screen.getByRole("button", { name: "CSV-Import" }));
       await waitFor(() => screen.getByRole("dialog"));
 
-      triggerFileChange(makeValidCsvFile());
+      triggerFileChange(makeDisplayNameOnlyCsvFile());
       await waitFor(() =>
         screen.getByRole("button", { name: content.dialog.submit }),
       );
