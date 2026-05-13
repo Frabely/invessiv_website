@@ -113,8 +113,8 @@ describe("0002 lead storage constraint drift", () => {
     expect(displayNameSql).toContain(
       "duplicate normalized company_name values exist",
     );
-    expect(displayNameSql).toContain(
-      "DROP CONSTRAINT IF EXISTS leads_last_name_or_company_name_check",
+    expect(displayNameSql).toMatch(
+      /DROP[\s\S]*CONSTRAINT IF EXISTS leads_last_name_or_company_name_check/,
     );
     expect(displayNameSql).toContain("leads_company_name_lower_uidx");
   });

@@ -30,6 +30,7 @@ describe("leadMapperService", () => {
 
     expect(result).toEqual({
       created_at: createdAt,
+      display_name: "Max Mustermann",
       email: "max@example.com",
       first_name: "Max",
       id: "lead-id-1",
