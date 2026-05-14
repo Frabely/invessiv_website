@@ -94,7 +94,6 @@
   },
   "skipReasons": {
     "notes_too_long": "Note would exceed 5000 characters",
-    "improvement_too_long": "Improvement entry exceeds 500 characters",
     "unknown": "Unknown error"
   },
   "improvementsEditor": {

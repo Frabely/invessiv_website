@@ -1,7 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
 import { leadsService } from "./leads-service";
@@ -270,64 +268,6 @@ describe("leadsService.deleteLead", () => {
 
     await expect(leadsService.deleteLead(leadId)).resolves.toEqual({
       code: LeadErrorCode.NotFound,
-      ok: false,
-    });
-  });
-});
-
-describe("leadsService.bulkEditLeads", () => {
-  it("updates multiple leads through the API", async () => {
-    const request: BulkEditLeadsInput = {
-      ids: ["lead-1", "lead-2"],
-      patch: { status: ContactLeadStatus.Qualified },
-    };
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        ok: true,
-        updatedCount: 2,
-        failedLeads: [],
-      }),
-      ok: true,
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(leadsService.bulkEditLeads(request)).resolves.toEqual({
-      ok: true,
-      updatedCount: 2,
-      failedLeads: [],
-    });
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      "/api/workspace/leads/bulk",
-      expect.objectContaining({
-        body: JSON.stringify(request),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      }),
-    );
-  });
-
-  it("maps validation errors from the API response", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({
-        details: [{ message: "Invalid", path: ["ids"], code: "custom" }],
-        error: LeadErrorCode.ValidationError,
-      }),
-      ok: false,
-      status: 400,
-    });
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(
-      leadsService.bulkEditLeads({
-        ids: ["lead-1"],
-        patch: { status: ContactLeadStatus.Won },
-      }),
-    ).resolves.toEqual({
-      code: LeadErrorCode.ValidationError,
-      errors: [{ message: "Invalid", path: ["ids"], code: "custom" }],
       ok: false,
     });
   });

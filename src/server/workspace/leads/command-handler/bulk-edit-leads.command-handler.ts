@@ -19,7 +19,6 @@ import {
   getDrizzleDatabaseClient,
 } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
-import { formatLeadDisplayName } from "@/server/workspace/leads/format/lead-display-name";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 
 type LeadCurrentState = {
@@ -156,7 +155,7 @@ async function processSingleLead(
         updated: false,
         failure: {
           id: current.id,
-          displayName: formatLeadDisplayName(current),
+          displayName: current.display_name,
           reason: BulkSkipReason.NotesTooLong,
         },
       };
@@ -258,7 +257,7 @@ export async function bulkEditLeads(
       });
       failedLeads.push({
         id: displayProbe.id,
-        displayName: formatLeadDisplayName(displayProbe),
+        displayName: displayProbe.display_name,
         reason: BulkSkipReason.Unknown,
       });
     }

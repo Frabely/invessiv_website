@@ -1,6 +1,5 @@
 export const BulkSkipReason = {
   NotesTooLong: "notes_too_long",
-  ImprovementTooLong: "improvement_too_long",
   Unknown: "unknown",
 } as const;
 
@@ -9,6 +8,5 @@ export type BulkSkipReason =
 
 export const BULK_SKIP_REASON_VALUES = [
   BulkSkipReason.NotesTooLong,
-  BulkSkipReason.ImprovementTooLong,
   BulkSkipReason.Unknown,
 ] as const;

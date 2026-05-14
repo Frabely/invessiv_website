@@ -1,10 +1,8 @@
 import type { LeadErrorCode as LeadErrorCodeType } from "@/common/constants/leads/errors/lead-error-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { BulkEditLeadsInput } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
 import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import type { BulkEditLeadsResult } from "@/common/contracts/leads/results/bulk-edit-leads-result";
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
 import type { z } from "zod";
@@ -22,8 +20,6 @@ type DeleteLeadSuccessPayload = {
   ok: true;
 };
 
-type BulkEditLeadsSuccessPayload = BulkEditLeadsResult;
-
 type CreateLeadServiceResult =
   | CreateLeadResult
   | { ok: false; code: LeadErrorCodeType };
@@ -34,15 +30,6 @@ type UpdateLeadServiceResult =
 
 type DeleteLeadServiceResult =
   | { ok: true }
-  | { ok: false; code: LeadErrorCodeType };
-
-type BulkEditLeadsServiceResult =
-  | BulkEditLeadsResult
-  | {
-      ok: false;
-      code: LeadErrorCodeType;
-      errors: z.core.$ZodIssue[];
-    }
   | { ok: false; code: LeadErrorCodeType };
 
 function mapLeadMutationConflictCode(
@@ -179,46 +166,6 @@ async function updateLead(
   }
 }
 
-async function bulkEditLeads(
-  request: BulkEditLeadsInput,
-): Promise<BulkEditLeadsServiceResult> {
-  try {
-    const response = await fetch(`${LEAD_API_PATH}/bulk`, {
-      body: JSON.stringify(request),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    const payload = (await response.json().catch(() => null)) as unknown;
-
-    if (!response.ok) {
-      if (isLeadApiErrorPayload(payload) && Array.isArray(payload.details)) {
-        return {
-          errors: payload.details as z.core.$ZodIssue[],
-          ok: false,
-          code: LeadErrorCode.ValidationError,
-        };
-      }
-
-      return { ok: false, code: LeadErrorCode.Internal };
-    }
-
-    if (isBulkEditLeadsSuccessPayload(payload)) {
-      return {
-        ok: true,
-        updatedCount: payload.updatedCount,
-        failedLeads: payload.failedLeads ?? [],
-      };
-    }
-
-    return { ok: false, code: LeadErrorCode.Internal };
-  } catch {
-    return { ok: false, code: LeadErrorCode.Internal };
-  }
-}
-
 function isLeadApiErrorPayload(value: unknown): value is LeadApiErrorPayload {
   return typeof value === "object" && value !== null;
 }
@@ -243,21 +190,7 @@ function isDeleteLeadSuccessPayload(
   );
 }
 
-function isBulkEditLeadsSuccessPayload(
-  value: unknown,
-): value is BulkEditLeadsSuccessPayload {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "ok" in value &&
-    (value as { ok?: unknown }).ok === true &&
-    "updatedCount" in value &&
-    typeof (value as { updatedCount?: unknown }).updatedCount === "number"
-  );
-}
-
 export const leadsService = {
-  bulkEditLeads,
   createLead,
   deleteLead,
   updateLead,

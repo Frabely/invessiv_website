@@ -94,7 +94,6 @@
   },
   "skipReasons": {
     "notes_too_long": "Notiz würde 5000 Zeichen überschreiten",
-    "improvement_too_long": "Verbesserungs-Eintrag überschreitet 500 Zeichen",
     "unknown": "Unbekannter Fehler"
   },
   "improvementsEditor": {
