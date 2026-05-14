@@ -9,6 +9,8 @@ export type BulkDeleteLeadsInput = {
   ids: string[];
 };
 
+// TODO(CR #6 / ARCHITECTURE-open-items #1): wenn Ownership-Modell eingeführt wird,
+// `where user_id = $caller` ergänzen — Hard-Delete ohne Scope ist besonders kritisch.
 export async function bulkDeleteLeads(
   input: BulkDeleteLeadsInput,
 ): Promise<BulkDeleteLeadsResult> {

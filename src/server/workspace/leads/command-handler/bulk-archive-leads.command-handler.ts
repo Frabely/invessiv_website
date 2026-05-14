@@ -13,6 +13,8 @@ export type BulkArchiveLeadsInput = {
   ids: string[];
 };
 
+// TODO(CR #6 / ARCHITECTURE-open-items #1): wenn Ownership-Modell eingeführt wird,
+// `where user_id = $caller` ergänzen, damit IDOR-Vektor bei Multi-Tenancy geschlossen ist.
 export async function bulkArchiveLeads(
   input: BulkArchiveLeadsInput,
 ): Promise<BulkArchiveLeadsResult> {

@@ -179,6 +179,8 @@ async function processSingleLead(
   return { updated: true };
 }
 
+// TODO(CR #6 / ARCHITECTURE-open-items #1): wenn Ownership-Modell eingeführt wird,
+// `where user_id = $caller` an den Lead-SELECT/-UPDATE-Pfad ergänzen.
 export async function bulkEditLeads(
   input: BulkEditLeadsInput,
 ): Promise<BulkEditLeadsResult> {
