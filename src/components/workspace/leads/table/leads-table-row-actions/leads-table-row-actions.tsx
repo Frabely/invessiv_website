@@ -1,15 +1,23 @@
 "use client";
 
-import type { MouseEvent } from "react";
+import { type MouseEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import type { LeadsDeleteDictionary } from "@/i18n/dictionaries/workspace/leads";
+import { LeadDeleteConfirmDialog } from "../../delete/lead-delete-confirm-dialog/lead-delete-confirm-dialog";
 import styles from "./leads-table-row-actions.module.css";
 
 type LeadsTableRowActionsProps = {
+  deleteContent: LeadsDeleteDictionary;
+  deleteLabel: string;
   editHref: string;
   editLabel: string;
+  leadCurrentStatus: ContactLeadStatus;
+  leadDisplayName: string;
+  leadId: string;
 };
 
 function stopRowPropagation(event: MouseEvent<HTMLElement>) {
@@ -17,11 +25,17 @@ function stopRowPropagation(event: MouseEvent<HTMLElement>) {
 }
 
 export function LeadsTableRowActions({
+  deleteContent,
+  deleteLabel,
   editHref,
   editLabel,
+  leadCurrentStatus,
+  leadDisplayName,
+  leadId,
 }: LeadsTableRowActionsProps) {
   const router = useRouter();
   const startTransition = useNavigationContext();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   return (
     <td
@@ -29,18 +43,41 @@ export function LeadsTableRowActions({
       onClick={stopRowPropagation}
       onMouseDown={stopRowPropagation}
     >
-      <button
-        aria-label={editLabel}
-        className={styles.button}
-        onClick={(event) => {
-          stopRowPropagation(event);
-          startTransition(() => router.push(editHref));
-        }}
-        title={editLabel}
-        type="button"
-      >
-        <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-      </button>
+      <div className={styles.group}>
+        <button
+          aria-label={editLabel}
+          className={styles.button}
+          onClick={(event) => {
+            stopRowPropagation(event);
+            startTransition(() => router.push(editHref));
+          }}
+          title={editLabel}
+          type="button"
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+        </button>
+        <button
+          aria-label={deleteLabel}
+          className={`${styles.button} ${styles.buttonDestructive}`}
+          onClick={(event) => {
+            stopRowPropagation(event);
+            setIsDeleteDialogOpen(true);
+          }}
+          title={deleteLabel}
+          type="button"
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faTrash} />
+        </button>
+      </div>
+      {isDeleteDialogOpen ? (
+        <LeadDeleteConfirmDialog
+          content={deleteContent}
+          currentStatus={leadCurrentStatus}
+          leadDisplayName={leadDisplayName}
+          leadId={leadId}
+          onCloseAction={() => setIsDeleteDialogOpen(false)}
+        />
+      ) : null}
     </td>
   );
 }

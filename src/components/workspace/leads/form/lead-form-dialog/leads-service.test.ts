@@ -234,11 +234,10 @@ describe("leadsService.updateLead", () => {
 describe("leadsService.deleteLead", () => {
   const leadId = "123e4567-e89b-12d3-a456-426614174000";
 
-  it("archives a lead through the API", async () => {
+  it("deletes a lead through the API", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       json: async () => ({
         ok: true,
-        status: ContactLeadStatus.Archived,
       }),
       ok: true,
     });
@@ -246,7 +245,6 @@ describe("leadsService.deleteLead", () => {
 
     await expect(leadsService.deleteLead(leadId)).resolves.toEqual({
       ok: true,
-      status: ContactLeadStatus.Archived,
     });
 
     expect(fetchMock).toHaveBeenCalledWith(

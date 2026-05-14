@@ -31,7 +31,8 @@
   },
   "actions": {
     "label": "Aktionen",
-    "edit": "Lead bearbeiten"
+    "edit": "Lead bearbeiten",
+    "delete": "Lead löschen"
   },
   "relativeTime": {
     "justNow": "gerade eben",

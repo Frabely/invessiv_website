@@ -6,13 +6,19 @@ import { DELETE, GET, PATCH } from "@/app/api/workspace/leads/[id]/route";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockGetLeadById, mockUpdateLead } =
-  vi.hoisted(() => ({
-    mockAuth: vi.fn(),
-    mockCurrentUser: vi.fn(),
-    mockGetLeadById: vi.fn(),
-    mockUpdateLead: vi.fn(),
-  }));
+const {
+  mockAuth,
+  mockCurrentUser,
+  mockDeleteLead,
+  mockGetLeadById,
+  mockUpdateLead,
+} = vi.hoisted(() => ({
+  mockAuth: vi.fn(),
+  mockCurrentUser: vi.fn(),
+  mockDeleteLead: vi.fn(),
+  mockGetLeadById: vi.fn(),
+  mockUpdateLead: vi.fn(),
+}));
 
 vi.mock("@clerk/nextjs/server", () => ({
   auth: mockAuth,
@@ -27,6 +33,11 @@ vi.mock(
 vi.mock(
   "@/server/workspace/leads/command-handler/update-lead.command-handler",
   () => ({ updateLead: mockUpdateLead }),
+);
+
+vi.mock(
+  "@/server/workspace/leads/command-handler/delete-lead.command-handler",
+  () => ({ deleteLead: mockDeleteLead }),
 );
 
 const ALLOWED_EMAIL = "owner@example.com";
@@ -359,7 +370,7 @@ describe("DELETE /api/workspace/leads/[id]", () => {
     vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
     mockAuth.mockReset();
     mockCurrentUser.mockReset();
-    mockUpdateLead.mockReset();
+    mockDeleteLead.mockReset();
   });
 
   afterEach(() => {
@@ -377,15 +388,12 @@ describe("DELETE /api/workspace/leads/[id]", () => {
     );
 
     expect(response.status).toBe(401);
-    expect(mockUpdateLead).not.toHaveBeenCalled();
+    expect(mockDeleteLead).not.toHaveBeenCalled();
   });
 
-  it("returns 200 with archived status on successful soft-delete", async () => {
+  it("returns 200 with { ok: true } on successful hard-delete", async () => {
     setupAuthenticatedUser();
-    mockUpdateLead.mockResolvedValue({
-      ok: true,
-      lead: { ...STUB_LEAD, leadStatus: "archived" },
-    });
+    mockDeleteLead.mockResolvedValue({ ok: true });
 
     const response = await DELETE(
       makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
@@ -396,15 +404,12 @@ describe("DELETE /api/workspace/leads/[id]", () => {
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body).toEqual({ ok: true, status: "archived" });
+    expect(body).toEqual({ ok: true });
   });
 
-  it("calls updateLead with lead_status=archived", async () => {
+  it("calls deleteLead with the lead id from the path", async () => {
     setupAuthenticatedUser();
-    mockUpdateLead.mockResolvedValue({
-      ok: true,
-      lead: { ...STUB_LEAD, leadStatus: "archived" },
-    });
+    mockDeleteLead.mockResolvedValue({ ok: true });
 
     await DELETE(
       makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
@@ -413,14 +418,12 @@ describe("DELETE /api/workspace/leads/[id]", () => {
       makeContext(LEAD_ID),
     );
 
-    expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, {
-      lead_status: "archived",
-    });
+    expect(mockDeleteLead).toHaveBeenCalledWith(LEAD_ID);
   });
 
   it("returns 404 when the lead does not exist", async () => {
     setupAuthenticatedUser();
-    mockUpdateLead.mockResolvedValue({
+    mockDeleteLead.mockResolvedValue({
       ok: false,
       code: LeadErrorCode.NotFound,
     });
@@ -435,5 +438,21 @@ describe("DELETE /api/workspace/leads/[id]", () => {
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body).toMatchObject({ error: "NOT_FOUND" });
+  });
+
+  it("returns 500 when deleteLead throws", async () => {
+    setupAuthenticatedUser();
+    mockDeleteLead.mockRejectedValue(new Error("db is down"));
+
+    const response = await DELETE(
+      makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
+        method: "DELETE",
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(response.status).toBe(500);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: "INTERNAL" });
   });
 });

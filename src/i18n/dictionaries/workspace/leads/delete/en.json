@@ -1,0 +1,21 @@
+{
+  "dialog": {
+    "kicker": "Remove lead",
+    "title": "Delete lead?",
+    "description": "What would you like to do with \"{name}\"? Permanently deleting also removes all related activities, social profiles, and submissions.",
+    "closeAriaLabel": "Close dialog"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "archive": "Archive",
+    "confirmDelete": "Delete permanently"
+  },
+  "status": {
+    "archiving": "Archiving …",
+    "deleting": "Deleting …"
+  },
+  "errors": {
+    "notFound": "This lead no longer exists.",
+    "internal": "Something went wrong. Please try again."
+  }
+}

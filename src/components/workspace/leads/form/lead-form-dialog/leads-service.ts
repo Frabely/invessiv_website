@@ -8,7 +8,6 @@ import type { BulkEditLeadsResult } from "@/common/contracts/leads/results/bulk-
 import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
 import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
 import type { z } from "zod";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 
 const LEAD_API_PATH = "/api/workspace/leads";
 
@@ -21,7 +20,6 @@ type LeadApiErrorPayload = {
 
 type DeleteLeadSuccessPayload = {
   ok: true;
-  status: typeof ContactLeadStatus.Archived;
 };
 
 type BulkEditLeadsSuccessPayload = {
@@ -38,7 +36,7 @@ type UpdateLeadServiceResult =
   | { ok: false; code: LeadErrorCodeType };
 
 type DeleteLeadServiceResult =
-  | { ok: true; status: typeof ContactLeadStatus.Archived }
+  | { ok: true }
   | { ok: false; code: LeadErrorCodeType };
 
 type BulkEditLeadsServiceResult =
@@ -127,7 +125,7 @@ async function deleteLead(leadId: string): Promise<DeleteLeadServiceResult> {
     }
 
     if (isDeleteLeadSuccessPayload(payload)) {
-      return { ok: true, status: ContactLeadStatus.Archived };
+      return { ok: true };
     }
 
     return { ok: false, code: LeadErrorCode.Internal };
@@ -240,9 +238,7 @@ function isDeleteLeadSuccessPayload(
     typeof value === "object" &&
     value !== null &&
     "ok" in value &&
-    (value as { ok?: unknown }).ok === true &&
-    "status" in value &&
-    (value as { status?: unknown }).status === ContactLeadStatus.Archived
+    (value as { ok?: unknown }).ok === true
   );
 }
 

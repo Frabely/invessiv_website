@@ -29,6 +29,7 @@
   --color-cta-hover: #6899f0;
   --color-focus: rgba(104, 153, 240, 0.78);
   --color-cta-active: #3d6fcb;
+  --color-danger: #d92d20;
   --color-on-cta: #0f1b32;
   --color-faq-open-surface: color-mix(
     in srgb,
@@ -140,6 +141,7 @@
   --color-cta-hover: #346ed4;
   --color-focus: rgba(52, 110, 212, 0.48);
   --color-cta-active: #1f50a8;
+  --color-danger: #b91c1c;
   --color-on-cta: #f5f8ff;
   --color-faq-open-surface: color-mix(
     in srgb,

@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import {
+  getLeadsDeleteDictionary,
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -85,6 +86,7 @@ describe("LeadsTableRow", () => {
               selected: "lead-999",
               status: "qualified",
             }}
+            deleteContent={getLeadsDeleteDictionary("de")}
             lead={lead}
             locale="de"
             sharedContent={getLeadsSharedDictionary("de")}

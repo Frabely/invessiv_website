@@ -4,6 +4,7 @@ import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty
 import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
+  LeadsDeleteDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -17,6 +18,7 @@ import styles from "./leads-table.module.css";
 
 type LeadsTableProps = {
   basePath: string;
+  deleteContent: LeadsDeleteDictionary;
   locale: Locale;
   currentSearchParams: Record<string, string | string[] | undefined>;
   queryString: string;
@@ -39,6 +41,7 @@ function getActiveSort(queryString: string): string | undefined {
 
 export function LeadsTable({
   basePath,
+  deleteContent,
   locale,
   currentSearchParams,
   queryString,
@@ -142,6 +145,7 @@ export function LeadsTable({
                       basePath={basePath}
                       currentQueryString={queryString}
                       currentSearchParams={currentSearchParams}
+                      deleteContent={deleteContent}
                       key={lead.id}
                       lead={lead}
                       locale={locale}

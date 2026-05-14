@@ -28,8 +28,8 @@
 }
 
 .table {
-  width: max(100%, 1696px);
-  min-width: 1696px;
+  width: max(100%, 1733px);
+  min-width: 1733px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -40,7 +40,7 @@
 }
 
 .actionsColumn {
-  width: 56px;
+  width: 96px;
 }
 
 .leadColumn {

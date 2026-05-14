@@ -4,8 +4,8 @@ import type { NextRequest } from "next/server";
 
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
+import { deleteLead } from "@/server/workspace/leads/command-handler/delete-lead.command-handler";
 import { updateLead } from "@/server/workspace/leads/command-handler/update-lead.command-handler";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
@@ -86,9 +86,7 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
   return withWorkspaceApiAuth(async () => {
     let result;
     try {
-      result = await updateLead(id, {
-        lead_status: ContactLeadStatus.Archived,
-      });
+      result = await deleteLead(id);
     } catch {
       return leadApiError(
         LeadErrorCode.Internal,
@@ -100,9 +98,6 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
       return leadApiError(LeadErrorCode.NotFound, HttpResponseCode.NotFound);
     }
 
-    return Response.json(
-      { ok: true, status: ContactLeadStatus.Archived },
-      { status: HttpResponseCode.Ok },
-    );
+    return Response.json({ ok: true }, { status: HttpResponseCode.Ok });
   })(request);
 }

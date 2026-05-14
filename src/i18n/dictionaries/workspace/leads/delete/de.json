@@ -1,0 +1,21 @@
+{
+  "dialog": {
+    "kicker": "Lead entfernen",
+    "title": "Lead löschen?",
+    "description": "Was möchtest du mit \"{name}\" tun? Beim endgültigen Löschen werden alle zugehörigen Aktivitäten, Social-Profile und Einreichungen mit entfernt.",
+    "closeAriaLabel": "Dialog schließen"
+  },
+  "buttons": {
+    "cancel": "Abbrechen",
+    "archive": "Archivieren",
+    "confirmDelete": "Wirklich löschen"
+  },
+  "status": {
+    "archiving": "Wird archiviert …",
+    "deleting": "Wird gelöscht …"
+  },
+  "errors": {
+    "notFound": "Dieser Lead existiert nicht mehr.",
+    "internal": "Beim Verarbeiten ist ein Fehler aufgetreten. Bitte erneut versuchen."
+  }
+}

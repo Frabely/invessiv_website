@@ -1,12 +1,13 @@
 "use client";
 
-import type { KeyboardEvent, MouseEvent } from "react";
+import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
+  LeadsDeleteDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -28,6 +29,7 @@ type LeadsTableRowProps = {
   basePath: string;
   currentQueryString: string;
   currentSearchParams: Record<string, string | string[] | undefined>;
+  deleteContent: LeadsDeleteDictionary;
   lead: LeadSummaryDto;
   locale: Locale;
   sharedContent: LeadsSharedDictionary;
@@ -56,6 +58,7 @@ export function LeadsTableRow({
   basePath,
   currentQueryString,
   currentSearchParams,
+  deleteContent,
   lead,
   locale,
   sharedContent,
@@ -187,8 +190,13 @@ export function LeadsTableRow({
       </td>
 
       <LeadsTableRowActions
+        deleteContent={deleteContent}
+        deleteLabel={tableContent.actions.delete}
         editHref={editHref}
         editLabel={tableContent.actions.edit}
+        leadCurrentStatus={lead.leadStatus}
+        leadDisplayName={displayName}
+        leadId={lead.id}
       />
     </tr>
   );
