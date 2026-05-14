@@ -22,10 +22,7 @@ type DeleteLeadSuccessPayload = {
   ok: true;
 };
 
-type BulkEditLeadsSuccessPayload = {
-  ok: true;
-  updatedCount: number;
-};
+type BulkEditLeadsSuccessPayload = BulkEditLeadsResult;
 
 type CreateLeadServiceResult =
   | CreateLeadResult
@@ -209,7 +206,11 @@ async function bulkEditLeads(
     }
 
     if (isBulkEditLeadsSuccessPayload(payload)) {
-      return { ok: true, updatedCount: payload.updatedCount };
+      return {
+        ok: true,
+        updatedCount: payload.updatedCount,
+        failedLeads: payload.failedLeads ?? [],
+      };
     }
 
     return { ok: false, code: LeadErrorCode.Internal };

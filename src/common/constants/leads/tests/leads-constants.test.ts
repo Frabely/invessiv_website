@@ -47,12 +47,13 @@ describe("LEAD_SOURCES", () => {
 });
 
 describe("LEAD_ACTIVITY_TYPES", () => {
-  it("contains exactly the four activity types", () => {
+  it("contains exactly the supported activity types", () => {
     expect(LEAD_ACTIVITY_TYPE_VALUES).toEqual([
       "note",
       "status_change",
       "inbound_submission",
       "import",
+      "bulk_edit",
     ]);
   });
 
@@ -214,6 +215,7 @@ describe("LeadValidationIssueCode", () => {
   it("contains the expected validation issue codes without duplicates", () => {
     expect(LEAD_VALIDATION_ISSUE_CODE_VALUES).toEqual([
       LeadValidationIssueCode.LastNameOrCompanyNameRequired,
+      LeadValidationIssueCode.BulkEditEmptyPatch,
     ]);
     expect(new Set(LEAD_VALIDATION_ISSUE_CODE_VALUES).size).toBe(
       LEAD_VALIDATION_ISSUE_CODE_VALUES.length,

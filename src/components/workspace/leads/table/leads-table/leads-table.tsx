@@ -2,12 +2,15 @@ import type { Locale } from "@/config/i18n";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
 import { LeadSort } from "@/common/constants/leads/list/lead-sort";
+import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
+  LeadsBulkDictionary,
   LeadsDeleteDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { LeadsBulkActionBar } from "../leads-bulk-action-bar/leads-bulk-action-bar";
 import { LeadsEmptyState } from "../leads-empty-state/leads-empty-state";
 import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/leads-table-select-all-checkbox";
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
@@ -18,11 +21,14 @@ import styles from "./leads-table.module.css";
 
 type LeadsTableProps = {
   basePath: string;
+  bulkContent: LeadsBulkDictionary;
+  categories: LeadCategoryOption[];
   deleteContent: LeadsDeleteDictionary;
   locale: Locale;
   currentSearchParams: Record<string, string | string[] | undefined>;
   queryString: string;
   rows: LeadSummaryDto[];
+  selectionResetKey?: string;
   emptyState?: {
     actionHref?: string;
     actionLabel: string;
@@ -41,11 +47,14 @@ function getActiveSort(queryString: string): string | undefined {
 
 export function LeadsTable({
   basePath,
+  bulkContent,
+  categories,
   deleteContent,
   locale,
   currentSearchParams,
   queryString,
   rows,
+  selectionResetKey,
   emptyState,
   sharedContent,
   tableContent,
@@ -55,7 +64,10 @@ export function LeadsTable({
 
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
-      <LeadsTableSelectionProvider rowIds={rowIds}>
+      <LeadsTableSelectionProvider
+        rowIds={rowIds}
+        selectionResetKey={selectionResetKey}
+      >
         <div className={styles.tableFrame}>
           <div className={styles.tableScroll}>
             <table className={styles.table}>
@@ -173,6 +185,12 @@ export function LeadsTable({
             </table>
           </div>
         </div>
+        <LeadsBulkActionBar
+          bulkContent={bulkContent}
+          categories={categories}
+          rows={rows}
+          sharedContent={sharedContent}
+        />
       </LeadsTableSelectionProvider>
     </section>
   );

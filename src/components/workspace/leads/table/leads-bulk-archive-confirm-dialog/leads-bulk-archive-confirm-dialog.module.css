@@ -1,0 +1,181 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: calc(var(--workspace-header-height, 60px) + 4rem)
+    clamp(0.75rem, 2vw, 2rem) 1.25rem;
+  overflow: hidden;
+  background: rgba(12, 10, 9, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(245, 158, 11, 0.1), transparent 32%),
+    linear-gradient(180deg, #2b2522 0%, #211d1a 100%);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(34, 29, 26, 0.72);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.kicker {
+  width: fit-content;
+  margin: 0;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f5a742;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #f7f2ec;
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.description {
+  margin: 0;
+  max-width: 60ch;
+  color: rgba(247, 242, 236, 0.68);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.closeButton {
+  flex: 0 0 auto;
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0;
+  border-radius: 999px;
+}
+
+.statusBanner {
+  margin: 1rem 1.25rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(245, 158, 11, 0.26);
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.08);
+  color: #f7f2ec;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.errorBanner {
+  margin: 1rem 1.25rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(217, 45, 32, 0.45);
+  border-radius: 10px;
+  background: rgba(217, 45, 32, 0.12);
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
+.leadList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.75rem 1.25rem 0;
+  list-style: none;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.leadItem {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 8px;
+  background: rgba(33, 29, 26, 0.6);
+  color: rgba(247, 242, 236, 0.86);
+  font-size: 0.86rem;
+}
+
+.moreItem {
+  padding: 0.35rem 0.65rem;
+  color: rgba(247, 242, 236, 0.55);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem 1.15rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(34, 29, 26, 0.4);
+}
+
+.confirmButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.85);
+  color: #1a1310;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.confirmButton:hover:not(:disabled),
+.confirmButton:focus-visible:not(:disabled) {
+  background: rgba(245, 158, 11, 1);
+  border-color: rgba(251, 191, 36, 0.95);
+}
+
+.confirmButton:focus-visible {
+  outline: 2px solid var(--color-focus, #fbbf24);
+  outline-offset: 2px;
+}
+
+.confirmButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

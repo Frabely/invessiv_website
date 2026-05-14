@@ -42,7 +42,8 @@
       "note": "Note",
       "status_change": "Status changed",
       "inbound_submission": "Inbound submission",
-      "import": "Import"
+      "import": "Import",
+      "bulk_edit": "Bulk edit"
     },
     "actor": {
       "system": "System",

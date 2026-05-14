@@ -1,0 +1,93 @@
+.bar {
+  position: fixed;
+  bottom: clamp(1rem, 2vw, 1.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(20, 17, 15, 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  max-width: calc(100vw - 2rem);
+}
+
+.summary {
+  margin: 0;
+  padding-left: 0.65rem;
+  color: rgba(247, 242, 236, 0.85);
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.45rem;
+}
+
+.clearButton {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.archiveButton {
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.05rem;
+  border: 1px solid rgba(217, 45, 32, 0.6);
+  border-radius: 999px;
+  background: rgba(217, 45, 32, 0.85);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+
+.deleteButton:hover,
+.deleteButton:focus-visible {
+  background: rgba(217, 45, 32, 1);
+  border-color: rgba(248, 113, 113, 0.9);
+}
+
+.deleteButton:focus-visible {
+  outline: 2px solid var(--color-focus, #fbbf24);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .bar {
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 18px;
+    left: 0.75rem;
+    right: 0.75rem;
+    transform: none;
+    width: auto;
+  }
+
+  .actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

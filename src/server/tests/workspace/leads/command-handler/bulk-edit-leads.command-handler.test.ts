@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { BulkSkipReason } from "@/common/constants/leads/bulk/bulk-skip-reasons";
+import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({
     getDrizzleDatabaseClientMock: vi.fn(),
@@ -16,173 +19,187 @@ vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
   createLeadActivity: createLeadActivityMock,
 }));
 
-type SelectRow = { id: string; lead_status: string };
+type LeadState = {
+  id: string;
+  display_name: string;
+  first_name: string | null;
+  last_name: string | null;
+  company_name: string | null;
+  email: string | null;
+  lead_status: string;
+  category_id: string | null;
+  score: number | null;
+  owner: string | null;
+  notes: string | null;
+  improvements: string[] | null;
+};
 
-function setupDb(existingRows: SelectRow[]) {
-  const updateCaptures: Record<string, unknown>[] = [];
-  const activityInsertCaptures: unknown[] = [];
+type SetClause = Record<string, unknown>;
 
-  const txMock = {
-    select: vi.fn().mockImplementation(() => ({
-      from: vi.fn().mockImplementation(() => ({
-        where: vi.fn().mockResolvedValue(existingRows),
-      })),
-    })),
-    update: vi.fn().mockImplementation(() => ({
-      set: vi.fn().mockImplementation((setArgs: Record<string, unknown>) => ({
-        where: vi.fn().mockImplementation(() => {
-          updateCaptures.push(setArgs);
-          return Promise.resolve();
+function buildLead(overrides: Partial<LeadState>): LeadState {
+  return {
+    id: "lead-1",
+    display_name: "Lead Eins",
+    first_name: null,
+    last_name: null,
+    company_name: null,
+    email: null,
+    lead_status: "new",
+    category_id: null,
+    score: null,
+    owner: null,
+    notes: null,
+    improvements: null,
+    ...overrides,
+  };
+}
+
+function setupDb(rows: LeadState[]) {
+  const updateCaptures: SetClause[] = [];
+  let rowIndex = 0;
+
+  function selectChain() {
+    return {
+      from: () => ({
+        where: () => ({
+          limit: async () => {
+            const next = rows[rowIndex] ?? null;
+            rowIndex += 1;
+            return next ? [next] : [];
+          },
         }),
-      })),
-    })),
-    insert: vi.fn().mockImplementation(() => ({
-      values: vi.fn().mockImplementation((v: unknown) => {
-        activityInsertCaptures.push(v);
-        return Promise.resolve();
       }),
-    })),
+    };
+  }
+
+  function updateChain() {
+    return {
+      set: (setArgs: SetClause) => ({
+        where: async () => {
+          updateCaptures.push(setArgs);
+        },
+      }),
+    };
+  }
+
+  const dbMock = {
+    select: selectChain,
+    transaction: async (cb: (tx: unknown) => Promise<unknown>) => {
+      return cb({
+        update: updateChain,
+      });
+    },
   };
 
-  getDrizzleDatabaseClientMock.mockReturnValue({
-    transaction: vi
-      .fn()
-      .mockImplementation(async (cb: (tx: typeof txMock) => Promise<void>) => {
-        await cb(txMock);
-      }),
-  });
+  getDrizzleDatabaseClientMock.mockReturnValue(dbMock);
 
-  return { updateCaptures, activityInsertCaptures };
+  return { updateCaptures };
 }
 
 describe("bulkEditLeads", () => {
-  it("returns ok:true with updatedCount equal to number of actually changed leads", async () => {
-    setupDb([
-      { id: "id-1", lead_status: "new" },
-      { id: "id-2", lead_status: "new" },
-    ]);
+  it("returns ok:true with empty result when ids array is empty", async () => {
+    vi.resetModules();
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["id-1", "id-2"],
-      status: "qualified",
-    });
+    const result = await bulkEditLeads({ ids: [], patch: {} });
 
-    expect(result).toEqual({ ok: true, updatedCount: 2 });
+    expect(result).toEqual({ ok: true, updatedCount: 0, failedLeads: [] });
   });
 
-  it("skips leads that already have the target status and returns correct updatedCount", async () => {
+  it("updates a lead's status when the status differs", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
-    createLeadActivityMock.mockResolvedValue(undefined);
-    setupDb([
-      { id: "id-1", lead_status: "new" },
-      { id: "id-2", lead_status: "qualified" },
-    ]);
+    const { updateCaptures } = setupDb([buildLead({ lead_status: "new" })]);
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
     const result = await bulkEditLeads({
-      ids: ["id-1", "id-2"],
-      status: "qualified",
+      ids: ["lead-1"],
+      patch: { status: "qualified" },
     });
 
-    expect(result).toEqual({ ok: true, updatedCount: 1 });
-    expect(createLeadActivityMock).toHaveBeenCalledOnce();
-    expect(createLeadActivityMock).toHaveBeenCalledWith(
-      expect.any(Object),
-      expect.objectContaining({
-        body: "new → qualified",
-        metadata: {
-          previous_status: "new",
-          next_status: "qualified",
-        },
-      }),
-    );
-  });
-
-  it("sets lead_status and updated_at in the batch UPDATE", async () => {
-    vi.resetModules();
-    const { updateCaptures } = setupDb([{ id: "id-1", lead_status: "new" }]);
-    const { bulkEditLeads } =
-      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
-
-    await bulkEditLeads({ ids: ["id-1"], status: "qualified" });
-
+    expect(result).toEqual({
+      ok: true,
+      updatedCount: 1,
+      failedLeads: [],
+    });
     expect(updateCaptures).toHaveLength(1);
     expect(updateCaptures[0].lead_status).toBe("qualified");
-    expect(updateCaptures[0].updated_at).toBeInstanceOf(Date);
+    expect(createLeadActivityMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ type: LeadActivityType.BulkEdit }),
+    );
   });
 
-  it("logs a status_change activity per lead with body '<old> → <new>' and transition metadata", async () => {
+  it("skips a lead whose appended note exceeds the 5000-char limit", async () => {
     vi.resetModules();
-    createLeadActivityMock.mockClear();
-    createLeadActivityMock.mockResolvedValue(undefined);
-    setupDb([
-      { id: "id-1", lead_status: "new" },
-      { id: "id-2", lead_status: "contacted" },
+    const existingNotes = "x".repeat(4980);
+    const { updateCaptures } = setupDb([
+      buildLead({ notes: existingNotes, display_name: "Bob" }),
     ]);
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({ ids: ["id-1", "id-2"], status: "qualified" });
+    const result = await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { notes_append: "y".repeat(100) },
+    });
 
-    expect(createLeadActivityMock).toHaveBeenCalledTimes(2);
-    expect(createLeadActivityMock).toHaveBeenCalledWith(
-      expect.any(Object),
-      expect.objectContaining({
-        type: "status_change",
-        body: "new → qualified",
-        metadata: {
-          previous_status: "new",
-          next_status: "qualified",
-        },
-      }),
-    );
-    expect(createLeadActivityMock).toHaveBeenCalledWith(
-      expect.any(Object),
-      expect.objectContaining({
-        type: "status_change",
-        body: "contacted → qualified",
-        metadata: {
-          previous_status: "contacted",
-          next_status: "qualified",
-        },
-      }),
-    );
+    expect(updateCaptures).toHaveLength(0);
+    expect(result.updatedCount).toBe(0);
+    expect(result.failedLeads).toEqual([
+      {
+        id: "lead-1",
+        displayName: "Bob",
+        reason: BulkSkipReason.NotesTooLong,
+      },
+    ]);
   });
 
-  it("sets status to archived when called with status='archived' (covers archive use case)", async () => {
+  it("appends a note with newline separator only when existing note is non-empty", async () => {
     vi.resetModules();
-    createLeadActivityMock.mockClear();
-    createLeadActivityMock.mockResolvedValue(undefined);
-    setupDb([{ id: "id-1", lead_status: "new" }]);
+    const { updateCaptures } = setupDb([
+      buildLead({ id: "lead-1", notes: "alt" }),
+      buildLead({ id: "lead-2", notes: null }),
+    ]);
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({ ids: ["id-1"], status: "archived" });
+    await bulkEditLeads({
+      ids: ["lead-1", "lead-2"],
+      patch: { notes_append: "neu" },
+    });
 
-    expect(result).toEqual({ ok: true, updatedCount: 1 });
-    expect(createLeadActivityMock).toHaveBeenCalledWith(
-      expect.any(Object),
-      expect.objectContaining({
-        body: "new → archived",
-        metadata: {
-          previous_status: "new",
-          next_status: "archived",
-        },
-      }),
-    );
+    expect(updateCaptures[0].notes).toBe("alt\nneu");
+    expect(updateCaptures[1].notes).toBe("neu");
   });
 
-  it("returns ok:true with updatedCount 0 when ids array is empty", async () => {
+  it("appends improvements to the existing list", async () => {
     vi.resetModules();
+    const { updateCaptures } = setupDb([buildLead({ improvements: ["a"] })]);
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({ ids: [], status: "qualified" });
+    await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { improvements_append: ["b", "c"] },
+    });
 
-    expect(result).toEqual({ ok: true, updatedCount: 0 });
+    expect(updateCaptures[0].improvements).toEqual(["a", "b", "c"]);
+  });
+
+  it("clears owner to null when patch.owner is null", async () => {
+    vi.resetModules();
+    const { updateCaptures } = setupDb([buildLead({ owner: "Lisa" })]);
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { owner: null },
+    });
+
+    expect(updateCaptures[0].owner).toBeNull();
   });
 });

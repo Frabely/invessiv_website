@@ -2,16 +2,17 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
-import { bulkEditLeads } from "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler";
 import {
   LeadBulkAction,
   leadBulkActionSchema,
 } from "@/server/workspace/leads/api/bulk-action-schema";
+import { bulkArchiveLeads } from "@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler";
+import { bulkDeleteLeads } from "@/server/workspace/leads/command-handler/bulk-delete-leads.command-handler";
+import { bulkEditLeads } from "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler";
 
 export const runtime = "nodejs";
 
@@ -35,15 +36,35 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
     );
   }
 
-  const input =
-    parsed.data.action === LeadBulkAction.Archive
-      ? { ids: parsed.data.ids, status: ContactLeadStatus.Archived }
-      : { ids: parsed.data.ids, status: parsed.data.status };
-
   try {
-    const result = await bulkEditLeads(input);
+    const action = parsed.data.action;
+
+    if (action === LeadBulkAction.BulkEdit) {
+      const result = await bulkEditLeads({
+        ids: parsed.data.ids,
+        patch: parsed.data.patch,
+      });
+      return Response.json(
+        {
+          ok: result.ok,
+          updatedCount: result.updatedCount,
+          failedLeads: result.failedLeads,
+        },
+        { status: HttpResponseCode.Ok },
+      );
+    }
+
+    if (action === LeadBulkAction.Archive) {
+      const result = await bulkArchiveLeads({ ids: parsed.data.ids });
+      return Response.json(
+        { ok: result.ok, updatedCount: result.updatedCount },
+        { status: HttpResponseCode.Ok },
+      );
+    }
+
+    const result = await bulkDeleteLeads({ ids: parsed.data.ids });
     return Response.json(
-      { ok: result.ok, updatedCount: result.updatedCount },
+      { ok: result.ok, deletedCount: result.deletedCount },
       { status: HttpResponseCode.Ok },
     );
   } catch {

@@ -279,12 +279,13 @@ describe("leadsService.bulkEditLeads", () => {
   it("updates multiple leads through the API", async () => {
     const request: BulkEditLeadsInput = {
       ids: ["lead-1", "lead-2"],
-      status: ContactLeadStatus.Qualified,
+      patch: { status: ContactLeadStatus.Qualified },
     };
     const fetchMock = vi.fn().mockResolvedValue({
       json: async () => ({
         ok: true,
         updatedCount: 2,
+        failedLeads: [],
       }),
       ok: true,
     });
@@ -293,6 +294,7 @@ describe("leadsService.bulkEditLeads", () => {
     await expect(leadsService.bulkEditLeads(request)).resolves.toEqual({
       ok: true,
       updatedCount: 2,
+      failedLeads: [],
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -321,7 +323,7 @@ describe("leadsService.bulkEditLeads", () => {
     await expect(
       leadsService.bulkEditLeads({
         ids: ["lead-1"],
-        status: ContactLeadStatus.Won,
+        patch: { status: ContactLeadStatus.Won },
       }),
     ).resolves.toEqual({
       code: LeadErrorCode.ValidationError,

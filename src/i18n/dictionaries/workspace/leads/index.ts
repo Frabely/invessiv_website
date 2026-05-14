@@ -19,6 +19,8 @@ import importDe from "./import/de.json";
 import importEn from "./import/en.json";
 import deleteDe from "./delete/de.json";
 import deleteEn from "./delete/en.json";
+import bulkDe from "./bulk/de.json";
+import bulkEn from "./bulk/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsToolbarDictionary = typeof toolbarDe;
@@ -30,6 +32,7 @@ export type LeadsDetailDictionary = typeof detailDe;
 export type LeadsFormDictionary = typeof formDe;
 export type LeadsImportDictionary = typeof importDe;
 export type LeadsDeleteDictionary = typeof deleteDe;
+export type LeadsBulkDictionary = typeof bulkDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
@@ -79,6 +82,11 @@ const LEADS_IMPORT: Record<Locale, LeadsImportDictionary> = {
 const LEADS_DELETE: Record<Locale, LeadsDeleteDictionary> = {
   de: deleteDe,
   en: deleteEn,
+};
+
+const LEADS_BULK: Record<Locale, LeadsBulkDictionary> = {
+  de: bulkDe,
+  en: bulkEn,
 };
 
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
@@ -131,4 +139,8 @@ export function getLeadsDeleteDictionary(
   locale: Locale,
 ): LeadsDeleteDictionary {
   return LEADS_DELETE[locale];
+}
+
+export function getLeadsBulkDictionary(locale: Locale): LeadsBulkDictionary {
+  return LEADS_BULK[locale];
 }

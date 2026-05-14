@@ -16,6 +16,7 @@ import {
 } from "@/common/constants/leads/list/lead-empty-state-variants";
 import { LeadSort } from "@/common/constants/leads/list/lead-sort";
 import {
+  getLeadsBulkDictionary,
   getLeadsDeleteDictionary,
   getLeadsDetailDictionary,
   getLeadsFormDictionary,
@@ -88,6 +89,7 @@ export default async function LeadsPage({
   const tableContent = getLeadsTableDictionary(locale as Locale);
   const deleteContent = getLeadsDeleteDictionary(locale as Locale);
   const detailContent = getLeadsDetailDictionary(locale as Locale);
+  const bulkContent = getLeadsBulkDictionary(locale as Locale);
   const parsedFilters = parseLeadListFilters(resolvedSearchParams);
   const selectedLeadId = parseSelectedLeadId(resolvedSearchParams);
   const resolvedSort = parsedFilters.sort ?? LeadSort.CreatedDesc;
@@ -192,6 +194,8 @@ export default async function LeadsPage({
         />
         <LeadsTable
           basePath={basePath}
+          bulkContent={bulkContent}
+          categories={categoryOptions}
           deleteContent={deleteContent}
           emptyState={
             leadList.total === 0
@@ -214,6 +218,7 @@ export default async function LeadsPage({
           queryString={queryString}
           currentSearchParams={resolvedSearchParams}
           rows={leadList.rows}
+          selectionResetKey={queryString}
           sharedContent={sharedContent}
           tableContent={tableContent}
         />

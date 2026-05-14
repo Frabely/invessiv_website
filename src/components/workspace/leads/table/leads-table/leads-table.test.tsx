@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
 import {
+  getLeadsBulkDictionary,
   getLeadsDeleteDictionary,
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
@@ -30,6 +31,8 @@ describe("LeadsTable", () => {
     render(
       <LeadsTable
         basePath="/de/workspace/leads"
+        bulkContent={getLeadsBulkDictionary("de")}
+        categories={[]}
         deleteContent={getLeadsDeleteDictionary("de")}
         emptyState={{
           actionLabel: "Filter zurücksetzen",
@@ -82,6 +85,8 @@ describe("LeadsTable", () => {
     render(
       <LeadsTable
         basePath="/de/workspace/leads"
+        bulkContent={getLeadsBulkDictionary("de")}
+        categories={[]}
         deleteContent={getLeadsDeleteDictionary("de")}
         locale="de"
         queryString=""

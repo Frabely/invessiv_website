@@ -42,7 +42,8 @@
       "note": "Notiz",
       "status_change": "Status geändert",
       "inbound_submission": "Eingehende Anfrage",
-      "import": "Import"
+      "import": "Import",
+      "bulk_edit": "Bulk-Edit"
     },
     "actor": {
       "system": "System",

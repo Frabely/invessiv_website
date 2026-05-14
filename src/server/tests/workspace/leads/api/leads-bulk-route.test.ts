@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
+
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
@@ -10,10 +11,22 @@ import {
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockBulkEditLeads } = vi.hoisted(() => ({
+const VALID_UUID_A = "00000000-0000-4000-8000-000000000001";
+const VALID_UUID_B = "00000000-0000-4000-8000-000000000002";
+const VALID_UUID_C = "00000000-0000-4000-8000-000000000003";
+
+const {
+  mockAuth,
+  mockCurrentUser,
+  mockBulkEditLeads,
+  mockBulkArchiveLeads,
+  mockBulkDeleteLeads,
+} = vi.hoisted(() => ({
   mockAuth: vi.fn(),
   mockCurrentUser: vi.fn(),
   mockBulkEditLeads: vi.fn(),
+  mockBulkArchiveLeads: vi.fn(),
+  mockBulkDeleteLeads: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({
@@ -24,6 +37,14 @@ vi.mock("@clerk/nextjs/server", () => ({
 vi.mock(
   "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler",
   () => ({ bulkEditLeads: mockBulkEditLeads }),
+);
+vi.mock(
+  "@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler",
+  () => ({ bulkArchiveLeads: mockBulkArchiveLeads }),
+);
+vi.mock(
+  "@/server/workspace/leads/command-handler/bulk-delete-leads.command-handler",
+  () => ({ bulkDeleteLeads: mockBulkDeleteLeads }),
 );
 
 const ALLOWED_EMAIL = "owner@example.com";
@@ -50,6 +71,8 @@ describe("POST /api/workspace/leads/bulk", () => {
     mockAuth.mockReset();
     mockCurrentUser.mockReset();
     mockBulkEditLeads.mockReset();
+    mockBulkArchiveLeads.mockReset();
+    mockBulkDeleteLeads.mockReset();
   });
 
   afterEach(() => {
@@ -61,9 +84,9 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: LeadBulkAction.SetStatus,
-        ids: ["id-1"],
-        status: ContactLeadStatus.New,
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A],
+        patch: { status: ContactLeadStatus.New },
       }),
     );
 
@@ -73,56 +96,69 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(mockBulkEditLeads).not.toHaveBeenCalled();
   });
 
-  it("set_status: returns 200 with updatedCount on success", async () => {
+  it("bulk_edit: returns 200 with updatedCount and failedLeads", async () => {
     setupAuthenticatedUser();
-    mockBulkEditLeads.mockResolvedValue({ ok: true, updatedCount: 3 });
+    mockBulkEditLeads.mockResolvedValue({
+      ok: true,
+      updatedCount: 3,
+      failedLeads: [],
+    });
 
     const response = await POST(
       makeRequest({
-        action: LeadBulkAction.SetStatus,
-        ids: ["id-1", "id-2", "id-3"],
-        status: ContactLeadStatus.Qualified,
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A, VALID_UUID_B, VALID_UUID_C],
+        patch: { status: ContactLeadStatus.Qualified },
       }),
     );
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body).toMatchObject({ ok: true, updatedCount: 3 });
-  });
-
-  it("set_status: calls bulkEditLeads with ids and status", async () => {
-    setupAuthenticatedUser();
-    mockBulkEditLeads.mockResolvedValue({ ok: true, updatedCount: 2 });
-
-    await POST(
-      makeRequest({
-        action: LeadBulkAction.SetStatus,
-        ids: ["id-a", "id-b"],
-        status: ContactLeadStatus.Contacted,
-      }),
-    );
-
+    expect(body).toMatchObject({
+      ok: true,
+      updatedCount: 3,
+      failedLeads: [],
+    });
     expect(mockBulkEditLeads).toHaveBeenCalledWith({
-      ids: ["id-a", "id-b"],
-      status: ContactLeadStatus.Contacted,
+      ids: [VALID_UUID_A, VALID_UUID_B, VALID_UUID_C],
+      patch: { status: ContactLeadStatus.Qualified },
     });
   });
 
-  it("archive: returns 200 and calls bulkEditLeads with status=archived", async () => {
+  it("archive: returns 200 with updatedCount", async () => {
     setupAuthenticatedUser();
-    mockBulkEditLeads.mockResolvedValue({ ok: true, updatedCount: 2 });
+    mockBulkArchiveLeads.mockResolvedValue({ ok: true, updatedCount: 2 });
 
     const response = await POST(
-      makeRequest({ action: LeadBulkAction.Archive, ids: ["id-1", "id-2"] }),
+      makeRequest({
+        action: LeadBulkAction.Archive,
+        ids: [VALID_UUID_A, VALID_UUID_B],
+      }),
     );
 
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body).toMatchObject({ ok: true, updatedCount: 2 });
-    expect(mockBulkEditLeads).toHaveBeenCalledWith({
-      ids: ["id-1", "id-2"],
-      status: ContactLeadStatus.Archived,
+    expect(mockBulkArchiveLeads).toHaveBeenCalledWith({
+      ids: [VALID_UUID_A, VALID_UUID_B],
     });
+  });
+
+  it("delete: returns 200 with deletedCount", async () => {
+    setupAuthenticatedUser();
+    mockBulkDeleteLeads.mockResolvedValue({ ok: true, deletedCount: 1 });
+
+    const response = await POST(
+      makeRequest({
+        action: LeadBulkAction.Delete,
+        ids: [VALID_UUID_A],
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body).toMatchObject({ ok: true, deletedCount: 1 });
+    expect(mockBulkDeleteLeads).toHaveBeenCalledWith({ ids: [VALID_UUID_A] });
   });
 
   it("returns 400 when ids array is empty", async () => {
@@ -130,9 +166,9 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: LeadBulkAction.SetStatus,
+        action: LeadBulkAction.BulkEdit,
         ids: [],
-        status: ContactLeadStatus.New,
+        patch: { status: ContactLeadStatus.New },
       }),
     );
 
@@ -146,20 +182,23 @@ describe("POST /api/workspace/leads/bulk", () => {
     setupAuthenticatedUser();
 
     const response = await POST(
-      makeRequest({ action: "delete_all", ids: ["id-1"] }),
+      makeRequest({ action: "delete_all", ids: [VALID_UUID_A] }),
     );
 
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body).toMatchObject({ error: LeadErrorCode.ValidationError });
-    expect(mockBulkEditLeads).not.toHaveBeenCalled();
   });
 
-  it("returns 400 when set_status is missing status field", async () => {
+  it("returns 400 when bulk_edit patch is empty", async () => {
     setupAuthenticatedUser();
 
     const response = await POST(
-      makeRequest({ action: LeadBulkAction.SetStatus, ids: ["id-1"] }),
+      makeRequest({
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A],
+        patch: {},
+      }),
     );
 
     expect(response.status).toBe(400);
@@ -182,7 +221,6 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body).toMatchObject({ error: LeadErrorCode.ValidationError });
-    expect(mockBulkEditLeads).not.toHaveBeenCalled();
   });
 
   it("returns 500 when bulkEditLeads throws an unexpected error", async () => {
@@ -191,9 +229,9 @@ describe("POST /api/workspace/leads/bulk", () => {
 
     const response = await POST(
       makeRequest({
-        action: LeadBulkAction.SetStatus,
-        ids: ["id-1"],
-        status: ContactLeadStatus.New,
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A],
+        patch: { status: ContactLeadStatus.New },
       }),
     );
 
@@ -202,18 +240,24 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(body).toMatchObject({ error: LeadErrorCode.Internal });
   });
 
-  it("accepts both documented actions through the extracted schema", () => {
+  it("accepts all documented actions through the schema", () => {
     expect(
       leadBulkActionSchema.safeParse({
-        action: LeadBulkAction.SetStatus,
-        ids: ["id-1"],
-        status: ContactLeadStatus.New,
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A],
+        patch: { status: ContactLeadStatus.New },
       }).success,
     ).toBe(true);
     expect(
       leadBulkActionSchema.safeParse({
         action: LeadBulkAction.Archive,
-        ids: ["id-1"],
+        ids: [VALID_UUID_A],
+      }).success,
+    ).toBe(true);
+    expect(
+      leadBulkActionSchema.safeParse({
+        action: LeadBulkAction.Delete,
+        ids: [VALID_UUID_A],
       }).success,
     ).toBe(true);
   });

@@ -1,0 +1,117 @@
+{
+  "summary": {
+    "selectedOne": "1 lead selected",
+    "selectedMany": "{count} leads selected"
+  },
+  "toolbar": {
+    "edit": "Edit…",
+    "archive": "Archive",
+    "delete": "Delete",
+    "clear": "Clear selection"
+  },
+  "editDialog": {
+    "kicker": "Bulk edit",
+    "title": "Edit {count} leads",
+    "description": "Choose which fields to apply to all selected leads.",
+    "applyLabel": "Apply",
+    "save": "Save ({count} leads)",
+    "cancel": "Cancel",
+    "closeAriaLabel": "Close",
+    "fields": {
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status"
+      },
+      "category": {
+        "label": "Category",
+        "noneOption": "— No category —",
+        "placeholder": "Select category"
+      },
+      "score": {
+        "label": "Score",
+        "placeholder": "0 to 100",
+        "clearHint": "Leave empty to clear score."
+      },
+      "owner": {
+        "label": "Owner",
+        "placeholder": "Responsible person",
+        "clearHint": "Leave empty to clear owner."
+      },
+      "notesAppend": {
+        "label": "Append note",
+        "placeholder": "Will be appended to existing note",
+        "hint": "Appended to existing notes. Leads whose total length exceeds 5000 characters will be skipped."
+      },
+      "improvementsAppend": {
+        "label": "Append improvements",
+        "hint": "These improvements will be added on top of existing entries. Maximum 20 items.",
+        "emptyState": "No new improvements. Nothing will be appended on save."
+      }
+    },
+    "validation": {
+      "atLeastOneField": "Select at least one field to apply.",
+      "scoreOutOfRange": "Score must be between 0 and 100.",
+      "improvementTooLong": "Improvement may be at most 500 characters",
+      "improvementRequired": "Improvement may not be empty",
+      "tooManyImprovements": "Maximum 20 improvements per bulk edit."
+    },
+    "result": {
+      "successBanner": "{updated} of {total} leads updated.",
+      "failureBannerOnly": "No changes were made.",
+      "skippedHeader": "Skipped leads:",
+      "close": "Close"
+    },
+    "status": {
+      "saving": "Saving changes..."
+    }
+  },
+  "archiveConfirm": {
+    "kicker": "Bulk archive",
+    "title": "Archive leads?",
+    "messageOne": "The following lead will be moved to the archive status:",
+    "messageMany": "The following {count} leads will be moved to the archive status:",
+    "leadListMoreSuffix": "and {count} more",
+    "confirm": "Archive",
+    "cancel": "Cancel",
+    "closeAriaLabel": "Close",
+    "status": {
+      "archiving": "Archiving leads..."
+    }
+  },
+  "deleteConfirm": {
+    "kicker": "Permanent delete",
+    "title": "Permanently delete leads?",
+    "warning": "This action cannot be undone.",
+    "messageOne": "The following lead will be permanently deleted:",
+    "messageMany": "The following {count} leads will be permanently deleted:",
+    "leadListMoreSuffix": "and {count} more",
+    "confirm": "Delete permanently",
+    "cancel": "Cancel",
+    "closeAriaLabel": "Close",
+    "status": {
+      "deleting": "Deleting leads..."
+    }
+  },
+  "skipReasons": {
+    "notes_too_long": "Note would exceed 5000 characters",
+    "improvement_too_long": "Improvement entry exceeds 500 characters",
+    "unknown": "Unknown error"
+  },
+  "improvementsEditor": {
+    "addButton": "Add entry",
+    "addAriaLabel": "Add improvement",
+    "fieldLabel": "Improvement",
+    "fieldPlaceholder": "e.g. Clearer CTA",
+    "confirmAdd": "Add",
+    "confirmEdit": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "remove": "Remove",
+    "emptyState": "No entries yet.",
+    "emptyAppendState": "No new entries. Nothing will be appended on save."
+  },
+  "errors": {
+    "generic": "Bulk action could not be completed.",
+    "network": "Network error. Please try again."
+  }
+}

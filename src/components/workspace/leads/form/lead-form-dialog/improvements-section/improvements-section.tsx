@@ -1,22 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import {
   type Control,
-  useFieldArray,
+  Controller,
   type UseFormClearErrors,
 } from "react-hook-form";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
-import { FormField } from "@/components/shared/form/form-field/form-field";
+import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
+import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type { LeadsFormDictionary } from "@/i18n/dictionaries/workspace/leads";
-import styles from "./improvements-section.module.css";
 
 type ImprovementsSectionProps = {
   clearErrorsAction: UseFormClearErrors<LeadFormValues>;
@@ -31,6 +25,35 @@ const ImprovementsSectionField = {
   Improvements: "improvements",
 } as const;
 
+function buildEditorContent(
+  content: LeadsFormDictionary,
+  isEditMode: boolean,
+  initialItemCount: number,
+): ImprovementsListEditorContent {
+  const emptyState =
+    isEditMode && initialItemCount > 0
+      ? content.help.improvementsClearedState
+      : content.help.improvementsEmptyState;
+
+  return {
+    title: content.sections.improvements,
+    addButton: content.buttons.addImprovement,
+    addAriaLabel: content.buttons.addImprovement,
+    fieldLabel: content.fields.improvement,
+    fieldPlaceholder: content.placeholders.improvement,
+    confirmAdd: content.buttons.confirmAdd,
+    confirmEdit: content.buttons.confirmEdit,
+    cancel: content.buttons.cancel,
+    edit: content.buttons.edit,
+    remove: content.buttons.remove,
+    emptyState,
+    validation: {
+      required: content.validation.improvementRequired,
+      tooLong: content.validation.improvementTooLong,
+    },
+  };
+}
+
 export function ImprovementsSection({
   clearErrorsAction,
   content,
@@ -39,177 +62,32 @@ export function ImprovementsSection({
   isEditMode,
   onInteractionAction,
 }: ImprovementsSectionProps) {
-  const improvements = useFieldArray({
-    control,
-    name: ImprovementsSectionField.Improvements,
-  });
-  const editorRef = useRef<HTMLDivElement>(null);
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [draft, setDraft] = useState("");
-  const [draftError, setDraftError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!editorOpen) {
-      return;
-    }
-
-    window.requestAnimationFrame(() => {
-      editorRef.current
-        ?.querySelector<HTMLInputElement>("[name='improvement_draft']")
-        ?.focus();
-    });
-  }, [editorOpen]);
-
-  function resetEditor() {
-    setEditorOpen(false);
-    setEditingIndex(null);
-    setDraft("");
-    setDraftError(null);
-  }
-
-  function openEditor() {
-    if (editorOpen && editingIndex === null) {
-      resetEditor();
-      onInteractionAction();
-      return;
-    }
-
-    setEditorOpen(true);
-    setEditingIndex(null);
-    setDraft("");
-    setDraftError(null);
-    onInteractionAction();
-  }
-
-  function beginEdit(index: number) {
-    setEditorOpen(true);
-    setEditingIndex(index);
-    setDraft(improvements.fields[index]?.value ?? "");
-    setDraftError(null);
-    onInteractionAction();
-  }
-
-  function confirmDraft() {
-    const value = draft.trim();
-    if (!value) {
-      setDraftError(content.validation.improvementRequired);
-      return;
-    }
-
-    if (value.length > LeadFieldLimits.ImprovementMaxLength) {
-      setDraftError(content.validation.improvementTooLong);
-      return;
-    }
-
-    if (editingIndex === null) {
-      improvements.append({ value });
-    } else {
-      improvements.update(editingIndex, { value });
-    }
-    clearErrorsAction(ImprovementsSectionField.Improvements);
-    resetEditor();
-    onInteractionAction();
-  }
-
-  function removeImprovement(index: number) {
-    improvements.remove(index);
-    if (editingIndex === index) {
-      resetEditor();
-    } else if (editingIndex !== null && editingIndex > index) {
-      setEditingIndex((current) => (current === null ? null : current - 1));
-    }
-    clearErrorsAction(ImprovementsSectionField.Improvements);
-    onInteractionAction();
-  }
-
-  const confirmButtonLabel =
-    editingIndex === null
-      ? content.buttons.confirmAdd
-      : content.buttons.confirmEdit;
+  const editorContent = buildEditorContent(
+    content,
+    isEditMode,
+    initialItemCount,
+  );
 
   return (
-    <section className={styles.section} aria-labelledby="add-lead-improvements">
-      <div className={styles.sectionHeader}>
-        <h3 className={styles.sectionTitle} id="add-lead-improvements">
-          {content.sections.improvements}
-        </h3>
-        <button
-          aria-label={content.buttons.addImprovement}
-          aria-pressed={editorOpen}
-          className={styles.iconToggleButton}
-          onClick={openEditor}
-          title={content.buttons.addImprovement}
-          type="button"
-        >
-          <FontAwesomeIcon icon={faPlus} />
-        </button>
-      </div>
-
-      {editorOpen ? (
-        <div className={styles.inlineDialog} ref={editorRef}>
-          <div className={styles.inlineDialogRow}>
-            <FormField
-              className={styles.field}
-              controlClassName={styles.input}
-              errorMessage={draftError ?? undefined}
-              inputProps={{
-                name: "improvement_draft",
-                maxLength: LeadFieldLimits.ImprovementMaxLength,
-                onChange: (event) => {
-                  setDraft(event.currentTarget.value);
-                  setDraftError(null);
-                  onInteractionAction();
-                },
-                placeholder: content.placeholders.improvement,
-                value: draft,
-              }}
-              kind="text"
-              label={content.fields.improvement}
-            />
-
-            <ButtonControl onClick={resetEditor} type="button" variant="ghost">
-              {content.buttons.cancel}
-            </ButtonControl>
-            <PrimaryCtaButton onClick={confirmDraft} type="button">
-              {confirmButtonLabel}
-            </PrimaryCtaButton>
-          </div>
-        </div>
-      ) : null}
-
-      {improvements.fields.length === 0 ? (
-        <p className={styles.emptyState}>
-          {isEditMode && initialItemCount > 0
-            ? content.help.improvementsClearedState
-            : content.help.improvementsEmptyState}
-        </p>
-      ) : (
-        <div className={styles.stack}>
-          {improvements.fields.map((field, index) => (
-            <div className={styles.row} key={field.id}>
-              <span className={styles.listItemText}>{field.value}</span>
-
-              <div className={styles.rowActions}>
-                <ButtonControl
-                  onClick={() => beginEdit(index)}
-                  type="button"
-                  variant="ghost"
-                >
-                  {content.buttons.edit}
-                </ButtonControl>
-                <ButtonControl
-                  onClick={() => removeImprovement(index)}
-                  type="button"
-                  variant="ghost"
-                >
-                  {content.buttons.remove}
-                </ButtonControl>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
+    <Controller
+      control={control}
+      name={ImprovementsSectionField.Improvements}
+      render={({ field }) => {
+        const values = (field.value ?? []).map((item) => item.value);
+        return (
+          <ImprovementsListEditor
+            ariaLabelledBy="add-lead-improvements"
+            content={editorContent}
+            maxLengthPerEntry={LeadFieldLimits.ImprovementMaxLength}
+            onChange={(next) => {
+              field.onChange(next.map((value) => ({ value })));
+              clearErrorsAction(ImprovementsSectionField.Improvements);
+            }}
+            onInteractionAction={onInteractionAction}
+            value={values}
+          />
+        );
+      }}
+    />
   );
 }

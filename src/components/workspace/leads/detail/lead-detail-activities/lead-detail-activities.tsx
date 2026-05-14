@@ -3,6 +3,7 @@ import {
   faArrowRightArrowLeft,
   faFileImport,
   faInbox,
+  faLayerGroup,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -54,6 +55,7 @@ const ACTIVITY_TYPE_ICON: Record<LeadActivityType, IconDefinition> = {
   [LeadActivityType.StatusChange]: faArrowRightArrowLeft,
   [LeadActivityType.InboundSubmission]: faInbox,
   [LeadActivityType.Import]: faFileImport,
+  [LeadActivityType.BulkEdit]: faLayerGroup,
 };
 
 function getStatusChangeMetadata(
