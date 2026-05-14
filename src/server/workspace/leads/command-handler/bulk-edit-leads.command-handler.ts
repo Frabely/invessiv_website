@@ -193,7 +193,10 @@ export async function bulkEditLeads(
   let updatedCount = 0;
 
   for (const leadId of input.ids) {
-    const [current] = await db
+    // Best-effort identity probe used solely to report a display name on the
+    // catch-path below. The race-sensitive read (notes, status, score, …)
+    // happens inside the Tx — see processSingleLead below.
+    const [displayProbe] = await db
       .select({
         id: leads.id,
         display_name: leads.display_name,
@@ -201,38 +204,59 @@ export async function bulkEditLeads(
         last_name: leads.last_name,
         company_name: leads.company_name,
         email: leads.email,
-        lead_status: leads.lead_status,
-        category_id: leads.category_id,
-        score: leads.score,
-        owner: leads.owner,
-        notes: leads.notes,
-        improvements: leads.improvements,
       })
       .from(leads)
       .where(eq(leads.id, leadId))
       .limit(1);
 
-    if (!current) {
+    if (!displayProbe) {
       continue;
     }
 
     try {
       const result = await db.transaction(async (tx) => {
+        // Fresh, race-free read inside the Tx. All business-logic decisions
+        // (notes-length skip, change detection, update payload) run against
+        // this snapshot — preventing TOCTOU overwrite of concurrent writers.
+        const [current] = await tx
+          .select({
+            id: leads.id,
+            display_name: leads.display_name,
+            first_name: leads.first_name,
+            last_name: leads.last_name,
+            company_name: leads.company_name,
+            email: leads.email,
+            lead_status: leads.lead_status,
+            category_id: leads.category_id,
+            score: leads.score,
+            owner: leads.owner,
+            notes: leads.notes,
+            improvements: leads.improvements,
+          })
+          .from(leads)
+          .where(eq(leads.id, leadId))
+          .limit(1);
+
+        if (!current) {
+          // Row vanished between probe and Tx — treat as a silent skip.
+          return { updated: false } as const;
+        }
+
         return processSingleLead(tx, current, input.patch, now);
       });
       if (result.updated) {
         updatedCount += 1;
-      } else if (result.failure) {
+      } else if ("failure" in result && result.failure) {
         failedLeads.push(result.failure);
       }
     } catch (error) {
       console.error("[bulk-edit-leads] per-lead failure", {
-        leadId: current.id,
+        leadId: displayProbe.id,
         error,
       });
       failedLeads.push({
-        id: current.id,
-        displayName: formatLeadDisplayName(current),
+        id: displayProbe.id,
+        displayName: formatLeadDisplayName(displayProbe),
         reason: BulkSkipReason.Unknown,
       });
     }

@@ -54,17 +54,41 @@ function buildLead(overrides: Partial<LeadState>): LeadState {
   };
 }
 
-function setupDb(rows: LeadState[]) {
+function setupDb(rows: LeadState[], options: { txRows?: LeadState[] } = {}) {
   const updateCaptures: SetClause[] = [];
-  let rowIndex = 0;
+  const outerSelectCalls: { source: "outer" }[] = [];
+  const innerSelectCalls: { source: "inner" }[] = [];
+  let outerRowIndex = 0;
+  let innerRowIndex = 0;
 
-  function selectChain() {
+  // The outer SELECT (display-probe) walks `rows`. The inner SELECT (inside Tx)
+  // walks `txRows` if provided, otherwise falls back to `rows`. This lets tests
+  // distinguish which read drives business logic such as the notes-length check.
+  const txRows = options.txRows ?? rows;
+
+  function outerSelectChain() {
+    outerSelectCalls.push({ source: "outer" });
     return {
       from: () => ({
         where: () => ({
           limit: async () => {
-            const next = rows[rowIndex] ?? null;
-            rowIndex += 1;
+            const next = rows[outerRowIndex] ?? null;
+            outerRowIndex += 1;
+            return next ? [next] : [];
+          },
+        }),
+      }),
+    };
+  }
+
+  function innerSelectChain() {
+    innerSelectCalls.push({ source: "inner" });
+    return {
+      from: () => ({
+        where: () => ({
+          limit: async () => {
+            const next = txRows[innerRowIndex] ?? null;
+            innerRowIndex += 1;
             return next ? [next] : [];
           },
         }),
@@ -83,9 +107,10 @@ function setupDb(rows: LeadState[]) {
   }
 
   const dbMock = {
-    select: selectChain,
+    select: outerSelectChain,
     transaction: async (cb: (tx: unknown) => Promise<unknown>) => {
       return cb({
+        select: innerSelectChain,
         update: updateChain,
       });
     },
@@ -93,7 +118,7 @@ function setupDb(rows: LeadState[]) {
 
   getDrizzleDatabaseClientMock.mockReturnValue(dbMock);
 
-  return { updateCaptures };
+  return { updateCaptures, outerSelectCalls, innerSelectCalls };
 }
 
 describe("bulkEditLeads", () => {
@@ -187,6 +212,48 @@ describe("bulkEditLeads", () => {
     });
 
     expect(updateCaptures[0].improvements).toEqual(["a", "b", "c"]);
+  });
+
+  it("re-reads the lead inside the transaction so the notes-length check uses the fresh row (CR #2)", async () => {
+    vi.resetModules();
+    // Outer probe sees stale, short notes — would pass the length check.
+    const stale = buildLead({
+      id: "lead-1",
+      display_name: "Bob",
+      notes: "short",
+    });
+    // Inside the Tx the row already has 4980 chars of notes — appending 100
+    // more must exceed the 5000-char limit and trigger a NotesTooLong skip.
+    const fresh = buildLead({
+      id: "lead-1",
+      display_name: "Bob",
+      notes: "x".repeat(4980),
+    });
+
+    const { updateCaptures, innerSelectCalls } = setupDb([stale], {
+      txRows: [fresh],
+    });
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    const result = await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { notesAppend: "y".repeat(100) },
+    });
+
+    // Proves the Tx-internal SELECT ran (race-free read).
+    expect(innerSelectCalls).toHaveLength(1);
+    // Proves the inner row (notes length 4980) — not the outer stale row
+    // (notes length 5) — drove the skip decision.
+    expect(updateCaptures).toHaveLength(0);
+    expect(result.updatedCount).toBe(0);
+    expect(result.failedLeads).toEqual([
+      {
+        id: "lead-1",
+        displayName: "Bob",
+        reason: BulkSkipReason.NotesTooLong,
+      },
+    ]);
   });
 
   it("clears owner to null when patch.owner is null", async () => {
