@@ -2,12 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
 import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
+import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
-import {
-  LeadBulkAction,
-  leadBulkActionSchema,
-} from "@/server/workspace/leads/api/bulk-action-schema";
+import { leadBulkActionSchema } from "@/server/workspace/leads/api/bulk-action-schema";
 
 vi.mock("server-only", () => ({}));
 

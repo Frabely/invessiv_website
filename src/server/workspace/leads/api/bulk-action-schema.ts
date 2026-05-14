@@ -6,8 +6,6 @@ import { BulkEditLimits } from "@/common/constants/leads/bulk/bulk-edit-limits";
 import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 
-export { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
-
 const optionalNullableTrimmedString = (max: number) =>
   z
     .union([z.string(), z.null()])

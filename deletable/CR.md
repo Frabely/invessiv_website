@@ -817,3 +817,65 @@ Fix-Optionen:
   Lint-Fehler ein false positive und kann via `// eslint-disable-next-line` umgangen werden, mit Kommentar warum
 
 Empfehlung: Ursache mit `npm run lint` reproduzieren und gezielt fixen statt blind unterdrücken.
+
+---
+
+# Code Review — Branch `bulk-edit` (Runde 5)
+
+User-eigene Findings — komplementär zu Runde 1–4.
+
+### 51. `BulkEditField` const-Objekt lokal im Dialog — in `common` auslagern
+
+`leads-bulk-edit-dialog.tsx:49-58`:
+
+```ts
+const BulkEditField = {
+  Status: "status",
+  Category: "category",
+  Score: "score",
+  Owner: "owner",
+  NotesAppend: "notesAppend",
+  ImprovementsAppend: "improvementsAppend",
+} as const;
+
+type BulkEditField = (typeof BulkEditField)[keyof typeof BulkEditField];
+```
+
+Folgt dem Const-Objekt-Pattern, ist aber lokal eingebettet — sollte nach `src/common/constants/leads/bulk/bulk-edit-fields.ts` ausgelagert werden. Hat zusätzlichen Wert:
+
+- **Beziehung zu `BulkEditFieldKey`** (`src/common/constants/leads/bulk/bulk-edit-field-keys.ts`): Die zwei Const-Objekte überschneiden sich semantisch (Server-Field-Keys vs. UI-Apply-Field-Keys), aber haben unterschiedliche Werte (`category_id` vs. `category`, `notes_appended` vs. `notesAppend`). Bei Umsetzung von CR.md #1 (camelCase-Rename) konvergieren sie — dann wird klar, ob sie zu **einer** geteilten Konstante zusammengelegt werden können.
+- **Type-Sicherheit beim `applyState`-Record**: aktuell `Record<BulkEditField, boolean>` mit lokalem Typ. Ausgelagert können Tests + andere Caller (z. B. ein Settings-Panel für „welche Felder default-an?") denselben Type konsumieren.
+
+Empfehlung: nach #1 (camelCase-Rename) bewerten, ob `BulkEditField` (UI) und `BulkEditFieldKey` (Activity-Metadata) ein und dasselbe Const-Objekt werden sollen. Falls ja → eine geteilte Datei. Falls nein → beide ins `common/constants/leads/bulk/` mit klarer Naming-Abgrenzung.
+
+### 52. `BulkEditLeadsFailedLead["reason"]` — indexed-access statt direkter Type-Import
+
+`leads-bulk-edit-dialog.tsx:107-115`:
+
+```ts
+function getSkipReasonLabel(
+  bulkContent: LeadsBulkDictionary,
+  reason: BulkEditLeadsFailedLead["reason"],
+): string {
+  const knownReason = BULK_SKIP_REASON_VALUES.find(
+    (value) => value === reason,
+  );
+  ...
+}
+```
+
+`BulkEditLeadsFailedLead["reason"]` ist eine indexed-access-Type-Auflösung — funktioniert, aber:
+
+1. Der String-Literal `"reason"` ist ein impliziter Property-Name-Hardcode. Wenn die Property umbenannt wird, bricht es zwar zur Compile-Zeit, aber unnötige Indirektion.
+2. Der eigentliche Type ist `BulkSkipReason` (aus `src/common/constants/leads/bulk/bulk-skip-reasons.ts`). Direkter Import wäre einfacher zu lesen:
+
+```ts
+function getSkipReasonLabel(
+  bulkContent: LeadsBulkDictionary,
+  reason: BulkSkipReason,
+): string {
+```
+
+Fix: `BulkSkipReason` direkt importieren statt indexed-access über DTO.
+
+Zweite Stelle: Falls der Code-Pfad zukünftig die Dictionary-Keys typsicher absichern soll (`bulkContent.skipReasons[resolved]`), gehört eine `Record<BulkSkipReason, string>`-Type-Constraint auf die JSON-Struktur — aktuell ist's stillschweigender Konvention, dass die JSON-Keys den Const-Werten entsprechen. Bei Hinzufügen neuer Skip-Reasons (Pflicht: in DE+EN) fällt kein Compile-Fehler, sondern nur ein Runtime-`undefined`.

@@ -3,13 +3,11 @@ import "server-only";
 import type { NextRequest } from "next/server";
 
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
+import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
-import {
-  LeadBulkAction,
-  leadBulkActionSchema,
-} from "@/server/workspace/leads/api/bulk-action-schema";
+import { leadBulkActionSchema } from "@/server/workspace/leads/api/bulk-action-schema";
 import { bulkArchiveLeads } from "@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler";
 import { bulkDeleteLeads } from "@/server/workspace/leads/command-handler/bulk-delete-leads.command-handler";
 import { bulkEditLeads } from "@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler";
