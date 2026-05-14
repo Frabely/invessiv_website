@@ -535,3 +535,285 @@ Diese Runde fokussiert sich auf:
 - **A11y-Lücken** (#30, #31, #32)
 - **Schmal-fokussierte UX-Bugs** (#33, #34)
 - **Robustness-Edge-Cases** (#35, #36)
+
+---
+
+# Code Review — Branch `bulk-edit` (Runde 4)
+
+User-eigene Findings — komplementär zu Runde 1–3.
+
+## Konstanten / Typen
+
+### 37. `BulkEditSubmitFailure.kind` nutzt hardcoded String-Literale statt const-Objekt
+
+`leads-bulk-edit-service.ts:16` definiert:
+
+```ts
+type BulkEditFailure = {
+  ok: false;
+  kind: "network" | "server";
+};
+```
+
+Verletzt das Pflicht-Pattern aus `src/common/CLAUDE.md` (Const-Objekt-Pattern für String-Unions). Sollte:
+
+```ts
+export const BulkSubmitFailureKind = {
+  Network: "network",
+  Server: "server",
+} as const;
+export type BulkSubmitFailureKind =
+  (typeof BulkSubmitFailureKind)[keyof typeof BulkSubmitFailureKind];
+```
+
+Nach `src/common/constants/leads/bulk/bulk-submit-failure-kinds.ts` auslagern. Wird im Dialog (
+`leads-bulk-edit-dialog.tsx:240-243`) für die Fehlermeldungs-Wahl konsumiert — dort dann typsicher statt
+String-Vergleich.
+
+### 38. `BULK_API_ENDPOINT` gehört global, nicht pro Komponente
+
+Verstärkung zu CR.md #11: aktuell in `leads-bulk-edit-service.ts:6`, `leads-bulk-delete-confirm-dialog.tsx:19` und
+`leads-bulk-archive-confirm-dialog.tsx:19` jeweils lokal redefiniert.
+
+Fix: nach `src/common/constants/leads/bulk/bulk-api-endpoints.ts` (oder Erweiterung einer bestehenden
+API-Endpoint-Konstanten-Datei). Ein einziger Import-Pfad.
+
+### 39. `BulkDialogKind` in `leads-bulk-action-bar.tsx` lokal definiert — auslagern
+
+`leads-bulk-action-bar.tsx:20-26`:
+
+```ts
+const BulkDialogKind = {
+  Edit: "edit",
+  Archive: "archive",
+  Delete: "delete",
+} as const;
+type BulkDialogKind = (typeof BulkDialogKind)[keyof typeof BulkDialogKind];
+```
+
+Nuance: reiner UI-State, kein API-Vertrag → könnte lokal bleiben. Wenn der Const-Objekt-Pattern aber konsequent
+angewendet wird, gehört's nach `src/common/constants/leads/bulk/bulk-dialog-kinds.ts`. Bei späterer Reuse (z. B.
+Deep-Link auf einen offenen Dialog via URL-Param) zahlt es sich aus.
+
+### 40. `BulkEditActivityMetadata`, `LeadCurrentState`, `LeadUpdateSetClause` auslagern — Ort-Empfehlung
+
+Spezialisierung von CR.md #4 mit konkretem Ort:
+
+- `LeadCurrentState`: snake_case DB-Row-Form → `src/common/contracts/leads/rows/lead-current-state-row.ts` (passt zu
+  `rows/`-Konvention aus `src/common/CLAUDE.md`)
+- `LeadUpdateSetClause`: Drizzle-Insert-Partial → server-internal →
+  `src/server/workspace/leads/types/lead-update-types.ts`
+- `BulkEditActivityMetadata`: könnte client-relevant werden (wenn Audit-UI Metadata rendert, siehe R2#13) →
+  `src/common/contracts/leads/bulk/bulk-edit-activity-metadata.ts`
+
+---
+
+## Code-Sauberkeit
+
+### 41. `hasOwn(patch, "status")` hardcoded String-Keys
+
+`bulk-edit-leads.command-handler.ts:73, 84, 96, 108`: `hasOwn(patch, "status")`, `hasOwn(patch, "category_id")` etc. —
+Strings statt typsicherer Key-Referenzen. Refactor:
+
+```ts
+function hasOwn<K extends keyof BulkEditLeadsPatch>(
+  p: BulkEditLeadsPatch,
+  key: K,
+);
+```
+
+Mit `keyof BulkEditLeadsPatch`-Constraint bricht ein Tippfehler die Compilation. Hängt mit CR.md #1 zusammen — der
+camelCase-Rename macht den Refactor ohnehin nötig.
+
+### 42. Server-Log-Strings nicht in Konstanten
+
+`bulk-edit-leads.command-handler.ts:228`: `console.error("[bulk-edit-leads] per-lead failure", ...)`. Hardcoded String.
+In Produktion läuft das wahrscheinlich in einen Log-Aggregator (Vercel Logs / Sentry); eine Konstante macht
+Filter/Alerts stabil:
+
+```ts
+const LOG_TAG_BULK_EDIT_PER_LEAD = "[bulk-edit-leads] per-lead failure";
+```
+
+Eher Konvention als Bug. Aktuell scheint kein Logger-Wrapper zu existieren (kein `import { logger }`), also rein
+Stil-Verbesserung.
+
+Wichtig: Log-Strings gehören **nicht** in i18n-Dicts — Logs sind für Entwickler/Ops, nicht für End-User.
+
+---
+
+## Architektur / Pattern
+
+### 43. Route-Dispatcher hat „Delete" als implizites Default
+
+`src/app/api/workspace/leads/bulk/route.ts`:
+
+```ts
+if (action === LeadBulkAction.BulkEdit) { ...
+  return
+...
+}
+if (action === LeadBulkAction.Archive) { ...
+  return
+...
+}
+// fall-through:
+const result = await bulkDeleteLeads({ids: parsed.data.ids});
+```
+
+Funktional korrekt (Zod-discriminatedUnion stellt sicher, dass `action` nur einer der drei Werte ist), aber \*
+\*stilistisch gefährlich\*\*: die destruktivste Aktion (Hard-Delete) ist der Default. Wenn jemand später eine vierte Action
+hinzufügt und vergisst, eine dritte `if`-Branche zu schreiben, fällt sie auf Delete durch.
+
+Fix: explizites `switch` mit exhaustiveness-Check:
+
+```ts
+switch (parsed.data.action) {
+  case LeadBulkAction.BulkEdit:
+    return handleBulkEdit(...);
+  case LeadBulkAction.Archive:
+    return handleArchive(...);
+  case LeadBulkAction.Delete:
+    return handleDelete(...);
+  default: {
+    const _exhaustive: never = parsed.data;
+    return leadApiError(LeadErrorCode.Internal, 500);
+  }
+}
+```
+
+Oder dispatch-Map. Beides macht die Auswahl explizit und compiler-geprüft.
+
+### 44. `LeadsTableSelectionProvider` — setState-during-render-Pattern ist unsauber
+
+`leads-table-selection-provider.tsx:17-25`:
+
+```ts
+const [selectedIds, setSelectedIds] = useState<string[]>([]);
+const [previousResetKey, setPreviousResetKey] = useState(selectionResetKey);
+
+if (previousResetKey !== selectionResetKey) {
+  setPreviousResetKey(selectionResetKey);
+  setSelectedIds([]);
+}
+```
+
+Zwar React-konform (offiziell empfohlenes „Storing information from previous renders"-Pattern), aber:
+
+1. Zwei `useState`-Hooks für eine logische Property → Hidden-State, der bei Refactors leicht übersehen wird
+2. setState-during-render triggert sofortigen Re-Run derselben Komponente; sieht harmlos aus, ist aber subtil
+3. Saubere Alternative: Provider per `key`-Prop von außen remounten
+
+```tsx
+<LeadsTableSelectionProvider key={queryString} rowIds={...}>
+```
+
+Deklarativ, ohne Hidden-State, idiomatischer React. Konsequenz: Provider verliert den `selectionResetKey`-Prop und wird
+typsauber pure.
+
+---
+
+## UX / Refactoring
+
+### 45. Archive- und Delete-Confirm-Dialog sind nahezu identisch — DRY-Verstoß
+
+`leads-bulk-archive-confirm-dialog.tsx` (198 Zeilen) und `leads-bulk-delete-confirm-dialog.tsx` (202 Zeilen) sind
+strukturell identisch:
+
+| Aspekt          | Archive                          | Delete                                           |
+| --------------- | -------------------------------- | ------------------------------------------------ |
+| Props           | identisch                        | identisch                                        |
+| Render-Struktur | identisch                        | identisch                                        |
+| Confirm-Flow    | identisch                        | identisch                                        |
+| Unterschied     | `LeadBulkAction.Archive` + Texte | `LeadBulkAction.Delete` + warning-Banner + Texte |
+
+Fix: generischer `LeadsBulkConfirmDialog` mit `variant: "archive" | "delete"`-Prop (oder direkt `action: LeadBulkAction`
+-Prop). Inhalts-Texte via Variant aus dem Bulk-Dictionary aufgelöst, Confirm-Button-Color via CSS-Variant-Class. Spart ~
+150 Zeilen Code, einen identischen Test-Pfad, und reduziert die Stellen, an denen CR.md #16 (Inline-Fetch statt Service)
+gleichzeitig gefixt werden muss.
+
+### 46. `LEAD_LIST_MAX_VISIBLE = 10` Cap — empirisch gesetzt, mehrfach dupliziert
+
+`leads-bulk-archive-confirm-dialog.tsx:21` und `leads-bulk-delete-confirm-dialog.tsx:21` definieren beide
+`const LEAD_LIST_MAX_VISIBLE = 10`. Bei #45 (Merge) verschwindet die Duplikation automatisch.
+
+Konzeptioneller Punkt: Cap an sich ist sinnvoll, damit der Confirm-Dialog bei 200 selektierten Leads nicht vertikal
+explodiert. **Aber:** ein hartes Cut-off nach 10 Einträgen verbirgt Information („und 47 weitere") in genau dem Moment,
+wo der User Sicherheit braucht (vor irreversiblem Delete).
+
+Empfehlung: Cap durch eine **scrollbare Liste mit `max-height`** ersetzen (z. B. `max-height: 240px; overflow-y: auto`).
+Dann sieht der User alle ausgewählten Leads (per Scroll), der Dialog bleibt kompakt, und der Confirm-Button bleibt
+sichtbar. Die Konstante wird obsolet.
+
+### 47. `DialogId` als hardcoded String — sollte `useId()` werden
+
+`leads-bulk-delete-confirm-dialog.tsx:23-26` und `leads-bulk-archive-confirm-dialog.tsx:23-26` definieren beide:
+
+```ts
+const DialogId = {
+  Title: "leads-bulk-{delete,archive}-confirm-title",
+  Description: "leads-bulk-{delete,archive}-confirm-description",
+} as const;
+```
+
+Diese werden für `aria-labelledby`/`aria-describedby` verwendet. Problem: wenn zwei Instanzen desselben Dialogs
+gleichzeitig im DOM existieren (z. B. Storybook-Story mit zwei Beispielen, oder Modal-über-Modal-Edge-Case), kollidieren
+die IDs → Screen-Reader liest die falsche Description vor.
+
+Korrekte Lösung: **React `useId()`** statt Konstanten:
+
+```ts
+const titleId = useId();
+const descriptionId = useId();
+```
+
+`useId()` produziert pro Mount eine eindeutige, SSR-stabile ID. Behebt sowohl ID-Kollision als auch Code-Duplikation.
+
+Anmerkung: DOM-IDs sind technische Identifier, kein lokalisierbarer Text — sie gehören **nicht** in i18n-Dicts (weder
+`de.json` noch `en.json`).
+
+### 48. `lead-display-name.ts` ist überflüssige Defensive-Code-Schicht
+
+`src/server/workspace/leads/format/lead-display-name.ts` implementiert eine Fallback-Kaskade
+`display_name → company_name → first/last → email → "—"`. **Aber:**
+
+1. `record-configuration/leads.ts:23` deklariert `display_name: text("display_name").notNull()` — DB-seitig NOT NULL.
+2. `src/server/workspace/leads/shared/create-lead-core.ts:130-142` stellt server-seitig sicher, dass `display_name`
+   immer aus Input-Daten zusammengesetzt und gesetzt wird, bevor INSERT.
+3. Alle Lese-Pfade (`LeadSummaryDto.displayName`, `LeadDetailDto.displayName`) typisieren das Feld als `string` (
+   nicht-nullable).
+
+Trotzdem deklariert `LeadDisplayNameInput.display_name: string | null` (`lead-display-name.ts:6`) und prüft
+`if (lead.display_name && lead.display_name.trim().length > 0)`. Die Fallback-Branches `company_name`/
+`first_name+last_name`/`email`/`"—"` sind **unerreichbar**.
+
+Fix: Helper löschen. Im Command-Handler direkt `current.display_name` verwenden (DB-Garantie). Falls die Skip-Liste „mit
+display_name" gerendert wird, ist das ein einzeiliger Property-Access — kein Helper nötig.
+
+### 49. `ImprovementsListEditorContent` inline im Component-File
+
+`improvements-list-editor.tsx:16-33` exportiert den Content-Type direkt aus der Komponenten-Datei. CR.md #4 (
+Inline-Typen) gilt analog für Components — der Content-Type ist eine separate Schnittstelle, die mehrere Caller (
+`leads-bulk-edit-dialog.tsx`, `improvements-section.tsx`) konsumieren.
+
+Fix: nach `src/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor-content.ts`
+auslagern. Die Komponenten-Datei importiert dann den Type von dort.
+
+### 50. TS71007 in `improvements-list-editor.tsx`
+
+User-Hinweis: TS71007 (Next.js-Linter: „Props must be serializable for client components when crossing the server/client
+boundary, or function props passed from server components must follow the `*Action` naming convention") tritt in dieser
+Datei auf.
+
+Wahrscheinlicher Trigger: `onChange` und `onInteractionAction` sind Funktions-Props. Next.js' Linter erwartet bei
+Server→Client-Übergaben entweder Server-Actions (mit `*Action`-Suffix) oder dass die Caller selbst Client-Components
+sind. `onInteractionAction` folgt der Konvention, `onChange` nicht.
+
+Fix-Optionen:
+
+- `onChange` umbenennen zu `onChangeAction` — Standard-Konvention, bricht aber den HTML-`onChange`
+  -Pattern-Erwartungshorizont
+- Caller bestätigen, dass sie Client-Components sind (vermutlich der Fall, da `"use client"` im Editor) — dann ist der
+  Lint-Fehler ein false positive und kann via `// eslint-disable-next-line` umgangen werden, mit Kommentar warum
+
+Empfehlung: Ursache mit `npm run lint` reproduzieren und gezielt fixen statt blind unterdrücken.

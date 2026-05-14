@@ -6,13 +6,23 @@ import { LeadsTableSelectionContext } from "./leads-table-selection-context";
 type LeadsTableSelectionProviderProps = {
   children: ReactNode;
   rowIds: string[];
+  selectionResetKey?: string;
 };
 
 export function LeadsTableSelectionProvider({
   children,
   rowIds,
+  selectionResetKey,
 }: LeadsTableSelectionProviderProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [previousResetKey, setPreviousResetKey] = useState<string | undefined>(
+    selectionResetKey,
+  );
+
+  if (previousResetKey !== selectionResetKey) {
+    setPreviousResetKey(selectionResetKey);
+    setSelectedIds([]);
+  }
 
   const selectedCount = selectedIds.length;
   const allSelected = rowIds.length > 0 && selectedCount === rowIds.length;
