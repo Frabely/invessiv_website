@@ -173,7 +173,7 @@ export function LeadsBulkEditDialog({
       patch.status = statusValue;
     }
     if (applyState[BulkEditField.Category]) {
-      patch.category_id = categoryValue === "" ? null : categoryValue;
+      patch.categoryId = categoryValue === "" ? null : categoryValue;
     }
     if (applyState[BulkEditField.Score]) {
       if (scoreValue.trim() === "") {
@@ -199,14 +199,14 @@ export function LeadsBulkEditDialog({
     if (applyState[BulkEditField.NotesAppend]) {
       const trimmed = notesAppendValue.trim();
       if (trimmed.length > 0) {
-        patch.notes_append = trimmed;
+        patch.notesAppend = trimmed;
       }
     }
     if (
       applyState[BulkEditField.ImprovementsAppend] &&
       improvementsAppend.length > 0
     ) {
-      patch.improvements_append = improvementsAppend;
+      patch.improvementsAppend = improvementsAppend;
     }
     return patch;
   }

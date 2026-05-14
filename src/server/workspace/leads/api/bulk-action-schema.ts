@@ -21,7 +21,7 @@ const optionalNullableTrimmedString = (max: number) =>
 const bulkEditPatchSchema = z
   .object({
     status: z.enum(CONTACT_LEAD_STATUS_VALUES).optional(),
-    category_id: z.string().uuid().nullable().optional(),
+    categoryId: z.string().uuid().nullable().optional(),
     score: z
       .number()
       .int()
@@ -32,12 +32,12 @@ const bulkEditPatchSchema = z
     owner: optionalNullableTrimmedString(
       LeadFieldLimits.OwnerMaxLength,
     ).optional(),
-    notes_append: z
+    notesAppend: z
       .string()
       .min(1)
       .max(LeadFieldLimits.NotesMaxLength)
       .optional(),
-    improvements_append: z
+    improvementsAppend: z
       .array(z.string().min(1).max(LeadFieldLimits.ImprovementMaxLength))
       .max(BulkEditLimits.MaxImprovementsPerRequest)
       .optional(),

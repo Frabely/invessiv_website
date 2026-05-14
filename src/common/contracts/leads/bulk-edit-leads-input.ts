@@ -2,11 +2,11 @@ import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-
 
 export interface BulkEditLeadsPatch {
   status?: ContactLeadStatus;
-  category_id?: string | null;
+  categoryId?: string | null;
   score?: number | null;
   owner?: string | null;
-  notes_append?: string;
-  improvements_append?: string[];
+  notesAppend?: string;
+  improvementsAppend?: string[];
 }
 
 export interface BulkEditLeadsInput {

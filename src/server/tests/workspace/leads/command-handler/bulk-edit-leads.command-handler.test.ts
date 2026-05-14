@@ -143,7 +143,7 @@ describe("bulkEditLeads", () => {
 
     const result = await bulkEditLeads({
       ids: ["lead-1"],
-      patch: { notes_append: "y".repeat(100) },
+      patch: { notesAppend: "y".repeat(100) },
     });
 
     expect(updateCaptures).toHaveLength(0);
@@ -168,7 +168,7 @@ describe("bulkEditLeads", () => {
 
     await bulkEditLeads({
       ids: ["lead-1", "lead-2"],
-      patch: { notes_append: "neu" },
+      patch: { notesAppend: "neu" },
     });
 
     expect(updateCaptures[0].notes).toBe("alt\nneu");
@@ -183,7 +183,7 @@ describe("bulkEditLeads", () => {
 
     await bulkEditLeads({
       ids: ["lead-1"],
-      patch: { improvements_append: ["b", "c"] },
+      patch: { improvementsAppend: ["b", "c"] },
     });
 
     expect(updateCaptures[0].improvements).toEqual(["a", "b", "c"]);

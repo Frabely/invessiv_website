@@ -80,8 +80,8 @@ function buildUpdateSet(
     }
   }
 
-  if (hasOwn(patch, "category_id")) {
-    const next = patch.category_id ?? null;
+  if (hasOwn(patch, "categoryId")) {
+    const next = patch.categoryId ?? null;
     if (current.category_id !== next) {
       setClause.category_id = next;
       changedFields.push(BulkEditFieldKey.CategoryId);
@@ -110,23 +110,20 @@ function buildUpdateSet(
     }
   }
 
-  if (patch.notes_append) {
-    const combined = combineNotes(current.notes, patch.notes_append);
+  if (patch.notesAppend) {
+    const combined = combineNotes(current.notes, patch.notesAppend);
     setClause.notes = combined;
     changedFields.push(BulkEditFieldKey.NotesAppended);
-    notesAppendedChars = patch.notes_append.length;
+    notesAppendedChars = patch.notesAppend.length;
     before.notes_length = current.notes?.length ?? 0;
     after.notes_length = combined.length;
   }
 
-  if (patch.improvements_append && patch.improvements_append.length > 0) {
-    const next = [
-      ...(current.improvements ?? []),
-      ...patch.improvements_append,
-    ];
+  if (patch.improvementsAppend && patch.improvementsAppend.length > 0) {
+    const next = [...(current.improvements ?? []), ...patch.improvementsAppend];
     setClause.improvements = next;
     changedFields.push(BulkEditFieldKey.ImprovementsAdded);
-    improvementsAddedCount = patch.improvements_append.length;
+    improvementsAddedCount = patch.improvementsAppend.length;
     before.improvements_count = current.improvements?.length ?? 0;
     after.improvements_count = next.length;
   }
@@ -152,8 +149,8 @@ async function processSingleLead(
   patch: BulkEditLeadsPatch,
   now: Date,
 ): Promise<{ updated: boolean; failure?: BulkEditLeadsFailedLead }> {
-  if (patch.notes_append) {
-    const combined = combineNotes(current.notes, patch.notes_append);
+  if (patch.notesAppend) {
+    const combined = combineNotes(current.notes, patch.notesAppend);
     if (combined.length > LeadFieldLimits.NotesMaxLength) {
       return {
         updated: false,
