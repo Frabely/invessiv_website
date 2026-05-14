@@ -51,6 +51,8 @@
     "validation": {
       "atLeastOneField": "Select at least one field to apply.",
       "scoreOutOfRange": "Score must be between 0 and 100.",
+      "notesAppendEmpty": "Appended note cannot be empty.",
+      "improvementsAppendEmpty": "Appended improvements cannot be empty.",
       "improvementTooLong": "Improvement may be at most 500 characters",
       "improvementRequired": "Improvement may not be empty",
       "tooManyImprovements": "Maximum 20 improvements per bulk edit."

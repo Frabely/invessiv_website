@@ -7,8 +7,8 @@ import {
 } from "react-hook-form";
 
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
+import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor-content";
 import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type { LeadsFormDictionary } from "@/i18n/dictionaries/workspace/leads";
 
@@ -79,7 +79,7 @@ export function ImprovementsSection({
             ariaLabelledBy="add-lead-improvements"
             content={editorContent}
             maxLengthPerEntry={LeadFieldLimits.ImprovementMaxLength}
-            onChange={(next) => {
+            onChangeAction={(next) => {
               field.onChange(next.map((value) => ({ value })));
               clearErrorsAction(ImprovementsSectionField.Improvements);
             }}

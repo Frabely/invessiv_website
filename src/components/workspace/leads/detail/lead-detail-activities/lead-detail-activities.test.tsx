@@ -47,6 +47,22 @@ const invalidStatusChangeActivity: LeadActivityDto = {
   metadata: { previous_status: "new", next_status: "does-not-exist" },
 };
 
+const bulkEditActivity: LeadActivityDto = {
+  id: "act-4",
+  type: LeadActivityType.BulkEdit,
+  title: null,
+  body: "Updated fields: status, owner",
+  metadata: {
+    changedFields: ["status", "owner"],
+    before: {},
+    after: {},
+  },
+  occurredAt: "2026-04-14T10:30:00.000Z",
+  actorType: LeadActorType.System,
+  actorId: null,
+  actorLabel: null,
+};
+
 const baseSubmission: LeadSubmissionDto = {
   id: "sub-1",
   requestId: "req-abc",
@@ -135,5 +151,16 @@ describe("LeadDetailActivities", () => {
       screen.getByRole("heading", { name: "Incoming form submission" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Quick contact")).toBeInTheDocument();
+  });
+
+  it("renders bulk edit activity body", () => {
+    renderActivities({
+      activities: [bulkEditActivity],
+    });
+
+    expect(screen.getAllByText("Bulk-Edit").length).toBeGreaterThan(0);
+    expect(
+      screen.getByText("Updated fields: status, owner"),
+    ).toBeInTheDocument();
   });
 });

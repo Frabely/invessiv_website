@@ -205,6 +205,26 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(mockBulkEditLeads).not.toHaveBeenCalled();
   });
 
+  it("returns 400 when bulk_edit tries to archive a lead", async () => {
+    setupAuthenticatedUser();
+
+    const response = await POST(
+      makeRequest({
+        action: LeadBulkAction.BulkEdit,
+        ids: [VALID_UUID_A],
+        patch: { status: ContactLeadStatus.Archived },
+      }),
+    );
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body).toMatchObject({ error: LeadErrorCode.ValidationError });
+    expect(body.details?.[0]?.message).toBe(
+      "bulk_edit_status_archive_disallowed",
+    );
+    expect(mockBulkEditLeads).not.toHaveBeenCalled();
+  });
+
   it("returns 400 when the request body is not valid JSON", async () => {
     setupAuthenticatedUser();
 

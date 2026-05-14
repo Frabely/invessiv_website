@@ -1,9 +1,10 @@
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
+import type { BulkSubmitFailureKind as BulkSubmitFailureKindType } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { BULK_API_ENDPOINT } from "@/common/constants/leads/bulk/bulk-api-endpoint";
 import type { BulkEditLeadsPatch } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { BulkEditLeadsFailedLead } from "@/common/contracts/leads/results/bulk-edit-leads-result";
-
-const BULK_API_ENDPOINT = "/api/workspace/leads/bulk";
 
 type BulkEditSuccess = {
   ok: true;
@@ -13,7 +14,7 @@ type BulkEditSuccess = {
 
 type BulkEditFailure = {
   ok: false;
-  kind: "network" | "server";
+  kind: BulkSubmitFailureKindType;
 };
 
 export type BulkEditSubmitResult = BulkEditSuccess | BulkEditFailure;
@@ -38,7 +39,7 @@ export async function submitBulkEdit(
     });
 
     if (response.status !== HttpResponseCode.Ok) {
-      return { ok: false, kind: "server" };
+      return { ok: false, kind: BulkSubmitFailureKind.Server };
     }
 
     const data = (await response.json()) as BulkEditSuccess;
@@ -48,6 +49,6 @@ export async function submitBulkEdit(
       failedLeads: data.failedLeads ?? [],
     };
   } catch {
-    return { ok: false, kind: "network" };
+    return { ok: false, kind: BulkSubmitFailureKind.Network };
   }
 }

@@ -10,27 +10,9 @@ import {
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
+import type { ImprovementsListEditorContent } from "./improvements-list-editor-content";
 
 import styles from "./improvements-list-editor.module.css";
-
-export type ImprovementsListEditorContent = {
-  title?: string;
-  addButton: string;
-  addAriaLabel: string;
-  fieldLabel: string;
-  fieldPlaceholder: string;
-  confirmAdd: string;
-  confirmEdit: string;
-  cancel: string;
-  edit: string;
-  remove: string;
-  emptyState: string;
-  validation: {
-    required: string;
-    tooLong: string;
-    tooMany?: string;
-  };
-};
 
 type ImprovementsListEditorProps = {
   ariaLabelledBy?: string;
@@ -39,7 +21,7 @@ type ImprovementsListEditorProps = {
   draftInputName?: string;
   maxEntries?: number;
   maxLengthPerEntry?: number;
-  onChange: (next: string[]) => void;
+  onChangeAction: (next: string[]) => void;
   onInteractionAction?: () => void;
   value: string[];
 };
@@ -53,7 +35,7 @@ export function ImprovementsListEditor({
   draftInputName = DRAFT_INPUT_DEFAULT_NAME,
   maxEntries,
   maxLengthPerEntry = LeadFieldLimits.ImprovementMaxLength,
-  onChange,
+  onChangeAction,
   onInteractionAction,
   value,
 }: ImprovementsListEditorProps) {
@@ -133,11 +115,11 @@ export function ImprovementsListEditor({
         setDraftError(content.validation.tooMany);
         return;
       }
-      onChange([...value, trimmed]);
+      onChangeAction([...value, trimmed]);
     } else {
       const next = value.slice();
       next[editingIndex] = trimmed;
-      onChange(next);
+      onChangeAction(next);
     }
     resetEditor();
     notifyInteraction();
@@ -145,7 +127,7 @@ export function ImprovementsListEditor({
 
   function removeEntry(index: number) {
     const next = value.filter((_, i) => i !== index);
-    onChange(next);
+    onChangeAction(next);
     if (editingIndex === index) {
       resetEditor();
     } else if (editingIndex !== null && editingIndex > index) {

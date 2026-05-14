@@ -51,6 +51,8 @@
     "validation": {
       "atLeastOneField": "Mindestens ein Feld zum Anwenden auswählen.",
       "scoreOutOfRange": "Score muss zwischen 0 und 100 liegen.",
+      "notesAppendEmpty": "Angehängte Notiz darf nicht leer sein.",
+      "improvementsAppendEmpty": "Angehängte Verbesserungen dürfen nicht leer sein.",
       "improvementTooLong": "Verbesserung darf maximal 500 Zeichen lang sein",
       "improvementRequired": "Verbesserung darf nicht leer sein",
       "tooManyImprovements": "Maximal 20 Verbesserungen pro Bulk-Edit."

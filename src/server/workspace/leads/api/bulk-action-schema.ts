@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
+import {
+  CONTACT_LEAD_STATUS_VALUES,
+  ContactLeadStatus,
+} from "@/common/constants/contact/contact-lead-statuses";
 import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
 import { BulkEditLimits } from "@/common/constants/leads/bulk/bulk-edit-limits";
 import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
@@ -18,8 +21,13 @@ const optionalNullableTrimmedString = (max: number) =>
 
 const bulkEditPatchSchema = z
   .object({
-    status: z.enum(CONTACT_LEAD_STATUS_VALUES).optional(),
-    categoryId: z.string().uuid().nullable().optional(),
+    status: z
+      .enum(CONTACT_LEAD_STATUS_VALUES)
+      .refine((status) => status !== ContactLeadStatus.Archived, {
+        message: LeadValidationIssueCode.BulkEditStatusArchiveDisallowed,
+      })
+      .optional(),
+    categoryId: z.uuid().nullable().optional(),
     score: z
       .number()
       .int()
@@ -44,12 +52,7 @@ const bulkEditPatchSchema = z
     message: LeadValidationIssueCode.BulkEditEmptyPatch,
   });
 
-export type BulkEditPatch = z.infer<typeof bulkEditPatchSchema>;
-
-const idsSchema = z
-  .array(z.string().uuid())
-  .min(1)
-  .max(BulkEditLimits.MaxIdsPerRequest);
+const idsSchema = z.array(z.uuid()).min(1).max(BulkEditLimits.MaxIdsPerRequest);
 
 export const leadBulkActionSchema = z.discriminatedUnion("action", [
   z.object({
@@ -66,5 +69,3 @@ export const leadBulkActionSchema = z.discriminatedUnion("action", [
     ids: idsSchema,
   }),
 ]);
-
-export type LeadBulkActionInput = z.infer<typeof leadBulkActionSchema>;

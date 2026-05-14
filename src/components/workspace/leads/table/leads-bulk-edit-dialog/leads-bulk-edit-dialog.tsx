@@ -1,6 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ import {
   BULK_SKIP_REASON_VALUES,
   BulkSkipReason,
 } from "@/common/constants/leads/bulk/bulk-skip-reasons";
+import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import type { BulkEditLeadsPatch } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
@@ -26,8 +27,8 @@ import {
 } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
-import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
+import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor-content";
 import type {
   LeadsBulkDictionary,
   LeadsSharedDictionary,
@@ -36,6 +37,8 @@ import type {
 import { submitBulkEdit } from "./leads-bulk-edit-service";
 
 import styles from "./leads-bulk-edit-dialog.module.css";
+import type { BulkEditField as BulkEditFieldKind } from "@/common/constants/leads/bulk/bulk-edit-fields";
+import { BulkEditField } from "@/common/constants/leads/bulk/bulk-edit-fields";
 
 type LeadsBulkEditDialogProps = {
   bulkContent: LeadsBulkDictionary;
@@ -46,17 +49,6 @@ type LeadsBulkEditDialogProps = {
   sharedContent: LeadsSharedDictionary;
 };
 
-const BulkEditField = {
-  Status: "status",
-  Category: "category",
-  Score: "score",
-  Owner: "owner",
-  NotesAppend: "notesAppend",
-  ImprovementsAppend: "improvementsAppend",
-} as const;
-
-type BulkEditField = (typeof BulkEditField)[keyof typeof BulkEditField];
-
 const DialogId = {
   Title: "leads-bulk-edit-dialog-title",
   Description: "leads-bulk-edit-dialog-description",
@@ -66,7 +58,7 @@ const STATUS_OPTIONS_EXCLUDING_ARCHIVED = CONTACT_LEAD_STATUS_VALUES.filter(
   (status) => status !== ContactLeadStatus.Archived,
 );
 
-type ApplyState = Record<BulkEditField, boolean>;
+type ApplyState = Record<BulkEditFieldKind, boolean>;
 
 const INITIAL_APPLY_STATE: ApplyState = {
   [BulkEditField.Status]: false,
@@ -135,19 +127,19 @@ export function LeadsBulkEditDialog({
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [scoreError, setScoreError] = useState<string | null>(null);
+  const [notesAppendError, setNotesAppendError] = useState<string | null>(null);
+  const [improvementsAppendError, setImprovementsAppendError] = useState<
+    string | null
+  >(null);
   const [isPending, setIsPending] = useState(false);
   const [failedLeads, setFailedLeads] = useState<BulkEditLeadsFailedLead[]>([]);
   const [updatedCount, setUpdatedCount] = useState<number | null>(null);
   const [resultBannerShown, setResultBannerShown] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.requestAnimationFrame(() => {
-      const container = dialogRef.current;
-      if (!container) return;
-      const focusable = container.querySelector<HTMLElement>(
-        "input, select, textarea, button",
-      );
-      focusable?.focus();
+      closeButtonRef.current?.focus();
     });
   }, []);
 
@@ -156,14 +148,18 @@ export function LeadsBulkEditDialog({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (isPending) {
-      if (event.key === "Escape") event.preventDefault();
+    if (isPending && event.key === "Escape") {
+      event.preventDefault();
       return;
     }
     trapDialogFocus(event, event.currentTarget, onCloseAction);
   }
 
-  function toggleApply(field: BulkEditField) {
+  function toggleApply(field: BulkEditFieldKind) {
+    setErrorMessage(null);
+    setScoreError(null);
+    setNotesAppendError(null);
+    setImprovementsAppendError(null);
     setApplyState((current) => ({ ...current, [field]: !current[field] }));
   }
 
@@ -198,9 +194,20 @@ export function LeadsBulkEditDialog({
     }
     if (applyState[BulkEditField.NotesAppend]) {
       const trimmed = notesAppendValue.trim();
-      if (trimmed.length > 0) {
-        patch.notesAppend = trimmed;
+      if (trimmed.length === 0) {
+        setNotesAppendError(bulkContent.editDialog.validation.notesAppendEmpty);
+        return null;
       }
+      patch.notesAppend = trimmed;
+    }
+    if (
+      applyState[BulkEditField.ImprovementsAppend] &&
+      improvementsAppend.length === 0
+    ) {
+      setImprovementsAppendError(
+        bulkContent.editDialog.validation.improvementsAppendEmpty,
+      );
+      return null;
     }
     if (
       applyState[BulkEditField.ImprovementsAppend] &&
@@ -211,9 +218,16 @@ export function LeadsBulkEditDialog({
     return patch;
   }
 
+  function finishSuccess() {
+    router.refresh();
+    onSuccessAction();
+  }
+
   async function handleSubmit() {
     setErrorMessage(null);
     setScoreError(null);
+    setNotesAppendError(null);
+    setImprovementsAppendError(null);
 
     const anyApplied = Object.values(applyState).some(Boolean);
     if (!anyApplied) {
@@ -235,7 +249,7 @@ export function LeadsBulkEditDialog({
 
     if (!result.ok) {
       setErrorMessage(
-        result.kind === "network"
+        result.kind === BulkSubmitFailureKind.Network
           ? bulkContent.errors.network
           : bulkContent.errors.generic,
       );
@@ -247,14 +261,12 @@ export function LeadsBulkEditDialog({
     setResultBannerShown(true);
 
     if (result.failedLeads.length === 0) {
-      router.refresh();
-      onSuccessAction();
+      finishSuccess();
     }
   }
 
   function handleCloseAfterPartialSuccess() {
-    router.refresh();
-    onSuccessAction();
+    finishSuccess();
   }
 
   const totalCount = selectedIds.length;
@@ -299,6 +311,7 @@ export function LeadsBulkEditDialog({
             className={styles.closeButton}
             disabled={isPending}
             onClick={onCloseAction}
+            ref={closeButtonRef}
             title={bulkContent.editDialog.closeAriaLabel}
             type="button"
             variant="ghost"
@@ -478,7 +491,10 @@ export function LeadsBulkEditDialog({
                 className={styles.textarea}
                 disabled={!applyState[BulkEditField.NotesAppend] || isPending}
                 maxLength={LeadFieldLimits.NotesMaxLength}
-                onChange={(event) => setNotesAppendValue(event.target.value)}
+                onChange={(event) => {
+                  setNotesAppendValue(event.target.value);
+                  setNotesAppendError(null);
+                }}
                 placeholder={
                   bulkContent.editDialog.fields.notesAppend.placeholder
                 }
@@ -488,6 +504,11 @@ export function LeadsBulkEditDialog({
               <small className={styles.hint}>
                 {bulkContent.editDialog.fields.notesAppend.hint}
               </small>
+              {notesAppendError ? (
+                <small className={styles.error} role="alert">
+                  {notesAppendError}
+                </small>
+              ) : null}
             </div>
           </section>
 
@@ -520,13 +541,21 @@ export function LeadsBulkEditDialog({
                   draftInputName="bulk_improvement_draft"
                   maxEntries={BulkEditLimits.MaxImprovementsPerRequest}
                   maxLengthPerEntry={LeadFieldLimits.ImprovementMaxLength}
-                  onChange={setImprovementsAppend}
+                  onChangeAction={(next) => {
+                    setImprovementsAppend(next);
+                    setImprovementsAppendError(null);
+                  }}
                   value={improvementsAppend}
                 />
               </div>
               <small className={styles.hint}>
                 {bulkContent.editDialog.fields.improvementsAppend.hint}
               </small>
+              {improvementsAppendError ? (
+                <small className={styles.error} role="alert">
+                  {improvementsAppendError}
+                </small>
+              ) : null}
             </div>
           </section>
 

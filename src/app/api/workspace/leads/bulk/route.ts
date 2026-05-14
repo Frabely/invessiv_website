@@ -37,34 +37,44 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
   try {
     const action = parsed.data.action;
 
-    if (action === LeadBulkAction.BulkEdit) {
-      const result = await bulkEditLeads({
-        ids: parsed.data.ids,
-        patch: parsed.data.patch,
-      });
-      return Response.json(
-        {
-          ok: result.ok,
-          updatedCount: result.updatedCount,
-          failedLeads: result.failedLeads,
-        },
-        { status: HttpResponseCode.Ok },
-      );
+    switch (action) {
+      case LeadBulkAction.BulkEdit: {
+        const result = await bulkEditLeads({
+          ids: parsed.data.ids,
+          patch: parsed.data.patch,
+        });
+        return Response.json(
+          {
+            ok: result.ok,
+            updatedCount: result.updatedCount,
+            failedLeads: result.failedLeads,
+          },
+          { status: HttpResponseCode.Ok },
+        );
+      }
+      case LeadBulkAction.Archive: {
+        const result = await bulkArchiveLeads({ ids: parsed.data.ids });
+        return Response.json(
+          { ok: result.ok, updatedCount: result.updatedCount },
+          { status: HttpResponseCode.Ok },
+        );
+      }
+      case LeadBulkAction.Delete: {
+        const result = await bulkDeleteLeads({ ids: parsed.data.ids });
+        return Response.json(
+          { ok: result.ok, deletedCount: result.deletedCount },
+          { status: HttpResponseCode.Ok },
+        );
+      }
+      default: {
+        const _exhaustive: never = action;
+        void _exhaustive;
+        return leadApiError(
+          LeadErrorCode.Internal,
+          HttpResponseCode.InternalServerError,
+        );
+      }
     }
-
-    if (action === LeadBulkAction.Archive) {
-      const result = await bulkArchiveLeads({ ids: parsed.data.ids });
-      return Response.json(
-        { ok: result.ok, updatedCount: result.updatedCount },
-        { status: HttpResponseCode.Ok },
-      );
-    }
-
-    const result = await bulkDeleteLeads({ ids: parsed.data.ids });
-    return Response.json(
-      { ok: result.ok, deletedCount: result.deletedCount },
-      { status: HttpResponseCode.Ok },
-    );
   } catch {
     return leadApiError(
       LeadErrorCode.Internal,

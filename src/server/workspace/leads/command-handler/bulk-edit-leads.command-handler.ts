@@ -21,33 +21,38 @@ import {
 import { leads } from "@/server/db/record-configuration";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 
-type LeadCurrentState = {
-  id: string;
-  display_name: string;
-  first_name: string | null;
-  last_name: string | null;
-  company_name: string | null;
-  email: string | null;
-  lead_status: typeof leads.$inferSelect.lead_status;
-  category_id: string | null;
-  score: number | null;
-  owner: string | null;
-  notes: string | null;
-  improvements: string[] | null;
+import type { BulkEditActivityMetadata } from "@/server/workspace/leads/types/bulk-edit-activity-metadata";
+import type { LeadCurrentState } from "@/server/workspace/leads/types/lead-current-state";
+import type { LeadUpdateSetClause } from "@/server/workspace/leads/types/lead-update-set-clause";
+
+const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
+  [BulkEditFieldKey.Status]: "status",
+  [BulkEditFieldKey.CategoryId]: "category",
+  [BulkEditFieldKey.Score]: "score",
+  [BulkEditFieldKey.Owner]: "owner",
+  [BulkEditFieldKey.NotesAppended]: "notes",
+  [BulkEditFieldKey.ImprovementsAdded]: "improvements",
 };
 
-type LeadUpdateSetClause = Partial<typeof leads.$inferInsert>;
-
-type BulkEditActivityMetadata = {
-  changedFields: string[];
-  before: Record<string, unknown>;
-  after: Record<string, unknown>;
-  notesAppendedChars?: number;
-  improvementsAddedCount?: number;
-};
-
-function hasOwn(patch: BulkEditLeadsPatch, key: keyof BulkEditLeadsPatch) {
+function hasOwn<K extends keyof BulkEditLeadsPatch>(
+  patch: BulkEditLeadsPatch,
+  key: K,
+): boolean {
   return Object.prototype.hasOwnProperty.call(patch, key);
+}
+
+function buildBulkEditActivityBody(
+  metadata: BulkEditActivityMetadata,
+): string | null {
+  if (metadata.changedFields.length === 0) {
+    return null;
+  }
+
+  const labels = metadata.changedFields.map(
+    (field) => BULK_EDIT_ACTIVITY_FIELD_LABELS[field] ?? field,
+  );
+
+  return `Updated fields: ${labels.join(", ")}`;
 }
 
 function combineNotes(existing: string | null, append: string): string {
@@ -171,6 +176,7 @@ async function processSingleLead(
   await createLeadActivity(tx, {
     leadId: current.id,
     type: LeadActivityType.BulkEdit,
+    body: buildBulkEditActivityBody(metadata),
     metadata,
     actorType: LeadActorType.System,
   });
@@ -178,8 +184,6 @@ async function processSingleLead(
   return { updated: true };
 }
 
-// TODO(CR #6 / ARCHITECTURE-open-items #1): wenn Ownership-Modell eingeführt wird,
-// `where user_id = $caller` an den Lead-SELECT/-UPDATE-Pfad ergänzen.
 export async function bulkEditLeads(
   input: BulkEditLeadsInput,
 ): Promise<BulkEditLeadsResult> {

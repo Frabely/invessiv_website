@@ -180,6 +180,17 @@ function renderStatusChange(
   );
 }
 
+function renderBulkEdit(
+  activity: LeadActivityDto,
+  content: LeadsDetailDictionary,
+) {
+  return (
+    <p className={styles.bodyText}>
+      {activity.body ?? content.activity.bulkEdit.fallbackBody}
+    </p>
+  );
+}
+
 function renderActivityEntry(
   activity: LeadActivityDto,
   content: LeadsDetailDictionary,
@@ -209,6 +220,8 @@ function renderActivityEntry(
         <h4 className={styles.title}>{title}</h4>
         {activity.type === LeadActivityType.StatusChange ? (
           renderStatusChange(activity, content, sharedContent)
+        ) : activity.type === LeadActivityType.BulkEdit ? (
+          renderBulkEdit(activity, content)
         ) : activity.body ? (
           <p className={styles.bodyText}>{activity.body}</p>
         ) : null}

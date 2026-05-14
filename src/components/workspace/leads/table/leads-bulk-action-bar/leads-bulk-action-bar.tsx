@@ -14,16 +14,9 @@ import type {
 import { LeadsBulkArchiveConfirmDialog } from "../leads-bulk-archive-confirm-dialog/leads-bulk-archive-confirm-dialog";
 import { LeadsBulkDeleteConfirmDialog } from "../leads-bulk-delete-confirm-dialog/leads-bulk-delete-confirm-dialog";
 import { LeadsBulkEditDialog } from "../leads-bulk-edit-dialog/leads-bulk-edit-dialog";
+import { BulkDialogKind } from "@/common/constants/leads/bulk/bulk-dialog-kinds";
 
 import styles from "./leads-bulk-action-bar.module.css";
-
-const BulkDialogKind = {
-  Edit: "edit",
-  Archive: "archive",
-  Delete: "delete",
-} as const;
-
-type BulkDialogKind = (typeof BulkDialogKind)[keyof typeof BulkDialogKind];
 
 type LeadsBulkActionBarProps = {
   bulkContent: LeadsBulkDictionary;

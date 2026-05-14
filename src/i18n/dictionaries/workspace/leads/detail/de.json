@@ -60,6 +60,9 @@
     "statusChange": {
       "fallbackBody": "Der Status wurde aktualisiert.",
       "separator": "→"
+    },
+    "bulkEdit": {
+      "fallbackBody": "Mehrere Lead-Felder wurden aktualisiert."
     }
   }
 }

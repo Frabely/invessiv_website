@@ -19,6 +19,7 @@ export const LEAD_ERROR_CODE_VALUES = [
 export const LeadValidationIssueCode = {
   LastNameOrCompanyNameRequired: "last_name_or_company_name_required",
   BulkEditEmptyPatch: "bulk_edit_empty_patch",
+  BulkEditStatusArchiveDisallowed: "bulk_edit_status_archive_disallowed",
 } as const;
 
 export type LeadValidationIssueCode =
@@ -27,4 +28,5 @@ export type LeadValidationIssueCode =
 export const LEAD_VALIDATION_ISSUE_CODE_VALUES = [
   LeadValidationIssueCode.LastNameOrCompanyNameRequired,
   LeadValidationIssueCode.BulkEditEmptyPatch,
+  LeadValidationIssueCode.BulkEditStatusArchiveDisallowed,
 ] as const;
