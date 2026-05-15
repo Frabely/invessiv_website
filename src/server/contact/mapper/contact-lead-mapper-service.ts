@@ -23,7 +23,9 @@ export type LeadMapperInput = {
   company_name?: string | null;
   email: string;
   displayName: string;
-  website_url?: string;
+  phone?: string | null;
+  notes?: string | null;
+  website_url?: string | null;
 };
 
 export type SubmissionApiToDbMapperInput = {
@@ -43,6 +45,8 @@ export function mapLeadApiToDb(
     first_name: null,
     last_name: null,
     company_name: payload.company_name?.trim() || null,
+    phone: payload.phone?.trim() || null,
+    notes: payload.notes?.trim() || null,
     lead_status: ContactLeadStatus.PendingReview,
     owner: null,
     source: LeadSource.Webform,
@@ -79,6 +83,7 @@ export function mapQuickContactDtoToDbPersistInput(
     {
       displayName: payload.displayName,
       email: payload.email,
+      notes: payload.message,
     },
     createdAt,
   );
@@ -112,7 +117,9 @@ export function mapProjectRequestDtoToDbPersistInput(
       email: payload.email,
       displayName: payload.displayName,
       company_name: payload.company ?? null,
-      website_url: payload.website,
+      phone: payload.phone ?? null,
+      notes: payload.projectDetails.trim(),
+      website_url: payload.website ?? null,
     },
     createdAt,
   );
@@ -161,6 +168,7 @@ export function mapDiscoveryCallDtoToDbPersistInput(
     {
       displayName: payload.displayName,
       email: payload.email,
+      notes: payload.message ?? null,
     },
     createdAt,
   );

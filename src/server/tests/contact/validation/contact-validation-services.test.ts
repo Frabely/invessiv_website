@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
 import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
@@ -26,6 +27,32 @@ describe("contact validation services", () => {
     });
 
     expect(parsed.ok).toBe(true);
+  });
+
+  it("accepts project details up to the lead notes limit", () => {
+    const parsed = projectRequestValidationService.validate({
+      ...validProjectRequestPayload,
+      goalKey: "generate_inquiries",
+      projectDetails: "x".repeat(LeadFieldLimits.NotesMaxLength),
+    });
+
+    expect(parsed.ok).toBe(true);
+  });
+
+  it("rejects project details longer than the lead notes limit", () => {
+    const parsed = projectRequestValidationService.validate({
+      ...validProjectRequestPayload,
+      goalKey: "generate_inquiries",
+      projectDetails: "x".repeat(LeadFieldLimits.NotesMaxLength + 1),
+    });
+
+    expect(parsed.ok).toBe(false);
+    if (parsed.ok) {
+      throw new Error("expected validation failure");
+    }
+    expect(parsed.fieldErrors.projectDetails).toContain(
+      CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong,
+    );
   });
 
   it("rejects missing conditional landing fields", () => {

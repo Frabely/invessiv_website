@@ -3,6 +3,7 @@ import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request
 import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
 import { CONTACT_OFFER_KEYS } from "@/common/constants/contact/contact-offer-keys";
+import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import { CONTACT_PAGE_KEYS } from "@/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
@@ -42,7 +43,10 @@ export const projectRequestSchema = z
       .string()
       .trim()
       .min(5, CONTACT_VALIDATION_FIELD_ERROR_CODE.ProjectDetailsRequired)
-      .max(5000, CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong),
+      .max(
+        LeadFieldLimits.NotesMaxLength,
+        CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong,
+      ),
     role: optionalTrimmedString,
     startedAt: isoDateTimeSchema,
     website: optionalUrlString,
