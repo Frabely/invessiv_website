@@ -19,6 +19,7 @@ import {
 import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import type { BulkEditLeadsPatch } from "@/common/contracts/leads/bulk-edit-leads-input";
+import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { BulkEditLeadsFailedLead } from "@/common/contracts/leads/results/bulk-edit-leads-result";
 import {
@@ -28,13 +29,12 @@ import {
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
-import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor-content";
 import type {
   LeadsBulkDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
-import { leadsBulkEditService } from "../services/leads-bulk-edit-service";
+import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
 
 import styles from "./leads-bulk-edit-dialog.module.css";
 import type { BulkEditField as BulkEditFieldKind } from "@/common/constants/leads/bulk/bulk-edit-fields";

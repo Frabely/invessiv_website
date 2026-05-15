@@ -5,12 +5,12 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
 import {
   ButtonControl,
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
-import type { ImprovementsListEditorContent } from "./improvements-list-editor-content";
 
 import styles from "./improvements-list-editor.module.css";
 

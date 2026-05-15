@@ -19,7 +19,7 @@ import {
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
-import { leadsBulkEditService } from "../services/leads-bulk-edit-service";
+import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
 import { LeadsBulkEditDialog } from "./leads-bulk-edit-dialog";
 
 const routerRefreshMock = vi.fn();

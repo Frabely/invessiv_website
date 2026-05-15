@@ -1,4 +1,4 @@
-import { leads } from "@/server/db/record-configuration";
+import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
 
 export type LeadCurrentState = {
   id: string;
@@ -7,7 +7,7 @@ export type LeadCurrentState = {
   last_name: string | null;
   company_name: string | null;
   email: string | null;
-  lead_status: typeof leads.$inferSelect.lead_status;
+  lead_status: ContactLeadStatus;
   category_id: string | null;
   score: number | null;
   owner: string | null;

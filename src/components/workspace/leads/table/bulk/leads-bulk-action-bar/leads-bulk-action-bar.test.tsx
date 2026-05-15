@@ -11,8 +11,8 @@ import {
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
-import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
-import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
+import { useLeadsTableSelection } from "../../leads-table-selection-provider/leads-table-selection-context";
+import { LeadsTableSelectionProvider } from "../../leads-table-selection-provider/leads-table-selection-provider";
 import { LeadsBulkActionBar } from "./leads-bulk-action-bar";
 
 const dialogMocks = vi.hoisted(() => ({

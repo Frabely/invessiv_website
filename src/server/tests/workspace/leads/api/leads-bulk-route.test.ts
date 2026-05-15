@@ -5,7 +5,7 @@ import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statu
 import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
 import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
-import { leadBulkActionSchema } from "@/server/workspace/leads/api/bulk-action-schema";
+import { leadBulkActionSchema } from "@/server/workspace/leads/services/bulk-action.schema";
 
 vi.mock("server-only", () => ({}));
 

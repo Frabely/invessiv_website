@@ -7,8 +7,8 @@ import {
 } from "react-hook-form";
 
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
-import type { ImprovementsListEditorContent } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor-content";
 import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
 import type { LeadsFormDictionary } from "@/i18n/dictionaries/workspace/leads";
 

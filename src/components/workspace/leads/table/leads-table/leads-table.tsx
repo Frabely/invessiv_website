@@ -10,7 +10,7 @@ import type {
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
-import { LeadsBulkActionBar } from "../leads-bulk-action-bar/leads-bulk-action-bar";
+import { LeadsBulkActionBar } from "../bulk/leads-bulk-action-bar/leads-bulk-action-bar";
 import { LeadsEmptyState } from "../leads-empty-state/leads-empty-state";
 import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/leads-table-select-all-checkbox";
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";

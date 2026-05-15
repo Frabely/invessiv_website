@@ -1,5 +1,10 @@
 # To-dos
 
+## Cleanup von `src/common`
+
+- `src/common` strukturell aufraeumen und fachlich sauberer schneiden.
+- Gemeinsame Contracts, Konstanten und Hilfstypen weiter konsolidieren, damit der Bereich langfristig schlank bleibt.
+
 ## Cleanup der `AGENTS.md`-Dateien
 
 - `AGENTS.md`-Dateien prüfen und bereinigen.

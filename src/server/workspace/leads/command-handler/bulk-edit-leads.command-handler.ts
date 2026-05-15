@@ -11,6 +11,11 @@ import type {
   BulkEditLeadsPatch,
 } from "@/common/contracts/leads/bulk-edit-leads-input";
 import type {
+  BulkEditActivityMetadata,
+  LeadCurrentState,
+  LeadUpdateSetClause,
+} from "@/common/contracts/leads";
+import type {
   BulkEditLeadsFailedLead,
   BulkEditLeadsResult,
 } from "@/common/contracts/leads/results/bulk-edit-leads-result";
@@ -20,10 +25,6 @@ import {
 } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
 import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
-
-import type { BulkEditActivityMetadata } from "@/server/workspace/leads/types/bulk-edit-activity-metadata";
-import type { LeadCurrentState } from "@/server/workspace/leads/types/lead-current-state";
-import type { LeadUpdateSetClause } from "@/server/workspace/leads/types/lead-update-set-clause";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
   [BulkEditFieldKey.Status]: "status",

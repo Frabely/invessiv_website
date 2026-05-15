@@ -12,7 +12,7 @@ import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 
-import { leadsBulkEditService } from "../services/leads-bulk-edit-service";
+import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
 
 import styles from "./leads-bulk-archive-confirm-dialog.module.css";
 

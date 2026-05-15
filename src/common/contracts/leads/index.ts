@@ -20,6 +20,10 @@ export type { CreateLeadCoreInput } from "./create-lead-core-input";
 export type { CreateLeadCoreOptions } from "./create-lead-core-options";
 export type { CreateLeadCoreSocialProfileInput } from "./create-lead-core-social-profile-input";
 export type { LeadSummaryDto } from "./lead-summary.dto";
+export type { LeadCurrentState } from "./rows/lead-current-state";
+export type { LeadUpdateSetClause } from "./lead-update-set-clause";
+export type { BulkEditActivityMetadata } from "./bulk-edit-activity-metadata";
+export type { ImprovementsListEditorContent } from "./improvements-list-editor-content";
 export type {
   BulkActionFailureResultDto,
   BulkActionSubmitInputDto,
