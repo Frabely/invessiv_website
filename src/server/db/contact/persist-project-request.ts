@@ -18,7 +18,7 @@ export async function persistProjectRequestLead(
   const db = getDrizzleDatabaseClient();
 
   await db.transaction(async (tx) => {
-    const { submissionId } = await persistSharedLeadSubmission(tx, {
+    const sharedResult = await persistSharedLeadSubmission(tx, {
       lead: projectRequestPersistInput.lead,
       submission: projectRequestPersistInput.lead_submission,
     });
@@ -31,7 +31,7 @@ export async function persistProjectRequestLead(
         projectRequestPersistInput.lead_project_request.custom_page_names,
       goal_key: projectRequestPersistInput.lead_project_request.goal_key,
       id: projectRequestPersistInput.lead_project_request.id,
-      lead_submission_id: submissionId,
+      lead_submission_id: sharedResult.submissionId,
       offer_key: projectRequestPersistInput.lead_project_request.offer_key,
       page_keys: projectRequestPersistInput.lead_project_request.page_keys,
       phone: projectRequestPersistInput.lead_project_request.phone,

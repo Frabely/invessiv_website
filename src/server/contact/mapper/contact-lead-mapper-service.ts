@@ -20,6 +20,7 @@ export type ApiToDbMapperOptions = {
 };
 
 export type LeadMapperInput = {
+  company_name?: string | null;
   email: string;
   displayName: string;
   website_url?: string;
@@ -39,12 +40,13 @@ export function mapLeadApiToDb(
     display_name: payload.displayName.trim(),
     email: payload.email.trim(),
     id: randomUUID(),
-    first_name: undefined,
-    last_name: undefined,
+    first_name: null,
+    last_name: null,
+    company_name: payload.company_name?.trim() || null,
     lead_status: ContactLeadStatus.PendingReview,
-    owner: undefined,
+    owner: null,
     source: LeadSource.Webform,
-    website_url: payload.website_url?.trim() || undefined,
+    website_url: payload.website_url?.trim() || null,
     updated_at: createdAt,
   };
 }
@@ -109,6 +111,7 @@ export function mapProjectRequestDtoToDbPersistInput(
     {
       email: payload.email,
       displayName: payload.displayName,
+      company_name: payload.company ?? null,
       website_url: payload.website,
     },
     createdAt,

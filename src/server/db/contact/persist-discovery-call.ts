@@ -18,7 +18,7 @@ export async function persistDiscoveryCallLead(
   const db = getDrizzleDatabaseClient();
 
   await db.transaction(async (tx) => {
-    const { submissionId } = await persistSharedLeadSubmission(tx, {
+    const sharedResult = await persistSharedLeadSubmission(tx, {
       lead: discoveryCallPersistInput.lead,
       submission: discoveryCallPersistInput.lead_submission,
     });
@@ -26,7 +26,7 @@ export async function persistDiscoveryCallLead(
     await tx.insert(leadCallContacts).values({
       created_at: discoveryCallPersistInput.call_contact.created_at,
       id: discoveryCallPersistInput.call_contact.id,
-      lead_submission_id: submissionId,
+      lead_submission_id: sharedResult.submissionId,
       message: discoveryCallPersistInput.call_contact.message ?? null,
       updated_at: discoveryCallPersistInput.call_contact.updated_at,
     });

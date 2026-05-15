@@ -31,6 +31,9 @@ function serializeSqlChunks(value: unknown): string {
   const chunks = (value as { queryChunks?: unknown[] }).queryChunks ?? [];
   return chunks
     .map((chunk) => {
+      if (chunk == null) {
+        return "";
+      }
       const maybeStringChunk = chunk as { value?: unknown };
       return Array.isArray(maybeStringChunk.value)
         ? maybeStringChunk.value.join(" ")
@@ -147,5 +150,51 @@ describe("persistSharedLeadSubmission", () => {
       submission_started_at: null,
       updated_at: new Date("2026-03-26T09:35:00.000Z"),
     });
+  });
+
+  it("throws when the lead upsert does not yield an id", async () => {
+    const { persistSharedLeadSubmission } =
+      await import("@/server/db/contact/shared/shared-lead-submission");
+
+    const executeMock = vi.fn().mockResolvedValue({ rows: [] });
+    const insertValuesMock = vi.fn().mockResolvedValue(undefined);
+    const insertMock = vi.fn().mockReturnValue({
+      values: insertValuesMock,
+    });
+    const tx = {
+      execute: executeMock,
+      insert: insertMock,
+    };
+
+    await expect(
+      persistSharedLeadSubmission(tx as never, {
+        lead: {
+          company_name: null,
+          created_at: new Date("2026-03-26T09:30:00.000Z"),
+          display_name: "Max Mustermann",
+          email: "max@example.com",
+          first_name: null,
+          id: "new-lead-id",
+          last_name: null,
+          lead_status: "new",
+          owner: null,
+          source: LeadSource.Webform,
+          updated_at: new Date("2026-03-26T09:35:00.000Z"),
+          website_url: null,
+        },
+        submission: {
+          channel: "quick_contact",
+          consent_accepted_at: new Date("2026-03-26T09:35:00.000Z"),
+          created_at: new Date("2026-03-26T09:35:00.000Z"),
+          id: "submission-api-id",
+          lead_id: "new-lead-id",
+          locale: "de",
+          request_id: "request_123",
+          submission_started_at: undefined,
+          updated_at: new Date("2026-03-26T09:35:00.000Z"),
+        },
+      }),
+    ).rejects.toThrow("Lead upsert did not return an id.");
+    expect(insertMock).not.toHaveBeenCalled();
   });
 });

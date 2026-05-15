@@ -31,12 +31,10 @@ export async function submitDiscoveryCallCommandHandler(
     return {
       ok: true as const,
     };
-  } catch {
+  } catch (error) {
     console.error(
       `${CONTACT_SUBMIT_LOG_PREFIX.DiscoveryCall} ${CONTACT_SUBMIT_LOG_MESSAGE.PersistenceFailed}`,
-      {
-        requestId,
-      },
+      { error, requestId },
     );
 
     return {

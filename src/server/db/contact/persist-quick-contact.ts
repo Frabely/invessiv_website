@@ -18,7 +18,7 @@ export async function persistQuickContactLead(
   const db = getDrizzleDatabaseClient();
 
   await db.transaction(async (tx) => {
-    const { submissionId } = await persistSharedLeadSubmission(tx, {
+    const sharedResult = await persistSharedLeadSubmission(tx, {
       lead: quickContactPersistInput.lead,
       submission: quickContactPersistInput.lead_submission,
     });
@@ -26,7 +26,7 @@ export async function persistQuickContactLead(
     await tx.insert(leadEmailContacts).values({
       created_at: quickContactPersistInput.lead_email_contact.created_at,
       id: quickContactPersistInput.lead_email_contact.id,
-      lead_submission_id: submissionId,
+      lead_submission_id: sharedResult.submissionId,
       message: quickContactPersistInput.lead_email_contact.message,
       updated_at: quickContactPersistInput.lead_email_contact.updated_at,
     });

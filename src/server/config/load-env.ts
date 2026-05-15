@@ -9,11 +9,7 @@ export function loadLocalEnvFiles() {
   }
 
   const cwd = process.cwd();
-  const envFiles = [
-    ".env",
-    ".env.local",
-    ".env.development.local",
-  ];
+  const envFiles = [".env.local", ".env.development.local"];
 
   for (const envFile of envFiles) {
     loadDotenv({

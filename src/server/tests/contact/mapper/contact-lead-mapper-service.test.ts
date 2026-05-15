@@ -30,13 +30,14 @@ describe("leadMapperService", () => {
 
     expect(result).toEqual({
       created_at: createdAt,
+      company_name: null,
       display_name: "Max Mustermann",
       email: "max@example.com",
       id: "lead-id-1",
-      first_name: undefined,
-      last_name: undefined,
+      first_name: null,
+      last_name: null,
       lead_status: ContactLeadStatus.PendingReview,
-      owner: undefined,
+      owner: null,
       source: LeadSource.Webform,
       website_url: "https://example.com",
       updated_at: createdAt,
@@ -112,7 +113,8 @@ describe("leadMapperService", () => {
 
     expect(result.lead.id).toBe("lead-id-1");
     expect(result.lead.lead_status).toBe(ContactLeadStatus.PendingReview);
-    expect(result.lead.owner).toBeUndefined();
+    expect(result.lead.owner).toBeNull();
+    expect(result.lead.company_name).toBe("Invessiv GmbH");
     expect(result.lead_submission.id).toBe("submission-id-1");
     expect(result.lead_submission.lead_id).toBe(result.lead.id);
     expect(result.lead_project_request.id).toBe("project-request-id-1");
