@@ -118,14 +118,6 @@ Das in `src/common/constants/leads/` etablierte Muster (`const Foo = { Bar: "bar
   `updatedAt` später von ISO-Strings auf `Date` umstellen; aktuell funktioniert der Insert so, aber intern wären `Date`
   -Werte semantisch und typseitig sauberer.
 
-## CRM-DB-Felder für Steuer
-
-- Vier Felder einbauen: Land, B2B/B2C, Firma ja/nein, USt-IdNr.
-
-## Hero-Visual Verbesserung
-
-- Im Hero-Visual die Maus als „Lampe“ anzeigen und beim Visual Schatten einfügen, abhängig von der Mausposition.
-
 ## Lead Detail Panel Follow-up
 
 - Der Button `Vollprofil geplant` im Lead-Detail-Panel bleibt vorerst als Platzhalter sichtbar.

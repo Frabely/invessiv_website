@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRotateLeft,
@@ -97,7 +97,7 @@ export function LeadsToolbar({
   sharedContent,
 }: LeadsToolbarProps) {
   const router = useRouter();
-  const startTransition = useNavigationContext();
+  const { startTransition } = useLeadsTableTransition();
   const searchParams = getSearchParams(currentQueryString);
   const currentStatus = getQueryValue(searchParams, LeadListQueryParam.Status);
   const currentSource = getQueryValue(searchParams, LeadListQueryParam.Source);

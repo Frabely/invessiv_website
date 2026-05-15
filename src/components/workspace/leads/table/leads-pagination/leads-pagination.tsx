@@ -9,7 +9,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import type { LeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
-import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
 import {
   buildPaginationHref,
   getPaginationItems,
@@ -67,7 +67,8 @@ export function LeadsPagination({
   total,
 }: LeadsPaginationProps) {
   const router = useRouter();
-  const startTransition = useNavigationContext();
+  const { startTransition, isPending } = useLeadsTableTransition();
+  const isLoading = isPending;
   const isEmpty = total === 0;
   const totalPages = isEmpty ? 1 : Math.max(1, Math.ceil(total / perPage));
   const effectivePage = Math.min(Math.max(currentPage, 1), totalPages);
@@ -100,7 +101,7 @@ export function LeadsPagination({
       </>
     );
 
-    if (disabled) {
+    if (disabled || isLoading) {
       return (
         <span
           aria-disabled="true"
@@ -125,11 +126,11 @@ export function LeadsPagination({
   function renderPageItem(page: number) {
     const isCurrentPage = !isEmpty && page === effectivePage;
 
-    if (isEmpty || isCurrentPage) {
+    if (isEmpty || isCurrentPage || isLoading) {
       return (
         <span
           aria-current={isCurrentPage ? "page" : undefined}
-          aria-disabled={isEmpty ? "true" : undefined}
+          aria-disabled={isEmpty || isLoading ? "true" : undefined}
           className={`${styles.pageButton} ${
             isCurrentPage ? styles.pageButtonActive : styles.pageButtonDisabled
           }`}

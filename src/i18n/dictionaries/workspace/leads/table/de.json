@@ -41,5 +41,6 @@
   },
   "placeholders": {
     "empty": "—"
-  }
+  },
+  "loadingLabel": "Leads werden geladen …"
 }

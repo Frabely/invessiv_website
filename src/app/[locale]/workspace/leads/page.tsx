@@ -7,6 +7,7 @@ import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-sh
 import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
+import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
 import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
@@ -180,56 +181,58 @@ export default async function LeadsPage({
   return (
     <>
       <LeadsPageShell detailPanelProps={detailPanelProps}>
-        <LeadsPageHeader
-          addLeadHref={addLeadHref}
-          content={shellContent}
-          importContent={importContent}
-        />
-        <LeadsToolbar
-          basePath={basePath}
-          categories={categoryOptions}
-          content={toolbarContent}
-          currentQueryString={queryString}
-          sharedContent={sharedContent}
-        />
-        <LeadsTable
-          basePath={basePath}
-          bulkContent={bulkContent}
-          categories={categoryOptions}
-          deleteContent={deleteContent}
-          emptyState={
-            leadList.total === 0
-              ? {
-                  actionHref: hasFilters ? basePath : addLeadHref,
-                  actionLabel: hasFilters
-                    ? paginationContent.emptyState.noResultsAction
-                    : paginationContent.emptyState.noLeadsAction,
-                  description: hasFilters
-                    ? paginationContent.emptyState.noResultsDescription
-                    : paginationContent.emptyState.noLeadsDescription,
-                  title: hasFilters
-                    ? paginationContent.emptyState.noResultsTitle
-                    : paginationContent.emptyState.noLeadsTitle,
-                  variant: emptyStateVariant,
-                }
-              : undefined
-          }
-          locale={locale as Locale}
-          queryString={queryString}
-          currentSearchParams={resolvedSearchParams}
-          rows={leadList.rows}
-          selectionResetKey={queryString}
-          sharedContent={sharedContent}
-          tableContent={tableContent}
-        />
-        <LeadsPagination
-          basePath={basePath}
-          content={paginationContent}
-          currentPage={currentPage}
-          perPage={leadList.perPage}
-          queryString={queryString}
-          total={leadList.total}
-        />
+        <LeadsTableTransitionProvider>
+          <LeadsPageHeader
+            addLeadHref={addLeadHref}
+            content={shellContent}
+            importContent={importContent}
+          />
+          <LeadsToolbar
+            basePath={basePath}
+            categories={categoryOptions}
+            content={toolbarContent}
+            currentQueryString={queryString}
+            sharedContent={sharedContent}
+          />
+          <LeadsTable
+            basePath={basePath}
+            bulkContent={bulkContent}
+            categories={categoryOptions}
+            deleteContent={deleteContent}
+            emptyState={
+              leadList.total === 0
+                ? {
+                    actionHref: hasFilters ? basePath : addLeadHref,
+                    actionLabel: hasFilters
+                      ? paginationContent.emptyState.noResultsAction
+                      : paginationContent.emptyState.noLeadsAction,
+                    description: hasFilters
+                      ? paginationContent.emptyState.noResultsDescription
+                      : paginationContent.emptyState.noLeadsDescription,
+                    title: hasFilters
+                      ? paginationContent.emptyState.noResultsTitle
+                      : paginationContent.emptyState.noLeadsTitle,
+                    variant: emptyStateVariant,
+                  }
+                : undefined
+            }
+            locale={locale as Locale}
+            queryString={queryString}
+            currentSearchParams={resolvedSearchParams}
+            rows={leadList.rows}
+            selectionResetKey={queryString}
+            sharedContent={sharedContent}
+            tableContent={tableContent}
+          />
+          <LeadsPagination
+            basePath={basePath}
+            content={paginationContent}
+            currentPage={currentPage}
+            perPage={leadList.perPage}
+            queryString={queryString}
+            total={leadList.total}
+          />
+        </LeadsTableTransitionProvider>
       </LeadsPageShell>
       <LeadFormDialog
         categories={categoryOptions}

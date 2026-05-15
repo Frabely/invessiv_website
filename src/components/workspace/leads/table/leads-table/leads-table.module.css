@@ -6,6 +6,7 @@
 }
 
 .tableFrame {
+  position: relative;
   flex: 1 1 auto;
   display: flex;
   min-height: 0;
@@ -74,14 +75,12 @@
 .table thead th {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 11;
   background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
   backdrop-filter: blur(8px);
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-xs);
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 72%, transparent);
   padding: 0.9rem 1rem;
@@ -99,7 +98,7 @@
 
 .table thead th.actionsHeader {
   right: 0;
-  z-index: 3;
+  z-index: 12;
   text-align: center;
   background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
   box-shadow: -1px 0 0 color-mix(in srgb, var(--color-border) 38%, transparent);
