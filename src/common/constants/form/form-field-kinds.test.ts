@@ -9,8 +9,10 @@ describe("FormFieldKind", () => {
     expect(FormFieldKind).toEqual({
       Email: "email",
       Number: "number",
+      Select: "select",
       Tel: "tel",
       Text: "text",
+      Textarea: "textarea",
       Url: "url",
     });
   });
