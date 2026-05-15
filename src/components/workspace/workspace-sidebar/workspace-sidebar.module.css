@@ -254,8 +254,7 @@
       background-color 220ms ease;
   }
 
-  .sidebar:hover,
-  .sidebar:focus-within {
+  .sidebar:hover {
     width: 240px;
     background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
   }
@@ -282,9 +281,7 @@
   }
 
   .sidebar:hover .linkLabel,
-  .sidebar:hover .linkBadge,
-  .sidebar:focus-within .linkLabel,
-  .sidebar:focus-within .linkBadge {
+  .sidebar:hover .linkBadge {
     opacity: 1;
     transform: translateX(0);
     transition-delay: 80ms;
