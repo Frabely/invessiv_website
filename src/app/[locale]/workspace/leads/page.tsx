@@ -181,12 +181,12 @@ export default async function LeadsPage({
   return (
     <>
       <LeadsPageShell detailPanelProps={detailPanelProps}>
-        <LeadsPageHeader
-          addLeadHref={addLeadHref}
-          content={shellContent}
-          importContent={importContent}
-        />
         <LeadsTableTransitionProvider>
+          <LeadsPageHeader
+            addLeadHref={addLeadHref}
+            content={shellContent}
+            importContent={importContent}
+          />
           <LeadsToolbar
             basePath={basePath}
             categories={categoryOptions}

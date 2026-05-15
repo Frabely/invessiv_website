@@ -1,4 +1,7 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
 import { buildLeadHref } from "../lead-table-utils";
 import styles from "./sortable-header.module.css";
 
@@ -31,6 +34,9 @@ export function SortableHeader({
   sortAsc,
   sortDesc,
 }: SortableHeaderProps) {
+  const router = useRouter();
+  const { isPending, startTransition } = useLeadsTableTransition();
+  const isLoading = isPending;
   const targetSort = activeSort === sortAsc ? sortDesc : sortAsc;
   const href = getSortHref(basePath, queryString, targetSort);
   const isActive = activeSort === sortAsc || activeSort === sortDesc;
@@ -38,22 +44,37 @@ export function SortableHeader({
     activeSort === sortDesc ? "↓" : activeSort === sortAsc ? "↑" : "↕";
   const nextSortLabel = targetSort === sortAsc ? ascLabel : descLabel;
 
+  const directionIndicator = (
+    <span
+      aria-hidden="true"
+      className={styles.sortDirection}
+      data-active={isActive ? "true" : "false"}
+    >
+      {direction}
+    </span>
+  );
+
   return (
     <th className={styles.sortableHeader} scope="col">
-      <Link
-        aria-label={`${label}: ${nextSortLabel}`}
-        className={styles.sortLink}
-        href={href}
-      >
-        <span>{label}</span>
+      {isLoading ? (
         <span
-          aria-hidden="true"
-          className={styles.sortDirection}
-          data-active={isActive ? "true" : "false"}
+          aria-label={`${label}: ${nextSortLabel}`}
+          className={`${styles.sortLink} ${styles.sortLinkDisabled}`}
         >
-          {direction}
+          <span>{label}</span>
+          {directionIndicator}
         </span>
-      </Link>
+      ) : (
+        <button
+          aria-label={`${label}: ${nextSortLabel}`}
+          className={styles.sortLink}
+          onClick={() => startTransition(() => router.push(href))}
+          type="button"
+        >
+          <span>{label}</span>
+          {directionIndicator}
+        </button>
+      )}
     </th>
   );
 }

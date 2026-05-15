@@ -17,7 +17,9 @@
   border: 2.5px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--accent);
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation:
+    spin 0.7s linear infinite,
+    spinColor 1.4s ease-in-out infinite;
 }
 
 .srOnly {
@@ -35,5 +37,15 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes spinColor {
+  0%,
+  100% {
+    border-top-color: var(--accent);
+  }
+  50% {
+    border-top-color: var(--color-cta);
   }
 }

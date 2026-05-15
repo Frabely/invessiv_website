@@ -28,3 +28,8 @@
   opacity: 1;
   color: var(--color-cta);
 }
+
+.sortLinkDisabled {
+  cursor: default;
+  pointer-events: none;
+}
