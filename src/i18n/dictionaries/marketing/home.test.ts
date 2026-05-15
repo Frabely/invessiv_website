@@ -27,4 +27,20 @@ describe("home dictionary", () => {
       );
     },
   );
+
+  it.each(["de", "en"] as const)(
+    "keeps the %s proof summary copy readable",
+    (locale) => {
+      const proofSection = getHomeSections(locale).find(
+        (section) => section.id === "proof",
+      );
+
+      if (!proofSection) {
+        throw new Error("Expected proof section to be available.");
+      }
+
+      expect(proofSection.summaryPoints[0]).toContain("★");
+      expect(proofSection.summaryPoints[0]).not.toContain("?");
+    },
+  );
 });

@@ -55,6 +55,7 @@ describe("persistSharedLeadSubmission", () => {
       id: "lead-api-id",
       last_name: "Mustermann",
       lead_status: "new",
+      company_name: "Invessiv GmbH",
       notes: "Kurze erste Anfrage.",
       owner: undefined,
       phone: "+49 151 23456789",
@@ -90,6 +91,7 @@ describe("persistSharedLeadSubmission", () => {
     const upsertSql = serializeSqlChunks(mocks.executeMock.mock.calls[0]?.[0]);
     expect(upsertSql).toContain("display_name");
     expect(upsertSql).toContain("display_name = excluded.display_name");
+    expect(upsertSql).toContain("company_name = excluded.company_name");
     expect(upsertSql).toContain("phone");
     expect(upsertSql).toContain("phone = excluded.phone");
     expect(upsertSql).toContain("website_url");
@@ -125,6 +127,7 @@ describe("persistSharedLeadSubmission", () => {
         id: "new-lead-id",
         last_name: "Mustermann",
         lead_status: "new",
+        company_name: "Neue Firma",
         owner: undefined,
         source: LeadSource.Webform,
         updated_at: new Date("2026-03-26T09:35:00.000Z"),

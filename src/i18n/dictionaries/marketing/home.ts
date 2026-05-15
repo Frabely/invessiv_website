@@ -389,7 +389,7 @@ const HOME_SECTIONS = [
         title: "Was Kunden über die Zusammenarbeit sagen",
         description: "aus realen Web- & Softwareprojekten",
         summaryPoints: [
-          "5,0 ????? bei Google",
+          "5,0 ★★★★★ bei Google",
           "echte Kundenstimmen",
           "klare Ergebnisse",
         ],
@@ -435,7 +435,7 @@ const HOME_SECTIONS = [
         title: "What clients say about working together",
         description: "from real web and software projects",
         summaryPoints: [
-          "5.0 ????? on Google",
+          "5.0 ★★★★★ on Google",
           "real client reviews",
           "clear outcomes",
         ],

@@ -47,6 +47,7 @@ export async function persistSharedLeadSubmission(
     where email is not null
     do update set
       display_name = excluded.display_name,
+               company_name = excluded.company_name,
                phone = excluded.phone,
                website_url = excluded.website_url,
                notes = excluded.notes,
