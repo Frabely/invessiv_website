@@ -16,6 +16,7 @@ import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
 import { SortableHeader } from "../sortable-header/sortable-header";
+import { LeadsTableSpinner } from "./leads-table-spinner/leads-table-spinner";
 import { LEADS_TABLE_COLUMN_COUNT } from "./leads-table.constants";
 import styles from "./leads-table.module.css";
 
@@ -69,6 +70,7 @@ export function LeadsTable({
         selectionResetKey={selectionResetKey}
       >
         <div className={styles.tableFrame}>
+          <LeadsTableSpinner ariaLabel={tableContent.loadingLabel} />
           <div className={styles.tableScroll}>
             <table className={styles.table}>
               <colgroup>
