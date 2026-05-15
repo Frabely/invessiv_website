@@ -25,7 +25,7 @@ describe("createContactNotificationMessage", () => {
       website: undefined,
     });
 
-    expect(message.subject).toMatch(/^\[DEV\] \[/);
+    expect(message.subject).toMatch(/^\[DEV] \[/);
 
     vi.unstubAllEnvs();
   });
@@ -51,7 +51,7 @@ describe("createContactNotificationMessage", () => {
       website: undefined,
     });
 
-    expect(message.subject).toMatch(/^\[PREVIEW\] \[/);
+    expect(message.subject).toMatch(/^\[PREVIEW] \[/);
 
     vi.unstubAllEnvs();
   });
@@ -77,7 +77,7 @@ describe("createContactNotificationMessage", () => {
       website: undefined,
     });
 
-    expect(message.subject).not.toMatch(/^\[(DEV|PREVIEW)\]/);
+    expect(message.subject).not.toMatch(/^\[(DEV|PREVIEW)]/);
     expect(message.subject).toContain("Landingpages");
     expect(message.text).toContain('"Angebot": Landingpages');
     expect(message.text).toContain("Start, Kontakt");
