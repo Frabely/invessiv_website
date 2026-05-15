@@ -55,7 +55,10 @@ describe("persistSharedLeadSubmission", () => {
       id: "lead-api-id",
       last_name: "Mustermann",
       lead_status: "new",
+      notes: "Kurze erste Anfrage.",
       owner: undefined,
+      phone: "+49 151 23456789",
+      website_url: "https://example.com",
       source: LeadSource.Webform,
       updated_at: new Date("2026-03-26T09:30:00.000Z"),
     };
@@ -87,6 +90,12 @@ describe("persistSharedLeadSubmission", () => {
     const upsertSql = serializeSqlChunks(mocks.executeMock.mock.calls[0]?.[0]);
     expect(upsertSql).toContain("display_name");
     expect(upsertSql).toContain("display_name = excluded.display_name");
+    expect(upsertSql).toContain("phone");
+    expect(upsertSql).toContain("phone = excluded.phone");
+    expect(upsertSql).toContain("website_url");
+    expect(upsertSql).toContain("website_url = excluded.website_url");
+    expect(upsertSql).toContain("notes");
+    expect(upsertSql).toContain("notes = excluded.notes");
     expect(mocks.insertMock).toHaveBeenCalledTimes(1);
     expect(mocks.insertValuesMock).toHaveBeenCalledWith({
       channel: "project_request",
@@ -177,10 +186,11 @@ describe("persistSharedLeadSubmission", () => {
           id: "new-lead-id",
           last_name: null,
           lead_status: "new",
+          phone: null,
+          website_url: null,
           owner: null,
           source: LeadSource.Webform,
           updated_at: new Date("2026-03-26T09:35:00.000Z"),
-          website_url: null,
         },
         submission: {
           channel: "quick_contact",

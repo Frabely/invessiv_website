@@ -23,6 +23,9 @@ export async function persistSharedLeadSubmission(
       display_name,
       company_name,
       email,
+      phone,
+      website_url,
+      notes,
       source,
       lead_status,
       created_at,
@@ -33,6 +36,9 @@ export async function persistSharedLeadSubmission(
       ${input.lead.display_name},
       ${input.lead.company_name},
       ${input.lead.email},
+      ${input.lead.phone},
+      ${input.lead.website_url},
+      ${input.lead.notes},
       ${input.lead.source},
       ${input.lead.lead_status},
       ${input.lead.created_at},
@@ -41,6 +47,9 @@ export async function persistSharedLeadSubmission(
     where email is not null
     do update set
       display_name = excluded.display_name,
+               phone = excluded.phone,
+               website_url = excluded.website_url,
+               notes = excluded.notes,
       updated_at = excluded.updated_at
     returning id
   `);
