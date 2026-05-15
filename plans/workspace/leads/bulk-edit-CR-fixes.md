@@ -113,7 +113,7 @@ Ziel:
 
 ---
 
-## Phase 3 - Bulk-Dialog und Bulk-Status-Korrektheit
+## Phase 3 - Bulk-Dialog und Bulk-Status-Korrektheit (done)
 
 ### Task 3.1 - Archive-Bypass in `bulk_edit` verhindern
 
@@ -176,7 +176,7 @@ Ziel:
 
 ---
 
-## Phase 4 - Bulk-Action-Bar und Bulk-Confirm-Dialoge
+## Phase 4 - Bulk-Action-Bar und Bulk-Confirm-Dialoge (done)
 
 ### Task 4.1 - Selection-State korrekt halten
 

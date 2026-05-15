@@ -14,22 +14,31 @@ export function LeadsTableSelectionProvider({
   rowIds,
   selectionResetKey,
 }: LeadsTableSelectionProviderProps) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [previousResetKey, setPreviousResetKey] = useState<string | undefined>(
-    selectionResetKey,
+  return (
+    <LeadsTableSelectionProviderInner
+      key={selectionResetKey ?? "__default__"}
+      rowIds={rowIds}
+    >
+      {children}
+    </LeadsTableSelectionProviderInner>
   );
+}
 
-  if (previousResetKey !== selectionResetKey) {
-    setPreviousResetKey(selectionResetKey);
-    setSelectedIds([]);
-  }
-
-  const selectedCount = selectedIds.length;
-  const allSelected = rowIds.length > 0 && selectedCount === rowIds.length;
+function LeadsTableSelectionProviderInner({
+  children,
+  rowIds,
+}: Omit<LeadsTableSelectionProviderProps, "selectionResetKey">) {
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const rowIdSet = new Set(rowIds);
+  const normalizedSelectedIds = selectedIds.filter((id) => rowIdSet.has(id));
+  const selectedCount = normalizedSelectedIds.length;
+  const allSelected =
+    rowIds.length > 0 &&
+    rowIds.every((id) => normalizedSelectedIds.includes(id));
   const someSelected = selectedCount > 0 && !allSelected;
 
   function isSelected(id: string) {
-    return selectedIds.includes(id);
+    return normalizedSelectedIds.includes(id);
   }
 
   function toggleRow(id: string) {
@@ -63,7 +72,7 @@ export function LeadsTableSelectionProvider({
         isSelected,
         rowIds,
         selectedCount,
-        selectedIds,
+        selectedIds: normalizedSelectedIds,
         someSelected,
         toggleAll,
         toggleRow,

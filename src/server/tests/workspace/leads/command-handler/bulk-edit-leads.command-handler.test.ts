@@ -269,4 +269,71 @@ describe("bulkEditLeads", () => {
 
     expect(updateCaptures[0].owner).toBeNull();
   });
+
+  it("records an unknown skip when a per-lead transaction fails", async () => {
+    vi.resetModules();
+    createLeadActivityMock.mockClear();
+
+    const outerRows = [
+      buildLead({ id: "lead-1", display_name: "Anna" }),
+      buildLead({ id: "lead-2", display_name: "Bea" }),
+    ];
+    let outerRowIndex = 0;
+    let transactionCount = 0;
+
+    const dbMock = {
+      select: () => ({
+        from: () => ({
+          where: () => ({
+            limit: async () => {
+              const next = outerRows[outerRowIndex] ?? null;
+              outerRowIndex += 1;
+              return next ? [next] : [];
+            },
+          }),
+        }),
+      }),
+      transaction: async (cb: (tx: unknown) => Promise<unknown>) => {
+        transactionCount += 1;
+        if (transactionCount === 2) {
+          throw new Error("boom");
+        }
+
+        return cb({
+          select: () => ({
+            from: () => ({
+              where: () => ({
+                limit: async () => [buildLead({ id: "lead-1", owner: null })],
+              }),
+            }),
+          }),
+          update: () => ({
+            set: () => ({
+              where: async () => undefined,
+            }),
+          }),
+        });
+      },
+    };
+
+    getDrizzleDatabaseClientMock.mockReturnValue(dbMock);
+
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    const result = await bulkEditLeads({
+      ids: ["lead-1", "lead-2"],
+      patch: { owner: "Lisa" },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.failedLeads).toEqual([
+      {
+        id: "lead-2",
+        displayName: "Bea",
+        reason: BulkSkipReason.Unknown,
+      },
+    ]);
+    expect(createLeadActivityMock).toHaveBeenCalledTimes(1);
+  });
 });

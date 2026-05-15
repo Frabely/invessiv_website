@@ -127,8 +127,10 @@
   margin: 0;
   padding: 0.75rem 1.25rem 0;
   list-style: none;
-  max-height: 240px;
+  max-height: min(36vh, 320px);
   overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .leadItem {
@@ -138,13 +140,6 @@
   background: rgba(33, 29, 26, 0.6);
   color: rgba(247, 242, 236, 0.86);
   font-size: 0.86rem;
-}
-
-.moreItem {
-  padding: 0.35rem 0.65rem;
-  color: rgba(247, 242, 236, 0.55);
-  font-size: 0.8rem;
-  font-style: italic;
 }
 
 .footer {

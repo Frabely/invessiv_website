@@ -34,7 +34,7 @@ import type {
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
-import { submitBulkEdit } from "./leads-bulk-edit-service";
+import { leadsBulkEditService } from "../services/leads-bulk-edit-service";
 
 import styles from "./leads-bulk-edit-dialog.module.css";
 import type { BulkEditField as BulkEditFieldKind } from "@/common/constants/leads/bulk/bulk-edit-fields";
@@ -244,7 +244,7 @@ export function LeadsBulkEditDialog({
     }
 
     setIsPending(true);
-    const result = await submitBulkEdit({ ids: selectedIds, patch });
+    const result = await leadsBulkEditService.edit({ ids: selectedIds, patch });
     setIsPending(false);
 
     if (!result.ok) {

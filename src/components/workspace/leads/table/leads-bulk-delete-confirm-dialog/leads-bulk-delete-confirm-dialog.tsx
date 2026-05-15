@@ -1,29 +1,20 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import { ButtonControl } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 
+import { leadsBulkEditService } from "../services/leads-bulk-edit-service";
+
 import styles from "./leads-bulk-delete-confirm-dialog.module.css";
-
-const BULK_API_ENDPOINT = "/api/workspace/leads/bulk";
-
-const LEAD_LIST_MAX_VISIBLE = 10;
-
-const DialogId = {
-  Title: "leads-bulk-delete-confirm-title",
-  Description: "leads-bulk-delete-confirm-description",
-} as const;
 
 type LeadsBulkDeleteConfirmDialogProps = {
   bulkContent: LeadsBulkDictionary;
@@ -42,16 +33,6 @@ function buildMessage(bulkContent: LeadsBulkDictionary, count: number): string {
   );
 }
 
-function buildMoreSuffix(
-  bulkContent: LeadsBulkDictionary,
-  remaining: number,
-): string {
-  return bulkContent.deleteConfirm.leadListMoreSuffix.replace(
-    "{count}",
-    String(remaining),
-  );
-}
-
 export function LeadsBulkDeleteConfirmDialog({
   bulkContent,
   onCloseAction,
@@ -60,6 +41,10 @@ export function LeadsBulkDeleteConfirmDialog({
 }: LeadsBulkDeleteConfirmDialogProps) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+  const statusId = useId();
+  const errorId = useId();
   const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -88,15 +73,10 @@ export function LeadsBulkDeleteConfirmDialog({
     setErrorMessage(null);
     setIsPending(true);
     try {
-      const response = await fetch(BULK_API_ENDPOINT, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          action: LeadBulkAction.Delete,
-          ids: selectedLeads.map((lead) => lead.id),
-        }),
+      const result = await leadsBulkEditService.delete({
+        ids: selectedLeads.map((lead) => lead.id),
       });
-      if (response.status !== HttpResponseCode.Ok) {
+      if (!result.ok) {
         setIsPending(false);
         setErrorMessage(bulkContent.errors.generic);
         return;
@@ -110,17 +90,23 @@ export function LeadsBulkDeleteConfirmDialog({
   }
 
   const message = buildMessage(bulkContent, selectedLeads.length);
-  const visibleLeads = selectedLeads.slice(0, LEAD_LIST_MAX_VISIBLE);
-  const remaining = selectedLeads.length - visibleLeads.length;
   const statusMessage = isPending
     ? bulkContent.deleteConfirm.status.deleting
     : null;
+  const describedBy = [
+    descriptionId,
+    statusMessage ? statusId : null,
+    errorMessage ? errorId : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return createPortal(
     <div className={styles.overlay} role="presentation">
       <div
-        aria-describedby={DialogId.Description}
-        aria-labelledby={DialogId.Title}
+        aria-busy={isPending}
+        aria-describedby={describedBy || undefined}
+        aria-labelledby={titleId}
         aria-modal="true"
         className={styles.dialog}
         onKeyDown={handleKeyDown}
@@ -130,10 +116,10 @@ export function LeadsBulkDeleteConfirmDialog({
         <header className={styles.header}>
           <div className={styles.heading}>
             <p className={styles.kicker}>{bulkContent.deleteConfirm.kicker}</p>
-            <h2 className={styles.title} id={DialogId.Title}>
+            <h2 className={styles.title} id={titleId}>
               {bulkContent.deleteConfirm.title}
             </h2>
-            <p className={styles.description} id={DialogId.Description}>
+            <p className={styles.description} id={descriptionId}>
               {message}
             </p>
           </div>
@@ -154,24 +140,26 @@ export function LeadsBulkDeleteConfirmDialog({
           {bulkContent.deleteConfirm.warning}
         </p>
 
-        <FormStatus className={styles.statusBanner} message={statusMessage} />
+        {statusMessage ? (
+          <div id={statusId}>
+            <FormStatus
+              className={styles.statusBanner}
+              message={statusMessage}
+            />
+          </div>
+        ) : null}
         {errorMessage ? (
-          <p className={styles.errorBanner} role="alert">
+          <p className={styles.errorBanner} id={errorId} role="alert">
             {errorMessage}
           </p>
         ) : null}
 
         <ul className={styles.leadList}>
-          {visibleLeads.map((lead) => (
+          {selectedLeads.map((lead) => (
             <li className={styles.leadItem} key={lead.id}>
               <strong>{lead.displayName}</strong>
             </li>
           ))}
-          {remaining > 0 ? (
-            <li className={styles.moreItem}>
-              {buildMoreSuffix(bulkContent, remaining)}
-            </li>
-          ) : null}
         </ul>
 
         <footer className={styles.footer}>

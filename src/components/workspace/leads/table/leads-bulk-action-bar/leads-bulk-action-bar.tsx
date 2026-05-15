@@ -6,6 +6,7 @@ import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import { ButtonControl } from "@/components/shared/button/button";
 import { useLeadsTableSelection } from "@/components/workspace/leads/table/leads-table-selection-provider/leads-table-selection-context";
+import { BulkDialogKind } from "@/common/constants/leads/bulk/bulk-dialog-kinds";
 import type {
   LeadsBulkDictionary,
   LeadsSharedDictionary,
@@ -14,7 +15,6 @@ import type {
 import { LeadsBulkArchiveConfirmDialog } from "../leads-bulk-archive-confirm-dialog/leads-bulk-archive-confirm-dialog";
 import { LeadsBulkDeleteConfirmDialog } from "../leads-bulk-delete-confirm-dialog/leads-bulk-delete-confirm-dialog";
 import { LeadsBulkEditDialog } from "../leads-bulk-edit-dialog/leads-bulk-edit-dialog";
-import { BulkDialogKind } from "@/common/constants/leads/bulk/bulk-dialog-kinds";
 
 import styles from "./leads-bulk-action-bar.module.css";
 
@@ -48,7 +48,14 @@ export function LeadsBulkActionBar({
     return null;
   }
 
-  const selectedLeads = rows.filter((row) => selection.isSelected(row.id));
+  const selectedLeads = rows.filter((row) =>
+    selection.selectedIds.includes(row.id),
+  );
+
+  if (selectedLeads.length === 0) {
+    return null;
+  }
+
   const selectedIds = selectedLeads.map((row) => row.id);
 
   function closeDialog() {
