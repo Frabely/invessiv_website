@@ -41,9 +41,8 @@ describe("submitProjectRequestCommandHandler", () => {
       {
         consentAccepted: false,
         email: "invalid",
-        firstName: "",
+        displayName: "",
         kind: CONTACT_REQUEST_KIND.ProjectRequest,
-        lastName: "",
         locale: "de",
         offerKey: "landing",
         projectDetails: "Kurz",
@@ -81,10 +80,9 @@ describe("submitProjectRequestCommandHandler", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         goalKey: "generate_inquiries",
         kind: CONTACT_REQUEST_KIND.ProjectRequest,
-        lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
         projectDetails: "Landingpage fuer qualifizierte Leads.",
@@ -99,7 +97,7 @@ describe("submitProjectRequestCommandHandler", () => {
     expect(sendMailMock).toHaveBeenCalledTimes(1);
   });
 
-  it("returns the delivery error when mail delivery fails", async () => {
+  it("still succeeds when mail delivery fails", async () => {
     mapContactToMailMock.mockResolvedValueOnce({
       html: "<p>mail</p>",
       subject: "Subject",
@@ -118,10 +116,33 @@ describe("submitProjectRequestCommandHandler", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         goalKey: "generate_inquiries",
         kind: CONTACT_REQUEST_KIND.ProjectRequest,
-        lastName: "Mustermann",
+        locale: "de",
+        offerKey: "landing",
+        projectDetails: "Landingpage fuer qualifizierte Leads.",
+        startedAt: "2026-04-10T10:00:00.000Z",
+      },
+      "req_123",
+    );
+
+    expect(result).toEqual({ ok: true });
+  });
+
+  it("returns delivery unavailable when persistence throws", async () => {
+    persistProjectRequestLeadMock.mockRejectedValueOnce(new Error("db down"));
+
+    const { submitProjectRequestCommandHandler } =
+      await import("@/server/contact/handlers/submit-project-request.command-handler");
+
+    const result = await submitProjectRequestCommandHandler(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        displayName: "Max Mustermann",
+        goalKey: "generate_inquiries",
+        kind: CONTACT_REQUEST_KIND.ProjectRequest,
         locale: "de",
         offerKey: "landing",
         projectDetails: "Landingpage fuer qualifizierte Leads.",

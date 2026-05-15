@@ -14,10 +14,9 @@ export type SaveProjectRequestDto = {
   company?: string;
   consentAccepted: boolean;
   email: string;
-  firstName: string;
+  displayName: string;
   goalKey?: ContactGoalKey;
   kind: typeof CONTACT_REQUEST_KIND.ProjectRequest;
-  lastName: string;
   locale: Locale;
   offerKey: ContactOfferKey;
   customPageNames?: string[];

@@ -22,6 +22,7 @@ import type {
   QuickContactFormCopy,
 } from "@/i18n/dictionaries/marketing/home";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import styles from "./quick-contact-form.module.css";
 
@@ -123,11 +124,11 @@ export function QuickContactForm({
         resetFormAnalytics();
       } catch {
         setStatusMessage(formCopy.submitErrorGeneric);
-        trackSubmitError("generic");
+        trackSubmitError(ContactFormSubmitErrorType.Generic);
       }
     },
     () => {
-      trackSubmitError("validation");
+      trackSubmitError(ContactFormSubmitErrorType.Validation);
     },
   );
 
@@ -181,15 +182,12 @@ export function QuickContactForm({
           <ContactHelperList items={channel.detailPoints} />
         ) : null}
 
-        <div className={`${sharedStyles.grid} ${sharedStyles.gridTwo}`}>
-          <ContactIdentityFields
-            controlClassName={sharedStyles.fieldControl}
-            copy={formCopy}
-            errors={errors}
-            getErrorMessage={getErrorMessage}
-            register={register}
-          />
-        </div>
+        <ContactIdentityFields
+          copy={formCopy}
+          errors={errors}
+          getErrorMessage={getErrorMessage}
+          register={register}
+        />
 
         <ContactMessageField
           className={sharedStyles.messageField}

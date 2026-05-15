@@ -1,11 +1,18 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import type { ContactIdentityFieldsCopy } from "@/common/contracts/contact/copy/contact-identity-fields-copy";
-import type { ContactIdentityFieldsValues } from "@/common/contracts/contact/fields/contact-identity-fields-values";
+import { CONTACT_FIELD_NAME } from "@/common/constants/contact/contact-field-names";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
+import { CONTACT_FIELD_ERROR_CODE } from "@/common/constants/contact/contact-field-error-codes";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
+import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 
+export type ContactIdentityFieldsValues = {
+  displayName: string;
+  email: string;
+};
+
 type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
-  controlClassName?: string;
   copy: ContactIdentityFieldsCopy;
   errors: FieldErrors<TValues>;
   getErrorMessage: (fieldName: keyof ContactIdentityFieldsValues) => string;
@@ -18,74 +25,53 @@ type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
 export function ContactIdentityFields<
   TValues extends ContactIdentityFieldsValues,
 >({
-  controlClassName,
   copy,
   errors,
   getErrorMessage,
   register,
   onFieldChange,
 }: ContactIdentityFieldsProps<TValues>) {
-  const firstNameField = "firstName" as Path<TValues>;
-  const lastNameField = "lastName" as Path<TValues>;
-  const emailField = "email" as Path<TValues>;
+  const displayNameField = CONTACT_FIELD_NAME.DisplayName as Path<TValues>;
+  const emailField = CONTACT_FIELD_NAME.Email as Path<TValues>;
 
   return (
-    <>
+    <div className={`${sharedStyles.grid} ${sharedStyles.gridTwo}`}>
       <FormField
-        controlClassName={controlClassName}
         errorMessage={
-          errors.firstName ? getErrorMessage("firstName") : undefined
+          errors.displayName ? getErrorMessage("displayName") : undefined
         }
         inputProps={{
-          ...register(firstNameField, {
-            onChange: onFieldChange?.firstName,
-            required: "required",
+          ...register(displayNameField, {
+            onChange: onFieldChange?.displayName,
+            required: CONTACT_FIELD_ERROR_CODE.Required,
           }),
-          "aria-invalid": errors.firstName ? "true" : undefined,
+          "aria-invalid": errors.displayName ? "true" : undefined,
           autoCapitalize: "words",
-          autoComplete: "given-name",
+          autoComplete: "name",
         }}
-        kind="text"
-        label={copy.firstNameLabel}
+        kind={FormFieldKind.Text}
+        label={copy.nameLabel}
         required
       />
 
       <FormField
-        controlClassName={controlClassName}
-        errorMessage={errors.lastName ? getErrorMessage("lastName") : undefined}
-        inputProps={{
-          ...register(lastNameField, {
-            onChange: onFieldChange?.lastName,
-            required: "required",
-          }),
-          "aria-invalid": errors.lastName ? "true" : undefined,
-          autoCapitalize: "words",
-          autoComplete: "family-name",
-        }}
-        kind="text"
-        label={copy.lastNameLabel}
-        required
-      />
-
-      <FormField
-        controlClassName={controlClassName}
         errorMessage={errors.email ? getErrorMessage("email") : undefined}
         inputProps={{
           ...register(emailField, {
             onChange: onFieldChange?.email,
             pattern: {
-              message: "invalid_email",
+              message: CONTACT_FIELD_ERROR_CODE.InvalidEmail,
               value: CONTACT_EMAIL_PATTERN,
             },
-            required: "required",
+            required: CONTACT_FIELD_ERROR_CODE.Required,
           }),
           "aria-invalid": errors.email ? "true" : undefined,
           autoComplete: "email",
         }}
-        kind="email"
+        kind={FormFieldKind.Email}
         label={copy.emailLabel}
         required
       />
-    </>
+    </div>
   );
 }

@@ -25,6 +25,7 @@ import type {
   ContactChannelCopy,
   DiscoveryCallFormCopy,
 } from "@/i18n/dictionaries/marketing/home";
+import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { trackDiscoveryCallCalendarClick } from "@/lib/analytics/events/discovery-call-events";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
@@ -128,7 +129,7 @@ export function DiscoveryCallPanel({
       },
       async () => {
         pendingWindow?.close();
-        trackSubmitError("validation");
+        trackSubmitError(ContactFormSubmitErrorType.Validation);
       },
     );
 
@@ -162,15 +163,12 @@ export function DiscoveryCallPanel({
           <ContactHelperList items={channel.detailPoints} />
         ) : null}
 
-        <div className={`${sharedStyles.grid} ${sharedStyles.gridTwo}`}>
-          <ContactIdentityFields
-            controlClassName={sharedStyles.fieldControl}
-            copy={formCopy}
-            errors={errors}
-            getErrorMessage={getErrorMessage}
-            register={register}
-          />
-        </div>
+        <ContactIdentityFields
+          copy={formCopy}
+          errors={errors}
+          getErrorMessage={getErrorMessage}
+          register={register}
+        />
 
         <ContactMessageField
           className={sharedStyles.messageField}

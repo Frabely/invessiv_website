@@ -163,19 +163,13 @@
   gap: var(--project-request-grid-gap);
 }
 
-.stepOneGrid {
-  align-items: start;
-}
-
 .fieldOfferLayout {
   max-width: 100%;
 }
 
-.stepOneEmailStack,
 .stepOneOfferStack {
   display: grid;
-  align-content: start;
-  gap: var(--project-request-grid-gap);
+  gap: 0.55rem;
 }
 
 .stepOneRequiredHint {
@@ -297,26 +291,6 @@
 }
 
 @media (min-width: 901px) {
-  .stepOneGrid > :nth-child(1) {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .stepOneGrid > :nth-child(2) {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .stepOneGrid > :nth-child(3) {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .stepOneGrid > :nth-child(4) {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
   .fieldOfferLayout {
     width: 100%;
     max-width: 100%;

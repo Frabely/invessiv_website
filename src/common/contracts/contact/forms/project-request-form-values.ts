@@ -3,8 +3,7 @@ export type ProjectRequestFormValues = {
   company: string;
   consentAccepted: boolean;
   email: string;
-  firstName: string;
-  lastName: string;
+  displayName: string;
   goalKey: string;
   offerKey: string;
   customPageNames: string[];

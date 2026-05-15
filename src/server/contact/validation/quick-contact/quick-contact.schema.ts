@@ -17,9 +17,8 @@ export const quickContactSchema = z
         CONTACT_VALIDATION_FIELD_ERROR_CODE.ConsentRequired,
       ),
     email: emailStringSchema,
-    firstName: nameStringSchema,
+    displayName: nameStringSchema,
     kind: z.literal(CONTACT_REQUEST_KIND.QuickContact),
-    lastName: nameStringSchema,
     locale: localeSchema,
     message: z
       .string()

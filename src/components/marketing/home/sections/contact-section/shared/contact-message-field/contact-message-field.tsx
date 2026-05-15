@@ -1,5 +1,6 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import type { BaseContactFieldsValues } from "@/common/contracts/contact/fields/base-contact-fields-values";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import type { ContactMessageFieldCopy } from "@/common/contracts/contact/copy/contact-message-field-copy";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 
@@ -28,7 +29,7 @@ export function ContactMessageField<TValues extends BaseContactFieldsValues>({
     <FormField
       className={className}
       errorMessage={errors.message ? getErrorMessage("message") : undefined}
-      kind="textarea"
+      kind={FormFieldKind.Textarea}
       label={copy.messageLabel}
       required={required}
       textareaProps={{

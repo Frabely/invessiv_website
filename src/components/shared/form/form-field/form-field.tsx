@@ -6,7 +6,10 @@ import type {
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
-import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
+import {
+  FormFieldKind,
+  type FormFieldKind as FormFieldKindType,
+} from "@/common/constants/form/form-field-kinds";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import styles from "./form-field.module.css";
 
@@ -28,20 +31,25 @@ type BaseFormFieldProps = {
 };
 
 type SelectFieldProps = BaseFormFieldProps & {
-  kind: "select";
+  kind: typeof FormFieldKind.Select;
   options: FieldOption[];
   selectProps?: SelectHTMLAttributes<HTMLSelectElement> & {
     "data-empty"?: string;
   };
 };
 
+type TextInputKind = Exclude<
+  FormFieldKindType,
+  typeof FormFieldKind.Select | typeof FormFieldKind.Textarea
+>;
+
 type TextFieldProps = BaseFormFieldProps & {
   inputProps?: InputHTMLAttributes<HTMLInputElement>;
-  kind: FormFieldKind;
+  kind: TextInputKind;
 };
 
 type TextareaFieldProps = BaseFormFieldProps & {
-  kind: "textarea";
+  kind: typeof FormFieldKind.Textarea;
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 
@@ -76,7 +84,7 @@ export function FormField(props: FormFieldProps) {
         <FormFieldLabel label={label} required={required} />
       </span>
       <span className={styles.control}>
-        {props.kind === "textarea"
+        {props.kind === FormFieldKind.Textarea
           ? renderTextarea(
               props,
               controlClassName,
@@ -84,7 +92,7 @@ export function FormField(props: FormFieldProps) {
               resolvedHintId,
             )
           : null}
-        {props.kind === "select"
+        {props.kind === FormFieldKind.Select
           ? renderSelect(
               props,
               controlClassName,
@@ -92,7 +100,8 @@ export function FormField(props: FormFieldProps) {
               resolvedHintId,
             )
           : null}
-        {props.kind !== "textarea" && props.kind !== "select"
+        {props.kind !== FormFieldKind.Textarea &&
+        props.kind !== FormFieldKind.Select
           ? renderInput(
               props,
               controlClassName,
@@ -120,7 +129,7 @@ export function FormField(props: FormFieldProps) {
 }
 
 function getFieldBaseId(props: FormFieldProps): string {
-  if (props.kind === "textarea") {
+  if (props.kind === FormFieldKind.Textarea) {
     return (
       props.textareaProps?.id ??
       props.textareaProps?.name ??
@@ -128,7 +137,7 @@ function getFieldBaseId(props: FormFieldProps): string {
     );
   }
 
-  if (props.kind === "select") {
+  if (props.kind === FormFieldKind.Select) {
     return (
       props.selectProps?.id ??
       props.selectProps?.name ??

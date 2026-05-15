@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
 import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import {
   ButtonControl,
   PrimaryCtaButton,
@@ -185,7 +186,7 @@ export function ImprovementsListEditor({
                 placeholder: content.fieldPlaceholder,
                 value: draft,
               }}
-              kind="text"
+              kind={FormFieldKind.Text}
               label={content.fieldLabel}
             />
             <ButtonControl onClick={resetEditor} type="button" variant="ghost">

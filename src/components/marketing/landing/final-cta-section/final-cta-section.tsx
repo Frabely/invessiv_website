@@ -5,11 +5,14 @@ import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-contact-form-to-dto";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
+import { CONTACT_FORM_FIELD_NAME } from "@/common/constants/contact/contact-form-field-names";
+import { SubmitState } from "@/common/constants/form/submit-state";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
+import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import type { Locale } from "@/config/i18n";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -23,34 +26,22 @@ type FinalCtaSectionProps = LandingFinalCtaContent & {
 type FormValues = {
   consentAccepted: boolean;
   email: string;
-  goal: string;
   honeypot: string;
   name: string;
-  website: string;
+  [CONTACT_FORM_FIELD_NAME.Goal]: string;
+  [CONTACT_FORM_FIELD_NAME.Website]: string;
 };
 
 const DEFAULT_FORM_VALUES: FormValues = {
   consentAccepted: false,
   email: "",
-  goal: "",
   honeypot: "",
   name: "",
-  website: "",
+  [CONTACT_FORM_FIELD_NAME.Goal]: "",
+  [CONTACT_FORM_FIELD_NAME.Website]: "",
 };
 
 const URL_PATTERN = /^https?:\/\/\S+\.\S+/i;
-
-function splitName(input: string): { firstName: string; lastName: string } {
-  const trimmed = input.trim().replace(/\s+/g, " ");
-  const spaceIndex = trimmed.indexOf(" ");
-  if (spaceIndex === -1) {
-    return { firstName: trimmed, lastName: trimmed };
-  }
-  return {
-    firstName: trimmed.slice(0, spaceIndex),
-    lastName: trimmed.slice(spaceIndex + 1),
-  };
-}
 
 function buildMessage(
   goal: string,
@@ -92,9 +83,9 @@ export function FinalCtaSection({
   const websiteHintId = `${fieldIdPrefix}-website-hint`;
 
   const [submitState, setSubmitState] = useState<{
-    kind: "idle" | "error" | "success";
+    kind: (typeof SubmitState.Kind)[keyof typeof SubmitState.Kind];
     message?: string;
-  }>({ kind: "idle" });
+  }>({ kind: SubmitState.Kind.Idle });
   const {
     resetFormAnalytics,
     trackFormStart,
@@ -132,7 +123,7 @@ export function FinalCtaSection({
     async (values) => {
       if (values.honeypot.trim()) {
         setSubmitState({
-          kind: "success",
+          kind: SubmitState.Kind.Success,
           message: form.successBody,
         });
         reset(DEFAULT_FORM_VALUES);
@@ -140,47 +131,47 @@ export function FinalCtaSection({
       }
 
       trackSubmitAttempt();
-      const { firstName, lastName } = splitName(values.name);
-      const dto = mapQuickContactFormToDto(
-        {
-          consentAccepted: values.consentAccepted,
-          email: values.email,
-          firstName,
-          lastName,
-          message: buildMessage(
-            values.goal,
-            values.website,
-            form.payloadContext,
-          ),
-        },
+      const dto: SaveQuickContactDto = {
+        consentAccepted: values.consentAccepted,
+        displayName: values.name.trim(),
+        email: values.email.trim(),
+        kind: "quick_contact",
         locale,
-      );
+        message: buildMessage(
+          values[CONTACT_FORM_FIELD_NAME.Goal],
+          values[CONTACT_FORM_FIELD_NAME.Website],
+          form.payloadContext,
+        ),
+      };
 
       try {
         const response = await submitQuickContact(dto);
         if (!response.ok) {
           setSubmitState({
-            kind: "error",
+            kind: SubmitState.Kind.Error,
             message: getSubmitErrorMessage(response),
           });
           trackSubmitError(getContactSubmitAnalyticsErrorType(response));
           return;
         }
         trackSubmitSuccess();
-        setSubmitState({ kind: "success" });
+        setSubmitState({ kind: SubmitState.Kind.Success });
         reset(DEFAULT_FORM_VALUES);
         resetFormAnalytics();
       } catch {
-        setSubmitState({ kind: "error", message: form.errorGeneric });
-        trackSubmitError("generic");
+        setSubmitState({
+          kind: SubmitState.Kind.Error,
+          message: form.errorGeneric,
+        });
+        trackSubmitError(ContactFormSubmitErrorType.Generic);
       }
     },
     () => {
-      trackSubmitError("validation");
+      trackSubmitError(ContactFormSubmitErrorType.Validation);
     },
   );
 
-  const isSuccess = submitState.kind === "success";
+  const isSuccess = submitState.kind === SubmitState.Kind.Success;
 
   return (
     <section
@@ -310,7 +301,7 @@ export function FinalCtaSection({
                 {form.fields.website.label}
               </label>
               <input
-                {...register("website", {
+                {...register(CONTACT_FORM_FIELD_NAME.Website, {
                   validate: (value) => {
                     const trimmed = value.trim();
                     if (!trimmed) {
@@ -352,7 +343,7 @@ export function FinalCtaSection({
                 </span>
               </label>
               <textarea
-                {...register("goal", {
+                {...register(CONTACT_FORM_FIELD_NAME.Goal, {
                   validate: (value) => value.trim().length >= 1 || "required",
                 })}
                 aria-describedby={errors.goal ? `${goalId}-error` : undefined}
@@ -428,7 +419,8 @@ export function FinalCtaSection({
               <p className={styles.requiredHint}>{form.requiredHint}</p>
             </div>
 
-            {submitState.kind === "error" && submitState.message ? (
+            {submitState.kind === SubmitState.Kind.Error &&
+            submitState.message ? (
               <p aria-live="polite" className={styles.submitError} role="alert">
                 {submitState.message}
               </p>

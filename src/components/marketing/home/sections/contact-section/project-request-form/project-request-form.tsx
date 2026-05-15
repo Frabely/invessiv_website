@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
+import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/shared/contact-identity-fields/contact-identity-fields";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -10,6 +11,7 @@ import { FormActions } from "@/components/shared/form/form-actions/form-actions"
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
@@ -19,8 +21,8 @@ import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-
 import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/project-request-form-values";
 import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
-import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import styles from "./project-request-form.module.css";
 
@@ -33,15 +35,13 @@ type FormOption = {
   label: string;
 };
 
-type ContactFormCopy = {
+export type ContactFormCopy = {
   budgetLabel: string;
   budgetOptions: FormOption[];
   conditionalFieldHint: string;
   companyLabel: string;
   consentLabel: string;
   emailLabel: string;
-  firstNameLabel: string;
-  lastNameLabel: string;
   addPageLabel: string;
   goalLabel: string;
   goalOptions: FormOption[];
@@ -87,6 +87,7 @@ type ContactFormCopy = {
   submitSuccess: string;
   subtitle: string;
   title: string;
+  nameLabel: string;
   websiteLabel: string;
   workflowLabel: string;
   workflowOptions: FormOption[];
@@ -178,7 +179,6 @@ export function ProjectRequestForm({
     formCopy.nextStepProjectLabel ??
     `${formCopy.nextStepLabel} ${formCopy.stepThreeTitle}`;
   const ghostButtonClassName = `${buttonStyles.button} ${buttonStyles.ghost}`;
-  const fieldOfferClassName = `${styles.fieldOfferLayout}`;
   const pagesCustomFieldClassName = `${styles.pagesCustom}`;
 
   const fieldRules = useMemo(() => {
@@ -213,10 +213,8 @@ export function ProjectRequestForm({
     (step: FormStep) => {
       window.requestAnimationFrame(() => {
         if (step === 1) {
-          const hasIdentity =
-            getValues("firstName").trim().length > 0 &&
-            getValues("lastName").trim().length > 0;
-          setFocus(hasIdentity ? "offerKey" : "firstName");
+          const hasIdentity = getValues("displayName").trim().length > 0;
+          setFocus(hasIdentity ? "offerKey" : "displayName");
           return;
         }
 
@@ -244,7 +242,7 @@ export function ProjectRequestForm({
   );
 
   const getFieldStep = (fieldName: string): FormStep => {
-    if (["firstName", "lastName", "email", "offerKey"].includes(fieldName)) {
+    if (["displayName", "email", "offerKey"].includes(fieldName)) {
       return 1;
     }
 
@@ -330,7 +328,7 @@ export function ProjectRequestForm({
         FormStep,
         Array<keyof ProjectRequestFormValues>
       > = {
-        1: ["firstName", "lastName", "email", "offerKey"],
+        1: ["displayName", "email", "offerKey"],
         2: ["projectDetails"],
         3: ["consentAccepted"],
       };
@@ -590,7 +588,9 @@ export function ProjectRequestForm({
     for (const step of STEP_SEQUENCE) {
       const isStepValid = await validateStep(step);
       if (!isStepValid) {
-        trackSubmitError("validation", { step: String(step) });
+        trackSubmitError(ContactFormSubmitErrorType.Validation, {
+          step: String(step),
+        });
         setStep(step);
         return;
       }
@@ -625,7 +625,7 @@ export function ProjectRequestForm({
             setStatusMessage(
               `${formCopy.validationSummaryPrefix}: ${getFieldErrorTextByCode(payload.fieldErrors[firstInvalidField]?.[0])}`,
             );
-            trackSubmitError("validation", {
+            trackSubmitError(ContactFormSubmitErrorType.Validation, {
               step: String(getFieldStep(firstInvalidField)),
             });
             return;
@@ -648,10 +648,10 @@ export function ProjectRequestForm({
       resetFormAnalytics();
       setCurrentStep(1);
       setStartedAt(new Date().toISOString());
-      window.requestAnimationFrame(() => setFocus("firstName"));
+      window.requestAnimationFrame(() => setFocus("displayName"));
     } catch {
       setStatusMessage(formCopy.submitErrorGeneric);
-      trackSubmitError("generic");
+      trackSubmitError(ContactFormSubmitErrorType.Generic);
     }
   });
 
@@ -729,113 +729,61 @@ export function ProjectRequestForm({
           >
             <legend>{formCopy.stepOneTitle}</legend>
 
-            <div
-              className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid} ${styles.stepOneGrid}`}
-            >
+            <ContactIdentityFields
+              copy={formCopy}
+              errors={errors}
+              getErrorMessage={(fieldName) => getFieldErrorText(fieldName)}
+              onFieldChange={{
+                displayName: () => clearErrors("displayName"),
+                email: () => clearErrors("email"),
+              }}
+              register={register}
+            />
+
+            <div className={styles.stepOneOfferStack}>
               <FormField
+                className={styles.fieldOfferLayout}
                 errorMessage={
-                  errors.firstName ? getFieldErrorText("firstName") : undefined
+                  errors.offerKey ? getFieldErrorText("offerKey") : undefined
                 }
-                inputProps={{
-                  ...register("firstName", {
-                    onChange: () => clearErrors("firstName"),
-                    required: "required",
-                  }),
-                  "aria-invalid": errors.firstName ? "true" : undefined,
-                  autoCapitalize: "words",
-                  autoComplete: "given-name",
-                }}
-                kind="text"
-                label={formCopy.firstNameLabel}
+                kind={FormFieldKind.Select}
+                label={formCopy.offerLabel}
+                options={[
+                  {
+                    label: formCopy.offerPlaceholder,
+                    value: "",
+                  },
+                  ...offerOptions.map((option) => ({
+                    label: option.title,
+                    value: option.key,
+                  })),
+                ]}
                 required
-              />
-
-              <FormField
-                errorMessage={
-                  errors.lastName ? getFieldErrorText("lastName") : undefined
-                }
-                inputProps={{
-                  ...register("lastName", {
-                    onChange: () => clearErrors("lastName"),
-                    required: "required",
-                  }),
-                  "aria-invalid": errors.lastName ? "true" : undefined,
-                  autoCapitalize: "words",
-                  autoComplete: "family-name",
-                }}
-                kind="text"
-                label={formCopy.lastNameLabel}
-                required
-              />
-
-              <div className={styles.stepOneEmailStack}>
-                <FormField
-                  errorMessage={
-                    errors.email ? getFieldErrorText("email") : undefined
-                  }
-                  inputProps={{
-                    ...register("email", {
-                      onChange: () => clearErrors("email"),
-                      pattern: {
-                        message: "invalid_email",
-                        value: CONTACT_EMAIL_PATTERN,
-                      },
-                      required: "required",
-                    }),
-                    "aria-invalid": errors.email ? "true" : undefined,
-                    autoComplete: "email",
-                  }}
-                  kind="email"
-                  label={formCopy.emailLabel}
-                  required
-                />
-
-                <p className={styles.stepOneRequiredHint}>
-                  {formCopy.requiredHint}
-                </p>
-              </div>
-
-              <div className={styles.stepOneOfferStack}>
-                <FormField
-                  className={fieldOfferClassName}
-                  errorMessage={
-                    errors.offerKey ? getFieldErrorText("offerKey") : undefined
-                  }
-                  kind="select"
-                  label={formCopy.offerLabel}
-                  options={[
-                    {
-                      label: formCopy.offerPlaceholder,
-                      value: "",
+                selectProps={{
+                  ...register("offerKey", {
+                    onChange: (event) => {
+                      applyOfferSelection(event.target.value);
+                      clearErrors([
+                        "offerKey",
+                        "goalKey",
+                        "pageKeys",
+                        "website",
+                      ]);
                     },
-                    ...offerOptions.map((option) => ({
-                      label: option.title,
-                      value: option.key,
-                    })),
-                  ]}
-                  required
-                  selectProps={{
-                    ...register("offerKey", {
-                      onChange: (event) => {
-                        applyOfferSelection(event.target.value);
-                        clearErrors([
-                          "offerKey",
-                          "goalKey",
-                          "pageKeys",
-                          "website",
-                        ]);
-                      },
-                      required: "required",
-                    }),
-                    "aria-invalid": errors.offerKey ? "true" : undefined,
-                    "data-empty": selectedOfferKey ? "false" : "true",
-                  }}
-                />
+                    required: "required",
+                  }),
+                  "aria-invalid": errors.offerKey ? "true" : undefined,
+                  "data-empty": selectedOfferKey ? "false" : "true",
+                }}
+              />
 
-                <p className={styles.conditionalHint}>
-                  {formCopy.conditionalFieldHint}
-                </p>
-              </div>
+              <p className={styles.conditionalHint}>
+                {formCopy.conditionalFieldHint}
+              </p>
+
+              <p className={styles.stepOneRequiredHint}>
+                {formCopy.requiredHint}
+              </p>
             </div>
 
             <FormActions
@@ -876,7 +824,7 @@ export function ProjectRequestForm({
                   "aria-invalid": errors.website ? "true" : undefined,
                   autoComplete: "url",
                 }}
-                kind="url"
+                kind={FormFieldKind.Url}
                 label={formCopy.websiteLabel}
                 required={fieldRules.requiresWebsite}
               />
@@ -887,7 +835,7 @@ export function ProjectRequestForm({
                 errorMessage={
                   errors.goalKey ? getFieldErrorText("goalKey") : undefined
                 }
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={formCopy.goalLabel}
                 options={[
                   { label: "-", value: "" },
@@ -979,7 +927,7 @@ export function ProjectRequestForm({
                         formCopy.pagesPlaceholder,
                       value: customPageDraft,
                     }}
-                    kind="text"
+                    kind={FormFieldKind.Text}
                     label={
                       formCopy.pagesCustomLabel ??
                       "Weitere Seite hinzufügen (optional)"
@@ -1004,7 +952,7 @@ export function ProjectRequestForm({
                     ? getFieldErrorText("workflowKey")
                     : undefined
                 }
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={formCopy.workflowLabel}
                 options={[
                   { label: "-", value: "" },
@@ -1027,7 +975,7 @@ export function ProjectRequestForm({
                   ? getFieldErrorText("projectDetails")
                   : undefined
               }
-              kind="textarea"
+              kind={FormFieldKind.Textarea}
               label={formCopy.projectDetailsLabel}
               required
               textareaProps={{
@@ -1082,7 +1030,7 @@ export function ProjectRequestForm({
                   autoCapitalize: "words",
                   autoComplete: "organization",
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={formCopy.companyLabel}
               />
 
@@ -1092,7 +1040,7 @@ export function ProjectRequestForm({
                   autoCapitalize: "words",
                   autoComplete: "organization-title",
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={formCopy.roleLabel}
               />
             </div>
@@ -1102,7 +1050,7 @@ export function ProjectRequestForm({
                 ...register("phone"),
                 autoComplete: "tel",
               }}
-              kind="tel"
+              kind={FormFieldKind.Tel}
               label={formCopy.phoneLabel}
             />
 
@@ -1110,7 +1058,7 @@ export function ProjectRequestForm({
               className={`${sharedStyles.grid} ${sharedStyles.gridTwo} ${styles.grid}`}
             >
               <FormField
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={formCopy.budgetLabel}
                 options={[
                   { label: "-", value: "" },
@@ -1123,7 +1071,7 @@ export function ProjectRequestForm({
               />
 
               <FormField
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={formCopy.startLabel}
                 options={[
                   { label: "-", value: "" },

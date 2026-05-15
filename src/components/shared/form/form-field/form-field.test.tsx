@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/vitest";
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import { FormField } from "./form-field";
 
 describe("FormField", () => {
@@ -13,7 +14,7 @@ describe("FormField", () => {
         <FormField
           errorMessage="Required"
           hint="Hint text"
-          kind="text"
+          kind={FormFieldKind.Text}
           label="First name"
           required
           inputProps={{
@@ -21,14 +22,14 @@ describe("FormField", () => {
           }}
         />
         <FormField
-          kind="number"
+          kind={FormFieldKind.Number}
           label="Score"
           inputProps={{
             placeholder: "0 to 100",
           }}
         />
         <FormField
-          kind="select"
+          kind={FormFieldKind.Select}
           label="Category"
           options={[
             { label: "Choose", value: "" },
@@ -39,7 +40,7 @@ describe("FormField", () => {
           }}
         />
         <FormField
-          kind="textarea"
+          kind={FormFieldKind.Textarea}
           label="Notes"
           textareaProps={{
             placeholder: "Write something",

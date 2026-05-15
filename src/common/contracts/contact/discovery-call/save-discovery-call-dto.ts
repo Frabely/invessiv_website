@@ -4,9 +4,8 @@ import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request
 export type SaveDiscoveryCallDto = {
   consentAccepted: boolean;
   email: string;
-  firstName: string;
+  displayName: string;
   kind: typeof CONTACT_REQUEST_KIND.DiscoveryCall;
-  lastName: string;
   locale: Locale;
   message?: string;
 };

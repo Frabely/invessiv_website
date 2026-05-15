@@ -4,9 +4,8 @@ import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request
 export type SaveQuickContactDto = {
   consentAccepted: boolean;
   email: string;
-  firstName: string;
+  displayName: string;
   kind: typeof CONTACT_REQUEST_KIND.QuickContact;
-  lastName: string;
   locale: Locale;
   message: string;
 };

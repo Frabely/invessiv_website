@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createCalendlyPrefillHref,
   submitDiscoveryCall,
-  submitQuickContact,
   submitProjectRequest,
+  submitQuickContact,
 } from "./contact-form-service";
 
 describe("contact-form-service", () => {
@@ -21,9 +21,8 @@ describe("contact-form-service", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: "project_request",
-        lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
         projectDetails: "Landingpage fuer qualifizierte Leads.",
@@ -41,9 +40,8 @@ describe("contact-form-service", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           kind: "project_request",
-          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Landingpage fuer qualifizierte Leads.",
@@ -71,9 +69,8 @@ describe("contact-form-service", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: "quick_contact",
-        lastName: "Mustermann",
         locale: "de",
         message: "Wir brauchen eine kurze Einschaetzung.",
       },
@@ -89,9 +86,8 @@ describe("contact-form-service", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           kind: "quick_contact",
-          lastName: "Mustermann",
           locale: "de",
           message: "Wir brauchen eine kurze Einschaetzung.",
         }),
@@ -117,9 +113,8 @@ describe("contact-form-service", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: "discovery_call",
-        lastName: "Mustermann",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",
       },
@@ -135,9 +130,8 @@ describe("contact-form-service", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           kind: "discovery_call",
-          lastName: "Mustermann",
           locale: "de",
           message: "Wir wollen den Umfang kurz einordnen.",
         }),
@@ -153,8 +147,7 @@ describe("contact-form-service", () => {
     const calendlyHref = createCalendlyPrefillHref(
       {
         email: "max@example.com",
-        firstName: "Max",
-        lastName: "Mustermann",
+        displayName: "Max Mustermann",
         message: "Wir wollen den Umfang kurz einordnen.",
       },
       {
@@ -171,8 +164,7 @@ describe("contact-form-service", () => {
     const calendlyHref = createCalendlyPrefillHref(
       {
         email: "max@example.com",
-        firstName: "Max",
-        lastName: "Mustermann",
+        displayName: "Max Mustermann",
         message: "   ",
       },
       {

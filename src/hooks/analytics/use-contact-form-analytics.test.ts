@@ -3,6 +3,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { useContactFormAnalytics } from "./use-contact-form-analytics";
 
 const mockTrackConversionEvent = vi.fn();
@@ -72,7 +73,7 @@ describe("useContactFormAnalytics", () => {
     act(() => {
       result.current.trackSubmitAttempt({ step: "calendar" });
       result.current.trackSubmitSuccess();
-      result.current.trackSubmitError("delivery");
+      result.current.trackSubmitError(ContactFormSubmitErrorType.Delivery);
     });
 
     expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
@@ -102,7 +103,7 @@ describe("useContactFormAnalytics", () => {
       },
     );
     expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_submit_error", {
-      error_type: "delivery",
+      error_type: ContactFormSubmitErrorType.Delivery,
       form_id: "discovery_call",
       location: "contact",
       target: "calendly",

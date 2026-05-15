@@ -68,9 +68,8 @@ describe("ContactSection", () => {
           companyLabel: "Unternehmen",
           consentLabel: "Ich stimme gemäß",
           emailLabel: "E-Mail",
-          firstNameLabel: "Vorname",
+          nameLabel: "Name",
           addPageLabel: "Seite hinzufügen",
-          lastNameLabel: "Nachname",
           goalLabel: "Ziel",
           goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
           intro: "Kurzbeschreibung",
@@ -134,8 +133,7 @@ describe("ContactSection", () => {
           metaLabel: "E-Mail",
           copyActionLabel: "E-Mail kopieren",
           copiedActionLabel: "E-Mail kopiert",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Nachricht",
           messagePlaceholder: "Schreib kurz dein Anliegen.",
@@ -156,8 +154,7 @@ describe("ContactSection", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Kurz vorbereiten und dann Termin wählen.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen.",
@@ -225,7 +222,7 @@ describe("ContactSection", () => {
     fireEvent.click(screen.getByRole("button", { name: /Kennenlern-Call/ }));
     const callPanel = screen.getByRole("region", { name: "Kennenlern-Call" });
     expect(
-      within(callPanel).getByRole("textbox", { name: /Vorname\s*\*/ }),
+      within(callPanel).getByRole("textbox", { name: /Name\s*\*/ }),
     ).toBeTruthy();
     expect(
       within(callPanel).getByRole("textbox", { name: /E-Mail\s*\*/ }),

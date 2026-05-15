@@ -1,5 +1,5 @@
-import type { ContactIdentityFieldsValues } from "@/common/contracts/contact/fields/contact-identity-fields-values";
-
-export type BaseContactFieldsValues = ContactIdentityFieldsValues & {
+export type BaseContactFieldsValues = {
+  displayName: string;
+  email: string;
   message: string;
 };

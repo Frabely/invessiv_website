@@ -1,4 +1,5 @@
 import "server-only";
+import { CONTACT_FIELD_NAME } from "@/common/constants/contact/contact-field-names";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getServerEnv } from "@/server/config/env";
@@ -45,12 +46,11 @@ export async function createContactNotificationMessage(
   const environmentPrefix = getEnvironmentSubjectPrefix(
     getServerEnv().deploymentEnvironment,
   );
-  const subject = `${environmentPrefix}[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.firstName)} ${sanitizeLine(payload.lastName)}`;
+  const subject = `${environmentPrefix}[${copy.subjectPrefix}] ${sanitizeLine(localizedOffer)} | ${sanitizeLine(payload.displayName)}`;
   const rows = [
     [copy.labels.offerKey, mapValue("offerKey", payload.offerKey, copy)],
-    [copy.labels.firstName, payload.firstName],
-    [copy.labels.lastName, payload.lastName],
-    [copy.labels.email, payload.email],
+    [copy.labels[CONTACT_FIELD_NAME.DisplayName], payload.displayName],
+    [copy.labels[CONTACT_FIELD_NAME.Email], payload.email],
     [copy.labels.company, payload.company],
     [copy.labels.role, payload.role],
     [copy.labels.phone, payload.phone],

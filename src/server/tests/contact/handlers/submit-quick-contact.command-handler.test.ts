@@ -40,9 +40,8 @@ describe("submitQuickContactCommandHandler", () => {
       {
         consentAccepted: false,
         email: "invalid",
-        firstName: "",
+        displayName: "",
         kind: CONTACT_REQUEST_KIND.QuickContact,
-        lastName: "",
         locale: "de",
         message: "",
       },
@@ -78,9 +77,8 @@ describe("submitQuickContactCommandHandler", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: CONTACT_REQUEST_KIND.QuickContact,
-        lastName: "Mustermann",
         locale: "de",
         message: "Kurze erste Anfrage.",
       },
@@ -93,7 +91,7 @@ describe("submitQuickContactCommandHandler", () => {
     expect(sendMailMock).toHaveBeenCalledTimes(1);
   });
 
-  it("returns delivery errors from the mail infrastructure", async () => {
+  it("still succeeds when the mail infrastructure fails", async () => {
     mapQuickContactToMailMock.mockResolvedValueOnce({
       html: "<p>mail</p>",
       subject: "Subject",
@@ -112,9 +110,29 @@ describe("submitQuickContactCommandHandler", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: CONTACT_REQUEST_KIND.QuickContact,
-        lastName: "Mustermann",
+        locale: "de",
+        message: "Kurze erste Anfrage.",
+      },
+      "req_123",
+    );
+
+    expect(result).toEqual({ ok: true });
+  });
+
+  it("returns delivery unavailable when persistence throws", async () => {
+    persistQuickContactLeadMock.mockRejectedValueOnce(new Error("db down"));
+
+    const { submitQuickContactCommandHandler } =
+      await import("@/server/contact/handlers/submit-quick-contact.command-handler");
+
+    const result = await submitQuickContactCommandHandler(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        displayName: "Max Mustermann",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         locale: "de",
         message: "Kurze erste Anfrage.",
       },

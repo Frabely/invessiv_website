@@ -13,9 +13,8 @@ export type Dictionary = {
     quickContactNotification: {
       detailsLabel: string;
       emailLabel: string;
-      firstNameLabel: string;
       heading: string;
-      lastNameLabel: string;
+      nameLabel: string;
       subjectPrefix: string;
     };
   };

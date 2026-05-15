@@ -6,6 +6,7 @@ import type { CalendlyPrefillOptions } from "@/common/contracts/contact/options/
 import type { ContactSubmitOptions } from "@/common/contracts/contact/options/contact-submit-options";
 import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
 import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
+import { ContactSearchParam } from "@/common/constants/contact/contact-search-params";
 import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
 
 function createClientErrorResponse(
@@ -85,13 +86,12 @@ export function createCalendlyPrefillHref(
   { calendlyUrl, concernAnswerSlot = 1 }: CalendlyPrefillOptions,
 ) {
   const url = new URL(calendlyUrl);
-  const normalizedName =
-    `${values.firstName.trim()} ${values.lastName.trim()}`.trim();
+  const normalizedName = values.displayName.trim();
   const normalizedEmail = values.email.trim();
   const normalizedConcern = values.message.trim();
 
-  url.searchParams.set("name", normalizedName);
-  url.searchParams.set("email", normalizedEmail);
+  url.searchParams.set(ContactSearchParam.Name, normalizedName);
+  url.searchParams.set(ContactSearchParam.Email, normalizedEmail);
 
   if (normalizedConcern) {
     url.searchParams.set(`a${concernAnswerSlot}`, normalizedConcern);

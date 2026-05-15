@@ -76,8 +76,7 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -97,11 +96,8 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
-      target: { value: "Max" },
-    });
-    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
-      target: { value: "Mustermann" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+      target: { value: "Max Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
@@ -115,9 +111,8 @@ describe("DiscoveryCallPanel", () => {
         {
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           kind: "discovery_call",
-          lastName: "Mustermann",
           locale: "de",
           message: undefined,
         },
@@ -127,8 +122,7 @@ describe("DiscoveryCallPanel", () => {
         {
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
-          lastName: "Mustermann",
+          displayName: "Max Mustermann",
           message: "",
         },
         {
@@ -200,8 +194,7 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -254,8 +247,7 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -275,11 +267,8 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
-      target: { value: "Max" },
-    });
-    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
-      target: { value: "Mustermann" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+      target: { value: "Max Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
@@ -313,8 +302,7 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "FÃ¼r direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefÃ¼llt.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
@@ -334,11 +322,8 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Vorname\s*\*/ }), {
-      target: { value: "Max" },
-    });
-    fireEvent.change(screen.getByRole("textbox", { name: /Nachname\s*\*/ }), {
-      target: { value: "Mustermann" },
+    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+      target: { value: "Max Mustermann" },
     });
     fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
       target: { value: "max@example.com" },
@@ -364,8 +349,7 @@ describe("DiscoveryCallPanel", () => {
           title: "Kennenlern-Call",
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro: "Name und E-Mail werden in Calendly vorbefüllt.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",

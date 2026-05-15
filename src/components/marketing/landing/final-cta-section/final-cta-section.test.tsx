@@ -69,9 +69,8 @@ describe("FinalCtaSection", () => {
       expect(submitQuickContact).toHaveBeenCalledWith(
         expect.objectContaining({
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           kind: "quick_contact",
-          lastName: "Mustermann",
           locale: "de",
           message:
             "Landingpage-Check Anfrage\n\nWebsite: https://example.com\n\nIch möchte direkt eine neue Landingpage für mein Angebot.",

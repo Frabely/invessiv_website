@@ -36,10 +36,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           goalKey: "generate_inquiries",
           kind: "project_request",
-          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -69,9 +68,8 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: false,
           email: "invalid",
-          firstName: "",
+          displayName: "",
           kind: "project_request",
-          lastName: "",
           locale: "de",
           offerKey: "landing",
           projectDetails: "Zu kurz",
@@ -109,10 +107,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           goalKey: "generate_inquiries",
           kind: "project_request",
-          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -143,7 +140,7 @@ describe("POST /api/public/contact", () => {
     expect(payload.code).toBe("rate_limited");
   });
 
-  it("returns delivery_unavailable when the mail provider throws", async () => {
+  it("still returns success when the mail provider throws after persistence", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation(() =>
@@ -162,10 +159,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           goalKey: "generate_inquiries",
           kind: "project_request",
-          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -181,9 +177,8 @@ describe("POST /api/public/contact", () => {
 
     const payload = (await response.json()) as { code: string; ok: boolean };
 
-    expect(response.status).toBe(503);
-    expect(payload.ok).toBe(false);
-    expect(payload.code).toBe("delivery_unavailable");
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
   });
 
   it("returns internal_error when submission orchestration throws unexpectedly", async () => {
@@ -202,10 +197,9 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
+          displayName: "Max Mustermann",
           goalKey: "generate_inquiries",
           kind: "project_request",
-          lastName: "Mustermann",
           locale: "de",
           offerKey: "landing",
           projectDetails:
@@ -233,11 +227,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
           kind: "quick_contact",
-          lastName: "Mustermann",
           locale: "de",
           message: "Kurze erste Anfrage mit zwei Saetzen.",
+          displayName: "Max Mustermann",
         }),
         headers: {
           "Content-Type": "application/json",
@@ -263,11 +256,10 @@ describe("POST /api/public/contact", () => {
         body: JSON.stringify({
           consentAccepted: true,
           email: "max@example.com",
-          firstName: "Max",
           kind: "discovery_call",
-          lastName: "Mustermann",
           locale: "de",
           message: "Wir wollen den Umfang kurz einordnen.",
+          displayName: "Max Mustermann",
         }),
         headers: {
           "Content-Type": "application/json",

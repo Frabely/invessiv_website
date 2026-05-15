@@ -18,6 +18,7 @@ import {
   LEAD_SOCIAL_PLATFORMS_VALUES,
   type LeadSocialPlatform,
 } from "@/common/constants/leads/social/lead-social-platforms";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import {
   ButtonControl,
   PrimaryCtaButton,
@@ -274,7 +275,7 @@ export function SocialProfilesSection({
               className={styles.field}
               controlClassName={styles.input}
               errorMessage={platformDraftError ?? undefined}
-              kind="select"
+              kind={FormFieldKind.Select}
               label={content.fields.platform}
               options={[
                 {
@@ -313,7 +314,7 @@ export function SocialProfilesSection({
                 placeholder: content.placeholders.profileUrl,
                 value: profileUrlDraft,
               }}
-              kind="url"
+              kind={FormFieldKind.Url}
               label={content.fields.profileUrl}
             />
             <ButtonControl

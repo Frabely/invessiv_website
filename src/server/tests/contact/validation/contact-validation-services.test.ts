@@ -9,9 +9,8 @@ import { quickContactValidationService } from "@/server/contact/validation/quick
 const validProjectRequestPayload = {
   consentAccepted: true,
   email: "max@example.com",
-  firstName: "Max",
+  displayName: "Max Mustermann",
   kind: CONTACT_REQUEST_KIND.ProjectRequest,
-  lastName: "Mustermann",
   locale: "de",
   offerKey: "landing",
   projectDetails:
@@ -153,9 +152,8 @@ describe("contact validation services", () => {
     const parsed = quickContactValidationService.validate({
       consentAccepted: true,
       email: "max@example.com",
-      firstName: "Max",
+      displayName: "Max Mustermann",
       kind: CONTACT_REQUEST_KIND.QuickContact,
-      lastName: "Mustermann",
       locale: "de",
       message: "Kurze erste Anfrage.",
     });
@@ -167,9 +165,8 @@ describe("contact validation services", () => {
     const parsed = discoveryCallValidationService.validate({
       consentAccepted: true,
       email: "max@example.com",
-      firstName: "Max",
+      displayName: "Max Mustermann",
       kind: CONTACT_REQUEST_KIND.DiscoveryCall,
-      lastName: "Mustermann",
       locale: "de",
       message: "Wir wollen den Umfang kurz einordnen.",
     });

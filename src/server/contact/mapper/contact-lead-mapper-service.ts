@@ -13,7 +13,6 @@ import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/di
 import type { ProjectRequestPersistInput } from "@/server/db/contracts/contact/project-request-persist-input";
 import type { QuickContactPersistInput } from "@/server/db/contracts/contact/quick-contact-persist-input";
 import type { Locale } from "@/config/i18n";
-import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 
 export type ApiToDbMapperOptions = {
   createdAt?: Date;
@@ -22,8 +21,8 @@ export type ApiToDbMapperOptions = {
 
 export type LeadMapperInput = {
   email: string;
-  firstName: string;
-  lastName: string;
+  displayName: string;
+  website_url?: string;
 };
 
 export type SubmissionApiToDbMapperInput = {
@@ -35,23 +34,17 @@ export function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
 ): ContactLeadPersistRecord {
-  const displayName =
-    deriveLeadDisplayName({
-      company_name: undefined,
-      first_name: payload.firstName,
-      last_name: payload.lastName,
-    }) ?? `${payload.firstName.trim()} ${payload.lastName.trim()}`.trim();
-
   return {
     created_at: createdAt,
-    display_name: displayName,
+    display_name: payload.displayName.trim(),
     email: payload.email.trim(),
-    first_name: payload.firstName.trim(),
     id: randomUUID(),
-    last_name: payload.lastName.trim(),
+    first_name: undefined,
+    last_name: undefined,
     lead_status: ContactLeadStatus.PendingReview,
     owner: undefined,
     source: LeadSource.Webform,
+    website_url: payload.website_url?.trim() || undefined,
     updated_at: createdAt,
   };
 }
@@ -80,7 +73,13 @@ export function mapQuickContactDtoToDbPersistInput(
   payload: SaveQuickContactDto,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): QuickContactPersistInput {
-  const lead = mapLeadApiToDb(payload, createdAt);
+  const lead = mapLeadApiToDb(
+    {
+      displayName: payload.displayName,
+      email: payload.email,
+    },
+    createdAt,
+  );
   const leadSubmission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,
@@ -106,7 +105,14 @@ export function mapProjectRequestDtoToDbPersistInput(
   payload: SaveProjectRequestDto,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): ProjectRequestPersistInput {
-  const lead = mapLeadApiToDb(payload, createdAt);
+  const lead = mapLeadApiToDb(
+    {
+      email: payload.email,
+      displayName: payload.displayName,
+      website_url: payload.website,
+    },
+    createdAt,
+  );
   const leadSubmission = mapSubmissionApiToDb(
     {
       locale: payload.locale,
@@ -148,7 +154,13 @@ export function mapDiscoveryCallDtoToDbPersistInput(
   payload: SaveDiscoveryCallDto,
   { createdAt = new Date(), requestId }: ApiToDbMapperOptions,
 ): DiscoveryCallPersistInput {
-  const lead = mapLeadApiToDb(payload, createdAt);
+  const lead = mapLeadApiToDb(
+    {
+      displayName: payload.displayName,
+      email: payload.email,
+    },
+    createdAt,
+  );
   const leadSubmission = mapSubmissionApiToDb(
     { locale: payload.locale },
     requestId,

@@ -11,9 +11,8 @@ export function mapDiscoveryCallFormToDto(
   return {
     consentAccepted: values.consentAccepted,
     email: values.email.trim(),
-    firstName: values.firstName.trim(),
+    displayName: values.displayName.trim(),
     kind: CONTACT_REQUEST_KIND.DiscoveryCall,
-    lastName: values.lastName.trim(),
     locale,
     message: message || undefined,
   };

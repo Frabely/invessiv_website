@@ -22,8 +22,8 @@ describe("leadMapperService", () => {
     const result = leadMapperService.mapLeadApiToDb(
       {
         email: " max@example.com ",
-        firstName: " Max ",
-        lastName: " Mustermann ",
+        displayName: " Max Mustermann ",
+        website_url: "https://example.com ",
       },
       createdAt,
     );
@@ -32,12 +32,13 @@ describe("leadMapperService", () => {
       created_at: createdAt,
       display_name: "Max Mustermann",
       email: "max@example.com",
-      first_name: "Max",
       id: "lead-id-1",
-      last_name: "Mustermann",
+      first_name: undefined,
+      last_name: undefined,
       lead_status: ContactLeadStatus.PendingReview,
       owner: undefined,
       source: LeadSource.Webform,
+      website_url: "https://example.com",
       updated_at: createdAt,
     });
   });
@@ -56,9 +57,8 @@ describe("leadMapperService", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: "quick_contact",
-        lastName: "Mustermann",
         locale: "de",
         message: "Kurze erste Anfrage.",
       },
@@ -92,10 +92,9 @@ describe("leadMapperService", () => {
         company: "Invessiv GmbH",
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         goalKey: "generate_inquiries",
         kind: "project_request",
-        lastName: "Mustermann",
         locale: "de",
         offerKey: "landing",
         customPageNames: ["Karriereseite"],
@@ -124,6 +123,7 @@ describe("leadMapperService", () => {
     expect(result.lead_project_request.custom_page_names).toEqual([
       "Karriereseite",
     ]);
+    expect(result.lead.website_url).toBe("https://example.com");
   });
 
   it("creates linked lead, submission, and call contact records", async () => {
@@ -140,9 +140,8 @@ describe("leadMapperService", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: "discovery_call",
-        lastName: "Mustermann",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",
       },

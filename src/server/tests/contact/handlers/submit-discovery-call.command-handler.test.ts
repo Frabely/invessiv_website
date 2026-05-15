@@ -27,9 +27,8 @@ describe("submitDiscoveryCallCommandHandler", () => {
       {
         consentAccepted: false,
         email: "invalid",
-        firstName: "",
+        displayName: "",
         kind: CONTACT_REQUEST_KIND.DiscoveryCall,
-        lastName: "",
         locale: "de",
         message: "Test",
       },
@@ -55,9 +54,8 @@ describe("submitDiscoveryCallCommandHandler", () => {
       {
         consentAccepted: true,
         email: "max@example.com",
-        firstName: "Max",
+        displayName: "Max Mustermann",
         kind: CONTACT_REQUEST_KIND.DiscoveryCall,
-        lastName: "Mustermann",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",
       },
@@ -66,5 +64,29 @@ describe("submitDiscoveryCallCommandHandler", () => {
 
     expect(result).toEqual({ ok: true });
     expect(persistDiscoveryCallLeadMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns delivery unavailable when persistence throws", async () => {
+    persistDiscoveryCallLeadMock.mockRejectedValueOnce(new Error("db down"));
+
+    const { submitDiscoveryCallCommandHandler } =
+      await import("@/server/contact/handlers/submit-discovery-call.command-handler");
+
+    const result = await submitDiscoveryCallCommandHandler(
+      {
+        consentAccepted: true,
+        email: "max@example.com",
+        displayName: "Max Mustermann",
+        kind: CONTACT_REQUEST_KIND.DiscoveryCall,
+        locale: "de",
+        message: "Wir wollen den Umfang kurz einordnen.",
+      },
+      "req_123",
+    );
+
+    expect(result).toEqual({
+      code: CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable,
+      ok: false,
+    });
   });
 });

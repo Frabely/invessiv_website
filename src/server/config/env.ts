@@ -1,7 +1,7 @@
 import { COMPANY } from "@/config/company";
 import { loadLocalEnvFiles } from "@/server/config/load-env";
 
-export type ContactMailProvider = "disabled" | "noop" | "resend";
+export type ContactMailProvider = "disabled" | "resend";
 export type DeploymentEnvironment = "development" | "preview" | "production";
 
 export type ServerEnv = {
@@ -40,8 +40,8 @@ function readContactMailProvider(): ContactMailProvider {
     return "resend";
   }
 
-  if (rawValue === "noop" && readDeploymentEnvironment() === "development") {
-    return "noop";
+  if (readDeploymentEnvironment() === "development") {
+    return "resend";
   }
 
   return "disabled";

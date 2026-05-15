@@ -145,8 +145,7 @@ export type ContactFormCopy = {
   subtitle: string;
   intro: string;
   conditionalFieldHint: string;
-  firstNameLabel: string;
-  lastNameLabel: string;
+  nameLabel: string;
   emailLabel: string;
   addPageLabel: string;
   phoneLabel: string;
@@ -211,8 +210,7 @@ export type QuickContactFormCopy = {
   metaLabel: string;
   copyActionLabel: string;
   copiedActionLabel: string;
-  firstNameLabel: string;
-  lastNameLabel: string;
+  nameLabel: string;
   emailLabel: string;
   messageLabel: string;
   messagePlaceholder: string;
@@ -234,8 +232,7 @@ export type DiscoveryCallFormCopy = {
   title: string;
   subtitle: string;
   intro: string;
-  firstNameLabel: string;
-  lastNameLabel: string;
+  nameLabel: string;
   emailLabel: string;
   messageLabel: string;
   messagePlaceholder: string;
@@ -392,7 +389,7 @@ const HOME_SECTIONS = [
         title: "Was Kunden über die Zusammenarbeit sagen",
         description: "aus realen Web- & Softwareprojekten",
         summaryPoints: [
-          "5,0 ★★★★★ bei Google",
+          "5,0 ????? bei Google",
           "echte Kundenstimmen",
           "klare Ergebnisse",
         ],
@@ -438,7 +435,7 @@ const HOME_SECTIONS = [
         title: "What clients say about working together",
         description: "from real web and software projects",
         summaryPoints: [
-          "5.0 ★★★★★ on Google",
+          "5.0 ????? on Google",
           "real client reviews",
           "clear outcomes",
         ],
@@ -1028,8 +1025,7 @@ const HOME_SECTIONS = [
             "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
             "Die Zusatzfragen passen sich an dein gewähltes Leistungsmodell an.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           addPageLabel: "Seite hinzufügen",
           phoneLabel: "Telefon",
@@ -1181,8 +1177,7 @@ const HOME_SECTIONS = [
           metaLabel: "E-Mail",
           copyActionLabel: "Adresse kopieren",
           copiedActionLabel: "Adresse kopiert",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Nachricht",
           messagePlaceholder:
@@ -1209,8 +1204,7 @@ const HOME_SECTIONS = [
           subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
           intro:
             "Trag kurz deine Kontaktdaten ein und gib optional dein Anliegen mit, damit der Termin fokussierter starten kann.",
-          firstNameLabel: "Vorname",
-          lastNameLabel: "Nachname",
+          nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder:
@@ -1289,8 +1283,7 @@ const HOME_SECTIONS = [
             "Share the key facts. You get a clear view on scope, timing, and budget range.",
           conditionalFieldHint:
             "The follow-up questions adapt to your selected service model.",
-          firstNameLabel: "First name",
-          lastNameLabel: "Last name",
+          nameLabel: "Name",
           emailLabel: "Email",
           addPageLabel: "Add page",
           phoneLabel: "Phone",
@@ -1430,8 +1423,7 @@ const HOME_SECTIONS = [
           metaLabel: "Email",
           copyActionLabel: "Copy address",
           copiedActionLabel: "Address copied",
-          firstNameLabel: "First name",
-          lastNameLabel: "Last name",
+          nameLabel: "Name",
           emailLabel: "Email",
           messageLabel: "Message",
           messagePlaceholder:
@@ -1459,8 +1451,7 @@ const HOME_SECTIONS = [
             "Best for live alignment with a bit of context before the call.",
           intro:
             "Add your contact details and, if useful, a short note so the call can start with clearer context.",
-          firstNameLabel: "First name",
-          lastNameLabel: "Last name",
+          nameLabel: "Name",
           emailLabel: "Email",
           messageLabel: "Topic",
           messagePlaceholder:

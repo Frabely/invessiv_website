@@ -25,6 +25,7 @@ import {
 } from "@/common/constants/leads/forms/lead-form-dialog-modes";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
+import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
 import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
 import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
 import {
@@ -681,7 +682,7 @@ export function LeadFormDialog({
                   autoComplete: "organization",
                   placeholder: content.placeholders.displayName,
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={content.fields.displayName}
                 required
               />
@@ -704,7 +705,7 @@ export function LeadFormDialog({
                   autoComplete: "given-name",
                   placeholder: content.placeholders.firstName,
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={content.fields.firstName}
               />
 
@@ -726,7 +727,7 @@ export function LeadFormDialog({
                   autoComplete: "family-name",
                   placeholder: content.placeholders.lastName,
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={content.fields.lastName}
               />
 
@@ -748,7 +749,7 @@ export function LeadFormDialog({
                   autoComplete: "organization",
                   placeholder: content.placeholders.companyName,
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={content.fields.companyName}
               />
 
@@ -771,7 +772,7 @@ export function LeadFormDialog({
                   autoComplete: "email",
                   placeholder: content.placeholders.email,
                 }}
-                kind="email"
+                kind={FormFieldKind.Email}
                 label={content.fields.email}
               />
             </div>
@@ -810,7 +811,7 @@ export function LeadFormDialog({
                   autoComplete: "tel",
                   placeholder: content.placeholders.phone,
                 }}
-                kind="tel"
+                kind={FormFieldKind.Tel}
                 label={content.fields.phone}
               />
 
@@ -846,7 +847,7 @@ export function LeadFormDialog({
                   autoComplete: "url",
                   placeholder: content.placeholders.websiteUrl,
                 }}
-                kind="url"
+                kind={FormFieldKind.Url}
                 label={content.fields.websiteUrl}
               />
 
@@ -858,7 +859,7 @@ export function LeadFormDialog({
                   currentValues.category_id,
                   initialValues.category_id,
                 )}
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={content.fields.category}
                 options={[
                   { label: content.placeholders.category, value: "" },
@@ -896,7 +897,7 @@ export function LeadFormDialog({
                   inputMode: "numeric",
                   placeholder: content.placeholders.score,
                 }}
-                kind="number"
+                kind={FormFieldKind.Number}
                 label={content.fields.score}
               />
 
@@ -918,7 +919,7 @@ export function LeadFormDialog({
                   autoComplete: "organization-title",
                   placeholder: content.placeholders.owner,
                 }}
-                kind="text"
+                kind={FormFieldKind.Text}
                 label={content.fields.owner}
               />
 
@@ -926,7 +927,7 @@ export function LeadFormDialog({
                 className={styles.field}
                 controlClassName={styles.input}
                 errorMessage={errors.lead_status?.message}
-                kind="select"
+                kind={FormFieldKind.Select}
                 label={content.fields.status}
                 options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
                   label: sharedContent.status[status],
@@ -960,7 +961,7 @@ export function LeadFormDialog({
                 placeholder: content.placeholders.notes,
                 rows: 4,
               }}
-              kind="textarea"
+              kind={FormFieldKind.Textarea}
               label={content.fields.notes}
             />
           </section>
