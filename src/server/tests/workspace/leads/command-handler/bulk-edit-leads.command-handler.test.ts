@@ -182,6 +182,38 @@ describe("bulkEditLeads", () => {
     ]);
   });
 
+  it("returns partial success when one lead updates and another is skipped", async () => {
+    vi.resetModules();
+    const { updateCaptures } = setupDb([
+      buildLead({ id: "lead-1", display_name: "Anna", notes: "short" }),
+      buildLead({
+        id: "lead-2",
+        display_name: "Bea",
+        notes: "x".repeat(4980),
+      }),
+    ]);
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    const result = await bulkEditLeads({
+      ids: ["lead-1", "lead-2"],
+      patch: { notesAppend: "y".repeat(100) },
+    });
+
+    expect(updateCaptures).toHaveLength(1);
+    expect(result).toEqual({
+      ok: true,
+      updatedCount: 1,
+      failedLeads: [
+        {
+          id: "lead-2",
+          displayName: "Bea",
+          reason: BulkSkipReason.NotesTooLong,
+        },
+      ],
+    });
+  });
+
   it("appends a note with newline separator only when existing note is non-empty", async () => {
     vi.resetModules();
     const { updateCaptures } = setupDb([
@@ -273,6 +305,9 @@ describe("bulkEditLeads", () => {
   it("records an unknown skip when a per-lead transaction fails", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
 
     const outerRows = [
       buildLead({ id: "lead-1", display_name: "Anna" }),
@@ -335,5 +370,12 @@ describe("bulkEditLeads", () => {
       },
     ]);
     expect(createLeadActivityMock).toHaveBeenCalledTimes(1);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "[bulk-edit-leads] per-lead failure",
+      expect.objectContaining({
+        leadId: "lead-2",
+        error: expect.any(Error),
+      }),
+    );
   });
 });

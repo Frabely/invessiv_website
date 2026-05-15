@@ -9,9 +9,11 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
+import type { ComponentType } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { LeadSummaryDto } from "@/common/contracts/leads";
+import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { getLeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { leadsBulkEditService } from "@/components/workspace/leads/table/services/leads-bulk-edit-service";
 import { LeadsBulkArchiveConfirmDialog } from "@/components/workspace/leads/table/leads-bulk-archive-confirm-dialog/leads-bulk-archive-confirm-dialog";
@@ -52,6 +54,37 @@ function createLead(index: number): LeadSummaryDto {
     category: null,
     socialProfiles: [],
   };
+}
+
+type BulkConfirmDialogScenario = {
+  component: ComponentType<BulkConfirmDialogProps>;
+  confirmLabel: string;
+  serviceMethod: "archive" | "delete";
+  title: string;
+};
+
+type BulkConfirmDialogProps = {
+  bulkContent: LeadsBulkDictionary;
+  onCloseAction: () => void;
+  onSuccessAction: () => void;
+  selectedLeads: LeadSummaryDto[];
+};
+
+function renderBulkConfirmDialog(
+  ScenarioComponent: BulkConfirmDialogScenario["component"],
+  bulkContent: LeadsBulkDictionary,
+  selectedLeads: LeadSummaryDto[],
+  onCloseAction: () => void,
+  onSuccessAction: () => void,
+) {
+  render(
+    <ScenarioComponent
+      bulkContent={bulkContent}
+      onCloseAction={onCloseAction}
+      onSuccessAction={onSuccessAction}
+      selectedLeads={selectedLeads}
+    />,
+  );
 }
 
 describe("leadsBulkEditService", () => {
@@ -172,86 +205,65 @@ describe("leadsBulkEditService", () => {
   );
 });
 
-describe("LeadsBulkArchiveConfirmDialog", () => {
-  it("renders the full selected list and submits the archive action", async () => {
-    const archiveSpy = vi
-      .spyOn(leadsBulkEditService, "archive")
-      .mockResolvedValue({ ok: true });
-    const bulkContent = getLeadsBulkDictionary("en");
-    const selectedLeads = Array.from({ length: 12 }, (_, index) =>
-      createLead(index + 1),
-    );
-    const onCloseAction = vi.fn();
-    const onSuccessAction = vi.fn();
+const bulkConfirmDialogScenarios = [
+  {
+    component: LeadsBulkArchiveConfirmDialog,
+    confirmLabel: "archiveConfirm",
+    serviceMethod: "archive",
+    title: "archiveConfirm",
+  },
+  {
+    component: LeadsBulkDeleteConfirmDialog,
+    confirmLabel: "deleteConfirm",
+    serviceMethod: "delete",
+    title: "deleteConfirm",
+  },
+] as const;
 
-    render(
-      <LeadsBulkArchiveConfirmDialog
-        bulkContent={bulkContent}
-        onCloseAction={onCloseAction}
-        onSuccessAction={onSuccessAction}
-        selectedLeads={selectedLeads}
-      />,
-    );
+describe.each(bulkConfirmDialogScenarios)(
+  "$serviceMethod confirm dialog",
+  ({ component, confirmLabel, serviceMethod, title }) => {
+    it("renders the full selected list and submits the bulk action", async () => {
+      const submitSpy = vi
+        .spyOn(leadsBulkEditService, serviceMethod)
+        .mockResolvedValue({ ok: true });
+      const bulkContent = getLeadsBulkDictionary("en");
+      const selectedLeads = Array.from({ length: 12 }, (_, index) =>
+        createLead(index + 1),
+      );
+      const onCloseAction = vi.fn();
+      const onSuccessAction = vi.fn();
 
-    expect(
-      screen.getByRole("dialog", { name: bulkContent.archiveConfirm.title }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(12);
-    expect(screen.queryByText("and 2 more")).not.toBeInTheDocument();
+      renderBulkConfirmDialog(
+        component,
+        bulkContent,
+        selectedLeads,
+        onCloseAction,
+        onSuccessAction,
+      );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: bulkContent.archiveConfirm.confirm }),
-    );
+      expect(
+        screen.getByRole("dialog", {
+          name: bulkContent[title].title,
+        }),
+      ).toBeInTheDocument();
+      expect(screen.getAllByRole("listitem")).toHaveLength(12);
+      expect(screen.queryByText("and 2 more")).not.toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(archiveSpy).toHaveBeenCalledWith({
-        ids: selectedLeads.map((lead) => lead.id),
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: bulkContent[confirmLabel].confirm,
+        }),
+      );
+
+      await waitFor(() => {
+        expect(submitSpy).toHaveBeenCalledWith({
+          ids: selectedLeads.map((lead) => lead.id),
+        });
       });
+      expect(routerRefreshMock).toHaveBeenCalled();
+      expect(onSuccessAction).toHaveBeenCalled();
+      expect(onCloseAction).not.toHaveBeenCalled();
     });
-    expect(routerRefreshMock).toHaveBeenCalled();
-    expect(onSuccessAction).toHaveBeenCalled();
-    expect(onCloseAction).not.toHaveBeenCalled();
-  });
-});
-
-describe("LeadsBulkDeleteConfirmDialog", () => {
-  it("renders the full selected list and submits the delete action", async () => {
-    const deleteSpy = vi
-      .spyOn(leadsBulkEditService, "delete")
-      .mockResolvedValue({ ok: true });
-    const bulkContent = getLeadsBulkDictionary("en");
-    const selectedLeads = Array.from({ length: 12 }, (_, index) =>
-      createLead(index + 1),
-    );
-    const onCloseAction = vi.fn();
-    const onSuccessAction = vi.fn();
-
-    render(
-      <LeadsBulkDeleteConfirmDialog
-        bulkContent={bulkContent}
-        onCloseAction={onCloseAction}
-        onSuccessAction={onSuccessAction}
-        selectedLeads={selectedLeads}
-      />,
-    );
-
-    expect(
-      screen.getByRole("dialog", { name: bulkContent.deleteConfirm.title }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(12);
-    expect(screen.queryByText("and 2 more")).not.toBeInTheDocument();
-
-    fireEvent.click(
-      screen.getByRole("button", { name: bulkContent.deleteConfirm.confirm }),
-    );
-
-    await waitFor(() => {
-      expect(deleteSpy).toHaveBeenCalledWith({
-        ids: selectedLeads.map((lead) => lead.id),
-      });
-    });
-    expect(routerRefreshMock).toHaveBeenCalled();
-    expect(onSuccessAction).toHaveBeenCalled();
-    expect(onCloseAction).not.toHaveBeenCalled();
-  });
-});
+  },
+);

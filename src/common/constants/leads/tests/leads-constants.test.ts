@@ -216,6 +216,7 @@ describe("LeadValidationIssueCode", () => {
     expect(LEAD_VALIDATION_ISSUE_CODE_VALUES).toEqual([
       LeadValidationIssueCode.LastNameOrCompanyNameRequired,
       LeadValidationIssueCode.BulkEditEmptyPatch,
+      LeadValidationIssueCode.BulkEditStatusArchiveDisallowed,
     ]);
     expect(new Set(LEAD_VALIDATION_ISSUE_CODE_VALUES).size).toBe(
       LEAD_VALIDATION_ISSUE_CODE_VALUES.length,
