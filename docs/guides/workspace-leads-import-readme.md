@@ -1,8 +1,8 @@
 # Workspace Leads CSV-Import
 
 Dieses Dokument beschreibt das CSV-Format für den Lead-Import im Workspace.
-Es ist so geschrieben, dass es direkt an eine KI übergeben werden kann – zusammen mit dem Template oder einer
-Recherche-Liste –, damit die KI daraus eine importfertige CSV-Datei erstellt.
+Es ist so geschrieben, dass es direkt an eine KI übergeben werden kann - zusammen mit dem Template oder einer
+Recherche-Liste -, damit die KI daraus eine importfertige CSV-Datei erstellt.
 
 ---
 
@@ -15,6 +15,7 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 - Pflichtfelder müssen befüllt sein, optionale Felder bleiben leer (kein Leerzeichen, kein `-`).
 - Leere optionale Felder werden einfach ausgelassen (zwei Semikola nebeneinander: `;;`).
 - Spaltennamen dürfen nicht abgeändert werden.
+- Aus Datenschutzsicht ist es sinnvoll, alle Leads zunächst auf `zu prüfen` (`pending_review`) zu setzen.
 - Encoding: UTF-8.
 
 ---
@@ -44,7 +45,7 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 | `instagram_url` | Nein    | URL            | Instagram-Profilseite. Muss eine gültige URL sein.                                                                                                                    | `https://instagram.com/anna.weber`     |
 | `youtube_url`   | Nein    | URL            | YouTube-Kanal. Muss eine gültige URL sein.                                                                                                                            | `https://youtube.com/@annakanal`       |
 | `score`         | Nein    | Ganzzahl 0–100 | Priorisierungspunktzahl. Muss eine ganze Zahl zwischen 0 und 100 sein.                                                                                                | `72`                                   |
-| `status`        | Nein    | Statuswert     | Aktueller Stand im Akquiseprozess. Siehe gültige Werte unten. Leer = `new`.                                                                                           | `qualified`                            |
+| `status`        | Nein    | Statuswert     | Prüfstatus des Leads. Empfohlen für neue Imports: `zu prüfen` / `pending_review`.                                                                                     | `zu prüfen`                            |
 | `category`      | Nein    | Text           | Kategorie-Slug. Wird nur ausgewertet, wenn `category_id` leer ist. Unbekannte Slugs führen zu einem Fehler (Zeile wird nicht importiert). Groß-/Kleinschreibung egal. | `coaches`                              |
 | `category_id`   | Nein    | UUID           | UUID einer bestehenden Kategorie im System. Hat Vorrang vor `category`.                                                                                               | `3fa85f64-5717-4562-b3fc-2c963f66afa6` |
 | `owner`         | Nein    | Text           | Interner Verantwortlicher (Name der Person im Team).                                                                                                                  | `Moritz`                               |
@@ -67,7 +68,7 @@ Das Feld `category` akzeptiert folgende Slugs (case-sensitive):
 | `consultants`             | Berater              | Consultants             |
 | `photographers`           | Fotografen           | Photographers           |
 
-Ein unbekannter Slug ist ein **Fehler** — die betroffene Zeile wird nicht importiert und im Report ausgewiesen.
+Ein unbekannter Slug ist ein **Fehler** - die betroffene Zeile wird nicht importiert und im Report ausgewiesen.
 Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vor `category`.
 
 ---
@@ -76,18 +77,19 @@ Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vo
 
 Der Status-Wert wird normalisiert. Folgende Bezeichnungen werden akzeptiert (DE und EN):
 
-| Status (intern) | Akzeptierte Eingaben             |
-| --------------- | -------------------------------- |
-| `new`           | `new`, `neu`                     |
-| `contacted`     | `contacted`, `kontaktiert`       |
-| `qualified`     | `qualified`, `qualifiziert`      |
-| `proposal`      | `proposal`, `angebot`            |
-| `on_hold`       | `on_hold`, `on hold`, `pausiert` |
-| `won`           | `won`, `gewonnen`                |
-| `lost`          | `lost`, `verloren`               |
-| `archived`      | `archived`, `archiviert`         |
+| Status (intern)  | Akzeptierte Eingaben                            |
+| ---------------- | ----------------------------------------------- |
+| `pending_review` | `zu prüfen`, `pending_review`, `pending review` |
+| `new`            | `new`, `neu`                                    |
+| `contacted`      | `contacted`, `kontaktiert`                      |
+| `qualified`      | `qualified`, `qualifiziert`                     |
+| `proposal`       | `proposal`, `angebot`                           |
+| `on_hold`        | `on_hold`, `on hold`, `pausiert`                |
+| `won`            | `won`, `gewonnen`                               |
+| `lost`           | `lost`, `verloren`                              |
+| `archived`       | `archived`, `archiviert`                        |
 
-Unbekannte Werte werden als `new` importiert und erzeugen eine Warnung im Report.
+Für neue Importdateien ist `zu prüfen` die empfohlene Voreinstellung.
 
 ---
 
@@ -114,16 +116,7 @@ Hero schärfen | CTA verbessern | Trust-Signale ergänzen
 
 ## Deduplizierung
 
-- E-Mail-Adressen werden global dedupliziert — bereits vorhandene Leads werden übersprungen.
+- E-Mail-Adressen werden global dedupliziert - bereits vorhandene Leads werden übersprungen.
 - `external_guid` ist optional. Wenn gesetzt, muss sie innerhalb der Datei eindeutig sein.
 - Wenn E-Mail und `external_guid` auf unterschiedliche bestehende Leads zeigen, wird die Zeile übersprungen und im
   Report ausgewiesen.
-
----
-
-## Beispieldateien
-
-| Datei                                  | Inhalt                                             |
-| -------------------------------------- | -------------------------------------------------- |
-| `docs/guides/lead-import-template.csv` | Nur Spaltenköpfe — als leere Vorlage zum Ausfüllen |
-| `docs/guides/lead-import-example.csv`  | 5 Beispielzeilen mit verschiedenen Kombinationen   |
