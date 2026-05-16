@@ -211,29 +211,27 @@ sharedContent = {sharedDict}
 
 ## Tasks
 
-1. **Konstanten** anlegen (`outreach-channels.ts`, `outreach-error-codes.ts`, `outreach-prompt-keys.ts`,
-   `outreach-defaults.ts`).
-2. **DTOs** (`generate-outreach-request.dto.ts`, `generate-outreach-result.dto.ts`).
-3. **Prompts-Modul**:
-   - 3a. `copywriting-guidelines.ts`, `outreach-profile.ts`.
-   - 3b. `channel-profiles.ts`.
-   - 3c. `outreach-prompt-registry.ts` + `prompts/first-touch-prompt.ts`.
-4. **Zod-Schema** + Test (TDD).
-5. **Prompt-Service** + Tests (TDD, inkl. DSGVO-Negativtests).
-6. **AI-Service** + Tests (TDD, gemockter OpenAI-Client; Tests für LM-Studio-Erfolg / LM-Studio-Fail→OpenAI-Erfolg /
-   beide-Fail).
-7. **Message-Parser** + Tests (Email-Subject-Extraktion).
-8. **Command-Handler** + Tests (gemockte Services, **Activity-Log wird verifiziert**).
-9. **API-Error-Helper** (`outreach-api-error.ts`).
-10. **API-Route** `POST /api/workspace/outreach/generate` (Auth + Schema + Handler).
-11. **i18n-Block** (de + en in EINEM Commit; `index.ts` für Outreach-Section + Einbau in Leads-Dictionary-Index).
-12. **`LeadOutreachDialog`-Component** (alle Phasen, Email-Sonderfall).
-13. **`LeadOutreachTrigger`-Component** (zwei Varianten).
-14. **Integration Detail-Panel-Header** (Trigger `icon-only`).
-15. **Integration Edit-Dialog-Footer** (Trigger `icon+text`, nur `mode === 'edit'`).
-16. **Integration Table-Row-Actions** (Trigger `icon-only`, zwischen Edit und Delete; Click-Propagation stoppen).
-17. **Pre-Merge-Gate:** `npm run lint && npm run typecheck && npm run test && npm run build`.
-18. **Manueller Smoke-Test** (`npm run dev`) — siehe Verifikation.
+Modell-Wahl pro Task. Faustregel: **Sonnet 4.6** für mechanisches Pattern-Matching (Konstanten, DTOs, Zod, Tests,
+Routen, Integrationen). **Opus 4.7** dort, wo Output-Qualität sichtbar ist (Prompt-Engineering, Dialog-UX).
+
+| #   | Task                                                                                                                                                                                                             | Modell     |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 1   | **Konstanten + DTOs** — `outreach-channels.ts`, `outreach-error-codes.ts`, `outreach-prompt-keys.ts`, `outreach-defaults.ts`, `generate-outreach-request.dto.ts`, `generate-outreach-result.dto.ts`.             | **Sonnet** |
+| 2   | **Prompts-Modul** — 2a: `copywriting-guidelines.ts` + `outreach-profile.ts`; 2b: `channel-profiles.ts`; 2c: `outreach-prompt-registry.ts` + `prompts/first-touch-prompt.ts`. Tonalität, Channel-Tuning, Persona. | **Opus**   |
+| 3   | **Zod-Schema + Test** (TDD).                                                                                                                                                                                     | **Sonnet** |
+| 4   | **Prompt-Service + Tests** (TDD, inkl. **DSGVO-Negativtests** — Email/Phone nie im Prompt-Output).                                                                                                               | **Sonnet** |
+| 5   | **AI-Service + Tests** — LM-Studio (Qwen3-14B Q4_K_M) primär, OpenAI `gpt-4o-mini` Fallback; Tests für LM-Studio-Erfolg / LM-Studio-Fail→OpenAI-Erfolg / beide-Fail mit gemocktem `openai`-SDK.                  | **Sonnet** |
+| 6   | **Message-Parser + Tests** (Email-Subject-Extraktion, Falsch-Format-Robustheit).                                                                                                                                 | **Sonnet** |
+| 7   | **Command-Handler + Tests** (gemockte Services; **Activity-Log-Aufruf verifiziert** — `type='message_drafted'`, `metadata={promptKey, channel, subject?}`).                                                      | **Sonnet** |
+| 8   | **API-Layer** — `outreach-api-error.ts` + `POST /api/workspace/outreach/generate` (Auth + Schema + Handler) in einem Commit.                                                                                     | **Sonnet** |
+| 9   | **i18n-Block** — `de.json` + `en.json` + `index.ts` für Outreach-Section + Einbau in `workspace/leads/index.ts`. Beide Locales **zwingend** im selben Commit.                                                    | **Sonnet** |
+| 10  | **UI-Komponenten + Integrationen** — `LeadOutreachDialog` (alle Phasen, Email-Sonderfall) → `LeadOutreachTrigger` (zwei Varianten) → Mounts in Detail-Panel-Header, Edit-Dialog-Footer, Table-Row-Actions.       | **Opus**   |
+
+### Definition of Done (vor PR, keine eigenen Tasks)
+
+- `npm run lint && npm run typecheck && npm run test && npm run build` grün.
+- Manueller Smoke-Test (`npm run dev`) gemäß Verifikations-Sektion durchlaufen.
+- DSGVO-Check (Network-Tab + Server-Log) bestanden.
 
 ## Re-Use-Punkte
 
