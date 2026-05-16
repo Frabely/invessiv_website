@@ -33,8 +33,17 @@ export async function generateOutreachMessage(
   try {
     rawText = await outreachAiService.generate(systemPrompt, userPrompt);
   } catch (error) {
-    if (error instanceof Error && error.message === "PROVIDER_UNAVAILABLE") {
+    if (
+      error instanceof Error &&
+      error.message === OutreachErrorCode.ProviderUnavailable
+    ) {
       return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
+    }
+    if (
+      error instanceof Error &&
+      error.message === OutreachErrorCode.NotConfigured
+    ) {
+      return { ok: false, code: OutreachErrorCode.NotConfigured };
     }
     return { ok: false, code: OutreachErrorCode.Internal };
   }

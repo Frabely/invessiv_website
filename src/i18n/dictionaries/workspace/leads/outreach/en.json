@@ -1,14 +1,15 @@
 {
-  "triggerLabel": "Generate outreach",
+  "triggerLabel": "Draft outreach",
   "dialog": {
-    "title": "Generate outreach",
-    "description": "Create a short, copy-paste-ready message for an existing lead.",
+    "eyebrow": "AI draft",
+    "title": "Draft outreach",
+    "description": "Create a short message that feels personal and is ready to copy. The prompt receives lead facts only, never email addresses or phone numbers.",
     "closeAriaLabel": "Close dialog"
   },
   "prompt": {
     "label": "Template",
     "descriptions": {
-      "firstTouch": "First touch - subtle value hint, soft CTA, no pitch"
+      "first-touch": "First touch: subtle value hint, soft CTA, no pitch"
     }
   },
   "channel": {
@@ -17,13 +18,13 @@
       "linkedin": "LinkedIn",
       "email": "Email",
       "instagram": "Instagram",
-      "directMessage": "Direct message"
+      "direct-message": "Direct message"
     },
     "hints": {
       "linkedin": "Professional, personal, and calm in tone.",
       "email": "Only useful if you want a subject line and body for email.",
       "instagram": "Casual, friendly, and slightly informal.",
-      "directMessage": "Only useful for private contacts you already know."
+      "direct-message": "Only useful for private contacts you already know."
     }
   },
   "improvements": {
@@ -41,10 +42,10 @@
     "bodyLabel": "Message",
     "subjectPlaceholder": "Subject will appear here",
     "bodyPlaceholder": "The generated message will appear here",
-    "emptyState": "No message generated yet."
+    "emptyState": "No draft yet. Choose a channel and context, then generate the first version."
   },
   "status": {
-    "generating": "Generating message…",
+    "generating": "Generating message...",
     "copied": "Copied to clipboard",
     "ready": "Ready"
   },

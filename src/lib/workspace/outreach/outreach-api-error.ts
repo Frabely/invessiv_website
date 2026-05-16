@@ -4,6 +4,7 @@ import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-erro
 const MESSAGES: Record<OutreachErrorCode, string> = {
   [OutreachErrorCode.LeadNotFound]: "Lead not found",
   [OutreachErrorCode.ValidationError]: "Validation failed",
+  [OutreachErrorCode.NotConfigured]: "Nicht konfiguriert",
   [OutreachErrorCode.ProviderUnavailable]: "Outreach provider unavailable",
   [OutreachErrorCode.Internal]: "Unexpected server error",
 };

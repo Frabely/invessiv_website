@@ -8,6 +8,7 @@ import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-quer
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsDeleteDictionary,
+  LeadsOutreachDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -32,6 +33,7 @@ type LeadsTableRowProps = {
   deleteContent: LeadsDeleteDictionary;
   lead: LeadSummaryDto;
   locale: Locale;
+  outreachContent?: LeadsOutreachDictionary;
   sharedContent: LeadsSharedDictionary;
   tableContent: LeadsTableDictionary;
 };
@@ -61,6 +63,7 @@ export function LeadsTableRow({
   deleteContent,
   lead,
   locale,
+  outreachContent,
   sharedContent,
   tableContent,
 }: LeadsTableRowProps) {
@@ -197,6 +200,7 @@ export function LeadsTableRow({
         leadCurrentStatus={lead.leadStatus}
         leadDisplayName={displayName}
         leadId={lead.id}
+        outreachContent={outreachContent}
       />
     </tr>
   );

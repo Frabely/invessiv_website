@@ -8,6 +8,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import {
   getLeadsDeleteDictionary,
+  getLeadsOutreachDictionary,
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -89,6 +90,7 @@ describe("LeadsTableRow", () => {
             deleteContent={getLeadsDeleteDictionary("de")}
             lead={lead}
             locale="de"
+            outreachContent={getLeadsOutreachDictionary("de")}
             sharedContent={getLeadsSharedDictionary("de")}
             tableContent={getLeadsTableDictionary("de")}
           />

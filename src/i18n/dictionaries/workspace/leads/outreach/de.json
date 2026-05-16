@@ -1,14 +1,15 @@
 {
-  "triggerLabel": "Outreach generieren",
+  "triggerLabel": "Outreach entwerfen",
   "dialog": {
-    "title": "Outreach generieren",
-    "description": "Erstelle eine kurze, copy-paste-fähige Nachricht für einen bestehenden Lead.",
+    "eyebrow": "KI-Entwurf",
+    "title": "Outreach entwerfen",
+    "description": "Erstelle eine kurze Nachricht, die persönlich klingt und direkt kopiert werden kann. Der Prompt erhält nur Lead-Fakten, keine E-Mail-Adresse oder Telefonnummer.",
     "closeAriaLabel": "Dialog schließen"
   },
   "prompt": {
     "label": "Vorlage",
     "descriptions": {
-      "firstTouch": "Erstkontakt – dezenter Werthinweis, weicher CTA, kein Pitch"
+      "first-touch": "Erstkontakt: dezenter Werthinweis, weicher CTA, kein Pitch"
     }
   },
   "channel": {
@@ -17,13 +18,13 @@
       "linkedin": "LinkedIn",
       "email": "E-Mail",
       "instagram": "Instagram",
-      "directMessage": "Direktnachricht"
+      "direct-message": "Direktnachricht"
     },
     "hints": {
       "linkedin": "Professionell, persönlich und ruhig formuliert.",
       "email": "Nur sinnvoll, wenn du Betreff und Nachricht als E-Mail ausgeben willst.",
       "instagram": "Locker-freundlich und leicht informell.",
-      "directMessage": "Nur sinnvoll bei privatem Kontakt, den du bereits kennst."
+      "direct-message": "Nur sinnvoll bei privatem Kontakt, den du bereits kennst."
     }
   },
   "improvements": {
@@ -41,10 +42,10 @@
     "bodyLabel": "Nachricht",
     "subjectPlaceholder": "Betreff wird hier angezeigt",
     "bodyPlaceholder": "Die generierte Nachricht erscheint hier",
-    "emptyState": "Noch keine Nachricht generiert."
+    "emptyState": "Noch kein Entwurf vorhanden. Wähle Kanal und Kontext, dann generiere die erste Version."
   },
   "status": {
-    "generating": "Nachricht wird generiert…",
+    "generating": "Nachricht wird generiert...",
     "copied": "In die Zwischenablage kopiert",
     "ready": "Bereit"
   },

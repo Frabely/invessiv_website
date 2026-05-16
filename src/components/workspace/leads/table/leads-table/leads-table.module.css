@@ -3,6 +3,7 @@
   display: flex;
   min-height: 0;
   width: 100%;
+  overflow: hidden;
 }
 
 .tableFrame {
@@ -29,8 +30,8 @@
 }
 
 .table {
-  width: max(100%, 1733px);
-  min-width: 1733px;
+  width: max(100%, 1765px);
+  min-width: 1765px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -41,7 +42,7 @@
 }
 
 .actionsColumn {
-  width: 96px;
+  width: 128px;
 }
 
 .leadColumn {

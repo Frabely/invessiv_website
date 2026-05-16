@@ -9,6 +9,7 @@ import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty
 import {
   getLeadsBulkDictionary,
   getLeadsDeleteDictionary,
+  getLeadsOutreachDictionary,
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -41,6 +42,7 @@ describe("LeadsTable", () => {
           variant: LeadsEmptyStateVariant.Filtered,
         }}
         locale="de"
+        outreachContent={getLeadsOutreachDictionary("de")}
         queryString="search=abc"
         currentSearchParams={{ search: "abc" }}
         rows={[]}
@@ -89,6 +91,7 @@ describe("LeadsTable", () => {
         categories={[]}
         deleteContent={getLeadsDeleteDictionary("de")}
         locale="de"
+        outreachContent={getLeadsOutreachDictionary("de")}
         queryString=""
         currentSearchParams={{}}
         rows={rows}

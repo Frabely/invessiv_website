@@ -2,7 +2,7 @@
   position: sticky;
   right: 0;
   z-index: 1;
-  width: 96px;
+  width: 128px;
   text-align: center;
   background: color-mix(in srgb, var(--color-surface-1) 96%, transparent);
   box-shadow: -1px 0 0 color-mix(in srgb, var(--color-border) 38%, transparent);

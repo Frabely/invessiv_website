@@ -8,6 +8,7 @@ import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsDetailDictionary,
+  LeadsOutreachDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import {
@@ -18,6 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
+import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
 
@@ -27,6 +29,7 @@ export type LeadDetailPanelProps = {
   editHref: string;
   lead: LeadDetailDto;
   locale: Locale;
+  outreachContent?: LeadsOutreachDictionary;
   sharedContent: LeadsSharedDictionary;
 };
 
@@ -86,6 +89,7 @@ export function LeadDetailPanel({
   editHref,
   lead,
   locale,
+  outreachContent,
   sharedContent,
 }: LeadDetailPanelProps) {
   const router = useRouter();
@@ -117,6 +121,14 @@ export function LeadDetailPanel({
         </div>
 
         <div className={styles.actions}>
+          {outreachContent ? (
+            <LeadOutreachTrigger
+              content={outreachContent}
+              lead={lead}
+              variant="icon-only"
+            />
+          ) : null}
+
           <button
             aria-label={content.actions.edit}
             className={styles.editIconLink}

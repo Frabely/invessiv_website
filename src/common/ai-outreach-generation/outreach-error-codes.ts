@@ -1,6 +1,7 @@
 export const OutreachErrorCode = {
   LeadNotFound: "LEAD_NOT_FOUND",
   ValidationError: "VALIDATION_ERROR",
+  NotConfigured: "NOT_CONFIGURED",
   ProviderUnavailable: "PROVIDER_UNAVAILABLE",
   Internal: "INTERNAL",
 } as const;
@@ -11,6 +12,7 @@ export type OutreachErrorCode =
 export const OUTREACH_ERROR_CODE_VALUES = [
   OutreachErrorCode.LeadNotFound,
   OutreachErrorCode.ValidationError,
+  OutreachErrorCode.NotConfigured,
   OutreachErrorCode.ProviderUnavailable,
   OutreachErrorCode.Internal,
 ] as const;

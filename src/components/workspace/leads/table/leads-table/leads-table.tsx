@@ -7,6 +7,7 @@ import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsBulkDictionary,
   LeadsDeleteDictionary,
+  LeadsOutreachDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -27,6 +28,7 @@ type LeadsTableProps = {
   deleteContent: LeadsDeleteDictionary;
   locale: Locale;
   currentSearchParams: Record<string, string | string[] | undefined>;
+  outreachContent?: LeadsOutreachDictionary;
   queryString: string;
   rows: LeadSummaryDto[];
   selectionResetKey?: string;
@@ -53,6 +55,7 @@ export function LeadsTable({
   deleteContent,
   locale,
   currentSearchParams,
+  outreachContent,
   queryString,
   rows,
   selectionResetKey,
@@ -163,6 +166,7 @@ export function LeadsTable({
                       key={lead.id}
                       lead={lead}
                       locale={locale}
+                      outreachContent={outreachContent}
                       sharedContent={sharedContent}
                       tableContent={tableContent}
                     />

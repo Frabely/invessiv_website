@@ -51,19 +51,21 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
             OutreachErrorCode.ProviderUnavailable,
             HttpResponseCode.ServiceUnavailable,
           );
+        case OutreachErrorCode.NotConfigured:
+          return outreachApiError(
+            OutreachErrorCode.NotConfigured,
+            HttpResponseCode.ServiceUnavailable,
+          );
         case OutreachErrorCode.Internal:
           return outreachApiError(
             OutreachErrorCode.Internal,
             HttpResponseCode.InternalServerError,
           );
-        default: {
-          const _exhaustive: never = result.code;
-          void _exhaustive;
+        default:
           return outreachApiError(
             OutreachErrorCode.Internal,
             HttpResponseCode.InternalServerError,
           );
-        }
       }
     }
 

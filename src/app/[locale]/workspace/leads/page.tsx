@@ -23,6 +23,7 @@ import {
   getLeadsFormDictionary,
   getLeadsImportDictionary,
   getLeadsMetaDictionary,
+  getLeadsOutreachDictionary,
   getLeadsPaginationDictionary,
   getLeadsSharedDictionary,
   getLeadsShellDictionary,
@@ -91,6 +92,7 @@ export default async function LeadsPage({
   const deleteContent = getLeadsDeleteDictionary(locale as Locale);
   const detailContent = getLeadsDetailDictionary(locale as Locale);
   const bulkContent = getLeadsBulkDictionary(locale as Locale);
+  const outreachContent = getLeadsOutreachDictionary(locale as Locale);
   const parsedFilters = parseLeadListFilters(resolvedSearchParams);
   const selectedLeadId = parseSelectedLeadId(resolvedSearchParams);
   const resolvedSort = parsedFilters.sort ?? LeadSort.CreatedDesc;
@@ -157,6 +159,7 @@ export default async function LeadsPage({
         ),
         lead: selectedLead,
         locale: locale as Locale,
+        outreachContent,
         sharedContent,
       }
     : undefined;
@@ -217,6 +220,7 @@ export default async function LeadsPage({
                 : undefined
             }
             locale={locale as Locale}
+            outreachContent={outreachContent}
             queryString={queryString}
             currentSearchParams={resolvedSearchParams}
             rows={leadList.rows}
@@ -241,6 +245,7 @@ export default async function LeadsPage({
         initialLead={editLead ?? undefined}
         mode={dialogMode}
         open={dialogOpen}
+        outreachContent={outreachContent}
         sharedContent={sharedContent}
       />
     </>

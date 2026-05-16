@@ -32,6 +32,7 @@ import {
   ButtonControl,
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
+import { LeadOutreachTrigger } from "@/components/workspace/leads/outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { FormActions } from "@/components/shared/form/form-actions/form-actions";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
@@ -44,6 +45,7 @@ import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsFormDictionary,
+  LeadsOutreachDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import type { z } from "zod";
@@ -59,6 +61,7 @@ type LeadFormDialogProps = {
   initialLead?: LeadDetailDto;
   mode: LeadFormDialogModeValue;
   open: boolean;
+  outreachContent?: LeadsOutreachDictionary;
   sharedContent: LeadsSharedDictionary;
 };
 
@@ -243,6 +246,7 @@ export function LeadFormDialog({
   initialLead,
   mode,
   open,
+  outreachContent,
   sharedContent,
 }: LeadFormDialogProps) {
   const router = useRouter();
@@ -996,6 +1000,13 @@ export function LeadFormDialog({
                   >
                     {content.buttons.cancel}
                   </ButtonControl>
+                  {isEditMode && initialLead && outreachContent ? (
+                    <LeadOutreachTrigger
+                      content={outreachContent}
+                      lead={initialLead}
+                      variant="icon+text"
+                    />
+                  ) : null}
                   <PrimaryCtaButton disabled={isSubmitting} type="submit">
                     {isSubmitting ? savingLabel : submitLabel}
                   </PrimaryCtaButton>

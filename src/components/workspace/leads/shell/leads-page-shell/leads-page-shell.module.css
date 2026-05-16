@@ -44,24 +44,27 @@
 
 @media (max-width: 1024px) {
   .shell {
-    height: auto;
+    height: calc(
+      100dvh - var(--workspace-header-height, 64px) -
+        var(--workspace-main-padding-block-start, 1.5rem) -
+        var(--workspace-main-padding-block-end, 1.5rem)
+    );
   }
 
   .contentRow {
     flex-direction: column;
-    overflow: visible;
-    flex: none;
+    overflow: hidden;
+    flex: 1 1 auto;
   }
 
   .contentSlot,
   .detailPanelSlot {
-    flex: none;
     width: 100%;
-    max-height: none;
   }
 
   .contentSlot {
-    overflow: visible;
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 
   .detailPanelSlot {
@@ -70,5 +73,17 @@
     z-index: 15;
     overflow: hidden;
     background: var(--color-bg);
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    height: auto;
+  }
+
+  .contentRow,
+  .contentSlot {
+    flex: none;
+    overflow: visible;
   }
 }
