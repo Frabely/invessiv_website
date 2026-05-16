@@ -1,5 +1,5 @@
-import type { OutreachChannel } from "@/common/constants/outreach/outreach-channels";
-import type { OutreachPromptKey } from "@/common/constants/outreach/outreach-prompt-keys";
+import type { OutreachChannel } from "./outreach-channels";
+import type { OutreachPromptKey } from "./outreach-prompt-keys";
 
 export interface GenerateOutreachRequestDto {
   leadId: string;
