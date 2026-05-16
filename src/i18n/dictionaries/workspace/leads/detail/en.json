@@ -43,7 +43,8 @@
       "status_change": "Status changed",
       "inbound_submission": "Inbound submission",
       "import": "Import",
-      "bulk_edit": "Bulk edit"
+      "bulk_edit": "Bulk edit",
+      "message_drafted": "Message drafted"
     },
     "actor": {
       "system": "System",

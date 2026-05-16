@@ -43,7 +43,8 @@
       "status_change": "Status geändert",
       "inbound_submission": "Eingehende Anfrage",
       "import": "Import",
-      "bulk_edit": "Bulk-Edit"
+      "bulk_edit": "Bulk-Edit",
+      "message_drafted": "Nachricht generiert"
     },
     "actor": {
       "system": "System",

@@ -1,6 +1,7 @@
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faArrowRightArrowLeft,
+  faComment,
   faFileImport,
   faInbox,
   faLayerGroup,
@@ -56,6 +57,7 @@ const ACTIVITY_TYPE_ICON: Record<LeadActivityType, IconDefinition> = {
   [LeadActivityType.InboundSubmission]: faInbox,
   [LeadActivityType.Import]: faFileImport,
   [LeadActivityType.BulkEdit]: faLayerGroup,
+  [LeadActivityType.MessageDrafted]: faComment,
 };
 
 function getStatusChangeMetadata(

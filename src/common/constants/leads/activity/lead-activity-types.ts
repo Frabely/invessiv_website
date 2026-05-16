@@ -4,6 +4,7 @@ export const LeadActivityType = {
   InboundSubmission: "inbound_submission",
   Import: "import",
   BulkEdit: "bulk_edit",
+  MessageDrafted: "message_drafted",
 } as const;
 
 export type LeadActivityType =
@@ -15,4 +16,5 @@ export const LEAD_ACTIVITY_TYPE_VALUES = [
   LeadActivityType.InboundSubmission,
   LeadActivityType.Import,
   LeadActivityType.BulkEdit,
+  LeadActivityType.MessageDrafted,
 ] as const;

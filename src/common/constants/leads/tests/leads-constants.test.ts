@@ -54,6 +54,7 @@ describe("LEAD_ACTIVITY_TYPES", () => {
       "inbound_submission",
       "import",
       "bulk_edit",
+      "message_drafted",
     ]);
   });
 
