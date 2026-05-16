@@ -6,7 +6,7 @@
 ## Context
 
 Aus einem bestehenden Lead soll eine personalisierte Outreach-Kurz­nachricht generiert werden, die direkt
-copy-paste-fähig ist (LinkedIn / Email / Instagram / WhatsApp / Direktnachricht). Ziel: nicht-copy-paste klingend,
+copy-paste-fähig ist (LinkedIn / Email / Instagram / Direktnachricht). Ziel: nicht-copy-paste klingend,
 individuell-catchy, **kein Pitch** — sondern dezenter Werthinweis (max. 2 Improvements) + weicher CTA.
 
 Drei UI-Trigger (Detail-Panel-Header, Edit-Dialog-Footer, Tabellen-Zeile) öffnen denselben Dialog. Im Dialog wählt der
@@ -42,7 +42,7 @@ OpenAI `gpt-4o-mini` als Fallback).
 
 | Datei                                                                                            | Aktion | Verantwortung                                                                                                                                                                                                                             |
 | ------------------------------------------------------------------------------------------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/common/constants/outreach/outreach-channels.ts`                                             | NEU    | `OutreachChannel` (5 Werte: Linkedin, Email, Instagram, Whatsapp, DirectMessage) + `OUTREACH_CHANNEL_VALUES`                                                                                                                              |
+| `src/common/constants/outreach/outreach-channels.ts`                                             | NEU    | `OutreachChannel` (4 Werte: Linkedin, Email, Instagram, DirectMessage) + `OUTREACH_CHANNEL_VALUES`                                                                                                                                        |
 | `src/common/constants/outreach/outreach-error-codes.ts`                                          | NEU    | `OutreachErrorCode` (LeadNotFound, ValidationError, ProviderUnavailable, Internal)                                                                                                                                                        |
 | `src/common/constants/outreach/outreach-prompt-keys.ts`                                          | NEU    | `OutreachPromptKey` (initial: `FirstTouch`) + `OUTREACH_PROMPT_KEY_VALUES`                                                                                                                                                                |
 | `src/common/constants/outreach/outreach-defaults.ts`                                             | NEU    | `OUTREACH_DEFAULT_CHANNEL = OutreachChannel.Linkedin`, `OUTREACH_DEFAULT_PROMPT_KEY = OutreachPromptKey.FirstTouch`, `OUTREACH_CONTEXT_NOTE_MAX_LEN = 200`, `OUTREACH_MAX_IMPROVEMENTS = 2`, `OUTREACH_DEFAULT_OWNER_FALLBACK = "Moritz"` |
@@ -102,13 +102,12 @@ OpenAI `gpt-4o-mini` als Fallback).
 
 Const-Object in `channel-profiles.ts`. Werte:
 
-| Channel         | maxChars | Greeting      | requiresSubject | Tonalitäts-Direktive                                                                      |
-| --------------- | -------- | ------------- | --------------- | ----------------------------------------------------------------------------------------- |
-| LinkedIn        | 300      | „Viele Grüße" | nein            | professionell-persönlich, ruhig, kein Sales-Sprech                                        |
-| Email           | 900      | „Viele Grüße" | **ja**          | professionell, klare Struktur, Subject < 60 Zeichen, neugierig-machend                    |
-| Instagram       | 500      | „Liebe Grüße" | nein            | locker-freundlich, leicht informell                                                       |
-| WhatsApp        | 160      | keine         | nein            | sehr kurz, sachlich-freundlich; nur bei bestehender Geschäftsbeziehung legal (Hint im UI) |
-| Direktnachricht | 250      | keine         | nein            | privat-persönlich, „du", als ob man die Person bereits kennt — **kein** Firmen-Pitch      |
+| Channel         | maxChars | Greeting      | requiresSubject | Tonalitäts-Direktive                                                                 |
+| --------------- | -------- | ------------- | --------------- | ------------------------------------------------------------------------------------ |
+| LinkedIn        | 300      | „Viele Grüße" | nein            | professionell-persönlich, ruhig, kein Sales-Sprech                                   |
+| Email           | 900      | „Viele Grüße" | **ja**          | professionell, klare Struktur, Subject < 60 Zeichen, neugierig-machend               |
+| Instagram       | 500      | „Liebe Grüße" | nein            | locker-freundlich, leicht informell                                                  |
+| Direktnachricht | 250      | keine         | nein            | privat-persönlich, „du", für private Kontakte — **kein** Firmen-Pitch, kein Fremdeln |
 
 ### Prompt-Registry
 
@@ -195,9 +194,9 @@ sharedContent = {sharedDict}
 - **Prompt-Select:** `<select>` mit allen Einträgen aus `OUTREACH_PROMPT_KEY_VALUES`. Unter dem Select: Description aus
   `t.promptDescriptions[selectedKey]`. Auch mit 1 Eintrag rendern, damit Layout bei zukünftigen Prompts konsistent
   bleibt.
-- **Channel-Select:** Segmented-Buttons (5 Stück) aus `OUTREACH_CHANNEL_VALUES`, Default `OUTREACH_DEFAULT_CHANNEL`.
-- **Channel-Hint:** bei `Whatsapp` Legal-Hint (`whatsappLegalHint`); bei `DirectMessage` Hint („nur sinnvoll bei
-  privatem Kontakt, den du bereits kennst" — `directMessageHint`).
+- **Channel-Select:** Segmented-Buttons (4 Stück) aus `OUTREACH_CHANNEL_VALUES`, Default `OUTREACH_DEFAULT_CHANNEL`.
+- **Channel-Hint:** bei `DirectMessage` Hint („nur sinnvoll bei privatem Kontakt, den du bereits kennst" —
+  `directMessageHint`).
 - **Improvements-Toggle:** Checkbox, default `true` wenn Lead Improvements hat. Disabled mit Tooltip wenn keine
   Improvements am Lead.
 - **Kontext-Textfeld:** `<textarea>` max 200 Zeichen, optional. Placeholder + Counter aus i18n.
@@ -262,7 +261,7 @@ Routen, Integrationen). **Opus 4.7** dort, wo Output-Qualität sichtbar ist (Pro
    - Prompt-Select zeigt „First-Touch" mit Description darunter.
    - Channel-Default ist LinkedIn; Wechsel auf Email zeigt nach Generate zwei Felder (Subject + Body) statt eines
      Textareas.
-   - WhatsApp und Direktnachricht zeigen ihren jeweiligen Hint.
+   - Direktnachricht zeigt den `directMessageHint`.
    - Improvements-Checkbox disabled mit Tooltip, wenn Lead keine Improvements hat.
    - Copy-Button kopiert tatsächlich (Toast).
    - „Neu generieren" überschreibt das Ergebnis.
