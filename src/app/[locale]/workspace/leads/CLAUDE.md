@@ -57,8 +57,10 @@ page.tsx (Server-Component)
   - `shell/{de,en}.json` — Header- und Shell-Texte
   - `shared/{de,en}.json` — Status-/Source-/Kategorie-/Plattform-Labels, Score-Aria-Label
   - `table/{de,en}.json` — Tabellen-Header, Sort-Labels, Selection-Labels, Platzhalter
+  - `outreach/{de,en}.json` — Texte für Outreach-Trigger, Dialog, Kanäle, Fehler und Aktionen
   - `index.ts` — `getLeadsMetaDictionary(locale)`, `getLeadsSharedDictionary(locale)`,
-    `getLeadsTableDictionary(locale)`, `getLeadsShellDictionary(locale)`
+    `getLeadsTableDictionary(locale)`, `getLeadsShellDictionary(locale)`,
+    `getLeadsOutreachDictionary(locale)`
 - DE und EN immer im selben Commit pflegen.
 - Keine `locale === "de" ? ... : ...`-Branches; auch nicht für Kategorie-Labels. Kategorien werden über ihren `label_key` aus dem Dictionary aufgelöst — nicht direkt aus der DB.
 

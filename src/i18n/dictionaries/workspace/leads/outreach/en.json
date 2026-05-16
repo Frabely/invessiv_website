@@ -1,0 +1,65 @@
+{
+  "triggerLabel": "Generate outreach",
+  "dialog": {
+    "title": "Generate outreach",
+    "description": "Create a short, copy-paste-ready message for an existing lead.",
+    "closeAriaLabel": "Close dialog"
+  },
+  "prompt": {
+    "label": "Template",
+    "descriptions": {
+      "firstTouch": "First touch - subtle value hint, soft CTA, no pitch"
+    }
+  },
+  "channel": {
+    "label": "Channel",
+    "labels": {
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "instagram": "Instagram",
+      "directMessage": "Direct message"
+    },
+    "hints": {
+      "linkedin": "Professional, personal, and calm in tone.",
+      "email": "Only useful if you want a subject line and body for email.",
+      "instagram": "Casual, friendly, and slightly informal.",
+      "directMessage": "Only useful for private contacts you already know."
+    }
+  },
+  "improvements": {
+    "label": "Include improvements",
+    "help": "At most 2 notes will be considered.",
+    "disabledHint": "No improvements are available for this lead."
+  },
+  "contextNote": {
+    "label": "Additional context",
+    "placeholder": "For example: in English, with a clearer CTA, or a shorter tone.",
+    "counterLabel": "{count}/{max} characters"
+  },
+  "result": {
+    "subjectLabel": "Subject",
+    "bodyLabel": "Message",
+    "subjectPlaceholder": "Subject will appear here",
+    "bodyPlaceholder": "The generated message will appear here",
+    "emptyState": "No message generated yet."
+  },
+  "status": {
+    "generating": "Generating message…",
+    "copied": "Copied to clipboard",
+    "ready": "Ready"
+  },
+  "buttons": {
+    "generate": "Generate",
+    "regenerate": "Regenerate",
+    "copy": "Copy",
+    "copied": "Copied",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "errors": {
+    "validation": "The request is invalid.",
+    "leadNotFound": "The lead could not be found.",
+    "providerUnavailable": "The AI provider is currently unavailable.",
+    "internal": "The message could not be generated."
+  }
+}

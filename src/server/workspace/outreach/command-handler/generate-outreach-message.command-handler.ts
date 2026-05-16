@@ -10,7 +10,7 @@ import { outreachAiService } from "@/server/workspace/outreach/services/outreach
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
 import { appendLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 
-export async function generateOutreach(
+export async function generateOutreachMessage(
   request: GenerateOutreachRequestDto,
 ): Promise<GenerateOutreachResultDto> {
   const lead = await getLeadById(request.leadId);

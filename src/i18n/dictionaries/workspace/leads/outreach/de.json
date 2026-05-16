@@ -1,0 +1,65 @@
+{
+  "triggerLabel": "Outreach generieren",
+  "dialog": {
+    "title": "Outreach generieren",
+    "description": "Erstelle eine kurze, copy-paste-fähige Nachricht für einen bestehenden Lead.",
+    "closeAriaLabel": "Dialog schließen"
+  },
+  "prompt": {
+    "label": "Vorlage",
+    "descriptions": {
+      "firstTouch": "Erstkontakt – dezenter Werthinweis, weicher CTA, kein Pitch"
+    }
+  },
+  "channel": {
+    "label": "Kanal",
+    "labels": {
+      "linkedin": "LinkedIn",
+      "email": "E-Mail",
+      "instagram": "Instagram",
+      "directMessage": "Direktnachricht"
+    },
+    "hints": {
+      "linkedin": "Professionell, persönlich und ruhig formuliert.",
+      "email": "Nur sinnvoll, wenn du Betreff und Nachricht als E-Mail ausgeben willst.",
+      "instagram": "Locker-freundlich und leicht informell.",
+      "directMessage": "Nur sinnvoll bei privatem Kontakt, den du bereits kennst."
+    }
+  },
+  "improvements": {
+    "label": "Verbesserungen einbeziehen",
+    "help": "Es werden maximal 2 Hinweise berücksichtigt.",
+    "disabledHint": "Für diesen Lead sind keine Verbesserungen hinterlegt."
+  },
+  "contextNote": {
+    "label": "Zusätzlicher Kontext",
+    "placeholder": "Zum Beispiel: in English, mit klarerem CTA oder kürzerem Ton.",
+    "counterLabel": "{count}/{max} Zeichen"
+  },
+  "result": {
+    "subjectLabel": "Betreff",
+    "bodyLabel": "Nachricht",
+    "subjectPlaceholder": "Betreff wird hier angezeigt",
+    "bodyPlaceholder": "Die generierte Nachricht erscheint hier",
+    "emptyState": "Noch keine Nachricht generiert."
+  },
+  "status": {
+    "generating": "Nachricht wird generiert…",
+    "copied": "In die Zwischenablage kopiert",
+    "ready": "Bereit"
+  },
+  "buttons": {
+    "generate": "Generieren",
+    "regenerate": "Neu generieren",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "errors": {
+    "validation": "Die Anfrage ist ungültig.",
+    "leadNotFound": "Der Lead wurde nicht gefunden.",
+    "providerUnavailable": "Der KI-Anbieter ist derzeit nicht verfügbar.",
+    "internal": "Die Nachricht konnte nicht generiert werden."
+  }
+}

@@ -3,7 +3,7 @@ import { OUTREACH_CHANNEL_VALUES } from "@/common/ai-outreach-generation/outreac
 import { OUTREACH_CONTEXT_NOTE_MAX_LEN } from "@/common/ai-outreach-generation/outreach-defaults";
 import { OUTREACH_PROMPT_KEY_VALUES } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 
-export const generateOutreachSchema = z.object({
+export const generateOutreachMessageSchema = z.object({
   leadId: z.string().min(1),
   promptKey: z.enum(OUTREACH_PROMPT_KEY_VALUES),
   channel: z.enum(OUTREACH_CHANNEL_VALUES),
@@ -11,4 +11,6 @@ export const generateOutreachSchema = z.object({
   contextNote: z.string().max(OUTREACH_CONTEXT_NOTE_MAX_LEN).optional(),
 });
 
-export type GenerateOutreachInput = z.infer<typeof generateOutreachSchema>;
+export type GenerateOutreachMessageInput = z.infer<
+  typeof generateOutreachMessageSchema
+>;

@@ -5,7 +5,7 @@ import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prom
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import { generateOutreach } from "@/server/workspace/outreach/command-handler/generate-outreach-command-handler";
+import { generateOutreachMessage } from "@/server/workspace/outreach/command-handler/generate-outreach-message.command-handler";
 
 const {
   getLeadByIdMock,
@@ -74,25 +74,25 @@ const BASE_REQUEST: GenerateOutreachRequestDto = {
 
 afterEach(() => vi.clearAllMocks());
 
-describe("generateOutreach — lead not found", () => {
+describe("generateOutreachMessage — lead not found", () => {
   it("returns LeadNotFound when lead does not exist", async () => {
     getLeadByIdMock.mockResolvedValue(null);
-    const result = await generateOutreach(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST);
     expect(result).toEqual({ ok: false, code: OutreachErrorCode.LeadNotFound });
   });
 
   it("does not call the AI service when the lead is not found", async () => {
     getLeadByIdMock.mockResolvedValue(null);
-    await generateOutreach(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST);
     expect(generateMock).not.toHaveBeenCalled();
   });
 });
 
-describe("generateOutreach — AI provider errors", () => {
+describe("generateOutreachMessage — AI provider errors", () => {
   it("returns ProviderUnavailable when AI service throws PROVIDER_UNAVAILABLE", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockRejectedValue(new Error("PROVIDER_UNAVAILABLE"));
-    const result = await generateOutreach(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST);
     expect(result).toEqual({
       ok: false,
       code: OutreachErrorCode.ProviderUnavailable,
@@ -102,17 +102,17 @@ describe("generateOutreach — AI provider errors", () => {
   it("returns Internal for unexpected AI errors", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockRejectedValue(new Error("network timeout"));
-    const result = await generateOutreach(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST);
     expect(result).toEqual({ ok: false, code: OutreachErrorCode.Internal });
   });
 });
 
-describe("generateOutreach — success (non-email channel)", () => {
+describe("generateOutreachMessage — success (non-email channel)", () => {
   it("returns ok result without subject", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Generated outreach body");
     parseMock.mockReturnValue({ body: "Generated outreach body" });
-    const result = await generateOutreach(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST);
     expect(result).toEqual({
       ok: true,
       channel: OutreachChannel.Linkedin,
@@ -126,7 +126,7 @@ describe("generateOutreach — success (non-email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Generated outreach body");
     parseMock.mockReturnValue({ body: "Generated outreach body" });
-    await generateOutreach(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
       type: LeadActivityType.MessageDrafted,
@@ -143,7 +143,7 @@ describe("generateOutreach — success (non-email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("body");
     parseMock.mockReturnValue({ body: "body" });
-    await generateOutreach(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST);
     const callArg = appendLeadActivityMock.mock.calls[0][0] as {
       metadata: Record<string, unknown>;
     };
@@ -151,7 +151,7 @@ describe("generateOutreach — success (non-email channel)", () => {
   });
 });
 
-describe("generateOutreach — success (email channel)", () => {
+describe("generateOutreachMessage — success (email channel)", () => {
   const emailRequest: GenerateOutreachRequestDto = {
     ...BASE_REQUEST,
     channel: OutreachChannel.Email,
@@ -161,7 +161,7 @@ describe("generateOutreach — success (email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Betreff: Test Subject\n\nEmail body");
     parseMock.mockReturnValue({ subject: "Test Subject", body: "Email body" });
-    const result = await generateOutreach(emailRequest);
+    const result = await generateOutreachMessage(emailRequest);
     expect(result).toMatchObject({
       ok: true,
       subject: "Test Subject",
@@ -175,7 +175,7 @@ describe("generateOutreach — success (email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Betreff: Test Subject\n\nEmail body");
     parseMock.mockReturnValue({ subject: "Test Subject", body: "Email body" });
-    await generateOutreach(emailRequest);
+    await generateOutreachMessage(emailRequest);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
       type: LeadActivityType.MessageDrafted,
@@ -190,7 +190,7 @@ describe("generateOutreach — success (email channel)", () => {
   });
 });
 
-describe("generateOutreach — prompt service integration", () => {
+describe("generateOutreachMessage — prompt service integration", () => {
   it("calls buildPromptMessages with lead, promptKey, channel, and options", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("body");
@@ -200,7 +200,7 @@ describe("generateOutreach — prompt service integration", () => {
       includeImprovements: true,
       contextNote: "In English please",
     };
-    await generateOutreach(request);
+    await generateOutreachMessage(request);
     expect(buildPromptMessagesMock).toHaveBeenCalledWith(
       MOCK_LEAD,
       OutreachPromptKey.FirstTouch,

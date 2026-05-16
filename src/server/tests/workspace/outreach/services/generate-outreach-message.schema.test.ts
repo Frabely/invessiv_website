@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateOutreachSchema } from "@/server/workspace/outreach/generate-outreach.schema";
+import { generateOutreachMessageSchema } from "@/server/workspace/outreach/generate-outreach-message.schema";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import { OUTREACH_CONTEXT_NOTE_MAX_LEN } from "@/common/ai-outreach-generation/outreach-defaults";
@@ -11,16 +11,19 @@ const VALID_BASE = {
   includeImprovements: true,
 };
 
-describe("generateOutreachSchema", () => {
+describe("generateOutreachMessageSchema", () => {
   describe("valid inputs", () => {
     it("accepts minimal valid input", () => {
-      expect(generateOutreachSchema.safeParse(VALID_BASE).success).toBe(true);
+      expect(generateOutreachMessageSchema.safeParse(VALID_BASE).success).toBe(
+        true,
+      );
     });
 
     it("accepts all channels", () => {
       for (const channel of Object.values(OutreachChannel)) {
         expect(
-          generateOutreachSchema.safeParse({ ...VALID_BASE, channel }).success,
+          generateOutreachMessageSchema.safeParse({ ...VALID_BASE, channel })
+            .success,
         ).toBe(true);
       }
     });
@@ -28,7 +31,7 @@ describe("generateOutreachSchema", () => {
     it("accepts all promptKeys", () => {
       for (const promptKey of Object.values(OutreachPromptKey)) {
         expect(
-          generateOutreachSchema.safeParse({ ...VALID_BASE, promptKey })
+          generateOutreachMessageSchema.safeParse({ ...VALID_BASE, promptKey })
             .success,
         ).toBe(true);
       }
@@ -36,7 +39,7 @@ describe("generateOutreachSchema", () => {
 
     it("accepts includeImprovements=false", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           includeImprovements: false,
         }).success,
@@ -45,7 +48,7 @@ describe("generateOutreachSchema", () => {
 
     it("accepts optional contextNote within limit", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           contextNote: "a".repeat(OUTREACH_CONTEXT_NOTE_MAX_LEN),
         }).success,
@@ -54,25 +57,31 @@ describe("generateOutreachSchema", () => {
 
     it("accepts missing contextNote (field optional)", () => {
       const { ...withoutNote } = VALID_BASE;
-      expect(generateOutreachSchema.safeParse(withoutNote).success).toBe(true);
+      expect(generateOutreachMessageSchema.safeParse(withoutNote).success).toBe(
+        true,
+      );
     });
   });
 
   describe("invalid inputs", () => {
     it("rejects missing leadId", () => {
-      const { leadId: _, ...rest } = VALID_BASE;
-      expect(generateOutreachSchema.safeParse(rest).success).toBe(false);
+      const { leadId: omittedLeadId, ...rest } = VALID_BASE;
+      void omittedLeadId;
+      expect(generateOutreachMessageSchema.safeParse(rest).success).toBe(false);
     });
 
     it("rejects empty leadId", () => {
       expect(
-        generateOutreachSchema.safeParse({ ...VALID_BASE, leadId: "" }).success,
+        generateOutreachMessageSchema.safeParse({
+          ...VALID_BASE,
+          leadId: "",
+        }).success,
       ).toBe(false);
     });
 
     it("rejects unknown channel", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           channel: "whatsapp",
         }).success,
@@ -81,7 +90,7 @@ describe("generateOutreachSchema", () => {
 
     it("rejects unknown promptKey", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           promptKey: "unknown-key",
         }).success,
@@ -90,7 +99,7 @@ describe("generateOutreachSchema", () => {
 
     it("rejects contextNote exceeding limit", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           contextNote: "a".repeat(OUTREACH_CONTEXT_NOTE_MAX_LEN + 1),
         }).success,
@@ -99,7 +108,7 @@ describe("generateOutreachSchema", () => {
 
     it("rejects non-boolean includeImprovements", () => {
       expect(
-        generateOutreachSchema.safeParse({
+        generateOutreachMessageSchema.safeParse({
           ...VALID_BASE,
           includeImprovements: "yes",
         }).success,
@@ -107,13 +116,15 @@ describe("generateOutreachSchema", () => {
     });
 
     it("rejects missing channel", () => {
-      const { channel: _, ...rest } = VALID_BASE;
-      expect(generateOutreachSchema.safeParse(rest).success).toBe(false);
+      const { channel: omittedChannel, ...rest } = VALID_BASE;
+      void omittedChannel;
+      expect(generateOutreachMessageSchema.safeParse(rest).success).toBe(false);
     });
 
     it("rejects missing promptKey", () => {
-      const { promptKey: _, ...rest } = VALID_BASE;
-      expect(generateOutreachSchema.safeParse(rest).success).toBe(false);
+      const { promptKey: omittedPromptKey, ...rest } = VALID_BASE;
+      void omittedPromptKey;
+      expect(generateOutreachMessageSchema.safeParse(rest).success).toBe(false);
     });
   });
 });
