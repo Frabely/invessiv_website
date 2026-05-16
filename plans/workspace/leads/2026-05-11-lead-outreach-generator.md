@@ -228,11 +228,49 @@ Routen, Integrationen). **Opus 4.7** dort, wo Output-Qualität sichtbar ist (Pro
 | 3   | ✅ **Zod-Schema + Test** (TDD) — 14 Tests grün. **Abgeschlossen 2026-05-16.**                                                                                                                                                                                                                                                               | **Sonnet** |
 | 4   | ✅ **Prompt-Service + Tests** (TDD, inkl. **DSGVO-Negativtests** — Email/Phone nie im Prompt-Output) — 18 Tests grün. **Abgeschlossen 2026-05-16.**                                                                                                                                                                                         | **Sonnet** |
 | 5   | ✅ **AI-Service + Tests** — LM-Studio (Qwen3-14B Q4_K_M) primär, OpenAI `gpt-4o-mini` Fallback; 7 Tests grün (LM-Studio-Erfolg / LM-Studio-Fail→OpenAI-Erfolg / beide-Fail / kein API-Key). `openai` als Dependency installiert. **Abgeschlossen 2026-05-16.**                                                                              | **Sonnet** |
-| 6   | **Message-Parser + Tests** (Email-Subject-Extraktion, Falsch-Format-Robustheit).                                                                                                                                                                                                                                                            | **Sonnet** |
-| 7   | **Command-Handler + Tests** (gemockte Services; **Activity-Log-Aufruf verifiziert** — `type='message_drafted'`, `metadata={promptKey, channel, subject?}`).                                                                                                                                                                                 | **Sonnet** |
-| 8   | **API-Layer** — `outreach-api-error.ts` + `POST /api/workspace/outreach/generate` (Auth + Schema + Handler) in einem Commit.                                                                                                                                                                                                                | **Sonnet** |
-| 9   | **i18n-Block** — `de.json` + `en.json` + `index.ts` für Outreach-Section + Einbau in `workspace/leads/index.ts`. Beide Locales **zwingend** im selben Commit.                                                                                                                                                                               | **Sonnet** |
-| 10  | **UI-Komponenten + Integrationen** — `LeadOutreachDialog` (alle Phasen, Email-Sonderfall) → `LeadOutreachTrigger` (zwei Varianten) → Mounts in Detail-Panel-Header, Edit-Dialog-Footer, Table-Row-Actions.                                                                                                                                  | **Opus**   |
+| 6   | ✅ **Message-Parser + Tests** — 11 Tests grün (Subject-Extraktion kanalunabhängig via `Betreff:`-Prefix, Falsch-Format → subject=undefined/body=rawText). **Abgeschlossen 2026-05-16.**                                                                                                                                                     | **Sonnet** |
+| 7   | **Mehrsprachigkeit + Sprachauswahl** — `language`-Feld durch die gesamte Pipeline; Subject-Prefix aus Dict statt hardcoded; Sprachauswahl-`<select>` im Dialog. Betrifft retroaktiv Tasks 1, 3, 4, 6 (nachzupflegen). Siehe Detail-Beschreibung unten.                                                                                      | **Sonnet** |
+| 8   | **Command-Handler + Tests** (gemockte Services; **Activity-Log-Aufruf verifiziert** — `type='message_drafted'`, `metadata={promptKey, channel, language, subject?}`).                                                                                                                                                                       | **Sonnet** |
+| 9   | **API-Layer** — `outreach-api-error.ts` + `POST /api/workspace/outreach/generate` (Auth + Schema + Handler) in einem Commit.                                                                                                                                                                                                                | **Sonnet** |
+| 10  | **i18n-Block** — `de.json` + `en.json` + `index.ts` für Outreach-Section + Einbau in `workspace/leads/index.ts`. Beide Locales **zwingend** im selben Commit.                                                                                                                                                                               | **Sonnet** |
+| 11  | **UI-Komponenten + Integrationen** — `LeadOutreachDialog` (alle Phasen, Email-Sonderfall) → `LeadOutreachTrigger` (zwei Varianten) → Mounts in Detail-Panel-Header, Edit-Dialog-Footer, Table-Row-Actions. Sprachauswahl-Select im Dialog (aus Task 7).                                                                                     | **Opus**   |
+
+### Task 7 — Mehrsprachigkeit + Sprachauswahl (Detail)
+
+**Ziel:** Alle hardcodierten Sprach-Strings durch typisierte Dicts ersetzen; `language`-Feld durch die gesamte
+Pipeline führen; Sprachauswahl-Select im Dialog.
+
+#### Neue Dateien
+
+| Datei                                                            | Aktion | Inhalt                                                                                                                       |
+| ---------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `src/common/ai-outreach-generation/outreach-language.ts`         | NEU    | `OutreachLanguage = { De: "de", En: "en" }` + `OUTREACH_LANGUAGE_VALUES` + `OUTREACH_DEFAULT_LANGUAGE = OutreachLanguage.De` |
+| `src/common/ai-outreach-generation/outreach-subject-prefixes.ts` | NEU    | `SUBJECT_PREFIX_BY_LANGUAGE: Record<OutreachLanguage, string>` — `{ de: "Betreff: ", en: "Subject: " }`                      |
+
+#### Retroaktive Updates (bereits abgeschlossene Tasks)
+
+| Datei                              | Änderung                                                                                                   |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `generate-outreach-request.dto.ts` | `language: OutreachLanguage` hinzufügen                                                                    |
+| `generate-outreach.schema.ts`      | `language: z.enum(OUTREACH_LANGUAGE_VALUES)` + Schema-Tests ergänzen                                       |
+| `prompt-build-context.ts`          | `language: OutreachLanguage` hinzufügen                                                                    |
+| `first-touch-prompt.ts`            | Language-Direktive im `systemPrompt`: `"Schreibe auf Deutsch."` / `"Write in English."`                    |
+| `outreach-prompt-service.ts`       | `language` aus Request durchreichen an `build(ctx)`                                                        |
+| `outreach-message-parser.ts`       | `parse(channel, rawText, language)` — `SUBJECT_PREFIX_BY_LANGUAGE[language]` statt hardcoded `"Betreff: "` |
+| `outreach-message-parser.test.ts`  | Tests auf `language`-Parameter umstellen; EN-Test: `"Subject: "` extrahiert korrekt                        |
+| `generate-outreach.schema.test.ts` | `language`-Validierung testen                                                                              |
+
+#### Dialog-Integration
+
+- Sprachauswahl-`<select>` im `LeadOutreachDialog` zwischen Channel-Select und Kontext-Textfeld.
+- Default: `OUTREACH_DEFAULT_LANGUAGE` (`"de"`).
+- Label und Optionen aus i18n (`languageLabel`, `languageOptions.de`, `languageOptions.en`).
+- `language` wird als weiteres Feld im POST-Body mitgeschickt.
+- Kein `locale === "de" ? … : …` — die Sprache der generierten Nachricht ist unabhängig von der UI-Sprache.
+
+#### Metadaten
+
+- `appendLeadActivity` erhält `metadata: { promptKey, channel, language, subject? }`.
 
 ### Definition of Done (vor PR, keine eigenen Tasks)
 
@@ -259,10 +297,10 @@ Routen, Integrationen). **Opus 4.7** dort, wo Output-Qualität sichtbar ist (Pro
      Output (negativer Test mit gefüllten Feldern).
    - AI-Service: LM-Studio-Erfolg → Text; LM-Studio-Fail + OpenAI-Key gesetzt → OpenAI-`gpt-4o-mini`-Erfolg; beide-Fail
      → `PROVIDER_UNAVAILABLE`.
-   - Parser: Email-Output mit „Betreff: …" wird korrekt in `{subject, body}` zerlegt; Falsch-Format → `subject = ''`,
-     `body = vollständigerText`.
+   - Parser: Output mit `Betreff: …` / `Subject: …` (je nach `language`) → `{subject, body}`; Falsch-Format →
+     `subject = undefined`, `body = vollständigerText`.
    - Command-Handler: Lead-not-found → `LeadNotFound`; bei Erfolg wird `appendLeadActivity` mit
-     `type='message_drafted'`, `body=parsedBody` und `metadata={promptKey, channel, subject?}` aufgerufen.
+     `type='message_drafted'`, `body=parsedBody` und `metadata={promptKey, channel, language, subject?}` aufgerufen.
 3. **Manueller Smoke-Test** (`npm run dev`):
    - Trigger erscheint im **Detail-Panel-Header** (icon-only), im **Edit-Dialog-Footer** (icon+text, nur Edit-Mode), in
      der **Table-Row** (icon-only). Im **Create-Dialog**: NICHT sichtbar.
