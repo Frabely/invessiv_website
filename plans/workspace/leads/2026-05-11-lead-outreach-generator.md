@@ -1,7 +1,7 @@
 # Lead Outreach Generator — Revidierter Plan (Stand: 2026-05-16)
 
-> Diese Datei ersetzt den ursprünglichen 11.05-Plan (Ollama-first, 3 Kanäle, ein einzelner Trigger). Aus dem 11.05-Plan
-> wurde noch nichts implementiert — Greenfield-Start.
+> Diese Datei ersetzt den ursprünglichen 11.05-Plan (LM-Studio-first, 3 Kanäle, ein einzelner Trigger). Aus dem
+> 11.05-Plan wurde noch nichts implementiert — Greenfield-Start.
 
 ## Context
 
@@ -11,7 +11,8 @@ individuell-catchy, **kein Pitch** — sondern dezenter Werthinweis (max. 2 Impr
 
 Drei UI-Trigger (Detail-Panel-Header, Edit-Dialog-Footer, Tabellen-Zeile) öffnen denselben Dialog. Im Dialog wählt der
 User Prompt (aus Code-Registry) + Kanal (Default LinkedIn) + optionales freies Kontext-Feld + Improvements-Toggle.
-Provider-Auswahl (Ollama/OpenAI) **nicht** im UI — Server entscheidet automatisch (Ollama zuerst, OpenAI als Fallback).
+Provider-Auswahl (LM Studio / OpenAI) **nicht** im UI — Server entscheidet automatisch (lokales LM-Studio-Modell zuerst,
+OpenAI `gpt-4o-mini` als Fallback).
 
 ## Konventionen (zwingend einzuhalten)
 
@@ -55,7 +56,7 @@ Provider-Auswahl (Ollama/OpenAI) **nicht** im UI — Server entscheidet automati
 | `src/server/workspace/outreach/services/generate-outreach.schema.ts`                             | NEU    | Zod-Schema gegen Request-DTO                                                                                                                                                                                                              |
 | `src/server/workspace/outreach/services/generate-outreach.schema.test.ts`                        | NEU    | Schema-Tests (TDD)                                                                                                                                                                                                                        |
 | `src/server/workspace/outreach/services/outreach-prompt-service.ts`                              | NEU    | `buildSystemPrompt`, `buildUserPrompt` — orchestriert Registry + Channel-Profil + Lead-Sanitization                                                                                                                                       |
-| `src/server/workspace/outreach/services/outreach-ai-service.ts`                                  | NEU    | Ollama-zuerst, OpenAI-Fallback (kein UI-Switch). **Kein** `checkAvailability`-Export.                                                                                                                                                     |
+| `src/server/workspace/outreach/services/outreach-ai-service.ts`                                  | NEU    | LM-Studio-zuerst (Qwen3-14B-GGUF Q4_K_M), OpenAI-`gpt-4o-mini`-Fallback (kein UI-Switch). **Kein** `checkAvailability`-Export.                                                                                                            |
 | `src/server/workspace/outreach/services/outreach-message-parser.ts`                              | NEU    | Parser: für Email → `{ subject, body }`; sonst → `{ body }`                                                                                                                                                                               |
 | `src/server/workspace/outreach/command-handler/generate-outreach-command-handler.ts`             | NEU    | DB-Fetch → Prompt → AI → Parser → `appendLeadActivity` → Result                                                                                                                                                                           |
 | `src/server/workspace/outreach/types/outreach-internal-types.ts`                                 | NEU    | Server-interne Typen (z. B. `ChannelProfile`, `PromptBuildContext`)                                                                                                                                                                       |
@@ -87,7 +88,7 @@ Provider-Auswahl (Ollama/OpenAI) **nicht** im UI — Server entscheidet automati
   → getLeadById(leadId)                            // re-use aus P1-T13
   → ChannelProfile = CHANNEL_PROFILES[channel]     // {maxChars, greetingStyle, requiresSubject, tone}
   → Registry[promptKey].build({channel, lead, options}) → { systemPrompt, userPrompt }
-  → outreachAiService.generate(system, user)       // Ollama → OpenAI Fallback
+  → outreachAiService.generate(system, user)       // LM Studio (Qwen3-14B Q4_K_M) → OpenAI gpt-4o-mini Fallback
   → outreachMessageParser.parse(channel, rawText)  // Email: {subject, body}, sonst: {body}
   → lead-activity-service.appendLeadActivity({     // re-use aus P1-T14
        leadId, type: 'message_drafted',
@@ -149,10 +150,15 @@ Neue Prompts später: weiteren Wert in `OutreachPromptKey` + neue Datei unter
 
 ### AI-Service (Server-only)
 
-- Ollama via `openai`-SDK gegen `OLLAMA_BASE_URL/v1` (Default `http://localhost:11434`), Model aus `OLLAMA_MODEL` (
-  Default `mistral`).
-- Bei Ollama-Fehler (ECONNREFUSED, Timeout, 4xx) → automatisch OpenAI mit `process.env.OPENAI_API_KEY` und
-  `OPENAI_MODEL` (Default z. B. `gpt-4o-mini`; tatsächlicher Model-Name in `.env.local` konfigurierbar).
+- **Primär: lokales Modell via LM Studio.**
+  - Runtime: LM Studio Server (OpenAI-kompatibler HTTP-Endpoint).
+  - Model: `Qwen3-14B-GGUF` Quantisierung `Q4_K_M`.
+  - Base URL: `http://localhost:1234/v1` (konfigurierbar via `LMSTUDIO_BASE_URL`, Default `http://localhost:1234/v1`).
+  - Model-ID via `LMSTUDIO_MODEL` (Default `qwen3-14b`; muss exakt dem in LM Studio geladenen Identifier entsprechen).
+  - Aufruf über `openai`-SDK mit obiger Base-URL und `apiKey: "lm-studio"` (Dummy — LM Studio ignoriert den Key).
+- **Fallback: OpenAI `gpt-4o-mini`.**
+  - Bei LM-Studio-Fehler (ECONNREFUSED, Timeout, 4xx/5xx) → automatisch OpenAI mit `process.env.OPENAI_API_KEY` und
+    `OPENAI_MODEL` (Default `gpt-4o-mini`, in `.env.local` überschreibbar).
 - Wenn beide nicht erreichbar/konfiguriert → wirft `Error("PROVIDER_UNAVAILABLE")`, vom Handler in
   `OutreachErrorCode.ProviderUnavailable` gemappt.
 - **Kein** `checkAvailability`-Export, **kein** `/providers`-Route — der UI-Provider-Switch entfällt komplett.
@@ -214,7 +220,7 @@ sharedContent = {sharedDict}
    - 3c. `outreach-prompt-registry.ts` + `prompts/first-touch-prompt.ts`.
 4. **Zod-Schema** + Test (TDD).
 5. **Prompt-Service** + Tests (TDD, inkl. DSGVO-Negativtests).
-6. **AI-Service** + Tests (TDD, gemockter OpenAI-Client; Tests für Ollama-Erfolg / Ollama-Fail→OpenAI-Erfolg /
+6. **AI-Service** + Tests (TDD, gemockter OpenAI-Client; Tests für LM-Studio-Erfolg / LM-Studio-Fail→OpenAI-Erfolg /
    beide-Fail).
 7. **Message-Parser** + Tests (Email-Subject-Extraktion).
 8. **Command-Handler** + Tests (gemockte Services, **Activity-Log wird verifiziert**).
@@ -246,8 +252,8 @@ sharedContent = {sharedDict}
    - Zod-Schema akzeptiert/lehnt Channel-Werte, PromptKey-Werte und contextNote-Länge korrekt ab.
    - Prompt-Service: bei `includeImprovements=true` max **2** Improvements im Output; **niemals** Email/Telefon im
      Output (negativer Test mit gefüllten Feldern).
-   - AI-Service: Ollama-Erfolg → Text; Ollama-Fail + OpenAI-Key gesetzt → OpenAI-Erfolg; beide-Fail →
-     `PROVIDER_UNAVAILABLE`.
+   - AI-Service: LM-Studio-Erfolg → Text; LM-Studio-Fail + OpenAI-Key gesetzt → OpenAI-`gpt-4o-mini`-Erfolg; beide-Fail
+     → `PROVIDER_UNAVAILABLE`.
    - Parser: Email-Output mit „Betreff: …" wird korrekt in `{subject, body}` zerlegt; Falsch-Format → `subject = ''`,
      `body = vollständigerText`.
    - Command-Handler: Lead-not-found → `LeadNotFound`; bei Erfolg wird `appendLeadActivity` mit
