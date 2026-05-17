@@ -2,23 +2,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 
-const { mockLmStudioCreate, mockOpenAiCreate } = vi.hoisted(() => ({
-  mockLmStudioCreate: vi.fn(),
+const { mockOpenAiCreate } = vi.hoisted(() => ({
   mockOpenAiCreate: vi.fn(),
 }));
 
 vi.mock("openai", () => ({
   default: class MockOpenAI {
-    private config: { apiKey: string; baseURL?: string };
-
-    constructor(config: { apiKey: string; baseURL?: string }) {
-      this.config = config;
-    }
-
     get chat() {
       return {
         completions: {
-          create: this.config.baseURL ? mockLmStudioCreate : mockOpenAiCreate,
+          create: mockOpenAiCreate,
         },
       };
     }
@@ -49,38 +42,7 @@ afterEach(() => {
 });
 
 describe("outreachAiService.generate", () => {
-  it("returns text from LM Studio when the local server is available", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue(Response.json({ data: [] })),
-    );
-    mockLmStudioCreate.mockResolvedValueOnce(makeCompletion(FAKE_TEXT));
-
-    const result = await outreachAiService.generate("system", "user");
-
-    expect(result).toBe(FAKE_TEXT);
-    expect(mockLmStudioCreate).toHaveBeenCalled();
-    expect(mockOpenAiCreate).not.toHaveBeenCalled();
-  });
-
-  it("falls back to OpenAI when LM Studio is unavailable", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new Error("ECONNREFUSED")),
-    );
-    mockOpenAiCreate.mockResolvedValueOnce(makeCompletion(FAKE_TEXT));
-
-    const result = await outreachAiService.generate("system", "user");
-
-    expect(result).toBe(FAKE_TEXT);
-    expect(mockOpenAiCreate).toHaveBeenCalled();
-  });
-
-  it("calls OpenAI with system and user messages on fallback", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new Error("ECONNREFUSED")),
-    );
+  it("calls OpenAI with system and user messages", async () => {
     mockOpenAiCreate.mockResolvedValueOnce(makeCompletion(FAKE_TEXT));
 
     await outreachAiService.generate("my-system", "my-user");
@@ -95,24 +57,35 @@ describe("outreachAiService.generate", () => {
     );
   });
 
-  it("throws NOT_CONFIGURED when neither LM Studio nor OpenAI are available", async () => {
+  it("returns the generated text from OpenAI", async () => {
+    mockOpenAiCreate.mockResolvedValueOnce(makeCompletion(FAKE_TEXT));
+
+    const result = await outreachAiService.generate("system", "user");
+
+    expect(result).toBe(FAKE_TEXT);
+  });
+
+  it("throws NOT_CONFIGURED when OPENAI_API_KEY is not set", async () => {
     delete process.env.OPENAI_API_KEY;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new Error("ECONNREFUSED")),
-    );
 
     await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
       OutreachErrorCode.NotConfigured,
     );
+    expect(mockOpenAiCreate).not.toHaveBeenCalled();
   });
 
   it("throws PROVIDER_UNAVAILABLE when OpenAI rejects", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new Error("ECONNREFUSED")),
-    );
     mockOpenAiCreate.mockRejectedValueOnce(new Error("openai_error"));
+
+    await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
+      OutreachErrorCode.ProviderUnavailable,
+    );
+  });
+
+  it("throws PROVIDER_UNAVAILABLE when OpenAI returns empty content", async () => {
+    mockOpenAiCreate.mockResolvedValueOnce({
+      choices: [{ message: { content: "" } }],
+    });
 
     await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
       OutreachErrorCode.ProviderUnavailable,

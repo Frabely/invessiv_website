@@ -7,6 +7,7 @@ import {
   LeadOutreachTriggerVariant,
   type LeadOutreachTriggerVariant as LeadOutreachTriggerVariantValue,
 } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
+import type { OutreachLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachDialog } from "../lead-outreach-dialog/lead-outreach-dialog";
 import styles from "./lead-outreach-trigger.module.css";
@@ -18,6 +19,7 @@ type LeadOutreachTriggerProps = {
     displayName: string;
     id: string;
     improvements?: string[] | null;
+    facts?: OutreachLeadFacts;
   };
   onClickCaptureAction?: (event: MouseEvent<HTMLButtonElement>) => void;
   variant: LeadOutreachTriggerVariantValue;
@@ -31,6 +33,7 @@ export function LeadOutreachTrigger({
   variant,
 }: LeadOutreachTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [openRevision, setOpenRevision] = useState(0);
   const isIconOnly = variant === LeadOutreachTriggerVariant.IconOnly;
   const buttonClassName = [
     isIconOnly ? styles.iconButton : styles.textButton,
@@ -46,6 +49,7 @@ export function LeadOutreachTrigger({
         className={buttonClassName}
         onClick={(event) => {
           onClickCaptureAction?.(event);
+          setOpenRevision((current) => current + 1);
           setIsOpen(true);
         }}
         title={content.triggerLabel}
@@ -59,9 +63,11 @@ export function LeadOutreachTrigger({
         <LeadOutreachDialog
           content={content}
           leadDisplayName={lead.displayName}
+          leadFacts={lead.facts}
           leadId={lead.id}
           leadImprovements={lead.improvements}
           onCloseAction={() => setIsOpen(false)}
+          refreshToken={openRevision}
         />
       ) : null}
     </>

@@ -3,20 +3,8 @@ import type { OutreachChannel } from "@/common/ai-outreach-generation/outreach-c
 import type { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import type { OutreachPromptOptions } from "@/common/ai-outreach-generation/outreach-prompt-options";
 import type { OutreachPromptMessages } from "@/common/ai-outreach-generation/outreach-prompt-messages";
-import type { OutreachLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
+import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
 import { OUTREACH_PROMPT_REGISTRY } from "@/common/ai-outreach-generation/outreach-prompt-registry";
-
-function sanitizeLeadFacts(lead: LeadDetailDto): OutreachLeadFacts {
-  return {
-    firstName: lead.firstName,
-    companyName: lead.companyName,
-    websiteUrl: lead.websiteUrl,
-    categoryLabel: lead.category?.labelKey ?? null,
-    notes: lead.notes,
-    improvements: lead.improvements ?? [],
-    owner: lead.owner,
-  };
-}
 
 function buildPromptMessages(
   lead: LeadDetailDto,

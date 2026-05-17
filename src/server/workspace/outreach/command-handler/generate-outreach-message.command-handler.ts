@@ -18,34 +18,38 @@ export async function generateOutreachMessage(
     return { ok: false, code: OutreachErrorCode.LeadNotFound };
   }
 
-  const { systemPrompt, userPrompt } =
-    outreachPromptService.buildPromptMessages(
-      lead,
-      request.promptKey,
-      request.channel,
-      {
-        includeImprovements: request.includeImprovements,
-        contextNote: request.contextNote,
-      },
-    );
-
   let rawText: string;
-  try {
-    rawText = await outreachAiService.generate(systemPrompt, userPrompt);
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      error.message === OutreachErrorCode.ProviderUnavailable
-    ) {
-      return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
+  if (request.clientGeneratedRawText) {
+    rawText = request.clientGeneratedRawText;
+  } else {
+    const { systemPrompt, userPrompt } =
+      outreachPromptService.buildPromptMessages(
+        lead,
+        request.promptKey,
+        request.channel,
+        {
+          includeImprovements: request.includeImprovements,
+          contextNote: request.contextNote,
+        },
+      );
+
+    try {
+      rawText = await outreachAiService.generate(systemPrompt, userPrompt);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === OutreachErrorCode.ProviderUnavailable
+      ) {
+        return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
+      }
+      if (
+        error instanceof Error &&
+        error.message === OutreachErrorCode.NotConfigured
+      ) {
+        return { ok: false, code: OutreachErrorCode.NotConfigured };
+      }
+      return { ok: false, code: OutreachErrorCode.Internal };
     }
-    if (
-      error instanceof Error &&
-      error.message === OutreachErrorCode.NotConfigured
-    ) {
-      return { ok: false, code: OutreachErrorCode.NotConfigured };
-    }
-    return { ok: false, code: OutreachErrorCode.Internal };
   }
 
   const parsed = outreachMessageParser.parse(request.channel, rawText);

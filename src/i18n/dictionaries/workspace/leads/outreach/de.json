@@ -47,7 +47,13 @@
   "status": {
     "generating": "Nachricht wird generiert...",
     "copied": "In die Zwischenablage kopiert",
-    "ready": "Bereit"
+    "ready": "Bereit",
+    "checkingProviders": "Provider wird geprüft...",
+    "localActive": "Lokales Modell aktiv",
+    "localNoModel": "Lokaler Provider aktiv · Kein Modell geladen",
+    "cloudFallback": "OpenAI-Fallback aktiv",
+    "noProvider": "Kein Provider verfügbar",
+    "localFailed": "Lokale Generierung fehlgeschlagen, Cloud wird verwendet"
   },
   "buttons": {
     "generate": "Generieren",
@@ -61,6 +67,7 @@
     "validation": "Die Anfrage ist ungültig.",
     "leadNotFound": "Der Lead wurde nicht gefunden.",
     "providerUnavailable": "Der KI-Anbieter ist derzeit nicht verfügbar.",
+    "notConfigured": "Kein KI-Provider konfiguriert.",
     "internal": "Die Nachricht konnte nicht generiert werden."
   }
 }

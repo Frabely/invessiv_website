@@ -209,3 +209,82 @@ describe("generateOutreachMessage — prompt service integration", () => {
     );
   });
 });
+
+describe("generateOutreachMessage — clientGeneratedRawText", () => {
+  it("skips AI service call when clientGeneratedRawText is provided", async () => {
+    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
+    parseMock.mockReturnValue({ body: "Local body" });
+
+    const request: GenerateOutreachRequestDto = {
+      ...BASE_REQUEST,
+      clientGeneratedRawText: "Local body",
+      provider: "local-lm-studio",
+    };
+
+    await generateOutreachMessage(request);
+
+    expect(generateMock).not.toHaveBeenCalled();
+    expect(buildPromptMessagesMock).not.toHaveBeenCalled();
+  });
+
+  it("parses and saves the clientGeneratedRawText when provided", async () => {
+    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
+    parseMock.mockReturnValue({ body: "Local body" });
+
+    const request: GenerateOutreachRequestDto = {
+      ...BASE_REQUEST,
+      clientGeneratedRawText: "Local body",
+      provider: "local-lm-studio",
+    };
+
+    const result = await generateOutreachMessage(request);
+
+    expect(parseMock).toHaveBeenCalledWith(
+      OutreachChannel.Linkedin,
+      "Local body",
+    );
+    expect(appendLeadActivityMock).toHaveBeenCalled();
+    expect(result).toEqual({
+      ok: true,
+      channel: OutreachChannel.Linkedin,
+      promptKey: OutreachPromptKey.FirstTouch,
+      body: "Local body",
+    });
+  });
+
+  it("calls AI service when clientGeneratedRawText is not provided", async () => {
+    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
+    generateMock.mockResolvedValue("Server body");
+    parseMock.mockReturnValue({ body: "Server body" });
+
+    await generateOutreachMessage(BASE_REQUEST);
+
+    expect(generateMock).toHaveBeenCalled();
+  });
+
+  it("returns NotConfigured when clientGeneratedRawText is absent and OpenAI not configured", async () => {
+    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
+    generateMock.mockRejectedValue(new Error(OutreachErrorCode.NotConfigured));
+
+    const result = await generateOutreachMessage(BASE_REQUEST);
+
+    expect(result).toEqual({
+      ok: false,
+      code: OutreachErrorCode.NotConfigured,
+    });
+  });
+
+  it("returns ProviderUnavailable when OpenAI fails", async () => {
+    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
+    generateMock.mockRejectedValue(
+      new Error(OutreachErrorCode.ProviderUnavailable),
+    );
+
+    const result = await generateOutreachMessage(BASE_REQUEST);
+
+    expect(result).toEqual({
+      ok: false,
+      code: OutreachErrorCode.ProviderUnavailable,
+    });
+  });
+});

@@ -9,6 +9,8 @@ export const generateOutreachMessageSchema = z.object({
   channel: z.enum(OUTREACH_CHANNEL_VALUES),
   includeImprovements: z.boolean(),
   contextNote: z.string().max(OUTREACH_CONTEXT_NOTE_MAX_LEN).optional(),
+  clientGeneratedRawText: z.string().optional(),
+  provider: z.enum(["local-lm-studio", "openai"]).optional(),
 });
 
 export type GenerateOutreachMessageInput = z.infer<

@@ -23,17 +23,42 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-const { mockGenerateOutreachMessage } = vi.hoisted(() => ({
-  mockGenerateOutreachMessage: vi.fn(),
-}));
+const { mockGenerateOutreachMessage, mockCheckOutreachProviders } = vi.hoisted(
+  () => ({
+    mockGenerateOutreachMessage: vi.fn(),
+    mockCheckOutreachProviders: vi.fn(),
+  }),
+);
+const mockGenerateLocalOutreachMessage = vi.hoisted(() => vi.fn());
 
 vi.mock("@/client/leads/outreach/lead-outreach-generation-service", () => ({
   generateOutreachMessage: mockGenerateOutreachMessage,
 }));
 
+vi.mock(
+  "@/client/leads/outreach/lead-outreach-local-generation-service",
+  () => ({
+    generateLocalOutreachMessage: mockGenerateLocalOutreachMessage,
+  }),
+);
+
+vi.mock(
+  "@/client/leads/outreach/lead-outreach-provider-status-service",
+  () => ({
+    checkOutreachProviders: mockCheckOutreachProviders,
+  }),
+);
+
 beforeEach(() => {
   refreshMock.mockReset();
   mockGenerateOutreachMessage.mockReset();
+  mockCheckOutreachProviders.mockReset();
+  mockGenerateLocalOutreachMessage.mockReset();
+  mockCheckOutreachProviders.mockResolvedValue({
+    local: { running: false },
+    openai: true,
+    openaiModel: "gpt-4o-mini",
+  });
   mockGenerateOutreachMessage.mockResolvedValue({
     ok: true,
     channel: OutreachChannel.Linkedin,
@@ -62,9 +87,7 @@ describe("LeadOutreachTrigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
     fireEvent.change(
-      screen.getByPlaceholderText(
-        "Zum Beispiel: in English, mit klarerem CTA oder kürzerem Ton.",
-      ),
+      screen.getByRole("textbox", { name: /Zusätzlicher Kontext/i }),
       {
         target: { value: "in English" },
       },
@@ -72,13 +95,16 @@ describe("LeadOutreachTrigger", () => {
     fireEvent.click(screen.getByRole("button", { name: "Generieren" }));
 
     await waitFor(() => {
-      expect(mockGenerateOutreachMessage).toHaveBeenCalledWith({
-        channel: OutreachChannel.Linkedin,
-        contextNote: "in English",
-        includeImprovements: true,
-        leadId: "lead-123",
-        promptKey: OutreachPromptKey.FirstTouch,
-      });
+      expect(mockGenerateOutreachMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          channel: OutreachChannel.Linkedin,
+          contextNote: "in English",
+          includeImprovements: true,
+          leadId: "lead-123",
+          promptKey: OutreachPromptKey.FirstTouch,
+          provider: "openai",
+        }),
+      );
     });
 
     expect(
@@ -117,7 +143,105 @@ describe("LeadOutreachTrigger", () => {
       screen.getByDisplayValue("Hallo Anna, ich habe eine kleine Beobachtung."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Für diesen Lead sind keine Verbesserungen hinterlegt."),
+      screen.getByText(/keine Verbesserungen hinterlegt/i),
     ).toBeInTheDocument();
+  });
+
+  it("rechecks the local provider when the dialog is reopened", async () => {
+    mockCheckOutreachProviders
+      .mockResolvedValueOnce({
+        local: { running: true, modelLoaded: false },
+        openai: false,
+        openaiModel: null,
+      })
+      .mockResolvedValueOnce({
+        local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
+        openai: false,
+        openaiModel: null,
+      });
+
+    render(
+      <LeadOutreachTrigger
+        content={getLeadsOutreachDictionary("de")}
+        lead={{
+          displayName: "Anna Meyer",
+          id: "lead-123",
+          improvements: ["Hero klarer machen"],
+        }}
+        variant="icon+text"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
+    expect(
+      await screen.findByText(/Lokaler Provider aktiv · Kein Modell geladen/i),
+    ).toBeInTheDocument();
+    expect(mockCheckOutreachProviders).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: /Dialog schlie/i }));
+    expect(
+      screen.queryByText(/Lokaler Provider aktiv · Kein Modell geladen/i),
+    ).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
+    expect(
+      await screen.findByText(/Lokales Modell aktiv · qwen3-14b/i),
+    ).toBeInTheDocument();
+    expect(mockCheckOutreachProviders).toHaveBeenCalledTimes(2);
+  });
+
+  it("uses the loaded local model name when generating locally", async () => {
+    mockCheckOutreachProviders.mockResolvedValueOnce({
+      local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
+      openai: false,
+      openaiModel: null,
+    });
+    mockGenerateLocalOutreachMessage.mockResolvedValueOnce("Lokaler Entwurf");
+    mockGenerateOutreachMessage.mockResolvedValueOnce({
+      ok: true,
+      channel: OutreachChannel.Linkedin,
+      promptKey: OutreachPromptKey.FirstTouch,
+      body: "Lokaler Entwurf",
+    });
+
+    render(
+      <LeadOutreachTrigger
+        content={getLeadsOutreachDictionary("de")}
+        lead={{
+          displayName: "Anna Meyer",
+          facts: {
+            categoryLabel: "Website",
+            companyName: "Meyer GmbH",
+            firstName: "Anna",
+            improvements: [],
+            notes: null,
+            owner: "Moritz",
+            websiteUrl: "https://example.com",
+          },
+          id: "lead-123",
+          improvements: ["Hero klarer machen"],
+        }}
+        variant="icon+text"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
+    await screen.findByText(/Lokales Modell aktiv · qwen3-14b/i);
+    fireEvent.click(screen.getByRole("button", { name: "Generieren" }));
+
+    await waitFor(() => {
+      expect(mockGenerateLocalOutreachMessage).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
+        "qwen3-14b",
+      );
+    });
+
+    expect(mockGenerateOutreachMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        clientGeneratedRawText: "Lokaler Entwurf",
+        provider: "local-lm-studio",
+      }),
+    );
   });
 });

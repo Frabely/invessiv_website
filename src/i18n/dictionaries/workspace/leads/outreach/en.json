@@ -47,7 +47,13 @@
   "status": {
     "generating": "Generating message...",
     "copied": "Copied to clipboard",
-    "ready": "Ready"
+    "ready": "Ready",
+    "checkingProviders": "Checking providers...",
+    "localActive": "Local model active",
+    "localNoModel": "Local provider active · No model loaded",
+    "cloudFallback": "OpenAI fallback active",
+    "noProvider": "No provider available",
+    "localFailed": "Local generation failed, using cloud"
   },
   "buttons": {
     "generate": "Generate",
@@ -61,6 +67,7 @@
     "validation": "The request is invalid.",
     "leadNotFound": "The lead could not be found.",
     "providerUnavailable": "The AI provider is currently unavailable.",
+    "notConfigured": "No AI provider configured.",
     "internal": "The message could not be generated."
   }
 }

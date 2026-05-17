@@ -19,6 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
+import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
 import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
@@ -124,7 +125,12 @@ export function LeadDetailPanel({
           {outreachContent ? (
             <LeadOutreachTrigger
               content={outreachContent}
-              lead={lead}
+              lead={{
+                displayName: lead.displayName,
+                id: lead.id,
+                improvements: lead.improvements,
+                facts: sanitizeLeadFacts(lead),
+              }}
               variant="icon-only"
             />
           ) : null}

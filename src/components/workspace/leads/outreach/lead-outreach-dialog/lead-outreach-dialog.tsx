@@ -39,18 +39,31 @@ import {
   OUTREACH_PROMPT_KEY_VALUES,
   type OutreachPromptKey,
 } from "@/common/ai-outreach-generation/outreach-prompt-keys";
+import { OUTREACH_PROMPT_REGISTRY } from "@/common/ai-outreach-generation/outreach-prompt-registry";
+import type { OutreachLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
 import { copyTextToClipboard } from "@/client/leads/outreach/lead-outreach-clipboard-service";
 import { generateOutreachMessage } from "@/client/leads/outreach/lead-outreach-generation-service";
+import { checkOutreachProviders } from "@/client/leads/outreach/lead-outreach-provider-status-service";
+import { generateLocalOutreachMessage } from "@/client/leads/outreach/lead-outreach-local-generation-service";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";
 
+type ProviderState =
+  | "checking"
+  | "local"
+  | "local-no-model"
+  | "openai"
+  | "none";
+
 type LeadOutreachDialogProps = {
   content: LeadsOutreachDictionary;
   leadDisplayName: string;
+  leadFacts?: OutreachLeadFacts;
   leadId: string;
   leadImprovements?: string[] | null;
   onCloseAction: () => void;
+  refreshToken: number;
 };
 
 const OutreachDialogId = {
@@ -67,6 +80,18 @@ function formatCounter(
     .replace("{max}", String(OUTREACH_CONTEXT_NOTE_MAX_LEN));
 }
 
+function createFallbackLeadFacts(): OutreachLeadFacts {
+  return {
+    firstName: null,
+    companyName: null,
+    websiteUrl: null,
+    categoryLabel: null,
+    notes: null,
+    improvements: [],
+    owner: null,
+  };
+}
+
 function getErrorMessage(
   content: LeadsOutreachDictionary,
   code: OutreachErrorCode,
@@ -78,6 +103,8 @@ function getErrorMessage(
       return content.errors.leadNotFound;
     case OutreachErrorCode.ProviderUnavailable:
       return content.errors.providerUnavailable;
+    case OutreachErrorCode.NotConfigured:
+      return content.errors.notConfigured;
     case OutreachErrorCode.Internal:
       return content.errors.internal;
     default: {
@@ -86,12 +113,35 @@ function getErrorMessage(
   }
 }
 
+function getProviderBadgeLabel(
+  content: LeadsOutreachDictionary,
+  state: ProviderState,
+  modelName: string | null,
+): string {
+  switch (state) {
+    case "checking":
+      return content.status.checkingProviders;
+    case "local":
+      return modelName
+        ? `${content.status.localActive} · ${modelName}`
+        : content.status.localActive;
+    case "local-no-model":
+      return content.status.localNoModel;
+    case "openai":
+      return content.status.cloudFallback;
+    case "none":
+      return content.status.noProvider;
+  }
+}
+
 export function LeadOutreachDialog({
   content,
   leadDisplayName,
+  leadFacts,
   leadId,
   leadImprovements,
   onCloseAction,
+  refreshToken,
 }: LeadOutreachDialogProps) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -111,6 +161,9 @@ export function LeadOutreachDialog({
     useState(hasImprovements);
   const [contextNote, setContextNote] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [providerState, setProviderState] = useState<ProviderState>("checking");
+  const [localAvailable, setLocalAvailable] = useState(false);
+  const [localModelName, setLocalModelName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -153,6 +206,44 @@ export function LeadOutreachDialog({
     return () => window.cancelAnimationFrame(frame);
   }, [isMounted]);
 
+  useEffect(() => {
+    if (!isMounted) {
+      return;
+    }
+
+    setProviderState("checking");
+    setLocalAvailable(false);
+    setLocalModelName(null);
+
+    let cancelled = false;
+
+    checkOutreachProviders().then((status) => {
+      if (cancelled) return;
+      const { local } = status;
+      if (local.running && local.modelLoaded) {
+        setLocalAvailable(true);
+        setLocalModelName(local.modelName);
+        setProviderState("local");
+      } else if (local.running && !local.modelLoaded) {
+        setLocalAvailable(true);
+        setLocalModelName(null);
+        setProviderState("local-no-model");
+      } else if (status.openai) {
+        setLocalAvailable(false);
+        setLocalModelName(null);
+        setProviderState("openai");
+      } else {
+        setLocalAvailable(false);
+        setLocalModelName(null);
+        setProviderState("none");
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isMounted, refreshToken]);
+
   const portalRoot = isMounted ? document.body : null;
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -164,7 +255,7 @@ export function LeadOutreachDialog({
     setCopiedTarget(null);
     setIsGenerating(true);
 
-    const payload: GenerateOutreachRequestDto = {
+    const basePayload: GenerateOutreachRequestDto = {
       leadId,
       promptKey: selectedPromptKey,
       channel: selectedChannel,
@@ -173,7 +264,52 @@ export function LeadOutreachDialog({
     };
 
     try {
-      const result = await generateOutreachMessage(payload);
+      if (localAvailable && localModelName) {
+        const promptEntry = OUTREACH_PROMPT_REGISTRY[selectedPromptKey];
+        const leadFactsForPrompt = leadFacts ?? createFallbackLeadFacts();
+        const { systemPrompt, userPrompt } = promptEntry.build({
+          channel: selectedChannel,
+          lead: leadFactsForPrompt,
+          options: {
+            includeImprovements: includeImprovements && hasImprovements,
+            contextNote: contextNote.trim() || undefined,
+          },
+        });
+
+        let rawText: string | null = null;
+        try {
+          rawText = await generateLocalOutreachMessage(
+            systemPrompt,
+            userPrompt,
+            localModelName,
+          );
+        } catch {
+          setErrorMessage(content.status.localFailed);
+        }
+
+        if (rawText !== null) {
+          const result = await generateOutreachMessage({
+            ...basePayload,
+            clientGeneratedRawText: rawText,
+            provider: "local-lm-studio",
+          });
+
+          if (!result.ok) {
+            setErrorMessage(getErrorMessage(content, result.code));
+            return;
+          }
+
+          setSubject(result.subject ?? "");
+          setBody(result.body);
+          router.refresh();
+          return;
+        }
+      }
+
+      const result = await generateOutreachMessage({
+        ...basePayload,
+        provider: "openai",
+      });
 
       if (!result.ok) {
         setErrorMessage(getErrorMessage(content, result.code));
@@ -244,6 +380,15 @@ export function LeadOutreachDialog({
               </span>
               <strong>{leadDisplayName}</strong>
             </div>
+
+            <span
+              className={styles.providerBadge}
+              data-state={providerState}
+              aria-live="polite"
+            >
+              <span aria-hidden="true" className={styles.providerDot} />
+              {getProviderBadgeLabel(content, providerState, localModelName)}
+            </span>
 
             <label className={styles.field} htmlFor={promptId}>
               <span className={styles.label}>{content.prompt.label}</span>
@@ -333,7 +478,7 @@ export function LeadOutreachDialog({
 
             <button
               className={styles.generateButton}
-              disabled={isGenerating}
+              disabled={isGenerating || providerState === "none"}
               onClick={handleGenerate}
               type="button"
             >
