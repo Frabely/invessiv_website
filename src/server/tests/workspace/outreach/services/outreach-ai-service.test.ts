@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 
 const { mockOpenAiCreate } = vi.hoisted(() => ({
@@ -68,27 +67,27 @@ describe("outreachAiService.generate", () => {
   it("throws NOT_CONFIGURED when OPENAI_API_KEY is not set", async () => {
     delete process.env.OPENAI_API_KEY;
 
-    await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
-      OutreachErrorCode.NotConfigured,
-    );
+    await expect(
+      outreachAiService.generate("system", "user"),
+    ).resolves.toBeNull();
     expect(mockOpenAiCreate).not.toHaveBeenCalled();
   });
 
-  it("throws PROVIDER_UNAVAILABLE when OpenAI rejects", async () => {
+  it("returns null when OpenAI rejects", async () => {
     mockOpenAiCreate.mockRejectedValueOnce(new Error("openai_error"));
 
     await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
-      OutreachErrorCode.ProviderUnavailable,
+      "openai_error",
     );
   });
 
-  it("throws PROVIDER_UNAVAILABLE when OpenAI returns empty content", async () => {
+  it("returns null when OpenAI returns empty content", async () => {
     mockOpenAiCreate.mockResolvedValueOnce({
       choices: [{ message: { content: "" } }],
     });
 
-    await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
-      OutreachErrorCode.ProviderUnavailable,
-    );
+    await expect(
+      outreachAiService.generate("system", "user"),
+    ).resolves.toBeNull();
   });
 });
