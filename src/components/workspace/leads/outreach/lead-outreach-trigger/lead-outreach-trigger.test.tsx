@@ -34,20 +34,26 @@ const { mockGenerateOutreachMessage, mockCheckOutreachProviders } = vi.hoisted(
 const mockGenerateLocalOutreachMessage = vi.hoisted(() => vi.fn());
 
 vi.mock("@/client/leads/outreach/lead-outreach-generation-service", () => ({
-  generateOutreachMessage: mockGenerateOutreachMessage,
+  outreachGenerationClientService: {
+    generateOutreachMessage: mockGenerateOutreachMessage,
+  },
 }));
 
 vi.mock(
   "@/client/leads/outreach/lead-outreach-local-generation-service",
   () => ({
-    generateLocalOutreachMessage: mockGenerateLocalOutreachMessage,
+    outreachLocalGenerationService: {
+      generateLocalOutreachMessage: mockGenerateLocalOutreachMessage,
+    },
   }),
 );
 
 vi.mock(
   "@/client/leads/outreach/lead-outreach-provider-status-service",
   () => ({
-    checkOutreachProviders: mockCheckOutreachProviders,
+    outreachProviderStatusService: {
+      checkOutreachProviders: mockCheckOutreachProviders,
+    },
   }),
 );
 

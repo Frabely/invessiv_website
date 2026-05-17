@@ -21,5 +21,3 @@ export const outreachPromptService = {
   sanitizeLeadFacts,
   buildPromptMessages,
 };
-
-export { sanitizeLeadFacts };

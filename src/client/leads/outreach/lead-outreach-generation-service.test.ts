@@ -3,7 +3,7 @@ import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channe
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import { LeadOutreachApiEndpoints } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
-import { generateOutreachMessage } from "./lead-outreach-generation-service";
+import { outreachGenerationClientService } from "./lead-outreach-generation-service";
 
 describe("lead-outreach-generation-service", () => {
   beforeEach(() => {
@@ -26,13 +26,14 @@ describe("lead-outreach-generation-service", () => {
       }),
     );
 
-    const result = await generateOutreachMessage({
-      channel: OutreachChannel.Email,
-      contextNote: "Bitte knapp",
-      includeImprovements: true,
-      leadId: "lead-123",
-      promptKey: OutreachPromptKey.FirstTouch,
-    });
+    const result =
+      await outreachGenerationClientService.generateOutreachMessage({
+        channel: OutreachChannel.Email,
+        contextNote: "Bitte knapp",
+        includeImprovements: true,
+        leadId: "lead-123",
+        promptKey: OutreachPromptKey.FirstTouch,
+      });
 
     expect(result).toMatchObject({
       ok: true,
@@ -71,13 +72,14 @@ describe("lead-outreach-generation-service", () => {
       ),
     );
 
-    const result = await generateOutreachMessage({
-      channel: OutreachChannel.Linkedin,
-      contextNote: "Bitte knapp",
-      includeImprovements: false,
-      leadId: "lead-123",
-      promptKey: OutreachPromptKey.FirstTouch,
-    });
+    const result =
+      await outreachGenerationClientService.generateOutreachMessage({
+        channel: OutreachChannel.Linkedin,
+        contextNote: "Bitte knapp",
+        includeImprovements: false,
+        leadId: "lead-123",
+        promptKey: OutreachPromptKey.FirstTouch,
+      });
 
     expect(result).toEqual({
       ok: false,

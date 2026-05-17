@@ -36,7 +36,7 @@ async function fetchJson<T>(
   }
 }
 
-export async function generateOutreachMessage(
+async function generateOutreachMessage(
   payload: GenerateOutreachRequestDto,
 ): Promise<GenerateOutreachResultDto> {
   const result = await fetchJson<GenerateOutreachResultDto>(GENERATE_ENDPOINT, {

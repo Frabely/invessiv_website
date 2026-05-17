@@ -42,9 +42,9 @@ import {
 import { OUTREACH_PROMPT_REGISTRY } from "@/common/ai-outreach-generation/outreach-prompt-registry";
 import type { OutreachLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
 import { copyTextToClipboard } from "@/client/leads/outreach/lead-outreach-clipboard-service";
-import { generateOutreachMessage } from "@/client/leads/outreach/lead-outreach-generation-service";
-import { checkOutreachProviders } from "@/client/leads/outreach/lead-outreach-provider-status-service";
-import { generateLocalOutreachMessage } from "@/client/leads/outreach/lead-outreach-local-generation-service";
+import { outreachGenerationClientService } from "@/client/leads/outreach/lead-outreach-generation-service";
+import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
+import { outreachLocalGenerationService } from "@/client/leads/outreach/lead-outreach-local-generation-service";
 import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
@@ -226,7 +226,7 @@ export function LeadOutreachDialog({
 
     let cancelled = false;
 
-    checkOutreachProviders().then((status) => {
+    outreachProviderStatusService.checkOutreachProviders().then((status) => {
       if (cancelled) return;
       const { local } = status;
       if (local.running && local.modelLoaded) {
@@ -287,21 +287,23 @@ export function LeadOutreachDialog({
 
         let rawText: string | null = null;
         try {
-          rawText = await generateLocalOutreachMessage(
-            systemPrompt,
-            userPrompt,
-            localModelName,
-          );
+          rawText =
+            await outreachLocalGenerationService.generateLocalOutreachMessage(
+              systemPrompt,
+              userPrompt,
+              localModelName,
+            );
         } catch {
           setErrorMessage(content.status.localFailed);
         }
 
         if (rawText !== null) {
-          const result = await generateOutreachMessage({
-            ...basePayload,
-            clientGeneratedRawText: rawText,
-            provider: OutreachProvider.LocalLmStudio,
-          });
+          const result =
+            await outreachGenerationClientService.generateOutreachMessage({
+              ...basePayload,
+              clientGeneratedRawText: rawText,
+              provider: OutreachProvider.LocalLmStudio,
+            });
 
           if (!result.ok) {
             setErrorMessage(getErrorMessage(content, result.code));
@@ -315,10 +317,11 @@ export function LeadOutreachDialog({
         }
       }
 
-      const result = await generateOutreachMessage({
-        ...basePayload,
-        provider: OutreachProvider.OpenAi,
-      });
+      const result =
+        await outreachGenerationClientService.generateOutreachMessage({
+          ...basePayload,
+          provider: OutreachProvider.OpenAi,
+        });
 
       if (!result.ok) {
         setErrorMessage(getErrorMessage(content, result.code));

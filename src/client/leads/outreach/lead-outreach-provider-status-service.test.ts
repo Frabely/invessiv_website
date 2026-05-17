@@ -4,10 +4,7 @@ import {
   OutreachOpenAi,
 } from "@/common/ai-outreach-generation/outreach-lm-studio";
 import { OutreachLmStudioModelType } from "@/common/ai-outreach-generation/outreach-lm-studio-model-types";
-import {
-  checkOutreachProviders,
-  outreachProviderStatusService,
-} from "./lead-outreach-provider-status-service";
+import { outreachProviderStatusService } from "./lead-outreach-provider-status-service";
 
 describe("lead-outreach-provider-status-service", () => {
   beforeEach(() => {
@@ -43,7 +40,7 @@ describe("lead-outreach-provider-status-service", () => {
         modelName: "qwen3-14b",
       });
       expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-        `${OutreachLmStudio.NativeApiBaseUrl}/models`,
+        OutreachLmStudio.ModelsEndpoint,
         expect.objectContaining({ method: "GET" }),
       );
     });
@@ -175,7 +172,8 @@ describe("lead-outreach-provider-status-service", () => {
           }),
         );
 
-      const result = await checkOutreachProviders();
+      const result =
+        await outreachProviderStatusService.checkOutreachProviders();
 
       expect(result).toMatchObject({
         local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
@@ -204,7 +202,8 @@ describe("lead-outreach-provider-status-service", () => {
           }),
         );
 
-      const result = await checkOutreachProviders();
+      const result =
+        await outreachProviderStatusService.checkOutreachProviders();
 
       expect(result).toMatchObject({
         local: { running: true, modelLoaded: false },
@@ -224,7 +223,8 @@ describe("lead-outreach-provider-status-service", () => {
           }),
         );
 
-      const result = await checkOutreachProviders();
+      const result =
+        await outreachProviderStatusService.checkOutreachProviders();
 
       expect(result).toMatchObject({ local: { running: false }, openai: true });
     });
@@ -234,7 +234,8 @@ describe("lead-outreach-provider-status-service", () => {
         .mockRejectedValueOnce(new TypeError("Failed to fetch"))
         .mockRejectedValueOnce(new TypeError("Network error"));
 
-      const result = await checkOutreachProviders();
+      const result =
+        await outreachProviderStatusService.checkOutreachProviders();
 
       expect(result).toMatchObject({
         local: { running: false },

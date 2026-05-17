@@ -72,10 +72,10 @@ async function checkLocalLmStudio(): Promise<LocalLmStudioStatus> {
     LOCAL_CHECK_TIMEOUT_MS,
   );
   try {
-    const response = await fetch(
-      `${OutreachLmStudio.NativeApiBaseUrl}/models`,
-      { method: "GET", signal: controller.signal },
-    );
+    const response = await fetch(OutreachLmStudio.ModelsEndpoint, {
+      method: "GET",
+      signal: controller.signal,
+    });
     if (!response.ok) {
       return { running: false };
     }
@@ -90,10 +90,10 @@ async function checkLocalLmStudio(): Promise<LocalLmStudioStatus> {
     return { running: true, modelLoaded: true, modelName: loadedModelName };
   } catch {
     try {
-      const response = await fetch(
-        `${OutreachLmStudio.DefaultBaseUrl}${OutreachLmStudio.ModelsPath}`,
-        { method: "GET", signal: controller.signal },
-      );
+      const response = await fetch(OutreachLmStudio.ModelsEndpoint, {
+        method: "GET",
+        signal: controller.signal,
+      });
       if (!response.ok) {
         return { running: false };
       }
@@ -131,7 +131,7 @@ async function checkServerProviders(): Promise<{
   }
 }
 
-export async function checkOutreachProviders(): Promise<OutreachProviderStatus> {
+async function checkOutreachProviders(): Promise<OutreachProviderStatus> {
   const [local, server] = await Promise.all([
     checkLocalLmStudio(),
     checkServerProviders(),

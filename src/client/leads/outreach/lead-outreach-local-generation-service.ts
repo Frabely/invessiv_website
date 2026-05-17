@@ -5,13 +5,12 @@ import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-messa
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
 
 const LOCAL_GENERATE_TIMEOUT_MS = 30000;
-const CHAT_COMPLETIONS_ENDPOINT = `${OutreachLmStudio.DefaultBaseUrl}${OutreachLmStudio.ChatCompletionsPath}`;
 
 interface ChatCompletionResponse {
   choices?: Array<{ message?: { content?: string } }>;
 }
 
-export async function generateLocalOutreachMessage(
+async function generateLocalOutreachMessage(
   systemPrompt: string,
   userPrompt: string,
   model: string,
@@ -28,7 +27,7 @@ export async function generateLocalOutreachMessage(
       { role: OutreachChatRole.User, content: userPrompt },
     ];
 
-    const response = await fetch(CHAT_COMPLETIONS_ENDPOINT, {
+    const response = await fetch(OutreachLmStudio.ChatCompletionsEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

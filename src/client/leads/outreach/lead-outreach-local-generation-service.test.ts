@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
-import { generateLocalOutreachMessage } from "./lead-outreach-local-generation-service";
+import { outreachLocalGenerationService } from "./lead-outreach-local-generation-service";
 
 describe("lead-outreach-local-generation-service", () => {
   beforeEach(() => {
@@ -29,15 +29,16 @@ describe("lead-outreach-local-generation-service", () => {
       }),
     );
 
-    const result = await generateLocalOutreachMessage(
-      "system prompt",
-      "user prompt",
-      "qwen3-14b",
-    );
+    const result =
+      await outreachLocalGenerationService.generateLocalOutreachMessage(
+        "system prompt",
+        "user prompt",
+        "qwen3-14b",
+      );
 
     expect(result).toBe("Hallo Anna, kurzer Entwurf.");
     expect(vi.mocked(fetch)).toHaveBeenCalledWith(
-      `${OutreachLmStudio.DefaultBaseUrl}${OutreachLmStudio.ChatCompletionsPath}`,
+      OutreachLmStudio.ChatCompletionsEndpoint,
       expect.objectContaining({
         body: JSON.stringify({
           model: "qwen3-14b",

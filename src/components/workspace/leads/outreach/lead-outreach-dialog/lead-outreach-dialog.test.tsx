@@ -34,18 +34,24 @@ vi.mock("next/navigation", () => ({
 vi.mock(
   "@/client/leads/outreach/lead-outreach-provider-status-service",
   () => ({
-    checkOutreachProviders: checkOutreachProvidersMock,
+    outreachProviderStatusService: {
+      checkOutreachProviders: checkOutreachProvidersMock,
+    },
   }),
 );
 
 vi.mock("@/client/leads/outreach/lead-outreach-generation-service", () => ({
-  generateOutreachMessage: generateOutreachMessageMock,
+  outreachGenerationClientService: {
+    generateOutreachMessage: generateOutreachMessageMock,
+  },
 }));
 
 vi.mock(
   "@/client/leads/outreach/lead-outreach-local-generation-service",
   () => ({
-    generateLocalOutreachMessage: generateLocalOutreachMessageMock,
+    outreachLocalGenerationService: {
+      generateLocalOutreachMessage: generateLocalOutreachMessageMock,
+    },
   }),
 );
 
