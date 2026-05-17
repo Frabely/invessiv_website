@@ -10,5 +10,5 @@ export const OutreachLmStudio = {
 } as const;
 
 export const OutreachOpenAi = {
-  DefaultModel: "gpt-4o-mini",
+  DefaultModel: "gpt-4.1-mini",
 } as const;

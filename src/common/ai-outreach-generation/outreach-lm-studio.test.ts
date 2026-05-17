@@ -13,7 +13,7 @@ describe("OutreachLmStudio", () => {
 
   it("keeps the OpenAI default model stable", () => {
     expect(OutreachOpenAi).toEqual({
-      DefaultModel: "gpt-4o-mini",
+      DefaultModel: "gpt-4.1-mini",
     });
   });
 });
