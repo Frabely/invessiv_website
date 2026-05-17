@@ -82,6 +82,15 @@ Mapping-Service selbst und nicht im Query-Handler.
 - Orchestrierung nicht in `src/server/db`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.
 
+## Service-Exports in `src/server/**`
+
+- Service-Module exportieren nach außen bevorzugt ein einziges Service-Objekt als öffentliche API.
+- Interne Hilfsfunktionen bleiben in der Datei unexportiert und werden nur vom Service-Objekt verwendet.
+- Wenn ein Helper auch extern gebraucht wird, wird er über das Service-Objekt erreichbar gemacht statt zusätzlich als
+  named export zu erscheinen.
+- Tests importieren das Service-Objekt und rufen dessen Methoden auf, statt interne Hilfsfunktionen direkt zu
+  importieren.
+
 ## Typen-Regel (verbindlich)
 
 Exported TypeScript-Typen und Interfaces gehören **nicht** inline in Service- oder Handler-Dateien. Sie werden immer in
