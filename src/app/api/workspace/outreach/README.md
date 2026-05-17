@@ -19,7 +19,7 @@ Returns which server-side AI providers are configured. Never exposes secrets.
   "providers": {
     "openai": {
       "available": true,
-      "model": "gpt-4o-mini"
+      "model": "gpt-4.1-mini"
     }
   }
 }
