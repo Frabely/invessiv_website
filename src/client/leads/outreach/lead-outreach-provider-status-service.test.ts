@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
+import {
+  OutreachLmStudio,
+  OutreachOpenAi,
+} from "@/common/ai-outreach-generation/outreach-lm-studio";
+import { OutreachLmStudioModelType } from "@/common/ai-outreach-generation/outreach-lm-studio-model-types";
 import {
   checkOutreachProviders,
   outreachProviderStatusService,
@@ -25,7 +29,7 @@ describe("lead-outreach-provider-status-service", () => {
           data: [
             {
               loaded_instances: [{ id: "qwen3-14b" }],
-              type: "llm",
+              type: OutreachLmStudioModelType.Llm,
             },
           ],
         }),
@@ -50,7 +54,7 @@ describe("lead-outreach-provider-status-service", () => {
           models: [
             {
               loaded_instances: [],
-              type: "llm",
+              type: OutreachLmStudioModelType.Llm,
             },
           ],
         }),
@@ -98,26 +102,36 @@ describe("lead-outreach-provider-status-service", () => {
       vi.mocked(fetch).mockResolvedValueOnce(
         Response.json({
           ok: true,
-          providers: { openai: { available: true, model: "gpt-4o-mini" } },
+          providers: {
+            openai: { available: true, model: OutreachOpenAi.DefaultModel },
+          },
         }),
       );
 
       const result = await outreachProviderStatusService.checkServerProviders();
 
-      expect(result).toEqual({ openai: true, model: "gpt-4o-mini" });
+      expect(result).toEqual({
+        openai: true,
+        model: OutreachOpenAi.DefaultModel,
+      });
     });
 
     it("returns openai available=false when server responds with available=false", async () => {
       vi.mocked(fetch).mockResolvedValueOnce(
         Response.json({
           ok: true,
-          providers: { openai: { available: false, model: "gpt-4o-mini" } },
+          providers: {
+            openai: { available: false, model: OutreachOpenAi.DefaultModel },
+          },
         }),
       );
 
       const result = await outreachProviderStatusService.checkServerProviders();
 
-      expect(result).toEqual({ openai: false, model: "gpt-4o-mini" });
+      expect(result).toEqual({
+        openai: false,
+        model: OutreachOpenAi.DefaultModel,
+      });
     });
 
     it("returns openai=false when fetch fails", async () => {
@@ -147,7 +161,7 @@ describe("lead-outreach-provider-status-service", () => {
             data: [
               {
                 loaded_instances: [{ id: "qwen3-14b" }],
-                type: "llm",
+                type: OutreachLmStudioModelType.Llm,
               },
             ],
           }),
@@ -155,7 +169,9 @@ describe("lead-outreach-provider-status-service", () => {
         .mockResolvedValueOnce(
           Response.json({
             ok: true,
-            providers: { openai: { available: true, model: "gpt-4o-mini" } },
+            providers: {
+              openai: { available: true, model: OutreachOpenAi.DefaultModel },
+            },
           }),
         );
 
@@ -174,7 +190,7 @@ describe("lead-outreach-provider-status-service", () => {
             data: [
               {
                 loaded_instances: [],
-                type: "llm",
+                type: OutreachLmStudioModelType.Llm,
               },
             ],
           }),
@@ -182,7 +198,9 @@ describe("lead-outreach-provider-status-service", () => {
         .mockResolvedValueOnce(
           Response.json({
             ok: true,
-            providers: { openai: { available: true, model: "gpt-4o-mini" } },
+            providers: {
+              openai: { available: true, model: OutreachOpenAi.DefaultModel },
+            },
           }),
         );
 
@@ -200,7 +218,9 @@ describe("lead-outreach-provider-status-service", () => {
         .mockResolvedValueOnce(
           Response.json({
             ok: true,
-            providers: { openai: { available: true, model: "gpt-4o-mini" } },
+            providers: {
+              openai: { available: true, model: OutreachOpenAi.DefaultModel },
+            },
           }),
         );
 

@@ -1,8 +1,10 @@
 "use client";
 
+import { PROVIDER_STATUS_ENDPOINT } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import { OutreachLmStudioModelType } from "@/common/ai-outreach-generation/outreach-lm-studio-model-types";
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
 
-const PROVIDER_STATUS_ENDPOINT = "/api/workspace/outreach/provider-status";
+export { PROVIDER_STATUS_ENDPOINT };
 const LOCAL_CHECK_TIMEOUT_MS = 1500;
 
 type LocalLmStudioModelInstance = {
@@ -11,7 +13,7 @@ type LocalLmStudioModelInstance = {
 
 type LocalLmStudioModel = {
   loaded_instances?: LocalLmStudioModelInstance[];
-  type?: "llm" | "embedding";
+  type?: OutreachLmStudioModelType;
 };
 
 type LocalLmStudioModelsResponse = {
@@ -40,7 +42,7 @@ function getLocalLmStudioModels(
 
 function getLoadedLlmModelName(models: LocalLmStudioModel[]): string | null {
   for (const model of models) {
-    if (model.type === "embedding") {
+    if (model.type === OutreachLmStudioModelType.Embedding) {
       continue;
     }
 
@@ -89,7 +91,7 @@ async function checkLocalLmStudio(): Promise<LocalLmStudioStatus> {
   } catch {
     try {
       const response = await fetch(
-        `${OutreachLmStudio.DefaultBaseUrl}/models`,
+        `${OutreachLmStudio.DefaultBaseUrl}${OutreachLmStudio.ModelsPath}`,
         { method: "GET", signal: controller.signal },
       );
       if (!response.ok) {

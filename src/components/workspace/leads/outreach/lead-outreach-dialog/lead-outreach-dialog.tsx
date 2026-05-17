@@ -45,16 +45,21 @@ import { copyTextToClipboard } from "@/client/leads/outreach/lead-outreach-clipb
 import { generateOutreachMessage } from "@/client/leads/outreach/lead-outreach-generation-service";
 import { checkOutreachProviders } from "@/client/leads/outreach/lead-outreach-provider-status-service";
 import { generateLocalOutreachMessage } from "@/client/leads/outreach/lead-outreach-local-generation-service";
+import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";
 
+const LeadOutreachProviderState = {
+  Checking: "checking",
+  Local: "local",
+  LocalNoModel: "local-no-model",
+  OpenAi: "openai",
+  None: "none",
+} as const;
+
 type ProviderState =
-  | "checking"
-  | "local"
-  | "local-no-model"
-  | "openai"
-  | "none";
+  (typeof LeadOutreachProviderState)[keyof typeof LeadOutreachProviderState];
 
 type LeadOutreachDialogProps = {
   content: LeadsOutreachDictionary;
@@ -119,17 +124,19 @@ function getProviderBadgeLabel(
   modelName: string | null,
 ): string {
   switch (state) {
-    case "checking":
+    case LeadOutreachProviderState.Checking:
       return content.status.checkingProviders;
-    case "local":
+    case LeadOutreachProviderState.Local:
       return modelName
         ? `${content.status.localActive} · ${modelName}`
         : content.status.localActive;
-    case "local-no-model":
+    case LeadOutreachProviderState.LocalNoModel:
       return content.status.localNoModel;
-    case "openai":
+    case LeadOutreachProviderState.OpenAi:
       return content.status.cloudFallback;
-    case "none":
+    case LeadOutreachProviderState.None:
+      return content.status.noProvider;
+    default:
       return content.status.noProvider;
   }
 }
@@ -161,7 +168,9 @@ export function LeadOutreachDialog({
     useState(hasImprovements);
   const [contextNote, setContextNote] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [providerState, setProviderState] = useState<ProviderState>("checking");
+  const [providerState, setProviderState] = useState<ProviderState>(
+    LeadOutreachProviderState.Checking,
+  );
   const [localAvailable, setLocalAvailable] = useState(false);
   const [localModelName, setLocalModelName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -211,7 +220,7 @@ export function LeadOutreachDialog({
       return;
     }
 
-    setProviderState("checking");
+    setProviderState(LeadOutreachProviderState.Checking);
     setLocalAvailable(false);
     setLocalModelName(null);
 
@@ -223,19 +232,19 @@ export function LeadOutreachDialog({
       if (local.running && local.modelLoaded) {
         setLocalAvailable(true);
         setLocalModelName(local.modelName);
-        setProviderState("local");
+        setProviderState(LeadOutreachProviderState.Local);
       } else if (local.running && !local.modelLoaded) {
         setLocalAvailable(true);
         setLocalModelName(null);
-        setProviderState("local-no-model");
+        setProviderState(LeadOutreachProviderState.LocalNoModel);
       } else if (status.openai) {
         setLocalAvailable(false);
         setLocalModelName(null);
-        setProviderState("openai");
+        setProviderState(LeadOutreachProviderState.OpenAi);
       } else {
         setLocalAvailable(false);
         setLocalModelName(null);
-        setProviderState("none");
+        setProviderState(LeadOutreachProviderState.None);
       }
     });
 
@@ -291,7 +300,7 @@ export function LeadOutreachDialog({
           const result = await generateOutreachMessage({
             ...basePayload,
             clientGeneratedRawText: rawText,
-            provider: "local-lm-studio",
+            provider: OutreachProvider.LocalLmStudio,
           });
 
           if (!result.ok) {
@@ -308,7 +317,7 @@ export function LeadOutreachDialog({
 
       const result = await generateOutreachMessage({
         ...basePayload,
-        provider: "openai",
+        provider: OutreachProvider.OpenAi,
       });
 
       if (!result.ok) {
@@ -478,7 +487,9 @@ export function LeadOutreachDialog({
 
             <button
               className={styles.generateButton}
-              disabled={isGenerating || providerState === "none"}
+              disabled={
+                isGenerating || providerState === LeadOutreachProviderState.None
+              }
               onClick={handleGenerate}
               type="button"
             >

@@ -11,6 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
+import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachDialog } from "./lead-outreach-dialog";
 
@@ -200,7 +201,7 @@ describe("LeadOutreachDialog", () => {
       expect(generateOutreachMessageMock).toHaveBeenCalledWith(
         expect.objectContaining({
           clientGeneratedRawText: "Lokaler Entwurf",
-          provider: "local-lm-studio",
+          provider: OutreachProvider.LocalLmStudio,
           leadId: "lead-1",
         }),
       );

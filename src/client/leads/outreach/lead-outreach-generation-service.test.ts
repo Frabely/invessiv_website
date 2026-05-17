@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
+import { LeadOutreachApiEndpoints } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
 import { generateOutreachMessage } from "./lead-outreach-generation-service";
 
 describe("lead-outreach-generation-service", () => {
@@ -41,7 +42,7 @@ describe("lead-outreach-generation-service", () => {
       body: "Hallo Anna, ich habe eine kleine Beobachtung.",
     });
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/workspace/outreach/generate",
+      LeadOutreachApiEndpoints.Generate,
       expect.objectContaining({
         body: JSON.stringify({
           channel: OutreachChannel.Email,

@@ -3,8 +3,7 @@
 import type { GenerateOutreachRequestDto } from "@/common/ai-outreach-generation/generate-outreach-request.dto";
 import type { GenerateOutreachResultDto } from "@/common/ai-outreach-generation/generate-outreach-result.dto";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
-
-const GENERATE_ENDPOINT = "/api/workspace/outreach/generate";
+import { GENERATE_ENDPOINT } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
 
 type ApiResult<T> = {
   payload: T | null;

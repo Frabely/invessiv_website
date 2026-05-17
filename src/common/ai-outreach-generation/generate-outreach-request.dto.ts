@@ -1,7 +1,6 @@
 import type { OutreachChannel } from "./outreach-channels";
+import type { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import type { OutreachPromptKey } from "./outreach-prompt-keys";
-
-export type OutreachProvider = "local-lm-studio" | "openai";
 
 export interface GenerateOutreachRequestDto {
   leadId: string;

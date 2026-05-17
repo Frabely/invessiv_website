@@ -19,7 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
-import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
+import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts-utils";
 import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";

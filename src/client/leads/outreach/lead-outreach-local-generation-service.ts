@@ -1,13 +1,11 @@
 "use client";
 
+import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
 
 const LOCAL_GENERATE_TIMEOUT_MS = 30000;
-
-interface ChatMessage {
-  role: "system" | "user" | "assistant";
-  content: string;
-}
+const CHAT_COMPLETIONS_ENDPOINT = `${OutreachLmStudio.DefaultBaseUrl}${OutreachLmStudio.ChatCompletionsPath}`;
 
 interface ChatCompletionResponse {
   choices?: Array<{ message?: { content?: string } }>;
@@ -25,40 +23,32 @@ export async function generateLocalOutreachMessage(
   );
 
   try {
-    const messages: ChatMessage[] = [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userPrompt },
+    const messages = [
+      { role: OutreachChatRole.System, content: systemPrompt },
+      { role: OutreachChatRole.User, content: userPrompt },
     ];
 
-    const response = await fetch(
-      `${OutreachLmStudio.DefaultBaseUrl}/chat/completions`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model,
-          messages,
-        }),
-        signal: controller.signal,
-      },
-    );
+    const response = await fetch(CHAT_COMPLETIONS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages,
+      }),
+      signal: controller.signal,
+    });
 
     if (!response.ok) {
-      throw new Error("local-unavailable");
+      throw new Error(OutreachErrorCode.ProviderUnavailable);
     }
 
     const data = (await response.json()) as ChatCompletionResponse;
     const text = data?.choices?.[0]?.message?.content?.trim();
     if (!text) {
-      throw new Error("local-unavailable");
+      throw new Error(OutreachErrorCode.ProviderUnavailable);
     }
 
     return text;
-  } catch (error) {
-    if (error instanceof Error && error.message === "local-unavailable") {
-      throw error;
-    }
-    throw new Error("local-unavailable");
   } finally {
     window.clearTimeout(timeout);
   }

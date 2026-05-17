@@ -1,9 +1,9 @@
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import type { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import type { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import type { OutreachPromptOptions } from "@/common/ai-outreach-generation/outreach-prompt-options";
 import type { OutreachPromptMessages } from "@/common/ai-outreach-generation/outreach-prompt-messages";
-import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts";
+import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import { sanitizeLeadFacts } from "@/common/ai-outreach-generation/outreach-lead-facts-utils";
 import { OUTREACH_PROMPT_REGISTRY } from "@/common/ai-outreach-generation/outreach-prompt-registry";
 
 function buildPromptMessages(
@@ -21,3 +21,5 @@ export const outreachPromptService = {
   sanitizeLeadFacts,
   buildPromptMessages,
 };
+
+export { sanitizeLeadFacts };

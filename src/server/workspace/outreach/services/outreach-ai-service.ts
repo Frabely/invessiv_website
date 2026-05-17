@@ -1,7 +1,9 @@
 import OpenAI from "openai";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
 
-const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+const OPENAI_MODEL = process.env.OPENAI_MODEL ?? OutreachOpenAi.DefaultModel;
 
 async function generate(
   systemPrompt: string,
@@ -17,8 +19,8 @@ async function generate(
     const response = await client.chat.completions.create({
       model: OPENAI_MODEL,
       messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt },
+        { role: OutreachChatRole.System, content: systemPrompt },
+        { role: OutreachChatRole.User, content: userPrompt },
       ],
     });
 

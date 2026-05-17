@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { GET } from "@/app/api/workspace/outreach/provider-status/route";
 
@@ -91,7 +92,7 @@ describe("GET /api/workspace/outreach/provider-status", () => {
     const response = await GET(makeRequest());
 
     const body = await response.json();
-    expect(body.providers.openai.model).toBe("gpt-4o-mini");
+    expect(body.providers.openai.model).toBe(OutreachOpenAi.DefaultModel);
   });
 
   it("uses the custom model when OPENAI_MODEL is set", async () => {

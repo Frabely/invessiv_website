@@ -11,7 +11,9 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
 import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
+import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import { getLeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachTrigger } from "./lead-outreach-trigger";
 
@@ -57,7 +59,7 @@ beforeEach(() => {
   mockCheckOutreachProviders.mockResolvedValue({
     local: { running: false },
     openai: true,
-    openaiModel: "gpt-4o-mini",
+    openaiModel: OutreachOpenAi.DefaultModel,
   });
   mockGenerateOutreachMessage.mockResolvedValue({
     ok: true,
@@ -102,7 +104,7 @@ describe("LeadOutreachTrigger", () => {
           includeImprovements: true,
           leadId: "lead-123",
           promptKey: OutreachPromptKey.FirstTouch,
-          provider: "openai",
+          provider: OutreachProvider.OpenAi,
         }),
       );
     });
@@ -240,7 +242,7 @@ describe("LeadOutreachTrigger", () => {
     expect(mockGenerateOutreachMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         clientGeneratedRawText: "Lokaler Entwurf",
-        provider: "local-lm-studio",
+        provider: OutreachProvider.LocalLmStudio,
       }),
     );
   });
