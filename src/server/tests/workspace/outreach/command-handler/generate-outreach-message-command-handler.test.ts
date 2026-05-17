@@ -264,7 +264,7 @@ describe("generateOutreachMessage — clientGeneratedRawText", () => {
 
   it("returns NotConfigured when clientGeneratedRawText is absent and OpenAI not configured", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
-    generateMock.mockRejectedValue(new Error(OutreachErrorCode.NotConfigured));
+    generateMock.mockResolvedValue(null);
 
     const result = await generateOutreachMessage(BASE_REQUEST);
 

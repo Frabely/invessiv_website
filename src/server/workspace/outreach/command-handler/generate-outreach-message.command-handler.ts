@@ -33,20 +33,28 @@ export async function generateOutreachMessage(
         },
       );
 
-    const openAiApiKey = process.env.OPENAI_API_KEY;
-    if (!openAiApiKey) {
-      return { ok: false, code: OutreachErrorCode.NotConfigured };
-    }
+    try {
+      const generated = await outreachAiService.generate(
+        systemPrompt,
+        userPrompt,
+      );
+      if (!generated) {
+        return process.env.OPENAI_API_KEY
+          ? { ok: false, code: OutreachErrorCode.ProviderUnavailable }
+          : { ok: false, code: OutreachErrorCode.NotConfigured };
+      }
 
-    const generated = await outreachAiService.generate(
-      systemPrompt,
-      userPrompt,
-    );
-    if (!generated) {
-      return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
-    }
+      rawText = generated;
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === OutreachErrorCode.ProviderUnavailable
+      ) {
+        return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
+      }
 
-    rawText = generated;
+      return { ok: false, code: OutreachErrorCode.Internal };
+    }
   }
 
   const parsed = outreachMessageParser.parse(request.channel, rawText);
