@@ -285,15 +285,14 @@ export function LeadOutreachDialog({
           },
         });
 
-        let rawText: string | null = null;
-        try {
-          rawText =
-            await outreachLocalGenerationService.generateLocalOutreachMessage(
-              systemPrompt,
-              userPrompt,
-              localModelName,
-            );
-        } catch {
+        const rawText =
+          await outreachLocalGenerationService.generateLocalOutreachMessage(
+            systemPrompt,
+            userPrompt,
+            localModelName,
+          );
+
+        if (rawText === null) {
           setErrorMessage(content.status.localFailed);
         }
 

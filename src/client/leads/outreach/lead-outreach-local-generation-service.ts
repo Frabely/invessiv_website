@@ -1,6 +1,5 @@
 "use client";
 
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
 
@@ -14,7 +13,7 @@ async function generateLocalOutreachMessage(
   systemPrompt: string,
   userPrompt: string,
   model: string,
-): Promise<string> {
+): Promise<string | null> {
   const controller = new AbortController();
   const timeout = window.setTimeout(
     () => controller.abort(),
@@ -38,13 +37,13 @@ async function generateLocalOutreachMessage(
     });
 
     if (!response.ok) {
-      throw new Error(OutreachErrorCode.ProviderUnavailable);
+      return null;
     }
 
     const data = (await response.json()) as ChatCompletionResponse;
     const text = data?.choices?.[0]?.message?.content?.trim();
     if (!text) {
-      throw new Error(OutreachErrorCode.ProviderUnavailable);
+      return null;
     }
 
     return text;
