@@ -1,14 +1,14 @@
 import "server-only";
-import type { GenerateOutreachRequestDto } from "@/common/ai-outreach-generation/generate-outreach-request.dto";
-import type { GenerateOutreachResultDto } from "@/common/ai-outreach-generation/generate-outreach-result.dto";
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
+import type { GenerateOutreachResultDto } from "@/common/contracts/leads/outreach/generate-outreach-result.dto";
+import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
-import { outreachGenerationService } from "@/server/workspace/outreach/services/outreach-generation-service";
+import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
-import { appendLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
+import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 
 export async function generateOutreachMessage(
   request: GenerateOutreachRequestDto,
@@ -27,7 +27,7 @@ export async function generateOutreachMessage(
 
   let rawText: string;
   try {
-    const generated = await outreachGenerationService.generate(
+    const generated = await outreachAiService.generate(
       systemPrompt,
       userPrompt,
     );
@@ -52,7 +52,7 @@ export async function generateOutreachMessage(
 
   const parsed = outreachMessageParser.parse(request.channel, rawText);
 
-  await appendLeadActivity({
+  await leadActivityService.appendLeadActivity({
     leadId: request.leadId,
     type: LeadActivityType.MessageDrafted,
     body: parsed.body,

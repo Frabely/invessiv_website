@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 

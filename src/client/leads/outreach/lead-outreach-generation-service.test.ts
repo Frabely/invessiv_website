@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
+import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
 import { LeadOutreachApiEndpoints } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
 import { outreachGenerationClientService } from "./lead-outreach-generation-service";
 

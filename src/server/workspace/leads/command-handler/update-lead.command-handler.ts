@@ -13,7 +13,7 @@ import {
   isDuplicateCompanyNameError,
   isDuplicateEmailError,
 } from "@/server/workspace/leads/shared/is-duplicate-email-error";
-import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
+import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
 export async function updateLead(
@@ -63,7 +63,7 @@ export async function updateLead(
       await tx.update(leads).set(setFields).where(eq(leads.id, leadId));
 
       if (isStatusChange) {
-        await createLeadActivity(tx, {
+        await leadActivityService.createLeadActivity(tx, {
           leadId,
           type: LeadActivityType.StatusChange,
           body: `${existing.leadStatus} → ${data.lead_status}`,

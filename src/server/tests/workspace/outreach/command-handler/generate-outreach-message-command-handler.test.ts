@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { GenerateOutreachRequestDto } from "@/common/ai-outreach-generation/generate-outreach-request.dto";
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
+import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import { generateOutreachMessage } from "@/server/workspace/outreach/command-handler/generate-outreach-message.command-handler";
@@ -35,17 +35,16 @@ vi.mock(
     },
   }),
 );
-vi.mock(
-  "@/server/workspace/outreach/services/outreach-generation-service",
-  () => ({
-    outreachGenerationService: { generate: generateMock },
-  }),
-);
+vi.mock("@/server/workspace/outreach/services/outreach-ai-service", () => ({
+  outreachAiService: { generate: generateMock },
+}));
 vi.mock("@/server/workspace/outreach/services/outreach-message-parser", () => ({
   outreachMessageParser: { parse: parseMock },
 }));
 vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  appendLeadActivity: appendLeadActivityMock,
+  leadActivityService: {
+    appendLeadActivity: appendLeadActivityMock,
+  },
 }));
 
 const MOCK_LEAD = {

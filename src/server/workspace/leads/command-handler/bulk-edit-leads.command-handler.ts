@@ -24,7 +24,7 @@ import {
   getDrizzleDatabaseClient,
 } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
-import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
+import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
   [BulkEditFieldKey.Status]: "status",
@@ -174,7 +174,7 @@ async function processSingleLead(
   }
 
   await tx.update(leads).set(setClause).where(eq(leads.id, current.id));
-  await createLeadActivity(tx, {
+  await leadActivityService.createLeadActivity(tx, {
     leadId: current.id,
     type: LeadActivityType.BulkEdit,
     body: buildBulkEditActivityBody(metadata),

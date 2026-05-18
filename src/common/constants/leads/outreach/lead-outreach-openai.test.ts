@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OutreachOpenAi } from "./outreach-openai";
+import { OutreachOpenAi } from "./lead-outreach-openai";
 
 describe("OutreachOpenAi", () => {
   it("keeps the OpenAI default model stable", () => {

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
+import { OutreachOpenAi } from "@/common/constants/leads/outreach/lead-outreach-openai";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 
 export const runtime = "nodejs";

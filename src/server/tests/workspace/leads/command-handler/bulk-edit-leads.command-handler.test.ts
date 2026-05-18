@@ -16,7 +16,9 @@ vi.mock("@/server/db/core", async (importOriginal) => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
 vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  createLeadActivity: createLeadActivityMock,
+  leadActivityService: {
+    createLeadActivity: createLeadActivityMock,
+  },
 }));
 
 type LeadState = {

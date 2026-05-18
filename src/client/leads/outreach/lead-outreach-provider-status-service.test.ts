@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
+import { OutreachOpenAi } from "@/common/constants/leads/outreach/lead-outreach-openai";
 import { outreachProviderStatusService } from "./lead-outreach-provider-status-service";
 
 describe("lead-outreach-provider-status-service", () => {

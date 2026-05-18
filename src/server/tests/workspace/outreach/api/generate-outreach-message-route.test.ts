@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
+import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
 import { POST } from "@/app/api/workspace/outreach/generate/route";
 
 vi.mock("server-only", () => ({}));

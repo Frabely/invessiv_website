@@ -1,5 +1,5 @@
 import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import type { OutreachLeadFacts } from "./outreach-lead-facts";
+import type { OutreachLeadFacts } from "@/common/contracts/leads/outreach/outreach-lead-facts";
 
 export function sanitizeLeadFacts(lead: LeadDetailDto): OutreachLeadFacts {
   return {

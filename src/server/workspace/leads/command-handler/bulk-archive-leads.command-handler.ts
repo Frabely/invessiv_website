@@ -7,7 +7,7 @@ import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-type
 import type { BulkArchiveLeadsResult } from "@/common/contracts/leads/results/bulk-archive-leads-result";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
-import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
+import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 
 export type BulkArchiveLeadsInput = {
   ids: string[];
@@ -49,7 +49,7 @@ export async function bulkArchiveLeads(
       );
 
     for (const row of toUpdate) {
-      await createLeadActivity(tx, {
+      await leadActivityService.createLeadActivity(tx, {
         leadId: row.id,
         type: LeadActivityType.StatusChange,
         body: `${row.lead_status} → ${ContactLeadStatus.Archived}`,

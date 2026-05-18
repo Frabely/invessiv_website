@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachDialog } from "./lead-outreach-dialog";
 

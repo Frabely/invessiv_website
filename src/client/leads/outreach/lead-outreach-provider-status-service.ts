@@ -2,8 +2,6 @@
 
 import { PROVIDER_STATUS_ENDPOINT } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
 
-export { PROVIDER_STATUS_ENDPOINT };
-
 export interface OutreachProviderStatus {
   openai: boolean;
   openaiModel: string | null;

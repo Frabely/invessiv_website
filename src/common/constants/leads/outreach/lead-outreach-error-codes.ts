@@ -8,11 +8,3 @@ export const OutreachErrorCode = {
 
 export type OutreachErrorCode =
   (typeof OutreachErrorCode)[keyof typeof OutreachErrorCode];
-
-export const OUTREACH_ERROR_CODE_VALUES = [
-  OutreachErrorCode.LeadNotFound,
-  OutreachErrorCode.ValidationError,
-  OutreachErrorCode.NotConfigured,
-  OutreachErrorCode.ProviderUnavailable,
-  OutreachErrorCode.Internal,
-] as const;

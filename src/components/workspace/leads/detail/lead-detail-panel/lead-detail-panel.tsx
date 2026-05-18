@@ -19,6 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
+import { LeadOutreachTriggerVariant } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";
@@ -128,7 +129,7 @@ export function LeadDetailPanel({
                 displayName: lead.displayName,
                 id: lead.id,
               }}
-              variant="icon-only"
+              variant={LeadOutreachTriggerVariant.IconOnly}
             />
           ) : null}
 

@@ -4,7 +4,7 @@ import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leadActivities } from "@/server/db/record-configuration";
 import type { CreateLeadActivityInput } from "@/common/contracts/leads/create-lead-activity-input";
 
-export async function createLeadActivity(
+async function createLeadActivity(
   tx: ContactDatabaseTransaction,
   input: CreateLeadActivityInput,
 ): Promise<void> {
@@ -24,7 +24,7 @@ export async function createLeadActivity(
   });
 }
 
-export async function appendLeadActivity(
+async function appendLeadActivity(
   input: CreateLeadActivityInput,
 ): Promise<void> {
   const db = getDrizzleDatabaseClient();
@@ -43,3 +43,8 @@ export async function appendLeadActivity(
     created_at: now,
   });
 }
+
+export const leadActivityService = {
+  appendLeadActivity,
+  createLeadActivity,
+} as const;

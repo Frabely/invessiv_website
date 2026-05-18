@@ -38,6 +38,7 @@ import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
+import { LeadOutreachTriggerVariant } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
@@ -1004,7 +1005,7 @@ export function LeadFormDialog({
                     <LeadOutreachTrigger
                       content={outreachContent}
                       lead={initialLead}
-                      variant="icon+text"
+                      variant={LeadOutreachTriggerVariant.IconText}
                     />
                   ) : null}
                   <PrimaryCtaButton disabled={isSubmitting} type="submit">

@@ -10,7 +10,9 @@ const createLeadActivityMock = vi.fn().mockResolvedValue(undefined);
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  createLeadActivity: createLeadActivityMock,
+  leadActivityService: {
+    createLeadActivity: createLeadActivityMock,
+  },
 }));
 
 const NOW = new Date("2024-03-01T12:00:00Z");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
+import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
 
 describe("outreachMessageParser.parse — mit 'Betreff:' Prefix (alle Kanäle)", () => {

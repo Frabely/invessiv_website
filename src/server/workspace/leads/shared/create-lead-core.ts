@@ -20,7 +20,7 @@ import {
   leadSocialProfiles,
   leadSubmissions,
 } from "@/server/db/record-configuration";
-import { createLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
+import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
@@ -178,7 +178,7 @@ export async function createLeadCoreInTransaction(
       actorType: LeadActorType.System,
       metadata: options.activityMetadata ?? null,
     };
-    await createLeadActivity(tx, activityInput);
+    await leadActivityService.createLeadActivity(tx, activityInput);
 
     return await loadLeadDetailInTransaction(tx, leadId);
   } catch (error) {
