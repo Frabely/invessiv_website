@@ -11,7 +11,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
 import { getLeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachTrigger } from "./lead-outreach-trigger";
 
@@ -50,7 +50,6 @@ beforeEach(() => {
   mockGenerateOutreachMessage.mockReset();
   mockCheckOutreachProviders.mockReset();
   mockCheckOutreachProviders.mockResolvedValue({
-    local: { running: false },
     openai: true,
     openaiModel: OutreachOpenAi.DefaultModel,
   });
@@ -133,17 +132,15 @@ describe("LeadOutreachTrigger", () => {
     ).toBeInTheDocument();
   });
 
-  it("rechecks the local provider when the dialog is reopened", async () => {
+  it("rechecks the OpenAI provider when the dialog is reopened", async () => {
     mockCheckOutreachProviders
       .mockResolvedValueOnce({
-        local: { running: true, modelLoaded: false },
         openai: false,
         openaiModel: null,
       })
       .mockResolvedValueOnce({
-        local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
-        openai: false,
-        openaiModel: null,
+        openai: true,
+        openaiModel: OutreachOpenAi.DefaultModel,
       });
 
     render(
@@ -159,18 +156,16 @@ describe("LeadOutreachTrigger", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
     expect(
-      await screen.findByText(/Lokaler Provider aktiv · Kein Modell geladen/i),
+      await screen.findByText(/Kein KI-Provider verfügbar/i),
     ).toBeInTheDocument();
     expect(mockCheckOutreachProviders).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole("button", { name: /Dialog schlie/i }));
-    expect(
-      screen.queryByText(/Lokaler Provider aktiv · Kein Modell geladen/i),
-    ).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Dialog schließen/i }));
+    expect(screen.queryByText(/Kein KI-Provider verfügbar/i)).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
     expect(
-      await screen.findByText(/Lokales Modell aktiv · qwen3-14b/i),
+      await screen.findByText(/OpenAI aktiv · gpt-4\.1-mini/i),
     ).toBeInTheDocument();
     expect(mockCheckOutreachProviders).toHaveBeenCalledTimes(2);
   });

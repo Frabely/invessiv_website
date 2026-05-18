@@ -2,7 +2,7 @@ import "server-only";
 
 import OpenAI from "openai";
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
-import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
 
 const OPENAI_MODEL = process.env.OPENAI_MODEL ?? OutreachOpenAi.DefaultModel;
 

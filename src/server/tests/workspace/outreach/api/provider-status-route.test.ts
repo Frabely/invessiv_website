@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
-import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
+import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { GET } from "@/app/api/workspace/outreach/provider-status/route";
 

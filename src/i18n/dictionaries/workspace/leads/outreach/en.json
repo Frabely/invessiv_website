@@ -38,11 +38,8 @@
     "copied": "Copied to clipboard",
     "ready": "Ready",
     "checkingProviders": "Checking providers...",
-    "localActive": "Local model active",
-    "localNoModel": "Local provider active · No model loaded",
-    "cloudFallback": "OpenAI fallback active",
-    "noProvider": "No provider available",
-    "localFailed": "Local generation failed, using cloud"
+    "openAiActive": "OpenAI active",
+    "noProvider": "No AI provider available"
   },
   "buttons": {
     "generate": "Generate",

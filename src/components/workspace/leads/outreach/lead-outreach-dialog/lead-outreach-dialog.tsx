@@ -44,8 +44,6 @@ import styles from "./lead-outreach-dialog.module.css";
 
 const LeadOutreachProviderState = {
   Checking: "checking",
-  Local: "local",
-  LocalNoModel: "local-no-model",
   OpenAi: "openai",
   None: "none",
 } as const;
@@ -99,24 +97,16 @@ function getErrorMessage(
 function getProviderBadgeLabel(
   content: LeadsOutreachDictionary,
   state: ProviderState,
-  modelName: string | null,
+  model: string | null,
 ): string {
   if (state === LeadOutreachProviderState.Checking) {
     return content.status.checkingProviders;
   }
 
-  if (state === LeadOutreachProviderState.Local) {
-    return modelName
-      ? `${content.status.localActive} · ${modelName}`
-      : content.status.localActive;
-  }
-
-  if (state === LeadOutreachProviderState.LocalNoModel) {
-    return content.status.localNoModel;
-  }
-
   if (state === LeadOutreachProviderState.OpenAi) {
-    return content.status.cloudFallback;
+    return model
+      ? `${content.status.openAiActive} · ${model}`
+      : content.status.openAiActive;
   }
 
   return content.status.noProvider;
@@ -142,7 +132,7 @@ export function LeadOutreachDialog({
   const [providerState, setProviderState] = useState<ProviderState>(
     LeadOutreachProviderState.Checking,
   );
-  const [localModelName, setLocalModelName] = useState<string | null>(null);
+  const [openAiModel, setOpenAiModel] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
@@ -186,25 +176,18 @@ export function LeadOutreachDialog({
     }
 
     setProviderState(LeadOutreachProviderState.Checking);
-    setLocalModelName(null);
+    setOpenAiModel(null);
 
     let cancelled = false;
 
     outreachProviderStatusService.checkOutreachProviders().then((status) => {
       if (cancelled) return;
-      const { local } = status;
-      if (local.running && local.modelLoaded) {
-        setLocalModelName(local.modelName);
-        setProviderState(LeadOutreachProviderState.Local);
-      } else if (local.running && !local.modelLoaded) {
-        setLocalModelName(null);
-        setProviderState(LeadOutreachProviderState.LocalNoModel);
-      } else if (status.openai) {
-        setLocalModelName(null);
+      if (status.openai) {
         setProviderState(LeadOutreachProviderState.OpenAi);
+        setOpenAiModel(status.openaiModel);
       } else {
-        setLocalModelName(null);
         setProviderState(LeadOutreachProviderState.None);
+        setOpenAiModel(null);
       }
     });
 
@@ -316,7 +299,7 @@ export function LeadOutreachDialog({
               aria-live="polite"
             >
               <span aria-hidden="true" className={styles.providerDot} />
-              {getProviderBadgeLabel(content, providerState, localModelName)}
+              {getProviderBadgeLabel(content, providerState, openAiModel)}
             </span>
 
             <div className={styles.field}>

@@ -64,5 +64,5 @@ Generates, parses, and persists an outreach draft from structured lead data and 
 - Lead data is resolved server-side by `leadId`.
 - The server derives structured context such as `websiteExists` from existing lead data and decides internally whether
   improvements are relevant.
-- The server tries the local LM Studio endpoint first and falls back to OpenAI if needed.
+- The server generates outreach drafts with OpenAI.
 - `OPENAI_API_KEY` remains server-only and is never exposed to the client.

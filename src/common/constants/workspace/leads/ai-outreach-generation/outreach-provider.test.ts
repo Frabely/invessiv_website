@@ -4,7 +4,6 @@ import { OutreachProvider } from "./outreach-provider";
 describe("OutreachProvider", () => {
   it("keeps the outreach provider values stable", () => {
     expect(OutreachProvider).toEqual({
-      LocalLmStudio: "local-lm-studio",
       OpenAi: "openai",
     });
   });

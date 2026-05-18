@@ -38,11 +38,8 @@
     "copied": "In die Zwischenablage kopiert",
     "ready": "Bereit",
     "checkingProviders": "Provider wird geprüft...",
-    "localActive": "Lokales Modell aktiv",
-    "localNoModel": "Lokaler Provider aktiv · Kein Modell geladen",
-    "cloudFallback": "OpenAI-Fallback aktiv",
-    "noProvider": "Kein Provider verfügbar",
-    "localFailed": "Lokale Generierung fehlgeschlagen, Cloud wird verwendet"
+    "openAiActive": "OpenAI aktiv",
+    "noProvider": "Kein KI-Provider verfügbar"
   },
   "buttons": {
     "generate": "Generieren",

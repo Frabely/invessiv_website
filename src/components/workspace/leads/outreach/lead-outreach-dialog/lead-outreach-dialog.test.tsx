@@ -52,15 +52,14 @@ afterEach(() => {
 
 beforeEach(() => {
   checkOutreachProvidersMock.mockResolvedValue({
-    local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
-    openai: false,
-    openaiModel: null,
+    openai: true,
+    openaiModel: "gpt-4.1-mini",
   });
 
   generateOutreachMessageMock.mockResolvedValue({
     ok: true,
     channel: OutreachChannel.Linkedin,
-    body: "Lokaler Entwurf",
+    body: "OpenAI Entwurf",
   });
 });
 
@@ -104,11 +103,8 @@ const content: LeadsOutreachDictionary = {
     copied: "Copied",
     ready: "Ready",
     checkingProviders: "Checking providers...",
-    localActive: "Local model active",
-    localNoModel: "Local provider active · No model loaded",
-    cloudFallback: "OpenAI fallback active",
+    openAiActive: "OpenAI active",
     noProvider: "No provider available",
-    localFailed: "Local generation failed",
   },
   buttons: {
     generate: "Generate",
@@ -128,11 +124,10 @@ const content: LeadsOutreachDictionary = {
 };
 
 describe("LeadOutreachDialog", () => {
-  it("shows the yellow local provider badge when LM Studio has no loaded model", async () => {
+  it("shows the OpenAI provider badge when OpenAI is configured", async () => {
     checkOutreachProvidersMock.mockResolvedValueOnce({
-      local: { running: true, modelLoaded: false },
-      openai: false,
-      openaiModel: null,
+      openai: true,
+      openaiModel: "gpt-4.1-mini",
     });
 
     render(
@@ -145,8 +140,8 @@ describe("LeadOutreachDialog", () => {
       />,
     );
 
-    const badge = await screen.findByText(content.status.localNoModel);
-    expect(badge.getAttribute("data-state")).toBe("local-no-model");
+    const badge = await screen.findByText(/OpenAI active · gpt-4\.1-mini/i);
+    expect(badge.getAttribute("data-state")).toBe("openai");
 
     await waitFor(() => {
       const generateButton = screen.getByRole("button", {
@@ -167,7 +162,7 @@ describe("LeadOutreachDialog", () => {
       />,
     );
 
-    await screen.findByText(/Local model active .*qwen3-14b/i);
+    await screen.findByText(/OpenAI active · gpt-4\.1-mini/i);
     fireEvent.click(
       screen.getByRole("button", {
         name: content.buttons.generate,

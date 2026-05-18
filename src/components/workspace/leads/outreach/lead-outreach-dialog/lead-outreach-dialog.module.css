@@ -433,28 +433,16 @@
   color: var(--outreach-muted);
 }
 
-.providerBadge[data-state="local"] {
+.providerBadge[data-state="openai"] {
   border-color: color-mix(in srgb, #4ade80 42%, transparent);
   background: color-mix(in srgb, #4ade80 10%, transparent);
   color: color-mix(in srgb, #4ade80 90%, var(--outreach-text));
 }
 
-.providerBadge[data-state="openai"] {
-  border-color: color-mix(in srgb, var(--outreach-accent) 42%, transparent);
-  background: color-mix(in srgb, var(--outreach-accent) 10%, transparent);
-  color: var(--outreach-accent);
-}
-
-.providerBadge[data-state="local-no-model"] {
-  border-color: color-mix(in srgb, #facc15 42%, transparent);
-  background: color-mix(in srgb, #facc15 10%, transparent);
-  color: color-mix(in srgb, #facc15 88%, var(--outreach-text));
-}
-
 .providerBadge[data-state="none"] {
-  border-color: color-mix(in srgb, var(--color-danger) 42%, transparent);
-  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
-  color: var(--color-danger);
+  border-color: color-mix(in srgb, #f87171 42%, transparent);
+  background: color-mix(in srgb, #f87171 10%, transparent);
+  color: color-mix(in srgb, #f87171 90%, var(--outreach-text));
 }
 
 .providerDot {
@@ -470,20 +458,12 @@
   animation: provider-pulse 1.2s ease-in-out infinite;
 }
 
-.providerBadge[data-state="local"] .providerDot {
+.providerBadge[data-state="openai"] .providerDot {
   background: #4ade80;
 }
 
-.providerBadge[data-state="local-no-model"] .providerDot {
-  background: #facc15;
-}
-
-.providerBadge[data-state="openai"] .providerDot {
-  background: var(--outreach-accent);
-}
-
 .providerBadge[data-state="none"] .providerDot {
-  background: var(--color-danger);
+  background: #f87171;
 }
 
 @keyframes provider-pulse {
