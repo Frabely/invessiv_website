@@ -120,10 +120,10 @@ export function LeadOutreachDialog({
   refreshToken,
 }: LeadOutreachDialogProps) {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDivElement>(null);
   const contextTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [isMounted, setIsMounted] = useState(false);
   const contextId = useId();
+  const channelGroupId = useId();
   const resultSubjectId = useId();
   const resultBodyId = useId();
   const [selectedChannel, setSelectedChannel] = useState<OutreachChannelValue>(
@@ -221,9 +221,9 @@ export function LeadOutreachDialog({
 
     try {
       const result =
-        await outreachGenerationClientService.generateOutreachMessage({
-          ...basePayload,
-        });
+        await outreachGenerationClientService.generateOutreachMessage(
+          basePayload,
+        );
 
       if (!result.ok) {
         setErrorMessage(getErrorMessage(content, result.code));
@@ -251,14 +251,13 @@ export function LeadOutreachDialog({
   }
 
   const dialog = (
-    <div className={styles.overlay} role="presentation">
+    <div className={styles.overlay}>
       <div
         aria-describedby={OutreachDialogId.Description}
         aria-labelledby={OutreachDialogId.Title}
         aria-modal="true"
         className={styles.dialog}
         onKeyDown={handleKeyDown}
-        ref={dialogRef}
         role="dialog"
       >
         <header className={styles.header}>
@@ -305,8 +304,14 @@ export function LeadOutreachDialog({
             </span>
 
             <div className={styles.field}>
-              <span className={styles.label}>{content.channel.label}</span>
-              <div className={styles.segmented} role="group">
+              <span className={styles.label} id={channelGroupId}>
+                {content.channel.label}
+              </span>
+              <div
+                className={styles.segmented}
+                aria-labelledby={channelGroupId}
+                role="group"
+              >
                 {channelOptions.map((channel) => (
                   <button
                     aria-pressed={selectedChannel === channel.value}
@@ -331,8 +336,6 @@ export function LeadOutreachDialog({
                 className={styles.textarea}
                 id={contextId}
                 maxLength={OUTREACH_CONTEXT_NOTE_MAX_LEN}
-                autoFocus
-                defaultValue=""
                 onChange={(event) =>
                   setContextNoteLength(event.currentTarget.value.length)
                 }
@@ -365,7 +368,7 @@ export function LeadOutreachDialog({
               <>
                 {shouldRenderSubjectField ? (
                   <div className={styles.resultField}>
-                    <span className={styles.resultHeader}>
+                    <div className={styles.resultHeader}>
                       <label htmlFor={resultSubjectId}>
                         {content.result.subjectLabel}
                       </label>
@@ -382,7 +385,7 @@ export function LeadOutreachDialog({
                           ? content.buttons.copied
                           : content.buttons.copy}
                       </button>
-                    </span>
+                    </div>
                     <input
                       className={styles.resultInput}
                       id={resultSubjectId}
@@ -396,7 +399,7 @@ export function LeadOutreachDialog({
                 ) : null}
 
                 <div className={styles.resultField}>
-                  <span className={styles.resultHeader}>
+                  <div className={styles.resultHeader}>
                     <label htmlFor={resultBodyId}>
                       {content.result.bodyLabel}
                     </label>
@@ -411,7 +414,7 @@ export function LeadOutreachDialog({
                         ? content.buttons.copied
                         : content.buttons.copy}
                     </button>
-                  </span>
+                  </div>
                   <textarea
                     className={styles.resultTextarea}
                     id={resultBodyId}
