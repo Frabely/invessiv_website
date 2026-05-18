@@ -3,14 +3,8 @@
   "dialog": {
     "eyebrow": "KI-Entwurf",
     "title": "Outreach entwerfen",
-    "description": "Erstelle eine kurze Nachricht, die persönlich klingt und direkt kopiert werden kann. Der Prompt erhält nur Lead-Fakten, keine E-Mail-Adresse oder Telefonnummer.",
+    "description": "Erstelle eine kurze Nachricht, die persönlich klingt und direkt kopiert werden kann. Der Server nutzt dafür Lead-Fakten, Website-Kontext und den Zusatzkontext aus dem Formular.",
     "closeAriaLabel": "Dialog schließen"
-  },
-  "prompt": {
-    "label": "Vorlage",
-    "descriptions": {
-      "first-touch": "Erstkontakt: dezenter Werthinweis, weicher CTA, kein Pitch"
-    }
   },
   "channel": {
     "label": "Kanal",
@@ -26,11 +20,6 @@
       "instagram": "Locker-freundlich und leicht informell.",
       "direct-message": "Nur sinnvoll bei privatem Kontakt, den du bereits kennst."
     }
-  },
-  "improvements": {
-    "label": "Verbesserungen einbeziehen",
-    "help": "Es werden maximal 2 Hinweise berücksichtigt.",
-    "disabledHint": "Für diesen Lead sind keine Verbesserungen hinterlegt."
   },
   "contextNote": {
     "label": "Zusätzlicher Kontext",

@@ -12,8 +12,6 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
-import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
-import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import { getLeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachTrigger } from "./lead-outreach-trigger";
 
@@ -31,22 +29,12 @@ const { mockGenerateOutreachMessage, mockCheckOutreachProviders } = vi.hoisted(
     mockCheckOutreachProviders: vi.fn(),
   }),
 );
-const mockGenerateLocalOutreachMessage = vi.hoisted(() => vi.fn());
 
 vi.mock("@/client/leads/outreach/lead-outreach-generation-service", () => ({
   outreachGenerationClientService: {
     generateOutreachMessage: mockGenerateOutreachMessage,
   },
 }));
-
-vi.mock(
-  "@/client/leads/outreach/lead-outreach-local-generation-service",
-  () => ({
-    outreachLocalGenerationService: {
-      generateLocalOutreachMessage: mockGenerateLocalOutreachMessage,
-    },
-  }),
-);
 
 vi.mock(
   "@/client/leads/outreach/lead-outreach-provider-status-service",
@@ -61,7 +49,6 @@ beforeEach(() => {
   refreshMock.mockReset();
   mockGenerateOutreachMessage.mockReset();
   mockCheckOutreachProviders.mockReset();
-  mockGenerateLocalOutreachMessage.mockReset();
   mockCheckOutreachProviders.mockResolvedValue({
     local: { running: false },
     openai: true,
@@ -70,7 +57,6 @@ beforeEach(() => {
   mockGenerateOutreachMessage.mockResolvedValue({
     ok: true,
     channel: OutreachChannel.Linkedin,
-    promptKey: OutreachPromptKey.FirstTouch,
     body: "Hi Anna, kurzer Gedanke zu eurer Website.",
   });
 });
@@ -80,14 +66,13 @@ afterEach(() => {
 });
 
 describe("LeadOutreachTrigger", () => {
-  it("opens the dialog and posts a minimal outreach request without lead PII", async () => {
+  it("opens the dialog and posts a minimal outreach request without prompt data", async () => {
     render(
       <LeadOutreachTrigger
         content={getLeadsOutreachDictionary("de")}
         lead={{
           displayName: "Anna Meyer",
           id: "lead-123",
-          improvements: ["Hero klarer machen"],
         }}
         variant="icon+text"
       />,
@@ -107,10 +92,7 @@ describe("LeadOutreachTrigger", () => {
         expect.objectContaining({
           channel: OutreachChannel.Linkedin,
           contextNote: "in English",
-          includeImprovements: true,
           leadId: "lead-123",
-          promptKey: OutreachPromptKey.FirstTouch,
-          provider: OutreachProvider.OpenAi,
         }),
       );
     });
@@ -127,7 +109,6 @@ describe("LeadOutreachTrigger", () => {
     mockGenerateOutreachMessage.mockResolvedValueOnce({
       ok: true,
       channel: OutreachChannel.Email,
-      promptKey: OutreachPromptKey.FirstTouch,
       subject: "Kurzer Website-Gedanke",
       body: "Hallo Anna, ich habe eine kleine Beobachtung.",
     });
@@ -135,7 +116,7 @@ describe("LeadOutreachTrigger", () => {
     render(
       <LeadOutreachTrigger
         content={getLeadsOutreachDictionary("de")}
-        lead={{ displayName: "Anna Meyer", id: "lead-123", improvements: [] }}
+        lead={{ displayName: "Anna Meyer", id: "lead-123" }}
         variant="icon+text"
       />,
     );
@@ -149,9 +130,6 @@ describe("LeadOutreachTrigger", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByDisplayValue("Hallo Anna, ich habe eine kleine Beobachtung."),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/keine Verbesserungen hinterlegt/i),
     ).toBeInTheDocument();
   });
 
@@ -174,7 +152,6 @@ describe("LeadOutreachTrigger", () => {
         lead={{
           displayName: "Anna Meyer",
           id: "lead-123",
-          improvements: ["Hero klarer machen"],
         }}
         variant="icon+text"
       />,
@@ -196,60 +173,5 @@ describe("LeadOutreachTrigger", () => {
       await screen.findByText(/Lokales Modell aktiv · qwen3-14b/i),
     ).toBeInTheDocument();
     expect(mockCheckOutreachProviders).toHaveBeenCalledTimes(2);
-  });
-
-  it("uses the loaded local model name when generating locally", async () => {
-    mockCheckOutreachProviders.mockResolvedValueOnce({
-      local: { running: true, modelLoaded: true, modelName: "qwen3-14b" },
-      openai: false,
-      openaiModel: null,
-    });
-    mockGenerateLocalOutreachMessage.mockResolvedValueOnce("Lokaler Entwurf");
-    mockGenerateOutreachMessage.mockResolvedValueOnce({
-      ok: true,
-      channel: OutreachChannel.Linkedin,
-      promptKey: OutreachPromptKey.FirstTouch,
-      body: "Lokaler Entwurf",
-    });
-
-    render(
-      <LeadOutreachTrigger
-        content={getLeadsOutreachDictionary("de")}
-        lead={{
-          displayName: "Anna Meyer",
-          facts: {
-            categoryLabel: "Website",
-            companyName: "Meyer GmbH",
-            firstName: "Anna",
-            improvements: [],
-            notes: null,
-            owner: "Moritz",
-            websiteUrl: "https://example.com",
-          },
-          id: "lead-123",
-          improvements: ["Hero klarer machen"],
-        }}
-        variant="icon+text"
-      />,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: "Outreach entwerfen" }));
-    await screen.findByText(/Lokales Modell aktiv · qwen3-14b/i);
-    fireEvent.click(screen.getByRole("button", { name: "Generieren" }));
-
-    await waitFor(() => {
-      expect(mockGenerateLocalOutreachMessage).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.any(String),
-        "qwen3-14b",
-      );
-    });
-
-    expect(mockGenerateOutreachMessage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        clientGeneratedRawText: "Lokaler Entwurf",
-        provider: OutreachProvider.LocalLmStudio,
-      }),
-    );
   });
 });

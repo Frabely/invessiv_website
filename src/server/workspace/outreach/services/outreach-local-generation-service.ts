@@ -1,4 +1,4 @@
-"use client";
+import "server-only";
 
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
 import { OutreachLmStudio } from "@/common/ai-outreach-generation/outreach-lm-studio";
@@ -9,29 +9,26 @@ interface ChatCompletionResponse {
   choices?: Array<{ message?: { content?: string } }>;
 }
 
-async function generateLocalOutreachMessage(
+async function generate(
   systemPrompt: string,
   userPrompt: string,
-  model: string,
 ): Promise<string | null> {
   const controller = new AbortController();
-  const timeout = window.setTimeout(
+  const timeout = setTimeout(
     () => controller.abort(),
     LOCAL_GENERATE_TIMEOUT_MS,
   );
 
   try {
-    const messages = [
-      { role: OutreachChatRole.System, content: systemPrompt },
-      { role: OutreachChatRole.User, content: userPrompt },
-    ];
-
     const response = await fetch(OutreachLmStudio.ChatCompletionsEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model,
-        messages,
+        model: OutreachLmStudio.DefaultModel,
+        messages: [
+          { role: OutreachChatRole.System, content: systemPrompt },
+          { role: OutreachChatRole.User, content: userPrompt },
+        ],
       }),
       signal: controller.signal,
     });
@@ -41,17 +38,17 @@ async function generateLocalOutreachMessage(
     }
 
     const data = (await response.json()) as ChatCompletionResponse;
-    const text = data?.choices?.[0]?.message?.content?.trim();
-    if (!text) {
+    const text = data?.choices?.[0]?.message?.content;
+    if (typeof text !== "string" || text.trim().length === 0) {
       return null;
     }
 
     return text;
   } finally {
-    window.clearTimeout(timeout);
+    clearTimeout(timeout);
   }
 }
 
 export const outreachLocalGenerationService = {
-  generateLocalOutreachMessage,
+  generate,
 } as const;

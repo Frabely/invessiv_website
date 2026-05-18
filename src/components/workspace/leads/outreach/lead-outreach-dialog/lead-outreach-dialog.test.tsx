@@ -10,20 +10,15 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
-import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachDialog } from "./lead-outreach-dialog";
 
-const {
-  checkOutreachProvidersMock,
-  generateOutreachMessageMock,
-  generateLocalOutreachMessageMock,
-} = vi.hoisted(() => ({
-  checkOutreachProvidersMock: vi.fn(),
-  generateOutreachMessageMock: vi.fn(),
-  generateLocalOutreachMessageMock: vi.fn(),
-}));
+const { checkOutreachProvidersMock, generateOutreachMessageMock } = vi.hoisted(
+  () => ({
+    checkOutreachProvidersMock: vi.fn(),
+    generateOutreachMessageMock: vi.fn(),
+  }),
+);
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -46,15 +41,6 @@ vi.mock("@/client/leads/outreach/lead-outreach-generation-service", () => ({
   },
 }));
 
-vi.mock(
-  "@/client/leads/outreach/lead-outreach-local-generation-service",
-  () => ({
-    outreachLocalGenerationService: {
-      generateLocalOutreachMessage: generateLocalOutreachMessageMock,
-    },
-  }),
-);
-
 vi.mock("@/client/leads/outreach/lead-outreach-clipboard-service", () => ({
   copyTextToClipboard: vi.fn(),
 }));
@@ -74,11 +60,8 @@ beforeEach(() => {
   generateOutreachMessageMock.mockResolvedValue({
     ok: true,
     channel: OutreachChannel.Linkedin,
-    promptKey: OutreachPromptKey.FirstTouch,
     body: "Lokaler Entwurf",
   });
-
-  generateLocalOutreachMessageMock.mockResolvedValue("Lokaler Entwurf");
 });
 
 const content: LeadsOutreachDictionary = {
@@ -88,12 +71,6 @@ const content: LeadsOutreachDictionary = {
     title: "Draft outreach",
     description: "Create a short message.",
     closeAriaLabel: "Close dialog",
-  },
-  prompt: {
-    label: "Template",
-    descriptions: {
-      "first-touch": "First touch",
-    },
   },
   channel: {
     label: "Channel",
@@ -109,11 +86,6 @@ const content: LeadsOutreachDictionary = {
       instagram: "Casual.",
       "direct-message": "Private contact.",
     },
-  },
-  improvements: {
-    label: "Include improvements",
-    help: "At most 2 notes.",
-    disabledHint: "No improvements available.",
   },
   contextNote: {
     label: "Additional context",
@@ -184,17 +156,12 @@ describe("LeadOutreachDialog", () => {
     });
   });
 
-  it("uses the local generator even when lead facts are unavailable", async () => {
-    generateLocalOutreachMessageMock.mockResolvedValueOnce(
-      "Hallo Markus,\n\nmir ist aufgefallen, dass die Klarheit im Leistungsangebot noch stärker sein könnte. Falls Sie dazu Lust haben, tausche ich mich gern aus.",
-    );
-
+  it("sends only the structured request fields to the server", async () => {
     render(
       <LeadOutreachDialog
         content={content}
         leadDisplayName="Muster Lead"
         leadId="lead-1"
-        leadImprovements={["Klarheit im Leistungsangebot"]}
         onCloseAction={vi.fn()}
         refreshToken={0}
       />,
@@ -208,68 +175,19 @@ describe("LeadOutreachDialog", () => {
     );
 
     await waitFor(() => {
-      expect(generateLocalOutreachMessageMock).toHaveBeenCalledTimes(1);
-      expect(generateLocalOutreachMessageMock.mock.calls[0][1]).toContain(
-        "Klarheit im Leistungsangebot",
-      );
       expect(generateOutreachMessageMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          clientGeneratedRawText:
-            "Hallo Markus,\n\nmir ist aufgefallen, dass die Klarheit im Leistungsangebot noch stärker sein könnte. Falls Sie dazu Lust haben, tausche ich mich gern aus.",
-          provider: OutreachProvider.LocalLmStudio,
+          channel: OutreachChannel.Linkedin,
           leadId: "lead-1",
         }),
       );
     });
   });
 
-  it("falls back to OpenAI when local generation fails", async () => {
-    generateLocalOutreachMessageMock.mockResolvedValueOnce(null);
+  it("uses the generated subject and body on email drafts", async () => {
     generateOutreachMessageMock.mockResolvedValueOnce({
       ok: true,
-      channel: OutreachChannel.Linkedin,
-      promptKey: OutreachPromptKey.FirstTouch,
-      body: "OpenAI body",
-    });
-
-    render(
-      <LeadOutreachDialog
-        content={content}
-        leadDisplayName="Muster Lead"
-        leadId="lead-1"
-        leadImprovements={["Mehr Klarheit im Leistungsangebot"]}
-        onCloseAction={vi.fn()}
-        refreshToken={0}
-      />,
-    );
-
-    await screen.findByText(/Local model active .*qwen3-14b/i);
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.buttons.generate,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(generateLocalOutreachMessageMock).toHaveBeenCalledTimes(1);
-      expect(generateOutreachMessageMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          provider: OutreachProvider.OpenAi,
-        }),
-      );
-      expect(generateOutreachMessageMock).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          clientGeneratedRawText: expect.any(String),
-        }),
-      );
-    });
-  });
-
-  it("renders a subject field for LinkedIn drafts", async () => {
-    generateOutreachMessageMock.mockResolvedValueOnce({
-      ok: true,
-      channel: OutreachChannel.Linkedin,
-      promptKey: OutreachPromptKey.FirstTouch,
+      channel: OutreachChannel.Email,
       subject: "Kurzer LinkedIn-Betreff",
       body: "Hallo Peter,\n\nKurzer Text.",
     });
@@ -295,19 +213,49 @@ describe("LeadOutreachDialog", () => {
     ).toBeTruthy();
   });
 
+  it("renders a subject field when the server returns one for a non-subject channel", async () => {
+    generateOutreachMessageMock.mockResolvedValueOnce({
+      ok: true,
+      channel: OutreachChannel.Instagram,
+      subject: "Optionaler Betreff",
+      body: "Kurz und locker.",
+    });
+
+    render(
+      <LeadOutreachDialog
+        content={content}
+        leadDisplayName="Muster Lead"
+        leadId="lead-1"
+        onCloseAction={vi.fn()}
+        refreshToken={0}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.buttons.generate,
+      }),
+    );
+
+    expect(await screen.findByDisplayValue("Optionaler Betreff")).toBeTruthy();
+    expect(screen.getByDisplayValue("Kurz und locker.")).toBeTruthy();
+  });
+
   it("keeps whitespace in the context note input until submit", async () => {
     render(
       <LeadOutreachDialog
         content={content}
         leadDisplayName="Muster Lead"
         leadId="lead-1"
-        leadImprovements={["Hero klarer machen"]}
         onCloseAction={vi.fn()}
         refreshToken={0}
       />,
     );
 
     const contextInput = screen.getByLabelText(/Additional context/i);
+    await waitFor(() => {
+      expect(document.activeElement).toBe(contextInput);
+    });
     fireEvent.change(contextInput, { target: { value: "  in English  " } });
     expect((contextInput as HTMLTextAreaElement).value).toBe("  in English  ");
 
@@ -320,7 +268,7 @@ describe("LeadOutreachDialog", () => {
     await waitFor(() => {
       expect(generateOutreachMessageMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          contextNote: "in English",
+          contextNote: "  in English  ",
         }),
       );
     });

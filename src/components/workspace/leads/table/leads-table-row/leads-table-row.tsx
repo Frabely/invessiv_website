@@ -56,6 +56,21 @@ function getCategoryLabel(
   return labelKey;
 }
 
+function isInteractiveDescendant(
+  target: EventTarget | null,
+  container: HTMLElement,
+): boolean {
+  if (!(target instanceof HTMLElement) || target === container) {
+    return false;
+  }
+
+  return (
+    target.closest(
+      "button, input, select, textarea, a[href], summary, [contenteditable='true']",
+    ) !== null
+  );
+}
+
 export function LeadsTableRow({
   basePath,
   currentQueryString,
@@ -103,6 +118,10 @@ export function LeadsTableRow({
   }
 
   function handleRowKeyDown(event: KeyboardEvent<HTMLTableRowElement>) {
+    if (isInteractiveDescendant(event.target, event.currentTarget)) {
+      return;
+    }
+
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       startTransition(() => router.push(href));

@@ -18,7 +18,6 @@ type LeadOutreachTriggerProps = {
   lead: {
     displayName: string;
     id: string;
-    improvements?: string[] | null;
     facts?: OutreachLeadFacts;
   };
   onClickCaptureAction?: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -63,9 +62,7 @@ export function LeadOutreachTrigger({
         <LeadOutreachDialog
           content={content}
           leadDisplayName={lead.displayName}
-          leadFacts={lead.facts}
           leadId={lead.id}
-          leadImprovements={lead.improvements}
           onCloseAction={() => setIsOpen(false)}
           refreshToken={openRevision}
         />

@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
 import {
   getLeadsDeleteDictionary,
@@ -50,6 +50,10 @@ vi.mock("next/link", () => ({
 
 afterEach(() => {
   cleanup();
+});
+
+beforeEach(() => {
+  pushMock.mockReset();
 });
 
 describe("LeadsTableRow", () => {
@@ -112,5 +116,59 @@ describe("LeadsTableRow", () => {
     expect(calledUrl.searchParams.get("edit")).toBe("lead-123");
     expect(calledUrl.searchParams.get("selected")).toBe("lead-999");
     expect(calledUrl.searchParams.get("status")).toBe("qualified");
+  });
+
+  it("does not trigger row navigation when the outreach button receives Space", () => {
+    const tableContent = getLeadsTableDictionary("de");
+    const outreachContent = getLeadsOutreachDictionary("de");
+    const lead: LeadSummaryDto = {
+      id: "lead-123",
+      displayName: "Anna Meyer",
+      firstName: "Anna",
+      lastName: "Meyer",
+      companyName: "Acme",
+      email: "anna@example.com",
+      phone: null,
+      websiteUrl: null,
+      score: 82,
+      source: "manual",
+      leadStatus: "qualified",
+      owner: null,
+      createdAt: "2026-05-01T10:00:00.000Z",
+      updatedAt: "2026-05-02T10:00:00.000Z",
+      category: {
+        id: "cat-1",
+        slug: "coaches",
+        labelKey: "coaches",
+      },
+      socialProfiles: [],
+    };
+
+    render(
+      <table>
+        <tbody>
+          <LeadsTableRow
+            basePath="/de/workspace/leads"
+            currentQueryString="status=qualified"
+            currentSearchParams={{
+              status: "qualified",
+            }}
+            deleteContent={getLeadsDeleteDictionary("de")}
+            lead={lead}
+            locale="de"
+            outreachContent={outreachContent}
+            sharedContent={getLeadsSharedDictionary("de")}
+            tableContent={tableContent}
+          />
+        </tbody>
+      </table>,
+    );
+
+    const outreachButton = screen.getByRole("button", {
+      name: outreachContent.triggerLabel,
+    });
+    fireEvent.keyDown(outreachButton, { key: " ", code: "Space" });
+
+    expect(pushMock).not.toHaveBeenCalled();
   });
 });

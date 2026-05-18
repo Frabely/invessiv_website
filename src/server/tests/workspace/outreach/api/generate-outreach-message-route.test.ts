@@ -4,7 +4,6 @@ import type { NextRequest } from "next/server";
 import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
-import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import { POST } from "@/app/api/workspace/outreach/generate/route";
 
 vi.mock("server-only", () => ({}));
@@ -70,9 +69,7 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(
       makeRequest({
         leadId: LEAD_ID,
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Linkedin,
-        includeImprovements: false,
       }),
     );
 
@@ -85,16 +82,13 @@ describe("POST /api/workspace/outreach/generate", () => {
     mockGenerateOutreach.mockResolvedValue({
       ok: true,
       channel: OutreachChannel.Email,
-      promptKey: OutreachPromptKey.FirstTouch,
       subject: "Kurzer Betreff",
       body: "Email body",
     });
 
     const requestBody = {
       leadId: LEAD_ID,
-      promptKey: OutreachPromptKey.FirstTouch,
       channel: OutreachChannel.Email,
-      includeImprovements: true,
       contextNote: "Bitte auf Englisch",
     };
 
@@ -106,7 +100,6 @@ describe("POST /api/workspace/outreach/generate", () => {
     expect(body).toMatchObject({
       ok: true,
       channel: OutreachChannel.Email,
-      promptKey: OutreachPromptKey.FirstTouch,
       subject: "Kurzer Betreff",
       body: "Email body",
     });
@@ -118,9 +111,7 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(
       makeRequest({
         leadId: LEAD_ID,
-        promptKey: "unknown-key",
-        channel: OutreachChannel.Linkedin,
-        includeImprovements: false,
+        channel: "whatsapp",
       }),
     );
 
@@ -152,9 +143,7 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(
       makeRequest({
         leadId: LEAD_ID,
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Linkedin,
-        includeImprovements: false,
       }),
     );
 
@@ -176,9 +165,7 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(
       makeRequest({
         leadId: LEAD_ID,
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Linkedin,
-        includeImprovements: false,
       }),
     );
 
@@ -197,9 +184,7 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(
       makeRequest({
         leadId: LEAD_ID,
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Linkedin,
-        includeImprovements: false,
       }),
     );
 

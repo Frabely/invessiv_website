@@ -64,6 +64,14 @@ describe("outreachAiService.generate", () => {
     expect(result).toBe(FAKE_TEXT);
   });
 
+  it("returns generated content without trimming it", async () => {
+    mockOpenAiCreate.mockResolvedValueOnce(makeCompletion(`  ${FAKE_TEXT}\n`));
+
+    const result = await outreachAiService.generate("system", "user");
+
+    expect(result).toBe(`  ${FAKE_TEXT}\n`);
+  });
+
   it("throws NOT_CONFIGURED when OPENAI_API_KEY is not set", async () => {
     delete process.env.OPENAI_API_KEY;
 

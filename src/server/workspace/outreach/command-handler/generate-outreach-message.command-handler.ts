@@ -5,8 +5,8 @@ import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-erro
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
-import { outreachPromptService } from "@/server/workspace/outreach/services/outreach-prompt-service";
-import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
+import { outreachGenerationService } from "@/server/workspace/outreach/services/outreach-generation-service";
+import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
 import { appendLeadActivity } from "@/server/workspace/leads/services/lead-activity-service";
 
@@ -18,43 +18,36 @@ export async function generateOutreachMessage(
     return { ok: false, code: OutreachErrorCode.LeadNotFound };
   }
 
+  const { systemPrompt, userPrompt } =
+    await outreachSkillContextService.buildSkillPrompts({
+      lead,
+      channel: request.channel,
+      contextNote: request.contextNote,
+    });
+
   let rawText: string;
-  if (request.clientGeneratedRawText) {
-    rawText = request.clientGeneratedRawText;
-  } else {
-    const { systemPrompt, userPrompt } =
-      outreachPromptService.buildPromptMessages(
-        lead,
-        request.promptKey,
-        request.channel,
-        {
-          includeImprovements: request.includeImprovements,
-          contextNote: request.contextNote,
-        },
-      );
+  try {
+    const generated = await outreachGenerationService.generate(
+      systemPrompt,
+      userPrompt,
+    );
 
-    try {
-      const generated = await outreachAiService.generate(
-        systemPrompt,
-        userPrompt,
-      );
-      if (!generated) {
-        return process.env.OPENAI_API_KEY
-          ? { ok: false, code: OutreachErrorCode.ProviderUnavailable }
-          : { ok: false, code: OutreachErrorCode.NotConfigured };
-      }
-
-      rawText = generated;
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === OutreachErrorCode.ProviderUnavailable
-      ) {
-        return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
-      }
-
-      return { ok: false, code: OutreachErrorCode.Internal };
+    if (!generated) {
+      return process.env.OPENAI_API_KEY
+        ? { ok: false, code: OutreachErrorCode.ProviderUnavailable }
+        : { ok: false, code: OutreachErrorCode.NotConfigured };
     }
+
+    rawText = generated;
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === OutreachErrorCode.ProviderUnavailable
+    ) {
+      return { ok: false, code: OutreachErrorCode.ProviderUnavailable };
+    }
+
+    return { ok: false, code: OutreachErrorCode.Internal };
   }
 
   const parsed = outreachMessageParser.parse(request.channel, rawText);
@@ -64,7 +57,6 @@ export async function generateOutreachMessage(
     type: LeadActivityType.MessageDrafted,
     body: parsed.body,
     metadata: {
-      promptKey: request.promptKey,
       channel: request.channel,
       ...(parsed.subject !== undefined ? { subject: parsed.subject } : {}),
     },
@@ -74,7 +66,6 @@ export async function generateOutreachMessage(
   return {
     ok: true,
     channel: request.channel,
-    promptKey: request.promptKey,
     body: parsed.body,
     ...(parsed.subject !== undefined ? { subject: parsed.subject } : {}),
   };

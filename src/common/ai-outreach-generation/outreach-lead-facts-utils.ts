@@ -3,6 +3,7 @@ import type { OutreachLeadFacts } from "./outreach-lead-facts";
 
 export function sanitizeLeadFacts(lead: LeadDetailDto): OutreachLeadFacts {
   return {
+    displayName: lead.displayName,
     firstName: lead.firstName,
     companyName: lead.companyName,
     websiteUrl: lead.websiteUrl,

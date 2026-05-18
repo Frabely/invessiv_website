@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { GenerateOutreachRequestDto } from "@/common/ai-outreach-generation/generate-outreach-request.dto";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
-import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
@@ -9,15 +8,15 @@ import { generateOutreachMessage } from "@/server/workspace/outreach/command-han
 
 const {
   getLeadByIdMock,
-  buildPromptMessagesMock,
+  buildSkillPromptsMock,
   generateMock,
   parseMock,
   appendLeadActivityMock,
 } = vi.hoisted(() => ({
   getLeadByIdMock: vi.fn(),
-  buildPromptMessagesMock: vi
+  buildSkillPromptsMock: vi
     .fn()
-    .mockReturnValue({ systemPrompt: "system", userPrompt: "user" }),
+    .mockResolvedValue({ systemPrompt: "system", userPrompt: "user" }),
   generateMock: vi.fn(),
   parseMock: vi.fn(),
   appendLeadActivityMock: vi.fn().mockResolvedValue(undefined),
@@ -28,12 +27,20 @@ vi.mock(
   "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler",
   () => ({ getLeadById: getLeadByIdMock }),
 );
-vi.mock("@/server/workspace/outreach/services/outreach-prompt-service", () => ({
-  outreachPromptService: { buildPromptMessages: buildPromptMessagesMock },
-}));
-vi.mock("@/server/workspace/outreach/services/outreach-ai-service", () => ({
-  outreachAiService: { generate: generateMock },
-}));
+vi.mock(
+  "@/server/workspace/outreach/services/outreach-skill-context-service",
+  () => ({
+    outreachSkillContextService: {
+      buildSkillPrompts: buildSkillPromptsMock,
+    },
+  }),
+);
+vi.mock(
+  "@/server/workspace/outreach/services/outreach-generation-service",
+  () => ({
+    outreachGenerationService: { generate: generateMock },
+  }),
+);
 vi.mock("@/server/workspace/outreach/services/outreach-message-parser", () => ({
   outreachMessageParser: { parse: parseMock },
 }));
@@ -67,9 +74,7 @@ const MOCK_LEAD = {
 
 const BASE_REQUEST: GenerateOutreachRequestDto = {
   leadId: "lead-123",
-  promptKey: OutreachPromptKey.FirstTouch,
   channel: OutreachChannel.Linkedin,
-  includeImprovements: false,
 };
 
 afterEach(() => vi.clearAllMocks());
@@ -116,7 +121,6 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
     expect(result).toEqual({
       ok: true,
       channel: OutreachChannel.Linkedin,
-      promptKey: OutreachPromptKey.FirstTouch,
       body: "Generated outreach body",
     });
     expect(result).not.toHaveProperty("subject");
@@ -132,7 +136,6 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
       type: LeadActivityType.MessageDrafted,
       body: "Generated outreach body",
       metadata: {
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Linkedin,
       },
       actorType: LeadActorType.System,
@@ -167,7 +170,6 @@ describe("generateOutreachMessage — success (email channel)", () => {
       subject: "Test Subject",
       body: "Email body",
       channel: OutreachChannel.Email,
-      promptKey: OutreachPromptKey.FirstTouch,
     });
   });
 
@@ -181,7 +183,6 @@ describe("generateOutreachMessage — success (email channel)", () => {
       type: LeadActivityType.MessageDrafted,
       body: "Email body",
       metadata: {
-        promptKey: OutreachPromptKey.FirstTouch,
         channel: OutreachChannel.Email,
         subject: "Test Subject",
       },
@@ -190,79 +191,42 @@ describe("generateOutreachMessage — success (email channel)", () => {
   });
 });
 
-describe("generateOutreachMessage — prompt service integration", () => {
-  it("calls buildPromptMessages with lead, promptKey, channel, and options", async () => {
+describe("generateOutreachMessage — skill context integration", () => {
+  it("calls buildSkillPrompts with lead, channel, and options", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("body");
     parseMock.mockReturnValue({ body: "body" });
     const request: GenerateOutreachRequestDto = {
       ...BASE_REQUEST,
-      includeImprovements: true,
       contextNote: "In English please",
     };
     await generateOutreachMessage(request);
-    expect(buildPromptMessagesMock).toHaveBeenCalledWith(
-      MOCK_LEAD,
-      OutreachPromptKey.FirstTouch,
-      OutreachChannel.Linkedin,
-      { includeImprovements: true, contextNote: "In English please" },
-    );
+    expect(buildSkillPromptsMock).toHaveBeenCalledWith({
+      lead: MOCK_LEAD,
+      channel: OutreachChannel.Linkedin,
+      contextNote: "In English please",
+    });
   });
 });
 
-describe("generateOutreachMessage — clientGeneratedRawText", () => {
-  it("skips AI service call when clientGeneratedRawText is provided", async () => {
+describe("generateOutreachMessage — generated raw text", () => {
+  it("uses the generated text from the server generator", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
-    parseMock.mockReturnValue({ body: "Local body" });
-
-    const request: GenerateOutreachRequestDto = {
-      ...BASE_REQUEST,
-      clientGeneratedRawText: "Local body",
-      provider: "local-lm-studio",
-    };
-
-    await generateOutreachMessage(request);
-
-    expect(generateMock).not.toHaveBeenCalled();
-    expect(buildPromptMessagesMock).not.toHaveBeenCalled();
-  });
-
-  it("parses and saves the clientGeneratedRawText when provided", async () => {
-    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
-    parseMock.mockReturnValue({ body: "Local body" });
-
-    const request: GenerateOutreachRequestDto = {
-      ...BASE_REQUEST,
-      clientGeneratedRawText: "Local body",
-      provider: "local-lm-studio",
-    };
-
-    const result = await generateOutreachMessage(request);
-
-    expect(parseMock).toHaveBeenCalledWith(
-      OutreachChannel.Linkedin,
-      "Local body",
-    );
-    expect(appendLeadActivityMock).toHaveBeenCalled();
-    expect(result).toEqual({
-      ok: true,
-      channel: OutreachChannel.Linkedin,
-      promptKey: OutreachPromptKey.FirstTouch,
-      body: "Local body",
+    buildSkillPromptsMock.mockResolvedValue({
+      systemPrompt: "system",
+      userPrompt: "user",
     });
-  });
-
-  it("calls AI service when clientGeneratedRawText is not provided", async () => {
-    getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Server body");
     parseMock.mockReturnValue({ body: "Server body" });
 
     await generateOutreachMessage(BASE_REQUEST);
 
-    expect(generateMock).toHaveBeenCalled();
+    expect(generateMock).toHaveBeenCalledWith("system", "user");
   });
+});
 
-  it("returns NotConfigured when clientGeneratedRawText is absent and OpenAI not configured", async () => {
+describe("generateOutreachMessage — generation failures", () => {
+  it("returns NotConfigured when no provider can generate text", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue(null);
 
@@ -274,7 +238,7 @@ describe("generateOutreachMessage — clientGeneratedRawText", () => {
     });
   });
 
-  it("returns ProviderUnavailable when OpenAI fails", async () => {
+  it("returns ProviderUnavailable when the generation service throws that error", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockRejectedValue(
       new Error(OutreachErrorCode.ProviderUnavailable),

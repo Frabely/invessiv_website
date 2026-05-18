@@ -1,3 +1,5 @@
+import "server-only";
+
 import OpenAI from "openai";
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
 import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-lm-studio";
@@ -22,8 +24,8 @@ async function generate(
     ],
   });
 
-  const text = response.choices[0]?.message?.content?.trim();
-  if (!text) {
+  const text = response.choices[0]?.message?.content;
+  if (typeof text !== "string" || text.trim().length === 0) {
     return null;
   }
 

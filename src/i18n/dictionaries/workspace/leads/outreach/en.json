@@ -3,14 +3,8 @@
   "dialog": {
     "eyebrow": "AI draft",
     "title": "Draft outreach",
-    "description": "Create a short message that feels personal and is ready to copy. The prompt receives lead facts only, never email addresses or phone numbers.",
+    "description": "Create a short message that feels personal and is ready to copy. The server combines lead facts, website context, and the additional context from the form.",
     "closeAriaLabel": "Close dialog"
-  },
-  "prompt": {
-    "label": "Template",
-    "descriptions": {
-      "first-touch": "First touch: subtle value hint, soft CTA, no pitch"
-    }
   },
   "channel": {
     "label": "Channel",
@@ -26,11 +20,6 @@
       "instagram": "Casual, friendly, and slightly informal.",
       "direct-message": "Only useful for private contacts you already know."
     }
-  },
-  "improvements": {
-    "label": "Include improvements",
-    "help": "At most 2 notes will be considered.",
-    "disabledHint": "No improvements are available for this lead."
   },
   "contextNote": {
     "label": "Additional context",

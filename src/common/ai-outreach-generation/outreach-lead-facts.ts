@@ -1,4 +1,5 @@
 export interface OutreachLeadFacts {
+  displayName: string | null;
   firstName: string | null;
   companyName: string | null;
   websiteUrl: string | null;

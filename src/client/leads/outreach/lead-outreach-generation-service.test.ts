@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@/common/ai-outreach-generation/outreach-channels";
 import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
-import { OutreachPromptKey } from "@/common/ai-outreach-generation/outreach-prompt-keys";
 import { LeadOutreachApiEndpoints } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
 import { outreachGenerationClientService } from "./lead-outreach-generation-service";
 
@@ -20,7 +19,6 @@ describe("lead-outreach-generation-service", () => {
       Response.json({
         ok: true,
         channel: OutreachChannel.Email,
-        promptKey: OutreachPromptKey.FirstTouch,
         subject: "Kurzer Website-Gedanke",
         body: "Hallo Anna, ich habe eine kleine Beobachtung.",
       }),
@@ -30,15 +28,12 @@ describe("lead-outreach-generation-service", () => {
       await outreachGenerationClientService.generateOutreachMessage({
         channel: OutreachChannel.Email,
         contextNote: "Bitte knapp",
-        includeImprovements: true,
         leadId: "lead-123",
-        promptKey: OutreachPromptKey.FirstTouch,
       });
 
     expect(result).toMatchObject({
       ok: true,
       channel: OutreachChannel.Email,
-      promptKey: OutreachPromptKey.FirstTouch,
       subject: "Kurzer Website-Gedanke",
       body: "Hallo Anna, ich habe eine kleine Beobachtung.",
     });
@@ -48,9 +43,7 @@ describe("lead-outreach-generation-service", () => {
         body: JSON.stringify({
           channel: OutreachChannel.Email,
           contextNote: "Bitte knapp",
-          includeImprovements: true,
           leadId: "lead-123",
-          promptKey: OutreachPromptKey.FirstTouch,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -76,9 +69,7 @@ describe("lead-outreach-generation-service", () => {
       await outreachGenerationClientService.generateOutreachMessage({
         channel: OutreachChannel.Linkedin,
         contextNote: "Bitte knapp",
-        includeImprovements: false,
         leadId: "lead-123",
-        promptKey: OutreachPromptKey.FirstTouch,
       });
 
     expect(result).toEqual({
