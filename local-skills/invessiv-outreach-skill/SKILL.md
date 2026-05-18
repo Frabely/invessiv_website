@@ -1,6 +1,14 @@
-﻿---
+---
 name: invessiv-outreach-skill
-description: Use this skill when Moritz needs a cautious, individualized German first outreach message for Invessiv about websites, landing pages, or online presence leads. The skill decides whether to use website-based improvements: if a website exists, it may use up to two concrete hints; if no website exists, it should stay generic-but-individual and mention pilot projects at fair entry pricing. Produce a neutral subject line and a plain-text copyable message without markdown code fences; on LinkedIn, address the person with a first-name greeting like "Hallo Susann" instead of Herr/Frau.
+description: >-
+  Use this skill when Moritz needs a cautious, individualized German first outreach
+  message for Invessiv about websites, landing pages, or online presence leads.
+  The skill decides whether to use website-based improvements: if a website exists,
+  it may use up to two concrete hints; if no website exists, it should stay
+  generic-but-individual and mention pilot projects at fair entry pricing. Produce a
+  neutral subject line and a plain-text copyable message without markdown code
+  fences; on LinkedIn, address the person with a first-name greeting like
+  "Hallo Susann" instead of Herr/Frau.
 ---
 
 # Invessiv Outreach Skill
