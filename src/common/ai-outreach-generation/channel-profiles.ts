@@ -14,9 +14,9 @@ export const CHANNEL_PROFILES: Record<OutreachChannel, ChannelProfile> = {
   [OutreachChannel.Linkedin]: {
     maxChars: 300,
     greeting: "Viele Grüße",
-    requiresSubject: false,
+    requiresSubject: true,
     addressForm: "sie",
-    toneDirective: `Professionell-persönlich, ruhig, kein Sales-Sprech. Wirke wie ein Mensch, der konkret hingeschaut hat – nicht wie ein Recruiter-Template. LinkedIn-Connect-Note-Stil: 1 Aufhänger + 1 Beobachtung + softer CTA. Anrede mit "Sie".`,
+    toneDirective: `Professionell-persönlich, ruhig, kein Sales-Sprech. Wirke wie ein Mensch, der konkret hingeschaut hat – nicht wie ein Recruiter-Template. LinkedIn-Connect-Note-Stil: 1 Aufhänger + 1 Beobachtung + softer CTA. Mit Betreffzeile wie bei einer kurzen Nachricht. Anrede mit "Sie".`,
   },
   [OutreachChannel.Email]: {
     maxChars: 900,

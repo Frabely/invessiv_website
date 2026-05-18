@@ -159,6 +159,83 @@ describe("outreachPromptService.buildPromptMessages — Improvements", () => {
   });
 });
 
+describe("outreachPromptService.buildPromptMessages — Runtime-Template", () => {
+  it("includes the template example and transfer rules in systemPrompt", () => {
+    const { systemPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead(),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Linkedin,
+      { includeImprovements: true },
+    );
+
+    expect(systemPrompt).toContain("NACHRICHTEN-TEMPLATE");
+    expect(systemPrompt).toContain("Beispielnachricht:");
+    expect(systemPrompt).toContain("Nutze die Vorlage als Form- und Tonanker");
+    expect(systemPrompt).toContain("Website-Hinweise nur verwenden");
+  });
+
+  it("serializes a lead with firstName, company, category, notes and missing website", () => {
+    const { userPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead({ websiteUrl: null }),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Linkedin,
+      { includeImprovements: true },
+    );
+
+    expect(userPrompt).toContain("Vorname: Max");
+    expect(userPrompt).toContain("Firma: ACME GmbH");
+    expect(userPrompt).toContain("Kategorie: Handwerk");
+    expect(userPrompt).toContain("Notizen: Hat gute Bewertungen");
+    expect(userPrompt).toContain(
+      "Website-Status: Keine Website gefunden oder Website-Status unbekannt.",
+    );
+  });
+
+  it("marks a known website as present and blocks missing-website wording", () => {
+    const { userPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead({ websiteUrl: "https://acme.de" }),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Email,
+      { includeImprovements: false },
+    );
+
+    expect(userPrompt).toContain(
+      "Website-Status: Website vorhanden: https://acme.de",
+    );
+    expect(userPrompt).toContain(
+      "Bei 'Website vorhanden' keinen Missing-Website-Hinweis schreiben.",
+    );
+  });
+
+  it("keeps company usable when firstName is missing", () => {
+    const { userPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead({ firstName: null, companyName: "Muster AG" }),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Linkedin,
+      { includeImprovements: false },
+    );
+
+    expect(userPrompt).not.toContain("Vorname:");
+    expect(userPrompt).toContain("Firma: Muster AG");
+  });
+
+  it("passes contextNote as an additional instruction", () => {
+    const { userPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead(),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Linkedin,
+      {
+        includeImprovements: false,
+        contextNote: "CTA bitte besonders weich formulieren.",
+      },
+    );
+
+    expect(userPrompt).toContain(
+      "Zusätzlicher Kontext vom Absender: CTA bitte besonders weich formulieren.",
+    );
+  });
+});
+
 describe("outreachPromptService.buildPromptMessages — structure", () => {
   it("returns an object with systemPrompt and userPrompt strings", () => {
     const messages = outreachPromptService.buildPromptMessages(
@@ -203,13 +280,33 @@ describe("outreachPromptService.buildPromptMessages — structure", () => {
     expect(userPrompt).not.toContain("Vorname:");
   });
 
-  it("includes contextNote in userPrompt when provided", () => {
+  it("includes contextNote and override guidance in userPrompt when provided", () => {
     const { userPrompt } = outreachPromptService.buildPromptMessages(
       makeLead(),
       OutreachPromptKey.FirstTouch,
       OutreachChannel.Linkedin,
-      { includeImprovements: false, contextNote: "Schreibt gerne über KI" },
+      {
+        includeImprovements: false,
+        contextNote: "Schreibt gerne über KI",
+      },
     );
     expect(userPrompt).toContain("Schreibt gerne über KI");
+    expect(userPrompt).toContain("Kein expliziter Du-Override");
+    expect(userPrompt).toContain("Sie");
+  });
+
+  it("allows du only when the contextNote explicitly asks for it", () => {
+    const { userPrompt } = outreachPromptService.buildPromptMessages(
+      makeLead(),
+      OutreachPromptKey.FirstTouch,
+      OutreachChannel.Linkedin,
+      {
+        includeImprovements: false,
+        contextNote: "Bitte im Du, per Du und duzen.",
+      },
+    );
+
+    expect(userPrompt).toContain("erlaubt ausdrücklich die Du-Form");
+    expect(userPrompt).toContain("Bitte im Du, per Du und duzen.");
   });
 });

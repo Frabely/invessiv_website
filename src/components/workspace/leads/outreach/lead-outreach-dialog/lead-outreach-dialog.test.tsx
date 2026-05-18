@@ -185,11 +185,59 @@ describe("LeadOutreachDialog", () => {
   });
 
   it("uses the local generator even when lead facts are unavailable", async () => {
+    generateLocalOutreachMessageMock.mockResolvedValueOnce(
+      "Hallo Markus,\n\nmir ist aufgefallen, dass die Klarheit im Leistungsangebot noch stärker sein könnte. Falls Sie dazu Lust haben, tausche ich mich gern aus.",
+    );
+
     render(
       <LeadOutreachDialog
         content={content}
         leadDisplayName="Muster Lead"
         leadId="lead-1"
+        leadImprovements={["Klarheit im Leistungsangebot"]}
+        onCloseAction={vi.fn()}
+        refreshToken={0}
+      />,
+    );
+
+    await screen.findByText(/Local model active .*qwen3-14b/i);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.buttons.generate,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(generateLocalOutreachMessageMock).toHaveBeenCalledTimes(1);
+      expect(generateLocalOutreachMessageMock.mock.calls[0][1]).toContain(
+        "Klarheit im Leistungsangebot",
+      );
+      expect(generateOutreachMessageMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          clientGeneratedRawText:
+            "Hallo Markus,\n\nmir ist aufgefallen, dass die Klarheit im Leistungsangebot noch stärker sein könnte. Falls Sie dazu Lust haben, tausche ich mich gern aus.",
+          provider: OutreachProvider.LocalLmStudio,
+          leadId: "lead-1",
+        }),
+      );
+    });
+  });
+
+  it("falls back to OpenAI when local generation fails", async () => {
+    generateLocalOutreachMessageMock.mockResolvedValueOnce(null);
+    generateOutreachMessageMock.mockResolvedValueOnce({
+      ok: true,
+      channel: OutreachChannel.Linkedin,
+      promptKey: OutreachPromptKey.FirstTouch,
+      body: "OpenAI body",
+    });
+
+    render(
+      <LeadOutreachDialog
+        content={content}
+        leadDisplayName="Muster Lead"
+        leadId="lead-1"
+        leadImprovements={["Mehr Klarheit im Leistungsangebot"]}
         onCloseAction={vi.fn()}
         refreshToken={0}
       />,
@@ -206,9 +254,73 @@ describe("LeadOutreachDialog", () => {
       expect(generateLocalOutreachMessageMock).toHaveBeenCalledTimes(1);
       expect(generateOutreachMessageMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          clientGeneratedRawText: "Lokaler Entwurf",
-          provider: OutreachProvider.LocalLmStudio,
-          leadId: "lead-1",
+          provider: OutreachProvider.OpenAi,
+        }),
+      );
+      expect(generateOutreachMessageMock).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          clientGeneratedRawText: expect.any(String),
+        }),
+      );
+    });
+  });
+
+  it("renders a subject field for LinkedIn drafts", async () => {
+    generateOutreachMessageMock.mockResolvedValueOnce({
+      ok: true,
+      channel: OutreachChannel.Linkedin,
+      promptKey: OutreachPromptKey.FirstTouch,
+      subject: "Kurzer LinkedIn-Betreff",
+      body: "Hallo Peter,\n\nKurzer Text.",
+    });
+
+    render(
+      <LeadOutreachDialog
+        content={content}
+        leadDisplayName="Muster Lead"
+        leadId="lead-1"
+        onCloseAction={vi.fn()}
+        refreshToken={0}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.buttons.generate,
+      }),
+    );
+
+    expect(
+      await screen.findByDisplayValue("Kurzer LinkedIn-Betreff"),
+    ).toBeTruthy();
+  });
+
+  it("keeps whitespace in the context note input until submit", async () => {
+    render(
+      <LeadOutreachDialog
+        content={content}
+        leadDisplayName="Muster Lead"
+        leadId="lead-1"
+        leadImprovements={["Hero klarer machen"]}
+        onCloseAction={vi.fn()}
+        refreshToken={0}
+      />,
+    );
+
+    const contextInput = screen.getByLabelText(/Additional context/i);
+    fireEvent.change(contextInput, { target: { value: "  in English  " } });
+    expect((contextInput as HTMLTextAreaElement).value).toBe("  in English  ");
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.buttons.generate,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(generateOutreachMessageMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          contextNote: "in English",
         }),
       );
     });

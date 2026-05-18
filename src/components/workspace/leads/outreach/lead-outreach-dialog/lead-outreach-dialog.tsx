@@ -18,7 +18,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   OUTREACH_CHANNEL_VALUES,
-  OutreachChannel,
   type OutreachChannel as OutreachChannelValue,
 } from "@/common/ai-outreach-generation/outreach-channels";
 import {
@@ -46,6 +45,7 @@ import { outreachGenerationClientService } from "@/client/leads/outreach/lead-ou
 import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
 import { outreachLocalGenerationService } from "@/client/leads/outreach/lead-outreach-local-generation-service";
 import { OutreachProvider } from "@/common/constants/workspace/leads/ai-outreach-generation/outreach-provider";
+import { CHANNEL_PROFILES } from "@/common/ai-outreach-generation/channel-profiles";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";
@@ -85,15 +85,38 @@ function formatCounter(
     .replace("{max}", String(OUTREACH_CONTEXT_NOTE_MAX_LEN));
 }
 
-function createFallbackLeadFacts(): OutreachLeadFacts {
+function createFallbackLeadFacts(
+  fallbackImprovements: string[] | null | undefined,
+): OutreachLeadFacts {
   return {
     firstName: null,
     companyName: null,
     websiteUrl: null,
     categoryLabel: null,
     notes: null,
-    improvements: [],
+    improvements: fallbackImprovements ?? [],
     owner: null,
+  };
+}
+
+function mergeLeadFactsWithImprovements(params: {
+  leadFacts?: OutreachLeadFacts;
+  leadImprovements?: string[] | null;
+}): OutreachLeadFacts {
+  const baseFacts = params.leadFacts ?? createFallbackLeadFacts(null);
+  const fallbackImprovements = params.leadImprovements ?? [];
+  const mergedImprovements = [
+    ...(baseFacts.improvements ?? []),
+    ...fallbackImprovements,
+  ]
+    .map((item) => item.trim())
+    .filter(
+      (item, index, items) => item.length > 0 && items.indexOf(item) === index,
+    );
+
+  return {
+    ...baseFacts,
+    improvements: mergedImprovements,
   };
 }
 
@@ -181,6 +204,8 @@ export function LeadOutreachDialog({
   const hasResult = body.length > 0 || subject.length > 0;
   const channelHint = content.channel.hints[selectedChannel];
   const promptDescription = content.prompt.descriptions[selectedPromptKey];
+  const selectedChannelRequiresSubject =
+    CHANNEL_PROFILES[selectedChannel].requiresSubject;
   const counterText = formatCounter(content, contextNote.length);
   const generateLabel = hasResult
     ? content.buttons.regenerate
@@ -264,24 +289,29 @@ export function LeadOutreachDialog({
     setCopiedTarget(null);
     setIsGenerating(true);
 
+    const submittedContextNote = contextNote.trim();
+
     const basePayload: GenerateOutreachRequestDto = {
       leadId,
       promptKey: selectedPromptKey,
       channel: selectedChannel,
       includeImprovements: includeImprovements && hasImprovements,
-      ...(contextNote.trim() ? { contextNote: contextNote.trim() } : {}),
+      ...(submittedContextNote ? { contextNote: submittedContextNote } : {}),
     };
 
     try {
       if (localAvailable && localModelName) {
         const promptEntry = OUTREACH_PROMPT_REGISTRY[selectedPromptKey];
-        const leadFactsForPrompt = leadFacts ?? createFallbackLeadFacts();
+        const leadFactsForPrompt = mergeLeadFactsWithImprovements({
+          leadFacts,
+          leadImprovements,
+        });
         const { systemPrompt, userPrompt } = promptEntry.build({
           channel: selectedChannel,
           lead: leadFactsForPrompt,
           options: {
             includeImprovements: includeImprovements && hasImprovements,
-            contextNote: contextNote.trim() || undefined,
+            contextNote: submittedContextNote || undefined,
           },
         });
 
@@ -503,7 +533,7 @@ export function LeadOutreachDialog({
           <section className={styles.resultPanel} aria-live="polite">
             {hasResult ? (
               <>
-                {selectedChannel === OutreachChannel.Email ? (
+                {selectedChannelRequiresSubject ? (
                   <label className={styles.resultField}>
                     <span className={styles.resultHeader}>
                       <span>{content.result.subjectLabel}</span>
@@ -550,7 +580,7 @@ export function LeadOutreachDialog({
                     onChange={(event) => setBody(event.target.value)}
                     placeholder={content.result.bodyPlaceholder}
                     rows={
-                      selectedChannel === OutreachChannel.Email
+                      selectedChannelRequiresSubject
                         ? OUTREACH_RESULT_TEXTAREA_ROWS.Email
                         : OUTREACH_RESULT_TEXTAREA_ROWS.Default
                     }

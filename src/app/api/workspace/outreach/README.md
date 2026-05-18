@@ -51,7 +51,7 @@ call and uses that text directly for parsing and persistence. Without it the ser
   "ok": true,
   "channel": "linkedin | email | instagram | direct-message",
   "promptKey": "first-touch",
-  "subject": "string (only for email)",
+  "subject": "string (for email and LinkedIn)",
   "body": "string"
 }
 ```
