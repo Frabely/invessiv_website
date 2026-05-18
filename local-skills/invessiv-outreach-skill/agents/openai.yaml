@@ -1,0 +1,33 @@
+display_name: Invessiv Outreach Skill
+short_description: Create cautious, individualized LinkedIn first messages with a neutral subject line.
+default_prompt: >-
+  Nutze den Invessiv Outreach Skill.
+
+  Erstelle eine individuelle LinkedIn-Erstnachricht mit Betreff.
+
+  Wichtig:
+  - Ich bin Moritz.
+  - Kein harter Pitch.
+  - Deutschland-tauglich und vorsichtig formuliert.
+  - Nicht direkt "mehr Anfragen", "Landingpage", "Website-Optimierung" oder "ich kann helfen" schreiben.
+  - Erst um Erlaubnis fragen.
+  - Es soll nicht nach Copy-Paste klingen.
+  - Maximal einen konkreten Verbesserungspunkt nennen.
+  - Wenn keine Website vorhanden ist, nutze den Pilotprojekt-Ansatz für einfache klare Websites zu fairen Einstiegskonditionen.
+  - Wenn eine Website vorhanden ist, ehrlich aus Besucherperspektive schreiben.
+  - Wenn die Person mich zuerst vernetzt hat, persönlicher starten: "danke für die Einladung".
+  - Verwende Sie oder du passend zur Person.
+  - Erstelle auch einen passenden Betreff.
+
+  Lead:
+  Name:
+  Firma:
+  Rolle:
+  Website:
+  LinkedIn-Kontext:
+  Branche:
+  Auffälligkeiten / Verbesserungen:
+  Ton: eher locker / eher formell
+  Ansprache: Sie / du / selbst entscheiden
+  Website vorhanden: ja / nein
+  Person hat zuerst vernetzt: ja / nein
