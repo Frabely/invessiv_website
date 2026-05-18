@@ -1,6 +1,7 @@
----
+﻿---
 name: invessiv-outreach-skill
-description: Use this skill when Moritz needs a cautious, individualized LinkedIn first message for Invessiv outreach in German, especially for websites, landing pages, or online presence leads. It covers cases with an existing website or no website and always produces a neutral subject line plus a copyable message.
+description:
+  Use this skill when Moritz needs a cautious, individualized German first outreach message for Invessiv about websites, landing pages, or online presence leads. The skill decides whether to use website-based improvements: if a website exists, it may use up to two concrete hints; if no website exists, it should stay generic-but-individual and mention pilot projects at fair entry pricing. Produce a neutral subject line and a plain-text copyable message without markdown code fences; on LinkedIn, address the person with a first-name greeting like "Hallo Susann" instead of Herr/Frau.
 ---
 
 # Invessiv Outreach Skill
@@ -15,38 +16,40 @@ Create a message that:
 - stays cautious and Germany-appropriate
 - does not pitch directly
 - asks for permission first
-- mentions at most one concrete improvement point
-- feels individually written for the person, company, website, or profile
+- mentions at most two concrete, relevant improvement hints
+- feels individually written for the person, industry, website, or profile
 - avoids aggressive sales language
 
 ## Required Inputs
 
 Use the available context in this order:
 
-- display name
-- company name
-- website URL
+- name
+- company
+- role
+- website
+- LinkedIn context
+- industry
+- observed details or improvement points
+- preferred tone: relaxed or formal
+- preferred address: `Sie`, `du`, or decide yourself
 - whether a website exists
-- category label or similar industry hint
-- notes or observations
-- optional improvements
-- owner or sender name
-- channel
-- include improvements flag
-- additional context note
+- whether the person connected first
 
-If important information is missing, infer conservatively from the available fields.
+If important information is missing, infer conservatively from context.
 
 ## Core Logic
 
 ### If a website exists
 
-Focus on the first impression and the visitor path.
+Use the website as the main source.
 
-1. Pick one concrete but respectful point.
-2. Do not list multiple issues.
-3. Do not sell a solution.
-4. Ask permission to explain what you mean.
+1. Look at the website briefly.
+2. Pick up to two concrete but respectful hints.
+3. Do not list more than two hints.
+4. Do not sell a solution.
+5. Ask permission to explain what you mean.
+6. Make it clear that the note is based on the website, not on a generic guess.
 
 Good angles:
 
@@ -60,13 +63,22 @@ Good angles:
 
 ### If no website exists
 
-Use a calm pilot-project angle.
+Use a deliberately more generic but still individual message.
 
-- mention that no clear website was found
-- do not ask for case studies
-- frame it as a possible small, clear first website
-- keep the tone low pressure
+- do not pretend to have reviewed a website
+- do not invent concrete website feedback
+- lean on role, industry, profile, or LinkedIn context
+- mention that you currently offer pilot projects at fair entry pricing
+- keep the tone calm and low pressure
 - ask if it is okay to briefly say what you have in mind
+
+### If the person connected first
+
+Start more personally:
+
+- thank them for the invitation
+- mention that you took the connection as a reason to look at the site or profile
+- then add one real observation
 
 ## Tone
 
@@ -88,7 +100,12 @@ Should not sound:
 - like a sales script
 - like a website audit
 
-## Address Choice
+## Address and Salutation
+
+- On LinkedIn, use a first-name greeting if available: `Hallo Susann,`
+- Do not use `Herr/Frau` in LinkedIn salutations.
+- If the first name is missing, use `Hallo,` or another neutral greeting.
+- Keep the body in `Sie` or `du` according to the profile fit and context.
 
 Use `Sie` for:
 
@@ -103,9 +120,10 @@ Use `du` for:
 
 - younger or casual profiles
 - coaches, creatives, photographers
+- if the person connected first
 - clearly personal LinkedIn profiles
 
-When in doubt, use `Sie`.
+When in doubt, use `Sie` in the body and a neutral first-name LinkedIn greeting.
 
 ## Subject Line Rules
 
@@ -127,13 +145,43 @@ Avoid:
 - Kostenloses Website-Audit
 - Neue Kunden über Ihre Website
 
+## Output Contract
+
+The output must follow this structure exactly:
+
+```text
+Subject: <neutral subject line>
+
+Message:
+<plain text body>
+```
+
+Rules for the output contract:
+
+- Output exactly one `Subject:` line.
+- Output exactly one `Message:` line.
+- Put a blank line between subject and message.
+- The body must start immediately on the next line after `Message:`.
+- Do not put the subject again anywhere in the body.
+- Do not output any other labels, bullets, headings, or commentary.
+- Do not wrap either block in markdown code fences.
+- Do not use `Message: ```...````, ever.
+- Do not use quotes around the subject or body.
+- Do not place the body on the same line as `Message:`.
+- The first non-empty line of the body should be the greeting.
+
 ## Language Rules
 
 - Do not mention numbers unless needed.
 - Do not promise results too early.
-- Mention only one concrete point.
+- Mention no more than two concrete hints.
 - Do not copy the website headline verbatim.
 - Keep the ending permission-based.
+- Do not wrap the message in markdown code fences.
+- Output the message as plain text so it can be copied directly.
+- Never emit `Message: ```...````, even if the content itself contains line breaks.
+- If no website exists, mention pilot projects at fair entry pricing in a calm, non-pushy way.
+- If a subject is present in the source material, keep it only in the subject line and not in the body.
 
 Standard endings:
 
@@ -157,14 +205,6 @@ Viele Grüße
 Moritz von Invessiv
 ```
 
-## Output Format
-
-Always output:
-
-1. Subject
-2. Message as a copyable text block
-3. Optional short alternative, only if useful
-
 ## Quality Check
 
 Before output, verify:
@@ -173,12 +213,19 @@ Before output, verify:
 2. Is there a real connection to the person, company, website, or profile?
 3. Is it not directly selling?
 4. Is it asking for permission?
-5. Is only one concrete point mentioned?
+5. Is no more than two concrete hints mentioned?
 6. Does it avoid harsh criticism?
 7. Is the subject neutral?
 8. Is the address choice appropriate?
 9. Are aggressive terms avoided?
 10. Would it read naturally on LinkedIn without extra context?
+11. Is the message plain text, without triple backticks?
+12. On LinkedIn, does the salutation use a first name instead of Herr/Frau?
+13. If a website exists, is the message based on that website?
+14. If no website exists, is the message generic-but-individual and does it mention pilot projects at fair entry
+    pricing?
+15. Is the subject only in the subject line and not repeated in the body?
+16. Is the body starting directly after `Message:` with a greeting, not another label?
 
 ## References
 

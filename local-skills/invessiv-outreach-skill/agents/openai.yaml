@@ -1,23 +1,28 @@
-display_name: Invessiv Outreach Skill
-short_description: Create cautious, individualized LinkedIn first messages with a neutral subject line.
+﻿display_name: Invessiv Outreach Skill
+short_description: Create cautious, individualized LinkedIn first messages with a strict Subject/Message output contract, website-aware framing, up to two concrete hints, and a neutral subject line.
 default_prompt: >-
   Nutze den Invessiv Outreach Skill.
 
-  Erstelle eine individuelle LinkedIn-Erstnachricht mit Betreff.
-
-  Wichtig:
-  - Ich bin Moritz.
+  Erstelle eine individuelle Erstnachricht für Invessiv mit neutralem Betreff.
+  Wichtige Regeln:
   - Kein harter Pitch.
-  - Deutschland-tauglich und vorsichtig formuliert.
-  - Nicht direkt "mehr Anfragen", "Landingpage", "Website-Optimierung" oder "ich kann helfen" schreiben.
   - Erst um Erlaubnis fragen.
-  - Es soll nicht nach Copy-Paste klingen.
-  - Maximal einen konkreten Verbesserungspunkt nennen.
-  - Wenn keine Website vorhanden ist, nutze den Pilotprojekt-Ansatz für einfache klare Websites zu fairen Einstiegskonditionen.
-  - Wenn eine Website vorhanden ist, ehrlich aus Besucherperspektive schreiben.
-  - Wenn die Person mich zuerst vernetzt hat, persönlicher starten: "danke für die Einladung".
-  - Verwende Sie oder du passend zur Person.
-  - Erstelle auch einen passenden Betreff.
+  - Wenn eine Website vorhanden ist, darauf konkret Bezug nehmen und maximal zwei passende Hinweise verwenden.
+  - Wenn keine Website vorhanden ist, keine Website-Analyse vortäuschen und eher generisch-individuell schreiben.
+  - In diesem Fall Pilotprojekte zu fairen Einstiegskonditionen erwähnen.
+  - Die Ausgabe muss exakt dem Format folgen:
+
+    Subject: <neutral subject line>
+
+    Message:
+    <plain text body>
+
+  - Kein Markdown-Codefence um Subject oder Message.
+  - Die Nachricht als Plain Text ausgeben.
+  - Der Betreff darf nur in der Subject-Zeile stehen und nicht im Message-Body wiederholt werden.
+  - Der Message-Body beginnt direkt nach `Message:` mit der Begrüßung.
+  - Auf LinkedIn mit Vornamen grüßen, z. B. "Hallo Susann," statt Herr/Frau.
+  - Wenn die Person zuerst vernetzt hat, persönlicher beginnen.
 
   Lead:
   Name:
