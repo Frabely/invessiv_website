@@ -2,6 +2,7 @@ import "server-only";
 
 import OpenAI from "openai";
 import { OutreachChatRole } from "@/common/ai-outreach-generation/outreach-message-roles";
+import { OutreachErrorCode } from "@/common/ai-outreach-generation/outreach-error-codes";
 import { OutreachOpenAi } from "@/common/ai-outreach-generation/outreach-openai";
 
 const OPENAI_MODEL = process.env.OPENAI_MODEL ?? OutreachOpenAi.DefaultModel;
@@ -16,20 +17,24 @@ async function generate(
   }
 
   const client = new OpenAI({ apiKey });
-  const response = await client.chat.completions.create({
-    model: OPENAI_MODEL,
-    messages: [
-      { role: OutreachChatRole.System, content: systemPrompt },
-      { role: OutreachChatRole.User, content: userPrompt },
-    ],
-  });
 
-  const text = response.choices[0]?.message?.content;
-  if (typeof text !== "string" || text.trim().length === 0) {
-    return null;
+  try {
+    const response = await client.chat.completions.create({
+      model: OPENAI_MODEL,
+      messages: [
+        { role: OutreachChatRole.System, content: systemPrompt },
+        { role: OutreachChatRole.User, content: userPrompt },
+      ],
+    });
+    const text = response.choices[0]?.message?.content;
+    if (typeof text !== "string" || text.trim().length === 0) {
+      return null;
+    }
+
+    return text;
+  } catch {
+    throw new Error(OutreachErrorCode.ProviderUnavailable);
   }
-
-  return text;
 }
 
 export const outreachAiService = { generate };

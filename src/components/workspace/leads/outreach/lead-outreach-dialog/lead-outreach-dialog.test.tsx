@@ -151,6 +151,31 @@ describe("LeadOutreachDialog", () => {
     });
   });
 
+  it("keeps generation enabled when the provider check reports no provider", async () => {
+    checkOutreachProvidersMock.mockResolvedValueOnce({
+      openai: false,
+      openaiModel: null,
+    });
+
+    render(
+      <LeadOutreachDialog
+        content={content}
+        leadDisplayName="Muster Lead"
+        leadId="lead-1"
+        onCloseAction={vi.fn()}
+        refreshToken={0}
+      />,
+    );
+
+    await screen.findByText(/No provider available/i);
+
+    expect(
+      screen
+        .getByRole("button", { name: content.buttons.generate })
+        .hasAttribute("disabled"),
+    ).toBe(false);
+  });
+
   it("sends only the structured request fields to the server", async () => {
     render(
       <LeadOutreachDialog
@@ -206,6 +231,8 @@ describe("LeadOutreachDialog", () => {
     expect(
       await screen.findByDisplayValue("Kurzer LinkedIn-Betreff"),
     ).toBeTruthy();
+    expect(screen.getByLabelText(content.result.subjectLabel)).toBeTruthy();
+    expect(screen.getByLabelText(content.result.bodyLabel)).toBeTruthy();
   });
 
   it("renders a subject field when the server returns one for a non-subject channel", async () => {

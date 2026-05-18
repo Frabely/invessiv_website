@@ -124,6 +124,8 @@ export function LeadOutreachDialog({
   const contextTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [isMounted, setIsMounted] = useState(false);
   const contextId = useId();
+  const resultSubjectId = useId();
+  const resultBodyId = useId();
   const [selectedChannel, setSelectedChannel] = useState<OutreachChannelValue>(
     OUTREACH_DEFAULT_CHANNEL,
   );
@@ -349,9 +351,7 @@ export function LeadOutreachDialog({
 
             <button
               className={styles.generateButton}
-              disabled={
-                isGenerating || providerState === LeadOutreachProviderState.None
-              }
+              disabled={isGenerating}
               onClick={handleGenerate}
               type="button"
             >
@@ -364,9 +364,11 @@ export function LeadOutreachDialog({
             {hasResult ? (
               <>
                 {shouldRenderSubjectField ? (
-                  <label className={styles.resultField}>
+                  <div className={styles.resultField}>
                     <span className={styles.resultHeader}>
-                      <span>{content.result.subjectLabel}</span>
+                      <label htmlFor={resultSubjectId}>
+                        {content.result.subjectLabel}
+                      </label>
                       <button
                         className={styles.copyButton}
                         disabled={!subject}
@@ -383,18 +385,21 @@ export function LeadOutreachDialog({
                     </span>
                     <input
                       className={styles.resultInput}
+                      id={resultSubjectId}
                       onChange={(event) =>
                         setSubject(event.currentTarget.value)
                       }
                       placeholder={content.result.subjectPlaceholder}
                       value={subject}
                     />
-                  </label>
+                  </div>
                 ) : null}
 
-                <label className={styles.resultField}>
+                <div className={styles.resultField}>
                   <span className={styles.resultHeader}>
-                    <span>{content.result.bodyLabel}</span>
+                    <label htmlFor={resultBodyId}>
+                      {content.result.bodyLabel}
+                    </label>
                     <button
                       className={styles.copyButton}
                       disabled={!body}
@@ -409,6 +414,7 @@ export function LeadOutreachDialog({
                   </span>
                   <textarea
                     className={styles.resultTextarea}
+                    id={resultBodyId}
                     onChange={(event) => setBody(event.currentTarget.value)}
                     placeholder={content.result.bodyPlaceholder}
                     rows={
@@ -418,7 +424,7 @@ export function LeadOutreachDialog({
                     }
                     value={body}
                   />
-                </label>
+                </div>
               </>
             ) : (
               <div className={styles.emptyState}>

@@ -81,11 +81,11 @@ describe("outreachAiService.generate", () => {
     expect(mockOpenAiCreate).not.toHaveBeenCalled();
   });
 
-  it("returns null when OpenAI rejects", async () => {
+  it("throws ProviderUnavailable when OpenAI rejects", async () => {
     mockOpenAiCreate.mockRejectedValueOnce(new Error("openai_error"));
 
     await expect(outreachAiService.generate("system", "user")).rejects.toThrow(
-      "openai_error",
+      "PROVIDER_UNAVAILABLE",
     );
   });
 
