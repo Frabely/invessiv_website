@@ -1,5 +1,3 @@
-import "server-only";
-
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 export const LEAD_IMPORT_STATUS_SYNONYMS: Record<string, ContactLeadStatus> = {

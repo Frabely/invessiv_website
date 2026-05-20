@@ -29,21 +29,19 @@ async function getLeadByEmail(email: string) {
 
   const rows = await sql.query(
     `
-      SELECT
-        leads.email,
-        concat_ws(' ', leads.first_name, leads.last_name) AS "fullName",
-        lead_project_requests.offer_key AS "inquiryType",
-        lead_submissions.channel AS "sourceForm",
-        lead_project_requests.goal_key AS "goalKey"
-      FROM leads
-      LEFT JOIN lead_submissions
-        ON lead_submissions.lead_id = leads.id
-      LEFT JOIN lead_project_requests
-        ON lead_project_requests.lead_submission_id = lead_submissions.id
-      WHERE leads.email = $1
-      ORDER BY lead_submissions.created_at DESC
-      LIMIT 1
-    `,
+            SELECT leads.email,
+                   concat_ws(' ', leads.first_name, leads.last_name) AS "fullName",
+                   lead_project_requests.offer_key                   AS "inquiryType",
+                   lead_submissions.channel                          AS "sourceForm",
+                   lead_project_requests.goal_key                    AS "goalKey"
+            FROM leads
+                     LEFT JOIN lead_submissions
+                               ON lead_submissions.lead_id = leads.id
+                     LEFT JOIN lead_project_requests
+                               ON lead_project_requests.lead_submission_id = lead_submissions.id
+            WHERE leads.email = $1
+            ORDER BY lead_submissions.created_at DESC LIMIT 1
+        `,
     [email],
   );
 
