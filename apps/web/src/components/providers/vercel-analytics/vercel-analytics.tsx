@@ -4,7 +4,7 @@ import { Analytics, type BeforeSendEvent } from "@vercel/analytics/react";
 import { ConversionClickTracker } from "@/components/shared/analytics/conversion-click-tracker/conversion-click-tracker";
 import { isSupportedLocale } from "@/config/i18n";
 
-const SENSITIVE_ROUTE_PREFIXES = ["/api/", "/workspace"];
+const SENSITIVE_ROUTE_PREFIXES = ["/api/"];
 const SENSITIVE_QUERY_PARTS = [
   "token",
   "email",

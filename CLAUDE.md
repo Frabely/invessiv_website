@@ -5,73 +5,83 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev          # Start dev server
-npm run build        # Production build
-npm run lint         # ESLint
-npm run typecheck    # TypeScript type-check (no emit)
-npm run test         # Vitest unit tests
-npm run test:e2e     # Playwright E2E tests
-npm run db:migrate   # Run DB migrations (variants: :dev, :preview, :prod)
+pnpm dev:web                                  # Start web dev server (port 3000)
+pnpm dev:workspace                            # Start workspace dev server (port 3001)
+pnpm build:web                                # Production build apps/web
+pnpm build:workspace                          # Production build apps/workspace
+pnpm lint                                     # ESLint across all workspaces
+pnpm typecheck                                # TypeScript type-check across all workspaces
+pnpm test                                     # Vitest unit tests across all workspaces
+pnpm --filter @invessiv/web test:e2e          # Playwright E2E for apps/web
+pnpm --filter @invessiv/workspace test:e2e    # Playwright E2E for apps/workspace
+pnpm db:migrate                               # Run DB migrations (variants: :dev, :preview, :prod)
 ```
 
-Pre-merge gates: `npm run lint` and `npm run build` must pass green.
+Pre-merge gates: `pnpm lint`, `pnpm typecheck`, `pnpm build:web` and `pnpm build:workspace` must pass green.
 
 ## Architecture
 
 **Stack**: Next.js 16 (App Router) · React 19 · Tailwind CSS v4 · Drizzle ORM + Neon PostgreSQL · Resend (email) · Vitest + Playwright · Vercel
 
-**What this is**: A conversion-focused marketing/service website for Invessiv with a contact-lead pipeline (project requests, discovery calls, quick contacts).
+**What this is**: A conversion-focused marketing/service website for Invessiv (`apps/web`, served at
+`https://invessiv.com`) plus a private CRM/workspace (`apps/workspace`, served at `https://workspace.invessiv.com`).
+Pipeline includes contact-lead intake (project requests, discovery calls, quick contacts) on web and lead management on
+workspace.
 
-### Directory layout
+### Monorepo layout
 
 ```
-src/
-├── app/[locale]/         # Route entries only — page.tsx orchestrates, no logic here
-│   ├── (auth)/           # Public Clerk sign-in/sign-up routes
-│   ├── workspace/      # Protected workspace route group
-│   ├── (landing)/        # Landing page route group
-│   └── (legal)/          # Legal pages route group
-├── app/api/              # API route handlers (POST /api/public/contact)
-├── components/
-│   ├── auth/             # Auth frame components for Clerk pages
-│   ├── workspace/        # Protected workspace UI components
-│   ├── marketing/        # Landing page sections (hero, services, proof, process, contact, footer)
-│   ├── legal/            # Legal page components
-│   └── shared/           # Reusable UI (button, locale-switch, theme-switch, breadcrumbs)
-├── server/
-│   ├── contact/          # Command handlers per contact kind
-│   ├── workspace/        # Workspace command/query handlers
-│   └── services/         # Email service, response builder, anti-abuse, rate limiter
-├── i18n/dictionaries/    # Per-section translation files: <section>/{de,en}.json + index.ts
-├── hooks/                # Custom React hooks (scroll, reveal, tilt, theme, etc.)
-└── lib/                  # SEO helpers, navigation, analytics utilities
+apps/
+├── web/                            # @invessiv/web — public marketing/legal/contact site
+│   └── src/
+│       ├── app/[locale]/           # Route entries: (landing), (legal), api/public/contact
+│       ├── client/contact/         # Client-side contact form helpers
+│       ├── components/             # marketing, legal, providers, shared
+│       ├── config/                 # Routes, i18n, company info, feature flags
+│       ├── hooks/                  # analytics, marketing
+│       ├── i18n/dictionaries/      # landing, legal, mail, marketing — per locale
+│       ├── lib/                    # analytics, navigation, seo, theme, url, site-metadata
+│       └── server/
+│           ├── contact/            # Command handlers per contact kind
+│           ├── services/           # Email, response builder, anti-abuse, rate limiter
+│           └── config/             # Server config
+└── workspace/                      # @invessiv/workspace — private CRM, Clerk-protected
+    └── src/
+        ├── app/[locale]/
+        │   ├── (auth)/             # Public sign-in/sign-up
+        │   └── (app)/              # Protected workspace pages (leads, etc.)
+        ├── app/api/workspace/      # Workspace API routes (Route-level auth)
+        ├── client/leads/           # Client-side leads helpers
+        ├── components/             # auth, workspace, providers, shared
+        ├── i18n/dictionaries/      # auth, workspace — per locale
+        ├── lib/                    # auth (allowlist, api guard), workspace
+        ├── proxy.ts                # Clerk middleware (page routes only)
+        └── server/workspace/       # Workspace command/query handlers, services
 
 packages/
-├── common/               # Shared DTOs, constants, defaults, patterns (@invessiv/common)
-│   ├── contracts/
-│   ├── constants/
-│   ├── defaults/
-│   └── patterns/
-└── db/                   # Drizzle client, schemas, migrations, persistence (@invessiv/db)
-    ├── migrations/       # SQL migration files
-    ├── scripts/          # Migration/seed/smoke-test runners
+├── common/                         # @invessiv/common — shared DTOs/constants/defaults/patterns
+│   └── src/{contracts,constants,defaults,patterns}/
+└── db/                             # @invessiv/db — Drizzle client, schemas, migrations, persistence
+    ├── migrations/                 # SQL migration files
+    ├── scripts/                    # Migration/seed/smoke-test runners
     └── src/
-        ├── contact/      # Persist-* functions per contact kind
-        ├── contracts/    # Persistence input/record contracts
-        ├── core/         # DB client, env loading, SQL helpers
-        └── record-configuration/  # pgTable schemas (one file per table)
+        ├── contact/                # Persist-* functions per contact kind
+        ├── contracts/              # Persistence input/record contracts
+        ├── core/                   # DB client, env loading, SQL helpers
+        └── record-configuration/   # pgTable schemas (one file per table)
 ```
 
 ### Scoped guidance files
 
 Read the closest scoped guidance file before changing files in that area. Root rules still apply; scoped files add or tighten local conventions.
 
-| File                                   | What it contains                                                                                                                                   | When to use it                                                                                                                                      |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/[locale]/(auth)/AGENTS.md`    | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                               | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                      |
-| `src/app/[locale]/(auth)/CLAUDE.md`    | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.                 | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smoke tests. |
-| `src/app/[locale]/workspace/AGENTS.md` | Agent/Codex rules for the protected workspace: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests, and skills.          | Use for workspace routes, workspace layout, auth/permission checks, workspace dictionaries, or protected workspace components.                      |
-| `src/app/[locale]/workspace/CLAUDE.md` | Architecture knowledge for the workspace: defense-in-depth, Clerk/allowlist mechanics, routing conventions, critical files, and future extensions. | Use for `/[locale]/workspace`, `requireWorkspaceAccess`, allowlist changes, role-model planning, or workspace shell work.                           |
+| File                                                    | What it contains                                                                                                                         | When to use it                                                                                                                                 |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/workspace/src/app/[locale]/(auth)/AGENTS.md`      | Agent/Codex rules for public Clerk auth routes, i18n, component structure, security boundaries, and required skills.                     | Use for sign-in/sign-up routes, auth frame UI, auth metadata, auth dictionaries, or Clerk UI work in `(auth)`.                                 |
+| `apps/workspace/src/app/[locale]/(auth)/CLAUDE.md`      | Architecture knowledge for the public auth area: purpose, Clerk stack, routing, redirects, i18n, security, and planned extensions.       | Use for planning, implementation, or review of `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk appearance, auth redirects, or auth E2E smokes. |
+| `apps/workspace/src/app/[locale]/(app)/leads/AGENTS.md` | Agent/Codex rules for the protected workspace leads area: auth gate, allowlist, noindex/dynamic rendering, permission boundaries, tests. | Use for workspace leads routes, layout, auth/permission checks, workspace dictionaries, or protected workspace components.                     |
+| `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` | Architecture knowledge for the workspace leads area: defense-in-depth, Clerk/allowlist mechanics, routing, critical files, extensions.   | Use for leads routes, `requireWorkspaceAccess`, allowlist changes, role-model planning, or workspace shell work.                               |
+| `apps/workspace/src/server/{AGENTS,CLAUDE}.md`          | Server-side conventions for workspace command/query handlers, services, persistence boundary against `@invessiv/db`.                     | Use when adding or changing workspace command/query handlers, services, or anything in `server/workspace/**`.                                  |
 
 ### Routing
 
@@ -79,15 +89,18 @@ Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Sta
 
 ### i18n (mandatory rules)
 
-- All UI/page text lives exclusively in `src/i18n/dictionaries/<section>/{de,en}.json` — never inline in `.tsx`
-- Loaded server-side via `src/i18n/get-dictionary.ts` (marked `server-only`)
+- All UI/page text lives exclusively in `apps/<app>/src/i18n/dictionaries/<section>/{de,en}.json` — never inline in
+  `.tsx`
+- Web loads via `apps/web/src/i18n/get-dictionary.ts` (marked `server-only`); workspace loads via per-domain helpers in
+  `apps/workspace/src/i18n/dictionaries/<domain>/index.ts`
 - When editing copy, always update **all** supported locale files in the same commit
 - No `locale === "de" ? … : …` branching in app/config/lib/provider/component code. This also applies to provider configuration and third-party localization objects such as Clerk `deDE`/`enUS`. Use typed locale-keyed dictionaries or `Record<SupportedLocale, ...>` mappings so adding a third language never requires structural code changes.
 - Key namespace convention: `meta`, `page`, `sections`, `labels`, `values` within each section namespace
 
 ### Contact API pattern
 
-`POST /api/public/contact` dispatches to per-kind command handlers in `src/server/contact/`. Each handler validates with
+`POST /api/public/contact` (in `apps/web`) dispatches to per-kind command handlers in `apps/web/src/server/contact/`.
+Each handler validates with
 Zod, persists via a dedicated persistence service (`packages/db/src/contact/`), and sends email via Resend. Rate
 limiting and anti-abuse checks run before dispatch.
 
@@ -127,7 +140,7 @@ export const FooErrorCode = {
 } as const;
 export type FooErrorCode = (typeof FooErrorCode)[keyof typeof FooErrorCode];
 
-// 2. Message map + helper co-located with the layer that uses it (e.g. src/app/api/.../foo-error.ts)
+// 2. Message map + helper co-located with the layer that uses it (e.g. apps/<app>/src/app/api/.../foo-error.ts)
 const MESSAGES: Record<FooErrorCode, string> = {
   [FooErrorCode.NotFound]: "Not found",
   [FooErrorCode.ValidationError]: "Validation failed",
@@ -166,7 +179,7 @@ files:
 
 - **Shared between client and server** (input shapes, result shapes, DTOs): `packages/common/src/contracts/<domain>/`
 - **Server-internal only** (contains server-only imports or DB types): dedicated `*-types.ts` file within
-  `src/server/workspace/<domain>/`
+  `apps/workspace/src/server/workspace/<domain>/` (or the equivalent server folder of the owning app)
 
 The service or handler file imports directly from the contract file — no re-exporting.
 
@@ -174,9 +187,10 @@ The service or handler file imports directly from the contract file — no re-ex
 
 - Each component lives in its own folder: `component-name/component-name.tsx`
 - Styles go in a separate file (`component-name.css` or `*.module.css`), never inline styles in `.tsx`
-- `src/app/globals.css` contains only: Tailwind import, global tokens/reset, theme CSS variables — no component-specific classes
+- `apps/<app>/src/app/globals.css` contains only: Tailwind import, global tokens/reset, theme CSS variables — no
+  component-specific classes
 - Server Components by default; `"use client"` only when interactivity requires it
-- Animation/scroll/observer logic belongs in `src/hooks/`, not in render files
+- Animation/scroll/observer logic belongs in `apps/<app>/src/hooks/`, not in render files
 - `page.tsx` files orchestrate only — no large render switches or inline business logic
 
 ### CSS / Theming
@@ -195,7 +209,7 @@ The service or handler file imports directly from the contract file — no re-ex
 ### Testing
 
 - Unit tests co-located with implementation (`*.test.ts` / `*.test.tsx`)
-- E2E tests in `e2e/` covering core conversion flows (contact form submission)
+- E2E tests in `apps/<app>/e2e/` covering core flows (web: contact form submission; workspace: auth/leads)
 - New logic/workflows require tests (unit or E2E depending on risk) before merge
 
 ### Architecture violations

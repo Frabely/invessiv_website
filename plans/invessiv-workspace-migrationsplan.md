@@ -155,16 +155,16 @@ Diese alten Pfade müssen nicht per Redirect erhalten bleiben, weil der Workspac
 
 ## Umsetzungsstatus
 
-| PR  | Status        | Nachweis                                                                                                                                                                                                                                                                                                                                                                                                                |
-| --- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Abgeschlossen | Branch `chore/monorepo-migration`, Tag `before-monorepo-migration`, Commit `e458a62`, Gates grün mit `corepack pnpm`                                                                                                                                                                                                                                                                                                    |
-| 2   | Abgeschlossen | `packages/common` extrahiert; Gates grün: `pnpm --filter @invessiv/common typecheck`, `pnpm lint`, `pnpm typecheck`, `pnpm test`                                                                                                                                                                                                                                                                                        |
-| 3   | Abgeschlossen | `packages/db` extrahiert; Gates grün: `pnpm --filter @invessiv/db typecheck`, `pnpm --filter @invessiv/db test`, `pnpm --filter @invessiv/db db:smoke:dev`, `pnpm lint`, `pnpm typecheck`                                                                                                                                                                                                                               |
-| 4   | Abgeschlossen | `apps/web` erstellt und öffentliche Website isoliert; Gates grün: `pnpm --filter @invessiv/web lint`, `typecheck`, `test`, `build`; Contact-E2E/DB-Smoke bewusst ausgelassen, da E2E lokal nicht zuverlässig genutzt wird                                                                                                                                                                                               |
-| 5   | Abgeschlossen | `apps/workspace` erstellt, Auth-Gate, Proxy, Dictionaries, Komponenten und APIs migriert; manueller Auth-Smoke vom Nutzer bestätigt                                                                                                                                                                                                                                                                                     |
-| 6   | Abgeschlossen | `apps/workspace/playwright.config.ts` erstellt; e2e nach `apps/web/e2e/` verschoben; Root-Scripts auf `pnpm -r` umgestellt; Proxy-Typfehler behoben; `server-only`-Verstoß in `packages/common` entfernt; Gates: `pnpm lint`, `pnpm typecheck`, `pnpm test` grün; `--filter @invessiv/web test:e2e` scheitert an fehlendem Build (vorher fehlerhaft, bewusst ausgelassen); `--filter @invessiv/workspace test:e2e` grün |
-| 7   | Code-Ready    | `NEXT_PUBLIC_SITE_URL` in `apps/web/src/lib/site-metadata.ts` verdrahtet; `apps/web/.env.example` und `apps/workspace/.env.example` per App gesplittet (Clerk-URL-ENV entfernt); beide Apps bauen erfolgreich; Gates lint/typecheck/test grün. Vercel-Projektkonfiguration (Root Directory, Preview-Deploys, Clerk Origins) erfordert manuelle Dashboard-Schritte — siehe Checkliste unten                              |
-| 8   | Offen         | Noch nicht begonnen                                                                                                                                                                                                                                                                                                                                                                                                     |
+| PR  | Status        | Nachweis                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Abgeschlossen | Branch `chore/monorepo-migration`, Tag `before-monorepo-migration`, Commit `e458a62`, Gates grün mit `corepack pnpm`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 2   | Abgeschlossen | `packages/common` extrahiert; Gates grün: `pnpm --filter @invessiv/common typecheck`, `pnpm lint`, `pnpm typecheck`, `pnpm test`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| 3   | Abgeschlossen | `packages/db` extrahiert; Gates grün: `pnpm --filter @invessiv/db typecheck`, `pnpm --filter @invessiv/db test`, `pnpm --filter @invessiv/db db:smoke:dev`, `pnpm lint`, `pnpm typecheck`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 4   | Abgeschlossen | `apps/web` erstellt und öffentliche Website isoliert; Gates grün: `pnpm --filter @invessiv/web lint`, `typecheck`, `test`, `build`; Contact-E2E/DB-Smoke bewusst ausgelassen, da E2E lokal nicht zuverlässig genutzt wird                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 5   | Abgeschlossen | `apps/workspace` erstellt, Auth-Gate, Proxy, Dictionaries, Komponenten und APIs migriert; manueller Auth-Smoke vom Nutzer bestätigt                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| 6   | Abgeschlossen | `apps/workspace/playwright.config.ts` erstellt; e2e nach `apps/web/e2e/` verschoben; Root-Scripts auf `pnpm -r` umgestellt; Proxy-Typfehler behoben; `server-only`-Verstoß in `packages/common` entfernt; Gates: `pnpm lint`, `pnpm typecheck`, `pnpm test` grün; `--filter @invessiv/web test:e2e` scheitert an fehlendem Build (vorher fehlerhaft, bewusst ausgelassen); `--filter @invessiv/workspace test:e2e` grün                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 7   | Code-Ready    | `NEXT_PUBLIC_SITE_URL` in `apps/web/src/lib/site-metadata.ts` verdrahtet; `apps/web/.env.example` und `apps/workspace/.env.example` per App gesplittet (Clerk-URL-ENV entfernt); beide Apps bauen erfolgreich; Gates lint/typecheck/test grün. Vercel-Projektkonfiguration (Root Directory, Preview-Deploys, Clerk Origins) erfordert manuelle Dashboard-Schritte — siehe Checkliste unten                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 8   | Code-Ready    | Alte Single-App-Struktur entfernt (root `src/`, `next.config.ts`, `next-env.d.ts`, `tsconfig.json`, `vitest.config.ts`, `playwright.config.ts`, `postcss.config.mjs`, `public/`, `.next/`, root `dev`/`build`/`start`-Scripts, App-Runtime-Deps); `/workspace`-Defense-in-Depth in `apps/web/vercel-analytics` entfernt; CLAUDE.md und AGENTS.md auf Monorepo-Pfade aktualisiert; Per-App-Deps ergänzt (`apps/web`: `dotenv` runtime, `@neondatabase/serverless` dev; `apps/workspace`: `drizzle-orm` runtime, `dotenv` dev); root `eslint.config.mjs` und `next` (devDep) als zentrales Tooling-Anker erhalten; Gates lint/typecheck/test grün, `pnpm build:web` und `pnpm build:workspace` grün. Operative Schritte (DNS, Vercel-Domain, Clerk Origins, Production-Smoke) erfordern manuelle Dashboard-Arbeit — siehe Checkliste unten |
 
 ### PR 1: Monorepo-Grundlage ohne App-Split
 
@@ -617,6 +617,88 @@ Rollback:
 - Workspace-DNS auf vorherigen Zustand zurücksetzen
 - Vercel Production Deployment der vorherigen Web-App reaktivieren
 - Clerk Redirect URLs erst nach erfolgreichem Rollback bereinigen
+
+## Manuelle Operations-Checkliste (PR 7 + PR 8)
+
+Diese Schritte können nicht aus dem Repo heraus erledigt werden und müssen im jeweiligen Dashboard durchgeführt werden.
+Reihenfolge einhalten, sonst gibt es bei Clerk und DNS unnötige Race Conditions.
+
+### Vercel-Projekte (PR 7)
+
+- [ ] Projekt `invessiv-web` anlegen oder umkonfigurieren, **Root Directory = `apps/web`**
+  - Build Command: `pnpm --filter @invessiv/web build`
+  - Install Command: standard (pnpm wird vom Monorepo erkannt)
+  - Output Directory: `apps/web/.next`
+- [ ] Projekt `invessiv-workspace` anlegen oder umkonfigurieren, **Root Directory = `apps/workspace`**
+  - Build Command: `pnpm --filter @invessiv/workspace build`
+  - Output Directory: `apps/workspace/.next`
+- [ ] Beide Projekte: „Include source files outside of the Root Directory" aktivieren, damit `packages/**` zugänglich
+      bleibt
+- [ ] Preview-Deploy beider Projekte einmal manuell triggern und die Routen aus dem Testplan oben durchklicken
+
+### ENV-Variablen (PR 7)
+
+`apps/web` Vercel-Projekt:
+
+- [ ] `DATABASE_URL`
+- [ ] `CONTACT_MAIL_PROVIDER=resend`
+- [ ] `CONTACT_MAIL_FROM=Invessiv <noreply@invessiv.com>`
+- [ ] `CONTACT_MAIL_TO=…`
+- [ ] `RESEND_API_KEY`
+- [ ] `NEXT_PUBLIC_SITE_URL=https://invessiv.com`
+- [ ] `GOOGLE_SITE_VERIFICATION` (falls genutzt)
+- [ ] `ENABLE_MARKETING_PROOF=false`
+
+`apps/workspace` Vercel-Projekt:
+
+- [ ] `DATABASE_URL`
+- [ ] `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- [ ] `CLERK_SECRET_KEY`
+- [ ] `WORKSPACE_ALLOWED_EMAILS`
+- [ ] `NEXT_PUBLIC_APP_URL=https://workspace.invessiv.com`
+- [ ] `NEXT_PUBLIC_MARKETING_URL=https://invessiv.com`
+- [ ] `OPENAI_API_KEY`
+- [ ] `OPENAI_MODEL` (optional, sonst Default)
+
+### DNS + Custom Domain (PR 8)
+
+- [ ] Im Vercel-Projekt `invessiv-workspace` Custom Domain `workspace.invessiv.com` hinzufügen
+- [ ] DNS-Provider: CNAME `workspace` → `cname.vercel-dns.com` (oder vom Vercel-Dialog vorgeschlagener Ziel-Host)
+- [ ] DNS-Propagation abwarten; Vercel-Domain-Status muss „Valid Configuration" zeigen
+
+### Clerk Allowed Origins / Redirect URLs (PR 8)
+
+In der Clerk-Instanz, die der Workspace verwendet:
+
+- [ ] Allowed Origins ergänzen:
+  - `https://workspace.invessiv.com`
+- [ ] Redirect URLs / Allowed Callback URLs ergänzen:
+  - `https://workspace.invessiv.com/de/sign-in`
+  - `https://workspace.invessiv.com/en/sign-in`
+  - `https://workspace.invessiv.com/de/sign-up`
+  - `https://workspace.invessiv.com/en/sign-up`
+  - `https://workspace.invessiv.com/de`
+  - `https://workspace.invessiv.com/en`
+- [ ] Für Preview-Deployments analog Vercel-Preview-URLs hinterlegen
+- [ ] Alte Clerk-Origins auf `https://invessiv.com/*` erst entfernen, nachdem Production-Smoke grün ist
+
+### Production-Smoke nach Cutover (PR 8)
+
+- [ ] `https://invessiv.com/de` lädt korrekt
+- [ ] `https://invessiv.com/en` lädt korrekt
+- [ ] Kontaktformular auf `/de/landing` und `/en/landing` schreibt DB-Eintrag und sendet Mail
+- [ ] `https://workspace.invessiv.com/de/sign-in` und `/en/sign-in` laden, kein Cross-Origin-Bruch
+- [ ] Login mit allowlisted User → Leads-Übersicht erreichbar
+- [ ] Login mit nicht-allowlisted User → 404, kein Datenleak
+- [ ] `https://workspace.invessiv.com/api/workspace/leads` unauthenticated → JSON `401`
+- [ ] `https://workspace.invessiv.com/api/workspace/leads` mit Auth aber ohne Allowlist → JSON `404`
+
+### Bookmarks und Doku (PR 8)
+
+- [ ] Persönliche Bookmarks auf `workspace.invessiv.com` aktualisieren
+- [ ] Interne Dokumentation (Slack-Pins, Notion-Seiten etc.) auf neue Subdomain umstellen
+- [ ] Alte Workspace-Pfade unter `invessiv.com/de/workspace*` dürfen ab jetzt 404 liefern — keine Marketing-Links mehr
+      darauf
 
 ## Endgültiger Testplan
 

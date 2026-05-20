@@ -18,9 +18,6 @@ describe("Vercel Analytics URL sanitizing", () => {
       sanitizeAnalyticsUrl("https://invessiv.com/api/public/contact"),
     ).toBeNull();
     expect(
-      sanitizeAnalyticsUrl("https://invessiv.com/de/workspace"),
-    ).toBeNull();
-    expect(
       sanitizeAnalyticsUrl("https://invessiv.com/de?email=max@example.com"),
     ).toBeNull();
     expect(
