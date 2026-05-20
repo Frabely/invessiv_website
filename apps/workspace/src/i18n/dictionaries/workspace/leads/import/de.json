@@ -1,0 +1,73 @@
+{
+  "trigger": {
+    "label": "CSV-Import"
+  },
+  "dialog": {
+    "title": "Leads importieren",
+    "description": "CSV-Datei hochladen und Leads automatisch anlegen.",
+    "aria": {
+      "titleId": "import-leads-dialog-title",
+      "descriptionId": "import-leads-dialog-description",
+      "dropzoneLabelId": "import-leads-dropzone-label",
+      "dropzoneHintId": "import-leads-dropzone-hint"
+    },
+    "close": "Schließen",
+    "cancel": "Abbrechen",
+    "submit": "Importieren",
+    "submitting": "Wird importiert …",
+    "chooseFile": "CSV-Datei auswählen",
+    "changeFile": "Datei wechseln",
+    "dropzoneLabel": "CSV-Datei hierher ziehen oder klicken",
+    "dropzoneHint": "Maximal 2 MB · nur .csv"
+  },
+  "preview": {
+    "title": "Vorschau",
+    "recognizedColumns": "Erkannte Spalten",
+    "ignoredColumns": "Ignorierte Spalten",
+    "missingRequiredTitle": "Pflichtfelder fehlen",
+    "missingRequiredHint": "Die Datei muss die Spalte \"display_name\" enthalten."
+  },
+  "summary": {
+    "title": "Import-Ergebnis",
+    "imported": "Importiert",
+    "skipped": "Übersprungen",
+    "errors": "Fehler",
+    "warnings": "Warnungen",
+    "ignoredColumns": "Ignorierte Spalten",
+    "rowIssues": "Zeilen-Details",
+    "rowIssuesEmpty": "Keine Probleme",
+    "rowPrefix": "Zeile",
+    "columnPrefix": "Spalte"
+  },
+  "errors": {
+    "file_too_large": "Die Datei überschreitet das 2-MB-Limit.",
+    "unsupported_media_type": "Nur CSV-Dateien (.csv) werden akzeptiert.",
+    "empty_file": "Keine Datei ausgewählt oder die Datei ist leer.",
+    "invalid_csv": "Die Datei konnte nicht als gültige CSV verarbeitet werden.",
+    "too_many_rows": "Die Datei überschreitet das Limit von 500 Datenzeilen.",
+    "validation_failed": "Die Validierung der Import-Daten ist fehlgeschlagen.",
+    "internal": "Unerwarteter Server-Fehler beim Import.",
+    "client_too_large": "Die Datei überschreitet das 2-MB-Limit.",
+    "generic": "Es ist ein unbekannter Fehler aufgetreten."
+  },
+  "row_issues": {
+    "missing_email": "E-Mail-Adresse fehlt",
+    "missing_display_name": "Anzeigename fehlt",
+    "invalid_email": "Ungültige E-Mail-Adresse",
+    "invalid_url": "Ungültige URL",
+    "invalid_score": "Ungültiger Score (0–100, ganze Zahl erwartet)",
+    "invalid_external_guid": "Ungültige externe GUID",
+    "unknown_category_id": "Unbekannte Kategorie-ID",
+    "duplicate_email_in_file": "E-Mail in dieser Datei mehrfach vorhanden",
+    "duplicate_external_guid_in_file": "Externe GUID in dieser Datei mehrfach vorhanden",
+    "duplicate_email": "Lead mit dieser E-Mail existiert bereits (übersprungen)",
+    "duplicate_company_name": "Lead mit diesem Firmennamen existiert bereits (übersprungen)",
+    "duplicate_external_guid": "Lead mit dieser externen GUID existiert bereits (übersprungen)",
+    "conflict_email_guid_mismatch": "E-Mail und externe GUID verweisen auf unterschiedliche Leads (übersprungen)"
+  },
+  "warnings": {
+    "ignored_column": "Unbekannte Spalte wird ignoriert",
+    "unknown_status_fallback": "Unbekannter Status – Standardwert wird verwendet",
+    "empty_improvement_token": "Leeres Verbesserungs-Token entfernt"
+  }
+}

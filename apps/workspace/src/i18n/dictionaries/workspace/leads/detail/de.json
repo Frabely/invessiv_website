@@ -1,0 +1,69 @@
+{
+  "sections": {
+    "contact": "Kontakt",
+    "category": "Kategorie",
+    "socialProfiles": "Social Profiles",
+    "improvements": "Verbesserungen",
+    "notes": "Notizen",
+    "activity": "Aktivitäten"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "company": "Unternehmen",
+    "website": "Website",
+    "owner": "Owner",
+    "source": "Quelle",
+    "score": "Score",
+    "created": "Erstellt",
+    "updated": "Aktualisiert",
+    "status": "Status"
+  },
+  "actions": {
+    "closeAriaLabel": "Detail-Panel schließen",
+    "edit": "Lead bearbeiten",
+    "viewFullProfile": "Vollprofil geplant"
+  },
+  "empty": {
+    "phone": "Keine Telefonnummer",
+    "website": "Keine Website",
+    "category": "Keine Kategorie",
+    "socialProfiles": "Keine Social Profiles",
+    "email": "Keine E-Mail",
+    "notes": "Noch keine Notizen",
+    "improvements": "Noch keine Verbesserungen",
+    "owner": "Kein Owner",
+    "company": "Kein Unternehmen",
+    "score": "Kein Score"
+  },
+  "activity": {
+    "empty": "Noch keine Aktivitäten",
+    "types": {
+      "note": "Notiz",
+      "status_change": "Status geändert",
+      "inbound_submission": "Eingehende Anfrage",
+      "import": "Import",
+      "bulk_edit": "Bulk-Edit",
+      "message_drafted": "Nachricht generiert"
+    },
+    "actor": {
+      "system": "System",
+      "user": "Benutzer"
+    },
+    "channels": {
+      "quick_contact": "Schnellkontakt",
+      "project_request": "Projektanfrage",
+      "discovery_call": "Erstgespräch"
+    },
+    "submission": {
+      "fallbackTitle": "Eingang über Formular"
+    },
+    "statusChange": {
+      "fallbackBody": "Der Status wurde aktualisiert.",
+      "separator": "→"
+    },
+    "bulkEdit": {
+      "fallbackBody": "Mehrere Lead-Felder wurden aktualisiert."
+    }
+  }
+}

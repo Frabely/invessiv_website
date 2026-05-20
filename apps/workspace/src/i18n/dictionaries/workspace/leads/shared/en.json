@@ -1,0 +1,42 @@
+{
+  "status": {
+    "new": "New",
+    "pending_review": "Pending Review",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "proposal": "Proposal",
+    "on_hold": "On Hold",
+    "won": "Won",
+    "lost": "Lost",
+    "archived": "Archived"
+  },
+  "source": {
+    "webform": "Webform",
+    "manual": "Manual",
+    "import": "Import"
+  },
+  "category": {
+    "coaches": "Coaches",
+    "craftspeople": "Craftspeople",
+    "local-service-providers": "Local Service Providers",
+    "small-b2b-providers": "Small B2B Providers",
+    "consultants": "Consultants",
+    "photographers": "Photographers",
+    "other": "Other"
+  },
+  "platform": {
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "youtube": "YouTube"
+  },
+  "socialIconLabel": {
+    "website": "Open website",
+    "linkedin": "Open LinkedIn profile",
+    "instagram": "Open Instagram profile",
+    "youtube": "Open YouTube channel",
+    "phone": "Call"
+  },
+  "score": {
+    "ariaLabel": "Score"
+  }
+}

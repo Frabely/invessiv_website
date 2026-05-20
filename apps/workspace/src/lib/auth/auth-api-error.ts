@@ -1,0 +1,21 @@
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
+
+const MESSAGES: Record<AuthErrorCode, string> = {
+  [AuthErrorCode.NotFound]: "Resource not found",
+  [AuthErrorCode.Unauthorized]: "Authentication required",
+};
+
+export function authApiError(
+  code: AuthErrorCode,
+  status: HttpResponseCode,
+): Response {
+  return Response.json(
+    {
+      ok: false,
+      error: code,
+      message: MESSAGES[code],
+    },
+    { status },
+  );
+}

@@ -1,0 +1,94 @@
+.root {
+  --badge-accent: var(--color-cta);
+  --badge-border: color-mix(in srgb, var(--badge-accent) 32%, transparent);
+  --badge-bg: color-mix(
+    in srgb,
+    var(--badge-accent) 13%,
+    var(--color-surface-2) 87%
+  );
+  --badge-text: color-mix(
+    in srgb,
+    var(--color-text) 88%,
+    var(--badge-accent) 12%
+  );
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  min-height: 32px;
+  padding: 0 0.85rem 0 0.74rem;
+  border: 1px solid var(--badge-border);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--badge-bg) 78%, var(--color-surface-1) 22%),
+    color-mix(in srgb, var(--color-surface-2) 90%, transparent)
+  );
+  color: var(--badge-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: 0 0 auto;
+  color: var(--badge-accent);
+}
+
+.label {
+  transform: translateY(0.01em);
+}
+
+.root[data-tone="neutral"] {
+  --badge-accent: color-mix(
+    in srgb,
+    var(--color-text-muted) 70%,
+    var(--color-border) 30%
+  );
+}
+
+.root[data-tone="primary"] {
+  --badge-accent: var(--color-cta);
+}
+
+.root[data-tone="info"] {
+  --badge-accent: color-mix(in srgb, #38bdf8 74%, var(--color-text-muted) 26%);
+}
+
+.root[data-tone="success"] {
+  --badge-accent: #36b37e;
+}
+
+.root[data-tone="orange"] {
+  --badge-accent: var(--color-accent-orange);
+}
+
+.root[data-tone="warning"] {
+  --badge-accent: var(--color-accent-gold);
+}
+
+.root[data-tone="purple"] {
+  --badge-accent: color-mix(in srgb, #8b5cf6 82%, var(--color-text-muted) 18%);
+}
+
+.root[data-tone="danger"] {
+  --badge-accent: color-mix(in srgb, #ef4444 78%, var(--color-text-muted) 22%);
+}
+
+[data-theme="light"] .root {
+  --badge-bg: color-mix(
+    in srgb,
+    var(--badge-accent) 10%,
+    var(--color-surface-1) 90%
+  );
+  --badge-text: color-mix(
+    in srgb,
+    var(--color-text) 84%,
+    var(--badge-accent) 16%
+  );
+}

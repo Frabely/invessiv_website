@@ -1,0 +1,99 @@
+{
+  "title": {
+    "create": "Lead hinzufügen",
+    "edit": "Lead bearbeiten"
+  },
+  "description": {
+    "create": "Manuellen Kontakt oder Firma direkt im Workspace anlegen.",
+    "edit": "Bestehende Stammdaten dieses Leads anpassen."
+  },
+  "sections": {
+    "identity": "Kontakt",
+    "details": "Kontext",
+    "socialProfiles": "Social Profiles",
+    "improvements": "Verbesserungen",
+    "notes": "Notizen"
+  },
+  "fields": {
+    "displayName": "Anzeigename",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "companyName": "Unternehmen",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "websiteUrl": "Website",
+    "category": "Kategorie",
+    "score": "Score",
+    "owner": "Owner",
+    "status": "Status",
+    "notes": "Notizen",
+    "improvement": "Verbesserung",
+    "platform": "Plattform",
+    "profileUrl": "Profil-URL"
+  },
+  "placeholders": {
+    "displayName": "Anzeigename",
+    "firstName": "Vorname",
+    "lastName": "Nachname oder Ansprechpartner",
+    "companyName": "Unternehmen oder Marke",
+    "email": "name@firma.de",
+    "phone": "+49 ...",
+    "websiteUrl": "https://...",
+    "category": "Kategorie wählen",
+    "score": "0 bis 100",
+    "owner": "Zuständige Person",
+    "notes": "Kurze Notiz zum Lead",
+    "improvement": "z. B. Klarere CTA",
+    "platform": "Plattform wählen",
+    "profileUrl": "https://..."
+  },
+  "buttons": {
+    "submit": {
+      "create": "Lead speichern",
+      "edit": "Änderungen speichern"
+    },
+    "cancel": "Abbrechen",
+    "closeAriaLabel": "Schließen",
+    "addImprovement": "Verbesserung hinzufügen",
+    "addProfile": "Profil hinzufügen",
+    "confirmAdd": "Hinzufügen",
+    "confirmEdit": "Speichern",
+    "edit": "Bearbeiten",
+    "remove": "Entfernen"
+  },
+  "validation": {
+    "displayNameRequired": "Anzeigename ist erforderlich",
+    "emailInvalid": "Ungültige E-Mail",
+    "phoneInvalid": "Ungültige Telefonnummer",
+    "scoreInvalid": "Score muss 0-100 sein",
+    "urlInvalid": "Ungültige URL",
+    "categoryInvalid": "Ungültige Kategorie",
+    "improvementTooLong": "Verbesserung darf maximal 500 Zeichen lang sein",
+    "emailExists": "Diese E-Mail ist bereits einem bestehenden Lead zugeordnet.",
+    "companyNameExists": "Dieses Unternehmen ist bereits einem bestehenden Lead zugeordnet.",
+    "generic": "Lead konnte nicht gespeichert werden",
+    "socialProfileInvalid": "Ungültige Plattform",
+    "socialProfileRequired": "Plattform und URL sind erforderlich",
+    "socialProfileDuplicate": "Diese Plattform wurde bereits hinzugefügt",
+    "improvementRequired": "Verbesserung darf nicht leer sein"
+  },
+  "help": {
+    "requiredHint": "Pflichtfelder sind mit * markiert.",
+    "improvementsHint": "Optional. Mehrere Hinweise sind möglich und werden mit dem Lead gespeichert.",
+    "improvementsEmptyState": "Noch keine Verbesserungen. Wird erst mit dem Lead gespeichert.",
+    "improvementsClearedState": "Alle bisherigen Verbesserungen wurden entfernt. Die Liste wird beim Speichern geleert.",
+    "socialProfilesHint": "Optional. Profile werden mit dem Lead gespeichert.",
+    "socialProfilesEmptyState": "Noch kein Profil. LinkedIn, Instagram oder YouTube ergänzen.",
+    "socialProfilesClearedState": "Alle bisherigen Social Profiles wurden entfernt. Die Liste wird beim Speichern geleert.",
+    "fieldStateUnchanged": "Unverändert",
+    "fieldStateCleared": "Beim Speichern geleert",
+    "fieldStateRequired": "Pflichtfeld",
+    "fieldStateSet": "Geändert",
+    "fieldStatePristineEmpty": "Ursprünglich leer"
+  },
+  "status": {
+    "savingCreate": "Lead wird gespeichert...",
+    "savingEdit": "Änderungen werden gespeichert...",
+    "successEdit": "Lead wurde aktualisiert."
+  }
+}

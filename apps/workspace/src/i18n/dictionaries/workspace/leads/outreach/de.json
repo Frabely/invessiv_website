@@ -1,0 +1,59 @@
+{
+  "triggerLabel": "Outreach entwerfen",
+  "dialog": {
+    "eyebrow": "KI-Entwurf",
+    "title": "Outreach entwerfen",
+    "description": "Erstelle eine kurze Nachricht, die persönlich klingt und direkt kopiert werden kann. Der Server nutzt dafür Lead-Fakten, Website-Kontext und den Zusatzkontext aus dem Formular.",
+    "closeAriaLabel": "Dialog schließen"
+  },
+  "channel": {
+    "label": "Kanal",
+    "labels": {
+      "linkedin": "LinkedIn",
+      "email": "E-Mail",
+      "instagram": "Instagram",
+      "direct-message": "Direktnachricht"
+    },
+    "hints": {
+      "linkedin": "Professionell, persönlich und ruhig formuliert.",
+      "email": "Nur sinnvoll, wenn du Betreff und Nachricht als E-Mail ausgeben willst.",
+      "instagram": "Locker-freundlich und leicht informell.",
+      "direct-message": "Nur sinnvoll bei privatem Kontakt, den du bereits kennst."
+    }
+  },
+  "contextNote": {
+    "label": "Zusätzlicher Kontext",
+    "placeholder": "Zum Beispiel: in English, mit klarerem CTA oder kürzerem Ton.",
+    "counterLabel": "{count}/{max} Zeichen"
+  },
+  "result": {
+    "subjectLabel": "Betreff",
+    "bodyLabel": "Nachricht",
+    "subjectPlaceholder": "Betreff wird hier angezeigt",
+    "bodyPlaceholder": "Die generierte Nachricht erscheint hier",
+    "emptyState": "Noch kein Entwurf vorhanden. Wähle Kanal und Kontext, dann generiere die erste Version."
+  },
+  "status": {
+    "generating": "Nachricht wird generiert...",
+    "copied": "In die Zwischenablage kopiert",
+    "ready": "Bereit",
+    "checkingProviders": "Provider wird geprüft...",
+    "openAiActive": "OpenAI aktiv",
+    "noProvider": "Kein KI-Provider verfügbar"
+  },
+  "buttons": {
+    "generate": "Generieren",
+    "regenerate": "Neu generieren",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "errors": {
+    "validation": "Die Anfrage ist ungültig.",
+    "leadNotFound": "Der Lead wurde nicht gefunden.",
+    "providerUnavailable": "Der KI-Anbieter ist derzeit nicht verfügbar.",
+    "notConfigured": "Kein KI-Provider konfiguriert.",
+    "internal": "Die Nachricht konnte nicht generiert werden."
+  }
+}

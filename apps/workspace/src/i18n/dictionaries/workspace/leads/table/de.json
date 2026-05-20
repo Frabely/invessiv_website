@@ -1,0 +1,46 @@
+{
+  "columns": {
+    "select": "Auswählen",
+    "lead": "Lead",
+    "category": "Kategorie",
+    "stage": "Stage",
+    "source": "Source",
+    "score": "Score",
+    "social": "Profile",
+    "created": "Erstellt",
+    "updated": "Aktualisiert"
+  },
+  "sort": {
+    "nameAsc": "Name A-Z",
+    "nameDesc": "Name Z-A",
+    "scoreAsc": "Score aufsteigend",
+    "scoreDesc": "Score absteigend",
+    "createdAsc": "Älteste zuerst",
+    "createdDesc": "Neueste zuerst",
+    "updatedAsc": "Zuletzt aktualisiert (älteste)",
+    "updatedDesc": "Zuletzt aktualisiert (neueste)"
+  },
+  "selection": {
+    "selectAll": "Alle sichtbaren Leads auswählen",
+    "deselectAll": "Auswahl aufheben",
+    "row": "Lead auswählen",
+    "selectedCount": "Leads ausgewählt"
+  },
+  "row": {
+    "open": "Lead öffnen"
+  },
+  "actions": {
+    "label": "Aktionen",
+    "edit": "Lead bearbeiten",
+    "delete": "Lead löschen"
+  },
+  "relativeTime": {
+    "justNow": "gerade eben",
+    "hoursAgo": "vor {count} Std.",
+    "daysAgo": "vor {count} Tagen"
+  },
+  "placeholders": {
+    "empty": "—"
+  },
+  "loadingLabel": "Leads werden geladen …"
+}

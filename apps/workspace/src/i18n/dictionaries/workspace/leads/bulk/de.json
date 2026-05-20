@@ -1,0 +1,118 @@
+{
+  "summary": {
+    "selectedOne": "1 Lead ausgewählt",
+    "selectedMany": "{count} Leads ausgewählt"
+  },
+  "toolbar": {
+    "edit": "Bearbeiten…",
+    "archive": "Archivieren",
+    "delete": "Löschen",
+    "clear": "Auswahl aufheben"
+  },
+  "editDialog": {
+    "kicker": "Bulk-Edit",
+    "title": "{count} Leads bearbeiten",
+    "description": "Wähle aus, welche Felder auf alle ausgewählten Leads angewendet werden sollen.",
+    "applyLabel": "Anwenden",
+    "save": "Speichern ({count} Leads)",
+    "cancel": "Abbrechen",
+    "closeAriaLabel": "Schließen",
+    "fields": {
+      "status": {
+        "label": "Status",
+        "placeholder": "Status wählen"
+      },
+      "category": {
+        "label": "Kategorie",
+        "noneOption": "— Ohne Kategorie —",
+        "placeholder": "Kategorie wählen"
+      },
+      "score": {
+        "label": "Score",
+        "placeholder": "0 bis 100",
+        "clearHint": "Leer lassen, um Score zu entfernen."
+      },
+      "owner": {
+        "label": "Owner",
+        "placeholder": "Zuständige Person",
+        "clearHint": "Leer lassen, um Owner zu entfernen."
+      },
+      "notesAppend": {
+        "label": "Notiz anhängen",
+        "placeholder": "Wird an bestehende Notiz angehängt",
+        "hint": "Wird an bestehende Notizen angehängt. Leads, deren Gesamtlänge 5000 Zeichen überschreitet, werden übersprungen."
+      },
+      "improvementsAppend": {
+        "label": "Verbesserungen anhängen",
+        "hint": "Diese Verbesserungen werden zu bestehenden hinzugefügt. Maximal 20 Einträge.",
+        "emptyState": "Keine neuen Verbesserungen. Beim Speichern wird nichts angehängt."
+      }
+    },
+    "validation": {
+      "atLeastOneField": "Mindestens ein Feld zum Anwenden auswählen.",
+      "scoreOutOfRange": "Score muss zwischen 0 und 100 liegen.",
+      "notesAppendEmpty": "Angehängte Notiz darf nicht leer sein.",
+      "improvementsAppendEmpty": "Angehängte Verbesserungen dürfen nicht leer sein.",
+      "improvementTooLong": "Verbesserung darf maximal 500 Zeichen lang sein",
+      "improvementRequired": "Verbesserung darf nicht leer sein",
+      "tooManyImprovements": "Maximal 20 Verbesserungen pro Bulk-Edit."
+    },
+    "result": {
+      "successBanner": "{updated} von {total} Leads aktualisiert.",
+      "failureBannerOnly": "Keine Änderungen vorgenommen.",
+      "skippedHeader": "Übersprungene Leads:",
+      "close": "Schließen"
+    },
+    "status": {
+      "saving": "Änderungen werden gespeichert..."
+    }
+  },
+  "archiveConfirm": {
+    "kicker": "Bulk-Archivierung",
+    "title": "Leads archivieren?",
+    "messageOne": "Folgender Lead wird in den Archiv-Status verschoben:",
+    "messageMany": "Folgende {count} Leads werden in den Archiv-Status verschoben:",
+    "leadListMoreSuffix": "und {count} weitere",
+    "confirm": "Archivieren",
+    "cancel": "Abbrechen",
+    "closeAriaLabel": "Schließen",
+    "status": {
+      "archiving": "Leads werden archiviert..."
+    }
+  },
+  "deleteConfirm": {
+    "kicker": "Endgültiges Löschen",
+    "title": "Leads endgültig löschen?",
+    "warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
+    "messageOne": "Folgender Lead wird unwiderruflich gelöscht:",
+    "messageMany": "Folgende {count} Leads werden unwiderruflich gelöscht:",
+    "leadListMoreSuffix": "und {count} weitere",
+    "confirm": "Endgültig löschen",
+    "cancel": "Abbrechen",
+    "closeAriaLabel": "Schließen",
+    "status": {
+      "deleting": "Leads werden gelöscht..."
+    }
+  },
+  "skipReasons": {
+    "notes_too_long": "Notiz würde 5000 Zeichen überschreiten",
+    "unknown": "Unbekannter Fehler"
+  },
+  "improvementsEditor": {
+    "addButton": "Eintrag hinzufügen",
+    "addAriaLabel": "Verbesserung hinzufügen",
+    "fieldLabel": "Verbesserung",
+    "fieldPlaceholder": "z. B. Klarere CTA",
+    "confirmAdd": "Hinzufügen",
+    "confirmEdit": "Speichern",
+    "cancel": "Abbrechen",
+    "edit": "Bearbeiten",
+    "remove": "Entfernen",
+    "emptyState": "Noch keine Einträge.",
+    "emptyAppendState": "Keine neuen Einträge. Beim Speichern wird nichts angehängt."
+  },
+  "errors": {
+    "generic": "Bulk-Aktion konnte nicht abgeschlossen werden.",
+    "network": "Netzwerkfehler. Bitte erneut versuchen."
+  }
+}

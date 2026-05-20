@@ -1,0 +1,226 @@
+.pagination {
+  margin-top: 0.75rem;
+  padding: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 92%, transparent),
+    color-mix(in srgb, var(--color-surface-2) 68%, transparent)
+  );
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.4;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.navButton,
+.pageButton,
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.navButton,
+.pageButton {
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.navButton {
+  gap: 0.45rem;
+  padding: 0 0.75rem;
+}
+
+.pageButton {
+  min-width: 38px;
+  padding: 0 0.7rem;
+}
+
+.pageButtonDisabled,
+.pageButtonDisabled:hover,
+.pageButtonDisabled:active {
+  cursor: not-allowed;
+  opacity: 0.52;
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--color-surface-2) 58%, transparent);
+  border-color: color-mix(in srgb, var(--color-border) 64%, transparent);
+}
+
+.navButton:hover,
+.pageButton:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-cta) 38%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 10%, var(--color-surface-2));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.navButton:active,
+.pageButton:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.navButton:focus-visible,
+.pageButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.navButtonDisabled,
+.navButtonDisabled:hover,
+.navButtonDisabled:active {
+  cursor: not-allowed;
+  opacity: 0.46;
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--color-surface-2) 58%, transparent);
+  border-color: color-mix(in srgb, var(--color-border) 64%, transparent);
+}
+
+.navIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 0.85rem;
+  line-height: 1;
+}
+
+.navIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.navLabel {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.pageStrip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--color-surface-1) 54%, transparent);
+}
+
+.pageButtonActive {
+  border-color: color-mix(in srgb, var(--color-cta) 52%, transparent);
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  cursor: default;
+  box-shadow:
+    0 8px 18px color-mix(in srgb, var(--color-cta) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.pageButtonActive:hover {
+  transform: none;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+}
+
+.ellipsis {
+  min-width: 34px;
+  padding: 0 0.4rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  border-color: transparent;
+}
+
+[data-theme="light"] .pagination {
+  box-shadow:
+    0 16px 32px rgba(28, 41, 67, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 720px) {
+  .pagination {
+    padding: 0.8rem;
+  }
+
+  .summaryRow {
+    align-items: flex-start;
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.15rem;
+    scrollbar-width: thin;
+  }
+
+  .pageStrip {
+    flex: 0 0 auto;
+  }
+
+  .navButton,
+  .pageButton,
+  .ellipsis {
+    min-height: 36px;
+  }
+
+  .navButton {
+    flex: 0 0 auto;
+    padding: 0 0.65rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .navButton:first-child .navLabel,
+  .navButton:last-child .navLabel {
+    display: none;
+  }
+
+  .navButton:first-child,
+  .navButton:last-child {
+    width: 36px;
+    padding: 0;
+  }
+}
