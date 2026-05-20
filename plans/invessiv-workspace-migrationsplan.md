@@ -27,7 +27,7 @@ Die Migration soll nicht als Big Bang erfolgen. Jede Phase muss für sich review
 | API-Schutz              | Workspace-APIs werden nicht per Proxy geschützt, sondern ausschließlich route-level über `withWorkspaceApiAuth` oder gleichwertige serverseitige Allowlist-Prüfung |
 | Kontaktformular         | Bleibt in `apps/web` unter `/api/public/contact`                                                                                                                   |
 | DB                      | Beide Apps nutzen `packages/db`; `packages/db` bleibt server-only                                                                                                  |
-| UI                      | Kein `packages/ui`, bis echter Cross-App-Reuse entsteht                                                                                                            |
+| UI                      | Kein `packages/ui` als Default; gemeinsame Komponenten dürfen in ein Shared-Package wandern, sobald echter Cross-App-Reuse stabil ist                              |
 | Lint                    | Scripts nutzen `eslint .`, nicht `next lint`                                                                                                                       |
 | Tooling                 | Lint/Typecheck/Test-Tooling bleibt zentral am Root                                                                                                                 |
 | i18n                    | Sprachabhängige Inhalte bleiben dictionary-basiert; DE/EN-Keys müssen kompatibel bleiben                                                                           |
@@ -43,7 +43,8 @@ invessiv_website/
           [locale]/
             (landing)/
             (legal)/
-          api/public/contact/
+          api/
+            public/contact/
         client/contact/
         components/
           legal/
@@ -75,7 +76,8 @@ invessiv_website/
               leads/
               import/
               settings/
-          api/workspace/
+          api/
+            workspace/
         client/
           leads/
           outreach/
@@ -113,9 +115,9 @@ invessiv_website/
         contact/
         contracts/
         core/
-        migrations/
         record-configuration/
         index.ts
+      migrations/
       scripts/
       package.json
       tsconfig.json
@@ -518,10 +520,6 @@ GOOGLE_SITE_VERIFICATION
 DATABASE_URL
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 CLERK_SECRET_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL
-NEXT_PUBLIC_CLERK_SIGN_UP_URL
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
 WORKSPACE_ALLOWED_EMAILS
 NEXT_PUBLIC_APP_URL=https://workspace.invessiv.com
 NEXT_PUBLIC_MARKETING_URL=https://invessiv.com
@@ -529,7 +527,9 @@ OPENAI_API_KEY
 OPENAI_MODEL
 ```
 
-Clerk-ENV-Werte dürfen keine harte `/de`-Default-Locale erzwingen. Locale-passende Sign-in-, Sign-up-, After-Sign-in- und Redirect-Targets werden über zentrale Route-Helper oder Proxy-/App-Logik erzeugt.
+Clerk-URL-ENV-Werte wie `NEXT_PUBLIC_CLERK_SIGN_IN_URL`, `NEXT_PUBLIC_CLERK_SIGN_UP_URL` und After-URLs werden nicht als
+Pflicht-ENV gesetzt. Locale-passende Sign-in-, Sign-up-, After-Sign-in- und Redirect-Targets werden über zentrale
+Route-Helper oder Proxy-/App-Logik erzeugt.
 `OPENAI_MODEL` bleibt optional; der Code darf den vorhandenen Default verwenden. Nur `OPENAI_API_KEY` ist betrieblich
 zwingend.
 
@@ -647,7 +647,7 @@ Qualitäts-Gates:
 
 ## Nicht-Ziele dieser Migration
 
-- Kein neues `packages/ui`
+- Kein vorschnell angelegtes `packages/ui`; Shared-Package nur für tatsächlich geteilte, stabile Komponenten
 - Kein CORS-Layer zwischen Web und Workspace
 - Keine Änderung am Rollenmodell über die bestehende Allowlist hinaus
 - Keine fachliche Erweiterung von Leads, Import oder Outreach
