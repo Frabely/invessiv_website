@@ -145,6 +145,26 @@ Diese alten Pfade müssen nicht per Redirect erhalten bleiben, weil der Workspac
 
 ## PR-Schnitt
 
+## Arbeits- und Commit-Regel
+
+- Änderungen werden erst nach ausdrücklicher Bestätigung committed.
+- Abgeschlossene PR-Schritte werden direkt in diesem Plan im Statusblock markiert.
+- Wenn Gates nicht vollständig ausgeführt werden können, wird der konkrete Grund im jeweiligen PR-Status dokumentiert.
+- Bereits vorhandene Commits bleiben bestehen, sofern kein expliziter Revert beauftragt wird.
+
+## Umsetzungsstatus
+
+| PR  | Status        | Nachweis                                                                                                             |
+| --- | ------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 1   | Abgeschlossen | Branch `chore/monorepo-migration`, Tag `before-monorepo-migration`, Commit `e458a62`, Gates grün mit `corepack pnpm` |
+| 2   | Offen         | Noch nicht begonnen                                                                                                  |
+| 3   | Offen         | Noch nicht begonnen                                                                                                  |
+| 4   | Offen         | Noch nicht begonnen                                                                                                  |
+| 5   | Offen         | Noch nicht begonnen                                                                                                  |
+| 6   | Offen         | Noch nicht begonnen                                                                                                  |
+| 7   | Offen         | Noch nicht begonnen                                                                                                  |
+| 8   | Offen         | Noch nicht begonnen                                                                                                  |
+
 ### PR 1: Monorepo-Grundlage ohne App-Split
 
 Ziel: pnpm und Workspace-Struktur vorbereiten, ohne fachliche Dateien zu verschieben.
