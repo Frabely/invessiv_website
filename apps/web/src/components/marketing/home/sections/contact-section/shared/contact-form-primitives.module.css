@@ -1,0 +1,105 @@
+.form {
+  display: grid;
+  gap: clamp(0.85rem, 1.2vw, 1.05rem);
+}
+
+.grid {
+  display: grid;
+  gap: clamp(0.8rem, 1.1vw, 1rem);
+}
+
+.gridTwo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fieldControl,
+.messageField textarea {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 13px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  line-height: 1.45;
+  padding: 0.76rem 0.92rem;
+}
+
+.messageField textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+
+.fieldControl::placeholder,
+.messageField textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
+}
+
+.fieldControl:focus-visible,
+.messageField textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
+}
+
+.consent {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  column-gap: 12px;
+  row-gap: 8px;
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+  font-size: var(--font-size-label-md);
+  line-height: 1.48;
+}
+
+.consent input {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin: 0.18rem 0 0;
+  accent-color: var(--color-cta);
+  align-self: center;
+}
+
+.consentError {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 650;
+  color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
+}
+
+.form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .gridTwo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .form {
+    gap: 0.95rem;
+  }
+
+  .grid {
+    gap: 0.9rem;
+  }
+
+  .fieldControl,
+  .messageField textarea {
+    min-height: 46px;
+    padding: 0.76rem 0.94rem;
+  }
+
+  .messageField textarea {
+    min-height: 136px;
+  }
+}

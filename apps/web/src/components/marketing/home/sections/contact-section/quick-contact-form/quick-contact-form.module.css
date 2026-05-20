@@ -1,0 +1,100 @@
+.metaCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 14px;
+  padding: 1.1rem 1.15rem;
+  min-height: 108px;
+  min-width: min(100%, 34rem);
+  border: 1px solid
+    color-mix(in srgb, var(--color-cta) 36%, var(--color-border) 64%);
+  border-radius: 16px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 78%,
+    var(--color-cta) 22%
+  );
+}
+
+.metaCopy {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.metaLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metaValue {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  line-height: 1.42;
+  white-space: nowrap;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  border-color: color-mix(in srgb, var(--color-cta) 34%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 58%,
+    var(--color-cta) 42%
+  );
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-cta) 8%);
+}
+
+@media (min-width: 1100px) {
+  .metaCard {
+    min-height: 100%;
+    min-width: min(100%, 37rem);
+    padding: 1.22rem 1.2rem;
+  }
+
+  .metaCopy {
+    gap: 0.42rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .metaCard {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    min-width: 100%;
+  }
+
+  .metaValue {
+    word-break: break-word;
+  }
+
+  .copyButton {
+    width: 100%;
+  }
+}

@@ -1,0 +1,84 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { LandingPage } from "@/components/marketing/landing/landing-page/landing-page";
+import {
+  type Locale,
+  isSupportedLocale,
+  SUPPORTED_LOCALES,
+} from "@/config/i18n";
+import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
+import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
+import {
+  createLocaleAlternates,
+  createPageMetadata,
+} from "@/lib/seo/page-metadata";
+
+type LandingRouteProps = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateStaticParams() {
+  return SUPPORTED_LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: LandingRouteProps): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isSupportedLocale(locale)) {
+    return {};
+  }
+
+  const {
+    title,
+    description,
+    imageAlt,
+    imageHeight,
+    imageUrl,
+    imageWidth,
+    openGraphLocale,
+  } = getLandingMetaContent(locale);
+  return createPageMetadata({
+    absoluteTitle: true,
+    title,
+    description,
+    canonicalPath: `/${locale}/landing`,
+    languages: createLocaleAlternates({
+      de: "/de/landing",
+      en: "/en/landing",
+    }),
+    openGraphLocale,
+    socialImage: {
+      alt: imageAlt,
+      height: imageHeight,
+      url: imageUrl,
+      width: imageWidth,
+    },
+  });
+}
+
+export default async function LandingRoute({ params }: LandingRouteProps) {
+  const { locale } = await params;
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
+  const activeLocale = locale as Locale;
+  const { description } = getLandingMetaContent(activeLocale);
+  const landingStructuredData = createMarketingStructuredData(
+    activeLocale,
+    description,
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(landingStructuredData),
+        }}
+      />
+      <LandingPage locale={activeLocale} />
+    </>
+  );
+}

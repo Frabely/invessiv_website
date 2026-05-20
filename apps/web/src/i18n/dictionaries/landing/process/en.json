@@ -1,0 +1,31 @@
+{
+  "body": "Four clear steps, so you always know what comes next.",
+  "eyebrow": "Process",
+  "steps": [
+    {
+      "iconKey": "target",
+      "numeral": "01",
+      "title": "Goal",
+      "description": "A short briefing on your offer, audience, and desired result."
+    },
+    {
+      "iconKey": "structure",
+      "numeral": "02",
+      "title": "Structure",
+      "description": "Sections, content flow, and form tailored to your offer."
+    },
+    {
+      "iconKey": "build",
+      "numeral": "03",
+      "title": "Build",
+      "description": "I build design, code, and copy. You give feedback, I apply it."
+    },
+    {
+      "iconKey": "launch",
+      "numeral": "04",
+      "title": "Launch",
+      "description": "Domain connected, form tested, and live in 3–7 days."
+    }
+  ],
+  "title": "How your landing page comes together."
+}

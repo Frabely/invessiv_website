@@ -1,0 +1,78 @@
+{
+  "terms": {
+    "meta": {
+      "title": "Terms and Conditions",
+      "description": "Terms and conditions of Invessiv for project-based digital services, primarily for business customers.",
+      "openGraphTitle": "Terms and Conditions | Invessiv",
+      "openGraphLocale": "en_US"
+    },
+    "page": {
+      "title": "Terms and Conditions",
+      "lead": "These terms primarily apply to contracts with business customers. Invessiv enters into contracts with consumers only in individual cases on the basis of individual offers.",
+      "updatedAt": "Last updated: March 26, 2026.",
+      "breadcrumbAriaLabel": "Breadcrumb",
+      "homeLabel": "Home",
+      "tocLabel": "Contents"
+    },
+    "sections": {
+      "provider": {
+        "title": "1. Provider",
+        "labels": {
+          "company": "Business name",
+          "owner": "Owner",
+          "address": "Address",
+          "email": "Email"
+        },
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Germany"
+      },
+      "scope": {
+        "title": "2. Scope",
+        "body": "These terms apply to offers, services, and contracts of Invessiv. As a rule, the services are directed at business customers. Contracts with consumers are concluded only in individual cases on the basis of individual offers. Any conflicting or deviating terms of the customer apply only if Invessiv has expressly accepted them in text form. In contracts with consumers, these terms apply only to the extent that no mandatory statutory provisions take precedence."
+      },
+      "contractConclusion": {
+        "title": "3. Formation of contract",
+        "body": "The presentation of services on the website, in introductory calls, or in other information does not yet constitute a binding offer. The website does not enable an immediate binding contract conclusion. Inquiries via website, email, or conversation are non-binding. Invessiv may internally document incoming inquiries, related communication data, and processing status to the extent necessary for review, handling, offer preparation, and follow-up of pre-contractual communication. A contract is formed only through an individual offer from Invessiv and its acceptance in text form or through another express agreement in text form. The binding scope and content of the services are determined by the respective offer and the specific agreements made."
+      },
+      "servicesScope": {
+        "title": "4. Services",
+        "body": "Invessiv provides, in particular, project-based services in web development, automation, and digital process solutions as well as ongoing services such as support, maintenance, care, and further development. The specific scope of services is defined exclusively by the respective offer or ongoing agreement. Change requests and extensions after contract formation require separate coordination and may result in additional effort and additional remuneration."
+      },
+      "clientCooperation": {
+        "title": "5. Customer cooperation",
+        "body": "The customer shall provide content, information, access credentials, contacts, approvals, and any other required cooperation in good time. Delays or additional effort caused by late, incomplete, or incorrect cooperation are not the responsibility of Invessiv and may reasonably extend agreed timelines. Additional effort may be invoiced separately where factually justified."
+      },
+      "payment": {
+        "title": "6. Fees and payment terms",
+        "body": "Fees, price indications, tax treatment, invoicing modalities, and the specific billing timing are determined by the respective offer, invoice, or other agreement. Prices or price indications shown on the website are, unless expressly stated otherwise, for non-binding orientation only. Unless otherwise agreed, invoices are due within 14 days from the invoice date without deduction."
+      },
+      "consumerContracts": {
+        "title": "7. Notes for consumer contracts",
+        "body": "Where Invessiv exceptionally enters into contracts with consumers, this is done exclusively on the basis of individual offers. Mandatory consumer protection rights and legally required information remain unaffected. If additional statutory notices, withdrawal information, or separate declarations are required for a specific contract, they will be provided separately in the relevant offer or contract process."
+      },
+      "acceptance": {
+        "title": "8. Review, approval, and completion",
+        "body": "For defined project-based services, Invessiv provides work results for review and approval. The customer shall review them promptly and communicate any material deviations in a comprehensible manner. Justified material deviations will be remedied within a reasonable period. Ongoing services, support, and other services are not subject to formal acceptance unless expressly agreed otherwise."
+      },
+      "usageRights": {
+        "title": "9. Usage rights",
+        "body": "Until full payment has been received, all usage rights in the work results created by Invessiv remain with Invessiv unless mandatory law provides otherwise. After full payment, the customer receives the usage rights required for the contractually agreed purpose in the agreed results. Delivery of open source code, editable project files, raw data, or other source files not expressly owed will only take place if this is expressly provided for in the offer or another agreement. Rights in open-source components, third-party assets, external libraries, plugins, fonts, or other third-party elements are governed by their respective license terms."
+      },
+      "thirdPartyServices": {
+        "title": "10. Third-party services and external components",
+        "body": "Hosting, domains, external software, APIs, third-party tools, platforms, licenses, and other third-party services are included in Invessiv's services only if this has been expressly agreed. Such services may be subject to separate terms, costs, and license requirements of the respective providers. Invessiv may engage suitable subcontractors or technical service providers to perform the agreed services."
+      },
+      "liability": {
+        "title": "11. Liability",
+        "body": "Invessiv has unlimited liability in cases of intent and gross negligence and for damages arising from injury to life, body, or health. In cases of slight negligence involving a breach of essential contractual obligations, liability is limited to foreseeable damage typical for the contract. In all other cases, liability for slight negligence is excluded to the extent permitted by law. Mandatory statutory liability provisions, in particular under product liability law or for the benefit of consumers, remain unaffected."
+      },
+      "confidentiality": {
+        "title": "12. Confidentiality",
+        "body": "Both parties shall treat as confidential any confidential information of the other party that becomes known to them in connection with the offer, contract, or collaboration and shall use it only for the performance of the respective contractual relationship."
+      },
+      "finalProvisions": {
+        "title": "13. Final provisions",
+        "body": "The law of the Federal Republic of Germany applies, excluding the UN Convention on Contracts for the International Sale of Goods (CISG), to the extent legally permissible. For contracts with merchants, legal entities under public law, or special funds under public law, the registered seat of Invessiv is the place of jurisdiction where legally permissible. Individual agreements in the offer or contract take precedence over these terms."
+      }
+    }
+  }
+}

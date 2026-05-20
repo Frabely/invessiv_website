@@ -1,0 +1,122 @@
+.section {
+  --reveal-delay: 0ms;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(16rem, 1fr);
+  gap: clamp(1.75rem, 4vw, 4.75rem);
+  align-items: center;
+  width: min(
+    calc(100% - (var(--page-inline-gutter) * 2)),
+    var(--max-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(4.5rem, 8vw, 7.75rem) 0;
+}
+
+.section::before {
+  content: "";
+  position: absolute;
+  inset: auto auto -8% -8%;
+  z-index: -1;
+  width: min(34rem, 70vw);
+  height: min(34rem, 70vw);
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle at 38% 32%,
+      color-mix(in srgb, var(--color-cta) 20%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      circle at 68% 68%,
+      color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+      transparent 62%
+    );
+  filter: blur(18px);
+  opacity: 0.7;
+}
+
+.intro,
+.body {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 520ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.intro[data-visible="true"],
+.body[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.intro {
+  display: grid;
+  gap: clamp(0.9rem, 1.8vw, 1.35rem);
+  max-width: 25.5rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  margin: 0;
+  max-width: 15ch;
+  color: var(--color-text);
+  font-size: clamp(2.05rem, 4vw, 4.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.62;
+}
+
+@media (max-width: 960px) {
+  .section {
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 6vw, 3.5rem);
+    padding-block: clamp(4rem, 11vw, 6rem);
+  }
+
+  .intro {
+    order: -1;
+    max-width: min(70%, 34rem);
+  }
+
+  .title {
+    max-width: 14ch;
+    font-size: clamp(2.05rem, 8.2vw, 3.45rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    width: calc(100% - (var(--page-inline-gutter) * 2));
+  }
+
+  .section::before {
+    display: none;
+  }
+
+  .intro {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .body {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

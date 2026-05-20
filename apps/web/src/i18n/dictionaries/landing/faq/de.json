@@ -1,0 +1,44 @@
+{
+  "cta": {
+    "analyticsTarget": "contact",
+    "analyticsVariant": "soft",
+    "href": "#contact",
+    "label": "Frage nicht dabei? Schreib mir kurz, worum es geht."
+  },
+  "eyebrow": "Häufige Fragen",
+  "title": "Was du dich jetzt vielleicht fragst.",
+  "items": [
+    {
+      "question": "Wie schnell ist die Landingpage fertig?",
+      "answer": "Meist in 3–7 Tagen, wenn Ziel, Angebot und Feedback klar sind."
+    },
+    {
+      "question": "Muss ich die Texte selbst schreiben?",
+      "answer": "Nein. Ich helfe dir, dein Angebot klar zu strukturieren und verständlich zu formulieren."
+    },
+    {
+      "question": "Kann die Landingpage später erweitert werden?",
+      "answer": "Ja. Sie kann später Teil einer größeren Website werden oder weitere Seiten bekommen."
+    },
+    {
+      "question": "Ist das auch sinnvoll, wenn ich schon eine Website habe?",
+      "answer": "Ja. Sie kann zusätzlich zu deiner Website entstehen — für ein Angebot, eine Kampagne oder eine Zielgruppe."
+    },
+    {
+      "question": "Brauche ich direkt Werbung?",
+      "answer": "Nein. Du kannst sie auch für Outreach, Empfehlungen, Social Media oder direkte Kontakte nutzen."
+    },
+    {
+      "question": "Was ist ab 999 € enthalten?",
+      "answer": "Der Einstiegspreis gilt für eine Landingpage mit bis zu 6 Inhaltssektionen, responsiver Umsetzung, Kontaktformular und Launch-Unterstützung. Größere Umfänge, zusätzliche Seiten oder individuelle Funktionen kalkuliere ich separat."
+    },
+    {
+      "question": "Für wen ist das nicht geeignet?",
+      "answer": "Wenn dein Angebot noch unklar ist oder du viele Unterseiten brauchst, ist eine einfache Landingpage wahrscheinlich nicht der erste Schritt.",
+      "link": {
+        "label": "Schau dir meine Leistungen an",
+        "href": "/de#services"
+      }
+    }
+  ]
+}

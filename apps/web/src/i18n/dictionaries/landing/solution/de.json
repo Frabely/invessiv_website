@@ -1,0 +1,28 @@
+{
+  "body": "Eine Landingpage bündelt ein konkretes Angebot auf einer Seite: was du anbietest, warum es relevant ist und wie Interessenten anfragen.",
+  "eyebrow": "Lösung",
+  "graphic": {
+    "browserLabel": "Klare Botschaft",
+    "buttonLabel": "Kostenlosen Check anfragen",
+    "formButton": "Anfrage senden",
+    "formFields": [
+      "Dein Name",
+      "E-Mail-Adresse",
+      "Dein Anliegen",
+      "Kurzbeschreibung (optional)"
+    ],
+    "formLabel": "Anfrage stellen",
+    "formSecurity": "Sicher. Unverbindlich. Schnell.",
+    "formTitle": "Erzähl mir kurz von deinem Projekt.",
+    "heroTitle": "Dein Angebot. Ein klarer Nutzen.",
+    "rating": "4,9 von 5 Sternen",
+    "trustLabel": "Vertrauen schafft Entscheidung",
+    "valueLabel": "Deine Vorteile",
+    "valueTiles": [
+      "Verständlich erklärt",
+      "Relevanter Nutzen",
+      "Nächster Schritt klar"
+    ]
+  },
+  "title": "Eine Landingpage führt Besucher gezielt zur Anfrage."
+}

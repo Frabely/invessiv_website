@@ -1,0 +1,78 @@
+{
+  "terms": {
+    "meta": {
+      "title": "AGB",
+      "description": "Allgemeine Geschäftsbedingungen von Invessiv für projektbasierte digitale Leistungen, im Regelfall für Geschäftskunden.",
+      "openGraphTitle": "AGB | Invessiv",
+      "openGraphLocale": "de_DE"
+    },
+    "page": {
+      "title": "Allgemeine Geschäftsbedingungen",
+      "lead": "Diese Bedingungen gelten im Regelfall für Verträge mit Unternehmern. Verträge mit Verbrauchern schließt Invessiv nur im Einzelfall auf Grundlage individueller Angebote.",
+      "updatedAt": "Zuletzt geändert: 26. März 2026.",
+      "breadcrumbAriaLabel": "Breadcrumb",
+      "homeLabel": "Start",
+      "tocLabel": "Inhalt"
+    },
+    "sections": {
+      "provider": {
+        "title": "1. Anbieter",
+        "labels": {
+          "company": "Geschäftsbezeichnung",
+          "owner": "Inhaber",
+          "address": "Adresse",
+          "email": "E-Mail"
+        },
+        "addressLine": "Frankenberger Straße 235, 09131 Chemnitz, Deutschland"
+      },
+      "scope": {
+        "title": "2. Geltungsbereich",
+        "body": "Diese Bedingungen gelten für Angebote, Leistungen und Verträge von Invessiv. Das Leistungsangebot richtet sich im Regelfall an Unternehmer. Verträge mit Verbrauchern kommen nur im Einzelfall auf Grundlage individueller Angebote zustande. Entgegenstehende oder abweichende Bedingungen des Kunden gelten nur, wenn Invessiv ihnen ausdrücklich in Textform zugestimmt hat. Gegenüber Verbrauchern gelten diese Bedingungen nur insoweit, als ihnen keine zwingenden gesetzlichen Vorschriften entgegenstehen."
+      },
+      "contractConclusion": {
+        "title": "3. Vertragsschluss",
+        "body": "Die Darstellung von Leistungen auf der Webseite, in Erstgesprächen oder in sonstigen Informationen stellt noch kein verbindliches Angebot dar. Die Webseite ermöglicht keinen unmittelbaren verbindlichen Vertragsabschluss. Anfragen per Webseite, E-Mail oder Gespräch sind unverbindlich. Invessiv ist berechtigt, eingehende Anfragen, zugehörige Kommunikationsdaten und Bearbeitungsstände intern zu dokumentieren, soweit dies zur Prüfung, Bearbeitung, Angebotsvorbereitung und Nachverfolgung vorvertraglicher Kommunikation erforderlich ist. Ein Vertrag kommt erst durch ein individuelles Angebot von Invessiv und dessen Annahme in Textform oder durch eine sonstige ausdrückliche Vereinbarung in Textform zustande. Maßgeblich für Umfang und Inhalt der Leistungen sind das jeweilige Angebot und die konkret getroffenen Abreden."
+      },
+      "servicesScope": {
+        "title": "4. Leistungen",
+        "body": "Invessiv erbringt insbesondere Projektleistungen in den Bereichen Webentwicklung, Automatisierung und digitale Prozesslösungen sowie laufende Leistungen wie Betreuung, Wartung, Support oder Weiterentwicklung. Der konkrete Leistungsumfang ergibt sich ausschließlich aus dem jeweiligen Angebot oder der laufenden Vereinbarung. Änderungs- und Erweiterungswünsche nach Vertragsschluss bedürfen einer gesonderten Abstimmung und können zusätzlichen Aufwand sowie zusätzliche Vergütung auslösen."
+      },
+      "clientCooperation": {
+        "title": "5. Mitwirkung des Kunden",
+        "body": "Der Kunde stellt Inhalte, Informationen, Zugänge, Ansprechpartner, Freigaben und sonstige erforderliche Mitwirkungshandlungen rechtzeitig zur Verfügung. Verzögerungen oder Mehraufwand, die durch verspätete, unvollständige oder fehlerhafte Mitwirkung entstehen, gehen nicht zulasten von Invessiv und können vereinbarte Fristen angemessen verschieben. Zusätzlicher Aufwand kann gesondert berechnet werden, soweit dies sachlich veranlasst ist."
+      },
+      "payment": {
+        "title": "6. Vergütung und Zahlungsbedingungen",
+        "body": "Die Vergütung, Preisangaben, steuerliche Behandlung, Abrechnungsmodalitäten und der konkrete Abrechnungszeitpunkt richten sich nach dem jeweiligen Angebot, der Rechnung oder der sonstigen Vereinbarung. Auf der Webseite genannte Preise oder Preisindikationen dienen, soweit nicht ausdrücklich anders bezeichnet, nur der unverbindlichen Orientierung. Sofern nichts Abweichendes vereinbart ist, sind Rechnungen innerhalb von 14 Tagen ab Rechnungsdatum ohne Abzug fällig."
+      },
+      "consumerContracts": {
+        "title": "7. Hinweise für Verbraucherverträge",
+        "body": "Soweit Invessiv ausnahmsweise Verträge mit Verbrauchern schließt, erfolgt dies ausschließlich auf Grundlage individueller Angebote. Zwingende Verbraucherschutzrechte und gesetzlich vorgeschriebene Informationen bleiben unberührt. Sofern für den konkreten Vertrag zusätzliche gesetzliche Hinweise, Widerrufsinformationen oder gesonderte Erklärungen erforderlich sind, werden diese im jeweiligen Angebots- oder Vertragsprozess gesondert bereitgestellt."
+      },
+      "acceptance": {
+        "title": "8. Review, Freigabe und Fertigstellung",
+        "body": "Bei abgegrenzten Projektleistungen stellt Invessiv Arbeitsergebnisse zur Prüfung und Freigabe bereit. Der Kunde prüft diese zeitnah und teilt wesentliche Abweichungen nachvollziehbar mit. Berechtigte wesentliche Abweichungen werden innerhalb angemessener Frist nachgebessert. Laufende Leistungen, Support und sonstige Dienstleistungen unterliegen keiner förmlichen Abnahme, sofern nicht ausdrücklich etwas anderes vereinbart ist."
+      },
+      "usageRights": {
+        "title": "9. Nutzungsrechte",
+        "body": "Bis zur vollständigen Zahlung verbleiben sämtliche Nutzungsrechte an den von Invessiv erstellten Arbeitsergebnissen bei Invessiv, soweit nicht zwingendes Recht entgegensteht. Nach vollständiger Zahlung erhält der Kunde die für den vertraglich vereinbarten Zweck erforderlichen Nutzungsrechte an den vereinbarten Ergebnissen. Die Übergabe von offenem Quellcode, editierbaren Projektdateien, Rohdaten oder sonstigen nicht ausdrücklich geschuldeten Ausgangsdateien erfolgt nur, wenn dies im Angebot oder in einer sonstigen Vereinbarung ausdrücklich vorgesehen ist. Rechte an Open-Source-Bestandteilen, Drittanbieter-Assets, externen Bibliotheken, Plugins, Schriftarten oder sonstigen Fremdbestandteilen richten sich nach den jeweiligen Lizenzbedingungen."
+      },
+      "thirdPartyServices": {
+        "title": "10. Drittanbieter und Fremdleistungen",
+        "body": "Hosting, Domains, externe Software, APIs, Drittanbieter-Tools, Plattformen, Lizenzen und sonstige Leistungen Dritter sind nur dann Bestandteil der Leistungen von Invessiv, wenn dies ausdrücklich vereinbart wurde. Solche Leistungen können gesonderten Bedingungen, Kosten und Lizenzvorgaben der jeweiligen Anbieter unterliegen. Invessiv ist berechtigt, geeignete Subunternehmer oder technische Dienstleister zur Leistungserbringung einzusetzen."
+      },
+      "liability": {
+        "title": "11. Haftung",
+        "body": "Invessiv haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten haftet Invessiv nur auf den vertragstypischen, vorhersehbaren Schaden. Im Übrigen ist die Haftung bei leichter Fahrlässigkeit ausgeschlossen, soweit gesetzlich zulässig. Zwingende gesetzliche Haftungsvorschriften, insbesondere nach dem Produkthaftungsgesetz oder zugunsten von Verbrauchern, bleiben unberührt."
+      },
+      "confidentiality": {
+        "title": "12. Vertraulichkeit",
+        "body": "Beide Parteien behandeln vertrauliche Informationen der jeweils anderen Partei, die ihnen im Zusammenhang mit Angebot, Vertrag oder Zusammenarbeit bekannt werden, vertraulich und verwenden sie nur für die Durchführung des jeweiligen Vertragsverhältnisses."
+      },
+      "finalProvisions": {
+        "title": "13. Schlussbestimmungen",
+        "body": "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts, soweit gesetzlich zulässig. Gegenüber Unternehmern, juristischen Personen des öffentlichen Rechts oder öffentlich-rechtlichen Sondervermögen ist, soweit gesetzlich zulässig, der Sitz von Invessiv Gerichtsstand. Individuelle Vereinbarungen im Angebot oder Vertrag gehen diesen Bedingungen vor."
+      }
+    }
+  }
+}

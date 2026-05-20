@@ -1,0 +1,44 @@
+{
+  "cta": {
+    "analyticsTarget": "contact",
+    "analyticsVariant": "soft",
+    "href": "#contact",
+    "label": "Question not listed? Send me a short message about what you need."
+  },
+  "eyebrow": "Frequently asked",
+  "title": "What you might be wondering right now.",
+  "items": [
+    {
+      "question": "How fast will the landing page be ready?",
+      "answer": "Usually in 3–7 days, once your goal, offer and feedback are clear."
+    },
+    {
+      "question": "Do I have to write the copy myself?",
+      "answer": "No. I help you structure your offer clearly and put it into words people understand."
+    },
+    {
+      "question": "Can the landing page be extended later?",
+      "answer": "Yes. It can later become part of a larger website or gain additional pages."
+    },
+    {
+      "question": "Does it make sense if I already have a website?",
+      "answer": "Yes. It can sit alongside your website — for an offer, campaign, or target group."
+    },
+    {
+      "question": "Do I need to run ads right away?",
+      "answer": "No. You can also use it for outreach, referrals, social media, or direct contacts."
+    },
+    {
+      "question": "What is included from €999?",
+      "answer": "The starting price applies to a landing page with up to 6 content sections, responsive implementation, contact form, and launch support. Larger scopes, additional pages, or custom functions are calculated separately."
+    },
+    {
+      "question": "Who is this not for?",
+      "answer": "If your offer is unclear or you need many subpages, a simple landing page probably isn't the right first step.",
+      "link": {
+        "label": "Take a look at my services",
+        "href": "/en#services"
+      }
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+.section {
+  --reveal-delay: 0ms;
+  --card-radius: 24px;
+  --card-border-thickness: 1.5px;
+
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(2rem, 4vw, 3rem);
+  width: min(
+    calc(100% - (var(--page-inline-gutter) * 2)),
+    var(--max-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  text-align: center;
+}
+
+.spotlight {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(38rem, 86vw);
+  height: min(28rem, 70vw);
+  transform: translate(-50%, -42%);
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle at 32% 38%,
+      color-mix(in srgb, var(--color-accent-warm) 26%, transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      circle at 70% 62%,
+      color-mix(in srgb, var(--color-cta) 22%, transparent),
+      transparent 64%
+    );
+  filter: blur(24px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.intro,
+.stage,
+.afterCard {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 520ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.intro[data-visible="true"],
+.stage[data-visible="true"],
+.afterCard[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.intro {
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.85rem, 1.6vw, 1.2rem);
+  max-width: 38rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.15rem;
+}
+
+.title {
+  margin: 0;
+  max-width: 18ch;
+  color: var(--color-text);
+  font-size: clamp(1.85rem, 3.4vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  max-width: 42ch;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.6;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  position: relative;
+  width: min(100%, var(--focus-lane-max));
+  display: grid;
+  border-radius: var(--card-radius);
+  border: var(--card-border-thickness) solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, var(--color-accent-warm), var(--color-cta))
+      border-box;
+  box-shadow:
+    0 30px 80px -50px color-mix(in srgb, var(--color-cta) 45%, transparent),
+    0 12px 30px -20px
+      color-mix(in srgb, var(--color-accent-warm) 35%, transparent);
+  overflow: hidden;
+  text-align: left;
+}
+
+.cardHeader {
+  display: grid;
+  gap: 0.55rem;
+  padding: clamp(1.35rem, 2.4vw, 1.85rem) clamp(1.5rem, 2.8vw, 2.25rem);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 14%, transparent),
+    color-mix(in srgb, var(--color-cta) 12%, transparent)
+  );
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.planBadge {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.32rem 0.75rem 0.32rem 0.55rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-cta) 88%, transparent),
+    color-mix(in srgb, var(--color-accent-warm) 80%, transparent)
+  );
+  color: var(--color-on-cta, #fff);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.planBadge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-on-cta, #fff);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--color-on-cta, #fff) 30%, transparent);
+}
+
+.planTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.planDescription {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, var(--color-text) 10%);
+  font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.08rem);
+  line-height: 1.55;
+  max-width: 44ch;
+}
+
+.cardBody {
+  display: grid;
+  gap: clamp(0.85rem, 1.6vw, 1.15rem);
+  padding: clamp(1.5rem, 2.8vw, 2.25rem);
+}
+
+.itemsLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text) 20%);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.itemList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1vw, 0.8rem) clamp(0.85rem, 1.6vw, 1.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.itemCheck {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-cta) 88%, transparent),
+    color-mix(in srgb, var(--color-accent-warm) 80%, transparent)
+  );
+  color: var(--color-on-cta, #fff);
+  flex-shrink: 0;
+}
+
+.itemLabel {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: clamp(0.95rem, 0.92rem + 0.18vw, 1.05rem);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.cardFooter {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(1rem, 2vw, 1.6rem);
+  padding: clamp(1.1rem, 2vw, 1.4rem) clamp(1.5rem, 2.8vw, 2.25rem);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 35%, transparent 65%);
+}
+
+.duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+}
+
+.durationIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 28%, var(--color-border) 72%);
+  color: var(--color-accent-warm);
+  flex-shrink: 0;
+}
+
+.durationText {
+  display: grid;
+  gap: 0.1rem;
+  line-height: 1.2;
+}
+
+.durationLabel {
+  color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text) 20%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.durationValue {
+  color: var(--color-text);
+  font-size: clamp(0.98rem, 0.94rem + 0.18vw, 1.08rem);
+  font-weight: 600;
+}
+
+.price {
+  display: grid;
+  justify-items: end;
+  gap: 0.1rem;
+  line-height: 1;
+}
+
+.priceLabel {
+  color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text) 20%);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.priceValue {
+  font-size: clamp(2rem, 1.3rem + 2.2vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-warm),
+    var(--color-cta)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-feature-settings: "tnum" 1;
+}
+
+.afterCard {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.hint {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: clamp(0.9rem, 0.86rem + 0.18vw, 1rem);
+  line-height: 1.5;
+}
+
+.cta {
+  font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
+}
+
+:global([data-theme="light"]) .card {
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, var(--color-accent-warm), var(--color-cta))
+      border-box;
+  box-shadow:
+    0 30px 70px -50px color-mix(in srgb, var(--color-cta) 30%, transparent),
+    0 14px 28px -22px
+      color-mix(in srgb, var(--color-accent-warm) 25%, transparent);
+}
+
+:global([data-theme="light"]) .cardFooter {
+  background: color-mix(in srgb, var(--color-surface-2) 60%, transparent 40%);
+}
+
+@media (max-width: 720px) {
+  .section {
+    width: calc(100% - (var(--page-inline-gutter) * 2));
+  }
+
+  .spotlight {
+    transform: translate(-50%, -38%);
+    filter: blur(28px);
+    opacity: 0.42;
+  }
+
+  .itemList {
+    grid-template-columns: 1fr;
+  }
+
+  .cardFooter {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 1rem;
+  }
+
+  .price {
+    justify-items: start;
+  }
+
+  .afterCard {
+    width: 100%;
+  }
+
+  .cta {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardHeader,
+  .cardBody,
+  .cardFooter {
+    padding-inline: 1.25rem;
+  }
+
+  .planTitle {
+    font-size: clamp(1.3rem, 5.5vw, 1.55rem);
+  }
+
+  .priceValue {
+    font-size: clamp(1.85rem, 8.5vw, 2.35rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .stage,
+  .afterCard {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

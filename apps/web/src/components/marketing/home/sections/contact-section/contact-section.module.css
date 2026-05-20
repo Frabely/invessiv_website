@@ -1,0 +1,290 @@
+.section {
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.stack {
+  display: grid;
+  gap: clamp(0.85rem, 1.4vw, 1.1rem);
+}
+
+.briefHead {
+  display: grid;
+  gap: clamp(0.5rem, 0.8vw, 0.75rem);
+  max-width: 64rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.decisionIntro {
+  max-width: 62ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.54;
+}
+
+.entryPanel {
+  display: grid;
+  gap: clamp(0.75rem, 1.1vw, 1rem);
+  padding-top: clamp(0.75rem, 1vw, 0.95rem);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.entryPanelProject {
+  padding-top: clamp(0.85rem, 1.2vw, 1.05rem);
+}
+
+.entryPanelProject :global([data-project-request-panel="true"]) {
+  margin-top: 0;
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 18%,
+    var(--color-border) 82%
+  );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 8px 20px rgba(5, 8, 12, 0.07);
+}
+
+.secondaryPaths {
+  display: grid;
+  gap: clamp(0.55rem, 0.9vw, 0.8rem);
+  margin-top: clamp(0.2rem, 0.6vw, 0.45rem);
+  padding-top: clamp(0.7rem, 1vw, 0.95rem);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+}
+
+.secondaryPathsIntro p {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  font-size: var(--font-size-heading-lg);
+  font-weight: 690;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.secondaryPathGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.secondaryPathTrigger {
+  width: 100%;
+  min-height: 68px;
+  padding: 0.72rem 0.82rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 64%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-surface-1) 46%, transparent);
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  display: grid;
+  justify-items: start;
+  gap: 0.16rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.secondaryPathTrigger:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 24%,
+    var(--color-border) 76%
+  );
+  background: color-mix(in srgb, var(--color-surface-2) 54%, transparent);
+  transform: translateY(-1px);
+}
+
+.secondaryPathTriggerActive {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 38%,
+    var(--color-border) 62%
+  );
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-surface-2) 78%, var(--color-cta) 22%),
+    color-mix(in srgb, var(--color-surface-1) 88%, transparent)
+  );
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+.secondaryPathTrigger:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+}
+
+.secondaryPathKicker {
+  color: color-mix(in srgb, var(--color-text) 56%, var(--color-text-muted) 44%);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 690;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.secondaryPathTitle {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
+  font-size: var(--font-size-body-md);
+  font-weight: 760;
+  line-height: 1.24;
+}
+
+.secondaryPathDescription {
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.42;
+}
+
+.secondaryPathPanel {
+  display: grid;
+  padding-top: 0.35rem;
+}
+
+.ctaWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.secondaryLink {
+  width: fit-content;
+  color: color-mix(in srgb, var(--accent) 78%, #ffe8cd 22%);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.secondaryLink::after {
+  content: "\2192";
+  display: inline-block;
+  margin-left: 9px;
+  font-size: 0.92em;
+  transition: transform 180ms ease;
+}
+
+.secondaryLink:hover::after,
+.secondaryLink:focus-visible::after {
+  transform: translateX(2px);
+}
+
+.secondaryLink:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 62%, #fff0df 38%);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+:global([data-theme="light"]) .decisionIntro {
+  color: #76503c;
+}
+
+:global([data-theme="light"]) .secondaryPathKicker {
+  color: #8a604a;
+}
+
+:global([data-theme="light"]) .secondaryPathTrigger {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
+}
+
+:global([data-theme="light"]) .secondaryPathTrigger:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 30%,
+    var(--color-border) 70%
+  );
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--color-surface-1) 92%, var(--color-cta) 8%),
+    color-mix(in srgb, var(--color-surface-2) 84%, var(--color-cta) 16%)
+  );
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+:global([data-theme="light"]) .secondaryPathTriggerActive {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 64%,
+    var(--color-border) 36%
+  );
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-cta) 24%, #ffffff 76%),
+    color-mix(in srgb, var(--color-cta) 14%, var(--color-surface-2) 86%)
+  );
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-cta) 12%);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-cta) 22%, transparent),
+    0 10px 24px color-mix(in srgb, var(--color-cta) 12%, transparent);
+}
+
+:global([data-theme="light"]) .secondaryPathTriggerActive .secondaryPathTitle {
+  color: color-mix(in srgb, var(--color-text) 90%, var(--color-cta) 10%);
+}
+
+:global([data-theme="light"]) .secondaryLink {
+  color: color-mix(in srgb, var(--accent) 58%, var(--color-text) 42%);
+}
+
+@media (min-width: 760px) {
+  .secondaryPathGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ctaWrap {
+    margin-top: 0.2rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .stack {
+    gap: clamp(0.9rem, 1.25vw, 1.15rem);
+  }
+
+  .briefHead {
+    gap: 0.72rem;
+    max-width: 68rem;
+  }
+
+  .decisionIntro {
+    max-width: 64ch;
+  }
+
+  .entryPanel {
+    padding-top: 0.95rem;
+  }
+
+  .secondaryPathTrigger {
+    min-height: 70px;
+    padding: 0.74rem 0.95rem;
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .title {
+    font-size: var(--font-size-section-title);
+  }
+}

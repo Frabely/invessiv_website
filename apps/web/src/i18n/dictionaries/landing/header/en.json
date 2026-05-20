@@ -1,0 +1,18 @@
+{
+  "actionsAriaLabel": "Language and primary action",
+  "brandLabel": "Invessiv",
+  "brandLogoAlt": "Invessiv logo",
+  "ctaLabel": "Request a free check",
+  "labelsByHref": {
+    "#solution": "Solution",
+    "#inclusions": "Scope",
+    "#audience": "Audience",
+    "#process": "Process",
+    "#pricing": "Pricing",
+    "#faq": "FAQ"
+  },
+  "localeMenuLabel": "Open language menu",
+  "localeSwitchLabel": "Choose language",
+  "mobileMenuLabel": "Menu",
+  "navAriaLabel": "Landing page navigation"
+}

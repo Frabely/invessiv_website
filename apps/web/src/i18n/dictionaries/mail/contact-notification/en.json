@@ -1,0 +1,71 @@
+{
+  "mail": {
+    "contactNotification": {
+      "detailsLabel": "Project description / requirements",
+      "heading": "New project request",
+      "labels": {
+        "budgetKey": "Budget range",
+        "company": "Company",
+        "customPageNames": "Additional pages",
+        "email": "Email",
+        "displayName": "Name",
+        "goalKey": "Primary goal",
+        "offerKey": "Offer",
+        "pageKeys": "Required pages",
+        "phone": "Phone",
+        "preferredStartKey": "Preferred start",
+        "role": "Role",
+        "website": "Website",
+        "workflowKey": "Type of request"
+      },
+      "subjectPrefix": "Project request",
+      "values": {
+        "budgetKey": {
+          "above_10000": "€10,000+",
+          "below_1000": "Below €1,000",
+          "between_1000_2500": "€1,000 - €2,500",
+          "between_2500_5000": "€2,500 - €5,000",
+          "between_5000_10000": "€5,000 - €10,000",
+          "open": "Not defined yet"
+        },
+        "goalKey": {
+          "generate_inquiries": "Generate inquiries",
+          "grow_newsletter": "Build a contact list",
+          "increase_bookings": "Book more calls",
+          "other_goal": "Other goal",
+          "sell_product": "Sell a product"
+        },
+        "offerKey": {
+          "landing": "Landing pages",
+          "maintenance": "Maintenance & Support",
+          "process": "Process tools",
+          "upgrade": "Website upgrade",
+          "web": "Websites"
+        },
+        "pageKeys": {
+          "about": "About",
+          "blog": "Blog",
+          "careers": "Careers",
+          "contact": "Contact",
+          "home": "Home",
+          "landing_page": "Landing page",
+          "services": "Services"
+        },
+        "preferredStartKey": {
+          "immediately": "Immediately",
+          "later_flexible": "Later / flexible",
+          "within_one_month": "Within 1 month",
+          "within_two_weeks": "Within 2 weeks"
+        },
+        "workflowKey": {
+          "build_internal_tool": "Build an internal tool for a team",
+          "connect_data_or_systems": "Connect data or systems",
+          "digitize_existing_process": "Digitize an existing process",
+          "improve_existing_tool": "Improve an existing tool or system",
+          "other_process": "Other request",
+          "simplify_manual_process": "Simplify a manual process"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "bottomNote": "Landing page offer by Invessiv",
+  "brand": "Invessiv",
+  "columns": [
+    {
+      "title": "Landing page"
+    },
+    {
+      "title": "Invessiv",
+      "links": [
+        {
+          "label": "More about Invessiv",
+          "href": "/en"
+        }
+      ]
+    },
+    {
+      "title": "Contact",
+      "links": [
+        {
+          "label": "Request a free check",
+          "href": "#contact"
+        }
+      ]
+    }
+  ],
+  "copyright": "© 2026 Invessiv. All rights reserved.",
+  "description": "A compact landing page for one clear offer — built quickly and focused on inquiries.",
+  "legalLinks": [
+    {
+      "label": "Imprint",
+      "href": "/en/imprint"
+    },
+    {
+      "label": "Privacy",
+      "href": "/en/privacy"
+    },
+    {
+      "label": "Terms",
+      "href": "/en/terms"
+    }
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "href": "https://www.linkedin.com/company/invessiv/",
+      "label": "LinkedIn"
+    },
+    {
+      "platform": "instagram",
+      "href": "https://www.instagram.com/invessiv/",
+      "label": "Instagram"
+    }
+  ]
+}
