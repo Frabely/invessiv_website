@@ -15,7 +15,9 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 - Pflichtfelder müssen befüllt sein, optionale Felder bleiben leer (kein Leerzeichen, kein `-`).
 - Leere optionale Felder werden einfach ausgelassen (zwei Semikola nebeneinander: `;;`).
 - Spaltennamen dürfen nicht abgeändert werden.
-- Aus Datenschutzsicht ist es sinnvoll, alle Leads zunächst auf `zu prüfen` (`pending_review`) zu setzen.
+- Jede Zeile muss einen `display_name` enthalten.
+- Für neue Imports immer `pending_review` als `status` setzen. Andere Statuswerte werden für diesen Workflow nicht
+  verwendet.
 - Encoding: UTF-8.
 
 ---
@@ -35,6 +37,7 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 
 | Spalte          | Pflicht | Typ            | Beschreibung                                                                                                                                                          | Beispiel                               |
 | --------------- | ------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `display_name`  | **Ja**  | Text           | Anzeigename des Leads. Muss gesetzt sein.                                                                                                                             | `Anna Weber`                           |
 | `email`         | **Ja**  | E-Mail         | Eindeutige E-Mail-Adresse des Leads. Muss eine gültige E-Mail sein.                                                                                                   | `anna.weber@beispiel.de`               |
 | `last_name`     | Bedingt | Text           | Nachname. Pflicht, wenn `company_name` leer.                                                                                                                          | `Weber`                                |
 | `company_name`  | Bedingt | Text           | Firmenname. Pflicht, wenn `last_name` leer.                                                                                                                           | `Muster GmbH`                          |
@@ -45,7 +48,7 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 | `instagram_url` | Nein    | URL            | Instagram-Profilseite. Muss eine gültige URL sein.                                                                                                                    | `https://instagram.com/anna.weber`     |
 | `youtube_url`   | Nein    | URL            | YouTube-Kanal. Muss eine gültige URL sein.                                                                                                                            | `https://youtube.com/@annakanal`       |
 | `score`         | Nein    | Ganzzahl 0–100 | Priorisierungspunktzahl. Muss eine ganze Zahl zwischen 0 und 100 sein.                                                                                                | `72`                                   |
-| `status`        | Nein    | Statuswert     | Prüfstatus des Leads. Empfohlen für neue Imports: `zu prüfen` / `pending_review`.                                                                                     | `zu prüfen`                            |
+| `status`        | **Ja**  | Statuswert     | Prüfstatus des Leads. Für den aktuellen Import-Workflow immer `pending_review`.                                                                                       | `pending_review`                       |
 | `category`      | Nein    | Text           | Kategorie-Slug. Wird nur ausgewertet, wenn `category_id` leer ist. Unbekannte Slugs führen zu einem Fehler (Zeile wird nicht importiert). Groß-/Kleinschreibung egal. | `coaches`                              |
 | `category_id`   | Nein    | UUID           | UUID einer bestehenden Kategorie im System. Hat Vorrang vor `category`.                                                                                               | `3fa85f64-5717-4562-b3fc-2c963f66afa6` |
 | `owner`         | Nein    | Text           | Interner Verantwortlicher (Name der Person im Team).                                                                                                                  | `Moritz`                               |
@@ -89,7 +92,7 @@ Der Status-Wert wird normalisiert. Folgende Bezeichnungen werden akzeptiert (DE 
 | `lost`           | `lost`, `verloren`                              |
 | `archived`       | `archived`, `archiviert`                        |
 
-Für neue Importdateien ist `zu prüfen` die empfohlene Voreinstellung.
+Für neue Importdateien ist `pending_review` die feste Voreinstellung.
 
 ---
 
