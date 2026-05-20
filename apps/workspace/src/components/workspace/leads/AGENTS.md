@@ -107,17 +107,20 @@ Neue Subfolder-Gruppen werden über einen Plan eingeführt, nicht ad hoc.
 
 ## Subfolder-Übersicht (Stand)
 
-| Subfolder  | Zweck                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| `shell/`   | Page-Shell, Page-Header                                                                          |
-| `toolbar/` | Filter-Toolbar (Tabs, Suche, Status-/Source-/Kategorie-/Score-/Date-Filter, künftige Filter)     |
-| `table/`   | Tabelle, Row, Selection-Provider, Bulk-Action-Bar, Pagination, Empty-State, Loading-State        |
-| `detail/`  | Lead-Detail-Side-Panel und Activity-/Timeline-Komponenten                                        |
-| `form/`    | Lead-Forms (Add, Edit, künftig Import-/Message-Forms)                                            |
-| `shared/`  | Status-/Source-/Plattform-Badges, Score-Bar, weitere lead-übergreifend wiederverwendbare Visuals |
+| Subfolder   | Zweck                                                                                            |
+| ----------- | ------------------------------------------------------------------------------------------------ |
+| `shell/`    | Page-Shell, Page-Header, Loading-Skeleton                                                        |
+| `toolbar/`  | Filter-Toolbar (Tabs, Suche, Status-/Source-/Kategorie-/Score-/Date-Filter, künftige Filter)     |
+| `table/`    | Tabelle, Row, Selection-Provider, Bulk-Action-Bar, Pagination, Empty-State, Loading-State        |
+| `detail/`   | Lead-Detail-Side-Panel und Activity-/Timeline-Komponenten                                        |
+| `form/`     | Lead-Forms (Add, Edit)                                                                           |
+| `delete/`   | Lösch-Bestätigungs-Dialog                                                                        |
+| `import/`   | Import-Dialog, Column-Mapping-UI                                                                 |
+| `outreach/` | Outreach-Trigger und Outreach-Dialog                                                             |
+| `shared/`   | Status-/Source-/Plattform-Badges, Score-Bar, weitere lead-übergreifend wiederverwendbare Visuals |
 
-Neue Subfolder-Gruppen (z. B. `import/`, `messaging/`, `analytics/`) werden plan-getrieben eingeführt und in dieser
-Tabelle ergänzt.
+Neue Subfolder-Gruppen (z. B. `messaging/`, `analytics/`) werden plan-getrieben eingeführt und in dieser Tabelle
+ergänzt.
 
 ## Form-DTO-Regel
 
@@ -134,7 +137,7 @@ Tabelle ergänzt.
    `<component-name>.module.css`.
 4. Prop-Typen aus `packages/common/src/contracts/leads/**` ziehen, keine eigenen Lead-Shapes erfinden.
 5. Falls interaktiv: Tests co-locatieren (`<component-name>.test.tsx`).
-6. Vor Merge `npm run lint && npm run typecheck && npm run test && npm run build` grün halten.
+6. Vor Merge `pnpm lint && pnpm typecheck && pnpm test && pnpm build:workspace` grün halten.
 
 ## Was hier nicht hingehört
 
@@ -147,7 +150,7 @@ Tabelle ergänzt.
 ## Verweise
 
 - Repo-Root `AGENTS.md` und `CLAUDE.md`.
-- `src/components/AGENTS.md` und `src/components/CLAUDE.md`.
-- `src/app/[locale]/leads/AGENTS.md` und `CLAUDE.md`.
-- `src/app/api/workspace/leads/AGENTS.md`, `CLAUDE.md` und `README.md`.
+- `apps/workspace/src/app/[locale]/(app)/leads/AGENTS.md` — Routen-/Page-Regeln.
+- `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` — Architektur-Wissen (SSR-Flow, DTO-Grenzen, Caching).
+- `apps/workspace/src/app/api/workspace/leads/README.md` — API-Contract.
 - Aktive und kommende Pläne: `plans/workspace/leads/`.

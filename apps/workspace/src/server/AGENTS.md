@@ -85,7 +85,7 @@ Mapping-Service selbst und nicht im Query-Handler.
   parallel manuell neben dem `pgTable`-Modell gepflegt.
 - Reines Mapping nicht in `packages/db/src`.
 - Orchestrierung nicht in `packages/db/src`.
-- Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.
+- Tests nach `apps/workspace/src/server/tests` legen und die Server-Struktur dort spiegeln.
 
 ## Service-Exports in `src/server/**`
 

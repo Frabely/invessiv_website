@@ -99,20 +99,26 @@ Auth-Duplikation.
 ## i18n-Struktur
 
 ```
-src/i18n/dictionaries/workspace/leads/
-  meta/
-    de.json
-    en.json
-  page/
-    de.json
-    en.json
+apps/workspace/src/i18n/dictionaries/workspace/leads/
+  bulk/{de,en}.json
+  delete/{de,en}.json
+  detail/{de,en}.json
+  form/{de,en}.json
+  import/{de,en}.json
+  meta/{de,en}.json
+  outreach/{de,en}.json + outreach/index.ts
+  pagination/{de,en}.json
+  shared/{de,en}.json
+  shell/{de,en}.json
+  table/{de,en}.json
+  toolbar/{de,en}.json
   index.ts
 ```
 
-`index.ts` stellt typisierte Loader bereit (`getLeadsMetaContent(locale)`, `getLeadsPageContent(locale)`, …). Neue
-Sektionen (z. B. Import-UI, Messaging-UI) ergänzen `page/{de,en}.json` oder eigene Subordner unterhalb `leads/`.
-`src/i18n/get-dictionary.ts` lädt die Sections nach Bedarf. Komponenten konsumieren vorbereitete Inhalte und enthalten
-keine sprachabhängige Rest-Copy.
+`index.ts` stellt typisierte Loader bereit (`getLeadsMetaDictionary(locale)`, `getLeadsShellDictionary(locale)`,
+`getLeadsTableDictionary(locale)`, `getLeadsSharedDictionary(locale)`, `getLeadsOutreachDictionary(locale)`, …).
+Neue Sektionen ergänzen bestehende Unterordner oder legen neue Subordner unterhalb `leads/` an.
+Komponenten konsumieren vorbereitete Inhalte und enthalten keine sprachabhängige Rest-Copy.
 
 ## SEO und Caching
 
@@ -129,7 +135,7 @@ keine sprachabhängige Rest-Copy.
 4. Page bzw. Sub-View dünn halten: Filter/Params parsen, Query-Handler aufrufen, Komponenten zusammensetzen.
 5. Mutationen über API-Routen unter `/api/workspace/leads/*` durchreichen, danach `router.refresh()`.
 6. Tests ergänzen: Unit für Validation/Filter/Command, Integration für Query-Handler, E2E für kritische User-Flows.
-7. Vor Merge `npm run lint`, `npm run typecheck`, `npm run test` und `npm run build` grün halten.
+7. Vor Merge `pnpm lint`, `pnpm typecheck`, `pnpm test` und `pnpm build:workspace` grün halten.
 
 ## Was hier nicht hingehört
 
@@ -142,9 +148,8 @@ keine sprachabhängige Rest-Copy.
 ## Verweise
 
 - Repo-Root `AGENTS.md` und `CLAUDE.md`.
-- `src/app/AGENTS.md` und `src/app/CLAUDE.md`.
-- `src/app/[locale]/AGENTS.md` und `src/app/[locale]/CLAUDE.md`.
-- `src/app/[locale]/leads/CLAUDE.md`.
-- `src/components/workspace/leads/AGENTS.md`.
-- `src/app/api/workspace/leads/AGENTS.md`, `CLAUDE.md` und `README.md`.
+- `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` — Architektur-Wissen (Auth-Vererbung, SSR-Datenfluss,
+  DTO-Grenzen, kritische Dateien).
+- `apps/workspace/src/components/workspace/leads/AGENTS.md` — Komponenten-Regeln.
+- `apps/workspace/src/app/api/workspace/leads/README.md` — API-Contract.
 - Aktive und kommende Pläne: `plans/workspace/leads/`.

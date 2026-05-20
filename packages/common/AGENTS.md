@@ -44,7 +44,7 @@ export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
 ```
 
 Alle bestehenden `as const`-Arrays in `packages/common/src/constants/**`, die String-Literale als Union-Typ exponieren,
-sind schrittweise auf dieses Pattern umzustellen (siehe `docs/Todo.md`).
+sind schrittweise auf dieses Pattern umzustellen (siehe `plans/Todo.md`).
 
 ## Contract-Felder: immer camelCase
 
