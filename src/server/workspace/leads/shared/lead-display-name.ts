@@ -1,5 +1,5 @@
-import type { CreateLeadCoreInput } from "@/common/contracts/leads/create-lead-core-input";
-import type { LeadImportRowDto } from "@/common/contracts/leads/import/lead-import-row.dto";
+import type { CreateLeadCoreInput } from "@invessiv/common/contracts/leads/create-lead-core-input";
+import type { LeadImportRowDto } from "@invessiv/common/contracts/leads/import/lead-import-row.dto";
 
 function trimValue(value: string | null | undefined): string | undefined {
   if (value === undefined || value === null) {

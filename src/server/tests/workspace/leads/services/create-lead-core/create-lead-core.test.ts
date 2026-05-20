@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import { PostgresErrorCode } from "@/server/db/core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 

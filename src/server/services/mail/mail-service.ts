@@ -1,5 +1,5 @@
 import "server-only";
-import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { getServerEnv } from "@/server/config/env";
 import type {
   MailMessage,

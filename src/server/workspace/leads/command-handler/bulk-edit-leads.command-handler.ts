@@ -1,24 +1,24 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import { BulkEditFieldKey } from "@/common/constants/leads/bulk/bulk-edit-field-keys";
-import { BulkSkipReason } from "@/common/constants/leads/bulk/bulk-skip-reasons";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { BulkEditFieldKey } from "@invessiv/common/constants/leads/bulk/bulk-edit-field-keys";
+import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
 import type {
   BulkEditLeadsInput,
   BulkEditLeadsPatch,
-} from "@/common/contracts/leads/bulk-edit-leads-input";
+} from "@invessiv/common/contracts/leads/bulk-edit-leads-input";
 import type {
   BulkEditActivityMetadata,
   LeadCurrentState,
   LeadUpdateSetClause,
-} from "@/common/contracts/leads";
+} from "@invessiv/common/contracts/leads";
 import type {
   BulkEditLeadsFailedLead,
   BulkEditLeadsResult,
-} from "@/common/contracts/leads/results/bulk-edit-leads-result";
+} from "@invessiv/common/contracts/leads/results/bulk-edit-leads-result";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,

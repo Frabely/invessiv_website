@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
-import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
+import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
+import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 import { socialProfileSchema } from "@/server/workspace/leads/services/shared/lead-social-profile.schema";
 import {
   leadEmailSchema,

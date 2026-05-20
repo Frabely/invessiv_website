@@ -5,7 +5,7 @@ import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsDetailDictionary,
   LeadsOutreachDictionary,
@@ -19,7 +19,7 @@ import {
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
-import { LeadOutreachTriggerVariant } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
+import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
 import styles from "./lead-detail-panel.module.css";

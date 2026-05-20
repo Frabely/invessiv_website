@@ -1,10 +1,10 @@
-import type { LeadErrorCode as LeadErrorCodeType } from "@/common/constants/leads/errors/lead-error-codes";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
-import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
-import type { UpdateLeadResult } from "@/common/contracts/leads/results/update-lead-result";
+import type { LeadErrorCode as LeadErrorCodeType } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
+import type { UpdateLeadRequestDto } from "@invessiv/common/contracts/leads/update-lead-request.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
+import type { CreateLeadResult } from "@invessiv/common/contracts/leads/results/create-lead-result";
+import type { UpdateLeadResult } from "@invessiv/common/contracts/leads/results/update-lead-result";
 import type { z } from "zod";
 
 const LEAD_API_PATH = "/api/workspace/leads";

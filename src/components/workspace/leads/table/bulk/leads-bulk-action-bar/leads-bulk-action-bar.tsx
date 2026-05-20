@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
-import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import { ButtonControl } from "@/components/shared/button/button";
 import { useLeadsTableSelection } from "@/components/workspace/leads/table/leads-table-selection-provider/leads-table-selection-context";
-import { BulkDialogKind } from "@/common/constants/leads/bulk/bulk-dialog-kinds";
+import { BulkDialogKind } from "@invessiv/common/constants/leads/bulk/bulk-dialog-kinds";
 import type {
   LeadsBulkDictionary,
   LeadsSharedDictionary,

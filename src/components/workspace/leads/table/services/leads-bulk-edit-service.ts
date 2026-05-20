@@ -1,14 +1,14 @@
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
-import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
-import { BULK_API_ENDPOINT } from "@/common/constants/leads/bulk/bulk-api-endpoint";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { LeadBulkAction } from "@invessiv/common/constants/leads/bulk/lead-bulk-actions";
+import { BulkSubmitFailureKind } from "@invessiv/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { BULK_API_ENDPOINT } from "@invessiv/common/constants/leads/bulk/bulk-api-endpoint";
 import type {
   BulkActionSubmitInputDto,
   BulkActionSubmitResultDto,
   BulkEditSubmitInputDto,
   BulkEditSubmitResultDto,
   BulkEditSubmitSuccessDto,
-} from "@/common/contracts/leads";
+} from "@invessiv/common/contracts/leads";
 
 function buildBulkActionRequestBody(action: string, ids: string[]) {
   return JSON.stringify({

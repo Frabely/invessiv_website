@@ -1,11 +1,11 @@
 import "server-only";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
-import type { LeadCsvSeparator } from "@/common/constants/leads/import/csv/lead-csv-separator";
-import type { LeadCsvParseErrorDetails } from "@/common/contracts/leads/import/csv/lead-csv-parse-error-details";
-import type { LeadCsvParseResult } from "@/common/contracts/leads/import/csv/lead-csv-parse-result";
-import type { LeadCsvParserOptions } from "@/common/contracts/leads/import/csv/lead-csv-parser-options";
-import type { LeadCsvRowState } from "@/common/contracts/leads/import/csv/lead-csv-row-state";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
+import type { LeadCsvSeparator } from "@invessiv/common/constants/leads/import/csv/lead-csv-separator";
+import type { LeadCsvParseErrorDetails } from "@invessiv/common/contracts/leads/import/csv/lead-csv-parse-error-details";
+import type { LeadCsvParseResult } from "@invessiv/common/contracts/leads/import/csv/lead-csv-parse-result";
+import type { LeadCsvParserOptions } from "@invessiv/common/contracts/leads/import/csv/lead-csv-parser-options";
+import type { LeadCsvRowState } from "@invessiv/common/contracts/leads/import/csv/lead-csv-row-state";
 
 const BOM = "\ufeff";
 const QUOTE = '"';

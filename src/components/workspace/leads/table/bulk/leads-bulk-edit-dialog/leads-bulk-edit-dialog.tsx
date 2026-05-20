@@ -10,18 +10,18 @@ import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
   type ContactLeadStatus as ContactLeadStatusValue,
-} from "@/common/constants/contact/contact-lead-statuses";
-import { BulkEditLimits } from "@/common/constants/leads/bulk/bulk-edit-limits";
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { BulkEditLimits } from "@invessiv/common/constants/leads/bulk/bulk-edit-limits";
 import {
   BULK_SKIP_REASON_VALUES,
   BulkSkipReason,
-} from "@/common/constants/leads/bulk/bulk-skip-reasons";
-import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import type { BulkEditLeadsPatch } from "@/common/contracts/leads/bulk-edit-leads-input";
-import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
-import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
-import type { BulkEditLeadsFailedLead } from "@/common/contracts/leads/results/bulk-edit-leads-result";
+} from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
+import { BulkSubmitFailureKind } from "@invessiv/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import type { BulkEditLeadsPatch } from "@invessiv/common/contracts/leads/bulk-edit-leads-input";
+import type { ImprovementsListEditorContent } from "@invessiv/common/contracts/leads";
+import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
+import type { BulkEditLeadsFailedLead } from "@invessiv/common/contracts/leads/results/bulk-edit-leads-result";
 import {
   ButtonControl,
   PrimaryCtaButton,
@@ -37,8 +37,8 @@ import type {
 import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
 
 import styles from "./leads-bulk-edit-dialog.module.css";
-import type { BulkEditField as BulkEditFieldKind } from "@/common/constants/leads/bulk/bulk-edit-fields";
-import { BulkEditField } from "@/common/constants/leads/bulk/bulk-edit-fields";
+import type { BulkEditField as BulkEditFieldKind } from "@invessiv/common/constants/leads/bulk/bulk-edit-fields";
+import { BulkEditField } from "@invessiv/common/constants/leads/bulk/bulk-edit-fields";
 
 type LeadsBulkEditDialogProps = {
   bulkContent: LeadsBulkDictionary;

@@ -1,13 +1,13 @@
-import type { LeadActivityDto } from "@/common/contracts/leads/lead-activity.dto";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
-import type { LeadSubmissionDto } from "@/common/contracts/leads/lead-submission.dto";
-import type { LeadDetailMainRow } from "@/common/contracts/leads/rows/lead-detail-main-row";
-import type { LeadSocialProfileRow } from "@/common/contracts/leads/rows/lead-social-profile-row";
-import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
-import type { LeadSubmissionRow } from "@/common/contracts/leads/rows/lead-submission-row";
-import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
-import type { LeadSummaryRow } from "@/common/contracts/leads/rows/lead-summary-row";
+import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
+import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
+import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
+import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
+import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
+import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead-activity-row";
+import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
+import type { LeadSummaryRow } from "@invessiv/common/contracts/leads/rows/lead-summary-row";
 import { mapCategoryRowToDto } from "@/server/workspace/leads/services/lead-category/lead-category-mapping-service";
 
 function mapSocialProfileRowToDto(

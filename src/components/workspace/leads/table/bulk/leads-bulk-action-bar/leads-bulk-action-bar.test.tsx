@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import {
   getLeadsBulkDictionary,
   getLeadsSharedDictionary,

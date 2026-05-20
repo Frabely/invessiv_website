@@ -2,11 +2,11 @@ import "server-only";
 
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import type { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
-import { CHANNEL_PROFILES } from "@/common/constants/leads/outreach/lead-outreach-channel-profiles";
-import { OUTREACH_MAX_IMPROVEMENTS } from "@/common/defaults/leads/outreach/lead-outreach-defaults";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import { sanitizeLeadFacts } from "@/common/patterns/leads/outreach/sanitize-lead-facts";
+import type { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
+import { CHANNEL_PROFILES } from "@invessiv/common/constants/leads/outreach/lead-outreach-channel-profiles";
+import { OUTREACH_MAX_IMPROVEMENTS } from "@invessiv/common/defaults/leads/outreach/lead-outreach-defaults";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
+import { sanitizeLeadFacts } from "@invessiv/common/patterns/leads/outreach/sanitize-lead-facts";
 
 const SKILL_FILE_PATH = path.join(
   process.cwd(),

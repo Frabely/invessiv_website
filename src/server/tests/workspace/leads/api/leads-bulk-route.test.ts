@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadBulkAction } from "@invessiv/common/constants/leads/bulk/lead-bulk-actions";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { POST } from "@/app/api/workspace/leads/bulk/route";
 import { leadBulkActionSchema } from "@/server/workspace/leads/services/bulk-action.schema";
 

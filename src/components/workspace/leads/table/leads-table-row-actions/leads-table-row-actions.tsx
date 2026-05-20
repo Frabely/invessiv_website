@@ -4,8 +4,8 @@ import { type MouseEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadOutreachTriggerVariant } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
+import type { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type {
   LeadsDeleteDictionary,

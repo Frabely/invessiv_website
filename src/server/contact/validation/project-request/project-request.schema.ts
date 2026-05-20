@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
-import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
-import { CONTACT_OFFER_KEYS } from "@/common/constants/contact/contact-offer-keys";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import { CONTACT_PAGE_KEYS } from "@/common/constants/contact/contact-page-keys";
-import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { CONTACT_BUDGET_KEYS } from "@invessiv/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEYS } from "@invessiv/common/constants/contact/contact-goal-keys";
+import { CONTACT_OFFER_KEYS } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { CONTACT_PAGE_KEYS } from "@invessiv/common/constants/contact/contact-page-keys";
+import { CONTACT_START_KEYS } from "@invessiv/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEYS } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import {
   emailStringSchema,
   isoDateTimeSchema,

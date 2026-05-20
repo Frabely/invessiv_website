@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import {
   emailStringSchema,
   localeSchema,

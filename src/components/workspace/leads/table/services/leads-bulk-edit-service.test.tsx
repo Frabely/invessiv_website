@@ -12,13 +12,13 @@ import {
 import type { ComponentType } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { LeadSummaryDto } from "@/common/contracts/leads";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { getLeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { leadsBulkEditService } from "@/components/workspace/leads/table/services/leads-bulk-edit-service";
 import { LeadsBulkArchiveConfirmDialog } from "@/components/workspace/leads/table/bulk/leads-bulk-archive-confirm-dialog/leads-bulk-archive-confirm-dialog";
 import { LeadsBulkDeleteConfirmDialog } from "@/components/workspace/leads/table/bulk/leads-bulk-delete-confirm-dialog/leads-bulk-delete-confirm-dialog";
-import { BulkSubmitFailureKind } from "@/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { BulkSubmitFailureKind } from "@invessiv/common/constants/leads/bulk/bulk-submit-failure-kinds";
 
 const routerRefreshMock = vi.fn();
 

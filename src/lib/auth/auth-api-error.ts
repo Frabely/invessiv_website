@@ -1,5 +1,5 @@
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { AuthErrorCode } from "@/common/constants/auth/auth-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
 
 const MESSAGES: Record<AuthErrorCode, string> = {
   [AuthErrorCode.NotFound]: "Resource not found",

@@ -414,7 +414,7 @@ describe("ProjectRequestForm", () => {
       location: "contact",
       target: "form",
       variant: "primary",
-      step: "3",
+      step: "2",
     });
     expect(mockTrackConversionEvent).toHaveBeenCalledWith(
       "form_submit_attempt",

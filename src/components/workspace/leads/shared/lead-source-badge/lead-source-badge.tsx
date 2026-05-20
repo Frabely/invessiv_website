@@ -4,10 +4,10 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
-import { LeadBadgeKind } from "@/common/constants/leads/badges/lead-badge-kinds";
-import type { LeadBadgeTone as LeadBadgeToneValue } from "@/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadgeTone } from "@/common/constants/leads/badges/lead-badge-tones";
+import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
+import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
+import { LeadBadgeTone } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
 import { LeadBadge } from "../lead-badge/lead-badge";
 
 type LeadSourceBadgeProps = {

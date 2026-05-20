@@ -1,4 +1,4 @@
-import { LEAD_TRACKING_PARAMS } from "@/common/constants/leads/tracking/lead-tracking-params";
+import { LEAD_TRACKING_PARAMS } from "@invessiv/common/constants/leads/tracking/lead-tracking-params";
 
 function isTrackingParam(key: string): boolean {
   return LEAD_TRACKING_PARAMS.has(key) || key.startsWith("utm_");

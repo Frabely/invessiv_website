@@ -4,8 +4,8 @@ import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
-import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsDeleteDictionary,
   LeadsOutreachDictionary,

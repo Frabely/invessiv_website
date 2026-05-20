@@ -17,17 +17,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
-} from "@/common/constants/contact/contact-lead-statuses";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
-} from "@/common/constants/leads/forms/lead-form-dialog-modes";
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
-import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
-import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
-import { CONTACT_EMAIL_PATTERN } from "@/common/patterns/contact/contact-email";
-import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
+} from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
+import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
+import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
+import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 import {
   ButtonControl,
   PrimaryCtaButton,
@@ -38,19 +38,19 @@ import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
-import { LeadOutreachTriggerVariant } from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
+import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
-import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsFormDictionary,
   LeadsOutreachDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import type { z } from "zod";
-import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
+import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";
 import { leadFormSchema } from "./lead-form-dialog.schema";
 import { leadsService } from "./leads-service";
 import styles from "./lead-form-dialog.module.css";

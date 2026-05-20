@@ -1,6 +1,6 @@
 import "server-only";
-import { CONTACT_FIELD_NAME } from "@/common/constants/contact/contact-field-names";
-import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
+import { CONTACT_FIELD_NAME } from "@invessiv/common/constants/contact/contact-field-names";
+import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getServerEnv } from "@/server/config/env";
 import {

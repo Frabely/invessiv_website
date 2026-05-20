@@ -8,14 +8,14 @@ import {
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import type { ContactRequestKind } from "@/common/constants/contact/contact-request-kind";
-import { LeadDetailEntryKind } from "@/common/constants/leads/activity/lead-detail-entry-kinds";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import type { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import type { LeadActivityDto } from "@/common/contracts/leads/lead-activity.dto";
-import type { LeadSubmissionDto } from "@/common/contracts/leads/lead-submission.dto";
+import type { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import type { ContactRequestKind } from "@invessiv/common/constants/contact/contact-request-kind";
+import { LeadDetailEntryKind } from "@invessiv/common/constants/leads/activity/lead-detail-entry-kinds";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import type { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
+import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
 import type { Locale } from "@/config/i18n";
 import type {
   LeadsDetailDictionary,

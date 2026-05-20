@@ -4,7 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
 import LeadsPage from "./page";
 
 const mockListLeads = vi.hoisted(() => vi.fn());

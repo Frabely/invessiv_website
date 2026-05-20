@@ -62,7 +62,7 @@ Listet Leads gefiltert, sortiert und paginiert.
 }
 ```
 
-`LeadSummaryDto` → `src/common/contracts/leads/lead-summary.dto.ts`.
+`LeadSummaryDto` → `packages/common/src/contracts/leads/lead-summary.dto.ts`.
 
 Kategorien liefern stabile technische Werte aus `lead_categories`: `id`, `slug` und `label_key`. Die API gibt keine
 lokalisierten Kategorie-Labels aus; die Workspace-UI löst `label_key` locale-spezifisch über Dictionaries auf.
@@ -78,7 +78,8 @@ lokalisierten Kategorie-Labels aus; die Workspace-UI löst `label_key` locale-sp
 
 Legt einen Lead manuell an. Server setzt explizit `source='manual'` und `lead_status='new'`. Activity-Eintrag (`type='note'`) wird im selben Transaktions-Schritt erzeugt.
 
-Der Request-Body ist das Shared DTO `CreateLeadRequestDto` aus `src/common/contracts/leads/create-lead-request.dto.ts`.
+Der Request-Body ist das Shared DTO `CreateLeadRequestDto` aus
+`packages/common/src/contracts/leads/create-lead-request.dto.ts`.
 `FormValues` aus der UI werden vor dem `fetch` dorthin gemappt; serverintern bleibt Persistenz-Input ein eigener,
 separater
 Layer.
@@ -126,7 +127,7 @@ angewendete Seed-Migration unverändert; `0007` entfernt die dort benötigten De
 { "lead": LeadDetailDto }
 ```
 
-`LeadDetailDto` → `src/common/contracts/leads/lead-detail.dto.ts`.
+`LeadDetailDto` → `packages/common/src/contracts/leads/lead-detail.dto.ts`.
 
 ### Fehler
 
@@ -282,15 +283,15 @@ Persistenz: `getDrizzleDatabaseClient()` + `ContactDatabaseTransaction` aus `src
 
 ## DTO-Verweise
 
-| Contract               | Datei                                                      |
-| ---------------------- | ---------------------------------------------------------- |
-| `LeadSummaryDto`       | `src/common/contracts/leads/lead-summary.dto.ts`           |
-| `LeadDetailDto`        | `src/common/contracts/leads/lead-detail.dto.ts`            |
-| `CreateLeadRequestDto` | `src/common/contracts/leads/create-lead-request.dto.ts`    |
-| `CreateLeadResult`     | `src/common/contracts/leads/results/create-lead-result.ts` |
-| `UpdateLeadResult`     | `src/common/contracts/leads/results/update-lead-result.ts` |
-| `ListLeadsResult`      | `src/common/contracts/leads/results/list-leads-result.ts`  |
-| `BulkEditLeadsInput`   | `src/common/contracts/leads/bulk-edit-leads-input.ts`      |
+| Contract               | Datei                                                               |
+| ---------------------- | ------------------------------------------------------------------- |
+| `LeadSummaryDto`       | `packages/common/src/contracts/leads/lead-summary.dto.ts`           |
+| `LeadDetailDto`        | `packages/common/src/contracts/leads/lead-detail.dto.ts`            |
+| `CreateLeadRequestDto` | `packages/common/src/contracts/leads/create-lead-request.dto.ts`    |
+| `CreateLeadResult`     | `packages/common/src/contracts/leads/results/create-lead-result.ts` |
+| `UpdateLeadResult`     | `packages/common/src/contracts/leads/results/update-lead-result.ts` |
+| `ListLeadsResult`      | `packages/common/src/contracts/leads/results/list-leads-result.ts`  |
+| `BulkEditLeadsInput`   | `packages/common/src/contracts/leads/bulk-edit-leads-input.ts`      |
 
 ## Hinweise
 

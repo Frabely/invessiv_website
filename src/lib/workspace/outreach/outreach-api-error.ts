@@ -1,5 +1,5 @@
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
 
 const MESSAGES: Record<OutreachErrorCode, string> = {
   [OutreachErrorCode.LeadNotFound]: "Lead not found",

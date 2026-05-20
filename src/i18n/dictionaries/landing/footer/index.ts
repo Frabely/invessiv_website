@@ -1,4 +1,4 @@
-import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import type { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import type { Locale } from "@/config/i18n";
 import { LANDING_NAVIGATION } from "@/config/navigation/landing";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";

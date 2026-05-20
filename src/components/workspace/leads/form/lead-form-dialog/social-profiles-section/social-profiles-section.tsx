@@ -17,15 +17,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   LEAD_SOCIAL_PLATFORMS_VALUES,
   type LeadSocialPlatform,
-} from "@/common/constants/leads/social/lead-social-platforms";
-import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
+} from "@invessiv/common/constants/leads/social/lead-social-platforms";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import {
   ButtonControl,
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
-import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
+import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";
 import type {
   LeadsFormDictionary,
   LeadsSharedDictionary,

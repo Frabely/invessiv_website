@@ -11,7 +11,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
+import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
 import { getLeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { ImportLeadsDialog } from "./import-leads-dialog";
 

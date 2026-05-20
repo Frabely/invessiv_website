@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { BulkSkipReason } from "@/common/constants/leads/bulk/bulk-skip-reasons";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
+import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({

@@ -1,5 +1,5 @@
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 
 const MESSAGES: Record<LeadErrorCode, string> = {
   [LeadErrorCode.NotFound]: "Lead not found",

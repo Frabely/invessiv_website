@@ -1,6 +1,6 @@
-import type { QuickContactFormValues } from "@/common/contracts/contact/forms/quick-contact-form-values";
-import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import type { QuickContactFormValues } from "@invessiv/common/contracts/contact/forms/quick-contact-form-values";
+import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 
 export function mapQuickContactFormToDto(
   values: QuickContactFormValues,

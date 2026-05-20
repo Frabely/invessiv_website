@@ -1,5 +1,5 @@
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
 
 const MESSAGES: Record<LeadImportErrorCode, string> = {
   [LeadImportErrorCode.FileTooLarge]: "File exceeds the 2 MB size limit",

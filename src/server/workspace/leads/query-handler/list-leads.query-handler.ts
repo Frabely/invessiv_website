@@ -5,10 +5,10 @@ import {
   leads,
   leadSocialProfiles,
 } from "@/server/db/record-configuration";
-import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
+import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
-import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
+import type { ListLeadsResult } from "@invessiv/common/contracts/leads/results/list-leads-result";
 import { buildLeadFilter } from "./lead-filter.query-handler";
 
 export async function listLeads(

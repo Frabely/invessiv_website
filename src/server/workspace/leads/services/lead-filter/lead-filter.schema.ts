@@ -2,10 +2,10 @@ import { z } from "zod";
 import {
   CONTACT_LEAD_STATUS_ALL,
   CONTACT_LEAD_STATUS_VALUES,
-} from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import { LEAD_SOURCES_VALUES } from "@/common/constants/leads/sources/lead-sources";
-import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LEAD_SORT_VALUES } from "@invessiv/common/constants/leads/list/lead-sort";
 
 export const leadFilterSchema = z.object({
   status: z

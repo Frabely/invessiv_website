@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { FormActionsLayout } from "@/common/constants/form/form-actions-layout";
+import { FormActionsLayout } from "@invessiv/common/constants/form/form-actions-layout";
 import styles from "./form-actions.module.css";
 
 type FormActionsProps = {

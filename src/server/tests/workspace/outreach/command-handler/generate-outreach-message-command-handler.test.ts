@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
-import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
+import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 import { generateOutreachMessage } from "@/server/workspace/outreach/command-handler/generate-outreach-message.command-handler";
 
 const {

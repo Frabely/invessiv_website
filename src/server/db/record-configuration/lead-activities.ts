@@ -8,8 +8,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { LEAD_ACTIVITY_TYPE_VALUES } from "@/common/constants/leads/activity/lead-activity-types";
-import { LEAD_ACTOR_TYPE_VALUES } from "@/common/constants/leads/activity/lead-actor-types";
+import { LEAD_ACTIVITY_TYPE_VALUES } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LEAD_ACTOR_TYPE_VALUES } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 import { sqlCheckIn } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration/leads";
 

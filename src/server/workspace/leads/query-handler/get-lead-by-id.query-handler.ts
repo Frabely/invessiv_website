@@ -7,7 +7,7 @@ import {
   leadSocialProfiles,
   leadSubmissions,
 } from "@/server/db/record-configuration";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 
 export async function getLeadById(id: string): Promise<LeadDetailDto | null> {

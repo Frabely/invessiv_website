@@ -1,14 +1,14 @@
-import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
-import type { MapProjectRequestFormToDtoOptions } from "@/common/contracts/contact/options/map-project-request-form-to-dto-options";
-import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
+import type { ProjectRequestFormValues } from "@invessiv/common/contracts/contact/forms/project-request-form-values";
+import type { MapProjectRequestFormToDtoOptions } from "@invessiv/common/contracts/contact/options/map-project-request-form-to-dto-options";
+import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
 import type {
   ContactBudgetKey,
   ContactGoalKey,
   ContactPageKey,
   ContactStartKey,
   ContactWorkflowKey,
-} from "@/common/contracts/contact/keys/contact-option-keys";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+} from "@invessiv/common/contracts/contact/keys/contact-option-keys";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 
 function toOptionalTrimmedString(value: string) {
   const trimmedValue = value.trim();

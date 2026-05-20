@@ -2,8 +2,8 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { leadImportApiError } from "@/lib/workspace/leads/lead-import-api-error";
 import { importLeads } from "@/server/workspace/leads/command-handler/import-leads.command-handler";

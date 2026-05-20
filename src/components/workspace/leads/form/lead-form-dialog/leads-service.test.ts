@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
-import type { UpdateLeadRequestDto } from "@/common/contracts/leads/update-lead-request.dto";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
+import type { UpdateLeadRequestDto } from "@invessiv/common/contracts/leads/update-lead-request.dto";
 import { leadsService } from "./leads-service";
 
 afterEach(() => {

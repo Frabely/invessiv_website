@@ -1,9 +1,9 @@
 import "server-only";
-import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
-import type { GenerateOutreachResultDto } from "@/common/contracts/leads/outreach/generate-outreach-result.dto";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
+import type { GenerateOutreachResultDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-result.dto";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";

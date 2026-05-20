@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { CONTACT_LEAD_STATUS_VALUES } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
+import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { leadSchema } from "@/server/workspace/leads/shared/lead-schema";
-import { isValidContactPhone } from "@/common/patterns/contact/contact-phone";
+import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 
 const nullableTrimmedString = (max: number) =>
   z.string().trim().min(1).max(max).nullable().optional();

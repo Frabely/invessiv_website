@@ -3,10 +3,10 @@ import { and, asc, desc, eq, gte, ilike, lte, ne, or } from "drizzle-orm";
 import {
   CONTACT_LEAD_STATUS_ALL,
   ContactLeadStatus,
-} from "@/common/constants/contact/contact-lead-statuses";
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { leads } from "@/server/db/record-configuration";
-import { LEAD_LIST_PAGE_SIZE } from "@/common/constants/leads/list/lead-list-defaults";
-import { LeadSort } from "@/common/constants/leads/list/lead-sort";
+import { LEAD_LIST_PAGE_SIZE } from "@invessiv/common/constants/leads/list/lead-list-defaults";
+import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 
 export type LeadFilterResult = {

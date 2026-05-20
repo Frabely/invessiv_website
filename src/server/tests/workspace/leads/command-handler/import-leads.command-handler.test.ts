@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
-import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
+import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
 import { PostgresErrorCode } from "@/server/db/core";
 
 // ── Mocks (hoisted so vi.mock can reference them) ─────────────────────────────

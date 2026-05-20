@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import type {
   ContactSubmitErrorResponse,
   ContactSubmitSuccessResponse,
-} from "@/common/contracts/contact/submit/contact-submit";
-import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit-error-code";
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
+} from "@invessiv/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitErrorCode } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 
 export function createContactSuccessResponse(
   requestId: string,

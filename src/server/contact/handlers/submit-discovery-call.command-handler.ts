@@ -1,6 +1,6 @@
 import "server-only";
-import type { ContactCommandHandlerResult } from "@/common/contracts/contact/records/contact-command-handler-result";
-import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import type { ContactCommandHandlerResult } from "@invessiv/common/contracts/contact/records/contact-command-handler-result";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import {
   CONTACT_SUBMIT_LOG_MESSAGE,
   CONTACT_SUBMIT_LOG_PREFIX,

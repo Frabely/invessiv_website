@@ -1,4 +1,4 @@
-import type { ContactSubmitErrorResponse } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitErrorResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 
 export function getContactSubmitAnalyticsErrorType(

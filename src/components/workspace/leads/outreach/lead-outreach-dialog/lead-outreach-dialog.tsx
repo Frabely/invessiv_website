@@ -20,24 +20,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   OUTREACH_CHANNEL_VALUES,
   type OutreachChannel as OutreachChannelValue,
-} from "@/common/constants/leads/outreach/lead-outreach-channels";
+} from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
 import {
   OUTREACH_CONTEXT_NOTE_MAX_LEN,
   OUTREACH_CONTEXT_NOTE_ROWS,
   OUTREACH_COPY_FEEDBACK_MS,
   OUTREACH_DEFAULT_CHANNEL,
   OUTREACH_RESULT_TEXTAREA_ROWS,
-} from "@/common/defaults/leads/outreach/lead-outreach-defaults";
+} from "@invessiv/common/defaults/leads/outreach/lead-outreach-defaults";
 import {
   OutreachCopyTarget,
   type OutreachCopyTarget as OutreachCopyTargetValue,
-} from "@/common/constants/leads/outreach/lead-outreach-copy-targets";
-import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
+} from "@invessiv/common/constants/leads/outreach/lead-outreach-copy-targets";
+import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
 import { copyTextToClipboard } from "@/client/leads/outreach/lead-outreach-clipboard-service";
 import { outreachGenerationClientService } from "@/client/leads/outreach/lead-outreach-generation-service";
 import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
-import { CHANNEL_PROFILES } from "@/common/constants/leads/outreach/lead-outreach-channel-profiles";
+import { CHANNEL_PROFILES } from "@invessiv/common/constants/leads/outreach/lead-outreach-channel-profiles";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";

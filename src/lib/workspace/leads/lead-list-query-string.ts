@@ -1,10 +1,10 @@
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
 import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
-} from "@/common/constants/leads/forms/lead-form-dialog-modes";
+} from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
-import { LEAD_SORT_VALUES } from "@/common/constants/leads/list/lead-sort";
+import { LEAD_SORT_VALUES } from "@invessiv/common/constants/leads/list/lead-sort";
 
 type SearchParamsInput = Record<string, string | string[] | undefined>;
 

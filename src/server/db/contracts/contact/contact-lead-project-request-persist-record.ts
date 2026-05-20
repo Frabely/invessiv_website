@@ -1,4 +1,4 @@
-import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
+import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
 import { leadProjectRequests } from "@/server/db/record-configuration/lead-project-requests";
 
 type LeadProjectRequestInsert = typeof leadProjectRequests.$inferInsert;

@@ -1,5 +1,5 @@
 import { updateLeadSchema } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
-import type { ExistingLeadValidationState } from "@/common/contracts/leads/validation/existing-lead-validation-state";
+import type { ExistingLeadValidationState } from "@invessiv/common/contracts/leads/validation/existing-lead-validation-state";
 
 function validate(input: unknown, existingLead: ExistingLeadValidationState) {
   const parsed = updateLeadSchema.safeParse(input);

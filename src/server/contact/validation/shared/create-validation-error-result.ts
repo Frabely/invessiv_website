@@ -1,6 +1,6 @@
 import type { z } from "zod";
-import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
-import type { ContactValidationFailure } from "@/common/contracts/contact/validation/contact-validation-result";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
+import type { ContactValidationFailure } from "@invessiv/common/contracts/contact/validation/contact-validation-result";
 import { flattenContactFieldErrors } from "@/server/contact/validation/shared/flatten-contact-field-errors";
 import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 

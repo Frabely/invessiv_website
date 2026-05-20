@@ -10,8 +10,8 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
-import { OutreachOpenAi } from "@/common/constants/leads/outreach/lead-outreach-openai";
+import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
+import { OutreachOpenAi } from "@invessiv/common/constants/leads/outreach/lead-outreach-openai";
 import { getLeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachTrigger } from "./lead-outreach-trigger";
 

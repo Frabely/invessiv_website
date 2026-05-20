@@ -2,8 +2,8 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { DeleteLeadResult } from "@/common/contracts/leads/results/delete-lead-result";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { DeleteLeadResult } from "@invessiv/common/contracts/leads/results/delete-lead-result";
 
 export async function deleteLead(leadId: string): Promise<DeleteLeadResult> {
   const db = getDrizzleDatabaseClient();

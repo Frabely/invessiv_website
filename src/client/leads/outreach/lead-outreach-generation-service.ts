@@ -1,9 +1,9 @@
 "use client";
 
-import type { GenerateOutreachRequestDto } from "@/common/contracts/leads/outreach/generate-outreach-request.dto";
-import type { GenerateOutreachResultDto } from "@/common/contracts/leads/outreach/generate-outreach-result.dto";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
-import { GENERATE_ENDPOINT } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
+import type { GenerateOutreachResultDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-result.dto";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
+import { GENERATE_ENDPOINT } from "@invessiv/common/constants/leads/outreach/lead-outreach-api-endpoints";
 
 type ApiResult<T> = {
   payload: T | null;

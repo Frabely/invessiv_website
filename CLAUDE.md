@@ -94,7 +94,7 @@ Canonical model source: `src/server/db/record-configuration/`. Schema defined wi
   ```ts
   export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
   ```
-- Each constant group lives in its own file under `src/common/constants/<domain>/`
+- Each constant group lives in its own file under `packages/common/src/constants/<domain>/`
 
 ### Error Codes & Messages
 
@@ -105,7 +105,7 @@ form validation errors, toasts, inline error text).
 **Pattern:**
 
 ```ts
-// 1. Error codes in src/common/constants/<domain>/<domain>-error-codes.ts
+// 1. Error codes in packages/common/src/constants/<domain>/<domain>-error-codes.ts
 export const FooErrorCode = {
   NotFound: "NOT_FOUND",
   ValidationError: "VALIDATION_ERROR",
@@ -150,7 +150,7 @@ export function fooError(
 Exported TypeScript types and interfaces are never defined inline in service or handler files. They live in dedicated
 files:
 
-- **Shared between client and server** (input shapes, result shapes, DTOs): `src/common/contracts/<domain>/`
+- **Shared between client and server** (input shapes, result shapes, DTOs): `packages/common/src/contracts/<domain>/`
 - **Server-internal only** (contains server-only imports or DB types): dedicated `*-types.ts` file within
   `src/server/workspace/<domain>/`
 

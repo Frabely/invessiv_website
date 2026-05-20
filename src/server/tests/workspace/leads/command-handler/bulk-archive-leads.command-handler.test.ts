@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({

@@ -1,4 +1,4 @@
-import type { ContactValidationResult } from "@/common/contracts/contact/validation/contact-validation-result";
+import type { ContactValidationResult } from "@invessiv/common/contracts/contact/validation/contact-validation-result";
 import {
   projectRequestSchema,
   type ProjectRequestValidationData,

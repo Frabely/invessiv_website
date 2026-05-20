@@ -44,7 +44,7 @@ page.tsx (Server-Component)
 ## Filter via Query-Params
 
 - Erlaubte Keys: `status`, `source`, `category`, `search`, `score_min`, `date_from`, `date_to`, `page`, `sort`.
-- Keys werden zentral in `src/common/constants/leads/lead-list-defaults.ts` und in
+- Keys werden zentral in `packages/common/src/constants/leads/lead-list-defaults.ts` und in
   `src/server/workspace/leads/services/lead-filter/lead-filter.schema.ts` typisiert. **Keine** ad-hoc-Strings in
   Komponenten.
 - Standardliste schließt `archived` aus. Archivierte Leads sind nur über `?status=archived` sichtbar.
@@ -85,7 +85,7 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 
 ## Kontrakt-Grenzen (DTOs vs. DB-Records)
 
-- `src/common/contracts/leads/**` enthält **nur** API-/Client-shared DTOs:
+- `packages/common/src/contracts/leads/**` enthält **nur** API-/Client-shared DTOs:
   - `lead-summary.dto.ts` — Listenzeile (für `<LeadsTable>`)
   - `lead-detail.dto.ts` — vollständiger Datensatz inkl. Kategorie, Social-Profile, Activities, Submissions
   - `bulk-edit-leads-input.ts` — Bulk-Action-Input
@@ -94,7 +94,8 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 - Persistenznahe Record-Shapes liegen bei Bedarf unter `src/server/db/records/leads/**` und werden nur server-intern
   konsumiert.
 - Persistenz-Inputs liegen nur dann unter `src/server/db/contracts/leads/**`, wenn sie von DB-Persistenzfunktionen konsumiert werden. Command-spezifische Inputs bleiben unter `src/server/workspace/leads/**`.
-- UI darf ausschließlich `src/common/contracts/leads/**` importieren, nie `src/server/**` oder `src/server/db/**`.
+- UI darf ausschließlich `packages/common/src/contracts/leads/**` importieren, nie `src/server/**` oder
+  `src/server/db/**`.
 
 ## Kritische Dateien
 
@@ -109,7 +110,7 @@ Server Components sind Default. `"use client"` nur, wenn echte Interaktivität (
 | `src/server/workspace/leads/query-handler/get-lead-by-id.query-handler.ts` | Detail-Loader                            |
 | `src/server/workspace/leads/services/lead-filter-service.ts`               | Query-Param → Drizzle-Where              |
 | `src/i18n/dictionaries/workspace/leads/`                                   | Texte für Meta, Shell und Shared-Visuals |
-| `src/common/contracts/leads/`                                              | API-/Client-shared DTOs                  |
+| `packages/common/src/contracts/leads/`                                     | API-/Client-shared DTOs                  |
 
 ## Reuse-Punkte
 

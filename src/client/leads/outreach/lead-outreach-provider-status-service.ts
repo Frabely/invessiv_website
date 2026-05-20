@@ -1,6 +1,6 @@
 "use client";
 
-import { PROVIDER_STATUS_ENDPOINT } from "@/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import { PROVIDER_STATUS_ENDPOINT } from "@invessiv/common/constants/leads/outreach/lead-outreach-api-endpoints";
 
 export interface OutreachProviderStatus {
   openai: boolean;

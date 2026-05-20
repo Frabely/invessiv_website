@@ -1,10 +1,10 @@
-﻿import {
+import {
   PRIMARY_NAVIGATION,
   SECTION_HREFS,
   type SectionId,
 } from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
-import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import {
   COMPANY,
   COMPANY_CALENDLY,
@@ -13,11 +13,11 @@ import {
   COMPANY_SOCIAL_LINKEDIN,
   COMPANY_TEL,
 } from "@/config/company";
-import { CONTACT_BUDGET_KEY } from "@/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEY } from "@/common/constants/contact/contact-goal-keys";
-import { CONTACT_PAGE_KEY } from "@/common/constants/contact/contact-page-keys";
-import { CONTACT_START_KEY } from "@/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEY } from "@/common/constants/contact/contact-workflow-keys";
+import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
+import { CONTACT_PAGE_KEY } from "@invessiv/common/constants/contact/contact-page-keys";
+import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "web" | "upgrade";

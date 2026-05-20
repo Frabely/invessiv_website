@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
-import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadImportColumnKey } from "@invessiv/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import { LeadImportWarningCode } from "@invessiv/common/constants/leads/import/warnings/lead-import-warning-codes";
 import { leadImportValidationService } from "@/server/workspace/leads/services/import/lead-import-validation-service";
-import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
+import type { RawLeadImportRow } from "@invessiv/common/contracts/leads/import/csv/lead-import-raw-row";
 
 vi.mock("server-only", () => ({}));
 

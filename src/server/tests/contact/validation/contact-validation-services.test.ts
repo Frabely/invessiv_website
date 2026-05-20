@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
 import { projectRequestValidationService } from "@/server/contact/validation/project-request/project-request-validation-service";

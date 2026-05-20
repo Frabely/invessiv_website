@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -11,16 +11,16 @@ import { FormActions } from "@/components/shared/form/form-actions/form-actions"
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
 import { submitProjectRequest } from "@/client/contact/services/contact-form-service";
 import { SECTION_HREFS } from "@/config/navigation/home";
-import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
-import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@/common/defaults/contact/project-request-form-values";
-import type { ProjectRequestFormValues } from "@/common/contracts/contact/forms/project-request-form-values";
-import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
+import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/contact-submit-path";
+import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@invessiv/common/defaults/contact/project-request-form-values";
+import type { ProjectRequestFormValues } from "@invessiv/common/contracts/contact/forms/project-request-form-values";
+import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";

@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   LeadOutreachTriggerVariant,
   type LeadOutreachTriggerVariant as LeadOutreachTriggerVariantValue,
-} from "@/common/constants/leads/outreach/lead-outreach-trigger-variants";
-import type { OutreachLeadFacts } from "@/common/contracts/leads/outreach/outreach-lead-facts";
+} from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
+import type { OutreachLeadFacts } from "@invessiv/common/contracts/leads/outreach/outreach-lead-facts";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadOutreachDialog } from "../lead-outreach-dialog/lead-outreach-dialog";
 import styles from "./lead-outreach-trigger.module.css";

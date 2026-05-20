@@ -1,10 +1,10 @@
 import "server-only";
 import { inArray } from "drizzle-orm";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import type { BulkArchiveLeadsResult } from "@/common/contracts/leads/results/bulk-archive-leads-result";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import type { BulkArchiveLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-archive-leads-result";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import { leads } from "@/server/db/record-configuration";
 import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";

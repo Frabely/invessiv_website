@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadFormDialogMode } from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
+import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
 import {
   buildLeadCreateHref,
   buildLeadDetailPanelEditHref,

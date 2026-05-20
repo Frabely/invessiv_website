@@ -25,12 +25,12 @@ This directory contains all backend logic: orchestration, persistence, and serve
 
 The contact pipeline is split across four locations — keep them separate:
 
-| Responsibility                   | Location                        |
-| -------------------------------- | ------------------------------- |
-| Orchestration / command handlers | `src/server/contact/`           |
-| Mapping / transformation         | `src/server/services/contact/`  |
-| Persistence                      | `src/server/db/`                |
-| Shared contracts / DTOs          | `src/common/contracts/contact/` |
+| Responsibility                   | Location                                 |
+| -------------------------------- | ---------------------------------------- |
+| Orchestration / command handlers | `src/server/contact/`                    |
+| Mapping / transformation         | `src/server/services/contact/`           |
+| Persistence                      | `src/server/db/`                         |
+| Shared contracts / DTOs          | `packages/common/src/contracts/contact/` |
 
 ## Naming conventions
 
@@ -78,7 +78,8 @@ src/server/workspace/leads/services/
 **When to extract a shared sub-mapper** (e.g. category): as soon as the same join mapping appears in a second handler. A
 single callsite stays inline in its mapping service; two callsites get their own file.
 
-**Row types** (`LeadSummaryRow`, `LeadDetailRow`, …) live in `src/common/contracts/<domain>/rows/` — not in the mapping
+**Row types** (`LeadSummaryRow`, `LeadDetailRow`, …) live in `packages/common/src/contracts/<domain>/rows/` — not in the
+mapping
 service folder and not in the query handler.
 
 ## Database model rules

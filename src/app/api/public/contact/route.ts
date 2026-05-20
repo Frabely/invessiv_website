@@ -3,9 +3,9 @@ import { z } from "zod";
 import {
   CONTACT_REQUEST_KIND,
   CONTACT_REQUEST_KINDS,
-} from "@/common/constants/contact/contact-request-kind";
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { CONTACT_SUBMIT_ERROR_CODE } from "@/common/contracts/contact/submit/contact-submit-error-code";
+} from "@invessiv/common/constants/contact/contact-request-kind";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { submitDiscoveryCallCommandHandler } from "@/server/contact/handlers/submit-discovery-call.command-handler";
 import {
   createContactErrorResponse,

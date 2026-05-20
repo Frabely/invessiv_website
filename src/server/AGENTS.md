@@ -1,4 +1,4 @@
-﻿# Server
+# Server
 
 Dieser Ordner ist für Backend-Logik, Orchestrierung, Persistenz und gemeinsame serverseitige Contracts gedacht.
 
@@ -24,7 +24,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 - Orchestrierung in `src/server/contact`
 - Mapping in `src/server/services/contact`
 - Persistenz in `src/server/db`
-- Gemeinsame Contracts in `src/common/contracts/contact`
+- Gemeinsame Contracts in `packages/common/src/contracts/contact`
 
 ## Benennung
 
@@ -64,7 +64,7 @@ src/server/workspace/leads/services/
 Mapping-Service. Sobald ein zweiter Handler dieselbe Join-Logik braucht, wird der Teil-Mapper in eine eigene Datei
 extrahiert.
 
-**Row-Typen** (`LeadSummaryRow`, `LeadDetailRow` …) liegen in `src/common/contracts/<domain>/rows/` — nicht im
+**Row-Typen** (`LeadSummaryRow`, `LeadDetailRow` …) liegen in `packages/common/src/contracts/<domain>/rows/` — nicht im
 Mapping-Service selbst und nicht im Query-Handler.
 
 ## Strukturregeln
@@ -73,7 +73,8 @@ Mapping-Service selbst und nicht im Query-Handler.
 - SQL- und Tabellenwissen nach `src/server/db`.
 - `src/server/db/record-configuration/**` ist die kanonische Quelle fuer DB-Modelle auf Basis von `pgTable`.
 - In `record-configuration/**` liegt pro Tabelle genau ein Modellfile; Sammeldateien oder parallele Modellvarianten werden dort nicht neu eingefuehrt.
-- Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in `src/common/**` gehalten.
+- Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in
+  `packages/common/src/**` gehalten.
 - Contracts werden serverseitig unter `src/server/db/contracts/**` abgelegt und nicht unter `src/server/**` gemischt.
 - `records/**` enthält nur DB-nahe Record-/Row-Shapes; zusammengesetzte Persistenz-Payloads, Persistenz-Inputs und Persistenz-Resultate liegen ausschließlich unter `contracts/**`.
 - Record-Typen unter `src/server/db/records/**` spiegeln die aktuelle DB-Struktur direkt: Tabellennahe Dateinamen, Spaltennamen in `snake_case` und keine app-nahen `camelCase`-Aliasfelder.
@@ -96,7 +97,8 @@ Mapping-Service selbst und nicht im Query-Handler.
 Exported TypeScript-Typen und Interfaces gehören **nicht** inline in Service- oder Handler-Dateien. Sie werden immer in
 eigenen Dateien außerhalb definiert:
 
-- **Client/Server-shared** (Input-Shapes, Result-Shapes ohne Server-only-Imports): `src/common/contracts/<domain>/`
+- **Client/Server-shared** (Input-Shapes, Result-Shapes ohne Server-only-Imports):
+  `packages/common/src/contracts/<domain>/`
   — z. B. `create-lead-result.ts` unter `results/`, `create-lead-activity-input.ts` im Domain-Root
 - **Rein serverseitig** (enthält `server-only`-Imports oder DB-Typen): eigene `*-types.ts`-Datei innerhalb
   `src/server/workspace/<domain>/`
@@ -108,12 +110,13 @@ Die Service-/Handler-Datei importiert den Typ direkt aus der jeweiligen Contract
 - `unknown` ist nur an der äußersten HTTP- bzw. Route-Grenze zulässig. Ab dort wird der Request gegen ein
   explizites DTO-Schema validiert und nur noch als typisiertes DTO weitergereicht.
 - Command-Handler erhalten keine untyped Payloads als Fachmodell. Ihr Input ist ein Shared DTO aus
-  `src/common/contracts/<domain>/` oder ein klar serverseitiger Persistenz-/Result-Input aus `src/server/**`.
+  `packages/common/src/contracts/<domain>/` oder ein klar serverseitiger Persistenz-/Result-Input aus `src/server/**`.
 - Wenn ein Handler noch mit `unknown` arbeitet, ist das ein Architektur-Debt und keine neue Normalform.
 
 ## Error-Code & Message-Konvention
 
-- Error-Codes kommen immer aus dem zugehörigen `*ErrorCode`-Const-Objekt in `src/common/constants/<domain>/`. Kein
+- Error-Codes kommen immer aus dem zugehörigen `*ErrorCode`-Const-Objekt in `packages/common/src/constants/<domain>/`.
+  Kein
   Handler oder Service schreibt `"NOT_FOUND"` oder `"INTERNAL"` als String-Literal in eine Response.
 - Message-Texte werden in einer einzigen `*-error.ts`-Datei auf Route-Ebene (oder äquivalenter Layer-Ebene) als
   `Record<FooErrorCode, string>` gemappt — nicht in Server-Handlern, nicht verteilt über mehrere Dateien.

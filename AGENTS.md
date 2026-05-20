@@ -1,4 +1,4 @@
-﻿# AGENTS.md - Invessiv (GPT Codex Agents)
+# AGENTS.md - Invessiv (GPT Codex Agents)
 
 ## Ziel
 
@@ -291,7 +291,8 @@ Outputs:
 - Keys im Const-Objekt verwenden **PascalCase** (`LeadSource.Webform`, nicht `LeadSource.WEBFORM`)
 - Wenn Iteration benötigt wird (z. B. Drizzle `{ enum: [...] }`, `sqlCheckIn`), wird ein separates `FOO_KIND_VALUES`-Array exportiert, das ausschließlich aus dem Const-Objekt abgeleitet wird; String-Literale erscheinen **genau einmal**, im Const-Objekt
 - **Error-Code & Message-Konvention (verbindlich):** Error-Codes sind Konstanten nach dem Const-Objekt-Pattern in
-  `src/common/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen** `*-error.ts`
+  `packages/common/src/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen**
+  `*-error.ts`
   -Datei auf Ebene der nutzenden Layer (API-Route, Client-Komponente) gemappt — nie inline in Route- oder
   Komponenten-Dateien verstreut. Call-Sites rufen ausschließlich den Helper auf (z. B.
   `fooError(FooErrorCode.NotFound, 404)`). Das Pattern gilt server-seitig (API-Responses) und client-seitig (
@@ -304,7 +305,7 @@ Outputs:
   src/config/routes.ts`— und werden von dort importiert. Client-Komponenten importieren`SITE_ROUTES
   `direkt; server-only Helfer (z. B.`workspacePathFor`) bleiben in `src/lib/auth/routes.ts`und dürfen nicht in`"use
   client"`-Dateien importiert werden.
-- API-Request-Bodies werden immer als Shared DTO in `src/common/contracts/<domain>/` modelliert. Form-State,
+- API-Request-Bodies werden immer als Shared DTO in `packages/common/src/contracts/<domain>/` modelliert. Form-State,
   Request-DTO, serverinterner Persistenz-Input und Result-DTO sind getrennte Rollen und dürfen nicht vermischt werden.
   Route-Handler validieren den Body an der HTTP-Grenze gegen das DTO-Schema und reichen danach nur noch typisierte
   DTO-Objekte an Command-Handler weiter.

@@ -9,7 +9,7 @@ import type {
 import {
   FormFieldKind,
   type FormFieldKind as FormFieldKindType,
-} from "@/common/constants/form/form-field-kinds";
+} from "@invessiv/common/constants/form/form-field-kinds";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import styles from "./form-field.module.css";
 

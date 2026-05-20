@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
 import { PostgresErrorCode } from "@/server/db/core";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(

@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
-import type { ListLeadsResult } from "@/common/contracts/leads/results/list-leads-result";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
+import type { ListLeadsResult } from "@invessiv/common/contracts/leads/results/list-leads-result";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { GET, POST } from "@/app/api/workspace/leads/route";
 
 vi.mock("server-only", () => ({}));

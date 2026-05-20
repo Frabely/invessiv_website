@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
-import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
+import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
 
 vi.mock("server-only", () => ({}));
 

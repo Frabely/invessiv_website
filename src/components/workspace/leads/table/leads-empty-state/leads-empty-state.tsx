@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LeadsEmptyStateVariant } from "@/common/constants/leads/list/lead-empty-state-variants";
+import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
 import styles from "./leads-empty-state.module.css";
 
 type LeadsEmptyStateProps = {

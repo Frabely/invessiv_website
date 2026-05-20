@@ -3,11 +3,11 @@ import { z } from "zod";
 import {
   CONTACT_LEAD_STATUS_VALUES,
   ContactLeadStatus,
-} from "@/common/constants/contact/contact-lead-statuses";
-import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
-import { BulkEditLimits } from "@/common/constants/leads/bulk/bulk-edit-limits";
-import { LeadValidationIssueCode } from "@/common/constants/leads/errors/lead-error-codes";
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadBulkAction } from "@invessiv/common/constants/leads/bulk/lead-bulk-actions";
+import { BulkEditLimits } from "@invessiv/common/constants/leads/bulk/bulk-edit-limits";
+import { LeadValidationIssueCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
 
 const optionalNullableTrimmedString = (max: number) =>
   z

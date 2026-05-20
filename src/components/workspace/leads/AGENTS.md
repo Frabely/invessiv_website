@@ -1,4 +1,4 @@
-﻿# AGENTS.md — Komponenten Workspace Leads
+# AGENTS.md — Komponenten Workspace Leads
 
 Diese Datei gilt für `src/components/workspace/leads/` und alle Subordner darunter. Sie ergänzt die Repo-Root `AGENTS.md`, `src/components/AGENTS.md` und `src/components/CLAUDE.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
@@ -51,7 +51,7 @@ Diese Gruppierung ist eine Scope-spezifische Präzisierung der Standardregel und
    Plattformen, Aktivitätstypen) werden über stabile Schlüssel im Dictionary aufgelöst, nicht direkt aus der DB.
    Komponenten erhalten vorbereitete Inhalte als Props oder über Server-Component-Loader, nicht hartkodiert.
 
-7. **Kontrakt-Grenzen.** Komponenten importieren nur aus `src/common/contracts/leads/**` für DTOs und aus
+7. **Kontrakt-Grenzen.** Komponenten importieren nur aus `packages/common/src/contracts/leads/**` für DTOs und aus
    `src/i18n/dictionaries/workspace/leads/` für Texte. **Kein** Import aus `src/server/**` oder `src/server/db/**`.
 
 8. **Mutationen über die API.** Client-Komponenten rufen `/api/workspace/leads/...` per `fetch` auf, nicht direkt
@@ -103,7 +103,7 @@ Neue Subfolder-Gruppen (z. B. `import/`, `messaging/`, `analytics/`) werden plan
 ## Form-DTO-Regel
 
 - Form-Komponenten in `form/` mappen ihren UI-State vor dem `fetch` auf explizite Request-DTOs aus
-  `src/common/contracts/leads/`.
+  `packages/common/src/contracts/leads/`.
 - Der Mapper benennt die Zielrolle klar, zum Beispiel `mapAddLeadFormValuesToCreateLeadRequestDto`.
 - Serverinterne Persistenz-Shapes, DB-Records und Handler-Inputs werden nicht direkt im Client gebaut.
 
@@ -112,7 +112,7 @@ Neue Subfolder-Gruppen (z. B. `import/`, `messaging/`, `analytics/`) werden plan
 1. Plan oder Ticket aktualisieren (Komponentenname, Subfolder, Props, Daten- und Mutations-Quelle, Reuse-Punkte).
 2. Dictionaries unter `src/i18n/dictionaries/workspace/leads/` (DE + EN) im selben Commit ergänzen.
 3. Komponente unter `src/components/workspace/leads/<group>/<component-name>/<component-name>.tsx` anlegen, dazu `<component-name>.module.css`.
-4. Prop-Typen aus `src/common/contracts/leads/**` ziehen, keine eigenen Lead-Shapes erfinden.
+4. Prop-Typen aus `packages/common/src/contracts/leads/**` ziehen, keine eigenen Lead-Shapes erfinden.
 5. Falls interaktiv: Tests co-locatieren (`<component-name>.test.tsx`).
 6. Vor Merge `npm run lint && npm run typecheck && npm run test && npm run build` grün halten.
 

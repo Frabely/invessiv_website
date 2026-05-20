@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { LeadValidationMessageCode } from "@/common/constants/leads/forms/lead-form-validation";
+import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { leadFormSchema } from "./lead-form-dialog.schema";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 const baseFormValues = {
   category_id: "",

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { LeadFormValues } from "@/common/contracts/leads/forms/lead-form-values";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";
 import { leadMapperService } from "./lead-mapper-service";
 
 describe("leadMapperService.mapAddLeadFormValuesToCreateLeadRequestDto", () => {

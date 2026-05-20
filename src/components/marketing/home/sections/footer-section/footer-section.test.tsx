@@ -3,7 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { FooterSection } from "./footer-section";
 
 describe("FooterSection", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
+import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
 

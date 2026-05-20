@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generateOutreachMessageSchema } from "@/server/workspace/outreach/generate-outreach-message.schema";
-import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
-import { OUTREACH_CONTEXT_NOTE_MAX_LEN } from "@/common/defaults/leads/outreach/lead-outreach-defaults";
+import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
+import { OUTREACH_CONTEXT_NOTE_MAX_LEN } from "@invessiv/common/defaults/leads/outreach/lead-outreach-defaults";
 
 const VALID_BASE = {
   leadId: "123e4567-e89b-12d3-a456-426614174000",

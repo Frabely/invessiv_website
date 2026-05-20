@@ -1,4 +1,4 @@
-﻿# Components
+# Components
 
 Dieser Ordner ist für wiederverwendbare UI-Komponenten gedacht.
 
@@ -34,7 +34,8 @@ Dieser Ordner ist für wiederverwendbare UI-Komponenten gedacht.
 Wenn eine Komponente Fehlerzustände anzeigt (Form-Validation, Toast, Inline-Error), gilt dieselbe Konvention wie
 server-seitig:
 
-- **Error-Codes** kommen aus dem zugehörigen `*ErrorCode`-Const-Objekt in `src/common/constants/<domain>/` — kein
+- **Error-Codes** kommen aus dem zugehörigen `*ErrorCode`-Const-Objekt in `packages/common/src/constants/<domain>/` —
+  kein
   String-Literal direkt in der Komponente.
 - **Message-Texte** werden in einer einzigen co-located `*-error.ts`- oder `*-messages.ts`-Datei auf die Codes gemappt (
   z. B. `src/lib/<domain>/<domain>-error-messages.ts`).
@@ -47,7 +48,7 @@ server-seitig:
 ## Form-DTO-Grenze
 
 - Form-Komponenten modellieren ihren lokalen UI-State als `FormValues` und mappen vor dem `fetch` auf ein explizites
-  Request-DTO aus `src/common/contracts/<domain>/`.
+  Request-DTO aus `packages/common/src/contracts/<domain>/`.
 - Kein Form-Mapper soll serverinterne Persistenz-Shapes, DB-Records oder Handler-Inputs direkt bauen.
 - Mapper sollen ihre Zielrolle im Namen tragen, zum Beispiel `mapAddLeadFormValuesToCreateLeadRequestDto`.
 

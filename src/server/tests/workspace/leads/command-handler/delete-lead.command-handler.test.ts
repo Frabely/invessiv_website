@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 
 const { getDrizzleDatabaseClientMock } = vi.hoisted(() => ({
   getDrizzleDatabaseClientMock: vi.fn(),

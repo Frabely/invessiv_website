@@ -1,10 +1,10 @@
-import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
-import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
-import { LEAD_IMPORT_STATUS_SYNONYMS } from "@/common/constants/leads/import/status/lead-import-status-synonyms";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
+import { LeadImportColumnKey } from "@invessiv/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportWarningCode } from "@invessiv/common/constants/leads/import/warnings/lead-import-warning-codes";
+import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import { LEAD_IMPORT_STATUS_SYNONYMS } from "@invessiv/common/constants/leads/import/status/lead-import-status-synonyms";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import type { LeadImportRowIssueDto } from "@invessiv/common/contracts/leads";
 import {
   leadEmailSchema,
   leadScoreSchema,

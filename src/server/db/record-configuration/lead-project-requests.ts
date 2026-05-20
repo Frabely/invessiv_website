@@ -1,9 +1,9 @@
 import { sql } from "drizzle-orm";
-import { CONTACT_BUDGET_KEYS } from "@/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEYS } from "@/common/constants/contact/contact-goal-keys";
-import { CONTACT_OFFER_KEYS } from "@/common/constants/contact/contact-offer-keys";
-import { CONTACT_START_KEYS } from "@/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEYS } from "@/common/constants/contact/contact-workflow-keys";
+import { CONTACT_BUDGET_KEYS } from "@invessiv/common/constants/contact/contact-budget-keys";
+import { CONTACT_GOAL_KEYS } from "@invessiv/common/constants/contact/contact-goal-keys";
+import { CONTACT_OFFER_KEYS } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { CONTACT_START_KEYS } from "@invessiv/common/constants/contact/contact-start-keys";
+import { CONTACT_WORKFLOW_KEYS } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import {
   check,
   index,

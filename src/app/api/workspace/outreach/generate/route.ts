@@ -2,8 +2,8 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { OutreachErrorCode } from "@/common/constants/leads/outreach/lead-outreach-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { outreachApiError } from "@/lib/workspace/outreach/outreach-api-error";
 import { generateOutreachMessage } from "@/server/workspace/outreach/command-handler/generate-outreach-message.command-handler";

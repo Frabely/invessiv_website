@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import type { LeadSummaryDto } from "@/common/contracts/leads/lead-summary.dto";
+import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import { ButtonControl } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";

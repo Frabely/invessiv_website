@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
 
 export const leadTextSchema = z.string().trim();
 export const leadOptionalTextSchema = leadTextSchema.optional();

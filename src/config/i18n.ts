@@ -1,8 +1,13 @@
-export type Locale = "de" | "en";
+export {
+  SUPPORTED_LOCALES,
+  type Locale,
+} from "@invessiv/common/contracts/i18n/locale";
 
-export const SUPPORTED_LOCALES = ["de", "en"] as const;
+import {
+  type Locale,
+  SUPPORTED_LOCALES,
+} from "@invessiv/common/contracts/i18n/locale";
 
 export function isSupportedLocale(value: string): value is Locale {
   return SUPPORTED_LOCALES.includes(value as Locale);
 }
-

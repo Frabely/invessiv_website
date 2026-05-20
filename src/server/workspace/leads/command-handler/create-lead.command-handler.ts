@@ -1,11 +1,11 @@
 import "server-only";
 
 import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
-import type { CreateLeadRequestDto } from "@/common/contracts/leads/create-lead-request.dto";
-import type { CreateLeadResult } from "@/common/contracts/leads/results/create-lead-result";
+import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
+import type { CreateLeadResult } from "@invessiv/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
 import { DuplicateCompanyNameError } from "@/server/workspace/leads/shared/duplicate-company-name-error.class";
 import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";

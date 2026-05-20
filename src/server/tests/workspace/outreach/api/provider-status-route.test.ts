@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
-import { OutreachOpenAi } from "@/common/constants/leads/outreach/lead-outreach-openai";
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
+import { OutreachOpenAi } from "@invessiv/common/constants/leads/outreach/lead-outreach-openai";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { GET } from "@/app/api/workspace/outreach/provider-status/route";
 
 vi.mock("server-only", () => ({}));

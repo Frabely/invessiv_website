@@ -2,19 +2,19 @@ import "server-only";
 
 import { z } from "zod";
 
-import { LeadImportColumnKey } from "@/common/constants/leads/import/columns/lead-import-column-keys";
-import { LeadImportWarningCode } from "@/common/constants/leads/import/warnings/lead-import-warning-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
-import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
+import { LeadImportColumnKey } from "@invessiv/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportWarningCode } from "@invessiv/common/constants/leads/import/warnings/lead-import-warning-codes";
+import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import type { LeadImportRowIssueDto } from "@invessiv/common/contracts/leads";
 import { leadOptionalTextSchema } from "@/server/workspace/leads/shared/lead-validation-core";
 import { leadImportSocialProfileMapperService } from "@/server/workspace/leads/services/import/lead-import-social-profile-mapper-service";
 import { leadImportFieldValidationService } from "@/server/workspace/leads/services/import/lead-import-field-validation-service";
 import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
-import type { RawLeadImportRow } from "@/common/contracts/leads/import/csv/lead-import-raw-row";
-import type { LeadImportValidationContext } from "@/common/contracts/leads/import/validation/lead-import-validation-context";
-import type { LeadImportValidationResult } from "@/common/contracts/leads/import/validation/lead-import-validation-result";
-import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/validation/lead-import-valid-row";
+import type { RawLeadImportRow } from "@invessiv/common/contracts/leads/import/csv/lead-import-raw-row";
+import type { LeadImportValidationContext } from "@invessiv/common/contracts/leads/import/validation/lead-import-validation-context";
+import type { LeadImportValidationResult } from "@invessiv/common/contracts/leads/import/validation/lead-import-validation-result";
+import type { ValidatedLeadImportRow } from "@invessiv/common/contracts/leads/import/validation/lead-import-valid-row";
 
 type LeadImportRowSchemaInput = z.infer<typeof leadImportRowSchema>;
 type LeadImportIssueCode =

@@ -2,16 +2,16 @@ import "server-only";
 
 import { desc, eq } from "drizzle-orm";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import type { CreateLeadCoreInput } from "@/common/contracts/leads/create-lead-core-input";
-import type { CreateLeadCoreOptions } from "@/common/contracts/leads/create-lead-core-options";
-import type { CreateLeadActivityInput } from "@/common/contracts/leads/create-lead-activity-input";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
-import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
-import type { LeadDetailMainRow } from "@/common/contracts/leads/rows/lead-detail-main-row";
-import type { LeadSocialProfileRow } from "@/common/contracts/leads/rows/lead-social-profile-row";
-import type { LeadSubmissionRow } from "@/common/contracts/leads/rows/lead-submission-row";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import type { CreateLeadCoreInput } from "@invessiv/common/contracts/leads/create-lead-core-input";
+import type { CreateLeadCoreOptions } from "@invessiv/common/contracts/leads/create-lead-core-options";
+import type { CreateLeadActivityInput } from "@invessiv/common/contracts/leads/create-lead-activity-input";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
+import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead-activity-row";
+import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
+import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
+import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
 import type { ContactDatabaseTransaction } from "@/server/db/core";
 import {
   leadActivities,

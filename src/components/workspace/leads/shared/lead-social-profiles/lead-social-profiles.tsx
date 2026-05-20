@@ -9,8 +9,8 @@ import {
 import { faGlobe, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
-import type { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
+import type { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import styles from "./lead-social-profiles.module.css";
 
 type LeadSocialProfilesLabels = {

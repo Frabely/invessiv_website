@@ -1,5 +1,5 @@
 import type { RefinementCtx } from "zod";
-import { CONTACT_OFFER_KEY } from "@/common/constants/contact/contact-offer-keys";
+import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 
 type ProjectRequestValidationShape = {

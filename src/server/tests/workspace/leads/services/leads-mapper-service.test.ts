@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@/common/constants/leads/activity/lead-actor-types";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import type { LeadActivityRow } from "@/common/contracts/leads/rows/lead-activity-row";
-import type { LeadDetailMainRow } from "@/common/contracts/leads/rows/lead-detail-main-row";
-import type { LeadSocialProfileRow } from "@/common/contracts/leads/rows/lead-social-profile-row";
-import type { LeadSubmissionRow } from "@/common/contracts/leads/rows/lead-submission-row";
-import type { LeadSocialProfileDto } from "@/common/contracts/leads/lead-social-profile.dto";
-import type { LeadSummaryRow } from "@/common/contracts/leads/rows/lead-summary-row";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead-activity-row";
+import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
+import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
+import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
+import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
+import type { LeadSummaryRow } from "@invessiv/common/contracts/leads/rows/lead-summary-row";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 
 const NOW = new Date("2024-03-01T12:00:00Z");

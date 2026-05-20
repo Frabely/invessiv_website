@@ -20,13 +20,13 @@ import {
 import {
   LEAD_IMPORT_COLUMN_KEY_VALUES,
   LeadImportColumnKey,
-} from "@/common/constants/leads/import/columns/lead-import-column-keys";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
+} from "@invessiv/common/constants/leads/import/columns/lead-import-column-keys";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type {
   LeadImportCsvPreview,
   LeadImportDialogPhase,
-} from "@/common/contracts/leads/import/lead-import-dialog-phase";
-import { LeadImportDialogPhaseTag } from "@/common/contracts/leads/import/lead-import-dialog-phase";
+} from "@invessiv/common/contracts/leads/import/lead-import-dialog-phase";
+import { LeadImportDialogPhaseTag } from "@invessiv/common/contracts/leads/import/lead-import-dialog-phase";
 import type { LeadsImportDictionary } from "@/i18n/dictionaries/workspace/leads";
 import {
   getLeadImportErrorMessage,

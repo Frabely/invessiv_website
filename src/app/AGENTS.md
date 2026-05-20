@@ -1,4 +1,4 @@
-﻿# App Router
+# App Router
 
 Dieser Ordner ist für Next.js-App-Router-Einstiegspunkte und die Routen-Orchestrierung gedacht.
 
@@ -24,7 +24,7 @@ Dieser Ordner ist für Next.js-App-Router-Einstiegspunkte und die Routen-Orchest
 Error-Codes und Message-Texte dürfen nie als String-Literale in Route-Dateien stehen. Die projektweite Konvention (Root
 `CLAUDE.md` → „Error Codes & Messages") gilt für alle API-Routen unter `src/app/api/`:
 
-- Error-Codes kommen aus einem `*ErrorCode`-Const-Objekt in `src/common/constants/<domain>/`.
+- Error-Codes kommen aus einem `*ErrorCode`-Const-Objekt in `packages/common/src/constants/<domain>/`.
 - Message-Texte stehen in einer einzigen `*-error.ts`-Datei neben den Route-Dateien der jeweiligen Domain.
 - Route-Handler rufen ausschließlich den Helper auf — kein `Response.json({ error: "...", message: "..." })` direkt.
 

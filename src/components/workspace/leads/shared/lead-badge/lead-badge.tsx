@@ -1,7 +1,7 @@
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { LeadBadgeKind } from "@/common/constants/leads/badges/lead-badge-kinds";
-import type { LeadBadgeTone } from "@/common/constants/leads/badges/lead-badge-tones";
+import type { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
+import type { LeadBadgeTone } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
 import styles from "./lead-badge.module.css";
 
 type LeadBadgeProps = {

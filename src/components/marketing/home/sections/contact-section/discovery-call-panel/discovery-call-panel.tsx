@@ -17,10 +17,10 @@ import {
   createCalendlyPrefillHref,
   submitDiscoveryCall,
 } from "@/client/contact/services/contact-form-service";
-import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@/common/defaults/contact/discovery-call-form-values";
-import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
+import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@invessiv/common/defaults/contact/discovery-call-form-values";
+import type { DiscoveryCallFormValues } from "@invessiv/common/contracts/contact/forms/discovery-call-form-values";
 import { mapDiscoveryCallFormToDto } from "@/client/contact/mappers/map-discovery-call-form-to-dto";
-import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import type {
   ContactChannelCopy,
   DiscoveryCallFormCopy,

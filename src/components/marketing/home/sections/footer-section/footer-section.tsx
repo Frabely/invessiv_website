@@ -1,7 +1,7 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
-import { LeadSocialPlatform } from "@/common/constants/leads/social/lead-social-platforms";
+import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type {

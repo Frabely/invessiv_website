@@ -11,9 +11,9 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { BulkSkipReason } from "@/common/constants/leads/bulk/bulk-skip-reasons";
-import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
+import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import {
   getLeadsBulkDictionary,
   getLeadsSharedDictionary,

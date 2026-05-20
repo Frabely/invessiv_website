@@ -8,14 +8,14 @@ import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
-import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
-import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
-import { LeadFormDialogMode } from "@/common/constants/leads/forms/lead-form-dialog-modes";
+import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
+import type { LeadCategoryDto } from "@invessiv/common/contracts/leads/lead-category.dto";
+import { LeadFormDialogMode } from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
 import {
   LeadsEmptyStateVariant,
   type LeadsEmptyStateVariant as LeadsEmptyStateVariantValue,
-} from "@/common/constants/leads/list/lead-empty-state-variants";
-import { LeadSort } from "@/common/constants/leads/list/lead-sort";
+} from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
+import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import {
   getLeadsBulkDictionary,
   getLeadsDeleteDictionary,

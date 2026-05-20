@@ -1,4 +1,4 @@
-﻿# AGENTS.md — Workspace Leads (UI)
+# AGENTS.md — Workspace Leads (UI)
 
 Diese Datei gilt für `src/app/[locale]/workspace/leads/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md`, `src/app/AGENTS.md` und `src/app/[locale]/workspace/AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
@@ -29,7 +29,9 @@ Diese Datei gilt für `src/app/[locale]/workspace/leads/` und alle Subroutes dar
 
 5. **Keine Page-internen DB-Zugriffe.** Keine direkten Drizzle-Aufrufe in `page.tsx`, `loading.tsx` oder UI-Komponenten. Datenbankzugriff läuft ausschließlich über die Query-/Command-Handler im Server-Layer.
 
-6. **Kontrakt-Grenzen einhalten.** UI darf nur `src/common/contracts/leads/**` importieren. `src/server/**` und `src/server/db/**` sind tabu. DB-nahe Records (`src/server/db/records/leads/**`) und Persistenz-Inputs (`src/server/db/contracts/leads/**`) bleiben server-intern.
+6. **Kontrakt-Grenzen einhalten.** UI darf nur `packages/common/src/contracts/leads/**` importieren. `src/server/**` und
+   `src/server/db/**` sind tabu. DB-nahe Records (`src/server/db/records/leads/**`) und Persistenz-Inputs (
+   `src/server/db/contracts/leads/**`) bleiben server-intern.
 
 7. **DTO-Trennung respektieren.** Schreib-Operationen verwenden getrennte Command-DTOs (z. B. `create-lead.dto.ts`, `update-lead.dto.ts`); gemeinsam genutzte schreibbare Felder liegen in `lead-write-fields.dto.ts`. **Kein** generisches `save-lead.dto.ts`, kein vermischtes Mega-DTO. Neue Mutations-Flows folgen demselben Muster.
 

@@ -1,6 +1,6 @@
-import type { DiscoveryCallFormValues } from "@/common/contracts/contact/forms/discovery-call-form-values";
-import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
-import { CONTACT_REQUEST_KIND } from "@/common/constants/contact/contact-request-kind";
+import type { DiscoveryCallFormValues } from "@invessiv/common/contracts/contact/forms/discovery-call-form-values";
+import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/discovery-call/save-discovery-call-dto";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 
 export function mapDiscoveryCallFormToDto(
   values: DiscoveryCallFormValues,

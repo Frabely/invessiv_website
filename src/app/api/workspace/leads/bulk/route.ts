@@ -2,9 +2,9 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
-import { LeadBulkAction } from "@/common/constants/leads/bulk/lead-bulk-actions";
-import { LeadErrorCode } from "@/common/constants/leads/errors/lead-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { LeadBulkAction } from "@invessiv/common/constants/leads/bulk/lead-bulk-actions";
+import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { leadApiError } from "@/lib/workspace/leads/lead-api-error";
 import { bulkArchiveLeads } from "@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler";

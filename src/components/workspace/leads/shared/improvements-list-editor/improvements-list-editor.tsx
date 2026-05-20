@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { LeadFieldLimits } from "@/common/constants/leads/forms/lead-field-limits";
-import type { ImprovementsListEditorContent } from "@/common/contracts/leads";
-import { FormFieldKind } from "@/common/constants/form/form-field-kinds";
+import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import type { ImprovementsListEditorContent } from "@invessiv/common/contracts/leads";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import {
   ButtonControl,
   PrimaryCtaButton,

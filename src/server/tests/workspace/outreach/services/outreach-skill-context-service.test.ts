@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { OutreachChannel } from "@/common/constants/leads/outreach/lead-outreach-channels";
-import type { LeadDetailDto } from "@/common/contracts/leads/lead-detail.dto";
+import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 
 vi.mock("server-only", () => ({}));

@@ -1,18 +1,18 @@
 import "server-only";
 
-import { ContactLeadStatus } from "@/common/constants/contact/contact-lead-statuses";
-import { LeadImportErrorCode } from "@/common/constants/leads/import/errors/lead-import-error-codes";
-import { LeadImportRowIssueCode } from "@/common/constants/leads/import/issues/lead-import-row-issue-codes";
-import { LeadImportRowIssueSeverity } from "@/common/constants/leads/import/issues/lead-import-row-issue-severities";
-import { LeadSource } from "@/common/constants/leads/sources/lead-sources";
-import { LeadActivityType } from "@/common/constants/leads/activity/lead-activity-types";
-import type { LeadImportReportDto } from "@/common/contracts/leads/import/lead-import-report.dto";
-import type { LeadImportResultDto } from "@/common/contracts/leads/import/lead-import-result.dto";
-import type { LeadImportRowIssueDto } from "@/common/contracts/leads";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
+import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
+import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
+import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
+import type { LeadImportResultDto } from "@invessiv/common/contracts/leads/import/lead-import-result.dto";
+import type { LeadImportRowIssueDto } from "@invessiv/common/contracts/leads";
 import type {
   RowEntry,
   ValidatedRowEntry,
-} from "@/common/contracts/leads/import/validation/lead-import-row-entry";
+} from "@invessiv/common/contracts/leads/import/validation/lead-import-row-entry";
 import { getDrizzleDatabaseClient } from "@/server/db/core";
 import {
   LeadCsvParseError,
@@ -24,7 +24,7 @@ import { leadImportExistingKeysLoaderService } from "@/server/workspace/leads/se
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
-import type { ValidatedLeadImportRow } from "@/common/contracts/leads/import/validation/lead-import-valid-row";
+import type { ValidatedLeadImportRow } from "@invessiv/common/contracts/leads/import/validation/lead-import-valid-row";
 import {
   isDuplicateCompanyNameError,
   isDuplicateExternalGuidError,

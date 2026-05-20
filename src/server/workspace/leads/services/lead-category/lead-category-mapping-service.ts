@@ -1,5 +1,5 @@
-import type { LeadCategoryDto } from "@/common/contracts/leads/lead-category.dto";
-import type { LeadCategoryRow } from "@/common/contracts/leads/rows/lead-category-row";
+import type { LeadCategoryDto } from "@invessiv/common/contracts/leads/lead-category.dto";
+import type { LeadCategoryRow } from "@invessiv/common/contracts/leads/rows/lead-category-row";
 
 export function mapCategoryRowToDto(
   row: LeadCategoryRow,

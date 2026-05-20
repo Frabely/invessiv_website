@@ -3,10 +3,10 @@ import "server-only";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 
-import { HttpResponseCode } from "@/common/constants/http/http-response-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { WorkspaceAccess } from "./permissions";
 import { isEmailAllowed } from "./allowlist";
-import { AuthErrorCode } from "@/common/constants/auth/auth-error-codes";
+import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
 import { authApiError } from "./auth-api-error";
 
 type WorkspaceApiHandler = (

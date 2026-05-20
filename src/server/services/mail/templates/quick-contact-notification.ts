@@ -1,5 +1,5 @@
 import "server-only";
-import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
+import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { getServerEnv } from "@/server/config/env";
 import type { MailMessage } from "@/server/services/mail/mail-provider";

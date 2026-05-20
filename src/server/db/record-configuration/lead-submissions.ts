@@ -7,7 +7,7 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
-import { CONTACT_REQUEST_KINDS } from "@/common/constants/contact/contact-request-kind";
+import { CONTACT_REQUEST_KINDS } from "@invessiv/common/constants/contact/contact-request-kind";
 import { leads } from "@/server/db/record-configuration/leads";
 
 export const leadSubmissions = pgTable(

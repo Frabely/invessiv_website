@@ -1,13 +1,13 @@
-import type { ContactSubmitResponse } from "@/common/contracts/contact/submit/contact-submit";
-import type { ContactSubmitErrorCode } from "@/common/contracts/contact/submit/contact-submit-error-code";
-import type { BaseContactFieldsValues } from "@/common/contracts/contact/fields/base-contact-fields-values";
-import type { SaveDiscoveryCallDto } from "@/common/contracts/contact/discovery-call/save-discovery-call-dto";
-import type { CalendlyPrefillOptions } from "@/common/contracts/contact/options/calendly-prefill-options";
-import type { ContactSubmitOptions } from "@/common/contracts/contact/options/contact-submit-options";
-import type { SaveProjectRequestDto } from "@/common/contracts/contact/project-request/save-project-request-dto";
-import type { SaveQuickContactDto } from "@/common/contracts/contact/quick-contact/save-quick-contact-dto";
-import { ContactSearchParam } from "@/common/constants/contact/contact-search-params";
-import { DEFAULT_CONTACT_SUBMIT_PATH } from "@/common/constants/contact/contact-submit-path";
+import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
+import type { ContactSubmitErrorCode } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
+import type { BaseContactFieldsValues } from "@invessiv/common/contracts/contact/fields/base-contact-fields-values";
+import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/discovery-call/save-discovery-call-dto";
+import type { CalendlyPrefillOptions } from "@invessiv/common/contracts/contact/options/calendly-prefill-options";
+import type { ContactSubmitOptions } from "@invessiv/common/contracts/contact/options/contact-submit-options";
+import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
+import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
+import { ContactSearchParam } from "@invessiv/common/constants/contact/contact-search-params";
+import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/contact-submit-path";
 
 function createClientErrorResponse(
   code: ContactSubmitErrorCode = "internal_error",
