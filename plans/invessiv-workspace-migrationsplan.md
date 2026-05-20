@@ -29,6 +29,7 @@ Die Migration soll nicht als Big Bang erfolgen. Jede Phase muss für sich review
 | DB                      | Beide Apps nutzen `packages/db`; `packages/db` bleibt server-only                                                                                                  |
 | UI                      | Kein `packages/ui`, bis echter Cross-App-Reuse entsteht                                                                                                            |
 | Lint                    | Scripts nutzen `eslint .`, nicht `next lint`                                                                                                                       |
+| Tooling                 | Lint/Typecheck/Test-Tooling bleibt zentral am Root                                                                                                                 |
 | i18n                    | Sprachabhängige Inhalte bleiben dictionary-basiert; DE/EN-Keys müssen kompatibel bleiben                                                                           |
 
 ## Zielstruktur
@@ -247,10 +248,11 @@ Umfang:
 - `src/server/db/record-configuration/**` nach `packages/db/src/record-configuration/**`
 - `src/server/db/contact/**` nach `packages/db/src/contact/**`
 - `src/server/db/contracts/**` nach `packages/db/src/contracts/**`
-- `src/server/db/migrations/**` nach `packages/db/src/migrations/**` oder `packages/db/migrations/**`
+- `src/server/db/migrations/**` nach `packages/db/migrations/**`
 - `src/server/db/scripts/**` nach `packages/db/scripts/**`
 - Script-Pfade so anpassen, dass Migrationen unabhängig vom aktuellen Working Directory gefunden werden
 - `packages/db/src/index.ts` nur mit serverseitig sicheren Exports anlegen
+- Migrations-Skripte und DB-Commands referenzieren ausschließlich `packages/db/migrations/**`
 - Imports in der bestehenden App auf `@invessiv/db` umstellen
 
 `packages/db/package.json`:
@@ -398,6 +400,8 @@ Umfang:
 - `/api/workspace/**` aus dem Proxy-Auth-Schutz ausnehmen
 - API-Routen verpflichtend über `withWorkspaceApiAuth` oder einen gleichwertigen Route-Level-Helper schützen
 - API-Routen behalten JSON-Fehler bei fehlender Auth oder fehlender Allowlist und liefern keine Redirect-/HTML-Antworten
+- Clerk-ENV-Werte bleiben pfadneutral; locale-passende Sign-in-, Sign-up- und After-URLs werden über zentrale Helper
+  erzeugt und nicht per `/de`-Default im ENV festgeschrieben
 
 `apps/workspace/src/proxy.ts`:
 
@@ -526,6 +530,8 @@ OPENAI_MODEL
 ```
 
 Clerk-ENV-Werte dürfen keine harte `/de`-Default-Locale erzwingen. Locale-passende Sign-in-, Sign-up-, After-Sign-in- und Redirect-Targets werden über zentrale Route-Helper oder Proxy-/App-Logik erzeugt.
+`OPENAI_MODEL` bleibt optional; der Code darf den vorhandenen Default verwenden. Nur `OPENAI_API_KEY` ist betrieblich
+zwingend.
 
 `packages/db` Scripts unterstützen weiterhin:
 
@@ -636,9 +642,8 @@ Qualitäts-Gates:
 
 ## Offene Entscheidungen vor Umsetzung
 
-- Liegen DB-Migrationen final in `packages/db/src/migrations/**` oder `packages/db/migrations/**`? Die Scripts müssen den gewählten Pfad eindeutig referenzieren.
-- Wird `OPENAI_MODEL` als Pflichtvariable im Workspace eingeführt oder mit serverseitigem Default betrieben?
-- Werden Preview-Clerk-Redirects wildcard-basiert oder deployment-spezifisch gepflegt?
+- Keine offenen Entscheidungen mehr für die Migrationsgrundlage; Implementierungsdetails folgen dem festgelegten Pfad-
+  und ENV-Setup.
 
 ## Nicht-Ziele dieser Migration
 
