@@ -52,7 +52,7 @@ Diese Gruppierung ist eine Scope-spezifische Präzisierung der Standardregel und
    Komponenten erhalten vorbereitete Inhalte als Props oder über Server-Component-Loader, nicht hartkodiert.
 
 7. **Kontrakt-Grenzen.** Komponenten importieren nur aus `packages/common/src/contracts/leads/**` für DTOs und aus
-   `src/i18n/dictionaries/workspace/leads/` für Texte. **Kein** Import aus `src/server/**` oder `src/server/db/**`.
+   `src/i18n/dictionaries/workspace/leads/` für Texte. **Kein** Import aus `src/server/**` oder `@invessiv/db`.
 
 8. **Mutationen über die API.** Client-Komponenten rufen `/api/workspace/leads/...` per `fetch` auf, nicht direkt
    Server-Actions oder DB-Funktionen. Nach erfolgreicher Mutation wird `router.refresh()` aufgerufen, damit der Server

@@ -1,12 +1,12 @@
 import { desc, eq } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   leadActivities,
   leadCategories,
   leads,
   leadSocialProfiles,
   leadSubmissions,
-} from "@/server/db/record-configuration";
+} from "@invessiv/db/record-configuration";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 

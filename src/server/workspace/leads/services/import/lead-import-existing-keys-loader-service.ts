@@ -2,8 +2,8 @@ import "server-only";
 
 import { inArray, sql } from "drizzle-orm";
 
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leads } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
 
 export interface ExistingLeadKeys {
   emailToLeadId: Map<string, string>;

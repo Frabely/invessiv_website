@@ -1,6 +1,6 @@
 import { asc } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leadCategories } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leadCategories } from "@invessiv/db/record-configuration";
 import type { LeadCategoryDto } from "@invessiv/common/contracts/leads/lead-category.dto";
 
 export async function getLeadCategories(): Promise<LeadCategoryDto[]> {

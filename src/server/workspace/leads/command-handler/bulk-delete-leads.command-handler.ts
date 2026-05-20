@@ -2,8 +2,8 @@ import "server-only";
 import { inArray } from "drizzle-orm";
 
 import type { BulkDeleteLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-delete-leads-result";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leads } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
 
 export type BulkDeleteLeadsInput = {
   ids: string[];

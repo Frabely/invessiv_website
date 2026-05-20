@@ -3,9 +3,24 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
+    alias: [
+      {
+        find: /^@invessiv\/db\/scripts\/(.+)$/,
+        replacement: path.resolve(__dirname, "packages/db/scripts/$1"),
+      },
+      {
+        find: /^@invessiv\/db\/(.+)$/,
+        replacement: path.resolve(__dirname, "packages/db/src/$1"),
+      },
+      {
+        find: /^@invessiv\/db$/,
+        replacement: path.resolve(__dirname, "packages/db/src/index.ts"),
+      },
+      {
+        find: /^@\/(.+)$/,
+        replacement: path.resolve(__dirname, "src/$1"),
+      },
+    ],
   },
   test: {
     environment: "node",

@@ -39,16 +39,27 @@ src/
 │   ├── legal/            # Legal page components
 │   └── shared/           # Reusable UI (button, locale-switch, theme-switch, breadcrumbs)
 ├── server/
-│   ├── db/               # Drizzle client, schemas in record-configuration/, migrations/
 │   ├── contact/          # Command handlers per contact kind
+│   ├── workspace/        # Workspace command/query handlers
 │   └── services/         # Email service, response builder, anti-abuse, rate limiter
 ├── i18n/dictionaries/    # Per-section translation files: <section>/{de,en}.json + index.ts
 ├── hooks/                # Custom React hooks (scroll, reveal, tilt, theme, etc.)
-├── lib/                  # SEO helpers, navigation, analytics utilities
-└── common/
-    ├── contracts/        # TypeScript DTO interfaces for contact request kinds
-    ├── constants/        # Enums, defaults (contact kinds, locales, etc.)
-    └── patterns/         # Shared utility patterns
+└── lib/                  # SEO helpers, navigation, analytics utilities
+
+packages/
+├── common/               # Shared DTOs, constants, defaults, patterns (@invessiv/common)
+│   ├── contracts/
+│   ├── constants/
+│   ├── defaults/
+│   └── patterns/
+└── db/                   # Drizzle client, schemas, migrations, persistence (@invessiv/db)
+    ├── migrations/       # SQL migration files
+    ├── scripts/          # Migration/seed/smoke-test runners
+    └── src/
+        ├── contact/      # Persist-* functions per contact kind
+        ├── contracts/    # Persistence input/record contracts
+        ├── core/         # DB client, env loading, SQL helpers
+        └── record-configuration/  # pgTable schemas (one file per table)
 ```
 
 ### Scoped guidance files
@@ -76,11 +87,14 @@ Dynamic locale segment `[locale]` (values: `"de"` | `"en"`) wraps all pages. Sta
 
 ### Contact API pattern
 
-`POST /api/public/contact` dispatches to per-kind command handlers in `src/server/contact/`. Each handler validates with Zod, persists via a dedicated persistence service (`src/server/db/`), and sends email via Resend. Rate limiting and anti-abuse checks run before dispatch.
+`POST /api/public/contact` dispatches to per-kind command handlers in `src/server/contact/`. Each handler validates with
+Zod, persists via a dedicated persistence service (`packages/db/src/contact/`), and sends email via Resend. Rate
+limiting and anti-abuse checks run before dispatch.
 
 ### Database
 
-Canonical model source: `src/server/db/record-configuration/`. Schema defined with Drizzle `pgTable`; never duplicate column lists elsewhere. Connection is a cached singleton.
+Canonical model source: `packages/db/src/record-configuration/` (workspace package `@invessiv/db`). Schema defined with
+Drizzle `pgTable`; never duplicate column lists elsewhere. Connection is a cached singleton.
 
 ### Constants & Enums
 

@@ -1,7 +1,7 @@
 import "server-only";
-import type { ContactDatabaseTransaction } from "@/server/db/core";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leadActivities } from "@/server/db/record-configuration";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leadActivities } from "@invessiv/db/record-configuration";
 import type { CreateLeadActivityInput } from "@invessiv/common/contracts/leads/create-lead-activity-input";
 
 async function createLeadActivity(

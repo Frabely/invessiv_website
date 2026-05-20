@@ -1,10 +1,10 @@
 import { count, eq, inArray } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   leadCategories,
   leads,
   leadSocialProfiles,
-} from "@/server/db/record-configuration";
+} from "@invessiv/db/record-configuration";
 import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";

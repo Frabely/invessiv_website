@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leads, leadSocialProfiles } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads, leadSocialProfiles } from "@invessiv/db/record-configuration";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";

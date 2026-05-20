@@ -7,7 +7,7 @@ import {
   CONTACT_SUBMIT_LOG_MESSAGE,
   CONTACT_SUBMIT_LOG_PREFIX,
 } from "@/server/contact/handlers/contact-submit-logging";
-import { persistProjectRequestLead } from "@/server/db/contact/persist-project-request";
+import { persistProjectRequestLead } from "@invessiv/db/contact/persist-project-request";
 import { projectRequestValidationService } from "@/server/contact/validation/project-request/project-request-validation-service";
 import { mapContactToMail } from "@/server/services/mail/mappers/map-contact-to-mail";
 import { sendMail } from "@/server/services/mail/mail-service";

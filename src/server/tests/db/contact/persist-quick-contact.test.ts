@@ -12,11 +12,11 @@ const {
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/core", () => ({
+vi.mock("@invessiv/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
 }));
-vi.mock("@/server/db/contact/shared/shared-lead-submission", () => ({
+vi.mock("@invessiv/db/contact/shared/shared-lead-submission", () => ({
   persistSharedLeadSubmission: persistSharedLeadSubmissionMock,
 }));
 
@@ -41,7 +41,7 @@ describe("persistQuickContactLead", () => {
     });
 
     const { persistQuickContactLead } =
-      await import("@/server/db/contact/persist-quick-contact");
+      await import("@invessiv/db/contact/persist-quick-contact");
 
     const result = await persistQuickContactLead({
       lead_email_contact: {

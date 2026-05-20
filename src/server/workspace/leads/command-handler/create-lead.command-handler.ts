@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getDrizzleDatabaseClient } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";

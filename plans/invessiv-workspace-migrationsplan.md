@@ -155,16 +155,16 @@ Diese alten Pfade müssen nicht per Redirect erhalten bleiben, weil der Workspac
 
 ## Umsetzungsstatus
 
-| PR  | Status        | Nachweis                                                                                                                         |
-| --- | ------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Abgeschlossen | Branch `chore/monorepo-migration`, Tag `before-monorepo-migration`, Commit `e458a62`, Gates grün mit `corepack pnpm`             |
-| 2   | Abgeschlossen | `packages/common` extrahiert; Gates grün: `pnpm --filter @invessiv/common typecheck`, `pnpm lint`, `pnpm typecheck`, `pnpm test` |
-| 3   | Offen         | Noch nicht begonnen                                                                                                              |
-| 4   | Offen         | Noch nicht begonnen                                                                                                              |
-| 5   | Offen         | Noch nicht begonnen                                                                                                              |
-| 6   | Offen         | Noch nicht begonnen                                                                                                              |
-| 7   | Offen         | Noch nicht begonnen                                                                                                              |
-| 8   | Offen         | Noch nicht begonnen                                                                                                              |
+| PR  | Status        | Nachweis                                                                                                                                                                                  |
+| --- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Abgeschlossen | Branch `chore/monorepo-migration`, Tag `before-monorepo-migration`, Commit `e458a62`, Gates grün mit `corepack pnpm`                                                                      |
+| 2   | Abgeschlossen | `packages/common` extrahiert; Gates grün: `pnpm --filter @invessiv/common typecheck`, `pnpm lint`, `pnpm typecheck`, `pnpm test`                                                          |
+| 3   | Abgeschlossen | `packages/db` extrahiert; Gates grün: `pnpm --filter @invessiv/db typecheck`, `pnpm --filter @invessiv/db test`, `pnpm --filter @invessiv/db db:smoke:dev`, `pnpm lint`, `pnpm typecheck` |
+| 4   | Offen         | Noch nicht begonnen                                                                                                                                                                       |
+| 5   | Offen         | Noch nicht begonnen                                                                                                                                                                       |
+| 6   | Offen         | Noch nicht begonnen                                                                                                                                                                       |
+| 7   | Offen         | Noch nicht begonnen                                                                                                                                                                       |
+| 8   | Offen         | Noch nicht begonnen                                                                                                                                                                       |
 
 ### PR 1: Monorepo-Grundlage ohne App-Split
 

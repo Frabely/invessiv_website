@@ -6,7 +6,7 @@ import {
   CONTACT_SUBMIT_LOG_PREFIX,
 } from "@/server/contact/handlers/contact-submit-logging";
 import { leadMapperService } from "@/server/contact/mapper/contact-lead-mapper-service";
-import { persistDiscoveryCallLead } from "@/server/db/contact/persist-discovery-call";
+import { persistDiscoveryCallLead } from "@invessiv/db/contact/persist-discovery-call";
 import { discoveryCallValidationService } from "@/server/contact/validation/discovery-call/discovery-call-validation-service";
 
 export async function submitDiscoveryCallCommandHandler(

@@ -12,14 +12,14 @@ import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead
 import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
 import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
 import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
-import type { ContactDatabaseTransaction } from "@/server/db/core";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
   leadActivities,
   leadCategories,
   leads,
   leadSocialProfiles,
   leadSubmissions,
-} from "@/server/db/record-configuration";
+} from "@invessiv/db/record-configuration";
 import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";

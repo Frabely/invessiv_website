@@ -84,7 +84,8 @@ Layer 2 fängt Fälle ab, die Layer 1 nicht vollständig abdecken kann:
 
 - Mehr E-Mail-Adressen: `WORKSPACE_ALLOWED_EMAILS` in Vercel ergänzen und redeployen.
 - Mehr Strenge, z. B. Domain- oder Pattern-Regeln: `src/lib/auth/allowlist.ts` erweitern und Tests ergänzen.
-- DB-basierte ACL erst ab mehr als 5 berechtigten Usern oder dynamischen Berechtigungen einführen. Dann nach `src/server/auth/` migrieren und DB-Modelle kanonisch unter `src/server/db/record-configuration/` pflegen.
+- DB-basierte ACL erst ab mehr als 5 berechtigten Usern oder dynamischen Berechtigungen einführen. Dann nach
+  `src/server/auth/` migrieren und DB-Modelle kanonisch unter `packages/db/src/record-configuration/` pflegen.
 
 ## Routing-Konvention
 
@@ -133,14 +134,14 @@ src/i18n/dictionaries/workspace/
 
 ## Geplante Erweiterungen
 
-| Feature                           | Trigger                                                 | Ort                                                                                             |
-| --------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Sidebar / Workspace-Navigation    | Sobald mehr als 1 Workspace-Page existiert              | `workspace/layout.tsx`                                                                          |
-| `<UserButton>` im Site-Header     | Sobald Login öffentlich beworben wird                   | `src/components/marketing/site-header/` mit `<SignedIn>`-Wrapper                                |
-| Rollen-System (`admin`, `viewer`) | Sobald Allowlist-User unterschiedliche Rechte brauchen  | Clerk `publicMetadata.role` und `requireRole()`-Helper                                          |
-| DB-basierte ACL                   | Mehr als 5 berechtigte User oder dynamische Permissions | Drizzle-Tabelle unter `src/server/db/record-configuration/` und Helper unter `src/server/auth/` |
-| E2E-Test Login-Flow               | Sobald Workspace-Inhalte existieren                     | `e2e/workspace-auth.e2e.ts`                                                                     |
-| Custom Clerk Theme                | Falls Default-Light nicht zum Brand passt               | `appearance`-Prop in `<ClerkProvider>`                                                          |
+| Feature                           | Trigger                                                 | Ort                                                                                               |
+| --------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Sidebar / Workspace-Navigation    | Sobald mehr als 1 Workspace-Page existiert              | `workspace/layout.tsx`                                                                            |
+| `<UserButton>` im Site-Header     | Sobald Login öffentlich beworben wird                   | `src/components/marketing/site-header/` mit `<SignedIn>`-Wrapper                                  |
+| Rollen-System (`admin`, `viewer`) | Sobald Allowlist-User unterschiedliche Rechte brauchen  | Clerk `publicMetadata.role` und `requireRole()`-Helper                                            |
+| DB-basierte ACL                   | Mehr als 5 berechtigte User oder dynamische Permissions | Drizzle-Tabelle unter `packages/db/src/record-configuration/` und Helper unter `src/server/auth/` |
+| E2E-Test Login-Flow               | Sobald Workspace-Inhalte existieren                     | `e2e/workspace-auth.e2e.ts`                                                                       |
+| Custom Clerk Theme                | Falls Default-Light nicht zum Brand passt               | `appearance`-Prop in `<ClerkProvider>`                                                            |
 
 ## Kritische Dateien
 

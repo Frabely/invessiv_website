@@ -29,7 +29,7 @@ The contact pipeline is split across four locations — keep them separate:
 | -------------------------------- | ---------------------------------------- |
 | Orchestration / command handlers | `src/server/contact/`                    |
 | Mapping / transformation         | `src/server/services/contact/`           |
-| Persistence                      | `src/server/db/`                         |
+| Persistence                      | `packages/db/src/` (`@invessiv/db`)      |
 | Shared contracts / DTOs          | `packages/common/src/contracts/contact/` |
 
 ## Naming conventions
@@ -38,8 +38,8 @@ The contact pipeline is split across four locations — keep them separate:
 - `mapThingApiToDb` — API-to-DB mappers
 - `mapThingDbToApi` / `mapThingRowToDto` — DB-row-to-DTO direction
 - `persist-*.ts` — database persistence functions
-- `*-record.ts` — DB-adjacent row shapes (lives in `src/server/db/records/`)
-- `*-persist-input.ts` — persistence payload contracts (lives in `src/server/db/contracts/`)
+- `*-record.ts` — DB-adjacent row shapes (lives in `packages/db/src/records/`)
+- `*-persist-input.ts` — persistence payload contracts (lives in `packages/db/src/contracts/`)
 
 ## Mapping service tests
 
@@ -84,12 +84,13 @@ service folder and not in the query handler.
 
 ## Database model rules
 
-- **Canonical model source**: `src/server/db/record-configuration/` — schema defined with Drizzle `pgTable`
+- **Canonical model source**: `packages/db/src/record-configuration/` (`@invessiv/db`) — schema defined with Drizzle
+  `pgTable`
 - One model file per table in `record-configuration/`; no aggregate files, no duplicate model variants
 - `records/**` holds only DB-adjacent record/row shapes with `snake_case` column names — no `camelCase` alias fields
 - Composite persistence payloads and persistence results live exclusively in `contracts/**`, not in `records/**`
 - Never duplicate column lists or table names alongside the `pgTable` definition
-- No pure mapping logic in `src/server/db/`; no route orchestration in `src/server/db/`
+- No pure mapping logic in `packages/db/src/`; no route orchestration in `packages/db/src/`
 
 ## Tests
 

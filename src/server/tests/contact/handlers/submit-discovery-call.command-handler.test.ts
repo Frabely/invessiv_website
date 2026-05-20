@@ -1,4 +1,4 @@
-import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+﻿import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { CONTACT_VALIDATION_FIELD_ERROR_CODE } from "@/server/contact/validation/shared/contact-validation-field-error-code";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -9,7 +9,7 @@ const { persistDiscoveryCallLeadMock } = vi.hoisted(() => ({
 
 vi.mock("server-only", () => ({}));
 
-vi.mock("@/server/db/contact/persist-discovery-call", () => ({
+vi.mock("@invessiv/db/contact/persist-discovery-call", () => ({
   persistDiscoveryCallLead: persistDiscoveryCallLeadMock,
 }));
 

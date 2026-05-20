@@ -21,7 +21,7 @@ vi.mock("@/server/services/mail/mail-service", () => ({
   sendMail: sendMailMock,
 }));
 
-vi.mock("@/server/db/contact/persist-project-request", () => ({
+vi.mock("@invessiv/db/contact/persist-project-request", () => ({
   persistProjectRequestLead: persistProjectRequestLeadMock,
 }));
 

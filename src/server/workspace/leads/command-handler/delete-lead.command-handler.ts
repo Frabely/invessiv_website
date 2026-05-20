@@ -1,7 +1,7 @@
 import "server-only";
 import { eq } from "drizzle-orm";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leads } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { DeleteLeadResult } from "@invessiv/common/contracts/leads/results/delete-lead-result";
 

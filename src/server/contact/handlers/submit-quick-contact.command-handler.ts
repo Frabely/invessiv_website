@@ -7,7 +7,7 @@ import {
   CONTACT_SUBMIT_LOG_MESSAGE,
   CONTACT_SUBMIT_LOG_PREFIX,
 } from "@/server/contact/handlers/contact-submit-logging";
-import { persistQuickContactLead } from "@/server/db/contact/persist-quick-contact";
+import { persistQuickContactLead } from "@invessiv/db/contact/persist-quick-contact";
 import { quickContactValidationService } from "@/server/contact/validation/quick-contact/quick-contact-validation-service";
 import { mapQuickContactToMail } from "@/server/services/mail/templates/quick-contact-notification";
 import { sendMail } from "@/server/services/mail/mail-service";

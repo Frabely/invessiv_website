@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
-import { PostgresErrorCode } from "@/server/db/core";
+import { PostgresErrorCode } from "@invessiv/db/core";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({
@@ -11,8 +11,8 @@ const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
 );
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/server/db/core")>()),
+vi.mock("@invessiv/db/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
 vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({

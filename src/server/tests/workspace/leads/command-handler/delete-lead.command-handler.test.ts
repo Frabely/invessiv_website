@@ -6,8 +6,8 @@ const { getDrizzleDatabaseClientMock } = vi.hoisted(() => ({
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/server/db/core")>()),
+vi.mock("@invessiv/db/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
 

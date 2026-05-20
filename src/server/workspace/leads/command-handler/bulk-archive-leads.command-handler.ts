@@ -5,8 +5,8 @@ import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-le
 import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
 import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 import type { BulkArchiveLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-archive-leads-result";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
-import { leads } from "@/server/db/record-configuration";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
 import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 
 export type BulkArchiveLeadsInput = {

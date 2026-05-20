@@ -1,15 +1,15 @@
-import { getTableConfig } from "drizzle-orm/pg-core";
+﻿import { getTableConfig } from "drizzle-orm/pg-core";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { leadActivities } from "@/server/db/record-configuration/lead-activities";
-import { leadCallContacts } from "@/server/db/record-configuration/lead-call-contacts";
-import { leadCategories } from "@/server/db/record-configuration/lead-categories";
-import { leadEmailContacts } from "@/server/db/record-configuration/lead-email-contacts";
-import { leadProjectRequests } from "@/server/db/record-configuration/lead-project-requests";
-import { leadSocialProfiles } from "@/server/db/record-configuration/lead-social-profiles";
-import { leadSubmissions } from "@/server/db/record-configuration/lead-submissions";
-import { leads } from "@/server/db/record-configuration/leads";
+import { leadActivities } from "@invessiv/db/record-configuration/lead-activities";
+import { leadCallContacts } from "@invessiv/db/record-configuration/lead-call-contacts";
+import { leadCategories } from "@invessiv/db/record-configuration/lead-categories";
+import { leadEmailContacts } from "@invessiv/db/record-configuration/lead-email-contacts";
+import { leadProjectRequests } from "@invessiv/db/record-configuration/lead-project-requests";
+import { leadSocialProfiles } from "@invessiv/db/record-configuration/lead-social-profiles";
+import { leadSubmissions } from "@invessiv/db/record-configuration/lead-submissions";
+import { leads } from "@invessiv/db/record-configuration/leads";
 
 const CONTACT_TABLE_SCHEMAS = [
   { table: leads, tableName: "leads" },
@@ -53,14 +53,14 @@ describe("contact drizzle schema", () => {
     const createMigrationSql = readFileSync(
       join(
         process.cwd(),
-        "src/server/db/migrations/0003_create_lead_categories.sql",
+        "packages/db/migrations/0003_create_lead_categories.sql",
       ),
       "utf8",
     );
     const removeDefaultsMigrationSql = readFileSync(
       join(
         process.cwd(),
-        "src/server/db/migrations/0007_remove_lead_category_defaults.sql",
+        "packages/db/migrations/0007_remove_lead_category_defaults.sql",
       ),
       "utf8",
     );

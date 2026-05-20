@@ -1,9 +1,9 @@
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { describe, expect, it } from "vitest";
 import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/lead-sources";
-import { sqlCheckIn } from "@/server/db/core";
-import * as schema from "@/server/db/record-configuration";
-import { leads } from "@/server/db/record-configuration";
+import { sqlCheckIn } from "@invessiv/db/core";
+import * as schema from "@invessiv/db/record-configuration";
+import { leads } from "@invessiv/db/record-configuration";
 
 const db = drizzle({
   connection: "postgresql://test:test@test.neon.tech/testdb",

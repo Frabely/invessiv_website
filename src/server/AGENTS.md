@@ -23,7 +23,7 @@ Für Contact-bezogenen Code gilt die Trennung:
 
 - Orchestrierung in `src/server/contact`
 - Mapping in `src/server/services/contact`
-- Persistenz in `src/server/db`
+- Persistenz in `packages/db/src`
 - Gemeinsame Contracts in `packages/common/src/contracts/contact`
 
 ## Benennung
@@ -70,17 +70,18 @@ Mapping-Service selbst und nicht im Query-Handler.
 ## Strukturregeln
 
 - Pro Datei möglichst nur eine Verantwortung.
-- SQL- und Tabellenwissen nach `src/server/db`.
-- `src/server/db/record-configuration/**` ist die kanonische Quelle fuer DB-Modelle auf Basis von `pgTable`.
+- SQL- und Tabellenwissen nach `packages/db/src`.
+- `packages/db/src/record-configuration/**` ist die kanonische Quelle fuer DB-Modelle auf Basis von `pgTable`.
 - In `record-configuration/**` liegt pro Tabelle genau ein Modellfile; Sammeldateien oder parallele Modellvarianten werden dort nicht neu eingefuehrt.
-- Tabellennahe Record-Typen werden serverseitig unter `src/server/db/records/**` abgelegt und nicht in
+- Tabellennahe Record-Typen werden serverseitig unter `packages/db/src/records/**` abgelegt und nicht in
   `packages/common/src/**` gehalten.
-- Contracts werden serverseitig unter `src/server/db/contracts/**` abgelegt und nicht unter `src/server/**` gemischt.
+- Contracts werden serverseitig unter `packages/db/src/contracts/**` abgelegt und nicht unter `src/server/**` gemischt.
 - `records/**` enthält nur DB-nahe Record-/Row-Shapes; zusammengesetzte Persistenz-Payloads, Persistenz-Inputs und Persistenz-Resultate liegen ausschließlich unter `contracts/**`.
-- Record-Typen unter `src/server/db/records/**` spiegeln die aktuelle DB-Struktur direkt: Tabellennahe Dateinamen, Spaltennamen in `snake_case` und keine app-nahen `camelCase`-Aliasfelder.
+- Record-Typen unter `packages/db/src/records/**` spiegeln die aktuelle DB-Struktur direkt: Tabellennahe Dateinamen,
+  Spaltennamen in `snake_case` und keine app-nahen `camelCase`-Aliasfelder.
 - Doppelte Tabellenmetadaten sind zu vermeiden: Spaltenlisten, Tabellennamen und aehnliche DB-Strukturinfos werden nicht parallel manuell neben dem `pgTable`-Modell gepflegt.
-- Reines Mapping nicht in `src/server/db`.
-- Orchestrierung nicht in `src/server/db`.
+- Reines Mapping nicht in `packages/db/src`.
+- Orchestrierung nicht in `packages/db/src`.
 - Tests nach `src/server/tests` legen und die Server-Struktur dort spiegeln.
 
 ## Service-Exports in `src/server/**`

@@ -12,11 +12,11 @@ const {
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/db/core", () => ({
+vi.mock("@invessiv/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
   hasDatabaseConnectionString: hasDatabaseConnectionStringMock,
 }));
-vi.mock("@/server/db/contact/shared/shared-lead-submission", () => ({
+vi.mock("@invessiv/db/contact/shared/shared-lead-submission", () => ({
   persistSharedLeadSubmission: persistSharedLeadSubmissionMock,
 }));
 
@@ -41,7 +41,7 @@ describe("persistDiscoveryCallLead", () => {
     });
 
     const { persistDiscoveryCallLead } =
-      await import("@/server/db/contact/persist-discovery-call");
+      await import("@invessiv/db/contact/persist-discovery-call");
 
     const result = await persistDiscoveryCallLead({
       call_contact: {

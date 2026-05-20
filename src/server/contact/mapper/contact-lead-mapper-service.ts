@@ -7,11 +7,11 @@ import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/di
 import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
 import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
-import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
-import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
-import type { DiscoveryCallPersistInput } from "@/server/db/contracts/contact/discovery-call-persist-input";
-import type { ProjectRequestPersistInput } from "@/server/db/contracts/contact/project-request-persist-input";
-import type { QuickContactPersistInput } from "@/server/db/contracts/contact/quick-contact-persist-input";
+import type { ContactLeadPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-persist-record";
+import type { ContactLeadSubmissionPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-submission-persist-record";
+import type { DiscoveryCallPersistInput } from "@invessiv/db/contracts/contact/discovery-call-persist-input";
+import type { ProjectRequestPersistInput } from "@invessiv/db/contracts/contact/project-request-persist-input";
+import type { QuickContactPersistInput } from "@invessiv/db/contracts/contact/quick-contact-persist-input";
 import type { Locale } from "@/config/i18n";
 
 export type ApiToDbMapperOptions = {

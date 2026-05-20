@@ -3,8 +3,8 @@ import { drizzle } from "drizzle-orm/neon-serverless";
 import type { SQL } from "drizzle-orm";
 import { buildLeadFilter } from "@/server/workspace/leads/query-handler/lead-filter.query-handler";
 import { LEAD_LIST_PAGE_SIZE } from "@invessiv/common/constants/leads/list/lead-list-defaults";
-import * as schema from "@/server/db/record-configuration";
-import { leads } from "@/server/db/record-configuration";
+import * as schema from "@invessiv/db/record-configuration";
+import { leads } from "@invessiv/db/record-configuration";
 
 // Fake drizzle instance used only to compile SQL via .toSQL() — no network calls.
 const db = drizzle({

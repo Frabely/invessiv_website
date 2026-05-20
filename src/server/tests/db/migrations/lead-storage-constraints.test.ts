@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { beforeAll, describe, expect, it } from "vitest";
 import { SUPPORTED_LOCALES } from "@/config/i18n";
 import { CONTACT_BUDGET_KEYS } from "@invessiv/common/constants/contact/contact-budget-keys";
@@ -11,22 +10,16 @@ import { CONTACT_START_KEYS } from "@invessiv/common/constants/contact/contact-s
 import { CONTACT_WORKFLOW_KEYS } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import { CONTACT_REQUEST_KINDS } from "@invessiv/common/constants/contact/contact-request-kind";
 
-const currentFilePath = fileURLToPath(import.meta.url);
-const migrationsDirectory = path.dirname(currentFilePath);
 const migrationPath = path.join(
-  migrationsDirectory,
-  "..",
-  "..",
-  "..",
+  process.cwd(),
+  "packages",
   "db",
   "migrations",
   "0002_restructure_lead_storage.sql",
 );
 const leadDisplayNameMigrationPath = path.join(
-  migrationsDirectory,
-  "..",
-  "..",
-  "..",
+  process.cwd(),
+  "packages",
   "db",
   "migrations",
   "0010_add_lead_display_name_and_nullable_email.sql",

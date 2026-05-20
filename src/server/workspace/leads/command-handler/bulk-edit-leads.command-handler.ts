@@ -22,8 +22,8 @@ import type {
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
-} from "@/server/db/core";
-import { leads } from "@/server/db/record-configuration";
+} from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
 import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {

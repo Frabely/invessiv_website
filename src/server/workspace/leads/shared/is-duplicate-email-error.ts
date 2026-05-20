@@ -1,4 +1,4 @@
-import { PostgresErrorCode } from "@/server/db/core";
+import { PostgresErrorCode } from "@invessiv/db/core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 import { DuplicateCompanyNameError } from "@/server/workspace/leads/shared/duplicate-company-name-error.class";
 

@@ -4,7 +4,7 @@ import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/err
 import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
-import { PostgresErrorCode } from "@/server/db/core";
+import { PostgresErrorCode } from "@invessiv/db/core";
 
 // ── Mocks (hoisted so vi.mock can reference them) ─────────────────────────────
 
@@ -22,8 +22,8 @@ const {
 
 vi.mock("server-only", () => ({}));
 
-vi.mock("@/server/db/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/server/db/core")>()),
+vi.mock("@invessiv/db/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
 

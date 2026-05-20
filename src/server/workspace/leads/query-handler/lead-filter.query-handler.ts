@@ -4,7 +4,7 @@ import {
   CONTACT_LEAD_STATUS_ALL,
   ContactLeadStatus,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { leads } from "@/server/db/record-configuration";
+import { leads } from "@invessiv/db/record-configuration";
 import { LEAD_LIST_PAGE_SIZE } from "@invessiv/common/constants/leads/list/lead-list-defaults";
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";

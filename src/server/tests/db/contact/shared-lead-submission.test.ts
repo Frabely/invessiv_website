@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
-import type { ContactLeadPersistRecord } from "@/server/db/contracts/contact/contact-lead-persist-record";
-import type { ContactLeadSubmissionPersistRecord } from "@/server/db/contracts/contact/contact-lead-submission-persist-record";
+import type { ContactLeadPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-persist-record";
+import type { ContactLeadSubmissionPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-submission-persist-record";
 
 vi.mock("server-only", () => ({}));
 
@@ -45,7 +45,7 @@ function serializeSqlChunks(value: unknown): string {
 describe("persistSharedLeadSubmission", () => {
   it("runs one atomic lead upsert and reuses its returned id for the submission", async () => {
     const { persistSharedLeadSubmission } =
-      await import("@/server/db/contact/shared/shared-lead-submission");
+      await import("@invessiv/db/contact/shared/shared-lead-submission");
 
     const lead: ContactLeadPersistRecord = {
       created_at: new Date("2026-03-26T09:30:00.000Z"),
@@ -114,7 +114,7 @@ describe("persistSharedLeadSubmission", () => {
 
   it("uses the id returned from the atomic upsert for an existing normalized email", async () => {
     const { persistSharedLeadSubmission } =
-      await import("@/server/db/contact/shared/shared-lead-submission");
+      await import("@invessiv/db/contact/shared/shared-lead-submission");
 
     const { tx, mocks } = createTxMock("existing-lead-id");
 
@@ -166,7 +166,7 @@ describe("persistSharedLeadSubmission", () => {
 
   it("throws when the lead upsert does not yield an id", async () => {
     const { persistSharedLeadSubmission } =
-      await import("@/server/db/contact/shared/shared-lead-submission");
+      await import("@invessiv/db/contact/shared/shared-lead-submission");
 
     const executeMock = vi.fn().mockResolvedValue({ rows: [] });
     const insertValuesMock = vi.fn().mockResolvedValue(undefined);

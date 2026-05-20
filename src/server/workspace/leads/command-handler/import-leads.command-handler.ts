@@ -13,7 +13,7 @@ import type {
   RowEntry,
   ValidatedRowEntry,
 } from "@invessiv/common/contracts/leads/import/validation/lead-import-row-entry";
-import { getDrizzleDatabaseClient } from "@/server/db/core";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   LeadCsvParseError,
   leadCsvParserService,

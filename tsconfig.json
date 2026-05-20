@@ -10,7 +10,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@invessiv/common": ["./packages/common/src/index.ts"],
-      "@invessiv/common/*": ["./packages/common/src/*"]
+      "@invessiv/common/*": ["./packages/common/src/*"],
+      "@invessiv/db": ["./packages/db/src/index.ts"],
+      "@invessiv/db/*": ["./packages/db/src/*"],
+      "@invessiv/db/scripts/*": ["./packages/db/scripts/*"]
     }
   },
   "include": [
