@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   ImportLeadReportField,
   ImportLeadServiceValue,
-} from "./import-leads-service.constants";
+} from "@invessiv/common";
 
 describe("ImportLeadServiceValue", () => {
   it("exposes the expected client import constants", () => {

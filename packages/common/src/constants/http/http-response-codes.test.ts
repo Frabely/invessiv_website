@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { HttpResponseCode } from "./http-response-codes";
+import { HttpResponseCode } from "@invessiv/common";
 
 describe("HttpResponseCode", () => {
   it("exposes the expected HTTP status constants", () => {

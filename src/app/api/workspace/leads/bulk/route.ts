@@ -67,8 +67,7 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
         );
       }
       default: {
-        const _exhaustive: never = action;
-        void _exhaustive;
+        void action;
         return leadApiError(
           LeadErrorCode.Internal,
           HttpResponseCode.InternalServerError,

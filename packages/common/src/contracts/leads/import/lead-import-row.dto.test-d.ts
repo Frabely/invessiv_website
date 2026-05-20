@@ -1,5 +1,5 @@
 import type { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
-import type { LeadImportRowDto } from "./lead-import-row.dto";
+import type { LeadImportRowDto } from "@invessiv/common";
 
 type Expect<T extends true> = T;
 type Equal<A, B> =

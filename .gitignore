@@ -57,5 +57,3 @@ mockup*.html
 
 # generated customer mockups (seed outputs)
 kunden_templates/mockups/landing_generated_*.html
-
-.vercel
