@@ -30,7 +30,7 @@ async function getLeadByEmail(email: string) {
   const rows = await sql.query(
     `
             SELECT leads.email,
-                   concat_ws(' ', leads.first_name, leads.last_name) AS "fullName",
+                   leads.display_name AS "displayName",
                    lead_project_requests.offer_key                   AS "inquiryType",
                    lead_submissions.channel                          AS "sourceForm",
                    lead_project_requests.goal_key                    AS "goalKey"
@@ -63,8 +63,7 @@ test.describe("contact lead persistence", () => {
     await page.goto("/de");
     await page.locator("#contact").scrollIntoViewIfNeeded();
 
-    await page.locator('input[name="firstName"]').fill("Lead");
-    await page.locator('input[name="lastName"]').fill("E2E");
+    await page.locator('input[name="displayName"]').fill("Lead E2E");
     await page.locator('input[name="email"]').fill(email);
     await page.locator('select[name="offerKey"]').selectOption("landing");
     await page
@@ -97,7 +96,7 @@ test.describe("contact lead persistence", () => {
       })
       .toMatchObject({
         email,
-        fullName: "Lead E2E",
+        displayName: "Lead E2E",
         goalKey: "generate_inquiries",
         inquiryType: "landing",
         sourceForm: "project_request",
