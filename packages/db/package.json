@@ -1,0 +1,36 @@
+{
+  "name": "@invessiv/db",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@invessiv/common": "workspace:*",
+    "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.2",
+    "server-only": "^0.0.1",
+    "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^5",
+    "vitest": "latest"
+  },
+  "scripts": {
+    "db:migrate": "tsx scripts/run-migrations.ts",
+    "db:migrate:dev": "tsx scripts/run-migrations.ts development",
+    "db:migrate:preview": "tsx scripts/run-migrations.ts preview",
+    "db:migrate:prod": "tsx scripts/run-migrations.ts production",
+    "db:reset:dev": "tsx scripts/reset-development-db.ts",
+    "db:smoke": "tsx scripts/smoke-test.ts",
+    "db:smoke:dev": "tsx scripts/smoke-test.ts development",
+    "db:smoke:preview": "tsx scripts/smoke-test.ts preview",
+    "db:smoke:prod": "tsx scripts/smoke-test.ts production",
+    "db:seed:leads": "tsx scripts/seed-leads-fixture.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  }
+}

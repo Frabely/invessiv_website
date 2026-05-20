@@ -1,4 +1,4 @@
-﻿# AGENTS.md - Invessiv (GPT Codex Agents)
+# AGENTS.md - Invessiv (GPT Codex Agents)
 
 ## Ziel
 
@@ -21,12 +21,17 @@ Dieses Repository wird mit Agenten-Workflows entwickelt, um:
 
 Zusätzlich zu dieser Root-Datei gibt es bereichsspezifische `AGENTS.md`- und `CLAUDE.md`-Dateien. Sie sind zu lesen, sobald eine Änderung Dateien im jeweiligen Scope betrifft.
 
-| Pfad                                   | Was darin steht                                                                                                                                   | Wann nutzen                                                                                                                                         |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/app/[locale]/(auth)/AGENTS.md`    | Codex-/Agent-Regeln für öffentliche Clerk-Auth-Routen, i18n, Komponentenstruktur, Security-Grenzen und erforderliche Skills.                      | Bei Arbeiten an Sign-in/Sign-up-Routen, Auth-Frame, Auth-Metadata, Auth-Dictionaries oder Clerk-UI im `(auth)`-Bereich.                             |
-| `src/app/[locale]/(auth)/CLAUDE.md`    | Architekturwissen für den öffentlichen Auth-Bereich: Zweck, Clerk-Stack, Routing, Redirects, i18n, Security und geplante Erweiterungen.           | Bei Planung, Review oder Umsetzung von `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk Appearance, Auth-Redirects oder Auth-E2E-Smokes.             |
-| `src/app/[locale]/workspace/AGENTS.md` | Codex-/Agent-Regeln für den geschützten Workspace-Bereich: Auth-Gate, Allowlist, noindex/dynamic Rendering, Permission-Grenzen, Tests und Skills. | Bei Arbeiten an Workspace-Routen, Workspace-Layout, Auth-/Permission-Checks, Workspace-Dictionaries oder geschützten UI-Komponenten.                |
-| `src/app/[locale]/workspace/CLAUDE.md` | Architekturwissen für das Workspace: Defense-in-Depth, Clerk/Allowlist-Mechanik, Routing-Konvention, kritische Dateien und spätere Erweiterungen. | Bei Planung, Review oder Umsetzung von `/[locale]/workspace`, `requireWorkspaceAccess`, Allowlist-Erweiterungen, Rollenmodell oder Workspace-Shell. |
+| Pfad                                                    | Was darin steht                                                                                                                              | Wann nutzen                                                                                                                                |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/workspace/src/app/[locale]/(auth)/AGENTS.md`      | Codex-/Agent-Regeln für öffentliche Clerk-Auth-Routen, i18n, Komponentenstruktur, Security-Grenzen und erforderliche Skills.                 | Bei Arbeiten an Sign-in/Sign-up-Routen, Auth-Frame, Auth-Metadata, Auth-Dictionaries oder Clerk-UI im `(auth)`-Bereich.                    |
+| `apps/workspace/src/app/[locale]/(auth)/CLAUDE.md`      | Architekturwissen für den öffentlichen Auth-Bereich: Zweck, Clerk-Stack, Routing, Redirects, i18n, Security und geplante Erweiterungen.      | Bei Planung, Review oder Umsetzung von `/[locale]/sign-in`, `/[locale]/sign-up`, Clerk Appearance, Auth-Redirects oder Auth-E2E-Smokes.    |
+| `apps/workspace/src/app/[locale]/(app)/leads/AGENTS.md` | Codex-/Agent-Regeln für den geschützten Workspace-Leads-Bereich: Auth-Gate, Allowlist, noindex/dynamic Rendering, Permission-Grenzen, Tests. | Bei Arbeiten an Workspace-Leads-Routen, Layout, Auth-/Permission-Checks, Workspace-Dictionaries oder geschützten UI-Komponenten.           |
+| `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` | Architekturwissen für den Workspace-Leads-Bereich: Defense-in-Depth, Clerk/Allowlist-Mechanik, Routing-Konvention, kritische Dateien.        | Bei Planung, Review oder Umsetzung von Leads-Routen, `requireWorkspaceAccess`, Allowlist-Erweiterungen, Rollenmodell oder Workspace-Shell. |
+| `apps/workspace/src/server/{AGENTS,CLAUDE}.md`          | Serverseitige Konventionen für Workspace-Command/Query-Handler, Services, Persistenz-Grenze gegen `@invessiv/db`.                            | Bei Arbeiten an Workspace-Command-/Query-Handlern, Services oder allem unter `server/workspace/**`.                                        |
+
+> Hinweis: Restliche `src/...`-Pfadangaben weiter unten in dieser Datei beziehen sich strukturell weiterhin auf die
+> jeweilige App (`apps/web/src/...` bzw. `apps/workspace/src/...`). Die Konventionen gelten unverändert; nur das physische
+> Wurzelverzeichnis ist seit der Monorepo-Migration `apps/<app>/src/`.
 
 ## Branding & Variation (verbindlich)
 
@@ -291,7 +296,8 @@ Outputs:
 - Keys im Const-Objekt verwenden **PascalCase** (`LeadSource.Webform`, nicht `LeadSource.WEBFORM`)
 - Wenn Iteration benötigt wird (z. B. Drizzle `{ enum: [...] }`, `sqlCheckIn`), wird ein separates `FOO_KIND_VALUES`-Array exportiert, das ausschließlich aus dem Const-Objekt abgeleitet wird; String-Literale erscheinen **genau einmal**, im Const-Objekt
 - **Error-Code & Message-Konvention (verbindlich):** Error-Codes sind Konstanten nach dem Const-Objekt-Pattern in
-  `src/common/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen** `*-error.ts`
+  `packages/common/src/constants/<domain>/`. Die zugehörigen lesbaren Message-Texte werden in **einer einzigen**
+  `*-error.ts`
   -Datei auf Ebene der nutzenden Layer (API-Route, Client-Komponente) gemappt — nie inline in Route- oder
   Komponenten-Dateien verstreut. Call-Sites rufen ausschließlich den Helper auf (z. B.
   `fooError(FooErrorCode.NotFound, 404)`). Das Pattern gilt server-seitig (API-Responses) und client-seitig (
@@ -304,7 +310,7 @@ Outputs:
   src/config/routes.ts`— und werden von dort importiert. Client-Komponenten importieren`SITE_ROUTES
   `direkt; server-only Helfer (z. B.`workspacePathFor`) bleiben in `src/lib/auth/routes.ts`und dürfen nicht in`"use
   client"`-Dateien importiert werden.
-- API-Request-Bodies werden immer als Shared DTO in `src/common/contracts/<domain>/` modelliert. Form-State,
+- API-Request-Bodies werden immer als Shared DTO in `packages/common/src/contracts/<domain>/` modelliert. Form-State,
   Request-DTO, serverinterner Persistenz-Input und Result-DTO sind getrennte Rollen und dürfen nicht vermischt werden.
   Route-Handler validieren den Body an der HTTP-Grenze gegen das DTO-Schema und reichen danach nur noch typisierte
   DTO-Objekte an Command-Handler weiter.
@@ -313,7 +319,9 @@ Outputs:
 - Theme- und Sprachlogik zentralisieren (z. B. src/config, src/content, src/lib) statt in UI-Komponenten zu verteilen
 - Feature-Flags für unfertige Flows nutzen, statt halbfertige Logik produktiv zu schalten
 - Öffentliche und serverseitige Umgebungsvariablen strikt trennen (`NEXT_PUBLIC_*` nur für wirklich Öffentliche Werte)
-- Für serverseitige DB-Modelle ist `src/server/db/record-configuration/**` die kanonische Modellquelle; Tabellenstruktur wird dort über `pgTable` gepflegt und nicht parallel über manuelle Spaltenlisten oder zusätzliche Modellkopien dupliziert
+- Für serverseitige DB-Modelle ist `packages/db/src/record-configuration/**` die kanonische Modellquelle;
+  Tabellenstruktur wird dort über `pgTable` gepflegt und nicht parallel über manuelle Spaltenlisten oder zusätzliche
+  Modellkopien dupliziert
 
 ## Performance- und Rendering-Standards (ergänzend)
 

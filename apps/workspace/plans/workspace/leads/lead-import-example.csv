@@ -1,0 +1,4 @@
+external_guid;email;first_name;last_name;company_name;phone;website_url;category_id;category;score;linkedin_url;instagram_url;youtube_url;status;owner;notes;improvements
+linkedin-001;anna.schmidt@example.com;Anna;Schmidt;Schmidt Consulting;+49 30 1234567;https://schmidt-consulting.example;;consulting;82;https://www.linkedin.com/in/anna-schmidt;https://www.instagram.com/schmidtconsulting;https://www.youtube.com/@schmidtconsulting;zu prüfen;Moritz;"Outbound source with full profile";"Clarify hero positioning | Make CTA more visible | Add trust signals | Improve mobile above-the-fold copy"
+;max.mustermann@example.com;Max;Mustermann;;;;;;45;;;;zu prüfen;;"Minimal person lead with optional score";
+company-003;kontakt@beispiel-gmbh.example;;;Beispiel GmbH;;https://beispiel-gmbh.example;;agency;67;https://www.linkedin.com/company/beispiel-gmbh;;;zu prüfen;Moritz;;"Sharpen service offer | Add proof section"

@@ -1,0 +1,51 @@
+{
+  "heroPrimaryCta": "Request project",
+  "heroSecondaryCta": "Find the right service",
+  "heroTag": "CLEARER PRESENCE, MORE INQUIRIES",
+  "heroVisualAriaLabel": "Live performance snapshot",
+  "leadBridgeContent": {
+    "kicker": "START POINT",
+    "title": "Landing pages first. Websites, upgrades, or tools only when they add value.",
+    "signalAriaLabel": "Trust signals and next flow",
+    "summaryPoints": [
+      "Honest assessment before kickoff",
+      "Landing pages with a clear conversion goal",
+      "Website, upgrade, or tool only when needed"
+    ],
+    "bridge": "I mainly build landing pages that communicate offers clearly and guide visitors toward an inquiry. Websites, upgrades, or process optimization tools are added only when they truly support the next step."
+  },
+  "mappingWarning": "Navigation/section mapping is incomplete.",
+  "proofHighlightsAriaLabel": "Proof section highlights",
+  "proofRatingAriaLabel": "5 out of 5 stars",
+  "proofReviewLinkLabel": "View on Google",
+  "servicesAddonBadgeLabel": "Add-on",
+  "servicesFitLabel": "Ideal for",
+  "servicesMoreItemsPluralLabel": "more items",
+  "servicesMoreItemsSingularLabel": "more item",
+  "servicesRecommendedBadgeLabel": "Recommended",
+  "servicesIntentTitle": "Choose your visitor goal. The matching service will be highlighted.",
+  "servicesIntentOptions": [
+    {
+      "key": "more_inquiries",
+      "label": "turn visitors into inquiries"
+    },
+    {
+      "key": "improve_existing_site",
+      "label": "make the current site clearer"
+    },
+    {
+      "key": "plan_new_website",
+      "label": "launch a website with a clear inquiry path"
+    }
+  ],
+  "servicesPrimaryCta": "Request project",
+  "servicesPrimaryCtaLabels": {
+    "landing": "Request project",
+    "web": "Request project",
+    "process": "Request project",
+    "upgrade": "Request upgrade",
+    "maintenance": "Request maintenance & support"
+  },
+  "servicesDetailsCta": "More details",
+  "servicesDeliveryLabel": "Timeframe"
+}

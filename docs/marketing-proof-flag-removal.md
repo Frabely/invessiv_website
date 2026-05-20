@@ -8,19 +8,19 @@ Ziel: kein toter Flag-Code, keine übrig gebliebenen Test-Helfer, keine nutzlose
 
 Geänderte Bestandsdateien:
 
-- `src/app/[locale]/page.tsx`
-- `src/app/[locale]/projects/page.tsx`
-- `src/app/sitemap.ts`
-- `src/components/marketing/home/home-sections-renderer.tsx`
-- `src/components/marketing/home/marketing-home-page-client.tsx`
-- `src/components/marketing/home/home-sections-renderer.test.tsx`
-- `src/proxy.ts`
+- `apps/web/src/app/[locale]/page.tsx`
+- `apps/web/src/app/[locale]/projects/page.tsx`
+- `apps/web/src/app/sitemap.ts`
+- `apps/web/src/components/marketing/home/home-sections-renderer.tsx`
+- `apps/web/src/components/marketing/home/marketing-home-page-client.tsx`
+- `apps/web/src/components/marketing/home/home-sections-renderer.test.tsx`
+- `apps/web/src/proxy.ts`
 
 Nur für das temporäre Launch-Gate neu angelegte Dateien:
 
-- `src/config/marketing-launch.ts`
-- `src/config/marketing-launch.test.ts`
-- `src/app/[locale]/projects/page.test.tsx`
+- `apps/web/src/config/marketing-launch.ts`
+- `apps/web/src/config/marketing-launch.test.ts`
+- `apps/web/src/app/[locale]/projects/page.test.tsx`
 
 ## Rückbau in konkreten Schritten
 
@@ -28,7 +28,7 @@ Nur für das temporäre Launch-Gate neu angelegte Dateien:
 
 Diese Datei wurde ausschließlich für den temporären Launch-Hebel angelegt und soll danach komplett entfernt werden:
 
-- `src/config/marketing-launch.ts`
+- `apps/web/src/config/marketing-launch.ts`
 
 Inhalt, der dadurch verschwindet:
 
@@ -38,23 +38,23 @@ Inhalt, der dadurch verschwindet:
 
 Auch dieser Test existiert nur wegen des temporären Flags und soll danach komplett entfernt werden:
 
-- `src/config/marketing-launch.test.ts`
+- `apps/web/src/config/marketing-launch.test.ts`
 
 ### 3. Home-Page wieder ohne Flag-Prop verdrahten
 
-In `src/app/[locale]/page.tsx`:
+In `apps/web/src/app/[locale]/page.tsx`:
 
 - Import `isMarketingProofEnabled` entfernen
 - `MarketingHomePageClient showProofSection={isMarketingProofEnabled()}` zurückbauen zu:
   - `MarketingHomePageClient`
 
-In `src/components/marketing/home/marketing-home-page-client.tsx`:
+In `apps/web/src/components/marketing/home/marketing-home-page-client.tsx`:
 
 - `MarketingHomePageClientProps` vollständig entfernen
 - Prop `showProofSection` aus der Funktionssignatur entfernen
 - Übergabe `showProofSection={showProofSection}` an `HomeSectionsRenderer` entfernen
 
-In `src/components/marketing/home/home-sections-renderer.tsx`:
+In `apps/web/src/components/marketing/home/home-sections-renderer.tsx`:
 
 - Prop `showProofSection: boolean` aus `HomeSectionsRendererProps` entfernen
 - `showProofSection` aus der Funktionssignatur entfernen
@@ -67,7 +67,7 @@ Erwarteter Endzustand:
 
 ### 4. Projects-Route wieder dauerhaft aktiv machen
 
-In `src/app/[locale]/projects/page.tsx`:
+In `apps/web/src/app/[locale]/projects/page.tsx`:
 
 - Import `redirect` wieder entfernen, falls danach ungenutzt
 - Import `isMarketingProofEnabled` entfernen
@@ -83,7 +83,7 @@ Erwarteter Endzustand:
 
 ### 5. Projects-Sitemap dauerhaft wieder aufnehmen
 
-In `src/app/sitemap.ts`:
+In `apps/web/src/app/sitemap.ts`:
 
 - Import `isMarketingProofEnabled` entfernen
 - lokale Variable `entries` zurück auf ein direktes `return [...]` reduzieren, wenn keine andere Zwischenlogik mehr nötig ist
@@ -99,7 +99,7 @@ Erwarteter Endzustand:
 
 ### 6. Legacy-Redirect `/projects` wieder auf die Projects-Seite setzen
 
-In `src/proxy.ts`:
+In `apps/web/src/proxy.ts`:
 
 - Import `isMarketingProofEnabled` entfernen
 - ternäre Sonderlogik in `targetPath` entfernen:
@@ -117,7 +117,7 @@ Erwarteter Endzustand:
 
 Diese Testdatei wurde nur eingeführt, um das Flag-Verhalten für Redirect vs. Render zu prüfen. Nach Entfernung des Flags soll sie komplett gelöscht werden:
 
-- `src/app/[locale]/projects/page.test.tsx`
+- `apps/web/src/app/[locale]/projects/page.test.tsx`
 
 Grund:
 
@@ -125,7 +125,7 @@ Grund:
 
 ### 8. Home-Renderer-Test auf den dauerhaften Zustand zurückbauen
 
-In `src/components/marketing/home/home-sections-renderer.test.tsx`:
+In `apps/web/src/components/marketing/home/home-sections-renderer.test.tsx`:
 
 - in bestehenden Render-Aufrufen `showProofSection={true}` entfernen
 - den zusätzlichen Test komplett entfernen:
@@ -141,23 +141,23 @@ Wichtig:
 
 Diese Dateien dürfen nach dem Entfernen des Env-Gates nicht mehr im Repo liegen:
 
-- `src/config/marketing-launch.ts`
-- `src/config/marketing-launch.test.ts`
-- `src/app/[locale]/projects/page.test.tsx`
+- `apps/web/src/config/marketing-launch.ts`
+- `apps/web/src/config/marketing-launch.test.ts`
+- `apps/web/src/app/[locale]/projects/page.test.tsx`
 
 ## Repo-weiter Abschluss-Check
 
 Nach dem Rückbau diese Suchen ausführen und auf `0` Treffer bestehen:
 
 ```powershell
-rg -n "ENABLE_MARKETING_PROOF|isMarketingProofEnabled|showProofSection" src docs
+rg -n "ENABLE_MARKETING_PROOF|isMarketingProofEnabled|showProofSection" apps packages docs
 ```
 
 Zusätzlich prüfen:
 
 ```powershell
-rg -n '"/projects": "/de"' src/proxy.ts
-rg -n "robots: \\{\\s*index: false,\\s*follow: false" src/app/[locale]/projects/page.tsx
+rg -n '"/projects": "/de"' apps/web/src/proxy.ts
+rg -n "robots: \\{\\s*index: false,\\s*follow: false" apps/web/src/app/[locale]/projects/page.tsx
 ```
 
 Die erste Suche darf nach dem Rückbau keinen Treffer mehr liefern.
@@ -168,8 +168,8 @@ Die zweite und dritte Suche dürfen ebenfalls keinen Treffer mehr liefern.
 Nach dem Entfernen des Gates mindestens ausführen:
 
 ```powershell
-npx tsc --noEmit
-npm run test -- home-sections-renderer
+pnpm --filter @invessiv/web typecheck
+pnpm --filter @invessiv/web test home-sections-renderer
 ```
 
 Zusätzlich fachlich prüfen:

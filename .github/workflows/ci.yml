@@ -13,23 +13,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
 
-      - name: Run tests
-        run: npm run test
+      - name: Typecheck
+        run: pnpm typecheck
 
-      - name: Build
-        run: npm run build
+      - name: Test
+        run: pnpm test
+
+      - name: Build web
+        run: pnpm build:web
+
+      - name: Build workspace
+        run: pnpm build:workspace
 
   contact-e2e:
     if: ${{ secrets.CONTACT_E2E_DATABASE_URL != '' && secrets.CONTACT_E2E_RESEND_API_KEY != '' && secrets.CONTACT_E2E_MAIL_FROM != '' && secrets.CONTACT_E2E_MAIL_TO != '' }}
@@ -38,20 +47,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        run: pnpm --filter @invessiv/web exec playwright install --with-deps chromium
 
-      - name: Build
-        run: npm run build
+      - name: Build web
+        run: pnpm build:web
         env:
           DATABASE_URL: ${{ secrets.CONTACT_E2E_DATABASE_URL }}
           CONTACT_MAIL_PROVIDER: resend
@@ -60,7 +72,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.CONTACT_E2E_RESEND_API_KEY }}
 
       - name: Contact lead E2E
-        run: npm run test:e2e:contact
+        run: pnpm --filter @invessiv/web exec playwright test contact-lead-persistence
         env:
           DATABASE_URL: ${{ secrets.CONTACT_E2E_DATABASE_URL }}
           CONTACT_MAIL_PROVIDER: resend

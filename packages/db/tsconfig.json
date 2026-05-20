@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@invessiv/common": ["../common/src/index.ts"],
+      "@invessiv/common/*": ["../common/src/*"],
+      "@invessiv/db": ["./src/index.ts"],
+      "@invessiv/db/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules"]
+}

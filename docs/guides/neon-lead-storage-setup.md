@@ -33,11 +33,11 @@ Die Website speichert validierte Kontaktanfragen zusätzlich zum Mailversand in 
 
 ## 3. Migrationen ausführen
 
-- `npm run db:migrate`
+- `pnpm db:migrate`
 - Optional direkt pro Zielumgebung:
-  - `npm run db:migrate:dev`
-  - `npm run db:migrate:preview`
-  - `npm run db:migrate:prod`
+  - `pnpm db:migrate:dev`
+  - `pnpm db:migrate:preview`
+  - `pnpm db:migrate:prod`
 
 Erwartung:
 
@@ -47,11 +47,11 @@ Erwartung:
 
 ## 4. DB-Smoketest ausführen
 
-- `npm run db:smoke`
+- `pnpm db:smoke`
 - Optional direkt pro Zielumgebung:
-  - `npm run db:smoke:dev`
-  - `npm run db:smoke:preview`
-  - `npm run db:smoke:prod`
+  - `pnpm db:smoke:dev`
+  - `pnpm db:smoke:preview`
+  - `pnpm db:smoke:prod`
 
 Erwartung:
 
@@ -80,7 +80,8 @@ Erwartung:
 
 ## 7. E2E-Verifikation in der QA-Kette
 
-- Für den echten Browser- und DB-Check steht `npm run test:e2e:contact` zur Verfügung.
+- Für den echten Browser- und DB-Check steht `pnpm --filter @invessiv/web exec playwright test contact-lead-persistence`
+  zur Verfügung (alternativ `pnpm --filter @invessiv/web test:e2e` für alle Web-E2E-Tests).
 - Der Test sendet eine reale Anfrage über das Kontaktformular, prüft den Datensatz in Neon und löscht den Test-Lead anschließend wieder.
 - Dieser Test sollte nur gegen eine dedizierte Development- oder Staging-Datenbank laufen, nicht gegen Production.
 - Falls CI den Test ausführen soll, sollten dafür separate E2E-Secrets und idealerweise eine eigene Test-Mailbox verwendet werden.
@@ -89,7 +90,9 @@ Erwartung:
 ## Hinweise
 
 - Ohne `DATABASE_URL` bleibt der bestehende Mail-Flow aktiv, aber es erfolgt keine Lead-Persistierung.
-- Die zielgerichteten npm-Skripte setzen intern `DATABASE_URL` aus `DATABASE_URL_DEVELOPMENT`, `DATABASE_URL_PREVIEW` oder `DATABASE_URL_PRODUCTION`.
-- Bevorzugt lesen die zielgerichteten npm-Skripte `DATABASE_URL` direkt aus der passenden lokalen Env-Datei des Ziel-Deployments.
+- Die zielgerichteten pnpm-Skripte setzen intern `DATABASE_URL` aus `DATABASE_URL_DEVELOPMENT`, `DATABASE_URL_PREVIEW`
+  oder `DATABASE_URL_PRODUCTION`.
+- Bevorzugt lesen die zielgerichteten pnpm-Skripte `DATABASE_URL` direkt aus der passenden lokalen Env-Datei des
+  Ziel-Deployments.
 - Die Persistierung ist aktuell für das bestehende Projektanfrage-Formular umgesetzt und über `source_form = project_request` gekennzeichnet.
 - Die früheren integrationsverwalteten `INVESSIV_DATABASE_*`-Variablen können parallel existieren, der Code priorisiert jedoch `DATABASE_URL`.

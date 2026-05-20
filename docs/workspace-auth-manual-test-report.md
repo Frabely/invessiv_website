@@ -2,6 +2,11 @@
 
 Datum: 2026-04-30
 
+> **Historischer Snapshot.** Dieser Report dokumentiert den Stand vor der Monorepo- und Subdomain-Migration. Pfade wie
+> `src/proxy.test.ts` und Routen wie `/de/workspace` / `/en/workspace` waren zum Erfassungszeitpunkt korrekt. Aktueller
+> Stand: Proxy-Tests liegen unter `apps/workspace/src/proxy.test.ts`, geschützte Workspace-Routen leben unter
+> `https://workspace.invessiv.com/de` und `https://workspace.invessiv.com/en` (ohne `/workspace`-Segment).
+
 Scope: Ticket 8 aus `plans/workspace/clerk-auth-and-workspace-shell.md`.
 
 ## Ergebnis
