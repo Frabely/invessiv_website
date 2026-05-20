@@ -29,7 +29,8 @@ Die Migration soll nicht als Big Bang erfolgen. Jede Phase muss für sich review
 | DB                      | Beide Apps nutzen `packages/db`; `packages/db` bleibt server-only                                                                                                  |
 | UI                      | Kein `packages/ui` als Default; gemeinsame Komponenten dürfen in ein Shared-Package wandern, sobald echter Cross-App-Reuse stabil ist                              |
 | Lint                    | Scripts nutzen `eslint .`, nicht `next lint`                                                                                                                       |
-| Tooling                 | Lint/Typecheck/Test-Tooling bleibt zentral am Root                                                                                                                 |
+| Tooling                 | Lint/Typecheck/Test-Tooling bleibt zentral auf Monorepo-Ebene                                                                                                      |
+| Root-Workspace-Package  | Das Root-`package.json` heißt `pnpm-invessiv`; dieser Name bezeichnet nur die pnpm-/Tooling-Ebene, nicht eine deploybare App                                       |
 | i18n                    | Sprachabhängige Inhalte bleiben dictionary-basiert; DE/EN-Keys müssen kompatibel bleiben                                                                           |
 
 ## Zielstruktur
@@ -122,7 +123,7 @@ invessiv_website/
       package.json
       tsconfig.json
 
-  package.json
+  package.json              # name: pnpm-invessiv
   pnpm-workspace.yaml
   pnpm-lock.yaml
   tsconfig.base.json
@@ -175,13 +176,13 @@ Umfang:
 - Backup-Tag `before-monorepo-migration` setzen
 - `pnpm import` aus bestehender `package-lock.json` ausführen
 - `pnpm-workspace.yaml` anlegen
-- Root-`package.json` auf pnpm-Scripts vorbereiten
+- Root-Workspace-`package.json` auf `name: "pnpm-invessiv"` und pnpm-Scripts vorbereiten
 - `tsconfig.base.json` anlegen
 - `package-lock.json` entfernen, `pnpm-lock.yaml` committen
-- vorhandene Root-Scripts zunächst kompatibel mit der aktuellen Single-App-Struktur halten
+- vorhandene Monorepo-Scripts zunächst kompatibel mit der aktuellen Single-App-Struktur halten
 - neue Filter-Scripts für `@invessiv/web`, `@invessiv/workspace` und `@invessiv/db` erst in den PRs aktivieren, in denen diese Workspaces existieren
 
-Root-Scripts Zielzustand nach Abschluss des App-/Package-Splits:
+Monorepo-Scripts Zielzustand nach Abschluss des App-/Package-Splits:
 
 ```json
 {
@@ -196,7 +197,8 @@ Root-Scripts Zielzustand nach Abschluss des App-/Package-Splits:
     "db:migrate:dev": "pnpm --filter @invessiv/db db:migrate:dev",
     "db:smoke:dev": "pnpm --filter @invessiv/db db:smoke:dev"
   },
-  "packageManager": "pnpm@<lokal-geprüfte-version>"
+  "packageManager": "pnpm@<lokal-geprüfte-version>",
+  "name": "pnpm-invessiv"
 }
 ```
 
@@ -210,7 +212,7 @@ Gate:
 Rollback:
 
 - `package-lock.json` aus vorherigem Commit wiederherstellen
-- `pnpm-lock.yaml`, `pnpm-workspace.yaml` und Root-Script-Änderungen zurücknehmen
+- `pnpm-lock.yaml`, `pnpm-workspace.yaml` und Monorepo-Script-Änderungen zurücknehmen
 
 ### PR 2: `packages/common` extrahieren
 
@@ -502,11 +504,12 @@ Umfang:
 - `apps/workspace/eslint.config.mjs`
 - `apps/web/postcss.config.mjs`
 - `apps/workspace/postcss.config.mjs`
-- Tooling-Abhängigkeiten bleiben zentral am Root; App-/Package-Configs referenzieren Root-Tooling, statt alle Dev-Dependencies unnötig zu duplizieren
+- Tooling-Abhängigkeiten bleiben zentral auf Monorepo-Ebene; App-/Package-Configs referenzieren das zentrale Tooling,
+  statt alle Dev-Dependencies unnötig zu duplizieren
 - E2E-Tests fachlich verschieben:
   - Kontaktformular und Marketing nach `apps/web/e2e/**`
   - Workspace-Auth, Leads, Import und Outreach nach `apps/workspace/e2e/**`
-- Root-Husky und lint-staged auf Monorepo-Pfade prüfen
+- Husky und lint-staged auf Monorepo-Pfade prüfen
 
 Gate:
 
@@ -566,7 +569,7 @@ Vercel-Konfiguration:
 - Projekt `invessiv-web`: Root Directory `apps/web`
 - Projekt `invessiv-workspace`: Root Directory `apps/workspace`
 - Zugriff auf externe Workspace-Packages aktivieren, falls Vercel dies für `packages/**` verlangt
-- Vercel muss die Root-Workspace-Installation plus Zugriff auf `packages/**` unterstützen
+- Vercel muss die Monorepo-Installation plus Zugriff auf `packages/**` unterstützen
 - Preview-Deploys beider Apps vor DNS-Änderung testen
 
 Gate:
@@ -591,7 +594,7 @@ Reihenfolge:
 5. interne Dokumentation und persönliche Bookmarks auf `workspace.invessiv.com` umstellen
 6. Marketing-Links, falls vorhanden, auf `workspace.invessiv.com` umstellen oder entfernen
 7. alten Workspace- und Auth-Code aus `apps/web` entfernen
-8. `src/proxy.ts` aus alter Root-Struktur entfernen, sobald beide Apps vollständig getrennt sind
+8. `src/proxy.ts` aus alter Single-App-Struktur entfernen, sobald beide Apps vollständig getrennt sind
 
 Gate:
 
