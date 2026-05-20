@@ -1,245 +1,208 @@
-# Überarbeiteter Migrationsplan: Invessiv Monorepo
+# Invessiv Workspace Migrationsplan: Risikoarme Monorepo-Migration
 
-Stand: 20.05.2026 — ersetzt ursprünglichen Plan vom 13.05.2026
+Stand: 20.05.2026
 
-## Context
+## Zielbild
 
-Die aktuelle Next.js-App vermischt Marketing (invessiv.com) und Workspace-CRM in einem Projekt. Ziel ist ein
-pnpm-Monorepo mit zwei unabhängig deployten Apps (zwei Vercel-Projekte, ein GitHub-Repo). Alle kritischen Fehler aus der
-Plan-Review sind in diesem Plan behoben.
+Invessiv wird in ein pnpm-Monorepo mit zwei unabhängig deployten Next.js-Apps überführt:
 
----
+- `apps/web`: öffentliche Marketing-, Legal- und Kontaktformular-App für `https://invessiv.com`
+- `apps/workspace`: private CRM-/Workspace-App für `https://workspace.invessiv.com`
+- `packages/common`: geteilte DTOs, Konstanten, Defaults und Patterns
+- `packages/db`: Drizzle-Client, Schemas, Migrationen, DB-Scripts und DB-nahe Persistenzfunktionen
 
-## Finale Architekturentscheidungen
+Die Migration soll nicht als Big Bang erfolgen. Jede Phase muss für sich reviewbar, buildfähig und rückrollbar sein.
 
-| Frage                        | Entscheidung                                      |
-| ---------------------------- | ------------------------------------------------- |
-| Build-Tool                   | pnpm workspaces only (kein Turborepo)             |
-| Legacy-Redirects in apps/web | `next.config.ts redirects()` — kein middleware    |
-| DB-Zugriff                   | Beide Apps via `packages/db`                      |
-| Kontaktformular-API          | Bleibt in apps/web (`/api/public/contact`)        |
-| packages/common Scope        | Vollständige Migration aller `src/common`-Inhalte |
-| CORS                         | Nicht nötig (kein Cross-Origin API)               |
+## Verbindliche Architekturentscheidungen
 
----
+| Thema                   | Entscheidung                                                                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Package Manager         | Migration von `package-lock.json` zu `pnpm-lock.yaml` über `pnpm import`; danach `package-lock.json` entfernen                                                     |
+| Monorepo Tooling        | pnpm workspaces, kein Turborepo                                                                                                                                    |
+| Next.js Routing-Schutz  | Für Next.js `16.1.6` wird `proxy.ts` verwendet, nicht `middleware.ts`                                                                                              |
+| Workspace-URLs          | Workspace behält Locale-Prefixe auf der Subdomain: `/de/leads`, `/en/leads`                                                                                        |
+| Web-Redirects           | Keine Workspace-/Auth-Redirects nötig; der Workspace wurde nicht öffentlich genutzt                                                                                |
+| Auth-Schutz             | `apps/workspace/src/proxy.ts` schützt private Workspace-Seitenrouten                                                                                               |
+| Public Workspace-Routen | Nur `/:locale/sign-in(.*)` und `/:locale/sign-up(.*)` sind öffentlich                                                                                              |
+| API-Schutz              | Workspace-APIs werden nicht per Proxy geschützt, sondern ausschließlich route-level über `withWorkspaceApiAuth` oder gleichwertige serverseitige Allowlist-Prüfung |
+| Kontaktformular         | Bleibt in `apps/web` unter `/api/public/contact`                                                                                                                   |
+| DB                      | Beide Apps nutzen `packages/db`; `packages/db` bleibt server-only                                                                                                  |
+| UI                      | Kein `packages/ui`, bis echter Cross-App-Reuse entsteht                                                                                                            |
+| Lint                    | Scripts nutzen `eslint .`, nicht `next lint`                                                                                                                       |
+| i18n                    | Sprachabhängige Inhalte bleiben dictionary-basiert; DE/EN-Keys müssen kompatibel bleiben                                                                           |
 
 ## Zielstruktur
 
-```
-invessiv/                           ← gleicher GitHub-Repo-Root
+```text
+invessiv_website/
   apps/
-    web/                            ← invessiv.com (Marketing + Kontaktformular-API)
-      src/
-        app/                        ← nur öffentliche Routen
-        components/marketing/
-        components/legal/
-        components/shared/
-        server/contact/             ← Kontaktformular-Handler + E-Mail + Anti-Abuse
-        i18n/
-        lib/
-        hooks/
-        config/
-      next.config.ts                ← Legacy-Redirects + workspace.invessiv.com-Redirects
-      package.json                  ← @invessiv/web
-      tsconfig.json
-
-    workspace/                      ← workspace.invessiv.com (CRM)
+    web/
       src/
         app/
-          (auth)/sign-in/[[...rest]]/page.tsx
-          (auth)/sign-up/[[...rest]]/page.tsx
-          (app)/layout.tsx          ← Sidebar + UserButton
-          (app)/page.tsx
-          (app)/leads/
-          (app)/import/
-          (app)/settings/
-        middleware.ts               ← Clerk Auth (Layer 1)
-        lib/auth/                   ← allowlist.ts + permissions.ts + routes.ts
-        server/workspace/           ← Leads, Outreach, etc.
-        components/workspace/
-        i18n/dictionaries/workspace/
-        i18n/dictionaries/auth/
-        client/leads/
-        client/outreach/
+          [locale]/
+            (landing)/
+            (legal)/
+          api/public/contact/
+        client/contact/
+        components/
+          legal/
+          marketing/
+          shared/
+        config/
+        hooks/
+        i18n/
+        lib/
+        server/contact/
+      e2e/
       next.config.ts
-      package.json                  ← @invessiv/workspace
+      package.json
+      playwright.config.ts
+      postcss.config.mjs
+      tsconfig.json
+      vitest.config.ts
+
+    workspace/
+      src/
+        app/
+          [locale]/
+            (auth)/
+              sign-in/[[...rest]]/page.tsx
+              sign-up/[[...rest]]/page.tsx
+            (app)/
+              layout.tsx
+              page.tsx
+              leads/
+              import/
+              settings/
+          api/workspace/
+        client/
+          leads/
+          outreach/
+        components/
+          auth/
+          workspace/
+        config/
+        i18n/
+        lib/
+          auth/
+          workspace/
+        server/workspace/
+        proxy.ts
+      e2e/
+      next.config.ts
+      package.json
+      playwright.config.ts
+      postcss.config.mjs
+      tsconfig.json
+      vitest.config.ts
 
   packages/
-    common/                         ← alles aus src/common (types, contracts, constants)
+    common/
       src/
         constants/
         contracts/
         defaults/
         patterns/
         index.ts
-      package.json                  ← @invessiv/common
+      package.json
       tsconfig.json
 
-    db/                             ← Drizzle-Client + Schemas + Migrations
+    db/
       src/
-        core/                       ← client.ts, sql-helpers.ts
-        schema/                     ← lead-submissions.ts, leads.ts, etc.
-        contact/                    ← persist-discovery-call.ts etc.
+        contact/
+        contracts/
+        core/
+        migrations/
+        record-configuration/
         index.ts
-      scripts/                      ← run-migrations.ts, seed-leads-fixture.ts, etc.
-      package.json                  ← @invessiv/db
+      scripts/
+      package.json
       tsconfig.json
 
-  package.json                      ← root (workspaces config)
+  package.json
   pnpm-workspace.yaml
+  pnpm-lock.yaml
   tsconfig.base.json
 ```
 
----
+## URL-Zielbild
 
-## Korrekturen gegenüber dem alten Plan
+| Bisher intern         | Neu                                         |
+| --------------------- | ------------------------------------------- |
+| `/de/workspace`       | `https://workspace.invessiv.com/de`         |
+| `/en/workspace`       | `https://workspace.invessiv.com/en`         |
+| `/de/workspace/leads` | `https://workspace.invessiv.com/de/leads`   |
+| `/en/workspace/leads` | `https://workspace.invessiv.com/en/leads`   |
+| `/de/sign-in`         | `https://workspace.invessiv.com/de/sign-in` |
+| `/en/sign-in`         | `https://workspace.invessiv.com/en/sign-in` |
+| `/de/sign-up`         | `https://workspace.invessiv.com/de/sign-up` |
+| `/en/sign-up`         | `https://workspace.invessiv.com/en/sign-up` |
 
-| #   | Problem                                                                             | Lösung                                                                                        |
-| --- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| 1   | `middleware.ts` existierte nicht — `src/proxy.ts` war nie aktive Next.js-Middleware | apps/workspace bekommt echte `src/middleware.ts` mit Clerk; apps/web braucht keine Middleware |
-| 2   | `WORKSPACE_ALLOWED_EMAILS` fehlte in Workspace-Env-Vars                             | Explizit in Phase 5 und Vercel-Config                                                         |
-| 3   | Marketing-App braucht auch DB (Kontaktformular)                                     | Beide Apps nutzen `packages/db`                                                               |
-| 4   | `"type": "module"` in packages/common riskant                                       | Entfernt — kein Typ-Feld in packages/common/package.json                                      |
-| 5   | `"next": "latest"` riskiert Version-Mismatch                                        | Alle Apps pinnen `"next": "16.1.6"`, `"react": "19.2.3"`, `"zod": "^4.3.6"`                   |
-| 6   | Phase-Reihenfolge: Phase 2 (apps/web) vor Phase 3 (common) bricht Build             | packages/_ werden **vor** apps/_ erstellt                                                     |
-| 7   | Tailwind v4 nicht adressiert                                                        | Jede App behält/bekommt eigene Tailwind-CSS-Konfiguration                                     |
-| 8   | Vercel Build-Command für Turborepo fehlt                                            | Kein Turborepo → `next build` direkt, Root-Directory-Konfiguration reicht                     |
-| 9   | packages/common-Beispiele verwendeten plain string unions                           | Const-Objekt-Pattern (CLAUDE.md-Konvention) wird durchgängig erzwungen                        |
-| 10  | E2E, Vitest, ESLint, Husky nicht adressiert                                         | In Phase 9 explizit behandelt                                                                 |
-| 11  | DB-Migration-Scripts ohne Zielort                                                   | Liegen in `packages/db/scripts/`, werden von Root-DB-Commands aufgerufen                      |
+Diese alten Pfade müssen nicht per Redirect erhalten bleiben, weil der Workspace bisher nicht öffentlich genutzt wurde. Nach dem Cleanup dürfen alte Workspace-Pfade auf `invessiv.com` 404 liefern. Entscheidend ist nur, dass interne Links, Bookmarks in interner Dokumentation und Clerk-Konfigurationen auf die neue Subdomain zeigen.
 
----
+## PR-Schnitt
 
-## Kritische Dateien (Referenz)
+### PR 1: Monorepo-Grundlage ohne App-Split
 
-| Datei                                 | Ziel                                                                                                      | Bemerkung                               |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `src/proxy.ts`                        | Aufteilen: legacy redirects → `apps/web/next.config.ts`; Clerk-Logic → `apps/workspace/src/middleware.ts` | War nie aktive Middleware               |
-| `src/common/**`                       | → `packages/common/src/`                                                                                  | Vollständige Migration                  |
-| `src/server/db/core/`                 | → `packages/db/src/core/`                                                                                 | Drizzle-Client                          |
-| `src/server/db/record-configuration/` | → `packages/db/src/schema/`                                                                               | Schemas                                 |
-| `src/server/db/scripts/`              | → `packages/db/scripts/`                                                                                  | Migration-Scripts                       |
-| `src/server/db/contact/`              | → `packages/db/src/contact/`                                                                              | Contact-Persist-Handler (shared)        |
-| `src/server/db/contracts/`            | → `packages/db/src/contracts/`                                                                            | DB-interne Typen                        |
-| `src/server/contact/`                 | → `apps/web/src/server/contact/`                                                                          | Kontaktformular-Business-Logic          |
-| `src/server/workspace/`               | → `apps/workspace/src/server/workspace/`                                                                  | CRM-Business-Logic                      |
-| `src/app/[locale]/workspace/`         | → `apps/workspace/src/app/(app)/`                                                                         | Workspace-Routen (ohne /de)             |
-| `src/app/[locale]/(auth)/`            | → `apps/workspace/src/app/(auth)/`                                                                        | Clerk Sign-in/Sign-up                   |
-| `src/components/workspace/`           | → `apps/workspace/src/components/workspace/`                                                              |                                         |
-| `src/components/auth/`                | → `apps/workspace/src/components/auth/`                                                                   |                                         |
-| `src/components/marketing/`           | → `apps/web/src/components/marketing/`                                                                    |                                         |
-| `src/lib/auth/`                       | → `apps/workspace/src/lib/auth/`                                                                          | allowlist.ts, permissions.ts, routes.ts |
-| `src/i18n/dictionaries/workspace/`    | → `apps/workspace/src/i18n/...`                                                                           |                                         |
-| `src/i18n/dictionaries/auth/`         | → `apps/workspace/src/i18n/...`                                                                           |                                         |
-| `src/client/leads/`                   | → `apps/workspace/src/client/leads/`                                                                      |                                         |
-| `src/client/outreach/`                | → `apps/workspace/src/client/outreach/`                                                                   |                                         |
-| `src/client/contact/`                 | → `apps/web/src/client/contact/`                                                                          |                                         |
-| `e2e/contact-lead-persistence.e2e.ts` | → `apps/web/e2e/`                                                                                         |                                         |
-| `e2e/home-section-spacing.e2e.ts`     | → `apps/web/e2e/`                                                                                         |                                         |
-| `e2e/services-localization.e2e.ts`    | → `apps/web/e2e/`                                                                                         |                                         |
-| `vitest.config.ts`                    | → je eine pro App                                                                                         |                                         |
-| `eslint.config.mjs`                   | → je eine pro App + root                                                                                  |                                         |
+Ziel: pnpm und Workspace-Struktur vorbereiten, ohne fachliche Dateien zu verschieben.
 
----
+Umfang:
 
-## Migrationsphasen
+- Branch `chore/monorepo-migration` erstellen
+- Backup-Tag `before-monorepo-migration` setzen
+- `pnpm import` aus bestehender `package-lock.json` ausführen
+- `pnpm-workspace.yaml` anlegen
+- Root-`package.json` auf pnpm-Scripts vorbereiten
+- `tsconfig.base.json` anlegen
+- `package-lock.json` entfernen, `pnpm-lock.yaml` committen
+- vorhandene Root-Scripts zunächst kompatibel mit der aktuellen Single-App-Struktur halten
+- neue Filter-Scripts für `@invessiv/web`, `@invessiv/workspace` und `@invessiv/db` erst in den PRs aktivieren, in denen diese Workspaces existieren
 
-### Phase 0 — Vorbereitung (Tag 1, Stunde 1)
-
-1. Branch erstellen: `git checkout -b chore/monorepo-migration`
-2. Tag setzen: `git tag before-monorepo-migration`
-3. Alle ENV-Variablen dokumentieren (beide kommenden Apps):
-
-**apps/web ENV:**
-
-```
-DATABASE_URL
-RESEND_API_KEY
-NEXT_PUBLIC_SITE_URL
-NEXT_PUBLIC_WORKSPACE_URL=https://workspace.invessiv.com
-```
-
-**apps/workspace ENV:**
-
-```
-DATABASE_URL
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-CLERK_SECRET_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-WORKSPACE_ALLOWED_EMAILS=...
-NEXT_PUBLIC_APP_URL=https://workspace.invessiv.com
-NEXT_PUBLIC_MARKETING_URL=https://invessiv.com
-OPENAI_API_KEY
-```
-
----
-
-### Phase 1 — Monorepo-Basis anlegen (Tag 1)
-
-**Root `package.json`:**
+Root-Scripts Zielzustand nach Abschluss des App-/Package-Splits:
 
 ```json
 {
-  "name": "invessiv",
-  "private": true,
   "scripts": {
     "dev:web": "pnpm --filter @invessiv/web dev",
     "dev:workspace": "pnpm --filter @invessiv/workspace dev",
     "build:web": "pnpm --filter @invessiv/web build",
     "build:workspace": "pnpm --filter @invessiv/workspace build",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "db:migrate:dev": "pnpm --filter @invessiv/db db:migrate:dev",
+    "db:smoke:dev": "pnpm --filter @invessiv/db db:smoke:dev"
   },
-  "packageManager": "pnpm@9.x"
+  "packageManager": "pnpm@<lokal-geprüfte-version>"
 }
 ```
 
-Prüfe zuerst: `pnpm --version` → trage exakte Version ein.
+Gate:
 
-**`pnpm-workspace.yaml`:**
+- `pnpm install`
+- bestehendes `pnpm lint`
+- bestehendes `pnpm typecheck`
+- bestehendes `pnpm test`
 
-```yaml
-packages:
-  - "apps/*"
-  - "packages/*"
-```
+Rollback:
 
-**`tsconfig.base.json`:**
+- `package-lock.json` aus vorherigem Commit wiederherstellen
+- `pnpm-lock.yaml`, `pnpm-workspace.yaml` und Root-Script-Änderungen zurücknehmen
 
-```json
-{
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react-jsx",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noUncheckedSideEffectImports": true,
-    "noFallthroughCasesInSwitch": true,
-    "allowUnreachableCode": false
-  }
-}
-```
+### PR 2: `packages/common` extrahieren
 
----
+Ziel: `src/common/**` nach `packages/common/src/**` verschieben und über `@invessiv/common` konsumieren.
 
-### Phase 2 — `packages/common` (Tag 1–2, VOR den Apps)
+Umfang:
 
-**Ziel:** Alle Inhalte aus `src/common/` → `packages/common/src/`
+- `packages/common/package.json` ohne `"type": "module"` anlegen
+- `packages/common/src/index.ts` mit gezielten Public Exports anlegen
+- `src/common/**` nach `packages/common/src/**` verschieben
+- Imports auf `@invessiv/common` umstellen
+- temporäre oder finale TS-Paths sauber konfigurieren
+- neu berührte String-Unions auf Const-Objekt-Pattern prüfen
 
-**`packages/common/package.json`** (kein `"type": "module"`):
+`packages/common/package.json`:
 
 ```json
 {
@@ -251,36 +214,46 @@ packages:
   },
   "dependencies": {
     "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
   }
 }
 ```
 
-**Konvention:** Alle Typen in packages/common müssen das Const-Objekt-Pattern verwenden:
+Gate:
 
-```ts
-// ✅ korrekt
-export const LeadStatus = { New: "new", Contacted: "contacted" } as const;
-export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];
+- `pnpm --filter @invessiv/common typecheck`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
 
-// ❌ verboten
-export type LeadStatus = "new" | "contacted";
-```
+Follow-up-Regel:
 
-**Schritte:**
+- Wenn alte String-Union-Verstöße nicht in diesem PR bereinigt werden können, müssen sie mit Dateipfad, Regelbezug, Risiko und nächstem Schritt dokumentiert werden.
 
-1. `packages/common/src/` anlegen, Verzeichnisstruktur spiegeln: `constants/`, `contracts/`, `defaults/`, `patterns/`
-2. Dateien verschieben (nicht kopieren)
-3. `packages/common/src/index.ts` anlegen mit Re-Exports aller Public-API
-4. Im aktuellen Mono-App temporär `@invessiv/common` als Alias hinzufügen (`tsconfig.json` paths)
-5. `npm run typecheck` + `npm run lint` grün
+### PR 3: `packages/db` extrahieren
 
----
+Ziel: DB-nahe Logik server-only in `packages/db` bündeln.
 
-### Phase 3 — `packages/db` (Tag 2)
+Umfang:
 
-**Ziel:** Drizzle-Client + Schemas + Migrations + Scripts auslagern
+- `src/server/db/core/**` nach `packages/db/src/core/**`
+- `src/server/db/record-configuration/**` nach `packages/db/src/record-configuration/**`
+- `src/server/db/contact/**` nach `packages/db/src/contact/**`
+- `src/server/db/contracts/**` nach `packages/db/src/contracts/**`
+- `src/server/db/migrations/**` nach `packages/db/src/migrations/**` oder `packages/db/migrations/**`
+- `src/server/db/scripts/**` nach `packages/db/scripts/**`
+- Script-Pfade so anpassen, dass Migrationen unabhängig vom aktuellen Working Directory gefunden werden
+- `packages/db/src/index.ts` nur mit serverseitig sicheren Exports anlegen
+- Imports in der bestehenden App auf `@invessiv/db` umstellen
 
-**`packages/db/package.json`:**
+`packages/db/package.json`:
 
 ```json
 {
@@ -291,124 +264,62 @@ export type LeadStatus = "new" | "contacted";
     "./*": "./src/*"
   },
   "dependencies": {
+    "@invessiv/common": "workspace:*",
     "@neondatabase/serverless": "^1.0.2",
+    "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.2",
     "server-only": "^0.0.1",
-    "@invessiv/common": "workspace:*"
+    "tsx": "^4.21.0"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10",
-    "tsx": "^4.21.0",
-    "dotenv": "^17.3.1"
-  }
-}
-```
-
-**DB-Scripts** bleiben in `packages/db/scripts/`:
-
-```json
-{
+    "typescript": "^5",
+    "vitest": "latest"
+  },
   "scripts": {
     "db:migrate": "tsx scripts/run-migrations.ts",
     "db:migrate:dev": "tsx scripts/run-migrations.ts development",
+    "db:migrate:preview": "tsx scripts/run-migrations.ts preview",
     "db:migrate:prod": "tsx scripts/run-migrations.ts production",
-    "db:seed:leads": "tsx scripts/seed-leads-fixture.ts"
+    "db:reset:dev": "tsx scripts/reset-development-db.ts",
+    "db:smoke": "tsx scripts/smoke-test.ts",
+    "db:smoke:dev": "tsx scripts/smoke-test.ts development",
+    "db:smoke:preview": "tsx scripts/smoke-test.ts preview",
+    "db:smoke:prod": "tsx scripts/smoke-test.ts production",
+    "db:seed:leads": "tsx scripts/seed-leads-fixture.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
   }
 }
 ```
 
-Root-`package.json` delegiert:
+Gate:
 
-```json
-{
-  "db:migrate": "pnpm --filter @invessiv/db db:migrate",
-  "db:migrate:dev": "pnpm --filter @invessiv/db db:migrate:dev"
-}
-```
+- `pnpm --filter @invessiv/db typecheck`
+- `pnpm --filter @invessiv/db test`
+- `pnpm --filter @invessiv/db db:smoke:dev`
+- `pnpm lint`
+- `pnpm typecheck`
 
-**Schritte:**
+### PR 4: `apps/web` erstellen und Marketing-App isolieren
 
-1. `src/server/db/core/` → `packages/db/src/core/`
-2. `src/server/db/record-configuration/` → `packages/db/src/schema/`
-3. `src/server/db/contact/` → `packages/db/src/contact/`
-4. `src/server/db/contracts/` → `packages/db/src/contracts/`
-5. `src/server/db/scripts/` → `packages/db/scripts/`
-6. `packages/db/src/index.ts` mit Public-Exports
-7. Imports in aktuellem App aktualisieren
-8. `npm run typecheck` grün
+Ziel: öffentliche Website in `apps/web` lauffähig machen, ohne Workspace-Code mitzunehmen.
 
----
+Umfang:
 
-### Phase 4 — `apps/web` (Tag 3)
+- Marketing-, Legal-, SEO-, Theme-, Navigation-, Public-Asset- und Provider-Code nach `apps/web` verschieben
+- `src/app/api/public/contact/**` nach `apps/web/src/app/api/public/contact/**`
+- `src/server/contact/**` nach `apps/web/src/server/contact/**`
+- `src/client/contact/**` nach `apps/web/src/client/contact/**`
+- `src/i18n/**` für Web übernehmen, aber Workspace- und Auth-Dictionaries nicht in `apps/web` belassen
+- `src/lib/auth/**`, Workspace-Komponenten, Workspace-APIs und Auth-Routen nicht nach `apps/web` übernehmen
+- `apps/web/src/app/robots.ts` und `apps/web/src/app/sitemap.ts` auf `https://invessiv.com` ausrichten
+- `apps/web/next.config.ts` ohne Workspace-/Auth-Redirects halten
+- vorhandene öffentliche Links zum Workspace entfernen; falls ein interner Link bewusst bleibt, zeigt er direkt auf `NEXT_PUBLIC_WORKSPACE_URL`
+- bestehendes `/projects`-Feature-Flag-Verhalten in `apps/web` übernehmen und die bisherigen Proxy-Tests dafür in passende Web-Routing-/Config-Tests überführen oder funktional ersetzen
 
-**Ziel:** Aktuelle Marketing-App wird nach `apps/web/` verschoben, Clerk entfernt, Legacy-Redirects in `next.config.ts`
-verankert.
-
-**Was kommt in apps/web:**
-
-- `src/app/[locale]/(landing)/` + `(legal)/` + Root-Pages
-- `src/app/api/public/contact/` (bleibt komplett)
-- `src/components/marketing/`, `shared/`, `legal/`
-- `src/server/contact/` (Kontaktformular-Handler, Resend, Anti-Abuse)
-- `src/i18n/` (ohne workspace/, auth/)
-- `src/lib/` (ohne auth/)
-- `src/hooks/marketing/`
-- `src/config/`
-- `src/client/contact/`
-
-**Was NICHT in apps/web kommt:**
-
-- Alles unter `workspace/` (Route + Components + Server)
-- `(auth)/` Routen
-- `src/lib/auth/` (allowlist, permissions)
-- `src/client/leads/`, `src/client/outreach/`
-
-**`apps/web/next.config.ts`** — Legacy-Redirects + Workspace-Redirects:
-
-```ts
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      // Legacy-Redirects (aus proxy.ts übernommen)
-      { source: "/", destination: "/de", permanent: true },
-      { source: "/imprint", destination: "/de/imprint", permanent: true },
-      { source: "/privacy", destination: "/de/privacy", permanent: true },
-      { source: "/terms", destination: "/de/terms", permanent: true },
-      // Workspace-Redirects (nach Migration)
-      {
-        source: "/de/workspace",
-        destination: "https://workspace.invessiv.com",
-        permanent: true,
-      },
-      {
-        source: "/de/workspace/:path*",
-        destination: "https://workspace.invessiv.com/:path*",
-        permanent: true,
-      },
-      // Auth-Redirects
-      {
-        source: "/de/sign-in",
-        destination: "https://workspace.invessiv.com/sign-in",
-        permanent: true,
-      },
-      {
-        source: "/de/sign-up",
-        destination: "https://workspace.invessiv.com/sign-up",
-        permanent: true,
-      },
-    ];
-  },
-  transpilePackages: ["@invessiv/common", "@invessiv/db"],
-};
-
-export default nextConfig;
-```
-
-**Kein `middleware.ts`** in apps/web — nicht nötig.
-
-**`apps/web/package.json`:**
+`apps/web/package.json`:
 
 ```json
 {
@@ -418,7 +329,7 @@ export default nextConfig;
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test --pass-with-no-tests"
@@ -426,46 +337,77 @@ export default nextConfig;
   "dependencies": {
     "@invessiv/common": "workspace:*",
     "@invessiv/db": "workspace:*",
-    "next": "16.1.6",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "zod": "^4.3.6",
-    "resend": "latest",
     "@vercel/analytics": "^1.6.1",
     "@vercel/speed-insights": "^1.3.1",
+    "next": "16.1.6",
     "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-hook-form": "^7.72.1",
-    "server-only": "^0.0.1"
+    "resend": "latest",
+    "server-only": "^0.0.1",
+    "zod": "^4.3.6"
   }
 }
 ```
 
-**Test:** `pnpm --filter @invessiv/web dev` → `http://localhost:3000` öffnen, Kontaktformular testen.
+Minimaler Zielzustand für `apps/web/next.config.ts`:
 
----
+```ts
+import type { NextConfig } from "next";
 
-### Phase 5 — `apps/workspace` (Tag 3–4)
+const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/", destination: "/de", permanent: true },
+      { source: "/imprint", destination: "/de/imprint", permanent: true },
+      { source: "/privacy", destination: "/de/privacy", permanent: true },
+      { source: "/terms", destination: "/de/terms", permanent: true },
+    ];
+  },
+  transpilePackages: ["@invessiv/common", "@invessiv/db"],
+};
 
-**Ziel:** Eigenständige Next.js-App für das CRM.
+export default nextConfig;
+```
 
-**Was kommt in apps/workspace:**
+Gate:
 
-- `src/app/[locale]/workspace/**` → `src/app/(app)/**` (Locale-Prefix entfernen)
-- `src/app/[locale]/(auth)/` → `src/app/(auth)/`
-- `src/components/workspace/`
-- `src/components/auth/`
-- `src/server/workspace/`
-- `src/lib/auth/` (allowlist.ts, permissions.ts, routes.ts — angepasst für neue URLs)
-- `src/i18n/dictionaries/workspace/`
-- `src/i18n/dictionaries/auth/`
-- `src/client/leads/`, `src/client/outreach/`
+- `pnpm --filter @invessiv/web lint`
+- `pnpm --filter @invessiv/web typecheck`
+- `pnpm --filter @invessiv/web test`
+- `pnpm --filter @invessiv/web build`
+- Kontaktformular lokal gegen Development-DB testen
 
-**`apps/workspace/src/middleware.ts`** (echte Next.js-Middleware):
+### PR 5: `apps/workspace` erstellen
+
+Ziel: Workspace-App mit Locale-Prefix und eigenem Auth-Gate lauffähig machen.
+
+Umfang:
+
+- `src/app/[locale]/workspace/**` nach `apps/workspace/src/app/[locale]/(app)/**`
+- `src/app/[locale]/(auth)/**` nach `apps/workspace/src/app/[locale]/(auth)/**`
+- `src/app/api/workspace/**` nach `apps/workspace/src/app/api/workspace/**`
+- `src/server/workspace/**` nach `apps/workspace/src/server/workspace/**`
+- `src/lib/auth/**` und `src/lib/workspace/**` nach `apps/workspace/src/lib/**`
+- Workspace- und Auth-Dictionaries nach `apps/workspace/src/i18n/**`
+- Workspace-Komponenten und Client-Services nach `apps/workspace/src/**`
+- Workspace-`robots.ts` mit `noindex`, `nofollow`, `noarchive` und `nosnippet`
+- keine Sitemap für private Workspace-Routen
+- `apps/workspace/src/proxy.ts` mit Clerk-Schutz für Seitenrouten anlegen
+- `/api/workspace/**` aus dem Proxy-Auth-Schutz ausnehmen
+- API-Routen verpflichtend über `withWorkspaceApiAuth` oder einen gleichwertigen Route-Level-Helper schützen
+- API-Routen behalten JSON-Fehler bei fehlender Auth oder fehlender Allowlist und liefern keine Redirect-/HTML-Antworten
+
+`apps/workspace/src/proxy.ts`:
 
 ```ts
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
+const isPublicRoute = createRouteMatcher([
+  "/:locale/sign-in(.*)",
+  "/:locale/sign-up(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
@@ -475,40 +417,12 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
+    "/((?!api|_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
 ```
 
-**URL-Mapping:**
-
-```
-/de/workspace           → /          (apps/workspace Root)
-/de/workspace/leads     → /leads
-/de/workspace/leads/new → /leads/new
-/de/workspace/import    → /import
-/de/sign-in             → /sign-in
-/de/sign-up             → /sign-up
-```
-
-**ENV-Variablen für apps/workspace/.env.local:**
-
-```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-WORKSPACE_ALLOWED_EMAILS=deine@email.de
-DATABASE_URL=...
-NEXT_PUBLIC_APP_URL=http://localhost:3001
-NEXT_PUBLIC_MARKETING_URL=http://localhost:3000
-OPENAI_API_KEY=...
-```
-
-**`apps/workspace/package.json`:**
+`apps/workspace/package.json`:
 
 ```json
 {
@@ -518,207 +432,218 @@ OPENAI_API_KEY=...
     "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start --port 3001",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:e2e": "playwright test --pass-with-no-tests"
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.2.8",
     "@clerk/localizations": "^4.5.6",
+    "@clerk/nextjs": "^7.2.8",
     "@invessiv/common": "workspace:*",
     "@invessiv/db": "workspace:*",
     "next": "16.1.6",
+    "next-themes": "^0.4.6",
+    "openai": "^6.38.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "zod": "^4.3.6",
-    "openai": "^6.38.0",
-    "next-themes": "^0.4.6",
     "react-hook-form": "^7.72.1",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "zod": "^4.3.6"
   }
 }
 ```
 
-**Test:** `pnpm --filter @invessiv/workspace dev` → `http://localhost:3001`, Login, Leads.
+Gate:
 
----
+- `pnpm --filter @invessiv/workspace lint`
+- `pnpm --filter @invessiv/workspace typecheck`
+- `pnpm --filter @invessiv/workspace test`
+- `pnpm --filter @invessiv/workspace build`
+- manueller Auth-Smoke mit Allowlist-User und Nicht-Allowlist-User
 
-### Phase 6 — Tailwind v4 pro App (Tag 4)
+### PR 6: Tooling, Tests und E2E pro App splitten
 
-Tailwind v4 hat keine `tailwind.config.ts` mehr. Jede App braucht ihre eigene CSS-Konfiguration.
+Ziel: App-spezifische Qualitätsgates stabilisieren.
 
-**apps/web:** Bestehende Tailwind-CSS-Konfiguration aus `src/app/globals.css` übernehmen.
+Umfang:
 
-**apps/workspace:** Neue `src/app/globals.css` mit:
+- `apps/web/vitest.config.ts`
+- `apps/workspace/vitest.config.ts`
+- `apps/web/playwright.config.ts`
+- `apps/workspace/playwright.config.ts`
+- `apps/web/eslint.config.mjs`
+- `apps/workspace/eslint.config.mjs`
+- `apps/web/postcss.config.mjs`
+- `apps/workspace/postcss.config.mjs`
+- Tooling-Abhängigkeiten bleiben zentral am Root; App-/Package-Configs referenzieren Root-Tooling, statt alle Dev-Dependencies unnötig zu duplizieren
+- E2E-Tests fachlich verschieben:
+  - Kontaktformular und Marketing nach `apps/web/e2e/**`
+  - Workspace-Auth, Leads, Import und Outreach nach `apps/workspace/e2e/**`
+- Root-Husky und lint-staged auf Monorepo-Pfade prüfen
 
-```css
-@import "tailwindcss";
-/* Workspace-spezifische Theme-Tokens */
-```
+Gate:
 
-Wenn `packages/ui` später Komponenten enthält, müssen beide Apps dessen Pfad referenzieren:
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm --filter @invessiv/web test:e2e`
+- `pnpm --filter @invessiv/workspace test:e2e`
 
-```css
-@source "../../../packages/ui/src/**/*.tsx";
-```
+### PR 7: Vercel Preview und ENV-Split
 
----
+Ziel: beide Apps als getrennte Vercel-Projekte previewfähig machen.
 
-### Phase 7 — Vercel-Projekte einrichten (Tag 5)
+`apps/web` ENV:
 
-**Projekt 1: invessiv-web**
-
-```
-Root Directory:  apps/web
-Build Command:   next build        (kein Turborepo)
-Framework:       Next.js
-Domain:          invessiv.com
-```
-
-ENV-Vars in Vercel:
-
-```
+```text
 DATABASE_URL
+CONTACT_MAIL_PROVIDER
+CONTACT_MAIL_FROM
+CONTACT_MAIL_TO
 RESEND_API_KEY
 NEXT_PUBLIC_SITE_URL=https://invessiv.com
 NEXT_PUBLIC_WORKSPACE_URL=https://workspace.invessiv.com
+ENABLE_MARKETING_PROOF
+GOOGLE_SITE_VERIFICATION
 ```
 
-**Wichtig:** In Vercel → Project Settings → Build & Development → aktiviere **"Include source files outside of the Root
-Directory"** (für Zugriff auf packages/\*).
+`apps/workspace` ENV:
 
-**Projekt 2: invessiv-workspace**
-
-```
-Root Directory:  apps/workspace
-Build Command:   next build
-Framework:       Next.js
-Domain:          workspace.invessiv.com
-```
-
-ENV-Vars in Vercel:
-
-```
+```text
 DATABASE_URL
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 CLERK_SECRET_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
-WORKSPACE_ALLOWED_EMAILS=...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL
+NEXT_PUBLIC_CLERK_SIGN_UP_URL
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+WORKSPACE_ALLOWED_EMAILS
 NEXT_PUBLIC_APP_URL=https://workspace.invessiv.com
 NEXT_PUBLIC_MARKETING_URL=https://invessiv.com
-OPENAI_API_KEY=...
+OPENAI_API_KEY
+OPENAI_MODEL
 ```
 
----
+Clerk-ENV-Werte dürfen keine harte `/de`-Default-Locale erzwingen. Locale-passende Sign-in-, Sign-up-, After-Sign-in- und Redirect-Targets werden über zentrale Route-Helper oder Proxy-/App-Logik erzeugt.
 
-### Phase 8 — DNS für workspace.invessiv.com (Tag 6)
+`packages/db` Scripts unterstützen weiterhin:
 
-1. In Vercel → `invessiv-workspace` → Settings → Domains → `workspace.invessiv.com` hinzufügen
-2. Vercel zeigt CNAME-Wert an → beim Domain-Anbieter eintragen:
-   ```
-   Type: CNAME
-   Name: workspace
-   Value: cname.vercel-dns.com
-   ```
-3. Warten auf Vercel-Validierung
-4. Testen: `https://workspace.invessiv.com/sign-in`
-
-**Clerk Dashboard prüfen:**
-
-- Allowed redirect URLs: `https://workspace.invessiv.com/*`
-- Allowed origins: `https://workspace.invessiv.com`
-- Production domain korrekt gesetzt
-
----
-
-### Phase 9 — Tests, Tooling, Cleanup (Tag 7)
-
-**Vitest pro App** (apps/web/vitest.config.ts, apps/workspace/vitest.config.ts):
-
-```ts
-import path from "node:path";
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  resolve: {
-    alias: { "@": path.resolve(__dirname, "src") },
-  },
-  test: {
-    environment: "node",
-    exclude: [".claude/**", "node_modules/**"],
-  },
-});
+```text
+DATABASE_URL_DEVELOPMENT
+DATABASE_URL_PREVIEW
+DATABASE_URL_PRODUCTION
 ```
 
-**E2E-Tests:**
+Vercel-Konfiguration:
 
-- `e2e/contact-lead-persistence.e2e.ts` → `apps/web/e2e/`
-- `e2e/home-section-spacing.e2e.ts` → `apps/web/e2e/`
-- `e2e/services-localization.e2e.ts` → `apps/web/e2e/`
-- Neue Workspace-E2E: `apps/workspace/e2e/workspace-auth.e2e.ts`
+- Projekt `invessiv-web`: Root Directory `apps/web`
+- Projekt `invessiv-workspace`: Root Directory `apps/workspace`
+- Zugriff auf externe Workspace-Packages aktivieren, falls Vercel dies für `packages/**` verlangt
+- Vercel muss die Root-Workspace-Installation plus Zugriff auf `packages/**` unterstützen
+- Preview-Deploys beider Apps vor DNS-Änderung testen
 
-**ESLint** — Root bleibt, Apps bekommen eigene `eslint.config.mjs` (extends root).
+Gate:
 
-**Husky + lint-staged** — bleiben im Root, funktionieren für gesamtes Monorepo.
+- Preview `apps/web`: `/de`, `/en`, Kontaktformular, Legal-Routen
+- Preview `apps/workspace`: `/de/sign-in`, `/en/sign-in`, `/de/leads`
+- Clerk Allowed Origins und Redirect URLs für Preview und Production prüfen
 
-**Cleanup:**
+### PR 8: DNS, direkte Workspace-Links und Cleanup
 
-- `src/app/[locale]/workspace/` aus apps/web entfernen
-- `src/app/[locale]/(auth)/` aus apps/web entfernen (nach Workspace-Migration)
-- `src/lib/auth/` aus apps/web entfernen
-- `src/proxy.ts` entfernen (komplett ersetzt)
-- `src/components/workspace/` und `auth/` aus apps/web entfernen
+Ziel: Workspace produktiv auf Subdomain schalten, direkte interne Zugriffe nutzen und alten Workspace-Code aus der Web-App entfernen.
 
----
+Reihenfolge:
 
-### Phase 10 — Go-live-Reihenfolge
+1. `workspace.invessiv.com` im Vercel-Projekt `invessiv-workspace` hinzufügen
+2. DNS-CNAME setzen
+3. Clerk Allowed Origins und Redirect URLs aktualisieren:
+   - `https://workspace.invessiv.com/de/*`
+   - `https://workspace.invessiv.com/en/*`
+   - `https://workspace.invessiv.com`
+4. Production-Smoke Workspace durchführen
+5. interne Dokumentation und persönliche Bookmarks auf `workspace.invessiv.com` umstellen
+6. Marketing-Links, falls vorhanden, auf `workspace.invessiv.com` umstellen oder entfernen
+7. alten Workspace- und Auth-Code aus `apps/web` entfernen
+8. `src/proxy.ts` aus alter Root-Struktur entfernen, sobald beide Apps vollständig getrennt sind
 
-1. Monorepo-Migration mergen (workspace-Routen noch in apps/web für Rollback)
-2. Preview-Deploy beider Vercel-Projekte testen
-3. DNS für workspace.invessiv.com setzen
-4. Production-Deploy workspace testen: Login, Leads, Allowlist
-5. Marketing-Links in apps/web auf `workspace.invessiv.com` umstellen
-6. Redirects `/de/workspace/*` → `workspace.invessiv.com/*` aktivieren
-7. Workspace-Code aus apps/web entfernen
-8. Monitoring-Logs prüfen
+Gate:
 
-**Rollback:** Vercel → vorheriges Deployment reaktivieren; Redirects deaktivieren → alte Routen wieder aktiv.
+- `https://invessiv.com/de` lädt korrekt
+- `https://invessiv.com/en` lädt korrekt
+- `https://workspace.invessiv.com/de/leads` ist direkt erreichbar
+- `https://workspace.invessiv.com/en/leads` ist direkt erreichbar
+- alte Workspace-Pfade auf `invessiv.com`, z. B. `/de/workspace/leads`, dürfen nach Cleanup 404 liefern
+- nicht eingeloggter Workspace-User landet bei locale-passendem Sign-in
+- nicht-allowlisted eingeloggter User erhält 404
+- allowlisted User sieht Leads, Import und Outreach
+- Workspace-API liefert bei fehlender Auth JSON `401`
+- Workspace-API liefert bei fehlender Allowlist JSON `404`
+- Workspace-Routen sind `noindex` und nicht in der Web-Sitemap
+- DE/EN-Dictionaries bleiben key-kompatibel
 
----
+Rollback:
 
-## Verification / Testcheckliste
+- Web-App auf altes Deployment zurückrollen, falls öffentliche Website betroffen ist
+- Workspace-DNS auf vorherigen Zustand zurücksetzen
+- Vercel Production Deployment der vorherigen Web-App reaktivieren
+- Clerk Redirect URLs erst nach erfolgreichem Rollback bereinigen
 
-**Lokal vor Go-live:**
+## Endgültiger Testplan
+
+Lokale Gates:
 
 ```bash
-pnpm --filter @invessiv/web dev      # http://localhost:3000
-pnpm --filter @invessiv/workspace dev # http://localhost:3001
-pnpm typecheck
 pnpm lint
-pnpm --filter @invessiv/web test
-pnpm --filter @invessiv/workspace test
+pnpm typecheck
+pnpm test
+pnpm build:web
+pnpm build:workspace
+pnpm --filter @invessiv/db db:migrate:dev
+pnpm --filter @invessiv/db db:smoke:dev
+pnpm --filter @invessiv/web test:e2e
+pnpm --filter @invessiv/workspace test:e2e
 ```
 
-**Funktionale Tests (apps/web):**
+Web Acceptance:
 
-- [ ] Startseite + Landing lädt
-- [ ] Kontaktformular: Absenden → DB-Eintrag + E-Mail
-- [ ] Legal-Pages (imprint, privacy, terms)
-- [ ] Sprach-Switch DE/EN
-- [ ] Legacy-Redirects: `/` → `/de`, `/imprint` → `/de/imprint`
-- [ ] `/de/workspace` → Redirect zu `workspace.invessiv.com`
+- [ ] `/de` und `/en` laden korrekt
+- [ ] Kontaktformular schreibt DB-Eintrag
+- [ ] Kontaktformular sendet oder queued Mail
+- [ ] Legal-Routen `/de/imprint`, `/de/privacy`, `/de/terms`, `/en/imprint`, `/en/privacy`, `/en/terms` laden korrekt
+- [ ] Canonicals und Metadata zeigen auf `https://invessiv.com`
+- [ ] Sitemap enthält keine privaten Workspace-Routen
 
-**Funktionale Tests (apps/workspace):**
+Workspace Acceptance:
 
-- [ ] Sign-in funktioniert
-- [ ] Sign-up funktioniert
-- [ ] Nicht-Allowlist-User → 404
-- [ ] Lead-Liste lädt
-- [ ] Lead erstellen/bearbeiten
-- [ ] Import funktioniert
-- [ ] Logout funktioniert
-- [ ] Session bleibt nach Reload
+- [ ] `/de/sign-in` und `/en/sign-in` laden korrekt
+- [ ] `/de/sign-up` und `/en/sign-up` laden korrekt
+- [ ] geschützte Routen erfordern Clerk-Login
+- [ ] Allowlist-Gate bleibt serverseitig aktiv
+- [ ] Leads, Import und Outreach funktionieren für allowlisted User
+- [ ] API-Fehler bleiben JSON und redirecten nicht auf HTML
+- [ ] `robots.ts` setzt private Defaults
+
+Qualitäts-Gates:
+
+- [ ] Lint grün
+- [ ] Typecheck grün
+- [ ] Unit-/Integration-Tests grün
+- [ ] E2E-Smokes grün oder bewusst mit Risiko dokumentiert
+- [ ] A11y-Smoke für Web-Startseite und Workspace-Core-Flow geprüft
+- [ ] Core-Web-Vitals-Risiken für Web dokumentiert
+- [ ] Security-/Privacy-Auswirkungen dokumentiert
+
+## Offene Entscheidungen vor Umsetzung
+
+- Liegen DB-Migrationen final in `packages/db/src/migrations/**` oder `packages/db/migrations/**`? Die Scripts müssen den gewählten Pfad eindeutig referenzieren.
+- Wird `OPENAI_MODEL` als Pflichtvariable im Workspace eingeführt oder mit serverseitigem Default betrieben?
+- Werden Preview-Clerk-Redirects wildcard-basiert oder deployment-spezifisch gepflegt?
+
+## Nicht-Ziele dieser Migration
+
+- Kein neues `packages/ui`
+- Kein CORS-Layer zwischen Web und Workspace
+- Keine Änderung am Rollenmodell über die bestehende Allowlist hinaus
+- Keine fachliche Erweiterung von Leads, Import oder Outreach
+- Keine Umstellung auf Turborepo
