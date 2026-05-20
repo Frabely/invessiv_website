@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspaceMetaContent } from "@/i18n/dictionaries/workspace";
 
@@ -32,5 +32,5 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
     notFound();
   }
 
-  return null;
+  redirect(`/${locale}/leads`);
 }
