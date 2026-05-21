@@ -5,8 +5,8 @@ import {
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 describe("CONTACT_LEAD_STATUS_VALUES", () => {
-  it("contains all 9 statuses", () => {
-    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(9);
+  it("contains all 10 statuses", () => {
+    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(10);
   });
 
   it("positions pending_review between new and contacted", () => {
@@ -20,6 +20,22 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
 
     expect(pendingReviewIdx).toBeGreaterThan(newIdx);
     expect(pendingReviewIdx).toBeLessThan(contactedIdx);
+  });
+
+  it("positions responded between contacted and qualified", () => {
+    const contactedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "contacted" as never,
+    );
+    const respondedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "responded" as never,
+    );
+    const qualifiedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "qualified" as never,
+    );
+
+    expect(respondedIdx).not.toBe(-1);
+    expect(respondedIdx).toBeGreaterThan(contactedIdx);
+    expect(respondedIdx).toBeLessThan(qualifiedIdx);
   });
 
   it("positions proposal between qualified and on_hold", () => {
@@ -48,6 +64,7 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
       "new",
       "pending_review",
       "contacted",
+      "responded",
       "qualified",
       "proposal",
       "on_hold",

@@ -8,6 +8,7 @@ import {
   faFileSignature,
   faHourglassHalf,
   faLayerGroup,
+  faReply,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -52,6 +53,10 @@ const STATUS_CONFIG: Record<
   [ContactLeadStatus.Contacted]: {
     icon: faComments,
     tone: LeadBadgeTone.Primary,
+  },
+  [ContactLeadStatus.Responded]: {
+    icon: faReply,
+    tone: LeadBadgeTone.Indigo,
   },
   [ContactLeadStatus.Qualified]: {
     icon: faCircleCheck,
