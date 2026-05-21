@@ -1,0 +1,62 @@
+.group {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--font-size-caption);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+}
+
+.inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.field {
+  min-width: 0;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-2) 94%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  box-sizing: border-box;
+}
+
+.input:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 720px) {
+  .inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .field,
+  .input {
+    width: 100%;
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "placeholderLabel": "Bald verfügbar",
+  "items": {
+    "acquisitionVolume": {
+      "title": "Akquise-Volumen",
+      "description": "Neue Leads im gewählten Zeitraum inkl. Vergleich zur Vorperiode."
+    },
+    "funnel": {
+      "title": "Funnel",
+      "description": "Vier Pipeline-Stufen mit Drop-Off zwischen den Stufen."
+    },
+    "sourcePerformance": {
+      "title": "Quellen-Performance",
+      "description": "Volume und Qualität nach Lead-Quelle."
+    },
+    "timeToContact": {
+      "title": "Zeit bis zur ersten Kontaktaufnahme",
+      "description": "Median in Tagen zwischen Lead-Anlage und erstem Kontakt."
+    },
+    "outreachActivity": {
+      "title": "Outreach-Aktivität pro Tag",
+      "description": "Eigene Nachrichten, Status-Wechsel und Notizen je Tag."
+    },
+    "hotLeads": {
+      "title": "Hot Leads – Action Queue",
+      "description": "Top-Leads, die jetzt einen ersten Kontakt verdienen."
+    },
+    "funnelVelocity": {
+      "title": "Funnel-Velocity",
+      "description": "Wie lange Leads im Schnitt in jeder Stufe verbringen."
+    },
+    "activityHeatmap": {
+      "title": "Aktivitäts-Heatmap & Streak",
+      "description": "Wochentag × Tageszeit plus aktueller Streak."
+    }
+  }
+}

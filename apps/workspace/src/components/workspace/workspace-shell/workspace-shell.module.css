@@ -89,11 +89,11 @@
   min-height: clamp(16rem, 44vh, 30rem);
 }
 
-.main:has([data-workspace-page="leads"]) {
-  --workspace-leads-main-padding: clamp(1.5rem, 2.8vw, 2.4rem);
-  --workspace-main-padding-block-start: var(--workspace-leads-main-padding);
-  --workspace-main-padding-block-end: var(--workspace-leads-main-padding);
-  --workspace-main-padding-inline: var(--workspace-leads-main-padding);
+.main:has([data-workspace-page]) {
+  --workspace-app-main-padding: clamp(1.5rem, 2.8vw, 2.4rem);
+  --workspace-main-padding-block-start: var(--workspace-app-main-padding);
+  --workspace-main-padding-block-end: var(--workspace-app-main-padding);
+  --workspace-main-padding-inline: var(--workspace-app-main-padding);
 }
 
 [data-theme="light"] .grid {
@@ -148,8 +148,8 @@
     min-height: calc(100dvh - var(--workspace-header-height));
   }
 
-  .main:has([data-workspace-page="leads"]) {
-    --workspace-leads-main-padding: clamp(1.15rem, 4.4vw, 1.6rem);
+  .main:has([data-workspace-page]) {
+    --workspace-app-main-padding: clamp(1.15rem, 4.4vw, 1.6rem);
   }
 
   .blobOrange,

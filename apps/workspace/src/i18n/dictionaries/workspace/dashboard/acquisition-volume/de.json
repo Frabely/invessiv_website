@@ -1,0 +1,11 @@
+{
+  "comparisonDescription": "vs. Vorperiode ({previous})",
+  "comparisonNoPriorData": "Vorperiode: keine Daten",
+  "comparisonFormat": {
+    "percent": "{value} %",
+    "noData": "—"
+  },
+  "pendingReviewBadge": "{count} warten auf Review",
+  "subText": "Neue Leads im gewählten Zeitraum (ohne Review-Warteschlange).",
+  "emptyValue": "0"
+}

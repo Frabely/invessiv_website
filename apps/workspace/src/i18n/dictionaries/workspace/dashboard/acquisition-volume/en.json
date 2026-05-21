@@ -1,0 +1,11 @@
+{
+  "comparisonDescription": "vs. previous period ({previous})",
+  "comparisonNoPriorData": "No prior data",
+  "comparisonFormat": {
+    "percent": "{value}%",
+    "noData": "—"
+  },
+  "pendingReviewBadge": "{count} pending review",
+  "subText": "New leads in the selected range (excluding the review queue).",
+  "emptyValue": "0"
+}
