@@ -1,0 +1,1 @@
+export const DEFAULT_DASHBOARD_RANGE_DAYS = 30;

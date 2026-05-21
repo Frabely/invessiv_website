@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  dashboardPathFor,
   REDIRECT_URL_QUERY_PARAM,
   signInPathFor,
   signInPathWithRedirect,
@@ -14,6 +15,7 @@ describe("auth routes", () => {
     expect(SITE_ROUTES.SIGN_IN).toBe("/sign-in");
     expect(SITE_ROUTES.SIGN_UP).toBe("/sign-up");
     expect(SITE_ROUTES.WORKSPACE).toBe("");
+    expect(SITE_ROUTES.DASHBOARD).toBe("/dashboard");
   });
 
   it("builds locale-prefixed paths for every supported locale", () => {
@@ -23,6 +25,8 @@ describe("auth routes", () => {
     expect(signUpPathFor("en")).toBe("/en/sign-up");
     expect(workspacePathFor("de")).toBe("/de");
     expect(workspacePathFor("en")).toBe("/en");
+    expect(dashboardPathFor("de")).toBe("/de/dashboard");
+    expect(dashboardPathFor("en")).toBe("/en/dashboard");
   });
 
   it("appends an encoded redirect_url query parameter", () => {

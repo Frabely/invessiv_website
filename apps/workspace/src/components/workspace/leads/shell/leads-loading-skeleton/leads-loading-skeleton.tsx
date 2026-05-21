@@ -7,6 +7,7 @@ export function LeadsLoadingSkeleton() {
       aria-busy="true"
       aria-label="Loading"
       className={styles.shell}
+      data-workspace-page="leads"
       role="status"
     >
       <div className={styles.headerSkeleton}>

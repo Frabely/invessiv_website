@@ -12,7 +12,7 @@ export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
   {
     id: "overview",
     labelKey: "overview",
-    path: null,
+    path: "/dashboard",
     iconViewBox: "0 0 24 24",
     iconPaths: [
       "M3 3h7v9H3z",

@@ -16,6 +16,7 @@ import {
   LeadSourceBadge,
   LeadStatusBadge,
 } from "@/components/workspace/leads/shared";
+import { DateRangeFilter } from "@/components/workspace/shared/date-range-filter/date-range-filter";
 import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
 import {
@@ -221,46 +222,22 @@ export function LeadsToolbar({
             </select>
           </label>
 
-          <div className={styles.dateRange}>
-            <span className={styles.fieldLabel}>
-              {content.filters.dateRange}
-            </span>
-            <div className={styles.dateInputs}>
-              <label className={styles.dateField}>
-                <span className={styles.srOnly}>
-                  {content.filters.dateFrom}
-                </span>
-                <input
-                  className={styles.dateInput}
-                  max={currentDateTo || undefined}
-                  onChange={(event) => {
-                    commitFilter({
-                      [LeadListQueryParam.DateFrom]:
-                        event.target.value || undefined,
-                    });
-                  }}
-                  type="date"
-                  value={currentDateFrom}
-                />
-              </label>
-
-              <label className={styles.dateField}>
-                <span className={styles.srOnly}>{content.filters.dateTo}</span>
-                <input
-                  className={styles.dateInput}
-                  min={currentDateFrom || undefined}
-                  onChange={(event) => {
-                    commitFilter({
-                      [LeadListQueryParam.DateTo]:
-                        event.target.value || undefined,
-                    });
-                  }}
-                  type="date"
-                  value={currentDateTo}
-                />
-              </label>
-            </div>
-          </div>
+          <DateRangeFilter
+            className={styles.dateRangeSlot}
+            fromValue={currentDateFrom}
+            labels={{
+              group: content.filters.dateRange,
+              from: content.filters.dateFrom,
+              to: content.filters.dateTo,
+            }}
+            onFromChangeAction={(value) =>
+              commitFilter({ [LeadListQueryParam.DateFrom]: value })
+            }
+            onToChangeAction={(value) =>
+              commitFilter({ [LeadListQueryParam.DateTo]: value })
+            }
+            toValue={currentDateTo}
+          />
         </div>
 
         <div className={styles.facetGroups}>

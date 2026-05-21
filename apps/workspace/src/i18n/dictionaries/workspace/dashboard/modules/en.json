@@ -1,0 +1,37 @@
+{
+  "placeholderLabel": "Coming soon",
+  "items": {
+    "acquisitionVolume": {
+      "title": "Acquisition volume",
+      "description": "New leads in the selected range with comparison to the previous period."
+    },
+    "funnel": {
+      "title": "Funnel",
+      "description": "Four pipeline stages with drop-off between stages."
+    },
+    "sourcePerformance": {
+      "title": "Source performance",
+      "description": "Volume and quality by lead source."
+    },
+    "timeToContact": {
+      "title": "Time to first contact",
+      "description": "Median days between lead creation and first outreach."
+    },
+    "outreachActivity": {
+      "title": "Outreach activity per day",
+      "description": "Your own messages, status changes, and notes per day."
+    },
+    "hotLeads": {
+      "title": "Hot leads – action queue",
+      "description": "Top leads worth a first contact right now."
+    },
+    "funnelVelocity": {
+      "title": "Funnel velocity",
+      "description": "Average days leads spend in each stage."
+    },
+    "activityHeatmap": {
+      "title": "Activity heatmap & streak",
+      "description": "Weekday × time of day plus current streak."
+    }
+  }
+}

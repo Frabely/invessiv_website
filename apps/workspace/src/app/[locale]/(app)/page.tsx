@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspaceMetaContent } from "@/i18n/dictionaries/workspace";
+import { dashboardPathFor } from "@/lib/auth/routes";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,5 +33,5 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
     notFound();
   }
 
-  redirect(`/${locale}/leads`);
+  redirect(dashboardPathFor(locale));
 }
