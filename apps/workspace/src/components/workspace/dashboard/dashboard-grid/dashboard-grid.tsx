@@ -5,20 +5,54 @@ import styles from "./dashboard-grid.module.css";
 
 type DashboardModuleKey = keyof DashboardModulesDictionary["items"];
 
-type ModuleLayout = {
-  key: DashboardModuleKey;
-  span: "span12" | "span6" | "span4";
+type ColumnSpan = 4 | 6 | 8 | 12;
+
+type ResponsiveSpan = {
+  mobile: ColumnSpan;
+  tablet: ColumnSpan;
+  desktop: ColumnSpan;
 };
 
+type ModuleLayout = {
+  key: DashboardModuleKey;
+  span: ResponsiveSpan;
+};
+
+// Per-widget responsive sizing — each widget declares the column span it needs
+// at each breakpoint based on its intrinsic content, not a one-size template.
 const MODULE_LAYOUT: ReadonlyArray<ModuleLayout> = [
-  { key: "acquisitionVolume", span: "span4" },
-  { key: "funnel", span: "span12" },
-  { key: "sourcePerformance", span: "span6" },
-  { key: "timeToContact", span: "span4" },
-  { key: "outreachActivity", span: "span6" },
-  { key: "hotLeads", span: "span6" },
-  { key: "funnelVelocity", span: "span4" },
-  { key: "activityHeatmap", span: "span4" },
+  {
+    key: "funnel",
+    span: { mobile: 12, tablet: 12, desktop: 12 },
+  },
+  {
+    key: "acquisitionVolume",
+    span: { mobile: 12, tablet: 6, desktop: 4 },
+  },
+  {
+    key: "hotLeads",
+    span: { mobile: 12, tablet: 6, desktop: 4 },
+  },
+  {
+    key: "timeToContact",
+    span: { mobile: 12, tablet: 6, desktop: 4 },
+  },
+  {
+    key: "sourcePerformance",
+    span: { mobile: 12, tablet: 12, desktop: 8 },
+  },
+  {
+    key: "outreachActivity",
+    span: { mobile: 12, tablet: 12, desktop: 8 },
+  },
+  {
+    key: "funnelVelocity",
+    span: { mobile: 12, tablet: 6, desktop: 6 },
+  },
+  {
+    key: "activityHeatmap",
+    span: { mobile: 12, tablet: 6, desktop: 6 },
+  },
 ];
 
 type DashboardGridSlots = Partial<Record<DashboardModuleKey, ReactNode>>;
@@ -35,7 +69,14 @@ export function DashboardGrid({ content, slots }: DashboardGridProps) {
         const item = content.items[key];
         const slot = slots?.[key];
         return (
-          <div className={styles[span]} key={key}>
+          <div
+            className={styles.slot}
+            data-desktop-span={span.desktop}
+            data-mobile-span={span.mobile}
+            data-tablet-span={span.tablet}
+            data-widget={key}
+            key={key}
+          >
             {slot ?? (
               <DashboardModulePlaceholder
                 badgeLabel={content.placeholderLabel}

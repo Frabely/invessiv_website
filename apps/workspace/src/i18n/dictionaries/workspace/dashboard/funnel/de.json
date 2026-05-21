@@ -1,0 +1,40 @@
+{
+  "stageLabels": {
+    "new": "Neu",
+    "contacted": "Kontaktiert",
+    "responded": "Geantwortet",
+    "qualified": "Qualifiziert",
+    "proposal": "Angebot",
+    "won": "Gewonnen",
+    "on_hold": "Pausiert",
+    "lost": "Verloren",
+    "archived": "Archiviert"
+  },
+  "stageDescriptions": {
+    "new": "Frische Anfragen, noch ohne Kontakt.",
+    "contacted": "Erste Outreach läuft.",
+    "responded": "Lead reagiert, Dialog aktiv.",
+    "qualified": "Passt zum Angebot, sales-ready.",
+    "proposal": "Angebot liegt vor oder wird konkretisiert.",
+    "won": "Abgeschlossen und gewonnen."
+  },
+  "stageCountAriaSuffix": "Leads",
+  "pipelineShare": "{value} % der Pipeline",
+  "dropOff": {
+    "forwarded": "{value} % weiter",
+    "noData": "—",
+    "noDataDescription": "Vorstufe ohne Daten"
+  },
+  "outcome": {
+    "percent": "{value} %",
+    "ariaLabel": "{label}: {count} Leads, {value} vom Gesamtbestand"
+  },
+  "total": {
+    "label": "Gesamt"
+  },
+  "pendingReview": {
+    "format": "{count} warten auf Review"
+  },
+  "connectorAriaLabel": "Übergang zur nächsten Stufe",
+  "emptyState": "Im gewählten Zeitraum noch keine Leads in dieser Phase."
+}

@@ -29,6 +29,13 @@ vi.mock(
   }),
 );
 
+vi.mock(
+  "@/components/workspace/dashboard/funnel-snapshot-module/funnel-snapshot-module",
+  () => ({
+    FunnelSnapshotModule: () => <h2>Funnel</h2>,
+  }),
+);
+
 describe("DashboardPage", () => {
   beforeEach(() => {
     mockRouter.push.mockReset();

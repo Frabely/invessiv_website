@@ -77,7 +77,7 @@ Der User hat **1 Kunden** und steht aktuell in der **Lead-Akquise-Phase**: Leads
 
 > Jeder Task ist ein eigener PR. Kein Task startet, bevor der vorherige grün gemerged ist.
 
-### Task 0 — Status `responded` einführen
+### Task 0 — Status `responded` einführen ✅ erledigt
 
 **Warum zuerst:** Funnel-Cards (Task 3) brauchen den Status. Schema-Änderung muss vor allen UI-Modulen mergebar sein.
 
@@ -88,7 +88,7 @@ Der User hat **1 Kunden** und steht aktuell in der **Lead-Akquise-Phase**: Leads
 - Tests: Constants-Test (`leads-constants.test.ts`) erweitern, Badge-Test, Status-Filter-Test.
 - **Skills:** `test-driven-development`, `verification-before-completion`.
 
-### Task 1 — Dashboard-Route + Skeleton + Range-Filter
+### Task 1 — Dashboard-Route + Skeleton + Range-Filter ✅ erledigt
 
 - Neue Route `apps/workspace/src/app/[locale]/(app)/dashboard/page.tsx` mit `force-dynamic` und no-index Metadata.
 - Redirect in `apps/workspace/src/app/[locale]/(app)/page.tsx` von `/leads` auf `/dashboard` umstellen.
@@ -100,7 +100,7 @@ Der User hat **1 Kunden** und steht aktuell in der **Lead-Akquise-Phase**: Leads
 - Tests: Range-Resolver-Unit-Test, Route-Smoke (rendert ohne Crash).
 - **Skills:** `frontend-design`, Animation-Effects-Katalog-Check, `test-driven-development`.
 
-### Task 2 — KPI-Card-Component + Akquise-Volumen-Modul
+### Task 2 — KPI-Card-Component + Akquise-Volumen-Modul ✅ erledigt
 
 - Wiederverwendbare `kpi-card`-Komponente: Titel, Hauptzahl, Vergleichswert (mit ±% und Trend-Pfeil), optionaler Sub-Text, optionaler Sparkline-Slot.
 - Query-Handler `get-acquisition-volume.query-handler.ts`: Zählt Leads mit `created_at IN [from, to]`, exkludiert `pending_review` (separat ausgeworfen als „X warten auf Review"-Pill).

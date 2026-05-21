@@ -1,16 +1,29 @@
 import styles from "./dashboard-loading-skeleton.module.css";
 
-type CellSpan = "span12" | "span6" | "span4";
+type ColumnSpan = 4 | 6 | 8 | 12;
 
-const PLACEHOLDER_LAYOUT: ReadonlyArray<{ id: string; span: CellSpan }> = [
-  { id: "acquisitionVolume", span: "span4" },
-  { id: "funnel", span: "span12" },
-  { id: "sourcePerformance", span: "span6" },
-  { id: "timeToContact", span: "span4" },
-  { id: "outreachActivity", span: "span6" },
-  { id: "hotLeads", span: "span6" },
-  { id: "funnelVelocity", span: "span4" },
-  { id: "activityHeatmap", span: "span4" },
+type ResponsiveSpan = {
+  mobile: ColumnSpan;
+  tablet: ColumnSpan;
+  desktop: ColumnSpan;
+};
+
+// Mirrors apps/workspace/src/components/workspace/dashboard/dashboard-grid/dashboard-grid.tsx
+// so the skeleton occupies the same slots and no layout shift occurs when
+// real content streams in.
+const PLACEHOLDER_LAYOUT: ReadonlyArray<{
+  id: string;
+  span: ResponsiveSpan;
+  bone?: "tall" | "default";
+}> = [
+  { id: "funnel", span: { mobile: 12, tablet: 12, desktop: 12 }, bone: "tall" },
+  { id: "acquisitionVolume", span: { mobile: 12, tablet: 6, desktop: 4 } },
+  { id: "hotLeads", span: { mobile: 12, tablet: 6, desktop: 4 } },
+  { id: "timeToContact", span: { mobile: 12, tablet: 6, desktop: 4 } },
+  { id: "sourcePerformance", span: { mobile: 12, tablet: 12, desktop: 8 } },
+  { id: "outreachActivity", span: { mobile: 12, tablet: 12, desktop: 8 } },
+  { id: "funnelVelocity", span: { mobile: 12, tablet: 6, desktop: 6 } },
+  { id: "activityHeatmap", span: { mobile: 12, tablet: 6, desktop: 6 } },
 ];
 
 export function DashboardLoadingSkeleton() {
@@ -30,9 +43,18 @@ export function DashboardLoadingSkeleton() {
         <div className={`${styles.bone} ${styles.filterBone}`} />
       </div>
       <div className={styles.grid}>
-        {PLACEHOLDER_LAYOUT.map(({ id, span }) => (
-          <div className={`${styles.cell} ${styles[span]}`} key={id}>
-            <div className={`${styles.bone} ${styles.cardBone}`} />
+        {PLACEHOLDER_LAYOUT.map(({ id, span, bone }) => (
+          <div
+            className={styles.cell}
+            data-desktop-span={span.desktop}
+            data-mobile-span={span.mobile}
+            data-tablet-span={span.tablet}
+            key={id}
+          >
+            <div
+              className={`${styles.bone} ${styles.cardBone}`}
+              data-variant={bone ?? "default"}
+            />
           </div>
         ))}
       </div>

@@ -9,12 +9,15 @@ import modulesDe from "./modules/de.json";
 import modulesEn from "./modules/en.json";
 import acquisitionVolumeDe from "./acquisition-volume/de.json";
 import acquisitionVolumeEn from "./acquisition-volume/en.json";
+import funnelDe from "./funnel/de.json";
+import funnelEn from "./funnel/en.json";
 
 export type DashboardMetaDictionary = typeof metaDe;
 export type DashboardHeaderDictionary = typeof headerDe;
 export type DashboardRangeFilterDictionary = typeof rangeFilterDe;
 export type DashboardModulesDictionary = typeof modulesDe;
 export type DashboardAcquisitionVolumeDictionary = typeof acquisitionVolumeDe;
+export type DashboardFunnelDictionary = typeof funnelDe;
 
 const DASHBOARD_META: Record<Locale, DashboardMetaDictionary> = {
   de: metaDe,
@@ -42,6 +45,11 @@ const DASHBOARD_ACQUISITION_VOLUME: Record<
 > = {
   de: acquisitionVolumeDe,
   en: acquisitionVolumeEn,
+};
+
+const DASHBOARD_FUNNEL: Record<Locale, DashboardFunnelDictionary> = {
+  de: funnelDe,
+  en: funnelEn,
 };
 
 export function getDashboardMetaDictionary(
@@ -72,4 +80,10 @@ export function getDashboardAcquisitionVolumeDictionary(
   locale: Locale,
 ): DashboardAcquisitionVolumeDictionary {
   return DASHBOARD_ACQUISITION_VOLUME[locale];
+}
+
+export function getDashboardFunnelDictionary(
+  locale: Locale,
+): DashboardFunnelDictionary {
+  return DASHBOARD_FUNNEL[locale];
 }
