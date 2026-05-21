@@ -3,6 +3,7 @@ import {
   LeadDetailPanel,
   type LeadDetailPanelProps,
 } from "@/components/workspace/leads/detail/lead-detail-panel/lead-detail-panel";
+import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
 import styles from "./leads-page-shell.module.css";
 
 type LeadsPageShellProps = {
@@ -15,7 +16,7 @@ export function LeadsPageShell({
   detailPanelProps,
 }: LeadsPageShellProps) {
   return (
-    <div className={styles.shell} data-workspace-page="leads">
+    <WorkspacePageShell className={styles.shell} pageId="leads">
       <div className={styles.contentRow}>
         <div className={styles.contentSlot}>{children}</div>
         {detailPanelProps ? (
@@ -24,6 +25,6 @@ export function LeadsPageShell({
           </div>
         ) : null}
       </div>
-    </div>
+    </WorkspacePageShell>
   );
 }

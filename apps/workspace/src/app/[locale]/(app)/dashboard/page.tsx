@@ -4,7 +4,7 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { DashboardDateRangeFilter } from "@/components/workspace/dashboard/dashboard-date-range-filter/dashboard-date-range-filter";
 import { DashboardGrid } from "@/components/workspace/dashboard/dashboard-grid/dashboard-grid";
 import { DashboardPageHeader } from "@/components/workspace/dashboard/dashboard-page-header/dashboard-page-header";
-import { DashboardPageShell } from "@/components/workspace/dashboard/dashboard-page-shell/dashboard-page-shell";
+import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
 import {
   getDashboardHeaderDictionary,
   getDashboardMetaDictionary,
@@ -61,7 +61,7 @@ export default async function DashboardPage({
     serializeDashboardSearchParams(resolvedSearchParams);
 
   return (
-    <DashboardPageShell>
+    <WorkspacePageShell pageId="dashboard">
       <DashboardPageHeader
         content={headerContent}
         rangeFilter={
@@ -75,6 +75,6 @@ export default async function DashboardPage({
         }
       />
       <DashboardGrid content={modulesContent} />
-    </DashboardPageShell>
+    </WorkspacePageShell>
   );
 }
