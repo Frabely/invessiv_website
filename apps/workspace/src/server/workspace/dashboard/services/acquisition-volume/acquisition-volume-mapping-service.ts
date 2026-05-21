@@ -1,5 +1,5 @@
 import type { AcquisitionVolumeDto } from "@/common/contracts/dashboard/acquisition-volume.dto";
-import { readAggregateCount } from "../coerce-count";
+import { aggregateCountService } from "../aggregate-count-service";
 
 export type AcquisitionVolumeAggregateRow = {
   count: number | string | null;
@@ -11,9 +11,9 @@ function mapRowsToDto(
   pendingReviewRows: ReadonlyArray<AcquisitionVolumeAggregateRow>,
 ): AcquisitionVolumeDto {
   return {
-    current: readAggregateCount(currentRows),
-    previous: readAggregateCount(previousRows),
-    pendingReview: readAggregateCount(pendingReviewRows),
+    current: aggregateCountService.readAggregateCount(currentRows),
+    previous: aggregateCountService.readAggregateCount(previousRows),
+    pendingReview: aggregateCountService.readAggregateCount(pendingReviewRows),
   };
 }
 

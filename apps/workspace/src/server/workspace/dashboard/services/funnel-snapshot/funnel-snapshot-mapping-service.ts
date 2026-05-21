@@ -11,7 +11,7 @@ import type {
   FunnelSnapshotDto,
   FunnelSnapshotStageDto,
 } from "@/common/contracts/dashboard/funnel-snapshot.dto";
-import { coerceCount } from "../coerce-count";
+import { aggregateCountService } from "../aggregate-count-service";
 
 export type FunnelStatusRow = {
   lead_status: string;
@@ -47,7 +47,7 @@ function aggregateFunnelRows(
   let totalCount = 0;
 
   for (const row of rows) {
-    const rowCount = coerceCount(row.count);
+    const rowCount = aggregateCountService.coerceCount(row.count);
     totalCount += rowCount;
 
     if (row.lead_status === ContactLeadStatus.PendingReview) {
