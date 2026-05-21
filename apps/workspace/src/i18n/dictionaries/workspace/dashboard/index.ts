@@ -7,11 +7,14 @@ import rangeFilterDe from "./range-filter/de.json";
 import rangeFilterEn from "./range-filter/en.json";
 import modulesDe from "./modules/de.json";
 import modulesEn from "./modules/en.json";
+import acquisitionVolumeDe from "./acquisition-volume/de.json";
+import acquisitionVolumeEn from "./acquisition-volume/en.json";
 
 export type DashboardMetaDictionary = typeof metaDe;
 export type DashboardHeaderDictionary = typeof headerDe;
 export type DashboardRangeFilterDictionary = typeof rangeFilterDe;
 export type DashboardModulesDictionary = typeof modulesDe;
+export type DashboardAcquisitionVolumeDictionary = typeof acquisitionVolumeDe;
 
 const DASHBOARD_META: Record<Locale, DashboardMetaDictionary> = {
   de: metaDe,
@@ -31,6 +34,14 @@ const DASHBOARD_RANGE_FILTER: Record<Locale, DashboardRangeFilterDictionary> = {
 const DASHBOARD_MODULES: Record<Locale, DashboardModulesDictionary> = {
   de: modulesDe,
   en: modulesEn,
+};
+
+const DASHBOARD_ACQUISITION_VOLUME: Record<
+  Locale,
+  DashboardAcquisitionVolumeDictionary
+> = {
+  de: acquisitionVolumeDe,
+  en: acquisitionVolumeEn,
 };
 
 export function getDashboardMetaDictionary(
@@ -55,4 +66,10 @@ export function getDashboardModulesDictionary(
   locale: Locale,
 ): DashboardModulesDictionary {
   return DASHBOARD_MODULES[locale];
+}
+
+export function getDashboardAcquisitionVolumeDictionary(
+  locale: Locale,
+): DashboardAcquisitionVolumeDictionary {
+  return DASHBOARD_ACQUISITION_VOLUME[locale];
 }

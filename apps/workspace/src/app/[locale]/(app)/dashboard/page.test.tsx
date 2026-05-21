@@ -22,6 +22,13 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("server-only", () => ({}));
 
+vi.mock(
+  "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module",
+  () => ({
+    AcquisitionVolumeModule: () => <h2>Akquise-Volumen</h2>,
+  }),
+);
+
 describe("DashboardPage", () => {
   beforeEach(() => {
     mockRouter.push.mockReset();
