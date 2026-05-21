@@ -56,6 +56,10 @@
   --badge-accent: var(--color-cta);
 }
 
+.root[data-tone="indigo"] {
+  --badge-accent: color-mix(in srgb, #6366f1 78%, var(--color-text-muted) 22%);
+}
+
 .root[data-tone="info"] {
   --badge-accent: color-mix(in srgb, #38bdf8 74%, var(--color-text-muted) 26%);
 }

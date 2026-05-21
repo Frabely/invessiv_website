@@ -1,5 +1,6 @@
 export const LeadBadgeTone = {
   Danger: "danger",
+  Indigo: "indigo",
   Info: "info",
   Neutral: "neutral",
   Primary: "primary",
@@ -13,6 +14,7 @@ export type LeadBadgeTone = (typeof LeadBadgeTone)[keyof typeof LeadBadgeTone];
 
 export const LEAD_BADGE_TONE_VALUES = [
   LeadBadgeTone.Danger,
+  LeadBadgeTone.Indigo,
   LeadBadgeTone.Info,
   LeadBadgeTone.Neutral,
   LeadBadgeTone.Primary,

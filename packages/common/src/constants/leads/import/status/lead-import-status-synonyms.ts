@@ -8,6 +8,8 @@ export const LEAD_IMPORT_STATUS_SYNONYMS: Record<string, ContactLeadStatus> = {
   new: ContactLeadStatus.New,
   kontaktiert: ContactLeadStatus.Contacted,
   contacted: ContactLeadStatus.Contacted,
+  geantwortet: ContactLeadStatus.Responded,
+  responded: ContactLeadStatus.Responded,
   qualifiziert: ContactLeadStatus.Qualified,
   qualified: ContactLeadStatus.Qualified,
   angebot: ContactLeadStatus.Proposal,

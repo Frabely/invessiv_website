@@ -156,6 +156,7 @@ describe("LeadBadgeTone", () => {
   it("contains the expected badge tones without duplicates", () => {
     expect(LEAD_BADGE_TONE_VALUES).toEqual([
       LeadBadgeTone.Danger,
+      LeadBadgeTone.Indigo,
       LeadBadgeTone.Info,
       LeadBadgeTone.Neutral,
       LeadBadgeTone.Primary,
