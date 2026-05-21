@@ -10,7 +10,6 @@
 .slot {
   display: flex;
   min-width: 0;
-  /* Default mobile-first column span; overridden by data-attributes below. */
   grid-column: span 12 / span 12;
 }
 

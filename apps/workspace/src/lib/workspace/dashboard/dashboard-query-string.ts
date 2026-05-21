@@ -1,4 +1,10 @@
+import type { DashboardQueryParam } from "@/common/constants/dashboard/dashboard-query-params";
+
 type SearchParamsInput = Record<string, string | string[] | undefined>;
+
+export type DashboardHrefOverrides = Partial<
+  Record<DashboardQueryParam, string | undefined>
+>;
 
 export function serializeDashboardSearchParams(
   searchParams: SearchParamsInput,
@@ -22,7 +28,7 @@ export function serializeDashboardSearchParams(
 export function buildDashboardHref(
   basePath: string,
   queryString: string,
-  overrides: Record<string, string | undefined>,
+  overrides: DashboardHrefOverrides,
 ): string {
   const params = new URLSearchParams(queryString);
   for (const [key, value] of Object.entries(overrides)) {

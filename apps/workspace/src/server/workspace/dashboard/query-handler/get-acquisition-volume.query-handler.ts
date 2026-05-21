@@ -5,16 +5,7 @@ import { leads } from "@invessiv/db/record-configuration";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import type { AcquisitionVolumeDto } from "@/common/contracts/dashboard/acquisition-volume.dto";
 import type { GetAcquisitionVolumeInput } from "@/common/contracts/dashboard/get-acquisition-volume-input";
-
-function toCount(
-  rows: ReadonlyArray<{ count: number | string | null }>,
-): number {
-  const raw = rows[0]?.count;
-  if (raw === null || raw === undefined) {
-    return 0;
-  }
-  return typeof raw === "number" ? raw : Number(raw);
-}
+import { acquisitionVolumeMappingService } from "../services/acquisition-volume/acquisition-volume-mapping-service";
 
 export async function getAcquisitionVolume(
   input: GetAcquisitionVolumeInput,
@@ -40,9 +31,9 @@ export async function getAcquisitionVolume(
     db.select({ count: count() }).from(leads).where(pendingReviewWhere),
   ]);
 
-  return {
-    current: toCount(currentRows),
-    previous: toCount(previousRows),
-    pendingReview: toCount(pendingReviewRows),
-  };
+  return acquisitionVolumeMappingService.mapRowsToDto(
+    currentRows,
+    previousRows,
+    pendingReviewRows,
+  );
 }

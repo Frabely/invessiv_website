@@ -1,11 +1,13 @@
 import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { CSSProperties } from "react";
+import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadStatusBadge } from "@/components/workspace/leads/shared/lead-status-badge/lead-status-badge";
 import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
 import type { Locale } from "@/config/i18n";
 import type { DashboardFunnelDictionary } from "@/i18n/dictionaries/workspace/dashboard";
+import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import styles from "./funnel-snapshot-view.module.css";
-import { CSSProperties } from "react";
 
 const PERCENT_PLACEHOLDER = "{value}";
 const COUNT_PLACEHOLDER = "{count}";
@@ -18,21 +20,13 @@ type FunnelSnapshotViewProps = {
   title: string;
 };
 
-function formatCount(value: number, locale: Locale): string {
-  return new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(
-    value,
-  );
-}
-
 function formatPercentFromRatio(
   ratio: number,
   locale: Locale,
   template: string,
 ): string {
   const percentValue = Math.round(ratio * 100);
-  const formattedNumber = new Intl.NumberFormat(locale, {
-    maximumFractionDigits: 0,
-  }).format(percentValue);
+  const formattedNumber = formatIntegerCount(percentValue, locale);
   return template.replace(PERCENT_PLACEHOLDER, formattedNumber);
 }
 
@@ -50,7 +44,7 @@ export function FunnelSnapshotView({
     0,
   );
   const pipelineCount = Math.max(totalCount - inactiveOutcomeCount, 0);
-  const formattedTotalCount = formatCount(totalCount, locale);
+  const formattedTotalCount = formatIntegerCount(totalCount, locale);
 
   return (
     <section aria-labelledby="funnel-snapshot-title" className={styles.card}>
@@ -67,7 +61,10 @@ export function FunnelSnapshotView({
           </span>
           <div className={styles.outcomes}>
             {outcomes.map((outcome) => {
-              const formattedOutcomeCount = formatCount(outcome.count, locale);
+              const formattedOutcomeCount = formatIntegerCount(
+                outcome.count,
+                locale,
+              );
               const outcomeRatio =
                 totalCount === 0 ? null : outcome.count / totalCount;
               const formattedOutcomePercent =
@@ -113,7 +110,7 @@ export function FunnelSnapshotView({
             index < stages.length - 1 ? stages[index + 1] : null;
           const stageLabel = labels.stageLabels[stage.key];
           const stageDescription = labels.stageDescriptions[stage.key];
-          const formattedCount = formatCount(stage.count, locale);
+          const formattedCount = formatIntegerCount(stage.count, locale);
           const pendingReviewCount = stage.pendingReviewCount ?? 0;
           const pipelineShareRatio =
             pipelineCount === 0
@@ -148,11 +145,12 @@ export function FunnelSnapshotView({
 
                 <div className={styles.stageBody}>
                   <span className={styles.stageValue}>{formattedCount}</span>
-                  {stage.key === "new" && pendingReviewCount > 0 ? (
+                  {stage.key === ContactLeadStatus.New &&
+                  pendingReviewCount > 0 ? (
                     <span className={styles.stageInlineNote}>
                       {labels.pendingReview.format.replace(
                         COUNT_PLACEHOLDER,
-                        formatCount(pendingReviewCount, locale),
+                        formatIntegerCount(pendingReviewCount, locale),
                       )}
                     </span>
                   ) : null}

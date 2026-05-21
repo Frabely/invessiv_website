@@ -1,15 +1,19 @@
 import type { ReactNode } from "react";
 import styles from "./dashboard-grid.module.css";
 
+const DashboardModuleKey = {
+  AcquisitionVolume: "acquisitionVolume",
+  Funnel: "funnel",
+  SourcePerformance: "sourcePerformance",
+  TimeToContact: "timeToContact",
+  OutreachActivity: "outreachActivity",
+  HotLeads: "hotLeads",
+  FunnelVelocity: "funnelVelocity",
+  ActivityHeatmap: "activityHeatmap",
+} as const;
+
 type DashboardModuleKey =
-  | "acquisitionVolume"
-  | "funnel"
-  | "sourcePerformance"
-  | "timeToContact"
-  | "outreachActivity"
-  | "hotLeads"
-  | "funnelVelocity"
-  | "activityHeatmap";
+  (typeof DashboardModuleKey)[keyof typeof DashboardModuleKey];
 
 type ColumnSpan = 4 | 6 | 8 | 12;
 
@@ -24,39 +28,37 @@ type ModuleLayout = {
   span: ResponsiveSpan;
 };
 
-// Per-widget responsive sizing — each widget declares the column span it needs
-// at each breakpoint based on its intrinsic content, not a one-size template.
 const MODULE_LAYOUT: ReadonlyArray<ModuleLayout> = [
   {
-    key: "funnel",
+    key: DashboardModuleKey.Funnel,
     span: { mobile: 12, tablet: 12, desktop: 12 },
   },
   {
-    key: "acquisitionVolume",
+    key: DashboardModuleKey.AcquisitionVolume,
     span: { mobile: 12, tablet: 6, desktop: 4 },
   },
   {
-    key: "hotLeads",
+    key: DashboardModuleKey.HotLeads,
     span: { mobile: 12, tablet: 6, desktop: 4 },
   },
   {
-    key: "timeToContact",
+    key: DashboardModuleKey.TimeToContact,
     span: { mobile: 12, tablet: 6, desktop: 4 },
   },
   {
-    key: "sourcePerformance",
+    key: DashboardModuleKey.SourcePerformance,
     span: { mobile: 12, tablet: 12, desktop: 8 },
   },
   {
-    key: "outreachActivity",
+    key: DashboardModuleKey.OutreachActivity,
     span: { mobile: 12, tablet: 12, desktop: 8 },
   },
   {
-    key: "funnelVelocity",
+    key: DashboardModuleKey.FunnelVelocity,
     span: { mobile: 12, tablet: 6, desktop: 6 },
   },
   {
-    key: "activityHeatmap",
+    key: DashboardModuleKey.ActivityHeatmap,
     span: { mobile: 12, tablet: 6, desktop: 6 },
   },
 ];

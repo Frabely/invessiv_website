@@ -1,4 +1,4 @@
-import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import type { FunnelOutcomeStatus } from "@/common/constants/dashboard/funnel-outcome-order";
 import type { FunnelStage } from "@/common/constants/dashboard/funnel-stage-order";
 
 export type FunnelSnapshotStageDto = {
@@ -9,10 +9,7 @@ export type FunnelSnapshotStageDto = {
 };
 
 export type FunnelSnapshotOutcomeDto = {
-  key:
-    | typeof ContactLeadStatus.OnHold
-    | typeof ContactLeadStatus.Lost
-    | typeof ContactLeadStatus.Archived;
+  key: FunnelOutcomeStatus;
   count: number;
 };
 

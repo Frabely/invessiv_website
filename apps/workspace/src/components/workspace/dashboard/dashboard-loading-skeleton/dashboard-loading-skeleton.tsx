@@ -8,9 +8,6 @@ type ResponsiveSpan = {
   desktop: ColumnSpan;
 };
 
-// Mirrors apps/workspace/src/components/workspace/dashboard/dashboard-grid/dashboard-grid.tsx
-// so the skeleton occupies the same slots and no layout shift occurs when
-// real content streams in.
 const PLACEHOLDER_LAYOUT: ReadonlyArray<{
   id: string;
   span: ResponsiveSpan;

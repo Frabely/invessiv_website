@@ -3,9 +3,9 @@ import type { KpiCardComparison } from "@/common/contracts/dashboard/kpi-card-co
 import type { Locale } from "@/config/i18n";
 import type { DashboardAcquisitionVolumeDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import { calculateKpiDelta } from "@/lib/workspace/dashboard/calculate-kpi-delta";
+import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import { KpiCard } from "../kpi-card/kpi-card";
 
-const INTEGER_FRACTION_DIGITS = 0;
 const PERCENT_FRACTION_DIGITS = 1;
 const PREVIOUS_PLACEHOLDER = "{previous}";
 const PERCENT_PLACEHOLDER = "{value}";
@@ -18,12 +18,6 @@ type AcquisitionVolumeViewProps = {
   title: string;
 };
 
-function formatInteger(value: number, locale: Locale): string {
-  return new Intl.NumberFormat(locale, {
-    maximumFractionDigits: INTEGER_FRACTION_DIGITS,
-  }).format(value);
-}
-
 function formatPercent(
   percent: number,
   locale: Locale,
@@ -31,7 +25,7 @@ function formatPercent(
 ): string {
   const formattedNumber = new Intl.NumberFormat(locale, {
     maximumFractionDigits: PERCENT_FRACTION_DIGITS,
-    minimumFractionDigits: INTEGER_FRACTION_DIGITS,
+    minimumFractionDigits: 0,
     signDisplay: "exceptZero",
   }).format(percent);
   return template.replace(PERCENT_PLACEHOLDER, formattedNumber);
@@ -61,7 +55,7 @@ function buildComparison(
     ),
     description: labels.comparisonDescription.replace(
       PREVIOUS_PLACEHOLDER,
-      formatInteger(data.previous, locale),
+      formatIntegerCount(data.previous, locale),
     ),
   };
 }
@@ -72,14 +66,14 @@ export function AcquisitionVolumeView({
   locale,
   title,
 }: AcquisitionVolumeViewProps) {
-  const value = formatInteger(data.current, locale);
+  const value = formatIntegerCount(data.current, locale);
   const comparison = buildComparison(data, labels, locale);
 
   const badge =
     data.pendingReview > 0
       ? labels.pendingReviewBadge.replace(
           PENDING_REVIEW_PLACEHOLDER,
-          formatInteger(data.pendingReview, locale),
+          formatIntegerCount(data.pendingReview, locale),
         )
       : undefined;
 

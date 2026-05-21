@@ -4,7 +4,10 @@ import { useRouter } from "next/navigation";
 import { DashboardQueryParam } from "@/common/constants/dashboard/dashboard-query-params";
 import type { DateRangeFilterLabels } from "@/common/contracts/date-range-filter-labels";
 import { DateRangeFilter } from "@/components/workspace/shared/date-range-filter/date-range-filter";
-import { buildDashboardHref } from "@/lib/workspace/dashboard/dashboard-query-string";
+import {
+  buildDashboardHref,
+  type DashboardHrefOverrides,
+} from "@/lib/workspace/dashboard/dashboard-query-string";
 
 type DashboardDateRangeFilterProps = {
   basePath: string;
@@ -14,14 +17,16 @@ type DashboardDateRangeFilterProps = {
   toValue: string;
 };
 
-type DateRangeQueryOverride = Record<string, string | undefined>;
+type DateRangeKey =
+  | typeof DashboardQueryParam.DateFrom
+  | typeof DashboardQueryParam.DateTo;
 
 function buildDateRangeOverride(
-  key: typeof DashboardQueryParam.DateFrom | typeof DashboardQueryParam.DateTo,
+  key: DateRangeKey,
   value: string | undefined,
   fromValue: string,
   toValue: string,
-): DateRangeQueryOverride {
+): DashboardHrefOverrides {
   if (key === DashboardQueryParam.DateFrom) {
     if (!value) {
       return {
@@ -72,12 +77,14 @@ export function DashboardDateRangeFilter({
 }: DashboardDateRangeFilterProps) {
   const router = useRouter();
 
-  const pushOverride = (
-    key:
-      | typeof DashboardQueryParam.DateFrom
-      | typeof DashboardQueryParam.DateTo,
-    value: string | undefined,
-  ) => {
+  const pushOverride = (key: DateRangeKey, value: string | undefined) => {
+    const normalizedValue = value ?? "";
+    const currentValue =
+      key === DashboardQueryParam.DateFrom ? fromValue : toValue;
+    if (normalizedValue === currentValue) {
+      return;
+    }
+
     const overrides = buildDateRangeOverride(key, value, fromValue, toValue);
 
     router.push(buildDashboardHref(basePath, currentQueryString, overrides), {
