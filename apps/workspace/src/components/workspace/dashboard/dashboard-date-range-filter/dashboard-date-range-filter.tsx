@@ -14,6 +14,55 @@ type DashboardDateRangeFilterProps = {
   toValue: string;
 };
 
+type DateRangeQueryOverride = Record<string, string | undefined>;
+
+function buildDateRangeOverride(
+  key: typeof DashboardQueryParam.DateFrom | typeof DashboardQueryParam.DateTo,
+  value: string | undefined,
+  fromValue: string,
+  toValue: string,
+): DateRangeQueryOverride {
+  if (key === DashboardQueryParam.DateFrom) {
+    if (!value) {
+      return {
+        [DashboardQueryParam.DateFrom]: undefined,
+        [DashboardQueryParam.DateTo]: toValue || undefined,
+      };
+    }
+
+    if (toValue && value > toValue) {
+      return {
+        [DashboardQueryParam.DateFrom]: value,
+        [DashboardQueryParam.DateTo]: value,
+      };
+    }
+
+    return {
+      [DashboardQueryParam.DateFrom]: value,
+      [DashboardQueryParam.DateTo]: toValue || undefined,
+    };
+  }
+
+  if (!value) {
+    return {
+      [DashboardQueryParam.DateFrom]: fromValue || undefined,
+      [DashboardQueryParam.DateTo]: undefined,
+    };
+  }
+
+  if (fromValue && value < fromValue) {
+    return {
+      [DashboardQueryParam.DateFrom]: value,
+      [DashboardQueryParam.DateTo]: value,
+    };
+  }
+
+  return {
+    [DashboardQueryParam.DateFrom]: fromValue || undefined,
+    [DashboardQueryParam.DateTo]: value,
+  };
+}
+
 export function DashboardDateRangeFilter({
   basePath,
   currentQueryString,
@@ -23,11 +72,17 @@ export function DashboardDateRangeFilter({
 }: DashboardDateRangeFilterProps) {
   const router = useRouter();
 
-  const pushOverride = (key: string, value: string | undefined) => {
-    router.push(
-      buildDashboardHref(basePath, currentQueryString, { [key]: value }),
-      { scroll: false },
-    );
+  const pushOverride = (
+    key:
+      | typeof DashboardQueryParam.DateFrom
+      | typeof DashboardQueryParam.DateTo,
+    value: string | undefined,
+  ) => {
+    const overrides = buildDateRangeOverride(key, value, fromValue, toValue);
+
+    router.push(buildDashboardHref(basePath, currentQueryString, overrides), {
+      scroll: false,
+    });
   };
 
   return (

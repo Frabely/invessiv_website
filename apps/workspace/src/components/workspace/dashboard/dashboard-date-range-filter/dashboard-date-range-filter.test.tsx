@@ -45,7 +45,28 @@ describe("DashboardDateRangeFilter", () => {
     });
 
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/en/dashboard?date_from=2026-04-01",
+      "/en/dashboard?date_from=2026-04-01&date_to=2026-05-21",
+      { scroll: false },
+    );
+  });
+
+  it("repairs inverted ranges when the current URL is already inverted", () => {
+    render(
+      <DashboardDateRangeFilter
+        basePath="/de/dashboard"
+        currentQueryString="foo=bar&date_from=2026-04-30&date_to=2026-04-01"
+        fromValue="2026-04-01"
+        labels={labels}
+        toValue="2026-04-30"
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("From"), {
+      target: { value: "2026-04-15" },
+    });
+
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      "/de/dashboard?foo=bar&date_from=2026-04-15&date_to=2026-04-30",
       { scroll: false },
     );
   });
@@ -87,8 +108,9 @@ describe("DashboardDateRangeFilter", () => {
       target: { value: "" },
     });
 
-    expect(mockRouter.push).toHaveBeenCalledWith("/en/dashboard", {
-      scroll: false,
-    });
+    expect(mockRouter.push).toHaveBeenCalledWith(
+      "/en/dashboard?date_to=2026-05-21",
+      { scroll: false },
+    );
   });
 });
