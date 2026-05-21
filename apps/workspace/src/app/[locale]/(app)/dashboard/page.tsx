@@ -10,7 +10,6 @@ import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/
 import {
   getDashboardHeaderDictionary,
   getDashboardMetaDictionary,
-  getDashboardModulesDictionary,
   getDashboardRangeFilterDictionary,
 } from "@/i18n/dictionaries/workspace/dashboard";
 import { dashboardPathFor } from "@/lib/auth/routes";
@@ -54,8 +53,6 @@ export default async function DashboardPage({
 
   const headerContent = getDashboardHeaderDictionary(activeLocale);
   const rangeFilterContent = getDashboardRangeFilterDictionary(activeLocale);
-  const modulesContent = getDashboardModulesDictionary(activeLocale);
-
   const rangeSelection =
     rangeResolverService.resolveDashboardRange(resolvedSearchParams);
   const basePath = dashboardPathFor(activeLocale);
@@ -77,7 +74,6 @@ export default async function DashboardPage({
         }
       />
       <DashboardGrid
-        content={modulesContent}
         slots={{
           acquisitionVolume: (
             <AcquisitionVolumeModule

@@ -1,9 +1,15 @@
 import type { ReactNode } from "react";
-import { DashboardModulePlaceholder } from "@/components/workspace/dashboard/dashboard-module-placeholder/dashboard-module-placeholder";
-import type { DashboardModulesDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import styles from "./dashboard-grid.module.css";
 
-type DashboardModuleKey = keyof DashboardModulesDictionary["items"];
+type DashboardModuleKey =
+  | "acquisitionVolume"
+  | "funnel"
+  | "sourcePerformance"
+  | "timeToContact"
+  | "outreachActivity"
+  | "hotLeads"
+  | "funnelVelocity"
+  | "activityHeatmap";
 
 type ColumnSpan = 4 | 6 | 8 | 12;
 
@@ -58,16 +64,17 @@ const MODULE_LAYOUT: ReadonlyArray<ModuleLayout> = [
 type DashboardGridSlots = Partial<Record<DashboardModuleKey, ReactNode>>;
 
 type DashboardGridProps = {
-  content: DashboardModulesDictionary;
   slots?: DashboardGridSlots;
 };
 
-export function DashboardGrid({ content, slots }: DashboardGridProps) {
+export function DashboardGrid({ slots }: DashboardGridProps) {
   return (
     <section className={styles.grid}>
       {MODULE_LAYOUT.map(({ key, span }) => {
-        const item = content.items[key];
         const slot = slots?.[key];
+        if (!slot) {
+          return null;
+        }
         return (
           <div
             className={styles.slot}
@@ -77,13 +84,7 @@ export function DashboardGrid({ content, slots }: DashboardGridProps) {
             data-widget={key}
             key={key}
           >
-            {slot ?? (
-              <DashboardModulePlaceholder
-                badgeLabel={content.placeholderLabel}
-                description={item.description}
-                title={item.title}
-              />
-            )}
+            {slot}
           </div>
         );
       })}

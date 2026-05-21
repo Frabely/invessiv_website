@@ -70,11 +70,11 @@ describe("DashboardPage", () => {
       screen.getByRole("heading", { level: 2, name: "Funnel" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
+      screen.queryByRole("heading", {
         level: 2,
         name: "Aktivitäts-Heatmap & Streak",
       }),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
   });
 
   it("reflects date_from and date_to from the URL in the inputs", async () => {
