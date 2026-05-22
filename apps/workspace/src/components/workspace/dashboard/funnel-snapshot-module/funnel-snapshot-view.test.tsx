@@ -213,7 +213,7 @@ describe("FunnelSnapshotView", () => {
   });
 
   it("renders stage conversion labels and connector labels from the previous stage", () => {
-    render(
+    const { container } = render(
       <FunnelSnapshotView
         data={buildSnapshot()}
         labels={LABELS}
@@ -227,11 +227,26 @@ describe("FunnelSnapshotView", () => {
     expect(screen.getByText("42 % von Geantwortet")).toBeInTheDocument();
     expect(screen.getByText("63 % von Qualifiziert")).toBeInTheDocument();
     expect(screen.getByText("60 % von Angebot")).toBeInTheDocument();
-    expect(screen.getByText("25 / 46 · 54 %")).toBeInTheDocument();
-    expect(screen.getByText("19 / 25 · 76 %")).toBeInTheDocument();
-    expect(screen.getByText("8 / 19 · 42 %")).toBeInTheDocument();
-    expect(screen.getByText("5 / 8 · 63 %")).toBeInTheDocument();
-    expect(screen.getByText("3 / 5 · 60 %")).toBeInTheDocument();
+    const connectors = container.querySelectorAll(
+      '[data-slot="funnel-connector"]',
+    );
+    const expectedConnectorContents: ReadonlyArray<[string, string]> = [
+      ["54 %", "25 / 46"],
+      ["76 %", "19 / 25"],
+      ["42 %", "8 / 19"],
+      ["63 %", "5 / 8"],
+      ["60 %", "3 / 5"],
+    ];
+    expectedConnectorContents.forEach(([percent, ratio], index) => {
+      const connector = connectors[index];
+      expect(connector).toBeDefined();
+      expect(
+        within(connector as HTMLElement).getByText(percent),
+      ).toBeInTheDocument();
+      expect(
+        within(connector as HTMLElement).getByText(ratio),
+      ).toBeInTheDocument();
+    });
   });
 
   it("renders the bottleneck insight in the header", () => {
@@ -263,8 +278,8 @@ describe("FunnelSnapshotView", () => {
     expect(connectors).toHaveLength(5);
   });
 
-  it("renders 0 / 0 · 0 % when the previous stage has zero leads", () => {
-    render(
+  it("renders 0 % with 0 / 0 ratio when the previous stage has zero leads", () => {
+    const { container } = render(
       <FunnelSnapshotView
         data={buildSnapshot(
           {
@@ -283,7 +298,16 @@ describe("FunnelSnapshotView", () => {
       />,
     );
 
-    expect(screen.getAllByText("0 / 0 · 0 %").length).toBeGreaterThanOrEqual(1);
+    const firstConnector = container.querySelector(
+      '[data-slot="funnel-connector"]',
+    );
+    expect(firstConnector).not.toBeNull();
+    expect(
+      within(firstConnector as HTMLElement).getByText("0 %"),
+    ).toBeInTheDocument();
+    expect(
+      within(firstConnector as HTMLElement).getByText("0 / 0"),
+    ).toBeInTheDocument();
     expect(screen.getAllByText("0 % von Neu").length).toBeGreaterThanOrEqual(1);
   });
 
@@ -314,8 +338,18 @@ describe("FunnelSnapshotView", () => {
     const connectors = container.querySelectorAll(
       '[data-slot="funnel-connector"]',
     );
-    expect(connectors[0]?.textContent).toContain("3 / 7 · 43 %");
-    expect(connectors[1]?.textContent).toContain("0 / 3 · 0 %");
+    expect(
+      within(connectors[0] as HTMLElement).getByText("43 %"),
+    ).toBeInTheDocument();
+    expect(
+      within(connectors[0] as HTMLElement).getByText("3 / 7"),
+    ).toBeInTheDocument();
+    expect(
+      within(connectors[1] as HTMLElement).getByText("0 %"),
+    ).toBeInTheDocument();
+    expect(
+      within(connectors[1] as HTMLElement).getByText("0 / 3"),
+    ).toBeInTheDocument();
     const summaryPrimary = screen.getByText("Aktive Pipeline").parentElement;
     expect(summaryPrimary).not.toBeNull();
     expect(

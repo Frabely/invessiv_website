@@ -301,6 +301,7 @@ export function FunnelSnapshotView({
                   index={index}
                   locale={locale}
                   nextCount={nextStage.count}
+                  nextStageKey={nextStage.key}
                   previousCount={stage.count}
                 />
               ) : null}

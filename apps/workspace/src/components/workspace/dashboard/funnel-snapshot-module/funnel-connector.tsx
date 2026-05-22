@@ -1,19 +1,21 @@
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CSSProperties } from "react";
+import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
 import type { Locale } from "../../../../config/i18n";
 import { formatIntegerCount } from "../../../../lib/workspace/dashboard/format-integer";
 import styles from "./funnel-connector.module.css";
+
+type FunnelStageKey = FunnelSnapshotDto["stages"][number]["key"];
 
 type FunnelConnectorProps = {
   ariaLabel: string;
   index: number;
   locale: Locale;
   nextCount: number;
+  nextStageKey: FunnelStageKey;
   previousCount: number;
 };
 
-function formatTransitionLabel(
+function formatPercentLabel(
   previousCount: number,
   nextCount: number,
   locale: Locale,
@@ -25,7 +27,18 @@ function formatTransitionLabel(
       ? 0
       : Math.round((normalizedNextCount / normalizedPreviousCount) * 100);
 
-  return `${formatIntegerCount(normalizedNextCount, locale)} / ${formatIntegerCount(normalizedPreviousCount, locale)} · ${formatIntegerCount(percentValue, locale)} %`;
+  return `${formatIntegerCount(percentValue, locale)} %`;
+}
+
+function formatRatioLabel(
+  previousCount: number,
+  nextCount: number,
+  locale: Locale,
+): string {
+  const normalizedPreviousCount = previousCount > 0 ? previousCount : 0;
+  const normalizedNextCount = previousCount > 0 ? nextCount : 0;
+
+  return `${formatIntegerCount(normalizedNextCount, locale)} / ${formatIntegerCount(normalizedPreviousCount, locale)}`;
 }
 
 export function FunnelConnector({
@@ -33,19 +46,18 @@ export function FunnelConnector({
   index,
   locale,
   nextCount,
+  nextStageKey,
   previousCount,
 }: FunnelConnectorProps) {
-  const formattedForwarded = formatTransitionLabel(
-    previousCount,
-    nextCount,
-    locale,
-  );
+  const percentLabel = formatPercentLabel(previousCount, nextCount, locale);
+  const ratioLabel = formatRatioLabel(previousCount, nextCount, locale);
 
   return (
     <div
       aria-label={ariaLabel}
       className={styles.connector}
       data-slot="funnel-connector"
+      data-target-stage={nextStageKey}
       role="presentation"
       style={
         {
@@ -53,16 +65,12 @@ export function FunnelConnector({
         } as CSSProperties
       }
     >
-      <div className={styles.connectorLabel}>
-        <span aria-hidden="true" className={styles.connectorChevron}>
-          <FontAwesomeIcon icon={faArrowRightLong} />
-        </span>
-        <span className={styles.connectorRatio}>{formattedForwarded}</span>
-        <span className={styles.connectorMeta}>
-          {formatIntegerCount(previousCount, locale)} →{" "}
-          {formatIntegerCount(nextCount, locale)}
-        </span>
+      <span aria-hidden="true" className={styles.connectorLine} />
+      <div className={styles.connectorBadge}>
+        <span className={styles.connectorPercent}>{percentLabel}</span>
+        <span className={styles.connectorRatio}>{ratioLabel}</span>
       </div>
+      <span aria-hidden="true" className={styles.connectorLine} />
     </div>
   );
 }
