@@ -15,7 +15,7 @@ describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Für lokale und regionale Unternehmen, die ihr Angebot klar erklären, Vertrauen aufbauen und Besucher gezielt zur Projektanfrage führen wollen."
+        description="Webseiten, Landingpages, Upgrades und digitale Tools für Dienstleister und KMU, die ihr Angebot verständlich zeigen, Vertrauen aufbauen und bessere Anfragen gewinnen wollen."
         heroPrimaryCta="Projekt anfragen"
         heroSecondaryCta="Leistung passend einschätzen"
         heroTag="KLARER AUFTRITT, MEHR ANFRAGEN"
@@ -24,14 +24,16 @@ describe("HeroSection", () => {
         primaryCtaHref="#contact"
         secondaryCtaAnalyticsTarget="services"
         secondaryCtaHref="#services"
-        title="Landingpages,\ndie passende Anfragen bringen."
+        title="Klare digitale Auftritte,\ndie deine Kunden wirklich erreichen."
         trackingLocation="hero"
       />,
     );
 
     const heroHeading = screen.getByRole("heading", { level: 1 });
-    expect(heroHeading.textContent).toContain("Landingpages,");
-    expect(heroHeading.textContent).toContain("die passende Anfragen bringen.");
+    expect(heroHeading.textContent).toContain("Klare digitale Auftritte,");
+    expect(heroHeading.textContent).toContain(
+      "die deine Kunden wirklich erreichen.",
+    );
     expect(
       screen
         .getByRole("link", { name: "Projekt anfragen" })

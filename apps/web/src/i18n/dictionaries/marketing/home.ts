@@ -371,14 +371,15 @@ const HOME_SECTIONS = [
     id: "hero",
     copy: {
       de: {
-        title: "Landingpages,\ndie passende Anfragen bringen.",
+        title:
+          "Klare digitale Auftritte,\ndie deine Kunden wirklich erreichen.",
         description:
-          "Für lokale und regionale Unternehmen, die ihr Angebot klar erklären, Vertrauen aufbauen und Besucher gezielt zur Projektanfrage führen wollen.",
+          "Webseiten, Landingpages, Upgrades und digitale Tools für Dienstleister und KMU, die ihr Angebot verständlich zeigen, Vertrauen aufbauen und bessere Anfragen gewinnen wollen.",
       },
       en: {
-        title: "Landing pages\nthat bring in relevant inquiries.",
+        title: "Clear digital presences\nthat truly reach your customers.",
         description:
-          "For local and regional businesses that want to explain their offer clearly, build trust, and guide visitors toward a project request.",
+          "Websites, landing pages, upgrades, and digital tools for service businesses and SMBs that want to present their offer clearly, build trust, and win better inquiries.",
       },
     },
   },

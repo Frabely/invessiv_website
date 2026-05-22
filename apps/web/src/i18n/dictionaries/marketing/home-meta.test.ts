@@ -7,9 +7,13 @@ describe("home-meta", () => {
     const content = getHomeMetaContent("de");
 
     expect(content.title).toBe(
-      "Invessiv | Landingpages für mehr passende Anfragen",
+      "Invessiv | Webentwicklung & digitale Lösungen für KMU",
     );
     expect(content.description).toContain("Invessiv");
+    expect(content.description).toContain("Webseiten");
+    expect(content.description).toContain("Landingpages");
+    expect(content.description).toContain("digitale Tools");
+    expect(content.description).toContain("Upgrades");
     expect(content.description).not.toContain("Moritz Hecht");
   });
 
@@ -17,9 +21,13 @@ describe("home-meta", () => {
     const content = getHomeMetaContent("en");
 
     expect(content.title).toBe(
-      "Invessiv | Landing Pages for Relevant Inquiries",
+      "Invessiv | Web Development & Digital Solutions for SMBs",
     );
     expect(content.description).toContain("Invessiv");
+    expect(content.description).toContain("websites");
+    expect(content.description).toContain("landing pages");
+    expect(content.description).toContain("digital tools");
+    expect(content.description).toContain("upgrades");
     expect(content.description).not.toContain("Moritz Hecht");
   });
 });
