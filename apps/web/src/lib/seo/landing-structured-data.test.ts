@@ -39,8 +39,8 @@ describe("landing-structured-data", () => {
       name: pricing.card.planTitle,
       priceRange: pricing.card.priceValue,
       deliveryLeadTime: {
-        minValue: 3,
-        maxValue: 7,
+        minValue: 5,
+        maxValue: 10,
         unitCode: "DAY",
       },
     });
@@ -60,7 +60,7 @@ describe("landing-structured-data", () => {
     expect(landingOrganization?.["@id"]).toBe(marketingOrganization?.["@id"]);
   });
 
-  it("localizes service fields while keeping the price range language-independent", () => {
+  it("localizes service fields including the price range prefix", () => {
     const deData = createLandingStructuredData("de");
     const enData = createLandingStructuredData("en");
     const deService = graphEntry(deData, "Service");
@@ -84,7 +84,10 @@ describe("landing-structured-data", () => {
     expect(deService?.offers.priceRange).toBe(
       `${deStructuredData.offer.priceRangePrefix} 999 ${deStructuredData.offer.priceRangeCurrencySymbol}`,
     );
-    expect(enService?.offers.priceRange).toBe(deService?.offers.priceRange);
+    expect(enService?.offers.priceRange).toBe(
+      `${enStructuredData.offer.priceRangePrefix} 999 ${enStructuredData.offer.priceRangeCurrencySymbol}`,
+    );
+    expect(deService?.offers.priceRange).not.toBe(enService?.offers.priceRange);
   });
 
   it("keeps private owner names out of the output", () => {

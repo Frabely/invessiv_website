@@ -10,7 +10,7 @@
   },
   "offer": {
     "priceCurrency": "EUR",
-    "priceRangePrefix": "ab",
+    "priceRangePrefix": "from",
     "priceRangeCurrencySymbol": "€"
   },
   "service": {

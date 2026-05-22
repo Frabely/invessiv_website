@@ -56,17 +56,17 @@ describe("LandingRoute", () => {
       "https://invessiv.com/de/services/landing-page",
     );
     expect(metadata.title).toEqual({
-      absolute: "Landingpage klar auf Anfragen ausgerichtet | Invessiv",
+      absolute: "Landingpage erstellen lassen | ab 999 € | Invessiv",
     });
     expect(metadata.description).toBe(
-      "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und anfrageorientiert umgesetzt.",
+      "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlosen Check anfragen.",
     );
     expect(metadata.openGraph).toMatchObject({
       description:
-        "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und anfrageorientiert umgesetzt.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlosen Check anfragen.",
       locale: "de_DE",
       siteName: "Invessiv",
-      title: "Landingpage klar auf Anfragen ausgerichtet | Invessiv",
+      title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
       type: "website",
       url: "https://invessiv.com/de/services/landing-page",
     });
@@ -81,14 +81,14 @@ describe("LandingRoute", () => {
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
       description:
-        "Landingpages für Selbstständige und kleine Unternehmen – klar, schnell und anfrageorientiert umgesetzt.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlosen Check anfragen.",
       images: [
         {
           alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
           url: "https://invessiv.com/og/landing.png",
         },
       ],
-      title: "Landingpage klar auf Anfragen ausgerichtet | Invessiv",
+      title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
     });
   });
 });
