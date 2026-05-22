@@ -24,12 +24,15 @@ export function QAndAAccordion({ ariaLabel, id, items }: QAndAAccordionProps) {
         const isOpen = openIndex === index;
 
         return (
-          <li className={styles.item} key={questionId}>
+          <li
+            className={styles.item}
+            data-open={isOpen ? "true" : "false"}
+            key={questionId}
+          >
             <button
               aria-controls={answerId}
               aria-expanded={isOpen}
               className={styles.disclosure}
-              data-open={isOpen ? "true" : "false"}
               onClick={() => {
                 setOpenIndex(isOpen ? null : index);
               }}
@@ -59,15 +62,22 @@ export function QAndAAccordion({ ariaLabel, id, items }: QAndAAccordionProps) {
                   </svg>
                 </span>
               </span>
-              <span
-                aria-hidden={isOpen ? undefined : true}
-                aria-labelledby={questionId}
-                className={styles.answerWrap}
-                id={answerId}
-              >
-                <span className={styles.answer}>{item.answer}</span>
-              </span>
             </button>
+            <div
+              aria-hidden={isOpen ? undefined : true}
+              aria-labelledby={questionId}
+              className={styles.answerWrap}
+              id={answerId}
+            >
+              <div className={styles.answerContent}>
+                <p className={styles.answer}>{item.answer}</p>
+                {item.link && isOpen ? (
+                  <a className={styles.answerLink} href={item.link.href}>
+                    {item.link.label}
+                  </a>
+                ) : null}
+              </div>
+            </div>
           </li>
         );
       })}

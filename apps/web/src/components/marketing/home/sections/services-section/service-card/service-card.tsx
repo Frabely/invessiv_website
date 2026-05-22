@@ -1,7 +1,7 @@
 ﻿"use client";
 
-import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
+import { useRef } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
@@ -128,11 +128,11 @@ export function ServiceCard({
       <article
         aria-label={card.title}
         className={cardClasses}
-        data-service-card="true"
+        data-service-card={hasExpandableContent ? "true" : undefined}
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
-        onPointerLeave={onPointerLeaveAction}
-        onPointerMove={onPointerMoveAction}
+        onPointerLeave={hasExpandableContent ? onPointerLeaveAction : undefined}
+        onPointerMove={hasExpandableContent ? onPointerMoveAction : undefined}
       >
         <div className={styles.surface}>
           <div className={styles.header}>

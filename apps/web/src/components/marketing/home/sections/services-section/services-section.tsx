@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import type { PointerEvent, RefObject } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { FeaturedServiceCard } from "@/components/marketing/home/sections/services-section/featured-service-card/featured-service-card";
 import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
@@ -32,6 +32,7 @@ type GoalOption = {
 type ServicesSectionProps = {
   addonBadgeLabel: string;
   deliveryLabel: string;
+  detailPageCtaLabel: string;
   detailsCtaLabel: string;
   fitLabel: string;
   goalOptions: GoalOption[];
@@ -48,6 +49,7 @@ type ServicesSectionProps = {
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardData[];
   serviceContextNote?: string;
+  serviceDetailHrefs?: Partial<Record<ServiceCardData["key"], string>>;
   serviceSecondaryTitle?: string;
   title: string;
 };
@@ -55,6 +57,7 @@ type ServicesSectionProps = {
 export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
+  detailPageCtaLabel,
   detailsCtaLabel,
   fitLabel,
   goalOptions,
@@ -68,6 +71,7 @@ export function ServicesSection({
   sectionRef,
   serviceCards,
   serviceContextNote,
+  serviceDetailHrefs,
   serviceSecondaryTitle,
   title,
 }: ServicesSectionProps) {
@@ -186,6 +190,7 @@ export function ServicesSection({
               ctaLabel={primaryCtaLabel}
               ctaProjectGoal={selectedGoalLabel}
               defaultDeliveryLabel={deliveryLabel}
+              detailPageCtaLabel={detailPageCtaLabel}
               detailsCtaLabel={detailsCtaLabel}
               fitLabel={fitLabel}
               isDetailsOpen={openCardKey === card.key}
@@ -201,6 +206,7 @@ export function ServicesSection({
               onPointerLeaveAction={resetCardSpotlight}
               onPointerMoveAction={setCardSpotlight}
               recommendedBadgeLabel={recommendedBadgeLabel}
+              serviceDetailHref={serviceDetailHrefs?.[card.key]}
             />
           ) : (
             <ServiceCard

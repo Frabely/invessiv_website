@@ -1,9 +1,10 @@
 ﻿"use client";
 
-import { useRef } from "react";
 import type { KeyboardEvent, MouseEvent, PointerEvent } from "react";
+import { useRef } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { SECTION_HREFS } from "@/config/navigation/home";
@@ -18,6 +19,7 @@ type FeaturedServiceCardProps = {
   ctaLabel: string;
   ctaProjectGoal?: string;
   defaultDeliveryLabel: string;
+  detailPageCtaLabel: string;
   detailsCtaLabel: string;
   fitLabel: string;
   isDetailsOpen: boolean;
@@ -30,6 +32,7 @@ type FeaturedServiceCardProps = {
   onPointerLeaveAction: (event: PointerEvent<HTMLElement>) => void;
   onPointerMoveAction: (event: PointerEvent<HTMLElement>) => void;
   recommendedBadgeLabel: string;
+  serviceDetailHref?: string;
 };
 
 export function FeaturedServiceCard({
@@ -37,6 +40,7 @@ export function FeaturedServiceCard({
   ctaLabel,
   ctaProjectGoal = "",
   defaultDeliveryLabel,
+  detailPageCtaLabel,
   detailsCtaLabel,
   fitLabel,
   isDetailsOpen,
@@ -49,6 +53,7 @@ export function FeaturedServiceCard({
   onPointerLeaveAction,
   onPointerMoveAction,
   recommendedBadgeLabel,
+  serviceDetailHref,
 }: FeaturedServiceCardProps) {
   const detailsId = `services-details-${card.key}`;
   const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -123,11 +128,11 @@ export function FeaturedServiceCard({
       <article
         aria-label={card.title}
         className={cardClasses}
-        data-service-card="true"
+        data-service-card={hasExpandableContent ? "true" : undefined}
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
-        onPointerLeave={onPointerLeaveAction}
-        onPointerMove={onPointerMoveAction}
+        onPointerLeave={hasExpandableContent ? onPointerLeaveAction : undefined}
+        onPointerMove={hasExpandableContent ? onPointerMoveAction : undefined}
       >
         <div className={styles.surface}>
           <div className={styles.header}>
@@ -214,6 +219,12 @@ export function FeaturedServiceCard({
                 {ctaLabel}
               </span>
             )}
+
+            {serviceDetailHref ? (
+              <ServiceCardLink href={serviceDetailHref}>
+                {detailPageCtaLabel}
+              </ServiceCardLink>
+            ) : null}
 
             {hasExpandableContent ? (
               <button

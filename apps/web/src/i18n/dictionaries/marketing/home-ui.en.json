@@ -46,6 +46,7 @@
     "upgrade": "Request upgrade",
     "maintenance": "Request maintenance & support"
   },
+  "servicesDetailPageCta": "See process and costs",
   "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Timeframe"
 }

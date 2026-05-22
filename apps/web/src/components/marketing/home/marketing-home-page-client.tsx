@@ -11,9 +11,11 @@ import {
   PRIMARY_NAVIGATION_SECTION_IDS,
   SECTION_HREFS,
 } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import { useServicesCardReveal } from "@/hooks/marketing/use-services-card-reveal";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 
 type MarketingHomePageClientProps = {
@@ -28,6 +30,10 @@ export function MarketingHomePageClient({
   const sections = getHomeSections(locale);
   const ui = getHomeUiContent(locale);
   const heroSection = sections.find((section) => section.id === "hero");
+  const landingPageServiceHref = createLocalePathname(
+    SITE_ROUTES.LANDING_PAGE_SERVICE,
+    locale,
+  );
 
   if (!heroSection) {
     throw new Error("Expected home hero section to be available.");
@@ -65,6 +71,7 @@ export function MarketingHomePageClient({
         />
 
         <HomeSectionsRenderer
+          landingPageServiceHref={landingPageServiceHref}
           sections={sections}
           servicesSectionRef={servicesSectionRef}
           showProofSection={showProofSection}

@@ -33,8 +33,7 @@ const serviceCards = [
     highlight: "schnell live & conversion-fokussiert",
     pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
     delivery: "3-7 Tage",
-    included: ["Rahmen", "Design", "SEO", "Performance", "Tracking"],
-    details: ["Zusatzhinweis"],
+    included: ["Rahmen", "Mobil klar", "Kontaktweg"],
   },
   {
     key: "process" as const,
@@ -57,7 +56,8 @@ const serviceCards = [
     highlight: "spürbare UX- und Speed-Verbesserung",
     pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
     delivery: "2-5 Tage",
-    included: ["Analyse", "UX", "Optimierung"],
+    included: ["Analyse", "UX", "Optimierung", "Review"],
+    details: ["Zusatzhinweis"],
   },
   {
     key: "maintenance" as const,
@@ -90,6 +90,7 @@ function renderSection() {
     <ServicesSection
       addonBadgeLabel="Add-on"
       deliveryLabel="Lieferzeit"
+      detailPageCtaLabel="Ablauf & Kosten ansehen"
       detailsCtaLabel="Mehr Infos"
       fitLabel="Ideal für"
       goalOptions={goalOptions}
@@ -109,6 +110,9 @@ function renderSection() {
       sectionRef={{ current: null }}
       serviceCards={serviceCards}
       serviceContextNote="Alle Projekte werden individuell kalkuliert. Du erhältst vor Start ein verbindliches Angebot in Textform."
+      serviceDetailHrefs={{
+        landing: "/de/services/landing-page",
+      }}
       serviceSecondaryTitle="Schon etwas da?"
       title="Was brauchst du gerade?"
     />,
@@ -212,6 +216,17 @@ describe("ServicesSection", () => {
     ).toBeTruthy();
     expect(screen.queryByText("KI-Templates & Agents")).toBeNull();
     const landingCard = getArticleByTitle("Landingpages");
+    expect(landingCard.getAttribute("data-service-card")).toBeNull();
+    expect(
+      within(landingCard)
+        .getByRole("link", { name: "Projekt anfragen" })
+        .getAttribute("href"),
+    ).toBe("#contact");
+    expect(
+      within(landingCard)
+        .getByRole("link", { name: "Ablauf & Kosten ansehen" })
+        .getAttribute("href"),
+    ).toBe("/de/services/landing-page");
     expect(
       within(landingCard)
         .getByRole("link", { name: "Projekt anfragen" })
@@ -309,25 +324,25 @@ describe("ServicesSection", () => {
     ).toBe("neue Website mit klarem Anfrageweg starten");
   });
 
-  it("keeps only one primary card expanded at a time without changing the top selection", () => {
+  it("keeps only one expandable primary card expanded at a time without changing the top selection", () => {
     renderSection();
 
-    const landingArticle = getArticleByTitle("Landingpages");
+    const upgradeArticle = getArticleByTitle("Webseiten-Upgrade");
     const webArticle = getArticleByTitle("Webseiten");
-    const landingDetails = document.getElementById("services-details-landing");
+    const upgradeDetails = document.getElementById("services-details-upgrade");
     const webDetails = document.getElementById("services-details-web");
 
-    expect(landingDetails?.hasAttribute("hidden")).toBe(true);
+    expect(upgradeDetails?.hasAttribute("hidden")).toBe(true);
     expect(webDetails?.hasAttribute("hidden")).toBe(true);
 
-    fireEvent.click(landingArticle as HTMLElement);
-    expect(landingDetails?.hasAttribute("hidden")).toBe(false);
+    fireEvent.click(upgradeArticle as HTMLElement);
+    expect(upgradeDetails?.hasAttribute("hidden")).toBe(false);
     expect(webDetails?.hasAttribute("hidden")).toBe(true);
     expect(
-      within(landingArticle as HTMLElement)
+      within(upgradeArticle as HTMLElement)
         .getByRole("link", { name: "Projekt anfragen" })
         .getAttribute("data-project-offer"),
-    ).toBe("landing");
+    ).toBe("upgrade");
     expect(
       screen
         .getByRole("button", { name: "Besucher zu Anfragen führen" })
@@ -335,7 +350,7 @@ describe("ServicesSection", () => {
     ).toBe("true");
 
     fireEvent.click(webArticle as HTMLElement);
-    expect(landingDetails?.hasAttribute("hidden")).toBe(true);
+    expect(upgradeDetails?.hasAttribute("hidden")).toBe(true);
     expect(webDetails?.hasAttribute("hidden")).toBe(false);
     expect(
       within(webArticle as HTMLElement)

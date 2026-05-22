@@ -172,38 +172,12 @@
 }
 
 .toggleArrow {
-  font-size: 0.96rem;
-  line-height: 1;
-}
-
-.ctaLink {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  width: fit-content;
-  color: color-mix(in srgb, var(--color-text) 34%, var(--color-cta) 66%);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 700;
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 62%, transparent);
-  text-underline-offset: 0.16em;
-}
-
-.ctaLink::after {
-  content: "›";
-  font-size: 1em;
-  line-height: 1;
-  color: color-mix(in srgb, var(--color-cta) 82%, var(--color-text) 18%);
-}
-
-.ctaLink:hover {
-  color: color-mix(in srgb, var(--color-text) 22%, var(--color-cta) 78%);
-  text-decoration-color: color-mix(in srgb, var(--color-cta) 74%, transparent);
-}
-
-.ctaLink:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-cta) 42%, transparent);
-  outline-offset: 3px;
-  border-radius: 6px;
+  justify-content: center;
+  font-size: 0.96rem;
+  line-height: 0;
+  transform: translateY(-0.04em);
 }
 
 @media (max-width: 759px) {
@@ -292,8 +266,7 @@
     font-size: var(--font-size-body-lg);
   }
 
-  .pricingHint,
-  .ctaLink {
+  .pricingHint {
     font-size: var(--font-size-label-md);
   }
 }

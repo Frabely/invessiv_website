@@ -45,6 +45,7 @@ describe("FeaturedServiceCard", () => {
           ctaLabel="Landingpage anfragen"
           ctaProjectGoal="mehr Anfragen gewinnen"
           defaultDeliveryLabel="Lieferzeit"
+          detailPageCtaLabel="Ablauf & Kosten ansehen"
           detailsCtaLabel="Mehr Infos"
           fitLabel="Ideal fuer"
           isDetailsOpen={isDetailsOpen}

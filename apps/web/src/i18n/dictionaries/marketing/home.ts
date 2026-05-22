@@ -3,7 +3,9 @@ import {
   SECTION_HREFS,
   type SectionId,
 } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import {
   COMPANY,
@@ -101,6 +103,10 @@ export type ProcessCtaCopy = {
 export type QnaItemCopy = {
   question: string;
   answer: string;
+  link?: {
+    href: string;
+    label: string;
+  };
 };
 
 export type QnaSecondaryContactCopy = {
@@ -353,18 +359,26 @@ export type HomeSectionContent = {
   [Id in ContentSectionId]: { id: Id } & ContentSectionMap[Id];
 }[ContentSectionId];
 
-const LEGAL_PAGE_HREFS = {
+const LOCALIZED_PAGE_HREFS: Record<Locale, Partial<Record<string, string>>> = {
   de: {
-    imprint: "/de/imprint",
-    privacy: "/de/privacy",
-    terms: "/de/terms",
+    [SITE_ROUTES.IMPRINT]: createLocalePathname(SITE_ROUTES.IMPRINT, "de"),
+    [SITE_ROUTES.PRIVACY]: createLocalePathname(SITE_ROUTES.PRIVACY, "de"),
+    [SITE_ROUTES.TERMS]: createLocalePathname(SITE_ROUTES.TERMS, "de"),
+    [SITE_ROUTES.LANDING_PAGE_SERVICE]: createLocalePathname(
+      SITE_ROUTES.LANDING_PAGE_SERVICE,
+      "de",
+    ),
   },
   en: {
-    imprint: "/en/imprint",
-    privacy: "/en/privacy",
-    terms: "/en/terms",
+    [SITE_ROUTES.IMPRINT]: createLocalePathname(SITE_ROUTES.IMPRINT, "en"),
+    [SITE_ROUTES.PRIVACY]: createLocalePathname(SITE_ROUTES.PRIVACY, "en"),
+    [SITE_ROUTES.TERMS]: createLocalePathname(SITE_ROUTES.TERMS, "en"),
+    [SITE_ROUTES.LANDING_PAGE_SERVICE]: createLocalePathname(
+      SITE_ROUTES.LANDING_PAGE_SERVICE,
+      "en",
+    ),
   },
-} as const;
+};
 
 const HOME_SECTIONS = [
   {
@@ -500,16 +514,9 @@ const HOME_SECTIONS = [
             pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
             delivery: "3–10 Tage",
             included: [
-              "Klare Angebotsstruktur mit einem eindeutigen nächsten Schritt",
-              "Mobile Gestaltung mit schneller Orientierung",
-              "Abschnitte für Nutzen, Vertrauen, Ablauf und Kontakt",
-              "Saubere Grundlage für Auffindbarkeit, Vorschau beim Teilen und schnelle Ladezeiten",
-              "1–2 Feedbackrunden inklusive",
-            ],
-            details: [
-              "Copy-Feinschliff oder Inhaltsproduktion kann ergänzt werden.",
-              "Ab der 3. Feedbackrunde wird zusätzlicher Aufwand transparent kalkuliert.",
-              "Hosting, Domain und externe Tools stimmen wir bei Bedarf separat ab.",
+              "Klare Angebotsstruktur",
+              "Mobil schnell verständlich",
+              "Kontaktweg direkt integriert",
             ],
           },
           {
@@ -627,16 +634,9 @@ const HOME_SECTIONS = [
             pricingHint: "Quote based on goal, scope, and feedback depth",
             delivery: "3–10 days",
             included: [
-              "Clear offer structure with one obvious next step",
-              "Mobile design with fast orientation",
-              "Sections for value, trust, process, and contact",
-              "Clean foundation for discoverability, share previews, and fast load times",
-              "1–2 feedback rounds included",
-            ],
-            details: [
-              "Copy refinement or content production can be added.",
-              "From the 3rd feedback round onward, additional effort is quoted transparently.",
-              "Hosting, domain, and external tools are aligned separately when needed.",
+              "Clear offer structure",
+              "Fast to understand on mobile",
+              "Direct contact path included",
             ],
           },
           {
@@ -863,7 +863,11 @@ const HOME_SECTIONS = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung.",
+              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung. Für klassische Einzel-Landingpages gibt es einen eigenen Ablauf auf der Landingpage-Detailseite.",
+            link: {
+              label: "Landingpage-Detailseite ansehen",
+              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
+            },
           },
           {
             question: "Kannst du meine bestehende Webseite überarbeiten?",
@@ -920,7 +924,11 @@ const HOME_SECTIONS = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right service model, the next step, and, where useful, an individual offer for delivery.",
+              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right service model, the next step, and, where useful, an individual offer for delivery. Classic single landing pages have their own process on the landing page detail page.",
+            link: {
+              label: "View landing page details",
+              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
+            },
           },
           {
             question: "Can you redesign my existing website?",
@@ -1487,6 +1495,15 @@ const HOME_SECTIONS = [
             links: [],
           },
           {
+            title: "Leistungen",
+            links: [
+              {
+                label: "Landingpage erstellen lassen",
+                href: SITE_ROUTES.LANDING_PAGE_SERVICE,
+              },
+            ],
+          },
+          {
             title: "Kontakt",
             links: [
               { label: "Invessiv", href: "/imprint#company-details" },
@@ -1521,6 +1538,15 @@ const HOME_SECTIONS = [
           {
             title: "Menu",
             links: [],
+          },
+          {
+            title: "Services",
+            links: [
+              {
+                label: "Get a landing page built",
+                href: SITE_ROUTES.LANDING_PAGE_SERVICE,
+              },
+            ],
           },
           {
             title: "Contact",
@@ -1562,22 +1588,41 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
     label: siteHeaderUi.labelsByHref[item.href] ?? item.href,
   }));
 
-  const localizeLegalHref = (href: string) => {
+  const localizeInternalHref = (href: string) => {
     if (!href.startsWith("/")) {
       return href;
     }
 
-    return href
-      .replace("/imprint", LEGAL_PAGE_HREFS[locale].imprint)
-      .replace("/privacy", LEGAL_PAGE_HREFS[locale].privacy)
-      .replace("/terms", LEGAL_PAGE_HREFS[locale].terms);
+    const hashIndex = href.indexOf("#");
+    const pathname = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+    const hash = hashIndex >= 0 ? href.slice(hashIndex) : "";
+    const localizedPathname = LOCALIZED_PAGE_HREFS[locale][pathname];
+
+    return localizedPathname ? `${localizedPathname}${hash}` : href;
   };
 
   return HOME_SECTIONS.map((section): HomeSectionContent => {
     if (section.id !== "footer") {
-      return {
+      const localizedSection = {
         id: section.id,
         ...section.copy[locale],
+      } as HomeSectionContent;
+
+      if (localizedSection.id !== "faq") {
+        return localizedSection;
+      }
+
+      return {
+        ...localizedSection,
+        qnaItems: localizedSection.qnaItems.map((item) => ({
+          ...item,
+          link: item.link
+            ? {
+                ...item.link,
+                href: localizeInternalHref(item.link.href),
+              }
+            : undefined,
+        })),
       } as HomeSectionContent;
     }
 
@@ -1603,16 +1648,16 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
         ...column,
         links: column.links.map((link) => ({
           ...link,
-          href: localizeLegalHref(link.href),
+          href: localizeInternalHref(link.href),
         })),
       })),
       footerSocialLinks: localizedSection.footerSocialLinks.map((link) => ({
         ...link,
-        href: localizeLegalHref(link.href),
+        href: localizeInternalHref(link.href),
       })),
       footerLegalLinks: localizedSection.footerLegalLinks.map((link) => ({
         ...link,
-        href: localizeLegalHref(link.href),
+        href: localizeInternalHref(link.href),
       })),
     };
   });

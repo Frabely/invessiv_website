@@ -24,6 +24,7 @@ import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
 
 type HomeSectionsRendererProps = {
+  landingPageServiceHref: string;
   sections: HomeSectionContent[];
   servicesSectionRef: RefObject<HTMLElement | null>;
   showProofSection: boolean;
@@ -32,6 +33,7 @@ type HomeSectionsRendererProps = {
 };
 
 export function HomeSectionsRenderer({
+  landingPageServiceHref,
   sections,
   servicesSectionRef,
   showProofSection,
@@ -86,6 +88,7 @@ export function HomeSectionsRenderer({
               <ServicesSection
                 addonBadgeLabel={ui.servicesAddonBadgeLabel}
                 deliveryLabel={ui.servicesDeliveryLabel}
+                detailPageCtaLabel={ui.servicesDetailPageCta}
                 detailsCtaLabel={ui.servicesDetailsCta}
                 fitLabel={ui.servicesFitLabel}
                 goalOptions={ui.servicesIntentOptions}
@@ -100,6 +103,9 @@ export function HomeSectionsRenderer({
                 sectionRef={servicesSectionRef}
                 serviceCards={section.serviceCards}
                 serviceContextNote={section.serviceContextNote}
+                serviceDetailHrefs={{
+                  landing: landingPageServiceHref,
+                }}
                 serviceSecondaryTitle={section.serviceSecondaryTitle}
                 title={section.title}
               />

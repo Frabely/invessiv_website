@@ -46,6 +46,7 @@
     "upgrade": "Upgrade anfragen",
     "maintenance": "Wartung & Support anfragen"
   },
+  "servicesDetailPageCta": "Ablauf & Kosten ansehen",
   "servicesDetailsCta": "Mehr Infos",
   "servicesDeliveryLabel": "Zeitrahmen"
 }

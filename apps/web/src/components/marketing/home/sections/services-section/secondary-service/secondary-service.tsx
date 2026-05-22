@@ -1,9 +1,10 @@
 ﻿"use client";
 
-import { useState } from "react";
 import type { MouseEvent } from "react";
+import { useState } from "react";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
@@ -98,8 +99,7 @@ export function SecondaryService({
           </span>
         </button>
         <div className={styles.ctaSlot}>
-          <a
-            className={styles.ctaLink}
+          <ServiceCardLink
             data-analytics-event="cta_click"
             data-analytics-location="pricing"
             data-analytics-target="form"
@@ -109,7 +109,7 @@ export function SecondaryService({
             href={SECTION_HREFS.contact}
           >
             {ctaLabel}
-          </a>
+          </ServiceCardLink>
         </div>
       </div>
     </article>

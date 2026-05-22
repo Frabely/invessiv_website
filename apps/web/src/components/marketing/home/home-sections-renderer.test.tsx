@@ -33,6 +33,7 @@ describe("HomeSectionsRenderer", () => {
   it("passes the five active services into the project request select", () => {
     render(
       <HomeSectionsRenderer
+        landingPageServiceHref="/de/services/landing-page"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={true}
@@ -66,6 +67,7 @@ describe("HomeSectionsRenderer", () => {
   it("renders the lead bridge before services and proof after services", () => {
     render(
       <HomeSectionsRenderer
+        landingPageServiceHref="/de/services/landing-page"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={true}
@@ -101,6 +103,7 @@ describe("HomeSectionsRenderer", () => {
   it("does not render the proof section while the launch flag is disabled", () => {
     render(
       <HomeSectionsRenderer
+        landingPageServiceHref="/de/services/landing-page"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={false}
