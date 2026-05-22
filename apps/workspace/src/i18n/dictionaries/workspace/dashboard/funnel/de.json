@@ -19,7 +19,8 @@
     "won": "Abgeschlossen und gewonnen."
   },
   "stageCountAriaSuffix": "Leads",
-  "pipelineShare": "{value} % der Pipeline",
+  "pipelineShareRoot": "{value} % aktive Pipeline",
+  "pipelineShareFromPrev": "{value} % von {stage}",
   "dropOff": {
     "forwarded": "{value} % weiter",
     "noData": "—",
@@ -29,10 +30,18 @@
     "percent": "{value} %",
     "ariaLabel": "{label}: {count} Leads, {value} vom Gesamtbestand"
   },
-  "total": {
-    "label": "Gesamt"
+  "summary": {
+    "activePipeline": "Aktive Pipeline",
+    "total": "{count} gesamt",
+    "excluded": "{count} ausgeschlossen",
+    "outcomeLabel": "{count} {label}"
+  },
+  "insight": {
+    "largestDropOff": "Größter Verlust: {from} → {to} · {drop} Leads offen",
+    "weakestConversion": "Schwächste Conversion: {from} → {to} · {value} %"
   },
   "pendingReview": {
+    "prefix": "davon",
     "format": "{count} warten auf Review"
   },
   "connectorAriaLabel": "Übergang zur nächsten Stufe",

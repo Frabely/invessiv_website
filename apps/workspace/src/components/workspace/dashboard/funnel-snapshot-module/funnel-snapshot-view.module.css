@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1rem;
   padding: clamp(1.05rem, 1.8vw, 1.5rem);
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
@@ -12,18 +12,14 @@
     color-mix(in srgb, var(--color-surface-1) 70%, transparent) 100%
   );
   width: 100%;
-  height: 100%;
-  /* Stacked layout floor (mobile + narrow tablet). */
-  min-height: clamp(640px, 104vw, 800px);
+  height: auto;
   overflow: hidden;
   isolation: isolate;
 }
 
 @media (min-width: 1100px) {
-  /* Once the internal cards lay out horizontally, the widget is wider and
-       dramatically shorter — drop the floor accordingly. */
   .card {
-    min-height: clamp(255px, 22vw, 330px);
+    min-height: 0;
   }
 }
 
@@ -70,7 +66,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.7rem;
   flex-wrap: wrap;
 }
 
@@ -85,94 +81,75 @@
 
 .headerMetrics {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
-  gap: 0.65rem;
+  gap: 0.6rem;
   flex-wrap: wrap;
 }
 
-.totalCount {
+.summaryLine {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.summaryPrimary {
   display: inline-grid;
   grid-template-columns: auto auto;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.32rem 0.55rem;
+  padding: 0.34rem 0.6rem;
   border-radius: 999px;
   border: 1px solid
     color-mix(in srgb, var(--color-accent-warm) 30%, transparent);
-  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 6%, transparent) inset;
 }
 
-.totalCountLabel {
-  font-size: 0.66rem;
+.summaryPrimaryLabel {
+  font-size: 0.67rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
 }
 
-.totalCountValue {
-  font-size: 0.95rem;
+.summaryPrimaryValue {
+  font-size: 0.98rem;
   font-weight: 780;
   color: var(--color-text);
   font-variant-numeric: tabular-nums;
 }
 
-.outcomes {
+.summarySecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 62%, transparent);
+  color: var(--color-text-muted);
+  font-size: 0.74rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryOutcomes {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.45rem;
+  gap: 0.32rem;
   flex-wrap: wrap;
 }
 
-.outcome {
-  display: inline-grid;
-  grid-template-columns: auto auto auto;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.32rem 0.55rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 62%, transparent);
-  color: var(--color-text);
-}
-
-.outcome[data-outcome="on_hold"] {
-  border-color: color-mix(in srgb, var(--color-text-muted) 34%, transparent);
-}
-
-.outcome[data-outcome="lost"] {
-  border-color: color-mix(
-    in srgb,
-    var(--color-danger, #f87171) 26%,
-    transparent
-  );
-  background: color-mix(in srgb, var(--color-danger, #f87171) 8%, transparent);
-}
-
-.outcome[data-outcome="archived"] {
-  opacity: 0.82;
-}
-
-.outcomeBadge {
+.summaryOutcomeBadge {
   max-width: 100%;
-}
-
-.outcomeValue {
-  min-width: 1.2ch;
-  font-size: 0.95rem;
-  font-weight: 750;
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.outcomePercent {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+  transform: scale(0.96);
+  transform-origin: center;
 }
 
 .track {
@@ -180,7 +157,7 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.85rem;
+  gap: 0.65rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -189,18 +166,16 @@
 .stageItem {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.5rem;
   min-width: 0;
 }
-
-/* ---------- Stage card ---------- */
 
 .stageCard {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: clamp(0.9rem, 1.5vw, 1.15rem);
+  gap: 0.6rem;
+  padding: clamp(0.92rem, 1.5vw, 1.15rem);
   border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
   background: linear-gradient(
@@ -215,8 +190,6 @@
   --stage-delay: 0s;
 }
 
-/* Match LeadStatusBadge tones 1:1 — see lead-badge.module.css.
-   new → tone Info, contacted → Primary, responded → Indigo, qualified → Orange. */
 .stageCard[data-stage="new"] {
   --stage-accent: color-mix(in srgb, #38bdf8 74%, var(--color-text-muted) 26%);
 }
@@ -277,13 +250,12 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 0.28rem;
+  gap: 0.35rem;
   z-index: 1;
-  margin-top: 0.1rem;
 }
 
 .stageValue {
-  font-size: clamp(2rem, 3.8vw, 2.85rem);
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
   font-weight: 700;
   letter-spacing: -0.028em;
   line-height: 1;
@@ -296,15 +268,20 @@
 .stageInlineNote {
   display: inline-flex;
   align-items: center;
-  min-height: 1.35rem;
-  padding: 0.18rem 0.45rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, #f59e0b 28%, transparent);
-  background: color-mix(in srgb, #f59e0b 9%, transparent);
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: color-mix(in srgb, var(--color-text) 82%, #f59e0b 18%);
-  font-variant-numeric: tabular-nums;
+  gap: 0.38rem;
+  min-height: 1.45rem;
+  flex-wrap: wrap;
+}
+
+.stageInlineNotePrefix {
+  font-size: 0.75rem;
+  font-weight: 650;
+  color: color-mix(in srgb, var(--color-text-muted) 84%, transparent);
+}
+
+.stageInlineBadge {
+  transform: scale(0.92);
+  transform-origin: left center;
 }
 
 .stageShareRow {
@@ -312,7 +289,8 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.32rem;
+  margin-top: auto;
 }
 
 .stageBarTrack {
@@ -355,10 +333,10 @@
 }
 
 .stageShareLabel {
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
-  color: color-mix(in srgb, var(--color-text) 78%, transparent);
+  color: color-mix(in srgb, var(--color-text) 82%, transparent);
   font-variant-numeric: tabular-nums;
 }
 
@@ -374,62 +352,48 @@
   border: 0;
 }
 
-/* ---------- Connector ---------- */
-
-.connector {
+.insight {
   position: relative;
-  display: flex;
+  z-index: 1;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0.35rem;
-  min-height: 44px;
-  --connector-delay: 0s;
+  gap: 0.42rem;
+  margin: 0.25rem 0 0;
+  padding: 0.42rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 58%, transparent);
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.2;
+  flex-wrap: wrap;
 }
 
-.connectorChevron {
+.insight[data-kind="drop"] {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 22%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 7%, transparent);
+  color: color-mix(
+    in srgb,
+    var(--color-text) 86%,
+    var(--color-accent-warm) 14%
+  );
+}
+
+.insightIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
+  width: 1rem;
   height: 1rem;
   flex: 0 0 auto;
   color: var(--color-accent-warm);
-  font-size: 0.95rem;
-  transform: rotate(90deg);
+  font-size: 0.78rem;
 }
 
-.connector[data-has-data="false"] .connectorChevron {
-  color: var(--color-text-muted);
-}
-
-.connectorLabel {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.24rem;
-  text-align: center;
-}
-
-.connectorPercent {
-  font-size: 0.84rem;
-  font-weight: 700;
-  letter-spacing: 0.005em;
-  color: var(--color-text);
+.insightText {
   font-variant-numeric: tabular-nums;
 }
-
-.connector[data-has-data="false"] .connectorPercent {
-  color: var(--color-text-muted);
-}
-
-.connectorNoDataDescription {
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  letter-spacing: 0.01em;
-}
-
-/* ---------- Animations ---------- */
 
 @keyframes funnel-stage-accent {
   from {
@@ -457,16 +421,14 @@
   }
 }
 
-/* ---------- Desktop layout: cards in row, connectors inline ---------- */
-
 @media (min-width: 1100px) {
   .track {
     grid-template-columns:
-      minmax(0, 1fr) minmax(50px, 0.4fr)
-      minmax(0, 1fr) minmax(50px, 0.4fr)
-      minmax(0, 1fr) minmax(50px, 0.4fr)
-      minmax(0, 1fr) minmax(50px, 0.4fr)
-      minmax(0, 1fr) minmax(50px, 0.4fr)
+      minmax(0, 1fr) minmax(78px, 0.55fr)
+      minmax(0, 1fr) minmax(78px, 0.55fr)
+      minmax(0, 1fr) minmax(78px, 0.55fr)
+      minmax(0, 1fr) minmax(78px, 0.55fr)
+      minmax(0, 1fr) minmax(78px, 0.55fr)
       minmax(0, 1fr);
     align-items: stretch;
     gap: 0;
@@ -483,37 +445,12 @@
   }
 
   .stageValue {
-    font-size: clamp(1.75rem, 2.1vw, 2.4rem);
-  }
-
-  .connector {
-    grid-row: 1;
-    align-items: center;
-    justify-items: center;
-    justify-content: center;
-    padding: 0 0.35rem;
-    min-width: 50px;
-    min-height: 0;
-  }
-
-  .connectorChevron {
-    transform: rotate(0deg);
-    width: 1.35rem;
-    height: 1rem;
-  }
-
-  .connectorLabel {
-    flex-direction: column;
-    gap: 0.16rem;
+    font-size: clamp(1.9rem, 2vw, 2.65rem);
   }
 }
 
 @media (min-width: 1280px) {
-  .connector {
-    min-width: 64px;
-  }
-
   .stageValue {
-    font-size: clamp(1.9rem, 2.15vw, 2.65rem);
+    font-size: clamp(2rem, 2.05vw, 2.8rem);
   }
 }

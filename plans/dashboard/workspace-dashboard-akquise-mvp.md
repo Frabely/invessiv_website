@@ -109,7 +109,7 @@ Der User hat **1 Kunden** und steht aktuell in der **Lead-Akquise-Phase**: Leads
 - Tests: Query-Handler (Vitest + Test-DB), KPI-Card (jsdom), Modul-Render (jsdom).
 - **Skills:** `frontend-design`, `test-driven-development`.
 
-### Task 3 — Funnel-Cards (4 Stufen mit Drop-Off)
+### Task 3 — Funnel-Cards (4 Stufen mit Drop-Off) ✅ erledigt
 
 - Query-Handler `get-funnel-snapshot.query-handler.ts`: Counts pro Status (`new`, `contacted`, `responded`, `qualified`) im Zeitraum.
 - DTO `FunnelSnapshotDto { stages: Array<{ key: ContactLeadStatus; count: number; dropOffFromPrev: number | null }> }`.
