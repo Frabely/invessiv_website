@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
 
 type LocaleExpectation = {
-  detailsLabel: string;
+  detailLinkLabel: string;
   imprintPageTitle: string;
   imprintHref: "/de/imprint" | "/en/imprint";
   heading: string;
   htmlLang: "de" | "en";
+  landingServiceHref: "/de/services/landing-page" | "/en/services/landing-page";
   localePath: "/de" | "/en";
   maintenanceTitle: string;
   navAriaLabel: string;
@@ -24,10 +25,11 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
   {
     localePath: "/de",
     htmlLang: "de",
+    landingServiceHref: "/de/services/landing-page",
     imprintHref: "/de/imprint",
     imprintPageTitle: "Impressum",
     heading: "Was brauchst du gerade?",
-    detailsLabel: "Mehr Infos",
+    detailLinkLabel: "Ablauf & Kosten ansehen",
     maintenanceTitle: "Wartung & Support",
     processTitle: "Prozessoptimierungs-Tools",
     recommendedBadge: "Empfohlen",
@@ -43,10 +45,11 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
   {
     localePath: "/en",
     htmlLang: "en",
+    landingServiceHref: "/en/services/landing-page",
     imprintHref: "/en/imprint",
     imprintPageTitle: "Legal Notice",
     heading: "What do you need right now?",
-    detailsLabel: "More details",
+    detailLinkLabel: "See process and costs",
     maintenanceTitle: "Maintenance & support",
     processTitle: "Process optimization tools",
     recommendedBadge: "Recommended",
@@ -134,7 +137,10 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     );
     await expect(
       servicesSection.locator('[data-service-card="true"]'),
-    ).toHaveCount(3);
+    ).toHaveCount(2);
+    await expect(
+      servicesSection.locator('[data-card-key="landing"]'),
+    ).toBeVisible();
     await expect(
       servicesSection
         .locator('[data-card-key="web"]')
@@ -161,15 +167,11 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     ).toBeVisible();
 
     const landingCard = servicesSection
-      .locator('[data-service-card="true"]')
+      .locator('[data-card-key="landing"]')
       .first();
-    await landingCard
-      .getByRole("button", { name: expectations.detailsLabel })
-      .click();
-
     await expect(
-      landingCard.locator('a[href="#contact"]').first(),
-    ).toBeVisible();
+      landingCard.getByRole("link", { name: expectations.detailLinkLabel }),
+    ).toHaveAttribute("href", expectations.landingServiceHref);
 
     const missingAnchorTargets = await page.evaluate((localePath) => {
       const uniqueTargets = [
