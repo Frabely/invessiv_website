@@ -7,7 +7,7 @@ import {
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
 import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
-import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
+import { createLandingStructuredData } from "@/lib/seo/landing-structured-data";
 import {
   createLocaleAlternates,
   createPageMetadata,
@@ -64,11 +64,7 @@ export default async function LandingRoute({ params }: LandingRouteProps) {
   }
 
   const activeLocale = locale as Locale;
-  const { description } = getLandingMetaContent(activeLocale);
-  const landingStructuredData = createMarketingStructuredData(
-    activeLocale,
-    description,
-  );
+  const landingStructuredData = createLandingStructuredData(activeLocale);
 
   return (
     <>

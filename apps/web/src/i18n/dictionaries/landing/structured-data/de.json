@@ -1,0 +1,20 @@
+{
+  "audienceType": "Dienstleister, Selbstständige und kleine Unternehmen",
+  "areaServed": {
+    "countryCode": "DE"
+  },
+  "breadcrumbs": {
+    "home": "Start",
+    "services": "Leistungen",
+    "service": "Landingpage erstellen lassen"
+  },
+  "offer": {
+    "priceCurrency": "EUR",
+    "priceRangePrefix": "ab",
+    "priceRangeCurrencySymbol": "€"
+  },
+  "service": {
+    "name": "Landingpage erstellen lassen",
+    "serviceType": "Landingpage-Entwicklung"
+  }
+}

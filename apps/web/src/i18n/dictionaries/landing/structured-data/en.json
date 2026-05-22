@@ -1,0 +1,20 @@
+{
+  "audienceType": "Service businesses, freelancers, and small businesses",
+  "areaServed": {
+    "countryCode": "DE"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "services": "Services",
+    "service": "Landing page development"
+  },
+  "offer": {
+    "priceCurrency": "EUR",
+    "priceRangePrefix": "ab",
+    "priceRangeCurrencySymbol": "€"
+  },
+  "service": {
+    "name": "Landing page development",
+    "serviceType": "Landing page development"
+  }
+}

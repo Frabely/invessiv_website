@@ -4,7 +4,7 @@ import {
   COMPANY_SOCIAL_LINKEDIN,
 } from "@/config/company";
 import type { Locale } from "@/config/i18n";
-import { SITE_URL } from "@/lib/site-metadata";
+import { SITE_LOGO_URL, SITE_URL } from "@/lib/site-metadata";
 
 const PHONE_DISPLAY_BY_LOCALE: Record<Locale, string> = {
   de: COMPANY.contact.phoneDisplayDe,
@@ -32,7 +32,7 @@ export function createMarketingStructuredData(
         "@id": organizationId,
         name: COMPANY.brandName,
         url: SITE_URL,
-        logo: `${SITE_URL}/brand/icon.png`,
+        logo: SITE_LOGO_URL,
         email: COMPANY.contact.email,
         telephone: phoneDisplay,
         sameAs: [COMPANY_SOCIAL_LINKEDIN, COMPANY_SOCIAL_INSTAGRAM],
