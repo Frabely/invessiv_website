@@ -2,16 +2,25 @@ import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CSSProperties } from "react";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadStatusBadge } from "@/components/workspace/leads/shared/lead-status-badge/lead-status-badge";
+import {
+  FunnelInsightKind,
+  type FunnelInsightKind as FunnelInsightKindValue,
+} from "../../../../common/constants/dashboard/funnel-insight-kind";
+import { LeadStatusBadge } from "../../leads/shared";
 import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
 import type { Locale } from "@/config/i18n";
 import type { DashboardFunnelDictionary } from "@/i18n/dictionaries/workspace/dashboard";
-import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
+import { formatIntegerCount } from "../../../../lib/workspace/dashboard/format-integer";
+import { FunnelConnector } from "./funnel-connector";
 import styles from "./funnel-snapshot-view.module.css";
 
 const PERCENT_PLACEHOLDER = "{value}";
 const COUNT_PLACEHOLDER = "{count}";
 const LABEL_PLACEHOLDER = "{label}";
+const FROM_PLACEHOLDER = "{from}";
+const TO_PLACEHOLDER = "{to}";
+const DROP_PLACEHOLDER = "{drop}";
+const STAGE_PLACEHOLDER = "{stage}";
 
 type FunnelSnapshotViewProps = {
   data: FunnelSnapshotDto;
@@ -19,6 +28,22 @@ type FunnelSnapshotViewProps = {
   locale: Locale;
   title: string;
 };
+
+type FunnelStageKey = FunnelSnapshotDto["stages"][number]["key"];
+
+type FunnelStepInsight = {
+  fromKey: FunnelStageKey;
+  toKey: FunnelStageKey;
+  fromCount: number;
+  toCount: number;
+  conversionPercent: number;
+  dropCount: number;
+};
+
+type FunnelInsight = {
+  kind: FunnelInsightKindValue;
+  stage: FunnelStepInsight;
+} | null;
 
 function formatPercentFromRatio(
   ratio: number,
@@ -28,6 +53,60 @@ function formatPercentFromRatio(
   const percentValue = Math.round(ratio * 100);
   const formattedNumber = formatIntegerCount(percentValue, locale);
   return template.replace(PERCENT_PLACEHOLDER, formattedNumber);
+}
+
+function buildTransitionInsights(
+  stages: ReadonlyArray<FunnelSnapshotDto["stages"][number]>,
+): {
+  largestDropOff: FunnelStepInsight | null;
+  weakestConversion: FunnelStepInsight | null;
+} {
+  let largestDropOff: FunnelStepInsight | null = null;
+  let weakestConversion: FunnelStepInsight | null = null;
+
+  for (let index = 0; index < stages.length - 1; index += 1) {
+    const currentStage = stages[index];
+    const nextStage = stages[index + 1];
+
+    if (!currentStage || !nextStage) {
+      continue;
+    }
+
+    const fromCount = currentStage.count;
+    const toCount = nextStage.count;
+    const dropCount = Math.max(fromCount - toCount, 0);
+    const conversionPercent =
+      fromCount <= 0 ? 0 : Math.round((toCount / fromCount) * 100);
+    const insight: FunnelStepInsight = {
+      fromKey: currentStage.key,
+      toKey: nextStage.key,
+      fromCount,
+      toCount,
+      conversionPercent,
+      dropCount,
+    };
+
+    if (
+      largestDropOff === null ||
+      insight.dropCount > largestDropOff.dropCount ||
+      (insight.dropCount === largestDropOff.dropCount &&
+        insight.conversionPercent < largestDropOff.conversionPercent)
+    ) {
+      largestDropOff = insight;
+    }
+
+    if (
+      fromCount > 0 &&
+      (weakestConversion === null ||
+        insight.conversionPercent < weakestConversion.conversionPercent ||
+        (insight.conversionPercent === weakestConversion.conversionPercent &&
+          insight.dropCount > weakestConversion.dropCount))
+    ) {
+      weakestConversion = insight;
+    }
+  }
+
+  return { largestDropOff, weakestConversion };
 }
 
 export function FunnelSnapshotView({
@@ -45,6 +124,22 @@ export function FunnelSnapshotView({
   );
   const pipelineCount = Math.max(totalCount - inactiveOutcomeCount, 0);
   const formattedTotalCount = formatIntegerCount(totalCount, locale);
+  const formattedPipelineCount = formatIntegerCount(pipelineCount, locale);
+  const transitionInsights = buildTransitionInsights(stages);
+
+  const insight: FunnelInsight =
+    transitionInsights.largestDropOff !== null &&
+    transitionInsights.largestDropOff.dropCount > 0
+      ? {
+          kind: FunnelInsightKind.Drop,
+          stage: transitionInsights.largestDropOff,
+        }
+      : transitionInsights.weakestConversion !== null
+        ? {
+            kind: FunnelInsightKind.Conversion,
+            stage: transitionInsights.weakestConversion,
+          }
+        : null;
 
   return (
     <section aria-labelledby="funnel-snapshot-title" className={styles.card}>
@@ -53,51 +148,48 @@ export function FunnelSnapshotView({
           {title}
         </h2>
         <div className={styles.headerMetrics}>
-          <span className={styles.totalCount}>
-            <span className={styles.totalCountLabel}>{labels.total.label}</span>
-            <span className={styles.totalCountValue}>
-              {formattedTotalCount}
+          <div className={styles.summaryLine}>
+            <span className={styles.summaryPrimary}>
+              <span className={styles.summaryPrimaryLabel}>
+                {labels.summary.activePipeline}
+              </span>
+              <span className={styles.summaryPrimaryValue}>
+                {formattedPipelineCount}
+              </span>
             </span>
-          </span>
-          <div className={styles.outcomes}>
+            <span className={styles.summarySecondary}>
+              {labels.summary.total.replace(
+                COUNT_PLACEHOLDER,
+                formattedTotalCount,
+              )}
+            </span>
+            <span className={styles.summarySecondary}>
+              {labels.summary.excluded.replace(
+                COUNT_PLACEHOLDER,
+                formatIntegerCount(inactiveOutcomeCount, locale),
+              )}
+            </span>
+          </div>
+
+          <div className={styles.summaryOutcomes}>
             {outcomes.map((outcome) => {
               const formattedOutcomeCount = formatIntegerCount(
                 outcome.count,
                 locale,
               );
-              const outcomeRatio =
-                totalCount === 0 ? null : outcome.count / totalCount;
-              const formattedOutcomePercent =
-                outcomeRatio === null
-                  ? labels.dropOff.noData
-                  : formatPercentFromRatio(
-                      outcomeRatio,
-                      locale,
-                      labels.outcome.percent,
-                    );
 
               return (
-                <span
-                  aria-label={labels.outcome.ariaLabel
-                    .replace(LABEL_PLACEHOLDER, labels.stageLabels[outcome.key])
-                    .replace(COUNT_PLACEHOLDER, formattedOutcomeCount)
-                    .replace(PERCENT_PLACEHOLDER, formattedOutcomePercent)}
-                  className={styles.outcome}
-                  data-outcome={outcome.key}
+                <LeadStatusBadge
+                  className={styles.summaryOutcomeBadge}
                   key={outcome.key}
-                >
-                  <LeadStatusBadge
-                    className={styles.outcomeBadge}
-                    label={labels.stageLabels[outcome.key]}
-                    status={outcome.key}
-                  />
-                  <span className={styles.outcomeValue}>
-                    {formattedOutcomeCount}
-                  </span>
-                  <span className={styles.outcomePercent}>
-                    {formattedOutcomePercent}
-                  </span>
-                </span>
+                  label={labels.summary.outcomeLabel
+                    .replace(COUNT_PLACEHOLDER, formattedOutcomeCount)
+                    .replace(
+                      LABEL_PLACEHOLDER,
+                      labels.stageLabels[outcome.key],
+                    )}
+                  status={outcome.key}
+                />
               );
             })}
           </div>
@@ -108,6 +200,11 @@ export function FunnelSnapshotView({
         {stages.map((stage, index) => {
           const nextStage =
             index < stages.length - 1 ? stages[index + 1] : null;
+          const previousStage = index > 0 ? stages[index - 1] : null;
+          const previousStageLabel =
+            previousStage === null
+              ? null
+              : labels.stageLabels[previousStage.key];
           const stageLabel = labels.stageLabels[stage.key];
           const stageDescription = labels.stageDescriptions[stage.key];
           const formattedCount = formatIntegerCount(stage.count, locale);
@@ -116,6 +213,19 @@ export function FunnelSnapshotView({
             pipelineCount === 0
               ? null
               : Math.min(stage.count / pipelineCount, 1);
+          const stageConversionRatio =
+            index === 0
+              ? 1
+              : previousStage === null || previousStage.count === 0
+                ? 0
+                : stage.count / previousStage.count;
+          const shareLabel =
+            index === 0
+              ? labels.pipelineShareRoot
+              : labels.pipelineShareFromPrev.replace(
+                  STAGE_PLACEHOLDER,
+                  previousStageLabel ?? "",
+                );
 
           return (
             <li className={styles.stageItem} key={stage.key}>
@@ -148,10 +258,17 @@ export function FunnelSnapshotView({
                   {stage.key === ContactLeadStatus.New &&
                   pendingReviewCount > 0 ? (
                     <span className={styles.stageInlineNote}>
-                      {labels.pendingReview.format.replace(
-                        COUNT_PLACEHOLDER,
-                        formatIntegerCount(pendingReviewCount, locale),
-                      )}
+                      <span className={styles.stageInlineNotePrefix}>
+                        {labels.pendingReview.prefix}
+                      </span>
+                      <LeadStatusBadge
+                        className={styles.stageInlineBadge}
+                        label={labels.pendingReview.format.replace(
+                          COUNT_PLACEHOLDER,
+                          formatIntegerCount(pendingReviewCount, locale),
+                        )}
+                        status={ContactLeadStatus.PendingReview}
+                      />
                     </span>
                   ) : null}
                 </div>
@@ -168,9 +285,9 @@ export function FunnelSnapshotView({
                     {pipelineShareRatio === null
                       ? labels.dropOff.noData
                       : formatPercentFromRatio(
-                          pipelineShareRatio,
+                          stageConversionRatio,
                           locale,
-                          labels.pipelineShare,
+                          shareLabel,
                         )}
                   </span>
                 </div>
@@ -181,70 +298,53 @@ export function FunnelSnapshotView({
               {nextStage !== null ? (
                 <FunnelConnector
                   ariaLabel={labels.connectorAriaLabel}
-                  dropOff={nextStage.dropOffFromPrev}
-                  forwardedTemplate={labels.dropOff.forwarded}
                   index={index}
                   locale={locale}
-                  noDataDescription={labels.dropOff.noDataDescription}
-                  noDataLabel={labels.dropOff.noData}
+                  nextCount={nextStage.count}
+                  previousCount={stage.count}
                 />
               ) : null}
             </li>
           );
         })}
       </ol>
-    </section>
-  );
-}
 
-type FunnelConnectorProps = {
-  ariaLabel: string;
-  dropOff: number | null;
-  forwardedTemplate: string;
-  index: number;
-  locale: Locale;
-  noDataDescription: string;
-  noDataLabel: string;
-};
-
-function FunnelConnector({
-  ariaLabel,
-  dropOff,
-  forwardedTemplate,
-  index,
-  locale,
-  noDataDescription,
-  noDataLabel,
-}: FunnelConnectorProps) {
-  const hasData = dropOff !== null;
-  const formattedForwarded = hasData
-    ? formatPercentFromRatio(dropOff, locale, forwardedTemplate)
-    : noDataLabel;
-
-  return (
-    <div
-      aria-label={ariaLabel}
-      className={styles.connector}
-      data-has-data={hasData ? "true" : "false"}
-      data-slot="funnel-connector"
-      role="presentation"
-      style={
-        {
-          "--connector-delay": `${0.18 + index * 0.1}s`,
-        } as CSSProperties
-      }
-    >
-      <div className={styles.connectorLabel}>
-        <span aria-hidden="true" className={styles.connectorChevron}>
-          <FontAwesomeIcon icon={faArrowRightLong} />
-        </span>
-        <span className={styles.connectorPercent}>{formattedForwarded}</span>
-        {!hasData ? (
-          <span className={styles.connectorNoDataDescription}>
-            {noDataDescription}
+      {insight !== null ? (
+        <p className={styles.insight} data-kind={insight.kind}>
+          <span aria-hidden="true" className={styles.insightIcon}>
+            <FontAwesomeIcon icon={faArrowRightLong} />
           </span>
-        ) : null}
-      </div>
-    </div>
+          <span className={styles.insightText}>
+            {insight.kind === "drop"
+              ? labels.insight.largestDropOff
+                  .replace(
+                    FROM_PLACEHOLDER,
+                    labels.stageLabels[insight.stage.fromKey],
+                  )
+                  .replace(
+                    TO_PLACEHOLDER,
+                    labels.stageLabels[insight.stage.toKey],
+                  )
+                  .replace(
+                    DROP_PLACEHOLDER,
+                    formatIntegerCount(insight.stage.dropCount, locale),
+                  )
+              : labels.insight.weakestConversion
+                  .replace(
+                    FROM_PLACEHOLDER,
+                    labels.stageLabels[insight.stage.fromKey],
+                  )
+                  .replace(
+                    TO_PLACEHOLDER,
+                    labels.stageLabels[insight.stage.toKey],
+                  )
+                  .replace(
+                    PERCENT_PLACEHOLDER,
+                    formatIntegerCount(insight.stage.conversionPercent, locale),
+                  )}
+          </span>
+        </p>
+      ) : null}
+    </section>
   );
 }

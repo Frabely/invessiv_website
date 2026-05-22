@@ -1,0 +1,84 @@
+.connector {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18rem 0.12rem;
+  min-height: 42px;
+  --connector-delay: 0s;
+}
+
+.connectorChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  color: var(--color-accent-warm);
+  font-size: 0.95rem;
+  transform: rotate(90deg);
+}
+
+.connectorLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.24rem;
+  text-align: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 82%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 62%, transparent) 100%
+  );
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 5%, transparent) inset;
+  min-width: 0;
+  width: max-content;
+  max-width: 100%;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.connectorRatio {
+  font-size: 0.84rem;
+  font-weight: 780;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--color-text) 94%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.connectorMeta {
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1100px) {
+  .connector {
+    grid-row: 1;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    padding: 0 0.2rem;
+    min-width: 52px;
+    min-height: 0;
+  }
+
+  .connectorChevron {
+    transform: rotate(0deg);
+    width: 1.15rem;
+    height: 0.95rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .connector {
+    min-width: 60px;
+  }
+}

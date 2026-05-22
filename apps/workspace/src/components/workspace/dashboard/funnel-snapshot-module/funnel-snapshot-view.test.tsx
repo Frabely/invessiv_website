@@ -33,7 +33,8 @@ const LABELS = {
     won: "Abgeschlossen und gewonnen.",
   },
   stageCountAriaSuffix: "Leads",
-  pipelineShare: "{value} % der Pipeline",
+  pipelineShareRoot: "{value} % aktive Pipeline",
+  pipelineShareFromPrev: "{value} % von {stage}",
   dropOff: {
     forwarded: "{value} % weiter",
     noData: "—",
@@ -43,10 +44,18 @@ const LABELS = {
     percent: "{value} %",
     ariaLabel: "{label}: {count} Leads, {value} vom Gesamtbestand",
   },
-  total: {
-    label: "Gesamt",
+  summary: {
+    activePipeline: "Aktive Pipeline",
+    total: "{count} gesamt",
+    excluded: "{count} ausgeschlossen",
+    outcomeLabel: "{count} {label}",
+  },
+  insight: {
+    largestDropOff: "Größter Verlust: {from} → {to} · {drop} Leads offen",
+    weakestConversion: "Schwächste Conversion: {from} → {to} · {value} %",
   },
   pendingReview: {
+    prefix: "davon",
     format: "{count} warten auf Review",
   },
   connectorAriaLabel: "Übergang zur nächsten Stufe",
@@ -66,18 +75,18 @@ const ORDER: ReadonlyArray<FunnelStage> = [
 function buildSnapshot(
   overrides: Partial<Record<FunnelStage, number>> = {},
   outcomes = {
-    onHold: 3,
-    lost: 11,
-    archived: 2,
+    onHold: 1,
+    lost: 1,
+    archived: 1,
   },
 ): FunnelSnapshotDto {
   const counts: Record<FunnelStage, number> = {
-    new: 100,
-    contacted: 60,
-    responded: 30,
-    qualified: 12,
-    proposal: 7,
-    won: 4,
+    new: 46,
+    contacted: 25,
+    responded: 19,
+    qualified: 8,
+    proposal: 5,
+    won: 3,
     ...overrides,
   };
 
@@ -94,7 +103,7 @@ function buildSnapshot(
         key,
         count,
         dropOffFromPrev: dropOff,
-        ...(key === ContactLeadStatus.New ? { pendingReviewCount: 30 } : {}),
+        ...(key === ContactLeadStatus.New ? { pendingReviewCount: 7 } : {}),
       };
     }),
     outcomes: [
@@ -102,7 +111,7 @@ function buildSnapshot(
       { key: ContactLeadStatus.Lost, count: outcomes.lost },
       { key: ContactLeadStatus.Archived, count: outcomes.archived },
     ],
-    totalCount: 116,
+    totalCount: 49,
   };
 }
 
@@ -137,12 +146,12 @@ describe("FunnelSnapshotView", () => {
     expect(within(stages[3]).getByText("Qualifiziert")).toBeInTheDocument();
     expect(within(stages[4]).getByText("Angebot")).toBeInTheDocument();
     expect(within(stages[5]).getByText("Gewonnen")).toBeInTheDocument();
-    expect(screen.getByText("Pausiert")).toBeInTheDocument();
-    expect(screen.getByText("Verloren")).toBeInTheDocument();
-    expect(screen.getByText("Archiviert")).toBeInTheDocument();
+    expect(screen.getByText("1 Pausiert")).toBeInTheDocument();
+    expect(screen.getByText("1 Verloren")).toBeInTheDocument();
+    expect(screen.getByText("1 Archiviert")).toBeInTheDocument();
   });
 
-  it("renders the count for each stage, total count, and each outcome", () => {
+  it("renders the count for each stage, total summary, and each outcome", () => {
     render(
       <FunnelSnapshotView
         data={buildSnapshot()}
@@ -152,46 +161,38 @@ describe("FunnelSnapshotView", () => {
       />,
     );
     const stages = screen.getAllByRole("group", { name: /stage/i });
-    expect(within(stages[0]).getByText("100")).toBeInTheDocument();
-    expect(within(stages[1]).getByText("60")).toBeInTheDocument();
-    expect(within(stages[2]).getByText("30")).toBeInTheDocument();
-    expect(within(stages[3]).getByText("12")).toBeInTheDocument();
-    expect(within(stages[4]).getByText("7")).toBeInTheDocument();
-    expect(within(stages[5]).getByText("4")).toBeInTheDocument();
-    expect(screen.getByText("Gesamt")).toBeInTheDocument();
-    expect(screen.getByText("116")).toBeInTheDocument();
-    expect(screen.getByText("3")).toBeInTheDocument();
-    expect(screen.getByText("11")).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
-  });
-
-  it("renders outcome percentages next to the top outcome counts", () => {
-    render(
-      <FunnelSnapshotView
-        data={buildSnapshot()}
-        labels={LABELS}
-        locale="de"
-        title={TITLE}
-      />,
-    );
-    expect(screen.getByText("3 %")).toBeInTheDocument();
-    expect(screen.getByText("9 %")).toBeInTheDocument();
-    expect(screen.getByText("2 %")).toBeInTheDocument();
-  });
-
-  it("renders the pending review count inside the new cumulative stage card", () => {
-    render(
-      <FunnelSnapshotView
-        data={buildSnapshot({ new: 33 })}
-        labels={LABELS}
-        locale="de"
-        title={TITLE}
-      />,
-    );
-    const stages = screen.getAllByRole("group", { name: /stage/i });
-    expect(within(stages[0]).getByText("33")).toBeInTheDocument();
+    expect(within(stages[0]).getByText("46")).toBeInTheDocument();
+    expect(within(stages[1]).getByText("25")).toBeInTheDocument();
+    expect(within(stages[2]).getByText("19")).toBeInTheDocument();
+    expect(within(stages[3]).getByText("8")).toBeInTheDocument();
+    expect(within(stages[4]).getByText("5")).toBeInTheDocument();
+    expect(within(stages[5]).getByText("3")).toBeInTheDocument();
+    const summaryPrimary = screen.getByText("Aktive Pipeline").parentElement;
+    expect(summaryPrimary).not.toBeNull();
     expect(
-      within(stages[0]).getByText("30 warten auf Review"),
+      within(summaryPrimary as HTMLElement).getByText("46"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("49 gesamt")).toBeInTheDocument();
+    expect(screen.getByText("3 ausgeschlossen")).toBeInTheDocument();
+    expect(screen.getByText("1 Pausiert")).toBeInTheDocument();
+    expect(screen.getByText("1 Verloren")).toBeInTheDocument();
+    expect(screen.getByText("1 Archiviert")).toBeInTheDocument();
+  });
+
+  it("renders the updated pending-review line in the new stage card", () => {
+    render(
+      <FunnelSnapshotView
+        data={buildSnapshot()}
+        labels={LABELS}
+        locale="de"
+        title={TITLE}
+      />,
+    );
+    const stages = screen.getAllByRole("group", { name: /stage/i });
+    expect(within(stages[0]).getByText("46")).toBeInTheDocument();
+    expect(within(stages[0]).getByText("davon")).toBeInTheDocument();
+    expect(
+      within(stages[0]).getByText("7 warten auf Review"),
     ).toBeInTheDocument();
   });
 
@@ -211,7 +212,7 @@ describe("FunnelSnapshotView", () => {
     expect(screen.getByText(LABELS.stageDescriptions.won)).toBeInTheDocument();
   });
 
-  it("renders the pipeline share per stage relative to active pipeline entries", () => {
+  it("renders stage conversion labels and connector labels from the previous stage", () => {
     render(
       <FunnelSnapshotView
         data={buildSnapshot()}
@@ -220,15 +221,20 @@ describe("FunnelSnapshotView", () => {
         title={TITLE}
       />,
     );
-    expect(screen.getByText("100 % der Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("60 % der Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("30 % der Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("12 % der Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("7 % der Pipeline")).toBeInTheDocument();
-    expect(screen.getByText("4 % der Pipeline")).toBeInTheDocument();
+    expect(screen.getByText("100 % aktive Pipeline")).toBeInTheDocument();
+    expect(screen.getByText("54 % von Neu")).toBeInTheDocument();
+    expect(screen.getByText("76 % von Kontaktiert")).toBeInTheDocument();
+    expect(screen.getByText("42 % von Geantwortet")).toBeInTheDocument();
+    expect(screen.getByText("63 % von Qualifiziert")).toBeInTheDocument();
+    expect(screen.getByText("60 % von Angebot")).toBeInTheDocument();
+    expect(screen.getByText("25 / 46 · 54 %")).toBeInTheDocument();
+    expect(screen.getByText("19 / 25 · 76 %")).toBeInTheDocument();
+    expect(screen.getByText("8 / 19 · 42 %")).toBeInTheDocument();
+    expect(screen.getByText("5 / 8 · 63 %")).toBeInTheDocument();
+    expect(screen.getByText("3 / 5 · 60 %")).toBeInTheDocument();
   });
 
-  it("does not render a header close-rate KPI", () => {
+  it("renders the bottleneck insight in the header", () => {
     render(
       <FunnelSnapshotView
         data={buildSnapshot()}
@@ -237,24 +243,9 @@ describe("FunnelSnapshotView", () => {
         title={TITLE}
       />,
     );
-    expect(screen.queryByText("Abschlussquote")).not.toBeInTheDocument();
-  });
-
-  it("renders five connector percentages and no absolute loss text", () => {
-    render(
-      <FunnelSnapshotView
-        data={buildSnapshot()}
-        labels={LABELS}
-        locale="de"
-        title={TITLE}
-      />,
-    );
-    expect(screen.getByText("60 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("50 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("40 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("58 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("57 % weiter")).toBeInTheDocument();
-    expect(screen.queryByText(/\d+ verloren$/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText("Größter Verlust: Neu → Kontaktiert · 21 Leads offen"),
+    ).toBeInTheDocument();
   });
 
   it("renders exactly five connectors", () => {
@@ -272,7 +263,7 @@ describe("FunnelSnapshotView", () => {
     expect(connectors).toHaveLength(5);
   });
 
-  it("renders 0 percent for a connector when previous stage has zero leads", () => {
+  it("renders 0 / 0 · 0 % when the previous stage has zero leads", () => {
     render(
       <FunnelSnapshotView
         data={buildSnapshot(
@@ -292,14 +283,12 @@ describe("FunnelSnapshotView", () => {
       />,
     );
 
-    expect(screen.getAllByText("0 % weiter").length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getAllByText(LABELS.dropOff.noDataDescription).length,
-    ).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("0 / 0 · 0 %").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("0 % von Neu").length).toBeGreaterThanOrEqual(1);
   });
 
   it("rounds connector and share percentages to whole numbers", () => {
-    render(
+    const { container } = render(
       <FunnelSnapshotView
         data={buildSnapshot(
           {
@@ -318,9 +307,20 @@ describe("FunnelSnapshotView", () => {
       />,
     );
 
-    expect(screen.getByText("43 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("0 % weiter")).toBeInTheDocument();
-    expect(screen.getByText("6 % der Pipeline")).toBeInTheDocument();
+    expect(screen.getByText("43 % von Neu")).toBeInTheDocument();
+    expect(
+      screen.getAllByText("0 % von Kontaktiert").length,
+    ).toBeGreaterThanOrEqual(1);
+    const connectors = container.querySelectorAll(
+      '[data-slot="funnel-connector"]',
+    );
+    expect(connectors[0]?.textContent).toContain("3 / 7 · 43 %");
+    expect(connectors[1]?.textContent).toContain("0 / 3 · 0 %");
+    const summaryPrimary = screen.getByText("Aktive Pipeline").parentElement;
+    expect(summaryPrimary).not.toBeNull();
+    expect(
+      within(summaryPrimary as HTMLElement).getByText("49"),
+    ).toBeInTheDocument();
   });
 
   it("excludes paused, lost, and archived outcomes from the pipeline percentage base", () => {
@@ -372,7 +372,11 @@ describe("FunnelSnapshotView", () => {
       />,
     );
 
-    expect(screen.getByText("100 % der Pipeline")).toBeInTheDocument();
+    const summaryPrimary = screen.getByText("Aktive Pipeline").parentElement;
+    expect(summaryPrimary).not.toBeNull();
+    expect(
+      within(summaryPrimary as HTMLElement).getByText("8"),
+    ).toBeInTheDocument();
   });
 
   it("does not render stage index counters", () => {
