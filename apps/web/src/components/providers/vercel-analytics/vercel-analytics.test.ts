@@ -8,9 +8,9 @@ describe("Vercel Analytics URL sanitizing", () => {
   it("removes query strings and hashes from allowed pageview URLs", () => {
     expect(
       sanitizeAnalyticsUrl(
-        "https://invessiv.com/de/landing?utm_source=test#preise",
+        "https://invessiv.com/de/services/landing-page?utm_source=test#preise",
       ),
-    ).toBe("https://invessiv.com/de/landing");
+    ).toBe("https://invessiv.com/de/services/landing-page");
   });
 
   it("drops sensitive routes and sensitive query keys", () => {

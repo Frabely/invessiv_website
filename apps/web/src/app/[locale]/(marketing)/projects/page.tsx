@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { ProjectsPage } from "@/components/marketing/projects/projects-page/projects-page";
 import {
-  type Locale,
   isSupportedLocale,
+  type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
 import { isMarketingProofEnabled } from "@/config/marketing-launch";

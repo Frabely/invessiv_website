@@ -30,13 +30,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/de/landing`,
+      url: `${SITE_URL}/de/services/landing-page`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/en/landing`,
+      url: `${SITE_URL}/en/services/landing-page`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.8,

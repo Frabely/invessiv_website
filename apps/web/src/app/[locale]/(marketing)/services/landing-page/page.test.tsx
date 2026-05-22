@@ -2,6 +2,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import LandingRoute, { generateMetadata } from "./page";
 
 const { mockLandingPage, mockNotFound } = vi.hoisted(() => ({
   mockLandingPage: vi.fn(() => <div data-testid="landing-page" />),
@@ -17,8 +18,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/components/marketing/landing/landing-page/landing-page", () => ({
   LandingPage: mockLandingPage,
 }));
-
-import LandingRoute, { generateMetadata } from "./page";
 
 describe("LandingRoute", () => {
   beforeEach(() => {
@@ -54,7 +53,7 @@ describe("LandingRoute", () => {
     });
 
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/landing",
+      "https://invessiv.com/de/services/landing-page",
     );
     expect(metadata.title).toEqual({
       absolute: "Landingpage klar auf Anfragen ausgerichtet | Invessiv",
@@ -69,7 +68,7 @@ describe("LandingRoute", () => {
       siteName: "Invessiv",
       title: "Landingpage klar auf Anfragen ausgerichtet | Invessiv",
       type: "website",
-      url: "https://invessiv.com/de/landing",
+      url: "https://invessiv.com/de/services/landing-page",
     });
     expect(metadata.openGraph?.images).toEqual([
       {

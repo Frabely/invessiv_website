@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LandingPage } from "@/components/marketing/landing/landing-page/landing-page";
+import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
 import {
-  type Locale,
   isSupportedLocale,
+  type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
-import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
+import { isMarketingProofEnabled } from "@/config/marketing-launch";
+import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
 import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
 import {
   createLocaleAlternates,
   createPageMetadata,
 } from "@/lib/seo/page-metadata";
 
-type LandingRouteProps = {
+type LocalePageProps = {
   params: Promise<{ locale: string }>;
 };
 
@@ -23,49 +24,34 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: LandingRouteProps): Promise<Metadata> {
+}: LocalePageProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
   }
 
-  const {
-    title,
-    description,
-    imageAlt,
-    imageHeight,
-    imageUrl,
-    imageWidth,
-    openGraphLocale,
-  } = getLandingMetaContent(locale);
+  const { title, description, openGraphLocale } = getHomeMetaContent(locale);
   return createPageMetadata({
-    absoluteTitle: true,
     title,
     description,
-    canonicalPath: `/${locale}/landing`,
+    canonicalPath: `/${locale}`,
     languages: createLocaleAlternates({
-      de: "/de/landing",
-      en: "/en/landing",
+      de: "/de",
+      en: "/en",
     }),
     openGraphLocale,
-    socialImage: {
-      alt: imageAlt,
-      height: imageHeight,
-      url: imageUrl,
-      width: imageWidth,
-    },
   });
 }
 
-export default async function LandingRoute({ params }: LandingRouteProps) {
+export default async function LocalePage({ params }: LocalePageProps) {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     notFound();
   }
 
   const activeLocale = locale as Locale;
-  const { description } = getLandingMetaContent(activeLocale);
-  const landingStructuredData = createMarketingStructuredData(
+  const { description } = getHomeMetaContent(activeLocale);
+  const marketingStructuredData = createMarketingStructuredData(
     activeLocale,
     description,
   );
@@ -75,10 +61,10 @@ export default async function LandingRoute({ params }: LandingRouteProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(landingStructuredData),
+          __html: JSON.stringify(marketingStructuredData),
         }}
       />
-      <LandingPage locale={activeLocale} />
+      <MarketingHomePageClient showProofSection={isMarketingProofEnabled()} />
     </>
   );
 }

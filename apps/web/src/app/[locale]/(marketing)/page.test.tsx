@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, expect, it, vi } from "vitest";
+import { generateMetadata } from "./page";
 
 vi.mock("next/navigation", () => ({
   notFound: vi.fn(() => {
@@ -11,8 +12,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/components/marketing/home/marketing-home-page-client", () => ({
   MarketingHomePageClient: () => <div data-testid="home-page" />,
 }));
-
-import { generateMetadata } from "./page";
 
 describe("LocalePage metadata", () => {
   it("uses the shared static OG image for the German homepage", async () => {

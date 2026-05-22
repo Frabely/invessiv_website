@@ -6,7 +6,7 @@ describe("site routes", () => {
   it("keeps public web route segments outside domain-specific helpers", () => {
     expect(SITE_ROUTES).toEqual({
       HOME: "/",
-      LANDING: "/landing",
+      LANDING_PAGE_SERVICE: "/services/landing-page",
       PROJECTS: "/projects",
       IMPRINT: "/imprint",
       PRIVACY: "/privacy",

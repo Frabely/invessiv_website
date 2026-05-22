@@ -1,6 +1,6 @@
 export const SITE_ROUTES = {
   HOME: "/",
-  LANDING: "/landing",
+  LANDING_PAGE_SERVICE: "/services/landing-page",
   PROJECTS: "/projects",
   IMPRINT: "/imprint",
   PRIVACY: "/privacy",
