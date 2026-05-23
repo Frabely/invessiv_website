@@ -81,7 +81,7 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const bridgeHeading = screen.getByRole("heading", {
-      name: "Landingpages zuerst. Webseiten, Upgrades oder Tools nur, wenn sie sinnvoll ergänzen.",
+      name: "Landingpage, Website, Upgrade oder Tool — je nachdem, was dich wirklich weiterbringt.",
     });
     const servicesHeading = screen.getByRole("heading", {
       name: "Was brauchst du gerade?",
