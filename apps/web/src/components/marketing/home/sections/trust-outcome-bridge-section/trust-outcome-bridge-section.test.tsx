@@ -17,22 +17,24 @@ describe("TrustOutcomeBridgeSection", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "Landingpages zuerst. Webseiten, Upgrades oder Tools nur, wenn sie sinnvoll ergänzen.",
+        name: "Landingpage, Website, Upgrade oder Tool — je nachdem, was dich wirklich weiterbringt.",
       }),
     ).toBeTruthy();
     expect(
       screen.getByText(
-        "Ich entwickle vor allem Landingpages, die Angebote klar vermitteln und Besucher zur Anfrage führen. Webseiten, Upgrades oder Prozessoptimierungs-Tools kommen nur dazu, wenn sie den nächsten Schritt wirklich unterstützen.",
+        "Ich entwickle Landingpages, Webseiten und Upgrades für mehr passende Anfragen — und digitale Tools, die dir Arbeitszeit sparen. Welche Leistung für dein Ziel sinnvoll ist, besprechen wir ehrlich vor dem Start.",
       ),
     ).toBeTruthy();
     expect(
       screen.getByText("Ehrliche Einschätzung vor dem Start"),
     ).toBeTruthy();
     expect(
-      screen.getByText("Landingpages mit klarem Conversion-Ziel"),
+      screen.getByText(
+        "Für mehr Anfragen oder produktivere Abläufe — je nach Ziel",
+      ),
     ).toBeTruthy();
     expect(
-      screen.getByText("Website, Upgrade oder Tool nur bei Bedarf"),
+      screen.getByText("Nur das, was dein Projekt wirklich braucht"),
     ).toBeTruthy();
     expect(
       screen.queryByText("Passender Einstieg vor Projektbeginn"),
