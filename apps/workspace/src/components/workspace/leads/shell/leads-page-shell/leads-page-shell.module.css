@@ -45,6 +45,14 @@
 }
 
 @media (max-width: 1024px) {
+  .shell {
+    height: calc(
+      100dvh - var(--workspace-header-height, 64px) -
+        var(--workspace-main-padding-block-start, 1.15rem) -
+        var(--workspace-main-padding-block-end, 1.15rem)
+    );
+  }
+
   .contentRow {
     flex-direction: column;
     overflow: hidden;
@@ -76,16 +84,6 @@
   .contentSlot {
     flex: none;
     overflow: visible;
-  }
-}
-
-@media (max-width: 1024px) {
-  .shell {
-    height: calc(
-      100dvh - var(--workspace-header-height, 64px) -
-        var(--workspace-main-padding-block-start, 1.15rem) -
-        var(--workspace-main-padding-block-end, 1.15rem)
-    );
   }
 }
 
