@@ -36,6 +36,16 @@ export const SECTION_HREFS = {
   footer: "#footer",
 } as const satisfies Record<SectionId, SectionHref>;
 
+export const CONTACT_EMAIL_SECTION_HREF = "#contact-email" as const;
+
+export const CONTACT_CHANNEL_MODES = {
+  Email: "email",
+  Call: "call",
+} as const;
+
+export type ContactChannelMode =
+  (typeof CONTACT_CHANNEL_MODES)[keyof typeof CONTACT_CHANNEL_MODES];
+
 export type NavigationItem = {
   href: string;
 };

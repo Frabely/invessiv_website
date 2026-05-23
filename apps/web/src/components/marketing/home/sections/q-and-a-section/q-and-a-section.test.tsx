@@ -32,7 +32,7 @@ describe("QAndASection", () => {
         ]}
         secondaryContact={{
           hint: "Frage nicht dabei?",
-          href: "mailto:service@invessiv.com",
+          href: "#contact-email",
           label: "Schreib mir direkt per Mail.",
         }}
         title="Q&A"
@@ -72,7 +72,7 @@ describe("QAndASection", () => {
         ]}
         secondaryContact={{
           hint: "Frage nicht dabei?",
-          href: "mailto:service@invessiv.com",
+          href: "#contact-email",
           label: "Schreib mir direkt per Mail.",
         }}
         title="Q&A"
@@ -107,8 +107,6 @@ describe("QAndASection", () => {
     const secondaryContactLink = screen.getByRole("link", {
       name: "Schreib mir direkt per Mail.",
     });
-    expect(secondaryContactLink.getAttribute("href")).toBe(
-      "mailto:service@invessiv.com",
-    );
+    expect(secondaryContactLink.getAttribute("href")).toBe("#contact-email");
   });
 });

@@ -1,11 +1,14 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
-import { SECTION_HREFS } from "@/config/navigation/home";
+import {
+  CONTACT_CHANNEL_MODES,
+  CONTACT_EMAIL_SECTION_HREF,
+  SECTION_HREFS,
+} from "@/config/navigation/home";
 import type {
   ContactChannelCopy,
-  ContactCtaCopy,
   ContactFormCopy,
   ContactSecondaryCtaCopy,
   DiscoveryCallFormCopy,
@@ -16,10 +19,7 @@ import { ProjectRequestForm } from "@/components/marketing/home/sections/contact
 import { QuickContactForm } from "@/components/marketing/home/sections/contact-section/quick-contact-form/quick-contact-form";
 import styles from "./contact-section.module.css";
 
-type ChannelMode = "email" | "call";
-
 type ContactSectionProps = {
-  contactCta?: ContactCtaCopy;
   contactAlternativeLabel?: string;
   contactChannels: ContactChannelCopy[];
   contactDecisionIntro: string;
@@ -33,10 +33,12 @@ type ContactSectionProps = {
   title: string;
 };
 
-const CONTACT_SECTION_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}']`;
+const CONTACT_SECTION_EVENTS = {
+  Click: "click",
+  HashChange: "hashchange",
+} as const;
 
 export function ContactSection({
-  contactCta,
   contactAlternativeLabel,
   contactChannels,
   contactDecisionIntro,
@@ -49,22 +51,9 @@ export function ContactSection({
   privacyHref,
   title,
 }: ContactSectionProps) {
-  const primaryPath = useMemo(
-    () =>
-      contactCta && contactForm ? { cta: contactCta, form: contactForm } : null,
-    [contactCta, contactForm],
-  );
-
   const [selectedChannelIndex, setSelectedChannelIndex] = useState<
     number | null
   >(null);
-
-  const getChannelMode = (channel: ContactChannelCopy): ChannelMode => {
-    if (channel.mode) {
-      return channel.mode;
-    }
-    return channel.href.startsWith("mailto:") ? "email" : "call";
-  };
 
   const getSecondaryCtaAnalyticsProps = (href: string) => {
     const contactTarget = getContactTarget(href);
@@ -91,14 +80,26 @@ export function ContactSection({
       : (contactChannels[selectedChannelIndex] ?? null);
 
   useEffect(() => {
-    if (!primaryPath) {
-      return;
-    }
+    const nextChannelIndex = contactChannels.findIndex(
+      (channel) => channel.mode === CONTACT_CHANNEL_MODES.Email,
+    );
 
-    const activateProjectEntry = () => {
-      if (window.location.hash === SECTION_HREFS.contact) {
-        setSelectedChannelIndex(null);
+    const openEmailChannel = () => {
+      if (nextChannelIndex >= 0) {
+        setSelectedChannelIndex(nextChannelIndex);
+        return;
       }
+
+      setSelectedChannelIndex(null);
+    };
+
+    const handleHashChange = () => {
+      if (window.location.hash === CONTACT_EMAIL_SECTION_HREF) {
+        openEmailChannel();
+        return;
+      }
+
+      setSelectedChannelIndex(null);
     };
 
     const handleDocumentClick = (event: MouseEvent) => {
@@ -107,21 +108,32 @@ export function ContactSection({
         return;
       }
 
-      const contactAnchor = target.closest(CONTACT_SECTION_LINK_SELECTOR);
-      if (contactAnchor) {
-        setSelectedChannelIndex(null);
+      if (target.closest(`a[href="${CONTACT_EMAIL_SECTION_HREF}"]`) !== null) {
+        openEmailChannel();
       }
     };
 
-    activateProjectEntry();
-    window.addEventListener("hashchange", activateProjectEntry);
-    document.addEventListener("click", handleDocumentClick);
+    handleHashChange();
+    window.addEventListener(
+      CONTACT_SECTION_EVENTS.HashChange,
+      handleHashChange,
+    );
+    document.addEventListener(
+      CONTACT_SECTION_EVENTS.Click,
+      handleDocumentClick,
+    );
 
     return () => {
-      window.removeEventListener("hashchange", activateProjectEntry);
-      document.removeEventListener("click", handleDocumentClick);
+      window.removeEventListener(
+        CONTACT_SECTION_EVENTS.HashChange,
+        handleHashChange,
+      );
+      document.removeEventListener(
+        CONTACT_SECTION_EVENTS.Click,
+        handleDocumentClick,
+      );
     };
-  }, [primaryPath]);
+  }, [contactChannels]);
 
   return (
     <section className={styles.section} id={id}>
@@ -131,15 +143,15 @@ export function ContactSection({
           <p className={styles.decisionIntro}>{contactDecisionIntro}</p>
         </div>
 
-        {primaryPath ? (
+        {contactForm ? (
           <article
             className={`${styles.entryPanel} ${styles.entryPanelProject}`}
           >
             <ProjectRequestForm
-              formCopy={primaryPath.form}
+              formCopy={contactForm}
               offerOptions={contactFormOffers}
               privacyHref={privacyHref}
-              privacyLabel={primaryPath.form.privacyLabel}
+              privacyLabel={contactForm.privacyLabel}
             />
           </article>
         ) : null}
@@ -183,12 +195,14 @@ export function ContactSection({
               })}
             </div>
 
+            <span aria-hidden="true" id={CONTACT_EMAIL_SECTION_HREF.slice(1)} />
+
             {selectedChannel ? (
               <div
                 className={styles.secondaryPathPanel}
                 id={`contact-channel-${selectedChannelIndex}-panel`}
               >
-                {getChannelMode(selectedChannel) === "email" &&
+                {selectedChannel.mode === CONTACT_CHANNEL_MODES.Email &&
                 quickContactForm ? (
                   <QuickContactForm
                     channel={selectedChannel}
@@ -196,7 +210,7 @@ export function ContactSection({
                     privacyHref={privacyHref}
                   />
                 ) : null}
-                {getChannelMode(selectedChannel) === "call" &&
+                {selectedChannel.mode === CONTACT_CHANNEL_MODES.Call &&
                 discoveryCallForm ? (
                   <DiscoveryCallPanel
                     channel={selectedChannel}

@@ -1,4 +1,6 @@
 import {
+  CONTACT_EMAIL_SECTION_HREF,
+  type ContactChannelMode,
   PRIMARY_NAVIGATION,
   SECTION_HREFS,
   type SectionId,
@@ -116,7 +118,7 @@ export type QnaSecondaryContactCopy = {
 };
 
 export type ContactChannelCopy = {
-  mode?: "email" | "call";
+  mode: ContactChannelMode;
   kicker?: string;
   label: string;
   description?: string;
@@ -317,7 +319,6 @@ type ContactSectionCopy = {
   contactDecisionIntro: string;
   contactAlternativeLabel: string;
   contactChannels: ContactChannelCopy[];
-  contactCta: ContactCtaCopy;
   contactSecondaryCta: ContactSecondaryCtaCopy;
   contactForm: ContactFormCopy;
   quickContactForm: QuickContactFormCopy;
@@ -858,7 +859,7 @@ const HOME_SECTIONS = [
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
-          href: COMPANY_MAILTO,
+          href: CONTACT_EMAIL_SECTION_HREF,
         },
         qnaItems: [
           {
@@ -919,7 +920,7 @@ const HOME_SECTIONS = [
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",
-          href: COMPANY_MAILTO,
+          href: CONTACT_EMAIL_SECTION_HREF,
         },
         qnaItems: [
           {
@@ -1019,11 +1020,6 @@ const HOME_SECTIONS = [
             metaValue: "Asynchroner Schnellkontakt",
           },
         ],
-        contactCta: {
-          kicker: "Direkt starten",
-          label: "Projektanfrage starten",
-          href: SECTION_HREFS.contact,
-        },
         contactSecondaryCta: {
           label: "Leistungsmodelle vergleichen",
           href: SECTION_HREFS.services,
@@ -1277,11 +1273,6 @@ const HOME_SECTIONS = [
             metaValue: "Asynchronous quick contact",
           },
         ],
-        contactCta: {
-          kicker: "Start directly",
-          label: "Start project request",
-          href: SECTION_HREFS.contact,
-        },
         contactSecondaryCta: {
           label: "Compare service models",
           href: SECTION_HREFS.services,

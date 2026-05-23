@@ -3,6 +3,7 @@ import type {
   QnaSecondaryContactCopy,
 } from "@/i18n/dictionaries/marketing/home";
 import { QAndAAccordion } from "@/components/marketing/home/shared/q-and-a-accordion/q-and-a-accordion";
+import { CONTACT_CHANNEL_MODES } from "@/config/navigation/home";
 import styles from "./q-and-a-section.module.css";
 
 type QnaItem = QnaItemCopy;
@@ -40,7 +41,7 @@ export function QAndASection({
                 href={secondaryContact.href}
                 data-analytics-event="contact_click"
                 data-analytics-location="qna"
-                data-analytics-target="email"
+                data-analytics-target={CONTACT_CHANNEL_MODES.Email}
               >
                 {secondaryContact.label}
               </a>
