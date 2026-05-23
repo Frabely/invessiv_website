@@ -509,12 +509,11 @@ const HOME_SECTIONS = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
-            fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die schnell live gehen sollen.",
+            fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die in 5–10 Tagen live gehen sollen.",
             isRecommended: true,
-            highlight:
-              "schnell live und klar auf Anfragen, Buchungen oder Verkäufe ausgerichtet",
+            highlight: "mit klarem Fokus auf Anfragen, Buchungen oder Verkäufe",
             pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
-            delivery: "3–10 Tage",
+            delivery: "5–10 Tage",
             included: [
               "Klare Angebotsstruktur",
               "Mobil schnell verständlich",
@@ -629,12 +628,11 @@ const HOME_SECTIONS = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
-            fit: "Single offer pages, campaigns, or new offers that should go live quickly.",
+            fit: "Single offer pages, campaigns, or new offers that should go live in 5–10 days.",
             isRecommended: true,
-            highlight:
-              "live quickly and clearly aimed at inquiries, bookings, or sales",
+            highlight: "with a clear focus on inquiries, bookings, or sales",
             pricingHint: "Quote based on goal, scope, and feedback depth",
-            delivery: "3–10 days",
+            delivery: "5–10 days",
             included: [
               "Clear offer structure",
               "Fast to understand on mobile",
