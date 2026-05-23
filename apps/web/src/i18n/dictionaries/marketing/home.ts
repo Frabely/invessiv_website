@@ -386,14 +386,15 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         title:
-          "Klare digitale Auftritte,\ndie deine Kunden wirklich erreichen.",
+          "Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten.",
         description:
-          "Webseiten, Landingpages, Upgrades und digitale Tools für Dienstleister und KMU, die ihr Angebot verständlich zeigen, Vertrauen aufbauen und bessere Anfragen gewinnen wollen.",
+          "Landingpages, Webseiten, Upgrades und Prozessoptimierungs-Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Arbeitsschritte spürbar einfacher machen wollen.",
       },
       en: {
-        title: "Clear digital presences\nthat truly reach your customers.",
+        title:
+          "Digital solutions\nthat lead to better inquiries and reduce internal effort.",
         description:
-          "Websites, landing pages, upgrades, and digital tools for service businesses and SMBs that want to present their offer clearly, build trust, and win better inquiries.",
+          "Landing pages, websites, upgrades, and process optimization tools for service businesses and SMBs that want to present their offer clearly and make internal work easier.",
       },
     },
   },

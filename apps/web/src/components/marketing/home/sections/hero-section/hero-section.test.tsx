@@ -15,24 +15,24 @@ describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Webseiten, Landingpages, Upgrades und digitale Tools für Dienstleister und KMU, die ihr Angebot verständlich zeigen, Vertrauen aufbauen und bessere Anfragen gewinnen wollen."
+        description="Landingpages, Webseiten, Upgrades und Prozessoptimierungs-Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Arbeitsschritte spürbar einfacher machen wollen."
         heroPrimaryCta="Projekt anfragen"
         heroSecondaryCta="Leistung passend einschätzen"
-        heroTag="KLARER AUFTRITT, MEHR ANFRAGEN"
+        heroTag="MEHR ANFRAGEN, EINFACHERE PROZESSE"
         heroVisualAriaLabel="Hero visual preview"
         primaryCtaAnalyticsTarget="form"
         primaryCtaHref="#contact"
         secondaryCtaAnalyticsTarget="services"
         secondaryCtaHref="#services"
-        title="Klare digitale Auftritte,\ndie deine Kunden wirklich erreichen."
+        title="Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten."
         trackingLocation="hero"
       />,
     );
 
     const heroHeading = screen.getByRole("heading", { level: 1 });
-    expect(heroHeading.textContent).toContain("Klare digitale Auftritte,");
+    expect(heroHeading.textContent).toContain("Digitale Lösungen,");
     expect(heroHeading.textContent).toContain(
-      "die deine Kunden wirklich erreichen.",
+      "die zu passenden Anfragen führen und interne Arbeit entlasten.",
     );
     expect(
       screen
