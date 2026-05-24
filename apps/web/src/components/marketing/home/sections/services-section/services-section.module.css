@@ -314,21 +314,49 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 68%,
+    var(--color-text) 32%
+  );
 }
 
 .timeIconImage {
+  display: block;
+  flex: 0 0 auto;
   width: 1.55rem;
   height: 1.55rem;
-  filter: var(--services-time-icon-filter, none);
-  object-fit: contain;
+  background-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 72%,
+    var(--color-text) 28%
+  );
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 
-.timeIcon {
-  --services-time-icon-filter: brightness(0) saturate(100%) invert(62%)
-    sepia(88%) saturate(1454%) hue-rotate(360deg) brightness(103%)
-    contrast(103%);
+:global([data-theme="light"]) .timeIcon {
+  border-color: color-mix(
+    in srgb,
+    var(--color-border) 74%,
+    var(--color-accent-warm) 26%
+  );
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 88%,
+    var(--color-accent-warm) 12%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 60%,
+    var(--color-text) 40%
+  );
 }
 
 .timeText {

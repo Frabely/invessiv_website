@@ -1,8 +1,7 @@
 "use client";
 
-import type { PointerEvent, RefObject } from "react";
+import type { CSSProperties, PointerEvent, RefObject } from "react";
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
@@ -14,6 +13,10 @@ import styles from "./services-section.module.css";
 
 const PRIMARY_SERVICE_ORDER = ["landing", "process", "upgrade", "web"] as const;
 const DEFAULT_SERVICE_KEY = "landing";
+const CALENDAR_ICON_MASK_STYLE = {
+  WebkitMaskImage: 'url("/services/calender-icon.svg")',
+  maskImage: 'url("/services/calender-icon.svg")',
+} satisfies CSSProperties;
 
 type PrimaryServiceKey = (typeof PRIMARY_SERVICE_ORDER)[number];
 type PrimaryServiceCardData = Extract<
@@ -259,12 +262,9 @@ export function ServicesSection({
         <aside className={styles.activeAside}>
           <div className={styles.timeBlock}>
             <span aria-hidden="true" className={styles.timeIcon}>
-              <Image
-                alt=""
+              <span
                 className={styles.timeIconImage}
-                height={25}
-                src="/services/calender-icon.svg"
-                width={25}
+                style={CALENDAR_ICON_MASK_STYLE}
               />
             </span>
             <div className={styles.timeText}>
