@@ -52,8 +52,6 @@ type ServicesSectionProps = {
   serviceCards: ServiceCardCopy[];
   serviceContextNote?: string;
   serviceDetailHrefs?: Partial<Record<ServiceCardCopy["key"], string>>;
-  serviceMoreAboutCtaPrefix: string;
-  serviceMoreAboutLabels: Partial<Record<ServiceCardCopy["key"], string>>;
   serviceOptions: ServiceOption[];
   servicePickerTitle: string;
   serviceSecondaryTitle?: string;
@@ -78,8 +76,6 @@ export function ServicesSection({
   serviceCards,
   serviceContextNote,
   serviceDetailHrefs,
-  serviceMoreAboutCtaPrefix,
-  serviceMoreAboutLabels,
   serviceOptions,
   servicePickerTitle,
   serviceSecondaryTitle,
@@ -286,52 +282,41 @@ export function ServicesSection({
         <div className={styles.serviceRows} role="list">
           {otherPrimaryCards.map((card) => {
             const rowDeliveryLabel = card.deliveryLabel ?? deliveryLabel;
-            const rowDetailHref = serviceDetailHrefs?.[card.key];
-            const rowMoreAboutLabel = `${serviceMoreAboutCtaPrefix} ${
-              serviceMoreAboutLabels[card.key] ?? card.title
-            }`;
+            const isSelected = card.key === selectedCard.key;
 
             return (
               <div
                 className={styles.serviceRowShell}
                 data-card-key={card.key}
+                data-selected={isSelected ? "true" : "false"}
                 data-service-variant="alternative"
                 key={card.key}
                 role="listitem"
               >
-                <div className={styles.serviceRow}>
-                  <span className={styles.rowIconTitle}>
-                    <ServiceCardIcon
-                      iconAlt={card.iconAlt}
-                      iconSrc={card.iconSrc}
-                    />
-                    <span className={styles.rowText}>
-                      <span className={styles.rowTitle}>{card.title}</span>
-                      <span className={styles.rowDescription}>
-                        {card.description ?? card.fit}
+                <button
+                  aria-pressed={isSelected}
+                  className={styles.serviceRowButton}
+                  onClick={() => selectServiceAndReveal(card.key)}
+                  type="button"
+                >
+                  <div className={styles.serviceRow}>
+                    <span className={styles.rowIconTitle}>
+                      <ServiceCardIcon
+                        iconAlt={card.iconAlt}
+                        iconSrc={card.iconSrc}
+                      />
+                      <span className={styles.rowText}>
+                        <span className={styles.rowTitle}>{card.title}</span>
+                        <span className={styles.rowDescription}>
+                          {card.description ?? card.fit}
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <span className={styles.rowMeta}>
-                    {rowDeliveryLabel}: {card.delivery}
-                  </span>
-                </div>
-                <div
-                  className={styles.mobileRowAction}
-                  data-has-detail={rowDetailHref ? "true" : "false"}
-                >
-                  {rowDetailHref ? (
-                    <ServiceActionCta href={rowDetailHref}>
-                      {rowMoreAboutLabel}
-                    </ServiceActionCta>
-                  ) : (
-                    <ServiceActionCta
-                      onClick={() => selectServiceAndReveal(card.key)}
-                    >
-                      {rowMoreAboutLabel}
-                    </ServiceActionCta>
-                  )}
-                </div>
+                    <span className={styles.rowMeta}>
+                      {rowDeliveryLabel}: {card.delivery}
+                    </span>
+                  </div>
+                </button>
               </div>
             );
           })}

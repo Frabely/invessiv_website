@@ -102,8 +102,6 @@ export function HomeSectionsRenderer({
                 serviceDetailHrefs={{
                   landing: landingPageServiceHref,
                 }}
-                serviceMoreAboutCtaPrefix={ui.servicesMoreAboutCtaPrefix}
-                serviceMoreAboutLabels={ui.servicesMoreAboutLabels}
                 serviceOptions={ui.servicesIntentOptions}
                 servicePickerTitle={ui.servicesIntentTitle}
                 serviceSecondaryTitle={section.serviceSecondaryTitle}

@@ -412,9 +412,39 @@
 }
 
 .serviceRowShell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
+  display: block;
+}
+
+.serviceRowButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.serviceRowButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.serviceRowButton:hover .serviceRow,
+.serviceRowButton:focus-visible .serviceRow,
+.serviceRowShell[data-selected="true"] .serviceRow {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 88%,
+    var(--color-cta) 12%
+  );
+}
+
+.serviceRowButton:hover .rowTitle,
+.serviceRowButton:focus-visible .rowTitle,
+.serviceRowShell[data-selected="true"] .rowTitle {
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-cta) 8%);
 }
 
 .serviceRow {
@@ -466,6 +496,18 @@
   line-height: 1.5;
 }
 
+@media (min-width: 760px) {
+  .rowText {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: baseline;
+  }
+
+  .rowDescription {
+    align-self: center;
+  }
+}
+
 .rowMeta {
   display: inline-flex;
   align-items: center;
@@ -488,13 +530,6 @@
   padding: 0 1rem;
   font-size: var(--font-size-body-sm);
   white-space: nowrap;
-}
-
-.mobileRowAction {
-  display: flex;
-  position: relative;
-  z-index: 1;
-  padding: 0 1.2rem 0 0.5rem;
 }
 
 .maintenanceCard {
@@ -689,11 +724,6 @@
     width: fit-content;
     min-width: 0;
     white-space: normal;
-  }
-
-  .mobileRowAction {
-    display: flex;
-    padding: 0 1.2rem 1.05rem;
   }
 
   .activeAside .primaryCta {

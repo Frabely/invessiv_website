@@ -123,13 +123,6 @@ function renderSection(options?: {
       serviceDetailHrefs={{
         landing: "/de/services/landing-page",
       }}
-      serviceMoreAboutCtaPrefix="Mehr zu"
-      serviceMoreAboutLabels={{
-        landing: "Landingpages",
-        process: "internen Tools",
-        upgrade: "Webseiten-Upgrades",
-        web: "Webseiten",
-      }}
       serviceOptions={serviceOptions}
       servicePickerTitle="Wähle die Leistung, die gerade am besten zu deinem nächsten Schritt passt."
       serviceSecondaryTitle="Ergänzend nach dem Launch"
@@ -221,13 +214,49 @@ describe("ServicesSection", () => {
         .getAttribute("data-project-goal"),
     ).toBe("Interne Abläufe vereinfachen");
     expect(
-      screen
-        .getByRole("link", { name: "Mehr zu Landingpages" })
-        .getAttribute("href"),
-    ).toBe("/de/services/landing-page");
-    expect(
       alternatives.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["landing", "upgrade", "web"]);
+  });
+
+  it("hovers an alternative service without changing selection, then clicks it to select", () => {
+    const scrollIntoView = vi.fn();
+    const sectionRef = { current: null } as RefObject<HTMLElement | null>;
+
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
+
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0);
+      return 1;
+    });
+
+    const { container } = renderSection({ sectionRef });
+    const processRowButton = container.querySelector(
+      "[data-card-key='process'] button",
+    ) as HTMLButtonElement;
+
+    fireEvent.mouseEnter(processRowButton);
+
+    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(
+      container
+        .querySelector("[data-service-variant='active']")
+        ?.getAttribute("data-card-key"),
+    ).toBe("landing");
+
+    fireEvent.click(processRowButton);
+
+    expect(scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
+    });
+    expect(
+      container
+        .querySelector("[data-service-variant='active']")
+        ?.getAttribute("data-card-key"),
+    ).toBe("process");
   });
 
   it("keeps the alternative list stably sorted for every selected primary service", () => {
@@ -271,29 +300,5 @@ describe("ServicesSection", () => {
         ?.getAttribute("data-card-key"),
     ).toBe("maintenance");
     expect(screen.getByText("Ergänzend nach dem Launch")).toBeTruthy();
-  });
-
-  it("scrolls back to the selected service after using a mobile more link without detail page", () => {
-    const scrollIntoView = vi.fn();
-    const sectionRef = { current: null } as RefObject<HTMLElement | null>;
-
-    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
-      configurable: true,
-      value: scrollIntoView,
-    });
-
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
-      callback(0);
-      return 1;
-    });
-
-    renderSection({ sectionRef });
-
-    fireEvent.click(screen.getByRole("button", { name: "Mehr zu Webseiten" }));
-
-    expect(scrollIntoView).toHaveBeenCalledWith({
-      behavior: "smooth",
-      block: "start",
-    });
   });
 });
