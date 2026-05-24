@@ -22,6 +22,13 @@
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
+  "servicesMoreAboutCtaPrefix": "More about",
+  "servicesMoreAboutLabels": {
+    "landing": "landing pages",
+    "process": "internal tools",
+    "upgrade": "website upgrades",
+    "web": "websites"
+  },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
   "servicesIntentTitle": "Choose your goal. I’ll show the service that fits best.",

@@ -24,6 +24,13 @@ export type HomeUiContent = {
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;
+  servicesMoreAboutCtaPrefix: string;
+  servicesMoreAboutLabels: {
+    landing: string;
+    process: string;
+    upgrade: string;
+    web: string;
+  };
   servicesRecommendedBadgeLabel: string;
   servicesDeliveryLabel: string;
   servicesDetailPageCta: string;

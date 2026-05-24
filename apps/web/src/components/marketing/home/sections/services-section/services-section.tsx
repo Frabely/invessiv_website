@@ -52,6 +52,8 @@ type ServicesSectionProps = {
   serviceCards: ServiceCardCopy[];
   serviceContextNote?: string;
   serviceDetailHrefs?: Partial<Record<ServiceCardCopy["key"], string>>;
+  serviceMoreAboutCtaPrefix: string;
+  serviceMoreAboutLabels: Partial<Record<ServiceCardCopy["key"], string>>;
   serviceOptions: ServiceOption[];
   servicePickerTitle: string;
   serviceSecondaryTitle?: string;
@@ -77,6 +79,8 @@ export function ServicesSection({
   serviceCards,
   serviceContextNote,
   serviceDetailHrefs,
+  serviceMoreAboutCtaPrefix,
+  serviceMoreAboutLabels,
   serviceOptions,
   servicePickerTitle,
   serviceSecondaryTitle,
@@ -152,6 +156,17 @@ export function ServicesSection({
   const getPrimaryCtaLabel = (cardKey: ServiceCardCopy["key"]) =>
     primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
     primaryCtaLabel;
+
+  const selectServiceAndReveal = (cardKey: PrimaryServiceKey) => {
+    setSelectedServiceKey(cardKey);
+
+    window.requestAnimationFrame(() => {
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
 
   if (!selectedCard) {
     return null;
@@ -293,6 +308,10 @@ export function ServicesSection({
         <div className={styles.serviceRows} role="list">
           {otherPrimaryCards.map((card) => {
             const rowDeliveryLabel = card.deliveryLabel ?? deliveryLabel;
+            const rowDetailHref = serviceDetailHrefs?.[card.key];
+            const rowMoreAboutLabel = `${serviceMoreAboutCtaPrefix} ${
+              serviceMoreAboutLabels[card.key] ?? card.title
+            }`;
 
             return (
               <div
@@ -327,6 +346,30 @@ export function ServicesSection({
                     &rsaquo;
                   </span>
                 </button>
+                <div
+                  className={styles.mobileRowAction}
+                  data-has-detail={rowDetailHref ? "true" : "false"}
+                >
+                  {rowDetailHref ? (
+                    <ServiceCardLink href={rowDetailHref}>
+                      {rowMoreAboutLabel}
+                    </ServiceCardLink>
+                  ) : (
+                    <button
+                      className={styles.mobileRowActionButton}
+                      onClick={() => selectServiceAndReveal(card.key)}
+                      type="button"
+                    >
+                      {rowMoreAboutLabel}
+                      <span
+                        aria-hidden="true"
+                        className={styles.mobileRowActionArrow}
+                      >
+                        &rsaquo;
+                      </span>
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}

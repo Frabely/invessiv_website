@@ -531,6 +531,22 @@
   line-height: 1;
 }
 
+.mobileRowAction {
+  display: none;
+}
+
+.mobileRowAction[data-has-detail="true"] {
+  display: flex;
+  padding: 0 1.2rem 1.05rem;
+}
+
+.mobileRowActionButton {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
 .maintenanceCard {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -703,6 +719,7 @@
 
   .serviceRow {
     grid-template-columns: minmax(0, 1fr) auto;
+    padding-bottom: 0.75rem;
   }
 
   .rowText {
@@ -715,6 +732,49 @@
     width: fit-content;
     min-width: 0;
     white-space: normal;
+  }
+
+  .mobileRowAction {
+    display: flex;
+    padding: 0 1.2rem 1.05rem;
+  }
+
+  .mobileRowAction > a,
+  .mobileRowActionButton {
+    display: inline-flex;
+    min-height: 2.35rem;
+    align-items: center;
+    justify-content: flex-start;
+    width: fit-content;
+    color: var(--color-cta);
+    font-size: var(--font-size-body-sm);
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+  }
+
+  .mobileRowActionArrow {
+    margin-left: 0.35rem;
+    font-size: 1.25em;
+    line-height: 1;
+    transform: translateY(-0.02em);
+  }
+
+  .mobileRowAction > a:hover,
+  .mobileRowActionButton:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
+
+  .mobileRowAction > a:focus-visible,
+  .mobileRowActionButton:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .rowArrow {
+    display: none;
   }
 
   .activeAside .primaryCta {

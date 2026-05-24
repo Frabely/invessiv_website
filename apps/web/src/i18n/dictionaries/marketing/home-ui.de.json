@@ -22,6 +22,13 @@
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
+  "servicesMoreAboutCtaPrefix": "Mehr zu",
+  "servicesMoreAboutLabels": {
+    "landing": "Landingpages",
+    "process": "internen Tools",
+    "upgrade": "Webseiten-Upgrades",
+    "web": "Webseiten"
+  },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
   "servicesIntentTitle": "Wähle dein Ziel. Ich zeige dir die Leistung, die dafür am ehesten passt.",

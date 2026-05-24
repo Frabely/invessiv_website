@@ -7,7 +7,8 @@ import {
   screen,
   within,
 } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import type { RefObject } from "react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ServicesSection } from "./services-section";
 
@@ -96,7 +97,9 @@ const serviceOptions = [
   },
 ];
 
-function renderSection() {
+function renderSection(options?: {
+  sectionRef?: RefObject<HTMLElement | null>;
+}) {
   return render(
     <ServicesSection
       addonBadgeLabel="Zusatzleistung"
@@ -115,11 +118,18 @@ function renderSection() {
         web: "Projekt anfragen",
       }}
       recommendedBadgeLabel="Empfohlen für dich"
-      sectionRef={{ current: null }}
+      sectionRef={options?.sectionRef ?? { current: null }}
       serviceCards={serviceCards}
       serviceContextNote="Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten."
       serviceDetailHrefs={{
         landing: "/de/services/landing-page",
+      }}
+      serviceMoreAboutCtaPrefix="Mehr zu"
+      serviceMoreAboutLabels={{
+        landing: "Landingpages",
+        process: "internen Tools",
+        upgrade: "Webseiten-Upgrades",
+        web: "Webseiten",
       }}
       serviceOptions={serviceOptions}
       servicePickerTitle="Wähle die Leistung, die gerade am besten zu deinem nächsten Schritt passt."
@@ -132,6 +142,7 @@ function renderSection() {
 describe("ServicesSection", () => {
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it("renders service chips in the requested order and shows landing as the default active service", () => {
@@ -211,6 +222,11 @@ describe("ServicesSection", () => {
         .getAttribute("data-project-goal"),
     ).toBe("Interne Abläufe vereinfachen");
     expect(
+      screen
+        .getByRole("link", { name: "Mehr zu Landingpages" })
+        .getAttribute("href"),
+    ).toBe("/de/services/landing-page");
+    expect(
       alternatives.map((card) => card.getAttribute("data-card-key")),
     ).toEqual(["landing", "upgrade", "web"]);
   });
@@ -256,5 +272,29 @@ describe("ServicesSection", () => {
         ?.getAttribute("data-card-key"),
     ).toBe("maintenance");
     expect(screen.getByText("Ergänzend nach dem Launch")).toBeTruthy();
+  });
+
+  it("scrolls back to the selected service after using a mobile more link without detail page", () => {
+    const scrollIntoView = vi.fn();
+    const sectionRef = { current: null } as RefObject<HTMLElement | null>;
+
+    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
+      configurable: true,
+      value: scrollIntoView,
+    });
+
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0);
+      return 1;
+    });
+
+    renderSection({ sectionRef });
+
+    fireEvent.click(screen.getByRole("button", { name: "Mehr zu Webseiten" }));
+
+    expect(scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
+    });
   });
 });
