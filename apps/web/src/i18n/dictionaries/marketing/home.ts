@@ -40,7 +40,6 @@ type BaseServiceCard = {
 type StandardServiceCardBase = BaseServiceCard & {
   description?: string;
   highlight: string;
-  outcomes?: string[];
   pricingHint: string;
   delivery: string;
   deliveryLabel?: string;
@@ -512,6 +511,8 @@ const HOME_SECTIONS = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landingpages Icon",
             title: "Landingpages",
+            description:
+              "Fokussierte Angebotsseiten, die ein klares Ziel verfolgen und den nächsten Schritt leicht machen.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die in 5–10 Tagen live gehen sollen.",
             isRecommended: true,
             highlight: "mit klarem Fokus auf Anfragen, Buchungen oder Verkäufe",
@@ -523,17 +524,14 @@ const HOME_SECTIONS = [
               "Direkter Kontaktweg",
             ],
             timeline: ["Briefing", "Entwurf", "Launch"],
-            outcomes: [
-              "Mehr Anfragen",
-              "Klare Botschaft",
-              "Messbare Ergebnisse",
-            ],
           },
           {
             key: "web",
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Webseiten Icon",
             title: "Webseiten",
+            description:
+              "Strukturierte Webauftritte, die Angebote verständlich erklären und passende Anfragen erleichtern.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
             highlight: "professioneller Auftritt mit klaren Wegen zur Anfrage",
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -544,11 +542,6 @@ const HOME_SECTIONS = [
               "Direkter Anfrageweg",
             ],
             timeline: ["Struktur", "Seitenbau", "Launch"],
-            outcomes: [
-              "Klare Struktur",
-              "Starker Auftritt",
-              "Saubere Lead-Strecke",
-            ],
             details: [
               "Sprachen, zusätzliche Seiten und Integrationen werden vor Start als eigener Umfang eingeplant.",
               "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
@@ -559,6 +552,8 @@ const HOME_SECTIONS = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Webseiten-Upgrade Icon",
             title: "Webseiten-Upgrade",
+            description:
+              "Gezielte Verbesserungen, die bestehende Seiten klarer, nutzbarer und schneller machen.",
             fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
             highlight:
               "klarer, schneller und leichter nutzbar ohne kompletten Neubau",
@@ -570,11 +565,6 @@ const HOME_SECTIONS = [
               "Schnellere Seite",
             ],
             timeline: ["Analyse", "Umbau", "Check"],
-            outcomes: [
-              "Klarerer Auftritt",
-              "Bessere Nutzung",
-              "Schnellere Seite",
-            ],
             details: [
               "Auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
               "Größere Rebuild-Themen werden separat empfohlen und geplant.",
@@ -622,11 +612,6 @@ const HOME_SECTIONS = [
               "Nutzbare Tool-Version",
             ],
             timeline: ["Ablauf", "Toolbau", "Übergabe"],
-            outcomes: [
-              "Weniger Handarbeit",
-              "Klarere Abläufe",
-              "Nutzbare Version",
-            ],
             details: [
               "Weitere Workflows setzen wir als Folgepakete um.",
               "Login, Rechte, Integrationen und Betrieb hängen vom konkreten Ablauf ab und werden vor Start eingegrenzt.",
@@ -645,6 +630,8 @@ const HOME_SECTIONS = [
             iconSrc: "/services/website-layout-icon.svg",
             iconAlt: "Landing pages icon",
             title: "Landing pages",
+            description:
+              "Focused offer pages that serve one clear goal and make the next step easy.",
             fit: "Single offer pages, campaigns, or new offers that should go live in 5–10 days.",
             isRecommended: true,
             highlight: "with a clear focus on inquiries, bookings, or sales",
@@ -656,13 +643,14 @@ const HOME_SECTIONS = [
               "Direct contact path",
             ],
             timeline: ["Briefing", "Draft", "Launch"],
-            outcomes: ["More inquiries", "Clear message", "Measurable results"],
           },
           {
             key: "web",
             iconSrc: "/services/coding-icon.svg",
             iconAlt: "Websites icon",
             title: "Websites",
+            description:
+              "Structured websites that explain your offer clearly and make relevant inquiries easier.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
             highlight: "a professional presence with clear paths to contact",
             pricingHint: "Individual quote based on page scope and depth",
@@ -673,11 +661,6 @@ const HOME_SECTIONS = [
               "Direct inquiry path",
             ],
             timeline: ["Structure", "Page build", "Launch"],
-            outcomes: [
-              "Clear structure",
-              "Stronger presence",
-              "Clean lead path",
-            ],
             details: [
               "Languages, additional pages, and integrations are planned as their own scope before kickoff.",
               "Third-party licenses and external integrations are aligned separately when needed.",
@@ -688,6 +671,8 @@ const HOME_SECTIONS = [
             iconSrc: "/services/slow-internet-speed-icon.svg",
             iconAlt: "Website upgrade icon",
             title: "Website upgrade",
+            description:
+              "Focused improvements that make existing sites clearer, easier to use, and faster.",
             fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
             highlight:
               "clearer, faster, and easier to use without a full rebuild",
@@ -696,11 +681,6 @@ const HOME_SECTIONS = [
             delivery: "3–14 days",
             included: ["Clearer content", "Better usability", "Faster site"],
             timeline: ["Analysis", "Rework", "Check"],
-            outcomes: [
-              "Clearer presence",
-              "Better usability",
-              "Faster website",
-            ],
             details: [
               "Can also be planned as ongoing improvement or a focused one-off service.",
               "Larger rebuild topics are recommended and planned separately.",
@@ -748,11 +728,6 @@ const HOME_SECTIONS = [
               "Usable tool version",
             ],
             timeline: ["Workflow", "Tool build", "Handover"],
-            outcomes: [
-              "Less manual work",
-              "Clearer workflows",
-              "Usable first version",
-            ],
             details: [
               "Additional workflows are delivered as follow-up modules.",
               "Login, permissions, integrations, and operations depend on the concrete workflow and are scoped before kickoff.",

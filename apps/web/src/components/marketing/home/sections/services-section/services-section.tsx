@@ -159,8 +159,6 @@ export function ServicesSection({
 
   const selectedDeliveryLabel = selectedCard.deliveryLabel ?? deliveryLabel;
   const selectedDescription = selectedCard.description;
-  const outcomeItems =
-    selectedCard.outcomes ?? selectedCard.included.slice(0, 3);
   const timelineItems =
     selectedCard.timeline ?? selectedCard.included.slice(0, 3);
   const detailHref = serviceDetailHrefs?.[selectedCard.key];
@@ -246,17 +244,6 @@ export function ServicesSection({
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
-
-          <div className={styles.outcomeStrip}>
-            {outcomeItems.slice(0, 3).map((outcome) => (
-              <span className={styles.outcomeItem} key={outcome}>
-                <span aria-hidden="true" className={styles.checkIcon}>
-                  ✓
-                </span>
-                {outcome}
-              </span>
-            ))}
-          </div>
         </div>
 
         <aside className={styles.activeAside}>

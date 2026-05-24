@@ -126,6 +126,31 @@ describe("home dictionary", () => {
     },
   );
 
+  it.each(["de", "en"] as const)(
+    "keeps every %s service card supported by a short description",
+    (locale) => {
+      const servicesSection = getHomeSections(locale).find(
+        (section) => section.id === "services",
+      );
+
+      if (!servicesSection) {
+        throw new Error("Expected services section to be available.");
+      }
+
+      expect(
+        servicesSection.serviceCards.map((card) => [
+          card.key,
+          card.description,
+        ]),
+      ).toEqual(
+        servicesSection.serviceCards.map((card) => [
+          card.key,
+          expect.stringMatching(/\S/),
+        ]),
+      );
+    },
+  );
+
   it("keeps DE and EN home UI dictionary keys aligned", () => {
     const deKeys = Object.keys(getHomeUiContent("de")).sort();
     const enKeys = Object.keys(getHomeUiContent("en")).sort();

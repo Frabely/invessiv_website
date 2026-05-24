@@ -245,8 +245,7 @@
   align-items: center;
 }
 
-.bulletList > li::before,
-.checkIcon {
+.bulletList > li::before {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -261,43 +260,9 @@
   content: "✓";
 }
 
-.outcomeStrip,
 .maintenanceCard {
   border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 66%, transparent);
-}
-
-.outcomeStrip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, auto));
-  width: fit-content;
-  max-width: 100%;
-  margin-top: clamp(1.35rem, 2.1vw, 1.95rem);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.outcomeItem {
-  display: inline-flex;
-  min-height: 3rem;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0.62rem;
-  padding: 0 1rem;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: var(--font-size-body-sm);
-  font-weight: 700;
-  line-height: 1.2;
-  white-space: nowrap;
-}
-
-.outcomeItem + .outcomeItem {
-  border-left: 1px solid
-    color-mix(in srgb, var(--color-border) 76%, transparent);
-}
-
-.checkIcon {
-  flex: 0 0 auto;
 }
 
 .timeBlock {
@@ -592,7 +557,6 @@
 }
 
 :global([data-theme="light"]) .serviceRows,
-:global([data-theme="light"]) .outcomeStrip,
 :global([data-theme="light"]) .maintenanceCard {
   background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
 }
@@ -702,21 +666,6 @@
     padding-top: 1.35rem;
     border-top: 1px solid
       color-mix(in srgb, var(--color-border) 82%, transparent);
-  }
-
-  .outcomeStrip {
-    grid-template-columns: 1fr;
-    width: 100%;
-  }
-
-  .outcomeItem {
-    width: 100%;
-  }
-
-  .outcomeItem + .outcomeItem {
-    border-left: 0;
-    border-top: 1px solid
-      color-mix(in srgb, var(--color-border) 76%, transparent);
   }
 
   .serviceRow {
