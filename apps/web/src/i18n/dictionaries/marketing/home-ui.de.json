@@ -22,20 +22,31 @@
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
-  "servicesRecommendedBadgeLabel": "Empfohlen",
-  "servicesIntentTitle": "Wähle dein Besucherziel. Die passende Leistung wird hervorgehoben.",
+  "servicesRecommendedBadgeLabel": "Empfohlen für dich",
+  "servicesKicker": "LEISTUNGEN",
+  "servicesIntentTitle": "Wähle dein Ziel. Ich zeige dir die Leistung, die dafür am ehesten passt.",
+  "servicesOtherTitle": "Andere mögliche Leistungen",
+  "servicesLaunchAddonTitle": "Ergänzend nach dem Launch",
   "servicesIntentOptions": [
     {
       "key": "more_inquiries",
-      "label": "Besucher zu Anfragen führen"
+      "label": "Mehr passende Anfragen",
+      "serviceKey": "landing"
+    },
+    {
+      "key": "simplify_processes",
+      "label": "Interne Abläufe vereinfachen",
+      "serviceKey": "process"
     },
     {
       "key": "improve_existing_site",
-      "label": "bestehende Seite klarer ausrichten"
+      "label": "Bestehende Seite klarer machen",
+      "serviceKey": "upgrade"
     },
     {
       "key": "plan_new_website",
-      "label": "neue Website mit klarem Anfrageweg starten"
+      "label": "Neue Website starten",
+      "serviceKey": "web"
     }
   ],
   "servicesPrimaryCta": "Projekt anfragen",

@@ -2,44 +2,43 @@
 
 import type { PointerEvent, RefObject } from "react";
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 
-import { FeaturedServiceCard } from "@/components/marketing/home/sections/services-section/featured-service-card/featured-service-card";
-import { SecondaryService } from "@/components/marketing/home/sections/services-section/secondary-service/secondary-service";
-import { ServiceCard } from "@/components/marketing/home/sections/services-section/service-card/service-card";
+import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
+import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
 import styles from "./services-section.module.css";
 
-const PRIMARY_ORDER = ["landing", "upgrade", "web"] as const;
-const SECONDARY_ORDER = ["maintenance", "process"] as const;
-const DEFAULT_GOAL_KEY = "more_inquiries";
-const GOAL_TO_SERVICE = {
-  more_inquiries: "landing",
-  improve_existing_site: "upgrade",
-  plan_new_website: "web",
-} as const;
+const PRIMARY_SERVICE_ORDER = ["landing", "process", "upgrade", "web"] as const;
+const DEFAULT_SERVICE_KEY = "landing";
 
-type ServiceCardData = ServiceCardCopy;
-type SecondaryServiceCardData = Extract<
-  ServiceCardData,
-  { key: (typeof SECONDARY_ORDER)[number] }
+type PrimaryServiceKey = (typeof PRIMARY_SERVICE_ORDER)[number];
+type PrimaryServiceCardData = Extract<
+  ServiceCardCopy,
+  { key: PrimaryServiceKey }
 >;
-type GoalOption = {
+type MaintenanceServiceCardData = Extract<
+  ServiceCardCopy,
+  { key: "maintenance" }
+>;
+
+type ServiceOption = {
   key: string;
   label: string;
+  serviceKey?: string;
 };
 
 type ServicesSectionProps = {
   addonBadgeLabel: string;
   deliveryLabel: string;
   detailPageCtaLabel: string;
-  detailsCtaLabel: string;
-  fitLabel: string;
-  goalOptions: GoalOption[];
-  goalTitle: string;
   id: string;
-  moreItemsPluralLabel: string;
-  moreItemsSingularLabel: string;
+  kicker: string;
+  launchAddonTitle: string;
+  otherServicesTitle: string;
   primaryCtaLabel: string;
   primaryCtaLabels: Record<
     "landing" | "maintenance" | "process" | "upgrade" | "web",
@@ -47,24 +46,27 @@ type ServicesSectionProps = {
   >;
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
-  serviceCards: ServiceCardData[];
+  serviceCards: ServiceCardCopy[];
   serviceContextNote?: string;
-  serviceDetailHrefs?: Partial<Record<ServiceCardData["key"], string>>;
+  serviceDetailHrefs?: Partial<Record<ServiceCardCopy["key"], string>>;
+  serviceOptions: ServiceOption[];
+  servicePickerTitle: string;
   serviceSecondaryTitle?: string;
   title: string;
 };
+
+function isPrimaryServiceKey(key: string): key is PrimaryServiceKey {
+  return PRIMARY_SERVICE_ORDER.some((serviceKey) => serviceKey === key);
+}
 
 export function ServicesSection({
   addonBadgeLabel,
   deliveryLabel,
   detailPageCtaLabel,
-  detailsCtaLabel,
-  fitLabel,
-  goalOptions,
-  goalTitle,
   id,
-  moreItemsPluralLabel,
-  moreItemsSingularLabel,
+  kicker,
+  launchAddonTitle,
+  otherServicesTitle,
   primaryCtaLabel,
   primaryCtaLabels,
   recommendedBadgeLabel,
@@ -72,48 +74,58 @@ export function ServicesSection({
   serviceCards,
   serviceContextNote,
   serviceDetailHrefs,
+  serviceOptions,
+  servicePickerTitle,
   serviceSecondaryTitle,
   title,
 }: ServicesSectionProps) {
-  const [openCardKey, setOpenCardKey] = useState<string | null>(null);
-  const [selectedGoalKey, setSelectedGoalKey] = useState<string>(
-    goalOptions[0]?.key ?? DEFAULT_GOAL_KEY,
-  );
+  const [selectedServiceKey, setSelectedServiceKey] =
+    useState<PrimaryServiceKey>(DEFAULT_SERVICE_KEY);
 
   const primaryCards = useMemo(
     () =>
-      PRIMARY_ORDER.map((key) =>
+      PRIMARY_SERVICE_ORDER.map((key) =>
         serviceCards.find((card) => card.key === key),
-      ).filter((card): card is ServiceCardData => Boolean(card)),
+      ).filter((card): card is PrimaryServiceCardData => Boolean(card)),
     [serviceCards],
   );
 
-  const secondaryCards = useMemo(
+  const maintenanceCard = useMemo(
     () =>
-      SECONDARY_ORDER.map((key) =>
-        serviceCards.find((card) => card.key === key),
-      ).filter((card): card is SecondaryServiceCardData => Boolean(card)),
+      serviceCards.find(
+        (card): card is MaintenanceServiceCardData =>
+          card.key === "maintenance",
+      ),
     [serviceCards],
   );
 
-  const recommendedCardKey =
-    GOAL_TO_SERVICE[selectedGoalKey as keyof typeof GOAL_TO_SERVICE] ??
-    "landing";
-
-  const selectedGoal =
-    goalOptions.find((option) => option.key === selectedGoalKey) ?? null;
-  const selectedGoalLabel = selectedGoal?.label ?? "";
+  const selectedCard =
+    primaryCards.find((card) => card.key === selectedServiceKey) ??
+    primaryCards[0] ??
+    null;
+  const selectedOption =
+    serviceOptions.find(
+      (option) => (option.serviceKey ?? option.key) === selectedCard?.key,
+    ) ?? null;
+  const ctaProjectGoal = selectedOption?.label ?? selectedCard?.title ?? "";
+  const otherPrimaryCards = primaryCards.filter(
+    (card) => card.key !== selectedCard?.key,
+  );
 
   useEffect(() => {
+    if (!selectedCard) {
+      return;
+    }
+
     window.dispatchEvent(
       new CustomEvent("invessiv:project-offer-change", {
         detail: {
-          offerKey: recommendedCardKey,
-          projectGoal: selectedGoal?.label ?? "",
+          offerKey: selectedCard.key,
+          projectGoal: ctaProjectGoal,
         },
       }),
     );
-  }, [recommendedCardKey, selectedGoal?.label]);
+  }, [ctaProjectGoal, selectedCard]);
 
   const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
     if (event.pointerType !== "mouse") {
@@ -134,127 +146,246 @@ export function ServicesSection({
     event.currentTarget.style.removeProperty("--services-spotlight-y");
   };
 
-  const toggleCardDetails = (cardKey: string, nextOpenState: boolean) => {
-    setOpenCardKey((currentOpenCardKey) => {
-      if (nextOpenState) {
-        return cardKey;
-      }
-
-      return currentOpenCardKey === cardKey ? null : currentOpenCardKey;
-    });
-  };
-
-  const selectGoal = (goalKey: string) => {
-    setSelectedGoalKey(goalKey);
-    setOpenCardKey(null);
-  };
-
-  const handlePrimaryCardSelection = () => undefined;
-
-  const getSecondaryCtaLabel = (cardKey: ServiceCardData["key"]) =>
+  const getPrimaryCtaLabel = (cardKey: ServiceCardCopy["key"]) =>
     primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
     primaryCtaLabel;
 
+  if (!selectedCard) {
+    return null;
+  }
+
+  const selectedDeliveryLabel = selectedCard.deliveryLabel ?? deliveryLabel;
+  const selectedDescription = selectedCard.description;
+  const outcomeItems =
+    selectedCard.outcomes ?? selectedCard.included.slice(0, 3);
+  const timelineItems =
+    selectedCard.timeline ?? selectedCard.included.slice(0, 3);
+  const detailHref = serviceDetailHrefs?.[selectedCard.key];
+
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <div className={styles.goalPicker} aria-label={goalTitle} role="group">
-        <h2 className={styles.sectionTitle}>{title}</h2>
-        <h3 className={styles.goalTitle}>{goalTitle}</h3>
-        <div className={styles.goalChips}>
-          {goalOptions.map((option) => {
-            const isActive = option.key === selectedGoalKey;
+      <header className={styles.header}>
+        <p className={styles.kicker}>{kicker}</p>
+        <div className={styles.headingBlock}>
+          <h2 className={styles.sectionTitle}>{title}</h2>
+          <p className={styles.contextNote}>{servicePickerTitle}</p>
+          {serviceContextNote ? (
+            <p className={styles.contextMeta}>{serviceContextNote}</p>
+          ) : null}
+        </div>
+      </header>
+
+      <div
+        className={styles.servicePicker}
+        aria-label={servicePickerTitle}
+        role="group"
+      >
+        {serviceOptions.map((option) => {
+          const optionServiceKey = option.serviceKey ?? option.key;
+          const isActive = optionServiceKey === selectedCard.key;
+
+          return (
+            <button
+              aria-pressed={isActive}
+              className={`${styles.serviceChip}${
+                isActive ? ` ${styles.serviceChipActive}` : ""
+              }`}
+              key={option.key}
+              onClick={() => {
+                if (isPrimaryServiceKey(optionServiceKey)) {
+                  setSelectedServiceKey(optionServiceKey);
+                }
+              }}
+              type="button"
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div aria-hidden="true" className={styles.sectionDivider} />
+
+      <article
+        aria-label={selectedCard.title}
+        className={styles.activeService}
+        data-card-key={selectedCard.key}
+        data-service-card="true"
+        data-service-variant="active"
+        onPointerLeave={resetCardSpotlight}
+        onPointerMove={setCardSpotlight}
+      >
+        <div className={styles.activeMain}>
+          <div className={styles.activeHeading}>
+            <ServiceCardIcon
+              iconAlt={selectedCard.iconAlt}
+              iconSrc={selectedCard.iconSrc}
+            />
+            <div className={styles.activeHeadingText}>
+              <p className={styles.activeEyebrow}>{recommendedBadgeLabel}</p>
+              <h3 className={styles.activeTitle}>
+                <span>
+                  {selectedCard.title}
+                  <span aria-hidden="true" className={styles.titleDot}>
+                    .
+                  </span>
+                </span>
+              </h3>
+            </div>
+          </div>
+
+          {selectedDescription ? (
+            <p className={styles.activeDescription}>{selectedDescription}</p>
+          ) : null}
+
+          <ul className={styles.bulletList}>
+            {selectedCard.included.slice(0, 4).map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
+          </ul>
+
+          <div className={styles.outcomeStrip}>
+            {outcomeItems.slice(0, 3).map((outcome) => (
+              <span className={styles.outcomeItem} key={outcome}>
+                <span aria-hidden="true" className={styles.checkIcon}>
+                  ✓
+                </span>
+                {outcome}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <aside className={styles.activeAside}>
+          <div className={styles.timeBlock}>
+            <span aria-hidden="true" className={styles.timeIcon}>
+              <Image
+                alt=""
+                className={styles.timeIconImage}
+                height={25}
+                src="/services/calender-icon.svg"
+                width={25}
+              />
+            </span>
+            <div className={styles.timeText}>
+              <p className={styles.timeLabel}>{selectedDeliveryLabel}</p>
+              <p className={styles.timeValue}>{selectedCard.delivery}</p>
+              <p className={styles.timeSteps}>{timelineItems.join(" → ")}</p>
+            </div>
+          </div>
+
+          <div className={styles.actionRow}>
+            <PrimaryCtaLink
+              className={styles.primaryCta}
+              data-analytics-event="cta_click"
+              data-analytics-location="pricing"
+              data-analytics-target="form"
+              data-analytics-variant="primary"
+              data-project-goal={ctaProjectGoal}
+              data-project-offer={selectedCard.key}
+              href={SECTION_HREFS.contact}
+            >
+              {getPrimaryCtaLabel(selectedCard.key)}
+            </PrimaryCtaLink>
+
+            {detailHref ? (
+              <ServiceCardLink href={detailHref}>
+                {detailPageCtaLabel}
+              </ServiceCardLink>
+            ) : null}
+          </div>
+        </aside>
+      </article>
+
+      <div className={styles.otherServices}>
+        <h3 className={styles.listTitle}>{otherServicesTitle}</h3>
+        <div className={styles.serviceRows} role="list">
+          {otherPrimaryCards.map((card) => {
+            const rowDeliveryLabel = card.deliveryLabel ?? deliveryLabel;
 
             return (
-              <button
-                aria-pressed={isActive}
-                className={`${styles.goalChip}${isActive ? ` ${styles.goalChipActive}` : ""}`}
-                key={option.key}
-                onClick={() => selectGoal(option.key)}
-                type="button"
+              <div
+                data-card-key={card.key}
+                data-service-variant="alternative"
+                key={card.key}
+                role="listitem"
               >
-                {option.label}
-              </button>
+                <button
+                  className={styles.serviceRow}
+                  onClick={() => setSelectedServiceKey(card.key)}
+                  onPointerLeave={resetCardSpotlight}
+                  onPointerMove={setCardSpotlight}
+                  type="button"
+                >
+                  <span className={styles.rowIconTitle}>
+                    <ServiceCardIcon
+                      iconAlt={card.iconAlt}
+                      iconSrc={card.iconSrc}
+                    />
+                    <span className={styles.rowText}>
+                      <span className={styles.rowTitle}>{card.title}</span>
+                      <span className={styles.rowDescription}>
+                        {card.description ?? card.fit}
+                      </span>
+                    </span>
+                  </span>
+                  <span className={styles.rowMeta}>
+                    {rowDeliveryLabel}: {card.delivery}
+                  </span>
+                  <span aria-hidden="true" className={styles.rowArrow}>
+                    &rsaquo;
+                  </span>
+                </button>
+              </div>
             );
           })}
         </div>
-        {serviceContextNote ? (
-          <p className={styles.contextNote}>{serviceContextNote}</p>
-        ) : null}
       </div>
 
-      <div className={styles.primaryGrid} role="list">
-        {primaryCards.map((card) =>
-          card.key === "landing" ? (
-            <FeaturedServiceCard
-              card={card}
-              ctaLabel={primaryCtaLabel}
-              ctaProjectGoal={selectedGoalLabel}
-              defaultDeliveryLabel={deliveryLabel}
-              detailPageCtaLabel={detailPageCtaLabel}
-              detailsCtaLabel={detailsCtaLabel}
-              fitLabel={fitLabel}
-              isDetailsOpen={openCardKey === card.key}
-              isMobilePriority={card.key === recommendedCardKey}
-              isRecommended={card.key === recommendedCardKey}
-              key={card.key}
-              moreItemsPluralLabel={moreItemsPluralLabel}
-              moreItemsSingularLabel={moreItemsSingularLabel}
-              onCardSelectAction={handlePrimaryCardSelection}
-              onDetailsToggleAction={(nextOpenState) =>
-                toggleCardDetails(card.key, nextOpenState)
-              }
-              onPointerLeaveAction={resetCardSpotlight}
-              onPointerMoveAction={setCardSpotlight}
-              recommendedBadgeLabel={recommendedBadgeLabel}
-              serviceDetailHref={serviceDetailHrefs?.[card.key]}
-            />
-          ) : (
-            <ServiceCard
-              card={card}
-              ctaLabel={primaryCtaLabel}
-              isCompact
-              isCtaActive={recommendedCardKey === card.key}
-              ctaProjectGoal={selectedGoalLabel}
-              defaultDeliveryLabel={deliveryLabel}
-              detailsCtaLabel={detailsCtaLabel}
-              fitLabel={fitLabel}
-              isDetailsOpen={openCardKey === card.key}
-              isMobilePriority={card.key === recommendedCardKey}
-              isRecommended={card.key === recommendedCardKey}
-              key={card.key}
-              moreItemsPluralLabel={moreItemsPluralLabel}
-              moreItemsSingularLabel={moreItemsSingularLabel}
-              onCardSelectAction={handlePrimaryCardSelection}
-              onDetailsToggleAction={(nextOpenState) =>
-                toggleCardDetails(card.key, nextOpenState)
-              }
-              onPointerLeaveAction={resetCardSpotlight}
-              onPointerMoveAction={setCardSpotlight}
-              recommendedBadgeLabel={recommendedBadgeLabel}
-            />
-          ),
-        )}
-      </div>
-
-      <div className={styles.secondaryBlock}>
-        {serviceSecondaryTitle ? (
-          <h3 className={styles.secondaryTitle}>{serviceSecondaryTitle}</h3>
-        ) : null}
-
-        <div className={styles.secondaryGrid} role="list">
-          {secondaryCards.map((card) => (
-            <SecondaryService
-              addonBadgeLabel={addonBadgeLabel}
-              card={card}
-              ctaLabel={getSecondaryCtaLabel(card.key)}
-              ctaProjectGoal={selectedGoalLabel}
-              defaultDeliveryLabel={deliveryLabel}
-              detailsCtaLabel={detailsCtaLabel}
-              key={card.key}
-            />
-          ))}
+      {maintenanceCard ? (
+        <div className={styles.launchAddon}>
+          <h3 className={styles.listTitle}>
+            {serviceSecondaryTitle ?? launchAddonTitle}
+          </h3>
+          <article
+            aria-label={maintenanceCard.title}
+            className={styles.maintenanceCard}
+            data-card-key={maintenanceCard.key}
+            data-service-variant="secondary"
+          >
+            <div className={styles.maintenanceTitleRow}>
+              <h4 className={styles.maintenanceTitle}>
+                <ServiceCardIcon
+                  iconAlt={maintenanceCard.iconAlt}
+                  iconSrc={maintenanceCard.iconSrc}
+                />
+                <span>{maintenanceCard.title}</span>
+              </h4>
+              <span className={styles.addonBadge}>{addonBadgeLabel}</span>
+            </div>
+            <p className={styles.maintenanceDescription}>
+              {maintenanceCard.description}
+            </p>
+            <div className={styles.maintenanceFooter}>
+              <span className={styles.rowMeta}>
+                {maintenanceCard.deliveryLabel ?? deliveryLabel}:{" "}
+                {maintenanceCard.delivery}
+              </span>
+              <ServiceCardLink
+                data-analytics-event="cta_click"
+                data-analytics-location="pricing"
+                data-analytics-target="form"
+                data-analytics-variant="secondary-link"
+                data-project-goal={ctaProjectGoal}
+                data-project-offer={maintenanceCard.key}
+                href={SECTION_HREFS.contact}
+              >
+                {getPrimaryCtaLabel(maintenanceCard.key)}
+              </ServiceCardLink>
+            </div>
+          </article>
         </div>
-      </div>
+      ) : null}
     </section>
   );
 }

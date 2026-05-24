@@ -22,20 +22,31 @@
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
-  "servicesRecommendedBadgeLabel": "Recommended",
-  "servicesIntentTitle": "Choose your visitor goal. The matching service will be highlighted.",
+  "servicesRecommendedBadgeLabel": "Recommended for you",
+  "servicesKicker": "SERVICES",
+  "servicesIntentTitle": "Choose your goal. I’ll show the service that fits best.",
+  "servicesOtherTitle": "Other possible services",
+  "servicesLaunchAddonTitle": "Additional after launch",
   "servicesIntentOptions": [
     {
       "key": "more_inquiries",
-      "label": "turn visitors into inquiries"
+      "label": "Get better inquiries",
+      "serviceKey": "landing"
+    },
+    {
+      "key": "simplify_processes",
+      "label": "Simplify internal workflows",
+      "serviceKey": "process"
     },
     {
       "key": "improve_existing_site",
-      "label": "make the current site clearer"
+      "label": "Make the current site clearer",
+      "serviceKey": "upgrade"
     },
     {
       "key": "plan_new_website",
-      "label": "launch a website with a clear inquiry path"
+      "label": "Start a new website",
+      "serviceKey": "web"
     }
   ],
   "servicesPrimaryCta": "Request project",

@@ -24,8 +24,8 @@ import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-st
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
-type PrimaryServiceCardKey = "landing" | "web" | "upgrade";
-type SecondaryServiceCardKey = "process" | "maintenance";
+type PrimaryServiceCardKey = "landing" | "process" | "upgrade" | "web";
+type SecondaryServiceCardKey = "maintenance";
 type ServiceCardKey = PrimaryServiceCardKey | SecondaryServiceCardKey;
 
 type BaseServiceCard = {
@@ -38,11 +38,14 @@ type BaseServiceCard = {
 };
 
 type StandardServiceCardBase = BaseServiceCard & {
+  description?: string;
   highlight: string;
+  outcomes?: string[];
   pricingHint: string;
   delivery: string;
   deliveryLabel?: string;
   included: string[];
+  timeline?: string[];
   details?: string[];
 };
 
@@ -502,7 +505,7 @@ const HOME_SECTIONS = [
         title: "Was brauchst du gerade?",
         serviceContextNote:
           "Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten.",
-        serviceSecondaryTitle: "Ergänzende Leistungen für Betrieb und Abläufe",
+        serviceSecondaryTitle: "Ergänzend nach dem Launch",
         serviceCards: [
           {
             key: "landing",
@@ -516,8 +519,14 @@ const HOME_SECTIONS = [
             delivery: "5–10 Tage",
             included: [
               "Klare Angebotsstruktur",
-              "Mobil schnell verständlich",
-              "Kontaktweg direkt integriert",
+              "Mobil klar verständlich",
+              "Direkter Kontaktweg",
+            ],
+            timeline: ["Briefing", "Entwurf", "Launch"],
+            outcomes: [
+              "Mehr Anfragen",
+              "Klare Botschaft",
+              "Messbare Ergebnisse",
             ],
           },
           {
@@ -530,12 +539,15 @@ const HOME_SECTIONS = [
             pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
             delivery: "10–21 Tage",
             included: [
-              "Positionierung und Seitenstruktur vor der Umsetzung geklärt",
-              "Startseite und Kernseiten mit einheitlicher Gestaltung",
-              "Navigation, Inhalte und Kontaktwege logisch aufgebaut",
-              "Inhalte so aufgebaut, dass spätere Änderungen leichter möglich sind",
-              "Technische Grundlagen für SEO, Performance und mobile Nutzung",
-              "Kontakt- oder Anfrageformular inklusive",
+              "Klare Struktur",
+              "Professioneller Auftritt",
+              "Direkter Anfrageweg",
+            ],
+            timeline: ["Struktur", "Seitenbau", "Launch"],
+            outcomes: [
+              "Klare Struktur",
+              "Starker Auftritt",
+              "Saubere Lead-Strecke",
             ],
             details: [
               "Sprachen, zusätzliche Seiten und Integrationen werden vor Start als eigener Umfang eingeplant.",
@@ -553,12 +565,15 @@ const HOME_SECTIONS = [
             pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
             delivery: "3–14 Tage",
             included: [
-              "Kurzanalyse der größten Bremsen in UX, Inhalt und Technik",
-              "Bessere Hierarchie für Inhalte, Kontaktwege und Leseführung",
-              "Mobile Darstellung und grundlegende Barrierefreiheit geprüft",
-              "Technische SEO-Grundlagen für Struktur und Indexierung",
-              "Code- und CSS-Aufräumen dort, wo es sichtbar hilft",
-              "Vorher-Nachher-Check der wichtigsten Änderungen",
+              "Klarere Inhalte",
+              "Bessere Nutzung",
+              "Schnellere Seite",
+            ],
+            timeline: ["Analyse", "Umbau", "Check"],
+            outcomes: [
+              "Klarerer Auftritt",
+              "Bessere Nutzung",
+              "Schnellere Seite",
             ],
             details: [
               "Auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
@@ -600,14 +615,17 @@ const HOME_SECTIONS = [
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
             highlight: "weniger manuelle Schritte und klarere Abläufe",
             pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
-            delivery: "stark projektabhängig, nach kurzer Klärung einschätzbar",
+            delivery: "nach Klärung",
             included: [
-              "Kurze Klärung von Ziel, Nutzern, Daten und Ablauf",
-              "Erste nutzbare Version für einen konkreten Workflow",
-              "Eingaben, Status oder Übersichten passend zum Ablauf",
-              "Anbindungen an bestehende Tools, wenn sinnvoll",
-              "Rollen oder Zugriff nur, wenn sie für den Start nötig sind",
-              "Übergabe mit kurzer Dokumentation",
+              "Weniger Handarbeit",
+              "Klarere Abläufe",
+              "Nutzbare Tool-Version",
+            ],
+            timeline: ["Ablauf", "Toolbau", "Übergabe"],
+            outcomes: [
+              "Weniger Handarbeit",
+              "Klarere Abläufe",
+              "Nutzbare Version",
             ],
             details: [
               "Weitere Workflows setzen wir als Folgepakete um.",
@@ -620,8 +638,7 @@ const HOME_SECTIONS = [
         title: "What do you need right now?",
         serviceContextNote:
           "Before kickoff, you receive a clear offer with scope, timeline, and cost.",
-        serviceSecondaryTitle:
-          "Additional services for operations and workflows",
+        serviceSecondaryTitle: "Additional after launch",
         serviceCards: [
           {
             key: "landing",
@@ -635,9 +652,11 @@ const HOME_SECTIONS = [
             delivery: "5–10 days",
             included: [
               "Clear offer structure",
-              "Fast to understand on mobile",
-              "Direct contact path included",
+              "Clear on mobile",
+              "Direct contact path",
             ],
+            timeline: ["Briefing", "Draft", "Launch"],
+            outcomes: ["More inquiries", "Clear message", "Measurable results"],
           },
           {
             key: "web",
@@ -649,12 +668,15 @@ const HOME_SECTIONS = [
             pricingHint: "Individual quote based on page scope and depth",
             delivery: "10–21 days",
             included: [
-              "Positioning and page structure clarified before implementation",
-              "Homepage and core pages with consistent design",
-              "Navigation, content, and contact paths structured logically",
-              "Content structured so later updates are easier",
-              "Technical foundations for SEO, performance, and mobile use",
-              "Contact or inquiry form included",
+              "Clear structure",
+              "Professional presence",
+              "Direct inquiry path",
+            ],
+            timeline: ["Structure", "Page build", "Launch"],
+            outcomes: [
+              "Clear structure",
+              "Stronger presence",
+              "Clean lead path",
             ],
             details: [
               "Languages, additional pages, and integrations are planned as their own scope before kickoff.",
@@ -672,13 +694,12 @@ const HOME_SECTIONS = [
             pricingHint:
               "Quote based on the current state and depth of intervention",
             delivery: "3–14 days",
-            included: [
-              "Short analysis of the biggest blockers in UX, content, and tech",
-              "Better hierarchy for content, contact paths, and reading flow",
-              "Mobile presentation and basic accessibility checked",
-              "Technical SEO foundations for structure and indexing",
-              "Code and CSS cleanup where it visibly helps",
-              "Before/after check of the most important changes",
+            included: ["Clearer content", "Better usability", "Faster site"],
+            timeline: ["Analysis", "Rework", "Check"],
+            outcomes: [
+              "Clearer presence",
+              "Better usability",
+              "Faster website",
             ],
             details: [
               "Can also be planned as ongoing improvement or a focused one-off service.",
@@ -720,14 +741,17 @@ const HOME_SECTIONS = [
             fit: "Teams that want to structure or partially automate recurring internal steps.",
             highlight: "fewer manual steps and clearer workflows",
             pricingHint: "Calculated by workflow, data, and integrations",
-            delivery: "highly project-dependent, estimated after short scoping",
+            delivery: "after scoping",
             included: [
-              "Short clarification of goal, users, data, and workflow",
-              "First usable version for one concrete workflow",
-              "Inputs, status, or overviews matched to the workflow",
-              "Connections to existing tools where useful",
-              "Roles or access only where needed for the first step",
-              "Handover with short documentation",
+              "Less manual work",
+              "Clearer workflows",
+              "Usable tool version",
+            ],
+            timeline: ["Workflow", "Tool build", "Handover"],
+            outcomes: [
+              "Less manual work",
+              "Clearer workflows",
+              "Usable first version",
             ],
             details: [
               "Additional workflows are delivered as follow-up modules.",

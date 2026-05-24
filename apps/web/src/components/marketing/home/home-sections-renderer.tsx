@@ -89,14 +89,11 @@ export function HomeSectionsRenderer({
                 addonBadgeLabel={ui.servicesAddonBadgeLabel}
                 deliveryLabel={ui.servicesDeliveryLabel}
                 detailPageCtaLabel={ui.servicesDetailPageCta}
-                detailsCtaLabel={ui.servicesDetailsCta}
-                fitLabel={ui.servicesFitLabel}
-                goalOptions={ui.servicesIntentOptions}
-                goalTitle={ui.servicesIntentTitle}
                 id={section.id}
                 key={section.id}
-                moreItemsPluralLabel={ui.servicesMoreItemsPluralLabel}
-                moreItemsSingularLabel={ui.servicesMoreItemsSingularLabel}
+                kicker={ui.servicesKicker}
+                launchAddonTitle={ui.servicesLaunchAddonTitle}
+                otherServicesTitle={ui.servicesOtherTitle}
                 primaryCtaLabel={ui.servicesPrimaryCta}
                 primaryCtaLabels={ui.servicesPrimaryCtaLabels}
                 recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
@@ -106,6 +103,8 @@ export function HomeSectionsRenderer({
                 serviceDetailHrefs={{
                   landing: landingPageServiceHref,
                 }}
+                serviceOptions={ui.servicesIntentOptions}
+                servicePickerTitle={ui.servicesIntentTitle}
                 serviceSecondaryTitle={section.serviceSecondaryTitle}
                 title={section.title}
               />

@@ -32,8 +32,8 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     detailLinkLabel: "Ablauf & Kosten ansehen",
     maintenanceTitle: "Wartung & Support",
     processTitle: "Prozessoptimierungs-Tools",
-    recommendedBadge: "Empfohlen",
-    secondarySectionTitle: "Ergänzende Leistungen für Betrieb und Abläufe",
+    recommendedBadge: "Empfohlen für dich",
+    secondarySectionTitle: "Ergänzend nach dem Launch",
     upgradeTitle: "Webseiten-Upgrade",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
@@ -52,8 +52,8 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     detailLinkLabel: "See process and costs",
     maintenanceTitle: "Maintenance & support",
     processTitle: "Process optimization tools",
-    recommendedBadge: "Recommended",
-    secondarySectionTitle: "Additional services for operations and workflows",
+    recommendedBadge: "Recommended for you",
+    secondarySectionTitle: "Additional after launch",
     upgradeTitle: "Website upgrade",
     navAriaLabel: "Primary navigation",
     privacyPageTitle: "Privacy Policy",
@@ -137,7 +137,7 @@ for (const expectations of LOCALE_EXPECTATIONS) {
     );
     await expect(
       servicesSection.locator('[data-service-card="true"]'),
-    ).toHaveCount(2);
+    ).toHaveCount(1);
     await expect(
       servicesSection.locator('[data-card-key="landing"]'),
     ).toBeVisible();

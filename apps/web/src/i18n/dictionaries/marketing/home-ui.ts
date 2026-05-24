@@ -28,7 +28,14 @@ export type HomeUiContent = {
   servicesDeliveryLabel: string;
   servicesDetailPageCta: string;
   servicesDetailsCta: string;
-  servicesIntentOptions: Array<{ key: string; label: string }>;
+  servicesKicker: string;
+  servicesLaunchAddonTitle: string;
+  servicesOtherTitle: string;
+  servicesIntentOptions: Array<{
+    key: string;
+    label: string;
+    serviceKey?: string;
+  }>;
   servicesIntentTitle: string;
   servicesPrimaryCta: string;
   servicesPrimaryCtaLabels: {

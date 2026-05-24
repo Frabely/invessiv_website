@@ -1,13 +1,43 @@
 .section {
   display: grid;
-  gap: clamp(2rem, 2.8vw, 2.75rem);
+  gap: clamp(1.35rem, 2.3vw, 2.45rem);
   margin-top: 0;
 }
 
-.goalPicker {
+.header {
   display: grid;
   gap: 12px;
-  align-content: start;
+}
+
+.kicker,
+.contextNote,
+.contextMeta,
+.fitNote,
+.activeDescription,
+.activeEyebrow,
+.timeLabel,
+.timeValue,
+.timeSteps,
+.maintenanceDescription {
+  margin: 0;
+}
+
+.kicker,
+.activeEyebrow {
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 82%,
+    var(--color-text) 18%
+  );
+  font-size: var(--font-size-ui-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.headingBlock {
+  display: grid;
+  gap: 10px;
 }
 
 .sectionTitle {
@@ -20,7 +50,15 @@
 }
 
 .contextNote {
-  margin: 0;
+  max-width: min(100%, 52rem);
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  font-size: var(--font-size-heading-lg);
+  font-weight: 740;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.contextMeta {
   max-width: min(100%, 54rem);
   color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
   font-size: var(--font-size-body-md);
@@ -29,23 +67,13 @@
   letter-spacing: -0.01em;
 }
 
-.goalTitle {
-  margin: 0;
-  max-width: min(100%, 48rem);
-  font-size: var(--font-size-heading-lg);
-  font-weight: 760;
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-text-muted) 8%);
-}
-
-.goalChips {
+.servicePicker {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-.goalChip {
+.serviceChip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +96,7 @@
     box-shadow 180ms ease;
 }
 
-:global([data-theme="light"]) .goalChip {
+:global([data-theme="light"]) .serviceChip {
   background: color-mix(
     in srgb,
     var(--color-surface-1) 92%,
@@ -82,8 +110,8 @@
   color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
 }
 
-.goalChip:hover,
-.goalChip:focus-visible {
+.serviceChip:hover,
+.serviceChip:focus-visible {
   transform: translateY(-1px);
   border-color: color-mix(
     in srgb,
@@ -99,7 +127,13 @@
   box-shadow: 0 10px 24px color-mix(in srgb, var(--color-cta) 12%, transparent);
 }
 
-.goalChipActive {
+.serviceChip:focus-visible,
+.serviceRow:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.serviceChipActive {
   border-color: color-mix(
     in srgb,
     var(--color-cta) 58%,
@@ -116,200 +150,582 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
-:global([data-theme="light"]) .goalChipActive {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 58%,
-    var(--color-border) 42%
-  );
-  background: linear-gradient(
-    120deg,
-    color-mix(in srgb, var(--color-cta) 24%, #ffffff 76%),
-    color-mix(in srgb, var(--color-cta) 16%, var(--color-surface-1) 84%)
-  );
-  color: color-mix(in srgb, var(--color-text) 86%, var(--color-cta) 14%);
-  box-shadow:
-    0 12px 28px color-mix(in srgb, var(--color-cta) 14%, transparent),
-    inset 0 1px 0 color-mix(in srgb, #ffffff 48%, transparent);
+.sectionDivider {
+  height: 1px;
+  background: color-mix(in srgb, var(--color-border) 72%, transparent);
 }
 
-.primaryGrid {
+.activeService {
   display: grid;
-  gap: 20px;
+  gap: clamp(1.4rem, 2.5vw, 2.5rem);
+  padding: clamp(0.7rem, 1.5vw, 1.4rem) 0 clamp(0.8rem, 1.8vw, 1.8rem);
 }
 
-.secondaryBlock {
+.activeMain,
+.activeAside,
+.otherServices,
+.launchAddon,
+.maintenanceCard {
   display: grid;
-  gap: 20px;
+  align-content: start;
 }
 
-.secondaryTitle {
+.activeMain {
+  justify-items: start;
+  gap: 0;
+}
+
+.activeAside {
+  gap: clamp(2rem, 3.4vw, 3.35rem);
+  justify-items: start;
+}
+
+.activeHeading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1.9rem, 2.8vw, 2.6rem);
+  align-items: start;
+  margin-bottom: clamp(1.05rem, 1.8vw, 1.65rem);
+  --service-icon-size: clamp(4.4rem, 5.8vw, 5.6rem);
+  --service-icon-image-size: clamp(3.2rem, 4vw, 4rem);
+  --service-icon-radius: 1.25rem;
+}
+
+.activeHeadingText {
+  display: grid;
+  gap: 0.58rem;
+}
+
+.activeTitle,
+.maintenanceTitle {
   margin: 0;
-  font-size: var(--font-size-heading-lg);
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  color: var(--color-text);
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.secondaryGrid {
+.activeTitle {
+  display: block;
+  font-size: clamp(2.75rem, 1.55rem + 3.3vw, 4.35rem);
+  line-height: 0.98;
+}
+
+.titleDot {
+  color: var(--color-accent-warm);
+}
+
+.activeDescription {
+  max-width: 36rem;
+  color: color-mix(in srgb, var(--color-text) 77%, var(--color-text-muted) 23%);
+  font-size: clamp(1.1rem, 0.98rem + 0.38vw, 1.34rem);
+  font-weight: 500;
+  line-height: 1.42;
+  letter-spacing: -0.01em;
+}
+
+.fitNote {
+  display: none;
+}
+
+.bulletList {
   display: grid;
-  gap: clamp(2rem, 2.8vw, 2.75rem);
+  gap: 0.62rem;
+  margin: clamp(1.25rem, 2vw, 1.8rem) 0 0;
+  padding: 0;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: var(--font-size-body-md);
+  line-height: 1.58;
+  list-style: none;
+}
+
+.bulletList > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.bulletList > li::before,
+.checkIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-warm);
+  font-size: 1.08rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: translateY(-1px);
+}
+
+.bulletList > li::before {
+  content: "✓";
+}
+
+.outcomeStrip,
+.maintenanceCard {
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 66%, transparent);
+}
+
+.outcomeStrip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, auto));
+  width: fit-content;
+  max-width: 100%;
+  margin-top: clamp(1.35rem, 2.1vw, 1.95rem);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.outcomeItem {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.62rem;
+  padding: 0 1rem;
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.outcomeItem + .outcomeItem {
+  border-left: 1px solid
+    color-mix(in srgb, var(--color-border) 76%, transparent);
+}
+
+.checkIcon {
+  flex: 0 0 auto;
+}
+
+.timeBlock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(1.05rem, 1.5vw, 1.3rem);
+  align-items: start;
+}
+
+.timeIcon {
+  display: inline-flex;
+  width: 2.65rem;
+  height: 2.65rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+}
+
+.timeIconImage {
+  width: 1.55rem;
+  height: 1.55rem;
+  filter: var(--services-time-icon-filter, none);
+  object-fit: contain;
+}
+
+.timeIcon {
+  --services-time-icon-filter: brightness(0) saturate(100%) invert(62%)
+    sepia(88%) saturate(1454%) hue-rotate(360deg) brightness(103%)
+    contrast(103%);
+}
+
+.timeText {
+  display: grid;
+  gap: 0.72rem;
+  padding-top: 0.05rem;
+}
+
+.timeLabel {
+  color: color-mix(in srgb, var(--color-text) 58%, var(--color-text-muted) 42%);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.timeValue {
+  color: var(--color-text);
+  font-size: clamp(1.72rem, 1.38rem + 0.72vw, 2.2rem);
+  font-weight: 840;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.timeSteps {
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: var(--font-size-body-md);
+  line-height: 1.45;
+}
+
+.actionRow,
+.maintenanceFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.actionRow {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  justify-self: start;
+  width: min(100%, 22rem);
+  gap: 1.18rem;
+}
+
+.primaryCta {
+  min-height: 46px;
+  width: fit-content;
+  max-width: 100%;
+  padding-inline: 18px;
+  font-size: var(--font-size-body-md);
+}
+
+.otherServices,
+.launchAddon {
+  gap: 14px;
+}
+
+.listTitle {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.serviceRows {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--color-surface-1) 80%, transparent);
+}
+
+.serviceRows > * + * {
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.serviceRow {
+  position: relative;
+  --services-spotlight-x: 50%;
+  --services-spotlight-y: 0%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 4.7rem;
+  padding: 0.95rem 1.2rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.serviceRow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    320px circle at var(--services-spotlight-x) var(--services-spotlight-y),
+    rgba(136, 166, 214, 0.15) 0%,
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.serviceRow:hover {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 86%,
+    var(--color-cta) 14%
+  );
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent);
+}
+
+.serviceRow:hover::before {
+  opacity: 1;
+}
+
+.rowIconTitle {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1.45rem;
+  min-width: 0;
+}
+
+.rowText {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 3rem);
+  align-items: center;
+  min-width: 0;
+}
+
+.rowTitle {
+  color: var(--color-text);
+  font-size: var(--font-size-body-lg);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.rowDescription,
+.maintenanceDescription {
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.rowMeta,
+.addonBadge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.rowMeta {
+  position: relative;
+  z-index: 1;
+  min-height: 2.35rem;
+  min-width: 8.5rem;
+  justify-content: center;
+  padding: 0 1rem;
+  font-size: var(--font-size-body-sm);
+  white-space: nowrap;
+}
+
+.rowArrow {
+  position: relative;
+  z-index: 1;
+  color: var(--color-text);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.maintenanceCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  min-height: 4.7rem;
+  padding: 0.95rem 1.2rem;
+  border-radius: 14px;
+}
+
+.maintenanceTitleRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 16rem) minmax(0, 1fr);
+  gap: 1.45rem;
+  align-items: center;
+}
+
+.maintenanceTitle {
+  --service-icon-size: 48px;
+  --service-icon-image-size: 34px;
+  --service-icon-radius: 13px;
+  display: contents;
+  font-size: clamp(1.22rem, 1.04rem + 0.4vw, 1.48rem);
+  line-height: 1.15;
+}
+
+.addonBadge {
+  min-height: 28px;
+  padding: 0 12px;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--accent) 20%);
+  font-size: var(--font-size-badge);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+:global([data-theme="light"]) .serviceRows,
+:global([data-theme="light"]) .outcomeStrip,
+:global([data-theme="light"]) .maintenanceCard {
+  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
 }
 
 @media (min-width: 760px) {
-  .goalPicker {
+  .header {
     gap: 14px;
   }
 
-  .goalTitle {
-    max-width: min(100%, 46rem);
-  }
-
-  .goalChips {
+  .servicePicker {
     gap: 14px;
   }
 
-  .goalChip {
+  .serviceChip {
     min-height: 48px;
     padding-inline: 20px;
-  }
-
-  .primaryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .primaryGrid > [data-mobile-priority] {
-    order: 0;
-  }
-
-  .secondaryGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1120px) {
   .section {
-    gap: clamp(2.2rem, 2.6vw, 3rem);
+    gap: clamp(1.45rem, 1.9vw, 2.35rem);
   }
 
-  .goalPicker {
-    gap: 16px;
+  .header {
+    gap: 14px;
   }
 
-  .sectionTitle {
-    margin-bottom: 4px;
+  .activeService {
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.82fr);
+    gap: clamp(2rem, 3.5vw, 4rem);
   }
 
-  .goalTitle {
-    max-width: 52rem;
-    font-size: clamp(1.26rem, 1.1rem + 0.85vw, 1.72rem);
-    line-height: 1.3;
+  .activeAside {
+    min-height: 100%;
+    padding-left: clamp(3.4rem, 5.4vw, 5.4rem);
+    border-left: 1px solid
+      color-mix(in srgb, var(--color-border) 82%, transparent);
   }
 
-  .goalChips {
-    gap: 16px;
+  .primaryCta {
+    min-height: 52px;
+    min-width: min(100%, 18rem);
+    justify-content: center;
   }
 
-  .goalChip {
+  .actionRow > a:not(.primaryCta) {
+    width: min(100%, 18rem);
+    justify-content: center;
+    text-align: center;
+  }
+
+  .serviceChip {
     min-height: 54px;
     padding-inline: 24px;
     font-size: var(--font-size-body-lg);
   }
 
-  .contextNote {
-    max-width: 60rem;
+  .activeDescription {
+    max-width: 39rem;
   }
 
-  .primaryGrid {
-    grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
-    grid-template-rows: repeat(2, minmax(clamp(13.25rem, 17vh, 16rem), auto));
-    grid-template-areas:
-      "landing upgrade"
-      "landing web";
-    align-items: stretch;
-    gap: 24px 28px;
-  }
-
-  .primaryGrid > [data-card-key="landing"] {
-    grid-area: landing;
-    align-self: stretch;
-  }
-
-  .primaryGrid > [data-card-key="upgrade"] {
-    grid-area: upgrade;
-  }
-
-  .primaryGrid > [data-card-key="web"] {
-    grid-area: web;
-  }
-
-  .secondaryBlock {
-    gap: 22px;
-  }
-
-  .secondaryTitle {
-    max-width: 36rem;
-    white-space: nowrap;
-  }
-
-  .secondaryGrid {
-    grid-template-columns: minmax(0, 1.02fr) minmax(20rem, 0.98fr);
-    gap: clamp(2.2rem, 2.6vw, 3rem) 28px;
+  .bulletList,
+  .timeSteps {
+    font-size: var(--font-size-body-lg);
   }
 }
 
 @media (min-width: 1500px) {
-  .goalPicker {
-    gap: 18px;
-  }
-
-  .goalTitle {
-    max-width: 56rem;
-    font-size: clamp(1.34rem, 0.98rem + 0.72vw, 1.9rem);
-  }
-
-  .goalChip {
-    min-height: 58px;
-    padding-inline: 28px;
-    font-size: var(--font-size-body-lg);
-  }
-
-  .primaryGrid {
-    grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
-    grid-template-rows: repeat(2, minmax(clamp(13.5rem, 17vh, 16.25rem), auto));
-    gap: 30px 34px;
-  }
-
-  .secondaryGrid {
-    grid-template-columns: minmax(0, 1.03fr) minmax(22rem, 0.97fr);
-    gap: clamp(2.2rem, 2.6vw, 3rem) 34px;
-  }
-}
-
-@media (max-width: 1119px) {
-  .secondaryTitle {
-    white-space: normal;
-  }
-}
-
-@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
   .sectionTitle {
     font-size: var(--font-size-section-title-wide);
+  }
+
+  .contextNote {
+    max-width: 58rem;
+  }
+
+  .serviceChip {
+    min-height: 58px;
+    padding-inline: 28px;
   }
 }
 
 @media (max-width: 759px) {
-  .contextNote {
-    max-width: 100%;
-  }
-
-  .primaryGrid > [data-mobile-priority="top"] {
-    order: -1;
-  }
-
-  .goalChip {
+  .serviceChip {
     width: 100%;
     justify-content: flex-start;
     padding-inline: 16px;
+  }
+
+  .activeService {
+    grid-template-columns: 1fr;
+  }
+
+  .activeHeading {
+    --service-icon-size: 4rem;
+    --service-icon-image-size: 2.9rem;
+    --service-icon-radius: 1.1rem;
+    gap: 1rem;
+  }
+
+  .activeTitle {
+    font-size: clamp(2.15rem, 1.12rem + 8vw, 3rem);
+  }
+
+  .activeAside {
+    padding-top: 1.35rem;
+    border-top: 1px solid
+      color-mix(in srgb, var(--color-border) 82%, transparent);
+  }
+
+  .outcomeStrip {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .outcomeItem {
+    width: 100%;
+  }
+
+  .outcomeItem + .outcomeItem {
+    border-left: 0;
+    border-top: 1px solid
+      color-mix(in srgb, var(--color-border) 76%, transparent);
+  }
+
+  .serviceRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .rowText {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .rowMeta {
+    grid-column: 1 / -1;
+    width: fit-content;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .primaryCta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .maintenanceCard,
+  .maintenanceTitleRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .serviceChip,
+  .serviceRow,
+  .serviceRow::before {
+    transition: none;
+  }
+
+  .serviceChip:hover {
+    transform: none;
   }
 }

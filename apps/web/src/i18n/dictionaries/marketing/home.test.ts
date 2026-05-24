@@ -4,6 +4,7 @@ import { PRIMARY_NAVIGATION } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 import { getHomeSections } from "./home";
+import { getHomeUiContent } from "./home-ui";
 
 describe("home dictionary", () => {
   it.each(["de", "en"] as const)(
@@ -93,6 +94,44 @@ describe("home dictionary", () => {
       expect(landingCard?.details).toBeUndefined();
     },
   );
+
+  it.each(["de", "en"] as const)(
+    "keeps %s service selection aligned with the primary service order",
+    (locale) => {
+      const servicesSection = getHomeSections(locale).find(
+        (section) => section.id === "services",
+      );
+
+      if (!servicesSection) {
+        throw new Error("Expected services section to be available.");
+      }
+
+      const ui = getHomeUiContent(locale);
+
+      expect(
+        ui.servicesIntentOptions.map((option) => option.serviceKey),
+      ).toEqual(["landing", "process", "upgrade", "web"]);
+      expect(
+        servicesSection.serviceCards
+          .filter((card) =>
+            ui.servicesIntentOptions.some(
+              (option) => option.serviceKey === card.key,
+            ),
+          )
+          .map((card) => card.key),
+      ).toEqual(["landing", "web", "upgrade", "process"]);
+      expect(
+        servicesSection.serviceCards.find((card) => card.key === "process"),
+      ).toBeTruthy();
+    },
+  );
+
+  it("keeps DE and EN home UI dictionary keys aligned", () => {
+    const deKeys = Object.keys(getHomeUiContent("de")).sort();
+    const enKeys = Object.keys(getHomeUiContent("en")).sort();
+
+    expect(deKeys).toEqual(enKeys);
+  });
 
   it.each(["de", "en"] as const)(
     "keeps the %s proof summary copy readable",
