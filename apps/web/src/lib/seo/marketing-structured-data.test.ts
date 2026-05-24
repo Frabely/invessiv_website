@@ -6,7 +6,7 @@ describe("marketing-structured-data", () => {
   it("keeps the homepage graph focused on the Invessiv brand", () => {
     const data = createMarketingStructuredData(
       "de",
-      "Invessiv entwickelt Landingpages, Webseiten und Prozess-Tools.",
+      "Invessiv entwickelt Landingpages, Webseiten und Interne Tools.",
     );
 
     const organization = data["@graph"].find(
@@ -31,7 +31,7 @@ describe("marketing-structured-data", () => {
     });
     expect(service).toMatchObject({
       "@type": "Service",
-      serviceType: "Webentwicklung, Landingpages und Prozess-Tools",
+      serviceType: "Webentwicklung, Landingpages und Interne Tools",
     });
     expect(serialized).not.toContain("Moritz Hecht");
   });

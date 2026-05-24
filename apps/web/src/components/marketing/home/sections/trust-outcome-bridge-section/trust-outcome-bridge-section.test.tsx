@@ -22,7 +22,7 @@ describe("TrustOutcomeBridgeSection", () => {
     ).toBeTruthy();
     expect(
       screen.getByText(
-        "Ich entwickle Landingpages, Webseiten und Upgrades für mehr passende Anfragen — und digitale Tools, die dir Arbeitszeit sparen. Welche Leistung für dein Ziel sinnvoll ist, besprechen wir ehrlich vor dem Start.",
+        "Ich entwickle Landingpages, Webseiten und Upgrades für mehr passende Anfragen — und Interne Tools, die Abläufe vereinfachen, verbessern oder beschleunigen. Welche Leistung für dein Ziel sinnvoll ist, besprechen wir ehrlich vor dem Start.",
       ),
     ).toBeTruthy();
     expect(

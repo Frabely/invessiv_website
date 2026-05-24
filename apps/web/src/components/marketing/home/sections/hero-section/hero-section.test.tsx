@@ -15,7 +15,7 @@ describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
-        description="Landingpages, Webseiten, Upgrades und Prozessoptimierungs-Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Arbeitsschritte spürbar einfacher machen wollen."
+        description="Landingpages, Webseiten, Upgrades und Interne Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Abläufe spürbar einfacher, besser oder schneller machen wollen."
         heroPrimaryCta="Projekt anfragen"
         heroSecondaryCta="Leistung passend einschätzen"
         heroTag="MEHR ANFRAGEN, EINFACHERE PROZESSE"

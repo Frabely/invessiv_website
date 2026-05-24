@@ -392,13 +392,13 @@ const HOME_SECTIONS = [
         title:
           "Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten.",
         description:
-          "Landingpages, Webseiten, Upgrades und Prozessoptimierungs-Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Arbeitsschritte spürbar einfacher machen wollen.",
+          "Landingpages, Webseiten, Upgrades und Interne Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Abläufe spürbar einfacher, besser oder schneller machen wollen.",
       },
       en: {
         title:
           "Digital solutions\nthat lead to better inquiries and reduce internal effort.",
         description:
-          "Landing pages, websites, upgrades, and process optimization tools for service businesses and SMBs that want to present their offer clearly and make internal work easier.",
+          "Landing pages, websites, upgrades, and internal tools for service businesses and SMBs that want to present their offer clearly and make internal workflows simpler, better, or faster.",
       },
     },
   },
@@ -608,12 +608,12 @@ const HOME_SECTIONS = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Prozessoptimierungs-Tools Icon",
-            title: "Prozessoptimierungs-Tools",
+            iconAlt: "Interne Tools Icon",
+            title: "Interne Tools",
             description:
-              "Kleines internes Tool oder schlanke Automatisierung, wenn nach der Website wiederkehrende Arbeit reduziert werden soll.",
+              "Maßgeschneiderte Tools, die interne Abläufe vereinfachen, verbessern oder beschleunigen.",
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
-            highlight: "weniger manuelle Schritte und klarere Abläufe",
+            highlight: "weniger manuelle Schritte und klarere interne Abläufe",
             pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
             delivery: "nach Klärung",
             included: [
@@ -734,12 +734,12 @@ const HOME_SECTIONS = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Process optimization tools icon",
-            title: "Process optimization tools",
+            iconAlt: "Internal tools icon",
+            title: "Internal tools",
             description:
-              "Small internal tool or lean automation when recurring work should be reduced after the website path is clear.",
+              "Custom tools that simplify, improve, or speed up internal workflows.",
             fit: "Teams that want to structure or partially automate recurring internal steps.",
-            highlight: "fewer manual steps and clearer workflows",
+            highlight: "fewer manual steps and clearer internal workflows",
             pricingHint: "Calculated by workflow, data, and integrations",
             delivery: "after scoping",
             included: [

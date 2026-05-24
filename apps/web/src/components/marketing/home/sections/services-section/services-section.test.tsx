@@ -39,8 +39,8 @@ const serviceCards = [
     key: "process" as const,
     iconSrc: "/services/process-icon.svg",
     iconAlt: "Process Icon",
-    title: "Prozessoptimierungs-Tools",
-    description: "Workflows digitalisieren.",
+    title: "Interne Tools",
+    description: "Maßgeschneiderte Tools für interne Abläufe.",
     fit: "Teams mit klaren Routineabläufen.",
     highlight: "weniger manuelle Schritte im Alltag",
     pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
@@ -196,9 +196,7 @@ describe("ServicesSection", () => {
     );
 
     expect(activeService.getAttribute("data-card-key")).toBe("process");
-    expect(
-      within(activeService).getByText("Prozessoptimierungs-Tools"),
-    ).toBeTruthy();
+    expect(within(activeService).getByText("Interne Tools")).toBeTruthy();
     expect(
       within(activeService).queryByText("Empfohlen für dich"),
     ).toBeTruthy();

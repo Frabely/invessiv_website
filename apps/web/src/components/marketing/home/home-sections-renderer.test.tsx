@@ -52,9 +52,7 @@ describe("HomeSectionsRenderer", () => {
 
     expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
     expect(screen.getByRole("option", { name: "Landingpages" })).toBeTruthy();
-    expect(
-      screen.getByRole("option", { name: "Prozessoptimierungs-Tools" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Interne Tools" })).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Webseiten-Upgrade" }),
     ).toBeTruthy();

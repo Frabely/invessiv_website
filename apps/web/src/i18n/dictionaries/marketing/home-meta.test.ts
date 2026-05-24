@@ -12,7 +12,8 @@ describe("home-meta", () => {
     expect(content.description).toContain("Invessiv");
     expect(content.description).toContain("Webseiten");
     expect(content.description).toContain("Landingpages");
-    expect(content.description).toContain("digitale Tools");
+    expect(content.description).toContain("Interne Tools");
+    expect(content.description).toContain("interne Abläufe");
     expect(content.description).toContain("Upgrades");
     expect(content.description).not.toContain("Moritz Hecht");
   });
@@ -26,7 +27,8 @@ describe("home-meta", () => {
     expect(content.description).toContain("Invessiv");
     expect(content.description).toContain("websites");
     expect(content.description).toContain("landing pages");
-    expect(content.description).toContain("digital tools");
+    expect(content.description).toContain("internal tools");
+    expect(content.description).toContain("internal workflows");
     expect(content.description).toContain("upgrades");
     expect(content.description).not.toContain("Moritz Hecht");
   });
