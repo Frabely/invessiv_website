@@ -17,12 +17,12 @@ describe("TrustOutcomeBridgeSection", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: "Landingpage, Website, Upgrade oder Tool — je nachdem, was dich wirklich weiterbringt.",
+        name: "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
       }),
     ).toBeTruthy();
     expect(
       screen.getByText(
-        "Ich entwickle Landingpages, Webseiten und Upgrades für mehr passende Anfragen — und Interne Tools, die Abläufe vereinfachen, verbessern oder beschleunigen. Welche Leistung für dein Ziel sinnvoll ist, besprechen wir ehrlich vor dem Start.",
+        "Ich entwickle Landingpages, Webseiten, Upgrades und interne Tools für mehr passende Anfragen oder effizientere Abläufe. Welche Leistung für dein Ziel passt, klären wir ehrlich vor dem Start.",
       ),
     ).toBeTruthy();
     expect(

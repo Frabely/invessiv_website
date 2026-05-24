@@ -79,7 +79,7 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const bridgeHeading = screen.getByRole("heading", {
-      name: "Landingpage, Website, Upgrade oder Tool — je nachdem, was dich wirklich weiterbringt.",
+      name: "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
     });
     const servicesHeading = screen.getByRole("heading", {
       name: "Was brauchst du gerade?",
