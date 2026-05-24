@@ -16,7 +16,7 @@ const serviceCards = [
     key: "web" as const,
     iconSrc: "/services/coding-icon.svg",
     iconAlt: "Web Icon",
-    title: "Webseiten",
+    title: "Webseite",
     fit: "Relaunches mit mehreren Kernseiten.",
     highlight: "klarer professioneller Auftritt",
     pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -28,7 +28,7 @@ const serviceCards = [
     key: "landing" as const,
     iconSrc: "/services/website-layout-icon.svg",
     iconAlt: "Landing Icon",
-    title: "Landingpages",
+    title: "Landingpage",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
     highlight: "schnell live & conversion-fokussiert",
     pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
@@ -39,7 +39,7 @@ const serviceCards = [
     key: "process" as const,
     iconSrc: "/services/process-icon.svg",
     iconAlt: "Process Icon",
-    title: "Interne Tools",
+    title: "Internes Tool",
     description: "Maßgeschneiderte Tools für interne Abläufe.",
     fit: "Teams mit klaren Routineabläufen.",
     highlight: "weniger manuelle Schritte im Alltag",
@@ -196,7 +196,7 @@ describe("ServicesSection", () => {
     );
 
     expect(activeService.getAttribute("data-card-key")).toBe("process");
-    expect(within(activeService).getByText("Interne Tools")).toBeTruthy();
+    expect(within(activeService).getByText("Internes Tool")).toBeTruthy();
     expect(
       within(activeService).queryByText("Empfohlen für dich"),
     ).toBeTruthy();

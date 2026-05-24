@@ -50,9 +50,9 @@ describe("HomeSectionsRenderer", () => {
       name: /Passendes Leistungsmodell\s*\*/,
     });
 
-    expect(screen.getByRole("option", { name: "Webseiten" })).toBeTruthy();
-    expect(screen.getByRole("option", { name: "Landingpages" })).toBeTruthy();
-    expect(screen.getByRole("option", { name: "Interne Tools" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Webseite" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Landingpage" })).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Internes Tool" })).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Webseiten-Upgrade" }),
     ).toBeTruthy();

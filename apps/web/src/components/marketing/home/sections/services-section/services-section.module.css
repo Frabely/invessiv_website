@@ -687,13 +687,18 @@
   }
 
   .activeTitle {
-    font-size: clamp(2.15rem, 1.12rem + 8vw, 3rem);
+    font-size: clamp(1.95rem, 1rem + 7vw, 2.65rem);
+    overflow-wrap: anywhere;
   }
 
   .activeAside {
     padding-top: 1.35rem;
     border-top: 1px solid
       color-mix(in srgb, var(--color-border) 82%, transparent);
+  }
+
+  .activeAside .actionRow {
+    width: 100%;
   }
 
   .serviceRow {
@@ -712,7 +717,7 @@
     white-space: normal;
   }
 
-  .primaryCta {
+  .activeAside .primaryCta {
     width: 100%;
     justify-content: center;
   }

@@ -509,8 +509,8 @@ const HOME_SECTIONS = [
           {
             key: "landing",
             iconSrc: "/services/website-layout-icon.svg",
-            iconAlt: "Landingpages Icon",
-            title: "Landingpages",
+            iconAlt: "Landingpage Icon",
+            title: "Landingpage",
             description:
               "Fokussierte Angebotsseiten, die ein klares Ziel verfolgen und den nächsten Schritt leicht machen.",
             fit: "Einzelne Angebotsseiten, Kampagnen oder neue Angebote, die in 5–10 Tagen live gehen sollen.",
@@ -528,8 +528,8 @@ const HOME_SECTIONS = [
           {
             key: "web",
             iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Webseiten Icon",
-            title: "Webseiten",
+            iconAlt: "Webseite Icon",
+            title: "Webseite",
             description:
               "Strukturierte Webauftritte, die Angebote verständlich erklären und passende Anfragen erleichtern.",
             fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
@@ -598,8 +598,8 @@ const HOME_SECTIONS = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Interne Tools Icon",
-            title: "Interne Tools",
+            iconAlt: "Internes Tool Icon",
+            title: "Internes Tool",
             description:
               "Maßgeschneiderte Tools, die interne Abläufe vereinfachen, verbessern oder beschleunigen.",
             fit: "Teams, die wiederkehrende interne Schritte strukturieren oder teilweise automatisieren wollen.",
@@ -628,8 +628,8 @@ const HOME_SECTIONS = [
           {
             key: "landing",
             iconSrc: "/services/website-layout-icon.svg",
-            iconAlt: "Landing pages icon",
-            title: "Landing pages",
+            iconAlt: "Landing page icon",
+            title: "Landing page",
             description:
               "Focused offer pages that serve one clear goal and make the next step easy.",
             fit: "Single offer pages, campaigns, or new offers that should go live in 5–10 days.",
@@ -647,8 +647,8 @@ const HOME_SECTIONS = [
           {
             key: "web",
             iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Websites icon",
-            title: "Websites",
+            iconAlt: "Website icon",
+            title: "Website",
             description:
               "Structured websites that explain your offer clearly and make relevant inquiries easier.",
             fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
@@ -714,8 +714,8 @@ const HOME_SECTIONS = [
           {
             key: "process",
             iconSrc: "/services/process-icon.svg",
-            iconAlt: "Internal tools icon",
-            title: "Internal tools",
+            iconAlt: "Internal tool icon",
+            title: "Internal tool",
             description:
               "Custom tools that simplify, improve, or speed up internal workflows.",
             fit: "Teams that want to structure or partially automate recurring internal steps.",

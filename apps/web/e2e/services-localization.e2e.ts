@@ -31,7 +31,7 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     heading: "Was brauchst du gerade?",
     detailLinkLabel: "Mehr zu Landingpages",
     maintenanceTitle: "Wartung & Support",
-    processTitle: "Interne Tools",
+    processTitle: "Internes Tool",
     recommendedBadge: "Empfohlen für dich",
     secondarySectionTitle: "Ergänzend nach dem Launch",
     upgradeTitle: "Webseiten-Upgrade",
@@ -40,7 +40,7 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     privacyHref: "/de/privacy",
     skipLinkLabel: "Direkt zum Hauptinhalt springen",
     termsHref: "/de/terms",
-    webTitle: "Webseiten",
+    webTitle: "Webseite",
   },
   {
     localePath: "/en",
@@ -51,7 +51,7 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     heading: "What do you need right now?",
     detailLinkLabel: "More about landing pages",
     maintenanceTitle: "Maintenance & support",
-    processTitle: "Internal tools",
+    processTitle: "Internal tool",
     recommendedBadge: "Recommended for you",
     secondarySectionTitle: "Additional after launch",
     upgradeTitle: "Website upgrade",
@@ -60,7 +60,7 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     privacyHref: "/en/privacy",
     skipLinkLabel: "Skip to main content",
     termsHref: "/en/terms",
-    webTitle: "Websites",
+    webTitle: "Website",
   },
 ];
 
