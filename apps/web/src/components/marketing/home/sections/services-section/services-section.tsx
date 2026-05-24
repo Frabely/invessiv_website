@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ServiceActionCta } from "@/components/marketing/home/sections/services-section/service-action-cta/service-action-cta";
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
@@ -160,7 +161,7 @@ export function ServicesSection({
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
       <header className={styles.header}>
-        <p className={styles.kicker}>{kicker}</p>
+        <EyebrowPill>{kicker}</EyebrowPill>
         <div className={styles.headingBlock}>
           <h2 className={styles.sectionTitle}>{title}</h2>
           <p className={styles.contextNote}>{servicePickerTitle}</p>
