@@ -86,7 +86,6 @@ export function HomeSectionsRenderer({
           if (section.id === SERVICES_SECTION_ID) {
             return (
               <ServicesSection
-                addonBadgeLabel={ui.servicesAddonBadgeLabel}
                 deliveryLabel={ui.servicesDeliveryLabel}
                 detailPageCtaLabel={ui.servicesDetailPageCta}
                 id={section.id}

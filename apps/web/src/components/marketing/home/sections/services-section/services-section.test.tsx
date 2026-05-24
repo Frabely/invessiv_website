@@ -102,7 +102,6 @@ function renderSection(options?: {
 }) {
   return render(
     <ServicesSection
-      addonBadgeLabel="Zusatzleistung"
       deliveryLabel="Zeitrahmen"
       detailPageCtaLabel="Ablauf & Kosten ansehen"
       id="services"

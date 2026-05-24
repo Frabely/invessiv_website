@@ -20,7 +20,6 @@ export type HomeUiContent = {
   proofHighlightsAriaLabel: string;
   proofRatingAriaLabel: string;
   proofReviewLinkLabel: string;
-  servicesAddonBadgeLabel: string;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;

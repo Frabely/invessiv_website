@@ -1,10 +1,10 @@
 "use client";
 
-import type { CSSProperties, PointerEvent, RefObject } from "react";
+import type { CSSProperties, RefObject } from "react";
 import { useEffect, useMemo, useState } from "react";
 
+import { ServiceActionCta } from "@/components/marketing/home/sections/services-section/service-action-cta/service-action-cta";
 import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
-import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
@@ -35,7 +35,6 @@ type ServiceOption = {
 };
 
 type ServicesSectionProps = {
-  addonBadgeLabel: string;
   deliveryLabel: string;
   detailPageCtaLabel: string;
   id: string;
@@ -65,7 +64,6 @@ function isPrimaryServiceKey(key: string): key is PrimaryServiceKey {
 }
 
 export function ServicesSection({
-  addonBadgeLabel,
   deliveryLabel,
   detailPageCtaLabel,
   id,
@@ -133,25 +131,6 @@ export function ServicesSection({
       }),
     );
   }, [ctaProjectGoal, selectedCard]);
-
-  const setCardSpotlight = (event: PointerEvent<HTMLElement>) => {
-    if (event.pointerType !== "mouse") {
-      return;
-    }
-
-    const card = event.currentTarget;
-    const bounds = card.getBoundingClientRect();
-    const x = event.clientX - bounds.left;
-    const y = event.clientY - bounds.top;
-
-    card.style.setProperty("--services-spotlight-x", `${x}px`);
-    card.style.setProperty("--services-spotlight-y", `${y}px`);
-  };
-
-  const resetCardSpotlight = (event: PointerEvent<HTMLElement>) => {
-    event.currentTarget.style.removeProperty("--services-spotlight-x");
-    event.currentTarget.style.removeProperty("--services-spotlight-y");
-  };
 
   const getPrimaryCtaLabel = (cardKey: ServiceCardCopy["key"]) =>
     primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
@@ -228,8 +207,6 @@ export function ServicesSection({
         data-card-key={selectedCard.key}
         data-service-card="true"
         data-service-variant="active"
-        onPointerLeave={resetCardSpotlight}
-        onPointerMove={setCardSpotlight}
       >
         <div className={styles.activeMain}>
           <div className={styles.activeHeading}>
@@ -295,9 +272,9 @@ export function ServicesSection({
             </PrimaryCtaLink>
 
             {detailHref ? (
-              <ServiceCardLink href={detailHref}>
+              <ServiceActionCta href={detailHref}>
                 {detailPageCtaLabel}
-              </ServiceCardLink>
+              </ServiceActionCta>
             ) : null}
           </div>
         </aside>
@@ -315,18 +292,13 @@ export function ServicesSection({
 
             return (
               <div
+                className={styles.serviceRowShell}
                 data-card-key={card.key}
                 data-service-variant="alternative"
                 key={card.key}
                 role="listitem"
               >
-                <button
-                  className={styles.serviceRow}
-                  onClick={() => setSelectedServiceKey(card.key)}
-                  onPointerLeave={resetCardSpotlight}
-                  onPointerMove={setCardSpotlight}
-                  type="button"
-                >
+                <div className={styles.serviceRow}>
                   <span className={styles.rowIconTitle}>
                     <ServiceCardIcon
                       iconAlt={card.iconAlt}
@@ -342,32 +314,21 @@ export function ServicesSection({
                   <span className={styles.rowMeta}>
                     {rowDeliveryLabel}: {card.delivery}
                   </span>
-                  <span aria-hidden="true" className={styles.rowArrow}>
-                    &rsaquo;
-                  </span>
-                </button>
+                </div>
                 <div
                   className={styles.mobileRowAction}
                   data-has-detail={rowDetailHref ? "true" : "false"}
                 >
                   {rowDetailHref ? (
-                    <ServiceCardLink href={rowDetailHref}>
+                    <ServiceActionCta href={rowDetailHref}>
                       {rowMoreAboutLabel}
-                    </ServiceCardLink>
+                    </ServiceActionCta>
                   ) : (
-                    <button
-                      className={styles.mobileRowActionButton}
+                    <ServiceActionCta
                       onClick={() => selectServiceAndReveal(card.key)}
-                      type="button"
                     >
                       {rowMoreAboutLabel}
-                      <span
-                        aria-hidden="true"
-                        className={styles.mobileRowActionArrow}
-                      >
-                        &rsaquo;
-                      </span>
-                    </button>
+                    </ServiceActionCta>
                   )}
                 </div>
               </div>
@@ -387,25 +348,20 @@ export function ServicesSection({
             data-card-key={maintenanceCard.key}
             data-service-variant="secondary"
           >
-            <div className={styles.maintenanceTitleRow}>
-              <h4 className={styles.maintenanceTitle}>
-                <ServiceCardIcon
-                  iconAlt={maintenanceCard.iconAlt}
-                  iconSrc={maintenanceCard.iconSrc}
-                />
-                <span>{maintenanceCard.title}</span>
-              </h4>
-              <span className={styles.addonBadge}>{addonBadgeLabel}</span>
-            </div>
-            <p className={styles.maintenanceDescription}>
-              {maintenanceCard.description}
-            </p>
-            <div className={styles.maintenanceFooter}>
-              <span className={styles.rowMeta}>
-                {maintenanceCard.deliveryLabel ?? deliveryLabel}:{" "}
-                {maintenanceCard.delivery}
-              </span>
-              <ServiceCardLink
+            <div className={styles.maintenanceContent}>
+              <div className={styles.maintenanceTitleRow}>
+                <h4 className={styles.maintenanceTitle}>
+                  <ServiceCardIcon
+                    iconAlt={maintenanceCard.iconAlt}
+                    iconSrc={maintenanceCard.iconSrc}
+                  />
+                  <span>{maintenanceCard.title}</span>
+                </h4>
+              </div>
+              <p className={styles.maintenanceDescription}>
+                {maintenanceCard.description}
+              </p>
+              <ServiceActionCta
                 data-analytics-event="cta_click"
                 data-analytics-location="pricing"
                 data-analytics-target="form"
@@ -415,7 +371,13 @@ export function ServicesSection({
                 href={SECTION_HREFS.contact}
               >
                 {getPrimaryCtaLabel(maintenanceCard.key)}
-              </ServiceCardLink>
+              </ServiceActionCta>
+            </div>
+            <div className={styles.maintenanceMeta}>
+              <span className={styles.rowMeta}>
+                {maintenanceCard.deliveryLabel ?? deliveryLabel}:{" "}
+                {maintenanceCard.delivery}
+              </span>
             </div>
           </article>
         </div>
