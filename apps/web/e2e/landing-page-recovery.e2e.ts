@@ -2,13 +2,13 @@ import { expect, test } from "@playwright/test";
 
 const LANDING_ROUTE_EXPECTATIONS = [
   {
-    detailLinkLabel: "Ablauf & Kosten ansehen",
+    detailLinkLabel: "Mehr zu Landingpages",
     footerLinkLabel: "Landingpage erstellen lassen",
     localePath: "/de",
     pagePath: "/de/services/landing-page",
   },
   {
-    detailLinkLabel: "See process and costs",
+    detailLinkLabel: "More about landing pages",
     footerLinkLabel: "Get a landing page built",
     localePath: "/en",
     pagePath: "/en/services/landing-page",

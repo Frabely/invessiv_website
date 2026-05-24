@@ -235,30 +235,34 @@ export function ServicesSection({
             </div>
           </div>
 
-          {selectedDescription ? (
-            <p className={styles.activeDescription}>{selectedDescription}</p>
-          ) : null}
+          <div className={styles.activeSummary}>
+            {selectedDescription ? (
+              <p className={styles.activeDescription}>{selectedDescription}</p>
+            ) : null}
 
-          <ul className={styles.bulletList}>
-            {selectedCard.included.slice(0, 4).map((bullet) => (
-              <li key={bullet}>{bullet}</li>
-            ))}
-          </ul>
+            <ul className={styles.bulletList}>
+              {selectedCard.included.slice(0, 4).map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <aside className={styles.activeAside}>
           <div className={styles.timeBlock}>
-            <span aria-hidden="true" className={styles.timeIcon}>
-              <span
-                className={styles.timeIconImage}
-                style={CALENDAR_ICON_MASK_STYLE}
-              />
-            </span>
-            <div className={styles.timeText}>
-              <p className={styles.timeLabel}>{selectedDeliveryLabel}</p>
-              <p className={styles.timeValue}>{selectedCard.delivery}</p>
-              <p className={styles.timeSteps}>{timelineItems.join(" → ")}</p>
+            <div className={styles.timeHeader}>
+              <span aria-hidden="true" className={styles.timeIcon}>
+                <span
+                  className={styles.timeIconImage}
+                  style={CALENDAR_ICON_MASK_STYLE}
+                />
+              </span>
+              <div className={styles.timeText}>
+                <p className={styles.timeLabel}>{selectedDeliveryLabel}</p>
+                <p className={styles.timeValue}>{selectedCard.delivery}</p>
+              </div>
             </div>
+            <p className={styles.timeSteps}>{timelineItems.join(" → ")}</p>
           </div>
 
           <div className={styles.actionRow}>

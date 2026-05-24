@@ -175,6 +175,12 @@
   gap: 0;
 }
 
+.activeSummary {
+  display: grid;
+  gap: clamp(1.25rem, 2vw, 1.8rem);
+  width: 100%;
+}
+
 .activeAside {
   gap: clamp(2rem, 3.4vw, 3.35rem);
   justify-items: start;
@@ -185,7 +191,7 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(1.9rem, 2.8vw, 2.6rem);
   align-items: start;
-  margin-bottom: clamp(1.05rem, 1.8vw, 1.65rem);
+  margin-bottom: clamp(2.4rem, 3.8vw, 3.9rem);
   --service-icon-size: clamp(4.4rem, 5.8vw, 5.6rem);
   --service-icon-image-size: clamp(3.2rem, 4vw, 4rem);
   --service-icon-radius: 1.25rem;
@@ -230,7 +236,7 @@
 .bulletList {
   display: grid;
   gap: 0.62rem;
-  margin: clamp(1.25rem, 2vw, 1.8rem) 0 0;
+  margin: 0;
   padding: 0;
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
   font-size: var(--font-size-body-md);
@@ -266,6 +272,11 @@
 }
 
 .timeBlock {
+  display: grid;
+  gap: clamp(1rem, 1.45vw, 1.25rem);
+}
+
+.timeHeader {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(1.05rem, 1.5vw, 1.3rem);
@@ -364,7 +375,6 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  justify-self: start;
   width: min(100%, 22rem);
   gap: 1.18rem;
 }
@@ -586,7 +596,7 @@
   }
 
   .activeService {
-    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.82fr);
+    grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.64fr);
     gap: clamp(2rem, 3.5vw, 4rem);
   }
 
@@ -595,6 +605,7 @@
     padding-left: clamp(3.4rem, 5.4vw, 5.4rem);
     border-left: 1px solid
       color-mix(in srgb, var(--color-border) 82%, transparent);
+    justify-items: center;
   }
 
   .primaryCta {
@@ -609,6 +620,17 @@
     text-align: center;
   }
 
+  .timeBlock,
+  .actionRow {
+    width: min(100%, 18rem);
+  }
+
+  .timeSteps {
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+  }
+
   .serviceChip {
     min-height: 54px;
     padding-inline: 24px;
@@ -617,6 +639,12 @@
 
   .activeDescription {
     max-width: 39rem;
+  }
+
+  .activeSummary {
+    grid-template-columns: minmax(0, 1.02fr) minmax(16rem, 0.78fr);
+    gap: clamp(2rem, 3.4vw, 3.6rem);
+    align-items: start;
   }
 
   .bulletList,
