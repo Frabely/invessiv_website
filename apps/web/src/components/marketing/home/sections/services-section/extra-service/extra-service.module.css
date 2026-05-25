@@ -7,6 +7,7 @@
   --service-icon-image-size-wide: 28px;
   --service-icon-radius-wide: 11px;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 16px;
   min-height: 100%;
   padding: 22px;
@@ -28,6 +29,63 @@
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 18px 34px rgba(0, 0, 0, 0.18);
+}
+
+.maintenanceContent {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  min-width: 0;
+}
+
+.maintenanceTitleRow {
+  min-width: 0;
+}
+
+.maintenanceTitle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.14rem, 1rem + 0.24vw, 1.26rem);
+  font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+
+.maintenanceDescription {
+  max-width: 42rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.maintenanceMeta {
+  display: flex;
+  justify-content: flex-end;
+  align-self: start;
+  min-width: max-content;
+}
+
+.rowMeta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 2.35rem;
+  padding: 0 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .header,
@@ -181,6 +239,19 @@
 }
 
 @media (max-width: 759px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .maintenanceMeta {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .rowMeta {
+    white-space: normal;
+  }
+
   .card[data-service-expanded="false"] .copyDetails {
     display: none;
   }
@@ -218,6 +289,10 @@
     font-size: clamp(1.2rem, 1.06rem + 0.26vw, 1.34rem);
   }
 
+  .maintenanceTitle {
+    font-size: clamp(1.2rem, 1.06rem + 0.26vw, 1.34rem);
+  }
+
   .badge,
   .metaChip {
     padding: 9px 13px;
@@ -229,7 +304,8 @@
   }
 
   .description,
-  .fit {
+  .fit,
+  .maintenanceDescription {
     font-size: var(--font-size-body-md);
   }
 
@@ -257,12 +333,17 @@
     font-size: 1.38rem;
   }
 
+  .maintenanceTitle {
+    font-size: 1.38rem;
+  }
+
   .highlight {
     font-size: 1.04rem;
   }
 
   .description,
-  .fit {
+  .fit,
+  .maintenanceDescription {
     font-size: var(--font-size-body-lg);
   }
 

@@ -20,6 +20,79 @@ Im Bereich `Prozessoptimierung & digitale Workflows` gibt es zwei Angebotsstufen
 Diese Angebotsstufen werden nicht als zusätzliche Pflichtauswahl im Formular eingeführt. Sie dienen als klare
 Orientierung in der Services Section und in der Formular-Microcopy.
 
+## Resultate der Copy-Planphase
+
+Diese Entscheidungen stammen aus der Copywriting-Planphase und sind für die weitere Umsetzung verbindlich.
+
+Relevante Umsetzungsdateien:
+
+- Services-Content: [`../src/i18n/dictionaries/marketing/home.ts`](../src/i18n/dictionaries/marketing/home.ts)
+- Services-UI-Texte DE: [
+  `../src/i18n/dictionaries/marketing/home-ui.de.json`](../src/i18n/dictionaries/marketing/home-ui.de.json)
+- Services-UI-Texte EN: [
+  `../src/i18n/dictionaries/marketing/home-ui.en.json`](../src/i18n/dictionaries/marketing/home-ui.en.json)
+- Services-Section: [
+  `../src/components/marketing/home/sections/services-section/services-section.tsx`](../src/components/marketing/home/sections/services-section/services-section.tsx)
+- Services-Tests: [
+  `../src/components/marketing/home/sections/services-section/services-section.test.tsx`](../src/components/marketing/home/sections/services-section/services-section.test.tsx)
+- Dictionary-Tests: [`../src/i18n/dictionaries/marketing/home.test.ts`](../src/i18n/dictionaries/marketing/home.test.ts)
+
+### Zielgruppe und Tonalität
+
+- Primäre Zielgruppe: Dienstleister und KMU, insbesondere Inhaber und kleine Teams.
+- Hauptfrage der Nutzer: `Passt das für mich?`
+- Die Copy muss zuerst einordnen, welches Angebot sinnvoll ist, bevor sie Details erklärt.
+- Tonalität: direkt, pragmatisch, klar, ohne überzogene Versprechen.
+- Primäre CTA-Richtung: `Angebot einschätzen lassen`.
+
+### Webauftritt & Landingpages
+
+- Landingpages bleiben der klare Einstieg und das Hauptangebot.
+- Website, Relaunch und Upgrade bleiben als kompakte Anwendungsfälle sichtbar.
+- Hauptnutzen: passendere Anfragen, weil Angebot, Zielgruppe und nächster Schritt klarer werden.
+- Sichtbarer Lieferumfang in der kompakten Copy:
+  - Struktur
+  - Design
+  - mobile Umsetzung
+  - SEO-Basis
+  - Kontaktweg/Formular
+  - Launch
+- Prozesslogik: `Ziel klären -> Struktur entwickeln -> Umsetzung -> Launch`.
+- Preislogik: In der kompakten Services Section keine Preise nennen; Preisdetails bleiben auf der
+  Landingpage-Detailseite
+  oder werden nach Scope im Anfrageprozess geklärt.
+
+### Prozessoptimierung & digitale Workflows
+
+- Kernnutzen: Prozesse beim Kunden einfacher, schneller, zentraler und weniger fehleranfällig machen.
+- Das Angebot soll nicht nur als Automatisierung wirken, sondern als bessere Arbeitsweise für wiederkehrende Abläufe.
+- Zwei Angebotsstufen bleiben als Orientierung sichtbar:
+  - `Custom KI-Skills für wiederkehrende Prozesse`
+  - `Individuelle Softwarelösung für zentrale Prozessabläufe`
+- Beispielrahmen für die Copy:
+  - Kundenanfragen oder E-Mails auswerten
+  - wiederkehrende Inhalte oder Antworten vorbereiten
+  - Kundendaten, Status und Folgeschritte zentral verwalten
+  - verstreute Arbeit aus mehreren Systemen in einen klaren Workflow bringen
+- Prozesslogik: `Prozess verstehen -> Engpass finden -> passende Lösung bauen -> Übergabe`.
+- Grenze: Kein Overengineering; die kleinste sinnvolle Lösung wird bevorzugt.
+
+### Copy-Umsetzungsregeln
+
+- Services Section bleibt kompakt; keine langen Absätze.
+- Pro Angebot maximal:
+  - eine klare Headline
+  - ein kurzer Nutzenabsatz
+  - drei kompakte Ergebnis-/Lieferumfangspunkte
+  - vier kurze Prozessworte
+- DE/EN parallel pflegen.
+- Keine neuen Inline-Texte in Komponenten.
+- Keine Preisversprechen in der kompakten Services Section.
+- Preis-/Conversion-Entscheidung: Keine Preise in der Services Section ist akzeptabel, solange Preisdetails über die
+  Landingpage-Detailseite oder den Anfrageprozess transparent aufgefangen werden. Hintergrund:
+  - [HockeyStack: Pricing-/Demo-Page Transparenz im B2B-Kontext](https://www.hockeystack.com/lab-blog-posts/state-of-pricing-demo-case-study-pages)
+  - [BAMS: Transparente Kosten am Checkout/Kaufpunkt](https://www.bams.com/blog/transparent-checkout-pricing/)
+
 ## Grundsatzentscheidungen
 
 - Das aktuelle Design der Services Section bleibt final.
@@ -45,7 +118,7 @@ Orientierung in der Services Section und in der Formular-Microcopy.
 - `best-practices`: Offer-Mapping, DTO-/Validation-Kompatibilität und kleine reviewbare Schritte.
 - `seo`: nur falls Metadata, Structured Data oder servicebezogene SEO-Texte angepasst werden.
 
-## Schritt 1: Offer-Mapping und sichtbare Angebotslogik festziehen
+## Schritt 1: Offer-Mapping und sichtbare Angebotslogik festziehen ✅ Erledigt
 
 Ziel: Die UI zeigt zwei Kernangebote, während bestehende technische Werte kompatibel bleiben.
 
@@ -72,7 +145,15 @@ Tests:
   - `process` => Prozess
   - `maintenance` => Support
 
-## Schritt 2: Services Section inhaltlich umbauen
+Status:
+
+- Erledigt.
+- Relevante Umsetzung:
+  - [`../common/constants/marketing/contact-offer-groups.ts`](../common/constants/marketing/contact-offer-groups.ts)
+  - [
+    `../common/constants/marketing/contact-offer-groups.test.ts`](../common/constants/marketing/contact-offer-groups.test.ts)
+
+## Schritt 2: Services Section inhaltlich umbauen ✅ Erledigt
 
 Ziel: Die Services Section zeigt nur zwei primäre Angebote plus Support als Zusatzleistung.
 
@@ -115,6 +196,24 @@ Tests:
   - Support wird separat gerendert.
   - `web` und `upgrade` erscheinen nicht mehr als eigenständige Hauptangebote.
   - CTA-Event liefert weiterhin einen gültigen `offerKey`.
+
+Status:
+
+- Erledigt.
+- Relevante Umsetzung:
+  - [
+    `../src/components/marketing/home/sections/services-section/services-section.tsx`](../src/components/marketing/home/sections/services-section/services-section.tsx)
+  - [
+    `../src/components/marketing/home/sections/services-section/selected-service/selected-service.tsx`](../src/components/marketing/home/sections/services-section/selected-service/selected-service.tsx)
+  - [
+    `../src/components/marketing/home/sections/services-section/extra-service/extra-service.tsx`](../src/components/marketing/home/sections/services-section/extra-service/extra-service.tsx)
+  - [
+    `../src/components/marketing/home/sections/services-section/services-section.module.css`](../src/components/marketing/home/sections/services-section/services-section.module.css)
+  - [
+    `../src/components/marketing/home/sections/services-section/extra-service/extra-service.module.css`](../src/components/marketing/home/sections/services-section/extra-service/extra-service.module.css)
+  - [`../src/i18n/dictionaries/marketing/home.ts`](../src/i18n/dictionaries/marketing/home.ts)
+  - [`../src/i18n/dictionaries/marketing/home-ui.de.json`](../src/i18n/dictionaries/marketing/home-ui.de.json)
+  - [`../src/i18n/dictionaries/marketing/home-ui.en.json`](../src/i18n/dictionaries/marketing/home-ui.en.json)
 
 ## Schritt 3: Kontaktformular auf zwei klare Angebote ausrichten
 

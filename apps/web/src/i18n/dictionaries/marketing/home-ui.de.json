@@ -30,8 +30,8 @@
   },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
-  "servicesIntentTitle": "Wähle dein Ziel. Ich zeige dir die Leistung, die dafür am ehesten passt.",
-  "servicesOtherTitle": "Andere mögliche Leistungen",
+  "servicesIntentTitle": "Wähle dein Ziel. Du siehst sofort, welches Angebot passt und was der nächste Schritt wäre.",
+  "servicesOtherTitle": "Weiteres Kernangebot",
   "servicesLaunchAddonTitle": "Ergänzend nach dem Launch",
   "servicesIntentOptions": [
     {
@@ -43,23 +43,13 @@
       "key": "simplify_processes",
       "label": "Interne Abläufe vereinfachen",
       "serviceKey": "process"
-    },
-    {
-      "key": "improve_existing_site",
-      "label": "Bestehende Seite klarer machen",
-      "serviceKey": "upgrade"
-    },
-    {
-      "key": "plan_new_website",
-      "label": "Neue Website starten",
-      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Projekt anfragen",
+  "servicesPrimaryCta": "Angebot einschätzen lassen",
   "servicesPrimaryCtaLabels": {
-    "landing": "Projekt anfragen",
+    "landing": "Angebot einschätzen lassen",
     "web": "Projekt anfragen",
-    "process": "Projekt anfragen",
+    "process": "Angebot einschätzen lassen",
     "upgrade": "Upgrade anfragen",
     "maintenance": "Wartung & Support anfragen"
   },

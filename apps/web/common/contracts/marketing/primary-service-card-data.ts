@@ -1,8 +1,7 @@
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 
-import type { PrimaryServiceKey } from "./primary-service-key";
+import type { PrimaryServiceKey } from "@/common/contracts";
 
-export type PrimaryServiceCardData = Extract<
-  ServiceCardCopy,
-  { key: PrimaryServiceKey }
->;
+export type PrimaryServiceCardData = ServiceCardCopy & {
+  key: PrimaryServiceKey;
+};

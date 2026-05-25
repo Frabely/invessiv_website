@@ -23,14 +23,13 @@ import styles from "./services-section.module.css";
 const PRIMARY_SERVICE_ORDER = [
   CONTACT_OFFER_KEY.Landing,
   CONTACT_OFFER_KEY.Process,
-  CONTACT_OFFER_KEY.Upgrade,
-  CONTACT_OFFER_KEY.Web,
 ] as const;
 const DEFAULT_SERVICE_KEY = CONTACT_OFFER_KEY.Landing;
 
 type ServicesSectionProps = {
   deliveryLabel: string;
   detailPageCtaLabel: string;
+  detailsCtaLabel: string;
   id: string;
   kicker: string;
   launchAddonTitle: string;
@@ -55,6 +54,7 @@ function isPrimaryServiceKey(key: string): key is PrimaryServiceKey {
 export function ServicesSection({
   deliveryLabel,
   detailPageCtaLabel,
+  detailsCtaLabel,
   id,
   kicker,
   launchAddonTitle,
@@ -189,6 +189,7 @@ export function ServicesSection({
         defaultDeliveryLabel={deliveryLabel}
         detailHref={detailHref}
         detailPageCtaLabel={detailPageCtaLabel}
+        detailsCtaLabel={detailsCtaLabel}
         recommendedBadgeLabel={recommendedBadgeLabel}
         selectedCard={selectedCard}
       />

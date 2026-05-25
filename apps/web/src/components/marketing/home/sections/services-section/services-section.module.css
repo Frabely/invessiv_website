@@ -15,6 +15,7 @@
 .fitNote,
 .activeDescription,
 .activeEyebrow,
+.activeDetailsList,
 .timeLabel,
 .timeValue,
 .timeSteps,
@@ -253,18 +254,138 @@
 }
 
 .bulletList > li::before {
+  content: "";
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-accent-warm);
-  font-size: 1.08rem;
-  font-weight: 900;
-  line-height: 1;
-  transform: translateY(-1px);
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 78%, var(--color-text) 22%),
+    color-mix(in srgb, var(--color-cta) 62%, var(--color-accent-warm) 38%)
+  );
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
 }
 
-.bulletList > li::before {
-  content: "✓";
+.activeDetails {
+  grid-column: 1 / -1;
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-surface-2) 80%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 70%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
+    0 18px 44px color-mix(in srgb, var(--color-bg) 42%, transparent);
+}
+
+.activeDetails[open] {
+  width: 100%;
+}
+
+.activeDetailsSummary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.2rem;
+  padding: 0.9rem 1rem;
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 820;
+  line-height: 1.2;
+  cursor: pointer;
+  list-style: none;
+}
+
+.activeDetailsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.activeDetailsSummary::after {
+  content: "";
+  width: 0.58rem;
+  height: 0.58rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.78;
+  transform: translateY(-0.12rem) rotate(45deg);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.activeDetails[open] .activeDetailsSummary {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.activeDetails[open] .activeDetailsSummary::after {
+  opacity: 1;
+  transform: translateY(0.12rem) rotate(225deg);
+}
+
+.activeDetailsSummary:hover {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 78%,
+    var(--color-cta) 8%
+  );
+}
+
+.activeDetailsSummary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.activeDetailsList {
+  display: grid;
+  gap: 0;
+  padding: 0;
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.48;
+  list-style: none;
+}
+
+.activeDetailsList > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.78rem;
+  align-items: start;
+  padding: 0.82rem 1rem;
+}
+
+.activeDetailsList > li + li {
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+}
+
+.activeDetailsList > li::before {
+  content: "";
+  width: 0.42rem;
+  height: 0.42rem;
+  margin-top: 0.48rem;
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 66%,
+    var(--color-text) 34%
+  );
+}
+
+:global([data-theme="light"]) .activeDetails {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-surface-1) 96%, var(--color-cta) 4%),
+    color-mix(in srgb, var(--color-surface-2) 94%, transparent)
+  );
+  box-shadow: 0 16px 34px color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 .maintenanceCard {
@@ -657,7 +778,7 @@
   .timeSteps {
     text-align: center;
     width: 100%;
-    white-space: nowrap;
+    max-width: 18rem;
   }
 
   .serviceChip {

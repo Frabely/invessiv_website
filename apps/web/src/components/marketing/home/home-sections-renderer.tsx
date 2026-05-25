@@ -88,6 +88,7 @@ export function HomeSectionsRenderer({
               <ServicesSection
                 deliveryLabel={ui.servicesDeliveryLabel}
                 detailPageCtaLabel={ui.servicesDetailPageCta}
+                detailsCtaLabel={ui.servicesDetailsCta}
                 id={section.id}
                 key={section.id}
                 kicker={ui.servicesKicker}

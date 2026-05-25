@@ -1,7 +1,5 @@
-import type { ContactOfferKey } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 
-export type PrimaryServiceKey = Exclude<
-  ContactOfferKey,
-  typeof CONTACT_OFFER_KEY.Maintenance
->;
+export type PrimaryServiceKey =
+  | typeof CONTACT_OFFER_KEY.Landing
+  | typeof CONTACT_OFFER_KEY.Process;

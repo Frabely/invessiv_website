@@ -30,8 +30,8 @@
   },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
-  "servicesIntentTitle": "Choose your goal. I’ll show the service that fits best.",
-  "servicesOtherTitle": "Other possible services",
+  "servicesIntentTitle": "Choose your goal. You immediately see which offer fits and what the next step would be.",
+  "servicesOtherTitle": "Other core offer",
   "servicesLaunchAddonTitle": "Additional after launch",
   "servicesIntentOptions": [
     {
@@ -43,23 +43,13 @@
       "key": "simplify_processes",
       "label": "Simplify internal workflows",
       "serviceKey": "process"
-    },
-    {
-      "key": "improve_existing_site",
-      "label": "Make the current site clearer",
-      "serviceKey": "upgrade"
-    },
-    {
-      "key": "plan_new_website",
-      "label": "Start a new website",
-      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Request project",
+  "servicesPrimaryCta": "Get offer guidance",
   "servicesPrimaryCtaLabels": {
-    "landing": "Request project",
+    "landing": "Get offer guidance",
     "web": "Request project",
-    "process": "Request project",
+    "process": "Get offer guidance",
     "upgrade": "Request upgrade",
     "maintenance": "Request maintenance & support"
   },

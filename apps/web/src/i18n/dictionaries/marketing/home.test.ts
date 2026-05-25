@@ -91,7 +91,7 @@ describe("home dictionary", () => {
       );
 
       expect(landingCard?.included).toHaveLength(3);
-      expect(landingCard?.details).toBeUndefined();
+      expect(landingCard?.details).toHaveLength(2);
     },
   );
 
@@ -110,7 +110,7 @@ describe("home dictionary", () => {
 
       expect(
         ui.servicesIntentOptions.map((option) => option.serviceKey),
-      ).toEqual(["landing", "process", "upgrade", "web"]);
+      ).toEqual(["landing", "process"]);
       expect(
         servicesSection.serviceCards
           .filter((card) =>
@@ -119,7 +119,7 @@ describe("home dictionary", () => {
             ),
           )
           .map((card) => card.key),
-      ).toEqual(["landing", "web", "upgrade", "process"]);
+      ).toEqual(["landing", "process"]);
       expect(
         servicesSection.serviceCards.find((card) => card.key === "process"),
       ).toBeTruthy();
