@@ -45,14 +45,14 @@ export function ServiceActionCta({
 }: ServiceActionCtaProps) {
   const content = (
     <>
-      <span>{children}</span>
+      <span className={styles.label}>{children}</span>
       <span aria-hidden="true" className={styles.arrow}>
         &rsaquo;
       </span>
     </>
   );
 
-  if (href) {
+  if (href !== undefined) {
     return (
       <a
         className={actionClassName(className)}

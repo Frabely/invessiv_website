@@ -41,6 +41,7 @@ describe("QuickContactForm", () => {
           href: "mailto:hi@invessiv.de",
           kicker: "Kurz",
           label: "Kurze E-Mail",
+          mode: "email",
           value: "hi@invessiv.de",
         }}
         formCopy={{

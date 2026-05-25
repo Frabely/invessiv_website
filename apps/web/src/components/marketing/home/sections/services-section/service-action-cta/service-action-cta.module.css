@@ -19,6 +19,12 @@
   cursor: pointer;
 }
 
+.label {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .cta:hover {
   text-decoration: underline;
   text-underline-offset: 0.18em;

@@ -24,6 +24,7 @@ import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/s
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
+import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
 import styles from "./project-request-form.module.css";
 
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
@@ -551,13 +552,13 @@ export function ProjectRequestForm({
     };
 
     window.addEventListener(
-      "invessiv:project-offer-change",
+      PROJECT_OFFER_CHANGE_EVENT,
       handleOfferSync as EventListener,
     );
 
     return () => {
       window.removeEventListener(
-        "invessiv:project-offer-change",
+        PROJECT_OFFER_CHANGE_EVENT,
         handleOfferSync as EventListener,
       );
     };

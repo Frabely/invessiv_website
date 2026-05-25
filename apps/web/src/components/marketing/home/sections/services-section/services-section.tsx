@@ -1,39 +1,32 @@
 "use client";
 
-import type { CSSProperties, RefObject } from "react";
+import type { RefObject } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-import { ServiceActionCta } from "@/components/marketing/home/sections/services-section/service-action-cta/service-action-cta";
-import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
+import type { ContactOfferKey } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { SECTION_HREFS } from "@/config/navigation/home";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
+import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
+import type {
+  MaintenanceServiceCardData,
+  PrimaryServiceCardData,
+  PrimaryServiceKey,
+  ServiceOption,
+} from "@/common/contracts/marketing";
 
+import { ExtraService } from "./extra-service/extra-service";
+import { SecondaryService } from "./secondary-service/secondary-service";
+import { SelectedService } from "./selected-service/selected-service";
 import styles from "./services-section.module.css";
 
-const PRIMARY_SERVICE_ORDER = ["landing", "process", "upgrade", "web"] as const;
-const DEFAULT_SERVICE_KEY = "landing";
-const CALENDAR_ICON_MASK_STYLE = {
-  WebkitMaskImage: 'url("/services/calender-icon.svg")',
-  maskImage: 'url("/services/calender-icon.svg")',
-} satisfies CSSProperties;
-
-type PrimaryServiceKey = (typeof PRIMARY_SERVICE_ORDER)[number];
-type PrimaryServiceCardData = Extract<
-  ServiceCardCopy,
-  { key: PrimaryServiceKey }
->;
-type MaintenanceServiceCardData = Extract<
-  ServiceCardCopy,
-  { key: "maintenance" }
->;
-
-type ServiceOption = {
-  key: string;
-  label: string;
-  serviceKey?: string;
-};
+const PRIMARY_SERVICE_ORDER = [
+  CONTACT_OFFER_KEY.Landing,
+  CONTACT_OFFER_KEY.Process,
+  CONTACT_OFFER_KEY.Upgrade,
+  CONTACT_OFFER_KEY.Web,
+] as const;
+const DEFAULT_SERVICE_KEY = CONTACT_OFFER_KEY.Landing;
 
 type ServicesSectionProps = {
   deliveryLabel: string;
@@ -43,15 +36,12 @@ type ServicesSectionProps = {
   launchAddonTitle: string;
   otherServicesTitle: string;
   primaryCtaLabel: string;
-  primaryCtaLabels: Record<
-    "landing" | "maintenance" | "process" | "upgrade" | "web",
-    string
-  >;
+  primaryCtaLabels: Record<ContactOfferKey, string>;
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardCopy[];
   serviceContextNote?: string;
-  serviceDetailHrefs?: Partial<Record<ServiceCardCopy["key"], string>>;
+  serviceDetailHrefs?: Partial<Record<ContactOfferKey, string>>;
   serviceOptions: ServiceOption[];
   servicePickerTitle: string;
   serviceSecondaryTitle?: string;
@@ -96,7 +86,7 @@ export function ServicesSection({
     () =>
       serviceCards.find(
         (card): card is MaintenanceServiceCardData =>
-          card.key === "maintenance",
+          card.key === CONTACT_OFFER_KEY.Maintenance,
       ),
     [serviceCards],
   );
@@ -120,7 +110,7 @@ export function ServicesSection({
     }
 
     window.dispatchEvent(
-      new CustomEvent("invessiv:project-offer-change", {
+      new CustomEvent(PROJECT_OFFER_CHANGE_EVENT, {
         detail: {
           offerKey: selectedCard.key,
           projectGoal: ctaProjectGoal,
@@ -129,9 +119,8 @@ export function ServicesSection({
     );
   }, [ctaProjectGoal, selectedCard]);
 
-  const getPrimaryCtaLabel = (cardKey: ServiceCardCopy["key"]) =>
-    primaryCtaLabels[cardKey as keyof typeof primaryCtaLabels] ||
-    primaryCtaLabel;
+  const getPrimaryCtaLabel = (cardKey: ContactOfferKey) =>
+    primaryCtaLabels[cardKey] || primaryCtaLabel;
 
   const selectServiceAndReveal = (cardKey: PrimaryServiceKey) => {
     setSelectedServiceKey(cardKey);
@@ -148,10 +137,6 @@ export function ServicesSection({
     return null;
   }
 
-  const selectedDeliveryLabel = selectedCard.deliveryLabel ?? deliveryLabel;
-  const selectedDescription = selectedCard.description;
-  const timelineItems =
-    selectedCard.timeline ?? selectedCard.included.slice(0, 3);
   const detailHref = serviceDetailHrefs?.[selectedCard.key];
 
   return (
@@ -198,84 +183,15 @@ export function ServicesSection({
 
       <div aria-hidden="true" className={styles.sectionDivider} />
 
-      <article
-        aria-label={selectedCard.title}
-        className={styles.activeService}
-        data-card-key={selectedCard.key}
-        data-service-card="true"
-        data-service-variant="active"
-      >
-        <div className={styles.activeMain}>
-          <div className={styles.activeHeading}>
-            <ServiceCardIcon
-              iconAlt={selectedCard.iconAlt}
-              iconSrc={selectedCard.iconSrc}
-            />
-            <div className={styles.activeHeadingText}>
-              <p className={styles.activeEyebrow}>{recommendedBadgeLabel}</p>
-              <h3 className={styles.activeTitle}>
-                <span>
-                  {selectedCard.title}
-                  <span aria-hidden="true" className={styles.titleDot}>
-                    .
-                  </span>
-                </span>
-              </h3>
-            </div>
-          </div>
-
-          <div className={styles.activeSummary}>
-            {selectedDescription ? (
-              <p className={styles.activeDescription}>{selectedDescription}</p>
-            ) : null}
-
-            <ul className={styles.bulletList}>
-              {selectedCard.included.slice(0, 4).map((bullet) => (
-                <li key={bullet}>{bullet}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <aside className={styles.activeAside}>
-          <div className={styles.timeBlock}>
-            <div className={styles.timeHeader}>
-              <span aria-hidden="true" className={styles.timeIcon}>
-                <span
-                  className={styles.timeIconImage}
-                  style={CALENDAR_ICON_MASK_STYLE}
-                />
-              </span>
-              <div className={styles.timeText}>
-                <p className={styles.timeLabel}>{selectedDeliveryLabel}</p>
-                <p className={styles.timeValue}>{selectedCard.delivery}</p>
-              </div>
-            </div>
-            <p className={styles.timeSteps}>{timelineItems.join(" → ")}</p>
-          </div>
-
-          <div className={styles.actionRow}>
-            <PrimaryCtaLink
-              className={styles.primaryCta}
-              data-analytics-event="cta_click"
-              data-analytics-location="pricing"
-              data-analytics-target="form"
-              data-analytics-variant="primary"
-              data-project-goal={ctaProjectGoal}
-              data-project-offer={selectedCard.key}
-              href={SECTION_HREFS.contact}
-            >
-              {getPrimaryCtaLabel(selectedCard.key)}
-            </PrimaryCtaLink>
-
-            {detailHref ? (
-              <ServiceActionCta href={detailHref}>
-                {detailPageCtaLabel}
-              </ServiceActionCta>
-            ) : null}
-          </div>
-        </aside>
-      </article>
+      <SelectedService
+        ctaLabel={getPrimaryCtaLabel(selectedCard.key)}
+        ctaProjectGoal={ctaProjectGoal}
+        defaultDeliveryLabel={deliveryLabel}
+        detailHref={detailHref}
+        detailPageCtaLabel={detailPageCtaLabel}
+        recommendedBadgeLabel={recommendedBadgeLabel}
+        selectedCard={selectedCard}
+      />
 
       <div className={styles.otherServices}>
         <h3 className={styles.listTitle}>{otherServicesTitle}</h3>
@@ -285,39 +201,13 @@ export function ServicesSection({
             const isSelected = card.key === selectedCard.key;
 
             return (
-              <div
-                className={styles.serviceRowShell}
-                data-card-key={card.key}
-                data-selected={isSelected ? "true" : "false"}
-                data-service-variant="alternative"
+              <SecondaryService
+                card={card}
+                defaultDeliveryLabel={rowDeliveryLabel}
+                isSelected={isSelected}
                 key={card.key}
-                role="listitem"
-              >
-                <button
-                  aria-pressed={isSelected}
-                  className={styles.serviceRowButton}
-                  onClick={() => selectServiceAndReveal(card.key)}
-                  type="button"
-                >
-                  <div className={styles.serviceRow}>
-                    <span className={styles.rowIconTitle}>
-                      <ServiceCardIcon
-                        iconAlt={card.iconAlt}
-                        iconSrc={card.iconSrc}
-                      />
-                      <span className={styles.rowText}>
-                        <span className={styles.rowTitle}>{card.title}</span>
-                        <span className={styles.rowDescription}>
-                          {card.description ?? card.fit}
-                        </span>
-                      </span>
-                    </span>
-                    <span className={styles.rowMeta}>
-                      {rowDeliveryLabel}: {card.delivery}
-                    </span>
-                  </div>
-                </button>
-              </div>
+                onSelectAction={selectServiceAndReveal}
+              />
             );
           })}
         </div>
@@ -328,44 +218,12 @@ export function ServicesSection({
           <h3 className={styles.listTitle}>
             {serviceSecondaryTitle ?? launchAddonTitle}
           </h3>
-          <article
-            aria-label={maintenanceCard.title}
-            className={styles.maintenanceCard}
-            data-card-key={maintenanceCard.key}
-            data-service-variant="secondary"
-          >
-            <div className={styles.maintenanceContent}>
-              <div className={styles.maintenanceTitleRow}>
-                <h4 className={styles.maintenanceTitle}>
-                  <ServiceCardIcon
-                    iconAlt={maintenanceCard.iconAlt}
-                    iconSrc={maintenanceCard.iconSrc}
-                  />
-                  <span>{maintenanceCard.title}</span>
-                </h4>
-              </div>
-              <p className={styles.maintenanceDescription}>
-                {maintenanceCard.description}
-              </p>
-              <ServiceActionCta
-                data-analytics-event="cta_click"
-                data-analytics-location="pricing"
-                data-analytics-target="form"
-                data-analytics-variant="secondary-link"
-                data-project-goal={ctaProjectGoal}
-                data-project-offer={maintenanceCard.key}
-                href={SECTION_HREFS.contact}
-              >
-                {getPrimaryCtaLabel(maintenanceCard.key)}
-              </ServiceActionCta>
-            </div>
-            <div className={styles.maintenanceMeta}>
-              <span className={styles.rowMeta}>
-                {maintenanceCard.deliveryLabel ?? deliveryLabel}:{" "}
-                {maintenanceCard.delivery}
-              </span>
-            </div>
-          </article>
+          <ExtraService
+            card={maintenanceCard}
+            ctaLabel={getPrimaryCtaLabel(maintenanceCard.key)}
+            ctaProjectGoal={ctaProjectGoal}
+            defaultDeliveryLabel={deliveryLabel}
+          />
         </div>
       ) : null}
     </section>

@@ -1,95 +1,47 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { SecondaryService } from "./secondary-service";
 
 describe("SecondaryService", () => {
-  it("renders a quieter secondary card with a text CTA instead of a button", () => {
+  it("renders a collapsed alternative service row and selects it on click", () => {
+    const onSelect = vi.fn();
+
     render(
       <SecondaryService
-        addonBadgeLabel="Add-on"
         card={{
-          key: "maintenance",
-          title: "Wartung & Support",
-          description: "Schnelle Weiterentwicklung und saubere Pflege.",
-          fit: "Sinnvoll, wenn bestehende Seiten laufend angepasst werden sollen.",
-          iconSrc: "/services/customer-service-icon.svg",
-          iconAlt: "Support Icon",
-          highlight: "schnelle Hilfe für laufende Themen",
-          pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
-          delivery: "24-72h",
-          included: ["Bugfixes", "Checks", "Pflege"],
+          key: "process",
+          title: "Internes Tool",
+          description: "Maßgeschneiderte Tools für interne Abläufe.",
+          fit: "Teams mit klaren Routineabläufen.",
+          iconSrc: "/services/process-icon.svg",
+          iconAlt: "Process Icon",
+          highlight: "weniger manuelle Schritte im Alltag",
+          pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
+          delivery: "1-2 Wochen",
+          included: ["Audit", "Konzept", "Setup", "Testing"],
         }}
-        ctaLabel="Wartung & Support anfragen"
-        ctaProjectGoal="mehr Anfragen gewinnen"
-        defaultDeliveryLabel="Reaktionszeit"
-        detailsCtaLabel="Mehr Infos"
+        defaultDeliveryLabel="Zeitrahmen"
+        isSelected={false}
+        onSelectAction={onSelect}
       />,
     );
 
-    expect(screen.getByText("Wartung & Support")).toBeTruthy();
-    expect(screen.getByText("Add-on")).toBeTruthy();
-    expect(screen.getByText("schnelle Hilfe für laufende Themen")).toBeTruthy();
-    expect(screen.getByText(/Reaktionszeit:\s*24-72h/i)).toBeTruthy();
+    expect(screen.getByText("Internes Tool")).toBeTruthy();
     expect(
-      screen.getByText("Nach Aufwand oder abgestimmtem Betreuungspaket"),
+      screen.getByText("Maßgeschneiderte Tools für interne Abläufe."),
     ).toBeTruthy();
-    expect(
-      screen.getByText(
-        "Sinnvoll, wenn bestehende Seiten laufend angepasst werden sollen.",
-      ),
-    ).toBeTruthy();
-    expect(
-      screen
-        .getByRole("button", { name: /Mehr Infos/i })
-        .getAttribute("aria-expanded"),
-    ).toBe("false");
-    expect(
-      screen
-        .getByText("Wartung & Support")
-        .closest("article")
-        ?.getAttribute("data-service-expanded"),
-    ).toBe("false");
-    expect(
-      screen.getByRole("link", { name: "Wartung & Support anfragen" }),
-    ).toBeTruthy();
-    const article = screen.getByText("Wartung & Support").closest("article");
+    expect(screen.getByText(/Zeitrahmen:\s*1-2 Wochen/i)).toBeTruthy();
 
-    fireEvent.click(article as HTMLElement);
+    fireEvent.click(screen.getByRole("button", { name: /Internes Tool/i }));
+
+    expect(onSelect).toHaveBeenCalledWith("process");
     expect(
       screen
-        .getByRole("button", { name: /Mehr Infos/i })
-        .getAttribute("aria-expanded"),
-    ).toBe("true");
-    expect(
-      screen
-        .getByText("Wartung & Support")
-        .closest("article")
-        ?.getAttribute("data-service-expanded"),
-    ).toBe("true");
-    fireEvent.click(
-      screen.getByRole("link", { name: "Wartung & Support anfragen" }),
-    );
-    expect(
-      screen
-        .getByText("Wartung & Support")
-        .closest("article")
-        ?.getAttribute("data-service-expanded"),
-    ).toBe("true");
-    fireEvent.click(screen.getByRole("button", { name: /Mehr Infos/i }));
-    expect(
-      screen
-        .getByText("Wartung & Support")
-        .closest("article")
-        ?.getAttribute("data-service-expanded"),
+        .getByRole("button", { name: /Internes Tool/i })
+        .getAttribute("aria-pressed"),
     ).toBe("false");
-    expect(
-      screen
-        .getByText("Wartung & Support")
-        .closest("article")
-        ?.getAttribute("tabindex"),
-    ).toBeNull();
   });
 });

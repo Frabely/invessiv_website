@@ -1,117 +1,53 @@
-﻿"use client";
+"use client";
 
-import type { MouseEvent } from "react";
-import { useState } from "react";
-
-import { ServiceCardIcon } from "@/components/marketing/home/sections/services-section/service-card-icon";
-import { ServiceCardLink } from "@/components/marketing/home/sections/services-section/service-card-link/service-card-link";
-import { SECTION_HREFS } from "@/config/navigation/home";
-import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
-
-import styles from "./secondary-service.module.css";
-
-type SecondaryServiceCard = Extract<
-  ServiceCardCopy,
-  { key: "maintenance" | "process" }
->;
+import { ServiceCardIcon } from "../service-card-icon";
+import type { PrimaryServiceCardData } from "@/common/contracts/marketing";
+import styles from "../services-section.module.css";
 
 type SecondaryServiceProps = {
-  addonBadgeLabel: string;
-  card: SecondaryServiceCard;
-  ctaLabel: string;
-  ctaProjectGoal?: string;
+  card: PrimaryServiceCardData;
   defaultDeliveryLabel: string;
-  detailsCtaLabel: string;
+  isSelected: boolean;
+  onSelectAction: (cardKey: PrimaryServiceCardData["key"]) => void;
 };
 
 export function SecondaryService({
-  addonBadgeLabel,
   card,
-  ctaLabel,
-  ctaProjectGoal = "",
   defaultDeliveryLabel,
-  detailsCtaLabel,
+  isSelected,
+  onSelectAction,
 }: SecondaryServiceProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const deliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
-  const detailsId = `services-secondary-details-${card.key}`;
-  const toggleDetails = () => setIsDetailsOpen((currentState) => !currentState);
-
-  const handleCardClick = (event: MouseEvent<HTMLElement>) => {
-    const target = event.target;
-    if (
-      target instanceof Element &&
-      target.closest("button, a, input, select, textarea, summary")
-    ) {
-      return;
-    }
-
-    toggleDetails();
-  };
+  const rowDeliveryLabel = card.deliveryLabel ?? defaultDeliveryLabel;
 
   return (
-    <article
-      aria-label={card.title}
-      className={styles.card}
+    <div
+      className={styles.serviceRowShell}
       data-card-key={card.key}
-      data-service-expanded={isDetailsOpen ? "true" : "false"}
-      data-service-variant="secondary"
-      onClick={handleCardClick}
+      data-selected={isSelected ? "true" : "false"}
+      data-service-variant="alternative"
       role="listitem"
     >
-      <div className={styles.header}>
-        <div className={styles.titleWrap}>
-          <h4 className={styles.title}>
+      <button
+        aria-pressed={isSelected}
+        className={styles.serviceRowButton}
+        onClick={() => onSelectAction(card.key)}
+        type="button"
+      >
+        <div className={styles.serviceRow}>
+          <span className={styles.rowIconTitle}>
             <ServiceCardIcon iconAlt={card.iconAlt} iconSrc={card.iconSrc} />
-            <span>{card.title}</span>
-          </h4>
-          {card.key === "maintenance" ? (
-            <span className={styles.badge}>{addonBadgeLabel}</span>
-          ) : null}
-        </div>
-
-        <div className={styles.metaRow}>
-          <span className={styles.highlight}>{card.highlight}</span>
-          <span className={styles.metaChip}>
-            {deliveryLabel}: {card.delivery}
+            <span className={styles.rowText}>
+              <span className={styles.rowTitle}>{card.title}</span>
+              <span className={styles.rowDescription}>
+                {card.description ?? card.fit}
+              </span>
+            </span>
+          </span>
+          <span className={styles.rowMeta}>
+            {rowDeliveryLabel}: {card.delivery}
           </span>
         </div>
-      </div>
-
-      <div className={styles.copy}>
-        <div className={styles.copyDetails} id={detailsId}>
-          <div className={styles.copyBlock}>
-            <p className={styles.description}>{card.description}</p>
-            {card.fit ? <p className={styles.fit}>{card.fit}</p> : null}
-          </div>
-          <p className={styles.pricingHint}>{card.pricingHint}</p>
-        </div>
-        <button
-          aria-controls={detailsId}
-          aria-expanded={isDetailsOpen}
-          className={styles.detailsToggle}
-          onClick={toggleDetails}
-          type="button"
-        >
-          {detailsCtaLabel}
-          <span aria-hidden="true" className={styles.toggleArrow}>
-            &rsaquo;
-          </span>
-        </button>
-        <div className={styles.ctaSlot}>
-          <ServiceCardLink
-            data-analytics-event="cta_click"
-            data-analytics-location="pricing"
-            data-analytics-target="form"
-            data-analytics-variant="secondary-link"
-            data-project-goal={ctaProjectGoal}
-            data-project-offer={card.key}
-            href={SECTION_HREFS.contact}
-          >
-            {ctaLabel}
-          </ServiceCardLink>
-        </div>
-      </div>
-    </article>
+      </button>
+    </div>
   );
 }

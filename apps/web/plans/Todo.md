@@ -2,6 +2,12 @@
 
 ## Offen
 
+### project-request-form.tsx hardcoded error codes ersetzen
+
+In `src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.tsx` werden noch
+hartcodierte String-Fehlercodes verwendet. Das muss in einem separaten Schritt auf zentrale Error-Code-Konstanten und
+ein sauberes Mapping umgestellt werden, aber nicht in diesem Branch.
+
 ### Zeitangabe Landingpage überarbeiten
 
 **Aktuell:** `5–10 Tage` an allen Stellen (Hero, Trust, Process, FAQ, Pricing, Meta)
