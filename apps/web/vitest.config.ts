@@ -24,6 +24,14 @@ export default defineConfig({
         ),
       },
       {
+        find: /^@\/common\/(.+)$/,
+        replacement: path.resolve(__dirname, "common/$1"),
+      },
+      {
+        find: /^@\/common$/,
+        replacement: path.resolve(__dirname, "common/index.ts"),
+      },
+      {
         find: /^@\/(.+)$/,
         replacement: path.resolve(__dirname, "src/$1"),
       },
