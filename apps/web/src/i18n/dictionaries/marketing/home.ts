@@ -19,6 +19,7 @@ import {
 } from "@/config/company";
 import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
+import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_PAGE_KEY } from "@invessiv/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
@@ -173,6 +174,7 @@ export type ContactFormCopy = {
   pagesCustomPlaceholder?: string;
   pagesCustomRemoveLabel?: string;
   pagesRequiredHint?: string;
+  offerGuidance?: ContactFormOption[];
   workflowLabel: string;
   workflowOptions: ContactFormOption[];
   stepNavigationLabel: string;
@@ -190,6 +192,7 @@ export type ContactFormCopy = {
   startOptions: ContactFormOption[];
   projectDetailsLabel: string;
   projectDetailsPlaceholder: string;
+  projectDetailsPlaceholders?: ContactFormOption[];
   consentLabel: string;
   privacyLabel: string;
   submitLabel: string;
@@ -1037,7 +1040,7 @@ const HOME_SECTIONS = [
           intro:
             "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
           conditionalFieldHint:
-            "Die Zusatzfragen passen sich an dein gewähltes Leistungsmodell an.",
+            "Wähle eines der drei Angebote. Die nächsten Fragen passen sich daran an.",
           nameLabel: "Name",
           emailLabel: "E-Mail",
           addPageLabel: "Seite hinzufügen",
@@ -1045,9 +1048,9 @@ const HOME_SECTIONS = [
           companyLabel: "Unternehmen",
           roleLabel: "Rolle",
           websiteLabel: "Aktuelle Webseite",
-          offerLabel: "Passendes Leistungsmodell",
-          offerPlaceholder: "Leistungsmodell wählen",
-          goalLabel: "Hauptziel der Landingpage",
+          offerLabel: "Passendes Angebot",
+          offerPlaceholder: "Angebot wählen",
+          goalLabel: "Ziel des Webauftritts",
           goalOptions: [
             {
               key: CONTACT_GOAL_KEY.GenerateInquiries,
@@ -1064,7 +1067,7 @@ const HOME_SECTIONS = [
             },
             { key: CONTACT_GOAL_KEY.OtherGoal, label: "Anderes Ziel" },
           ],
-          pagesLabel: "Benötigte Seiten",
+          pagesLabel: "Umfang und benötigte Seiten",
           pagesPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesOptions: [
             { key: CONTACT_PAGE_KEY.Home, label: "Start" },
@@ -1080,7 +1083,24 @@ const HOME_SECTIONS = [
           pagesCustomRemoveLabel: "Seite entfernen",
           pagesRequiredHint:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          workflowLabel: "Art des Vorhabens",
+          offerGuidance: [
+            {
+              key: CONTACT_OFFER_KEY.Landing,
+              label:
+                "Für Landingpages, neue Websites, Relaunches oder gezielte Verbesserungen bestehender Seiten.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Process,
+              label:
+                "Für wiederkehrende Abläufe: vom Custom KI-Skill bis zur individuellen Softwarelösung.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Maintenance,
+              label:
+                "Für bestehende Websites, Tools oder laufende Änderungen nach dem Launch.",
+            },
+          ],
+          workflowLabel: "Wiederkehrender Prozess oder Workflow",
           workflowOptions: [
             {
               key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
@@ -1153,6 +1173,23 @@ const HOME_SECTIONS = [
           projectDetailsLabel: "Projektziel und Anforderungen",
           projectDetailsPlaceholder:
             "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
+          projectDetailsPlaceholders: [
+            {
+              key: CONTACT_OFFER_KEY.Landing,
+              label:
+                "Beschreibe Angebot, Zielgruppe, Ziel der Seite, vorhandene Inhalte und was am aktuellen Auftritt besser werden soll.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Process,
+              label:
+                "Beschreibe den wiederkehrenden Ablauf, heutige Tools, manuelle Schritte und ob eher ein Custom KI-Skill oder eine Softwarelösung naheliegt.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Maintenance,
+              label:
+                "Beschreibe bestehendes Projekt, gewünschte Änderung, Wartungsbedarf, Dringlichkeit und bekannte technische Rahmenbedingungen.",
+            },
+          ],
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
           privacyLabel: "Datenschutzerklärung zu.",
           submitLabel: "Anfrage senden",
@@ -1176,7 +1213,7 @@ const HOME_SECTIONS = [
           fieldErrorPagesRequired:
             "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
           fieldErrorTooManyPages: "Bitte füge maximal 12 eigene Seiten hinzu.",
-          fieldErrorGoalRequired: "Bitte wähle ein Ziel für die Landingpage.",
+          fieldErrorGoalRequired: "Bitte wähle ein Ziel für den Webauftritt.",
           fieldErrorWorkflowRequired: "Bitte wähle die Art des Vorhabens.",
           fieldErrorConsentRequired:
             "Bitte bestätige die Datenschutzerklärung.",
@@ -1290,7 +1327,7 @@ const HOME_SECTIONS = [
           intro:
             "Share the key facts. You get a clear view on scope, timing, and budget range.",
           conditionalFieldHint:
-            "The follow-up questions adapt to your selected service model.",
+            "Choose one of the three offers. The next questions adapt to it.",
           nameLabel: "Name",
           emailLabel: "Email",
           addPageLabel: "Add page",
@@ -1298,9 +1335,9 @@ const HOME_SECTIONS = [
           companyLabel: "Company",
           roleLabel: "Role",
           websiteLabel: "Current website",
-          offerLabel: "Relevant service model",
-          offerPlaceholder: "Choose a service model",
-          goalLabel: "Primary landing page goal",
+          offerLabel: "Relevant offer",
+          offerPlaceholder: "Choose an offer",
+          goalLabel: "Goal of the web presence",
           goalOptions: [
             {
               key: CONTACT_GOAL_KEY.GenerateInquiries,
@@ -1317,7 +1354,7 @@ const HOME_SECTIONS = [
             },
             { key: CONTACT_GOAL_KEY.OtherGoal, label: "Other goal" },
           ],
-          pagesLabel: "Required pages",
+          pagesLabel: "Scope and required pages",
           pagesPlaceholder: "e.g. Team, FAQ, Careers",
           pagesOptions: [
             { key: CONTACT_PAGE_KEY.Home, label: "Home" },
@@ -1332,7 +1369,24 @@ const HOME_SECTIONS = [
           pagesCustomPlaceholder: "e.g. Sponsors",
           pagesCustomRemoveLabel: "Remove page",
           pagesRequiredHint: "Please select at least one page or add your own.",
-          workflowLabel: "Type of request",
+          offerGuidance: [
+            {
+              key: CONTACT_OFFER_KEY.Landing,
+              label:
+                "For landing pages, new websites, relaunches, or focused improvements to existing sites.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Process,
+              label:
+                "For recurring workflows: from a custom AI skill to a bespoke software solution.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Maintenance,
+              label:
+                "For existing websites, tools, or ongoing changes after launch.",
+            },
+          ],
+          workflowLabel: "Recurring process or workflow",
           workflowOptions: [
             {
               key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
@@ -1393,6 +1447,23 @@ const HOME_SECTIONS = [
           projectDetailsLabel: "Notes, requirements, and project description",
           projectDetailsPlaceholder:
             "Describe your goal, audience, timeline, key pages/features, and available assets.",
+          projectDetailsPlaceholders: [
+            {
+              key: CONTACT_OFFER_KEY.Landing,
+              label:
+                "Describe the offer, audience, page goal, available content, and what should improve in the current presence.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Process,
+              label:
+                "Describe the recurring workflow, current tools, manual steps, and whether a custom AI skill or software solution seems more likely.",
+            },
+            {
+              key: CONTACT_OFFER_KEY.Maintenance,
+              label:
+                "Describe the existing project, requested change, maintenance need, urgency, and known technical context.",
+            },
+          ],
           consentLabel:
             "I agree to the processing of my information according to the",
           privacyLabel: "privacy policy.",
@@ -1417,7 +1488,7 @@ const HOME_SECTIONS = [
           fieldErrorPagesRequired:
             "Please select at least one page or add your own.",
           fieldErrorTooManyPages: "Please add no more than 12 custom pages.",
-          fieldErrorGoalRequired: "Please select a landing page goal.",
+          fieldErrorGoalRequired: "Please select a goal for the web presence.",
           fieldErrorWorkflowRequired: "Please select the type of request.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",
           requiredHint: "* Required fields",

@@ -22,6 +22,7 @@ import {
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
 import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
+import { CANONICAL_CONTACT_OFFER_KEY_BY_GROUP } from "@/common/constants/marketing";
 
 type HomeSectionsRendererProps = {
   landingPageServiceHref: string;
@@ -165,15 +166,34 @@ export function HomeSectionsRenderer({
           }
 
           if (section.id === CONTACT_SECTION_ID) {
-            const contactFormOffers = servicesSection.serviceCards.map(
-              (card) => ({
-                key: card.key,
-                title: card.title,
-              }),
+            const contactFormOfferKeys = Object.values(
+              CANONICAL_CONTACT_OFFER_KEY_BY_GROUP,
+            );
+            const contactFormOffers = contactFormOfferKeys.flatMap(
+              (offerKey) => {
+                const card = servicesSection.serviceCards.find(
+                  (serviceCard) => serviceCard.key === offerKey,
+                );
+
+                return card
+                  ? [
+                      {
+                        key: card.key,
+                        title: card.title,
+                      },
+                    ]
+                  : [];
+              },
             );
             const privacyHref = footerSection.footerLegalLinks.find((link) =>
               /privacy|datenschutz/i.test(link.label),
             )?.href;
+
+            if (contactFormOffers.length !== contactFormOfferKeys.length) {
+              throw new Error(
+                "Expected contact form offer cards to be available.",
+              );
+            }
 
             if (!privacyHref) {
               throw new Error("Expected footer privacy link for contact form.");

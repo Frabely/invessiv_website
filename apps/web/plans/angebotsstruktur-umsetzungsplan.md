@@ -215,7 +215,7 @@ Status:
   - [`../src/i18n/dictionaries/marketing/home-ui.de.json`](../src/i18n/dictionaries/marketing/home-ui.de.json)
   - [`../src/i18n/dictionaries/marketing/home-ui.en.json`](../src/i18n/dictionaries/marketing/home-ui.en.json)
 
-## Schritt 3: Kontaktformular auf zwei klare Angebote ausrichten
+## Schritt 3: Kontaktformular auf zwei klare Angebote ausrichten ✅ Erledigt
 
 Ziel: Das Formular bleibt dynamisch, fragt aber keine zusätzliche Unterservice-Entscheidung ab.
 
@@ -251,6 +251,18 @@ Tests:
   - Prozessauswahl zeigt Prozess-relevante Felder.
   - Supportauswahl zeigt Support-relevante Felder.
   - Es existiert kein erforderliches Unterservice-Feld.
+
+Status:
+
+- Erledigt.
+- Relevante Umsetzung:
+  - [
+    `../src/components/marketing/home/home-sections-renderer.tsx`](../src/components/marketing/home/home-sections-renderer.tsx)
+  - [
+    `../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.tsx`](../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.tsx)
+  - [
+    `../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.test.tsx`](../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.test.tsx)
+  - [`../src/i18n/dictionaries/marketing/home.ts`](../src/i18n/dictionaries/marketing/home.ts)
 
 ## Schritt 4: Validation, Mail und Persistenz kompatibel prüfen
 

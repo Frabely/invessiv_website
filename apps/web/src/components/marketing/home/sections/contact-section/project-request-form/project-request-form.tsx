@@ -24,7 +24,15 @@ import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/s
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
-import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
+import {
+  getCanonicalContactOfferKey,
+  PROJECT_OFFER_CHANGE_EVENT,
+} from "@/common/constants/marketing";
+import {
+  CONTACT_OFFER_KEY,
+  CONTACT_OFFER_KEYS,
+  type ContactOfferKey,
+} from "@invessiv/common/constants/contact/contact-offer-keys";
 import styles from "./project-request-form.module.css";
 
 const CONTACT_PROJECT_LINK_SELECTOR = `a[href='${SECTION_HREFS.contact}'][data-project-offer]`;
@@ -56,10 +64,12 @@ export type ContactFormCopy = {
   pagesOptions?: FormOption[];
   pagesPlaceholder: string;
   pagesRequiredHint?: string;
+  offerGuidance?: FormOption[];
   phoneLabel: string;
   previousStepLabel: string;
   projectDetailsLabel: string;
   projectDetailsPlaceholder: string;
+  projectDetailsPlaceholders?: FormOption[];
   requiredHint: string;
   roleLabel: string;
   startLabel: string;
@@ -109,6 +119,9 @@ type ProjectOfferSyncDetail = {
   offerKey?: string;
   projectGoal?: string;
 };
+
+const isContactOfferKey = (value: string): value is ContactOfferKey =>
+  CONTACT_OFFER_KEYS.includes(value as ContactOfferKey);
 
 export function ProjectRequestForm({
   formCopy,
@@ -183,18 +196,45 @@ export function ProjectRequestForm({
   const pagesCustomFieldClassName = `${styles.pagesCustom}`;
 
   const fieldRules = useMemo(() => {
-    const websiteRequiredKeys = ["upgrade", "maintenance"];
+    const webOfferKeys: ContactOfferKey[] = [
+      CONTACT_OFFER_KEY.Landing,
+      CONTACT_OFFER_KEY.Web,
+      CONTACT_OFFER_KEY.Upgrade,
+    ];
+    const websiteRequiredKeys: ContactOfferKey[] = [
+      CONTACT_OFFER_KEY.Upgrade,
+      CONTACT_OFFER_KEY.Maintenance,
+    ];
+    const isWebOffer = webOfferKeys.includes(
+      selectedOfferKey as ContactOfferKey,
+    );
+
     return {
-      requiresGoal: selectedOfferKey === "landing",
-      requiresPages: selectedOfferKey === "web",
-      requiresWebsite: websiteRequiredKeys.includes(selectedOfferKey),
+      requiresGoal: isWebOffer,
+      requiresPages: isWebOffer,
+      requiresWebsite: websiteRequiredKeys.includes(
+        selectedOfferKey as ContactOfferKey,
+      ),
       showsWebsite:
-        selectedOfferKey === "landing" ||
-        selectedOfferKey === "web" ||
-        websiteRequiredKeys.includes(selectedOfferKey),
-      requiresWorkflow: selectedOfferKey === "process",
+        isWebOffer ||
+        websiteRequiredKeys.includes(selectedOfferKey as ContactOfferKey),
+      requiresWorkflow: selectedOfferKey === CONTACT_OFFER_KEY.Process,
     };
   }, [selectedOfferKey]);
+
+  const getOptionLabel = useCallback(
+    (options: FormOption[] | undefined, optionKey: string | undefined) =>
+      options?.find((option) => option.key === optionKey)?.label,
+    [],
+  );
+
+  const selectedOfferGuidance = getOptionLabel(
+    formCopy.offerGuidance,
+    selectedOfferKey,
+  );
+  const projectDetailsPlaceholder =
+    getOptionLabel(formCopy.projectDetailsPlaceholders, selectedOfferKey) ??
+    formCopy.projectDetailsPlaceholder;
 
   const getValidOfferKey = useCallback(
     (value: string | null | undefined) => {
@@ -203,8 +243,12 @@ export function ProjectRequestForm({
       }
 
       const normalizedValue = value.toLowerCase();
-      return offerOptions.some((option) => option.key === normalizedValue)
-        ? normalizedValue
+      const canonicalOfferKey = isContactOfferKey(normalizedValue)
+        ? getCanonicalContactOfferKey(normalizedValue)
+        : normalizedValue;
+
+      return offerOptions.some((option) => option.key === canonicalOfferKey)
+        ? canonicalOfferKey
         : "";
     },
     [offerOptions],
@@ -369,24 +413,33 @@ export function ProjectRequestForm({
       setValue("offerKey", nextOfferKey, { shouldDirty: true });
       setStatusMessage(null);
 
-      if (nextOfferKey !== "landing") {
+      if (nextOfferKey !== CONTACT_OFFER_KEY.Landing) {
         setValue("goalKey", "");
         clearErrors("goalKey");
       }
 
-      if (nextOfferKey !== "process") {
+      if (nextOfferKey !== CONTACT_OFFER_KEY.Process) {
         setValue("workflowKey", "");
         clearErrors("workflowKey");
       }
 
-      if (nextOfferKey !== "web") {
+      if (nextOfferKey !== CONTACT_OFFER_KEY.Landing) {
         setValue("pageKeys", []);
         setValue("customPageNames", []);
         setCustomPageDraft("");
         clearErrors("pageKeys");
       }
 
-      if (!["upgrade", "web", "maintenance"].includes(nextOfferKey)) {
+      if (
+        !(
+          [
+            CONTACT_OFFER_KEY.Landing,
+            CONTACT_OFFER_KEY.Web,
+            CONTACT_OFFER_KEY.Upgrade,
+            CONTACT_OFFER_KEY.Maintenance,
+          ] as ContactOfferKey[]
+        ).includes(nextOfferKey as ContactOfferKey)
+      ) {
         clearErrors("website");
       }
     },
@@ -831,6 +884,10 @@ export function ProjectRequestForm({
               />
             ) : null}
 
+            {selectedOfferGuidance ? (
+              <p className={styles.conditionalHint}>{selectedOfferGuidance}</p>
+            ) : null}
+
             {fieldRules.requiresGoal ? (
               <FormField
                 errorMessage={
@@ -986,7 +1043,7 @@ export function ProjectRequestForm({
                     value.trim().length > 0 || "project_details_required",
                 }),
                 "aria-invalid": errors.projectDetails ? "true" : undefined,
-                placeholder: formCopy.projectDetailsPlaceholder,
+                placeholder: projectDetailsPlaceholder,
                 rows: 5,
               }}
             />
