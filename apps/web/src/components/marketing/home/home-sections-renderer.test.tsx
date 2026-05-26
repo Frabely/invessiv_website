@@ -30,7 +30,7 @@ afterEach(() => {
 const sections = getHomeSections("de");
 
 describe("HomeSectionsRenderer", () => {
-  it("passes the five active offer options into the project request select", () => {
+  it("passes the three canonical offer options into the project request select", () => {
     render(
       <HomeSectionsRenderer
         landingPageServiceHref="/de/services/landing-page"
@@ -47,15 +47,11 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const offerSelect = screen.getByRole("combobox", {
-      name: /Passendes Leistungsmodell\s*\*/,
+      name: /Passendes Angebot\s*\*/,
     });
 
     expect(
       screen.getByRole("option", { name: "Webauftritt & Landingpages" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("option", { name: "Webseite" })).toBeTruthy();
-    expect(
-      screen.getByRole("option", { name: "Webseiten-Upgrade" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Wartung & Support" }),
@@ -65,6 +61,8 @@ describe("HomeSectionsRenderer", () => {
         name: "Prozessoptimierung & digitale Workflows",
       }),
     ).toBeTruthy();
+    expect(offerSelect.textContent).not.toContain("Webseite");
+    expect(offerSelect.textContent).not.toContain("Webseiten-Upgrade");
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
   });
 

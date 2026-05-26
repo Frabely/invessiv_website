@@ -311,7 +311,7 @@ Status:
   - [
     `../src/i18n/dictionaries/mail/contact-notification/en.json`](../src/i18n/dictionaries/mail/contact-notification/en.json)
 
-## Schritt 5: Workspace-Leads nur bei Bedarf anfassen
+## Schritt 5: Workspace-Leads nur bei Bedarf anfassen ✅ Erledigt
 
 Ziel: Die Leadverwaltung bleibt kompatibel und zeigt keine veraltete Angebotslogik, falls Offer-Labels dort sichtbar
 sind.
@@ -331,7 +331,18 @@ Review-Grenze:
 - Nur Label-/Anzeigeanpassungen im Workspace.
 - Keine Workspace-Architekturänderung.
 
-## Schritt 6: Qualitätssicherung und Abschluss
+Status:
+
+- Erledigt, keine Code-Änderung notwendig.
+- Prüfung in `apps/workspace`:
+  - `offer_key` wird aktuell nicht in Workspace-DTOs für `LeadSummaryDto` oder `LeadDetailDto` übertragen.
+  - Die Detailansicht zeigt nur allgemeine Submission-Daten (`channel`, Zeitpunkte, Request-ID), aber keine
+    `lead_project_requests.offer_key`-Details.
+  - Es existiert kein sichtbares lokales Offer-Label-Mapping für `landing`, `web`, `upgrade`, `process` oder
+    `maintenance` im Workspace.
+- Deshalb keine Workspace-Label- oder Architekturänderung vorgenommen.
+
+## Schritt 6: Qualitätssicherung und Abschluss ✅ Erledigt
 
 Ausführen:
 
@@ -349,6 +360,20 @@ Zusätzliche Checks:
 - Services Section bleibt visuell kompakt.
 - Keine neue DB-Migration wurde eingeführt.
 - Keine Unterservice-Pflichtauswahl wurde eingeführt.
+
+Status:
+
+- Erledigt.
+- Ausgeführt:
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npm run test`
+  - `npm run build`
+- Zusätzliche Prüfung:
+  - keine neue DB-Migration
+  - kein neues `offerDetailKey`
+  - keine Unterservice-Pflichtauswahl
+  - Full-Suite-Testabgleich für veraltete Angebotsauswahl-Erwartungen
 
 ## Nicht-Ziele
 

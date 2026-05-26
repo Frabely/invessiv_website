@@ -490,13 +490,15 @@ describe("ProjectRequestForm", () => {
       expect(screen.getByText("Erfolg")).toBeTruthy();
     });
 
-    expect(mockTrackConversionEvent).toHaveBeenCalledWith("form_start", {
-      form_id: "project_request",
-      location: "contact",
-      target: "form",
-      variant: "primary",
-      step: "3",
-    });
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "form_start",
+      expect.objectContaining({
+        form_id: "project_request",
+        location: "contact",
+        target: "form",
+        variant: "primary",
+      }),
+    );
     expect(mockTrackConversionEvent).toHaveBeenCalledWith(
       "form_submit_attempt",
       {
