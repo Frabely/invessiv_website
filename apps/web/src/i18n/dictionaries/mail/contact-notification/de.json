@@ -36,11 +36,11 @@
           "sell_product": "Produkt verkaufen"
         },
         "offerKey": {
-          "landing": "Landingpages",
+          "landing": "Webauftritt & Landingpages",
           "maintenance": "Wartung & Support",
-          "process": "Interne Tools",
-          "upgrade": "Webseiten-Upgrade",
-          "web": "Webseiten"
+          "process": "Prozessoptimierung & digitale Workflows",
+          "upgrade": "Webauftritt & Landingpages",
+          "web": "Webauftritt & Landingpages"
         },
         "pageKeys": {
           "about": "Über uns",

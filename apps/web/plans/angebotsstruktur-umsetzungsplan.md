@@ -264,7 +264,7 @@ Status:
     `../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.test.tsx`](../src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.test.tsx)
   - [`../src/i18n/dictionaries/marketing/home.ts`](../src/i18n/dictionaries/marketing/home.ts)
 
-## Schritt 4: Validation, Mail und Persistenz kompatibel prüfen
+## Schritt 4: Validation, Mail und Persistenz kompatibel prüfen ✅ Erledigt
 
 Ziel: Die neue UI bricht keine bestehenden Payloads und keine Lead-Persistenz.
 
@@ -294,6 +294,22 @@ Tests:
   - alle bestehenden Offer-Keys bleiben gültig.
   - neue Webauswahl über `landing` funktioniert mit den erwarteten Feldern.
 - Mail-/Mapper-Test, falls vorhandene Tests die Offer-Labels oder Payload-Aufbereitung abdecken.
+
+Status:
+
+- Erledigt.
+- DTO und DB-Schema bleiben unverändert.
+- Persistenz-Mapping bleibt kompatibel und speichert `offerKey`, `pageKeys`, `customPageNames`, `goalKey`, `website` und
+  `workflowKey` weiterhin unverändert.
+- Relevante Umsetzung:
+  - [
+    `../src/server/contact/validation/project-request/project-request.schema.test.ts`](../src/server/contact/validation/project-request/project-request.schema.test.ts)
+  - [
+    `../src/server/services/mail/templates/contact-notification.test.ts`](../src/server/services/mail/templates/contact-notification.test.ts)
+  - [
+    `../src/i18n/dictionaries/mail/contact-notification/de.json`](../src/i18n/dictionaries/mail/contact-notification/de.json)
+  - [
+    `../src/i18n/dictionaries/mail/contact-notification/en.json`](../src/i18n/dictionaries/mail/contact-notification/en.json)
 
 ## Schritt 5: Workspace-Leads nur bei Bedarf anfassen
 

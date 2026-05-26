@@ -36,11 +36,11 @@
           "sell_product": "Sell a product"
         },
         "offerKey": {
-          "landing": "Landing pages",
+          "landing": "Web presence & landing pages",
           "maintenance": "Maintenance & Support",
-          "process": "Internal tools",
-          "upgrade": "Website upgrade",
-          "web": "Websites"
+          "process": "Process optimization & digital workflows",
+          "upgrade": "Web presence & landing pages",
+          "web": "Web presence & landing pages"
         },
         "pageKeys": {
           "about": "About",
