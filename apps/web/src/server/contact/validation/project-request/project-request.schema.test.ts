@@ -75,6 +75,16 @@ describe("projectRequestSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts early web requests without a page idea", () => {
+    const result = projectRequestSchema.safeParse({
+      ...basePayload,
+      goalKey: CONTACT_GOAL_KEY.GenerateInquiries,
+      offerKey: CONTACT_OFFER_KEY.Landing,
+    });
+
+    expect(result.success).toBe(true);
+  });
+
   it("rejects invalid legacy web payloads without pages", () => {
     const result = projectRequestSchema.safeParse({
       ...basePayload,

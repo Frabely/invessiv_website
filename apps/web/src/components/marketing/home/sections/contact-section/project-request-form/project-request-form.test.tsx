@@ -65,6 +65,8 @@ const formCopyFixture = {
     { key: "contact", label: "Kontakt" },
     { key: "careers", label: "Karriere" },
   ],
+  pagesHint:
+    "Falls du noch nicht sicher bist, klären wir den sinnvollen Umfang gemeinsam.",
   pagesPlaceholder: "Start, Kontakt",
   pagesRequiredHint: "Bitte mindestens eine Seite wählen.",
   phoneLabel: "Telefon",
@@ -207,7 +209,7 @@ describe("ProjectRequestForm", () => {
     });
   });
 
-  it("requires at least one selected page in step two for web projects", async () => {
+  it("keeps the page idea optional for web projects", async () => {
     renderForm();
 
     fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
@@ -226,6 +228,14 @@ describe("ProjectRequestForm", () => {
       expect(screen.getByText("Web-Hinweis")).toBeTruthy();
     });
 
+    expect(
+      screen.getByText(
+        "Falls du noch nicht sicher bist, klären wir den sinnvollen Umfang gemeinsam.",
+      ),
+    ).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Noch unsicher" })).toBeNull();
+    expect(screen.getByText("Seiten")).toBeTruthy();
+
     fireEvent.change(screen.getByRole("textbox", { name: "Webseite" }), {
       target: { value: "https://example.com" },
     });
@@ -238,18 +248,6 @@ describe("ProjectRequestForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
 
-    await waitFor(() => {
-      expect(screen.getAllByRole("alert").length).toBeGreaterThan(0);
-    });
-    expect(
-      screen.getByText("Bitte mindestens eine Seite wählen."),
-    ).toBeTruthy();
-
-    fireEvent.change(screen.getByPlaceholderText("z. B. Sponsoren"), {
-      target: { value: "Sponsoren" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Seite hinzufügen" }));
-    fireEvent.click(screen.getByRole("button", { name: "Weiter zu Rahmen" }));
     await waitFor(() => {
       expect(screen.getByRole("checkbox")).toBeTruthy();
     });

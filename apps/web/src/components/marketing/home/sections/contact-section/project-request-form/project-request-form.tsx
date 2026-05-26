@@ -60,6 +60,7 @@ export type ContactFormCopy = {
   pagesCustomLabel?: string;
   pagesCustomPlaceholder?: string;
   pagesCustomRemoveLabel?: string;
+  pagesHint?: string;
   pagesLabel: string;
   pagesOptions?: FormOption[];
   pagesPlaceholder: string;
@@ -211,10 +212,11 @@ export function ProjectRequestForm({
 
     return {
       requiresGoal: isWebOffer,
-      requiresPages: isWebOffer,
+      requiresPages: selectedOfferKey === CONTACT_OFFER_KEY.Web,
       requiresWebsite: websiteRequiredKeys.includes(
         selectedOfferKey as ContactOfferKey,
       ),
+      showsPages: isWebOffer,
       showsWebsite:
         isWebOffer ||
         websiteRequiredKeys.includes(selectedOfferKey as ContactOfferKey),
@@ -910,11 +912,17 @@ export function ProjectRequestForm({
               />
             ) : null}
 
-            {fieldRules.requiresPages ? (
+            {fieldRules.showsPages ? (
               <div className={styles.pages} tabIndex={-1}>
                 <p className={styles.pagesLabel}>
-                  <FormFieldLabel label={formCopy.pagesLabel} required />
+                  <FormFieldLabel
+                    label={formCopy.pagesLabel}
+                    required={fieldRules.requiresPages}
+                  />
                 </p>
+                {formCopy.pagesHint ? (
+                  <p className={styles.conditionalHint}>{formCopy.pagesHint}</p>
+                ) : null}
                 <div className={styles.pagesOptions}>
                   {formCopy.pagesOptions?.map((option) => {
                     const isSelected = selectedPageKeys.includes(option.key);

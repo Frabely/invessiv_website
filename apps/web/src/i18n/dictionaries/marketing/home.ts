@@ -173,6 +173,7 @@ export type ContactFormCopy = {
   pagesCustomLabel?: string;
   pagesCustomPlaceholder?: string;
   pagesCustomRemoveLabel?: string;
+  pagesHint?: string;
   pagesRequiredHint?: string;
   offerGuidance?: ContactFormOption[];
   workflowLabel: string;
@@ -1067,7 +1068,7 @@ const HOME_SECTIONS = [
             },
             { key: CONTACT_GOAL_KEY.OtherGoal, label: "Anderes Ziel" },
           ],
-          pagesLabel: "Umfang und benötigte Seiten",
+          pagesLabel: "Grobe Seitenidee",
           pagesPlaceholder: "z. B. Team, FAQ, Karriere",
           pagesOptions: [
             { key: CONTACT_PAGE_KEY.Home, label: "Start" },
@@ -1078,6 +1079,8 @@ const HOME_SECTIONS = [
             { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
             { key: CONTACT_PAGE_KEY.LandingPage, label: "Landingpage" },
           ],
+          pagesHint:
+            "Falls du noch nicht sicher bist, klären wir den sinnvollen Umfang gemeinsam.",
           pagesCustomLabel: "Weitere Seite hinzufügen",
           pagesCustomPlaceholder: "z. B. Sponsoren",
           pagesCustomRemoveLabel: "Seite entfernen",
@@ -1354,7 +1357,7 @@ const HOME_SECTIONS = [
             },
             { key: CONTACT_GOAL_KEY.OtherGoal, label: "Other goal" },
           ],
-          pagesLabel: "Scope and required pages",
+          pagesLabel: "Rough page idea",
           pagesPlaceholder: "e.g. Team, FAQ, Careers",
           pagesOptions: [
             { key: CONTACT_PAGE_KEY.Home, label: "Home" },
@@ -1365,6 +1368,8 @@ const HOME_SECTIONS = [
             { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
             { key: CONTACT_PAGE_KEY.LandingPage, label: "Landing page" },
           ],
+          pagesHint:
+            "If you are not sure yet, we will clarify the useful scope together.",
           pagesCustomLabel: "Add another page",
           pagesCustomPlaceholder: "e.g. Sponsors",
           pagesCustomRemoveLabel: "Remove page",
