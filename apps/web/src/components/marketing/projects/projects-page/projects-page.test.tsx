@@ -117,7 +117,7 @@ describe("ProjectsPage", () => {
               "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
             supportingText:
               "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build.",
-            primaryLabel: "Projekt anfragen",
+            primaryLabel: "Angebot einschätzen lassen",
             primaryHref: "/de#contact",
             secondaryLabel: "Leistungsmodelle",
             secondaryHref: "/de#services",
@@ -153,7 +153,7 @@ describe("ProjectsPage", () => {
       "https://consumption-trial.invessiv.com/",
     );
     expect(
-      screen.getByRole("link", { name: "Projekt anfragen" }),
+      screen.getByRole("link", { name: "Angebot einschätzen lassen" }),
     ).toHaveAttribute("href", "/de#contact");
     expect(screen.getByTestId("footer-section")).toBeInTheDocument();
   });

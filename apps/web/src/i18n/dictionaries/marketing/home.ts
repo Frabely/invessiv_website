@@ -802,7 +802,7 @@ const HOME_SECTIONS = [
           },
         ],
         processCta: {
-          label: "Projekt & Umfang anfragen",
+          label: "Angebot einschätzen lassen",
           href: SECTION_HREFS.contact,
         },
       },
@@ -854,7 +854,7 @@ const HOME_SECTIONS = [
           },
         ],
         processCta: {
-          label: "Request project & outline",
+          label: "Get an offer estimate",
           href: SECTION_HREFS.contact,
         },
       },
@@ -878,7 +878,7 @@ const HOME_SECTIONS = [
             answer:
               "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung. Für klassische Einzel-Landingpages gibt es einen eigenen Ablauf auf der Landingpage-Detailseite.",
             link: {
-              label: "Landingpage-Detailseite ansehen",
+              label: "Mehr zu Landingpages",
               href: SITE_ROUTES.LANDING_PAGE_SERVICE,
             },
           },

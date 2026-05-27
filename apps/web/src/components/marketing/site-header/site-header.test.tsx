@@ -85,7 +85,9 @@ describe("SiteHeader", () => {
 
     expect(screen.getAllByText("Einstieg").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Leistungsmodelle").length).toBeGreaterThan(0);
-    expect(screen.getAllByText("Projekt anfragen").length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText("Angebot einschätzen lassen").length,
+    ).toBeGreaterThan(0);
     expect(screen.getByTestId("reading-progress")).toBeTruthy();
   });
 

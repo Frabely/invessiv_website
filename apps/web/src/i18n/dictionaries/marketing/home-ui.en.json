@@ -1,5 +1,5 @@
 {
-  "heroPrimaryCta": "Request project",
+  "heroPrimaryCta": "Get an offer estimate",
   "heroSecondaryCta": "Find the right service",
   "heroTag": "MORE INQUIRIES, SIMPLER PROCESSES",
   "heroVisualAriaLabel": "Live performance snapshot",
@@ -45,12 +45,12 @@
       "serviceKey": "process"
     }
   ],
-  "servicesPrimaryCta": "Get offer guidance",
+  "servicesPrimaryCta": "Get an offer estimate",
   "servicesPrimaryCtaLabels": {
-    "landing": "Get offer guidance",
-    "web": "Request project",
-    "process": "Get offer guidance",
-    "upgrade": "Request upgrade",
+    "landing": "Get an offer estimate",
+    "web": "Get an offer estimate",
+    "process": "Get an offer estimate",
+    "upgrade": "Get an offer estimate",
     "maintenance": "Request maintenance & support"
   },
   "servicesDetailPageCta": "More about landing pages",

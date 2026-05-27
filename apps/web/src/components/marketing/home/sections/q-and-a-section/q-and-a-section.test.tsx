@@ -22,7 +22,7 @@ describe("QAndASection", () => {
               "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
             link: {
               href: "/de/services/landing-page",
-              label: "Landingpage-Detailseite ansehen",
+              label: "Mehr zu Landingpages",
             },
           },
           {
@@ -62,7 +62,7 @@ describe("QAndASection", () => {
               "Kickoff erfolgt nach der Rahmen-Abstimmung mit klarem Zeitplan.",
             link: {
               href: "/de/services/landing-page",
-              label: "Landingpage-Detailseite ansehen",
+              label: "Mehr zu Landingpages",
             },
           },
           {
@@ -91,7 +91,7 @@ describe("QAndASection", () => {
     expect(secondCard.getAttribute("aria-expanded")).toBe("false");
     expect(
       screen
-        .getByRole("link", { name: "Landingpage-Detailseite ansehen" })
+        .getByRole("link", { name: "Mehr zu Landingpages" })
         .getAttribute("href"),
     ).toBe("/de/services/landing-page");
 
@@ -100,7 +100,7 @@ describe("QAndASection", () => {
     expect(secondCard.getAttribute("aria-expanded")).toBe("true");
     expect(
       screen.queryByRole("link", {
-        name: "Landingpage-Detailseite ansehen",
+        name: "Mehr zu Landingpages",
       }),
     ).toBeNull();
 

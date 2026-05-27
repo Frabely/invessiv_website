@@ -1,5 +1,5 @@
 {
-  "heroPrimaryCta": "Projekt anfragen",
+  "heroPrimaryCta": "Angebot einschätzen lassen",
   "heroSecondaryCta": "Leistung passend einschätzen",
   "heroTag": "MEHR ANFRAGEN, EINFACHERE PROZESSE",
   "heroVisualAriaLabel": "Live Performance Einblick",
@@ -48,9 +48,9 @@
   "servicesPrimaryCta": "Angebot einschätzen lassen",
   "servicesPrimaryCtaLabels": {
     "landing": "Angebot einschätzen lassen",
-    "web": "Projekt anfragen",
+    "web": "Angebot einschätzen lassen",
     "process": "Angebot einschätzen lassen",
-    "upgrade": "Upgrade anfragen",
+    "upgrade": "Angebot einschätzen lassen",
     "maintenance": "Wartung & Support anfragen"
   },
   "servicesDetailPageCta": "Mehr zu Landingpages",
