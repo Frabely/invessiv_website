@@ -849,6 +849,7 @@
 
   .activeAside .actionRow {
     width: 100%;
+    align-items: center;
   }
 
   .serviceRow {
@@ -870,6 +871,11 @@
   .activeAside .primaryCta {
     width: 100%;
     justify-content: center;
+  }
+
+  .actionRow > a:not(.primaryCta) {
+    justify-content: center;
+    text-align: center;
   }
 
   .maintenanceCard {
