@@ -37,6 +37,10 @@ export function SelectedService({
 }: SelectedServiceProps) {
   const selectedDeliveryLabel =
     selectedCard.deliveryLabel ?? defaultDeliveryLabel;
+  const selectedTitle = selectedCard.title.replace(
+    "Prozessoptimierung",
+    "Prozess\u00ADoptimierung",
+  );
   const selectedDescription = selectedCard.description;
   const detailItems = selectedCard.details ?? [];
   const timelineItems =
@@ -60,7 +64,7 @@ export function SelectedService({
             <p className={styles.activeEyebrow}>{recommendedBadgeLabel}</p>
             <h3 className={styles.activeTitle}>
               <span>
-                {selectedCard.title}
+                {selectedTitle}
                 <span aria-hidden="true" className={styles.titleDot}>
                   .
                 </span>

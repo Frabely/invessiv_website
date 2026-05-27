@@ -201,7 +201,7 @@ describe("ServicesSection", () => {
     expect(activeService.getAttribute("data-card-key")).toBe("process");
     expect(
       within(activeService).getByText(
-        "Prozessoptimierung & digitale Workflows",
+        "Prozess\u00ADoptimierung & digitale Workflows",
       ),
     ).toBeTruthy();
     expect(
