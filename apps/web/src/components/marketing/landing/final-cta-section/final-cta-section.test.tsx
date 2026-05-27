@@ -61,7 +61,7 @@ describe("FinalCtaSection", () => {
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Kostenlosen Check anfragen",
+        name: "Anfrage senden",
       }),
     );
 
@@ -73,7 +73,7 @@ describe("FinalCtaSection", () => {
           kind: "quick_contact",
           locale: "de",
           message:
-            "Landingpage-Check Anfrage\n\nWebsite: https://example.com\n\nIch möchte direkt eine neue Landingpage für mein Angebot.",
+            "Landingpage-Anfrage\n\nWebsite: https://example.com\n\nIch möchte direkt eine neue Landingpage für mein Angebot.",
         }),
       );
     });

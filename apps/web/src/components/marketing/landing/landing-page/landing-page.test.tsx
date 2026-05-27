@@ -104,7 +104,7 @@ describe("LandingPage", () => {
       ),
     ).toBeTruthy();
     const audienceCta = screen
-      .getAllByRole("link", { name: "Kostenlosen Check anfragen" })
+      .getAllByRole("link", { name: "Landingpage anfragen" })
       .find((link) => link.dataset.analyticsLocation === "audience");
     expect(audienceCta).toBeTruthy();
     expect(audienceCta!.getAttribute("href")).toBe("#contact");
@@ -120,7 +120,7 @@ describe("LandingPage", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("button", {
-        name: /Kostenlosen Check anfragen/,
+        name: /Anfrage senden/,
       }),
     ).toBeTruthy();
     expect(
@@ -129,7 +129,7 @@ describe("LandingPage", () => {
     const pageFooter = document.getElementById("footer");
     expect(pageFooter).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="#contact"]')?.textContent).toBe(
-      "Kostenlosen Check anfragen",
+      "Landingpage anfragen",
     );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();

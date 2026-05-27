@@ -1,7 +1,7 @@
 {
   "eyebrow": "Inquire",
   "title": "Tell me briefly about your project.",
-  "body": "The check clarifies your offer, audience, and page structure. Tell me whether to review an existing page or start a new landing page.",
+  "body": "Your inquiry clarifies your offer, audience, and page structure. Tell me whether to review an existing page or start a new landing page.",
   "form": {
     "fields": {
       "name": {
@@ -32,9 +32,9 @@
     "privacyLabel": "Privacy",
     "privacyHref": "/en/privacy",
     "requiredHint": "Required fields are marked with *.",
-    "submitLabel": "Request a free check",
+    "submitLabel": "Send inquiry",
     "submittingLabel": "Sending ...",
-    "payloadContext": "Landing page check inquiry",
+    "payloadContext": "Landing page inquiry",
     "successTitle": "Thanks for your inquiry.",
     "successBody": "I'll get back to you with a short assessment - usually within 24 hours.",
     "errorRequired": "Please fill this in.",
