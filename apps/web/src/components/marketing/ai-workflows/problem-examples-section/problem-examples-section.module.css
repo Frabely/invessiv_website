@@ -142,10 +142,12 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--color-cta);
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--color-cta) 18%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 8%, transparent);
+  background: linear-gradient(
+    135deg,
+    rgba(231, 154, 73, 0.96),
+    rgba(209, 126, 49, 0.9)
+  );
+  box-shadow: 0 0 0 4px rgba(231, 154, 73, 0.14);
   justify-self: center;
   position: relative;
   z-index: 1;
@@ -153,9 +155,7 @@
 }
 
 .examplesItem:hover .itemNode {
-  box-shadow:
-    0 0 0 5px color-mix(in srgb, var(--color-cta) 22%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 10%, transparent);
+  box-shadow: 0 0 0 6px rgba(231, 154, 73, 0.2);
 }
 
 .itemText {
@@ -196,9 +196,8 @@
 
 /* Light theme */
 :global([data-theme="light"]) .examplesItem:hover .itemNode {
-  box-shadow:
-    0 0 0 5px color-mix(in srgb, var(--color-cta) 16%, transparent),
-    0 0 0 1px color-mix(in srgb, var(--color-cta) 8%, transparent);
+  box-shadow: 0 0 0 6px
+    color-mix(in srgb, var(--color-accent-warm) 18%, transparent);
 }
 
 /* Tablet/Mobile */
