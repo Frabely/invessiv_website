@@ -9,6 +9,9 @@
 > **Für agentische Worker:** Bei Copy-Schritten ist `copywriting` Pflicht; bei UI-Schritten ist
 > `frontend-design` Pflicht. Vor Section-/Animationsarbeit müssen `animation_mockups/` und
 > `animation_mockups/effects-catalog.json` geprüft werden.
+>
+> **Commit-Regel:** Commit-Schritte am Ende jeder Task sind **Vorschläge für die Commit-Message**.
+> Der Agent führt **keinen** `git commit` aus — der User reviewed und committet selbst.
 
 ---
 
@@ -153,14 +156,14 @@ Komponenten oder Dictionaries.
   `apps/web/src/config/navigation/linkedin-post.ts`
 - Update: alle Imports in betroffenen Dateien
 
-- [ ] **Step 1:** `SITE_ROUTES` aktualisieren:
+- [x] **Step 1:** `SITE_ROUTES` aktualisieren:
   - `LINKEDIN_POST_SERVICE = "/services/linkedin-post"` (diese Kampagnen-Page)
   - `AI_WORKFLOWS_SERVICE = "/services/ai-workflows"` bleibt reserviert für die allgemeine
     KI-Workflows-Landingpage (eigener Plan)
-- [ ] **Step 2:** Ordner umbenennen (`git mv`), Imports nachziehen.
-- [ ] **Step 3:** Navigation-Config auf neue Route + Section-IDs `problem`, `offer`, `generator` updaten.
-- [ ] **Step 4:** Verify `npm run typecheck` + Route `/de/services/linkedin-post` erreichbar.
-- [ ] **Step 5:** Commit — `refactor(linkedin-post): rename route from ai-workflows`
+- [x] **Step 2:** Ordner umbenennen (`git mv`), Imports nachziehen.
+- [x] **Step 3:** Navigation-Config auf neue Route + Section-IDs `problem`, `offer`, `generator` updaten.
+- [x] **Step 4:** Verify `npm run typecheck` + Route `/de/services/linkedin-post` erreichbar.
+- [x] **Step 5:** Commit — `refactor(linkedin-post): rename route from ai-workflows`
 
 > **Nach diesem Task stoppen** und Ergebnis reviewen, bevor A1 ff. gestartet wird.
 
