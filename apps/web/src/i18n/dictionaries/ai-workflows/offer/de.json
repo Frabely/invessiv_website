@@ -1,41 +1,38 @@
 {
   "eyebrow": "WAS DU BEKOMMST",
   "title": "Ein kostenloser Check. Kein Pitch.",
-  "body": "Du beschreibst deinen aktuellen Content-Prozess. Wir prüfen, ob daraus ein wiederholbarer KI-Workflow werden kann.",
-  "deliverablesHeading": "Was nach dem Check vorliegt",
+  "body": "Du zeigst deinen Prozess. Wir prüfen das KI-Potenzial.",
+  "deliverablesHeading": "Was du nach dem Check hast",
   "deliverables": [
     {
       "label": "Prozessdiagnose",
-      "detail": "Einschätzung, wo dein Workflow heute steht"
+      "detail": "Wo dein Workflow heute steht"
     },
     {
-      "label": "Workflow-Ideen",
-      "detail": "1–2 KI-Content-Szenarien für deinen Kontext"
+      "label": "Workflow-Konzept",
+      "detail": "Wie daraus ein KI-Workflow werden kann"
     },
     {
       "label": "Input-Einschätzung",
-      "detail": "Welche Quellen sich für dich eignen"
-    },
-    {
-      "label": "Pilot-Empfehlung",
-      "detail": "Ob ein Mini-Pilot sinnvoll wäre"
+      "detail": "Welche Eingaben der Workflow braucht"
     },
     {
       "label": "Nächster Schritt",
-      "detail": "Klare Handlungsempfehlung danach"
+      "detail": "Ob ein Pilot sinnvoll ist — und was konkret folgt"
     }
   ],
-  "proofNote": "Wir nutzen denselben Workflow für eigene LinkedIn-Inhalte.",
+  "proofNote": "Wir nutzen denselben Prozess, um KI-Workflows zu erstellen.",
+  "cta": "Content-Workflow prüfen",
   "stepsLabel": "So läuft's ab",
   "steps": [
     {
-      "label": "Prozess beschreiben"
+      "label": "Prozess zeigen"
     },
     {
-      "label": "Ideen erhalten"
+      "label": "Workflow-Potenzial erkennen"
     },
     {
-      "label": "Pilot entscheiden"
+      "label": "Empfehlung erhalten"
     }
   ]
 }

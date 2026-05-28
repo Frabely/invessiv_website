@@ -231,6 +231,8 @@
 
   .title {
     max-width: none;
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    line-height: 1.05;
   }
 
   .examplesItem {

@@ -20,6 +20,7 @@ export type LandingAiOfferContent = {
   proofNote: string;
   stepsLabel: string;
   steps: OfferStep[];
+  cta: string;
 };
 
 const CONTENT: Record<Locale, LandingAiOfferContent> = { de, en };

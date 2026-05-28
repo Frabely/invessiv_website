@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
 import type { LandingAiOfferContent } from "@/i18n/dictionaries/ai-workflows/offer";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -10,6 +11,7 @@ import styles from "./offer-section.module.css";
 type OfferSectionProps = LandingAiOfferContent & {
   id: string;
   locale: Locale;
+  ctaHref: string;
 };
 
 export function OfferSection({
@@ -21,6 +23,8 @@ export function OfferSection({
   deliverablesHeading,
   deliverables,
   proofNote,
+  cta,
+  ctaHref,
   stepsLabel,
   steps,
 }: OfferSectionProps) {
@@ -65,6 +69,10 @@ export function OfferSection({
             </li>
           ))}
         </ol>
+      </div>
+
+      <div className={styles.ctaRow} data-reveal-item="true">
+        <PrimaryCtaLink href={ctaHref}>{cta}</PrimaryCtaLink>
       </div>
     </section>
   );

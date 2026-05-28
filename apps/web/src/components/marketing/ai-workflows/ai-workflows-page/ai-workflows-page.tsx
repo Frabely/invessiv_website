@@ -55,6 +55,7 @@ export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
         <OfferSection
           id={AI_WORKFLOWS_SECTION_HREFS.offer.slice(1)}
           locale={locale}
+          ctaHref={AI_WORKFLOWS_SECTION_HREFS.contact}
           {...offer}
         />
 
