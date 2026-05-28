@@ -4,11 +4,26 @@
   "body": "The idea is set. But turning it into a finished LinkedIn post means going through the same steps every single time.",
   "examplesHeading": "What slows you down every week",
   "examples": [
-    "Writing a hook",
-    "Structuring the post",
-    "Matching caption and CTA",
-    "Finding the right tone",
-    "Keeping a rhythm"
+    {
+      "text": "Writing a hook",
+      "time": "~15 min"
+    },
+    {
+      "text": "Structuring the post",
+      "time": "~10 min"
+    },
+    {
+      "text": "Matching caption and CTA",
+      "time": "~10 min"
+    },
+    {
+      "text": "Finding the right tone",
+      "time": "~8 min"
+    },
+    {
+      "text": "Keeping a rhythm",
+      "time": "every week"
+    }
   ],
   "summary": "The effort isn't in the thinking — it's in the writing."
 }

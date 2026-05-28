@@ -4,11 +4,26 @@
   "body": "Die Idee steht. Aber bis daraus ein fertiger LinkedIn-Post wird, wiederholen sich jedes Mal dieselben Schritte.",
   "examplesHeading": "Was dich jede Woche ausbremst",
   "examples": [
-    "Hook formulieren",
-    "Post strukturieren",
-    "Caption und CTA abstimmen",
-    "Ton treffen",
-    "Rhythmus halten"
+    {
+      "text": "Hook formulieren",
+      "time": "~15 min"
+    },
+    {
+      "text": "Post strukturieren",
+      "time": "~10 min"
+    },
+    {
+      "text": "Caption und CTA abstimmen",
+      "time": "~10 min"
+    },
+    {
+      "text": "Ton treffen",
+      "time": "~8 min"
+    },
+    {
+      "text": "Rhythmus halten",
+      "time": "jede Woche"
+    }
   ],
   "summary": "Der Aufwand liegt nicht im Denken — sondern im Aufschreiben."
 }

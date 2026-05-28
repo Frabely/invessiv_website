@@ -40,9 +40,11 @@ export function ProblemExamplesSection({
             <li
               className={styles.examplesItem}
               data-reveal-item="true"
-              key={example}
+              key={example.text}
             >
-              <span>{example}</span>
+              <span aria-hidden="true" className={styles.itemNode} />
+              <span className={styles.itemText}>{example.text}</span>
+              <span className={styles.itemTime}>{example.time}</span>
             </li>
           ))}
         </ul>
