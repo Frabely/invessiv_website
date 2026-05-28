@@ -1,0 +1,13 @@
+display_name: LinkedIn Post Generator
+short_description: >
+  Generate a single LinkedIn post (1080x1080 PNG + caption.txt +
+  result.json) from a visitor's topic, expertise, tone, and locale.
+  Non-branded; randomly chosen color pair per run (or fixed via --seed).
+  --dry-run skips the PNG render while still writing post.html,
+  caption.txt, and result.json — used by server-side unit tests (B3).
+default_prompt: >
+  Erstelle mir einen LinkedIn-Post.
+  Thema: "Preisgespräche mit Bestandskunden".
+  Rolle/Branche: "Strategieberatung für KMU".
+  Ton: persönlich.
+  Locale: de.

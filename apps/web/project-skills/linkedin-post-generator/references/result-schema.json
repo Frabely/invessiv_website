@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invessiv.com/schemas/linkedin-post-generator/result.json",
+  "title": "LinkedInPostGeneratorResult",
+  "description": "Programmatic output contract for the linkedin-post-generator skill. Always written to result.json in the run folder.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "inputs",
+    "colorPair",
+    "content",
+    "caption",
+    "paths",
+    "render"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "description": "ISO 8601 UTC timestamp, second precision, no milliseconds. Format: YYYY-MM-DDTHH:MM:SSZ."
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["topic", "expertise", "tone", "locale"],
+      "properties": {
+        "topic": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 280
+        },
+        "expertise": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "tone": {
+          "enum": ["sachlich", "persönlich", "provokativ"]
+        },
+        "locale": {
+          "enum": ["de", "en"]
+        }
+      }
+    },
+    "colorPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "index",
+        "source",
+        "primary",
+        "secondary",
+        "text",
+        "accent"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9
+        },
+        "source": {
+          "enum": ["random", "seeded"]
+        },
+        "primary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "secondary": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "text": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "accent": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "headlineHtml",
+        "headlinePlain",
+        "bodyVariant",
+        "insight",
+        "bullets",
+        "expertiseDisplay"
+      ],
+      "properties": {
+        "headlineHtml": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "headlinePlain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 90,
+          "pattern": "^[^<>]*$",
+          "description": "Headline with all HTML tags stripped. Must not contain '<' or '>'."
+        },
+        "bodyVariant": {
+          "enum": ["insight", "bullets"]
+        },
+        "insight": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 220
+        },
+        "bullets": {
+          "type": ["array", "null"],
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "expertiseDisplay": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "Expertise input after hard char-cap at 60 characters. NOT HTML-escaped (escaping happens at template-substitution time). No appended ellipsis — visual cropping is done via CSS text-overflow on .post__expertise."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "bodyVariant": {
+                "const": "insight"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "insight": {
+                "type": "string"
+              },
+              "bullets": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "bodyVariant": {
+                "const": "bullets"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "insight": {
+                "type": "null"
+              },
+              "bullets": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body", "hashtags"],
+      "properties": {
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\r]*$",
+          "description": "Caption body without the trailing hashtag line. Paragraphs separated by '\\n\\n'. LF line endings only — must not contain '\\r'."
+        },
+        "hashtags": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9\\u00C0-\\u017F]*$",
+            "description": "Hashtag WITHOUT leading '#'. Caller is responsible for prepending '#' when rendering. Allowed characters: ASCII letters/digits and Latin-1 Supplement / Latin Extended-A accents (covers DE umlauts, French/Spanish accents)."
+          },
+          "contains": {
+            "const": "LinkedIn"
+          },
+          "description": "Must contain 'LinkedIn'. Spec also requires it to be the LAST element — enforced by the skill's quality gate (JSON Schema cannot express positional constraints with array contains)."
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["htmlPath", "pngPath", "captionPath"],
+      "properties": {
+        "htmlPath": {
+          "type": ["string", "null"]
+        },
+        "pngPath": {
+          "type": ["string", "null"]
+        },
+        "captionPath": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "viewportPx", "deviceScaleFactor"],
+      "properties": {
+        "mode": {
+          "enum": ["full", "dry-run"]
+        },
+        "viewportPx": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["width", "height"],
+          "properties": {
+            "width": {
+              "type": "integer",
+              "const": 1080
+            },
+            "height": {
+              "type": "integer",
+              "const": 1080
+            }
+          }
+        },
+        "deviceScaleFactor": {
+          "type": "integer",
+          "const": 1
+        }
+      }
+    }
+  }
+}

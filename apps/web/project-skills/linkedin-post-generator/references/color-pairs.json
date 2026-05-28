@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "pairs": [
+    {
+      "index": 0,
+      "id": "navy-steel",
+      "primary": "#0F1B2D",
+      "secondary": "#1A3355",
+      "text": "#E8F1FA",
+      "accent": "#5BA3D9"
+    },
+    {
+      "index": 1,
+      "id": "slate-sage",
+      "primary": "#171E2A",
+      "secondary": "#1B3028",
+      "text": "#E4EDE8",
+      "accent": "#52B788"
+    },
+    {
+      "index": 2,
+      "id": "plum-wine",
+      "primary": "#1A0E22",
+      "secondary": "#32102A",
+      "text": "#F0E4EC",
+      "accent": "#C97FA8"
+    },
+    {
+      "index": 3,
+      "id": "forest-olive",
+      "primary": "#0D1F14",
+      "secondary": "#1C2B0D",
+      "text": "#E4EDE2",
+      "accent": "#72C47A"
+    },
+    {
+      "index": 4,
+      "id": "charcoal-terra",
+      "primary": "#1A1210",
+      "secondary": "#2C1A10",
+      "text": "#F0E8E0",
+      "accent": "#C87B52"
+    },
+    {
+      "index": 5,
+      "id": "graphite-indigo",
+      "primary": "#121520",
+      "secondary": "#181530",
+      "text": "#E6E4F4",
+      "accent": "#8B80E0"
+    },
+    {
+      "index": 6,
+      "id": "teal-deep",
+      "primary": "#081D1A",
+      "secondary": "#0C2C26",
+      "text": "#DFF0EC",
+      "accent": "#3EC8B0"
+    },
+    {
+      "index": 7,
+      "id": "ink-midnight",
+      "primary": "#0C0C14",
+      "secondary": "#14142A",
+      "text": "#ECEAF8",
+      "accent": "#A08CF0"
+    },
+    {
+      "index": 8,
+      "id": "ash-ocean",
+      "primary": "#141820",
+      "secondary": "#102030",
+      "text": "#E4ECF4",
+      "accent": "#60A8D4"
+    },
+    {
+      "index": 9,
+      "id": "bronze-dark",
+      "primary": "#1A1408",
+      "secondary": "#2A1E08",
+      "text": "#F0EAD8",
+      "accent": "#C8A04A"
+    }
+  ]
+}
