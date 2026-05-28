@@ -1,93 +1,77 @@
-# Kurzbriefing V8: Prozess-Check als Akquise für KI-Workflows
+# Kurzbriefing V9: Content-Workflow-Check als Akquise für KI-Workflows
 
 ## Kurzurteil
 
-Die Idee bleibt sinnvoll, muss aber nach außen konkreter verkauft werden.
+Die Landingpage wird auf eine konkretere Zielgruppe und ein greifbareres Problem ausgerichtet:
+
+> Solo-Dienstleister, die regelmäßig auf LinkedIn posten wollen, aber keinen stabilen Prozess dafür haben.
 
 Nicht primär als:
 
 > KI-Workflow-Demo
 
-Auch nicht nur als:
+Nicht als:
 
-> Workflow-Check
+> Kostenloser LinkedIn-Post-Generator
 
 Sondern als:
 
-> Kostenloser Kurz-Check für 5 passende Dienstleister: Finde heraus, welche wiederkehrende Aufgabe du mit KI schneller
-> vorbereiten kannst.
+> Kostenloser Content-Workflow-Check für 5 passende Selbstständige: Finde heraus, ob aus deinem vorhandenen Material ein
+> wiederholbarer LinkedIn-Prozess werden kann.
 
-Der Begriff „Workflow“ bleibt wichtig, aber er sollte nicht der erste Hook sein. Viele potenzielle Kunden kaufen nicht
-„einen Workflow“. Sie wollen weniger manuelle Arbeit bei Angeboten, Projektupdates, Referenzen, Kundenantworten oder
-internen Übergaben.
+Der Begriff "Workflow" bleibt wichtig, aber der erste Hook ist das konkrete Problem:
 
-Das Ziel ist nicht, kostenlose KI-Ausgaben zu verteilen. Das Ziel ist, qualifizierte Prozessprobleme sichtbar zu machen
-und daraus Gespräche über bezahlte Mini-Piloten für automatisierte Workflows zu erzeugen.
+> LinkedIn bleibt liegen.
 
-Die erste Version bleibt klein:
-
-> Landingpage + kurzes Einstiegsformular + manuelle Auswertung + persönliches Follow-up
-
-Automatisierung kommt erst, wenn Nachfrage und Kaufabsicht erkennbar sind.
-
----
+Das Ziel ist nicht, kostenlose Posts zu verteilen. Das Ziel ist, qualifizierte Content-Prozessprobleme sichtbar zu
+machen und daraus Gespräche über bezahlte Mini-Piloten für individuelle KI-Workflows zu erzeugen.
 
 ## Ziel
 
 Primäres Ziel:
 
-> Neukunden für individuelle KI-Workflows gewinnen.
+> Neukunden für individuelle KI-gestützte Content-Workflows gewinnen.
 
-Getestet wird nicht, ob Menschen kostenlosen KI-Content wollen.
+Getestet wird nicht, ob Menschen kostenlose KI-Texte wollen.
 
 Getestet wird:
 
-> Gibt es bei B2B-Dienstleistern und kleinen Agenturen wiederkehrende Aufgaben mit klarem Zeitverlust, für die sie eine
-> individuelle KI-Automatisierung prüfen oder als Mini-Pilot umsetzen würden?
+> Gibt es bei Solo-Dienstleistern wiederkehrende Content-Engpässe, für die sie einen kleinen KI-Workflow prüfen oder als
+> Mini-Pilot umsetzen würden?
 
 Erfolg bedeutet:
 
-- konkrete Prozessprobleme
-- wiederkehrender Zeitaufwand
-- ausreichender Kontext für eine Workflow-Idee
-- Antwort auf Follow-up
-- Interesse an einer Umsetzung
-- Gespräch oder Anfrage für einen bezahlten Piloten
-
----
+- klares Content-Problem,
+- regelmäßiger Zeit- oder Konsistenzverlust,
+- vorhandenes Material als Input,
+- ausreichender Kontext für eine Workflow-Idee,
+- Antwort auf Follow-up,
+- Interesse an Umsetzung oder Pilot-Scope.
 
 ## V1-Kampagnenfokus
 
-Für den ersten Test wird nicht die ganze Breite an „KI-Workflows“ beworben.
-
 Empfohlener erster Use Case:
 
-> Angebote aus Gesprächsnotizen schneller vorbereiten.
+> LinkedIn-Posts regelmäßig aus vorhandenem Material vorbereiten.
 
 Warum dieser Use Case stark ist:
 
-- nah an Umsatz und Neukundengewinnung
-- für viele Dienstleister wiederkehrend
-- klarer Input: Gesprächsnotizen, Leistungsbausteine, Website, alte Angebote
-- klarer Output: Angebotsstruktur, Leistungsbeschreibung, nächste Schritte
-- bessere Kaufabsicht als reine Content-Erstellung
+- nah am bestehenden Invessiv-Beispiel,
+- für viele Selbstständige ein wiederkehrendes Problem,
+- klarer Input: Kundenfragen, Projektalltag, Notizen, Sprachnotizen, bestehende Inhalte,
+- klarer Output: Post-Entwürfe, Hook-Ideen, Themenlinien oder einfache Carousel-Strukturen,
+- bessere Positionierung als allgemeine "KI im Marketing"-Beratung.
 
 Primäre Zielgruppe für den ersten LinkedIn-Test:
 
-> Kleine Webdesign- und Marketingagenturen, die regelmäßig Erstgespräche führen und danach Angebote,
-> Leistungsbeschreibungen oder Follow-up-Mails vorbereiten.
+> Solo-Dienstleister, Berater, Coaches und kleine B2B-Selbstständige, die regelmäßig auf LinkedIn sichtbar sein wollen,
+> aber keinen stabilen Prozess vom Gedanken zum Post haben.
 
-Weitere Segmente wie IT-Dienstleister und Berater werden erst später getestet, wenn der Angebotsprozess als Winkel
-grundsätzlich funktioniert.
+Spätere Zielgruppen:
 
-Zweiter möglicher Use Case für später:
-
-> Projektreferenzen aus Abschlussnotizen erstellen.
-
-Dieser Use Case ist gut, aber für die erste Akquise etwas indirekter, weil der Nutzen eher Sichtbarkeit als
-unmittelbarer Umsatz ist.
-
----
+- Agenturinhaber mit eigenem Personal-Brand-Content,
+- kleine lokale Dienstleister mit Google-Business- und Instagram-Bedarf,
+- B2B-Teams mit wiederkehrenden Experteninhalten.
 
 ## Positionierung
 
@@ -95,167 +79,108 @@ Die Landingpage verkauft keinen Content-Generator und kein fertiges SaaS.
 
 Sie bietet einen einfachen Einstieg:
 
-> Beschreibe eine wiederkehrende Aufgabe. Ich prüfe, ob daraus ein sinnvoller KI-Workflow werden kann, und skizziere dir
-> 1–2 konkrete Automatisierungsideen.
+> Beschreibe kurz, warum LinkedIn bei dir liegen bleibt. Ich prüfe, ob daraus ein sinnvoller KI-Content-Workflow werden
+> kann, und skizziere dir 1-2 konkrete Workflow-Ideen samt Pilot-Empfehlung.
 
 Der Nutzen für den Besucher:
 
-- er erkennt, ob seine Aufgabe überhaupt für KI geeignet ist
-- er bekommt keine abstrakte Beratung, sondern konkrete Ideen für seinen Ablauf
-- er sieht, wie ein kleiner Pilot aussehen könnte
-- er muss noch kein großes Projekt beauftragen
+- er erkennt, ob sein Content-Problem überhaupt workflow-tauglich ist,
+- er sieht, welche vorhandenen Materialien als Input reichen könnten,
+- er bekommt keine abstrakte Beratung, sondern konkrete Ideen für seinen Arbeitsalltag,
+- er muss noch kein großes Projekt beauftragen.
 
 Der Nutzen für Invessiv:
 
-- echte Engpässe statt allgemeinem KI-Interesse sammeln
-- bessere Erstgespräche führen
-- Mini-Piloten als niedrigschwelligen Einstieg verkaufen
-- wiederkehrende Muster für spätere Angebote erkennen
-
----
-
-## Kernidee
-
-Ein Besucher beschreibt kurz:
-
-- welche wiederkehrende Aufgabe regelmäßig Zeit kostet
-- wie diese Aufgabe aktuell erledigt wird
-- wie oft sie anfällt oder wie viel Zeit sie ungefähr kostet
-- welches Material, welche Notizen oder welche Tools dabei eine Rolle spielen
-
-Daraus erhält er per E-Mail:
-
-1. eine kurze Einschätzung des Prozess-Engpasses
-2. 1–2 konkrete KI-Workflow-Ideen für seinen Fall
-3. einen Vorschlag für einen kleinen bezahlten Piloten, wenn der Prozess geeignet ist
-4. optional ein Beispiel-Output, wenn es zum Prozess passt
-
-Der wichtigste Punkt ist der Pilot-Vorschlag. Ohne ihn bleibt die Aktion eine nette Ideen-Sammlung und erzeugt zu wenig
-Kaufabsicht.
-
----
-
-## Zielgruppe für V1
-
-Die Zielgruppe wird bewusst eng gefasst:
-
-> B2B-Dienstleister und kleine Agenturen, die regelmäßig aus Gesprächen, Notizen, Projektmaterial oder
-> Standardleistungen strukturierte Ergebnisse erstellen müssen.
-
-Geeignete Beispiele:
-
-- kleine Marketingagenturen
-- Webdesigner und Webflow-/WordPress-Dienstleister
-- IT-Dienstleister
-- Berater
-- spezialisierte B2B-Dienstleister mit wiederkehrenden Kundenprozessen
-
-Weniger geeignet für V1:
-
-- sehr breite KMU-Zielgruppen
-- reine Creator oder LinkedIn-Nutzer ohne operativen Prozess
-- Unternehmen ohne wiederkehrende Aufgaben
-- Interessenten, die nur kostenlose Texte generieren wollen
-
-Die Zielgruppe soll den Grundgedanken schnell verstehen:
-
-> wiederkehrender Input, wiederkehrende Entscheidung, wiederkehrender Output.
-
----
+- echte Content-Engpässe statt allgemeinem KI-Interesse sammeln,
+- bessere Erstgespräche führen,
+- Mini-Piloten als niedrigschwelligen Einstieg verkaufen,
+- wiederkehrende Muster für spätere Workflow-Angebote erkennen.
 
 ## Hauptproblem der Zielgruppe
 
-Viele kleine Dienstleister nutzen ChatGPT punktuell, aber nicht als stabilen Prozess.
+Viele Solo-Dienstleister wissen, dass LinkedIn wichtig wäre. Trotzdem bleibt Posting unregelmäßig, weil kein Prozess
+existiert.
 
 Typische Symptome:
 
-- Gesprächsnotizen bleiben liegen
-- Angebote werden jedes Mal neu zusammengebaut
-- Leistungsbeschreibungen werden manuell aus alten Dokumenten kopiert
-- Referenzen entstehen nur selten, obwohl gute Projekte vorhanden sind
-- Kundenfragen werden wiederholt manuell beantwortet
-- interne Übergaben sind unstrukturiert
-- Website- oder LinkedIn-Inhalte entstehen zufällig statt aus einem Prozess
+- Ideen entstehen im Alltag, werden aber nicht festgehalten,
+- Kundenfragen tauchen wiederholt auf, werden aber nicht in Content übersetzt,
+- Projektlearnings bleiben intern,
+- Posts werden jedes Mal neu aus dem Nichts geschrieben,
+- ChatGPT wird punktuell genutzt, aber ohne wiederholbare Struktur,
+- Tonalität und Qualität schwanken,
+- Veröffentlichung hängt von Tagesform und freier Zeit ab.
 
-Die Landingpage muss diese Alltagssprache nutzen. „KI-Workflow“ darf vorkommen, aber der Einstieg sollte über konkrete
-Aufgaben gehen.
-
----
+Die Landingpage muss diese Alltagssprache nutzen. "KI-Workflow" darf vorkommen, aber der Einstieg läuft über das
+konkrete LinkedIn-Problem.
 
 ## Größtes Risiko
 
 Das Angebot kann falsch verstanden werden als:
 
-> Kostenloser LinkedIn-Post-Generator
+> Ich bekomme kostenlos LinkedIn-Posts.
 
 Dann entstehen falsche Leads und schlechte Signale.
 
 Gegenmaßnahmen:
 
-- Content nur als mögliches Beispiel nennen, nicht als Hauptversprechen
-- im Hero auf „wiederkehrende Aufgabe“ und „schneller vorbereiten“ fokussieren
-- den ersten Kampagnenwinkel auf Angebote oder einen ähnlich kaufnahen Prozess spitzen
-- Formular kurz halten und erst im Follow-up weiter qualifizieren
-- Output als Prozessdiagnose + Workflow-Ideen + Pilot-Empfehlung strukturieren
-- Follow-up klar auf Mini-Pilot ausrichten
+- Hero auf "Bleibt LinkedIn liegen?" und "Content-Prozess prüfen" fokussieren.
+- CTA nicht "Post generieren", sondern "Content-Workflow prüfen".
+- Output als Prozessdiagnose + Workflow-Ideen + Pilot-Empfehlung strukturieren.
+- Klar sagen: kostenlos ist der Check, nicht die laufende Content-Produktion.
+- Follow-up auf Mini-Pilot ausrichten.
 
 Klare Positionierung:
 
-> Es geht nicht um einen einzelnen KI-Text. Es geht um wiederholbare Abläufe, die aus Notizen, Material oder
-> Standardprozessen bessere Ergebnisse machen.
-
----
+> Es geht nicht um einen einzelnen KI-Post. Es geht um einen wiederholbaren Ablauf, der aus deinem vorhandenen Material
+> regelmäßig bessere LinkedIn-Entwürfe vorbereitet.
 
 ## Angebot für die erste Version
 
-### Manueller Prozess-Check für 5 passende Fälle
+### Kostenloser Content-Workflow-Check für 5 passende Selbstständige
 
 Der Besucher erhält:
 
-- eine kurze Einschätzung seines beschriebenen Prozesses
-- 1–2 konkrete Automatisierungsideen
-- eine Empfehlung, welche Idee sich als kleiner Pilot eignet
-- eine grobe Einschätzung, welche Vorlagen, Tools oder Daten dafür nötig wären
-- einen konkreten nächsten Schritt, falls der Prozess geeignet ist
+- eine kurze Einschätzung seines aktuellen Content-Prozesses,
+- 1-2 konkrete Workflow-Ideen,
+- eine Empfehlung, welche Idee sich als kleiner Pilot eignet,
+- eine grobe Einschätzung, welche Materialien, Vorlagen oder Routinen dafür nötig wären,
+- einen konkreten nächsten Schritt, falls der Prozess geeignet ist.
 
 Optional, wenn passend:
 
-- ein Beispiel für einen möglichen Output, etwa Angebotsstruktur, Referenztext oder Kundenantwort
+- ein Beispiel für einen möglichen Output, z. B. Post-Struktur, Hook-Varianten oder Themenlinie.
 
 Nicht versprechen:
 
-- fertige Automatisierung
-- sofortige KI-Ausgabe
-- pauschale Zeitersparnis-Garantie ohne echten Prozess-Test
-- technische Umsetzung ohne Gespräch
+- fertige Automatisierung,
+- unbegrenzte Post-Erstellung,
+- garantierte Reichweite,
+- sofortige Veröffentlichung,
+- technische Umsetzung ohne Gespräch.
 
 Positive Erwartung:
 
-> Du erhältst keine fertige Automatisierung, sondern eine priorisierte Einschätzung mit konkretem nächstem
+> Du erhältst keine fertige Content-Maschine, sondern eine priorisierte Einschätzung mit konkretem nächstem
 > Umsetzungsschritt.
-
----
 
 ## Datenschutz und Materialgrenzen
 
-In V1 sollen Nutzer keine sensiblen Kundendaten, vertrauliche Dokumente oder personenbezogenen Details einreichen.
+In V1 sollen Nutzer keine sensiblen Kundendaten, vertraulichen Dokumente oder personenbezogenen Details Dritter
+einreichen.
 
 Pflicht-Hinweis direkt am Formular:
 
-> Bitte keine sensiblen Kundendaten oder vertraulichen Dokumente einreichen. Beschreibe den Ablauf anonymisiert.
-> Beispiele reichen als kurze Textbeschreibung.
+> Bitte keine sensiblen Kundendaten oder vertraulichen Dokumente einfügen. Anonymisierte Beispiele oder kurze
+> Beschreibungen reichen.
 
 Für den kostenlosen Check gilt:
 
-- keine Pflicht-Uploads
-- keine Kundennamen nötig
-- keine personenbezogenen Daten Dritter nötig
-- keine vertraulichen Verträge, Angebote oder internen Dokumente
-- Beispiele werden anonymisiert oder als kurzer Ablauftext beschrieben
-
-Wenn für einen bezahlten Piloten echtes Material nötig wird, wird das erst im nächsten Schritt sauber geklärt.
-
----
+- keine Pflicht-Uploads,
+- keine Kundennamen nötig,
+- keine personenbezogenen Daten Dritter nötig,
+- keine vertraulichen Verträge, Angebote oder internen Dokumente,
+- Beispiele werden anonymisiert als kurzer Ablauf- oder Materialtext beschrieben.
 
 ## Weg zum bezahlten Piloten
 
@@ -263,108 +188,44 @@ Der kostenlose Check ist der Einstieg. Der nächste Schritt muss explizit vorber
 
 ### Einstiegslogik
 
-1. Manueller Prozess-Check für passende Fälle
-2. Kurzes Klärungsgespräch bei passendem Prozess
-3. Bezahlter Mini-Pilot mit engem Scope
-4. Ausbau zu dauerhaftem Workflow oder weiterer Automatisierung
+1. Kostenloser Content-Workflow-Check für passende Fälle.
+2. Kurzes Klärungsgespräch bei passendem Prozess.
+3. Bezahlter Mini-Pilot mit engem Scope.
+4. Ausbau zu dauerhaftem Workflow oder weiterer Automatisierung.
 
 ### Mini-Pilot-Angebot
 
 Ziel:
 
-> An einem echten Beispiel wird ein kleiner, wiederholbarer Workflow-Prototyp gebaut, der einen klaren Input in einen
-> brauchbaren Output verwandelt.
+> An einem echten Content-Prozess wird ein kleiner, wiederholbarer Workflow-Prototyp gebaut, der vorhandenes Material in
+> brauchbare LinkedIn-Entwürfe verwandelt.
 
 Typischer Scope:
 
-- ein klar abgegrenzter Prozess
-- ein Input-Format, zum Beispiel Gesprächsnotizen oder Projektabschlussnotizen
-- ein Ziel-Output, zum Beispiel Angebotsentwurf, Follow-up-Mail, Referenzentwurf oder Kundenantwort
-- einfache Eingabestruktur
-- erste Prompt-/Workflow-Logik
-- 1–2 Testläufe mit echtem oder anonymisiertem Beispielmaterial
-- kurze Übergabe mit Nutzungshinweisen und Grenzen
-
-Typischer Zeitrahmen:
-
-> 5–10 Arbeitstage nach geklärtem Scope und bereitgestelltem Beispielmaterial.
+- ein klar abgegrenzter Content-Prozess,
+- ein Input-Format, z. B. Sprachnotiz, Stichpunkte, Kundenfrage oder Projektlearning,
+- ein Ziel-Output, z. B. LinkedIn-Post, Hook-Varianten, Themenliste oder einfache Carousel-Struktur,
+- einfache Eingabestruktur,
+- erste Prompt-/Workflow-Logik,
+- 1-2 Testläufe mit echtem oder anonymisiertem Beispielmaterial,
+- kurze Übergabe mit Nutzungshinweisen und Grenzen.
 
 Preis-Frame:
 
 > Bezahlte Mini-Piloten starten ab 1.500 € netto mit klar begrenztem Scope. Der genaue Preis wird nach Prozess,
 > Materiallage und gewünschtem Output als Festpreis angeboten.
 
-Interne Preislogik vor Livegang festlegen:
-
-- Mini-Pilot: ab 1.500 € netto; ein Prozess, ein Input-Format, ein Ziel-Output, 1–2 Testläufe
-- erweiterter Pilot: 2.500–3.500 € netto; ein Prozess, zwei Outputs oder einfache Übergabe-/Freigabelogik
-- Workflow-Ausbau: ab 5.000 € netto; stabilerer Workflow, mehrere Varianten, Dokumentation oder Tool-Anbindung
-- kein kostenloser Umsetzungs-Pilot; kostenlos ist nur der manuelle Prozess-Check
-- Preis immer als Festpreis mit klarer Scope-Grenze anbieten, nicht als offenes Stundenkontingent
-
-Landingpage-Formulierung:
-
-> Der Kurz-Check ist kostenlos. Wenn der Prozess passt, starten bezahlte Mini-Piloten ab 1.500 € netto mit klar
-> begrenztem Scope.
-
-Nicht enthalten:
-
-- großes Dashboard
-- Mehrnutzer-Login
-- komplexe Integrationen
-- vollständige Prozessautomatisierung ohne manuelle Kontrolle
-- Verarbeitung sensibler Daten ohne gesonderte Klärung
-- unbegrenzte Varianten oder Folgeprozesse
-
-Beispiel für den Pilot-Frame:
-
-> Wenn eine Idee passt, können wir daraus einen kleinen Piloten bauen: ein klar abgegrenzter Workflow, der aus deinem
-> vorhandenen Material einen wiederkehrenden Output vorbereitet.
-
-Der Pilot sollte klein und kaufbar wirken, nicht wie ein großes Beratungsprojekt.
-
----
-
-## Empfohlene erste Version
-
-### Version 0: Manuelle Akquise-Validierung
-
-Umfang:
-
-- Landingpage
-- kurzes Einstiegsformular
-- keine sofortige KI-Ausgabe
-- keine Pflicht-Uploads
-- manuelle oder halbmanuelle Auswertung
-- Ergebnis per E-Mail
-- persönliches Follow-up
-
-Warum:
-
-- schneller live
-- weniger Technikrisiko
-- bessere Gespräche
-- keine API-, Upload- oder Abuse-Logik nötig
-- echte Antworten zeigen Kaufabsicht besser als Tool-Nutzung
-
-Klare Regel:
-
-> Wenn die manuelle Version keine brauchbaren Prozessprobleme und keine Pilot-Gespräche erzeugt, lohnt sich eine
-> automatisierte Version wahrscheinlich nicht.
-
----
-
 ## Formularfelder
 
-Das Formular muss für kalten LinkedIn-Traffic leicht genug bleiben. Es soll qualifizieren, aber nicht wie ein
-Beratungsfragebogen wirken.
+Das Formular muss für kalten LinkedIn-Traffic leicht genug bleiben.
 
 ### Pflichtfelder für V1
 
 - E-Mail
-- Tätigkeit / Unternehmensart oder Website
-- wiederkehrende Aufgabe, die regelmäßig Zeit kostet
-- aktueller Ablauf inklusive grober Häufigkeit oder Zeitaufwand
+- Tätigkeit/Positionierung oder Website
+- Was hält dich aktuell davon ab, regelmäßig auf LinkedIn zu posten?
+- Woraus könnten bei dir Beiträge entstehen?
+- Aktueller Ablauf inklusive grober Häufigkeit oder Zeitaufwand
 - Datenschutz- und Nutzungshinweis
 
 ### Optionale Felder
@@ -373,126 +234,107 @@ Beratungsfragebogen wirken.
 - Beispielmaterial als anonymisierte Textbeschreibung
 - gewünschter Output
 - verwendete Tools oder Vorlagen
-- wichtigstes Ziel: Zeit sparen, Qualität erhöhen, schneller reagieren, mehr Sichtbarkeit, bessere Struktur
+- wichtigstes Ziel: sichtbarer werden, schneller posten, klarer formulieren, Vertrauen aufbauen, Leads vorbereiten
 
 ### Nicht im ersten Formular abfragen
 
-- Telefonnummer als Pflichtfeld
-- Budget als Pflichtfeld
-- detaillierter Tool-Stack
-- mehrere Dateien
-- komplexe Anforderungen
-- Kalenderbuchung als Pflichtschritt
-- verbindliches Interesse an einem bezahlten Piloten
-
-Die stärkere Qualifizierung passiert nach der ersten Antwort per Follow-up. Das senkt Reibung und verhindert, dass gute
-Leads vor dem Absenden aussteigen.
-
----
+- Telefonnummer als Pflichtfeld,
+- Budget als Pflichtfeld,
+- detaillierter Tool-Stack,
+- Uploads,
+- mehrere Kanäle gleichzeitig,
+- Kalenderbuchung als Pflichtschritt,
+- verbindliches Interesse an einem bezahlten Piloten.
 
 ## Wichtigste Fragen im Formular
 
 ### Kernfrage
 
-> Welche wiederkehrende Aufgabe kostet dich regelmäßig Zeit?
+> Was hält dich aktuell davon ab, regelmäßig auf LinkedIn zu posten?
 
 Hilfetext:
 
-> Zum Beispiel: Angebote aus Gesprächsnotizen vorbereiten, Referenzen aus Projekten erstellen, Projektupdates schreiben,
-> Kundenfragen beantworten, Leads vorqualifizieren oder Website-Inhalte aktualisieren.
+> Zum Beispiel: zu wenig Zeit, keine klare Themenroutine, Entwürfe bleiben liegen, Posts dauern zu lange oder du weißt
+> nicht, wie du aus Kundenfragen und Projektalltag Content machst.
 
-### Kombinierte Qualifizierungsfrage
+### Materialfrage
 
-> Wie erledigst du diese Aufgabe aktuell und wie oft fällt sie ungefähr an?
+> Woraus könnten bei dir Beiträge entstehen?
 
 Hilfetext:
 
-> Eine grobe Beschreibung reicht. Zum Beispiel: „Nach jedem Erstgespräch schreibe ich aus Notizen ein Angebot. Das
-> passiert 3–4 Mal pro Monat und dauert jeweils 1–2 Stunden.“
+> Zum Beispiel: Kundenfragen, Projektlearnings, Sprachnotizen, Stichpunkte, alte Posts, Website-Inhalte,
+> Beratungsnotizen oder wiederkehrende Themen.
 
-### Datenschutz-Hinweis
+### Qualifizierungsfrage
 
-> Bitte keine sensiblen Kundendaten oder vertraulichen Dokumente einfügen. Anonymisierte Beispiele reichen.
+> Wie erstellst du Posts aktuell und wie oft möchtest du realistisch veröffentlichen?
 
-### Follow-up-Fragen nach Einreichung
+Hilfetext:
 
-Diese Fragen gehören nicht zwingend ins Erstformular:
-
-- Wie viel Zeit kostet der Prozess pro Woche oder Monat?
-- Wer erledigt die Aufgabe aktuell?
-- Welche Vorlagen, Tools oder alten Beispiele gibt es?
-- Was wäre ein guter erster Output?
-- Wäre ein kleiner bezahlter Pilot interessant, wenn die Idee passt?
-
----
+> Eine grobe Beschreibung reicht. Zum Beispiel: "Ich sammle Ideen in Notizen, poste aber nur alle paar Wochen. Ziel wäre
+> 2-mal pro Woche mit weniger Aufwand."
 
 ## Landingpage-Struktur
 
-1. Hero mit konkretem Aufgabenproblem und Prozess-Check-Angebot
-2. Kurze Erklärung: Aufgabe beschreiben, Automatisierungsideen erhalten
-3. Ersten Use Case sichtbar machen, zum Beispiel Angebote aus Gesprächsnotizen
-4. Beispiele für weitere passende Aufgaben zeigen
-5. Ablauf in 3 Schritten erklären
-6. Ergebnis des Checks konkret darstellen
-7. Kurzes Formular mit niedriger Einstiegshürde
-8. Hinweis: erste Auswertung erfolgt manuell und persönlich
-9. CTA auf Prozess-Check
+1. Hero mit Frage zu LinkedIn-Konsistenz und Content-Workflow-Check.
+2. Kurze Erklärung: Problem beschreiben, Workflow-Ideen erhalten.
+3. Ersten Use Case sichtbar machen: aus vorhandenem Material regelmäßig LinkedIn-Entwürfe vorbereiten.
+4. Beispiele für passende Input-Quellen zeigen.
+5. Ablauf in 3 Schritten erklären.
+6. Ergebnis des Checks konkret darstellen.
+7. Kurzes Formular mit niedriger Einstiegshürde.
+8. Hinweis: erste Auswertung erfolgt persönlich/qualifiziert und nicht als freie KI-Spielwiese.
+9. CTA auf Content-Prozess-Check.
 
-### Mögliche Headline
+### Hero
 
-> Welche wiederkehrende Aufgabe kostet dich jede Woche Zeit?
+Empfohlene Headline:
 
-### Alternative Headlines
+> Kosten dich LinkedIn-Posts zu viel Zeit?
 
-> Lass prüfen, welcher manuelle Prozess sich bei dir mit KI vorbereiten lässt
+Alternative Headlines:
 
-> Bereitest du Angebote, Follow-ups oder Referenzen noch jedes Mal manuell vor?
+> Hast du genug Ideen, aber keinen LinkedIn-Prozess?
 
-> Aus Gesprächsnotizen schneller zum Angebotsentwurf
+> Kostet dich jeder LinkedIn-Post wieder zu viel Zeit?
 
-### Subheadline
+> Wird aus deinen Kundenfragen zu selten Content?
 
-> Beschreibe kurz eine wiederkehrende Aufgabe. Ich skizziere dir, ob daraus ein sinnvoller KI-Workflow werden kann und
-> welcher kleine Pilot dafür geeignet wäre.
+Subheadline:
 
-### Hero-CTA
+> Kostenloser Check für 5 Selbstständige: Ich prüfe, ob aus deinen Ideen ein wiederholbarer Content-Workflow werden
+> kann.
 
-> Aufgabe prüfen lassen
+Hero-CTA:
+
+> Content-Workflow prüfen
 
 Alternative:
 
-> Prozess-Check anfragen
+> LinkedIn-Workflow prüfen lassen
 
----
-
-## Beispielhafte Aufgaben
-
-Die Beispiele sollten operativ sein, nicht nur Content-orientiert.
+## Beispielhafte Aufgaben und Inputs
 
 Stärkster V1-Aufhänger:
 
-- Angebote aus Gesprächsnotizen vorbereiten
+- LinkedIn-Posts aus vorhandenen Notizen, Kundenfragen und Projektlearnings vorbereiten.
 
 Weitere gute Beispiele:
 
-- Projektreferenzen aus Abschlussnotizen erstellen
-- wiederkehrende Kundenfragen strukturiert beantworten
-- Leads aus Formularantworten vorqualifizieren
-- Projektupdates aus Stichpunkten formulieren
-- Website-Abschnitte aus Projektmaterial vorbereiten
-- interne Briefings aus E-Mails und Notizen strukturieren
-- Standardantworten für wiederkehrende Anfragen vorbereiten
+- wiederkehrende Kundenfragen in Post-Ideen übersetzen,
+- Projektlearnings zu LinkedIn-Beiträgen machen,
+- Sprachnotizen in erste Entwürfe verwandeln,
+- alte Inhalte in neue Themenlinien überführen,
+- Beratungsalltag in kurze Fachposts strukturieren,
+- Google-Business-Posts aus denselben Rohideen ableiten.
 
 Schwächere Beispiele für V1:
 
-- „LinkedIn-Post generieren“
-- „mehr Content erstellen“
-- „KI im Marketing nutzen“
-- „Prozesse optimieren“
-
-Diese Formulierungen sind zu breit oder ziehen falsche Erwartungen an.
-
----
+- "mehr Content erstellen",
+- "LinkedIn automatisch posten",
+- "viral gehen",
+- "KI im Marketing nutzen".
 
 ## Output des Prozess-Checks
 
@@ -500,255 +342,147 @@ Der Nutzer erhält per E-Mail:
 
 ### 1. Kurze Prozessdiagnose
 
-Was ist der wiederkehrende Engpass?
-
 Beispiel:
 
-> Du führst Erstgespräche, aber der Schritt von Gesprächsnotizen zu Angebot kostet jedes Mal manuell Zeit und hängt
-> stark von deiner Tagesform ab.
+> Du hast genug Material aus Kundenfragen und Projekten, aber keinen festen Schritt, der daraus regelmäßig Post-Entwürfe
+> macht. Dadurch hängt LinkedIn an Tagesform und freier Zeit.
 
 ### 2. Ein bis zwei Workflow-Ideen
 
 Beispiel:
 
-> Workflow-Idee 1: Aus Gesprächsnotizen entsteht ein erster Angebotsentwurf mit Ausgangslage, Leistungsbausteinen,
-> nächstem Schritt und offenen Rückfragen.
+> Workflow-Idee 1: Aus einer Sprachnotiz entsteht ein LinkedIn-Entwurf mit Hook, Hauptgedanke, Beispiel und CTA.
 
-> Workflow-Idee 2: Aus denselben Notizen entsteht zusätzlich eine kurze Follow-up-Mail, die das Gespräch zusammenfasst
-> und den Angebotsprozess sauber vorbereitet.
+> Workflow-Idee 2: Aus wiederkehrenden Kundenfragen entsteht eine Themenliste mit Post-Ansätzen für die nächsten zwei
+> Wochen.
 
 ### 3. Pilot-Empfehlung
 
 Beispiel:
 
-> Als erster Pilot wäre der Angebotsentwurf sinnvoll, weil Input, Output und Nutzen klar abgrenzbar sind.
+> Als erster Pilot wäre der Sprachnotiz-zu-Post-Workflow sinnvoll, weil Input, Output und Nutzen klar abgrenzbar sind.
 
 ### 4. Umsetzungshinweis
 
 Beispiel:
 
-> Dafür bräuchten wir 2–3 anonymisierte Beispielangebote, typische Gesprächsnotizen und klare Regeln, welche
-> Leistungsbausteine vorgeschlagen werden dürfen.
+> Dafür bräuchten wir 5-10 typische Themen, 2-3 alte Posts oder Stichpunkte und klare Regeln für Tonalität, Länge und
+> CTA.
 
 ### 5. Nächster Schritt
 
 Beispiel:
 
 > Wenn du möchtest, schicke ich dir als nächsten Schritt einen kleinen Pilot-Scope mit Ablauf, Aufwand, Preisrahmen und
-> Grenzen für diesen Angebots-Workflow.
-
----
+> Grenzen für diesen Content-Workflow.
 
 ## Primärer CTA
 
 Nicht:
 
+> Kostenlosen Post generieren
+
+Nicht:
+
 > Kostenloses Erstgespräch buchen
-
-Nicht primär:
-
-> LinkedIn-Post generieren
 
 Sondern:
 
-> Aufgabe prüfen lassen
+> Content-Workflow prüfen
 
 Oder:
 
-> Prozess-Check anfragen
+> LinkedIn-Workflow prüfen lassen
 
-Oder:
-
-> Wiederkehrende Aufgabe einreichen
-
-Der CTA muss auf den konkreten Nutzen zeigen: Der Besucher bekommt eine Einschätzung und Ideen für seinen Prozess.
-
----
-
-## Follow-up-Logik
-
-Nach der manuellen Auswertung sollte die E-Mail nicht nur liefern, sondern den nächsten Schritt vorbereiten.
-
-Struktur:
-
-1. kurze persönliche Einordnung
-2. erkannter Engpass
-3. 1–2 Workflow-Ideen
-4. beste Pilot-Idee
-5. konkrete Frage zum nächsten Schritt
-
-Beispiel-Abschluss:
-
-> Wenn diese Richtung für dich relevant ist, würde ich als nächsten Schritt einen kleinen Piloten vorschlagen: Wir
-> nehmen einen echten Fall, definieren den Input und testen daraus einen ersten wiederholbaren Workflow. Mini-Piloten
-> starten ab 1.500 € netto. Soll ich dir einen kleinen Pilot-Scope mit Ablauf und Aufwand schicken?
-
-Diese Frage ist besser als ein allgemeines „Melde dich gern“, weil sie das Gespräch konkret weiterführt.
-
----
+Der CTA muss auf den konkreten Nutzen zeigen: Der Besucher bekommt eine Einschätzung und Ideen für seinen wiederholbaren
+Content-Prozess.
 
 ## Erfolgsmessung
 
 Wichtigste Kennzahl:
 
-> Qualifizierte Prozess-Leads pro 100 Besucher je Traffic-Quelle.
+> Qualifizierte Content-Prozess-Leads pro 100 Besucher je Traffic-Quelle.
 
-Ein qualifizierter Prozess-Lead erfüllt mindestens drei Kriterien:
+Ein qualifizierter Lead erfüllt mindestens drei Kriterien:
 
-- konkrete wiederkehrende Aufgabe genannt
-- Häufigkeit oder Zeitaufwand grob angegeben
-- aktueller Ablauf beschrieben
-- brauchbarer Unternehmenskontext geliefert
-- Interesse an Pilot nicht ausgeschlossen
-- Antwort auf Follow-up
-
-Stärkere Kaufabsichts-Signale:
-
-- fragt nach Umsetzung
-- nennt weitere Prozesse
-- fragt nach Aufwand, Kosten oder Dauer
-- möchte ein Beispiel mit eigenen Daten sehen
-- stimmt einem kurzen Klärungsgespräch zu
+- konkretes LinkedIn-/Content-Problem genannt,
+- aktueller Ablauf beschrieben,
+- gewünschte Posting-Frequenz oder Zeitproblem grob angegeben,
+- brauchbarer Selbstständigen-/Dienstleisterkontext geliefert,
+- vorhandenes Material als Input genannt,
+- Interesse an Pilot nicht ausgeschlossen.
 
 Nicht als Erfolg zählen:
 
-- reine E-Mail-Adressen
-- generierte LinkedIn-Posts
-- Likes auf LinkedIn
-- allgemeines Lob
-- Formularantworten ohne wiederkehrende Aufgabe
-- Interessenten, die ausdrücklich nur Inspiration wollen
-
-### Messung nach Traffic-Quelle
-
-100 Besucher aus unterschiedlichen Quellen sind nicht gleichwertig. Deshalb getrennt auswerten:
-
-- persönliches LinkedIn-Netzwerk
-- kalter LinkedIn-Post
-- direkte Outreach-Nachricht
-- Website organisch
-- Empfehlung
-
-Pro Quelle erfassen:
-
-- Besucher
-- Formularstarts
-- Formularabschlüsse
-- qualifizierte Prozessprobleme
-- Antworten auf Follow-up
-- Pilot-Gespräche
-- konkrete Pilot-Kandidaten
-
----
-
-## Go-/No-Go
-
-### Go
-
-Weiterverfolgen, wenn innerhalb von 7–14 Tagen bei 100–300 Besuchern aus einer klar benannten Quelle entsteht:
-
-- mindestens 8–12 Formular-Einreichungen
-- mindestens 5 brauchbare wiederkehrende Prozessprobleme
-- mindestens 3 Antworten auf Follow-up
-- mindestens 2 Gespräche über mögliche Umsetzung
-- mindestens 1 konkreter Pilot-Kandidat
-
-### Starkes Go
-
-Beschleunigen, wenn zusätzlich entsteht:
-
-- mehrere ähnliche Prozessprobleme in derselben Zielgruppe
-- konkrete Fragen nach Preis, Zeitplan oder Umsetzung
-- Bereitschaft, echtes Beispielmaterial für einen Piloten zu liefern
-- wiederholtes Interesse am gleichen Use Case, zum Beispiel Angebotsvorbereitung
-
-### No-Go oder Pivot
-
-Stoppen oder neu positionieren, wenn:
-
-- Nutzer nur kostenlosen Content wollen
-- Prozessproblem-Antworten oberflächlich bleiben
-- niemand auf Follow-ups reagiert
-- niemand den Zusammenhang zwischen Aufgabe und Automatisierung versteht
-- keine Pilot-Gespräche entstehen
-- vor echten Signalen mehr als 1–2 Netto-Tage gebaut werden
-
----
+- reine E-Mail-Adressen,
+- Nutzer, die nur kostenlose Posts wollen,
+- Likes auf LinkedIn,
+- allgemeines Lob,
+- Antworten ohne konkreten Prozess,
+- Interessenten, die ausdrücklich nur Inspiration wollen.
 
 ## Nicht bauen vor ersten Signalen
 
-- automatisiertes SaaS
-- Login
-- Dashboard
-- komplexe Upload-Verarbeitung
-- mehrere Workflow-Strecken
-- mehrere Zielgruppen
-- Prompt-Bibliothek
-- Content-Kalender
-- LinkedIn-Posting-Automation
-- detaillierte Kostenlogik
-- komplexes Admin-System
-- vollautomatisierte Analyse ohne persönliche Einordnung
-
----
+- automatisiertes SaaS,
+- Login,
+- Dashboard,
+- komplexe Upload-Verarbeitung,
+- mehrere Kanäle gleichzeitig,
+- Content-Kalender,
+- LinkedIn-Posting-Automation,
+- detaillierte Kostenlogik,
+- komplexes Admin-System,
+- vollautomatisierte Analyse ohne persönliche Einordnung.
 
 ## LinkedIn-Post für Traffic
 
-Viele kleine Dienstleister nutzen ChatGPT.
+Viele Selbstständige wissen, dass LinkedIn wichtig wäre.
 
-Aber oft bleibt es bei einzelnen Texten.
+Aber oft bleibt es liegen.
 
-Der größere Hebel liegt in Aufgaben, die sich ständig wiederholen.
+Nicht, weil es keine Ideen gibt.
 
-Zum Beispiel:
+Sondern weil kein verlässlicher Prozess existiert, der aus Alltag, Kundenfragen und Notizen regelmäßig gute Entwürfe
+macht.
 
-- Angebote aus Gesprächsnotizen vorbereiten
-- Follow-up-Mails nach Erstgesprächen schreiben
-- Projektreferenzen aus Stichpunkten erstellen
-- Kundenfragen strukturierter beantworten
-- Leads aus Formularantworten vorqualifizieren
+Ich suche 5 Solo-Dienstleister, bei denen ich kostenlos prüfe, ob sich daraus ein kleiner KI-Content-Workflow bauen
+lässt.
 
-Ich suche 5 Webdesign- oder Marketingagenturen, bei denen ich kostenlos einen wiederkehrenden manuellen Angebotsprozess
-prüfe.
+Du beschreibst kurz:
 
-Du beschreibst kurz eine Aufgabe, die regelmäßig Zeit kostet.
+- warum LinkedIn aktuell liegen bleibt,
+- woraus bei dir Beiträge entstehen könnten,
+- wie oft du realistisch posten möchtest.
 
 Ich skizziere dir daraus:
 
-- den wahrscheinlichen Engpass
-- 1–2 konkrete KI-Workflow-Ideen
-- eine Empfehlung, ob sich daraus ein kleiner Pilot lohnt
+- den wahrscheinlichen Engpass,
+- 1-2 konkrete Workflow-Ideen,
+- eine Empfehlung, ob sich daraus ein kleiner Pilot lohnt.
 
-Es geht nicht um noch einen kostenlosen LinkedIn-Post-Generator.
+Es geht nicht um einen kostenlosen Post-Generator.
 
 Es geht um die Frage:
 
-> Welche Aufgabe wiederholt sich bei dir oft genug, dass ein kleiner KI-Workflow wirklich helfen könnte?
+> Welcher wiederholbare Ablauf würde dir helfen, aus vorhandenem Material regelmäßiger LinkedIn-Content vorzubereiten?
 
-Wenn du das prüfen lassen möchtest, kommentiere mit „Prozess“ oder trag dich hier ein:
+Wenn du das prüfen lassen möchtest, kommentiere mit "Content" oder trag dich hier ein:
 
 [Landingpage-Link]
-
----
 
 ## Finale Empfehlung
 
 Starte nicht mit einer automatisierten Demo.
 
-Starte mit einem klar positionierten Prozess-Check:
+Starte mit einem klar positionierten Content-Workflow-Check:
 
-> Eine Landingpage, ein kurzes Formular, manuelle Auswertung und persönliches Follow-up mit Pilot-Brücke.
+> Eine Landingpage, ein kurzes Formular, qualifizierte Auswertung und persönliches Follow-up mit Pilot-Brücke.
 
-Der erste Kampagnenwinkel sollte spitz sein:
+Der erste Kampagnenwinkel bleibt spitz:
 
-> Angebote aus Gesprächsnotizen schneller vorbereiten.
+> LinkedIn bleibt liegen, obwohl genug Material vorhanden wäre.
 
 Der Fokus bleibt:
 
-> Nicht Content generieren. Nicht KI zeigen. Sondern wiederkehrende Aufgaben finden, daraus konkrete Workflow-Ideen
-> ableiten und passende Interessenten in bezahlte Mini-Piloten führen.
-
-Wenn daraus keine qualifizierten Prozessprobleme und keine Pilot-Gespräche entstehen, ist entweder Zielgruppe,
-Problem-Frame oder Angebot zu unscharf.
-
-Wenn daraus 1–3 gute Pilot-Gespräche entstehen, lohnt sich eine kleine automatisierte V1.
+> Nicht Posts verschenken. Nicht KI zeigen. Sondern wiederkehrende Content-Probleme finden, daraus konkrete
+> Workflow-Ideen ableiten und passende Interessenten in bezahlte Mini-Piloten führen.

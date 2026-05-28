@@ -2,92 +2,44 @@
 
 ## Ziel und Scope
 
-Geplant wird eine neue Marketing-Landingpage für einen kostenlosen Prozess-Check rund um KI-Workflows:
+Geplant wird eine neue Marketing-Landingpage für einen kostenlosen Prozess-Check rund um KI-gestützte
+LinkedIn-Content-Workflows:
 
 - Öffentliche Route: `/[locale]/services/ai-workflows`
 - Deutsche URL: `/de/services/ai-workflows`
 - Englische URL: `/en/services/ai-workflows`
-- Zielgruppe: kleine Webdesign- und Marketingagenturen, die nach Erstgesprächen wiederkehrend Angebote, Follow-ups oder
-  Leistungsbeschreibungen vorbereiten.
-- Angebot: kostenloser KI-gestützter Kurz-Check für 5 passende Fälle.
-- Anschlussangebot: bezahlte Mini-Piloten ab 1.500 € netto.
+- Zielgruppe: Solo-Dienstleister, Berater, Coaches und kleine B2B-Selbstständige, die regelmäßig auf LinkedIn sichtbar
+  sein wollen, aber keinen stabilen Content-Prozess haben.
+- Problem: LinkedIn bleibt liegen, weil aus Kundenfragen, Projektalltag, Notizen, Sprachnotizen und Fachwissen keine
+  wiederholbare Posting-Routine entsteht.
+- Angebot: kostenloser Content-Workflow-Check für 5 passende Selbstständige.
+- Anschlussangebot: bezahlte Mini-Piloten ab 1.500 € netto mit klar begrenztem Scope.
 
-Diese Datei ist ausschließlich ein Umsetzungsplan. Es werden noch keine Landingpage, kein Formular und kein Backend
-implementiert.
+Diese Datei ist ausschließlich ein Umsetzungsplan. Die konkrete Task-Ausführung steht in
+`apps/web/plans/ai-workflows/umsetzungsplan-steps.md`.
 
 ## Nicht-Ziele für V1
 
+- Kein kostenloser LinkedIn-Post-Generator als Hauptversprechen.
+- Keine vollautomatische Veröffentlichung auf LinkedIn.
+- Kein Content-Kalender-SaaS, kein Login, kein Dashboard.
 - Keine Kalenderbuchung als Pflichtschritt.
 - Keine Pflichtfelder für Telefonnummer oder Budget.
 - Keine Wiederverwendung der bestehenden Projektanfrage als versteckte Workflow-Anfrage.
-- Kein SaaS-Dashboard-Fake oder simuliertes Produkt-UI.
-- Keine unkontrollierte öffentliche KI-Spielwiese ohne Qualifizierung, Rate-Limit und Datenschutz-Hinweis.
-- Keine Verarbeitung sensibler Kundendaten oder vertraulicher Dokumente.
+- Keine Verarbeitung sensibler Kundendaten, vertraulicher Dokumente oder personenbezogener Daten Dritter.
+- Kein Upload in V1; Beispiele werden als anonymisierte Textbeschreibung abgefragt.
 
-## Geplante Dateien und Architektur
+## Positionierung
 
-### Route
+Die Landingpage verkauft keine einzelnen KI-Texte. Sie verkauft den Einstieg in einen wiederholbaren Content-Prozess:
 
-Neue Marketing-Route:
+> Beschreibe kurz, warum LinkedIn bei dir liegen bleibt. Wir prüfen, ob aus deinem vorhandenen Material ein
+> wiederholbarer KI-Content-Workflow werden kann, und skizzieren dir einen passenden Mini-Pilot.
 
-- `apps/web/src/app/[locale]/(marketing)/services/ai-workflows/page.tsx`
+Der wichtigste Unterschied:
 
-Die Route orchestriert nur Metadata, Dictionary-Laden und Section-Rendering. Sichtbare Texte werden nicht inline
-gepflegt.
-
-### Routen-Konstanten
-
-`SITE_ROUTES` wird um eine eigene Route erweitert:
-
-```ts
-AI_WORKFLOWS_SERVICE: "/services/ai-workflows";
-```
-
-URL-Pfade werden ausschließlich über zentrale Route-Konstanten oder vorhandene Path-Helper zusammengesetzt.
-
-### Content und i18n
-
-Die Landingpage erhält eigene DE-/EN-Dictionaries analog zu bestehenden Marketing-Landing-Dictionaries.
-
-Geplant:
-
-- eigene Content-Keys für Hero, Sections, Pricing, Datenschutz-Hinweis, CTAs, Formular und Metadata
-- identische Keys in Deutsch und Englisch
-- keine locale-basierten Inline-Verzweigungen in `page.tsx`, Komponenten, SEO-Logik oder Structured Data
-- vollständige parallele Pflege aller sichtbaren Texte in DE/EN
-
-### Komponenten
-
-Neue Komponenten liegen unter:
-
-- `apps/web/src/components/marketing/ai-workflows/**`
-
-Geplante Struktur:
-
-- `ai-workflows-page/`
-- `hero-section/`
-- `problem-examples-section/`
-- `offer-section/`
-- `pricing-section/`
-- `privacy-note-section/`
-- `workflow-check-form/`
-
-Für V1 wird die sichtbare Landingpage bewusst schlank gehalten. Proof/Expertise und Ablauf werden nicht als große eigene
-Sections umgesetzt, sondern kompakt in `offer-section` oder `pricing-section` integriert.
-
-Produktive Komponenten erhalten lokale CSS Modules oder vorhandene Utility-Patterns. Neue globale Section-CSS in
-`globals.css` ist nicht vorgesehen.
-
-### Formular
-
-Das Workflow-Check-Formular wird als eigene Client Component umgesetzt:
-
-- `workflow-check-form.tsx`
-- `workflow-check-form.module.css`
-- testnahe Form-Mapper/Form-Service-Dateien nach bestehendem Muster
-
-Die Komponente nutzt zugängliche Fehlermeldungen, sichtbare Fokuszustände und einen Honeypot analog bestehender
-Kontaktformulare.
+- Nicht: "Wir generieren dir kostenlos Posts."
+- Sondern: "Wir prüfen, ob dein Content-Material und deine Arbeitsweise zu einem wiederholbaren Workflow taugen."
 
 ## Landingpage Content und UX
 
@@ -95,111 +47,84 @@ Kontaktformulare.
 
 Kerncopy:
 
-- Headline: „Bereitest du Angebote nach Erstgesprächen noch jedes Mal manuell vor?“
-- Subheadline: kostenloser Kurz-Check für 5 Webdesign- oder Marketingagenturen.
-- Primary CTA: „Aufgabe prüfen lassen“
-- Preis-Microcopy: „Der Kurz-Check ist kostenlos. Bezahlte Mini-Piloten starten ab 1.500 € netto.“
+- Mini-Eyebrow: "LinkedIn-Content-Workflow"
+- Headline als Frage: "Kosten dich LinkedIn-Posts zu viel Zeit?"
+- Subheadline: "Kostenloser Check für 5 Selbstständige: Wir prüfen, ob aus deinen Ideen ein wiederholbarer
+  Content-Workflow werden kann."
+- Primary CTA: "Content-Workflow prüfen"
+- Secondary CTA: "Was du bekommst" nur auf Desktop/Tablet; Mobile zeigt nur den Primary CTA.
+- Trust-Chips unter dem CTA: "Kostenloser Check", "Klare Workflow-Einschätzung".
 
-Der Hero muss sofort Angebot, Zielgruppe und nächsten Schritt erklären. Genau eine H1 pro Seite.
+Der Hero muss auf Mobile sofort Zielgruppe, Problem, Angebot und nächsten Schritt erklären. Genau eine H1 pro Seite.
 
-### Sections
+### Geplante V1-Seitenstruktur
 
-Geplante V1-Seitenstruktur:
-
-1. Hero
-2. Problem + Beispiele kombiniert: Gesprächsnotizen, Angebote, Follow-ups und Leistungsbeschreibungen kosten
-   wiederkehrend Zeit; konkrete Beispiele sind Angebote aus Gesprächsnotizen, Follow-up-Mails, Leistungsbausteine,
-   Projektbriefings und Referenzen.
-3. Was du bekommst: KI-gestützter Prozess-Check mit 1-2 Workflow-Ideen, kurzer Einschätzung und Pilot-Empfehlung.
-   Proof/Expertise wird hier knapp eingebettet, z. B. über den eigenen Social-Workflow als Beispiel für wiederholbare
-   KI-Outputs im konsistenten Design.
+1. Hero mit konkreter Frage zu LinkedIn-Konsistenz.
+2. Problem + Beispiele kombiniert: LinkedIn bleibt liegen, obwohl genug Fachwissen, Kundenfragen und Projektmaterial
+   vorhanden wären.
+3. Was du bekommst: Content-Workflow-Check mit kurzer Einschätzung, 1-2 Workflow-Ideen und Pilot-Empfehlung.
 4. Pricing/Pilot-Frame: kostenloser Kurz-Check, Mini-Pilot ab 1.500 € netto, erweiterter Pilot 2.500-3.500 € netto,
    Ausbau ab 5.000 € netto.
-5. Datenschutz-Hinweis: keine sensiblen Kundendaten, keine vertraulichen Dokumente, anonymisierte oder bereinigte
-   Beispiele reichen.
-6. Final CTA mit Formular.
+5. Datenschutz-Hinweis: keine sensiblen Kundendaten, keine vertraulichen Dokumente; anonymisierte Beispiele reichen.
+6. Final CTA mit kurzem Formular.
 
-Die Seite soll für V1 nicht wie eine lange Service-Erklärseite wirken. Sie muss schnell verständlich machen: Problem
-erkennen, kostenlosen Check verstehen, Formular ausfüllen. Ablaufdetails wie „Aufgabe beschreiben, Einschätzung
-erhalten,
-Pilot-Scope entscheiden“ werden als kurze 3-Schritt-Zeile innerhalb der Offer- oder Pricing-Section geführt, nicht als
-eigener großer Seitenblock.
+Die Seite soll schlank bleiben. Ablaufdetails wie "Material beschreiben, Workflow-Ideen erhalten, Pilot-Scope
+entscheiden" werden als kurze 3-Schritt-Zeile geführt, nicht als große Erklärstrecke.
 
-### Designrichtung
+### Geeignete Beispiel-Inputs
 
-- Ruhige, hochwertige B2B-Service-Landingpage.
-- Dark Mode als Default, Light Mode kompatibel.
-- Keine überladene Dashboard-Ästhetik.
-- Mobile-first mit klarer Tablet-/Desktop-Erweiterung.
-- Lesbare, scannbare Abschnitte statt Textwände.
-- Interaktive Elemente mit klaren Hover-, Active-, Disabled- und Focus-States.
+- Kundenfragen, die wiederholt auftauchen.
+- Projektlearnings oder Vorher-/Nachher-Erfahrungen.
+- Sprachnotizen, Stichpunkte oder Entwürfe.
+- Bestehende Website-, Angebots- oder Beratungsinhalte.
+- Google-Business- oder LinkedIn-Posts aus der Vergangenheit.
+- Wiederkehrende Themen, die wichtig wären, aber nicht regelmäßig formuliert werden.
 
-### Animationen und Effektbibliothek
+### Output des kostenlosen Checks
 
-Vor Umsetzung müssen `animation_mockups/` und `animation_mockups/effects-catalog.json` geprüft werden.
+Der Besucher erhält per E-Mail:
 
-Vorgesehene Effekte:
+1. eine kurze Einschätzung, warum der aktuelle Content-Prozess hakt,
+2. 1-2 konkrete Workflow-Ideen für wiederholbare LinkedIn-Posts,
+3. eine Empfehlung, welcher kleine Pilot sinnvoll wäre,
+4. eine grobe Einschätzung, welches Material oder welche Vorlagen dafür nötig wären,
+5. einen klaren nächsten Schritt, falls der Prozess geeignet ist.
 
-- `scroll_reveal_stagger` für Section-Aufbau.
-- `gradient_border_grain` für Preis-/Pilotkarte.
-- optional `svg_path_journey` nur, wenn der kompakte 3-Schritt-Ablauf dadurch nicht größer oder erklärbedürftiger wirkt.
+Nicht versprechen:
 
-Mobile Animationen werden reduziert. `prefers-reduced-motion` wird respektiert.
+- fertige Automatisierung,
+- unbegrenzte Post-Erstellung,
+- garantierte Reichweite,
+- vollautomatische Veröffentlichung,
+- technische Umsetzung ohne Klärungsgespräch.
 
 ## Formularverhalten
 
-### Felder
-
-Pflichtfelder:
+### Pflichtfelder
 
 - E-Mail
-- Tätigkeit/Unternehmensart oder Website
-- Wiederkehrende Aufgabe
+- Tätigkeit/Positionierung oder Website
+- Was hält dich aktuell davon ab, regelmäßig auf LinkedIn zu posten?
+- Woraus könnten bei dir Beiträge entstehen?
 - Aktueller Ablauf inklusive grober Häufigkeit oder Zeitaufwand
 - Consent/Datenschutz
 
-Optionale Felder:
+### Optionale Felder
 
 - Name
-- gewünschter Output
+- gewünschter Output, z. B. Post-Entwurf, Hook-Ideen, Carousel-Struktur oder Themenliste
 - verwendete Tools/Vorlagen
-- anonymisiertes Beispiel
-- Upload eines anonymisierten Beispiels oder Dokuments
+- anonymisiertes Beispiel als Freitext
+- wichtigstes Ziel: sichtbarer werden, schneller posten, klarer formulieren, Vertrauen aufbauen, Leads vorbereiten
 
-Nicht vorgesehen:
+### Nicht im ersten Formular abfragen
 
 - Pflicht-Telefonnummer
 - Pflicht-Budget
-- Pflicht-Kalenderbuchung
-- Upload sensibler Kundendaten, vertraulicher Verträge oder unbearbeiteter Kundendokumente
-
-### Client-seitig
-
-- Validierung mit zugänglichen Fehlermeldungen.
-- Honeypot-Feld analog bestehender Kontaktformulare.
-- Submit über die bestehende `/api/public/contact`-Route, erweitert um `workflow_check`.
-- Erfolgszustand ohne automatische Kalenderpflicht.
-- Fehlerzustand mit klarer, nicht technischer Meldung.
-- Upload-Feld mit klarer Dateityp-, Größen- und Datenschutzkommunikation.
-- Upload darf erst nach aktiver Datenschutz-/Consent-Bestätigung abgesendet werden.
-- Client-seitig werden keine KI-Prompts gebaut und keine KI-API direkt aufgerufen.
-
-### Analytics
-
-Bestehende Conversion-Events werden weiterverwendet:
-
-- `form_start`
-- `form_submit_attempt`
-- `lead_submit_success`
-- `form_submit_error`
-- CTA-Klicks
-
-Pflicht-Kontext:
-
-- `form_id: "workflow_check"`
-- Locations wie `ai_workflows_hero`, `ai_workflows_form`, `ai_workflows_final_cta`
-
-Analytics-Payloads enthalten keine PII.
+- detaillierter Tool-Stack
+- Uploads
+- mehrere Kanäle gleichzeitig
+- verbindliches Interesse an einem bezahlten Piloten
 
 ## Backend- und Contact-Architektur
 
@@ -213,166 +138,90 @@ workflow_check;
 
 Diese wird als neuer `CONTACT_REQUEST_KIND` modelliert und nicht auf bestehende Projektanfragen gemappt.
 
-### Shared DTOs
-
-Neue Shared DTOs/Form-Values:
-
-- `packages/common/src/contracts/contact/workflow-check/**`
-
-Geplant:
-
-- Request-DTO
-- Form-Values
-- Zod-Schema
-- typisierte Validierungsfehler nach bestehendem Pattern
-
 ### Server-seitige Verarbeitung
 
-Die bestehende Contact-Route wird um `workflow_check` erweitert:
-
-- Body an der HTTP-Grenze gegen das neue DTO validieren.
+- Body an der HTTP-Grenze gegen ein eigenes Workflow-Check-DTO validieren.
 - Rate-Limit und Payload-Limit der bestehenden Contact-Route weiterverwenden.
 - Spam-/Honeypot-Logik beibehalten.
 - Anfrage an neuen Command-Handler weiterreichen.
-- Mail-Notification mit eigener Workflow-Check-Vorlage versenden.
-- Upload-Metadaten, erlaubte Dateitypen und Größenlimit serverseitig validieren.
-- Upload-Inhalte nur serverseitig verarbeiten; keine KI-API-Keys oder Prompt-Details im Client.
+- Anfrage speichern und interne Mail-Notification versenden.
+- Optionaler serverseitiger KI-Service erzeugt eine strukturierte Content-Workflow-Einschätzung.
+- Bei KI-Fehlern geht die Lead-Anfrage nicht verloren; der Check wird als manuell nachzufassen markiert.
 
 ### KI-Workflow-Backend
 
-Für V1 ist eine echte KI-gestützte Backend-Auswertung vorgesehen.
+Für V1 ist ein serverseitiger KI-gestützter Check vorgesehen, aber keine öffentliche KI-Spielwiese.
 
-Geplant:
+Strukturierte Ausgabe:
 
-- eigener serverseitiger Workflow-Check-Skill oder klar abgegrenztes Workflow-Modul
-- serverseitiger KI-API-Aufruf nach erfolgreicher Validierung, Rate-Limit-Prüfung und Consent-Prüfung
-- strukturierter Prompt aus Formularfeldern und optionalem anonymisiertem Upload-Kontext
-- strukturierte Ausgabe, z. B. Problemzusammenfassung, 1-2 Workflow-Ideen, Aufwandseinschätzung, empfohlener Pilot-Scope
-  und offene Rückfragen
-- Persistenz der Anfrage und der erzeugten Auswertung nach bestehendem Lead-/Submission-Muster
-- interne Mail mit Formularinhalt, Upload-Hinweis und KI-Auswertung
-- Fehlerpfad, wenn KI-Auswertung scheitert: Anfrage trotzdem speichern und als manuell nachzufassenden Workflow-Check
-  markieren
-
-Die KI-Auswertung ist ein Backend-Prozess. Die Landingpage zeigt keine freie öffentliche Chat- oder Prompt-Oberfläche.
-
-### Persistenz
-
-Persistenz folgt der bestehenden Contact-Architektur:
-
-- `Lead`
-- `LeadSubmission`
-- eigene Workflow-Check-Detaildaten
-- optionaler Upload-/Attachment-Datensatz oder referenzierte Datei-Metadaten
-- KI-Auswertung/Workflow-Check-Ergebnis als eigener strukturierter Datensatz oder klar abgegrenztes Feld im
-  Workflow-Check-Kontext
-
-Die bestehenden Projektanfrage-Detaildaten werden nicht zweckentfremdet.
-
-### Mail-Notification
-
-Eigene interne Mail-Vorlage für Workflow-Check-Anfragen:
-
-- E-Mail
-- Name, falls angegeben
-- Website oder Unternehmensart
-- wiederkehrende Aufgabe
-- aktueller Ablauf
-- Häufigkeit oder Zeitaufwand
-- gewünschter Output, falls angegeben
-- Tools/Vorlagen, falls angegeben
-- anonymisiertes Beispiel, falls angegeben
-- Upload-Hinweis, falls Datei übermittelt wurde
-- KI-Auswertung mit Workflow-Ideen und Pilot-Empfehlung, falls erfolgreich erzeugt
-- Datenschutzkontext: keine sensiblen Kundendaten, keine vertraulichen Dokumente
+- Problemzusammenfassung des aktuellen Content-Prozesses,
+- 1-2 Content-Workflow-Ideen,
+- mögliche Input-Quellen,
+- empfohlener Pilot-Scope,
+- offene Rückfragen.
 
 ## SEO und Indexierbarkeit
 
-Geplant:
-
-- eigene Metadata pro Locale
-- Canonical:
+- Eigene Metadata pro Locale.
+- Canonicals:
   - `/de/services/ai-workflows`
   - `/en/services/ai-workflows`
-- `alternates.languages` für DE/EN
-- OpenGraph-Texte aus Dictionaries
-- Service Structured Data aus locale-basierten Dictionaries oder typisierten Locale-Mappings
-- interne crawlbare Verlinkung aus passenden Marketing-Bereichen
-- Sitemap prüfen und Route aufnehmen, falls sie nicht automatisch über Route-Konstanten läuft
-- Robots prüfen, damit die Route indexierbar bleibt
+- `alternates.languages` für DE/EN.
+- OpenGraph-Texte aus Dictionaries.
+- Service Structured Data aus locale-basierten Dictionaries oder typisierten Locale-Mappings.
+- Interne crawlbare Verlinkung aus passenden Marketing-Bereichen.
+- Sitemap/Robots prüfen.
 
-Die Metadata-Title-Konvention wird eingehalten: Unterseite als `Seitenthema | Invessiv`.
+Metadata-Title-Konvention: Unterseite als `Seitenthema | Invessiv`, z. B. `KI-Content-Workflows | Invessiv`.
 
 ## Tests
 
 ### Unit- und Integrationstests
 
-Geplante Tests:
-
 - Route-Metadata für DE/EN inklusive Canonical und Alternates.
-- neue `SITE_ROUTES`-Konstante und locale path usage.
+- Neue `SITE_ROUTES`-Konstante und locale path usage.
 - Workflow-Check DTO/Zod-Validation:
-  - required fields
-  - invalid email
-  - missing consent
-  - Honeypot/Spam
-  - Upload-Dateityp und Upload-Größe
-  - Payload shape
+  - required fields,
+  - invalid email,
+  - missing consent,
+  - Honeypot/Spam,
+  - Payload shape.
 - Contact API Dispatch für `workflow_check`.
 - Mapper/Persistenz-Input für Lead, Submission und Workflow-Check-Details.
 - KI-Workflow-Service:
-  - baut strukturierte KI-Anfrage aus validierten Formular- und Upload-Daten
-  - speichert strukturierte Auswertung
-  - behandelt KI-API-Fehler ohne Verlust der Lead-Anfrage
-- Mail-Template DE/EN enthält Aufgabe, Ablauf, Website/Unternehmensart, Upload-Hinweis, KI-Auswertung und
-  Datenschutzkontext.
-- Client Mapper/Form-Service sendet korrektes DTO.
+  - baut strukturierte Anfrage aus validierten Formularfeldern,
+  - speichert strukturierte Auswertung,
+  - behandelt KI-API-Fehler ohne Verlust der Lead-Anfrage.
+- Mail-Template DE/EN enthält Content-Prozess, Materialquellen, Ziel, Datenschutzkontext und KI-Auswertung.
 - Formular-Komponente:
-  - Validation Errors
-  - Successful Submit State
-  - Submit Error State
-  - Upload-Validierung
+  - Validation Errors,
+  - Successful Submit State,
+  - Submit Error State.
 
 ### E2E und Smoke
-
-Geplante E2E-/Smoke-Prüfungen:
 
 - `/de/services/ai-workflows` rendert.
 - `/en/services/ai-workflows` rendert.
 - Primary CTA scrollt zum Formular und fokussiert sinnvoll.
-- Formular kann mit gültigen Daten und optionalem anonymisiertem Upload abgesendet werden.
+- Formular kann mit gültigen Daten abgesendet werden.
 - Keyboard Navigation funktioniert.
 - Fokuszustände sind sichtbar.
 - Mobile Viewport ohne Textüberlauf oder überlappende UI.
-
-### Quality Gates
-
-Vor Merge:
-
-```bash
-npm run lint
-npm run typecheck
-npm run test:unit
-npm run build
-```
-
-Bei Formular-/API-Änderungen zusätzlich relevante Integrationstests für die Contact API.
 
 ## Akzeptanzkriterien
 
 - Neue Route ist unter `/de/services/ai-workflows` und `/en/services/ai-workflows` erreichbar.
 - Seite nutzt eigene Dictionaries für DE/EN.
 - Keine sichtbaren UI-Texte inline in Page-Dateien oder Komponenten.
+- Zielgruppe, Problem und Angebot sind konsistent auf Solo-Dienstleister mit LinkedIn-Content-Prozess ausgerichtet.
 - Neue Formular-Anfrageart heißt `workflow_check`.
 - Workflow-Check verwendet eigene DTOs und eigene serverseitige Validierung.
 - Persistenz nutzt Lead + LeadSubmission + eigene Workflow-Check-Detaildaten.
-- Optionaler Upload ist vorhanden, begrenzt, serverseitig validiert und klar als anonymisiertes Beispiel kommuniziert.
-- Eine echte KI-gestützte Auswertung läuft serverseitig nach Validierung, Rate-Limit und Consent-Prüfung.
-- KI-API-Keys, Prompt-Details und Upload-Verarbeitung bleiben ausschließlich im Backend.
+- Upload ist in V1 nicht enthalten.
+- KI-API-Keys, Prompt-Details und Auswertung bleiben ausschließlich im Backend.
 - Bei KI-API-Fehlern geht die Lead-Anfrage nicht verloren.
 - Keine Zweckentfremdung der Projektanfrage.
 - Keine PII in Analytics-Payloads.
-- CTA-Events und Formular-Events enthalten `form_id: "workflow_check"`.
 - SEO-Metadata, Canonical, Alternates und Service Structured Data sind vorhanden.
 - Sitemap/Robots sind geprüft.
 - Keine neue globale Section-CSS in `globals.css`.
@@ -380,28 +229,11 @@ Bei Formular-/API-Änderungen zusätzlich relevante Integrationstests für die C
 - Dark Mode ist Default; Light Mode bleibt kompatibel.
 - Mobile Layout ist ohne Überlauf und ohne überlappende UI nutzbar.
 
-## Umsetzungsreihenfolge
-
-1. Bestehende Marketing-, Contact- und Dictionary-Strukturen prüfen.
-2. Route-Konstante und i18n-Content für DE/EN vorbereiten.
-3. Statische Landingpage-Sections als Server Components aufbauen.
-4. Design-Effekte aus `animation_mockups/` auswählen und integriert planen.
-5. Workflow-Check DTOs und Request-Art ergänzen.
-6. Formular als Client Component mit Validierung und Honeypot umsetzen.
-7. Upload-Handling mit Dateityp-/Größenlimit und Datenschutzkommunikation ergänzen.
-8. KI-Workflow-Backend mit Skill/Service, strukturierter Auswertung und Fehlerpfad ergänzen.
-9. Contact API Dispatch, Command-Handler, Mapper, Persistenz und Mail-Notification erweitern.
-10. SEO-Metadata, Structured Data, interne Links und Sitemap/Robots prüfen.
-11. Unit-/Integrationstests ergänzen.
-12. E2E-/Smoke-Tests für Routing, CTA, Upload und Formular ergänzen.
-13. Quality Gates ausführen und Ergebnisse dokumentieren.
-
 ## Annahmen
 
-- Die erste Kampagne fokussiert Webdesign- und Marketingagenturen mit Angebotsprozessen.
-- Der kostenlose Check wird KI-gestützt ausgewertet und intern qualifiziert.
-- Uploads sind in V1 erlaubt, aber nur als anonymisierte oder bereinigte Beispiele mit klaren Limits.
-- Die KI-Auswertung dient als Prozess-Check und Pilot-Vorbereitung, nicht als frei nutzbares KI-Tool.
+- Die erste Kampagne fokussiert Solo-Dienstleister mit LinkedIn als primärem Kanal.
+- Der kostenlose Check qualifiziert den Content-Prozess und bereitet einen Mini-Pilot vor.
+- Kostenlos ist nur die Einschätzung, nicht die laufende Erstellung fertiger Posts.
 - Bezahlte Mini-Piloten starten ab 1.500 € netto mit klar begrenztem Scope.
 - Der erweiterte Pilot liegt bei 2.500-3.500 € netto.
 - Ausbauprojekte starten ab 5.000 € netto.

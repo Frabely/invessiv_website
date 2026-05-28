@@ -1,4 +1,5 @@
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
+import { AiWorkflowsHeroSection } from "@/components/marketing/ai-workflows/hero-section/hero-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -7,6 +8,7 @@ import {
   AI_WORKFLOWS_HEADER_NAVIGATION,
   AI_WORKFLOWS_SECTION_HREFS,
 } from "@/config/navigation/ai-workflows";
+import { getAiWorkflowsHeroContent } from "@/i18n/dictionaries/ai-workflows/hero";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
 type AiWorkflowsPageProps = {
@@ -14,6 +16,7 @@ type AiWorkflowsPageProps = {
 };
 
 export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
+  const hero = getAiWorkflowsHeroContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
@@ -30,7 +33,14 @@ export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
           <span className="page-noise" />
         </div>
 
-        {/* Sections werden in Tasks A1–A6 ergänzt */}
+        <AiWorkflowsHeroSection
+          {...hero}
+          primaryCtaHref={AI_WORKFLOWS_SECTION_HREFS.contact}
+          secondaryCtaHref={AI_WORKFLOWS_SECTION_HREFS.offer}
+          trackingLocation="ai_workflows_hero"
+        />
+
+        {/* Sections A2–A6 folgen */}
 
         <FooterSection
           bottomNote={footer.bottomNote}
