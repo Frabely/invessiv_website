@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
-import type { LandingAiOfferContent } from "@/i18n/dictionaries/ai-workflows/offer";
+import type { LandingAiOfferContent } from "@/i18n/dictionaries/linkedin-post/offer";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./offer-section.module.css";
 

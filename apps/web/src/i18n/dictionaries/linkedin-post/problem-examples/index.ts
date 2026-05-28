@@ -18,7 +18,7 @@ export type LandingAiProblemExamplesContent = {
 
 const CONTENT: Record<Locale, LandingAiProblemExamplesContent> = { de, en };
 
-export function getAiWorkflowsProblemExamplesContent(
+export function getLinkedInPostProblemExamplesContent(
   locale: Locale,
 ): LandingAiProblemExamplesContent {
   return CONTENT[locale];

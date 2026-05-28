@@ -1,36 +1,36 @@
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
-import { AiWorkflowsHeroSection } from "@/components/marketing/ai-workflows/hero-section/hero-section";
-import { ProblemExamplesSection } from "@/components/marketing/ai-workflows/problem-examples-section/problem-examples-section";
-import { OfferSection } from "@/components/marketing/ai-workflows/offer-section/offer-section";
+import { AiWorkflowsHeroSection } from "@/components/marketing/linkedin-post/hero-section/hero-section";
+import { ProblemExamplesSection } from "@/components/marketing/linkedin-post/problem-examples-section/problem-examples-section";
+import { OfferSection } from "@/components/marketing/linkedin-post/offer-section/offer-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { FOOTER_SECTION_ID } from "@/config/navigation/home";
 import {
-  AI_WORKFLOWS_HEADER_NAVIGATION,
-  AI_WORKFLOWS_SECTION_HREFS,
-} from "@/config/navigation/ai-workflows";
-import { getAiWorkflowsHeroContent } from "@/i18n/dictionaries/ai-workflows/hero";
-import { getAiWorkflowsProblemExamplesContent } from "@/i18n/dictionaries/ai-workflows/problem-examples";
-import { getAiWorkflowsOfferContent } from "@/i18n/dictionaries/ai-workflows/offer";
+  LINKEDIN_POST_HEADER_NAVIGATION,
+  LINKEDIN_POST_SECTION_HREFS,
+} from "@/config/navigation/linkedin-post";
+import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
+import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
+import { getLinkedInPostOfferContent } from "@/i18n/dictionaries/linkedin-post/offer";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
-type AiWorkflowsPageProps = {
+type LinkedInPostPageProps = {
   locale: Locale;
 };
 
-export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
-  const hero = getAiWorkflowsHeroContent(locale);
-  const problemExamples = getAiWorkflowsProblemExamplesContent(locale);
-  const offer = getAiWorkflowsOfferContent(locale);
+export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
+  const hero = getLinkedInPostHeroContent(locale);
+  const problemExamples = getLinkedInPostProblemExamplesContent(locale);
+  const offer = getLinkedInPostOfferContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
     <>
       <AnchorOffsetScroll />
       <SiteHeader
-        ctaHref={AI_WORKFLOWS_SECTION_HREFS.contact}
-        navigation={AI_WORKFLOWS_HEADER_NAVIGATION}
+        ctaHref={LINKEDIN_POST_SECTION_HREFS.generator}
+        navigation={LINKEDIN_POST_HEADER_NAVIGATION}
         showThemeSwitch={false}
       />
 
@@ -41,21 +41,21 @@ export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
 
         <AiWorkflowsHeroSection
           {...hero}
-          primaryCtaHref={AI_WORKFLOWS_SECTION_HREFS.contact}
-          secondaryCtaHref={AI_WORKFLOWS_SECTION_HREFS.offer}
-          trackingLocation="ai_workflows_hero"
+          primaryCtaHref={LINKEDIN_POST_SECTION_HREFS.generator}
+          secondaryCtaHref={LINKEDIN_POST_SECTION_HREFS.offer}
+          trackingLocation="linkedin_post_hero"
         />
 
         <ProblemExamplesSection
-          id={AI_WORKFLOWS_SECTION_HREFS.problem.slice(1)}
+          id={LINKEDIN_POST_SECTION_HREFS.problem.slice(1)}
           locale={locale}
           {...problemExamples}
         />
 
         <OfferSection
-          id={AI_WORKFLOWS_SECTION_HREFS.offer.slice(1)}
+          id={LINKEDIN_POST_SECTION_HREFS.offer.slice(1)}
           locale={locale}
-          ctaHref={AI_WORKFLOWS_SECTION_HREFS.contact}
+          ctaHref={LINKEDIN_POST_SECTION_HREFS.generator}
           {...offer}
         />
 

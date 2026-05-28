@@ -1,314 +1,301 @@
-# AI-Workflows Landingpage — Step-by-Step Umsetzungsplan
+# LinkedIn-Post Landingpage — Step-by-Step Umsetzungsplan
 
-> **Für agentische Worker:** Schritte nutzen Checkbox-Syntax (`- [ ]`) zum Tracking. Bei Copy-Schritten ist
-> `copywriting`
-> Pflicht; bei UI-Schritten ist `frontend-design` Pflicht. Vor Section-/Animationsarbeit müssen `animation_mockups/` und
+> **Pivot-Notiz (2026-05-28):** Der ursprüngliche "manueller Workflow-Check"-Ansatz wurde ersetzt durch
+> ein **Lead-Magnet-Generator-Funnel**: Besucher gibt Thema + Expertise + Ton + E-Mail ein → fertiger
+> LinkedIn-Post (Bild + Caption) erscheint sofort auf der Page + wird per Mail zugesendet → weiche CTA
+> zur Projektanfrage. Pricing gehört nicht auf diese Page; Pricing-Tiers folgen auf der allgemeinen
+> `/services/ai-workflows`-Landingpage (separater Plan: `ki-workflows-landing-stub.md`).
+>
+> **Für agentische Worker:** Bei Copy-Schritten ist `copywriting` Pflicht; bei UI-Schritten ist
+> `frontend-design` Pflicht. Vor Section-/Animationsarbeit müssen `animation_mockups/` und
 > `animation_mockups/effects-catalog.json` geprüft werden.
-
-## Zielbild V1
-
-**Goal:** Neue conversion-fokussierte Marketing-Landingpage unter `/[locale]/services/ai-workflows` (DE/EN) für einen
-kostenlosen Content-Workflow-Check.
-
-**Zielgruppe:** Solo-Dienstleister, Berater, Coaches und kleine B2B-Selbstständige, die regelmäßig auf LinkedIn sichtbar
-sein wollen, aber keinen stabilen Content-Prozess haben.
-
-**Konkretes Problem:** LinkedIn bleibt liegen, obwohl genug Material vorhanden wäre: Kundenfragen, Projektlearnings,
-Sprachnotizen, Stichpunkte, alte Posts, Website-Inhalte oder Beratungsalltag.
-
-**Konkretes Angebot:** Kostenloser Content-Workflow-Check für 5 passende Selbstständige. Besucher beschreiben ihren
-aktuellen LinkedIn-/Content-Prozess; Invessiv prüft, ob daraus ein wiederholbarer KI-Content-Workflow mit klarem
-Pilot-Scope werden kann.
-
-**Anschlussangebot:** Bezahlte Mini-Piloten ab 1.500 € netto mit klar begrenztem Scope.
-
-**Nicht-Ziel:** Kein kostenloser LinkedIn-Post-Generator, keine vollautomatische Veröffentlichung, kein
-Content-Kalender-
-SaaS, kein Login/Dashboard, kein Upload in V1.
-
-## Architektur
-
-- Next.js App Router Route-Gruppe `(marketing)`.
-- Route orchestriert nur Metadata, Dictionary-Laden, Structured Data und Section-Rendering.
-- Komponenten liegen unter `apps/web/src/components/marketing/ai-workflows/**`.
-- Sichtbare Copy liegt ausschließlich in DE/EN-Dictionaries unter `apps/web/src/i18n/dictionaries/ai-workflows/**`.
-- Form-UI spricht gegen typisierte Submit-Services; DTO, API-Dispatch, Persistenz, KI-Auswertung und Mail bleiben im
-  Logik-Track.
-- Upload bleibt V2. V1 nutzt anonymisierte Freitextbeispiele.
-
-## Verbindliche Copy-Basis
-
-Hero DE:
-
-- Tag: `LINKEDIN-CONTENT-WORKFLOW`
-- H1: `Kosten dich LinkedIn-Posts zu viel Zeit?`
-- Description:
-  `Kostenloser Check für 5 Selbstständige: Wir prüfen, ob aus deinen Ideen ein wiederholbarer Content-Workflow werden kann.`
-- Primary CTA: `Content-Workflow prüfen`
-- Secondary CTA: `Was du bekommst`
-- Trust-Chips: `Kostenloser Check`, `Klare Workflow-Einschätzung`
-
-Hero EN sinngemäß:
-
-- Tag: `LINKEDIN CONTENT WORKFLOW`
-- H1: `Why does LinkedIn keep slipping?`
-- Description:
-  `Free check for 5 solo service providers: we test whether your ideas can become a repeatable content workflow.`
-- Primary CTA: `Check my content workflow`
-- Secondary CTA: `What you get`
-- Trust-Chips: `Free check`, `Clear workflow assessment`
-
-Primärer CTA im gesamten Flow: `Content-Workflow prüfen`.
-
-## Verbindliche Bauprinzipien (Track A)
-
-- **Mobile First (verbindlich):** Jede Section und jedes Dictionary wird zuerst für Mobile (360 px) gebaut und dann für
-  Tablet/Desktop erweitert. Copy ist standardmäßig kurz und scannbar — kein Fließtext, der auf kleinen Screens zur
-  Textwand wird. Lange Passagen, Verschachtelungen und dekorative Zusatztexte werden weggelassen, wenn sie auf Mobile
-  keinen Wert liefern.
-- **Copy-Regel (verbindlich):** Body-Texte max. 2 kurze Sätze. Listenpunkte max. 5 Wörter. Zusammenfassungen 1 Satz.
-
-## Track-Übersicht
-
-- **Seam S:** geteilter Form-Values-Typ + Submit-Service-Stub.
-- **Track A — UI:** Route, Dictionaries, Hero, Problem-/Beispiele-Section, Offer, Pricing, Privacy, Formular, Metadata.
-- **Track B — Logik:** `workflow_check`-Request-Art, DTO/Zod, API-Dispatch, Persistenz, optionaler KI-Check, interne
-  Mail.
-- **Track C — Integration & SEO:** echter Submit-Service, interne Links, Sitemap/Robots.
-- **Track D — QA:** E2E, A11y-Smoke, Quality Gates.
-
-Jeder Task endet mit genau einem Commit.
 
 ---
 
-## SEAM — gemeinsame Schnittstelle zuerst
+## Zielbild V1
 
-### Task S1: Form-Values-Typ + Submit-Service-Stub
+**Route:** `/[locale]/services/linkedin-post`
 
-**Zweck:** UI und Logik entkoppeln.
+**Goal:** Conversion-fokussierte Lead-Capture-Page. Besucher gibt Thema, Expertise und Ton ein →
+erhält einen fertigen LinkedIn-Post (HTML-generiertes Bild + Caption) direkt auf der Page und per
+E-Mail. Danach weiche CTA zur unverbindlichen Anfrage für einen eigenen KI-Content-Workflow.
+
+**Zielgruppe:** Solo-Dienstleister, Berater, Coaches und kleine B2B-Selbstständige, die regelmäßig
+auf LinkedIn sichtbar sein wollen, aber keinen stabilen Content-Prozess haben.
+
+**Primäres Conversion-Ziel:** Lead erfassen (E-Mail + Branche + Posting-Kontext).
+
+**Sekundäres Conversion-Ziel:** Projektanfrage nach erlebtem Sofortwert (generierter Post).
+
+**Nicht-Ziel:** Kein allgemeiner KI-Workflow-Berater, kein Dashboard, kein Login, kein Upload,
+kein Subscription-Modell, kein Pricing auf dieser Page, kein LinkedIn-Autoposter.
+
+---
+
+## Architektur
+
+- Next.js App Router, Route-Gruppe `(marketing)`.
+- Route: `apps/web/src/app/[locale]/(marketing)/services/linkedin-post/page.tsx`
+- Komponenten: `apps/web/src/components/marketing/linkedin-post/**`
+- Dictionaries: `apps/web/src/i18n/dictionaries/linkedin-post/**`
+- Generator-API: `apps/web/src/app/api/public/generator/linkedin-post/route.ts`
+- Download-Endpoint: `apps/web/src/app/api/public/generator/linkedin-post/download/route.ts`
+- Generator-Service: `apps/web/src/server/services/generator/**`
+- Lead-Persistenz über bestehendes Contact-System (neuer `request_kind: "linkedin_post_generator"`)
+
+---
+
+## Verbindliche Copy-Basis
+
+**Hero DE:**
+
+- Tag: `KI-CONTENT FÜR LINKEDIN`
+- H1: `Dein nächster LinkedIn-Post in 60 Sekunden`
+- Description: `Gib dein Thema ein — wir generieren einen fertigen Post mit Bild. Kostenlos, kein Account nötig.`
+- Primary CTA: `Post generieren`
+- Trust-Chips: `Kostenlos`, `Sofort-Ergebnis`, `Download inklusive`
+
+**Hero EN (sinngemäß):**
+
+- Tag: `AI CONTENT FOR LINKEDIN`
+- H1: `Your next LinkedIn post in 60 seconds`
+- Description: `Enter your topic — we generate a ready-to-post image and caption. Free, no account needed.`
+- Primary CTA: `Generate post`
+- Trust-Chips: `Free`, `Instant result`, `Download included`
+
+---
+
+## Verbindliche Bauprinzipien
+
+- **Mobile First (verbindlich):** Jede Section zuerst für 360 px, dann Tablet/Desktop.
+- **Copy-Regel:** Body max. 2 kurze Sätze. Listen max. 5 Wörter pro Punkt.
+- **Kein Pricing auf dieser Page.**
+- **Output-Qualität vor Geschwindigkeit:** Bei schlechter Bild-Generierung lieber Loading-State
+  verlängern als ein qualitativ schlechtes Bild auszuliefern.
+
+---
+
+## SEAM — Gemeinsame Schnittstelle
+
+### Task S1: GeneratorFormValues + Submit-Service-Stub _(aktualisiert)_
 
 **Files:**
 
-- Create: `packages/common/src/contracts/contact/forms/workflow-check-form-values.ts`
-- Create: `apps/web/src/client/contact/workflow-check/submit-workflow-check.ts`
+- Create/Replace: `packages/common/src/contracts/generator/linkedin-post-generator-form-values.ts`
+- Create/Replace: `apps/web/src/client/generator/submit-linkedin-post-generator.ts`
 
 - [ ] **Step 1: Form-Values-Typ definieren**
 
 ```ts
-export type WorkflowCheckFormValues = {
+export type LinkedInPostGeneratorFormValues = {
+  topic: string; // Thema (Freitext, max. 280 Zeichen)
+  expertise: string; // Branche / Positionierung (Freitext, max. 120 Zeichen)
+  tone: "sachlich" | "persönlich" | "provokativ";
   email: string;
-  businessType: string;
-  website: string;
-  postingBlocker: string;
-  contentSources: string;
-  currentProcess: string;
   consent: boolean;
-  name: string;
-  desiredOutput: string;
-  toolsUsed: string;
-  anonymizedExample: string;
-  company: string;
+  company: string; // Honeypot
 };
 
-export const WORKFLOW_CHECK_FORM_INITIAL_VALUES: WorkflowCheckFormValues = {
-  email: "",
-  businessType: "",
-  website: "",
-  postingBlocker: "",
-  contentSources: "",
-  currentProcess: "",
-  consent: false,
-  name: "",
-  desiredOutput: "",
-  toolsUsed: "",
-  anonymizedExample: "",
-  company: "",
-};
+export const LINKEDIN_POST_GENERATOR_INITIAL_VALUES: LinkedInPostGeneratorFormValues =
+  {
+    topic: "",
+    expertise: "",
+    tone: "persönlich",
+    email: "",
+    consent: false,
+    company: "",
+  };
 ```
 
-- [ ] **Step 2: Submit-Service-Interface + Stub**
+- [ ] **Step 2: Submit-Result-Typ + Stub**
 
 ```ts
-import type { WorkflowCheckFormValues } from "@invessiv/common/contracts/contact/forms/workflow-check-form-values";
-
-export type SubmitWorkflowCheckResult =
-  | { ok: true }
+export type LinkedInPostGeneratorResult =
+  | { ok: true; imageUrl: string; caption: string; downloadToken: string }
   | { ok: false; fieldErrors?: Record<string, string[]>; code: string };
 
-export async function submitWorkflowCheck(
-  _values: WorkflowCheckFormValues,
-): Promise<SubmitWorkflowCheckResult> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return { ok: true };
+export async function submitLinkedInPostGenerator(
+  _values: LinkedInPostGeneratorFormValues,
+): Promise<LinkedInPostGeneratorResult> {
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return {
+    ok: true,
+    imageUrl: "/placeholder-post.png",
+    caption: "Beispiel-Caption für deinen LinkedIn-Post.",
+    downloadToken: "stub-token",
+  };
 }
 ```
 
 - [ ] **Step 3: Verify** — `npm run typecheck`
-- [ ] **Step 4: Commit** — `feat(ai-workflows): add workflow-check form seam`
+- [ ] **Step 4: Commit** — `feat(linkedin-post): add generator form seam`
 
 ---
 
 # TRACK A — UI
 
-### Task A0: Route-Konstante + Route-Scaffold + Navigation
+### Task A0: Route-Rename + Scaffold + Navigation _(aktualisiert)_
+
+**Scope:** Die bestehende `ai-workflows`-Route und alle zugehörigen Artefakte werden auf
+`linkedin-post` umbenannt. Dies ist ein reiner Rename — keine inhaltliche Änderung an bestehenden
+Komponenten oder Dictionaries.
 
 **Files:**
 
 - Modify: `apps/web/src/config/routes.ts`
-- Create: `apps/web/src/config/navigation/ai-workflows.ts`
-- Create: `apps/web/src/app/[locale]/(marketing)/services/ai-workflows/page.tsx`
-- Create: `apps/web/src/components/marketing/ai-workflows/ai-workflows-page/ai-workflows-page.tsx`
+- Rename: `apps/web/src/app/[locale]/(marketing)/services/ai-workflows/` →
+  `apps/web/src/app/[locale]/(marketing)/services/linkedin-post/`
+- Rename: `apps/web/src/components/marketing/ai-workflows/` →
+  `apps/web/src/components/marketing/linkedin-post/`
+- Rename: `apps/web/src/i18n/dictionaries/ai-workflows/` →
+  `apps/web/src/i18n/dictionaries/linkedin-post/`
+- Rename: `apps/web/src/config/navigation/ai-workflows.ts` →
+  `apps/web/src/config/navigation/linkedin-post.ts`
+- Update: alle Imports in betroffenen Dateien
 
-- [ ] **Step 1:** `SITE_ROUTES.AI_WORKFLOWS_SERVICE = "/services/ai-workflows"` ergänzen.
-- [ ] **Step 2:** Navigation mit Section-IDs `problem`, `offer`, `pricing`, `privacy`, `contact` anlegen.
-- [ ] **Step 3:** Orchestrator rendert `SiteHeader`, `main.marketing-main`, Sections und `FooterSection`.
-- [ ] **Step 4:** Route-Page spiegelt bestehende Marketing-Route mit Locale-Guard.
-- [ ] **Step 5:** Verify `/de/services/ai-workflows` und `/en/services/ai-workflows`.
-- [ ] **Step 6:** Commit — `feat(ai-workflows): scaffold route and navigation`
+- [ ] **Step 1:** `SITE_ROUTES` aktualisieren:
+  - `LINKEDIN_POST_SERVICE = "/services/linkedin-post"` (diese Kampagnen-Page)
+  - `AI_WORKFLOWS_SERVICE = "/services/ai-workflows"` bleibt reserviert für die allgemeine
+    KI-Workflows-Landingpage (eigener Plan)
+- [ ] **Step 2:** Ordner umbenennen (`git mv`), Imports nachziehen.
+- [ ] **Step 3:** Navigation-Config auf neue Route + Section-IDs `problem`, `offer`, `generator` updaten.
+- [ ] **Step 4:** Verify `npm run typecheck` + Route `/de/services/linkedin-post` erreichbar.
+- [ ] **Step 5:** Commit — `refactor(linkedin-post): rename route from ai-workflows`
 
-### Task A1: Hero-Section
+> **Nach diesem Task stoppen** und Ergebnis reviewen, bevor A1 ff. gestartet wird.
 
-**Files:**
+---
 
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/hero/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/components/marketing/ai-workflows/hero-section/hero-section.tsx`
-- Create: `apps/web/src/components/marketing/ai-workflows/hero-section/hero-section.module.css`
-
-**Content-Shape:** `tag`, `title`, `description`, `primaryCta`, `secondaryCta`, `trustChips`, `visualAriaLabel`.
-
-- [ ] **Step 1:** DE/EN-Dictionaries mit verbindlicher Copy-Basis anlegen.
-- [ ] **Step 2:** Komponente mit genau einer `<h1>` bauen.
-- [ ] **Step 3:** Primary CTA auf `#contact`, Secondary CTA auf `#offer`.
-- [ ] **Step 4:** CSS Module mobile-first, Dark default, Light kompatibel, sichtbare Fokus-States. Auf Mobile wird nur
-      der Primary CTA gezeigt; der Secondary CTA bleibt Desktop/Tablet vorbehalten.
-- [ ] **Step 5:** Trust-Chips unter dem CTA mit der bestehenden `SectionScanPoints`-Komponente rendern, keine neue
-      lokale Chip-Komponente oder eigene Chip-Optik einführen.
-- [ ] **Step 6:** Optional `scroll_reveal_stagger` dezent einsetzen.
-- [ ] **Step 7:** Verify 360 px Mobile ohne Textüberlauf.
-- [ ] **Step 8:** Commit — `feat(ai-workflows): add hero section`
-
-### Task A2: Problem- und Beispiele-Section
+### Task A1: Hero-Section _(bleibt, minimale Copy-Anpassung)_
 
 **Files:**
 
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/problem-examples/{de.json,en.json,index.ts}`
-- Create:
-  `apps/web/src/components/marketing/ai-workflows/problem-examples-section/{problem-examples-section.tsx,problem-examples-section.module.css}`
+- Modify: `apps/web/src/i18n/dictionaries/linkedin-post/hero/{de.json,en.json}`
+- Modify: `apps/web/src/components/marketing/linkedin-post/hero-section/hero-section.tsx`
 
-**Content-Fokus:** LinkedIn bleibt liegen, weil kein wiederholbarer Prozess vom Material zum Post existiert.
+- [ ] **Step 1:** Dictionaries auf neue Copy-Basis aktualisieren (neues H1, neue Description, Trust-Chips).
+- [ ] **Step 2:** Primary CTA zeigt auf `#generator` (statt `#contact`). Secondary CTA zeigt auf `#offer`.
+- [ ] **Step 3:** Verify 360 px, Trust-Chips korrekt.
+- [ ] **Step 4:** Commit — `feat(linkedin-post): update hero copy for generator funnel`
 
-**Beispiele:** Kundenfragen, Projektlearnings, Sprachnotizen, Stichpunkte, alte Posts, Website-Inhalte, Beratungsalltag.
+---
+
+### Task A2: Problem-Section _(bleibt unverändert)_
+
+Keine Änderung. "LinkedIn bleibt liegen weil kein Prozess existiert" passt weiterhin.
+
+---
+
+### Task A3: Offer-Section _(bleibt unverändert — generisch wiederverwendbar)_
+
+Keine Änderung. Die Offer-Section ist bewusst generisch gehalten und wird auf der allgemeinen
+`/services/ai-workflows`-Page wiederverwendet.
+
+---
+
+### Task A4: Example-Section _(neu)_
+
+**Files:**
+
+- Create: `apps/web/src/i18n/dictionaries/linkedin-post/example/{de.json,en.json,index.ts}`
+- Create: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.tsx`
+- Create: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.module.css`
+
+**Inhalt:** 1–2 statische Beispiel-Posts (real generierte Ausgaben des eigenen HTML-Skills) mit
+Bild-Vorschau + Caption-Text. Zeigt dem Besucher den konkreten Output bevor er seine E-Mail angibt.
+
+**Design:** Mobile-first. Auf Mobile: Bild oben, Caption darunter, gestapelt. Auf Desktop:
+nebeneinander oder 2-Spalten-Grid. Bild immer mit `alt`-Text (Caption-Inhalt).
+
+- [ ] **Step 1:** DE/EN-Dictionaries: Section-Heading, kurzer Subtext, Aria-Labels für Beispiel-Posts.
+- [ ] **Step 2:** Statische Bild-Assets (real generierte Beispiele) einbinden — `next/image`, klar
+      dimensioniert. Placeholder verwenden bis echte Assets verfügbar.
+- [ ] **Step 3:** Scroll-Reveal (`scroll_reveal_stagger`) dezent für die Beispiel-Karten.
+- [ ] **Step 4:** Kleiner "Mach es selbst"-Link am Ende scrollt zu `#generator`.
+- [ ] **Step 5:** Verify 360 px: Bilder skalieren korrekt, kein Überlauf.
+- [ ] **Step 6:** Commit — `feat(linkedin-post): add example section with static post previews`
+
+---
+
+### Task A5: Generator-Section _(neu, ersetzt A4 Pricing + altes A6 Formular)_
+
+**Files:**
+
+- Create: `apps/web/src/i18n/dictionaries/linkedin-post/generator/{de.json,en.json,index.ts}`
+- Create: `apps/web/src/components/marketing/linkedin-post/generator-section/generator-section.tsx`
+- Create: `apps/web/src/components/marketing/linkedin-post/generator-section/generator-section.module.css`
+- Create: `apps/web/src/components/marketing/linkedin-post/generator-section/generator-section.test.tsx`
+
+**States:**
+
+1. **Idle** — Formular: Thema, Expertise, Ton (3 Buttons: sachlich / persönlich / provokativ),
+   E-Mail, Consent-Checkbox, Submit-Button.
+2. **Loading** — Submit-Button deaktiviert, Loading-Indicator, Status-Text ("Dein Post wird generiert…").
+3. **Success** — Bild-Vorschau + Caption-Text. Download-Buttons (Bild, Text). Soft-CTA-Card darunter.
+4. **Error** — Inline-Fehlermeldung, Formular bleibt editierbar.
+
+**Soft-CTA nach Ergebnis (DE):**
+`"Das war ein Beispiel-Workflow. Einen eigenen KI-Content-Prozess für dein Business bauen — lass uns
+kurz sprechen."` → Link zu Kontaktformular oder Calendly.
+
+**Mobile-first:**
+
+- Alle Felder full-width gestapelt
+- Ton-Auswahl: 3 gleichbreite Buttons, full-width auf Mobile
+- Output: Bild 100% Breite, Caption darunter
+- Download-Buttons: full-width gestapelt
+- CTA-Card: full-width, klarer Kontrast
+
+- [ ] **Step 1:** DE/EN-Dictionaries: Labels, Hilfetexte, Ton-Options, Error-Copy, Success-Copy,
+      Loading-Text, Soft-CTA-Text.
+- [ ] **Step 2:** Failing jsdom-Tests: Required-Errors (topic, email, consent), Tone-Selection,
+      Loading-State während Submit, Success-State mit imageUrl + caption, Error-State, Honeypot.
+- [ ] **Step 3:** Client Component gegen Stub `submitLinkedInPostGenerator` aus S1 bauen.
+- [ ] **Step 4:** Analytics: `generator_form_start`, `generator_submit_attempt`,
+      `generator_success`, `generator_error`, `post_download` — alle mit
+      `form_id: "linkedin_post_generator"`, keine PII.
+- [ ] **Step 5:** CSS Module: mobile-first, Ton-Buttons mit klarem Selected-State,
+      Loading-Skeleton für Bild-Placeholder, sichtbare Focus-States.
+- [ ] **Step 6:** `gradient_border_grain`-Effekt für Ergebnis-Block oder Soft-CTA-Card prüfen.
+- [ ] **Step 7:** Tests grün: `npm run test:unit -- generator-section`.
+- [ ] **Step 8:** Section mit `id="generator"` einhängen.
+- [ ] **Step 9:** Commit — `feat(linkedin-post): add linkedin post generator section`
+
+---
+
+### Task A6: Privacy-Note-Section _(vormals A5, bleibt)_
+
+**Files:**
+
+- Create: `apps/web/src/i18n/dictionaries/linkedin-post/privacy-note/{de.json,en.json,index.ts}`
+- Create: `apps/web/src/components/marketing/linkedin-post/privacy-note-section/...`
+
+**Pflichtbotschaft:** E-Mail wird nur für Zusendung des generierten Posts genutzt. Kein Spam.
+Keine Weitergabe. Datenschutz-Link. Keine sensiblen Kundendaten oder personenbezogenen Daten Dritter
+als Input verwenden.
 
 - [ ] **Step 1:** DE/EN-Dictionaries schreiben.
-- [ ] **Step 2:** Eine `<h2>`, kurzer Body, scannbare Beispiel-Liste.
-- [ ] **Step 3:** `scroll_reveal_stagger` für die Liste prüfen und reduziert auf Mobile einsetzen.
-- [ ] **Step 4:** Verify DE/EN und 360 px.
-- [ ] **Step 5:** Commit — `feat(ai-workflows): add content workflow problem section`
-
-### Task A3: Offer-Section
-
-**Files:**
-
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/offer/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/components/marketing/ai-workflows/offer-section/{offer-section.tsx,offer-section.module.css}`
-
-**Content-Fokus:** Was der kostenlose Check liefert:
-
-- kurze Prozessdiagnose,
-- 1-2 KI-Content-Workflow-Ideen,
-- Einschätzung geeigneter Input-Quellen,
-- Pilot-Empfehlung,
-- nächster Schritt bei passendem Prozess.
-
-**3-Schritt-Zeile:** `Prozess beschreiben` → `Workflow-Ideen erhalten` → `Pilot-Scope entscheiden`.
-
-- [ ] **Step 1:** DE/EN-Dictionaries schreiben; keine Reichweiten- oder Zeitersparnis-Garantien.
-- [ ] **Step 2:** Deliverables-Liste + kompakter Proof-Hinweis auf Invessiv-eigenen Social-Workflow.
-- [ ] **Step 3:** `svg_path_journey` nur einsetzen, wenn die 3-Schritt-Zeile dadurch nicht überladen wirkt.
-- [ ] **Step 4:** Verify.
-- [ ] **Step 5:** Commit — `feat(ai-workflows): add content workflow offer section`
-
-### Task A4: Pricing-/Pilot-Frame
-
-**Files:**
-
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/pricing/{de.json,en.json,index.ts}`
-- Create:
-  `apps/web/src/components/marketing/ai-workflows/pricing-section/{pricing-section.tsx,pricing-section.module.css}`
-
-**Tiers:**
-
-- Kostenloser Kurz-Check: Prozessdiagnose + 1-2 Workflow-Ideen + Pilot-Empfehlung.
-- Mini-Pilot ab 1.500 € netto: ein Content-Prozess, ein Input-Format, ein Ziel-Output, 1-2 Testläufe.
-- Erweiterter Pilot 2.500-3.500 € netto: zweiter Output oder einfache Freigabe-/Übergabelogik.
-- Ausbau ab 5.000 € netto: stabilerer Workflow, mehrere Varianten, Dokumentation oder Tool-Anbindung.
-
-- [ ] **Step 1:** DE/EN-Dictionaries schreiben.
-- [ ] **Step 2:** Pricing-Karte mit `gradient_border_grain` prüfen.
-- [ ] **Step 3:** Klare Scope-Grenzen nennen; kein "unbegrenzter Content".
-- [ ] **Step 4:** Verify.
-- [ ] **Step 5:** Commit — `feat(ai-workflows): add pilot pricing section`
-
-### Task A5: Privacy-Note-Section
-
-**Files:**
-
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/privacy-note/{de.json,en.json,index.ts}`
-- Create:
-  `apps/web/src/components/marketing/ai-workflows/privacy-note-section/{privacy-note-section.tsx,privacy-note-section.module.css}`
-
-**Pflichtbotschaft:** Keine sensiblen Kundendaten, vertraulichen Dokumente oder personenbezogenen Daten Dritter.
-Anonymisierte Beispiele als Text reichen.
-
-- [ ] **Step 1:** DE/EN-Dictionaries schreiben.
-- [ ] **Step 2:** Ruhigen Hinweisblock mit einer `<h2>` bauen.
+- [ ] **Step 2:** Ruhiger Hinweisblock mit `<p>` + Datenschutz-Link.
 - [ ] **Step 3:** Verify.
-- [ ] **Step 4:** Commit — `feat(ai-workflows): add privacy note section`
+- [ ] **Step 4:** Commit — `feat(linkedin-post): add privacy note section`
 
-### Task A6: Final-CTA + Workflow-Check-Formular
+---
 
-**Files:**
-
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/form/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/components/marketing/ai-workflows/workflow-check-form/workflow-check-form.tsx`
-- Create: `apps/web/src/components/marketing/ai-workflows/workflow-check-form/workflow-check-form.module.css`
-- Create: `apps/web/src/components/marketing/ai-workflows/workflow-check-form/workflow-check-form.test.tsx`
-
-**Pflichtfelder:**
-
-- E-Mail,
-- Tätigkeit/Positionierung oder Website,
-- `Was hält dich aktuell davon ab, regelmäßig auf LinkedIn zu posten?`,
-- `Woraus könnten bei dir Beiträge entstehen?`,
-- aktueller Ablauf inklusive grober Häufigkeit oder Zeitaufwand,
-- Consent.
-
-**Optionale Felder:** Name, gewünschter Output, Tools/Vorlagen, anonymisiertes Beispiel, wichtigstes Ziel.
-
-- [ ] **Step 1:** DE/EN-Dictionaries für Labels, Hilfetexte, Error-/Success-Copy schreiben.
-- [ ] **Step 2:** Failing jsdom-Test schreiben: Required Errors, Honeypot, Success, Submit Error, Fokus nach Submit.
-- [ ] **Step 3:** Client Component gegen `submitWorkflowCheck` aus S1 bauen.
-- [ ] **Step 4:** Analytics: `form_start`, `form_submit_attempt`, `lead_submit_success`, `form_submit_error` mit
-      `form_id: "workflow_check"` und Location `ai_workflows_form`; keine PII.
-- [ ] **Step 5:** CSS Module: mobile-first, klare Error-/Disabled-/Focus-States.
-- [ ] **Step 6:** Tests grün: `npm run test:unit -- workflow-check-form`.
-- [ ] **Step 7:** Section mit `id="contact"` einhängen.
-- [ ] **Step 8:** Commit — `feat(ai-workflows): add content workflow check form`
-
-### Task A7: Metadata + Structured Data
+### Task A7: Metadata + Structured Data _(aktualisiert)_
 
 **Files:**
 
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/meta/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/i18n/dictionaries/ai-workflows/structured-data/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/lib/seo/ai-workflows-structured-data.ts`
-- Modify: `apps/web/src/app/[locale]/(marketing)/services/ai-workflows/page.tsx`
+- Create: `apps/web/src/i18n/dictionaries/linkedin-post/meta/{de.json,en.json,index.ts}`
+- Create: `apps/web/src/lib/seo/linkedin-post-structured-data.ts`
+- Modify: `apps/web/src/app/[locale]/(marketing)/services/linkedin-post/page.tsx`
 
-- [ ] **Step 1:** Meta-Copy DE/EN schreiben. Title-Konvention: `KI-Content-Workflows | Invessiv`.
-- [ ] **Step 2:** Canonical und alternates für `/de|/en/services/ai-workflows`.
-- [ ] **Step 3:** Service Structured Data für Content-Workflow-Check, keine locale-Ternaries.
-- [ ] **Step 4:** Page-Test für Metadata DE/EN.
-- [ ] **Step 5:** Commit — `feat(ai-workflows): add metadata and structured data`
+- [ ] **Step 1:** Meta-Copy DE/EN. Title: `LinkedIn-Post Generator | Invessiv`.
+- [ ] **Step 2:** Canonical und alternates für `/de|/en/services/linkedin-post`.
+- [ ] **Step 3:** Service Structured Data: `SoftwareApplication` oder `Service` für den Generator.
+- [ ] **Step 4:** Page-Test Metadata DE/EN.
+- [ ] **Step 5:** Commit — `feat(linkedin-post): add metadata and structured data`
+
+---
 
 ### Task A8: UI-Review
 
@@ -317,119 +304,204 @@ Anonymisierte Beispiele als Text reichen.
 - [ ] `npm run test:unit`
 - [ ] `npm run build`
 - [ ] A11y-Smoke: Keyboard, Fokus-Reihenfolge, Kontrast, Dark/Light, Mobile 360 px.
-- [ ] Code Review für UI-Track.
+- [ ] Generator-Flow manuell testen (Stub): Idle → Loading → Success → Download.
+- [ ] Code-Review UI-Track.
 
 ---
 
-# TRACK B — Logik
+# TRACK B — Generator-Logik
 
-### Task B1: `workflow_check`-Anfrageart
+### Task B1: `linkedin_post_generator`-Anfrageart
 
-**Files:** Modify `packages/common/src/constants/contact/contact-request-kind.ts`.
+**Files:** Modify `packages/common/src/constants/contact/contact-request-kind.ts`
 
 - [ ] **Step 1:** Failing Konstanten-Test erweitern.
-- [ ] **Step 2:** Const-Objekt-Pattern ergänzen: `WorkflowCheck: "workflow_check"`.
+- [ ] **Step 2:** `LinkedInPostGenerator: "linkedin_post_generator"` ergänzen.
 - [ ] **Step 3:** Tests grün.
-- [ ] **Step 4:** Commit — `feat(contact): add workflow_check request kind`
+- [ ] **Step 4:** Commit — `feat(generator): add linkedin_post_generator request kind`
 
-### Task B2: Shared DTO + Zod-Schema
+---
+
+### Task B2: Generator DTO + Zod-Schema
 
 **Files:**
 
-- Create: `packages/common/src/contracts/contact/workflow-check/save-workflow-check-dto.ts`
-- Create: `apps/web/src/server/contact/validation/workflow-check/workflow-check.schema.ts`
-- Create: `apps/web/src/server/contact/validation/workflow-check/workflow-check.schema.test.ts`
+- Create: `packages/common/src/contracts/generator/linkedin-post-generator-dto.ts`
+- Create: `apps/web/src/server/generator/validation/linkedin-post-generator.schema.ts`
+- Create: `apps/web/src/server/generator/validation/linkedin-post-generator.schema.test.ts`
 
-**DTO:** spiegelt `WorkflowCheckFormValues` ohne Honeypot + `kind`.
+**DTO:**
+
+```ts
+export type LinkedInPostGeneratorDto = {
+  topic: string; // max. 280 Zeichen
+  expertise: string; // max. 120 Zeichen
+  tone: "sachlich" | "persönlich" | "provokativ";
+  email: string;
+  kind: "linkedin_post_generator";
+};
+```
 
 - [ ] **Step 1:** DTO definieren.
-- [ ] **Step 2:** Failing Schema-Tests: required fields, invalid email, missing consent, Honeypot/Spam, `businessType`
-      oder `website`, Payload shape.
+- [ ] **Step 2:** Failing Schema-Tests: required fields, topic max-length, invalid email,
+      missing consent, Honeypot/Spam, ungültiger tone-Wert.
 - [ ] **Step 3:** Zod-Schema implementieren.
 - [ ] **Step 4:** Tests grün.
-- [ ] **Step 5:** Commit — `feat(contact): add workflow-check DTO and validation`
+- [ ] **Step 5:** Commit — `feat(generator): add linkedin-post-generator DTO and validation`
 
-### Task B3: Command-Handler + API-Dispatch
+---
 
-**Files:**
-
-- Create: `apps/web/src/server/contact/handlers/submit-workflow-check.command-handler.ts`
-- Create: `apps/web/src/server/contact/handlers/submit-workflow-check.command-handler.test.ts`
-- Modify: `apps/web/src/app/api/public/contact/route.ts`
-
-- [ ] **Step 1:** Failing Handler-/Dispatch-Tests schreiben.
-- [ ] **Step 2:** Handler validiert Body, Spam/Honeypot und reicht an Mapper/Persistenz/KI/Mail weiter.
-- [ ] **Step 3:** Contact API Dispatch für `CONTACT_REQUEST_KIND.WorkflowCheck`.
-- [ ] **Step 4:** Tests grün.
-- [ ] **Step 5:** Commit — `feat(contact): handle workflow_check submissions`
-
-### Task B4: Client-Mapper + echter Submit
+### Task B3: HTML-Skill-Invokation + Caption-Generierung
 
 **Files:**
 
-- Create: `apps/web/src/client/contact/mappers/map-workflow-check-form-to-dto.ts`
-- Create: `apps/web/src/client/contact/mappers/map-workflow-check-form-to-dto.test.ts`
-- Modify: `apps/web/src/client/contact/workflow-check/submit-workflow-check.ts`
+- Create: `apps/web/src/server/services/generator/linkedin-post/generate-linkedin-post.ts`
+- Create: `apps/web/src/server/services/generator/linkedin-post/generate-linkedin-post.test.ts`
 
-- [ ] **Step 1:** Failing Mapper-Test: Form Values → DTO, Honeypot raus, `kind` gesetzt, Trim/Normalisierung.
-- [ ] **Step 2:** Mapper implementieren.
-- [ ] **Step 3:** Stub durch `fetch("/api/public/contact")` ersetzen; Signatur bleibt stabil.
+**Ablauf:**
+
+1. Input (topic, expertise, tone) → Claude-API-Call: generiert strukturierten Inhalt
+   (Headline, Haupttext, Hashtags) im JSON-Format.
+2. JSON → HTML-Skill: rendert das fertige Post-Bild als HTML (bestehende, feste Vorlage).
+3. Gibt zurück: `{ html: string; caption: string }`.
+
+**Fehlerpfade:** KI-Timeout, ungültiger JSON-Output, HTML-Rendering-Fehler → jeweils eigener
+Fehlercode; Lead trotzdem persistieren (B5).
+
+- [ ] **Step 1:** Failing Tests: strukturierter Input → strukturierter Output, Fehlerpfad-Handling.
+- [ ] **Step 2:** Claude-API-Call mit strukturiertem Output-Schema implementieren (server-only).
+- [ ] **Step 3:** HTML-Skill-Integration: HTML aus Template + generierten Inhalten zusammensetzen.
 - [ ] **Step 4:** Tests grün.
-- [ ] **Step 5:** Commit — `feat(contact): wire workflow-check form submit`
+- [ ] **Step 5:** Commit — `feat(generator): implement linkedin post content generation`
 
-### Task B5: Persistenz
+---
 
-**Files:** `packages/db/src/record-configuration/**` + Contact Mapper.
+### Task B4: HTML-to-Image-Konvertierung
+
+**Files:**
+
+- Create: `apps/web/src/server/services/generator/linkedin-post/render-post-image.ts`
+- Create: `apps/web/src/server/services/generator/linkedin-post/render-post-image.test.ts`
+
+**Ansatz:** HTML → Screenshot via Puppeteer/Playwright (server-side, headless) oder äquivalenter
+Render-Service. Gibt Buffer oder temporäre Datei zurück.
+
+**Performance-Grenze:** Render-Timeout max. 8 Sekunden; bei Überschreitung Fehlercode
+`RENDER_TIMEOUT`, Lead trotzdem speichern.
+
+**Speicherung:** Temporäre Ablage in `/tmp` oder externem Storage (z.B. S3/R2) mit TTL 24h.
+Download-Token verweist auf diese Datei.
+
+- [ ] **Step 1:** Failing Tests: HTML-Input → Image-Buffer-Output, Timeout-Pfad.
+- [ ] **Step 2:** Render-Service implementieren.
+- [ ] **Step 3:** Temporäre Datei-Ablage + Download-Token-Generierung.
+- [ ] **Step 4:** Tests grün.
+- [ ] **Step 5:** Commit — `feat(generator): implement html-to-image rendering`
+
+---
+
+### Task B5: Lead-Persistenz
+
+**Files:** `packages/db/src/record-configuration/**` + Mapper
+
+**Daten:** E-Mail, Expertise, Tone, Topic (gekürzt, kein PII-Risiko), Zeitstempel,
+Generator-Status (success/error), Request-Kind `linkedin_post_generator`.
 
 - [ ] **Step 1:** Failing Mapper/Persistence-Input-Test.
-- [ ] **Step 2:** Eigene Workflow-Check-Detaildaten modellieren; Projektanfrage-Details nicht zweckentfremden.
-- [ ] **Step 3:** Lead + LeadSubmission + Workflow-Check-Details persistieren.
-- [ ] **Step 4:** Tests grün.
-- [ ] **Step 5:** Commit — `feat(contact): persist content workflow check details`
+- [ ] **Step 2:** Lead + LeadSubmission + Generator-Details modellieren (eigene Tabelle/Column,
+      kein Projektanfrage-Schema zweckentfremden).
+- [ ] **Step 3:** Tests grün.
+- [ ] **Step 4:** Commit — `feat(generator): persist linkedin post generator leads`
 
-### Task B6: Optionaler KI-Workflow-Check
+---
 
-**Files:** Create `apps/web/src/server/services/ai/workflow-check/**`.
+### Task B6: E-Mail-Versand (Kopie an Besucher)
 
-**Output:** Problemzusammenfassung, 1-2 Content-Workflow-Ideen, geeignete Input-Quellen, Pilot-Scope, offene Rückfragen.
+**Files:**
 
-- [ ] **Step 1:** Failing Tests: strukturierte Anfrage, strukturierte Ausgabe, Fehlerpfad.
-- [ ] **Step 2:** Server-only Service implementieren; keine KI-Keys oder Prompt-Details im Client.
-- [ ] **Step 3:** Bei KI-Fehler Lead erhalten und Check als manuell nachzufassen markieren.
-- [ ] **Step 4:** Tests grün.
-- [ ] **Step 5:** Commit — `feat(ai-workflows): add server-side content workflow check`
+- Create: `apps/web/src/server/services/mail/templates/linkedin-post-generator-result.ts`
+- Create: entsprechende Test-Datei
 
-### Task B7: Interne Mail-Notification
+**Inhalt:** Generiertes Bild als Anhang + Caption als Text + kurzer Begleittext + weicher Hinweis
+auf Kontaktmöglichkeit für eigenen KI-Workflow. Kein Spam, kein Upsell-Druck.
 
-**Files:** Create `apps/web/src/server/services/mail/templates/workflow-check-notification.ts`.
-
-**Inhalt:** E-Mail, Name falls vorhanden, Tätigkeit/Website, Posting-Blocker, Content-Quellen, aktueller Ablauf,
-gewünschter Output, anonymisiertes Beispiel, KI-Auswertung falls vorhanden, Datenschutzkontext.
+**Sprache:** Richtet sich nach dem locale des Requests (DE/EN).
 
 - [ ] **Step 1:** Failing Template-Test DE/EN.
 - [ ] **Step 2:** Template implementieren.
 - [ ] **Step 3:** Tests grün.
-- [ ] **Step 4:** Commit — `feat(ai-workflows): add workflow-check mail notification`
+- [ ] **Step 4:** Commit — `feat(generator): add linkedin post result mail template`
+
+---
+
+### Task B7: API-Route
+
+**Files:**
+
+- Create: `apps/web/src/app/api/public/generator/linkedin-post/route.ts`
+- Create: entsprechende Test-Datei
+
+**Flow:**
+
+```
+POST /api/public/generator/linkedin-post
+  → Validate DTO (B2)
+  → Honeypot/Spam-Check
+  → Generate content + HTML (B3)
+  → Render image (B4)
+  → Persist lead (B5) — auch bei Generierungsfehler
+  → Send email (B6) — best-effort, kein hard fail
+  → Return { imageUrl, caption, downloadToken }
+```
+
+**Response-Codes:** `200 OK`, `400 Bad Request`, `429 Too Many Requests`, `500 Internal Server Error`.
+
+**Rate-Limit:** Max. 3 Requests pro IP pro Stunde.
+
+- [ ] **Step 1:** Failing API-Tests: happy path, Validierungsfehler, Rate-Limit, Generierungsfehler.
+- [ ] **Step 2:** Route implementieren.
+- [ ] **Step 3:** Submit-Service-Stub aus S1 durch echten `fetch`-Call ersetzen.
+- [ ] **Step 4:** Tests grün.
+- [ ] **Step 5:** Commit — `feat(generator): add linkedin post generator api route`
+
+---
+
+### Task B8: Download-Endpoint
+
+**Files:**
+
+- Create: `apps/web/src/app/api/public/generator/linkedin-post/download/route.ts`
+
+**Logik:** GET mit `?token=<downloadToken>` → Datei aus temporärem Storage → `image/png` mit
+`Content-Disposition: attachment`. Token einmalig gültig oder TTL 24h.
+
+- [ ] **Step 1:** Failing Tests: gültiger Token, abgelaufener Token, ungültiger Token.
+- [ ] **Step 2:** Endpoint implementieren.
+- [ ] **Step 3:** Tests grün.
+- [ ] **Step 4:** Commit — `feat(generator): add post image download endpoint`
 
 ---
 
 # TRACK C — Integration & SEO
 
-### Task C1: Interne Verlinkung + Sitemap/Robots
+### Task C1: Submit-Service verdrahten + interne Verlinkung
 
-- [ ] Crawlbare interne Links aus passenden Marketing-Bereichen auf `/services/ai-workflows` ergänzen, nur über
-      `SITE_ROUTES.AI_WORKFLOWS_SERVICE`.
-- [ ] `sitemap.ts` prüfen und Route aufnehmen, falls nicht automatisch enthalten.
+- [ ] Stub aus S1 durch echten API-Call ersetzen (wird in B7 ausgelöst).
+- [ ] Crawlbare interne Links aus Home und Marketing-Bereichen auf `/services/linkedin-post` ergänzen,
+      nur über `SITE_ROUTES.LINKEDIN_POST_SERVICE`.
+- [ ] `sitemap.ts` prüfen und Route aufnehmen.
 - [ ] `robots.ts` prüfen; Route bleibt indexierbar.
-- [ ] Commit — `feat(ai-workflows): add internal links and sitemap coverage`
+- [ ] Commit — `feat(linkedin-post): add internal links and sitemap coverage`
 
 ### Task C2: Integration Review
 
-- [ ] Formular gegen echten API-Pfad testen.
-- [ ] Analytics-Payloads prüfen: keine PII, korrekte `form_id`.
-- [ ] Datenschutztexte gegen Formularfelder prüfen.
+- [ ] Generator-Flow gegen echten API-Pfad testen (Stub deaktiviert).
+- [ ] E-Mail-Empfang prüfen (Testadresse).
+- [ ] Download-Link in der E-Mail funktioniert.
+- [ ] Analytics-Payloads: keine PII, korrekte `form_id`.
+- [ ] Rate-Limit greift bei Missbrauch.
 - [ ] SEO Preview DE/EN prüfen.
-- [ ] Commit — `test(ai-workflows): verify content workflow integration`
+- [ ] Commit — `test(linkedin-post): verify generator integration`
 
 ---
 
@@ -437,16 +509,19 @@ gewünschter Output, anonymisiertes Beispiel, KI-Auswertung falls vorhanden, Dat
 
 ### Task D1: E2E / Smoke
 
-- [ ] `/de/services/ai-workflows` rendert.
-- [ ] `/en/services/ai-workflows` rendert.
-- [ ] Hero ist mobile verständlich und ohne Überlauf.
-- [ ] Primary CTA scrollt zum Formular + sinnvoller Fokus.
+- [ ] `/de/services/linkedin-post` rendert.
+- [ ] `/en/services/linkedin-post` rendert.
+- [ ] Hero CTA scrollt zum Generator.
 - [ ] Formular zeigt Required Errors.
-- [ ] Formular kann mit gültigen Daten abgesendet werden.
-- [ ] Submit Error State ist verständlich.
+- [ ] Formular kann mit gültigen Daten abgesendet werden (Stub).
+- [ ] Loading-State erscheint während Submit.
+- [ ] Ergebnis (Bild + Caption) erscheint nach Success.
+- [ ] Download-Button funktioniert.
+- [ ] Soft-CTA nach Ergebnis sichtbar.
+- [ ] Error-State ist verständlich.
 - [ ] Keyboard-Navigation funktioniert.
 - [ ] Fokus-States sichtbar.
-- [ ] Commit — `test(ai-workflows): add routing and workflow-check e2e smoke`
+- [ ] Commit — `test(linkedin-post): add e2e smoke tests`
 
 ### Task D2: Quality Gates + PR-Doku
 
@@ -454,35 +529,36 @@ gewünschter Output, anonymisiertes Beispiel, KI-Auswertung falls vorhanden, Dat
 - [ ] `npm run typecheck`
 - [ ] `npm run test:unit`
 - [ ] `npm run build`
-- [ ] Relevante Contact-Integrationstests.
 - [ ] Core Web Vitals kurz prüfen: LCP/CLS/INP.
-- [ ] PR-Beschreibung: Was/Warum, Screenshots DE/EN Mobile/Desktop, Testplan, Risiko/Rollback, Security/Privacy-Impact.
+- [ ] PR: Was/Warum, Screenshots DE/EN Mobile/Desktop, Testplan, Risiko/Rollback, Security/Privacy.
 
 ---
 
 ## Akzeptanzkriterien
 
-- Route unter `/de|/en/services/ai-workflows` erreichbar.
-- Zielgruppe, Problem, Angebot und CTA sind überall konsistent auf LinkedIn-Content-Workflow für Solo-Dienstleister
-  ausgerichtet.
-- Keine Hero-, Formular-, Meta- oder Section-Copy aus dem alten Angebotsprozess-Frame übrig.
-- Keine sichtbaren UI-Texte inline in Pages oder Komponenten.
-- Anfrageart `workflow_check`; eigene DTOs und serverseitige Validierung.
-- Kein Upload in V1.
-- Kein kostenloser LinkedIn-Post-Generator als Flow oder Claim.
-- Persistenz nutzt Lead + LeadSubmission + eigene Workflow-Check-Detaildaten.
-- KI-Auswertung, falls aktiv, läuft ausschließlich serverseitig und verliert bei Fehlern keine Lead-Anfrage.
-- Keine PII in Analytics.
-- SEO-Metadata, Canonical, Alternates und Service Structured Data vorhanden.
+- Route unter `/de|/en/services/linkedin-post` erreichbar.
+- Hero, Problem, Offer, Beispiel-Section und Generator-Section konsistent auf
+  LinkedIn-Post-Generierung für Solo-Dienstleister ausgerichtet.
+- Kein Pricing auf dieser Page.
+- Kein sichtbarer UI-Text inline in Pages oder Komponenten.
+- Generator liefert Ergebnis direkt auf der Page + per E-Mail.
+- Lead mit E-Mail + Input-Kontext persistiert, auch bei Generierungsfehler.
+- Download-Button funktioniert (Bild-Datei).
+- Soft-CTA nach Ergebnis sichtbar und klickbar.
+- Rate-Limit für Generator-API aktiv.
+- Kein PII in Analytics.
+- Metadata, Canonical, Alternates und Structured Data vorhanden.
 - Sitemap/Robots geprüft.
 - Keine neue globale Section-CSS in `globals.css`.
-- Keine URL-String-Konstruktion außerhalb zentraler Route-Konstanten/Helper.
 - Dark Mode default, Light kompatibel.
-- Mobile ohne Textüberlauf oder überlappende UI.
+- Mobile 360 px: kein Textüberlauf, kein Überlappen.
 
 ## Offene Punkte vor Umsetzung
 
-- KI-Provider und Kosten-/Rate-Limit für den optionalen serverseitigen Check festlegen.
-- Entscheiden, ob FAQ in V1 enthalten ist oder erst V2.
-- Footer-Content: bestehendes `getLandingFooterContent` verwenden oder eigenes `ai-workflows/footer`-Dictionary anlegen.
-- Branch-Strategie festlegen: gemeinsamer Feature-Branch oder getrennte UI-/Backend-Branches.
+- [ ] Temporärer Bild-Storage klären: `/tmp` (serverless-inkompatibel!) vs. R2/S3 vs. Base64 in Response.
+- [ ] HTML-to-Image-Lösung für Serverless bestätigen: Puppeteer benötigt Chrome-Layer
+      (Vercel: `@sparticuz/chromium`); Playwright ähnlich — oder externer Screenshot-Service.
+- [ ] Rate-Limit-Speicher: In-Memory (single-instance) vs. Redis/Upstash für verteilte Deployments.
+- [ ] Locale der generierten E-Mail: aus URL-Locale ableiten oder optionalem Feld.
+- [ ] Calendly-URL oder Kontaktformular für Soft-CTA festlegen.
+- [ ] Echte Beispiel-Bild-Assets (real generiert) für Example-Section bereitstellen.

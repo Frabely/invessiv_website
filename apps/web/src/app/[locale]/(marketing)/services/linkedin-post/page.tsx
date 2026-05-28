@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AiWorkflowsPage } from "@/components/marketing/ai-workflows/ai-workflows-page/ai-workflows-page";
+import { LinkedInPostPage } from "@/components/marketing/linkedin-post/ai-workflows-page/ai-workflows-page";
 import {
   isSupportedLocale,
   type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
 
-type AiWorkflowsRouteProps = {
+type LinkedInPostRouteProps = {
   params: Promise<{ locale: string }>;
 };
 
@@ -17,7 +17,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: AiWorkflowsRouteProps): Promise<Metadata> {
+}: LinkedInPostRouteProps): Promise<Metadata> {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     return {};
@@ -26,9 +26,9 @@ export async function generateMetadata({
   return {};
 }
 
-export default async function AiWorkflowsRoute({
+export default async function LinkedInPostRoute({
   params,
-}: AiWorkflowsRouteProps) {
+}: LinkedInPostRouteProps) {
   const { locale } = await params;
   if (!isSupportedLocale(locale)) {
     notFound();
@@ -36,5 +36,5 @@ export default async function AiWorkflowsRoute({
 
   const activeLocale = locale as Locale;
 
-  return <AiWorkflowsPage locale={activeLocale} />;
+  return <LinkedInPostPage locale={activeLocale} />;
 }

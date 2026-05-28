@@ -6,7 +6,7 @@ import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
-import type { LandingAiHeroContent } from "@/i18n/dictionaries/ai-workflows/hero";
+import type { LandingAiHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import styles from "./hero-section.module.css";
 
 type AiWorkflowsHeroSectionProps = LandingAiHeroContent & {

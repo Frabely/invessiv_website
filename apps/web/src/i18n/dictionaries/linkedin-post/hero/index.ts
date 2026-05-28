@@ -14,7 +14,7 @@ export type LandingAiHeroContent = {
 
 const CONTENT: Record<Locale, LandingAiHeroContent> = { de, en };
 
-export function getAiWorkflowsHeroContent(
+export function getLinkedInPostHeroContent(
   locale: Locale,
 ): LandingAiHeroContent {
   return CONTENT[locale];

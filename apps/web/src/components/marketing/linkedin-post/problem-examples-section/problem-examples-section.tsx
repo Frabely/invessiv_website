@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
-import type { LandingAiProblemExamplesContent } from "@/i18n/dictionaries/ai-workflows/problem-examples";
+import type { LandingAiProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./problem-examples-section.module.css";
 

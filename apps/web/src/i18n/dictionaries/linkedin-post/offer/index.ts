@@ -25,7 +25,7 @@ export type LandingAiOfferContent = {
 
 const CONTENT: Record<Locale, LandingAiOfferContent> = { de, en };
 
-export function getAiWorkflowsOfferContent(
+export function getLinkedInPostOfferContent(
   locale: Locale,
 ): LandingAiOfferContent {
   return CONTENT[locale];
