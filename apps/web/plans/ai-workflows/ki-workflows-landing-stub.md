@@ -51,9 +51,10 @@ FooterSection
 | `SiteHeader`, `FooterSection`   | global          | keine                                                     |
 | `EyebrowPill`, `PrimaryCtaLink` | global          | keine                                                     |
 
-> **Import-Hinweis:** `OfferSection` liegt nach dem Rename unter
+> **Import-Hinweis:** `OfferSection` liegt unter
 > `@/components/marketing/linkedin-post/offer-section/offer-section`. Direkt importieren,
-> nicht kopieren.
+> nicht kopieren. Die Komponente wird auf `/services/linkedin-post` **nicht gerendert** —
+> sie existiert dort nur als Quelle zur Wiederverwendung auf dieser Page.
 
 ---
 
