@@ -1,5 +1,6 @@
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { AiWorkflowsHeroSection } from "@/components/marketing/ai-workflows/hero-section/hero-section";
+import { ProblemExamplesSection } from "@/components/marketing/ai-workflows/problem-examples-section/problem-examples-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -9,6 +10,7 @@ import {
   AI_WORKFLOWS_SECTION_HREFS,
 } from "@/config/navigation/ai-workflows";
 import { getAiWorkflowsHeroContent } from "@/i18n/dictionaries/ai-workflows/hero";
+import { getAiWorkflowsProblemExamplesContent } from "@/i18n/dictionaries/ai-workflows/problem-examples";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
 type AiWorkflowsPageProps = {
@@ -17,6 +19,7 @@ type AiWorkflowsPageProps = {
 
 export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
   const hero = getAiWorkflowsHeroContent(locale);
+  const problemExamples = getAiWorkflowsProblemExamplesContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
@@ -40,7 +43,13 @@ export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
           trackingLocation="ai_workflows_hero"
         />
 
-        {/* Sections A2–A6 folgen */}
+        <ProblemExamplesSection
+          id={AI_WORKFLOWS_SECTION_HREFS.problem.slice(1)}
+          locale={locale}
+          {...problemExamples}
+        />
+
+        {/* Sections A3–A6 folgen */}
 
         <FooterSection
           bottomNote={footer.bottomNote}

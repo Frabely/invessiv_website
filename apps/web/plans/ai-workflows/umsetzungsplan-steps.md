@@ -60,6 +60,14 @@ Hero EN sinngemäß:
 
 Primärer CTA im gesamten Flow: `Content-Workflow prüfen`.
 
+## Verbindliche Bauprinzipien (Track A)
+
+- **Mobile First (verbindlich):** Jede Section und jedes Dictionary wird zuerst für Mobile (360 px) gebaut und dann für
+  Tablet/Desktop erweitert. Copy ist standardmäßig kurz und scannbar — kein Fließtext, der auf kleinen Screens zur
+  Textwand wird. Lange Passagen, Verschachtelungen und dekorative Zusatztexte werden weggelassen, wenn sie auf Mobile
+  keinen Wert liefern.
+- **Copy-Regel (verbindlich):** Body-Texte max. 2 kurze Sätze. Listenpunkte max. 5 Wörter. Zusammenfassungen 1 Satz.
+
 ## Track-Übersicht
 
 - **Seam S:** geteilter Form-Values-Typ + Submit-Service-Stub.
