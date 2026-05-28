@@ -1,0 +1,41 @@
+{
+  "eyebrow": "WHAT YOU GET",
+  "title": "A free check. No sales pitch.",
+  "body": "You describe your current content process. We assess whether it can become a repeatable AI workflow.",
+  "deliverablesHeading": "What you'll have after the check",
+  "deliverables": [
+    {
+      "label": "Process diagnosis",
+      "detail": "An assessment of where your workflow stands today"
+    },
+    {
+      "label": "Workflow ideas",
+      "detail": "1–2 AI content scenarios for your context"
+    },
+    {
+      "label": "Input assessment",
+      "detail": "Which sources work best for you"
+    },
+    {
+      "label": "Pilot recommendation",
+      "detail": "Whether a mini-pilot would make sense"
+    },
+    {
+      "label": "Next step",
+      "detail": "A clear action recommendation after the check"
+    }
+  ],
+  "proofNote": "We use the same workflow for our own LinkedIn content.",
+  "stepsLabel": "How it works",
+  "steps": [
+    {
+      "label": "Describe your process"
+    },
+    {
+      "label": "Receive ideas"
+    },
+    {
+      "label": "Decide on pilot"
+    }
+  ]
+}

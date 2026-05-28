@@ -1,6 +1,7 @@
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { AiWorkflowsHeroSection } from "@/components/marketing/ai-workflows/hero-section/hero-section";
 import { ProblemExamplesSection } from "@/components/marketing/ai-workflows/problem-examples-section/problem-examples-section";
+import { OfferSection } from "@/components/marketing/ai-workflows/offer-section/offer-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
@@ -11,6 +12,7 @@ import {
 } from "@/config/navigation/ai-workflows";
 import { getAiWorkflowsHeroContent } from "@/i18n/dictionaries/ai-workflows/hero";
 import { getAiWorkflowsProblemExamplesContent } from "@/i18n/dictionaries/ai-workflows/problem-examples";
+import { getAiWorkflowsOfferContent } from "@/i18n/dictionaries/ai-workflows/offer";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
 type AiWorkflowsPageProps = {
@@ -20,6 +22,7 @@ type AiWorkflowsPageProps = {
 export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
   const hero = getAiWorkflowsHeroContent(locale);
   const problemExamples = getAiWorkflowsProblemExamplesContent(locale);
+  const offer = getAiWorkflowsOfferContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
@@ -49,7 +52,13 @@ export function AiWorkflowsPage({ locale }: AiWorkflowsPageProps) {
           {...problemExamples}
         />
 
-        {/* Sections A3–A6 folgen */}
+        <OfferSection
+          id={AI_WORKFLOWS_SECTION_HREFS.offer.slice(1)}
+          locale={locale}
+          {...offer}
+        />
+
+        {/* Sections A4–A6 folgen */}
 
         <FooterSection
           bottomNote={footer.bottomNote}
