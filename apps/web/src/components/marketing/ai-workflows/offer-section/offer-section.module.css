@@ -58,6 +58,7 @@
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
   font-size: var(--font-size-body-lg);
   line-height: 1.62;
+  white-space: pre-line;
 }
 
 /* Deliverables block */
@@ -153,6 +154,7 @@
   gap: 0.85rem;
   padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  margin-top: calc(clamp(2.5rem, 5vw, 4rem) * -0.4);
 }
 
 .stepsLabel {
@@ -319,21 +321,40 @@
 
   .stepsList {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.45rem;
+    align-items: stretch;
+    gap: 0;
+    counter-reset: steps;
   }
 
   .stepItem {
-    gap: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--color-border) 50%, transparent);
+    counter-increment: steps;
     width: 100%;
   }
 
-  .stepItem:nth-child(2) {
-    padding-left: 4rem;
+  .stepItem:first-child {
+    border-top: 1px solid
+      color-mix(in srgb, var(--color-border) 50%, transparent);
   }
 
-  .stepItem:nth-child(3) {
-    padding-left: 8rem;
+  .stepItem::before {
+    content: counter(steps);
+    flex: 0 0 auto;
+    min-width: 1.25rem;
+    color: color-mix(
+      in srgb,
+      var(--color-cta) 70%,
+      var(--color-text-muted) 30%
+    );
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
 
   .stepItem:not(:last-child)::after {
@@ -341,10 +362,19 @@
   }
 
   .stepPill {
-    font-size: 0.82rem;
-    padding: 0.32rem 0.7rem;
+    border: none;
+    background: transparent;
+    padding: 0;
+    gap: 0;
+    font-size: 0.9rem;
+    font-weight: 550;
+    white-space: normal;
     width: 100%;
     justify-content: flex-start;
+  }
+
+  .stepPill::before {
+    display: none;
   }
 
   .ctaRow {
