@@ -1,9 +1,9 @@
 {
-  "tag": "LINKEDIN-CONTENT-WORKFLOW",
-  "title": "Verlierst du zu viel Zeit mit LinkedIn-Posts?",
-  "description": "Kostenloser Check für 5 Selbstständige. Wir prüfen, ob aus deinen Ideen ein wiederholbarer Workflow werden kann.",
-  "primaryCta": "Content-Workflow prüfen",
-  "secondaryCta": "Was du bekommst",
-  "trustChips": ["Kostenlos", "Klare Einschätzung"],
-  "visualAriaLabel": "Schematischer KI-Content-Workflow von vorhandenen Notizen zu wiederholbaren LinkedIn-Entwürfen"
+  "tag": "KI-CONTENT FÜR LINKEDIN",
+  "title": "Dein nächster LinkedIn-Post in 60 Sekunden",
+  "description": "Gib dein Thema ein — wir generieren einen fertigen Post mit Bild. Kostenlos, kein Account nötig.",
+  "primaryCta": "Post generieren",
+  "secondaryCta": "Beispiel ansehen",
+  "trustChips": ["Kostenlos", "Sofort-Ergebnis", "Download inklusive"],
+  "visualAriaLabel": "KI-generierter LinkedIn-Post mit Bild und Caption als Vorschau"
 }

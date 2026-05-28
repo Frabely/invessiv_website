@@ -176,10 +176,11 @@ Komponenten oder Dictionaries.
 - Modify: `apps/web/src/i18n/dictionaries/linkedin-post/hero/{de.json,en.json}`
 - Modify: `apps/web/src/components/marketing/linkedin-post/hero-section/hero-section.tsx`
 
-- [ ] **Step 1:** Dictionaries auf neue Copy-Basis aktualisieren (neues H1, neue Description, Trust-Chips).
-- [ ] **Step 2:** Primary CTA zeigt auf `#generator` (statt `#contact`). Secondary CTA zeigt auf `#offer`.
-- [ ] **Step 3:** Verify 360 px, Trust-Chips korrekt.
-- [ ] **Step 4:** Commit — `feat(linkedin-post): update hero copy for generator funnel`
+- [x] **Step 1:** Dictionaries auf neue Copy-Basis aktualisieren (neues H1, neue Description, Trust-Chips).
+- [x] **Step 2:** Primary CTA zeigt auf `#generator` (statt `#contact`). Secondary CTA zeigt auf `#offer`.
+      `data-analytics-target` auf `"generator"` korrigiert.
+- [x] **Step 3:** Verify 360 px, Trust-Chips korrekt.
+- [x] **Step 4:** Commit — `feat(linkedin-post): update hero copy for generator funnel`
 
 ---
 

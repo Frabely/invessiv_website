@@ -63,7 +63,7 @@ export function AiWorkflowsHeroSection({
             data-analytics-event="cta_click"
             data-analytics-location={trackingLocation}
             data-analytics-variant="primary"
-            data-analytics-target="contact"
+            data-analytics-target="generator"
           >
             {primaryCta}
           </PrimaryCtaLink>
