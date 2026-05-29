@@ -1,0 +1,208 @@
+/* Mobile-first. Preview frame chrome + idle/loading/error states. The success
+   state owns its own module (success-preview.module.css). */
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.previewFrame {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem 1.1rem 1.35rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 65%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--color-surface-2) 98%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+  overflow: hidden;
+}
+
+.previewBody {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.previewMark {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 95%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.previewHeadline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.18rem;
+  font-weight: 740;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.previewCopy {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Idle silhouette: dashed placeholder card */
+.previewSilhouette {
+  display: block;
+  aspect-ratio: 5 / 4;
+  border: 1.5px dashed
+    color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      color-mix(in srgb, var(--color-accent-warm) 12%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      color-mix(in srgb, var(--color-cta) 8%, transparent),
+      transparent 55%
+    );
+}
+
+/* Loading skeleton shimmer */
+.skeletonShimmer {
+  display: block;
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: 12px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--color-surface-2) 100%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 50%,
+    color-mix(in srgb, var(--color-surface-2) 100%, transparent) 100%
+  );
+  background-size: 220% 100%;
+  overflow: hidden;
+  animation: shimmer 1.8s linear infinite;
+}
+
+.skeletonShimmer::before,
+.skeletonShimmer::after {
+  content: "";
+  position: absolute;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.skeletonShimmer::before {
+  inset: 14% 14% auto 14%;
+  height: 14%;
+}
+
+.skeletonShimmer::after {
+  inset: auto 14% 14% 14%;
+  height: 22%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* Loading step list */
+.stepsList {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-size: 0.92rem;
+  transition: color 240ms ease;
+}
+
+.stepItem[data-status="active"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.stepItem[data-status="done"] {
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+}
+
+.stepDot {
+  display: inline-grid;
+  place-items: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1.5px solid
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 240ms ease,
+    border-color 240ms ease,
+    transform 240ms ease;
+}
+
+.stepItem[data-status="active"] .stepDot {
+  border-color: var(--color-accent-warm);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-accent-warm) 95%, transparent) 0 35%,
+    transparent 38%
+  );
+  transform: scale(1.05);
+}
+
+.stepItem[data-status="done"] .stepDot {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 70%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 70%, transparent);
+}
+
+/* Error state polish */
+.preview[data-state="error"] .previewFrame {
+  border-color: color-mix(in srgb, var(--color-danger) 50%, transparent);
+}
+
+/* ── Tablet ── */
+@media (min-width: 720px) {
+  .previewFrame {
+    padding: 1.4rem 1.4rem 1.55rem;
+    border-radius: 20px;
+  }
+
+  .previewHeadline {
+    font-size: 1.28rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonShimmer {
+    animation: none;
+  }
+
+  .stepItem,
+  .stepDot {
+    transition: none;
+  }
+}

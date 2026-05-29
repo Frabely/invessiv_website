@@ -3,7 +3,7 @@ import type { GeneratorState } from "@/common/contracts/generator/generator-stat
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
-import styles from "./generator-section.module.css";
+import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;

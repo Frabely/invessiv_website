@@ -8,7 +8,7 @@ import {
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { CustomPostBlock } from "./custom-post-block/custom-post-block";
-import styles from "./generator-section.module.css";
+import styles from "./success-preview.module.css";
 
 type SuccessPreviewProps = {
   caption: string;

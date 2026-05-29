@@ -5,7 +5,7 @@ import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-
 import type { LinkedInPostGeneratorFormValues } from "@invessiv/common/contracts/generator/linkedin-post-generator-form-values";
 import { Field } from "./field";
 import type { GeneratorFieldIds } from "./use-field-ids";
-import styles from "./generator-section.module.css";
+import styles from "./generator-form.module.css";
 
 type GeneratorFormProps = {
   content: LinkedInPostGeneratorContent;

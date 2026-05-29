@@ -1,0 +1,190 @@
+/* Mobile-first. Success state of the generator preview.
+   The preview frame chrome (.preview/.previewFrame/.previewBody/.previewMark/
+   .previewHeadline) is intentionally owned here too so this component is
+   self-contained; the idle/loading/error states own their copy in
+   preview-panel.module.css. */
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.previewFrame {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem 1.1rem 1.35rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 65%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--color-surface-2) 98%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+  overflow: hidden;
+}
+
+.previewBody {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.previewMark {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 95%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.previewHeadline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.18rem;
+  font-weight: 740;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* Success media */
+.successMedia {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+}
+
+.successImage {
+  object-fit: cover;
+}
+
+/* Caption block */
+.captionBlock {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 50%, transparent);
+  border-left: 3px solid
+    color-mix(in srgb, var(--color-accent-warm) 75%, transparent);
+  border-radius: 0 12px 12px 0;
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+}
+
+.captionLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 720;
+}
+
+.captionText {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: 0.94rem;
+  line-height: 1.55;
+  white-space: pre-line;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.copyButton {
+  justify-self: start;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
+  color: color-mix(in srgb, var(--color-text) 90%, transparent);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 56%, transparent);
+}
+
+.copyButton[data-state="copied"] {
+  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 65%, transparent);
+}
+
+/* Downloads */
+.downloadRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 180ms ease;
+}
+
+.downloadButton:hover,
+.downloadButton:focus-visible {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 68%,
+    var(--color-cta) 14%
+  );
+  border-color: color-mix(in srgb, var(--color-cta) 38%, transparent);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+
+/* ── Tablet ── */
+@media (min-width: 720px) {
+  .previewFrame {
+    padding: 1.4rem 1.4rem 1.55rem;
+    border-radius: 20px;
+  }
+
+  .previewHeadline {
+    font-size: 1.28rem;
+  }
+
+  .downloadRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .downloadButton {
+    transition: none;
+  }
+}

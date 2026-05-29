@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import styles from "./generator-section.module.css";
+import styles from "./field.module.css";
 
 type FieldProps = {
   children: ReactNode;
