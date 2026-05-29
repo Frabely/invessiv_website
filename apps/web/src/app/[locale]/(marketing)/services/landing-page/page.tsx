@@ -6,6 +6,7 @@ import {
   type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
 import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
 import { createLandingStructuredData } from "@/lib/seo/landing-structured-data";
 import {
@@ -38,15 +39,18 @@ export async function generateMetadata({
     imageWidth,
     openGraphLocale,
   } = getLandingMetaContent(locale);
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((supportedLocale) => [
+      supportedLocale,
+      `/${supportedLocale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`,
+    ]),
+  );
   return createPageMetadata({
     absoluteTitle: true,
     title,
     description,
-    canonicalPath: `/${locale}/services/landing-page`,
-    languages: createLocaleAlternates({
-      de: "/de/services/landing-page",
-      en: "/en/services/landing-page",
-    }),
+    canonicalPath: `/${locale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`,
+    languages: createLocaleAlternates(languages),
     openGraphLocale,
     socialImage: {
       alt: imageAlt,

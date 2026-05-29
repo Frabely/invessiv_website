@@ -1,0 +1,40 @@
+{
+  "eyebrow": "ECHTE BEISPIELE",
+  "title": "So sieht der Output aus.",
+  "body": "Zwei Posts, die der Generator in unter einer Minute baut. Hook, Struktur, Caption, Bild — fertig zum Hochladen.",
+  "samplesAriaLabel": "Beispiel-Posts vom LinkedIn-Post-Generator",
+  "samples": [
+    {
+      "id": "sample-1",
+      "toneLabel": "Sachlich",
+      "topicLabel": "Thema: Preisgespräche im Beratungsalltag",
+      "author": {
+        "name": "Lena Wieland",
+        "role": "Strategieberatung · Mittelstand",
+        "avatarInitials": "LW"
+      },
+      "image": {
+        "headline": "Drei Sätze, die jedes Preisgespräch ruhiger machen.",
+        "footnote": "Nicht laut. Nicht weich. Sondern klar."
+      },
+      "caption": "Preisgespräche sind selten ein Preisproblem.\nMeistens fehlt der Rahmen, in dem der Preis Sinn ergibt.\n\nDrei Sätze, die ich jedes Mal nutze:\n→ „Das hängt davon ab, was du als Ergebnis brauchst.“\n→ „Mein Honorar ist fix, der Scope ist verhandelbar.“\n→ „Lass uns den Wert vor dem Preis klären.“\n\nFunktioniert, weil sie keine Verteidigung sind — sondern eine Einladung."
+    },
+    {
+      "id": "sample-2",
+      "toneLabel": "Persönlich",
+      "topicLabel": "Thema: Routinen, die Solo-Coaches scheitern lassen",
+      "author": {
+        "name": "Jonas Krenz",
+        "role": "Business-Coach · Solo",
+        "avatarInitials": "JK"
+      },
+      "image": {
+        "headline": "Ich habe meine Morgenroutine gestrichen.",
+        "footnote": "Und es war die produktivste Entscheidung des Quartals."
+      },
+      "caption": "Drei Jahre lang habe ich jeden Morgen das gleiche Setup gefahren:\nJournal, Workout, kalter Kaffee, Tagesplan.\n\nDas Problem war nicht die Routine.\nDas Problem war, dass ich sie als Beweis genutzt habe.\n\nBeweis, dass ich seriös bin.\nBeweis, dass ich es ernst meine.\nBeweis, dass ich mir selbst nichts schenke.\n\nSeit ich sie gestrichen habe, fängt mein Tag dort an, wo die Arbeit liegt — nicht in einem Ritual davor."
+    }
+  ],
+  "ctaLabel": "Mach es selbst",
+  "ctaAriaLabel": "Zum LinkedIn-Post-Generator scrollen"
+}

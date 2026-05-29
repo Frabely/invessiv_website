@@ -7,6 +7,8 @@ describe("site routes", () => {
     expect(SITE_ROUTES).toEqual({
       HOME: "/",
       LANDING_PAGE_SERVICE: "/services/landing-page",
+      LINKEDIN_POST_SERVICE: "/services/linkedin-post",
+      AI_WORKFLOWS_SERVICE: "/services/ai-workflows",
       PROJECTS: "/projects",
       IMPRINT: "/imprint",
       PRIVACY: "/privacy",

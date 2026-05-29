@@ -1,0 +1,40 @@
+{
+  "eyebrow": "REAL EXAMPLES",
+  "title": "Here's what the output looks like.",
+  "body": "Two posts the generator builds in under a minute. Hook, structure, caption, image — ready to upload.",
+  "samplesAriaLabel": "Sample posts from the LinkedIn post generator",
+  "samples": [
+    {
+      "id": "sample-1",
+      "toneLabel": "Factual",
+      "topicLabel": "Topic: Pricing talks in consulting",
+      "author": {
+        "name": "Lena Wieland",
+        "role": "Strategy consultant · Mid-market",
+        "avatarInitials": "LW"
+      },
+      "image": {
+        "headline": "Three sentences that calm every pricing call.",
+        "footnote": "Not loud. Not soft. Just clear."
+      },
+      "caption": "Pricing calls are rarely a price problem.\nMore often, the frame around the price is missing.\n\nThree lines I use every time:\n→ \"That depends on the outcome you actually need.\"\n→ \"My fee is fixed. The scope is what we negotiate.\"\n→ \"Let's settle the value before we settle the price.\"\n\nWorks because they aren't a defence — they're an invitation."
+    },
+    {
+      "id": "sample-2",
+      "toneLabel": "Personal",
+      "topicLabel": "Topic: Routines that quietly drain solo coaches",
+      "author": {
+        "name": "Jonas Krenz",
+        "role": "Business coach · Solo",
+        "avatarInitials": "JK"
+      },
+      "image": {
+        "headline": "I dropped my morning routine.",
+        "footnote": "And it was the most productive call this quarter."
+      },
+      "caption": "For three years I ran the same setup every morning:\njournal, workout, cold coffee, daily plan.\n\nThe routine wasn't the problem.\nThe problem was using it as proof.\n\nProof that I was serious.\nProof that I meant business.\nProof that I gave myself nothing for free.\n\nSince I dropped it, my day starts where the work is — not in a ritual in front of it."
+    }
+  ],
+  "ctaLabel": "Try it yourself",
+  "ctaAriaLabel": "Scroll to the LinkedIn post generator"
+}

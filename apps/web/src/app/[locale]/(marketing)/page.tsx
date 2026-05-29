@@ -31,14 +31,17 @@ export async function generateMetadata({
   }
 
   const { title, description, openGraphLocale } = getHomeMetaContent(locale);
+  const languages = Object.fromEntries(
+    SUPPORTED_LOCALES.map((supportedLocale) => [
+      supportedLocale,
+      `/${supportedLocale}`,
+    ]),
+  );
   return createPageMetadata({
     title,
     description,
     canonicalPath: `/${locale}`,
-    languages: createLocaleAlternates({
-      de: "/de",
-      en: "/en",
-    }),
+    languages: createLocaleAlternates(languages),
     openGraphLocale,
   });
 }

@@ -1,0 +1,97 @@
+{
+  "eyebrow": "YOUR GENERATOR",
+  "title": "Tell us what you want to post.",
+  "body": "Three fields. One email. You get the image and caption right here — and a copy in your inbox.",
+  "form": {
+    "topic": {
+      "label": "What's it about?",
+      "placeholder": "e.g. pricing talks with existing clients",
+      "help": "One sentence is enough. Max. 280 characters.",
+      "maxLength": 280,
+      "requiredError": "Please enter a topic.",
+      "tooLongError": "Please keep it under 280 characters."
+    },
+    "expertise": {
+      "label": "Your role or industry",
+      "placeholder": "e.g. strategy consulting for SMBs",
+      "help": "Helps us match the tone. Max. 120 characters.",
+      "maxLength": 120,
+      "requiredError": "Please add your role.",
+      "tooLongError": "Please keep it under 120 characters."
+    },
+    "tone": {
+      "label": "Which tone?",
+      "help": "Pick a style — it shapes the whole post.",
+      "options": [
+        {
+          "value": "sachlich",
+          "label": "Factual",
+          "description": "Clear, sober, provable."
+        },
+        {
+          "value": "persönlich",
+          "label": "Personal",
+          "description": "Experience-based, in your voice."
+        },
+        {
+          "value": "provokativ",
+          "label": "Provocative",
+          "description": "Pointed, with a clear stance."
+        }
+      ],
+      "requiredError": "Pick a tone."
+    },
+    "email": {
+      "label": "Where do we send the copy?",
+      "placeholder": "you@address.com",
+      "help": "For this post only. No spam.",
+      "requiredError": "Please add your email.",
+      "invalidError": "That doesn't look like a valid email."
+    },
+    "consent": {
+      "label": "I agree my email is used to deliver this post.",
+      "requiredError": "We need your OK to deliver the post."
+    },
+    "honeypot": {
+      "label": "Company"
+    },
+    "submit": "Generate post",
+    "submitLoading": "Generating …",
+    "loadingHelp": "Takes around 30 seconds. Keep this window open."
+  },
+  "preview": {
+    "idle": {
+      "headline": "Your post will appear here.",
+      "body": "Fill in the fields on the left — we build hook, image and caption in under a minute.",
+      "stepLabel": "Step"
+    },
+    "loading": {
+      "headline": "We're building your post …",
+      "body": "Picking hook, structure and image layout. Seconds, not minutes.",
+      "steps": [
+        "Writing the hook",
+        "Setting the structure",
+        "Rendering the image",
+        "Finalising the caption"
+      ]
+    },
+    "success": {
+      "headline": "Done. Here's your post.",
+      "imageAlt": "Generated LinkedIn post image",
+      "captionLabel": "Caption",
+      "copyCaption": "Copy caption",
+      "copyCaptionCopied": "Copied",
+      "downloadImage": "Download image",
+      "downloadCaption": "Download text",
+      "softCtaTag": "Next step",
+      "softCtaTitle": "This was a sample workflow.",
+      "softCtaBody": "Want your own AI content process for your business? Let's talk briefly.",
+      "softCtaLabel": "Get in touch",
+      "softCtaHref": "/en/#contact"
+    },
+    "error": {
+      "headline": "Something went wrong.",
+      "body": "We couldn't build the post just now. Try again — your input is saved."
+    }
+  }
+}

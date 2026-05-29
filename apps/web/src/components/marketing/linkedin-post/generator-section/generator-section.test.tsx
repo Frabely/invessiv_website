@@ -1,0 +1,253 @@
+// @vitest-environment jsdom
+
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
+import type {
+  LinkedInPostGeneratorResult,
+  submitLinkedInPostGenerator,
+} from "@/client/generator/submit-linkedin-post-generator";
+import { GeneratorSection } from "./generator-section";
+
+type SubmitGenerator = typeof submitLinkedInPostGenerator;
+
+const content = getLinkedInPostGeneratorContent("de");
+
+const VALID_INPUTS = {
+  topic: "Wie ich Kunden von 999 € auf 4.999 € bringe",
+  expertise: "Strategieberatung",
+  email: "test@example.com",
+} as const;
+
+function renderSection(submitMock?: SubmitGenerator) {
+  const submit: SubmitGenerator =
+    submitMock ??
+    (async () => ({
+      ok: true,
+      imageUrl: "/og/landing.png",
+      caption: "Generierte Caption.",
+      downloadToken: "tok-123",
+    }));
+  render(
+    <GeneratorSection
+      content={content}
+      id="generator"
+      locale="de"
+      submitGenerator={submit}
+    />,
+  );
+  return { submit };
+}
+
+function clickSubmit() {
+  fireEvent.click(screen.getByRole("button", { name: content.form.submit }));
+}
+
+function fillValidValues() {
+  fireEvent.change(
+    screen.getByLabelText(content.form.topic.label, { selector: "textarea" }),
+    { target: { value: VALID_INPUTS.topic } },
+  );
+  fireEvent.change(screen.getByLabelText(content.form.expertise.label), {
+    target: { value: VALID_INPUTS.expertise },
+  });
+  fireEvent.click(
+    screen.getByLabelText(content.form.tone.options[0].label, {
+      exact: false,
+    }),
+  );
+  fireEvent.change(screen.getByLabelText(content.form.email.label), {
+    target: { value: VALID_INPUTS.email },
+  });
+  fireEvent.click(screen.getByLabelText(content.form.consent.label));
+}
+
+beforeEach(() => {
+  Object.assign(navigator, {
+    clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
+  });
+  window.HTMLElement.prototype.scrollIntoView = vi.fn();
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
+
+describe("GeneratorSection", () => {
+  it("renders the idle preview by default", () => {
+    renderSection();
+    expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
+    expect(screen.getByText(content.preview.idle.body)).toBeTruthy();
+  });
+
+  it("shows required errors when submitting an empty form", async () => {
+    const submit = vi.fn() as unknown as SubmitGenerator;
+    renderSection(submit);
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByText(content.form.topic.requiredError)).toBeTruthy();
+    });
+    expect(screen.getByText(content.form.expertise.requiredError)).toBeTruthy();
+    expect(screen.getByText(content.form.email.requiredError)).toBeTruthy();
+    expect(screen.getByText(content.form.consent.requiredError)).toBeTruthy();
+    expect(submit).not.toHaveBeenCalled();
+  });
+
+  it("shows the email format error for an invalid email", async () => {
+    const submit = vi.fn() as unknown as SubmitGenerator;
+    renderSection(submit);
+    fillValidValues();
+    fireEvent.change(screen.getByLabelText(content.form.email.label), {
+      target: { value: "not-an-email" },
+    });
+
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByText(content.form.email.invalidError!)).toBeTruthy();
+    });
+    expect(submit).not.toHaveBeenCalled();
+  });
+
+  it("selects a tone and toggles the selected state", () => {
+    renderSection();
+    const provocative = screen.getByLabelText(
+      content.form.tone.options[2].label,
+      { exact: false },
+    );
+    fireEvent.click(provocative);
+    expect((provocative as HTMLInputElement).checked).toBe(true);
+  });
+
+  it("transitions through loading and success when submit succeeds", async () => {
+    let resolveSubmit:
+      | ((value: LinkedInPostGeneratorResult) => void)
+      | undefined;
+    const submit = vi.fn<SubmitGenerator>(
+      () =>
+        new Promise<LinkedInPostGeneratorResult>((resolve) => {
+          resolveSubmit = resolve;
+        }),
+    );
+
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByText(content.preview.loading.headline)).toBeTruthy();
+    });
+    expect(
+      screen.getByRole("button", { name: content.form.submitLoading }),
+    ).toBeTruthy();
+    expect(screen.getByText(content.form.loadingHelp)).toBeTruthy();
+
+    resolveSubmit!({
+      ok: true,
+      imageUrl: "/og/landing.png",
+      caption: "Erfolgs-Caption.",
+      downloadToken: "tok-success",
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText(content.preview.success.headline)).toBeTruthy();
+    });
+    const captionBlock = screen.getByText("Erfolgs-Caption.");
+    expect(captionBlock).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: content.preview.success.downloadImage }),
+    ).toBeTruthy();
+    expect(submit).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders the error state when submit returns ok:false", async () => {
+    const submit: SubmitGenerator = async () => ({
+      ok: false as const,
+      code: "INTERNAL",
+    });
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByText(content.preview.error.headline)).toBeTruthy();
+    });
+    expect(screen.getByText(content.preview.error.body)).toBeTruthy();
+  });
+
+  it("does not submit when the honeypot is filled", async () => {
+    const submit = vi.fn() as unknown as SubmitGenerator;
+    renderSection(submit);
+    fillValidValues();
+    const honeypot = screen.getByLabelText(content.form.honeypot.label);
+    fireEvent.change(honeypot, { target: { value: "bot" } });
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(submit).not.toHaveBeenCalled();
+    });
+    expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
+  });
+
+  it("renders the soft CTA card after success", async () => {
+    renderSection();
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText(content.preview.success.softCtaTitle),
+        ).toBeTruthy();
+      },
+      { timeout: 3000 },
+    );
+    const ctaLink = screen.getByRole("link", {
+      name: new RegExp(content.preview.success.softCtaLabel, "i"),
+    });
+    expect(ctaLink.getAttribute("href")).toBe(
+      content.preview.success.softCtaHref,
+    );
+  });
+
+  it("copies the caption when pressing the copy button", async () => {
+    renderSection();
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole("button", {
+            name: content.preview.success.copyCaption,
+          }),
+        ).toBeTruthy();
+      },
+      { timeout: 3000 },
+    );
+    const copyButton = screen.getByRole("button", {
+      name: content.preview.success.copyCaption,
+    });
+    fireEvent.click(copyButton);
+    await waitFor(() => {
+      expect(navigator.clipboard.writeText).toHaveBeenCalled();
+    });
+  });
+
+  it("links the consent label to a checkbox input", () => {
+    renderSection();
+    const checkbox = screen.getByRole("checkbox", {
+      name: content.form.consent.label,
+    }) as HTMLInputElement;
+    expect(checkbox).toBeTruthy();
+    expect(checkbox.type).toBe("checkbox");
+  });
+});

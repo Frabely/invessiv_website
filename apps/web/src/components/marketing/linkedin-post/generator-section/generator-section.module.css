@@ -1,0 +1,883 @@
+/* Mobile-first: layout, sizing and typography target 360px before scaling up. */
+
+.section {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  width: calc(100% - (var(--page-inline-gutter) * 2));
+  margin: 0 auto;
+  padding-block: clamp(2.5rem, 9vw, 4rem);
+}
+
+.intro {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 100%;
+}
+
+.eyebrow {
+  margin: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.85rem, 7vw, 2.3rem);
+  font-weight: 760;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  max-width: 36rem;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+/* Workbench: form first, preview below on mobile */
+.workbench {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* ── Form ── */
+.form {
+  position: relative;
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.15rem 1.1rem 1.4rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--color-surface-2) 96%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.fieldHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.label {
+  color: var(--color-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.fieldMeta {
+  color: color-mix(in srgb, var(--color-text-muted) 80%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+}
+
+.fieldHelp {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 92%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.fieldError {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-danger) 88%, var(--color-text) 12%);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.45;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background 200ms ease;
+}
+
+.textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+}
+
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cta) 24%, transparent);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text-muted) 70%, transparent);
+}
+
+.field[data-has-error="true"] .input,
+.field[data-has-error="true"] .textarea {
+  border-color: color-mix(in srgb, var(--color-danger) 72%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+/* ── Tone radio group ── */
+.toneGroup {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  display: block;
+  padding: 0;
+  color: var(--color-text);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.legendHelp {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 92%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.toneOptions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+}
+
+.toneOption {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 0.2rem 0.5rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 50%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    background 200ms ease,
+    transform 180ms ease;
+}
+
+.toneOption:hover {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 38%, transparent);
+}
+
+.toneOption[data-selected] {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 72%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 10%,
+    var(--color-bg) 90%
+  );
+  box-shadow: 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 50%, transparent) inset;
+}
+
+.toneRadio {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  border-radius: inherit;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.toneRadio:focus-visible {
+  outline: none;
+}
+
+.toneRadio:focus-visible + .toneLabel {
+  text-shadow: 0 0 0;
+}
+
+.toneOption:has(.toneRadio:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.toneLabel {
+  grid-column: 1 / 2;
+  color: var(--color-text);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.toneOption[data-selected] .toneLabel {
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm) 8%);
+}
+
+.toneOption[data-selected]::after {
+  content: "✓";
+  grid-row: 1;
+  grid-column: 2;
+  align-self: start;
+  color: var(--color-accent-warm);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.toneDescription {
+  grid-column: 1 / -1;
+  color: color-mix(in srgb, var(--color-text-muted) 95%, transparent);
+  font-size: 0.83rem;
+  line-height: 1.4;
+}
+
+/* ── Consent ── */
+.consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.6rem;
+  margin-top: 0.1rem;
+  cursor: pointer;
+}
+
+.consentInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.consentBox {
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.1rem;
+  border: 1.5px solid
+    color-mix(in srgb, var(--color-border-strong) 80%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    transform 160ms ease;
+}
+
+.consentInput:checked + .consentBox {
+  border-color: var(--color-cta);
+  background: var(--color-cta);
+}
+
+.consentInput:checked + .consentBox::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 2px solid var(--color-on-cta);
+  border-top: none;
+  border-left: none;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.consentInput:focus-visible + .consentBox {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.consentText {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.consent[data-error] .consentBox {
+  border-color: color-mix(in srgb, var(--color-danger) 75%, transparent);
+}
+
+.consentError {
+  margin: -0.4rem 0 0;
+  color: color-mix(in srgb, var(--color-danger) 88%, var(--color-text) 12%);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Honeypot — hidden but reachable to bots */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ── Submit ── */
+.submitButton {
+  width: 100%;
+  margin-top: 0.2rem;
+}
+
+.loadingHelp {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+/* ── Preview ── */
+.previewSlot {
+  display: block;
+}
+
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.previewFrame {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem 1.1rem 1.35rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 65%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--color-surface-2) 98%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+  overflow: hidden;
+}
+
+.previewBody {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.previewMark {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 95%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.previewHeadline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.18rem;
+  font-weight: 740;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.previewCopy {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Idle silhouette: dashed placeholder card */
+.previewSilhouette {
+  display: block;
+  aspect-ratio: 5 / 4;
+  border: 1.5px dashed
+    color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      circle at 30% 30%,
+      color-mix(in srgb, var(--color-accent-warm) 12%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 75% 70%,
+      color-mix(in srgb, var(--color-cta) 8%, transparent),
+      transparent 55%
+    );
+}
+
+/* Loading skeleton shimmer */
+.skeletonShimmer {
+  display: block;
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: 12px;
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--color-surface-2) 100%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 50%,
+    color-mix(in srgb, var(--color-surface-2) 100%, transparent) 100%
+  );
+  background-size: 220% 100%;
+  overflow: hidden;
+  animation: shimmer 1.8s linear infinite;
+}
+
+.skeletonShimmer::before,
+.skeletonShimmer::after {
+  content: "";
+  position: absolute;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+.skeletonShimmer::before {
+  inset: 14% 14% auto 14%;
+  height: 14%;
+}
+
+.skeletonShimmer::after {
+  inset: auto 14% 14% 14%;
+  height: 22%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* Loading step list */
+.stepsList {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-size: 0.92rem;
+  transition: color 240ms ease;
+}
+
+.stepItem[data-status="active"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.stepItem[data-status="done"] {
+  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
+}
+
+.stepDot {
+  display: inline-grid;
+  place-items: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1.5px solid
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  transition:
+    background 240ms ease,
+    border-color 240ms ease,
+    transform 240ms ease;
+}
+
+.stepItem[data-status="active"] .stepDot {
+  border-color: var(--color-accent-warm);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-accent-warm) 95%, transparent) 0 35%,
+    transparent 38%
+  );
+  transform: scale(1.05);
+}
+
+.stepItem[data-status="done"] .stepDot {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 70%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 70%, transparent);
+}
+
+/* Success media */
+.successMedia {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+}
+
+.successImage {
+  object-fit: cover;
+}
+
+/* Caption block */
+.captionBlock {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 50%, transparent);
+  border-left: 3px solid
+    color-mix(in srgb, var(--color-accent-warm) 75%, transparent);
+  border-radius: 0 12px 12px 0;
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+}
+
+.captionLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 720;
+}
+
+.captionText {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: 0.94rem;
+  line-height: 1.55;
+  white-space: pre-line;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.copyButton {
+  justify-self: start;
+  padding: 0.32rem 0.65rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
+  color: color-mix(in srgb, var(--color-text) 90%, transparent);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease;
+}
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 56%, transparent);
+}
+
+.copyButton[data-state="copied"] {
+  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 65%, transparent);
+}
+
+/* Downloads */
+.downloadRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
+  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 180ms ease;
+}
+
+.downloadButton:hover,
+.downloadButton:focus-visible {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 68%,
+    var(--color-cta) 14%
+  );
+  border-color: color-mix(in srgb, var(--color-cta) 38%, transparent);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+
+/* Soft CTA card (gradient_border_grain inspired) */
+.softCta {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.2rem 1.15rem;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      360px 220px at 18% 16%,
+      color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+      transparent 65%
+    ),
+    radial-gradient(
+      300px 180px at 86% 86%,
+      color-mix(in srgb, var(--color-cta) 14%, transparent),
+      transparent 65%
+    ),
+    color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.softCta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      rgba(255, 255, 255, 0.04) 0.5px,
+      transparent 0.5px
+    )
+    0 0 / 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+:global([data-theme="light"]) .softCta::before {
+  background: radial-gradient(rgba(0, 0, 0, 0.05) 0.5px, transparent 0.5px) 0
+    0 / 3px 3px;
+  opacity: 0.45;
+}
+
+.softCtaTag {
+  display: inline-flex;
+  align-self: start;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 50%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
+  color: color-mix(in srgb, var(--color-accent-warm) 95%, var(--color-text) 5%);
+  font-size: 0.7rem;
+  font-weight: 760;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.softCtaTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.14rem;
+  font-weight: 740;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.softCtaBody {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.softCtaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+  padding: 0.6rem 0.95rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
+  color: var(--color-text);
+  font-size: 0.92rem;
+  font-weight: 700;
+  align-self: start;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    transform 180ms ease;
+}
+
+.softCtaLink:hover,
+.softCtaLink:focus-visible {
+  background: color-mix(
+    in srgb,
+    var(--color-bg) 76%,
+    var(--color-accent-warm) 16%
+  );
+  border-color: color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
+  transform: translateY(-1px);
+}
+
+.softCtaArrow {
+  transition: transform 220ms ease;
+}
+
+.softCtaLink:hover .softCtaArrow,
+.softCtaLink:focus-visible .softCtaArrow {
+  transform: translateX(3px);
+}
+
+/* Error state polish */
+.preview[data-state="error"] .previewFrame {
+  border-color: color-mix(in srgb, var(--color-danger) 50%, transparent);
+}
+
+/* ── Tablet ── */
+@media (min-width: 720px) {
+  .section {
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-block: clamp(3.25rem, 7vw, 5rem);
+  }
+
+  .intro {
+    gap: clamp(0.7rem, 1.2vw, 1rem);
+    max-width: 40rem;
+  }
+
+  .title {
+    font-size: clamp(2.05rem, 4vw, 3rem);
+    letter-spacing: -0.035em;
+  }
+
+  .body {
+    font-size: clamp(1rem, 0.95rem + 0.32vw, 1.16rem);
+  }
+
+  .form,
+  .previewFrame {
+    padding: 1.4rem 1.4rem 1.55rem;
+    border-radius: 20px;
+  }
+
+  .toneOptions {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+  }
+
+  .toneOption {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+  }
+
+  .toneOption[data-selected]::after {
+    grid-row: 1;
+    grid-column: 1;
+    justify-self: end;
+    margin-top: -0.2rem;
+  }
+
+  .toneLabel {
+    grid-column: 1 / -1;
+  }
+
+  .downloadRow {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .previewHeadline {
+    font-size: 1.28rem;
+  }
+}
+
+/* ── Desktop ── */
+@media (min-width: 961px) {
+  .section {
+    max-width: var(--max-content-width);
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  .workbench {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: start;
+  }
+
+  .previewSlot {
+    position: sticky;
+    top: clamp(6.5rem, 9vw, 8rem);
+  }
+
+  .softCta {
+    padding: 1.5rem 1.4rem;
+  }
+
+  .softCtaTitle {
+    font-size: 1.22rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonShimmer {
+    animation: none;
+  }
+
+  .stepItem,
+  .stepDot,
+  .submitButton,
+  .softCtaLink,
+  .softCtaArrow,
+  .downloadButton {
+    transition: none;
+  }
+}

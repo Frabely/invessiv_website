@@ -1,0 +1,97 @@
+{
+  "eyebrow": "DEIN GENERATOR",
+  "title": "Sag uns, worüber du schreiben willst.",
+  "body": "Drei Felder. Eine E-Mail. Du bekommst Bild und Caption sofort hier — und als Kopie in dein Postfach.",
+  "form": {
+    "topic": {
+      "label": "Worum geht's?",
+      "placeholder": "z. B. Preisgespräche mit Bestandskunden",
+      "help": "Ein Satz reicht. Max. 280 Zeichen.",
+      "maxLength": 280,
+      "requiredError": "Bitte ein Thema angeben.",
+      "tooLongError": "Bitte unter 280 Zeichen halten."
+    },
+    "expertise": {
+      "label": "Deine Rolle oder Branche",
+      "placeholder": "z. B. Strategieberatung für KMU",
+      "help": "Hilft uns, den Ton zu treffen. Max. 120 Zeichen.",
+      "maxLength": 120,
+      "requiredError": "Bitte ergänze deine Rolle.",
+      "tooLongError": "Bitte unter 120 Zeichen halten."
+    },
+    "tone": {
+      "label": "In welchem Ton?",
+      "help": "Wähl einen Stil — das prägt den ganzen Post.",
+      "options": [
+        {
+          "value": "sachlich",
+          "label": "Sachlich",
+          "description": "Klar, nüchtern, beweisbar."
+        },
+        {
+          "value": "persönlich",
+          "label": "Persönlich",
+          "description": "Erfahrungsbasiert, in deiner Stimme."
+        },
+        {
+          "value": "provokativ",
+          "label": "Provokativ",
+          "description": "Pointiert, mit klarer Position."
+        }
+      ],
+      "requiredError": "Wähl einen Ton."
+    },
+    "email": {
+      "label": "Wohin schicken wir die Kopie?",
+      "placeholder": "deine@adresse.com",
+      "help": "Nur für diesen Post. Kein Spam.",
+      "requiredError": "Bitte E-Mail-Adresse angeben.",
+      "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
+    },
+    "consent": {
+      "label": "Ich bin einverstanden, dass meine E-Mail genutzt wird, um den Post zuzustellen.",
+      "requiredError": "Ohne dein OK können wir nichts zustellen."
+    },
+    "honeypot": {
+      "label": "Firma"
+    },
+    "submit": "Post generieren",
+    "submitLoading": "Wird generiert …",
+    "loadingHelp": "Das dauert ~30 Sekunden. Lass das Fenster offen."
+  },
+  "preview": {
+    "idle": {
+      "headline": "Hier erscheint dein Post.",
+      "body": "Fülle die Felder links — wir bauen Hook, Bild und Caption in unter einer Minute.",
+      "stepLabel": "Schritt"
+    },
+    "loading": {
+      "headline": "Wir bauen deinen Post …",
+      "body": "Wir wählen Hook, Struktur und Bildlayout. Sekunden, nicht Minuten.",
+      "steps": [
+        "Hook formulieren",
+        "Struktur setzen",
+        "Bild rendern",
+        "Caption finalisieren"
+      ]
+    },
+    "success": {
+      "headline": "Fertig. So sieht dein Post aus.",
+      "imageAlt": "Generiertes LinkedIn-Post-Bild",
+      "captionLabel": "Caption",
+      "copyCaption": "Caption kopieren",
+      "copyCaptionCopied": "Kopiert",
+      "downloadImage": "Bild herunterladen",
+      "downloadCaption": "Text herunterladen",
+      "softCtaTag": "Nächster Schritt",
+      "softCtaTitle": "Das war ein Beispiel-Workflow.",
+      "softCtaBody": "Eigener KI-Content-Prozess für dein Business — lass uns kurz sprechen.",
+      "softCtaLabel": "Kontakt aufnehmen",
+      "softCtaHref": "/de/#contact"
+    },
+    "error": {
+      "headline": "Etwas ist schiefgegangen.",
+      "body": "Wir konnten den Post gerade nicht bauen. Versuch's noch einmal — deine Eingaben sind erhalten."
+    }
+  }
+}

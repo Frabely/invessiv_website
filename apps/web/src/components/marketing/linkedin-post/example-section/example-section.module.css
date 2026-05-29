@@ -1,0 +1,520 @@
+/* Mobile-first: base styles target 360px and scale up via @media (min-width: ...) */
+
+.section {
+  position: relative;
+  display: grid;
+  gap: 1.75rem;
+  width: calc(100% - (var(--page-inline-gutter) * 2));
+  margin: 0 auto;
+  padding-block: clamp(2.75rem, 9vw, 4rem);
+}
+
+/* Section frame: thin paper-edge motif on the right (desktop only) */
+.section::before {
+  content: "";
+  display: none;
+}
+
+.intro {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 100%;
+}
+
+.eyebrow {
+  margin: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.85rem, 7vw, 2.3rem);
+  font-weight: 760;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  max-width: 34rem;
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+  font-size: 0.98rem;
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+/* Samples: stacked on mobile, side-by-side from tablet up */
+.samplesGrid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sampleCardWrap {
+  position: relative;
+  display: block;
+}
+
+/* Card: paper-like artifact */
+.sampleCard {
+  position: relative;
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.1rem 1.1rem 1.35rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 16px;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--color-surface-2) 96%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+}
+
+.sampleCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+      rgba(255, 255, 255, 0.05) 0.5px,
+      transparent 0.5px
+    )
+    0 0 / 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+}
+
+:global([data-theme="light"]) .sampleCard::after {
+  background: radial-gradient(rgba(0, 0, 0, 0.05) 0.5px, transparent 0.5px) 0
+    0 / 3px 3px;
+  opacity: 0.5;
+}
+
+/* Meta strip */
+.metaStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.55rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.metaTone {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 56%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
+  color: color-mix(in srgb, var(--color-accent-warm) 92%, var(--color-text) 8%);
+  font-weight: 760;
+  white-space: nowrap;
+}
+
+.metaDivider {
+  display: none;
+  flex: 0 0 1.5rem;
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--color-border-strong) 80%, transparent) 0,
+    color-mix(in srgb, var(--color-border-strong) 80%, transparent) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+.metaTopic {
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-weight: 620;
+  letter-spacing: 0.1em;
+}
+
+/* Generated image preview: CSS-only artifact */
+.postImage {
+  position: relative;
+  display: grid;
+  align-items: center;
+  margin: 0;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(
+    138deg,
+    color-mix(in srgb, var(--color-bg) 84%, var(--color-accent-warm) 16%) 0%,
+    color-mix(in srgb, var(--color-bg) 92%, var(--color-cta) 8%) 100%
+  );
+  isolation: isolate;
+}
+
+.postImageGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-border) 65%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-border) 65%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 24px 24px;
+  -webkit-mask-image: radial-gradient(
+    closest-side at 70% 35%,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.16) 70%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    closest-side at 70% 35%,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.16) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.postImageGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      220px 160px at 16% 80%,
+      color-mix(in srgb, var(--color-accent-warm) 38%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      260px 200px at 88% 14%,
+      color-mix(in srgb, var(--color-cta) 28%, transparent),
+      transparent 72%
+    );
+  pointer-events: none;
+}
+
+.postImageContent {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: end;
+  gap: 0.45rem;
+  padding: 1.1rem;
+  color: var(--color-text);
+}
+
+.postImageMark {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.postImageHeadline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.18rem, 5.4vw, 1.45rem);
+  font-weight: 760;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.postImageFootnote {
+  margin: 0;
+  max-width: 30ch;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+/* Author row */
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.authorAvatar {
+  display: grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 90%, transparent),
+    color-mix(in srgb, var(--color-accent-orange) 88%, transparent)
+  );
+  color: #1d1410;
+  font-weight: 780;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.authorMeta {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.authorName {
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 0.94rem;
+  line-height: 1.15;
+}
+
+.authorRole {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.005em;
+}
+
+/* Caption: post body */
+.caption {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
+  font-size: 0.96rem;
+  line-height: 1.62;
+  white-space: pre-line;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+/* CTA row */
+.ctaRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.ctaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px dashed
+    color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm) 8%);
+  font-size: 0.95rem;
+  font-weight: 640;
+  transition:
+    color 200ms ease,
+    transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ctaLink:hover,
+.ctaLink:focus-visible {
+  color: var(--color-accent-warm);
+  transform: translateY(2px);
+}
+
+.ctaArrow {
+  display: inline-grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 56%, transparent);
+  border-radius: 50%;
+  color: var(--color-accent-warm);
+  font-size: 0.8rem;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ctaLink:hover .ctaArrow,
+.ctaLink:focus-visible .ctaArrow {
+  transform: translateY(2px);
+}
+
+/* Reveal */
+.intro,
+.sampleCardWrap,
+.ctaRow {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 520ms ease,
+    transform 580ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.intro[data-visible="true"],
+.sampleCardWrap[data-visible="true"],
+.ctaRow[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tablet: side-by-side cards */
+@media (min-width: 720px) {
+  .section {
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-block: clamp(3.25rem, 7vw, 5rem);
+  }
+
+  .intro {
+    gap: clamp(0.7rem, 1.2vw, 1rem);
+    max-width: 38rem;
+  }
+
+  .title {
+    font-size: clamp(2.05rem, 4vw, 3rem);
+    letter-spacing: -0.035em;
+  }
+
+  .body {
+    font-size: clamp(1rem, 0.95rem + 0.32vw, 1.16rem);
+  }
+
+  .samplesGrid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: clamp(1.5rem, 2.4vw, 2.25rem);
+  }
+
+  .sampleCard {
+    gap: clamp(1.1rem, 1.6vw, 1.35rem);
+    padding: clamp(1.3rem, 2vw, 1.7rem) clamp(1.3rem, 2vw, 1.7rem)
+      clamp(1.5rem, 2.4vw, 1.85rem);
+    border-radius: 18px;
+  }
+
+  .metaStrip {
+    flex-wrap: nowrap;
+    font-size: var(--font-size-ui-xs);
+  }
+
+  .metaDivider {
+    display: block;
+  }
+
+  .postImageHeadline {
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  }
+
+  .postImageFootnote {
+    font-size: clamp(0.92rem, 0.9rem + 0.18vw, 1rem);
+  }
+
+  .authorAvatar {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 0.84rem;
+  }
+
+  .authorName {
+    font-size: 0.96rem;
+  }
+
+  .authorRole {
+    font-size: 0.82rem;
+  }
+
+  .caption {
+    font-size: clamp(0.97rem, 0.9rem + 0.28vw, 1.06rem);
+  }
+
+  .ctaRow {
+    justify-content: flex-end;
+  }
+
+  .ctaArrow {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 0.86rem;
+  }
+}
+
+/* Desktop: diagonal offset + paper-edge motif */
+@media (min-width: 961px) {
+  .section {
+    gap: clamp(2.25rem, 4.5vw, 4rem);
+    padding-block: clamp(3.5rem, 7vw, 6rem);
+    max-width: var(--max-content-width);
+  }
+
+  .section::before {
+    display: block;
+    position: absolute;
+    inset: clamp(2rem, 4vw, 3rem) 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        color-mix(in srgb, var(--color-border) 28%, transparent) 22%,
+        color-mix(in srgb, var(--color-border) 28%, transparent) 78%,
+        transparent 100%
+      ),
+      radial-gradient(
+        circle at 100% 50%,
+        color-mix(in srgb, var(--color-accent-warm) 6%, transparent),
+        transparent 38%
+      );
+    background-repeat: no-repeat;
+    background-position:
+      right 0 top 0,
+      right 0 top 0;
+    background-size:
+      1px 100%,
+      100% 100%;
+  }
+
+  .sampleCardWrap[data-position="left"] {
+    margin-top: clamp(0rem, 1vw, 1.25rem);
+  }
+
+  .sampleCardWrap[data-position="right"] {
+    margin-top: clamp(2.25rem, 5vw, 4.5rem);
+  }
+
+  /* Initial rest transforms include rotation */
+  .sampleCardWrap[data-position="left"] {
+    transform: translateY(18px) rotate(-0.35deg);
+  }
+
+  .sampleCardWrap[data-position="right"] {
+    transform: translateY(18px) rotate(0.4deg);
+  }
+
+  .sampleCardWrap[data-position="left"][data-visible="true"] {
+    transform: translateY(0) rotate(-0.35deg);
+  }
+
+  .sampleCardWrap[data-position="right"][data-visible="true"] {
+    transform: translateY(0) rotate(0.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .sampleCardWrap,
+  .ctaRow {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .sampleCardWrap[data-position="left"],
+  .sampleCardWrap[data-position="right"] {
+    transform: none;
+  }
+}
