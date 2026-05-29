@@ -197,27 +197,43 @@ Keine Änderung. Die Offer-Section ist bewusst generisch gehalten und wird auf d
 
 ---
 
-### Task A4: Example-Section _(neu)_
+### Task A4: Example-Section _(aktualisiert)_
 
 **Files:**
 
-- Create: `apps/web/src/i18n/dictionaries/linkedin-post/example/{de.json,en.json,index.ts}`
-- Create: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.tsx`
-- Create: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.module.css`
+- Create/Modify: `apps/web/src/i18n/dictionaries/linkedin-post/example/{de.json,en.json,index.ts}`
+- Create/Modify: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.tsx`
+- Create/Modify: `apps/web/src/components/marketing/linkedin-post/example-section/example-section.module.css`
 
-**Inhalt:** 1–2 statische Beispiel-Posts (real generierte Ausgaben des eigenen HTML-Skills) mit
-Bild-Vorschau + Caption-Text. Zeigt dem Besucher den konkreten Output bevor er seine E-Mail angibt.
+**Inhalt:** Statische Beispiel-Posts (real generierte Ausgaben des eigenen HTML-Skills) mit
+Bild-Vorschau + Caption-Text. Zeigt dem Besucher den konkreten Generator-Output bevor er seine
+E-Mail angibt. Kein Custom-Workflow-Beispiel hier — das gehört in den Success-State (A5).
 
-**Design:** Mobile-first. Auf Mobile: Bild oben, Caption darunter, gestapelt. Auf Desktop:
-nebeneinander oder 2-Spalten-Grid. Bild immer mit `alt`-Text (Caption-Inhalt).
+**Responsive-Regel (verbindlich):**
 
-- [ ] **Step 1:** DE/EN-Dictionaries: Section-Heading, kurzer Subtext, Aria-Labels für Beispiel-Posts.
-- [ ] **Step 2:** Statische Bild-Assets (real generierte Beispiele) einbinden — `next/image`, klar
-      dimensioniert. Placeholder verwenden bis echte Assets verfügbar.
-- [ ] **Step 3:** Scroll-Reveal (`scroll_reveal_stagger`) dezent für die Beispiel-Karten.
-- [ ] **Step 4:** Kleiner "Mach es selbst"-Link am Ende scrollt zu `#generator`.
-- [ ] **Step 5:** Verify 360 px: Bilder skalieren korrekt, kein Überlauf.
-- [ ] **Step 6:** Commit — `feat(linkedin-post): add example section with static post previews`
+- **Mobile (< 720 px):** horizontales **Swipe-Carousel** mit Scroll-Snap. Beide Karten bleiben
+  erreichbar; Kartenbreite ~88 % zeigt einen Peek der nächsten Karte als Swipe-Affordance.
+  Kein Edge-Bleed (kein `100vw` + negative Margin) — die Karten bleiben im Page-Gutter, damit die
+  erste Karte links Abstand behält.
+- **Desktop (≥ 720 px):** **2 Karten** nebeneinander im bestehenden 2-Spalten-Grid (Carousel-CSS
+  wird ab 720 px vollständig zurückgesetzt).
+
+**Begründung:** Ein Carousel ist hier mindestens so stark wie eine Einzelkarte — wird Karte 2 nicht
+geswiped, ist der Mehrwert identisch zur Einzelkarte; wird sie gesehen, ist es zusätzlicher Beweis.
+Kein Downside gegenüber der Einzelkarte.
+
+Bild immer mit `alt`-Text (Caption-Inhalt). Carousel-`<ul>` ist `tabIndex={0}` (Keyboard-Scroll).
+
+- [ ] **Step 1:** DE/EN-Dictionaries: Section-Heading, kurzer Subtext, Aria-Labels.
+- [ ] **Step 2:** Statische Bild-Assets (real generierte Beispiele via HTML-Skill) einbinden —
+      `next/image`, klar dimensioniert. Placeholder verwenden bis echte Assets verfügbar.
+- [ ] **Step 3:** Mobile-Carousel: Flex + `scroll-snap-type: x mandatory`, dünne Scrollbar als
+      Affordance, `scroll-padding-left: 0`. Ab `min-width: 720px` auf Grid zurücksetzen.
+- [ ] **Step 4:** Scroll-Reveal (`scroll_reveal_stagger`) dezent für die Karten.
+- [ ] **Step 5:** Kleiner "Mach es selbst"-Link am Ende scrollt zu `#generator`.
+- [ ] **Step 6:** Verify 360 px: Karte 1 mit Links-Abstand, Peek von Karte 2, Swipe funktioniert.
+      Verify Desktop: 2 Karten nebeneinander, kein Scroll.
+- [ ] **Step 7:** Commit — `feat(linkedin-post): restore mobile carousel for example section`
 
 ---
 
@@ -235,12 +251,38 @@ nebeneinander oder 2-Spalten-Grid. Bild immer mit `alt`-Text (Caption-Inhalt).
 1. **Idle** — Formular: Thema, Expertise, Ton (3 Buttons: sachlich / persönlich / provokativ),
    E-Mail, Consent-Checkbox, Submit-Button.
 2. **Loading** — Submit-Button deaktiviert, Loading-Indicator, Status-Text ("Dein Post wird generiert…").
-3. **Success** — Bild-Vorschau + Caption-Text. Download-Buttons (Bild, Text). Soft-CTA-Card darunter.
+3. **Success** — Bild-Vorschau + Caption-Text. Download-Buttons (Bild, Text).
+   Danach: **Custom-Post-Block** (siehe unten). Danach: **Soft-CTA-Card**.
 4. **Error** — Inline-Fehlermeldung, Formular bleibt editierbar.
 
-**Soft-CTA nach Ergebnis (DE):**
-`"Das war ein Beispiel-Workflow. Einen eigenen KI-Content-Prozess für dein Business bauen — lass uns
-kurz sprechen."` → Link zu Kontaktformular oder Calendly.
+**Success-State — Custom-Post-Block (neu, verbindlich):**
+
+Erscheint direkt unterhalb von Bild-Vorschau + Download-Buttons, vor der Soft-CTA-Card.
+Zeigt einen echten Post aus Moritz' eigenem Custom-Workflow als visuelles Kontrastbeispiel.
+
+Aufbau:
+
+- Trennzeile / visueller Abstand zum Generator-Ergebnis darüber
+- Label-Badge (klar sichtbar, nicht subtil): z. B. „Custom Workflow" + Icon (z. B. ⚡ oder
+  ein kleines Workflow-Icon) — macht unmissverständlich klar: das ist kein Generator-Output
+- Das echte Post-Bild (statisches Asset, generiert via Custom-Skill): mit eigenem Farbthema,
+  eigenem Branding-Stil (Icon, URL, individuelle Typografie) — sichtbarer Qualitätsunterschied
+  zum Generator-Output
+- Darunter kurze Kontext-Zeile (DE/EN aus Dictionary): z. B.
+  „Erstellt mit einem maßgeschneiderten Workflow — einem einzigen Befehl, abgestimmt auf
+  Nische, Tone-of-Voice und Branding."
+- **Soft-CTA-Copy (DE):** `"Lass uns prüfen, ob das für deinen Social-Media-Content-Workflow
+umsetzbar ist."` → Link zu Kontaktformular oder Calendly.
+  **(EN):** `"Let's check if this is feasible for your social media content workflow."` → selber Link.
+
+**Warum hier (nicht in der Example-Section):**
+Der Besucher hat gerade seinen eigenen Generator-Output gesehen — er ist im höchsten Moment
+wahrgenommenen Werts. Das Custom-Beispiel trifft genau dann auf die Frage "was wäre möglich
+wenn das auf mich zugeschnitten ist?" — maximale Kaufmotivation ohne Pricing-Druck.
+
+**Soft-CTA nach Custom-Block (DE):**
+Kein zweiter CTA-Block mehr notwendig; der Custom-Post-Block übernimmt diese Funktion vollständig.
+Der alte generische Soft-CTA-Text ("Das war ein Beispiel-Workflow…") entfällt.
 
 **Mobile-first:**
 
@@ -251,19 +293,27 @@ kurz sprechen."` → Link zu Kontaktformular oder Calendly.
 - CTA-Card: full-width, klarer Kontrast
 
 - [ ] **Step 1:** DE/EN-Dictionaries: Labels, Hilfetexte, Ton-Options, Error-Copy, Success-Copy,
-      Loading-Text, Soft-CTA-Text.
+      Loading-Text. Neu: `customPost.label`, `customPost.context`, `customPost.ctaLabel`,
+      `customPost.ctaAriaLabel`, `customPost.imageAlt` für den Custom-Post-Block.
 - [ ] **Step 2:** Failing jsdom-Tests: Required-Errors (topic, email, consent), Tone-Selection,
       Loading-State während Submit, Success-State mit imageUrl + caption, Error-State, Honeypot.
+      Neu: Success-State rendert Custom-Post-Block mit Label-Badge, Bild und CTA-Link.
 - [ ] **Step 3:** Client Component gegen Stub `submitLinkedInPostGenerator` aus S1 bauen.
+      Custom-Post-Block ist statisch (kein API-Call) — immer sichtbar im Success-State.
 - [ ] **Step 4:** Analytics: `generator_form_start`, `generator_submit_attempt`,
-      `generator_success`, `generator_error`, `post_download` — alle mit
+      `generator_success`, `generator_error`, `post_download`, `custom_post_cta_click` — alle mit
       `form_id: "linkedin_post_generator"`, keine PII.
 - [ ] **Step 5:** CSS Module: mobile-first, Ton-Buttons mit klarem Selected-State,
       Loading-Skeleton für Bild-Placeholder, sichtbare Focus-States.
-- [ ] **Step 6:** `gradient_border_grain`-Effekt für Ergebnis-Block oder Soft-CTA-Card prüfen.
-- [ ] **Step 7:** Tests grün: `npm run test:unit -- generator-section`.
-- [ ] **Step 8:** Section mit `id="generator"` einhängen.
-- [ ] **Step 9:** Commit — `feat(linkedin-post): add linkedin post generator section`
+      Custom-Post-Block: visuell vom Generator-Ergebnis abgesetzt (Trennlinie oder Gap),
+      Label-Badge prominent (nicht subtil), Bild full-width auf Mobile.
+- [ ] **Step 6:** Statisches Custom-Post-Asset bereitstellen (real generiert via Custom-Skill,
+      eigenes Branding: Icon, URL, individuelles Farbthema). `next/image`, klar dimensioniert.
+      Placeholder bis echtes Asset verfügbar.
+- [ ] **Step 7:** `gradient_border_grain`-Effekt für Custom-Post-Block oder Soft-CTA prüfen.
+- [ ] **Step 8:** Tests grün: `npm run test:unit -- generator-section`.
+- [ ] **Step 9:** Section mit `id="generator"` einhängen.
+- [ ] **Step 10:** Commit — `feat(linkedin-post): add linkedin post generator section with custom post block`
 
 ---
 

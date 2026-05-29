@@ -1,4 +1,6 @@
-/* Mobile-first: base styles target 360px and scale up via @media (min-width: ...) */
+/* Mobile-first: base styles target 360px and scale up via @media (min-width: ...).
+   Section-level layout only. The individual post card lives in
+   ./sample-card/sample-card.module.css. */
 
 .section {
   position: relative;
@@ -44,259 +46,58 @@
   text-wrap: pretty;
 }
 
-/* Samples: stacked on mobile, side-by-side from tablet up */
+/* Samples: swipeable carousel on mobile, 2-up grid from tablet.
+   No edge bleed — cards stay inside the page gutter so the first card keeps
+   its left spacing. The ~88% card width reveals a peek of the next card as
+   the swipe affordance; worst case the second card is simply unseen (same as
+   showing one), best case it adds proof. */
 .samplesGrid {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+  display: flex;
+  gap: 1rem;
   margin: 0;
-  padding: 0;
+  padding: 0 0 0.6rem;
   list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(
+      in srgb,
+      var(--color-border-strong) 55%,
+      transparent
+    )
+    transparent;
 }
 
+.samplesGrid::-webkit-scrollbar {
+  height: 3px;
+}
+
+.samplesGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.samplesGrid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+}
+
+/* Carousel/grid item — owns layout, reveal and desktop offset. The card
+   internals live in the SampleCard sub-component. */
 .sampleCardWrap {
   position: relative;
-  display: block;
+  flex: 0 0 88%;
+  scroll-snap-align: start;
 }
 
-/* Card: paper-like artifact */
-.sampleCard {
-  position: relative;
-  display: grid;
-  gap: 1.1rem;
-  padding: 1.1rem 1.1rem 1.35rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
-  border-radius: 16px;
-  background: linear-gradient(
-    170deg,
-    color-mix(in srgb, var(--color-surface-2) 96%, transparent) 0%,
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent) 100%
-  );
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
-    0 18px 40px -28px var(--color-shadow);
-}
-
-.sampleCard::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background: radial-gradient(
-      rgba(255, 255, 255, 0.05) 0.5px,
-      transparent 0.5px
-    )
-    0 0 / 3px 3px;
-  mix-blend-mode: overlay;
-  opacity: 0.4;
-}
-
-:global([data-theme="light"]) .sampleCard::after {
-  background: radial-gradient(rgba(0, 0, 0, 0.05) 0.5px, transparent 0.5px) 0
-    0 / 3px 3px;
-  opacity: 0.5;
-}
-
-/* Meta strip */
-.metaStrip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem 0.55rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.metaTone {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.18rem 0.55rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 56%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
-  color: color-mix(in srgb, var(--color-accent-warm) 92%, var(--color-text) 8%);
-  font-weight: 760;
-  white-space: nowrap;
-}
-
-.metaDivider {
-  display: none;
-  flex: 0 0 1.5rem;
-  height: 1px;
-  background-image: repeating-linear-gradient(
-    to right,
-    color-mix(in srgb, var(--color-border-strong) 80%, transparent) 0,
-    color-mix(in srgb, var(--color-border-strong) 80%, transparent) 3px,
-    transparent 3px,
-    transparent 6px
-  );
-}
-
-.metaTopic {
-  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
-  font-weight: 620;
-  letter-spacing: 0.1em;
-}
-
-/* Generated image preview: CSS-only artifact */
-.postImage {
-  position: relative;
-  display: grid;
-  align-items: center;
+/* Fictional-profile disclaimer (section level) */
+.disclaimer {
   margin: 0;
-  aspect-ratio: 5 / 4;
-  overflow: hidden;
-  border-radius: 12px;
-  background: linear-gradient(
-    138deg,
-    color-mix(in srgb, var(--color-bg) 84%, var(--color-accent-warm) 16%) 0%,
-    color-mix(in srgb, var(--color-bg) 92%, var(--color-cta) 8%) 100%
-  );
-  isolation: isolate;
-}
-
-.postImageGrid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-border) 65%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-border) 65%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(
-    closest-side at 70% 35%,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.16) 70%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    closest-side at 70% 35%,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.16) 70%,
-    transparent 100%
-  );
-  pointer-events: none;
-}
-
-.postImageGlow {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      220px 160px at 16% 80%,
-      color-mix(in srgb, var(--color-accent-warm) 38%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      260px 200px at 88% 14%,
-      color-mix(in srgb, var(--color-cta) 28%, transparent),
-      transparent 72%
-    );
-  pointer-events: none;
-}
-
-.postImageContent {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  align-content: end;
-  gap: 0.45rem;
-  padding: 1.1rem;
-  color: var(--color-text);
-}
-
-.postImageMark {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
-  font-family:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.postImageHeadline {
-  margin: 0;
-  color: var(--color-text);
-  font-size: clamp(1.18rem, 5.4vw, 1.45rem);
-  font-weight: 760;
-  line-height: 1.06;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-}
-
-.postImageFootnote {
-  margin: 0;
-  max-width: 30ch;
-  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
-  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--color-text-muted) 78%, transparent);
+  font-size: 0.78rem;
   line-height: 1.45;
-}
-
-/* Author row */
-.author {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-}
-
-.authorAvatar {
-  display: grid;
-  place-items: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 90%, transparent),
-    color-mix(in srgb, var(--color-accent-orange) 88%, transparent)
-  );
-  color: #1d1410;
-  font-weight: 780;
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-}
-
-.authorMeta {
-  display: grid;
-  gap: 0.1rem;
-  min-width: 0;
-}
-
-.authorName {
-  color: var(--color-text);
-  font-weight: 700;
-  font-size: 0.94rem;
-  line-height: 1.15;
-}
-
-.authorRole {
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  letter-spacing: 0.005em;
-}
-
-/* Caption: post body */
-.caption {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
-  font-size: 0.96rem;
-  line-height: 1.62;
-  white-space: pre-line;
-  text-wrap: pretty;
-  overflow-wrap: anywhere;
 }
 
 /* CTA row */
@@ -347,6 +148,7 @@
 /* Reveal */
 .intro,
 .sampleCardWrap,
+.disclaimer,
 .ctaRow {
   opacity: 0;
   transform: translateY(18px);
@@ -358,6 +160,7 @@
 
 .intro[data-visible="true"],
 .sampleCardWrap[data-visible="true"],
+.disclaimer[data-visible="true"],
 .ctaRow[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
@@ -384,52 +187,25 @@
     font-size: clamp(1rem, 0.95rem + 0.32vw, 1.16rem);
   }
 
+  /* Revert carousel to a 2-up grid from tablet up */
   .samplesGrid {
+    display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: start;
     gap: clamp(1.5rem, 2.4vw, 2.25rem);
+    padding-bottom: 0;
+    overflow-x: visible;
+    scroll-snap-type: none;
+    scrollbar-width: none;
   }
 
-  .sampleCard {
-    gap: clamp(1.1rem, 1.6vw, 1.35rem);
-    padding: clamp(1.3rem, 2vw, 1.7rem) clamp(1.3rem, 2vw, 1.7rem)
-      clamp(1.5rem, 2.4vw, 1.85rem);
-    border-radius: 18px;
+  .samplesGrid::-webkit-scrollbar {
+    display: none;
   }
 
-  .metaStrip {
-    flex-wrap: nowrap;
-    font-size: var(--font-size-ui-xs);
-  }
-
-  .metaDivider {
-    display: block;
-  }
-
-  .postImageHeadline {
-    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
-  }
-
-  .postImageFootnote {
-    font-size: clamp(0.92rem, 0.9rem + 0.18vw, 1rem);
-  }
-
-  .authorAvatar {
-    width: 2.4rem;
-    height: 2.4rem;
-    font-size: 0.84rem;
-  }
-
-  .authorName {
-    font-size: 0.96rem;
-  }
-
-  .authorRole {
-    font-size: 0.82rem;
-  }
-
-  .caption {
-    font-size: clamp(0.97rem, 0.9rem + 0.28vw, 1.06rem);
+  .sampleCardWrap {
+    flex: unset;
+    scroll-snap-align: none;
   }
 
   .ctaRow {
@@ -480,18 +256,11 @@
 
   .sampleCardWrap[data-position="left"] {
     margin-top: clamp(0rem, 1vw, 1.25rem);
-  }
-
-  .sampleCardWrap[data-position="right"] {
-    margin-top: clamp(2.25rem, 5vw, 4.5rem);
-  }
-
-  /* Initial rest transforms include rotation */
-  .sampleCardWrap[data-position="left"] {
     transform: translateY(18px) rotate(-0.35deg);
   }
 
   .sampleCardWrap[data-position="right"] {
+    margin-top: clamp(2.25rem, 5vw, 4.5rem);
     transform: translateY(18px) rotate(0.4deg);
   }
 
@@ -507,6 +276,7 @@
 @media (prefers-reduced-motion: reduce) {
   .intro,
   .sampleCardWrap,
+  .disclaimer,
   .ctaRow {
     opacity: 1;
     transform: none;

@@ -661,123 +661,6 @@
   transform: translateY(-1px);
 }
 
-/* Soft CTA card (gradient_border_grain inspired) */
-.softCta {
-  position: relative;
-  display: grid;
-  gap: 0.55rem;
-  padding: 1.2rem 1.15rem;
-  border-radius: 18px;
-  background:
-    radial-gradient(
-      360px 220px at 18% 16%,
-      color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
-      transparent 65%
-    ),
-    radial-gradient(
-      300px 180px at 86% 86%,
-      color-mix(in srgb, var(--color-cta) 14%, transparent),
-      transparent 65%
-    ),
-    color-mix(in srgb, var(--color-surface-1) 92%, transparent);
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 60%, transparent);
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.softCta::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      rgba(255, 255, 255, 0.04) 0.5px,
-      transparent 0.5px
-    )
-    0 0 / 3px 3px;
-  mix-blend-mode: overlay;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-:global([data-theme="light"]) .softCta::before {
-  background: radial-gradient(rgba(0, 0, 0, 0.05) 0.5px, transparent 0.5px) 0
-    0 / 3px 3px;
-  opacity: 0.45;
-}
-
-.softCtaTag {
-  display: inline-flex;
-  align-self: start;
-  padding: 0.2rem 0.55rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 50%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
-  color: color-mix(in srgb, var(--color-accent-warm) 95%, var(--color-text) 5%);
-  font-size: 0.7rem;
-  font-weight: 760;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.softCtaTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.14rem;
-  font-weight: 740;
-  line-height: 1.18;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-}
-
-.softCtaBody {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 80%, var(--color-text-muted) 20%);
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
-.softCtaLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.15rem;
-  padding: 0.6rem 0.95rem;
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
-  color: var(--color-text);
-  font-size: 0.92rem;
-  font-weight: 700;
-  align-self: start;
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    transform 180ms ease;
-}
-
-.softCtaLink:hover,
-.softCtaLink:focus-visible {
-  background: color-mix(
-    in srgb,
-    var(--color-bg) 76%,
-    var(--color-accent-warm) 16%
-  );
-  border-color: color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
-  transform: translateY(-1px);
-}
-
-.softCtaArrow {
-  transition: transform 220ms ease;
-}
-
-.softCtaLink:hover .softCtaArrow,
-.softCtaLink:focus-visible .softCtaArrow {
-  transform: translateX(3px);
-}
-
 /* Error state polish */
 .preview[data-state="error"] .previewFrame {
   border-color: color-mix(in srgb, var(--color-danger) 50%, transparent);
@@ -857,14 +740,6 @@
     position: sticky;
     top: clamp(6.5rem, 9vw, 8rem);
   }
-
-  .softCta {
-    padding: 1.5rem 1.4rem;
-  }
-
-  .softCtaTitle {
-    font-size: 1.22rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -875,8 +750,6 @@
   .stepItem,
   .stepDot,
   .submitButton,
-  .softCtaLink,
-  .softCtaArrow,
   .downloadButton {
     transition: none;
   }

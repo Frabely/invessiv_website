@@ -17,6 +17,7 @@ import {
 } from "@/client/generator/submit-linkedin-post-generator";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
+import { CustomPostBlock } from "./custom-post-block/custom-post-block";
 import {
   LINKEDIN_POST_GENERATOR_INITIAL_VALUES,
   type LinkedInPostGeneratorFormValues,
@@ -675,23 +676,7 @@ function SuccessPreview({
         </div>
       </div>
 
-      <aside className={styles.softCta}>
-        <span className={styles.softCtaTag}>{success.softCtaTag}</span>
-        <h4 className={styles.softCtaTitle}>{success.softCtaTitle}</h4>
-        <p className={styles.softCtaBody}>{success.softCtaBody}</p>
-        <a
-          className={styles.softCtaLink}
-          data-analytics-event="cta_click"
-          data-analytics-location="generator_soft_cta"
-          data-analytics-target="contact"
-          href={success.softCtaHref}
-        >
-          {success.softCtaLabel}
-          <span aria-hidden="true" className={styles.softCtaArrow}>
-            →
-          </span>
-        </a>
-      </aside>
+      <CustomPostBlock content={content.customPost} />
     </div>
   );
 }

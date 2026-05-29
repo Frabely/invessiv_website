@@ -63,11 +63,30 @@ export type LinkedInPostGeneratorPreviewSuccessCopy = {
   copyCaptionCopied: string;
   downloadImage: string;
   downloadCaption: string;
-  softCtaTag: string;
-  softCtaTitle: string;
-  softCtaBody: string;
-  softCtaLabel: string;
-  softCtaHref: string;
+};
+
+export type LinkedInPostGeneratorCustomPostPostCopy = {
+  authorName: string;
+  authorRole: string;
+  authorImageAlt: string;
+  caption: string;
+  captionMore: string;
+  captionLess: string;
+  imageSrc: string;
+  imageAlt: string;
+  commandLabel: string;
+  command: string;
+};
+
+export type LinkedInPostGeneratorCustomPostCopy = {
+  badge: string;
+  headline: string;
+  context: string;
+  prompt: string;
+  ctaLabel: string;
+  ctaAriaLabel: string;
+  ctaHref: string;
+  post: LinkedInPostGeneratorCustomPostPostCopy;
 };
 
 export type LinkedInPostGeneratorPreviewErrorCopy = {
@@ -88,6 +107,7 @@ export type LinkedInPostGeneratorContent = {
   body: string;
   form: LinkedInPostGeneratorFormCopy;
   preview: LinkedInPostGeneratorPreviewCopy;
+  customPost: LinkedInPostGeneratorCustomPostCopy;
 };
 
 const CONTENT: Record<Locale, LinkedInPostGeneratorContent> = {

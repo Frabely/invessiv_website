@@ -82,16 +82,32 @@
       "copyCaption": "Caption kopieren",
       "copyCaptionCopied": "Kopiert",
       "downloadImage": "Bild herunterladen",
-      "downloadCaption": "Text herunterladen",
-      "softCtaTag": "Nächster Schritt",
-      "softCtaTitle": "Das war ein Beispiel-Workflow.",
-      "softCtaBody": "Eigener KI-Content-Prozess für dein Business — lass uns kurz sprechen.",
-      "softCtaLabel": "Kontakt aufnehmen",
-      "softCtaHref": "/de/#contact"
+      "downloadCaption": "Text herunterladen"
     },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
       "body": "Wir konnten den Post gerade nicht bauen. Versuch's noch einmal — deine Eingaben sind erhalten."
+    }
+  },
+  "customPost": {
+    "badge": "Custom Workflow",
+    "headline": "So sieht es aus, wenn der Workflow dir gehört.",
+    "context": "Echter Post aus meinem internen Workflow — eigenes Branding, eigene Bildsprache, eigene Stimme. Aus einem einzigen Befehl.",
+    "prompt": "Lass uns prüfen, ob das für deinen Social-Media-Content-Workflow umsetzbar ist.",
+    "ctaLabel": "Umsetzbarkeit prüfen",
+    "ctaAriaLabel": "Kontakt aufnehmen und eigenen Content-Workflow prüfen",
+    "ctaHref": "/de/#contact",
+    "post": {
+      "authorName": "Moritz Hecht",
+      "authorRole": "Webdesigner",
+      "authorImageAlt": "Profilbild von Moritz Hecht",
+      "caption": "SEO wird oft auf Rankings, Keywords und technische Checks reduziert.\n\nDas ist alles wichtig. Aber Sichtbarkeit allein löst noch kein Anfrageproblem.\n\nWenn jemand über Google auf eine Angebotsseite kommt, ist die Erwartung schon da: Die Person sucht eine Lösung, eine Einschätzung oder einen Anbieter, der zum Anliegen passt.\n\nGenau dann muss die Seite schnell klären, ob das Angebot relevant ist, warum Vertrauen gerechtfertigt ist und welcher nächste Schritt sinnvoll ist.\n\nWenn du deine Angebotsseite nicht nur sichtbarer, sondern auch klarer für passende Anfragen machen möchtest, schreib mir gerne per DM oder schildere dein Anliegen kurz über die Website.\n\nMehr dazu:\nhttps://www.invessiv.com/de/services/landing-page\n\n#Invessiv #SEO #Landingpage #OnlinePraesenz",
+      "captionMore": "… mehr",
+      "captionLess": "weniger",
+      "imageSrc": "/linkedin-post/custom-post-seo.png",
+      "imageAlt": "LinkedIn-Post: „SEO bringt wenig, wenn die Seite nicht führt“ — generiert mit dem internen Invessiv-Workflow",
+      "commandLabel": "Befehl",
+      "command": "Erstelle mit dem Skill „invessiv-social-post“ eine LinkedIn-Slide zum Thema SEO."
     }
   }
 }

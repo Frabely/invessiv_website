@@ -4,10 +4,8 @@ import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
-import type {
-  LinkedInPostExampleContent,
-  LinkedInPostExampleSample,
-} from "@/i18n/dictionaries/linkedin-post/example";
+import type { LinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
+import { SampleCard } from "./sample-card/sample-card";
 import styles from "./example-section.module.css";
 
 type ExampleSectionProps = LinkedInPostExampleContent & {
@@ -23,6 +21,10 @@ export function ExampleSection({
   title,
   body,
   samplesAriaLabel,
+  promptLabel,
+  captionMore,
+  captionLess,
+  disclaimer,
   samples,
   ctaLabel,
   ctaAriaLabel,
@@ -43,11 +45,29 @@ export function ExampleSection({
         aria-label={samplesAriaLabel}
         className={styles.samplesGrid}
         role="list"
+        // Focusable so keyboard users can scroll the mobile carousel
+        tabIndex={0}
       >
         {samples.map((sample, index) => (
-          <SampleCard index={index} key={sample.id} sample={sample} />
+          <li
+            className={styles.sampleCardWrap}
+            data-position={index === 0 ? "left" : "right"}
+            data-reveal-item="true"
+            key={sample.id}
+          >
+            <SampleCard
+              captionLess={captionLess}
+              captionMore={captionMore}
+              promptLabel={promptLabel}
+              sample={sample}
+            />
+          </li>
         ))}
       </ul>
+
+      <p className={styles.disclaimer} data-reveal-item="true">
+        {disclaimer}
+      </p>
 
       <div className={styles.ctaRow} data-reveal-item="true">
         <a
@@ -66,54 +86,5 @@ export function ExampleSection({
         </a>
       </div>
     </section>
-  );
-}
-
-type SampleCardProps = {
-  index: number;
-  sample: LinkedInPostExampleSample;
-};
-
-function SampleCard({ index, sample }: SampleCardProps) {
-  return (
-    <li
-      className={styles.sampleCardWrap}
-      data-position={index === 0 ? "left" : "right"}
-      data-reveal-item="true"
-    >
-      <article aria-label={sample.topicLabel} className={styles.sampleCard}>
-        <div className={styles.metaStrip}>
-          <span className={styles.metaTone}>{sample.toneLabel}</span>
-          <span aria-hidden="true" className={styles.metaDivider} />
-          <span className={styles.metaTopic}>{sample.topicLabel}</span>
-        </div>
-
-        <figure aria-label={sample.image.headline} className={styles.postImage}>
-          <span aria-hidden="true" className={styles.postImageGrid} />
-          <span aria-hidden="true" className={styles.postImageGlow} />
-          <div className={styles.postImageContent}>
-            <p className={styles.postImageMark} aria-hidden="true">
-              ⌗ {sample.id.replace("sample-", "0")}
-            </p>
-            <h3 className={styles.postImageHeadline}>
-              {sample.image.headline}
-            </h3>
-            <p className={styles.postImageFootnote}>{sample.image.footnote}</p>
-          </div>
-        </figure>
-
-        <header className={styles.author}>
-          <span aria-hidden="true" className={styles.authorAvatar}>
-            {sample.author.avatarInitials}
-          </span>
-          <span className={styles.authorMeta}>
-            <span className={styles.authorName}>{sample.author.name}</span>
-            <span className={styles.authorRole}>{sample.author.role}</span>
-          </span>
-        </header>
-
-        <p className={styles.caption}>{sample.caption}</p>
-      </article>
-    </li>
   );
 }

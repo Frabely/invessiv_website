@@ -82,16 +82,32 @@
       "copyCaption": "Copy caption",
       "copyCaptionCopied": "Copied",
       "downloadImage": "Download image",
-      "downloadCaption": "Download text",
-      "softCtaTag": "Next step",
-      "softCtaTitle": "This was a sample workflow.",
-      "softCtaBody": "Want your own AI content process for your business? Let's talk briefly.",
-      "softCtaLabel": "Get in touch",
-      "softCtaHref": "/en/#contact"
+      "downloadCaption": "Download text"
     },
     "error": {
       "headline": "Something went wrong.",
       "body": "We couldn't build the post just now. Try again — your input is saved."
+    }
+  },
+  "customPost": {
+    "badge": "Custom Workflow",
+    "headline": "This is what it looks like when the workflow is yours.",
+    "context": "A real post from my internal workflow — own branding, own visual language, own voice. From a single command.",
+    "prompt": "Let's check if this is feasible for your social media content workflow.",
+    "ctaLabel": "Check feasibility",
+    "ctaAriaLabel": "Get in touch to check your own content workflow",
+    "ctaHref": "/en/#contact",
+    "post": {
+      "authorName": "Moritz Hecht",
+      "authorRole": "Web designer",
+      "authorImageAlt": "Profile picture of Moritz Hecht",
+      "caption": "SEO often gets reduced to rankings, keywords, and technical checks.\n\nAll of that matters. But visibility alone does not solve an inquiry problem.\n\nWhen someone lands on an offer page through Google, there is already intent behind the visit. That person is looking for a solution, an assessment, or a provider who fits the situation.\n\nThat is exactly when the page needs to make the offer clear, build enough trust, and point to a useful next step.\n\nIf you want your offer page to be not only more visible, but also clearer for the right inquiries, feel free to send me a DM or briefly describe your project through the website.\n\nMore here:\nhttps://www.invessiv.com/en/services/landing-page\n\n#Invessiv #SEO #Landingpage #OnlinePresence",
+      "captionMore": "… more",
+      "captionLess": "less",
+      "imageSrc": "/linkedin-post/custom-post-seo-en.png",
+      "imageAlt": "LinkedIn post: “SEO does little if the page does not guide” — generated with the internal Invessiv workflow",
+      "commandLabel": "Command",
+      "command": "Create a LinkedIn slide on the topic of SEO with the “invessiv-social-post” skill."
     }
   }
 }

@@ -1,0 +1,14 @@
+Worked for 2m 43s
+
+Für den letzten Auftrag „1 LinkedIn-Slide zum Thema SEO“ inklusive deiner mitgeschickten Skill-Anweisung, meiner Tool-
+  Aufrufe, HTML/CSS-Erzeugung, Caption und Checks würde ich ungefähr rechnen:
+
+  - Input: ca. 80k-140k Tokens über mehrere Modellaufrufe
+  - Output: ca. 10k-20k Tokens, inkl. generiertem HTML/CSS und Tool-Anweisungen
+  - GPT-5.5 API-Preis laut OpenAI: $5 / 1M input tokens, $30 / 1M output tokens
+
+  Grobe Kosten:
+
+  - Input: $0.40-$0.70
+  - Output: $0.30-$0.60
+  - Gesamt: ungefähr $0.70-$1.30

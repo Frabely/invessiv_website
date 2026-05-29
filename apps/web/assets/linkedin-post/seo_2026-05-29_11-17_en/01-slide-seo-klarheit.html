@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invessiv LinkedIn Slide - SEO Clarity</title>
+    <style>
+      :root {
+        --text: #f4ebe5;
+        --muted: #ded4cc;
+        --accent: #c4884a;
+        --ink: #141116;
+        --line: rgba(255, 255, 255, 0.13);
+        --accent-soft: rgba(196, 136, 74, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        background: #120f14;
+        color: var(--text);
+        font-family: "Aptos", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+      }
+
+      .slide {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background:
+          linear-gradient(
+            115deg,
+            rgba(67, 34, 19, 0.62),
+            rgba(13, 14, 25, 0.84)
+          ),
+          url("../../../../assets/background_stories_nografik.png") center /
+            cover no-repeat;
+      }
+
+      .slide::before,
+      .slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .slide::before {
+        background:
+          radial-gradient(
+            34rem 30rem at 12% 18%,
+            rgba(238, 126, 24, 0.12),
+            transparent 58%
+          ),
+          radial-gradient(
+            34rem 30rem at 92% 26%,
+            rgba(72, 100, 170, 0.09),
+            transparent 54%
+          );
+        filter: blur(20px);
+      }
+
+      .slide::after {
+        background: radial-gradient(
+          circle at center,
+          transparent 58%,
+          rgba(4, 4, 7, 0.44) 100%
+        );
+      }
+
+      .frame {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        padding: 86px 94px 72px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 72px;
+      }
+
+      .brand img {
+        width: 44px;
+        height: auto;
+        filter: drop-shadow(0 4px 14px rgba(251, 133, 40, 0.2));
+      }
+
+      .brand span {
+        color: var(--accent);
+        font-size: 29px;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .card {
+        position: relative;
+        min-height: 880px;
+        padding: 66px 48px 56px;
+        border: 1px solid rgba(255, 255, 255, 0.045);
+        border-radius: 39px;
+        background: linear-gradient(
+          180deg,
+          rgba(24, 18, 27, 0.34),
+          rgba(15, 12, 18, 0.24)
+        );
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.03),
+          0 16px 34px rgba(0, 0, 0, 0.15);
+        text-align: center;
+      }
+
+      .divider {
+        position: relative;
+        height: 1px;
+        margin: 18px 0 74px;
+        background: var(--line);
+      }
+
+      .tag {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 146px;
+        height: 44px;
+        padding: 0 22px;
+        border-radius: 999px;
+        background: linear-gradient(
+          180deg,
+          rgba(24, 18, 27, 0.94),
+          rgba(24, 18, 27, 0.88)
+        );
+        border: 1px solid rgba(223, 151, 57, 0.2);
+        color: var(--accent);
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .headline {
+        margin: 0 auto;
+        max-width: 790px;
+        font-size: 58px;
+        line-height: 1.16;
+        font-weight: 850;
+        letter-spacing: 0;
+        text-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+      }
+
+      .lead {
+        margin: 58px auto 0;
+        max-width: 740px;
+        color: var(--muted);
+        font-size: 31px;
+        line-height: 1.32;
+        font-weight: 500;
+      }
+
+      .headline span,
+      .lead span {
+        color: var(--accent);
+        font-style: normal;
+        font-weight: 850;
+      }
+
+      .highlight {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 58px;
+        min-height: 76px;
+        max-width: 760px;
+        padding: 18px 40px;
+        border-radius: 22px;
+        background: linear-gradient(
+          180deg,
+          rgba(223, 151, 57, 0.16),
+          rgba(223, 151, 57, 0.1)
+        );
+        border: 1px solid rgba(223, 151, 57, 0.22);
+        color: var(--text);
+        font-size: 30px;
+        font-weight: 850;
+        line-height: 1.18;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+
+      .count {
+        align-self: flex-end;
+        margin: 26px 20px 0 0;
+        font-size: 21px;
+        font-weight: 800;
+        color: #f2eee9;
+      }
+
+      .url {
+        margin: auto 0 0;
+        text-align: center;
+        color: #ece5df;
+        font-size: 22px;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="slide" aria-label="Invessiv LinkedIn Slide">
+      <section class="frame">
+        <header class="brand" aria-label="Invessiv">
+          <img
+            src="../../../../assets/icon_noText.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <span>INVESSIV</span>
+        </header>
+
+        <article class="card" aria-label="Content area">
+          <div class="divider"><span class="tag">SEO</span></div>
+          <h1 class="headline">
+            SEO does little if the page does not <span>guide</span>.
+          </h1>
+          <p class="lead">
+            Being found is only the first step. After that, the page has to
+            explain whether the offer fits, why it is credible, and what should
+            happen next.
+          </p>
+          <p class="highlight">
+            Visibility only works when search intent and inquiry flow match.
+          </p>
+        </article>
+
+        <p class="count" aria-label="Carousel counter"></p>
+
+        <p class="url">invessiv.com</p>
+      </section>
+    </main>
+  </body>
+</html>

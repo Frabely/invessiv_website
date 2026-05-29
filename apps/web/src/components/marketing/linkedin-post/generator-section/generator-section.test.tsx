@@ -197,25 +197,27 @@ describe("GeneratorSection", () => {
     expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
   });
 
-  it("renders the soft CTA card after success", async () => {
+  it("renders the custom post block with the real post and CTA after success", async () => {
     renderSection();
     fillValidValues();
     clickSubmit();
 
     await waitFor(
       () => {
-        expect(
-          screen.getByText(content.preview.success.softCtaTitle),
-        ).toBeTruthy();
+        expect(screen.getByText(content.customPost.headline)).toBeTruthy();
       },
       { timeout: 3000 },
     );
+    expect(
+      screen.getByText(content.customPost.badge, { exact: false }),
+    ).toBeTruthy();
+    expect(screen.getByText(content.customPost.post.authorName)).toBeTruthy();
+    expect(screen.getByText(content.customPost.post.authorRole)).toBeTruthy();
+
     const ctaLink = screen.getByRole("link", {
-      name: new RegExp(content.preview.success.softCtaLabel, "i"),
+      name: content.customPost.ctaAriaLabel,
     });
-    expect(ctaLink.getAttribute("href")).toBe(
-      content.preview.success.softCtaHref,
-    );
+    expect(ctaLink.getAttribute("href")).toBe(content.customPost.ctaHref);
   });
 
   it("copies the caption when pressing the copy button", async () => {

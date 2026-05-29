@@ -20,6 +20,7 @@ export type LinkedInPostExampleSample = {
   author: LinkedInPostExampleAuthor;
   image: LinkedInPostExampleImage;
   caption: string;
+  promptText: string;
 };
 
 export type LinkedInPostExampleContent = {
@@ -27,6 +28,10 @@ export type LinkedInPostExampleContent = {
   title: string;
   body: string;
   samplesAriaLabel: string;
+  promptLabel: string;
+  captionMore: string;
+  captionLess: string;
+  disclaimer: string;
   samples: LinkedInPostExampleSample[];
   ctaLabel: string;
   ctaAriaLabel: string;

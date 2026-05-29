@@ -29,6 +29,11 @@ const nextConfig: NextConfig = {
       { source: "/terms", destination: "/de/terms", permanent: true },
     ];
   },
+  images: {
+    // Allow a high-quality variant for text-heavy showcase images (e.g. the
+    // generated LinkedIn slide) so type stays crisp; 75 stays the default.
+    qualities: [75, 90],
+  },
   transpilePackages: ["@invessiv/common", "@invessiv/db"],
 };
 
