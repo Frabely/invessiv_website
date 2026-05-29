@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invessiv.com/schemas/linkedin-post-generator/content.json",
+  "title": "LinkedInPostGeneratorContent",
+  "description": "Structured-output contract for the Claude API copy call (Task B3). This is the ONLY portion produced by the LLM. The server wrapper (and the Codex run) assemble the remaining result.json fields — schemaVersion, generatedAt, inputs echo, colorPair, content.expertiseDisplay (cap at 60), paths, render — around this object. The LLM MUST NOT emit those wrapper-owned fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "headlineHtml",
+    "headlinePlain",
+    "bodyVariant",
+    "insight",
+    "bullets",
+    "caption"
+  ],
+  "properties": {
+    "headlineHtml": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Headline; MAY contain only <em>/</em> pairs, nothing else."
+    },
+    "headlinePlain": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 90,
+      "pattern": "^[^<>]*$",
+      "description": "Headline with all HTML tags stripped. Must not contain '<' or '>'."
+    },
+    "bodyVariant": {
+      "enum": ["insight", "bullets"],
+      "description": "MUST be 'bullets' iff tone === 'sachlich', else 'insight'."
+    },
+    "insight": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 220,
+      "description": "Plain text only, no HTML tags. Non-null iff bodyVariant === 'insight'."
+    },
+    "bullets": {
+      "type": ["array", "null"],
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 120,
+        "description": "Plain text only, 6-14 words."
+      },
+      "description": "Non-null iff bodyVariant === 'bullets'."
+    },
+    "caption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body", "hashtags"],
+      "properties": {
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[^\\r]*$",
+          "description": "Caption body without the trailing hashtag line. Paragraphs separated by '\\n\\n'. LF only — no '\\r'. First paragraph MUST be a standalone hook <= 140 chars (enforced by the skill quality gate, see SKILL.md section 9)."
+        },
+        "hashtags": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\u00C0-\\u017F][A-Za-z0-9\\u00C0-\\u017F]*$",
+            "description": "Hashtag WITHOUT leading '#'. Last element MUST be 'LinkedIn' (positional rule enforced by the skill quality gate)."
+          },
+          "contains": {
+            "const": "LinkedIn"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "bodyVariant": {
+            "const": "insight"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "insight": {
+            "type": "string"
+          },
+          "bullets": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "bodyVariant": {
+            "const": "bullets"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "insight": {
+            "type": "null"
+          },
+          "bullets": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  ]
+}

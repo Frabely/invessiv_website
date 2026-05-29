@@ -198,8 +198,8 @@
           "maxItems": 5,
           "items": {
             "type": "string",
-            "pattern": "^[A-Za-z0-9][A-Za-z0-9\\u00C0-\\u017F]*$",
-            "description": "Hashtag WITHOUT leading '#'. Caller is responsible for prepending '#' when rendering. Allowed characters: ASCII letters/digits and Latin-1 Supplement / Latin Extended-A accents (covers DE umlauts, French/Spanish accents)."
+            "pattern": "^[A-Za-z0-9\\u00C0-\\u017F][A-Za-z0-9\\u00C0-\\u017F]*$",
+            "description": "Hashtag WITHOUT leading '#'. Caller is responsible for prepending '#' when rendering. Allowed characters (including the FIRST character): ASCII letters/digits and Latin-1 Supplement / Latin Extended-A accents (covers DE umlauts incl. leading ones like 'Übergabe', French/Spanish accents)."
           },
           "contains": {
             "const": "LinkedIn"

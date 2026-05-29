@@ -31,8 +31,18 @@ on the post itself.
    A4 screenshots, design previews, manual QA). The LLM follows this
    spec directly.
 
-Both consumers MUST produce identical output for identical inputs
-(with the same `--seed`).
+Both consumers MUST agree on the **deterministic mechanics** for
+identical inputs: the same `--seed` selects the same color pair, the
+same `topic` yields the same slug, and both write the same file set,
+JSON shape, and formatting.
+
+The **copy is intentionally non-deterministic** — headline, body, and
+caption are LLM-generated and may (and should) differ on every run,
+even for identical inputs and the same `--seed`. The seed fixes only
+the color pair, never the wording. Re-running to get a fresh copy
+variant is an expected, supported use (see §3). Snapshot tests must
+therefore assert structure, schema-validity, and formatting — never
+the exact copy wording.
 
 When generating copy, apply the `copywriting` skill principles
 (clear, direct, no hype, no buzzwords, no unsupported promises).
@@ -84,6 +94,12 @@ Do not normalize. Only display labels and generated copy switch with
 ---
 
 ## 2. Invocation Contract
+
+This is a **contract, not a shipped binary** — there is no executable
+named `linkedin-post-generator`. The flag interface below is
+implemented twice: once by the server-side TypeScript wrapper
+(Tasks B3+B4+B7) and once by the Codex run that parses the prompt. Both
+implementations MUST honour the same flags and defaults.
 
 The skill accepts inputs via **CLI flags** (server-side TypeScript
 wrapper) or via **prompt-extracted values** (Codex). Both must support
@@ -141,6 +157,12 @@ output**:
   non-deterministic across calls.
 - The color pair is random unless `--seed N` is passed; `--seed N`
   fixes only the color, not the content.
+
+This is **intended behaviour**, not a defect: re-running produces a
+fresh copy variant for the same input, which is desirable. The color
+pair is the only stabilizable axis — a caller (e.g. a future UI color
+picker) can pin it via `--seed N` while still getting new copy on each
+run.
 
 The caller decides whether a re-generation:
 
@@ -213,6 +235,35 @@ U+0073 U+00F6 U+006E U+006C U+0069 U+0063 U+0068`; treat any other
 
 The full JSON Schema lives at `references/result-schema.json`. Validate
 against it before declaring success.
+
+### Field ownership — LLM vs. wrapper
+
+`result.json` mixes two sources. Only some fields are produced by the
+LLM copy call (Task B3); the rest are assembled by the wrapper (the
+server pipeline or the Codex run). For the **API/copy use case the LLM
+returns ONLY the fields below**, validated against
+`references/content-schema.json` — never the wrapper-owned fields.
+
+| `result.json` field            | Owner   | Notes                                    |
+| ------------------------------ | ------- | ---------------------------------------- |
+| `content.headlineHtml`         | **LLM** | `<em>` pairs only                        |
+| `content.headlinePlain`        | **LLM** | tags stripped                            |
+| `content.bodyVariant`          | **LLM** | bullets iff `sachlich`, else insight     |
+| `content.insight`              | **LLM** | xor with bullets                         |
+| `content.bullets`              | **LLM** | xor with insight                         |
+| `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                |
+| `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`        |
+| `content.expertiseDisplay`     | wrapper | `expertise` hard-capped at 60 chars      |
+| `inputs.*`                     | wrapper | echoes the four inputs verbatim          |
+| `colorPair.*`                  | wrapper | seed/random pick from `color-pairs.json` |
+| `paths.*`, `render.*`          | wrapper | filesystem + render metadata             |
+| `schemaVersion`, `generatedAt` | wrapper | constant / UTC timestamp                 |
+
+The LLM structured-output contract is therefore a strict subset:
+`{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, caption }`.
+B3 wires this object into the Claude API call's response schema; the
+wrapper then merges it with the wrapper-owned fields and validates the
+merged object against `references/result-schema.json`.
 
 **Format requirements** (for deterministic snapshot tests):
 
@@ -414,6 +465,13 @@ production renderings will not be byte-identical.
 ---
 
 ## 8. Content Generation by Tone & Locale
+
+**Model (B3):** use a current top-tier Claude model with the API's
+structured-output / tool-use mode bound to `references/content-schema.json`,
+and a low-to-moderate temperature (≈ 0.5–0.7) — high enough for varied
+copy across re-runs (see §3), low enough to keep the quality gate
+(§11) passing reliably. Pin the exact model id in B3's server config,
+not in this spec, so model upgrades do not require a skill edit.
 
 All copy is in the **request locale**. No Invessiv branding ("Invessiv",
 "invessiv.com", "Landingpage" as a service mention) in any visible
@@ -704,7 +762,8 @@ linkedin-post-generator/
 │   └── post-template.html            ← canonical HTML template
 ├── references/
 │   ├── color-pairs.json              ← 10 predefined dark pairs
-│   ├── result-schema.json            ← JSON Schema for result.json
+│   ├── content-schema.json           ← JSON Schema for the LLM copy call (B3)
+│   ├── result-schema.json            ← JSON Schema for the full result.json
 │   └── examples/
 │       ├── sachlich-de.md
 │       ├── persoenlich-de.md
