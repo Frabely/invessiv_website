@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useId, useState } from "react";
+import type { Locale } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
 import type { LinkedInPostGeneratorCustomPostCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import styles from "./custom-post-block.module.css";
 
@@ -9,6 +11,7 @@ const PROFILE_IMAGE_SRC = "/linkedin-post/moritz-hecht.jpeg";
 
 type CustomPostBlockProps = {
   content: LinkedInPostGeneratorCustomPostCopy;
+  locale: Locale;
 };
 
 /**
@@ -17,10 +20,14 @@ type CustomPostBlockProps = {
  * to contrast against the un-branded generator output and open the aspiration
  * gap toward a bespoke workflow.
  */
-export function CustomPostBlock({ content }: CustomPostBlockProps) {
+export function CustomPostBlock({ content, locale }: CustomPostBlockProps) {
   const { post } = content;
   const [isExpanded, setIsExpanded] = useState(false);
   const captionId = useId();
+  // The post links to our own landing page; build the href from the route
+  // constant + locale instead of the literal URL shown in the caption.
+  const landingHref = `/${locale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`;
+  const [captionBefore, captionAfter] = post.caption.split("{{link}}");
 
   return (
     <aside className={styles.block}>
@@ -55,7 +62,20 @@ export function CustomPostBlock({ content }: CustomPostBlockProps) {
             data-expanded={isExpanded || undefined}
             id={captionId}
           >
-            {post.caption}
+            {captionBefore}
+            {captionAfter !== undefined ? (
+              <>
+                <a
+                  className={styles.captionLink}
+                  href={landingHref}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {post.linkUrl}
+                </a>
+                {captionAfter}
+              </>
+            ) : null}
           </p>
           <button
             aria-controls={captionId}

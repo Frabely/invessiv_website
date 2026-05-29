@@ -187,6 +187,20 @@
   overflow: hidden;
 }
 
+.captionLink {
+  color: color-mix(in srgb, var(--color-cta) 90%, var(--color-text) 10%);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 180ms ease;
+}
+
+.captionLink:hover,
+.captionLink:focus-visible {
+  color: var(--color-cta);
+  text-decoration: underline;
+}
+
 .captionToggle {
   padding: 0.1rem 0;
   border: 0;

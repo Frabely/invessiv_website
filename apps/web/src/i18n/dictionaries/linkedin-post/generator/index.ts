@@ -70,6 +70,7 @@ export type LinkedInPostGeneratorCustomPostPostCopy = {
   authorRole: string;
   authorImageAlt: string;
   caption: string;
+  linkUrl: string;
   captionMore: string;
   captionLess: string;
   imageSrc: string;
