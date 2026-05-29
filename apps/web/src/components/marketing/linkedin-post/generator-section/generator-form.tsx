@@ -1,5 +1,9 @@
-import { type ChangeEvent, type SubmitEvent } from "react";
+import { type ChangeEvent, type CSSProperties, type SubmitEvent } from "react";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import {
+  GENERATOR_COLOR_AUTO,
+  GENERATOR_COLOR_PAIRS,
+} from "@/common/constants/generator/generator-color-pairs";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LinkedInPostGeneratorFormValues } from "@invessiv/common/contracts/generator/linkedin-post-generator-form-values";
@@ -117,6 +121,62 @@ export function GeneratorForm({
               </label>
             );
           })}
+        </div>
+      </fieldset>
+
+      <fieldset className={styles.colorGroup}>
+        <legend className={styles.legend}>{content.form.color.label}</legend>
+        <p className={styles.legendHelp}>{content.form.color.help}</p>
+        <div className={styles.swatches} role="radiogroup">
+          <label
+            className={styles.swatchWrap}
+            data-selected={
+              values.colorPairId === GENERATOR_COLOR_AUTO || undefined
+            }
+            title={content.form.color.autoLabel}
+          >
+            <input
+              aria-label={content.form.color.autoLabel}
+              checked={values.colorPairId === GENERATOR_COLOR_AUTO}
+              className={styles.swatchInput}
+              name="colorPairId"
+              onChange={() => onChange("colorPairId", GENERATOR_COLOR_AUTO)}
+              type="radio"
+              value={GENERATOR_COLOR_AUTO}
+            />
+            <span aria-hidden="true" className={styles.swatchAuto} />
+          </label>
+          {GENERATOR_COLOR_PAIRS.map((pair) => (
+            <label
+              className={styles.swatchWrap}
+              data-selected={values.colorPairId === pair.id || undefined}
+              key={pair.id}
+              title={pair.name}
+            >
+              <input
+                aria-label={`${content.form.color.swatchLabel} ${pair.name}`}
+                checked={values.colorPairId === pair.id}
+                className={styles.swatchInput}
+                name="colorPairId"
+                onChange={() => onChange("colorPairId", pair.id)}
+                type="radio"
+                value={pair.id}
+              />
+              <span
+                aria-hidden="true"
+                className={styles.swatch}
+                style={
+                  {
+                    "--swatch-from": pair.primary,
+                    "--swatch-to": pair.secondary,
+                    "--swatch-accent": pair.accent,
+                  } as CSSProperties
+                }
+              >
+                <span className={styles.swatchDot} />
+              </span>
+            </label>
+          ))}
         </div>
       </fieldset>
 

@@ -26,6 +26,13 @@ export type LinkedInPostGeneratorToneCopy = {
   requiredError: string;
 };
 
+export type LinkedInPostGeneratorColorCopy = {
+  label: string;
+  help: string;
+  autoLabel: string;
+  swatchLabel: string;
+};
+
 export type LinkedInPostGeneratorConsentCopy = {
   label: string;
   requiredError: string;
@@ -35,6 +42,7 @@ export type LinkedInPostGeneratorFormCopy = {
   topic: LinkedInPostGeneratorFieldCopy;
   expertise: LinkedInPostGeneratorFieldCopy;
   tone: LinkedInPostGeneratorToneCopy;
+  color: LinkedInPostGeneratorColorCopy;
   email: LinkedInPostGeneratorFieldCopy;
   consent: LinkedInPostGeneratorConsentCopy;
   honeypot: { label: string };

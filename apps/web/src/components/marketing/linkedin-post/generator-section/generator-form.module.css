@@ -178,6 +178,108 @@
   line-height: 1.4;
 }
 
+/* ── Color picker ── compact swatches that double as a mini preview */
+.colorGroup {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.15rem;
+}
+
+.swatchWrap {
+  position: relative;
+  display: inline-flex;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.swatchInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  border-radius: inherit;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.swatch {
+  /* Defaults; the actual pair colors are passed inline as custom properties.
+     Declared here so the variables are defined in scope (and inherited by
+     .swatchDot) rather than only referenced in var(). */
+  --swatch-from: var(--color-surface-2);
+  --swatch-to: var(--color-surface-1);
+  --swatch-accent: var(--color-accent-warm);
+  position: relative;
+  display: grid;
+  place-items: end;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--swatch-from) 0%,
+    var(--swatch-to) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  transition: transform 160ms ease;
+}
+
+.swatchDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 0 0.2rem 0.2rem 0;
+  border-radius: 50%;
+  background: var(--swatch-accent);
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, #000 35%, transparent);
+}
+
+/* Auto = random: a multi-hue tile that hints "any of these" */
+.swatchAuto {
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: conic-gradient(
+    from 210deg,
+    #5ba3d9,
+    #52b788,
+    #c97fa8,
+    #c8a04a,
+    #8b80e0,
+    #5ba3d9
+  );
+  border: 1px dashed color-mix(in srgb, var(--color-text) 45%, transparent);
+}
+
+.swatchWrap:hover .swatch,
+.swatchWrap:hover .swatchAuto {
+  transform: translateY(-1px);
+}
+
+.swatchWrap[data-selected] .swatch,
+.swatchWrap[data-selected] .swatchAuto {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.swatchWrap:has(.swatchInput:focus-visible) .swatch,
+.swatchWrap:has(.swatchInput:focus-visible) .swatchAuto {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 /* ── Consent ── */
 .consent {
   display: grid;

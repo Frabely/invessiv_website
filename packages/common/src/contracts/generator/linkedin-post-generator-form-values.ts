@@ -7,6 +7,8 @@ export type LinkedInPostGeneratorFormValues = {
   topic: string;
   expertise: string;
   tone: LinkedInPostToneType;
+  /** Predefined color-pair id, or "auto" to let the pipeline pick at random. */
+  colorPairId: string;
   email: string;
   consent: boolean;
   company: string;
@@ -17,6 +19,7 @@ export const LINKEDIN_POST_GENERATOR_INITIAL_VALUES: LinkedInPostGeneratorFormVa
     topic: "",
     expertise: "",
     tone: LinkedInPostTone.Personal,
+    colorPairId: "auto",
     email: "",
     consent: false,
     company: "",

@@ -41,6 +41,12 @@
       ],
       "requiredError": "Pick a tone."
     },
+    "color": {
+      "label": "Background",
+      "help": "Pick a color combo — or let us choose automatically.",
+      "autoLabel": "Automatic",
+      "swatchLabel": "Color scheme"
+    },
     "email": {
       "label": "Where do we send the copy?",
       "placeholder": "you@address.com",

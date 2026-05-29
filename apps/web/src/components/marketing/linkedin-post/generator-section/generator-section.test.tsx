@@ -8,6 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
   LinkedInPostGeneratorResult,
@@ -125,6 +126,16 @@ describe("GeneratorSection", () => {
     );
     fireEvent.click(provocative);
     expect((provocative as HTMLInputElement).checked).toBe(true);
+  });
+
+  it("selects a predefined background color pair", () => {
+    renderSection();
+    const firstPair = GENERATOR_COLOR_PAIRS[0];
+    const swatch = screen.getByLabelText(
+      `${content.form.color.swatchLabel} ${firstPair.name}`,
+    ) as HTMLInputElement;
+    fireEvent.click(swatch);
+    expect(swatch.checked).toBe(true);
   });
 
   it("transitions through loading and success when submit succeeds", async () => {

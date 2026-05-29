@@ -41,6 +41,12 @@
       ],
       "requiredError": "Wähl einen Ton."
     },
+    "color": {
+      "label": "Hintergrund",
+      "help": "Wähl eine Farbkombi — oder lass uns automatisch wählen.",
+      "autoLabel": "Automatisch",
+      "swatchLabel": "Farbschema"
+    },
     "email": {
       "label": "Wohin schicken wir die Kopie?",
       "placeholder": "deine@adresse.com",
