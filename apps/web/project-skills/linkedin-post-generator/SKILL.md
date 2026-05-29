@@ -32,15 +32,16 @@ on the post itself.
    spec directly.
 
 Both consumers MUST agree on the **deterministic mechanics** for
-identical inputs: the same `--seed` selects the same color pair, the
-same `topic` yields the same slug, and both write the same file set,
-JSON shape, and formatting.
+identical inputs: a concrete `colorPairId` always yields that exact
+color pair (`--seed` is a low-level index alternative), the same
+`topic` yields the same slug, and both write the same file set, JSON
+shape, and formatting.
 
 The **copy is intentionally non-deterministic** — headline, body, and
 caption are LLM-generated and may (and should) differ on every run,
-even for identical inputs and the same `--seed`. The seed fixes only
-the color pair, never the wording. Re-running to get a fresh copy
-variant is an expected, supported use (see §3). Snapshot tests must
+even for identical inputs and the same `colorPairId`. The color choice
+fixes only the color pair, never the wording. Re-running to get a fresh
+copy variant is an expected, supported use (see §3). Snapshot tests must
 therefore assert structure, schema-validity, and formatting — never
 the exact copy wording.
 
@@ -51,12 +52,13 @@ When generating copy, apply the `copywriting` skill principles
 
 ## 1. Inputs
 
-| Field       | Type   | Max       | Required | Notes                                                                                         |
-| ----------- | ------ | --------- | -------- | --------------------------------------------------------------------------------------------- |
-| `topic`     | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                           |
-| `expertise` | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry"         |
-| `tone`      | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale) |
-| `locale`    | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                      |
+| Field         | Type   | Max       | Required | Notes                                                                                                                                                                               |
+| ------------- | ------ | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `topic`       | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                                                                                                                 |
+| `expertise`   | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry"                                                                                               |
+| `tone`        | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale)                                                                                       |
+| `locale`      | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                                                                                                            |
+| `colorPairId` | enum   | —         | yes      | One of the 10 pair ids in `references/color-pairs.json` (e.g. `navy-steel`) **or** `auto`. Comes from the form color picker; default `auto`. A concrete id is **binding** — see §6. |
 
 Wire values for `tone` match
 `packages/common/src/contracts/generator/linkedin-post-generator-tone.ts`.
@@ -90,6 +92,8 @@ Do not normalize. Only display labels and generated copy switch with
   stop and report.
 - `tone` not in enum → stop.
 - `locale` not in {`de`, `en`} → stop.
+- `colorPairId` not one of the 10 pair ids or `auto` → stop (do not fall
+  back to random — a bad value is a contract bug, not a free choice).
 
 ---
 
@@ -111,19 +115,22 @@ linkedin-post-generator \
   --expertise "<string>" \
   --tone <sachlich|persönlich|provokativ> \
   --locale <de|en> \
+  --color <pair-id|auto> \
   [--out-dir <path>] \
   [--seed <0..9>] \
   [--dry-run]
 ```
 
-| Flag        | Default                                        | Description                                                                    |
-| ----------- | ---------------------------------------------- | ------------------------------------------------------------------------------ |
-| `--out-dir` | `apps/web/linkedin-post-output/<slug>_<date>/` | Where to write output files. Server passes a temp dir; Codex uses the default. |
-| `--seed`    | unset → random                                 | Force color-pair index (0–9). Out-of-range → stop with error.                  |
-| `--dry-run` | off                                            | Skip Playwright PNG render. HTML, caption, and JSON are still written.         |
+| Flag        | Default                                        | Description                                                                                                                                                                         |
+| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--color`   | `auto`                                         | Color pair, maps to the form's `colorPairId`. A pair id (e.g. `navy-steel`) is **binding**: that exact pair MUST be used and `colorPair.source = "selected"`. `auto` → random pick. |
+| `--out-dir` | `apps/web/linkedin-post-output/<slug>_<date>/` | Where to write output files. Server passes a temp dir; Codex uses the default.                                                                                                      |
+| `--seed`    | unset → random                                 | Low-level alternative for local runs: force color-pair index (0–9), `source = "seeded"`. **Ignored when `--color <id>` is a concrete id.** Out-of-range → stop with error.          |
+| `--dry-run` | off                                            | Skip Playwright PNG render. HTML, caption, and JSON are still written.                                                                                                              |
 
-For Codex invocations, the LLM parses the user prompt into these four
-inputs and the optional flags, then executes the same logic.
+For Codex invocations, the LLM parses the user prompt into these inputs
+(including `colorPairId`) and the optional flags, then executes the same
+logic.
 
 ---
 
@@ -155,14 +162,15 @@ output**:
 
 - The headline and body content are LLM-generated; the LLM is
   non-deterministic across calls.
-- The color pair is random unless `--seed N` is passed; `--seed N`
-  fixes only the color, not the content.
+- The color pair is random only when `colorPairId` is `auto` (or unset)
+  and no `--seed` is passed. A **concrete `colorPairId` pins the exact
+  pair on every run** (`--seed N` is a low-level index alternative);
+  neither fixes the content.
 
 This is **intended behaviour**, not a defect: re-running produces a
 fresh copy variant for the same input, which is desirable. The color
-pair is the only stabilizable axis — a caller (e.g. a future UI color
-picker) can pin it via `--seed N` while still getting new copy on each
-run.
+pair is the only stabilizable axis — the form's color picker pins it via
+`colorPairId` while the copy still varies on each run.
 
 The caller decides whether a re-generation:
 
@@ -244,20 +252,20 @@ server pipeline or the Codex run). For the **API/copy use case the LLM
 returns ONLY the fields below**, validated against
 `references/content-schema.json` — never the wrapper-owned fields.
 
-| `result.json` field            | Owner   | Notes                                    |
-| ------------------------------ | ------- | ---------------------------------------- |
-| `content.headlineHtml`         | **LLM** | `<em>` pairs only                        |
-| `content.headlinePlain`        | **LLM** | tags stripped                            |
-| `content.bodyVariant`          | **LLM** | bullets iff `sachlich`, else insight     |
-| `content.insight`              | **LLM** | xor with bullets                         |
-| `content.bullets`              | **LLM** | xor with insight                         |
-| `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                |
-| `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`        |
-| `content.expertiseDisplay`     | wrapper | `expertise` hard-capped at 60 chars      |
-| `inputs.*`                     | wrapper | echoes the four inputs verbatim          |
-| `colorPair.*`                  | wrapper | seed/random pick from `color-pairs.json` |
-| `paths.*`, `render.*`          | wrapper | filesystem + render metadata             |
-| `schemaVersion`, `generatedAt` | wrapper | constant / UTC timestamp                 |
+| `result.json` field            | Owner   | Notes                                                            |
+| ------------------------------ | ------- | ---------------------------------------------------------------- |
+| `content.headlineHtml`         | **LLM** | `<em>` pairs only                                                |
+| `content.headlinePlain`        | **LLM** | tags stripped                                                    |
+| `content.bodyVariant`          | **LLM** | bullets iff `sachlich`, else insight                             |
+| `content.insight`              | **LLM** | xor with bullets                                                 |
+| `content.bullets`              | **LLM** | xor with insight                                                 |
+| `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                                        |
+| `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`                                |
+| `content.expertiseDisplay`     | wrapper | `expertise` hard-capped at 60 chars                              |
+| `inputs.*`                     | wrapper | echoes the four inputs verbatim                                  |
+| `colorPair.*`                  | wrapper | resolved from `colorPairId`: selected / seeded / random — see §6 |
+| `paths.*`, `render.*`          | wrapper | filesystem + render metadata                                     |
+| `schemaVersion`, `generatedAt` | wrapper | constant / UTC timestamp                                         |
 
 The LLM structured-output contract is therefore a strict subset:
 `{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, caption }`.
@@ -327,7 +335,9 @@ merged object against `references/result-schema.json`.
 
 **Key semantics**:
 
-- `colorPair.source`: `"seeded"` if `--seed` was passed, `"random"` otherwise.
+- `colorPair.source`: `"selected"` if a concrete `colorPairId` was given
+  (then `colorPair.id` MUST equal that id), `"seeded"` if `--seed` was
+  used, `"random"` otherwise.
 - `content.expertiseDisplay`: expertise input after **hard char-cap at 60**.
   Stored **unescaped** (HTML-escaping happens at template-substitution
   time). **No appended ellipsis** — visual cropping is done by
@@ -365,10 +375,19 @@ merged object against `references/result-schema.json`.
 ## 6. Color System
 
 10 predefined dark color pairs defined in
-`references/color-pairs.json`. Pick one per run:
+`references/color-pairs.json`. Select one per run by this **precedence
+(first match wins)**:
 
-- If `--seed N` provided: use index `N`, set `colorPair.source = "seeded"`.
-- Otherwise: uniform random integer in `[0, 9]`, set `colorPair.source = "random"`.
+1. **`colorPairId` is one of the 10 ids** → use **that exact pair**.
+   Set `colorPair.id = colorPairId` and `colorPair.source = "selected"`.
+   **Binding — the visitor's chosen color MUST be used. Do NOT randomize,
+   substitute, or "improve" it, regardless of topic/tone.**
+2. **`--seed N` (0–9)** → use index `N`, `colorPair.source = "seeded"`.
+3. **`colorPairId === "auto"` (or unset) and no `--seed`** → uniform
+   random integer in `[0, 9]`, `colorPair.source = "random"`.
+
+`colorPair.index` is always the chosen pair's index from
+`color-pairs.json`, regardless of source.
 
 The post background uses a 135° linear gradient between `primary` and
 `secondary`. `text` and `accent` are co-tuned for legibility against
@@ -376,6 +395,8 @@ that gradient — do not swap colors between pairs.
 
 **Forbidden**:
 
+- **Ignoring or overriding a concrete `colorPairId`** — the selected
+  pair is binding and must appear unchanged in `colorPair` and the PNG.
 - Inventing new pairs.
 - Changing individual color channels.
 - Using Invessiv's `#df9739` orange.
@@ -716,7 +737,11 @@ Run all checks before declaring success.
 - [ ] `result.json.generatedAt` matches `YYYY-MM-DDTHH:MM:SSZ` (no ms).
 - [ ] `result.json.inputs` echoes the four inputs verbatim (NFC byte-exact).
 - [ ] `result.json.colorPair.index` ∈ `[0, 9]`.
-- [ ] `result.json.colorPair.source === "seeded"` iff `--seed` was passed.
+- [ ] `colorPair.source` is `"selected"` iff a concrete `colorPairId` was
+      given; `"seeded"` iff `--seed` (and no concrete id); else `"random"`.
+- [ ] **If `colorPairId` is a concrete id, `result.json.colorPair.id ===
+    colorPairId`** and the PNG background uses that pair (the visitor's
+      chosen color MUST be honored).
 - [ ] `bodyVariant === "bullets"` iff `tone === "sachlich"`; else `"insight"`.
 - [ ] Exactly one of `content.insight` / `content.bullets` is non-null.
 - [ ] `content.headlinePlain.length <= 90` (hard cap).

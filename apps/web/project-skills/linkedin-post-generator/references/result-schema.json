@@ -71,7 +71,7 @@
           "maximum": 9
         },
         "source": {
-          "enum": ["random", "seeded"]
+          "enum": ["random", "seeded", "selected"]
         },
         "primary": {
           "type": "string",

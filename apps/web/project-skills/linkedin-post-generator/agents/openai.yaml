@@ -1,8 +1,9 @@
 display_name: LinkedIn Post Generator
 short_description: >
   Generate a single LinkedIn post (1080x1080 PNG + caption.txt +
-  result.json) from a visitor's topic, expertise, tone, and locale.
-  Non-branded; randomly chosen color pair per run (or fixed via --seed).
+  result.json) from a visitor's topic, expertise, tone, locale, and
+  colorPairId. Non-branded; the color pair is the visitor's chosen
+  predefined pair (binding) or random when colorPairId is "auto".
   --dry-run skips the PNG render while still writing post.html,
   caption.txt, and result.json — used by server-side unit tests (B3).
 default_prompt: >
@@ -10,4 +11,5 @@ default_prompt: >
   Thema: "Preisgespräche mit Bestandskunden".
   Rolle/Branche: "Strategieberatung für KMU".
   Ton: persönlich.
+  Farbschema (colorPairId): navy-steel.
   Locale: de.

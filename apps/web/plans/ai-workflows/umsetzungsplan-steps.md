@@ -44,7 +44,49 @@ kein Subscription-Modell, kein Pricing auf dieser Page, kein LinkedIn-Autoposter
 - Generator-API: `apps/web/src/app/api/public/generator/linkedin-post/route.ts`
 - Download-Endpoint: `apps/web/src/app/api/public/generator/linkedin-post/download/route.ts`
 - Generator-Service: `apps/web/src/server/services/generator/**`
+- App-lokale Shared-Schicht: `apps/web/common/**` (Alias `@/common/*`) — `constants/generator/**`
+  (Analytics, State-Kind, Color-Pairs) und `contracts/generator/**` (State, FieldErrors)
+- Generierungs-Spezifikation (kanonisch): `apps/web/project-skills/linkedin-post-generator/**`
+  (Skill-Contract inkl. `colorPairId`, `references/result-schema.json`, `references/content-schema.json`,
+  `references/color-pairs.json`, `templates/post-template.html`)
 - Lead-Persistenz über bestehendes Contact-System (neuer `request_kind: "linkedin_post_generator"`)
+
+---
+
+## Ist-Stand & Reconciliation (Stand: 2026-05-29)
+
+**SEAM (S1) + TRACK A (UI) sind umgesetzt** und über `typecheck` / `lint` / `test:unit` / `build` grün.
+Wichtige Abweichungen gegenüber der ursprünglichen Planung, die TRACK B & C betreffen:
+
+- **Neuer verbindlicher Parameter `colorPairId`:** Der Generator hat eine Hintergrund-Farbauswahl über die
+  10 vordefinierten Paare + `auto` (Zufall). Liegt als Form-Value `colorPairId` vor (Default `"auto"`) und
+  **muss bis zum Generierungs-Service durchgereicht werden** (Skill-Parameter, _binding_ — Skill §1/§6).
+  → Betrifft **B2** (DTO/Zod), **B3** (Skill-Aufruf `--color`), **B5** (Persistenz), **B7** (Passthrough).
+- **Skill ist die kanonische Generierungs-Spezifikation:** `linkedin-post-generator/SKILL.md` definiert Inputs
+  (inkl. `colorPairId`), `references/content-schema.json` (= striktes LLM-Output-Schema für den Claude-Call),
+  `references/result-schema.json` (Gesamt-`result.json`), Farb-Selektion (§6, binding) und Quality-Gate.
+  **B3 implementiert genau diesen Contract**, statt eigene Strukturen zu erfinden.
+- **App-lokale Konstanten wiederverwenden** (keine neuen Magic Strings):
+  - `@/common/constants/generator/generator-analytics` — `GeneratorAnalyticsEvent`, `GENERATOR_FORM_ID`,
+    `GeneratorErrorReason`, `PostDownloadTarget` (Analytics-Mechanik bleibt `window.dispatchEvent`).
+  - `@/common/constants/generator/generator-state-kind` — `GeneratorStateKind`.
+  - `@/common/constants/generator/generator-color-pairs` — `GENERATOR_COLOR_PAIRS` (10) + `GENERATOR_COLOR_AUTO`.
+  - `@/common/contracts/generator/` — `GeneratorState`, `GeneratorFieldErrors`.
+- **Generator-Section ist in Einzelkomponenten gesplittet** (je eigenes CSS-Modul): `generator-section.tsx`
+  (Orchestrierung) · `generator-form.tsx` · `field.tsx` · `preview-panel.tsx` · `success-preview.tsx` ·
+  `custom-post-block/` · `use-field-ids.ts`.
+- **Custom-Post-Block zeigt den ECHTEN Post** (Asset-Punkt erledigt): locale-abhängiges Bild
+  `/linkedin-post/custom-post-seo{,-en}.png`, Profil Moritz Hecht / Webdesigner (`/linkedin-post/moritz-hecht.jpeg`),
+  echte Caption mit klickbarem internem Landing-Link (neuer Tab, Ziel aus `SITE_ROUTES.LANDING_PAGE_SERVICE`)
+  - Befehl-Zeile. Statisch, kein API-Call.
+- **Example-Section** = klassischer LinkedIn-Post (Profil → Caption mit „… mehr" → full-bleed 1:1-Bild),
+  Mobile-Swipe-Carousel, fiktive Profile (Max Mustermann / Mila Musterfrau) + Fiktiv-Hinweis,
+  `SampleCard` als eigene Komponente. **Noch offen:** echte `promptText`-Werte (Platzhalter) + echte Beispiel-Bilder.
+- **Analytics-Naming-Korrektur:** Custom-Post-CTA nutzt `cta_click` + `data-analytics-location="generator_custom_post"`
+  (App-Taxonomie), **nicht** `custom_post_cta_click` wie in A5 ursprünglich notiert.
+
+> **Konsequenz für TRACK B:** Die Submit-/Result-Form-Schnittstelle (S1) steht; `submitLinkedInPostGenerator`
+> ist noch ein Stub. B7 ersetzt den Stub durch den echten `fetch`; B2/B3/B5 müssen `colorPairId` aufnehmen.
 
 ---
 
@@ -80,7 +122,13 @@ kein Subscription-Modell, kein Pricing auf dieser Page, kein LinkedIn-Autoposter
 
 ## SEAM — Gemeinsame Schnittstelle
 
-### Task S1: GeneratorFormValues + Submit-Service-Stub _(aktualisiert)_
+### Task S1: GeneratorFormValues + Submit-Service-Stub _(✅ umgesetzt)_
+
+> **Stand:** umgesetzt. Real ist `LinkedInPostGeneratorFormValues =
+{ topic, expertise, tone, colorPairId, email, consent, company }` (Default `colorPairId: "auto"`,
+> `tone` über die `LinkedInPostTone`-Konstante). Das Snippet unten ist die ursprüngliche Skizze **ohne**
+> `colorPairId`. `submitLinkedInPostGenerator` ist noch der Stub; Result-Shape unverändert
+> `{ ok, imageUrl, caption, downloadToken }`.
 
 **Files:**
 
@@ -197,7 +245,7 @@ Keine Änderung. Die Offer-Section ist bewusst generisch gehalten und wird auf d
 
 ---
 
-### Task A4: Example-Section _(aktualisiert)_
+### Task A4: Example-Section _(✅ umgesetzt — offen: echte promptText + Bilder)_
 
 **Files:**
 
@@ -237,7 +285,19 @@ Bild immer mit `alt`-Text (Caption-Inhalt). Carousel-`<ul>` ist `tabIndex={0}` (
 
 ---
 
-### Task A5: Generator-Section _(neu, ersetzt A4 Pricing + altes A6 Formular)_
+### Task A5: Generator-Section _(✅ umgesetzt — inkl. Farbauswahl)_
+
+> **Stand:** umgesetzt. Ergänzungen/Korrekturen gegenüber den Steps unten:
+>
+> - **Farbauswahl (neu):** kompakter Swatch-Picker über `GENERATOR_COLOR_PAIRS` + „Auto" → Form-Value
+>   `colorPairId` (Default `auto`). Jede Swatch = Mini-Vorschau (Gradient + Akzentpunkt), platzsparend auf Mobile.
+> - **Komponenten-Split:** `generator-form` / `field` / `preview-panel` / `success-preview` /
+>   `custom-post-block`, jeweils eigenes CSS-Modul.
+> - **Custom-Post-Block** zeigt den **echten** Post (locale-abhängiges Bild + Profil + Caption mit internem
+>   Link + Befehl-Zeile) → Step 6 „Placeholder-Asset" damit erledigt.
+> - **Analytics** über `@/common/constants/generator/generator-analytics` (Konstanten statt Magic Strings);
+>   Custom-Post-CTA = `cta_click` + `location="generator_custom_post"` (**nicht** `custom_post_cta_click`).
+> - **State-Diskriminanten** über `GeneratorStateKind`; Form-Errors über `GeneratorFieldErrors`.
 
 **Files:**
 
@@ -317,7 +377,7 @@ Der alte generische Soft-CTA-Text ("Das war ein Beispiel-Workflow…") entfällt
 
 ---
 
-### Task A6: Privacy-Note-Section _(vormals A5, bleibt)_
+### Task A6: Privacy-Note-Section _(✅ umgesetzt)_
 
 **Files:**
 
@@ -335,7 +395,7 @@ als Input verwenden.
 
 ---
 
-### Task A7: Metadata + Structured Data _(aktualisiert)_
+### Task A7: Metadata + Structured Data _(✅ umgesetzt — Werte ggf. final gegenprüfen)_
 
 **Files:**
 
@@ -390,16 +450,23 @@ als Input verwenden.
 export type LinkedInPostGeneratorDto = {
   topic: string; // max. 280 Zeichen
   expertise: string; // max. 120 Zeichen
-  tone: "sachlich" | "persönlich" | "provokativ";
+  tone: LinkedInPostTone; // const-Objekt-Typ (kein inline union)
+  colorPairId: string; // eine der 10 Pair-Ids ODER "auto"
   email: string;
   kind: "linkedin_post_generator";
 };
 ```
 
-- [ ] **Step 1:** DTO definieren.
+> **colorPairId-Regel:** Gültig sind die 10 Ids aus
+> `@/common/constants/generator/generator-color-pairs` (`GENERATOR_COLOR_PAIRS`) **oder**
+> `GENERATOR_COLOR_AUTO`. Zod validiert strikt gegen diese Menge (kein stiller Fallback). Die ID
+> wird unverändert an B3 weitergereicht (binding, siehe Skill §6).
+
+- [ ] **Step 1:** DTO definieren (inkl. `colorPairId`; `tone` über `LinkedInPostTone`).
 - [ ] **Step 2:** Failing Schema-Tests: required fields, topic max-length, invalid email,
-      missing consent, Honeypot/Spam, ungültiger tone-Wert.
-- [ ] **Step 3:** Zod-Schema implementieren.
+      missing consent, Honeypot/Spam, ungültiger tone-Wert, **ungültiger `colorPairId`** (nicht aus
+      `GENERATOR_COLOR_PAIRS`-Ids ∪ `auto`).
+- [ ] **Step 3:** Zod-Schema implementieren (colorPairId-Enum aus den Color-Pair-Konstanten ableiten).
 - [ ] **Step 4:** Tests grün.
 - [ ] **Step 5:** Commit — `feat(generator): add linkedin-post-generator DTO and validation`
 
@@ -412,19 +479,29 @@ export type LinkedInPostGeneratorDto = {
 - Create: `apps/web/src/server/services/generator/linkedin-post/generate-linkedin-post.ts`
 - Create: `apps/web/src/server/services/generator/linkedin-post/generate-linkedin-post.test.ts`
 
+**Implementiert den Skill-Contract** (`linkedin-post-generator/SKILL.md`) — keine eigenen Strukturen erfinden.
+
 **Ablauf:**
 
-1. Input (topic, expertise, tone) → Claude-API-Call: generiert strukturierten Inhalt
-   (Headline, Haupttext, Hashtags) im JSON-Format.
-2. JSON → HTML-Skill: rendert das fertige Post-Bild als HTML (bestehende, feste Vorlage).
-3. Gibt zurück: `{ html: string; caption: string }`.
+1. Input (topic, expertise, tone, locale) → Claude-API-Call mit Structured Output gebunden an
+   `references/content-schema.json` (= **nur** der Copy-Teil: headlineHtml/headlinePlain/bodyVariant/
+   insight|bullets/caption). Niedrige Temperatur, aktuelles Top-Claude-Modell (Skill §8).
+2. **Farb-Paar nach Skill §6 (binding) auflösen:** konkrete `colorPairId` → genau dieses Paar
+   (`colorPair.source = "selected"`); `auto` → Zufall (`"random"`). Pair-Daten aus
+   `references/color-pairs.json`.
+3. Wrapper setzt `result.json` (Skill §5) zusammen (LLM-Copy + colorPair + inputs + render) und füllt
+   `templates/post-template.html` mit den Pair-Farben → fertiges Post-HTML.
+4. Gibt zurück: `{ html: string; caption: string; colorPair }`.
 
-**Fehlerpfade:** KI-Timeout, ungültiger JSON-Output, HTML-Rendering-Fehler → jeweils eigener
-Fehlercode; Lead trotzdem persistieren (B5).
+**Fehlerpfade:** KI-Timeout, ungültiger/Schema-invalider LLM-Output, HTML-Rendering-Fehler → jeweils
+eigener Fehlercode (Mapping über ein `*-error.ts` gemäß Root-CLAUDE.md); Lead trotzdem persistieren (B5).
 
-- [ ] **Step 1:** Failing Tests: strukturierter Input → strukturierter Output, Fehlerpfad-Handling.
-- [ ] **Step 2:** Claude-API-Call mit strukturiertem Output-Schema implementieren (server-only).
-- [ ] **Step 3:** HTML-Skill-Integration: HTML aus Template + generierten Inhalten zusammensetzen.
+- [ ] **Step 1:** Failing Tests: strukturierter Input → schema-valider Output; **konkrete `colorPairId`
+      ⇒ `result.json.colorPair.id === colorPairId` & `source === "selected"`**; `auto` ⇒ `"random"`;
+      Fehlerpfad-Handling.
+- [ ] **Step 2:** Claude-API-Call gegen `content-schema.json` implementieren (server-only).
+- [ ] **Step 3:** Farb-Auflösung (binding) + HTML aus `post-template.html` + Copy zusammensetzen;
+      `result.json` gegen `references/result-schema.json` validieren (Quality-Gate Skill §11).
 - [ ] **Step 4:** Tests grün.
 - [ ] **Step 5:** Commit — `feat(generator): implement linkedin post content generation`
 
@@ -458,8 +535,9 @@ Download-Token verweist auf diese Datei.
 
 **Files:** `packages/db/src/record-configuration/**` + Mapper
 
-**Daten:** E-Mail, Expertise, Tone, Topic (gekürzt, kein PII-Risiko), Zeitstempel,
-Generator-Status (success/error), Request-Kind `linkedin_post_generator`.
+**Daten:** E-Mail, Expertise, Tone, **colorPairId** (gewähltes Farbschema bzw. `auto`), Topic
+(gekürzt, kein PII-Risiko), Zeitstempel, Generator-Status (success/error), Request-Kind
+`linkedin_post_generator`.
 
 - [ ] **Step 1:** Failing Mapper/Persistence-Input-Test.
 - [ ] **Step 2:** Lead + LeadSubmission + Generator-Details modellieren (eigene Tabelle/Column,
@@ -499,18 +577,22 @@ auf Kontaktmöglichkeit für eigenen KI-Workflow. Kein Spam, kein Upsell-Druck.
 
 ```
 POST /api/public/generator/linkedin-post
-  → Validate DTO (B2)
+  → Validate DTO (B2) — inkl. colorPairId
   → Honeypot/Spam-Check
-  → Generate content + HTML (B3)
+  → Generate content + HTML (B3) — colorPairId binding durchreichen
   → Render image (B4)
-  → Persist lead (B5) — auch bei Generierungsfehler
+  → Persist lead (B5) — auch bei Generierungsfehler, inkl. colorPairId
   → Send email (B6) — best-effort, kein hard fail
-  → Return { imageUrl, caption, downloadToken }
+  → Return { imageUrl, caption, downloadToken }   // = Stub-Result-Shape aus S1
 ```
 
 **Response-Codes:** `200 OK`, `400 Bad Request`, `429 Too Many Requests`, `500 Internal Server Error`.
 
 **Rate-Limit:** Max. 3 Requests pro IP pro Stunde.
+
+> **Konstanten/Reuse:** `GENERATOR_FORM_ID`, Error-Reasons (`GeneratorErrorReason`) und Analytics-Events
+> aus `@/common/constants/generator/**` wiederverwenden. Der Client (`submitLinkedInPostGenerator`) sendet
+> bereits `colorPairId` mit; B7 reicht es bis B3 durch.
 
 - [ ] **Step 1:** Failing API-Tests: happy path, Validierungsfehler, Rate-Limit, Generierungsfehler.
 - [ ] **Step 2:** Route implementieren.
@@ -598,6 +680,7 @@ POST /api/public/generator/linkedin-post
 - Generator liefert Ergebnis direkt auf der Page + per E-Mail.
 - Lead mit E-Mail + Input-Kontext persistiert, auch bei Generierungsfehler.
 - Download-Button funktioniert (Bild-Datei).
+- Gewählte Hintergrundfarbe (`colorPairId`) wird im generierten Post eingehalten; `auto` ⇒ Zufallspaar.
 - Soft-CTA nach Ergebnis sichtbar und klickbar.
 - Rate-Limit für Generator-API aktiv.
 - Kein PII in Analytics.
@@ -615,4 +698,5 @@ POST /api/public/generator/linkedin-post
 - [ ] Rate-Limit-Speicher: In-Memory (single-instance) vs. Redis/Upstash für verteilte Deployments.
 - [ ] Locale der generierten E-Mail: aus URL-Locale ableiten oder optionalem Feld.
 - [ ] Calendly-URL oder Kontaktformular für Soft-CTA festlegen.
-- [ ] Echte Beispiel-Bild-Assets (real generiert) für Example-Section bereitstellen.
+- [ ] Example-Section: echte `promptText`-Werte (aktuell Platzhalter) + echte Beispiel-Bilder bereitstellen.
+      (Custom-Post-Block-Assets sind bereits real — erledigt.)
