@@ -173,7 +173,7 @@ export function GeneratorSection({
 
     let result: LinkedInPostGeneratorResult;
     try {
-      result = await submitGenerator(values);
+      result = await submitGenerator(values, locale);
     } catch {
       setState({ kind: GeneratorStateKind.Error });
       emitAnalytics(GeneratorAnalyticsEvent.Error, {
@@ -190,9 +190,11 @@ export function GeneratorSection({
 
     setState({
       kind: GeneratorStateKind.Success,
-      imageUrl: result.imageUrl,
+      post: result.post,
       caption: result.caption,
-      downloadToken: result.downloadToken,
+      downloadFileName: result.downloadFileName,
+      imageDataUrl: result.imageDataUrl,
+      previewHtml: result.previewHtml,
     });
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }

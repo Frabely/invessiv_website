@@ -11,6 +11,9 @@ export type LinkedInPostExampleAuthor = {
 export type LinkedInPostExampleImage = {
   headline: string;
   footnote: string;
+  /** Public path to an actual rendered PNG (e.g. "/linkedin-post/example-foo.png").
+   * When provided, a real <Image> is shown instead of the CSS-generated placeholder. */
+  src?: string;
 };
 
 export type LinkedInPostExampleSample = {

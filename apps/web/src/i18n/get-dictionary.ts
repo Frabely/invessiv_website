@@ -17,6 +17,13 @@ export type Dictionary = {
       nameLabel: string;
       subjectPrefix: string;
     };
+    linkedinPostGeneratorResult: {
+      attachmentIntro: string;
+      captionLabel: string;
+      heading: string;
+      subject: string;
+      textIntro: string;
+    };
   };
   imprint: {
     meta: {
@@ -206,18 +213,23 @@ export type Dictionary = {
 };
 
 export async function getDictionary(locale: Locale): Promise<Dictionary> {
-  const [mail, quickContactMail, imprint, terms, privacy] = await Promise.all([
-    import(`./dictionaries/mail/contact-notification/${locale}.json`),
-    import(`./dictionaries/mail/quick-contact-notification/${locale}.json`),
-    import(`./dictionaries/legal/imprint/${locale}.json`),
-    import(`./dictionaries/legal/terms/${locale}.json`),
-    import(`./dictionaries/legal/privacy/${locale}.json`),
-  ]);
+  const [mail, quickContactMail, generatorMail, imprint, terms, privacy] =
+    await Promise.all([
+      import(`./dictionaries/mail/contact-notification/${locale}.json`),
+      import(`./dictionaries/mail/quick-contact-notification/${locale}.json`),
+      import(
+        `./dictionaries/mail/linkedin-post-generator-result/${locale}.json`
+      ),
+      import(`./dictionaries/legal/imprint/${locale}.json`),
+      import(`./dictionaries/legal/terms/${locale}.json`),
+      import(`./dictionaries/legal/privacy/${locale}.json`),
+    ]);
 
   return {
     mail: {
       ...mail.default.mail,
       ...quickContactMail.default.mail,
+      ...generatorMail.default.mail,
     },
     imprint: imprint.default.imprint,
     terms: terms.default.terms,

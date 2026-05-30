@@ -25,9 +25,11 @@ export function PreviewPanel({ content, locale, state }: PreviewPanelProps) {
     <SuccessPreview
       caption={state.caption}
       content={content}
-      downloadToken={state.downloadToken}
-      imageUrl={state.imageUrl}
+      downloadFileName={state.downloadFileName}
+      imageDataUrl={state.imageDataUrl}
       locale={locale}
+      post={state.post}
+      previewHtml={state.previewHtml}
     />
   );
 }

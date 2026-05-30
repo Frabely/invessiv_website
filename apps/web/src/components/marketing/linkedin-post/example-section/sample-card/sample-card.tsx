@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useId, useState } from "react";
 import type { LinkedInPostExampleSample } from "@/i18n/dictionaries/linkedin-post/example";
 import styles from "./sample-card.module.css";
@@ -16,6 +17,9 @@ type SampleCardProps = {
  * profile → caption (with "… more" truncation) → full-bleed square image,
  * followed by the prompt note that produced it. The carousel/grid wrapper
  * (`<li>`) and its layout live in the parent example-section.
+ *
+ * When `sample.image.src` is provided the real 1080×1080 PNG is shown;
+ * otherwise the CSS-generated placeholder renders as fallback.
  */
 export function SampleCard({
   captionLess,
@@ -59,21 +63,35 @@ export function SampleCard({
         </div>
 
         <figure aria-label={sample.image.headline} className={styles.postImage}>
-          <span aria-hidden="true" className={styles.postImageGrid} />
-          <span aria-hidden="true" className={styles.postImageGlow} />
-          <div className={styles.postImageContent}>
-            <p className={styles.postImageMark} aria-hidden="true">
-              ⌗ {sample.id.replace("sample-", "0")}
-            </p>
-            <h3 className={styles.postImageHeadline}>
-              {sample.image.headline}
-            </h3>
-            <p className={styles.postImageFootnote}>{sample.image.footnote}</p>
-          </div>
+          {sample.image.src ? (
+            <Image
+              alt={sample.image.headline}
+              className={styles.postImageReal}
+              fill
+              quality={90}
+              sizes="(max-width: 720px) 88vw, (max-width: 960px) 45vw, 460px"
+              src={sample.image.src}
+            />
+          ) : (
+            <>
+              <span aria-hidden="true" className={styles.postImageGrid} />
+              <span aria-hidden="true" className={styles.postImageGlow} />
+              <div className={styles.postImageContent}>
+                <p className={styles.postImageMark} aria-hidden="true">
+                  ⌗ {sample.id.replace("sample-", "0")}
+                </p>
+                <h3 className={styles.postImageHeadline}>
+                  {sample.image.headline}
+                </h3>
+                <p className={styles.postImageFootnote}>
+                  {sample.image.footnote}
+                </p>
+              </div>
+            </>
+          )}
         </figure>
       </article>
 
-      {/* Prompt that produced the post — placeholder until real inputs land */}
       <p className={styles.promptNote}>
         <span className={styles.promptNoteLabel}>{promptLabel}</span>
         <span className={styles.promptNoteText}>{sample.promptText}</span>

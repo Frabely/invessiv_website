@@ -148,6 +148,10 @@
   isolation: isolate;
 }
 
+.postImageReal {
+  object-fit: cover;
+}
+
 .postImageGrid {
   position: absolute;
   inset: 0;

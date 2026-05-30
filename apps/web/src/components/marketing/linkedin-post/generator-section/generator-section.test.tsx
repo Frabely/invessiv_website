@@ -26,14 +26,41 @@ const VALID_INPUTS = {
   email: "test@example.com",
 } as const;
 
+const GENERATED_POST = {
+  bodyVariant: "insight" as const,
+  bullets: null,
+  colorPair: {
+    accent: "#5BA3D9",
+    id: "navy-steel",
+    index: 0,
+    primary: "#0F1B2D",
+    secondary: "#1A3355",
+    text: "#E8F1FA",
+  },
+  expertiseDisplay: "Strategieberatung",
+  headlineHtml: "Preise brauchen <em>Kontext</em>",
+  headlinePlain: "Preise brauchen Kontext",
+  highlight: null,
+  insight: "Ein klares Angebot nimmt dem Gespräch den Druck.",
+  template: {
+    bodyVariant: "insight" as const,
+    id: "editorial-center",
+    index: 0,
+  },
+};
+
+const PREVIEW_HTML = "<!doctype html><html><body>preview</body></html>";
+
 function renderSection(submitMock?: SubmitGenerator) {
   const submit: SubmitGenerator =
     submitMock ??
     (async () => ({
       ok: true,
-      imageUrl: "/og/landing.png",
       caption: "Generierte Caption.",
-      downloadToken: "tok-123",
+      downloadFileName: "generierte-caption.png",
+      imageDataUrl: "data:image/png;base64,AAAA",
+      post: GENERATED_POST,
+      previewHtml: PREVIEW_HTML,
     }));
   render(
     <GeneratorSection
@@ -74,6 +101,14 @@ beforeEach(() => {
     clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
   });
   window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  // PostFramePreview uses ResizeObserver, which jsdom does not implement.
+  window.ResizeObserver = class {
+    observe() {}
+
+    unobserve() {}
+
+    disconnect() {}
+  };
 });
 
 afterEach(() => {
@@ -163,9 +198,11 @@ describe("GeneratorSection", () => {
 
     resolveSubmit!({
       ok: true,
-      imageUrl: "/og/landing.png",
       caption: "Erfolgs-Caption.",
-      downloadToken: "tok-success",
+      downloadFileName: "erfolgs-caption.png",
+      imageDataUrl: "data:image/png;base64,AAAA",
+      post: GENERATED_POST,
+      previewHtml: PREVIEW_HTML,
     });
 
     await waitFor(() => {
@@ -174,7 +211,9 @@ describe("GeneratorSection", () => {
     const captionBlock = screen.getByText("Erfolgs-Caption.");
     expect(captionBlock).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: content.preview.success.downloadImage }),
+      screen.getByRole("button", {
+        name: content.preview.success.downloadImage,
+      }),
     ).toBeTruthy();
     expect(submit).toHaveBeenCalledTimes(1);
   });

@@ -1,4 +1,5 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import type { LinkedInPostGeneratorPostDto } from "@invessiv/common/contracts/generator/linkedin-post-generator-api";
 
 /**
  * UI state of the LinkedIn-post generator preview. Client-only — lives in the
@@ -10,8 +11,10 @@ export type GeneratorState =
   | { kind: typeof GeneratorStateKind.Loading; stepIndex: number }
   | {
       kind: typeof GeneratorStateKind.Success;
-      imageUrl: string;
+      post: LinkedInPostGeneratorPostDto;
       caption: string;
-      downloadToken: string;
+      downloadFileName: string;
+      previewHtml: string;
+      imageDataUrl: string | null;
     }
   | { kind: typeof GeneratorStateKind.Error };

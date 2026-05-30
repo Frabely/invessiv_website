@@ -34,7 +34,17 @@ const nextConfig: NextConfig = {
     // generated LinkedIn slide) so type stays crisp; 75 stays the default.
     qualities: [75, 90],
   },
+  // Playwright (used for the server-side LinkedIn-post PNG render) must stay an
+  // external runtime dependency — it is not bundleable.
+  serverExternalPackages: ["playwright", "playwright-core"],
   transpilePackages: ["@invessiv/common", "@invessiv/db"],
+  // The generator PNG render reads the structural HTML skeletons at runtime;
+  // make sure they are traced into the standalone server output.
+  outputFileTracingIncludes: {
+    "/api/public/generator/linkedin-post": [
+      "./project-skills/linkedin-post-generator/templates/**",
+    ],
+  },
 };
 
 export default nextConfig;

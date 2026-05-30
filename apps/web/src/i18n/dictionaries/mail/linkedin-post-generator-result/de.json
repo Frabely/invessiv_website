@@ -1,0 +1,11 @@
+{
+  "mail": {
+    "linkedinPostGeneratorResult": {
+      "subject": "Dein LinkedIn-Post ist bereit",
+      "heading": "Dein LinkedIn-Post ist bereit",
+      "textIntro": "Hier ist die generierte Caption. Das Bild findest du als Vorschau im Anhang und als PNG direkt im Generator.",
+      "attachmentIntro": "Anhang: Bildvorschau und Caption-Datei.",
+      "captionLabel": "Caption"
+    }
+  }
+}

@@ -10,35 +10,37 @@
   "samples": [
     {
       "id": "sample-1",
-      "toneLabel": "Factual",
-      "topicLabel": "Topic: Pricing talks in consulting",
+      "toneLabel": "Provocative",
+      "topicLabel": "Topic: Visibility on LinkedIn",
       "author": {
-        "name": "Max Mustermann",
-        "role": "Strategy consultant · Mid-market",
-        "avatarInitials": "MM"
+        "name": "Lena Bauer",
+        "role": "Business Coach · Freelance",
+        "avatarInitials": "LB"
       },
       "image": {
-        "headline": "Three sentences that calm every pricing call.",
-        "footnote": "Not loud. Not soft. Just clear."
+        "headline": "Reach brings likes. Inquiries only come from clarity",
+        "footnote": "Provocative · Coaching for freelancers",
+        "src": "/linkedin-post/example-sichtbarkeit.png"
       },
-      "caption": "Pricing calls are rarely a price problem.\nMore often, the frame around the price is missing.\n\nThree lines I use every time:\n→ \"That depends on the outcome you actually need.\"\n→ \"My fee is fixed. The scope is what we negotiate.\"\n→ \"Let's settle the value before we settle the price.\"\n\nWorks because they aren't a defence — they're an invitation.",
-      "promptText": "Placeholder – the input used will be added here."
+      "caption": "Three months of consistent posting, decent reach — and still barely any concrete inquiries.\n\nVisibility brings people to you. Whether that turns into a conversation depends on what comes next: do they understand within seconds what you solve, who you work with, and what the first step is?\n\nWhat's stopping people from taking the next step with you right now?\n\n#LinkedInMarketing #Visibility #ClientAcquisition #LinkedIn",
+      "promptText": "Role: Coaching for freelancers — Topic: Why visibility on LinkedIn alone doesn't generate inquiries — Tone: Provocative"
     },
     {
       "id": "sample-2",
       "toneLabel": "Personal",
-      "topicLabel": "Topic: Routines that quietly drain solo coaches",
+      "topicLabel": "Topic: Why visibility on LinkedIn matters",
       "author": {
-        "name": "Mila Musterfrau",
-        "role": "Business coach · Solo",
-        "avatarInitials": "MM"
+        "name": "Jan Weber",
+        "role": "LinkedIn Marketing",
+        "avatarInitials": "JW"
       },
       "image": {
-        "headline": "I dropped my morning routine.",
-        "footnote": "And it was the most productive call this quarter."
+        "headline": "Most people don't buy from the best — they buy from the one they know",
+        "footnote": "Personal · LinkedIn Marketing",
+        "src": "/linkedin-post/example-linkedin-marketing.png"
       },
-      "caption": "For three years I ran the same setup every morning:\njournal, workout, cold coffee, daily plan.\n\nThe routine wasn't the problem.\nThe problem was using it as proof.\n\nProof that I was serious.\nProof that I meant business.\nProof that I gave myself nothing for free.\n\nSince I dropped it, my day starts where the work is — not in a ritual in front of it.",
-      "promptText": "Placeholder – the input used will be added here."
+      "caption": "Reach feels pointless — until someone reaches out who's been quietly following you for months.\n\nVisibility rarely sells immediately. It keeps you top of mind for when the need arises — and then people ask the one they already feel they know, not the stranger with the better ad.\n\nWhen did someone last reach out to you simply because they already knew you?\n\n#LinkedInMarketing #Visibility #PersonalBranding #LinkedIn",
+      "promptText": "Role: LinkedIn Marketing — Topic: Why visibility on LinkedIn matters — Tone: Personal"
     }
   ],
   "ctaLabel": "Try it yourself",

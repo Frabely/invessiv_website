@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-30T09:30:00Z",
+  "inputs": {
+    "topic": "Warum Sichtbarkeit auf LinkedIn allein keine Anfragen bringt",
+    "expertise": "Coaching für Selbstständige",
+    "tone": "provokativ",
+    "locale": "de"
+  },
+  "colorPair": {
+    "id": "navy-steel",
+    "index": 0,
+    "source": "selected",
+    "primary": "#0F1B2D",
+    "secondary": "#1A3355",
+    "text": "#E8F1FA",
+    "accent": "#5BA3D9"
+  },
+  "template": {
+    "id": "editorial-center",
+    "index": 0,
+    "source": "selected",
+    "bodyVariant": "insight"
+  },
+  "content": {
+    "headlineHtml": "Reichweite bringt Likes. Anfragen entstehen erst durch <em>Klarheit</em>",
+    "headlinePlain": "Reichweite bringt Likes. Anfragen entstehen erst durch Klarheit",
+    "bodyVariant": "insight",
+    "insight": "Wer dich im Feed entdeckt, entscheidet in Sekunden, ob er weiterklickt — und nur dann, wenn sofort klar ist, was du anbietest, warum man dir vertraut und was der nächste Schritt ist.",
+    "bullets": null,
+    "highlight": "Reichweite ist Schritt eins. Klarheit macht daraus planbare Anfragen.",
+    "expertiseDisplay": "Coaching für Selbstständige"
+  },
+  "caption": {
+    "body": "Drei Monate konstant gepostet, ordentliche Reichweite — und trotzdem kaum konkrete Anfragen.\n\nSichtbarkeit bringt Menschen zu dir. Ob daraus ein Gespräch wird, entscheidet sich danach: Verstehen sie in wenigen Sekunden, was du löst, für wen du arbeitest und wie der erste Schritt aussieht?\n\nWas hält Leute bei dir gerade davon ab, den nächsten Schritt zu gehen?",
+    "hashtags": [
+      "LinkedInMarketing",
+      "Sichtbarkeit",
+      "Kundengewinnung",
+      "LinkedIn"
+    ]
+  },
+  "paths": {
+    "htmlPath": "post.html",
+    "pngPath": "post.png",
+    "captionPath": "caption.txt"
+  },
+  "render": {
+    "mode": "full",
+    "viewportPx": {
+      "width": 1080,
+      "height": 1080
+    },
+    "deviceScaleFactor": 1
+  }
+}
