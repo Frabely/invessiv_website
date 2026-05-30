@@ -15,13 +15,12 @@ import {
   LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT,
   LINKEDIN_POST_GENERATOR_MAIL_FAILED_LOG_EVENT,
   LINKEDIN_POST_MAX_BODY_SIZE,
-  LINKEDIN_POST_MAX_DURATION_SECONDS,
   LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT,
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
 
 export const runtime = "nodejs";
-export const maxDuration = LINKEDIN_POST_MAX_DURATION_SECONDS;
+export const maxDuration = 60;
 
 function errorResponse(
   code: string,
