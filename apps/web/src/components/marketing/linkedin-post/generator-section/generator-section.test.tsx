@@ -12,11 +12,11 @@ import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-co
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
   LinkedInPostGeneratorResult,
-  submitLinkedInPostGenerator,
-} from "@/client/generator/submit-linkedin-post-generator";
+  linkedinPostGeneratorService,
+} from "@/client/linkedin-post/services/linkedin-post-generator-service";
 import { GeneratorSection } from "./generator-section";
 
-type SubmitGenerator = typeof submitLinkedInPostGenerator;
+type SubmitGenerator = typeof linkedinPostGeneratorService.submitLinkedInPost;
 
 const content = getLinkedInPostGeneratorContent("de");
 

@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { submitLinkedInPostGenerator } from "./submit-linkedin-post-generator";
+import { linkedinPostGeneratorService } from "./linkedin-post-generator-service";
 
 afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("submitLinkedInPostGenerator", () => {
+describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
   it("posts form values with the active locale", async () => {
     vi.stubGlobal(
       "fetch",
@@ -37,7 +37,7 @@ describe("submitLinkedInPostGenerator", () => {
       ),
     );
 
-    const result = await submitLinkedInPostGenerator(
+    const result = await linkedinPostGeneratorService.submitLinkedInPost(
       {
         colorPairId: "auto",
         company: "",
@@ -73,7 +73,7 @@ describe("submitLinkedInPostGenerator", () => {
         ),
     );
 
-    const result = await submitLinkedInPostGenerator(
+    const result = await linkedinPostGeneratorService.submitLinkedInPost(
       {
         colorPairId: "auto",
         company: "",

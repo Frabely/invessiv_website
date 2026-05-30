@@ -61,7 +61,7 @@ function isGeneratorResult(
   );
 }
 
-export async function submitLinkedInPostGenerator(
+async function submitLinkedInPost(
   values: LinkedInPostGeneratorFormValues,
   locale: Locale,
 ): Promise<LinkedInPostGeneratorResult> {
@@ -83,3 +83,7 @@ export async function submitLinkedInPostGenerator(
     ok: false,
   };
 }
+
+export const linkedinPostGeneratorService = {
+  submitLinkedInPost,
+} as const;

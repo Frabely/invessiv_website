@@ -4,8 +4,8 @@ import { type SubmitEvent, useEffect, useRef, useState } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import {
   type LinkedInPostGeneratorResult,
-  submitLinkedInPostGenerator as defaultSubmit,
-} from "@/client/generator/submit-linkedin-post-generator";
+  linkedinPostGeneratorService,
+} from "@/client/linkedin-post/services/linkedin-post-generator-service";
 import {
   GENERATOR_FORM_ID,
   GeneratorAnalyticsEvent,
@@ -31,14 +31,14 @@ type GeneratorSectionProps = {
   id: string;
   locale: Locale;
   content: LinkedInPostGeneratorContent;
-  submitGenerator?: typeof defaultSubmit;
+  submitGenerator?: typeof linkedinPostGeneratorService.submitLinkedInPost;
 };
 
 export function GeneratorSection({
   id,
   locale,
   content,
-  submitGenerator = defaultSubmit,
+  submitGenerator = linkedinPostGeneratorService.submitLinkedInPost,
 }: GeneratorSectionProps) {
   const fieldIds = useFieldIds();
   const [values, setValues] = useState<LinkedInPostGeneratorFormValues>(
