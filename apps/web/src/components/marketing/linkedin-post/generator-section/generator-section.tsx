@@ -217,7 +217,7 @@ export function GeneratorSection({
         />
 
         <div className={styles.previewSlot} ref={previewRef}>
-          <PreviewPanel content={content} locale={locale} state={state} />
+          <PreviewPanel content={content} state={state} />
         </div>
       </div>
     </section>

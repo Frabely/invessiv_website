@@ -1,0 +1,175 @@
+/* Mobile-first. LinkedIn feed card chrome: author header + caption + image slot.
+   The image slot (full-bleed figure) is provided by the caller — its negative
+   margin relies on the --card-pad variable set here. */
+
+.card {
+  --card-pad: 1.1rem;
+  position: relative;
+  display: grid;
+  width: 100%;
+  gap: 0.85rem;
+  /* No bottom padding: the image slot sits flush at the card's bottom edge */
+  padding: var(--card-pad) var(--card-pad) 0;
+  overflow: hidden;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 16px;
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--color-surface-2) 96%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+}
+
+/* Grain overlay */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+      rgba(255, 255, 255, 0.05) 0.5px,
+      transparent 0.5px
+    )
+    0 0 / 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+}
+
+:global([data-theme="light"]) .card::after {
+  background: radial-gradient(rgba(0, 0, 0, 0.05) 0.5px, transparent 0.5px) 0
+    0 / 3px 3px;
+  opacity: 0.5;
+}
+
+/* Author row */
+.author {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+/* Initials avatar */
+.authorAvatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 90%, transparent),
+    color-mix(in srgb, var(--color-accent-orange) 88%, transparent)
+  );
+  color: #1d1410;
+  font-weight: 780;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+/* Image avatar */
+.authorAvatarImg {
+  flex-shrink: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.authorMeta {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.authorName {
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 0.94rem;
+  line-height: 1.15;
+}
+
+.authorRole {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.005em;
+}
+
+/* Caption with LinkedIn-style "… mehr" truncation */
+.captionWrap {
+  display: grid;
+  gap: 0.2rem;
+  justify-items: start;
+}
+
+.caption {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+/* Collapsed: clamp to 3 lines; expanded reveals the full caption */
+.caption:not([data-expanded]) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.captionToggle {
+  padding: 0.1rem 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 640;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.captionToggle:hover,
+.captionToggle:focus-visible {
+  color: var(--color-accent-warm);
+}
+
+/* ── Tablet ── */
+@media (min-width: 720px) {
+  .card {
+    --card-pad: clamp(1.3rem, 2vw, 1.7rem);
+    gap: clamp(0.9rem, 1.4vw, 1.15rem);
+    border-radius: 18px;
+  }
+
+  .authorAvatar,
+  .authorAvatarImg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+
+  .authorAvatar {
+    font-size: 0.84rem;
+  }
+
+  .authorName {
+    font-size: 0.96rem;
+  }
+
+  .authorRole {
+    font-size: 0.82rem;
+  }
+
+  .caption {
+    font-size: clamp(0.97rem, 0.9rem + 0.28vw, 1.06rem);
+  }
+}

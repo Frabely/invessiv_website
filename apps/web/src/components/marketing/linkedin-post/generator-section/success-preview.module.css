@@ -1,37 +1,13 @@
 /* Mobile-first. Success state of the generator preview.
-   The preview frame chrome (.preview/.previewFrame/.previewBody/.previewMark/
-   .previewHeadline) is intentionally owned here too so this component is
-   self-contained; the idle/loading/error states own their copy in
-   preview-panel.module.css. */
+   Card chrome (border, bg, author, caption) is owned by LinkedinPost.
+   This file owns: the READY label, the post image figure, and the download panel. */
+
 .preview {
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.previewFrame {
-  position: relative;
-  display: grid;
-  gap: 1rem;
-  padding: 1.1rem 1.1rem 1.35rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 65%, transparent);
-  border-radius: 18px;
-  background: linear-gradient(
-    168deg,
-    color-mix(in srgb, var(--color-surface-2) 98%, transparent) 0%,
-    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
-  );
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
-    0 18px 40px -28px var(--color-shadow);
-  overflow: hidden;
-}
-
-.previewBody {
-  display: grid;
-  gap: 0.7rem;
-}
-
+/* Atmospheric status label above the card */
 .previewMark {
   margin: 0;
   color: color-mix(in srgb, var(--color-accent-warm) 95%, transparent);
@@ -40,6 +16,18 @@
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+}
+
+/* Full-bleed post image inside LinkedinPost's card.
+   --card-pad is set by LinkedinPost's .card and cascades down. */
+.postImage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: 0 calc(var(--card-pad) * -1);
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
 }
 
 .previewHeadline {
@@ -52,47 +40,10 @@
   text-wrap: balance;
 }
 
-/* Success media */
-.successMedia {
-  position: relative;
+/* Download actions below the card */
+.downloadPanel {
   display: grid;
-  place-items: center;
-  aspect-ratio: 1;
-  border-radius: 12px;
-  overflow: hidden;
-  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-}
-
-/* Caption block */
-.captionBlock {
-  display: grid;
-  gap: 0.45rem;
-  padding: 0.85rem 0.95rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 50%, transparent);
-  border-left: 3px solid
-    color-mix(in srgb, var(--color-accent-warm) 75%, transparent);
-  border-radius: 0 12px 12px 0;
-  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
-}
-
-.captionLabel {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 720;
-}
-
-.captionText {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: 0.94rem;
-  line-height: 1.55;
-  white-space: pre-line;
-  text-wrap: pretty;
-  overflow-wrap: anywhere;
+  gap: 0.5rem;
 }
 
 .copyButton {
@@ -125,7 +76,6 @@
   border-color: color-mix(in srgb, var(--color-accent-warm) 65%, transparent);
 }
 
-/* Downloads */
 .downloadRow {
   display: grid;
   grid-template-columns: 1fr;
@@ -172,15 +122,6 @@
 
 /* ── Tablet ── */
 @media (min-width: 720px) {
-  .previewFrame {
-    padding: 1.4rem 1.4rem 1.55rem;
-    border-radius: 20px;
-  }
-
-  .previewHeadline {
-    font-size: 1.28rem;
-  }
-
   .downloadRow {
     grid-template-columns: 1fr 1fr;
   }

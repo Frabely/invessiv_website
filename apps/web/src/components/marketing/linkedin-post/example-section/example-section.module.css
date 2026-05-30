@@ -221,6 +221,16 @@
 
 /* Desktop: diagonal offset + paper-edge motif */
 @media (min-width: 961px) {
+  .title {
+    font-size: clamp(2.1rem, 4.2vw, 4.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .body {
+    font-size: var(--font-size-body-lg);
+  }
+
   .section {
     gap: clamp(2.25rem, 4.5vw, 4rem);
     padding-block: clamp(3.5rem, 7vw, 6rem);

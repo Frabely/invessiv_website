@@ -74,6 +74,16 @@
 
 /* ── Desktop ── */
 @media (min-width: 961px) {
+  .title {
+    font-size: clamp(2.1rem, 4.2vw, 4.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .body {
+    font-size: var(--font-size-body-lg);
+  }
+
   .section {
     max-width: var(--max-content-width);
     padding-block: clamp(3.5rem, 8vw, 6rem);

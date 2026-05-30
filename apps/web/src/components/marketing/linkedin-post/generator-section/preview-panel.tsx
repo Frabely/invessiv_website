@@ -1,17 +1,15 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
-import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
 import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;
-  locale: Locale;
   state: GeneratorState;
 };
 
-export function PreviewPanel({ content, locale, state }: PreviewPanelProps) {
+export function PreviewPanel({ content, state }: PreviewPanelProps) {
   if (state.kind === GeneratorStateKind.Idle) {
     return <IdlePreview content={content} />;
   }
@@ -26,8 +24,8 @@ export function PreviewPanel({ content, locale, state }: PreviewPanelProps) {
       caption={state.caption}
       content={content}
       downloadFileName={state.downloadFileName}
+      expertiseDisplay={state.post.expertiseDisplay}
       imageDataUrl={state.imageDataUrl}
-      locale={locale}
       postTitle={state.post.headlinePlain}
       previewHtml={state.previewHtml}
     />

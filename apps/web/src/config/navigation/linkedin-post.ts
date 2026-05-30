@@ -4,6 +4,7 @@ export const LINKEDIN_POST_SECTION_IDS = [
   "problem",
   "example",
   "generator",
+  "workflow",
   "privacy",
   "footer",
 ] as const;
@@ -15,6 +16,7 @@ export const LINKEDIN_POST_SECTION_HREFS = {
   problem: "#problem",
   example: "#example",
   generator: "#generator",
+  workflow: "#workflow",
   privacy: "#privacy",
   footer: "#footer",
 } as const satisfies Record<LinkedInPostSectionId, LinkedInPostSectionHref>;

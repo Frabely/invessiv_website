@@ -2,6 +2,7 @@ import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-
 import { AiWorkflowsHeroSection } from "@/components/marketing/linkedin-post/hero-section/hero-section";
 import { ExampleSection } from "@/components/marketing/linkedin-post/example-section/example-section";
 import { GeneratorSection } from "@/components/marketing/linkedin-post/generator-section/generator-section";
+import { WorkflowShowcaseSection } from "@/components/marketing/linkedin-post/workflow-showcase-section/workflow-showcase-section";
 import { PrivacyNoteSection } from "@/components/marketing/linkedin-post/privacy-note-section/privacy-note-section";
 import { ProblemExamplesSection } from "@/components/marketing/linkedin-post/problem-examples-section/problem-examples-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
@@ -70,6 +71,12 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
         <GeneratorSection
           content={generator}
           id={LINKEDIN_POST_SECTION_HREFS.generator.slice(1)}
+          locale={locale}
+        />
+
+        <WorkflowShowcaseSection
+          {...generator.customPost}
+          id={LINKEDIN_POST_SECTION_HREFS.workflow.slice(1)}
           locale={locale}
         />
 

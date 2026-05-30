@@ -1,7 +1,6 @@
 .frame {
   position: relative;
-  width: min(100%, 31rem);
-  margin: 0 auto;
+  width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 12px;

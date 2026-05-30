@@ -1,0 +1,131 @@
+/* Mobile-first. Two-column workflow showcase: pitch (left) + post (right).
+   On mobile the columns stack — pitch first, then post. */
+
+.section {
+  width: calc(100% - (var(--page-inline-gutter) * 2));
+  margin: 0 auto;
+  padding-block: clamp(2.75rem, 9vw, 4rem);
+}
+
+.grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+/* ── Pitch column (left) ── */
+.pitch {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+}
+
+.headline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.45rem, 4vw, 2rem);
+  font-weight: 760;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
+  font-size: clamp(0.96rem, 0.9rem + 0.3vw, 1.06rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.ctaWrap {
+  display: flex;
+}
+
+/* ── Post column (right) ── */
+.postColumn {
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+}
+
+/* Full-bleed post image inside LinkedinPost's card.
+   --card-pad is set by LinkedinPost's .card and cascades down here. */
+.postImage {
+  position: relative;
+  margin: 0 calc(var(--card-pad) * -1);
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+/* Command row below the post card */
+.command {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-1) 60%, transparent);
+}
+
+.commandLabel {
+  flex: none;
+  padding: 0.08rem 0.38rem;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--color-cta) 14%, transparent);
+  color: color-mix(in srgb, var(--color-cta) 96%, var(--color-text) 4%);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.commandText {
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Tablet: 2-column side-by-side ── */
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 3rem 3.5rem;
+  }
+
+  .pitch {
+    gap: 1.25rem;
+    position: sticky;
+    top: 5rem;
+  }
+}
+
+/* ── Desktop: give post column slightly more room ── */
+@media (min-width: 961px) {
+  .section {
+    max-width: var(--max-content-width);
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+
+  .headline {
+    font-size: clamp(2.1rem, 4.2vw, 4.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+
+  .body {
+    font-size: var(--font-size-body-lg);
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1.1fr;
+    gap: 3.5rem 5rem;
+  }
+}

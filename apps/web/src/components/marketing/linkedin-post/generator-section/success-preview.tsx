@@ -4,9 +4,8 @@ import {
   GeneratorAnalyticsEvent,
   PostDownloadTarget,
 } from "@/common/constants/generator/generator-analytics";
-import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
-import { CustomPostBlock } from "./custom-post-block/custom-post-block";
+import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
 import styles from "./success-preview.module.css";
 
@@ -14,8 +13,8 @@ type SuccessPreviewProps = {
   caption: string;
   content: LinkedInPostGeneratorContent;
   downloadFileName: string;
+  expertiseDisplay: string;
   imageDataUrl: string | null;
-  locale: Locale;
   postTitle: string;
   previewHtml: string;
 };
@@ -31,8 +30,8 @@ export function SuccessPreview({
   caption,
   content,
   downloadFileName,
+  expertiseDisplay,
   imageDataUrl,
-  locale,
   postTitle,
   previewHtml,
 }: SuccessPreviewProps) {
@@ -88,56 +87,60 @@ export function SuccessPreview({
 
   const captionTextHref = `data:text/plain;charset=utf-8,${encodeURIComponent(caption)}`;
   const captionFileName = downloadFileName.replace(/\.png$/u, ".txt");
+  const avatarInitial = expertiseDisplay.charAt(0).toUpperCase();
 
   return (
     <div className={styles.preview} data-state="success">
-      <div className={styles.previewFrame}>
-        <div className={styles.successMedia}>
-          <PostFramePreview html={previewHtml} title={postTitle} />
-        </div>
-        <div className={styles.previewBody}>
-          <p className={styles.previewMark} aria-hidden="true">
-            READY
-          </p>
-          <h3 className={styles.previewHeadline}>{success.headline}</h3>
-          <div className={styles.captionBlock}>
-            <p className={styles.captionLabel}>{success.captionLabel}</p>
-            <p className={styles.captionText}>{caption}</p>
-            <button
-              className={styles.copyButton}
-              data-state={hasCopied ? "copied" : "default"}
-              onClick={handleCopy}
-              type="button"
-            >
-              {hasCopied ? success.copyCaptionCopied : success.copyCaption}
-            </button>
-          </div>
-          <div className={styles.downloadRow}>
-            <button
-              className={styles.downloadButton}
-              data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
-              data-analytics-target={PostDownloadTarget.Image}
-              disabled={!imageDataUrl}
-              onClick={handleImageDownload}
-              type="button"
-            >
-              {success.downloadImage}
-            </button>
-            <a
-              className={styles.downloadButton}
-              data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
-              data-analytics-target={PostDownloadTarget.Text}
-              download={captionFileName}
-              href={captionTextHref}
-              onClick={() => handleAnalyticsDownload(PostDownloadTarget.Text)}
-            >
-              {success.downloadCaption}
-            </a>
-          </div>
+      <p aria-hidden="true" className={styles.previewMark}>
+        READY
+      </p>
+      <h3 className={styles.previewHeadline}>{success.headline}</h3>
+
+      <LinkedinPost
+        author={{
+          avatar: { kind: "initials", value: avatarInitial },
+          role: expertiseDisplay,
+        }}
+        caption={caption}
+        image={
+          <figure aria-label={postTitle} className={styles.postImage}>
+            <PostFramePreview html={previewHtml} title={postTitle} />
+          </figure>
+        }
+      />
+
+      <div className={styles.downloadPanel}>
+        <button
+          className={styles.copyButton}
+          data-state={hasCopied ? "copied" : "default"}
+          onClick={handleCopy}
+          type="button"
+        >
+          {hasCopied ? success.copyCaptionCopied : success.copyCaption}
+        </button>
+        <div className={styles.downloadRow}>
+          <button
+            className={styles.downloadButton}
+            data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
+            data-analytics-target={PostDownloadTarget.Image}
+            disabled={!imageDataUrl}
+            onClick={handleImageDownload}
+            type="button"
+          >
+            {success.downloadImage}
+          </button>
+          <a
+            className={styles.downloadButton}
+            data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
+            data-analytics-target={PostDownloadTarget.Text}
+            download={captionFileName}
+            href={captionTextHref}
+            onClick={() => handleAnalyticsDownload(PostDownloadTarget.Text)}
+          >
+            {success.downloadCaption}
+          </a>
         </div>
       </div>
-
-      <CustomPostBlock content={content.customPost} locale={locale} />
     </div>
   );
 }
