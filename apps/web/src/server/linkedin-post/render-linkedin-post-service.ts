@@ -1,7 +1,9 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { type Browser, chromium } from "playwright";
 import { GENERATOR_TEMPLATES } from "@/common/constants/generator/generator-templates";
+import { POST_SIZE_PX, RENDER_TIMEOUT_MS } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
 import { escapeHtml } from "@/server/services/mail/templates/template-utils";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
@@ -69,7 +71,7 @@ function buildHighlightBlock(post: LinkedInPostGeneratorPostDto) {
   return `<p class="post__highlight">${escapeHtml(post.highlight)}</p>`;
 }
 
-export function renderLinkedInPostHtml(
+function renderLinkedInPostHtml(
   post: LinkedInPostGeneratorPostDto,
   locale: Locale,
 ) {
@@ -86,3 +88,54 @@ export function renderLinkedInPostHtml(
     .replaceAll("[BODY_CONTENT]", buildBodyContent(post))
     .replaceAll("[HIGHLIGHT_BLOCK]", buildHighlightBlock(post));
 }
+
+/**
+ * Renders the canonical post HTML to a 1080x1080 PNG via a warm Chromium pool.
+ * The browser is launched once and reused across requests (launching per
+ * request would blow the render budget). Rendering is best-effort: callers
+ * treat a thrown error as "no server PNG available" and fall back gracefully.
+ */
+
+let browserPromise: Promise<Browser> | null = null;
+
+async function getBrowser(): Promise<Browser> {
+  if (browserPromise) {
+    const existing = await browserPromise.catch(() => null);
+    if (existing && existing.isConnected()) {
+      return existing;
+    }
+    browserPromise = null;
+  }
+
+  browserPromise = chromium.launch({ args: ["--no-sandbox"] });
+  return browserPromise;
+}
+
+async function renderLinkedInPostPng(html: string): Promise<Buffer> {
+  const browser = await getBrowser();
+  const context = await browser.newContext({
+    deviceScaleFactor: 1,
+    viewport: { height: POST_SIZE_PX, width: POST_SIZE_PX },
+  });
+
+  try {
+    const page = await context.newPage();
+    await page.setContent(html, {
+      timeout: RENDER_TIMEOUT_MS,
+      waitUntil: "load",
+    });
+
+    await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    return await page.screenshot({
+      clip: { height: POST_SIZE_PX, width: POST_SIZE_PX, x: 0, y: 0 },
+      type: "png",
+    });
+  } finally {
+    await context.close();
+  }
+}
+
+export const renderLinkedinPostService = {
+  renderLinkedInPostHtml,
+  renderLinkedInPostPng,
+};
