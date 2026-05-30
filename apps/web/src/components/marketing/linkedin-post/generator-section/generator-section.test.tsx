@@ -62,7 +62,7 @@ function renderSection(submitMock?: SubmitGenerator) {
       post: GENERATED_POST,
       previewHtml: PREVIEW_HTML,
     }));
-  render(
+  const { container } = render(
     <GeneratorSection
       content={content}
       id="generator"
@@ -70,7 +70,7 @@ function renderSection(submitMock?: SubmitGenerator) {
       submitGenerator={submit}
     />,
   );
-  return { submit };
+  return { submit, container };
 }
 
 function clickSubmit() {
@@ -117,10 +117,9 @@ afterEach(() => {
 });
 
 describe("GeneratorSection", () => {
-  it("renders the idle preview by default", () => {
-    renderSection();
-    expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
-    expect(screen.getByText(content.preview.idle.body)).toBeTruthy();
+  it("renders the idle preview skeleton by default", () => {
+    const { container } = renderSection();
+    expect(container.querySelector('[data-state="idle"]')).toBeTruthy();
   });
 
   it("shows required errors when submitting an empty form", async () => {
@@ -244,7 +243,6 @@ describe("GeneratorSection", () => {
     await waitFor(() => {
       expect(submit).not.toHaveBeenCalled();
     });
-    expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
   });
 
   it("copies the caption when pressing the copy button", async () => {

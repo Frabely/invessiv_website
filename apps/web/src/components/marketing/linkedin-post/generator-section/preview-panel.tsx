@@ -11,7 +11,7 @@ type PreviewPanelProps = {
 
 export function PreviewPanel({ content, state }: PreviewPanelProps) {
   if (state.kind === GeneratorStateKind.Idle) {
-    return <IdlePreview content={content} />;
+    return <IdlePreview label={content.preview.idle.headline} />;
   }
   if (state.kind === GeneratorStateKind.Loading) {
     return <LoadingPreview content={content} stepIndex={state.stepIndex} />;
@@ -32,18 +32,24 @@ export function PreviewPanel({ content, state }: PreviewPanelProps) {
   );
 }
 
-function IdlePreview({ content }: { content: LinkedInPostGeneratorContent }) {
-  const { idle } = content.preview;
+function IdlePreview({ label }: { label: string }) {
   return (
     <div className={styles.preview} data-state="idle">
-      <div className={styles.previewFrame}>
-        <span aria-hidden="true" className={styles.previewSilhouette} />
-        <div className={styles.previewBody}>
-          <p className={styles.previewMark} aria-hidden="true">
-            ⌗ {idle.stepLabel} 01
-          </p>
-          <h3 className={styles.previewHeadline}>{idle.headline}</h3>
-          <p className={styles.previewCopy}>{idle.body}</p>
+      <div aria-hidden="true" className={styles.skeletonCard}>
+        <div className={styles.skeletonAuthorRow}>
+          <span className={styles.skeletonAvatar} />
+          <div className={styles.skeletonMeta}>
+            <span className={`${styles.skeletonBar} ${styles.skeletonName}`} />
+            <span className={`${styles.skeletonBar} ${styles.skeletonRole}`} />
+          </div>
+        </div>
+        <div className={styles.skeletonCaptionBlock}>
+          <span className={styles.skeletonBar} />
+          <span className={styles.skeletonBar} />
+          <span className={styles.skeletonBar} />
+        </div>
+        <div className={styles.skeletonImage}>
+          <span className={styles.skeletonImageLabel}>{label}</span>
         </div>
       </div>
     </div>

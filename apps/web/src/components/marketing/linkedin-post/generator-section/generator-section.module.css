@@ -92,11 +92,12 @@
   .workbench {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     gap: clamp(1.5rem, 3vw, 2.5rem);
-    align-items: start;
+    align-items: stretch;
   }
 
   .previewSlot {
     position: sticky;
     top: clamp(6.5rem, 9vw, 8rem);
+    height: 100%;
   }
 }
