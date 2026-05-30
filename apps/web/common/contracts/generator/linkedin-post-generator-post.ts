@@ -1,4 +1,4 @@
-import type { LinkedInPostBodyVariant } from "@invessiv/common/contracts/generator/linkedin-post-body-variant";
+import type { LinkedInPostBodyVariant } from "./linkedin-post-body-variant";
 import type { LinkedInPostGeneratorColorPairDto } from "./linkedin-post-generator-color-pair";
 import type { LinkedInPostGeneratorTemplateDto } from "./linkedin-post-generator-template";
 

@@ -14,12 +14,10 @@ import {
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import { LINKEDIN_POST_GENERATOR_INITIAL_VALUES } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
-import {
-  LINKEDIN_POST_GENERATOR_INITIAL_VALUES,
-  type LinkedInPostGeneratorFormValues,
-} from "@invessiv/common/contracts/generator/linkedin-post-generator-form-values";
 import { GeneratorForm } from "./generator-form";
 import { PreviewPanel } from "./preview-panel";
 import { useFieldIds } from "./use-field-ids";

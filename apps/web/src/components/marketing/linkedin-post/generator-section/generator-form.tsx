@@ -6,7 +6,7 @@ import {
 } from "@/common/constants/generator/generator-color-pairs";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
-import type { LinkedInPostGeneratorFormValues } from "@invessiv/common/contracts/generator/linkedin-post-generator-form-values";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import { Field } from "./field";
 import type { GeneratorFieldIds } from "./use-field-ids";
 import styles from "./generator-form.module.css";

@@ -1,5 +1,5 @@
-import type { LinkedInPostBodyVariant as LinkedInPostBodyVariantType } from "@invessiv/common/contracts/generator/linkedin-post-body-variant";
-import { LinkedInPostBodyVariant } from "@invessiv/common/contracts/generator/linkedin-post-body-variant";
+import type { LinkedInPostBodyVariant as LinkedInPostBodyVariantType } from "@/common/contracts/generator/linkedin-post-body-variant";
+import { LinkedInPostBodyVariant } from "@/common/contracts/generator/linkedin-post-body-variant";
 
 /**
  * Predefined structural post templates for the generated LinkedIn post. Each

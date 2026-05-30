@@ -1,5 +1,5 @@
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
-import type { LinkedInPostTone } from "@invessiv/common/contracts/generator/linkedin-post-generator-tone";
+import type { LinkedInPostTone } from "./linkedin-post-generator-tone";
 
 export type LinkedInPostGeneratorRequestDto = {
   topic: string;

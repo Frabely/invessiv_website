@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { LINKEDIN_POST_BODY_VARIANT_VALUES } from "@invessiv/common/contracts/generator/linkedin-post-body-variant";
+import { LINKEDIN_POST_BODY_VARIANT_VALUES } from "@/common/contracts/generator/linkedin-post-body-variant";
 import {
   GENERATOR_TEMPLATE_AUTO,
   GENERATOR_TEMPLATES,

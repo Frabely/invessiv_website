@@ -2,7 +2,7 @@ import type {
   LinkedInPostGeneratorFailureResponseDto,
   LinkedInPostGeneratorSuccessResponseDto,
 } from "@/common/contracts/generator";
-import type { LinkedInPostGeneratorFormValues } from "@invessiv/common/contracts/generator/linkedin-post-generator-form-values";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /**
