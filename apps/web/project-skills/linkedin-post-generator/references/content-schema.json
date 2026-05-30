@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://invessiv.com/schemas/linkedin-post-generator/content.json",
   "title": "LinkedInPostGeneratorContent",
-  "description": "Structured-output contract for the Claude API copy call (Task B3). This is the ONLY portion produced by the LLM. The server wrapper (and the Codex run) assemble the remaining result.json fields — schemaVersion, generatedAt, inputs echo, colorPair, content.expertiseDisplay (cap at 60), paths, render — around this object. The LLM MUST NOT emit those wrapper-owned fields.",
+  "description": "Structured-output contract for the LLM copy call (Task B3). This is the ONLY portion produced by the LLM. The server wrapper (and the Codex run) assemble the remaining result.json fields — schemaVersion, generatedAt, inputs echo, colorPair, template, content.expertiseDisplay (cap at 60), paths, render — around this object. The LLM MUST NOT emit those wrapper-owned fields. bodyVariant is dictated by the selected template (template.bodyVariant) and passed into the prompt — the LLM must return exactly that body form.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -11,6 +11,7 @@
     "bodyVariant",
     "insight",
     "bullets",
+    "highlight",
     "caption"
   ],
   "properties": {
@@ -29,7 +30,7 @@
     },
     "bodyVariant": {
       "enum": ["insight", "bullets"],
-      "description": "MUST be 'bullets' iff tone === 'sachlich', else 'insight'."
+      "description": "Dictated by the selected template (template.bodyVariant), NOT derived from tone. The prompt passes the required value — return exactly that. 'bullets' = three bullets; 'insight' = one free-text paragraph."
     },
     "insight": {
       "type": ["string", "null"],
@@ -48,6 +49,12 @@
         "description": "Plain text only, 6-14 words."
       },
       "description": "Non-null iff bodyVariant === 'bullets'."
+    },
+    "highlight": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 160,
+      "description": "Optional focal emphasis line (≤ 160 chars, plain text, no HTML). Provide a non-null value ONLY when the prompt says the template supports a highlight (insight templates); otherwise return null. Must not repeat the headline verbatim and must respect the same forbidden-phrase rules."
     },
     "caption": {
       "type": "object",

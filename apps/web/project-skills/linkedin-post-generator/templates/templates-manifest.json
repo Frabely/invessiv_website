@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "templates": [
+    {
+      "index": 0,
+      "id": "editorial-center",
+      "bodyVariant": "insight",
+      "supportsHighlight": true,
+      "file": "template-editorial-center.html"
+    },
+    {
+      "index": 1,
+      "id": "left-rail",
+      "bodyVariant": "insight",
+      "supportsHighlight": true,
+      "file": "template-left-rail.html"
+    },
+    {
+      "index": 2,
+      "id": "statement",
+      "bodyVariant": "insight",
+      "supportsHighlight": false,
+      "file": "template-statement.html"
+    },
+    {
+      "index": 3,
+      "id": "bullet-stack",
+      "bodyVariant": "bullets",
+      "supportsHighlight": false,
+      "file": "template-bullet-stack.html"
+    },
+    {
+      "index": 4,
+      "id": "index-checklist",
+      "bodyVariant": "bullets",
+      "supportsHighlight": false,
+      "file": "template-index-checklist.html"
+    }
+  ]
+}

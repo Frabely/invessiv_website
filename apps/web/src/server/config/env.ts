@@ -10,6 +10,8 @@ export type ServerEnv = {
   contactMailTo: string;
   databaseUrl: string | null;
   deploymentEnvironment: DeploymentEnvironment;
+  openAiApiKey: string | null;
+  openAiModel: string;
   resendApiKey: string | null;
 };
 
@@ -65,6 +67,8 @@ export function getServerEnv(): ServerEnv {
     contactMailTo: process.env.CONTACT_MAIL_TO?.trim() || COMPANY.contact.email,
     databaseUrl,
     deploymentEnvironment: readDeploymentEnvironment(),
+    openAiApiKey: process.env.OPENAI_API_KEY?.trim() || null,
+    openAiModel: process.env.OPENAI_MODEL?.trim() || "gpt-5.5",
     resendApiKey: process.env.RESEND_API_KEY?.trim() || null,
   };
 }

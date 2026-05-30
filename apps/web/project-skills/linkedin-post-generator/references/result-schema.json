@@ -10,6 +10,7 @@
     "generatedAt",
     "inputs",
     "colorPair",
+    "template",
     "content",
     "caption",
     "paths",
@@ -18,7 +19,7 @@
   "properties": {
     "schemaVersion": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "generatedAt": {
       "type": "string",
@@ -91,6 +92,31 @@
         }
       }
     },
+    "template": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "index", "source", "bodyVariant"],
+      "description": "Structural skeleton chosen for this run. Purely structural (background style, copy arrangement, body form) — carries no copy. Choice is decoupled from tone.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "One of the template ids in templates/templates-manifest.json."
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4
+        },
+        "source": {
+          "enum": ["random", "seeded", "selected"],
+          "description": "'selected' if a concrete templateId was given, 'seeded' if a --template-seed index was used, else 'random'."
+        },
+        "bodyVariant": {
+          "enum": ["insight", "bullets"],
+          "description": "Body form required by the chosen template. content.bodyVariant MUST equal this value (the template dictates the body form, not the tone)."
+        }
+      }
+    },
     "content": {
       "type": "object",
       "additionalProperties": false,
@@ -100,6 +126,7 @@
         "bodyVariant",
         "insight",
         "bullets",
+        "highlight",
         "expertiseDisplay"
       ],
       "properties": {
@@ -116,7 +143,8 @@
           "description": "Headline with all HTML tags stripped. Must not contain '<' or '>'."
         },
         "bodyVariant": {
-          "enum": ["insight", "bullets"]
+          "enum": ["insight", "bullets"],
+          "description": "Body form. Dictated by the selected template (template.bodyVariant), NOT derived from tone. 'bullets' renders three bullets; 'insight' renders one free-text paragraph."
         },
         "insight": {
           "type": ["string", "null"],
@@ -132,6 +160,12 @@
             "minLength": 1,
             "maxLength": 120
           }
+        },
+        "highlight": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 160,
+          "description": "Optional focal emphasis line. Non-null only when the selected template has supportsHighlight=true (insight templates); null otherwise. Plain text, no HTML tags."
         },
         "expertiseDisplay": {
           "type": "string",

@@ -52,13 +52,14 @@ When generating copy, apply the `copywriting` skill principles
 
 ## 1. Inputs
 
-| Field         | Type   | Max       | Required | Notes                                                                                                                                                                               |
-| ------------- | ------ | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `topic`       | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                                                                                                                 |
-| `expertise`   | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry"                                                                                               |
-| `tone`        | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale)                                                                                       |
-| `locale`      | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                                                                                                            |
-| `colorPairId` | enum   | —         | yes      | One of the 10 pair ids in `references/color-pairs.json` (e.g. `navy-steel`) **or** `auto`. Comes from the form color picker; default `auto`. A concrete id is **binding** — see §6. |
+| Field         | Type   | Max       | Required | Notes                                                                                                                                                                                                                                                                     |
+| ------------- | ------ | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `topic`       | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                                                                                                                                                                                                       |
+| `expertise`   | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry"                                                                                                                                                                                     |
+| `tone`        | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale)                                                                                                                                                                             |
+| `locale`      | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                                                                                                                                                                                                  |
+| `colorPairId` | enum   | —         | yes      | One of the 10 pair ids in `references/color-pairs.json` (e.g. `navy-steel`) **or** `auto`. Comes from the form color picker; default `auto`. A concrete id is **binding** — see §6.                                                                                       |
+| `templateId`  | enum   | —         | no       | One of the 5 template ids in `templates/templates-manifest.json` (e.g. `editorial-center`) **or** `auto`. Default `auto` (random). A concrete id is **binding** — see §7. The runtime form does not expose this; production runs are random. Mainly for Codex/local runs. |
 
 Wire values for `tone` match
 `packages/common/src/contracts/generator/linkedin-post-generator-tone.ts`.
@@ -94,6 +95,8 @@ Do not normalize. Only display labels and generated copy switch with
 - `locale` not in {`de`, `en`} → stop.
 - `colorPairId` not one of the 10 pair ids or `auto` → stop (do not fall
   back to random — a bad value is a contract bug, not a free choice).
+- `templateId` (if given) not one of the 5 template ids or `auto` → stop
+  (same reasoning as `colorPairId`).
 
 ---
 
@@ -116,17 +119,21 @@ linkedin-post-generator \
   --tone <sachlich|persönlich|provokativ> \
   --locale <de|en> \
   --color <pair-id|auto> \
+  [--template <template-id|auto>] \
   [--out-dir <path>] \
   [--seed <0..9>] \
+  [--template-seed <0..4>] \
   [--dry-run]
 ```
 
-| Flag        | Default                                        | Description                                                                                                                                                                         |
-| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--color`   | `auto`                                         | Color pair, maps to the form's `colorPairId`. A pair id (e.g. `navy-steel`) is **binding**: that exact pair MUST be used and `colorPair.source = "selected"`. `auto` → random pick. |
-| `--out-dir` | `apps/web/linkedin-post-output/<slug>_<date>/` | Where to write output files. Server passes a temp dir; Codex uses the default.                                                                                                      |
-| `--seed`    | unset → random                                 | Low-level alternative for local runs: force color-pair index (0–9), `source = "seeded"`. **Ignored when `--color <id>` is a concrete id.** Out-of-range → stop with error.          |
-| `--dry-run` | off                                            | Skip Playwright PNG render. HTML, caption, and JSON are still written.                                                                                                              |
+| Flag              | Default                                        | Description                                                                                                                                                                                           |
+| ----------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--color`         | `auto`                                         | Color pair, maps to the form's `colorPairId`. A pair id (e.g. `navy-steel`) is **binding**: that exact pair MUST be used and `colorPair.source = "selected"`. `auto` → random pick.                   |
+| `--template`      | `auto`                                         | Structural skeleton, maps to `templateId`. A template id (e.g. `editorial-center`) is **binding**: `template.source = "selected"` and its `bodyVariant` dictates the body form. `auto` → random pick. |
+| `--out-dir`       | `apps/web/linkedin-post-output/<slug>_<date>/` | Where to write output files. Server passes a temp dir; Codex uses the default.                                                                                                                        |
+| `--seed`          | unset → random                                 | Low-level alternative for local runs: force color-pair index (0–9), `source = "seeded"`. **Ignored when `--color <id>` is a concrete id.** Out-of-range → stop with error.                            |
+| `--template-seed` | unset → random                                 | Low-level alternative: force template index (0–4), `template.source = "seeded"`. **Ignored when `--template <id>` is a concrete id.** Out-of-range → stop with error.                                 |
+| `--dry-run`       | off                                            | Skip Playwright PNG render. HTML, caption, and JSON are still written.                                                                                                                                |
 
 For Codex invocations, the LLM parses the user prompt into these inputs
 (including `colorPairId`) and the optional flags, then executes the same
@@ -256,19 +263,21 @@ returns ONLY the fields below**, validated against
 | ------------------------------ | ------- | ---------------------------------------------------------------- |
 | `content.headlineHtml`         | **LLM** | `<em>` pairs only                                                |
 | `content.headlinePlain`        | **LLM** | tags stripped                                                    |
-| `content.bodyVariant`          | **LLM** | bullets iff `sachlich`, else insight                             |
+| `content.bodyVariant`          | **LLM** | must equal `template.bodyVariant` (template-driven, not tone)    |
 | `content.insight`              | **LLM** | xor with bullets                                                 |
 | `content.bullets`              | **LLM** | xor with insight                                                 |
+| `content.highlight`            | **LLM** | focal line; null unless template `supportsHighlight`             |
 | `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                                        |
 | `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`                                |
 | `content.expertiseDisplay`     | wrapper | `expertise` hard-capped at 60 chars                              |
 | `inputs.*`                     | wrapper | echoes the four inputs verbatim                                  |
 | `colorPair.*`                  | wrapper | resolved from `colorPairId`: selected / seeded / random — see §6 |
+| `template.*`                   | wrapper | resolved from `templateId`: selected / seeded / random — see §7  |
 | `paths.*`, `render.*`          | wrapper | filesystem + render metadata                                     |
-| `schemaVersion`, `generatedAt` | wrapper | constant / UTC timestamp                                         |
+| `schemaVersion`, `generatedAt` | wrapper | constant (`2`) / UTC timestamp                                   |
 
 The LLM structured-output contract is therefore a strict subset:
-`{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, caption }`.
+`{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, highlight, caption }`.
 B3 wires this object into the Claude API call's response schema; the
 wrapper then merges it with the wrapper-owned fields and validates the
 merged object against `references/result-schema.json`.
@@ -288,7 +297,7 @@ merged object against `references/result-schema.json`.
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedAt": "2026-05-28T14:30:12Z",
   "inputs": {
     "topic": "...",
@@ -305,12 +314,19 @@ merged object against `references/result-schema.json`.
     "text": "#E8F1FA",
     "accent": "#5BA3D9"
   },
+  "template": {
+    "id": "editorial-center",
+    "index": 0,
+    "source": "random",
+    "bodyVariant": "insight"
+  },
   "content": {
     "headlineHtml": "...",
     "headlinePlain": "...",
     "bodyVariant": "insight",
     "insight": "...",
     "bullets": null,
+    "highlight": "...",
     "expertiseDisplay": "..."
   },
   "caption": {
@@ -403,21 +419,57 @@ that gradient — do not swap colors between pairs.
 
 ---
 
-## 7. HTML Template
+## 7. Template System
 
-The template lives at `templates/post-template.html`. Substitution is
-done by literal replacement of bracket-wrapped placeholders.
+There are **5 structural skeletons** in `templates/`, catalogued in
+`templates/templates-manifest.json`. Each skeleton is **purely
+structural** — it fixes the background style (driven by the color pair),
+the copy arrangement, and the body form. It carries **no copy**; all
+text is substituted at render time. The copy still varies on every run
+(see §3); only the structure is fixed by the chosen template.
 
-| Placeholder      | Value                                                                    |
-| ---------------- | ------------------------------------------------------------------------ |
-| `[LOCALE]`       | input `locale` (`de` or `en`)                                            |
-| `[BG_START]`     | `pair.primary`                                                           |
-| `[BG_END]`       | `pair.secondary`                                                         |
-| `[TEXT]`         | `pair.text`                                                              |
-| `[ACCENT]`       | `pair.accent`                                                            |
-| `[EXPERTISE]`    | `content.expertiseDisplay`, HTML-escaped                                 |
-| `[HEADLINE]`     | `content.headlineHtml` (already contains `<em>`; escape everything else) |
-| `[BODY_CONTENT]` | insight `<p>` or bullets `<ul>` (see below)                              |
+| index | id                 | bodyVariant | highlight | file                             |
+| ----- | ------------------ | ----------- | --------- | -------------------------------- |
+| 0     | `editorial-center` | `insight`   | yes       | `template-editorial-center.html` |
+| 1     | `left-rail`        | `insight`   | yes       | `template-left-rail.html`        |
+| 2     | `statement`        | `insight`   | no        | `template-statement.html`        |
+| 3     | `bullet-stack`     | `bullets`   | no        | `template-bullet-stack.html`     |
+| 4     | `index-checklist`  | `bullets`   | no        | `template-index-checklist.html`  |
+
+### Template selection (precedence, first match wins)
+
+1. **Concrete `templateId`** (one of the 5 ids) → use **that** skeleton,
+   `template.source = "selected"`. Binding — do not substitute.
+2. **`--template-seed N` (0–4)** → use index `N`, `source = "seeded"`.
+3. **`templateId === "auto"` / unset and no seed** → uniform random
+   template in `[0, 4]`, `source = "random"`.
+
+Selection is **decoupled from tone** — the template, not the tone,
+decides the body form. `template.bodyVariant` is fed into the copy
+prompt so the LLM returns the matching body shape (see §8). The runtime
+form does not expose a template picker; production runs are always
+random.
+
+### Placeholders (same set for every skeleton)
+
+Substitution is literal replacement of bracket-wrapped placeholders.
+
+| Placeholder         | Value                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------- |
+| `[LOCALE]`          | input `locale` (`de` or `en`)                                                      |
+| `[BG_START]`        | `pair.primary`                                                                     |
+| `[BG_END]`          | `pair.secondary`                                                                   |
+| `[TEXT]`            | `pair.text`                                                                        |
+| `[ACCENT]`          | `pair.accent`                                                                      |
+| `[EXPERTISE]`       | `content.expertiseDisplay`, HTML-escaped                                           |
+| `[HEADLINE]`        | `content.headlineHtml` (already contains `<em>`; escape everything else)           |
+| `[BODY_CONTENT]`    | insight `<p>` or bullets `<ul>` (see below)                                        |
+| `[HIGHLIGHT_BLOCK]` | `<p class="post__highlight">{highlight}</p>` or `""` (only on highlight templates) |
+
+The canonical renderer is
+`apps/web/src/server/services/generator/linkedin-post/render-linkedin-post-html.ts` —
+a single source of truth shared by the server PNG render, the mail
+attachment, and the on-page preview iframe, so they never drift.
 
 ### Visual elements deliberately NOT present
 
@@ -425,8 +477,8 @@ done by literal replacement of bracket-wrapped placeholders.
   „Persönlich" / „Sachlich" / „Provokativ" on the post would identify
   it as tool-output and destroy the lead-magnet value (visitor will
   not post a labelled-as-AI image to their LinkedIn). Tone still
-  drives content shape and copy register, and is preserved in
-  `result.json.inputs.tone`.
+  drives the copy register (not the body shape — that is template-driven,
+  see §7/§8) and is preserved in `result.json.inputs.tone`.
 - **No topic kicker line above the headline.** The topic drives the
   headline; rendering both creates visual redundancy and looks
   uneditorial. Topic remains in `result.json.inputs.topic` for
@@ -454,7 +506,14 @@ Matches `apps/web/src/i18n/dictionaries/linkedin-post/generator/{de,en}.json`.
 ### Body variants
 
 - `bodyVariant === "insight"` → `<p class="post__insight">{insight}</p>`
+  (+ `[HIGHLIGHT_BLOCK]` → `<p class="post__highlight">{highlight}</p>`
+  when the template supports a highlight)
 - `bodyVariant === "bullets"` → `<ul class="post__bullets"><li>...</li>×3</ul>`
+
+All skeletons use the same inner content classes (`.post__expertise`,
+`.post__headline`, `.post__insight`, `.post__bullets`, `.post__highlight`)
+so the renderer stays template-agnostic; only the surrounding structure
+and background differ per skeleton.
 
 ### HTML escaping
 
@@ -504,27 +563,44 @@ expertise. The `topic` value is the post's subject.
 **Six worked examples** (one per tone × locale combination) live under
 `references/examples/`. Read those before generating new content.
 
-### `sachlich` — fact-based, body = bullets
+> **Body form is template-driven, NOT tone-driven (v2).** The selected
+> template (§7) decides whether the body is `bullets` or an `insight`
+> paragraph via `template.bodyVariant`; the prompt passes the required
+> value and the copy MUST match it. **Tone only governs the register /
+> voice** of headline, body, and caption — never the body shape. So a
+> `sachlich` post can render as an insight paragraph if the chosen
+> template is an insight template, and a `persönlich` post can render as
+> bullets. The per-tone guidance below therefore describes voice; the
+> per-form rules apply on top, depending on the template's body form.
+
+### `sachlich` — fact-based register
 
 - **Headline**: thesis or sharp observation as a statement. No question.
   No exclamation mark. No trailing period. May use `<em>` on the
   single sharpest noun/verb.
-- **3 bullets**: each ≤ 14 words. Factual, no opinion language
-  (no "ich glaube" / "I think"). Cause → effect → consequence when applicable.
+- Factual, no opinion language (no "ich glaube" / "I think").
 
-### `persönlich` — experience-based, body = insight paragraph
+### `persönlich` — experience-based register
 
 - **Headline**: hook from personal observation. First-person allowed.
   Conversational, not preachy. May use `<em>` on 1–2 emotionally weighted words.
-- **Insight (≤ 2 sentences)**: extends headline with specific context,
-  not advice. Concrete > abstract.
+- Concrete > abstract; specific context, not advice.
 
-### `provokativ` — pointed opinion, body = insight paragraph
+### `provokativ` — pointed-opinion register
 
 - **Headline**: clear counter-position as a statement. Respectful.
   May use `<em>` on the contested word.
-- **Insight (≤ 2 sentences)**: sharpens the position, does not soften
-  with "vielleicht" / "maybe". Names what is at stake.
+- Sharpens the position, does not soften with "vielleicht" / "maybe".
+  Names what is at stake.
+
+### Body form rules (applied per the template's `bodyVariant`)
+
+- **`bullets`** → exactly 3 bullets, each 6–14 words. Cause → effect →
+  consequence when applicable.
+- **`insight`** → one free-text paragraph, ≤ 2 sentences (hard cap 220 chars).
+- **`highlight`** (only when the template's `supportsHighlight` is true) →
+  one short focal line ≤ 160 chars that sharpens the point; must not
+  repeat the headline. Null for all other templates.
 
 ### Cross-tone rules
 
@@ -733,16 +809,26 @@ Run all checks before declaring success.
 - [ ] Output folder exists at the resolved `<out-dir>`.
 - [ ] `result.json` is valid against `references/result-schema.json`
       (run the schema validator — many checks below are also schema-enforced).
-- [ ] `result.json.schemaVersion === 1`.
+- [ ] `result.json.schemaVersion === 2`.
 - [ ] `result.json.generatedAt` matches `YYYY-MM-DDTHH:MM:SSZ` (no ms).
 - [ ] `result.json.inputs` echoes the four inputs verbatim (NFC byte-exact).
 - [ ] `result.json.colorPair.index` ∈ `[0, 9]`.
 - [ ] `colorPair.source` is `"selected"` iff a concrete `colorPairId` was
       given; `"seeded"` iff `--seed` (and no concrete id); else `"random"`.
 - [ ] **If `colorPairId` is a concrete id, `result.json.colorPair.id ===
-    colorPairId`** and the PNG background uses that pair (the visitor's
+  colorPairId`** and the PNG background uses that pair (the visitor's
       chosen color MUST be honored).
-- [ ] `bodyVariant === "bullets"` iff `tone === "sachlich"`; else `"insight"`.
+- [ ] `result.json.template.index` ∈ `[0, 4]` and `template.id` is one of
+      the 5 ids in `templates/templates-manifest.json`.
+- [ ] `template.source` is `"selected"` iff a concrete `templateId` was
+      given; `"seeded"` iff `--template-seed` (and no concrete id); else
+      `"random"`. If concrete, `template.id === templateId` and the PNG
+      uses that skeleton.
+- [ ] `content.bodyVariant === template.bodyVariant` (template-driven, NOT
+      tied to tone).
+- [ ] `content.highlight` is non-null **iff** the chosen template has
+      `supportsHighlight: true`; otherwise `null`. If non-null: ≤ 160 chars,
+      plain text, does not repeat `headlinePlain`.
 - [ ] Exactly one of `content.insight` / `content.bullets` is non-null.
 - [ ] `content.headlinePlain.length <= 90` (hard cap).
 - [ ] `content.headlinePlain` contains no `<` or `>`.
@@ -784,7 +870,12 @@ Run all checks before declaring success.
 linkedin-post-generator/
 ├── SKILL.md                          ← this file (specification)
 ├── templates/
-│   └── post-template.html            ← canonical HTML template
+│   ├── templates-manifest.json       ← catalogue of the 5 skeletons (id, bodyVariant, highlight)
+│   ├── template-editorial-center.html
+│   ├── template-left-rail.html
+│   ├── template-statement.html
+│   ├── template-bullet-stack.html
+│   └── template-index-checklist.html
 ├── references/
 │   ├── color-pairs.json              ← 10 predefined dark pairs
 │   ├── content-schema.json           ← JSON Schema for the LLM copy call (B3)

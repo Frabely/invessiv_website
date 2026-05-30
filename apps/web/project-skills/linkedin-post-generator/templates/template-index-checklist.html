@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="[LOCALE]">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LinkedIn Post</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1080px;
+        overflow: hidden;
+      }
+
+      .post {
+        position: relative;
+        width: 1080px;
+        height: 1080px;
+        color: [TEXT];
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          system-ui,
+          "Helvetica Neue",
+          "Liberation Sans",
+          "DejaVu Sans",
+          Arial,
+          sans-serif;
+        background:
+          radial-gradient(
+            58% 52% at 88% 10%,
+            color-mix(in srgb, [ACCENT] 24%, transparent) 0%,
+            transparent 56%
+          ),
+          linear-gradient(155deg, [BG_START] 0%, [BG_END] 100%);
+      }
+
+      .post::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+          circle at center,
+          transparent 56%,
+          rgba(0, 0, 0, 0.32) 100%
+        );
+      }
+
+      .post__inner {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        padding: 100px 96px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .post__expertise {
+        display: block;
+        max-width: 880px;
+        margin-bottom: 30px;
+        color: [ACCENT];
+        font-size: 23px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .post__headline {
+        max-width: 840px;
+        padding-bottom: 50px;
+        margin-bottom: 50px;
+        border-bottom: 1px solid color-mix(in srgb, [TEXT] 14%, transparent);
+        font-size: 58px;
+        line-height: 1.12;
+        font-weight: 800;
+        letter-spacing: -0.016em;
+      }
+
+      .post__headline em {
+        color: [ACCENT];
+        font-style: normal;
+      }
+
+      .post__bullets {
+        list-style: none;
+        counter-reset: checklist;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .post__bullets li {
+        counter-increment: checklist;
+        position: relative;
+        min-height: 64px;
+        padding-left: 96px;
+        display: flex;
+        align-items: center;
+        font-size: 31px;
+        line-height: 1.26;
+        font-weight: 500;
+        color: color-mix(in srgb, [TEXT] 92%, transparent);
+      }
+
+      .post__bullets li::before {
+        content: counter(checklist, decimal-leading-zero);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        border: 1px solid color-mix(in srgb, [ACCENT] 36%, transparent);
+        background: color-mix(in srgb, [ACCENT] 16%, transparent);
+        color: [ACCENT];
+        font-size: 26px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="post">
+      <div class="post__inner">
+        <span class="post__expertise">[EXPERTISE]</span>
+        <h1 class="post__headline">[HEADLINE]</h1>
+        [BODY_CONTENT]
+      </div>
+    </div>
+  </body>
+</html>
