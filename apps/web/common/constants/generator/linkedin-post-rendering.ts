@@ -8,3 +8,9 @@ export const LINKEDIN_POST_GENERATOR_MAIL_FAILED_LOG_EVENT =
   "linkedin_post_generator_mail_failed";
 export const LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT =
   "linkedin_post_generator_failed";
+
+export const LINKEDIN_POST_REQUIRED_HASHTAG = "LinkedIn";
+export const LINKEDIN_POST_FALLBACK_HASHTAG = "SocialMedia";
+export const LINKEDIN_POST_DOWNLOAD_FILENAME_FALLBACK = "linkedin-post";
+export const LINKEDIN_POST_OPENAI_SCHEMA_NAME =
+  "linkedin_post_generator_content";
