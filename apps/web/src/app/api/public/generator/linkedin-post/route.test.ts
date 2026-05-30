@@ -49,8 +49,11 @@ const mocks = vi.hoisted(() => ({
   sendMail: vi.fn(),
 }));
 
-vi.mock("@/server/linkedin-post/linkedin-post-generator-service", () => ({
+vi.mock("@/server/linkedin-post/linkedin-post-openai-adapter-service", () => ({
   LinkedInPostGenerationError: mocks.LinkedInPostGenerationError,
+}));
+
+vi.mock("@/server/linkedin-post/linkedin-post-generator-service", () => ({
   generateLinkedInPost: mocks.generateLinkedInPost,
 }));
 
