@@ -8,12 +8,15 @@ type ResendProviderOptions = {
   from: string;
 };
 
+const RESEND_EMAILS_ENDPOINT = "https://api.resend.com/emails";
+
 export class ResendMailProvider implements MailProvider {
   constructor(private readonly options: ResendProviderOptions) {}
 
   async send(message: MailMessage) {
-    const response = await fetch("https://api.resend.com/emails", {
+    const response = await fetch(RESEND_EMAILS_ENDPOINT, {
       body: JSON.stringify({
+        attachments: message.attachments,
         from: this.options.from,
         html: message.html,
         subject: message.subject,

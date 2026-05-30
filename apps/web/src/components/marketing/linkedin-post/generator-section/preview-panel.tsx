@@ -28,7 +28,7 @@ export function PreviewPanel({ content, locale, state }: PreviewPanelProps) {
       downloadFileName={state.downloadFileName}
       imageDataUrl={state.imageDataUrl}
       locale={locale}
-      post={state.post}
+      postTitle={state.post.headlinePlain}
       previewHtml={state.previewHtml}
     />
   );

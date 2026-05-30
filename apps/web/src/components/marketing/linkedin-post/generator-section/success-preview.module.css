@@ -55,14 +55,12 @@
 /* Success media */
 .successMedia {
   position: relative;
-  aspect-ratio: 5 / 4;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
   background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-}
-
-.successImage {
-  object-fit: cover;
 }
 
 /* Caption block */
@@ -153,6 +151,11 @@
     border-color 200ms ease,
     color 200ms ease,
     transform 180ms ease;
+}
+
+.downloadButton:disabled {
+  cursor: wait;
+  opacity: 0.68;
 }
 
 .downloadButton:hover,

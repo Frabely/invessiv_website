@@ -31,6 +31,38 @@ professioneller.
 
 ---
 
+### LinkedIn-Post-Generator: Qualitätsgrenze ohne persönliche Daten
+
+Der Generator liefert technisch saubere, strukturell hochwertige Posts — aber die Copy bleibt **zwangsläufig generisch
+**, weil er keine persönlichen Informationen kennt:
+
+- Kein eigenes Branding, keine Logofarben, keine visuelle Identität
+- Keine persönliche Stimme, keine konkreten Erfahrungen, keine Referenzen
+- Keine Unternehmensfotos, Teambilder oder eigene Bild-Assets
+- Keine spezifischen Zahlen, Case Studies oder Kundenzitate
+
+Das ist kein Fehler — es ist die bewusste Grenze des öffentlichen Lead-Magnet-Tools.
+
+**Der Hinweis sollte irgendwo auf der Seite sichtbar sein** (z. B. unterhalb der Beispiele oder im Success-State), damit
+Besucher verstehen, warum das Ergebnis noch nicht „nach ihnen" klingt — und was dagegen helfen würde.
+
+**Mögliche Erweiterung: Custom Workflow per Skill**
+
+Ein dedizierter `custom-linkedin-post`-Skill (analog zu `invessiv-social-post`) könnte genau diese Lücke schließen:
+
+- Persönliche Angaben (Stimme, Expertise-Tiefe, Referenzen) als Skill-Kontext
+- Eigenes Logo oder Bild-URL als Input — **Bild-Input wäre kein technisches Problem**: der Skill nimmt eine URL oder
+  einen lokalen Pfad entgegen und bettet das Bild direkt in das HTML-Template ein; Playwright rendert es pixelgenau in
+  den PNG-Export
+- Individuelle Farbpalette statt der 10 generischen Paare
+- Persistente Persona-Daten (Name, Rolle, Profilbild) für konsistente Posts über mehrere Runs hinweg
+
+Der Skill würde nicht im öffentlichen Generator laufen, sondern als interner Workflow (wie `invessiv-social-post`) —
+Besucher, die das Ergebnis sehen, erkennen den Qualitätsunterschied und haben einen konkreten nächsten Schritt: eigenen
+Workflow anfragen.
+
+---
+
 ### Zeiten in Home Services-Sektion überarbeiten
 
 Sobald die Zeitangabe für die Landingpage entschieden ist, müssen die Delivery-Werte aller Service-Cards in

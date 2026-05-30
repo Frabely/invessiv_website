@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   GENERATOR_FORM_ID,
@@ -8,22 +7,34 @@ import {
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { CustomPostBlock } from "./custom-post-block/custom-post-block";
+import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
 import styles from "./success-preview.module.css";
 
 type SuccessPreviewProps = {
   caption: string;
   content: LinkedInPostGeneratorContent;
-  downloadToken: string;
-  imageUrl: string;
+  downloadFileName: string;
+  imageDataUrl: string | null;
   locale: Locale;
+  postTitle: string;
+  previewHtml: string;
 };
+
+function downloadDataUrl(href: string, fileName: string) {
+  const link = document.createElement("a");
+  link.download = fileName;
+  link.href = href;
+  link.click();
+}
 
 export function SuccessPreview({
   caption,
   content,
-  downloadToken,
-  imageUrl,
+  downloadFileName,
+  imageDataUrl,
   locale,
+  postTitle,
+  previewHtml,
 }: SuccessPreviewProps) {
   const { success } = content.preview;
   const [hasCopied, setHasCopied] = useState(false);
@@ -67,24 +78,26 @@ export function SuccessPreview({
     );
   }
 
+  function handleImageDownload() {
+    if (!imageDataUrl) {
+      return;
+    }
+    downloadDataUrl(imageDataUrl, downloadFileName);
+    handleAnalyticsDownload(PostDownloadTarget.Image);
+  }
+
   const captionTextHref = `data:text/plain;charset=utf-8,${encodeURIComponent(caption)}`;
+  const captionFileName = downloadFileName.replace(/\.png$/u, ".txt");
 
   return (
     <div className={styles.preview} data-state="success">
       <div className={styles.previewFrame}>
         <div className={styles.successMedia}>
-          <Image
-            alt={success.imageAlt}
-            className={styles.successImage}
-            fill
-            sizes="(max-width: 720px) 100vw, 480px"
-            src={imageUrl}
-            unoptimized
-          />
+          <PostFramePreview html={previewHtml} title={postTitle} />
         </div>
         <div className={styles.previewBody}>
           <p className={styles.previewMark} aria-hidden="true">
-            ⌗ READY
+            READY
           </p>
           <h3 className={styles.previewHeadline}>{success.headline}</h3>
           <div className={styles.captionBlock}>
@@ -100,21 +113,21 @@ export function SuccessPreview({
             </button>
           </div>
           <div className={styles.downloadRow}>
-            <a
+            <button
               className={styles.downloadButton}
               data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
               data-analytics-target={PostDownloadTarget.Image}
-              download
-              href={imageUrl}
-              onClick={() => handleAnalyticsDownload(PostDownloadTarget.Image)}
+              disabled={!imageDataUrl}
+              onClick={handleImageDownload}
+              type="button"
             >
               {success.downloadImage}
-            </a>
+            </button>
             <a
               className={styles.downloadButton}
               data-analytics-event={GeneratorAnalyticsEvent.PostDownload}
               data-analytics-target={PostDownloadTarget.Text}
-              download={`linkedin-post-${downloadToken}.txt`}
+              download={captionFileName}
               href={captionTextHref}
               onClick={() => handleAnalyticsDownload(PostDownloadTarget.Text)}
             >
