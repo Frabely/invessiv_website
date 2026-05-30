@@ -1,5 +1,5 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
-import type { LinkedInPostGeneratorPostDto } from "@invessiv/common/contracts/generator/linkedin-post-generator-api";
+import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
 
 /**
  * UI state of the LinkedIn-post generator preview. Client-only — lives in the
