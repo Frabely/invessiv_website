@@ -1,0 +1,19 @@
+.frame {
+  position: relative;
+  width: min(100%, 31rem);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 20px 48px -32px var(--color-shadow);
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1080px;
+  height: 1080px;
+  border: 0;
+  transform-origin: top left;
+}
