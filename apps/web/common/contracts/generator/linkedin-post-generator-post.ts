@@ -1,6 +1,8 @@
-import type { LinkedInPostBodyVariant } from "./linkedin-post-body-variant";
-import type { LinkedInPostGeneratorColorPairDto } from "./linkedin-post-generator-color-pair";
-import type { LinkedInPostGeneratorTemplateDto } from "./linkedin-post-generator-template";
+import type {
+  LinkedInPostBodyVariant,
+  LinkedInPostGeneratorColorPairDto,
+  LinkedInPostGeneratorTemplateDto,
+} from "@/common/contracts";
 
 export type LinkedInPostGeneratorPostDto = {
   headlineHtml: string;
