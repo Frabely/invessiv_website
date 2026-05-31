@@ -6,6 +6,7 @@ export type LinkedInPostGeneratorRequestDto = {
   expertise: string;
   tone: LinkedInPostTone;
   colorPairId: string;
+  displayName: string;
   email: string;
   consent: boolean;
   company: string;

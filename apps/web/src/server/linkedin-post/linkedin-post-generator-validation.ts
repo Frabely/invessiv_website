@@ -29,10 +29,6 @@ export const linkedinPostGeneratorRequestSchema = z.object({
   locale: z.enum(SUPPORTED_LOCALES).default(Locale.De),
 });
 
-export type ValidLinkedInPostGeneratorRequest = z.infer<
-  typeof linkedinPostGeneratorRequestSchema
->;
-
 export function mapGeneratorValidationErrors(error: z.ZodError) {
   const fieldErrors: Record<string, string[]> = {};
   for (const issue of error.issues) {

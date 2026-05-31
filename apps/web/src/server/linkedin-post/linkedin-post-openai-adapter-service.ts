@@ -9,7 +9,7 @@ import {
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
-import type { ValidLinkedInPostGeneratorRequest } from "./linkedin-post-generator-validation";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import contentSchema from "../../../project-skills/linkedin-post-generator/references/content-schema.json";
 
 export type OpenAIResponsesClient = Pick<OpenAI["responses"], "create">;
@@ -110,7 +110,7 @@ const PROMPT_LANGUAGE_BY_LOCALE: Record<Locale, string> = {
 };
 
 function createPrompt(
-  request: ValidLinkedInPostGeneratorRequest,
+  request: LinkedInPostGeneratorRequestDto,
   template: GeneratorTemplate,
 ) {
   const language = PROMPT_LANGUAGE_BY_LOCALE[request.locale];
@@ -245,7 +245,7 @@ function mapOpenAIRequestError(error: unknown) {
 
 async function callOpenAI(
   client: OpenAIResponsesClient,
-  request: ValidLinkedInPostGeneratorRequest,
+  request: LinkedInPostGeneratorRequestDto,
   model: string,
   template: GeneratorTemplate,
 ): Promise<GeneratedContent> {

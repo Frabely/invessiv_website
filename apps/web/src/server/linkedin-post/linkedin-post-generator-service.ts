@@ -16,7 +16,7 @@ import {
   BRAND_COLLISION_PATTERN,
   PROMPT_INJECTION_PATTERN,
 } from "@/common/patterns/linkedin-post-generator-patterns";
-import type { ValidLinkedInPostGeneratorRequest } from "./linkedin-post-generator-validation";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import {
   type GeneratedContent,
   LinkedInPostGenerationError,
@@ -34,7 +34,7 @@ function normalizeInput(value: string) {
   return value.trim().normalize("NFC");
 }
 
-function assertSafeInput(request: ValidLinkedInPostGeneratorRequest) {
+function assertSafeInput(request: LinkedInPostGeneratorRequestDto) {
   const input = `${request.topic}\n${request.expertise}`;
   if (BRAND_COLLISION_PATTERN.test(input)) {
     throw new LinkedInPostGenerationError(
@@ -161,7 +161,7 @@ type GenerateLinkedInPostResult = LinkedInPostGeneratorSuccessResponseDto & {
 };
 
 export async function generateLinkedInPost(
-  rawRequest: ValidLinkedInPostGeneratorRequest,
+  rawRequest: LinkedInPostGeneratorRequestDto,
   client?: OpenAIResponsesClient,
   options?: GenerateLinkedInPostOptions,
 ): Promise<GenerateLinkedInPostResult> {

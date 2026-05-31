@@ -11,6 +11,7 @@ import {
   mapGeneratorValidationErrors,
 } from "@/server/linkedin-post/linkedin-post-generator-validation";
 import type { LinkedInPostGeneratorFailureResponseDto } from "@/common/contracts/generator";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import {
   LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT,
   LINKEDIN_POST_GENERATOR_MAIL_FAILED_LOG_EVENT,
@@ -145,6 +146,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const generatorRequest: LinkedInPostGeneratorRequestDto = parsedPayload.data;
+
   if (parsedPayload.data.company.trim() !== "") {
     return errorResponse(
       LinkedInPostGeneratorErrorCode.SpamDetected,
@@ -153,7 +156,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const result = await generateLinkedInPost(parsedPayload.data);
+    const result = await generateLinkedInPost(generatorRequest);
 
     let png: Buffer | null = null;
     try {
@@ -177,10 +180,10 @@ export async function POST(request: NextRequest) {
     const message = await createLinkedInPostGeneratorResultMessage({
       caption: result.caption,
       downloadFileName: result.downloadFileName,
-      locale: parsedPayload.data.locale,
+      locale: generatorRequest.locale,
       png,
       post: result.post,
-      to: parsedPayload.data.email,
+      to: generatorRequest.email,
     });
     const mailResult = await sendMail(message);
     if (!mailResult.ok) {
