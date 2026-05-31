@@ -36,6 +36,7 @@ export type LinkedInPostExampleContent = {
   captionLess: string;
   disclaimer: string;
   samples: LinkedInPostExampleSample[];
+  ctaLead: string;
   ctaLabel: string;
   ctaAriaLabel: string;
 };

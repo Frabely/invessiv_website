@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -26,6 +27,7 @@ export function ExampleSection({
   captionLess,
   disclaimer,
   samples,
+  ctaLead,
   ctaLabel,
   ctaAriaLabel,
   generatorHref,
@@ -70,20 +72,18 @@ export function ExampleSection({
       </p>
 
       <div className={styles.ctaRow} data-reveal-item="true">
-        <a
+        <p className={styles.ctaLead}>{ctaLead}</p>
+        <PrimaryCtaLink
           aria-label={ctaAriaLabel}
-          className={styles.ctaLink}
+          className={styles.ctaButton}
           data-analytics-event="cta_click"
           data-analytics-location="example_section"
           data-analytics-target="generator"
-          data-analytics-variant="ghost"
+          data-analytics-variant="primary"
           href={generatorHref}
         >
-          <span className={styles.ctaArrow} aria-hidden="true">
-            ↓
-          </span>
           {ctaLabel}
-        </a>
+        </PrimaryCtaLink>
       </div>
     </section>
   );

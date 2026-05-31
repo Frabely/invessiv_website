@@ -43,6 +43,7 @@
       "promptText": "Role: LinkedIn Marketing — Topic: Why visibility on LinkedIn matters — Tone: Personal"
     }
   ],
-  "ctaLabel": "Try it yourself",
+  "ctaLead": "If you already have a topic in mind, generate your first draft now.",
+  "ctaLabel": "Generate post",
   "ctaAriaLabel": "Scroll to the LinkedIn post generator"
 }

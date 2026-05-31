@@ -3,7 +3,6 @@ import { AiWorkflowsHeroSection } from "@/components/marketing/linkedin-post/her
 import { ExampleSection } from "@/components/marketing/linkedin-post/example-section/example-section";
 import { GeneratorSection } from "@/components/marketing/linkedin-post/generator-section/generator-section";
 import { WorkflowShowcaseSection } from "@/components/marketing/linkedin-post/workflow-showcase-section/workflow-showcase-section";
-import { PrivacyNoteSection } from "@/components/marketing/linkedin-post/privacy-note-section/privacy-note-section";
 import { ProblemExamplesSection } from "@/components/marketing/linkedin-post/problem-examples-section/problem-examples-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -13,11 +12,9 @@ import {
   LINKEDIN_POST_HEADER_NAVIGATION,
   LINKEDIN_POST_SECTION_HREFS,
 } from "@/config/navigation/linkedin-post";
-import { SITE_ROUTES } from "@/config/routes";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
-import { getLinkedInPostPrivacyNoteContent } from "@/i18n/dictionaries/linkedin-post/privacy-note";
 import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
@@ -30,9 +27,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
   const problemExamples = getLinkedInPostProblemExamplesContent(locale);
   const example = getLinkedInPostExampleContent(locale);
   const generator = getLinkedInPostGeneratorContent(locale);
-  const privacyNote = getLinkedInPostPrivacyNoteContent(locale);
   const footer = getLandingFooterContent(locale);
-  const privacyHref = `/${locale}${SITE_ROUTES.PRIVACY}`;
 
   return (
     <>
@@ -78,12 +73,6 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
           {...generator.customPost}
           id={LINKEDIN_POST_SECTION_HREFS.workflow.slice(1)}
           locale={locale}
-        />
-
-        <PrivacyNoteSection
-          {...privacyNote}
-          id={LINKEDIN_POST_SECTION_HREFS.privacy.slice(1)}
-          privacyHref={privacyHref}
         />
 
         <FooterSection
