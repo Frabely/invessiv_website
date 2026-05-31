@@ -19,6 +19,7 @@ import {
 } from "@/client/contact/services/contact-form-service";
 import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@invessiv/common/defaults/contact/discovery-call-form-values";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import type { DiscoveryCallFormValues } from "@invessiv/common/contracts/contact/forms/discovery-call-form-values";
 import { mapDiscoveryCallFormToDto } from "@/client/contact/mappers/map-discovery-call-form-to-dto";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
@@ -183,12 +184,16 @@ export function DiscoveryCallPanel({
 
         <label className={sharedStyles.consent}>
           <input
-            {...register("consentAccepted", {
+            {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
               validate: (value) =>
                 value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
             })}
             aria-describedby="discovery-call-consent-error"
-            aria-invalid={errors.consentAccepted ? "true" : undefined}
+            aria-invalid={
+              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? "true"
+                : undefined
+            }
             type="checkbox"
           />
           <ContactConsentText
@@ -196,8 +201,8 @@ export function DiscoveryCallPanel({
             errorClassName={sharedStyles.consentError}
             errorId="discovery-call-consent-error"
             errorMessage={
-              errors.consentAccepted
-                ? getErrorMessage("consentAccepted")
+              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? getErrorMessage(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
                 : undefined
             }
             privacyHref={privacyHref}

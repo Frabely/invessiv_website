@@ -13,6 +13,7 @@ import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-f
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
@@ -284,7 +285,7 @@ export function ProjectRequestForm({
           return;
         }
 
-        setFocus("consentAccepted");
+        setFocus(CONTACT_FORM_FIELD_NAME.ConsentAccepted);
       });
     },
     [fieldRules, getValues, setFocus],
@@ -381,7 +382,7 @@ export function ProjectRequestForm({
       > = {
         1: ["displayName", "email", "offerKey"],
         2: ["projectDetails"],
-        3: ["consentAccepted"],
+        3: [CONTACT_FORM_FIELD_NAME.ConsentAccepted],
       };
 
       const stepFields = [...fieldsByStep[step]];
@@ -1157,9 +1158,13 @@ export function ProjectRequestForm({
             <label className={sharedStyles.consent}>
               <input
                 aria-describedby="project-request-consent-error"
-                aria-invalid={errors.consentAccepted ? "true" : undefined}
+                aria-invalid={
+                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                    ? "true"
+                    : undefined
+                }
                 type="checkbox"
-                {...register("consentAccepted", {
+                {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
                   validate: (value) =>
                     value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
                 })}
@@ -1169,8 +1174,8 @@ export function ProjectRequestForm({
                 errorClassName={sharedStyles.consentError}
                 errorId="project-request-consent-error"
                 errorMessage={
-                  errors.consentAccepted
-                    ? getFieldErrorText("consentAccepted")
+                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                    ? getFieldErrorText(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
                     : undefined
                 }
                 privacyHref={privacyHref}

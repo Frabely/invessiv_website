@@ -29,19 +29,19 @@ type FinalCtaSectionProps = FinalCtaContent & {
 };
 
 type FormValues = {
-  consentAccepted: boolean;
   email: string;
   honeypot: string;
   name: string;
+  [CONTACT_FORM_FIELD_NAME.ConsentAccepted]: boolean;
   [CONTACT_FORM_FIELD_NAME.Goal]: string;
   [CONTACT_FORM_FIELD_NAME.Website]: string;
 };
 
 const DEFAULT_FORM_VALUES: FormValues = {
-  consentAccepted: false,
   email: "",
   honeypot: "",
   name: "",
+  [CONTACT_FORM_FIELD_NAME.ConsentAccepted]: false,
   [CONTACT_FORM_FIELD_NAME.Goal]: "",
   [CONTACT_FORM_FIELD_NAME.Website]: "",
 };
@@ -140,7 +140,7 @@ export function FinalCtaSection({
 
       trackSubmitAttempt();
       const dto: SaveQuickContactDto = {
-        consentAccepted: values.consentAccepted,
+        consentAccepted: values[CONTACT_FORM_FIELD_NAME.ConsentAccepted],
         displayName: values.name.trim(),
         email: values.email.trim(),
         kind: CONTACT_REQUEST_KIND.QuickContact,
@@ -394,12 +394,16 @@ export function FinalCtaSection({
 
             <label className={styles.consent}>
               <input
-                {...register("consentAccepted", {
+                {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
                   validate: (value) =>
                     value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
                 })}
                 aria-describedby={consentErrorId}
-                aria-invalid={errors.consentAccepted ? "true" : undefined}
+                aria-invalid={
+                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                    ? "true"
+                    : undefined
+                }
                 className={styles.consentCheckbox}
                 type="checkbox"
               />
@@ -419,9 +423,15 @@ export function FinalCtaSection({
             <p
               className={styles.errorText}
               id={consentErrorId}
-              role={errors.consentAccepted ? "alert" : undefined}
+              role={
+                errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                  ? "alert"
+                  : undefined
+              }
             >
-              {errors.consentAccepted ? form.errorConsent : "\u00a0"}
+              {errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? form.errorConsent
+                : "\u00a0"}
             </p>
 
             <div className={styles.actions}>

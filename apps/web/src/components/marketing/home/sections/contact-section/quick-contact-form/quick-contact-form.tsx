@@ -16,6 +16,7 @@ import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-con
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { DEFAULT_QUICK_CONTACT_FORM_VALUES } from "@invessiv/common/defaults/contact/quick-contact-form-values";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import type { QuickContactFormValues } from "@invessiv/common/contracts/contact/forms/quick-contact-form-values";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
@@ -202,12 +203,16 @@ export function QuickContactForm({
 
         <label className={sharedStyles.consent}>
           <input
-            {...register("consentAccepted", {
+            {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
               validate: (value) =>
                 value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
             })}
             aria-describedby="quick-contact-consent-error"
-            aria-invalid={errors.consentAccepted ? "true" : undefined}
+            aria-invalid={
+              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? "true"
+                : undefined
+            }
             type="checkbox"
           />
           <ContactConsentText
@@ -215,8 +220,8 @@ export function QuickContactForm({
             errorClassName={sharedStyles.consentError}
             errorId="quick-contact-consent-error"
             errorMessage={
-              errors.consentAccepted
-                ? getErrorMessage("consentAccepted")
+              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? getErrorMessage(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
                 : undefined
             }
             privacyHref={privacyHref}
