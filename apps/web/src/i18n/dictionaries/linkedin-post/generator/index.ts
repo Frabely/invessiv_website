@@ -43,6 +43,7 @@ export type LinkedInPostGeneratorFormCopy = {
   expertise: LinkedInPostGeneratorFieldCopy;
   tone: LinkedInPostGeneratorToneCopy;
   color: LinkedInPostGeneratorColorCopy;
+  displayName: LinkedInPostGeneratorFieldCopy;
   email: LinkedInPostGeneratorFieldCopy;
   consent: LinkedInPostGeneratorConsentCopy;
   honeypot: { label: string };

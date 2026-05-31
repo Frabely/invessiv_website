@@ -140,6 +140,7 @@ export function GeneratorSection({
     const next: GeneratorFieldErrors = {};
     const topic = values.topic.trim();
     const expertise = values.expertise.trim();
+    const displayName = values.displayName.trim();
     const email = values.email.trim();
 
     if (!topic) {
@@ -160,6 +161,16 @@ export function GeneratorSection({
       content.form.expertise.tooLongError
     ) {
       next.expertise = content.form.expertise.tooLongError;
+    }
+
+    if (!displayName) {
+      next.displayName = content.form.displayName.requiredError;
+    } else if (
+      content.form.displayName.maxLength &&
+      displayName.length > content.form.displayName.maxLength &&
+      content.form.displayName.tooLongError
+    ) {
+      next.displayName = content.form.displayName.tooLongError;
     }
 
     if (!email) {

@@ -1,5 +1,6 @@
 import { type ChangeEvent, type CSSProperties, type SubmitEvent } from "react";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { CustomSelect } from "@invessiv/ui";
 import {
   GENERATOR_COLOR_AUTO,
   GENERATOR_COLOR_PAIRS,
@@ -47,7 +48,22 @@ export function GeneratorForm({
 }: GeneratorFormProps) {
   const topicMax = content.form.topic.maxLength ?? 280;
   const expertiseMax = content.form.expertise.maxLength ?? 120;
+  const displayNameMax = content.form.displayName.maxLength ?? 80;
   const isSuccess = state.kind === GeneratorStateKind.Success;
+  const toneOptions = content.form.tone.options;
+  const colorOptions = [
+    {
+      label: content.form.color.autoLabel,
+      leading: <ColorPreview kind="auto" pairId={GENERATOR_COLOR_AUTO} />,
+      value: GENERATOR_COLOR_AUTO,
+    },
+    ...GENERATOR_COLOR_PAIRS.map((pair) => ({
+      ariaLabel: `${content.form.color.swatchLabel} ${pair.name}`,
+      label: pair.name,
+      leading: <ColorPreview kind="pair" pairId={pair.id} />,
+      value: pair.id,
+    })),
+  ];
 
   return (
     <form
@@ -107,91 +123,58 @@ export function GeneratorForm({
         />
       </Field>
 
-      <fieldset className={styles.toneGroup}>
-        <legend className={styles.legend}>{content.form.tone.label}</legend>
-        <p className={styles.legendHelp}>{content.form.tone.help}</p>
-        <div className={styles.toneOptions} role="radiogroup">
-          {content.form.tone.options.map((option) => {
-            const isSelected = values.tone === option.value;
-            return (
-              <label
-                className={styles.toneOption}
-                data-selected={isSelected || undefined}
-                key={option.value}
-              >
-                <input
-                  checked={isSelected}
-                  className={styles.toneRadio}
-                  name="tone"
-                  onChange={() => onChange("tone", option.value)}
-                  type="radio"
-                  value={option.value}
-                />
-                <span className={styles.toneLabel}>{option.label}</span>
-                <span className={styles.toneDescription}>
-                  {option.description}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
+      <Field
+        error={errors.tone}
+        help={content.form.tone.help}
+        htmlFor={fieldIds.tone}
+        label={content.form.tone.label}
+      >
+        <CustomSelect
+          describedBy={errors.tone ? `${fieldIds.tone}-error` : undefined}
+          id={fieldIds.tone}
+          invalid={Boolean(errors.tone)}
+          onChange={(next) => onChange("tone", next)}
+          options={toneOptions}
+          value={values.tone}
+        />
+      </Field>
 
       <fieldset className={styles.colorGroup}>
         <legend className={styles.legend}>{content.form.color.label}</legend>
         <p className={styles.legendHelp}>{content.form.color.help}</p>
-        <div className={styles.swatches} role="radiogroup">
-          <label
-            className={styles.swatchWrap}
-            data-selected={
-              values.colorPairId === GENERATOR_COLOR_AUTO || undefined
-            }
-            title={content.form.color.autoLabel}
-          >
-            <input
-              aria-label={content.form.color.autoLabel}
-              checked={values.colorPairId === GENERATOR_COLOR_AUTO}
-              className={styles.swatchInput}
-              name="colorPairId"
-              onChange={() => onChange("colorPairId", GENERATOR_COLOR_AUTO)}
-              type="radio"
-              value={GENERATOR_COLOR_AUTO}
-            />
-            <span aria-hidden="true" className={styles.swatchAuto} />
-          </label>
-          {GENERATOR_COLOR_PAIRS.map((pair) => (
-            <label
-              className={styles.swatchWrap}
-              data-selected={values.colorPairId === pair.id || undefined}
-              key={pair.id}
-              title={pair.name}
-            >
-              <input
-                aria-label={`${content.form.color.swatchLabel} ${pair.name}`}
-                checked={values.colorPairId === pair.id}
-                className={styles.swatchInput}
-                name="colorPairId"
-                onChange={() => onChange("colorPairId", pair.id)}
-                type="radio"
-                value={pair.id}
-              />
-              <span
-                aria-hidden="true"
-                className={styles.swatch}
-                style={
-                  {
-                    "--swatch-from": pair.primary,
-                    "--swatch-to": pair.secondary,
-                    "--swatch-accent": pair.accent,
-                  } as CSSProperties
-                }
-              >
-                <span className={styles.swatchDot} />
-              </span>
-            </label>
-          ))}
-        </div>
+        <CustomSelect
+          id={fieldIds.colorPair}
+          onChange={(next) => onChange("colorPairId", next)}
+          options={colorOptions}
+          value={values.colorPairId}
+        />
       </fieldset>
+
+      <Field
+        error={errors.displayName}
+        help={content.form.displayName.help}
+        htmlFor={fieldIds.displayName}
+        label={content.form.displayName.label}
+        meta={`${values.displayName.length}/${displayNameMax}`}
+      >
+        <input
+          aria-describedby={
+            errors.displayName ? `${fieldIds.displayName}-error` : undefined
+          }
+          aria-invalid={Boolean(errors.displayName)}
+          autoComplete="name"
+          className={styles.input}
+          id={fieldIds.displayName}
+          maxLength={displayNameMax}
+          name="displayName"
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            onChange("displayName", event.target.value)
+          }
+          placeholder={content.form.displayName.placeholder}
+          type="text"
+          value={values.displayName}
+        />
+      </Field>
 
       <Field
         error={errors.email}
@@ -327,5 +310,36 @@ export function GeneratorForm({
         </div>
       ) : null}
     </form>
+  );
+}
+
+function ColorPreview({
+  kind,
+  pairId,
+}: {
+  kind: "auto" | "pair";
+  pairId: string;
+}) {
+  if (kind === "auto") {
+    return <span aria-hidden="true" className={styles.swatchAuto} />;
+  }
+
+  const pair = GENERATOR_COLOR_PAIRS.find(
+    (candidate) => candidate.id === pairId,
+  );
+  return (
+    <span
+      aria-hidden="true"
+      className={styles.swatch}
+      style={
+        {
+          "--swatch-from": pair?.primary,
+          "--swatch-to": pair?.secondary,
+          "--swatch-accent": pair?.accent,
+        } as CSSProperties
+      }
+    >
+      <span className={styles.swatchDot} />
+    </span>
   );
 }

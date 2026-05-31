@@ -47,6 +47,14 @@
       "autoLabel": "Automatic",
       "swatchLabel": "Color scheme"
     },
+    "displayName": {
+      "label": "Display name",
+      "placeholder": "e.g. Moritz Hecht",
+      "help": "This is how your name appears in the sample post.",
+      "maxLength": 80,
+      "requiredError": "Please enter a display name.",
+      "tooLongError": "Please keep it under 80 characters."
+    },
     "email": {
       "label": "Where do we send the copy?",
       "placeholder": "you@address.com",

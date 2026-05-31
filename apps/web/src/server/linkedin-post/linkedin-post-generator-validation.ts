@@ -18,6 +18,7 @@ export const linkedinPostGeneratorRequestSchema = z.object({
   expertise: z.string().trim().min(1).max(120),
   tone: z.enum(LINKEDIN_POST_TONE_VALUES),
   colorPairId: z.enum(GENERATOR_COLOR_PAIR_IDS),
+  displayName: z.string().trim().min(1).max(80),
   email: z
     .string()
     .trim()

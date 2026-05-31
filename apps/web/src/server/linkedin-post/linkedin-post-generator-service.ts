@@ -167,6 +167,7 @@ export async function generateLinkedInPost(
 ): Promise<GenerateLinkedInPostResult> {
   const request = {
     ...rawRequest,
+    displayName: normalizeInput(rawRequest.displayName),
     expertise: normalizeInput(rawRequest.expertise),
     topic: normalizeInput(rawRequest.topic),
   };
@@ -204,6 +205,7 @@ export async function generateLinkedInPost(
   const post: LinkedInPostGeneratorPostDto = {
     bodyVariant: generated.bodyVariant,
     bullets: generated.bodyVariant === "bullets" ? generated.bullets : null,
+    authorName: request.displayName.slice(0, 80),
     colorPair,
     expertiseDisplay: request.expertise.slice(0, 60),
     headlineHtml: sanitizeHeadlineHtml(generated.headlineHtml),

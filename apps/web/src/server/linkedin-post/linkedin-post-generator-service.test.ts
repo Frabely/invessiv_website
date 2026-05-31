@@ -7,6 +7,7 @@ const VALID_REQUEST = {
   colorPairId: "navy-steel",
   company: "",
   consent: true as const,
+  displayName: "Max Mustermann",
   email: "max@example.com",
   expertise: "Strategieberatung",
   locale: "de" as const,
@@ -72,6 +73,7 @@ describe("generateLinkedInPost", () => {
 
     expect(result.ok).toBe(true);
     expect(result.post.colorPair.id).toBe("navy-steel");
+    expect(result.post.authorName).toBe("Max Mustermann");
     expect(result.post.colorPair.primary).toBe("#0F1B2D");
     expect(result.post.template.id).toBe("bullet-stack");
     expect(result.post.template.bodyVariant).toBe("bullets");

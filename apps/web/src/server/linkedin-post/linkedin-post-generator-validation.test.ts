@@ -7,6 +7,7 @@ const VALID_REQUEST = {
   colorPairId: "auto",
   company: "",
   consent: true,
+  displayName: "Max Mustermann",
   email: "max@example.com",
   expertise: "Strategieberatung",
   locale: "de",
@@ -32,11 +33,21 @@ describe("linkedinPostGeneratorRequestSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("enforces the topic and expertise length limits", () => {
+  it("enforces the topic, expertise and display name length limits", () => {
     const result = linkedinPostGeneratorRequestSchema.safeParse({
       ...VALID_REQUEST,
+      displayName: "x".repeat(81),
       expertise: "x".repeat(121),
       topic: "x".repeat(281),
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a missing display name", () => {
+    const result = linkedinPostGeneratorRequestSchema.safeParse({
+      ...VALID_REQUEST,
+      displayName: "",
     });
 
     expect(result.success).toBe(false);

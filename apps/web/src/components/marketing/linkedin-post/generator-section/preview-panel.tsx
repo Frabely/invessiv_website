@@ -36,6 +36,7 @@ export function PreviewPanel({
       content={content}
       hasCopied={hasCopied}
       downloadFileName={state.downloadFileName}
+      authorName={state.post.authorName}
       expertiseDisplay={state.post.expertiseDisplay}
       imageDataUrl={state.imageDataUrl}
       postTitle={state.post.headlinePlain}

@@ -6,6 +6,7 @@ vi.mock("server-only", () => ({}));
 const POST = {
   bodyVariant: "insight" as const,
   bullets: null,
+  authorName: "Max Mustermann",
   colorPair: {
     accent: "#5BA3D9",
     id: "navy-steel",

@@ -3,6 +3,7 @@ export type GeneratorFieldName =
   | "topic"
   | "expertise"
   | "tone"
+  | "displayName"
   | "email"
   | "consent";
 

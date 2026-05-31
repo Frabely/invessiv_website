@@ -8,6 +8,7 @@ type SuccessPreviewProps = {
   content: LinkedInPostGeneratorContent;
   hasCopied: boolean;
   downloadFileName: string;
+  authorName: string;
   expertiseDisplay: string;
   imageDataUrl: string | null;
   postTitle: string;
@@ -22,6 +23,7 @@ export function SuccessPreview({
   content,
   hasCopied,
   downloadFileName,
+  authorName,
   expertiseDisplay,
   imageDataUrl,
   postTitle,
@@ -30,7 +32,12 @@ export function SuccessPreview({
   onDownloadCaption,
   onDownloadImage,
 }: SuccessPreviewProps) {
-  const avatarInitial = expertiseDisplay.charAt(0).toUpperCase();
+  const avatarInitial = authorName
+    .split(/\s+/u)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("")
+    .slice(0, 2);
   const { success } = content.preview;
 
   return (
@@ -49,6 +56,7 @@ export function SuccessPreview({
       <LinkedinPost
         author={{
           avatar: { kind: "initials", value: avatarInitial },
+          name: authorName,
           role: expertiseDisplay,
         }}
         caption={caption}

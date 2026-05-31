@@ -24,12 +24,14 @@ const content = getLinkedInPostGeneratorContent("de");
 const VALID_INPUTS = {
   topic: "Wie ich Kunden von 999 € auf 4.999 € bringe",
   expertise: "Strategieberatung",
+  displayName: "Moritz Hecht",
   email: "test@example.com",
 } as const;
 
 const GENERATED_POST = {
   bodyVariant: "insight" as const,
   bullets: null,
+  authorName: VALID_INPUTS.displayName,
   colorPair: {
     accent: "#5BA3D9",
     id: "navy-steel",
@@ -86,11 +88,15 @@ function fillValidValues() {
   fireEvent.change(screen.getByLabelText(content.form.expertise.label), {
     target: { value: VALID_INPUTS.expertise },
   });
+  fireEvent.click(screen.getByLabelText(content.form.tone.label));
   fireEvent.click(
-    screen.getByLabelText(content.form.tone.options[0].label, {
-      exact: false,
+    screen.getByRole("option", {
+      name: new RegExp(content.form.tone.options[0].label),
     }),
   );
+  fireEvent.change(screen.getByLabelText(content.form.displayName.label), {
+    target: { value: VALID_INPUTS.displayName },
+  });
   fireEvent.change(screen.getByLabelText(content.form.email.label), {
     target: { value: VALID_INPUTS.email },
   });
@@ -132,6 +138,9 @@ describe("GeneratorSection", () => {
       expect(screen.getByText(content.form.topic.requiredError)).toBeTruthy();
     });
     expect(screen.getByText(content.form.expertise.requiredError)).toBeTruthy();
+    expect(
+      screen.getByText(content.form.displayName.requiredError),
+    ).toBeTruthy();
     expect(screen.getByText(content.form.email.requiredError)).toBeTruthy();
     expect(screen.getByText(content.form.consent.requiredError)).toBeTruthy();
     expect(submit).not.toHaveBeenCalled();
@@ -153,24 +162,35 @@ describe("GeneratorSection", () => {
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it("selects a tone and toggles the selected state", () => {
+  it("selects a tone with the custom select", () => {
     renderSection();
-    const provocative = screen.getByLabelText(
-      content.form.tone.options[2].label,
-      { exact: false },
+    fireEvent.click(screen.getByLabelText(content.form.tone.label));
+    fireEvent.click(
+      screen.getByRole("option", {
+        name: new RegExp(content.form.tone.options[2].label),
+      }),
     );
-    fireEvent.click(provocative);
-    expect((provocative as HTMLInputElement).checked).toBe(true);
+    expect(
+      screen.getByLabelText(content.form.tone.label).textContent,
+    ).toContain(content.form.tone.options[2].label);
   });
 
-  it("selects a predefined background color pair", () => {
+  it("selects a predefined background color pair with the custom select", () => {
     renderSection();
     const firstPair = GENERATOR_COLOR_PAIRS[0];
-    const swatch = screen.getByLabelText(
-      `${content.form.color.swatchLabel} ${firstPair.name}`,
-    ) as HTMLInputElement;
-    fireEvent.click(swatch);
-    expect(swatch.checked).toBe(true);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: new RegExp(content.form.color.autoLabel),
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("option", {
+        name: `${content.form.color.swatchLabel} ${firstPair.name}`,
+      }),
+    );
+    expect(
+      screen.getByRole("button", { name: new RegExp(firstPair.name) }),
+    ).toBeTruthy();
   });
 
   it("transitions through loading and success when submit succeeds", async () => {
@@ -210,6 +230,7 @@ describe("GeneratorSection", () => {
     });
     const captionBlock = screen.getByText("Erfolgs-Caption.");
     expect(captionBlock).toBeTruthy();
+    expect(screen.getByText(VALID_INPUTS.displayName)).toBeTruthy();
     const form = container.querySelector("form");
     expect(form).toBeTruthy();
     expect(

@@ -47,6 +47,14 @@
       "autoLabel": "Automatisch",
       "swatchLabel": "Farbschema"
     },
+    "displayName": {
+      "label": "Anzeigename",
+      "placeholder": "z. B. Moritz Hecht",
+      "help": "So erscheint dein Name im Beispielpost.",
+      "maxLength": 80,
+      "requiredError": "Bitte gib einen Anzeigenamen an.",
+      "tooLongError": "Bitte unter 80 Zeichen halten."
+    },
     "email": {
       "label": "Wohin schicken wir die Kopie?",
       "placeholder": "deine@adresse.com",
