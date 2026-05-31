@@ -6,10 +6,21 @@ import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;
+  hasCopied: boolean;
+  onCopyCaption: (caption: string) => void;
+  onDownloadCaption: (caption: string, downloadFileName: string) => void;
+  onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
   state: GeneratorState;
 };
 
-export function PreviewPanel({ content, state }: PreviewPanelProps) {
+export function PreviewPanel({
+  content,
+  hasCopied,
+  onCopyCaption,
+  onDownloadCaption,
+  onDownloadImage,
+  state,
+}: PreviewPanelProps) {
   if (state.kind === GeneratorStateKind.Idle) {
     return <IdlePreview label={content.preview.idle.headline} />;
   }
@@ -23,11 +34,15 @@ export function PreviewPanel({ content, state }: PreviewPanelProps) {
     <SuccessPreview
       caption={state.caption}
       content={content}
+      hasCopied={hasCopied}
       downloadFileName={state.downloadFileName}
       expertiseDisplay={state.post.expertiseDisplay}
       imageDataUrl={state.imageDataUrl}
       postTitle={state.post.headlinePlain}
       previewHtml={state.previewHtml}
+      onCopyCaption={onCopyCaption}
+      onDownloadCaption={onDownloadCaption}
+      onDownloadImage={onDownloadImage}
     />
   );
 }

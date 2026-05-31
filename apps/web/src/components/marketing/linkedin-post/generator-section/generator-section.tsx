@@ -45,6 +45,7 @@ export function GeneratorSection({
   const [errors, setErrors] = useState<GeneratorFieldErrors>({});
   const [state, setState] = useState<GeneratorState>({ kind: "idle" });
   const [hasStarted, setHasStarted] = useState(false);
+  const [hasCopied, setHasCopied] = useState(false);
   const previewRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -93,6 +94,30 @@ export function GeneratorSection({
     }
     setHasStarted(true);
     emitAnalytics(GeneratorAnalyticsEvent.FormStart);
+  }
+
+  function handleCopyCaption(caption: string) {
+    if (typeof navigator === "undefined" || !navigator.clipboard) {
+      return;
+    }
+    navigator.clipboard.writeText(caption).then(() => {
+      setHasCopied(true);
+      window.setTimeout(() => setHasCopied(false), 2200);
+    });
+  }
+
+  function handleImageDownload(imageDataUrl: string, downloadFileName: string) {
+    const link = document.createElement("a");
+    link.download = downloadFileName;
+    link.href = imageDataUrl;
+    link.click();
+  }
+
+  function handleCaptionDownload(caption: string, downloadFileName: string) {
+    const link = document.createElement("a");
+    link.download = downloadFileName.replace(/\.png$/u, ".txt");
+    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(caption)}`;
+    link.click();
   }
 
   function handleFieldChange<K extends keyof LinkedInPostGeneratorFormValues>(
@@ -167,6 +192,7 @@ export function GeneratorSection({
     }
 
     setErrors({});
+    setHasCopied(false);
     setState({ kind: GeneratorStateKind.Loading, stepIndex: 0 });
 
     let result: LinkedInPostGeneratorResult;
@@ -210,14 +236,26 @@ export function GeneratorSection({
           content={content}
           errors={errors}
           fieldIds={fieldIds}
+          hasCopied={hasCopied}
           isSubmitting={state.kind === GeneratorStateKind.Loading}
+          onCopyCaption={handleCopyCaption}
+          onDownloadCaption={handleCaptionDownload}
+          onDownloadImage={handleImageDownload}
           onChange={handleFieldChange}
           onSubmit={handleSubmit}
+          state={state}
           values={values}
         />
 
         <div className={styles.previewSlot} ref={previewRef}>
-          <PreviewPanel content={content} state={state} />
+          <PreviewPanel
+            content={content}
+            hasCopied={hasCopied}
+            onCopyCaption={handleCopyCaption}
+            onDownloadCaption={handleCaptionDownload}
+            onDownloadImage={handleImageDownload}
+            state={state}
+          />
         </div>
       </div>
     </section>

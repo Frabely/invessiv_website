@@ -298,6 +298,27 @@
   }
 }
 
+@media (min-width: 961px) {
+  .preview {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .previewFrame,
+  .preview[data-state="idle"] {
+    min-height: var(--generator-panel-min-height);
+  }
+
+  .previewFrame {
+    flex: 1;
+  }
+
+  .preview[data-state="idle"] {
+    height: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .skeletonShimmer {
     animation: none;

@@ -4,6 +4,8 @@ import {
   GENERATOR_COLOR_AUTO,
   GENERATOR_COLOR_PAIRS,
 } from "@/common/constants/generator/generator-color-pairs";
+import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import type { GeneratorState } from "@/common/contracts/generator/generator-state";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
@@ -15,12 +17,17 @@ type GeneratorFormProps = {
   content: LinkedInPostGeneratorContent;
   errors: GeneratorFieldErrors;
   fieldIds: GeneratorFieldIds;
+  hasCopied: boolean;
   isSubmitting: boolean;
+  onCopyCaption: (caption: string) => void;
+  onDownloadCaption: (caption: string, downloadFileName: string) => void;
+  onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
   onChange: <K extends keyof LinkedInPostGeneratorFormValues>(
     key: K,
     next: LinkedInPostGeneratorFormValues[K],
   ) => void;
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
+  state: GeneratorState;
   values: LinkedInPostGeneratorFormValues;
 };
 
@@ -28,13 +35,19 @@ export function GeneratorForm({
   content,
   errors,
   fieldIds,
+  hasCopied,
   isSubmitting,
+  onCopyCaption,
+  onDownloadCaption,
+  onDownloadImage,
   onChange,
   onSubmit,
+  state,
   values,
 }: GeneratorFormProps) {
   const topicMax = content.form.topic.maxLength ?? 280;
   const expertiseMax = content.form.expertise.maxLength ?? 120;
+  const isSuccess = state.kind === GeneratorStateKind.Success;
 
   return (
     <form
@@ -263,6 +276,55 @@ export function GeneratorForm({
         <p className={styles.loadingHelp} role="status">
           {content.form.loadingHelp}
         </p>
+      ) : null}
+
+      {isSuccess ? (
+        <div className={styles.successPanel}>
+          <p aria-hidden="true" className={styles.successMark}>
+            READY
+          </p>
+          <h3 className={styles.successHeadline}>
+            {content.preview.success.headline}
+          </h3>
+          <div className={styles.successActions}>
+            <button
+              className={styles.copyButton}
+              data-state={hasCopied ? "copied" : "default"}
+              onClick={() => onCopyCaption(state.caption)}
+              type="button"
+            >
+              {hasCopied
+                ? content.preview.success.copyCaptionCopied
+                : content.preview.success.copyCaption}
+            </button>
+            <div className={styles.downloadRow}>
+              <button
+                className={styles.downloadButton}
+                disabled={!state.imageDataUrl}
+                onClick={() =>
+                  state.imageDataUrl
+                    ? onDownloadImage(
+                        state.imageDataUrl,
+                        state.downloadFileName,
+                      )
+                    : undefined
+                }
+                type="button"
+              >
+                {content.preview.success.downloadImage}
+              </button>
+              <button
+                className={styles.downloadButton}
+                onClick={() =>
+                  onDownloadCaption(state.caption, state.downloadFileName)
+                }
+                type="button"
+              >
+                {content.preview.success.downloadCaption}
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </form>
   );

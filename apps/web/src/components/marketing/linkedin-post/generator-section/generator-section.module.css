@@ -90,6 +90,7 @@
   }
 
   .workbench {
+    --generator-panel-min-height: clamp(48rem, 54vw, 60rem);
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     gap: clamp(1.5rem, 3vw, 2.5rem);
     align-items: stretch;

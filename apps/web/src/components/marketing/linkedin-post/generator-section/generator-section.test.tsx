@@ -6,6 +6,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
@@ -183,7 +184,7 @@ describe("GeneratorSection", () => {
         }),
     );
 
-    renderSection(submit);
+    const { container } = renderSection(submit);
     fillValidValues();
     clickSubmit();
 
@@ -209,8 +210,10 @@ describe("GeneratorSection", () => {
     });
     const captionBlock = screen.getByText("Erfolgs-Caption.");
     expect(captionBlock).toBeTruthy();
+    const form = container.querySelector("form");
+    expect(form).toBeTruthy();
     expect(
-      screen.getByRole("button", {
+      within(form as HTMLFormElement).getByRole("button", {
         name: content.preview.success.downloadImage,
       }),
     ).toBeTruthy();
@@ -252,15 +255,20 @@ describe("GeneratorSection", () => {
 
     await waitFor(
       () => {
+        const form = screen.getByRole("form", {
+          name: content.title,
+        });
         expect(
-          screen.getByRole("button", {
+          within(form).getByRole("button", {
             name: content.preview.success.copyCaption,
           }),
         ).toBeTruthy();
       },
       { timeout: 3000 },
     );
-    const copyButton = screen.getByRole("button", {
+    const copyButton = within(
+      screen.getByRole("form", { name: content.title }),
+    ).getByRole("button", {
       name: content.preview.success.copyCaption,
     });
     fireEvent.click(copyButton);
