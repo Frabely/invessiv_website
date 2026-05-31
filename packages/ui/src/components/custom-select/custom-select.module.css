@@ -1,0 +1,129 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background 200ms ease;
+}
+
+.trigger:not([data-has-leading]) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.trigger:hover {
+  border-color: color-mix(in srgb, var(--color-cta) 42%, transparent);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cta) 24%, transparent);
+}
+
+.trigger[data-invalid] {
+  border-color: color-mix(in srgb, var(--color-danger) 72%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
+}
+
+.leading {
+  display: inline-flex;
+}
+
+.triggerText,
+.optionText {
+  display: grid;
+  min-width: 0;
+  text-align: left;
+}
+
+.triggerLabel,
+.optionLabel {
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: 0.94rem;
+  font-weight: 730;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerDescription,
+.optionDescription {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  color: color-mix(in srgb, var(--color-text-muted) 80%, transparent);
+  font-size: 0.82rem;
+}
+
+.listbox {
+  position: absolute;
+  z-index: 10;
+  inset-inline: 0;
+  top: calc(100% + 0.35rem);
+  display: grid;
+  max-height: 16rem;
+  padding: 0.3rem;
+  overflow-y: auto;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 62%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface-1) 98%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 38px -24px var(--color-shadow);
+}
+
+.option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 42px;
+  padding: 0.4rem 0.45rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.option:not([data-has-leading]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.option:hover,
+.option:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--color-cta) 11%, transparent);
+}
+
+.option[aria-selected="true"] {
+  background: color-mix(in srgb, var(--color-cta) 16%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 32%, transparent)
+    inset;
+}

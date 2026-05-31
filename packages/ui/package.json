@@ -1,0 +1,21 @@
+{
+  "name": "@invessiv/ui",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "peerDependencies": {
+    "react": "19.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5",
+    "vitest": "latest"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  }
+}
