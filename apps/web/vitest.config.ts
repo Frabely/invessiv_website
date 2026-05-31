@@ -5,6 +5,25 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: /^react\/jsx-dev-runtime$/,
+        replacement: path.resolve(
+          __dirname,
+          "node_modules/react/jsx-dev-runtime.js",
+        ),
+      },
+      {
+        find: /^react$/,
+        replacement: path.resolve(__dirname, "node_modules/react/index.js"),
+      },
+      {
+        find: /^@invessiv\/ui\/(.+)$/,
+        replacement: path.resolve(__dirname, "../../packages/ui/src/$1"),
+      },
+      {
+        find: /^@invessiv\/ui$/,
+        replacement: path.resolve(__dirname, "../../packages/ui/src/index.ts"),
+      },
+      {
         find: /^@invessiv\/db\/(.+)$/,
         replacement: path.resolve(__dirname, "../../packages/db/src/$1"),
       },

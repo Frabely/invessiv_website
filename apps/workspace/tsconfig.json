@@ -12,7 +12,9 @@
       "@invessiv/common": ["../../packages/common/src/index.ts"],
       "@invessiv/common/*": ["../../packages/common/src/*"],
       "@invessiv/db": ["../../packages/db/src/index.ts"],
-      "@invessiv/db/*": ["../../packages/db/src/*"]
+      "@invessiv/db/*": ["../../packages/db/src/*"],
+      "@invessiv/ui": ["../../packages/ui/src/index.ts"],
+      "@invessiv/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [

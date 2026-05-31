@@ -37,7 +37,7 @@ const nextConfig: NextConfig = {
   // Playwright (used for the server-side LinkedIn-post PNG render) must stay an
   // external runtime dependency — it is not bundleable.
   serverExternalPackages: ["playwright", "playwright-core"],
-  transpilePackages: ["@invessiv/common", "@invessiv/db"],
+  transpilePackages: ["@invessiv/common", "@invessiv/db", "@invessiv/ui"],
   // The generator PNG render reads the structural HTML skeletons at runtime;
   // make sure they are traced into the standalone server output.
   outputFileTracingIncludes: {

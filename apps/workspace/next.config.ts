@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@invessiv/common", "@invessiv/db"],
+  transpilePackages: ["@invessiv/common", "@invessiv/db", "@invessiv/ui"],
   async redirects() {
     return [
       {
