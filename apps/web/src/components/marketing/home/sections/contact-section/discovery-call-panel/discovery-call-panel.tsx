@@ -18,9 +18,11 @@ import {
   submitDiscoveryCall,
 } from "@/client/contact/services/contact-form-service";
 import { DEFAULT_DISCOVERY_CALL_FORM_VALUES } from "@invessiv/common/defaults/contact/discovery-call-form-values";
+import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import type { DiscoveryCallFormValues } from "@invessiv/common/contracts/contact/forms/discovery-call-form-values";
 import { mapDiscoveryCallFormToDto } from "@/client/contact/mappers/map-discovery-call-form-to-dto";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import type {
   ContactChannelCopy,
   DiscoveryCallFormCopy,
@@ -75,11 +77,11 @@ export function DiscoveryCallPanel({
   ): string => {
     const code = errors[fieldName]?.message ?? errors[fieldName]?.type;
 
-    if (code === "invalid_email") {
+    if (code === CONTACT_FIELD_ERROR_CODE.InvalidEmail) {
       return formCopy.fieldErrorInvalidEmail;
     }
 
-    if (code === "consent_required") {
+    if (code === CONTACT_FIELD_ERROR_CODE.ConsentRequired) {
       return formCopy.fieldErrorConsentRequired;
     }
 
@@ -139,7 +141,7 @@ export function DiscoveryCallPanel({
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
   ): string => {
-    if (response.code === "rate_limited") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.RateLimited) {
       return formCopy.submitErrorRateLimited;
     }
 
@@ -182,7 +184,8 @@ export function DiscoveryCallPanel({
         <label className={sharedStyles.consent}>
           <input
             {...register("consentAccepted", {
-              validate: (value) => value || "consent_required",
+              validate: (value) =>
+                value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
             })}
             aria-describedby="discovery-call-consent-error"
             aria-invalid={errors.consentAccepted ? "true" : undefined}

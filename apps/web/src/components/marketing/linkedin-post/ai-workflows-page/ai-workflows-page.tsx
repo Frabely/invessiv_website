@@ -5,6 +5,7 @@ import { GeneratorSection } from "@/components/marketing/linkedin-post/generator
 import { WorkflowShowcaseSection } from "@/components/marketing/linkedin-post/workflow-showcase-section/workflow-showcase-section";
 import { ProblemExamplesSection } from "@/components/marketing/linkedin-post/problem-examples-section/problem-examples-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
+import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { FOOTER_SECTION_ID } from "@/config/navigation/home";
@@ -14,6 +15,7 @@ import {
 } from "@/config/navigation/linkedin-post";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
+import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
@@ -27,6 +29,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
   const problemExamples = getLinkedInPostProblemExamplesContent(locale);
   const example = getLinkedInPostExampleContent(locale);
   const generator = getLinkedInPostGeneratorContent(locale);
+  const finalCta = getLinkedInPostFinalCtaContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
@@ -73,6 +76,14 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
           {...generator.customPost}
           id={LINKEDIN_POST_SECTION_HREFS.workflow.slice(1)}
           locale={locale}
+        />
+
+        <FinalCtaSection
+          analyticsLocation="linkedin_post_final_cta"
+          formId="linkedin_post_final_cta"
+          id={LINKEDIN_POST_SECTION_HREFS.contact.slice(1)}
+          locale={locale}
+          {...finalCta}
         />
 
         <FooterSection

@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import { linkedinPostGeneratorService } from "./linkedin-post-generator-service";
 
 afterEach(() => {
@@ -42,6 +43,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
         colorPairId: "auto",
         company: "",
         consent: true,
+        displayName: "Test User",
         email: "test@example.com",
         expertise: "Consulting",
         tone: "sachlich",
@@ -78,6 +80,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
         colorPairId: "auto",
         company: "",
         consent: true,
+        displayName: "Test User",
         email: "test@example.com",
         expertise: "Consulting",
         tone: "sachlich",
@@ -87,7 +90,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
     );
 
     expect(result).toEqual({
-      code: "internal_error",
+      code: LinkedInPostGeneratorErrorCode.InternalError,
       ok: false,
     });
   });

@@ -8,6 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { DiscoveryCallPanel } from "./discovery-call-panel";
 
 const createCalendlyPrefillHrefMock = vi.fn();
@@ -223,7 +224,7 @@ describe("DiscoveryCallPanel", () => {
 
   it("closes the pre-opened window again when the API submit fails", async () => {
     submitDiscoveryCallMock.mockResolvedValue({
-      code: "rate_limited",
+      code: CONTACT_SUBMIT_ERROR_CODE.RateLimited,
       ok: false,
       requestId: "req_123",
     });

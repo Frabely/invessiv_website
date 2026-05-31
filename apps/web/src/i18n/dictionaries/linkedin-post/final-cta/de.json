@@ -1,0 +1,42 @@
+{
+  "eyebrow": "KI-WORKFLOW ANFRAGEN",
+  "title": "Welche Arbeit soll dein Workflow jede Woche abnehmen?",
+  "body": "Beschreib kurz einen wiederkehrenden Ablauf: Content planen, Posts erstellen, Bildideen vorbereiten, Reports schreiben oder etwas anderes. Ich prüfe, ob daraus ein schlanker KI-Workflow werden kann.",
+  "form": {
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Vor- und Nachname",
+        "autocomplete": "name"
+      },
+      "email": {
+        "label": "E-Mail",
+        "placeholder": "name@beispiel.de",
+        "autocomplete": "email"
+      },
+      "goal": {
+        "label": "Welchen bestehenden Workflow möchtest du automatisieren?",
+        "placeholder": "z. B. Aus einem Thema jede Woche LinkedIn-Post, Bild, Caption und E-Mail-Entwurf erstellen ..."
+      },
+      "honeypot": {
+        "label": "Bitte nicht ausfüllen"
+      }
+    },
+    "consentLabel": "Ich bin mit der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage einverstanden.",
+    "privacyLabel": "Datenschutz",
+    "privacyHref": "/de/privacy",
+    "requiredHint": "Pflichtfelder sind mit * markiert.",
+    "submitLabel": "Workflow prüfen lassen",
+    "submittingLabel": "Wird gesendet ...",
+    "payloadContext": "KI-Workflow-Anfrage",
+    "successTitle": "Danke für deine Anfrage.",
+    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir - meistens innerhalb von 24 Stunden.",
+    "errorRequired": "Bitte ausfüllen.",
+    "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
+    "errorConsent": "Ohne deine Einwilligung kann ich die Anfrage nicht bearbeiten.",
+    "errorRateLimited": "Zu viele Anfragen in kurzer Zeit. Bitte versuch es in ein paar Minuten erneut.",
+    "errorDelivery": "Die Anfrage konnte gerade nicht zugestellt werden. Bitte versuch es noch einmal.",
+    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail."
+  },
+  "trustLine": "Kurze Einschätzung statt Verkaufsgespräch."
+}

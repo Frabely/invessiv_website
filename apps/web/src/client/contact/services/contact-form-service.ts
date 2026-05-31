@@ -1,5 +1,8 @@
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
-import type { ContactSubmitErrorCode } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
+import {
+  CONTACT_SUBMIT_ERROR_CODE,
+  type ContactSubmitErrorCode,
+} from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import type { BaseContactFieldsValues } from "@invessiv/common/contracts/contact/fields/base-contact-fields-values";
 import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import type { CalendlyPrefillOptions } from "@invessiv/common/contracts/contact/options/calendly-prefill-options";
@@ -10,7 +13,7 @@ import { ContactSearchParam } from "@invessiv/common/constants/contact/contact-s
 import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/contact-submit-path";
 
 function createClientErrorResponse(
-  code: ContactSubmitErrorCode = "internal_error",
+  code: ContactSubmitErrorCode = CONTACT_SUBMIT_ERROR_CODE.InternalError,
 ): ContactSubmitResponse {
   return {
     code,

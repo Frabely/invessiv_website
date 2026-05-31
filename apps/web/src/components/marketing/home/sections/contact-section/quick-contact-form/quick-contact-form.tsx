@@ -15,8 +15,11 @@ import { useLanguage } from "@/components/providers/language-provider";
 import { mapQuickContactFormToDto } from "@/client/contact/mappers/map-quick-contact-form-to-dto";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { DEFAULT_QUICK_CONTACT_FORM_VALUES } from "@invessiv/common/defaults/contact/quick-contact-form-values";
+import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import type { QuickContactFormValues } from "@invessiv/common/contracts/contact/forms/quick-contact-form-values";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import type {
   ContactChannelCopy,
   QuickContactFormCopy,
@@ -51,7 +54,7 @@ export function QuickContactForm({
     trackSubmitError,
     trackSubmitSuccess,
   } = useContactFormAnalytics({
-    formId: "quick_contact",
+    formId: CONTACT_REQUEST_KIND.QuickContact,
     location: "contact",
   });
   const {
@@ -77,11 +80,11 @@ export function QuickContactForm({
   const getErrorMessage = (fieldName: keyof QuickContactFormValues) => {
     const code = errors[fieldName]?.message ?? errors[fieldName]?.type;
 
-    if (code === "consent_required") {
+    if (code === CONTACT_FIELD_ERROR_CODE.ConsentRequired) {
       return formCopy.fieldErrorConsentRequired;
     }
 
-    if (code === "invalid_email") {
+    if (code === CONTACT_FIELD_ERROR_CODE.InvalidEmail) {
       return formCopy.fieldErrorInvalidEmail;
     }
 
@@ -135,11 +138,11 @@ export function QuickContactForm({
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
   ): string => {
-    if (response.code === "rate_limited") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.RateLimited) {
       return formCopy.submitErrorRateLimited;
     }
 
-    if (response.code === "delivery_unavailable") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable) {
       return formCopy.submitErrorDelivery;
     }
 
@@ -200,7 +203,8 @@ export function QuickContactForm({
         <label className={sharedStyles.consent}>
           <input
             {...register("consentAccepted", {
-              validate: (value) => value || "consent_required",
+              validate: (value) =>
+                value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
             })}
             aria-describedby="quick-contact-consent-error"
             aria-invalid={errors.consentAccepted ? "true" : undefined}

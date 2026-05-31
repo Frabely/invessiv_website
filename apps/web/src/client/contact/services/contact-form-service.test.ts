@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import {
   createCalendlyPrefillHref,
   submitDiscoveryCall,
@@ -70,7 +71,7 @@ describe("contact-form-service", () => {
         consentAccepted: true,
         email: "max@example.com",
         displayName: "Max Mustermann",
-        kind: "quick_contact",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         locale: "de",
         message: "Wir brauchen eine kurze Einschaetzung.",
       },
@@ -87,7 +88,7 @@ describe("contact-form-service", () => {
           consentAccepted: true,
           email: "max@example.com",
           displayName: "Max Mustermann",
-          kind: "quick_contact",
+          kind: CONTACT_REQUEST_KIND.QuickContact,
           locale: "de",
           message: "Wir brauchen eine kurze Einschaetzung.",
         }),

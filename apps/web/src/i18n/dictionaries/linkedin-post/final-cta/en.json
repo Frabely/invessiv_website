@@ -1,0 +1,42 @@
+{
+  "eyebrow": "REQUEST AN AI WORKFLOW",
+  "title": "Which weekly task should your workflow take off your plate?",
+  "body": "Briefly describe a recurring process: planning content, drafting posts, preparing image ideas, writing reports, or something else. I will check whether it can become a lean AI workflow.",
+  "form": {
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "First and last name",
+        "autocomplete": "name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "name@example.com",
+        "autocomplete": "email"
+      },
+      "goal": {
+        "label": "Which existing workflow do you want to automate?",
+        "placeholder": "e.g. Turn one topic into a LinkedIn post, image, caption, and email draft every week ..."
+      },
+      "honeypot": {
+        "label": "Please leave empty"
+      }
+    },
+    "consentLabel": "I agree to the processing of my data to handle my inquiry.",
+    "privacyLabel": "Privacy",
+    "privacyHref": "/en/privacy",
+    "requiredHint": "Required fields are marked with *.",
+    "submitLabel": "Have my workflow checked",
+    "submittingLabel": "Sending ...",
+    "payloadContext": "AI workflow inquiry",
+    "successTitle": "Thanks for your inquiry.",
+    "successBody": "I'll get back to you with a short assessment - usually within 24 hours.",
+    "errorRequired": "Please fill this in.",
+    "errorEmail": "Please enter a valid email address.",
+    "errorConsent": "Without your consent I can't process the inquiry.",
+    "errorRateLimited": "Too many requests in a short time. Please try again in a few minutes.",
+    "errorDelivery": "The inquiry couldn't be delivered just now. Please try again.",
+    "errorGeneric": "Something went wrong. Please try again or send me an email directly."
+  },
+  "trustLine": "A short assessment instead of a sales call."
+}

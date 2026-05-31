@@ -7,6 +7,9 @@ import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
+import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { SubmitState } from "@invessiv/common/constants/form/submit-state";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
@@ -15,10 +18,12 @@ import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-anal
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
-import type { LandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
+import type { FinalCtaContent } from "@/i18n/dictionaries/shared/final-cta";
 import styles from "./final-cta-section.module.css";
 
-type FinalCtaSectionProps = LandingFinalCtaContent & {
+type FinalCtaSectionProps = FinalCtaContent & {
+  analyticsLocation: string;
+  formId: string;
   id: string;
   locale: Locale;
 };
@@ -63,9 +68,11 @@ function buildMessage(
 }
 
 export function FinalCtaSection({
+  analyticsLocation,
   body,
   eyebrow,
   form,
+  formId,
   id,
   locale,
   title,
@@ -81,6 +88,7 @@ export function FinalCtaSection({
   const goalId = `${fieldIdPrefix}-goal`;
   const consentErrorId = `${fieldIdPrefix}-consent-error`;
   const websiteHintId = `${fieldIdPrefix}-website-hint`;
+  const websiteField = form.fields.website;
 
   const [submitState, setSubmitState] = useState<{
     kind: (typeof SubmitState.Kind)[keyof typeof SubmitState.Kind];
@@ -93,8 +101,8 @@ export function FinalCtaSection({
     trackSubmitError,
     trackSubmitSuccess,
   } = useContactFormAnalytics({
-    formId: "landing_final_cta",
-    location: "landing_final_cta",
+    formId,
+    location: analyticsLocation,
   });
 
   const {
@@ -110,10 +118,10 @@ export function FinalCtaSection({
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
   ): string => {
-    if (response.code === "rate_limited") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.RateLimited) {
       return form.errorRateLimited;
     }
-    if (response.code === "delivery_unavailable") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable) {
       return form.errorDelivery;
     }
     return form.errorGeneric;
@@ -135,7 +143,7 @@ export function FinalCtaSection({
         consentAccepted: values.consentAccepted,
         displayName: values.name.trim(),
         email: values.email.trim(),
-        kind: "quick_contact",
+        kind: CONTACT_REQUEST_KIND.QuickContact,
         locale,
         message: buildMessage(
           values[CONTACT_FORM_FIELD_NAME.Goal],
@@ -216,7 +224,7 @@ export function FinalCtaSection({
         ) : (
           <form
             className={styles.formCard}
-            data-analytics-location="landing_final_cta"
+            data-analytics-location={analyticsLocation}
             noValidate
             onFocusCapture={() => trackFormStart()}
             onSubmit={onSubmit}
@@ -231,7 +239,9 @@ export function FinalCtaSection({
                 </label>
                 <input
                   {...register("name", {
-                    validate: (value) => value.trim().length >= 2 || "required",
+                    validate: (value) =>
+                      value.trim().length >= 2 ||
+                      CONTACT_FIELD_ERROR_CODE.Required,
                   })}
                   aria-describedby={errors.name ? `${nameId}-error` : undefined}
                   aria-invalid={errors.name ? "true" : undefined}
@@ -247,7 +257,7 @@ export function FinalCtaSection({
                   id={`${nameId}-error`}
                   role={errors.name ? "alert" : undefined}
                 >
-                  {errors.name ? form.errorRequired : " "}
+                  {errors.name ? form.errorRequired : "\u00a0"}
                 </p>
               </div>
 
@@ -263,11 +273,11 @@ export function FinalCtaSection({
                     validate: (value) => {
                       const trimmed = value.trim();
                       if (!trimmed) {
-                        return "required";
+                        return CONTACT_FIELD_ERROR_CODE.Required;
                       }
                       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
                         ? true
-                        : "invalid_email";
+                        : CONTACT_FIELD_ERROR_CODE.InvalidEmail;
                     },
                   })}
                   aria-describedby={
@@ -288,52 +298,59 @@ export function FinalCtaSection({
                   role={errors.email ? "alert" : undefined}
                 >
                   {errors.email
-                    ? errors.email.message === "invalid_email"
+                    ? errors.email.message ===
+                      CONTACT_FIELD_ERROR_CODE.InvalidEmail
                       ? form.errorEmail
                       : form.errorRequired
-                    : " "}
+                    : "\u00a0"}
                 </p>
               </div>
             </div>
 
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor={websiteId}>
-                {form.fields.website.label}
-              </label>
-              <input
-                {...register(CONTACT_FORM_FIELD_NAME.Website, {
-                  validate: (value) => {
-                    const trimmed = value.trim();
-                    if (!trimmed) {
-                      return true;
-                    }
-                    return URL_PATTERN.test(trimmed) ? true : "invalid_url";
-                  },
-                })}
-                aria-describedby={
-                  errors.website ? `${websiteId}-error` : websiteHintId
-                }
-                aria-invalid={errors.website ? "true" : undefined}
-                autoComplete={form.fields.website.autocomplete}
-                className={styles.input}
-                id={websiteId}
-                inputMode="url"
-                placeholder={form.fields.website.placeholder}
-                type="url"
-              />
-              {form.fields.website.hint ? (
-                <p className={styles.hint} id={websiteHintId}>
-                  {form.fields.website.hint}
+            {websiteField ? (
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor={websiteId}>
+                  {websiteField.label}
+                </label>
+                <input
+                  {...register(CONTACT_FORM_FIELD_NAME.Website, {
+                    validate: (value) => {
+                      const trimmed = value.trim();
+                      if (!trimmed) {
+                        return true;
+                      }
+                      return URL_PATTERN.test(trimmed)
+                        ? true
+                        : CONTACT_FIELD_ERROR_CODE.InvalidUrl;
+                    },
+                  })}
+                  aria-describedby={
+                    errors.website ? `${websiteId}-error` : websiteHintId
+                  }
+                  aria-invalid={errors.website ? "true" : undefined}
+                  autoComplete={websiteField.autocomplete}
+                  className={styles.input}
+                  id={websiteId}
+                  inputMode="url"
+                  placeholder={websiteField.placeholder}
+                  type="url"
+                />
+                {websiteField.hint ? (
+                  <p className={styles.hint} id={websiteHintId}>
+                    {websiteField.hint}
+                  </p>
+                ) : null}
+                <p
+                  className={styles.errorText}
+                  id={`${websiteId}-error`}
+                  role={errors.website ? "alert" : undefined}
+                >
+                  {errors.website
+                    ? (form.errorWebsite ?? form.errorGeneric)
+                    : "\u00a0"}
                 </p>
-              ) : null}
-              <p
-                className={styles.errorText}
-                id={`${websiteId}-error`}
-                role={errors.website ? "alert" : undefined}
-              >
-                {errors.website ? form.errorWebsite : " "}
-              </p>
-            </div>
+              </div>
+            ) : null}
 
             <div className={styles.field}>
               <label className={styles.label} htmlFor={goalId}>
@@ -344,7 +361,9 @@ export function FinalCtaSection({
               </label>
               <textarea
                 {...register(CONTACT_FORM_FIELD_NAME.Goal, {
-                  validate: (value) => value.trim().length >= 1 || "required",
+                  validate: (value) =>
+                    value.trim().length >= 1 ||
+                    CONTACT_FIELD_ERROR_CODE.Required,
                 })}
                 aria-describedby={errors.goal ? `${goalId}-error` : undefined}
                 aria-invalid={errors.goal ? "true" : undefined}
@@ -359,7 +378,7 @@ export function FinalCtaSection({
                 id={`${goalId}-error`}
                 role={errors.goal ? "alert" : undefined}
               >
-                {errors.goal ? form.errorRequired : " "}
+                {errors.goal ? form.errorRequired : "\u00a0"}
               </p>
             </div>
 
@@ -376,7 +395,8 @@ export function FinalCtaSection({
             <label className={styles.consent}>
               <input
                 {...register("consentAccepted", {
-                  validate: (value) => value || "consent_required",
+                  validate: (value) =>
+                    value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
                 })}
                 aria-describedby={consentErrorId}
                 aria-invalid={errors.consentAccepted ? "true" : undefined}
@@ -401,14 +421,14 @@ export function FinalCtaSection({
               id={consentErrorId}
               role={errors.consentAccepted ? "alert" : undefined}
             >
-              {errors.consentAccepted ? form.errorConsent : " "}
+              {errors.consentAccepted ? form.errorConsent : "\u00a0"}
             </p>
 
             <div className={styles.actions}>
               <PrimaryCtaButton
                 className={styles.submit}
                 data-analytics-event="cta_click"
-                data-analytics-location="landing_final_cta"
+                data-analytics-location={analyticsLocation}
                 data-analytics-target="form_submit"
                 data-analytics-variant="primary"
                 disabled={isSubmitting}

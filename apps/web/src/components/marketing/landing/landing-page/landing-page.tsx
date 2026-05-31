@@ -1,6 +1,6 @@
 ﻿import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
-import { FinalCtaSection } from "@/components/marketing/landing/final-cta-section/final-cta-section";
+import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
@@ -105,6 +105,8 @@ export function LandingPage({ locale }: LandingPageProps) {
         <FaqSection id="faq" locale={locale} {...faq} />
 
         <FinalCtaSection
+          analyticsLocation="landing_final_cta"
+          formId="landing_final_cta"
           id={CONTACT_SECTION_ID}
           locale={locale}
           {...finalCta}

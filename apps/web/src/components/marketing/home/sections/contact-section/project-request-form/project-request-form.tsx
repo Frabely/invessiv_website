@@ -12,6 +12,7 @@ import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
+import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
@@ -21,6 +22,7 @@ import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/
 import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@invessiv/common/defaults/contact/project-request-form-values";
 import type { ProjectRequestFormValues } from "@invessiv/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
+import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
@@ -311,15 +313,17 @@ export function ProjectRequestForm({
   const getFieldErrorTextByCode = useCallback(
     (code: string | undefined) => {
       const mappedMessages: Record<string, string> = {
-        consent_required: formCopy.fieldErrorConsentRequired,
+        [CONTACT_FIELD_ERROR_CODE.ConsentRequired]:
+          formCopy.fieldErrorConsentRequired,
         goal_required: formCopy.fieldErrorRequired,
-        invalid_email: formCopy.fieldErrorInvalidEmail,
+        [CONTACT_FIELD_ERROR_CODE.InvalidEmail]:
+          formCopy.fieldErrorInvalidEmail,
         invalid_website: formCopy.fieldErrorInvalidWebsite,
         pages_required:
           formCopy.pagesRequiredHint ?? formCopy.fieldErrorPagesRequired,
         too_many_pages: formCopy.fieldErrorTooManyPages,
         project_details_required: formCopy.fieldErrorProjectDetailsRequired,
-        required: formCopy.fieldErrorRequired,
+        [CONTACT_FIELD_ERROR_CODE.Required]: formCopy.fieldErrorRequired,
         website_required: formCopy.fieldErrorRequired,
         workflow_required: formCopy.fieldErrorRequired,
       };
@@ -622,17 +626,17 @@ export function ProjectRequestForm({
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
   ) => {
-    if (response.code === "rate_limited") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.RateLimited) {
       return formCopy.submitErrorRateLimited;
     }
 
-    if (response.code === "delivery_unavailable") {
+    if (response.code === CONTACT_SUBMIT_ERROR_CODE.DeliveryUnavailable) {
       return formCopy.submitErrorDelivery;
     }
 
     if (
-      response.code === "validation_error" ||
-      response.code === "spam_detected"
+      response.code === CONTACT_SUBMIT_ERROR_CODE.ValidationError ||
+      response.code === CONTACT_SUBMIT_ERROR_CODE.SpamDetected
     ) {
       return formCopy.submitErrorValidation;
     }
@@ -826,7 +830,7 @@ export function ProjectRequestForm({
                         "website",
                       ]);
                     },
-                    required: "required",
+                    required: CONTACT_FIELD_ERROR_CODE.Required,
                   }),
                   "aria-invalid": errors.offerKey ? "true" : undefined,
                   "data-empty": selectedOfferKey ? "false" : "true",
@@ -1156,7 +1160,8 @@ export function ProjectRequestForm({
                 aria-invalid={errors.consentAccepted ? "true" : undefined}
                 type="checkbox"
                 {...register("consentAccepted", {
-                  validate: (value) => value || "consent_required",
+                  validate: (value) =>
+                    value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
                 })}
               />
               <ContactConsentText

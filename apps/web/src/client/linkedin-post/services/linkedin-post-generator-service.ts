@@ -3,6 +3,7 @@ import type {
   LinkedInPostGeneratorSuccessResponseDto,
 } from "@/common/contracts/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /**
@@ -79,7 +80,7 @@ async function submitLinkedInPost(
   }
 
   return {
-    code: "internal_error",
+    code: LinkedInPostGeneratorErrorCode.InternalError,
     ok: false,
   };
 }
