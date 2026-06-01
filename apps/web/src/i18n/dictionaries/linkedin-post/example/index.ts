@@ -31,7 +31,13 @@ export type LinkedInPostExampleContent = {
   title: string;
   body: string;
   samplesAriaLabel: string;
+  inputLabel: string;
+  outputLabel: string;
   promptLabel: string;
+  topicFieldLabel: string;
+  roleFieldLabel: string;
+  toneFieldLabel: string;
+  flowHint: string;
   captionMore: string;
   captionLess: string;
   disclaimer: string;

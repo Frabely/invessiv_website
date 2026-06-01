@@ -1,9 +1,105 @@
-/* Mobile-first. Sub-component of example-section: the post image figure
-   (full-bleed inside LinkedinPost's card) and the prompt note below.
-   Card chrome (author, caption, card border/bg) lives in linkedin-post.module.css. */
+/* Mobile-first. Sub-component of example-section: output card first, then a
+   compact input disclosure. Card chrome (author, caption, border/bg) lives in
+   linkedin-post.module.css. */
 
-/* Generated post image — full-bleed to the card edges, square like the
-   real 1080×1080 generator output. --card-pad is set by LinkedinPost's .card. */
+.flow {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sectionLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.inputGrid {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.inputItem {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.inputItemLabel {
+  color: color-mix(in srgb, var(--color-text-muted) 82%, transparent);
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inputItemValue {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.94rem;
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+
+.outputRail {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.outputHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.inputDisclosure {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.inputToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.8rem 0;
+  border: 0;
+  border-top: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 48%, transparent);
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.inputToggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 70%, transparent);
+  outline-offset: 3px;
+}
+
+.inputToggleText {
+  color: color-mix(in srgb, var(--color-cta) 92%, var(--color-text) 8%);
+  font-size: 0.84rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.inputPanel {
+  display: grid;
+}
+
+/* Generated post image - full-bleed to the card edges, square like the
+   real 1080x1080 generator output. --card-pad is set by LinkedinPost's card. */
 .postImage {
   position: relative;
   display: grid;
@@ -108,39 +204,31 @@
   line-height: 1.45;
 }
 
-/* Prompt note — sits directly under each post */
-.promptNote {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem;
-  margin: 0.7rem 0 0;
+.disclaimer {
+  margin: 0;
   padding-left: 0.1rem;
+  color: color-mix(in srgb, var(--color-text-muted) 78%, transparent);
+  font-size: 0.74rem;
+  line-height: 1.4;
+  text-wrap: pretty;
 }
 
-.promptNoteLabel {
-  flex: none;
-  padding: 0.1rem 0.4rem;
-  border-radius: 5px;
-  background: color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
-  color: color-mix(in srgb, var(--color-accent-warm) 95%, var(--color-text) 5%);
-  font-family:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.promptNoteText {
-  color: color-mix(in srgb, var(--color-text-muted) 92%, transparent);
-  font-size: 0.84rem;
-  line-height: 1.45;
-  font-style: italic;
-}
-
-/* ── Tablet ── */
+/* Tablet */
 @media (min-width: 720px) {
+  .inputToggle {
+    display: none;
+  }
+
+  .inputPanel {
+    display: grid;
+  }
+
+  .inputGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    padding-top: 0.1rem;
+  }
+
   .postImageHeadline {
     font-size: clamp(1.35rem, 2.4vw, 1.85rem);
   }

@@ -21,8 +21,12 @@ export function ExampleSection({
   eyebrow,
   title,
   body,
+  inputLabel,
+  outputLabel,
   samplesAriaLabel,
-  promptLabel,
+  topicFieldLabel,
+  roleFieldLabel,
+  toneFieldLabel,
   captionMore,
   captionLess,
   disclaimer,
@@ -47,7 +51,6 @@ export function ExampleSection({
         aria-label={samplesAriaLabel}
         className={styles.samplesGrid}
         role="list"
-        // Focusable so keyboard users can scroll the mobile carousel
         tabIndex={0}
       >
         {samples.map((sample, index) => (
@@ -60,16 +63,17 @@ export function ExampleSection({
             <SampleCard
               captionLess={captionLess}
               captionMore={captionMore}
-              promptLabel={promptLabel}
+              disclaimer={disclaimer}
+              inputLabel={inputLabel}
+              outputLabel={outputLabel}
+              roleFieldLabel={roleFieldLabel}
               sample={sample}
+              toneFieldLabel={toneFieldLabel}
+              topicFieldLabel={topicFieldLabel}
             />
           </li>
         ))}
       </ul>
-
-      <p className={styles.disclaimer} data-reveal-item="true">
-        {disclaimer}
-      </p>
 
       <div className={styles.ctaRow} data-reveal-item="true">
         <p className={styles.ctaLead}>{ctaLead}</p>

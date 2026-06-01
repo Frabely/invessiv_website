@@ -3,7 +3,13 @@
   "title": "Here's what the output looks like.",
   "body": "Two posts the generator builds in under a minute. Hook, structure, caption, image — ready to upload.",
   "samplesAriaLabel": "Sample posts from the LinkedIn post generator",
+  "inputLabel": "Input",
+  "outputLabel": "Output",
   "promptLabel": "Prompt",
+  "topicFieldLabel": "Topic",
+  "roleFieldLabel": "Role",
+  "toneFieldLabel": "Tone",
+  "flowHint": "This is how the finished post comes together.",
   "captionMore": "… more",
   "captionLess": "less",
   "disclaimer": "The name and details below each profile are fictional and shown as an example only.",
@@ -43,7 +49,7 @@
       "promptText": "Role: LinkedIn Marketing — Topic: Why visibility on LinkedIn matters — Tone: Personal"
     }
   ],
-  "ctaLead": "If you want to test the format first, start here with a sample post.",
-  "ctaLabel": "Generate post",
+  "ctaLead": "If you want to try the format yourself now, jump straight into the generator.",
+  "ctaLabel": "To generator",
   "ctaAriaLabel": "Scroll to the LinkedIn post generator"
 }

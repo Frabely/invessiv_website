@@ -3,7 +3,13 @@
   "title": "So sieht der Output aus.",
   "body": "Zwei Posts, die der Generator in unter einer Minute baut. Hook, Struktur, Caption, Bild – fertig zum Hochladen.",
   "samplesAriaLabel": "Beispiel-Posts vom LinkedIn-Post-Generator",
+  "inputLabel": "Input",
+  "outputLabel": "Output",
   "promptLabel": "Prompt",
+  "topicFieldLabel": "Thema",
+  "roleFieldLabel": "Rolle",
+  "toneFieldLabel": "Ton",
+  "flowHint": "Daraus entsteht der fertige Post.",
   "captionMore": "… mehr",
   "captionLess": "weniger",
   "disclaimer": "Name und Angaben unter dem Profil sind frei erfunden und dienen nur als Beispiel.",
@@ -43,7 +49,7 @@
       "promptText": "Rolle: LinkedIn Marketing — Thema: Warum Sichtbarkeit auf LinkedIn wichtig ist — Ton: Persönlich"
     }
   ],
-  "ctaLead": "Wenn du erst das Prinzip testen willst, starte hier mit einem Beispielpost.",
-  "ctaLabel": "Post generieren",
+  "ctaLead": "Wenn du das Format jetzt selbst ausprobieren willst, spring direkt in den Generator.",
+  "ctaLabel": "Zum Generator",
   "ctaAriaLabel": "Zum LinkedIn-Post-Generator scrollen"
 }
