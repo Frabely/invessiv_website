@@ -1,27 +1,27 @@
 {
   "eyebrow": "YOUR GENERATOR",
-  "title": "Tell us what you want to post.",
-  "body": "Three fields. One email. You get the image and caption right here — and a copy in your inbox.",
+  "title": "Tell us what to post.",
+  "body": "Three fields. One email. You get the image and caption here.",
   "form": {
     "topic": {
       "label": "What's it about?",
-      "placeholder": "e.g. pricing talks with existing clients",
-      "help": "One sentence is enough. Max. 280 characters.",
+      "placeholder": "e.g. client conversations",
+      "help": "One sentence is enough.",
       "maxLength": 280,
       "requiredError": "Please enter a topic.",
       "tooLongError": "Please keep it under 280 characters."
     },
     "expertise": {
       "label": "Your role or industry",
-      "placeholder": "e.g. strategy consulting for SMBs",
-      "help": "Helps us match the tone. Max. 120 characters.",
+      "placeholder": "e.g. consulting",
+      "help": "Helps match the tone.",
       "maxLength": 120,
       "requiredError": "Please add your role.",
       "tooLongError": "Please keep it under 120 characters."
     },
     "tone": {
       "label": "Which tone?",
-      "help": "Pick a style — it shapes the whole post.",
+      "help": "Pick the style.",
       "options": [
         {
           "value": "sachlich",
@@ -43,14 +43,14 @@
     },
     "color": {
       "label": "Background",
-      "help": "Pick a color combo — or let us choose automatically.",
+      "help": "Or let us choose automatically.",
       "autoLabel": "Automatic",
       "swatchLabel": "Color scheme"
     },
     "displayName": {
       "label": "Display name",
       "placeholder": "e.g. Moritz Hecht",
-      "help": "This is how your name appears in the sample post.",
+      "help": "This is how your name appears.",
       "maxLength": 80,
       "requiredError": "Please enter a display name.",
       "tooLongError": "Please keep it under 80 characters."
@@ -58,30 +58,30 @@
     "email": {
       "label": "Where do we send the copy?",
       "placeholder": "you@address.com",
-      "help": "For this post only. No spam.",
+      "help": "For this post only.",
       "requiredError": "Please add your email.",
       "invalidError": "That doesn't look like a valid email."
     },
     "consent": {
-      "label": "I agree my email is used to deliver this post.",
+      "label": "I agree my email can be used to deliver this post.",
       "requiredError": "We need your OK to deliver the post."
     },
     "honeypot": {
       "label": "Company"
     },
     "submit": "Generate post",
-    "submitLoading": "Generating …",
-    "loadingHelp": "Takes around 30 seconds. Keep this window open."
+    "submitLoading": "Creating …",
+    "loadingHelp": "Keep this open for ~30 seconds."
   },
   "preview": {
     "idle": {
       "headline": "Your post will appear here.",
-      "body": "Fill in the fields on the left — we build hook, image and caption in under a minute.",
+      "body": "Fill in the fields on the left. We build hook, image and caption.",
       "stepLabel": "Step"
     },
     "loading": {
       "headline": "We're building your post …",
-      "body": "Picking hook, structure and image layout. Seconds, not minutes.",
+      "body": "Hook, structure and layout are being set.",
       "steps": [
         "Writing the hook",
         "Setting the structure",
@@ -100,22 +100,22 @@
     },
     "error": {
       "headline": "Something went wrong.",
-      "body": "We couldn't build the post just now. Try again — your input is saved."
+      "body": "We couldn't build the post right now. Try again."
     }
   },
   "customPost": {
     "badge": "Custom Workflow",
     "headline": "This is what it looks like when the workflow is yours.",
-    "context": "A real post from my internal workflow — own branding, own visual language, own voice. From a single command.",
-    "prompt": "Let's check if this is feasible for your social media content workflow.",
+    "context": "A real post from my workflow: branding, visual language, and voice in one command.",
+    "prompt": "Check if this fits your workflow.",
     "ctaLabel": "Check feasibility",
     "ctaAriaLabel": "Get in touch to check your own content workflow",
-    "ctaHref": "/en/#contact",
+    "ctaHref": "#generator",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Web designer",
       "authorImageAlt": "Profile picture of Moritz Hecht",
-      "caption": "SEO often gets reduced to rankings, keywords, and technical checks.\n\nAll of that matters. But visibility alone does not solve an inquiry problem.\n\nWhen someone lands on an offer page through Google, there is already intent behind the visit. That person is looking for a solution, an assessment, or a provider who fits the situation.\n\nThat is exactly when the page needs to make the offer clear, build enough trust, and point to a useful next step.\n\nIf you want your offer page to be not only more visible, but also clearer for the right inquiries, feel free to send me a DM or briefly describe your project through the website.\n\nMore here:\n{{link}}\n\n#Invessiv #SEO #Landingpage #OnlinePresence",
+      "caption": "SEO often gets reduced to rankings.\n\nWhat matters most is whether the page quickly shows if the offer fits.\n\nMore here:\n{{link}}\n\n#Invessiv #SEO #Landingpage #OnlinePresence",
       "linkUrl": "https://www.invessiv.com/en/services/landing-page",
       "captionMore": "… more",
       "captionLess": "less",

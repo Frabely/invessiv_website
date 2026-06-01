@@ -10,10 +10,14 @@
 .grid {
   display: grid;
   gap: 2.5rem;
+  grid-template-areas:
+    "post"
+    "pitch";
 }
 
 /* ── Pitch column (left) ── */
 .pitch {
+  grid-area: pitch;
   display: grid;
   gap: 1.1rem;
   align-content: start;
@@ -43,6 +47,7 @@
 
 /* ── Post column (right) ── */
 .postColumn {
+  grid-area: post;
   display: grid;
   gap: 0.9rem;
   align-content: start;
@@ -96,6 +101,7 @@
 @media (min-width: 720px) {
   .grid {
     grid-template-columns: 1fr 1fr;
+    grid-template-areas: "pitch post";
     align-items: start;
     gap: 3rem 3.5rem;
   }

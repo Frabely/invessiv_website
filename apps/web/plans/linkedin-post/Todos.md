@@ -1,9 +1,8 @@
 ## Todos
 
-- Umsetzbarkeit prüfen und den CTA zum Formular führen.
-- Prüfen, ob der Custom Post in `WorkflowShowcaseSection` höher dargestellt werden muss.
+- "Umsetzbarkeit prüfen" -> CTA zum Formular führen.
+- der Custom Post in `WorkflowShowcaseSection` höher darstellen, da man logo und link jeweils unten oben nicht sieht.
 - Prüfen, ob der Komponentenname falsch benannt ist und zu `LinkedInPostPage` korrigiert werden muss.
-- Für `service/landing-page` und `service/linkedin-post` eigene Submission-Typen einführen.
 - Header und Footer inhaltlich anpassen.
 - Die Copy des Submission-Formulars kürzen, damit sie auf Mobile besser lesbar ist.
 - Privacy prüfen: Muss explizit erwähnt werden, dass beim Generieren von Posts Besucherdaten erfasst werden?
@@ -15,6 +14,7 @@
 - Im Hero auf Desktop eventuell Posts einfügen.
 - Beim Post-Generieren auf Mobile direkt zum erzeugten Post scrollen.
 - Bessere Überleitung direkt am generierten Post zum eigentlichen Request für einen Custom Skill schaffen.
+- Für `service/landing-page` und `service/linkedin-post` eigene Submission-Typen einführen.
 - Limitierung:
   - Monatsbudget festlegen, z. B. `20 €` in OpenAI aufladen.
   - Pro E-Mail ein Limit definieren, z. B. maximal `2` Posts pro Woche oder alle `3` Tage.
@@ -22,3 +22,5 @@
     `20 € / Preis pro Post = verfügbare Posts`).
   - Nach dem zweiten Generieren soll der Generator ausbleiben bzw. gesperrt werden.
   - Bild und Caption download als zip zusammen und per Email versenden.
+- Generator input und Name email splitten - download/email erst verschicken wenn kontakt daten eingegeben wurden
+  - der nutzer sieht den psot bevor er seine daten eingeben muss

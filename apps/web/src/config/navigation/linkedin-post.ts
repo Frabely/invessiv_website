@@ -23,5 +23,5 @@ export const LINKEDIN_POST_SECTION_HREFS = {
 
 export const LINKEDIN_POST_HEADER_NAVIGATION: NavigationItem[] = [
   { href: LINKEDIN_POST_SECTION_HREFS.example },
-  { href: LINKEDIN_POST_SECTION_HREFS.generator },
+  { href: LINKEDIN_POST_SECTION_HREFS.workflow },
 ];

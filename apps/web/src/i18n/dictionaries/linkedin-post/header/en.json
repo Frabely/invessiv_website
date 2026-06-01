@@ -1,0 +1,14 @@
+{
+  "actionsAriaLabel": "Language and page action",
+  "brandLabel": "Invessiv",
+  "brandLogoAlt": "Invessiv logo",
+  "ctaLabel": "To the form",
+  "labelsByHref": {
+    "#example": "Example",
+    "#workflow": "Workflow"
+  },
+  "localeMenuLabel": "Open language menu",
+  "localeSwitchLabel": "Choose language",
+  "mobileMenuLabel": "Menu",
+  "navAriaLabel": "Navigate the LinkedIn post workflow"
+}

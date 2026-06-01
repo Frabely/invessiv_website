@@ -13,6 +13,7 @@ import {
   LINKEDIN_POST_HEADER_NAVIGATION,
   LINKEDIN_POST_SECTION_HREFS,
 } from "@/config/navigation/linkedin-post";
+import { getLinkedInPostHeaderContent } from "@/i18n/dictionaries/linkedin-post/header";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
@@ -30,6 +31,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
   const example = getLinkedInPostExampleContent(locale);
   const generator = getLinkedInPostGeneratorContent(locale);
   const finalCta = getLinkedInPostFinalCtaContent(locale);
+  const header = getLinkedInPostHeaderContent(locale);
   const footer = getLandingFooterContent(locale);
 
   return (
@@ -39,6 +41,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
         ctaHref={LINKEDIN_POST_SECTION_HREFS.generator}
         navigation={LINKEDIN_POST_HEADER_NAVIGATION}
         showThemeSwitch={false}
+        uiContent={header}
       />
 
       <main className="marketing-main" id="main-content" tabIndex={-1}>

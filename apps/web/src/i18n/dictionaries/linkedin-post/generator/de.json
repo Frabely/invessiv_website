@@ -1,27 +1,27 @@
 {
   "eyebrow": "DEIN GENERATOR",
-  "title": "Sag uns, worüber du schreiben willst.",
-  "body": "Drei Felder. Eine E-Mail. Du bekommst Bild und Caption sofort hier — und als Kopie in dein Postfach.",
+  "title": "Sag uns kurz, worum es geht.",
+  "body": "Drei Felder. Eine E-Mail. Du bekommst Bild und Caption direkt hier.",
   "form": {
     "topic": {
       "label": "Worum geht's?",
-      "placeholder": "z. B. Preisgespräche mit Bestandskunden",
-      "help": "Ein Satz reicht. Max. 280 Zeichen.",
+      "placeholder": "z. B. Kundengespräche",
+      "help": "Ein Satz reicht.",
       "maxLength": 280,
       "requiredError": "Bitte ein Thema angeben.",
       "tooLongError": "Bitte unter 280 Zeichen halten."
     },
     "expertise": {
       "label": "Deine Rolle oder Branche",
-      "placeholder": "z. B. Strategieberatung für KMU",
-      "help": "Hilft uns, den Ton zu treffen. Max. 120 Zeichen.",
+      "placeholder": "z. B. Beratung",
+      "help": "Hilft beim Ton.",
       "maxLength": 120,
       "requiredError": "Bitte ergänze deine Rolle.",
       "tooLongError": "Bitte unter 120 Zeichen halten."
     },
     "tone": {
       "label": "In welchem Ton?",
-      "help": "Wähl einen Stil — das prägt den ganzen Post.",
+      "help": "Wähl den Stil.",
       "options": [
         {
           "value": "sachlich",
@@ -43,14 +43,14 @@
     },
     "color": {
       "label": "Hintergrund",
-      "help": "Wähl eine Farbkombi — oder lass uns automatisch wählen.",
+      "help": "Oder automatisch.",
       "autoLabel": "Automatisch",
       "swatchLabel": "Farbschema"
     },
     "displayName": {
       "label": "Anzeigename",
       "placeholder": "z. B. Moritz Hecht",
-      "help": "So erscheint dein Name im Beispielpost.",
+      "help": "So erscheint dein Name.",
       "maxLength": 80,
       "requiredError": "Bitte gib einen Anzeigenamen an.",
       "tooLongError": "Bitte unter 80 Zeichen halten."
@@ -58,30 +58,30 @@
     "email": {
       "label": "Wohin schicken wir die Kopie?",
       "placeholder": "deine@adresse.com",
-      "help": "Nur für diesen Post. Kein Spam.",
+      "help": "Nur für diesen Post.",
       "requiredError": "Bitte E-Mail-Adresse angeben.",
       "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
     },
     "consent": {
-      "label": "Ich bin einverstanden, dass meine E-Mail genutzt wird, um den Post zuzustellen.",
+      "label": "Ich bin einverstanden, dass meine E-Mail für die Zustellung genutzt wird.",
       "requiredError": "Ohne dein OK können wir nichts zustellen."
     },
     "honeypot": {
       "label": "Firma"
     },
     "submit": "Post generieren",
-    "submitLoading": "Wird generiert …",
-    "loadingHelp": "Das dauert ~30 Sekunden. Lass das Fenster offen."
+    "submitLoading": "Wird erstellt …",
+    "loadingHelp": "Ca. 30 Sekunden offen lassen."
   },
   "preview": {
     "idle": {
       "headline": "Hier erscheint dein Post.",
-      "body": "Fülle die Felder links — wir bauen Hook, Bild und Caption in unter einer Minute.",
+      "body": "Füll die Felder links aus. Wir bauen Hook, Bild und Caption.",
       "stepLabel": "Schritt"
     },
     "loading": {
       "headline": "Wir bauen deinen Post …",
-      "body": "Wir wählen Hook, Struktur und Bildlayout. Sekunden, nicht Minuten.",
+      "body": "Hook, Struktur und Layout werden jetzt gesetzt.",
       "steps": [
         "Hook formulieren",
         "Struktur setzen",
@@ -100,22 +100,22 @@
     },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
-      "body": "Wir konnten den Post gerade nicht bauen. Versuch's noch einmal — deine Eingaben sind erhalten."
+      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal."
     }
   },
   "customPost": {
     "badge": "Custom Workflow",
     "headline": "So sieht es aus, wenn der Workflow dir gehört.",
-    "context": "Echter Post aus meinem internen Workflow — eigenes Branding, eigene Bildsprache, eigene Stimme. Aus einem einzigen Befehl.",
-    "prompt": "Lass uns prüfen, ob das für deinen Social-Media-Content-Workflow umsetzbar ist.",
+    "context": "Echter Post aus meinem Workflow: Branding, Bildsprache und Stimme in einem Befehl.",
+    "prompt": "Prüf, ob das zu deinem Workflow passt.",
     "ctaLabel": "Umsetzbarkeit prüfen",
     "ctaAriaLabel": "Kontakt aufnehmen und eigenen Content-Workflow prüfen",
-    "ctaHref": "/de/#contact",
+    "ctaHref": "#generator",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Webdesigner",
       "authorImageAlt": "Profilbild von Moritz Hecht",
-      "caption": "SEO wird oft auf Rankings, Keywords und technische Checks reduziert.\n\nDas ist alles wichtig. Aber Sichtbarkeit allein löst noch kein Anfrageproblem.\n\nWenn jemand über Google auf eine Angebotsseite kommt, ist die Erwartung schon da: Die Person sucht eine Lösung, eine Einschätzung oder einen Anbieter, der zum Anliegen passt.\n\nGenau dann muss die Seite schnell klären, ob das Angebot relevant ist, warum Vertrauen gerechtfertigt ist und welcher nächste Schritt sinnvoll ist.\n\nWenn du deine Angebotsseite nicht nur sichtbarer, sondern auch klarer für passende Anfragen machen möchtest, schreib mir gerne per DM oder schildere dein Anliegen kurz über die Website.\n\nMehr dazu:\n{{link}}\n\n#Invessiv #SEO #Landingpage #OnlinePraesenz",
+      "caption": "SEO wird oft auf Rankings reduziert.\n\nWichtig ist aber vor allem: Die Seite muss sofort zeigen, ob das Angebot passt.\n\nMehr dazu:\n{{link}}\n\n#Invessiv #SEO #Landingpage #OnlinePraesenz",
       "linkUrl": "https://www.invessiv.com/de/services/landing-page",
       "captionMore": "… mehr",
       "captionLess": "weniger",

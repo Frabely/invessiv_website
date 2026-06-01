@@ -16,7 +16,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock(
-  "@/components/marketing/linkedin-post/ai-workflows-page/ai-workflows-page",
+  "@/components/marketing/linkedin-post/linkedin-post-page/linkedin-post-page",
   () => ({
     LinkedInPostPage: mockLinkedInPostPage,
   }),

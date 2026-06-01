@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LinkedInPostPage } from "@/components/marketing/linkedin-post/ai-workflows-page/ai-workflows-page";
+import { LinkedInPostPage } from "@/components/marketing/linkedin-post/linkedin-post-page/linkedin-post-page";
 import {
   isSupportedLocale,
   type Locale,
