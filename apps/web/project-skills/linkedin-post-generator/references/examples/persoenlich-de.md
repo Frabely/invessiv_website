@@ -11,6 +11,7 @@
 
 - **headlinePlain:** `Mein bestes Erstgespräch dauerte 14 Minuten — und endete im Auftrag`
 - **headlineHtml:** `Mein bestes Erstgespräch dauerte 14 Minuten — und endete im <em>Auftrag</em>`
+- **kicker:** `Vertrauen im Vertrieb`
 - **bodyVariant:** `insight`
 - **insight:**
   `Wir haben nicht über Methoden gesprochen, sondern über genau eine Situation, die er nicht mehr aushielt. Den Rest hat das Schweigen erledigt.`
@@ -30,6 +31,8 @@ Hashtags (JSON array, without leading `#`):
 
 ## Notes
 
+- `kicker` (`Vertrauen im Vertrieb`) is a thematic label derived from topic + content — NOT the `expertise` input (
+  `Coaching für Führungskräfte`) and not a restatement of the headline.
 - First-person OK, conversational tone.
 - Insight extends headline with concrete context, no advice.
 - Caption avoids "in der heutigen Zeit", "letztendlich".

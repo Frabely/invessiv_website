@@ -11,6 +11,7 @@
 
 - **headlinePlain:** `Preise stagnieren nicht — sie werden jedes Jahr neu verhandelt`
 - **headlineHtml:** `Preise stagnieren nicht — sie werden jedes Jahr neu <em>verhandelt</em>`
+- **kicker:** `Preisverhandlung`
 - **bodyVariant:** `bullets`
 - **bullets:**
   1. `Bestandskunden testen den Anker, den du vor Jahren gesetzt hast.`
@@ -32,6 +33,8 @@ Hashtags (JSON array, without leading `#`):
 
 ## Notes
 
+- `kicker` (`Preisverhandlung`) is a thematic label derived from topic + content — NOT the `expertise` input (
+  `Strategieberatung für KMU`) and not a restatement of the headline.
 - Headline uses `<em>` on the sharpest verb (`verhandelt`).
 - Three bullets, each ≤ 14 words, factual, no opinion language.
 - Caption avoids first-person, names a concrete framework (3 Punkte).

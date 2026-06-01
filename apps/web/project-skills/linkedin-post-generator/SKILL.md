@@ -52,14 +52,14 @@ When generating copy, apply the `copywriting` skill principles
 
 ## 1. Inputs
 
-| Field         | Type   | Max       | Required | Notes                                                                                                                                                                                                                                                                     |
-| ------------- | ------ | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `topic`       | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                                                                                                                                                                                                       |
-| `expertise`   | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry"                                                                                                                                                                                     |
-| `tone`        | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale)                                                                                                                                                                             |
-| `locale`      | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                                                                                                                                                                                                  |
-| `colorPairId` | enum   | —         | yes      | One of the 10 pair ids in `references/color-pairs.json` (e.g. `navy-steel`) **or** `auto`. Comes from the form color picker; default `auto`. A concrete id is **binding** — see §6.                                                                                       |
-| `templateId`  | enum   | —         | no       | One of the 5 template ids in `templates/templates-manifest.json` (e.g. `editorial-center`) **or** `auto`. Default `auto` (random). A concrete id is **binding** — see §7. The runtime form does not expose this; production runs are random. Mainly for Codex/local runs. |
+| Field         | Type   | Max       | Required | Notes                                                                                                                                                                                                                                                                                      |
+| ------------- | ------ | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `topic`       | string | 280 chars | yes      | Form textarea — UI label DE „Worum geht's?" / EN „What's it about?"                                                                                                                                                                                                                        |
+| `expertise`   | string | 120 chars | yes      | Form text input — UI label DE „Deine Rolle oder Branche" / EN „Your role or industry". Defines the **perspective** the post is written from (voice, vocabulary, assumed reader). **Not rendered verbatim into the post** — the visible eyebrow is the generated `content.kicker` (see §8). |
+| `tone`        | enum   | —         | yes      | Wire values `sachlich` \| `persönlich` \| `provokativ` (German strings, regardless of locale)                                                                                                                                                                                              |
+| `locale`      | enum   | —         | yes      | `de` \| `en` — determines display labels + copy language                                                                                                                                                                                                                                   |
+| `colorPairId` | enum   | —         | yes      | One of the 10 pair ids in `references/color-pairs.json` (e.g. `navy-steel`) **or** `auto`. Comes from the form color picker; default `auto`. A concrete id is **binding** — see §6.                                                                                                        |
+| `templateId`  | enum   | —         | no       | One of the 5 template ids in `templates/templates-manifest.json` (e.g. `editorial-center`) **or** `auto`. Default `auto` (random). A concrete id is **binding** — see §7. The runtime form does not expose this; production runs are random. Mainly for Codex/local runs.                  |
 
 Wire values for `tone` match
 `packages/common/src/contracts/generator/linkedin-post-generator-tone.ts`.
@@ -259,25 +259,25 @@ server pipeline or the Codex run). For the **API/copy use case the LLM
 returns ONLY the fields below**, validated against
 `references/content-schema.json` — never the wrapper-owned fields.
 
-| `result.json` field            | Owner   | Notes                                                            |
-| ------------------------------ | ------- | ---------------------------------------------------------------- |
-| `content.headlineHtml`         | **LLM** | `<em>` pairs only                                                |
-| `content.headlinePlain`        | **LLM** | tags stripped                                                    |
-| `content.bodyVariant`          | **LLM** | must equal `template.bodyVariant` (template-driven, not tone)    |
-| `content.insight`              | **LLM** | xor with bullets                                                 |
-| `content.bullets`              | **LLM** | xor with insight                                                 |
-| `content.highlight`            | **LLM** | focal line; null unless template `supportsHighlight`             |
-| `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                                        |
-| `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`                                |
-| `content.expertiseDisplay`     | wrapper | `expertise` hard-capped at 60 chars                              |
-| `inputs.*`                     | wrapper | echoes the four inputs verbatim                                  |
-| `colorPair.*`                  | wrapper | resolved from `colorPairId`: selected / seeded / random — see §6 |
-| `template.*`                   | wrapper | resolved from `templateId`: selected / seeded / random — see §7  |
-| `paths.*`, `render.*`          | wrapper | filesystem + render metadata                                     |
-| `schemaVersion`, `generatedAt` | wrapper | constant (`2`) / UTC timestamp                                   |
+| `result.json` field            | Owner   | Notes                                                              |
+| ------------------------------ | ------- | ------------------------------------------------------------------ |
+| `content.headlineHtml`         | **LLM** | `<em>` pairs only                                                  |
+| `content.headlinePlain`        | **LLM** | tags stripped                                                      |
+| `content.bodyVariant`          | **LLM** | must equal `template.bodyVariant` (template-driven, not tone)      |
+| `content.insight`              | **LLM** | xor with bullets                                                   |
+| `content.bullets`              | **LLM** | xor with insight                                                   |
+| `content.highlight`            | **LLM** | focal line; null unless template `supportsHighlight`               |
+| `content.kicker`               | **LLM** | eyebrow label; thematic, not the raw `expertise`, not the headline |
+| `caption.body`                 | **LLM** | paragraphs, `\n\n`-joined                                          |
+| `caption.hashtags`             | **LLM** | no leading `#`, last = `LinkedIn`                                  |
+| `inputs.*`                     | wrapper | echoes the four inputs verbatim                                    |
+| `colorPair.*`                  | wrapper | resolved from `colorPairId`: selected / seeded / random — see §6   |
+| `template.*`                   | wrapper | resolved from `templateId`: selected / seeded / random — see §7    |
+| `paths.*`, `render.*`          | wrapper | filesystem + render metadata                                       |
+| `schemaVersion`, `generatedAt` | wrapper | constant (`2`) / UTC timestamp                                     |
 
 The LLM structured-output contract is therefore a strict subset:
-`{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, highlight, caption }`.
+`{ headlineHtml, headlinePlain, bodyVariant, insight, bullets, highlight, kicker, caption }`.
 B3 wires this object into the Claude API call's response schema; the
 wrapper then merges it with the wrapper-owned fields and validates the
 merged object against `references/result-schema.json`.
@@ -327,7 +327,7 @@ merged object against `references/result-schema.json`.
     "insight": "...",
     "bullets": null,
     "highlight": "...",
-    "expertiseDisplay": "..."
+    "kicker": "..."
   },
   "caption": {
     "body": "paragraph one\n\nparagraph two\n\nclosing line",
@@ -354,10 +354,13 @@ merged object against `references/result-schema.json`.
 - `colorPair.source`: `"selected"` if a concrete `colorPairId` was given
   (then `colorPair.id` MUST equal that id), `"seeded"` if `--seed` was
   used, `"random"` otherwise.
-- `content.expertiseDisplay`: expertise input after **hard char-cap at 60**.
-  Stored **unescaped** (HTML-escaping happens at template-substitution
-  time). **No appended ellipsis** — visual cropping is done by
-  `text-overflow: ellipsis` on `.post__expertise`.
+- `content.kicker`: LLM-generated eyebrow label rendered in the pill above
+  the headline. 1–3 words, **hard cap 32 chars**, plain text, post locale. A
+  thematic category/rubric derived from the topic **and** the generated copy —
+  **never the verbatim `expertise` (role/industry) input** and **never a
+  restatement of the headline** (see §8). Stored **unescaped** (HTML-escaping
+  happens at template-substitution time). **No appended ellipsis** — visual
+  cropping is done by `text-overflow: ellipsis` on `.post__kicker`.
 - `content.headlinePlain`: headline with all HTML tags stripped. Used
   for `<title>` and OpenGraph `imageAlt`. **NOT used as mail subject** —
   the mail (B6) MUST use its own locale-aware static string like
@@ -382,9 +385,18 @@ merged object against `references/result-schema.json`.
   rendered into the visual post (would identify the post as tool-output).
   Callers that need a tone display label can derive it from
   `inputs.tone` + `inputs.locale` using the table in section 7.
-- `content.topicDisplay` — removed because the topic kicker is no
-  longer rendered into the visual post (visually duplicates the
-  headline). The full topic remains available in `inputs.topic`.
+- `content.topicDisplay` — removed because the **raw topic** is no
+  longer rendered into the visual post (verbatim topic visually duplicates the
+  headline). The full topic remains available in `inputs.topic`. The eyebrow
+  pill is now filled by the generated `content.kicker` (a short thematic label,
+  **not** the verbatim topic) instead.
+- `content.expertiseDisplay` — removed from the post contract. The eyebrow
+  pill no longer renders the raw `expertise` (role/industry) input; it renders
+  the generated `content.kicker`. The role/industry only steers the copy's
+  perspective (§8) and stays available in `inputs.expertise`. (Web-app chrome
+  outside this skill — e.g. the simulated LinkedIn author subtitle — may still
+  use the raw role/industry; that is an implementation concern, not part of the
+  post artefact.)
 
 ---
 
@@ -461,7 +473,7 @@ Substitution is literal replacement of bracket-wrapped placeholders.
 | `[BG_END]`          | `pair.secondary`                                                                   |
 | `[TEXT]`            | `pair.text`                                                                        |
 | `[ACCENT]`          | `pair.accent`                                                                      |
-| `[EXPERTISE]`       | `content.expertiseDisplay`, HTML-escaped                                           |
+| `[KICKER]`          | `content.kicker`, HTML-escaped                                                     |
 | `[HEADLINE]`        | `content.headlineHtml` (already contains `<em>`; escape everything else)           |
 | `[BODY_CONTENT]`    | insight `<p>` or bullets `<ul>` (see below)                                        |
 | `[HIGHLIGHT_BLOCK]` | `<p class="post__highlight">{highlight}</p>` or `""` (only on highlight templates) |
@@ -479,10 +491,12 @@ attachment, and the on-page preview iframe, so they never drift.
   not post a labelled-as-AI image to their LinkedIn). Tone still
   drives the copy register (not the body shape — that is template-driven,
   see §7/§8) and is preserved in `result.json.inputs.tone`.
-- **No topic kicker line above the headline.** The topic drives the
-  headline; rendering both creates visual redundancy and looks
-  uneditorial. Topic remains in `result.json.inputs.topic` for
-  analytics and lead persistence.
+- **No raw topic or role/industry echo in the kicker.** The eyebrow pill
+  (`.post__kicker`) is present, but it shows the generated `content.kicker` — a
+  short thematic label. It must never be the verbatim `topic` sentence (would
+  duplicate the headline) and never the raw `expertise` role/industry input
+  (that only steers perspective, see §8). Topic and expertise remain in
+  `result.json.inputs.*` for analytics and lead persistence.
 - **No CTA footer ("Weiterlesen ↓" or similar).** Square LinkedIn
   posts have no „next slide" affordance — such CTAs are semantically
   wrong for the format.
@@ -510,7 +524,7 @@ Matches `apps/web/src/i18n/dictionaries/linkedin-post/generator/{de,en}.json`.
   when the template supports a highlight)
 - `bodyVariant === "bullets"` → `<ul class="post__bullets"><li>...</li>×3</ul>`
 
-All skeletons use the same inner content classes (`.post__expertise`,
+All skeletons use the same inner content classes (`.post__kicker`,
 `.post__headline`, `.post__insight`, `.post__bullets`, `.post__highlight`)
 so the renderer stays template-agnostic; only the surrounding structure
 and background differ per skeleton.
@@ -530,7 +544,7 @@ Tag policy by field:
   `<strong>`, `<br>`, etc.
 - **`bullets[*]`** — **plain text only**, rendered into `<li>`. Same rule
   as `insight`.
-- **`expertiseDisplay`** — user-provided, always fully escaped, no
+- **`kicker`** — plain text only, fully escaped at substitution, no
   tag preservation.
 
 ### Font strategy
@@ -558,7 +572,23 @@ All copy is in the **request locale**. No Invessiv branding ("Invessiv",
 string. The post is the visitor's, not Invessiv's.
 
 The `expertise` value steers vocabulary, examples, and assumed reader
-expertise. The `topic` value is the post's subject.
+expertise — it is the **perspective** the post is written from. It is **not**
+shown verbatim in the post; the visible eyebrow is the generated `kicker`
+(see below). The `topic` value is the post's subject.
+
+### Kicker (eyebrow label)
+
+`content.kicker` fills the pill above the headline. It is **generated**, never
+copied:
+
+- 1–3 words, ≤ 32 chars, plain text, in the post locale.
+- A thematic **category/rubric** for the post (e.g. „Preisverhandlung",
+  „Sichtbarkeit & Vertrauen") that fits the `topic` and the copy you generate.
+- **Never the verbatim `expertise` (role/industry) input** — that value only
+  steers voice and perspective and is not surfaced in the post.
+- **Never a restatement of the headline** (no shared key phrase) and never the
+  raw `topic` sentence.
+- Same forbidden-phrase rules as the other fields; no emoji.
 
 **Six worked examples** (one per tone × locale combination) live under
 `references/examples/`. Read those before generating new content.
@@ -816,7 +846,7 @@ Run all checks before declaring success.
 - [ ] `colorPair.source` is `"selected"` iff a concrete `colorPairId` was
       given; `"seeded"` iff `--seed` (and no concrete id); else `"random"`.
 - [ ] **If `colorPairId` is a concrete id, `result.json.colorPair.id ===
-  colorPairId`** and the PNG background uses that pair (the visitor's
+colorPairId`** and the PNG background uses that pair (the visitor's
       chosen color MUST be honored).
 - [ ] `result.json.template.index` ∈ `[0, 4]` and `template.id` is one of
       the 5 ids in `templates/templates-manifest.json`.
@@ -834,7 +864,9 @@ Run all checks before declaring success.
 - [ ] `content.headlinePlain` contains no `<` or `>`.
 - [ ] `content.insight` (if non-null) contains no HTML tags at all.
 - [ ] Each `content.bullets[i]` (if non-null) is plain text, **6–14 words**.
-- [ ] `content.expertiseDisplay.length <= 60`.
+- [ ] `content.kicker` is 1–3 words, ≤ 32 chars, plain text (no `<`/`>`).
+- [ ] `content.kicker` is NOT a verbatim copy of `inputs.expertise` and does
+      NOT repeat `headlinePlain`.
 - [ ] `caption.hashtags` has 3–5 items and the **last** item is `"LinkedIn"`.
 - [ ] `caption.body` contains no `\r` characters.
 - [ ] First paragraph of `caption.body` ≤ 140 chars (LinkedIn mobile-clip rule).
@@ -844,8 +876,9 @@ Run all checks before declaring success.
 - [ ] No forbidden phrases (section 8) in `headlinePlain`, `insight`, `bullets`, or `caption.body`.
 - [ ] `post.html` valid HTML — every `[PLACEHOLDER]` replaced.
 - [ ] `<html lang="...">` matches input `locale`.
-- [ ] `post.html` contains NO tone-chip element, NO topic kicker, NO CTA footer (see section 7 „Visual elements
-      deliberately NOT present").
+- [ ] `post.html` contains NO tone-chip element and NO CTA footer (see section 7
+      „Visual elements deliberately NOT present"). The eyebrow pill IS present
+      and renders `content.kicker` (not the raw topic/role).
 - [ ] `caption.txt` ends with the hashtag line and a trailing newline.
 
 ### Full mode only

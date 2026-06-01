@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://invessiv.com/schemas/linkedin-post-generator/content.json",
   "title": "LinkedInPostGeneratorContent",
-  "description": "Structured-output contract for the LLM copy call (Task B3). This is the ONLY portion produced by the LLM. The server wrapper (and the Codex run) assemble the remaining result.json fields — schemaVersion, generatedAt, inputs echo, colorPair, template, content.expertiseDisplay (cap at 60), paths, render — around this object. The LLM MUST NOT emit those wrapper-owned fields. bodyVariant is dictated by the selected template (template.bodyVariant) and passed into the prompt — the LLM must return exactly that body form.",
+  "description": "Structured-output contract for the LLM copy call (Task B3). This is the ONLY portion produced by the LLM. The server wrapper (and the Codex run) assemble the remaining result.json fields — schemaVersion, generatedAt, inputs echo, colorPair, template, paths, render — around this object. The LLM MUST NOT emit those wrapper-owned fields. The eyebrow label `kicker` IS produced by the LLM (part of this schema) and is a thematic label, never the raw role/industry input. bodyVariant is dictated by the selected template (template.bodyVariant) and passed into the prompt — the LLM must return exactly that body form.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -12,6 +12,7 @@
     "insight",
     "bullets",
     "highlight",
+    "kicker",
     "caption"
   ],
   "properties": {
@@ -55,6 +56,13 @@
       "minLength": 1,
       "maxLength": 160,
       "description": "Optional focal emphasis line (≤ 160 chars, plain text, no HTML). Provide a non-null value ONLY when the prompt says the template supports a highlight (insight templates); otherwise return null. Must not repeat the headline verbatim and must respect the same forbidden-phrase rules."
+    },
+    "kicker": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[^<>]*$",
+      "description": "Short eyebrow/kicker label for the pill above the headline. 1-3 words, <= 32 chars, plain text (no HTML), in the post locale. A thematic CATEGORY/rubric derived from the topic AND the content you generate (e.g. 'Preisverhandlung', 'Sichtbarkeit & Vertrauen'). It is NOT the role/industry input — never copy the 'Role or industry' value verbatim — and must NOT restate the headline. Same forbidden-phrase rules as the other fields."
     },
     "caption": {
       "type": "object",

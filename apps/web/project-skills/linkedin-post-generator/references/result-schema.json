@@ -127,7 +127,7 @@
         "insight",
         "bullets",
         "highlight",
-        "expertiseDisplay"
+        "kicker"
       ],
       "properties": {
         "headlineHtml": {
@@ -167,11 +167,12 @@
           "maxLength": 160,
           "description": "Optional focal emphasis line. Non-null only when the selected template has supportsHighlight=true (insight templates); null otherwise. Plain text, no HTML tags."
         },
-        "expertiseDisplay": {
+        "kicker": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 60,
-          "description": "Expertise input after hard char-cap at 60 characters. NOT HTML-escaped (escaping happens at template-substitution time). No appended ellipsis — visual cropping is done via CSS text-overflow on .post__expertise."
+          "maxLength": 32,
+          "pattern": "^[^<>]*$",
+          "description": "LLM-generated eyebrow/kicker label rendered in the pill above the headline (.post__kicker). 1-3 words, <= 32 chars, plain text. A thematic category derived from topic + generated content — NOT the raw role/industry input, NOT a restatement of the headline. NOT HTML-escaped here (escaping happens at template-substitution time); visual cropping via CSS text-overflow."
         }
       },
       "allOf": [

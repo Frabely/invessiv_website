@@ -83,7 +83,7 @@ function renderLinkedInPostHtml(
     .replaceAll("[BG_END]", post.colorPair.secondary)
     .replaceAll("[TEXT]", post.colorPair.text)
     .replaceAll("[ACCENT]", post.colorPair.accent)
-    .replaceAll("[EXPERTISE]", escapeHtml(post.expertiseDisplay))
+    .replaceAll("[KICKER]", escapeHtml(post.kicker))
     .replaceAll("[HEADLINE]", post.headlineHtml)
     .replaceAll("[BODY_CONTENT]", buildBodyContent(post))
     .replaceAll("[HIGHLIGHT_BLOCK]", buildHighlightBlock(post));

@@ -180,6 +180,10 @@ export type Dictionary = {
         title: string;
         body: string;
       };
+      generator: {
+        title: string;
+        body: string;
+      };
       appointments: {
         title: string;
         body: string;

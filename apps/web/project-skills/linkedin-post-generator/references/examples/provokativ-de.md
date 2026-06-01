@@ -11,6 +11,7 @@
 
 - **headlinePlain:** `Eure Jobanzeige ist nicht zu lang — sie ist zu beliebig`
 - **headlineHtml:** `Eure Jobanzeige ist nicht zu lang — sie ist zu <em>beliebig</em>`
+- **kicker:** `Stellenanzeigen`
 - **bodyVariant:** `insight`
 - **insight:**
   `Solange jede dritte Stellenanzeige denselben Stack, denselben "spannenden Hund im Büro" und dieselben Benefits aufzählt, ist die Länge nicht das Problem.`
@@ -32,6 +33,8 @@ Hashtags (JSON array, without leading `#`):
 
 ## Notes
 
+- `kicker` (`Stellenanzeigen`) is a thematic label derived from topic + content — NOT the `expertise` input (
+  `Tech-Recruiting für Startups`) and not a restatement of the headline.
 - Headline is a clear counter-position (not a question).
 - Insight sharpens the position, does not soften with "vielleicht".
 - Caption uses "Niemand" — this is allowed under the §8 hyperbole-pronoun

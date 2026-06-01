@@ -11,6 +11,7 @@
 
 - **headlinePlain:** `Prices do not stay flat — they are renegotiated every year`
 - **headlineHtml:** `Prices do not stay flat — they are <em>renegotiated</em> every year`
+- **kicker:** `Pricing Strategy`
 - **bodyVariant:** `bullets`
 - **bullets:**
   1. `Existing clients test the anchor you set years ago.`
@@ -32,6 +33,8 @@ Hashtags (JSON array, without leading `#`):
 
 ## Notes
 
+- `kicker` (`Pricing Strategy`) is a thematic label derived from topic + content — NOT the `expertise` input (
+  `Strategy consulting for SMBs`) and not a restatement of the headline.
 - `<em>` on the sharpest verb (`renegotiated`).
 - No first person, no opinion language.
 - Hashtags in English; ends with `#LinkedIn`.

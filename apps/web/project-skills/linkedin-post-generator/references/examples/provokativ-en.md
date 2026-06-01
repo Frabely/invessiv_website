@@ -11,6 +11,7 @@
 
 - **headlinePlain:** `Your job ad is not too long — it is too generic`
 - **headlineHtml:** `Your job ad is not too long — it is too <em>generic</em>`
+- **kicker:** `Job Ads`
 - **bodyVariant:** `insight`
 - **insight:**
   `As long as every third posting lists the same stack, the same office dog, and the same benefits, length is not the bottleneck.`
@@ -32,6 +33,8 @@ Hashtags (JSON array, without leading `#`):
 
 ## Notes
 
+- `kicker` (`Job Ads`) is a thematic label derived from topic + content — NOT the `expertise` input (
+  `Tech recruiting for startups`) and not a restatement of the headline.
 - Counter-position framed as statement, not question.
 - Avoids "Everyone", "Nobody", "Hot take".
 - Closing question is open.
