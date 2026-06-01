@@ -49,5 +49,7 @@ create table if not exists linkedin_post_generator_usage_limits
 ) <> '')
     );
 
+--> statement-breakpoint
+
 create index if not exists linkedin_post_generator_usage_limits_reset_idx
     on linkedin_post_generator_usage_limits (window_reset_at);
