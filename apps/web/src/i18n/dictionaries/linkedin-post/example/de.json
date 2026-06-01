@@ -1,7 +1,7 @@
 {
   "eyebrow": "ECHTE BEISPIELE",
   "title": "So sieht der Output aus.",
-  "body": "Zwei Posts, die der Generator in unter einer Minute baut. Hook, Struktur, Caption, Bild — fertig zum Hochladen.",
+  "body": "Zwei Posts, die der Generator in unter einer Minute baut. Hook, Struktur, Caption, Bild – fertig zum Hochladen.",
   "samplesAriaLabel": "Beispiel-Posts vom LinkedIn-Post-Generator",
   "promptLabel": "Prompt",
   "captionMore": "… mehr",
@@ -43,7 +43,7 @@
       "promptText": "Rolle: LinkedIn Marketing — Thema: Warum Sichtbarkeit auf LinkedIn wichtig ist — Ton: Persönlich"
     }
   ],
-  "ctaLead": "Wenn du jetzt ein Thema im Kopf hast, lass dir direkt deinen ersten Entwurf bauen.",
+  "ctaLead": "Wenn du erst das Prinzip testen willst, starte hier mit einem Beispielpost.",
   "ctaLabel": "Post generieren",
   "ctaAriaLabel": "Zum LinkedIn-Post-Generator scrollen"
 }

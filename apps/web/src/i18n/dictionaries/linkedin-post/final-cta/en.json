@@ -1,7 +1,7 @@
 {
-  "eyebrow": "REQUEST AN AI WORKFLOW",
-  "title": "Which weekly task should your workflow take off your plate?",
-  "body": "Briefly describe a recurring process: planning content, drafting posts, preparing image ideas, writing reports, or something else. I will check whether it can become a lean AI workflow.",
+  "eyebrow": "REQUEST A PROJECT",
+  "title": "Which recurring task should your content setup take off your plate?",
+  "body": "Briefly describe the repeating part: planning posts, preparing image ideas, drafting captions, or something else. I will check whether it can become a lean workflow.",
   "form": {
     "fields": {
       "name": {
@@ -26,7 +26,7 @@
     "privacyLabel": "Privacy",
     "privacyHref": "/en/privacy",
     "requiredHint": "Required fields are marked with *.",
-    "submitLabel": "Have my workflow checked",
+    "submitLabel": "Request project",
     "submittingLabel": "Sending ...",
     "payloadContext": "AI workflow inquiry",
     "successTitle": "Thanks for your inquiry.",

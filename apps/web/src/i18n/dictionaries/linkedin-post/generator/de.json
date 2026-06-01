@@ -1,7 +1,7 @@
 {
-  "eyebrow": "DEIN GENERATOR",
-  "title": "Sag uns kurz, worum es geht.",
-  "body": "Drei Felder. Eine E-Mail. Du bekommst Bild und Caption direkt hier.",
+  "eyebrow": "BEISPIEL-POST ERSTELLEN",
+  "title": "Sieh dir zuerst ein konkretes Ergebnis an.",
+  "body": "Mit drei Angaben erzeugen wir dir ein Beispiel für Bild und Caption. Wenn dir das Format passt, kannst du danach dein eigenes Projekt anfragen.",
   "form": {
     "topic": {
       "label": "Worum geht's?",
@@ -12,7 +12,7 @@
       "tooLongError": "Bitte unter 280 Zeichen halten."
     },
     "expertise": {
-      "label": "Deine Rolle oder Branche",
+      "label": "Rolle oder Branche",
       "placeholder": "z. B. Beratung",
       "help": "Hilft beim Ton.",
       "maxLength": 120,
@@ -56,7 +56,7 @@
       "tooLongError": "Bitte unter 80 Zeichen halten."
     },
     "email": {
-      "label": "Wohin schicken wir die Kopie?",
+      "label": "Wohin schicken wir das Ergebnis?",
       "placeholder": "deine@adresse.com",
       "help": "Nur für diesen Post.",
       "requiredError": "Bitte E-Mail-Adresse angeben.",
@@ -75,12 +75,12 @@
   },
   "preview": {
     "idle": {
-      "headline": "Hier erscheint dein Post.",
+      "headline": "Hier erscheint dein Beispiel.",
       "body": "Füll die Felder links aus. Wir bauen Hook, Bild und Caption.",
       "stepLabel": "Schritt"
     },
     "loading": {
-      "headline": "Wir bauen deinen Post …",
+      "headline": "Wir bauen dein Beispiel …",
       "body": "Hook, Struktur und Layout werden jetzt gesetzt.",
       "steps": [
         "Hook formulieren",
@@ -90,7 +90,7 @@
       ]
     },
     "success": {
-      "headline": "Fertig. So sieht dein Post aus.",
+      "headline": "Fertig. So sieht dein Beispiel aus.",
       "imageAlt": "Generiertes LinkedIn-Post-Bild",
       "captionLabel": "Caption",
       "copyCaption": "Caption kopieren",
@@ -104,12 +104,12 @@
     }
   },
   "customPost": {
-    "badge": "Custom Workflow",
-    "headline": "So sieht es aus, wenn der Workflow dir gehört.",
-    "context": "Echter Post aus meinem Workflow: Branding, Bildsprache und Stimme in einem Befehl.",
-    "prompt": "Prüf, ob das zu deinem Workflow passt.",
-    "ctaLabel": "Workflow anfragen",
-    "ctaAriaLabel": "Anfrageformular öffnen und eigenen Content-Workflow anfragen",
+    "badge": "EIGENER ABLAUF",
+    "headline": "So sieht ein eigener Ablauf aus.",
+    "context": "Ein Ausschnitt aus einem echten Workflow: Branding, Bildsprache und Stimme greifen zusammen.",
+    "prompt": "Wenn dir das Format passt, frag dein Projekt an.",
+    "ctaLabel": "Projekt anfragen",
+    "ctaAriaLabel": "Anfrageformular öffnen und ein eigenes Projekt anfragen",
     "ctaHref": "#contact",
     "post": {
       "authorName": "Moritz Hecht",

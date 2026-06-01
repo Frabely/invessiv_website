@@ -5,11 +5,11 @@
   "ctaLabel": "Post generieren",
   "labelsByHref": {
     "#example": "Beispielposts",
-    "#workflow": "Eigener Generator",
+    "#workflow": "Ablauf",
     "#contact": "Projekt anfragen"
   },
   "localeMenuLabel": "Sprache öffnen",
   "localeSwitchLabel": "Sprache wählen",
   "mobileMenuLabel": "Menü",
-  "navAriaLabel": "Navigiere im LinkedIn-Post-Workflow"
+  "navAriaLabel": "Navigiere durch den LinkedIn-Post-Ablauf"
 }

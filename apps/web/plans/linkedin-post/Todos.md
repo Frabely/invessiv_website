@@ -1,25 +1,20 @@
 ## Todos
 
-- Footer inhaltlich anpassen.
 - Privacy prüfen: Muss explizit erwähnt werden, dass beim Generieren von Posts Besucherdaten erfasst werden?
 - Prüfen, ob dafür ein Cookie-Banner oder ein zusätzlicher Consent-Hinweis nötig ist.
-- Die Generator-Copy so anpassen, dass klar wird: Besucher geben ihre Daten an, damit wir sie bei Bedarf später
-  kontaktieren können.
 - Den unteren Teil der Example Section verbessern.
 - Die Abstände der Sections auf Desktop vergrößern.
-- Im Hero auf Desktop eventuell Posts einfügen.
 - Beim Post-Generieren auf Mobile direkt zum erzeugten Post scrollen.
 - Bessere Überleitung direkt am generierten Post zum eigentlichen Request für einen Custom Skill schaffen.
 - Für `service/landing-page` und `service/linkedin-post` eigene Submission-Typen einführen.
 - Limitierung:
   - Monatsbudget festlegen, z. B. `20 €` in OpenAI aufladen.
-  - Pro E-Mail ein Limit definieren, z. B. maximal `2` Posts pro Woche oder alle `3` Tage.
+  - Pro E-Mail/Besucher ein Limit definieren, z. B. maximal `2` Posts pro Woche oder alle `3` Tage. -> Datenschutz?
   - Im Generator grob anzeigen, wie viele Posts in diesem Monat noch übrig sind (
     `20 € / Preis pro Post = verfügbare Posts`).
   - Bild und Caption download als zip zusammen und per Email versenden.
 - Generator input und Name email splitten - download/email erst verschicken wenn kontakt daten eingegeben wurden
 
-- Zweiten CTA sichtbar halten: **„Individuellen KI-Workflow anfragen“** -> auch mobile
 - Generator als Einstieg positionieren, nicht als Hauptprodukt
 - Klar machen: Der Free-Generator ist nur ein Beispiel, der eigentliche Mehrwert ist der individuelle KI-Skill
 - Nach dem Generator stark zur Anfrage überleiten
@@ -29,3 +24,5 @@
 - 2 Gratis-Nutzungen positiv formulieren: **„Du kannst den Generator 2x kostenlos testen“**
 - Nach der zweiten Nutzung direkt zum Anfrageformular führen
 - Beispielposts mit **Input + Output** darstellen, damit der Nutzen sofort verständlich wird
+-
+- Im Hero auf Desktop eventuell Posts einfügen.

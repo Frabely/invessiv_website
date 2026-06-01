@@ -1,7 +1,7 @@
 {
-  "eyebrow": "YOUR GENERATOR",
-  "title": "Tell us what to post.",
-  "body": "Three fields. One email. You get the image and caption here.",
+  "eyebrow": "CREATE A SAMPLE POST",
+  "title": "See a concrete result first.",
+  "body": "Three inputs generate a sample image and caption. If the format fits, you can request your own project next.",
   "form": {
     "topic": {
       "label": "What's it about?",
@@ -12,7 +12,7 @@
       "tooLongError": "Please keep it under 280 characters."
     },
     "expertise": {
-      "label": "Your role or industry",
+      "label": "Role or industry",
       "placeholder": "e.g. consulting",
       "help": "Helps match the tone.",
       "maxLength": 120,
@@ -56,7 +56,7 @@
       "tooLongError": "Please keep it under 80 characters."
     },
     "email": {
-      "label": "Where do we send the copy?",
+      "label": "Where should we send the result?",
       "placeholder": "you@address.com",
       "help": "For this post only.",
       "requiredError": "Please add your email.",
@@ -64,23 +64,23 @@
     },
     "consent": {
       "label": "I agree my email can be used to deliver this post.",
-      "requiredError": "We need your OK to deliver the post."
+      "requiredError": "We need your OK to deliver the result."
     },
     "honeypot": {
       "label": "Company"
     },
     "submit": "Generate post",
     "submitLoading": "Creating …",
-    "loadingHelp": "Keep this open for ~30 seconds."
+    "loadingHelp": "Keep this open for about 30 seconds."
   },
   "preview": {
     "idle": {
-      "headline": "Your post will appear here.",
+      "headline": "Your sample will appear here.",
       "body": "Fill in the fields on the left. We build hook, image and caption.",
       "stepLabel": "Step"
     },
     "loading": {
-      "headline": "We're building your post …",
+      "headline": "We're building your sample …",
       "body": "Hook, structure and layout are being set.",
       "steps": [
         "Writing the hook",
@@ -90,7 +90,7 @@
       ]
     },
     "success": {
-      "headline": "Done. Here's your post.",
+      "headline": "Done. Here's your sample.",
       "imageAlt": "Generated LinkedIn post image",
       "captionLabel": "Caption",
       "copyCaption": "Copy caption",
@@ -104,12 +104,12 @@
     }
   },
   "customPost": {
-    "badge": "Custom Workflow",
-    "headline": "This is what it looks like when the workflow is yours.",
-    "context": "A real post from my workflow: branding, visual language, and voice in one command.",
-    "prompt": "Check if this fits your workflow.",
-    "ctaLabel": "Request workflow",
-    "ctaAriaLabel": "Open the inquiry form to request your own content workflow",
+    "badge": "CUSTOM PROCESS",
+    "headline": "This is what a custom process looks like.",
+    "context": "A post from a real workflow: branding, visual language, and voice are combined in one system.",
+    "prompt": "If the format fits, request your project next.",
+    "ctaLabel": "Request project",
+    "ctaAriaLabel": "Open the inquiry form to request your own project",
     "ctaHref": "#contact",
     "post": {
       "authorName": "Moritz Hecht",
