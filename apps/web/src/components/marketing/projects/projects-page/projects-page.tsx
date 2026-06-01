@@ -40,26 +40,17 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
   const footerSection = getHomeSections(locale).find(
     (section) => section.id === FOOTER_SECTION_ID,
   );
-  const localizeFooterHref = (href: string) => {
-    if (href.startsWith("#")) {
-      return `/${locale}${href}`;
-    }
-
-    return href;
-  };
-  const localizedFooterColumns =
-    footerSection?.footerColumns?.map((column) => ({
-      ...column,
-      links: column.links.map((link) => ({
-        ...link,
-        href: localizeFooterHref(link.href),
-      })),
-    })) ?? [];
-  const localizedFooterLegalLinks =
-    footerSection?.footerLegalLinks?.map((link) => ({
-      ...link,
-      href: localizeFooterHref(link.href),
-    })) ?? [];
+  const localizedNavColumn = footerSection
+    ? {
+        ...footerSection.navColumn,
+        links: footerSection.navColumn.links.map((link) => ({
+          ...link,
+          href: link.href.startsWith("#")
+            ? `/${locale}${link.href}`
+            : link.href,
+        })),
+      }
+    : null;
 
   return (
     <>
@@ -321,16 +312,11 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
         </LayoutShell>
       </main>
 
-      {footerSection ? (
+      {footerSection && localizedNavColumn ? (
         <FooterSection
-          bottomNote={footerSection.footerBottomNote}
-          brand={footerSection.footerBrand}
-          columns={localizedFooterColumns}
-          copyright={footerSection.footerCopyright}
           description={footerSection.description}
-          id={FOOTER_SECTION_ID}
-          legalLinks={localizedFooterLegalLinks}
-          socialLinks={footerSection.footerSocialLinks}
+          locale={locale}
+          navColumn={localizedNavColumn}
         />
       ) : null}
     </>

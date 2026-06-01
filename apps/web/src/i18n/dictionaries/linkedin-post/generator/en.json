@@ -108,9 +108,9 @@
     "headline": "This is what it looks like when the workflow is yours.",
     "context": "A real post from my workflow: branding, visual language, and voice in one command.",
     "prompt": "Check if this fits your workflow.",
-    "ctaLabel": "Check feasibility",
-    "ctaAriaLabel": "Get in touch to check your own content workflow",
-    "ctaHref": "#generator",
+    "ctaLabel": "Request workflow",
+    "ctaAriaLabel": "Open the inquiry form to request your own content workflow",
+    "ctaHref": "#contact",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Web designer",

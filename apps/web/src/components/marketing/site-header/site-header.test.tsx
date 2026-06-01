@@ -240,4 +240,47 @@ describe("SiteHeader", () => {
 
     expect(mobileMenu.hasAttribute("open")).toBe(false);
   });
+
+  it("keeps non-cta contact links visible in the mobile menu", () => {
+    mockUseLanguage.mockReturnValue({
+      locale: "de",
+      setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
+      isMounted: true,
+      theme: "dark",
+      toggleTheme: vi.fn(),
+    });
+
+    const { container } = render(
+      <SiteHeader
+        ctaHref="#generator"
+        navigation={[{ href: "#example" }, { href: "#contact" }]}
+        uiContent={{
+          actionsAriaLabel: "Actions",
+          brandLabel: "Invessiv",
+          brandLogoAlt: "Invessiv Logo",
+          ctaLabel: "Post generieren",
+          labelsByHref: {
+            "#contact": "Workflow anfragen",
+            "#example": "Beispiel",
+            "#generator": "Post generieren",
+          },
+          localeMenuLabel: "Sprache öffnen",
+          localeSwitchLabel: "Sprache wählen",
+          mobileMenuLabel: "Menü",
+          navAriaLabel: "Navigation",
+        }}
+      />,
+    );
+
+    const mobileMenu = container.querySelector(".site-header__mobile-menu");
+    if (!(mobileMenu instanceof HTMLDetailsElement)) {
+      throw new Error("Expected mobile menu to be rendered");
+    }
+
+    expect(
+      within(mobileMenu).getByRole("link", { name: "Workflow anfragen" }),
+    ).toBeTruthy();
+  });
 });

@@ -9,6 +9,7 @@ import { ReadingProgress } from "@/components/marketing/shared/reading-progress/
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
+import type { NavigationItem } from "@/config/navigation/home";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import {
   getSiteHeaderUiContent,
@@ -16,7 +17,6 @@ import {
 } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
-import type { NavigationItem } from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
 import {
   createLocaleScrollRestoreState,
@@ -110,8 +110,9 @@ export function SiteHeader({
     const hashIndex = href.indexOf("#");
     return hashIndex >= 0 ? href.slice(hashIndex) : href;
   };
+  const ctaLabelKey = getLabelKey(ctaHref);
   const mobileNavigation = navigation.filter(
-    (item) => getLabelKey(item.href) !== SECTION_HREFS.contact,
+    (item) => getLabelKey(item.href) !== ctaLabelKey,
   );
   const headerClassName = isScrolled
     ? `${styles.header} ${styles.headerScrolled} site-header is-scrolled`

@@ -8,15 +8,7 @@ import {
 import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
-import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
-import {
-  COMPANY,
-  COMPANY_CALENDLY,
-  COMPANY_MAILTO,
-  COMPANY_SOCIAL_INSTAGRAM,
-  COMPANY_SOCIAL_LINKEDIN,
-  COMPANY_TEL,
-} from "@/config/company";
+import { COMPANY, COMPANY_CALENDLY, COMPANY_MAILTO } from "@/config/company";
 import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
@@ -271,17 +263,6 @@ export type FooterColumnCopy = {
   }>;
 };
 
-export type FooterSocialLinkCopy = {
-  platform: LeadSocialPlatform;
-  href: string;
-  label: string;
-};
-
-export type FooterLegalLinkCopy = {
-  label: string;
-  href: string;
-};
-
 type HeroSectionCopy = {
   title: string;
   description: string;
@@ -333,12 +314,7 @@ type ContactSectionCopy = {
 
 type FooterSectionCopy = {
   description: string;
-  footerColumns: FooterColumnCopy[];
-  footerBrand: string;
-  footerCopyright: string;
-  footerSocialLinks: FooterSocialLinkCopy[];
-  footerLegalLinks: FooterLegalLinkCopy[];
-  footerBottomNote?: string;
+  navColumn: FooterColumnCopy;
 };
 
 type ContentSectionMap = {
@@ -368,6 +344,7 @@ export type HomeSectionContent = {
 
 const LOCALIZED_PAGE_HREFS: Record<Locale, Partial<Record<string, string>>> = {
   de: {
+    [SITE_ROUTES.HOME]: createLocalePathname(SITE_ROUTES.HOME, "de"),
     [SITE_ROUTES.IMPRINT]: createLocalePathname(SITE_ROUTES.IMPRINT, "de"),
     [SITE_ROUTES.PRIVACY]: createLocalePathname(SITE_ROUTES.PRIVACY, "de"),
     [SITE_ROUTES.TERMS]: createLocalePathname(SITE_ROUTES.TERMS, "de"),
@@ -375,13 +352,22 @@ const LOCALIZED_PAGE_HREFS: Record<Locale, Partial<Record<string, string>>> = {
       SITE_ROUTES.LANDING_PAGE_SERVICE,
       "de",
     ),
+    [SITE_ROUTES.LINKEDIN_POST_SERVICE]: createLocalePathname(
+      SITE_ROUTES.LINKEDIN_POST_SERVICE,
+      "de",
+    ),
   },
   en: {
+    [SITE_ROUTES.HOME]: createLocalePathname(SITE_ROUTES.HOME, "en"),
     [SITE_ROUTES.IMPRINT]: createLocalePathname(SITE_ROUTES.IMPRINT, "en"),
     [SITE_ROUTES.PRIVACY]: createLocalePathname(SITE_ROUTES.PRIVACY, "en"),
     [SITE_ROUTES.TERMS]: createLocalePathname(SITE_ROUTES.TERMS, "en"),
     [SITE_ROUTES.LANDING_PAGE_SERVICE]: createLocalePathname(
       SITE_ROUTES.LANDING_PAGE_SERVICE,
+      "en",
+    ),
+    [SITE_ROUTES.LINKEDIN_POST_SERVICE]: createLocalePathname(
+      SITE_ROUTES.LINKEDIN_POST_SERVICE,
       "en",
     ),
   },
@@ -1564,93 +1550,11 @@ const HOME_SECTIONS = [
       de: {
         description:
           "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
-        footerColumns: [
-          {
-            title: "Menü",
-            links: [],
-          },
-          {
-            title: "Leistungen",
-            links: [
-              {
-                label: "Landingpage erstellen lassen",
-                href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-              },
-            ],
-          },
-          {
-            title: "Kontakt",
-            links: [
-              { label: "Invessiv", href: "/imprint#company-details" },
-              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
-              { label: COMPANY.contact.phoneDisplayDe, href: COMPANY_TEL },
-            ],
-          },
-        ],
-        footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. Alle Rechte vorbehalten.",
-        footerSocialLinks: [
-          {
-            platform: LeadSocialPlatform.Linkedin,
-            href: COMPANY_SOCIAL_LINKEDIN,
-            label: "LinkedIn",
-          },
-          {
-            platform: LeadSocialPlatform.Instagram,
-            href: COMPANY_SOCIAL_INSTAGRAM,
-            label: "Instagram",
-          },
-        ],
-        footerLegalLinks: [
-          { label: "Impressum", href: "/imprint" },
-          { label: "Datenschutz", href: "/privacy" },
-          { label: "AGB", href: "/terms" },
-        ],
+        navColumn: { title: "Menü", links: [] },
       },
       en: {
         description: "Quick access to core pages and contact options.",
-        footerColumns: [
-          {
-            title: "Menu",
-            links: [],
-          },
-          {
-            title: "Services",
-            links: [
-              {
-                label: "Get a landing page built",
-                href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-              },
-            ],
-          },
-          {
-            title: "Contact",
-            links: [
-              { label: "Invessiv", href: "/imprint#company-details" },
-              { label: COMPANY.contact.email, href: COMPANY_MAILTO },
-              { label: COMPANY.contact.phoneDisplayEn, href: COMPANY_TEL },
-            ],
-          },
-        ],
-        footerBrand: "Invessiv",
-        footerCopyright: "© 2026 Invessiv. All rights reserved.",
-        footerSocialLinks: [
-          {
-            platform: LeadSocialPlatform.Linkedin,
-            href: COMPANY_SOCIAL_LINKEDIN,
-            label: "LinkedIn",
-          },
-          {
-            platform: LeadSocialPlatform.Instagram,
-            href: COMPANY_SOCIAL_INSTAGRAM,
-            label: "Instagram",
-          },
-        ],
-        footerLegalLinks: [
-          { label: "Imprint", href: "/imprint" },
-          { label: "Privacy", href: "/privacy" },
-          { label: "Terms", href: "/terms" },
-        ],
+        navColumn: { title: "Menu", links: [] },
       },
     },
   },
@@ -1705,35 +1609,13 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
       id: section.id,
       ...section.copy[locale],
     };
-    const [menuColumn, ...footerColumns] = localizedSection.footerColumns;
-
-    if (!menuColumn) {
-      throw new Error("Expected footer menu column to be available.");
-    }
 
     return {
       ...localizedSection,
-      footerColumns: [
-        {
-          ...menuColumn,
-          links: primaryNavigationLinks,
-        },
-        ...footerColumns,
-      ].map((column) => ({
-        ...column,
-        links: column.links.map((link) => ({
-          ...link,
-          href: localizeInternalHref(link.href),
-        })),
-      })),
-      footerSocialLinks: localizedSection.footerSocialLinks.map((link) => ({
-        ...link,
-        href: localizeInternalHref(link.href),
-      })),
-      footerLegalLinks: localizedSection.footerLegalLinks.map((link) => ({
-        ...link,
-        href: localizeInternalHref(link.href),
-      })),
+      navColumn: {
+        ...localizedSection.navColumn,
+        links: primaryNavigationLinks,
+      },
     };
   });
 }

@@ -19,36 +19,14 @@ describe("home dictionary", () => {
       }
 
       const header = getSiteHeaderUiContent(locale);
-      const menuColumn = footerSection.footerColumns[0];
+      const { navColumn } = footerSection;
 
-      expect(menuColumn.links.map((link) => link.href)).toEqual(
+      expect(navColumn.links.map((link) => link.href)).toEqual(
         PRIMARY_NAVIGATION.map((item) => item.href),
       );
-      expect(menuColumn.links.map((link) => link.label)).toEqual(
+      expect(navColumn.links.map((link) => link.label)).toEqual(
         PRIMARY_NAVIGATION.map((item) => header.labelsByHref[item.href]),
       );
-    },
-  );
-
-  it.each([
-    ["de", "/de/services/landing-page", "Landingpage erstellen lassen"],
-    ["en", "/en/services/landing-page", "Get a landing page built"],
-  ] as const)(
-    "localizes the %s footer service link",
-    (locale, expectedHref, expectedLabel) => {
-      const footerSection = getHomeSections(locale).find(
-        (section) => section.id === "footer",
-      );
-
-      if (!footerSection) {
-        throw new Error("Expected footer section to be available.");
-      }
-
-      const serviceLink = footerSection.footerColumns
-        .flatMap((column) => column.links)
-        .find((link) => link.label === expectedLabel);
-
-      expect(serviceLink?.href).toBe(expectedHref);
     },
   );
 

@@ -72,6 +72,7 @@ export function MarketingHomePageClient({
 
         <HomeSectionsRenderer
           landingPageServiceHref={landingPageServiceHref}
+          locale={locale}
           sections={sections}
           servicesSectionRef={servicesSectionRef}
           showProofSection={showProofSection}

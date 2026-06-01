@@ -108,9 +108,9 @@
     "headline": "So sieht es aus, wenn der Workflow dir gehört.",
     "context": "Echter Post aus meinem Workflow: Branding, Bildsprache und Stimme in einem Befehl.",
     "prompt": "Prüf, ob das zu deinem Workflow passt.",
-    "ctaLabel": "Umsetzbarkeit prüfen",
-    "ctaAriaLabel": "Kontakt aufnehmen und eigenen Content-Workflow prüfen",
-    "ctaHref": "#generator",
+    "ctaLabel": "Workflow anfragen",
+    "ctaAriaLabel": "Anfrageformular öffnen und eigenen Content-Workflow anfragen",
+    "ctaHref": "#contact",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Webdesigner",

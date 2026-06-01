@@ -19,6 +19,9 @@ import {
   SECTION_IDS,
   SERVICES_SECTION_ID,
 } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import type { Locale } from "@/config/i18n";
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
 import type { HomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import type { ValidationResult } from "@/lib/navigation/validate-navigation-sections";
@@ -26,6 +29,7 @@ import { CANONICAL_CONTACT_OFFER_KEY_BY_GROUP } from "@/common/constants/marketi
 
 type HomeSectionsRendererProps = {
   landingPageServiceHref: string;
+  locale: Locale;
   sections: HomeSectionContent[];
   servicesSectionRef: RefObject<HTMLElement | null>;
   showProofSection: boolean;
@@ -35,6 +39,7 @@ type HomeSectionsRendererProps = {
 
 export function HomeSectionsRenderer({
   landingPageServiceHref,
+  locale,
   sections,
   servicesSectionRef,
   showProofSection,
@@ -185,18 +190,15 @@ export function HomeSectionsRenderer({
                   : [];
               },
             );
-            const privacyHref = footerSection.footerLegalLinks.find((link) =>
-              /privacy|datenschutz/i.test(link.label),
-            )?.href;
+            const privacyHref = createLocalePathname(
+              SITE_ROUTES.PRIVACY,
+              locale,
+            );
 
             if (contactFormOffers.length !== contactFormOfferKeys.length) {
               throw new Error(
                 "Expected contact form offer cards to be available.",
               );
-            }
-
-            if (!privacyHref) {
-              throw new Error("Expected footer privacy link for contact form.");
             }
 
             return (
@@ -222,14 +224,9 @@ export function HomeSectionsRenderer({
       </LayoutShell>
 
       <FooterSection
-        bottomNote={footerSection.footerBottomNote}
-        brand={footerSection.footerBrand}
-        columns={footerSection.footerColumns}
-        copyright={footerSection.footerCopyright}
         description={footerSection.description}
-        id={FOOTER_SECTION_ID}
-        legalLinks={footerSection.footerLegalLinks}
-        socialLinks={footerSection.footerSocialLinks}
+        locale={locale}
+        navColumn={footerSection.navColumn}
       />
     </>
   );

@@ -33,12 +33,6 @@
   max-width: 34rem;
 }
 
-.brandWrap {
-  display: grid;
-  gap: 4px;
-  align-content: start;
-}
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -49,13 +43,6 @@
   color: var(--color-text);
   font-size: var(--font-size-heading-lg);
   letter-spacing: -0.03em;
-}
-
-.ownerNote {
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: var(--font-size-ui-xs);
-  line-height: 1.3;
-  letter-spacing: 0.02em;
 }
 
 .description {
@@ -208,7 +195,6 @@
 }
 
 :global([data-theme="light"]) .description,
-:global([data-theme="light"]) .ownerNote,
 :global([data-theme="light"]) .bottomMeta {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
 }
@@ -270,10 +256,6 @@
 
   .description {
     max-width: 40ch;
-  }
-
-  .brandWrap {
-    justify-items: center;
   }
 
   .brand {

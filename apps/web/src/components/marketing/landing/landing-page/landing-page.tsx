@@ -13,11 +13,7 @@ import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { LANDING_HEADER_NAVIGATION } from "@/config/navigation/landing";
-import {
-  CONTACT_SECTION_ID,
-  FOOTER_SECTION_ID,
-  SECTION_HREFS,
-} from "@/config/navigation/home";
+import { CONTACT_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -113,14 +109,9 @@ export function LandingPage({ locale }: LandingPageProps) {
         />
 
         <FooterSection
-          bottomNote={footer.bottomNote}
-          brand={footer.brand}
-          columns={footer.columns}
-          copyright={footer.copyright}
           description={footer.description}
-          id={FOOTER_SECTION_ID}
-          legalLinks={footer.legalLinks}
-          socialLinks={footer.socialLinks}
+          locale={locale}
+          navColumn={footer.navColumn}
         />
       </main>
     </>

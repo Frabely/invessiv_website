@@ -1,0 +1,24 @@
+{
+  "description": "A compact workflow for LinkedIn posts with image, caption, and a clear inquiry path.",
+  "navColumn": {
+    "title": "LinkedIn Post",
+    "links": [
+      {
+        "label": "Sample posts",
+        "href": "#example"
+      },
+      {
+        "label": "Generate post",
+        "href": "#generator"
+      },
+      {
+        "label": "Custom Generator",
+        "href": "#workflow"
+      },
+      {
+        "label": "Request project",
+        "href": "#contact"
+      }
+    ]
+  }
+}

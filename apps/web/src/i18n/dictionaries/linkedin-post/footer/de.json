@@ -1,0 +1,24 @@
+{
+  "description": "Ein kompakter Workflow für LinkedIn-Posts mit Bild, Caption und klarer Anfrage.",
+  "navColumn": {
+    "title": "LinkedIn Post",
+    "links": [
+      {
+        "label": "Beispielposts",
+        "href": "#example"
+      },
+      {
+        "label": "Post generieren",
+        "href": "#generator"
+      },
+      {
+        "label": "Eigener Generator",
+        "href": "#workflow"
+      },
+      {
+        "label": "Projekt anfragen",
+        "href": "#contact"
+      }
+    ]
+  }
+}

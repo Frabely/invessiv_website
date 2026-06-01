@@ -34,6 +34,7 @@ describe("HomeSectionsRenderer", () => {
     render(
       <HomeSectionsRenderer
         landingPageServiceHref="/de/services/landing-page"
+        locale="de"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={true}
@@ -70,6 +71,7 @@ describe("HomeSectionsRenderer", () => {
     render(
       <HomeSectionsRenderer
         landingPageServiceHref="/de/services/landing-page"
+        locale="de"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={true}
@@ -106,6 +108,7 @@ describe("HomeSectionsRenderer", () => {
     render(
       <HomeSectionsRenderer
         landingPageServiceHref="/de/services/landing-page"
+        locale="de"
         sections={sections}
         servicesSectionRef={createRef<HTMLElement>()}
         showProofSection={false}

@@ -2,42 +2,59 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
 import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
+import {
+  COMPANY,
+  COMPANY_MAILTO,
+  COMPANY_SOCIAL_INSTAGRAM,
+  COMPANY_SOCIAL_LINKEDIN,
+  COMPANY_TEL,
+} from "@/config/company";
+import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
-import { SECTION_HREFS } from "@/config/navigation/home";
-import type {
-  FooterColumnCopy,
-  FooterLegalLinkCopy,
-  FooterSocialLinkCopy,
-} from "@/i18n/dictionaries/marketing/home";
+import type { Locale } from "@/config/i18n";
+import type { FooterColumnCopy } from "@/i18n/dictionaries/marketing/home";
+import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
 import styles from "./footer-section.module.css";
 
-type FooterColumn = FooterColumnCopy;
-type FooterLegalLink = FooterLegalLinkCopy;
-type FooterSocialLink = FooterSocialLinkCopy;
-
-type FooterSectionProps = {
-  bottomNote?: string;
-  brand: string;
-  columns: FooterColumn[];
-  copyright: string;
+export type FooterSectionProps = {
   description: string;
-  id: string;
-  legalLinks: FooterLegalLink[];
-  socialLinks: FooterSocialLink[];
+  locale: Locale;
+  navColumn: FooterColumnCopy;
 };
 
+const PHONE_DISPLAY: Record<Locale, string> = {
+  de: COMPANY.contact.phoneDisplayDe,
+  en: COMPANY.contact.phoneDisplayEn,
+};
+
+const SOCIAL_LINKS = [
+  {
+    platform: LeadSocialPlatform.Linkedin,
+    href: COMPANY_SOCIAL_LINKEDIN,
+    label: "LinkedIn",
+    icon: faLinkedinIn,
+  },
+  {
+    platform: LeadSocialPlatform.Instagram,
+    href: COMPANY_SOCIAL_INSTAGRAM,
+    label: "Instagram",
+    icon: faInstagram,
+  },
+];
+
 export function FooterSection({
-  bottomNote,
-  brand,
-  columns,
-  copyright,
   description,
-  id,
-  legalLinks,
-  socialLinks,
+  locale,
+  navColumn,
 }: FooterSectionProps) {
+  const copy = getFooterStaticContent(locale);
+  const imprintHref = createLocalePathname(SITE_ROUTES.IMPRINT, locale);
+
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
+
   const getLinkAnalyticsProps = (href: string) => {
     const contactTarget = getContactTarget(href);
     if (contactTarget) {
@@ -57,80 +74,63 @@ export function FooterSection({
     }
     return {};
   };
-  const linkColumns = columns
-    .map((column) => ({
-      ...column,
-      links: column.links.filter((link) => !isPlaceholderHref(link.href)),
-    }))
-    .filter((column) => column.links.length > 0);
-  const legalColumnTitle = legalLinks.some((link) => link.label === "Impressum")
-    ? "Rechtliches"
-    : "Legal";
-  const footerColumnsWithLegal = legalLinks.length
-    ? [
-        ...linkColumns.slice(0, 1),
-        {
-          title: legalColumnTitle,
-          links: legalLinks.filter((link) => !isPlaceholderHref(link.href)),
-        },
-        ...linkColumns.slice(1),
-      ]
-    : linkColumns;
-  const visibleSocialLinks = socialLinks.filter(
-    (link) => !isPlaceholderHref(link.href),
-  );
 
-  const getSocialIcon = (platform: FooterSocialLink["platform"]) => {
-    if (platform === LeadSocialPlatform.Linkedin) {
-      return faLinkedinIn;
-    }
-    return faInstagram;
+  const filteredNavColumn: FooterColumnCopy = {
+    ...navColumn,
+    links: navColumn.links.filter((link) => !isPlaceholderHref(link.href)),
   };
 
+  const contactColumn = {
+    title: copy.contactTitle,
+    links: [
+      { label: copy.brand, href: `${imprintHref}#company-details` },
+      { label: COMPANY.contact.email, href: COMPANY_MAILTO },
+      { label: PHONE_DISPLAY[locale], href: COMPANY_TEL },
+    ],
+  };
+
+  const columns = [
+    filteredNavColumn,
+    { title: copy.legalTitle, links: copy.legalLinks },
+    { title: copy.invessivTitle, links: copy.invessivLinks },
+    contactColumn,
+  ];
+
   return (
-    <footer className={styles.footer} id={id}>
+    <footer className={styles.footer} id={FOOTER_SECTION_ID}>
       <div className={styles.inner}>
         <div className={styles.shell}>
           <div className={styles.layout}>
             <section className={styles.identity}>
-              <div className={styles.brandWrap}>
-                <span className={styles.brand}>
-                  <Image
-                    src="/brand/icon.png"
-                    alt="Invessiv Logo"
-                    width={24}
-                    height={24}
-                  />
-                  <strong>{brand}</strong>
-                </span>
-                {bottomNote ? (
-                  <small className={styles.ownerNote}>{bottomNote}</small>
-                ) : null}
-              </div>
+              <span className={styles.brand}>
+                <Image
+                  src="/brand/icon.png"
+                  alt="Invessiv Logo"
+                  width={24}
+                  height={24}
+                />
+                <strong>{copy.brand}</strong>
+              </span>
 
               <p className={styles.description}>{description}</p>
 
-              {visibleSocialLinks.length ? (
-                <ul className={styles.socials} aria-label="Social links">
-                  {visibleSocialLinks.map((socialLink) => (
-                    <li key={socialLink.platform}>
-                      <a
-                        aria-label={socialLink.label}
-                        className={styles.socialLink}
-                        href={socialLink.href}
-                      >
-                        <FontAwesomeIcon
-                          icon={getSocialIcon(socialLink.platform)}
-                        />
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              <ul className={styles.socials} aria-label={copy.socialsAriaLabel}>
+                {SOCIAL_LINKS.map((socialLink) => (
+                  <li key={socialLink.platform}>
+                    <a
+                      aria-label={socialLink.label}
+                      className={styles.socialLink}
+                      href={socialLink.href}
+                    >
+                      <FontAwesomeIcon icon={socialLink.icon} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </section>
 
             <div className={styles.grid} role="list">
-              {footerColumnsWithLegal.map((column) => (
+              {columns.map((column) => (
                 <section
                   className={styles.column}
                   key={column.title}
@@ -161,7 +161,7 @@ export function FooterSection({
 
           <div className={styles.bottom}>
             <div className={styles.bottomMeta}>
-              <span>{copyright}</span>
+              <span>{copy.copyright}</span>
             </div>
           </div>
         </div>

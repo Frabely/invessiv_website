@@ -3,7 +3,7 @@
   "title": "Your next LinkedIn post in 60 seconds",
   "description": "Enter your topic — we generate a ready-to-post image and caption. Free, no account needed.",
   "primaryCta": "Generate post",
-  "secondaryCta": "See an example",
+  "secondaryCta": "Request workflow",
   "trustChips": ["Free", "Instant result", "Download included"],
   "visualAriaLabel": "AI-generated LinkedIn post with image and caption preview"
 }

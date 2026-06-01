@@ -73,7 +73,7 @@ export function AiWorkflowsHeroSection({
             data-analytics-event="cta_click"
             data-analytics-location={trackingLocation}
             data-analytics-variant="secondary"
-            data-analytics-target="offer"
+            data-analytics-target="contact"
           >
             {secondaryCta}
           </a>

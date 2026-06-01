@@ -2,10 +2,11 @@
   "actionsAriaLabel": "Sprache und Seitenaktion",
   "brandLabel": "Invessiv",
   "brandLogoAlt": "Invessiv Logo",
-  "ctaLabel": "Zum Formular",
+  "ctaLabel": "Post generieren",
   "labelsByHref": {
-    "#example": "Beispiel",
-    "#workflow": "Workflow"
+    "#example": "Beispielposts",
+    "#workflow": "Eigener Generator",
+    "#contact": "Projekt anfragen"
   },
   "localeMenuLabel": "Sprache öffnen",
   "localeSwitchLabel": "Sprache wählen",

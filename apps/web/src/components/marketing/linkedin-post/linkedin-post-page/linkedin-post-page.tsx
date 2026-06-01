@@ -8,18 +8,17 @@ import { FooterSection } from "@/components/marketing/home/sections/footer-secti
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
-import { FOOTER_SECTION_ID } from "@/config/navigation/home";
 import {
   LINKEDIN_POST_HEADER_NAVIGATION,
   LINKEDIN_POST_SECTION_HREFS,
 } from "@/config/navigation/linkedin-post";
 import { getLinkedInPostHeaderContent } from "@/i18n/dictionaries/linkedin-post/header";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
+import { getLinkedInPostFooterContent } from "@/i18n/dictionaries/linkedin-post/footer";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
-import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 
 type LinkedInPostPageProps = {
   locale: Locale;
@@ -32,7 +31,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
   const generator = getLinkedInPostGeneratorContent(locale);
   const finalCta = getLinkedInPostFinalCtaContent(locale);
   const header = getLinkedInPostHeaderContent(locale);
-  const footer = getLandingFooterContent(locale);
+  const footer = getLinkedInPostFooterContent(locale);
 
   return (
     <>
@@ -52,7 +51,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
         <AiWorkflowsHeroSection
           {...hero}
           primaryCtaHref={LINKEDIN_POST_SECTION_HREFS.generator}
-          secondaryCtaHref={LINKEDIN_POST_SECTION_HREFS.example}
+          secondaryCtaHref={LINKEDIN_POST_SECTION_HREFS.contact}
           trackingLocation="linkedin_post_hero"
         />
 
@@ -90,14 +89,9 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
         />
 
         <FooterSection
-          bottomNote={footer.bottomNote}
-          brand={footer.brand}
-          columns={footer.columns}
-          copyright={footer.copyright}
           description={footer.description}
-          id={FOOTER_SECTION_ID}
-          legalLinks={footer.legalLinks}
-          socialLinks={footer.socialLinks}
+          locale={locale}
+          navColumn={footer.navColumn}
         />
       </main>
     </>

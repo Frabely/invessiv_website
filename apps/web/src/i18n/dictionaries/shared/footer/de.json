@@ -1,0 +1,36 @@
+{
+  "brand": "Invessiv",
+  "copyright": "© 2026 Invessiv. Alle Rechte vorbehalten.",
+  "legalTitle": "Rechtliches",
+  "legalLinks": [
+    {
+      "label": "Impressum",
+      "href": "/de/imprint"
+    },
+    {
+      "label": "Datenschutz",
+      "href": "/de/privacy"
+    },
+    {
+      "label": "AGB",
+      "href": "/de/terms"
+    }
+  ],
+  "invessivTitle": "Invessiv",
+  "invessivLinks": [
+    {
+      "label": "Mehr über Invessiv",
+      "href": "/de"
+    },
+    {
+      "label": "Landingpage-Angebot",
+      "href": "/de/services/landing-page"
+    },
+    {
+      "label": "LinkedIn Post Generator",
+      "href": "/de/services/linkedin-post"
+    }
+  ],
+  "contactTitle": "Kontakt",
+  "socialsAriaLabel": "Social-Links"
+}
