@@ -1,0 +1,7 @@
+export const LINKEDIN_POST_GENERATOR_USAGE_LIMIT_SCOPE =
+  "linkedin-post-generator";
+
+export const LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX = 2;
+
+export const LINKEDIN_POST_GENERATOR_USAGE_LIMIT_WINDOW_MS =
+  30 * 24 * 60 * 60 * 1000;
