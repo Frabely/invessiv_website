@@ -1,4 +1,5 @@
 export * from "./constants/http";
+export * from "./constants/generator";
 export * from "./constants/leads/activity";
 export * from "./constants/leads/badges";
 export * from "./constants/leads/delete";
@@ -9,4 +10,5 @@ export * from "./constants/leads/list";
 export * from "./constants/leads/sources";
 export * from "./constants/leads/tracking";
 export * from "./contracts/i18n/locale";
+export type * from "./contracts/generator";
 export type * from "./contracts/leads";

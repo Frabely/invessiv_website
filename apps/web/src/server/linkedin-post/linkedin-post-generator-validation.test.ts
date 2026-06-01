@@ -33,7 +33,7 @@ describe("linkedinPostGeneratorRequestSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("enforces the topic, expertise and display name length limits", () => {
+  it("enforces the topic, expertise and optional display name length limits", () => {
     const result = linkedinPostGeneratorRequestSchema.safeParse({
       ...VALID_REQUEST,
       displayName: "x".repeat(81),
@@ -44,12 +44,14 @@ describe("linkedinPostGeneratorRequestSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rejects a missing display name", () => {
+  it("accepts a missing display name and optional email", () => {
     const result = linkedinPostGeneratorRequestSchema.safeParse({
       ...VALID_REQUEST,
+      consent: false,
       displayName: "",
+      email: "",
     });
 
-    expect(result.success).toBe(false);
+    expect(result.success).toBe(true);
   });
 });

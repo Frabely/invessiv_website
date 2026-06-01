@@ -33,6 +33,11 @@ export type LinkedInPostGeneratorColorCopy = {
   swatchLabel: string;
 };
 
+export type LinkedInPostGeneratorDeliveryCopy = {
+  title: string;
+  body: string;
+};
+
 export type LinkedInPostGeneratorConsentCopy = {
   label: string;
   requiredError: string;
@@ -43,10 +48,12 @@ export type LinkedInPostGeneratorFormCopy = {
   expertise: LinkedInPostGeneratorFieldCopy;
   tone: LinkedInPostGeneratorToneCopy;
   color: LinkedInPostGeneratorColorCopy;
+  delivery: LinkedInPostGeneratorDeliveryCopy;
   displayName: LinkedInPostGeneratorFieldCopy;
   email: LinkedInPostGeneratorFieldCopy;
   consent: LinkedInPostGeneratorConsentCopy;
   honeypot: { label: string };
+  privacyNotice: string;
   submit: string;
   submitLoading: string;
   loadingHelp: string;
@@ -72,6 +79,16 @@ export type LinkedInPostGeneratorPreviewSuccessCopy = {
   copyCaptionCopied: string;
   downloadImage: string;
   downloadCaption: string;
+  fallbackAuthorName: string;
+  trialNote: string;
+  remainingNote: string;
+  followUp: {
+    badge: string;
+    headline: string;
+    body: string;
+    ctaLabel: string;
+    ctaAriaLabel: string;
+  };
 };
 
 export type LinkedInPostGeneratorCustomPostPostCopy = {
@@ -102,6 +119,7 @@ export type LinkedInPostGeneratorCustomPostCopy = {
 export type LinkedInPostGeneratorPreviewErrorCopy = {
   headline: string;
   body: string;
+  limitReachedBody: string;
 };
 
 export type LinkedInPostGeneratorPreviewCopy = {

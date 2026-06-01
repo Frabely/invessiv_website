@@ -35,6 +35,7 @@ const GENERATED_OUTPUT = {
   headlinePlain: "Preise brauchen Kontext",
   highlight: null,
   insight: null,
+  kicker: "Preisstrategie",
 };
 
 const INSIGHT_OUTPUT = {
@@ -49,6 +50,7 @@ const INSIGHT_OUTPUT = {
   highlight: "Ohne klaren Anlass wird jede Anpassung zur Verhandlung.",
   insight:
     "Kunden akzeptieren neue Preise, wenn der Anlass vor der Zahl steht.",
+  kicker: "Preisstrategie",
 };
 
 afterEach(() => {
@@ -79,9 +81,33 @@ describe("generateLinkedInPost", () => {
     expect(result.post.template.bodyVariant).toBe("bullets");
     expect(result.caption).toContain("#LinkedIn");
     expect(result.previewHtml).toContain("post__bullets");
+    // The eyebrow renders the generated kicker, never the raw role/industry input.
+    expect(result.post.kicker).toBe("Preisstrategie");
+    expect(result.previewHtml).toContain("Preisstrategie");
+    expect(result.previewHtml).not.toContain("Strategieberatung");
     expect(result.downloadFileName).toBe(
       "preisgespraeche-mit-bestandskunden.png",
     );
+  });
+
+  it("falls back to a locale-aware author name when the display name is empty", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-key");
+    const client = {
+      create: vi.fn().mockResolvedValue({
+        output_text: JSON.stringify(GENERATED_OUTPUT),
+      }),
+    };
+
+    const result = await generateLinkedInPost(
+      {
+        ...VALID_REQUEST,
+        displayName: "",
+      },
+      client,
+      BULLETS_TEMPLATE,
+    );
+
+    expect(result.post.authorName).toBe("Dein Name");
   });
 
   it("reads structured output from the Responses API output array", async () => {

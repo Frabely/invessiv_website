@@ -21,6 +21,7 @@ const GENERATED_RESULT = {
     },
     authorName: "Max Mustermann",
     expertiseDisplay: "Consulting",
+    kicker: "Pricing",
     headlineHtml: "Sharp <em>pricing</em>",
     headlinePlain: "Sharp pricing",
     highlight: null,
@@ -47,7 +48,14 @@ const mocks = vi.hoisted(() => ({
     }
   },
   renderLinkedInPostPng: vi.fn(),
+  releaseLinkedInPostGeneratorUsage: vi.fn(),
+  reserveLinkedInPostGeneratorUsage: vi.fn(),
   sendMail: vi.fn(),
+  toUsageLimitSnapshot: vi.fn((reservation) => ({
+    limit: reservation.limit,
+    remaining: reservation.remaining,
+    resetAt: reservation.resetAt.toISOString(),
+  })),
 }));
 
 vi.mock("@/server/linkedin-post/linkedin-post-openai-adapter-service", () => ({
@@ -63,6 +71,20 @@ vi.mock("@/server/linkedin-post/render-linkedin-post-service", () => ({
     renderLinkedInPostPng: mocks.renderLinkedInPostPng,
   },
 }));
+
+vi.mock(
+  "@/server/linkedin-post/linkedin-post-generator-usage-limit-service",
+  () => ({
+    GeneratorUsageLimitUnavailableError: class GeneratorUsageLimitUnavailableError extends Error {},
+    linkedinPostGeneratorUsageLimitService: {
+      releaseLinkedInPostGeneratorUsage:
+        mocks.releaseLinkedInPostGeneratorUsage,
+      reserveLinkedInPostGeneratorUsage:
+        mocks.reserveLinkedInPostGeneratorUsage,
+      toUsageLimitSnapshot: mocks.toUsageLimitSnapshot,
+    },
+  }),
+);
 
 vi.mock("@/server/services/mail/mail-service", () => ({
   sendMail: mocks.sendMail,
@@ -83,6 +105,14 @@ describe("POST /api/public/generator/linkedin-post", () => {
     vi.resetModules();
     mocks.generateLinkedInPost.mockResolvedValue(GENERATED_RESULT);
     mocks.renderLinkedInPostPng.mockResolvedValue(Buffer.from("fake-png"));
+    mocks.reserveLinkedInPostGeneratorUsage.mockResolvedValue({
+      allowed: true,
+      keyHash: "hash",
+      limit: 2,
+      remaining: 1,
+      resetAt: new Date("2026-07-01T00:00:00.000Z"),
+    });
+    mocks.releaseLinkedInPostGeneratorUsage.mockResolvedValue(undefined);
     mocks.sendMail.mockResolvedValue({ ok: true });
   });
 
@@ -106,12 +136,58 @@ describe("POST /api/public/generator/linkedin-post", () => {
       }),
     );
 
-    const payload = (await response.json()) as typeof GENERATED_RESULT;
+    const payload = (await response.json()) as typeof GENERATED_RESULT & {
+      usageLimit?: { limit: number; remaining: number; resetAt: string };
+    };
     expect(response.status).toBe(200);
     expect(payload.ok).toBe(true);
     expect(payload.post.headlinePlain).toBe("Sharp pricing");
     expect(payload.imageDataUrl).toMatch(/^data:image\/png;base64,/);
+    expect(payload.usageLimit).toEqual({
+      limit: 2,
+      remaining: 1,
+      resetAt: "2026-07-01T00:00:00.000Z",
+    });
     expect(mocks.sendMail).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks when the server-side usage limit is reached", async () => {
+    mocks.reserveLinkedInPostGeneratorUsage.mockResolvedValue({
+      allowed: false,
+      limit: 2,
+      remaining: 0,
+      resetAt: new Date("2026-07-01T00:00:00.000Z"),
+    });
+
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: false,
+        displayName: "",
+        email: "",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "Pricing conversations",
+      }),
+    );
+
+    const payload = (await response.json()) as {
+      code: string;
+      ok: boolean;
+      usageLimit?: { limit: number; remaining: number; resetAt: string };
+    };
+    expect(response.status).toBe(429);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("usage_limit_reached");
+    expect(payload.usageLimit).toEqual({
+      limit: 2,
+      remaining: 0,
+      resetAt: "2026-07-01T00:00:00.000Z",
+    });
+    expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
   });
 
   it("stays successful with a null image when the PNG render fails", async () => {
@@ -145,15 +221,15 @@ describe("POST /api/public/generator/linkedin-post", () => {
     const { POST } = await import("./route");
     const response = await POST(
       createRequest({
-        colorPairId: "missing",
+        colorPairId: "auto",
         company: "",
         consent: false,
         displayName: "",
         email: "invalid",
-        expertise: "",
+        expertise: "Consulting",
         locale: "en",
         tone: "sachlich",
-        topic: "",
+        topic: "Pricing conversations",
       }),
     );
 
@@ -190,6 +266,28 @@ describe("POST /api/public/generator/linkedin-post", () => {
     const payload = (await response.json()) as { ok: boolean };
     expect(response.status).toBe(200);
     expect(payload.ok).toBe(true);
+  });
+
+  it("skips mail delivery when no email is provided", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: false,
+        displayName: "",
+        email: "",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "Pricing conversations",
+      }),
+    );
+
+    const payload = (await response.json()) as { ok: boolean };
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(mocks.sendMail).not.toHaveBeenCalled();
   });
 
   it("blocks honeypot submissions", async () => {
@@ -247,5 +345,6 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(payload.ok).toBe(false);
     expect(payload.code).toBe("openai_invalid_content");
     expect(payload.debug?.stage).toBe("openai_quality_gate");
+    expect(mocks.releaseLinkedInPostGeneratorUsage).toHaveBeenCalledTimes(1);
   });
 });

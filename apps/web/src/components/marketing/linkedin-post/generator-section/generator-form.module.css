@@ -130,6 +130,17 @@
   border: none;
 }
 
+.deliveryGroup {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1rem 0.95rem 0.95rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent);
+}
+
 /* ── Consent ── */
 .consent {
   display: grid;
@@ -226,6 +237,20 @@
   color: color-mix(in srgb, var(--color-text-muted) 90%, transparent);
   font-size: 0.82rem;
   text-align: center;
+}
+
+.trialNote {
+  margin: -0.15rem 0 0;
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.privacyNote {
+  margin: -0.35rem 0 0;
+  color: color-mix(in srgb, var(--color-text-muted) 78%, transparent);
+  font-size: 0.76rem;
+  line-height: 1.45;
 }
 
 .successPanel {

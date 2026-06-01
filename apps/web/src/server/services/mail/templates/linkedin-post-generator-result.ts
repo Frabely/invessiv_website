@@ -34,7 +34,7 @@ function createPreviewSvg(post: LinkedInPostGeneratorPostDto) {
     `<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${post.colorPair.primary}"/><stop offset="1" stop-color="${post.colorPair.secondary}"/></linearGradient></defs>`,
     `<rect width="1080" height="1080" fill="url(#bg)"/>`,
     `<circle cx="190" cy="160" r="260" fill="${post.colorPair.accent}" opacity="0.18"/>`,
-    `<text x="120" y="150" fill="${post.colorPair.text}" opacity="0.78" font-size="24" font-weight="760" letter-spacing="5">${escapeHtml(post.expertiseDisplay.toUpperCase())}</text>`,
+    `<text x="120" y="150" fill="${post.colorPair.text}" opacity="0.78" font-size="24" font-weight="760" letter-spacing="5">${escapeHtml(post.kicker.toUpperCase())}</text>`,
     `<foreignObject x="120" y="270" width="760" height="330"><div xmlns="http://www.w3.org/1999/xhtml" style="color:${post.colorPair.text};font-family:Arial,sans-serif;font-size:82px;font-weight:820;line-height:.96">${post.headlineHtml.replaceAll("<em>", `<span style="color:${post.colorPair.accent}">`).replaceAll("</em>", "</span>")}</div></foreignObject>`,
     body,
     `<rect x="760" y="940" width="210" height="2" fill="${post.colorPair.accent}" opacity="0.74"/>`,

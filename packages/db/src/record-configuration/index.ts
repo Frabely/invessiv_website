@@ -6,3 +6,4 @@ export * from "./lead-project-requests";
 export * from "./lead-social-profiles";
 export * from "./lead-submissions";
 export * from "./leads";
+export * from "./linkedin-post-generator-usage-limits";

@@ -98,6 +98,11 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.contact.body}</p>,
     },
     {
+      id: "linkedin-post-generator",
+      title: privacy.sections.generator.title,
+      body: <p>{privacy.sections.generator.body}</p>,
+    },
+    {
       id: "appointments",
       title: privacy.sections.appointments.title,
       body: <p>{privacy.sections.appointments.body}</p>,

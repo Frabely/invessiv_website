@@ -1,7 +1,7 @@
 {
   "eyebrow": "CREATE A SAMPLE POST",
   "title": "See a concrete result first.",
-  "body": "Three inputs generate a sample image and caption. If the format fits, you can request your own project next.",
+  "body": "Start with topic, role and tone. If you want, you can add an optional name and email for delivery.",
   "form": {
     "topic": {
       "label": "What's it about?",
@@ -47,28 +47,33 @@
       "autoLabel": "Automatic",
       "swatchLabel": "Color scheme"
     },
+    "delivery": {
+      "title": "Optional: name and delivery",
+      "body": "The generator works without contact details. If you want the result sent to you, add your name and email here."
+    },
     "displayName": {
-      "label": "Display name",
+      "label": "Name for the sample",
       "placeholder": "e.g. Moritz Hecht",
-      "help": "This is how your name appears.",
+      "help": "Optional. Lets the sample show your name.",
       "maxLength": 80,
       "requiredError": "Please enter a display name.",
       "tooLongError": "Please keep it under 80 characters."
     },
     "email": {
-      "label": "Where should we send the result?",
+      "label": "Email for delivery",
       "placeholder": "you@address.com",
-      "help": "For this post only.",
+      "help": "Optional. Only fill it in if you want the result sent to you.",
       "requiredError": "Please add your email.",
       "invalidError": "That doesn't look like a valid email."
     },
     "consent": {
-      "label": "I agree my email can be used to deliver this post.",
-      "requiredError": "We need your OK to deliver the result."
+      "label": "I agree that my email can be used to deliver the result.",
+      "requiredError": "Please confirm this if you want the result sent to you."
     },
     "honeypot": {
       "label": "Company"
     },
+    "privacyNotice": "We process your inputs to generate the sample. To limit misuse, we store a pseudonymous technical identifier for 30 days. Email is optional.",
     "submit": "Generate post",
     "submitLoading": "Creating …",
     "loadingHelp": "Keep this open for about 30 seconds."
@@ -96,11 +101,22 @@
       "copyCaption": "Copy caption",
       "copyCaptionCopied": "Copied",
       "downloadImage": "Download image",
-      "downloadCaption": "Download text"
+      "downloadCaption": "Download text",
+      "fallbackAuthorName": "Your name",
+      "trialNote": "You can test the generator twice for free.",
+      "remainingNote": "{{remaining}} of {{limit}} free tests left in this period.",
+      "followUp": {
+        "badge": "Next step",
+        "headline": "If the style fits, request the project.",
+        "body": "If the sample helps, we can turn it into a custom workflow next.",
+        "ctaLabel": "Request project",
+        "ctaAriaLabel": "Jump to the inquiry form"
+      }
     },
     "error": {
       "headline": "Something went wrong.",
-      "body": "We couldn't build the post right now. Try again."
+      "body": "We couldn't build the post right now. Try again.",
+      "limitReachedBody": "You have used the 2 free tests for this period. Request a project if you want a custom workflow."
     }
   },
   "customPost": {

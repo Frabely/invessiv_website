@@ -35,6 +35,11 @@ const GeneratedContentSchema = z
       .max(160)
       .regex(/^[^<>]*$/u)
       .nullable(),
+    kicker: z
+      .string()
+      .min(1)
+      .max(32)
+      .regex(/^[^<>]*$/u),
     caption: z.object({
       body: z
         .string()
@@ -129,10 +134,11 @@ function createPrompt(
     "headlineHtml may contain only <em> tags. headlinePlain must be the same headline without tags.",
     bodyRule,
     highlightRule,
+    "Also return a short eyebrow label (kicker): 1-3 words, at most 32 characters, plain text, same language. It is a thematic category/rubric for the post derived from the topic AND the copy you generate. Never copy the role/industry value verbatim and never restate the headline.",
     `Tone of voice (steers register only, NOT the body form): ${request.tone}.`,
     "Caption first paragraph must stand alone and stay at or below 140 characters. Hashtags must end with LinkedIn.",
     `Topic: ${request.topic}`,
-    `Role or industry: ${request.expertise}`,
+    `Role or industry (perspective only — do NOT print this verbatim anywhere): ${request.expertise}`,
   ].join("\n");
 }
 

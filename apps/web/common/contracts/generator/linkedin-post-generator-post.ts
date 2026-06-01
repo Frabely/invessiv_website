@@ -11,6 +11,7 @@ export type LinkedInPostGeneratorPostDto = {
   insight: string | null;
   bullets: string[] | null;
   highlight: string | null;
+  kicker: string;
   authorName: string;
   expertiseDisplay: string;
   colorPair: LinkedInPostGeneratorColorPairDto;

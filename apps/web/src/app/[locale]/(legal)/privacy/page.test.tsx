@@ -3,6 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import PrivacyPage from "./page";
 
 const { mockNotFound, mockLegalDocumentContent, mockLegalDocumentLayout } =
   vi.hoisted(() => ({
@@ -69,8 +70,6 @@ vi.mock(
   }),
 );
 
-import PrivacyPage from "./page";
-
 describe("PrivacyPage", () => {
   beforeEach(() => {
     mockNotFound.mockClear();
@@ -91,6 +90,7 @@ describe("PrivacyPage", () => {
       "vercel-analytics",
       "speed-insights",
       "contact",
+      "linkedin-post-generator",
       "appointments",
       "cookies",
       "recipients",

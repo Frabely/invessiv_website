@@ -3,6 +3,8 @@ export const LinkedInPostGeneratorErrorCode = {
   PayloadTooLarge: "payload_too_large",
   ValidationError: "validation_error",
   SpamDetected: "spam_detected",
+  UsageLimitReached: "usage_limit_reached",
+  UsageLimitUnavailable: "usage_limit_unavailable",
   UnsafeInput: "unsafe_input",
   OpenAiApiKeyMissing: "openai_api_key_missing",
   OpenAiRequestFailed: "openai_request_failed",

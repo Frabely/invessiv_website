@@ -1,7 +1,7 @@
 {
   "eyebrow": "BEISPIEL-POST ERSTELLEN",
   "title": "Sieh dir zuerst ein konkretes Ergebnis an.",
-  "body": "Mit drei Angaben erzeugen wir dir ein Beispiel für Bild und Caption. Wenn dir das Format passt, kannst du danach dein eigenes Projekt anfragen.",
+  "body": "Erst Thema, Rolle und Ton testen. Wenn du willst, kannst du optional Name und E-Mail für Zusendung ergänzen.",
   "form": {
     "topic": {
       "label": "Worum geht's?",
@@ -47,28 +47,33 @@
       "autoLabel": "Automatisch",
       "swatchLabel": "Farbschema"
     },
+    "delivery": {
+      "title": "Optional: Name und Zusendung",
+      "body": "Der Generator läuft auch ohne Kontaktdaten. Wenn du dir das Ergebnis schicken lassen willst, ergänze hier Name und E-Mail."
+    },
     "displayName": {
-      "label": "Anzeigename",
+      "label": "Name für den Vorschlag",
       "placeholder": "z. B. Moritz Hecht",
-      "help": "So erscheint dein Name.",
+      "help": "Optional. So erscheint der Vorschlag mit deinem Namen.",
       "maxLength": 80,
       "requiredError": "Bitte gib einen Anzeigenamen an.",
       "tooLongError": "Bitte unter 80 Zeichen halten."
     },
     "email": {
-      "label": "Wohin schicken wir das Ergebnis?",
+      "label": "E-Mail für Zusendung",
       "placeholder": "deine@adresse.com",
-      "help": "Nur für diesen Post.",
+      "help": "Optional. Nur ausfüllen, wenn du dir das Ergebnis schicken lassen willst.",
       "requiredError": "Bitte E-Mail-Adresse angeben.",
       "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
     },
     "consent": {
-      "label": "Ich bin einverstanden, dass meine E-Mail für die Zustellung genutzt wird.",
-      "requiredError": "Ohne dein OK können wir nichts zustellen."
+      "label": "Ich bin einverstanden, dass meine E-Mail für die Zusendung genutzt wird.",
+      "requiredError": "Bitte bestätige das, wenn du dir das Ergebnis schicken lässt."
     },
     "honeypot": {
       "label": "Firma"
     },
+    "privacyNotice": "Wir verarbeiten deine Eingaben zur Generierung. Zur Missbrauchsbegrenzung speichern wir 30 Tage eine pseudonyme technische Kennung. E-Mail ist optional.",
     "submit": "Post generieren",
     "submitLoading": "Wird erstellt …",
     "loadingHelp": "Ca. 30 Sekunden offen lassen."
@@ -96,11 +101,22 @@
       "copyCaption": "Caption kopieren",
       "copyCaptionCopied": "Kopiert",
       "downloadImage": "Bild herunterladen",
-      "downloadCaption": "Text herunterladen"
+      "downloadCaption": "Text herunterladen",
+      "fallbackAuthorName": "Dein Name",
+      "trialNote": "Du kannst den Generator 2x kostenlos testen.",
+      "remainingNote": "Noch {{remaining}} von {{limit}} kostenlosen Tests in diesem Zeitraum übrig.",
+      "followUp": {
+        "badge": "Nächster Schritt",
+        "headline": "Passt der Stil? Dann frag dein Projekt an.",
+        "body": "Wenn dir der Beispielpost hilft, setzen wir daraus im nächsten Schritt einen individuellen Workflow auf.",
+        "ctaLabel": "Projekt anfragen",
+        "ctaAriaLabel": "Zum Anfrageformular springen"
+      }
     },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
-      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal."
+      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal.",
+      "limitReachedBody": "Du hast die 2 kostenlosen Tests für diesen Zeitraum genutzt. Frag gern ein Projekt an, wenn du einen eigenen Workflow willst."
     }
   },
   "customPost": {

@@ -16,5 +16,18 @@ export type GeneratorState =
       downloadFileName: string;
       previewHtml: string;
       imageDataUrl: string | null;
+      usageLimit?: {
+        limit: number;
+        remaining: number;
+        resetAt: string;
+      };
     }
-  | { kind: typeof GeneratorStateKind.Error };
+  | {
+      kind: typeof GeneratorStateKind.Error;
+      code?: string;
+      usageLimit?: {
+        limit: number;
+        remaining: number;
+        resetAt: string;
+      };
+    };

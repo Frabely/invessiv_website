@@ -5,4 +5,9 @@ export type LinkedInPostGeneratorSuccessResponseDto = {
   post: LinkedInPostGeneratorPostDto;
   caption: string;
   downloadFileName: string;
+  usageLimit?: {
+    limit: number;
+    remaining: number;
+    resetAt: string;
+  };
 };

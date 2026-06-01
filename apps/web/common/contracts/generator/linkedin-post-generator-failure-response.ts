@@ -6,4 +6,9 @@ export type LinkedInPostGeneratorFailureResponseDto = {
     stage: string;
   };
   fieldErrors?: Record<string, string[]>;
+  usageLimit?: {
+    limit: number;
+    remaining: number;
+    resetAt: string;
+  };
 };

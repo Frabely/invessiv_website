@@ -1,7 +1,8 @@
 import "server-only";
 import { z } from "zod";
-import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
+import { GeneratorZodIssueCode } from "@/common/constants/generator";
 import {
   Locale,
   SUPPORTED_LOCALES,
@@ -13,21 +14,37 @@ const GENERATOR_COLOR_PAIR_IDS = [
   ...GENERATOR_COLOR_PAIRS.map((pair) => pair.id),
 ] as [string, ...string[]];
 
-export const linkedinPostGeneratorRequestSchema = z.object({
-  topic: z.string().trim().min(1).max(280),
-  expertise: z.string().trim().min(1).max(120),
-  tone: z.enum(LINKEDIN_POST_TONE_VALUES),
-  colorPairId: z.enum(GENERATOR_COLOR_PAIR_IDS),
-  displayName: z.string().trim().min(1).max(80),
-  email: z
-    .string()
-    .trim()
-    .max(254)
-    .pipe(z.email(CONTACT_FIELD_ERROR_CODE.InvalidEmail)),
-  consent: z.literal(true),
-  company: z.string().max(200).default(""),
-  locale: z.enum(SUPPORTED_LOCALES).default(Locale.De),
-});
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const linkedinPostGeneratorRequestSchema = z
+  .object({
+    topic: z.string().trim().min(1).max(280),
+    expertise: z.string().trim().min(1).max(120),
+    tone: z.enum(LINKEDIN_POST_TONE_VALUES),
+    colorPairId: z.enum(GENERATOR_COLOR_PAIR_IDS),
+    displayName: z.string().trim().max(80).default(""),
+    email: z.string().trim().max(254).default(""),
+    consent: z.boolean().default(false),
+    company: z.string().max(200).default(""),
+    locale: z.enum(SUPPORTED_LOCALES).default(Locale.De),
+  })
+  .superRefine((value, context) => {
+    if (value.email !== "" && !EMAIL_PATTERN.test(value.email)) {
+      context.addIssue({
+        code: GeneratorZodIssueCode.Custom,
+        message: CONTACT_FIELD_ERROR_CODE.InvalidEmail,
+        path: ["email"],
+      });
+    }
+
+    if (value.email !== "" && !value.consent) {
+      context.addIssue({
+        code: GeneratorZodIssueCode.Custom,
+        message: CONTACT_FIELD_ERROR_CODE.ConsentRequired,
+        path: ["consent"],
+      });
+    }
+  });
 
 export function mapGeneratorValidationErrors(error: z.ZodError) {
   const fieldErrors: Record<string, string[]> = {};

@@ -1,3 +1,4 @@
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
@@ -10,6 +11,7 @@ type SuccessPreviewProps = {
   downloadFileName: string;
   authorName: string;
   expertiseDisplay: string;
+  followUpHref: string;
   imageDataUrl: string | null;
   postTitle: string;
   previewHtml: string;
@@ -25,6 +27,7 @@ export function SuccessPreview({
   downloadFileName,
   authorName,
   expertiseDisplay,
+  followUpHref,
   imageDataUrl,
   postTitle,
   previewHtml,
@@ -32,7 +35,9 @@ export function SuccessPreview({
   onDownloadCaption,
   onDownloadImage,
 }: SuccessPreviewProps) {
-  const avatarInitial = authorName
+  const resolvedAuthorName =
+    authorName || content.preview.success.fallbackAuthorName;
+  const avatarInitial = resolvedAuthorName
     .split(/\s+/u)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase())
@@ -56,7 +61,7 @@ export function SuccessPreview({
       <LinkedinPost
         author={{
           avatar: { kind: "initials", value: avatarInitial },
-          name: authorName,
+          name: resolvedAuthorName,
           role: expertiseDisplay,
         }}
         caption={caption}
@@ -90,6 +95,25 @@ export function SuccessPreview({
             {success.downloadCaption}
           </button>
         </div>
+      </div>
+
+      <div className={styles.followUpCard}>
+        <p className={styles.followUpBadge}>
+          {content.preview.success.followUp.badge}
+        </p>
+        <h3 className={styles.followUpHeadline}>
+          {content.preview.success.followUp.headline}
+        </h3>
+        <p className={styles.followUpBody}>
+          {content.preview.success.trialNote}
+        </p>
+        <PrimaryCtaLink
+          aria-label={content.preview.success.followUp.ctaAriaLabel}
+          className={styles.followUpCta}
+          href={followUpHref}
+        >
+          {content.preview.success.followUp.ctaLabel}
+        </PrimaryCtaLink>
       </div>
     </div>
   );

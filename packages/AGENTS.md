@@ -38,6 +38,14 @@ Hier liegen allgemeine Inhalte zur Datenbank:
 
 DTOs für App-/API-Grenzen bleiben in `packages/common`; UI- und Server-Feature-Logik bleibt in den Apps.
 
+DB-Zugriffe und Persistenzfunktionen in `packages/db` verwenden das kanonische Drizzle-`pgTable`-Schema aus
+`packages/db/src/record-configuration/**`. Tabellen- und Spaltennamen werden nicht als manuelle Raw-SQL-Strings
+dupliziert, wenn ein `pgTable`-Modell existiert. Query Builder, Drizzle-Operatoren (`eq`, `and`, `or`, `lt`, `inArray`
+usw.) und Schema-Spalten haben Vorrang vor Raw SQL. Raw SQL ist nur für einzelne Ausdrücke zulässig, die mit dem Query
+Builder nicht sinnvoll ausdrückbar sind (z. B. `case`, `greatest`, spezielle Postgres-Funktionen); auch dann werden
+Tabellen/Spalten über Schema-Referenzen interpoliert, nicht als freie String-Literale geschrieben. Wenn unklar ist, ob
+ein Zugriff noch Query Builder oder schon Raw SQL sein darf, vor der Umsetzung nachfragen.
+
 ### `packages/ui`
 
 Hier liegen global verfügbare UI-Komponenten, die von mehreren Apps genutzt werden können, z. B. generische Controls

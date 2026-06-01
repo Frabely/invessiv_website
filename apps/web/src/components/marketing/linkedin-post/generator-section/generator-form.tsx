@@ -29,6 +29,7 @@ type GeneratorFormProps = {
   ) => void;
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
   state: GeneratorState;
+  successfulRuns: number;
   values: LinkedInPostGeneratorFormValues;
 };
 
@@ -44,12 +45,23 @@ export function GeneratorForm({
   onChange,
   onSubmit,
   state,
+  successfulRuns,
   values,
 }: GeneratorFormProps) {
   const topicMax = content.form.topic.maxLength ?? 280;
   const expertiseMax = content.form.expertise.maxLength ?? 120;
   const displayNameMax = content.form.displayName.maxLength ?? 80;
   const isSuccess = state.kind === GeneratorStateKind.Success;
+  const generatorNote =
+    isSuccess && state.usageLimit
+      ? state.usageLimit.remaining <= 0
+        ? content.preview.success.followUp.body
+        : content.preview.success.remainingNote
+            .replace("{{remaining}}", String(state.usageLimit.remaining))
+            .replace("{{limit}}", String(state.usageLimit.limit))
+      : successfulRuns >= 2
+        ? content.preview.success.followUp.body
+        : content.preview.success.trialNote;
   const toneOptions = content.form.tone.options;
   const colorOptions = [
     {
@@ -150,83 +162,103 @@ export function GeneratorForm({
         />
       </fieldset>
 
-      <Field
-        error={errors.displayName}
-        help={content.form.displayName.help}
-        htmlFor={fieldIds.displayName}
-        label={content.form.displayName.label}
-        meta={`${values.displayName.length}/${displayNameMax}`}
-      >
-        <input
-          aria-describedby={
-            errors.displayName ? `${fieldIds.displayName}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.displayName)}
-          autoComplete="name"
-          className={styles.input}
-          id={fieldIds.displayName}
-          maxLength={displayNameMax}
-          name="displayName"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            onChange("displayName", event.target.value)
-          }
-          placeholder={content.form.displayName.placeholder}
-          type="text"
-          value={values.displayName}
-        />
-      </Field>
+      <fieldset className={styles.deliveryGroup}>
+        <legend className={styles.legend}>{content.form.delivery.title}</legend>
+        <p className={styles.legendHelp}>{content.form.delivery.body}</p>
 
-      <Field
-        error={errors.email}
-        help={content.form.email.help}
-        htmlFor={fieldIds.email}
-        label={content.form.email.label}
-      >
-        <input
-          aria-describedby={
-            errors.email ? `${fieldIds.email}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.email)}
-          autoComplete="email"
-          className={styles.input}
-          id={fieldIds.email}
-          name="email"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            onChange("email", event.target.value)
-          }
-          placeholder={content.form.email.placeholder}
-          type="email"
-          value={values.email}
-        />
-      </Field>
+        <Field
+          error={errors.displayName}
+          help={content.form.displayName.help}
+          htmlFor={fieldIds.displayName}
+          label={content.form.displayName.label}
+          meta={`${values.displayName.length}/${displayNameMax}`}
+        >
+          <input
+            aria-describedby={
+              errors.displayName ? `${fieldIds.displayName}-error` : undefined
+            }
+            aria-invalid={Boolean(errors.displayName)}
+            autoComplete="name"
+            className={styles.input}
+            id={fieldIds.displayName}
+            maxLength={displayNameMax}
+            name="displayName"
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              onChange("displayName", event.target.value)
+            }
+            placeholder={content.form.displayName.placeholder}
+            type="text"
+            value={values.displayName}
+          />
+        </Field>
 
-      <label
-        className={styles.consent}
-        data-error={Boolean(errors.consent) || undefined}
-        htmlFor={fieldIds.consent}
-      >
-        <input
-          aria-describedby={
-            errors.consent ? `${fieldIds.consent}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.consent)}
-          checked={values.consent}
-          className={styles.consentInput}
-          id={fieldIds.consent}
-          name="consent"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            onChange("consent", event.target.checked)
-          }
-          type="checkbox"
-        />
-        <span className={styles.consentBox} aria-hidden="true" />
-        <span className={styles.consentText}>{content.form.consent.label}</span>
-      </label>
-      {errors.consent ? (
-        <p className={styles.consentError} id={`${fieldIds.consent}-error`}>
-          {errors.consent}
-        </p>
-      ) : null}
+        <Field
+          error={errors.email}
+          help={content.form.email.help}
+          htmlFor={fieldIds.email}
+          label={content.form.email.label}
+        >
+          <input
+            aria-describedby={
+              errors.email ? `${fieldIds.email}-error` : undefined
+            }
+            aria-invalid={Boolean(errors.email)}
+            autoComplete="email"
+            className={styles.input}
+            id={fieldIds.email}
+            name="email"
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              onChange("email", event.target.value)
+            }
+            placeholder={content.form.email.placeholder}
+            type="email"
+            value={values.email}
+          />
+        </Field>
+
+        {values.email.trim() !== "" ? (
+          <>
+            <label
+              className={styles.consent}
+              data-error={Boolean(errors.consent) || undefined}
+              htmlFor={fieldIds.consent}
+            >
+              <input
+                aria-describedby={
+                  errors.consent ? `${fieldIds.consent}-error` : undefined
+                }
+                aria-invalid={Boolean(errors.consent)}
+                checked={values.consent}
+                className={styles.consentInput}
+                id={fieldIds.consent}
+                name="consent"
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  onChange("consent", event.target.checked)
+                }
+                type="checkbox"
+              />
+              <span className={styles.consentBox} aria-hidden="true" />
+              <span className={styles.consentText}>
+                {content.form.consent.label}
+              </span>
+            </label>
+            {errors.consent ? (
+              <p
+                className={styles.consentError}
+                id={`${fieldIds.consent}-error`}
+              >
+                {errors.consent}
+              </p>
+            ) : null}
+          </>
+        ) : null}
+      </fieldset>
+
+      <p className={styles.trialNote} aria-live="polite">
+        {generatorNote}
+      </p>
+
+      <p className={styles.privacyNote}>{content.form.privacyNotice}</p>
 
       <div aria-hidden="true" className={styles.honeypot}>
         <label htmlFor={fieldIds.honeypot}>{content.form.honeypot.label}</label>

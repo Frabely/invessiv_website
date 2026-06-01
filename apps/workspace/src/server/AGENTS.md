@@ -72,6 +72,14 @@ Mapping-Service selbst und nicht im Query-Handler.
 - Pro Datei möglichst nur eine Verantwortung.
 - SQL- und Tabellenwissen nach `packages/db/src`.
 - `packages/db/src/record-configuration/**` ist die kanonische Quelle fuer DB-Modelle auf Basis von `pgTable`.
+- DB-Zugriffe erfolgen über das kanonische Drizzle-`pgTable`-Schema aus `@invessiv/db/record-configuration`; Tabellen-
+  und Spaltennamen werden nicht als manuelle Raw-SQL-Strings dupliziert, wenn ein `pgTable`-Modell existiert.
+- Query Builder, Drizzle-Operatoren (`eq`, `and`, `or`, `lt`, `inArray` usw.) und Schema-Spalten haben Vorrang vor Raw
+  SQL.
+- Raw SQL ist nur für einzelne Ausdrücke zulässig, die mit dem Query Builder nicht sinnvoll ausdrückbar sind (z. B.
+  `case`, `greatest`, spezielle Postgres-Funktionen). Auch dann werden Tabellen/Spalten über Schema-Referenzen
+  interpoliert, nicht als freie String-Literale geschrieben.
+- Wenn unklar ist, ob ein Zugriff noch Query Builder oder schon Raw SQL sein darf, vor der Umsetzung nachfragen.
 - In `record-configuration/**` liegt pro Tabelle genau ein Modellfile; Sammeldateien oder parallele Modellvarianten
   werden dort nicht neu eingefuehrt.
 - Tabellennahe Record-Typen werden serverseitig unter `packages/db/src/records/**` abgelegt und nicht in

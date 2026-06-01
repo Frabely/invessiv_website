@@ -29,10 +29,16 @@ import type {
   LinkedInPostGeneratorSuccessResponseDto,
   LinkedInPostGeneratorTemplateDto,
 } from "@/common/contracts/generator";
+import type { Locale } from "@/config/i18n";
 
 function normalizeInput(value: string) {
   return value.trim().normalize("NFC");
 }
+
+const DEFAULT_AUTHOR_NAME_BY_LOCALE: Record<Locale, string> = {
+  de: "Dein Name",
+  en: "Your name",
+};
 
 function assertSafeInput(request: LinkedInPostGeneratorRequestDto) {
   const input = `${request.topic}\n${request.expertise}`;
@@ -197,6 +203,10 @@ export async function generateLinkedInPost(
   );
 
   const colorPair = resolveColorPair(request.colorPairId);
+  const authorName =
+    request.displayName.trim() ||
+    DEFAULT_AUTHOR_NAME_BY_LOCALE[request.locale] ||
+    DEFAULT_AUTHOR_NAME_BY_LOCALE.de;
   const template: LinkedInPostGeneratorTemplateDto = {
     bodyVariant: resolvedTemplate.template.bodyVariant,
     id: resolvedTemplate.template.id,
@@ -205,8 +215,11 @@ export async function generateLinkedInPost(
   const post: LinkedInPostGeneratorPostDto = {
     bodyVariant: generated.bodyVariant,
     bullets: generated.bodyVariant === "bullets" ? generated.bullets : null,
-    authorName: request.displayName.slice(0, 80),
+    authorName: authorName.slice(0, 80),
     colorPair,
+    // Generated thematic eyebrow for the post image (not the raw role/industry).
+    kicker: generated.kicker,
+    // Raw role/industry — only feeds the simulated LinkedIn author subtitle.
     expertiseDisplay: request.expertise.slice(0, 60),
     headlineHtml: sanitizeHeadlineHtml(generated.headlineHtml),
     headlinePlain: generated.headlinePlain || stripTags(generated.headlineHtml),

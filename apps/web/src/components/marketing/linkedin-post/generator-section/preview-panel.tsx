@@ -1,4 +1,5 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
@@ -6,6 +7,7 @@ import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;
+  followUpHref: string;
   hasCopied: boolean;
   onCopyCaption: (caption: string) => void;
   onDownloadCaption: (caption: string, downloadFileName: string) => void;
@@ -15,6 +17,7 @@ type PreviewPanelProps = {
 
 export function PreviewPanel({
   content,
+  followUpHref,
   hasCopied,
   onCopyCaption,
   onDownloadCaption,
@@ -28,7 +31,7 @@ export function PreviewPanel({
     return <LoadingPreview content={content} stepIndex={state.stepIndex} />;
   }
   if (state.kind === GeneratorStateKind.Error) {
-    return <ErrorPreview content={content} />;
+    return <ErrorPreview content={content} code={state.code} />;
   }
   return (
     <SuccessPreview
@@ -41,6 +44,7 @@ export function PreviewPanel({
       imageDataUrl={state.imageDataUrl}
       postTitle={state.post.headlinePlain}
       previewHtml={state.previewHtml}
+      followUpHref={followUpHref}
       onCopyCaption={onCopyCaption}
       onDownloadCaption={onDownloadCaption}
       onDownloadImage={onDownloadImage}
@@ -114,8 +118,18 @@ function LoadingPreview({
   );
 }
 
-function ErrorPreview({ content }: { content: LinkedInPostGeneratorContent }) {
+function ErrorPreview({
+  code,
+  content,
+}: {
+  code?: string;
+  content: LinkedInPostGeneratorContent;
+}) {
   const { error } = content.preview;
+  const body =
+    code === LinkedInPostGeneratorErrorCode.UsageLimitReached
+      ? error.limitReachedBody
+      : error.body;
   return (
     <div className={styles.preview} data-state="error" role="alert">
       <div className={styles.previewFrame}>
@@ -124,7 +138,7 @@ function ErrorPreview({ content }: { content: LinkedInPostGeneratorContent }) {
             ⌗ ERROR
           </p>
           <h3 className={styles.previewHeadline}>{error.headline}</h3>
-          <p className={styles.previewCopy}>{error.body}</p>
+          <p className={styles.previewCopy}>{body}</p>
         </div>
       </div>
     </div>

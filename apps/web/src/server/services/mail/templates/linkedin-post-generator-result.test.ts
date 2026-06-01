@@ -16,6 +16,7 @@ const POST = {
     text: "#E8F1FA",
   },
   expertiseDisplay: "Strategieberatung",
+  kicker: "Preisstrategie",
   headlineHtml: "Preise brauchen <em>Kontext</em>",
   headlinePlain: "Preise brauchen Kontext",
   highlight: null,

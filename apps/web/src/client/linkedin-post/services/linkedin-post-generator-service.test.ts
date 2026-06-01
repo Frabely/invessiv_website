@@ -29,6 +29,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
                 text: "#E8F1FA",
               },
               expertiseDisplay: "Consulting",
+              kicker: "Pricing",
               headlineHtml: "Sharp <em>point</em>",
               headlinePlain: "Sharp point",
               insight: "A useful observation.",
