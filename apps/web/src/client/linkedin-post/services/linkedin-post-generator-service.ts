@@ -4,6 +4,7 @@ import type {
 } from "@/common/contracts/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /**
@@ -66,8 +67,20 @@ async function submitLinkedInPost(
   values: LinkedInPostGeneratorFormValues,
   locale: Locale,
 ): Promise<LinkedInPostGeneratorResult> {
+  const requestBody: LinkedInPostGeneratorRequestDto = {
+    colorPairId: values.colorPairId,
+    company: values.company,
+    consent: values.consent,
+    displayName: values.displayName,
+    email: values.email,
+    expertise: values.expertise,
+    locale,
+    tone: values.tone,
+    topic: values.topic,
+  };
+
   const response = await fetch(GENERATOR_ENDPOINT, {
-    body: JSON.stringify({ ...values, locale }),
+    body: JSON.stringify(requestBody),
     headers: {
       "Content-Type": "application/json",
     },

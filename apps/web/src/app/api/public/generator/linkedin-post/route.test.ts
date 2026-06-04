@@ -37,6 +37,7 @@ const GENERATED_RESULT = {
 
 const mocks = vi.hoisted(() => ({
   generateLinkedInPost: vi.fn(),
+  buildMockLinkedInPostGeneratorSuccessResult: vi.fn(),
   LinkedInPostGenerationError: class LinkedInPostGenerationError extends Error {
     constructor(
       readonly code: string,
@@ -64,6 +65,13 @@ vi.mock("@/server/linkedin-post/linkedin-post-openai-adapter-service", () => ({
 
 vi.mock("@/server/linkedin-post/linkedin-post-generator-service", () => ({
   generateLinkedInPost: mocks.generateLinkedInPost,
+}));
+
+vi.mock("@/server/linkedin-post/linkedin-post-generator-mock-service", () => ({
+  linkedinPostGeneratorMockService: {
+    buildMockLinkedInPostGeneratorSuccessResult:
+      mocks.buildMockLinkedInPostGeneratorSuccessResult,
+  },
 }));
 
 vi.mock("@/server/linkedin-post/render-linkedin-post-service", () => ({
@@ -103,7 +111,13 @@ function createRequest(body: unknown) {
 describe("POST /api/public/generator/linkedin-post", () => {
   beforeEach(() => {
     vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK", "false");
     mocks.generateLinkedInPost.mockResolvedValue(GENERATED_RESULT);
+    mocks.buildMockLinkedInPostGeneratorSuccessResult.mockResolvedValue({
+      ...GENERATED_RESULT,
+      imageDataUrl: null,
+      previewHtml: GENERATED_RESULT.previewHtml,
+    });
     mocks.renderLinkedInPostPng.mockResolvedValue(Buffer.from("fake-png"));
     mocks.reserveLinkedInPostGeneratorUsage.mockResolvedValue({
       allowed: true,
@@ -118,6 +132,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it("returns generated content for a valid request", async () => {
@@ -149,6 +164,34 @@ describe("POST /api/public/generator/linkedin-post", () => {
       resetAt: "2026-07-01T00:00:00.000Z",
     });
     expect(mocks.sendMail).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the server-side mock generator without contacting OpenAI when the mock env is enabled", async () => {
+    vi.stubEnv("NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK", "true");
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: true,
+        displayName: "Max Mustermann",
+        email: "max@example.com",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "Pricing conversations",
+      }),
+    );
+
+    const payload = (await response.json()) as typeof GENERATED_RESULT & {
+      usageLimit?: { limit: number; remaining: number; resetAt: string };
+    };
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
+    expect(
+      mocks.buildMockLinkedInPostGeneratorSuccessResult,
+    ).toHaveBeenCalled();
   });
 
   it("blocks when the server-side usage limit is reached", async () => {

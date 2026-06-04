@@ -15,6 +15,7 @@ import {
 } from "@/common/constants/generator";
 import { LinkedInPostGenerationError } from "@/server/linkedin-post/linkedin-post-openai-adapter-service";
 import { generateLinkedInPost } from "@/server/linkedin-post/linkedin-post-generator-service";
+import { linkedinPostGeneratorMockService } from "@/server/linkedin-post/linkedin-post-generator-mock-service";
 import {
   GeneratorUsageLimitUnavailableError,
   linkedinPostGeneratorUsageLimitService,
@@ -246,7 +247,13 @@ async function generateLinkedInPostCommandHandler({
   }
 
   try {
-    const result = await generateLinkedInPost(generatorRequest);
+    const result = await (process.env
+      .NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK !== "false"
+      ? linkedinPostGeneratorMockService.buildMockLinkedInPostGeneratorSuccessResult(
+          generatorRequest,
+          generatorRequest.locale,
+        )
+      : generateLinkedInPost(generatorRequest));
 
     let png: Buffer | null = null;
     try {

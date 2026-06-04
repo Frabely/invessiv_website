@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import { linkedinPostGeneratorService } from "./linkedin-post-generator-service";
 
 afterEach(() => {
@@ -28,11 +27,23 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
                 secondary: "#1A3355",
                 text: "#E8F1FA",
               },
+              authorName: "Max Mustermann",
               expertiseDisplay: "Consulting",
-              kicker: "Pricing",
               headlineHtml: "Sharp <em>point</em>",
               headlinePlain: "Sharp point",
+              highlight: null,
               insight: "A useful observation.",
+              kicker: "Pricing",
+              template: {
+                bodyVariant: "insight",
+                id: "editorial-center",
+                index: 0,
+              },
+            },
+            usageLimit: {
+              limit: 2,
+              remaining: 1,
+              resetAt: "2026-07-01T00:00:00.000Z",
             },
           }),
         ),
@@ -44,7 +55,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
         colorPairId: "auto",
         company: "",
         consent: true,
-        displayName: "Test User",
+        displayName: "Max Mustermann",
         email: "test@example.com",
         expertise: "Consulting",
         tone: "sachlich",
@@ -64,16 +75,13 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
     expect(JSON.parse(String(init?.body))).toEqual(
       expect.objectContaining({ locale: "en", topic: "Pricing" }),
     );
+    expect(JSON.parse(String(init?.body))).not.toHaveProperty("mode");
   });
 
   it("falls back to an internal error for malformed response payloads", async () => {
     vi.stubGlobal(
       "fetch",
-      vi
-        .fn()
-        .mockResolvedValue(
-          new Response(JSON.stringify({ ok: true, caption: "Caption" })),
-        ),
+      vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: true }))),
     );
 
     const result = await linkedinPostGeneratorService.submitLinkedInPost(
@@ -87,11 +95,11 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
         tone: "sachlich",
         topic: "Pricing",
       },
-      "de",
+      "en",
     );
 
     expect(result).toEqual({
-      code: LinkedInPostGeneratorErrorCode.InternalError,
+      code: "internal_error",
       ok: false,
     });
   });
