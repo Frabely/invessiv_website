@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
+import { ContactConsentField } from "@/components/shared/form/contact-consent-field/contact-consent-field";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
 import { ContactHelperList } from "@/components/marketing/home/sections/contact-section/shared/contact-helper-list/contact-helper-list";
@@ -182,33 +182,20 @@ export function DiscoveryCallPanel({
           required={false}
         />
 
-        <label className={sharedStyles.consent}>
-          <input
-            {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
-              validate: (value) =>
-                value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
-            })}
-            aria-describedby="discovery-call-consent-error"
-            aria-invalid={
-              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                ? "true"
-                : undefined
-            }
-            type="checkbox"
-          />
-          <ContactConsentText
-            consentLabel={formCopy.consentLabel}
-            errorClassName={sharedStyles.consentError}
-            errorId="discovery-call-consent-error"
-            errorMessage={
-              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                ? getErrorMessage(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
-                : undefined
-            }
-            privacyHref={privacyHref}
-            privacyLabel={formCopy.privacyLabel}
-          />
-        </label>
+        <ContactConsentField
+          className={sharedStyles.consent}
+          consentLabel={formCopy.consentLabel}
+          errorClassName={sharedStyles.consentError}
+          errorId="discovery-call-consent-error"
+          errorMessage={
+            errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+              ? getErrorMessage(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
+              : undefined
+          }
+          privacyHref={privacyHref}
+          privacyLabel={formCopy.privacyLabel}
+          register={register}
+        />
 
         <FormActions
           buttons={

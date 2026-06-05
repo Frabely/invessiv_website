@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { ContactConsentText } from "@/components/marketing/home/sections/contact-section/shared/contact-consent-text/contact-consent-text";
+import { ContactConsentField } from "@/components/shared/form/contact-consent-field/contact-consent-field";
 import { ContactIdentityFields } from "@/components/marketing/home/sections/contact-section/shared/contact-identity-fields/contact-identity-fields";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { ContactFormShell } from "@/components/marketing/home/sections/contact-section/shared/contact-form-shell/contact-form-shell";
@@ -1172,33 +1172,20 @@ export function ProjectRequestForm({
               />
             </div>
 
-            <label className={sharedStyles.consent}>
-              <input
-                aria-describedby="project-request-consent-error"
-                aria-invalid={
-                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                    ? "true"
-                    : undefined
-                }
-                type="checkbox"
-                {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
-                  validate: (value) =>
-                    value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
-                })}
-              />
-              <ContactConsentText
-                consentLabel={formCopy.consentLabel}
-                errorClassName={sharedStyles.consentError}
-                errorId="project-request-consent-error"
-                errorMessage={
-                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                    ? getFieldErrorText(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
-                    : undefined
-                }
-                privacyHref={privacyHref}
-                privacyLabel={privacyLabel}
-              />
-            </label>
+            <ContactConsentField
+              className={sharedStyles.consent}
+              consentLabel={formCopy.consentLabel}
+              errorClassName={sharedStyles.consentError}
+              errorId="project-request-consent-error"
+              errorMessage={
+                errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                  ? getFieldErrorText(CONTACT_FORM_FIELD_NAME.ConsentAccepted)
+                  : undefined
+              }
+              privacyHref={privacyHref}
+              privacyLabel={privacyLabel}
+              register={register}
+            />
 
             <FormActions
               buttons={

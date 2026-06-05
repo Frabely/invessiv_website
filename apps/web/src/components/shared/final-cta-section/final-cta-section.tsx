@@ -5,27 +5,27 @@ import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
+import { ContactConsentField } from "@/components/shared/form/contact-consent-field/contact-consent-field";
+import { FormField } from "@/components/shared/form/form-field/form-field";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
+import { mapFinalCtaFormToDto } from "@/client/contact/mappers/map-final-cta-form-to-dto";
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
-import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { SubmitState } from "@invessiv/common/constants/form/submit-state";
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { CONTACT_URL_PATTERN } from "@invessiv/common/patterns/contact/contact-url";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
-import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
+import type { FinalCtaFormValues } from "@invessiv/common/contracts/contact/forms/final-cta-form-values";
+import { DEFAULT_FINAL_CTA_FORM_VALUES } from "@invessiv/common/defaults/contact/final-cta-form-values";
 import type { Locale } from "@/config/i18n";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { FinalCtaContent } from "@/i18n/dictionaries/shared/final-cta";
-import {
-  DEFAULT_FINAL_CTA_FORM_VALUES,
-  type FinalCtaFormValues,
-} from "./final-cta-form-values";
 import styles from "./final-cta-section.module.css";
 
 type FinalCtaSectionProps = FinalCtaContent & {
@@ -35,25 +35,6 @@ type FinalCtaSectionProps = FinalCtaContent & {
   locale: Locale;
   origin?: ContactSubmissionOrigin;
 };
-
-function buildMessage(
-  goal: string,
-  website: string,
-  payloadContext: string,
-): string {
-  const trimmedWebsite = website.trim();
-  const trimmedGoal = goal.trim();
-  const trimmedContext = payloadContext.trim();
-  const messageParts = trimmedContext ? [trimmedContext] : [];
-
-  if (!trimmedWebsite) {
-    messageParts.push(trimmedGoal);
-    return messageParts.join("\n\n");
-  }
-
-  messageParts.push(`Website: ${trimmedWebsite}`, trimmedGoal);
-  return messageParts.join("\n\n");
-}
 
 export function FinalCtaSection({
   analyticsLocation,
@@ -70,13 +51,7 @@ export function FinalCtaSection({
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
 
-  const fieldIdPrefix = useId();
-  const nameId = `${fieldIdPrefix}-name`;
-  const emailId = `${fieldIdPrefix}-email`;
-  const websiteId = `${fieldIdPrefix}-website`;
-  const goalId = `${fieldIdPrefix}-goal`;
-  const consentErrorId = `${fieldIdPrefix}-consent-error`;
-  const websiteHintId = `${fieldIdPrefix}-website-hint`;
+  const consentErrorId = `${useId()}-consent-error`;
   const websiteField = form.fields.website;
 
   const [submitState, setSubmitState] = useState<{
@@ -104,6 +79,23 @@ export function FinalCtaSection({
     mode: "onSubmit",
   });
 
+  const getFieldErrorMessage = (
+    fieldName: keyof FinalCtaFormValues,
+  ): string => {
+    const code = errors[fieldName]?.message ?? errors[fieldName]?.type;
+
+    if (code === CONTACT_FIELD_ERROR_CODE.InvalidEmail) {
+      return form.errorEmail;
+    }
+    if (code === CONTACT_FIELD_ERROR_CODE.InvalidUrl) {
+      return form.errorWebsite ?? form.errorGeneric;
+    }
+    if (code === CONTACT_FIELD_ERROR_CODE.ConsentRequired) {
+      return form.errorConsent;
+    }
+    return form.errorRequired;
+  };
+
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,
   ): string => {
@@ -128,19 +120,11 @@ export function FinalCtaSection({
       }
 
       trackSubmitAttempt();
-      const dto: SaveQuickContactDto = {
-        consentAccepted: values[CONTACT_FORM_FIELD_NAME.ConsentAccepted],
-        displayName: values.name.trim(),
-        email: values.email.trim(),
-        kind: CONTACT_REQUEST_KIND.QuickContact,
+      const dto = mapFinalCtaFormToDto(values, {
         locale,
-        message: buildMessage(
-          values[CONTACT_FORM_FIELD_NAME.Goal],
-          values[CONTACT_FORM_FIELD_NAME.Website],
-          form.payloadContext,
-        ),
         origin,
-      };
+        payloadContext: form.payloadContext,
+      });
 
       try {
         const response = await submitQuickContact(dto);
@@ -220,46 +204,31 @@ export function FinalCtaSection({
             onSubmit={onSubmit}
           >
             <div className={styles.fieldGrid}>
-              <div className={styles.field}>
-                <label className={styles.label} htmlFor={nameId}>
-                  {form.fields.name.label}
-                  <span aria-hidden="true" className={styles.required}>
-                    *
-                  </span>
-                </label>
-                <input
-                  {...register("name", {
+              <FormField
+                errorMessage={
+                  errors.name ? getFieldErrorMessage("name") : undefined
+                }
+                inputProps={{
+                  ...register("name", {
                     validate: (value) =>
                       value.trim().length >= 2 ||
                       CONTACT_FIELD_ERROR_CODE.Required,
-                  })}
-                  aria-describedby={errors.name ? `${nameId}-error` : undefined}
-                  aria-invalid={errors.name ? "true" : undefined}
-                  aria-required="true"
-                  autoComplete={form.fields.name.autocomplete}
-                  className={styles.input}
-                  id={nameId}
-                  placeholder={form.fields.name.placeholder}
-                  type="text"
-                />
-                <p
-                  className={styles.errorText}
-                  id={`${nameId}-error`}
-                  role={errors.name ? "alert" : undefined}
-                >
-                  {errors.name ? form.errorRequired : "\u00a0"}
-                </p>
-              </div>
+                  }),
+                  "aria-invalid": errors.name ? "true" : undefined,
+                  autoComplete: form.fields.name.autocomplete,
+                  placeholder: form.fields.name.placeholder,
+                }}
+                kind={FormFieldKind.Text}
+                label={form.fields.name.label}
+                required
+              />
 
-              <div className={styles.field}>
-                <label className={styles.label} htmlFor={emailId}>
-                  {form.fields.email.label}
-                  <span aria-hidden="true" className={styles.required}>
-                    *
-                  </span>
-                </label>
-                <input
-                  {...register("email", {
+              <FormField
+                errorMessage={
+                  errors.email ? getFieldErrorMessage("email") : undefined
+                }
+                inputProps={{
+                  ...register("email", {
                     validate: (value) => {
                       const trimmed = value.trim();
                       if (!trimmed) {
@@ -269,41 +238,28 @@ export function FinalCtaSection({
                         ? true
                         : CONTACT_FIELD_ERROR_CODE.InvalidEmail;
                     },
-                  })}
-                  aria-describedby={
-                    errors.email ? `${emailId}-error` : undefined
-                  }
-                  aria-invalid={errors.email ? "true" : undefined}
-                  aria-required="true"
-                  autoComplete={form.fields.email.autocomplete}
-                  className={styles.input}
-                  id={emailId}
-                  inputMode="email"
-                  placeholder={form.fields.email.placeholder}
-                  type="email"
-                />
-                <p
-                  className={styles.errorText}
-                  id={`${emailId}-error`}
-                  role={errors.email ? "alert" : undefined}
-                >
-                  {errors.email
-                    ? errors.email.message ===
-                      CONTACT_FIELD_ERROR_CODE.InvalidEmail
-                      ? form.errorEmail
-                      : form.errorRequired
-                    : "\u00a0"}
-                </p>
-              </div>
+                  }),
+                  "aria-invalid": errors.email ? "true" : undefined,
+                  autoComplete: form.fields.email.autocomplete,
+                  inputMode: "email",
+                  placeholder: form.fields.email.placeholder,
+                }}
+                kind={FormFieldKind.Email}
+                label={form.fields.email.label}
+                required
+              />
             </div>
 
             {websiteField ? (
-              <div className={styles.field}>
-                <label className={styles.label} htmlFor={websiteId}>
-                  {websiteField.label}
-                </label>
-                <input
-                  {...register(CONTACT_FORM_FIELD_NAME.Website, {
+              <FormField
+                errorMessage={
+                  errors.website
+                    ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Website)
+                    : undefined
+                }
+                hint={websiteField.hint}
+                inputProps={{
+                  ...register(CONTACT_FORM_FIELD_NAME.Website, {
                     validate: (value) => {
                       const trimmed = value.trim();
                       if (!trimmed) {
@@ -313,64 +269,37 @@ export function FinalCtaSection({
                         ? true
                         : CONTACT_FIELD_ERROR_CODE.InvalidUrl;
                     },
-                  })}
-                  aria-describedby={
-                    errors.website ? `${websiteId}-error` : websiteHintId
-                  }
-                  aria-invalid={errors.website ? "true" : undefined}
-                  autoComplete={websiteField.autocomplete}
-                  className={styles.input}
-                  id={websiteId}
-                  inputMode="url"
-                  placeholder={websiteField.placeholder}
-                  type="url"
-                />
-                {websiteField.hint ? (
-                  <p className={styles.hint} id={websiteHintId}>
-                    {websiteField.hint}
-                  </p>
-                ) : null}
-                <p
-                  className={styles.errorText}
-                  id={`${websiteId}-error`}
-                  role={errors.website ? "alert" : undefined}
-                >
-                  {errors.website
-                    ? (form.errorWebsite ?? form.errorGeneric)
-                    : "\u00a0"}
-                </p>
-              </div>
+                  }),
+                  "aria-invalid": errors.website ? "true" : undefined,
+                  autoComplete: websiteField.autocomplete,
+                  inputMode: "url",
+                  placeholder: websiteField.placeholder,
+                }}
+                kind={FormFieldKind.Url}
+                label={websiteField.label}
+              />
             ) : null}
 
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor={goalId}>
-                {form.fields.goal.label}
-                <span aria-hidden="true" className={styles.required}>
-                  *
-                </span>
-              </label>
-              <textarea
-                {...register(CONTACT_FORM_FIELD_NAME.Goal, {
+            <FormField
+              errorMessage={
+                errors.goal
+                  ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Goal)
+                  : undefined
+              }
+              kind={FormFieldKind.Textarea}
+              label={form.fields.goal.label}
+              required
+              textareaProps={{
+                ...register(CONTACT_FORM_FIELD_NAME.Goal, {
                   validate: (value) =>
                     value.trim().length >= 1 ||
                     CONTACT_FIELD_ERROR_CODE.Required,
-                })}
-                aria-describedby={errors.goal ? `${goalId}-error` : undefined}
-                aria-invalid={errors.goal ? "true" : undefined}
-                aria-required="true"
-                className={styles.textarea}
-                id={goalId}
-                placeholder={form.fields.goal.placeholder}
-                rows={5}
-              />
-              <p
-                className={styles.errorText}
-                id={`${goalId}-error`}
-                role={errors.goal ? "alert" : undefined}
-              >
-                {errors.goal ? form.errorRequired : "\u00a0"}
-              </p>
-            </div>
+                }),
+                "aria-invalid": errors.goal ? "true" : undefined,
+                placeholder: form.fields.goal.placeholder,
+                rows: 5,
+              }}
+            />
 
             <label aria-hidden="true" className={styles.honeypot}>
               {form.fields.honeypot.label}
@@ -382,47 +311,21 @@ export function FinalCtaSection({
               />
             </label>
 
-            <label className={styles.consent}>
-              <input
-                {...register(CONTACT_FORM_FIELD_NAME.ConsentAccepted, {
-                  validate: (value) =>
-                    value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
-                })}
-                aria-describedby={consentErrorId}
-                aria-invalid={
-                  errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                    ? "true"
-                    : undefined
-                }
-                className={styles.consentCheckbox}
-                type="checkbox"
-              />
-              <span className={styles.consentText}>
-                {form.consentLabel}{" "}
-                <a
-                  className={styles.consentLink}
-                  href={form.privacyHref}
-                  rel="noopener"
-                  target="_blank"
-                >
-                  {form.privacyLabel}
-                </a>
-                .
-              </span>
-            </label>
-            <p
-              className={styles.errorText}
-              id={consentErrorId}
-              role={
+            <ContactConsentField
+              checkboxClassName={styles.consentCheckbox}
+              className={styles.consent}
+              consentLabel={form.consentLabel}
+              errorClassName={styles.consentError}
+              errorId={consentErrorId}
+              errorMessage={
                 errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                  ? "alert"
+                  ? form.errorConsent
                   : undefined
               }
-            >
-              {errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                ? form.errorConsent
-                : "\u00a0"}
-            </p>
+              privacyHref={form.privacyHref}
+              privacyLabel={form.privacyLabel}
+              register={register}
+            />
 
             <div className={styles.actions}>
               <PrimaryCtaButton
