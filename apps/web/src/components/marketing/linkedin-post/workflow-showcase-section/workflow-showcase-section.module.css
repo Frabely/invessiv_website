@@ -11,8 +11,8 @@
   display: grid;
   gap: 2.5rem;
   grid-template-areas:
-    "post"
-    "pitch";
+    "pitch"
+    "post";
 }
 
 /* ── Pitch column (left) ── */
