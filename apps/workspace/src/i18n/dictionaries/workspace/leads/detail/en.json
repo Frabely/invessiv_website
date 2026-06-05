@@ -53,7 +53,8 @@
     "channels": {
       "quick_contact": "Quick contact",
       "project_request": "Project request",
-      "discovery_call": "Discovery call"
+      "discovery_call": "Discovery call",
+      "linkedin_post_delivery": "LinkedIn post delivery"
     },
     "submission": {
       "fallbackTitle": "Incoming form submission"

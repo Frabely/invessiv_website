@@ -146,22 +146,77 @@ downloadAction, emailAction, success{download,email}, error{…} }`.
     Form-Namespace in den Lead-Namespace verschieben.
 - Alle Texte via `copywriting`-Skill, DE/EN konsistent, UTF-8 sauber.
 
-### Phase B — Backend: anonyme Generierung + signierter Deliver-Schritt
+### Phase B — Backend: anonyme Generierung, signierter Deliver-Schritt & Lead-Persistenz
 
-- Generierung: Identitätsfelder optional machen; bei leerer E-Mail **kein** Mailversand im Generierungs-Handler.
-  `deliveryToken` (HMAC, kurzer Ablauf) in den Success-Response aufnehmen
-  (`linkedin-post-generator-success-response.ts`).
-- Neuer Endpoint `apps/web/src/app/api/public/generator/linkedin-post/deliver/route.ts` + Command-Handler
-  `generate-linkedin-post-deliver.command-handler.ts`: Token verifizieren → PNG neu rendern (Mock/OpenAI-DTO-basiert) →
-  bei `intent: "email"` Mail versenden; Lead-Daten + Consents protokollieren.
-- Neue Error-Codes (Token ungültig/abgelaufen, Deliver-Rate-Limit) im bestehenden Error-Code-Const-Objekt +
-  Message-Mapping.
-- Abgleich mit der bereits gestageten Datei
-  `apps/web/common/constants/generator/linkedin-post-generator-request-modes.ts` (Generate/Deliver-Modi) und dem
-  `linkedin-post-generator-mock.ts`-Mock-Service.
-- **Lead-Persistenz** (Name/E-Mail/Consents/Topic-Kontext): primär als eigener Punkt — entweder eigene Tabelle analog
-  `packages/db/src/record-configuration/**` oder Wiederverwendung der Contact-Pipeline (neuer `kind`). **Offen / als
-  Folge-Ticket vorgesehen**, falls Scope begrenzt bleiben soll.
+> **Entscheidungen (vom Nutzer bestätigt, 2026-06):**
+>
+> - **Download-Aktion entfällt komplett.** Der Lead-Schritt nach der Generierung hat nur noch **eine** Aktion
+>   „Per E-Mail schicken". Die bisherige „Herunterladen"-Logik in `lead-capture-card.tsx` und das Download-Wiring in
+>   `success-preview.tsx`/`generator-section.tsx` werden **ersatzlos entfernt**. Clipboard-Copy bleibt frei (kein
+>   personenbezogener Tausch).
+> - **Lead-Persistenz über die bestehende Contact-Pipeline** (kein neues Schema-Silo). Es entsteht **immer** ein Lead,
+>   sobald die Pflicht-Consent (transaktional) gesetzt ist; der optionale Marketing-Consent wird als **Flag**
+>   gespeichert und steuert ausschließlich spätere Marketing-Mails (DSGVO-Zwecktrennung, §7 UWG). Nur der
+>   **E-Mail-Versand** persistiert — einen reinen Download gibt es nicht mehr.
+> - **Typ-Modell: Channel + Origin.** Neuer Channel `linkedin_post_delivery` für die Post-Zustellung; Projekt-Anfragen
+>   bleiben `project_request`, erhalten aber einen neuen **Origin**-Marker. Origin `linkedin_post` markiert beide
+>   LinkedIn-Post-Flows (Post-Zustellung + Projekt-Anfrage von der LinkedIn-Post-Seite); bestehende Flows = Origin
+>   `website`.
+
+#### B1. Shared Constants & Contracts (`packages/common`)
+
+- `CONTACT_REQUEST_KIND` um `LinkedInPostDelivery: "linkedin_post_delivery"` erweitern (+ `CONTACT_REQUEST_KINDS`-Array,
+  - Test). Channel ist nur DB-`text` (keine CHECK-Constraint) → keine Enum-Migration nötig.
+- Neues Const-Objekt `ContactSubmissionOrigin` (`Website: "website"`, `LinkedInPost: "linkedin_post"`) +
+  `CONTACT_SUBMISSION_ORIGIN_VALUES` + Test in `packages/common/src/constants/contact/`.
+- Neue DTOs: Deliver-Request (`{ deliveryToken, displayName, email, consentDelivery, consentMarketing, locale }`) und
+  Save-DTO für den Post-Delivery-Lead.
+- Generator-Error-Codes erweitern: `DeliveryTokenInvalid`, `DeliveryTokenExpired`, `DeliveryRateLimited`
+  (+ Message-Mapping in der Nutzungsschicht, nicht inline).
+
+#### B2. DB: Migration + Persistenz (`packages/db`)
+
+- `lead_submissions` um `origin` (text, notNull, default `'website'`) und `marketing_consent` (boolean, notNull,
+  default false) erweitern — Record-Config (`record-configuration/lead-submissions.ts`) + Migration.
+- Channel-Detailrecord für die Post-Zustellung: Default = bestehendes `lead_email_contact` wiederverwenden
+  (Topic-Kontext im Message-Feld), keine neue Tabelle, sofern nicht zwingend nötig — in B2 final entscheiden.
+- Persistenzfunktion nach Contact-Pattern (`@invessiv/db/<domain>/**`), vom Web-Server aufgerufen; Mapping API→DB an der
+  Server-zu-DB-Grenze (siehe `server/linkedin-post/AGENTS.md`).
+
+#### B3. Deliver-Token-Service + Generierungs-Response (`apps/web/src/server/linkedin-post`)
+
+- Neuer `linkedin-post-delivery-token-service.ts`: HMAC-SHA256 (eigenes Secret `GENERATOR_DELIVERY_TOKEN_SECRET`,
+  Pattern wie `linkedin-post-generator-usage-key-service.ts`) über `{ post, caption, downloadFileName, locale, exp }`;
+  `createDeliveryToken` + `verifyDeliveryToken`. Unit-Test (sign/verify/expiry/tamper).
+- Generierungs-Service/Handler: optionales `deliveryToken` in den Success-Response aufnehmen
+  (`linkedin-post-generator-success-response.ts`). Mailversand im Generate-Schritt bleibt entfernt.
+
+#### B4. Deliver-Endpoint + Command-Handler
+
+- `apps/web/src/app/api/public/generator/linkedin-post/deliver/route.ts` (dünner HTTP-Adapter) +
+  `handlers/deliver-linkedin-post.command-handler.ts`: Body validieren (Zod gegen Deliver-DTO) → Token verifizieren →
+  Post-DTO re-rendern (`renderLinkedInPostHtml` → `renderLinkedInPostPng`) → Mail via bestehendem Template versenden →
+  Lead persistieren (Channel `linkedin_post_delivery`, Origin `linkedin_post`, `marketing_consent`) → Rate-Limit über
+  eigenen, getrennten Scope (gleiche IP-Key-Mechanik) → Fehler-Mapping.
+
+#### B5. Frontend-Anpassung (Lead-Schritt)
+
+- `lead-capture-card.tsx`: „Herunterladen"-Button + `onDownload`-Prop + Download-Feedback **entfernen**; nur
+  „Per E-Mail schicken" bleibt → ruft Deliver-Endpoint mit `deliveryToken` + Identität + Consents auf; Erfolg/Fehler
+  sichtbar (kein „coming soon" mehr).
+- `success-preview.tsx`/`generator-section.tsx`: Download-Wiring (`onDownloadImage`/`onDownloadCaption` Richtung
+  Lead-Schritt) entfernen; `deliveryToken` aus dem Success-State in die Karte reichen.
+- Projekt-Anfrage über die LinkedIn-Post-Seite mit `origin: linkedin_post` taggen (project-request-Flow um optionales
+  Origin-Feld erweitern; Default `website`).
+- i18n DE/EN parallel: Lead-Schritt-Texte auf „nur E-Mail" reduzieren; Deliver-Erfolg/-Fehler ergänzen.
+
+#### B6. Tests
+
+- Unit: delivery-token-service, neue Constants, Deliver-Command-Handler (Token-Verify, Re-Render-/Mail-/Persist-Mock,
+  Rate-Limit), Deliver-Validation-Schema.
+- jsdom: `lead-capture-card` (nur E-Mail-Aktion, Consent-Gating, Marketing-Flag), `generator-section`
+  (deliveryToken-Fluss).
+- DB-Smoke für Migration/Persistenz, soweit Pattern vorhanden.
 
 ### Phase C — Tests & Verifikation
 
@@ -233,9 +288,10 @@ CampaignCleaner (Opt-In Form Best Practices).
 
 ## Offene Punkte / bewusste Entscheidungen
 
-- **Lead-Persistenz** (DB-Tabelle vs. Contact-Pipeline) ist in Phase B als Folge-Ticket markiert — bitte vor Phase B
-  entscheiden, ob jetzt mit umgesetzt.
-- **Phase B (E-Mail-Versand)** kann separat abgenommen werden; ohne sie wäre der E-Mail-Pfad zunächst „Coming soon",
-  der Download-Pfad funktioniert.
+- **Lead-Persistenz**: ENTSCHIEDEN (2026-06) — Contact-Pipeline wiederverwenden, Channel + Origin, Marketing-Consent als
+  Flag, nur E-Mail-Versand persistiert. Siehe Phase-B-Entscheidungsblock.
+- **Download-Aktion**: ENTSCHIEDEN (2026-06) — komplett entfernt; einzige Lead-Aktion ist „Per E-Mail schicken".
+- **Channel-Detailrecord** für die Post-Zustellung (eigene Tabelle vs. `lead_email_contact` wiederverwenden): in B2
+  final zu entscheiden; Default = Wiederverwendung.
 - Architektur-Gate: Alle neuen Komponenten als eigener Ordner + scoped `*.module.css` + Test; Texte nur in
   Dictionaries; Routen/Pfade aus Konstanten; Error-Codes via Const-Objekt + Message-Helper.

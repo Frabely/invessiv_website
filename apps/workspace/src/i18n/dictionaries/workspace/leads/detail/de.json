@@ -53,7 +53,8 @@
     "channels": {
       "quick_contact": "Schnellkontakt",
       "project_request": "Projektanfrage",
-      "discovery_call": "Erstgespräch"
+      "discovery_call": "Erstgespräch",
+      "linkedin_post_delivery": "LinkedIn-Post-Zustellung"
     },
     "submission": {
       "fallbackTitle": "Eingang über Formular"
