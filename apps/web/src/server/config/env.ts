@@ -16,6 +16,10 @@ export type ServerEnv = {
 };
 
 function readDeploymentEnvironment(): DeploymentEnvironment {
+  if (process.env.NODE_ENV?.trim().toLowerCase() === "development") {
+    return "development";
+  }
+
   const rawEnvironment =
     process.env.VERCEL_TARGET_ENV?.trim().toLowerCase() ||
     process.env.VERCEL_ENV?.trim().toLowerCase() ||

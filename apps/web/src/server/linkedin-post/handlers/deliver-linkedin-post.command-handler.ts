@@ -2,18 +2,18 @@ import "server-only";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type {
   DeliverLinkedInPostCommandInput,
+  DeliveryTokenPayload,
   LinkedInPostDeliverCommandHandlerResult,
 } from "@/common/contracts/generator";
 import {
+  DeliveryTokenInvalidReason,
   LINKEDIN_POST_DELIVERY_FAILED_LOG_EVENT,
   LINKEDIN_POST_DELIVERY_PERSIST_FAILED_LOG_EVENT,
   LINKEDIN_POST_GENERATOR_MAIL_FAILED_LOG_EVENT,
   LINKEDIN_POST_MAX_BODY_SIZE,
   LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT,
-  DeliveryTokenInvalidReason,
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
-import type { DeliveryTokenPayload } from "@/common/contracts/generator";
 import type { GeneratorUsageLimitReservation } from "@invessiv/common/contracts/generator";
 import { persistLinkedInPostDeliveryLead } from "@invessiv/db/contact/persist-linkedin-post-delivery";
 import {
@@ -105,14 +105,20 @@ async function persistDeliveryLead(
       marketingConsent,
       requestId,
     });
-    await persistLinkedInPostDeliveryLead(persistInput);
+    const persistResult = await persistLinkedInPostDeliveryLead(persistInput);
+    if (!persistResult.persisted) {
+      console.error(LINKEDIN_POST_DELIVERY_PERSIST_FAILED_LOG_EVENT, {
+        reason: "database_not_configured",
+        requestId,
+      });
+    }
+    return persistResult.persisted;
   } catch (error) {
-    // Lead-Persistenz ist best-effort: ein DB-Fehler darf die bereits erfolgte
-    // Zustellung nicht zum Scheitern bringen.
     console.error(LINKEDIN_POST_DELIVERY_PERSIST_FAILED_LOG_EVENT, {
       reason: error instanceof Error ? error.message : "unknown",
       requestId,
     });
+    return false;
   }
 }
 
@@ -225,12 +231,31 @@ async function deliverLinkedInPostCommandHandler({
       );
     }
 
+    const persisted = await persistDeliveryLead(
+      tokenPayload,
+      { displayName: parsed.data.displayName, email: parsed.data.email },
+      parsed.data.consentMarketing,
+      requestId,
+    );
+
+    if (!persisted) {
+      await linkedinPostDeliveryRateLimitService.releaseLinkedInPostDeliveryUsage(
+        reservation,
+      );
+      return failureResult(
+        LinkedInPostGeneratorErrorCode.DeliveryUnavailable,
+        HttpResponseCode.ServiceUnavailable,
+        undefined,
+        { stage: "deliver_persist" },
+      );
+    }
+
     const message = await createLinkedInPostGeneratorResultMessage({
       caption: tokenPayload.caption,
       downloadFileName: tokenPayload.downloadFileName,
       locale: tokenPayload.locale,
-      png,
       post: tokenPayload.post,
+      png,
       to: parsed.data.email,
     });
     const mailResult = await sendMail(message);
@@ -251,13 +276,6 @@ async function deliverLinkedInPostCommandHandler({
         { reason: mailResult.reason, stage: "deliver_mail" },
       );
     }
-
-    await persistDeliveryLead(
-      tokenPayload,
-      { displayName: parsed.data.displayName, email: parsed.data.email },
-      parsed.data.consentMarketing,
-      requestId,
-    );
 
     return { body: { ok: true }, status: HttpResponseCode.Ok };
   } catch (error) {

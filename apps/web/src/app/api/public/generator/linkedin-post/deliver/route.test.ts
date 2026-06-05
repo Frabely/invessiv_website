@@ -160,7 +160,7 @@ describe("POST /api/public/generator/linkedin-post/deliver", () => {
     expect(mocks.reserveLinkedInPostDeliveryUsage).toHaveBeenCalledTimes(1);
     expect(
       mocks.persistLinkedInPostDeliveryLead.mock.invocationCallOrder[0],
-    ).toBeGreaterThan(mocks.sendMail.mock.invocationCallOrder[0]);
+    ).toBeLessThan(mocks.sendMail.mock.invocationCallOrder[0]);
   });
 
   it("rejects an invalid token without reserving budget or sending mail", async () => {
@@ -217,7 +217,8 @@ describe("POST /api/public/generator/linkedin-post/deliver", () => {
     expect(payload.ok).toBe(false);
     expect(payload.code).toBe("delivery_unavailable");
     expect(mocks.releaseLinkedInPostDeliveryUsage).toHaveBeenCalledTimes(1);
-    expect(mocks.persistLinkedInPostDeliveryLead).not.toHaveBeenCalled();
+    expect(mocks.persistLinkedInPostDeliveryLead).toHaveBeenCalledTimes(1);
+    expect(mocks.sendMail).toHaveBeenCalledTimes(1);
   });
 
   it("releases the reservation and skips lead persistence when rendering fails", async () => {
@@ -234,17 +235,19 @@ describe("POST /api/public/generator/linkedin-post/deliver", () => {
     expect(mocks.releaseLinkedInPostDeliveryUsage).toHaveBeenCalledTimes(1);
   });
 
-  it("stays successful even if lead persistence throws", async () => {
+  it("fails before mail delivery if lead persistence throws", async () => {
     mocks.persistLinkedInPostDeliveryLead.mockRejectedValue(
       new Error("db_down"),
     );
     const { POST } = await import("./route");
     const response = await POST(createRequest(VALID_BODY));
 
-    const payload = (await response.json()) as { ok: boolean };
-    expect(response.status).toBe(200);
-    expect(payload.ok).toBe(true);
-    expect(mocks.sendMail).toHaveBeenCalledTimes(1);
+    const payload = (await response.json()) as { code: string; ok: boolean };
+    expect(response.status).toBe(503);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("delivery_unavailable");
+    expect(mocks.sendMail).not.toHaveBeenCalled();
+    expect(mocks.releaseLinkedInPostDeliveryUsage).toHaveBeenCalledTimes(1);
   });
 
   it("returns validation errors for an invalid payload", async () => {

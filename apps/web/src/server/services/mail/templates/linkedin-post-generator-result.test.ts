@@ -72,4 +72,19 @@ describe("createLinkedInPostGeneratorResultMessage", () => {
 
     expect(message.subject).toContain("Your LinkedIn post is ready");
   });
+
+  it("uses the development prefix in local dev mode", async () => {
+    vi.stubEnv("NODE_ENV", "development");
+
+    const message = await createLinkedInPostGeneratorResultMessage({
+      caption: "Caption\n\n#B2B #LinkedIn",
+      downloadFileName: "post.png",
+      locale: "de",
+      post: POST,
+      to: "max@example.com",
+    });
+
+    expect(message.subject).toContain("[DEV] ");
+    vi.unstubAllEnvs();
+  });
 });
