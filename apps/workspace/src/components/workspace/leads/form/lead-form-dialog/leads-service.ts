@@ -6,8 +6,7 @@ import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail
 import type { CreateLeadResult } from "@invessiv/common/contracts/leads/results/create-lead-result";
 import type { UpdateLeadResult } from "@invessiv/common/contracts/leads/results/update-lead-result";
 import type { z } from "zod";
-
-const LEAD_API_PATH = "/api/workspace/leads";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 type LeadApiErrorPayload = {
   details?: unknown;
@@ -50,7 +49,7 @@ async function createLead(
   request: CreateLeadRequestDto,
 ): Promise<CreateLeadServiceResult> {
   try {
-    const response = await fetch(LEAD_API_PATH, {
+    const response = await fetch(WorkspaceApiEndpoint.Leads, {
       body: JSON.stringify(request),
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +90,7 @@ async function createLead(
 
 async function deleteLead(leadId: string): Promise<DeleteLeadServiceResult> {
   try {
-    const response = await fetch(`${LEAD_API_PATH}/${leadId}`, {
+    const response = await fetch(`${WorkspaceApiEndpoint.Leads}/${leadId}`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -123,7 +122,7 @@ async function updateLead(
   request: UpdateLeadRequestDto,
 ): Promise<UpdateLeadServiceResult> {
   try {
-    const response = await fetch(`${LEAD_API_PATH}/${leadId}`, {
+    const response = await fetch(`${WorkspaceApiEndpoint.Leads}/${leadId}`, {
       body: JSON.stringify(request),
       headers: {
         "Content-Type": "application/json",

@@ -4,11 +4,16 @@ import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type { ContactLeadPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-persist-record";
 import type { ContactLeadSubmissionPersistRecord } from "@invessiv/db/contracts/contact/contact-lead-submission-persist-record";
 import { leadSubmissions } from "@invessiv/db/record-configuration/lead-submissions";
+import { leads } from "@invessiv/db/record-configuration/leads";
 
 export type PersistedSharedLeadSubmission = {
   leadId: string;
   submissionId: string;
 };
+
+function columnName(column: { name: string }) {
+  return sql.identifier(column.name);
+}
 
 export async function persistSharedLeadSubmission(
   tx: ContactDatabaseTransaction,
@@ -18,18 +23,18 @@ export async function persistSharedLeadSubmission(
   },
 ): Promise<PersistedSharedLeadSubmission> {
   const leadUpsertResult = await tx.execute<{ id: string }>(sql`
-    insert into leads (
-      id,
-      display_name,
-      company_name,
-      email,
-      phone,
-      website_url,
-      notes,
-      source,
-      lead_status,
-      created_at,
-      updated_at
+    insert into ${leads} (
+      ${columnName(leads.id)},
+      ${columnName(leads.display_name)},
+      ${columnName(leads.company_name)},
+      ${columnName(leads.email)},
+      ${columnName(leads.phone)},
+      ${columnName(leads.website_url)},
+      ${columnName(leads.notes)},
+      ${columnName(leads.source)},
+      ${columnName(leads.lead_status)},
+      ${columnName(leads.created_at)},
+      ${columnName(leads.updated_at)}
     )
     values (
       ${input.lead.id},
@@ -43,16 +48,16 @@ export async function persistSharedLeadSubmission(
       ${input.lead.lead_status},
       ${input.lead.created_at},
       ${input.lead.updated_at}
-    ) on conflict ((lower(btrim(email))))
-    where email is not null
+    ) on conflict ((lower(btrim(${leads.email}))))
+    where ${leads.email} is not null
     do update set
-      display_name = excluded.display_name,
-               company_name = excluded.company_name,
-               phone = excluded.phone,
-               website_url = excluded.website_url,
-               notes = excluded.notes,
-      updated_at = excluded.updated_at
-    returning id
+      ${columnName(leads.display_name)} = excluded.${columnName(leads.display_name)},
+      ${columnName(leads.company_name)} = excluded.${columnName(leads.company_name)},
+      ${columnName(leads.phone)} = excluded.${columnName(leads.phone)},
+      ${columnName(leads.website_url)} = excluded.${columnName(leads.website_url)},
+      ${columnName(leads.notes)} = excluded.${columnName(leads.notes)},
+      ${columnName(leads.updated_at)} = excluded.${columnName(leads.updated_at)}
+    returning ${leads.id}
   `);
   const leadId = leadUpsertResult.rows[0]?.id;
 
@@ -67,6 +72,8 @@ export async function persistSharedLeadSubmission(
     id: input.submission.id,
     lead_id: leadId,
     locale: input.submission.locale,
+    marketing_consent: input.submission.marketing_consent,
+    origin: input.submission.origin,
     request_id: input.submission.request_id,
     submission_started_at: input.submission.submission_started_at ?? null,
     updated_at: input.submission.updated_at,

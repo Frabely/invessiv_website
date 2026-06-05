@@ -1,5 +1,4 @@
 export const ImportLeadServiceValue = {
-  ApiPath: "/api/workspace/leads/import",
   FileField: "file",
   HttpMethodPost: "POST",
   ReportField: "report",

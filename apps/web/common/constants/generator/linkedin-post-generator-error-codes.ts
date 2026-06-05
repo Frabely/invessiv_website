@@ -14,6 +14,9 @@ export const LinkedInPostGeneratorErrorCode = {
   OpenAiInvalidContent: "openai_invalid_content",
   GeneratorSchemaInvalid: "generator_schema_invalid",
   DeliveryUnavailable: "delivery_unavailable",
+  DeliveryTokenInvalid: "delivery_token_invalid",
+  DeliveryTokenExpired: "delivery_token_expired",
+  DeliveryRateLimited: "delivery_rate_limited",
   InternalError: "internal_error",
 } as const;
 

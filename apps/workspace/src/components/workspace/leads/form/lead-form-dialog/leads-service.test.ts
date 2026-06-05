@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
 import type { UpdateLeadRequestDto } from "@invessiv/common/contracts/leads/update-lead-request.dto";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { leadsService } from "./leads-service";
 
 afterEach(() => {
@@ -33,7 +34,7 @@ describe("leadsService.createLead", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/workspace/leads",
+      WorkspaceApiEndpoint.Leads,
       expect.objectContaining({
         body: JSON.stringify(request),
         headers: {
@@ -137,7 +138,7 @@ describe("leadsService.updateLead", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      `/api/workspace/leads/${leadId}`,
+      `${WorkspaceApiEndpoint.Leads}/${leadId}`,
       expect.objectContaining({
         body: JSON.stringify(request),
         headers: {
@@ -246,7 +247,7 @@ describe("leadsService.deleteLead", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      `/api/workspace/leads/${leadId}`,
+      `${WorkspaceApiEndpoint.Leads}/${leadId}`,
       expect.objectContaining({
         headers: {
           "Content-Type": "application/json",

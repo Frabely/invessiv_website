@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { GeneratorZodIssueCode } from "@/common/constants/generator";
 import {
@@ -13,8 +14,6 @@ const GENERATOR_COLOR_PAIR_IDS = [
   "auto",
   ...GENERATOR_COLOR_PAIRS.map((pair) => pair.id),
 ] as [string, ...string[]];
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const linkedinPostGeneratorRequestSchema = z
   .object({
@@ -29,7 +28,7 @@ export const linkedinPostGeneratorRequestSchema = z
     locale: z.enum(SUPPORTED_LOCALES).default(Locale.De),
   })
   .superRefine((value, context) => {
-    if (value.email !== "" && !EMAIL_PATTERN.test(value.email)) {
+    if (value.email !== "" && !CONTACT_EMAIL_PATTERN.test(value.email)) {
       context.addIssue({
         code: GeneratorZodIssueCode.Custom,
         message: CONTACT_FIELD_ERROR_CODE.InvalidEmail,

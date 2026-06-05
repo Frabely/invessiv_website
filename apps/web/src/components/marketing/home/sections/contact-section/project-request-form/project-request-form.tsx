@@ -19,7 +19,7 @@ import { useLanguage } from "@/components/providers/language-provider";
 import { mapProjectRequestFormToDto } from "@/client/contact/mappers/map-project-request-form-to-dto";
 import { submitProjectRequest } from "@/client/contact/services/contact-form-service";
 import { SECTION_HREFS } from "@/config/navigation/home";
-import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/contact-submit-path";
+import { WebApiEndpoint } from "@/common/constants";
 import { DEFAULT_PROJECT_REQUEST_FORM_VALUES } from "@invessiv/common/defaults/contact/project-request-form-values";
 import type { ProjectRequestFormValues } from "@invessiv/common/contracts/contact/forms/project-request-form-values";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
@@ -128,7 +128,7 @@ export function ProjectRequestForm({
   offerOptions,
   privacyHref,
   privacyLabel,
-  submitPath = DEFAULT_CONTACT_SUBMIT_PATH,
+  submitPath = WebApiEndpoint.ContactSubmit,
 }: ProjectRequestFormProps) {
   const { locale } = useLanguage();
   const [customPageDraft, setCustomPageDraft] = useState("");

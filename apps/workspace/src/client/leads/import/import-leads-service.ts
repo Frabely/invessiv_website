@@ -6,6 +6,7 @@ import {
   ImportLeadReportField,
   ImportLeadServiceValue,
 } from "@invessiv/common/constants/leads/import/service/import-leads-service.constants";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 function isObjectWithStringField(
   value: unknown,
@@ -45,7 +46,7 @@ async function submitImport(file: File): Promise<LeadImportResultDto> {
 
   let response: Response;
   try {
-    response = await fetch(ImportLeadServiceValue.ApiPath, {
+    response = await fetch(WorkspaceApiEndpoint.LeadsImport, {
       method: ImportLeadServiceValue.HttpMethodPost,
       body: formData,
     });

@@ -63,11 +63,11 @@
   },
   "leadCapture": {
     "headline": "Like the post?",
-    "body": "Add your name and email to download it or have it sent to you – both come with the caption.",
+    "body": "Add your name and email and we'll send you the post with its caption by email.",
     "displayName": {
       "label": "Name",
       "placeholder": "e.g. Moritz Hecht",
-      "help": "Lets the post show your name.",
+      "help": "So we can address you personally in the email.",
       "maxLength": 80,
       "requiredError": "Please enter a name.",
       "tooLongError": "Please keep it under 80 characters."
@@ -86,13 +86,13 @@
       "label": "Send me occasional tips on LinkedIn posts and workflows."
     },
     "marketingMicrocopy": "No spam. Unsubscribe any time with one click.",
-    "downloadAction": "Download",
     "emailAction": "Send by email",
-    "comingSoonBadge": "Soon",
-    "emailComingSoon": "Email delivery is almost ready. For now, download the post directly.",
-    "success": {
-      "download": "Download started. The post is now in your downloads.",
-      "email": "Once delivery is live, we'll send the post to this address."
+    "emailActionLoading": "Sending …",
+    "deliver": {
+      "success": "Done. The post and caption are in your inbox – check spam too, just in case.",
+      "errorGeneric": "That didn't work just now. Please try again in a moment.",
+      "errorRateLimited": "You've already sent this post a few times. Please try again later.",
+      "errorExpired": "This link has expired. Generate the post again and the send will work."
     }
   },
   "preview": {

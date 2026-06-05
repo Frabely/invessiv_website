@@ -8,7 +8,6 @@ import {
 describe("ImportLeadServiceValue", () => {
   it("exposes the expected client import constants", () => {
     expect(ImportLeadServiceValue).toEqual({
-      ApiPath: "/api/workspace/leads/import",
       FileField: "file",
       HttpMethodPost: "POST",
       ReportField: "report",

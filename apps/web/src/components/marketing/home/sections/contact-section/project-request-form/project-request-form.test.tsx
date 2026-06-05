@@ -8,6 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { WebApiEndpoint } from "@/common/constants";
 
 import { ProjectRequestForm } from "./project-request-form";
 
@@ -466,7 +467,7 @@ describe("ProjectRequestForm", () => {
     });
 
     const [, requestInit] = fetchMock.mock.calls[0]!;
-    expect(fetchMock.mock.calls[0]?.[0]).toBe("/api/public/contact");
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(WebApiEndpoint.ContactSubmit);
     expect(requestInit?.method).toBe("POST");
     expect(requestInit?.headers).toMatchObject({
       "Content-Type": "application/json",

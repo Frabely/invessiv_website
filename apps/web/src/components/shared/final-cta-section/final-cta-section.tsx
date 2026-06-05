@@ -9,8 +9,11 @@ import { submitQuickContact } from "@/client/contact/services/contact-form-servi
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { CONTACT_SUBMIT_ERROR_CODE } from "@invessiv/common/contracts/contact/submit/contact-submit-error-code";
 import { SubmitState } from "@invessiv/common/constants/form/submit-state";
+import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
+import { CONTACT_URL_PATTERN } from "@invessiv/common/patterns/contact/contact-url";
 import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/submit/contact-submit";
 import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import type { Locale } from "@/config/i18n";
@@ -19,6 +22,10 @@ import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { FinalCtaContent } from "@/i18n/dictionaries/shared/final-cta";
+import {
+  DEFAULT_FINAL_CTA_FORM_VALUES,
+  type FinalCtaFormValues,
+} from "./final-cta-form-values";
 import styles from "./final-cta-section.module.css";
 
 type FinalCtaSectionProps = FinalCtaContent & {
@@ -26,27 +33,8 @@ type FinalCtaSectionProps = FinalCtaContent & {
   formId: string;
   id: string;
   locale: Locale;
+  origin?: ContactSubmissionOrigin;
 };
-
-type FormValues = {
-  email: string;
-  honeypot: string;
-  name: string;
-  [CONTACT_FORM_FIELD_NAME.ConsentAccepted]: boolean;
-  [CONTACT_FORM_FIELD_NAME.Goal]: string;
-  [CONTACT_FORM_FIELD_NAME.Website]: string;
-};
-
-const DEFAULT_FORM_VALUES: FormValues = {
-  email: "",
-  honeypot: "",
-  name: "",
-  [CONTACT_FORM_FIELD_NAME.ConsentAccepted]: false,
-  [CONTACT_FORM_FIELD_NAME.Goal]: "",
-  [CONTACT_FORM_FIELD_NAME.Website]: "",
-};
-
-const URL_PATTERN = /^https?:\/\/\S+\.\S+/i;
 
 function buildMessage(
   goal: string,
@@ -75,6 +63,7 @@ export function FinalCtaSection({
   formId,
   id,
   locale,
+  origin = ContactSubmissionOrigin.Website,
   title,
   trustLine,
 }: FinalCtaSectionProps) {
@@ -110,8 +99,8 @@ export function FinalCtaSection({
     handleSubmit,
     register,
     reset,
-  } = useForm<FormValues>({
-    defaultValues: DEFAULT_FORM_VALUES,
+  } = useForm<FinalCtaFormValues>({
+    defaultValues: DEFAULT_FINAL_CTA_FORM_VALUES,
     mode: "onSubmit",
   });
 
@@ -134,7 +123,7 @@ export function FinalCtaSection({
           kind: SubmitState.Kind.Success,
           message: form.successBody,
         });
-        reset(DEFAULT_FORM_VALUES);
+        reset(DEFAULT_FINAL_CTA_FORM_VALUES);
         return;
       }
 
@@ -150,6 +139,7 @@ export function FinalCtaSection({
           values[CONTACT_FORM_FIELD_NAME.Website],
           form.payloadContext,
         ),
+        origin,
       };
 
       try {
@@ -164,7 +154,7 @@ export function FinalCtaSection({
         }
         trackSubmitSuccess();
         setSubmitState({ kind: SubmitState.Kind.Success });
-        reset(DEFAULT_FORM_VALUES);
+        reset(DEFAULT_FINAL_CTA_FORM_VALUES);
         resetFormAnalytics();
       } catch {
         setSubmitState({
@@ -275,7 +265,7 @@ export function FinalCtaSection({
                       if (!trimmed) {
                         return CONTACT_FIELD_ERROR_CODE.Required;
                       }
-                      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
+                      return CONTACT_EMAIL_PATTERN.test(trimmed)
                         ? true
                         : CONTACT_FIELD_ERROR_CODE.InvalidEmail;
                     },
@@ -319,7 +309,7 @@ export function FinalCtaSection({
                       if (!trimmed) {
                         return true;
                       }
-                      return URL_PATTERN.test(trimmed)
+                      return CONTACT_URL_PATTERN.test(trimmed)
                         ? true
                         : CONTACT_FIELD_ERROR_CODE.InvalidUrl;
                     },

@@ -7,6 +7,10 @@ export const LINKEDIN_POST_GENERATOR_MAIL_FAILED_LOG_EVENT =
   "linkedin_post_generator_mail_failed";
 export const LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT =
   "linkedin_post_generator_failed";
+export const LINKEDIN_POST_DELIVERY_FAILED_LOG_EVENT =
+  "linkedin_post_delivery_failed";
+export const LINKEDIN_POST_DELIVERY_PERSIST_FAILED_LOG_EVENT =
+  "linkedin_post_delivery_persist_failed";
 
 export const LINKEDIN_POST_REQUIRED_HASHTAG = "LinkedIn";
 export const LINKEDIN_POST_FALLBACK_HASHTAG = "SocialMedia";

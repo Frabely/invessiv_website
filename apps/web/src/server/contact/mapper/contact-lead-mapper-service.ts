@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import type { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import type { ContactSubmissionChannel } from "@invessiv/common/contracts/contact/keys/contact-request-kind";
 import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/discovery-call/save-discovery-call-dto";
 import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
@@ -33,6 +34,15 @@ export type SubmissionApiToDbMapperInput = {
   startedAt?: Date;
 };
 
+/**
+ * Optional submission metadata. `origin`/`marketingConsent` default to the DB
+ * defaults (website/false) when omitted, so existing callers stay untouched.
+ */
+export type SubmissionApiToDbMapperExtra = {
+  origin?: ContactSubmissionOrigin;
+  marketingConsent?: boolean;
+};
+
 export function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
@@ -61,6 +71,7 @@ export function mapSubmissionApiToDb(
   channel: ContactSubmissionChannel,
   leadId: string,
   createdAt: Date,
+  extra?: SubmissionApiToDbMapperExtra,
 ): ContactLeadSubmissionPersistRecord {
   return {
     channel,
@@ -69,6 +80,8 @@ export function mapSubmissionApiToDb(
     id: randomUUID(),
     lead_id: leadId,
     locale: payload.locale,
+    marketing_consent: extra?.marketingConsent,
+    origin: extra?.origin,
     request_id: requestId,
     submission_started_at: payload.startedAt,
     updated_at: createdAt,
@@ -93,6 +106,7 @@ export function mapQuickContactDtoToDbPersistInput(
     CONTACT_REQUEST_KIND.QuickContact,
     lead.id,
     createdAt,
+    { origin: payload.origin },
   );
 
   return {

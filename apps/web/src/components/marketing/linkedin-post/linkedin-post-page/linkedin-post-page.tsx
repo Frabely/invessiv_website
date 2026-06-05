@@ -6,6 +6,7 @@ import { WorkflowShowcaseSection } from "@/components/marketing/linkedin-post/wo
 import { ProblemExamplesSection } from "@/components/marketing/linkedin-post/problem-examples-section/problem-examples-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import {
@@ -85,6 +86,7 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
           formId="linkedin_post_final_cta"
           id={LINKEDIN_POST_SECTION_HREFS.contact.slice(1)}
           locale={locale}
+          origin={ContactSubmissionOrigin.LinkedInPost}
           {...finalCta}
         />
 

@@ -8,6 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { WebApiEndpoint } from "@/common/constants";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
@@ -215,9 +216,58 @@ describe("GeneratorSection", () => {
     // The lead-capture step appears only after success.
     expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: content.leadCapture.downloadAction }),
+      screen.getByRole("button", { name: content.leadCapture.emailAction }),
     ).toBeTruthy();
     expect(submit).toHaveBeenCalledTimes(1);
+  });
+
+  it("threads the delivery token from the success result into the deliver request", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({ ok: true }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const submit: SubmitGenerator = async () => ({
+      ok: true,
+      caption: "Erfolgs-Caption.",
+      deliveryToken: "signed-token-123",
+      downloadFileName: "erfolgs-caption.png",
+      imageDataUrl: "data:image/png;base64,AAAA",
+      post: GENERATED_POST,
+      previewHtml: PREVIEW_HTML,
+    });
+
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
+    });
+
+    fireEvent.change(
+      screen.getByLabelText(content.leadCapture.displayName.label),
+      { target: { value: "Moritz Hecht" } },
+    );
+    fireEvent.change(screen.getByLabelText(content.leadCapture.email.label), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.click(
+      screen.getByRole("checkbox", {
+        name: content.leadCapture.consentDelivery.label,
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.leadCapture.emailAction }),
+    );
+
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe(WebApiEndpoint.LinkedInPostDeliver);
+    const body = JSON.parse(String(init.body)) as { deliveryToken: string };
+    expect(body.deliveryToken).toBe("signed-token-123");
+
+    vi.unstubAllGlobals();
   });
 
   it("shows the remaining usage in the meter after a successful run", async () => {

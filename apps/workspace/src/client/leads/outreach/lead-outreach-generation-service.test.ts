@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
 import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
-import { LeadOutreachApiEndpoints } from "@invessiv/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { outreachGenerationClientService } from "./lead-outreach-generation-service";
 
 describe("lead-outreach-generation-service", () => {
@@ -38,7 +38,7 @@ describe("lead-outreach-generation-service", () => {
       body: "Hallo Anna, ich habe eine kleine Beobachtung.",
     });
     expect(fetchMock).toHaveBeenCalledWith(
-      LeadOutreachApiEndpoints.Generate,
+      WorkspaceApiEndpoint.OutreachGenerate,
       expect.objectContaining({
         body: JSON.stringify({
           channel: OutreachChannel.Email,

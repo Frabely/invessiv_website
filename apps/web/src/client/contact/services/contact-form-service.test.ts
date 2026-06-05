@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { WebApiEndpoint } from "@/common/constants";
 import {
   createCalendlyPrefillHref,
   submitDiscoveryCall,
@@ -30,13 +31,13 @@ describe("contact-form-service", () => {
         startedAt: "2026-04-09T10:00:00.000Z",
       },
       {
-        submitPath: "/api/public/contact",
+        submitPath: WebApiEndpoint.ContactSubmit,
       },
     );
 
     expect(response).toEqual({ ok: true, requestId: "req_123" });
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/public/contact",
+      WebApiEndpoint.ContactSubmit,
       expect.objectContaining({
         body: JSON.stringify({
           consentAccepted: true,
@@ -76,13 +77,13 @@ describe("contact-form-service", () => {
         message: "Wir brauchen eine kurze Einschaetzung.",
       },
       {
-        submitPath: "/api/public/contact",
+        submitPath: WebApiEndpoint.ContactSubmit,
       },
     );
 
     expect(response).toEqual({ ok: true, requestId: "req_456" });
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/public/contact",
+      WebApiEndpoint.ContactSubmit,
       expect.objectContaining({
         body: JSON.stringify({
           consentAccepted: true,
@@ -120,13 +121,13 @@ describe("contact-form-service", () => {
         message: "Wir wollen den Umfang kurz einordnen.",
       },
       {
-        submitPath: "/api/public/contact",
+        submitPath: WebApiEndpoint.ContactSubmit,
       },
     );
 
     expect(response).toEqual({ ok: true, requestId: "req_789" });
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/public/contact",
+      WebApiEndpoint.ContactSubmit,
       expect.objectContaining({
         body: JSON.stringify({
           consentAccepted: true,

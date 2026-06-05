@@ -1,6 +1,6 @@
 "use client";
 
-import { PROVIDER_STATUS_ENDPOINT } from "@invessiv/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 export interface OutreachProviderStatus {
   openai: boolean;
@@ -12,7 +12,7 @@ async function checkServerProviders(): Promise<{
   model: string | null;
 }> {
   try {
-    const response = await fetch(PROVIDER_STATUS_ENDPOINT, {
+    const response = await fetch(WorkspaceApiEndpoint.OutreachProviderStatus, {
       method: "GET",
     });
     if (!response.ok) {

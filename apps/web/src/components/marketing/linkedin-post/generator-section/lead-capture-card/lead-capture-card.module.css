@@ -157,54 +157,13 @@
   margin-top: 0.15rem;
 }
 
-.downloadAction {
+.emailAction {
   width: 100%;
 }
 
-.emailAction {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0 0.9rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease;
-}
-
-.emailAction:hover,
-.emailAction:focus-visible {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 68%,
-    var(--color-cta) 14%
-  );
-  border-color: color-mix(in srgb, var(--color-cta) 38%, transparent);
-  color: var(--color-text);
-}
-
-.comingSoon {
-  padding: 0.1rem 0.45rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent-warm) 22%, transparent);
-  color: color-mix(in srgb, var(--color-accent-warm) 96%, var(--color-text));
-  font-family:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.emailAction[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.78;
 }
 
 .feedback {
@@ -217,18 +176,19 @@
   line-height: 1.45;
 }
 
-.feedback[data-kind="download"] {
+.feedback[data-kind="success"] {
   background: color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
   color: color-mix(in srgb, var(--color-text) 92%, var(--color-accent-warm));
+}
+
+.feedback[data-kind="error"] {
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  color: color-mix(in srgb, var(--color-danger) 88%, var(--color-text) 12%);
 }
 
 /* ── Tablet ── */
 @media (min-width: 720px) {
   .card {
     padding: 1.05rem 1.15rem 1.2rem;
-  }
-
-  .actions {
-    grid-template-columns: 1fr 1fr;
   }
 }

@@ -1,27 +1,24 @@
 import { PrimaryCtaLink } from "@/components/shared/button/button";
+import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
-import {
-  LeadCaptureCard,
-  type LeadIdentity,
-} from "./lead-capture-card/lead-capture-card";
+import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
+import { LeadCaptureCard } from "./lead-capture-card/lead-capture-card";
 import styles from "./success-preview.module.css";
 
 type SuccessPreviewProps = {
   caption: string;
   content: LinkedInPostGeneratorContent;
   hasCopied: boolean;
-  downloadFileName: string;
   authorName: string;
   expertiseDisplay: string;
   followUpHref: string;
-  imageDataUrl: string | null;
+  locale: Locale;
   postTitle: string;
   previewHtml: string;
+  deliveryToken?: string;
   onCopyCaption: (caption: string) => void;
-  onDownloadCaption: (caption: string, downloadFileName: string) => void;
-  onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
   onLeadIdentityChange: (identity: LeadIdentity) => void;
   onRequestCustomWorkflow: () => void;
 };
@@ -30,16 +27,14 @@ export function SuccessPreview({
   caption,
   content,
   hasCopied,
-  downloadFileName,
   authorName,
   expertiseDisplay,
   followUpHref,
-  imageDataUrl,
+  locale,
   postTitle,
   previewHtml,
+  deliveryToken,
   onCopyCaption,
-  onDownloadCaption,
-  onDownloadImage,
   onLeadIdentityChange,
   onRequestCustomWorkflow,
 }: SuccessPreviewProps) {
@@ -52,14 +47,6 @@ export function SuccessPreview({
     .join("")
     .slice(0, 2);
   const { success } = content.preview;
-
-  /** Both gated actions ship the post with its caption (image + caption text). */
-  function handleLeadDownload() {
-    if (imageDataUrl) {
-      onDownloadImage(imageDataUrl, downloadFileName);
-    }
-    onDownloadCaption(caption, downloadFileName);
-  }
 
   return (
     <div className={styles.preview} data-state="success">
@@ -91,7 +78,8 @@ export function SuccessPreview({
 
       <LeadCaptureCard
         content={content.leadCapture}
-        onDownload={handleLeadDownload}
+        deliveryToken={deliveryToken}
+        locale={locale}
         onIdentityChange={onLeadIdentityChange}
       />
 

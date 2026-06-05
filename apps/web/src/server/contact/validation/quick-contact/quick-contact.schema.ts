@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import {
+  CONTACT_SUBMISSION_ORIGIN_VALUES,
+  ContactSubmissionOrigin,
+} from "@invessiv/common/constants/contact/contact-submission-origin";
+import {
   emailStringSchema,
   localeSchema,
   nameStringSchema,
@@ -25,6 +29,9 @@ export const quickContactSchema = z
       .trim()
       .min(1, CONTACT_VALIDATION_FIELD_ERROR_CODE.MessageRequired)
       .max(5000, CONTACT_VALIDATION_FIELD_ERROR_CODE.TooLong),
+    origin: z
+      .enum(CONTACT_SUBMISSION_ORIGIN_VALUES)
+      .default(ContactSubmissionOrigin.Website),
   })
   .superRefine(applyQuickContactValidationRules);
 

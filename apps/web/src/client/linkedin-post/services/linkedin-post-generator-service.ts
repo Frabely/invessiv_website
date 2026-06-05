@@ -3,7 +3,10 @@ import type {
   LinkedInPostGeneratorSuccessResponseDto,
 } from "@/common/contracts/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
-import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
+import {
+  WebApiEndpoint,
+  LinkedInPostGeneratorErrorCode,
+} from "@/common/constants";
 import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
@@ -22,8 +25,6 @@ export type LinkedInPostGeneratorSuccessResult =
 export type LinkedInPostGeneratorResult =
   | LinkedInPostGeneratorSuccessResult
   | LinkedInPostGeneratorFailureResponseDto;
-
-const GENERATOR_ENDPOINT = "/api/public/generator/linkedin-post";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -79,7 +80,7 @@ async function submitLinkedInPost(
     topic: values.topic,
   };
 
-  const response = await fetch(GENERATOR_ENDPOINT, {
+  const response = await fetch(WebApiEndpoint.LinkedInPostGenerate, {
     body: JSON.stringify(requestBody),
     headers: {
       "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 {
-  "eyebrow": "PROJEKT ANFRAGEN",
+  "eyebrow": "WORKFLOW PRÜFEN",
   "title": "Welche Aufgabe soll dein Content-Ablauf jede Woche abnehmen?",
   "body": "Beschreib kurz den wiederkehrenden Teil: Posts planen, Bildideen vorbereiten, Captions schreiben oder etwas anderes. Ich prüfe, ob daraus ein schlanker Workflow werden kann.",
   "form": {
@@ -26,7 +26,7 @@
     "privacyLabel": "Datenschutz",
     "privacyHref": "/de/privacy",
     "requiredHint": "Pflichtfelder sind mit * markiert.",
-    "submitLabel": "Projekt anfragen",
+    "submitLabel": "Workflow prüfen lassen",
     "submittingLabel": "Wird gesendet ...",
     "payloadContext": "KI-Workflow-Anfrage",
     "successTitle": "Danke für deine Anfrage.",

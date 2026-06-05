@@ -54,10 +54,12 @@ function getGeneratorRequestIp(headers: Headers) {
   return null;
 }
 
-function createGeneratorUsageKeyHash(ip: string, secret: string) {
-  return createHmac("sha256", secret)
-    .update(`${LINKEDIN_POST_GENERATOR_USAGE_LIMIT_SCOPE}:${ip}`)
-    .digest("hex");
+function createGeneratorUsageKeyHash(
+  ip: string,
+  secret: string,
+  scope: string = LINKEDIN_POST_GENERATOR_USAGE_LIMIT_SCOPE,
+) {
+  return createHmac("sha256", secret).update(`${scope}:${ip}`).digest("hex");
 }
 
 export const linkedinPostGeneratorUsageKeyService = {

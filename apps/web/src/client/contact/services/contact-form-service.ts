@@ -10,7 +10,7 @@ import type { ContactSubmitOptions } from "@invessiv/common/contracts/contact/op
 import type { SaveProjectRequestDto } from "@invessiv/common/contracts/contact/project-request/save-project-request-dto";
 import type { SaveQuickContactDto } from "@invessiv/common/contracts/contact/quick-contact/save-quick-contact-dto";
 import { ContactSearchParam } from "@invessiv/common/constants/contact/contact-search-params";
-import { DEFAULT_CONTACT_SUBMIT_PATH } from "@invessiv/common/constants/contact/contact-submit-path";
+import { WebApiEndpoint } from "@/common/constants";
 
 function createClientErrorResponse(
   code: ContactSubmitErrorCode = CONTACT_SUBMIT_ERROR_CODE.InternalError,
@@ -44,7 +44,7 @@ export async function submitProjectRequest(
 
 async function submitContact(
   dto: SaveProjectRequestDto | SaveQuickContactDto | SaveDiscoveryCallDto,
-  { submitPath = DEFAULT_CONTACT_SUBMIT_PATH }: ContactSubmitOptions = {},
+  { submitPath = WebApiEndpoint.ContactSubmit }: ContactSubmitOptions = {},
 ): Promise<ContactSubmitResponse> {
   try {
     const response = await fetch(submitPath, {

@@ -65,13 +65,13 @@ export type LinkedInPostGeneratorLeadCaptureCopy = {
   consentDelivery: LinkedInPostGeneratorLeadConsentCopy;
   consentMarketing: { label: string };
   marketingMicrocopy: string;
-  downloadAction: string;
   emailAction: string;
-  comingSoonBadge: string;
-  emailComingSoon: string;
-  success: {
-    download: string;
-    email: string;
+  emailActionLoading: string;
+  deliver: {
+    success: string;
+    errorGeneric: string;
+    errorRateLimited: string;
+    errorExpired: string;
   };
 };
 

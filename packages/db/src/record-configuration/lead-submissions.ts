@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   index,
   pgTable,
@@ -8,6 +9,10 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { CONTACT_REQUEST_KINDS } from "@invessiv/common/constants/contact/contact-request-kind";
+import {
+  CONTACT_SUBMISSION_ORIGIN_VALUES,
+  ContactSubmissionOrigin,
+} from "@invessiv/common/constants/contact/contact-submission-origin";
 import { leads } from "@invessiv/db/record-configuration/leads";
 
 export const leadSubmissions = pgTable(
@@ -21,6 +26,12 @@ export const leadSubmissions = pgTable(
     channel: text("channel", {
       enum: CONTACT_REQUEST_KINDS,
     }).notNull(),
+    origin: text("origin", {
+      enum: CONTACT_SUBMISSION_ORIGIN_VALUES,
+    })
+      .notNull()
+      .default(ContactSubmissionOrigin.Website),
+    marketing_consent: boolean("marketing_consent").notNull().default(false),
     locale: text("locale", { enum: ["de", "en"] }).notNull(),
     consent_accepted_at: timestamp("consent_accepted_at", {
       withTimezone: true,
@@ -46,6 +57,10 @@ export const leadSubmissions = pgTable(
     ),
     index("lead_submissions_channel_created_at_idx").on(
       table.channel,
+      table.created_at.desc(),
+    ),
+    index("lead_submissions_origin_created_at_idx").on(
+      table.origin,
       table.created_at.desc(),
     ),
   ],

@@ -14,6 +14,9 @@ Unterordnern ergänzen diese Regeln.
 - Interne Hilfsfunktionen bleiben unexportiert und werden nur über das Service-Objekt erreichbar gemacht, wenn sie
   außerhalb gebraucht werden.
 - Tests importieren das Service-Objekt statt interne Helper direkt zu importieren.
+- Geteilte Typen, Request-/Response-Shapes und stabile Konstanten werden nicht in Server-Services definiert. Sie liegen
+  in `apps/web/common/contracts/**` bzw. `apps/web/common/constants/**` und werden von Server-, Client- und UI-Code nur
+  importiert.
 
 ## DB-Zugriffe
 

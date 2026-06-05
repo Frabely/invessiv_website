@@ -18,11 +18,13 @@ Er ist strukturell an `packages/common/src` angelehnt, bleibt aber auf `apps/web
 - `constants/` für benannte Konstanten
 - `contracts/` für gemeinsam genutzte TypeScript-Typen
 - Pro fachlicher Gruppe eine Datei, keine Sammeldateien ohne klaren Nutzen
+- Interne Web-API-Endpunkte werden zentral in `constants/api-endpoints.ts` gepflegt. Client-, Server- und UI-Code baut
+  API-URLs nicht lokal aus String-Literalen, sondern importiert `WebApiEndpoint` aus dieser Datei.
 
 ## Konstanten-Regel
 
-String-Union-Typen werden ausschließlich über das Const-Objekt + abgeleiteter Type-Pattern definiert. TypeScript
-`enum` wird nicht verwendet.
+String-Union-Typen werden ausschließlich über das Const-Objekt + abgeleiteter Type-Pattern definiert. TypeScript `enum`
+wird nicht verwendet.
 
 ## Dateien und Exporte
 

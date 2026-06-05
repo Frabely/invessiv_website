@@ -63,11 +63,11 @@
   },
   "leadCapture": {
     "headline": "Gefällt dir der Post?",
-    "body": "Trag Name und E-Mail ein, dann lädst du ihn herunter oder bekommst ihn zugeschickt – beides mit Caption.",
+    "body": "Trag Name und E-Mail ein, dann schicken wir dir den Post mit Caption direkt per E-Mail.",
     "displayName": {
       "label": "Name",
       "placeholder": "z. B. Moritz Hecht",
-      "help": "So erscheint der Post mit deinem Namen.",
+      "help": "Damit wir dich in der E-Mail persönlich ansprechen.",
       "maxLength": 80,
       "requiredError": "Bitte gib einen Namen an.",
       "tooLongError": "Bitte unter 80 Zeichen halten."
@@ -86,13 +86,13 @@
       "label": "Schick mir gelegentlich Tipps zu LinkedIn-Posts und Workflows."
     },
     "marketingMicrocopy": "Kein Spam. Jederzeit mit einem Klick abbestellbar.",
-    "downloadAction": "Herunterladen",
     "emailAction": "Per E-Mail schicken",
-    "comingSoonBadge": "Bald",
-    "emailComingSoon": "Der E-Mail-Versand ist gleich verfügbar. Lad dir den Post so lange direkt herunter.",
-    "success": {
-      "download": "Download gestartet. Der Post liegt jetzt in deinen Downloads.",
-      "email": "Sobald der Versand live ist, schicken wir dir den Post an diese Adresse."
+    "emailActionLoading": "Wird geschickt …",
+    "deliver": {
+      "success": "Erledigt. Der Post liegt mit Caption in deinem Postfach – schau zur Sicherheit auch im Spam nach.",
+      "errorGeneric": "Das hat gerade nicht geklappt. Versuch es bitte gleich noch einmal.",
+      "errorRateLimited": "Du hast den Post schon mehrfach verschickt. Versuch es später noch einmal.",
+      "errorExpired": "Der Link ist abgelaufen. Erzeug den Post bitte neu, dann klappt der Versand."
     }
   },
   "preview": {

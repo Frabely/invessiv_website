@@ -3,7 +3,7 @@
 import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
 import type { GenerateOutreachResultDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-result.dto";
 import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
-import { GENERATE_ENDPOINT } from "@invessiv/common/constants/leads/outreach/lead-outreach-api-endpoints";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 type ApiResult<T> = {
   payload: T | null;
@@ -39,13 +39,16 @@ async function fetchJson<T>(
 async function generateOutreachMessage(
   payload: GenerateOutreachRequestDto,
 ): Promise<GenerateOutreachResultDto> {
-  const result = await fetchJson<GenerateOutreachResultDto>(GENERATE_ENDPOINT, {
-    body: JSON.stringify(payload),
-    headers: {
-      "Content-Type": "application/json",
+  const result = await fetchJson<GenerateOutreachResultDto>(
+    WorkspaceApiEndpoint.OutreachGenerate,
+    {
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
     },
-    method: "POST",
-  });
+  );
 
   if (result.response?.ok && isGenerateResult(result.payload)) {
     return result.payload;

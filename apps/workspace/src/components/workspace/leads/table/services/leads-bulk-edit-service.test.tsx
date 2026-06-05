@@ -19,6 +19,7 @@ import { leadsBulkEditService } from "@/components/workspace/leads/table/service
 import { LeadsBulkArchiveConfirmDialog } from "@/components/workspace/leads/table/bulk/leads-bulk-archive-confirm-dialog/leads-bulk-archive-confirm-dialog";
 import { LeadsBulkDeleteConfirmDialog } from "@/components/workspace/leads/table/bulk/leads-bulk-delete-confirm-dialog/leads-bulk-delete-confirm-dialog";
 import { BulkSubmitFailureKind } from "@invessiv/common/constants/leads/bulk/bulk-submit-failure-kinds";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 const routerRefreshMock = vi.fn();
 
@@ -112,7 +113,7 @@ describe("leadsBulkEditService", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/workspace/leads/bulk",
+      WorkspaceApiEndpoint.LeadsBulk,
       expect.objectContaining({
         body: JSON.stringify({
           action: "bulk_edit",
@@ -143,7 +144,7 @@ describe("leadsBulkEditService", () => {
     ).resolves.toEqual({ ok: true });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      "/api/workspace/leads/bulk",
+      WorkspaceApiEndpoint.LeadsBulk,
       expect.objectContaining({
         body: JSON.stringify({
           action,

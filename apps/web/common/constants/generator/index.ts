@@ -4,4 +4,6 @@ export * from "./generator-zod-issue-codes";
 export * from "./linkedin-post-generator-error-codes";
 export * from "./generator-state-kind";
 export * from "./generator-templates";
+export * from "./lead-deliver-status";
+export * from "./linkedin-post-delivery-token";
 export * from "./linkedin-post-rendering";

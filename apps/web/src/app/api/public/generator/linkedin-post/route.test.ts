@@ -51,7 +51,9 @@ const mocks = vi.hoisted(() => ({
   renderLinkedInPostPng: vi.fn(),
   releaseLinkedInPostGeneratorUsage: vi.fn(),
   reserveLinkedInPostGeneratorUsage: vi.fn(),
-  sendMail: vi.fn(),
+  createDeliveryToken: vi.fn(),
+  DeliveryTokenSecretMissingError: class DeliveryTokenSecretMissingError extends Error {},
+  GeneratorUsageLimitUnavailableError: class GeneratorUsageLimitUnavailableError extends Error {},
   toUsageLimitSnapshot: vi.fn((reservation) => ({
     limit: reservation.limit,
     remaining: reservation.remaining,
@@ -83,7 +85,6 @@ vi.mock("@/server/linkedin-post/render-linkedin-post-service", () => ({
 vi.mock(
   "@/server/linkedin-post/linkedin-post-generator-usage-limit-service",
   () => ({
-    GeneratorUsageLimitUnavailableError: class GeneratorUsageLimitUnavailableError extends Error {},
     linkedinPostGeneratorUsageLimitService: {
       releaseLinkedInPostGeneratorUsage:
         mocks.releaseLinkedInPostGeneratorUsage,
@@ -94,8 +95,19 @@ vi.mock(
   }),
 );
 
-vi.mock("@/server/services/mail/mail-service", () => ({
-  sendMail: mocks.sendMail,
+vi.mock(
+  "@/server/linkedin-post/linkedin-post-generator-usage-key-service",
+  () => ({
+    GeneratorUsageLimitUnavailableError:
+      mocks.GeneratorUsageLimitUnavailableError,
+  }),
+);
+
+vi.mock("@/server/linkedin-post/linkedin-post-delivery-token-service", () => ({
+  DeliveryTokenSecretMissingError: mocks.DeliveryTokenSecretMissingError,
+  linkedinPostDeliveryTokenService: {
+    createDeliveryToken: mocks.createDeliveryToken,
+  },
 }));
 
 function createRequest(body: unknown) {
@@ -127,7 +139,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
       resetAt: new Date("2026-07-01T00:00:00.000Z"),
     });
     mocks.releaseLinkedInPostGeneratorUsage.mockResolvedValue(undefined);
-    mocks.sendMail.mockResolvedValue({ ok: true });
+    mocks.createDeliveryToken.mockReturnValue("signed-delivery-token");
   });
 
   afterEach(() => {
@@ -152,6 +164,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
     );
 
     const payload = (await response.json()) as typeof GENERATED_RESULT & {
+      deliveryToken?: string;
       usageLimit?: { limit: number; remaining: number; resetAt: string };
     };
     expect(response.status).toBe(200);
@@ -163,7 +176,10 @@ describe("POST /api/public/generator/linkedin-post", () => {
       remaining: 1,
       resetAt: "2026-07-01T00:00:00.000Z",
     });
-    expect(mocks.sendMail).toHaveBeenCalledTimes(1);
+    // Generation no longer sends mail; it returns a signed deliver token that
+    // gates the separate "post per E-Mail schicken" step.
+    expect(payload.deliveryToken).toBe("signed-delivery-token");
+    expect(mocks.createDeliveryToken).toHaveBeenCalledTimes(1);
   });
 
   it("uses the server-side mock generator without contacting OpenAI when the mock env is enabled", async () => {
@@ -257,7 +273,6 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(response.status).toBe(200);
     expect(payload.ok).toBe(true);
     expect(payload.imageDataUrl).toBeNull();
-    expect(mocks.sendMail).toHaveBeenCalledTimes(1);
   });
 
   it("returns validation errors for invalid payloads", async () => {
@@ -286,10 +301,9 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
   });
 
-  it("keeps the API result successful when mail delivery fails", async () => {
-    mocks.sendMail.mockResolvedValue({
-      ok: false,
-      reason: "delivery_unavailable",
+  it("stays successful without a deliveryToken when the delivery secret is missing", async () => {
+    mocks.createDeliveryToken.mockImplementation(() => {
+      throw new mocks.DeliveryTokenSecretMissingError();
     });
     const { POST } = await import("./route");
     const response = await POST(
@@ -306,31 +320,13 @@ describe("POST /api/public/generator/linkedin-post", () => {
       }),
     );
 
-    const payload = (await response.json()) as { ok: boolean };
+    const payload = (await response.json()) as {
+      deliveryToken?: string;
+      ok: boolean;
+    };
     expect(response.status).toBe(200);
     expect(payload.ok).toBe(true);
-  });
-
-  it("skips mail delivery when no email is provided", async () => {
-    const { POST } = await import("./route");
-    const response = await POST(
-      createRequest({
-        colorPairId: "auto",
-        company: "",
-        consent: false,
-        displayName: "",
-        email: "",
-        expertise: "Consulting",
-        locale: "en",
-        tone: "sachlich",
-        topic: "Pricing conversations",
-      }),
-    );
-
-    const payload = (await response.json()) as { ok: boolean };
-    expect(response.status).toBe(200);
-    expect(payload.ok).toBe(true);
-    expect(mocks.sendMail).not.toHaveBeenCalled();
+    expect(payload.deliveryToken).toBeUndefined();
   });
 
   it("blocks honeypot submissions", async () => {

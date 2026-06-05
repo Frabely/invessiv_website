@@ -1,7 +1,7 @@
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { LeadBulkAction } from "@invessiv/common/constants/leads/bulk/lead-bulk-actions";
 import { BulkSubmitFailureKind } from "@invessiv/common/constants/leads/bulk/bulk-submit-failure-kinds";
-import { BULK_API_ENDPOINT } from "@invessiv/common/constants/leads/bulk/bulk-api-endpoint";
+import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import type {
   BulkActionSubmitInputDto,
   BulkActionSubmitResultDto,
@@ -22,7 +22,7 @@ async function submitBulkAction(
   input: BulkActionSubmitInputDto,
 ): Promise<BulkActionSubmitResultDto> {
   try {
-    const response = await fetch(BULK_API_ENDPOINT, {
+    const response = await fetch(WorkspaceApiEndpoint.LeadsBulk, {
       headers: { "content-type": "application/json" },
       method: "POST",
       body: buildBulkActionRequestBody(action, input.ids),
@@ -42,7 +42,7 @@ async function edit(
   input: BulkEditSubmitInputDto,
 ): Promise<BulkEditSubmitResultDto> {
   try {
-    const response = await fetch(BULK_API_ENDPOINT, {
+    const response = await fetch(WorkspaceApiEndpoint.LeadsBulk, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({

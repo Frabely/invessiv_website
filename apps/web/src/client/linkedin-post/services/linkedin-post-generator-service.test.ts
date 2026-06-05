@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { WebApiEndpoint } from "@/common/constants";
 import { linkedinPostGeneratorService } from "./linkedin-post-generator-service";
 
 afterEach(() => {
@@ -66,7 +67,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
 
     expect(result.ok).toBe(true);
     expect(fetch).toHaveBeenCalledWith(
-      "/api/public/generator/linkedin-post",
+      WebApiEndpoint.LinkedInPostGenerate,
       expect.objectContaining({
         method: "POST",
       }),

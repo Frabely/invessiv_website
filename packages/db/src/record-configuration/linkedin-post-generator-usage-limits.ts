@@ -32,10 +32,7 @@ export const linkedinPostGeneratorUsageLimits = pgTable(
     check(
       "linkedin_post_generator_usage_limits_count_check",
       sql`${table.successful_generations}
-            >= 0 and
-            ${table.successful_generations}
-            <=
-            2`,
+            >= 0`,
     ),
     check(
       "linkedin_post_generator_usage_limits_hash_check",

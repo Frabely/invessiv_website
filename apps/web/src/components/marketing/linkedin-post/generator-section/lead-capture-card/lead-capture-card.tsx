@@ -1,36 +1,38 @@
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
-import { type ChangeEvent, useId, useState } from "react";
+import { type ChangeEvent, type FormEvent, useId, useState } from "react";
 import { LeadCaptureFieldName } from "@/common/constants/generator/lead-capture-field-names";
+import { LeadDeliverStatus } from "@/common/constants/generator/lead-deliver-status";
 import type { LeadCaptureFieldErrors } from "@/common/contracts/generator/generator-field-errors";
+import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
+import { linkedinPostDeliverService } from "@/client/linkedin-post/services/linkedin-post-deliver-service";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorLeadCaptureCopy } from "@/i18n/dictionaries/linkedin-post/generator";
+import { leadDeliverErrorMessage } from "@/client/linkedin-post/errors/lead-deliver-error";
 import { Field } from "../field";
-import { LeadCaptureFeedback } from "@/common/constants/generator/lead-capture-feedback";
 import styles from "./lead-capture-card.module.css";
-
-export type LeadIdentity = {
-  displayName: string;
-  email: string;
-};
 
 type LeadCaptureCardProps = {
   content: LinkedInPostGeneratorLeadCaptureCopy;
-  /** Triggers the actual image + caption download (post bytes live client-side). */
-  onDownload: () => void;
-  /** Best-effort lift of the captured identity for contact-form prefill. */
+  deliveryToken?: string;
+  locale: Locale;
   onIdentityChange: (identity: LeadIdentity) => void;
+  deliver?: typeof linkedinPostDeliverService.deliverLinkedInPost;
 };
 
 /**
  * Gated lead-capture step shown after a successful generation. Name + email are
- * exchanged for the download (works today) or the email delivery ("coming soon"
- * in Phase A). Two-consent model: a required transactional consent and an
- * optional, unchecked marketing opt-in with trust microcopy.
+ * exchanged for the email delivery of the post (with caption). Two-consent
+ * model: a required transactional consent and an optional, unchecked marketing
+ * opt-in with trust microcopy. The delivery itself runs server-side via a
+ * signed token; clipboard copy of the caption stays free elsewhere.
  */
 export function LeadCaptureCard({
   content,
-  onDownload,
+  deliveryToken,
+  locale,
   onIdentityChange,
+  deliver = linkedinPostDeliverService.deliverLinkedInPost,
 }: LeadCaptureCardProps) {
   const baseId = useId();
   const ids = {
@@ -45,9 +47,13 @@ export function LeadCaptureCard({
   const [consentDelivery, setConsentDelivery] = useState(false);
   const [consentMarketing, setConsentMarketing] = useState(false);
   const [errors, setErrors] = useState<LeadCaptureFieldErrors>({});
-  const [feedback, setFeedback] = useState<LeadCaptureFeedback | null>(null);
+  const [status, setStatus] = useState<LeadDeliverStatus>(
+    LeadDeliverStatus.Idle,
+  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const displayNameMax = content.displayName.maxLength ?? 80;
+  const isSending = status === LeadDeliverStatus.Sending;
 
   function clearError(field: keyof LeadCaptureFieldErrors) {
     setErrors((current) => {
@@ -91,32 +97,61 @@ export function LeadCaptureCard({
     return next;
   }
 
-  function runGatedAction(action: LeadCaptureFeedback) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isSending) {
+      return;
+    }
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      setFeedback(null);
+      setStatus(LeadDeliverStatus.Idle);
+      setErrorMessage(null);
       return;
     }
 
     setErrors({});
-    onIdentityChange({ displayName: displayName.trim(), email: email.trim() });
+    const trimmedName = displayName.trim();
+    const trimmedEmail = email.trim();
+    onIdentityChange({ displayName: trimmedName, email: trimmedEmail });
 
-    if (action === LeadCaptureFeedback.Download) {
-      onDownload();
+    if (!deliveryToken) {
+      setStatus(LeadDeliverStatus.Error);
+      setErrorMessage(content.deliver.errorGeneric);
+      return;
     }
-    setFeedback(action);
+
+    setStatus(LeadDeliverStatus.Sending);
+    setErrorMessage(null);
+
+    try {
+      const result = await deliver(
+        {
+          consentDelivery,
+          consentMarketing,
+          deliveryToken,
+          displayName: trimmedName,
+          email: trimmedEmail,
+        },
+        locale,
+      );
+
+      if (result.ok) {
+        setStatus(LeadDeliverStatus.Success);
+        return;
+      }
+
+      setStatus(LeadDeliverStatus.Error);
+      setErrorMessage(leadDeliverErrorMessage(result.code, content.deliver));
+    } catch {
+      setStatus(LeadDeliverStatus.Error);
+      setErrorMessage(content.deliver.errorGeneric);
+    }
   }
 
-  const feedbackMessage =
-    feedback === LeadCaptureFeedback.Download
-      ? content.success.download
-      : feedback === LeadCaptureFeedback.Email
-        ? content.emailComingSoon
-        : null;
-
   return (
-    <div className={styles.card}>
+    <form className={styles.card} noValidate onSubmit={handleSubmit}>
       <header className={styles.head}>
         <h3 className={styles.headline}>{content.headline}</h3>
         <p className={styles.body}>{content.body}</p>
@@ -221,31 +256,25 @@ export function LeadCaptureCard({
 
       <div className={styles.actions}>
         <PrimaryCtaButton
-          className={styles.downloadAction}
-          onClick={() => runGatedAction(LeadCaptureFeedback.Download)}
-          type="button"
-        >
-          {content.downloadAction}
-        </PrimaryCtaButton>
-        <button
+          aria-busy={isSending}
           className={styles.emailAction}
-          onClick={() => runGatedAction(LeadCaptureFeedback.Email)}
-          type="button"
+          disabled={isSending}
+          type="submit"
         >
-          <span>{content.emailAction}</span>
-          <span className={styles.comingSoon}>{content.comingSoonBadge}</span>
-        </button>
+          {isSending ? content.emailActionLoading : content.emailAction}
+        </PrimaryCtaButton>
       </div>
 
-      {feedbackMessage ? (
-        <p
-          className={styles.feedback}
-          data-kind={feedback ?? undefined}
-          role="status"
-        >
-          {feedbackMessage}
+      {status === LeadDeliverStatus.Success ? (
+        <p className={styles.feedback} data-kind="success" role="status">
+          {content.deliver.success}
         </p>
       ) : null}
-    </div>
+      {status === LeadDeliverStatus.Error && errorMessage ? (
+        <p className={styles.feedback} data-kind="error" role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
+    </form>
   );
 }

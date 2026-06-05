@@ -4,7 +4,7 @@ import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
 import { LimitReachedPreview } from "./limit-reached-preview/limit-reached-preview";
-import type { LeadIdentity } from "./lead-capture-card/lead-capture-card";
+import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
@@ -13,8 +13,6 @@ type PreviewPanelProps = {
   hasCopied: boolean;
   locale: Locale;
   onCopyCaption: (caption: string) => void;
-  onDownloadCaption: (caption: string, downloadFileName: string) => void;
-  onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
   onLeadIdentityChange: (identity: LeadIdentity) => void;
   onRequestCustomWorkflow: () => void;
   state: GeneratorState;
@@ -26,8 +24,6 @@ export function PreviewPanel({
   hasCopied,
   locale,
   onCopyCaption,
-  onDownloadCaption,
-  onDownloadImage,
   onLeadIdentityChange,
   onRequestCustomWorkflow,
   state,
@@ -57,16 +53,14 @@ export function PreviewPanel({
       caption={state.caption}
       content={content}
       hasCopied={hasCopied}
-      downloadFileName={state.downloadFileName}
       authorName={state.post.authorName}
       expertiseDisplay={state.post.expertiseDisplay}
-      imageDataUrl={state.imageDataUrl}
       postTitle={state.post.headlinePlain}
       previewHtml={state.previewHtml}
       followUpHref={followUpHref}
+      locale={locale}
+      deliveryToken={state.deliveryToken}
       onCopyCaption={onCopyCaption}
-      onDownloadCaption={onDownloadCaption}
-      onDownloadImage={onDownloadImage}
       onLeadIdentityChange={onLeadIdentityChange}
       onRequestCustomWorkflow={onRequestCustomWorkflow}
     />

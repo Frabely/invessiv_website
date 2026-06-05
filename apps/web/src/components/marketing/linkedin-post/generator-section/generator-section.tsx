@@ -23,9 +23,9 @@ import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-of
 import type { Locale } from "@/config/i18n";
 import { LINKEDIN_POST_SECTION_HREFS } from "@/config/navigation/linkedin-post";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
+import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { GeneratorForm } from "./generator-form";
 import { PreviewPanel } from "./preview-panel";
-import type { LeadIdentity } from "./lead-capture-card/lead-capture-card";
 import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-section.module.css";
 
@@ -122,20 +122,6 @@ export function GeneratorSection({
       setHasCopied(true);
       window.setTimeout(() => setHasCopied(false), 2200);
     });
-  }
-
-  function handleImageDownload(imageDataUrl: string, downloadFileName: string) {
-    const link = document.createElement("a");
-    link.download = downloadFileName;
-    link.href = imageDataUrl;
-    link.click();
-  }
-
-  function handleCaptionDownload(caption: string, downloadFileName: string) {
-    const link = document.createElement("a");
-    link.download = downloadFileName.replace(/\.png$/u, ".txt");
-    link.href = `data:text/plain;charset=utf-8,${encodeURIComponent(caption)}`;
-    link.click();
   }
 
   /**
@@ -261,6 +247,7 @@ export function GeneratorSection({
       imageDataUrl: result.imageDataUrl,
       previewHtml: result.previewHtml,
       usageLimit: result.usageLimit,
+      deliveryToken: result.deliveryToken,
     });
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }
@@ -293,8 +280,6 @@ export function GeneratorSection({
             hasCopied={hasCopied}
             locale={locale}
             onCopyCaption={handleCopyCaption}
-            onDownloadCaption={handleCaptionDownload}
-            onDownloadImage={handleImageDownload}
             onLeadIdentityChange={setLeadIdentity}
             onRequestCustomWorkflow={handleRequestCustomWorkflow}
             state={state}
