@@ -50,18 +50,6 @@ export function SuccessPreview({
 
   return (
     <div className={styles.preview} data-state="success">
-      <div className={styles.head}>
-        <h3 className={styles.headline}>{success.headline}</h3>
-        <button
-          className={styles.copyButton}
-          data-state={hasCopied ? "copied" : "default"}
-          onClick={() => onCopyCaption(caption)}
-          type="button"
-        >
-          {hasCopied ? success.copyCaptionCopied : success.copyCaption}
-        </button>
-      </div>
-
       <LinkedinPost
         author={{
           avatar: { kind: "initials", value: avatarInitial },
@@ -69,6 +57,16 @@ export function SuccessPreview({
           role: expertiseDisplay,
         }}
         caption={caption}
+        headerAction={
+          <button
+            className={styles.copyButton}
+            data-state={hasCopied ? "copied" : "default"}
+            onClick={() => onCopyCaption(caption)}
+            type="button"
+          >
+            {hasCopied ? success.copyCaptionCopied : success.copyCaption}
+          </button>
+        }
         image={
           <figure aria-label={postTitle} className={styles.postImage}>
             <PostFramePreview html={previewHtml} title={postTitle} />

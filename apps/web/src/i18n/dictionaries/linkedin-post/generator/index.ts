@@ -88,7 +88,6 @@ export type LinkedInPostGeneratorPreviewLoadingCopy = {
 };
 
 export type LinkedInPostGeneratorPreviewSuccessCopy = {
-  headline: string;
   copyCaption: string;
   copyCaptionCopied: string;
   fallbackAuthorName: string;

@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { ReactNode, useId, useState } from "react";
+import type { ReactNode } from "react";
+import { useId, useState } from "react";
 import styles from "./linkedin-post.module.css";
 
 type LinkedinPostAvatar =
@@ -20,6 +21,7 @@ type LinkedinPostProps = {
   caption: ReactNode;
   captionLess?: string;
   captionMore?: string;
+  headerAction?: ReactNode;
   image: ReactNode;
 };
 
@@ -29,6 +31,7 @@ export function LinkedinPost({
   caption,
   captionLess,
   captionMore,
+  headerAction,
   image,
 }: LinkedinPostProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -37,26 +40,32 @@ export function LinkedinPost({
 
   return (
     <article aria-label={ariaLabel} className={styles.card}>
-      <header className={styles.author}>
-        {author.avatar.kind === "initials" ? (
-          <span aria-hidden="true" className={styles.authorAvatar}>
-            {author.avatar.value}
+      <header className={styles.header}>
+        <div className={styles.author}>
+          {author.avatar.kind === "initials" ? (
+            <span aria-hidden="true" className={styles.authorAvatar}>
+              {author.avatar.value}
+            </span>
+          ) : (
+            <Image
+              alt={author.avatar.alt}
+              className={styles.authorAvatarImg}
+              height={40}
+              src={author.avatar.src}
+              width={40}
+            />
+          )}
+          <span className={styles.authorMeta}>
+            {author.name ? (
+              <span className={styles.authorName}>{author.name}</span>
+            ) : null}
+            <span className={styles.authorRole}>{author.role}</span>
           </span>
-        ) : (
-          <Image
-            alt={author.avatar.alt}
-            className={styles.authorAvatarImg}
-            height={40}
-            src={author.avatar.src}
-            width={40}
-          />
-        )}
-        <span className={styles.authorMeta}>
-          {author.name ? (
-            <span className={styles.authorName}>{author.name}</span>
-          ) : null}
-          <span className={styles.authorRole}>{author.role}</span>
-        </span>
+        </div>
+
+        {headerAction ? (
+          <div className={styles.headerAction}>{headerAction}</div>
+        ) : null}
       </header>
 
       <div className={styles.captionWrap}>
