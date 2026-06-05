@@ -349,6 +349,32 @@ describe("GeneratorSection", () => {
     expect(container.querySelector('[data-state="error"]')).toBeNull();
   });
 
+  it("disables the generate button once no free tests remain", async () => {
+    const submit: SubmitGenerator = async () => ({
+      ok: false as const,
+      code: "usage_limit_reached",
+      usageLimit: {
+        limit: 2,
+        remaining: 0,
+        resetAt: "2026-07-01T00:00:00.000Z",
+      },
+    });
+
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(content.preview.limitReached.headline),
+      ).toBeTruthy();
+    });
+    const submitButton = screen.getByRole("button", {
+      name: content.form.submit,
+    }) as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(true);
+  });
+
   it("renders the error state when submit returns ok:false", async () => {
     const submit: SubmitGenerator = async () => ({
       ok: false as const,

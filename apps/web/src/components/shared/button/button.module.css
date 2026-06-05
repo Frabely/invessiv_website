@@ -28,6 +28,8 @@
 .button:disabled {
   cursor: not-allowed;
   transform: none;
+  opacity: 0.5;
+  filter: saturate(0.7);
 }
 
 .primary {
