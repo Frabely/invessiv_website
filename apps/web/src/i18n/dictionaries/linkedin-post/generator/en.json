@@ -88,6 +88,7 @@
     "marketingMicrocopy": "No spam. Unsubscribe any time with one click.",
     "emailAction": "Send by email",
     "emailActionLoading": "Sending …",
+    "newPostAction": "Generate a new post",
     "deliver": {
       "success": "Done. The post and caption are in your inbox – check spam too, just in case.",
       "errorGeneric": "That didn't work just now. Please try again in a moment.",

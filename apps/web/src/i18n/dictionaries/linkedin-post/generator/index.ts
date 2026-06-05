@@ -67,6 +67,7 @@ export type LinkedInPostGeneratorLeadCaptureCopy = {
   marketingMicrocopy: string;
   emailAction: string;
   emailActionLoading: string;
+  newPostAction: string;
   deliver: {
     success: string;
     errorGeneric: string;

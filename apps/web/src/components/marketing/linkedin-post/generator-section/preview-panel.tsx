@@ -14,6 +14,7 @@ type PreviewPanelProps = {
   locale: Locale;
   onCopyCaption: (caption: string) => void;
   onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onRequestNewPost: () => void;
   onRequestCustomWorkflow: () => void;
   state: GeneratorState;
 };
@@ -25,6 +26,7 @@ export function PreviewPanel({
   locale,
   onCopyCaption,
   onLeadIdentityChange,
+  onRequestNewPost,
   onRequestCustomWorkflow,
   state,
 }: PreviewPanelProps) {
@@ -62,6 +64,7 @@ export function PreviewPanel({
       deliveryToken={state.deliveryToken}
       onCopyCaption={onCopyCaption}
       onLeadIdentityChange={onLeadIdentityChange}
+      onRequestNewPost={onRequestNewPost}
       onRequestCustomWorkflow={onRequestCustomWorkflow}
     />
   );

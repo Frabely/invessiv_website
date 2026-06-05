@@ -211,7 +211,11 @@ describe("GeneratorSection", () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText(content.preview.success.headline)).toBeTruthy();
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
     });
     // The lead-capture step appears only after success.
     expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
@@ -219,6 +223,28 @@ describe("GeneratorSection", () => {
       screen.getByRole("button", { name: content.leadCapture.emailAction }),
     ).toBeTruthy();
     expect(submit).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns to the idle preview when the new-post action is used", async () => {
+    renderSection();
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
+    });
   });
 
   it("threads the delivery token from the success result into the deliver request", async () => {

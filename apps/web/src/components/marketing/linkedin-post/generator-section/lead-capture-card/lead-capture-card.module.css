@@ -161,6 +161,10 @@
   width: 100%;
 }
 
+.secondaryAction {
+  width: 100%;
+}
+
 .emailAction[aria-busy="true"] {
   cursor: progress;
   opacity: 0.78;
@@ -190,5 +194,9 @@
 @media (min-width: 720px) {
   .card {
     padding: 1.05rem 1.15rem 1.2rem;
+  }
+
+  .actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

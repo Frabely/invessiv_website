@@ -20,6 +20,7 @@ type SuccessPreviewProps = {
   deliveryToken?: string;
   onCopyCaption: (caption: string) => void;
   onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onRequestNewPost: () => void;
   onRequestCustomWorkflow: () => void;
 };
 
@@ -36,6 +37,7 @@ export function SuccessPreview({
   deliveryToken,
   onCopyCaption,
   onLeadIdentityChange,
+  onRequestNewPost,
   onRequestCustomWorkflow,
 }: SuccessPreviewProps) {
   const resolvedAuthorName =
@@ -79,6 +81,7 @@ export function SuccessPreview({
         deliveryToken={deliveryToken}
         locale={locale}
         onIdentityChange={onLeadIdentityChange}
+        onRequestNewPost={onRequestNewPost}
       />
 
       <div className={styles.followUpCard}>

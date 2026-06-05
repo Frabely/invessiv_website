@@ -5,7 +5,10 @@ import { LeadDeliverStatus } from "@/common/constants/generator/lead-deliver-sta
 import type { LeadCaptureFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { linkedinPostDeliverService } from "@/client/linkedin-post/services/linkedin-post-deliver-service";
-import { PrimaryCtaButton } from "@/components/shared/button/button";
+import {
+  ButtonControl,
+  PrimaryCtaButton,
+} from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorLeadCaptureCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import { leadDeliverErrorMessage } from "@/client/linkedin-post/errors/lead-deliver-error";
@@ -17,6 +20,7 @@ type LeadCaptureCardProps = {
   deliveryToken?: string;
   locale: Locale;
   onIdentityChange: (identity: LeadIdentity) => void;
+  onRequestNewPost: () => void;
   deliver?: typeof linkedinPostDeliverService.deliverLinkedInPost;
 };
 
@@ -32,6 +36,7 @@ export function LeadCaptureCard({
   deliveryToken,
   locale,
   onIdentityChange,
+  onRequestNewPost,
   deliver = linkedinPostDeliverService.deliverLinkedInPost,
 }: LeadCaptureCardProps) {
   const baseId = useId();
@@ -263,6 +268,14 @@ export function LeadCaptureCard({
         >
           {isSending ? content.emailActionLoading : content.emailAction}
         </PrimaryCtaButton>
+        <ButtonControl
+          className={styles.secondaryAction}
+          onClick={onRequestNewPost}
+          type="button"
+          variant="ghost"
+        >
+          {content.newPostAction}
+        </ButtonControl>
       </div>
 
       {status === LeadDeliverStatus.Success ? (

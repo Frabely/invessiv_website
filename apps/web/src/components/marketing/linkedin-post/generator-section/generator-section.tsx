@@ -124,6 +124,12 @@ export function GeneratorSection({
     });
   }
 
+  function handleRequestNewPost() {
+    setHasCopied(false);
+    setLeadIdentity(EMPTY_LEAD_IDENTITY);
+    setState({ kind: GeneratorStateKind.Idle });
+  }
+
   /**
    * Best-effort prefill of the contact form: dispatch the offer-change event
    * with the LinkedIn-content offer and any identity captured in the lead step,
@@ -281,6 +287,7 @@ export function GeneratorSection({
             locale={locale}
             onCopyCaption={handleCopyCaption}
             onLeadIdentityChange={setLeadIdentity}
+            onRequestNewPost={handleRequestNewPost}
             onRequestCustomWorkflow={handleRequestCustomWorkflow}
             state={state}
           />

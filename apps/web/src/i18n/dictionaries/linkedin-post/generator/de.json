@@ -88,6 +88,7 @@
     "marketingMicrocopy": "Kein Spam. Jederzeit mit einem Klick abbestellbar.",
     "emailAction": "Per E-Mail schicken",
     "emailActionLoading": "Wird geschickt …",
+    "newPostAction": "Neuen Post generieren",
     "deliver": {
       "success": "Erledigt. Der Post liegt mit Caption in deinem Postfach – schau zur Sicherheit auch im Spam nach.",
       "errorGeneric": "Das hat gerade nicht geklappt. Versuch es bitte gleich noch einmal.",

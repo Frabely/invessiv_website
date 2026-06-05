@@ -23,6 +23,7 @@ function renderCard(overrides?: { deliver?: Deliver; deliveryToken?: string }) {
   const deliver: Deliver =
     overrides?.deliver ?? vi.fn<Deliver>().mockResolvedValue({ ok: true });
   const onIdentityChange = vi.fn();
+  const onRequestNewPost = vi.fn();
   render(
     <LeadCaptureCard
       content={content}
@@ -34,9 +35,10 @@ function renderCard(overrides?: { deliver?: Deliver; deliveryToken?: string }) {
       }
       locale="de"
       onIdentityChange={onIdentityChange}
+      onRequestNewPost={onRequestNewPost}
     />,
   );
-  return { deliver, onIdentityChange };
+  return { deliver, onIdentityChange, onRequestNewPost };
 }
 
 function fillValidLead({ marketing = false } = {}) {
@@ -128,6 +130,16 @@ describe("LeadCaptureCard", () => {
       expect.objectContaining({ consentMarketing: true }),
       "de",
     );
+  });
+
+  it("offers a secondary action to generate a new post", () => {
+    const { onRequestNewPost } = renderCard();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.newPostAction }),
+    );
+
+    expect(onRequestNewPost).toHaveBeenCalledTimes(1);
   });
 
   it("shows the rate-limited message when delivery is throttled", async () => {
