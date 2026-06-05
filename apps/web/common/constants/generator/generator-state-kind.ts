@@ -3,6 +3,7 @@ export const GeneratorStateKind = {
   Idle: "idle",
   Loading: "loading",
   Success: "success",
+  LimitReached: "limit_reached",
   Error: "error",
 } as const;
 

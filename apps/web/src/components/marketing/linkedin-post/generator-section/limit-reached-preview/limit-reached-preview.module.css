@@ -1,0 +1,90 @@
+/* Mobile-first. Conversion-oriented "free tests used up" state.
+   Shares the accent/follow-up look, not the error styling. */
+.preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.3rem 1.25rem 1.4rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 30%, var(--color-border-strong));
+  border-radius: 18px;
+  background: linear-gradient(
+    168deg,
+    color-mix(in srgb, var(--color-accent-warm) 12%, var(--color-surface-2) 88%)
+      0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
+    0 18px 40px -28px var(--color-shadow);
+}
+
+.badge {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
+  font-family:
+    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.headline {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.28rem;
+  font-weight: 760;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.reset {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text-muted) 92%, transparent);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cta {
+  justify-self: start;
+  margin-top: 0.35rem;
+}
+
+/* ── Tablet ── */
+@media (min-width: 720px) {
+  .card {
+    padding: 1.5rem 1.5rem 1.6rem;
+    border-radius: 20px;
+  }
+
+  .headline {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 961px) {
+  .preview {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .card {
+    flex: 1;
+    align-content: center;
+    min-height: var(--generator-panel-min-height);
+  }
+}

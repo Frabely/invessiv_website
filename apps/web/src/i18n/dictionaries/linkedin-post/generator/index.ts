@@ -33,30 +33,46 @@ export type LinkedInPostGeneratorColorCopy = {
   swatchLabel: string;
 };
 
-export type LinkedInPostGeneratorDeliveryCopy = {
-  title: string;
-  body: string;
-};
-
-export type LinkedInPostGeneratorConsentCopy = {
-  label: string;
-  requiredError: string;
-};
-
 export type LinkedInPostGeneratorFormCopy = {
   topic: LinkedInPostGeneratorFieldCopy;
   expertise: LinkedInPostGeneratorFieldCopy;
   tone: LinkedInPostGeneratorToneCopy;
   color: LinkedInPostGeneratorColorCopy;
-  delivery: LinkedInPostGeneratorDeliveryCopy;
-  displayName: LinkedInPostGeneratorFieldCopy;
-  email: LinkedInPostGeneratorFieldCopy;
-  consent: LinkedInPostGeneratorConsentCopy;
   honeypot: { label: string };
   privacyNotice: string;
   submit: string;
   submitLoading: string;
   loadingHelp: string;
+};
+
+export type LinkedInPostGeneratorUsageMeterCopy = {
+  regionLabel: string;
+  idle: string;
+  remaining: string;
+  resetPrefix: string;
+};
+
+export type LinkedInPostGeneratorLeadConsentCopy = {
+  label: string;
+  requiredError: string;
+};
+
+export type LinkedInPostGeneratorLeadCaptureCopy = {
+  headline: string;
+  body: string;
+  displayName: LinkedInPostGeneratorFieldCopy;
+  email: LinkedInPostGeneratorFieldCopy;
+  consentDelivery: LinkedInPostGeneratorLeadConsentCopy;
+  consentMarketing: { label: string };
+  marketingMicrocopy: string;
+  downloadAction: string;
+  emailAction: string;
+  comingSoonBadge: string;
+  emailComingSoon: string;
+  success: {
+    download: string;
+    email: string;
+  };
 };
 
 export type LinkedInPostGeneratorPreviewIdleCopy = {
@@ -73,15 +89,9 @@ export type LinkedInPostGeneratorPreviewLoadingCopy = {
 
 export type LinkedInPostGeneratorPreviewSuccessCopy = {
   headline: string;
-  imageAlt: string;
-  captionLabel: string;
   copyCaption: string;
   copyCaptionCopied: string;
-  downloadImage: string;
-  downloadCaption: string;
   fallbackAuthorName: string;
-  trialNote: string;
-  remainingNote: string;
   followUp: {
     badge: string;
     headline: string;
@@ -119,13 +129,22 @@ export type LinkedInPostGeneratorCustomPostCopy = {
 export type LinkedInPostGeneratorPreviewErrorCopy = {
   headline: string;
   body: string;
-  limitReachedBody: string;
+};
+
+export type LinkedInPostGeneratorPreviewLimitReachedCopy = {
+  badge: string;
+  headline: string;
+  body: string;
+  resetPrefix: string;
+  ctaLabel: string;
+  ctaAriaLabel: string;
 };
 
 export type LinkedInPostGeneratorPreviewCopy = {
   idle: LinkedInPostGeneratorPreviewIdleCopy;
   loading: LinkedInPostGeneratorPreviewLoadingCopy;
   success: LinkedInPostGeneratorPreviewSuccessCopy;
+  limitReached: LinkedInPostGeneratorPreviewLimitReachedCopy;
   error: LinkedInPostGeneratorPreviewErrorCopy;
 };
 
@@ -134,6 +153,8 @@ export type LinkedInPostGeneratorContent = {
   title: string;
   body: string;
   form: LinkedInPostGeneratorFormCopy;
+  usageMeter: LinkedInPostGeneratorUsageMeterCopy;
+  leadCapture: LinkedInPostGeneratorLeadCaptureCopy;
   preview: LinkedInPostGeneratorPreviewCopy;
   customPost: LinkedInPostGeneratorCustomPostCopy;
 };

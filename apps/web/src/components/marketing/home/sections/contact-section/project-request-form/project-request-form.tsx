@@ -31,6 +31,7 @@ import {
   getCanonicalContactOfferKey,
   PROJECT_OFFER_CHANGE_EVENT,
 } from "@/common/constants/marketing";
+import type { ProjectOfferSyncDetail } from "@/common/contracts/marketing/project-offer-sync-detail";
 import {
   CONTACT_OFFER_KEY,
   CONTACT_OFFER_KEYS,
@@ -117,11 +118,6 @@ type ProjectRequestFormProps = {
   privacyHref: string;
   privacyLabel: string;
   submitPath?: string;
-};
-
-type ProjectOfferSyncDetail = {
-  offerKey?: string;
-  projectGoal?: string;
 };
 
 const isContactOfferKey = (value: string): value is ContactOfferKey =>
@@ -526,6 +522,21 @@ export function ProjectRequestForm({
     [getValues, projectGoalSeed, setValue],
   );
 
+  const applyIdentitySeed = useCallback(
+    (displayName?: string, email?: string) => {
+      const trimmedName = displayName?.trim();
+      if (trimmedName && !getValues("displayName").trim()) {
+        setValue("displayName", trimmedName, { shouldDirty: true });
+      }
+
+      const trimmedEmail = email?.trim();
+      if (trimmedEmail && !getValues("email").trim()) {
+        setValue("email", trimmedEmail, { shouldDirty: true });
+      }
+    },
+    [getValues, setValue],
+  );
+
   const togglePageOption = (optionKey: string) => {
     const isSelected = selectedPageKeys.includes(optionKey);
     const nextSelection = isSelected
@@ -609,6 +620,7 @@ export function ProjectRequestForm({
       }
 
       applyProjectGoalSeed(detail?.projectGoal ?? "");
+      applyIdentitySeed(detail?.displayName, detail?.email);
     };
 
     window.addEventListener(
@@ -622,7 +634,12 @@ export function ProjectRequestForm({
         handleOfferSync as EventListener,
       );
     };
-  }, [applyOfferSelection, applyProjectGoalSeed, getValidOfferKey]);
+  }, [
+    applyIdentitySeed,
+    applyOfferSelection,
+    applyProjectGoalSeed,
+    getValidOfferKey,
+  ]);
 
   const getSubmitErrorMessage = (
     response: Extract<ContactSubmitResponse, { ok: false }>,

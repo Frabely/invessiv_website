@@ -2,6 +2,10 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
+import {
+  LeadCaptureCard,
+  type LeadIdentity,
+} from "./lead-capture-card/lead-capture-card";
 import styles from "./success-preview.module.css";
 
 type SuccessPreviewProps = {
@@ -18,6 +22,8 @@ type SuccessPreviewProps = {
   onCopyCaption: (caption: string) => void;
   onDownloadCaption: (caption: string, downloadFileName: string) => void;
   onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
+  onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onRequestCustomWorkflow: () => void;
 };
 
 export function SuccessPreview({
@@ -34,6 +40,8 @@ export function SuccessPreview({
   onCopyCaption,
   onDownloadCaption,
   onDownloadImage,
+  onLeadIdentityChange,
+  onRequestCustomWorkflow,
 }: SuccessPreviewProps) {
   const resolvedAuthorName =
     authorName || content.preview.success.fallbackAuthorName;
@@ -45,9 +53,18 @@ export function SuccessPreview({
     .slice(0, 2);
   const { success } = content.preview;
 
+  /** Both gated actions ship the post with its caption (image + caption text). */
+  function handleLeadDownload() {
+    if (imageDataUrl) {
+      onDownloadImage(imageDataUrl, downloadFileName);
+    }
+    onDownloadCaption(caption, downloadFileName);
+  }
+
   return (
     <div className={styles.preview} data-state="success">
-      <div className={styles.mobileActions}>
+      <div className={styles.head}>
+        <h3 className={styles.headline}>{success.headline}</h3>
         <button
           className={styles.copyButton}
           data-state={hasCopied ? "copied" : "default"}
@@ -72,47 +89,23 @@ export function SuccessPreview({
         }
       />
 
-      <div className={styles.mobileActions}>
-        <div className={styles.downloadRow}>
-          <button
-            className={styles.downloadButton}
-            disabled={!imageDataUrl}
-            onClick={() => {
-              if (!imageDataUrl) {
-                return;
-              }
-              onDownloadImage(imageDataUrl, downloadFileName);
-            }}
-            type="button"
-          >
-            {success.downloadImage}
-          </button>
-          <button
-            className={styles.downloadButton}
-            onClick={() => onDownloadCaption(caption, downloadFileName)}
-            type="button"
-          >
-            {success.downloadCaption}
-          </button>
-        </div>
-      </div>
+      <LeadCaptureCard
+        content={content.leadCapture}
+        onDownload={handleLeadDownload}
+        onIdentityChange={onLeadIdentityChange}
+      />
 
       <div className={styles.followUpCard}>
-        <p className={styles.followUpBadge}>
-          {content.preview.success.followUp.badge}
-        </p>
-        <h3 className={styles.followUpHeadline}>
-          {content.preview.success.followUp.headline}
-        </h3>
-        <p className={styles.followUpBody}>
-          {content.preview.success.trialNote}
-        </p>
+        <p className={styles.followUpBadge}>{success.followUp.badge}</p>
+        <h3 className={styles.followUpHeadline}>{success.followUp.headline}</h3>
+        <p className={styles.followUpBody}>{success.followUp.body}</p>
         <PrimaryCtaLink
-          aria-label={content.preview.success.followUp.ctaAriaLabel}
+          aria-label={success.followUp.ctaAriaLabel}
           className={styles.followUpCta}
           href={followUpHref}
+          onClick={onRequestCustomWorkflow}
         >
-          {content.preview.success.followUp.ctaLabel}
+          {success.followUp.ctaLabel}
         </PrimaryCtaLink>
       </div>
     </div>

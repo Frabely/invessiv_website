@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { GeneratorStateKind } from "./generator-state-kind";
+import { GeneratorStateKind } from "@/common/constants";
 
 describe("GeneratorStateKind", () => {
   it("exposes the exact state discriminants", () => {
@@ -8,6 +8,7 @@ describe("GeneratorStateKind", () => {
       Idle: "idle",
       Loading: "loading",
       Success: "success",
+      LimitReached: "limit_reached",
       Error: "error",
     });
   });

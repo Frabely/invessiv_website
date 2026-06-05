@@ -1,7 +1,7 @@
 {
   "eyebrow": "CREATE A SAMPLE POST",
   "title": "See a concrete result first.",
-  "body": "Start with topic, role and tone. If you want, you can add an optional name and email for delivery.",
+  "body": "Pick topic, role and tone. You get a finished post right away. You only need a name and email once you want to download it.",
   "form": {
     "topic": {
       "label": "What's it about?",
@@ -47,36 +47,53 @@
       "autoLabel": "Automatic",
       "swatchLabel": "Color scheme"
     },
-    "delivery": {
-      "title": "Optional: name and delivery",
-      "body": "The generator works without contact details. If you want the result sent to you, add your name and email here."
-    },
-    "displayName": {
-      "label": "Name for the sample",
-      "placeholder": "e.g. Moritz Hecht",
-      "help": "Optional. Lets the sample show your name.",
-      "maxLength": 80,
-      "requiredError": "Please enter a display name.",
-      "tooLongError": "Please keep it under 80 characters."
-    },
-    "email": {
-      "label": "Email for delivery",
-      "placeholder": "you@address.com",
-      "help": "Optional. Only fill it in if you want the result sent to you.",
-      "requiredError": "Please add your email.",
-      "invalidError": "That doesn't look like a valid email."
-    },
-    "consent": {
-      "label": "I agree that my email can be used to deliver the result.",
-      "requiredError": "Please confirm this if you want the result sent to you."
-    },
     "honeypot": {
       "label": "Company"
     },
-    "privacyNotice": "We process your inputs to generate the sample. To limit misuse, we store a pseudonymous technical identifier for 30 days. Email is optional.",
+    "privacyNotice": "We only process your inputs to build the sample post. To limit misuse, we store a pseudonymous technical identifier for 30 days.",
     "submit": "Generate post",
     "submitLoading": "Creating …",
     "loadingHelp": "Keep this open for about 30 seconds."
+  },
+  "usageMeter": {
+    "regionLabel": "Free tests",
+    "idle": "2 free tests",
+    "remaining": "{{remaining}} of {{limit}} tests left",
+    "resetPrefix": "New tests from"
+  },
+  "leadCapture": {
+    "headline": "Like the post?",
+    "body": "Add your name and email to download it or have it sent to you – both come with the caption.",
+    "displayName": {
+      "label": "Name",
+      "placeholder": "e.g. Moritz Hecht",
+      "help": "Lets the post show your name.",
+      "maxLength": 80,
+      "requiredError": "Please enter a name.",
+      "tooLongError": "Please keep it under 80 characters."
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "you@address.com",
+      "requiredError": "Please enter an email.",
+      "invalidError": "That doesn't look like a valid email."
+    },
+    "consentDelivery": {
+      "label": "I agree that my email can be used to send me the post.",
+      "requiredError": "Please confirm this to continue."
+    },
+    "consentMarketing": {
+      "label": "Send me occasional tips on LinkedIn posts and workflows."
+    },
+    "marketingMicrocopy": "No spam. Unsubscribe any time with one click.",
+    "downloadAction": "Download",
+    "emailAction": "Send by email",
+    "comingSoonBadge": "Soon",
+    "emailComingSoon": "Email delivery is almost ready. For now, download the post directly.",
+    "success": {
+      "download": "Download started. The post is now in your downloads.",
+      "email": "Once delivery is live, we'll send the post to this address."
+    }
   },
   "preview": {
     "idle": {
@@ -96,15 +113,9 @@
     },
     "success": {
       "headline": "Done. Here's your sample.",
-      "imageAlt": "Generated LinkedIn post image",
-      "captionLabel": "Caption",
       "copyCaption": "Copy caption",
       "copyCaptionCopied": "Copied",
-      "downloadImage": "Download image",
-      "downloadCaption": "Download text",
       "fallbackAuthorName": "Your name",
-      "trialNote": "You can test the generator twice for free.",
-      "remainingNote": "{{remaining}} of {{limit}} free tests left in this period.",
       "followUp": {
         "badge": "Next step",
         "headline": "If the style fits, request the project.",
@@ -113,10 +124,17 @@
         "ctaAriaLabel": "Jump to the inquiry form"
       }
     },
+    "limitReached": {
+      "badge": "All done",
+      "headline": "You've created your 2 free posts.",
+      "body": "Like the result? Then we'll turn it into a custom workflow that fits your voice and your branding.",
+      "resetPrefix": "New tests from",
+      "ctaLabel": "Request a custom workflow",
+      "ctaAriaLabel": "Jump to the inquiry form and request a custom workflow"
+    },
     "error": {
       "headline": "Something went wrong.",
-      "body": "We couldn't build the post right now. Try again.",
-      "limitReachedBody": "You have used the 2 free tests for this period. Request a project if you want a custom workflow."
+      "body": "We couldn't build the post right now. Try again."
     }
   },
   "customPost": {

@@ -1,6 +1,7 @@
 /* Mobile-first. Success state of the generator preview.
    Card chrome (border, bg, author, caption) is owned by LinkedinPost.
-   This file owns: the READY label, the post image figure, and the download panel. */
+   This file owns: the free copy action, the post image figure, the gated
+   lead-capture slot wrapper, and the follow-up card. */
 
 .preview {
   display: flex;
@@ -9,20 +10,22 @@
   height: 100%;
 }
 
-.mobileActions {
-  display: grid;
-  gap: 0.5rem;
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
 }
 
-/* Atmospheric status label above the card */
-.previewMark {
+.headline {
   margin: 0;
-  color: color-mix(in srgb, var(--color-accent-warm) 95%, transparent);
-  font-family:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  font-weight: 760;
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 /* Full-bleed post image inside LinkedinPost's card.
@@ -35,16 +38,6 @@
   aspect-ratio: 1;
   overflow: hidden;
   background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-}
-
-.previewHeadline {
-  margin: 0;
-  color: var(--color-text);
-  font-size: 1.18rem;
-  font-weight: 740;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
 }
 
 .copyButton {
@@ -75,12 +68,6 @@
 .copyButton[data-state="copied"] {
   color: color-mix(in srgb, var(--color-accent-warm) 96%, transparent);
   border-color: color-mix(in srgb, var(--color-accent-warm) 65%, transparent);
-}
-
-.downloadRow {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.5rem;
 }
 
 .followUpCard {
@@ -129,52 +116,10 @@
   justify-self: start;
 }
 
-.downloadButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 0.9rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 55%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
-  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
-  font-size: 0.9rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease,
-    transform 180ms ease;
-}
-
-.downloadButton:disabled {
-  cursor: wait;
-  opacity: 0.68;
-}
-
-.downloadButton:hover,
-.downloadButton:focus-visible {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 68%,
-    var(--color-cta) 14%
-  );
-  border-color: color-mix(in srgb, var(--color-cta) 38%, transparent);
-  color: var(--color-text);
-  transform: translateY(-1px);
-}
-
 /* ── Tablet ── */
 @media (min-width: 720px) {
   .preview {
     gap: 0.9rem;
-  }
-
-  .downloadRow {
-    grid-template-columns: 1fr 1fr;
   }
 
   .followUpCard {
@@ -185,15 +130,5 @@
 @media (min-width: 961px) {
   .preview {
     min-height: var(--generator-panel-min-height);
-  }
-
-  .mobileActions {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .downloadButton {
-    transition: none;
   }
 }

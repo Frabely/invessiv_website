@@ -5,63 +5,49 @@ import {
   GENERATOR_COLOR_AUTO,
   GENERATOR_COLOR_PAIRS,
 } from "@/common/constants/generator/generator-color-pairs";
-import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
-import type { GeneratorState } from "@/common/contracts/generator/generator-state";
+import type { GeneratorUsageLimit } from "@/common/contracts/generator/generator-state";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
+import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import { Field } from "./field";
-import type { GeneratorFieldIds } from "./use-field-ids";
+import { UsageMeter } from "./usage-meter/usage-meter";
+import type { GeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-form.module.css";
 
 type GeneratorFormProps = {
   content: LinkedInPostGeneratorContent;
   errors: GeneratorFieldErrors;
   fieldIds: GeneratorFieldIds;
-  hasCopied: boolean;
   isSubmitting: boolean;
-  onCopyCaption: (caption: string) => void;
-  onDownloadCaption: (caption: string, downloadFileName: string) => void;
-  onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
+  locale: Locale;
   onChange: <K extends keyof LinkedInPostGeneratorFormValues>(
     key: K,
     next: LinkedInPostGeneratorFormValues[K],
   ) => void;
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
-  state: GeneratorState;
-  successfulRuns: number;
+  usageLimit?: GeneratorUsageLimit;
   values: LinkedInPostGeneratorFormValues;
 };
 
+/**
+ * Anonymous generation step: creative fields only (topic, role, tone, color)
+ * plus the prominent usage meter and the honeypot. Name/email are collected
+ * later in the gated lead-capture step, never here.
+ */
 export function GeneratorForm({
   content,
   errors,
   fieldIds,
-  hasCopied,
   isSubmitting,
-  onCopyCaption,
-  onDownloadCaption,
-  onDownloadImage,
+  locale,
   onChange,
   onSubmit,
-  state,
-  successfulRuns,
+  usageLimit,
   values,
 }: GeneratorFormProps) {
   const topicMax = content.form.topic.maxLength ?? 280;
   const expertiseMax = content.form.expertise.maxLength ?? 120;
-  const displayNameMax = content.form.displayName.maxLength ?? 80;
-  const isSuccess = state.kind === GeneratorStateKind.Success;
-  const generatorNote =
-    isSuccess && state.usageLimit
-      ? state.usageLimit.remaining <= 0
-        ? content.preview.success.followUp.body
-        : content.preview.success.remainingNote
-            .replace("{{remaining}}", String(state.usageLimit.remaining))
-            .replace("{{limit}}", String(state.usageLimit.limit))
-      : successfulRuns >= 2
-        ? content.preview.success.followUp.body
-        : content.preview.success.trialNote;
   const toneOptions = content.form.tone.options;
   const colorOptions = [
     {
@@ -84,6 +70,12 @@ export function GeneratorForm({
       noValidate
       onSubmit={onSubmit}
     >
+      <UsageMeter
+        content={content.usageMeter}
+        locale={locale}
+        usageLimit={usageLimit}
+      />
+
       <Field
         error={errors.topic}
         help={content.form.topic.help}
@@ -162,102 +154,6 @@ export function GeneratorForm({
         />
       </fieldset>
 
-      <fieldset className={styles.deliveryGroup}>
-        <legend className={styles.legend}>{content.form.delivery.title}</legend>
-        <p className={styles.legendHelp}>{content.form.delivery.body}</p>
-
-        <Field
-          error={errors.displayName}
-          help={content.form.displayName.help}
-          htmlFor={fieldIds.displayName}
-          label={content.form.displayName.label}
-          meta={`${values.displayName.length}/${displayNameMax}`}
-        >
-          <input
-            aria-describedby={
-              errors.displayName ? `${fieldIds.displayName}-error` : undefined
-            }
-            aria-invalid={Boolean(errors.displayName)}
-            autoComplete="name"
-            className={styles.input}
-            id={fieldIds.displayName}
-            maxLength={displayNameMax}
-            name="displayName"
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              onChange("displayName", event.target.value)
-            }
-            placeholder={content.form.displayName.placeholder}
-            type="text"
-            value={values.displayName}
-          />
-        </Field>
-
-        <Field
-          error={errors.email}
-          help={content.form.email.help}
-          htmlFor={fieldIds.email}
-          label={content.form.email.label}
-        >
-          <input
-            aria-describedby={
-              errors.email ? `${fieldIds.email}-error` : undefined
-            }
-            aria-invalid={Boolean(errors.email)}
-            autoComplete="email"
-            className={styles.input}
-            id={fieldIds.email}
-            name="email"
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              onChange("email", event.target.value)
-            }
-            placeholder={content.form.email.placeholder}
-            type="email"
-            value={values.email}
-          />
-        </Field>
-
-        {values.email.trim() !== "" ? (
-          <>
-            <label
-              className={styles.consent}
-              data-error={Boolean(errors.consent) || undefined}
-              htmlFor={fieldIds.consent}
-            >
-              <input
-                aria-describedby={
-                  errors.consent ? `${fieldIds.consent}-error` : undefined
-                }
-                aria-invalid={Boolean(errors.consent)}
-                checked={values.consent}
-                className={styles.consentInput}
-                id={fieldIds.consent}
-                name="consent"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  onChange("consent", event.target.checked)
-                }
-                type="checkbox"
-              />
-              <span className={styles.consentBox} aria-hidden="true" />
-              <span className={styles.consentText}>
-                {content.form.consent.label}
-              </span>
-            </label>
-            {errors.consent ? (
-              <p
-                className={styles.consentError}
-                id={`${fieldIds.consent}-error`}
-              >
-                {errors.consent}
-              </p>
-            ) : null}
-          </>
-        ) : null}
-      </fieldset>
-
-      <p className={styles.trialNote} aria-live="polite">
-        {generatorNote}
-      </p>
-
       <p className={styles.privacyNote}>{content.form.privacyNotice}</p>
 
       <div aria-hidden="true" className={styles.honeypot}>
@@ -291,55 +187,6 @@ export function GeneratorForm({
         <p className={styles.loadingHelp} role="status">
           {content.form.loadingHelp}
         </p>
-      ) : null}
-
-      {isSuccess ? (
-        <div className={styles.successPanel}>
-          <p aria-hidden="true" className={styles.successMark}>
-            READY
-          </p>
-          <h3 className={styles.successHeadline}>
-            {content.preview.success.headline}
-          </h3>
-          <div className={styles.successActions}>
-            <button
-              className={styles.copyButton}
-              data-state={hasCopied ? "copied" : "default"}
-              onClick={() => onCopyCaption(state.caption)}
-              type="button"
-            >
-              {hasCopied
-                ? content.preview.success.copyCaptionCopied
-                : content.preview.success.copyCaption}
-            </button>
-            <div className={styles.downloadRow}>
-              <button
-                className={styles.downloadButton}
-                disabled={!state.imageDataUrl}
-                onClick={() =>
-                  state.imageDataUrl
-                    ? onDownloadImage(
-                        state.imageDataUrl,
-                        state.downloadFileName,
-                      )
-                    : undefined
-                }
-                type="button"
-              >
-                {content.preview.success.downloadImage}
-              </button>
-              <button
-                className={styles.downloadButton}
-                onClick={() =>
-                  onDownloadCaption(state.caption, state.downloadFileName)
-                }
-                type="button"
-              >
-                {content.preview.success.downloadCaption}
-              </button>
-            </div>
-          </div>
-        </div>
       ) : null}
     </form>
   );

@@ -1,17 +1,22 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
-import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
+import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
+import { LimitReachedPreview } from "./limit-reached-preview/limit-reached-preview";
+import type { LeadIdentity } from "./lead-capture-card/lead-capture-card";
 import styles from "./preview-panel.module.css";
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;
   followUpHref: string;
   hasCopied: boolean;
+  locale: Locale;
   onCopyCaption: (caption: string) => void;
   onDownloadCaption: (caption: string, downloadFileName: string) => void;
   onDownloadImage: (imageDataUrl: string, downloadFileName: string) => void;
+  onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onRequestCustomWorkflow: () => void;
   state: GeneratorState;
 };
 
@@ -19,9 +24,12 @@ export function PreviewPanel({
   content,
   followUpHref,
   hasCopied,
+  locale,
   onCopyCaption,
   onDownloadCaption,
   onDownloadImage,
+  onLeadIdentityChange,
+  onRequestCustomWorkflow,
   state,
 }: PreviewPanelProps) {
   if (state.kind === GeneratorStateKind.Idle) {
@@ -30,8 +38,19 @@ export function PreviewPanel({
   if (state.kind === GeneratorStateKind.Loading) {
     return <LoadingPreview content={content} stepIndex={state.stepIndex} />;
   }
+  if (state.kind === GeneratorStateKind.LimitReached) {
+    return (
+      <LimitReachedPreview
+        content={content.preview.limitReached}
+        followUpHref={followUpHref}
+        locale={locale}
+        onRequestCustomWorkflow={onRequestCustomWorkflow}
+        usageLimit={state.usageLimit}
+      />
+    );
+  }
   if (state.kind === GeneratorStateKind.Error) {
-    return <ErrorPreview content={content} code={state.code} />;
+    return <ErrorPreview content={content} />;
   }
   return (
     <SuccessPreview
@@ -48,6 +67,8 @@ export function PreviewPanel({
       onCopyCaption={onCopyCaption}
       onDownloadCaption={onDownloadCaption}
       onDownloadImage={onDownloadImage}
+      onLeadIdentityChange={onLeadIdentityChange}
+      onRequestCustomWorkflow={onRequestCustomWorkflow}
     />
   );
 }
@@ -118,18 +139,8 @@ function LoadingPreview({
   );
 }
 
-function ErrorPreview({
-  code,
-  content,
-}: {
-  code?: string;
-  content: LinkedInPostGeneratorContent;
-}) {
+function ErrorPreview({ content }: { content: LinkedInPostGeneratorContent }) {
   const { error } = content.preview;
-  const body =
-    code === LinkedInPostGeneratorErrorCode.UsageLimitReached
-      ? error.limitReachedBody
-      : error.body;
   return (
     <div className={styles.preview} data-state="error" role="alert">
       <div className={styles.previewFrame}>
@@ -138,7 +149,7 @@ function ErrorPreview({
             ⌗ ERROR
           </p>
           <h3 className={styles.previewHeadline}>{error.headline}</h3>
-          <p className={styles.previewCopy}>{body}</p>
+          <p className={styles.previewCopy}>{error.body}</p>
         </div>
       </div>
     </div>

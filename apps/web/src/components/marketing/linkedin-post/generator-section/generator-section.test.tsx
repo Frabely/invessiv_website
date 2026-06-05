@@ -6,7 +6,6 @@ import {
   render,
   screen,
   waitFor,
-  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
@@ -24,14 +23,12 @@ const content = getLinkedInPostGeneratorContent("de");
 const VALID_INPUTS = {
   topic: "Wie ich Kunden von 999 € auf 4.999 € bringe",
   expertise: "Strategieberatung",
-  displayName: "Moritz Hecht",
-  email: "test@example.com",
 } as const;
 
 const GENERATED_POST = {
   bodyVariant: "insight" as const,
   bullets: null,
-  authorName: VALID_INPUTS.displayName,
+  authorName: "Moritz Hecht",
   colorPair: {
     accent: "#5BA3D9",
     id: "navy-steel",
@@ -97,16 +94,6 @@ function fillValidValues() {
   );
 }
 
-function fillOptionalDeliveryValues() {
-  fireEvent.change(screen.getByLabelText(content.form.displayName.label), {
-    target: { value: VALID_INPUTS.displayName },
-  });
-  fireEvent.change(screen.getByLabelText(content.form.email.label), {
-    target: { value: VALID_INPUTS.email },
-  });
-  fireEvent.click(screen.getByLabelText(content.form.consent.label));
-}
-
 beforeEach(() => {
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
@@ -133,7 +120,12 @@ describe("GeneratorSection", () => {
     expect(container.querySelector('[data-state="idle"]')).toBeTruthy();
   });
 
-  it("shows required errors when submitting an empty form", async () => {
+  it("shows the idle usage hint before the first run", () => {
+    renderSection();
+    expect(screen.getByText(content.usageMeter.idle)).toBeTruthy();
+  });
+
+  it("shows required errors for the creative fields only", async () => {
     const submit = vi.fn() as unknown as SubmitGenerator;
     renderSection(submit);
     clickSubmit();
@@ -142,28 +134,17 @@ describe("GeneratorSection", () => {
       expect(screen.getByText(content.form.topic.requiredError)).toBeTruthy();
     });
     expect(screen.getByText(content.form.expertise.requiredError)).toBeTruthy();
-    expect(
-      screen.queryByText(content.form.displayName.requiredError),
-    ).toBeNull();
-    expect(screen.queryByText(content.form.email.requiredError)).toBeNull();
-    expect(screen.queryByText(content.form.consent.requiredError)).toBeNull();
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it("shows the email format error for an invalid email", async () => {
-    const submit = vi.fn() as unknown as SubmitGenerator;
-    renderSection(submit);
-    fillValidValues();
-    fireEvent.change(screen.getByLabelText(content.form.email.label), {
-      target: { value: "not-an-email" },
-    });
-
-    clickSubmit();
-
-    await waitFor(() => {
-      expect(screen.getByText(content.form.email.invalidError!)).toBeTruthy();
-    });
-    expect(submit).not.toHaveBeenCalled();
+  it("does not render any identity field in the generation step", () => {
+    renderSection();
+    expect(screen.queryByLabelText(content.leadCapture.email.label)).toBeNull();
+    expect(
+      screen.queryByRole("checkbox", {
+        name: content.leadCapture.consentDelivery.label,
+      }),
+    ).toBeNull();
   });
 
   it("selects a tone with the custom select", () => {
@@ -197,7 +178,7 @@ describe("GeneratorSection", () => {
     ).toBeTruthy();
   });
 
-  it("transitions through loading and success when submit succeeds", async () => {
+  it("transitions through loading and shows the gated lead step on success", async () => {
     let resolveSubmit:
       | ((value: LinkedInPostGeneratorResult) => void)
       | undefined;
@@ -208,9 +189,8 @@ describe("GeneratorSection", () => {
         }),
     );
 
-    const { container } = renderSection(submit);
+    renderSection(submit);
     fillValidValues();
-    fillOptionalDeliveryValues();
     clickSubmit();
 
     await waitFor(() => {
@@ -219,7 +199,6 @@ describe("GeneratorSection", () => {
     expect(
       screen.getByRole("button", { name: content.form.submitLoading }),
     ).toBeTruthy();
-    expect(screen.getByText(content.form.loadingHelp)).toBeTruthy();
 
     resolveSubmit!({
       ok: true,
@@ -233,40 +212,15 @@ describe("GeneratorSection", () => {
     await waitFor(() => {
       expect(screen.getByText(content.preview.success.headline)).toBeTruthy();
     });
-    const captionBlock = screen.getByText("Erfolgs-Caption.");
-    expect(captionBlock).toBeTruthy();
-    expect(screen.getByText(VALID_INPUTS.displayName)).toBeTruthy();
-    const form = container.querySelector("form");
-    expect(form).toBeTruthy();
+    // The lead-capture step appears only after success.
+    expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
     expect(
-      within(form as HTMLFormElement).getByRole("button", {
-        name: content.preview.success.downloadImage,
-      }),
+      screen.getByRole("button", { name: content.leadCapture.downloadAction }),
     ).toBeTruthy();
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
-  it("submits without optional delivery fields", async () => {
-    const submit = vi.fn<SubmitGenerator>(async () => ({
-      ok: true,
-      caption: "Kurz-Caption.",
-      downloadFileName: "kurz-caption.png",
-      imageDataUrl: null,
-      post: GENERATED_POST,
-      previewHtml: PREVIEW_HTML,
-    }));
-
-    renderSection(submit);
-    fillValidValues();
-    clickSubmit();
-
-    await waitFor(() => {
-      expect(screen.getByText(content.preview.success.headline)).toBeTruthy();
-    });
-    expect(submit).toHaveBeenCalledTimes(1);
-  });
-
-  it("shows the server-provided remaining usage after a successful run", async () => {
+  it("shows the remaining usage in the meter after a successful run", async () => {
     const submit = vi.fn<SubmitGenerator>(async () => ({
       ok: true,
       caption: "Kurz-Caption.",
@@ -286,15 +240,11 @@ describe("GeneratorSection", () => {
     clickSubmit();
 
     await waitFor(() => {
-      expect(
-        screen.getByText(
-          "Noch 1 von 2 kostenlosen Tests in diesem Zeitraum übrig.",
-        ),
-      ).toBeTruthy();
+      expect(screen.getByText("Noch 1 von 2 Tests")).toBeTruthy();
     });
   });
 
-  it("shows a clear limit message when the server returns 429", async () => {
+  it("renders the conversion-oriented limit preview on a 429, not an error", async () => {
     const submit: SubmitGenerator = async () => ({
       ok: false as const,
       code: "usage_limit_reached",
@@ -305,41 +255,22 @@ describe("GeneratorSection", () => {
       },
     });
 
-    renderSection(submit);
+    const { container } = renderSection(submit);
     fillValidValues();
     clickSubmit();
 
     await waitFor(() => {
       expect(
-        screen.getByText(content.preview.error.limitReachedBody),
+        screen.getByText(content.preview.limitReached.headline),
       ).toBeTruthy();
     });
-  });
-
-  it("scrolls to the inquiry section after the second successful run", async () => {
-    const submit = vi.fn<SubmitGenerator>(async () => ({
-      ok: true,
-      caption: "Kurz-Caption.",
-      downloadFileName: "kurz-caption.png",
-      imageDataUrl: null,
-      post: GENERATED_POST,
-      previewHtml: PREVIEW_HTML,
-    }));
-    const getElementByIdSpy = vi.spyOn(document, "getElementById");
-
-    renderSection(submit);
-    fillValidValues();
-    clickSubmit();
-
-    await waitFor(() => {
-      expect(screen.getByText(content.preview.success.headline)).toBeTruthy();
-    });
-
-    clickSubmit();
-
-    await waitFor(() => {
-      expect(getElementByIdSpy).toHaveBeenCalledWith("contact");
-    });
+    expect(
+      screen.getByRole("link", {
+        name: content.preview.limitReached.ctaAriaLabel,
+      }),
+    ).toBeTruthy();
+    // It must not reuse the error alert styling.
+    expect(container.querySelector('[data-state="error"]')).toBeNull();
   });
 
   it("renders the error state when submit returns ok:false", async () => {
@@ -370,51 +301,25 @@ describe("GeneratorSection", () => {
     });
   });
 
-  it("copies the caption when pressing the copy button", async () => {
+  it("copies the caption from the free copy action", async () => {
     renderSection();
     fillValidValues();
     clickSubmit();
 
-    await waitFor(
-      () => {
-        const form = screen.getByRole("form", {
-          name: content.title,
-        });
-        expect(
-          within(form).getByRole("button", {
-            name: content.preview.success.copyCaption,
-          }),
-        ).toBeTruthy();
-      },
-      { timeout: 3000 },
-    );
-    const copyButton = within(
-      screen.getByRole("form", { name: content.title }),
-    ).getByRole("button", {
-      name: content.preview.success.copyCaption,
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
     });
-    fireEvent.click(copyButton);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.preview.success.copyCaption,
+      }),
+    );
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalled();
     });
-  });
-
-  it("links the consent label to a checkbox input", () => {
-    renderSection();
-    expect(
-      screen.queryByRole("checkbox", {
-        name: content.form.consent.label,
-      }),
-    ).toBeNull();
-
-    fireEvent.change(screen.getByLabelText(content.form.email.label), {
-      target: { value: VALID_INPUTS.email },
-    });
-
-    const checkbox = screen.getByRole("checkbox", {
-      name: content.form.consent.label,
-    }) as HTMLInputElement;
-    expect(checkbox).toBeTruthy();
-    expect(checkbox.type).toBe("checkbox");
   });
 });

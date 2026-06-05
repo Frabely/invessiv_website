@@ -1,7 +1,7 @@
 {
   "eyebrow": "BEISPIEL-POST ERSTELLEN",
   "title": "Sieh dir zuerst ein konkretes Ergebnis an.",
-  "body": "Erst Thema, Rolle und Ton testen. Wenn du willst, kannst du optional Name und E-Mail für Zusendung ergänzen.",
+  "body": "Wähl Thema, Rolle und Ton. Du siehst sofort einen fertigen Post. Name und E-Mail brauchst du erst, wenn du ihn herunterladen willst.",
   "form": {
     "topic": {
       "label": "Worum geht's?",
@@ -47,36 +47,53 @@
       "autoLabel": "Automatisch",
       "swatchLabel": "Farbschema"
     },
-    "delivery": {
-      "title": "Optional: Name und Zusendung",
-      "body": "Der Generator läuft auch ohne Kontaktdaten. Wenn du dir das Ergebnis schicken lassen willst, ergänze hier Name und E-Mail."
-    },
-    "displayName": {
-      "label": "Name für den Vorschlag",
-      "placeholder": "z. B. Moritz Hecht",
-      "help": "Optional. So erscheint der Vorschlag mit deinem Namen.",
-      "maxLength": 80,
-      "requiredError": "Bitte gib einen Anzeigenamen an.",
-      "tooLongError": "Bitte unter 80 Zeichen halten."
-    },
-    "email": {
-      "label": "E-Mail für Zusendung",
-      "placeholder": "deine@adresse.com",
-      "help": "Optional. Nur ausfüllen, wenn du dir das Ergebnis schicken lassen willst.",
-      "requiredError": "Bitte E-Mail-Adresse angeben.",
-      "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
-    },
-    "consent": {
-      "label": "Ich bin einverstanden, dass meine E-Mail für die Zusendung genutzt wird.",
-      "requiredError": "Bitte bestätige das, wenn du dir das Ergebnis schicken lässt."
-    },
     "honeypot": {
       "label": "Firma"
     },
-    "privacyNotice": "Wir verarbeiten deine Eingaben zur Generierung. Zur Missbrauchsbegrenzung speichern wir 30 Tage eine pseudonyme technische Kennung. E-Mail ist optional.",
+    "privacyNotice": "Wir verarbeiten deine Eingaben nur, um den Beispielpost zu bauen. Zur Missbrauchsbegrenzung speichern wir 30 Tage eine pseudonyme technische Kennung.",
     "submit": "Post generieren",
     "submitLoading": "Wird erstellt …",
     "loadingHelp": "Ca. 30 Sekunden offen lassen."
+  },
+  "usageMeter": {
+    "regionLabel": "Kostenlose Tests",
+    "idle": "2 kostenlose Tests",
+    "remaining": "Noch {{remaining}} von {{limit}} Tests",
+    "resetPrefix": "Neue Tests ab"
+  },
+  "leadCapture": {
+    "headline": "Gefällt dir der Post?",
+    "body": "Trag Name und E-Mail ein, dann lädst du ihn herunter oder bekommst ihn zugeschickt – beides mit Caption.",
+    "displayName": {
+      "label": "Name",
+      "placeholder": "z. B. Moritz Hecht",
+      "help": "So erscheint der Post mit deinem Namen.",
+      "maxLength": 80,
+      "requiredError": "Bitte gib einen Namen an.",
+      "tooLongError": "Bitte unter 80 Zeichen halten."
+    },
+    "email": {
+      "label": "E-Mail",
+      "placeholder": "deine@adresse.com",
+      "requiredError": "Bitte gib eine E-Mail an.",
+      "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
+    },
+    "consentDelivery": {
+      "label": "Ich bin einverstanden, dass meine E-Mail genutzt wird, um mir den Post zu schicken.",
+      "requiredError": "Bitte bestätige das, um fortzufahren."
+    },
+    "consentMarketing": {
+      "label": "Schick mir gelegentlich Tipps zu LinkedIn-Posts und Workflows."
+    },
+    "marketingMicrocopy": "Kein Spam. Jederzeit mit einem Klick abbestellbar.",
+    "downloadAction": "Herunterladen",
+    "emailAction": "Per E-Mail schicken",
+    "comingSoonBadge": "Bald",
+    "emailComingSoon": "Der E-Mail-Versand ist gleich verfügbar. Lad dir den Post so lange direkt herunter.",
+    "success": {
+      "download": "Download gestartet. Der Post liegt jetzt in deinen Downloads.",
+      "email": "Sobald der Versand live ist, schicken wir dir den Post an diese Adresse."
+    }
   },
   "preview": {
     "idle": {
@@ -96,15 +113,9 @@
     },
     "success": {
       "headline": "Fertig. So sieht dein Beispiel aus.",
-      "imageAlt": "Generiertes LinkedIn-Post-Bild",
-      "captionLabel": "Caption",
       "copyCaption": "Caption kopieren",
       "copyCaptionCopied": "Kopiert",
-      "downloadImage": "Bild herunterladen",
-      "downloadCaption": "Text herunterladen",
       "fallbackAuthorName": "Dein Name",
-      "trialNote": "Du kannst den Generator 2x kostenlos testen.",
-      "remainingNote": "Noch {{remaining}} von {{limit}} kostenlosen Tests in diesem Zeitraum übrig.",
       "followUp": {
         "badge": "Nächster Schritt",
         "headline": "Passt der Stil? Dann frag dein Projekt an.",
@@ -113,10 +124,17 @@
         "ctaAriaLabel": "Zum Anfrageformular springen"
       }
     },
+    "limitReached": {
+      "badge": "Geschafft",
+      "headline": "Du hast deine 2 kostenlosen Posts erstellt.",
+      "body": "Gefällt dir das Ergebnis? Dann bauen wir daraus einen eigenen Workflow, der zu deiner Stimme und deinem Branding passt.",
+      "resetPrefix": "Neue Tests ab",
+      "ctaLabel": "Eigenen Workflow anfragen",
+      "ctaAriaLabel": "Zum Anfrageformular springen und einen eigenen Workflow anfragen"
+    },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
-      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal.",
-      "limitReachedBody": "Du hast die 2 kostenlosen Tests für diesen Zeitraum genutzt. Frag gern ein Projekt an, wenn du einen eigenen Workflow willst."
+      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal."
     }
   },
   "customPost": {

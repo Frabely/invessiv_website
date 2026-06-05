@@ -1,6 +1,13 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
 
+/** Server-reported free-test budget for the generator (pseudonymous IP key). */
+export type GeneratorUsageLimit = {
+  limit: number;
+  remaining: number;
+  resetAt: string;
+};
+
 /**
  * UI state of the LinkedIn-post generator preview. Client-only — lives in the
  * web app (not @invessiv/common, which is server/client-shared). The `kind`
@@ -16,18 +23,15 @@ export type GeneratorState =
       downloadFileName: string;
       previewHtml: string;
       imageDataUrl: string | null;
-      usageLimit?: {
-        limit: number;
-        remaining: number;
-        resetAt: string;
-      };
+      usageLimit?: GeneratorUsageLimit;
+      deliveryToken?: string;
+    }
+  | {
+      kind: typeof GeneratorStateKind.LimitReached;
+      usageLimit: GeneratorUsageLimit;
     }
   | {
       kind: typeof GeneratorStateKind.Error;
       code?: string;
-      usageLimit?: {
-        limit: number;
-        remaining: number;
-        resetAt: string;
-      };
+      usageLimit?: GeneratorUsageLimit;
     };

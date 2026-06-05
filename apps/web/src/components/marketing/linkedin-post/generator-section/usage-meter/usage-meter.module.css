@@ -1,0 +1,71 @@
+/* Mobile-first. Prominent free-test counter shown in the generator form head. */
+.meter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 24%, var(--color-border-strong));
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-accent-warm) 8%, var(--color-surface-2) 92%)
+      0%,
+    color-mix(in srgb, var(--color-surface-1) 100%, transparent) 100%
+  );
+}
+
+.pips {
+  display: inline-flex;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pip {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  border: 1.5px solid
+    color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
+  background: transparent;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease;
+}
+
+.pip[data-state="free"] {
+  background: color-mix(in srgb, var(--color-accent-warm) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 92%, transparent);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.summaryText {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.reset {
+  color: color-mix(in srgb, var(--color-text-muted) 92%, transparent);
+  font-weight: 500;
+}
+
+.meter[data-depleted="true"] {
+  border-color: color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  background: color-mix(in srgb, var(--color-surface-2) 88%, transparent);
+}
+
+.meter[data-depleted="true"] .summaryText {
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted));
+}

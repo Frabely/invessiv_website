@@ -12,20 +12,24 @@ import {
   GeneratorErrorReason,
 } from "@/common/constants/generator/generator-analytics";
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import { LINKEDIN_POST_GENERATOR_INITIAL_VALUES } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import type { ProjectOfferSyncDetail } from "@/common/contracts/marketing/project-offer-sync-detail";
+import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing/project-offer-change-event";
+import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import type { Locale } from "@/config/i18n";
 import { LINKEDIN_POST_SECTION_HREFS } from "@/config/navigation/linkedin-post";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { GeneratorForm } from "./generator-form";
 import { PreviewPanel } from "./preview-panel";
-import { useFieldIds } from "./use-field-ids";
+import type { LeadIdentity } from "./lead-capture-card/lead-capture-card";
+import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-section.module.css";
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const FREE_GENERATOR_TEST_LIMIT = 2;
+const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
 
 type GeneratorSectionProps = {
   id: string;
@@ -40,7 +44,7 @@ export function GeneratorSection({
   content,
   submitGenerator = linkedinPostGeneratorService.submitLinkedInPost,
 }: GeneratorSectionProps) {
-  const fieldIds = useFieldIds();
+  const fieldIds = useGeneratorFieldIds();
   const [values, setValues] = useState<LinkedInPostGeneratorFormValues>(
     () => LINKEDIN_POST_GENERATOR_INITIAL_VALUES,
   );
@@ -48,8 +52,16 @@ export function GeneratorSection({
   const [state, setState] = useState<GeneratorState>({ kind: "idle" });
   const [hasStarted, setHasStarted] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
-  const [successfulRuns, setSuccessfulRuns] = useState(0);
+  const [leadIdentity, setLeadIdentity] =
+    useState<LeadIdentity>(EMPTY_LEAD_IDENTITY);
   const previewRef = useRef<HTMLDivElement | null>(null);
+
+  const usageLimit =
+    state.kind === GeneratorStateKind.Success ||
+    state.kind === GeneratorStateKind.LimitReached ||
+    state.kind === GeneratorStateKind.Error
+      ? state.usageLimit
+      : undefined;
 
   useEffect(() => {
     if (state.kind !== GeneratorStateKind.Loading) {
@@ -69,7 +81,11 @@ export function GeneratorSection({
   }, [content.preview.loading.steps.length, state.kind]);
 
   useEffect(() => {
-    if (state.kind !== GeneratorStateKind.Error) {
+    if (
+      state.kind !== GeneratorStateKind.Success &&
+      state.kind !== GeneratorStateKind.LimitReached &&
+      state.kind !== GeneratorStateKind.Error
+    ) {
       return;
     }
 
@@ -78,29 +94,6 @@ export function GeneratorSection({
       block: "nearest",
     });
   }, [state.kind]);
-
-  useEffect(() => {
-    if (state.kind !== GeneratorStateKind.Success) {
-      return;
-    }
-
-    if (successfulRuns >= FREE_GENERATOR_TEST_LIMIT) {
-      const timeoutId = window.setTimeout(() => {
-        document
-          .getElementById(LINKEDIN_POST_SECTION_HREFS.contact.slice(1))
-          ?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-      }, 350);
-      return () => window.clearTimeout(timeoutId);
-    }
-
-    previewRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  }, [state.kind, successfulRuns]);
 
   function emitAnalytics(
     event: GeneratorAnalyticsEvent,
@@ -145,18 +138,32 @@ export function GeneratorSection({
     link.click();
   }
 
+  /**
+   * Best-effort prefill of the contact form: dispatch the offer-change event
+   * with the LinkedIn-content offer and any identity captured in the lead step,
+   * then let the anchor scroll to #contact. A cold limit (no prior lead step)
+   * simply leaves the identity empty — no error.
+   */
+  function handleRequestCustomWorkflow() {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const detail: ProjectOfferSyncDetail = {
+      offerKey: CONTACT_OFFER_KEY.Process,
+      displayName: leadIdentity.displayName || undefined,
+      email: leadIdentity.email || undefined,
+    };
+    window.dispatchEvent(
+      new CustomEvent(PROJECT_OFFER_CHANGE_EVENT, { detail }),
+    );
+  }
+
   function handleFieldChange<K extends keyof LinkedInPostGeneratorFormValues>(
     key: K,
     next: LinkedInPostGeneratorFormValues[K],
   ) {
     handleStart();
-    setValues((current) => {
-      const updated = { ...current, [key]: next };
-      if (key === "email" && typeof next === "string" && next.trim() === "") {
-        updated.consent = false;
-      }
-      return updated;
-    });
+    setValues((current) => ({ ...current, [key]: next }));
     setErrors((current) => {
       if (!(key in current)) {
         return current;
@@ -171,8 +178,6 @@ export function GeneratorSection({
     const next: GeneratorFieldErrors = {};
     const topic = values.topic.trim();
     const expertise = values.expertise.trim();
-    const displayName = values.displayName.trim();
-    const email = values.email.trim();
 
     if (!topic) {
       next.topic = content.form.topic.requiredError;
@@ -192,27 +197,6 @@ export function GeneratorSection({
       content.form.expertise.tooLongError
     ) {
       next.expertise = content.form.expertise.tooLongError;
-    }
-
-    if (
-      displayName &&
-      content.form.displayName.maxLength &&
-      displayName.length > content.form.displayName.maxLength &&
-      content.form.displayName.tooLongError
-    ) {
-      next.displayName = content.form.displayName.tooLongError;
-    }
-
-    if (
-      email &&
-      !EMAIL_PATTERN.test(email) &&
-      content.form.email.invalidError
-    ) {
-      next.email = content.form.email.invalidError;
-    }
-
-    if (email && !values.consent) {
-      next.consent = content.form.consent.requiredError;
     }
 
     return next;
@@ -250,11 +234,21 @@ export function GeneratorSection({
     }
 
     if (!result.ok) {
-      setState({
-        kind: GeneratorStateKind.Error,
-        code: result.code,
-        usageLimit: result.usageLimit,
-      });
+      if (
+        result.code === LinkedInPostGeneratorErrorCode.UsageLimitReached &&
+        result.usageLimit
+      ) {
+        setState({
+          kind: GeneratorStateKind.LimitReached,
+          usageLimit: result.usageLimit,
+        });
+      } else {
+        setState({
+          kind: GeneratorStateKind.Error,
+          code: result.code,
+          usageLimit: result.usageLimit,
+        });
+      }
       emitAnalytics(GeneratorAnalyticsEvent.Error, { reason: result.code });
       return;
     }
@@ -268,11 +262,6 @@ export function GeneratorSection({
       previewHtml: result.previewHtml,
       usageLimit: result.usageLimit,
     });
-    setSuccessfulRuns((current) =>
-      result.usageLimit
-        ? result.usageLimit.limit - result.usageLimit.remaining
-        : current + 1,
-    );
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }
 
@@ -289,15 +278,11 @@ export function GeneratorSection({
           content={content}
           errors={errors}
           fieldIds={fieldIds}
-          hasCopied={hasCopied}
           isSubmitting={state.kind === GeneratorStateKind.Loading}
-          onCopyCaption={handleCopyCaption}
-          onDownloadCaption={handleCaptionDownload}
-          onDownloadImage={handleImageDownload}
+          locale={locale}
           onChange={handleFieldChange}
           onSubmit={handleSubmit}
-          state={state}
-          successfulRuns={successfulRuns}
+          usageLimit={usageLimit}
           values={values}
         />
 
@@ -306,9 +291,12 @@ export function GeneratorSection({
             content={content}
             followUpHref={LINKEDIN_POST_SECTION_HREFS.contact}
             hasCopied={hasCopied}
+            locale={locale}
             onCopyCaption={handleCopyCaption}
             onDownloadCaption={handleCaptionDownload}
             onDownloadImage={handleImageDownload}
+            onLeadIdentityChange={setLeadIdentity}
+            onRequestCustomWorkflow={handleRequestCustomWorkflow}
             state={state}
           />
         </div>
