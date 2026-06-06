@@ -4,6 +4,8 @@
   "body": "Zwei Posts, die der Generator in unter einer Minute baut. Hook, Struktur, Caption, Bild – fertig zum Hochladen.",
   "samplesAriaLabel": "Beispiel-Posts vom LinkedIn-Post-Generator",
   "inputLabel": "Input",
+  "inputShowLabel": "Einblenden",
+  "inputHideLabel": "Ausblenden",
   "outputLabel": "Output",
   "promptLabel": "Prompt",
   "topicFieldLabel": "Thema",
@@ -12,6 +14,9 @@
   "flowHint": "Daraus entsteht der fertige Post.",
   "captionMore": "… mehr",
   "captionLess": "weniger",
+  "maximizeLabel": "Beitrag vergrößern",
+  "lightboxCloseLabel": "Vorschau schließen",
+  "lightboxAriaLabel": "Vergrößerte Beitragsvorschau",
   "disclaimer": "Name und Angaben unter dem Profil sind frei erfunden und dienen nur als Beispiel.",
   "samples": [
     {

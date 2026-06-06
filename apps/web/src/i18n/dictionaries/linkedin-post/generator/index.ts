@@ -111,6 +111,9 @@ export type LinkedInPostGeneratorCustomPostPostCopy = {
   linkUrl: string;
   captionMore: string;
   captionLess: string;
+  maximizeLabel: string;
+  lightboxCloseLabel: string;
+  lightboxAriaLabel: string;
   imageSrc: string;
   imageAlt: string;
   commandLabel: string;

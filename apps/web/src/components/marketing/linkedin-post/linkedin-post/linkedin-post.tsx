@@ -1,10 +1,16 @@
 "use client";
 
+import { faExpand } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
-import { LinkedinPostCaptionFit } from "@/common/constants";
+import {
+  LinkedinPostCaptionFit,
+  LinkedinPostVariant,
+} from "@/common/constants";
 import type { LinkedinPostAuthor } from "@/common/contracts";
+import { PostLightbox } from "./post-lightbox/post-lightbox";
 import styles from "./linkedin-post.module.css";
 
 const CAPTION_SCROLL_TOP_START = 0;
@@ -22,6 +28,11 @@ type LinkedinPostProps = {
   className?: string;
   headerAction?: ReactNode;
   image: ReactNode;
+  variant?: LinkedinPostVariant;
+  maximizable?: boolean;
+  maximizeLabel?: string;
+  lightboxCloseLabel?: string;
+  lightboxAriaLabel?: string;
 };
 
 function collapsedCaptionToggleLabel(
@@ -41,18 +52,33 @@ export function LinkedinPost({
   className,
   headerAction,
   image,
+  variant = LinkedinPostVariant.Card,
+  maximizable = false,
+  maximizeLabel,
+  lightboxCloseLabel,
+  lightboxAriaLabel,
 }: LinkedinPostProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [hasCaptionOverflow, setHasCaptionOverflow] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const captionRef = useRef<HTMLParagraphElement | null>(null);
+  const maximizeButtonRef = useRef<HTMLButtonElement | null>(null);
   const captionId = useId();
+  const isLightbox = variant === LinkedinPostVariant.Lightbox;
   const hasToggleLabels = Boolean(captionMore && captionLess);
   const hasToggle =
+    !isLightbox &&
     hasToggleLabels &&
     (captionFit === LinkedinPostCaptionFit.LineClamp ||
       isExpanded ||
       hasCaptionOverflow);
   const collapsedToggleLabel = collapsedCaptionToggleLabel(captionMore);
+  const showMaximize = !isLightbox && maximizable && Boolean(maximizeLabel);
+
+  function handleMinimize() {
+    setIsMaximized(false);
+    maximizeButtonRef.current?.focus();
+  }
 
   function resetCaptionScroll() {
     const captionElement = captionRef.current;
@@ -121,6 +147,7 @@ export function LinkedinPost({
     <article
       aria-label={ariaLabel}
       className={className ? `${styles.card} ${className}` : styles.card}
+      data-variant={variant}
       data-caption-fit={captionFit}
       data-caption-expanded={
         captionFit === LinkedinPostCaptionFit.Available && isExpanded
@@ -158,8 +185,24 @@ export function LinkedinPost({
           </span>
         </div>
 
-        {headerAction ? (
-          <div className={styles.headerAction}>{headerAction}</div>
+        {headerAction || showMaximize ? (
+          <div className={styles.headerControls}>
+            {headerAction ? (
+              <div className={styles.headerAction}>{headerAction}</div>
+            ) : null}
+            {showMaximize ? (
+              <button
+                aria-haspopup="dialog"
+                aria-label={maximizeLabel}
+                className={styles.maximizeButton}
+                onClick={() => setIsMaximized(true)}
+                ref={maximizeButtonRef}
+                type="button"
+              >
+                <FontAwesomeIcon aria-hidden="true" icon={faExpand} />
+              </button>
+            ) : null}
+          </div>
         ) : null}
       </header>
 
@@ -186,6 +229,24 @@ export function LinkedinPost({
       </div>
 
       {image}
+
+      {showMaximize ? (
+        <PostLightbox
+          ariaLabel={lightboxAriaLabel ?? ariaLabel ?? maximizeLabel ?? ""}
+          closeLabel={lightboxCloseLabel ?? maximizeLabel ?? ""}
+          onClose={handleMinimize}
+          open={isMaximized}
+        >
+          <LinkedinPost
+            ariaLabel={ariaLabel}
+            author={author}
+            caption={caption}
+            captionFit={captionFit}
+            image={image}
+            variant={LinkedinPostVariant.Lightbox}
+          />
+        </PostLightbox>
+      ) : null}
     </article>
   );
 }

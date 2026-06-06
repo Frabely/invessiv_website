@@ -22,6 +22,8 @@ export function ExampleSection({
   title,
   body,
   inputLabel,
+  inputShowLabel,
+  inputHideLabel,
   outputLabel,
   samplesAriaLabel,
   topicFieldLabel,
@@ -29,6 +31,9 @@ export function ExampleSection({
   toneFieldLabel,
   captionMore,
   captionLess,
+  maximizeLabel,
+  lightboxCloseLabel,
+  lightboxAriaLabel,
   disclaimer,
   samples,
   ctaLead,
@@ -64,7 +69,12 @@ export function ExampleSection({
               captionLess={captionLess}
               captionMore={captionMore}
               disclaimer={disclaimer}
+              inputHideLabel={inputHideLabel}
               inputLabel={inputLabel}
+              inputShowLabel={inputShowLabel}
+              lightboxAriaLabel={lightboxAriaLabel}
+              lightboxCloseLabel={lightboxCloseLabel}
+              maximizeLabel={maximizeLabel}
               outputLabel={outputLabel}
               roleFieldLabel={roleFieldLabel}
               sample={sample}

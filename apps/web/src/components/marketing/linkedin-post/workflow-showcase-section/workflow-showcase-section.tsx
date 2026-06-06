@@ -77,6 +77,10 @@ export function WorkflowShowcaseSection({
             caption={captionNode}
             captionLess={post.captionLess}
             captionMore={post.captionMore}
+            lightboxAriaLabel={post.lightboxAriaLabel}
+            lightboxCloseLabel={post.lightboxCloseLabel}
+            maximizable
+            maximizeLabel={post.maximizeLabel}
             image={
               <figure aria-hidden="true" className={styles.postImage}>
                 <Image

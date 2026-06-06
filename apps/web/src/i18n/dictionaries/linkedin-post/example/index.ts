@@ -32,6 +32,8 @@ export type LinkedInPostExampleContent = {
   body: string;
   samplesAriaLabel: string;
   inputLabel: string;
+  inputShowLabel: string;
+  inputHideLabel: string;
   outputLabel: string;
   promptLabel: string;
   topicFieldLabel: string;
@@ -40,6 +42,9 @@ export type LinkedInPostExampleContent = {
   flowHint: string;
   captionMore: string;
   captionLess: string;
+  maximizeLabel: string;
+  lightboxCloseLabel: string;
+  lightboxAriaLabel: string;
   disclaimer: string;
   samples: LinkedInPostExampleSample[];
   ctaLead: string;

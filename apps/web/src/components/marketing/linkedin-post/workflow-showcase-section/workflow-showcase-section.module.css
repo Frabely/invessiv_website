@@ -111,9 +111,15 @@
     position: sticky;
     top: 5rem;
   }
+
+  /* Compact post, horizontally centered within its column. */
+  .postColumn {
+    max-width: 360px;
+    justify-self: center;
+  }
 }
 
-/* ── Desktop: give post column slightly more room ── */
+/* ── Desktop: balanced two columns — text left, centered post right ── */
 @media (min-width: 961px) {
   .section {
     max-width: var(--max-content-width);
@@ -130,8 +136,9 @@
     font-size: var(--font-size-body-lg);
   }
 
+  /* Inherit the 1fr 1fr split from tablet; the right column stays wider than
+     the post cap so the post reads as centered within its column. */
   .grid {
-    grid-template-columns: 1fr 1.1fr;
     gap: 3.5rem 5rem;
   }
 }

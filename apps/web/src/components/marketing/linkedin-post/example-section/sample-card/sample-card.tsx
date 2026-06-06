@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { LinkedInPostExampleSample } from "@/i18n/dictionaries/linkedin-post/example";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import styles from "./sample-card.module.css";
@@ -11,55 +11,35 @@ type SampleCardProps = {
   captionMore: string;
   disclaimer: string;
   inputLabel: string;
+  inputShowLabel: string;
+  inputHideLabel: string;
   outputLabel: string;
   roleFieldLabel: string;
   sample: LinkedInPostExampleSample;
   toneFieldLabel: string;
   topicFieldLabel: string;
+  maximizeLabel: string;
+  lightboxCloseLabel: string;
+  lightboxAriaLabel: string;
 };
-
-const DESKTOP_QUERY = "(min-width: 720px)";
-
-function useDesktopExpansion() {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      typeof window.matchMedia !== "function"
-    ) {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia(DESKTOP_QUERY);
-    const updateExpansion = () => setIsExpanded(mediaQuery.matches);
-
-    updateExpansion();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", updateExpansion);
-      return () => mediaQuery.removeEventListener("change", updateExpansion);
-    }
-
-    mediaQuery.addListener(updateExpansion);
-    return () => mediaQuery.removeListener(updateExpansion);
-  }, []);
-
-  return [isExpanded, setIsExpanded] as const;
-}
 
 export function SampleCard({
   captionLess,
   captionMore,
   disclaimer,
   inputLabel,
+  inputShowLabel,
+  inputHideLabel,
   outputLabel,
   roleFieldLabel,
   sample,
   toneFieldLabel,
   topicFieldLabel,
+  maximizeLabel,
+  lightboxCloseLabel,
+  lightboxAriaLabel,
 }: SampleCardProps) {
-  const [isInputOpen, setIsInputOpen] = useDesktopExpansion();
+  const [isInputOpen, setIsInputOpen] = useState(false);
 
   return (
     <div className={styles.flow}>
@@ -78,6 +58,10 @@ export function SampleCard({
           caption={sample.caption}
           captionLess={captionLess}
           captionMore={captionMore}
+          lightboxAriaLabel={lightboxAriaLabel}
+          lightboxCloseLabel={lightboxCloseLabel}
+          maximizable
+          maximizeLabel={maximizeLabel}
           image={
             <figure
               aria-label={sample.image.headline}
@@ -126,7 +110,7 @@ export function SampleCard({
         >
           <span className={styles.sectionLabel}>{inputLabel}</span>
           <span className={styles.inputToggleText}>
-            {isInputOpen ? "Ausblenden" : "Einblenden"}
+            {isInputOpen ? inputHideLabel : inputShowLabel}
           </span>
         </button>
 

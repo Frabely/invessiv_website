@@ -55,6 +55,89 @@ describe("LinkedinPost", () => {
     expect(screen.getByRole("button", { name: "weniger" })).toBeTruthy();
   });
 
+  it("does not render the maximize control without the maximizable flag", () => {
+    render(
+      <LinkedinPost
+        author={{
+          avatar: { kind: "initials", value: "LB" },
+          name: "Lena Bauer",
+          role: "Business-Coach",
+        }}
+        caption="Ein Beispiel-Beitrag."
+        maximizeLabel="Beitrag vergrößern"
+        image={<figure aria-label="Post-Bild" />}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "Beitrag vergrößern" }),
+    ).toBeNull();
+  });
+
+  it("opens the lightbox and returns focus to the trigger on close", () => {
+    render(
+      <LinkedinPost
+        ariaLabel="Beispiel-Post"
+        author={{
+          avatar: { kind: "initials", value: "LB" },
+          name: "Lena Bauer",
+          role: "Business-Coach",
+        }}
+        caption="Ein Beispiel-Beitrag."
+        lightboxAriaLabel="Vergrößerte Beitragsvorschau"
+        lightboxCloseLabel="Vorschau schließen"
+        maximizable
+        maximizeLabel="Beitrag vergrößern"
+        image={<figure aria-label="Post-Bild" />}
+      />,
+    );
+
+    const maximizeButton = screen.getByRole("button", {
+      name: "Beitrag vergrößern",
+    });
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(maximizeButton);
+
+    const dialog = screen.getByRole("dialog", {
+      name: "Vergrößerte Beitragsvorschau",
+    });
+    expect(dialog).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Vorschau schließen" }),
+    ).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Vorschau schließen" }));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(maximizeButton);
+  });
+
+  it("closes the lightbox when Escape is pressed", () => {
+    render(
+      <LinkedinPost
+        author={{
+          avatar: { kind: "initials", value: "LB" },
+          name: "Lena Bauer",
+          role: "Business-Coach",
+        }}
+        caption="Ein Beispiel-Beitrag."
+        lightboxAriaLabel="Vergrößerte Beitragsvorschau"
+        lightboxCloseLabel="Vorschau schließen"
+        maximizable
+        maximizeLabel="Beitrag vergrößern"
+        image={<figure aria-label="Post-Bild" />}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Beitrag vergrößern" }));
+    expect(screen.getByRole("dialog")).toBeTruthy();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("lets available captions grow naturally when expanded", async () => {
     const clientHeightDescriptor = Object.getOwnPropertyDescriptor(
       HTMLElement.prototype,

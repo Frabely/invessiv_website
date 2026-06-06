@@ -61,9 +61,96 @@
   min-width: 0;
 }
 
+.headerControls {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
 .headerAction {
   flex-shrink: 0;
   padding-top: 0.08rem;
+}
+
+/* Maximize affordance — desktop-only (hidden below 720px, where posts already
+   span the full width and the lightbox would add no value). */
+.maximizeButton {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .maximizeButton {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid
+      color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-surface-1) 55%, transparent);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition:
+      color 180ms ease,
+      background 180ms ease,
+      border-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .maximizeButton:hover {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--color-cta) 45%, transparent);
+    background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+    color: var(--color-cta);
+  }
+
+  .maximizeButton:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--color-cta) 70%, transparent);
+    outline-offset: 2px;
+  }
+
+  .maximizeButton svg {
+    width: auto;
+    height: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maximizeButton {
+    transition: none;
+  }
+
+  .maximizeButton:hover {
+    transform: none;
+  }
+}
+
+/* ── Lightbox variant: enlarged, fully readable rendition ── */
+.card[data-variant="lightbox"] {
+  --card-pad: clamp(1.4rem, 4vw, 1.9rem);
+  gap: clamp(1rem, 2vw, 1.3rem);
+  border-radius: 18px;
+}
+
+.card[data-variant="lightbox"] .caption {
+  font-size: clamp(1rem, 0.95rem + 0.4vw, 1.12rem);
+  line-height: 1.62;
+}
+
+.card[data-variant="lightbox"] .authorName {
+  font-size: 1.02rem;
+}
+
+.card[data-variant="lightbox"] .authorRole {
+  font-size: 0.86rem;
+}
+
+.card[data-variant="lightbox"] .authorAvatar,
+.card[data-variant="lightbox"] .authorAvatarImg {
+  width: 2.6rem;
+  height: 2.6rem;
 }
 
 /* Initials avatar */

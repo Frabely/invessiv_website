@@ -94,7 +94,9 @@
   white-space: nowrap;
 }
 
-.inputPanel {
+/* Scope display to the visible state so the `hidden` attribute reliably
+   collapses the panel (an unconditional `display` would override `[hidden]`). */
+.inputPanel:not([hidden]) {
   display: grid;
 }
 
@@ -215,18 +217,9 @@
 
 /* Tablet */
 @media (min-width: 720px) {
-  .inputToggle {
-    display: none;
-  }
-
-  .inputPanel {
-    display: grid;
-  }
-
   .inputGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.9rem;
-    padding-top: 0.1rem;
   }
 
   .postImageHeadline {
@@ -235,5 +228,14 @@
 
   .postImageFootnote {
     font-size: clamp(0.92rem, 0.9rem + 0.18vw, 1rem);
+  }
+}
+
+/* Desktop: cards sit in narrow side columns of the editorial layout, so the
+   input fields stack instead of squeezing into three tiny columns. */
+@media (min-width: 961px) {
+  .inputGrid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
   }
 }
