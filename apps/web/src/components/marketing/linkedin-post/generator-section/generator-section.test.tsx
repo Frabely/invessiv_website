@@ -225,7 +225,7 @@ describe("GeneratorSection", () => {
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
-  it("returns to the idle preview when the new-post action is used", async () => {
+  it("keeps the generated post visible and scrolls to the generator when the new-post action is used", async () => {
     renderSection();
     fillValidValues();
     clickSubmit();
@@ -242,8 +242,15 @@ describe("GeneratorSection", () => {
       screen.getByRole("button", { name: content.leadCapture.newPostAction }),
     );
 
-    await waitFor(() => {
-      expect(screen.getByText(content.preview.idle.headline)).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: content.preview.success.copyCaption,
+      }),
+    ).toBeTruthy();
+    expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
     });
   });
 

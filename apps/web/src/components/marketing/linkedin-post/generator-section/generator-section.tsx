@@ -125,9 +125,10 @@ export function GeneratorSection({
   }
 
   function handleRequestNewPost() {
-    setHasCopied(false);
-    setLeadIdentity(EMPTY_LEAD_IDENTITY);
-    setState({ kind: GeneratorStateKind.Idle });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   }
 
   /**
