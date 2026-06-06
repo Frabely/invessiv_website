@@ -225,6 +225,34 @@ describe("GeneratorSection", () => {
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
+  it("renders the generated post and action rail in the success state", async () => {
+    const { container } = renderSection();
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
+    });
+
+    const postPane = container.querySelector('[data-slot="success-post"]');
+    const actionRail = container.querySelector('[data-slot="success-actions"]');
+
+    expect(postPane).toBeTruthy();
+    expect(actionRail).toBeTruthy();
+    expect(postPane?.textContent).toContain("Generierte Caption.");
+    expect(actionRail?.textContent).toContain(content.leadCapture.headline);
+    expect(actionRail?.textContent).toContain(
+      content.preview.success.followUp.headline,
+    );
+    expect(
+      postPane?.querySelector('[data-caption-fit="available"]'),
+    ).toBeTruthy();
+  });
+
   it("keeps the generated post visible and scrolls to the generator when the new-post action is used", async () => {
     renderSection();
     fillValidValues();

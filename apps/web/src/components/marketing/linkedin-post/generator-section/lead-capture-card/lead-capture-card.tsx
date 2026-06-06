@@ -1,5 +1,6 @@
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { type ChangeEvent, type FormEvent, useId, useState } from "react";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { LeadCaptureFieldName } from "@/common/constants/generator/lead-capture-field-names";
 import { LeadDeliverStatus } from "@/common/constants/generator/lead-deliver-status";
 import type { LeadCaptureFieldErrors } from "@/common/contracts/generator/generator-field-errors";
@@ -12,7 +13,8 @@ import {
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorLeadCaptureCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import { leadDeliverErrorMessage } from "@/client/linkedin-post/errors/lead-deliver-error";
-import { Field } from "../field";
+import { FormField } from "@/components/shared/form/form-field/form-field";
+import { LeadCaptureConsentField } from "./lead-capture-consent-field/lead-capture-consent-field";
 import styles from "./lead-capture-card.module.css";
 
 type LeadCaptureCardProps = {
@@ -162,102 +164,77 @@ export function LeadCaptureCard({
         <p className={styles.body}>{content.body}</p>
       </header>
 
-      <Field
-        error={errors.displayName}
-        help={content.displayName.help}
-        htmlFor={ids.displayName}
-        label={content.displayName.label}
-      >
-        <input
-          aria-describedby={
-            errors.displayName ? `${ids.displayName}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.displayName)}
-          autoComplete="name"
-          className={styles.input}
-          id={ids.displayName}
-          maxLength={displayNameMax}
-          name="leadName"
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+      <FormField
+        controlClassName={styles.input}
+        errorMessage={errors.displayName}
+        errorMessageId={`${ids.displayName}-error`}
+        hint={content.displayName.help}
+        hintId={`${ids.displayName}-hint`}
+        inputProps={{
+          "aria-label": content.displayName.label,
+          autoComplete: "name",
+          id: ids.displayName,
+          maxLength: displayNameMax,
+          name: "leadName",
+          onChange: (event: ChangeEvent<HTMLInputElement>) => {
             setDisplayName(event.target.value);
             clearError(LeadCaptureFieldName.DisplayName);
-          }}
-          placeholder={content.displayName.placeholder}
-          type="text"
-          value={displayName}
-        />
-      </Field>
+          },
+          placeholder: content.displayName.placeholder,
+          required: true,
+          value: displayName,
+        }}
+        kind={FormFieldKind.Text}
+        label={content.displayName.label}
+        required
+      />
 
-      <Field
-        error={errors.email}
-        htmlFor={ids.email}
-        label={content.email.label}
-      >
-        <input
-          aria-describedby={errors.email ? `${ids.email}-error` : undefined}
-          aria-invalid={Boolean(errors.email)}
-          autoComplete="email"
-          className={styles.input}
-          id={ids.email}
-          name="leadEmail"
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+      <FormField
+        controlClassName={styles.input}
+        errorMessage={errors.email}
+        errorMessageId={`${ids.email}-error`}
+        inputProps={{
+          "aria-label": content.email.label,
+          autoComplete: "email",
+          id: ids.email,
+          name: "leadEmail",
+          onChange: (event: ChangeEvent<HTMLInputElement>) => {
             setEmail(event.target.value);
             clearError(LeadCaptureFieldName.Email);
-          }}
-          placeholder={content.email.placeholder}
-          type="email"
-          value={email}
-        />
-      </Field>
+          },
+          placeholder: content.email.placeholder,
+          required: true,
+          value: email,
+        }}
+        kind={FormFieldKind.Email}
+        label={content.email.label}
+        required
+      />
 
-      <label
-        className={styles.consent}
-        data-error={Boolean(errors.consentDelivery) || undefined}
-        htmlFor={ids.consentDelivery}
+      <LeadCaptureConsentField
+        checked={consentDelivery}
+        error={errors.consentDelivery}
+        id={ids.consentDelivery}
+        label={content.consentDelivery.label}
+        name="consentDelivery"
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          setConsentDelivery(event.target.checked);
+          clearError(LeadCaptureFieldName.ConsentDelivery);
+        }}
+        required
+      />
+
+      <LeadCaptureConsentField
+        checked={consentMarketing}
+        id={ids.consentMarketing}
+        label={content.consentMarketing.label}
+        name="consentMarketing"
+        onChange={(event: ChangeEvent<HTMLInputElement>) =>
+          setConsentMarketing(event.target.checked)
+        }
       >
-        <input
-          aria-describedby={
-            errors.consentDelivery ? `${ids.consentDelivery}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.consentDelivery)}
-          checked={consentDelivery}
-          className={styles.consentInput}
-          id={ids.consentDelivery}
-          name="consentDelivery"
-          onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            setConsentDelivery(event.target.checked);
-            clearError(LeadCaptureFieldName.ConsentDelivery);
-          }}
-          type="checkbox"
-        />
-        <span aria-hidden="true" className={styles.consentBox} />
-        <span className={styles.consentText}>
-          {content.consentDelivery.label}
-        </span>
-      </label>
-      {errors.consentDelivery ? (
-        <p className={styles.consentError} id={`${ids.consentDelivery}-error`}>
-          {errors.consentDelivery}
-        </p>
-      ) : null}
-
-      <label className={styles.consent} htmlFor={ids.consentMarketing}>
-        <input
-          checked={consentMarketing}
-          className={styles.consentInput}
-          id={ids.consentMarketing}
-          name="consentMarketing"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            setConsentMarketing(event.target.checked)
-          }
-          type="checkbox"
-        />
-        <span aria-hidden="true" className={styles.consentBox} />
-        <span className={styles.consentText}>
-          {content.consentMarketing.label}
-          <span className={styles.microcopy}>{content.marketingMicrocopy}</span>
-        </span>
-      </label>
+        <span className={styles.microcopy}>{content.marketingMicrocopy}</span>
+      </LeadCaptureConsentField>
 
       <div className={styles.actions}>
         <PrimaryCtaButton

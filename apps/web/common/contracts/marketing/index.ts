@@ -1,3 +1,4 @@
+export * from "./linkedin-post-author";
 export * from "./maintenance-service-card-data";
 export * from "./primary-service-card-data";
 export * from "./primary-service-key";

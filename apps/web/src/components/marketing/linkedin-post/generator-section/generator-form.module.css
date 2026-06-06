@@ -170,7 +170,6 @@
 
 @media (min-width: 961px) {
   .form {
-    min-height: var(--generator-panel-min-height);
     height: 100%;
     align-content: start;
   }

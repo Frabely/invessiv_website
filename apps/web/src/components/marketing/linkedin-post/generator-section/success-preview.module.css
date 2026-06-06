@@ -10,6 +10,20 @@
   height: 100%;
 }
 
+.postPane {
+  min-width: 0;
+}
+
+.postCard {
+  min-width: 0;
+}
+
+.actionRail {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
 /* Full-bleed post image inside LinkedinPost's card.
    --card-pad is set by LinkedinPost's .card and cascades down. */
 .postImage {
@@ -111,6 +125,51 @@
 
 @media (min-width: 961px) {
   .preview {
-    min-height: var(--generator-panel-min-height);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--generator-column-gap);
+    height: 100%;
+  }
+
+  .postPane {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .postCard:not([data-caption-expanded="true"]) {
+    height: 100%;
+  }
+
+  .postImage {
+    align-self: end;
+    aspect-ratio: 1;
+  }
+
+  .actionRail {
+    align-self: start;
+    gap: 0.8rem;
+  }
+
+  .followUpCard {
+    gap: 0.42rem;
+    padding: 0.85rem 0.9rem 0.95rem;
+    border-color: color-mix(
+      in srgb,
+      var(--color-border-strong) 72%,
+      transparent
+    );
+    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+    box-shadow: none;
+  }
+
+  .followUpHeadline {
+    font-size: 0.95rem;
+    line-height: 1.18;
+  }
+
+  .followUpBody {
+    font-size: 0.84rem;
+    line-height: 1.45;
   }
 }

@@ -115,6 +115,8 @@
     "success": {
       "copyCaption": "Copy caption",
       "copyCaptionCopied": "Copied",
+      "captionMore": "… more",
+      "captionLess": "less",
       "fallbackAuthorName": "Your name",
       "followUp": {
         "badge": "Next step",

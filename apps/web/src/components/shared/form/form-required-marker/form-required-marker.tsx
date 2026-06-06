@@ -11,5 +11,9 @@ export function FormRequiredMarker({ className }: FormRequiredMarkerProps) {
     ? `${styles.marker} ${className}`
     : styles.marker;
 
-  return <strong className={markerClassName}>*</strong>;
+  return (
+    <strong aria-hidden="true" className={markerClassName}>
+      *
+    </strong>
+  );
 }

@@ -118,6 +118,7 @@
   display: grid;
   gap: 0.2rem;
   justify-items: start;
+  min-width: 0;
 }
 
 .caption {
@@ -132,10 +133,8 @@
 
 /* Collapsed: clamp to 3 lines; expanded reveals the full caption */
 .caption:not([data-expanded]) {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  display: block;
+  max-height: calc(1.6em * 3);
   overflow: hidden;
 }
 
@@ -143,7 +142,7 @@
   padding: 0.1rem 0;
   border: 0;
   background: none;
-  color: var(--color-text-muted);
+  color: var(--color-cta);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 640;
@@ -153,7 +152,31 @@
 
 .captionToggle:hover,
 .captionToggle:focus-visible {
-  color: var(--color-accent-warm);
+  color: var(--color-cta-hover);
+}
+
+.card[data-caption-fit="available"]:not([data-caption-expanded="true"]) {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.card[data-caption-fit="available"]:not([data-caption-expanded="true"])
+  .captionWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.card[data-caption-fit="available"]:not([data-caption-expanded="true"])
+  .caption {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
 }
 
 /* ── Tablet ── */

@@ -2,6 +2,7 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
+import { LinkedinPostCaptionFit } from "@/common/constants";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
 import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { LeadCaptureCard } from "./lead-capture-card/lead-capture-card";
@@ -52,50 +53,60 @@ export function SuccessPreview({
 
   return (
     <div className={styles.preview} data-state="success">
-      <LinkedinPost
-        author={{
-          avatar: { kind: "initials", value: avatarInitial },
-          name: resolvedAuthorName,
-          role: expertiseDisplay,
-        }}
-        caption={caption}
-        headerAction={
-          <button
-            className={styles.copyButton}
-            data-state={hasCopied ? "copied" : "default"}
-            onClick={() => onCopyCaption(caption)}
-            type="button"
+      <div className={styles.postPane} data-slot="success-post">
+        <LinkedinPost
+          author={{
+            avatar: { kind: "initials", value: avatarInitial },
+            name: resolvedAuthorName,
+            role: expertiseDisplay,
+          }}
+          caption={caption}
+          captionFit={LinkedinPostCaptionFit.Available}
+          captionLess={success.captionLess}
+          captionMore={success.captionMore}
+          className={styles.postCard}
+          headerAction={
+            <button
+              className={styles.copyButton}
+              data-state={hasCopied ? "copied" : "default"}
+              onClick={() => onCopyCaption(caption)}
+              type="button"
+            >
+              {hasCopied ? success.copyCaptionCopied : success.copyCaption}
+            </button>
+          }
+          image={
+            <figure aria-label={postTitle} className={styles.postImage}>
+              <PostFramePreview html={previewHtml} title={postTitle} />
+            </figure>
+          }
+        />
+      </div>
+
+      <div className={styles.actionRail} data-slot="success-actions">
+        <LeadCaptureCard
+          content={content.leadCapture}
+          deliveryToken={deliveryToken}
+          locale={locale}
+          onIdentityChange={onLeadIdentityChange}
+          onRequestNewPost={onRequestNewPost}
+        />
+
+        <div className={styles.followUpCard}>
+          <p className={styles.followUpBadge}>{success.followUp.badge}</p>
+          <h3 className={styles.followUpHeadline}>
+            {success.followUp.headline}
+          </h3>
+          <p className={styles.followUpBody}>{success.followUp.body}</p>
+          <PrimaryCtaLink
+            aria-label={success.followUp.ctaAriaLabel}
+            className={styles.followUpCta}
+            href={followUpHref}
+            onClick={onRequestCustomWorkflow}
           >
-            {hasCopied ? success.copyCaptionCopied : success.copyCaption}
-          </button>
-        }
-        image={
-          <figure aria-label={postTitle} className={styles.postImage}>
-            <PostFramePreview html={previewHtml} title={postTitle} />
-          </figure>
-        }
-      />
-
-      <LeadCaptureCard
-        content={content.leadCapture}
-        deliveryToken={deliveryToken}
-        locale={locale}
-        onIdentityChange={onLeadIdentityChange}
-        onRequestNewPost={onRequestNewPost}
-      />
-
-      <div className={styles.followUpCard}>
-        <p className={styles.followUpBadge}>{success.followUp.badge}</p>
-        <h3 className={styles.followUpHeadline}>{success.followUp.headline}</h3>
-        <p className={styles.followUpBody}>{success.followUp.body}</p>
-        <PrimaryCtaLink
-          aria-label={success.followUp.ctaAriaLabel}
-          className={styles.followUpCta}
-          href={followUpHref}
-          onClick={onRequestCustomWorkflow}
-        >
-          {success.followUp.ctaLabel}
-        </PrimaryCtaLink>
+            {success.followUp.ctaLabel}
+          </PrimaryCtaLink>
+        </div>
       </div>
     </div>
   );

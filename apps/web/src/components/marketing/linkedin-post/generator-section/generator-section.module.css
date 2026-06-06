@@ -50,6 +50,10 @@
   display: block;
 }
 
+.formSlot {
+  min-width: 0;
+}
+
 /* ── Tablet ── */
 @media (min-width: 720px) {
   .section {
@@ -90,15 +94,17 @@
   }
 
   .workbench {
-    --generator-panel-min-height: clamp(48rem, 54vw, 60rem);
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: clamp(1.5rem, 3vw, 2.5rem);
+    --generator-column-gap: clamp(1.25rem, 2vw, 2rem);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--generator-column-gap);
     align-items: stretch;
   }
 
   .previewSlot {
+    grid-column: span 2;
     position: sticky;
     top: clamp(6.5rem, 9vw, 8rem);
-    height: 100%;
+    align-self: start;
+    height: var(--generator-panel-height, auto);
   }
 }

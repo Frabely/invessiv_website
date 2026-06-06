@@ -91,6 +91,8 @@ export type LinkedInPostGeneratorPreviewLoadingCopy = {
 export type LinkedInPostGeneratorPreviewSuccessCopy = {
   copyCaption: string;
   copyCaptionCopied: string;
+  captionMore: string;
+  captionLess: string;
   fallbackAuthorName: string;
   followUp: {
     badge: string;

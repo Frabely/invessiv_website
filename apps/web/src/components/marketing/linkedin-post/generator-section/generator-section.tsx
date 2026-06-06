@@ -54,7 +54,9 @@ export function GeneratorSection({
   const [hasCopied, setHasCopied] = useState(false);
   const [leadIdentity, setLeadIdentity] =
     useState<LeadIdentity>(EMPTY_LEAD_IDENTITY);
+  const formSlotRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
+  const workbenchRef = useRef<HTMLDivElement | null>(null);
 
   const usageLimit =
     state.kind === GeneratorStateKind.Success ||
@@ -94,6 +96,26 @@ export function GeneratorSection({
       block: "nearest",
     });
   }, [state.kind]);
+
+  useEffect(() => {
+    const formSlot = formSlotRef.current;
+    const workbench = workbenchRef.current;
+    if (!formSlot || !workbench || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const updatePanelHeight = () => {
+      workbench.style.setProperty(
+        "--generator-panel-height",
+        `${formSlot.getBoundingClientRect().height}px`,
+      );
+    };
+
+    updatePanelHeight();
+    const observer = new ResizeObserver(updatePanelHeight);
+    observer.observe(formSlot);
+    return () => observer.disconnect();
+  }, []);
 
   function emitAnalytics(
     event: GeneratorAnalyticsEvent,
@@ -267,18 +289,20 @@ export function GeneratorSection({
         <p className={styles.body}>{content.body}</p>
       </header>
 
-      <div className={styles.workbench}>
-        <GeneratorForm
-          content={content}
-          errors={errors}
-          fieldIds={fieldIds}
-          isSubmitting={state.kind === GeneratorStateKind.Loading}
-          locale={locale}
-          onChange={handleFieldChange}
-          onSubmit={handleSubmit}
-          usageLimit={usageLimit}
-          values={values}
-        />
+      <div className={styles.workbench} ref={workbenchRef}>
+        <div className={styles.formSlot} ref={formSlotRef}>
+          <GeneratorForm
+            content={content}
+            errors={errors}
+            fieldIds={fieldIds}
+            isSubmitting={state.kind === GeneratorStateKind.Loading}
+            locale={locale}
+            onChange={handleFieldChange}
+            onSubmit={handleSubmit}
+            usageLimit={usageLimit}
+            values={values}
+          />
+        </div>
 
         <div className={styles.previewSlot} ref={previewRef}>
           <PreviewPanel
