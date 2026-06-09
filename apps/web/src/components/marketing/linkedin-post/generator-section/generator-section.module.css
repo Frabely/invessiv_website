@@ -15,6 +15,9 @@
   display: grid;
   gap: 0.65rem;
   max-width: 100%;
+  margin-inline: auto;
+  justify-items: center;
+  text-align: center;
 }
 
 .eyebrow {
@@ -44,6 +47,27 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
+}
+
+/* Single-column, centered layout for the states that show only one panel:
+   the initial form, the success result, and the limit-reached panel. */
+.workbench[data-layout="initial"],
+.workbench[data-layout="result"],
+.workbench[data-layout="limit"] {
+  justify-items: center;
+}
+
+.workbench[data-layout="initial"] .formSlot,
+.workbench[data-layout="limit"] .previewSlot {
+  width: 100%;
+  max-width: 38rem;
+}
+
+/* The success result holds a two-column post + action rail, so it needs more
+   room than the single-field panels — but stays centered, not full-bleed. */
+.workbench[data-layout="result"] .previewSlot {
+  width: 100%;
+  max-width: 56rem;
 }
 
 .previewSlot {
@@ -93,14 +117,19 @@
     padding-block: clamp(3.5rem, 8vw, 6rem);
   }
 
+  /* Shared by the split workbench gap and the success result's inner 2-col. */
   .workbench {
     --generator-column-gap: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  /* Split layout (loading / error): form 1/3, preview 2/3. */
+  .workbench[data-layout="split"] {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--generator-column-gap);
     align-items: stretch;
   }
 
-  .previewSlot {
+  .workbench[data-layout="split"] .previewSlot {
     grid-column: span 2;
     position: sticky;
     top: clamp(6.5rem, 9vw, 8rem);

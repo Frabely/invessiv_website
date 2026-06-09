@@ -57,123 +57,6 @@
   text-wrap: pretty;
 }
 
-/* Idle skeleton: mirrors LinkedinPost card structure */
-.preview[data-state="idle"] {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.skeletonCard {
-  --card-pad: 1.1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: var(--card-pad) var(--card-pad) 0;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
-  border-radius: 16px;
-  background: linear-gradient(
-    170deg,
-    color-mix(in srgb, var(--color-surface-2) 96%, transparent) 0%,
-    color-mix(in srgb, var(--color-surface-1) 98%, transparent) 100%
-  );
-  box-shadow:
-    0 1px 0 color-mix(in srgb, var(--color-text) 6%, transparent) inset,
-    0 18px 40px -28px var(--color-shadow);
-  overflow: hidden;
-}
-
-.skeletonAuthorRow {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 0.85rem;
-}
-
-.skeletonAvatar {
-  flex-shrink: 0;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-}
-
-.skeletonMeta {
-  display: grid;
-  gap: 0.35rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.skeletonBar {
-  display: block;
-  height: 0.7rem;
-  border-radius: 4px;
-  width: 100%;
-}
-
-.skeletonName {
-  width: 44%;
-}
-
-.skeletonRole {
-  width: 30%;
-}
-
-.skeletonCaptionBlock {
-  display: grid;
-  gap: 0.48rem;
-  margin-bottom: 0.85rem;
-}
-
-.skeletonCaptionBlock .skeletonBar:nth-child(2) {
-  width: 86%;
-}
-
-.skeletonCaptionBlock .skeletonBar:nth-child(3) {
-  width: 62%;
-}
-
-/* Static fill for all skeleton elements */
-.skeletonAvatar,
-.skeletonBar,
-.skeletonImage {
-  background: color-mix(in srgb, var(--color-text) 8%, transparent);
-}
-
-/* Full-bleed image placeholder — grows to fill remaining card height */
-.skeletonImage {
-  flex: 1;
-  min-height: 6rem;
-  margin: 0 calc(var(--card-pad) * -1);
-  display: grid;
-  place-items: center;
-}
-
-.skeletonImageLabel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.55rem;
-  padding-inline: 1.5rem;
-  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted));
-  font-size: 1.02rem;
-  font-weight: 680;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  text-align: center;
-  text-wrap: balance;
-}
-
-.skeletonImageLabel::before {
-  content: "⌗";
-  color: color-mix(in srgb, var(--color-accent-warm) 80%, transparent);
-  font-family:
-    "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-size: 1.1rem;
-  font-weight: 400;
-}
-
 /* Loading skeleton shimmer */
 .skeletonShimmer {
   display: block;
@@ -291,11 +174,6 @@
   .previewHeadline {
     font-size: 1.28rem;
   }
-
-  .skeletonCard {
-    --card-pad: clamp(1.3rem, 2vw, 1.7rem);
-    border-radius: 18px;
-  }
 }
 
 @media (min-width: 961px) {
@@ -305,17 +183,9 @@
     height: 100%;
   }
 
-  .previewFrame,
-  .preview[data-state="idle"] {
-    min-height: var(--generator-panel-min-height);
-  }
-
   .previewFrame {
+    min-height: var(--generator-panel-min-height);
     flex: 1;
-  }
-
-  .preview[data-state="idle"] {
-    height: 100%;
   }
 }
 

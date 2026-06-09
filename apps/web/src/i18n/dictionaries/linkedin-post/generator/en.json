@@ -97,11 +97,6 @@
     }
   },
   "preview": {
-    "idle": {
-      "headline": "Your sample will appear here.",
-      "body": "Fill in the fields on the left. We build hook, image and caption.",
-      "stepLabel": "Step"
-    },
     "loading": {
       "headline": "We're building your sample …",
       "body": "Hook, structure and layout are being set.",

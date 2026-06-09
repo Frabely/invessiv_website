@@ -76,12 +76,6 @@ export type LinkedInPostGeneratorLeadCaptureCopy = {
   };
 };
 
-export type LinkedInPostGeneratorPreviewIdleCopy = {
-  headline: string;
-  body: string;
-  stepLabel: string;
-};
-
 export type LinkedInPostGeneratorPreviewLoadingCopy = {
   headline: string;
   body: string;
@@ -146,7 +140,6 @@ export type LinkedInPostGeneratorPreviewLimitReachedCopy = {
 };
 
 export type LinkedInPostGeneratorPreviewCopy = {
-  idle: LinkedInPostGeneratorPreviewIdleCopy;
   loading: LinkedInPostGeneratorPreviewLoadingCopy;
   success: LinkedInPostGeneratorPreviewSuccessCopy;
   limitReached: LinkedInPostGeneratorPreviewLimitReachedCopy;

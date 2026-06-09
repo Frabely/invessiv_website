@@ -14,7 +14,10 @@ import {
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
-import type { GeneratorState } from "@/common/contracts/generator/generator-state";
+import type {
+  GeneratorState,
+  GeneratorUsageLimit,
+} from "@/common/contracts/generator/generator-state";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import { LINKEDIN_POST_GENERATOR_INITIAL_VALUES } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import type { ProjectOfferSyncDetail } from "@/common/contracts/marketing/project-offer-sync-detail";
@@ -30,6 +33,16 @@ import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids"
 import styles from "./generator-section.module.css";
 
 const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
+
+const GeneratorSectionLayout = {
+  Initial: "initial",
+  Split: "split",
+  Limit: "limit",
+  Result: "result",
+} as const;
+
+type GeneratorSectionLayout =
+  (typeof GeneratorSectionLayout)[keyof typeof GeneratorSectionLayout];
 
 type GeneratorSectionProps = {
   id: string;
@@ -49,30 +62,26 @@ export function GeneratorSection({
     () => LINKEDIN_POST_GENERATOR_INITIAL_VALUES,
   );
   const [errors, setErrors] = useState<GeneratorFieldErrors>({});
-  const [state, setState] = useState<GeneratorState>({ kind: "idle" });
+  const [state, setState] = useState<GeneratorState | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const [hasCopied, setHasCopied] = useState(false);
+  const [usageLimit, setUsageLimit] = useState<GeneratorUsageLimit | undefined>(
+    undefined,
+  );
   const [leadIdentity, setLeadIdentity] =
     useState<LeadIdentity>(EMPTY_LEAD_IDENTITY);
   const formSlotRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const workbenchRef = useRef<HTMLDivElement | null>(null);
 
-  const usageLimit =
-    state.kind === GeneratorStateKind.Success ||
-    state.kind === GeneratorStateKind.LimitReached ||
-    state.kind === GeneratorStateKind.Error
-      ? state.usageLimit
-      : undefined;
-
   useEffect(() => {
-    if (state.kind !== GeneratorStateKind.Loading) {
+    if (state?.kind !== GeneratorStateKind.Loading) {
       return;
     }
     const totalSteps = content.preview.loading.steps.length;
     const interval = window.setInterval(() => {
       setState((current) => {
-        if (current.kind !== GeneratorStateKind.Loading) {
+        if (current?.kind !== GeneratorStateKind.Loading) {
           return current;
         }
         const nextIndex = Math.min(current.stepIndex + 1, totalSteps - 1);
@@ -80,13 +89,13 @@ export function GeneratorSection({
       });
     }, 320);
     return () => window.clearInterval(interval);
-  }, [content.preview.loading.steps.length, state.kind]);
+  }, [content.preview.loading.steps.length, state?.kind]);
 
   useEffect(() => {
     if (
-      state.kind !== GeneratorStateKind.Success &&
-      state.kind !== GeneratorStateKind.LimitReached &&
-      state.kind !== GeneratorStateKind.Error
+      state?.kind !== GeneratorStateKind.Success &&
+      state?.kind !== GeneratorStateKind.LimitReached &&
+      state?.kind !== GeneratorStateKind.Error
     ) {
       return;
     }
@@ -95,7 +104,7 @@ export function GeneratorSection({
       behavior: "smooth",
       block: "nearest",
     });
-  }, [state.kind]);
+  }, [state?.kind]);
 
   useEffect(() => {
     const formSlot = formSlotRef.current;
@@ -147,6 +156,8 @@ export function GeneratorSection({
   }
 
   function handleRequestNewPost() {
+    setState(null);
+    setHasCopied(false);
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -222,8 +233,8 @@ export function GeneratorSection({
     emitAnalytics(GeneratorAnalyticsEvent.SubmitAttempt);
 
     if (values.company.trim() !== "") {
-      // Honeypot — silently no-op
-      setState({ kind: GeneratorStateKind.Idle });
+      // Honeypot — silently no-op (return to the initial, preview-less state)
+      setState(null);
       return;
     }
 
@@ -246,6 +257,10 @@ export function GeneratorSection({
         reason: GeneratorErrorReason.Network,
       });
       return;
+    }
+
+    if (result.usageLimit) {
+      setUsageLimit(result.usageLimit);
     }
 
     if (!result.ok) {
@@ -281,6 +296,17 @@ export function GeneratorSection({
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }
 
+  const layout: GeneratorSectionLayout = !state
+    ? GeneratorSectionLayout.Initial
+    : state.kind === GeneratorStateKind.LimitReached
+      ? GeneratorSectionLayout.Limit
+      : state.kind === GeneratorStateKind.Success
+        ? GeneratorSectionLayout.Result
+        : GeneratorSectionLayout.Split;
+  const showForm =
+    layout === GeneratorSectionLayout.Initial ||
+    layout === GeneratorSectionLayout.Split;
+
   return (
     <section className={styles.section} id={id}>
       <header className={styles.intro}>
@@ -289,34 +315,38 @@ export function GeneratorSection({
         <p className={styles.body}>{content.body}</p>
       </header>
 
-      <div className={styles.workbench} ref={workbenchRef}>
-        <div className={styles.formSlot} ref={formSlotRef}>
-          <GeneratorForm
-            content={content}
-            errors={errors}
-            fieldIds={fieldIds}
-            isSubmitting={state.kind === GeneratorStateKind.Loading}
-            locale={locale}
-            onChange={handleFieldChange}
-            onSubmit={handleSubmit}
-            usageLimit={usageLimit}
-            values={values}
-          />
-        </div>
+      <div className={styles.workbench} data-layout={layout} ref={workbenchRef}>
+        {showForm ? (
+          <div className={styles.formSlot} ref={formSlotRef}>
+            <GeneratorForm
+              content={content}
+              errors={errors}
+              fieldIds={fieldIds}
+              isSubmitting={state?.kind === GeneratorStateKind.Loading}
+              locale={locale}
+              onChange={handleFieldChange}
+              onSubmit={handleSubmit}
+              usageLimit={usageLimit}
+              values={values}
+            />
+          </div>
+        ) : null}
 
-        <div className={styles.previewSlot} ref={previewRef}>
-          <PreviewPanel
-            content={content}
-            followUpHref={LINKEDIN_POST_SECTION_HREFS.contact}
-            hasCopied={hasCopied}
-            locale={locale}
-            onCopyCaption={handleCopyCaption}
-            onLeadIdentityChange={setLeadIdentity}
-            onRequestNewPost={handleRequestNewPost}
-            onRequestCustomWorkflow={handleRequestCustomWorkflow}
-            state={state}
-          />
-        </div>
+        {state ? (
+          <div className={styles.previewSlot} ref={previewRef}>
+            <PreviewPanel
+              content={content}
+              followUpHref={LINKEDIN_POST_SECTION_HREFS.contact}
+              hasCopied={hasCopied}
+              locale={locale}
+              onCopyCaption={handleCopyCaption}
+              onLeadIdentityChange={setLeadIdentity}
+              onRequestNewPost={handleRequestNewPost}
+              onRequestCustomWorkflow={handleRequestCustomWorkflow}
+              state={state}
+            />
+          </div>
+        ) : null}
       </div>
     </section>
   );

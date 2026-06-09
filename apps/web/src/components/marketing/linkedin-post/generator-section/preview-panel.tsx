@@ -30,9 +30,6 @@ export function PreviewPanel({
   onRequestCustomWorkflow,
   state,
 }: PreviewPanelProps) {
-  if (state.kind === GeneratorStateKind.Idle) {
-    return <IdlePreview label={content.preview.idle.headline} />;
-  }
   if (state.kind === GeneratorStateKind.Loading) {
     return <LoadingPreview content={content} stepIndex={state.stepIndex} />;
   }
@@ -67,30 +64,6 @@ export function PreviewPanel({
       onRequestNewPost={onRequestNewPost}
       onRequestCustomWorkflow={onRequestCustomWorkflow}
     />
-  );
-}
-
-function IdlePreview({ label }: { label: string }) {
-  return (
-    <div className={styles.preview} data-state="idle">
-      <div aria-hidden="true" className={styles.skeletonCard}>
-        <div className={styles.skeletonAuthorRow}>
-          <span className={styles.skeletonAvatar} />
-          <div className={styles.skeletonMeta}>
-            <span className={`${styles.skeletonBar} ${styles.skeletonName}`} />
-            <span className={`${styles.skeletonBar} ${styles.skeletonRole}`} />
-          </div>
-        </div>
-        <div className={styles.skeletonCaptionBlock}>
-          <span className={styles.skeletonBar} />
-          <span className={styles.skeletonBar} />
-          <span className={styles.skeletonBar} />
-        </div>
-        <div className={styles.skeletonImage}>
-          <span className={styles.skeletonImageLabel}>{label}</span>
-        </div>
-      </div>
-    </div>
   );
 }
 

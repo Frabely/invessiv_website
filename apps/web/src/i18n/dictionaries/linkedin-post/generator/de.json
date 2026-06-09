@@ -97,11 +97,6 @@
     }
   },
   "preview": {
-    "idle": {
-      "headline": "Hier erscheint dein Beispiel.",
-      "body": "Füll die Felder links aus. Wir bauen Hook, Bild und Caption.",
-      "stepLabel": "Schritt"
-    },
     "loading": {
       "headline": "Wir bauen dein Beispiel …",
       "body": "Hook, Struktur und Layout werden jetzt gesetzt.",

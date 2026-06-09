@@ -147,11 +147,16 @@
   }
 
   .actionRail {
-    align-self: start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
     gap: 0.8rem;
   }
 
   .followUpCard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     gap: 0.42rem;
     padding: 0.85rem 0.9rem 0.95rem;
     border-color: color-mix(
@@ -161,6 +166,11 @@
     );
     background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
     box-shadow: none;
+  }
+
+  .followUpCta {
+    margin-top: auto;
+    align-self: flex-start;
   }
 
   .followUpHeadline {

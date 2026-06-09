@@ -5,7 +5,6 @@ import { GeneratorStateKind } from "@/common/constants";
 describe("GeneratorStateKind", () => {
   it("exposes the exact state discriminants", () => {
     expect(GeneratorStateKind).toEqual({
-      Idle: "idle",
       Loading: "loading",
       Success: "success",
       LimitReached: "limit_reached",

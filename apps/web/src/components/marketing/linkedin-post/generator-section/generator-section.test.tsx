@@ -116,9 +116,14 @@ afterEach(() => {
 });
 
 describe("GeneratorSection", () => {
-  it("renders the idle preview skeleton by default", () => {
+  it("renders only the form and no preview in the initial state", () => {
     const { container } = renderSection();
-    expect(container.querySelector('[data-state="idle"]')).toBeTruthy();
+    expect(
+      container.querySelector(
+        '[data-state="loading"], [data-state="success"], [data-state="error"], [data-state="limit-reached"]',
+      ),
+    ).toBeNull();
+    expect(container.querySelector('[data-layout="initial"]')).toBeTruthy();
   });
 
   it("shows the idle usage hint before the first run", () => {
@@ -253,7 +258,7 @@ describe("GeneratorSection", () => {
     ).toBeTruthy();
   });
 
-  it("keeps the generated post visible and scrolls to the generator when the new-post action is used", async () => {
+  it("returns to the generator form when the new-post action is used", async () => {
     renderSection();
     fillValidValues();
     clickSubmit();
@@ -270,12 +275,15 @@ describe("GeneratorSection", () => {
       screen.getByRole("button", { name: content.leadCapture.newPostAction }),
     );
 
+    // The success preview is replaced by the form again.
     expect(
-      screen.getByRole("button", {
+      screen.queryByRole("button", {
         name: content.preview.success.copyCaption,
       }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: content.form.submit }),
     ).toBeTruthy();
-    expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
     expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
       behavior: "smooth",
       block: "start",
@@ -331,7 +339,7 @@ describe("GeneratorSection", () => {
     vi.unstubAllGlobals();
   });
 
-  it("shows the remaining usage in the meter after a successful run", async () => {
+  it("shows the remaining usage in the meter after returning to the generator", async () => {
     const submit = vi.fn<SubmitGenerator>(async () => ({
       ok: true,
       caption: "Kurz-Caption.",
@@ -351,8 +359,20 @@ describe("GeneratorSection", () => {
     clickSubmit();
 
     await waitFor(() => {
-      expect(screen.getByText("Noch 1 von 2 Tests")).toBeTruthy();
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
     });
+
+    // The meter lives in the form, which is hidden during success — it returns
+    // (with the consumed test reflected) after "Neuen Post generieren".
+    fireEvent.click(
+      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+    );
+
+    expect(screen.getByText("Noch 1 von 2 Tests")).toBeTruthy();
   });
 
   it("renders the conversion-oriented limit preview on a 429, not an error", async () => {
@@ -384,7 +404,7 @@ describe("GeneratorSection", () => {
     expect(container.querySelector('[data-state="error"]')).toBeNull();
   });
 
-  it("disables the generate button once no free tests remain", async () => {
+  it("hides the form once no free tests remain", async () => {
     const submit: SubmitGenerator = async () => ({
       ok: false as const,
       code: "usage_limit_reached",
@@ -404,10 +424,11 @@ describe("GeneratorSection", () => {
         screen.getByText(content.preview.limitReached.headline),
       ).toBeTruthy();
     });
-    const submitButton = screen.getByRole("button", {
-      name: content.form.submit,
-    }) as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(true);
+    // The generator form (and its submit button) is removed entirely — there is
+    // nothing left to generate, only the conversion-oriented limit panel.
+    expect(
+      screen.queryByRole("button", { name: content.form.submit }),
+    ).toBeNull();
   });
 
   it("renders the error state when submit returns ok:false", async () => {
