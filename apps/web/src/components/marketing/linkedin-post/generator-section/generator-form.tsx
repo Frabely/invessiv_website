@@ -19,7 +19,6 @@ type GeneratorFormProps = {
   content: LinkedInPostGeneratorContent;
   errors: GeneratorFieldErrors;
   fieldIds: GeneratorFieldIds;
-  isSubmitting: boolean;
   locale: Locale;
   onChange: <K extends keyof LinkedInPostGeneratorFormValues>(
     key: K,
@@ -39,7 +38,6 @@ export function GeneratorForm({
   content,
   errors,
   fieldIds,
-  isSubmitting,
   locale,
   onChange,
   onSubmit,
@@ -178,17 +176,11 @@ export function GeneratorForm({
         data-analytics-location="generator_form"
         data-analytics-target="generator"
         data-analytics-variant="primary"
-        disabled={isSubmitting || hasReachedLimit}
+        disabled={hasReachedLimit}
         type="submit"
       >
-        {isSubmitting ? content.form.submitLoading : content.form.submit}
+        {content.form.submit}
       </PrimaryCtaButton>
-
-      {isSubmitting ? (
-        <p className={styles.loadingHelp} role="status">
-          {content.form.loadingHelp}
-        </p>
-      ) : null}
     </form>
   );
 }

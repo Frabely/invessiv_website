@@ -1,11 +1,18 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
+import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
 import { LimitReachedPreview } from "./limit-reached-preview/limit-reached-preview";
-import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
-import styles from "./preview-panel.module.css";
+import { ErrorPreview } from "./error-preview/error-preview";
+
+// Loading is rendered in-generator (GeneratingPanel), never here, so the preview
+// only ever carries the resolved states.
+type PreviewState = Exclude<
+  GeneratorState,
+  { kind: typeof GeneratorStateKind.Loading }
+>;
 
 type PreviewPanelProps = {
   content: LinkedInPostGeneratorContent;
@@ -16,9 +23,10 @@ type PreviewPanelProps = {
   onLeadIdentityChange: (identity: LeadIdentity) => void;
   onRequestNewPost: () => void;
   onRequestCustomWorkflow: () => void;
-  state: GeneratorState;
+  state: PreviewState;
 };
 
+/** Routes a resolved generator state to its dedicated preview component. */
 export function PreviewPanel({
   content,
   followUpHref,
@@ -30,98 +38,37 @@ export function PreviewPanel({
   onRequestCustomWorkflow,
   state,
 }: PreviewPanelProps) {
-  if (state.kind === GeneratorStateKind.Loading) {
-    return <LoadingPreview content={content} stepIndex={state.stepIndex} />;
+  switch (state.kind) {
+    case GeneratorStateKind.LimitReached:
+      return (
+        <LimitReachedPreview
+          content={content.preview.limitReached}
+          followUpHref={followUpHref}
+          locale={locale}
+          onRequestCustomWorkflow={onRequestCustomWorkflow}
+          usageLimit={state.usageLimit}
+        />
+      );
+    case GeneratorStateKind.Error:
+      return <ErrorPreview content={content} />;
+    case GeneratorStateKind.Success:
+      return (
+        <SuccessPreview
+          caption={state.caption}
+          content={content}
+          hasCopied={hasCopied}
+          authorName={state.post.authorName}
+          expertiseDisplay={state.post.expertiseDisplay}
+          postTitle={state.post.headlinePlain}
+          previewHtml={state.previewHtml}
+          followUpHref={followUpHref}
+          locale={locale}
+          deliveryToken={state.deliveryToken}
+          onCopyCaption={onCopyCaption}
+          onLeadIdentityChange={onLeadIdentityChange}
+          onRequestNewPost={onRequestNewPost}
+          onRequestCustomWorkflow={onRequestCustomWorkflow}
+        />
+      );
   }
-  if (state.kind === GeneratorStateKind.LimitReached) {
-    return (
-      <LimitReachedPreview
-        content={content.preview.limitReached}
-        followUpHref={followUpHref}
-        locale={locale}
-        onRequestCustomWorkflow={onRequestCustomWorkflow}
-        usageLimit={state.usageLimit}
-      />
-    );
-  }
-  if (state.kind === GeneratorStateKind.Error) {
-    return <ErrorPreview content={content} />;
-  }
-  return (
-    <SuccessPreview
-      caption={state.caption}
-      content={content}
-      hasCopied={hasCopied}
-      authorName={state.post.authorName}
-      expertiseDisplay={state.post.expertiseDisplay}
-      postTitle={state.post.headlinePlain}
-      previewHtml={state.previewHtml}
-      followUpHref={followUpHref}
-      locale={locale}
-      deliveryToken={state.deliveryToken}
-      onCopyCaption={onCopyCaption}
-      onLeadIdentityChange={onLeadIdentityChange}
-      onRequestNewPost={onRequestNewPost}
-      onRequestCustomWorkflow={onRequestCustomWorkflow}
-    />
-  );
-}
-
-function LoadingPreview({
-  content,
-  stepIndex,
-}: {
-  content: LinkedInPostGeneratorContent;
-  stepIndex: number;
-}) {
-  const { loading } = content.preview;
-  return (
-    <div className={styles.preview} data-state="loading">
-      <div className={styles.previewFrame}>
-        <span aria-hidden="true" className={styles.skeletonShimmer} />
-        <div className={styles.previewBody}>
-          <p className={styles.previewMark} aria-hidden="true">
-            ⌗ 0{stepIndex + 1}/0{loading.steps.length}
-          </p>
-          <h3 className={styles.previewHeadline}>{loading.headline}</h3>
-          <p className={styles.previewCopy}>{loading.body}</p>
-          <ol aria-live="polite" className={styles.stepsList}>
-            {loading.steps.map((step, index) => (
-              <li
-                className={styles.stepItem}
-                data-status={
-                  index < stepIndex
-                    ? "done"
-                    : index === stepIndex
-                      ? "active"
-                      : "pending"
-                }
-                key={step}
-              >
-                <span aria-hidden="true" className={styles.stepDot} />
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ErrorPreview({ content }: { content: LinkedInPostGeneratorContent }) {
-  const { error } = content.preview;
-  return (
-    <div className={styles.preview} data-state="error" role="alert">
-      <div className={styles.previewFrame}>
-        <div className={styles.previewBody}>
-          <p className={styles.previewMark} aria-hidden="true">
-            ⌗ ERROR
-          </p>
-          <h3 className={styles.previewHeadline}>{error.headline}</h3>
-          <p className={styles.previewCopy}>{error.body}</p>
-        </div>
-      </div>
-    </div>
-  );
 }

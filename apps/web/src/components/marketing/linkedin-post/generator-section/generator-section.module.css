@@ -50,14 +50,17 @@
 }
 
 /* Single-column, centered layout for the states that show only one panel:
-   the initial form, the success result, and the limit-reached panel. */
+   the initial form, the in-generator loading panel, the success result, and the
+   limit-reached panel. */
 .workbench[data-layout="initial"],
+.workbench[data-layout="loading"],
 .workbench[data-layout="result"],
 .workbench[data-layout="limit"] {
   justify-items: center;
 }
 
 .workbench[data-layout="initial"] .formSlot,
+.workbench[data-layout="loading"] .formSlot,
 .workbench[data-layout="limit"] .previewSlot {
   width: 100%;
   max-width: 38rem;

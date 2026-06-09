@@ -11,6 +11,7 @@ import {
   GeneratorAnalyticsEvent,
   GeneratorErrorReason,
 } from "@/common/constants/generator/generator-analytics";
+import { GeneratorSectionLayout } from "@/common/constants/generator/generator-section-layout";
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
@@ -28,21 +29,20 @@ import { LINKEDIN_POST_SECTION_HREFS } from "@/config/navigation/linkedin-post";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { GeneratorForm } from "./generator-form";
+import { GeneratingPanel } from "./generating-panel/generating-panel";
 import { PreviewPanel } from "./preview-panel";
 import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-section.module.css";
 
 const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
 
-const GeneratorSectionLayout = {
-  Initial: "initial",
-  Split: "split",
-  Limit: "limit",
-  Result: "result",
-} as const;
-
-type GeneratorSectionLayout =
-  (typeof GeneratorSectionLayout)[keyof typeof GeneratorSectionLayout];
+const LAYOUT_BY_STATE_KIND: Record<GeneratorStateKind, GeneratorSectionLayout> =
+  {
+    [GeneratorStateKind.Loading]: GeneratorSectionLayout.Loading,
+    [GeneratorStateKind.LimitReached]: GeneratorSectionLayout.Limit,
+    [GeneratorStateKind.Success]: GeneratorSectionLayout.Result,
+    [GeneratorStateKind.Error]: GeneratorSectionLayout.Split,
+  };
 
 type GeneratorSectionProps = {
   id: string;
@@ -273,11 +273,7 @@ export function GeneratorSection({
           usageLimit: result.usageLimit,
         });
       } else {
-        setState({
-          kind: GeneratorStateKind.Error,
-          code: result.code,
-          usageLimit: result.usageLimit,
-        });
+        setState({ kind: GeneratorStateKind.Error });
       }
       emitAnalytics(GeneratorAnalyticsEvent.Error, { reason: result.code });
       return;
@@ -287,25 +283,21 @@ export function GeneratorSection({
       kind: GeneratorStateKind.Success,
       post: result.post,
       caption: result.caption,
-      downloadFileName: result.downloadFileName,
-      imageDataUrl: result.imageDataUrl,
       previewHtml: result.previewHtml,
-      usageLimit: result.usageLimit,
       deliveryToken: result.deliveryToken,
     });
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }
 
-  const layout: GeneratorSectionLayout = !state
-    ? GeneratorSectionLayout.Initial
-    : state.kind === GeneratorStateKind.LimitReached
-      ? GeneratorSectionLayout.Limit
-      : state.kind === GeneratorStateKind.Success
-        ? GeneratorSectionLayout.Result
-        : GeneratorSectionLayout.Split;
-  const showForm =
-    layout === GeneratorSectionLayout.Initial ||
-    layout === GeneratorSectionLayout.Split;
+  const layout = state
+    ? LAYOUT_BY_STATE_KIND[state.kind]
+    : GeneratorSectionLayout.Initial;
+  const loadingState =
+    state?.kind === GeneratorStateKind.Loading ? state : null;
+  const previewState =
+    state && state.kind !== GeneratorStateKind.Loading ? state : null;
+  const showFormSlot =
+    !previewState || previewState.kind === GeneratorStateKind.Error;
 
   return (
     <section className={styles.section} id={id}>
@@ -316,23 +308,29 @@ export function GeneratorSection({
       </header>
 
       <div className={styles.workbench} data-layout={layout} ref={workbenchRef}>
-        {showForm ? (
+        {showFormSlot ? (
           <div className={styles.formSlot} ref={formSlotRef}>
-            <GeneratorForm
-              content={content}
-              errors={errors}
-              fieldIds={fieldIds}
-              isSubmitting={state?.kind === GeneratorStateKind.Loading}
-              locale={locale}
-              onChange={handleFieldChange}
-              onSubmit={handleSubmit}
-              usageLimit={usageLimit}
-              values={values}
-            />
+            {loadingState ? (
+              <GeneratingPanel
+                content={content}
+                stepIndex={loadingState.stepIndex}
+              />
+            ) : (
+              <GeneratorForm
+                content={content}
+                errors={errors}
+                fieldIds={fieldIds}
+                locale={locale}
+                onChange={handleFieldChange}
+                onSubmit={handleSubmit}
+                usageLimit={usageLimit}
+                values={values}
+              />
+            )}
           </div>
         ) : null}
 
-        {state ? (
+        {previewState ? (
           <div className={styles.previewSlot} ref={previewRef}>
             <PreviewPanel
               content={content}
@@ -343,7 +341,7 @@ export function GeneratorSection({
               onLeadIdentityChange={setLeadIdentity}
               onRequestNewPost={handleRequestNewPost}
               onRequestCustomWorkflow={handleRequestCustomWorkflow}
-              state={state}
+              state={previewState}
             />
           </div>
         ) : null}

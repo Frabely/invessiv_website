@@ -19,18 +19,11 @@ export type GeneratorState =
       kind: typeof GeneratorStateKind.Success;
       post: LinkedInPostGeneratorPostDto;
       caption: string;
-      downloadFileName: string;
       previewHtml: string;
-      imageDataUrl: string | null;
-      usageLimit?: GeneratorUsageLimit;
       deliveryToken?: string;
     }
   | {
       kind: typeof GeneratorStateKind.LimitReached;
       usageLimit: GeneratorUsageLimit;
     }
-  | {
-      kind: typeof GeneratorStateKind.Error;
-      code?: string;
-      usageLimit?: GeneratorUsageLimit;
-    };
+  | { kind: typeof GeneratorStateKind.Error };

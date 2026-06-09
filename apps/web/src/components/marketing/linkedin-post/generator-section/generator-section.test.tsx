@@ -199,12 +199,17 @@ describe("GeneratorSection", () => {
     fillValidValues();
     clickSubmit();
 
+    // Loading is now visualised in-generator (the right preview falls away):
+    // the form is replaced by the compact generating panel, so there is no
+    // submit button while a post is being built.
     await waitFor(() => {
       expect(screen.getByText(content.preview.loading.headline)).toBeTruthy();
     });
+    expect(screen.getByRole("status")).toBeTruthy();
+    expect(screen.getByText(content.preview.loading.body)).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: content.form.submitLoading }),
-    ).toBeTruthy();
+      screen.queryByRole("button", { name: content.form.submit }),
+    ).toBeNull();
 
     resolveSubmit!({
       ok: true,
