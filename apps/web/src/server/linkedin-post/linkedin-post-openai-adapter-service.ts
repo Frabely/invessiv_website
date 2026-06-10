@@ -142,7 +142,7 @@ function createPrompt(
   ].join("\n");
 }
 
-function createOpenAIContentSchema() {
+function adaptOpenAIContentSchema() {
   const parsedSchema = JsonObjectSchema.safeParse(contentSchema);
   if (!parsedSchema.success) {
     throw new LinkedInPostGenerationError(
@@ -167,6 +167,13 @@ function createOpenAIContentSchema() {
   }
 
   return parsedAdaptedSchema.data;
+}
+
+let memoizedOpenAIContentSchema: JsonObject | null = null;
+
+function createOpenAIContentSchema() {
+  memoizedOpenAIContentSchema ??= adaptOpenAIContentSchema();
+  return memoizedOpenAIContentSchema;
 }
 
 function removeUnsupportedOpenAISchemaKeywords(value: unknown): unknown {
@@ -255,6 +262,8 @@ async function callOpenAI(
   model: string,
   template: GeneratorTemplate,
 ): Promise<GeneratedContent> {
+  const openAIContentSchema = createOpenAIContentSchema();
+
   let response: unknown;
   try {
     response = await client.create({
@@ -279,7 +288,7 @@ async function callOpenAI(
       text: {
         format: {
           name: LINKEDIN_POST_OPENAI_SCHEMA_NAME,
-          schema: createOpenAIContentSchema(),
+          schema: openAIContentSchema,
           strict: true,
           type: "json_schema",
         },
