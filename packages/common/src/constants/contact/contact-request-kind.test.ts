@@ -10,14 +10,17 @@ describe("CONTACT_REQUEST_KIND", () => {
       DiscoveryCall: "discovery_call",
       ProjectRequest: "project_request",
       QuickContact: "quick_contact",
-      LinkedInPostDelivery: "linkedin_post_delivery",
     });
   });
 });
 
 describe("CONTACT_REQUEST_KINDS", () => {
-  it("contains the LinkedIn-post delivery channel without duplicates", () => {
-    expect(CONTACT_REQUEST_KINDS).toContain("linkedin_post_delivery");
+  it("contains the active contact request channels without duplicates", () => {
+    expect(CONTACT_REQUEST_KINDS).toEqual([
+      "project_request",
+      "quick_contact",
+      "discovery_call",
+    ]);
     expect(new Set(CONTACT_REQUEST_KINDS).size).toBe(
       CONTACT_REQUEST_KINDS.length,
     );

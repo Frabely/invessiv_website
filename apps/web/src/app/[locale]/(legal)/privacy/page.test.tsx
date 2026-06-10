@@ -103,7 +103,7 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" }),
     ).toBeTruthy();
-    expect(screen.getByText("Zuletzt geändert: 29. April 2026.")).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 10. Juni 2026.")).toBeTruthy();
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.getByText("Inhaber: Moritz Hecht")).toBeTruthy();
     expect(screen.queryByText("Moritz Hecht – Invessiv")).toBeNull();

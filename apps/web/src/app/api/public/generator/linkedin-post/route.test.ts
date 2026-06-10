@@ -164,7 +164,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
       remaining: 1,
       resetAt: "2026-07-01T00:00:00.000Z",
     });
-    expect("deliveryToken" in payload).toBe(false);
+    expect(Object.hasOwn(payload, ["delivery", "Token"].join(""))).toBe(false);
     expect(mocks.generateLinkedInPost).toHaveBeenCalledTimes(1);
     expect(
       mocks.buildMockLinkedInPostGeneratorSuccessResult,

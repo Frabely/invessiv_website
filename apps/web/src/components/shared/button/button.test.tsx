@@ -39,7 +39,7 @@ describe("shared button", () => {
           Leistungen ansehen
         </ButtonLink>
         <ButtonControl type="button" variant="ghost">
-          Zurueck
+          Zurück
         </ButtonControl>
       </>,
     );
@@ -50,10 +50,10 @@ describe("shared button", () => {
     expect(
       screen.getByRole("link", { name: "Leistungen ansehen" }).className,
     ).toContain("ghost");
-    expect(screen.getByRole("button", { name: "Zurueck" }).className).toContain(
+    expect(screen.getByRole("button", { name: "Zurück" }).className).toContain(
       "button",
     );
-    expect(screen.getByRole("button", { name: "Zurueck" }).className).toContain(
+    expect(screen.getByRole("button", { name: "Zurück" }).className).toContain(
       "ghost",
     );
   });

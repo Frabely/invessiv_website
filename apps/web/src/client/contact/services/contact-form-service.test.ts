@@ -27,7 +27,7 @@ describe("contact-form-service", () => {
         kind: "project_request",
         locale: "de",
         offerKey: "landing",
-        projectDetails: "Landingpage fuer qualifizierte Leads.",
+        projectDetails: "Landingpage für qualifizierte Leads.",
         startedAt: "2026-04-09T10:00:00.000Z",
       },
       {
@@ -46,7 +46,7 @@ describe("contact-form-service", () => {
           kind: "project_request",
           locale: "de",
           offerKey: "landing",
-          projectDetails: "Landingpage fuer qualifizierte Leads.",
+          projectDetails: "Landingpage für qualifizierte Leads.",
           startedAt: "2026-04-09T10:00:00.000Z",
         }),
         headers: {
@@ -74,7 +74,7 @@ describe("contact-form-service", () => {
         displayName: "Max Mustermann",
         kind: CONTACT_REQUEST_KIND.QuickContact,
         locale: "de",
-        message: "Wir brauchen eine kurze Einschaetzung.",
+        message: "Wir brauchen eine kurze Einschätzung.",
       },
       {
         submitPath: WebApiEndpoint.ContactSubmit,
@@ -91,7 +91,7 @@ describe("contact-form-service", () => {
           displayName: "Max Mustermann",
           kind: CONTACT_REQUEST_KIND.QuickContact,
           locale: "de",
-          message: "Wir brauchen eine kurze Einschaetzung.",
+          message: "Wir brauchen eine kurze Einschätzung.",
         }),
         headers: {
           "Content-Type": "application/json",

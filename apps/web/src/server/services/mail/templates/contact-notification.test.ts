@@ -20,7 +20,7 @@ describe("createContactNotificationMessage", () => {
       offerKey: CONTACT_OFFER_KEY.Landing,
       pageKeys: [CONTACT_PAGE_KEY.Home, CONTACT_PAGE_KEY.Contact],
       projectDetails:
-        "Eine Landingpage fuer qualifizierte Anfragen mit klarem Anfrageweg.",
+        "Eine Landingpage für qualifizierte Anfragen mit klarem Anfrageweg.",
       startedAt: "2026-03-20T10:00:00.000Z",
     });
     const legacyWebMessage = await createContactNotificationMessage({

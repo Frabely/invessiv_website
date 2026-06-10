@@ -293,7 +293,7 @@ describe("DiscoveryCallPanel", () => {
     render(
       <DiscoveryCallPanel
         channel={{
-          actionLabel: "Termin wÃ¤hlen",
+          actionLabel: "Termin wählen",
           href: "https://calendly.com/service-invessiv-cxf5/30min",
           label: "Kennenlern-Call",
           mode: "call",
@@ -301,20 +301,20 @@ describe("DiscoveryCallPanel", () => {
         }}
         formCopy={{
           title: "Kennenlern-Call",
-          subtitle: "FÃ¼r direkte Abstimmung mit etwas Kontext vor dem Termin.",
-          intro: "Name und E-Mail werden in Calendly vorbefÃ¼llt.",
+          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
+          intro: "Name und E-Mail werden in Calendly vorbefüllt.",
           nameLabel: "Name",
           emailLabel: "E-Mail",
           messageLabel: "Anliegen",
           messagePlaceholder: "Optionales Anliegen",
-          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemÃ¤ÃŸ",
-          privacyLabel: "DatenschutzerklÃ¤rung zu.",
-          submitLabel: "Termin wÃ¤hlen",
-          submittingLabel: "Wird geÃ¶ffnet",
-          submitSuccess: "Calendly wird geÃ¶ffnet",
+          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
+          privacyLabel: "Datenschutzerklärung zu.",
+          submitLabel: "Termin wählen",
+          submittingLabel: "Wird geöffnet",
+          submitSuccess: "Calendly wird geöffnet",
           submitErrorRateLimited: "Zu viele Anfragen",
           submitErrorGeneric: "Allgemeiner Fehler",
-          fieldErrorInvalidEmail: "UngÃ¼ltige E-Mail",
+          fieldErrorInvalidEmail: "Ungültige E-Mail",
           fieldErrorRequired: "Pflichtfeld",
           fieldErrorConsentRequired: "Zustimmung erforderlich",
           requiredHint: "* Pflichtfelder",
@@ -329,7 +329,7 @@ describe("DiscoveryCallPanel", () => {
     fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
       target: { value: "max@example.com" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Termin wÃ¤hlen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Termin wählen" }));
 
     await waitFor(() => {
       expect(screen.getByText("Zustimmung erforderlich")).toBeTruthy();

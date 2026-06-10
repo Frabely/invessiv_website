@@ -15,7 +15,7 @@ const basePayload = {
   kind: CONTACT_REQUEST_KIND.ProjectRequest,
   locale: "de",
   projectDetails:
-    "Eine Projektanfrage mit ausreichend Kontext fuer die erste Einschaetzung.",
+    "Eine Projektanfrage mit ausreichend Kontext für die erste Einschätzung.",
   startedAt: "2026-03-20T10:00:00.000Z",
 };
 
