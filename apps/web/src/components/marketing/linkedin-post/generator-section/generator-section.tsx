@@ -35,7 +35,7 @@ import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids"
 import styles from "./generator-section.module.css";
 
 const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
-const MOBILE_SUCCESS_SCROLL_QUERY = "(max-width: 719px)";
+const MOBILE_GENERATOR_SCROLL_QUERY = "(max-width: 719px)";
 
 const LAYOUT_BY_STATE_KIND: Record<GeneratorStateKind, GeneratorSectionLayout> =
   {
@@ -93,6 +93,16 @@ export function GeneratorSection({
   }, [content.preview.loading.steps.length, state?.kind]);
 
   useEffect(() => {
+    if (state?.kind === GeneratorStateKind.Loading) {
+      if (window.matchMedia?.(MOBILE_GENERATOR_SCROLL_QUERY).matches) {
+        formSlotRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+      return;
+    }
+
     if (
       state?.kind !== GeneratorStateKind.Success &&
       state?.kind !== GeneratorStateKind.LimitReached &&
@@ -103,7 +113,7 @@ export function GeneratorSection({
 
     const shouldPinSuccessToTop =
       state.kind === GeneratorStateKind.Success &&
-      window.matchMedia?.(MOBILE_SUCCESS_SCROLL_QUERY).matches;
+      window.matchMedia?.(MOBILE_GENERATOR_SCROLL_QUERY).matches;
 
     previewRef.current?.scrollIntoView({
       behavior: "smooth",

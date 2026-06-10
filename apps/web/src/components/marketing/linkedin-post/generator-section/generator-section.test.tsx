@@ -252,6 +252,30 @@ describe("GeneratorSection", () => {
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
+  it("scrolls to the in-generator loading panel on mobile submit", async () => {
+    mockMatchMedia(true);
+    const submit = vi.fn<SubmitGenerator>(
+      () =>
+        new Promise<LinkedInPostGeneratorResult>(() => {
+          // Keep the request pending so the loading panel remains visible.
+        }),
+    );
+
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(screen.getByRole("status")).toBeTruthy();
+    });
+    await waitFor(() => {
+      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  });
+
   it("renders the generated post and action rail in the success state", async () => {
     const { container } = renderSection();
     fillValidValues();
