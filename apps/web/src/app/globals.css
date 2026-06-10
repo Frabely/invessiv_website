@@ -241,11 +241,15 @@ body {
     linear-gradient(180deg, #1d1a18 0%, #211c19 46%, #171411 100%) fixed #1d1a18;
   color: var(--color-text);
   font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  overflow-x: hidden;
 }
 
 html {
   scroll-padding-top: var(--anchor-scroll-offset);
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: clip;
 }
 
 section[id] {

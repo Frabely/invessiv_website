@@ -62,8 +62,6 @@
 
 .intro {
   grid-area: intro;
-  position: sticky;
-  top: clamp(6rem, 10vw, 8rem);
   display: grid;
   gap: clamp(0.9rem, 1.8vw, 1.35rem);
   max-width: 26rem;
@@ -203,8 +201,6 @@
   }
 
   .intro {
-    position: relative;
-    top: auto;
     max-width: min(70%, 34rem);
   }
 

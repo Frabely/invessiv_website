@@ -46,11 +46,28 @@ export function ExampleSection({
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <header className={styles.intro} data-reveal-item="true">
-        <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.body}>{body}</p>
-      </header>
+      <div className={styles.middleColumn}>
+        <header className={styles.intro} data-reveal-item="true">
+          <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.body}>{body}</p>
+        </header>
+
+        <div className={styles.ctaRow} data-reveal-item="true">
+          <p className={styles.ctaLead}>{ctaLead}</p>
+          <PrimaryCtaLink
+            aria-label={ctaAriaLabel}
+            className={styles.ctaButton}
+            data-analytics-event="cta_click"
+            data-analytics-location="example_section"
+            data-analytics-target="generator"
+            data-analytics-variant="primary"
+            href={generatorHref}
+          >
+            {ctaLabel}
+          </PrimaryCtaLink>
+        </div>
+      </div>
 
       <ul
         aria-label={samplesAriaLabel}
@@ -84,21 +101,6 @@ export function ExampleSection({
           </li>
         ))}
       </ul>
-
-      <div className={styles.ctaRow} data-reveal-item="true">
-        <p className={styles.ctaLead}>{ctaLead}</p>
-        <PrimaryCtaLink
-          aria-label={ctaAriaLabel}
-          className={styles.ctaButton}
-          data-analytics-event="cta_click"
-          data-analytics-location="example_section"
-          data-analytics-target="generator"
-          data-analytics-variant="primary"
-          href={generatorHref}
-        >
-          {ctaLabel}
-        </PrimaryCtaLink>
-      </div>
     </section>
   );
 }

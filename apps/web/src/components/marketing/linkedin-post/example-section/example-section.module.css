@@ -17,6 +17,10 @@
   display: none;
 }
 
+.middleColumn {
+  display: contents;
+}
+
 .intro {
   display: grid;
   gap: 0.65rem;
@@ -100,8 +104,8 @@
   line-height: 1.45;
 }
 
-/* CTA row */
 .ctaRow {
+  order: 1;
   display: grid;
   gap: 0.85rem;
   justify-items: stretch;
@@ -205,27 +209,27 @@
   }
 }
 
-/* Desktop: editorial 3-column layout — post | title + CTA | post.
-   The carousel wrapper dissolves (display: contents) so the two cards become
-   direct grid items flanking the centered copy. Posts shrink to the side-column
-   width, which removes the "two oversized cards" problem. */
 @media (min-width: 961px) {
   .section {
     grid-template-columns: 1fr minmax(15rem, 21rem) 1fr;
-    grid-template-areas:
-      "postLeft intro     postRight"
-      "postLeft cta       postRight";
+    grid-template-areas: "postLeft middle postRight";
     align-items: center;
     column-gap: clamp(2rem, 4vw, 4.5rem);
-    row-gap: clamp(1.25rem, 2.5vw, 2rem);
     padding-block: clamp(3.5rem, 7vw, 6rem);
     max-width: var(--max-content-width);
   }
 
+  .middleColumn {
+    display: grid;
+    grid-area: middle;
+    gap: clamp(1.25rem, 2.5vw, 2rem);
+    align-self: start;
+    position: sticky;
+    top: clamp(6.5rem, 9vw, 8rem);
+  }
+
   .intro {
-    grid-area: intro;
     justify-items: center;
-    align-self: end;
     max-width: none;
     text-align: center;
   }
@@ -239,11 +243,6 @@
   .body {
     max-width: 30rem;
     font-size: var(--font-size-body-lg);
-  }
-
-  .ctaRow {
-    grid-area: cta;
-    align-self: start;
   }
 
   .samplesGrid {

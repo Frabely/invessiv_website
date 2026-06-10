@@ -55,8 +55,6 @@
 
 /* Copy column */
 .copyColumn {
-  position: sticky;
-  top: clamp(6rem, 10vw, 8rem);
   display: grid;
   gap: clamp(0.9rem, 1.8vw, 1.35rem);
 }
@@ -208,11 +206,6 @@
     grid-template-columns: 1fr;
     gap: clamp(1.5rem, 5vw, 2.5rem);
     padding-block: clamp(2.5rem, 9vw, 4.5rem);
-  }
-
-  .copyColumn {
-    position: relative;
-    top: auto;
   }
 
   .title {
