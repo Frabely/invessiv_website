@@ -129,6 +129,10 @@ function statusForGenerationError(code: LinkedInPostGeneratorErrorCode) {
   return HttpResponseCode.InternalServerError;
 }
 
+function shouldUseLinkedInPostGeneratorMock() {
+  return process.env.LINKEDIN_POST_GENERATOR_USE_MOCK === "true";
+}
+
 async function generateLinkedInPostCommandHandler({
   contentLength,
   contentType,
@@ -217,8 +221,7 @@ async function generateLinkedInPostCommandHandler({
   }
 
   try {
-    const result = await (process.env
-      .NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK !== "false"
+    const result = await (shouldUseLinkedInPostGeneratorMock()
       ? linkedinPostGeneratorMockService.buildMockLinkedInPostGeneratorSuccessResult(
           generatorRequest,
           generatorRequest.locale,

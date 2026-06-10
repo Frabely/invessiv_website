@@ -114,7 +114,6 @@ function createRequest(body: unknown) {
 describe("POST /api/public/generator/linkedin-post", () => {
   beforeEach(() => {
     vi.resetModules();
-    vi.stubEnv("NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK", "false");
     mocks.generateLinkedInPost.mockResolvedValue(GENERATED_RESULT);
     mocks.buildMockLinkedInPostGeneratorSuccessResult.mockResolvedValue({
       ...GENERATED_RESULT,
@@ -166,10 +165,14 @@ describe("POST /api/public/generator/linkedin-post", () => {
       resetAt: "2026-07-01T00:00:00.000Z",
     });
     expect("deliveryToken" in payload).toBe(false);
+    expect(mocks.generateLinkedInPost).toHaveBeenCalledTimes(1);
+    expect(
+      mocks.buildMockLinkedInPostGeneratorSuccessResult,
+    ).not.toHaveBeenCalled();
   });
 
   it("uses the server-side mock generator without contacting OpenAI when the mock env is enabled", async () => {
-    vi.stubEnv("NEXT_PUBLIC_LINKEDIN_POST_GENERATOR_USE_MOCK", "true");
+    vi.stubEnv("LINKEDIN_POST_GENERATOR_USE_MOCK", "true");
     const { POST } = await import("./route");
     const response = await POST(
       createRequest({
@@ -194,6 +197,32 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(
       mocks.buildMockLinkedInPostGeneratorSuccessResult,
     ).toHaveBeenCalled();
+  });
+
+  it("uses OpenAI when the server-side mock env is not exactly true", async () => {
+    vi.stubEnv("LINKEDIN_POST_GENERATOR_USE_MOCK", "TRUE");
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: true,
+        displayName: "Max Mustermann",
+        email: "max@example.com",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "Pricing conversations",
+      }),
+    );
+
+    const payload = (await response.json()) as typeof GENERATED_RESULT;
+    expect(response.status).toBe(200);
+    expect(payload.ok).toBe(true);
+    expect(mocks.generateLinkedInPost).toHaveBeenCalledTimes(1);
+    expect(
+      mocks.buildMockLinkedInPostGeneratorSuccessResult,
+    ).not.toHaveBeenCalled();
   });
 
   it("blocks when the server-side usage limit is reached", async () => {
