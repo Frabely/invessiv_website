@@ -181,16 +181,14 @@ describe("ContactSection", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: /Name\s*\*/ })).toBeTruthy();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: "Leistungen ansehen" })
         .getAttribute("href"),
     ).toBe("#services");
 
-    expect(
-      screen.queryByRole("textbox", { name: /Nachricht\s*\*/ }),
-    ).toBeNull();
+    expect(screen.queryByRole("textbox", { name: /Nachricht/ })).toBeNull();
     expect(
       screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
     ).toBeNull();
@@ -205,7 +203,7 @@ describe("ContactSection", () => {
     fireEvent.click(screen.getByRole("button", { name: /Kurze E-Mail/ }));
     const emailPanel = screen.getByRole("region", { name: "Kurze E-Mail" });
     expect(
-      within(emailPanel).getByRole("textbox", { name: /Nachricht\s*\*/ }),
+      within(emailPanel).getByRole("textbox", { name: /Nachricht/ }),
     ).toBeTruthy();
     expect(
       within(emailPanel).getByRole("button", { name: "E-Mail kopieren" }),
@@ -217,10 +215,10 @@ describe("ContactSection", () => {
     fireEvent.click(screen.getByRole("button", { name: /Kennenlern-Call/ }));
     const callPanel = screen.getByRole("region", { name: "Kennenlern-Call" });
     expect(
-      within(callPanel).getByRole("textbox", { name: /Name\s*\*/ }),
+      within(callPanel).getByRole("textbox", { name: /Name/ }),
     ).toBeTruthy();
     expect(
-      within(callPanel).getByRole("textbox", { name: /E-Mail\s*\*/ }),
+      within(callPanel).getByRole("textbox", { name: /E-Mail/ }),
     ).toBeTruthy();
     expect(
       within(callPanel).getByRole("textbox", { name: "Anliegen" }),

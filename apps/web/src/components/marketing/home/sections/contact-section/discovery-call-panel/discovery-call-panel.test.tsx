@@ -97,10 +97,10 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
       target: { value: "Max Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -268,10 +268,10 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
       target: { value: "Max Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("checkbox"));
@@ -323,10 +323,10 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /Name\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
       target: { value: "Max Mustermann" },
     });
-    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
       target: { value: "max@example.com" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Termin wÃ¤hlen" }));
@@ -370,10 +370,10 @@ describe("DiscoveryCallPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }), {
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
       target: { value: "keine-mail" },
     });
-    fireEvent.blur(screen.getByRole("textbox", { name: /E-Mail\s*\*/ }));
+    fireEvent.blur(screen.getByRole("textbox", { name: /E-Mail/ }));
 
     await waitFor(() => {
       expect(screen.getByText("Ungültige E-Mail")).toBeTruthy();

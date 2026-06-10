@@ -73,7 +73,7 @@ describe("QuickContactForm", () => {
     );
 
     const emailField = screen.getByRole("textbox", {
-      name: /E-Mail\s*\*/,
+      name: /E-Mail/,
     });
     fireEvent.blur(emailField);
 

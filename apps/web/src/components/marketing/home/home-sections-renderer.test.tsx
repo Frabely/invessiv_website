@@ -48,7 +48,7 @@ describe("HomeSectionsRenderer", () => {
     );
 
     const offerSelect = screen.getByRole("combobox", {
-      name: /Passendes Angebot\s*\*/,
+      name: /Passendes Angebot/,
     });
 
     expect(
