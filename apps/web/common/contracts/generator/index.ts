@@ -1,12 +1,6 @@
 export * from "./generator-field-errors";
 export * from "./generator-state";
-export * from "./lead-identity";
 export * from "./linkedin-post-body-variant";
-export * from "./linkedin-post-deliver-command";
-export * from "./linkedin-post-deliver-input";
-export * from "./linkedin-post-deliver-request";
-export * from "./linkedin-post-deliver-response";
-export * from "./linkedin-post-delivery-token";
 export * from "./linkedin-post-generator-color-pair";
 export * from "./linkedin-post-generator-form-values";
 export * from "./linkedin-post-generator-failure-response";
@@ -16,3 +10,4 @@ export * from "./linkedin-post-generator-response";
 export * from "./linkedin-post-generator-success-response";
 export * from "./linkedin-post-generator-template";
 export * from "./linkedin-post-generator-tone";
+export * from "./linkedin-post-zip-download-input";

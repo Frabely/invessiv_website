@@ -8,7 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { WebApiEndpoint } from "@/common/constants";
+import { GeneratorAnalyticsEvent } from "@/common/constants";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
@@ -18,6 +18,15 @@ import type {
 import { GeneratorSection } from "./generator-section";
 
 type SubmitGenerator = typeof linkedinPostGeneratorService.submitLinkedInPost;
+
+vi.mock(
+  "@/client/linkedin-post/services/linkedin-post-zip-download-service",
+  () => ({
+    linkedinPostZipDownloadService: {
+      downloadLinkedInPostZip: vi.fn(),
+    },
+  }),
+);
 
 const content = getLinkedInPostGeneratorContent("de");
 
@@ -160,12 +169,11 @@ describe("GeneratorSection", () => {
     expect(submit).not.toHaveBeenCalled();
   });
 
-  it("does not render any identity field in the generation step", () => {
+  it("does not render the result download action in the generation step", () => {
     renderSection();
-    expect(screen.queryByLabelText(content.leadCapture.email.label)).toBeNull();
     expect(
-      screen.queryByRole("checkbox", {
-        name: content.leadCapture.consentDelivery.label,
+      screen.queryByRole("button", {
+        name: content.resultDownload.downloadAction,
       }),
     ).toBeNull();
   });
@@ -201,7 +209,7 @@ describe("GeneratorSection", () => {
     ).toBeTruthy();
   });
 
-  it("transitions through loading and shows the gated lead step on success", async () => {
+  it("transitions through loading and shows the download step on success", async () => {
     let resolveSubmit:
       | ((value: LinkedInPostGeneratorResult) => void)
       | undefined;
@@ -244,10 +252,12 @@ describe("GeneratorSection", () => {
         }),
       ).toBeTruthy();
     });
-    // The lead-capture step appears only after success.
-    expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
+    // The download step appears only after success.
+    expect(screen.getByText(content.resultDownload.headline)).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: content.leadCapture.emailAction }),
+      screen.getByRole("button", {
+        name: content.resultDownload.downloadAction,
+      }),
     ).toBeTruthy();
     expect(submit).toHaveBeenCalledTimes(1);
   });
@@ -295,7 +305,7 @@ describe("GeneratorSection", () => {
     expect(postPane).toBeTruthy();
     expect(actionRail).toBeTruthy();
     expect(postPane?.textContent).toContain("Generierte Caption.");
-    expect(actionRail?.textContent).toContain(content.leadCapture.headline);
+    expect(actionRail?.textContent).toContain(content.resultDownload.headline);
     expect(actionRail?.textContent).toContain(
       content.preview.success.followUp.headline,
     );
@@ -345,7 +355,9 @@ describe("GeneratorSection", () => {
     });
 
     fireEvent.click(
-      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+      screen.getByRole("button", {
+        name: content.resultDownload.newPostAction,
+      }),
     );
 
     // The success preview is replaced by the form again.
@@ -363,53 +375,26 @@ describe("GeneratorSection", () => {
     });
   });
 
-  it("threads the delivery token from the success result into the deliver request", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      json: async () => ({ ok: true }),
-    });
-    vi.stubGlobal("fetch", fetchMock);
+  it("emits a post download event when the zip download action is used", async () => {
+    const eventSpy = vi.fn();
+    window.addEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
 
-    const submit: SubmitGenerator = async () => ({
-      ok: true,
-      caption: "Erfolgs-Caption.",
-      deliveryToken: "signed-token-123",
-      downloadFileName: "erfolgs-caption.png",
-      imageDataUrl: "data:image/png;base64,AAAA",
-      post: GENERATED_POST,
-      previewHtml: PREVIEW_HTML,
-    });
-
-    renderSection(submit);
+    renderSection();
     fillValidValues();
     clickSubmit();
 
     await waitFor(() => {
-      expect(screen.getByText(content.leadCapture.headline)).toBeTruthy();
+      expect(screen.getByText(content.resultDownload.headline)).toBeTruthy();
     });
 
-    fireEvent.change(
-      screen.getByLabelText(content.leadCapture.displayName.label),
-      { target: { value: "Moritz Hecht" } },
-    );
-    fireEvent.change(screen.getByLabelText(content.leadCapture.email.label), {
-      target: { value: "test@example.com" },
-    });
     fireEvent.click(
-      screen.getByRole("checkbox", {
-        name: content.leadCapture.consentDelivery.label,
+      screen.getByRole("button", {
+        name: content.resultDownload.downloadAction,
       }),
     );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.leadCapture.emailAction }),
-    );
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
-    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe(WebApiEndpoint.LinkedInPostDeliver);
-    const body = JSON.parse(String(init.body)) as { deliveryToken: string };
-    expect(body.deliveryToken).toBe("signed-token-123");
-
-    vi.unstubAllGlobals();
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    window.removeEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
   });
 
   it("shows the remaining usage in the meter after returning to the generator", async () => {
@@ -442,7 +427,9 @@ describe("GeneratorSection", () => {
     // The meter lives in the form, which is hidden during success — it returns
     // (with the consumed test reflected) after "Neuen Post generieren".
     fireEvent.click(
-      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+      screen.getByRole("button", {
+        name: content.resultDownload.newPostAction,
+      }),
     );
 
     expect(screen.getByText("Noch 1 von 2 Tests")).toBeTruthy();
@@ -476,7 +463,9 @@ describe("GeneratorSection", () => {
     });
 
     fireEvent.click(
-      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+      screen.getByRole("button", {
+        name: content.resultDownload.newPostAction,
+      }),
     );
 
     const submitButton = screen.getByRole("button", {

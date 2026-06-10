@@ -52,28 +52,12 @@ export type LinkedInPostGeneratorUsageMeterCopy = {
   resetPrefix: string;
 };
 
-export type LinkedInPostGeneratorLeadConsentCopy = {
-  label: string;
-  requiredError: string;
-};
-
-export type LinkedInPostGeneratorLeadCaptureCopy = {
+export type LinkedInPostGeneratorResultDownloadCopy = {
   headline: string;
   body: string;
-  displayName: LinkedInPostGeneratorFieldCopy;
-  email: LinkedInPostGeneratorFieldCopy;
-  consentDelivery: LinkedInPostGeneratorLeadConsentCopy;
-  consentMarketing: { label: string };
-  marketingMicrocopy: string;
-  emailAction: string;
-  emailActionLoading: string;
+  downloadAction: string;
+  downloadUnavailable: string;
   newPostAction: string;
-  deliver: {
-    success: string;
-    errorGeneric: string;
-    errorRateLimited: string;
-    errorExpired: string;
-  };
 };
 
 export type LinkedInPostGeneratorPreviewLoadingCopy = {
@@ -152,7 +136,7 @@ export type LinkedInPostGeneratorContent = {
   body: string;
   form: LinkedInPostGeneratorFormCopy;
   usageMeter: LinkedInPostGeneratorUsageMeterCopy;
-  leadCapture: LinkedInPostGeneratorLeadCaptureCopy;
+  resultDownload: LinkedInPostGeneratorResultDownloadCopy;
   preview: LinkedInPostGeneratorPreviewCopy;
   customPost: LinkedInPostGeneratorCustomPostCopy;
 };

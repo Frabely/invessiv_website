@@ -61,40 +61,12 @@
     "remaining": "Noch {{remaining}} von {{limit}} Tests",
     "resetPrefix": "Neue Tests ab"
   },
-  "leadCapture": {
-    "headline": "Gefällt dir der Post?",
-    "body": "Trag Name und E-Mail ein, dann schicken wir dir den Post mit Caption direkt per E-Mail.",
-    "displayName": {
-      "label": "Name",
-      "placeholder": "z. B. Moritz Hecht",
-      "help": "Damit wir dich in der E-Mail persönlich ansprechen.",
-      "maxLength": 80,
-      "requiredError": "Bitte gib einen Namen an.",
-      "tooLongError": "Bitte unter 80 Zeichen halten."
-    },
-    "email": {
-      "label": "E-Mail",
-      "placeholder": "deine@adresse.com",
-      "requiredError": "Bitte gib eine E-Mail an.",
-      "invalidError": "Das sieht nicht nach einer gültigen E-Mail aus."
-    },
-    "consentDelivery": {
-      "label": "Ich bin einverstanden, dass meine E-Mail genutzt wird, um mir den Post zu schicken.",
-      "requiredError": "Bitte bestätige das, um fortzufahren."
-    },
-    "consentMarketing": {
-      "label": "Schick mir gelegentlich Tipps zu LinkedIn-Posts und Workflows."
-    },
-    "marketingMicrocopy": "Kein Spam. Jederzeit mit einem Klick abbestellbar.",
-    "emailAction": "Per E-Mail schicken",
-    "emailActionLoading": "Wird geschickt …",
-    "newPostAction": "Neuen Post generieren",
-    "deliver": {
-      "success": "Erledigt. Der Post liegt mit Caption in deinem Postfach – schau zur Sicherheit auch im Spam nach.",
-      "errorGeneric": "Das hat gerade nicht geklappt. Versuch es bitte gleich noch einmal.",
-      "errorRateLimited": "Du hast den Post schon mehrfach verschickt. Versuch es später noch einmal.",
-      "errorExpired": "Der Link ist abgelaufen. Erzeug den Post bitte neu, dann klappt der Versand."
-    }
+  "resultDownload": {
+    "headline": "Post herunterladen",
+    "body": "Lade Bild und Caption als ZIP herunter. Die Caption kannst du zusätzlich direkt kopieren.",
+    "downloadAction": "Bild und Caption herunterladen",
+    "downloadUnavailable": "Der Bilddownload ist gerade nicht verfügbar. Du kannst die Caption weiterhin direkt kopieren.",
+    "newPostAction": "Neuen Post generieren"
   },
   "preview": {
     "loading": {

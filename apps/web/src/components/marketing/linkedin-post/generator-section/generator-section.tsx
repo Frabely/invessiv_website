@@ -27,14 +27,12 @@ import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-of
 import type { Locale } from "@/config/i18n";
 import { LINKEDIN_POST_SECTION_HREFS } from "@/config/navigation/linkedin-post";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
-import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { GeneratorForm } from "./generator-form";
 import { GeneratingPanel } from "./generating-panel/generating-panel";
 import { PreviewPanel } from "./preview-panel";
 import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-section.module.css";
 
-const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
 const MOBILE_GENERATOR_SCROLL_QUERY = "(max-width: 719px)";
 
 const LAYOUT_BY_STATE_KIND: Record<GeneratorStateKind, GeneratorSectionLayout> =
@@ -69,8 +67,6 @@ export function GeneratorSection({
   const [usageLimit, setUsageLimit] = useState<GeneratorUsageLimit | undefined>(
     undefined,
   );
-  const [leadIdentity, setLeadIdentity] =
-    useState<LeadIdentity>(EMPTY_LEAD_IDENTITY);
   const formSlotRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
   const workbenchRef = useRef<HTMLDivElement | null>(null);
@@ -170,6 +166,10 @@ export function GeneratorSection({
     });
   }
 
+  function handleDownloadPost() {
+    emitAnalytics(GeneratorAnalyticsEvent.PostDownload);
+  }
+
   function handleRequestNewPost() {
     setState(null);
     setHasCopied(false);
@@ -180,10 +180,8 @@ export function GeneratorSection({
   }
 
   /**
-   * Best-effort prefill of the contact form: dispatch the offer-change event
-   * with the LinkedIn-content offer and any identity captured in the lead step,
-   * then let the anchor scroll to #contact. A cold limit (no prior lead step)
-   * simply leaves the identity empty — no error.
+   * Best-effort prefill of the contact form with the LinkedIn-content offer,
+   * then let the anchor scroll to #contact.
    */
   function handleRequestCustomWorkflow() {
     if (typeof window === "undefined") {
@@ -191,8 +189,6 @@ export function GeneratorSection({
     }
     const detail: ProjectOfferSyncDetail = {
       offerKey: CONTACT_OFFER_KEY.Process,
-      displayName: leadIdentity.displayName || undefined,
-      email: leadIdentity.email || undefined,
     };
     window.dispatchEvent(
       new CustomEvent(PROJECT_OFFER_CHANGE_EVENT, { detail }),
@@ -310,8 +306,9 @@ export function GeneratorSection({
       kind: GeneratorStateKind.Success,
       post: result.post,
       caption: result.caption,
+      downloadFileName: result.downloadFileName,
+      imageDataUrl: result.imageDataUrl,
       previewHtml: result.previewHtml,
-      deliveryToken: result.deliveryToken,
     });
     emitAnalytics(GeneratorAnalyticsEvent.Success);
   }
@@ -365,7 +362,7 @@ export function GeneratorSection({
               hasCopied={hasCopied}
               locale={locale}
               onCopyCaption={handleCopyCaption}
-              onLeadIdentityChange={setLeadIdentity}
+              onDownloadPost={handleDownloadPost}
               onRequestNewPost={handleRequestNewPost}
               onRequestCustomWorkflow={handleRequestCustomWorkflow}
               state={previewState}

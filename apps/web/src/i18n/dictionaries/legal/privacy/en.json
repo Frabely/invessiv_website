@@ -9,7 +9,7 @@
     "page": {
       "title": "Privacy Policy",
       "lead": "This Privacy Policy explains how personal data is processed in connection with this website and its available contact channels.",
-      "updatedAt": "Last updated: April 29, 2026.",
+      "updatedAt": "Last updated: June 10, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents"
@@ -41,7 +41,7 @@
       },
       "generator": {
         "title": "6. LinkedIn post generator",
-        "body": "If you use the LinkedIn post generator, we process your inputs such as topic, role or industry, tone, optionally your name and optionally your email address, as well as the generated sample. The inputs are transmitted to OpenAI to create the result. Email delivery only happens if you voluntarily provide an email address and confirm delivery. To limit misuse and costs, we store a pseudonymous technical identifier for 30 days based on a server-side hashed IP value, together with a usage counter and reset time. The raw IP address, prompt, output and email address are not stored in the limit record. The legal basis is Art. 6 para. 1 lit. b GDPR for the requested generation and optional delivery, and Art. 6 para. 1 lit. f GDPR for misuse and cost control. We do not permanently store generator content at Invessiv, apart from technically necessary logs and possible retention by service providers."
+        "body": "If you use the LinkedIn post generator, we process your inputs such as topic, role or industry, tone, and selected color style, as well as the generated sample. The inputs are transmitted to OpenAI to create the result. The result is then provided directly in the browser as a ZIP file containing an image file and a text file; email delivery and providing an email address are not part of the generator. To limit misuse and costs, we store a pseudonymous technical identifier for 30 days based on a server-side hashed IP value, together with a usage counter and reset time. The raw IP address, prompt, and output are not stored in the limit record. The legal basis is Art. 6 para. 1 lit. b GDPR for the requested generation and provision of the download, and Art. 6 para. 1 lit. f GDPR for misuse and cost control. We do not permanently store generator content at Invessiv, apart from technically necessary logs and possible retention by service providers."
       },
       "appointments": {
         "title": "7. Appointment scheduling and online meetings",
@@ -53,7 +53,7 @@
       },
       "recipients": {
         "title": "9. Recipients and service providers",
-        "body": "Depending on the processing activity, personal data may in particular be received by: Vercel Inc. for hosting, Vercel Web Analytics, and Vercel Speed Insights, OpenAI for generating LinkedIn post samples, Resend / Plus Five Five, Inc. for the technical delivery of form inquiries and optional generator results by email, Neon for the technical storage of lead records and pseudonymous generator limit data in a managed Postgres database, Calendly LLC for appointment scheduling, and Zoom Communications, Inc. for online meetings. Apart from that, we only disclose personal data where this is necessary to handle your inquiry, perform a contract, comply with legal obligations, or where you have provided consent."
+        "body": "Depending on the processing activity, personal data may in particular be received by: Vercel Inc. for hosting, Vercel Web Analytics, and Vercel Speed Insights, OpenAI for generating LinkedIn post samples, Resend / Plus Five Five, Inc. for the technical delivery of form inquiries, Neon for the technical storage of lead records and pseudonymous generator limit data in a managed Postgres database, Calendly LLC for appointment scheduling, and Zoom Communications, Inc. for online meetings. Apart from that, we only disclose personal data where this is necessary to handle your inquiry, perform a contract, comply with legal obligations, or where you have provided consent."
       },
       "storage": {
         "title": "10. Retention and deletion",

@@ -8,16 +8,12 @@ import type {
 import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import {
   LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT,
-  LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT,
   LINKEDIN_POST_MAX_BODY_SIZE,
+  LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT,
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
 import { LinkedInPostGenerationError } from "@/server/linkedin-post/linkedin-post-openai-adapter-service";
 import { generateLinkedInPost } from "@/server/linkedin-post/linkedin-post-generator-service";
-import {
-  DeliveryTokenSecretMissingError,
-  linkedinPostDeliveryTokenService,
-} from "@/server/linkedin-post/linkedin-post-delivery-token-service";
 import { linkedinPostGeneratorMockService } from "@/server/linkedin-post/linkedin-post-generator-mock-service";
 import { linkedinPostGeneratorUsageLimitService } from "@/server/linkedin-post/linkedin-post-generator-usage-limit-service";
 import { GeneratorUsageLimitUnavailableError } from "@/server/linkedin-post/linkedin-post-generator-usage-key-service";
@@ -133,30 +129,6 @@ function statusForGenerationError(code: LinkedInPostGeneratorErrorCode) {
   return HttpResponseCode.InternalServerError;
 }
 
-/**
- * Best-effort signed token for the gated deliver step. A missing delivery
- * secret is non-fatal: the post still renders/downloads, only the email path
- * stays unavailable (no token → the card hides the action).
- */
-function createDeliveryTokenForResult(
-  result: LinkedInPostGeneratorSuccessResponseDto,
-  locale: LinkedInPostGeneratorRequestDto["locale"],
-): string | undefined {
-  try {
-    return linkedinPostDeliveryTokenService.createDeliveryToken({
-      caption: result.caption,
-      downloadFileName: result.downloadFileName,
-      locale,
-      post: result.post,
-    });
-  } catch (error) {
-    if (error instanceof DeliveryTokenSecretMissingError) {
-      return undefined;
-    }
-    throw error;
-  }
-}
-
 async function generateLinkedInPostCommandHandler({
   contentLength,
   contentType,
@@ -269,15 +241,9 @@ async function generateLinkedInPostCommandHandler({
       ? `data:image/png;base64,${png.toString("base64")}`
       : null;
 
-    const deliveryToken = createDeliveryTokenForResult(
-      result,
-      generatorRequest.locale,
-    );
-
     return {
       body: {
         ...result,
-        deliveryToken,
         imageDataUrl,
         usageLimit:
           linkedinPostGeneratorUsageLimitService.toUsageLimitSnapshot(

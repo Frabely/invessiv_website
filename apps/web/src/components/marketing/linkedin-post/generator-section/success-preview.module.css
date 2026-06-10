@@ -1,7 +1,7 @@
 /* Mobile-first. Success state of the generator preview.
    Card chrome (border, bg, author, caption) is owned by LinkedinPost.
    This file owns: the free copy action, the post image figure, the gated
-   lead-capture slot wrapper, and the follow-up card. */
+   result actions wrapper, and the follow-up card. */
 
 .preview {
   display: flex;
@@ -12,10 +12,12 @@
 
 .postPane {
   min-width: 0;
+  width: 100%;
 }
 
 .postCard {
   min-width: 0;
+  width: 100%;
 }
 
 .actionRail {
@@ -116,7 +118,18 @@
 /* ── Tablet ── */
 @media (min-width: 720px) {
   .preview {
-    gap: 0.9rem;
+    gap: 1rem;
+  }
+
+  .postPane {
+    justify-self: center;
+    max-width: min(100%, 31rem);
+  }
+
+  .actionRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    width: 100%;
   }
 
   .followUpCard {
@@ -127,14 +140,16 @@
 @media (min-width: 961px) {
   .preview {
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(22rem, 0.65fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
-    gap: var(--generator-column-gap);
+    justify-items: stretch;
+    gap: clamp(1rem, 1.6vw, 1.35rem);
     height: auto;
   }
 
   .postPane {
     min-height: 0;
+    max-width: min(100%, 30rem);
   }
 
   .postImage {
@@ -144,9 +159,10 @@
 
   .actionRail {
     align-self: start;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--generator-column-gap);
+    width: 100%;
   }
 
   .followUpCard {

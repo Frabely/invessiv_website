@@ -7,7 +7,6 @@ describe("WebApiEndpoint", () => {
     expect(WebApiEndpoint).toEqual({
       ContactSubmit: "/api/public/contact",
       LinkedInPostGenerate: "/api/public/generator/linkedin-post",
-      LinkedInPostDeliver: "/api/public/generator/linkedin-post/deliver",
     });
   });
 

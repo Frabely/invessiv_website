@@ -1,5 +1,4 @@
 import { PrimaryCtaLink } from "@/components/shared/button/button";
-import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import {
@@ -7,8 +6,7 @@ import {
   LinkedinPostCaptionFit,
 } from "@/common/constants";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
-import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
-import { LeadCaptureCard } from "./lead-capture-card/lead-capture-card";
+import { ResultDownloadCard } from "./result-download-card/result-download-card";
 import styles from "./success-preview.module.css";
 
 type SuccessPreviewProps = {
@@ -18,12 +16,12 @@ type SuccessPreviewProps = {
   authorName: string;
   expertiseDisplay: string;
   followUpHref: string;
-  locale: Locale;
   postTitle: string;
   previewHtml: string;
-  deliveryToken?: string;
+  downloadFileName: string;
+  imageDataUrl: string | null;
   onCopyCaption: (caption: string) => void;
-  onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onDownloadPost: () => void;
   onRequestNewPost: () => void;
   onRequestCustomWorkflow: () => void;
 };
@@ -35,12 +33,12 @@ export function SuccessPreview({
   authorName,
   expertiseDisplay,
   followUpHref,
-  locale,
   postTitle,
   previewHtml,
-  deliveryToken,
+  downloadFileName,
+  imageDataUrl,
   onCopyCaption,
-  onLeadIdentityChange,
+  onDownloadPost,
   onRequestNewPost,
   onRequestCustomWorkflow,
 }: SuccessPreviewProps) {
@@ -88,11 +86,12 @@ export function SuccessPreview({
       </div>
 
       <div className={styles.actionRail} data-slot="success-actions">
-        <LeadCaptureCard
-          content={content.leadCapture}
-          deliveryToken={deliveryToken}
-          locale={locale}
-          onIdentityChange={onLeadIdentityChange}
+        <ResultDownloadCard
+          caption={caption}
+          content={content.resultDownload}
+          downloadFileName={downloadFileName}
+          imageDataUrl={imageDataUrl}
+          onDownload={onDownloadPost}
           onRequestNewPost={onRequestNewPost}
         />
 

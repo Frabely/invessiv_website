@@ -4,8 +4,8 @@ import type {
 } from "@/common/contracts/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import {
-  WebApiEndpoint,
   LinkedInPostGeneratorErrorCode,
+  WebApiEndpoint,
 } from "@/common/constants";
 import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
@@ -13,7 +13,7 @@ import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 /**
  * Extends the shared DTO with web-app-specific rendering fields that are
  * returned by the API but intentionally excluded from the shared contract
- * (they are implementation details of the iframe preview and PNG download,
+ * (they are implementation details of the iframe preview and ZIP download,
  * not part of the general API surface).
  */
 export type LinkedInPostGeneratorSuccessResult =

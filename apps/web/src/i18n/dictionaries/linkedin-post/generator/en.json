@@ -61,40 +61,12 @@
     "remaining": "{{remaining}} of {{limit}} tests left",
     "resetPrefix": "New tests from"
   },
-  "leadCapture": {
-    "headline": "Like the post?",
-    "body": "Add your name and email and we'll send you the post with its caption by email.",
-    "displayName": {
-      "label": "Name",
-      "placeholder": "e.g. Moritz Hecht",
-      "help": "So we can address you personally in the email.",
-      "maxLength": 80,
-      "requiredError": "Please enter a name.",
-      "tooLongError": "Please keep it under 80 characters."
-    },
-    "email": {
-      "label": "Email",
-      "placeholder": "you@address.com",
-      "requiredError": "Please enter an email.",
-      "invalidError": "That doesn't look like a valid email."
-    },
-    "consentDelivery": {
-      "label": "I agree that my email can be used to send me the post.",
-      "requiredError": "Please confirm this to continue."
-    },
-    "consentMarketing": {
-      "label": "Send me occasional tips on LinkedIn posts and workflows."
-    },
-    "marketingMicrocopy": "No spam. Unsubscribe any time with one click.",
-    "emailAction": "Send by email",
-    "emailActionLoading": "Sending …",
-    "newPostAction": "Generate a new post",
-    "deliver": {
-      "success": "Done. The post and caption are in your inbox – check spam too, just in case.",
-      "errorGeneric": "That didn't work just now. Please try again in a moment.",
-      "errorRateLimited": "You've already sent this post a few times. Please try again later.",
-      "errorExpired": "This link has expired. Generate the post again and the send will work."
-    }
+  "resultDownload": {
+    "headline": "Download your post",
+    "body": "Download the image and caption as a ZIP. You can still copy the caption directly.",
+    "downloadAction": "Download image and caption",
+    "downloadUnavailable": "The image download is unavailable right now. You can still copy the caption directly.",
+    "newPostAction": "Generate a new post"
   },
   "preview": {
     "loading": {

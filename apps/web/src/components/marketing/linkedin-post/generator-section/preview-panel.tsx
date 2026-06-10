@@ -1,6 +1,5 @@
 import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
-import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
@@ -20,7 +19,7 @@ type PreviewPanelProps = {
   hasCopied: boolean;
   locale: Locale;
   onCopyCaption: (caption: string) => void;
-  onLeadIdentityChange: (identity: LeadIdentity) => void;
+  onDownloadPost: () => void;
   onRequestNewPost: () => void;
   onRequestCustomWorkflow: () => void;
   state: PreviewState;
@@ -33,7 +32,7 @@ export function PreviewPanel({
   hasCopied,
   locale,
   onCopyCaption,
-  onLeadIdentityChange,
+  onDownloadPost,
   onRequestNewPost,
   onRequestCustomWorkflow,
   state,
@@ -62,10 +61,10 @@ export function PreviewPanel({
           postTitle={state.post.headlinePlain}
           previewHtml={state.previewHtml}
           followUpHref={followUpHref}
-          locale={locale}
-          deliveryToken={state.deliveryToken}
+          downloadFileName={state.downloadFileName}
+          imageDataUrl={state.imageDataUrl}
           onCopyCaption={onCopyCaption}
-          onLeadIdentityChange={onLeadIdentityChange}
+          onDownloadPost={onDownloadPost}
           onRequestNewPost={onRequestNewPost}
           onRequestCustomWorkflow={onRequestCustomWorkflow}
         />
