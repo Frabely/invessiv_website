@@ -35,6 +35,7 @@ import { useGeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids"
 import styles from "./generator-section.module.css";
 
 const EMPTY_LEAD_IDENTITY: LeadIdentity = { displayName: "", email: "" };
+const MOBILE_SUCCESS_SCROLL_QUERY = "(max-width: 719px)";
 
 const LAYOUT_BY_STATE_KIND: Record<GeneratorStateKind, GeneratorSectionLayout> =
   {
@@ -100,9 +101,13 @@ export function GeneratorSection({
       return;
     }
 
+    const shouldPinSuccessToTop =
+      state.kind === GeneratorStateKind.Success &&
+      window.matchMedia?.(MOBILE_SUCCESS_SCROLL_QUERY).matches;
+
     previewRef.current?.scrollIntoView({
       behavior: "smooth",
-      block: "nearest",
+      block: shouldPinSuccessToTop ? "start" : "nearest",
     });
   }, [state?.kind]);
 
@@ -246,6 +251,18 @@ export function GeneratorSection({
 
     setErrors({});
     setHasCopied(false);
+
+    if (usageLimit && usageLimit.remaining <= 0) {
+      setState({
+        kind: GeneratorStateKind.LimitReached,
+        usageLimit,
+      });
+      emitAnalytics(GeneratorAnalyticsEvent.Error, {
+        reason: LinkedInPostGeneratorErrorCode.UsageLimitReached,
+      });
+      return;
+    }
+
     setState({ kind: GeneratorStateKind.Loading, stepIndex: 0 });
 
     let result: LinkedInPostGeneratorResult;

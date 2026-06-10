@@ -8,7 +8,10 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { LinkedinPostCaptionFit } from "@/common/constants";
+import {
+  LinkedinPostCaptionClamp,
+  LinkedinPostCaptionFit,
+} from "@/common/constants";
 import { LinkedinPost } from "./linkedin-post";
 
 describe("LinkedinPost", () => {
@@ -53,6 +56,28 @@ describe("LinkedinPost", () => {
     fireEvent.click(screen.getByRole("button", { name: "… mehr" }));
 
     expect(screen.getByRole("button", { name: "weniger" })).toBeTruthy();
+  });
+
+  it("marks generated-result captions with the wider collapsed clamp", () => {
+    render(
+      <LinkedinPost
+        author={{
+          avatar: { kind: "initials", value: "LB" },
+          name: "Lena Bauer",
+          role: "Business-Coach",
+        }}
+        caption="Eine laengere generierte Caption, die im Ergebnis sichtbar bleibt, aber nicht die gesamte Vorschau dominiert."
+        captionClamp={LinkedinPostCaptionClamp.Result}
+        captionLess="weniger"
+        captionMore="… mehr"
+        image={<figure aria-label="Post-Bild" />}
+      />,
+    );
+
+    const toggle = screen.getByRole("button", { name: "… mehr" });
+    expect(toggle.closest("article")?.getAttribute("data-caption-clamp")).toBe(
+      "result",
+    );
   });
 
   it("does not render the maximize control without the maximizable flag", () => {

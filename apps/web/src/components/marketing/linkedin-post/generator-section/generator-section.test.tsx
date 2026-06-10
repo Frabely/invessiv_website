@@ -53,6 +53,22 @@ const GENERATED_POST = {
 
 const PREVIEW_HTML = "<!doctype html><html><body>preview</body></html>";
 
+function mockMatchMedia(matches: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+}
+
 function renderSection(submitMock?: SubmitGenerator) {
   const submit: SubmitGenerator =
     submitMock ??
@@ -99,6 +115,7 @@ beforeEach(() => {
   Object.assign(navigator, {
     clipboard: { writeText: vi.fn().mockResolvedValue(undefined) },
   });
+  mockMatchMedia(false);
   window.HTMLElement.prototype.scrollIntoView = vi.fn();
   // PostFramePreview uses ResizeObserver, which jsdom does not implement.
   window.ResizeObserver = class {
@@ -259,8 +276,35 @@ describe("GeneratorSection", () => {
       content.preview.success.followUp.headline,
     );
     expect(
-      postPane?.querySelector('[data-caption-fit="available"]'),
+      postPane?.querySelector(
+        '[data-caption-fit="line-clamp"][data-caption-clamp="result"]',
+      ),
     ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: content.preview.success.captionMore }),
+    ).toBeTruthy();
+  });
+
+  it("scrolls the generated post to the top on mobile success", async () => {
+    mockMatchMedia(true);
+    renderSection();
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
+    });
+
+    await waitFor(() => {
+      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   });
 
   it("returns to the generator form when the new-post action is used", async () => {
@@ -378,6 +422,52 @@ describe("GeneratorSection", () => {
     );
 
     expect(screen.getByText("Noch 1 von 2 Tests")).toBeTruthy();
+  });
+
+  it("keeps submit enabled at the local limit and opens the limit preview", async () => {
+    const submit = vi.fn<SubmitGenerator>(async () => ({
+      ok: true,
+      caption: "Letzte Caption.",
+      downloadFileName: "letzte-caption.png",
+      imageDataUrl: null,
+      post: GENERATED_POST,
+      previewHtml: PREVIEW_HTML,
+      usageLimit: {
+        limit: 2,
+        remaining: 0,
+        resetAt: "2026-07-01T00:00:00.000Z",
+      },
+    }));
+
+    renderSection(submit);
+    fillValidValues();
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: content.preview.success.copyCaption,
+        }),
+      ).toBeTruthy();
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.leadCapture.newPostAction }),
+    );
+
+    const submitButton = screen.getByRole("button", {
+      name: content.form.submit,
+    }) as HTMLButtonElement;
+    expect(submitButton.disabled).toBe(false);
+
+    clickSubmit();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(content.preview.limitReached.headline),
+      ).toBeTruthy();
+    });
+    expect(submit).toHaveBeenCalledTimes(1);
   });
 
   it("renders the conversion-oriented limit preview on a 429, not an error", async () => {

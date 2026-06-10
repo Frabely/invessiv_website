@@ -50,21 +50,21 @@ export function LimitReachedPreview({
         </div>
         <h3 className={styles.headline}>{content.headline}</h3>
         <p className={styles.body}>{content.body}</p>
-        <div className={styles.footer}>
-          {resetDate ? (
-            <p className={styles.reset}>
-              {content.resetPrefix} {resetDate}
-            </p>
-          ) : null}
-          <PrimaryCtaLink
-            aria-label={content.ctaAriaLabel}
-            className={styles.cta}
-            href={followUpHref}
-            onClick={onRequestCustomWorkflow}
-          >
-            {content.ctaLabel}
-          </PrimaryCtaLink>
-        </div>
+      </div>
+      <div className={styles.actionBar}>
+        {resetDate ? (
+          <p className={styles.reset}>
+            {content.resetPrefix} {resetDate}
+          </p>
+        ) : null}
+        <PrimaryCtaLink
+          aria-label={content.ctaAriaLabel}
+          className={styles.cta}
+          href={followUpHref}
+          onClick={onRequestCustomWorkflow}
+        >
+          {content.ctaLabel}
+        </PrimaryCtaLink>
       </div>
     </div>
   );

@@ -66,8 +66,8 @@
   max-width: 38rem;
 }
 
-/* The success result holds a two-column post + action rail, so it needs more
-   room than the single-field panels — but stays centered, not full-bleed. */
+/* The success result holds a post + action rail, so it gets a wider desktop
+   canvas while staying compact on smaller screens. */
 .workbench[data-layout="result"] .previewSlot {
   width: 100%;
   max-width: 56rem;
@@ -123,6 +123,10 @@
   /* Shared by the split workbench gap and the success result's inner 2-col. */
   .workbench {
     --generator-column-gap: clamp(1.25rem, 2vw, 2rem);
+  }
+
+  .workbench[data-layout="result"] .previewSlot {
+    max-width: 100%;
   }
 
   /* Split layout (loading / error): form 1/3, preview 2/3. */

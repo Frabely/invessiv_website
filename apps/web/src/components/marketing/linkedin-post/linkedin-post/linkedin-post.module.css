@@ -209,6 +209,7 @@
 }
 
 .caption {
+  --caption-collapsed-lines: 3;
   margin: 0;
   color: color-mix(in srgb, var(--color-text) 86%, var(--color-text-muted) 14%);
   font-size: 0.96rem;
@@ -218,11 +219,15 @@
   overflow-wrap: anywhere;
 }
 
-/* Collapsed: clamp to 3 lines; expanded reveals the full caption */
+/* Collapsed caption; expanded reveals the full caption */
 .caption:not([data-expanded]) {
   display: block;
-  max-height: calc(1.6em * 3);
+  max-height: calc(1.6em * var(--caption-collapsed-lines));
   overflow: hidden;
+}
+
+.card[data-caption-clamp="result"] .caption {
+  --caption-collapsed-lines: 5;
 }
 
 .captionToggle {
@@ -294,5 +299,9 @@
 
   .caption {
     font-size: clamp(0.97rem, 0.9rem + 0.28vw, 1.06rem);
+  }
+
+  .card[data-caption-clamp="result"] .caption {
+    --caption-collapsed-lines: 7;
   }
 }

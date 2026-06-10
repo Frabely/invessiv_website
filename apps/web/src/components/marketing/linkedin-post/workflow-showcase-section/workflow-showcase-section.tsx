@@ -58,7 +58,11 @@ export function WorkflowShowcaseSection({
           <p className={styles.body}>{context}</p>
           <p className={styles.body}>{prompt}</p>
           <div className={styles.ctaWrap}>
-            <PrimaryCtaLink aria-label={ctaAriaLabel} href={ctaHref}>
+            <PrimaryCtaLink
+              aria-label={ctaAriaLabel}
+              className={styles.cta}
+              href={ctaHref}
+            >
               {ctaLabel}
             </PrimaryCtaLink>
           </div>

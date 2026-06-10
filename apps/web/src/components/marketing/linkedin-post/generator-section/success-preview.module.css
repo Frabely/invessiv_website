@@ -109,7 +109,8 @@
 }
 
 .followUpCta {
-  justify-self: start;
+  width: 100%;
+  justify-self: stretch;
 }
 
 /* ── Tablet ── */
@@ -126,19 +127,14 @@
 @media (min-width: 961px) {
   .preview {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1.35fr) minmax(22rem, 0.65fr);
+    align-items: start;
     gap: var(--generator-column-gap);
-    height: 100%;
+    height: auto;
   }
 
   .postPane {
     min-height: 0;
-    height: 100%;
-  }
-
-  .postCard:not([data-caption-expanded="true"]) {
-    height: 100%;
   }
 
   .postImage {
@@ -147,16 +143,14 @@
   }
 
   .actionRail {
-    align-self: stretch;
+    align-self: start;
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
   }
 
   .followUpCard {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+    display: grid;
     gap: 0.42rem;
     padding: 0.85rem 0.9rem 0.95rem;
     border-color: color-mix(
@@ -169,8 +163,9 @@
   }
 
   .followUpCta {
-    margin-top: auto;
+    width: auto;
     align-self: flex-start;
+    justify-self: start;
   }
 
   .followUpHeadline {

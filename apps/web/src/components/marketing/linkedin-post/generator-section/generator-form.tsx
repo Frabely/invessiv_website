@@ -47,7 +47,6 @@ export function GeneratorForm({
   const topicMax = content.form.topic.maxLength ?? 280;
   const expertiseMax = content.form.expertise.maxLength ?? 120;
   const toneOptions = content.form.tone.options;
-  const hasReachedLimit = Boolean(usageLimit && usageLimit.remaining <= 0);
   const colorOptions = [
     {
       label: content.form.color.autoLabel,
@@ -176,7 +175,6 @@ export function GeneratorForm({
         data-analytics-location="generator_form"
         data-analytics-target="generator"
         data-analytics-variant="primary"
-        disabled={hasReachedLimit}
         type="submit"
       >
         {content.form.submit}

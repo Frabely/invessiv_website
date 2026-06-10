@@ -2,7 +2,10 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
-import { LinkedinPostCaptionFit } from "@/common/constants";
+import {
+  LinkedinPostCaptionClamp,
+  LinkedinPostCaptionFit,
+} from "@/common/constants";
 import { PostFramePreview } from "./post-frame-preview/post-frame-preview";
 import type { LeadIdentity } from "@/common/contracts/generator/lead-identity";
 import { LeadCaptureCard } from "./lead-capture-card/lead-capture-card";
@@ -61,7 +64,8 @@ export function SuccessPreview({
             role: expertiseDisplay,
           }}
           caption={caption}
-          captionFit={LinkedinPostCaptionFit.Available}
+          captionClamp={LinkedinPostCaptionClamp.Result}
+          captionFit={LinkedinPostCaptionFit.LineClamp}
           captionLess={success.captionLess}
           captionMore={success.captionMore}
           className={styles.postCard}

@@ -43,6 +43,11 @@
 
 .ctaWrap {
   display: flex;
+  width: 100%;
+}
+
+.cta {
+  width: 100%;
 }
 
 /* ── Post column (right) ── */
@@ -110,6 +115,14 @@
     gap: 1.25rem;
     position: sticky;
     top: 5rem;
+  }
+
+  .ctaWrap {
+    width: auto;
+  }
+
+  .cta {
+    width: auto;
   }
 
   /* Compact post, horizontally centered within its column. */

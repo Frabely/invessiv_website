@@ -6,6 +6,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import {
+  LinkedinPostCaptionClamp,
   LinkedinPostCaptionFit,
   LinkedinPostVariant,
 } from "@/common/constants";
@@ -22,6 +23,7 @@ type LinkedinPostProps = {
   ariaLabel?: string;
   author: LinkedinPostAuthor;
   caption: ReactNode;
+  captionClamp?: LinkedinPostCaptionClamp;
   captionFit?: LinkedinPostCaptionFit;
   captionLess?: string;
   captionMore?: string;
@@ -46,6 +48,7 @@ export function LinkedinPost({
   ariaLabel,
   author,
   caption,
+  captionClamp = LinkedinPostCaptionClamp.Default,
   captionFit = LinkedinPostCaptionFit.LineClamp,
   captionLess,
   captionMore,
@@ -148,6 +151,7 @@ export function LinkedinPost({
       aria-label={ariaLabel}
       className={className ? `${styles.card} ${className}` : styles.card}
       data-variant={variant}
+      data-caption-clamp={captionClamp}
       data-caption-fit={captionFit}
       data-caption-expanded={
         captionFit === LinkedinPostCaptionFit.Available && isExpanded
@@ -241,6 +245,7 @@ export function LinkedinPost({
             ariaLabel={ariaLabel}
             author={author}
             caption={caption}
+            captionClamp={captionClamp}
             captionFit={captionFit}
             image={image}
             variant={LinkedinPostVariant.Lightbox}
