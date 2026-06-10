@@ -52,7 +52,10 @@ export function mapGeneratorValidationErrors(error: z.ZodError) {
     if (typeof field !== "string") {
       continue;
     }
-    fieldErrors[field] = [...(fieldErrors[field] ?? []), issue.code];
+
+    const fieldErrorCode =
+      issue.code === GeneratorZodIssueCode.Custom ? issue.message : issue.code;
+    fieldErrors[field] = [...(fieldErrors[field] ?? []), fieldErrorCode];
   }
   return fieldErrors;
 }

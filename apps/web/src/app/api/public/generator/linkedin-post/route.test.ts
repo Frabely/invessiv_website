@@ -312,7 +312,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
     };
     expect(response.status).toBe(400);
     expect(payload.ok).toBe(false);
-    expect(payload.fieldErrors?.email).toBeTruthy();
+    expect(payload.fieldErrors?.email).toContain("invalid_email");
     expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
   });
 

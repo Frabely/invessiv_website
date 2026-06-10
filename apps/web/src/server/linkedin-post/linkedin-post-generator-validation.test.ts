@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { linkedinPostGeneratorRequestSchema } from "./linkedin-post-generator-validation";
+import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
+import {
+  linkedinPostGeneratorRequestSchema,
+  mapGeneratorValidationErrors,
+} from "./linkedin-post-generator-validation";
 
 vi.mock("server-only", () => ({}));
 
@@ -53,5 +57,42 @@ describe("linkedinPostGeneratorRequestSchema", () => {
     });
 
     expect(result.success).toBe(true);
+  });
+});
+
+describe("mapGeneratorValidationErrors", () => {
+  it("maps custom issues to their domain field error codes", () => {
+    const result = linkedinPostGeneratorRequestSchema.safeParse({
+      ...VALID_REQUEST,
+      consent: false,
+      email: "not-an-email",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+
+    const fieldErrors = mapGeneratorValidationErrors(result.error);
+    expect(fieldErrors.email).toContain(CONTACT_FIELD_ERROR_CODE.InvalidEmail);
+    expect(fieldErrors.consent).toContain(
+      CONTACT_FIELD_ERROR_CODE.ConsentRequired,
+    );
+    expect(Object.values(fieldErrors).flat()).not.toContain("custom");
+  });
+
+  it("keeps native zod issue codes for non-custom issues", () => {
+    const result = linkedinPostGeneratorRequestSchema.safeParse({
+      ...VALID_REQUEST,
+      topic: "",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) {
+      return;
+    }
+
+    const fieldErrors = mapGeneratorValidationErrors(result.error);
+    expect(fieldErrors.topic).toEqual(["too_small"]);
   });
 });
