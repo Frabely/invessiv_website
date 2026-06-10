@@ -12,7 +12,9 @@ import {
   LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT,
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
-import { LinkedInPostGenerationError } from "@/server/linkedin-post/linkedin-post-openai-adapter-service";
+import { BoundedJsonBodyResultKind } from "@/common/constants/http/bounded-json-body-result-kind";
+import { boundedJsonBodyService } from "@/server/http/bounded-json-body-service";
+import { linkedinPostGeneratorErrorService } from "@/server/linkedin-post/errors/linkedin-post-generator-error";
 import { generateLinkedInPost } from "@/server/linkedin-post/linkedin-post-generator-service";
 import { linkedinPostGeneratorMockService } from "@/server/linkedin-post/linkedin-post-generator-mock-service";
 import { linkedinPostGeneratorUsageLimitService } from "@/server/linkedin-post/linkedin-post-generator-usage-limit-service";
@@ -37,23 +39,21 @@ export type LinkedInPostGeneratorCommandHandlerResult = {
 };
 
 export type GenerateLinkedInPostCommandInput = {
+  bodyStream: ReadableStream<Uint8Array> | null;
   contentLength: string | null;
   contentType: string | null;
   headers: Headers;
-  readPayload: () => Promise<unknown>;
 };
 
 function failureResult(
   code: string,
   status: HttpResponseCode,
   fieldErrors?: Record<string, string[]>,
-  debug?: { reason?: string; stage: string },
   usageLimit?: LinkedInPostGeneratorFailureResponseDto["usageLimit"],
 ): LinkedInPostGeneratorCommandHandlerResult {
   return {
     body: {
       code,
-      debug,
       fieldErrors,
       ok: false,
       usageLimit,
@@ -74,70 +74,15 @@ function hasPayloadWithinLimit(contentLength: string | null) {
   );
 }
 
-function mapGenerationError(error: unknown) {
-  if (error instanceof LinkedInPostGenerationError) {
-    return {
-      code: error.code,
-      debug: {
-        reason: error.message,
-        stage: error.stage,
-      },
-    };
-  }
-
-  if (error instanceof Error) {
-    return {
-      code: LinkedInPostGeneratorErrorCode.InternalError,
-      debug: {
-        reason: error.message,
-        stage: "route_unexpected",
-      },
-    };
-  }
-
-  return {
-    code: LinkedInPostGeneratorErrorCode.InternalError,
-    debug: {
-      stage: "route_unknown",
-    },
-  };
-}
-
-function statusForGenerationError(code: LinkedInPostGeneratorErrorCode) {
-  if (code === LinkedInPostGeneratorErrorCode.UnsafeInput) {
-    return HttpResponseCode.BadRequest;
-  }
-
-  if (
-    code === LinkedInPostGeneratorErrorCode.OpenAiInvalidContent ||
-    code === LinkedInPostGeneratorErrorCode.OpenAiInvalidJson
-  ) {
-    return HttpResponseCode.UnprocessableContent;
-  }
-
-  if (
-    code === LinkedInPostGeneratorErrorCode.UsageLimitUnavailable ||
-    code === LinkedInPostGeneratorErrorCode.OpenAiApiKeyMissing ||
-    code === LinkedInPostGeneratorErrorCode.OpenAiRequestFailed ||
-    code === LinkedInPostGeneratorErrorCode.OpenAiSchemaError ||
-    code === LinkedInPostGeneratorErrorCode.OpenAiEmptyOutput ||
-    code === LinkedInPostGeneratorErrorCode.GeneratorSchemaInvalid
-  ) {
-    return HttpResponseCode.ServiceUnavailable;
-  }
-
-  return HttpResponseCode.InternalServerError;
-}
-
 function shouldUseLinkedInPostGeneratorMock() {
   return process.env.LINKEDIN_POST_GENERATOR_USE_MOCK === "true";
 }
 
 async function generateLinkedInPostCommandHandler({
+  bodyStream,
   contentLength,
   contentType,
   headers,
-  readPayload,
 }: GenerateLinkedInPostCommandInput): Promise<LinkedInPostGeneratorCommandHandlerResult> {
   if (!contentType?.includes("application/json")) {
     return failureResult(
@@ -153,17 +98,28 @@ async function generateLinkedInPostCommandHandler({
     );
   }
 
-  let payload: unknown;
-  try {
-    payload = await readPayload();
-  } catch {
+  const bodyResult = await boundedJsonBodyService.readBoundedJsonBody(
+    bodyStream,
+    LINKEDIN_POST_MAX_BODY_SIZE,
+  );
+
+  if (bodyResult.kind === BoundedJsonBodyResultKind.PayloadTooLarge) {
+    return failureResult(
+      LinkedInPostGeneratorErrorCode.PayloadTooLarge,
+      HttpResponseCode.PayloadTooLarge,
+    );
+  }
+
+  if (bodyResult.kind === BoundedJsonBodyResultKind.InvalidJson) {
     return failureResult(
       LinkedInPostGeneratorErrorCode.InvalidJson,
       HttpResponseCode.BadRequest,
     );
   }
 
-  const parsedPayload = linkedinPostGeneratorRequestSchema.safeParse(payload);
+  const parsedPayload = linkedinPostGeneratorRequestSchema.safeParse(
+    bodyResult.payload,
+  );
   if (!parsedPayload.success) {
     return failureResult(
       LinkedInPostGeneratorErrorCode.ValidationError,
@@ -192,7 +148,7 @@ async function generateLinkedInPostCommandHandler({
         headers,
       );
   } catch (error) {
-    const debug =
+    const logContext =
       error instanceof GeneratorUsageLimitUnavailableError
         ? {
             reason: error.message,
@@ -200,11 +156,14 @@ async function generateLinkedInPostCommandHandler({
           }
         : { stage: LinkedInPostGeneratorErrorStage.UsageLimitUnknown };
 
+    console.error(LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT, {
+      code: LinkedInPostGeneratorErrorCode.UsageLimitUnavailable,
+      ...logContext,
+    });
+
     return failureResult(
       LinkedInPostGeneratorErrorCode.UsageLimitUnavailable,
       HttpResponseCode.ServiceUnavailable,
-      undefined,
-      debug,
     );
   }
 
@@ -212,7 +171,6 @@ async function generateLinkedInPostCommandHandler({
     return failureResult(
       LinkedInPostGeneratorErrorCode.UsageLimitReached,
       HttpResponseCode.TooManyRequests,
-      undefined,
       undefined,
       linkedinPostGeneratorUsageLimitService.toUsageLimitSnapshot(
         usageReservation,
@@ -259,19 +217,18 @@ async function generateLinkedInPostCommandHandler({
     await linkedinPostGeneratorUsageLimitService.releaseLinkedInPostGeneratorUsage(
       usageReservation,
     );
-    const { code, debug } = mapGenerationError(error);
+    const { code, logContext } =
+      linkedinPostGeneratorErrorService.mapGenerationError(error);
 
     console.error(LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT, {
       code,
-      reason: debug.reason,
-      stage: debug.stage,
+      reason: logContext.reason,
+      stage: logContext.stage,
     });
 
     return failureResult(
       code,
-      statusForGenerationError(code),
-      undefined,
-      debug,
+      linkedinPostGeneratorErrorService.statusForGenerationError(code),
     );
   }
 }

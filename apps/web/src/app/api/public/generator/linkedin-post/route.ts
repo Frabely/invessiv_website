@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
   const result =
     await generateLinkedInPostCommandHandlerService.generateLinkedInPostCommandHandler(
       {
+        bodyStream: request.body,
         contentLength: request.headers.get("content-length"),
         contentType: request.headers.get("content-type"),
         headers: request.headers,
-        readPayload: () => request.json(),
       },
     );
 

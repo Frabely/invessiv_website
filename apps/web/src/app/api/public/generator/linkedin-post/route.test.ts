@@ -338,7 +338,10 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(payload.code).toBe("spam_detected");
   });
 
-  it("returns a specific OpenAI failure code with a debug stage", async () => {
+  it("returns a stable OpenAI failure code without leaking debug details", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     mocks.generateLinkedInPost.mockRejectedValue(
       new mocks.LinkedInPostGenerationError(
         "openai_invalid_content",
@@ -364,13 +367,134 @@ describe("POST /api/public/generator/linkedin-post", () => {
 
     const payload = (await response.json()) as {
       code: string;
-      debug?: { reason?: string; stage: string };
       ok: boolean;
     };
     expect(response.status).toBe(422);
     expect(payload.ok).toBe(false);
     expect(payload.code).toBe("openai_invalid_content");
-    expect(payload.debug?.stage).toBe("openai_quality_gate");
+    expect("debug" in payload).toBe(false);
+    const serializedPayload = JSON.stringify(payload);
+    expect(serializedPayload).not.toContain("openai_quality_gate");
+    expect(serializedPayload).not.toContain("linkedin_hashtag_must_be_last");
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "linkedin_post_generator_failed",
+      {
+        code: "openai_invalid_content",
+        reason: "caption.hashtags:linkedin_hashtag_must_be_last",
+        stage: "openai_quality_gate",
+      },
+    );
     expect(mocks.releaseLinkedInPostGeneratorUsage).toHaveBeenCalledTimes(1);
+    consoleErrorSpy.mockRestore();
+  });
+
+  it("keeps unexpected provider errors internal", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mocks.generateLinkedInPost.mockRejectedValue(
+      new Error("provider stack trace details"),
+    );
+
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: true,
+        displayName: "Max Mustermann",
+        email: "max@example.com",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "Pricing conversations",
+      }),
+    );
+
+    const payload = (await response.json()) as { code: string; ok: boolean };
+    expect(response.status).toBe(500);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("internal_error");
+    expect("debug" in payload).toBe(false);
+    expect(JSON.stringify(payload)).not.toContain(
+      "provider stack trace details",
+    );
+    consoleErrorSpy.mockRestore();
+  });
+
+  it("rejects an oversized payload even without a Content-Length header", async () => {
+    const { POST } = await import("./route");
+    const response = await POST(
+      createRequest({
+        colorPairId: "auto",
+        company: "",
+        consent: true,
+        displayName: "Max Mustermann",
+        email: "max@example.com",
+        expertise: "Consulting",
+        locale: "en",
+        tone: "sachlich",
+        topic: "x".repeat(20_000),
+      }),
+    );
+
+    const payload = (await response.json()) as { code: string; ok: boolean };
+    expect(response.status).toBe(413);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("payload_too_large");
+    expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
+  });
+
+  it("rejects an oversized payload with a forged small Content-Length header", async () => {
+    const { POST } = await import("./route");
+    const request = new Request(
+      "http://localhost/api/public/generator/linkedin-post",
+      {
+        body: JSON.stringify({
+          colorPairId: "auto",
+          company: "",
+          consent: true,
+          displayName: "Max Mustermann",
+          email: "max@example.com",
+          expertise: "Consulting",
+          locale: "en",
+          tone: "sachlich",
+          topic: "x".repeat(20_000),
+        }),
+        headers: {
+          "Content-Length": "10",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+    ) as NextRequest;
+    const response = await POST(request);
+
+    const payload = (await response.json()) as { code: string; ok: boolean };
+    expect(response.status).toBe(413);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("payload_too_large");
+    expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
+  });
+
+  it("rejects malformed JSON bodies as invalid_json", async () => {
+    const { POST } = await import("./route");
+    const request = new Request(
+      "http://localhost/api/public/generator/linkedin-post",
+      {
+        body: '{"topic":',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      },
+    ) as NextRequest;
+    const response = await POST(request);
+
+    const payload = (await response.json()) as { code: string; ok: boolean };
+    expect(response.status).toBe(400);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("invalid_json");
+    expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
   });
 });

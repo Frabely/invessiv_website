@@ -7,6 +7,7 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import type { Locale } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LinkedInPostGeneratorCustomPostCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import styles from "./workflow-showcase-section.module.css";
@@ -33,7 +34,10 @@ export function WorkflowShowcaseSection({
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
 
-  const landingHref = `/${locale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`;
+  const landingHref = createLocalePathname(
+    SITE_ROUTES.LANDING_PAGE_SERVICE,
+    locale,
+  );
   const [captionBefore, captionAfter] = post.caption.split("{{link}}");
   const captionNode = (
     <>

@@ -1,89 +1,34 @@
 import type { MetadataRoute } from "next";
+import { SUPPORTED_LOCALES } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
 import { isMarketingProofEnabled } from "@/config/marketing-launch";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { SITE_URL } from "@/lib/site-metadata";
 
+function sitemapEntry(pathname: string): MetadataRoute.Sitemap[number] {
+  return {
+    url: `${SITE_URL}${pathname}`,
+  };
+}
+
+function localizedRouteEntries(route: string): MetadataRoute.Sitemap {
+  return SUPPORTED_LOCALES.map((locale) =>
+    sitemapEntry(createLocalePathname(route, locale)),
+  );
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   const entries: MetadataRoute.Sitemap = [
-    {
-      url: `${SITE_URL}/de`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/en`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/de/services/landing-page`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/en/services/landing-page`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${SITE_URL}/de/imprint`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/en/imprint`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/de/privacy`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/en/privacy`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/de/terms`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
-    {
-      url: `${SITE_URL}/en/terms`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6,
-    },
+    ...localizedRouteEntries(SITE_ROUTES.HOME),
+    ...localizedRouteEntries(SITE_ROUTES.LANDING_PAGE_SERVICE),
+    ...localizedRouteEntries(SITE_ROUTES.LINKEDIN_POST_SERVICE),
+    ...localizedRouteEntries(SITE_ROUTES.IMPRINT),
+    ...localizedRouteEntries(SITE_ROUTES.PRIVACY),
+    ...localizedRouteEntries(SITE_ROUTES.TERMS),
   ];
 
   if (isMarketingProofEnabled()) {
-    entries.splice(
-      4,
-      0,
-      {
-        url: `${SITE_URL}/de/projects`,
-        lastModified: now,
-        changeFrequency: "monthly",
-        priority: 0.7,
-      },
-      {
-        url: `${SITE_URL}/en/projects`,
-        lastModified: now,
-        changeFrequency: "monthly",
-        priority: 0.7,
-      },
-    );
+    entries.splice(6, 0, ...localizedRouteEntries(SITE_ROUTES.PROJECTS));
   }
 
   return entries;
