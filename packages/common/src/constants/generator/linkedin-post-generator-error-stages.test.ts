@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LinkedInPostGeneratorErrorStage } from "./linkedin-post-generator-error-stages";
+import { LinkedInPostGeneratorErrorStage } from "@invessiv/common";
 
 describe("LinkedInPostGeneratorErrorStage", () => {
   it("contains the expected error stages", () => {

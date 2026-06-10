@@ -3,7 +3,7 @@ import {
   LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX,
   LINKEDIN_POST_GENERATOR_USAGE_LIMIT_SCOPE,
   LINKEDIN_POST_GENERATOR_USAGE_LIMIT_WINDOW_MS,
-} from "./linkedin-post-generator-usage-limits";
+} from "@invessiv/common";
 
 describe("LinkedIn post generator usage limits", () => {
   it("keeps the public generator limit at two runs per 30 days", () => {
