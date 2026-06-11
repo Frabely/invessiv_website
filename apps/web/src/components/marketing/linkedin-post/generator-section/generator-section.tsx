@@ -40,7 +40,7 @@ const LAYOUT_BY_STATE_KIND: Record<GeneratorStateKind, GeneratorSectionLayout> =
     [GeneratorStateKind.Loading]: GeneratorSectionLayout.Loading,
     [GeneratorStateKind.LimitReached]: GeneratorSectionLayout.Limit,
     [GeneratorStateKind.Success]: GeneratorSectionLayout.Result,
-    [GeneratorStateKind.Error]: GeneratorSectionLayout.Split,
+    [GeneratorStateKind.Error]: GeneratorSectionLayout.Initial,
   };
 
 type GeneratorSectionProps = {
@@ -69,7 +69,6 @@ export function GeneratorSection({
   );
   const formSlotRef = useRef<HTMLDivElement | null>(null);
   const previewRef = useRef<HTMLDivElement | null>(null);
-  const workbenchRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (state?.kind !== GeneratorStateKind.Loading) {
@@ -99,10 +98,17 @@ export function GeneratorSection({
       return;
     }
 
+    if (state?.kind === GeneratorStateKind.Error) {
+      formSlotRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+      return;
+    }
+
     if (
       state?.kind !== GeneratorStateKind.Success &&
-      state?.kind !== GeneratorStateKind.LimitReached &&
-      state?.kind !== GeneratorStateKind.Error
+      state?.kind !== GeneratorStateKind.LimitReached
     ) {
       return;
     }
@@ -116,26 +122,6 @@ export function GeneratorSection({
       block: shouldPinSuccessToTop ? "start" : "nearest",
     });
   }, [state?.kind]);
-
-  useEffect(() => {
-    const formSlot = formSlotRef.current;
-    const workbench = workbenchRef.current;
-    if (!formSlot || !workbench || typeof ResizeObserver === "undefined") {
-      return;
-    }
-
-    const updatePanelHeight = () => {
-      workbench.style.setProperty(
-        "--generator-panel-height",
-        `${formSlot.getBoundingClientRect().height}px`,
-      );
-    };
-
-    updatePanelHeight();
-    const observer = new ResizeObserver(updatePanelHeight);
-    observer.observe(formSlot);
-    return () => observer.disconnect();
-  }, []);
 
   function emitAnalytics(
     event: GeneratorAnalyticsEvent,
@@ -319,9 +305,12 @@ export function GeneratorSection({
   const loadingState =
     state?.kind === GeneratorStateKind.Loading ? state : null;
   const previewState =
-    state && state.kind !== GeneratorStateKind.Loading ? state : null;
-  const showFormSlot =
-    !previewState || previewState.kind === GeneratorStateKind.Error;
+    state &&
+    state.kind !== GeneratorStateKind.Loading &&
+    state.kind !== GeneratorStateKind.Error
+      ? state
+      : null;
+  const showFormSlot = !previewState;
 
   return (
     <section className={styles.section} id={id}>
@@ -331,7 +320,7 @@ export function GeneratorSection({
         <p className={styles.body}>{content.body}</p>
       </header>
 
-      <div className={styles.workbench} data-layout={layout} ref={workbenchRef}>
+      <div className={styles.workbench} data-layout={layout}>
         {showFormSlot ? (
           <div className={styles.formSlot} ref={formSlotRef}>
             {loadingState ? (
@@ -347,6 +336,11 @@ export function GeneratorSection({
                 locale={locale}
                 onChange={handleFieldChange}
                 onSubmit={handleSubmit}
+                submitError={
+                  state?.kind === GeneratorStateKind.Error
+                    ? content.preview.error
+                    : undefined
+                }
                 usageLimit={usageLimit}
                 values={values}
               />

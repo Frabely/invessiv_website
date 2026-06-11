@@ -5,7 +5,6 @@
 export const GeneratorSectionLayout = {
   Initial: "initial",
   Loading: "loading",
-  Split: "split",
   Limit: "limit",
   Result: "result",
 } as const;

@@ -555,7 +555,7 @@ describe("GeneratorSection", () => {
       ok: false as const,
       code: "INTERNAL",
     });
-    renderSection(submit);
+    const { container } = renderSection(submit);
     fillValidValues();
     clickSubmit();
 
@@ -563,6 +563,13 @@ describe("GeneratorSection", () => {
       expect(screen.getByText(content.preview.error.headline)).toBeTruthy();
     });
     expect(screen.getByText(content.preview.error.body)).toBeTruthy();
+    expect(container.querySelector('[data-state="error"]')).toBeTruthy();
+    // The form (and its submit button) stays visible so the user can retry
+    // immediately — no separate preview panel for the error state.
+    expect(
+      screen.getByRole("button", { name: content.form.submit }),
+    ).toBeTruthy();
+    expect(container.querySelector('[data-layout="initial"]')).toBeTruthy();
   });
 
   it("does not submit when the honeypot is filled", async () => {

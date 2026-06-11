@@ -10,7 +10,10 @@ import {
 import type { GeneratorUsageLimit } from "@/common/contracts/generator/ui/generator-state";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/ui/generator-field-errors";
 import type { Locale } from "@/config/i18n";
-import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
+import type {
+  LinkedInPostGeneratorContent,
+  LinkedInPostGeneratorPreviewErrorCopy,
+} from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/ui/linkedin-post-generator-form-values";
 import { UsageMeter } from "./usage-meter/usage-meter";
 import type { GeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
@@ -26,6 +29,7 @@ type GeneratorFormProps = {
     next: LinkedInPostGeneratorFormValues[K],
   ) => void;
   onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
+  submitError?: LinkedInPostGeneratorPreviewErrorCopy;
   usageLimit?: GeneratorUsageLimit;
   values: LinkedInPostGeneratorFormValues;
 };
@@ -42,6 +46,7 @@ export function GeneratorForm({
   locale,
   onChange,
   onSubmit,
+  submitError,
   usageLimit,
   values,
 }: GeneratorFormProps) {
@@ -166,6 +171,18 @@ export function GeneratorForm({
       >
         {content.form.submit}
       </PrimaryCtaButton>
+
+      {submitError ? (
+        <div
+          aria-live="polite"
+          className={styles.submitError}
+          data-state="error"
+          role="alert"
+        >
+          <p className={styles.submitErrorHeadline}>{submitError.headline}</p>
+          <p className={styles.submitErrorBody}>{submitError.body}</p>
+        </div>
+      ) : null}
     </form>
   );
 }

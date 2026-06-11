@@ -4,11 +4,11 @@ import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { SuccessPreview } from "./success-preview";
 import { LimitReachedPreview } from "./limit-reached-preview/limit-reached-preview";
-import { ErrorPreview } from "./error-preview/error-preview";
 
 type PreviewState = Exclude<
   GeneratorState,
-  { kind: typeof GeneratorStateKind.Loading }
+  | { kind: typeof GeneratorStateKind.Loading }
+  | { kind: typeof GeneratorStateKind.Error }
 >;
 
 type PreviewPanelProps = {
@@ -46,8 +46,6 @@ export function PreviewPanel({
           usageLimit={state.usageLimit}
         />
       );
-    case GeneratorStateKind.Error:
-      return <ErrorPreview content={content} />;
     case GeneratorStateKind.Success:
       return (
         <SuccessPreview

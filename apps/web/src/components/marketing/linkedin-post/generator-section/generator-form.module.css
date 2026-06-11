@@ -103,6 +103,30 @@
   margin-top: 0.2rem;
 }
 
+.submitError {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+}
+
+.submitErrorHeadline {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-danger) 88%, var(--color-text) 12%);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.submitErrorBody {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-danger) 88%, var(--color-text) 12%);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 .privacyNote {
   margin: -0.35rem 0 0;
   color: color-mix(in srgb, var(--color-text-muted) 78%, transparent);
