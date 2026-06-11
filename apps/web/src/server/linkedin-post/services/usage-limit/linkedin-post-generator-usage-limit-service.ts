@@ -12,8 +12,8 @@ import type {
 import {
   GeneratorUsageLimitUnavailableError,
   linkedinPostGeneratorUsageKeyService,
-} from "@/server/linkedin-post/linkedin-post-generator-usage-key-service";
-import { databaseGeneratorUsageLimitStore } from "@/server/linkedin-post/linkedin-post-generator-usage-limit-store";
+} from "./linkedin-post-generator-usage-key-service";
+import { databaseGeneratorUsageLimitStore } from "./linkedin-post-generator-usage-limit-store";
 
 function toUsageLimitSnapshot(
   reservation: Pick<GeneratorUsageLimitReservation, "limit" | "remaining"> & {

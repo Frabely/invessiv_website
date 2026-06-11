@@ -2,8 +2,10 @@ import { describe, expect, it, vi } from "vitest";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import {
   linkedinPostGeneratorRequestSchema,
-  mapGeneratorValidationErrors,
+  linkedinPostGeneratorValidationService,
 } from "./linkedin-post-generator-validation";
+
+const { mapGeneratorValidationErrors } = linkedinPostGeneratorValidationService;
 
 vi.mock("server-only", () => ({}));
 

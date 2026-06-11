@@ -59,29 +59,43 @@ const mocks = vi.hoisted(() => ({
   })),
 }));
 
-vi.mock("@/server/linkedin-post/linkedin-post-openai-adapter-service", () => ({
-  LinkedInPostGenerationError: mocks.LinkedInPostGenerationError,
-}));
-
-vi.mock("@/server/linkedin-post/linkedin-post-generator-service", () => ({
-  generateLinkedInPost: mocks.generateLinkedInPost,
-}));
-
-vi.mock("@/server/linkedin-post/linkedin-post-generator-mock-service", () => ({
-  linkedinPostGeneratorMockService: {
-    buildMockLinkedInPostGeneratorSuccessResult:
-      mocks.buildMockLinkedInPostGeneratorSuccessResult,
-  },
-}));
-
-vi.mock("@/server/linkedin-post/render-linkedin-post-service", () => ({
-  renderLinkedinPostService: {
-    renderLinkedInPostPng: mocks.renderLinkedInPostPng,
-  },
-}));
+vi.mock(
+  "@/server/linkedin-post/services/generation/linkedin-post-openai-adapter-service",
+  () => ({
+    LinkedInPostGenerationError: mocks.LinkedInPostGenerationError,
+  }),
+);
 
 vi.mock(
-  "@/server/linkedin-post/linkedin-post-generator-usage-limit-service",
+  "@/server/linkedin-post/services/generation/linkedin-post-generator-service",
+  () => ({
+    linkedinPostGeneratorService: {
+      generateLinkedInPost: mocks.generateLinkedInPost,
+    },
+  }),
+);
+
+vi.mock(
+  "@/server/linkedin-post/services/generation/linkedin-post-generator-mock-service",
+  () => ({
+    linkedinPostGeneratorMockService: {
+      buildMockLinkedInPostGeneratorSuccessResult:
+        mocks.buildMockLinkedInPostGeneratorSuccessResult,
+    },
+  }),
+);
+
+vi.mock(
+  "@/server/linkedin-post/services/rendering/linkedin-post-render-service",
+  () => ({
+    linkedinPostRenderService: {
+      renderLinkedInPostPng: mocks.renderLinkedInPostPng,
+    },
+  }),
+);
+
+vi.mock(
+  "@/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-limit-service",
   () => ({
     linkedinPostGeneratorUsageLimitService: {
       releaseLinkedInPostGeneratorUsage:
@@ -94,7 +108,7 @@ vi.mock(
 );
 
 vi.mock(
-  "@/server/linkedin-post/linkedin-post-generator-usage-key-service",
+  "@/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service",
   () => ({
     GeneratorUsageLimitUnavailableError:
       mocks.GeneratorUsageLimitUnavailableError,

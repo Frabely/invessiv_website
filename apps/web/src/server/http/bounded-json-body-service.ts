@@ -17,10 +17,7 @@ function concatenateChunks(chunks: Uint8Array[], receivedBytes: number) {
 async function cancelReader(reader: ReadableStreamDefaultReader<Uint8Array>) {
   try {
     await reader.cancel();
-  } catch {
-    // The size verdict is already known. A failed cancel must not turn a
-    // payload_too_large result into a generic invalid_json response.
-  }
+  } catch {}
 }
 
 /**

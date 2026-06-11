@@ -230,24 +230,24 @@ downloadAction, emailAction, success{download,email}, error{…} }`.
 
 ## Kritische Dateien (Referenz)
 
-| Zweck                   | Pfad                                                                                                                                                             |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Section-Orchestrierung  | `apps/web/src/components/marketing/linkedin-post/generator-section/generator-section.tsx`                                                                        |
-| Generier-Formular       | `…/generator-section/generator-form.tsx`                                                                                                                         |
-| Preview-Routing         | `…/generator-section/preview-panel.tsx`                                                                                                                          |
-| Success-Preview         | `…/generator-section/success-preview.tsx`                                                                                                                        |
-| State-Kind-Konstante    | `apps/web/common/constants/generator/generator-state-kind.ts`                                                                                                    |
-| State-Contract          | `apps/web/common/contracts/generator/generator-state.ts`                                                                                                         |
-| Form-Values             | `apps/web/common/contracts/generator/linkedin-post-generator-form-values.ts`                                                                                     |
-| Error-Codes             | `apps/web/common/constants/generator/linkedin-post-generator-error-codes.ts`                                                                                     |
-| Generator-Dictionary    | `apps/web/src/i18n/dictionaries/linkedin-post/generator/{de,en}.json` + `index.ts`                                                                               |
-| Generierungs-Handler    | `apps/web/src/server/linkedin-post/handlers/generate-linkedin-post.command-handler.ts`                                                                           |
-| Mail-Template           | `apps/web/src/server/services/mail/templates/linkedin-post-generator-result.ts`                                                                                  |
-| PNG-Render              | `apps/web/src/server/linkedin-post/render-linkedin-post-service.ts`                                                                                              |
-| Usage-Limit (IP-Key/DB) | `apps/web/src/server/linkedin-post/linkedin-post-generator-usage-key-service.ts`, `packages/db/src/linkedin-post/reserve-linkedin-post-generator-usage-limit.ts` |
-| Contact-Prefill-Event   | `apps/web/common/constants/marketing/project-offer-change-event.ts`, `…/contact-section/project-request-form/project-request-form.tsx`                           |
+| Zweck                   | Pfad                                                                                                                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Section-Orchestrierung  | `apps/web/src/components/marketing/linkedin-post/generator-section/generator-section.tsx`                                                                                             |
+| Generier-Formular       | `…/generator-section/generator-form.tsx`                                                                                                                                              |
+| Preview-Routing         | `…/generator-section/preview-panel.tsx`                                                                                                                                               |
+| Success-Preview         | `…/generator-section/success-preview.tsx`                                                                                                                                             |
+| State-Kind-Konstante    | `apps/web/common/constants/generator/generator-state-kind.ts`                                                                                                                         |
+| State-Contract          | `apps/web/common/contracts/generator/generator-state.ts`                                                                                                                              |
+| Form-Values             | `apps/web/common/contracts/generator/linkedin-post-generator-form-values.ts`                                                                                                          |
+| Error-Codes             | `apps/web/common/constants/generator/linkedin-post-generator-error-codes.ts`                                                                                                          |
+| Generator-Dictionary    | `apps/web/src/i18n/dictionaries/linkedin-post/generator/{de,en}.json` + `index.ts`                                                                                                    |
+| Generierungs-Handler    | `apps/web/src/server/linkedin-post/handlers/generate-linkedin-post.command-handler.ts`                                                                                                |
+| Mail-Template           | `apps/web/src/server/services/mail/templates/linkedin-post-generator-result.ts`                                                                                                       |
+| PNG-Render              | `apps/web/src/server/linkedin-post/services/rendering/linkedin-post-render-service.ts`                                                                                                |
+| Usage-Limit (IP-Key/DB) | `apps/web/src/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service.ts`, `packages/db/src/linkedin-post/reserve-linkedin-post-generator-usage-limit.ts` |
+| Contact-Prefill-Event   | `apps/web/common/constants/marketing/project-offer-change-event.ts`, `…/contact-section/project-request-form/project-request-form.tsx`                                                |
 
-**Wiederverwenden statt neu bauen:** `render-linkedin-post-service.ts` (Re-Render im Deliver), Mail-Template,
+**Wiederverwenden statt neu bauen:** `linkedin-post-render-service.ts` (Re-Render im Deliver), Mail-Template,
 `linkedin-post-generator-usage-key-service.ts` (Rate-Limit), `PROJECT_OFFER_CHANGE_EVENT`-Mechanik (Prefill),
 `PrimaryCtaLink`/`PrimaryCtaButton`, `Field`-Komponente, bestehender Honeypot.
 

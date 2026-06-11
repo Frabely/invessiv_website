@@ -132,7 +132,7 @@ describe("linkedinPostOpenaiAdapterService.callOpenAI", () => {
   it("keeps schema adaptation failures visible as generator schema errors", async () => {
     vi.resetModules();
     vi.doMock(
-      "../../../project-skills/linkedin-post-generator/references/content-schema.json",
+      "../../../../../project-skills/linkedin-post-generator/references/content-schema.json",
       () => ({ default: "not-a-json-object" }),
     );
 
@@ -156,7 +156,7 @@ describe("linkedinPostOpenaiAdapterService.callOpenAI", () => {
     });
 
     vi.doUnmock(
-      "../../../project-skills/linkedin-post-generator/references/content-schema.json",
+      "../../../../../project-skills/linkedin-post-generator/references/content-schema.json",
     );
   });
 });

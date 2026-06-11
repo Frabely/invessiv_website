@@ -2,23 +2,26 @@ import { describe, expect, it, vi } from "vitest";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { LinkedInPostGeneratorErrorStage } from "@invessiv/common/constants/generator";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator";
-import { LinkedInPostGenerationError } from "@/server/linkedin-post/linkedin-post-openai-adapter-service";
+import { LinkedInPostGenerationError } from "@/server/linkedin-post/services/generation/linkedin-post-openai-adapter-service";
 import { linkedinPostGeneratorErrorService } from "./linkedin-post-generator-error";
 
 vi.mock("server-only", () => ({}));
 
-vi.mock("@/server/linkedin-post/linkedin-post-openai-adapter-service", () => ({
-  LinkedInPostGenerationError: class LinkedInPostGenerationError extends Error {
-    constructor(
-      readonly code: string,
-      readonly stage: string,
-      message: string,
-    ) {
-      super(message);
-      this.name = "LinkedInPostGenerationError";
-    }
-  },
-}));
+vi.mock(
+  "@/server/linkedin-post/services/generation/linkedin-post-openai-adapter-service",
+  () => ({
+    LinkedInPostGenerationError: class LinkedInPostGenerationError extends Error {
+      constructor(
+        readonly code: string,
+        readonly stage: string,
+        message: string,
+      ) {
+        super(message);
+        this.name = "LinkedInPostGenerationError";
+      }
+    },
+  }),
+);
 
 describe("linkedinPostGeneratorErrorService.mapGenerationError", () => {
   it("keeps code, stage and reason from a generation error in the log context", () => {

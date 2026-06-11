@@ -33,7 +33,11 @@ Sie ergänzen die Root-Regeln und präzisieren die Grenze zwischen Web-App-Serve
 - Für jeden API-Endpunkt gibt es im Regelfall einen passenden Command- oder Query-Handler unter `handlers/`.
 - Command-/Query-Handler orchestrieren Validierung, Limit-Prüfung, Generator-Aufruf, Rendering, optionale
   Mail-Zustellung und Fehler-Mapping.
-- Fachliche Hilfslogik für den Generator bleibt in klar benannten Services in diesem Ordner.
+- Fachliche Services liegen unter `services/`, gegliedert nach Verantwortung:
+  - `services/generation/` — Generator-Orchestrierung, OpenAI-Adapter und Mock-Variante
+  - `services/rendering/` — kanonisches HTML-/PNG-Rendering des Posts
+  - `services/usage-limit/` — IP-Pseudonymisierung, Limit-Reservierung und DB-Store-Adapter
+- Request-Schema und Validierungs-Mapping liegen unter `validation/`, Fehler-Mapping unter `errors/`.
 - Services exportieren ein Objekt im Pattern
   `export const <serviceName> = { <serviceFunction1>, <serviceFunction2> } as const;`; Call-Sites importieren dieses
   Service-Objekt statt lose Einzelfunktionen.

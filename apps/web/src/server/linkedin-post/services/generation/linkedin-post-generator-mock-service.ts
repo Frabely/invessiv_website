@@ -1,3 +1,4 @@
+import "server-only";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
 import { LinkedInPostBodyVariant } from "@/common/contracts/generator/linkedin-post-body-variant";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator/linkedin-post-generator-post";
@@ -5,21 +6,13 @@ import type { LinkedInPostGeneratorSuccessResponseDto } from "@/common/contracts
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
 import type { Locale } from "@/config/i18n";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
+import { escapeHtml } from "@/server/services/mail/templates/template-utils";
 
 type MockLinkedInPostGeneratorSuccessResult =
   LinkedInPostGeneratorSuccessResponseDto & {
     imageDataUrl: string | null;
     previewHtml: string;
   };
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
 
 function hashString(value: string) {
   let hash = 0;
@@ -29,19 +22,28 @@ function hashString(value: string) {
   return hash;
 }
 
-function selectExample(
+/** Deterministic per-input key so the same form values always pick the same
+ *  example and color pair. */
+function createSelectionKey(
   values: LinkedInPostGeneratorFormValues,
   locale: Locale,
 ) {
-  const content = getLinkedInPostExampleContent(locale);
-  const selectionKey = [
+  return [
     values.topic.trim(),
     values.expertise.trim(),
     values.tone,
     values.colorPairId,
     locale,
   ].join("|");
-  const selectedIndex = hashString(selectionKey) % content.samples.length;
+}
+
+function selectExample(
+  values: LinkedInPostGeneratorFormValues,
+  locale: Locale,
+) {
+  const content = getLinkedInPostExampleContent(locale);
+  const selectedIndex =
+    hashString(createSelectionKey(values, locale)) % content.samples.length;
   return content.samples[selectedIndex]!;
 }
 
@@ -49,14 +51,9 @@ function selectColorPair(
   values: LinkedInPostGeneratorFormValues,
   locale: Locale,
 ) {
-  const selectionKey = [
-    values.topic.trim(),
-    values.expertise.trim(),
-    values.tone,
-    values.colorPairId,
-    locale,
-  ].join("|");
-  const selectedIndex = hashString(selectionKey) % GENERATOR_COLOR_PAIRS.length;
+  const selectedIndex =
+    hashString(createSelectionKey(values, locale)) %
+    GENERATOR_COLOR_PAIRS.length;
   const selected = GENERATOR_COLOR_PAIRS[selectedIndex]!;
 
   return {

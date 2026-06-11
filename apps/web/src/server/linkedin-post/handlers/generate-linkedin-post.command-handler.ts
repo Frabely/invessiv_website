@@ -15,15 +15,15 @@ import {
 import { BoundedJsonBodyResultKind } from "@/common/constants/http/bounded-json-body-result-kind";
 import { boundedJsonBodyService } from "@/server/http/bounded-json-body-service";
 import { linkedinPostGeneratorErrorService } from "@/server/linkedin-post/errors/linkedin-post-generator-error";
-import { generateLinkedInPost } from "@/server/linkedin-post/linkedin-post-generator-service";
-import { linkedinPostGeneratorMockService } from "@/server/linkedin-post/linkedin-post-generator-mock-service";
-import { linkedinPostGeneratorUsageLimitService } from "@/server/linkedin-post/linkedin-post-generator-usage-limit-service";
-import { GeneratorUsageLimitUnavailableError } from "@/server/linkedin-post/linkedin-post-generator-usage-key-service";
+import { linkedinPostGeneratorService } from "@/server/linkedin-post/services/generation/linkedin-post-generator-service";
+import { linkedinPostGeneratorMockService } from "@/server/linkedin-post/services/generation/linkedin-post-generator-mock-service";
+import { linkedinPostGeneratorUsageLimitService } from "@/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-limit-service";
+import { GeneratorUsageLimitUnavailableError } from "@/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service";
 import {
   linkedinPostGeneratorRequestSchema,
-  mapGeneratorValidationErrors,
-} from "@/server/linkedin-post/linkedin-post-generator-validation";
-import { renderLinkedinPostService } from "@/server/linkedin-post/render-linkedin-post-service";
+  linkedinPostGeneratorValidationService,
+} from "@/server/linkedin-post/validation/linkedin-post-generator-validation";
+import { linkedinPostRenderService } from "@/server/linkedin-post/services/rendering/linkedin-post-render-service";
 
 type LinkedInPostGeneratorCommandSuccessResponse =
   LinkedInPostGeneratorSuccessResponseDto & {
@@ -124,7 +124,9 @@ async function generateLinkedInPostCommandHandler({
     return failureResult(
       LinkedInPostGeneratorErrorCode.ValidationError,
       HttpResponseCode.BadRequest,
-      mapGeneratorValidationErrors(parsedPayload.error),
+      linkedinPostGeneratorValidationService.mapGeneratorValidationErrors(
+        parsedPayload.error,
+      ),
     );
   }
 
@@ -184,11 +186,11 @@ async function generateLinkedInPostCommandHandler({
           generatorRequest,
           generatorRequest.locale,
         )
-      : generateLinkedInPost(generatorRequest));
+      : linkedinPostGeneratorService.generateLinkedInPost(generatorRequest));
 
     let png: Buffer | null = null;
     try {
-      png = await renderLinkedinPostService.renderLinkedInPostPng(
+      png = await linkedinPostRenderService.renderLinkedInPostPng(
         result.previewHtml,
       );
     } catch (renderError) {

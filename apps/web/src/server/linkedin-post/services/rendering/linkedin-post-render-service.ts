@@ -135,7 +135,7 @@ async function renderLinkedInPostPng(html: string): Promise<Buffer> {
   }
 }
 
-export const renderLinkedinPostService = {
+export const linkedinPostRenderService = {
   renderLinkedInPostHtml,
   renderLinkedInPostPng,
-};
+} as const;

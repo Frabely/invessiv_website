@@ -5,7 +5,7 @@ import {
   releaseLinkedInPostGeneratorUsageLimit,
   reserveLinkedInPostGeneratorUsageLimit,
 } from "@invessiv/db/linkedin-post/reserve-linkedin-post-generator-usage-limit";
-import { GeneratorUsageLimitUnavailableError } from "@/server/linkedin-post/linkedin-post-generator-usage-key-service";
+import { GeneratorUsageLimitUnavailableError } from "./linkedin-post-generator-usage-key-service";
 
 export const databaseGeneratorUsageLimitStore: GeneratorUsageLimitStore = {
   async reserve({ keyHash, limit, now, windowMs }) {

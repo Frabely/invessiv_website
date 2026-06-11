@@ -11,7 +11,7 @@ import {
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
 import { getServerEnv } from "@/server/config/env";
-import { renderLinkedinPostService } from "./render-linkedin-post-service";
+import { linkedinPostRenderService } from "../rendering/linkedin-post-render-service";
 import {
   BRAND_COLLISION_PATTERN,
   PROMPT_INJECTION_PATTERN,
@@ -61,12 +61,11 @@ function assertSafeInput(request: LinkedInPostGeneratorRequestDto) {
 function resolveColorPair(
   colorPairId: string,
 ): LinkedInPostGeneratorColorPairDto {
-  const selected =
+  const index =
     colorPairId === "auto"
-      ? GENERATOR_COLOR_PAIRS[
-          Math.floor(Math.random() * GENERATOR_COLOR_PAIRS.length)
-        ]
-      : GENERATOR_COLOR_PAIRS.find((pair) => pair.id === colorPairId);
+      ? Math.floor(Math.random() * GENERATOR_COLOR_PAIRS.length)
+      : GENERATOR_COLOR_PAIRS.findIndex((pair) => pair.id === colorPairId);
+  const selected = GENERATOR_COLOR_PAIRS[index];
 
   if (!selected) {
     throw new Error("invalid_color_pair");
@@ -75,7 +74,7 @@ function resolveColorPair(
   return {
     accent: selected.accent,
     id: selected.id,
-    index: GENERATOR_COLOR_PAIRS.findIndex((pair) => pair.id === selected.id),
+    index,
     primary: selected.primary,
     secondary: selected.secondary,
     text: selected.text,
@@ -166,7 +165,7 @@ type GenerateLinkedInPostResult = LinkedInPostGeneratorSuccessResponseDto & {
   previewHtml: string;
 };
 
-export async function generateLinkedInPost(
+async function generateLinkedInPost(
   rawRequest: LinkedInPostGeneratorRequestDto,
   client?: OpenAIResponsesClient,
   options?: GenerateLinkedInPostOptions,
@@ -204,7 +203,7 @@ export async function generateLinkedInPost(
 
   const colorPair = resolveColorPair(request.colorPairId);
   const authorName =
-    request.displayName.trim() ||
+    request.displayName ||
     DEFAULT_AUTHOR_NAME_BY_LOCALE[request.locale] ||
     DEFAULT_AUTHOR_NAME_BY_LOCALE.de;
   const template: LinkedInPostGeneratorTemplateDto = {
@@ -235,9 +234,13 @@ export async function generateLinkedInPost(
     downloadFileName: createDownloadFileName(request.topic),
     ok: true,
     post,
-    previewHtml: renderLinkedinPostService.renderLinkedInPostHtml(
+    previewHtml: linkedinPostRenderService.renderLinkedInPostHtml(
       post,
       request.locale,
     ),
   };
 }
+
+export const linkedinPostGeneratorService = {
+  generateLinkedInPost,
+} as const;

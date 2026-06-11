@@ -45,7 +45,7 @@ export const linkedinPostGeneratorRequestSchema = z
     }
   });
 
-export function mapGeneratorValidationErrors(error: z.ZodError) {
+function mapGeneratorValidationErrors(error: z.ZodError) {
   const fieldErrors: Record<string, string[]> = {};
   for (const issue of error.issues) {
     const field = issue.path[0];
@@ -59,3 +59,7 @@ export function mapGeneratorValidationErrors(error: z.ZodError) {
   }
   return fieldErrors;
 }
+
+export const linkedinPostGeneratorValidationService = {
+  mapGeneratorValidationErrors,
+} as const;

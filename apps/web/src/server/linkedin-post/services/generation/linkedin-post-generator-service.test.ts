@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { generateLinkedInPost } from "./linkedin-post-generator-service";
+import { linkedinPostGeneratorService } from "./linkedin-post-generator-service";
+
+const { generateLinkedInPost } = linkedinPostGeneratorService;
 
 vi.mock("server-only", () => ({}));
 

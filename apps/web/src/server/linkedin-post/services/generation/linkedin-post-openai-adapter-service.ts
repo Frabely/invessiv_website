@@ -10,7 +10,7 @@ import {
 } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
-import contentSchema from "../../../project-skills/linkedin-post-generator/references/content-schema.json";
+import contentSchema from "../../../../../project-skills/linkedin-post-generator/references/content-schema.json";
 
 export type OpenAIResponsesClient = Pick<OpenAI["responses"], "create">;
 
@@ -384,4 +384,4 @@ function normalizeHashtags(hashtags: string[]) {
 
 export const linkedinPostOpenaiAdapterService = {
   callOpenAI,
-};
+} as const;
