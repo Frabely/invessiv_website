@@ -1,7 +1,7 @@
 {
   "eyebrow": "WAS DU BEKOMMST",
   "title": "Ein kostenloser Check. Kein Pitch.",
-  "body": "Du zeigst deinen Prozess.\nWir prüfen, wo KI helfen kann.",
+  "body": "Du zeigst deinen Prozess.\nIch prüfe, wo KI helfen kann.",
   "deliverablesHeading": "Was du nach dem Check hast",
   "deliverables": [
     {
@@ -21,7 +21,7 @@
       "detail": "Ob ein Pilot sinnvoll ist — und was konkret folgt"
     }
   ],
-  "proofNote": "Wir nutzen denselben Prozess, um KI-Workflows zu erstellen.",
+  "proofNote": "Ich nutze denselben Prozess für meine eigenen KI-Workflows.",
   "cta": "Content-Workflow prüfen",
   "stepsLabel": "So läuft's ab",
   "steps": [

@@ -1,7 +1,7 @@
 {
   "eyebrow": "CHECK WORKFLOW",
   "title": "Which task should your workflow take over?",
-  "body": "Briefly describe the recurring task. I will check whether it can become a lean workflow.",
+  "body": "Briefly describe how your posts get made today. I'll check which steps a workflow can take over.",
   "form": {
     "fields": {
       "name": {
@@ -15,8 +15,8 @@
         "autocomplete": "email"
       },
       "goal": {
-        "label": "Which existing workflow do you want to automate?",
-        "placeholder": "e.g. Turn one topic into a LinkedIn post, image, caption, and email draft every week ..."
+        "label": "How do your posts get made today?",
+        "placeholder": "e.g. collect a topic, write the text, build the image, post — every single week"
       },
       "honeypot": {
         "label": "Please leave empty"

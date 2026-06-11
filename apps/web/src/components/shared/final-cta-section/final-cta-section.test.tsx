@@ -143,7 +143,7 @@ describe("FinalCtaSection", () => {
 
     fireEvent.change(
       screen.getByRole("textbox", {
-        name: /Welchen bestehenden Workflow möchtest du automatisieren/,
+        name: /Wie entstehen deine Posts heute/,
       }),
       {
         target: {

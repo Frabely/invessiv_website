@@ -1,7 +1,7 @@
 {
   "eyebrow": "WORKFLOW PRÜFEN",
   "title": "Welche Aufgabe soll dein Workflow abnehmen?",
-  "body": "Beschreib kurz die wiederkehrende Aufgabe. Ich prüfe, ob daraus ein schlanker Workflow werden kann.",
+  "body": "Beschreib kurz, wie deine Posts heute entstehen. Ich prüfe, welche Schritte ein Workflow übernehmen kann.",
   "form": {
     "fields": {
       "name": {
@@ -15,8 +15,8 @@
         "autocomplete": "email"
       },
       "goal": {
-        "label": "Welchen bestehenden Workflow möchtest du automatisieren?",
-        "placeholder": "z. B. Aus einem Thema jede Woche LinkedIn-Post, Bild, Caption und E-Mail-Entwurf erstellen ..."
+        "label": "Wie entstehen deine Posts heute?",
+        "placeholder": "z. B. Thema sammeln, Text schreiben, Bild bauen, posten — jede Woche aufs Neue"
       },
       "honeypot": {
         "label": "Bitte nicht ausfüllen"

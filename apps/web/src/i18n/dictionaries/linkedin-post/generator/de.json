@@ -1,7 +1,7 @@
 {
-  "eyebrow": "BEISPIEL-POST ERSTELLEN",
-  "title": "Sieh dir zuerst ein konkretes Ergebnis an.",
-  "body": "Wähl Thema, Rolle und Ton. Du siehst sofort einen fertigen Post. Name und E-Mail brauchst du erst, wenn du ihn herunterladen willst.",
+  "eyebrow": "JETZT SELBST TESTEN",
+  "title": "Jetzt mit deinem Thema.",
+  "body": "Wähl Thema, Rolle und Ton — 60 Sekunden später steht dein Post. Kein Account nötig, Download inklusive.",
   "form": {
     "topic": {
       "label": "Worum geht's?",
@@ -50,7 +50,7 @@
     "honeypot": {
       "label": "Firma"
     },
-    "privacyNotice": "Wir verarbeiten deine Eingaben nur, um den Beispielpost zu bauen. Zur Missbrauchsbegrenzung speichern wir 30 Tage eine pseudonyme technische Kennung.",
+    "privacyNotice": "Ich verarbeite deine Eingaben nur, um den Beispielpost zu bauen. Zur Missbrauchsbegrenzung wird 30 Tage eine pseudonyme technische Kennung gespeichert.",
     "submit": "Post generieren",
     "submitLoading": "Wird erstellt …",
     "loadingHelp": "Ca. 30 Sekunden offen lassen."
@@ -70,7 +70,7 @@
   },
   "preview": {
     "loading": {
-      "headline": "Wir bauen dein Beispiel …",
+      "headline": "Dein Beispiel entsteht …",
       "body": "Hook, Struktur und Layout werden jetzt gesetzt.",
       "steps": [
         "Hook formulieren",
@@ -87,29 +87,29 @@
       "fallbackAuthorName": "Dein Name",
       "followUp": {
         "badge": "Nächster Schritt",
-        "headline": "Passt der Stil? Dann frag dein Projekt an.",
-        "body": "Wenn dir der Beispielpost hilft, setzen wir daraus im nächsten Schritt einen individuellen Workflow auf.",
-        "ctaLabel": "Projekt anfragen",
+        "headline": "Gefällt dir der Post?",
+        "body": "Ein eigener Workflow baut solche Posts mit deinem Branding und deiner Stimme — Woche für Woche.",
+        "ctaLabel": "Workflow anfragen",
         "ctaAriaLabel": "Zum Anfrageformular springen"
       }
     },
     "limitReached": {
       "badge": "Geschafft",
       "headline": "Du hast deine 2 kostenlosen Posts erstellt.",
-      "body": "Gefällt dir das Ergebnis? Dann bauen wir daraus einen eigenen Workflow, der zu deiner Stimme und deinem Branding passt.",
+      "body": "Gefällt dir das Ergebnis? Dann baue ich dir einen eigenen Workflow, der zu deiner Stimme und deinem Branding passt.",
       "resetPrefix": "Neue Tests ab",
-      "ctaLabel": "Eigenen Workflow anfragen",
-      "ctaAriaLabel": "Zum Anfrageformular springen und einen eigenen Workflow anfragen"
+      "ctaLabel": "Workflow anfragen",
+      "ctaAriaLabel": "Zum Anfrageformular springen und einen Workflow anfragen"
     },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
-      "body": "Wir konnten den Post gerade nicht bauen. Versuch es noch einmal."
+      "body": "Der Post konnte gerade nicht erstellt werden. Versuch es noch einmal."
     }
   },
   "customPost": {
     "badge": "ECHTES BEISPIEL",
     "headline": "Dieser Post kommt aus meinem Workflow.",
-    "context": "Bild und Caption stammen aus einem Workflow, den ich für meine eigenen Social-Media-Posts gebaut habe: Branding, Bildsprache und Stimme greifen zusammen.",
+    "context": "Bild und Caption stammen aus dem Workflow, den ich für meine eigenen Posts nutze: Branding, Bildsprache und Stimme greifen zusammen. Genauso einen Workflow baue ich dir für deine Posts.",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Webdesigner",

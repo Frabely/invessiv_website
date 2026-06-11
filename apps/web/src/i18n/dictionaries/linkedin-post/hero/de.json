@@ -1,9 +1,9 @@
 {
   "tag": "KI-CONTENT FÜR LINKEDIN",
   "title": "Dein nächster LinkedIn-Post in 60 Sekunden",
-  "description": "Teste den kostenlosen Generator als Beispiel. Wenn du daraus regelmäßig Inhalte machen willst, bauen wir dir danach einen eigenen Workflow.",
+  "description": "Wenn jeder Post eine Stunde frisst, bleibt das Posten liegen. Teste den Generator mit deinem Thema — zwei Posts kostenlos, mit Bild, Caption und Download.",
   "primaryCta": "Post generieren",
   "secondaryCta": "Workflow anfragen",
-  "trustChips": ["Kostenlos", "Sofort-Ergebnis", "Download inklusive"],
+  "trustChips": ["Kostenlos", "Ohne Account", "Download inklusive"],
   "visualAriaLabel": "KI-generierter LinkedIn-Post mit Bild und Caption als Vorschau"
 }

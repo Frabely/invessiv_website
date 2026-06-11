@@ -1,9 +1,9 @@
 {
   "tag": "AI CONTENT FOR LINKEDIN",
   "title": "Your next LinkedIn post in 60 seconds",
-  "description": "Try the free generator as an example. If you want recurring content from this format, we can build your own workflow next.",
+  "description": "If every post eats an hour, posting stops happening. Try the generator with your topic — two free posts with image, caption, and download.",
   "primaryCta": "Generate post",
   "secondaryCta": "Request workflow",
-  "trustChips": ["Free", "Instant result", "Download included"],
+  "trustChips": ["Free", "No account", "Download included"],
   "visualAriaLabel": "AI-generated LinkedIn post with image and caption preview"
 }

@@ -1,7 +1,7 @@
 {
-  "eyebrow": "CREATE A SAMPLE POST",
-  "title": "See a concrete result first.",
-  "body": "Pick topic, role and tone. You get a finished post right away. You only need a name and email once you want to download it.",
+  "eyebrow": "TRY IT YOURSELF",
+  "title": "Now with your topic.",
+  "body": "Pick a topic, role, and tone — 60 seconds later your post is ready. No account needed, download included.",
   "form": {
     "topic": {
       "label": "What's it about?",
@@ -43,14 +43,14 @@
     },
     "color": {
       "label": "Background",
-      "help": "Or let us choose automatically.",
+      "help": "Or pick automatic.",
       "autoLabel": "Automatic",
       "swatchLabel": "Color scheme"
     },
     "honeypot": {
       "label": "Company"
     },
-    "privacyNotice": "We only process your inputs to build the sample post. To limit misuse, we store a pseudonymous technical identifier for 30 days.",
+    "privacyNotice": "I only process your inputs to build the sample post. To limit misuse, a pseudonymous technical identifier is stored for 30 days.",
     "submit": "Generate post",
     "submitLoading": "Creating …",
     "loadingHelp": "Keep this open for about 30 seconds."
@@ -70,7 +70,7 @@
   },
   "preview": {
     "loading": {
-      "headline": "We're building your sample …",
+      "headline": "Your sample is on its way …",
       "body": "Hook, structure and layout are being set.",
       "steps": [
         "Writing the hook",
@@ -87,29 +87,29 @@
       "fallbackAuthorName": "Your name",
       "followUp": {
         "badge": "Next step",
-        "headline": "If the style fits, request the project.",
-        "body": "If the sample helps, we can turn it into a custom workflow next.",
-        "ctaLabel": "Request project",
+        "headline": "Like the post?",
+        "body": "A custom workflow builds posts like this with your branding and your voice — week after week.",
+        "ctaLabel": "Request workflow",
         "ctaAriaLabel": "Jump to the inquiry form"
       }
     },
     "limitReached": {
       "badge": "All done",
       "headline": "You've created your 2 free posts.",
-      "body": "Like the result? Then we'll turn it into a custom workflow that fits your voice and your branding.",
+      "body": "Like the result? Then I'll build you a custom workflow that fits your voice and your branding.",
       "resetPrefix": "New tests from",
-      "ctaLabel": "Request a custom workflow",
-      "ctaAriaLabel": "Jump to the inquiry form and request a custom workflow"
+      "ctaLabel": "Request workflow",
+      "ctaAriaLabel": "Jump to the inquiry form and request a workflow"
     },
     "error": {
       "headline": "Something went wrong.",
-      "body": "We couldn't build the post right now. Try again."
+      "body": "The post couldn't be created right now. Try again."
     }
   },
   "customPost": {
     "badge": "REAL EXAMPLE",
     "headline": "This post comes from my workflow.",
-    "context": "Image and caption come from a workflow I built for my own social media posts: branding, visual language, and voice work together.",
+    "context": "Image and caption come from the workflow I use for my own posts: branding, visual language, and voice work together. I can build the same kind of workflow for your posts.",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Web designer",

@@ -1,7 +1,7 @@
 {
   "eyebrow": "DAS PROBLEM",
   "title": "Die Idee ist da. Der Post kostet trotzdem Zeit.",
-  "body": "Nicht die Idee kostet Zeit — sondern der Weg zum fertigen Post.",
+  "body": "Von der Idee zum fertigen Post sind es immer dieselben Schritte — und genau die summieren sich.",
   "examplesHeading": "Was dich jede Woche ausbremst",
   "examples": [
     {
@@ -25,5 +25,5 @@
       "time": "jede Woche"
     }
   ],
-  "summary": "Das Problem ist nicht Kreativität.\nDas kostet dich ~60 Minuten — nicht 60 Sekunden."
+  "summary": "Rund 60 Minuten pro Post, jede Woche.\nGenau diesen Teil kannst du automatisieren."
 }
