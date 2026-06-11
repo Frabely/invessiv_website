@@ -9,6 +9,7 @@
     "db:migrate:preview": "pnpm --filter @invessiv/db db:migrate:preview",
     "db:migrate:prod": "pnpm --filter @invessiv/db db:migrate:prod",
     "db:reset:dev": "pnpm --filter @invessiv/db db:reset:dev",
+    "db:reset:preview": "pnpm --filter @invessiv/db db:reset:preview",
     "db:smoke": "pnpm --filter @invessiv/db db:smoke",
     "db:smoke:dev": "pnpm --filter @invessiv/db db:smoke:dev",
     "db:smoke:preview": "pnpm --filter @invessiv/db db:smoke:preview",

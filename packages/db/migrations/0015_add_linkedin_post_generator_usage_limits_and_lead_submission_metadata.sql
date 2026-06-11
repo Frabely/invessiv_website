@@ -35,10 +35,6 @@ create table if not exists linkedin_post_generator_usage_limits
     successful_generations
     >=
     0
-    and
-    successful_generations
-    <=
-    2
 ),
     constraint linkedin_post_generator_usage_limits_hash_check
     check
@@ -53,3 +49,18 @@ create table if not exists linkedin_post_generator_usage_limits
 
 create index if not exists linkedin_post_generator_usage_limits_reset_idx
     on linkedin_post_generator_usage_limits (window_reset_at);
+
+--> statement-breakpoint
+
+ALTER TABLE lead_submissions
+    ADD COLUMN IF NOT EXISTS origin TEXT NOT NULL DEFAULT 'website';
+
+--> statement-breakpoint
+
+ALTER TABLE lead_submissions
+    ADD COLUMN IF NOT EXISTS marketing_consent BOOLEAN NOT NULL DEFAULT FALSE;
+
+--> statement-breakpoint
+
+CREATE INDEX IF NOT EXISTS lead_submissions_origin_created_at_idx
+    ON lead_submissions (origin, created_at DESC);
