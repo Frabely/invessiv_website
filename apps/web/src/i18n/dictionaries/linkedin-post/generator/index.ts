@@ -1,5 +1,5 @@
 import type { Locale } from "@/config/i18n";
-import type { LinkedInPostTone } from "@/common/contracts/generator/linkedin-post-generator-tone";
+import type { LinkedInPostTone } from "@/common/contracts/generator/post/linkedin-post-generator-tone";
 import de from "./de.json";
 import en from "./en.json";
 

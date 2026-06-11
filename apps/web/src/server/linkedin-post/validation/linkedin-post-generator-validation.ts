@@ -8,7 +8,7 @@ import {
   Locale,
   SUPPORTED_LOCALES,
 } from "@invessiv/common/contracts/i18n/locale";
-import { LINKEDIN_POST_TONE_VALUES } from "@/common/contracts/generator/linkedin-post-generator-tone";
+import { LINKEDIN_POST_TONE_VALUES } from "@/common/contracts/generator/post/linkedin-post-generator-tone";
 
 const GENERATOR_COLOR_PAIR_IDS = [
   "auto",

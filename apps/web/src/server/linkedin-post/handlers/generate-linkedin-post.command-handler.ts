@@ -5,7 +5,7 @@ import type {
   LinkedInPostGeneratorFailureResponseDto,
   LinkedInPostGeneratorSuccessResponseDto,
 } from "@/common/contracts/generator";
-import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/api/linkedin-post-generator-request";
 import {
   LINKEDIN_POST_GENERATOR_FAILED_LOG_EVENT,
   LINKEDIN_POST_MAX_BODY_SIZE,

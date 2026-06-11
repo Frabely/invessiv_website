@@ -7,11 +7,11 @@ import {
   GENERATOR_COLOR_AUTO,
   GENERATOR_COLOR_PAIRS,
 } from "@/common/constants/generator/post/generator-color-pairs";
-import type { GeneratorUsageLimit } from "@/common/contracts/generator/generator-state";
-import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
+import type { GeneratorUsageLimit } from "@/common/contracts/generator/ui/generator-state";
+import type { GeneratorFieldErrors } from "@/common/contracts/generator/ui/generator-field-errors";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
-import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/ui/linkedin-post-generator-form-values";
 import { UsageMeter } from "./usage-meter/usage-meter";
 import type { GeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-form.module.css";

@@ -16,7 +16,7 @@ import {
   BRAND_COLLISION_PATTERN,
   PROMPT_INJECTION_PATTERN,
 } from "@/common/patterns/linkedin-post-generator-patterns";
-import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/api/linkedin-post-generator-request";
 import {
   type GeneratedContent,
   LinkedInPostGenerationError,

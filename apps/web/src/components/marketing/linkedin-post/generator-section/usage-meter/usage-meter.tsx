@@ -1,6 +1,6 @@
 import { LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX } from "@invessiv/common/constants/generator";
 import type { Locale } from "@/config/i18n";
-import type { GeneratorUsageLimit } from "@/common/contracts/generator/generator-state";
+import type { GeneratorUsageLimit } from "@/common/contracts/generator/ui/generator-state";
 import type { LinkedInPostGeneratorUsageMeterCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import { formatResetDate } from "@/lib/format-reset-date";
 import styles from "./usage-meter.module.css";

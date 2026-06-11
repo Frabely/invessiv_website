@@ -1,9 +1,9 @@
 import "server-only";
 import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
-import { LinkedInPostBodyVariant } from "@/common/contracts/generator/linkedin-post-body-variant";
-import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator/linkedin-post-generator-post";
-import type { LinkedInPostGeneratorSuccessResponseDto } from "@/common/contracts/generator/linkedin-post-generator-success-response";
-import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import { LinkedInPostBodyVariant } from "@/common/contracts/generator/post/linkedin-post-body-variant";
+import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator/post/linkedin-post-generator-post";
+import type { LinkedInPostGeneratorSuccessResponseDto } from "@/common/contracts/generator/api/linkedin-post-generator-success-response";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/ui/linkedin-post-generator-form-values";
 import type { Locale } from "@/config/i18n";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
 import { escapeHtml } from "@/server/services/mail/templates/template-utils";

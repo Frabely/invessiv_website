@@ -2,12 +2,12 @@ import type {
   LinkedInPostGeneratorFailureResponseDto,
   LinkedInPostGeneratorSuccessResponseDto,
 } from "@/common/contracts/generator";
-import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/ui/linkedin-post-generator-form-values";
 import {
   LinkedInPostGeneratorErrorCode,
   WebApiEndpoint,
 } from "@/common/constants";
-import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
+import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/api/linkedin-post-generator-request";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /**

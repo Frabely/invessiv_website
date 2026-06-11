@@ -1,6 +1,6 @@
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type { Locale } from "@/config/i18n";
-import type { GeneratorUsageLimit } from "@/common/contracts/generator/generator-state";
+import type { GeneratorUsageLimit } from "@/common/contracts/generator/ui/generator-state";
 import type { LinkedInPostGeneratorPreviewLimitReachedCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import { formatResetDate } from "@/lib/format-reset-date";
 import styles from "./limit-reached-preview.module.css";
