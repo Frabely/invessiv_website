@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
@@ -28,6 +28,10 @@ vi.mock("@/lib/analytics/conversion-events", async (importOriginal) => {
 });
 
 describe("FinalCtaSection", () => {
+  beforeEach(() => {
+    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -106,6 +110,13 @@ describe("FinalCtaSection", () => {
         variant: "primary",
       },
     );
+
+    await waitFor(() => {
+      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   });
 
   it("submits the LinkedIn workflow CTA without rendering a website field", async () => {

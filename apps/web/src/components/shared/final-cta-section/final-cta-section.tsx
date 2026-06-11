@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -154,6 +154,16 @@ export function FinalCtaSection({
   );
 
   const isSuccess = submitState.kind === SubmitState.Kind.Success;
+
+  useEffect(() => {
+    if (!isSuccess) {
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [id, isSuccess]);
 
   return (
     <section
