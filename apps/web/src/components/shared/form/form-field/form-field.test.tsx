@@ -89,8 +89,11 @@ describe("FormField", () => {
       </FormField>,
     );
 
-    const control = screen.getByRole("button", { name: /Open tone picker/ });
+    // The wrapping label provides the accessible name, so the button is
+    // queried by the field label, not by its own content.
+    const control = screen.getByRole("button", { name: /Tone/ });
     expect(control).toBeInTheDocument();
+    expect(control).toHaveTextContent("Open tone picker");
     expect(screen.getByText("Pick a tone")).toHaveAttribute("id", "tone-error");
     expect(screen.getByText("3/3")).toHaveAttribute("aria-hidden", "true");
   });

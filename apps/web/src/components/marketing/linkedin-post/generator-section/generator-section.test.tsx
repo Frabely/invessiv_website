@@ -104,15 +104,26 @@ function clickSubmit() {
   fireEvent.click(screen.getByRole("button", { name: content.form.submit }));
 }
 
+// The shared FormField wraps controls in a label that also contains hint and
+// error text, so accessible names are matched by inclusion, not equality.
+function byFieldLabel(label: string) {
+  return { name: (name: string) => name.includes(label) };
+}
+
+function getToneTrigger() {
+  return screen.getByRole("button", byFieldLabel(content.form.tone.label));
+}
+
 function fillValidValues() {
   fireEvent.change(
-    screen.getByLabelText(content.form.topic.label, { selector: "textarea" }),
+    screen.getByRole("textbox", byFieldLabel(content.form.topic.label)),
     { target: { value: VALID_INPUTS.topic } },
   );
-  fireEvent.change(screen.getByLabelText(content.form.expertise.label), {
-    target: { value: VALID_INPUTS.expertise },
-  });
-  fireEvent.click(screen.getByLabelText(content.form.tone.label));
+  fireEvent.change(
+    screen.getByRole("textbox", byFieldLabel(content.form.expertise.label)),
+    { target: { value: VALID_INPUTS.expertise } },
+  );
+  fireEvent.click(getToneTrigger());
   fireEvent.click(
     screen.getByRole("option", {
       name: new RegExp(content.form.tone.options[0].label),
@@ -180,15 +191,15 @@ describe("GeneratorSection", () => {
 
   it("selects a tone with the custom select", () => {
     renderSection();
-    fireEvent.click(screen.getByLabelText(content.form.tone.label));
+    fireEvent.click(getToneTrigger());
     fireEvent.click(
       screen.getByRole("option", {
         name: new RegExp(content.form.tone.options[2].label),
       }),
     );
-    expect(
-      screen.getByLabelText(content.form.tone.label).textContent,
-    ).toContain(content.form.tone.options[2].label);
+    expect(getToneTrigger().textContent).toContain(
+      content.form.tone.options[2].label,
+    );
   });
 
   it("selects a predefined background color pair with the custom select", () => {
