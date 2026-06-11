@@ -7,6 +7,7 @@ import {
 describe("FormFieldKind", () => {
   it("contains the expected input kinds in order", () => {
     expect(FormFieldKind).toEqual({
+      Custom: "custom",
       Email: "email",
       Number: "number",
       Select: "select",

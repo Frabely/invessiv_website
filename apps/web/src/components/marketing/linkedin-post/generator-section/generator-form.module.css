@@ -17,49 +17,6 @@
     0 18px 40px -28px var(--color-shadow);
 }
 
-.input,
-.textarea {
-  width: 100%;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
-  color: var(--color-text);
-  font-family: inherit;
-  font-size: 1rem;
-  line-height: 1.45;
-  transition:
-    border-color 200ms ease,
-    box-shadow 200ms ease,
-    background 200ms ease;
-}
-
-.textarea {
-  min-height: 6.5rem;
-  resize: vertical;
-}
-
-.input:focus-visible,
-.textarea:focus-visible {
-  outline: none;
-  border-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cta) 24%, transparent);
-}
-
-.input::placeholder,
-.textarea::placeholder {
-  color: color-mix(in srgb, var(--color-text-muted) 70%, transparent);
-}
-
-/* Error state driven by aria-invalid (set by the field) — keeps the rule
-   self-contained instead of reaching into the Field component's classes. */
-.input[aria-invalid="true"],
-.textarea[aria-invalid="true"] {
-  border-color: color-mix(in srgb, var(--color-danger) 72%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
-}
-
 /* ── Field group labels ── */
 .legend {
   display: block;

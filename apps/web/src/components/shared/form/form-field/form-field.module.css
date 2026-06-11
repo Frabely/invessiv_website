@@ -3,10 +3,25 @@
   gap: 0.48rem;
 }
 
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .label {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
   font-size: var(--font-size-label-md);
   font-weight: 700;
+  line-height: 1.4;
+}
+
+.labelSuffix {
+  flex: none;
+  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
+  font-size: var(--font-size-caption);
+  font-variant-numeric: tabular-nums;
   line-height: 1.4;
 }
 

@@ -1,5 +1,7 @@
 import { type ChangeEvent, type CSSProperties, type SubmitEvent } from "react";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { FormField } from "@/components/shared/form/form-field/form-field";
 import { CustomSelect } from "@invessiv/ui";
 import {
   GENERATOR_COLOR_AUTO,
@@ -10,7 +12,6 @@ import type { GeneratorFieldErrors } from "@/common/contracts/generator/generato
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
-import { Field } from "./field";
 import { UsageMeter } from "./usage-meter/usage-meter";
 import type { GeneratorFieldIds } from "@/hooks/marketing/use-generator-field-ids";
 import styles from "./generator-form.module.css";
@@ -74,61 +75,47 @@ export function GeneratorForm({
         usageLimit={usageLimit}
       />
 
-      <Field
-        error={errors.topic}
-        help={content.form.topic.help}
-        htmlFor={fieldIds.topic}
+      <FormField
+        errorMessage={errors.topic}
+        hint={content.form.topic.help}
+        kind={FormFieldKind.Textarea}
         label={content.form.topic.label}
-        meta={`${values.topic.length}/${topicMax}`}
-      >
-        <textarea
-          aria-describedby={
-            errors.topic ? `${fieldIds.topic}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.topic)}
-          className={styles.textarea}
-          id={fieldIds.topic}
-          maxLength={topicMax}
-          name="topic"
-          onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
-            onChange("topic", event.target.value)
-          }
-          placeholder={content.form.topic.placeholder}
-          rows={3}
-          value={values.topic}
-        />
-      </Field>
+        labelSuffix={`${values.topic.length}/${topicMax}`}
+        textareaProps={{
+          id: fieldIds.topic,
+          maxLength: topicMax,
+          name: "topic",
+          onChange: (event: ChangeEvent<HTMLTextAreaElement>) =>
+            onChange("topic", event.target.value),
+          placeholder: content.form.topic.placeholder,
+          rows: 3,
+          value: values.topic,
+        }}
+      />
 
-      <Field
-        error={errors.expertise}
-        help={content.form.expertise.help}
-        htmlFor={fieldIds.expertise}
+      <FormField
+        errorMessage={errors.expertise}
+        hint={content.form.expertise.help}
+        kind={FormFieldKind.Text}
         label={content.form.expertise.label}
-        meta={`${values.expertise.length}/${expertiseMax}`}
-      >
-        <input
-          aria-describedby={
-            errors.expertise ? `${fieldIds.expertise}-error` : undefined
-          }
-          aria-invalid={Boolean(errors.expertise)}
-          autoComplete="organization-title"
-          className={styles.input}
-          id={fieldIds.expertise}
-          maxLength={expertiseMax}
-          name="expertise"
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            onChange("expertise", event.target.value)
-          }
-          placeholder={content.form.expertise.placeholder}
-          type="text"
-          value={values.expertise}
-        />
-      </Field>
+        labelSuffix={`${values.expertise.length}/${expertiseMax}`}
+        inputProps={{
+          autoComplete: "organization-title",
+          id: fieldIds.expertise,
+          maxLength: expertiseMax,
+          name: "expertise",
+          onChange: (event: ChangeEvent<HTMLInputElement>) =>
+            onChange("expertise", event.target.value),
+          placeholder: content.form.expertise.placeholder,
+          value: values.expertise,
+        }}
+      />
 
-      <Field
-        error={errors.tone}
-        help={content.form.tone.help}
-        htmlFor={fieldIds.tone}
+      <FormField
+        controlId={fieldIds.tone}
+        errorMessage={errors.tone}
+        hint={content.form.tone.help}
+        kind={FormFieldKind.Custom}
         label={content.form.tone.label}
       >
         <CustomSelect
@@ -139,7 +126,7 @@ export function GeneratorForm({
           options={toneOptions}
           value={values.tone}
         />
-      </Field>
+      </FormField>
 
       <fieldset className={styles.colorGroup}>
         <legend className={styles.legend}>{content.form.color.label}</legend>

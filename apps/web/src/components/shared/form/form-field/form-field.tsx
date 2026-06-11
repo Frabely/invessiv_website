@@ -27,6 +27,7 @@ type BaseFormFieldProps = {
   hint?: ReactNode;
   hintId?: string;
   label: string;
+  labelSuffix?: ReactNode;
   required?: boolean;
 };
 
@@ -40,7 +41,9 @@ type SelectFieldProps = BaseFormFieldProps & {
 
 type TextInputKind = Exclude<
   FormFieldKindType,
-  typeof FormFieldKind.Select | typeof FormFieldKind.Textarea
+  | typeof FormFieldKind.Custom
+  | typeof FormFieldKind.Select
+  | typeof FormFieldKind.Textarea
 >;
 
 type TextFieldProps = BaseFormFieldProps & {
@@ -53,7 +56,14 @@ type TextareaFieldProps = BaseFormFieldProps & {
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 
+type CustomControlFieldProps = BaseFormFieldProps & {
+  children: ReactNode;
+  controlId?: string;
+  kind: typeof FormFieldKind.Custom;
+};
+
 export type FormFieldProps =
+  | CustomControlFieldProps
   | SelectFieldProps
   | TextFieldProps
   | TextareaFieldProps;
@@ -68,6 +78,7 @@ export function FormField(props: FormFieldProps) {
     hint,
     hintId,
     label,
+    labelSuffix,
     required = false,
   } = props;
 
@@ -80,10 +91,18 @@ export function FormField(props: FormFieldProps) {
 
   return (
     <label className={rootClassName}>
-      <span className={styles.label}>
-        <FormFieldLabel label={label} required={required} />
+      <span className={styles.labelRow}>
+        <span className={styles.label}>
+          <FormFieldLabel label={label} required={required} />
+        </span>
+        {labelSuffix ? (
+          <span aria-hidden="true" className={styles.labelSuffix}>
+            {labelSuffix}
+          </span>
+        ) : null}
       </span>
       <span className={styles.control}>
+        {props.kind === FormFieldKind.Custom ? props.children : null}
         {props.kind === FormFieldKind.Textarea
           ? renderTextarea(
               props,
@@ -100,7 +119,8 @@ export function FormField(props: FormFieldProps) {
               resolvedHintId,
             )
           : null}
-        {props.kind !== FormFieldKind.Textarea &&
+        {props.kind !== FormFieldKind.Custom &&
+        props.kind !== FormFieldKind.Textarea &&
         props.kind !== FormFieldKind.Select
           ? renderInput(
               props,
@@ -129,6 +149,10 @@ export function FormField(props: FormFieldProps) {
 }
 
 function getFieldBaseId(props: FormFieldProps): string {
+  if (props.kind === FormFieldKind.Custom) {
+    return props.controlId ?? slugifyFieldLabel(props.label, props.kind);
+  }
+
   if (props.kind === FormFieldKind.Textarea) {
     return (
       props.textareaProps?.id ??

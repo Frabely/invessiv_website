@@ -73,4 +73,25 @@ describe("FormField", () => {
     expect(screen.getByText("Required")).toBeInTheDocument();
     expect(screen.getByText("Hint text")).toBeInTheDocument();
   });
+
+  it("hosts a custom control with anchored error id and visual-only label suffix", () => {
+    render(
+      <FormField
+        controlId="tone"
+        errorMessage="Pick a tone"
+        kind={FormFieldKind.Custom}
+        label="Tone"
+        labelSuffix="3/3"
+      >
+        <button aria-describedby="tone-error" id="tone" type="button">
+          Open tone picker
+        </button>
+      </FormField>,
+    );
+
+    const control = screen.getByRole("button", { name: /Open tone picker/ });
+    expect(control).toBeInTheDocument();
+    expect(screen.getByText("Pick a tone")).toHaveAttribute("id", "tone-error");
+    expect(screen.getByText("3/3")).toHaveAttribute("aria-hidden", "true");
+  });
 });

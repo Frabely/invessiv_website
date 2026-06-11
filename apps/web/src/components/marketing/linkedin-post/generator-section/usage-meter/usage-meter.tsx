@@ -1,11 +1,9 @@
+import { LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX } from "@invessiv/common/constants/generator";
 import type { Locale } from "@/config/i18n";
 import type { GeneratorUsageLimit } from "@/common/contracts/generator/generator-state";
 import type { LinkedInPostGeneratorUsageMeterCopy } from "@/i18n/dictionaries/linkedin-post/generator";
 import { formatResetDate } from "@/lib/format-reset-date";
 import styles from "./usage-meter.module.css";
-
-/** Free-test budget shown when the server has not reported a usage limit yet. */
-const DEFAULT_FREE_TESTS = 2;
 
 type UsageMeterProps = {
   content: LinkedInPostGeneratorUsageMeterCopy;
@@ -19,10 +17,10 @@ type UsageMeterProps = {
  * budget, a reset date, and one pip per test (filled = still available).
  */
 export function UsageMeter({ content, locale, usageLimit }: UsageMeterProps) {
-  const limit = usageLimit?.limit ?? DEFAULT_FREE_TESTS;
+  const limit = usageLimit?.limit ?? LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX;
   const remaining = usageLimit
     ? Math.max(0, Math.min(usageLimit.remaining, limit))
-    : DEFAULT_FREE_TESTS;
+    : LINKEDIN_POST_GENERATOR_USAGE_LIMIT_MAX;
 
   const summary = usageLimit
     ? content.remaining
