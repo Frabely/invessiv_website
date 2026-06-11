@@ -31,6 +31,20 @@ const TEMPLATES_DIR = join(
   "linkedin-post-generator",
   "templates",
 );
+const INTER_FONT_DIR = join(
+  process.cwd(),
+  "node_modules",
+  "@fontsource",
+  "inter",
+  "files",
+);
+const INTER_FONT_FILES = [
+  join(INTER_FONT_DIR, "inter-latin-400-normal.woff"),
+  join(INTER_FONT_DIR, "inter-latin-600-normal.woff"),
+  join(INTER_FONT_DIR, "inter-latin-700-normal.woff"),
+  join(INTER_FONT_DIR, "inter-latin-800-normal.woff"),
+];
+const SVG_FONT_FAMILY = "Inter, Arial, Helvetica, sans-serif";
 
 const templateCache = new Map<string, string>();
 
@@ -143,7 +157,7 @@ function wrapText(value: string, maxChars: number, maxLines: number) {
 }
 
 function renderTextLine(line: SvgTextLine) {
-  return `<text x="${line.x}" y="${line.y}" fill="${line.fill}" font-family="Arial, Helvetica, sans-serif" font-size="${line.size}" font-weight="${line.weight ?? 500}" letter-spacing="0" text-anchor="${line.anchor ?? "start"}">${escapeSvg(line.text)}</text>`;
+  return `<text x="${line.x}" y="${line.y}" fill="${line.fill}" font-family="${SVG_FONT_FAMILY}" font-size="${line.size}" font-weight="${line.weight ?? 500}" letter-spacing="0" text-anchor="${line.anchor ?? "start"}">${escapeSvg(line.text)}</text>`;
 }
 
 function renderWrappedText({
@@ -429,7 +443,7 @@ function renderIndexChecklistSvg(post: LinkedInPostGeneratorPostDto) {
         .map((bullet, index) => {
           const y = 588 + index * 118;
           return `
-            <text x="126" y="${y}" fill="${post.colorPair.accent}" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="840">0${index + 1}</text>
+            <text x="126" y="${y}" fill="${post.colorPair.accent}" font-family="${SVG_FONT_FAMILY}" font-size="46" font-weight="840">0${index + 1}</text>
             ${renderWrappedText({
               fill: post.colorPair.text,
               lineHeight: 34,
@@ -473,7 +487,8 @@ async function renderLinkedInPostPng(
       value: POST_SIZE_PX,
     },
     font: {
-      loadSystemFonts: true,
+      fontFiles: INTER_FONT_FILES,
+      loadSystemFonts: false,
     },
   });
   return Buffer.from(resvg.render().asPng());
