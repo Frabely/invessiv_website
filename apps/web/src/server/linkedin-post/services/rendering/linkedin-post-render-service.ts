@@ -1,7 +1,6 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Browser, LaunchOptions } from "playwright-core";
 import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
 import { POST_SIZE_PX, RENDER_TIMEOUT_MS } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
@@ -96,29 +95,95 @@ function renderLinkedInPostHtml(
  * treat a thrown error as "no server PNG available" and fall back gracefully.
  */
 
-let browserPromise: Promise<Browser> | null = null;
+type PostRenderBrowser = {
+  isConnected: () => boolean;
+  newContext: (options: {
+    deviceScaleFactor: number;
+    viewport: { height: number; width: number };
+  }) => Promise<{
+    close: () => Promise<void>;
+    newPage: () => Promise<{
+      evaluate: <T>(callback: () => T | Promise<T>) => Promise<T>;
+      screenshot: (options: {
+        clip: { height: number; width: number; x: number; y: number };
+        type: "png";
+      }) => Promise<Buffer>;
+      setContent: (
+        html: string,
+        options: { timeout: number; waitUntil: "load" },
+      ) => Promise<void>;
+    }>;
+  }>;
+};
+
+type PuppeteerBrowser = {
+  connected: boolean;
+  newPage: () => Promise<{
+    close: () => Promise<void>;
+    evaluate: <T>(callback: () => T | Promise<T>) => Promise<T>;
+    screenshot: (options: {
+      clip: { height: number; width: number; x: number; y: number };
+      type: "png";
+    }) => Promise<Buffer | Uint8Array>;
+    setContent: (
+      html: string,
+      options: { timeout: number; waitUntil: "load" },
+    ) => Promise<void>;
+    setViewport: (viewport: {
+      deviceScaleFactor: number;
+      height: number;
+      width: number;
+    }) => Promise<void>;
+  }>;
+};
+
+let browserPromise: Promise<PostRenderBrowser> | null = null;
 
 function isVercelRuntime() {
   return Boolean(process.env.VERCEL);
 }
 
-async function createBrowserLaunchOptions(): Promise<LaunchOptions> {
-  if (!isVercelRuntime()) {
-    return {
-      args: ["--no-sandbox"],
-    };
-  }
-
+async function createVercelBrowser(): Promise<PostRenderBrowser> {
   const { default: chromium } = await import("@sparticuz/chromium");
+  const { default: puppeteer } = await import("puppeteer-core");
 
-  return {
+  const browser = (await puppeteer.launch({
     args: chromium.args,
     executablePath: await chromium.executablePath(),
     headless: true,
+  })) as PuppeteerBrowser;
+
+  return {
+    isConnected: () => browser.connected,
+    async newContext({ deviceScaleFactor, viewport }) {
+      const page = await browser.newPage();
+      await page.setViewport({
+        deviceScaleFactor,
+        height: viewport.height,
+        width: viewport.width,
+      });
+
+      return {
+        close: () => page.close(),
+        newPage: async () => ({
+          evaluate: page.evaluate.bind(page),
+          screenshot: async (options) => {
+            const screenshot = await page.screenshot(options);
+            return Buffer.from(screenshot);
+          },
+          setContent: page.setContent.bind(page),
+        }),
+      };
+    },
   };
 }
 
-async function getBrowser(): Promise<Browser> {
+async function createLocalBrowser(): Promise<PostRenderBrowser> {
+  const { chromium } = await import("playwright");
+  return chromium.launch({ args: ["--no-sandbox"] });
+}
+
+async function getBrowser(): Promise<PostRenderBrowser> {
   if (browserPromise) {
     const existing = await browserPromise.catch(() => null);
     if (existing && existing.isConnected()) {
@@ -127,8 +192,9 @@ async function getBrowser(): Promise<Browser> {
     browserPromise = null;
   }
 
-  const { chromium } = await import("playwright-core");
-  browserPromise = chromium.launch(await createBrowserLaunchOptions());
+  browserPromise = isVercelRuntime()
+    ? createVercelBrowser()
+    : createLocalBrowser();
   return browserPromise;
 }
 

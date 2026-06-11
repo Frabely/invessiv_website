@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
   },
-  serverExternalPackages: ["@sparticuz/chromium", "playwright-core"],
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   transpilePackages: ["@invessiv/common", "@invessiv/db", "@invessiv/ui"],
   outputFileTracingIncludes: {
     "/api/public/generator/linkedin-post": [
