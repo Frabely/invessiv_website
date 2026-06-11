@@ -59,11 +59,11 @@ describe("LandingRoute", () => {
       absolute: "Landingpage erstellen lassen | ab 999 € | Invessiv",
     });
     expect(metadata.description).toBe(
-      "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Landingpage anfragen.",
+      "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
     );
     expect(metadata.openGraph).toMatchObject({
       description:
-        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Landingpage anfragen.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
       locale: "de_DE",
       siteName: "Invessiv",
       title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
@@ -81,7 +81,7 @@ describe("LandingRoute", () => {
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
       description:
-        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Landingpage anfragen.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
       images: [
         {
           alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
