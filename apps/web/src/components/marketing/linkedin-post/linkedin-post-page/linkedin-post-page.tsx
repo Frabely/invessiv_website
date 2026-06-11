@@ -64,7 +64,6 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
 
         <ExampleSection
           {...example}
-          generatorHref={LINKEDIN_POST_SECTION_HREFS.generator}
           id={LINKEDIN_POST_SECTION_HREFS.example.slice(1)}
           locale={locale}
         />

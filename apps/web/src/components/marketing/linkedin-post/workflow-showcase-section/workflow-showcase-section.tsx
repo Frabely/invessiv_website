@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { LinkedinPost } from "@/components/marketing/linkedin-post/linkedin-post/linkedin-post";
 import type { Locale } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
@@ -25,10 +24,6 @@ export function WorkflowShowcaseSection({
   badge,
   headline,
   context,
-  prompt,
-  ctaLabel,
-  ctaAriaLabel,
-  ctaHref,
   post,
 }: WorkflowShowcaseSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -60,16 +55,10 @@ export function WorkflowShowcaseSection({
           <EyebrowPill>{badge}</EyebrowPill>
           <h2 className={styles.headline}>{headline}</h2>
           <p className={styles.body}>{context}</p>
-          <p className={styles.body}>{prompt}</p>
-          <div className={styles.ctaWrap}>
-            <PrimaryCtaLink
-              aria-label={ctaAriaLabel}
-              className={styles.cta}
-              href={ctaHref}
-            >
-              {ctaLabel}
-            </PrimaryCtaLink>
-          </div>
+          <p className={styles.command}>
+            <span className={styles.commandLabel}>{post.commandLabel}</span>
+            <span className={styles.commandText}>{post.command}</span>
+          </p>
         </div>
         <div className={styles.postColumn} data-reveal-item="true">
           <LinkedinPost
@@ -102,11 +91,6 @@ export function WorkflowShowcaseSection({
               </figure>
             }
           />
-
-          <p className={styles.command}>
-            <span className={styles.commandLabel}>{post.commandLabel}</span>
-            <span className={styles.commandText}>{post.command}</span>
-          </p>
         </div>
       </div>
     </section>

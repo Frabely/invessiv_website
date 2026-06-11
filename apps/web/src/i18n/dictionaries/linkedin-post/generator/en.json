@@ -107,13 +107,9 @@
     }
   },
   "customPost": {
-    "badge": "CUSTOM PROCESS",
-    "headline": "This is what a custom process looks like.",
-    "context": "A post from a real workflow: branding, visual language, and voice are combined in one system.",
-    "prompt": "If the format fits, request your project next.",
-    "ctaLabel": "Request project",
-    "ctaAriaLabel": "Open the inquiry form to request your own project",
-    "ctaHref": "#contact",
+    "badge": "REAL EXAMPLE",
+    "headline": "This post comes from my workflow.",
+    "context": "Image and caption come from a workflow I built for my own social media posts: branding, visual language, and voice work together.",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Web designer",

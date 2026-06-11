@@ -34,11 +34,19 @@
 .title {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.85rem, 7vw, 2.3rem);
+  font-size: clamp(1.8rem, 7vw, 2.4rem);
   font-weight: 760;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   text-wrap: balance;
+}
+
+/* Shared headline scale: matches the other section titles in the 641–960 range */
+@media (min-width: 641px) {
+  .title {
+    font-size: clamp(2.1rem, 8.5vw, 3.5rem);
+    line-height: 0.98;
+  }
 }
 
 .body {
@@ -104,47 +112,10 @@
   line-height: 1.45;
 }
 
-.ctaRow {
-  order: 1;
-  display: grid;
-  gap: 0.85rem;
-  justify-items: stretch;
-  width: 100%;
-  max-width: min(100%, 38rem);
-  margin-inline: auto;
-  padding: clamp(1rem, 3vw, 1.25rem);
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 18%, transparent);
-  border-radius: 1.15rem;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-accent-warm) 11%, transparent),
-    color-mix(in srgb, var(--color-surface-2) 82%, transparent)
-  );
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent);
-}
-
-.ctaLead {
-  margin: 0;
-  max-width: 34rem;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: clamp(0.95rem, 0.9rem + 0.18vw, 1.05rem);
-  font-weight: 560;
-  line-height: 1.55;
-  text-align: center;
-  text-wrap: pretty;
-}
-
-.ctaButton {
-  width: 100%;
-  min-width: 0;
-}
-
 /* Reveal */
 .intro,
 .sampleCardWrap,
-.disclaimer,
-.ctaRow {
+.disclaimer {
   opacity: 0;
   transform: translateY(18px);
   transition:
@@ -155,8 +126,7 @@
 
 .intro[data-visible="true"],
 .sampleCardWrap[data-visible="true"],
-.disclaimer[data-visible="true"],
-.ctaRow[data-visible="true"] {
+.disclaimer[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
 }
@@ -171,11 +141,6 @@
   .intro {
     gap: clamp(0.7rem, 1.2vw, 1rem);
     max-width: 38rem;
-  }
-
-  .title {
-    font-size: clamp(2.05rem, 4vw, 3rem);
-    letter-spacing: -0.035em;
   }
 
   .body {
@@ -202,46 +167,41 @@
     flex: unset;
     scroll-snap-align: none;
   }
-
-  .ctaButton {
-    width: 100%;
-    min-width: 0;
-  }
 }
 
 @media (min-width: 961px) {
   .section {
-    grid-template-columns: 1fr minmax(15rem, 21rem) 1fr;
-    grid-template-areas: "postLeft middle postRight";
-    align-items: center;
-    column-gap: clamp(2rem, 4vw, 4.5rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+    grid-template-areas:
+      "postLeft intro"
+      "postLeft postRight";
+    align-items: start;
+    gap: clamp(1rem, 2vw, 1.8rem) clamp(1.5rem, 3.4vw, 3.5rem);
     padding-block: clamp(3.5rem, 7vw, 6rem);
     max-width: var(--max-content-width);
   }
 
   .middleColumn {
-    display: grid;
-    grid-area: middle;
-    gap: clamp(1.25rem, 2.5vw, 2rem);
-    align-self: start;
-    position: sticky;
-    top: clamp(6.5rem, 9vw, 8rem);
+    display: block;
+    grid-area: intro;
+    align-self: end;
   }
 
   .intro {
-    justify-items: center;
+    justify-items: start;
+    width: 100%;
     max-width: none;
-    text-align: center;
+    text-align: left;
   }
 
   .title {
-    font-size: clamp(1.65rem, 1.3rem + 1.1vw, 2.35rem);
-    line-height: 1.04;
-    letter-spacing: -0.03em;
+    font-size: clamp(2.1rem, 4.2vw, 4.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
   }
 
   .body {
-    max-width: 30rem;
+    max-width: 36rem;
     font-size: var(--font-size-body-lg);
   }
 
@@ -250,18 +210,22 @@
   }
 
   .sampleCardWrap {
-    align-self: center;
+    width: min(100%, clamp(23rem, 38vw, 32rem));
   }
 
   .sampleCardWrap[data-position="left"] {
     grid-area: postLeft;
     margin-top: 0;
+    align-self: center;
+    justify-self: center;
     transform: translateY(18px) rotate(-0.4deg);
   }
 
   .sampleCardWrap[data-position="right"] {
     grid-area: postRight;
-    margin-top: 0;
+    margin-top: clamp(1.35rem, 2.8vw, 2.75rem);
+    align-self: start;
+    justify-self: center;
     transform: translateY(18px) rotate(0.45deg);
   }
 
@@ -277,8 +241,7 @@
 @media (prefers-reduced-motion: reduce) {
   .intro,
   .sampleCardWrap,
-  .disclaimer,
-  .ctaRow {
+  .disclaimer {
     opacity: 1;
     transform: none;
     transition: none;

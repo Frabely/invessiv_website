@@ -1,5 +1,5 @@
 {
-  "description": "Ein kompakter Ablauf für LinkedIn-Posts mit Bild, Caption und klarer Anfrage.",
+  "description": "Ein kompakter Workflow für LinkedIn-Posts mit Bild, Caption und klarer Anfrage.",
   "navColumn": {
     "title": "LinkedIn Post",
     "links": [
@@ -12,7 +12,7 @@
         "href": "#generator"
       },
       {
-        "label": "Ablauf",
+        "label": "Workflow-Beispiel",
         "href": "#workflow"
       },
       {

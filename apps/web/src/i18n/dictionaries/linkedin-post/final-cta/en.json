@@ -1,7 +1,7 @@
 {
   "eyebrow": "CHECK WORKFLOW",
-  "title": "Which recurring task should your content setup take off your plate?",
-  "body": "Briefly describe the repeating part: planning posts, preparing image ideas, drafting captions, or something else. I will check whether it can become a lean workflow.",
+  "title": "Which task should your workflow take over?",
+  "body": "Briefly describe the recurring task. I will check whether it can become a lean workflow.",
   "form": {
     "fields": {
       "name": {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
@@ -12,7 +11,6 @@ import styles from "./example-section.module.css";
 type ExampleSectionProps = LinkedInPostExampleContent & {
   id: string;
   locale: Locale;
-  generatorHref: string;
 };
 
 export function ExampleSection({
@@ -36,10 +34,6 @@ export function ExampleSection({
   lightboxAriaLabel,
   disclaimer,
   samples,
-  ctaLead,
-  ctaLabel,
-  ctaAriaLabel,
-  generatorHref,
 }: ExampleSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
@@ -52,21 +46,6 @@ export function ExampleSection({
           <h2 className={styles.title}>{title}</h2>
           <p className={styles.body}>{body}</p>
         </header>
-
-        <div className={styles.ctaRow} data-reveal-item="true">
-          <p className={styles.ctaLead}>{ctaLead}</p>
-          <PrimaryCtaLink
-            aria-label={ctaAriaLabel}
-            className={styles.ctaButton}
-            data-analytics-event="cta_click"
-            data-analytics-location="example_section"
-            data-analytics-target="generator"
-            data-analytics-variant="primary"
-            href={generatorHref}
-          >
-            {ctaLabel}
-          </PrimaryCtaLink>
-        </div>
       </div>
 
       <ul

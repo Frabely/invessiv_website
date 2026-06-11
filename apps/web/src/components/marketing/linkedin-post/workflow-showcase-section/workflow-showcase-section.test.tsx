@@ -25,9 +25,6 @@ vi.mock(
 const baseProps = {
   badge: "Workflow",
   context: "Context",
-  ctaAriaLabel: "Open contact",
-  ctaHref: "#contact",
-  ctaLabel: "Contact",
   headline: "Custom post",
   id: "workflow",
   post: {
@@ -46,7 +43,6 @@ const baseProps = {
     linkUrl: "invessiv.com/services/landing-page",
     maximizeLabel: "Enlarge",
   },
-  prompt: "Prompt",
 } as const;
 
 describe("WorkflowShowcaseSection", () => {

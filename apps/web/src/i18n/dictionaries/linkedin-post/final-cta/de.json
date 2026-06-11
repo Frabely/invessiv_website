@@ -1,7 +1,7 @@
 {
   "eyebrow": "WORKFLOW PRÜFEN",
-  "title": "Welche Aufgabe soll dein Content-Ablauf jede Woche abnehmen?",
-  "body": "Beschreib kurz den wiederkehrenden Teil: Posts planen, Bildideen vorbereiten, Captions schreiben oder etwas anderes. Ich prüfe, ob daraus ein schlanker Workflow werden kann.",
+  "title": "Welche Aufgabe soll dein Workflow abnehmen?",
+  "body": "Beschreib kurz die wiederkehrende Aufgabe. Ich prüfe, ob daraus ein schlanker Workflow werden kann.",
   "form": {
     "fields": {
       "name": {

@@ -5,11 +5,11 @@
   "ctaLabel": "Generate post",
   "labelsByHref": {
     "#example": "Sample posts",
-    "#workflow": "Process",
+    "#workflow": "Workflow example",
     "#contact": "Request project"
   },
   "localeMenuLabel": "Open language menu",
   "localeSwitchLabel": "Choose language",
   "mobileMenuLabel": "Menu",
-  "navAriaLabel": "Navigate the LinkedIn post process"
+  "navAriaLabel": "LinkedIn post page navigation"
 }

@@ -102,10 +102,6 @@ export type LinkedInPostGeneratorCustomPostCopy = {
   badge: string;
   headline: string;
   context: string;
-  prompt: string;
-  ctaLabel: string;
-  ctaAriaLabel: string;
-  ctaHref: string;
   post: LinkedInPostGeneratorCustomPostPostCopy;
 };
 

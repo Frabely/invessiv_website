@@ -1,5 +1,5 @@
 {
-  "description": "A compact process for LinkedIn posts with image, caption, and a clear inquiry path.",
+  "description": "A compact workflow for LinkedIn posts with image, caption, and a clear inquiry path.",
   "navColumn": {
     "title": "LinkedIn Post",
     "links": [
@@ -12,7 +12,7 @@
         "href": "#generator"
       },
       {
-        "label": "Process",
+        "label": "Workflow example",
         "href": "#workflow"
       },
       {

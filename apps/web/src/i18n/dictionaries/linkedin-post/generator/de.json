@@ -107,13 +107,9 @@
     }
   },
   "customPost": {
-    "badge": "EIGENER ABLAUF",
-    "headline": "So sieht ein eigener Ablauf aus.",
-    "context": "Ein Ausschnitt aus einem echten Workflow: Branding, Bildsprache und Stimme greifen zusammen.",
-    "prompt": "Wenn dir das Format passt, frag dein Projekt an.",
-    "ctaLabel": "Projekt anfragen",
-    "ctaAriaLabel": "Anfrageformular öffnen und ein eigenes Projekt anfragen",
-    "ctaHref": "#contact",
+    "badge": "ECHTES BEISPIEL",
+    "headline": "Dieser Post kommt aus meinem Workflow.",
+    "context": "Bild und Caption stammen aus einem Workflow, den ich für meine eigenen Social-Media-Posts gebaut habe: Branding, Bildsprache und Stimme greifen zusammen.",
     "post": {
       "authorName": "Moritz Hecht",
       "authorRole": "Webdesigner",

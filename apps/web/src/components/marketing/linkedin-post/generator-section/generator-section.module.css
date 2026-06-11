@@ -27,11 +27,19 @@
 .title {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.85rem, 7vw, 2.3rem);
+  font-size: clamp(1.8rem, 7vw, 2.4rem);
   font-weight: 760;
-  line-height: 1.04;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   text-wrap: balance;
+}
+
+/* Shared headline scale: matches the other section titles in the 641–960 range */
+@media (min-width: 641px) {
+  .title {
+    font-size: clamp(2.1rem, 8.5vw, 3.5rem);
+    line-height: 0.98;
+  }
 }
 
 .body {
@@ -42,8 +50,12 @@
   line-height: 1.6;
 }
 
-/* Workbench: form first, preview below on mobile */
+/* Workbench: form first, preview below on mobile.
+   --generator-panel-height is updated at runtime by a ResizeObserver in
+   generator-section.tsx so the sticky preview matches the form height. */
 .workbench {
+  --generator-panel-height: auto;
+
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
@@ -93,11 +105,6 @@
     max-width: 40rem;
   }
 
-  .title {
-    font-size: clamp(2.05rem, 4vw, 3rem);
-    letter-spacing: -0.035em;
-  }
-
   .body {
     font-size: clamp(1rem, 0.95rem + 0.32vw, 1.16rem);
   }
@@ -105,6 +112,10 @@
 
 /* ── Desktop ── */
 @media (min-width: 961px) {
+  .intro {
+    max-width: min(100%, 52rem);
+  }
+
   .title {
     font-size: clamp(2.1rem, 4.2vw, 4.45rem);
     line-height: 0.98;
@@ -141,6 +152,6 @@
     position: sticky;
     top: clamp(6.5rem, 9vw, 8rem);
     align-self: start;
-    height: var(--generator-panel-height, auto);
+    height: var(--generator-panel-height);
   }
 }

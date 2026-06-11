@@ -47,9 +47,6 @@ export type LinkedInPostExampleContent = {
   lightboxAriaLabel: string;
   disclaimer: string;
   samples: LinkedInPostExampleSample[];
-  ctaLead: string;
-  ctaLabel: string;
-  ctaAriaLabel: string;
 };
 
 const CONTENT: Record<Locale, LinkedInPostExampleContent> = { de, en };

@@ -63,7 +63,7 @@
   display: grid;
   justify-items: center;
   gap: clamp(0.85rem, 1.6vw, 1.2rem);
-  max-width: 38rem;
+  max-width: min(100%, 56rem);
 }
 
 .eyebrow {
@@ -72,11 +72,11 @@
 
 .title {
   margin: 0;
-  max-width: 22ch;
+  max-width: 28ch;
   color: var(--color-text);
-  font-size: clamp(1.85rem, 3.4vw, 3.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.1rem, 4.2vw, 4.45rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -256,6 +256,20 @@
       color-mix(in srgb, var(--color-accent-warm) 32%, transparent);
 }
 
+/* Shared headline scale: matches the marketing section titles below desktop */
+@media (max-width: 960px) {
+  .title {
+    font-size: clamp(2.1rem, 8.5vw, 3.5rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    line-height: 1.05;
+  }
+}
+
 @media (max-width: 720px) {
   .section {
     width: calc(100% - (var(--page-inline-gutter) * 2));
@@ -277,6 +291,16 @@
 
   .submit {
     max-width: none;
+  }
+}
+
+@media (min-width: 961px) {
+  .intro {
+    max-width: min(100%, 72rem);
+  }
+
+  .title {
+    max-width: min(100%, 40ch);
   }
 }
 
