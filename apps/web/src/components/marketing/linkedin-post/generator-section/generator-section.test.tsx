@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GeneratorAnalyticsEvent } from "@/common/constants";
-import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import type {
   LinkedInPostGeneratorResult,

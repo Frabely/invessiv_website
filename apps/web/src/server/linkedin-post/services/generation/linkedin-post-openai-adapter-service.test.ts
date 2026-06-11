@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { GENERATOR_TEMPLATES } from "@/common/constants/generator/generator-templates";
+import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
 import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator";
 import type { LinkedInPostGeneratorRequestDto } from "@/common/contracts/generator/linkedin-post-generator-request";
 import {

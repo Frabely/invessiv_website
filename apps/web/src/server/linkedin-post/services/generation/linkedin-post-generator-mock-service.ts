@@ -1,5 +1,5 @@
 import "server-only";
-import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
 import { LinkedInPostBodyVariant } from "@/common/contracts/generator/linkedin-post-body-variant";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator/linkedin-post-generator-post";
 import type { LinkedInPostGeneratorSuccessResponseDto } from "@/common/contracts/generator/linkedin-post-generator-success-response";

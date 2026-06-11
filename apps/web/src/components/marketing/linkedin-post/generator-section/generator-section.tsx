@@ -10,17 +10,17 @@ import {
   GENERATOR_FORM_ID,
   GeneratorAnalyticsEvent,
   GeneratorErrorReason,
-} from "@/common/constants/generator/generator-analytics";
-import { GeneratorSectionLayout } from "@/common/constants/generator/generator-section-layout";
-import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
-import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/linkedin-post-generator-error-codes";
+} from "@/common/constants/generator/analytics/generator-analytics";
+import { GeneratorSectionLayout } from "@/common/constants/generator/ui/generator-section-layout";
+import { GeneratorStateKind } from "@/common/constants/generator/ui/generator-state-kind";
+import { LinkedInPostGeneratorErrorCode } from "@/common/constants/generator/api/linkedin-post-generator-error-codes";
 import type { GeneratorFieldErrors } from "@/common/contracts/generator/generator-field-errors";
 import type {
   GeneratorState,
   GeneratorUsageLimit,
 } from "@/common/contracts/generator/generator-state";
 import type { LinkedInPostGeneratorFormValues } from "@/common/contracts/generator/linkedin-post-generator-form-values";
-import { LINKEDIN_POST_GENERATOR_INITIAL_VALUES } from "@/common/contracts/generator/linkedin-post-generator-form-values";
+import { DEFAULT_LINKEDIN_POST_GENERATOR_FORM_VALUES } from "@/common/defaults/generator/linkedin-post-generator-form-values";
 import type { ProjectOfferSyncDetail } from "@/common/contracts/marketing/project-offer-sync-detail";
 import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing/project-offer-change-event";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
@@ -58,7 +58,7 @@ export function GeneratorSection({
 }: GeneratorSectionProps) {
   const fieldIds = useGeneratorFieldIds();
   const [values, setValues] = useState<LinkedInPostGeneratorFormValues>(
-    () => LINKEDIN_POST_GENERATOR_INITIAL_VALUES,
+    () => DEFAULT_LINKEDIN_POST_GENERATOR_FORM_VALUES,
   );
   const [errors, setErrors] = useState<GeneratorFieldErrors>({});
   const [state, setState] = useState<GeneratorState | null>(null);

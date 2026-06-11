@@ -6,7 +6,6 @@ export * from "./linkedin-post-generator-form-values";
 export * from "./linkedin-post-generator-failure-response";
 export * from "./linkedin-post-generator-post";
 export * from "./linkedin-post-generator-request";
-export * from "./linkedin-post-generator-response";
 export * from "./linkedin-post-generator-success-response";
 export * from "./linkedin-post-generator-template";
 export * from "./linkedin-post-generator-tone";

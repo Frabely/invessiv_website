@@ -4,7 +4,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import { GeneratingPanel } from "./generating-panel";
-import { GeneratorStepStatus } from "@/common/constants/generator/generator-step-status";
+import { GeneratorStepStatus } from "@/common/constants/generator/ui/generator-step-status";
 
 const content = getLinkedInPostGeneratorContent("de");
 

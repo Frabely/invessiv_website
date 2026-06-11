@@ -1,11 +1,11 @@
 import "server-only";
 import OpenAI from "openai";
-import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
 import {
   GENERATOR_TEMPLATE_AUTO,
   GENERATOR_TEMPLATES,
   type GeneratorTemplate,
-} from "@/common/constants/generator/generator-templates";
+} from "@/common/constants/generator/post/generator-templates";
 import {
   LINKEDIN_POST_DOWNLOAD_FILENAME_FALLBACK,
   LinkedInPostGeneratorErrorCode,

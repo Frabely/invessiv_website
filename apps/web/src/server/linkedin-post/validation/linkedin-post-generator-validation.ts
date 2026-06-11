@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
-import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/generator-color-pairs";
+import { GENERATOR_COLOR_PAIRS } from "@/common/constants/generator/post/generator-color-pairs";
 import { GeneratorZodIssueCode } from "@/common/constants/generator";
 import {
   Locale,

@@ -2,7 +2,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { type Browser, chromium } from "playwright";
-import { GENERATOR_TEMPLATES } from "@/common/constants/generator/generator-templates";
+import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
 import { POST_SIZE_PX, RENDER_TIMEOUT_MS } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
 import { escapeHtml } from "@/server/services/mail/templates/template-utils";

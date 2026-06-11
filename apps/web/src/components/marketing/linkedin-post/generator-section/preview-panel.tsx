@@ -1,4 +1,4 @@
-import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import { GeneratorStateKind } from "@/common/constants/generator/ui/generator-state-kind";
 import type { GeneratorState } from "@/common/contracts/generator/generator-state";
 import type { Locale } from "@/config/i18n";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
@@ -6,8 +6,6 @@ import { SuccessPreview } from "./success-preview";
 import { LimitReachedPreview } from "./limit-reached-preview/limit-reached-preview";
 import { ErrorPreview } from "./error-preview/error-preview";
 
-// Loading is rendered in-generator (GeneratingPanel), never here, so the preview
-// only ever carries the resolved states.
 type PreviewState = Exclude<
   GeneratorState,
   { kind: typeof GeneratorStateKind.Loading }

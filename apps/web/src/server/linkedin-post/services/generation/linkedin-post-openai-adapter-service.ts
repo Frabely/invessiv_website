@@ -1,7 +1,7 @@
 import "server-only";
 import OpenAI from "openai";
 import { z } from "zod";
-import { type GeneratorTemplate } from "@/common/constants/generator/generator-templates";
+import { type GeneratorTemplate } from "@/common/constants/generator/post/generator-templates";
 import {
   LINKEDIN_POST_FALLBACK_HASHTAG,
   LINKEDIN_POST_OPENAI_SCHEMA_NAME,

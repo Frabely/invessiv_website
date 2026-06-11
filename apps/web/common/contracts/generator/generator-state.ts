@@ -1,4 +1,4 @@
-import { GeneratorStateKind } from "@/common/constants/generator/generator-state-kind";
+import { GeneratorStateKind } from "@/common/constants/generator/ui/generator-state-kind";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
 
 /** Server-reported free-test budget for the generator (pseudonymous IP key). */

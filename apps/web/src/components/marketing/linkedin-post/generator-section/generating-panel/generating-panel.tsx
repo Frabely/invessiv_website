@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { GeneratorStepStatus } from "@/common/constants/generator/generator-step-status";
+import { GeneratorStepStatus } from "@/common/constants/generator/ui/generator-step-status";
 import type { LinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-post/generator";
 import styles from "./generating-panel.module.css";
 
