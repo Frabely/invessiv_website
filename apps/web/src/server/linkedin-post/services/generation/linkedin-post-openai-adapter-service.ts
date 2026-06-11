@@ -114,11 +114,28 @@ const PROMPT_LANGUAGE_BY_LOCALE: Record<Locale, string> = {
   en: "English",
 };
 
+const PROMPT_TONE_BY_LOCALE: Record<
+  Locale,
+  Record<LinkedInPostGeneratorRequestDto["tone"], string>
+> = {
+  de: {
+    sachlich: "sachlich / faktisch",
+    persönlich: "persönlich / erfahrungsbasiert",
+    provokativ: "provokativ / pointiert",
+  },
+  en: {
+    sachlich: "factual / evidence-led",
+    persönlich: "personal / experience-led",
+    provokativ: "provocative / pointed-opinion",
+  },
+};
+
 function createPrompt(
   request: LinkedInPostGeneratorRequestDto,
   template: GeneratorTemplate,
 ) {
   const language = PROMPT_LANGUAGE_BY_LOCALE[request.locale];
+  const tone = PROMPT_TONE_BY_LOCALE[request.locale][request.tone];
   const bodyRule =
     template.bodyVariant === "bullets"
       ? 'Return bodyVariant "bullets" with exactly three concise bullets (6-14 words each) and insight null.'
@@ -129,13 +146,15 @@ function createPrompt(
 
   return [
     `Write one neutral, unbranded LinkedIn square-post concept in ${language}.`,
+    `Output language is ${language}. Every generated field must be ${language}: headlineHtml, headlinePlain, kicker, insight, bullets, highlight, caption.body, and all hashtags except LinkedIn.`,
+    `If the topic or role/industry is written in another language, translate and adapt the idea into natural ${language}. Do not mirror the input language.`,
     "Return only fields from the provided JSON schema.",
     "No Invessiv, no invessiv.com, no watermark, no unsupported promises, no emoji in the visual fields.",
     "headlineHtml may contain only <em> tags. headlinePlain must be the same headline without tags.",
     bodyRule,
     highlightRule,
     "Also return a short eyebrow label (kicker): 1-3 words, at most 32 characters, plain text, same language. It is a thematic category/rubric for the post derived from the topic AND the copy you generate. Never copy the role/industry value verbatim and never restate the headline.",
-    `Tone of voice (steers register only, NOT the body form): ${request.tone}.`,
+    `Tone of voice (steers register only, NOT the body form and NOT the language): ${tone}.`,
     "Caption first paragraph must stand alone and stay at or below 140 characters. Hashtags must end with LinkedIn.",
     `Topic: ${request.topic}`,
     `Role or industry (perspective only — do NOT print this verbatim anywhere): ${request.expertise}`,
@@ -271,7 +290,7 @@ async function callOpenAI(
         {
           content: [
             {
-              text: "You create high-quality LinkedIn post content for a visitor-owned, unbranded generator.",
+              text: "You create high-quality LinkedIn post content for a visitor-owned, unbranded generator. Follow the requested output language exactly, even when the input topic or role is written in another language.",
               type: "input_text",
             },
           ],

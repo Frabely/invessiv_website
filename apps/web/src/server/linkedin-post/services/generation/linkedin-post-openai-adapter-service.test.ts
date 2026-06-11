@@ -61,6 +61,63 @@ describe("linkedinPostOpenaiAdapterService.callOpenAI", () => {
     expect(client.create).toHaveBeenCalledTimes(1);
   });
 
+  it("uses the request locale as the generation language", async () => {
+    const englishClient = createResponsesClient(
+      JSON.stringify(VALID_GENERATED_CONTENT),
+    );
+    const germanClient = createResponsesClient(
+      JSON.stringify({
+        ...VALID_GENERATED_CONTENT,
+        caption: {
+          body: "Ein kurzer eigenstaendiger Caption-Absatz.",
+          hashtags: ["B2B", "Preis", "LinkedIn"],
+        },
+        headlineHtml: "Klare <em>Preise</em>",
+        headlinePlain: "Klare Preise",
+        highlight: "Eine zugespitzte Zeile zum Punkt.",
+        insight: "Eine knappe Beobachtung zu Preisen.",
+        kicker: "Preise",
+      }),
+    );
+
+    await linkedinPostOpenaiAdapterService.callOpenAI(
+      englishClient,
+      { ...GENERATOR_REQUEST, locale: "en", tone: "persönlich" },
+      "gpt-test",
+      INSIGHT_TEMPLATE,
+    );
+    await linkedinPostOpenaiAdapterService.callOpenAI(
+      germanClient,
+      { ...GENERATOR_REQUEST, locale: "de", tone: "persönlich" },
+      "gpt-test",
+      INSIGHT_TEMPLATE,
+    );
+
+    const englishPrompt =
+      englishClient.create.mock.calls[0]?.[0]?.input?.[1]?.content?.[0]?.text;
+    const germanPrompt =
+      germanClient.create.mock.calls[0]?.[0]?.input?.[1]?.content?.[0]?.text;
+
+    expect(englishPrompt).toContain(
+      "Write one neutral, unbranded LinkedIn square-post concept in English.",
+    );
+    expect(englishPrompt).toContain(
+      "Output language is English. Every generated field must be English",
+    );
+    expect(englishPrompt).toContain(
+      "translate and adapt the idea into natural English",
+    );
+    expect(englishPrompt).toContain(
+      "Tone of voice (steers register only, NOT the body form and NOT the language): personal / experience-led.",
+    );
+    expect(germanPrompt).toContain(
+      "Write one neutral, unbranded LinkedIn square-post concept in German.",
+    );
+    expect(germanPrompt).toContain(
+      "Tone of voice (steers register only, NOT the body form and NOT the language): persönlich / erfahrungsbasiert.",
+    );
+  });
+
   it("reuses the same adapted content schema across requests", async () => {
     const firstClient = createResponsesClient(
       JSON.stringify(VALID_GENERATED_CONTENT),

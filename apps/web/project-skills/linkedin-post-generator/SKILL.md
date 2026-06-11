@@ -567,9 +567,14 @@ copy across re-runs (see §3), low enough to keep the quality gate
 (§11) passing reliably. Pin the exact model id in B3's server config,
 not in this spec, so model upgrades do not require a skill edit.
 
-All copy is in the **request locale**. No Invessiv branding ("Invessiv",
-"invessiv.com", "Landingpage" as a service mention) in any visible
-string. The post is the visitor's, not Invessiv's.
+All copy is in the **request locale**. If `locale = "de"`, generate German
+headline, body, kicker, caption, and locale-specific hashtags. If
+`locale = "en"`, generate English headline, body, kicker, caption, and
+locale-specific hashtags. The German tone wire values (`sachlich`,
+`persönlich`, `provokativ`) never determine output language; they only select
+the register within the language chosen by `locale`. No Invessiv branding
+("Invessiv", "invessiv.com", "Landingpage" as a service mention) in any
+visible string. The post is the visitor's, not Invessiv's.
 
 The `expertise` value steers vocabulary, examples, and assumed reader
 expertise — it is the **perspective** the post is written from. It is **not**
