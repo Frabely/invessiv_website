@@ -35,12 +35,12 @@ const POST: LinkedInPostGeneratorPostDto = {
 };
 
 describe("linkedinPostRenderService", () => {
-  it("renders the generated post as SVG", () => {
-    const svg = linkedinPostRenderService.renderLinkedInPostSvg(POST);
+  it("renders the generated post as SVG", async () => {
+    const svg = await linkedinPostRenderService.renderLinkedInPostSvg(POST);
 
     expect(svg).toContain("<svg");
-    expect(svg).toContain("Better client calls");
-    expect(svg).toContain("Start with the decision");
+    expect(svg).toContain("<path");
+    expect(svg).toContain("#F4F7F5");
   });
 
   it("renders the generated post SVG as a PNG buffer", async () => {

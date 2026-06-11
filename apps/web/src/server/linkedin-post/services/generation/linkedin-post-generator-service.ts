@@ -160,7 +160,7 @@ type GenerateLinkedInPostOptions = {
 
 /** Service-internal result — extends the shared DTO with previewHtml which is
  *  specific to the web app's rendering pipeline. The route handler assembles
- *  imageDataUrl (from Playwright) and returns both to the client. */
+ *  imageDataUrl (from the server image renderer) and returns both to the client. */
 type GenerateLinkedInPostResult = LinkedInPostGeneratorSuccessResponseDto & {
   previewHtml: string;
 };
