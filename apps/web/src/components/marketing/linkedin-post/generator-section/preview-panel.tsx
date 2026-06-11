@@ -57,7 +57,6 @@ export function PreviewPanel({
           postTitle={state.post.headlinePlain}
           previewHtml={state.previewHtml}
           followUpHref={followUpHref}
-          downloadFileName={state.downloadFileName}
           imageDataUrl={state.imageDataUrl}
           onCopyCaption={onCopyCaption}
           onDownloadPost={onDownloadPost}

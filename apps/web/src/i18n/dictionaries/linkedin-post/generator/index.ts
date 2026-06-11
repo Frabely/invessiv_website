@@ -57,6 +57,7 @@ export type LinkedInPostGeneratorResultDownloadCopy = {
   body: string;
   downloadAction: string;
   downloadUnavailable: string;
+  fileBaseName: string;
   newPostAction: string;
 };
 

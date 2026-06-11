@@ -11,7 +11,7 @@ import {
   LinkedInPostGeneratorErrorCode,
 } from "@/common/constants/generator";
 import { getServerEnv } from "@/server/config/env";
-import { linkedinPostRenderService } from "../rendering/linkedin-post-render-service";
+import { linkedinPostHtmlRenderService } from "../rendering/linkedin-post-html-render-service";
 import {
   BRAND_COLLISION_PATTERN,
   PROMPT_INJECTION_PATTERN,
@@ -234,7 +234,7 @@ async function generateLinkedInPost(
     downloadFileName: createDownloadFileName(request.topic),
     ok: true,
     post,
-    previewHtml: linkedinPostRenderService.renderLinkedInPostHtml(
+    previewHtml: linkedinPostHtmlRenderService.renderLinkedInPostHtml(
       post,
       request.locale,
     ),

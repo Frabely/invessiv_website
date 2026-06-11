@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { LinkedInPostBodyVariant } from "@/common/contracts/generator/post/linkedin-post-body-variant";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
-import { linkedinPostRenderService } from "./linkedin-post-render-service";
+import { LinkedInPostBodyVariant } from "@/common/contracts/generator/post/linkedin-post-body-variant";
+import { linkedinPostImageRenderService } from "./linkedin-post-image-render-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -34,9 +34,10 @@ const POST: LinkedInPostGeneratorPostDto = {
   },
 };
 
-describe("linkedinPostRenderService", () => {
+describe("linkedinPostImageRenderService", () => {
   it("renders the generated post as SVG", async () => {
-    const svg = await linkedinPostRenderService.renderLinkedInPostSvg(POST);
+    const svg =
+      await linkedinPostImageRenderService.renderLinkedInPostSvg(POST);
 
     expect(svg).toContain("<svg");
     expect(svg).toContain("<path");
@@ -44,7 +45,8 @@ describe("linkedinPostRenderService", () => {
   });
 
   it("renders the generated post SVG as a PNG buffer", async () => {
-    const png = await linkedinPostRenderService.renderLinkedInPostPng(POST);
+    const png =
+      await linkedinPostImageRenderService.renderLinkedInPostPng(POST);
 
     expect(png.subarray(0, 8)).toEqual(
       Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),

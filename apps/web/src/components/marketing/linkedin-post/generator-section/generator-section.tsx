@@ -292,7 +292,6 @@ export function GeneratorSection({
       kind: GeneratorStateKind.Success,
       post: result.post,
       caption: result.caption,
-      downloadFileName: result.downloadFileName,
       imageDataUrl: result.imageDataUrl,
       previewHtml: result.previewHtml,
     });

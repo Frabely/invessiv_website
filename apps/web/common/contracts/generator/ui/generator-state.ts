@@ -19,7 +19,6 @@ export type GeneratorState =
       kind: typeof GeneratorStateKind.Success;
       post: LinkedInPostGeneratorPostDto;
       caption: string;
-      downloadFileName: string;
       imageDataUrl: string;
       previewHtml: string;
     }

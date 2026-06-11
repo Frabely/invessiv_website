@@ -66,6 +66,7 @@
     "body": "Lade Bild und Caption als ZIP herunter. Die Caption kannst du zusätzlich direkt kopieren.",
     "downloadAction": "Bild und Caption herunterladen",
     "downloadUnavailable": "Der Bilddownload ist gerade nicht verfügbar. Du kannst die Caption weiterhin direkt kopieren.",
+    "fileBaseName": "post",
     "newPostAction": "Neuen Post generieren"
   },
   "preview": {

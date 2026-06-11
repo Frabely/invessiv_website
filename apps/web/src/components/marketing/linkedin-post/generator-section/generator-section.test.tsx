@@ -386,6 +386,8 @@ describe("GeneratorSection", () => {
   });
 
   it("emits a post download event when the zip download action is used", async () => {
+    const { linkedinPostZipDownloadService } =
+      await import("@/client/linkedin-post/services/linkedin-post-zip-download-service");
     const eventSpy = vi.fn();
     window.addEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
 
@@ -404,6 +406,13 @@ describe("GeneratorSection", () => {
     );
 
     expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(
+      linkedinPostZipDownloadService.downloadLinkedInPostZip,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        downloadFileName: "post.png",
+      }),
+    );
     window.removeEventListener(GeneratorAnalyticsEvent.PostDownload, eventSpy);
   });
 

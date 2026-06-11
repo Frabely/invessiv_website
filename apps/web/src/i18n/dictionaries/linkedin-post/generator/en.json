@@ -66,6 +66,7 @@
     "body": "Download the image and caption as a ZIP. You can still copy the caption directly.",
     "downloadAction": "Download image and caption",
     "downloadUnavailable": "The image download is unavailable right now. You can still copy the caption directly.",
+    "fileBaseName": "post",
     "newPostAction": "Generate a new post"
   },
   "preview": {

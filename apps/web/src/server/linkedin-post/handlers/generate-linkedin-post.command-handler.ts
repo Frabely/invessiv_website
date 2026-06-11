@@ -23,7 +23,7 @@ import {
   linkedinPostGeneratorRequestSchema,
   linkedinPostGeneratorValidationService,
 } from "@/server/linkedin-post/validation/linkedin-post-generator-validation";
-import { linkedinPostRenderService } from "@/server/linkedin-post/services/rendering/linkedin-post-render-service";
+import { linkedinPostImageRenderService } from "@/server/linkedin-post/services/rendering/linkedin-post-image-render-service";
 
 type LinkedInPostGeneratorCommandSuccessResponse =
   LinkedInPostGeneratorSuccessResponseDto & {
@@ -190,7 +190,9 @@ async function generateLinkedInPostCommandHandler({
 
     let png: Buffer;
     try {
-      png = await linkedinPostRenderService.renderLinkedInPostPng(result.post);
+      png = await linkedinPostImageRenderService.renderLinkedInPostPng(
+        result.post,
+      );
     } catch (renderError) {
       await linkedinPostGeneratorUsageLimitService.releaseLinkedInPostGeneratorUsage(
         usageReservation,

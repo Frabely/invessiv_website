@@ -86,9 +86,9 @@ vi.mock(
 );
 
 vi.mock(
-  "@/server/linkedin-post/services/rendering/linkedin-post-render-service",
+  "@/server/linkedin-post/services/rendering/linkedin-post-image-render-service",
   () => ({
-    linkedinPostRenderService: {
+    linkedinPostImageRenderService: {
       renderLinkedInPostPng: mocks.renderLinkedInPostPng,
     },
   }),

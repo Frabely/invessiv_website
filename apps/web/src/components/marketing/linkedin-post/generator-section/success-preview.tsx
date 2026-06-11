@@ -18,7 +18,6 @@ type SuccessPreviewProps = {
   followUpHref: string;
   postTitle: string;
   previewHtml: string;
-  downloadFileName: string;
   imageDataUrl: string;
   onCopyCaption: (caption: string) => void;
   onDownloadPost: () => void;
@@ -35,7 +34,6 @@ export function SuccessPreview({
   followUpHref,
   postTitle,
   previewHtml,
-  downloadFileName,
   imageDataUrl,
   onCopyCaption,
   onDownloadPost,
@@ -51,6 +49,7 @@ export function SuccessPreview({
     .join("")
     .slice(0, 2);
   const { success } = content.preview;
+  const downloadResourceFileName = `${content.resultDownload.fileBaseName}.png`;
 
   return (
     <div className={styles.preview} data-state="success">
@@ -89,7 +88,7 @@ export function SuccessPreview({
         <ResultDownloadCard
           caption={caption}
           content={content.resultDownload}
-          downloadFileName={downloadFileName}
+          downloadFileName={downloadResourceFileName}
           imageDataUrl={imageDataUrl}
           onDownload={onDownloadPost}
           onRequestNewPost={onRequestNewPost}
