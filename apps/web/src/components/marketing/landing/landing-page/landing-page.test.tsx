@@ -51,7 +51,7 @@ describe("LandingPage", () => {
       "Eine Landingpage, die dein Angebot klar verkauft",
     );
     expect(
-      screen.getByText(/Keine große Website\. Kein unnötiger Umfang\./),
+      screen.getByText(/Klarer Umfang\. Fester Preis: 999 € für den Starter\./),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", {
