@@ -89,12 +89,10 @@ export function GeneratorSection({
 
   useEffect(() => {
     if (state?.kind === GeneratorStateKind.Loading) {
-      if (window.matchMedia?.(MOBILE_GENERATOR_SCROLL_QUERY).matches) {
-        formSlotRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
+      document.getElementById(id)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
       return;
     }
 
@@ -121,7 +119,7 @@ export function GeneratorSection({
       behavior: "smooth",
       block: shouldPinSuccessToTop ? "start" : "nearest",
     });
-  }, [state?.kind]);
+  }, [state?.kind, id]);
 
   function emitAnalytics(
     event: GeneratorAnalyticsEvent,

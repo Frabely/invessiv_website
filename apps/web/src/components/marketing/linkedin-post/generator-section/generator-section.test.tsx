@@ -272,8 +272,7 @@ describe("GeneratorSection", () => {
     expect(submit).toHaveBeenCalledTimes(1);
   });
 
-  it("scrolls to the in-generator loading panel on mobile submit", async () => {
-    mockMatchMedia(true);
+  it("scrolls to the section headline when the loading state appears", async () => {
     const submit = vi.fn<SubmitGenerator>(
       () =>
         new Promise<LinkedInPostGeneratorResult>(() => {
