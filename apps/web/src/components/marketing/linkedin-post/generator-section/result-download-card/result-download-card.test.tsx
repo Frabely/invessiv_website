@@ -52,28 +52,6 @@ describe("ResultDownloadCard", () => {
     expect(onDownload).toHaveBeenCalledTimes(1);
   });
 
-  it("disables download when no image is available", () => {
-    render(
-      <ResultDownloadCard
-        caption="Caption"
-        content={content}
-        downloadFileName="post.png"
-        imageDataUrl={null}
-        onDownload={vi.fn()}
-        onRequestNewPost={vi.fn()}
-      />,
-    );
-
-    expect(
-      (
-        screen.getByRole("button", {
-          name: content.downloadAction,
-        }) as HTMLButtonElement
-      ).disabled,
-    ).toBe(true);
-    expect(screen.getByText(content.downloadUnavailable)).toBeTruthy();
-  });
-
   it("offers a secondary action to generate a new post", () => {
     const onRequestNewPost = vi.fn();
     render(

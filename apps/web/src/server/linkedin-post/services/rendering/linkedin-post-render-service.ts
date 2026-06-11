@@ -1,7 +1,7 @@
 import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { Browser } from "playwright";
+import type { Browser, LaunchOptions } from "playwright-core";
 import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
 import { POST_SIZE_PX, RENDER_TIMEOUT_MS } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
@@ -98,6 +98,26 @@ function renderLinkedInPostHtml(
 
 let browserPromise: Promise<Browser> | null = null;
 
+function isVercelRuntime() {
+  return Boolean(process.env.VERCEL);
+}
+
+async function createBrowserLaunchOptions(): Promise<LaunchOptions> {
+  if (!isVercelRuntime()) {
+    return {
+      args: ["--no-sandbox"],
+    };
+  }
+
+  const { default: chromium } = await import("@sparticuz/chromium");
+
+  return {
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
+    headless: true,
+  };
+}
+
 async function getBrowser(): Promise<Browser> {
   if (browserPromise) {
     const existing = await browserPromise.catch(() => null);
@@ -107,8 +127,8 @@ async function getBrowser(): Promise<Browser> {
     browserPromise = null;
   }
 
-  const { chromium } = await import("playwright");
-  browserPromise = chromium.launch({ args: ["--no-sandbox"] });
+  const { chromium } = await import("playwright-core");
+  browserPromise = chromium.launch(await createBrowserLaunchOptions());
   return browserPromise;
 }
 

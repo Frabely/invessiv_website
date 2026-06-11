@@ -13,6 +13,7 @@ export const LinkedInPostGeneratorErrorCode = {
   OpenAiInvalidJson: "openai_invalid_json",
   OpenAiInvalidContent: "openai_invalid_content",
   GeneratorSchemaInvalid: "generator_schema_invalid",
+  ImageRenderFailed: "image_render_failed",
   DeliveryUnavailable: "delivery_unavailable",
   DeliveryTokenInvalid: "delivery_token_invalid",
   DeliveryTokenExpired: "delivery_token_expired",

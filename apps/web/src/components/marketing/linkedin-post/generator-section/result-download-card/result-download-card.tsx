@@ -10,7 +10,7 @@ type ResultDownloadCardProps = {
   caption: string;
   content: LinkedInPostGeneratorResultDownloadCopy;
   downloadFileName: string;
-  imageDataUrl: string | null;
+  imageDataUrl: string;
   onDownload: () => void;
   onRequestNewPost: () => void;
 };
@@ -24,9 +24,6 @@ export function ResultDownloadCard({
   onRequestNewPost,
 }: ResultDownloadCardProps) {
   function handleDownload() {
-    if (!imageDataUrl) {
-      return;
-    }
     linkedinPostZipDownloadService.downloadLinkedInPostZip({
       caption,
       downloadFileName,
@@ -47,16 +44,9 @@ export function ResultDownloadCard({
         <p className={styles.body}>{content.body}</p>
       </header>
 
-      {!imageDataUrl ? (
-        <p className={styles.feedback} role="status">
-          {content.downloadUnavailable}
-        </p>
-      ) : null}
-
       <div className={styles.actions}>
         <PrimaryCtaButton
           className={styles.downloadAction}
-          disabled={!imageDataUrl}
           onClick={handleDownload}
           type="button"
         >

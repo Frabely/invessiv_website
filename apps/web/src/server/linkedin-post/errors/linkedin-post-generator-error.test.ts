@@ -98,6 +98,7 @@ describe("linkedinPostGeneratorErrorService.statusForGenerationError", () => {
       LinkedInPostGeneratorErrorCode.OpenAiSchemaError,
       LinkedInPostGeneratorErrorCode.OpenAiEmptyOutput,
       LinkedInPostGeneratorErrorCode.GeneratorSchemaInvalid,
+      LinkedInPostGeneratorErrorCode.ImageRenderFailed,
     ];
 
     for (const code of serviceUnavailableCodes) {

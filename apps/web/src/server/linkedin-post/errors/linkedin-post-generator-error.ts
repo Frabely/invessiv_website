@@ -68,7 +68,8 @@ function statusForGenerationError(
     code === LinkedInPostGeneratorErrorCode.OpenAiRequestFailed ||
     code === LinkedInPostGeneratorErrorCode.OpenAiSchemaError ||
     code === LinkedInPostGeneratorErrorCode.OpenAiEmptyOutput ||
-    code === LinkedInPostGeneratorErrorCode.GeneratorSchemaInvalid
+    code === LinkedInPostGeneratorErrorCode.GeneratorSchemaInvalid ||
+    code === LinkedInPostGeneratorErrorCode.ImageRenderFailed
   ) {
     return HttpResponseCode.ServiceUnavailable;
   }

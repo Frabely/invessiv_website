@@ -19,7 +19,7 @@ import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 export type LinkedInPostGeneratorSuccessResult =
   LinkedInPostGeneratorSuccessResponseDto & {
     previewHtml: string;
-    imageDataUrl: string | null;
+    imageDataUrl: string;
   };
 
 export type LinkedInPostGeneratorResult =
@@ -41,7 +41,7 @@ function isLinkedInPostGeneratorSuccessResult(
     typeof value.caption === "string" &&
     typeof value.downloadFileName === "string" &&
     isRecord(value.post) &&
-    (typeof value.imageDataUrl === "string" || value.imageDataUrl === null)
+    typeof value.imageDataUrl === "string"
   );
 }
 

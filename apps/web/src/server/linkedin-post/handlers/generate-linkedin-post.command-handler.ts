@@ -27,7 +27,7 @@ import { linkedinPostRenderService } from "@/server/linkedin-post/services/rende
 
 type LinkedInPostGeneratorCommandSuccessResponse =
   LinkedInPostGeneratorSuccessResponseDto & {
-    imageDataUrl: string | null;
+    imageDataUrl: string;
     previewHtml: string;
   };
 
@@ -188,21 +188,26 @@ async function generateLinkedInPostCommandHandler({
         )
       : linkedinPostGeneratorService.generateLinkedInPost(generatorRequest));
 
-    let png: Buffer | null = null;
+    let png: Buffer;
     try {
       png = await linkedinPostRenderService.renderLinkedInPostPng(
         result.previewHtml,
       );
     } catch (renderError) {
+      await linkedinPostGeneratorUsageLimitService.releaseLinkedInPostGeneratorUsage(
+        usageReservation,
+      );
       console.error(LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT, {
         reason: renderError instanceof Error ? renderError.message : "unknown",
         stage: "playwright_render",
         template: result.post.template.id,
       });
+      return failureResult(
+        LinkedInPostGeneratorErrorCode.ImageRenderFailed,
+        HttpResponseCode.ServiceUnavailable,
+      );
     }
-    const imageDataUrl = png
-      ? `data:image/png;base64,${png.toString("base64")}`
-      : null;
+    const imageDataUrl = `data:image/png;base64,${png.toString("base64")}`;
 
     return {
       body: {

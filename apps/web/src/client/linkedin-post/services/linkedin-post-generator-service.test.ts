@@ -15,7 +15,7 @@ describe("linkedinPostGeneratorService.submitLinkedInPost", () => {
           JSON.stringify({
             caption: "Caption",
             downloadFileName: "post.png",
-            imageDataUrl: null,
+            imageDataUrl: "data:image/png;base64,AAAA",
             ok: true,
             post: {
               bodyVariant: "insight",

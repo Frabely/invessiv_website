@@ -137,7 +137,6 @@ beforeEach(() => {
   });
   mockMatchMedia(false);
   window.HTMLElement.prototype.scrollIntoView = vi.fn();
-  // PostFramePreview uses ResizeObserver, which jsdom does not implement.
   window.ResizeObserver = class {
     observe() {}
 
@@ -413,7 +412,7 @@ describe("GeneratorSection", () => {
       ok: true,
       caption: "Kurz-Caption.",
       downloadFileName: "kurz-caption.png",
-      imageDataUrl: null,
+      imageDataUrl: "data:image/png;base64,AAAA",
       post: GENERATED_POST,
       previewHtml: PREVIEW_HTML,
       usageLimit: {
@@ -451,7 +450,7 @@ describe("GeneratorSection", () => {
       ok: true,
       caption: "Letzte Caption.",
       downloadFileName: "letzte-caption.png",
-      imageDataUrl: null,
+      imageDataUrl: "data:image/png;base64,AAAA",
       post: GENERATED_POST,
       previewHtml: PREVIEW_HTML,
       usageLimit: {

@@ -20,7 +20,7 @@ export type GeneratorState =
       post: LinkedInPostGeneratorPostDto;
       caption: string;
       downloadFileName: string;
-      imageDataUrl: string | null;
+      imageDataUrl: string;
       previewHtml: string;
     }
   | {

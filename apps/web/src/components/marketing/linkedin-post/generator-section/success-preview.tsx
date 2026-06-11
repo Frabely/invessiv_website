@@ -19,7 +19,7 @@ type SuccessPreviewProps = {
   postTitle: string;
   previewHtml: string;
   downloadFileName: string;
-  imageDataUrl: string | null;
+  imageDataUrl: string;
   onCopyCaption: (caption: string) => void;
   onDownloadPost: () => void;
   onRequestNewPost: () => void;

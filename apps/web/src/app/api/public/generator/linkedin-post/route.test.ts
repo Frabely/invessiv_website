@@ -278,7 +278,7 @@ describe("POST /api/public/generator/linkedin-post", () => {
     expect(mocks.generateLinkedInPost).not.toHaveBeenCalled();
   });
 
-  it("stays successful with a null image when the PNG render fails", async () => {
+  it("returns an image render error and releases usage when the PNG render fails", async () => {
     mocks.renderLinkedInPostPng.mockRejectedValue(new Error("render_timeout"));
     const { POST } = await import("./route");
     const response = await POST(
@@ -296,12 +296,19 @@ describe("POST /api/public/generator/linkedin-post", () => {
     );
 
     const payload = (await response.json()) as {
-      imageDataUrl: string | null;
+      code: string;
       ok: boolean;
     };
-    expect(response.status).toBe(200);
-    expect(payload.ok).toBe(true);
-    expect(payload.imageDataUrl).toBeNull();
+    expect(response.status).toBe(503);
+    expect(payload.ok).toBe(false);
+    expect(payload.code).toBe("image_render_failed");
+    expect(mocks.releaseLinkedInPostGeneratorUsage).toHaveBeenCalledWith({
+      allowed: true,
+      keyHash: "hash",
+      limit: 2,
+      remaining: 1,
+      resetAt: new Date("2026-07-01T00:00:00.000Z"),
+    });
   });
 
   it("returns validation errors for invalid payloads", async () => {
