@@ -1,5 +1,5 @@
 import "server-only";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
 import { POST_SIZE_PX } from "@/common/constants/generator";
@@ -31,22 +31,54 @@ const TEMPLATES_DIR = join(
   "linkedin-post-generator",
   "templates",
 );
-const INTER_FONT_DIR = join(
-  process.cwd(),
-  "node_modules",
-  "@fontsource",
-  "inter",
-  "files",
-);
-const INTER_FONT_FILES = [
-  join(INTER_FONT_DIR, "inter-latin-400-normal.woff"),
-  join(INTER_FONT_DIR, "inter-latin-600-normal.woff"),
-  join(INTER_FONT_DIR, "inter-latin-700-normal.woff"),
-  join(INTER_FONT_DIR, "inter-latin-800-normal.woff"),
-];
+const INTER_FONT_FILE_NAMES = [
+  "inter-latin-400-normal.woff",
+  "inter-latin-600-normal.woff",
+  "inter-latin-700-normal.woff",
+  "inter-latin-800-normal.woff",
+] as const;
 const SVG_FONT_FAMILY = "Inter, Arial, Helvetica, sans-serif";
 
 const templateCache = new Map<string, string>();
+let fontBufferCache: Buffer[] | null = null;
+
+function resolveInterFontPath(fileName: string) {
+  const candidates = [
+    join(
+      process.cwd(),
+      "node_modules",
+      "@fontsource",
+      "inter",
+      "files",
+      fileName,
+    ),
+    join(
+      process.cwd(),
+      "..",
+      "..",
+      "node_modules",
+      "@fontsource",
+      "inter",
+      "files",
+      fileName,
+    ),
+    join("/var/task/node_modules", "@fontsource", "inter", "files", fileName),
+  ];
+
+  const found = candidates.find((candidate) => existsSync(candidate));
+  if (!found) {
+    throw new Error(`inter_font_missing:${fileName}`);
+  }
+
+  return found;
+}
+
+function loadInterFontBuffers() {
+  fontBufferCache ??= INTER_FONT_FILE_NAMES.map((fileName) =>
+    readFileSync(resolveInterFontPath(fileName)),
+  );
+  return fontBufferCache;
+}
 
 function loadTemplate(fileName: string) {
   const cached = templateCache.get(fileName);
@@ -487,9 +519,11 @@ async function renderLinkedInPostPng(
       value: POST_SIZE_PX,
     },
     font: {
-      fontFiles: INTER_FONT_FILES,
+      fontBuffers: loadInterFontBuffers(),
       loadSystemFonts: false,
     },
+  } as ConstructorParameters<typeof Resvg>[1] & {
+    font: { fontBuffers: Buffer[] };
   });
   return Buffer.from(resvg.render().asPng());
 }
