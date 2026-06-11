@@ -2,7 +2,7 @@ import "server-only";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { GENERATOR_TEMPLATES } from "@/common/constants/generator/post/generator-templates";
-import { POST_SIZE_PX, RENDER_TIMEOUT_MS } from "@/common/constants/generator";
+import { POST_SIZE_PX } from "@/common/constants/generator";
 import type { Locale } from "@/config/i18n";
 import { escapeHtml } from "@/server/services/mail/templates/template-utils";
 import type { LinkedInPostGeneratorPostDto } from "@/common/contracts/generator";
@@ -89,140 +89,398 @@ function renderLinkedInPostHtml(
 }
 
 /**
- * Renders the canonical post HTML to a 1080x1080 PNG via a warm Chromium pool.
- * The browser is launched once and reused across requests (launching per
- * request would blow the render budget). Rendering is best-effort: callers
- * treat a thrown error as "no server PNG available" and fall back gracefully.
+ * Renders the canonical post to a 1080x1080 PNG without a browser. The server
+ * path deliberately uses SVG + Resvg instead of Chromium/Playwright/Puppeteer
+ * so Vercel deployments do not depend on a bundled browser binary.
  */
 
-type PostRenderBrowser = {
-  isConnected: () => boolean;
-  newContext: (options: {
-    deviceScaleFactor: number;
-    viewport: { height: number; width: number };
-  }) => Promise<{
-    close: () => Promise<void>;
-    newPage: () => Promise<{
-      evaluate: <T>(callback: () => T | Promise<T>) => Promise<T>;
-      screenshot: (options: {
-        clip: { height: number; width: number; x: number; y: number };
-        type: "png";
-      }) => Promise<Buffer>;
-      setContent: (
-        html: string,
-        options: { timeout: number; waitUntil: "load" },
-      ) => Promise<void>;
-    }>;
-  }>;
+type SvgTextLine = {
+  text: string;
+  x: number;
+  y: number;
+  size: number;
+  fill: string;
+  weight?: number;
+  anchor?: "start" | "middle";
 };
 
-type PuppeteerBrowser = {
-  connected: boolean;
-  newPage: () => Promise<{
-    close: () => Promise<void>;
-    evaluate: <T>(callback: () => T | Promise<T>) => Promise<T>;
-    screenshot: (options: {
-      clip: { height: number; width: number; x: number; y: number };
-      type: "png";
-    }) => Promise<Buffer | Uint8Array>;
-    setContent: (
-      html: string,
-      options: { timeout: number; waitUntil: "load" },
-    ) => Promise<void>;
-    setViewport: (viewport: {
-      deviceScaleFactor: number;
-      height: number;
-      width: number;
-    }) => Promise<void>;
-  }>;
-};
-
-let browserPromise: Promise<PostRenderBrowser> | null = null;
-
-function isVercelRuntime() {
-  return Boolean(process.env.VERCEL);
+function escapeSvg(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
 }
 
-async function createVercelBrowser(): Promise<PostRenderBrowser> {
-  const { default: chromium } = await import("@sparticuz/chromium");
-  const { default: puppeteer } = await import("puppeteer-core");
+function wrapText(value: string, maxChars: number, maxLines: number) {
+  const words = value.trim().split(/\s+/u).filter(Boolean);
+  const lines: string[] = [];
+  let current = "";
 
-  const browser = (await puppeteer.launch({
-    args: chromium.args,
-    executablePath: await chromium.executablePath(),
-    headless: "shell",
-  })) as PuppeteerBrowser;
-
-  return {
-    isConnected: () => browser.connected,
-    async newContext({ deviceScaleFactor, viewport }) {
-      const page = await browser.newPage();
-      await page.setViewport({
-        deviceScaleFactor,
-        height: viewport.height,
-        width: viewport.width,
-      });
-
-      return {
-        close: () => page.close(),
-        newPage: async () => ({
-          evaluate: page.evaluate.bind(page),
-          screenshot: async (options) => {
-            const screenshot = await page.screenshot(options);
-            return Buffer.from(screenshot);
-          },
-          setContent: page.setContent.bind(page),
-        }),
-      };
-    },
-  };
-}
-
-async function createLocalBrowser(): Promise<PostRenderBrowser> {
-  const { chromium } = await import("playwright");
-  return chromium.launch({ args: ["--no-sandbox"] });
-}
-
-async function getBrowser(): Promise<PostRenderBrowser> {
-  if (browserPromise) {
-    const existing = await browserPromise.catch(() => null);
-    if (existing && existing.isConnected()) {
-      return existing;
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= maxChars) {
+      current = candidate;
+      continue;
     }
-    browserPromise = null;
+
+    if (current) {
+      lines.push(current);
+    }
+    current = word;
+
+    if (lines.length >= maxLines) {
+      break;
+    }
   }
 
-  browserPromise = isVercelRuntime()
-    ? createVercelBrowser()
-    : createLocalBrowser();
-  return browserPromise;
+  if (current && lines.length < maxLines) {
+    lines.push(current);
+  }
+
+  return lines;
 }
 
-async function renderLinkedInPostPng(html: string): Promise<Buffer> {
-  const browser = await getBrowser();
-  const context = await browser.newContext({
-    deviceScaleFactor: 1,
-    viewport: { height: POST_SIZE_PX, width: POST_SIZE_PX },
-  });
+function renderTextLine(line: SvgTextLine) {
+  return `<text x="${line.x}" y="${line.y}" fill="${line.fill}" font-family="Arial, Helvetica, sans-serif" font-size="${line.size}" font-weight="${line.weight ?? 500}" letter-spacing="0" text-anchor="${line.anchor ?? "start"}">${escapeSvg(line.text)}</text>`;
+}
 
-  try {
-    const page = await context.newPage();
-    await page.setContent(html, {
-      timeout: RENDER_TIMEOUT_MS,
-      waitUntil: "load",
-    });
+function renderWrappedText({
+  anchor,
+  fill,
+  lineHeight,
+  lines,
+  size,
+  weight,
+  x,
+  y,
+}: {
+  anchor?: "start" | "middle";
+  fill: string;
+  lineHeight: number;
+  lines: string[];
+  size: number;
+  weight?: number;
+  x: number;
+  y: number;
+}) {
+  return lines
+    .map((line, index) =>
+      renderTextLine({
+        anchor,
+        fill,
+        size,
+        text: line,
+        weight,
+        x,
+        y: y + index * lineHeight,
+      }),
+    )
+    .join("");
+}
 
-    await page.evaluate(() => document.fonts.ready.then(() => undefined));
-    return await page.screenshot({
-      clip: { height: POST_SIZE_PX, width: POST_SIZE_PX, x: 0, y: 0 },
-      type: "png",
-    });
-  } finally {
-    await context.close();
+function renderBullets(
+  post: LinkedInPostGeneratorPostDto,
+  x: number,
+  y: number,
+) {
+  return (post.bullets ?? [])
+    .slice(0, 3)
+    .map((bullet, index) => {
+      const itemY = y + index * 112;
+      const lines = wrapText(bullet, 34, 2);
+      return `
+        <circle cx="${x}" cy="${itemY - 12}" r="17" fill="${post.colorPair.accent}" opacity="0.95" />
+        <path d="M${x - 7} ${itemY - 12} L${x - 1} ${itemY - 5} L${x + 10} ${itemY - 20}" fill="none" stroke="#101010" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        ${renderWrappedText({
+          fill: post.colorPair.text,
+          lineHeight: 36,
+          lines,
+          size: 30,
+          weight: 680,
+          x: x + 44,
+          y: itemY,
+        })}
+      `;
+    })
+    .join("");
+}
+
+function renderBaseSvg(post: LinkedInPostGeneratorPostDto, body: string) {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${POST_SIZE_PX}" height="${POST_SIZE_PX}" viewBox="0 0 ${POST_SIZE_PX} ${POST_SIZE_PX}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${post.colorPair.primary}" />
+        <stop offset="100%" stop-color="${post.colorPair.secondary}" />
+      </linearGradient>
+      <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="26" stdDeviation="32" flood-color="#000000" flood-opacity="0.28" />
+      </filter>
+    </defs>
+    <rect width="${POST_SIZE_PX}" height="${POST_SIZE_PX}" fill="url(#bg)" />
+    <circle cx="920" cy="120" r="210" fill="${post.colorPair.accent}" opacity="0.16" />
+    <circle cx="80" cy="980" r="260" fill="${post.colorPair.accent}" opacity="0.1" />
+    ${body}
+  </svg>`;
+}
+
+function renderEditorialCenterSvg(post: LinkedInPostGeneratorPostDto) {
+  const headline = wrapText(post.headlinePlain, 18, 3);
+  const insight = wrapText(post.insight ?? post.highlight ?? "", 42, 3);
+
+  return renderBaseSvg(
+    post,
+    `
+      <rect x="128" y="142" width="824" height="796" rx="34" fill="rgba(255,255,255,0.09)" filter="url(#softShadow)" />
+      <rect x="214" y="222" width="652" height="4" rx="2" fill="${post.colorPair.accent}" />
+      ${renderTextLine({
+        anchor: "middle",
+        fill: post.colorPair.accent,
+        size: 28,
+        text: post.kicker.toUpperCase(),
+        weight: 760,
+        x: 540,
+        y: 292,
+      })}
+      ${renderWrappedText({
+        anchor: "middle",
+        fill: post.colorPair.text,
+        lineHeight: 96,
+        lines: headline,
+        size: 78,
+        weight: 820,
+        x: 540,
+        y: 420,
+      })}
+      ${renderWrappedText({
+        anchor: "middle",
+        fill: post.colorPair.text,
+        lineHeight: 42,
+        lines: insight,
+        size: 32,
+        weight: 540,
+        x: 540,
+        y: 735,
+      })}
+      ${
+        post.highlight
+          ? renderTextLine({
+              anchor: "middle",
+              fill: post.colorPair.accent,
+              size: 30,
+              text: post.highlight,
+              weight: 760,
+              x: 540,
+              y: 850,
+            })
+          : ""
+      }
+    `,
+  );
+}
+
+function renderLeftRailSvg(post: LinkedInPostGeneratorPostDto) {
+  const headline = wrapText(post.headlinePlain, 19, 4);
+  const insight = wrapText(post.insight ?? post.highlight ?? "", 34, 3);
+
+  return renderBaseSvg(
+    post,
+    `
+      <rect x="90" y="96" width="18" height="888" rx="9" fill="${post.colorPair.accent}" />
+      ${renderTextLine({
+        fill: post.colorPair.accent,
+        size: 30,
+        text: post.kicker.toUpperCase(),
+        weight: 780,
+        x: 170,
+        y: 185,
+      })}
+      ${renderWrappedText({
+        fill: post.colorPair.text,
+        lineHeight: 88,
+        lines: headline,
+        size: 72,
+        weight: 820,
+        x: 170,
+        y: 318,
+      })}
+      <rect x="170" y="730" width="704" height="158" rx="28" fill="rgba(255,255,255,0.1)" />
+      ${renderWrappedText({
+        fill: post.colorPair.text,
+        lineHeight: 38,
+        lines: insight,
+        size: 30,
+        weight: 560,
+        x: 214,
+        y: 790,
+      })}
+      ${
+        post.highlight
+          ? renderTextLine({
+              fill: post.colorPair.accent,
+              size: 28,
+              text: post.highlight,
+              weight: 760,
+              x: 214,
+              y: 910,
+            })
+          : ""
+      }
+    `,
+  );
+}
+
+function renderStatementSvg(post: LinkedInPostGeneratorPostDto) {
+  const headline = wrapText(post.headlinePlain, 16, 4);
+  const insight = wrapText(post.insight ?? "", 36, 2);
+
+  return renderBaseSvg(
+    post,
+    `
+      ${renderTextLine({
+        anchor: "middle",
+        fill: post.colorPair.accent,
+        size: 30,
+        text: post.kicker.toUpperCase(),
+        weight: 780,
+        x: 540,
+        y: 190,
+      })}
+      ${renderWrappedText({
+        anchor: "middle",
+        fill: post.colorPair.text,
+        lineHeight: 102,
+        lines: headline,
+        size: 84,
+        weight: 850,
+        x: 540,
+        y: 350,
+      })}
+      <rect x="332" y="765" width="416" height="5" rx="3" fill="${post.colorPair.accent}" />
+      ${renderWrappedText({
+        anchor: "middle",
+        fill: post.colorPair.text,
+        lineHeight: 40,
+        lines: insight,
+        size: 30,
+        weight: 540,
+        x: 540,
+        y: 845,
+      })}
+    `,
+  );
+}
+
+function renderBulletStackSvg(post: LinkedInPostGeneratorPostDto) {
+  const headline = wrapText(post.headlinePlain, 19, 3);
+
+  return renderBaseSvg(
+    post,
+    `
+      ${renderTextLine({
+        fill: post.colorPair.accent,
+        size: 28,
+        text: post.kicker.toUpperCase(),
+        weight: 780,
+        x: 120,
+        y: 152,
+      })}
+      ${renderWrappedText({
+        fill: post.colorPair.text,
+        lineHeight: 78,
+        lines: headline,
+        size: 64,
+        weight: 830,
+        x: 120,
+        y: 272,
+      })}
+      <rect x="112" y="570" width="856" height="360" rx="34" fill="rgba(255,255,255,0.1)" filter="url(#softShadow)" />
+      ${renderBullets(post, 172, 654)}
+    `,
+  );
+}
+
+function renderIndexChecklistSvg(post: LinkedInPostGeneratorPostDto) {
+  const headline = wrapText(post.headlinePlain, 20, 3);
+  const bullets = (post.bullets ?? []).slice(0, 3);
+
+  return renderBaseSvg(
+    post,
+    `
+      ${renderTextLine({
+        fill: post.colorPair.accent,
+        size: 28,
+        text: post.kicker.toUpperCase(),
+        weight: 780,
+        x: 118,
+        y: 150,
+      })}
+      ${renderWrappedText({
+        fill: post.colorPair.text,
+        lineHeight: 76,
+        lines: headline,
+        size: 62,
+        weight: 830,
+        x: 118,
+        y: 270,
+      })}
+      ${bullets
+        .map((bullet, index) => {
+          const y = 588 + index * 118;
+          return `
+            <text x="126" y="${y}" fill="${post.colorPair.accent}" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="840">0${index + 1}</text>
+            ${renderWrappedText({
+              fill: post.colorPair.text,
+              lineHeight: 34,
+              lines: wrapText(bullet, 38, 2),
+              size: 29,
+              weight: 650,
+              x: 220,
+              y,
+            })}
+          `;
+        })
+        .join("")}
+    `,
+  );
+}
+
+function renderLinkedInPostSvg(post: LinkedInPostGeneratorPostDto) {
+  switch (post.template.id) {
+    case "left-rail":
+      return renderLeftRailSvg(post);
+    case "statement":
+      return renderStatementSvg(post);
+    case "bullet-stack":
+      return renderBulletStackSvg(post);
+    case "index-checklist":
+      return renderIndexChecklistSvg(post);
+    case "editorial-center":
+    default:
+      return renderEditorialCenterSvg(post);
   }
+}
+
+async function renderLinkedInPostPng(
+  post: LinkedInPostGeneratorPostDto,
+): Promise<Buffer> {
+  const { Resvg } = await import("@resvg/resvg-js");
+  const svg = renderLinkedInPostSvg(post);
+  const resvg = new Resvg(svg, {
+    fitTo: {
+      mode: "width",
+      value: POST_SIZE_PX,
+    },
+    font: {
+      loadSystemFonts: true,
+    },
+  });
+  return Buffer.from(resvg.render().asPng());
 }
 
 export const linkedinPostRenderService = {
   renderLinkedInPostHtml,
   renderLinkedInPostPng,
+  renderLinkedInPostSvg,
 } as const;

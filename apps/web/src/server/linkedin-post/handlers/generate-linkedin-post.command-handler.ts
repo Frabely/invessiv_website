@@ -190,16 +190,14 @@ async function generateLinkedInPostCommandHandler({
 
     let png: Buffer;
     try {
-      png = await linkedinPostRenderService.renderLinkedInPostPng(
-        result.previewHtml,
-      );
+      png = await linkedinPostRenderService.renderLinkedInPostPng(result.post);
     } catch (renderError) {
       await linkedinPostGeneratorUsageLimitService.releaseLinkedInPostGeneratorUsage(
         usageReservation,
       );
       console.error(LINKEDIN_POST_PNG_RENDER_FAILED_LOG_EVENT, {
         reason: renderError instanceof Error ? renderError.message : "unknown",
-        stage: "playwright_render",
+        stage: "svg_render",
         template: result.post.template.id,
       });
       return failureResult(
