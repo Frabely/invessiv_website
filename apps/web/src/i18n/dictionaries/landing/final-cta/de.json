@@ -1,7 +1,7 @@
 {
   "eyebrow": "Anfrage",
   "title": "Worum geht's bei deiner Landingpage?",
-  "body": "Schreib kurz, ob ich eine bestehende Seite prüfen oder eine neue Landingpage starten soll.",
+  "body": "Schreib kurz, welches Angebot die Landingpage verkaufen soll und ob es schon eine bestehende Seite gibt.",
   "form": {
     "fields": {
       "name": {
@@ -22,7 +22,7 @@
       },
       "goal": {
         "label": "Was möchtest du mit der Landingpage erreichen?",
-        "placeholder": "Neue Landingpage für ... / Bitte prüfe meine bestehende Seite ..."
+        "placeholder": "z. B. mehr Anfragen für deine Beratung oder Buchungen für dein Angebot"
       },
       "honeypot": {
         "label": "Bitte nicht ausfüllen"

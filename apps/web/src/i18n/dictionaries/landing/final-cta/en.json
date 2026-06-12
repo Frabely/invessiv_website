@@ -1,7 +1,7 @@
 {
   "eyebrow": "Inquire",
   "title": "What should your landing page do?",
-  "body": "Tell me whether to review an existing page or start a new landing page.",
+  "body": "Tell me which offer the landing page should sell and whether an existing page already exists.",
   "form": {
     "fields": {
       "name": {
@@ -22,7 +22,7 @@
       },
       "goal": {
         "label": "What do you want to achieve with the landing page?",
-        "placeholder": "New landing page for ... / Please review my existing page ..."
+        "placeholder": "e.g. more inquiries for your consulting or bookings for your offer"
       },
       "honeypot": {
         "label": "Please leave empty"

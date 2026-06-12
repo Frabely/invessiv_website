@@ -18,11 +18,11 @@
         "body": "Du bekommst innerhalb von 24 Stunden eine persönliche Rückmeldung."
       },
       {
-        "title": "Nächsten Schritt wählen",
-        "body": "Wenn es passt, legen wir gemeinsam los."
+        "title": "In Ruhe entscheiden",
+        "body": "Du entscheidest danach, ob wir starten."
       }
     ],
-    "contactLead": "Du musst jetzt nichts weiter tun. Wenn du willst, können wir vorher noch kurz sprechen.",
+    "contactLead": "Du musst jetzt nichts weiter tun. Wenn du vorher sprechen möchtest, kannst du optional einen Termin buchen.",
     "contactLabel": "Optional Termin buchen",
     "backLabel": "Zurück zur Übersicht"
   }

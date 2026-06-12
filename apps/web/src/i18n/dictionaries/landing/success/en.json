@@ -18,11 +18,11 @@
         "body": "Within 24 hours you'll get a personal reply."
       },
       {
-        "title": "Choose the next step",
-        "body": "If it's a fit, we can move forward together."
+        "title": "Decide calmly",
+        "body": "After that, you decide whether we start."
       }
     ],
-    "contactLead": "You do not need to do anything else right now. If you want, we can also have a quick call first.",
+    "contactLead": "You do not need to do anything else right now. If you want to talk first, you can optionally book a call.",
     "contactLabel": "Optional: book a call",
     "backLabel": "Back to overview"
   }

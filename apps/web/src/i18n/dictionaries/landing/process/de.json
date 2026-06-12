@@ -4,8 +4,8 @@
     {
       "iconKey": "target",
       "numeral": "01",
-      "title": "Ziel",
-      "description": "Kurzes Briefing zu Angebot, Zielgruppe und gewünschtem Ergebnis."
+      "title": "Ersteinschätzung",
+      "description": "Du schickst mir kurz Angebot, Zielgruppe und gewünschtes Ergebnis."
     },
     {
       "iconKey": "structure",
