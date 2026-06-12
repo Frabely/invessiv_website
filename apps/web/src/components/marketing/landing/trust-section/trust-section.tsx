@@ -1,7 +1,9 @@
 "use client";
 
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
@@ -56,6 +58,7 @@ export function TrustSection({
   titleHighlight,
 }: TrustSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const [avatarFallback, setAvatarFallback] = useState(false);
   useStaggeredSectionReveal(sectionRef, locale, { staggerMs: 110 });
 
   return (
@@ -74,13 +77,26 @@ export function TrustSection({
         <article className={styles.chatCard} data-reveal-item="true">
           <div className={styles.chatHeader}>
             <span className={styles.avatarFrame}>
-              <Image
-                alt={chat.avatarAlt}
-                className={styles.avatar}
-                height={96}
-                src="/assets/moritz-hecht.jpeg"
-                width={96}
-              />
+              {avatarFallback ? (
+                <span className={styles.avatarFallback} aria-hidden="true">
+                  <FontAwesomeIcon
+                    aria-hidden="true"
+                    className={styles.avatarFallbackIcon}
+                    icon={faCircleUser}
+                  />
+                </span>
+              ) : (
+                <Image
+                  alt={chat.avatarAlt}
+                  className={styles.avatar}
+                  height={96}
+                  onError={() => {
+                    setAvatarFallback(true);
+                  }}
+                  src="/assets/moritz-hecht.jpeg"
+                  width={96}
+                />
+              )}
               <span aria-hidden="true" className={styles.statusDot} />
             </span>
             <span className={styles.identity}>
