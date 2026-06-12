@@ -3,7 +3,6 @@ import { FaqSection } from "@/components/marketing/landing/faq-section/faq-secti
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
-import { DoneForYouSection } from "@/components/marketing/landing/done-for-you-section/done-for-you-section";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
@@ -19,7 +18,6 @@ import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
-import { getLandingDoneForYouContent } from "@/i18n/dictionaries/landing/done-for-you";
 import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
@@ -36,7 +34,6 @@ export function LandingPage({ locale }: LandingPageProps) {
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
-  const doneForYou = getLandingDoneForYouContent(locale);
   const pricing = getLandingPricingContent(locale);
   const problemSolution = getLandingProblemSolutionContent(locale);
   const process = getLandingProcessContent(locale);
@@ -82,9 +79,13 @@ export function LandingPage({ locale }: LandingPageProps) {
           {...problemSolution}
         />
 
-        <DoneForYouSection id="done-for-you" locale={locale} {...doneForYou} />
-
-        <TrustSection id="trust" locale={locale} {...trust} />
+        <TrustSection
+          id="trust"
+          locale={locale}
+          replyAnalyticsTarget={CONTACT_SECTION_ID}
+          replyHref={SECTION_HREFS.contact}
+          {...trust}
+        />
 
         <AudienceSection id="audience" locale={locale} {...audience} />
 

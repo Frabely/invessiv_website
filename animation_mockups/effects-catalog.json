@@ -330,6 +330,24 @@
     "mockupPath": "all/chaos-order-sort"
   },
   {
+    "id": "direct_line_chat",
+    "name": "Direct Line Chat Thread",
+    "inspiredBy": ["Messenger UIs", "Invessiv landing trust section"],
+    "effectType": "Conversational section layout + sequential message reveal",
+    "trigger": "Scroll reveal",
+    "implementation": "Chat-style card with avatar header and status, message bubbles popping in sequentially (translate/scale with staggered delays via IntersectionObserver), reply bar styled as input acting as CTA",
+    "uxGoal": "Make 'direct collaboration with one person' tangible by presenting trust commitments as a personal chat instead of a feature list",
+    "bestFor": [
+      "Trust/about sections",
+      "Solo-founder positioning",
+      "Service landings without references"
+    ],
+    "performanceNotes": "Transform/opacity only; one IntersectionObserver per section; avatar as static optimized image",
+    "a11yNotes": "Messages are a real labelled list in reading order; status dot is decorative; reply bar is a real link with visible focus; respect prefers-reduced-motion",
+    "platformGroup": "all",
+    "mockupPath": "all/direct-line-chat"
+  },
+  {
     "id": "infinite_card_rondell",
     "name": "Infinite Card Rondell",
     "inspiredBy": ["Interactive carousel mockups", "Infinite drag galleries"],

@@ -1,25 +1,39 @@
 {
-  "body": "No agency, no open-ended scope. One point of contact, from structure to launch.",
+  "body": "Here is what that means for your project — message by message.",
+  "chat": {
+    "avatarAlt": "Moritz Hecht, your direct contact at Invessiv",
+    "messages": [
+      {
+        "title": "One person",
+        "body": "You write with the person who builds your page. No handovers, no broken telephone."
+      },
+      {
+        "title": "Clear scope",
+        "body": "The scope is fixed before the start — you know exactly what is included."
+      },
+      {
+        "title": "No agency loop",
+        "body": "Your feedback goes straight into the build, not through three departments."
+      },
+      {
+        "title": "Honest assessment",
+        "body": "If a landing page is not the right step for your offer, I will tell you."
+      },
+      {
+        "title": "No hidden costs",
+        "body": "If something goes beyond the Starter, you decide up front — not the invoice."
+      },
+      {
+        "title": "Honestly",
+        "body": "My first public reference project is currently in the works. Until it is live, I would rather convince you with a clear process than with logos."
+      }
+    ],
+    "name": "Moritz Hecht",
+    "replyCtaLabel": "Request a free initial assessment",
+    "role": "Builds your landing page",
+    "statusLabel": "Replies within 24 hours",
+    "threadLabel": "What to expect when you work with me"
+  },
   "eyebrow": "How I work",
-  "items": [
-    {
-      "title": "Transparent start",
-      "body": "You know what to expect before I start."
-    },
-    {
-      "title": "Fast launch",
-      "body": "Built in 5–10 days when the offer and feedback are clear."
-    },
-    {
-      "title": "One point of contact",
-      "body": "No agency back-and-forth, no unnecessary coordination loops."
-    },
-    {
-      "title": "Honest assessment",
-      "body": "If a landing page does not make sense for your offer, I will tell you openly."
-    }
-  ],
-  "itemsLabel": "What to expect",
-  "reassurance": "The check stays intentionally lean: understand first, assess clearly, then decide.",
-  "title": "What to expect when you work with me."
+  "title": "You work directly with me — not with an agency."
 }

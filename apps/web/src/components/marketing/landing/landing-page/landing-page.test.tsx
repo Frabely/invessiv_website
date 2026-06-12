@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { LandingPage } from "./landing-page";
 
@@ -45,6 +45,9 @@ describe("LandingPage", () => {
       screen
         .getByTestId("site-header")
         .querySelector('a[href="#done-for-you"]'),
+    ).toBeNull();
+    expect(
+      screen.getByTestId("site-header").querySelector('a[href="#trust"]'),
     ).toBeTruthy();
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#audience"]'),
@@ -77,27 +80,40 @@ describe("LandingPage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /Darum musst du dich nicht kümmern/,
+        name: /Du arbeitest direkt mit mir/,
       }),
     ).toBeTruthy();
     expect(
-      screen.getByText("Seitenstruktur aus deinem Angebot ableiten"),
+      screen.getByRole("img", {
+        name: "Moritz Hecht, dein direkter Ansprechpartner bei Invessiv",
+      }),
     ).toBeTruthy();
-    expect(screen.getByText("Go-live technisch vorbereiten")).toBeTruthy();
+    expect(screen.getByText("Antwortet innerhalb von 24 Std.")).toBeTruthy();
+    const trustThread = screen.getByRole("list", {
+      name: "Was du von der Zusammenarbeit erwarten kannst",
+    });
+    expect(within(trustThread).getAllByRole("listitem")).toHaveLength(6);
     expect(
-      screen.getByText(
-        /Ich sortiere daraus Struktur, Text, Design und Technik/,
-      ),
+      within(trustThread).getByText("Keine Agentur-Schleife"),
     ).toBeTruthy();
+    expect(
+      within(trustThread).getByText(/erstes öffentliches Referenzprojekt/),
+    ).toBeTruthy();
+    const trustReplyCta = screen
+      .getAllByRole("link", { name: /Kostenlose Ersteinschätzung anfragen/ })
+      .find((link) => link.dataset.analyticsLocation === "trust");
+    expect(trustReplyCta).toBeTruthy();
+    expect(trustReplyCta!.getAttribute("href")).toBe("#contact");
     expect(
       screen.queryByRole("heading", {
         level: 2,
-        name: /Was du bekommst/,
+        name: /Darum musst du dich nicht kümmern/,
       }),
     ).toBeNull();
-    expect(screen.queryByText("Klare Seitenstruktur")).toBeNull();
-    expect(screen.queryByText("Launch-Unterstützung")).toBeNull();
-    expect(screen.getByText(/Du brauchst keine fertigen Texte/)).toBeTruthy();
+    expect(
+      screen.queryByText("Seitenstruktur aus deinem Angebot ableiten"),
+    ).toBeNull();
+    expect(screen.queryByText(/Der Check bleibt bewusst schlank/)).toBeNull();
     expect(
       screen.getByText(
         "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
@@ -133,7 +149,8 @@ describe("LandingPage", () => {
     );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
-    expect(pageFooter?.querySelector('a[href="#done-for-you"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#done-for-you"]')).toBeNull();
+    expect(pageFooter?.querySelector('a[href="#trust"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="/de"]')?.textContent).toBe(
       "Mehr über Invessiv",
     );

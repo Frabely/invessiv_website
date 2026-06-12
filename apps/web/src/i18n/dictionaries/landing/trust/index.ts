@@ -4,13 +4,19 @@ import en from "./en.json";
 
 export type LandingTrustContent = {
   body: string;
+  chat: {
+    avatarAlt: string;
+    messages: Array<{
+      body: string;
+      title: string;
+    }>;
+    name: string;
+    replyCtaLabel: string;
+    role: string;
+    statusLabel: string;
+    threadLabel: string;
+  };
   eyebrow: string;
-  items: Array<{
-    body: string;
-    title: string;
-  }>;
-  itemsLabel: string;
-  reassurance: string;
   title: string;
 };
 

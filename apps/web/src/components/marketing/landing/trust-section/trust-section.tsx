@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -11,69 +12,97 @@ import styles from "./trust-section.module.css";
 type TrustSectionProps = LandingTrustContent & {
   id: string;
   locale: Locale;
+  replyAnalyticsTarget: string;
+  replyHref: string;
 };
 
 export function TrustSection({
   body,
+  chat,
   eyebrow,
   id,
-  items,
-  itemsLabel,
   locale,
-  reassurance,
+  replyAnalyticsTarget,
+  replyHref,
   title,
 }: TrustSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
-  useStaggeredSectionReveal(sectionRef, locale);
+  useStaggeredSectionReveal(sectionRef, locale, { staggerMs: 110 });
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <article className={styles.card}>
-        <div className={styles.body}>
-          <header className={styles.header} data-reveal-item="true">
-            <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
-            <h2 className={styles.title}>{title}</h2>
-            <p className={styles.statement}>{body}</p>
-          </header>
+      <span aria-hidden="true" className={styles.glow} />
 
-          <ul className={styles.signals} aria-label={itemsLabel}>
-            {items.map((item) => (
+      <div className={styles.layout}>
+        <header className={styles.intro} data-reveal-item="true">
+          <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.body}>{body}</p>
+        </header>
+
+        <article className={styles.chatCard} data-reveal-item="true">
+          <div className={styles.chatHeader}>
+            <span className={styles.avatarFrame}>
+              <Image
+                alt={chat.avatarAlt}
+                className={styles.avatar}
+                height={96}
+                src="/assets/moritz-hecht.jpeg"
+                width={96}
+              />
+              <span aria-hidden="true" className={styles.statusDot} />
+            </span>
+            <span className={styles.identity}>
+              <span className={styles.name}>{chat.name}</span>
+              <span className={styles.role}>{chat.role}</span>
+            </span>
+            <span className={styles.status}>{chat.statusLabel}</span>
+          </div>
+
+          <ul aria-label={chat.threadLabel} className={styles.thread}>
+            {chat.messages.map((message) => (
               <li
-                className={styles.signal}
+                className={styles.message}
                 data-reveal-item="true"
-                key={item.title}
+                key={message.title}
               >
-                <span aria-hidden="true" className={styles.signalIcon}>
-                  <svg
-                    fill="none"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    width="14"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 12.5l4.2 4 9.3-9.5"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.6"
-                    />
-                  </svg>
-                </span>
-                <span className={styles.signalText}>
-                  <span className={styles.signalTitle}>{item.title}</span>
-                  <span className={styles.signalBody}>{item.body}</span>
-                </span>
+                <span className={styles.messageTitle}>{message.title}</span>
+                <span className={styles.messageBody}>{message.body}</span>
               </li>
             ))}
           </ul>
-        </div>
 
-        <p className={styles.signature} data-reveal-item="true">
-          <span aria-hidden="true" className={styles.signatureMarker} />
-          <span>{reassurance}</span>
-        </p>
-      </article>
+          <div className={styles.replyBar} data-reveal-item="true">
+            <a
+              className={styles.reply}
+              data-analytics-event="cta_click"
+              data-analytics-location="trust"
+              data-analytics-target={replyAnalyticsTarget}
+              data-analytics-variant="secondary"
+              href={replyHref}
+            >
+              <span className={styles.replyLabel}>{chat.replyCtaLabel}</span>
+              <span aria-hidden="true" className={styles.replySend}>
+                <svg
+                  fill="none"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 12h14m0 0-5.5-5.5M18 12l-5.5 5.5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.2"
+                  />
+                </svg>
+              </span>
+            </a>
+          </div>
+        </article>
+      </div>
     </section>
   );
 }

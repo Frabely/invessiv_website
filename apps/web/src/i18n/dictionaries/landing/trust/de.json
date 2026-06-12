@@ -1,25 +1,39 @@
 {
-  "body": "Keine Agentur, kein offener Rahmen. Eine Ansprechperson begleitet deine Landingpage von der Struktur bis zum Launch.",
+  "body": "Was das für dein Projekt heißt, liest du hier — Nachricht für Nachricht.",
+  "chat": {
+    "avatarAlt": "Moritz Hecht, dein direkter Ansprechpartner bei Invessiv",
+    "messages": [
+      {
+        "title": "Eine Ansprechperson",
+        "body": "Du schreibst mit der Person, die deine Seite baut. Keine Übergaben, keine Stille Post."
+      },
+      {
+        "title": "Klarer Rahmen",
+        "body": "Der Umfang steht vor dem Start fest — du weißt genau, was enthalten ist."
+      },
+      {
+        "title": "Keine Agentur-Schleife",
+        "body": "Dein Feedback geht direkt in die Umsetzung, nicht durch drei Abteilungen."
+      },
+      {
+        "title": "Ehrliche Ersteinschätzung",
+        "body": "Wenn eine Landingpage für dein Angebot nicht der richtige Schritt ist, sage ich es dir."
+      },
+      {
+        "title": "Keine versteckten Kosten",
+        "body": "Geht etwas über den Starter hinaus, entscheidest du vorher — nicht die Rechnung."
+      },
+      {
+        "title": "Ehrlich gesagt",
+        "body": "Mein erstes öffentliches Referenzprojekt ist gerade in Umsetzung. Bis es online ist, überzeuge ich lieber mit klarem Prozess als mit Logos."
+      }
+    ],
+    "name": "Moritz Hecht",
+    "replyCtaLabel": "Kostenlose Ersteinschätzung anfragen",
+    "role": "Baut deine Landingpage",
+    "statusLabel": "Antwortet innerhalb von 24 Std.",
+    "threadLabel": "Was du von der Zusammenarbeit erwarten kannst"
+  },
   "eyebrow": "So arbeite ich",
-  "items": [
-    {
-      "title": "Transparenter Einstieg",
-      "body": "Du weißt vor dem Start, womit du rechnen kannst."
-    },
-    {
-      "title": "Schneller Launch",
-      "body": "Umsetzung in 5–10 Tagen, wenn Angebot und Feedback klar sind."
-    },
-    {
-      "title": "Eine Ansprechperson",
-      "body": "Kein Agentur-Pingpong, keine unnötigen Abstimmungen."
-    },
-    {
-      "title": "Ehrliche Einschätzung",
-      "body": "Wenn eine Landingpage für dein Angebot nicht sinnvoll ist, sage ich es dir offen."
-    }
-  ],
-  "itemsLabel": "Was du erwarten kannst",
-  "reassurance": "Der Check bleibt bewusst schlank: erst verstehen, dann einschätzen, dann entscheiden.",
-  "title": "Was du bei der Zusammenarbeit erwarten kannst."
+  "title": "Du arbeitest direkt mit mir — nicht mit einer Agentur."
 }
