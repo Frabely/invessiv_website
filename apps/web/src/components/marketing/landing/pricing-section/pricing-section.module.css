@@ -64,6 +64,21 @@
   justify-items: center;
   gap: clamp(0.85rem, 1.6vw, 1.2rem);
   max-width: 38rem;
+  position: relative;
+}
+
+.intro::after {
+  content: "";
+  width: min(7.5rem, 22vw);
+  height: 1px;
+  margin-top: 0.2rem;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+    color-mix(in srgb, var(--color-accent-warm) 82%, transparent),
+    color-mix(in srgb, var(--color-cta) 82%, transparent),
+    color-mix(in srgb, var(--color-cta) 18%, transparent)
+  );
 }
 
 .eyebrow {
@@ -74,7 +89,7 @@
   margin: 0;
   max-width: 18ch;
   color: var(--color-text);
-  font-size: clamp(1.85rem, 3.4vw, 3.4rem);
+  font-size: clamp(2.05rem, 4vw, 3.85rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
   text-wrap: balance;

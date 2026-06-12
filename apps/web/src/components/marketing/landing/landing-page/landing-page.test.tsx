@@ -129,7 +129,7 @@ describe("LandingPage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /Erzähl mir kurz von deinem Projekt/,
+        name: /Worum geht's bei deiner Landingpage/,
       }),
     ).toBeTruthy();
     expect(

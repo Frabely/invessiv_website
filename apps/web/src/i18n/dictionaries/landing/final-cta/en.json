@@ -1,6 +1,6 @@
 {
   "eyebrow": "Inquire",
-  "title": "Tell me briefly about your project.",
+  "title": "What should your landing page do?",
   "body": "Tell me whether to review an existing page or start a new landing page.",
   "form": {
     "fields": {

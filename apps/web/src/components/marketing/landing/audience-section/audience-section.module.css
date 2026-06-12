@@ -74,7 +74,7 @@
   margin: 0;
   max-width: 18ch;
   color: var(--color-text);
-  font-size: clamp(1.85rem, 3.4vw, 3.4rem);
+  font-size: clamp(2.05rem, 4vw, 3.85rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
   text-wrap: balance;
@@ -168,7 +168,7 @@
   }
 
   .title {
-    font-size: clamp(1.85rem, 7vw, 2.6rem);
+    font-size: clamp(1.8rem, 6.4vw, 2.7rem);
   }
 
   .ctaWrap {
