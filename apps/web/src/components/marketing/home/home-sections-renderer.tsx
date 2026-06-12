@@ -20,6 +20,7 @@ import {
   SERVICES_SECTION_ID,
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
+import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import type { Locale } from "@/config/i18n";
 import type { HomeSectionContent } from "@/i18n/dictionaries/marketing/home";
@@ -53,7 +54,7 @@ export function HomeSectionsRenderer({
         section.id === sectionId,
     );
   const servicesSection = getSectionById(SERVICES_SECTION_ID);
-  const footerSection = getSectionById(FOOTER_SECTION_ID);
+  const footerSection = getHomeFooterSectionContent(locale);
 
   if (!servicesSection || !footerSection) {
     throw new Error("Expected services and footer sections to be available.");

@@ -9,7 +9,7 @@
     var(--focus-lane-max)
   );
   margin: 0 auto;
-  padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 6.5rem);
+  padding: 108px 0 clamp(4rem, 9vw, 6.5rem);
   text-align: center;
 }
 
@@ -98,9 +98,7 @@
 .title,
 .body,
 .stepsCard,
-.hint,
-.contact,
-.back {
+.contact {
   animation: rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -231,47 +229,12 @@
   line-height: 1.55;
 }
 
-.hint {
-  display: grid;
-  gap: 0.3rem;
-  width: 100%;
-  margin-top: clamp(1rem, 2.5vw, 1.4rem);
-  padding: 1rem 1.15rem;
-  border-radius: 14px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 30%, transparent);
-  border-left: 3px solid
-    color-mix(in srgb, var(--color-accent-warm) 65%, transparent);
-  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
-  text-align: left;
-  animation-delay: 640ms;
-}
-
-.hintLabel {
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 78%,
-    var(--color-text) 22%
-  );
-  font-size: var(--font-size-caption);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hintBody {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: clamp(0.92rem, 0.88rem + 0.2vw, 1rem);
-  line-height: 1.6;
-}
-
 .contact {
   display: grid;
   justify-items: center;
   gap: 0.75rem;
   margin: clamp(1.8rem, 4vw, 2.4rem) 0 0;
-  animation-delay: 740ms;
+  animation-delay: 640ms;
 }
 
 .contactLead {
@@ -282,74 +245,39 @@
   line-height: 1.6;
 }
 
-.contactLink {
-  display: inline-flex;
+.actions {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.65rem 1.35rem;
-  border-radius: 999px;
-  border: 1.5px solid color-mix(in srgb, var(--color-cta) 42%, transparent);
-  color: var(--color-text);
-  font-size: clamp(0.92rem, 0.88rem + 0.2vw, 1rem);
-  font-weight: 650;
-  transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    transform 180ms ease;
+  justify-content: center;
+  gap: 0.6rem;
 }
 
-.contactLink:hover {
-  border-color: var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
-  transform: translateY(-1px);
+.contactLink,
+.back {
+  gap: 0.5rem;
+}
+
+.contactIcon,
+.backArrow {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
 }
 
 .contactIcon {
-  flex-shrink: 0;
   width: 0.95em;
-  color: var(--color-cta-hover);
-  transition: transform 200ms ease;
+}
+
+.backArrow {
+  width: 0.85em;
 }
 
 .contactLink:hover .contactIcon {
   transform: scale(1.1);
 }
 
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: clamp(1.1rem, 2.5vw, 1.5rem);
-  padding: 0.5rem 0.9rem;
-  border-radius: 999px;
-  color: color-mix(in srgb, var(--color-text-muted) 94%, transparent);
-  font-size: clamp(0.92rem, 0.88rem + 0.2vw, 1rem);
-  font-weight: 600;
-  transition:
-    color 180ms ease,
-    background 180ms ease;
-  animation-delay: 820ms;
-}
-
-.back:hover {
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--color-text) 7%, transparent);
-}
-
-.backArrow {
-  flex-shrink: 0;
-  width: 0.85em;
-  transition: transform 200ms ease;
-}
-
 .back:hover .backArrow {
   transform: translateX(-3px);
-}
-
-.contactLink:focus-visible,
-.back:focus-visible {
-  outline: 2px solid var(--color-cta);
-  outline-offset: 3px;
 }
 
 :global([data-theme="light"]) .stepsCard {
@@ -409,6 +337,7 @@
 @media (max-width: 720px) {
   .page {
     width: calc(100% - (var(--page-inline-gutter) * 2));
+    padding-top: 98px;
   }
 
   .glow {
@@ -422,8 +351,24 @@
     padding: 1.2rem 1rem;
   }
 
-  .hint {
-    padding: 0.9rem 1rem;
+  .contact {
+    align-items: stretch;
+    justify-items: stretch;
+  }
+
+  .actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .back,
+  .contactLink {
+    display: flex;
+    align-self: stretch;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
   }
 }
 
@@ -433,9 +378,7 @@
   .title,
   .body,
   .stepsCard,
-  .hint,
-  .contact,
-  .back {
+  .contact {
     animation: none;
   }
 
@@ -450,7 +393,7 @@
     opacity: 0;
   }
 
-  .back,
+  .contactIcon,
   .backArrow {
     transition: none;
   }

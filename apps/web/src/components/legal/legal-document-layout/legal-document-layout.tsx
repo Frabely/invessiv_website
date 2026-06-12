@@ -7,7 +7,7 @@ import {
   getLocalizedSectionHref,
   PRIMARY_NAVIGATION,
 } from "@/config/navigation/home";
-import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
+import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import styles from "./legal-document-layout.module.css";
 
 type LegalDocumentLayoutProps = {
@@ -29,24 +29,11 @@ export function LegalDocumentLayout({
   title,
   updatedAt,
 }: LegalDocumentLayoutProps) {
-  const footerSection = getHomeSections(locale).find(
-    (section) => section.id === "footer",
-  );
+  const footerSection = getHomeFooterSectionContent(locale);
   const legalHeaderNavigation = PRIMARY_NAVIGATION.map((item) => ({
     ...item,
     href: `/${locale}${item.href}`,
   }));
-  const localizedNavColumn = footerSection
-    ? {
-        ...footerSection.navColumn,
-        links: footerSection.navColumn.links.map((link) => ({
-          ...link,
-          href: link.href.startsWith("#")
-            ? `/${locale}${link.href}`
-            : link.href,
-        })),
-      }
-    : null;
 
   return (
     <>
@@ -76,11 +63,11 @@ export function LegalDocumentLayout({
           {children}
         </div>
       </main>
-      {footerSection && localizedNavColumn ? (
+      {footerSection ? (
         <FooterSection
           description={footerSection.description}
           locale={locale}
-          navColumn={localizedNavColumn}
+          navColumn={footerSection.navColumn}
         />
       ) : null}
     </>

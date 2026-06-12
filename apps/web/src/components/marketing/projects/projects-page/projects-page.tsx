@@ -11,13 +11,12 @@ import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import {
-  FOOTER_SECTION_ID,
   getLocalizedSectionHref,
   type NavigationItem,
 } from "@/config/navigation/home";
 import type { Locale } from "@/config/i18n";
-import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import type { ProjectsPageContent } from "@/i18n/dictionaries/marketing/projects";
+import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import styles from "./projects-page.module.css";
 
 type ProjectsPageProps = {
@@ -37,20 +36,7 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
     { href: getLocalizedSectionHref(locale, "process") },
     { href: getLocalizedSectionHref(locale, "faq") },
   ];
-  const footerSection = getHomeSections(locale).find(
-    (section) => section.id === FOOTER_SECTION_ID,
-  );
-  const localizedNavColumn = footerSection
-    ? {
-        ...footerSection.navColumn,
-        links: footerSection.navColumn.links.map((link) => ({
-          ...link,
-          href: link.href.startsWith("#")
-            ? `/${locale}${link.href}`
-            : link.href,
-        })),
-      }
-    : null;
+  const footerSection = getHomeFooterSectionContent(locale);
 
   return (
     <>
@@ -312,11 +298,11 @@ export function ProjectsPage({ content, locale }: ProjectsPageProps) {
         </LayoutShell>
       </main>
 
-      {footerSection && localizedNavColumn ? (
+      {footerSection ? (
         <FooterSection
           description={footerSection.description}
           locale={locale}
-          navColumn={localizedNavColumn}
+          navColumn={footerSection.navColumn}
         />
       ) : null}
     </>

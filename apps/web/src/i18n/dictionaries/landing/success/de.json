@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Anfrage gesendet | Invessiv",
+    "description": "Deine Anfrage für die kostenlose Ersteinschätzung ist eingegangen. Ich melde mich innerhalb von 24 Stunden mit einer klaren Einschätzung und den nächsten Schritten."
+  },
+  "page": {
+    "statusLabel": "Anfrage eingegangen",
+    "title": "Danke, deine Anfrage ist bei mir.",
+    "body": "Ich melde mich innerhalb von 24 Stunden mit einer ehrlichen Ersteinschätzung — kostenlos und unverbindlich.",
+    "stepsLabel": "Wie es weitergeht",
+    "steps": [
+      {
+        "title": "Anfrage prüfen",
+        "body": "Ich schaue mir deine Angaben in Ruhe an."
+      },
+      {
+        "title": "Einschätzung senden",
+        "body": "Du bekommst innerhalb von 24 Stunden eine persönliche Rückmeldung."
+      },
+      {
+        "title": "Nächsten Schritt wählen",
+        "body": "Wenn es passt, legen wir gemeinsam los."
+      }
+    ],
+    "contactLead": "Du musst jetzt nichts weiter tun. Wenn du willst, können wir vorher noch kurz sprechen.",
+    "contactLabel": "Optional Termin buchen",
+    "backLabel": "Zurück zur Übersicht"
+  }
+}

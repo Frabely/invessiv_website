@@ -5,6 +5,7 @@ import {
   faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonLink, PrimaryCtaLink } from "@/components/shared/button/button";
 import type { SuccessPageContent } from "@/i18n/dictionaries/shared/success-page";
 import styles from "./success-page.module.css";
 
@@ -20,8 +21,6 @@ export function SuccessPage({
   contactHref,
   contactLabel,
   contactLead,
-  hintBody,
-  hintLabel,
   statusLabel,
   steps,
   stepsLabel,
@@ -68,36 +67,32 @@ export function SuccessPage({
         </ol>
       </div>
 
-      <aside className={styles.hint}>
-        <span className={styles.hintLabel}>{hintLabel}</span>
-        <p className={styles.hintBody}>{hintBody}</p>
-      </aside>
-
       <div className={styles.contact}>
         <p className={styles.contactLead}>{contactLead}</p>
-        <a
-          className={styles.contactLink}
-          href={contactHref}
-          rel="noreferrer"
-          target="_blank"
-        >
-          <FontAwesomeIcon
-            aria-hidden="true"
-            className={styles.contactIcon}
-            icon={faCalendarCheck}
-          />
-          <span>{contactLabel}</span>
-        </a>
+        <div className={styles.actions}>
+          <ButtonLink className={styles.back} href={backHref} variant="ghost">
+            <FontAwesomeIcon
+              aria-hidden="true"
+              className={styles.backArrow}
+              icon={faArrowLeftLong}
+            />
+            <span>{backLabel}</span>
+          </ButtonLink>
+          <PrimaryCtaLink
+            className={styles.contactLink}
+            href={contactHref}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <FontAwesomeIcon
+              aria-hidden="true"
+              className={styles.contactIcon}
+              icon={faCalendarCheck}
+            />
+            <span>{contactLabel}</span>
+          </PrimaryCtaLink>
+        </div>
       </div>
-
-      <a className={styles.back} href={backHref}>
-        <FontAwesomeIcon
-          aria-hidden="true"
-          className={styles.backArrow}
-          icon={faArrowLeftLong}
-        />
-        <span>{backLabel}</span>
-      </a>
     </section>
   );
 }

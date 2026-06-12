@@ -283,4 +283,58 @@ describe("SiteHeader", () => {
       within(mobileMenu).getByRole("link", { name: "Workflow anfragen" }),
     ).toBeTruthy();
   });
+
+  it("renders only brand and locale switch in minimal mode", () => {
+    mockUseLanguage.mockReturnValue({
+      locale: "de",
+      setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
+      isMounted: true,
+      theme: "dark",
+      toggleTheme: vi.fn(),
+    });
+
+    const { container } = render(
+      <SiteHeader isMinimalHeader brandHref="/de" />,
+    );
+
+    expect(screen.getByText("Invessiv")).toBeTruthy();
+    expect(screen.queryByRole("navigation")).toBeNull();
+    expect(
+      container.querySelector('[data-analytics-event="cta_click"]'),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Zu Light wechseln" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Zu Dark wechseln" }),
+    ).toBeNull();
+    expect(container.querySelector(".site-header__mobile-menu")).toBeNull();
+    expect(screen.queryByTestId("reading-progress")).toBeNull();
+    expect(screen.getAllByRole("button", { name: "DE" }).length).toBe(2);
+    expect(screen.getAllByRole("button", { name: "EN" }).length).toBe(2);
+  });
+
+  it("still allows locale switching in minimal mode", () => {
+    const setLocale = vi.fn();
+    mockUseLanguage.mockReturnValue({
+      locale: "de",
+      setLocale,
+    });
+    mockUseTheme.mockReturnValue({
+      isMounted: true,
+      theme: "dark",
+      toggleTheme: vi.fn(),
+    });
+
+    render(<SiteHeader isMinimalHeader brandHref="/de" />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
+
+    expect(setLocale).toHaveBeenCalledWith("en");
+    expect(mockRouterReplace).toHaveBeenCalledWith("/en/imprint", {
+      scroll: false,
+    });
+  });
 });

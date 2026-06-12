@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Anfrage gesendet | Invessiv",
+    "description": "Deine Workflow-Anfrage ist eingegangen. Ich melde mich innerhalb von 24 Stunden mit einer kurzen, konkreten Einschätzung."
+  },
+  "page": {
+    "statusLabel": "Anfrage eingegangen",
+    "title": "Danke, deine Anfrage ist bei mir.",
+    "body": "Ich melde mich innerhalb von 24 Stunden mit einer kurzen Einschätzung, welche Arbeitsschritte ein Workflow übernehmen kann.",
+    "stepsLabel": "Wie es weitergeht",
+    "steps": [
+      {
+        "title": "Anfrage prüfen",
+        "body": "Ich lese deine Anfrage in Ruhe."
+      },
+      {
+        "title": "Workflow bewerten",
+        "body": "Du bekommst innerhalb von 24 Stunden eine persönliche Einschätzung zu deinem Workflow."
+      },
+      {
+        "title": "Nächsten Schritt klären",
+        "body": "Wenn es Sinn ergibt, besprechen wir die Umsetzung."
+      }
+    ],
+    "contactLead": "Du musst nichts weiter tun. Ein kurzes Gespräch vorab ist optional.",
+    "contactLabel": "Optional Termin buchen",
+    "backLabel": "Zurück zur Übersicht"
+  }
+}

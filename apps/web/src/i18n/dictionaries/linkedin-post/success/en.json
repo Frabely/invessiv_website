@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Inquiry sent | Invessiv",
+    "description": "Your workflow inquiry has been received. I'll get back to you within 24 hours with a short, concrete assessment."
+  },
+  "page": {
+    "statusLabel": "Inquiry received",
+    "title": "Thanks, your inquiry is with me.",
+    "body": "I'll get back to you within 24 hours with a short assessment of which work steps a workflow can take over.",
+    "stepsLabel": "What happens next",
+    "steps": [
+      {
+        "title": "Review the request",
+        "body": "I'll take a careful look at what you sent."
+      },
+      {
+        "title": "Assess the workflow",
+        "body": "Within 24 hours you'll get a personal assessment of your workflow."
+      },
+      {
+        "title": "Clarify the next step",
+        "body": "If it makes sense, we'll talk through the implementation."
+      }
+    ],
+    "contactLead": "You do not need to do anything else. A quick call beforehand is optional.",
+    "contactLabel": "Optional: book a call",
+    "backLabel": "Back to overview"
+  }
+}

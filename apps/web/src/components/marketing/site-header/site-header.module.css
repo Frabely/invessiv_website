@@ -78,6 +78,7 @@
 }
 
 .actions {
+  grid-column: 3;
   justify-self: end;
   display: inline-flex;
   align-items: center;

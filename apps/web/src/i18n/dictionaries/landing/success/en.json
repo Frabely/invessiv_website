@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Inquiry sent | Invessiv",
+    "description": "Your request for a free initial assessment has been received. I'll get back to you within 24 hours with a clear assessment and the next steps."
+  },
+  "page": {
+    "statusLabel": "Inquiry received",
+    "title": "Thanks, your inquiry is with me.",
+    "body": "I'll get back to you within 24 hours with an honest initial assessment - free and with no obligation.",
+    "stepsLabel": "What happens next",
+    "steps": [
+      {
+        "title": "Review the request",
+        "body": "I'll take a careful look at what you sent."
+      },
+      {
+        "title": "Send the assessment",
+        "body": "Within 24 hours you'll get a personal reply."
+      },
+      {
+        "title": "Choose the next step",
+        "body": "If it's a fit, we can move forward together."
+      }
+    ],
+    "contactLead": "You do not need to do anything else right now. If you want, we can also have a quick call first.",
+    "contactLabel": "Optional: book a call",
+    "backLabel": "Back to overview"
+  }
+}

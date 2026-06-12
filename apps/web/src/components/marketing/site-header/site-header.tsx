@@ -40,7 +40,8 @@ type SiteHeaderContent = Omit<
 type SiteHeaderProps = {
   brandHref?: string;
   ctaHref?: string;
-  navigation: NavigationItem[];
+  isMinimalHeader?: boolean;
+  navigation?: NavigationItem[];
   showThemeSwitch?: boolean;
   uiContent?: SiteHeaderContent;
 };
@@ -48,7 +49,8 @@ type SiteHeaderProps = {
 export function SiteHeader({
   brandHref = SECTION_HREFS.hero,
   ctaHref = SECTION_HREFS.contact,
-  navigation,
+  isMinimalHeader = false,
+  navigation = [],
   showThemeSwitch = true,
   uiContent,
 }: SiteHeaderProps) {
@@ -120,7 +122,7 @@ export function SiteHeader({
 
   return (
     <header className={headerClassName}>
-      <ReadingProgress />
+      {isMinimalHeader ? null : <ReadingProgress />}
       <div className={`${styles.inner} site-header__inner`}>
         <a className={`${styles.brand} site-header__brand`} href={brandHref}>
           <Image
@@ -133,20 +135,25 @@ export function SiteHeader({
           <span>{ui.brandLabel}</span>
         </a>
 
-        <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>
-          <ul className={styles.navList}>
-            {navigation.map((item) => (
-              <li key={item.href}>
-                <a className={styles.navLink} href={item.href}>
-                  {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {isMinimalHeader ? null : (
+          <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>
+            <ul className={styles.navList}>
+              {navigation.map((item) => (
+                <li key={item.href}>
+                  <a className={styles.navLink} href={item.href}>
+                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
 
-        <div className={styles.actions} aria-label={ui.actionsAriaLabel}>
-          {showThemeSwitch && themeSwitchCopy ? (
+        <div
+          className={styles.actions}
+          aria-label={isMinimalHeader ? undefined : ui.actionsAriaLabel}
+        >
+          {!isMinimalHeader && showThemeSwitch && themeSwitchCopy ? (
             <ThemeSwitch
               copy={themeSwitchCopy}
               onToggle={handleThemeToggle}
@@ -160,16 +167,18 @@ export function SiteHeader({
             onSelectAction={handleLocaleSelect}
             variant="desktop"
           />
-          <PrimaryCtaLink
-            className={styles.navCta}
-            href={ctaHref}
-            data-analytics-event="cta_click"
-            data-analytics-location="nav"
-            data-analytics-variant="primary"
-            data-analytics-target="form"
-          >
-            {ui.ctaLabel}
-          </PrimaryCtaLink>
+          {isMinimalHeader ? null : (
+            <PrimaryCtaLink
+              className={styles.navCta}
+              href={ctaHref}
+              data-analytics-event="cta_click"
+              data-analytics-location="nav"
+              data-analytics-variant="primary"
+              data-analytics-target="form"
+            >
+              {ui.ctaLabel}
+            </PrimaryCtaLink>
+          )}
         </div>
 
         <div className={styles.mobileActions}>
@@ -180,94 +189,100 @@ export function SiteHeader({
             onSelectAction={handleLocaleSelect}
             variant="mobile"
           />
-          <PrimaryCtaLink
-            aria-label={ui.ctaLabel}
-            className={`${styles.navCta} ${styles.mobileCta}`}
-            href={ctaHref}
-            title={ui.ctaLabel}
-            data-analytics-event="cta_click"
-            data-analytics-location="nav"
-            data-analytics-variant="primary"
-            data-analytics-target="form"
-          >
-            <span aria-hidden="true" className={styles.mobileCtaIcon}>
-              <svg fill="none" viewBox="0 0 24 24">
-                <path d="M7.5 19.5 3 21l1.5-4.5" />
-                <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
-                <circle
-                  cx="9.75"
-                  cy="12"
-                  fill="currentColor"
-                  r="0.9"
-                  stroke="none"
-                />
-                <circle
-                  cx="12.75"
-                  cy="12"
-                  fill="currentColor"
-                  r="0.9"
-                  stroke="none"
-                />
-                <circle
-                  cx="15.75"
-                  cy="12"
-                  fill="currentColor"
-                  r="0.9"
-                  stroke="none"
-                />
-              </svg>
-            </span>
-            <span className="sr-only">{ui.ctaLabel}</span>
-          </PrimaryCtaLink>
-          <details className={`${styles.mobileMenu} site-header__mobile-menu`}>
-            <summary
-              aria-label={ui.mobileMenuLabel}
-              className={styles.mobileMenuSummary}
-            >
-              <span className="sr-only">{ui.mobileMenuLabel}</span>
-              <span aria-hidden="true" className={styles.mobileMenuIcon}>
-                <span className={styles.mobileMenuIconLine} />
-                <span className={styles.mobileMenuIconLine} />
-                <span className={styles.mobileMenuIconLine} />
-              </span>
-            </summary>
-            <ul className={styles.mobileMenuList}>
-              {showThemeSwitch && themeSwitchCopy ? (
-                <li className={styles.mobileMenuListItem}>
-                  <ThemeSwitch
-                    copy={themeSwitchCopy}
-                    onToggle={handleThemeToggle}
-                    theme={theme}
-                    variant="mobile"
-                  />
-                </li>
-              ) : null}
-              {mobileNavigation.map((item) => (
-                <li className={styles.mobileMenuListItem} key={item.href}>
-                  <a
-                    className={styles.mobileMenuLink}
-                    href={item.href}
-                    onClick={handleMobileMenuLinkClick}
-                  >
-                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
-                  </a>
-                </li>
-              ))}
-              <li className={styles.mobileMenuListItem}>
-                <PrimaryCtaLink
-                  className={styles.mobileMenuCta}
-                  href={ctaHref}
-                  onClick={handleMobileMenuLinkClick}
-                  data-analytics-event="cta_click"
-                  data-analytics-location="nav"
-                  data-analytics-variant="primary"
-                  data-analytics-target="form"
+          {isMinimalHeader ? null : (
+            <>
+              <PrimaryCtaLink
+                aria-label={ui.ctaLabel}
+                className={`${styles.navCta} ${styles.mobileCta}`}
+                href={ctaHref}
+                title={ui.ctaLabel}
+                data-analytics-event="cta_click"
+                data-analytics-location="nav"
+                data-analytics-variant="primary"
+                data-analytics-target="form"
+              >
+                <span aria-hidden="true" className={styles.mobileCtaIcon}>
+                  <svg fill="none" viewBox="0 0 24 24">
+                    <path d="M7.5 19.5 3 21l1.5-4.5" />
+                    <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
+                    <circle
+                      cx="9.75"
+                      cy="12"
+                      fill="currentColor"
+                      r="0.9"
+                      stroke="none"
+                    />
+                    <circle
+                      cx="12.75"
+                      cy="12"
+                      fill="currentColor"
+                      r="0.9"
+                      stroke="none"
+                    />
+                    <circle
+                      cx="15.75"
+                      cy="12"
+                      fill="currentColor"
+                      r="0.9"
+                      stroke="none"
+                    />
+                  </svg>
+                </span>
+                <span className="sr-only">{ui.ctaLabel}</span>
+              </PrimaryCtaLink>
+              <details
+                className={`${styles.mobileMenu} site-header__mobile-menu`}
+              >
+                <summary
+                  aria-label={ui.mobileMenuLabel}
+                  className={styles.mobileMenuSummary}
                 >
-                  {ui.ctaLabel}
-                </PrimaryCtaLink>
-              </li>
-            </ul>
-          </details>
+                  <span className="sr-only">{ui.mobileMenuLabel}</span>
+                  <span aria-hidden="true" className={styles.mobileMenuIcon}>
+                    <span className={styles.mobileMenuIconLine} />
+                    <span className={styles.mobileMenuIconLine} />
+                    <span className={styles.mobileMenuIconLine} />
+                  </span>
+                </summary>
+                <ul className={styles.mobileMenuList}>
+                  {showThemeSwitch && themeSwitchCopy ? (
+                    <li className={styles.mobileMenuListItem}>
+                      <ThemeSwitch
+                        copy={themeSwitchCopy}
+                        onToggle={handleThemeToggle}
+                        theme={theme}
+                        variant="mobile"
+                      />
+                    </li>
+                  ) : null}
+                  {mobileNavigation.map((item) => (
+                    <li className={styles.mobileMenuListItem} key={item.href}>
+                      <a
+                        className={styles.mobileMenuLink}
+                        href={item.href}
+                        onClick={handleMobileMenuLinkClick}
+                      >
+                        {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
+                      </a>
+                    </li>
+                  ))}
+                  <li className={styles.mobileMenuListItem}>
+                    <PrimaryCtaLink
+                      className={styles.mobileMenuCta}
+                      href={ctaHref}
+                      onClick={handleMobileMenuLinkClick}
+                      data-analytics-event="cta_click"
+                      data-analytics-location="nav"
+                      data-analytics-variant="primary"
+                      data-analytics-target="form"
+                    >
+                      {ui.ctaLabel}
+                    </PrimaryCtaLink>
+                  </li>
+                </ul>
+              </details>
+            </>
+          )}
         </div>
       </div>
     </header>

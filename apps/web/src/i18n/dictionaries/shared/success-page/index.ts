@@ -8,8 +8,6 @@ export type SuccessPageContent = {
   body: string;
   contactLabel: string;
   contactLead: string;
-  hintBody: string;
-  hintLabel: string;
   statusLabel: string;
   steps: SuccessPageStep[];
   stepsLabel: string;
