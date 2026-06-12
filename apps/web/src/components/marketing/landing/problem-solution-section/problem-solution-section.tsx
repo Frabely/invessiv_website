@@ -1,5 +1,7 @@
 "use client";
 
+import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
@@ -68,7 +70,7 @@ export function ProblemSolutionSection({
         </div>
 
         <span aria-hidden="true" className={styles.connector}>
-          →
+          <FontAwesomeIcon aria-hidden="true" icon={faArrowRightLong} />
         </span>
 
         <div className={styles.clarityPanel} data-reveal-item="true">
