@@ -24,10 +24,12 @@
 ## Zielarchitektur
 
 - Conversion-Messung für Google Ads läuft direkt über ein **Google-Ads-Conversion-Tag** (`AW-`ID + Conversion-Label
-  aus einer in Google Ads angelegten Conversion-Aktion), eingebunden über eine einzige Provider-Komponente,
-  consent-aware und ohne doppelten Script-Einbau — nur auf Landing- und Success-Route, nicht global.
-- Zusätzlich wird **GA4** über die vorhandene Measurement-ID `G-5T4BC28Z0F` eingebunden (consent-gated über die
-  Analyse-Kategorie) — für Funnel-/Verhaltensanalyse der Landingpage (Absprünge, Engagement, Quellen). Kein GTM.
+  aus einer in Google Ads angelegten Conversion-Aktion), eingebunden über eine einzige Provider-Komponente, im
+  **Advanced Consent Mode** (Tag lädt mit Default `denied`, sendet bei Ablehnung cookielose Pings für Conversion-
+  Modeling) und ohne doppelten Script-Einbau — nur auf Landing- und Success-Route, nicht global.
+- Zusätzlich wird **GA4** über die vorhandene Measurement-ID `G-5T4BC28Z0F` eingebunden (ebenfalls Advanced Consent
+  Mode, gesteuert über die Analyse-Kategorie) — für Funnel-/Verhaltensanalyse der Landingpage (Absprünge, Engagement,
+  Quellen). Kein GTM.
 - Consent wird in einer eigenen kleinen Client-Schicht verwaltet: keine Consent-Dependency, kein GTM, kein unnötiges
   CMP-Paket.
 - Die Success-Seite `/[locale]/services/landing-page/success` (Umsetzung im Copy-Plan) wird als primäres
@@ -81,6 +83,42 @@ UX-Regeln:
 - Datenschutzlink im Banner und in den Einstellungen.
 - Mobile Banner darf den Haupt-CTA nicht dauerhaft verdecken; bevorzugt kompakter Bottom-Sheet-Stil mit klarer Max-Höhe.
 
+### Rechtliche Pflichten (DSGVO/TDDDG) — recherchiert, verbindlich
+
+Quellen am Ende des Dokuments. Diese Punkte sind keine Kür, sondern Voraussetzung für eine wirksame Einwilligung:
+
+- **Opt-in:** Analyse und Marketing erst nach aktiver Zustimmung; keine vorausgewählten Häkchen.
+- **Button-Gleichwertigkeit:** „Alle akzeptieren" und „Ablehnen" müssen gleich groß, gleich sichtbar und auf
+  **derselben Ebene** (erste Banner-Ebene) stehen — keine farbliche Hervorhebung nur des Accept-Buttons, „Ablehnen"
+  nicht als unscheinbarer Text-Link und nicht erst in den Einstellungen. (Klassischer Abmahn-/Bußgeldgrund.)
+- **Ein-Klick-Ablehnung:** Ablehnen darf nicht mehr Klicks kosten als Akzeptieren.
+- **Granularität:** Einwilligung getrennt pro Zweck (Analyse / Marketing), kein pauschales Sammel-Ja.
+- **Kein Dark Pattern / Nudging:** keine manipulative Gestaltung, kein Cookie-Wall-Zwang (Zugang nicht von Zustimmung
+  abhängig), keine Funktionseinbußen bei Ablehnung.
+- **Widerruf so einfach wie Erteilung:** dauerhafter „Cookie-Einstellungen"-Link (bei uns im Landing-/Success-Footer);
+  nach Ablehnung wird der Banner **nicht** erneut aufgedrängt.
+- **Pflichtinhalte auf Banner-Ebene** (auf gleicher Ebene wie die Buttons erreichbar): Verantwortlicher, konkrete
+  Verarbeitungszwecke (nicht vage „Surferlebnis verbessern"), verarbeitete Datenarten, Drittlandübermittlung (USA →
+  Google), Link zur Datenschutzerklärung.
+- **Consent Mode ersetzt die Einwilligung nicht:** Der Consent Mode ist nur die technische Schnittstelle; die
+  rechtswirksame Einwilligung muss unsere eigene Consent-Schicht einholen und dokumentieren (versionierter,
+  gespeicherter
+  Consent-State erfüllt die Dokumentationspflicht).
+
+### Barrierefreiheit (WCAG 2.2 AA) — verbindlich
+
+Der Banner ist ein interaktives Overlay und muss AA erfüllen (siehe auch AGENTS.md A11y-Pflicht):
+
+- **Semantik:** Container `role="dialog"` mit `aria-labelledby` (Banner-Titel) und `aria-describedby` (Bannertext),
+  damit Screenreader ihn als Dialog ankündigen.
+- **Tastatur:** Jede Aktion (Akzeptieren, Ablehnen, Einstellungen, Auswahl speichern, ggf. Schließen) ist ein natives
+  `button`; vollständige Bedienung per Tastatur, sichtbarer Fokus-Ring, logische Tab-Reihenfolge, `Escape` schließt.
+- **Fokus-Management:** Beim Öffnen Fokus in den Banner setzen; beim Schließen Fokus sinnvoll zurückgeben.
+- **Kein harter Focus-Trap:** Bewusste Abweichung vom klassischen Modal — der Bottom-Sheet sperrt die Seite **nicht**
+  aus (Anforderung „Ablehnen so leicht wie Akzeptieren" + „Haupt-CTA nicht verdecken"). Der Banner darf den aktuell
+  fokussierten Seiteninhalt nicht dauerhaft verdecken.
+- **WCAG 2.2 spezifisch:** Mindest-Zielgröße der Buttons 24×24 px (2.5.8), Kontrast AA, keine reine Farbcodierung.
+
 ### Vorgeschlagene DE-Copy
 
 - Bannertext: „Wir nutzen notwendige Funktionen für diese Website. Analyse und Marketing setzen wir nur ein, wenn du
@@ -107,6 +145,15 @@ Default Consent wird vor jeder Google-Tag-Konfiguration auf `denied` gesetzt:
 - `ad_user_data: "denied"`
 - `ad_personalization: "denied"`
 
+Begleitparameter (verbindlich, zusammen mit dem Default-denied gesetzt):
+
+- `ads_data_redaction: true` — solange `ad_storage = denied`, werden Ad-Identifier in den Pings redigiert.
+- `url_passthrough: true` — gibt den `gclid` über URL-Parameter weiter, wenn Cookies abgelehnt sind; sonst geht die
+  Klick-Zuordnung bei Ablehnung komplett verloren.
+- `wait_for_update: 500` (ms) — gibt dem Consent-Banner/`localStorage`-Read Zeit, die gespeicherte Auswahl anzuwenden,
+  bevor das Tag mit dem (Default-)Consent feuert. Verhindert ein Feuern mit veraltetem Default bei Wiederkehrern, die
+  bereits zugestimmt haben.
+
 Mapping:
 
 - Bei „Ablehnen“ bleiben alle optionalen Werte `denied`.
@@ -125,24 +172,37 @@ daraus ergeben sich `AW-`Conversion-ID und Conversion-Label. GA4-Measurement-ID,
 `NEXT_PUBLIC_*`-Env-Vars konfiguriert, nicht hartkodiert. Empfohlen: GA4-Property und Ads-Konto im jeweiligen Admin
 verknüpfen (bessere Attribution, Zielgruppen später nutzbar).
 
-- Entscheidung: **konservative Variante**. Google-Skripte werden erst nach Zustimmung geladen.
-- Zusätzlich wird ein kleiner Inline-Starter für `window.dataLayer`, `gtag` und `consent default denied` früh im Client
-  bereitgestellt, bevor ein Tag geladen oder konfiguriert wird.
-- Kein roher Script-Code in einzelnen Pages (das von Google angezeigte Snippet wird **nicht** roh eingeklebt — es
-  lädt bedingungslos und wäre ohne Consent-Gate ein DSGVO-Problem).
-- Kein `@next/third-parties` erzwingen, da die Dependency aktuell nicht vorhanden ist und für einen einzelnen Tag nicht
-  nötig ist.
-- Umsetzung über eigene `GoogleTag`-Client-Komponente mit `next/script` — **eine** gtag-Bibliothek, zwei
-  Destinationen:
-  - Script lädt, sobald **Analyse oder Marketing** zugestimmt wurde:
+- Entscheidung: **Advanced Consent Mode** (revidiert die frühere „konservative Variante"). Begründung: Im Basic Mode
+  (Skript erst nach Zustimmung laden) werden Conversions von Nutzern, die Marketing nicht aktiv akzeptieren, **gar
+  nicht** gemessen — bei einer Lead-Landingpage ist das die Mehrheit und damit eine strukturelle Untererfassung des
+  einzigen Seitenziels. Im Advanced Mode lädt das Tag bereits mit `consent default denied`; bei Ablehnung sendet es
+  **cookielose Pings** (keine Identifier, kein `localStorage`/Cookie-Zugriff), aus denen Google Conversions
+  **modelliert**. Bei Zustimmung wird per `consent update` auf vollständiges Tracking hochgestuft.
+- DSGVO-Einordnung: Das ist Googles empfohlener und üblicher Weg. Zulässig, weil ohne Zustimmung **keine** Cookies/
+  Identifier gespeichert werden, sondern nur aggregierbare, cookielose Signale. Das frühere „Snippet lädt
+  bedingungslos = DSGVO-Problem" galt für ein Tag **ohne** Consent-Mode-Gating; mit Default-denied + cookielosen Pings
+  entfällt dieser Einwand. (Bleibt technische/inhaltliche Einordnung, keine Rechtsberatung — im Privacy-Task abdecken.)
+- Inline-Starter früh im Client (vor dem Tag-Load): `window.dataLayer`, `gtag`-Stub, `consent default denied` inkl. der
+  Begleitparameter (`ads_data_redaction`, `url_passthrough`, `wait_for_update`). Dadurch gehen `dataLayer.push`-Events
+  nie verloren, auch wenn das externe Skript noch lädt.
+- Kein roher Google-Snippet-Code in einzelnen Pages; kein `@next/third-parties` erzwingen (Dependency nicht vorhanden,
+  für einen einzelnen Tag unnötig).
+- Umsetzung über eigene `GoogleTag`-Client-Komponente mit `next/script` — **eine** gtag-Bibliothek, zwei Destinationen:
+  - Skript lädt **immer** beim Mount der Landing-/Success-Route (nicht consent-gegated), Strategy `afterInteractive`:
     `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
-  - `gtag("config", "G-5T4BC28Z0F")` nur bei **Analyse**-Zustimmung (GA4-Messung)
-  - `gtag("config", "<AW-ID>")` nur bei **Marketing**-Zustimmung (Ads-Conversion-Destination)
-- Die Komponente wird gemäß `invessiv-landing`-Skill-Konvention nur auf der Landing-Route und der
-  Landing-Success-Route eingebunden (nicht global im Locale-Layout); Consent-Banner ebenfalls nur auf diesen Routen.
-  GA4 misst damit bewusst nur den Landing-Funnel, nicht die gesamte Site.
+  - `gtag("config", "G-5T4BC28Z0F")` (GA4) und `gtag("config", "<AW-ID>")` (Ads-Destination) werden gesetzt; der
+    Consent-Zustand (default denied, per Auswahl auf granted aktualisiert) steuert, ob volle Messung oder cookielose
+    Pings gesendet werden — **nicht** ob das Skript lädt.
+- GA4 `page_view` bei Client-Navigation: Der Form-Redirect zur Success-Route ist eine SPA-Navigation (`router.push`),
+  daher sendet GA4 dort **kein** automatisches `page_view`. Lösung: `send_page_view: false` in der GA4-Config und ein
+  manuelles `gtag("event", "page_view", ...)` bei jedem Routenwechsel (z. B. via `usePathname` im `GoogleTag`-Provider),
+  damit der Success-Aufruf im GA4-Funnel erscheint. Das Ads-Conversion-Event bleibt davon unberührt (separat, manuell).
+- Die Komponente wird gemäß `invessiv-landing`-Skill-Konvention nur auf der Landing-Route und der Landing-Success-Route
+  eingebunden (nicht global im Locale-Layout); Consent-Banner ebenfalls nur auf diesen Routen. GA4 misst damit bewusst
+  nur den Landing-Funnel, nicht die gesamte Site.
+- Graceful Degradation: Fehlen `AW-`ID/Label oder GA4-ID in den Env-Vars (z. B. Conversion-Aktion noch nicht angelegt),
+  no-op'ed die jeweilige Destination sauber — kein Build-/Runtime-Fehler.
 - Keine doppelten Google-Tags; vor Umsetzung nochmals `rg "gtag|googletagmanager|dataLayer"` prüfen.
-- Tag ist auf Landingpage und Success-Seite verfügbar, aber nur nach Consent aktiv.
 
 ## Formular-Submit-Flow (Voraussetzung aus dem Copy-Plan)
 
@@ -179,11 +239,16 @@ Optional später:
 ## Conversion Tracking für Google Ads
 
 - Primäre Conversion: Besuch von `/de/services/landing-page/success` — gemessen **event-basiert** über
-  `gtag("event", "conversion", { send_to: "<AW-ID>/<Label>" })` auf der Success-Route; keine URL-Regel in Google Ads
-  nötig.
+  `gtag("event", "conversion", { send_to: "<AW-ID>/<Label>", transaction_id: "<id>" })` auf der Success-Route; keine
+  URL-Regel in Google Ads nötig.
 - Schutz gegen Direktaufrufe: Der Redirect setzt ein kurzlebiges `sessionStorage`-Flag; die Conversion feuert nur,
   wenn das Flag vorhanden ist. Die Seite selbst wird bei Direktaufruf normal angezeigt. Beim Honeypot-Redirect wird
   das Flag nicht gesetzt.
+- **Deduplizierung (kein Doppelfeuern):** Das `sessionStorage`-Flag wird **direkt nach dem Lesen gelöscht**
+  (Konsum-Pattern), bevor das Event feuert. Dadurch löst weder ein Reload (F5) noch eine Zurück-/Vorwärts-Navigation
+  auf der Success-Seite eine zweite Conversion aus. Zusätzlich erhält das Event eine eindeutige `transaction_id` (im
+  Redirect erzeugt und über das Flag mitgegeben), damit Google identische Conversions auch serverseitig dedupliziert.
+- Tests decken ab: kein erneutes Feuern bei Reload/Back nach bereits konsumiertem Flag.
 - Nicht als primäre Conversion zählen:
   - Landingpage-Besuch
   - CTA-Klick
@@ -208,6 +273,23 @@ Empfehlung in Google Ads:
 - Landingpage-Besuch und CTA-Klicks nicht als primäre Conversion konfigurieren.
 - Mit Google Tag Assistant und Google Ads Conversion Diagnostics testen.
 
+### Enhanced Conversions for Leads (geplanter Follow-up nach V1, nicht im ersten Go)
+
+Begründung: Standard-Conversion-Tracking verliert Zuordnung durch Cookie-Ablehnung, ITP/Safari und Cross-Device
+(Klick mobil, Absenden am Desktop). Enhanced Conversions schließt diese Lücke und ist für Lead-Gen der wirksamste
+Attributions-Hebel.
+
+- Funktionsweise: Beim Submit werden die vom Nutzer **selbst eingegebenen** First-Party-Daten (E-Mail, optional Name)
+  **clientseitig mit SHA-256 gehasht** und mit dem Conversion-Event gesendet. Es verlässt **nur der Hash** den Browser,
+  niemals die Klar-E-Mail. Google matcht den Hash gegen eingeloggte Konten, die die Anzeige geklickt haben.
+- Voraussetzungen: Marketing-Consent (`ad_user_data: granted`), Aktivierung „Enhanced Conversions" in Google Ads,
+  Erwähnung in der Datenschutzerklärung.
+- Technische Umsetzung: E-Mail beim Redirect über `sessionStorage` zur Success-Route mitgeben, dort vor dem
+  Conversion-Event `gtag("set", "user_data", { sha256_email_address: <hash> })`; den sessionStorage-Wert direkt nach
+  Verarbeitung löschen (PII-Hygiene).
+- Warum erst V2: zusätzliche PII-/Hashing-Komplexität; der Nutzen skaliert mit Conversion-Volumen. Für den ersten Go
+  reicht das Basis-Conversion-Event. Als eigener Task einplanen, sobald erste Kampagnen Volumen liefern.
+
 ## Vercel Analytics Einordnung
 
 - Vercel Analytics bleibt bestehen.
@@ -221,16 +303,15 @@ Empfehlung in Google Ads:
 
 ## Datenschutz-/Consent-Checkliste
 
-- Datenschutzerklärung um Google Analytics / Google Ads / Google Tag / Conversion Tracking prüfen und ergänzen.
 - Consent Banner verlinkt Datenschutz.
 - Impressum bleibt erreichbar.
 - Cookie-Einstellungen über den Footer der Landing-/Success-Route erneut aufrufbar.
-- Analyse und Marketing standardmäßig deaktiviert.
-- Ablehnen genauso leicht wie Akzeptieren.
+- Analyse und Marketing standardmäßig deaktiviert (Consent default `denied`).
+- Ablehnen genauso leicht wie Akzeptieren (gleiche Ebene, gleiche Größe/Sichtbarkeit).
 - Consent-Auswahl speicherbar.
-- Consent-Auswahl widerrufbar und änderbar.
-- Google Consent Mode v2 Signale korrekt gesetzt.
-- Keine optionalen Google-Skripte ohne Zustimmung.
+- Consent-Auswahl widerrufbar und änderbar; Banner wird nach Ablehnung nicht erneut aufgedrängt.
+- Google Consent Mode v2 Signale korrekt gesetzt (inkl. `ads_data_redaction`, `url_passthrough`, `wait_for_update`).
+- Advanced Mode bewusst: ohne Zustimmung nur cookielose Pings, keine Cookies/Identifier — in der DSE erklärt.
 - Test mit „Alle akzeptieren“.
 - Test mit „Ablehnen“.
 - Test mit individueller Auswahl.
@@ -241,6 +322,24 @@ Empfehlung in Google Ads:
 - Success-Seite wird nur nach erfolgreichem Submit im normalen User-Flow erreicht.
 - Hinweis: Das ist eine technische/inhaltliche Checkliste, keine Rechtsberatung.
 
+### Pflichtangaben Datenschutzerklärung (recherchiert — Task 6)
+
+Konkret zu ergänzen/prüfen (Quellen am Ende):
+
+- Einsatz von **Google Analytics 4** (Measurement-ID), Zweck (Reichweiten-/Funnel-Analyse), verarbeitete Daten,
+  Rechtsgrundlage Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+- Einsatz von **Google Ads Conversion Tracking** (`AW-`Tag), Zweck (Messung von Anfragen aus Anzeigen).
+- **Google Consent Mode v2 im Advanced Mode** explizit erklären: dass auch **ohne Einwilligung cookielose Pings**
+  (Einwilligungsstatus + aggregierte Conversion-/Analytics-Signale) an Google gesendet werden und Google daraus
+  Conversions/Verhalten **modelliert**. Klarstellen: „cookieless ≠ consentless".
+- **Drittlandübermittlung in die USA** an Google (Google Ireland Ltd. / Google LLC), Hinweis auf Risiken und
+  Rechtsgrundlage des Transfers (EU-US Data Privacy Framework / SCCs).
+- Hinweis auf **IP-Adress-Verarbeitung** durch Google.
+- Speicherdauer/Widerruf der Einwilligung und Verweis auf den Cookie-Einstellungen-Link.
+- Falls Enhanced Conversions (V2) live geht: zusätzlich gehashte First-Party-Daten (E-Mail) an Google ergänzen.
+- Klarstellung: Consent Mode ist nur die technische Schnittstelle und ersetzt die eigene Einwilligungseinholung nicht.
+- Legal-Merge-Regel beachten: zwei Reviews für die DSE-Änderung.
+
 ## Go/No-Go-Quality-Gate
 
 Go für Google Ads nur, wenn:
@@ -249,11 +348,14 @@ Go für Google Ads nur, wenn:
 - Formular funktioniert.
 - Success-Seite funktioniert.
 - Google Tag ist eingebunden: GA4 `G-5T4BC28Z0F` + Ads-Conversion-Destination (`AW-`ID aus Env-Vars).
-- Tag ist consent-aware: Script lädt erst nach Zustimmung; GA4-Config nur bei Analyse-, Ads-Config nur bei
-  Marketing-Zustimmung.
-- Consent Banner funktioniert.
+- Tag läuft im Advanced Consent Mode: Default `denied`; bei Ablehnung cookielose Pings, bei Zustimmung volle Messung
+  (`consent update`). GA4-Messung nur bei Analyse-, Ads-Personalisierung nur bei Marketing-Zustimmung.
+- GA4 `page_view` wird auch bei SPA-Navigation auf die Success-Route gesendet.
+- Consent Banner funktioniert und ist barrierefrei (Tastatur, `role="dialog"`, Fokus-Management, kein harter Trap).
+- Banner erfüllt DSGVO/TDDDG: Accept/Reject gleichwertig auf erster Ebene, granular, Widerruf möglich.
 - Accept / Reject / Settings funktionieren.
-- Google Consent Mode v2 Werte werden korrekt gesetzt.
+- Google Consent Mode v2 Werte inkl. `ads_data_redaction`/`url_passthrough`/`wait_for_update` korrekt gesetzt.
+- Conversion feuert nicht doppelt bei Reload/Back (Flag-Konsum + `transaction_id`).
 - Formular-Submit leitet nur bei Erfolg auf Success-Seite.
 - Conversion-Event feuert auf `/de/services/landing-page/success` und kommt in Google Ads an.
 - Landingpage-Besuche zählen nicht als Conversion.
@@ -270,18 +372,32 @@ sind umgesetzt.
 
 1. Consent-Domainmodell und Tests: `lib/consent`, Consent-Typen, Storage-Versionierung, Consent-to-Google-Mapping.
 2. Consent UI: Banner, Settings-Dialog, Footer-Button (nur Landing-/Success-Route), DE/EN Dictionary-Copy, Mobile-
-   und Fokuszustände.
-3. GoogleTag Provider: `next/script` mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, Default-denied Stub, Script
-   lädt erst nach Analyse- oder Marketing-Zustimmung, `config` pro Destination nur bei passender Kategorie,
-   Consent-Updates, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in Google Ads angelegt, `AW-`ID +
-   Label liegen vor.
-4. Conversion auf der Success-Route: `sessionStorage`-Guard beim Redirect setzen (nicht im Honeypot-Fall),
-   Conversion-Event (`send_to: "<AW-ID>/<Label>"`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem
-   Submit, kein Feuern bei Fehlern, Direktaufrufen oder CTA-Klicks.
+   States. **DSGVO/TDDDG-Pflichten** (Accept/Reject gleichwertig auf erster Ebene, granular, kein Dark Pattern,
+   Widerruf) und **WCAG 2.2 AA** (`role="dialog"`, `aria-labelledby`/`-describedby`, native Buttons, Tastatur, Fokus-
+   Management, kein harter Trap, Zielgröße 24 px) umsetzen.
+3. GoogleTag Provider (Advanced Consent Mode): `next/script` mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, früher
+   Default-denied Stub inkl. `ads_data_redaction`/`url_passthrough`/`wait_for_update`, Script lädt beim Mount
+   (nicht consent-gegated), `consent update` bei Auswahl, GA4 `send_page_view: false` + manuelles `page_view` bei
+   Routenwechsel, graceful no-op bei fehlenden Env-Vars, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in
+   Google Ads angelegt, `AW-`ID + Label liegen vor.
+4. Conversion auf der Success-Route: `sessionStorage`-Guard + `transaction_id` beim Redirect setzen (nicht im
+   Honeypot-Fall), Flag **direkt nach dem Lesen löschen**, Conversion-Event (`send_to: "<AW-ID>/<Label>"`,
+   `transaction_id`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern,
+   Direktaufrufen, CTA-Klicks oder Reload/Back.
 5. FAQ-Ausstiegslink-Event: sekundäres Vercel-Analytics-Event (z. B. `faq_exit_services_click`) für den bewusst
    bestehenden Link `/{locale}#services` in der FAQ-Sektion; keine Ads-Conversion.
-6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen.
+6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen — Pflichtangaben siehe „Pflichtangaben
+   Datenschutzerklärung" (GA4, Ads, Consent Mode Advanced/cookielose Pings, USA-Transfer, IP, Widerruf). Legal-Merge-
+   Regel: zwei Reviews.
 7. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
+8. **E2E (zuletzt):** Playwright-Smoke für den Kernablauf — Consent Accept/Reject sichtbar & per Tastatur bedienbar,
+   Default-denied vor Auswahl, erfolgreicher Submit → Redirect auf Success → Conversion-Event feuert genau einmal,
+   Direktaufruf/Reload feuert nicht, Honeypot feuert nicht. Wird als letzter Task umgesetzt, wenn 1–7 stehen.
+
+### Geplanter Follow-up (nach V1, nicht im ersten Go)
+
+- Enhanced Conversions for Leads (gehashte E-Mail an das Conversion-Event) — Details siehe Abschnitt
+  „Enhanced Conversions for Leads".
 
 ## Entschieden
 
@@ -290,9 +406,15 @@ sind umgesetzt.
   im siteweiten Footer, da dort kein Consent-Provider existiert.
 - Ads-Conversion-Tracking läuft über ein direktes Google-Ads-Conversion-Tag (`AW-`ID + Label aus einer
   Conversion-Aktion in Google Ads, via `NEXT_PUBLIC_*`-Env-Vars) — nicht über GA4-Import.
-- Zusätzlich ist GA4 (`G-5T4BC28Z0F`) aktiv: consent-gated über die Analyse-Kategorie, nur auf Landing-/Success-Route.
+- Zusätzlich ist GA4 (`G-5T4BC28Z0F`) aktiv: gesteuert über die Analyse-Kategorie, nur auf Landing-/Success-Route.
   Der frühere „kein GA4"-Grundsatz aus dem ursprünglichen Copy-Plan (Begründung: 100-€-Testbudget) wurde bewusst
   revidiert — volles, übliches Landing-Tracking ist gewünscht. Kein GTM (für zwei Destinationen unnötig).
+- **Advanced Consent Mode** (revidiert die frühere „konservative Variante"): Tag lädt mit Default `denied` und sendet
+  bei Ablehnung cookielose Pings für Conversion-Modeling, statt erst nach Zustimmung zu laden. Begründung: Im Basic
+  Mode würde die Mehrheit der Leads (kein aktiver Marketing-Consent) gar nicht gemessen — Untererfassung des einzigen
+  Seitenziels.
+- **Enhanced Conversions for Leads** ist als V2-Follow-up eingeplant, **nicht** im ersten Go (zusätzliche PII-/Hashing-
+  Komplexität; Nutzen skaliert mit Volumen).
 - Die Success-Seite wird bei Direktaufruf normal angezeigt, zählt aber nur nach echtem Submit als Conversion
   (`sessionStorage`-Flag; im Honeypot-Fall nicht gesetzt).
 - UTM-Parameter werden **vorerst nicht** in Leads gespeichert; Kampagnen-Auswertung läuft über Google Ads/GA4.
@@ -307,3 +429,19 @@ sind umgesetzt.
 Keine — alle Punkte sind entschieden (siehe oben). Offen sind nur noch die operativen Voraussetzungen:
 Conversion-Aktion in Google Ads anlegen (`AW-`ID + Label für die Env-Vars) und GA4-Property mit dem Ads-Konto
 verknüpfen.
+
+## Quellen (Recherche Banner-/Datenschutz-Pflichten, Stand Juni 2026)
+
+- Google Consent Mode v2 & DSGVO, inkl. Advanced-Mode-Pings und DSE-Hinweise — eRecht24:
+  <https://www.e-recht24.de/datenschutz/13274-google-consent-mode-dsgvo.html>
+- Cookie-Banner Design-/Funktionsregeln (Button-Gleichwertigkeit, Dark Patterns, Pflichtinhalte) — Cortina Consult:
+  <https://cortina-consult.com/web-compliance/wissen/cookie-banner-design-regeln/>
+- Cookie-Banner-Pflicht DSGVO/TDDDG — externer-datenschutzbeauftragter-dresden.de:
+  <https://externer-datenschutzbeauftragter-dresden.de/datenschutz/cookie-banner-pflicht/>
+- WCAG-2.2-konforme Cookie-Banner (role="dialog", Fokus, Tastatur) — consentmanager:
+  <https://www.consentmanager.net/en/knowledge/wcag-cookie-banners/>
+- WCAG 2.2 Cookie-Banner-Anforderungen — secureprivacy.ai:
+  <https://secureprivacy.ai/blog/wcag-cookie-banner-requirements>
+
+Hinweis: Quellen sind Fachartikel, keine Rechtsberatung. Vor Go-Live durch die rechtlich verantwortliche Person prüfen
+lassen (Legal-Task 6, zwei Reviews).
