@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chaos → Order Sort</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="stage">
+      <header class="head">
+        <p class="kicker">Effekt-Mockup</p>
+        <h1>Chaos → Order Sort</h1>
+        <p class="lede">
+          Vorher/Nachher als Layout-Kontrast: links verstreute, gekippte
+          Schnipsel, rechts dieselben Punkte als ruhige, nummerierte Liste.
+          Hover auf einem Eintrag hebt das Gegenstück im anderen Panel hervor.
+        </p>
+      </header>
+
+      <section class="transform" id="transform">
+        <div class="panel chaos" data-reveal>
+          <p class="label">Vorher</p>
+          <ul class="chaos-list">
+            <li class="scrap" data-pair="0" data-reveal>
+              <span class="card"
+                ><span class="idx">01</span>Angebot zu allgemein</span
+              >
+            </li>
+            <li class="scrap" data-pair="1" data-reveal>
+              <span class="card"
+                ><span class="idx">02</span>Nutzen nicht greifbar</span
+              >
+            </li>
+            <li class="scrap" data-pair="2" data-reveal>
+              <span class="card"
+                ><span class="idx">03</span>Vertrauen kommt zu spät</span
+              >
+            </li>
+            <li class="scrap" data-pair="3" data-reveal>
+              <span class="card"
+                ><span class="idx">04</span>Nächster Schritt unklar</span
+              >
+            </li>
+            <li class="scrap" data-pair="4" data-reveal>
+              <span class="card"
+                ><span class="idx">05</span>Anfrage wirkt aufwendig</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <span class="connector" aria-hidden="true">→</span>
+
+        <div class="panel clarity" data-reveal>
+          <p class="label label--accent">Nachher</p>
+          <ol class="clarity-list">
+            <li class="row" data-pair="0" data-reveal>
+              <span class="idx">01</span>Angebot klar auf den Punkt
+            </li>
+            <li class="row" data-pair="1" data-reveal>
+              <span class="idx">02</span>Nutzen konkret benannt
+            </li>
+            <li class="row" data-pair="2" data-reveal>
+              <span class="idx">03</span>Vertrauen früh sichtbar
+            </li>
+            <li class="row" data-pair="3" data-reveal>
+              <span class="idx">04</span>Nächster Schritt eindeutig
+            </li>
+            <li class="row" data-pair="4" data-reveal>
+              <span class="idx">05</span>Anfrage in zwei Minuten
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

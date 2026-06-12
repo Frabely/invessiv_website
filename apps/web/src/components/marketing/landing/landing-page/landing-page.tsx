@@ -4,10 +4,9 @@ import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { DoneForYouSection } from "@/components/marketing/landing/done-for-you-section/done-for-you-section";
-import { ProblemSection } from "@/components/marketing/landing/problem-section/problem-section";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
+import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
-import { SolutionSection } from "@/components/marketing/landing/solution-section/solution-section";
 import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -22,9 +21,8 @@ import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
 import { getLandingDoneForYouContent } from "@/i18n/dictionaries/landing/done-for-you";
 import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
-import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
+import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
-import { getLandingSolutionContent } from "@/i18n/dictionaries/landing/solution";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
 
 type LandingPageProps = {
@@ -40,9 +38,8 @@ export function LandingPage({ locale }: LandingPageProps) {
   const hero = getLandingHeroContent(locale);
   const doneForYou = getLandingDoneForYouContent(locale);
   const pricing = getLandingPricingContent(locale);
-  const problem = getLandingProblemContent(locale);
+  const problemSolution = getLandingProblemSolutionContent(locale);
   const process = getLandingProcessContent(locale);
-  const solution = getLandingSolutionContent(locale);
   const trust = getLandingTrustContent(locale);
 
   return (
@@ -79,9 +76,11 @@ export function LandingPage({ locale }: LandingPageProps) {
           trackingLocation="landing_hero"
         />
 
-        <ProblemSection id="problem" locale={locale} {...problem} />
-
-        <SolutionSection id="solution" locale={locale} {...solution} />
+        <ProblemSolutionSection
+          id="solution"
+          locale={locale}
+          {...problemSolution}
+        />
 
         <DoneForYouSection id="done-for-you" locale={locale} {...doneForYou} />
 

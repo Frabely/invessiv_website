@@ -1,0 +1,29 @@
+{
+  "body": "A landing page brings your offer onto one page: what you offer, why it matters, and how to inquire.",
+  "eyebrow": "Problem → Solution",
+  "pairs": [
+    {
+      "problem": "Offer too generic",
+      "solution": "One page, one concrete offer"
+    },
+    {
+      "problem": "Value not tangible",
+      "solution": "The benefit comes first"
+    },
+    {
+      "problem": "Trust comes too late",
+      "solution": "Clear price, clear process"
+    },
+    {
+      "problem": "Next step unclear",
+      "solution": "One button, one goal"
+    },
+    {
+      "problem": "Inquiring feels like effort",
+      "solution": "Inquiry takes two minutes"
+    }
+  ],
+  "problemLabel": "Without a landing page",
+  "solutionLabel": "With a landing page",
+  "title": "From bounce to inquiry."
+}

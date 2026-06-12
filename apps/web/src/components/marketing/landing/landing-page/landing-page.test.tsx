@@ -58,32 +58,17 @@ describe("LandingPage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /Viele Websites sehen okay aus/,
-      }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", {
-        level: 3,
-        name: /Typische Fehler/,
-      }),
-    ).toBeTruthy();
-    const firstProblemItem = screen.getByText(
-      "Das Angebot bleibt zu allgemein.",
-    );
-    expect(firstProblemItem).toBeTruthy();
-    expect(
-      screen.getByText("Eine gute Landingpage räumt diese Hürden aus dem Weg."),
-    ).toBeTruthy();
-    await waitFor(() => {
-      expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
-    });
-    expect(
-      screen.getByRole("heading", {
-        level: 2,
-        name: /Eine Landingpage führt Besucher gezielt zur Anfrage/,
+        name: /Vom Absprung zur Anfrage/,
       }),
     ).toBeTruthy();
     expect(screen.getByText(/Eine Landingpage bündelt/)).toBeTruthy();
+    const firstProblemItem = screen.getByText("Angebot zu allgemein");
+    expect(firstProblemItem).toBeTruthy();
+    expect(screen.getByText("Eine Seite, ein konkretes Angebot")).toBeTruthy();
+    await waitFor(() => {
+      expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
+    });
+    expect(screen.queryByText("4,9 von 5 Sternen")).toBeNull();
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();
     expect(screen.queryByText(/keine überladene Website/)).toBeNull();
     expect(

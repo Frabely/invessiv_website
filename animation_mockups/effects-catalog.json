@@ -1,431 +1,346 @@
 [
-    {
-        "id":  "aurora_gradient_hero",
-        "name":  "Aurora Gradient Hero",
-        "inspiredBy":  [
-                           "Stripe",
-                           "Vercel"
-                       ],
-        "effectType":  "Animated ambient background",
-        "trigger":  "Autoplay",
-        "implementation":  "Layered radial gradients + blur + slow keyframes + subtle noise",
-        "uxGoal":  "Brand recall and modern premium atmosphere above the fold",
-        "bestFor":  [
-                        "Hero sections",
-                        "SaaS/product landings",
-                        "Dark theme backgrounds"
-                    ],
-        "performanceNotes":  "Use CSS instead of heavy canvas by default; reduce blur layers on mobile",
-        "a11yNotes":  "Respect prefers-reduced-motion and keep text contrast \u003e= WCAG AA",
-        "platformGroup":  "all",
-        "mockupPath":  "all/aurora-hero"
-    },
-    {
-        "id":  "scroll_depth_reveal",
-        "name":  "Scroll-Depth Reveal",
-        "inspiredBy":  [
-                           "Apple",
-                           "Awwwards process pages"
-                       ],
-        "effectType":  "Sticky scroll narrative",
-        "trigger":  "Scroll",
-        "implementation":  "Sticky cards with progressive scale/offset",
-        "uxGoal":  "Guide users through a step sequence with visual hierarchy",
-        "bestFor":  [
-                        "How-it-works",
-                        "Feature tours",
-                        "Product storytelling"
-                    ],
-        "performanceNotes":  "Prefer transform/opacity only; avoid layout-thrashing properties",
-        "a11yNotes":  "Do not block content behind mandatory motion; preserve reading order",
-        "platformGroup":  "all",
-        "mockupPath":  "all/scroll-depth-parallax"
-    },
-    {
-        "id":  "cursor_spotlight_cards",
-        "name":  "Cursor Spotlight Cards",
-        "inspiredBy":  [
-                           "Linear",
-                           "Modern agency sites"
-                       ],
-        "effectType":  "Pointer-reactive highlight",
-        "trigger":  "Pointer move",
-        "implementation":  "Per-card CSS variable update for radial highlight center",
-        "uxGoal":  "Increase perceived polish and interaction clarity",
-        "bestFor":  [
-                        "Feature grids",
-                        "Service cards",
-                        "Benefit tiles"
-                    ],
-        "performanceNotes":  "Track pointer only on hovered elements; avoid global mouse listeners",
-        "a11yNotes":  "Effect must be decorative only; content remains fully readable",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/cursor-spotlight"
-    },
-    {
-        "id":  "magnetic_cta",
-        "name":  "Magnetic CTA",
-        "inspiredBy":  [
-                           "High-end studio landings",
-                           "Awwwards interaction patterns"
-                       ],
-        "effectType":  "Microinteraction",
-        "trigger":  "Pointer proximity",
-        "implementation":  "Translate CTA slightly toward cursor with spring-like reset",
-        "uxGoal":  "Boost CTA salience without aggressive animation",
-        "bestFor":  [
-                        "Primary conversion buttons",
-                        "Hero CTA clusters"
-                    ],
-        "performanceNotes":  "Keep translation small; disable on touch-only devices if needed",
-        "a11yNotes":  "Keyboard focus style and click target size must remain stable",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/magnetic-cta"
-    },
-    {
-        "id":  "masked_text_reveal",
-        "name":  "Masked Text Reveal",
-        "inspiredBy":  [
-                           "Apple",
-                           "Editorial product launches"
-                       ],
-        "effectType":  "Scroll text reveal",
-        "trigger":  "Intersection on scroll",
-        "implementation":  "Overlay mask translated away when entering viewport",
-        "uxGoal":  "Sequence key claims for stronger message retention",
-        "bestFor":  [
-                        "Value proposition statements",
-                        "Narrative transitions"
-                    ],
-        "performanceNotes":  "Use IntersectionObserver; avoid scroll polling",
-        "a11yNotes":  "Ensure text exists in DOM and is not image-based",
-        "platformGroup":  "all",
-        "mockupPath":  "all/masked-text-reveal"
-    },
-    {
-        "id":  "floating_glass_ui",
-        "name":  "Floating Glass UI",
-        "inspiredBy":  [
-                           "Vercel",
-                           "Contemporary SaaS dashboards"
-                       ],
-        "effectType":  "Ambient float motion",
-        "trigger":  "Autoplay",
-        "implementation":  "Low-amplitude translateY loop with translucent cards",
-        "uxGoal":  "Convey live system feeling and premium interface quality",
-        "bestFor":  [
-                        "Metrics teasers",
-                        "Dashboard previews",
-                        "Social proof blocks"
-                    ],
-        "performanceNotes":  "Low amplitude and low frequency animations reduce distraction",
-        "a11yNotes":  "Stop motion under prefers-reduced-motion",
-        "platformGroup":  "all",
-        "mockupPath":  "all/floating-glass"
-    },
-    {
-        "id":  "svg_path_journey",
-        "name":  "SVG Path Journey",
-        "inspiredBy":  [
-                           "Narrative product tours",
-                           "Motion-first agency landings"
-                       ],
-        "effectType":  "Scroll-driven line draw",
-        "trigger":  "Scroll",
-        "implementation":  "SVG path with stroke-dasharray/stroke-dashoffset and a moving marker",
-        "uxGoal":  "Visualize progression from attention to conversion in one focused motion",
-        "bestFor":  [
-                        "Service process explainers",
-                        "How-it-works sections",
-                        "Conversion storytelling"
-                    ],
-        "performanceNotes":  "Animate stroke and transforms only; throttle updates with requestAnimationFrame",
-        "a11yNotes":  "Keep copy readable without animation and complete state under prefers-reduced-motion",
-        "platformGroup":  "all",
-        "mockupPath":  "all/svg-path-journey"
-    },
-    {
-        "id":  "mobile_bottom_sheet_snap",
-        "name":  "Mobile Bottom Sheet Snap",
-        "inspiredBy":  [
-                           "Material Design bottom sheets",
-                           "Native mobile app interaction patterns"
-                       ],
-        "effectType":  "Touch drag + snap microinteraction",
-        "trigger":  "Touch drag / tap",
-        "implementation":  "Pointer events with drag handle and two snap states (mid/open)",
-        "uxGoal":  "Expose details and CTA without leaving current context on small screens",
-        "bestFor":  [
-                        "Mobile landing CTAs",
-                        "Offer detail previews",
-                        "Sticky conversion panels"
-                    ],
-        "performanceNotes":  "Animate transform only and avoid continuous layout work during drag",
-        "a11yNotes":  "Provide tap fallback, stable focus order, and reduced-motion safe default",
-        "platformGroup":  "mobile",
-        "mockupPath":  "mobile/bottom-sheet-snap"
-    },
-    {
-        "id":  "tilt_cards_3d",
-        "name":  "Tilt Cards 3D",
-        "inspiredBy":  [
-                           "Interactive product cards",
-                           "Premium SaaS landings"
-                       ],
-        "effectType":  "Pointer-driven 3D tilt",
-        "trigger":  "Pointer move",
-        "implementation":  "Card transform with rotateX/rotateY from pointer position",
-        "uxGoal":  "Add depth and premium interaction feedback on feature cards",
-        "bestFor":  [
-                        "Pricing cards",
-                        "Feature grids",
-                        "Service highlights"
-                    ],
-        "performanceNotes":  "Use transform only and reset on pointerleave",
-        "a11yNotes":  "Decorative only, keep content readable and stable without pointer",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/tilt-cards"
-    },
-    {
-        "id":  "scroll_snap_story_panels",
-        "name":  "Scroll Snap Story Panels",
-        "inspiredBy":  [
-                           "Mobile storytelling sections",
-                           "Editorial product narratives"
-                       ],
-        "effectType":  "Container snap narrative",
-        "trigger":  "Scroll / touch",
-        "implementation":  "Y-axis scroll-snap panels with mild panel offset for depth",
-        "uxGoal":  "Guide users through short sequential claims with clear focus",
-        "bestFor":  [
-                        "How-it-works",
-                        "Feature storytelling",
-                        "Value ladder sections"
-                    ],
-        "performanceNotes":  "Use native scroll-snap and lightweight transform offsets",
-        "a11yNotes":  "Ensure keyboard scroll and readable static state",
-        "platformGroup":  "all",
-        "mockupPath":  "all/scroll-snap-story"
-    },
-    {
-        "id":  "canvas_particle_drift",
-        "name":  "Canvas Particle Drift",
-        "inspiredBy":  [
-                           "Ambient hero backgrounds",
-                           "Pseudo-3D motion scenes"
-                       ],
-        "effectType":  "Canvas ambient animation",
-        "trigger":  "Autoplay + pointer drift",
-        "implementation":  "2D canvas particles with depth factor and pointer-influenced drift",
-        "uxGoal":  "Create premium dynamic atmosphere in hero background",
-        "bestFor":  [
-                        "Hero backdrops",
-                        "Brand atmosphere sections"
-                    ],
-        "performanceNotes":  "Cap DPR, keep particle count controlled, reduce motion amplitude",
-        "a11yNotes":  "Avoid critical information in moving layer and respect reduced motion",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/canvas-particle-drift"
-    },
-    {
-        "id":  "view_transition_routing",
-        "name":  "View Transition Routing",
-        "inspiredBy":  [
-                           "App-like web navigation",
-                           "Modern single-page route transitions"
-                       ],
-        "effectType":  "Page/view transition",
-        "trigger":  "Route change",
-        "implementation":  "Use startViewTransition API with fade fallback",
-        "uxGoal":  "Preserve context and continuity during view switches",
-        "bestFor":  [
-                        "Landing subviews",
-                        "Pricing/detail toggles",
-                        "Tabbed narratives"
-                    ],
-        "performanceNotes":  "Keep transitions short and avoid heavy layout changes during swap",
-        "a11yNotes":  "Must remain usable with no API support and reduced motion preferences",
-        "platformGroup":  "all",
-        "mockupPath":  "all/view-transition-routing"
-    },
-    {
-        "id":  "shimmer_hover",
-        "name":  "Shimmer Hover",
-        "inspiredBy":  [
-                           "Motion Lab pattern"
-                       ],
-        "effectType":  "Hover light sweep",
-        "trigger":  "Hover/focus",
-        "implementation":  "Pseudo-element gradient sweep in CSS",
-        "uxGoal":  "Premium micro-feedback without JS",
-        "bestFor":  [
-                        "Cards",
-                        "CTA wrappers"
-                    ],
-        "performanceNotes":  "CSS only, short duration",
-        "a11yNotes":  "Decorative effect only",
-        "platformGroup":  "all",
-        "mockupPath":  "all/shimmer-hover"
-    },
-    {
-        "id":  "tilt_glass_shine",
-        "name":  "3D Tilt Glass Shine",
-        "inspiredBy":  [
-                           "Effect mockup 03",
-                           "Premium SaaS card interactions"
-                       ],
-        "effectType":  "Pointer 3D tilt + shine",
-        "trigger":  "Pointer move",
-        "implementation":  "Tilted card with moving shine hotspot and glass layers",
-        "uxGoal":  "Create high-end card depth and motion polish",
-        "bestFor":  [
-                        "Hero sidecards",
-                        "Pricing highlights",
-                        "Feature cards"
-                    ],
-        "performanceNotes":  "Use transform and CSS variables; cap rotation range",
-        "a11yNotes":  "Keep keyboard focus style and readable static content",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/3d-tilt-glass"
-    },
-    {
-        "id":  "scroll_reveal_stagger",
-        "name":  "Scroll Reveal Stagger",
-        "inspiredBy":  [
-                           "Effect mockup 04"
-                       ],
-        "effectType":  "Intersection reveal sequence",
-        "trigger":  "Scroll",
-        "implementation":  "IntersectionObserver with staggered delay values",
-        "uxGoal":  "Improve content scan rhythm and narrative pacing",
-        "bestFor":  [
-                        "Long landing sections",
-                        "Feature grids",
-                        "CTA sequences"
-                    ],
-        "performanceNotes":  "Observer-based and low-cost transitions",
-        "a11yNotes":  "Respect reduced motion and preserve reading order",
-        "platformGroup":  "all",
-        "mockupPath":  "all/scroll-reveal-stagger"
-    },
-    {
-        "id":  "svg_self_drawing_path",
-        "name":  "SVG Self-Drawing Path",
-        "inspiredBy":  [
-                           "Effect mockup 07"
-                       ],
-        "effectType":  "Autoplay line-draw hero",
-        "trigger":  "On load",
-        "implementation":  "stroke-dasharray and stroke-dashoffset line animation with staged fill",
-        "uxGoal":  "Create cinematic hero entry and brand recall",
-        "bestFor":  [
-                        "Hero marks",
-                        "Intro scenes",
-                        "Brand statements"
-                    ],
-        "performanceNotes":  "Short one-time animation; avoid long loops",
-        "a11yNotes":  "Provide complete static state for reduced motion",
-        "platformGroup":  "all",
-        "mockupPath":  "all/svg-path-draw"
-    },
-    {
-        "id":  "gradient_border_grain",
-        "name":  "Gradient Border Grain",
-        "inspiredBy":  [
-                           "Effect mockup 08"
-                       ],
-        "effectType":  "Ambient border light effect",
-        "trigger":  "Autoplay + hover",
-        "implementation":  "Conic-gradient animated border with noise overlay and hover light response",
-        "uxGoal":  "Increase perceived quality of highlighted cards",
-        "bestFor":  [
-                        "Pricing cards",
-                        "Feature spotlights",
-                        "Promo blocks"
-                    ],
-        "performanceNotes":  "Prefer CSS gradients over heavy assets",
-        "a11yNotes":  "Decorative layer only, maintain text contrast",
-        "platformGroup":  "all",
-        "mockupPath":  "all/gradient-border-grain"
-    },
-    {
-        "id":  "clip_path_hover_reveal",
-        "name":  "Clip-Path Hover Reveal",
-        "inspiredBy":  [
-                           "Effect mockup 10"
-                       ],
-        "effectType":  "Hover mask reveal",
-        "trigger":  "Pointer hover/move",
-        "implementation":  "clip-path circle reveal following pointer position",
-        "uxGoal":  "Interactive preview reveal for case studies and portfolio cards",
-        "bestFor":  [
-                        "Case study cards",
-                        "Portfolio tiles"
-                    ],
-        "performanceNotes":  "GPU-friendly clip-path usage on a single element",
-        "a11yNotes":  "Ensure content remains accessible without hover",
-        "platformGroup":  "desktop",
-        "mockupPath":  "desktop/clip-path-hover-reveal"
-    },
-    {
-        "id":  "infinite_logo_marquee",
-        "name":  "Infinite Logo Marquee",
-        "inspiredBy":  [
-                           "Effect mockup 11"
-                       ],
-        "effectType":  "Continuous trust-strip motion",
-        "trigger":  "Autoplay",
-        "implementation":  "Duplicated track with linear translateX loop and edge masking",
-        "uxGoal":  "Show social proof/integrations with gentle motion",
-        "bestFor":  [
-                        "Client logos",
-                        "Partner strips",
-                        "Integrations sections"
-                    ],
-        "performanceNotes":  "Pause on hover and keep speed moderate",
-        "a11yNotes":  "Stop or reduce movement when reduced motion is set",
-        "platformGroup":  "all",
-        "mockupPath":  "all/infinite-marquee"
-    },
-    {
-        "id":  "toggle_morph_microinteraction",
-        "name":  "Toggle Morph Microinteraction",
-        "inspiredBy":  [
-                           "Effect mockup 12"
-                       ],
-        "effectType":  "Stateful UI microinteraction",
-        "trigger":  "Click/tap",
-        "implementation":  "Toggle with morphing icon and squash-stretch transitions",
-        "uxGoal":  "Add delightful feedback for settings/actions",
-        "bestFor":  [
-                        "Settings toggles",
-                        "Preference controls",
-                        "Plan toggles"
-                    ],
-        "performanceNotes":  "Short transitions and no layout reflow",
-        "a11yNotes":  "Use aria-pressed and clear on/off state labels",
-        "platformGroup":  "all",
-        "mockupPath":  "all/toggle-microinteraction"
-    },
-    {
-        "id":  "infinite_card_rondell",
-        "name":  "Infinite Card Rondell",
-        "inspiredBy":  [
-                           "Interactive carousel mockups",
-                           "Infinite drag galleries"
-                       ],
-        "effectType":  "Horizontal infinite carousel",
-        "trigger":  "Drag/swipe",
-        "implementation":  "Pointer drag with inertia and DOM recycling for endless loop",
-        "uxGoal":  "Keep users exploring multiple cards without hard stops",
-        "bestFor":  [
-                        "Pricing showcases",
-                        "Feature cards",
-                        "Offer galleries"
-                    ],
-        "performanceNotes":  "Transform-based movement; recycle nodes instead of cloning on each frame",
-        "a11yNotes":  "Provide keyboard fallback controls in production and preserve readable static state",
-        "platformGroup":  "all",
-        "mockupPath":  "all/rondell"
-    }
+  {
+    "id": "aurora_gradient_hero",
+    "name": "Aurora Gradient Hero",
+    "inspiredBy": ["Stripe", "Vercel"],
+    "effectType": "Animated ambient background",
+    "trigger": "Autoplay",
+    "implementation": "Layered radial gradients + blur + slow keyframes + subtle noise",
+    "uxGoal": "Brand recall and modern premium atmosphere above the fold",
+    "bestFor": [
+      "Hero sections",
+      "SaaS/product landings",
+      "Dark theme backgrounds"
+    ],
+    "performanceNotes": "Use CSS instead of heavy canvas by default; reduce blur layers on mobile",
+    "a11yNotes": "Respect prefers-reduced-motion and keep text contrast \u003e= WCAG AA",
+    "platformGroup": "all",
+    "mockupPath": "all/aurora-hero"
+  },
+  {
+    "id": "scroll_depth_reveal",
+    "name": "Scroll-Depth Reveal",
+    "inspiredBy": ["Apple", "Awwwards process pages"],
+    "effectType": "Sticky scroll narrative",
+    "trigger": "Scroll",
+    "implementation": "Sticky cards with progressive scale/offset",
+    "uxGoal": "Guide users through a step sequence with visual hierarchy",
+    "bestFor": ["How-it-works", "Feature tours", "Product storytelling"],
+    "performanceNotes": "Prefer transform/opacity only; avoid layout-thrashing properties",
+    "a11yNotes": "Do not block content behind mandatory motion; preserve reading order",
+    "platformGroup": "all",
+    "mockupPath": "all/scroll-depth-parallax"
+  },
+  {
+    "id": "cursor_spotlight_cards",
+    "name": "Cursor Spotlight Cards",
+    "inspiredBy": ["Linear", "Modern agency sites"],
+    "effectType": "Pointer-reactive highlight",
+    "trigger": "Pointer move",
+    "implementation": "Per-card CSS variable update for radial highlight center",
+    "uxGoal": "Increase perceived polish and interaction clarity",
+    "bestFor": ["Feature grids", "Service cards", "Benefit tiles"],
+    "performanceNotes": "Track pointer only on hovered elements; avoid global mouse listeners",
+    "a11yNotes": "Effect must be decorative only; content remains fully readable",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/cursor-spotlight"
+  },
+  {
+    "id": "magnetic_cta",
+    "name": "Magnetic CTA",
+    "inspiredBy": ["High-end studio landings", "Awwwards interaction patterns"],
+    "effectType": "Microinteraction",
+    "trigger": "Pointer proximity",
+    "implementation": "Translate CTA slightly toward cursor with spring-like reset",
+    "uxGoal": "Boost CTA salience without aggressive animation",
+    "bestFor": ["Primary conversion buttons", "Hero CTA clusters"],
+    "performanceNotes": "Keep translation small; disable on touch-only devices if needed",
+    "a11yNotes": "Keyboard focus style and click target size must remain stable",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/magnetic-cta"
+  },
+  {
+    "id": "masked_text_reveal",
+    "name": "Masked Text Reveal",
+    "inspiredBy": ["Apple", "Editorial product launches"],
+    "effectType": "Scroll text reveal",
+    "trigger": "Intersection on scroll",
+    "implementation": "Overlay mask translated away when entering viewport",
+    "uxGoal": "Sequence key claims for stronger message retention",
+    "bestFor": ["Value proposition statements", "Narrative transitions"],
+    "performanceNotes": "Use IntersectionObserver; avoid scroll polling",
+    "a11yNotes": "Ensure text exists in DOM and is not image-based",
+    "platformGroup": "all",
+    "mockupPath": "all/masked-text-reveal"
+  },
+  {
+    "id": "floating_glass_ui",
+    "name": "Floating Glass UI",
+    "inspiredBy": ["Vercel", "Contemporary SaaS dashboards"],
+    "effectType": "Ambient float motion",
+    "trigger": "Autoplay",
+    "implementation": "Low-amplitude translateY loop with translucent cards",
+    "uxGoal": "Convey live system feeling and premium interface quality",
+    "bestFor": ["Metrics teasers", "Dashboard previews", "Social proof blocks"],
+    "performanceNotes": "Low amplitude and low frequency animations reduce distraction",
+    "a11yNotes": "Stop motion under prefers-reduced-motion",
+    "platformGroup": "all",
+    "mockupPath": "all/floating-glass"
+  },
+  {
+    "id": "svg_path_journey",
+    "name": "SVG Path Journey",
+    "inspiredBy": ["Narrative product tours", "Motion-first agency landings"],
+    "effectType": "Scroll-driven line draw",
+    "trigger": "Scroll",
+    "implementation": "SVG path with stroke-dasharray/stroke-dashoffset and a moving marker",
+    "uxGoal": "Visualize progression from attention to conversion in one focused motion",
+    "bestFor": [
+      "Service process explainers",
+      "How-it-works sections",
+      "Conversion storytelling"
+    ],
+    "performanceNotes": "Animate stroke and transforms only; throttle updates with requestAnimationFrame",
+    "a11yNotes": "Keep copy readable without animation and complete state under prefers-reduced-motion",
+    "platformGroup": "all",
+    "mockupPath": "all/svg-path-journey"
+  },
+  {
+    "id": "mobile_bottom_sheet_snap",
+    "name": "Mobile Bottom Sheet Snap",
+    "inspiredBy": [
+      "Material Design bottom sheets",
+      "Native mobile app interaction patterns"
+    ],
+    "effectType": "Touch drag + snap microinteraction",
+    "trigger": "Touch drag / tap",
+    "implementation": "Pointer events with drag handle and two snap states (mid/open)",
+    "uxGoal": "Expose details and CTA without leaving current context on small screens",
+    "bestFor": [
+      "Mobile landing CTAs",
+      "Offer detail previews",
+      "Sticky conversion panels"
+    ],
+    "performanceNotes": "Animate transform only and avoid continuous layout work during drag",
+    "a11yNotes": "Provide tap fallback, stable focus order, and reduced-motion safe default",
+    "platformGroup": "mobile",
+    "mockupPath": "mobile/bottom-sheet-snap"
+  },
+  {
+    "id": "tilt_cards_3d",
+    "name": "Tilt Cards 3D",
+    "inspiredBy": ["Interactive product cards", "Premium SaaS landings"],
+    "effectType": "Pointer-driven 3D tilt",
+    "trigger": "Pointer move",
+    "implementation": "Card transform with rotateX/rotateY from pointer position",
+    "uxGoal": "Add depth and premium interaction feedback on feature cards",
+    "bestFor": ["Pricing cards", "Feature grids", "Service highlights"],
+    "performanceNotes": "Use transform only and reset on pointerleave",
+    "a11yNotes": "Decorative only, keep content readable and stable without pointer",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/tilt-cards"
+  },
+  {
+    "id": "scroll_snap_story_panels",
+    "name": "Scroll Snap Story Panels",
+    "inspiredBy": [
+      "Mobile storytelling sections",
+      "Editorial product narratives"
+    ],
+    "effectType": "Container snap narrative",
+    "trigger": "Scroll / touch",
+    "implementation": "Y-axis scroll-snap panels with mild panel offset for depth",
+    "uxGoal": "Guide users through short sequential claims with clear focus",
+    "bestFor": [
+      "How-it-works",
+      "Feature storytelling",
+      "Value ladder sections"
+    ],
+    "performanceNotes": "Use native scroll-snap and lightweight transform offsets",
+    "a11yNotes": "Ensure keyboard scroll and readable static state",
+    "platformGroup": "all",
+    "mockupPath": "all/scroll-snap-story"
+  },
+  {
+    "id": "canvas_particle_drift",
+    "name": "Canvas Particle Drift",
+    "inspiredBy": ["Ambient hero backgrounds", "Pseudo-3D motion scenes"],
+    "effectType": "Canvas ambient animation",
+    "trigger": "Autoplay + pointer drift",
+    "implementation": "2D canvas particles with depth factor and pointer-influenced drift",
+    "uxGoal": "Create premium dynamic atmosphere in hero background",
+    "bestFor": ["Hero backdrops", "Brand atmosphere sections"],
+    "performanceNotes": "Cap DPR, keep particle count controlled, reduce motion amplitude",
+    "a11yNotes": "Avoid critical information in moving layer and respect reduced motion",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/canvas-particle-drift"
+  },
+  {
+    "id": "view_transition_routing",
+    "name": "View Transition Routing",
+    "inspiredBy": [
+      "App-like web navigation",
+      "Modern single-page route transitions"
+    ],
+    "effectType": "Page/view transition",
+    "trigger": "Route change",
+    "implementation": "Use startViewTransition API with fade fallback",
+    "uxGoal": "Preserve context and continuity during view switches",
+    "bestFor": [
+      "Landing subviews",
+      "Pricing/detail toggles",
+      "Tabbed narratives"
+    ],
+    "performanceNotes": "Keep transitions short and avoid heavy layout changes during swap",
+    "a11yNotes": "Must remain usable with no API support and reduced motion preferences",
+    "platformGroup": "all",
+    "mockupPath": "all/view-transition-routing"
+  },
+  {
+    "id": "shimmer_hover",
+    "name": "Shimmer Hover",
+    "inspiredBy": ["Motion Lab pattern"],
+    "effectType": "Hover light sweep",
+    "trigger": "Hover/focus",
+    "implementation": "Pseudo-element gradient sweep in CSS",
+    "uxGoal": "Premium micro-feedback without JS",
+    "bestFor": ["Cards", "CTA wrappers"],
+    "performanceNotes": "CSS only, short duration",
+    "a11yNotes": "Decorative effect only",
+    "platformGroup": "all",
+    "mockupPath": "all/shimmer-hover"
+  },
+  {
+    "id": "tilt_glass_shine",
+    "name": "3D Tilt Glass Shine",
+    "inspiredBy": ["Effect mockup 03", "Premium SaaS card interactions"],
+    "effectType": "Pointer 3D tilt + shine",
+    "trigger": "Pointer move",
+    "implementation": "Tilted card with moving shine hotspot and glass layers",
+    "uxGoal": "Create high-end card depth and motion polish",
+    "bestFor": ["Hero sidecards", "Pricing highlights", "Feature cards"],
+    "performanceNotes": "Use transform and CSS variables; cap rotation range",
+    "a11yNotes": "Keep keyboard focus style and readable static content",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/3d-tilt-glass"
+  },
+  {
+    "id": "scroll_reveal_stagger",
+    "name": "Scroll Reveal Stagger",
+    "inspiredBy": ["Effect mockup 04"],
+    "effectType": "Intersection reveal sequence",
+    "trigger": "Scroll",
+    "implementation": "IntersectionObserver with staggered delay values",
+    "uxGoal": "Improve content scan rhythm and narrative pacing",
+    "bestFor": ["Long landing sections", "Feature grids", "CTA sequences"],
+    "performanceNotes": "Observer-based and low-cost transitions",
+    "a11yNotes": "Respect reduced motion and preserve reading order",
+    "platformGroup": "all",
+    "mockupPath": "all/scroll-reveal-stagger"
+  },
+  {
+    "id": "svg_self_drawing_path",
+    "name": "SVG Self-Drawing Path",
+    "inspiredBy": ["Effect mockup 07"],
+    "effectType": "Autoplay line-draw hero",
+    "trigger": "On load",
+    "implementation": "stroke-dasharray and stroke-dashoffset line animation with staged fill",
+    "uxGoal": "Create cinematic hero entry and brand recall",
+    "bestFor": ["Hero marks", "Intro scenes", "Brand statements"],
+    "performanceNotes": "Short one-time animation; avoid long loops",
+    "a11yNotes": "Provide complete static state for reduced motion",
+    "platformGroup": "all",
+    "mockupPath": "all/svg-path-draw"
+  },
+  {
+    "id": "gradient_border_grain",
+    "name": "Gradient Border Grain",
+    "inspiredBy": ["Effect mockup 08"],
+    "effectType": "Ambient border light effect",
+    "trigger": "Autoplay + hover",
+    "implementation": "Conic-gradient animated border with noise overlay and hover light response",
+    "uxGoal": "Increase perceived quality of highlighted cards",
+    "bestFor": ["Pricing cards", "Feature spotlights", "Promo blocks"],
+    "performanceNotes": "Prefer CSS gradients over heavy assets",
+    "a11yNotes": "Decorative layer only, maintain text contrast",
+    "platformGroup": "all",
+    "mockupPath": "all/gradient-border-grain"
+  },
+  {
+    "id": "clip_path_hover_reveal",
+    "name": "Clip-Path Hover Reveal",
+    "inspiredBy": ["Effect mockup 10"],
+    "effectType": "Hover mask reveal",
+    "trigger": "Pointer hover/move",
+    "implementation": "clip-path circle reveal following pointer position",
+    "uxGoal": "Interactive preview reveal for case studies and portfolio cards",
+    "bestFor": ["Case study cards", "Portfolio tiles"],
+    "performanceNotes": "GPU-friendly clip-path usage on a single element",
+    "a11yNotes": "Ensure content remains accessible without hover",
+    "platformGroup": "desktop",
+    "mockupPath": "desktop/clip-path-hover-reveal"
+  },
+  {
+    "id": "infinite_logo_marquee",
+    "name": "Infinite Logo Marquee",
+    "inspiredBy": ["Effect mockup 11"],
+    "effectType": "Continuous trust-strip motion",
+    "trigger": "Autoplay",
+    "implementation": "Duplicated track with linear translateX loop and edge masking",
+    "uxGoal": "Show social proof/integrations with gentle motion",
+    "bestFor": ["Client logos", "Partner strips", "Integrations sections"],
+    "performanceNotes": "Pause on hover and keep speed moderate",
+    "a11yNotes": "Stop or reduce movement when reduced motion is set",
+    "platformGroup": "all",
+    "mockupPath": "all/infinite-marquee"
+  },
+  {
+    "id": "toggle_morph_microinteraction",
+    "name": "Toggle Morph Microinteraction",
+    "inspiredBy": ["Effect mockup 12"],
+    "effectType": "Stateful UI microinteraction",
+    "trigger": "Click/tap",
+    "implementation": "Toggle with morphing icon and squash-stretch transitions",
+    "uxGoal": "Add delightful feedback for settings/actions",
+    "bestFor": ["Settings toggles", "Preference controls", "Plan toggles"],
+    "performanceNotes": "Short transitions and no layout reflow",
+    "a11yNotes": "Use aria-pressed and clear on/off state labels",
+    "platformGroup": "all",
+    "mockupPath": "all/toggle-microinteraction"
+  },
+  {
+    "id": "chaos_order_sort",
+    "name": "Chaos to Order Sort",
+    "inspiredBy": [
+      "Editorial before/after layouts",
+      "Invessiv landing problem/solution section"
+    ],
+    "effectType": "Before/after layout contrast + cross-panel hover match",
+    "trigger": "Scroll reveal + hover",
+    "implementation": "Scattered rotated chips (nth-child offsets/rotations) vs. ordered numbered list; hover on one item highlights its counterpart in the other panel",
+    "uxGoal": "Make a problem-to-solution transformation tangible through layout itself instead of copy or graphics",
+    "bestFor": [
+      "Problem/solution sections",
+      "Before/after storytelling",
+      "Service value framing"
+    ],
+    "performanceNotes": "CSS transforms only; reveal via IntersectionObserver; hover matching with tiny state toggle",
+    "a11yNotes": "Both panels are real labelled lists in reading order; hover match is decorative only; respect prefers-reduced-motion",
+    "platformGroup": "all",
+    "mockupPath": "all/chaos-order-sort"
+  },
+  {
+    "id": "infinite_card_rondell",
+    "name": "Infinite Card Rondell",
+    "inspiredBy": ["Interactive carousel mockups", "Infinite drag galleries"],
+    "effectType": "Horizontal infinite carousel",
+    "trigger": "Drag/swipe",
+    "implementation": "Pointer drag with inertia and DOM recycling for endless loop",
+    "uxGoal": "Keep users exploring multiple cards without hard stops",
+    "bestFor": ["Pricing showcases", "Feature cards", "Offer galleries"],
+    "performanceNotes": "Transform-based movement; recycle nodes instead of cloning on each frame",
+    "a11yNotes": "Provide keyboard fallback controls in production and preserve readable static state",
+    "platformGroup": "all",
+    "mockupPath": "all/rondell"
+  }
 ]
