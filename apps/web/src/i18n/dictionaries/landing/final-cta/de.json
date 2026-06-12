@@ -1,7 +1,7 @@
 {
   "eyebrow": "Anfrage",
   "title": "Erzähl mir kurz von deinem Projekt.",
-  "body": "Deine Anfrage klärt Angebot, Zielgruppe und sinnvolle Seitenstruktur. Schreib kurz, ob ich eine bestehende Seite prüfen oder eine neue Landingpage starten soll.",
+  "body": "Schreib kurz, ob ich eine bestehende Seite prüfen oder eine neue Landingpage starten soll.",
   "form": {
     "fields": {
       "name": {

@@ -66,14 +66,6 @@
   text-wrap: balance;
 }
 
-.body {
-  margin: 0;
-  max-width: 38ch;
-  color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
-  font-size: var(--font-size-body-lg);
-  line-height: 1.6;
-}
-
 .track {
   position: relative;
 }

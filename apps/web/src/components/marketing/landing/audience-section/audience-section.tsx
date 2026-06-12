@@ -16,13 +16,11 @@ type AudienceSectionProps = LandingAudienceContent & {
 };
 
 export function AudienceSection({
-  body,
   cta,
   eyebrow,
   id,
   items,
   locale,
-  reassurance,
   title,
 }: AudienceSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -35,7 +33,6 @@ export function AudienceSection({
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
-        <p className={styles.body}>{body}</p>
       </div>
 
       <ul className={styles.pillList} data-reveal-item="true">
@@ -48,10 +45,6 @@ export function AudienceSection({
           </li>
         ))}
       </ul>
-
-      <p className={styles.reassurance} data-reveal-item="true">
-        {reassurance}
-      </p>
 
       {cta ? (
         <div className={styles.ctaWrap} data-reveal-item="true">

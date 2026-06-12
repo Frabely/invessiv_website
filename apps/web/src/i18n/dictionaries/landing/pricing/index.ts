@@ -15,7 +15,6 @@ export type LandingPricingCard = {
 };
 
 export type LandingPricingContent = {
-  body: string;
   card: LandingPricingCard;
   ctaLabel: string;
   eyebrow: string;

@@ -15,7 +15,6 @@ type ProcessSectionProps = LandingProcessContent & {
 };
 
 export function ProcessSection({
-  body,
   eyebrow,
   id,
   locale,
@@ -30,7 +29,6 @@ export function ProcessSection({
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
-        <p className={styles.body}>{body}</p>
       </div>
 
       <div className={styles.track} data-reveal-item="true">

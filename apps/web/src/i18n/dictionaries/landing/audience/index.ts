@@ -21,11 +21,9 @@ export type LandingAudienceItem = {
 };
 
 export type LandingAudienceContent = {
-  body: string;
   cta?: LandingSectionCtaContent;
   eyebrow: string;
   items: LandingAudienceItem[];
-  reassurance: string;
   title: string;
 };
 

@@ -17,7 +17,6 @@ type PricingSectionProps = LandingPricingContent & {
 };
 
 export function PricingSection({
-  body,
   card,
   ctaHref,
   ctaLabel,
@@ -37,7 +36,6 @@ export function PricingSection({
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
-        <p className={styles.body}>{body}</p>
       </div>
 
       <div className={styles.stage} data-reveal-item="true">

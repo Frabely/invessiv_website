@@ -19,7 +19,6 @@ export type LandingProcessStep = {
 };
 
 export type LandingProcessContent = {
-  body: string;
   eyebrow: string;
   steps: LandingProcessStep[];
   title: string;
