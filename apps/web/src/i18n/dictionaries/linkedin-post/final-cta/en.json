@@ -29,8 +29,6 @@
     "submitLabel": "Check workflow",
     "submittingLabel": "Sending ...",
     "payloadContext": "AI workflow inquiry",
-    "successTitle": "Thanks for your inquiry.",
-    "successBody": "I'll get back to you with a short assessment - usually within 24 hours.",
     "errorRequired": "Please fill this in.",
     "errorEmail": "Please enter a valid email address.",
     "errorConsent": "Without your consent I can't process the inquiry.",

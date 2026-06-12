@@ -188,64 +188,13 @@
   line-height: 1.5;
 }
 
-.successPanel {
-  display: grid;
-  justify-items: center;
-  gap: 0.85rem;
-  width: min(100%, var(--focus-lane-max));
-  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.4rem);
-  border-radius: var(--form-radius);
-  border: var(--form-border-thickness) solid transparent;
-  background:
-    linear-gradient(var(--surface), var(--surface)) padding-box,
-    linear-gradient(135deg, var(--color-cta), var(--color-accent-warm))
-      border-box;
-  box-shadow:
-    0 36px 90px -50px color-mix(in srgb, var(--color-cta) 55%, transparent),
-    0 16px 36px -22px
-      color-mix(in srgb, var(--color-accent-warm) 42%, transparent);
-  text-align: center;
-}
-
-.successCheck {
-  display: inline-grid;
-  place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 999px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-cta) 88%, transparent),
-    color-mix(in srgb, var(--color-accent-warm) 80%, transparent)
-  );
-  color: var(--color-on-cta, #fff);
-}
-
-.successTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.85rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.successBody {
-  margin: 0;
-  max-width: 38ch;
-  color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%);
-  font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.08rem);
-  line-height: 1.6;
-}
-
 .trustLine {
   margin: 0;
   color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
   font-size: var(--font-size-caption);
 }
 
-:global([data-theme="light"]) .formCard,
-:global([data-theme="light"]) .successPanel {
+:global([data-theme="light"]) .formCard {
   background:
     linear-gradient(#ffffff, #ffffff) padding-box,
     linear-gradient(135deg, var(--color-cta), var(--color-accent-warm))

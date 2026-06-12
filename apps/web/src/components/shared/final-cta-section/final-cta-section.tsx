@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -34,6 +35,7 @@ type FinalCtaSectionProps = FinalCtaContent & {
   id: string;
   locale: Locale;
   origin?: ContactSubmissionOrigin;
+  successRedirectHref: string;
 };
 
 export function FinalCtaSection({
@@ -45,9 +47,11 @@ export function FinalCtaSection({
   id,
   locale,
   origin = ContactSubmissionOrigin.Website,
+  successRedirectHref,
   title,
   trustLine,
 }: FinalCtaSectionProps) {
+  const router = useRouter();
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
 
@@ -108,14 +112,15 @@ export function FinalCtaSection({
     return form.errorGeneric;
   };
 
-  const onSubmit = handleSubmit(
+  const redirectToSuccess = () => {
+    reset(DEFAULT_FINAL_CTA_FORM_VALUES);
+    router.push(successRedirectHref);
+  };
+
+  const onValidSubmit = handleSubmit(
     async (values) => {
       if (values.honeypot.trim()) {
-        setSubmitState({
-          kind: SubmitState.Kind.Success,
-          message: form.successBody,
-        });
-        reset(DEFAULT_FINAL_CTA_FORM_VALUES);
+        redirectToSuccess();
         return;
       }
 
@@ -137,9 +142,8 @@ export function FinalCtaSection({
           return;
         }
         trackSubmitSuccess();
-        setSubmitState({ kind: SubmitState.Kind.Success });
-        reset(DEFAULT_FINAL_CTA_FORM_VALUES);
         resetFormAnalytics();
+        redirectToSuccess();
       } catch {
         setSubmitState({
           kind: SubmitState.Kind.Error,
@@ -153,17 +157,18 @@ export function FinalCtaSection({
     },
   );
 
-  const isSuccess = submitState.kind === SubmitState.Kind.Success;
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const formData = new FormData(event.currentTarget);
+    const honeypotValue = String(formData.get("honeypot") ?? "").trim();
 
-  useEffect(() => {
-    if (!isSuccess) {
+    if (honeypotValue) {
+      event.preventDefault();
+      redirectToSuccess();
       return;
     }
-    document.getElementById(id)?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, [id, isSuccess]);
+
+    void onValidSubmit(event);
+  };
 
   return (
     <section
@@ -183,183 +188,158 @@ export function FinalCtaSection({
       </div>
 
       <div className={styles.stage} data-reveal-item="true">
-        {isSuccess ? (
-          <div aria-live="polite" className={styles.successPanel} role="status">
-            <span aria-hidden="true" className={styles.successCheck}>
-              <svg
-                fill="none"
-                height="22"
-                viewBox="0 0 24 24"
-                width="22"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5 12.5l4.2 4 9.3-9.5"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2.4"
-                />
-              </svg>
-            </span>
-            <h3 className={styles.successTitle}>{form.successTitle}</h3>
-            <p className={styles.successBody}>{form.successBody}</p>
-          </div>
-        ) : (
-          <form
-            className={styles.formCard}
-            data-analytics-location={analyticsLocation}
-            noValidate
-            onFocusCapture={() => trackFormStart()}
-            onSubmit={onSubmit}
-          >
-            <div className={styles.fieldGrid}>
-              <FormField
-                errorMessage={
-                  errors.name ? getFieldErrorMessage("name") : undefined
-                }
-                inputProps={{
-                  ...register("name", {
-                    validate: (value) =>
-                      value.trim().length >= 2 ||
-                      CONTACT_FIELD_ERROR_CODE.Required,
-                  }),
-                  "aria-invalid": errors.name ? "true" : undefined,
-                  autoComplete: form.fields.name.autocomplete,
-                  placeholder: form.fields.name.placeholder,
-                }}
-                kind={FormFieldKind.Text}
-                label={form.fields.name.label}
-                required
-              />
-
-              <FormField
-                errorMessage={
-                  errors.email ? getFieldErrorMessage("email") : undefined
-                }
-                inputProps={{
-                  ...register("email", {
-                    validate: (value) => {
-                      const trimmed = value.trim();
-                      if (!trimmed) {
-                        return CONTACT_FIELD_ERROR_CODE.Required;
-                      }
-                      return CONTACT_EMAIL_PATTERN.test(trimmed)
-                        ? true
-                        : CONTACT_FIELD_ERROR_CODE.InvalidEmail;
-                    },
-                  }),
-                  "aria-invalid": errors.email ? "true" : undefined,
-                  autoComplete: form.fields.email.autocomplete,
-                  inputMode: "email",
-                  placeholder: form.fields.email.placeholder,
-                }}
-                kind={FormFieldKind.Email}
-                label={form.fields.email.label}
-                required
-              />
-            </div>
-
-            {websiteField ? (
-              <FormField
-                errorMessage={
-                  errors.website
-                    ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Website)
-                    : undefined
-                }
-                hint={websiteField.hint}
-                inputProps={{
-                  ...register(CONTACT_FORM_FIELD_NAME.Website, {
-                    validate: (value) => {
-                      const trimmed = value.trim();
-                      if (!trimmed) {
-                        return true;
-                      }
-                      return CONTACT_URL_PATTERN.test(trimmed)
-                        ? true
-                        : CONTACT_FIELD_ERROR_CODE.InvalidUrl;
-                    },
-                  }),
-                  "aria-invalid": errors.website ? "true" : undefined,
-                  autoComplete: websiteField.autocomplete,
-                  inputMode: "url",
-                  placeholder: websiteField.placeholder,
-                }}
-                kind={FormFieldKind.Url}
-                label={websiteField.label}
-              />
-            ) : null}
+        <form
+          className={styles.formCard}
+          data-analytics-location={analyticsLocation}
+          noValidate
+          onFocusCapture={() => trackFormStart()}
+          onSubmit={onSubmit}
+        >
+          <div className={styles.fieldGrid}>
+            <FormField
+              errorMessage={
+                errors.name ? getFieldErrorMessage("name") : undefined
+              }
+              inputProps={{
+                ...register("name", {
+                  validate: (value) =>
+                    value.trim().length >= 2 ||
+                    CONTACT_FIELD_ERROR_CODE.Required,
+                }),
+                "aria-invalid": errors.name ? "true" : undefined,
+                autoComplete: form.fields.name.autocomplete,
+                placeholder: form.fields.name.placeholder,
+              }}
+              kind={FormFieldKind.Text}
+              label={form.fields.name.label}
+              required
+            />
 
             <FormField
               errorMessage={
-                errors.goal
-                  ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Goal)
-                  : undefined
+                errors.email ? getFieldErrorMessage("email") : undefined
               }
-              kind={FormFieldKind.Textarea}
-              label={form.fields.goal.label}
-              required
-              textareaProps={{
-                ...register(CONTACT_FORM_FIELD_NAME.Goal, {
-                  validate: (value) =>
-                    value.trim().length >= 1 ||
-                    CONTACT_FIELD_ERROR_CODE.Required,
+              inputProps={{
+                ...register("email", {
+                  validate: (value) => {
+                    const trimmed = value.trim();
+                    if (!trimmed) {
+                      return CONTACT_FIELD_ERROR_CODE.Required;
+                    }
+                    return CONTACT_EMAIL_PATTERN.test(trimmed)
+                      ? true
+                      : CONTACT_FIELD_ERROR_CODE.InvalidEmail;
+                  },
                 }),
-                "aria-invalid": errors.goal ? "true" : undefined,
-                placeholder: form.fields.goal.placeholder,
-                rows: 5,
+                "aria-invalid": errors.email ? "true" : undefined,
+                autoComplete: form.fields.email.autocomplete,
+                inputMode: "email",
+                placeholder: form.fields.email.placeholder,
               }}
+              kind={FormFieldKind.Email}
+              label={form.fields.email.label}
+              required
             />
+          </div>
 
-            <label aria-hidden="true" className={styles.honeypot}>
-              {form.fields.honeypot.label}
-              <input
-                {...register("honeypot")}
-                autoComplete="off"
-                tabIndex={-1}
-                type="text"
-              />
-            </label>
-
-            <ContactConsentField
-              checkboxClassName={styles.consentCheckbox}
-              className={styles.consent}
-              consentLabel={form.consentLabel}
-              errorClassName={styles.consentError}
-              errorId={consentErrorId}
+          {websiteField ? (
+            <FormField
               errorMessage={
-                errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
-                  ? form.errorConsent
+                errors.website
+                  ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Website)
                   : undefined
               }
-              privacyHref={form.privacyHref}
-              privacyLabel={form.privacyLabel}
-              register={register}
+              hint={websiteField.hint}
+              inputProps={{
+                ...register(CONTACT_FORM_FIELD_NAME.Website, {
+                  validate: (value) => {
+                    const trimmed = value.trim();
+                    if (!trimmed) {
+                      return true;
+                    }
+                    return CONTACT_URL_PATTERN.test(trimmed)
+                      ? true
+                      : CONTACT_FIELD_ERROR_CODE.InvalidUrl;
+                  },
+                }),
+                "aria-invalid": errors.website ? "true" : undefined,
+                autoComplete: websiteField.autocomplete,
+                inputMode: "url",
+                placeholder: websiteField.placeholder,
+              }}
+              kind={FormFieldKind.Url}
+              label={websiteField.label}
             />
+          ) : null}
 
-            <div className={styles.actions}>
-              <PrimaryCtaButton
-                className={styles.submit}
-                data-analytics-event="cta_click"
-                data-analytics-location={analyticsLocation}
-                data-analytics-target="form_submit"
-                data-analytics-variant="primary"
-                disabled={isSubmitting}
-                type="submit"
-              >
-                {isSubmitting ? form.submittingLabel : form.submitLabel}
-              </PrimaryCtaButton>
-              <p className={styles.requiredHint}>{form.requiredHint}</p>
-            </div>
+          <FormField
+            errorMessage={
+              errors.goal
+                ? getFieldErrorMessage(CONTACT_FORM_FIELD_NAME.Goal)
+                : undefined
+            }
+            kind={FormFieldKind.Textarea}
+            label={form.fields.goal.label}
+            required
+            textareaProps={{
+              ...register(CONTACT_FORM_FIELD_NAME.Goal, {
+                validate: (value) =>
+                  value.trim().length >= 1 || CONTACT_FIELD_ERROR_CODE.Required,
+              }),
+              "aria-invalid": errors.goal ? "true" : undefined,
+              placeholder: form.fields.goal.placeholder,
+              rows: 5,
+            }}
+          />
 
-            {submitState.kind === SubmitState.Kind.Error &&
-            submitState.message ? (
-              <p aria-live="polite" className={styles.submitError} role="alert">
-                {submitState.message}
-              </p>
-            ) : null}
-          </form>
-        )}
+          <label aria-hidden="true" className={styles.honeypot}>
+            {form.fields.honeypot.label}
+            <input
+              {...register("honeypot")}
+              autoComplete="off"
+              tabIndex={-1}
+              type="text"
+            />
+          </label>
+
+          <ContactConsentField
+            checkboxClassName={styles.consentCheckbox}
+            className={styles.consent}
+            consentLabel={form.consentLabel}
+            errorClassName={styles.consentError}
+            errorId={consentErrorId}
+            errorMessage={
+              errors[CONTACT_FORM_FIELD_NAME.ConsentAccepted]
+                ? form.errorConsent
+                : undefined
+            }
+            privacyHref={form.privacyHref}
+            privacyLabel={form.privacyLabel}
+            register={register}
+          />
+
+          <div className={styles.actions}>
+            <PrimaryCtaButton
+              className={styles.submit}
+              data-analytics-event="cta_click"
+              data-analytics-location={analyticsLocation}
+              data-analytics-target="form_submit"
+              data-analytics-variant="primary"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {isSubmitting ? form.submittingLabel : form.submitLabel}
+            </PrimaryCtaButton>
+            <p className={styles.requiredHint}>{form.requiredHint}</p>
+          </div>
+
+          {submitState.kind === SubmitState.Kind.Error &&
+          submitState.message ? (
+            <p aria-live="polite" className={styles.submitError} role="alert">
+              {submitState.message}
+            </p>
+          ) : null}
+        </form>
       </div>
 
       <p className={styles.trustLine} data-reveal-item="true">

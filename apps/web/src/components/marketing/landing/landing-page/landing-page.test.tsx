@@ -4,6 +4,12 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { LandingPage } from "./landing-page";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+  }),
+}));
+
 vi.mock("@/components/marketing/site-header/site-header", () => ({
   SiteHeader: ({
     ctaHref,

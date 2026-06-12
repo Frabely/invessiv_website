@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -8,7 +14,16 @@ import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-pos
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { FinalCtaSection } from "./final-cta-section";
 
-const mockTrackConversionEvent = vi.fn();
+const { mockRouterPush, mockTrackConversionEvent } = vi.hoisted(() => ({
+  mockRouterPush: vi.fn(),
+  mockTrackConversionEvent: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockRouterPush,
+  }),
+}));
 
 vi.mock("@/client/contact/services/contact-form-service", () => ({
   submitQuickContact: vi
@@ -29,10 +44,11 @@ vi.mock("@/lib/analytics/conversion-events", async (importOriginal) => {
 
 describe("FinalCtaSection", () => {
   beforeEach(() => {
-    window.HTMLElement.prototype.scrollIntoView = vi.fn();
+    mockRouterPush.mockClear();
   });
 
   afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
   });
 
@@ -43,6 +59,7 @@ describe("FinalCtaSection", () => {
         formId="landing_final_cta"
         id="contact"
         locale="de"
+        successRedirectHref="/de/services/landing-page/success"
         {...getLandingFinalCtaContent("de")}
       />,
     );
@@ -111,12 +128,9 @@ describe("FinalCtaSection", () => {
       },
     );
 
-    await waitFor(() => {
-      expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
+    expect(mockRouterPush).toHaveBeenCalledWith(
+      "/de/services/landing-page/success",
+    );
   });
 
   it("submits the LinkedIn workflow CTA without rendering a website field", async () => {
@@ -126,6 +140,7 @@ describe("FinalCtaSection", () => {
         formId="linkedin_post_final_cta"
         id="contact"
         locale="de"
+        successRedirectHref="/de/services/linkedin-post/success"
         {...getLinkedInPostFinalCtaContent("de")}
       />,
     );
@@ -197,5 +212,44 @@ describe("FinalCtaSection", () => {
         variant: "primary",
       },
     );
+    expect(mockRouterPush).toHaveBeenCalledWith(
+      "/de/services/linkedin-post/success",
+    );
+  });
+
+  it("redirects honeypot submissions without calling the API", async () => {
+    const { container } = render(
+      <FinalCtaSection
+        analyticsLocation="landing_final_cta"
+        formId="landing_final_cta"
+        id="contact"
+        locale="de"
+        successRedirectHref="/de/services/landing-page/success"
+        {...getLandingFinalCtaContent("de")}
+      />,
+    );
+
+    const honeypot = container.querySelector<HTMLInputElement>(
+      'input[name="honeypot"]',
+    );
+    if (!honeypot) {
+      throw new Error("Expected honeypot field to be rendered.");
+    }
+
+    fireEvent.change(honeypot, {
+      target: { value: "bot-value" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Ersteinschätzung anfragen",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(mockRouterPush).toHaveBeenCalledWith(
+        "/de/services/landing-page/success",
+      );
+    });
+    expect(submitQuickContact).not.toHaveBeenCalled();
   });
 });

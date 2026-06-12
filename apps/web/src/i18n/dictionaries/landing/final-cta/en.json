@@ -35,8 +35,6 @@
     "submitLabel": "Request initial assessment",
     "submittingLabel": "Sending ...",
     "payloadContext": "Landing page inquiry",
-    "successTitle": "Thanks for your inquiry.",
-    "successBody": "I'll get back to you with a short assessment - usually within 24 hours.",
     "errorRequired": "Please fill this in.",
     "errorEmail": "Please enter a valid email address.",
     "errorWebsite": "Please enter a valid URL (e.g. https://example.com).",

@@ -35,8 +35,6 @@
     "submitLabel": "Ersteinschätzung anfragen",
     "submittingLabel": "Wird gesendet ...",
     "payloadContext": "Landingpage-Anfrage",
-    "successTitle": "Danke für deine Anfrage.",
-    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir - meistens innerhalb von 24 Stunden.",
     "errorRequired": "Bitte ausfüllen.",
     "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
     "errorWebsite": "Bitte eine gültige URL angeben (z. B. https://beispiel.de).",

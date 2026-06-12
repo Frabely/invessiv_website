@@ -29,8 +29,6 @@
     "submitLabel": "Workflow prüfen lassen",
     "submittingLabel": "Wird gesendet ...",
     "payloadContext": "KI-Workflow-Anfrage",
-    "successTitle": "Danke für deine Anfrage.",
-    "successBody": "Ich melde mich mit einer kurzen Einschätzung bei dir - meistens innerhalb von 24 Stunden.",
     "errorRequired": "Bitte ausfüllen.",
     "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
     "errorConsent": "Ohne deine Einwilligung kann ich die Anfrage nicht bearbeiten.",

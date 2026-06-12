@@ -20,8 +20,6 @@ export type FinalCtaFormCopy = {
   requiredHint: string;
   submitLabel: string;
   submittingLabel: string;
-  successTitle: string;
-  successBody: string;
   errorRequired: string;
   errorEmail: string;
   errorWebsite?: string;

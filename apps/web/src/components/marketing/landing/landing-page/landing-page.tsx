@@ -12,6 +12,7 @@ import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { LANDING_HEADER_NAVIGATION } from "@/config/navigation/landing";
 import { CONTACT_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -22,6 +23,7 @@ import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 
 type LandingPageProps = {
   locale: Locale;
@@ -106,6 +108,10 @@ export function LandingPage({ locale }: LandingPageProps) {
           formId="landing_final_cta"
           id={CONTACT_SECTION_ID}
           locale={locale}
+          successRedirectHref={createLocalePathname(
+            SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
+            locale,
+          )}
           {...finalCta}
         />
 
