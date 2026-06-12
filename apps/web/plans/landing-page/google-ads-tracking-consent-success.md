@@ -56,11 +56,17 @@ Neue Komponenten/Module, angepasst an die bestehende Struktur:
 Speicherung:
 
 - Bevorzugt `localStorage`, weil keine Serverentscheidung nötig ist und keine zusätzliche First-Party-Cookie-Oberfläche
-  entsteht.
+  entsteht. Das Speichern der **eigenen** Consent-Auswahl ist „technisch notwendig" und auch ohne Einwilligung zulässig
+  — getrennt von den cookielosen Google-Pings (siehe Consent-Mode-Konzept).
 - Banner erscheint nur, wenn noch keine Consent-Auswahl gespeichert ist.
 - Ein Link/Button „Cookie-Einstellungen“ öffnet die Einstellungen jederzeit erneut — gerendert **nur im Footer der
-  Landing-Route und ggf. der Success-Route** (dort, wo Consent-Provider und Banner existieren), nicht siteweit im
-  globalen Footer. Der geteilte `FooterSection` darf den Button nur über Props/Kontext aus diesen Routen erhalten.
+  Landing-Route und der Success-Route** (dort, wo Consent-Provider und Banner existieren), nicht siteweit im globalen
+  Footer. Der geteilte `FooterSection` darf den Button nur über Props/Kontext aus diesen Routen erhalten.
+
+Styling (AGENTS-konform):
+
+- Banner, Settings-Dialog und Cookie-Settings-Button stylen über lokales `*.module.css` oder statische Tailwind-
+  Utilities im JSX — **keine** Inline-Styles und keine neuen globalen Komponentenklassen in `globals.css`.
 
 Kategorien:
 
@@ -150,9 +156,10 @@ Begleitparameter (verbindlich, zusammen mit dem Default-denied gesetzt):
 - `ads_data_redaction: true` — solange `ad_storage = denied`, werden Ad-Identifier in den Pings redigiert.
 - `url_passthrough: true` — gibt den `gclid` über URL-Parameter weiter, wenn Cookies abgelehnt sind; sonst geht die
   Klick-Zuordnung bei Ablehnung komplett verloren.
-- `wait_for_update: 500` (ms) — gibt dem Consent-Banner/`localStorage`-Read Zeit, die gespeicherte Auswahl anzuwenden,
-  bevor das Tag mit dem (Default-)Consent feuert. Verhindert ein Feuern mit veraltetem Default bei Wiederkehrern, die
-  bereits zugestimmt haben.
+- `wait_for_update: 500` (ms) — Sicherheitsnetz, falls die Consent-Anwendung minimal verzögert ist; das Tag feuert
+  nicht sofort mit dem reinen Default. Da unser `localStorage`-Read **synchron** im Inline-Stub passiert (siehe unten),
+  ist die gespeicherte Auswahl in der Regel bereits vor dem ersten Ping gesetzt — `wait_for_update` ist Absicherung,
+  nicht der eigentliche Mechanismus.
 
 Mapping:
 
@@ -176,20 +183,22 @@ verknüpfen (bessere Attribution, Zielgruppen später nutzbar).
   (Skript erst nach Zustimmung laden) werden Conversions von Nutzern, die Marketing nicht aktiv akzeptieren, **gar
   nicht** gemessen — bei einer Lead-Landingpage ist das die Mehrheit und damit eine strukturelle Untererfassung des
   einzigen Seitenziels. Im Advanced Mode lädt das Tag bereits mit `consent default denied`; bei Ablehnung sendet es
-  **cookielose Pings** (keine Identifier, kein `localStorage`/Cookie-Zugriff), aus denen Google Conversions
-  **modelliert**. Bei Zustimmung wird per `consent update` auf vollständiges Tracking hochgestuft.
+  **cookielose Pings** (keine Identifier, kein Cookie-Zugriff), aus denen Google Conversions **modelliert**. Bei
+  Zustimmung wird per `consent update` auf vollständiges Tracking hochgestuft.
 - DSGVO-Einordnung: Das ist Googles empfohlener und üblicher Weg. Zulässig, weil ohne Zustimmung **keine** Cookies/
   Identifier gespeichert werden, sondern nur aggregierbare, cookielose Signale. Das frühere „Snippet lädt
   bedingungslos = DSGVO-Problem" galt für ein Tag **ohne** Consent-Mode-Gating; mit Default-denied + cookielosen Pings
   entfällt dieser Einwand. (Bleibt technische/inhaltliche Einordnung, keine Rechtsberatung — im Privacy-Task abdecken.)
-- Inline-Starter früh im Client (vor dem Tag-Load): `window.dataLayer`, `gtag`-Stub, `consent default denied` inkl. der
-  Begleitparameter (`ads_data_redaction`, `url_passthrough`, `wait_for_update`). Dadurch gehen `dataLayer.push`-Events
-  nie verloren, auch wenn das externe Skript noch lädt.
+- Inline-Starter als `next/script` mit Strategy **`beforeInteractive`** (garantiert vor dem Tag-Load): definiert
+  `window.dataLayer` + `gtag`-Stub, setzt `consent default denied` inkl. Begleitparameter (`ads_data_redaction`,
+  `url_passthrough`, `wait_for_update`) und liest die gespeicherte Auswahl **synchron** aus `localStorage`, um sie
+  sofort per `consent update` anzuwenden. Dadurch haben Wiederkehrer schon beim ersten Ping den korrekten Consent, und
+  `dataLayer.push`-Events gehen nie verloren, auch wenn das externe Skript noch lädt.
 - Kein roher Google-Snippet-Code in einzelnen Pages; kein `@next/third-parties` erzwingen (Dependency nicht vorhanden,
   für einen einzelnen Tag unnötig).
 - Umsetzung über eigene `GoogleTag`-Client-Komponente mit `next/script` — **eine** gtag-Bibliothek, zwei Destinationen:
-  - Skript lädt **immer** beim Mount der Landing-/Success-Route (nicht consent-gegated), Strategy `afterInteractive`:
-    `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
+  - gtag.js-Skript lädt **immer** beim Mount der Landing-/Success-Route (nicht consent-gegated), Strategy
+    `afterInteractive`: `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
   - `gtag("config", "G-5T4BC28Z0F")` (GA4) und `gtag("config", "<AW-ID>")` (Ads-Destination) werden gesetzt; der
     Consent-Zustand (default denied, per Auswahl auf granted aktualisiert) steuert, ob volle Messung oder cookielose
     Pings gesendet werden — **nicht** ob das Skript lädt.
@@ -214,13 +223,19 @@ Plan ergänzt nur die Tracking-Konsequenzen:
 - Aus dem Honeypot-Fall darf kein Google-Conversion-Event entstehen: Beim Honeypot-Redirect wird das
   `sessionStorage`-Guard-Flag (siehe Conversion Tracking) nicht gesetzt — der Bot sieht keinen Unterschied, die
   Conversion feuert trotzdem nicht.
+- Vercel-Analytics-Form-Events (`form_start`, `form_submit_attempt`, `form_submit_error`, `lead_submit_success` gemäß
+  `invessiv-landing`-Skill) bleiben bestehen. `lead_submit_success` feuert **auf der Landingpage unmittelbar vor dem
+  Redirect** (garantiert, unabhängig vom Laden der Success-Seite), nicht erst auf der Success-Route.
 
 UTM-Parameter:
 
 - Nicht im Redirect erzwingen.
 - Bei Bedarf später sauber in der Anfrage speichern, z. B. über erlaubte `utm_*`-Felder im DTO oder serverseitige
   Lead-Metadaten.
-- Keine sensiblen Parameter wie `gclid`, E-Mail oder Tokens an Analytics weitergeben.
+- `gclid`, E-Mail oder Tokens werden **nicht an Vercel Analytics** weitergegeben (der `beforeSend`-Sanitizer strippt
+  sie). Das ist **kein** Widerspruch zu `url_passthrough` (siehe Consent-Mode-Konzept): `url_passthrough` ist Googles
+  eigener Mechanismus, der `gclid` ausschließlich an die Google-Tags zur Ads-Attribution durchreicht — nicht an Vercel
+  Analytics.
 
 ## Success-Seite (Umsetzung im Copy-Plan)
 
@@ -230,7 +245,9 @@ kanonisch. Dieser Plan ergänzt nur die Tracking-Anforderungen an die Seite:
 
 - Seitenaufruf ist die primäre Google-Ads-Conversion (Details im Abschnitt Conversion Tracking).
 - Nicht prominent intern verlinken, nicht in die Sitemap aufnehmen.
-- Cookie-Einstellungen müssen über den Standard-Footer erreichbar bleiben.
+- Die Success-Route wird vom **Consent-Provider umschlossen** (wie die Landing-Route), damit Banner, Google-Tag und der
+  Cookie-Einstellungen-Button funktionieren. Der „Standard-Footer" der Success-Seite ist der provider-umschlossene
+  Footer mit dem Cookie-Einstellungen-Button — nicht der globale Site-Footer ohne Consent-Kontext.
 
 Optional später:
 
@@ -247,7 +264,8 @@ Optional später:
 - **Deduplizierung (kein Doppelfeuern):** Das `sessionStorage`-Flag wird **direkt nach dem Lesen gelöscht**
   (Konsum-Pattern), bevor das Event feuert. Dadurch löst weder ein Reload (F5) noch eine Zurück-/Vorwärts-Navigation
   auf der Success-Seite eine zweite Conversion aus. Zusätzlich erhält das Event eine eindeutige `transaction_id` (im
-  Redirect erzeugt und über das Flag mitgegeben), damit Google identische Conversions auch serverseitig dedupliziert.
+  Redirect erzeugt, z. B. `crypto.randomUUID()`, und über das Flag mitgegeben), damit Google identische Conversions
+  auch serverseitig dedupliziert.
 - Tests decken ab: kein erneutes Feuern bei Reload/Back nach bereits konsumiertem Flag.
 - Nicht als primäre Conversion zählen:
   - Landingpage-Besuch
@@ -256,12 +274,12 @@ Optional später:
   - Formular-Fokus
   - Scrolltiefe
   - fehlerhafter Submit
-- Optional sekundär:
+- Optional sekundär (als GA4-/Vercel-Events, **keine** Ads-Primär-Conversion):
   - CTA-Klick
   - E-Mail-Klick
   - Klick auf den FAQ-Ausstiegslink zur Leistungsübersicht (`/{locale}#services`) — der Link bleibt laut Copy-Plan
     bewusst bestehen (ehrliche Selbst-Disqualifikation); das Event misst, wer über diesen Weg von der Landingpage
-    abspringt (z. B. Vercel-Event `faq_exit_services_click`, keine Ads-Conversion)
+    abspringt (z. B. Vercel-Event `faq_exit_services_click`)
   - später Calendly-Klick
 
 Empfehlung in Google Ads:
@@ -332,6 +350,8 @@ Konkret zu ergänzen/prüfen (Quellen am Ende):
 - **Google Consent Mode v2 im Advanced Mode** explizit erklären: dass auch **ohne Einwilligung cookielose Pings**
   (Einwilligungsstatus + aggregierte Conversion-/Analytics-Signale) an Google gesendet werden und Google daraus
   Conversions/Verhalten **modelliert**. Klarstellen: „cookieless ≠ consentless".
+- **Vercel Analytics + Speed Insights** (cookieless, siteweit, nicht über den Banner gesteuert): Zweck, verarbeitete
+  Daten, Rechtsgrundlage — in der bestehenden DSE prüfen und bei Bedarf ergänzen, damit die Erklärung vollständig ist.
 - **Drittlandübermittlung in die USA** an Google (Google Ireland Ltd. / Google LLC), Hinweis auf Risiken und
   Rechtsgrundlage des Transfers (EU-US Data Privacy Framework / SCCs).
 - Hinweis auf **IP-Adress-Verarbeitung** durch Google.
@@ -370,16 +390,30 @@ Go für Google Ads nur, wenn:
 Voraussetzung: Success-Seite und Formular-Redirect aus dem Copy-Plan (`google-ads-copy-revision.md`, Tasks 5a–5c)
 sind umgesetzt.
 
-1. Consent-Domainmodell und Tests: `lib/consent`, Consent-Typen, Storage-Versionierung, Consent-to-Google-Mapping.
+1. ✅ **Erledigt.** Consent-Domainmodell und Tests in `lib/consent/`, nach Verantwortung geschnitten (analog
+   `lib/navigation/`):
+
+- `consent-types.ts` — Consent-Typen via const-Objekt-Pattern (`ConsentCategory`, `ConsentSignalState`,
+  `ConsentChoice`, `GoogleConsentSignals`) + Default-Choices.
+- `consent-mode.ts` — Consent-to-Google-Signal-Mapping, `DEFAULT_GOOGLE_CONSENT_SIGNALS`, `CONSENT_DEFAULT_PARAMS`;
+  Tests `consent-mode.test.ts` (node-Env, rein).
+- `consent-storage.ts` — `localStorage`-Storage mit Versionierung + Re-Consent-Hook über `version`, window-/try-catch-
+  Guard; Tests `consent-storage.test.ts` (jsdom-Env).
+- 15 Tests grün; `npm run typecheck` + ESLint (`src/lib/consent`) Exit 0. Kein Barrel — Konsumenten importieren
+  direkt.
+
 2. Consent UI: Banner, Settings-Dialog, Footer-Button (nur Landing-/Success-Route), DE/EN Dictionary-Copy, Mobile-
-   States. **DSGVO/TDDDG-Pflichten** (Accept/Reject gleichwertig auf erster Ebene, granular, kein Dark Pattern,
-   Widerruf) und **WCAG 2.2 AA** (`role="dialog"`, `aria-labelledby`/`-describedby`, native Buttons, Tastatur, Fokus-
-   Management, kein harter Trap, Zielgröße 24 px) umsetzen.
-3. GoogleTag Provider (Advanced Consent Mode): `next/script` mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, früher
-   Default-denied Stub inkl. `ads_data_redaction`/`url_passthrough`/`wait_for_update`, Script lädt beim Mount
-   (nicht consent-gegated), `consent update` bei Auswahl, GA4 `send_page_view: false` + manuelles `page_view` bei
-   Routenwechsel, graceful no-op bei fehlenden Env-Vars, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in
-   Google Ads angelegt, `AW-`ID + Label liegen vor.
+   States, Styling über `*.module.css`/Tailwind (keine Inline-Styles). **DSGVO/TDDDG-Pflichten** (Accept/Reject
+   gleichwertig auf erster Ebene, granular, kein Dark Pattern, Widerruf) und **WCAG 2.2 AA** (`role="dialog"`,
+   `aria-labelledby`/`-describedby`, native Buttons, Tastatur, Fokus-Management, kein harter Trap, Zielgröße 24 px)
+   umsetzen. **jsdom-Interaktionstest** (AGENTS-Pflicht): Accept/Reject/Auswahl-speichern aktualisiert den Consent-State
+   und löst `consent update` aus; Locale-Wechsel rendert korrekte Copy.
+3. GoogleTag Provider (Advanced Consent Mode): Inline-Stub (`beforeInteractive`) mit Default-denied +
+   `ads_data_redaction`/`url_passthrough`/`wait_for_update` und synchronem `localStorage`-Read; gtag.js
+   (`afterInteractive`) mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, Script lädt beim Mount (nicht consent-
+   gegated), `consent update` bei Auswahl, GA4 `send_page_view: false` + manuelles `page_view` bei Routenwechsel,
+   graceful no-op bei fehlenden Env-Vars, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in Google Ads
+   angelegt, `AW-`ID + Label liegen vor.
 4. Conversion auf der Success-Route: `sessionStorage`-Guard + `transaction_id` beim Redirect setzen (nicht im
    Honeypot-Fall), Flag **direkt nach dem Lesen löschen**, Conversion-Event (`send_to: "<AW-ID>/<Label>"`,
    `transaction_id`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern,
@@ -387,8 +421,8 @@ sind umgesetzt.
 5. FAQ-Ausstiegslink-Event: sekundäres Vercel-Analytics-Event (z. B. `faq_exit_services_click`) für den bewusst
    bestehenden Link `/{locale}#services` in der FAQ-Sektion; keine Ads-Conversion.
 6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen — Pflichtangaben siehe „Pflichtangaben
-   Datenschutzerklärung" (GA4, Ads, Consent Mode Advanced/cookielose Pings, USA-Transfer, IP, Widerruf). Legal-Merge-
-   Regel: zwei Reviews.
+   Datenschutzerklärung" (GA4, Ads, Consent Mode Advanced/cookielose Pings, Vercel Analytics, USA-Transfer, IP,
+   Widerruf). Legal-Merge-Regel: zwei Reviews.
 7. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
 8. **E2E (zuletzt):** Playwright-Smoke für den Kernablauf — Consent Accept/Reject sichtbar & per Tastatur bedienbar,
    Default-denied vor Auswahl, erfolgreicher Submit → Redirect auf Success → Conversion-Event feuert genau einmal,
@@ -402,8 +436,8 @@ sind umgesetzt.
 ## Entschieden
 
 - Google Tag und Consent-Banner werden zunächst nur auf Landingpage plus Success-Seite eingebunden, nicht global.
-- Der „Cookie-Einstellungen“-Button wird nur im Footer der Landing-Route und ggf. der Success-Route gerendert — nicht
-  im siteweiten Footer, da dort kein Consent-Provider existiert.
+- Der „Cookie-Einstellungen“-Button wird nur im Footer der Landing- und Success-Route gerendert (beide vom
+  Consent-Provider umschlossen) — nicht im siteweiten Footer, da dort kein Consent-Provider existiert.
 - Ads-Conversion-Tracking läuft über ein direktes Google-Ads-Conversion-Tag (`AW-`ID + Label aus einer
   Conversion-Aktion in Google Ads, via `NEXT_PUBLIC_*`-Env-Vars) — nicht über GA4-Import.
 - Zusätzlich ist GA4 (`G-5T4BC28Z0F`) aktiv: gesteuert über die Analyse-Kategorie, nur auf Landing-/Success-Route.
@@ -417,6 +451,9 @@ sind umgesetzt.
   Komplexität; Nutzen skaliert mit Volumen).
 - Die Success-Seite wird bei Direktaufruf normal angezeigt, zählt aber nur nach echtem Submit als Conversion
   (`sessionStorage`-Flag; im Honeypot-Fall nicht gesetzt).
+- **Kein automatisches Consent-Re-Prompt** in V1: Der Consent-State wird versioniert (`version`/`updatedAt`)
+  gespeichert; eine zeitbasierte Re-Einholung (z. B. nach 6–12 Monaten) ist bewusst nicht Teil von V1, lässt sich über
+  das `version`-Feld aber ohne Umbau nachrüsten.
 - UTM-Parameter werden **vorerst nicht** in Leads gespeichert; Kampagnen-Auswertung läuft über Google Ads/GA4.
   Möglicher Follow-up, sobald mehrere Kampagnen laufen und Lead-genaue Herkunft gebraucht wird.
 - Die UTM-Whitelist im Vercel-Analytics-Sanitizer bleibt **vorerst weg** (optionaler Follow-up); Quellen-/
