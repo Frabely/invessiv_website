@@ -7,6 +7,7 @@
  */
 export const ContactSubmissionOrigin = {
   Website: "website",
+  LandingPage: "landing_page",
   LinkedInPost: "linkedin_post",
 } as const;
 
@@ -15,5 +16,6 @@ export type ContactSubmissionOrigin =
 
 export const CONTACT_SUBMISSION_ORIGIN_VALUES = [
   ContactSubmissionOrigin.Website,
+  ContactSubmissionOrigin.LandingPage,
   ContactSubmissionOrigin.LinkedInPost,
 ] as const;

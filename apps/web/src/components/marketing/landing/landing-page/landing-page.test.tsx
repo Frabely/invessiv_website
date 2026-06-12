@@ -1,13 +1,27 @@
 // @vitest-environment jsdom
 
-import { render, screen, waitFor, within } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { LandingPage } from "./landing-page";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
   }),
+}));
+
+vi.mock("@/client/contact/services/contact-form-service", () => ({
+  submitQuickContact: vi
+    .fn()
+    .mockResolvedValue({ ok: true, requestId: "req_1" }),
 }));
 
 vi.mock("@/components/marketing/site-header/site-header", () => ({
@@ -35,6 +49,11 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
 }));
 
 describe("LandingPage", () => {
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+
   it("renders the landing skeleton with header, problem section, hero visual, and footer", async () => {
     render(<LandingPage locale="de" />);
 
@@ -169,5 +188,40 @@ describe("LandingPage", () => {
     expect(
       pageFooter?.querySelector('a[href="tel:+4915232070477"]')?.textContent,
     ).toBe("+49 1523 2070477");
+  });
+
+  it("submits landing leads with the landing page origin", async () => {
+    render(<LandingPage locale="de" />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(
+      screen.getByRole("textbox", {
+        name: /Was .* mit der Landingpage erreichen/,
+      }),
+      {
+        target: {
+          value: "Ich brauche eine Landingpage fuer mein Angebot.",
+        },
+      },
+    );
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /anfragen/,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(submitQuickContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          origin: "landing_page",
+        }),
+      );
+    });
   });
 });

@@ -24,6 +24,7 @@ import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/pr
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 
 type LandingPageProps = {
   locale: Locale;
@@ -108,6 +109,7 @@ export function LandingPage({ locale }: LandingPageProps) {
           formId="landing_final_cta"
           id={CONTACT_SECTION_ID}
           locale={locale}
+          origin={ContactSubmissionOrigin.LandingPage}
           successRedirectHref={createLocalePathname(
             SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
             locale,

@@ -8,6 +8,7 @@ describe("ContactSubmissionOrigin", () => {
   it("maps each origin to its persisted string value", () => {
     expect(ContactSubmissionOrigin).toEqual({
       Website: "website",
+      LandingPage: "landing_page",
       LinkedInPost: "linkedin_post",
     });
   });
@@ -17,6 +18,7 @@ describe("CONTACT_SUBMISSION_ORIGIN_VALUES", () => {
   it("lists every origin value without duplicates", () => {
     expect(CONTACT_SUBMISSION_ORIGIN_VALUES).toEqual([
       "website",
+      "landing_page",
       "linkedin_post",
     ]);
     expect(new Set(CONTACT_SUBMISSION_ORIGIN_VALUES).size).toBe(
