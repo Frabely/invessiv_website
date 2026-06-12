@@ -76,72 +76,9 @@ Rückfragen. (Ihre Rolle als Conversion-Anker für Google Ads regelt der Plan `g
 | **Preis (Pricing)**      | Kaufentscheidung vorbereiten       | „Preisrahmen / ab 999 €" wirkt offen. Hint gut, aber die Erhöhungs-Trigger fehlen direkt am Preis. Feedback-Runden fehlen in Items.                  |
 | **FAQ**                  | Einwände abbauen                   | Gute Auswahl inkl. „Was ist ab 999 € enthalten?" — Antwort schärfen (konkrete Trigger), Frage zu Feedback-Runden/Ablauf nach Anfrage ergänzen.       |
 | **Formular (Final CTA)** | Conversion                         | Felder korrekt (Name/E-Mail/Anliegen Pflicht, Website optional). Body gut. Submit-Label anpassen. Inline-Success-Panel wird durch Redirect ersetzt.  |
-| **Danke-Seite (neu)**    | Erwartung nach Submit setzen       | Existiert noch nicht. Wird neu gebaut: gemeinsame Komponente, eigene Route + Copy pro Formular (Details in Abschnitt 6b).                            |
+| **Danke-Seite (neu)**    | Erwartung nach Submit setzen       | Existiert noch nicht. Wird neu gebaut: gemeinsame Komponente, eigene Route + Copy pro Formular (Details in Abschnitt 4b).                            |
 
-## 4. Konkrete Copy-Probleme
-
-1. `hero/de.json`: `primaryCta: "Landingpage anfragen"` — harte Conversion-Sprache für kalten Traffic; kein „kostenlos".
-2. CTA-Wildwuchs droht: Header, Hero, Audience, Pricing, Solution-Grafik nutzen „Landingpage anfragen", FAQ-CTA und
-   Submit weichen ab — nach Umstellung müssen **alle** identisch zur neuen Linie sein.
-3. `pricing/de.json`: `priceLabel: "Preisrahmen"` schwächt den Festpreis-Charakter; „ab" ohne unmittelbare Erklärung am
-   Preis.
-4. Keine bezifferte Feedback-Runden-Angabe → „zusätzliche Iterationen kosten extra" wäre intransparent.
-5. `trust/de.json`: `reassurance` erwähnt „Der Check bleibt bewusst schlank" — es gibt keinen „Check" auf der Seite.
-6. `solution/de.json` → `graphic.rating: "4,9 von 5 Sternen"` — unbelegter Social Proof.
-7. `process/de.json`: Schritt 1 „Ziel/Briefing" setzt bereits Beauftragung voraus.
-8. `inclusions/de.json`: „Angebots- und Textgrundlage", „Launch-Unterstützung" sind abstrakt; Umfangsgrenzen (6
-   Sektionen, 2 Runden) fehlen.
-9. `final-cta/de.json`: `submitLabel: "Anfrage senden"` — okay, aber inkonsistent zur neuen Ersteinschätzungs-Linie.
-
-## 5. Konkrete Copy-Verbesserungen (DE; EN parallel synchron pflegen)
-
-**Hero** (`dictionaries/landing/hero/{de,en}.json`):
-
-- `primaryCta`: „Kostenlose Ersteinschätzung anfragen"
-- `trustLine`: „Klarer Umfang. Fester Preis: 999 € für den Starter." (in 3b um den Abstimmungs-Satz gekürzt — der lebt
-  als einziges Zuhause in der Pricing-hint)
-- `tag`: „LANDINGPAGE STARTER · 999 €" (Message-Match zur Anzeige)
-- Title + description bleiben (sind stark).
-
-**Solution-Grafik** (`solution/de.json`): ~~`rating` ersetzen durch ehrliches Element~~ — **überholt durch
-Abschnitt 7b:** Die Grafik entfällt komplett (User-Entscheidung); Umsetzung in Task 3e.
-
-**Inclusions** (`inclusions/de.json`):
-
-- Items konkretisieren: „Bis zu 6 Sektionen mit klarer Struktur", „Texte: Ich bringe dein Angebot auf den Punkt", „2
-  Feedback-Runden inklusive", „Responsives Design (Mobile zuerst)", „Anfrageformular, getestet und einsatzbereit",
-  „Launch: Domain, Technik, Go-live".
-
-**Process** (`process/de.json`), Schritt 1 neu:
-
-- Titel: „Ersteinschätzung" — Beschreibung: „Du schickst die Anfrage, ich antworte innerhalb von 24 Stunden mit einer
-  ehrlichen Einschätzung — kostenlos und unverbindlich. Erst danach entscheidest du."
-- Schritt 3 ergänzen: „…Du gibst Feedback (2 Runden inklusive), ich setze es um."
-
-**Pricing** (`pricing/de.json`): siehe Abschnitt 7.
-
-**FAQ** (`faq/de.json`):
-
-- Antwort „Was ist ab 999 € enthalten?" schärfen: „999 € gelten für den beschriebenen Starter-Umfang: bis zu 6
-  Sektionen, 2 Feedback-Runden, responsive Umsetzung, Formular und Launch. Mehr Sektionen, zusätzliche Feedback-Runden
-  oder Sonderfunktionen (z. B. Buchungssystem, Mehrsprachigkeit) bespreche ich vorher transparent mit dir — es entstehen
-  keine Kosten, denen du nicht zugestimmt hast."
-- Neue Frage: „Was passiert nach meiner Anfrage?" → „Du bekommst innerhalb von 24 Stunden eine persönliche
-  Ersteinschätzung. Die ist kostenlos und unverbindlich — du entscheidest danach in Ruhe."
-- Der Link auf `/{locale}#services` in der Antwort „Für wen ist das nicht geeignet?" **bleibt bewusst bestehen**
-  (ehrliche Selbst-Disqualifikation statt Sackgasse, kein Versehen). Absprünge über diesen Link werden als sekundäres
-  Tracking-Event erfasst — siehe Plan `google-ads-tracking-consent-success.md`.
-
-**Final CTA** (`final-cta/de.json`):
-
-- `submitLabel`: „Ersteinschätzung anfragen"
-- `successTitle`/`successBody` entfallen hier — die Danke-Copy zieht in die neuen Success-Dictionaries um (Abschnitt
-  6b).
-
-## 6. Neue/erweiterte Vertrauens-Section (Trust)
-
-Bestehende `trust-section` wird auf 6 Punkte erweitert (Komponente rendert Items aus Dictionary — voraussichtlich nur
-Dictionary-Änderung + ggf. Grid-Anpassung im CSS-Modul).
+## 4. Neue/erweiterte Vertrauens-Section (Trust)
 
 **Headline/Intro — 3 Varianten:**
 
@@ -176,7 +113,7 @@ Eindruck; C verkauft nicht, warum.
 6. **Transparente Abstimmung** — „Geht etwas über den Starter-Umfang hinaus, bekommst du vorher ein klares Angebot.
    Keine versteckten Kosten."
 
-## 6b. Danke-Seite (neu)
+## 4b. Danke-Seite (neu)
 
 **Architektur:**
 
@@ -205,7 +142,7 @@ Eindruck; C verkauft nicht, warum.
 Die LinkedIn-Post-Variante nutzt dieselbe Struktur mit eigener Copy (Bestätigung + nächste Schritte passend zum
 Generator-Kontext); Umfang der Copy wird in der Umsetzung des Tasks abgestimmt.
 
-## 7. Empfehlung zu „ab 999 €"
+## 5. Empfehlung zu „ab 999 €"
 
 **Prinzip:** Auf der Karte wird aus „ab 999 €" ein **Festpreis für definierten Umfang**; das „ab" lebt nur noch in
 Meta-Title und Anzeigen (dort korrekt und Erwartungs-Match), die Seite selbst erklärt die Logik explizit.
@@ -230,7 +167,7 @@ Hinweise für Task 3:
   „ab"-Prefix **bewusst** — sie ist wie der Meta-Title SERP-gerichtet, nicht On-Page. Im Task nur prüfen, dass das
   konsistent bleibt.
 
-## 7b. Textdichte & Design-Differenzierung (Mobile-first)
+## 5b. Textdichte & Design-Differenzierung (Mobile-first)
 
 **Befund:** Das Problem der Seite ist nicht die absolute Textmenge, sondern Struktur-Wiederholung. Fast jede Sektion
 folgt dem Muster _Eyebrow + Headline + Einleitungsabsatz + Liste (4–6 Bullets) + Abschluss-/Reassurance-Satz_; auf
@@ -263,9 +200,9 @@ mehrfach als volle Sätze erklärt:
 - **Problem + Lösung** werden zu **einer** Sektion zusammengeführt: Vorher/Nachher-Kontrast bzw. Paarung
   „Problem X → löse ich mit Lösung Y".
 - **Die Solution-Grafik entfällt komplett** (Mock-Browser-Visual inkl. `graphic.*`-Keys) — damit ist auch der
-  Grafik-Teil von Task 5 (Fake-Rating, formButton) hinfällig.
+  Grafik-Teil hinfällig.
 - **Trust + Done-for-you** werden konsolidiert (starke Überlappung: eine Person, kein Pingpong, klarer Rahmen);
-  Content-Basis sind die 6 Items aus Abschnitt 6 in gekürzter Form — Task 4 geht darin auf.
+  Content-Basis sind die 6 Items aus Abschnitt 4 in gekürzter Form.
 - **Audience („Für wen")** bleibt: Im Kern reichen Headline + Zielgruppen-Badges + CTA; Subheadline/Body und/oder
   einer der beiden Textabschnitte über dem CTA (helper/reassurance) entfallen.
 - **Process & Pricing** bleiben: maximal Subheadline/Body-Text entfernen.
@@ -273,7 +210,7 @@ mehrfach als volle Sätze erklärt:
   arbeiten; höchstens eine Frage entfällt.
 - **Final-CTA/Formular** bleibt im Kern: ggf. Body kürzen.
 
-## 8. CTA-Empfehlung
+## 6. CTA-Empfehlung
 
 Einheitlich überall (Skill-Prinzip: ein CTA, wiederholt):
 
@@ -285,7 +222,7 @@ Einheitlich überall (Skill-Prinzip: ein CTA, wiederholt):
 - **Skill-Datei:** `.claude/skills/invessiv-landing/SKILL.md` wurde bereits vorab auf die neue Linie aktualisiert
   (kanonischer CTA, Platzierungen, Kurzformen) ✓.
 
-## 9. Tracking & Consent (ausgelagert)
+## 7. Tracking & Consent (ausgelagert)
 
 Technisches Tracking ist nicht Teil dieses Plans. Consent-Banner, Google Consent Mode v2, Google-Tag-Einbindung,
 Conversion-Tracking auf der Danke-Route und die Datenschutz-Ergänzung werden vollständig im separaten Plan
@@ -300,7 +237,7 @@ Hinweis: Die UTM-Whitelist im Vercel-Analytics-Sanitizer bleibt laut Entscheidun
 - Wenige exakte/Phrase-Keywords („landingpage erstellen lassen" u. ä.), „ab 999 €" in der Anzeige als Vorqualifizierung
 - UTM-Schema: `?utm_source=google&utm_medium=cpc&utm_campaign=landingpage-starter`
 
-## 10. Tasks (klein, einzeln reviewbar, in Reihenfolge)
+## 8. Tasks (klein, einzeln reviewbar, in Reihenfolge)
 
 | #   | Task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Scope (Dateien)                                                                                                                                                        |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -312,14 +249,12 @@ Hinweis: Die UTM-Whitelist im Vercel-Analytics-Sanitizer bleibt laut Entscheidun
 | 3c  | ✅ **Erledigt (Audit, keine Änderung nötig).** **Textdichte (7b):** Alle verbleibenden Listen gegen Regel 3 geprüft: Pricing-Card-Items, Audience-Badges und Process-Steps sind bereits konform (keyword-first, ohne Punkt, ≤ 6 Wörter). Nicht-konforme Listen liegen ausschließlich in Umbau-Sektionen: Problem-Points (volle Sätze) → werden in 3e als „Problem X → Lösung Y"-Paare neu geschnitten; Done-for-you-/Trust-Items → 3f; Solution-Grafik-Listen entfallen in 3e                                                                                                                                                                                                                                                                                                                      | `dictionaries/landing/**/{de,en}.json` (nur Listen-Keys)                                                                                                               |
 | 3d  | ✅ **Umgesetzt.** **Textdichte (7b):** FAQ zeigt initial 5 Fragen, Rest per „Mehr Fragen anzeigen"-Button (einmalige Expansion, Fokus springt auf die erste neu sichtbare Frage; alle 8 Items bleiben im Server-HTML — `hidden`-Attribut statt Slice, Content-Parität zur FAQPage-Structured-Data). Label als Dictionary-Key `showMoreLabel` (DE+EN). Items so umsortiert, dass die konversionskritischen Fragen (999-€-Scope, „Was passiert nach meiner Anfrage?") in den sichtbaren Top 5 stehen; „erweiterbar", „Werbung nötig?", „nicht geeignet" liegen hinter dem Button. 3 jsdom-Tests (initial versteckt, Expansion, kein Button bei ≤ 5 Items)                                                                                                                                            | `faq-section/`, `dictionaries/landing/faq/{de,en}.json`                                                                                                                |
 | 3e  | ✅ **Umgesetzt.** Problem + Lösung zu `problem-solution-section/` zusammengeführt (Anker-ID bleibt `solution`, Navigation unverändert); Solution-Grafik inkl. `graphic.*`-Keys und altem Fake-Rating komplett entfernt; Copy als 5 keyword-first Paare „Problem X → Lösung Y" neu geschnitten (DE+EN, Headline + 1 Stützsatz). Design nach User-Abstimmung: „Chaos → Klarheit" — Probleme als verstreute, gekippte Schnipsel auf Pinnwand-Raster, Lösungen als ruhige nummerierte Karte, Hover hebt das Gegenstück im anderen Panel hervor; Effekt als neues Mockup `animation_mockups/all/chaos-order-sort/` + Katalog-Eintrag abgelegt, Reveal über bestehenden `useStaggeredSectionReveal`. Skill-Datei (Reihenfolge + Sektions-Index) mitgepflegt; 3 jsdom-Tests (Listen, Hover-Match, Reveal) | `problem-section/`, `solution-section/` (→ neue zusammengeführte Sektion), `dictionaries/landing/{problem,solution}/{de,en}.json`, `landing-page/`                     |
-| 3f  | **Kernumbau (7b):** Trust + Done-for-you konsolidieren — Content-Basis: die 6 Items aus Abschnitt 6 (Variante A) in gekürzter Form; **Task 4 geht in diesem Task auf** (nicht doppelt umsetzen); eigenständiges Layout statt identischem Listen-Pattern; vor Umsetzung Mockup-Check `animation_mockups/`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `trust-section/`, `done-for-you-section/`, `dictionaries/landing/{trust,done-for-you}/{de,en}.json`, `landing-page/`                                                   |
+| 3f  | **Kernumbau (5b):** Trust + Done-for-you konsolidieren — Content-Basis: die 6 Items aus Abschnitt 4 (Variante A) in gekürzter Form; **Trust-Section geht in diesem Task auf** (nicht doppelt umsetzen); eigenständiges Layout statt identischem Listen-Pattern; vor Umsetzung Mockup-Check `animation_mockups/`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `trust-section/`, `done-for-you-section/`, `dictionaries/landing/{trust,done-for-you}/{de,en}.json`, `landing-page/`                                                   |
 | 3g  | ✅ **Umgesetzt.** Design-Differenzierungs-Check nach 3e/3f: kompakte Intro-Sections (`problem-solution`, `trust`, `audience`, `pricing`) auf gemeinsamen H2-Scale gebracht; `process` und `faq` bewusst größer gelassen, weil sie als lange Narrative/Sticky-Anker fungieren. Zusätzlich kleine Differenzierung in `pricing`: Intro mit eigener Trennlinie zur Karte, damit nicht jede Sektion wie dasselbe Eyebrow+H2-Muster wirkt. Mobile 360 px mit den bestehenden Responsive-Clamps mitgepflegt.                                                                                                                                                                                                                                                                                              | `components/marketing/landing/**` (CSS-Module)                                                                                                                         |
-| 4   | ~~Trust-Section auf 6 Punkte erweitern~~ — **geht in Task 3f auf** (Items aus Abschnitt 6, Variante A, in gekürzter Form; Reassurance-„Check"-Fix wird dort miterledigt)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | siehe 3f                                                                                                                                                               |
-| 5   | Process Schritt 1 „Ersteinschätzung" (DE+EN) — der Solution-Grafik-Teil ist hinfällig: Grafik entfällt komplett in Task 3e (siehe 7b)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `dictionaries/landing/process/{de,en}.json`                                                                                                                            |
-| 5a  | Gemeinsame Success-Komponente bauen (Content nur über Props) + jsdom-Test                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `components/shared/success-page/`                                                                                                                                      |
-| 5b  | Success-Routen anlegen: Landing + LinkedIn-Post (noindex, eigene metadata, minimal Header + Standard-Footer) + Success-Dictionaries (DE+EN); Routen-Pfade als `SITE_ROUTES`-Konstanten in `src/config/routes.ts` ergänzen — keine String-Literale (AGENTS.md-Regel); 5c nutzt die Konstante für `successRedirectHref`                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `app/[locale]/(marketing)/services/{landing-page,linkedin-post}/success/page.tsx`, `dictionaries/{landing,linkedin-post}/success/{de,en}.json`, `src/config/routes.ts` |
-| 5c  | `FinalCtaSection`: `successRedirectHref`-Prop, Redirect statt Inline-Panel (Panel entfernen, Honeypot redirectet identisch), Success-Keys aus `final-cta`-Dictionaries entfernen, Tests anpassen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `components/shared/final-cta-section/`, `dictionaries/{landing,linkedin-post}/final-cta/{de,en}.json`, beide Page-Orchestratoren                                       |
-| 5d  | Lead-Origin für Landing-Leads erkennbar machen: Befund — `FinalCtaSection` hat ein `origin`-Prop (Default `ContactSubmissionOrigin.Website`); die LinkedIn-Post-Seite übergibt `LinkedInPost`, die Landingpage übergibt nichts → Landing-Leads sind in der DB nicht von Startseiten-Quick-Contacts unterscheidbar. Umsetzung: neuen Wert `LandingPage: "landing_page"` in `ContactSubmissionOrigin` + `CONTACT_SUBMISSION_ORIGIN_VALUES` ergänzen (Const-Objekt-Pattern, Konstanten-Test aktualisieren), Landing-Orchestrator übergibt `origin={ContactSubmissionOrigin.LandingPage}` an `FinalCtaSection`. Keine DB-Migration nötig (`origin` ist `text`-Spalte ohne Check-Constraint; Drizzle-`enum` und Zod-Schema leiten aus dem Values-Array ab).                                             | `packages/common/src/constants/contact/contact-submission-origin.ts` (+ `.test.ts`), `components/marketing/landing/landing-page/`, ggf. `final-cta-section.test.tsx`   |
+| 4a  | Gemeinsame Success-Komponente bauen (Content nur über Props) + jsdom-Test                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `components/shared/success-page/`                                                                                                                                      |
+| 4b  | Success-Routen anlegen: Landing + LinkedIn-Post (noindex, eigene metadata, minimal Header + Standard-Footer) + Success-Dictionaries (DE+EN); Routen-Pfade als `SITE_ROUTES`-Konstanten in `src/config/routes.ts` ergänzen — keine String-Literale (AGENTS.md-Regel); 4c nutzt die Konstante für `successRedirectHref`                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `app/[locale]/(marketing)/services/{landing-page,linkedin-post}/success/page.tsx`, `dictionaries/{landing,linkedin-post}/success/{de,en}.json`, `src/config/routes.ts` |
+| 4c  | `FinalCtaSection`: `successRedirectHref`-Prop, Redirect statt Inline-Panel (Panel entfernen, Honeypot redirectet identisch), Success-Keys aus `final-cta`-Dictionaries entfernen, Tests anpassen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `components/shared/final-cta-section/`, `dictionaries/{landing,linkedin-post}/final-cta/{de,en}.json`, beide Page-Orchestratoren                                       |
+| 4d  | Lead-Origin für Landing-Leads erkennbar machen: Befund — `FinalCtaSection` hat ein `origin`-Prop (Default `ContactSubmissionOrigin.Website`); die LinkedIn-Post-Seite übergibt `LinkedInPost`, die Landingpage übergibt nichts → Landing-Leads sind in der DB nicht von Startseiten-Quick-Contacts unterscheidbar. Umsetzung: neuen Wert `LandingPage: "landing_page"` in `ContactSubmissionOrigin` + `CONTACT_SUBMISSION_ORIGIN_VALUES` ergänzen (Const-Objekt-Pattern, Konstanten-Test aktualisieren), Landing-Orchestrator übergibt `origin={ContactSubmissionOrigin.LandingPage}` an `FinalCtaSection`. Keine DB-Migration nötig (`origin` ist `text`-Spalte ohne Check-Constraint; Drizzle-`enum` und Zod-Schema leiten aus dem Values-Array ab).                                             | `packages/common/src/constants/contact/contact-submission-origin.ts` (+ `.test.ts`), `components/marketing/landing/landing-page/`, ggf. `final-cta-section.test.tsx`   |
 | 6   | Tracking & Consent — entfällt hier; siehe Plan `google-ads-tracking-consent-success.md`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | —                                                                                                                                                                      |
 | 7   | Quality Gates (Lint/Typecheck/Tests/Build, Locales, A11y)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | —                                                                                                                                                                      |
 | 8   | **Finaler Gesamt-Copy-Check (Pflicht: `copywriting`-Skill laden):** Nach Abschluss aller Umbauten die komplette Copy der `/services/landing-page` entlang des Ablaufs prüfen — Hero → Problem → Lösung → Umfang → Vertrauen → Für wen → Ablauf → Preis → FAQ → Formular → Success-Seite. Geprüft wird: passt jede Sektion zur vorherigen und nächsten, ist der rote Faden zum CTA durchgängig, sind CTA-Texte, Preis-Logik (999 €, 2 Feedback-Runden), 24h-Versprechen und Tonalität überall konsistent, keine Redundanzen oder Restbestände alter Copy (z. B. „Check", „Landingpage anfragen"), DE und EN synchron. Gefundene Brüche werden direkt behoben.                                                                                                                                       | alle `dictionaries/landing/**` + `dictionaries/{landing,linkedin-post}/success/**`                                                                                     |
@@ -330,8 +265,8 @@ Design-Check. Empfohlene Reihenfolge innerhalb der 3x-Serie: erst die Streich-Du
 Kernumbauten (3e, 3f), zuletzt 3g — so wird in 3e/3f keine Copy doppelt angefasst, die vorher schon gestrichen wurde.
 Mit 3e/3f ändert sich die Sektions-Reihenfolge der Seite; die `invessiv-landing`-Skill-Datei (Sektions-Reihenfolge +
 Sektions-Index) wird im jeweiligen Task mitgepflegt.
-Danke-Seiten-Tasks (5a–5c) bauen aufeinander
-auf (Komponente → Routen → Redirect). Task 5d ist eine kleine, unabhängige Logik-Änderung mit Konstanten-Test. Die
+Danke-Seiten-Tasks (4a–4c) bauen aufeinander
+auf (Komponente → Routen → Redirect). Task 4d ist eine kleine, unabhängige Logik-Änderung mit Konstanten-Test. Die
 `invessiv-landing`-Skill-Datei wurde bereits vorab
 vollständig an diesen Plan angepasst (CTA, Preis-Logik, Trust-Sektion, Success-Seiten, Formular-Redirect, Tracking,
 SEO-Defaults, Sektions-Index) ✓.
@@ -339,7 +274,7 @@ SEO-Defaults, Sektions-Index) ✓.
 ## Verifikation
 
 - `npm run lint`, `npm run typecheck`, betroffene Tests (`final-cta-section.test.tsx`, neuer `success-page.test.tsx`
-  aus Task 5a, Konstanten-Test aus Task 5d), `npm run build`
+  aus Task 4a, Konstanten-Test aus Task 4d), `npm run build`
 - Beide Locales (`/de/...`, `/en/...`) visuell prüfen: identische Struktur, kein Encoding-Zerfall (ä/ö/ü/ß), Mobile 360
   px, Dark/Light
 - Formular-Flow end-to-end: Validierungsfehler, Erfolg → Redirect auf die richtige Danke-Route (Landing vs.
