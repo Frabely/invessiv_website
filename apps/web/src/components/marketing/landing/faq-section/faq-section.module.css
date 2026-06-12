@@ -89,6 +89,7 @@
 }
 
 .item,
+.showMoreWrap,
 .ctaLine {
   position: relative;
   opacity: 0;
@@ -100,9 +101,53 @@
 }
 
 .item[data-visible="true"],
+.showMoreWrap[data-visible="true"],
 .ctaLine[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
+}
+
+.showMoreWrap {
+  grid-column: 1;
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(1.25rem, 1vw, 1.75rem);
+}
+
+.showMore {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 32%, var(--color-border) 68%);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent-warm) 10%, transparent),
+    color-mix(in srgb, var(--color-cta) 8%, transparent)
+  );
+  color: var(--color-text);
+  font: inherit;
+  font-size: clamp(0.98rem, 0.94rem + 0.18vw, 1.04rem);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    transform 180ms ease;
+}
+
+.showMore:hover {
+  color: var(--color-accent-warm);
+  border-color: color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
+  transform: translateY(-1px);
+}
+
+.showMore:focus-visible {
+  outline: 2px solid var(--color-accent-warm);
+  outline-offset: 4px;
 }
 
 .item::after {
@@ -259,7 +304,6 @@
 
 .ctaLine {
   grid-column: 1;
-  grid-row: 2;
   margin: clamp(1.25rem, 1vw, 1.75rem) 0 0;
   padding-inline: clamp(0.9rem, 1.6vw, 1.25rem);
 }
@@ -358,6 +402,7 @@
 @media (prefers-reduced-motion: reduce) {
   .heading,
   .item,
+  .showMoreWrap,
   .ctaLine {
     opacity: 1;
     transform: none;

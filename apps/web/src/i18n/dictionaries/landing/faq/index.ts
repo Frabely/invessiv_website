@@ -18,6 +18,8 @@ export type LandingFaqContent = {
   cta?: LandingSectionCtaContent;
   eyebrow: string;
   items: LandingFaqItem[];
+  showLessLabel: string;
+  showMoreLabel: string;
   title: string;
 };
 

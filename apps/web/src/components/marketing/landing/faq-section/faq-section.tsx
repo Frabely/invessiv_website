@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import styles from "./faq-section.module.css";
+
+const INITIAL_VISIBLE_ITEMS = 5;
 
 type FaqSectionProps = LandingFaqContent & {
   id: string;
@@ -19,10 +21,24 @@ export function FaqSection({
   id,
   items,
   locale,
+  showLessLabel,
+  showMoreLabel,
   title,
 }: FaqSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const firstExpandedSummaryRef = useRef<HTMLElement | null>(null);
+  const [showAllItems, setShowAllItems] = useState(false);
   useStaggeredSectionReveal(sectionRef, locale);
+
+  const hasExpandableItems = items.length > INITIAL_VISIBLE_ITEMS;
+
+  useEffect(() => {
+    if (!showAllItems) {
+      return;
+    }
+
+    firstExpandedSummaryRef.current?.focus();
+  }, [showAllItems]);
 
   return (
     <section
@@ -39,15 +55,23 @@ export function FaqSection({
         </h2>
       </div>
 
-      <ol className={styles.list}>
-        {items.map((item) => (
+      <ol className={styles.list} id={`${id}-list`}>
+        {items.map((item, index) => (
           <li
             className={styles.item}
             data-reveal-item="true"
+            hidden={!showAllItems && index >= INITIAL_VISIBLE_ITEMS}
             key={item.question}
           >
             <details className={styles.details}>
-              <summary className={styles.summary}>
+              <summary
+                className={styles.summary}
+                ref={
+                  index === INITIAL_VISIBLE_ITEMS
+                    ? firstExpandedSummaryRef
+                    : undefined
+                }
+              >
                 <span className={styles.question}>{item.question}</span>
                 <span aria-hidden="true" className={styles.plus}>
                   <span className={styles.plusBar} />
@@ -69,8 +93,12 @@ export function FaqSection({
         ))}
       </ol>
 
-      {cta ? (
-        <p className={styles.ctaLine} data-reveal-item="true">
+      {showAllItems && cta ? (
+        <p
+          className={styles.ctaLine}
+          data-reveal-item="true"
+          data-visible="true"
+        >
           <a
             className={styles.ctaLink}
             data-analytics-event="cta_click"
@@ -82,6 +110,20 @@ export function FaqSection({
             {cta.label}
           </a>
         </p>
+      ) : null}
+
+      {hasExpandableItems ? (
+        <div className={styles.showMoreWrap} data-reveal-item="true">
+          <button
+            aria-controls={`${id}-list`}
+            aria-expanded={showAllItems}
+            className={styles.showMore}
+            onClick={() => setShowAllItems((currentValue) => !currentValue)}
+            type="button"
+          >
+            {showAllItems ? showLessLabel : showMoreLabel}
+          </button>
+        </div>
       ) : null}
     </section>
   );

@@ -6,27 +6,13 @@
     "label": "Frage nicht dabei? Schreib mir kurz, worum es geht."
   },
   "eyebrow": "Häufige Fragen",
+  "showLessLabel": "Weniger Fragen anzeigen",
+  "showMoreLabel": "Mehr Fragen anzeigen",
   "title": "Was du dich jetzt vielleicht fragst.",
   "items": [
     {
       "question": "Wie schnell ist die Landingpage fertig?",
       "answer": "Meist in 5–10 Tagen, wenn Ziel, Angebot und Feedback klar sind."
-    },
-    {
-      "question": "Muss ich die Texte selbst schreiben?",
-      "answer": "Nein. Ich helfe dir, dein Angebot klar zu strukturieren und verständlich zu formulieren."
-    },
-    {
-      "question": "Kann die Landingpage später erweitert werden?",
-      "answer": "Ja. Sie kann später Teil einer größeren Website werden oder weitere Seiten bekommen."
-    },
-    {
-      "question": "Ist das auch sinnvoll, wenn ich schon eine Website habe?",
-      "answer": "Ja. Sie kann zusätzlich zu deiner Website entstehen — für ein Angebot, eine Kampagne oder eine Zielgruppe."
-    },
-    {
-      "question": "Brauche ich direkt Werbung?",
-      "answer": "Nein. Du kannst sie auch für Outreach, Empfehlungen, Social Media oder direkte Kontakte nutzen."
     },
     {
       "question": "Was ist ab 999 € enthalten?",
@@ -35,6 +21,22 @@
     {
       "question": "Was passiert nach meiner Anfrage?",
       "answer": "Du bekommst innerhalb von 24 Stunden eine persönliche Ersteinschätzung. Die ist kostenlos und unverbindlich — du entscheidest danach in Ruhe."
+    },
+    {
+      "question": "Muss ich die Texte selbst schreiben?",
+      "answer": "Nein. Ich helfe dir, dein Angebot klar zu strukturieren und verständlich zu formulieren."
+    },
+    {
+      "question": "Ist das auch sinnvoll, wenn ich schon eine Website habe?",
+      "answer": "Ja. Sie kann zusätzlich zu deiner Website entstehen — für ein Angebot, eine Kampagne oder eine Zielgruppe."
+    },
+    {
+      "question": "Kann die Landingpage später erweitert werden?",
+      "answer": "Ja. Sie kann später Teil einer größeren Website werden oder weitere Seiten bekommen."
+    },
+    {
+      "question": "Brauche ich direkt Werbung?",
+      "answer": "Nein. Du kannst sie auch für Outreach, Empfehlungen, Social Media oder direkte Kontakte nutzen."
     },
     {
       "question": "Für wen ist das nicht geeignet?",

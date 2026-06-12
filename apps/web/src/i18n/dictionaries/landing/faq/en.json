@@ -6,27 +6,13 @@
     "label": "Question not listed? Send me a short message about what you need."
   },
   "eyebrow": "Frequently asked",
+  "showLessLabel": "Show fewer questions",
+  "showMoreLabel": "Show more questions",
   "title": "What you might be wondering right now.",
   "items": [
     {
       "question": "How fast will the landing page be ready?",
       "answer": "Usually in 5–10 days, once your goal, offer, and feedback are clear."
-    },
-    {
-      "question": "Do I have to write the copy myself?",
-      "answer": "No. I help you structure your offer clearly and put it into words people understand."
-    },
-    {
-      "question": "Can the landing page be extended later?",
-      "answer": "Yes. It can later become part of a larger website or gain additional pages."
-    },
-    {
-      "question": "Does it make sense if I already have a website?",
-      "answer": "Yes. It can sit alongside your website — for an offer, campaign, or target group."
-    },
-    {
-      "question": "Do I need to run ads right away?",
-      "answer": "No. You can also use it for outreach, referrals, social media, or direct contacts."
     },
     {
       "question": "What is included from €999?",
@@ -35,6 +21,22 @@
     {
       "question": "What happens after my inquiry?",
       "answer": "You receive a personal initial assessment within 24 hours. It is free and non-binding — you decide calmly afterwards."
+    },
+    {
+      "question": "Do I have to write the copy myself?",
+      "answer": "No. I help you structure your offer clearly and put it into words people understand."
+    },
+    {
+      "question": "Does it make sense if I already have a website?",
+      "answer": "Yes. It can sit alongside your website — for an offer, campaign, or target group."
+    },
+    {
+      "question": "Can the landing page be extended later?",
+      "answer": "Yes. It can later become part of a larger website or gain additional pages."
+    },
+    {
+      "question": "Do I need to run ads right away?",
+      "answer": "No. You can also use it for outreach, referrals, social media, or direct contacts."
     },
     {
       "question": "Who is this not for?",
