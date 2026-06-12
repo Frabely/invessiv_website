@@ -18,6 +18,7 @@ export type LandingTrustContent = {
   };
   eyebrow: string;
   title: string;
+  titleHighlight: string;
 };
 
 const LANDING_TRUST_CONTENT: Record<Locale, LandingTrustContent> = {

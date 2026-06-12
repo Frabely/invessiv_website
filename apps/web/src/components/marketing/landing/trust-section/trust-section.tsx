@@ -16,6 +16,34 @@ type TrustSectionProps = LandingTrustContent & {
   replyHref: string;
 };
 
+function renderHighlightedTitle(title: string, highlight: string) {
+  const highlightStart = title.indexOf(highlight);
+
+  if (highlightStart < 0) {
+    return title;
+  }
+
+  const beforeHighlight = title.slice(0, highlightStart);
+  const afterHighlight = title.slice(highlightStart + highlight.length);
+  const trailingPunctuation = afterHighlight.match(/^\s*([.!?:;]+)/)?.[1] ?? "";
+  const continuation = afterHighlight
+    .slice(
+      afterHighlight.indexOf(trailingPunctuation) + trailingPunctuation.length,
+    )
+    .trimStart();
+
+  return (
+    <>
+      {beforeHighlight}
+      <span className={styles.titleHighlight}>{highlight}</span>
+      {trailingPunctuation}
+      {continuation ? (
+        <span className={styles.titleContinuation}>{continuation}</span>
+      ) : null}
+    </>
+  );
+}
+
 export function TrustSection({
   body,
   chat,
@@ -25,6 +53,7 @@ export function TrustSection({
   replyAnalyticsTarget,
   replyHref,
   title,
+  titleHighlight,
 }: TrustSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale, { staggerMs: 110 });
@@ -36,8 +65,10 @@ export function TrustSection({
       <div className={styles.layout}>
         <header className={styles.intro} data-reveal-item="true">
           <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.body}>{body}</p>
+          <h2 className={styles.title}>
+            {renderHighlightedTitle(title, titleHighlight)}
+          </h2>
+          {body ? <p className={styles.body}>{body}</p> : null}
         </header>
 
         <article className={styles.chatCard} data-reveal-item="true">
@@ -73,6 +104,11 @@ export function TrustSection({
           </ul>
 
           <div className={styles.replyBar} data-reveal-item="true">
+            <span aria-hidden="true" className={styles.typingIndicator}>
+              <span />
+              <span />
+              <span />
+            </span>
             <a
               className={styles.reply}
               data-analytics-event="cta_click"

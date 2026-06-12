@@ -1,31 +1,27 @@
 {
-  "body": "Was das für dein Projekt heißt, liest du hier — Nachricht für Nachricht.",
+  "body": "",
   "chat": {
     "avatarAlt": "Moritz Hecht, dein direkter Ansprechpartner bei Invessiv",
     "messages": [
       {
         "title": "Eine Ansprechperson",
-        "body": "Du schreibst mit der Person, die deine Seite baut. Keine Übergaben, keine Stille Post."
+        "body": "Du schreibst direkt mit mir — ich baue deine Seite."
       },
       {
         "title": "Klarer Rahmen",
-        "body": "Der Umfang steht vor dem Start fest — du weißt genau, was enthalten ist."
+        "body": "Vor dem Start ist klar, was enthalten ist."
       },
       {
         "title": "Keine Agentur-Schleife",
-        "body": "Dein Feedback geht direkt in die Umsetzung, nicht durch drei Abteilungen."
+        "body": "Feedback landet direkt in der Umsetzung."
       },
       {
         "title": "Ehrliche Ersteinschätzung",
-        "body": "Wenn eine Landingpage für dein Angebot nicht der richtige Schritt ist, sage ich es dir."
+        "body": "Wenn eine Landingpage nicht passt, sage ich es."
       },
       {
         "title": "Keine versteckten Kosten",
-        "body": "Geht etwas über den Starter hinaus, entscheidest du vorher — nicht die Rechnung."
-      },
-      {
-        "title": "Ehrlich gesagt",
-        "body": "Mein erstes öffentliches Referenzprojekt ist gerade in Umsetzung. Bis es online ist, überzeuge ich lieber mit klarem Prozess als mit Logos."
+        "body": "Mehrumfang wird vorher abgestimmt."
       }
     ],
     "name": "Moritz Hecht",
@@ -35,5 +31,6 @@
     "threadLabel": "Was du von der Zusammenarbeit erwarten kannst"
   },
   "eyebrow": "So arbeite ich",
-  "title": "Du arbeitest direkt mit mir — nicht mit einer Agentur."
+  "title": "Du arbeitest direkt mit mir. Nicht mit einer Agentur.",
+  "titleHighlight": "mir"
 }

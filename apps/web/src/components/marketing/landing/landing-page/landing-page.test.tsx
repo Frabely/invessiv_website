@@ -92,13 +92,11 @@ describe("LandingPage", () => {
     const trustThread = screen.getByRole("list", {
       name: "Was du von der Zusammenarbeit erwarten kannst",
     });
-    expect(within(trustThread).getAllByRole("listitem")).toHaveLength(6);
+    expect(within(trustThread).getAllByRole("listitem")).toHaveLength(5);
     expect(
       within(trustThread).getByText("Keine Agentur-Schleife"),
     ).toBeTruthy();
-    expect(
-      within(trustThread).getByText(/erstes öffentliches Referenzprojekt/),
-    ).toBeTruthy();
+    expect(within(trustThread).queryByText(/Referenzprojekt/)).toBeNull();
     const trustReplyCta = screen
       .getAllByRole("link", { name: /Kostenlose Ersteinschätzung anfragen/ })
       .find((link) => link.dataset.analyticsLocation === "trust");

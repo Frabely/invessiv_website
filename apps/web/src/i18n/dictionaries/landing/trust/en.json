@@ -1,31 +1,27 @@
 {
-  "body": "Here is what that means for your project — message by message.",
+  "body": "",
   "chat": {
     "avatarAlt": "Moritz Hecht, your direct contact at Invessiv",
     "messages": [
       {
         "title": "One person",
-        "body": "You write with the person who builds your page. No handovers, no broken telephone."
+        "body": "You write directly with me — I build your page."
       },
       {
         "title": "Clear scope",
-        "body": "The scope is fixed before the start — you know exactly what is included."
+        "body": "The scope is clear before we start."
       },
       {
         "title": "No agency loop",
-        "body": "Your feedback goes straight into the build, not through three departments."
+        "body": "Your feedback goes straight into the build."
       },
       {
         "title": "Honest assessment",
-        "body": "If a landing page is not the right step for your offer, I will tell you."
+        "body": "If a landing page is not the right fit, I will say so."
       },
       {
         "title": "No hidden costs",
-        "body": "If something goes beyond the Starter, you decide up front — not the invoice."
-      },
-      {
-        "title": "Honestly",
-        "body": "My first public reference project is currently in the works. Until it is live, I would rather convince you with a clear process than with logos."
+        "body": "Extra scope is agreed up front."
       }
     ],
     "name": "Moritz Hecht",
@@ -35,5 +31,6 @@
     "threadLabel": "What to expect when you work with me"
   },
   "eyebrow": "How I work",
-  "title": "You work directly with me — not with an agency."
+  "title": "You work directly with me. Not with an agency.",
+  "titleHighlight": "me"
 }

@@ -73,6 +73,19 @@
   text-wrap: balance;
 }
 
+.titleHighlight {
+  color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 86%,
+    var(--color-text) 14%
+  );
+}
+
+.titleContinuation {
+  display: block;
+  color: var(--color-text);
+}
+
 .body {
   margin: 0;
   max-width: 30rem;
@@ -88,7 +101,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
-  border-radius: 26px;
+  border-radius: 24px;
   background:
     radial-gradient(
       circle at 14% 0%,
@@ -102,6 +115,7 @@
 }
 
 .chatHeader {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: clamp(0.75rem, 1.6vw, 1rem);
@@ -109,6 +123,7 @@
   padding: clamp(1rem, 2vw, 1.3rem) clamp(1.1rem, 2.4vw, 1.5rem);
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 70%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 32%, transparent);
 }
 
 .avatarFrame {
@@ -191,32 +206,94 @@
 }
 
 .thread {
+  position: relative;
   display: grid;
   gap: clamp(0.7rem, 1.4vw, 0.95rem);
   margin: 0;
   padding: clamp(1.1rem, 2.4vw, 1.5rem);
   list-style: none;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 16%, transparent),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 18px 18px,
+      color-mix(in srgb, var(--color-text) 11%, transparent) 1px,
+      transparent 1.3px
+    );
+  background-size:
+    auto,
+    22px 22px;
 }
 
 .message {
+  --bubble-bg: color-mix(
+    in srgb,
+    var(--color-surface-2) 88%,
+    var(--color-bg) 12%
+  );
+  --bubble-border: color-mix(in srgb, var(--color-border) 74%, transparent);
+
   justify-self: start;
-  max-width: min(32rem, 94%);
+  position: relative;
+  max-width: min(32rem, calc(100% - 2.7rem));
+  margin-left: 2.65rem;
   padding: clamp(0.75rem, 1.5vw, 0.95rem) clamp(0.95rem, 1.8vw, 1.2rem);
-  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 4px 18px 18px 18px;
-  background: color-mix(in srgb, var(--color-surface-2) 86%, transparent);
+  border: 1px solid var(--bubble-border);
+  border-radius: 6px 18px 18px;
+  background: var(--bubble-bg);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #ffffff 5%, transparent) inset,
+    0 12px 28px -24px color-mix(in srgb, #000 60%, transparent);
   transform: translateY(14px) scale(0.97);
   transform-origin: left bottom;
 }
 
+.message::before {
+  content: "M";
+  position: absolute;
+  left: -2.65rem;
+  bottom: 0.15rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  border-radius: 999px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--color-cta) 34%, var(--color-surface-2) 66%),
+    color-mix(in srgb, var(--color-accent-warm) 20%, var(--color-bg) 80%)
+  );
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.message::after {
+  content: "";
+  position: absolute;
+  left: -0.42rem;
+  bottom: 0.62rem;
+  width: 0.72rem;
+  height: 0.82rem;
+  border-left: 1px solid var(--bubble-border);
+  border-bottom: 1px solid var(--bubble-border);
+  background: var(--bubble-bg);
+  clip-path: polygon(100% 0, 0 55%, 100% 100%);
+}
+
 /* Letzte Nachricht = ehrlicher Referenz-Hinweis, bewusst warm abgesetzt */
 .message:last-child {
-  border-color: color-mix(
+  --bubble-bg: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+  --bubble-border: color-mix(
     in srgb,
     var(--color-accent-warm) 42%,
     var(--color-border) 58%
   );
-  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
 }
 
 .messageTitle {
@@ -241,7 +318,64 @@
 }
 
 .replyBar {
+  display: grid;
+  gap: 0.7rem;
   padding: 0 clamp(1.1rem, 2.4vw, 1.5rem) clamp(1.1rem, 2.4vw, 1.5rem);
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in srgb, var(--color-bg) 22%, transparent)
+  );
+}
+
+.typingIndicator {
+  display: inline-flex;
+  gap: 0.32rem;
+  align-items: center;
+  justify-self: end;
+  width: fit-content;
+  padding: 0.58rem 0.78rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-radius: 16px 16px 6px;
+  background: color-mix(
+    in srgb,
+    var(--color-bg) 68%,
+    var(--color-surface-2) 32%
+  );
+}
+
+.typingIndicator span {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--color-text-muted) 76%,
+    var(--color-text) 24%
+  );
+  animation: typing-dot 1.4s ease-in-out infinite;
+}
+
+.typingIndicator span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.typingIndicator span:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+@keyframes typing-dot {
+  0%,
+  70%,
+  100% {
+    opacity: 0.38;
+    transform: translateY(0);
+  }
+
+  35% {
+    opacity: 0.92;
+    transform: translateY(-2px);
+  }
 }
 
 /* Antwortleiste im Eingabefeld-Look: der nächste Schritt liegt direkt im Chat */
@@ -250,13 +384,14 @@
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 0.5rem 0.5rem 1.2rem;
+  min-height: 3.25rem;
+  padding: 0.48rem 0.48rem 0.48rem 1.15rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 90%, transparent);
-  border-radius: 999px;
+  border-radius: 18px;
   background: color-mix(
     in srgb,
-    var(--color-bg) 78%,
-    var(--color-surface-2) 22%
+    var(--color-bg) 80%,
+    var(--color-surface-2) 20%
   );
   color: var(--color-text);
   font-weight: 600;
@@ -318,11 +453,11 @@
 }
 
 :global([data-theme="light"]) .message {
-  background: color-mix(in srgb, #ffffff 62%, var(--color-surface-2) 38%);
+  --bubble-bg: color-mix(in srgb, #ffffff 66%, var(--color-surface-2) 34%);
 }
 
 :global([data-theme="light"]) .message:last-child {
-  background: color-mix(in srgb, var(--color-accent-warm) 10%, #ffffff 90%);
+  --bubble-bg: color-mix(in srgb, var(--color-accent-warm) 10%, #ffffff 90%);
 }
 
 :global([data-theme="light"]) .statusDot {
@@ -330,6 +465,10 @@
 }
 
 :global([data-theme="light"]) .reply {
+  background: color-mix(in srgb, #ffffff 78%, var(--color-surface-2) 22%);
+}
+
+:global([data-theme="light"]) .typingIndicator {
   background: color-mix(in srgb, #ffffff 78%, var(--color-surface-2) 22%);
 }
 
@@ -369,6 +508,12 @@
 
   .message {
     max-width: 100%;
+    margin-left: 0;
+  }
+
+  .message::before,
+  .message::after {
+    display: none;
   }
 
   .status {
@@ -397,5 +542,9 @@
 
   .replySend {
     transition: none;
+  }
+
+  .typingIndicator span {
+    animation: none;
   }
 }

@@ -20,8 +20,8 @@ const CONTENT = {
         body: "Du schreibst mit der Person, die deine Seite baut.",
       },
       {
-        title: "Ehrlich gesagt",
-        body: "Mein erstes öffentliches Referenzprojekt ist gerade in Umsetzung.",
+        title: "Keine versteckten Kosten",
+        body: "Mehrumfang wird vorher abgestimmt.",
       },
     ],
     name: "Moritz Hecht",
@@ -31,7 +31,8 @@ const CONTENT = {
     threadLabel: "Was du von der Zusammenarbeit erwarten kannst",
   },
   eyebrow: "So arbeite ich",
-  title: "Du arbeitest direkt mit mir — nicht mit einer Agentur.",
+  title: "Du arbeitest direkt mit mir. Nicht mit einer Agentur.",
+  titleHighlight: "mir",
 };
 
 function renderTrustSection() {
@@ -74,9 +75,8 @@ describe("TrustSection", () => {
     });
     expect(within(thread).getAllByRole("listitem")).toHaveLength(2);
     expect(within(thread).getByText("Eine Ansprechperson")).toBeTruthy();
-    expect(
-      within(thread).getByText(/erstes öffentliches Referenzprojekt/),
-    ).toBeTruthy();
+    expect(within(thread).getByText("Keine versteckten Kosten")).toBeTruthy();
+    expect(within(thread).queryByText(/Referenzprojekt/)).toBeNull();
   });
 
   it("renders the reply bar as the canonical CTA link with analytics attributes", () => {
