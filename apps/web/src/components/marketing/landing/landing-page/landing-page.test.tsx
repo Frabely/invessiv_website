@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),
   }),
+  usePathname: () => "/de/services/landing-page",
 }));
 
 vi.mock("@/client/contact/services/contact-form-service", () => ({

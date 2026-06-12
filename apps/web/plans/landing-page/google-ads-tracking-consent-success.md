@@ -419,17 +419,35 @@ sind umgesetzt.
 - Einbindung: `ConsentProvider` umschließt Landing- **und** Success-Route; `CookieSettingsButton` nur via neuer
   `FooterSection`-Prop `cookieSettings` (kein siteweiter Footer-Button).
 - Tests `consent-provider.test.tsx` (7 jsdom-Tests: Banner-Sichtbarkeit, Accept/Reject/Save → Storage + `consent
- update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 Disables), 379 Vitest-Tests und
+update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 Disables), 379 Vitest-Tests und
   `npm run build` grün.
 - Offener Feinschliff (nicht blockierend): explizites Tab-Order-/Sichtbarkeitsverhalten der einzelnen Toggles auf sehr
   kleinen Viewports nur visuell, nicht E2E geprüft — deckt Task 8 (E2E) ab.
 
-3. GoogleTag Provider (Advanced Consent Mode): Inline-Stub (`beforeInteractive`) mit Default-denied +
-   `ads_data_redaction`/`url_passthrough`/`wait_for_update` und synchronem `localStorage`-Read; gtag.js
-   (`afterInteractive`) mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, Script lädt beim Mount (nicht consent-
-   gegated), `consent update` bei Auswahl, GA4 `send_page_view: false` + manuelles `page_view` bei Routenwechsel,
-   graceful no-op bei fehlenden Env-Vars, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in Google Ads
-   angelegt, `AW-`ID + Label liegen vor.
+3. ✅ **Erledigt.** GoogleTag Provider (Advanced Consent Mode):
+
+- `lib/analytics/google-tag/google-tag-config.ts` — liest `NEXT_PUBLIC_GA4_MEASUREMENT_ID`,
+  `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID`, `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL`; `isGoogleTagEnabled` +
+  `getGtagLoaderId` (GA4 bevorzugt, sonst Ads-ID). Graceful no-op, wenn keine ID gesetzt ist.
+- `lib/analytics/google-tag/google-tag-script.ts` — pure Builder: `buildConsentBootstrapScript` (dataLayer + gtag-Stub,
+  `consent default denied` inkl. `wait_for_update`, `ads_data_redaction`/`url_passthrough` als `set`, synchroner
+  versionierter `localStorage`-Read → `consent update`), `buildGtagConfigScript` (GA4 `send_page_view:false`,
+  Ads-Config),
+  `buildGtagSrc`. Storage-Key/Version + Default-Signale aus `lib/consent/` wiederverwendet (Single Source).
+- `components/providers/google-tag/google-tag.tsx` — `"use client"`; ein synchroner Inline-Block (Bootstrap + Config) +
+  gtag.js-Loader, beide `afterInteractive`; manuelles GA4 `page_view` bei jedem `usePathname`-Wechsel.
+- **Strategie-Abweichung (vom User freigegeben):** statt `beforeInteractive` wird `afterInteractive` genutzt, weil
+  `beforeInteractive` im App Router nur im Root-Layout wirkt und das Tag sonst siteweit laden würde. Die Route-Scoping-
+  Anforderung (nur Landing + Success) hat Vorrang; der synchrone Inline-Block erfüllt den Ordering-Intent
+  (Consent-Default vor erstem Ping). Begründung als Kommentar in der Komponente.
+- Eingebunden via `<GoogleTag />` innerhalb des `ConsentProvider` auf Landing- (`landing-page.tsx`) und Success-Route
+  (`success/page.tsx`); `consent update` bei neuer Auswahl läuft weiter über das bestehende `emitConsentUpdate`.
+- `.env.example` um die drei `NEXT_PUBLIC_*`-Vars ergänzt (GA4-ID als Beispielwert vorbelegt, Ads leer).
+- 21 neue Tests (config/script/component) grün; bestehende Landing-/Success-Tests um `usePathname`-Mock ergänzt.
+  Verifikation: `npm run typecheck`, ESLint, 400 Vitest-Tests und `npm run build` grün.
+- Offen (operativ, nicht Code): Conversion-Aktion in Google Ads anlegen → `AW-`ID + Label für die Env-Vars; das
+  Conversion-Event selbst kommt in Task 4.
+
 4. Conversion auf der Success-Route: `sessionStorage`-Guard + `transaction_id` beim Redirect setzen (nicht im
    Honeypot-Fall), Flag **direkt nach dem Lesen löschen**, Conversion-Event (`send_to: "<AW-ID>/<Label>"`,
    `transaction_id`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern,

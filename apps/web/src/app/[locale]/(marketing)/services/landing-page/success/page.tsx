@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
+import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { SuccessPage } from "@/components/shared/success-page/success-page";
 import { COMPANY_CALENDLY } from "@/config/company";
@@ -72,6 +73,7 @@ export default async function LandingSuccessRoute({
 
   return (
     <ConsentProvider content={consent} locale={activeLocale}>
+      <GoogleTag />
       <SiteHeader
         isMinimalHeader
         brandHref={createLocalePathname(SITE_ROUTES.HOME, activeLocale)}

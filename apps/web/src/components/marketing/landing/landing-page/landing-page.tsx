@@ -10,6 +10,7 @@ import { ProcessSection } from "@/components/marketing/landing/process-section/p
 import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
+import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import { LANDING_HEADER_NAVIGATION } from "@/config/navigation/landing";
@@ -48,6 +49,7 @@ export function LandingPage({ locale }: LandingPageProps) {
 
   return (
     <ConsentProvider content={consent} locale={locale}>
+      <GoogleTag />
       <AnchorOffsetScroll />
       <SiteHeader
         ctaHref={SECTION_HREFS.contact}

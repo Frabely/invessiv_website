@@ -13,6 +13,7 @@ const { mockNotFound } = vi.hoisted(() => ({
 
 vi.mock("next/navigation", () => ({
   notFound: mockNotFound,
+  usePathname: () => "/de/services/landing-page/success",
 }));
 
 vi.mock("@/components/marketing/site-header/site-header", () => ({
