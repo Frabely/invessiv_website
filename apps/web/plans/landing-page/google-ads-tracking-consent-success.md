@@ -402,12 +402,28 @@ sind umgesetzt.
 - 15 Tests grün; `npm run typecheck` + ESLint (`src/lib/consent`) Exit 0. Kein Barrel — Konsumenten importieren
   direkt.
 
-2. Consent UI: Banner, Settings-Dialog, Footer-Button (nur Landing-/Success-Route), DE/EN Dictionary-Copy, Mobile-
-   States, Styling über `*.module.css`/Tailwind (keine Inline-Styles). **DSGVO/TDDDG-Pflichten** (Accept/Reject
-   gleichwertig auf erster Ebene, granular, kein Dark Pattern, Widerruf) und **WCAG 2.2 AA** (`role="dialog"`,
-   `aria-labelledby`/`-describedby`, native Buttons, Tastatur, Fokus-Management, kein harter Trap, Zielgröße 24 px)
-   umsetzen. **jsdom-Interaktionstest** (AGENTS-Pflicht): Accept/Reject/Auswahl-speichern aktualisiert den Consent-State
-   und löst `consent update` aus; Locale-Wechsel rendert korrekte Copy.
+2. ✅ **Erledigt.** Consent UI + Provider-Schicht:
+
+- `lib/consent/consent-store.ts` — `useSyncExternalStore`-Quelle für `localStorage` (SSR-sicher, Cross-Tab-Sync,
+  kein Mount-`setState`); `lib/consent/google-consent.ts` — `emitConsentUpdate` (gtag `consent update`, no-op ohne
+  `window.gtag`).
+- `components/providers/consent-provider/` — `consent-context.ts` + `consent-provider.tsx`;
+  `hooks/consent/use-consent.ts`.
+- `components/consent/consent-banner/` (Bottom-Sheet, `role="dialog"`, `aria-labelledby`/`-describedby`, Fokus setzen
+  - zurückgeben, `Escape`, kein harter Trap, Accept/Reject als **gleichwertige** Buttons auf erster Ebene),
+    `consent-settings/` + `consent-settings/consent-toggle-item/` (granulare Toggles, Save),
+    `cookie-settings-button/`.
+- Je eigenes `*.module.css` (keine Inline-Styles); Mobile-States (Full-width-Buttons < 30rem);
+  `prefers-reduced-motion`.
+- DE/EN-Copy in `i18n/dictionaries/shared/consent/{de,en}.json` (identische Keys, Loader `index.ts`).
+- Einbindung: `ConsentProvider` umschließt Landing- **und** Success-Route; `CookieSettingsButton` nur via neuer
+  `FooterSection`-Prop `cookieSettings` (kein siteweiter Footer-Button).
+- Tests `consent-provider.test.tsx` (7 jsdom-Tests: Banner-Sichtbarkeit, Accept/Reject/Save → Storage + `consent
+ update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 Disables), 379 Vitest-Tests und
+  `npm run build` grün.
+- Offener Feinschliff (nicht blockierend): explizites Tab-Order-/Sichtbarkeitsverhalten der einzelnen Toggles auf sehr
+  kleinen Viewports nur visuell, nicht E2E geprüft — deckt Task 8 (E2E) ab.
+
 3. GoogleTag Provider (Advanced Consent Mode): Inline-Stub (`beforeInteractive`) mit Default-denied +
    `ads_data_redaction`/`url_passthrough`/`wait_for_update` und synchronem `localStorage`-Read; gtag.js
    (`afterInteractive`) mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, Script lädt beim Mount (nicht consent-

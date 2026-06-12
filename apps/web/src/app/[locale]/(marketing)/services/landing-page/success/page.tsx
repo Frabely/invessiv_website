@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
+import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { SuccessPage } from "@/components/shared/success-page/success-page";
 import { COMPANY_CALENDLY } from "@/config/company";
@@ -11,6 +13,7 @@ import {
 } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
 import { getLandingSuccessContent } from "@/i18n/dictionaries/landing/success";
+import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import {
@@ -65,9 +68,10 @@ export default async function LandingSuccessRoute({
   const activeLocale = locale as Locale;
   const { page } = getLandingSuccessContent(activeLocale);
   const footer = getHomeFooterSectionContent(activeLocale);
+  const consent = getConsentStaticContent(activeLocale);
 
   return (
-    <>
+    <ConsentProvider content={consent} locale={activeLocale}>
       <SiteHeader
         isMinimalHeader
         brandHref={createLocalePathname(SITE_ROUTES.HOME, activeLocale)}
@@ -84,11 +88,12 @@ export default async function LandingSuccessRoute({
       </main>
       {footer ? (
         <FooterSection
+          cookieSettings={<CookieSettingsButton />}
           description={footer.description}
           locale={activeLocale}
           navColumn={footer.navColumn}
         />
       ) : null}
-    </>
+    </ConsentProvider>
   );
 }

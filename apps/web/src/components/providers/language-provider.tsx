@@ -1,10 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/config/i18n";
-import { LANGUAGE_PROVIDER_MISSING_ERROR } from "@/components/providers/provider-errors";
+import { LANGUAGE_PROVIDER_MISSING_ERROR } from "@invessiv/common/constants/providers/provider-errors";
 import {
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
   matchesLocaleScrollRestoreState,

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
@@ -19,6 +20,7 @@ import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
 import styles from "./footer-section.module.css";
 
 export type FooterSectionProps = {
+  cookieSettings?: ReactNode;
   description: string;
   locale: Locale;
   navColumn: FooterColumnCopy;
@@ -45,6 +47,7 @@ const SOCIAL_LINKS = [
 ];
 
 export function FooterSection({
+  cookieSettings,
   description,
   locale,
   navColumn,
@@ -163,6 +166,9 @@ export function FooterSection({
             <div className={styles.bottomMeta}>
               <span>{copy.copyright}</span>
             </div>
+            {cookieSettings ? (
+              <div className={styles.cookieSettings}>{cookieSettings}</div>
+            ) : null}
           </div>
         </div>
       </div>

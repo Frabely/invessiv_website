@@ -1,18 +1,18 @@
 "use client";
 
-import { createContext, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
+import { createContext, useContext, useEffect } from "react";
 import {
   ThemeProvider as NextThemesProvider,
   useTheme as useNextTheme,
 } from "next-themes";
-import { THEME_PROVIDER_MISSING_ERROR } from "@/components/providers/provider-errors";
+import { THEME_PROVIDER_MISSING_ERROR } from "@invessiv/common/constants/providers/provider-errors";
 import {
   DEFAULT_THEME,
-  THEME_COOKIE_MAX_AGE_SECONDS,
-  THEME_STORAGE_KEY,
   resolveStoredTheme,
   type Theme,
+  THEME_COOKIE_MAX_AGE_SECONDS,
+  THEME_STORAGE_KEY,
 } from "@/lib/theme/theme";
 
 type ThemeContextValue = {
