@@ -7,6 +7,7 @@ import { HERO_SECTION_ID } from "@/config/navigation/home";
 import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {
+  compactMobile?: boolean;
   description: string;
   primaryCtaAnalyticsTarget: string;
   primaryCtaHref: string;
@@ -22,6 +23,7 @@ type HeroSectionProps = {
 };
 
 export function HeroSection({
+  compactMobile = false,
   description,
   primaryCtaAnalyticsTarget,
   primaryCtaHref,
@@ -36,7 +38,10 @@ export function HeroSection({
   title,
 }: HeroSectionProps) {
   return (
-    <section className={`${styles.root} hero`} id={HERO_SECTION_ID}>
+    <section
+      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} hero`}
+      id={HERO_SECTION_ID}
+    >
       <div aria-hidden="true" className={styles.backgroundLayers}>
         <div className={heroVisualStyles.vignette} />
         <div className={heroVisualStyles.gridOverlay} />
@@ -63,7 +68,7 @@ export function HeroSection({
               {heroPrimaryCta}
             </PrimaryCtaLink>
             <a
-              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton}`}
+              className={`${buttonStyles.button} ${buttonStyles.ghost} ${styles.ctaButton} ${styles.secondaryCta}`}
               href={secondaryCtaHref}
               data-analytics-event="cta_click"
               data-analytics-location={trackingLocation}

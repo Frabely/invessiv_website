@@ -60,7 +60,7 @@
   margin: 0;
   max-width: 20ch;
   color: var(--color-text);
-  font-size: clamp(3rem, 6vw, 4.65rem);
+  font-size: clamp(2.7rem, 5.45vw, 4.25rem);
   line-height: 0.98;
   letter-spacing: -0.048em;
   text-wrap: balance;
@@ -134,6 +134,10 @@
     0 0 0 1px color-mix(in srgb, var(--color-cta) 48%, transparent);
 }
 
+.secondaryCta {
+  text-align: center;
+}
+
 [data-theme="light"] .title {
   text-shadow: none;
 }
@@ -177,7 +181,7 @@
 
   .title {
     max-width: 18ch;
-    font-size: clamp(4rem, 4.35vw, 4.95rem);
+    font-size: clamp(3.45rem, 3.9vw, 4.45rem);
   }
 
   .description {
@@ -213,7 +217,7 @@
 
   .title {
     max-width: 14ch;
-    font-size: clamp(2.8rem, 11vw, 3.85rem);
+    font-size: clamp(2.35rem, 9.4vw, 3.25rem);
     text-shadow: none;
   }
 
@@ -232,6 +236,34 @@
     width: 100%;
     min-height: 42px;
     padding-inline: 16px;
+  }
+
+  .compactMobile {
+    min-height: var(--mobile-viewport-height);
+    padding-bottom: clamp(1.7rem, 6vw, 2.35rem);
+  }
+
+  .compactMobile .content {
+    gap: clamp(1rem, 3.4vw, 1.45rem);
+  }
+
+  .compactMobile .title {
+    max-width: 17ch;
+    font-size: clamp(2.2rem, 8.55vw, 3.05rem);
+    line-height: 1.01;
+  }
+
+  .compactMobile .titleGradient {
+    white-space: normal;
+  }
+
+  .compactMobile .ctaRow {
+    gap: clamp(0.9rem, 3.8vw, 1.15rem);
+  }
+
+  .compactMobile .secondaryCta {
+    justify-self: stretch;
+    width: 100%;
   }
 }
 

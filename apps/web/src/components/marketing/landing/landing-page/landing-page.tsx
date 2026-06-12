@@ -59,6 +59,7 @@ export function LandingPage({ locale }: LandingPageProps) {
         </div>
 
         <HeroSection
+          compactMobile
           description={hero.description}
           heroPrimaryCta={hero.primaryCta}
           heroSecondaryCta={hero.secondaryCta}

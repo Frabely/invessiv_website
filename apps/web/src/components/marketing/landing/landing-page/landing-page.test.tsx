@@ -53,10 +53,10 @@ describe("LandingPage", () => {
       screen.getByTestId("site-header").querySelector('a[href="#audience"]'),
     ).toBeNull();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
-      "Eine Landingpage, die dein Angebot klar verkauft",
+      "Landingpage, die dein Angebot verkauft",
     );
     expect(
-      screen.getByText(/Klarer Umfang\. Fester Preis: 999 € für den Starter\./),
+      screen.getByText(/Ein Ansprechpartner\. Keine Agentur-Schleife\./),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", {
