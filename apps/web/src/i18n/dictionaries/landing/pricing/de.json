@@ -9,17 +9,17 @@
     "itemsLabel": "Enthalten",
     "items": [
       "1 Landingpage mit bis zu 6 Sektionen",
-      "Angebotsstruktur & Textgrundlage",
+      "Textgrundlage für dein Angebot",
       "Responsives Design & Umsetzung",
       "Kontaktformular für Anfragen",
-      "Mobile-optimierte Darstellung",
-      "Launch-Unterstützung"
+      "2 Feedback-Runden inklusive",
+      "Launch: Domain, Technik, Go-live"
     ],
     "durationLabel": "Umsetzung",
     "durationValue": "5–10 Tage",
-    "priceLabel": "Preisrahmen",
-    "priceValue": "ab 999 €"
+    "priceLabel": "Preis",
+    "priceValue": "999 €"
   },
-  "hint": "Du bekommst vor dem Start eine klare Einschätzung zu Umfang, Ablauf und Preis.",
+  "hint": "999 € gelten für genau diesen Umfang. Mehr Sektionen, zusätzliche Feedback-Runden oder Sonderfunktionen kalkuliere ich vorab transparent — du entscheidest, bevor Kosten entstehen.",
   "ctaLabel": "Kostenlose Ersteinschätzung anfragen"
 }

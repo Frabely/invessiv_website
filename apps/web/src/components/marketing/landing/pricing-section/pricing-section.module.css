@@ -308,6 +308,7 @@
   display: grid;
   justify-items: center;
   gap: clamp(1rem, 2vw, 1.5rem);
+  width: min(100%, var(--focus-lane-max));
 }
 
 .hint {

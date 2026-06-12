@@ -3,7 +3,7 @@ import { FaqSection } from "@/components/marketing/landing/faq-section/faq-secti
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
-import { InclusionsSection } from "@/components/marketing/landing/inclusions-section/inclusions-section";
+import { DoneForYouSection } from "@/components/marketing/landing/done-for-you-section/done-for-you-section";
 import { ProblemSection } from "@/components/marketing/landing/problem-section/problem-section";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
@@ -20,7 +20,7 @@ import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta
 import { getLandingFooterContent } from "@/i18n/dictionaries/landing/footer";
 import { getLandingHeaderContent } from "@/i18n/dictionaries/landing/header";
 import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
-import { getLandingInclusionsContent } from "@/i18n/dictionaries/landing/inclusions";
+import { getLandingDoneForYouContent } from "@/i18n/dictionaries/landing/done-for-you";
 import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemContent } from "@/i18n/dictionaries/landing/problem";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
@@ -38,7 +38,7 @@ export function LandingPage({ locale }: LandingPageProps) {
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
   const hero = getLandingHeroContent(locale);
-  const inclusions = getLandingInclusionsContent(locale);
+  const doneForYou = getLandingDoneForYouContent(locale);
   const pricing = getLandingPricingContent(locale);
   const problem = getLandingProblemContent(locale);
   const process = getLandingProcessContent(locale);
@@ -83,7 +83,7 @@ export function LandingPage({ locale }: LandingPageProps) {
 
         <SolutionSection id="solution" locale={locale} {...solution} />
 
-        <InclusionsSection id="inclusions" locale={locale} {...inclusions} />
+        <DoneForYouSection id="done-for-you" locale={locale} {...doneForYou} />
 
         <TrustSection id="trust" locale={locale} {...trust} />
 

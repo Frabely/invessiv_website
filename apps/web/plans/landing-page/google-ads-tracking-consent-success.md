@@ -23,8 +23,11 @@
 
 ## Zielarchitektur
 
-- Google Tag `G-5T4BC28Z0F` wird über eine einzige Provider-Komponente consent-aware und ohne doppelten Script-Einbau
-  integriert — nur auf Landing- und Success-Route, nicht global.
+- Conversion-Messung für Google Ads läuft direkt über ein **Google-Ads-Conversion-Tag** (`AW-`ID + Conversion-Label
+  aus einer in Google Ads angelegten Conversion-Aktion), eingebunden über eine einzige Provider-Komponente,
+  consent-aware und ohne doppelten Script-Einbau — nur auf Landing- und Success-Route, nicht global.
+- Zusätzlich wird **GA4** über die vorhandene Measurement-ID `G-5T4BC28Z0F` eingebunden (consent-gated über die
+  Analyse-Kategorie) — für Funnel-/Verhaltensanalyse der Landingpage (Absprünge, Engagement, Quellen). Kein GTM.
 - Consent wird in einer eigenen kleinen Client-Schicht verwaltet: keine Consent-Dependency, kein GTM, kein unnötiges
   CMP-Paket.
 - Die Success-Seite `/[locale]/services/landing-page/success` (Umsetzung im Copy-Plan) wird als primäres
@@ -53,7 +56,9 @@ Speicherung:
 - Bevorzugt `localStorage`, weil keine Serverentscheidung nötig ist und keine zusätzliche First-Party-Cookie-Oberfläche
   entsteht.
 - Banner erscheint nur, wenn noch keine Consent-Auswahl gespeichert ist.
-- Footer erhält einen Link/Button „Cookie-Einstellungen“, der die Einstellungen jederzeit erneut öffnet.
+- Ein Link/Button „Cookie-Einstellungen“ öffnet die Einstellungen jederzeit erneut — gerendert **nur im Footer der
+  Landing-Route und ggf. der Success-Route** (dort, wo Consent-Provider und Banner existieren), nicht siteweit im
+  globalen Footer. Der geteilte `FooterSection` darf den Button nur über Props/Kontext aus diesen Routen erhalten.
 
 Kategorien:
 
@@ -86,8 +91,8 @@ UX-Regeln:
 - Button „Auswahl speichern“: „Auswahl speichern“
 - Kategorie Notwendig: „Erforderlich, damit die Website sicher lädt und grundlegende Funktionen funktionieren. Diese
   Kategorie kann nicht deaktiviert werden.“
-- Kategorie Analyse: „Hilft uns zu verstehen, welche Seiten und Inhalte genutzt werden. Aktivieren wir nur mit deiner
-  Zustimmung.“
+- Kategorie Analyse: „Hilft uns über Google Analytics zu verstehen, welche Seiten und Inhalte genutzt werden.
+  Aktivieren wir nur mit deiner Zustimmung.“
 - Kategorie Marketing: „Erlaubt Google Ads Conversion Tracking, damit wir Angebotsanfragen aus Anzeigen korrekt messen
   können. Aktivieren wir nur mit deiner Zustimmung.“
 - Datenschutzlink: „Datenschutzerklärung“
@@ -113,20 +118,29 @@ Mapping:
   `{ version: 1, analytics: boolean, marketing: boolean, updatedAt: string }`.
 - Tests prüfen Mapping von gespeicherter Auswahl zu Google-Consent-Werten.
 
-## Google Tag Einbindung mit `G-5T4BC28Z0F`
+## Google Tag Einbindung (GA4 `G-5T4BC28Z0F` + Google-Ads-Conversion, kein GTM)
+
+Voraussetzung (operativ, vor Task 3): In Google Ads die Conversion-Aktion „Angebotsanfrage Landingpage" anlegen —
+daraus ergeben sich `AW-`Conversion-ID und Conversion-Label. GA4-Measurement-ID, `AW-`ID und Label werden über
+`NEXT_PUBLIC_*`-Env-Vars konfiguriert, nicht hartkodiert. Empfohlen: GA4-Property und Ads-Konto im jeweiligen Admin
+verknüpfen (bessere Attribution, Zielgruppen später nutzbar).
 
 - Entscheidung: **konservative Variante**. Google-Skripte werden erst nach Zustimmung geladen.
 - Zusätzlich wird ein kleiner Inline-Starter für `window.dataLayer`, `gtag` und `consent default denied` früh im Client
   bereitgestellt, bevor ein Tag geladen oder konfiguriert wird.
-- Kein roher Script-Code in einzelnen Pages.
+- Kein roher Script-Code in einzelnen Pages (das von Google angezeigte Snippet wird **nicht** roh eingeklebt — es
+  lädt bedingungslos und wäre ohne Consent-Gate ein DSGVO-Problem).
 - Kein `@next/third-parties` erzwingen, da die Dependency aktuell nicht vorhanden ist und für einen einzelnen Tag nicht
   nötig ist.
-- Umsetzung über eigene `GoogleTag`-Client-Komponente mit `next/script`:
-  - `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
-  - nur laden, wenn Analyse oder Marketing zugestimmt wurde.
-  - danach `gtag("config", "G-5T4BC28Z0F", ...)`.
+- Umsetzung über eigene `GoogleTag`-Client-Komponente mit `next/script` — **eine** gtag-Bibliothek, zwei
+  Destinationen:
+  - Script lädt, sobald **Analyse oder Marketing** zugestimmt wurde:
+    `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
+  - `gtag("config", "G-5T4BC28Z0F")` nur bei **Analyse**-Zustimmung (GA4-Messung)
+  - `gtag("config", "<AW-ID>")` nur bei **Marketing**-Zustimmung (Ads-Conversion-Destination)
 - Die Komponente wird gemäß `invessiv-landing`-Skill-Konvention nur auf der Landing-Route und der
   Landing-Success-Route eingebunden (nicht global im Locale-Layout); Consent-Banner ebenfalls nur auf diesen Routen.
+  GA4 misst damit bewusst nur den Landing-Funnel, nicht die gesamte Site.
 - Keine doppelten Google-Tags; vor Umsetzung nochmals `rg "gtag|googletagmanager|dataLayer"` prüfen.
 - Tag ist auf Landingpage und Success-Seite verfügbar, aber nur nach Consent aktiv.
 
@@ -164,7 +178,9 @@ Optional später:
 
 ## Conversion Tracking für Google Ads
 
-- Primäre Conversion: Besuch von `/de/services/landing-page/success`.
+- Primäre Conversion: Besuch von `/de/services/landing-page/success` — gemessen **event-basiert** über
+  `gtag("event", "conversion", { send_to: "<AW-ID>/<Label>" })` auf der Success-Route; keine URL-Regel in Google Ads
+  nötig.
 - Schutz gegen Direktaufrufe: Der Redirect setzt ein kurzlebiges `sessionStorage`-Flag; die Conversion feuert nur,
   wenn das Flag vorhanden ist. Die Seite selbst wird bei Direktaufruf normal angezeigt. Beim Honeypot-Redirect wird
   das Flag nicht gesetzt.
@@ -178,12 +194,16 @@ Optional später:
 - Optional sekundär:
   - CTA-Klick
   - E-Mail-Klick
+  - Klick auf den FAQ-Ausstiegslink zur Leistungsübersicht (`/{locale}#services`) — der Link bleibt laut Copy-Plan
+    bewusst bestehen (ehrliche Selbst-Disqualifikation); das Event misst, wer über diesen Weg von der Landingpage
+    abspringt (z. B. Vercel-Event `faq_exit_services_click`, keine Ads-Conversion)
   - später Calendly-Klick
 
 Empfehlung in Google Ads:
 
-- Neue Website-Conversion „Angebotsanfrage Landingpage“ anlegen.
-- Ziel/URL-Regel auf `/de/services/landing-page/success` setzen.
+- Neue Website-Conversion „Angebotsanfrage Landingpage“ anlegen — liefert `AW-`ID + Conversion-Label für die
+  Env-Vars.
+- Messung über das Conversion-Event auf der Success-Route (siehe oben), keine URL-Regel nötig.
 - Als primäre Conversion für Gebotsoptimierung markieren.
 - Landingpage-Besuch und CTA-Klicks nicht als primäre Conversion konfigurieren.
 - Mit Google Tag Assistant und Google Ads Conversion Diagnostics testen.
@@ -204,7 +224,7 @@ Empfehlung in Google Ads:
 - Datenschutzerklärung um Google Analytics / Google Ads / Google Tag / Conversion Tracking prüfen und ergänzen.
 - Consent Banner verlinkt Datenschutz.
 - Impressum bleibt erreichbar.
-- Cookie-Einstellungen über Footer erneut aufrufbar.
+- Cookie-Einstellungen über den Footer der Landing-/Success-Route erneut aufrufbar.
 - Analyse und Marketing standardmäßig deaktiviert.
 - Ablehnen genauso leicht wie Akzeptieren.
 - Consent-Auswahl speicherbar.
@@ -228,13 +248,14 @@ Go für Google Ads nur, wenn:
 - Landingpage lädt korrekt.
 - Formular funktioniert.
 - Success-Seite funktioniert.
-- Google Tag `G-5T4BC28Z0F` ist eingebunden.
-- Google Tag ist consent-aware.
+- Google Tag ist eingebunden: GA4 `G-5T4BC28Z0F` + Ads-Conversion-Destination (`AW-`ID aus Env-Vars).
+- Tag ist consent-aware: Script lädt erst nach Zustimmung; GA4-Config nur bei Analyse-, Ads-Config nur bei
+  Marketing-Zustimmung.
 - Consent Banner funktioniert.
 - Accept / Reject / Settings funktionieren.
 - Google Consent Mode v2 Werte werden korrekt gesetzt.
 - Formular-Submit leitet nur bei Erfolg auf Success-Seite.
-- Google Ads Conversion-Ziel zeigt auf `/de/services/landing-page/success`.
+- Conversion-Event feuert auf `/de/services/landing-page/success` und kommt in Google Ads an.
 - Landingpage-Besuche zählen nicht als Conversion.
 - Direktaufruf der Success-Seite zählt nicht als Conversion (Guard-Flag).
 - CTA-Klicks zählen nicht als primäre Conversion.
@@ -248,25 +269,41 @@ Voraussetzung: Success-Seite und Formular-Redirect aus dem Copy-Plan (`google-ad
 sind umgesetzt.
 
 1. Consent-Domainmodell und Tests: `lib/consent`, Consent-Typen, Storage-Versionierung, Consent-to-Google-Mapping.
-2. Consent UI: Banner, Settings-Dialog, Footer-Button, DE/EN Dictionary-Copy, Mobile- und Fokuszustände.
-3. GoogleTag Provider: `next/script`, Default-denied Stub, Consent-Updates, keine doppelte Einbindung.
-4. Conversion auf der Success-Route: `sessionStorage`-Guard beim Redirect setzen (nicht im Honeypot-Fall), Conversion
-   nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern, Direktaufrufen oder
-   CTA-Klicks.
-5. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen.
-6. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
+2. Consent UI: Banner, Settings-Dialog, Footer-Button (nur Landing-/Success-Route), DE/EN Dictionary-Copy, Mobile-
+   und Fokuszustände.
+3. GoogleTag Provider: `next/script` mit GA4-ID + `AW-`ID aus `NEXT_PUBLIC_*`-Env-Vars, Default-denied Stub, Script
+   lädt erst nach Analyse- oder Marketing-Zustimmung, `config` pro Destination nur bei passender Kategorie,
+   Consent-Updates, keine doppelte Einbindung. Voraussetzung: Conversion-Aktion in Google Ads angelegt, `AW-`ID +
+   Label liegen vor.
+4. Conversion auf der Success-Route: `sessionStorage`-Guard beim Redirect setzen (nicht im Honeypot-Fall),
+   Conversion-Event (`send_to: "<AW-ID>/<Label>"`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem
+   Submit, kein Feuern bei Fehlern, Direktaufrufen oder CTA-Klicks.
+5. FAQ-Ausstiegslink-Event: sekundäres Vercel-Analytics-Event (z. B. `faq_exit_services_click`) für den bewusst
+   bestehenden Link `/{locale}#services` in der FAQ-Sektion; keine Ads-Conversion.
+6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen.
+7. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
 
-## Entschieden (aus Copy-Plan und `invessiv-landing`-Skill übernommen)
+## Entschieden
 
 - Google Tag und Consent-Banner werden zunächst nur auf Landingpage plus Success-Seite eingebunden, nicht global.
+- Der „Cookie-Einstellungen“-Button wird nur im Footer der Landing-Route und ggf. der Success-Route gerendert — nicht
+  im siteweiten Footer, da dort kein Consent-Provider existiert.
+- Ads-Conversion-Tracking läuft über ein direktes Google-Ads-Conversion-Tag (`AW-`ID + Label aus einer
+  Conversion-Aktion in Google Ads, via `NEXT_PUBLIC_*`-Env-Vars) — nicht über GA4-Import.
+- Zusätzlich ist GA4 (`G-5T4BC28Z0F`) aktiv: consent-gated über die Analyse-Kategorie, nur auf Landing-/Success-Route.
+  Der frühere „kein GA4"-Grundsatz aus dem ursprünglichen Copy-Plan (Begründung: 100-€-Testbudget) wurde bewusst
+  revidiert — volles, übliches Landing-Tracking ist gewünscht. Kein GTM (für zwei Destinationen unnötig).
 - Die Success-Seite wird bei Direktaufruf normal angezeigt, zählt aber nur nach echtem Submit als Conversion
   (`sessionStorage`-Flag; im Honeypot-Fall nicht gesetzt).
+- UTM-Parameter werden **vorerst nicht** in Leads gespeichert; Kampagnen-Auswertung läuft über Google Ads/GA4.
+  Möglicher Follow-up, sobald mehrere Kampagnen laufen und Lead-genaue Herkunft gebraucht wird.
+- Die UTM-Whitelist im Vercel-Analytics-Sanitizer bleibt **vorerst weg** (optionaler Follow-up); Quellen-/
+  Kampagnen-Auswertung übernimmt GA4.
+- Die Datenschutzerklärung wird **im selben Branch** angepasst, aber als eigener, abgegrenzter Task (Task 6) —
+  Merge-Regel für Legal-Änderungen (zwei Reviews) beachten.
 
 ## Offene Fragen vor Umsetzung
 
-- Sollen UTM-Parameter in Leads gespeichert werden, oder reicht zunächst die Google-Ads-Conversion auf der
-  Success-Seite?
-- UTM-Whitelist im Vercel-Analytics-Sanitizer: optionaler Follow-up oder fester Task vor Ads-Start? (Der Copy-Plan
-  hatte sie ursprünglich als zwingenden Task; hier aktuell nur als Follow-up notiert.)
-- Gibt es bereits eine Google-Ads-Conversion-ID/-Label-Kombination zusätzlich zur GA4-/Google-Tag-ID `G-5T4BC28Z0F`?
-- Soll die Datenschutzerklärung im gleichen PR aktualisiert werden oder als separater Legal-/Content-PR?
+Keine — alle Punkte sind entschieden (siehe oben). Offen sind nur noch die operativen Voraussetzungen:
+Conversion-Aktion in Google Ads anlegen (`AW-`ID + Label für die Env-Vars) und GA4-Property mit dem Ads-Konto
+verknüpfen.

@@ -10,7 +10,7 @@
   "items": [
     {
       "question": "How fast will the landing page be ready?",
-      "answer": "Usually in 5–10 days, once your goal, offer and feedback are clear."
+      "answer": "Usually in 5–10 days, once your goal, offer, and feedback are clear."
     },
     {
       "question": "Do I have to write the copy myself?",
@@ -30,7 +30,11 @@
     },
     {
       "question": "What is included from €999?",
-      "answer": "The starting price applies to a landing page with up to 6 content sections, responsive implementation, contact form, and launch support. Larger scopes, additional pages, or custom functions are calculated separately."
+      "answer": "€999 applies to the described starter scope: up to 6 sections, 2 feedback rounds, responsive implementation, a form, and launch support. More sections, extra feedback rounds, or custom functionality (for example booking systems or multilingual setup) are discussed transparently with you in advance — no costs are added unless you approve them."
+    },
+    {
+      "question": "What happens after my inquiry?",
+      "answer": "You receive a personal initial assessment within 24 hours. It is free and non-binding — you decide calmly afterwards."
     },
     {
       "question": "Who is this not for?",

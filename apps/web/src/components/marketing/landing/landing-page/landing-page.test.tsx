@@ -42,7 +42,9 @@ describe("LandingPage", () => {
       screen.getByTestId("site-header").querySelector('a[href="#solution"]'),
     ).toBeTruthy();
     expect(
-      screen.getByTestId("site-header").querySelector('a[href="#inclusions"]'),
+      screen
+        .getByTestId("site-header")
+        .querySelector('a[href="#done-for-you"]'),
     ).toBeTruthy();
     expect(
       screen.getByTestId("site-header").querySelector('a[href="#audience"]'),
@@ -90,13 +92,26 @@ describe("LandingPage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /Was du bekommst/,
+        name: /Darum musst du dich nicht kümmern/,
       }),
     ).toBeTruthy();
-    expect(screen.getByText("Klare Seitenstruktur")).toBeTruthy();
-    expect(screen.getAllByText("Launch-Unterstützung").length).toBeGreaterThan(
-      0,
-    );
+    expect(
+      screen.getByText("Seitenstruktur aus deinem Angebot ableiten"),
+    ).toBeTruthy();
+    expect(screen.getByText("Go-live technisch vorbereiten")).toBeTruthy();
+    expect(
+      screen.getByText(
+        /Ich sortiere daraus Struktur, Text, Design und Technik/,
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", {
+        level: 2,
+        name: /Was du bekommst/,
+      }),
+    ).toBeNull();
+    expect(screen.queryByText("Klare Seitenstruktur")).toBeNull();
+    expect(screen.queryByText("Launch-Unterstützung")).toBeNull();
     expect(screen.getByText(/Du brauchst keine fertigen Texte/)).toBeTruthy();
     expect(
       screen.getByText(
@@ -133,7 +148,7 @@ describe("LandingPage", () => {
     );
     expect(pageFooter?.querySelector('a[href="#problem"]')).toBeNull();
     expect(pageFooter?.querySelector('a[href="#solution"]')).toBeTruthy();
-    expect(pageFooter?.querySelector('a[href="#inclusions"]')).toBeTruthy();
+    expect(pageFooter?.querySelector('a[href="#done-for-you"]')).toBeTruthy();
     expect(pageFooter?.querySelector('a[href="/de"]')?.textContent).toBe(
       "Mehr über Invessiv",
     );

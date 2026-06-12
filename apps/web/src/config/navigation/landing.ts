@@ -2,7 +2,7 @@
 
 export const LANDING_NAVIGATION: NavigationItem[] = [
   { href: "#solution" },
-  { href: "#inclusions" },
+  { href: "#done-for-you" },
   { href: "#process" },
   { href: "#pricing" },
   { href: "#faq" },
@@ -10,7 +10,7 @@ export const LANDING_NAVIGATION: NavigationItem[] = [
 
 export const LANDING_HEADER_NAVIGATION: NavigationItem[] = [
   { href: "#solution" },
-  { href: "#inclusions" },
+  { href: "#done-for-you" },
   { href: "#process" },
   { href: "#pricing" },
   { href: "#faq" },

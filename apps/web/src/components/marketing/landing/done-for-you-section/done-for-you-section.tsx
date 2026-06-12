@@ -5,15 +5,15 @@ import { useRef } from "react";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
-import type { LandingInclusionsContent } from "@/i18n/dictionaries/landing/inclusions";
-import styles from "./inclusions-section.module.css";
+import type { LandingDoneForYouContent } from "@/i18n/dictionaries/landing/done-for-you";
+import styles from "./done-for-you-section.module.css";
 
-type InclusionsSectionProps = LandingInclusionsContent & {
+type DoneForYouSectionProps = LandingDoneForYouContent & {
   id: string;
   locale: Locale;
 };
 
-export function InclusionsSection({
+export function DoneForYouSection({
   body,
   eyebrow,
   id,
@@ -22,7 +22,7 @@ export function InclusionsSection({
   locale,
   reassurance,
   title,
-}: InclusionsSectionProps) {
+}: DoneForYouSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
 

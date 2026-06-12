@@ -2,7 +2,7 @@ import type { Locale } from "@/config/i18n";
 import de from "./de.json";
 import en from "./en.json";
 
-export type LandingInclusionsContent = {
+export type LandingDoneForYouContent = {
   body: string;
   eyebrow: string;
   items: string[];
@@ -11,13 +11,13 @@ export type LandingInclusionsContent = {
   title: string;
 };
 
-const LANDING_INCLUSIONS_CONTENT: Record<Locale, LandingInclusionsContent> = {
+const LANDING_DONE_FOR_YOU_CONTENT: Record<Locale, LandingDoneForYouContent> = {
   de,
   en,
 };
 
-export function getLandingInclusionsContent(
+export function getLandingDoneForYouContent(
   locale: Locale,
-): LandingInclusionsContent {
-  return LANDING_INCLUSIONS_CONTENT[locale];
+): LandingDoneForYouContent {
+  return LANDING_DONE_FOR_YOU_CONTENT[locale];
 }

@@ -6,20 +6,20 @@
     "planLabel": "Starter",
     "planTitle": "Landing Page Starter",
     "planDescription": "For one offer, service, or campaign — from structure to launch.",
-    "itemsLabel": "Included from €999",
+    "itemsLabel": "Included",
     "items": [
       "1 landing page with up to 6 sections",
-      "Offer structure & copy foundation",
+      "Copy foundation for your offer",
       "Responsive design & build",
       "Contact form for inquiries",
-      "Mobile-optimised presentation",
-      "Launch support"
+      "2 feedback rounds included",
+      "Launch: domain, technical setup, go-live"
     ],
     "durationLabel": "Built in",
     "durationValue": "5–10 days",
     "priceLabel": "Price",
-    "priceValue": "from €999"
+    "priceValue": "€999"
   },
-  "hint": "Before I start, you get a clear assessment of scope, process, and price.",
+  "hint": "€999 applies to exactly this scope. More sections, extra feedback rounds, or custom functionality are quoted transparently in advance — you decide before any costs are added.",
   "ctaLabel": "Request a free initial assessment"
 }
