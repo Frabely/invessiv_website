@@ -7,7 +7,8 @@
   `/[locale]/services/landing-page`, also z. B. `/de/services/landing-page`.
 - Locales laufen über `[locale]`, `SUPPORTED_LOCALES`, `isSupportedLocale` und zentrale Pfadhelfer wie
   `createLocalePathname`.
-- Eine Success-Seite unter `/[locale]/services/landing-page/success` existiert aktuell nicht.
+- Eine Success-Seite unter `/[locale]/services/landing-page/success` existiert aktuell nicht; Route, gemeinsame
+  Komponente und Formular-Redirect werden im Copy-Plan (`google-ads-copy-revision.md`, Tasks 5a–5c) gebaut.
 - Die Landingpage rendert `LandingPage`, darin `FinalCtaSection` als Formularbereich mit `id="contact"`.
 - Das Formular validiert Name, E-Mail, Anliegen und Consent als Pflichtfelder; Website ist optional. Es nutzt
   `submitQuickContact`, wartet auf die API-Antwort und zeigt aktuell ein Inline-Erfolgspanel statt Redirect.
@@ -17,16 +18,19 @@
 - Es gibt aktuell keinen Google Tag, kein `gtag`, kein `dataLayer` und keinen Cookie-/Consent-Banner.
 - Footer, Datenschutz, Impressum und Terms existieren. Der Footer wird über `FooterSection` und Dictionary-Inhalte
   gerendert.
-- Es gibt bereits einen älteren Plan `apps/web/plans/landing-page/google-ads-copy-revision.md`, der Success-Seite,
-  Consent Mode v2 und direkten `gtag` ohne GTM grundsätzlich vorbereitet.
+- Es gibt bereits einen älteren Plan `apps/web/plans/landing-page/google-ads-copy-revision.md` (Copy, CTA, Preis-Logik,
+  Danke-Seiten-Copy). Tracking und Consent wurden dort entfernt und werden ausschließlich in diesem Plan umgesetzt.
 
 ## Zielarchitektur
 
-- Google Tag `G-5T4BC28Z0F` wird zentral, consent-aware und ohne doppelten Script-Einbau integriert.
+- Google Tag `G-5T4BC28Z0F` wird über eine einzige Provider-Komponente consent-aware und ohne doppelten Script-Einbau
+  integriert — nur auf Landing- und Success-Route, nicht global.
 - Consent wird in einer eigenen kleinen Client-Schicht verwaltet: keine Consent-Dependency, kein GTM, kein unnötiges
   CMP-Paket.
-- Success-Seite `/[locale]/services/landing-page/success` wird als primäres Google-Ads-Conversion-Ziel vorbereitet.
-- Formular-Redirect erfolgt ausschließlich nach erfolgreicher API-Antwort.
+- Die Success-Seite `/[locale]/services/landing-page/success` (Umsetzung im Copy-Plan) wird als primäres
+  Google-Ads-Conversion-Ziel genutzt.
+- Dieser Plan setzt den Formular-Redirect aus dem Copy-Plan voraus (Redirect ausschließlich nach erfolgreicher
+  API-Antwort).
 - Vercel Analytics bleibt bestehen und wird nicht als Ersatz für Google Ads Conversion Tracking oder Consent Mode
   behandelt.
 - Alle sichtbaren Texte für Banner und Success-Seite werden in DE und EN Dictionaries gepflegt, nicht inline in
@@ -121,19 +125,21 @@ Mapping:
   - `src="https://www.googletagmanager.com/gtag/js?id=G-5T4BC28Z0F"`
   - nur laden, wenn Analyse oder Marketing zugestimmt wurde.
   - danach `gtag("config", "G-5T4BC28Z0F", ...)`.
-- Die Komponente wird zentral im Locale-Layout oder in einem Provider unterhalb von `AppProviders` eingebunden.
+- Die Komponente wird gemäß `invessiv-landing`-Skill-Konvention nur auf der Landing-Route und der
+  Landing-Success-Route eingebunden (nicht global im Locale-Layout); Consent-Banner ebenfalls nur auf diesen Routen.
 - Keine doppelten Google-Tags; vor Umsetzung nochmals `rg "gtag|googletagmanager|dataLayer"` prüfen.
 - Tag ist auf Landingpage und Success-Seite verfügbar, aber nur nach Consent aktiv.
 
-## Formular-Submit-Flow
+## Formular-Submit-Flow (Voraussetzung aus dem Copy-Plan)
 
-- `FinalCtaSection` erhält ein optionales `successRedirectHref`.
-- Landingpage übergibt `/[locale]/services/landing-page/success`.
-- Nur bei `response.ok === true` erfolgt `router.push(successRedirectHref)`.
-- Validierungsfehler und API-Fehler bleiben auf der Landingpage und zeigen bestehende Fehlermeldungen.
+Der Redirect wird im Copy-Plan umgesetzt (`FinalCtaSection` mit `successRedirectHref`, Redirect nur bei
+`response.ok === true`, Validierungs-/API-Fehler bleiben auf der Landingpage, Honeypot redirectet identisch). Dieser
+Plan ergänzt nur die Tracking-Konsequenzen:
+
 - Button-Klick, Fokus, Scroll und Submit-Versuch zählen nicht als Google-Ads-Conversion.
-- Honeypot-Fall wird wie bisher bot-schonend behandelt; für Conversion-Messung sollte kein Google-Conversion-Event
-  daraus entstehen.
+- Aus dem Honeypot-Fall darf kein Google-Conversion-Event entstehen: Beim Honeypot-Redirect wird das
+  `sessionStorage`-Guard-Flag (siehe Conversion Tracking) nicht gesetzt — der Bot sieht keinen Unterschied, die
+  Conversion feuert trotzdem nicht.
 
 UTM-Parameter:
 
@@ -142,25 +148,15 @@ UTM-Parameter:
   Lead-Metadaten.
 - Keine sensiblen Parameter wie `gclid`, E-Mail oder Tokens an Analytics weitergeben.
 
-## Success-Seite `/de/services/landing-page/success`
+## Success-Seite (Umsetzung im Copy-Plan)
 
-- Neue Route: `apps/web/src/app/[locale]/(marketing)/services/landing-page/success/page.tsx`.
-- Route erhält eigene Metadata und `robots: { index: false, follow: false }`.
-- Nicht prominent intern verlinken, nicht in Sitemap aufnehmen.
-- Minimaler Header: Logo/Home-Link, keine volle Navigation und kein starker CTA.
-- Footer bleibt minimal bzw. Standard-Footer, damit Impressum, Datenschutz und Cookie-Einstellungen erreichbar bleiben.
-- Content über Dictionaries, DE und EN parallel.
+Route, gemeinsame `success-page`-Komponente, Metadata/noindex, minimaler Header/Standard-Footer und die gesamte Copy
+(DE/EN) sind im Copy-Plan `google-ads-copy-revision.md` spezifiziert (Abschnitt 6b, Tasks 5a–5c) — die dortige Copy ist
+kanonisch. Dieser Plan ergänzt nur die Tracking-Anforderungen an die Seite:
 
-DE-Copy:
-
-- Headline: „Danke — deine Anfrage ist angekommen.“
-- Intro: „Ich schaue mir dein Anliegen an und melde mich in der Regel innerhalb von 24 Stunden mit einer kurzen
-  Einschätzung.“
-- Nächste Schritte:
-  - „Ich prüfe dein Anliegen und dein Angebot.“
-  - „Du bekommst eine ehrliche Ersteinschätzung.“
-  - „Wenn es passt, klären wir Umfang, Preis und nächsten Schritt.“
-- Optionaler Link: „Zurück zur Landingpage“ oder „Zur Startseite“.
+- Seitenaufruf ist die primäre Google-Ads-Conversion (Details im Abschnitt Conversion Tracking).
+- Nicht prominent intern verlinken, nicht in die Sitemap aufnehmen.
+- Cookie-Einstellungen müssen über den Standard-Footer erreichbar bleiben.
 
 Optional später:
 
@@ -169,6 +165,9 @@ Optional später:
 ## Conversion Tracking für Google Ads
 
 - Primäre Conversion: Besuch von `/de/services/landing-page/success`.
+- Schutz gegen Direktaufrufe: Der Redirect setzt ein kurzlebiges `sessionStorage`-Flag; die Conversion feuert nur,
+  wenn das Flag vorhanden ist. Die Seite selbst wird bei Direktaufruf normal angezeigt. Beim Honeypot-Redirect wird
+  das Flag nicht gesetzt.
 - Nicht als primäre Conversion zählen:
   - Landingpage-Besuch
   - CTA-Klick
@@ -237,6 +236,7 @@ Go für Google Ads nur, wenn:
 - Formular-Submit leitet nur bei Erfolg auf Success-Seite.
 - Google Ads Conversion-Ziel zeigt auf `/de/services/landing-page/success`.
 - Landingpage-Besuche zählen nicht als Conversion.
+- Direktaufruf der Success-Seite zählt nicht als Conversion (Guard-Flag).
 - CTA-Klicks zählen nicht als primäre Conversion.
 - Mobile Ansicht des Banners verdeckt den Haupt-CTA nicht dauerhaft.
 - Datenschutz und Impressum sind erreichbar.
@@ -244,23 +244,29 @@ Go für Google Ads nur, wenn:
 
 ## Kleine reviewbare Tasks
 
+Voraussetzung: Success-Seite und Formular-Redirect aus dem Copy-Plan (`google-ads-copy-revision.md`, Tasks 5a–5c)
+sind umgesetzt.
+
 1. Consent-Domainmodell und Tests: `lib/consent`, Consent-Typen, Storage-Versionierung, Consent-to-Google-Mapping.
 2. Consent UI: Banner, Settings-Dialog, Footer-Button, DE/EN Dictionary-Copy, Mobile- und Fokuszustände.
 3. GoogleTag Provider: `next/script`, Default-denied Stub, Consent-Updates, keine doppelte Einbindung.
-4. Success-Seite: Route, Metadata/noindex, Dictionary-Copy, minimaler Header/Footer.
-5. Formular-Redirect: `FinalCtaSection` um `successRedirectHref` erweitern und Landingpage damit verbinden.
-6. Conversion-Konzept testen: Success-Page-Aufruf nach echtem Submit, kein Conversion-Feuern bei Fehlern oder
+4. Conversion auf der Success-Route: `sessionStorage`-Guard beim Redirect setzen (nicht im Honeypot-Fall), Conversion
+   nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern, Direktaufrufen oder
    CTA-Klicks.
-7. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen.
-8. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
+5. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen.
+6. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
+
+## Entschieden (aus Copy-Plan und `invessiv-landing`-Skill übernommen)
+
+- Google Tag und Consent-Banner werden zunächst nur auf Landingpage plus Success-Seite eingebunden, nicht global.
+- Die Success-Seite wird bei Direktaufruf normal angezeigt, zählt aber nur nach echtem Submit als Conversion
+  (`sessionStorage`-Flag; im Honeypot-Fall nicht gesetzt).
 
 ## Offene Fragen vor Umsetzung
 
-- Soll Google Tag auf allen öffentlichen Seiten consent-aware verfügbar sein oder zunächst nur auf Landingpage plus
-  Success-Seite?
-- Soll die Success-Seite bei Direktaufruf normal angezeigt werden oder per `sessionStorage`-Flag nur nach echtem Submit
-  als Conversion-fähig gelten?
 - Sollen UTM-Parameter in Leads gespeichert werden, oder reicht zunächst die Google-Ads-Conversion auf der
   Success-Seite?
+- UTM-Whitelist im Vercel-Analytics-Sanitizer: optionaler Follow-up oder fester Task vor Ads-Start? (Der Copy-Plan
+  hatte sie ursprünglich als zwingenden Task; hier aktuell nur als Follow-up notiert.)
 - Gibt es bereits eine Google-Ads-Conversion-ID/-Label-Kombination zusätzlich zur GA4-/Google-Tag-ID `G-5T4BC28Z0F`?
 - Soll die Datenschutzerklärung im gleichen PR aktualisiert werden oder als separater Legal-/Content-PR?
