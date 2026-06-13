@@ -481,10 +481,41 @@ update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 
   Exit-Link gesetzt / kein Tracking ohne Analytics-Content). Verifikation: `npm run typecheck`, ESLint (0 Fehler),
   414 Vitest-Tests und `npm run build` grün.
 
-6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen — Pflichtangaben siehe „Pflichtangaben
-   Datenschutzerklärung" (GA4, Ads, Consent Mode Advanced/cookielose Pings, Vercel Analytics, USA-Transfer, IP,
-   Widerruf). Legal-Merge-Regel: zwei Reviews.
-7. QA-Gate: Mobile Banner, Inkognito, Tag Assistant, Google Ads Diagnostics, Build/Lint/Typecheck.
+6. ✅ **Erledigt (Code; Legal-Review offen).** Datenschutztexte in DE/EN ergänzt:
+
+- Neuer Abschnitt „5. Google Analytics 4 und Google Ads (nur Landingpage)" (`googleTracking`) in
+  `i18n/dictionaries/legal/privacy/{de,en}.json`: GA4 (Measurement-ID), Ads Conversion Tracking, Consent Mode v2
+  Advanced inkl. cookielose Pings („cookieless ≠ consentless"), Route-Scoping nur Landing/Success, verarbeitete Daten
+  (IP durch Google, gclid), Rechtsgrundlage Art. 6 Abs. 1 lit. a DSGVO (Einwilligung), Consent-Banner-Bezug, Widerruf
+  über „Cookie-Einstellungen", Klarstellung „Consent Mode ersetzt die Einwilligung nicht", Anbieter Google Ireland/LLC.
+- Abschnitt „Cookies und ähnliche Technologien" korrigiert: der frühere Satz „kein Cookie-Banner / keine
+  zustimmungspflichtigen Cookies" war durch GA4/Ads überholt; jetzt mit Banner-/Consent-Speicherung-Bezug auf
+  Landing-/Success-Route.
+- Empfänger (Google Ireland/LLC) und Drittlandübermittlungen (USA-Transfer, EU-US Data Privacy Framework / SCCs) um
+  Google ergänzt; Vercel Analytics + Speed Insights waren bereits vollständig abgedeckt. Änderungsdatum auf 13. Juni
+  2026 aktualisiert.
+- Abschnitte 5–14 renumbered; `Dictionary`-Typ (`get-dictionary.ts`), `privacy/page.tsx` (neue Section `google-tracking`
+  nach Speed Insights) und `privacy/page.test.tsx` (Section-Reihenfolge, Datum, neue Assertions) angepasst.
+  Verifikation:
+  Typecheck, ESLint (0 Fehler), 414 Vitest-Tests und Build grün.
+- **Offen (nicht Code):** Legal-Merge-Regel — zwei Reviews vor Merge; finale Freigabe durch die rechtlich
+  verantwortliche Person (Fachartikel-Quellen, keine Rechtsberatung). Enhanced Conversions (V2) ist in der DSE noch
+  nicht erwähnt, da bewusst nicht im ersten Go.
+
+7. ✅ **Erledigt (automatisierte Gates; Live-/Tooling-Checks operativ offen).** QA-Gate:
+
+- Automatisiert grün: `pnpm typecheck`, `pnpm lint` (0 Fehler, nur bestehende `<img>`-Warnung in
+  `sample-card.test.tsx`), 414 Vitest-Tests, `pnpm build`.
+- Code-verifizierte Go/No-Go-Punkte: Banner-A11y (`role="dialog"`, `aria-labelledby/-describedby`, Tastatur, `Escape`,
+  Fokus setzen/zurückgeben, kein harter Trap) und Accept/Reject gleichwertig auf erster Ebene — durch Task-2-Tests
+  abgedeckt. Mobile-Banner verdeckt den Haupt-CTA nicht dauerhaft: `.root` mit `pointer-events: none` (nur `.dialog`
+  klickbar), kompakter Bottom-Sheet mit Max-Breite, Buttons `min-height: 44px` (WCAG 2.5.8), Full-width < 30rem.
+  Consent-Default `denied` vor Auswahl (google-tag-script-Test); Conversion feuert nicht doppelt/bei Direktaufruf/
+  Honeypot (Task-4-Tests).
+- **Offen (operativ, nur live + mit Google-Tooling + gesetzten `AW-`Env-Vars durchführbar):** Mobile-Banner auf echtem
+  Gerät, Inkognito-Test im echten Browser, Google Tag Assistant, Google Ads Conversion Diagnostics. Voraussetzung:
+  Conversion-Aktion in Google Ads angelegt → `AW-`ID + Label in den Env-Vars; Deployment auf einer Live-/Preview-URL.
+
 8. **E2E (zuletzt):** Playwright-Smoke für den Kernablauf — Consent Accept/Reject sichtbar & per Tastatur bedienbar,
    Default-denied vor Auswahl, erfolgreicher Submit → Redirect auf Success → Conversion-Event feuert genau einmal,
    Direktaufruf/Reload feuert nicht, Honeypot feuert nicht. Wird als letzter Task umgesetzt, wenn 1–7 stehen.

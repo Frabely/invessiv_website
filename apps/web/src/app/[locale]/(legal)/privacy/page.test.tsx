@@ -89,6 +89,7 @@ describe("PrivacyPage", () => {
       "hosting",
       "vercel-analytics",
       "speed-insights",
+      "google-tracking",
       "contact",
       "linkedin-post-generator",
       "appointments",
@@ -103,7 +104,7 @@ describe("PrivacyPage", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Datenschutzerklärung" }),
     ).toBeTruthy();
-    expect(screen.getByText("Zuletzt geändert: 10. Juni 2026.")).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 13. Juni 2026.")).toBeTruthy();
     expect(screen.getByText("Invessiv")).toBeTruthy();
     expect(screen.getByText("Inhaber: Moritz Hecht")).toBeTruthy();
     expect(screen.queryByText("Moritz Hecht – Invessiv")).toBeNull();
@@ -138,6 +139,14 @@ describe("PrivacyPage", () => {
       ),
     ).toBeTruthy();
     expect(screen.getByText(/invessiv-theme/)).toBeTruthy();
+    expect(
+      screen.getByText(
+        "5. Google Analytics 4 und Google Ads (nur Landingpage)",
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/Google Consent Mode v2 im Advanced Mode/),
+    ).toBeTruthy();
   });
 
   it("calls notFound for unsupported locales", async () => {
