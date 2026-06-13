@@ -1,5 +1,5 @@
+import type { ConsentChoice } from "@/common/contracts/consent/consent-choice";
 import { mapConsentChoiceToGoogleSignals } from "./consent-mode";
-import type { ConsentChoice } from "./consent-types";
 
 declare global {
   interface Window {

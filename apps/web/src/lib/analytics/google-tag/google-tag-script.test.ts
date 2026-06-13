@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
+import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
 import {
   buildConsentBootstrapScript,
   buildGtagConfigScript,
   buildGtagSrc,
 } from "./google-tag-script";
-import { CONSENT_STORAGE_KEY } from "@/lib/consent/consent-storage";
 
 describe("buildGtagSrc", () => {
   it("builds the gtag.js loader url for a given id", () => {

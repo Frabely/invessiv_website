@@ -1,15 +1,10 @@
+import {
+  CONSENT_STATE_VERSION,
+  CONSENT_STORAGE_KEY,
+} from "@/common/constants/consent/consent-storage";
+import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
+import { type StoredConsentState } from "@/common/contracts/consent/stored-consent-state";
 import { reportClientError } from "@/lib/observability/report-client-error";
-import { type ConsentChoice } from "./consent-types";
-
-export const CONSENT_STORAGE_KEY = "invessiv-consent";
-export const CONSENT_STATE_VERSION = 1;
-
-export type StoredConsentState = {
-  version: number;
-  analytics: boolean;
-  marketing: boolean;
-  updatedAt: string;
-};
 
 export function createStoredConsentState(
   choice: ConsentChoice,

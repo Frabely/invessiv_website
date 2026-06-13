@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { ConsentCategory } from "@/common/constants/consent/consent-category";
+import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
+import { DEFAULT_CONSENT_CHOICE } from "@/common/defaults/consent/consent-choice";
 import { ConsentToggleItem } from "@/components/consent/consent-banner/consent-settings/consent-toggle-item/consent-toggle-item";
 import { useConsent } from "@/hooks/consent/use-consent";
-import {
-  ConsentCategory,
-  type ConsentChoice,
-  DEFAULT_CONSENT_CHOICE,
-} from "@/lib/consent/consent-types";
 import styles from "./consent-settings.module.css";
 
 export function ConsentSettings() {

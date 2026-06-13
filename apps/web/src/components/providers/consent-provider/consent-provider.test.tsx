@@ -10,9 +10,9 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ConsentProvider } from "./consent-provider";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
 import type { Locale } from "@/config/i18n";
 import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
-import { CONSENT_STORAGE_KEY } from "@/lib/consent/consent-storage";
 
 function renderProvider(locale: Locale = "de") {
   return render(

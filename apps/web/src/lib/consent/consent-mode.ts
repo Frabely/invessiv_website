@@ -1,8 +1,6 @@
-import {
-  type ConsentChoice,
-  ConsentSignalState,
-  type GoogleConsentSignals,
-} from "./consent-types";
+import { ConsentSignalState } from "@/common/constants/consent/consent-signal-state";
+import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
+import { type GoogleConsentSignals } from "@/common/contracts/consent/google-consent-signals";
 
 export const DEFAULT_GOOGLE_CONSENT_SIGNALS: GoogleConsentSignals = {
   analytics_storage: ConsentSignalState.Denied,

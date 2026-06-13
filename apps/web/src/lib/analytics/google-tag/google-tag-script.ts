@@ -1,13 +1,12 @@
+import { GTAG_BASE_SRC } from "@/common/constants/analytics/google-tag";
+import {
+  CONSENT_STATE_VERSION,
+  CONSENT_STORAGE_KEY,
+} from "@/common/constants/consent/consent-storage";
 import {
   CONSENT_DEFAULT_PARAMS,
   DEFAULT_GOOGLE_CONSENT_SIGNALS,
 } from "@/lib/consent/consent-mode";
-import {
-  CONSENT_STATE_VERSION,
-  CONSENT_STORAGE_KEY,
-} from "@/lib/consent/consent-storage";
-
-const GTAG_BASE_SRC = "https://www.googletagmanager.com/gtag/js";
 
 export function buildGtagSrc(loaderId: string): string {
   return `${GTAG_BASE_SRC}?id=${encodeURIComponent(loaderId)}`;

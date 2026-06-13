@@ -1,18 +1,9 @@
-import {
-  CONSENT_STORAGE_KEY,
-  parseStoredConsentState,
-  toConsentChoice,
-} from "./consent-storage";
-import type { ConsentChoice } from "./consent-types";
-
-export const CONSENT_CHANGE_EVENT = "invessiv:consent-change";
-
-export const CONSENT_SNAPSHOT_UNKNOWN = Symbol.for("invessiv.consent.unknown");
-
-export type ConsentSnapshot =
-  | ConsentChoice
-  | null
-  | typeof CONSENT_SNAPSHOT_UNKNOWN;
+import { CONSENT_CHANGE_EVENT } from "@/common/constants/consent/consent-change-event";
+import { CONSENT_SNAPSHOT_UNKNOWN } from "@/common/constants/consent/consent-snapshot-unknown";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
+import type { ConsentChoice } from "@/common/contracts/consent/consent-choice";
+import type { ConsentSnapshot } from "@/common/contracts/consent/consent-snapshot";
+import { parseStoredConsentState, toConsentChoice } from "./consent-storage";
 
 let cachedRaw: string | null = null;
 let cachedChoice: ConsentChoice | null = null;

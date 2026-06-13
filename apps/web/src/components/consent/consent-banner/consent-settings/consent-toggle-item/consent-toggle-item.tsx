@@ -1,5 +1,5 @@
+import type { ConsentCategory } from "@/common/constants/consent/consent-category";
 import type { ConsentCategoryCopy } from "@/i18n/dictionaries/shared/consent";
-import type { ConsentCategory } from "@/lib/consent/consent-types";
 import styles from "./consent-toggle-item.module.css";
 
 type ConsentToggleItemProps = {

@@ -5,12 +5,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   CONSENT_STATE_VERSION,
   CONSENT_STORAGE_KEY,
+} from "@/common/constants/consent/consent-storage";
+import { ACCEPT_ALL_CONSENT_CHOICE } from "@/common/defaults/consent/consent-choice";
+import {
   createStoredConsentState,
   parseStoredConsentState,
   readStoredConsentChoice,
   writeStoredConsentChoice,
 } from "./consent-storage";
-import { ACCEPT_ALL_CONSENT_CHOICE } from "./consent-types";
 
 describe("createStoredConsentState", () => {
   it("stamps the current version and an ISO timestamp", () => {

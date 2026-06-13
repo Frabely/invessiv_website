@@ -2,21 +2,20 @@
 
 import type { ReactNode } from "react";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
-import { ConsentBanner } from "@/components/consent/consent-banner/consent-banner";
-import {
-  ConsentContext,
-  type ConsentContextValue,
-} from "@/components/providers/consent-provider/consent-context";
-import type { Locale } from "@/config/i18n";
-import type { ConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
+import { CONSENT_SNAPSHOT_UNKNOWN } from "@/common/constants/consent/consent-snapshot-unknown";
+import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
+import { type ConsentContextValue } from "@/common/contracts/consent/consent-context-value";
 import {
   ACCEPT_ALL_CONSENT_CHOICE,
-  type ConsentChoice,
   REJECT_ALL_CONSENT_CHOICE,
-} from "@/lib/consent/consent-types";
+} from "@/common/defaults/consent/consent-choice";
+import { ConsentBanner } from "@/components/consent/consent-banner/consent-banner";
+import { type BannerOverride } from "@/components/providers/consent-provider/banner-override";
+import { ConsentContext } from "@/components/providers/consent-provider/consent-context";
+import type { Locale } from "@/config/i18n";
+import type { ConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 import { writeStoredConsentChoice } from "@/lib/consent/consent-storage";
 import {
-  CONSENT_SNAPSHOT_UNKNOWN,
   getConsentServerSnapshot,
   getConsentSnapshot,
   notifyConsentChange,
@@ -28,11 +27,6 @@ type ConsentProviderProps = {
   children: ReactNode;
   content: ConsentStaticContent;
   locale: Locale;
-};
-
-type BannerOverride = {
-  open: boolean;
-  settings: boolean;
 };
 
 export function ConsentProvider({

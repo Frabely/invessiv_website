@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  DEFAULT_GOOGLE_CONSENT_SIGNALS,
-  mapConsentChoiceToGoogleSignals,
-} from "./consent-mode";
-import {
   ACCEPT_ALL_CONSENT_CHOICE,
   DEFAULT_CONSENT_CHOICE,
   REJECT_ALL_CONSENT_CHOICE,
-} from "./consent-types";
+} from "@/common/defaults/consent/consent-choice";
+import {
+  DEFAULT_GOOGLE_CONSENT_SIGNALS,
+  mapConsentChoiceToGoogleSignals,
+} from "./consent-mode";
 
 describe("mapConsentChoiceToGoogleSignals", () => {
   it("keeps every signal denied when both categories are rejected", () => {
