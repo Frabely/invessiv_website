@@ -516,9 +516,8 @@ update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 
   Gerät, Inkognito-Test im echten Browser, Google Tag Assistant, Google Ads Conversion Diagnostics. Voraussetzung:
   Conversion-Aktion in Google Ads angelegt → `AW-`ID + Label in den Env-Vars; Deployment auf einer Live-/Preview-URL.
 
-8. **E2E (zuletzt):** Playwright-Smoke für den Kernablauf — Consent Accept/Reject sichtbar & per Tastatur bedienbar,
-   Default-denied vor Auswahl, erfolgreicher Submit → Redirect auf Success → Conversion-Event feuert genau einmal,
-   Direktaufruf/Reload feuert nicht, Honeypot feuert nicht. Wird als letzter Task umgesetzt, wenn 1–7 stehen.
+8. **E2E (zuletzt) — ausgelagert nach `apps/web/plans/Todo.md`** (Abschnitt „Landing-Page Tracking/Consent: Playwright
+   E2E-Smoke"). Tasks 1–7 stehen; der Playwright-Smoke wird separat dort nachgezogen.
 
 ### Geplanter Follow-up (nach V1, nicht im ersten Go)
 

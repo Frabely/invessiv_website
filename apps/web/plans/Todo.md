@@ -77,3 +77,28 @@ Sobald die Zeitangabe für die Landingpage entschieden ist, müssen die Delivery
 | Prozess-Tool | `stark projektabhängig` | `highly project-dependent` |
 
 Frage: Sind diese Zeitangaben realistisch und konsistent mit der Landing-Positionierung?
+
+---
+
+### Landing-Page Tracking/Consent: Playwright E2E-Smoke
+
+Ausgelagert aus `apps/web/plans/landing-page/google-ads-tracking-consent-success.md` (dortiger Task 8). Tasks 1–7 des
+Plans stehen; dieser E2E-Smoke ist der letzte offene Schritt und wird separat nachgezogen.
+
+**Scope:** Playwright-Smoke für den Kernablauf der Landing-/Success-Route.
+
+**Abzudeckende Fälle:**
+
+- Consent-Banner ist sichtbar, Accept/Reject sind gleichwertig erreichbar und per Tastatur (Tab/Enter, `Escape`)
+  bedienbar.
+- Vor jeder Auswahl gilt Consent-Default `denied` (kein `consent update` auf `granted` ohne Klick).
+- Erfolgreicher Formular-Submit → Redirect auf die Success-Route → Conversion-Event feuert **genau einmal**.
+- Direktaufruf der Success-Route und Reload/Back nach konsumiertem Guard feuern **nicht**.
+- Honeypot-Treffer redirectet identisch, feuert aber **nicht**.
+
+**Hinweise zur Umsetzung:**
+
+- `gtag`/`dataLayer` im Test stubben und die gepushten Events asserten, statt echte Google-Calls abzuwarten — so läuft
+  der Smoke ohne gesetzte `AW-`Env-Vars und ohne externe Abhängigkeit.
+- Mobile-Viewport (360 px) mit prüfen: Banner verdeckt den Haupt-CTA nicht dauerhaft.
+- Erst umsetzen, wenn die übrigen Tasks stabil sind (Tasks 1–7 erledigt).
