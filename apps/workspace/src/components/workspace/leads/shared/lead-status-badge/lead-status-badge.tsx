@@ -1,13 +1,17 @@
 import {
   faArchive,
+  faArrowsRotate,
+  faBell,
   faCircleCheck,
   faCirclePause,
   faCirclePlus,
   faCircleXmark,
   faComments,
   faFileSignature,
+  faHandshake,
   faHourglassHalf,
   faLayerGroup,
+  faPhoneSlash,
   faReply,
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
@@ -53,6 +57,22 @@ const STATUS_CONFIG: Record<
   [ContactLeadStatus.Contacted]: {
     icon: faComments,
     tone: LeadBadgeTone.Primary,
+  },
+  [ContactLeadStatus.Connected]: {
+    icon: faHandshake,
+    tone: LeadBadgeTone.Indigo,
+  },
+  [ContactLeadStatus.FollowUp]: {
+    icon: faArrowsRotate,
+    tone: LeadBadgeTone.Info,
+  },
+  [ContactLeadStatus.NotReached]: {
+    icon: faPhoneSlash,
+    tone: LeadBadgeTone.Neutral,
+  },
+  [ContactLeadStatus.Reminder]: {
+    icon: faBell,
+    tone: LeadBadgeTone.Warning,
   },
   [ContactLeadStatus.Responded]: {
     icon: faReply,

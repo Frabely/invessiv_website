@@ -1,5 +1,5 @@
 import type { Locale } from "@/config/i18n";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";

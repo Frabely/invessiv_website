@@ -227,6 +227,112 @@ describe("LeadsToolbar", () => {
     ).toBeInTheDocument();
   });
 
+  function renderToolbar(currentQueryString: string) {
+    return render(
+      <LeadsToolbar
+        basePath="/de/leads"
+        categories={[]}
+        content={getLeadsToolbarDictionary("de")}
+        currentQueryString={currentQueryString}
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+  }
+
+  function lastPushedParams() {
+    const href = String(pushMock.mock.calls.at(-1)?.[0] ?? "");
+    return new URLSearchParams(href.split("?")[1] ?? "");
+  }
+
+  describe("profile filter", () => {
+    it("renders the profile filter group with all profile types", () => {
+      renderToolbar("");
+
+      const group = screen.getByRole("toolbar", { name: "Profile" });
+      expect(group).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Website" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Telefon" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "LinkedIn" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Instagram" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "YouTube" }),
+      ).toBeInTheDocument();
+    });
+
+    it("includes a profile type on first click", () => {
+      renderToolbar("");
+
+      fireEvent.click(screen.getByRole("button", { name: "Website" }));
+
+      const params = lastPushedParams();
+      expect(params.get("profile_include")).toBe("website");
+      expect(params.has("profile_exclude")).toBe(false);
+    });
+
+    it("switches an included type to excluded on second click", () => {
+      renderToolbar("profile_include=website");
+
+      const chip = screen.getByRole("button", {
+        name: "Website: eingeschlossen",
+      });
+      expect(chip).toHaveAttribute("data-state", "include");
+
+      fireEvent.click(chip);
+
+      const params = lastPushedParams();
+      expect(params.has("profile_include")).toBe(false);
+      expect(params.get("profile_exclude")).toBe("website");
+    });
+
+    it("clears an excluded type on third click", () => {
+      renderToolbar("profile_exclude=website");
+
+      const chip = screen.getByRole("button", {
+        name: "Website: ausgeschlossen",
+      });
+      expect(chip).toHaveAttribute("data-state", "exclude");
+
+      fireEvent.click(chip);
+
+      const params = lastPushedParams();
+      expect(params.has("profile_include")).toBe(false);
+      expect(params.has("profile_exclude")).toBe(false);
+    });
+
+    it("supports selecting multiple include types", () => {
+      renderToolbar("profile_include=website");
+
+      fireEvent.click(screen.getByRole("button", { name: "LinkedIn" }));
+
+      expect(lastPushedParams().get("profile_include")).toBe(
+        "website,linkedin",
+      );
+    });
+
+    it("enables reset and clears the profile params", () => {
+      renderToolbar("profile_include=website&profile_exclude=youtube");
+
+      const resetButton = screen.getByRole("button", {
+        name: "Filter zurücksetzen",
+      });
+      expect(resetButton).toBeEnabled();
+
+      fireEvent.click(resetButton);
+
+      const params = lastPushedParams();
+      expect(params.has("profile_include")).toBe(false);
+      expect(params.has("profile_exclude")).toBe(false);
+    });
+  });
+
   it("keeps reset disabled when no filters are active", () => {
     render(
       <LeadsToolbar

@@ -13,7 +13,7 @@ export function buildLeadHref(
     }
   }
 
-  const nextQuery = params.toString();
+  const nextQuery = params.toString().replace(/%2C/g, ",");
   return nextQuery ? `${basePath}?${nextQuery}` : basePath;
 }
 

@@ -23,7 +23,7 @@ import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
 } from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";

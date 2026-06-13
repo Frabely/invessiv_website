@@ -5,8 +5,8 @@ import {
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 describe("CONTACT_LEAD_STATUS_VALUES", () => {
-  it("contains all 10 statuses", () => {
-    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(10);
+  it("contains all 14 statuses", () => {
+    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(14);
   });
 
   it("positions pending_review between new and contacted", () => {
@@ -59,11 +59,35 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
     expect(onHoldIdx).toBeLessThan(wonIdx);
   });
 
+  it("positions the outreach states between contacted and responded", () => {
+    const contactedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "contacted" as never,
+    );
+    const respondedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "responded" as never,
+    );
+
+    for (const status of [
+      "connected",
+      "follow_up",
+      "not_reached",
+      "reminder",
+    ]) {
+      const idx = CONTACT_LEAD_STATUS_VALUES.indexOf(status as never);
+      expect(idx).toBeGreaterThan(contactedIdx);
+      expect(idx).toBeLessThan(respondedIdx);
+    }
+  });
+
   it("contains every expected status value", () => {
     const expected = [
       "new",
       "pending_review",
       "contacted",
+      "connected",
+      "follow_up",
+      "not_reached",
+      "reminder",
       "responded",
       "qualified",
       "proposal",

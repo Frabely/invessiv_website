@@ -1,6 +1,6 @@
 external_guid;email;first_name;last_name;company_name;phone;website_url;category_id;category;score;linkedin_url;instagram_url;youtube_url;status;owner;notes;improvements
-;anna.weber@beispiel.de;Anna;Weber;;+49 30 123456;https://beispiel.de;;;72;https://linkedin.com/in/anna-weber;;;zu prüfen;Moritz;Erstkontakt über Webinar.;Hero schärfen | CTA verbessern
-;info@muster-gmbh.de;;Muster;Muster GmbH;+49 89 987654;https://muster-gmbh.de;;;55;;;;zu prüfen;Moritz;Empfehlung von Weber.;Trust-Signale ergänzen | Über-uns-Seite überarbeiten
-ext-001;thomas.klein@klein-ag.com;Thomas;Klein;Klein AG;;https://klein-ag.com;;Bestandskunde;90;https://linkedin.com/in/thomas-klein;;;zu prüfen;Moritz;Langfristiger Kunde, Upsell geprüft.;
-;kontakt@startup-xyz.io;;;Startup XYZ;;https://startup-xyz.io;;;40;;;;;zu prüfen;Moritz;Inbound über LinkedIn.;Preisseite ergänzen | Mobile-Performance verbessern
-ext-002;m.braun@braun-consulting.de;Maria;Braun;Braun Consulting;+49 40 555000;https://braun-consulting.de;;Interessent;65;;https://instagram.com/braun_consulting;;zu prüfen;Moritz;;
+;anna.weber@beispiel.de;Anna;Weber;;+49 30 123456;https://beispiel.de;;;72;https://linkedin.com/in/anna-weber;;;pending_review;Moritz;Erstkontakt über Webinar.;Hero schärfen | CTA verbessern
+;info@muster-gmbh.de;;Muster;Muster GmbH;+49 89 987654;https://muster-gmbh.de;;;55;;;;pending_review;Moritz;Empfehlung von Weber.;Trust-Signale ergänzen | Über-uns-Seite überarbeiten
+ext-001;thomas.klein@klein-ag.com;Thomas;Klein;Klein AG;;https://klein-ag.com;;Bestandskunde;90;https://linkedin.com/in/thomas-klein;;;pending_review;Moritz;Langfristiger Kunde, Upsell geprüft.;
+;kontakt@startup-xyz.io;;;Startup XYZ;;https://startup-xyz.io;;;40;;;;;pending_review;Moritz;Inbound über LinkedIn.;Preisseite ergänzen | Mobile-Performance verbessern
+ext-002;m.braun@braun-consulting.de;Maria;Braun;Braun Consulting;+49 40 555000;https://braun-consulting.de;;Interessent;65;;https://instagram.com/braun_consulting;;pending_review;Moritz;;

@@ -51,7 +51,7 @@ vi.mock("@/server/workspace/leads/shared/create-lead-core", () => ({
 const EXAMPLE_CSV = [
   "external_guid;email;first_name;last_name;company_name;phone;website_url;category_id;category;score;linkedin_url;instagram_url;youtube_url;status;owner;notes;improvements",
   "linkedin-001;anna.schmidt@example.com;Anna;Schmidt;Schmidt Consulting;+49 30 1234567;https://schmidt-consulting.example;;consulting;82;https://www.linkedin.com/in/anna-schmidt;https://www.instagram.com/schmidtconsulting;https://www.youtube.com/@schmidtconsulting;new;Moritz;Outbound source;Clarify hero positioning | Make CTA more visible",
-  ";max.mustermann@example.com;Max;Mustermann;;;;;;45;;;;Neu;;Minimal person lead;",
+  ";max.mustermann@example.com;Max;Mustermann;;;;;;45;;;;new;;Minimal person lead;",
   "company-003;kontakt@beispiel-gmbh.example;;;Beispiel GmbH;;https://beispiel-gmbh.example;;;67;https://www.linkedin.com/company/beispiel-gmbh;;;qualified;Moritz;;Sharpen service offer | Add proof section",
 ].join("\n");
 

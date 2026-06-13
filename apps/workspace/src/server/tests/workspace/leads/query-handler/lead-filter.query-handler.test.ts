@@ -247,6 +247,86 @@ describe("buildLeadFilter", () => {
     });
   });
 
+  describe("profile filter (include/exclude)", () => {
+    it("matches leads with a website when profile_include=[website]", () => {
+      const { sql } = toSQLFull(
+        buildLeadFilter({ profile_include: ["website"] }).where,
+      );
+      expect(sql).toContain("website_url");
+      expect(sql.toLowerCase()).toContain("is not null");
+    });
+
+    it("matches leads with a linkedin profile via an exists subquery", () => {
+      const { sql, params } = toSQLFull(
+        buildLeadFilter({ profile_include: ["linkedin"] }).where,
+      );
+      expect(sql.toLowerCase()).toContain("exists");
+      expect(sql).toContain("lead_social_profiles");
+      expect(params).toContain("linkedin");
+    });
+
+    it("combines multiple include types with AND (lead must have all of them)", () => {
+      const { sql, params } = toSQLFull(
+        buildLeadFilter({ profile_include: ["website", "linkedin"] }).where,
+      );
+      expect(sql).toContain("website_url");
+      expect(sql.toLowerCase()).toContain("exists");
+      // No OR is introduced by the profile filter — the two hits are AND-combined.
+      expect(sql.toLowerCase()).not.toContain(" or ");
+      expect(params).toContain("linkedin");
+    });
+
+    it("matches leads with a phone number when profile_include=[phone]", () => {
+      const { sql } = toSQLFull(
+        buildLeadFilter({ profile_include: ["phone"] }).where,
+      );
+      expect(sql).toContain("phone");
+      expect(sql.toLowerCase()).toContain("is not null");
+    });
+
+    it("excludes phone via a NULL-safe predicate so phone-less leads still match", () => {
+      const { sql } = toSQLFull(
+        buildLeadFilter({ profile_exclude: ["phone"] }).where,
+      );
+      expect(sql).toContain("phone");
+      expect(sql.toLowerCase()).toContain("is null");
+    });
+
+    it("blocks leads matching an excluded social type via NOT EXISTS", () => {
+      const { sql, params } = toSQLFull(
+        buildLeadFilter({ profile_exclude: ["instagram"] }).where,
+      );
+      expect(sql.toLowerCase()).toContain("not exists");
+      expect(params).toContain("instagram");
+    });
+
+    it("excludes website via a NULL-safe predicate so website-less leads still match", () => {
+      const { sql } = toSQLFull(
+        buildLeadFilter({ profile_exclude: ["website"] }).where,
+      );
+      expect(sql).toContain("website_url");
+      expect(sql.toLowerCase()).toContain("is null");
+    });
+
+    it("applies include and exclude together", () => {
+      const { sql, params } = toSQLFull(
+        buildLeadFilter({
+          profile_include: ["website"],
+          profile_exclude: ["youtube"],
+        }).where,
+      );
+      expect(sql).toContain("website_url");
+      expect(sql.toLowerCase()).toContain("not exists");
+      expect(params).toContain("youtube");
+    });
+
+    it("does not add profile conditions when none are given", () => {
+      const { sql } = toSQLFull(buildLeadFilter({}).where);
+      expect(sql).not.toContain("website_url");
+      expect(sql).not.toContain("lead_social_profiles");
+    });
+  });
+
   describe("combined filters", () => {
     it("combines status and source conditions", () => {
       const { sql, params } = toSQLFull(
