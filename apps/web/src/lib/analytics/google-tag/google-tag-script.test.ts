@@ -44,7 +44,9 @@ describe("buildConsentBootstrapScript", () => {
     expect(script).toContain("parsed.version!==1");
     expect(script).toContain('parsed.analytics?"granted":"denied"');
     expect(script).toContain('parsed.marketing?"granted":"denied"');
-    expect(script).toContain("}catch(e){}");
+    expect(script).toContain(
+      "}catch(e){if(typeof console!=='undefined'){console.warn('[invessiv:consent-bootstrap]',e);}}",
+    );
   });
 });
 

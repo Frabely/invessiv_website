@@ -1,3 +1,4 @@
+import { reportClientError } from "@/lib/observability/report-client-error";
 import { type ConsentChoice } from "./consent-types";
 
 export const CONSENT_STORAGE_KEY = "invessiv-consent";
@@ -36,7 +37,8 @@ export function parseStoredConsentState(
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
-  } catch {
+  } catch (error) {
+    reportClientError("consent-storage.parse", error);
     return null;
   }
 
@@ -75,7 +77,8 @@ export function readStoredConsentState(): StoredConsentState | null {
     return parseStoredConsentState(
       window.localStorage.getItem(CONSENT_STORAGE_KEY),
     );
-  } catch {
+  } catch (error) {
+    reportClientError("consent-storage.read", error);
     return null;
   }
 }
@@ -96,7 +99,8 @@ export function writeStoredConsentChoice(
 
   try {
     window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(state));
-  } catch {
+  } catch (error) {
+    reportClientError("consent-storage.write", error);
     return null;
   }
 

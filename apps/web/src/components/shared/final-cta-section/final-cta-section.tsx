@@ -22,6 +22,10 @@ import type { ContactSubmitResponse } from "@invessiv/common/contracts/contact/s
 import type { FinalCtaFormValues } from "@invessiv/common/contracts/contact/forms/final-cta-form-values";
 import { DEFAULT_FINAL_CTA_FORM_VALUES } from "@invessiv/common/defaults/contact/final-cta-form-values";
 import type { Locale } from "@/config/i18n";
+import {
+  createConversionTransactionId,
+  markLandingConversionPending,
+} from "@/lib/analytics/google-ads-conversion/conversion-guard";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
@@ -36,6 +40,7 @@ type FinalCtaSectionProps = FinalCtaContent & {
   locale: Locale;
   origin?: ContactSubmissionOrigin;
   successRedirectHref: string;
+  trackAdsConversion?: boolean;
 };
 
 export function FinalCtaSection({
@@ -49,6 +54,7 @@ export function FinalCtaSection({
   origin = ContactSubmissionOrigin.Website,
   successRedirectHref,
   title,
+  trackAdsConversion = false,
   trustLine,
 }: FinalCtaSectionProps) {
   const router = useRouter();
@@ -112,7 +118,14 @@ export function FinalCtaSection({
     return form.errorGeneric;
   };
 
-  const redirectToSuccess = () => {
+  const redirectToSuccess = ({
+    markConversion,
+  }: {
+    markConversion: boolean;
+  }) => {
+    if (markConversion && trackAdsConversion) {
+      markLandingConversionPending(createConversionTransactionId());
+    }
     reset(DEFAULT_FINAL_CTA_FORM_VALUES);
     router.push(successRedirectHref);
   };
@@ -120,7 +133,7 @@ export function FinalCtaSection({
   const onValidSubmit = handleSubmit(
     async (values) => {
       if (values.honeypot.trim()) {
-        redirectToSuccess();
+        redirectToSuccess({ markConversion: false });
         return;
       }
 
@@ -143,7 +156,7 @@ export function FinalCtaSection({
         }
         trackSubmitSuccess();
         resetFormAnalytics();
-        redirectToSuccess();
+        redirectToSuccess({ markConversion: true });
       } catch {
         setSubmitState({
           kind: SubmitState.Kind.Error,
@@ -163,7 +176,7 @@ export function FinalCtaSection({
 
     if (honeypotValue) {
       event.preventDefault();
-      redirectToSuccess();
+      redirectToSuccess({ markConversion: false });
       return;
     }
 

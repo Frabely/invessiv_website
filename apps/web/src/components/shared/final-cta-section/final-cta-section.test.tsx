@@ -12,6 +12,7 @@ import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
+import { LANDING_CONVERSION_GUARD_KEY } from "@/lib/analytics/google-ads-conversion/conversion-guard";
 import { FinalCtaSection } from "./final-cta-section";
 
 const { mockRouterPush, mockTrackConversionEvent } = vi.hoisted(() => ({
@@ -50,6 +51,7 @@ describe("FinalCtaSection", () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    window.sessionStorage.clear();
   });
 
   it("submits quick contact with landing context and website in the message", async () => {
@@ -60,6 +62,7 @@ describe("FinalCtaSection", () => {
         id="contact"
         locale="de"
         successRedirectHref="/de/services/landing-page/success"
+        trackAdsConversion
         {...getLandingFinalCtaContent("de")}
       />,
     );
@@ -131,6 +134,9 @@ describe("FinalCtaSection", () => {
     expect(mockRouterPush).toHaveBeenCalledWith(
       "/de/services/landing-page/success",
     );
+    expect(
+      window.sessionStorage.getItem(LANDING_CONVERSION_GUARD_KEY),
+    ).not.toBeNull();
   });
 
   it("submits the LinkedIn workflow CTA without rendering a website field", async () => {
@@ -215,6 +221,9 @@ describe("FinalCtaSection", () => {
     expect(mockRouterPush).toHaveBeenCalledWith(
       "/de/services/linkedin-post/success",
     );
+    expect(
+      window.sessionStorage.getItem(LANDING_CONVERSION_GUARD_KEY),
+    ).toBeNull();
   });
 
   it("redirects honeypot submissions without calling the API", async () => {
@@ -225,6 +234,7 @@ describe("FinalCtaSection", () => {
         id="contact"
         locale="de"
         successRedirectHref="/de/services/landing-page/success"
+        trackAdsConversion
         {...getLandingFinalCtaContent("de")}
       />,
     );
@@ -251,5 +261,8 @@ describe("FinalCtaSection", () => {
       );
     });
     expect(submitQuickContact).not.toHaveBeenCalled();
+    expect(
+      window.sessionStorage.getItem(LANDING_CONVERSION_GUARD_KEY),
+    ).toBeNull();
   });
 });

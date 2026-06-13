@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { LandingConversion } from "@/components/analytics/landing-conversion/landing-conversion";
 import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
@@ -74,6 +75,7 @@ export default async function LandingSuccessRoute({
   return (
     <ConsentProvider content={consent} locale={activeLocale}>
       <GoogleTag />
+      <LandingConversion />
       <SiteHeader
         isMinimalHeader
         brandHref={createLocalePathname(SITE_ROUTES.HOME, activeLocale)}

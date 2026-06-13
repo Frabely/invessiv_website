@@ -120,6 +120,7 @@ export function LandingPage({ locale }: LandingPageProps) {
             SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
             locale,
           )}
+          trackAdsConversion
           {...finalCta}
         />
 

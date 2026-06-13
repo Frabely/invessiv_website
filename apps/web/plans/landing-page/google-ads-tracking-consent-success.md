@@ -448,10 +448,24 @@ update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 
 - Offen (operativ, nicht Code): Conversion-Aktion in Google Ads anlegen → `AW-`ID + Label für die Env-Vars; das
   Conversion-Event selbst kommt in Task 4.
 
-4. Conversion auf der Success-Route: `sessionStorage`-Guard + `transaction_id` beim Redirect setzen (nicht im
-   Honeypot-Fall), Flag **direkt nach dem Lesen löschen**, Conversion-Event (`send_to: "<AW-ID>/<Label>"`,
-   `transaction_id`) nur bei vorhandenem Flag feuern; Tests: Conversion nach echtem Submit, kein Feuern bei Fehlern,
-   Direktaufrufen, CTA-Klicks oder Reload/Back.
+4. ✅ **Erledigt.** Conversion auf der Success-Route:
+
+- `lib/analytics/google-ads-conversion/conversion-guard.ts` — `sessionStorage`-Guard (`LANDING_CONVERSION_GUARD_KEY`)
+  - `createConversionTransactionId` (`crypto.randomUUID` mit Fallback); `markLandingConversionPending` (window-/
+    try-catch-Guard) und `consumeLandingConversionGuard` (liest + löscht im selben Schritt → kein Doppelfeuern).
+- `lib/analytics/google-ads-conversion/conversion-event.ts` — `buildConversionSendTo` (`<AW-ID>/<Label>`) +
+  `fireLandingConversion` (gtag `event conversion` mit `send_to`/`transaction_id`, no-op ohne Ads-Config oder `gtag`).
+- `hooks/analytics/use-landing-conversion.ts` + `components/analytics/landing-conversion/` — konsumiert das Flag beim
+  Mount und feuert einmalig; eingebunden nur auf der Landing-Success-Route (`success/page.tsx`), nicht im geteilten
+  `SuccessPage` (LinkedIn-Success bleibt unberührt).
+- `FinalCtaSection` markiert das Guard-Flag nur bei echtem Submit-Erfolg und nur über die opt-in-Prop
+  `trackAdsConversion` (Landing-Page setzt sie; Honeypot-Redirect und LinkedIn setzen das Flag nicht).
+- Tests (15 neue + erweiterte Final-CTA-/Success-Tests): Conversion nach echtem Submit, kein Feuern bei Direktaufruf,
+  fehlender Ads-Config, Honeypot, LinkedIn oder Reload/Back (konsumiertes Flag). Verifikation: `npm run typecheck`,
+  ESLint (0 Fehler), 412 Vitest-Tests und `npm run build` grün.
+- Offen (operativ, nicht Code): `AW-`ID + Label in den Env-Vars hinterlegen, sobald die Conversion-Aktion in Google Ads
+  angelegt ist — ohne diese Werte no-op't die Conversion sauber.
+
 5. FAQ-Ausstiegslink-Event: sekundäres Vercel-Analytics-Event (z. B. `faq_exit_services_click`) für den bewusst
    bestehenden Link `/{locale}#services` in der FAQ-Sektion; keine Ads-Conversion.
 6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen — Pflichtangaben siehe „Pflichtangaben

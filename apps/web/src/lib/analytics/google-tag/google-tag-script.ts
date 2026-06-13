@@ -44,7 +44,7 @@ export function buildConsentBootstrapScript(): string {
       '"ad_user_data":parsed.marketing?"granted":"denied",' +
       '"ad_personalization":parsed.marketing?"granted":"denied"' +
       "});" +
-      "}catch(e){}})();",
+      "}catch(e){if(typeof console!=='undefined'){console.warn('[invessiv:consent-bootstrap]',e);}}})();",
   ].join("\n");
 }
 
