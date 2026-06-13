@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
 import {
   buildConsentBootstrapScript,
   buildGtagConfigScript,

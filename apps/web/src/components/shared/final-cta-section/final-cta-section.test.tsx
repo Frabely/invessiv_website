@@ -12,7 +12,7 @@ import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
-import { LANDING_CONVERSION_GUARD_KEY } from "@/lib/analytics/google-ads-conversion/conversion-guard";
+import { LANDING_CONVERSION_GUARD_KEY } from "@/common/constants/storage/storage-keys";
 import { writeStoredConsentChoice } from "@/lib/consent/consent-storage";
 import { FinalCtaSection } from "./final-cta-section";
 

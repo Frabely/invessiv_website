@@ -10,7 +10,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ConsentProvider } from "./consent-provider";
-import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
 import type { Locale } from "@/config/i18n";
 import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 

@@ -1,8 +1,4 @@
-type FireLandingConversionInput = {
-  adsConversionId: string | null;
-  adsConversionLabel: string | null;
-  transactionId: string;
-};
+import type { FireLandingConversionInput } from "@/common/contracts/analytics/fire-landing-conversion-input";
 
 export function buildConversionSendTo(
   adsConversionId: string,

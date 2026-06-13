@@ -5,10 +5,8 @@ import {
   DEFAULT_CONSENT_CHOICE,
   REJECT_ALL_CONSENT_CHOICE,
 } from "@/common/defaults/consent/consent-choice";
-import {
-  DEFAULT_GOOGLE_CONSENT_SIGNALS,
-  mapConsentChoiceToGoogleSignals,
-} from "./consent-mode";
+import { DEFAULT_GOOGLE_CONSENT_SIGNALS } from "@/common/defaults/consent/google-consent-signals";
+import { mapConsentChoiceToGoogleSignals } from "./consent-mode";
 
 describe("mapConsentChoiceToGoogleSignals", () => {
   it("keeps every signal denied when both categories are rejected", () => {

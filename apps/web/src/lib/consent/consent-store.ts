@@ -1,6 +1,6 @@
-import { CONSENT_CHANGE_EVENT } from "@/common/constants/consent/consent-change-event";
 import { CONSENT_SNAPSHOT_UNKNOWN } from "@/common/constants/consent/consent-snapshot-unknown";
-import { CONSENT_STORAGE_KEY } from "@/common/constants/consent/consent-storage";
+import { CONSENT_CHANGE_EVENT } from "@/common/constants/events/window-event-names";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
 import type { ConsentChoice } from "@/common/contracts/consent/consent-choice";
 import type { ConsentSnapshot } from "@/common/contracts/consent/consent-snapshot";
 import { parseStoredConsentState, toConsentChoice } from "./consent-storage";

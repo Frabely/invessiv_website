@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { CONSENT_SNAPSHOT_UNKNOWN } from "@/common/constants/consent/consent-snapshot-unknown";
+import { type BannerOverride } from "@/common/contracts/consent/banner-override";
 import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
 import { type ConsentContextValue } from "@/common/contracts/consent/consent-context-value";
 import {
@@ -10,7 +11,6 @@ import {
   REJECT_ALL_CONSENT_CHOICE,
 } from "@/common/defaults/consent/consent-choice";
 import { ConsentBanner } from "@/components/consent/consent-banner/consent-banner";
-import { type BannerOverride } from "@/components/providers/consent-provider/banner-override";
 import { ConsentContext } from "@/components/providers/consent-provider/consent-context";
 import type { Locale } from "@/config/i18n";
 import type { ConsentStaticContent } from "@/i18n/dictionaries/shared/consent";

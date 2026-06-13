@@ -1,7 +1,5 @@
-import {
-  CONSENT_STATE_VERSION,
-  CONSENT_STORAGE_KEY,
-} from "@/common/constants/consent/consent-storage";
+import { CONSENT_STATE_VERSION } from "@/common/constants/consent/consent-state-version";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
 import { type ConsentChoice } from "@/common/contracts/consent/consent-choice";
 import { type StoredConsentState } from "@/common/contracts/consent/stored-consent-state";
 import { reportClientError } from "@/lib/observability/report-client-error";

@@ -1,12 +1,8 @@
 import { GTAG_BASE_SRC } from "@/common/constants/analytics/google-tag";
-import {
-  CONSENT_STATE_VERSION,
-  CONSENT_STORAGE_KEY,
-} from "@/common/constants/consent/consent-storage";
-import {
-  CONSENT_DEFAULT_PARAMS,
-  DEFAULT_GOOGLE_CONSENT_SIGNALS,
-} from "@/lib/consent/consent-mode";
+import { CONSENT_STATE_VERSION } from "@/common/constants/consent/consent-state-version";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
+import { CONSENT_DEFAULT_PARAMS } from "@/common/defaults/consent/consent-default-params";
+import { DEFAULT_GOOGLE_CONSENT_SIGNALS } from "@/common/defaults/consent/google-consent-signals";
 
 export function buildGtagSrc(loaderId: string): string {
   return `${GTAG_BASE_SRC}?id=${encodeURIComponent(loaderId)}`;

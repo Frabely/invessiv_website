@@ -1,3 +1,4 @@
+export * from "./banner-override";
 export * from "./consent-choice";
 export * from "./consent-context-value";
 export * from "./consent-snapshot";

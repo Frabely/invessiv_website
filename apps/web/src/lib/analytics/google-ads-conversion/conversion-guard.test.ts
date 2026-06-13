@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it } from "vitest";
+import { LANDING_CONVERSION_GUARD_KEY } from "@/common/constants/storage/storage-keys";
 import {
   consumeLandingConversionGuard,
   createConversionTransactionId,
-  LANDING_CONVERSION_GUARD_KEY,
   markLandingConversionPending,
 } from "./conversion-guard";
 

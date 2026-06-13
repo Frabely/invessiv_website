@@ -2,10 +2,8 @@
 
 import { beforeEach, describe, expect, it } from "vitest";
 
-import {
-  CONSENT_STATE_VERSION,
-  CONSENT_STORAGE_KEY,
-} from "@/common/constants/consent/consent-storage";
+import { CONSENT_STATE_VERSION } from "@/common/constants/consent/consent-state-version";
+import { CONSENT_STORAGE_KEY } from "@/common/constants/storage/storage-keys";
 import { ACCEPT_ALL_CONSENT_CHOICE } from "@/common/defaults/consent/consent-choice";
 import {
   createStoredConsentState,

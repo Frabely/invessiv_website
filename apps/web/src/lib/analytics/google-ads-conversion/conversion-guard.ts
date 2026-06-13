@@ -1,6 +1,5 @@
+import { LANDING_CONVERSION_GUARD_KEY } from "@/common/constants/storage/storage-keys";
 import { reportClientError } from "@/lib/observability/report-client-error";
-
-export const LANDING_CONVERSION_GUARD_KEY = "invessiv-landing-ads-conversion";
 
 export function createConversionTransactionId(): string {
   if (

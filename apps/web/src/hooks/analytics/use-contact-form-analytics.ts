@@ -2,18 +2,10 @@
 
 import { useCallback, useRef } from "react";
 
-import {
-  trackConversionEvent,
-  type ConversionEventPayload,
-} from "@/lib/analytics/conversion-events";
+import { type ContactFormAnalyticsOptions } from "@/common/contracts/analytics/contact-form-analytics-options";
+import { type ConversionEventPayload } from "@/common/contracts/analytics/conversion-event-payload";
 import type { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
-
-type ContactFormAnalyticsOptions = {
-  formId: string;
-  location: string;
-  target?: string;
-  variant?: string;
-};
+import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 
 export function useContactFormAnalytics({
   formId,

@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { CLICK_TRACKED_EVENT_NAMES } from "@/common/constants/analytics/click-tracked-event-names";
+import { ALLOWED_CONVERSION_EVENT_NAMES } from "@/common/constants/analytics/conversion-event-names";
+import { ALLOWED_CONVERSION_PAYLOAD_FIELDS } from "@/common/constants/analytics/conversion-payload-fields";
 import {
-  ALLOWED_CONVERSION_EVENT_NAMES,
-  ALLOWED_CONVERSION_PAYLOAD_FIELDS,
-  CLICK_TRACKED_EVENT_NAMES,
   isClickTrackedEventName,
   isConversionEventName,
   sanitizeConversionEventPayload,

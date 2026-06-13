@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
+import { type ConversionEventName } from "@/common/constants/analytics/conversion-event-names";
+import { type ConversionEventPayload } from "@/common/contracts/analytics/conversion-event-payload";
 import {
   isClickTrackedEventName,
   isConversionEventName,
   trackConversionEvent,
-  type ConversionEventName,
-  type ConversionEventPayload,
 } from "@/lib/analytics/conversion-events";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 
