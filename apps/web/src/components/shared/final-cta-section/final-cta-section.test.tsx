@@ -13,6 +13,7 @@ import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { submitQuickContact } from "@/client/contact/services/contact-form-service";
 import { LANDING_CONVERSION_GUARD_KEY } from "@/lib/analytics/google-ads-conversion/conversion-guard";
+import { writeStoredConsentChoice } from "@/lib/consent/consent-storage";
 import { FinalCtaSection } from "./final-cta-section";
 
 const { mockRouterPush, mockTrackConversionEvent } = vi.hoisted(() => ({
@@ -51,10 +52,13 @@ describe("FinalCtaSection", () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    window.localStorage.clear();
     window.sessionStorage.clear();
   });
 
-  it("submits quick contact with landing context and website in the message", async () => {
+  it("submits quick contact with landing context and marks ads conversion when marketing consent exists", async () => {
+    writeStoredConsentChoice({ analytics: false, marketing: true });
+
     render(
       <FinalCtaSection
         analyticsLocation="landing_final_cta"
@@ -137,6 +141,54 @@ describe("FinalCtaSection", () => {
     expect(
       window.sessionStorage.getItem(LANDING_CONVERSION_GUARD_KEY),
     ).not.toBeNull();
+  });
+
+  it("does not mark ads conversion when marketing consent is missing", async () => {
+    writeStoredConsentChoice({ analytics: true, marketing: false });
+
+    render(
+      <FinalCtaSection
+        analyticsLocation="landing_final_cta"
+        formId="landing_final_cta"
+        id="contact"
+        locale="de"
+        successRedirectHref="/de/services/landing-page/success"
+        trackAdsConversion
+        {...getLandingFinalCtaContent("de")}
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
+      target: { value: "Max Mustermann" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
+      target: { value: "max@example.com" },
+    });
+    fireEvent.change(
+      screen.getByRole("textbox", {
+        name: /Was möchtest du mit der Landingpage erreichen/,
+      }),
+      {
+        target: {
+          value: "Ich möchte direkt eine neue Landingpage für mein Angebot.",
+        },
+      },
+    );
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Ersteinschätzung anfragen",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(mockRouterPush).toHaveBeenCalledWith(
+        "/de/services/landing-page/success",
+      );
+    });
+    expect(
+      window.sessionStorage.getItem(LANDING_CONVERSION_GUARD_KEY),
+    ).toBeNull();
   });
 
   it("submits the LinkedIn workflow CTA without rendering a website field", async () => {

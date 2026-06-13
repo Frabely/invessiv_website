@@ -26,6 +26,7 @@ import {
   createConversionTransactionId,
   markLandingConversionPending,
 } from "@/lib/analytics/google-ads-conversion/conversion-guard";
+import { readStoredConsentChoice } from "@/lib/consent/consent-storage";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
 import { ContactFormSubmitErrorType } from "@/lib/analytics/contact-form-submit-error-type";
 import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-submit-error-type";
@@ -123,7 +124,8 @@ export function FinalCtaSection({
   }: {
     markConversion: boolean;
   }) => {
-    if (markConversion && trackAdsConversion) {
+    const hasMarketingConsent = readStoredConsentChoice()?.marketing === true;
+    if (markConversion && trackAdsConversion && hasMarketingConsent) {
       markLandingConversionPending(createConversionTransactionId());
     }
     reset(DEFAULT_FINAL_CTA_FORM_VALUES);

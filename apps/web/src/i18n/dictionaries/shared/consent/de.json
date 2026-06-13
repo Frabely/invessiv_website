@@ -1,7 +1,7 @@
 {
   "banner": {
     "title": "Datenschutz-Einstellungen",
-    "description": "Wir nutzen notwendige Funktionen für diese Website. Analyse und Marketing setzen wir nur ein, wenn du zustimmst. Du kannst deine Auswahl jederzeit ändern.",
+    "description": "Invessiv nutzt notwendige Funktionen sowie auf dieser Landingpage Google Analytics und Google Ads, um Seitenaufrufe, Interaktionen und Angebotsanfragen mit technischen Geräte- und Browserdaten auszuwerten. Dabei können Daten an Google in den USA übermittelt werden. Analyse und Marketing steuerst du hier; Details findest du in der Datenschutzerklärung.",
     "privacyLabel": "Datenschutzerklärung",
     "acceptAll": "Alle akzeptieren",
     "reject": "Ablehnen",
@@ -15,11 +15,11 @@
     },
     "analytics": {
       "title": "Analyse",
-      "description": "Hilft uns über Google Analytics zu verstehen, welche Seiten und Inhalte genutzt werden. Aktivieren wir nur mit deiner Zustimmung."
+      "description": "Hilft uns über Google Analytics zu verstehen, welche Seiten und Inhalte genutzt werden. Die vollständige Analyse aktivieren wir nur mit deiner Zustimmung."
     },
     "marketing": {
       "title": "Marketing",
-      "description": "Erlaubt Google Ads Conversion Tracking, damit wir Angebotsanfragen aus Anzeigen korrekt messen können. Aktivieren wir nur mit deiner Zustimmung."
+      "description": "Erlaubt Google Ads Conversion Tracking, damit wir Angebotsanfragen aus Anzeigen korrekt messen können. Ads-Conversions erfassen wir nur mit deiner Zustimmung."
     }
   },
   "necessaryStateLabel": "Immer aktiv",

@@ -1,7 +1,7 @@
 {
   "banner": {
     "title": "Privacy settings",
-    "description": "We use functions that are necessary for this website. We only use analytics and marketing if you agree. You can change your choice at any time.",
+    "description": "Invessiv uses necessary functions and, on this landing page, Google Analytics and Google Ads to evaluate page views, interactions, and quote requests with technical device and browser data. Data may be transferred to Google in the United States. You control analytics and marketing here; details are available in the Privacy Policy.",
     "privacyLabel": "Privacy policy",
     "acceptAll": "Accept all",
     "reject": "Reject",
@@ -15,11 +15,11 @@
     },
     "analytics": {
       "title": "Analytics",
-      "description": "Helps us understand which pages and content get used, via Google Analytics. We only enable it with your consent."
+      "description": "Helps us understand which pages and content get used, via Google Analytics. We only enable full analytics measurement with your consent."
     },
     "marketing": {
       "title": "Marketing",
-      "description": "Enables Google Ads conversion tracking so we can correctly measure quote requests from ads. We only enable it with your consent."
+      "description": "Enables Google Ads conversion tracking so we can correctly measure quote requests from ads. We only record Ads conversions with your consent."
     }
   },
   "necessaryStateLabel": "Always on",
