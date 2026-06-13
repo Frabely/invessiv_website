@@ -3,18 +3,19 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
+import type { LandingFaqItem } from "@/i18n/dictionaries/landing/faq";
 import { FaqSection } from "./faq-section";
 
 afterEach(() => {
   cleanup();
 });
 
-const ITEMS = Array.from({ length: 8 }, (_, index) => ({
+const ITEMS: LandingFaqItem[] = Array.from({ length: 8 }, (_, index) => ({
   question: `Frage ${index + 1}?`,
   answer: `Antwort ${index + 1}.`,
 }));
 
-function renderFaqSection(items = ITEMS) {
+function renderFaqSection(items: LandingFaqItem[] = ITEMS) {
   return render(
     <FaqSection
       cta={{
@@ -104,5 +105,42 @@ describe("FaqSection", () => {
     expect(
       screen.queryByRole("button", { name: "Mehr Fragen anzeigen" }),
     ).toBeNull();
+  });
+
+  it("verkabelt den Ausstiegslink mit den Tracking-Attributen aus dem Content", () => {
+    renderFaqSection([
+      {
+        question: "Für wen ist das nicht geeignet?",
+        answer: "Wenn dein Angebot noch unklar ist.",
+        link: {
+          label: "Schau dir meine Leistungen an",
+          href: "/de#services",
+          analyticsEvent: "faq_exit_services_click",
+          analyticsLocation: "faq",
+          analyticsTarget: "services",
+        },
+      },
+    ]);
+
+    const exitLink = screen.getByRole("link", {
+      name: "Schau dir meine Leistungen an",
+    });
+    expect(exitLink.getAttribute("href")).toBe("/de#services");
+    expect(exitLink.dataset.analyticsEvent).toBe("faq_exit_services_click");
+    expect(exitLink.dataset.analyticsLocation).toBe("faq");
+    expect(exitLink.dataset.analyticsTarget).toBe("services");
+  });
+
+  it("setzt keine Tracking-Attribute auf Antwortlinks ohne Analytics-Content", () => {
+    renderFaqSection([
+      {
+        question: "Frage ohne Tracking?",
+        answer: "Antwort.",
+        link: { label: "Mehr lesen", href: "/de/info" },
+      },
+    ]);
+
+    const link = screen.getByRole("link", { name: "Mehr lesen" });
+    expect(link.dataset.analyticsEvent).toBeUndefined();
   });
 });

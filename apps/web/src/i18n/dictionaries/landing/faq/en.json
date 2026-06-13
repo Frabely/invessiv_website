@@ -43,7 +43,10 @@
       "answer": "If your offer is unclear or you need many subpages, a simple landing page probably isn't the right first step.",
       "link": {
         "label": "Take a look at my services",
-        "href": "/en#services"
+        "href": "/en#services",
+        "analyticsEvent": "faq_exit_services_click",
+        "analyticsLocation": "faq",
+        "analyticsTarget": "services"
       }
     }
   ]

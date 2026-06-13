@@ -82,7 +82,13 @@ export function FaqSection({
                 <div className={styles.answerInner}>
                   <p className={styles.answer}>{item.answer}</p>
                   {item.link ? (
-                    <a className={styles.answerLink} href={item.link.href}>
+                    <a
+                      className={styles.answerLink}
+                      data-analytics-event={item.link.analyticsEvent}
+                      data-analytics-location={item.link.analyticsLocation}
+                      data-analytics-target={item.link.analyticsTarget}
+                      href={item.link.href}
+                    >
                       {item.link.label}
                     </a>
                   ) : null}

@@ -466,8 +466,21 @@ update`, Escape-Dismiss, EN-Copy). Verifikation: `npm run typecheck`, ESLint (0 
 - Offen (operativ, nicht Code): `AW-`ID + Label in den Env-Vars hinterlegen, sobald die Conversion-Aktion in Google Ads
   angelegt ist — ohne diese Werte no-op't die Conversion sauber.
 
-5. FAQ-Ausstiegslink-Event: sekundäres Vercel-Analytics-Event (z. B. `faq_exit_services_click`) für den bewusst
-   bestehenden Link `/{locale}#services` in der FAQ-Sektion; keine Ads-Conversion.
+5. ✅ **Erledigt.** FAQ-Ausstiegslink-Event:
+
+- `faq_exit_services_click` als neuer Eintrag in `CLICK_TRACKED_EVENT_NAMES` (`lib/analytics/conversion-events.ts`) —
+  damit automatisch in `ALLOWED_CONVERSION_EVENT_NAMES` und über den bestehenden, delegierten `ConversionClickTracker`
+  (im Locale-Layout via `VercelAnalytics`) getrackt; kein neuer Tracker nötig. Reines Vercel-Analytics-Event, **keine**
+  Ads-Conversion.
+- Content-getrieben (analog CTA): `LandingFaqLink` um optionale `analyticsEvent`/`analyticsLocation`/`analyticsTarget`
+  erweitert; der Antwortlink in `faq-section.tsx` rendert die `data-analytics-*`-Attribute nur, wenn gesetzt. Andere
+  Antwortlinks bleiben ohne Tracking, bis sie es im Content opt-in setzen.
+- DE/EN parallel gepflegt: der `/{locale}#services`-Exit-Link in `faq/{de,en}.json` trägt
+  `analyticsEvent: "faq_exit_services_click"`, `analyticsLocation: "faq"`, `analyticsTarget: "services"`.
+- Tests: erweiterte `conversion-events.test.ts` (Allowlists), zwei neue `faq-section.test.tsx`-Fälle (Attribute am
+  Exit-Link gesetzt / kein Tracking ohne Analytics-Content). Verifikation: `npm run typecheck`, ESLint (0 Fehler),
+  414 Vitest-Tests und `npm run build` grün.
+
 6. Datenschutztexte: Privacy-Dictionaries in DE/EN ergänzen — Pflichtangaben siehe „Pflichtangaben
    Datenschutzerklärung" (GA4, Ads, Consent Mode Advanced/cookielose Pings, Vercel Analytics, USA-Transfer, IP,
    Widerruf). Legal-Merge-Regel: zwei Reviews.

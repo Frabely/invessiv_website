@@ -4,6 +4,9 @@ import de from "./de.json";
 import en from "./en.json";
 
 export type LandingFaqLink = {
+  analyticsEvent?: string;
+  analyticsLocation?: string;
+  analyticsTarget?: string;
   href: string;
   label: string;
 };

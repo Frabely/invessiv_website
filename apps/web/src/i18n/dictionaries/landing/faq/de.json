@@ -43,7 +43,10 @@
       "answer": "Wenn dein Angebot noch unklar ist oder du viele Unterseiten brauchst, ist eine einfache Landingpage wahrscheinlich nicht der erste Schritt.",
       "link": {
         "label": "Schau dir meine Leistungen an",
-        "href": "/de#services"
+        "href": "/de#services",
+        "analyticsEvent": "faq_exit_services_click",
+        "analyticsLocation": "faq",
+        "analyticsTarget": "services"
       }
     }
   ]

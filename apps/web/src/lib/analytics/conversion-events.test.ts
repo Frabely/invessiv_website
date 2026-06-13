@@ -22,6 +22,7 @@ describe("conversion events", () => {
       "cta_click",
       "contact_click",
       "calendar_click",
+      "faq_exit_services_click",
       "lead_submit_success",
       "form_start",
       "form_submit_attempt",
@@ -38,8 +39,9 @@ describe("conversion events", () => {
       "cta_click",
       "contact_click",
       "calendar_click",
+      "faq_exit_services_click",
     ]);
-    expect(isClickTrackedEventName("cta_click")).toBe(true);
+    expect(isClickTrackedEventName("faq_exit_services_click")).toBe(true);
     expect(isClickTrackedEventName("form_start")).toBe(false);
   });
 
