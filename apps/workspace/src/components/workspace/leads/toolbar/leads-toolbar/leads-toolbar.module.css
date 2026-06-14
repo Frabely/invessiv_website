@@ -38,6 +38,16 @@
   align-content: start;
 }
 
+/* Quelle + Profile teilen sich eine Grid-Spalte und werden vertikal
+   gestapelt, damit der Profil-Filter nicht in einer eigenen, halbleeren
+   Zeile unter den übrigen Filtern liegt. */
+.sourceProfileColumn {
+  display: grid;
+  gap: 0.875rem;
+  align-self: start;
+  align-content: start;
+}
+
 .field,
 .searchField {
   display: grid;

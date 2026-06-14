@@ -392,101 +392,109 @@ export function LeadsToolbar({
             </div>
           </div>
 
-          <div className={styles.facetGroup}>
-            <span className={styles.fieldLabel}>{content.filters.source}</span>
-            <div
-              aria-label={content.filters.source}
-              className={styles.chipRow}
-              role="toolbar"
-            >
-              <button
-                aria-pressed={!currentSource}
-                className={styles.badgeButton}
-                data-active={!currentSource ? "true" : "false"}
-                onClick={() => {
-                  commitFilter({ [LeadListQueryParam.Source]: undefined });
-                }}
-                type="button"
+          <div className={styles.sourceProfileColumn}>
+            <div className={styles.facetGroup}>
+              <span className={styles.fieldLabel}>
+                {content.filters.source}
+              </span>
+              <div
+                aria-label={content.filters.source}
+                className={styles.chipRow}
+                role="toolbar"
               >
-                <LeadBadge
-                  className={styles.badge}
-                  icon={faLayerGroup}
-                  kind="source"
-                  label={content.filters.allSources}
-                  tone="neutral"
-                />
-              </button>
+                <button
+                  aria-pressed={!currentSource}
+                  className={styles.badgeButton}
+                  data-active={!currentSource ? "true" : "false"}
+                  onClick={() => {
+                    commitFilter({ [LeadListQueryParam.Source]: undefined });
+                  }}
+                  type="button"
+                >
+                  <LeadBadge
+                    className={styles.badge}
+                    icon={faLayerGroup}
+                    kind="source"
+                    label={content.filters.allSources}
+                    tone="neutral"
+                  />
+                </button>
 
-              {LEAD_SOURCES_VALUES.map((source) => {
-                const isActive = currentSource === source;
+                {LEAD_SOURCES_VALUES.map((source) => {
+                  const isActive = currentSource === source;
 
-                return (
-                  <button
-                    aria-pressed={isActive}
-                    className={styles.badgeButton}
-                    data-active={isActive ? "true" : "false"}
-                    key={`source-${source}`}
-                    onClick={() => {
-                      commitFilter({ [LeadListQueryParam.Source]: source });
-                    }}
-                    type="button"
-                  >
-                    <LeadSourceBadge
-                      className={styles.badge}
-                      label={getSourceLabel(sharedContent, source)}
-                      source={source}
-                    />
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      aria-pressed={isActive}
+                      className={styles.badgeButton}
+                      data-active={isActive ? "true" : "false"}
+                      key={`source-${source}`}
+                      onClick={() => {
+                        commitFilter({ [LeadListQueryParam.Source]: source });
+                      }}
+                      type="button"
+                    >
+                      <LeadSourceBadge
+                        className={styles.badge}
+                        label={getSourceLabel(sharedContent, source)}
+                        source={source}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className={styles.facetGroup}>
-            <span className={styles.fieldLabel}>{content.profiles.label}</span>
-            <div
-              aria-label={content.profiles.label}
-              className={styles.chipRow}
-              role="toolbar"
-            >
-              {LEAD_PROFILE_TYPE_VALUES.map((profileType) => {
-                const state = getProfileFilterState(
-                  profileSelection,
-                  profileType,
-                );
-                const typeLabel = content.profiles.types[profileType];
-                const stateLabel =
-                  state === ProfileFilterState.Include
-                    ? content.profiles.included
-                    : state === ProfileFilterState.Exclude
-                      ? content.profiles.excluded
-                      : undefined;
+            <div className={styles.facetGroup}>
+              <span className={styles.fieldLabel}>
+                {content.profiles.label}
+              </span>
+              <div
+                aria-label={content.profiles.label}
+                className={styles.chipRow}
+                role="toolbar"
+              >
+                {LEAD_PROFILE_TYPE_VALUES.map((profileType) => {
+                  const state = getProfileFilterState(
+                    profileSelection,
+                    profileType,
+                  );
+                  const typeLabel = content.profiles.types[profileType];
+                  const stateLabel =
+                    state === ProfileFilterState.Include
+                      ? content.profiles.included
+                      : state === ProfileFilterState.Exclude
+                        ? content.profiles.excluded
+                        : undefined;
 
-                return (
-                  <button
-                    aria-label={
-                      stateLabel ? `${typeLabel}: ${stateLabel}` : typeLabel
-                    }
-                    aria-pressed={state !== ProfileFilterState.Inactive}
-                    className={styles.profileChip}
-                    data-profile-type={profileType}
-                    data-state={state}
-                    key={`profile-${profileType}`}
-                    onClick={() => {
-                      cycleProfile(profileType);
-                    }}
-                    title={content.profiles.hint}
-                    type="button"
-                  >
-                    <FontAwesomeIcon
-                      aria-hidden="true"
-                      className={styles.profileChipIcon}
-                      icon={PROFILE_TYPE_ICONS[profileType]}
-                    />
-                    <span className={styles.profileChipLabel}>{typeLabel}</span>
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      aria-label={
+                        stateLabel ? `${typeLabel}: ${stateLabel}` : typeLabel
+                      }
+                      aria-pressed={state !== ProfileFilterState.Inactive}
+                      className={styles.profileChip}
+                      data-profile-type={profileType}
+                      data-state={state}
+                      key={`profile-${profileType}`}
+                      onClick={() => {
+                        cycleProfile(profileType);
+                      }}
+                      title={content.profiles.hint}
+                      type="button"
+                    >
+                      <FontAwesomeIcon
+                        aria-hidden="true"
+                        className={styles.profileChipIcon}
+                        icon={PROFILE_TYPE_ICONS[profileType]}
+                      />
+                      <span className={styles.profileChipLabel}>
+                        {typeLabel}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
