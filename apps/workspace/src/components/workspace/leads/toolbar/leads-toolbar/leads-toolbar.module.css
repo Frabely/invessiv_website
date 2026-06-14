@@ -156,6 +156,88 @@
   pointer-events: none;
 }
 
+.profileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 32px;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-2) 92%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.profileChip:hover,
+.profileChip:focus-visible {
+  border-color: color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.profileChip:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 45%, transparent);
+  outline-offset: 2px;
+}
+
+/* Included = "muss beim Lead vorhanden sein": blauer Rahmen, blau hinterlegt
+   (konsistent mit den übrigen aktiven Toolbar-Chips). */
+.profileChip[data-state="include"] {
+  border-color: color-mix(in srgb, var(--color-cta) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 15%, transparent);
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-cta) 24%);
+  transform: translateY(-1px);
+}
+
+/* Excluded = "darf beim Lead nicht vorhanden sein": roter Rahmen, durchgestrichen. */
+.profileChip[data-state="exclude"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-danger) 55%,
+    var(--color-border)
+  );
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-danger) 24%);
+  transform: translateY(-1px);
+}
+
+.profileChip[data-state="exclude"] .profileChipLabel {
+  text-decoration: line-through;
+}
+
+.profileChipIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Platform-Markenfarben am Icon zur schnellen Wiedererkennung im neutralen (inaktiven) Zustand. */
+.profileChip[data-profile-type="linkedin"] .profileChipIcon {
+  color: #0a66c2;
+}
+
+.profileChip[data-profile-type="instagram"] .profileChipIcon {
+  color: #e1306c;
+}
+
+.profileChip[data-profile-type="youtube"] .profileChipIcon {
+  color: #ff0000;
+}
+
+/* Im aktiven Zustand folgt das Icon der State-Farbe (blau/rot), damit der Kontrast erhalten bleibt. */
+.profileChip[data-state="include"] .profileChipIcon,
+.profileChip[data-state="exclude"] .profileChipIcon {
+  color: inherit;
+}
+
 .utilityRow {
   display: flex;
   justify-content: space-between;

@@ -1,14 +1,68 @@
 import { describe, expect, it } from "vitest";
 import { LeadFormDialogMode } from "@invessiv/common/constants/leads/forms/lead-form-dialog-modes";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import {
   buildLeadCreateHref,
   buildLeadDetailPanelEditHref,
   buildLeadDialogCloseHref,
   buildLeadEditHref,
+  buildLeadListCloseHref,
+  buildLeadListQueryString,
   buildLeadTableRowEditHref,
   getLeadFormDialogMode,
 } from "./lead-list-query-string";
+
+describe("buildLeadListQueryString - profile filter", () => {
+  it("serializes include and exclude profile lists as comma-separated params", () => {
+    const queryString = buildLeadListQueryString(
+      {
+        profile_include: ["website", "linkedin"],
+        profile_exclude: ["youtube"],
+      },
+      1,
+      LeadSort.CreatedDesc,
+    );
+    const params = new URLSearchParams(queryString);
+
+    expect(params.get("profile_include")).toBe("website,linkedin");
+    expect(params.get("profile_exclude")).toBe("youtube");
+  });
+
+  it("keeps commas literal in the query string (no %2C encoding)", () => {
+    const queryString = buildLeadListQueryString(
+      { profile_include: ["linkedin", "youtube"] },
+      1,
+      LeadSort.CreatedDesc,
+    );
+
+    expect(queryString).toContain("profile_include=linkedin,youtube");
+    expect(queryString).not.toContain("%2C");
+  });
+
+  it("omits the profile params when no profile types are selected", () => {
+    const queryString = buildLeadListQueryString({}, 1, LeadSort.CreatedDesc);
+    const params = new URLSearchParams(queryString);
+
+    expect(params.has("profile_include")).toBe(false);
+    expect(params.has("profile_exclude")).toBe(false);
+  });
+});
+
+describe("buildLeadListCloseHref - profile filter", () => {
+  it("keeps the profile params when closing the detail panel", () => {
+    const href = buildLeadListCloseHref("/de/leads", {
+      selected: "lead-1",
+      profile_include: "website,linkedin",
+      profile_exclude: "youtube",
+    });
+    const url = new URL(href, "https://invessiv.com");
+
+    expect(url.searchParams.get("profile_include")).toBe("website,linkedin");
+    expect(url.searchParams.get("profile_exclude")).toBe("youtube");
+    expect(url.searchParams.has("selected")).toBe(false);
+  });
+});
 
 describe("lead list dialog query helpers", () => {
   it("builds a create dialog URL with mode=create", () => {

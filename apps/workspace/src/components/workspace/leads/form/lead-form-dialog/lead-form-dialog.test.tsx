@@ -12,7 +12,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsFormDictionary,

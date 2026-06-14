@@ -84,6 +84,26 @@
   --badge-accent: color-mix(in srgb, #ef4444 78%, var(--color-text-muted) 22%);
 }
 
+.root[data-tone="teal"] {
+  --badge-accent: color-mix(in srgb, #14b8a6 80%, var(--color-text-muted) 20%);
+}
+
+.root[data-tone="lime"] {
+  --badge-accent: color-mix(in srgb, #84cc16 78%, var(--color-text-muted) 22%);
+}
+
+.root[data-tone="fuchsia"] {
+  --badge-accent: color-mix(in srgb, #8a5a2b 86%, var(--color-text-muted) 14%);
+}
+
+.root[data-tone="coral"] {
+  --badge-accent: color-mix(in srgb, #f4692a 84%, var(--color-text-muted) 16%);
+}
+
+.root[data-tone="pink"] {
+  --badge-accent: color-mix(in srgb, #ec4899 80%, var(--color-text-muted) 20%);
+}
+
 [data-theme="light"] .root {
   --badge-bg: color-mix(
     in srgb,

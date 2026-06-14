@@ -1,4 +1,4 @@
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { PaginationItemKind } from "@invessiv/common/constants/leads/list/lead-pagination-item-kinds";
 
 export type PaginationItemPage = {

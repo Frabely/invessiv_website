@@ -16,10 +16,6 @@ import {
   LEAD_BADGE_TONE_VALUES,
   LeadBadgeTone,
 } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import {
-  LEAD_LIST_QUERY_PARAM_VALUES,
-  LeadListQueryParam,
-} from "@invessiv/common/constants/leads/list/lead-list-query-params";
 import { CONTACT_LEAD_STATUS_ALL } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
@@ -130,28 +126,6 @@ describe("LeadDetailEntryKind", () => {
   });
 });
 
-describe("LeadListQueryParam", () => {
-  it("contains the expected query param keys without duplicates", () => {
-    expect(LEAD_LIST_QUERY_PARAM_VALUES).toEqual([
-      LeadListQueryParam.Category,
-      LeadListQueryParam.DateFrom,
-      LeadListQueryParam.DateTo,
-      LeadListQueryParam.Mode,
-      LeadListQueryParam.TargetLeadId,
-      LeadListQueryParam.Page,
-      LeadListQueryParam.ScoreMin,
-      LeadListQueryParam.Search,
-      LeadListQueryParam.Selected,
-      LeadListQueryParam.Sort,
-      LeadListQueryParam.Source,
-      LeadListQueryParam.Status,
-    ]);
-    expect(new Set(LEAD_LIST_QUERY_PARAM_VALUES).size).toBe(
-      LEAD_LIST_QUERY_PARAM_VALUES.length,
-    );
-  });
-});
-
 describe("LeadBadgeTone", () => {
   it("contains the expected badge tones without duplicates", () => {
     expect(LEAD_BADGE_TONE_VALUES).toEqual([
@@ -164,6 +138,11 @@ describe("LeadBadgeTone", () => {
       LeadBadgeTone.Success,
       LeadBadgeTone.Orange,
       LeadBadgeTone.Warning,
+      LeadBadgeTone.Teal,
+      LeadBadgeTone.Lime,
+      LeadBadgeTone.Fuchsia,
+      LeadBadgeTone.Coral,
+      LeadBadgeTone.Pink,
     ]);
     expect(new Set(LEAD_BADGE_TONE_VALUES).size).toBe(
       LEAD_BADGE_TONE_VALUES.length,

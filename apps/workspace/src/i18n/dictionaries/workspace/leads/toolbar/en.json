@@ -22,6 +22,19 @@
     "allSources": "All sources",
     "allCategories": "All categories"
   },
+  "profiles": {
+    "label": "Profiles",
+    "hint": "Click to include, again to exclude, again to clear",
+    "included": "included",
+    "excluded": "excluded",
+    "types": {
+      "website": "Website",
+      "phone": "Phone",
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram",
+      "youtube": "YouTube"
+    }
+  },
   "scoreOptions": {
     "any": "Any score",
     "atLeast90": "90 or more",

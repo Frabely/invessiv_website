@@ -3,7 +3,9 @@ import {
   CONTACT_LEAD_STATUS_ALL,
   CONTACT_LEAD_STATUS_VALUES,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import type { LeadProfileType } from "@/common/constants/leads/profile/lead-profile-types";
+import { parseProfileTypeCsv } from "@/lib/workspace/leads/lead-profile-filter";
 import {
   LEAD_SOURCES_VALUES,
   type LeadSource,
@@ -71,6 +73,14 @@ function parseScoreMin(
   }
 
   return parsed;
+}
+
+function parseProfileTypeList(
+  searchParams: SearchParamsInput,
+  key: string,
+): LeadProfileType[] | undefined {
+  const result = parseProfileTypeCsv(getSingleSearchParam(searchParams, key));
+  return result.length > 0 ? result : undefined;
 }
 
 function isValidDateString(value: string): boolean {
@@ -164,6 +174,22 @@ export function parseLeadListFilters(
     filters.score_min = scoreMin;
   }
 
+  const profileInclude = parseProfileTypeList(
+    searchParams,
+    LeadListQueryParam.ProfileInclude,
+  );
+  if (profileInclude) {
+    filters.profile_include = profileInclude;
+  }
+
+  const profileExclude = parseProfileTypeList(
+    searchParams,
+    LeadListQueryParam.ProfileExclude,
+  );
+  if (profileExclude) {
+    filters.profile_exclude = profileExclude;
+  }
+
   if (sort && (LEAD_SORT_VALUES as readonly string[]).includes(sort)) {
     filters.sort = sort as LeadSortType;
   } else if (sort === LeadSort.CreatedDesc) {
@@ -181,6 +207,8 @@ export function hasActiveLeadFilters(filters: LeadFilterInput): boolean {
     filters.search ||
     filters.date_from ||
     filters.date_to ||
-    filters.score_min !== undefined,
+    filters.score_min !== undefined ||
+    (filters.profile_include && filters.profile_include.length > 0) ||
+    (filters.profile_exclude && filters.profile_exclude.length > 0),
   );
 }

@@ -78,20 +78,22 @@ Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vo
 
 ## Gültige Statuswerte
 
-Der Status-Wert wird normalisiert. Folgende Bezeichnungen werden akzeptiert (DE und EN):
+Der Status-Wert wird normalisiert (Groß-/Kleinschreibung egal). Akzeptiert werden ausschließlich die englischen
+snake_case-Werte:
 
-| Status (intern)  | Akzeptierte Eingaben                            |
-| ---------------- | ----------------------------------------------- |
-| `pending_review` | `zu prüfen`, `pending_review`, `pending review` |
-| `new`            | `new`, `neu`                                    |
-| `contacted`      | `contacted`, `kontaktiert`                      |
-| `qualified`      | `qualified`, `qualifiziert`                     |
-| `proposal`       | `proposal`, `angebot`                           |
-| `on_hold`        | `on_hold`, `on hold`, `pausiert`                |
-| `won`            | `won`, `gewonnen`                               |
-| `lost`           | `lost`, `verloren`                              |
-| `archived`       | `archived`, `archiviert`                        |
+| Status (intern)  | Akzeptierte Eingabe |
+| ---------------- | ------------------- |
+| `pending_review` | `pending_review`    |
+| `new`            | `new`               |
+| `contacted`      | `contacted`         |
+| `qualified`      | `qualified`         |
+| `proposal`       | `proposal`          |
+| `on_hold`        | `on_hold`           |
+| `won`            | `won`               |
+| `lost`           | `lost`              |
+| `archived`       | `archived`          |
 
+Unbekannte Werte werden auf `pending_review` zurückgesetzt und im Report als Warnung ausgewiesen.
 Für neue Importdateien ist `pending_review` die feste Voreinstellung.
 
 ---

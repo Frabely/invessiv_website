@@ -4,5 +4,4 @@ export * from "./errors/lead-import-error-codes";
 export * from "./issues/lead-import-row-issue-codes";
 export * from "./issues/lead-import-row-issue-severities";
 export * from "./service/import-leads-service.constants";
-export * from "./status/lead-import-status-synonyms";
 export * from "./warnings/lead-import-warning-codes";

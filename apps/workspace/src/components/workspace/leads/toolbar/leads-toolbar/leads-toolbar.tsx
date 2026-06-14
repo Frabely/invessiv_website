@@ -7,9 +7,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRotateLeft,
   faChevronDown,
+  faGlobe,
   faLayerGroup,
   faMagnifyingGlass,
+  faPhone,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faInstagram,
+  faLinkedinIn,
+  faYoutube,
+} from "@fortawesome/free-brands-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   LeadBadge,
   LeadCategoryBadge,
@@ -18,17 +26,37 @@ import {
 } from "@/components/workspace/leads/shared";
 import { DateRangeFilter } from "@/components/workspace/shared/date-range-filter/date-range-filter";
 import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import {
+  LEAD_PROFILE_TYPE_VALUES,
+  LeadProfileType,
+  type LeadProfileType as LeadProfileTypeValue,
+} from "@/common/constants/leads/profile/lead-profile-types";
+import { ProfileFilterState } from "@/common/constants/leads/profile/profile-filter-state";
 import {
   LEAD_SOURCES_VALUES,
   type LeadSource,
 } from "@invessiv/common/constants/leads/sources/lead-sources";
+import {
+  cycleProfileFilter,
+  getProfileFilterState,
+  readProfileFilterSelection,
+  serializeProfileFilterList,
+} from "@/lib/workspace/leads/lead-profile-filter";
 import type {
   LeadsSharedDictionary,
   LeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { buildLeadHref } from "../../table/lead-table-utils";
 import styles from "./leads-toolbar.module.css";
+
+const PROFILE_TYPE_ICONS: Record<LeadProfileTypeValue, IconDefinition> = {
+  [LeadProfileType.Website]: faGlobe,
+  [LeadProfileType.Phone]: faPhone,
+  [LeadProfileType.Linkedin]: faLinkedinIn,
+  [LeadProfileType.Instagram]: faInstagram,
+  [LeadProfileType.Youtube]: faYoutube,
+};
 
 type LeadCategoryOption = {
   id: string;
@@ -114,6 +142,12 @@ export function LeadsToolbar({
     getQueryValue(searchParams, LeadListQueryParam.DateTo) ?? "";
   const currentScore =
     getQueryValue(searchParams, LeadListQueryParam.ScoreMin) ?? "";
+  const profileSelection = readProfileFilterSelection(
+    getQueryValue(searchParams, LeadListQueryParam.ProfileInclude),
+    getQueryValue(searchParams, LeadListQueryParam.ProfileExclude),
+  );
+  const hasProfileFilters =
+    profileSelection.include.length > 0 || profileSelection.exclude.length > 0;
   const [isCollapsed, setIsCollapsed] = useState(false);
   const hasActiveFilters =
     Boolean(currentStatus) ||
@@ -122,7 +156,8 @@ export function LeadsToolbar({
     Boolean(currentSearch.trim()) ||
     Boolean(currentDateFrom) ||
     Boolean(currentDateTo) ||
-    Boolean(currentScore);
+    Boolean(currentScore) ||
+    hasProfileFilters;
   const isAllStatusActive =
     !currentStatus ||
     !CONTACT_LEAD_STATUS_VALUES.includes(currentStatus as never);
@@ -170,10 +205,24 @@ export function LeadsToolbar({
       [LeadListQueryParam.Category]: undefined,
       [LeadListQueryParam.DateFrom]: undefined,
       [LeadListQueryParam.DateTo]: undefined,
+      [LeadListQueryParam.ProfileInclude]: undefined,
+      [LeadListQueryParam.ProfileExclude]: undefined,
       [LeadListQueryParam.ScoreMin]: undefined,
       [LeadListQueryParam.Search]: undefined,
       [LeadListQueryParam.Source]: undefined,
       [LeadListQueryParam.Status]: undefined,
+    });
+  }
+
+  function cycleProfile(profileType: LeadProfileTypeValue) {
+    const next = cycleProfileFilter(profileSelection, profileType);
+    commitFilter({
+      [LeadListQueryParam.ProfileInclude]: serializeProfileFilterList(
+        next.include,
+      ),
+      [LeadListQueryParam.ProfileExclude]: serializeProfileFilterList(
+        next.exclude,
+      ),
     });
   }
 
@@ -387,6 +436,54 @@ export function LeadsToolbar({
                       label={getSourceLabel(sharedContent, source)}
                       source={source}
                     />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.facetGroup}>
+            <span className={styles.fieldLabel}>{content.profiles.label}</span>
+            <div
+              aria-label={content.profiles.label}
+              className={styles.chipRow}
+              role="toolbar"
+            >
+              {LEAD_PROFILE_TYPE_VALUES.map((profileType) => {
+                const state = getProfileFilterState(
+                  profileSelection,
+                  profileType,
+                );
+                const typeLabel = content.profiles.types[profileType];
+                const stateLabel =
+                  state === ProfileFilterState.Include
+                    ? content.profiles.included
+                    : state === ProfileFilterState.Exclude
+                      ? content.profiles.excluded
+                      : undefined;
+
+                return (
+                  <button
+                    aria-label={
+                      stateLabel ? `${typeLabel}: ${stateLabel}` : typeLabel
+                    }
+                    aria-pressed={state !== ProfileFilterState.Inactive}
+                    className={styles.profileChip}
+                    data-profile-type={profileType}
+                    data-state={state}
+                    key={`profile-${profileType}`}
+                    onClick={() => {
+                      cycleProfile(profileType);
+                    }}
+                    title={content.profiles.hint}
+                    type="button"
+                  >
+                    <FontAwesomeIcon
+                      aria-hidden="true"
+                      className={styles.profileChipIcon}
+                      icon={PROFILE_TYPE_ICONS[profileType]}
+                    />
+                    <span className={styles.profileChipLabel}>{typeLabel}</span>
                   </button>
                 );
               })}

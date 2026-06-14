@@ -22,6 +22,19 @@
     "allSources": "Alle Quellen",
     "allCategories": "Alle Kategorien"
   },
+  "profiles": {
+    "label": "Profile",
+    "hint": "Klicken zum Einschließen, erneut zum Ausschließen, erneut zum Zurücksetzen",
+    "included": "eingeschlossen",
+    "excluded": "ausgeschlossen",
+    "types": {
+      "website": "Website",
+      "phone": "Telefon",
+      "linkedin": "LinkedIn",
+      "instagram": "Instagram",
+      "youtube": "YouTube"
+    }
+  },
   "scoreOptions": {
     "any": "Beliebiger Score",
     "atLeast90": "90 oder mehr",

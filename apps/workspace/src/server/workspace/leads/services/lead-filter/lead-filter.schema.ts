@@ -4,6 +4,7 @@ import {
   CONTACT_LEAD_STATUS_VALUES,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
+import { LEAD_PROFILE_TYPE_VALUES } from "@/common/constants/leads/profile/lead-profile-types";
 import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/lead-sources";
 import { LEAD_SORT_VALUES } from "@invessiv/common/constants/leads/list/lead-sort";
 
@@ -18,6 +19,8 @@ export const leadFilterSchema = z.object({
   date_to: z.string().optional(),
   page: z.number().int().min(1).optional(),
   sort: z.enum(LEAD_SORT_VALUES).optional(),
+  profile_include: z.array(z.enum(LEAD_PROFILE_TYPE_VALUES)).optional(),
+  profile_exclude: z.array(z.enum(LEAD_PROFILE_TYPE_VALUES)).optional(),
   score_min: z
     .number()
     .int()

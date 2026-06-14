@@ -1,4 +1,4 @@
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import {
   LeadFormDialogMode,
   type LeadFormDialogMode as LeadFormDialogModeValue,
@@ -18,6 +18,8 @@ const LEAD_LIST_CLOSE_QUERY_PARAMS = [
   LeadListQueryParam.Page,
   LeadListQueryParam.Sort,
   LeadListQueryParam.ScoreMin,
+  LeadListQueryParam.ProfileInclude,
+  LeadListQueryParam.ProfileExclude,
 ] as const;
 
 export function buildLeadListQueryString(
@@ -55,10 +57,24 @@ export function buildLeadListQueryString(
     params.set(LeadListQueryParam.ScoreMin, String(filters.score_min));
   }
 
+  if (filters.profile_include && filters.profile_include.length > 0) {
+    params.set(
+      LeadListQueryParam.ProfileInclude,
+      filters.profile_include.join(","),
+    );
+  }
+
+  if (filters.profile_exclude && filters.profile_exclude.length > 0) {
+    params.set(
+      LeadListQueryParam.ProfileExclude,
+      filters.profile_exclude.join(","),
+    );
+  }
+
   params.set(LeadListQueryParam.Page, String(page));
   params.set(LeadListQueryParam.Sort, sort);
 
-  return params.toString();
+  return params.toString().replace(/%2C/g, ",");
 }
 
 export function buildLeadListCloseHref(

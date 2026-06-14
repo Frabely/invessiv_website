@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-import { LeadListQueryParam } from "@invessiv/common/constants/leads/list/lead-list-query-params";
+import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { withWorkspaceApiAuth } from "@/lib/auth/api";
 import { createLead } from "@/server/workspace/leads/command-handler/create-lead.command-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";

@@ -35,7 +35,7 @@ const validRawRow: RawLeadImportRow = {
   youtube_url: "https://www.youtube.com/@schmidtconsulting/",
   category_id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
   score: "82",
-  status: "Neu",
+  status: "new",
   improvements:
     "Clarify hero positioning | Make CTA more visible | Improve mobile above-the-fold copy",
 };
