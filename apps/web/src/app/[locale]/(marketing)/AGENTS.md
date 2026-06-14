@@ -23,6 +23,9 @@ Projects und Service-Detailseiten wie `/[locale]/services/landing-page`.
 - Landingpage-spezifische Structured Data wird über `createLandingStructuredData` erzeugt. Generische
   Marketing-Structured-Data nur für breite Marketing-Seiten verwenden.
 - Sprach- oder suchrelevante Texte gehören in Dictionaries, nicht in Route-Dateien oder SEO-Helper.
+- Jede Landing/Service-Detailseite hat ein primäres Keyword-Cluster und eine klare Suchintention (
+  informational/commercial); genau eine H1 pro Seite.
+- OG-Bilder pro Offer/Template vorsehen (Fallback erlaubt), damit Shares konsistent bleiben.
 
 ## i18n und Copy
 

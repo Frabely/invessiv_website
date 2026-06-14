@@ -30,12 +30,6 @@
 - Betroffene Stellen gezielt aktualisieren und die jeweiligen Tests mitziehen.
 - Das ist eine separate technische Bereinigung und kein Teil des aktuellen Leads-Refactors.
 
-## Stack Rework
-
-- Das Contact-DB-MVP ist abgeschlossen.
-- Folgearbeit nur noch entlang von [docs/stack-rework-mvp-plan.md](/abs/path/C:/Users/MoritzDesktop/IdeaProjects/invessiv_website/docs/stack-rework-mvp-plan.md) schneiden.
-- Nächster konkreter Slice: verbleibende Raw-Neon-Nutzung rund um `getDatabaseClient()` prüfen und bereinigen.
-
 ## I18n Dictionary Rework
 
 - `src/i18n/dictionaries/marketing/home.ts` und ggf. weitere verbleibende Dictionary-`*.ts`-Dateien auf das JSON-Schema umstellen.

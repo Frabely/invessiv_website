@@ -32,6 +32,39 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `parent/child/child.tsx` (+ `child.module.css`). Jede Komponente besitzt damit ihr
   eigenes, scoped CSS-Modul.
 
+## Typen & Konstanten (verbindlich)
+
+- In einer Komponenten-Datei (`.tsx`) darf **genau ein** Typ deklariert werden: der eigene
+  Props-Type der Komponente (`XxxProps`). **Sonst nichts** — kein weiterer Typ, kein `type`/`interface`,
+  keine Konstante, kein Map-/Default-Objekt.
+- Alle anderen Typen und Konstanten landen in `apps/web/common` (bzw. `packages/common`), **bevor**
+  die Komponente fertig ist — auch wenn sie aktuell nur in dieser einen Datei genutzt werden:
+  - Datentypen/DTOs/Shapes → `common/contracts/`
+  - String-Unions, Status-/Kind-/Variant-Werte, Event-Namen, Storage-Keys → `common/constants/`
+    (Const-Objekt-Pattern, siehe `packages/common/AGENTS.md`)
+  - Default-/Initialwerte → `common/defaults/`
+- Selbstcheck-Faustregel: Wird der Typ/die Konstante von mehr als dieser Datei referenziert **oder**
+  bildet sie ein Domänenkonzept ab (Status, Variante, DTO, Konfig)? → nach `common`. Nur `XxxProps`
+  bleibt lokal.
+
+```tsx
+// ❌ nicht in der Komponente
+type LeadCardVariant = "default" | "compact";
+const MAX_VISIBLE_TAGS = 5;
+
+// ✅ erlaubt: ausschließlich der eigene Props-Type
+interface LeadCardProps {
+  lead: LeadDto; // LeadDto aus common/contracts
+  variant: LeadCardVariant; // LeadCardVariant aus common/constants
+}
+```
+
+## Wiederverwendbare Komponenten
+
+- Breadcrumbs werden ausschließlich über die zentrale Komponente
+  `apps/web/src/components/legal/breadcrumbs/breadcrumbs.tsx` umgesetzt. Seiten/Layouts bauen kein eigenes
+  Breadcrumb-Markup nach; bei neuem Bedarf wird die zentrale Komponente erweitert, statt lokale Varianten zu erstellen.
+
 ## Verantwortungs-Schnitt
 
 - Layout-/Carousel-/Reveal-Verantwortung des Container-Elements bleibt bei der
@@ -48,8 +81,23 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Wird nur eine Sub-Komponente interaktiv, erhält **nur diese** das `"use client"`,
   damit der statische Teil Server-Component bleiben kann.
 
+## Animationen / Effektbibliothek
+
+- Unter `animation_mockups/` (Repo-Root) liegt eine Bibliothek wiederverwendbarer Animations-/Interaktions-Mockups; der
+  Katalog `animation_mockups/effects-catalog.json` beschreibt Effekte inkl. Use-Cases.
+- **Als Ressource nutzen, nicht als Pflicht-Gate:** Wenn ein vorhandener Effekt klar zum Ziel passt, ihn bevorzugt
+  wiederverwenden oder als Basis adaptieren, statt einen sehr ähnlichen Effekt neu zu bauen. Es gibt keine Pflicht, vor
+  jeder UI-Änderung die Bibliothek zu durchsuchen, und keinen Vorrang vor besserem, maßgeschneidertem Design (vgl.
+  Branding-Ziel „Wiedererkennungswert, keine Default-Implementierungen").
+- Lohnt sich ein neuer, allgemein nützlicher Effekt, wird er als eigenständiges Einzel-Mockup unter
+  `animation_mockups/<effekt-name>/` abgelegt (eigener Ordner, eigene `index.html`, bei Bedarf `styles.css`/`script.js`)
+  und im `effects-catalog.json` ergänzt — keine Sammeldateien mit mehreren Effekten.
+- Desktop-only-Effekte auf Mobile deaktivieren oder durch mobile-taugliche Alternativen ersetzen; Performance und
+  Lesbarkeit vor dekorativen Effekten.
+
 ## Checks vor Abschluss
 
-- `npm run typecheck`, `npm run lint` grün.
+- `pnpm -r typecheck`, `pnpm -r lint` grün.
+- In der `.tsx` steht kein Typ/keine Konstante außer dem eigenen `XxxProps`-Type; alles andere liegt in `common`.
 - Betroffene `*.test.tsx` grün; neue interaktive Komponente bekommt einen Test.
 - Mobile-first geprüft (360 px), Dark/Light konsistent, sichtbare Focus-States.

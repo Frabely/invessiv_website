@@ -1,7 +1,7 @@
 # AGENTS.md — Workspace Leads (UI)
 
-Diese Datei gilt für `src/app/[locale]/leads/` und alle Subroutes darunter. Sie ergänzt die Repo-Root `AGENTS.md`,
-`src/app/AGENTS.md` und `src/app/[locale]/AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
+Diese Datei gilt für `apps/workspace/src/app/[locale]/(app)/leads/` und alle Subroutes darunter. Sie ergänzt die
+Repo-Root `AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
 ## Codex-Arbeitsweise
 
@@ -147,9 +147,7 @@ Komponenten konsumieren vorbereitete Inhalte und enthalten keine sprachabhängig
 
 ## Verweise
 
-- Repo-Root `AGENTS.md` und `CLAUDE.md`.
-- `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` — Architektur-Wissen (Auth-Vererbung, SSR-Datenfluss,
-  DTO-Grenzen, kritische Dateien).
+- Repo-Root `AGENTS.md`.
 - `apps/workspace/src/components/workspace/leads/AGENTS.md` — Komponenten-Regeln.
 - `apps/workspace/src/app/api/workspace/leads/README.md` — API-Contract.
 - Aktive und kommende Pläne: `plans/workspace/leads/`.

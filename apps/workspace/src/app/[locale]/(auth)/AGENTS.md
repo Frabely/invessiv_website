@@ -5,7 +5,7 @@ Diese Datei gilt für `apps/workspace/src/app/[locale]/(auth)/` und alle Subrout
 
 ## Codex-Arbeitsweise
 
-- Bestehende Auth-Architektur zuerst lesen: `apps/workspace/src/app/[locale]/(auth)/CLAUDE.md`.
+- Bestehende Auth-Architektur und Regeln zuerst lesen: diese `AGENTS.md` und die Repo-Root `AGENTS.md`.
 - Standardmäßig nur ein Ticket oder einen klar abgegrenzten Schritt bearbeiten, sofern der Nutzer nicht ausdrücklich
   mehr beauftragt.
 - Keine eigene Auth-Logik einführen. Clerk bleibt die einzige Auth-Quelle.

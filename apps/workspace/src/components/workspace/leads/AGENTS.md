@@ -1,12 +1,11 @@
 # AGENTS.md — Komponenten Workspace Leads
 
 Diese Datei gilt für `src/components/workspace/leads/` und alle Subordner darunter. Sie ergänzt die Repo-Root
-`AGENTS.md`, `src/components/AGENTS.md` und `src/components/CLAUDE.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
+`AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
 ## Codex-Arbeitsweise
 
-- Bestehende Workspace-Konventionen (`src/components/CLAUDE.md`, Workspace-Parent-Doku) und aktive Pläne unter
-  `plans/workspace/leads/` zuerst lesen und respektieren.
+- Bestehende Workspace-Konventionen und aktive Pläne unter `plans/workspace/leads/` zuerst lesen und respektieren.
 - Komponenten klein, fokussiert und reviewbar halten. Keine Mega-Components.
 - Server Components sind Default; `"use client"` nur, wenn echte Interaktivität (URL-Sync, Selection-State, Dialog,
   Form, Live-Updates) das erzwingt.
@@ -24,8 +23,8 @@ Diese Datei gilt für `src/components/workspace/leads/` und alle Subordner darun
 
 ## Begründung der gruppierten Subfolder-Struktur
 
-Die Standardregel aus `src/components/CLAUDE.md` legt eine flache Komponentenordner-Struktur (
-`<component-name>/<component-name>.tsx`) nahe. Für die Workspace-Leads-UI weichen wir bewusst ab und gruppieren
+Die Standard-Komponentenkonvention des Projekts legt eine flache Komponentenordner-Struktur nahe
+(`<component-name>/<component-name>.tsx`). Für die Workspace-Leads-UI weichen wir bewusst ab und gruppieren
 Komponenten in fachliche Subfolder (`shell/`, `toolbar/`, `table/`, `detail/`, `form/`, `shared/` und ggf. weitere).
 Gründe:
 
@@ -149,8 +148,7 @@ ergänzt.
 
 ## Verweise
 
-- Repo-Root `AGENTS.md` und `CLAUDE.md`.
+- Repo-Root `AGENTS.md`.
 - `apps/workspace/src/app/[locale]/(app)/leads/AGENTS.md` — Routen-/Page-Regeln.
-- `apps/workspace/src/app/[locale]/(app)/leads/CLAUDE.md` — Architektur-Wissen (SSR-Flow, DTO-Grenzen, Caching).
 - `apps/workspace/src/app/api/workspace/leads/README.md` — API-Contract.
 - Aktive und kommende Pläne: `plans/workspace/leads/`.

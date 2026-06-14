@@ -33,6 +33,13 @@ wird nicht verwendet.
 - Reine Reexport-Dateien nur als `index.ts`-Barriere, nicht für fachliche Umformungen
 - Kein Mischen von UI-Dictionary-Typen mit Laufzeitlogik
 
+## Service-Section-Spezifikum
+
+- `PROJECT_OFFER_CHANGE_EVENT` ist der kanonische Event-Name für den Austausch zwischen Services-Section und
+  Kontaktformular.
+- Service-bezogene Offer-Keys werden direkt aus `@invessiv/common/constants/contact/contact-offer-keys` bezogen.
+- Typen für die Services-Section liegen getrennt pro Datei unter `contracts/marketing/`.
+
 ## Tests
 
 - Neue Konstanten erhalten einen kleinen Test, wenn daraus ein stabiler öffentliche Schlüssel oder eine Werte-Liste
