@@ -60,23 +60,23 @@ const STATUS_CONFIG: Record<
   },
   [ContactLeadStatus.Connected]: {
     icon: faHandshake,
-    tone: LeadBadgeTone.Indigo,
+    tone: LeadBadgeTone.Teal,
   },
   [ContactLeadStatus.FollowUp]: {
     icon: faArrowsRotate,
-    tone: LeadBadgeTone.Info,
+    tone: LeadBadgeTone.Lime,
   },
   [ContactLeadStatus.NotReached]: {
     icon: faPhoneSlash,
-    tone: LeadBadgeTone.Neutral,
+    tone: LeadBadgeTone.Coral,
   },
   [ContactLeadStatus.Reminder]: {
     icon: faBell,
-    tone: LeadBadgeTone.Warning,
+    tone: LeadBadgeTone.Fuchsia,
   },
   [ContactLeadStatus.Responded]: {
     icon: faReply,
-    tone: LeadBadgeTone.Indigo,
+    tone: LeadBadgeTone.Pink,
   },
   [ContactLeadStatus.Qualified]: {
     icon: faCircleCheck,
