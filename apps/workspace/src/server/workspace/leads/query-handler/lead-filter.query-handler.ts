@@ -1,5 +1,19 @@
 import type { SQL } from "drizzle-orm";
-import { and, asc, desc, eq, gte, ilike, lte, ne, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  exists,
+  gte,
+  ilike,
+  lte,
+  ne,
+  notExists,
+  or,
+  sql,
+} from "drizzle-orm";
+import { QueryBuilder } from "drizzle-orm/pg-core";
 import {
   CONTACT_LEAD_STATUS_ALL,
   ContactLeadStatus,
@@ -10,6 +24,7 @@ import {
   LeadProfileType,
   type LeadProfileType as LeadProfileTypeValue,
 } from "@/common/constants/leads/profile/lead-profile-types";
+import type { LeadSocialPlatform as LeadSocialPlatformValue } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 
@@ -92,54 +107,56 @@ export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
   };
 }
 
-function leadContactColumn(profileType: LeadProfileTypeValue) {
-  if (profileType === LeadProfileType.Website) {
-    return leads.website_url;
-  }
+type LeadContactProfileType = Exclude<
+  LeadProfileTypeValue,
+  LeadSocialPlatformValue
+>;
 
-  if (profileType === LeadProfileType.Phone) {
-    return leads.phone;
-  }
+function isLeadSocialPlatform(
+  profileType: LeadProfileTypeValue,
+): profileType is LeadSocialPlatformValue {
+  return (
+    profileType !== LeadProfileType.Website &&
+    profileType !== LeadProfileType.Phone
+  );
+}
 
-  return null;
+function leadContactColumn(profileType: LeadContactProfileType) {
+  return profileType === LeadProfileType.Website
+    ? leads.website_url
+    : leads.phone;
+}
+
+const queryBuilder = new QueryBuilder();
+
+function leadSocialProfileSubquery(profileType: LeadSocialPlatformValue) {
+  return queryBuilder
+    .select({ one: sql`1` })
+    .from(leadSocialProfiles)
+    .where(
+      and(
+        eq(leadSocialProfiles.lead_id, leads.id),
+        eq(leadSocialProfiles.platform, profileType),
+      ),
+    );
 }
 
 function profilePresent(profileType: LeadProfileTypeValue): SQL {
-  const column = leadContactColumn(profileType);
-  if (column) {
-    return sql`(${column} is not null and btrim(${column}) <> '')`;
+  if (isLeadSocialPlatform(profileType)) {
+    return exists(leadSocialProfileSubquery(profileType));
   }
 
-  return sql`exists (select 1 from
-  ${leadSocialProfiles}
-  where
-  ${leadSocialProfiles.lead_id}
-  =
-  ${leads.id}
-  and
-  ${leadSocialProfiles.platform}
-  =
-  ${profileType}
-  )`;
+  const column = leadContactColumn(profileType);
+  return sql`(${column} is not null and btrim(${column}) <> '')`;
 }
 
 function profileAbsent(profileType: LeadProfileTypeValue): SQL {
-  const column = leadContactColumn(profileType);
-  if (column) {
-    return sql`(${column} is null or btrim(${column}) = '')`;
+  if (isLeadSocialPlatform(profileType)) {
+    return notExists(leadSocialProfileSubquery(profileType));
   }
 
-  return sql`not exists (select 1 from
-  ${leadSocialProfiles}
-  where
-  ${leadSocialProfiles.lead_id}
-  =
-  ${leads.id}
-  and
-  ${leadSocialProfiles.platform}
-  =
-  ${profileType}
-  )`;
+  const column = leadContactColumn(profileType);
+  return sql`(${column} is null or btrim(${column}) = '')`;
 }
 
 function buildOrderBy(sort?: LeadSort): SQL {
