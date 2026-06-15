@@ -237,6 +237,7 @@ export function ImportLeadsDialog({ content }: Props) {
   return (
     <>
       <ButtonControl
+        aria-label={content.trigger.label}
         className={styles.triggerButton}
         onClick={handleTriggerClick}
         variant="ghost"
@@ -244,7 +245,7 @@ export function ImportLeadsDialog({ content }: Props) {
         <span aria-hidden="true" className={styles.triggerIcon}>
           <FontAwesomeIcon icon={faArrowUpFromBracket} />
         </span>
-        {content.trigger.label}
+        <span className={styles.triggerLabel}>{content.trigger.label}</span>
       </ButtonControl>
 
       {open && (

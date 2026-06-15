@@ -12,10 +12,11 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getLeadsSharedDictionary,
+  getLeadsShellDictionary,
   getLeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadFilterSelectId } from "@/common/constants/leads/list/lead-filter-select-ids";
-import { LeadsToolbar } from "./leads-toolbar";
+import { LeadsPageHeader } from "./leads-page-header";
 
 const pushMock = vi.fn();
 const replaceMock = vi.fn();
@@ -36,12 +37,17 @@ beforeEach(() => {
   pushMock.mockReset();
   replaceMock.mockReset();
   vi.useFakeTimers();
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: undefined,
+  });
 });
 
-describe("LeadsToolbar", () => {
+describe("LeadsPageHeader", () => {
   it("renders active filters and updates the URL for immediate filter changes", async () => {
     render(
-      <LeadsToolbar
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[
           { id: "cat-1", label: "Coaches", labelKey: "coaches" },
@@ -62,9 +68,10 @@ describe("LeadsToolbar", () => {
             labelKey: "other",
           },
         ]}
-        content={getLeadsToolbarDictionary("de")}
         currentQueryString="status=qualified&source=manual&category=cat-1&search=acme&score_min=70&date_from=2024-01-01&date_to=2024-01-31&page=2&sort=created_desc"
+        filtersContent={getLeadsToolbarDictionary("de")}
         sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={getLeadsShellDictionary("de")}
       />,
     );
 
@@ -81,7 +88,7 @@ describe("LeadsToolbar", () => {
     expect(
       screen
         .getByRole("button", { name: "Filter zurücksetzen" })
-        .closest("footer"),
+        .closest("header"),
     ).toBeTruthy();
     expect(
       within(statusGroup).getByRole("button", { name: "Qualifiziert" }),
@@ -195,12 +202,14 @@ describe("LeadsToolbar", () => {
 
   it("can collapse and expand the filter area", () => {
     render(
-      <LeadsToolbar
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
-        content={getLeadsToolbarDictionary("de")}
         currentQueryString=""
+        filtersContent={getLeadsToolbarDictionary("de")}
         sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={getLeadsShellDictionary("de")}
       />,
     );
 
@@ -236,14 +245,49 @@ describe("LeadsToolbar", () => {
     ).toBeInTheDocument();
   });
 
-  function renderToolbar(currentQueryString: string) {
-    return render(
-      <LeadsToolbar
+  it("starts collapsed on mobile viewports", () => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: query === "(max-width: 720px)",
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    render(
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
-        content={getLeadsToolbarDictionary("de")}
-        currentQueryString={currentQueryString}
+        currentQueryString=""
+        filtersContent={getLeadsToolbarDictionary("de")}
         sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={getLeadsShellDictionary("de")}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: "Filterbereich ausklappen" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("searchbox", { name: "Suche" })).toBeNull();
+  });
+
+  function renderToolbar(currentQueryString: string) {
+    return render(
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
+        basePath="/de/leads"
+        categories={[]}
+        currentQueryString={currentQueryString}
+        filtersContent={getLeadsToolbarDictionary("de")}
+        sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={getLeadsShellDictionary("de")}
       />,
     );
   }
@@ -408,12 +452,14 @@ describe("LeadsToolbar", () => {
 
   it("keeps reset disabled when no filters are active", () => {
     render(
-      <LeadsToolbar
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
-        content={getLeadsToolbarDictionary("de")}
         currentQueryString=""
+        filtersContent={getLeadsToolbarDictionary("de")}
         sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={getLeadsShellDictionary("de")}
       />,
     );
 

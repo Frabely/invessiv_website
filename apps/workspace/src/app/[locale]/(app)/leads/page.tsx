@@ -4,7 +4,6 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
-import { LeadsToolbar } from "@/components/workspace/leads/toolbar/leads-toolbar/leads-toolbar";
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
@@ -187,15 +186,13 @@ export default async function LeadsPage({
         <LeadsTableTransitionProvider>
           <LeadsPageHeader
             addLeadHref={addLeadHref}
-            content={shellContent}
-            importContent={importContent}
-          />
-          <LeadsToolbar
             basePath={basePath}
             categories={categoryOptions}
-            content={toolbarContent}
             currentQueryString={queryString}
+            filtersContent={toolbarContent}
+            importContent={importContent}
             sharedContent={sharedContent}
+            shellContent={shellContent}
           />
           <LeadsTable
             basePath={basePath}
