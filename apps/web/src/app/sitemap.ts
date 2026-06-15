@@ -22,13 +22,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...localizedRouteEntries(SITE_ROUTES.HOME),
     ...localizedRouteEntries(SITE_ROUTES.LANDING_PAGE_SERVICE),
     ...localizedRouteEntries(SITE_ROUTES.LINKEDIN_POST_SERVICE),
-    ...localizedRouteEntries(SITE_ROUTES.IMPRINT),
-    ...localizedRouteEntries(SITE_ROUTES.PRIVACY),
-    ...localizedRouteEntries(SITE_ROUTES.TERMS),
   ];
 
   if (isMarketingProofEnabled()) {
-    entries.splice(6, 0, ...localizedRouteEntries(SITE_ROUTES.PROJECTS));
+    entries.push(...localizedRouteEntries(SITE_ROUTES.PROJECTS));
   }
 
   return entries;

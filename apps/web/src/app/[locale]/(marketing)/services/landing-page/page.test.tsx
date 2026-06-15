@@ -53,7 +53,7 @@ describe("LandingRoute", () => {
     });
 
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/services/landing-page",
+      "https://www.invessiv.com/de/services/landing-page",
     );
     expect(metadata.title).toEqual({
       absolute: "Landingpage erstellen lassen | ab 999 € | Invessiv",
@@ -68,13 +68,13 @@ describe("LandingRoute", () => {
       siteName: "Invessiv",
       title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
       type: "website",
-      url: "https://invessiv.com/de/services/landing-page",
+      url: "https://www.invessiv.com/de/services/landing-page",
     });
     expect(metadata.openGraph?.images).toEqual([
       {
         alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
         height: 630,
-        url: "https://invessiv.com/og/landing.png",
+        url: "https://www.invessiv.com/og/landing.png",
         width: 1200,
       },
     ]);
@@ -85,7 +85,7 @@ describe("LandingRoute", () => {
       images: [
         {
           alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
-          url: "https://invessiv.com/og/landing.png",
+          url: "https://www.invessiv.com/og/landing.png",
         },
       ],
       title: "Landingpage erstellen lassen | ab 999 € | Invessiv",

@@ -29,21 +29,24 @@ export async function generateMetadata({
   const dict = await getDictionary(locale);
   const privacy = dict.privacy;
 
-  return createPageMetadata({
-    title: privacy.meta.title,
-    description: privacy.meta.description,
-    canonicalPath: `/${locale}/privacy`,
-    languages: createLocaleAlternates(
-      Object.fromEntries(
-        SUPPORTED_LOCALES.map((supportedLocale) => [
-          supportedLocale,
-          `/${supportedLocale}/privacy`,
-        ]),
+  return {
+    ...createPageMetadata({
+      title: privacy.meta.title,
+      description: privacy.meta.description,
+      canonicalPath: `/${locale}/privacy`,
+      languages: createLocaleAlternates(
+        Object.fromEntries(
+          SUPPORTED_LOCALES.map((supportedLocale) => [
+            supportedLocale,
+            `/${supportedLocale}/privacy`,
+          ]),
+        ),
       ),
-    ),
-    openGraphTitle: privacy.meta.openGraphTitle,
-    openGraphLocale: privacy.meta.openGraphLocale,
-  });
+      openGraphTitle: privacy.meta.openGraphTitle,
+      openGraphLocale: privacy.meta.openGraphLocale,
+    }),
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function PrivacyPage({ params }: PrivacyPageProps) {

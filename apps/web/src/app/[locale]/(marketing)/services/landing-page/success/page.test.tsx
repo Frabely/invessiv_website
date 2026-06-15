@@ -83,7 +83,7 @@ describe("LandingSuccessRoute", () => {
 
     expect(metadata.robots).toEqual({ index: false, follow: false });
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/services/landing-page/success",
+      "https://www.invessiv.com/de/services/landing-page/success",
     );
     expect(metadata.title).toEqual({
       absolute: "Anfrage gesendet | Invessiv",

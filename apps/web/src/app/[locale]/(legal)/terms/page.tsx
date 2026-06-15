@@ -50,21 +50,24 @@ export async function generateMetadata({
   const dict = await getDictionary(locale);
   const terms = dict.terms;
 
-  return createPageMetadata({
-    title: terms.meta.title,
-    description: terms.meta.description,
-    canonicalPath: `/${locale}/terms`,
-    languages: createLocaleAlternates(
-      Object.fromEntries(
-        SUPPORTED_LOCALES.map((supportedLocale) => [
-          supportedLocale,
-          `/${supportedLocale}/terms`,
-        ]),
+  return {
+    ...createPageMetadata({
+      title: terms.meta.title,
+      description: terms.meta.description,
+      canonicalPath: `/${locale}/terms`,
+      languages: createLocaleAlternates(
+        Object.fromEntries(
+          SUPPORTED_LOCALES.map((supportedLocale) => [
+            supportedLocale,
+            `/${supportedLocale}/terms`,
+          ]),
+        ),
       ),
-    ),
-    openGraphTitle: terms.meta.openGraphTitle,
-    openGraphLocale: terms.meta.openGraphLocale,
-  });
+      openGraphTitle: terms.meta.openGraphTitle,
+      openGraphLocale: terms.meta.openGraphLocale,
+    }),
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function TermsPage({ params }: TermsPageProps) {

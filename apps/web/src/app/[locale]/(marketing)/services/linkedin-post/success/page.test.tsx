@@ -82,7 +82,7 @@ describe("LinkedInPostSuccessRoute", () => {
 
     expect(metadata.robots).toEqual({ index: false, follow: false });
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/services/linkedin-post/success",
+      "https://www.invessiv.com/de/services/linkedin-post/success",
     );
     expect(metadata.title).toEqual({
       absolute: "Anfrage gesendet | Invessiv",

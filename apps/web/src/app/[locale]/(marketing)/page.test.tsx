@@ -19,20 +19,20 @@ describe("LocalePage metadata", () => {
       params: Promise.resolve({ locale: "de" }),
     });
 
-    expect(metadata.alternates?.canonical).toBe("https://invessiv.com/de");
-    expect(metadata.openGraph?.url).toBe("https://invessiv.com/de");
+    expect(metadata.alternates?.canonical).toBe("https://www.invessiv.com/de");
+    expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/de");
     expect(metadata.openGraph?.images).toEqual([
       {
         alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
         height: 630,
-        url: "https://invessiv.com/og/landing.png",
+        url: "https://www.invessiv.com/og/landing.png",
         width: 1200,
       },
     ]);
     expect(metadata.twitter?.images).toEqual([
       {
         alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
-        url: "https://invessiv.com/og/landing.png",
+        url: "https://www.invessiv.com/og/landing.png",
       },
     ]);
   });

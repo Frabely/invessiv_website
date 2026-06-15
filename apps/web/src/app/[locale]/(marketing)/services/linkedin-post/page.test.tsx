@@ -59,7 +59,7 @@ describe("LinkedInPostRoute", () => {
     });
 
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/services/linkedin-post",
+      "https://www.invessiv.com/de/services/linkedin-post",
     );
     expect(metadata.title).toEqual({
       absolute: "LinkedIn-Post Generator | Invessiv",
@@ -67,7 +67,7 @@ describe("LinkedInPostRoute", () => {
     expect(metadata.description).toContain("Generator");
     expect(metadata.openGraph?.locale).toBe("de_DE");
     expect(metadata.openGraph?.url).toBe(
-      "https://invessiv.com/de/services/linkedin-post",
+      "https://www.invessiv.com/de/services/linkedin-post",
     );
   });
 
@@ -77,7 +77,7 @@ describe("LinkedInPostRoute", () => {
     });
 
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/en/services/linkedin-post",
+      "https://www.invessiv.com/en/services/linkedin-post",
     );
     expect(metadata.title).toEqual({
       absolute: "LinkedIn Post Generator | Invessiv",

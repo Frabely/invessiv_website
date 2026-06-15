@@ -39,14 +39,17 @@ export async function generateMetadata({
     ]),
   );
 
-  return createPageMetadata({
-    title: dict.imprint.meta.title,
-    description: dict.imprint.meta.description,
-    canonicalPath: `/${locale}/imprint`,
-    languages: createLocaleAlternates(languages),
-    openGraphTitle: dict.imprint.meta.openGraphTitle,
-    openGraphLocale: dict.imprint.meta.openGraphLocale,
-  });
+  return {
+    ...createPageMetadata({
+      title: dict.imprint.meta.title,
+      description: dict.imprint.meta.description,
+      canonicalPath: `/${locale}/imprint`,
+      languages: createLocaleAlternates(languages),
+      openGraphTitle: dict.imprint.meta.openGraphTitle,
+      openGraphLocale: dict.imprint.meta.openGraphLocale,
+    }),
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function ImprintPage({ params }: ImprintPageProps) {

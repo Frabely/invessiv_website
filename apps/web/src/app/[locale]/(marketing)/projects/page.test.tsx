@@ -68,7 +68,7 @@ describe("ProjectsLocalePage", () => {
       "Ausgewählte Projekte von Invessiv: eine klar positionierte Finanzmakler-Webseite und ein fokussiertes Consumption-Tool mit ruhiger, nutzbarer Oberfläche.",
     );
     expect(metadata.alternates?.canonical).toBe(
-      "https://invessiv.com/de/projects",
+      "https://www.invessiv.com/de/projects",
     );
   });
 });
