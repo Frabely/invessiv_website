@@ -207,10 +207,16 @@ importers:
 
   packages/common:
     dependencies:
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
       zod:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      "@types/react":
+        specifier: ^19
+        version: 19.2.14
       typescript:
         specifier: ^5
         version: 5.9.3
@@ -251,6 +257,18 @@ importers:
 
   packages/ui:
     dependencies:
+      "@fortawesome/fontawesome-svg-core":
+        specifier: ^7.2.0
+        version: 7.2.0
+      "@fortawesome/free-solid-svg-icons":
+        specifier: ^7.2.0
+        version: 7.2.0
+      "@fortawesome/react-fontawesome":
+        specifier: ^3.2.0
+        version: 3.2.0(@fortawesome/fontawesome-svg-core@7.2.0)(react@19.2.3)
+      "@invessiv/common":
+        specifier: workspace:*
+        version: link:../common
       react:
         specifier: 19.2.3
         version: 19.2.3

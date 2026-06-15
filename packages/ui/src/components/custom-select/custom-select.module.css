@@ -3,13 +3,14 @@
 }
 
 .trigger {
+  position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 0.55rem;
   width: 100%;
   min-height: 44px;
-  padding: 0.45rem 0.65rem;
+  padding: 0.45rem 2rem 0.45rem 0.65rem;
   border: 1px solid
     color-mix(in srgb, var(--color-border-strong) 56%, transparent);
   border-radius: 10px;
@@ -24,7 +25,12 @@
 }
 
 .trigger:not([data-has-leading]) {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Platz für den Clear-Button links neben dem Chevron. */
+.trigger[data-clearable] {
+  padding-right: 3.4rem;
 }
 
 .trigger:hover {
@@ -74,9 +80,102 @@
   white-space: nowrap;
 }
 
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 1.45rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-2) 92%, transparent);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badge[data-state="include"] {
+  border-color: color-mix(in srgb, var(--color-cta) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 15%, transparent);
+}
+
+.badge[data-state="exclude"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-danger) 55%,
+    var(--color-border)
+  );
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+}
+
+.badge[data-state="exclude"] .badgeLabel {
+  text-decoration: line-through;
+}
+
+.badgeLeading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badgeLabel {
+  overflow: hidden;
+  max-width: 8rem;
+  color: var(--color-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.8rem;
+  transform: translateY(-50%);
+  pointer-events: none;
   color: color-mix(in srgb, var(--color-text-muted) 80%, transparent);
   font-size: 0.82rem;
+}
+
+.clearButton {
+  position: absolute;
+  top: 50%;
+  right: 1.95rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.clearButton:hover,
+.clearButton:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 16%, transparent);
+}
+
+.clearButton:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 55%, transparent);
+  outline-offset: 1px;
 }
 
 .listbox {
@@ -116,6 +215,16 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* Multi-Select-Optionen tragen zusätzlich einen Zustandsindikator (✓/✕). */
+.option[data-state] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  border: 1px solid transparent;
+}
+
+.option[data-state]:not([data-has-leading]) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .option:hover,
 .option:focus-visible {
   outline: none;
@@ -126,4 +235,33 @@
   background: color-mix(in srgb, var(--color-cta) 16%, transparent);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-cta) 32%, transparent)
     inset;
+}
+
+.option[data-state="include"] {
+  border-color: color-mix(in srgb, var(--color-cta) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 15%, transparent);
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-cta) 24%);
+}
+
+.option[data-state="exclude"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-danger) 55%,
+    var(--color-border)
+  );
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-danger) 24%);
+}
+
+.option[data-state="exclude"] .optionLabel {
+  text-decoration: line-through;
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 800;
 }

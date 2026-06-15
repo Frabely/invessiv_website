@@ -19,20 +19,20 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 ## Index der scope-spezifischen Dateien
 
-| Scope                                            | Worum es geht                                                                             |
-| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, Route-Gruppen, SEO, i18n, interne Service-Verlinkung                    |
-| `apps/web/src/components/`                       | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                     |
-| `apps/web/src/client/`                           | Clientseitige Services                                                                    |
-| `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`   | Logik/Hooks: Typen/Konstanten gehören nach `common` (keine Inline-Ausnahme)               |
-| `apps/web/src/server/` (+ `linkedin-post/`)      | Server-Handler, Service-Objekte, DB-Grenze                                                |
-| `apps/web/common/`                               | App-shared Contracts/Constants/Defaults                                                   |
-| `apps/workspace/src/app/[locale]/(auth)/`        | Öffentliche Clerk-Auth-Routen                                                             |
-| `apps/workspace/src/app/[locale]/(app)/leads/`   | Geschützter Leads-Bereich: Auth-Gate, Allowlist, noindex/dynamic                          |
-| `apps/workspace/src/components/workspace/leads/` | Geschützte Workspace-Leads-UI                                                             |
-| `apps/workspace/src/server/`                     | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                             |
-| `apps/workspace/src/common/`                     | Workspace-shared Contracts/Constants                                                      |
-| `packages/` (`common`, `db`, `ui`)               | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI |
+| Scope                                            | Worum es geht                                                                                                   |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, Route-Gruppen, SEO, i18n, interne Service-Verlinkung                                          |
+| `apps/web/src/components/`                       | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
+| `apps/web/src/client/`                           | Clientseitige Services                                                                                          |
+| `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`   | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
+| `apps/web/src/server/` (+ `linkedin-post/`)      | Server-Handler, Service-Objekte, DB-Grenze                                                                      |
+| `apps/web/common/`                               | App-shared Contracts/Constants/Defaults                                                                         |
+| `apps/workspace/src/app/[locale]/(auth)/`        | Öffentliche Clerk-Auth-Routen                                                                                   |
+| `apps/workspace/src/app/[locale]/(app)/leads/`   | Geschützter Leads-Bereich: Auth-Gate, Allowlist, noindex/dynamic                                                |
+| `apps/workspace/src/components/workspace/leads/` | Geschützte Workspace-Leads-UI                                                                                   |
+| `apps/workspace/src/server/`                     | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                                                   |
+| `apps/workspace/src/common/`                     | Workspace-shared Contracts/Constants                                                                            |
+| `packages/` (`common`, `db`, `ui`)               | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |
 
 > Hinweis: Pfadangaben in dieser Datei beziehen sich auf die jeweilige App-Wurzel (`apps/<app>/src/…`) bzw. auf
 > `packages/…`.
@@ -102,12 +102,15 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - Route-Dateien (`page.tsx`) orchestrieren nur — keine großen Render-Switches, keine sprach-/datenlastige Inline-Logik.
   Wiederkehrende UI-Interaktionslogik (Scroll/Pointer/Observer/Motion) in Hooks (`src/hooks/**`) kapseln.
 - Lange/monolithische Dateien frühzeitig in kleine, klar abgegrenzte Einheiten aufsplitten.
-- **Typen/Konstanten gehören nach `common`** (`packages/common` bzw. `apps/<app>/common`: `contracts/`, `constants/`,
-  `defaults/`) — nie inline in Logik-Dateien (`lib/`, `hooks/`, `client/`, `server/`) oder UI-Komponenten (`.tsx`), auch
-  nicht bei aktuell nur einmaliger Nutzung. **Einzige Ausnahme (nur UI):** der eigene Props-Type einer Komponente (
-  `XxxProps`) darf in der `.tsx` stehen; in Logik-Dateien gibt es keine Ausnahme. String-Unions/Enums ausschließlich per
-  **Const-Objekt + abgeleitetem Type** (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`,
-  `packages/common/AGENTS.md`.
+- **Export entscheidet über den Ort von Typen/Konstanten/Patterns.** Ein Typ, eine Konstante, eine Objekt-Map oder ein
+  Pattern darf lokal in der eigenen Datei (Komponente, `lib/`, `hooks/`, `client/`, `server/`) stehen, **solange er nur
+  dort genutzt und nicht exportiert wird** (z. B. der eigene `XxxProps`-Type einer Komponente, ein rein lokaler
+  Helfer-Type oder eine datei-interne Map). **Sobald ein `export` nötig wird (Nutzung in einer anderen Datei), wird der
+  Baustein vorher nach `common` verschoben** — kein `export` von Typen/Konstanten/Patterns aus Komponenten- oder
+  Logik-Dateien. Ziel ist `packages/common` (app-übergreifend) bzw. `apps/<app>/common` (app-spezifisch):
+  `contracts/` für Typen/DTOs/Shapes, `constants/` für String-Unions/Werte/Maps, `defaults/` für Defaults,
+  `patterns/` für seiteneffektfreie Helfer. String-Unions/Enums ausschließlich per **Const-Objekt + abgeleitetem Type**
+  (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.
 - **Error-Codes** als Const-Objekt in `…/constants/<domain>/`, Message-Texte nur in co-located `*-error.ts` der
   Nutzungsschicht. **URL-Pfade** ausschließlich aus typisierten Konstanten (`SITE_ROUTES` in `src/config/routes.ts`) /
   Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen.

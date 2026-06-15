@@ -4,7 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@invessiv/ui": ["./src/index.ts"],
-      "@invessiv/ui/*": ["./src/*"]
+      "@invessiv/ui/*": ["./src/*"],
+      "@invessiv/common": ["../common/src/index.ts"],
+      "@invessiv/common/*": ["../common/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

@@ -141,3 +141,88 @@
     outline-offset: -2px;
   }
 }
+
+/* Mobil: jede Zeile wird zu einer gestapelten Karte. Sekundärfelder
+   (Erstellt/Aktualisiert/Quelle) sind hier ausgeblendet und im Detail-Panel
+   sichtbar. */
+@media (max-width: 720px) {
+  .row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "check    lead     actions"
+      "stage    stage    stage"
+      "category category category"
+      "score    score    score"
+      "social   social   social";
+    gap: 0.5rem 0.6rem;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-surface-1) 82%, transparent);
+  }
+
+  .row:last-child {
+    margin-bottom: 0;
+  }
+
+  .row td {
+    padding: 0;
+    border-bottom: none;
+  }
+
+  .checkboxCell {
+    grid-area: check;
+    width: 18px;
+    align-self: center;
+  }
+
+  .leadCell {
+    grid-area: lead;
+    gap: 0.5rem;
+  }
+
+  .leadTitle {
+    white-space: normal;
+  }
+
+  .leadEmail {
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+    font-size: 0.8rem;
+  }
+
+  .stageCell {
+    grid-area: stage;
+    justify-self: start;
+  }
+
+  .categoryCell {
+    grid-area: category;
+    justify-self: start;
+  }
+
+  .scoreCell {
+    grid-area: score;
+    padding-right: 0;
+  }
+
+  .socialCell {
+    grid-area: social;
+    justify-self: start;
+  }
+
+  .categoryCell,
+  .stageCell {
+    padding-right: 0;
+  }
+
+  .createdCell,
+  .updatedCell,
+  .sourceCell {
+    display: none;
+  }
+}

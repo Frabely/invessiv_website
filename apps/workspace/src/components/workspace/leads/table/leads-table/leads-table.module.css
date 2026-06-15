@@ -138,3 +138,42 @@
     max-height: calc(100dvh - 18rem);
   }
 }
+
+/* Mobil: Tabelle wird zu gestapelten Karten (siehe leads-table-row). Kein
+   horizontales Scrollen, kein fixiertes Min-Width, Kopfzeile ausgeblendet. */
+@media (max-width: 720px) {
+  .shell {
+    display: block;
+    overflow: visible;
+  }
+
+  .tableFrame {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .tableScroll {
+    overflow: visible;
+  }
+
+  .table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody {
+    display: block;
+    width: 100%;
+  }
+}

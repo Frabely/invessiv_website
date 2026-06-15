@@ -1,8 +1,12 @@
 "use client";
 
-import { type MouseEvent, useState } from "react";
+import { type FocusEvent, type MouseEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsisVertical,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
@@ -23,6 +27,7 @@ type LeadsTableRowActionsProps = {
   leadCurrentStatus: ContactLeadStatus;
   leadDisplayName: string;
   leadId: string;
+  menuLabel: string;
   outreachContent?: LeadsOutreachDictionary;
 };
 
@@ -38,24 +43,48 @@ export function LeadsTableRowActions({
   leadCurrentStatus,
   leadDisplayName,
   leadId,
+  menuLabel,
   outreachContent,
 }: LeadsTableRowActionsProps) {
   const router = useRouter();
   const startTransition = useNavigationContext();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function handleCellBlur(event: FocusEvent<HTMLTableCellElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setIsMenuOpen(false);
+    }
+  }
 
   return (
     <td
       className={styles.cell}
+      onBlur={handleCellBlur}
       onClick={stopRowPropagation}
       onMouseDown={stopRowPropagation}
     >
-      <div className={styles.group}>
+      <button
+        aria-expanded={isMenuOpen}
+        aria-haspopup="menu"
+        aria-label={menuLabel}
+        className={styles.menuTrigger}
+        onClick={(event) => {
+          stopRowPropagation(event);
+          setIsMenuOpen((current) => !current);
+        }}
+        title={menuLabel}
+        type="button"
+      >
+        <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
+      </button>
+      <div className={styles.group} data-open={isMenuOpen ? "true" : "false"}>
         <button
           aria-label={editLabel}
           className={styles.button}
           onClick={(event) => {
             stopRowPropagation(event);
+            setIsMenuOpen(false);
             startTransition(() => router.push(editHref));
           }}
           title={editLabel}
@@ -76,6 +105,7 @@ export function LeadsTableRowActions({
           className={`${styles.button} ${styles.buttonDestructive}`}
           onClick={(event) => {
             stopRowPropagation(event);
+            setIsMenuOpen(false);
             setIsDeleteDialogOpen(true);
           }}
           title={deleteLabel}

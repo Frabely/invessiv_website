@@ -45,6 +45,7 @@
   "actions": {
     "collapseFilters": "Filterbereich einklappen",
     "expandFilters": "Filterbereich ausklappen",
-    "reset": "Filter zurücksetzen"
+    "reset": "Filter zurücksetzen",
+    "clear": "Zurücksetzen"
   }
 }

@@ -1,60 +1,191 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type FocusEvent, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import { TriState } from "@invessiv/common/constants/filters/tri-state";
+import type {
+  CustomMultiSelectOption,
+  CustomSelectOption,
+} from "@invessiv/common/contracts/ui/custom-select-option";
 import styles from "./custom-select.module.css";
 
-export type CustomSelectOption<TValue extends string = string> = {
-  value: TValue;
-  label: string;
-  description?: string;
+type SingleSelectProps<TValue extends string> = {
+  multiple?: false;
   ariaLabel?: string;
-  leading?: ReactNode;
-};
-
-type CustomSelectProps<TValue extends string = string> = {
+  clearLabel?: string;
   describedBy?: string;
   id: string;
   invalid?: boolean;
+  onClear?: () => void;
   options: readonly CustomSelectOption<TValue>[];
   value: TValue;
   onChange: (next: TValue) => void;
 };
 
-export function CustomSelect<TValue extends string = string>({
-  describedBy,
-  id,
-  invalid = false,
-  options,
-  value,
-  onChange,
-}: CustomSelectProps<TValue>) {
+type MultiSelectProps<TValue extends string> = {
+  multiple: true;
+  ariaLabel?: string;
+  clearLabel?: string;
+  describedBy?: string;
+  id: string;
+  invalid?: boolean;
+  onClear?: () => void;
+  triggerLabel: string;
+  options: readonly CustomMultiSelectOption<TValue>[];
+  onToggleOption: (value: TValue) => void;
+};
+
+type CustomSelectProps<TValue extends string = string> =
+  | SingleSelectProps<TValue>
+  | MultiSelectProps<TValue>;
+
+const STATE_ICON: Partial<Record<TriState, IconDefinition>> = {
+  [TriState.Include]: faCheck,
+  [TriState.Exclude]: faXmark,
+};
+
+export function CustomSelect<TValue extends string = string>(
+  props: CustomSelectProps<TValue>,
+) {
+  const {
+    ariaLabel,
+    clearLabel,
+    describedBy,
+    id,
+    invalid = false,
+    onClear,
+  } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const listBoxId = `${id}-listbox`;
+
+  function handleBlur(event: FocusEvent<HTMLDivElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setIsOpen(false);
+    }
+  }
+
+  const clearButton =
+    onClear && clearLabel ? (
+      <button
+        aria-label={clearLabel}
+        className={styles.clearButton}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClear();
+        }}
+        title={clearLabel}
+        type="button"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    ) : null;
+
+  if (props.multiple) {
+    const { options, onToggleOption, triggerLabel } = props;
+    const activeOptions = options.filter(
+      (option) => option.state !== TriState.Off,
+    );
+
+    return (
+      <div className={styles.root} onBlur={handleBlur}>
+        <button
+          aria-controls={listBoxId}
+          aria-describedby={describedBy}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-label={ariaLabel}
+          className={styles.trigger}
+          data-clearable={clearButton ? true : undefined}
+          data-invalid={invalid || undefined}
+          id={id}
+          onClick={() => setIsOpen((current) => !current)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setIsOpen(false);
+            }
+          }}
+          type="button"
+        >
+          <span className={styles.triggerText}>
+            {activeOptions.length > 0 ? (
+              <span className={styles.badges}>
+                {activeOptions.map((option) => (
+                  <span
+                    className={styles.badge}
+                    data-state={option.state}
+                    key={option.value}
+                  >
+                    {option.leading ? (
+                      <span className={styles.badgeLeading}>
+                        {option.leading}
+                      </span>
+                    ) : (
+                      <span className={styles.badgeLabel}>{option.label}</span>
+                    )}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className={styles.triggerLabel}>{triggerLabel}</span>
+            )}
+          </span>
+          <span aria-hidden="true" className={styles.chevron}>
+            v
+          </span>
+        </button>
+
+        {clearButton}
+
+        {isOpen ? (
+          <div className={styles.listbox} id={listBoxId} role="group">
+            {options.map((option) => {
+              const stateIcon = STATE_ICON[option.state];
+
+              return (
+                <button
+                  aria-label={option.ariaLabel}
+                  className={styles.option}
+                  data-has-leading={Boolean(option.leading) || undefined}
+                  data-state={option.state}
+                  key={option.value}
+                  onClick={() => onToggleOption(option.value)}
+                  type="button"
+                >
+                  {option.leading ? (
+                    <span className={styles.leading}>{option.leading}</span>
+                  ) : null}
+                  <span className={styles.optionText}>
+                    <span className={styles.optionLabel}>{option.label}</span>
+                  </span>
+                  <span aria-hidden="true" className={styles.indicator}>
+                    {stateIcon ? <FontAwesomeIcon icon={stateIcon} /> : null}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
+  const { options, value, onChange } = props;
   const selected =
     options.find((option) => option.value === value) ?? options[0];
   const hasSelectedLeading = Boolean(selected?.leading);
-  const listboxId = `${id}-listbox`;
-
-  function selectValue(next: TValue) {
-    onChange(next);
-    setIsOpen(false);
-  }
 
   return (
-    <div
-      className={styles.root}
-      onBlur={(event) => {
-        const nextTarget = event.relatedTarget as Node | null;
-        if (!event.currentTarget.contains(nextTarget)) {
-          setIsOpen(false);
-        }
-      }}
-    >
+    <div className={styles.root} onBlur={handleBlur}>
       <button
-        aria-controls={listboxId}
+        aria-controls={listBoxId}
         aria-describedby={describedBy}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-label={ariaLabel}
         className={styles.trigger}
+        data-clearable={clearButton ? true : undefined}
         data-has-leading={hasSelectedLeading || undefined}
         data-invalid={invalid || undefined}
         id={id}
@@ -82,8 +213,10 @@ export function CustomSelect<TValue extends string = string>({
         </span>
       </button>
 
+      {clearButton}
+
       {isOpen ? (
-        <div className={styles.listbox} id={listboxId} role="listbox">
+        <div className={styles.listbox} id={listBoxId} role="listbox">
           {options.map((option) => (
             <button
               aria-label={option.ariaLabel}
@@ -91,7 +224,10 @@ export function CustomSelect<TValue extends string = string>({
               className={styles.option}
               data-has-leading={Boolean(option.leading) || undefined}
               key={option.value}
-              onClick={() => selectValue(option.value)}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
               role="option"
               type="button"
             >

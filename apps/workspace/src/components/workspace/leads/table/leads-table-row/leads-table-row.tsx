@@ -219,6 +219,7 @@ export function LeadsTableRow({
         leadCurrentStatus={lead.leadStatus}
         leadDisplayName={displayName}
         leadId={lead.id}
+        menuLabel={tableContent.actions.label}
         outreachContent={outreachContent}
       />
     </tr>

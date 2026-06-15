@@ -1,0 +1,12 @@
+.field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: var(--font-size-caption);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+}

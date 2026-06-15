@@ -1,0 +1,80 @@
+.group {
+  display: grid;
+  gap: 0.45rem;
+  align-self: start;
+  align-content: start;
+}
+
+.fieldLabel {
+  font-size: var(--font-size-caption);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--color-text-muted);
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.badgeButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.12rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.badgeButton > :first-child {
+  pointer-events: none;
+}
+
+.badgeButton:hover,
+.badgeButton:focus-visible {
+  border-color: color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  outline: none;
+}
+
+.badgeButton[data-active="true"] {
+  border-color: color-mix(in srgb, var(--color-cta) 44%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+  transform: translateY(-1px);
+}
+
+.badgeButton[data-active="true"] > :first-child {
+  --badge-border: color-mix(in srgb, var(--badge-accent) 50%, transparent);
+  --badge-bg: color-mix(
+    in srgb,
+    var(--badge-accent) 18%,
+    var(--color-surface-1) 82%
+  );
+  --badge-text: color-mix(
+    in srgb,
+    var(--color-text) 78%,
+    var(--badge-accent) 22%
+  );
+}
+
+/* Mobil-only: die Chips weichen einem kompakten Select. */
+.selectSlot {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .chipRow {
+    display: none;
+  }
+
+  .selectSlot {
+    display: block;
+  }
+}

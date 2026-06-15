@@ -9,14 +9,18 @@ Inhalte von `AGENTS.md`-Dateien in diesem Projekt immer auf Deutsch pflegen.
 ## Was hier hingehört
 
 - `constants/` — benannte String-/Zahl-Konstanten und Enumerationswerte (kein Runtime-Code)
-- `contracts/` — TypeScript-Interfaces und DTOs, die über API-/DB-Grenzen geteilt werden
+- `contracts/` — TypeScript-Interfaces und DTOs, die über API-/DB-Grenzen geteilt werden; dazu gehören auch
+  geteilte UI-Control-Contracts (z. B. Option-/Props-Shapes generischer `@invessiv/ui`-Controls unter `contracts/ui/`).
+  Diese dürfen React **ausschließlich auf Typ-Ebene** referenzieren (`import type { ReactNode }`), niemals als
+  Runtime-Import, JSX oder Komponente.
 - `defaults/` — Standardwerte für Formulare und Request-Strukturen
 - `patterns/` — shared Utility-Hilfsmuster ohne Seiteneffekte
 
 ## Was hier nicht hingehört
 
 - Serverseitige Persistenz-Inputs oder Command-Outputs → `src/server/`
-- UI-Komponenten oder Hooks → `src/components/`, `src/hooks/`
+- UI-Komponenten, Hooks, JSX oder Runtime-React → `src/components/`, `src/hooks/` (reine Typ-Referenzen auf React in
+  geteilten UI-Control-Contracts sind erlaubt, siehe oben)
 - i18n-Dictionaries → `src/i18n/`
 - Konfiguration oder Umgebungsvariablen → `src/server/config/` oder `src/lib/`
 

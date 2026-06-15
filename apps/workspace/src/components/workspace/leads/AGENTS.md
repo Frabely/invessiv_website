@@ -104,6 +104,13 @@ Neue Subfolder-Gruppen werden über einen Plan eingeführt, nicht ad hoc.
     Tabelle, Detail-Panel, Activity-Stream, künftige Views). Keine doppelten Implementierungen in unterschiedlichen
     Subfoldern; bei wiederkehrendem Bedarf gehört der Baustein nach `shared/`.
 
+16. **Typen/Konstanten/Patterns nach Export-Regel.** In der `.tsx` dürfen Typen, Konstanten, Objekt-Maps und Patterns
+    lokal stehen, solange sie **nicht exportiert** werden (nur in dieser Datei genutzt) — z. B. der eigene
+    `XxxProps`-Type oder ein datei-interner Helfer. Sobald ein Baustein exportiert / von einer anderen Datei gebraucht
+    wird, wandert er vorher nach `common` (`apps/workspace/src/common` bzw. `packages/common`; DTOs aus
+    `contracts/leads/**`). Aus einer Lead-Komponente wird kein Typ/keine Konstante exportiert. Siehe Repo-Root-
+    `AGENTS.md`.
+
 ## Subfolder-Übersicht (Stand)
 
 | Subfolder   | Zweck                                                                                            |

@@ -171,4 +171,61 @@ describe("LeadsTableRow", () => {
 
     expect(pushMock).not.toHaveBeenCalled();
   });
+
+  it("toggles the actions menu without navigating the row", () => {
+    const tableContent = getLeadsTableDictionary("de");
+    const lead: LeadSummaryDto = {
+      id: "lead-123",
+      displayName: "Anna Meyer",
+      firstName: "Anna",
+      lastName: "Meyer",
+      companyName: "Acme",
+      email: "anna@example.com",
+      phone: null,
+      websiteUrl: null,
+      score: 82,
+      source: "manual",
+      leadStatus: "qualified",
+      owner: null,
+      createdAt: "2026-05-01T10:00:00.000Z",
+      updatedAt: "2026-05-02T10:00:00.000Z",
+      category: {
+        id: "cat-1",
+        slug: "coaches",
+        labelKey: "coaches",
+      },
+      socialProfiles: [],
+    };
+
+    render(
+      <table>
+        <tbody>
+          <LeadsTableRow
+            basePath="/de/leads"
+            currentQueryString="status=qualified"
+            currentSearchParams={{ status: "qualified" }}
+            deleteContent={getLeadsDeleteDictionary("de")}
+            lead={lead}
+            locale="de"
+            outreachContent={getLeadsOutreachDictionary("de")}
+            sharedContent={getLeadsSharedDictionary("de")}
+            tableContent={tableContent}
+          />
+        </tbody>
+      </table>,
+    );
+
+    const menuTrigger = screen.getByRole("button", {
+      name: tableContent.actions.label,
+    });
+    expect(menuTrigger).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(menuTrigger);
+
+    expect(menuTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("button", { name: tableContent.actions.edit }),
+    ).toBeInTheDocument();
+    expect(pushMock).not.toHaveBeenCalled();
+  });
 });

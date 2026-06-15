@@ -117,6 +117,11 @@ eigenen Dateien außerhalb definiert:
 
 Die Service-/Handler-Datei importiert den Typ direkt aus der jeweiligen Contract-Datei.
 
+Dieselbe Export-Regel gilt für Konstanten, Objekt-Maps und Patterns: Was exportiert / von anderen Dateien genutzt wird,
+liegt außerhalb (Const-Objekte/Werte in `packages/common/src/constants/<domain>/` bzw. server-only in `src/server/**`,
+seiteneffektfreie Helfer in `patterns/`). **Rein lokale, nicht exportierte** Helfer-Typen/-Konstanten dürfen in der
+Service-/Handler-Datei bleiben, solange sie nur dort genutzt werden.
+
 ## HTTP- und DTO-Grenze
 
 - `unknown` ist nur an der äußersten HTTP- bzw. Route-Grenze zulässig. Ab dort wird der Request gegen ein

@@ -7,12 +7,14 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getLeadsSharedDictionary,
   getLeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { LeadFilterSelectId } from "@/common/constants/leads/list/lead-filter-select-ids";
 import { LeadsToolbar } from "./leads-toolbar";
 
 const pushMock = vi.fn();
@@ -67,11 +69,12 @@ describe("LeadsToolbar", () => {
     );
 
     expect(screen.getByLabelText("Suche")).toHaveValue("acme");
-    expect(screen.getByRole("toolbar", { name: "Quelle" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("toolbar", { name: "Kategorie" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("toolbar", { name: "Status" })).toBeInTheDocument();
+    const sourceGroup = screen.getByRole("toolbar", { name: "Quelle" });
+    const categoryGroup = screen.getByRole("toolbar", { name: "Kategorie" });
+    const statusGroup = screen.getByRole("toolbar", { name: "Status" });
+    expect(sourceGroup).toBeInTheDocument();
+    expect(categoryGroup).toBeInTheDocument();
+    expect(statusGroup).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Filter zurücksetzen" }),
     ).toBeEnabled();
@@ -81,81 +84,87 @@ describe("LeadsToolbar", () => {
         .closest("footer"),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: "Qualifiziert" }),
+      within(statusGroup).getByRole("button", { name: "Qualifiziert" }),
     ).toHaveAttribute("data-active", "true");
     expect(
-      screen
+      within(statusGroup)
         .getByText("Alle")
         .closest("[data-kind='status'][data-tone='neutral']"),
     ).toBeTruthy();
     expect(
-      screen.getByText("Neu").closest("[data-kind='status'][data-tone='info']"),
+      within(statusGroup)
+        .getByText("Neu")
+        .closest("[data-kind='status'][data-tone='info']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Kontaktiert")
         .closest("[data-kind='status'][data-tone='primary']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Qualifiziert")
         .closest("[data-kind='status'][data-tone='orange']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Pausiert")
         .closest("[data-kind='status'][data-tone='neutral']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Angebot")
         .closest("[data-kind='status'][data-tone='purple']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Verloren")
         .closest("[data-kind='status'][data-tone='danger']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(statusGroup)
         .getByText("Archiviert")
         .closest("[data-kind='status'][data-tone='neutral']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(sourceGroup)
         .getByText("Alle Quellen")
         .closest("[data-kind='source'][data-tone='neutral']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(sourceGroup)
         .getByText("Manuell")
         .closest("[data-kind='source'][data-tone='warning']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(categoryGroup)
         .getByText("Coaches")
         .closest("[data-kind='category'][data-tone='primary']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(categoryGroup)
         .getByText("Lokale Dienstleister")
         .closest("[data-kind='category'][data-tone='success']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(categoryGroup)
         .getByText("Fotografen")
         .closest("[data-kind='category'][data-tone='info']"),
     ).toBeTruthy();
     expect(
-      screen
+      within(categoryGroup)
         .getByText("Andere")
         .closest("[data-kind='category'][data-tone='orange']"),
     ).toBeTruthy();
     expect(
-      screen.getByText("Coaches").closest("button[data-active='true']"),
+      within(categoryGroup)
+        .getByText("Coaches")
+        .closest("button[data-active='true']"),
     ).toBeTruthy();
     expect(
-      screen.getByText("Coaches").closest("[data-category-key='coaches']"),
+      within(categoryGroup)
+        .getByText("Coaches")
+        .closest("[data-category-key='coaches']"),
     ).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Webformular" }));
@@ -330,6 +339,70 @@ describe("LeadsToolbar", () => {
       const params = lastPushedParams();
       expect(params.has("profile_include")).toBe(false);
       expect(params.has("profile_exclude")).toBe(false);
+    });
+  });
+
+  describe("mobile filters", () => {
+    it("commits the status filter from the mobile single select", () => {
+      renderToolbar("");
+
+      fireEvent.click(screen.getByRole("button", { name: "Status" }));
+      const listbox = document.getElementById(
+        `${LeadFilterSelectId.Status}-listbox`,
+      );
+      expect(listbox).not.toBeNull();
+
+      fireEvent.click(
+        within(listbox as HTMLElement).getByRole("option", {
+          name: "Qualifiziert",
+        }),
+      );
+
+      expect(lastPushedParams().get("status")).toBe("qualified");
+    });
+
+    it("commits the source filter from the mobile single select", () => {
+      renderToolbar("");
+
+      fireEvent.click(screen.getByRole("button", { name: "Quelle" }));
+      const listbox = document.getElementById(
+        `${LeadFilterSelectId.Source}-listbox`,
+      );
+      expect(listbox).not.toBeNull();
+
+      fireEvent.click(
+        within(listbox as HTMLElement).getByRole("option", {
+          name: "Manuell",
+        }),
+      );
+
+      expect(lastPushedParams().get("source")).toBe("manual");
+    });
+
+    it("clears an active filter via the inline clear button on the select", () => {
+      renderToolbar("status=qualified");
+
+      fireEvent.click(screen.getByRole("button", { name: "Zurücksetzen" }));
+
+      expect(lastPushedParams().has("status")).toBe(false);
+    });
+
+    it("cycles a profile type from the mobile multi select", () => {
+      renderToolbar("");
+
+      fireEvent.click(screen.getByRole("button", { name: "Profile" }));
+      const listbox = document.getElementById(
+        `${LeadFilterSelectId.Profile}-listbox`,
+      );
+      expect(listbox).not.toBeNull();
+
+      fireEvent.click(
+        within(listbox as HTMLElement).getByRole("button", {
+          name: "Website",
+        }),
+      );
+
+      expect(lastPushedParams().get("profile_include")).toBe("website");
     });
   });
 

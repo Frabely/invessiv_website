@@ -34,28 +34,32 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Typen & Konstanten (verbindlich)
 
-- In einer Komponenten-Datei (`.tsx`) darf **genau ein** Typ deklariert werden: der eigene
-  Props-Type der Komponente (`XxxProps`). **Sonst nichts** — kein weiterer Typ, kein `type`/`interface`,
-  keine Konstante, kein Map-/Default-Objekt.
-- Alle anderen Typen und Konstanten landen in `apps/web/common` (bzw. `packages/common`), **bevor**
-  die Komponente fertig ist — auch wenn sie aktuell nur in dieser einen Datei genutzt werden:
+- **Export entscheidet über den Ort.** Typen, Konstanten, Objekt-Maps und Patterns dürfen lokal in der
+  Komponenten-Datei (`.tsx`) stehen, **solange sie nicht exportiert werden** (nur in dieser Datei genutzt) — z. B. der
+  eigene `XxxProps`-Type, ein lokaler Helfer-Type oder eine datei-interne Map.
+- **Sobald ein `export` nötig wird (der Baustein von einer anderen Datei gebraucht wird), wandert er vorher nach**
+  `apps/web/common` (bzw. `packages/common` app-übergreifend):
   - Datentypen/DTOs/Shapes → `common/contracts/`
-  - String-Unions, Status-/Kind-/Variant-Werte, Event-Namen, Storage-Keys → `common/constants/`
+  - String-Unions, Status-/Kind-/Variant-Werte, Event-Namen, Storage-Keys, Maps → `common/constants/`
     (Const-Objekt-Pattern, siehe `packages/common/AGENTS.md`)
   - Default-/Initialwerte → `common/defaults/`
-- Selbstcheck-Faustregel: Wird der Typ/die Konstante von mehr als dieser Datei referenziert **oder**
-  bildet sie ein Domänenkonzept ab (Status, Variante, DTO, Konfig)? → nach `common`. Nur `XxxProps`
-  bleibt lokal.
+  - Seiteneffektfreie Helfer/Patterns → `common/patterns/`
+- Aus einer Komponenten-Datei wird **kein** Typ/keine Konstante/kein Pattern exportiert. Wird ein Domänenkonzept
+  (Status, Variante, DTO, Konfig) abgebildet, gehört es ohnehin nach `common`, weil es geteilt wird.
 
 ```tsx
-// ❌ nicht in der Komponente
-type LeadCardVariant = "default" | "compact";
-const MAX_VISIBLE_TAGS = 5;
+// ❌ nicht exportieren aus der Komponente — vorher nach common
+export type LeadCardVariant = "default" | "compact";
+export const LEAD_CARD_TAG_LIMIT = 5;
 
-// ✅ erlaubt: ausschließlich der eigene Props-Type
+// ✅ erlaubt: lokal, nicht exportiert (nur in dieser Datei genutzt)
+const MAX_VISIBLE_TAGS = 5;
+type SortableColumn = "name" | "created"; // rein lokaler Helfer-Type
+
+// ✅ erlaubt: der eigene Props-Type
 interface LeadCardProps {
   lead: LeadDto; // LeadDto aus common/contracts
-  variant: LeadCardVariant; // LeadCardVariant aus common/constants
+  variant: LeadCardVariant; // geteilte Variante aus common/constants
 }
 ```
 
@@ -98,6 +102,7 @@ interface LeadCardProps {
 ## Checks vor Abschluss
 
 - `pnpm -r typecheck`, `pnpm -r lint` grün.
-- In der `.tsx` steht kein Typ/keine Konstante außer dem eigenen `XxxProps`-Type; alles andere liegt in `common`.
+- In der `.tsx` wird kein Typ/keine Konstante/kein Pattern exportiert; nicht-exportierte lokale Bausteine dürfen
+  bleiben, alles Geteilte liegt in `common`.
 - Betroffene `*.test.tsx` grün; neue interaktive Komponente bekommt einen Test.
 - Mobile-first geprüft (360 px), Dark/Light konsistent, sichtbare Focus-States.

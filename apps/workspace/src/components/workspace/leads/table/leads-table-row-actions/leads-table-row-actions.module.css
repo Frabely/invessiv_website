@@ -14,6 +14,34 @@
   gap: 4px;
 }
 
+/* Kebab-Trigger nur auf Mobile sichtbar; Desktop zeigt die Buttons inline. */
+.menuTrigger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.menuTrigger:hover,
+.menuTrigger:focus-visible {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-cta) 14%, transparent);
+}
+
+.menuTrigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -46,4 +74,40 @@
 .buttonDestructive:focus-visible {
   color: var(--color-danger);
   background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+}
+
+@media (max-width: 720px) {
+  .cell {
+    position: relative;
+    right: auto;
+    z-index: auto;
+    grid-area: actions;
+    width: auto;
+    align-self: start;
+    justify-self: end;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .menuTrigger {
+    display: inline-flex;
+  }
+
+  .group {
+    position: absolute;
+    top: calc(100% + 0.3rem);
+    right: 0;
+    z-index: 20;
+    display: none;
+    padding: 0.3rem;
+    border: 1px solid
+      color-mix(in srgb, var(--color-border-strong) 62%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--color-surface-1) 98%, transparent);
+    box-shadow: 0 18px 38px -24px var(--color-shadow);
+  }
+
+  .group[data-open="true"] {
+    display: inline-flex;
+  }
 }

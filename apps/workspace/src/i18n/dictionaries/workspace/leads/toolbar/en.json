@@ -45,6 +45,7 @@
   "actions": {
     "collapseFilters": "Collapse filters",
     "expandFilters": "Expand filters",
-    "reset": "Reset filters"
+    "reset": "Reset filters",
+    "clear": "Clear"
   }
 }
