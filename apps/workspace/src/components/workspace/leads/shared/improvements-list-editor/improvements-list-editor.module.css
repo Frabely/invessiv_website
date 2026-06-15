@@ -163,3 +163,59 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 640px) {
+  .editor {
+    gap: 0.5rem;
+  }
+
+  .header {
+    gap: 0.25rem;
+  }
+
+  .title {
+    font-size: 0.82rem;
+  }
+
+  .inlineDialog {
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+  }
+
+  .inlineDialogRow,
+  .row {
+    gap: 0.45rem;
+  }
+
+  .row {
+    padding: 0.58rem 0;
+  }
+
+  .emptyState {
+    padding: 0.58rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .field {
+    gap: 0.25rem;
+  }
+
+  .input {
+    min-height: 36px;
+    padding: 0.48rem 0.6rem;
+    border-radius: 7px;
+    font-size: 0.82rem;
+  }
+
+  .entryText {
+    font-size: 0.8rem;
+  }
+
+  .iconToggleButton {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+}

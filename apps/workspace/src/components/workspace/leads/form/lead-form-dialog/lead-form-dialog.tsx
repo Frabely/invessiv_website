@@ -12,7 +12,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { useForm, useWatch } from "react-hook-form";
-import { faGlobe, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faGlobe, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   CONTACT_LEAD_STATUS_VALUES,
@@ -995,21 +995,37 @@ export function LeadFormDialog({
               buttons={
                 <>
                   <ButtonControl
+                    aria-label={content.buttons.cancel}
+                    className={styles.footerIconButton}
                     onClick={closeDialog}
+                    title={content.buttons.cancel}
                     type="button"
                     variant="ghost"
                   >
-                    {content.buttons.cancel}
+                    <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+                    <span className={styles.footerButtonLabel}>
+                      {content.buttons.cancel}
+                    </span>
                   </ButtonControl>
                   {isEditMode && initialLead && outreachContent ? (
                     <LeadOutreachTrigger
+                      className={styles.footerOutreachButton}
                       content={outreachContent}
                       lead={initialLead}
                       variant={LeadOutreachTriggerVariant.IconText}
                     />
                   ) : null}
-                  <PrimaryCtaButton disabled={isSubmitting} type="submit">
-                    {isSubmitting ? savingLabel : submitLabel}
+                  <PrimaryCtaButton
+                    aria-label={isSubmitting ? savingLabel : submitLabel}
+                    className={styles.footerIconButton}
+                    disabled={isSubmitting}
+                    title={isSubmitting ? savingLabel : submitLabel}
+                    type="submit"
+                  >
+                    <FontAwesomeIcon aria-hidden="true" icon={faCheck} />
+                    <span className={styles.footerButtonLabel}>
+                      {isSubmitting ? savingLabel : submitLabel}
+                    </span>
                   </PrimaryCtaButton>
                 </>
               }

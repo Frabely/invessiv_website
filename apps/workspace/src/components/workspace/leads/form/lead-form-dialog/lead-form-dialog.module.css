@@ -277,6 +277,18 @@ select.input {
   backdrop-filter: blur(8px);
 }
 
+.footerIconButton {
+  gap: 0.48rem;
+}
+
+.footerButtonLabel {
+  line-height: 1;
+}
+
+.footerOutreachButton {
+  min-height: 46px;
+}
+
 @media (max-width: 960px) {
   .grid {
     grid-template-columns: 1fr;
@@ -301,6 +313,7 @@ select.input {
   }
 
   .dialog {
+    height: 100%;
     width: 100%;
     max-height: none;
     border-radius: 0;
@@ -311,22 +324,139 @@ select.input {
 
   .header {
     position: relative;
-    flex-direction: column;
-    padding: 1rem;
+    align-items: center;
+    min-height: 48px;
+    padding: 0.6rem 3.2rem 0.55rem 0.75rem;
   }
 
   .closeButton {
     position: absolute;
-    top: 0.9rem;
-    right: 0.9rem;
+    top: 0.45rem;
+    right: 0.65rem;
+    min-width: 2.15rem;
+    min-height: 2.15rem;
+  }
+
+  .heading {
+    gap: 0;
+  }
+
+  .kicker,
+  .description {
+    display: none;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    line-height: 1.18;
   }
 
   .form {
-    padding-inline: 1rem;
+    gap: 0.55rem;
+    padding: 0.55rem 0.7rem 0;
+    scrollbar-gutter: auto;
+  }
+
+  .statusBanner {
+    margin: 0.55rem 0.7rem 0;
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .section {
+    gap: 0.5rem;
+    padding: 0.65rem;
+    border-radius: 9px;
+  }
+
+  .sectionHeader {
+    gap: 0.45rem;
+  }
+
+  .sectionTitle {
+    font-size: 0.82rem;
+  }
+
+  .grid {
+    gap: 0.55rem;
+  }
+
+  .field {
+    gap: 0.25rem;
+  }
+
+  .fieldState {
+    padding: 0.16rem 0.4rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+  }
+
+  .input {
+    min-height: 36px;
+    padding: 0.48rem 0.6rem;
+  }
+
+  .textarea {
+    min-height: 76px;
+    padding: 0.58rem 0.6rem;
+  }
+
+  .input,
+  .textarea {
+    border-radius: 7px;
+    font-size: 0.82rem;
+  }
+
+  .iconActionButton {
+    min-width: 2.25rem;
+    min-height: 2.25rem;
   }
 
   .footer {
-    margin-inline: -1rem;
-    padding-inline: 1rem;
+    flex-direction: row;
+    margin-inline: -0.7rem;
+    padding: 0.45rem 0.7rem calc(0.45rem + env(safe-area-inset-bottom));
+  }
+
+  .footer :global(p) {
+    display: none;
+  }
+
+  .footer > :global(div) {
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .footer > :global(div) > :global(div) {
+    width: auto;
+    margin: 0;
+    gap: 0.35rem;
+    flex-wrap: nowrap;
+  }
+
+  .footer :global(button),
+  .footerOutreachButton {
+    width: 2.35rem !important;
+    min-width: 2.35rem;
+    height: 2.35rem;
+    min-height: 2.35rem;
+    padding: 0;
+    border-radius: 10px;
+  }
+
+  .footerButtonLabel,
+  .footerOutreachButton span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 }
