@@ -190,27 +190,27 @@
   --stage-delay: 0s;
 }
 
-.stageCard[data-stage="new"] {
+.stageCard[data-tone="info"] {
   --stage-accent: color-mix(in srgb, #38bdf8 74%, var(--color-text-muted) 26%);
 }
 
-.stageCard[data-stage="contacted"] {
+.stageCard[data-tone="primary"] {
   --stage-accent: var(--color-cta);
 }
 
-.stageCard[data-stage="responded"] {
-  --stage-accent: color-mix(in srgb, #6366f1 78%, var(--color-text-muted) 22%);
+.stageCard[data-tone="pink"] {
+  --stage-accent: color-mix(in srgb, #ec4899 80%, var(--color-text-muted) 20%);
 }
 
-.stageCard[data-stage="qualified"] {
+.stageCard[data-tone="orange"] {
   --stage-accent: var(--color-accent-orange);
 }
 
-.stageCard[data-stage="proposal"] {
+.stageCard[data-tone="purple"] {
   --stage-accent: color-mix(in srgb, #a855f7 76%, var(--color-text-muted) 24%);
 }
 
-.stageCard[data-stage="won"] {
+.stageCard[data-tone="success"] {
   --stage-accent: color-mix(in srgb, #22c55e 76%, var(--color-text-muted) 24%);
 }
 

@@ -2,6 +2,7 @@ import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CSSProperties } from "react";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { getLeadStatusBadgeTone } from "../../leads/shared/lead-status-badge/lead-status-badge";
 import {
   FunnelInsightKind,
   type FunnelInsightKind as FunnelInsightKindValue,
@@ -208,6 +209,7 @@ export function FunnelSnapshotView({
           const stageLabel = labels.stageLabels[stage.key];
           const stageDescription = labels.stageDescriptions[stage.key];
           const formattedCount = formatIntegerCount(stage.count, locale);
+          const stageTone = getLeadStatusBadgeTone(stage.key);
           const pendingReviewCount = stage.pendingReviewCount ?? 0;
           const pipelineShareRatio =
             pipelineCount === 0
@@ -233,6 +235,7 @@ export function FunnelSnapshotView({
                 aria-label={`${stageLabel} stage - ${formattedCount} ${labels.stageCountAriaSuffix}`}
                 className={styles.stageCard}
                 data-stage={stage.key}
+                data-tone={stageTone}
                 role="group"
                 style={
                   {
@@ -301,7 +304,7 @@ export function FunnelSnapshotView({
                   index={index}
                   locale={locale}
                   nextCount={nextStage.count}
-                  nextStageKey={nextStage.key}
+                  nextStageTone={getLeadStatusBadgeTone(nextStage.key)}
                   previousCount={stage.count}
                 />
               ) : null}

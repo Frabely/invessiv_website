@@ -6,6 +6,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import type { FunnelStage } from "@/common/constants/dashboard/funnel-stage-order";
 import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
+import { getLeadStatusBadgeTone } from "../../leads/shared/lead-status-badge/lead-status-badge";
 import { FunnelSnapshotView } from "./funnel-snapshot-view";
 
 afterEach(() => {
@@ -146,6 +147,9 @@ describe("FunnelSnapshotView", () => {
     expect(within(stages[3]).getByText("Qualifiziert")).toBeInTheDocument();
     expect(within(stages[4]).getByText("Angebot")).toBeInTheDocument();
     expect(within(stages[5]).getByText("Gewonnen")).toBeInTheDocument();
+    expect(stages[2].getAttribute("data-tone")).toBe(
+      getLeadStatusBadgeTone(ContactLeadStatus.Responded),
+    );
     expect(screen.getByText("1 Pausiert")).toBeInTheDocument();
     expect(screen.getByText("1 Verloren")).toBeInTheDocument();
     expect(screen.getByText("1 Archiviert")).toBeInTheDocument();
@@ -247,6 +251,9 @@ describe("FunnelSnapshotView", () => {
         within(connector as HTMLElement).getByText(ratio),
       ).toBeInTheDocument();
     });
+    expect(connectors[1]?.getAttribute("data-tone")).toBe(
+      getLeadStatusBadgeTone(ContactLeadStatus.Responded),
+    );
   });
 
   it("renders the bottleneck insight in the header", () => {

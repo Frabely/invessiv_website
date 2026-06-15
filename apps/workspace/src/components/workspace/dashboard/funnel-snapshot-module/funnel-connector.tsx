@@ -1,17 +1,15 @@
 import type { CSSProperties } from "react";
-import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
-import type { Locale } from "../../../../config/i18n";
-import { formatIntegerCount } from "../../../../lib/workspace/dashboard/format-integer";
+import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
+import type { Locale } from "@invessiv/common";
+import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import styles from "./funnel-connector.module.css";
-
-type FunnelStageKey = FunnelSnapshotDto["stages"][number]["key"];
 
 type FunnelConnectorProps = {
   ariaLabel: string;
   index: number;
   locale: Locale;
   nextCount: number;
-  nextStageKey: FunnelStageKey;
+  nextStageTone: LeadBadgeToneValue;
   previousCount: number;
 };
 
@@ -46,7 +44,7 @@ export function FunnelConnector({
   index,
   locale,
   nextCount,
-  nextStageKey,
+  nextStageTone,
   previousCount,
 }: FunnelConnectorProps) {
   const percentLabel = formatPercentLabel(previousCount, nextCount, locale);
@@ -57,7 +55,7 @@ export function FunnelConnector({
       aria-label={ariaLabel}
       className={styles.connector}
       data-slot="funnel-connector"
-      data-target-stage={nextStageKey}
+      data-tone={nextStageTone}
       role="presentation"
       style={
         {

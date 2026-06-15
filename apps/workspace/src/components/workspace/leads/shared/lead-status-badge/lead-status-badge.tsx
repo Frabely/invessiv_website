@@ -104,12 +104,18 @@ const STATUS_CONFIG: Record<
   },
 };
 
+export function getLeadStatusBadgeTone(
+  status: LeadStatusBadgeStatus,
+): LeadBadgeToneValue {
+  return STATUS_CONFIG[status].tone;
+}
+
 export function LeadStatusBadge({
   className,
   label,
   status,
 }: LeadStatusBadgeProps) {
-  const { icon, tone } = STATUS_CONFIG[status];
+  const { icon } = STATUS_CONFIG[status];
 
   return (
     <LeadBadge
@@ -117,7 +123,7 @@ export function LeadStatusBadge({
       icon={icon}
       kind={LeadBadgeKind.Status}
       label={label}
-      tone={tone}
+      tone={getLeadStatusBadgeTone(status)}
     />
   );
 }

@@ -11,7 +11,7 @@
   --connector-accent: var(--color-accent-warm);
 }
 
-.connector[data-target-stage="new"] {
+.connector[data-tone="info"] {
   --connector-accent: color-mix(
     in srgb,
     #38bdf8 74%,
@@ -19,23 +19,23 @@
   );
 }
 
-.connector[data-target-stage="contacted"] {
+.connector[data-tone="primary"] {
   --connector-accent: var(--color-cta);
 }
 
-.connector[data-target-stage="responded"] {
+.connector[data-tone="pink"] {
   --connector-accent: color-mix(
     in srgb,
-    #6366f1 78%,
-    var(--color-text-muted) 22%
+    #ec4899 80%,
+    var(--color-text-muted) 20%
   );
 }
 
-.connector[data-target-stage="qualified"] {
+.connector[data-tone="orange"] {
   --connector-accent: var(--color-accent-orange);
 }
 
-.connector[data-target-stage="proposal"] {
+.connector[data-tone="purple"] {
   --connector-accent: color-mix(
     in srgb,
     #a855f7 76%,
@@ -43,7 +43,7 @@
   );
 }
 
-.connector[data-target-stage="won"] {
+.connector[data-tone="success"] {
   --connector-accent: color-mix(
     in srgb,
     #22c55e 76%,
