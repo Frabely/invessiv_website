@@ -143,22 +143,31 @@
    horizontales Scrollen, kein fixiertes Min-Width, Kopfzeile ausgeblendet. */
 @media (max-width: 720px) {
   .shell {
-    display: block;
-    overflow: visible;
+    flex: 1 1 auto;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .tableFrame {
-    display: block;
-    height: auto;
+    flex: 1 1 auto;
+    display: flex;
+    min-height: 0;
+    height: 100%;
     max-height: none;
-    overflow: visible;
+    overflow: hidden;
     border: none;
     background: transparent;
     box-shadow: none;
   }
 
   .tableScroll {
-    overflow: visible;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding-block: 0.35rem;
   }
 
   .table {

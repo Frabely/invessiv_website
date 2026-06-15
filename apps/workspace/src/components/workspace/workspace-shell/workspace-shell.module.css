@@ -91,7 +91,14 @@
 
 .main:has([data-workspace-page]) {
   --workspace-app-main-padding: clamp(1.5rem, 2.8vw, 2.4rem);
-  --workspace-main-padding-block-start: var(--workspace-app-main-padding);
+  --workspace-app-header-hover-buffer: 0.35rem;
+  --workspace-main-padding-block-start: max(
+    0px,
+    calc(
+      var(--workspace-app-main-padding) -
+        var(--workspace-app-header-hover-buffer)
+    )
+  );
   --workspace-main-padding-block-end: var(--workspace-app-main-padding);
   --workspace-main-padding-inline: var(--workspace-app-main-padding);
 }

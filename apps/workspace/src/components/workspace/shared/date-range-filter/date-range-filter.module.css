@@ -57,6 +57,14 @@
 
   .field,
   .input {
+    min-width: 0;
     width: 100%;
+    max-width: 100%;
+  }
+
+  .input {
+    -webkit-appearance: none;
+    appearance: none;
+    padding-inline: 0.65rem;
   }
 }

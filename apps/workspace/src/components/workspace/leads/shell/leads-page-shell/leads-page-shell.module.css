@@ -9,10 +9,6 @@
   overflow: hidden;
 }
 
-.toolbarSlot {
-  padding-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
-}
-
 .contentRow {
   display: flex;
   flex-direction: row;
@@ -73,23 +69,32 @@
   .detailPanelSlot {
     position: fixed;
     inset: var(--workspace-header-height, 64px) 0 0;
-    z-index: 15;
+    z-index: 25;
     overflow: hidden;
     background: var(--color-bg);
   }
 }
 
 @media (max-width: 760px) {
+  .shell {
+    height: calc(
+      100dvh - var(--workspace-header-height, 64px) -
+        var(--workspace-main-padding-block-start, 1.15rem) -
+        var(--workspace-main-padding-block-end, 1.15rem)
+    );
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .contentRow,
   .contentSlot {
-    flex: none;
-    overflow: visible;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
   }
-}
 
-@media (max-width: 760px) {
-  .shell {
-    height: auto;
-    overflow: visible;
+  .contentRow {
+    gap: 0;
   }
 }

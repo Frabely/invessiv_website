@@ -116,3 +116,17 @@
     var(--badge-accent) 16%
   );
 }
+
+@media (max-width: 720px) {
+  .root {
+    gap: 0.32rem;
+    min-height: 26px;
+    padding: 0 0.58rem 0 0.5rem;
+    font-size: 0.72rem;
+  }
+
+  .icon {
+    width: 0.78rem;
+    height: 0.78rem;
+  }
+}

@@ -1,11 +1,16 @@
 .triggerButton {
+  min-height: 44px;
+  padding-inline: 1rem;
+  border-radius: 12px;
+  font-size: var(--font-size-body-sm);
   gap: 0.45rem;
+  white-space: nowrap;
 }
 
 .triggerIcon {
   display: inline-flex;
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
@@ -642,9 +647,9 @@ details[open] .rowIssuesSummary::before {
   .triggerButton {
     width: 100%;
     min-width: 0;
-    min-height: 40px;
+    min-height: 36px;
     justify-content: center;
-    padding-inline: 0.75rem;
+    padding-inline: 0.6rem;
   }
 
   .triggerLabel {

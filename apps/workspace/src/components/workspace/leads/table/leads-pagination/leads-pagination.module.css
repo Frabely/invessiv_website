@@ -180,47 +180,88 @@
 
 @media (max-width: 720px) {
   .pagination {
-    padding: 0.8rem;
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+    padding: 0.35rem 0 0;
+    border: 0;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    backdrop-filter: blur(12px);
+    box-shadow: none;
   }
 
   .summaryRow {
     align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .summary {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .controls {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto auto;
     width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 0.15rem;
-    scrollbar-width: thin;
+    justify-content: stretch;
+    gap: 0.25rem;
+    overflow: hidden;
   }
 
   .pageStrip {
-    flex: 0 0 auto;
+    justify-content: safe center;
+    min-width: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
   }
 
   .navButton,
   .pageButton,
   .ellipsis {
-    min-height: 36px;
+    min-height: 34px;
   }
 
   .navButton {
-    flex: 0 0 auto;
-    padding: 0 0.65rem;
-  }
-}
-
-@media (max-width: 460px) {
-  .navButton:first-child .navLabel,
-  .navButton:last-child .navLabel {
-    display: none;
-  }
-
-  .navButton:first-child,
-  .navButton:last-child {
-    width: 36px;
+    width: 34px;
     padding: 0;
+  }
+
+  .navLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .pageButton {
+    min-width: 34px;
+    padding: 0 0.55rem;
+  }
+
+  [data-theme="light"] .pagination {
+    box-shadow: none;
   }
 }

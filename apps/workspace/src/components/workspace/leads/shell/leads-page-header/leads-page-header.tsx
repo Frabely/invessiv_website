@@ -25,7 +25,10 @@ import type {
   LeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
-import { PrimaryCtaButton } from "@/components/shared/button/button";
+import {
+  ButtonControl,
+  PrimaryCtaButton,
+} from "@/components/shared/button/button";
 import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
 import { LeadCategoryFilter } from "@/components/workspace/leads/toolbar/lead-category-filter/lead-category-filter";
@@ -187,21 +190,20 @@ export function LeadsPageHeader({
       <header className={styles.bar}>
         <h1 className="sr-only">{shellContent.title}</h1>
         <div className={styles.utility}>
-          <button
+          <ButtonControl
             aria-label={filtersContent.actions.reset}
-            className={styles.resetButton}
+            className={styles.secondaryButton}
             disabled={!hasActiveFilters}
             onClick={resetFilters}
             type="button"
+            variant="ghost"
           >
-            <span className={styles.resetIconWrap} aria-hidden="true">
-              <span className={styles.resetIcon}>
-                <FontAwesomeIcon icon={faArrowRotateLeft} />
-              </span>
+            <span className={styles.buttonIcon} aria-hidden="true">
+              <FontAwesomeIcon icon={faArrowRotateLeft} />
             </span>
             <span className={styles.label}>{filtersContent.actions.reset}</span>
-          </button>
-          <button
+          </ButtonControl>
+          <ButtonControl
             aria-controls={LEADS_FILTER_PANEL_ID}
             aria-expanded={!isCollapsed}
             aria-label={
@@ -209,15 +211,16 @@ export function LeadsPageHeader({
                 ? filtersContent.actions.expandFilters
                 : filtersContent.actions.collapseFilters
             }
-            className={styles.collapseButton}
+            className={styles.secondaryButton}
             onClick={() => {
               setManualCollapsed((current) => {
                 return !(current ?? isMobileDefaultCollapsed);
               });
             }}
             type="button"
+            variant="ghost"
           >
-            <span aria-hidden="true" className={styles.collapseIconWrap}>
+            <span aria-hidden="true" className={styles.buttonIcon}>
               <FontAwesomeIcon
                 className={styles.collapseIcon}
                 icon={faChevronDown}
@@ -228,7 +231,7 @@ export function LeadsPageHeader({
                 ? filtersContent.actions.expandFilters
                 : filtersContent.actions.collapseFilters}
             </span>
-          </button>
+          </ButtonControl>
         </div>
 
         <div className={styles.actions}>
@@ -242,7 +245,7 @@ export function LeadsPageHeader({
               )
             }
           >
-            <span aria-hidden="true" className={styles.addButtonIcon}>
+            <span aria-hidden="true" className={styles.buttonIcon}>
               <FontAwesomeIcon icon={faPlus} />
             </span>
             <span className={styles.label}>{shellContent.addLeadButton}</span>
