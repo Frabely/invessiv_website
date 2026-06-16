@@ -1,6 +1,7 @@
 ﻿import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
+import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
@@ -13,7 +14,10 @@ import { ConsentProvider } from "@/components/providers/consent-provider/consent
 import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
-import { LANDING_HEADER_NAVIGATION } from "@/config/navigation/landing";
+import {
+  LANDING_HEADER_NAVIGATION,
+  LANDING_SECTION_IDS,
+} from "@/config/navigation/landing";
 import { CONTACT_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
@@ -67,6 +71,8 @@ export function LandingPage({ locale }: LandingPageProps) {
           <span className="page-noise" />
         </div>
 
+        <LandingFunnelTracker />
+
         <HeroSection
           compactMobile
           description={hero.description}
@@ -84,31 +90,39 @@ export function LandingPage({ locale }: LandingPageProps) {
         />
 
         <ProblemSolutionSection
-          id="solution"
+          id={LANDING_SECTION_IDS.solution}
           locale={locale}
           {...problemSolution}
         />
 
         <TrustSection
-          id="trust"
+          id={LANDING_SECTION_IDS.trust}
           locale={locale}
           replyAnalyticsTarget={CONTACT_SECTION_ID}
           replyHref={SECTION_HREFS.contact}
           {...trust}
         />
 
-        <AudienceSection id="audience" locale={locale} {...audience} />
+        <AudienceSection
+          id={LANDING_SECTION_IDS.audience}
+          locale={locale}
+          {...audience}
+        />
 
-        <ProcessSection id="process" locale={locale} {...process} />
+        <ProcessSection
+          id={LANDING_SECTION_IDS.process}
+          locale={locale}
+          {...process}
+        />
 
         <PricingSection
           ctaHref={SECTION_HREFS.contact}
-          id="pricing"
+          id={LANDING_SECTION_IDS.pricing}
           locale={locale}
           {...pricing}
         />
 
-        <FaqSection id="faq" locale={locale} {...faq} />
+        <FaqSection id={LANDING_SECTION_IDS.faq} locale={locale} {...faq} />
 
         <FinalCtaSection
           analyticsLocation="landing_final_cta"

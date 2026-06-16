@@ -1,22 +1,18 @@
 import type { FireLandingConversionInput } from "@/common/contracts/analytics/fire-landing-conversion-input";
 
-export function buildConversionSendTo(
-  adsConversionId: string,
-  adsConversionLabel: string,
-): string {
-  return `${adsConversionId}/${adsConversionLabel}`;
-}
-
 /**
- * Feuert das Google-Ads-Conversion-Event. No-op (gibt `false` zurück), wenn die
- * Ads-Destination nicht konfiguriert ist oder `gtag` noch nicht verfügbar ist.
+ * Feuert die Google-Ads-Conversion als event-basiertes Conversion-Event (neue
+ * „Google-Tag"-Conversions, kein `send_to`/Label). Der Event-Name wird in Google
+ * Ads der Conversion-Aktion zugeordnet; die AW-Destination muss dafür über
+ * `adsConversionId` geladen sein. No-op (gibt `false` zurück), wenn die Ads-
+ * Destination/das Event nicht konfiguriert ist oder `gtag` noch nicht verfügbar ist.
  */
 export function fireLandingConversion({
   adsConversionId,
-  adsConversionLabel,
+  adsConversionEvent,
   transactionId,
 }: FireLandingConversionInput): boolean {
-  if (!adsConversionId || !adsConversionLabel) {
+  if (!adsConversionId || !adsConversionEvent) {
     return false;
   }
 
@@ -24,8 +20,7 @@ export function fireLandingConversion({
     return false;
   }
 
-  window.gtag("event", "conversion", {
-    send_to: buildConversionSendTo(adsConversionId, adsConversionLabel),
+  window.gtag("event", adsConversionEvent, {
     transaction_id: transactionId,
   });
 

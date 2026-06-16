@@ -27,6 +27,7 @@ describe("conversion events", () => {
       "form_start",
       "form_submit_attempt",
       "form_submit_error",
+      "landing_page_section_view",
       "language_switch",
       "theme_switch",
     ]);

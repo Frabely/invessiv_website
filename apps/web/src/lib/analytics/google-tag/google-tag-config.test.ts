@@ -14,24 +14,27 @@ describe("getGoogleTagConfig", () => {
   it("reads the configured ids from NEXT_PUBLIC env vars", () => {
     vi.stubEnv("NEXT_PUBLIC_GA4_MEASUREMENT_ID", "G-5T4BC28Z0F");
     vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID", "AW-123456789");
-    vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL", "abcDEF123");
+    vi.stubEnv(
+      "NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT",
+      "ads_conversion_Angebot_anfordern_1",
+    );
 
     expect(getGoogleTagConfig()).toEqual({
       ga4MeasurementId: "G-5T4BC28Z0F",
       adsConversionId: "AW-123456789",
-      adsConversionLabel: "abcDEF123",
+      adsConversionEvent: "ads_conversion_Angebot_anfordern_1",
     });
   });
 
   it("normalizes empty or whitespace values to null", () => {
     vi.stubEnv("NEXT_PUBLIC_GA4_MEASUREMENT_ID", "");
     vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID", "   ");
-    vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL", " label ");
+    vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT", " ads_conversion_x ");
 
     expect(getGoogleTagConfig()).toEqual({
       ga4MeasurementId: null,
       adsConversionId: null,
-      adsConversionLabel: "label",
+      adsConversionEvent: "ads_conversion_x",
     });
   });
 });
@@ -42,14 +45,14 @@ describe("isGoogleTagEnabled", () => {
       isGoogleTagEnabled({
         ga4MeasurementId: "G-1",
         adsConversionId: null,
-        adsConversionLabel: null,
+        adsConversionEvent: null,
       }),
     ).toBe(true);
     expect(
       isGoogleTagEnabled({
         ga4MeasurementId: null,
         adsConversionId: "AW-1",
-        adsConversionLabel: null,
+        adsConversionEvent: null,
       }),
     ).toBe(true);
   });
@@ -59,7 +62,7 @@ describe("isGoogleTagEnabled", () => {
       isGoogleTagEnabled({
         ga4MeasurementId: null,
         adsConversionId: null,
-        adsConversionLabel: "label",
+        adsConversionEvent: "ads_conversion_x",
       }),
     ).toBe(false);
   });
@@ -71,7 +74,7 @@ describe("getGtagLoaderId", () => {
       getGtagLoaderId({
         ga4MeasurementId: "G-1",
         adsConversionId: "AW-1",
-        adsConversionLabel: null,
+        adsConversionEvent: null,
       }),
     ).toBe("G-1");
   });
@@ -81,7 +84,7 @@ describe("getGtagLoaderId", () => {
       getGtagLoaderId({
         ga4MeasurementId: null,
         adsConversionId: "AW-1",
-        adsConversionLabel: null,
+        adsConversionEvent: null,
       }),
     ).toBe("AW-1");
   });
@@ -91,7 +94,7 @@ describe("getGtagLoaderId", () => {
       getGtagLoaderId({
         ga4MeasurementId: null,
         adsConversionId: null,
-        adsConversionLabel: null,
+        adsConversionEvent: null,
       }),
     ).toBeNull();
   });
