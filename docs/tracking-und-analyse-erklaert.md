@@ -246,6 +246,38 @@ die Danke-Seite selbst eine einfache Server-Komponente.
 `faq_exit_services_click`) und filtert die mitgeschickten Daten, damit **nie persönliche Daten** (E-Mail, Telefon) an
 Analytics gehen. In diesem Branch kam nur der FAQ-Ausstiegslink-Event dazu.
 
+#### `landing_page_section_view` — der Sektions-Funnel (Absprung-Messung)
+
+**Wofür:** Sehen, **wo** Besucher abspringen, bevor sie das Formular erreichen.
+**Problem vorher:** Wir sahen nur „Seite geladen" und „Formular fokussiert". Bei z. B. 110 Besuchern → 0
+`form_start` war nicht erkennbar, ob sie am Hero, am Preis oder erst am Formular abgesprungen sind.
+**Was es tut:** Sobald eine Sektion in den sichtbaren Bereich scrollt, wird **einmal** das cookielose Vercel-Event
+`landing_page_section_view` mit `location = <Sektions-id>` gefeuert (`hero`, `solution`, `trust`, `audience`,
+`process`, `pricing`, `faq`, `contact`). Jede Sektion zählt **maximal einmal pro Seitenaufruf** (Hoch- und
+Runterscrollen feuert nicht erneut). Kein Consent nötig, keine persönlichen Daten.
+
+**Warum der `landing_page_`-Prefix im Event-Namen?** Damit im Vercel-Dashboard jede Landingpage ein **eigener
+Event-Eintrag** ist und du den Funnel pro Seite gebündelt und ohne Filter ablesen kannst. Eine künftige zweite
+Landingpage bekäme einen eigenen Namen (z. B. `<seite>_section_view`), der zusätzlich in die Event-Allowlist
+(`common/constants/analytics/conversion-event-names.ts`) aufgenommen wird. Die Sektionen bleiben dabei in der
+`location`-Property — die Zahl der Event-Namen bleibt also niedrig (einer pro Seite).
+
+Beteiligte Dateien:
+
+- `src/config/navigation/landing.ts` — die einzige Quelle der Landing-Sektions-ids (`LANDING_SECTION_IDS`) und die
+  daraus abgeleitete geordnete Funnel-Liste (`LANDING_FUNNEL_SECTION_IDS`). Dieselben ids werden in `landing-page.tsx`
+  als Sektions-`id` gerendert — eine Umbenennung schlägt damit an beiden Stellen zugleich durch.
+- `src/hooks/analytics/use-section-funnel-tracking.ts` — beobachtet die Sektionen per `IntersectionObserver` und
+  feuert je Sektion genau einmal. Bekommt den Event-Namen als Parameter und ist damit pro Landingpage
+  wiederverwendbar.
+- `src/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker.tsx` — unsichtbare Komponente
+  (`return null`), die den Hook mit `landing_page_section_view` auf der Landingpage aktiviert.
+
+**So liest man den Funnel im Vercel-Dashboard:** Unter Analytics → Events den Eintrag `landing_page_section_view`
+öffnen und die `location`-Werte absteigend nach Funnel-Reihenfolge mit den Seitenaufrufen und `form_start`
+vergleichen. Der größte Sprung nach unten zwischen zwei Sektionen ist der Hauptabsprungpunkt. Erreicht `contact`
+Besucher, bleibt `form_start` aber bei 0, liegt das Problem am Formular/CTA — nicht am Inhalt davor.
+
 ---
 
 ### Gruppe F — Hilfsmittel
@@ -263,7 +295,8 @@ später nachvollziehen kann. In Tests bleibt es still. So „verschluckt" kein `
 Diese Dateien sind **nicht neu**, aber hier wird der Tracking-Code eingehängt:
 
 - `src/components/marketing/landing/landing-page/landing-page.tsx`
-  → umschließt die Landingpage mit `ConsentProvider`, lädt `GoogleTag`, gibt dem Formular `trackAdsConversion`.
+  → umschließt die Landingpage mit `ConsentProvider`, lädt `GoogleTag`, mountet `LandingFunnelTracker` (Sektions-Funnel)
+  und gibt dem Formular `trackAdsConversion`.
 - `src/app/[locale]/(marketing)/services/landing-page/success/page.tsx`
   → die Danke-Seite: `ConsentProvider` + `GoogleTag` + `LandingConversion` (feuert die Conversion), `noindex`.
 - `src/components/shared/final-cta-section/final-cta-section.tsx`
