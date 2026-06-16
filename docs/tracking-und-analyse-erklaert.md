@@ -184,8 +184,8 @@ Bringt Googles Skript auf die Seite und richtet die zwei Ziele (GA4 + Ads) ein.
 
 **Wofür:** Liest die Zugangsdaten aus den Umgebungsvariablen.
 **Was es tut:** Holt `NEXT_PUBLIC_GA4_MEASUREMENT_ID`, `NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID` und
-`…_LABEL`. Wenn eine ID fehlt, wird das jeweilige Ziel sauber **abgeschaltet** (kein Fehler). So läuft GA4 schon, auch
-wenn die Google-Ads-Werte noch leer sind.
+`NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT`. Wenn eine ID fehlt, wird das jeweilige Ziel sauber **abgeschaltet** (kein
+Fehler). So läuft GA4 schon, auch wenn die Google-Ads-Werte noch leer sind.
 
 #### `src/lib/analytics/google-tag/google-tag-script.ts`
 
@@ -220,9 +220,12 @@ Reload oder „Zurück" **nicht** erneut, und ein direkter Aufruf der Danke-Seit
 #### `src/lib/analytics/google-ads-conversion/conversion-event.ts`
 
 **Wofür:** Schickt die Conversion an Google Ads.
-**Was es tut:** Ruft `gtag("event", "conversion", { send_to: "<AW-ID>/<Label>", transaction_id })` auf. Fehlt die
-Ads-Konfiguration oder `gtag`, passiert nichts (kein Fehler). Die `transaction_id` hilft Google, Doppelungen auch auf
-seiner Seite zu erkennen.
+**Was es tut:** Ruft das **event-basierte** Conversion-Event auf —
+`gtag("event", "<NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT>", { transaction_id })` (neue „Google-Tag"-Conversions ohne
+`send_to`/Label; der Event-Name ist in Google Ads der Conversion-Aktion zugeordnet). Die AW-Destination wird über
+`NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID` geladen, damit das Event zugeordnet werden kann. Fehlt ID oder Event-Name oder
+`gtag`, passiert nichts (kein Fehler). Die `transaction_id` hilft Google, Doppelungen auch auf seiner Seite zu
+erkennen.
 
 #### `src/hooks/analytics/use-landing-conversion.ts`
 

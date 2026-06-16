@@ -1,54 +1,44 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  buildConversionSendTo,
-  fireLandingConversion,
-} from "./conversion-event";
+import { fireLandingConversion } from "./conversion-event";
 
 afterEach(() => {
   delete window.gtag;
 });
 
-describe("buildConversionSendTo", () => {
-  it("joins conversion id and label with a slash", () => {
-    expect(buildConversionSendTo("AW-123456789", "abcDEF")).toBe(
-      "AW-123456789/abcDEF",
-    );
-  });
-});
-
 describe("fireLandingConversion", () => {
-  it("emits the conversion event with send_to and transaction_id", () => {
+  it("emits the configured ads conversion event with transaction_id", () => {
     window.gtag = vi.fn();
 
     const fired = fireLandingConversion({
       adsConversionId: "AW-123456789",
-      adsConversionLabel: "abcDEF",
+      adsConversionEvent: "ads_conversion_Angebot_anfordern_1",
       transactionId: "txn-1",
     });
 
     expect(fired).toBe(true);
-    expect(window.gtag).toHaveBeenCalledWith("event", "conversion", {
-      send_to: "AW-123456789/abcDEF",
-      transaction_id: "txn-1",
-    });
+    expect(window.gtag).toHaveBeenCalledWith(
+      "event",
+      "ads_conversion_Angebot_anfordern_1",
+      { transaction_id: "txn-1" },
+    );
   });
 
-  it("no-ops when the ads destination is not configured", () => {
+  it("no-ops when the ads destination or event is not configured", () => {
     window.gtag = vi.fn();
 
     expect(
       fireLandingConversion({
         adsConversionId: null,
-        adsConversionLabel: "abcDEF",
+        adsConversionEvent: "ads_conversion_Angebot_anfordern_1",
         transactionId: "txn-1",
       }),
     ).toBe(false);
     expect(
       fireLandingConversion({
         adsConversionId: "AW-123456789",
-        adsConversionLabel: null,
+        adsConversionEvent: null,
         transactionId: "txn-1",
       }),
     ).toBe(false);
@@ -59,7 +49,7 @@ describe("fireLandingConversion", () => {
     expect(
       fireLandingConversion({
         adsConversionId: "AW-123456789",
-        adsConversionLabel: "abcDEF",
+        adsConversionEvent: "ads_conversion_Angebot_anfordern_1",
         transactionId: "txn-1",
       }),
     ).toBe(false);

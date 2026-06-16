@@ -1,5 +1,5 @@
 export type FireLandingConversionInput = {
   adsConversionId: string | null;
-  adsConversionLabel: string | null;
+  adsConversionEvent: string | null;
   transactionId: string;
 };

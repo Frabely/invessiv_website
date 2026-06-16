@@ -20,7 +20,7 @@ export function useLandingConversion(): void {
     const config = getGoogleTagConfig();
     fireLandingConversion({
       adsConversionId: config.adsConversionId,
-      adsConversionLabel: config.adsConversionLabel,
+      adsConversionEvent: config.adsConversionEvent,
       transactionId,
     });
   }, []);

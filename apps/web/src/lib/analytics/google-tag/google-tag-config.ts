@@ -1,7 +1,7 @@
 export type GoogleTagConfig = {
   ga4MeasurementId: string | null;
   adsConversionId: string | null;
-  adsConversionLabel: string | null;
+  adsConversionEvent: string | null;
 };
 
 function normalizeEnvValue(value: string | undefined): string | null {
@@ -17,8 +17,8 @@ export function getGoogleTagConfig(): GoogleTagConfig {
     adsConversionId: normalizeEnvValue(
       process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID,
     ),
-    adsConversionLabel: normalizeEnvValue(
-      process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL,
+    adsConversionEvent: normalizeEnvValue(
+      process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT,
     ),
   };
 }

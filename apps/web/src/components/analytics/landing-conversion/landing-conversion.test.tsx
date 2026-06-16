@@ -7,7 +7,10 @@ import { LandingConversion } from "./landing-conversion";
 
 beforeEach(() => {
   vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID", "AW-123456789");
-  vi.stubEnv("NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL", "abcDEF");
+  vi.stubEnv(
+    "NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_EVENT",
+    "ads_conversion_Angebot_anfordern_1",
+  );
   window.gtag = vi.fn();
 });
 
@@ -25,10 +28,11 @@ describe("LandingConversion", () => {
     render(<LandingConversion />);
 
     expect(window.gtag).toHaveBeenCalledTimes(1);
-    expect(window.gtag).toHaveBeenCalledWith("event", "conversion", {
-      send_to: "AW-123456789/abcDEF",
-      transaction_id: "txn-1",
-    });
+    expect(window.gtag).toHaveBeenCalledWith(
+      "event",
+      "ads_conversion_Angebot_anfordern_1",
+      { transaction_id: "txn-1" },
+    );
   });
 
   it("does not fire on a direct visit without the guard flag", () => {
