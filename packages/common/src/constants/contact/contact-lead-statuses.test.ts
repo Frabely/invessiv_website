@@ -5,8 +5,8 @@ import {
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 describe("CONTACT_LEAD_STATUS_VALUES", () => {
-  it("contains all 14 statuses", () => {
-    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(14);
+  it("contains all 15 statuses", () => {
+    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(15);
   });
 
   it("positions pending_review between new and contacted", () => {
@@ -59,6 +59,22 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
     expect(onHoldIdx).toBeLessThan(wonIdx);
   });
 
+  it("positions connection_requested between contacted and connected", () => {
+    const contactedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "contacted" as never,
+    );
+    const connectionRequestedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "connection_requested" as never,
+    );
+    const connectedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "connected" as never,
+    );
+
+    expect(connectionRequestedIdx).not.toBe(-1);
+    expect(connectionRequestedIdx).toBeGreaterThan(contactedIdx);
+    expect(connectionRequestedIdx).toBeLessThan(connectedIdx);
+  });
+
   it("positions the outreach states between contacted and responded", () => {
     const contactedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
       "contacted" as never,
@@ -84,6 +100,7 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
       "new",
       "pending_review",
       "contacted",
+      "connection_requested",
       "connected",
       "follow_up",
       "not_reached",

@@ -10,6 +10,7 @@ describe("LEAD_IMPORT_STATUS_SYNONYMS", () => {
       pending_review: ContactLeadStatus.PendingReview,
       new: ContactLeadStatus.New,
       contacted: ContactLeadStatus.Contacted,
+      connection_requested: ContactLeadStatus.ConnectionRequested,
       connected: ContactLeadStatus.Connected,
       follow_up: ContactLeadStatus.FollowUp,
       not_reached: ContactLeadStatus.NotReached,

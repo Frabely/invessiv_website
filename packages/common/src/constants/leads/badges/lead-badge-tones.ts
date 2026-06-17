@@ -13,6 +13,7 @@ export const LeadBadgeTone = {
   Fuchsia: "fuchsia",
   Coral: "coral",
   Pink: "pink",
+  Magenta: "magenta",
 } as const;
 
 export type LeadBadgeTone = (typeof LeadBadgeTone)[keyof typeof LeadBadgeTone];
@@ -32,4 +33,5 @@ export const LEAD_BADGE_TONE_VALUES = [
   LeadBadgeTone.Fuchsia,
   LeadBadgeTone.Coral,
   LeadBadgeTone.Pink,
+  LeadBadgeTone.Magenta,
 ] as const;
