@@ -14,6 +14,7 @@ import {
   faPhoneSlash,
   faReply,
   faTrophy,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -57,6 +58,10 @@ const STATUS_CONFIG: Record<
   [ContactLeadStatus.Contacted]: {
     icon: faComments,
     tone: LeadBadgeTone.Primary,
+  },
+  [ContactLeadStatus.ConnectionRequested]: {
+    icon: faUserPlus,
+    tone: LeadBadgeTone.Magenta,
   },
   [ContactLeadStatus.Connected]: {
     icon: faHandshake,

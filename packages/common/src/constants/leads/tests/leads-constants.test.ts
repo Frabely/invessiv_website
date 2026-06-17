@@ -143,6 +143,7 @@ describe("LeadBadgeTone", () => {
       LeadBadgeTone.Fuchsia,
       LeadBadgeTone.Coral,
       LeadBadgeTone.Pink,
+      LeadBadgeTone.Magenta,
     ]);
     expect(new Set(LEAD_BADGE_TONE_VALUES).size).toBe(
       LEAD_BADGE_TONE_VALUES.length,

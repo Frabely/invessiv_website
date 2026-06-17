@@ -81,17 +81,23 @@ Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vo
 Der Status-Wert wird normalisiert (Groß-/Kleinschreibung egal). Akzeptiert werden ausschließlich die englischen
 snake_case-Werte:
 
-| Status (intern)  | Akzeptierte Eingabe |
-| ---------------- | ------------------- |
-| `pending_review` | `pending_review`    |
-| `new`            | `new`               |
-| `contacted`      | `contacted`         |
-| `qualified`      | `qualified`         |
-| `proposal`       | `proposal`          |
-| `on_hold`        | `on_hold`           |
-| `won`            | `won`               |
-| `lost`           | `lost`              |
-| `archived`       | `archived`          |
+| Status (intern)        | Akzeptierte Eingabe    | Bedeutung                                  |
+| ---------------------- | ---------------------- | ------------------------------------------ |
+| `new`                  | `new`                  | Neu                                        |
+| `pending_review`       | `pending_review`       | Zu prüfen                                  |
+| `contacted`            | `contacted`            | Kontaktiert                                |
+| `connection_requested` | `connection_requested` | Verbindung angefragt (Connect/Follow raus) |
+| `connected`            | `connected`            | Verbunden                                  |
+| `follow_up`            | `follow_up`            | Wiedervorlage                              |
+| `not_reached`          | `not_reached`          | Nicht erreicht                             |
+| `reminder`             | `reminder`             | Erinnerung                                 |
+| `responded`            | `responded`            | Geantwortet                                |
+| `qualified`            | `qualified`            | Qualifiziert                               |
+| `proposal`             | `proposal`             | Angebot                                    |
+| `on_hold`              | `on_hold`              | Pausiert                                   |
+| `won`                  | `won`                  | Gewonnen                                   |
+| `lost`                 | `lost`                 | Verloren                                   |
+| `archived`             | `archived`             | Archiviert                                 |
 
 Unbekannte Werte werden auf `pending_review` zurückgesetzt und im Report als Warnung ausgewiesen.
 Für neue Importdateien ist `pending_review` die feste Voreinstellung.

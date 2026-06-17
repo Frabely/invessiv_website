@@ -104,6 +104,10 @@
   --badge-accent: color-mix(in srgb, #ec4899 80%, var(--color-text-muted) 20%);
 }
 
+.root[data-tone="magenta"] {
+  --badge-accent: color-mix(in srgb, #c026d3 82%, var(--color-text-muted) 18%);
+}
+
 [data-theme="light"] .root {
   --badge-bg: color-mix(
     in srgb,
