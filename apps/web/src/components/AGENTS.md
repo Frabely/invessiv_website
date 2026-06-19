@@ -87,6 +87,13 @@ interface LeadCardProps {
 
 ## Animationen / Effektbibliothek
 
+- **Animationsbibliothek:** Für JS-gesteuerte/interaktive Animationen (Gesten, Layout-/Exit-Animationen, Scroll- und
+  Viewport-Trigger, orchestrierte Sequenzen) wird `motion` (vormals `framer-motion`, Paket `motion`, importiert via
+  `motion/react`) genutzt — keine konkurrierenden Animations-Libraries hinzufügen. Triviale Hover-/Fokus-/State-Übergänge
+  bleiben in CSS-Modulen bzw. Tailwind-Utilities; `motion` nur dort einsetzen, wo CSS allein nicht ausreicht.
+- `motion`-Komponenten brauchen `"use client"`; den interaktiven Teil so klein wie möglich halten (siehe „Client vs.
+  Server"). `prefers-reduced-motion` respektieren (z. B. `useReducedMotion`) und Desktop-only-Effekte auf Mobile
+  deaktivieren/ersetzen.
 - Unter `animation_mockups/` (Repo-Root) liegt eine Bibliothek wiederverwendbarer Animations-/Interaktions-Mockups; der
   Katalog `animation_mockups/effects-catalog.json` beschreibt Effekte inkl. Use-Cases.
 - **Als Ressource nutzen, nicht als Pflicht-Gate:** Wenn ein vorhandener Effekt klar zum Ziel passt, ihn bevorzugt
