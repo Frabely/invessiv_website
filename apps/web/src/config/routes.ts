@@ -5,6 +5,7 @@ export const SITE_ROUTES = {
   LINKEDIN_POST_SERVICE: "/services/linkedin-post",
   LINKEDIN_POST_SERVICE_SUCCESS: "/services/linkedin-post/success",
   PROJECTS: "/projects",
+  REFERENCES_KLARKOMPASS: "/references/klarkompass-coaching",
   IMPRINT: "/imprint",
   PRIVACY: "/privacy",
   TERMS: "/terms",

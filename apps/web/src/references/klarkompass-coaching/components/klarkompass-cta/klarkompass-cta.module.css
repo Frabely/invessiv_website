@@ -1,0 +1,78 @@
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.1rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 3px;
+  font-family: var(--kk-font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.cta:focus-visible {
+  outline: 3px solid var(--kk-focus);
+  outline-offset: 3px;
+}
+
+.primary {
+  border: 1px solid var(--kk-cta);
+  background: var(--kk-cta);
+  color: var(--kk-cta-ink);
+  box-shadow: 0 14px 30px -18px rgba(20, 16, 10, 0.7);
+}
+
+@media (hover: hover) {
+  .primary:hover {
+    background: var(--kk-cta-hover);
+    border-color: var(--kk-cta-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 18px 34px -16px rgba(20, 16, 10, 0.7);
+  }
+
+  .secondary:hover {
+    border-color: var(--kk-signal);
+    background: var(--kk-signal-soft);
+    transform: translateY(-1px);
+  }
+}
+
+.secondary {
+  border: 1px solid var(--kk-border);
+  background: transparent;
+  color: var(--kk-ink);
+}
+
+.mockBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #ffffff 26%, transparent);
+  color: inherit;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.secondary .mockBadge {
+  background: var(--kk-signal-soft);
+  color: var(--kk-paper);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

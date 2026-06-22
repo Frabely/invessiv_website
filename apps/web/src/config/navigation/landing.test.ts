@@ -17,6 +17,7 @@ describe("landing navigation constants", () => {
       "audience",
       "process",
       "pricing",
+      "reference",
       "faq",
       "contact",
     ]);

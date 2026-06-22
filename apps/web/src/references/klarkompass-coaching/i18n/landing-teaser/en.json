@@ -1,0 +1,14 @@
+{
+  "eyebrow": "Example",
+  "title": "This is what a finished landing page looks like",
+  "description": "To give you a feel for the result: a complete demo landing page I built as a concept project for a fictional coaching brand – structure, copy and design from one hand.",
+  "conceptBadge": "Concept project",
+  "browserLabel": "klarkompass-coaching.demo",
+  "previewAlt": "Preview of the KlarKompass demo landing page in a browser window",
+  "highlights": [
+    "Clear section structure from problem to CTA",
+    "A distinctive design instead of a template look",
+    "Honestly labelled – the brand does not actually exist"
+  ],
+  "linkLabel": "View the demo"
+}

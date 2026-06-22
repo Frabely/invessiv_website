@@ -1,0 +1,200 @@
+{
+  "header": {
+    "brand": "KlarKompass",
+    "navLabels": ["Herausforderung", "Methode", "Programm", "Über mich", "FAQ"],
+    "ctaLabel": "Kostenloses Erstgespräch buchen",
+    "mockLabel": "Demo",
+    "menuOpenLabel": "Menü öffnen",
+    "menuCloseLabel": "Menü schließen"
+  },
+  "hero": {
+    "badge": "1:1 Leadership Coaching",
+    "title": "Führe klarer. Wachse souverän in deine neue Rolle.",
+    "subtitle": "1:1-Coaching für neue Führungskräfte – ruhig, strukturiert und auf dein Tempo abgestimmt.",
+    "primaryCtaLabel": "Kostenloses Erstgespräch buchen",
+    "secondaryCtaLabel": "Programm ansehen",
+    "trustLine": "Vertraulich · auf Augenhöhe · ohne Standardrezepte",
+    "imageAlt": "Leadership-Coaching in einem hellen Büro: Impuls vor einer kleinen Führungsrunde",
+    "bearing": {
+      "readout": "047°",
+      "caption": "Kurs auf Klarheit"
+    }
+  },
+  "problem": {
+    "eyebrow": "Herausforderung",
+    "title": "Die Rolle ist neu – die Erwartungen sind sofort groß.",
+    "intro": "Fachlich bist du stark. Doch Führung verlangt etwas anderes: Entscheidungen unter Unsicherheit, klare Kommunikation und Haltung, wenn es ungemütlich wird.",
+    "points": [
+      "Du triffst Entscheidungen, zweifelst danach aber lange an ihnen.",
+      "Schwierige Gespräche schiebst du auf, statt sie klar zu führen.",
+      "Du bist im Tagesgeschäft gefangen und verlierst die Richtung aus dem Blick.",
+      "Du willst Autorität zeigen, ohne dich zu verstellen – und weißt nicht, wie."
+    ]
+  },
+  "results": {
+    "eyebrow": "Ergebnis",
+    "title": "Worauf wir gemeinsam hinarbeiten",
+    "items": [
+      {
+        "title": "Klarheit",
+        "description": "Du weißt, was dir wichtig ist, und triffst Entscheidungen, hinter denen du stehst."
+      },
+      {
+        "title": "Kommunikation",
+        "description": "Du sprichst Erwartungen, Feedback und Konflikte ruhig und direkt an."
+      },
+      {
+        "title": "Führung",
+        "description": "Du führst aus einer Haltung heraus, die zu dir passt – verbindlich statt verbissen."
+      }
+    ]
+  },
+  "method": {
+    "eyebrow": "Methode",
+    "title": "Ein klarer Weg statt loser Tipps",
+    "intro": "Wir arbeiten in vier Schritten, die aufeinander aufbauen – konkret, an deinen echten Situationen ausgerichtet.",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Standort bestimmen",
+        "description": "Wir schauen ehrlich auf deine aktuelle Rolle, deine Stärken und das, was dich blockiert."
+      },
+      {
+        "number": "02",
+        "title": "Muster erkennen",
+        "description": "Wir machen sichtbar, welche Denk- und Verhaltensmuster dich in der Führung ausbremsen."
+      },
+      {
+        "number": "03",
+        "title": "Strategien entwickeln",
+        "description": "Du entwickelst konkrete Handlungsoptionen für deine wiederkehrenden Situationen."
+      },
+      {
+        "number": "04",
+        "title": "Umsetzung begleiten",
+        "description": "Du setzt im Alltag um, wir justieren gemeinsam nach, bis es sich stimmig anfühlt."
+      }
+    ]
+  },
+  "offer": {
+    "eyebrow": "Programm",
+    "title": "Das 8-Wochen Leadership Reset Coaching",
+    "description": "Ein fokussiertes 1:1-Programm für deinen Einstieg in die Führungsrolle – mit Raum zum Reflektieren und klaren Schritten für den Alltag.",
+    "includesLabel": "Das ist enthalten",
+    "includes": [
+      "Acht 1:1-Sessions (je 60 Minuten) im Zwei-Wochen-Takt",
+      "Persönlicher Standort-Check zu Beginn",
+      "Konkrete Werkzeuge für Gespräche, Entscheidungen und Priorisierung",
+      "Kurze Sparring-Möglichkeit zwischen den Sessions",
+      "Persönliches Abschluss-Resümee mit nächsten Schritten"
+    ],
+    "suitableLabel": "Geeignet für",
+    "suitable": [
+      "Neue Führungskräfte in den ersten 18 Monaten",
+      "Fachexperten vor dem Schritt in die Führung",
+      "Teamleads, die souveräner auftreten wollen"
+    ],
+    "ctaLabel": "Kostenloses Erstgespräch buchen",
+    "noPriceNote": "Den Rahmen klären wir individuell im kostenlosen Erstgespräch – passend zu deiner Situation."
+  },
+  "about": {
+    "eyebrow": "Über mich",
+    "title": "Begleitung auf Augenhöhe",
+    "name": "Anna Berger",
+    "role": "Leadership Coach (fiktiv)",
+    "bio": "Ich begleite Menschen, die zum ersten Mal Führung übernehmen, dabei klar und sie selbst zu bleiben. Mir geht es nicht um fertige Rezepte, sondern um Entscheidungen und eine Haltung, die zu dir passen.",
+    "portraitAlt": "Abstrakte Bildmarke statt Foto – dies ist ein Konzeptprojekt",
+    "valuesLabel": "Wofür ich stehe",
+    "values": [
+      {
+        "title": "Klarheit",
+        "description": "Lieber ein ehrliches Wort als eine schöne Floskel."
+      },
+      {
+        "title": "Haltung",
+        "description": "Führung beginnt bei dir selbst, nicht beim Werkzeug."
+      },
+      {
+        "title": "Umsetzung",
+        "description": "Erkenntnis zählt erst, wenn sie deinen Alltag verändert."
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "Ablauf",
+    "title": "So arbeiten wir zusammen",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Erstgespräch",
+        "description": "Wir lernen uns kennen und klären, ob die Zusammenarbeit passt – unverbindlich."
+      },
+      {
+        "number": "02",
+        "title": "Standortanalyse",
+        "description": "Wir bestimmen, wo du stehst und worauf wir den Fokus legen."
+      },
+      {
+        "number": "03",
+        "title": "Coaching-Phase",
+        "description": "In acht Wochen arbeiten wir an deinen konkreten Führungssituationen."
+      },
+      {
+        "number": "04",
+        "title": "Transfer",
+        "description": "Du verankerst das Gelernte und nimmst klare nächste Schritte mit."
+      }
+    ]
+  },
+  "trust": {
+    "eyebrow": "Vertrauen",
+    "title": "Worauf du dich verlassen kannst",
+    "points": [
+      "Vertrauliche Gespräche in einem geschützten Rahmen",
+      "Begleitung auf Augenhöhe statt Belehrung",
+      "Praxisorientiert an deinen echten Situationen",
+      "Klare Struktur über die gesamten acht Wochen",
+      "Ehrliches Feedback, auch wenn es unbequem ist"
+    ],
+    "honestNote": "In einem echten Projekt stünden hier Kundenstimmen und Zertifikate. KlarKompass ist ein fiktives Konzeptprojekt – deshalb verzichten wir bewusst auf erfundene Referenzen."
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Häufige Fragen",
+    "items": [
+      {
+        "question": "Für wen ist das Coaching gedacht?",
+        "answer": "Für neue und angehende Führungskräfte, die ihre Rolle bewusst gestalten wollen – unabhängig von Branche oder Teamgröße."
+      },
+      {
+        "question": "Wie laufen die Sessions ab?",
+        "answer": "Die acht Sessions finden online per Video statt, im Zwei-Wochen-Takt und mit jeweils 60 Minuten Zeit für dein Thema."
+      },
+      {
+        "question": "Was, wenn ich zwischendurch nicht weiterkomme?",
+        "answer": "Zwischen den Sessions hast du eine kurze Sparring-Möglichkeit, um akute Situationen schnell einordnen zu können."
+      },
+      {
+        "question": "Brauche ich schon Führungserfahrung?",
+        "answer": "Nein. Das Programm passt sowohl vor dem ersten Führungsschritt als auch in den ersten Monaten der neuen Rolle."
+      },
+      {
+        "question": "Ist das hier ein echtes Angebot?",
+        "answer": "Nein. KlarKompass ist eine Demo: ein fiktives Konzeptprojekt, das zeigt, wie eine moderne Coaching-Landingpage aussehen kann."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Bereit für mehr Klarheit in deiner beruflichen Rolle?",
+    "description": "Lass uns in einem kostenlosen Erstgespräch herausfinden, ob die Zusammenarbeit zu dir passt.",
+    "ctaLabel": "Kostenloses Erstgespräch buchen",
+    "mockNote": "Hinweis: Dies ist eine Demo. Der Button ist ein Platzhalter und löst keine echte Buchung aus."
+  },
+  "footer": {
+    "brand": "KlarKompass",
+    "tagline": "1:1 Leadership Coaching für neue Führungskräfte",
+    "navLabels": ["Herausforderung", "Methode", "Programm", "Über mich", "FAQ"],
+    "conceptNote": "Dieses Projekt ist ein fiktives Konzeptprojekt von Invessiv. Es handelt sich nicht um einen realen Kundenauftrag und nicht um ein echtes Coaching-Angebot.",
+    "backLinkLabel": "Zurück zu Invessiv"
+  }
+}

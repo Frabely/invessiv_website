@@ -8,6 +8,7 @@ import { HeroSection } from "@/components/marketing/home/sections/hero-section/h
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
+import { ReferenceSection } from "@/references/klarkompass-coaching/landing-teaser/reference-section";
 import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
@@ -29,6 +30,7 @@ import { getLandingHeroContent } from "@/i18n/dictionaries/landing/hero";
 import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
+import { getLandingReferenceContent } from "@/references/klarkompass-coaching/i18n/landing-teaser";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
 import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
@@ -49,6 +51,7 @@ export function LandingPage({ locale }: LandingPageProps) {
   const pricing = getLandingPricingContent(locale);
   const problemSolution = getLandingProblemSolutionContent(locale);
   const process = getLandingProcessContent(locale);
+  const reference = getLandingReferenceContent(locale);
   const trust = getLandingTrustContent(locale);
 
   return (
@@ -120,6 +123,16 @@ export function LandingPage({ locale }: LandingPageProps) {
           id={LANDING_SECTION_IDS.pricing}
           locale={locale}
           {...pricing}
+        />
+
+        <ReferenceSection
+          demoHref={createLocalePathname(
+            SITE_ROUTES.REFERENCES_KLARKOMPASS,
+            locale,
+          )}
+          id={LANDING_SECTION_IDS.reference}
+          locale={locale}
+          {...reference}
         />
 
         <FaqSection id={LANDING_SECTION_IDS.faq} locale={locale} {...faq} />

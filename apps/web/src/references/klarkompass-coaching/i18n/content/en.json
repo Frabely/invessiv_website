@@ -1,0 +1,200 @@
+{
+  "header": {
+    "brand": "KlarKompass",
+    "navLabels": ["Challenge", "Method", "Programme", "About", "FAQ"],
+    "ctaLabel": "Book a free intro call",
+    "mockLabel": "Demo",
+    "menuOpenLabel": "Open menu",
+    "menuCloseLabel": "Close menu"
+  },
+  "hero": {
+    "badge": "1:1 Leadership Coaching",
+    "title": "Lead with clarity. Grow into your new role.",
+    "subtitle": "1:1 coaching for new leaders – calm, structured and paced to you.",
+    "primaryCtaLabel": "Book a free intro call",
+    "secondaryCtaLabel": "See the programme",
+    "trustLine": "Confidential · as equals · no off-the-shelf recipes",
+    "imageAlt": "Leadership coaching in a bright office: a session with a small group of leaders",
+    "bearing": {
+      "readout": "047°",
+      "caption": "Heading for clarity"
+    }
+  },
+  "problem": {
+    "eyebrow": "Challenge",
+    "title": "The role is new – the expectations are big right away.",
+    "intro": "You are strong on the craft. But leadership asks for something else: decisions under uncertainty, clear communication and a stance when things get uncomfortable.",
+    "points": [
+      "You make decisions, then keep doubting them long after.",
+      "You postpone hard conversations instead of leading them clearly.",
+      "You are caught in day-to-day work and lose sight of the direction.",
+      "You want to show authority without pretending to be someone else – and don't know how."
+    ]
+  },
+  "results": {
+    "eyebrow": "Outcome",
+    "title": "What we work towards together",
+    "items": [
+      {
+        "title": "Clarity",
+        "description": "You know what matters to you and make decisions you can stand behind."
+      },
+      {
+        "title": "Communication",
+        "description": "You address expectations, feedback and conflict calmly and directly."
+      },
+      {
+        "title": "Leadership",
+        "description": "You lead from a stance that fits you – committed, not tense."
+      }
+    ]
+  },
+  "method": {
+    "eyebrow": "Method",
+    "title": "A clear path instead of loose tips",
+    "intro": "We work in four steps that build on each other – concrete and aligned with your real situations.",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Locate your position",
+        "description": "We look honestly at your current role, your strengths and what holds you back."
+      },
+      {
+        "number": "02",
+        "title": "Spot the patterns",
+        "description": "We surface the thinking and behaviour patterns that slow you down as a leader."
+      },
+      {
+        "number": "03",
+        "title": "Develop strategies",
+        "description": "You develop concrete options for your recurring situations."
+      },
+      {
+        "number": "04",
+        "title": "Support the rollout",
+        "description": "You apply it day to day, and we adjust together until it feels right."
+      }
+    ]
+  },
+  "offer": {
+    "eyebrow": "Programme",
+    "title": "The 8-week Leadership Reset Coaching",
+    "description": "A focused 1:1 programme for your start into the leadership role – with room to reflect and clear steps for everyday work.",
+    "includesLabel": "What's included",
+    "includes": [
+      "Eight 1:1 sessions (60 minutes each) every two weeks",
+      "Personal position check at the start",
+      "Concrete tools for conversations, decisions and prioritisation",
+      "Short sparring option between sessions",
+      "Personal closing summary with next steps"
+    ],
+    "suitableLabel": "A good fit for",
+    "suitable": [
+      "New leaders in their first 18 months",
+      "Experts about to step into leadership",
+      "Team leads who want to show up with more confidence"
+    ],
+    "ctaLabel": "Book a free intro call",
+    "noPriceNote": "We define the scope individually in the free intro call – tailored to your situation."
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "Coaching as equals",
+    "name": "Anna Berger",
+    "role": "Leadership Coach (fictional)",
+    "bio": "I support people stepping into leadership for the first time to stay clear and true to themselves. It's not about ready-made recipes, but about decisions and a stance that fit you.",
+    "portraitAlt": "Abstract mark instead of a photo – this is a concept project",
+    "valuesLabel": "What I stand for",
+    "values": [
+      {
+        "title": "Clarity",
+        "description": "An honest word beats a pretty phrase."
+      },
+      {
+        "title": "Stance",
+        "description": "Leadership starts with you, not with the tool."
+      },
+      {
+        "title": "Action",
+        "description": "Insight only counts once it changes your everyday."
+      }
+    ]
+  },
+  "process": {
+    "eyebrow": "Process",
+    "title": "How we work together",
+    "steps": [
+      {
+        "number": "01",
+        "title": "Intro call",
+        "description": "We get to know each other and check whether working together fits – no strings attached."
+      },
+      {
+        "number": "02",
+        "title": "Position analysis",
+        "description": "We define where you stand and what to focus on."
+      },
+      {
+        "number": "03",
+        "title": "Coaching phase",
+        "description": "Over eight weeks we work on your concrete leadership situations."
+      },
+      {
+        "number": "04",
+        "title": "Transfer",
+        "description": "You anchor what you've learned and leave with clear next steps."
+      }
+    ]
+  },
+  "trust": {
+    "eyebrow": "Trust",
+    "title": "What you can rely on",
+    "points": [
+      "Confidential conversations in a protected space",
+      "Coaching as equals instead of lecturing",
+      "Practical and based on your real situations",
+      "A clear structure across all eight weeks",
+      "Honest feedback, even when it's uncomfortable"
+    ],
+    "honestNote": "In a real project, client testimonials and certificates would go here. KlarKompass is a fictional concept project – which is why we deliberately avoid made-up references."
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "question": "Who is this coaching for?",
+        "answer": "For new and aspiring leaders who want to shape their role deliberately – regardless of industry or team size."
+      },
+      {
+        "question": "How do the sessions work?",
+        "answer": "The eight sessions take place online via video, every two weeks, with 60 minutes for your topic each time."
+      },
+      {
+        "question": "What if I get stuck in between?",
+        "answer": "Between sessions you have a short sparring option to quickly make sense of urgent situations."
+      },
+      {
+        "question": "Do I need leadership experience already?",
+        "answer": "No. The programme fits both before your first leadership step and in the first months of the new role."
+      },
+      {
+        "question": "Is this a real offer?",
+        "answer": "No. KlarKompass is a demo: a fictional concept project showing how a modern coaching landing page can look."
+      }
+    ]
+  },
+  "finalCta": {
+    "title": "Ready for more clarity in your professional role?",
+    "description": "Let's find out in a free intro call whether working together is a fit for you.",
+    "ctaLabel": "Book a free intro call",
+    "mockNote": "Note: this is a demo. The button is a placeholder and does not trigger a real booking."
+  },
+  "footer": {
+    "brand": "KlarKompass",
+    "tagline": "1:1 leadership coaching for new leaders",
+    "navLabels": ["Challenge", "Method", "Programme", "About", "FAQ"],
+    "conceptNote": "This project is a fictional concept project by Invessiv. It is not a real client engagement and not an actual coaching offer.",
+    "backLinkLabel": "Back to Invessiv"
+  }
+}

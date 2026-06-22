@@ -13,6 +13,7 @@ export const LANDING_SECTION_IDS = {
   audience: "audience",
   process: PROCESS_SECTION_ID,
   pricing: "pricing",
+  reference: "reference",
   faq: FAQ_SECTION_ID,
   contact: CONTACT_SECTION_ID,
 } as const;
@@ -24,6 +25,7 @@ export const LANDING_FUNNEL_SECTION_IDS = [
   LANDING_SECTION_IDS.audience,
   LANDING_SECTION_IDS.process,
   LANDING_SECTION_IDS.pricing,
+  LANDING_SECTION_IDS.reference,
   LANDING_SECTION_IDS.faq,
   LANDING_SECTION_IDS.contact,
 ] as const;

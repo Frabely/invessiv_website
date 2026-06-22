@@ -1,0 +1,14 @@
+{
+  "eyebrow": "Beispiel",
+  "title": "So sieht eine fertige Landingpage aus",
+  "description": "Damit du ein Gefühl für das Ergebnis bekommst: eine vollständige Demo-Landingpage, die ich als Konzeptprojekt für eine fiktive Coaching-Marke umgesetzt habe – mit Struktur, Copy und Design aus einer Hand.",
+  "conceptBadge": "Konzeptprojekt",
+  "browserLabel": "klarkompass-coaching.demo",
+  "previewAlt": "Vorschau der KlarKompass-Demo-Landingpage im Browser-Fenster",
+  "highlights": [
+    "Klare Sektions-Struktur vom Problem bis zum CTA",
+    "Eigenständiges Design statt Baukasten-Optik",
+    "Ehrlich gekennzeichnet – eine echte Marke gibt es nicht"
+  ],
+  "linkLabel": "Demo ansehen"
+}

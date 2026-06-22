@@ -1,0 +1,228 @@
+.section {
+  --reveal-delay: 0ms;
+
+  position: relative;
+  width: min(
+    calc(100% - (var(--page-inline-gutter) * 2)),
+    var(--max-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(4rem, 8vw, 7rem) 0;
+}
+
+.spotlight {
+  position: absolute;
+  top: clamp(3rem, 8vw, 6rem);
+  right: 8%;
+  z-index: -1;
+  width: min(30rem, 70vw);
+  height: min(20rem, 50vw);
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 60% 40%,
+    color-mix(in srgb, var(--color-accent-warm) 18%, transparent),
+    transparent 64%
+  );
+  filter: blur(30px);
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.content,
+.visual {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 540ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.content[data-visible="true"],
+.visual[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.content {
+  display: grid;
+  justify-items: start;
+  gap: 1.1rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.1rem;
+}
+
+.title {
+  margin: 0;
+  max-width: 18ch;
+  color: var(--color-text);
+  font-size: var(--font-size-section-title);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.description {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.6;
+}
+
+.highlights {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.highlight {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  color: color-mix(in srgb, var(--color-text) 88%, transparent);
+  font-size: var(--font-size-body-md);
+  line-height: 1.5;
+}
+
+.highlightMark {
+  flex: 0 0 auto;
+  width: 0.65rem;
+  height: 0.65rem;
+  margin-top: 0.42rem;
+  border-radius: 3px;
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-warm),
+    var(--color-cta)
+  );
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  color: var(--color-cta);
+  font-size: var(--font-size-button);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--color-cta-hover);
+}
+
+.link:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-cta) 50%, transparent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.linkArrow {
+  transition: transform 180ms ease;
+}
+
+.link:hover .linkArrow {
+  transform: translateX(3px);
+}
+
+.visual {
+  position: relative;
+}
+
+.conceptBadge {
+  position: absolute;
+  top: -0.8rem;
+  left: 1.2rem;
+  z-index: 2;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 50%, transparent);
+  border-radius: 999px;
+  background: var(--color-surface-1);
+  color: var(--color-accent-warm);
+  font-size: var(--font-size-badge);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.browserFrame {
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 16px;
+  background: var(--color-surface-2);
+  box-shadow: 0 50px 90px -60px rgba(0, 0, 0, 0.65);
+}
+
+.browserChrome {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.95rem;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-1) 80%, transparent);
+}
+
+.chromeDot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-muted) 40%, transparent);
+}
+
+.chromeBar {
+  margin-left: 0.6rem;
+  padding: 0.2rem 0.7rem;
+  flex: 1;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.browserViewport {
+  display: block;
+  line-height: 0;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (min-width: 960px) {
+  .grid {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content,
+  .visual {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .linkArrow {
+    transition: none;
+  }
+}

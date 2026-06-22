@@ -1,0 +1,135 @@
+.brandScope {
+  /* Lokal gescopte Marken-Tokens – bewusst NICHT in globals.css.
+       „Grounded Bearings“: EIN durchgehender warm-dunkler Espresso/Bronze-Canvas;
+       Gold, Amber und Sand sind die warmen Akzente. Grün ist KEINE Basisfläche
+       mehr, sondern nur noch Highlight (Bearing-Line, Marker, Logo). */
+
+  /* Flächen – durchgehender Sand/Creme-Canvas, Karten heller angehoben.
+       Hero (Foto) und Footer bleiben dunkle Anker (--kk-anchor*). */
+  --kk-base: #ece0c8;
+  --kk-base-deep: #e3d4b6;
+  --kk-card: #f7f0e1;
+  --kk-paper-raised: var(--kk-card);
+  --kk-anchor: #2a1d12;
+  --kk-anchor-deep: #14100a;
+  --kk-bark: #6b4937;
+  --kk-clay: #a9795b;
+
+  /* Warme Akzente – Orange/Sand/Gold */
+  --kk-gold: #d8a657;
+  --kk-amber: #c98a4a;
+  --kk-sand: #d5c2a8;
+  --kk-surface: var(--kk-sand);
+
+  /* Grün – Logo-Grün (CTA + Signatur-Highlight) */
+  --kk-green: #2f7d5b;
+  --kk-green-deep: #245f46;
+  --kk-lime: #c8f169;
+
+  /* CTA – Logo-Grün als Aktionsfarbe (mit warm-heller Tinte für AA-Kontrast) */
+  --kk-cta: #2b7254;
+  --kk-cta-hover: #23624a;
+  --kk-cta-ink: #f6efe0;
+
+  /* Text – warm dunkel auf Sand/Creme */
+  --kk-paper: #f3e9d8;
+  --kk-ink: #2a1d12;
+  --kk-ink-body: #41301d;
+  --kk-slate: #6a5a44;
+
+  /* Signal = warmer Gold-Akzent (auf Hell tiefer für Lesbarkeit); Highlight = Grün */
+  --kk-signal: #bd7f2a;
+  --kk-signal-hover: #9a6618;
+  --kk-signal-soft: rgba(176, 118, 30, 0.14);
+  --kk-highlight: var(--kk-green);
+
+  /* Hintergrund-Akzent-Glows (Rhythmus auf dem einen Canvas) – auf Hell dezent.
+       Gold/Sand warm, dazu dosiertes Grün als Highlight-Schimmer. */
+  --kk-glow-gold: rgba(176, 118, 30, 0.1);
+  --kk-glow-sand: rgba(150, 120, 70, 0.06);
+  --kk-glow-green: rgba(47, 125, 91, 0.09);
+
+  /* Struktur – warme dunkle Hairlines auf Hell */
+  --kk-line: rgba(70, 50, 28, 0.2);
+  --kk-border: rgba(70, 50, 28, 0.14);
+  --kk-hair: rgba(70, 50, 28, 0.14);
+  --kk-focus: var(--kk-green);
+  --kk-radius: 5px;
+  --kk-radius-lg: 8px;
+  --kk-content-width: 112rem;
+  --kk-content-gutter: 1.25rem;
+
+  /* Rückwärtskompatible Aliasse */
+  --kk-font-serif: var(--kk-font-display);
+  --kk-bg: var(--kk-base);
+  --kk-text: var(--kk-ink);
+  --kk-primary: var(--kk-cta);
+  --kk-primary-hover: var(--kk-cta-hover);
+  --kk-accent: var(--kk-gold);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* Ein durchgehender Espresso-Canvas. Gold-/Sand-Glows plus ein dosierter
+       Grün-Schimmer sind vertikal verteilt, damit beim Scrollen rhythmisch warme
+       Akzente (und vereinzelt das Grün-Highlight) „auftauchen“. */
+  background:
+    radial-gradient(
+      52rem 34rem at 14% 3%,
+      var(--kk-glow-gold),
+      transparent 62%
+    ),
+    radial-gradient(
+      48rem 34rem at 92% 16%,
+      var(--kk-glow-sand),
+      transparent 62%
+    ),
+    radial-gradient(
+      46rem 34rem at 3% 37%,
+      var(--kk-glow-green),
+      transparent 60%
+    ),
+    radial-gradient(
+      50rem 36rem at 2% 55%,
+      var(--kk-glow-gold),
+      transparent 64%
+    ),
+    radial-gradient(
+      48rem 34rem at 100% 66%,
+      var(--kk-glow-sand),
+      transparent 62%
+    ),
+    radial-gradient(
+      50rem 36rem at 12% 88%,
+      var(--kk-glow-gold),
+      transparent 64%
+    ),
+    linear-gradient(168deg, var(--kk-base) 0%, var(--kk-base-deep) 100%);
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans, "Segoe UI", system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+.brandScope :where(h1, h2, h3) {
+  font-family: var(--kk-font-display, "Segoe UI", system-ui, sans-serif);
+  color: var(--kk-ink);
+  letter-spacing: -0.028em;
+}
+
+.main {
+  flex: 1 0 auto;
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brandScope {
+    scroll-behavior: auto;
+  }
+}
+
+@media (min-width: 880px) {
+  .brandScope {
+    --kk-content-gutter: clamp(2rem, 3vw, 3.5rem);
+  }
+}

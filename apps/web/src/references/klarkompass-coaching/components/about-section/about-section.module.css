@@ -1,0 +1,125 @@
+.section {
+  width: min(
+    calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
+    var(--kk-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+}
+
+.grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.portraitCard {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--kk-line);
+  border-radius: var(--kk-radius-lg);
+  background:
+    radial-gradient(circle at 100% 0%, var(--kk-signal-soft), transparent 45%),
+    var(--kk-paper-raised);
+  box-shadow: 0 36px 70px -58px rgba(20, 24, 31, 0.3);
+}
+
+.portraitInitials {
+  color: var(--kk-signal);
+  font-family: var(--kk-font-display);
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.content {
+  display: grid;
+  justify-items: start;
+  gap: 0.7rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--kk-font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.name {
+  margin: 0;
+  color: var(--kk-ink);
+  font-family: var(--kk-font-sans);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.role {
+  color: var(--kk-slate);
+  font-weight: 500;
+}
+
+.bio {
+  margin: 0.2rem 0 0.6rem;
+  max-width: 42ch;
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.valuesLabel {
+  margin: 0;
+  color: var(--kk-slate);
+  font-family: var(--kk-font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.values {
+  display: grid;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.value {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--kk-line);
+  border-radius: var(--kk-radius);
+  background: var(--kk-paper-raised);
+}
+
+.valueTitle {
+  color: var(--kk-ink);
+  font-family: var(--kk-font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.valueText {
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (min-width: 880px) {
+  .grid {
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+
+  .values {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

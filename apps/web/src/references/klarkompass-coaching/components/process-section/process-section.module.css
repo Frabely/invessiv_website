@@ -1,0 +1,86 @@
+.section {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  width: min(
+    calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
+    var(--kk-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+}
+
+.intro {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 36rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+
+.steps {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding-top: 1.1rem;
+  border-top: 1.5px solid var(--kk-hair);
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: flex-start;
+  color: var(--kk-signal);
+  font-family: var(--kk-font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.stepDegree {
+  margin-left: 0.05em;
+  font-size: 0.5em;
+  font-weight: 500;
+}
+
+.stepTitle {
+  margin: 0.2rem 0 0;
+  font-family: var(--kk-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.stepText {
+  margin: 0;
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 880px) {
+  .steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 560px) and (max-width: 879px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

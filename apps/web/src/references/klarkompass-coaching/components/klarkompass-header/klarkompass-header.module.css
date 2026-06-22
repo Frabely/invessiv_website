@@ -1,0 +1,184 @@
+.header {
+  /* Heller Sand/Papier-Header (bewusst kein Grün) – dunkle Tinte lokal gescopt,
+       damit der übrige dunkle Wald-Canvas unberührt bleibt. */
+  --kk-ink: #2a1d12;
+  --kk-text: #2a1d12;
+  --kk-card: #f1e9dc;
+  --kk-border: rgba(107, 73, 55, 0.22);
+
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  border-bottom: 1px solid transparent;
+  background: color-mix(in srgb, var(--kk-paper) 82%, transparent);
+  backdrop-filter: blur(10px);
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.header[data-scrolled="true"] {
+  border-bottom-color: var(--kk-border);
+  background: color-mix(in srgb, var(--kk-paper) 95%, transparent);
+  box-shadow: 0 10px 30px -24px rgba(20, 16, 10, 0.5);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: min(
+    calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
+    var(--kk-content-width)
+  );
+  margin: 0 auto;
+  height: 4.5rem;
+  padding: 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--kk-ink);
+  font-family: var(--kk-font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brandMark {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+}
+
+.brandMarkImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.navLink {
+  color: color-mix(in srgb, var(--kk-text) 78%, transparent);
+  font-family: var(--kk-font-sans);
+  font-size: 0.96rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.navLink:hover {
+  color: var(--kk-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerCta {
+  display: none;
+}
+
+.menuToggle {
+  display: inline-grid;
+  gap: 5px;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0.7rem;
+  align-content: center;
+  border: 1px solid var(--kk-border);
+  border-radius: 12px;
+  background: var(--kk-card);
+  cursor: pointer;
+}
+
+.menuBar {
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--kk-text);
+  transition:
+    transform 200ms ease,
+    opacity 200ms ease;
+}
+
+.menuBar[data-open="true"]:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menuBar[data-open="true"]:nth-child(2) {
+  opacity: 0;
+}
+
+.menuBar[data-open="true"]:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.mobileMenu {
+  display: grid;
+  gap: 0.4rem;
+  width: min(
+    calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
+    var(--kk-content-width)
+  );
+  margin: 0 auto;
+  padding: 0.5rem 0 1.1rem;
+}
+
+.mobileLink {
+  padding: 0.7rem 0.4rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--kk-border) 70%, transparent);
+  color: var(--kk-text);
+  font-family: var(--kk-font-sans);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.mobileCta {
+  margin-top: 0.6rem;
+  width: 100%;
+}
+
+@media (min-width: 880px) {
+  .inner {
+    height: 4.75rem;
+  }
+
+  .nav {
+    display: flex;
+  }
+
+  .headerCta {
+    display: inline-flex;
+  }
+
+  .menuToggle {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .menuBar {
+    transition: none;
+  }
+}

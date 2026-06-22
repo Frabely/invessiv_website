@@ -1,0 +1,301 @@
+.section {
+  display: grid;
+  gap: clamp(2.25rem, 5vw, 3.5rem);
+  width: min(
+    calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
+    var(--kk-content-width)
+  );
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+}
+
+.head {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 42rem;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.body {
+  display: grid;
+  gap: clamp(2.25rem, 5vw, 3.25rem);
+}
+
+/* ---------- Instrument ---------- */
+
+.instrumentWrap {
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+}
+
+.compass {
+  display: block;
+  width: min(80vw, 21rem);
+  height: auto;
+  overflow: visible;
+}
+
+.face {
+  fill: var(--kk-card);
+}
+
+.ring {
+  fill: none;
+  stroke: var(--kk-line);
+}
+
+.ringInner {
+  fill: none;
+  stroke: var(--kk-hair);
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
+}
+
+.star {
+  fill: var(--kk-sand);
+  opacity: 0.45;
+}
+
+.tickMinor {
+  stroke: var(--kk-hair);
+  stroke-width: 1;
+}
+
+.tickMajor {
+  stroke: var(--kk-ink);
+  stroke-width: 1.6;
+  opacity: 0.45;
+}
+
+.cardinal {
+  fill: var(--kk-ink);
+  font-family: var(--kk-font-display);
+  font-size: 9px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.needle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.needleNorth {
+  fill: var(--kk-signal);
+}
+
+.needleSouth {
+  fill: var(--kk-sand);
+}
+
+.hub {
+  fill: var(--kk-card);
+  stroke: var(--kk-signal);
+  stroke-width: 2;
+}
+
+.hubDot {
+  fill: var(--kk-signal);
+}
+
+.node {
+  fill: var(--kk-sand);
+  transition: fill 0.3s ease;
+}
+
+.nodeActive {
+  fill: var(--kk-signal);
+}
+
+.nodeGlow {
+  fill: var(--kk-signal);
+  opacity: 0.18;
+}
+
+.readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--kk-line);
+  border-radius: 999px;
+  background: var(--kk-card);
+}
+
+.readoutValue {
+  font-family: var(--kk-font-display);
+  font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+  font-weight: 600;
+  color: var(--kk-signal);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.readoutLabel {
+  width: 2.5rem;
+  height: 2px;
+  background: var(--kk-line);
+}
+
+/* ---------- Pain points ---------- */
+
+.points {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.point {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(0.9rem, 2.6vw, 1.3rem);
+  align-items: center;
+  padding: clamp(1rem, 2.6vw, 1.35rem) clamp(1.1rem, 2.6vw, 1.5rem);
+  border: 1px solid var(--kk-line);
+  border-radius: var(--kk-radius-lg);
+  background: var(--kk-card);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.point::before {
+  content: "";
+  position: absolute;
+  top: 16%;
+  bottom: 16%;
+  left: -1px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--kk-signal);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pointActive {
+  border-color: rgba(189, 127, 42, 0.55);
+  box-shadow: 0 14px 34px -22px rgba(70, 50, 28, 0.55);
+}
+
+.pointActive::before {
+  transform: scaleY(1);
+}
+
+.gauge {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+}
+
+.miniCompass {
+  display: block;
+  width: clamp(2.6rem, 8vw, 3rem);
+  height: auto;
+}
+
+.miniDial {
+  fill: none;
+  stroke: var(--kk-line);
+  stroke-width: 1.5;
+}
+
+.miniTicks {
+  stroke: var(--kk-hair);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.miniNeedleNorth {
+  fill: var(--kk-clay);
+  transition: fill 0.3s ease;
+}
+
+.miniNeedleSouth {
+  fill: var(--kk-sand);
+}
+
+.miniHub {
+  fill: var(--kk-card);
+  stroke: var(--kk-clay);
+  stroke-width: 1.5;
+  transition: stroke 0.3s ease;
+}
+
+.pointActive .miniNeedleNorth {
+  fill: var(--kk-signal);
+}
+
+.pointActive .miniHub {
+  stroke: var(--kk-signal);
+}
+
+.degree {
+  font-family: var(--kk-font-display);
+  font-size: clamp(0.82rem, 2.4vw, 0.95rem);
+  font-weight: 600;
+  color: var(--kk-slate);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+}
+
+.pointActive .degree {
+  color: var(--kk-signal-hover);
+}
+
+.pointText {
+  margin: 0;
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: clamp(1rem, 2.4vw, 1.08rem);
+  line-height: 1.5;
+}
+
+@media (min-width: 900px) {
+  .body {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(2.5rem, 4vw, 4rem);
+  }
+
+  .instrumentWrap {
+    position: sticky;
+    top: clamp(5.5rem, 14vh, 9rem);
+  }
+
+  .compass {
+    width: min(34vw, 25rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .point::before,
+  .point,
+  .node,
+  .miniNeedleNorth,
+  .miniHub,
+  .degree {
+    transition: none;
+  }
+}
