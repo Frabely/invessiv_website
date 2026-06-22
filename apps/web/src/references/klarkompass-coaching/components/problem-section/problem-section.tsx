@@ -21,13 +21,18 @@ type ProblemSectionProps = KlarkompassProblemContent & {
   locale: Locale;
 };
 
-const POINT_HEADINGS = [312, 174, 81, 237];
+const POINT_HEADINGS = [24, 66, 205, 286];
 const CYCLE_MS = 2400;
-const CARDINALS = [
-  { label: "N", heading: 0 },
-  { label: "E", heading: 90 },
-  { label: "S", heading: 180 },
-  { label: "W", heading: 270 },
+const CARDINAL_HEADINGS = [0, 90, 180, 270];
+const AXIS_LAYOUT: {
+  x: number;
+  y: number;
+  anchor: "start" | "middle" | "end";
+}[] = [
+  { x: 100, y: -12, anchor: "middle" },
+  { x: 196, y: 100, anchor: "start" },
+  { x: 100, y: 212, anchor: "middle" },
+  { x: 4, y: 100, anchor: "end" },
 ];
 const TICKS = Array.from({ length: 60 }, (_, i) => ({
   heading: i * 6,
@@ -50,7 +55,15 @@ function onRing(radius: number, heading: number): { x: number; y: number } {
   };
 }
 
-function CompassInstrument({ activeIndex }: { activeIndex: number }) {
+function CompassInstrument({
+  activeIndex,
+  cardinals,
+  axes,
+}: {
+  activeIndex: number;
+  cardinals: string[];
+  axes: string[];
+}) {
   const reduce = useReducedMotion();
   const activeHeading = headingFor(activeIndex);
 
@@ -74,7 +87,7 @@ function CompassInstrument({ activeIndex }: { activeIndex: number }) {
 
   return (
     <div aria-hidden="true" className={styles.instrumentWrap}>
-      <svg className={styles.compass} viewBox="0 0 200 200">
+      <svg className={styles.compass} viewBox="-46 -46 292 292">
         <circle className={styles.face} cx="100" cy="100" r="92" />
         <circle className={styles.ring} cx="100" cy="100" r="92" />
         <circle className={styles.ringInner} cx="100" cy="100" r="58" />
@@ -96,18 +109,35 @@ function CompassInstrument({ activeIndex }: { activeIndex: number }) {
           })}
         </g>
 
-        {CARDINALS.map((cardinal) => {
-          const point = onRing(70, cardinal.heading);
+        {CARDINAL_HEADINGS.map((heading, index) => {
+          const point = onRing(70, heading);
           return (
             <text
               className={styles.cardinal}
               dominantBaseline="central"
-              key={cardinal.label}
+              key={heading}
               textAnchor="middle"
               x={point.x}
               y={point.y}
             >
-              {cardinal.label}
+              {cardinals[index]}
+            </text>
+          );
+        })}
+
+        {axes.map((label, index) => {
+          const layout = AXIS_LAYOUT[index];
+          const isActive = index === activeIndex;
+          return (
+            <text
+              className={isActive ? styles.axisActive : styles.axis}
+              dominantBaseline="central"
+              key={`axis-${index}`}
+              textAnchor={layout.anchor}
+              x={layout.x}
+              y={layout.y}
+            >
+              {label}
             </text>
           );
         })}
@@ -164,6 +194,7 @@ function MiniBearing({ heading }: { heading: number }) {
 }
 
 export function ProblemSection({
+  compass,
   eyebrow,
   id,
   intro,
@@ -197,7 +228,11 @@ export function ProblemSection({
 
       <div className={styles.body}>
         <Reveal as="div" className={styles.instrumentColumn}>
-          <CompassInstrument activeIndex={activeIndex} />
+          <CompassInstrument
+            activeIndex={activeIndex}
+            axes={compass.axes}
+            cardinals={compass.cardinals}
+          />
         </Reveal>
 
         <ul className={styles.points}>

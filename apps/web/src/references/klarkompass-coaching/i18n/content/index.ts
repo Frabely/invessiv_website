@@ -27,11 +27,17 @@ export type KlarkompassHeroContent = {
   bearing: KlarkompassHeroBearing;
 };
 
+export type KlarkompassProblemCompass = {
+  cardinals: string[];
+  axes: string[];
+};
+
 export type KlarkompassProblemContent = {
   eyebrow: string;
   title: string;
   intro: string;
   points: string[];
+  compass: KlarkompassProblemCompass;
 };
 
 export type KlarkompassTitledItem = {

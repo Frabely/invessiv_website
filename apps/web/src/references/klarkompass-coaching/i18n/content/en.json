@@ -29,7 +29,11 @@
       "You postpone hard conversations instead of leading them clearly.",
       "You are caught in day-to-day work and lose sight of the direction.",
       "You want to show authority without pretending to be someone else – and don't know how."
-    ]
+    ],
+    "compass": {
+      "cardinals": ["N", "E", "S", "W"],
+      "axes": ["Clarity", "Dialogue", "Focus", "Composure"]
+    }
   },
   "results": {
     "eyebrow": "Outcome",

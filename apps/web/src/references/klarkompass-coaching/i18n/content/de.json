@@ -29,7 +29,11 @@
       "Schwierige Gespräche schiebst du auf, statt sie klar zu führen.",
       "Du bist im Tagesgeschäft gefangen und verlierst die Richtung aus dem Blick.",
       "Du willst Autorität zeigen, ohne dich zu verstellen – und weißt nicht, wie."
-    ]
+    ],
+    "compass": {
+      "cardinals": ["N", "O", "S", "W"],
+      "axes": ["Klarheit", "Gespräche", "Fokus", "Haltung"]
+    }
   },
   "results": {
     "eyebrow": "Ergebnis",
