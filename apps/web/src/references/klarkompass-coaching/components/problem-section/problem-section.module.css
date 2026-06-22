@@ -42,7 +42,6 @@
 .instrumentWrap {
   display: grid;
   justify-items: center;
-  gap: 1.1rem;
 }
 
 .compass {
@@ -113,45 +112,6 @@
 
 .hubDot {
   fill: var(--kk-signal);
-}
-
-.node {
-  fill: var(--kk-sand);
-  transition: fill 0.3s ease;
-}
-
-.nodeActive {
-  fill: var(--kk-signal);
-}
-
-.nodeGlow {
-  fill: var(--kk-signal);
-  opacity: 0.18;
-}
-
-.readout {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
-  border: 1px solid var(--kk-line);
-  border-radius: 999px;
-  background: var(--kk-card);
-}
-
-.readoutValue {
-  font-family: var(--kk-font-display);
-  font-size: clamp(1.05rem, 3.6vw, 1.35rem);
-  font-weight: 600;
-  color: var(--kk-signal);
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-}
-
-.readoutLabel {
-  width: 2.5rem;
-  height: 2px;
-  background: var(--kk-line);
 }
 
 /* ---------- Pain points ---------- */
@@ -275,8 +235,14 @@
 @media (min-width: 900px) {
   .body {
     grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: clamp(2.5rem, 4vw, 4rem);
+  }
+
+  .instrumentColumn {
+    display: grid;
+    align-content: center;
+    min-height: 100%;
   }
 
   .instrumentWrap {

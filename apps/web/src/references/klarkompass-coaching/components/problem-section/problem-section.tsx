@@ -38,11 +38,6 @@ function headingFor(index: number): number {
   return POINT_HEADINGS[index % POINT_HEADINGS.length];
 }
 
-function formatHeading(heading: number): string {
-  const normalized = ((Math.round(heading) % 360) + 360) % 360;
-  return `${String(normalized).padStart(3, "0")}°`;
-}
-
 function round(value: number): number {
   return Math.round(value * 1000) / 1000;
 }
@@ -122,29 +117,6 @@ function CompassInstrument({ activeIndex }: { activeIndex: number }) {
           d="M100 30 L107 93 L170 100 L107 107 L100 170 L93 107 L30 100 L93 93 Z"
         />
 
-        {POINT_HEADINGS.map((heading, index) => {
-          const point = onRing(92, heading);
-          const isActive = index === activeIndex;
-          return (
-            <g key={heading}>
-              {isActive ? (
-                <circle
-                  className={styles.nodeGlow}
-                  cx={point.x}
-                  cy={point.y}
-                  r="9"
-                />
-              ) : null}
-              <circle
-                className={isActive ? styles.nodeActive : styles.node}
-                cx={point.x}
-                cy={point.y}
-                r={isActive ? 5 : 3.4}
-              />
-            </g>
-          );
-        })}
-
         <motion.g
           className={styles.needle}
           style={{ rotate: reduce ? activeHeading : needleRotation }}
@@ -162,13 +134,6 @@ function CompassInstrument({ activeIndex }: { activeIndex: number }) {
         <circle className={styles.hub} cx="100" cy="100" r="7" />
         <circle className={styles.hubDot} cx="100" cy="100" r="2.5" />
       </svg>
-
-      <span className={styles.readout}>
-        <span className={styles.readoutLabel} />
-        <span className={styles.readoutValue}>
-          {formatHeading(activeHeading)}
-        </span>
-      </span>
     </div>
   );
 }
@@ -231,7 +196,7 @@ export function ProblemSection({
       </Reveal>
 
       <div className={styles.body}>
-        <Reveal as="div">
+        <Reveal as="div" className={styles.instrumentColumn}>
           <CompassInstrument activeIndex={activeIndex} />
         </Reveal>
 
