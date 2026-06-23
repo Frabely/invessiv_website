@@ -264,11 +264,6 @@
     min-height: 100%;
   }
 
-  .instrumentWrap {
-    position: sticky;
-    top: clamp(5.5rem, 14vh, 9rem);
-  }
-
   .compass {
     width: min(34vw, 25rem);
   }

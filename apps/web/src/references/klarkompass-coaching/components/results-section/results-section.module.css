@@ -1,25 +1,53 @@
 .section {
   display: grid;
-  justify-items: center;
-  gap: clamp(2rem, 4vw, 3rem);
+  gap: clamp(2.25rem, 5vw, 3.5rem);
   width: min(
     calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
-    var(--kk-content-width)
+    72rem
   );
   margin: 0 auto;
   padding: clamp(3.5rem, 7vw, 6rem) 0;
-  text-align: center;
 }
 
-.intro {
+/* ---------- Cartouche (chart title block) ---------- */
+
+.head {
+  position: relative;
   display: grid;
-  justify-items: center;
-  gap: 0.75rem;
+  gap: 0.9rem;
+  max-width: 44rem;
+  padding: clamp(1.3rem, 3vw, 1.85rem) clamp(1.3rem, 3vw, 2rem);
+  border: 1px solid var(--kk-border);
+  border-radius: var(--kk-radius-lg);
+  background: color-mix(in srgb, var(--kk-card) 55%, transparent);
+}
+
+.head::before,
+.head::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 0 solid var(--kk-signal);
+  opacity: 0.65;
+}
+
+.head::before {
+  top: 7px;
+  left: 7px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+.head::after {
+  right: 7px;
+  bottom: 7px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
 }
 
 .title {
   margin: 0;
-  max-width: 18ch;
   font-size: clamp(1.9rem, 3.6vw, 2.9rem);
   font-weight: 600;
   line-height: 1.08;
@@ -27,39 +55,263 @@
   text-wrap: balance;
 }
 
-.grid {
+.lead {
+  margin: 0;
+  max-width: 40rem;
+  color: var(--kk-ink-body);
+  font-family: var(--kk-font-sans);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* ---------- Body: chart + waypoint plot ---------- */
+
+.body {
   display: grid;
-  gap: 1.1rem;
+  gap: clamp(2.25rem, 5vw, 3rem);
+}
+
+.chart {
+  position: relative;
+  width: min(92%, 28rem);
+  margin: 0 auto;
+  padding: clamp(0.75rem, 2.5vw, 1.1rem);
+  border: 1px solid var(--kk-line);
+  border-radius: var(--kk-radius-lg);
+  background: var(--kk-card);
+  box-shadow: 0 24px 48px -40px rgba(107, 73, 55, 0.34);
+}
+
+.chartSvg {
+  display: block;
   width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.frame {
+  fill: none;
+  stroke: var(--kk-line);
+  stroke-width: 1.4;
+}
+
+.graticule line {
+  stroke: var(--kk-hair);
+  stroke-width: 1;
+}
+
+.roseRing {
+  fill: none;
+  stroke: var(--kk-line);
+}
+
+.roseStar {
+  fill: var(--kk-sand);
+  opacity: 0.6;
+}
+
+.roseN {
+  fill: var(--kk-slate);
+  font-family: var(--kk-font-display);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.routePlan {
+  fill: none;
+  stroke: var(--kk-line);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+}
+
+.routeDrawn {
+  fill: none;
+  stroke: var(--kk-signal);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.legBearing {
+  fill: var(--kk-slate);
+  font-family: var(--kk-font-display);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Position-fix markers (color flows to children via currentColor) */
+.markStart {
+  color: var(--kk-clay);
+}
+
+.markFix {
+  color: var(--kk-signal);
+}
+
+.markDest {
+  color: var(--kk-green);
+}
+
+.markCross {
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.markRing {
+  fill: var(--kk-card);
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.markOuter {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  opacity: 0.4;
+}
+
+.markDot {
+  fill: currentColor;
+}
+
+.markIndex {
+  fill: currentColor;
+  font-family: var(--kk-font-display);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Waypoint list ---------- */
+
+.plot {
+  display: grid;
+  gap: 1rem;
+}
+
+.startCue {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--kk-font-sans);
+  font-size: 0.9rem;
+  color: var(--kk-slate);
+  letter-spacing: 0.01em;
+}
+
+.startCueDot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--kk-clay);
+}
+
+.waypoints {
+  display: grid;
+  gap: 0.9rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .card {
+  position: relative;
   display: grid;
-  justify-items: start;
-  gap: 0.8rem;
-  padding: 1.75rem 1.6rem;
+  gap: 0.5rem;
+  padding: clamp(1.05rem, 2.6vw, 1.4rem) clamp(1.15rem, 2.6vw, 1.5rem);
   border: 1px solid var(--kk-line);
   border-radius: var(--kk-radius-lg);
-  background: var(--kk-paper-raised);
-  text-align: left;
-  box-shadow: 0 24px 48px -40px rgba(107, 73, 55, 0.34);
+  background: var(--kk-card);
+  box-shadow: 0 18px 38px -34px rgba(107, 73, 55, 0.4);
 }
 
-.cardMark {
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: var(--kk-radius);
-  background: var(--kk-signal-soft);
-  border: 1px solid color-mix(in srgb, var(--kk-signal) 40%, transparent);
+.card::before {
+  content: "";
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  left: -1px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--kk-signal);
+}
+
+.cardDest::before {
+  background: var(--kk-green);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.fixBadge {
+  display: inline-flex;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.miniFix,
+.miniFixDest {
+  width: 100%;
+  height: 100%;
+}
+
+.miniFix {
+  color: var(--kk-signal);
+}
+
+.miniFixDest {
+  color: var(--kk-green);
+}
+
+.cardIndex {
+  font-family: var(--kk-font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--kk-signal);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.cardDest .cardIndex {
+  color: var(--kk-green-deep);
+}
+
+.cardBearing {
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--kk-border);
+  border-radius: 999px;
+  font-family: var(--kk-font-sans);
+  font-size: 0.78rem;
+  color: var(--kk-slate);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.destTag {
+  margin-left: auto;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--kk-green) 14%, transparent);
+  font-family: var(--kk-font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--kk-green-deep);
+  letter-spacing: 0.02em;
 }
 
 .cardTitle {
   margin: 0;
   font-family: var(--kk-font-display);
-  font-size: 1.35rem;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -72,8 +324,19 @@
   line-height: 1.55;
 }
 
-@media (min-width: 820px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
+@media (min-width: 880px) {
+  .body {
+    grid-template-columns: minmax(0, 0.96fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(2.25rem, 4vw, 3.5rem);
+  }
+
+  .chart {
+    width: 100%;
+    max-width: 30rem;
+  }
+
+  .plot {
+    gap: 1.1rem;
   }
 }

@@ -36,8 +36,11 @@
     }
   },
   "results": {
-    "eyebrow": "Ergebnis",
-    "title": "Worauf wir gemeinsam hinarbeiten",
+    "eyebrow": "Dein Kurs",
+    "title": "Von Unsicherheit zu einem Kurs, den du hältst.",
+    "lead": "Wir plotten den Weg in drei Etappen. Erst findest du Klarheit, dann führst du Gespräche, dann führst du – aus einer Haltung, die zu dir passt.",
+    "startLabel": "Wo du jetzt stehst",
+    "destinationTag": "Kurs liegt an",
     "items": [
       {
         "title": "Klarheit",

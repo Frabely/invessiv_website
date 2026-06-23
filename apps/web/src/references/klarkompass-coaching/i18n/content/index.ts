@@ -48,6 +48,9 @@ export type KlarkompassTitledItem = {
 export type KlarkompassResultsContent = {
   eyebrow: string;
   title: string;
+  lead: string;
+  startLabel: string;
+  destinationTag: string;
   items: KlarkompassTitledItem[];
 };
 

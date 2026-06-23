@@ -36,8 +36,11 @@
     }
   },
   "results": {
-    "eyebrow": "Outcome",
-    "title": "What we work towards together",
+    "eyebrow": "Your course",
+    "title": "From uncertainty to a course you can hold.",
+    "lead": "We plot the way in three legs. First you find clarity, then you lead the conversations, then you lead – from a stance that fits you.",
+    "startLabel": "Where you stand now",
+    "destinationTag": "Course held",
     "items": [
       {
         "title": "Clarity",
