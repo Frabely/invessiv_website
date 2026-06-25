@@ -4,13 +4,13 @@ import styles from "./process-step-card.module.css";
 type ProcessStepCardProps = {
   index: number;
   step: ProcessStepCopy;
-  total: number;
 };
 
-export function ProcessStepCard({ index, step, total }: ProcessStepCardProps) {
-  // The journey node hangs off the gutter-facing edge: left for every card
-  // except the last, which the connector approaches from its right.
-  const side = index === total - 1 ? "right" : "left";
+export function ProcessStepCard({ index, step }: ProcessStepCardProps) {
+  // The journey node hangs off the inner, gutter-facing edge: right-column
+  // cards (even index) carry it on the left, left-column cards (odd index)
+  // on the right, so the connector runs down the centre.
+  const side = index % 2 === 0 ? "left" : "right";
 
   return (
     <article

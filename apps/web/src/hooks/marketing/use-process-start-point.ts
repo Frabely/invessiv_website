@@ -137,10 +137,12 @@ export function useProcessStartPoint({
         };
       });
 
-      // Each step's node hangs off the gutter-facing edge: left for every card
-      // except the last (right), matching ProcessStepCard's `side`.
+      // Each step's node hangs off the inner, gutter-facing edge so the journey
+      // runs down the centre: right-column cards (even index) carry it on the
+      // left, left-column cards (odd index) on the right — matching
+      // ProcessStepCard's `side`.
       const anchors = cardMetrics.map((metrics, index) => {
-        const useRightAnchor = !isStacked && index === cardMetrics.length - 1;
+        const useRightAnchor = !isStacked && index % 2 === 1;
         const x = clampX(
           useRightAnchor ? metrics.right + nodeGap : metrics.left - nodeGap,
         );
@@ -178,7 +180,11 @@ export function useProcessStartPoint({
       const ctaHeight = ctaRect?.height ?? 44;
       const ctaWidth = ctaRect?.width ?? 200;
       const ctaGap = isStacked ? 26 : 20;
-      const ctaEndY = lastMetrics.bottom + ctaGap + ctaHeight / 2;
+      // Desktop: the CTA sits beside the last card (box 4), aligned to its
+      // centre. Stacked: it drops below the final card.
+      const ctaEndY = isStacked
+        ? lastMetrics.bottom + ctaGap + ctaHeight / 2
+        : lastMetrics.centerY;
       const endX = isStacked
         ? layoutRect.width / 2
         : Math.min(

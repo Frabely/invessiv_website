@@ -90,11 +90,7 @@ export function ProcessSection({
         <ol className={styles.steps} ref={stepsRef} role="list">
           {processSteps.map((step, index) => (
             <li className={styles.cell} key={step.step} role="listitem">
-              <ProcessStepCard
-                index={index}
-                step={step}
-                total={processSteps.length}
-              />
+              <ProcessStepCard index={index} step={step} />
             </li>
           ))}
         </ol>
