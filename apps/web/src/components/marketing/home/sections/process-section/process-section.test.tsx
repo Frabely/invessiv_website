@@ -11,7 +11,7 @@ vi.mock("@/hooks/marketing/use-process-start-point", () => ({
 }));
 
 describe("ProcessSection", () => {
-  it("renders summary, roles, steps and cta content", () => {
+  it("renders title, summary, compact step cards and cta", () => {
     const processSection = getHomeSections("de").find(
       (section) => section.id === "process",
     );
@@ -27,7 +27,7 @@ describe("ProcessSection", () => {
       );
     }
 
-    render(
+    const { container } = render(
       <ProcessSection
         description={processSection.description}
         id="process"
@@ -42,11 +42,19 @@ describe("ProcessSection", () => {
       screen.getByRole("heading", { name: processSection.title }),
     ).toBeTruthy();
     expect(screen.getByText(processSection.summaryPoints[0])).toBeTruthy();
+    expect(screen.getByRole("heading", { name: firstStep.title })).toBeTruthy();
     expect(screen.getByText(firstStep.deliverable)).toBeTruthy();
+    expect(screen.getByText(firstStep.description)).toBeTruthy();
     expect(
-      screen
-        .getByRole("link", { name: processSection.processCta.label })
-        .getAttribute("href"),
-    ).toBe(processSection.processCta.href);
+      container.querySelectorAll("[data-process-step='true']"),
+    ).toHaveLength(processSection.processSteps.length);
+
+    const cta = screen.getByRole("link", {
+      name: processSection.processCta.label,
+    });
+    expect(cta.getAttribute("href")).toBe(processSection.processCta.href);
+    expect(cta.getAttribute("data-analytics-event")).toBe("cta_click");
+    expect(cta.getAttribute("data-analytics-location")).toBe("process");
+    expect(cta.getAttribute("data-analytics-target")).toBe("form");
   });
 });
