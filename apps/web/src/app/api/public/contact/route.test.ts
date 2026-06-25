@@ -2,6 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
 
 vi.mock("server-only", () => ({}));
+vi.mock("@invessiv/db/contact/persist-discovery-call", () => ({
+  persistDiscoveryCallLead: vi.fn().mockResolvedValue({ persisted: false }),
+}));
+vi.mock("@invessiv/db/contact/persist-project-request", () => ({
+  persistProjectRequestLead: vi.fn().mockResolvedValue({ persisted: false }),
+}));
+vi.mock("@invessiv/db/contact/persist-quick-contact", () => ({
+  persistQuickContactLead: vi.fn().mockResolvedValue({ persisted: false }),
+}));
 
 describe("POST /api/public/contact", () => {
   beforeEach(() => {
