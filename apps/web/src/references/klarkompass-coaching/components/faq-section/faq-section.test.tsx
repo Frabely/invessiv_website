@@ -32,6 +32,8 @@ beforeEach(() => {
 const content = {
   eyebrow: "FAQ",
   title: "Häufige Fragen",
+  lead: "Kurz und ehrlich beantwortet.",
+  contactPrompt: "Noch eine Frage offen?",
   items: [
     { question: "Frage 1", answer: "Antwort 1" },
     { question: "Frage 2", answer: "Antwort 2" },
@@ -45,7 +47,16 @@ afterEach(() => {
 
 describe("KlarkompassFaqSection", () => {
   it("opens one item at a time and toggles it closed again", () => {
-    render(<FaqSection id="kk-faq" locale="de" {...content} />);
+    render(
+      <FaqSection
+        ctaHref="#kk-contact"
+        ctaLabel="Erstgespräch buchen"
+        id="kk-faq"
+        locale="de"
+        mockLabel="Demo"
+        {...content}
+      />,
+    );
 
     const first = screen.getByRole("button", { name: "Frage 1" });
     const second = screen.getByRole("button", { name: "Frage 2" });

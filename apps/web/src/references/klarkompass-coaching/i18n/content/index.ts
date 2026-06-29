@@ -110,7 +110,12 @@ export type KlarkompassProcessContent = {
 export type KlarkompassTrustContent = {
   eyebrow: string;
   title: string;
-  points: string[];
+  lead: string;
+  proofLabel: string;
+  proofValue: string;
+  imageAlt: string;
+  photoNote: string;
+  points: KlarkompassTitledItem[];
   honestNote: string;
 };
 
@@ -122,6 +127,8 @@ export type KlarkompassFaqItem = {
 export type KlarkompassFaqContent = {
   eyebrow: string;
   title: string;
+  lead: string;
+  contactPrompt: string;
   items: KlarkompassFaqItem[];
 };
 

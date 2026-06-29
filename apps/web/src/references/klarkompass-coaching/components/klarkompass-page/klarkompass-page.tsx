@@ -89,6 +89,12 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           {...content.results}
         />
 
+        <TrustPointsSection
+          id={KLARKOMPASS_SECTION_ID.Trust}
+          locale={locale}
+          {...content.trust}
+        />
+
         <OfferSection
           ctaHref={ctaHref}
           id={KLARKOMPASS_SECTION_ID.Offer}
@@ -109,15 +115,12 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           {...content.process}
         />
 
-        <TrustPointsSection
-          id={KLARKOMPASS_SECTION_ID.Trust}
-          locale={locale}
-          {...content.trust}
-        />
-
         <FaqSection
+          ctaHref={ctaHref}
+          ctaLabel={content.header.ctaLabel}
           id={KLARKOMPASS_SECTION_ID.Faq}
           locale={locale}
+          mockLabel={content.header.mockLabel}
           {...content.faq}
         />
 

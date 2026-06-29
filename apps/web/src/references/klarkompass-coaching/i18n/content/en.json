@@ -152,19 +152,37 @@
   },
   "trust": {
     "eyebrow": "Trust",
-    "title": "What you can rely on",
+    "title": "Before we talk about the programme: this stays protected.",
+    "lead": "Good leadership does not start when you sound perfect. It starts when you can name what feels uncertain without being judged for it.",
+    "proofLabel": "No theatre",
+    "proofValue": "Protected space, clear work, no invented proof.",
+    "imageAlt": "A coach and client in a calm 1:1 conversation at a table, taking notes – a confidential, protected coaching space.",
+    "photoNote": "Concept photo",
     "points": [
-      "Confidential conversations in a protected space",
-      "Coaching as equals instead of lecturing",
-      "Practical and based on your real situations",
-      "A clear structure across all eight weeks",
-      "Honest feedback, even when it's uncomfortable"
+      {
+        "title": "Confidentiality without fine print",
+        "description": "Everything you bring stays in the coaching. Names, conflicts and internal dynamics are not turned into material."
+      },
+      {
+        "title": "Real situations, not role-play theatre",
+        "description": "We work on conversations, decisions and friction points that are genuinely on your desk this week."
+      },
+      {
+        "title": "Feedback that stays clear",
+        "description": "You do not get comfort phrases. I reflect what I see, then we turn it into one next action."
+      },
+      {
+        "title": "Structure without a drawer",
+        "description": "The frame keeps the course for eight weeks. The content comes from your role, your team and your pace."
+      }
     ],
-    "honestNote": "In a real project, client testimonials and certificates would go here. KlarKompass is a fictional concept project – which is why we deliberately avoid made-up references."
+    "honestNote": "KlarKompass is a fictional concept project. That is why this section does not show invented testimonials, logos or certificates, but the kind of commitments a real coaching offer would need to hold cleanly."
   },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
+    "lead": "Answered briefly and honestly – just like a real intro call.",
+    "contactPrompt": "Still have a question?",
     "items": [
       {
         "question": "Who is this coaching for?",

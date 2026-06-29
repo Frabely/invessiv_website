@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { KlarkompassCta } from "@/references/klarkompass-coaching/components/klarkompass-cta/klarkompass-cta";
 import { KlarkompassEyebrow } from "@/references/klarkompass-coaching/components/klarkompass-eyebrow/klarkompass-eyebrow";
 import {
   Reveal,
@@ -14,32 +15,64 @@ import styles from "./faq-section.module.css";
 type FaqSectionProps = KlarkompassFaqContent & {
   id: string;
   locale: Locale;
+  ctaHref: string;
+  ctaLabel: string;
+  mockLabel: string;
 };
 
-export function FaqSection({ eyebrow, id, items, title }: FaqSectionProps) {
+export function FaqSection({
+  contactPrompt,
+  ctaHref,
+  ctaLabel,
+  eyebrow,
+  id,
+  items,
+  lead,
+  locale,
+  mockLabel,
+  title,
+}: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <RevealGroup as="section" className={styles.section} id={id}>
-      <Reveal as="div" className={styles.intro}>
-        <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
-        <h2 className={styles.title}>{title}</h2>
-      </Reveal>
+    <section className={styles.section} id={id} lang={locale}>
+      <RevealGroup as="div" className={styles.intro}>
+        <Reveal as="div" className={styles.introInner}>
+          <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.lead}>{lead}</p>
+        </Reveal>
+      </RevealGroup>
 
-      <Reveal as="div" className={styles.list}>
+      <RevealGroup as="div" className={styles.list}>
         {items.map((item, index) => (
-          <FaqItem
-            contentId={`${id}-panel-${index}`}
-            isOpen={openIndex === index}
-            item={item}
-            key={item.question}
-            onToggle={() =>
-              setOpenIndex((current) => (current === index ? null : index))
-            }
-            triggerId={`${id}-trigger-${index}`}
-          />
+          <Reveal as="div" key={item.question}>
+            <FaqItem
+              contentId={`${id}-panel-${index}`}
+              isOpen={openIndex === index}
+              item={item}
+              onToggle={() =>
+                setOpenIndex((current) => (current === index ? null : index))
+              }
+              triggerId={`${id}-trigger-${index}`}
+            />
+          </Reveal>
         ))}
-      </Reveal>
-    </RevealGroup>
+      </RevealGroup>
+
+      <RevealGroup as="div" className={styles.nudge}>
+        <Reveal as="div" className={styles.nudgeText}>
+          {contactPrompt}
+        </Reveal>
+        <Reveal as="div" className={styles.nudgeAction}>
+          <KlarkompassCta
+            href={ctaHref}
+            label={ctaLabel}
+            mockLabel={mockLabel}
+            variant="secondary"
+          />
+        </Reveal>
+      </RevealGroup>
+    </section>
   );
 }

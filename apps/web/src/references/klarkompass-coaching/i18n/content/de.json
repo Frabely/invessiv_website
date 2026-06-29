@@ -152,19 +152,37 @@
   },
   "trust": {
     "eyebrow": "Vertrauen",
-    "title": "Worauf du dich verlassen kannst",
+    "title": "Bevor wir über das Programm sprechen: Das bleibt geschützt.",
+    "lead": "Gute Führung entsteht nicht, wenn du perfekt klingst. Sie entsteht, wenn du offen aussprechen kannst, wo du unsicher bist, ohne bewertet zu werden.",
+    "proofLabel": "Kein Theater",
+    "proofValue": "Geschützter Raum, klare Arbeit, keine erfundenen Beweise.",
+    "imageAlt": "Coachin und Klientin in einem ruhigen 1:1-Gespräch an einem Tisch, Notizen werden gemacht – ein vertraulicher, geschützter Coaching-Raum.",
+    "photoNote": "Konzeptfoto",
     "points": [
-      "Vertrauliche Gespräche in einem geschützten Rahmen",
-      "Begleitung auf Augenhöhe statt Belehrung",
-      "Praxisorientiert an deinen echten Situationen",
-      "Klare Struktur über die gesamten acht Wochen",
-      "Ehrliches Feedback, auch wenn es unbequem ist"
+      {
+        "title": "Vertraulichkeit ohne Fußnote",
+        "description": "Alles, was du einbringst, bleibt im Coaching. Namen, Konflikte und interne Dynamiken werden nicht verwertet."
+      },
+      {
+        "title": "Echte Situationen statt Rollenspiel-Theater",
+        "description": "Wir arbeiten an Gesprächen, Entscheidungen und Reibungspunkten, die diese Woche wirklich auf deinem Tisch liegen."
+      },
+      {
+        "title": "Feedback, das klar bleibt",
+        "description": "Du bekommst keine Wohlfühlfloskeln. Ich spiegle, was ich sehe, und wir übersetzen es in eine nächste Handlung."
+      },
+      {
+        "title": "Struktur ohne Schublade",
+        "description": "Der Rahmen hält acht Wochen lang den Kurs. Die Inhalte entstehen aus deiner Rolle, deinem Team und deinem Tempo."
+      }
     ],
-    "honestNote": "In einem echten Projekt stünden hier Kundenstimmen und Zertifikate. KlarKompass ist ein fiktives Konzeptprojekt – deshalb verzichten wir bewusst auf erfundene Referenzen."
+    "honestNote": "KlarKompass ist ein fiktives Konzeptprojekt. Deshalb stehen hier keine erfundenen Kundenstimmen, Logos oder Zertifikate, sondern die Art von Zusagen, die ein echtes Coaching sauber tragen müsste."
   },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Häufige Fragen",
+    "lead": "Kurz und ehrlich beantwortet – wie im echten Erstgespräch.",
+    "contactPrompt": "Noch eine Frage offen?",
     "items": [
       {
         "question": "Für wen ist das Coaching gedacht?",
