@@ -1,5 +1,3 @@
-"use client";
-
 import { KlarkompassCta } from "@/references/klarkompass-coaching/components/klarkompass-cta/klarkompass-cta";
 import { KlarkompassEyebrow } from "@/references/klarkompass-coaching/components/klarkompass-eyebrow/klarkompass-eyebrow";
 import {
@@ -26,54 +24,71 @@ export function OfferSection({
   includes,
   includesLabel,
   mockLabel,
-  noPriceNote,
+  price,
+  priceCaption,
+  priceLabel,
+  priceNote,
   suitable,
   suitableLabel,
   title,
 }: OfferSectionProps) {
   return (
     <RevealGroup as="section" className={styles.section} id={id}>
+      <Reveal as="div" className={styles.intro}>
+        <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.description}>{description}</p>
+      </Reveal>
+
       <Reveal as="div" className={styles.card}>
-        <div className={styles.header}>
-          <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
-          <h2 className={styles.title}>{title}</h2>
-          <p className={styles.description}>{description}</p>
-        </div>
-
-        <div className={styles.lists}>
-          <div className={styles.listBlock}>
-            <p className={styles.listLabel}>{includesLabel}</p>
-            <ul className={styles.list}>
+        <div className={styles.details}>
+          <div className={styles.block}>
+            <p className={styles.blockLabel}>{includesLabel}</p>
+            <ul className={styles.includes}>
               {includes.map((item) => (
-                <li className={styles.listItem} key={item}>
-                  <span className={styles.check} aria-hidden="true" />
+                <li className={styles.includeItem} key={item}>
+                  <span aria-hidden="true" className={styles.tick} />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className={styles.listBlock}>
-            <p className={styles.listLabel}>{suitableLabel}</p>
-            <ul className={styles.list}>
+          <div className={styles.block}>
+            <p className={styles.blockLabel}>{suitableLabel}</p>
+            <ul className={styles.chips}>
               {suitable.map((item) => (
-                <li className={styles.listItem} key={item}>
-                  <span className={styles.check} aria-hidden="true" />
-                  <span>{item}</span>
+                <li className={styles.chip} key={item}>
+                  {item}
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
-        <div className={styles.footer}>
-          <KlarkompassCta
-            href={ctaHref}
-            label={ctaLabel}
-            mockLabel={mockLabel}
-          />
-          <p className={styles.noPrice}>{noPriceNote}</p>
-        </div>
+        <aside className={styles.priceCard}>
+          <span aria-hidden="true" className={styles.needle}>
+            <svg className={styles.needleSvg} viewBox="0 0 24 24">
+              <path className={styles.needleNorth} d="M12 2.5 L15 12 L9 12 Z" />
+              <path
+                className={styles.needleSouth}
+                d="M12 21.5 L9 12 L15 12 Z"
+              />
+              <circle className={styles.needlePivot} cx="12" cy="12" r="1.7" />
+            </svg>
+          </span>
+          <p className={styles.priceLabel}>{priceLabel}</p>
+          <p className={styles.price}>{price}</p>
+          <p className={styles.priceCaption}>{priceCaption}</p>
+          <div className={styles.ctaWrap}>
+            <KlarkompassCta
+              href={ctaHref}
+              label={ctaLabel}
+              mockLabel={mockLabel}
+            />
+          </div>
+          <p className={styles.priceNote}>{priceNote}</p>
+        </aside>
       </Reveal>
     </RevealGroup>
   );

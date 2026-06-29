@@ -45,26 +45,25 @@ export type KlarkompassTitledItem = {
   description: string;
 };
 
+export type KlarkompassResultShift = {
+  title: string;
+  from: string;
+  to: string;
+};
+
 export type KlarkompassResultsContent = {
   eyebrow: string;
   title: string;
   lead: string;
-  startLabel: string;
-  destinationTag: string;
-  items: KlarkompassTitledItem[];
+  fromLabel: string;
+  toLabel: string;
+  items: KlarkompassResultShift[];
 };
 
 export type KlarkompassStep = {
   number: string;
   title: string;
   description: string;
-};
-
-export type KlarkompassMethodContent = {
-  eyebrow: string;
-  title: string;
-  intro: string;
-  steps: KlarkompassStep[];
 };
 
 export type KlarkompassOfferContent = {
@@ -75,8 +74,11 @@ export type KlarkompassOfferContent = {
   includes: string[];
   suitableLabel: string;
   suitable: string[];
+  priceLabel: string;
+  price: string;
+  priceCaption: string;
   ctaLabel: string;
-  noPriceNote: string;
+  priceNote: string;
 };
 
 export type KlarkompassAboutContent = {
@@ -86,6 +88,7 @@ export type KlarkompassAboutContent = {
   role: string;
   bio: string;
   portraitAlt: string;
+  photoNote: string;
   valuesLabel: string;
   values: KlarkompassTitledItem[];
 };
@@ -134,7 +137,6 @@ export type KlarkompassContent = {
   hero: KlarkompassHeroContent;
   problem: KlarkompassProblemContent;
   results: KlarkompassResultsContent;
-  method: KlarkompassMethodContent;
   offer: KlarkompassOfferContent;
   about: KlarkompassAboutContent;
   process: KlarkompassProcessContent;

@@ -5,7 +5,6 @@ import { FinalCtaSection } from "@/references/klarkompass-coaching/components/fi
 import { HeroSection } from "@/references/klarkompass-coaching/components/hero-section/hero-section";
 import { KlarkompassFooter } from "@/references/klarkompass-coaching/components/klarkompass-footer/klarkompass-footer";
 import { KlarkompassHeader } from "@/references/klarkompass-coaching/components/klarkompass-header/klarkompass-header";
-import { MethodSection } from "@/references/klarkompass-coaching/components/method-section/method-section";
 import { OfferSection } from "@/references/klarkompass-coaching/components/offer-section/offer-section";
 import { ProblemSection } from "@/references/klarkompass-coaching/components/problem-section/problem-section";
 import { ProcessSection } from "@/references/klarkompass-coaching/components/process-section/process-section";
@@ -88,12 +87,6 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           id={KLARKOMPASS_SECTION_ID.Results}
           locale={locale}
           {...content.results}
-        />
-
-        <MethodSection
-          id={KLARKOMPASS_SECTION_ID.Method}
-          locale={locale}
-          {...content.method}
         />
 
         <OfferSection

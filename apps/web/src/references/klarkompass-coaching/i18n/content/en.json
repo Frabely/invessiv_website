@@ -1,7 +1,7 @@
 {
   "header": {
     "brand": "KlarKompass",
-    "navLabels": ["Challenge", "Method", "Programme", "About", "FAQ"],
+    "navLabels": ["Challenge", "Programme", "About", "Process", "FAQ"],
     "ctaLabel": "Book a free intro call",
     "mockLabel": "Demo",
     "menuOpenLabel": "Open menu",
@@ -23,7 +23,7 @@
   "problem": {
     "eyebrow": "Challenge",
     "title": "The role is new – the expectations are big right away.",
-    "intro": "You are strong on the craft. But leadership asks for something else: decisions under uncertainty, clear communication and a stance when things get uncomfortable.",
+    "intro": "You are strong on the craft. But leadership asks for something else.",
     "points": [
       "You make decisions, then keep doubting them long after.",
       "You postpone hard conversations instead of leading them clearly.",
@@ -36,73 +36,52 @@
     }
   },
   "results": {
-    "eyebrow": "Your course",
-    "title": "From uncertainty to a course you can hold.",
-    "lead": "We plot the way in three legs. First you find clarity, then you lead the conversations, then you lead – from a stance that fits you.",
-    "startLabel": "Where you stand now",
-    "destinationTag": "Course held",
+    "eyebrow": "What changes",
+    "title": "From uncertainty to clarity in your leadership.",
+    "lead": "Coaching doesn't show up in theory – it shows up in your everyday work.",
+    "fromLabel": "Today",
+    "toLabel": "After the coaching",
     "items": [
       {
         "title": "Clarity",
-        "description": "You know what matters to you and make decisions you can stand behind."
+        "from": "You second-guess every decision.",
+        "to": "You decide – and stand by it."
       },
       {
         "title": "Communication",
-        "description": "You address expectations, feedback and conflict calmly and directly."
+        "from": "You keep putting off the hard talks.",
+        "to": "You speak plainly – calm and direct."
       },
       {
         "title": "Leadership",
-        "description": "You lead from a stance that fits you – committed, not tense."
-      }
-    ]
-  },
-  "method": {
-    "eyebrow": "Method",
-    "title": "A clear path instead of loose tips",
-    "intro": "We work in four steps that build on each other – concrete and aligned with your real situations.",
-    "steps": [
-      {
-        "number": "01",
-        "title": "Locate your position",
-        "description": "We look honestly at your current role, your strengths and what holds you back."
-      },
-      {
-        "number": "02",
-        "title": "Spot the patterns",
-        "description": "We surface the thinking and behaviour patterns that slow you down as a leader."
-      },
-      {
-        "number": "03",
-        "title": "Develop strategies",
-        "description": "You develop concrete options for your recurring situations."
-      },
-      {
-        "number": "04",
-        "title": "Support the rollout",
-        "description": "You apply it day to day, and we adjust together until it feels right."
+        "from": "You want authority without pretending.",
+        "to": "You lead from a stance that fits you."
       }
     ]
   },
   "offer": {
     "eyebrow": "Programme",
-    "title": "The 8-week Leadership Reset Coaching",
-    "description": "A focused 1:1 programme for your start into the leadership role – with room to reflect and clear steps for everyday work.",
+    "title": "The 8-week leadership coaching",
+    "description": "A focused 1:1 programme for your start into leadership – with room to reflect and clear steps for everyday work.",
     "includesLabel": "What's included",
     "includes": [
-      "Eight 1:1 sessions (60 minutes each) every two weeks",
-      "Personal position check at the start",
-      "Concrete tools for conversations, decisions and prioritisation",
-      "Short sparring option between sessions",
-      "Personal closing summary with next steps"
+      "8 1:1 sessions of 60 min, every two weeks",
+      "Position check at the start",
+      "Tools for conversations & decisions",
+      "Sparring between sessions",
+      "Closing summary with next steps"
     ],
-    "suitableLabel": "A good fit for",
+    "suitableLabel": "Who it's for",
     "suitable": [
-      "New leaders in their first 18 months",
-      "Experts about to step into leadership",
-      "Team leads who want to show up with more confidence"
+      "New leaders",
+      "Before the first leadership step",
+      "Team leads"
     ],
+    "priceLabel": "Fixed price",
+    "price": "€1,950",
+    "priceCaption": "for the full programme",
     "ctaLabel": "Book a free intro call",
-    "noPriceNote": "We define the scope individually in the free intro call – tailored to your situation."
+    "priceNote": "Demo price – a real coaching engagement is agreed individually."
   },
   "about": {
     "eyebrow": "About",
@@ -110,7 +89,8 @@
     "name": "Anna Berger",
     "role": "Leadership Coach (fictional)",
     "bio": "I support people stepping into leadership for the first time to stay clear and true to themselves. It's not about ready-made recipes, but about decisions and a stance that fit you.",
-    "portraitAlt": "Abstract mark instead of a photo – this is a concept project",
+    "portraitAlt": "Anna Berger, leadership coach, in conversation at a table in a bright, plant-filled outdoor space",
+    "photoNote": "Concept photo",
     "valuesLabel": "What I stand for",
     "values": [
       {
@@ -200,7 +180,7 @@
   "footer": {
     "brand": "KlarKompass",
     "tagline": "1:1 leadership coaching for new leaders",
-    "navLabels": ["Challenge", "Method", "Programme", "About", "FAQ"],
+    "navLabels": ["Challenge", "Programme", "About", "Process", "FAQ"],
     "conceptNote": "This project is a fictional concept project by Invessiv. It is not a real client engagement and not an actual coaching offer.",
     "backLinkLabel": "Back to Invessiv"
   }
