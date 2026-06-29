@@ -208,8 +208,12 @@
     ]
   },
   "finalCta": {
-    "title": "This is how a clear final CTA for a coaching page could feel.",
-    "description": "The button is deliberately marked as a demo. Clicking it only shows a note that KlarKompass is not a real company.",
+    "bearing": {
+      "readout": "000°",
+      "caption": "Heading reached: clarity"
+    },
+    "title": "Set your course. We'll walk it together.",
+    "description": "In a free intro call we map where you stand and whether the coaching fits — 30 minutes, no strings.",
     "ctaLabel": "Book a free intro call",
     "mockNote": "Note: this is a sample project. The button does not create a booking because KlarKompass is not a real company and Anna Berger is not a real provider."
   },

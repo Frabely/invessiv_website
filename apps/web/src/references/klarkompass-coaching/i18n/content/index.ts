@@ -134,6 +134,10 @@ export type KlarkompassFaqContent = {
 };
 
 export type KlarkompassFinalCtaContent = {
+  bearing: {
+    readout: string;
+    caption: string;
+  };
   title: string;
   description: string;
   ctaLabel: string;

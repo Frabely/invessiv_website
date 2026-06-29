@@ -208,8 +208,12 @@
     ]
   },
   "finalCta": {
-    "title": "So könnte ein klarer Abschluss-CTA für eine Coaching-Seite aussehen.",
-    "description": "Der Button bleibt bewusst als Demo markiert. Ein Klick zeigt nur den Hinweis, dass hinter KlarKompass kein echtes Unternehmen steht.",
+    "bearing": {
+      "readout": "000°",
+      "caption": "Kurs erreicht: Klarheit"
+    },
+    "title": "Setz den Kurs. Wir gehen ihn gemeinsam.",
+    "description": "Im kostenlosen Erstgespräch klären wir deine Ausgangslage und ob das Coaching zu dir passt – 30 Minuten, unverbindlich.",
     "ctaLabel": "Kostenloses Erstgespräch buchen",
     "mockNote": "Hinweis: Dies ist ein Beispielprojekt. Der Button löst keine Buchung aus, weil KlarKompass keine echte Firma und Anna Berger keine reale Anbieterin ist."
   },

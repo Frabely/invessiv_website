@@ -1,6 +1,6 @@
-/* Ruhiger Abschluss-CTA: crafted Split-Karte (Aussage links, Aktion rechts)
-   statt zentriertem Glow-Block. Helle Conversion-Karte mit markantem Gold-Glow,
-   grün getönte Trennlinie als CTA-/Signatur-Bezug. */
+/* Abschluss-CTA als "terminaler Waypoint": die Bearing-Line der Seite endet
+   hier am Ziel-Marker, der Kompass rastet auf Norden (000°) ein. Helle
+   Conversion-Karte mit markantem Gold-Glow, Grün als Ziel-/CTA-Signatur. */
 
 .section {
   width: min(
@@ -14,43 +14,152 @@
 .card {
   position: relative;
   display: grid;
-  gap: clamp(1.5rem, 4vw, 2.1rem);
-  max-width: 64rem;
+  gap: clamp(1.75rem, 5vw, 2.5rem);
+  max-width: 60rem;
   margin: 0 auto;
-  padding: clamp(1.9rem, 5vw, 3.25rem);
+  padding: clamp(2rem, 5vw, 3.25rem);
   overflow: hidden;
   background:
     radial-gradient(
-      38rem 20rem at 90% 6%,
-      rgba(216, 166, 87, 0.34),
-      transparent 62%
+      40rem 22rem at 88% -4%,
+      rgba(216, 166, 87, 0.36),
+      transparent 60%
     ),
-    var(--kk-paper-raised);
-  border: 1px solid color-mix(in srgb, var(--kk-signal) 32%, var(--kk-line));
+    radial-gradient(
+      30rem 22rem at 6% 108%,
+      var(--kk-glow-cta),
+      transparent 64%
+    ),
+    var(--kk-card);
+  border: 1px solid color-mix(in srgb, var(--kk-signal) 30%, var(--kk-line));
   border-radius: var(--kk-radius-lg);
-  box-shadow: 0 40px 80px -62px rgba(20, 24, 31, 0.32);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--kk-cta) 7%, transparent),
+    0 40px 90px -64px rgba(20, 24, 31, 0.42),
+    0 40px 96px -60px color-mix(in srgb, var(--kk-green) 40%, transparent);
 }
 
-.content {
+/* ---------- Destination rail: line concludes at the compass node ---------- */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.railLine {
+  width: 2px;
+  height: clamp(1.75rem, 5vw, 2.75rem);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--kk-green) 55%, transparent)
+  );
+}
+
+.node {
+  position: relative;
   display: grid;
-  gap: 0.9rem;
-  align-content: center;
+  place-items: center;
+  width: clamp(3.5rem, 11vw, 4.5rem);
+  aspect-ratio: 1;
+  margin-top: -1px;
+}
+
+.lock {
+  position: absolute;
+  inset: -0.4rem;
+  border: 1.5px solid color-mix(in srgb, var(--kk-green) 45%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5rem color-mix(in srgb, var(--kk-green) 9%, transparent);
+}
+
+.compass {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.rose {
+  fill: color-mix(in srgb, var(--kk-card) 80%, var(--kk-sage-light));
+  stroke: color-mix(in srgb, var(--kk-signal) 40%, var(--kk-border));
+  stroke-width: 1.5;
+}
+
+.tick {
+  stroke: color-mix(in srgb, var(--kk-signal) 55%, transparent);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.needle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.needleN {
+  fill: var(--kk-green);
+}
+
+.needleS {
+  fill: color-mix(in srgb, var(--kk-signal) 70%, var(--kk-sand));
+}
+
+.pivot {
+  fill: var(--kk-card);
+  stroke: var(--kk-ink);
+  stroke-width: 1.5;
+}
+
+/* ---------- Body: bearing readout → headline → action ---------- */
+
+.body {
+  display: grid;
+  gap: clamp(0.9rem, 2.5vw, 1.15rem);
+  text-align: center;
+}
+
+.readout {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem 0.7rem;
+  margin: 0;
+  font-family: var(--kk-font-sans);
+}
+
+.readoutValue {
+  color: var(--kk-green-deep);
+  font-size: 0.84rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+}
+
+.readoutCaption {
+  color: var(--kk-slate);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .title {
-  max-width: 20ch;
-  margin: 0;
+  max-width: 18ch;
+  margin: 0 auto;
   font-family: var(--kk-font-display);
-  font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+  font-size: clamp(1.95rem, 4vw, 3rem);
   font-weight: 600;
-  line-height: 1.07;
+  line-height: 1.06;
   letter-spacing: -0.018em;
   text-wrap: balance;
 }
 
 .description {
   max-width: 46ch;
-  margin: 0;
+  margin: 0 auto;
   color: var(--kk-ink-body);
   font-family: var(--kk-font-sans);
   font-size: clamp(1rem, 2.4vw, 1.1rem);
@@ -60,14 +169,12 @@
 .action {
   display: grid;
   gap: 1rem;
-  justify-items: start;
-  padding-top: clamp(1.25rem, 4vw, 1.5rem);
-  border-top: 1px solid
-    color-mix(in srgb, var(--kk-green) 22%, var(--kk-border));
+  justify-items: center;
+  margin-top: clamp(0.5rem, 2vw, 1rem);
 }
 
 .cta {
-  width: 100%;
+  width: min(100%, 22rem);
 }
 
 .mockNote {
@@ -75,22 +182,40 @@
   margin: 0;
   color: var(--kk-slate);
   font-family: var(--kk-font-sans);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   line-height: 1.55;
 }
 
 @media (min-width: 820px) {
   .card {
-    grid-template-columns: 1fr minmax(17rem, 20rem);
-    column-gap: clamp(2rem, 4vw, 3.5rem);
+    grid-template-columns: auto 1fr;
+    gap: clamp(2.25rem, 4vw, 3.5rem);
     align-items: center;
+    padding: clamp(2.75rem, 4vw, 3.5rem) clamp(2.75rem, 5vw, 4rem);
   }
 
+  .railLine {
+    height: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .body {
+    text-align: left;
+  }
+
+  .readout,
   .action {
-    padding-top: 0;
-    padding-left: clamp(2rem, 4vw, 3.5rem);
-    border-top: 0;
-    border-left: 1px solid
-      color-mix(in srgb, var(--kk-green) 22%, var(--kk-border));
+    justify-content: flex-start;
+    justify-items: start;
+  }
+
+  .title,
+  .description {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .cta {
+    width: auto;
+    min-width: 16rem;
   }
 }
