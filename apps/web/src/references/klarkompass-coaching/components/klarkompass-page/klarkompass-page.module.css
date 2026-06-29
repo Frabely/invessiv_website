@@ -8,6 +8,8 @@
        Hero (Foto) und Footer bleiben dunkle Anker (--kk-anchor*). */
   --kk-base: #ece0c8;
   --kk-base-deep: #e3d4b6;
+  --kk-sage: #d8dfc9;
+  --kk-sage-light: #e6ead8;
   --kk-card: #f7f0e1;
   --kk-paper-raised: var(--kk-card);
   --kk-anchor: #2a1d12;
@@ -45,9 +47,11 @@
 
   /* Hintergrund-Akzent-Glows (Rhythmus auf dem einen Canvas) – auf Hell dezent.
        Gold/Sand warm, dazu dosiertes Grün als Highlight-Schimmer. */
-  --kk-glow-gold: rgba(176, 118, 30, 0.1);
-  --kk-glow-sand: rgba(150, 120, 70, 0.06);
-  --kk-glow-green: rgba(47, 125, 91, 0.09);
+  --kk-glow-gold: rgba(176, 118, 30, 0.15);
+  --kk-glow-sand: rgba(150, 120, 70, 0.1);
+  --kk-glow-green: rgba(47, 125, 91, 0.14);
+  --kk-glow-cta: rgba(43, 114, 84, 0.24);
+  --kk-glow-sage: rgba(216, 223, 201, 0.78);
 
   /* Struktur – warme dunkle Hairlines auf Hell */
   --kk-line: rgba(70, 50, 28, 0.2);
@@ -75,34 +79,60 @@
        Akzente (und vereinzelt das Grün-Highlight) „auftauchen“. */
   background:
     radial-gradient(
+      42rem 26rem at 88% 10%,
+      var(--kk-glow-sage),
+      transparent 64%
+    ),
+    radial-gradient(
       52rem 34rem at 14% 3%,
       var(--kk-glow-gold),
-      transparent 62%
+      transparent 58%
     ),
     radial-gradient(
       48rem 34rem at 92% 16%,
       var(--kk-glow-sand),
-      transparent 62%
+      transparent 58%
+    ),
+    radial-gradient(46rem 34rem at 3% 37%, var(--kk-glow-cta), transparent 60%),
+    radial-gradient(
+      26rem 20rem at 24% 42%,
+      rgba(43, 114, 84, 0.18),
+      transparent 68%
     ),
     radial-gradient(
-      46rem 34rem at 3% 37%,
-      var(--kk-glow-green),
-      transparent 60%
+      50rem 32rem at 98% 40%,
+      var(--kk-glow-sage),
+      transparent 64%
     ),
     radial-gradient(
       50rem 36rem at 2% 55%,
       var(--kk-glow-gold),
-      transparent 64%
+      transparent 60%
+    ),
+    radial-gradient(
+      44rem 30rem at 88% 61%,
+      var(--kk-glow-cta),
+      transparent 62%
+    ),
+    radial-gradient(
+      30rem 22rem at 55% 70%,
+      rgba(43, 114, 84, 0.16),
+      transparent 70%
     ),
     radial-gradient(
       48rem 34rem at 100% 66%,
       var(--kk-glow-sand),
-      transparent 62%
+      transparent 58%
+    ),
+    radial-gradient(
+      54rem 34rem at 10% 78%,
+      var(--kk-glow-sage),
+      transparent 60%
     ),
     radial-gradient(
       50rem 36rem at 12% 88%,
       var(--kk-glow-gold),
-      transparent 64%
+      transparent 60%
     ),
     linear-gradient(168deg, var(--kk-base) 0%, var(--kk-base-deep) 100%);
   color: var(--kk-ink-body);

@@ -1,3 +1,7 @@
+/* Ruhiger Abschluss-CTA: crafted Split-Karte (Aussage links, Aktion rechts)
+   statt zentriertem Glow-Block. Helle Conversion-Karte mit markantem Gold-Glow,
+   grün getönte Trennlinie als CTA-/Signatur-Bezug. */
+
 .section {
   width: min(
     calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
@@ -8,47 +12,85 @@
 }
 
 .card {
+  position: relative;
   display: grid;
-  justify-items: center;
-  gap: 1.1rem;
-  padding: clamp(2.25rem, 5vw, 3.75rem);
-  border: 1px solid color-mix(in srgb, var(--kk-signal) 34%, var(--kk-line));
-  border-radius: var(--kk-radius-lg);
+  gap: clamp(1.5rem, 4vw, 2.1rem);
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: clamp(1.9rem, 5vw, 3.25rem);
+  overflow: hidden;
   background:
     radial-gradient(
-      circle at 50% 0%,
-      rgba(216, 166, 87, 0.36),
-      transparent 66%
+      38rem 20rem at 90% 6%,
+      rgba(216, 166, 87, 0.34),
+      transparent 62%
     ),
     var(--kk-paper-raised);
-  text-align: center;
+  border: 1px solid color-mix(in srgb, var(--kk-signal) 32%, var(--kk-line));
+  border-radius: var(--kk-radius-lg);
   box-shadow: 0 40px 80px -62px rgba(20, 24, 31, 0.32);
 }
 
+.content {
+  display: grid;
+  gap: 0.9rem;
+  align-content: center;
+}
+
 .title {
+  max-width: 20ch;
   margin: 0;
-  max-width: 22ch;
   font-family: var(--kk-font-display);
-  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-size: clamp(1.9rem, 3.8vw, 2.9rem);
   font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
+  line-height: 1.07;
+  letter-spacing: -0.018em;
   text-wrap: balance;
 }
 
 .description {
+  max-width: 46ch;
   margin: 0;
-  max-width: 44ch;
   color: var(--kk-ink-body);
   font-family: var(--kk-font-sans);
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.4vw, 1.1rem);
   line-height: 1.6;
 }
 
+.action {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  padding-top: clamp(1.25rem, 4vw, 1.5rem);
+  border-top: 1px solid
+    color-mix(in srgb, var(--kk-green) 22%, var(--kk-border));
+}
+
+.cta {
+  width: 100%;
+}
+
 .mockNote {
-  margin: 0.4rem 0 0;
+  max-width: 44ch;
+  margin: 0;
   color: var(--kk-slate);
   font-family: var(--kk-font-sans);
-  font-size: 0.88rem;
-  line-height: 1.5;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 820px) {
+  .card {
+    grid-template-columns: 1fr minmax(17rem, 20rem);
+    column-gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+
+  .action {
+    padding-top: 0;
+    padding-left: clamp(2rem, 4vw, 3.5rem);
+    border-top: 0;
+    border-left: 1px solid
+      color-mix(in srgb, var(--kk-green) 22%, var(--kk-border));
+  }
 }

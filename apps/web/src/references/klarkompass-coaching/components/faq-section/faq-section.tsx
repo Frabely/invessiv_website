@@ -66,10 +66,10 @@ export function FaqSection({
         </Reveal>
         <Reveal as="div" className={styles.nudgeAction}>
           <KlarkompassCta
+            className={styles.nudgeCta}
             href={ctaHref}
             label={ctaLabel}
             mockAlertMessage={mockAlertMessage}
-            variant="secondary"
           />
         </Reveal>
       </RevealGroup>

@@ -19,21 +19,28 @@ export function FinalCtaSection({
   ctaLabel,
   description,
   id,
+  locale,
   mockAlertMessage,
   mockNote,
   title,
 }: FinalCtaSectionProps) {
   return (
-    <RevealGroup as="section" className={styles.section} id={id}>
+    <RevealGroup as="section" className={styles.section} id={id} lang={locale}>
       <Reveal as="div" className={styles.card}>
-        <h2 className={styles.title}>{title}</h2>
-        <p className={styles.description}>{description}</p>
-        <KlarkompassCta
-          href={`#${id}`}
-          label={ctaLabel}
-          mockAlertMessage={mockAlertMessage}
-        />
-        <p className={styles.mockNote}>{mockNote}</p>
+        <div className={styles.content}>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.description}>{description}</p>
+        </div>
+
+        <div className={styles.action}>
+          <KlarkompassCta
+            className={styles.cta}
+            href={`#${id}`}
+            label={ctaLabel}
+            mockAlertMessage={mockAlertMessage}
+          />
+          <p className={styles.mockNote}>{mockNote}</p>
+        </div>
       </Reveal>
     </RevealGroup>
   );

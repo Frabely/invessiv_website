@@ -81,6 +81,20 @@
   display: flex;
 }
 
+.nudgeCta {
+  border-color: var(--kk-cta);
+  background: var(--kk-cta);
+  color: var(--kk-cta-ink);
+}
+
+@media (hover: hover) {
+  .nudgeCta:hover {
+    border-color: var(--kk-cta-hover);
+    background: var(--kk-cta-hover);
+    color: var(--kk-cta-ink);
+  }
+}
+
 /* ---------- Desktop: Intro links (sticky), Liste rechts ---------- */
 
 @media (min-width: 900px) {
@@ -91,8 +105,6 @@
   }
 
   .intro {
-    position: sticky;
-    top: 6rem;
     grid-column: 1 / span 4;
   }
 
