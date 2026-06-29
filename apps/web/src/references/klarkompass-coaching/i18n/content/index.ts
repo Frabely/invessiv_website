@@ -62,8 +62,11 @@ export type KlarkompassResultsContent = {
 
 export type KlarkompassStep = {
   number: string;
+  bearing: string;
+  kicker: string;
   title: string;
   description: string;
+  outcome: string;
 };
 
 export type KlarkompassOfferContent = {
@@ -96,6 +99,11 @@ export type KlarkompassAboutContent = {
 export type KlarkompassProcessContent = {
   eyebrow: string;
   title: string;
+  lead: string;
+  compassLabel: string;
+  compassCaption: string;
+  noteLabel: string;
+  note: string;
   steps: KlarkompassStep[];
 };
 

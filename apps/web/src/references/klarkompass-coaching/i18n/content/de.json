@@ -109,27 +109,44 @@
   },
   "process": {
     "eyebrow": "Ablauf",
-    "title": "So arbeiten wir zusammen",
+    "title": "Vier Kurswechsel, die Führung spürbar sortieren.",
+    "lead": "Kein Modul-Marathon. Wir arbeiten wie mit Karte und Kompass: erst Standort, dann Richtung, dann die nächsten Gespräche im echten Alltag.",
+    "compassLabel": "8 Wochen",
+    "compassCaption": "1:1 Leadership-Kompass",
+    "noteLabel": "Arbeitsweise",
+    "note": "Jede Session endet mit einem kleinen, konkreten Experiment für die nächsten zwei Wochen. So wird aus Reflexion ein Führungsverhalten, das du im Team wirklich ausprobieren kannst.",
     "steps": [
       {
         "number": "01",
-        "title": "Erstgespräch",
-        "description": "Wir lernen uns kennen und klären, ob die Zusammenarbeit passt – unverbindlich."
+        "bearing": "047°",
+        "kicker": "Ankommen",
+        "title": "Rollenrauschen entwirren",
+        "description": "Wir legen Erwartungen, Druckpunkte und unausgesprochene Fragen offen, bevor wir an Lösungen arbeiten.",
+        "outcome": "Du weißt, was wirklich auf dem Tisch liegt."
       },
       {
         "number": "02",
-        "title": "Standortanalyse",
-        "description": "Wir bestimmen, wo du stehst und worauf wir den Fokus legen."
+        "bearing": "118°",
+        "kicker": "Ausrichten",
+        "title": "Deinen Führungsnorden setzen",
+        "description": "Aus deinen Situationen entsteht ein klarer Fokus: welche Haltung, welche Grenzen, welche Gespräche jetzt zählen.",
+        "outcome": "Du führst nicht alles gleichzeitig, sondern das Richtige zuerst."
       },
       {
         "number": "03",
-        "title": "Coaching-Phase",
-        "description": "In acht Wochen arbeiten wir an deinen konkreten Führungssituationen."
+        "bearing": "204°",
+        "kicker": "Üben",
+        "title": "Schlüsselgespräche vorbereiten",
+        "description": "Wir übersetzen Einsichten in Formulierungen, Entscheidungen und kleine Experimente für deinen Arbeitsalltag.",
+        "outcome": "Du gehst mit Sprache statt Bauchgrummeln in schwierige Momente."
       },
       {
         "number": "04",
-        "title": "Transfer",
-        "description": "Du verankerst das Gelernte und nimmst klare nächste Schritte mit."
+        "bearing": "312°",
+        "kicker": "Verankern",
+        "title": "Klarheit tragfähig machen",
+        "description": "Zum Abschluss prüfen wir, was trägt, was noch wackelt und welche Routinen dich nach dem Coaching stabil halten.",
+        "outcome": "Du verlässt das Programm mit einem persönlichen Führungs-Kompass."
       }
     ]
   },

@@ -109,27 +109,44 @@
   },
   "process": {
     "eyebrow": "Process",
-    "title": "How we work together",
+    "title": "Four course shifts that make leadership feel clearer.",
+    "lead": "Not a module marathon. We work like a map and compass: first your position, then the direction, then the next conversations in real work.",
+    "compassLabel": "8 weeks",
+    "compassCaption": "1:1 leadership compass",
+    "noteLabel": "How it works",
+    "note": "Every session ends with one small, concrete experiment for the next two weeks. Reflection turns into leadership behaviour you can actually test with your team.",
     "steps": [
       {
         "number": "01",
-        "title": "Intro call",
-        "description": "We get to know each other and check whether working together fits – no strings attached."
+        "bearing": "047°",
+        "kicker": "Arrive",
+        "title": "Untangle the role noise",
+        "description": "We surface expectations, pressure points and unspoken questions before jumping to solutions.",
+        "outcome": "You know what is really on the table."
       },
       {
         "number": "02",
-        "title": "Position analysis",
-        "description": "We define where you stand and what to focus on."
+        "bearing": "118°",
+        "kicker": "Orient",
+        "title": "Set your leadership north",
+        "description": "Your real situations become a clear focus: which stance, which boundaries and which conversations matter now.",
+        "outcome": "You stop leading everything at once and start with what counts."
       },
       {
         "number": "03",
-        "title": "Coaching phase",
-        "description": "Over eight weeks we work on your concrete leadership situations."
+        "bearing": "204°",
+        "kicker": "Practise",
+        "title": "Prepare the key conversations",
+        "description": "We translate insight into wording, decisions and small experiments for your everyday work.",
+        "outcome": "You enter difficult moments with language, not a knot in your stomach."
       },
       {
         "number": "04",
-        "title": "Transfer",
-        "description": "You anchor what you've learned and leave with clear next steps."
+        "bearing": "312°",
+        "kicker": "Anchor",
+        "title": "Make clarity sustainable",
+        "description": "At the end we test what holds, what still wobbles and which routines keep you steady after coaching.",
+        "outcome": "You leave with a personal leadership compass."
       }
     ]
   },
