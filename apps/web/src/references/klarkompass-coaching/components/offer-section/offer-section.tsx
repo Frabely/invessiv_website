@@ -41,7 +41,31 @@ export function OfferSection({
       </Reveal>
 
       <Reveal as="div" className={styles.card}>
-        <div className={styles.details}>
+        <div className={styles.decision}>
+          <span aria-hidden="true" className={styles.needle}>
+            <svg className={styles.needleSvg} viewBox="0 0 24 24">
+              <path className={styles.needleNorth} d="M12 2.5 L15 12 L9 12 Z" />
+              <path
+                className={styles.needleSouth}
+                d="M12 21.5 L9 12 L15 12 Z"
+              />
+              <circle className={styles.needlePivot} cx="12" cy="12" r="1.7" />
+            </svg>
+          </span>
+          <p className={styles.priceLabel}>{priceLabel}</p>
+          <p className={styles.price}>{price}</p>
+          <p className={styles.priceCaption}>{priceCaption}</p>
+          <div className={styles.ctaWrap}>
+            <KlarkompassCta
+              href={ctaHref}
+              label={ctaLabel}
+              mockLabel={mockLabel}
+            />
+          </div>
+          <p className={styles.priceNote}>{priceNote}</p>
+        </div>
+
+        <div className={styles.contents}>
           <div className={styles.block}>
             <p className={styles.blockLabel}>{includesLabel}</p>
             <ul className={styles.includes}>
@@ -65,30 +89,6 @@ export function OfferSection({
             </ul>
           </div>
         </div>
-
-        <aside className={styles.priceCard}>
-          <span aria-hidden="true" className={styles.needle}>
-            <svg className={styles.needleSvg} viewBox="0 0 24 24">
-              <path className={styles.needleNorth} d="M12 2.5 L15 12 L9 12 Z" />
-              <path
-                className={styles.needleSouth}
-                d="M12 21.5 L9 12 L15 12 Z"
-              />
-              <circle className={styles.needlePivot} cx="12" cy="12" r="1.7" />
-            </svg>
-          </span>
-          <p className={styles.priceLabel}>{priceLabel}</p>
-          <p className={styles.price}>{price}</p>
-          <p className={styles.priceCaption}>{priceCaption}</p>
-          <div className={styles.ctaWrap}>
-            <KlarkompassCta
-              href={ctaHref}
-              label={ctaLabel}
-              mockLabel={mockLabel}
-            />
-          </div>
-          <p className={styles.priceNote}>{priceNote}</p>
-        </aside>
       </Reveal>
     </RevealGroup>
   );

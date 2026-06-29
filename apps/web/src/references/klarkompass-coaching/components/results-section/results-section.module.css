@@ -3,7 +3,7 @@
   gap: clamp(2rem, 4.5vw, 3.25rem);
   width: min(
     calc(100% - var(--kk-content-gutter) - var(--kk-content-gutter)),
-    64rem
+    var(--kk-content-width)
   );
   margin: 0 auto;
   padding: clamp(3.5rem, 7vw, 6rem) 0;
