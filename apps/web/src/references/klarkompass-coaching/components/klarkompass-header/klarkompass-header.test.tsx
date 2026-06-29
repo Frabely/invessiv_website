@@ -16,12 +16,12 @@ describe("KlarkompassHeader", () => {
     render(
       <KlarkompassHeader
         brand="KlarKompass"
+        ctaAlertMessage="Demo alert"
         ctaHref="#kk-contact"
         ctaLabel="Kostenloses Erstgespräch buchen"
         homeHref="#kk-hero"
         menuCloseLabel="Menü schließen"
         menuOpenLabel="Menü öffnen"
-        mockLabel="Demo"
         navItems={navItems}
       />,
     );

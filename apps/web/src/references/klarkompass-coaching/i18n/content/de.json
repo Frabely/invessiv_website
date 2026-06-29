@@ -4,17 +4,18 @@
     "navLabels": ["Herausforderung", "Programm", "Über mich", "Ablauf", "FAQ"],
     "ctaLabel": "Kostenloses Erstgespräch buchen",
     "mockLabel": "Demo",
+    "ctaAlertMessage": "KlarKompass ist ein Beispielprojekt von Invessiv. Hinter dieser Seite steht keine echte Firma und keine echte Coachin, deshalb kann hier kein Termin gebucht werden.",
     "menuOpenLabel": "Menü öffnen",
     "menuCloseLabel": "Menü schließen"
   },
   "hero": {
-    "badge": "1:1 Leadership Coaching",
+    "badge": "Beispiel-Landingpage · Leadership Coaching",
     "title": "Führe klarer. Wachse souverän in deine neue Rolle.",
-    "subtitle": "1:1-Coaching für neue Führungskräfte – ruhig, strukturiert und auf dein Tempo abgestimmt.",
+    "subtitle": "Eine fiktive Business-Coaching-Seite, die zeigt, wie ein klares 1:1-Angebot für neue Führungskräfte wirken könnte.",
     "primaryCtaLabel": "Kostenloses Erstgespräch buchen",
     "secondaryCtaLabel": "Programm ansehen",
-    "trustLine": "Vertraulich · auf Augenhöhe · ohne Standardrezepte",
-    "imageAlt": "Leadership-Coaching in einem hellen Büro: Impuls vor einer kleinen Führungsrunde",
+    "trustLine": "Konzeptprojekt · keine echte Firma · keine Buchung möglich",
+    "imageAlt": "Konzeptmotiv einer Leadership-Coaching-Situation in einem hellen Büro",
     "bearing": {
       "readout": "047°",
       "caption": "Kurs auf Klarheit"
@@ -60,10 +61,10 @@
     ]
   },
   "offer": {
-    "eyebrow": "Programm",
-    "title": "Das 8-Wochen Leadership-Coaching",
-    "description": "Ein fokussiertes 1:1-Programm für deinen Einstieg in die Führung – mit Raum zum Reflektieren und klaren Schritten für den Alltag.",
-    "includesLabel": "Das ist enthalten",
+    "eyebrow": "Beispielprogramm",
+    "title": "So könnte ein 8-Wochen Leadership-Coaching dargestellt werden",
+    "description": "Diese Angebotskarte ist Teil des Demo-Konzepts. Sie zeigt, wie Struktur, Umfang und Entscheidungshilfe für eine echte Business-Coaching-Seite aussehen könnten.",
+    "includesLabel": "Beispielhafte Inhalte",
     "includes": [
       "8 1:1-Sessions à 60 Min., alle zwei Wochen",
       "Standort-Check zum Start",
@@ -77,21 +78,21 @@
       "Vor dem ersten Führungsschritt",
       "Teamleads"
     ],
-    "priceLabel": "Festpreis",
+    "priceLabel": "Beispielpreis",
     "price": "1.950 €",
-    "priceCaption": "fürs gesamte Programm",
+    "priceCaption": "als Platzhalter für dieses Seitenkonzept",
     "ctaLabel": "Kostenloses Erstgespräch buchen",
-    "priceNote": "Demo-Preis – ein echtes Coaching vereinbaren wir individuell."
+    "priceNote": "Dieser Preis gehört zum Beispielprojekt. KlarKompass ist kein reales Unternehmen und verkauft dieses Coaching nicht."
   },
   "about": {
-    "eyebrow": "Über mich",
-    "title": "Begleitung auf Augenhöhe",
+    "eyebrow": "Beispielcoach",
+    "title": "Eine fiktive Coach-Person für das Seitenkonzept",
     "name": "Anna Berger",
-    "role": "Leadership Coach (fiktiv)",
-    "bio": "Ich begleite Menschen, die zum ersten Mal Führung übernehmen, dabei klar und sie selbst zu bleiben. Mir geht es nicht um fertige Rezepte, sondern um Entscheidungen und eine Haltung, die zu dir passen.",
-    "portraitAlt": "Anna Berger, Leadership Coach, im Gespräch an einem Tisch in hellem, begrüntem Außenbereich",
-    "photoNote": "Konzeptfoto",
-    "valuesLabel": "Wofür ich stehe",
+    "role": "Fiktive Leadership-Coachin im Demo-Projekt",
+    "bio": "Anna Berger ist keine reale Anbieterin, sondern eine bewusst erfundene Beispielfigur. An ihr zeigt diese Seite, wie Positionierung, Tonalität und Vertrauen für eine Business-Coaching-Marke formuliert werden können.",
+    "portraitAlt": "Konzeptbild für eine fiktive Leadership-Coachin, keine reale Person aus einem Kundenprojekt",
+    "photoNote": "Symbolbild für das Beispielprojekt",
+    "valuesLabel": "Wofür die Beispielmarke steht",
     "values": [
       {
         "title": "Klarheit",
@@ -153,11 +154,11 @@
   "trust": {
     "eyebrow": "Vertrauen",
     "title": "Bevor wir über das Programm sprechen: Das bleibt geschützt.",
-    "lead": "Gute Führung entsteht nicht, wenn du perfekt klingst. Sie entsteht, wenn du offen aussprechen kannst, wo du unsicher bist, ohne bewertet zu werden.",
+    "lead": "Auch als Beispielseite sollte Vertrauen nicht über Fake-Beweise entstehen. Deshalb zeigt KlarKompass keine erfundenen Kundenzitate, sondern klare Prinzipien, die ein echtes Coaching tragen müssten.",
     "proofLabel": "Kein Theater",
-    "proofValue": "Geschützter Raum, klare Arbeit, keine erfundenen Beweise.",
-    "imageAlt": "Coachin und Klientin in einem ruhigen 1:1-Gespräch an einem Tisch, Notizen werden gemacht – ein vertraulicher, geschützter Coaching-Raum.",
-    "photoNote": "Konzeptfoto",
+    "proofValue": "Klare Demo-Kennzeichnung statt erfundener Vertrauensbeweise.",
+    "imageAlt": "Symbolbild für eine fiktive Business-Coaching-Landingpage, keine reale Kundenszene",
+    "photoNote": "Symbolbild",
     "points": [
       {
         "title": "Vertraulichkeit ohne Fußnote",
@@ -176,12 +177,12 @@
         "description": "Der Rahmen hält acht Wochen lang den Kurs. Die Inhalte entstehen aus deiner Rolle, deinem Team und deinem Tempo."
       }
     ],
-    "honestNote": "KlarKompass ist ein fiktives Konzeptprojekt. Deshalb stehen hier keine erfundenen Kundenstimmen, Logos oder Zertifikate, sondern die Art von Zusagen, die ein echtes Coaching sauber tragen müsste."
+    "honestNote": "KlarKompass ist ein fiktives Konzeptprojekt. Es gibt keine echte Coachin, keine echten Kundinnen und keine belegbaren Ergebnisse. Genau deshalb stehen hier Prinzipien statt erfundener Testimonials."
   },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Häufige Fragen",
-    "lead": "Kurz und ehrlich beantwortet – wie im echten Erstgespräch.",
+    "lead": "Kurz und ehrlich beantwortet – mit Blick auf das Beispielprojekt.",
     "contactPrompt": "Noch eine Frage offen?",
     "items": [
       {
@@ -202,21 +203,21 @@
       },
       {
         "question": "Ist das hier ein echtes Angebot?",
-        "answer": "Nein. KlarKompass ist eine Demo: ein fiktives Konzeptprojekt, das zeigt, wie eine moderne Coaching-Landingpage aussehen kann."
+        "answer": "Nein. KlarKompass ist ein Beispielprojekt von Invessiv. Die Marke, das Angebot, die Coachin und die Preisangabe sind fiktiv und dienen nur dazu, eine moderne Coaching-Landingpage zu demonstrieren."
       }
     ]
   },
   "finalCta": {
-    "title": "Bereit für mehr Klarheit in deiner beruflichen Rolle?",
-    "description": "Lass uns in einem kostenlosen Erstgespräch herausfinden, ob die Zusammenarbeit zu dir passt.",
+    "title": "So könnte ein klarer Abschluss-CTA für eine Coaching-Seite aussehen.",
+    "description": "Der Button bleibt bewusst als Demo markiert. Ein Klick zeigt nur den Hinweis, dass hinter KlarKompass kein echtes Unternehmen steht.",
     "ctaLabel": "Kostenloses Erstgespräch buchen",
-    "mockNote": "Hinweis: Dies ist eine Demo. Der Button ist ein Platzhalter und löst keine echte Buchung aus."
+    "mockNote": "Hinweis: Dies ist ein Beispielprojekt. Der Button löst keine Buchung aus, weil KlarKompass keine echte Firma und Anna Berger keine reale Anbieterin ist."
   },
   "footer": {
     "brand": "KlarKompass",
-    "tagline": "1:1 Leadership Coaching für neue Führungskräfte",
+    "tagline": "Beispiel-Landingpage für eine fiktive Business-Coaching-Marke",
     "navLabels": ["Herausforderung", "Programm", "Über mich", "Ablauf", "FAQ"],
-    "conceptNote": "Dieses Projekt ist ein fiktives Konzeptprojekt von Invessiv. Es handelt sich nicht um einen realen Kundenauftrag und nicht um ein echtes Coaching-Angebot.",
+    "conceptNote": "Dieses Projekt ist ein fiktives Beispielprojekt von Invessiv. KlarKompass ist keine echte Firma, Anna Berger keine reale Person und das gezeigte Coaching kein buchbares Angebot.",
     "backLinkLabel": "Zurück zu Invessiv"
   }
 }

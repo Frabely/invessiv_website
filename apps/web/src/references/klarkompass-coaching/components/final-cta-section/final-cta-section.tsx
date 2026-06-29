@@ -12,14 +12,14 @@ import styles from "./final-cta-section.module.css";
 type FinalCtaSectionProps = KlarkompassFinalCtaContent & {
   id: string;
   locale: Locale;
-  mockLabel: string;
+  mockAlertMessage: string;
 };
 
 export function FinalCtaSection({
   ctaLabel,
   description,
   id,
-  mockLabel,
+  mockAlertMessage,
   mockNote,
   title,
 }: FinalCtaSectionProps) {
@@ -31,7 +31,7 @@ export function FinalCtaSection({
         <KlarkompassCta
           href={`#${id}`}
           label={ctaLabel}
-          mockLabel={mockLabel}
+          mockAlertMessage={mockAlertMessage}
         />
         <p className={styles.mockNote}>{mockNote}</p>
       </Reveal>

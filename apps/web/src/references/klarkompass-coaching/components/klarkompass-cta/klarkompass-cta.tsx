@@ -1,4 +1,6 @@
-import type { AnchorHTMLAttributes } from "react";
+"use client";
+
+import type { AnchorHTMLAttributes, MouseEvent } from "react";
 import styles from "./klarkompass-cta.module.css";
 
 type KlarkompassCtaVariant = "primary" | "secondary";
@@ -6,7 +8,7 @@ type KlarkompassCtaVariant = "primary" | "secondary";
 type KlarkompassCtaProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
   label: string;
-  mockLabel?: string;
+  mockAlertMessage?: string;
   variant?: KlarkompassCtaVariant;
 };
 
@@ -14,7 +16,8 @@ export function KlarkompassCta({
   className,
   href,
   label,
-  mockLabel,
+  mockAlertMessage,
+  onClick,
   variant = "primary",
   ...props
 }: KlarkompassCtaProps) {
@@ -22,10 +25,18 @@ export function KlarkompassCta({
     .filter(Boolean)
     .join(" ");
 
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (mockAlertMessage) {
+      event.preventDefault();
+      window.alert(mockAlertMessage);
+    }
+
+    onClick?.(event);
+  };
+
   return (
-    <a className={classNames} href={href} {...props}>
+    <a className={classNames} href={href} onClick={handleClick} {...props}>
       <span>{label}</span>
-      {mockLabel ? <span className={styles.mockBadge}>{mockLabel}</span> : null}
     </a>
   );
 }

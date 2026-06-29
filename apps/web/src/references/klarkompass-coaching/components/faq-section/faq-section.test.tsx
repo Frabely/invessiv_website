@@ -53,7 +53,7 @@ describe("KlarkompassFaqSection", () => {
         ctaLabel="Erstgespräch buchen"
         id="kk-faq"
         locale="de"
-        mockLabel="Demo"
+        mockAlertMessage="Demo alert"
         {...content}
       />,
     );

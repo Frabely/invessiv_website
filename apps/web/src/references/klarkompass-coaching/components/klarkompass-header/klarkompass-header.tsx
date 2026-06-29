@@ -15,21 +15,21 @@ type KlarkompassHeaderProps = {
   brand: string;
   ctaHref: string;
   ctaLabel: string;
+  ctaAlertMessage: string;
   homeHref: string;
   menuCloseLabel: string;
   menuOpenLabel: string;
-  mockLabel: string;
   navItems: KlarkompassNavItem[];
 };
 
 export function KlarkompassHeader({
   brand,
+  ctaAlertMessage,
   ctaHref,
   ctaLabel,
   homeHref,
   menuCloseLabel,
   menuOpenLabel,
-  mockLabel,
   navItems,
 }: KlarkompassHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -80,7 +80,7 @@ export function KlarkompassHeader({
             className={styles.headerCta}
             href={ctaHref}
             label={ctaLabel}
-            mockLabel={mockLabel}
+            mockAlertMessage={ctaAlertMessage}
           />
           <button
             aria-expanded={isMenuOpen}
@@ -112,7 +112,7 @@ export function KlarkompassHeader({
             className={styles.mobileCta}
             href={ctaHref}
             label={ctaLabel}
-            mockLabel={mockLabel}
+            mockAlertMessage={ctaAlertMessage}
             onClick={() => setIsMenuOpen(false)}
           />
         </div>

@@ -12,7 +12,7 @@ type OfferSectionProps = KlarkompassOfferContent & {
   ctaHref: string;
   id: string;
   locale: Locale;
-  mockLabel: string;
+  mockAlertMessage: string;
 };
 
 export function OfferSection({
@@ -23,7 +23,7 @@ export function OfferSection({
   id,
   includes,
   includesLabel,
-  mockLabel,
+  mockAlertMessage,
   price,
   priceCaption,
   priceLabel,
@@ -59,7 +59,7 @@ export function OfferSection({
             <KlarkompassCta
               href={ctaHref}
               label={ctaLabel}
-              mockLabel={mockLabel}
+              mockAlertMessage={mockAlertMessage}
             />
           </div>
           <p className={styles.priceNote}>{priceNote}</p>

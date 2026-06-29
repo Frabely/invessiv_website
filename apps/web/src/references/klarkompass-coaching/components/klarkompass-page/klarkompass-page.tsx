@@ -58,12 +58,12 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
     >
       <KlarkompassHeader
         brand={content.header.brand}
+        ctaAlertMessage={content.header.ctaAlertMessage}
         ctaHref={ctaHref}
         ctaLabel={content.header.ctaLabel}
         homeHref={homeHref}
         menuCloseLabel={content.header.menuCloseLabel}
         menuOpenLabel={content.header.menuOpenLabel}
-        mockLabel={content.header.mockLabel}
         navItems={navItems}
       />
 
@@ -71,7 +71,7 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
         <HeroSection
           id={KLARKOMPASS_SECTION_ID.Hero}
           locale={locale}
-          mockLabel={content.header.mockLabel}
+          mockAlertMessage={content.header.ctaAlertMessage}
           primaryHref={ctaHref}
           secondaryHref={`#${KLARKOMPASS_SECTION_ID.Offer}`}
           {...content.hero}
@@ -99,7 +99,7 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           ctaHref={ctaHref}
           id={KLARKOMPASS_SECTION_ID.Offer}
           locale={locale}
-          mockLabel={content.header.mockLabel}
+          mockAlertMessage={content.header.ctaAlertMessage}
           {...content.offer}
         />
 
@@ -120,14 +120,14 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           ctaLabel={content.header.ctaLabel}
           id={KLARKOMPASS_SECTION_ID.Faq}
           locale={locale}
-          mockLabel={content.header.mockLabel}
+          mockAlertMessage={content.header.ctaAlertMessage}
           {...content.faq}
         />
 
         <FinalCtaSection
           id={KLARKOMPASS_SECTION_ID.FinalCta}
           locale={locale}
-          mockLabel={content.header.mockLabel}
+          mockAlertMessage={content.header.ctaAlertMessage}
           {...content.finalCta}
         />
       </main>

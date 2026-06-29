@@ -11,7 +11,7 @@ import styles from "./hero-section.module.css";
 type HeroSectionProps = KlarkompassHeroContent & {
   id: string;
   locale: Locale;
-  mockLabel: string;
+  mockAlertMessage: string;
   primaryHref: string;
   secondaryHref: string;
 };
@@ -23,7 +23,7 @@ export function HeroSection({
   bearing,
   id,
   imageAlt,
-  mockLabel,
+  mockAlertMessage,
   primaryCtaLabel,
   primaryHref,
   secondaryCtaLabel,
@@ -112,7 +112,7 @@ export function HeroSection({
             <KlarkompassCta
               href={primaryHref}
               label={primaryCtaLabel}
-              mockLabel={mockLabel}
+              mockAlertMessage={mockAlertMessage}
             />
             <KlarkompassCta
               className={styles.secondaryGhost}

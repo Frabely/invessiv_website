@@ -17,7 +17,7 @@ type FaqSectionProps = KlarkompassFaqContent & {
   locale: Locale;
   ctaHref: string;
   ctaLabel: string;
-  mockLabel: string;
+  mockAlertMessage: string;
 };
 
 export function FaqSection({
@@ -29,7 +29,7 @@ export function FaqSection({
   items,
   lead,
   locale,
-  mockLabel,
+  mockAlertMessage,
   title,
 }: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -68,7 +68,7 @@ export function FaqSection({
           <KlarkompassCta
             href={ctaHref}
             label={ctaLabel}
-            mockLabel={mockLabel}
+            mockAlertMessage={mockAlertMessage}
             variant="secondary"
           />
         </Reveal>

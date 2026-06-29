@@ -7,6 +7,7 @@ export type KlarkompassHeaderContent = {
   navLabels: string[];
   ctaLabel: string;
   mockLabel: string;
+  ctaAlertMessage: string;
   menuOpenLabel: string;
   menuCloseLabel: string;
 };

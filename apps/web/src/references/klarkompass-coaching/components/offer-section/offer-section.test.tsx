@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OfferSection } from "./offer-section";
 
@@ -27,6 +27,7 @@ beforeEach(() => {
 
   vi.stubGlobal("IntersectionObserver", MockObserver);
   vi.stubGlobal("ResizeObserver", MockObserver);
+  vi.stubGlobal("alert", vi.fn());
 });
 
 const content = {
@@ -37,11 +38,11 @@ const content = {
   includes: ["8 1:1-Sessions", "Standort-Check"],
   suitableLabel: "Für wen",
   suitable: ["Neue Führungskräfte"],
-  priceLabel: "Festpreis",
+  priceLabel: "Beispielpreis",
   price: "1.950 €",
-  priceCaption: "fürs gesamte Programm",
+  priceCaption: "als Platzhalter für dieses Seitenkonzept",
   ctaLabel: "Erstgespräch buchen",
-  priceNote: "Demo-Preis – ein echtes Coaching vereinbaren wir individuell.",
+  priceNote: "Dieser Preis gehört zum Beispielprojekt.",
 };
 
 afterEach(() => {
@@ -56,7 +57,7 @@ describe("KlarkompassOfferSection", () => {
         ctaHref="#kk-contact"
         id="kk-offer"
         locale="de"
-        mockLabel="Demo"
+        mockAlertMessage="Demo alert"
         {...content}
       />,
     );
@@ -72,11 +73,13 @@ describe("KlarkompassOfferSection", () => {
     expect(screen.getByText("8 1:1-Sessions")).toBeTruthy();
     expect(screen.getByText("Für wen")).toBeTruthy();
     expect(screen.getByText("Neue Führungskräfte")).toBeTruthy();
-    expect(screen.getByText("Festpreis")).toBeTruthy();
+    expect(screen.getByText("Beispielpreis")).toBeTruthy();
     expect(screen.getByText("1.950 €")).toBeTruthy();
 
     const cta = screen.getByRole("link", { name: /Erstgespräch buchen/ });
     expect(cta.getAttribute("href")).toBe("#kk-contact");
-    expect(screen.getByText("Demo")).toBeTruthy();
+
+    fireEvent.click(cta);
+    expect(window.alert).toHaveBeenCalledWith("Demo alert");
   });
 });
