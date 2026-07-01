@@ -1,6 +1,6 @@
 /* "Der geschützte Raum": das Foto eines echten, vertraulichen 1:1-Gesprächs
-   ist der emotionale Anker. proofValue liegt als Caption darunter, proofLabel
-   als grüner Stempel auf dem Bild. Die vier Zusagen stehen ruhig daneben. */
+   ist der emotionale Anker. proofLabel sitzt als grüner Stempel auf dem Bild.
+   Die vier Zusagen stehen ruhig daneben. */
 
 .section {
   display: grid;
@@ -34,15 +34,6 @@
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;
-}
-
-.lead {
-  max-width: 40rem;
-  margin: 0;
-  color: var(--kk-ink-body);
-  font-family: var(--kk-font-sans);
-  font-size: clamp(1rem, 2.6vw, 1.12rem);
-  line-height: 1.6;
 }
 
 /* ---------- Body: Foto + Zusagen ---------- */
@@ -112,20 +103,6 @@
   height: 0.5rem;
   border: 1.5px solid var(--kk-cta-ink);
   transform: rotate(45deg);
-}
-
-.caption {
-  max-width: 36rem;
-  margin: 0;
-  padding-left: clamp(0.9rem, 2vw, 1.15rem);
-  color: var(--kk-ink);
-  font-family: var(--kk-font-display);
-  font-size: clamp(1.2rem, 3.2vw, 1.7rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-  border-left: 3px solid var(--kk-green);
 }
 
 /* ---------- Zusagen ---------- */

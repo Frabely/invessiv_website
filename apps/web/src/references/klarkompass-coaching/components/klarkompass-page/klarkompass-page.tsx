@@ -89,6 +89,18 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           {...content.results}
         />
 
+        <AboutSection
+          id={KLARKOMPASS_SECTION_ID.About}
+          locale={locale}
+          {...content.about}
+        />
+
+        <ProcessSection
+          id={KLARKOMPASS_SECTION_ID.Process}
+          locale={locale}
+          {...content.process}
+        />
+
         <TrustPointsSection
           id={KLARKOMPASS_SECTION_ID.Trust}
           locale={locale}
@@ -101,18 +113,6 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
           locale={locale}
           mockAlertMessage={content.header.ctaAlertMessage}
           {...content.offer}
-        />
-
-        <AboutSection
-          id={KLARKOMPASS_SECTION_ID.About}
-          locale={locale}
-          {...content.about}
-        />
-
-        <ProcessSection
-          id={KLARKOMPASS_SECTION_ID.Process}
-          locale={locale}
-          {...content.process}
         />
 
         <FaqSection
@@ -137,6 +137,7 @@ export function KlarkompassPage({ locale }: KlarkompassPageProps) {
         backLinkLabel={content.footer.backLinkLabel}
         brand={content.footer.brand}
         conceptNote={content.footer.conceptNote}
+        homeHref={homeHref}
         navItems={footerNavItems}
         tagline={content.footer.tagline}
       />

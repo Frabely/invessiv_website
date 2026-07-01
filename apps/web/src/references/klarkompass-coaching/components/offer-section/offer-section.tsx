@@ -18,7 +18,6 @@ type OfferSectionProps = KlarkompassOfferContent & {
 export function OfferSection({
   ctaHref,
   ctaLabel,
-  description,
   eyebrow,
   id,
   includes,
@@ -37,7 +36,6 @@ export function OfferSection({
       <Reveal as="div" className={styles.intro}>
         <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
         <h2 className={styles.title}>{title}</h2>
-        <p className={styles.description}>{description}</p>
       </Reveal>
 
       <Reveal as="div" className={styles.card}>

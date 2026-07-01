@@ -1,7 +1,7 @@
 .section {
   --hero-header-height: 4.5625rem;
   --hero-ink: var(--kk-ink);
-  --hero-ink-muted: rgba(65, 48, 29, 0.78);
+  --hero-ink-muted: rgba(54, 39, 22, 0.9);
   --hero-line: rgba(70, 50, 28, 0.26);
   --hero-shadow: 24 18 11;
 
@@ -135,7 +135,7 @@
   align-items: center;
   gap: 0.55rem;
   margin: 0;
-  color: rgba(65, 48, 29, 0.68);
+  color: rgba(54, 39, 22, 0.82);
   font-family: var(--kk-font-sans);
   font-size: clamp(0.72rem, 2.8vw, 0.86rem);
   line-height: 1.3;

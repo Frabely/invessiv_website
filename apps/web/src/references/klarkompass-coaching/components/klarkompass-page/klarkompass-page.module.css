@@ -79,58 +79,28 @@
        Akzente (und vereinzelt das Grün-Highlight) „auftauchen“. */
   background:
     radial-gradient(
-      42rem 26rem at 88% 10%,
-      var(--kk-glow-sage),
-      transparent 64%
-    ),
-    radial-gradient(
-      52rem 34rem at 14% 3%,
+      52rem 34rem at 14% 4%,
       var(--kk-glow-gold),
       transparent 58%
     ),
     radial-gradient(
-      48rem 34rem at 92% 16%,
+      48rem 30rem at 92% 14%,
+      var(--kk-glow-sage),
+      transparent 62%
+    ),
+    radial-gradient(44rem 32rem at 4% 38%, var(--kk-glow-cta), transparent 60%),
+    radial-gradient(
+      50rem 34rem at 96% 52%,
       var(--kk-glow-sand),
       transparent 58%
     ),
-    radial-gradient(46rem 34rem at 3% 37%, var(--kk-glow-cta), transparent 60%),
     radial-gradient(
-      26rem 20rem at 24% 42%,
-      rgba(43, 114, 84, 0.18),
-      transparent 68%
-    ),
-    radial-gradient(
-      50rem 32rem at 98% 40%,
-      var(--kk-glow-sage),
-      transparent 64%
-    ),
-    radial-gradient(
-      50rem 36rem at 2% 55%,
-      var(--kk-glow-gold),
-      transparent 60%
-    ),
-    radial-gradient(
-      44rem 30rem at 88% 61%,
-      var(--kk-glow-cta),
-      transparent 62%
-    ),
-    radial-gradient(
-      30rem 22rem at 55% 70%,
-      rgba(43, 114, 84, 0.16),
+      30rem 22rem at 58% 72%,
+      var(--kk-glow-green),
       transparent 70%
     ),
     radial-gradient(
-      48rem 34rem at 100% 66%,
-      var(--kk-glow-sand),
-      transparent 58%
-    ),
-    radial-gradient(
-      54rem 34rem at 10% 78%,
-      var(--kk-glow-sage),
-      transparent 60%
-    ),
-    radial-gradient(
-      50rem 36rem at 12% 88%,
+      52rem 36rem at 10% 82%,
       var(--kk-glow-gold),
       transparent 60%
     ),

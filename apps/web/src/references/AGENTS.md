@@ -18,7 +18,10 @@ Conversion-Bandbreite). Ergänzt die Root- und `components/`-`AGENTS.md`; bei Ko
 - Referenz-Seiten zeigen eine **fiktive Marke** als Konzept. Sie dürfen **nie** einen realen Kundenauftrag vortäuschen.
 - Pflicht: sichtbarer Hinweis "fiktives Konzeptprojekt" im Footer der Demo **und** ein als **Mock** gekennzeichneter
   CTA (kein echtes Buchungs-/Conversion-Ziel).
-- Verboten: erfundene Testimonials, Fake-Portraits realer Personen, Preisnennung, unbelegter Social Proof.
+- Verboten: erfundene Testimonials, Fake-Portraits realer Personen, unbelegter Social Proof.
+- **Preisnennung erlaubt, aber nur als klar markierte Demo-Angabe:** Ein Preis darf gezeigt werden, wenn er Teil der
+  Conversion-Demonstration ist und an mindestens einer sichtbaren Stelle (FAQ, Mock-Hinweis o. Ä.) ausdrücklich als
+  **erfunden/fiktiv** ausgewiesen ist. Kein Preis ohne diesen Hinweis; keine impliziten Echtpreise.
 
 ## Eigenständige Marke
 

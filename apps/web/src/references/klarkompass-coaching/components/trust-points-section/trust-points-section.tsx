@@ -34,15 +34,6 @@ const stampVariants: Variants = {
   },
 };
 
-const captionVariants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: EASE, delay: 0.3 },
-  },
-};
-
 const listVariants: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
@@ -63,18 +54,15 @@ export function TrustPointsSection({
   honestNote,
   id,
   imageAlt,
-  lead,
   locale,
   photoNote,
   points,
   proofLabel,
-  proofValue,
   title,
 }: TrustPointsSectionProps) {
   const reduce = useReducedMotion();
   const media = reduce ? staticVariants : mediaVariants;
   const stamp = reduce ? staticVariants : stampVariants;
-  const caption = reduce ? staticVariants : captionVariants;
   const list = reduce ? staticVariants : listVariants;
   const item = reduce ? staticVariants : itemVariants;
 
@@ -84,7 +72,6 @@ export function TrustPointsSection({
         <Reveal as="div" className={styles.headInner}>
           <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.lead}>{lead}</p>
         </Reveal>
       </RevealGroup>
 
@@ -110,9 +97,6 @@ export function TrustPointsSection({
               {proofLabel}
             </motion.span>
           </motion.div>
-          <motion.figcaption className={styles.caption} variants={caption}>
-            {proofValue}
-          </motion.figcaption>
         </motion.figure>
 
         <motion.ul

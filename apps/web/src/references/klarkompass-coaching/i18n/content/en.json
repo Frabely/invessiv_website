@@ -1,20 +1,20 @@
 {
   "header": {
     "brand": "KlarKompass",
-    "navLabels": ["Challenge", "Programme", "About", "Process", "FAQ"],
+    "navLabels": ["Challenge", "About", "Process", "Programme", "FAQ"],
     "ctaLabel": "Book a free intro call",
-    "mockLabel": "Demo",
-    "ctaAlertMessage": "KlarKompass is a sample project by Invessiv. There is no real company or real coach behind this page, so no appointment can be booked here.",
+    "mockLabel": "Note",
+    "ctaAlertMessage": "KlarKompass is a fictional concept project by Invessiv. There is no real company or real coach behind this page, so no appointment can be booked here.",
     "menuOpenLabel": "Open menu",
     "menuCloseLabel": "Close menu"
   },
   "hero": {
-    "badge": "Sample landing page · Leadership coaching",
-    "title": "Lead with clarity. Grow into your new role.",
-    "subtitle": "A fictional business coaching page showing how a clear 1:1 offer for new leaders could be presented.",
+    "badge": "1:1 leadership coaching",
+    "title": "Lead with clarity. Grow confidently into your new role.",
+    "subtitle": "An 8-week programme for new leaders who want to handle decisions, conversations and expectations with more calm.",
     "primaryCtaLabel": "Book a free intro call",
     "secondaryCtaLabel": "See the programme",
-    "trustLine": "Concept project · no real company · no booking possible",
+    "trustLine": "Confidential 1:1 coaching · online · clear steps for everyday leadership",
     "imageAlt": "Concept image of a leadership coaching situation in a bright office",
     "bearing": {
       "readout": "047°",
@@ -61,13 +61,12 @@
     ]
   },
   "offer": {
-    "eyebrow": "Sample programme",
-    "title": "How an 8-week leadership coaching offer could be presented",
-    "description": "This offer card is part of the demo concept. It shows how structure, scope and decision support could look on a real business coaching page.",
-    "includesLabel": "Example contents",
+    "eyebrow": "Programme",
+    "title": "8 weeks of leadership coaching with a clear course",
+    "includesLabel": "What's included",
     "includes": [
       "8 1:1 sessions of 60 min, every two weeks",
-      "Position check at the start",
+      "A starting-point check up front",
       "Tools for conversations & decisions",
       "Sparring between sessions",
       "Closing summary with next steps"
@@ -78,21 +77,21 @@
       "Before the first leadership step",
       "Team leads"
     ],
-    "priceLabel": "Sample price",
+    "priceLabel": "Investment",
     "price": "€1,950",
-    "priceCaption": "as a placeholder for this page concept",
+    "priceCaption": "for the complete 8-week programme",
     "ctaLabel": "Book a free intro call",
-    "priceNote": "This price belongs to the sample project. KlarKompass is not a real company and does not sell this coaching."
+    "priceNote": "A non-binding intro call comes before every booking. We decide together whether the coaching fits."
   },
   "about": {
-    "eyebrow": "Sample coach",
-    "title": "A fictional coach profile for the page concept",
+    "eyebrow": "About me",
+    "title": "Clarity grows when stance and craft come together.",
     "name": "Anna Berger",
-    "role": "Fictional leadership coach in the demo project",
-    "bio": "Anna Berger is not a real provider, but a deliberately fictional sample persona. This page uses her to show how positioning, tone and trust could be written for a business coaching brand.",
-    "portraitAlt": "Concept image for a fictional leadership coach, not a real person from a client project",
-    "photoNote": "Sample project image",
-    "valuesLabel": "What the sample brand stands for",
+    "role": "Leadership coach for new leaders",
+    "bio": "I support people who are strong in their craft and want to develop their own clear leadership style in a new role. In coaching, we connect reflection with concrete language, decisions and next steps for everyday work.",
+    "portraitAlt": "Leadership coach in a calm coaching situation",
+    "photoNote": "Leadership coaching",
+    "valuesLabel": "What KlarKompass stands for",
     "values": [
       {
         "title": "Clarity",
@@ -154,10 +153,8 @@
   "trust": {
     "eyebrow": "Trust",
     "title": "Before we talk about the programme: this stays protected.",
-    "lead": "Even as a sample page, trust should not come from fake proof. That is why KlarKompass shows no invented testimonials, only clear principles a real coaching offer would need to hold.",
     "proofLabel": "No theatre",
-    "proofValue": "Clear demo labelling instead of invented trust signals.",
-    "imageAlt": "Symbolic image for a fictional business coaching landing page, not a real client scene",
+    "imageAlt": "Calm coaching scene with notes and working material",
     "photoNote": "Symbolic image",
     "points": [
       {
@@ -173,16 +170,16 @@
         "description": "You do not get comfort phrases. I reflect what I see, then we turn it into one next action."
       },
       {
-        "title": "Structure without a drawer",
+        "title": "Structure, not a template",
         "description": "The frame keeps the course for eight weeks. The content comes from your role, your team and your pace."
       }
     ],
-    "honestNote": "KlarKompass is a fictional concept project. There is no real coach, no real clients and no proven outcomes. That is why this section uses principles instead of invented testimonials."
+    "honestNote": "Note: KlarKompass is a fictional concept project by Invessiv. That is why this section uses working principles instead of invented testimonials or claimed client results."
   },
   "faq": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
-    "lead": "Answered briefly and honestly, with the sample project in mind.",
+    "lead": "Answered briefly and honestly.",
     "contactPrompt": "Still have a question?",
     "items": [
       {
@@ -203,7 +200,7 @@
       },
       {
         "question": "Is this a real offer?",
-        "answer": "No. KlarKompass is a sample project by Invessiv. The brand, offer, coach profile and price are fictional and only demonstrate how a modern coaching landing page could look."
+        "answer": "No. KlarKompass is a fictional concept project by Invessiv. The brand, offer, coach profile and price are invented and are used to demonstrate a modern coaching landing page realistically."
       }
     ]
   },
@@ -215,13 +212,13 @@
     "title": "Set your course. We'll walk it together.",
     "description": "In a free intro call we map where you stand and whether the coaching fits — 30 minutes, no strings.",
     "ctaLabel": "Book a free intro call",
-    "mockNote": "Note: this is a sample project. The button does not create a booking because KlarKompass is not a real company and Anna Berger is not a real provider."
+    "mockNote": "Note: this is a fictional concept project. The button does not create a booking because KlarKompass is not a real company and Anna Berger is not a real provider."
   },
   "footer": {
     "brand": "KlarKompass",
-    "tagline": "Sample landing page for a fictional business coaching brand",
-    "navLabels": ["Challenge", "Programme", "About", "Process", "FAQ"],
-    "conceptNote": "This project is a fictional sample project by Invessiv. KlarKompass is not a real company, Anna Berger is not a real person and the coaching shown here is not a bookable offer.",
+    "tagline": "Leadership coaching for new leaders",
+    "navLabels": ["Challenge", "About", "Process", "Programme", "FAQ"],
+    "conceptNote": "This project is a fictional concept project by Invessiv. KlarKompass is not a real company, Anna Berger is not a real person and the coaching shown here is not a bookable offer.",
     "backLinkLabel": "Back to Invessiv"
   }
 }

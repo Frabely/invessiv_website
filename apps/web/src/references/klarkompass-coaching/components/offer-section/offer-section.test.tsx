@@ -33,7 +33,6 @@ beforeEach(() => {
 const content = {
   eyebrow: "Programm",
   title: "Das 8-Wochen Leadership-Coaching",
-  description: "Ein fokussiertes 1:1-Programm.",
   includesLabel: "Das ist enthalten",
   includes: ["8 1:1-Sessions", "Standort-Check"],
   suitableLabel: "Für wen",

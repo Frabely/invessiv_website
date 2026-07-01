@@ -73,7 +73,6 @@ export type KlarkompassStep = {
 export type KlarkompassOfferContent = {
   eyebrow: string;
   title: string;
-  description: string;
   includesLabel: string;
   includes: string[];
   suitableLabel: string;
@@ -111,9 +110,7 @@ export type KlarkompassProcessContent = {
 export type KlarkompassTrustContent = {
   eyebrow: string;
   title: string;
-  lead: string;
   proofLabel: string;
-  proofValue: string;
   imageAlt: string;
   photoNote: string;
   points: KlarkompassTitledItem[];
