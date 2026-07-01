@@ -55,7 +55,6 @@ export type KlarkompassResultShift = {
 export type KlarkompassResultsContent = {
   eyebrow: string;
   title: string;
-  lead: string;
   fromLabel: string;
   toLabel: string;
   items: KlarkompassResultShift[];
@@ -66,7 +65,6 @@ export type KlarkompassStep = {
   bearing: string;
   kicker: string;
   title: string;
-  description: string;
   outcome: string;
 };
 
@@ -125,7 +123,6 @@ export type KlarkompassFaqItem = {
 export type KlarkompassFaqContent = {
   eyebrow: string;
   title: string;
-  lead: string;
   contactPrompt: string;
   items: KlarkompassFaqItem[];
 };

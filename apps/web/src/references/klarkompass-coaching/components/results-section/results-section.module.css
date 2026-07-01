@@ -28,15 +28,6 @@
   text-wrap: balance;
 }
 
-.lead {
-  margin: 0;
-  max-width: 40rem;
-  color: var(--kk-ink-body);
-  font-family: var(--kk-font-sans);
-  font-size: clamp(1rem, 2.6vw, 1.1rem);
-  line-height: 1.55;
-}
-
 /* ---------- Shift cards (today -> after, blur resolves to focus) ---------- */
 
 .shifts {

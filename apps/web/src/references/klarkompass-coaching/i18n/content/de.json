@@ -11,7 +11,7 @@
   "hero": {
     "badge": "1:1 Leadership Coaching",
     "title": "Führe klarer. Wachse souverän in deine neue Rolle.",
-    "subtitle": "Ein 8-Wochen-Programm für neue Führungskräfte, die Entscheidungen, Gespräche und Erwartungen mit mehr Ruhe führen wollen.",
+    "subtitle": "8-Wochen-Programm für neue Führungskräfte, die Entscheidungen und schwierige Gespräche mit mehr Ruhe führen wollen.",
     "primaryCtaLabel": "Kostenloses Erstgespräch buchen",
     "secondaryCtaLabel": "Programm ansehen",
     "trustLine": "Vertrauliches 1:1 Coaching · online · klare Schritte für deinen Führungsalltag",
@@ -26,10 +26,10 @@
     "title": "Die Rolle ist neu – die Erwartungen sind sofort groß.",
     "intro": "Fachlich bist du stark. Doch Führung verlangt etwas anderes.",
     "points": [
-      "Du triffst Entscheidungen, zweifelst danach aber lange an ihnen.",
-      "Schwierige Gespräche schiebst du auf, statt sie klar zu führen.",
-      "Du bist im Tagesgeschäft gefangen und verlierst die Richtung aus dem Blick.",
-      "Du willst Autorität zeigen, ohne dich zu verstellen – und weißt nicht, wie."
+      "Du entscheidest – und zweifelst danach lange.",
+      "Schwierige Gespräche schiebst du auf, statt sie zu führen.",
+      "Im Tagesgeschäft verlierst du die Richtung aus dem Blick.",
+      "Du willst Autorität zeigen, ohne dich zu verstellen."
     ],
     "compass": {
       "cardinals": ["N", "O", "S", "W"],
@@ -39,7 +39,6 @@
   "results": {
     "eyebrow": "Was sich ändert",
     "title": "Von Unsicherheit zu Klarheit in deiner Führung.",
-    "lead": "Coaching zeigt sich nicht in der Theorie, sondern in deinem Alltag.",
     "fromLabel": "Heute",
     "toLabel": "Nach dem Coaching",
     "items": [
@@ -88,7 +87,7 @@
     "title": "Klarheit entsteht, wenn Haltung und Handwerk zusammenkommen.",
     "name": "Anna Berger",
     "role": "Leadership-Coachin für neue Führungskräfte",
-    "bio": "Ich begleite Menschen, die fachlich stark sind und in ihrer neuen Führungsrolle einen eigenen, klaren Stil entwickeln wollen. Im Coaching verbinden wir Reflexion mit konkreter Sprache, Entscheidungen und nächsten Schritten für deinen Alltag.",
+    "bio": "Ich begleite Menschen, die fachlich stark sind und in ihrer neuen Rolle einen eigenen, klaren Führungsstil finden wollen. Im Coaching verbinden wir Reflexion mit klarer Sprache und konkreten nächsten Schritten.",
     "portraitAlt": "Leadership-Coachin in einer ruhigen Coaching-Situation",
     "photoNote": "Leadership Coaching",
     "valuesLabel": "Wofür KlarKompass steht",
@@ -110,18 +109,17 @@
   "process": {
     "eyebrow": "Ablauf",
     "title": "Vier Kurswechsel, die Führung spürbar sortieren.",
-    "lead": "Kein Modul-Marathon. Wir arbeiten wie mit Karte und Kompass: erst Standort, dann Richtung, dann die nächsten Gespräche im echten Alltag.",
+    "lead": "Kein Modul-Marathon. Wir arbeiten wie mit Karte und Kompass: erst Standort, dann Richtung.",
     "compassLabel": "8 Wochen",
     "compassCaption": "1:1 Leadership-Kompass",
     "noteLabel": "Arbeitsweise",
-    "note": "Jede Session endet mit einem kleinen, konkreten Experiment für die nächsten zwei Wochen. So wird aus Reflexion ein Führungsverhalten, das du im Team wirklich ausprobieren kannst.",
+    "note": "Jede Session endet mit einem konkreten Experiment für die nächsten zwei Wochen – so wird aus Reflexion echtes Führungsverhalten.",
     "steps": [
       {
         "number": "01",
         "bearing": "047°",
         "kicker": "Ankommen",
         "title": "Rollenrauschen entwirren",
-        "description": "Wir legen Erwartungen, Druckpunkte und unausgesprochene Fragen offen, bevor wir an Lösungen arbeiten.",
         "outcome": "Du weißt, was wirklich auf dem Tisch liegt."
       },
       {
@@ -129,15 +127,13 @@
         "bearing": "118°",
         "kicker": "Ausrichten",
         "title": "Deinen Führungsnorden setzen",
-        "description": "Aus deinen Situationen entsteht ein klarer Fokus: welche Haltung, welche Grenzen, welche Gespräche jetzt zählen.",
-        "outcome": "Du führst nicht alles gleichzeitig, sondern das Richtige zuerst."
+        "outcome": "Du führst das Richtige zuerst – nicht alles gleichzeitig."
       },
       {
         "number": "03",
         "bearing": "204°",
         "kicker": "Üben",
         "title": "Schlüsselgespräche vorbereiten",
-        "description": "Wir übersetzen Einsichten in Formulierungen, Entscheidungen und kleine Experimente für deinen Arbeitsalltag.",
         "outcome": "Du gehst mit Sprache statt Bauchgrummeln in schwierige Momente."
       },
       {
@@ -145,7 +141,6 @@
         "bearing": "312°",
         "kicker": "Verankern",
         "title": "Klarheit tragfähig machen",
-        "description": "Zum Abschluss prüfen wir, was trägt, was noch wackelt und welche Routinen dich nach dem Coaching stabil halten.",
         "outcome": "Du verlässt das Programm mit einem persönlichen Führungs-Kompass."
       }
     ]
@@ -159,19 +154,19 @@
     "points": [
       {
         "title": "Vertraulichkeit ohne Fußnote",
-        "description": "Alles, was du einbringst, bleibt im Coaching. Namen, Konflikte und interne Dynamiken werden nicht verwertet."
+        "description": "Alles, was du einbringst, bleibt im Coaching."
       },
       {
         "title": "Echte Situationen statt Rollenspiel-Theater",
-        "description": "Wir arbeiten an Gesprächen, Entscheidungen und Reibungspunkten, die diese Woche wirklich auf deinem Tisch liegen."
+        "description": "Wir arbeiten an dem, was diese Woche auf deinem Tisch liegt."
       },
       {
         "title": "Feedback, das klar bleibt",
-        "description": "Du bekommst keine Wohlfühlfloskeln. Ich spiegle, was ich sehe, und wir übersetzen es in eine nächste Handlung."
+        "description": "Keine Wohlfühlfloskeln. Ich spiegle, was ich sehe."
       },
       {
         "title": "Struktur ohne Schublade",
-        "description": "Der Rahmen hält acht Wochen lang den Kurs. Die Inhalte entstehen aus deiner Rolle, deinem Team und deinem Tempo."
+        "description": "Der Rahmen hält den Kurs. Die Inhalte kommen aus deiner Rolle."
       }
     ],
     "honestNote": "Hinweis: KlarKompass ist ein fiktives Konzeptprojekt von Invessiv. Deshalb stehen hier Arbeitsprinzipien statt erfundener Testimonials oder angeblicher Kundenergebnisse."
@@ -179,7 +174,6 @@
   "faq": {
     "eyebrow": "FAQ",
     "title": "Häufige Fragen",
-    "lead": "Kurz und ehrlich beantwortet.",
     "contactPrompt": "Noch eine Frage offen?",
     "items": [
       {

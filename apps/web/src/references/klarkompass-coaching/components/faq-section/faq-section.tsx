@@ -27,7 +27,6 @@ export function FaqSection({
   eyebrow,
   id,
   items,
-  lead,
   locale,
   mockAlertMessage,
   title,
@@ -40,7 +39,6 @@ export function FaqSection({
         <Reveal as="div" className={styles.introInner}>
           <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.lead}>{lead}</p>
         </Reveal>
       </RevealGroup>
 

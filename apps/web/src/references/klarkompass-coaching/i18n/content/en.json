@@ -11,7 +11,7 @@
   "hero": {
     "badge": "1:1 leadership coaching",
     "title": "Lead with clarity. Grow confidently into your new role.",
-    "subtitle": "An 8-week programme for new leaders who want to handle decisions, conversations and expectations with more calm.",
+    "subtitle": "8-week programme for new leaders who want to handle decisions and hard conversations with more calm.",
     "primaryCtaLabel": "Book a free intro call",
     "secondaryCtaLabel": "See the programme",
     "trustLine": "Confidential 1:1 coaching · online · clear steps for everyday leadership",
@@ -26,10 +26,10 @@
     "title": "The role is new – the expectations are big right away.",
     "intro": "You are strong on the craft. But leadership asks for something else.",
     "points": [
-      "You make decisions, then keep doubting them long after.",
-      "You postpone hard conversations instead of leading them clearly.",
-      "You are caught in day-to-day work and lose sight of the direction.",
-      "You want to show authority without pretending to be someone else – and don't know how."
+      "You make decisions, then keep doubting them.",
+      "You postpone hard conversations instead of leading them.",
+      "In the daily grind you lose sight of the direction.",
+      "You want to show authority without pretending to be someone else."
     ],
     "compass": {
       "cardinals": ["N", "E", "S", "W"],
@@ -39,7 +39,6 @@
   "results": {
     "eyebrow": "What changes",
     "title": "From uncertainty to clarity in your leadership.",
-    "lead": "Coaching doesn't show up in theory – it shows up in your everyday work.",
     "fromLabel": "Today",
     "toLabel": "After the coaching",
     "items": [
@@ -88,7 +87,7 @@
     "title": "Clarity grows when stance and craft come together.",
     "name": "Anna Berger",
     "role": "Leadership coach for new leaders",
-    "bio": "I support people who are strong in their craft and want to develop their own clear leadership style in a new role. In coaching, we connect reflection with concrete language, decisions and next steps for everyday work.",
+    "bio": "I support people who are strong in their craft and want to find their own clear leadership style in a new role. In coaching, we connect reflection with clear language and concrete next steps.",
     "portraitAlt": "Leadership coach in a calm coaching situation",
     "photoNote": "Leadership coaching",
     "valuesLabel": "What KlarKompass stands for",
@@ -110,18 +109,17 @@
   "process": {
     "eyebrow": "Process",
     "title": "Four course shifts that make leadership feel clearer.",
-    "lead": "Not a module marathon. We work like a map and compass: first your position, then the direction, then the next conversations in real work.",
+    "lead": "Not a module marathon. We work like a map and compass: first your position, then the direction.",
     "compassLabel": "8 weeks",
     "compassCaption": "1:1 leadership compass",
     "noteLabel": "How it works",
-    "note": "Every session ends with one small, concrete experiment for the next two weeks. Reflection turns into leadership behaviour you can actually test with your team.",
+    "note": "Every session ends with one concrete experiment for the next two weeks – so reflection turns into real leadership behaviour.",
     "steps": [
       {
         "number": "01",
         "bearing": "047°",
         "kicker": "Arrive",
         "title": "Untangle the role noise",
-        "description": "We surface expectations, pressure points and unspoken questions before jumping to solutions.",
         "outcome": "You know what is really on the table."
       },
       {
@@ -129,15 +127,13 @@
         "bearing": "118°",
         "kicker": "Orient",
         "title": "Set your leadership north",
-        "description": "Your real situations become a clear focus: which stance, which boundaries and which conversations matter now.",
-        "outcome": "You stop leading everything at once and start with what counts."
+        "outcome": "You lead what counts first – not everything at once."
       },
       {
         "number": "03",
         "bearing": "204°",
         "kicker": "Practise",
         "title": "Prepare the key conversations",
-        "description": "We translate insight into wording, decisions and small experiments for your everyday work.",
         "outcome": "You enter difficult moments with language, not a knot in your stomach."
       },
       {
@@ -145,7 +141,6 @@
         "bearing": "312°",
         "kicker": "Anchor",
         "title": "Make clarity sustainable",
-        "description": "At the end we test what holds, what still wobbles and which routines keep you steady after coaching.",
         "outcome": "You leave with a personal leadership compass."
       }
     ]
@@ -159,19 +154,19 @@
     "points": [
       {
         "title": "Confidentiality without fine print",
-        "description": "Everything you bring stays in the coaching. Names, conflicts and internal dynamics are not turned into material."
+        "description": "Everything you bring stays in the coaching."
       },
       {
         "title": "Real situations, not role-play theatre",
-        "description": "We work on conversations, decisions and friction points that are genuinely on your desk this week."
+        "description": "We work on what's on your desk this week."
       },
       {
         "title": "Feedback that stays clear",
-        "description": "You do not get comfort phrases. I reflect what I see, then we turn it into one next action."
+        "description": "No comfort phrases. I reflect what I see."
       },
       {
         "title": "Structure, not a template",
-        "description": "The frame keeps the course for eight weeks. The content comes from your role, your team and your pace."
+        "description": "The frame keeps the course. The content comes from your role."
       }
     ],
     "honestNote": "Note: KlarKompass is a fictional concept project by Invessiv. That is why this section uses working principles instead of invented testimonials or claimed client results."
@@ -179,7 +174,6 @@
   "faq": {
     "eyebrow": "FAQ",
     "title": "Frequently asked questions",
-    "lead": "Answered briefly and honestly.",
     "contactPrompt": "Still have a question?",
     "items": [
       {

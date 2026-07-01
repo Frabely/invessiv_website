@@ -96,7 +96,6 @@ export function ProcessSection({
                     <span className={styles.kicker}>{step.kicker}</span>
                   </div>
                   <h3 className={styles.wpTitle}>{step.title}</h3>
-                  <p className={styles.wpText}>{step.description}</p>
                   <p className={styles.wpOutcome}>{step.outcome}</p>
                 </div>
               </motion.li>

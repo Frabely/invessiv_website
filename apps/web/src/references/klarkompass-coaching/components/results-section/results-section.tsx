@@ -50,7 +50,6 @@ export function ResultsSection({
   fromLabel,
   id,
   items,
-  lead,
   title,
   toLabel,
 }: ResultsSectionProps) {
@@ -65,7 +64,6 @@ export function ResultsSection({
         <Reveal as="div" className={styles.headInner}>
           <KlarkompassEyebrow>{eyebrow}</KlarkompassEyebrow>
           <h2 className={styles.title}>{title}</h2>
-          <p className={styles.lead}>{lead}</p>
         </Reveal>
       </RevealGroup>
 

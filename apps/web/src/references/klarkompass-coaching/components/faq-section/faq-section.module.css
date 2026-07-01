@@ -37,15 +37,6 @@
   text-wrap: balance;
 }
 
-.lead {
-  max-width: 34rem;
-  margin: 0;
-  color: var(--kk-ink-body);
-  font-family: var(--kk-font-sans);
-  font-size: clamp(1rem, 2.6vw, 1.12rem);
-  line-height: 1.6;
-}
-
 /* ---------- Q&A-Liste ---------- */
 
 .list {
