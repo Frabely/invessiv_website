@@ -70,6 +70,7 @@
 
 .nudgeAction {
   display: flex;
+  width: 100%;
 }
 
 .nudgeCta {
@@ -105,5 +106,9 @@
 
   .nudge {
     grid-column: 6 / -1;
+  }
+
+  .nudgeAction {
+    width: auto;
   }
 }

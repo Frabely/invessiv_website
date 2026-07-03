@@ -3,6 +3,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
+  box-sizing: border-box;
+  width: 100%;
   min-height: 3.1rem;
   padding: 0.85rem 1.6rem;
   border-radius: 3px;
@@ -51,6 +53,12 @@
   border: 1px solid var(--kk-border);
   background: transparent;
   color: var(--kk-ink);
+}
+
+@media (min-width: 880px) {
+  .cta {
+    width: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
