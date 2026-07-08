@@ -19,6 +19,7 @@ type HeroSectionProps = {
   heroTag: string;
   heroTrustLine?: string;
   heroVisualAriaLabel: string;
+  heroVideoSrc?: string;
   title: string;
 };
 
@@ -35,6 +36,7 @@ export function HeroSection({
   heroTag,
   heroTrustLine,
   heroVisualAriaLabel,
+  heroVideoSrc,
   title,
 }: HeroSectionProps) {
   return (
@@ -43,8 +45,21 @@ export function HeroSection({
       id={HERO_SECTION_ID}
     >
       <div aria-hidden="true" className={styles.backgroundLayers}>
+        {heroVideoSrc ? (
+          <video
+            aria-hidden="true"
+            autoPlay
+            className={styles.backgroundVideo}
+            loop
+            muted
+            playsInline
+            preload="metadata"
+          >
+            <source src={heroVideoSrc} type="video/mp4" />
+          </video>
+        ) : null}
         <div className={heroVisualStyles.vignette} />
-        <div className={heroVisualStyles.gridOverlay} />
+        {heroVideoSrc ? null : <div className={heroVisualStyles.gridOverlay} />}
         <div className={heroVisualStyles.noise} />
       </div>
 
