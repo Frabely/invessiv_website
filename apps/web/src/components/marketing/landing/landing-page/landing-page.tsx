@@ -81,6 +81,7 @@ export function LandingPage({ locale }: LandingPageProps) {
           heroTag={hero.tag}
           heroTrustLine={hero.trustLine}
           heroVisualAriaLabel={hero.visualAriaLabel}
+          heroVideoSrc="/assets/landing-page/spotlight.mp4"
           primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
           primaryCtaHref={SECTION_HREFS.contact}
           secondaryCtaAnalyticsTarget="process"
