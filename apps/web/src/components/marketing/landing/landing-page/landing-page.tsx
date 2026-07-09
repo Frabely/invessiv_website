@@ -100,7 +100,16 @@ export function LandingPage({ locale }: LandingPageProps) {
           }
           frameSlot={
             <>
-              <HeroZoomReplica>
+              <HeroZoomReplica
+                headerSlot={
+                  <SiteHeader
+                    ctaHref={SECTION_HREFS.contact}
+                    navigation={LANDING_HEADER_NAVIGATION}
+                    showThemeSwitch={false}
+                    uiContent={header}
+                  />
+                }
+              >
                 <HeroSection
                   compactMobile
                   decorative

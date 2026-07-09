@@ -39,8 +39,12 @@ describe("HeroZoomReplica", () => {
     );
 
     const replica = container.querySelector("[data-hero-zoom-replica]");
+    const replicaHeader = container.querySelector(
+      "[data-hero-zoom-replica-header]",
+    );
 
     expect(replica).toBeTruthy();
+    expect(replicaHeader).toBeNull();
     expect(replica?.getAttribute("aria-hidden")).toBe("true");
     expect(replica?.hasAttribute("inert")).toBe(true);
     expect(screen.queryByRole("heading")).toBeNull();
@@ -48,5 +52,24 @@ describe("HeroZoomReplica", () => {
     expect(container.querySelector("a")).toBeNull();
     expect(container.querySelector("#hero")).toBeNull();
     expect(container.querySelector("[data-analytics-event]")).toBeNull();
+  });
+
+  it("renders a provided real header slot inside the decorative replica", () => {
+    const { container } = render(
+      <HeroZoomReplica
+        headerSlot={<header className="site-header">Real header</header>}
+      >
+        <div>Hero</div>
+      </HeroZoomReplica>,
+    );
+
+    const replicaHeader = container.querySelector(
+      "[data-hero-zoom-replica-header]",
+    );
+
+    expect(replicaHeader).toBeTruthy();
+    expect(replicaHeader?.querySelector(".site-header")?.textContent).toBe(
+      "Real header",
+    );
   });
 });

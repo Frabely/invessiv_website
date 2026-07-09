@@ -4,9 +4,13 @@ import styles from "./hero-zoom-replica.module.css";
 
 type HeroZoomReplicaProps = {
   children: ReactNode;
+  headerSlot?: ReactNode;
 };
 
-export function HeroZoomReplica({ children }: HeroZoomReplicaProps) {
+export function HeroZoomReplica({
+  children,
+  headerSlot,
+}: HeroZoomReplicaProps) {
   return (
     <div
       aria-hidden="true"
@@ -14,6 +18,11 @@ export function HeroZoomReplica({ children }: HeroZoomReplicaProps) {
       data-hero-zoom-replica=""
       inert
     >
+      {headerSlot ? (
+        <div className={styles.header} data-hero-zoom-replica-header="">
+          {headerSlot}
+        </div>
+      ) : null}
       {children}
     </div>
   );

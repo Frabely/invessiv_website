@@ -1,3 +1,16 @@
 .replica {
   display: none;
+  position: relative;
+}
+
+.header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.header :global(.site-header) {
+  position: absolute;
+  top: 0;
 }

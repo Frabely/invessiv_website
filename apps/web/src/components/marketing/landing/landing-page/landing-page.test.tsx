@@ -58,26 +58,15 @@ describe("LandingPage", () => {
   it("renders the landing skeleton with header, problem section, hero visual, and footer", async () => {
     render(<LandingPage locale="de" />);
 
-    expect(
-      screen.getByTestId("site-header").getAttribute("data-cta-href"),
-    ).toBe("#contact");
-    expect(
-      screen.getByTestId("site-header").querySelector('a[href="#problem"]'),
-    ).toBeNull();
-    expect(
-      screen.getByTestId("site-header").querySelector('a[href="#solution"]'),
-    ).toBeTruthy();
-    expect(
-      screen
-        .getByTestId("site-header")
-        .querySelector('a[href="#done-for-you"]'),
-    ).toBeNull();
-    expect(
-      screen.getByTestId("site-header").querySelector('a[href="#trust"]'),
-    ).toBeTruthy();
-    expect(
-      screen.getByTestId("site-header").querySelector('a[href="#audience"]'),
-    ).toBeNull();
+    const siteHeaders = screen.getAllByTestId("site-header");
+    const primaryHeader = siteHeaders[0];
+    expect(siteHeaders).toHaveLength(2);
+    expect(primaryHeader.getAttribute("data-cta-href")).toBe("#contact");
+    expect(primaryHeader.querySelector('a[href="#problem"]')).toBeNull();
+    expect(primaryHeader.querySelector('a[href="#solution"]')).toBeTruthy();
+    expect(primaryHeader.querySelector('a[href="#done-for-you"]')).toBeNull();
+    expect(primaryHeader.querySelector('a[href="#trust"]')).toBeTruthy();
+    expect(primaryHeader.querySelector('a[href="#audience"]')).toBeNull();
     expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
       "Landingpage, die dein Angebot verkauft",
     );
@@ -161,6 +150,9 @@ describe("LandingPage", () => {
     const heroReplica = document.querySelector("[data-hero-zoom-replica]");
     expect(heroReplica).toBeTruthy();
     expect(heroReplica?.getAttribute("aria-hidden")).toBe("true");
+    expect(heroReplica?.querySelector("[data-testid='site-header']")).toBe(
+      siteHeaders[1],
+    );
     expect(heroReplica?.querySelector("h1")).toBeNull();
     expect(document.querySelector("[data-hero-zoom-placeholder]")).toBeTruthy();
     expect(
