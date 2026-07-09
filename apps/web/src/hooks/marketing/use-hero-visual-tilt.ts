@@ -1,18 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
 import type { RefObject } from "react";
+import { useEffect } from "react";
 
-export function useHeroVisualTilt(shotRef: RefObject<HTMLDivElement | null>) {
+import { DESKTOP_FINE_POINTER_MOTION_MEDIA_QUERY } from "@/common/constants/marketing";
+
+export function useHeroVisualTilt(
+  shotRef: RefObject<HTMLDivElement | null>,
+  enabled = true,
+) {
   useEffect(() => {
     const shot = shotRef.current;
 
-    if (!shot) {
+    if (!enabled || !shot) {
       return;
     }
 
     const canUsePointerEffect = window.matchMedia(
-      "(pointer: fine) and (min-width: 901px) and (prefers-reduced-motion: no-preference)",
+      DESKTOP_FINE_POINTER_MOTION_MEDIA_QUERY,
     ).matches;
 
     if (!canUsePointerEffect) {
@@ -51,5 +56,5 @@ export function useHeroVisualTilt(shotRef: RefObject<HTMLDivElement | null>) {
       window.removeEventListener("blur", reset);
       reset();
     };
-  }, [shotRef]);
+  }, [enabled, shotRef]);
 }

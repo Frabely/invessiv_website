@@ -5,6 +5,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useAnchorOffsetScroll } from "./use-anchor-offset-scroll";
 
+function mockLayoutTop(element: HTMLElement, offsetTop: number) {
+  Object.defineProperty(element, "offsetTop", {
+    configurable: true,
+    value: offsetTop,
+  });
+  Object.defineProperty(element, "offsetParent", {
+    configurable: true,
+    value: null,
+  });
+}
+
 function AnchorScrollHarness() {
   useAnchorOffsetScroll();
 
@@ -71,17 +82,7 @@ describe("useAnchorOffsetScroll", () => {
     });
 
     const processSection = screen.getByText("Process");
-    vi.spyOn(processSection, "getBoundingClientRect").mockReturnValue({
-      top: 420,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 420,
-      toJSON: () => ({}),
-    });
+    mockLayoutTop(processSection, 420);
 
     fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
 
@@ -103,17 +104,7 @@ describe("useAnchorOffsetScroll", () => {
     render(<AnchorScrollHarness />);
 
     const processSection = screen.getByText("Process");
-    vi.spyOn(processSection, "getBoundingClientRect").mockReturnValue({
-      top: 420,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 420,
-      toJSON: () => ({}),
-    });
+    mockLayoutTop(processSection, 420);
 
     fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
 
@@ -128,17 +119,7 @@ describe("useAnchorOffsetScroll", () => {
 
     const processSection = screen.getByText("Process");
     processSection.style.scrollMarginTop = "32px";
-    vi.spyOn(processSection, "getBoundingClientRect").mockReturnValue({
-      top: 420,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      width: 0,
-      height: 0,
-      x: 0,
-      y: 420,
-      toJSON: () => ({}),
-    });
+    mockLayoutTop(processSection, 420);
 
     fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
 

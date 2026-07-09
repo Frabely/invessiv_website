@@ -46,11 +46,16 @@ class MockIntersectionObserver {
   enter(element: Element) {
     this.callback([{ isIntersecting: true, target: element }]);
   }
+
+  hasTarget(id: string) {
+    return [...this.observed].some((element) => element.id === id);
+  }
 }
 
-function renderSections() {
+function renderSections(zoomState?: string) {
   render(
     <>
+      {zoomState ? <div data-zoom-state={zoomState} /> : null}
       <LandingFunnelTracker />
       <section id="hero" />
       <section id="solution" />
@@ -102,5 +107,32 @@ describe("LandingFunnelTracker", () => {
     observer.enter(hero);
 
     expect(mockTrackConversionEvent).toHaveBeenCalledTimes(1);
+  });
+
+  it("still tracks the hero while the zoom stage is pinned", () => {
+    renderSections("pinned");
+
+    const heroObserver = MockIntersectionObserver.instances.find((instance) =>
+      instance.hasTarget("hero"),
+    );
+
+    expect(heroObserver).toBeDefined();
+    heroObserver!.enter(document.getElementById("hero")!);
+
+    expect(mockTrackConversionEvent).toHaveBeenCalledWith(
+      "landing_page_section_view",
+      { location: "hero" },
+    );
+  });
+
+  it("does not observe gated sections while the zoom stage is pinned", () => {
+    renderSections("pinned");
+
+    const observesGated = MockIntersectionObserver.instances.some(
+      (instance) =>
+        instance.hasTarget("solution") || instance.hasTarget("contact"),
+    );
+
+    expect(observesGated).toBe(false);
   });
 });

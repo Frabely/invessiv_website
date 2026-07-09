@@ -82,8 +82,9 @@ describe("LandingPage", () => {
       "Landingpage, die dein Angebot verkauft",
     );
     expect(
-      screen.getByText(/Ein Ansprechpartner\. Keine Agentur-Schleife\./),
-    ).toBeTruthy();
+      screen.getAllByText(/Ein Ansprechpartner\. Keine Agentur-Schleife\./)
+        .length,
+    ).toBeGreaterThanOrEqual(1);
     expect(
       screen.getByRole("heading", {
         level: 2,
@@ -151,7 +152,17 @@ describe("LandingPage", () => {
     expect(audienceCta!.dataset.analyticsEvent).toBe("cta_click");
     expect(audienceCta!.dataset.analyticsTarget).toBe("contact");
     expect(audienceCta!.dataset.analyticsVariant).toBe("primary");
-    expect(screen.getByTestId("hero-visual")).toBeTruthy();
+    expect(screen.getAllByTestId("hero-visual").length).toBeGreaterThanOrEqual(
+      1,
+    );
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(document.querySelectorAll("#hero")).toHaveLength(1);
+    expect(document.querySelector("[data-zoom-state]")).toBeTruthy();
+    const heroReplica = document.querySelector("[data-hero-zoom-replica]");
+    expect(heroReplica).toBeTruthy();
+    expect(heroReplica?.getAttribute("aria-hidden")).toBe("true");
+    expect(heroReplica?.querySelector("h1")).toBeNull();
+    expect(document.querySelector("[data-hero-zoom-placeholder]")).toBeTruthy();
     expect(
       screen.getByRole("heading", {
         level: 2,

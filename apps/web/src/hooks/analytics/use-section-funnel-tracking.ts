@@ -9,6 +9,7 @@ import { trackConversionEvent } from "@/lib/analytics/conversion-events";
 export function useSectionFunnelTracking(
   eventName: ConversionEventName,
   sectionIds: readonly LandingFunnelSectionId[],
+  enabled = true,
 ) {
   const trackedRef = useRef<Set<string> | null>(null);
   if (trackedRef.current === null) {
@@ -16,7 +17,7 @@ export function useSectionFunnelTracking(
   }
 
   useEffect(() => {
-    if (!("IntersectionObserver" in window)) {
+    if (!enabled || !("IntersectionObserver" in window)) {
       return;
     }
 
@@ -60,5 +61,5 @@ export function useSectionFunnelTracking(
     return () => {
       observer.disconnect();
     };
-  }, [eventName, sectionIds]);
+  }, [enabled, eventName, sectionIds]);
 }

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import {
   getAnchorScrollTop,
   getHashHref,
+  getLayoutDocumentTop,
 } from "@/lib/navigation/anchor-scroll";
 
 function parsePixelValue(value: string) {
@@ -74,8 +75,8 @@ function scrollToHashTarget(hash: string, behavior: ScrollBehavior) {
   }
 
   const targetTop = getAnchorScrollTop(
-    targetElement.getBoundingClientRect().top,
-    window.scrollY,
+    getLayoutDocumentTop(targetElement),
+    0,
     getAnchorOffset(targetElement),
   );
 

@@ -5,6 +5,9 @@ import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funn
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { HeroZoomPlaceholder } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-placeholder/hero-zoom-placeholder";
+import { HeroZoomReplica } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-replica/hero-zoom-replica";
+import { HeroZoomStage } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-stage";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
@@ -73,77 +76,110 @@ export function LandingPage({ locale }: LandingPageProps) {
 
         <LandingFunnelTracker />
 
-        <HeroSection
-          compactMobile
-          description={hero.description}
-          heroPrimaryCta={hero.primaryCta}
-          heroSecondaryCta={hero.secondaryCta}
-          heroTag={hero.tag}
-          heroTrustLine={hero.trustLine}
-          heroVisualAriaLabel={hero.visualAriaLabel}
-          heroVideoSrc="/assets/landing-page/spotlight.mp4"
-          primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
-          primaryCtaHref={SECTION_HREFS.contact}
-          secondaryCtaAnalyticsTarget="process"
-          secondaryCtaHref={SECTION_HREFS.process}
-          title={hero.title}
-          trackingLocation="landing_hero"
-        />
+        <HeroZoomStage
+          heroSlot={
+            <HeroSection
+              compactMobile
+              description={hero.description}
+              heroPrimaryCta={hero.primaryCta}
+              heroSecondaryCta={hero.secondaryCta}
+              heroTag={hero.tag}
+              heroTrustLine={hero.trustLine}
+              heroVisualAriaLabel={hero.visualAriaLabel}
+              heroVideoSrc="/assets/landing-page/spotlight.mp4"
+              primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
+              primaryCtaHref={SECTION_HREFS.contact}
+              secondaryCtaAnalyticsTarget="process"
+              secondaryCtaHref={SECTION_HREFS.process}
+              title={hero.title}
+              trackingLocation="landing_hero"
+              visualSlot={
+                <HeroZoomPlaceholder ariaLabel={hero.visualAriaLabel} />
+              }
+            />
+          }
+          frameSlot={
+            <>
+              <HeroZoomReplica>
+                <HeroSection
+                  compactMobile
+                  decorative
+                  description={hero.description}
+                  heroPrimaryCta={hero.primaryCta}
+                  heroSecondaryCta={hero.secondaryCta}
+                  heroTag={hero.tag}
+                  heroTrustLine={hero.trustLine}
+                  heroVisualAriaLabel={hero.visualAriaLabel}
+                  primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
+                  primaryCtaHref={SECTION_HREFS.contact}
+                  secondaryCtaAnalyticsTarget="process"
+                  secondaryCtaHref={SECTION_HREFS.process}
+                  title={hero.title}
+                  trackingLocation="landing_hero"
+                />
+              </HeroZoomReplica>
 
-        <ProblemSolutionSection
-          id={LANDING_SECTION_IDS.solution}
-          locale={locale}
-          {...problemSolution}
-        />
+              <ProblemSolutionSection
+                id={LANDING_SECTION_IDS.solution}
+                locale={locale}
+                {...problemSolution}
+              />
 
-        <TrustSection
-          id={LANDING_SECTION_IDS.trust}
-          locale={locale}
-          replyAnalyticsTarget={CONTACT_SECTION_ID}
-          replyHref={SECTION_HREFS.contact}
-          {...trust}
-        />
+              <TrustSection
+                id={LANDING_SECTION_IDS.trust}
+                locale={locale}
+                replyAnalyticsTarget={CONTACT_SECTION_ID}
+                replyHref={SECTION_HREFS.contact}
+                {...trust}
+              />
 
-        <AudienceSection
-          id={LANDING_SECTION_IDS.audience}
-          locale={locale}
-          {...audience}
-        />
+              <AudienceSection
+                id={LANDING_SECTION_IDS.audience}
+                locale={locale}
+                {...audience}
+              />
 
-        <ProcessSection
-          id={LANDING_SECTION_IDS.process}
-          locale={locale}
-          {...process}
-        />
+              <ProcessSection
+                id={LANDING_SECTION_IDS.process}
+                locale={locale}
+                {...process}
+              />
 
-        <PricingSection
-          ctaHref={SECTION_HREFS.contact}
-          id={LANDING_SECTION_IDS.pricing}
-          locale={locale}
-          {...pricing}
-        />
+              <PricingSection
+                ctaHref={SECTION_HREFS.contact}
+                id={LANDING_SECTION_IDS.pricing}
+                locale={locale}
+                {...pricing}
+              />
 
-        <FaqSection id={LANDING_SECTION_IDS.faq} locale={locale} {...faq} />
+              <FaqSection
+                id={LANDING_SECTION_IDS.faq}
+                locale={locale}
+                {...faq}
+              />
 
-        <FinalCtaSection
-          analyticsLocation="landing_final_cta"
-          formId="landing_final_cta"
-          id={CONTACT_SECTION_ID}
-          locale={locale}
-          origin={ContactSubmissionOrigin.LandingPage}
-          successRedirectHref={createLocalePathname(
-            SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
-            locale,
-          )}
-          trackAdsConversion
-          {...finalCta}
-        />
+              <FinalCtaSection
+                analyticsLocation="landing_final_cta"
+                formId="landing_final_cta"
+                id={CONTACT_SECTION_ID}
+                locale={locale}
+                origin={ContactSubmissionOrigin.LandingPage}
+                successRedirectHref={createLocalePathname(
+                  SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
+                  locale,
+                )}
+                trackAdsConversion
+                {...finalCta}
+              />
 
-        <FooterSection
-          cookieSettings={<CookieSettingsButton />}
-          description={footer.description}
-          locale={locale}
-          navColumn={footer.navColumn}
+              <FooterSection
+                cookieSettings={<CookieSettingsButton />}
+                description={footer.description}
+                locale={locale}
+                navColumn={footer.navColumn}
+              />
+            </>
+          }
         />
       </main>
     </ConsentProvider>

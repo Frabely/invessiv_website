@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HeroSection } from "./hero-section";
 
@@ -12,6 +12,10 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
 }));
 
 describe("HeroSection", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
@@ -73,6 +77,56 @@ describe("HeroSection", () => {
     expect(secondaryLink.getAttribute("href")).toBe("#footer");
     expect(secondaryLink.dataset.analyticsLocation).toBe("landing_hero");
     expect(secondaryLink.dataset.analyticsTarget).toBe("footer");
+  });
+
+  it("renders a custom visual slot instead of the default hero visual", () => {
+    render(
+      <HeroSection
+        description="Kurze Beschreibung"
+        heroPrimaryCta="Check anfragen"
+        heroSecondaryCta="Footer ansehen"
+        heroTag="Landing"
+        heroVisualAriaLabel="Hero visual preview"
+        primaryCtaHref="#footer"
+        secondaryCtaHref="#footer"
+        trackingLocation="landing_hero"
+        primaryCtaAnalyticsTarget="footer"
+        secondaryCtaAnalyticsTarget="footer"
+        title="Landingpages"
+        visualSlot={<div data-testid="custom-visual" />}
+      />,
+    );
+
+    expect(screen.getByTestId("custom-visual")).toBeTruthy();
+    expect(screen.queryByText("Hero visual")).toBeNull();
+  });
+
+  it("renders decoratively without heading, id, links or analytics attributes", () => {
+    const { container } = render(
+      <HeroSection
+        decorative
+        description="Kurze Beschreibung"
+        heroPrimaryCta="Check anfragen"
+        heroSecondaryCta="Footer ansehen"
+        heroTag="Landing"
+        heroVisualAriaLabel="Hero visual preview"
+        primaryCtaHref="#footer"
+        secondaryCtaHref="#footer"
+        trackingLocation="landing_hero"
+        primaryCtaAnalyticsTarget="footer"
+        secondaryCtaAnalyticsTarget="footer"
+        title="Landingpages"
+      />,
+    );
+
+    expect(screen.queryByRole("heading")).toBeNull();
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(container.querySelector("#hero")).toBeNull();
+    expect(container.querySelector("a")).toBeNull();
+    expect(container.querySelector("[data-analytics-event]")).toBeNull();
+    expect(screen.getByText("Landingpages")).toBeTruthy();
+    expect(screen.getByText("Check anfragen")).toBeTruthy();
+    expect(screen.getByText("Footer ansehen")).toBeTruthy();
   });
 
   it("renders an optional decorative background video", () => {

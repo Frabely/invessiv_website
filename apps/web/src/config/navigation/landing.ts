@@ -28,6 +28,20 @@ export const LANDING_FUNNEL_SECTION_IDS = [
   LANDING_SECTION_IDS.contact,
 ] as const;
 
+export const LANDING_HERO_FUNNEL_SECTION_IDS = [
+  LANDING_SECTION_IDS.hero,
+] as const;
+
+export const LANDING_GATED_FUNNEL_SECTION_IDS = [
+  LANDING_SECTION_IDS.solution,
+  LANDING_SECTION_IDS.trust,
+  LANDING_SECTION_IDS.audience,
+  LANDING_SECTION_IDS.process,
+  LANDING_SECTION_IDS.pricing,
+  LANDING_SECTION_IDS.faq,
+  LANDING_SECTION_IDS.contact,
+] as const;
+
 export type LandingFunnelSectionId =
   (typeof LANDING_FUNNEL_SECTION_IDS)[number];
 

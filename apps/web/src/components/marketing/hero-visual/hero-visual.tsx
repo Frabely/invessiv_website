@@ -6,11 +6,12 @@ import styles from "./hero-visual.module.css";
 
 type HeroVisualProps = {
   ariaLabel: string;
+  decorative?: boolean;
 };
 
-export function HeroVisual({ ariaLabel }: HeroVisualProps) {
+export function HeroVisual({ ariaLabel, decorative = false }: HeroVisualProps) {
   const shotRef = useRef<HTMLDivElement | null>(null);
-  useHeroVisualTilt(shotRef);
+  useHeroVisualTilt(shotRef, !decorative);
 
   return (
     <aside aria-label={ariaLabel} className={styles.visual}>
