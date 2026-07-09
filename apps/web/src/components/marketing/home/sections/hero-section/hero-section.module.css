@@ -96,6 +96,7 @@
   max-width: 20ch;
   color: var(--color-text);
   font-size: clamp(2.7rem, 5.45vw, 4.25rem);
+  font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.048em;
   text-wrap: balance;

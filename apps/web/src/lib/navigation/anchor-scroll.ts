@@ -11,7 +11,14 @@ export function getLayoutDocumentTop(element: HTMLElement) {
   let current: HTMLElement | null = element;
 
   while (current) {
-    top += current.offsetTop;
+    const isSticky =
+      typeof window !== "undefined" &&
+      typeof HTMLElement !== "undefined" &&
+      current instanceof HTMLElement &&
+      window.getComputedStyle(current).position === "sticky";
+    if (!isSticky) {
+      top += current.offsetTop;
+    }
     const parent: Element | null = current.offsetParent;
     current = parent && "offsetTop" in parent ? (parent as HTMLElement) : null;
   }

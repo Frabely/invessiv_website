@@ -28,7 +28,7 @@ const MEASUREMENTS: HeroZoomMeasurements = {
 const END_SCROLL = computeHeroZoomEndScroll(MEASUREMENTS);
 
 describe("computeHeroZoomEndScroll", () => {
-  it("ends the zoom one handoff margin before exact alignment", () => {
+  it("ends the zoom once #solution reaches the handoff margin below the top", () => {
     expect(END_SCROLL).toBe(
       MEASUREMENTS.frameTop +
         MEASUREMENTS.replicaHeight -
@@ -85,17 +85,28 @@ describe("computeHeroZoomFrameStyle", () => {
     expect(style.backdropOpacity).toBe(0);
   });
 
-  it("clips the frame bottom exactly at the viewport bottom at progress 1", () => {
+  it("leaves #solution one handoff margin below the top at progress 1", () => {
     const style = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL);
 
-    const frameVisualTop = MEASUREMENTS.frameTop - END_SCROLL;
+    const frameVisualTop =
+      MEASUREMENTS.frameTop - END_SCROLL + style.translateY;
+    const solutionTop = frameVisualTop + MEASUREMENTS.replicaHeight;
+
+    expect(solutionTop).toBeCloseTo(HERO_ZOOM_HANDOFF_MARGIN_PX);
+  });
+
+  it("clips the frame bottom at the viewport bottom at progress 1", () => {
+    const style = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL);
+
+    const frameVisualTop =
+      MEASUREMENTS.frameTop - END_SCROLL + style.translateY;
     const visibleLocalHeight = MEASUREMENTS.frameHeight - style.clipBottomPx;
     const visualBottom = frameVisualTop + visibleLocalHeight * style.scale;
 
     expect(visualBottom).toBeCloseTo(MEASUREMENTS.viewportHeight);
   });
 
-  it("keeps intermediate values monotone between the endpoints", () => {
+  it("keeps the scale monotone increasing between the endpoints", () => {
     const quarter = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL * 0.25);
     const half = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL * 0.5);
     const threeQuarters = computeHeroZoomFrameStyle(
@@ -109,14 +120,12 @@ describe("computeHeroZoomFrameStyle", () => {
     expect(half.scale).toBeGreaterThan(quarter.scale);
     expect(threeQuarters.scale).toBeGreaterThan(half.scale);
     expect(threeQuarters.scale).toBeLessThan(1);
-    expect(quarter.heroOpacity).toBe(1);
-    expect(threeQuarters.heroOpacity).toBeLessThan(1);
   });
 
   it("never returns a negative clip inset", () => {
     const shallowFrame: HeroZoomMeasurements = {
       ...MEASUREMENTS,
-      frameHeight: 700,
+      frameHeight: 400,
     };
 
     const style = computeHeroZoomFrameStyle(

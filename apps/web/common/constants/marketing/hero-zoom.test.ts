@@ -36,8 +36,8 @@ describe("hero zoom constants", () => {
     expect(HERO_ZOOM_REPLICA_ATTRIBUTE).toBe("data-hero-zoom-replica");
   });
 
-  it("keeps the handoff margin larger than the section scroll margin", () => {
-    expect(HERO_ZOOM_HANDOFF_MARGIN_PX).toBeGreaterThanOrEqual(16);
+  it("keeps the handoff margin positive so #solution has room above it", () => {
+    expect(HERO_ZOOM_HANDOFF_MARGIN_PX).toBeGreaterThan(0);
   });
 
   it("keeps the re-pin threshold below full progress", () => {

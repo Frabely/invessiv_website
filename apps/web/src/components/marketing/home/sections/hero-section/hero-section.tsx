@@ -50,7 +50,7 @@ export function HeroSection({
 
   return (
     <section
-      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} hero`}
+      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${decorative ? styles.decorative : ""} hero`}
       id={decorative ? undefined : HERO_SECTION_ID}
     >
       <div aria-hidden="true" className={styles.backgroundLayers}>
@@ -67,9 +67,11 @@ export function HeroSection({
             <source src={heroVideoSrc} type="video/mp4" />
           </video>
         ) : null}
-        <div className={heroVisualStyles.vignette} />
-        {heroVideoSrc ? null : <div className={heroVisualStyles.gridOverlay} />}
-        <div className={heroVisualStyles.noise} />
+        {decorative ? null : <div className={heroVisualStyles.vignette} />}
+        {heroVideoSrc || decorative ? null : (
+          <div className={heroVisualStyles.gridOverlay} />
+        )}
+        {decorative ? null : <div className={heroVisualStyles.noise} />}
       </div>
 
       <div className={styles.grid}>

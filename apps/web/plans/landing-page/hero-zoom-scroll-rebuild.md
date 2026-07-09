@@ -54,9 +54,12 @@ Gegen den Code validierte Eckpunkte:
 
 - **Sticky-Hero spannt die ganze Stage** — ein „Track, danach Frame"-Layout kann den Hero nicht bis zum Handoff pinnen (
   Sticky würde vorher releasen).
-- **Handoff-Marge:** `scroll-margin-top` der Sections (globals.css:259, ~6–12px) würde Anker auf `#solution` knapp _vor_
-  den exakten Ausrichtungspunkt setzen → Seite bliebe bei p≈0.998 gepinnt und inert. Deshalb: Handoff vollendet sich
-  `HERO_ZOOM_HANDOFF_MARGIN_PX = 32` vor der exakten Ausrichtung; die letzten 32px sind natives Scrollen.
+- **Entkoppelte Zoom-Dauer (bewusst kurz):** Der Zoom vollendet, sobald die Frame-Oberkante die Viewport-Oberkante
+  erreicht — also nach **einer** Viewport-/Hero-Höhe (`scaleEnd = frameTop`), nicht erst wenn `#solution` oben steht. Am
+  Handoff steht die volle Hero (Replik) formatfüllend; ab dann natives Scrollen ins Content. Damit ist die Zoom-Dauer
+  von
+  der Replik-/Seitenhöhe entkoppelt und spürbar kürzer. Die frühere Kopplung `s_end = frameTop + R − M` (Zoom endet erst
+  bei `#solution`) war für die volle Replik-Höhe zu lang.
 - **clip-path ist funktional, nicht kosmetisch:** Der Frame ist ~10.000px hoch; der Clip begrenzt die
   gemalte/kompositierte Fläche (Perf).
 - **Transform-Clearing bei p≥1 mit leerem String** (`""`, niemals `translate3d(0,0,0) scale(1)`, kein verbleibendes
@@ -74,23 +77,25 @@ Alle Inputs layout-basiert (transform-unabhängig, via `offsetTop`-Kette), neu g
 Mount/Resize/Orientation/ResizeObserver auf dem Frame (rAF-throttled):
 
 ```
-V = innerHeight; yFrame = Layout-Top des Frames; R = replica.offsetHeight
+V = innerHeight; yFrame = Layout-Top des Frames (= Hero-/Pin-Höhe); Hf = frame.offsetHeight
 Placeholder-Rect (gepinnt = Viewport-Koordinaten): Tp, Lp, Wp, Hp; Lf = Frame-Layout-Left
-M = 32 (Handoff-Marge)
 
-s_end  = yFrame + R − M
-p(s)   = clamp(s / s_end, 0, 1);  e(p) Easing mit e(0)=0, e(1)=1 exakt
+scaleEnd = yFrame                      (Zoom fertig, sobald Frame-Oberkante = Viewport-Oberkante)
+p(s)   = clamp(s / scaleEnd, 0, 1);  e(p) Easing mit e(0)=0, e(1)=1 exakt
 k0     = Wp / Wf;  k(p) = k0 + (1−k0)·e(p)
-targetX(p) = Lp + (Lf−Lp)·e(p);  targetY(p) = Tp + ((M−R)−Tp)·e(p)
-tx = targetX − Lf;  ty = targetY − (yFrame − s)
+naturalTop(s) = yFrame − s             (Layout-Position der Frame-Oberkante im Viewport)
+renderedTop = Tp·(1−e) + naturalTop·e; renderedLeft = Lp·(1−e) + Lf·e
+tx = renderedLeft − Lf;  ty = renderedTop − naturalTop
 transform: translate3d(tx, ty, 0) scale(k);  origin: top left
-hVis(p) = Hp/k0 + ((V+R−M) − Hp/k0)·e(p)
-clip-path: inset(0 0 max(0, Hf−hVis)px 0 round r(p));  r(p) = (RADIUS/k0)·(1−e(p))
+hVis(p) = (Hp/k0)·(1−e) + V·e
+clip-path: inset(0 0 max(0, Hf−hVis)px 0 round r(p));  r(p) = (RADIUS·(1−e))/k
 heroFade: 1→0 über p∈[0.60,0.85];  backdropFade: 1→0 über p∈[0.85,0.98]
 ```
 
-Invarianten (Tests): bei p=1 gilt tx=ty=0, k=1, Clip-Unterkante exakt am Viewport-Bottom, Radius 0, Fades 0 → Clearing
-ist visuell ein No-Op. Bei p=0 entspricht das visuelle Frame-Rect dem Placeholder-Rect.
+Invarianten (Tests): bei p=1 gilt tx=ty=0, k=1, naturalTop=0 (Frame-Oberkante am Viewport-Top), Clip-Unterkante exakt
+am Viewport-Bottom, Radius 0, Fades 0 → Clearing ist visuell ein No-Op. Bei p=0 entspricht das visuelle Frame-Rect dem
+Placeholder-Rect. **Mini-Hintergrund:** Der dekorative Replik-Hero rendert **ohne** Vignette/Noise/Grid, damit die Mini
+den normalen `--bg` zeigt (die Vignette ist für den Video-Hero gedacht und würde ohne Video grau wirken).
 
 ## State-Machine (`data-zoom-state` + Window-Event)
 

@@ -15,6 +15,7 @@ import {
   type HeroZoomState,
 } from "@/common/constants/marketing";
 import type { HeroZoomMeasurements } from "@/common/contracts/marketing";
+import { HERO_SECTION_ID } from "@/config/navigation/home";
 import {
   computeHeroZoomEndScroll,
   computeHeroZoomFrameStyle,
@@ -192,7 +193,8 @@ export function useHeroZoom({
         return false;
       }
 
-      if (window.location.hash !== "") {
+      const hash = window.location.hash;
+      if (hash !== "" && hash !== `#${HERO_SECTION_ID}`) {
         return false;
       }
 

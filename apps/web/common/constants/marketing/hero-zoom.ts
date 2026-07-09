@@ -17,9 +17,14 @@ export const HERO_ZOOM_PLACEHOLDER_FALLBACK_ATTRIBUTE =
 
 export const HERO_ZOOM_REPLICA_ATTRIBUTE = "data-hero-zoom-replica";
 
-export const HERO_ZOOM_HANDOFF_MARGIN_PX = 32;
-
 export const HERO_ZOOM_REPIN_PROGRESS = 0.999;
+
+/**
+ * Abstand (px) zwischen der Oberkante von `#solution` und der Viewport-Oberkante,
+ * sobald der Zoom abgeschlossen ist. Gibt der Problem-Lösung-Sektion am Ende der
+ * Animation Luft nach oben, statt sie an die Bildschirmkante zu drücken.
+ */
+export const HERO_ZOOM_HANDOFF_MARGIN_PX = 120;
 
 export const HERO_ZOOM_ACTIVATION_MAX_SCROLL_RATIO = 0.5;
 

@@ -4,11 +4,11 @@ import {
   HERO_ZOOM_HANDOFF_MARGIN_PX,
   HERO_ZOOM_HERO_FADE_RANGE,
   type HeroZoomProgressRange,
-} from "../../constants/marketing/hero-zoom";
+} from "@/common/constants";
 import type {
   HeroZoomFrameStyle,
   HeroZoomMeasurements,
-} from "../../contracts/marketing/hero-zoom-geometry";
+} from "@/common/contracts";
 
 function clamp01(value: number) {
   return Math.min(1, Math.max(0, value));
@@ -22,11 +22,18 @@ function fadeOutOverRange(progress: number, range: HeroZoomProgressRange) {
   return 1 - clamp01((progress - range.start) / (range.end - range.start));
 }
 
+/**
+ * Scroll-Position, an der der Zoom abgeschlossen ist und `#solution` (direkt unter
+ * der Replik-Hero im Frame) mit `HERO_ZOOM_HANDOFF_MARGIN_PX` Abstand unter der
+ * Viewport-Oberkante steht. Der Transform ist hier exakt Identität → nahtloser
+ * Handoff an natives Scrollen.
+ */
 export function computeHeroZoomEndScroll(measurements: HeroZoomMeasurements) {
-  return (
+  return Math.max(
+    1,
     measurements.frameTop +
-    measurements.replicaHeight -
-    HERO_ZOOM_HANDOFF_MARGIN_PX
+      measurements.replicaHeight -
+      HERO_ZOOM_HANDOFF_MARGIN_PX,
   );
 }
 
