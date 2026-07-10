@@ -1,6 +1,8 @@
 .replica {
   display: none;
   position: relative;
+  overflow: hidden;
+  border-radius: 0;
 }
 
 .header {

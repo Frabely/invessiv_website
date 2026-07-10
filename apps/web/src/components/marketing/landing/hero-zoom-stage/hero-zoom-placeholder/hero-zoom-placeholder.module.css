@@ -113,6 +113,11 @@
     visibility 240ms ease;
 }
 
+.visualShot {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 :global([data-theme="light"]) .placeholder {
   background:
     linear-gradient(

@@ -15,7 +15,7 @@ export function HeroZoomPlaceholder({ ariaLabel }: HeroZoomPlaceholderProps) {
         <div className={styles.noise} />
       </div>
       <div className={styles.fallback} data-hero-zoom-placeholder-fallback="">
-        <HeroVisual ariaLabel={ariaLabel} />
+        <HeroVisual ariaLabel={ariaLabel} shotClassName={styles.visualShot} />
       </div>
     </div>
   );

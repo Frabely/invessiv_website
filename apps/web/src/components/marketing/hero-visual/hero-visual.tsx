@@ -7,18 +7,26 @@ import styles from "./hero-visual.module.css";
 type HeroVisualProps = {
   ariaLabel: string;
   decorative?: boolean;
+  shotClassName?: string;
 };
 
-export function HeroVisual({ ariaLabel, decorative = false }: HeroVisualProps) {
+export function HeroVisual({
+  ariaLabel,
+  decorative = false,
+  shotClassName,
+}: HeroVisualProps) {
   const shotRef = useRef<HTMLDivElement | null>(null);
   useHeroVisualTilt(shotRef, !decorative);
+  const shotClass = shotClassName
+    ? `${styles.shot} ${shotClassName}`
+    : styles.shot;
 
   return (
     <aside aria-label={ariaLabel} className={styles.visual}>
       <div className={`${styles.blob} ${styles.blobOne}`} />
       <div className={`${styles.blob} ${styles.blobTwo}`} />
       <div className={`${styles.blob} ${styles.blobThree}`} />
-      <div className={styles.shot} ref={shotRef}>
+      <div className={shotClass} ref={shotRef}>
         <div className={`${styles.layer} ${styles.layerBackplate}`}>
           <svg
             fill="none"

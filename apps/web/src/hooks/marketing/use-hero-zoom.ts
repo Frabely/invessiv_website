@@ -128,7 +128,7 @@ export function useHeroZoom({
       }
 
       frame.style.transform = `translate3d(${style.translateX}px, ${style.translateY}px, 0) scale(${style.scale})`;
-      frame.style.clipPath = `inset(0 0 ${style.clipBottomPx}px 0 round ${style.clipRadiusPx}px)`;
+      frame.style.clipPath = `inset(0 0 ${style.clipBottomPx}px 0 round 0 0 ${style.clipRadiusPx}px ${style.clipRadiusPx}px)`;
       stage.style.setProperty(HERO_FADE_VARIABLE, `${style.heroOpacity}`);
       stage.style.setProperty(
         BACKDROP_FADE_VARIABLE,
