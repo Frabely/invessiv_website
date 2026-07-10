@@ -17,6 +17,8 @@ export const HERO_ZOOM_PLACEHOLDER_FALLBACK_ATTRIBUTE =
 
 export const HERO_ZOOM_REPLICA_ATTRIBUTE = "data-hero-zoom-replica";
 
+export const HERO_ZOOM_CHROME_ATTRIBUTE = "data-hero-zoom-chrome";
+
 export const HERO_ZOOM_REPIN_PROGRESS = 0.999;
 
 /**
@@ -43,4 +45,14 @@ export const HERO_ZOOM_HERO_FADE_RANGE: HeroZoomProgressRange = {
 export const HERO_ZOOM_BACKDROP_FADE_RANGE: HeroZoomProgressRange = {
   start: 0.85,
   end: 0.98,
+};
+
+/**
+ * Fade-Fenster des Browser-Mockup-Rahmens um die Mini-Webseite. Endet bewusst
+ * vor p=1, damit der Rahmen vollständig verschwunden ist, sobald die Seite
+ * volle Größe erreicht.
+ */
+export const HERO_ZOOM_CHROME_FADE_RANGE: HeroZoomProgressRange = {
+  start: 0.65,
+  end: 0.9,
 };

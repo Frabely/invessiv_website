@@ -17,6 +17,12 @@ export type HeroZoomFrameStyle = {
   scale: number;
   clipBottomPx: number;
   clipRadiusPx: number;
+  chromeLeftPx: number;
+  chromeTopPx: number;
+  chromeWidthPx: number;
+  chromeHeightPx: number;
+  chromeRadiusPx: number;
+  chromeOpacity: number;
   heroOpacity: number;
   backdropOpacity: number;
 };

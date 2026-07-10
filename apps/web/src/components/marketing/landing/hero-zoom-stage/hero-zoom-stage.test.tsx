@@ -3,7 +3,10 @@
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { HERO_ZOOM_STATE } from "@/common/constants/marketing";
+import {
+  HERO_ZOOM_CHROME_ATTRIBUTE,
+  HERO_ZOOM_STATE,
+} from "@/common/constants/marketing";
 
 import { HeroZoomStage } from "./hero-zoom-stage";
 
@@ -144,6 +147,14 @@ describe("HeroZoomStage", () => {
     expect(getFrame().hasAttribute("inert")).toBe(false);
   });
 
+  it("renders the decorative browser chrome overlay", () => {
+    renderStage();
+
+    const chrome = getStage().querySelector(`[${HERO_ZOOM_CHROME_ATTRIBUTE}]`);
+    expect(chrome).not.toBeNull();
+    expect(chrome?.getAttribute("aria-hidden")).toBe("true");
+  });
+
   it("settles to idle when the layout cannot be measured", async () => {
     mockDesktopViewport();
     renderStage();
@@ -183,6 +194,12 @@ describe("HeroZoomStage", () => {
     });
     expect(frame.style.transform).toContain("scale");
     expect(frame.hasAttribute("inert")).toBe(true);
+    expect(getStage().style.getPropertyValue("--hero-zoom-chrome-w")).toMatch(
+      /px$/,
+    );
+    expect(
+      getStage().style.getPropertyValue("--hero-zoom-chrome-opacity"),
+    ).toBe("1");
 
     setScrollY(2400);
 
@@ -196,6 +213,10 @@ describe("HeroZoomStage", () => {
     expect(frame.style.willChange).toBe("");
     expect(frame.hasAttribute("inert")).toBe(false);
     expect(heroPin.style.visibility).toBe("hidden");
+    expect(getStage().style.getPropertyValue("--hero-zoom-chrome-w")).toBe("");
+    expect(
+      getStage().style.getPropertyValue("--hero-zoom-chrome-opacity"),
+    ).toBe("");
 
     setScrollY(400);
 

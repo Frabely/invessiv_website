@@ -28,6 +28,12 @@ import {
 
 const HERO_FADE_VARIABLE = "--hero-zoom-hero-fade";
 const BACKDROP_FADE_VARIABLE = "--hero-zoom-backdrop-fade";
+const CHROME_LEFT_VARIABLE = "--hero-zoom-chrome-x";
+const CHROME_TOP_VARIABLE = "--hero-zoom-chrome-y";
+const CHROME_WIDTH_VARIABLE = "--hero-zoom-chrome-w";
+const CHROME_HEIGHT_VARIABLE = "--hero-zoom-chrome-h";
+const CHROME_RADIUS_VARIABLE = "--hero-zoom-chrome-radius";
+const CHROME_OPACITY_VARIABLE = "--hero-zoom-chrome-opacity";
 
 type UseHeroZoomRefs = {
   stageRef: RefObject<HTMLDivElement | null>;
@@ -81,15 +87,26 @@ export function useHeroZoom({
       stage.style.removeProperty(BACKDROP_FADE_VARIABLE);
     };
 
+    const clearChromeVariables = () => {
+      stage.style.removeProperty(CHROME_LEFT_VARIABLE);
+      stage.style.removeProperty(CHROME_TOP_VARIABLE);
+      stage.style.removeProperty(CHROME_WIDTH_VARIABLE);
+      stage.style.removeProperty(CHROME_HEIGHT_VARIABLE);
+      stage.style.removeProperty(CHROME_RADIUS_VARIABLE);
+      stage.style.removeProperty(CHROME_OPACITY_VARIABLE);
+    };
+
     const enterIdle = () => {
       clearFrameStyles();
       clearFadeVariables();
+      clearChromeVariables();
       heroPin.style.visibility = "";
       transition(HERO_ZOOM_STATE.Idle);
     };
 
     const enterNative = () => {
       clearFrameStyles();
+      clearChromeVariables();
       heroPin.style.visibility = "hidden";
       stage.style.setProperty(HERO_FADE_VARIABLE, "0");
       stage.style.setProperty(BACKDROP_FADE_VARIABLE, "0");
@@ -116,6 +133,24 @@ export function useHeroZoom({
       stage.style.setProperty(
         BACKDROP_FADE_VARIABLE,
         `${style.backdropOpacity}`,
+      );
+      stage.style.setProperty(CHROME_LEFT_VARIABLE, `${style.chromeLeftPx}px`);
+      stage.style.setProperty(CHROME_TOP_VARIABLE, `${style.chromeTopPx}px`);
+      stage.style.setProperty(
+        CHROME_WIDTH_VARIABLE,
+        `${style.chromeWidthPx}px`,
+      );
+      stage.style.setProperty(
+        CHROME_HEIGHT_VARIABLE,
+        `${style.chromeHeightPx}px`,
+      );
+      stage.style.setProperty(
+        CHROME_RADIUS_VARIABLE,
+        `${style.chromeRadiusPx}px`,
+      );
+      stage.style.setProperty(
+        CHROME_OPACITY_VARIABLE,
+        `${style.chromeOpacity}`,
       );
     };
 
@@ -278,6 +313,7 @@ export function useHeroZoom({
       }
       clearFrameStyles();
       clearFadeVariables();
+      clearChromeVariables();
       heroPin.style.visibility = "";
     };
   }, [frameRef, heroPinRef, stageRef]);

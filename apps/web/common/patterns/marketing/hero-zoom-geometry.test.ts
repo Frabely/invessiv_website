@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  HERO_ZOOM_CHROME_FADE_RANGE,
   HERO_ZOOM_FRAME_RADIUS_PX,
   HERO_ZOOM_HANDOFF_MARGIN_PX,
 } from "../../constants/marketing/hero-zoom";
@@ -120,6 +121,29 @@ describe("computeHeroZoomFrameStyle", () => {
     expect(half.scale).toBeGreaterThan(quarter.scale);
     expect(threeQuarters.scale).toBeGreaterThan(half.scale);
     expect(threeQuarters.scale).toBeLessThan(1);
+  });
+
+  it("matches the chrome window to the placeholder rect at progress 0", () => {
+    const style = computeHeroZoomFrameStyle(MEASUREMENTS, 0);
+
+    expect(style.chromeLeftPx).toBeCloseTo(MEASUREMENTS.placeholderLeft);
+    expect(style.chromeTopPx).toBeCloseTo(MEASUREMENTS.placeholderTop);
+    expect(style.chromeWidthPx).toBeCloseTo(MEASUREMENTS.placeholderWidth);
+    expect(style.chromeHeightPx).toBeCloseTo(MEASUREMENTS.placeholderHeight);
+    expect(style.chromeRadiusPx).toBeCloseTo(HERO_ZOOM_FRAME_RADIUS_PX);
+    expect(style.chromeOpacity).toBe(1);
+  });
+
+  it("hides the chrome completely before the zoom finishes", () => {
+    const atFadeEnd = computeHeroZoomFrameStyle(
+      MEASUREMENTS,
+      END_SCROLL * HERO_ZOOM_CHROME_FADE_RANGE.end,
+    );
+    const atHandoff = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL);
+
+    expect(atFadeEnd.chromeOpacity).toBe(0);
+    expect(atHandoff.chromeOpacity).toBe(0);
+    expect(atHandoff.chromeRadiusPx).toBeCloseTo(0);
   });
 
   it("never returns a negative clip inset", () => {

@@ -1,5 +1,6 @@
 import {
   HERO_ZOOM_BACKDROP_FADE_RANGE,
+  HERO_ZOOM_CHROME_FADE_RANGE,
   HERO_ZOOM_FRAME_RADIUS_PX,
   HERO_ZOOM_HANDOFF_MARGIN_PX,
   HERO_ZOOM_HERO_FADE_RANGE,
@@ -92,6 +93,12 @@ export function computeHeroZoomFrameStyle(
     scale,
     clipBottomPx,
     clipRadiusPx,
+    chromeLeftPx: targetX,
+    chromeTopPx: targetY,
+    chromeWidthPx: frameWidth * scale,
+    chromeHeightPx: Math.min(visibleLocalHeight, frameHeight) * scale,
+    chromeRadiusPx: clipRadiusPx * scale,
+    chromeOpacity: fadeOutOverRange(progress, HERO_ZOOM_CHROME_FADE_RANGE),
     heroOpacity: fadeOutOverRange(progress, HERO_ZOOM_HERO_FADE_RANGE),
     backdropOpacity: fadeOutOverRange(progress, HERO_ZOOM_BACKDROP_FADE_RANGE),
   };

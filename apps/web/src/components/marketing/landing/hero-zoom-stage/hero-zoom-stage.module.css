@@ -44,6 +44,16 @@
   display: block;
 }
 
+/* Browser-Mockup nur während des Zooms; verschwindet vor dem Handoff komplett. */
+.stage[data-zoom-state="pinned"] [data-hero-zoom-chrome] {
+  display: block;
+}
+
+.stage[data-zoom-state="pinned"] [data-hero-zoom-placeholder] {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 .stage[data-zoom-state="pinned"] [data-hero-zoom-placeholder-fallback],
 .stage[data-zoom-state="native"] [data-hero-zoom-placeholder-fallback] {
   visibility: hidden;

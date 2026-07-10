@@ -5,6 +5,7 @@ import { useRef } from "react";
 
 import { HERO_ZOOM_STATE } from "@/common/constants/marketing";
 import { useHeroZoom } from "@/hooks/marketing/use-hero-zoom";
+import { HeroZoomChrome } from "./hero-zoom-chrome/hero-zoom-chrome";
 import styles from "./hero-zoom-stage.module.css";
 
 type HeroZoomStageProps = {
@@ -33,6 +34,7 @@ export function HeroZoomStage({ heroSlot, frameSlot }: HeroZoomStageProps) {
         <div aria-hidden="true" className={styles.frameBackdrop} />
         {frameSlot}
       </div>
+      <HeroZoomChrome />
     </div>
   );
 }
