@@ -12,9 +12,6 @@ export const HERO_ZOOM_STAGE_STATE_ATTRIBUTE = "data-zoom-state";
 
 export const HERO_ZOOM_PLACEHOLDER_ATTRIBUTE = "data-hero-zoom-placeholder";
 
-export const HERO_ZOOM_PLACEHOLDER_FALLBACK_ATTRIBUTE =
-  "data-hero-zoom-placeholder-fallback";
-
 export const HERO_ZOOM_REPLICA_ATTRIBUTE = "data-hero-zoom-replica";
 
 export const HERO_ZOOM_CHROME_ATTRIBUTE = "data-hero-zoom-chrome";

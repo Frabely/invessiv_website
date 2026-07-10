@@ -32,9 +32,9 @@ describe("buildConsentBootstrapScript", () => {
     expect(script).toContain('"wait_for_update":500');
   });
 
-  it("sets the redaction and passthrough companion params", () => {
+  it("sets redaction and disables url passthrough companion params", () => {
     expect(script).toContain("gtag('set', 'ads_data_redaction', true);");
-    expect(script).toContain("gtag('set', 'url_passthrough', true);");
+    expect(script).toContain("gtag('set', 'url_passthrough', false);");
   });
 
   it("reads the versioned stored choice and maps it to a consent update", () => {

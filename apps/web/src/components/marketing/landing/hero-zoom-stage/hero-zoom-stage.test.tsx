@@ -21,7 +21,8 @@ function renderStage() {
       frameSlot={
         <div data-testid="frame-slot">
           <div data-hero-zoom-replica="" data-testid="replica" />
-          <section id="solution" />
+          <section id="solution" data-testid="solution" />
+          <section id="process" />
         </div>
       }
     />,
@@ -58,11 +59,11 @@ function getHeroPin() {
 function mockDesktopViewport() {
   Object.defineProperty(window, "matchMedia", {
     configurable: true,
-    value: vi.fn().mockReturnValue({
-      matches: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: query !== "(max-width: 900px)",
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-    }),
+    })),
   });
   Object.defineProperty(window, "innerHeight", {
     configurable: true,
@@ -70,10 +71,25 @@ function mockDesktopViewport() {
   });
 }
 
+function mockMobileViewport() {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn().mockImplementation(() => ({
+      matches: true,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  });
+  Object.defineProperty(window, "innerHeight", {
+    configurable: true,
+    value: 640,
+  });
+}
+
 function mockMeasurements() {
   const frame = getFrame();
-  const replica = screen.getByTestId("replica");
   const placeholder = screen.getByTestId("placeholder");
+  const solution = screen.getByTestId("solution");
 
   Object.defineProperty(frame, "offsetTop", {
     configurable: true,
@@ -92,9 +108,13 @@ function mockMeasurements() {
     configurable: true,
     value: null,
   });
-  Object.defineProperty(replica, "offsetHeight", {
+  Object.defineProperty(solution, "offsetTop", {
     configurable: true,
-    value: 900,
+    value: 2100,
+  });
+  Object.defineProperty(solution, "offsetParent", {
+    configurable: true,
+    value: frame,
   });
   vi.spyOn(placeholder, "getBoundingClientRect").mockReturnValue({
     top: 220,
@@ -201,7 +221,7 @@ describe("HeroZoomStage", () => {
       getStage().style.getPropertyValue("--hero-zoom-chrome-opacity"),
     ).toBe("1");
 
-    setScrollY(2400);
+    setScrollY(3400);
 
     await waitFor(() => {
       expect(getStage().getAttribute("data-zoom-state")).toBe(
@@ -228,5 +248,19 @@ describe("HeroZoomStage", () => {
     expect(frame.style.transform).toContain("scale");
     expect(frame.hasAttribute("inert")).toBe(true);
     expect(heroPin.style.visibility).not.toBe("hidden");
+  });
+
+  it("pins the frame on mobile when reduced motion is not requested", async () => {
+    mockMobileViewport();
+    renderStage();
+    mockMeasurements();
+
+    await waitFor(() => {
+      expect(getStage().getAttribute("data-zoom-state")).toBe(
+        HERO_ZOOM_STATE.Pinned,
+      );
+    });
+
+    expect(getFrame().style.transform).toContain("scale");
   });
 });

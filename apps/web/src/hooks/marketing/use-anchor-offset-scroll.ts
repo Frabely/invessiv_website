@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 
 import {
+  createAnchorHistoryUrl,
   getAnchorScrollTop,
   getHashHref,
   getLayoutDocumentTop,
@@ -135,12 +136,16 @@ export function useAnchorOffsetScroll() {
 
       event.preventDefault();
 
-      const nextUrl = `${window.location.pathname}${window.location.search}${hash}`;
+      const nextUrl = createAnchorHistoryUrl(
+        window.location.pathname,
+        window.location.search,
+        hash,
+      );
       if (
         nextUrl !==
         window.location.pathname + window.location.search + window.location.hash
       ) {
-        window.history.pushState(null, "", hash);
+        window.history.pushState(null, "", nextUrl);
       }
     };
 

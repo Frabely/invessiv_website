@@ -4,7 +4,8 @@ export type HeroZoomMeasurements = {
   frameLeft: number;
   frameWidth: number;
   frameHeight: number;
-  replicaHeight: number;
+  targetTop: number;
+  handoffMarginPx: number;
   placeholderTop: number;
   placeholderLeft: number;
   placeholderWidth: number;

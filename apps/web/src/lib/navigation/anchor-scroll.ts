@@ -6,6 +6,38 @@ export function getHashHref(href: string | null) {
   return href;
 }
 
+const GOOGLE_LINKER_SEARCH_PARAM_NAMES = new Set(["_ga", "_gl", "_up"]);
+
+function isGoogleLinkerSearchParam(name: string) {
+  return GOOGLE_LINKER_SEARCH_PARAM_NAMES.has(name) || name.startsWith("_ga_");
+}
+
+export function createInternalNavigationUrl(
+  pathname: string,
+  search: string,
+  hash = "",
+) {
+  const searchParams = new URLSearchParams(search);
+
+  for (const key of [...searchParams.keys()]) {
+    if (isGoogleLinkerSearchParam(key)) {
+      searchParams.delete(key);
+    }
+  }
+
+  const sanitizedSearch = searchParams.toString();
+
+  return `${pathname}${sanitizedSearch ? `?${sanitizedSearch}` : ""}${hash}`;
+}
+
+export function createAnchorHistoryUrl(
+  pathname: string,
+  search: string,
+  hash: string,
+) {
+  return createInternalNavigationUrl(pathname, search, hash);
+}
+
 export function getLayoutDocumentTop(element: HTMLElement) {
   let top = 0;
   let current: HTMLElement | null = element;

@@ -5,7 +5,7 @@ import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funn
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
-import { HeroZoomPlaceholder } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-placeholder/hero-zoom-placeholder";
+import { HeroZoomAnchor } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-anchor/hero-zoom-anchor";
 import { HeroZoomReplica } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-replica/hero-zoom-replica";
 import { HeroZoomStage } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-stage";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
@@ -93,9 +93,7 @@ export function LandingPage({ locale }: LandingPageProps) {
               secondaryCtaHref={SECTION_HREFS.process}
               title={hero.title}
               trackingLocation="landing_hero"
-              visualSlot={
-                <HeroZoomPlaceholder ariaLabel={hero.visualAriaLabel} />
-              }
+              visualSlot={<HeroZoomAnchor />}
             />
           }
           frameSlot={

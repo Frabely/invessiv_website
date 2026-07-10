@@ -4,8 +4,8 @@ import {
   HERO_ZOOM_CHROME_FADE_RANGE,
   HERO_ZOOM_FRAME_RADIUS_PX,
   HERO_ZOOM_HANDOFF_MARGIN_PX,
-} from "../../constants/marketing/hero-zoom";
-import type { HeroZoomMeasurements } from "../../contracts/marketing/hero-zoom-geometry";
+} from "@/common/constants";
+import type { HeroZoomMeasurements } from "@/common/contracts";
 
 import {
   computeHeroZoomEndScroll,
@@ -19,7 +19,8 @@ const MEASUREMENTS: HeroZoomMeasurements = {
   frameLeft: 0,
   frameWidth: 1440,
   frameHeight: 9800,
-  replicaHeight: 900,
+  targetTop: 3600,
+  handoffMarginPx: HERO_ZOOM_HANDOFF_MARGIN_PX,
   placeholderTop: 220,
   placeholderLeft: 860,
   placeholderWidth: 432,
@@ -29,11 +30,11 @@ const MEASUREMENTS: HeroZoomMeasurements = {
 const END_SCROLL = computeHeroZoomEndScroll(MEASUREMENTS);
 
 describe("computeHeroZoomEndScroll", () => {
-  it("ends the zoom once #solution reaches the handoff margin below the top", () => {
+  it("ends the zoom once the target reaches the handoff margin below the top", () => {
     expect(END_SCROLL).toBe(
       MEASUREMENTS.frameTop +
-        MEASUREMENTS.replicaHeight -
-        HERO_ZOOM_HANDOFF_MARGIN_PX,
+        MEASUREMENTS.targetTop -
+        MEASUREMENTS.handoffMarginPx,
     );
   });
 });
@@ -86,14 +87,14 @@ describe("computeHeroZoomFrameStyle", () => {
     expect(style.backdropOpacity).toBe(0);
   });
 
-  it("leaves #solution one handoff margin below the top at progress 1", () => {
+  it("leaves the target section one handoff margin below the top at progress 1", () => {
     const style = computeHeroZoomFrameStyle(MEASUREMENTS, END_SCROLL);
 
     const frameVisualTop =
       MEASUREMENTS.frameTop - END_SCROLL + style.translateY;
-    const solutionTop = frameVisualTop + MEASUREMENTS.replicaHeight;
+    const targetTop = frameVisualTop + MEASUREMENTS.targetTop;
 
-    expect(solutionTop).toBeCloseTo(HERO_ZOOM_HANDOFF_MARGIN_PX);
+    expect(targetTop).toBeCloseTo(MEASUREMENTS.handoffMarginPx);
   });
 
   it("clips the frame bottom at the viewport bottom at progress 1", () => {

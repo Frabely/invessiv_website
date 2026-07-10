@@ -129,6 +129,24 @@ describe("useAnchorOffsetScroll", () => {
     });
   });
 
+  it("strips Google linker params from internal anchor URLs", () => {
+    window.history.replaceState(
+      {},
+      "",
+      "/de?_gl=1*abc*_ga=client&_up=MQ..&_ga_5T4BC28Z0F=session&utm_source=google",
+    );
+    render(<AnchorScrollHarness />);
+
+    const processSection = screen.getByText("Process");
+    mockLayoutTop(processSection, 420);
+
+    fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
+
+    expect(window.location.pathname).toBe("/de");
+    expect(window.location.search).toBe("?utm_source=google");
+    expect(window.location.hash).toBe("#process");
+  });
+
   it("leaves the skip link to native browser behavior", () => {
     render(<AnchorScrollHarness />);
 

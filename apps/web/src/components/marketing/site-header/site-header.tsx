@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
-import type { MouseEvent } from "react";
+import { type MouseEvent, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
@@ -23,6 +23,7 @@ import {
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
 } from "@/lib/navigation/locale-scroll-restoration";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import { createInternalNavigationUrl } from "@/lib/navigation/anchor-scroll";
 import {
   trackSiteHeaderLanguageSwitch,
   trackSiteHeaderThemeSwitch,
@@ -83,7 +84,7 @@ export function SiteHeader({
 
     const nextPathname = createLocalePathname(pathname, nextLocale);
     const search = typeof window !== "undefined" ? window.location.search : "";
-    const nextUrl = `${nextPathname}${search}`;
+    const nextUrl = createInternalNavigationUrl(nextPathname, search);
 
     if (typeof window !== "undefined") {
       window.sessionStorage.setItem(
@@ -119,6 +120,19 @@ export function SiteHeader({
   const headerClassName = isScrolled
     ? `${styles.header} ${styles.headerScrolled} site-header is-scrolled`
     : `${styles.header} site-header`;
+
+  useEffect(() => {
+    const sanitizedUrl = createInternalNavigationUrl(
+      window.location.pathname,
+      window.location.search,
+      window.location.hash,
+    );
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    if (sanitizedUrl !== currentUrl) {
+      window.history.replaceState(window.history.state, "", sanitizedUrl);
+    }
+  }, [pathname]);
 
   return (
     <header className={headerClassName}>

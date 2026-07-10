@@ -1,0 +1,21 @@
+.anchor {
+  display: block;
+  width: 100%;
+  min-height: 360px;
+  aspect-ratio: 16 / 10;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .anchor {
+    min-height: 0;
+    height: clamp(150px, 28svh, 230px);
+  }
+}
+
+@media (max-width: 420px) and (max-height: 700px) {
+  .anchor {
+    height: clamp(124px, 23svh, 168px);
+  }
+}

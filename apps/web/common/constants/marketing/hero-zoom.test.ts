@@ -7,7 +7,6 @@ import {
   HERO_ZOOM_HANDOFF_MARGIN_PX,
   HERO_ZOOM_HERO_FADE_RANGE,
   HERO_ZOOM_PLACEHOLDER_ATTRIBUTE,
-  HERO_ZOOM_PLACEHOLDER_FALLBACK_ATTRIBUTE,
   HERO_ZOOM_REPIN_PROGRESS,
   HERO_ZOOM_REPLICA_ATTRIBUTE,
   HERO_ZOOM_STAGE_STATE_ATTRIBUTE,
@@ -30,9 +29,6 @@ describe("hero zoom constants", () => {
 
   it("keeps the marker attributes stable for CSS selectors and queries", () => {
     expect(HERO_ZOOM_PLACEHOLDER_ATTRIBUTE).toBe("data-hero-zoom-placeholder");
-    expect(HERO_ZOOM_PLACEHOLDER_FALLBACK_ATTRIBUTE).toBe(
-      "data-hero-zoom-placeholder-fallback",
-    );
     expect(HERO_ZOOM_REPLICA_ATTRIBUTE).toBe("data-hero-zoom-replica");
   });
 

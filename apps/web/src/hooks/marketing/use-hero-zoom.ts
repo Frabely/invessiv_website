@@ -1,21 +1,21 @@
 "use client";
 
 import type { RefObject } from "react";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 
 import { LANDING_HERO_ZOOM_STATE_EVENT } from "@/common/constants/events";
 import {
-  DESKTOP_FINE_POINTER_MOTION_MEDIA_QUERY,
   HERO_ZOOM_ACTIVATION_MAX_SCROLL_RATIO,
+  HERO_ZOOM_HANDOFF_MARGIN_PX,
   HERO_ZOOM_PLACEHOLDER_ATTRIBUTE,
   HERO_ZOOM_REPIN_PROGRESS,
-  HERO_ZOOM_REPLICA_ATTRIBUTE,
   HERO_ZOOM_STAGE_STATE_ATTRIBUTE,
   HERO_ZOOM_STATE,
   type HeroZoomState,
 } from "@/common/constants/marketing";
 import type { HeroZoomMeasurements } from "@/common/contracts/marketing";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
+import { LANDING_SECTION_IDS } from "@/config/navigation/landing";
 import {
   computeHeroZoomEndScroll,
   computeHeroZoomFrameStyle,
@@ -34,6 +34,11 @@ const CHROME_WIDTH_VARIABLE = "--hero-zoom-chrome-w";
 const CHROME_HEIGHT_VARIABLE = "--hero-zoom-chrome-h";
 const CHROME_RADIUS_VARIABLE = "--hero-zoom-chrome-radius";
 const CHROME_OPACITY_VARIABLE = "--hero-zoom-chrome-opacity";
+const HERO_ZOOM_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: no-preference)";
+const HERO_ZOOM_MOBILE_MEDIA_QUERY = "(max-width: 900px)";
+const HERO_ZOOM_MOBILE_HANDOFF_MARGIN_PX = 72;
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 type UseHeroZoomRefs = {
   stageRef: RefObject<HTMLDivElement | null>;
@@ -46,7 +51,7 @@ export function useHeroZoom({
   heroPinRef,
   frameRef,
 }: UseHeroZoomRefs) {
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const stage = stageRef.current;
     const heroPin = heroPinRef.current;
     const frame = frameRef.current;
@@ -189,11 +194,12 @@ export function useHeroZoom({
       const placeholder = stage.querySelector(
         `[${HERO_ZOOM_PLACEHOLDER_ATTRIBUTE}]`,
       );
-      const replica = stage.querySelector(`[${HERO_ZOOM_REPLICA_ATTRIBUTE}]`);
+      const target = document.getElementById(LANDING_SECTION_IDS.solution);
 
       if (
         !(placeholder instanceof HTMLElement) ||
-        !(replica instanceof HTMLElement)
+        !(target instanceof HTMLElement) ||
+        !frame.contains(target)
       ) {
         return null;
       }
@@ -205,13 +211,18 @@ export function useHeroZoom({
         return null;
       }
 
+      const isMobile = window.matchMedia(HERO_ZOOM_MOBILE_MEDIA_QUERY).matches;
+
       return {
         viewportHeight: window.innerHeight,
         frameTop: getLayoutDocumentTop(frame),
         frameLeft: getLayoutDocumentLeft(frame),
         frameWidth,
         frameHeight: frame.offsetHeight,
-        replicaHeight: replica.offsetHeight,
+        targetTop: getLayoutDocumentTop(target) - getLayoutDocumentTop(frame),
+        handoffMarginPx: isMobile
+          ? HERO_ZOOM_MOBILE_HANDOFF_MARGIN_PX
+          : HERO_ZOOM_HANDOFF_MARGIN_PX,
         placeholderTop: rect.top,
         placeholderLeft: rect.left,
         placeholderWidth: rect.width,
@@ -224,7 +235,7 @@ export function useHeroZoom({
         return false;
       }
 
-      if (!window.matchMedia(DESKTOP_FINE_POINTER_MOTION_MEDIA_QUERY).matches) {
+      if (!window.matchMedia(HERO_ZOOM_MOTION_MEDIA_QUERY).matches) {
         return false;
       }
 
@@ -281,7 +292,7 @@ export function useHeroZoom({
         cleanups.push(() => observer.disconnect());
       }
 
-      const media = window.matchMedia(DESKTOP_FINE_POINTER_MOTION_MEDIA_QUERY);
+      const media = window.matchMedia(HERO_ZOOM_MOTION_MEDIA_QUERY);
       const handleMediaChange = () => {
         if (!media.matches) {
           for (const cleanup of cleanups.splice(0)) {

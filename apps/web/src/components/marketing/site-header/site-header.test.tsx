@@ -148,7 +148,7 @@ describe("SiteHeader", () => {
     ).toBeNull();
   });
 
-  it("does not carry a stale section hash into the locale switch", () => {
+  it("does not carry a stale hash or Google linker params into the locale switch", () => {
     const setLocale = vi.fn();
     mockUseLanguage.mockReturnValue({
       locale: "de",
@@ -159,7 +159,11 @@ describe("SiteHeader", () => {
       theme: "dark",
       toggleTheme: vi.fn(),
     });
-    window.history.replaceState({}, "", "/de/imprint?ref=nav#services");
+    window.history.replaceState(
+      {},
+      "",
+      "/de/imprint?ref=nav&_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session#services",
+    );
 
     render(
       <SiteHeader
@@ -175,6 +179,29 @@ describe("SiteHeader", () => {
     expect(
       window.sessionStorage.getItem(LOCALE_SCROLL_RESTORE_STORAGE_KEY),
     ).toContain('"url":"/en/imprint?ref=nav"');
+  });
+
+  it("cleans Google linker params from the current header URL", () => {
+    mockUseLanguage.mockReturnValue({
+      locale: "de",
+      setLocale: vi.fn(),
+    });
+    mockUseTheme.mockReturnValue({
+      isMounted: true,
+      theme: "dark",
+      toggleTheme: vi.fn(),
+    });
+    window.history.replaceState(
+      {},
+      "",
+      "/de?_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session&utm_source=google#hero",
+    );
+
+    render(<SiteHeader navigation={[]} />);
+
+    expect(window.location.pathname).toBe("/de");
+    expect(window.location.search).toBe("?utm_source=google");
+    expect(window.location.hash).toBe("#hero");
   });
 
   it("does not track or navigate when selecting the active locale", () => {

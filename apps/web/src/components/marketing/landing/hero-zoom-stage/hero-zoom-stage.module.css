@@ -1,4 +1,8 @@
 .stage {
+  --hero-zoom-backdrop-fade: 1;
+  --hero-zoom-hero-fade: 1;
+  --hero-zoom-spacer: 0px;
+
   position: relative;
   overflow-anchor: none;
 }
@@ -6,11 +10,11 @@
 .heroPin {
   position: relative;
   z-index: 1;
-  opacity: var(--hero-zoom-hero-fade, 1);
+  opacity: var(--hero-zoom-hero-fade);
 }
 
 .spacer {
-  height: var(--hero-zoom-spacer, 0px);
+  height: var(--hero-zoom-spacer);
 }
 
 .frame {
@@ -36,7 +40,7 @@
 }
 
 .stage[data-zoom-state="pinned"] .frameBackdrop {
-  opacity: var(--hero-zoom-backdrop-fade, 1);
+  opacity: var(--hero-zoom-backdrop-fade);
 }
 
 .stage[data-zoom-state="pinned"] [data-hero-zoom-replica],
@@ -47,23 +51,4 @@
 /* Browser-Mockup nur während des Zooms; verschwindet vor dem Handoff komplett. */
 .stage[data-zoom-state="pinned"] [data-hero-zoom-chrome] {
   display: block;
-}
-
-.stage[data-zoom-state="pinned"] [data-hero-zoom-placeholder] {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-
-.stage[data-zoom-state="pinned"] [data-hero-zoom-placeholder-fallback],
-.stage[data-zoom-state="native"] [data-hero-zoom-placeholder-fallback] {
-  visibility: hidden;
-  opacity: 0;
-}
-
-@media (max-width: 900px) {
-  .stage[data-zoom-state="pinned"] .heroPin,
-  .stage[data-zoom-state="native"] .heroPin {
-    position: relative;
-    top: auto;
-  }
 }

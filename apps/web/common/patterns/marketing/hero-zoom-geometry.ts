@@ -2,7 +2,6 @@ import {
   HERO_ZOOM_BACKDROP_FADE_RANGE,
   HERO_ZOOM_CHROME_FADE_RANGE,
   HERO_ZOOM_FRAME_RADIUS_PX,
-  HERO_ZOOM_HANDOFF_MARGIN_PX,
   HERO_ZOOM_HERO_FADE_RANGE,
   type HeroZoomProgressRange,
 } from "@/common/constants";
@@ -33,8 +32,8 @@ export function computeHeroZoomEndScroll(measurements: HeroZoomMeasurements) {
   return Math.max(
     1,
     measurements.frameTop +
-      measurements.replicaHeight -
-      HERO_ZOOM_HANDOFF_MARGIN_PX,
+      measurements.targetTop -
+      measurements.handoffMarginPx,
   );
 }
 
@@ -56,7 +55,8 @@ export function computeHeroZoomFrameStyle(
     frameLeft,
     frameWidth,
     frameHeight,
-    replicaHeight,
+    targetTop,
+    handoffMarginPx,
     placeholderTop,
     placeholderLeft,
     placeholderWidth,
@@ -71,15 +71,14 @@ export function computeHeroZoomFrameStyle(
   const scale = initialScale + (1 - initialScale) * eased;
 
   const targetX = placeholderLeft + (frameLeft - placeholderLeft) * eased;
-  const finalTop = HERO_ZOOM_HANDOFF_MARGIN_PX - replicaHeight;
+  const finalTop = handoffMarginPx - targetTop;
   const targetY = placeholderTop + (finalTop - placeholderTop) * eased;
 
   const translateX = targetX - frameLeft;
   const translateY = targetY - (frameTop - scrollY);
 
   const initialVisibleLocalHeight = placeholderHeight / initialScale;
-  const finalVisibleLocalHeight =
-    viewportHeight + replicaHeight - HERO_ZOOM_HANDOFF_MARGIN_PX;
+  const finalVisibleLocalHeight = viewportHeight + targetTop - handoffMarginPx;
   const visibleLocalHeight =
     initialVisibleLocalHeight +
     (finalVisibleLocalHeight - initialVisibleLocalHeight) * eased;
