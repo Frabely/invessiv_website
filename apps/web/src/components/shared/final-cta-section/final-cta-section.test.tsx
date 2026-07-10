@@ -191,6 +191,26 @@ describe("FinalCtaSection", () => {
     ).toBeNull();
   });
 
+  it("uses a deterministic consent error id based on the form id", () => {
+    render(
+      <FinalCtaSection
+        analyticsLocation="landing_final_cta"
+        formId="landing_final_cta"
+        id="contact"
+        locale="de"
+        successRedirectHref="/de/services/landing-page/success"
+        trackAdsConversion
+        {...getLandingFinalCtaContent("de")}
+      />,
+    );
+
+    const checkbox = screen.getByRole("checkbox");
+    const errorId = "landing_final_cta-consent-error";
+
+    expect(checkbox.getAttribute("aria-describedby")).toBe(errorId);
+    expect(document.getElementById(errorId)).toBeTruthy();
+  });
+
   it("submits the LinkedIn workflow CTA without rendering a website field", async () => {
     render(
       <FinalCtaSection
