@@ -40,7 +40,11 @@
 
 .stage[data-zoom-state="pinned"] [data-hero-zoom-replica],
 .stage[data-zoom-state="native"] [data-hero-zoom-replica] {
-  display: block;
+  visibility: visible;
+}
+
+.stage[data-zoom-state="idle"] [data-hero-zoom-replica] {
+  display: none;
 }
 
 /* Browser-Mockup nur während des Zooms; verschwindet vor dem Handoff komplett. */

@@ -214,9 +214,12 @@ describe("HeroZoomStage", () => {
     });
     expect(frame.style.transform).toContain("scale");
     expect(frame.hasAttribute("inert")).toBe(true);
-    expect(getStage().style.getPropertyValue("--hero-zoom-chrome-w")).toMatch(
-      /px$/,
-    );
+    expect(
+      Number(getStage().style.getPropertyValue("--hero-zoom-chrome-scale-x")),
+    ).toBeGreaterThan(0);
+    expect(
+      Number(getStage().style.getPropertyValue("--hero-zoom-chrome-scale-y")),
+    ).toBeGreaterThan(0);
     expect(
       getStage().style.getPropertyValue("--hero-zoom-chrome-opacity"),
     ).toBe("1");
@@ -233,7 +236,12 @@ describe("HeroZoomStage", () => {
     expect(frame.style.willChange).toBe("");
     expect(frame.hasAttribute("inert")).toBe(false);
     expect(heroPin.style.visibility).toBe("hidden");
-    expect(getStage().style.getPropertyValue("--hero-zoom-chrome-w")).toBe("");
+    expect(
+      getStage().style.getPropertyValue("--hero-zoom-chrome-scale-x"),
+    ).toBe("");
+    expect(
+      getStage().style.getPropertyValue("--hero-zoom-chrome-scale-y"),
+    ).toBe("");
     expect(
       getStage().style.getPropertyValue("--hero-zoom-chrome-opacity"),
     ).toBe("");
@@ -250,17 +258,18 @@ describe("HeroZoomStage", () => {
     expect(heroPin.style.visibility).not.toBe("hidden");
   });
 
-  it("pins the frame on mobile when reduced motion is not requested", async () => {
+  it("settles to idle on mobile so the page scrolls normally", async () => {
     mockMobileViewport();
     renderStage();
     mockMeasurements();
 
     await waitFor(() => {
       expect(getStage().getAttribute("data-zoom-state")).toBe(
-        HERO_ZOOM_STATE.Pinned,
+        HERO_ZOOM_STATE.Idle,
       );
     });
 
-    expect(getFrame().style.transform).toContain("scale");
+    expect(getFrame().style.transform).toBe("");
+    expect(getFrame().hasAttribute("inert")).toBe(false);
   });
 });

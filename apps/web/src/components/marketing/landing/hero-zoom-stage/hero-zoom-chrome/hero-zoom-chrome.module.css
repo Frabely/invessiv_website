@@ -10,16 +10,16 @@
   initial-value: 0px;
 }
 
-@property --hero-zoom-chrome-w {
-  syntax: "<length>";
+@property --hero-zoom-chrome-scale-x {
+  syntax: "<number>";
   inherits: true;
-  initial-value: 0px;
+  initial-value: 1;
 }
 
-@property --hero-zoom-chrome-h {
-  syntax: "<length>";
+@property --hero-zoom-chrome-scale-y {
+  syntax: "<number>";
   inherits: true;
-  initial-value: 0px;
+  initial-value: 1;
 }
 
 @property --hero-zoom-chrome-radius {
@@ -44,13 +44,20 @@
 
   display: none;
   position: fixed;
-  left: var(--hero-zoom-chrome-x);
-  top: var(--hero-zoom-chrome-y);
-  width: var(--hero-zoom-chrome-w);
-  height: var(--hero-zoom-chrome-h);
+  inset: 0 auto auto 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 3;
   pointer-events: none;
   opacity: var(--hero-zoom-chrome-opacity);
+  transform: translate3d(
+      var(--hero-zoom-chrome-x),
+      var(--hero-zoom-chrome-y),
+      0
+    )
+    scale(var(--hero-zoom-chrome-scale-x), var(--hero-zoom-chrome-scale-y));
+  transform-origin: top left;
+  will-change: transform, opacity;
   border: 1px solid var(--hero-zoom-chrome-line);
   border-radius: 0 0 var(--hero-zoom-chrome-radius)
     var(--hero-zoom-chrome-radius);
