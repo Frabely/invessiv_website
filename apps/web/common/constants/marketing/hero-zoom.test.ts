@@ -8,7 +8,6 @@ import {
   HERO_ZOOM_HERO_FADE_RANGE,
   HERO_ZOOM_PLACEHOLDER_ATTRIBUTE,
   HERO_ZOOM_REPIN_PROGRESS,
-  HERO_ZOOM_REPLICA_ATTRIBUTE,
   HERO_ZOOM_STAGE_STATE_ATTRIBUTE,
   HERO_ZOOM_STATE,
 } from "./hero-zoom";
@@ -27,9 +26,8 @@ describe("hero zoom constants", () => {
     expect(HERO_ZOOM_STAGE_STATE_ATTRIBUTE).toBe("data-zoom-state");
   });
 
-  it("keeps the marker attributes stable for CSS selectors and queries", () => {
+  it("keeps the placeholder marker attribute stable for layout queries", () => {
     expect(HERO_ZOOM_PLACEHOLDER_ATTRIBUTE).toBe("data-hero-zoom-placeholder");
-    expect(HERO_ZOOM_REPLICA_ATTRIBUTE).toBe("data-hero-zoom-replica");
   });
 
   it("keeps the handoff margin positive so #solution has room above it", () => {

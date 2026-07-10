@@ -7,6 +7,7 @@ import { FooterSection } from "@/components/marketing/home/sections/footer-secti
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { HeroZoomAnchor } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-anchor/hero-zoom-anchor";
 import { HeroZoomReplica } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-replica/hero-zoom-replica";
+import { HeroZoomReplicaHeader } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-replica/hero-zoom-replica-header/hero-zoom-replica-header";
 import { HeroZoomStage } from "@/components/marketing/landing/hero-zoom-stage/hero-zoom-stage";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
@@ -100,10 +101,10 @@ export function LandingPage({ locale }: LandingPageProps) {
             <>
               <HeroZoomReplica
                 headerSlot={
-                  <SiteHeader
+                  <HeroZoomReplicaHeader
                     ctaHref={SECTION_HREFS.contact}
+                    locale={locale}
                     navigation={LANDING_HEADER_NAVIGATION}
-                    showThemeSwitch={false}
                     uiContent={header}
                   />
                 }

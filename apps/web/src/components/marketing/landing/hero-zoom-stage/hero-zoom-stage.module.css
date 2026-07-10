@@ -1,7 +1,6 @@
 .stage {
   --hero-zoom-backdrop-fade: 1;
   --hero-zoom-hero-fade: 1;
-  --hero-zoom-spacer: 0px;
 
   position: relative;
   overflow-anchor: none;
@@ -11,10 +10,6 @@
   position: relative;
   z-index: 1;
   opacity: var(--hero-zoom-hero-fade);
-}
-
-.spacer {
-  height: var(--hero-zoom-spacer);
 }
 
 .frame {

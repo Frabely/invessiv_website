@@ -29,7 +29,6 @@ export function HeroZoomStage({ heroSlot, frameSlot }: HeroZoomStageProps) {
       <div className={styles.heroPin} ref={heroPinRef}>
         {heroSlot}
       </div>
-      <div aria-hidden="true" className={styles.spacer} />
       <div className={styles.frame} ref={frameRef}>
         <div aria-hidden="true" className={styles.frameBackdrop} />
         {frameSlot}

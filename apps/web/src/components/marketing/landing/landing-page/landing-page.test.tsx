@@ -60,7 +60,7 @@ describe("LandingPage", () => {
 
     const siteHeaders = screen.getAllByTestId("site-header");
     const primaryHeader = siteHeaders[0];
-    expect(siteHeaders).toHaveLength(2);
+    expect(siteHeaders).toHaveLength(1);
     expect(primaryHeader.getAttribute("data-cta-href")).toBe("#contact");
     expect(primaryHeader.querySelector('a[href="#problem"]')).toBeNull();
     expect(primaryHeader.querySelector('a[href="#solution"]')).toBeTruthy();
@@ -150,9 +150,12 @@ describe("LandingPage", () => {
     const heroReplica = document.querySelector("[data-hero-zoom-replica]");
     expect(heroReplica).toBeTruthy();
     expect(heroReplica?.getAttribute("aria-hidden")).toBe("true");
-    expect(heroReplica?.querySelector("[data-testid='site-header']")).toBe(
-      siteHeaders[1],
-    );
+    expect(
+      heroReplica?.querySelector("[data-hero-zoom-replica-header-bar]"),
+    ).toBeTruthy();
+    expect(
+      heroReplica?.querySelector("[data-testid='site-header']"),
+    ).toBeNull();
     expect(heroReplica?.querySelector("h1")).toBeNull();
     expect(document.querySelector("[data-hero-zoom-placeholder]")).toBeTruthy();
     expect(

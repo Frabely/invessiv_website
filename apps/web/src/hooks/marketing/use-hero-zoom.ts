@@ -46,6 +46,120 @@ type UseHeroZoomRefs = {
   frameRef: RefObject<HTMLDivElement | null>;
 };
 
+function dispatchZoomState(state: HeroZoomState) {
+  window.dispatchEvent(
+    new CustomEvent(LANDING_HERO_ZOOM_STATE_EVENT, {
+      detail: { state },
+    }),
+  );
+}
+
+function clearFrameStyles(frame: HTMLElement) {
+  frame.style.transform = "";
+  frame.style.clipPath = "";
+  frame.style.willChange = "";
+  frame.removeAttribute("inert");
+}
+
+function clearFadeVariables(stage: HTMLElement) {
+  stage.style.removeProperty(HERO_FADE_VARIABLE);
+  stage.style.removeProperty(BACKDROP_FADE_VARIABLE);
+}
+
+function clearChromeVariables(stage: HTMLElement) {
+  stage.style.removeProperty(CHROME_LEFT_VARIABLE);
+  stage.style.removeProperty(CHROME_TOP_VARIABLE);
+  stage.style.removeProperty(CHROME_WIDTH_VARIABLE);
+  stage.style.removeProperty(CHROME_HEIGHT_VARIABLE);
+  stage.style.removeProperty(CHROME_RADIUS_VARIABLE);
+  stage.style.removeProperty(CHROME_OPACITY_VARIABLE);
+}
+
+function clearHeroZoomInlineStyles({
+  frame,
+  heroPin,
+  stage,
+}: {
+  frame: HTMLElement;
+  heroPin: HTMLElement;
+  stage: HTMLElement;
+}) {
+  clearFrameStyles(frame);
+  clearFadeVariables(stage);
+  clearChromeVariables(stage);
+  heroPin.style.visibility = "";
+}
+
+function applyHeroZoomFrameStyle({
+  frame,
+  measurements,
+  stage,
+}: {
+  frame: HTMLElement;
+  measurements: HeroZoomMeasurements;
+  stage: HTMLElement;
+}) {
+  const style = computeHeroZoomFrameStyle(measurements, window.scrollY);
+
+  frame.style.transform = `translate3d(${style.translateX}px, ${style.translateY}px, 0) scale(${style.scale})`;
+  frame.style.clipPath = `inset(0 0 ${style.clipBottomPx}px 0 round 0 0 ${style.clipRadiusPx}px ${style.clipRadiusPx}px)`;
+  stage.style.setProperty(HERO_FADE_VARIABLE, `${style.heroOpacity}`);
+  stage.style.setProperty(BACKDROP_FADE_VARIABLE, `${style.backdropOpacity}`);
+  stage.style.setProperty(CHROME_LEFT_VARIABLE, `${style.chromeLeftPx}px`);
+  stage.style.setProperty(CHROME_TOP_VARIABLE, `${style.chromeTopPx}px`);
+  stage.style.setProperty(CHROME_WIDTH_VARIABLE, `${style.chromeWidthPx}px`);
+  stage.style.setProperty(CHROME_HEIGHT_VARIABLE, `${style.chromeHeightPx}px`);
+  stage.style.setProperty(CHROME_RADIUS_VARIABLE, `${style.chromeRadiusPx}px`);
+  stage.style.setProperty(CHROME_OPACITY_VARIABLE, `${style.chromeOpacity}`);
+}
+
+function measureHeroZoomLayout({
+  frame,
+  stage,
+}: {
+  frame: HTMLElement;
+  stage: HTMLElement;
+}): HeroZoomMeasurements | null {
+  const placeholder = stage.querySelector(
+    `[${HERO_ZOOM_PLACEHOLDER_ATTRIBUTE}]`,
+  );
+  const target = document.getElementById(LANDING_SECTION_IDS.solution);
+
+  if (
+    !(placeholder instanceof HTMLElement) ||
+    !(target instanceof HTMLElement) ||
+    !frame.contains(target)
+  ) {
+    return null;
+  }
+
+  const rect = placeholder.getBoundingClientRect();
+  const frameWidth = frame.offsetWidth;
+
+  if (frameWidth <= 0 || rect.width <= 0) {
+    return null;
+  }
+
+  const isMobile = window.matchMedia(HERO_ZOOM_MOBILE_MEDIA_QUERY).matches;
+  const frameTop = getLayoutDocumentTop(frame);
+
+  return {
+    viewportHeight: window.innerHeight,
+    frameTop,
+    frameLeft: getLayoutDocumentLeft(frame),
+    frameWidth,
+    frameHeight: frame.offsetHeight,
+    targetTop: getLayoutDocumentTop(target) - frameTop,
+    handoffMarginPx: isMobile
+      ? HERO_ZOOM_MOBILE_HANDOFF_MARGIN_PX
+      : HERO_ZOOM_HANDOFF_MARGIN_PX,
+    placeholderTop: rect.top,
+    placeholderLeft: rect.left,
+    placeholderWidth: rect.width,
+    placeholderHeight: rect.height,
+  };
+}
+
 export function useHeroZoom({
   stageRef,
   heroPinRef,
@@ -73,45 +187,18 @@ export function useHeroZoom({
 
       currentState = next;
       stage.setAttribute(HERO_ZOOM_STAGE_STATE_ATTRIBUTE, next);
-      window.dispatchEvent(
-        new CustomEvent(LANDING_HERO_ZOOM_STATE_EVENT, {
-          detail: { state: next },
-        }),
-      );
-    };
-
-    const clearFrameStyles = () => {
-      frame.style.transform = "";
-      frame.style.clipPath = "";
-      frame.style.willChange = "";
-      frame.removeAttribute("inert");
-    };
-
-    const clearFadeVariables = () => {
-      stage.style.removeProperty(HERO_FADE_VARIABLE);
-      stage.style.removeProperty(BACKDROP_FADE_VARIABLE);
-    };
-
-    const clearChromeVariables = () => {
-      stage.style.removeProperty(CHROME_LEFT_VARIABLE);
-      stage.style.removeProperty(CHROME_TOP_VARIABLE);
-      stage.style.removeProperty(CHROME_WIDTH_VARIABLE);
-      stage.style.removeProperty(CHROME_HEIGHT_VARIABLE);
-      stage.style.removeProperty(CHROME_RADIUS_VARIABLE);
-      stage.style.removeProperty(CHROME_OPACITY_VARIABLE);
+      dispatchZoomState(next);
     };
 
     const enterIdle = () => {
-      clearFrameStyles();
-      clearFadeVariables();
-      clearChromeVariables();
+      clearHeroZoomInlineStyles({ frame, heroPin, stage });
       heroPin.style.visibility = "";
       transition(HERO_ZOOM_STATE.Idle);
     };
 
     const enterNative = () => {
-      clearFrameStyles();
-      clearChromeVariables();
+      clearFrameStyles(frame);
+      clearChromeVariables(stage);
       heroPin.style.visibility = "hidden";
       stage.style.setProperty(HERO_FADE_VARIABLE, "0");
       stage.style.setProperty(BACKDROP_FADE_VARIABLE, "0");
@@ -123,8 +210,6 @@ export function useHeroZoom({
         return;
       }
 
-      const style = computeHeroZoomFrameStyle(measurements, window.scrollY);
-
       if (currentState !== HERO_ZOOM_STATE.Pinned) {
         frame.style.willChange = "transform";
         frame.setAttribute("inert", "");
@@ -132,31 +217,7 @@ export function useHeroZoom({
         transition(HERO_ZOOM_STATE.Pinned);
       }
 
-      frame.style.transform = `translate3d(${style.translateX}px, ${style.translateY}px, 0) scale(${style.scale})`;
-      frame.style.clipPath = `inset(0 0 ${style.clipBottomPx}px 0 round 0 0 ${style.clipRadiusPx}px ${style.clipRadiusPx}px)`;
-      stage.style.setProperty(HERO_FADE_VARIABLE, `${style.heroOpacity}`);
-      stage.style.setProperty(
-        BACKDROP_FADE_VARIABLE,
-        `${style.backdropOpacity}`,
-      );
-      stage.style.setProperty(CHROME_LEFT_VARIABLE, `${style.chromeLeftPx}px`);
-      stage.style.setProperty(CHROME_TOP_VARIABLE, `${style.chromeTopPx}px`);
-      stage.style.setProperty(
-        CHROME_WIDTH_VARIABLE,
-        `${style.chromeWidthPx}px`,
-      );
-      stage.style.setProperty(
-        CHROME_HEIGHT_VARIABLE,
-        `${style.chromeHeightPx}px`,
-      );
-      stage.style.setProperty(
-        CHROME_RADIUS_VARIABLE,
-        `${style.chromeRadiusPx}px`,
-      );
-      stage.style.setProperty(
-        CHROME_OPACITY_VARIABLE,
-        `${style.chromeOpacity}`,
-      );
+      applyHeroZoomFrameStyle({ frame, measurements, stage });
     };
 
     const render = () => {
@@ -188,46 +249,6 @@ export function useHeroZoom({
       if (!renderFrameId) {
         renderFrameId = window.requestAnimationFrame(render);
       }
-    };
-
-    const measure = (): HeroZoomMeasurements | null => {
-      const placeholder = stage.querySelector(
-        `[${HERO_ZOOM_PLACEHOLDER_ATTRIBUTE}]`,
-      );
-      const target = document.getElementById(LANDING_SECTION_IDS.solution);
-
-      if (
-        !(placeholder instanceof HTMLElement) ||
-        !(target instanceof HTMLElement) ||
-        !frame.contains(target)
-      ) {
-        return null;
-      }
-
-      const rect = placeholder.getBoundingClientRect();
-      const frameWidth = frame.offsetWidth;
-
-      if (frameWidth <= 0 || rect.width <= 0) {
-        return null;
-      }
-
-      const isMobile = window.matchMedia(HERO_ZOOM_MOBILE_MEDIA_QUERY).matches;
-
-      return {
-        viewportHeight: window.innerHeight,
-        frameTop: getLayoutDocumentTop(frame),
-        frameLeft: getLayoutDocumentLeft(frame),
-        frameWidth,
-        frameHeight: frame.offsetHeight,
-        targetTop: getLayoutDocumentTop(target) - getLayoutDocumentTop(frame),
-        handoffMarginPx: isMobile
-          ? HERO_ZOOM_MOBILE_HANDOFF_MARGIN_PX
-          : HERO_ZOOM_HANDOFF_MARGIN_PX,
-        placeholderTop: rect.top,
-        placeholderLeft: rect.left,
-        placeholderWidth: rect.width,
-        placeholderHeight: rect.height,
-      };
     };
 
     const canActivate = () => {
@@ -262,7 +283,7 @@ export function useHeroZoom({
         HERO_ZOOM_STAGE_STATE_ATTRIBUTE,
         HERO_ZOOM_STATE.Pinned,
       );
-      measurements = measure();
+      measurements = measureHeroZoomLayout({ frame, stage });
 
       if (!measurements) {
         enterIdle();
@@ -273,7 +294,7 @@ export function useHeroZoom({
 
       const handleScroll = () => scheduleRender();
       const handleResize = () => {
-        measurements = measure();
+        measurements = measureHeroZoomLayout({ frame, stage });
         scheduleRender();
       };
 
@@ -322,10 +343,7 @@ export function useHeroZoom({
       for (const cleanup of cleanups.splice(0)) {
         cleanup();
       }
-      clearFrameStyles();
-      clearFadeVariables();
-      clearChromeVariables();
-      heroPin.style.visibility = "";
+      clearHeroZoomInlineStyles({ frame, heroPin, stage });
     };
   }, [frameRef, heroPinRef, stageRef]);
 }

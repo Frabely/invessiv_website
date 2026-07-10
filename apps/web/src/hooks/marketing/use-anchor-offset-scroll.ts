@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 
 import {
-  createAnchorHistoryUrl,
   getAnchorScrollTop,
   getHashHref,
   getLayoutDocumentTop,
 } from "@/lib/navigation/anchor-scroll";
+import { createAnchorHistoryUrl } from "@/lib/navigation/internal-navigation-url";
 
 function parsePixelValue(value: string) {
   const parsedValue = Number.parseFloat(value);
@@ -136,11 +136,7 @@ export function useAnchorOffsetScroll() {
 
       event.preventDefault();
 
-      const nextUrl = createAnchorHistoryUrl(
-        window.location.pathname,
-        window.location.search,
-        hash,
-      );
+      const nextUrl = createAnchorHistoryUrl(window.location.pathname, hash);
       if (
         nextUrl !==
         window.location.pathname + window.location.search + window.location.hash

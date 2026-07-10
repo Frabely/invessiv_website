@@ -12,8 +12,8 @@ Scrollen scrollt nicht die Seite, sondern die Mini wächst per Scroll-Fortschrit
 ** (nahtloser Handoff, Transform vollständig entfernt). Rückwärts-Scrollen kehrt die Animation um. Einzige tolerierte
 Doppelung: eine dekorative Hero-Replik oben im Mini-Frame (aria-hidden + inert, **kein zweites h1\*\*).
 
-Gates: Desktop-only (Zoom nur bei `pointer: fine` + `min-width: 901px` + `no-preference` reduced-motion);
-Mobile/Reduced-Motion/No-JS/Deep-Links erhalten die heutige normale Seite unverändert.
+Gates: Zoom nur bei `prefers-reduced-motion: no-preference` und ohne fremden Deep-Link. Mobile nutzt denselben Effekt
+mit kleinerem Handoff-Abstand; Reduced-Motion/No-JS/Deep-Links erhalten die normale Seite.
 
 ## Architektur: Inverse-Transform auf In-Flow-Content (kein DOM-Swap, kein Scroll-Jump)
 
@@ -42,7 +42,6 @@ DOM in `<main class="marketing-main landing-main">`:
   <div class=heroPin>       ← position: sticky; top: 0; z-index: 1; spannt die GANZE Stage
     {heroSlot}                (Opacity via --hero-zoom-hero-fade)
   </div>
-  <div class=zoomSpacer />  ← height: var(--hero-zoom-spacer, 0px); im Zoom-Modus ~40svh
   <div class=frame ref inert>  ← z-index: 2; normaler Fluss; Transform/Clip nur solange gepinnt
     <div class=frameBackdrop aria-hidden />  ← opaker Seitenhintergrund, faded nahe p=1 aus
     {frameSlot}

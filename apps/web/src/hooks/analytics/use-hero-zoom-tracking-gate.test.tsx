@@ -5,7 +5,6 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import { LANDING_HERO_ZOOM_STATE_EVENT } from "@/common/constants/events";
 import {
-  HERO_ZOOM_STAGE_STATE_ATTRIBUTE,
   HERO_ZOOM_STATE,
   type HeroZoomState,
 } from "@/common/constants/marketing";
@@ -20,10 +19,6 @@ function GateProbe() {
 
 function dispatchZoomState(state: HeroZoomState) {
   act(() => {
-    const stage = document.querySelector(
-      `[${HERO_ZOOM_STAGE_STATE_ATTRIBUTE}]`,
-    );
-    stage?.setAttribute(HERO_ZOOM_STAGE_STATE_ATTRIBUTE, state);
     window.dispatchEvent(
       new CustomEvent(LANDING_HERO_ZOOM_STATE_EVENT, { detail: { state } }),
     );
@@ -35,30 +30,24 @@ describe("useHeroZoomTrackingGate", () => {
     cleanup();
   });
 
-  it("releases immediately when no zoom stage exists", () => {
+  it("gates until the zoom stage releases tracking", () => {
     render(<GateProbe />);
 
-    expect(screen.getByTestId("gate").textContent).toBe("released");
+    expect(screen.getByTestId("gate").textContent).toBe("gated");
   });
 
-  it("releases immediately when the stage is already idle", () => {
-    render(
-      <>
-        <div data-zoom-state={HERO_ZOOM_STATE.Idle} />
-        <GateProbe />
-      </>,
-    );
+  it("releases when the stage reports idle", () => {
+    render(<GateProbe />);
+
+    dispatchZoomState(HERO_ZOOM_STATE.Idle);
 
     expect(screen.getByTestId("gate").textContent).toBe("released");
+
+    dispatchZoomState(HERO_ZOOM_STATE.Pinned);
   });
 
   it("gates while pinned and follows the zoom state events", () => {
-    render(
-      <>
-        <div data-zoom-state={HERO_ZOOM_STATE.Pending} />
-        <GateProbe />
-      </>,
-    );
+    render(<GateProbe />);
 
     expect(screen.getByTestId("gate").textContent).toBe("gated");
 

@@ -1,14 +1,10 @@
 ﻿"use client";
 
-import Image from "next/image";
 import { type MouseEvent, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
-import { PrimaryCtaLink } from "@/components/shared/button/button";
-import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
-import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { NavigationItem } from "@/config/navigation/home";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import {
@@ -23,13 +19,13 @@ import {
   LOCALE_SCROLL_RESTORE_STORAGE_KEY,
 } from "@/lib/navigation/locale-scroll-restoration";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
-import { createInternalNavigationUrl } from "@/lib/navigation/anchor-scroll";
+import { createInternalNavigationUrl } from "@/lib/navigation/internal-navigation-url";
 import {
   trackSiteHeaderLanguageSwitch,
   trackSiteHeaderThemeSwitch,
 } from "@/lib/analytics/events/site-header-events";
 import { getNextTheme } from "@/lib/theme/theme";
-import styles from "./site-header.module.css";
+import { SiteHeaderView } from "./site-header-view";
 
 type SiteHeaderContent = Omit<
   SiteHeaderUiContent,
@@ -109,18 +105,6 @@ export function SiteHeader({
       ?.removeAttribute("open");
   };
 
-  const getLabelKey = (href: string) => {
-    const hashIndex = href.indexOf("#");
-    return hashIndex >= 0 ? href.slice(hashIndex) : href;
-  };
-  const ctaLabelKey = getLabelKey(ctaHref);
-  const mobileNavigation = navigation.filter(
-    (item) => getLabelKey(item.href) !== ctaLabelKey,
-  );
-  const headerClassName = isScrolled
-    ? `${styles.header} ${styles.headerScrolled} site-header is-scrolled`
-    : `${styles.header} site-header`;
-
   useEffect(() => {
     const sanitizedUrl = createInternalNavigationUrl(
       window.location.pathname,
@@ -135,170 +119,21 @@ export function SiteHeader({
   }, [pathname]);
 
   return (
-    <header className={headerClassName}>
-      {isMinimalHeader ? null : <ReadingProgress />}
-      <div className={`${styles.inner} site-header__inner`}>
-        <a className={`${styles.brand} site-header__brand`} href={brandHref}>
-          <Image
-            src="/brand/icon.png"
-            alt={ui.brandLogoAlt}
-            width={26}
-            height={26}
-            priority
-          />
-          <span>{ui.brandLabel}</span>
-        </a>
-
-        {isMinimalHeader ? null : (
-          <nav aria-label={ui.navAriaLabel} className={styles.desktopNav}>
-            <ul className={styles.navList}>
-              {navigation.map((item) => (
-                <li key={item.href}>
-                  <a className={styles.navLink} href={item.href}>
-                    {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
-
-        <div
-          className={styles.actions}
-          aria-label={isMinimalHeader ? undefined : ui.actionsAriaLabel}
-        >
-          {!isMinimalHeader && showThemeSwitch && themeSwitchCopy ? (
-            <ThemeSwitch
-              copy={themeSwitchCopy}
-              onToggle={handleThemeToggle}
-              theme={theme}
-            />
-          ) : null}
-          <LocaleSwitch
-            locale={locale}
-            localeMenuLabel={ui.localeMenuLabel}
-            localeSwitchLabel={ui.localeSwitchLabel}
-            onSelectAction={handleLocaleSelect}
-            variant="desktop"
-          />
-          {isMinimalHeader ? null : (
-            <PrimaryCtaLink
-              className={styles.navCta}
-              href={ctaHref}
-              data-analytics-event="cta_click"
-              data-analytics-location="nav"
-              data-analytics-variant="primary"
-              data-analytics-target="form"
-            >
-              {ui.ctaLabel}
-            </PrimaryCtaLink>
-          )}
-        </div>
-
-        <div className={styles.mobileActions}>
-          <LocaleSwitch
-            locale={locale}
-            localeMenuLabel={ui.localeMenuLabel}
-            localeSwitchLabel={ui.localeSwitchLabel}
-            onSelectAction={handleLocaleSelect}
-            variant="mobile"
-          />
-          {isMinimalHeader ? null : (
-            <>
-              <PrimaryCtaLink
-                aria-label={ui.ctaLabel}
-                className={`${styles.navCta} ${styles.mobileCta}`}
-                href={ctaHref}
-                title={ui.ctaLabel}
-                data-analytics-event="cta_click"
-                data-analytics-location="nav"
-                data-analytics-variant="primary"
-                data-analytics-target="form"
-              >
-                <span aria-hidden="true" className={styles.mobileCtaIcon}>
-                  <svg fill="none" viewBox="0 0 24 24">
-                    <path d="M7.5 19.5 3 21l1.5-4.5" />
-                    <path d="M7.5 19.5a9 9 0 1 0-3-6.72" />
-                    <circle
-                      cx="9.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                    <circle
-                      cx="12.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                    <circle
-                      cx="15.75"
-                      cy="12"
-                      fill="currentColor"
-                      r="0.9"
-                      stroke="none"
-                    />
-                  </svg>
-                </span>
-                <span className="sr-only">{ui.ctaLabel}</span>
-              </PrimaryCtaLink>
-              <details
-                className={`${styles.mobileMenu} site-header__mobile-menu`}
-              >
-                <summary
-                  aria-label={ui.mobileMenuLabel}
-                  className={styles.mobileMenuSummary}
-                >
-                  <span className="sr-only">{ui.mobileMenuLabel}</span>
-                  <span aria-hidden="true" className={styles.mobileMenuIcon}>
-                    <span className={styles.mobileMenuIconLine} />
-                    <span className={styles.mobileMenuIconLine} />
-                    <span className={styles.mobileMenuIconLine} />
-                  </span>
-                </summary>
-                <ul className={styles.mobileMenuList}>
-                  {showThemeSwitch && themeSwitchCopy ? (
-                    <li className={styles.mobileMenuListItem}>
-                      <ThemeSwitch
-                        copy={themeSwitchCopy}
-                        onToggle={handleThemeToggle}
-                        theme={theme}
-                        variant="mobile"
-                      />
-                    </li>
-                  ) : null}
-                  {mobileNavigation.map((item) => (
-                    <li className={styles.mobileMenuListItem} key={item.href}>
-                      <a
-                        className={styles.mobileMenuLink}
-                        href={item.href}
-                        onClick={handleMobileMenuLinkClick}
-                      >
-                        {ui.labelsByHref[getLabelKey(item.href)] ?? item.href}
-                      </a>
-                    </li>
-                  ))}
-                  <li className={styles.mobileMenuListItem}>
-                    <PrimaryCtaLink
-                      className={styles.mobileMenuCta}
-                      href={ctaHref}
-                      onClick={handleMobileMenuLinkClick}
-                      data-analytics-event="cta_click"
-                      data-analytics-location="nav"
-                      data-analytics-variant="primary"
-                      data-analytics-target="form"
-                    >
-                      {ui.ctaLabel}
-                    </PrimaryCtaLink>
-                  </li>
-                </ul>
-              </details>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
+    <SiteHeaderView
+      brandHref={brandHref}
+      ctaHref={ctaHref}
+      isMinimalHeader={isMinimalHeader}
+      isScrolled={isScrolled}
+      locale={locale}
+      navigation={navigation}
+      onLocaleSelect={handleLocaleSelect}
+      onMobileMenuLinkClick={handleMobileMenuLinkClick}
+      onThemeToggle={handleThemeToggle}
+      readingProgressSlot={<ReadingProgress />}
+      showThemeSwitch={showThemeSwitch}
+      theme={theme}
+      themeSwitchCopy={themeSwitchCopy}
+      uiContent={ui}
+    />
   );
 }

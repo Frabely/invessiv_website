@@ -154,8 +154,10 @@ Default Consent wird vor jeder Google-Tag-Konfiguration auf `denied` gesetzt:
 Begleitparameter (verbindlich, zusammen mit dem Default-denied gesetzt):
 
 - `ads_data_redaction: true` — solange `ad_storage = denied`, werden Ad-Identifier in den Pings redigiert.
-- `url_passthrough: true` — gibt den `gclid` über URL-Parameter weiter, wenn Cookies abgelehnt sind; sonst geht die
-  Klick-Zuordnung bei Ablehnung komplett verloren.
+- `url_passthrough: false` — Google-Linker-/Click-ID-Parameter werden nicht künstlich über interne URLs weitergereicht.
+  Attribution läuft über die erlaubten Google-Consent-Mode-Signale und bewusst gesetzte Kampagnenparameter; die
+  sichtbare
+  URL bleibt bei interner Navigation sauber.
 - `wait_for_update: 500` (ms) — Sicherheitsnetz, falls die Consent-Anwendung minimal verzögert ist; das Tag feuert
   nicht sofort mit dem reinen Default. Da unser `localStorage`-Read **synchron** im Inline-Stub passiert (siehe unten),
   ist die gespeicherte Auswahl in der Regel bereits vor dem ersten Ping gesetzt — `wait_for_update` ist Absicherung,
@@ -233,9 +235,8 @@ UTM-Parameter:
 - Bei Bedarf später sauber in der Anfrage speichern, z. B. über erlaubte `utm_*`-Felder im DTO oder serverseitige
   Lead-Metadaten.
 - `gclid`, E-Mail oder Tokens werden **nicht an Vercel Analytics** weitergegeben (der `beforeSend`-Sanitizer strippt
-  sie). Das ist **kein** Widerspruch zu `url_passthrough` (siehe Consent-Mode-Konzept): `url_passthrough` ist Googles
-  eigener Mechanismus, der `gclid` ausschließlich an die Google-Tags zur Ads-Attribution durchreicht — nicht an Vercel
-  Analytics.
+  sie). Google-Linker- und Click-ID-Parameter werden zusätzlich aus internen Navigations-URLs entfernt, damit CTAs und
+  Anchor-Klicks keine unnötigen Tracking-Queries fortschreiben.
 
 ## Success-Seite (Umsetzung im Copy-Plan)
 

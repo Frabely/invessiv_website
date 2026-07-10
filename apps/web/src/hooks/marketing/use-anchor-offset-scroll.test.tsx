@@ -129,7 +129,7 @@ describe("useAnchorOffsetScroll", () => {
     });
   });
 
-  it("strips Google linker params from internal anchor URLs", () => {
+  it("uses clean internal anchor URLs without stale query params", () => {
     window.history.replaceState(
       {},
       "",
@@ -143,7 +143,7 @@ describe("useAnchorOffsetScroll", () => {
     fireEvent.click(screen.getByRole("link", { name: "Zum Prozess" }));
 
     expect(window.location.pathname).toBe("/de");
-    expect(window.location.search).toBe("?utm_source=google");
+    expect(window.location.search).toBe("");
     expect(window.location.hash).toBe("#process");
   });
 

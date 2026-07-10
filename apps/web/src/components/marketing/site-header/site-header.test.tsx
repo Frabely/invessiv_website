@@ -162,7 +162,7 @@ describe("SiteHeader", () => {
     window.history.replaceState(
       {},
       "",
-      "/de/imprint?ref=nav&_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session#services",
+      "/de/imprint?ref=nav&_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session&gclid=click&wbraid=warm#services",
     );
 
     render(
@@ -194,7 +194,7 @@ describe("SiteHeader", () => {
     window.history.replaceState(
       {},
       "",
-      "/de?_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session&utm_source=google#hero",
+      "/de?_gl=1*abc&_up=MQ..&_ga=client&_ga_5T4BC28Z0F=session&gclid=click&utm_source=google#hero",
     );
 
     render(<SiteHeader navigation={[]} />);
