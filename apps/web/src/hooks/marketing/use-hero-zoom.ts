@@ -32,7 +32,8 @@ const CHROME_LEFT_VARIABLE = "--hero-zoom-chrome-x";
 const CHROME_TOP_VARIABLE = "--hero-zoom-chrome-y";
 const CHROME_SCALE_X_VARIABLE = "--hero-zoom-chrome-scale-x";
 const CHROME_SCALE_Y_VARIABLE = "--hero-zoom-chrome-scale-y";
-const CHROME_RADIUS_VARIABLE = "--hero-zoom-chrome-radius";
+const CHROME_RADIUS_X_VARIABLE = "--hero-zoom-chrome-radius-x";
+const CHROME_RADIUS_Y_VARIABLE = "--hero-zoom-chrome-radius-y";
 const CHROME_OPACITY_VARIABLE = "--hero-zoom-chrome-opacity";
 const HERO_ZOOM_MOTION_MEDIA_QUERY = "(prefers-reduced-motion: no-preference)";
 const HERO_ZOOM_MOBILE_MEDIA_QUERY = "(max-width: 900px)";
@@ -70,7 +71,8 @@ function clearChromeVariables(stage: HTMLElement) {
   stage.style.removeProperty(CHROME_TOP_VARIABLE);
   stage.style.removeProperty(CHROME_SCALE_X_VARIABLE);
   stage.style.removeProperty(CHROME_SCALE_Y_VARIABLE);
-  stage.style.removeProperty(CHROME_RADIUS_VARIABLE);
+  stage.style.removeProperty(CHROME_RADIUS_X_VARIABLE);
+  stage.style.removeProperty(CHROME_RADIUS_Y_VARIABLE);
   stage.style.removeProperty(CHROME_OPACITY_VARIABLE);
 }
 
@@ -99,6 +101,8 @@ function applyHeroZoomFrameStyle({
   stage: HTMLElement;
 }) {
   const style = computeHeroZoomFrameStyle(measurements, window.scrollY);
+  const chromeScaleX = style.chromeWidthPx / window.innerWidth;
+  const chromeScaleY = style.chromeHeightPx / window.innerHeight;
 
   frame.style.transform = `translate3d(${style.translateX}px, ${style.translateY}px, 0) scale(${style.scale})`;
   frame.style.clipPath = `inset(0 0 ${style.clipBottomPx}px 0 round 0 0 ${style.clipRadiusPx}px ${style.clipRadiusPx}px)`;
@@ -106,15 +110,16 @@ function applyHeroZoomFrameStyle({
   stage.style.setProperty(BACKDROP_FADE_VARIABLE, `${style.backdropOpacity}`);
   stage.style.setProperty(CHROME_LEFT_VARIABLE, `${style.chromeLeftPx}px`);
   stage.style.setProperty(CHROME_TOP_VARIABLE, `${style.chromeTopPx}px`);
+  stage.style.setProperty(CHROME_SCALE_X_VARIABLE, `${chromeScaleX}`);
+  stage.style.setProperty(CHROME_SCALE_Y_VARIABLE, `${chromeScaleY}`);
   stage.style.setProperty(
-    CHROME_SCALE_X_VARIABLE,
-    `${style.chromeWidthPx / window.innerWidth}`,
+    CHROME_RADIUS_X_VARIABLE,
+    `${chromeScaleX > 0 ? style.chromeRadiusPx / chromeScaleX : 0}px`,
   );
   stage.style.setProperty(
-    CHROME_SCALE_Y_VARIABLE,
-    `${style.chromeHeightPx / window.innerHeight}`,
+    CHROME_RADIUS_Y_VARIABLE,
+    `${chromeScaleY > 0 ? style.chromeRadiusPx / chromeScaleY : 0}px`,
   );
-  stage.style.setProperty(CHROME_RADIUS_VARIABLE, `${style.chromeRadiusPx}px`);
   stage.style.setProperty(CHROME_OPACITY_VARIABLE, `${style.chromeOpacity}`);
 }
 

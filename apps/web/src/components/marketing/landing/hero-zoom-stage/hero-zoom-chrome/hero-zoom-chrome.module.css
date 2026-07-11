@@ -22,7 +22,13 @@
   initial-value: 1;
 }
 
-@property --hero-zoom-chrome-radius {
+@property --hero-zoom-chrome-radius-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
+@property --hero-zoom-chrome-radius-y {
   syntax: "<length>";
   inherits: true;
   initial-value: 0px;
@@ -76,8 +82,9 @@
     )
     scale(var(--hero-zoom-chrome-scale-x), var(--hero-zoom-chrome-scale-y));
   border: 1px solid var(--hero-zoom-chrome-line);
-  border-radius: 0 0 var(--hero-zoom-chrome-radius)
-    var(--hero-zoom-chrome-radius);
+  border-radius: 0 0 var(--hero-zoom-chrome-radius-x)
+    var(--hero-zoom-chrome-radius-x) / 0 0 var(--hero-zoom-chrome-radius-y)
+    var(--hero-zoom-chrome-radius-y);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
 }
 
