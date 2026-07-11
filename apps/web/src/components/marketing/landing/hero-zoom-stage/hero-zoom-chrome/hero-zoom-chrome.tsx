@@ -1,18 +1,18 @@
+import { HeroZoomChromeTabStrip } from "./hero-zoom-chrome-tab-strip/hero-zoom-chrome-tab-strip";
+import { HeroZoomChromeToolbar } from "./hero-zoom-chrome-toolbar/hero-zoom-chrome-toolbar";
 import styles from "./hero-zoom-chrome.module.css";
-
-const CHROME_URL_LABEL = "invessiv.com";
 
 export function HeroZoomChrome() {
   return (
     <div aria-hidden="true" className={styles.chrome} data-hero-zoom-chrome="">
       <div className={styles.bar}>
-        <span className={styles.dots}>
-          <span className={styles.dot} />
-          <span className={styles.dot} />
-          <span className={styles.dot} />
+        <HeroZoomChromeTabStrip />
+        <HeroZoomChromeToolbar />
+      </div>
+      <div className={styles.windowFrame}>
+        <span className={styles.scrollbar}>
+          <span className={styles.scrollbarThumb} />
         </span>
-        <span className={styles.urlPill}>{CHROME_URL_LABEL}</span>
-        <span className={styles.barSpacer} />
       </div>
     </div>
   );

@@ -27,7 +27,6 @@
   pointer-events: none;
 }
 
-/* Zoom-Modus: Hero wird gepinnt, während der Frame darüber wächst. */
 .stage[data-zoom-state="pinned"] .heroPin,
 .stage[data-zoom-state="native"] .heroPin {
   position: sticky;
@@ -47,7 +46,6 @@
   display: none;
 }
 
-/* Browser-Mockup nur während des Zooms; verschwindet vor dem Handoff komplett. */
 .stage[data-zoom-state="pinned"] [data-hero-zoom-chrome] {
-  display: block;
+  display: contents;
 }

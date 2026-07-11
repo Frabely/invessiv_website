@@ -1,0 +1,69 @@
+.toolbar {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  gap: 46px;
+  padding: 0 50px;
+  background: var(--hero-zoom-chrome-surface);
+}
+
+.navGroup {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 42px;
+  color: var(--color-text-muted);
+}
+
+.navGroup svg {
+  display: block;
+  width: 46px;
+  height: 46px;
+}
+
+.navForward {
+  opacity: 0.4;
+}
+
+.urlPill {
+  flex: 1;
+  min-width: 0;
+  max-width: 1500px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  height: 90px;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+  border-radius: 999px;
+}
+
+.urlLock {
+  display: inline-flex;
+  opacity: 0.85;
+}
+
+.urlLock svg {
+  width: 44px;
+  height: 44px;
+}
+
+.urlLabel {
+  font-size: 48px;
+  letter-spacing: 0.02em;
+}
+
+.menu {
+  flex: none;
+  display: inline-flex;
+  color: var(--color-text-muted);
+}
+
+.menu svg {
+  width: 42px;
+  height: 42px;
+}
