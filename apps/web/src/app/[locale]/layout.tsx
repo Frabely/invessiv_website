@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { Insights } from "@/app/insights";
 import { AppProviders } from "@/components/providers/app-providers";
 import { VercelAnalytics } from "@/components/providers/vercel-analytics/vercel-analytics";
+import { bricolageGrotesque, plusJakartaSans } from "@/config/fonts";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
@@ -21,6 +22,8 @@ export const revalidate = 0;
 const googleSiteVerification =
   process.env.GOOGLE_SITE_VERIFICATION ??
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+
+const MAIN_CONTENT_HREF = "#main-content";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -76,9 +79,13 @@ export default async function LocaleLayout({
   const ui = getSiteHeaderUiContent(activeLocale);
 
   return (
-    <html lang={activeLocale} suppressHydrationWarning>
+    <html
+      lang={activeLocale}
+      suppressHydrationWarning
+      className={`${plusJakartaSans.variable} ${bricolageGrotesque.variable}`}
+    >
       <body>
-        <a className="skip-link" href="#main-content">
+        <a className="skip-link" href={MAIN_CONTENT_HREF}>
           {ui.skipLinkLabel}
         </a>
         <AppProviders initialLocale={activeLocale} initialTheme={initialTheme}>
