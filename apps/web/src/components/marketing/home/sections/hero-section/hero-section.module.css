@@ -52,9 +52,9 @@
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--color-background) 88%, transparent) 0%,
-      color-mix(in srgb, var(--color-background) 72%, transparent) 45%,
-      color-mix(in srgb, var(--color-background) 48%, transparent) 100%
+      color-mix(in srgb, var(--color-bg) 88%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 72%, transparent) 45%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 100%
     ),
     radial-gradient(
       90% 76% at 72% 38%,
@@ -95,6 +95,7 @@
   margin: 0;
   max-width: 20ch;
   color: var(--color-text);
+  font-family: var(--font-family-display), sans-serif;
   font-size: clamp(2.7rem, 5.45vw, 4.25rem);
   font-weight: 700;
   line-height: 0.98;
@@ -200,9 +201,9 @@
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb, var(--color-background) 90%, transparent) 0%,
-      color-mix(in srgb, var(--color-background) 76%, transparent) 48%,
-      color-mix(in srgb, var(--color-background) 42%, transparent) 100%
+      color-mix(in srgb, var(--color-bg) 90%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 76%, transparent) 48%,
+      color-mix(in srgb, var(--color-bg) 42%, transparent) 100%
     ),
     radial-gradient(
       92% 76% at 74% 40%,
@@ -272,9 +273,9 @@
     background:
       linear-gradient(
         180deg,
-        color-mix(in srgb, var(--color-background) 80%, transparent) 0%,
-        color-mix(in srgb, var(--color-background) 68%, transparent) 46%,
-        color-mix(in srgb, var(--color-background) 86%, transparent) 100%
+        color-mix(in srgb, var(--color-bg) 80%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 68%, transparent) 46%,
+        color-mix(in srgb, var(--color-bg) 86%, transparent) 100%
       ),
       radial-gradient(
         108% 70% at 78% 22%,
