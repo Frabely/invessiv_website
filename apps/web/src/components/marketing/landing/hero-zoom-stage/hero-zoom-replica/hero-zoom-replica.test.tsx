@@ -57,7 +57,7 @@ describe("HeroZoomReplica", () => {
   it("renders a provided real header slot inside the decorative replica", () => {
     const { container } = render(
       <HeroZoomReplica
-        headerSlot={<header className="site-header">Real header</header>}
+        headerSlot={<header data-site-header="">Real header</header>}
       >
         <div>Hero</div>
       </HeroZoomReplica>,
@@ -68,8 +68,8 @@ describe("HeroZoomReplica", () => {
     );
 
     expect(replicaHeader).toBeTruthy();
-    expect(replicaHeader?.querySelector(".site-header")?.textContent).toBe(
-      "Real header",
-    );
+    expect(
+      replicaHeader?.querySelector("[data-site-header]")?.textContent,
+    ).toBe("Real header");
   });
 });

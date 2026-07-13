@@ -2,15 +2,17 @@
 
 import { type MouseEvent, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+
+import type { SiteHeaderNavigationItem } from "@/common/contracts/marketing/site-header-navigation-item";
+import type { SiteHeaderUiContent } from "@/common/contracts/marketing/site-header-ui-content";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { ReadingProgress } from "@/components/marketing/shared/reading-progress/reading-progress";
-import type { NavigationItem } from "@/config/navigation/home";
+import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
+import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
+import type { NavigationItem } from "@/common/contracts/marketing/navigation-item";
 import { SECTION_HREFS } from "@/config/navigation/home";
-import {
-  getSiteHeaderUiContent,
-  type SiteHeaderUiContent,
-} from "@/i18n/dictionaries/marketing/site-header-ui";
+import { getSiteHeaderUiContent } from "@/i18n/dictionaries/marketing/site-header-ui";
 import { useMobileViewportHeight } from "@/hooks/marketing/use-mobile-viewport-height";
 import { useScrolledHeader } from "@/hooks/marketing/use-scrolled-header";
 import type { Locale } from "@/config/i18n";
@@ -25,7 +27,7 @@ import {
   trackSiteHeaderThemeSwitch,
 } from "@/lib/analytics/events/site-header-events";
 import { getNextTheme } from "@/lib/theme/theme";
-import { SiteHeaderView } from "./site-header-view";
+import { SiteHeaderView } from "./site-header-view/site-header-view";
 
 type SiteHeaderContent = Omit<
   SiteHeaderUiContent,
@@ -38,10 +40,26 @@ type SiteHeaderProps = {
   brandHref?: string;
   ctaHref?: string;
   isMinimalHeader?: boolean;
-  navigation?: NavigationItem[];
+  navigation?: readonly NavigationItem[];
   showThemeSwitch?: boolean;
   uiContent?: SiteHeaderContent;
 };
+
+function getLabelKey(href: string) {
+  const hashIndex = href.indexOf("#");
+
+  return hashIndex >= 0 ? href.slice(hashIndex) : href;
+}
+
+function prepareNavigation(
+  navigation: readonly NavigationItem[],
+  labelsByHref: Record<string, string>,
+): SiteHeaderNavigationItem[] {
+  return navigation.map((item) => ({
+    href: item.href,
+    label: labelsByHref[getLabelKey(item.href)] ?? item.href,
+  }));
+}
 
 export function SiteHeader({
   brandHref = SECTION_HREFS.hero,
@@ -58,6 +76,11 @@ export function SiteHeader({
   const isScrolled = useScrolledHeader(14);
   useMobileViewportHeight();
   const ui = uiContent ?? getSiteHeaderUiContent(locale);
+  const navigationItems = prepareNavigation(navigation, ui.labelsByHref);
+  const ctaLabelKey = getLabelKey(ctaHref);
+  const mobileNavigationItems = navigationItems.filter(
+    (item) => getLabelKey(item.href) !== ctaLabelKey,
+  );
   const themeSwitchCopy = ui.themeSwitch
     ? theme === "dark"
       ? {
@@ -100,9 +123,7 @@ export function SiteHeader({
     toggleTheme();
   };
   const handleMobileMenuLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    event.currentTarget
-      .closest<HTMLElement>(".site-header__mobile-menu")
-      ?.removeAttribute("open");
+    event.currentTarget.closest("details")?.removeAttribute("open");
   };
 
   useEffect(() => {
@@ -121,19 +142,50 @@ export function SiteHeader({
   return (
     <SiteHeaderView
       brandHref={brandHref}
+      content={ui}
       ctaHref={ctaHref}
+      desktopLocaleSwitchSlot={
+        <LocaleSwitch
+          locale={locale}
+          localeMenuLabel={ui.localeMenuLabel}
+          localeSwitchLabel={ui.localeSwitchLabel}
+          onSelectAction={handleLocaleSelect}
+        />
+      }
+      desktopThemeSwitchSlot={
+        showThemeSwitch && themeSwitchCopy ? (
+          <ThemeSwitch
+            copy={themeSwitchCopy}
+            onToggle={handleThemeToggle}
+            theme={theme}
+          />
+        ) : undefined
+      }
       isMinimalHeader={isMinimalHeader}
       isScrolled={isScrolled}
-      locale={locale}
-      navigation={navigation}
-      onLocaleSelect={handleLocaleSelect}
+      mobileLocaleSwitchSlot={
+        <LocaleSwitch
+          locale={locale}
+          localeMenuLabel={ui.localeMenuLabel}
+          localeSwitchLabel={ui.localeSwitchLabel}
+          onSelectAction={handleLocaleSelect}
+          variant="mobile"
+        />
+      }
+      mobileNavigation={mobileNavigationItems}
+      mobileThemeSwitchSlot={
+        showThemeSwitch && themeSwitchCopy ? (
+          <ThemeSwitch
+            copy={themeSwitchCopy}
+            onToggle={handleThemeToggle}
+            theme={theme}
+            variant="mobile"
+          />
+        ) : undefined
+      }
+      navigation={navigationItems}
       onMobileMenuLinkClick={handleMobileMenuLinkClick}
-      onThemeToggle={handleThemeToggle}
       readingProgressSlot={<ReadingProgress />}
-      showThemeSwitch={showThemeSwitch}
-      theme={theme}
-      themeSwitchCopy={themeSwitchCopy}
-      uiContent={ui}
     />
   );
 }

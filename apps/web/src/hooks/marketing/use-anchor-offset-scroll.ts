@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import { SiteHeaderDomSelector } from "@/common/constants/marketing/site-header-dom-selectors";
+
 import {
   getAnchorScrollTop,
   getHashHref,
@@ -62,8 +64,9 @@ function getAnchorOffset(targetElement: HTMLElement) {
   }
 
   const headerBottom =
-    document.querySelector<HTMLElement>(".site-header")?.getBoundingClientRect()
-      .bottom ?? 0;
+    document
+      .querySelector<HTMLElement>(SiteHeaderDomSelector.Root)
+      ?.getBoundingClientRect().bottom ?? 0;
 
   return Math.max(0, Math.round(headerBottom));
 }

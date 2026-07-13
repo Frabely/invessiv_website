@@ -1,4 +1,4 @@
-import type { NavigationItem } from "@/config/navigation/home";
+import type { NavigationItem } from "@/common/contracts/marketing/navigation-item";
 
 export const LINKEDIN_POST_SECTION_IDS = [
   "problem",

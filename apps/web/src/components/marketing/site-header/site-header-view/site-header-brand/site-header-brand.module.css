@@ -1,0 +1,16 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: start;
+  color: var(--color-text);
+  font-size: var(--font-size-brand);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .brand {
+    font-size: var(--font-size-brand-wide);
+  }
+}

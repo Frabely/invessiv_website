@@ -239,7 +239,7 @@ describe("SiteHeader", () => {
     expect(desktopLocaleMenu.hasAttribute("open")).toBe(false);
   });
 
-  it("closes the mobile menu when a section link is clicked", () => {
+  it("closes the mobile menu when a section link or CTA is clicked", () => {
     mockUseLanguage.mockReturnValue({
       locale: "de",
       setLocale: vi.fn(),
@@ -256,7 +256,9 @@ describe("SiteHeader", () => {
       />,
     );
 
-    const mobileMenu = container.querySelector(".site-header__mobile-menu");
+    const mobileMenu = container.querySelector(
+      "[data-site-header-mobile-menu]",
+    );
     if (!(mobileMenu instanceof HTMLDetailsElement)) {
       throw new Error("Expected mobile menu to be rendered");
     }
@@ -265,6 +267,14 @@ describe("SiteHeader", () => {
 
     fireEvent.click(within(mobileMenu).getByRole("link", { name: "Einstieg" }));
 
+    expect(mobileMenu.hasAttribute("open")).toBe(false);
+
+    mobileMenu.setAttribute("open", "");
+    fireEvent.click(
+      within(mobileMenu).getByRole("link", {
+        name: "Angebot einschätzen lassen",
+      }),
+    );
     expect(mobileMenu.hasAttribute("open")).toBe(false);
   });
 
@@ -301,7 +311,9 @@ describe("SiteHeader", () => {
       />,
     );
 
-    const mobileMenu = container.querySelector(".site-header__mobile-menu");
+    const mobileMenu = container.querySelector(
+      "[data-site-header-mobile-menu]",
+    );
     if (!(mobileMenu instanceof HTMLDetailsElement)) {
       throw new Error("Expected mobile menu to be rendered");
     }
@@ -337,7 +349,9 @@ describe("SiteHeader", () => {
     expect(
       screen.queryByRole("button", { name: "Zu Dark wechseln" }),
     ).toBeNull();
-    expect(container.querySelector(".site-header__mobile-menu")).toBeNull();
+    expect(
+      container.querySelector("[data-site-header-mobile-menu]"),
+    ).toBeNull();
     expect(screen.queryByTestId("reading-progress")).toBeNull();
     expect(screen.getAllByRole("button", { name: "DE" }).length).toBe(2);
     expect(screen.getAllByRole("button", { name: "EN" }).length).toBe(2);

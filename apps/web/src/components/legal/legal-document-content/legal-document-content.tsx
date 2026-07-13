@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
+import { SiteHeaderDomSelector } from "@/common/constants/marketing/site-header-dom-selectors";
 import styles from "./legal-document-content.module.css";
 
 type LegalDocumentSection = {
@@ -46,9 +47,11 @@ export function LegalDocumentContent({
     }
 
     const headerInner = document.querySelector<HTMLElement>(
-      ".site-header__inner",
+      SiteHeaderDomSelector.Inner,
     );
-    const header = document.querySelector<HTMLElement>(".site-header");
+    const header = document.querySelector<HTMLElement>(
+      SiteHeaderDomSelector.Root,
+    );
     const observedHeader = headerInner ?? header;
 
     if (!observedHeader) {

@@ -21,7 +21,7 @@ function AnchorScrollHarness() {
 
   return (
     <>
-      <header className="site-header" />
+      <header data-site-header="" />
       <a className="skip-link" href="#main-content">
         Direkt zum Inhalt
       </a>
@@ -64,7 +64,7 @@ describe("useAnchorOffsetScroll", () => {
   it("applies the anchor offset on hash link clicks", () => {
     render(<AnchorScrollHarness />);
 
-    const header = document.querySelector(".site-header");
+    const header = document.querySelector("[data-site-header]");
     if (!(header instanceof HTMLElement)) {
       throw new Error("Expected site header to be rendered");
     }

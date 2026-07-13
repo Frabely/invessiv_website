@@ -1,0 +1,33 @@
+.navigation {
+  display: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-nav);
+  list-style: none;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (min-width: 901px) {
+  .navigation {
+    display: block;
+    justify-self: center;
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .list {
+    gap: 18px;
+    font-size: var(--font-size-nav-wide);
+  }
+}

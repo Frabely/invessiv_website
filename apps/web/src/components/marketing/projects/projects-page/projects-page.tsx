@@ -10,10 +10,8 @@ import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
-import {
-  getLocalizedSectionHref,
-  type NavigationItem,
-} from "@/config/navigation/home";
+import { getLocalizedSectionHref } from "@/config/navigation/home";
+import type { NavigationItem } from "@/common/contracts/marketing/navigation-item";
 import type { Locale } from "@/config/i18n";
 import type { ProjectsPageContent } from "@/i18n/dictionaries/marketing/projects";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";

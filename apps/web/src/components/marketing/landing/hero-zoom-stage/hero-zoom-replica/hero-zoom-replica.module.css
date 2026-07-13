@@ -19,8 +19,3 @@
   z-index: 4;
   pointer-events: none;
 }
-
-.header :global(.site-header) {
-  position: absolute;
-  top: 0;
-}

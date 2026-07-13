@@ -49,6 +49,10 @@ export function LandingPage({ locale }: LandingPageProps) {
   const finalCta = getLandingFinalCtaContent(locale);
   const footer = getLandingFooterContent(locale);
   const header = getLandingHeaderContent(locale);
+  const replicaHeaderNavigation = LANDING_HEADER_NAVIGATION.map((item) => ({
+    href: item.href,
+    label: header.labelsByHref[item.href] ?? item.href,
+  }));
   const hero = getLandingHeroContent(locale);
   const pricing = getLandingPricingContent(locale);
   const problemSolution = getLandingProblemSolutionContent(locale);
@@ -102,9 +106,8 @@ export function LandingPage({ locale }: LandingPageProps) {
               <HeroZoomReplica
                 headerSlot={
                   <HeroZoomReplicaHeader
-                    ctaHref={SECTION_HREFS.contact}
                     locale={locale}
-                    navigation={LANDING_HEADER_NAVIGATION}
+                    navigation={replicaHeaderNavigation}
                     uiContent={header}
                   />
                 }

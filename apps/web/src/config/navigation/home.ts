@@ -1,3 +1,4 @@
+import type { NavigationItem } from "@/common/contracts/marketing/navigation-item";
 import type { Locale } from "@/config/i18n";
 
 export const SECTION_IDS = [
@@ -45,10 +46,6 @@ export const CONTACT_CHANNEL_MODES = {
 
 export type ContactChannelMode =
   (typeof CONTACT_CHANNEL_MODES)[keyof typeof CONTACT_CHANNEL_MODES];
-
-export type NavigationItem = {
-  href: string;
-};
 
 export const getSectionHref = (sectionId: SectionId): SectionHref =>
   SECTION_HREFS[sectionId];

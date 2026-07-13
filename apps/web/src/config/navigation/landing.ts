@@ -2,9 +2,9 @@ import {
   CONTACT_SECTION_ID,
   FAQ_SECTION_ID,
   HERO_SECTION_ID,
-  type NavigationItem,
   PROCESS_SECTION_ID,
 } from "@/config/navigation/home";
+import type { NavigationItem } from "@/common/contracts/marketing/navigation-item";
 
 export const LANDING_SECTION_IDS = {
   hero: HERO_SECTION_ID,
