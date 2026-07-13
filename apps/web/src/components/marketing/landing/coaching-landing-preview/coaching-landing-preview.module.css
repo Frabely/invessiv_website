@@ -45,7 +45,7 @@
   border-bottom: 1px solid rgba(77, 69, 56, 0.18);
   background: #e7dfd3;
   color: #514b42;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.45cqw;
   font-weight: 600;
   line-height: 1;
@@ -148,7 +148,7 @@
 .kicker {
   margin-bottom: 0.85cqw;
   color: #9a5b39;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 1.55cqw;
   font-weight: 800;
   line-height: 1.2;
@@ -156,7 +156,7 @@
 }
 
 .demoTitle {
-  max-width: 14ch;
+  max-width: 18ch;
   color: #27271f;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 6.4cqw;
@@ -170,7 +170,7 @@
   max-width: 36ch;
   margin-top: 1.25cqw;
   color: #625e53;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.6cqw;
   font-weight: 500;
   line-height: 1.42;
@@ -183,7 +183,7 @@
   border-radius: 999px;
   background: #4d5b3f;
   color: #fffaf1;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.1cqw;
   font-weight: 700;
   line-height: 1;
@@ -234,7 +234,7 @@
   gap: 2.6cqw;
   list-style: none;
   color: #5f594e;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.45cqw;
   font-weight: 600;
   line-height: 1.32;
@@ -295,7 +295,7 @@
   gap: 1.7cqw;
   list-style: none;
   color: #5f594e;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.45cqw;
   font-weight: 600;
   line-height: 1.32;
@@ -321,7 +321,7 @@
   border-radius: 999px;
   background: #4d5b3f;
   color: #fffaf1;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.1cqw;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -350,7 +350,7 @@
 
 .quoteAuthor {
   color: #8a8172;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 1.9cqw;
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -388,7 +388,7 @@
   border-radius: 1.6cqw;
   background: rgba(246, 239, 227, 0.1);
   color: #cfc9b8;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.2cqw;
   font-weight: 500;
 }
@@ -402,7 +402,7 @@
   border-radius: 999px;
   background: #f3e5d4;
   color: #3f4932;
-  font-family: var(--font-family-body), sans-serif;
+  font-family: var(--font-family-base), sans-serif;
   font-size: 2.2cqw;
   font-weight: 700;
 }
