@@ -58,9 +58,13 @@ export function HeroSection({
             <source src={heroVideoSrc} type="video/mp4" />
           </video>
         ) : null}
-        <div className={heroVisualStyles.vignette} />
-        {heroVideoSrc ? null : <div className={heroVisualStyles.gridOverlay} />}
-        <div className={heroVisualStyles.noise} />
+        {heroVideoSrc ? null : (
+          <>
+            <div className={heroVisualStyles.vignette} />
+            <div className={heroVisualStyles.gridOverlay} />
+            <div className={heroVisualStyles.noise} />
+          </>
+        )}
       </div>
 
       <div className={styles.grid}>
