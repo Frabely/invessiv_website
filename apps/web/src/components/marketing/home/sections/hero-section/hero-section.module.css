@@ -306,10 +306,11 @@
 
   .visualBleed {
     overflow: hidden;
-    align-items: center;
+    align-items: stretch;
   }
 
   .visualBleed .grid {
+    grid-template-rows: minmax(0, 1fr) auto;
     align-items: center;
   }
 
@@ -339,6 +340,45 @@
   .compactMobile .secondaryCta {
     justify-self: stretch;
     width: 100%;
+  }
+
+  .visualBleed {
+    min-height: calc(
+      100dvh + (100vw - var(--layout-rail-inline-gutter) * 2) * 0.403
+    );
+    padding-top: 4.25rem;
+    padding-bottom: 0;
+  }
+
+  .visualBleed .grid {
+    gap: 16px;
+  }
+
+  .visualBleed .content {
+    gap: 0.85rem;
+  }
+
+  .visualBleed .title {
+    max-width: 22ch;
+    font-size: clamp(1.9rem, 8.2vw, 2.7rem);
+    line-height: 1.05;
+  }
+
+  .visualBleed .description {
+    max-width: 44ch;
+    line-height: 1.48;
+  }
+
+  .visualBleed .ctaRow {
+    gap: 0.65rem;
+  }
+
+  .visualBleed .ctaButton {
+    min-height: 40px;
+  }
+
+  .visualBleed .trustLine {
+    font-size: 0.8rem;
   }
 }
 

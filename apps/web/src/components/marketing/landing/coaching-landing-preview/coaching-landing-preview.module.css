@@ -416,7 +416,7 @@
 
 @media (max-width: 900px) {
   .visual {
-    width: min(100%, 360px);
+    width: 100%;
     justify-self: center;
   }
 
@@ -451,10 +451,6 @@
 }
 
 @media (max-width: 480px) {
-  .visual {
-    width: min(100%, 330px);
-  }
-
   .addressBar {
     max-width: 100%;
   }
