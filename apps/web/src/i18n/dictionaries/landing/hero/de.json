@@ -1,6 +1,36 @@
 {
   "description": "Für Dienstleister und kleine Unternehmen, die aus Besuchern mehr passende Anfragen machen wollen.",
   "primaryCta": "Kostenlose Ersteinschätzung anfragen",
+  "preview": {
+    "ariaLabel": "Demo-Vorschau einer Landingpage für ein Positionierungscoaching",
+    "brand": "Klarraum Coaching",
+    "browserLabel": "klarraum-coaching.de",
+    "cta": "Klarheitsgespräch buchen",
+    "demoLabel": "Demo",
+    "description": "Schärfe Angebot und Botschaft, damit passende Kund:innen sofort verstehen, warum sie bei dir richtig sind.",
+    "formEmailLabel": "E-Mail",
+    "formNameLabel": "Name",
+    "formSubmitLabel": "Klarheitsgespräch buchen",
+    "formTitle": "Kostenloses Klarheitsgespräch",
+    "imageAlt": "Coach und selbstständiger Kunde in einem persönlichen Positionierungsgespräch",
+    "kicker": "POSITIONIERUNGSCOACHING",
+    "offerItems": [
+      "4 Sessions à 60 Minuten",
+      "Workbook mit Positionierungs-Framework",
+      "Messaging-Check für Website und Profil"
+    ],
+    "offerNote": "Festpreis 790 € · Start jederzeit",
+    "offerTitle": "In 4 Wochen zur klaren Positionierung.",
+    "problemTitle": "Dein Angebot ist gut. Aber noch nicht klar genug.",
+    "problems": [
+      "Du erklärst zu viel.",
+      "Dein Angebot klingt austauschbar.",
+      "Die richtigen Anfragen bleiben aus."
+    ],
+    "quote": "„Nach der zweiten Session konnte ich zum ersten Mal in einem Satz sagen, was ich anbiete.“",
+    "quoteAuthor": "Mara K., Beraterin",
+    "title": "Sag klar, wofür du stehst."
+  },
   "secondaryCta": "So läuft es ab",
   "tag": "LANDINGPAGE STARTER · 999 €",
   "title": "Eine Landingpage, die dein Angebot verkauft.\nIn 5–10 Tagen online.",

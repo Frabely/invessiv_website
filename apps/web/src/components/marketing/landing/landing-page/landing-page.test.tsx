@@ -49,6 +49,25 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
   ),
 }));
 
+vi.mock(
+  "@/components/marketing/landing/coaching-landing-preview/coaching-landing-preview",
+  () => ({
+    CoachingLandingPreview: ({
+      content,
+    }: {
+      content: { ariaLabel: string; cta: string };
+    }) => (
+      <aside aria-label={content.ariaLabel} data-testid="coaching-preview">
+        <div data-testid="coaching-preview-browser">
+          <div data-testid="coaching-preview-hero" />
+          <span data-testid="coaching-preview-cta">{content.cta}</span>
+          <div data-testid="coaching-preview-problem-block" />
+        </div>
+      </aside>
+    ),
+  }),
+);
+
 describe("LandingPage", () => {
   afterEach(() => {
     cleanup();
@@ -151,7 +170,18 @@ describe("LandingPage", () => {
     expect(audienceCta!.dataset.analyticsEvent).toBe("cta_click");
     expect(audienceCta!.dataset.analyticsTarget).toBe("contact");
     expect(audienceCta!.dataset.analyticsVariant).toBe("primary");
-    expect(screen.getByTestId("hero-visual")).toBeTruthy();
+    expect(screen.queryByTestId("hero-visual")).toBeNull();
+    expect(screen.getByTestId("coaching-preview")).toBeTruthy();
+    expect(screen.getByTestId("coaching-preview-browser")).toBeTruthy();
+    expect(screen.getByTestId("coaching-preview-hero")).toBeTruthy();
+    expect(screen.getByTestId("coaching-preview-problem-block")).toBeTruthy();
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(
+      screen.queryByRole("link", { name: "Klarheitsgespräch buchen" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: "Klarheitsgespräch buchen" }),
+    ).toBeNull();
     expect(
       screen.getByRole("heading", {
         level: 2,

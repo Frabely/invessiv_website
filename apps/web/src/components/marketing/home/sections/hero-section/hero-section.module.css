@@ -167,6 +167,16 @@
   text-align: center;
 }
 
+.visualBleed {
+  overflow: visible;
+  z-index: 2;
+  align-items: stretch;
+}
+
+.visualBleed .grid {
+  align-items: stretch;
+}
+
 [data-theme="light"] .title {
   text-shadow: none;
 }
@@ -292,6 +302,15 @@
     width: 100%;
     min-height: 42px;
     padding-inline: 16px;
+  }
+
+  .visualBleed {
+    overflow: hidden;
+    align-items: center;
+  }
+
+  .visualBleed .grid {
+    align-items: center;
   }
 
   .compactMobile {

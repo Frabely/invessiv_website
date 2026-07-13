@@ -21,6 +21,8 @@ type HeroSectionProps = {
   heroVisualAriaLabel: string;
   heroVideoSrc?: string;
   title: string;
+  visualBleed?: boolean;
+  visualSlot?: import("react").ReactNode;
 };
 
 export function HeroSection({
@@ -38,10 +40,12 @@ export function HeroSection({
   heroVisualAriaLabel,
   heroVideoSrc,
   title,
+  visualBleed = false,
+  visualSlot,
 }: HeroSectionProps) {
   return (
     <section
-      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} hero`}
+      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} hero`}
       id={HERO_SECTION_ID}
     >
       <div aria-hidden="true" className={styles.backgroundLayers}>
@@ -103,7 +107,7 @@ export function HeroSection({
           ) : null}
         </div>
 
-        <HeroVisual ariaLabel={heroVisualAriaLabel} />
+        {visualSlot ?? <HeroVisual ariaLabel={heroVisualAriaLabel} />}
       </div>
     </section>
   );

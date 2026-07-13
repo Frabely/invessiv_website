@@ -1,10 +1,12 @@
+import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
 import type { Locale } from "@/config/i18n";
 import de from "./de.json";
 import en from "./en.json";
 
-export type LandingHeroContent = {
+type LandingHeroContent = {
   description: string;
   primaryCta: string;
+  preview: LandingCoachingPreviewContent;
   secondaryCta: string;
   tag: string;
   title: string;

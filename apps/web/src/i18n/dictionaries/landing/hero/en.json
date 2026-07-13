@@ -1,6 +1,36 @@
 {
   "description": "For service providers and small companies that want to turn visitors into better-fit inquiries.",
   "primaryCta": "Request a free initial assessment",
+  "preview": {
+    "ariaLabel": "Demo preview of a positioning coaching landing page",
+    "brand": "Klarraum Coaching",
+    "browserLabel": "klarraum-coaching.de",
+    "cta": "Book a clarity call",
+    "demoLabel": "Demo",
+    "description": "Refine your offer and message so the right clients immediately understand why you are the right fit.",
+    "formEmailLabel": "Email",
+    "formNameLabel": "Name",
+    "formSubmitLabel": "Book a clarity call",
+    "formTitle": "Free clarity call",
+    "imageAlt": "Coach and self-employed client in a one-to-one positioning conversation",
+    "kicker": "POSITIONING COACHING",
+    "offerItems": [
+      "4 sessions, 60 minutes each",
+      "Workbook with a positioning framework",
+      "Messaging check for website and profile"
+    ],
+    "offerNote": "Fixed price €790 · start anytime",
+    "offerTitle": "A clear positioning in 4 weeks.",
+    "problemTitle": "Your offer is good. But not clear enough yet.",
+    "problems": [
+      "You explain too much.",
+      "Your offer sounds interchangeable.",
+      "The right inquiries do not come in."
+    ],
+    "quote": "“After the second session, I could finally say what I offer in one sentence.”",
+    "quoteAuthor": "Mara K., consultant",
+    "title": "Say clearly what you stand for."
+  },
   "secondaryCta": "How it works",
   "tag": "LANDING PAGE STARTER · €999",
   "title": "A landing page that sells your offer.\nLive in 5–10 days.",

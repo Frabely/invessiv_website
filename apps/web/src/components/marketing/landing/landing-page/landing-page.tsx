@@ -1,5 +1,6 @@
 ﻿import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
+import { CoachingLandingPreview } from "@/components/marketing/landing/coaching-landing-preview/coaching-landing-preview";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
 import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
@@ -88,6 +89,8 @@ export function LandingPage({ locale }: LandingPageProps) {
           secondaryCtaHref={SECTION_HREFS.process}
           title={hero.title}
           trackingLocation="landing_hero"
+          visualBleed
+          visualSlot={<CoachingLandingPreview content={hero.preview} />}
         />
 
         <ProblemSolutionSection
