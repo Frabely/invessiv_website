@@ -6,6 +6,7 @@ import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funn
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { SectionScrollFade } from "@/components/marketing/landing/section-scroll-fade/section-scroll-fade";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
 import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
@@ -16,6 +17,7 @@ import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import {
+  LANDING_FUNNEL_SECTION_IDS,
   LANDING_HEADER_NAVIGATION,
   LANDING_SECTION_IDS,
 } from "@/config/navigation/landing";
@@ -92,6 +94,8 @@ export function LandingPage({ locale }: LandingPageProps) {
           visualBleed
           visualSlot={<CoachingLandingPreview content={hero.preview} />}
         />
+
+        <SectionScrollFade sectionIds={LANDING_FUNNEL_SECTION_IDS} />
 
         <ProblemSolutionSection
           id={LANDING_SECTION_IDS.solution}
