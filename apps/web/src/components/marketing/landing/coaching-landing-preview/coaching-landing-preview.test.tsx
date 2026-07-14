@@ -42,6 +42,8 @@ describe("CoachingLandingPreview", () => {
       expect(screen.queryAllByRole("textbox")).toHaveLength(0);
       expect(screen.queryAllByRole("button")).toHaveLength(0);
       expect(screen.queryByRole("link", { name: content.cta })).toBeNull();
+      expect(screen.queryByText(/4 (Wochen|weeks)/i)).toBeNull();
+      expect(content.quoteAuthor).not.toMatch(/Mara K\./);
     },
   );
 });

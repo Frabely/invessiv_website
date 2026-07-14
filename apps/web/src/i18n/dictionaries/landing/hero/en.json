@@ -3,33 +3,33 @@
   "primaryCta": "Request a free initial assessment",
   "preview": {
     "ariaLabel": "Demo preview of a positioning coaching landing page",
-    "brand": "Klarraum Coaching",
-    "browserLabel": "klarraum-coaching.de",
-    "cta": "Book a clarity call",
+    "brand": "Standpunkt Coaching",
+    "browserLabel": "standpunkt-coaching.de",
+    "cta": "Request an intro call",
     "demoLabel": "Demo",
-    "description": "In 4 weeks we sharpen your offer and message — until the right clients instantly see why you fit.",
+    "description": "Across four one-to-one sessions, you shape a position the right clients understand — and you can stand behind.",
     "formEmailLabel": "Email",
     "formNameLabel": "Name",
-    "formSubmitLabel": "Book a clarity call",
-    "formTitle": "Free clarity call · 20 minutes",
+    "formSubmitLabel": "Request an intro call",
+    "formTitle": "Is the coaching right for you?",
     "imageAlt": "Coach and self-employed client in a one-to-one positioning conversation",
-    "kicker": "FOR INDEPENDENT CONSULTANTS",
+    "kicker": "POSITIONING FOR INDEPENDENTS",
     "offerItems": [
-      "4 one-to-one sessions, 60 minutes each",
-      "Your positioning statement — in writing",
-      "Messaging check for website and LinkedIn"
+      "4 × 75-minute one-to-one sessions",
+      "Offer core and positioning on one page",
+      "Concrete copy angles for website and LinkedIn"
     ],
-    "offerNote": "Fixed price €790 · start anytime",
-    "offerTitle": "A clear positioning in 4 weeks.",
+    "offerNote": "€890 · preparation and follow-up included",
+    "offerTitle": "Four sessions. One position that sticks.",
     "problemTitle": "Your offer is good. People just can't tell.",
     "problems": [
       "You need ten sentences to introduce yourself.",
       "Prospects compare you on price alone.",
       "The right inquiries never arrive."
     ],
-    "quote": "“After the second session, I could finally say what I offer in one sentence.”",
-    "quoteAuthor": "Mara K., consultant",
-    "title": "Say what you offer in one sentence."
+    "quote": "“You stop explaining only what you do. You show why it matters to the right people.”",
+    "quoteAuthor": "The coaching goal",
+    "title": "Make your offer unmistakably yours."
   },
   "secondaryCta": "How it works",
   "tag": "LANDING PAGE STARTER · €999",
