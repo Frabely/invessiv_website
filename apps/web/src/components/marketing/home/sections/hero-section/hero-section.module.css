@@ -344,7 +344,7 @@
 
   .visualBleed {
     min-height: calc(
-      100dvh + (100vw - var(--layout-rail-inline-gutter) * 2) * 0.403
+      100dvh + (100vw - var(--layout-rail-inline-gutter) * 2) * 0.16
     );
     padding-top: 4.25rem;
     padding-bottom: 0;
@@ -379,6 +379,24 @@
 
   .visualBleed .trustLine {
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 700px) {
+  .visualBleed {
+    padding-top: 6.75rem;
+  }
+
+  .visualBleed .grid {
+    gap: 26px;
+  }
+
+  .visualBleed .content {
+    gap: 1.1rem;
+  }
+
+  .visualBleed .ctaRow {
+    gap: 0.85rem;
   }
 }
 
