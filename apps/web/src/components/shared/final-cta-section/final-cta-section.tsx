@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type SyntheticEvent, useRef, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -62,7 +62,7 @@ export function FinalCtaSection({
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
 
-  const consentErrorId = `${id}-consent-error`;
+  const consentErrorId = `${formId}-consent-error`;
   const websiteField = form.fields.website;
 
   const [submitState, setSubmitState] = useState<{
@@ -172,7 +172,7 @@ export function FinalCtaSection({
     },
   );
 
-  const onSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
     const honeypotValue = String(formData.get("honeypot") ?? "").trim();
 

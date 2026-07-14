@@ -74,4 +74,33 @@ describe("HeroSection", () => {
     expect(secondaryLink.dataset.analyticsLocation).toBe("landing_hero");
     expect(secondaryLink.dataset.analyticsTarget).toBe("footer");
   });
+
+  it("renders an optional decorative background video", () => {
+    const { container } = render(
+      <HeroSection
+        description="Kurze Beschreibung"
+        heroPrimaryCta="Check anfragen"
+        heroSecondaryCta="Footer ansehen"
+        heroTag="Landing"
+        heroVideoSrc="/spotlight.mp4"
+        heroVisualAriaLabel="Hero visual preview"
+        primaryCtaHref="#footer"
+        secondaryCtaHref="#footer"
+        trackingLocation="landing_hero"
+        primaryCtaAnalyticsTarget="footer"
+        secondaryCtaAnalyticsTarget="footer"
+        title="Landingpages"
+      />,
+    );
+
+    const video = container.querySelector("video");
+    const source = container.querySelector("source");
+
+    expect(video).toBeTruthy();
+    expect(video?.getAttribute("preload")).toBe("metadata");
+    expect(video?.muted).toBe(true);
+    expect(video?.playsInline).toBe(true);
+    expect(source?.getAttribute("src")).toBe("/spotlight.mp4");
+    expect(source?.getAttribute("type")).toBe("video/mp4");
+  });
 });

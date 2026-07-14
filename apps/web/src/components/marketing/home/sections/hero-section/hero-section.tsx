@@ -19,7 +19,10 @@ type HeroSectionProps = {
   heroTag: string;
   heroTrustLine?: string;
   heroVisualAriaLabel: string;
+  heroVideoSrc?: string;
   title: string;
+  visualBleed?: boolean;
+  visualSlot?: import("react").ReactNode;
 };
 
 export function HeroSection({
@@ -35,17 +38,37 @@ export function HeroSection({
   heroTag,
   heroTrustLine,
   heroVisualAriaLabel,
+  heroVideoSrc,
   title,
+  visualBleed = false,
+  visualSlot,
 }: HeroSectionProps) {
   return (
     <section
-      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} hero`}
+      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} hero`}
       id={HERO_SECTION_ID}
     >
       <div aria-hidden="true" className={styles.backgroundLayers}>
-        <div className={heroVisualStyles.vignette} />
-        <div className={heroVisualStyles.gridOverlay} />
-        <div className={heroVisualStyles.noise} />
+        {heroVideoSrc ? (
+          <video
+            aria-hidden="true"
+            autoPlay
+            className={styles.backgroundVideo}
+            loop
+            muted
+            playsInline
+            preload="metadata"
+          >
+            <source src={heroVideoSrc} type="video/mp4" />
+          </video>
+        ) : null}
+        {heroVideoSrc ? null : (
+          <>
+            <div className={heroVisualStyles.vignette} />
+            <div className={heroVisualStyles.gridOverlay} />
+            <div className={heroVisualStyles.noise} />
+          </>
+        )}
       </div>
 
       <div className={styles.grid}>
@@ -84,7 +107,7 @@ export function HeroSection({
           ) : null}
         </div>
 
-        <HeroVisual ariaLabel={heroVisualAriaLabel} />
+        {visualSlot ?? <HeroVisual ariaLabel={heroVisualAriaLabel} />}
       </div>
     </section>
   );

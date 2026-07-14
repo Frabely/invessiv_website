@@ -1,0 +1,22 @@
+export type LandingCoachingPreviewContent = {
+  ariaLabel: string;
+  brand: string;
+  browserLabel: string;
+  cta: string;
+  demoLabel: string;
+  description: string;
+  formEmailLabel: string;
+  formNameLabel: string;
+  formSubmitLabel: string;
+  formTitle: string;
+  imageAlt: string;
+  kicker: string;
+  offerItems: string[];
+  offerNote: string;
+  offerTitle: string;
+  problemTitle: string;
+  problems: string[];
+  quote: string;
+  quoteAuthor: string;
+  title: string;
+};

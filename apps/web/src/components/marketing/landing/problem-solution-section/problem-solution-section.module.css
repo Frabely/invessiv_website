@@ -377,6 +377,12 @@
   }
 }
 
+@media (min-width: 901px) {
+  .section {
+    padding-top: clamp(10.5rem, 14vw, 14rem);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .header,
   .chaosPanel,
