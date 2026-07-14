@@ -1,9 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
 import type { RefObject } from "react";
+import { useEffect } from "react";
+import type { HeroVisualTiltOptions } from "@/common/contracts/marketing";
 
-export function useHeroVisualTilt(shotRef: RefObject<HTMLDivElement | null>) {
+export function useHeroVisualTilt(
+  shotRef: RefObject<HTMLDivElement | null>,
+  options: HeroVisualTiltOptions = {},
+) {
+  const {
+    maximumRotation = 8,
+    parallaxDistance = 6,
+    restRotation = -2,
+  } = options;
+
   useEffect(() => {
     const shot = shotRef.current;
 
@@ -25,18 +35,30 @@ export function useHeroVisualTilt(shotRef: RefObject<HTMLDivElement | null>) {
       const centerY = rect.top + rect.height / 2;
       const dx = (event.clientX - centerX) / rect.width;
       const dy = (event.clientY - centerY) / rect.height;
-      const rotateY = Math.max(-8, Math.min(8, dx * 18));
-      const rotateX = Math.max(-8, Math.min(8, -dy * 18));
-      const parallaxX = Math.max(-6, Math.min(6, dx * 11));
-      const parallaxY = Math.max(-6, Math.min(6, dy * 11));
+      const rotateY = Math.max(
+        -maximumRotation,
+        Math.min(maximumRotation, dx * maximumRotation * 2.25),
+      );
+      const rotateX = Math.max(
+        -maximumRotation,
+        Math.min(maximumRotation, -dy * maximumRotation * 2.25),
+      );
+      const parallaxX = Math.max(
+        -parallaxDistance,
+        Math.min(parallaxDistance, dx * parallaxDistance * (11 / 6)),
+      );
+      const parallaxY = Math.max(
+        -parallaxDistance,
+        Math.min(parallaxDistance, dy * parallaxDistance * (11 / 6)),
+      );
 
-      shot.style.transform = `rotate(-2deg) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
+      shot.style.transform = `rotate(${restRotation}deg) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg)`;
       shot.style.setProperty("--hero-parallax-x", `${parallaxX.toFixed(2)}px`);
       shot.style.setProperty("--hero-parallax-y", `${parallaxY.toFixed(2)}px`);
     };
 
     const reset = () => {
-      shot.style.transform = "rotate(-2deg)";
+      shot.style.transform = `rotate(${restRotation}deg)`;
       shot.style.setProperty("--hero-parallax-x", "0px");
       shot.style.setProperty("--hero-parallax-y", "0px");
     };
@@ -51,5 +73,5 @@ export function useHeroVisualTilt(shotRef: RefObject<HTMLDivElement | null>) {
       window.removeEventListener("blur", reset);
       reset();
     };
-  }, [shotRef]);
+  }, [maximumRotation, parallaxDistance, restRotation, shotRef]);
 }

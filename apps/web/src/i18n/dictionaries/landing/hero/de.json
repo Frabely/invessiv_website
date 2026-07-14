@@ -1,6 +1,36 @@
 {
   "description": "Für Dienstleister und kleine Unternehmen, die aus Besuchern mehr passende Anfragen machen wollen.",
   "primaryCta": "Kostenlose Ersteinschätzung anfragen",
+  "preview": {
+    "ariaLabel": "Demo-Vorschau einer Landingpage für ein Positionierungscoaching",
+    "brand": "Standpunkt Coaching",
+    "browserLabel": "standpunkt-coaching.de",
+    "cta": "Kennenlerngespräch anfragen",
+    "demoLabel": "Demo",
+    "description": "In vier 1:1-Sessions entwickelst du eine Positionierung, die passende Kund:innen verstehen — und du sicher vertreten kannst.",
+    "formEmailLabel": "E-Mail",
+    "formNameLabel": "Name",
+    "formSubmitLabel": "Kennenlerngespräch anfragen",
+    "formTitle": "Passt das Coaching zu dir?",
+    "imageAlt": "Coach und selbstständiger Kunde in einem persönlichen Positionierungsgespräch",
+    "kicker": "POSITIONIERUNG FÜR SELBSTSTÄNDIGE",
+    "offerItems": [
+      "4 × 75 Minuten im 1:1",
+      "Angebotskern und Positionierung auf einer Seite",
+      "Konkrete Textansätze für Website und LinkedIn"
+    ],
+    "offerNote": "890 € · inklusive Vor- und Nachbereitung",
+    "offerTitle": "Vier Sessions. Eine Positionierung, die sitzt.",
+    "problemTitle": "Dein Angebot ist gut. Nur merkt das niemand.",
+    "problems": [
+      "Du brauchst zehn Sätze, um dich vorzustellen.",
+      "Interessenten vergleichen dich über den Preis.",
+      "Die passenden Anfragen bleiben aus."
+    ],
+    "quote": "„Du erklärst nicht länger nur, was du machst. Du zeigst, warum es für die Richtigen relevant ist.“",
+    "quoteAuthor": "Ziel des Coachings",
+    "title": "Mach dein Angebot unverwechselbar."
+  },
   "secondaryCta": "So läuft es ab",
   "tag": "LANDINGPAGE STARTER · 999 €",
   "title": "Eine Landingpage, die dein Angebot verkauft.\nIn 5–10 Tagen online.",

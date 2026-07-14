@@ -32,6 +32,33 @@
   );
 }
 
+.backgroundVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% center;
+  opacity: 1;
+}
+
+.backgroundLayers:has(.backgroundVideo)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-bg) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 58%, transparent) 46%,
+    color-mix(in srgb, var(--color-bg) 8%, transparent) 100%
+  );
+}
+
+.backgroundLayers:has(.backgroundVideo) > :not(.backgroundVideo) {
+  z-index: 2;
+}
+
 .grid {
   position: relative;
   z-index: 2;
@@ -60,7 +87,9 @@
   margin: 0;
   max-width: 20ch;
   color: var(--color-text);
+  font-family: var(--font-family-display), sans-serif;
   font-size: clamp(2.7rem, 5.45vw, 4.25rem);
+  font-weight: 700;
   line-height: 0.98;
   letter-spacing: -0.048em;
   text-wrap: balance;
@@ -138,6 +167,16 @@
   text-align: center;
 }
 
+.visualBleed {
+  overflow: visible;
+  z-index: 2;
+  align-items: stretch;
+}
+
+.visualBleed .grid {
+  align-items: stretch;
+}
+
 [data-theme="light"] .title {
   text-shadow: none;
 }
@@ -153,6 +192,19 @@
   color: transparent;
   filter: none;
   animation: titleFlow 5s ease-in-out infinite alternate;
+}
+
+[data-theme="light"] .backgroundVideo {
+  opacity: 1;
+}
+
+[data-theme="light"] .backgroundLayers:has(.backgroundVideo)::before {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-bg) 94%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 68%, transparent) 48%,
+    color-mix(in srgb, var(--color-bg) 18%, transparent) 100%
+  );
 }
 
 @keyframes titleFlow {
@@ -206,6 +258,20 @@
     gap: 24px;
   }
 
+  .backgroundVideo {
+    object-position: 70% center;
+    opacity: 1;
+  }
+
+  .backgroundLayers:has(.backgroundVideo)::before {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 68%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 46%,
+      color-mix(in srgb, var(--color-bg) 72%, transparent) 100%
+    );
+  }
+
   .content {
     max-width: none;
     gap: clamp(0.9rem, 3vw, 1.35rem);
@@ -238,6 +304,16 @@
     padding-inline: 16px;
   }
 
+  .visualBleed {
+    overflow: hidden;
+    align-items: stretch;
+  }
+
+  .visualBleed .grid {
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
   .compactMobile {
     min-height: var(--mobile-viewport-height);
     padding-bottom: clamp(1.7rem, 6vw, 2.35rem);
@@ -265,9 +341,71 @@
     justify-self: stretch;
     width: 100%;
   }
+
+  .visualBleed {
+    min-height: calc(
+      100dvh + (100vw - var(--layout-rail-inline-gutter) * 2) * 0.16
+    );
+    padding-top: 4.25rem;
+    padding-bottom: 0;
+  }
+
+  .visualBleed .grid {
+    gap: 16px;
+  }
+
+  .visualBleed .content {
+    gap: 0.85rem;
+  }
+
+  .visualBleed .title {
+    max-width: 22ch;
+    font-size: clamp(1.9rem, 8.2vw, 2.7rem);
+    line-height: 1.05;
+  }
+
+  .visualBleed .description {
+    max-width: 44ch;
+    line-height: 1.48;
+  }
+
+  .visualBleed .ctaRow {
+    gap: 0.65rem;
+  }
+
+  .visualBleed .ctaButton {
+    min-height: 40px;
+  }
+
+  .visualBleed .trustLine {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 900px) and (max-height: 700px) {
+  .visualBleed {
+    padding-top: 6.75rem;
+  }
+
+  .visualBleed .grid {
+    gap: 26px;
+  }
+
+  .visualBleed .content {
+    gap: 1.1rem;
+  }
+
+  .visualBleed .ctaRow {
+    gap: 0.85rem;
+  }
 }
 
 @media (max-width: 640px) {
+  .backgroundVideo {
+    object-position: 74% center;
+    opacity: 1;
+  }
+
   .description {
     max-width: 29ch;
     font-size: var(--font-size-body-sm);

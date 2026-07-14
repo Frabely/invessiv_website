@@ -56,6 +56,28 @@ describe("FinalCtaSection", () => {
     window.sessionStorage.clear();
   });
 
+  it("uses a stable consent error id derived from the form id", () => {
+    render(
+      <FinalCtaSection
+        analyticsLocation="landing_final_cta"
+        formId="landing_final_cta"
+        id="contact"
+        locale="de"
+        successRedirectHref="/de/services/landing-page/success"
+        {...getLandingFinalCtaContent("de")}
+      />,
+    );
+
+    const checkbox = screen.getByRole("checkbox");
+
+    expect(checkbox.getAttribute("aria-describedby")).toBe(
+      "landing_final_cta-consent-error",
+    );
+    expect(
+      document.getElementById("landing_final_cta-consent-error"),
+    ).not.toBeNull();
+  });
+
   it("submits quick contact with landing context and marks ads conversion when marketing consent exists", async () => {
     writeStoredConsentChoice({ analytics: false, marketing: true });
 
