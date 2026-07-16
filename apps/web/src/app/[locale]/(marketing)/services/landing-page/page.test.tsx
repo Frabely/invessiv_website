@@ -56,17 +56,17 @@ describe("LandingRoute", () => {
       "https://www.invessiv.com/de/services/landing-page",
     );
     expect(metadata.title).toEqual({
-      absolute: "Landingpage erstellen lassen | ab 999 € | Invessiv",
+      absolute: "Landingpage erstellen lassen | ab 2000 € | Invessiv",
     });
     expect(metadata.description).toBe(
-      "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
+      "Schnelle, klare Landingpages für Dienstleister und KMU – ab 2000 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
     );
     expect(metadata.openGraph).toMatchObject({
       description:
-        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 2000 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
       locale: "de_DE",
       siteName: "Invessiv",
-      title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
+      title: "Landingpage erstellen lassen | ab 2000 € | Invessiv",
       type: "website",
       url: "https://www.invessiv.com/de/services/landing-page",
     });
@@ -81,14 +81,14 @@ describe("LandingRoute", () => {
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
       description:
-        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 999 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
+        "Schnelle, klare Landingpages für Dienstleister und KMU – ab 2000 €, in 5–10 Tagen. Struktur, Design und Technik aus einer Hand. Kostenlose Ersteinschätzung anfragen.",
       images: [
         {
           alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
           url: "https://www.invessiv.com/og/landing.png",
         },
       ],
-      title: "Landingpage erstellen lassen | ab 999 € | Invessiv",
+      title: "Landingpage erstellen lassen | ab 2000 € | Invessiv",
     });
   });
 });
