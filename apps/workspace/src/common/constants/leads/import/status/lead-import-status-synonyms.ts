@@ -10,6 +10,8 @@ export const LEAD_IMPORT_STATUS_SYNONYMS: Record<string, ContactLeadStatus> = {
   not_reached: ContactLeadStatus.NotReached,
   reminder: ContactLeadStatus.Reminder,
   responded: ContactLeadStatus.Responded,
+  setting_call: ContactLeadStatus.SettingCall,
+  closing_call: ContactLeadStatus.ClosingCall,
   qualified: ContactLeadStatus.Qualified,
   proposal: ContactLeadStatus.Proposal,
   on_hold: ContactLeadStatus.OnHold,

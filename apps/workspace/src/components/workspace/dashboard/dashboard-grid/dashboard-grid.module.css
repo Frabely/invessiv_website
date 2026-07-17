@@ -19,6 +19,17 @@
   width: 100%;
 }
 
+.slot[data-widget="acquisitionVolume"] {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.slot[data-widget="acquisitionVolume"] > * {
+  flex: 0 1 330px;
+  width: min(100%, 330px);
+  max-width: 330px;
+}
+
 /* ---------- Mobile (< 768px) — default state ---------- */
 
 .slot[data-mobile-span="4"] {

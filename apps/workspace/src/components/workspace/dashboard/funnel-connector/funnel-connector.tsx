@@ -11,6 +11,9 @@ type FunnelConnectorProps = {
   nextCount: number;
   nextStageTone: LeadBadgeToneValue;
   previousCount: number;
+  previousStageTone: LeadBadgeToneValue;
+  ratioLabel?: string;
+  showAreaFade?: boolean;
 };
 
 function formatPercentLabel(
@@ -46,14 +49,20 @@ export function FunnelConnector({
   nextCount,
   nextStageTone,
   previousCount,
+  previousStageTone,
+  ratioLabel,
+  showAreaFade = false,
 }: FunnelConnectorProps) {
   const percentLabel = formatPercentLabel(previousCount, nextCount, locale);
-  const ratioLabel = formatRatioLabel(previousCount, nextCount, locale);
+  const resolvedRatioLabel =
+    ratioLabel ?? formatRatioLabel(previousCount, nextCount, locale);
 
   return (
     <div
       aria-label={ariaLabel}
       className={styles.connector}
+      data-area-fade={showAreaFade ? "true" : "false"}
+      data-from-tone={previousStageTone}
       data-slot="funnel-connector"
       data-tone={nextStageTone}
       role="presentation"
@@ -66,7 +75,7 @@ export function FunnelConnector({
       <span aria-hidden="true" className={styles.connectorLine} />
       <div className={styles.connectorBadge}>
         <span className={styles.connectorPercent}>{percentLabel}</span>
-        <span className={styles.connectorRatio}>{ratioLabel}</span>
+        <span className={styles.connectorRatio}>{resolvedRatioLabel}</span>
       </div>
       <span aria-hidden="true" className={styles.connectorLine} />
     </div>

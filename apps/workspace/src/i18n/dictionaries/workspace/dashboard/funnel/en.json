@@ -3,6 +3,8 @@
     "new": "New",
     "contacted": "Contacted",
     "responded": "Responded",
+    "setting_call": "Setting Call",
+    "closing_call": "Closing Call",
     "qualified": "Qualified",
     "proposal": "Proposal",
     "won": "Won",
@@ -14,6 +16,8 @@
     "new": "Fresh inquiries, not contacted yet.",
     "contacted": "First outreach in progress.",
     "responded": "Lead engaged, dialog active.",
+    "setting_call": "Setting call booked or completed.",
+    "closing_call": "Closing call booked or completed.",
     "qualified": "Fits the offer, sales-ready.",
     "proposal": "Proposal sent or being finalized.",
     "won": "Closed and won."

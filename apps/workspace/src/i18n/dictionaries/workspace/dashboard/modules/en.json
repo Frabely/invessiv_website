@@ -5,9 +5,8 @@
       "title": "Acquisition volume",
       "description": "New leads in the selected range with comparison to the previous period."
     },
-    "funnel": {
-      "title": "Funnel",
-      "description": "Four pipeline stages with drop-off between stages."
+    "messaging": {
+      "title": "Messages"
     },
     "sourcePerformance": {
       "title": "Source performance",

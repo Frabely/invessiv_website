@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { AcquisitionVolumeModule } from "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module";
 import { DashboardGrid } from "@/components/workspace/dashboard/dashboard-grid/dashboard-grid";
-import { FunnelSnapshotModule } from "@/components/workspace/dashboard/funnel-snapshot-module/funnel-snapshot-module";
+import { MessagingConversionModule } from "@/components/workspace/dashboard/messaging-conversion-module/messaging-conversion-module";
 import { DashboardDateRangeFilter } from "@/components/workspace/dashboard/dashboard-date-range-filter/dashboard-date-range-filter";
 import { DashboardPageHeader } from "@/components/workspace/dashboard/dashboard-page-header/dashboard-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
@@ -81,8 +81,8 @@ export default async function DashboardPage({
               range={rangeSelection}
             />
           ),
-          funnel: (
-            <FunnelSnapshotModule
+          messaging: (
+            <MessagingConversionModule
               locale={activeLocale}
               range={rangeSelection}
             />

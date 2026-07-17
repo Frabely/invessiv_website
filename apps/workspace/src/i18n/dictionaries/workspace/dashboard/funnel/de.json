@@ -3,6 +3,8 @@
     "new": "Neu",
     "contacted": "Kontaktiert",
     "responded": "Geantwortet",
+    "setting_call": "Setting Call",
+    "closing_call": "Closing Call",
     "qualified": "Qualifiziert",
     "proposal": "Angebot",
     "won": "Gewonnen",
@@ -14,6 +16,8 @@
     "new": "Frische Anfragen, noch ohne Kontakt.",
     "contacted": "Erste Outreach läuft.",
     "responded": "Lead reagiert, Dialog aktiv.",
+    "setting_call": "Setting Call gebucht oder durchgeführt.",
+    "closing_call": "Closing Call gebucht oder durchgeführt.",
     "qualified": "Passt zum Angebot, sales-ready.",
     "proposal": "Angebot liegt vor oder wird konkretisiert.",
     "won": "Abgeschlossen und gewonnen."

@@ -30,9 +30,9 @@ vi.mock(
 );
 
 vi.mock(
-  "@/components/workspace/dashboard/funnel-snapshot-module/funnel-snapshot-module",
+  "@/components/workspace/dashboard/messaging-conversion-module/messaging-conversion-module",
   () => ({
-    FunnelSnapshotModule: () => <h2>Funnel</h2>,
+    MessagingConversionModule: () => <h2>Nachrichten</h2>,
   }),
 );
 
@@ -48,7 +48,7 @@ describe("DashboardPage", () => {
   });
 
   it("renders the header, date-range inputs, and module placeholders for de", async () => {
-    render(
+    const { container } = render(
       await DashboardPage({
         params: Promise.resolve({ locale: "de" }),
         searchParams: Promise.resolve({}),
@@ -67,7 +67,14 @@ describe("DashboardPage", () => {
       screen.getByRole("heading", { level: 2, name: "Akquise-Volumen" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 2, name: "Funnel" }),
+      container.querySelector('[data-widget="acquisitionVolume"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('[data-widget="newLeadsSummary"]'),
+    ).toBeNull();
+    expect(container.querySelector('[data-widget="funnel"]')).toBeNull();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Nachrichten" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", {

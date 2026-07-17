@@ -3,7 +3,7 @@ import styles from "./dashboard-grid.module.css";
 
 const DashboardModuleKey = {
   AcquisitionVolume: "acquisitionVolume",
-  Funnel: "funnel",
+  Messaging: "messaging",
   SourcePerformance: "sourcePerformance",
   TimeToContact: "timeToContact",
   OutreachActivity: "outreachActivity",
@@ -30,7 +30,7 @@ type ModuleLayout = {
 
 const MODULE_LAYOUT: ReadonlyArray<ModuleLayout> = [
   {
-    key: DashboardModuleKey.Funnel,
+    key: DashboardModuleKey.Messaging,
     span: { mobile: 12, tablet: 12, desktop: 12 },
   },
   {

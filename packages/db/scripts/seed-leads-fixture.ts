@@ -91,6 +91,9 @@ const CATEGORY_FIXTURES = [
     sortOrder: 30,
   },
   { slug: "craftspeople", labelKey: "craftspeople", sortOrder: 20 },
+  { slug: "lawyers", labelKey: "lawyers", sortOrder: 62 },
+  { slug: "tax-advisors", labelKey: "tax-advisors", sortOrder: 64 },
+  { slug: "appraisers", labelKey: "appraisers", sortOrder: 66 },
   { slug: "other", labelKey: "other", sortOrder: 70 },
 ] as const;
 

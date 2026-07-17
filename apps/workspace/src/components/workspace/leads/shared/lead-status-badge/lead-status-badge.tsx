@@ -2,6 +2,7 @@ import {
   faArchive,
   faArrowsRotate,
   faBell,
+  faCalendarCheck,
   faCircleCheck,
   faCirclePause,
   faCirclePlus,
@@ -12,6 +13,7 @@ import {
   faHourglassHalf,
   faLayerGroup,
   faPhoneSlash,
+  faPhoneVolume,
   faReply,
   faTrophy,
   faUserPlus,
@@ -82,6 +84,14 @@ const STATUS_CONFIG: Record<
   [ContactLeadStatus.Responded]: {
     icon: faReply,
     tone: LeadBadgeTone.Pink,
+  },
+  [ContactLeadStatus.SettingCall]: {
+    icon: faCalendarCheck,
+    tone: LeadBadgeTone.Indigo,
+  },
+  [ContactLeadStatus.ClosingCall]: {
+    icon: faPhoneVolume,
+    tone: LeadBadgeTone.Teal,
   },
   [ContactLeadStatus.Qualified]: {
     icon: faCircleCheck,

@@ -5,7 +5,7 @@ import { funnelSnapshotMappingService } from "@/server/workspace/dashboard/servi
 const { mapRowsToSnapshotDto } = funnelSnapshotMappingService;
 
 describe("funnelSnapshotMappingService.mapRowsToSnapshotDto", () => {
-  it("returns the six funnel stages in canonical order", () => {
+  it("returns the eight funnel stages in canonical order", () => {
     const result = mapRowsToSnapshotDto([
       { lead_status: ContactLeadStatus.New, count: 1 },
     ]);
@@ -14,6 +14,8 @@ describe("funnelSnapshotMappingService.mapRowsToSnapshotDto", () => {
       ContactLeadStatus.New,
       ContactLeadStatus.Contacted,
       ContactLeadStatus.Responded,
+      ContactLeadStatus.SettingCall,
+      ContactLeadStatus.ClosingCall,
       ContactLeadStatus.Qualified,
       ContactLeadStatus.Proposal,
       ContactLeadStatus.Won,
@@ -25,13 +27,15 @@ describe("funnelSnapshotMappingService.mapRowsToSnapshotDto", () => {
       { lead_status: ContactLeadStatus.New, count: 20 },
       { lead_status: ContactLeadStatus.Contacted, count: 12 },
       { lead_status: ContactLeadStatus.Responded, count: 6 },
+      { lead_status: ContactLeadStatus.SettingCall, count: 4 },
+      { lead_status: ContactLeadStatus.ClosingCall, count: 2 },
       { lead_status: ContactLeadStatus.Qualified, count: 2 },
       { lead_status: ContactLeadStatus.Proposal, count: 3 },
       { lead_status: ContactLeadStatus.Won, count: 1 },
     ]);
 
     expect(result.stages.map((stage) => stage.count)).toEqual([
-      44, 24, 12, 6, 4, 1,
+      50, 30, 18, 12, 8, 6, 4, 1,
     ]);
   });
 
@@ -76,14 +80,18 @@ describe("funnelSnapshotMappingService.mapRowsToSnapshotDto", () => {
       { lead_status: ContactLeadStatus.New, count: 100 },
       { lead_status: ContactLeadStatus.Contacted, count: 60 },
       { lead_status: ContactLeadStatus.Responded, count: 30 },
+      { lead_status: ContactLeadStatus.SettingCall, count: 6 },
+      { lead_status: ContactLeadStatus.ClosingCall, count: 3 },
       { lead_status: ContactLeadStatus.Qualified, count: 9 },
       { lead_status: ContactLeadStatus.Proposal, count: 6 },
       { lead_status: ContactLeadStatus.Won, count: 3 },
     ]);
 
-    expect(result.stages[1]?.dropOffFromPrev).toBeCloseTo(108 / 208, 5);
-    expect(result.stages[2]?.dropOffFromPrev).toBeCloseTo(48 / 108, 5);
-    expect(result.stages[3]?.dropOffFromPrev).toBeCloseTo(18 / 48, 5);
+    expect(result.stages[1]?.dropOffFromPrev).toBeCloseTo(117 / 217, 5);
+    expect(result.stages[2]?.dropOffFromPrev).toBeCloseTo(57 / 117, 5);
+    expect(result.stages[3]?.dropOffFromPrev).toBeCloseTo(27 / 57, 5);
+    expect(result.stages[4]?.dropOffFromPrev).toBeCloseTo(21 / 27, 5);
+    expect(result.stages[5]?.dropOffFromPrev).toBeCloseTo(18 / 21, 5);
   });
 
   it("returns 0 dropOff when the previous cumulative count is 0", () => {
@@ -96,6 +104,8 @@ describe("funnelSnapshotMappingService.mapRowsToSnapshotDto", () => {
     expect(result.stages[3]?.dropOffFromPrev).toBe(0);
     expect(result.stages[4]?.dropOffFromPrev).toBe(0);
     expect(result.stages[5]?.dropOffFromPrev).toBe(0);
+    expect(result.stages[6]?.dropOffFromPrev).toBe(0);
+    expect(result.stages[7]?.dropOffFromPrev).toBe(0);
   });
 
   it("clamps dropOffFromPrev to 1 when later cumulative exceeds previous", () => {

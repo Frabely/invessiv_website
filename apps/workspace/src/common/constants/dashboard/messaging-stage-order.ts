@@ -1,14 +1,11 @@
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
-export const FUNNEL_STAGE_ORDER = [
-  ContactLeadStatus.New,
+export const MESSAGING_STAGE_ORDER = [
   ContactLeadStatus.Contacted,
   ContactLeadStatus.Responded,
   ContactLeadStatus.SettingCall,
   ContactLeadStatus.ClosingCall,
-  ContactLeadStatus.Qualified,
-  ContactLeadStatus.Proposal,
   ContactLeadStatus.Won,
 ] as const;
 
-export type FunnelStage = (typeof FUNNEL_STAGE_ORDER)[number];
+export type MessagingStage = (typeof MESSAGING_STAGE_ORDER)[number];

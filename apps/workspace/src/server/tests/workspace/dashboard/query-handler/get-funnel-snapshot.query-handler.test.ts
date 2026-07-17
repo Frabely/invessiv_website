@@ -48,11 +48,13 @@ beforeEach(() => {
 });
 
 describe("getFunnelSnapshot", () => {
-  it("returns the six funnel stages in order with active cumulative counts", async () => {
+  it("returns the eight funnel stages in order with active cumulative counts", async () => {
     mockGroupedSelect([
       { lead_status: ContactLeadStatus.New, count: 20 },
       { lead_status: ContactLeadStatus.Contacted, count: 12 },
       { lead_status: ContactLeadStatus.Responded, count: 6 },
+      { lead_status: ContactLeadStatus.SettingCall, count: 4 },
+      { lead_status: ContactLeadStatus.ClosingCall, count: 2 },
       { lead_status: ContactLeadStatus.Qualified, count: 2 },
       { lead_status: ContactLeadStatus.Proposal, count: 3 },
       { lead_status: ContactLeadStatus.Won, count: 1 },
@@ -71,12 +73,14 @@ describe("getFunnelSnapshot", () => {
       ContactLeadStatus.New,
       ContactLeadStatus.Contacted,
       ContactLeadStatus.Responded,
+      ContactLeadStatus.SettingCall,
+      ContactLeadStatus.ClosingCall,
       ContactLeadStatus.Qualified,
       ContactLeadStatus.Proposal,
       ContactLeadStatus.Won,
     ]);
     expect(result.stages.map((stage) => stage.count)).toEqual([
-      51, 24, 12, 6, 4, 1,
+      57, 30, 18, 12, 8, 6, 4, 1,
     ]);
     expect(result.stages[0]?.pendingReviewCount).toBe(7);
     expect(result.outcomes).toEqual([
@@ -84,7 +88,7 @@ describe("getFunnelSnapshot", () => {
       { key: ContactLeadStatus.Lost, count: 4 },
       { key: ContactLeadStatus.Archived, count: 2 },
     ]);
-    expect(result.totalCount).toBe(62);
+    expect(result.totalCount).toBe(68);
   });
 
   it("sets dropOffFromPrev to null for the first stage", async () => {
@@ -102,6 +106,8 @@ describe("getFunnelSnapshot", () => {
       { lead_status: ContactLeadStatus.New, count: 100 },
       { lead_status: ContactLeadStatus.Contacted, count: 60 },
       { lead_status: ContactLeadStatus.Responded, count: 30 },
+      { lead_status: ContactLeadStatus.SettingCall, count: 6 },
+      { lead_status: ContactLeadStatus.ClosingCall, count: 3 },
       { lead_status: ContactLeadStatus.Qualified, count: 9 },
       { lead_status: ContactLeadStatus.Proposal, count: 6 },
       { lead_status: ContactLeadStatus.Won, count: 3 },
@@ -112,11 +118,13 @@ describe("getFunnelSnapshot", () => {
       await import("@/server/workspace/dashboard/query-handler/get-funnel-snapshot.query-handler");
 
     const result = await getFunnelSnapshot(INPUT);
-    expect(result.stages[1]?.dropOffFromPrev).toBeCloseTo(108 / 208, 5);
-    expect(result.stages[2]?.dropOffFromPrev).toBeCloseTo(48 / 108, 5);
-    expect(result.stages[3]?.dropOffFromPrev).toBeCloseTo(18 / 48, 5);
-    expect(result.stages[4]?.dropOffFromPrev).toBeCloseTo(9 / 18, 5);
-    expect(result.stages[5]?.dropOffFromPrev).toBeCloseTo(3 / 9, 5);
+    expect(result.stages[1]?.dropOffFromPrev).toBeCloseTo(117 / 217, 5);
+    expect(result.stages[2]?.dropOffFromPrev).toBeCloseTo(57 / 117, 5);
+    expect(result.stages[3]?.dropOffFromPrev).toBeCloseTo(27 / 57, 5);
+    expect(result.stages[4]?.dropOffFromPrev).toBeCloseTo(21 / 27, 5);
+    expect(result.stages[5]?.dropOffFromPrev).toBeCloseTo(18 / 21, 5);
+    expect(result.stages[6]?.dropOffFromPrev).toBeCloseTo(9 / 18, 5);
+    expect(result.stages[7]?.dropOffFromPrev).toBeCloseTo(3 / 9, 5);
   });
 
   it("returns 0 counts for missing stages (DB returned no rows for that status)", async () => {
@@ -130,7 +138,7 @@ describe("getFunnelSnapshot", () => {
 
     const result = await getFunnelSnapshot(INPUT);
     expect(result.stages.map((stage) => stage.count)).toEqual([
-      6, 1, 1, 1, 0, 0,
+      6, 1, 1, 1, 1, 1, 0, 0,
     ]);
   });
 
@@ -167,7 +175,7 @@ describe("getFunnelSnapshot", () => {
 
     const result = await getFunnelSnapshot(INPUT);
     expect(result.stages.map((stage) => stage.count)).toEqual([
-      16, 6, 6, 6, 4, 1,
+      16, 6, 6, 6, 6, 6, 4, 1,
     ]);
     expect(result.outcomes).toContainEqual({
       key: ContactLeadStatus.Lost,
@@ -192,6 +200,8 @@ describe("getFunnelSnapshot", () => {
     expect(result.stages[3]?.dropOffFromPrev).toBe(0);
     expect(result.stages[4]?.dropOffFromPrev).toBe(0);
     expect(result.stages[5]?.dropOffFromPrev).toBe(0);
+    expect(result.stages[6]?.dropOffFromPrev).toBe(0);
+    expect(result.stages[7]?.dropOffFromPrev).toBe(0);
   });
 
   it("coerces numeric strings from the DB driver to numbers", async () => {
