@@ -179,64 +179,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-.description {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.footer {
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-.card[data-compact="true"] {
-  gap: 0.55rem;
-  padding: 0.95rem;
-}
-
-.card[data-compact="true"] .badge {
-  gap: 0.36rem;
-  min-height: 28px;
-  padding-inline: 0.65rem;
-  font-size: 0.76rem;
-}
-
-.card[data-compact="true"] .body {
-  gap: 0.18rem;
-}
-
-.card[data-compact="true"] .value {
-  font-size: 2.5rem;
-}
-
-.card[data-compact="true"] .shareRow {
-  gap: 0.18rem;
-  margin-top: 0;
-}
-
-.card[data-compact="true"] .barTrack {
-  height: 4px;
-}
-
-.card[data-compact="true"] .shareLabel {
-  font-size: 0.66rem;
-  line-height: 1.15;
-}
-
-.card[data-compact="true"] .footer {
-  margin-top: auto;
-  padding-top: 0.75rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
-}
-
 @keyframes funnel-stage-accent {
   from {
     transform: scaleX(0);
@@ -262,14 +204,6 @@
 
   .value {
     font-size: clamp(1.9rem, 2vw, 2.65rem);
-  }
-
-  .card[data-compact="true"] {
-    padding: 0.95rem;
-  }
-
-  .card[data-compact="true"] .value {
-    font-size: 2.5rem;
   }
 }
 

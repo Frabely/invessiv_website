@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type { ContactLeadStatus as ContactLeadStatusValue } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LEAD_STATUS_BADGE_TONES } from "@/common/constants/leads/badges/lead-status-badge-tones";
 import { LeadStatusBadge } from "../../shared/lead-status-badge/lead-status-badge";
@@ -6,11 +5,7 @@ import styles from "./funnel-stage-card.module.css";
 
 type FunnelStageCardProps = {
   ariaLabel: string;
-  compact?: boolean;
   countLabel: string;
-  description?: string;
-  detail?: ReactNode;
-  footer?: ReactNode;
   index: number;
   shareLabel?: string;
   shareRatio?: number | null;
@@ -20,11 +15,7 @@ type FunnelStageCardProps = {
 
 export function FunnelStageCard({
   ariaLabel,
-  compact = false,
   countLabel,
-  description,
-  detail,
-  footer,
   index,
   shareLabel,
   shareRatio,
@@ -40,7 +31,6 @@ export function FunnelStageCard({
     <article
       aria-label={ariaLabel}
       className={styles.card}
-      data-compact={compact ? "true" : "false"}
       data-index={index}
       data-stage={status}
       data-tone={LEAD_STATUS_BADGE_TONES[status]}
@@ -56,7 +46,6 @@ export function FunnelStageCard({
       </div>
       <div className={styles.body}>
         <span className={styles.value}>{countLabel}</span>
-        {detail}
       </div>
       {shareLabel !== undefined ? (
         <div className={styles.shareRow}>
@@ -70,10 +59,6 @@ export function FunnelStageCard({
           <span className={styles.shareLabel}>{shareLabel}</span>
         </div>
       ) : null}
-      {description !== undefined ? (
-        <p className={styles.description}>{description}</p>
-      ) : null}
-      {footer ? <div className={styles.footer}>{footer}</div> : null}
     </article>
   );
 }

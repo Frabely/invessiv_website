@@ -86,7 +86,7 @@ export function MessagingConversionView({
 
     return (
       <div className={styles.spanRow} data-span={status}>
-        <span className={styles.spanLabel}>
+        <span aria-hidden="true" className={styles.spanLabel}>
           {formatStagePairLabel(labels.directRateLabel, fromLabel, toLabel)}
         </span>
         <FunnelConnector
@@ -104,11 +104,15 @@ export function MessagingConversionView({
           locale={locale}
           nextCount={spanRate.toCount}
           nextStageTone={LEAD_STATUS_BADGE_TONES[status]}
+          percentLabel={formatPercentLabel(
+            labels.ratePercent,
+            toPercent(spanRate.rate),
+            locale,
+          )}
           previousCount={spanRate.fromCount}
           previousStageTone={
             LEAD_STATUS_BADGE_TONES[ContactLeadStatus.Contacted]
           }
-          rate={spanRate.rate}
           showAreaFade
         />
       </div>
@@ -171,9 +175,13 @@ export function MessagingConversionView({
                   locale={locale}
                   nextCount={nextStep.count}
                   nextStageTone={LEAD_STATUS_BADGE_TONES[nextKey]}
+                  percentLabel={formatPercentLabel(
+                    labels.ratePercent,
+                    toPercent(nextStep.rateFromPrev),
+                    locale,
+                  )}
                   previousCount={step.count}
                   previousStageTone={LEAD_STATUS_BADGE_TONES[step.key]}
-                  rate={nextStep.rateFromPrev ?? 0}
                 />
               ) : null}
             </li>

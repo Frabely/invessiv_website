@@ -101,6 +101,28 @@ describe("MessagingConversionView", () => {
     );
   });
 
+  it("formats visible connector rates with the dictionary template", () => {
+    const { container } = render(
+      <MessagingConversionView
+        data={buildData()}
+        labels={{ ...LABELS, ratePercent: "Quote: {value} Prozent" }}
+        locale="de"
+        title="Nachrichten"
+      />,
+    );
+
+    const connectors = container.querySelectorAll(
+      '[data-slot="funnel-connector"]',
+    );
+    expect(connectors).toHaveLength(7);
+    expect(
+      within(connectors[0] as HTMLElement).getByText("Quote: 64 Prozent"),
+    ).toBeInTheDocument();
+    expect(
+      within(connectors[4] as HTMLElement).getByText("Quote: 36 Prozent"),
+    ).toBeInTheDocument();
+  });
+
   it("labels every direct contacted conversion visibly and accessibly", () => {
     const { container } = render(
       <MessagingConversionView
@@ -128,7 +150,10 @@ describe("MessagingConversionView", () => {
     for (const [status, label, rate] of cases) {
       const span = container.querySelector(`[data-span="${status}"]`);
       expect(span).not.toBeNull();
-      expect(within(span as HTMLElement).getByText(label)).toBeInTheDocument();
+      expect(within(span as HTMLElement).getByText(label)).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
       expect(within(span as HTMLElement).getByText(rate)).toBeInTheDocument();
       expect(
         span?.querySelector('[data-slot="funnel-connector"]'),

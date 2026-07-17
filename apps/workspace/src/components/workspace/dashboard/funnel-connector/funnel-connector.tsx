@@ -9,18 +9,12 @@ type FunnelConnectorProps = {
   locale: Locale;
   nextCount: number;
   nextStageTone: LeadBadgeToneValue;
+  percentLabel: string;
   previousCount: number;
   previousStageTone: LeadBadgeToneValue;
-  rate: number;
   ratioLabel?: string;
   showAreaFade?: boolean;
 };
-
-function formatPercentLabel(rate: number, locale: Locale): string {
-  const percentValue = Math.round(Math.max(0, Math.min(rate, 1)) * 100);
-
-  return `${formatIntegerCount(percentValue, locale)} %`;
-}
 
 function formatRatioLabel(
   previousCount: number,
@@ -39,13 +33,12 @@ export function FunnelConnector({
   locale,
   nextCount,
   nextStageTone,
+  percentLabel,
   previousCount,
   previousStageTone,
-  rate,
   ratioLabel,
   showAreaFade = false,
 }: FunnelConnectorProps) {
-  const percentLabel = formatPercentLabel(rate, locale);
   const resolvedRatioLabel =
     ratioLabel ?? formatRatioLabel(previousCount, nextCount, locale);
 
