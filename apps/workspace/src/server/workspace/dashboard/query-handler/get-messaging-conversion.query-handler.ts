@@ -1,5 +1,5 @@
 import "server-only";
-import { between } from "drizzle-orm";
+import { between, count as countRows } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
 import type { GetMessagingConversionInput } from "@/common/contracts/dashboard/get-messaging-conversion-input";
@@ -14,7 +14,7 @@ export async function getMessagingConversion(
   const rows = (await db
     .select({
       lead_status: leads.lead_status,
-      count: count(),
+      count: countRows(),
     })
     .from(leads)
     .where(between(leads.created_at, input.from, input.to))
