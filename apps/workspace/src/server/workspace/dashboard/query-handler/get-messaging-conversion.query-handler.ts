@@ -1,12 +1,24 @@
 import "server-only";
-import type { GetFunnelSnapshotInput } from "@/common/contracts/dashboard/get-funnel-snapshot-input";
+import { between } from "drizzle-orm";
+import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { leads } from "@invessiv/db/record-configuration";
+import type { GetMessagingConversionInput } from "@/common/contracts/dashboard/get-messaging-conversion-input";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
+import type { MessagingConversionStatusRow } from "@/common/contracts/dashboard/messaging-conversion-status-row";
 import { messagingConversionMappingService } from "../services/messaging-conversion/messaging-conversion-mapping-service";
-import { getFunnelSnapshot } from "./get-funnel-snapshot.query-handler";
 
 export async function getMessagingConversion(
-  input: GetFunnelSnapshotInput,
+  input: GetMessagingConversionInput,
 ): Promise<MessagingConversionDto> {
-  const snapshot = await getFunnelSnapshot(input);
-  return messagingConversionMappingService.mapSnapshotToConversionDto(snapshot);
+  const db = getDrizzleDatabaseClient();
+  const rows = (await db
+    .select({
+      lead_status: leads.lead_status,
+      count: count(),
+    })
+    .from(leads)
+    .where(between(leads.created_at, input.from, input.to))
+    .groupBy(leads.lead_status)) as ReadonlyArray<MessagingConversionStatusRow>;
+
+  return messagingConversionMappingService.mapRowsToConversionDto(rows);
 }

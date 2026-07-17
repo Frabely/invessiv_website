@@ -17,7 +17,7 @@ import {
   LeadBadgeTone,
   type LeadBadgeTone as LeadBadgeToneValue,
 } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadge } from "../lead-badge/lead-badge";
+import { LeadBadge } from "../../../shared/lead-badge/lead-badge";
 
 type LeadCategoryBadgeProps = {
   className?: string;

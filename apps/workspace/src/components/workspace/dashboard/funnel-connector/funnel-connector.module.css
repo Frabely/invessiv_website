@@ -18,6 +18,38 @@
   );
 }
 
+.connector[data-index="0"] {
+  --connector-delay: 180ms;
+}
+
+.connector[data-index="1"] {
+  --connector-delay: 280ms;
+}
+
+.connector[data-index="2"] {
+  --connector-delay: 380ms;
+}
+
+.connector[data-index="3"] {
+  --connector-delay: 480ms;
+}
+
+.connector[data-index="4"] {
+  --connector-delay: 580ms;
+}
+
+.connector[data-index="5"] {
+  --connector-delay: 680ms;
+}
+
+.connector[data-index="6"] {
+  --connector-delay: 780ms;
+}
+
+.connector[data-index="7"] {
+  --connector-delay: 880ms;
+}
+
 .connector[data-tone="info"] {
   --connector-end-accent: color-mix(
     in srgb,

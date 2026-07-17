@@ -8,5 +8,6 @@
   },
   "ratePercent": "{value} %",
   "stageCountAriaSuffix": "Leads",
-  "connectorAriaLabel": "Übergang zur nächsten Stufe"
+  "directRateLabel": "{from} → {to}",
+  "transitionAriaLabel": "{from} zu {to}: {rate}, {ratio} Leads"
 }

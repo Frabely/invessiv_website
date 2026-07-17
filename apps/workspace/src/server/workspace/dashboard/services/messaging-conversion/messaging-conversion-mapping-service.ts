@@ -1,9 +1,38 @@
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { MESSAGING_STAGE_ORDER } from "@/common/constants/dashboard/messaging-stage-order";
-import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
+import {
+  MESSAGING_STAGE_ORDER,
+  type MessagingStage,
+} from "@/common/constants/dashboard/messaging-stage-order";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
 import type { MessagingConversionSpanRateDto } from "@/common/contracts/dashboard/messaging-conversion-span-rate.dto";
+import type { MessagingConversionStatusRow } from "@/common/contracts/dashboard/messaging-conversion-status-row";
 import type { MessagingConversionStepDto } from "@/common/contracts/dashboard/messaging-conversion-step.dto";
+import { aggregateCountService } from "../aggregate-count-service";
+
+const CONTACTED_OUTREACH_STATUSES: ReadonlySet<string> = new Set([
+  ContactLeadStatus.Contacted,
+  ContactLeadStatus.FollowUp,
+  ContactLeadStatus.Reminder,
+]);
+
+function getMessagingStageForStatus(status: string): MessagingStage | null {
+  if (CONTACTED_OUTREACH_STATUSES.has(status)) {
+    return ContactLeadStatus.Contacted;
+  }
+
+  switch (status) {
+    case ContactLeadStatus.Responded:
+      return ContactLeadStatus.Responded;
+    case ContactLeadStatus.SettingCall:
+      return ContactLeadStatus.SettingCall;
+    case ContactLeadStatus.ClosingCall:
+      return ContactLeadStatus.ClosingCall;
+    case ContactLeadStatus.Won:
+      return ContactLeadStatus.Won;
+    default:
+      return null;
+  }
+}
 
 function computeRateFromPrev(
   currentCount: number,
@@ -29,13 +58,52 @@ function computeSpanRate(
   };
 }
 
-function mapSnapshotToConversionDto(
-  snapshot: FunnelSnapshotDto,
-): MessagingConversionDto {
-  const countByStage = new Map<string, number>();
-  for (const stage of snapshot.stages) {
-    countByStage.set(stage.key, stage.count);
+function aggregateCurrentStageCounts(
+  rows: ReadonlyArray<MessagingConversionStatusRow>,
+): ReadonlyMap<MessagingStage, number> {
+  const countByCurrentStage = new Map<MessagingStage, number>();
+
+  for (const row of rows) {
+    const stage = getMessagingStageForStatus(row.lead_status);
+    if (stage === null) {
+      continue;
+    }
+    const coercedCount = aggregateCountService.coerceCount(row.count);
+    const rowCount = Number.isFinite(coercedCount)
+      ? Math.max(coercedCount, 0)
+      : 0;
+
+    countByCurrentStage.set(
+      stage,
+      (countByCurrentStage.get(stage) ?? 0) + rowCount,
+    );
   }
+
+  return countByCurrentStage;
+}
+
+function getCumulativeStageCount(
+  countByCurrentStage: ReadonlyMap<MessagingStage, number>,
+  startIndex: number,
+): number {
+  return MESSAGING_STAGE_ORDER.slice(startIndex).reduce(
+    (total, stage) => total + (countByCurrentStage.get(stage) ?? 0),
+    0,
+  );
+}
+
+function mapRowsToConversionDto(
+  rows: ReadonlyArray<MessagingConversionStatusRow>,
+): MessagingConversionDto {
+  const countByCurrentStage = aggregateCurrentStageCounts(rows);
+  const countByStage = new Map<MessagingStage, number>();
+
+  MESSAGING_STAGE_ORDER.forEach((stage, index) => {
+    countByStage.set(
+      stage,
+      getCumulativeStageCount(countByCurrentStage, index),
+    );
+  });
 
   const steps: MessagingConversionStepDto[] = MESSAGING_STAGE_ORDER.map(
     (key, index) => {
@@ -69,5 +137,5 @@ function mapSnapshotToConversionDto(
 }
 
 export const messagingConversionMappingService = {
-  mapSnapshotToConversionDto,
+  mapRowsToConversionDto,
 };

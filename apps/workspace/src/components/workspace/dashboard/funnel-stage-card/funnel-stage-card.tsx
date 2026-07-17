@@ -1,7 +1,7 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { ContactLeadStatus as ContactLeadStatusValue } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadStatusBadge } from "../../leads/shared";
-import { getLeadStatusBadgeTone } from "../../leads/shared/lead-status-badge/lead-status-badge";
+import { LEAD_STATUS_BADGE_TONES } from "@/common/constants/leads/badges/lead-status-badge-tones";
+import { LeadStatusBadge } from "../../shared/lead-status-badge/lead-status-badge";
 import styles from "./funnel-stage-card.module.css";
 
 type FunnelStageCardProps = {
@@ -41,18 +41,10 @@ export function FunnelStageCard({
       aria-label={ariaLabel}
       className={styles.card}
       data-compact={compact ? "true" : "false"}
+      data-index={index}
       data-stage={status}
-      data-tone={getLeadStatusBadgeTone(status)}
+      data-tone={LEAD_STATUS_BADGE_TONES[status]}
       role="group"
-      style={
-        {
-          "--stage-share":
-            normalizedShareRatio === null
-              ? "0%"
-              : `${normalizedShareRatio * 100}%`,
-          "--stage-delay": `${0.08 + index * 0.1}s`,
-        } as CSSProperties
-      }
     >
       <span aria-hidden="true" className={styles.accent} />
       <div className={styles.top}>
@@ -68,13 +60,13 @@ export function FunnelStageCard({
       </div>
       {shareLabel !== undefined ? (
         <div className={styles.shareRow}>
-          <div
+          <progress
             aria-hidden="true"
             className={styles.barTrack}
             data-empty={normalizedShareRatio === null ? "true" : "false"}
-          >
-            <span className={styles.barFill} />
-          </div>
+            max={1}
+            value={normalizedShareRatio ?? 0}
+          />
           <span className={styles.shareLabel}>{shareLabel}</span>
         </div>
       ) : null}

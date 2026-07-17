@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
 import type { Locale } from "@invessiv/common";
 import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
@@ -12,21 +11,13 @@ type FunnelConnectorProps = {
   nextStageTone: LeadBadgeToneValue;
   previousCount: number;
   previousStageTone: LeadBadgeToneValue;
+  rate: number;
   ratioLabel?: string;
   showAreaFade?: boolean;
 };
 
-function formatPercentLabel(
-  previousCount: number,
-  nextCount: number,
-  locale: Locale,
-): string {
-  const normalizedPreviousCount = previousCount > 0 ? previousCount : 0;
-  const normalizedNextCount = previousCount > 0 ? nextCount : 0;
-  const percentValue =
-    normalizedPreviousCount === 0
-      ? 0
-      : Math.round((normalizedNextCount / normalizedPreviousCount) * 100);
+function formatPercentLabel(rate: number, locale: Locale): string {
+  const percentValue = Math.round(Math.max(0, Math.min(rate, 1)) * 100);
 
   return `${formatIntegerCount(percentValue, locale)} %`;
 }
@@ -50,10 +41,11 @@ export function FunnelConnector({
   nextStageTone,
   previousCount,
   previousStageTone,
+  rate,
   ratioLabel,
   showAreaFade = false,
 }: FunnelConnectorProps) {
-  const percentLabel = formatPercentLabel(previousCount, nextCount, locale);
+  const percentLabel = formatPercentLabel(rate, locale);
   const resolvedRatioLabel =
     ratioLabel ?? formatRatioLabel(previousCount, nextCount, locale);
 
@@ -63,14 +55,10 @@ export function FunnelConnector({
       className={styles.connector}
       data-area-fade={showAreaFade ? "true" : "false"}
       data-from-tone={previousStageTone}
+      data-index={index}
       data-slot="funnel-connector"
       data-tone={nextStageTone}
-      role="presentation"
-      style={
-        {
-          "--connector-delay": `${0.18 + index * 0.1}s`,
-        } as CSSProperties
-      }
+      role="group"
     >
       <span aria-hidden="true" className={styles.connectorLine} />
       <div className={styles.connectorBadge}>

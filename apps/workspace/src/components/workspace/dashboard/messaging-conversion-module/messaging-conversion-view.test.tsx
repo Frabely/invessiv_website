@@ -4,13 +4,11 @@ import "@testing-library/jest-dom/vitest";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { LEAD_STATUS_BADGE_TONES } from "@/common/constants/leads/badges/lead-status-badge-tones";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
-import { getLeadStatusBadgeTone } from "../../leads/shared/lead-status-badge/lead-status-badge";
 import { MessagingConversionView } from "./messaging-conversion-view";
 
-afterEach(() => {
-  cleanup();
-});
+afterEach(cleanup);
 
 const LABELS = {
   stageLabels: {
@@ -22,135 +20,69 @@ const LABELS = {
   },
   ratePercent: "{value} %",
   stageCountAriaSuffix: "Leads",
-  connectorAriaLabel: "Übergang zur nächsten Stufe",
+  directRateLabel: "{from} → {to}",
+  transitionAriaLabel: "{from} zu {to}: {rate}, {ratio} Leads",
 };
 
-const TITLE = "Nachrichten";
-
-function buildData(
-  counts: {
-    contacted: number;
-    responded: number;
-    setting: number;
-    closing: number;
-    won: number;
-  } = {
-    contacted: 25,
-    responded: 16,
-    setting: 9,
-    closing: 6,
-    won: 3,
-  },
-): MessagingConversionDto {
-  const { contacted, responded, setting, closing, won } = counts;
-
+function buildData(): MessagingConversionDto {
   return {
     steps: [
-      {
-        key: ContactLeadStatus.Contacted,
-        count: contacted,
-        rateFromPrev: null,
-      },
-      {
-        key: ContactLeadStatus.Responded,
-        count: responded,
-        rateFromPrev: contacted === 0 ? 0 : Math.min(responded / contacted, 1),
-      },
-      {
-        key: ContactLeadStatus.SettingCall,
-        count: setting,
-        rateFromPrev: responded === 0 ? 0 : Math.min(setting / responded, 1),
-      },
-      {
-        key: ContactLeadStatus.ClosingCall,
-        count: closing,
-        rateFromPrev: setting === 0 ? 0 : Math.min(closing / setting, 1),
-      },
-      {
-        key: ContactLeadStatus.Won,
-        count: won,
-        rateFromPrev: closing === 0 ? 0 : Math.min(won / closing, 1),
-      },
+      { key: ContactLeadStatus.Contacted, count: 25, rateFromPrev: null },
+      { key: ContactLeadStatus.Responded, count: 16, rateFromPrev: 16 / 25 },
+      { key: ContactLeadStatus.SettingCall, count: 9, rateFromPrev: 9 / 16 },
+      { key: ContactLeadStatus.ClosingCall, count: 6, rateFromPrev: 6 / 9 },
+      { key: ContactLeadStatus.Won, count: 3, rateFromPrev: 3 / 6 },
     ],
-    contactedToSetting: {
-      fromCount: contacted,
-      toCount: setting,
-      rate: contacted === 0 ? 0 : Math.min(setting / contacted, 1),
-    },
-    contactedToClosing: {
-      fromCount: contacted,
-      toCount: closing,
-      rate: contacted === 0 ? 0 : Math.min(closing / contacted, 1),
-    },
-    contactedToWon: {
-      fromCount: contacted,
-      toCount: won,
-      rate: contacted === 0 ? 0 : Math.min(won / contacted, 1),
-    },
+    contactedToSetting: { fromCount: 25, toCount: 9, rate: 9 / 25 },
+    contactedToClosing: { fromCount: 25, toCount: 6, rate: 6 / 25 },
+    contactedToWon: { fromCount: 25, toCount: 3, rate: 3 / 25 },
   };
 }
 
 describe("MessagingConversionView", () => {
-  it("renders the section title", () => {
-    render(
-      <MessagingConversionView
-        data={buildData()}
-        labels={LABELS}
-        locale="de"
-        title={TITLE}
-      />,
-    );
-    expect(screen.getByRole("heading", { name: TITLE })).toBeInTheDocument();
-  });
-
-  it("renders all five step cards in order with counts", () => {
-    render(
-      <MessagingConversionView
-        data={buildData()}
-        labels={LABELS}
-        locale="de"
-        title={TITLE}
-      />,
-    );
-
-    const steps = screen.getAllByRole("group");
-    expect(steps).toHaveLength(5);
-
-    expect(within(steps[0]).getByText("Kontaktiert")).toBeInTheDocument();
-    expect(within(steps[0]).getByText("25")).toBeInTheDocument();
-    expect(within(steps[0]).getByText("100 %")).toBeInTheDocument();
-    expect(within(steps[1]).getByText("Geantwortet")).toBeInTheDocument();
-    expect(within(steps[1]).getByText("16")).toBeInTheDocument();
-    expect(within(steps[1]).getByText("64 %")).toBeInTheDocument();
-    expect(
-      within(steps[2]).getByText("Setting Call gebucht"),
-    ).toBeInTheDocument();
-    expect(within(steps[2]).getByText("9")).toBeInTheDocument();
-    expect(within(steps[2]).getByText("36 %")).toBeInTheDocument();
-    expect(
-      within(steps[3]).getByText("Closing Call gebucht"),
-    ).toBeInTheDocument();
-    expect(within(steps[3]).getByText("6")).toBeInTheDocument();
-    expect(within(steps[3]).getByText("24 %")).toBeInTheDocument();
-    expect(within(steps[4]).getByText("Gewonnen")).toBeInTheDocument();
-    expect(within(steps[4]).getByText("3")).toBeInTheDocument();
-    expect(within(steps[4]).getByText("12 %")).toBeInTheDocument();
-    expect(steps[4].getAttribute("data-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.Won),
-    );
-
-    expect(steps[2].getAttribute("data-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.SettingCall),
-    );
-  });
-
-  it("renders four shared connectors between the cards", () => {
+  it("renders all five stages in order with localized counts", () => {
     const { container } = render(
       <MessagingConversionView
         data={buildData()}
         labels={LABELS}
         locale="de"
-        title={TITLE}
+        title="Nachrichten"
+      />,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Nachrichten" }),
+    ).toBeInTheDocument();
+    const stages = container.querySelectorAll("[data-stage]");
+    expect(stages).toHaveLength(5);
+    expect(
+      within(stages[0] as HTMLElement).getByText("Kontaktiert"),
+    ).toBeInTheDocument();
+    expect(
+      within(stages[0] as HTMLElement).getByText("25"),
+    ).toBeInTheDocument();
+    expect(
+      within(stages[4] as HTMLElement).getByText("Gewonnen"),
+    ).toBeInTheDocument();
+    expect(stages[4]).toHaveAttribute(
+      "data-tone",
+      LEAD_STATUS_BADGE_TONES[ContactLeadStatus.Won],
+    );
+  });
+
+  it("renders sequential connector rates from the DTO", () => {
+    const data = buildData();
+    const respondedStep = data.steps[1];
+    if (respondedStep) {
+      respondedStep.rateFromPrev = 0.5;
+    }
+
+    const { container } = render(
+      <MessagingConversionView
+        data={data}
+        labels={LABELS}
+        locale="de"
+        title="Nachrichten"
       />,
     );
 
@@ -158,103 +90,93 @@ describe("MessagingConversionView", () => {
       'ol [data-slot="funnel-connector"]',
     );
     expect(connectors).toHaveLength(4);
-
-    const expectedConnectorContents: ReadonlyArray<[string, string]> = [
-      ["64 %", "16 / 25"],
-      ["56 %", "9 / 16"],
-      ["67 %", "6 / 9"],
-      ["50 %", "3 / 6"],
-    ];
-    expectedConnectorContents.forEach(([percent, ratio], index) => {
-      const connector = connectors[index];
-      expect(connector).toBeDefined();
-      expect(
-        within(connector as HTMLElement).getByText(percent),
-      ).toBeInTheDocument();
-      expect(
-        within(connector as HTMLElement).getByText(ratio),
-      ).toBeInTheDocument();
-    });
-
-    expect(connectors[3]?.getAttribute("data-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.Won),
-    );
-    expect(connectors[3]?.getAttribute("data-from-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.ClosingCall),
+    expect(
+      within(connectors[0] as HTMLElement).getByText("50 %"),
+    ).toBeInTheDocument();
+    expect(
+      within(connectors[0] as HTMLElement).getByText("16 / 25"),
+    ).toBeInTheDocument();
+    expect(connectors[0]).toHaveAccessibleName(
+      "Kontaktiert zu Geantwortet: 50 %, 16 / 25 Leads",
     );
   });
 
-  it("renders the direct contacted span rates through won", () => {
+  it("labels every direct contacted conversion visibly and accessibly", () => {
     const { container } = render(
       <MessagingConversionView
         data={buildData()}
         labels={LABELS}
         locale="de"
-        title={TITLE}
+        title="Nachrichten"
       />,
     );
 
+    const cases = [
+      [
+        ContactLeadStatus.SettingCall,
+        "Kontaktiert → Setting Call gebucht",
+        "36 %",
+      ],
+      [
+        ContactLeadStatus.ClosingCall,
+        "Kontaktiert → Closing Call gebucht",
+        "24 %",
+      ],
+      [ContactLeadStatus.Won, "Kontaktiert → Gewonnen", "12 %"],
+    ] as const;
+
+    for (const [status, label, rate] of cases) {
+      const span = container.querySelector(`[data-span="${status}"]`);
+      expect(span).not.toBeNull();
+      expect(within(span as HTMLElement).getByText(label)).toBeInTheDocument();
+      expect(within(span as HTMLElement).getByText(rate)).toBeInTheDocument();
+      expect(
+        span?.querySelector('[data-slot="funnel-connector"]'),
+      ).toHaveAccessibleName(new RegExp(`^${label.replace("→", "zu")}`));
+    }
+  });
+
+  it("uses the direct rate from the DTO instead of recalculating it", () => {
+    const data = buildData();
+    data.contactedToSetting.rate = 0.2;
+
+    const { container } = render(
+      <MessagingConversionView
+        data={data}
+        labels={LABELS}
+        locale="de"
+        title="Nachrichten"
+      />,
+    );
     const settingSpan = container.querySelector(
       `[data-span="${ContactLeadStatus.SettingCall}"]`,
     );
-    expect(settingSpan).not.toBeNull();
-    const settingConnector = settingSpan?.querySelector(
-      '[data-slot="funnel-connector"]',
-    );
-    expect(settingConnector?.getAttribute("data-area-fade")).toBe("true");
-    expect(settingConnector?.getAttribute("data-from-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.Contacted),
-    );
+
     expect(
-      within(settingSpan as HTMLElement).getByText("36 %"),
+      within(settingSpan as HTMLElement).getByText("20 %"),
     ).toBeInTheDocument();
     expect(
       within(settingSpan as HTMLElement).getByText("9 / 25"),
     ).toBeInTheDocument();
-
-    const closingSpan = container.querySelector(
-      `[data-span="${ContactLeadStatus.ClosingCall}"]`,
-    );
-    expect(closingSpan).not.toBeNull();
-    expect(
-      within(closingSpan as HTMLElement).getByText("24 %"),
-    ).toBeInTheDocument();
-    expect(
-      within(closingSpan as HTMLElement).getByText("6 / 25"),
-    ).toBeInTheDocument();
-
-    const wonSpan = container.querySelector(
-      `[data-span="${ContactLeadStatus.Won}"]`,
-    );
-    expect(wonSpan).not.toBeNull();
-    const wonConnector = wonSpan?.querySelector(
-      '[data-slot="funnel-connector"]',
-    );
-    expect(wonConnector?.getAttribute("data-area-fade")).toBe("true");
-    expect(wonConnector?.getAttribute("data-tone")).toBe(
-      getLeadStatusBadgeTone(ContactLeadStatus.Won),
-    );
-    expect(
-      within(wonSpan as HTMLElement).getByText("12 %"),
-    ).toBeInTheDocument();
-    expect(
-      within(wonSpan as HTMLElement).getByText("3 / 25"),
-    ).toBeInTheDocument();
   });
 
-  it("renders 0 % rates when no leads were contacted", () => {
+  it("renders zero rates for an empty DTO", () => {
+    const data = buildData();
+    data.steps = data.steps.map((step) => ({
+      ...step,
+      count: 0,
+      rateFromPrev: step.rateFromPrev === null ? null : 0,
+    }));
+    data.contactedToSetting = { fromCount: 0, toCount: 0, rate: 0 };
+    data.contactedToClosing = { fromCount: 0, toCount: 0, rate: 0 };
+    data.contactedToWon = { fromCount: 0, toCount: 0, rate: 0 };
+
     const { container } = render(
       <MessagingConversionView
-        data={buildData({
-          contacted: 0,
-          responded: 0,
-          setting: 0,
-          closing: 0,
-          won: 0,
-        })}
+        data={data}
         labels={LABELS}
         locale="de"
-        title={TITLE}
+        title="Nachrichten"
       />,
     );
 

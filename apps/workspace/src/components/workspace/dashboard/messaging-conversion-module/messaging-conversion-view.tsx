@@ -1,16 +1,20 @@
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { MESSAGING_STAGE_ORDER } from "@/common/constants/dashboard/messaging-stage-order";
+import { LEAD_STATUS_BADGE_TONES } from "@/common/constants/leads/badges/lead-status-badge-tones";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
 import type { MessagingConversionSpanRateDto } from "@/common/contracts/dashboard/messaging-conversion-span-rate.dto";
 import type { Locale } from "@/config/i18n";
 import type { DashboardMessagingDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import { formatIntegerCount } from "../../../../lib/workspace/dashboard/format-integer";
-import { getLeadStatusBadgeTone } from "../../leads/shared/lead-status-badge/lead-status-badge";
 import { FunnelConnector } from "../funnel-connector/funnel-connector";
 import { FunnelStageCard } from "../funnel-stage-card/funnel-stage-card";
 import styles from "./messaging-conversion-view.module.css";
 
 const VALUE_PLACEHOLDER = "{value}";
+const FROM_PLACEHOLDER = "{from}";
+const TO_PLACEHOLDER = "{to}";
+const RATE_PLACEHOLDER = "{rate}";
+const RATIO_PLACEHOLDER = "{ratio}";
 
 type MessagingConversionViewProps = {
   data: MessagingConversionDto;
@@ -36,6 +40,34 @@ function formatPercentLabel(
   );
 }
 
+function formatStagePairLabel(
+  template: string,
+  fromLabel: string,
+  toLabel: string,
+): string {
+  return template
+    .replace(FROM_PLACEHOLDER, fromLabel)
+    .replace(TO_PLACEHOLDER, toLabel);
+}
+
+function formatTransitionAriaLabel(
+  template: string,
+  fromLabel: string,
+  toLabel: string,
+  rate: number,
+  fromCount: number,
+  toCount: number,
+  locale: Locale,
+  rateTemplate: string,
+): string {
+  const rateLabel = formatPercentLabel(rateTemplate, toPercent(rate), locale);
+  const ratioLabel = `${formatIntegerCount(toCount, locale)} / ${formatIntegerCount(fromCount, locale)}`;
+
+  return formatStagePairLabel(template, fromLabel, toLabel)
+    .replace(RATE_PLACEHOLDER, rateLabel)
+    .replace(RATIO_PLACEHOLDER, ratioLabel);
+}
+
 export function MessagingConversionView({
   data,
   labels,
@@ -48,20 +80,40 @@ export function MessagingConversionView({
     spanRate: MessagingConversionSpanRateDto,
     status: MessagingSpanStage,
     index: number,
-  ) => (
-    <div className={styles.spanRow} data-span={status}>
-      <FunnelConnector
-        ariaLabel={labels.connectorAriaLabel}
-        index={index}
-        locale={locale}
-        nextCount={spanRate.toCount}
-        nextStageTone={getLeadStatusBadgeTone(status)}
-        previousCount={spanRate.fromCount}
-        previousStageTone={getLeadStatusBadgeTone(ContactLeadStatus.Contacted)}
-        showAreaFade
-      />
-    </div>
-  );
+  ) => {
+    const fromLabel = labels.stageLabels[ContactLeadStatus.Contacted];
+    const toLabel = labels.stageLabels[status];
+
+    return (
+      <div className={styles.spanRow} data-span={status}>
+        <span className={styles.spanLabel}>
+          {formatStagePairLabel(labels.directRateLabel, fromLabel, toLabel)}
+        </span>
+        <FunnelConnector
+          ariaLabel={formatTransitionAriaLabel(
+            labels.transitionAriaLabel,
+            fromLabel,
+            toLabel,
+            spanRate.rate,
+            spanRate.fromCount,
+            spanRate.toCount,
+            locale,
+            labels.ratePercent,
+          )}
+          index={index}
+          locale={locale}
+          nextCount={spanRate.toCount}
+          nextStageTone={LEAD_STATUS_BADGE_TONES[status]}
+          previousCount={spanRate.fromCount}
+          previousStageTone={
+            LEAD_STATUS_BADGE_TONES[ContactLeadStatus.Contacted]
+          }
+          rate={spanRate.rate}
+          showAreaFade
+        />
+      </div>
+    );
+  };
 
   return (
     <section
@@ -105,13 +157,23 @@ export function MessagingConversionView({
               nextKey !== null &&
               nextKey !== ContactLeadStatus.Contacted ? (
                 <FunnelConnector
-                  ariaLabel={labels.connectorAriaLabel}
+                  ariaLabel={formatTransitionAriaLabel(
+                    labels.transitionAriaLabel,
+                    stageLabel,
+                    labels.stageLabels[nextKey],
+                    nextStep.rateFromPrev ?? 0,
+                    step.count,
+                    nextStep.count,
+                    locale,
+                    labels.ratePercent,
+                  )}
                   index={index}
                   locale={locale}
                   nextCount={nextStep.count}
-                  nextStageTone={getLeadStatusBadgeTone(nextKey)}
+                  nextStageTone={LEAD_STATUS_BADGE_TONES[nextKey]}
                   previousCount={step.count}
-                  previousStageTone={getLeadStatusBadgeTone(step.key)}
+                  previousStageTone={LEAD_STATUS_BADGE_TONES[step.key]}
+                  rate={nextStep.rateFromPrev ?? 0}
                 />
               ) : null}
             </li>

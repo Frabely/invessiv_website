@@ -7,8 +7,8 @@ Lead-**Status** ist heute ein hartverdrahtetes Enum:
 - Const-Objekt `ContactLeadStatus` / `CONTACT_LEAD_STATUS_VALUES` in `packages/common`.
 - `leads.lead_status` ist `text` mit Check-Constraint (`leads_lead_status_check`) auf die feste 14er-Liste; Default
   `new`.
-- Labels in Dictionaries (`shared/{de,en}.json`, `status.*`), Farbe/Icon hardcoded in `lead-status-badge.tsx`
-  (`STATUS_CONFIG`), Funnel-Reihenfolge als Konstanten (`FUNNEL_STAGE_ORDER`/`FUNNEL_OUTCOME_ORDER`).
+- Labels in Dictionaries (`shared/{de,en}.json`, `status.*`), Farbe/Icon in der app-weiten Status-Badge-Konfiguration
+  und Messaging-Reihenfolge in `MESSAGING_STAGE_ORDER`.
 - An ~36 Dateien referenziert (Schemas, Command-/Query-Handler, Badge, Dashboard, Import).
 
 Ziel: Status anlegen/bearbeiten/löschen — mit DB-persistierten, mehrsprachigen Namen, frei wählbarer Farbe (Hex) und
@@ -170,14 +170,11 @@ icon, isSystem`), sortiert nach `sort_order`. Daraus wird in der Page eine `slug
     Route-/Command-Grenze; die statischen `z.enum`-Stellen werden zu `z.string()` + Membership-Validierung.
   - Filter (`?status=`) akzeptiert künftig zusätzlich Custom-Slugs (plus `all`).
 
-### 8. Funnel/Dashboard — unverändert (nur absichern)
+### 8. Messaging/Dashboard — unverändert (nur absichern)
 
-- `FUNNEL_STAGE_ORDER`/`FUNNEL_OUTCOME_ORDER` referenzieren weiterhin **immutable Basis-Slugs**; Aggregation gruppiert
-  per
-  `leads.lead_status` (Slug). Custom-Status erscheinen nicht in den Order-Konstanten → automatisch außerhalb des
-  Funnels.
-- Guard-Test ergänzen/aktualisieren: Custom-Slugs tauchen nicht in den Funnel-Order-Konstanten auf (bereits vorhandenes
-  Muster in `funnel-order.test.ts`).
+- `MESSAGING_STAGE_ORDER` referenziert weiterhin **immutable Basis-Slugs**; die Aggregation ordnet nur bekannte
+  System-Status einer Messaging-Stufe zu. Custom-Status bleiben ohne explizite Zuordnung außerhalb der Auswertung.
+- Mapper-Test ergänzen/aktualisieren: Unbekannte Custom-Slugs verändern keine Messaging-Stufe.
 
 ### 9. Import
 
@@ -227,9 +224,9 @@ icon, isSystem`), sortiert nach `sort_order`. Daraus wird in der Page eine `slug
 - API/UI: `apps/workspace/src/app/api/workspace/statuses/{route.ts,[id]/route.ts}`,
   `src/lib/workspace/leads/lead-status-api-error.ts`,
   `src/app/[locale]/(app)/settings/statuses/page.tsx`, `components/workspace/settings/statuses/...`,
-  `components/workspace/leads/shared/lead-status-badge/lead-status-badge.tsx`
-- Funnel/Import: `common/constants/dashboard/funnel-{stage,outcome}-order.ts`,
-  `server/workspace/dashboard/services/funnel-snapshot/funnel-snapshot-mapping-service.ts`,
+  `components/workspace/shared/lead-status-badge/lead-status-badge.tsx`
+- Messaging/Import: `common/constants/dashboard/messaging-stage-order.ts`,
+  `server/workspace/dashboard/services/messaging-conversion/messaging-conversion-mapping-service.ts`,
   `services/import/lead-import-field-validation-service.ts`,
   `packages/common/src/constants/leads/import/status/lead-import-status-synonyms.ts`
 - Regeln: `apps/workspace/src/app/[locale]/(app)/leads/AGENTS.md` (Regel #9), `apps/workspace/src/server/AGENTS.md`

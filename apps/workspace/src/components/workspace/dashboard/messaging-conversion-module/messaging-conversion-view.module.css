@@ -101,11 +101,22 @@
 
 .spanRow {
   display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
   min-width: 0;
 }
 
 .spanRow > * {
   width: 100%;
+}
+
+.spanLabel {
+  color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  line-height: 1.25;
+  text-align: center;
 }
 
 @media (min-width: 1100px) {
