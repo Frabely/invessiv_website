@@ -1,5 +1,5 @@
 import "server-only";
-import { between } from "drizzle-orm";
+import { between, count } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
 import type { FunnelSnapshotDto } from "@/common/contracts/dashboard/funnel-snapshot.dto";
