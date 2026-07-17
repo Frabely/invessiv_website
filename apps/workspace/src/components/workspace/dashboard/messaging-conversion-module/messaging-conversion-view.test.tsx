@@ -14,11 +14,11 @@ afterEach(() => {
 
 const LABELS = {
   stageLabels: {
-    contacted: "Kontaktiert",
-    responded: "Geantwortet",
-    setting_call: "Setting Call gebucht",
-    closing_call: "Closing Call gebucht",
-    won: "Gewonnen",
+    [ContactLeadStatus.Contacted]: "Kontaktiert",
+    [ContactLeadStatus.Responded]: "Geantwortet",
+    [ContactLeadStatus.SettingCall]: "Setting Call gebucht",
+    [ContactLeadStatus.ClosingCall]: "Closing Call gebucht",
+    [ContactLeadStatus.Won]: "Gewonnen",
   },
   ratePercent: "{value} %",
   stageCountAriaSuffix: "Leads",
@@ -194,7 +194,9 @@ describe("MessagingConversionView", () => {
       />,
     );
 
-    const settingSpan = container.querySelector('[data-span="setting_call"]');
+    const settingSpan = container.querySelector(
+      `[data-span="${ContactLeadStatus.SettingCall}"]`,
+    );
     expect(settingSpan).not.toBeNull();
     const settingConnector = settingSpan?.querySelector(
       '[data-slot="funnel-connector"]',
@@ -210,7 +212,9 @@ describe("MessagingConversionView", () => {
       within(settingSpan as HTMLElement).getByText("9 / 25"),
     ).toBeInTheDocument();
 
-    const closingSpan = container.querySelector('[data-span="closing_call"]');
+    const closingSpan = container.querySelector(
+      `[data-span="${ContactLeadStatus.ClosingCall}"]`,
+    );
     expect(closingSpan).not.toBeNull();
     expect(
       within(closingSpan as HTMLElement).getByText("24 %"),
@@ -219,7 +223,9 @@ describe("MessagingConversionView", () => {
       within(closingSpan as HTMLElement).getByText("6 / 25"),
     ).toBeInTheDocument();
 
-    const wonSpan = container.querySelector('[data-span="won"]');
+    const wonSpan = container.querySelector(
+      `[data-span="${ContactLeadStatus.Won}"]`,
+    );
     expect(wonSpan).not.toBeNull();
     const wonConnector = wonSpan?.querySelector(
       '[data-slot="funnel-connector"]',

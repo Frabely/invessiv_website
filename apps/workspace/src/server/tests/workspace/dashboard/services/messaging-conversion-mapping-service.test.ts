@@ -27,12 +27,12 @@ describe("messagingConversionMappingService.mapSnapshotToConversionDto", () => {
   it("returns the messaging steps in canonical order with snapshot counts", () => {
     const result = mapSnapshotToConversionDto(
       buildSnapshot({
-        new: 40,
-        contacted: 20,
-        responded: 8,
-        setting_call: 5,
-        closing_call: 2,
-        won: 1,
+        [ContactLeadStatus.New]: 40,
+        [ContactLeadStatus.Contacted]: 20,
+        [ContactLeadStatus.Responded]: 8,
+        [ContactLeadStatus.SettingCall]: 5,
+        [ContactLeadStatus.ClosingCall]: 2,
+        [ContactLeadStatus.Won]: 1,
       }),
     );
 
@@ -49,11 +49,11 @@ describe("messagingConversionMappingService.mapSnapshotToConversionDto", () => {
   it("computes rateFromPrev relative to the previous step and null for the first step", () => {
     const result = mapSnapshotToConversionDto(
       buildSnapshot({
-        contacted: 20,
-        responded: 8,
-        setting_call: 5,
-        closing_call: 2,
-        won: 1,
+        [ContactLeadStatus.Contacted]: 20,
+        [ContactLeadStatus.Responded]: 8,
+        [ContactLeadStatus.SettingCall]: 5,
+        [ContactLeadStatus.ClosingCall]: 2,
+        [ContactLeadStatus.Won]: 1,
       }),
     );
 
@@ -66,7 +66,10 @@ describe("messagingConversionMappingService.mapSnapshotToConversionDto", () => {
 
   it("returns 0 rateFromPrev when the previous step count is 0", () => {
     const result = mapSnapshotToConversionDto(
-      buildSnapshot({ contacted: 0, responded: 3 }),
+      buildSnapshot({
+        [ContactLeadStatus.Contacted]: 0,
+        [ContactLeadStatus.Responded]: 3,
+      }),
     );
 
     expect(result.steps[1]?.rateFromPrev).toBe(0);
@@ -74,7 +77,10 @@ describe("messagingConversionMappingService.mapSnapshotToConversionDto", () => {
 
   it("clamps rateFromPrev to 1 when a later step exceeds the previous", () => {
     const result = mapSnapshotToConversionDto(
-      buildSnapshot({ contacted: 2, responded: 5 }),
+      buildSnapshot({
+        [ContactLeadStatus.Contacted]: 2,
+        [ContactLeadStatus.Responded]: 5,
+      }),
     );
 
     expect(result.steps[1]?.rateFromPrev).toBe(1);
@@ -83,11 +89,11 @@ describe("messagingConversionMappingService.mapSnapshotToConversionDto", () => {
   it("computes the direct span rates from contacted to each call stage and won", () => {
     const result = mapSnapshotToConversionDto(
       buildSnapshot({
-        contacted: 20,
-        responded: 8,
-        setting_call: 5,
-        closing_call: 2,
-        won: 1,
+        [ContactLeadStatus.Contacted]: 20,
+        [ContactLeadStatus.Responded]: 8,
+        [ContactLeadStatus.SettingCall]: 5,
+        [ContactLeadStatus.ClosingCall]: 2,
+        [ContactLeadStatus.Won]: 1,
       }),
     );
 
