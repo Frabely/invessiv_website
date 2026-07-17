@@ -8,7 +8,7 @@ import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-source
 import { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
 import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
 import { LeadBadgeTone } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadge } from "../lead-badge/lead-badge";
+import { LeadBadge } from "../../../shared/lead-badge/lead-badge";
 
 type LeadSourceBadgeProps = {
   className?: string;
