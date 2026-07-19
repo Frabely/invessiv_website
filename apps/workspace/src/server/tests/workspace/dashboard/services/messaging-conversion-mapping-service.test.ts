@@ -32,25 +32,32 @@ describe("messagingConversionMappingService.mapRowsToConversionDto", () => {
     expect(result.steps.map((step) => step.count)).toEqual([11, 7, 4, 2, 1]);
   });
 
-  it.each([ContactLeadStatus.FollowUp, ContactLeadStatus.Reminder])(
-    "counts %s in contacted but not responded",
-    (status) => {
-      const result = mapRowsToConversionDto([
-        row(status, 10),
-        row(ContactLeadStatus.Responded, 2),
-      ]);
+  it.each([
+    ContactLeadStatus.FollowUp,
+    ContactLeadStatus.Reminder,
+    ContactLeadStatus.Proposal,
+    ContactLeadStatus.Lost,
+  ])("counts %s in contacted and responded", (status) => {
+    const result = mapRowsToConversionDto([
+      row(status, 10),
+      row(ContactLeadStatus.Responded, 2),
+    ]);
 
-      expect(result.steps.map((step) => step.count)).toEqual([12, 2, 0, 0, 0]);
-      expect(result.steps[1]?.rateFromPrev).toBeCloseTo(2 / 12, 5);
-    },
-  );
+    expect(result.steps.map((step) => step.count)).toEqual([12, 12, 0, 0, 0]);
+    expect(result.steps[1]?.rateFromPrev).toBe(1);
+  });
+
+  it("counts not reached in contacted only", () => {
+    const result = mapRowsToConversionDto([
+      row(ContactLeadStatus.NotReached, 10),
+    ]);
+    expect(result.steps.map((step) => step.count)).toEqual([10, 0, 0, 0, 0]);
+  });
 
   it.each([
     ContactLeadStatus.ConnectionRequested,
     ContactLeadStatus.Connected,
-    ContactLeadStatus.NotReached,
     ContactLeadStatus.Qualified,
-    ContactLeadStatus.Proposal,
   ])("excludes %s from the messaging conversion", (status) => {
     const result = mapRowsToConversionDto([row(status, 10)]);
 
@@ -62,11 +69,22 @@ describe("messagingConversionMappingService.mapRowsToConversionDto", () => {
       row(ContactLeadStatus.New, 8),
       row(ContactLeadStatus.PendingReview, 7),
       row(ContactLeadStatus.OnHold, 6),
-      row(ContactLeadStatus.Lost, 5),
       row(ContactLeadStatus.Archived, 4),
     ]);
 
     expect(result.steps.map((step) => step.count)).toEqual([0, 0, 0, 0, 0]);
+  });
+
+  it("maps the requested cumulative funnel example", () => {
+    const result = mapRowsToConversionDto([
+      row(ContactLeadStatus.Contacted, 6),
+      row(ContactLeadStatus.Responded, 3),
+      row(ContactLeadStatus.SettingCall, 3),
+      row(ContactLeadStatus.ClosingCall, 1),
+      row(ContactLeadStatus.Won, 1),
+      row(ContactLeadStatus.Reminder, 1),
+    ]);
+    expect(result.steps.map((step) => step.count)).toEqual([15, 9, 5, 2, 1]);
   });
 
   it("coerces database counts and ignores invalid values", () => {
@@ -138,5 +156,35 @@ describe("messagingConversionMappingService.mapRowsToConversionDto", () => {
       toCount: 0,
       rate: 0,
     });
+  });
+});
+
+describe("messagingConversionMappingService.mapRangedRowsToConversionDto", () => {
+  it("combines database-aggregated event stages with legacy statuses", () => {
+    const result =
+      messagingConversionMappingService.mapRangedRowsToConversionDto(
+        [
+          { stageRank: 1, count: 2 },
+          { stageRank: "2", count: "1" },
+        ],
+        [{ lead_status: ContactLeadStatus.NotReached, count: 1 }],
+      );
+
+    expect(result.steps.map((step) => step.count)).toEqual([4, 3, 1, 0, 0]);
+  });
+
+  it("ignores invalid database stage ranks", () => {
+    const result =
+      messagingConversionMappingService.mapRangedRowsToConversionDto(
+        [
+          { stageRank: null, count: 1 },
+          { stageRank: -1, count: 1 },
+          { stageRank: 5, count: 1 },
+          { stageRank: "invalid", count: 1 },
+        ],
+        [],
+      );
+
+    expect(result.steps.map((step) => step.count)).toEqual([0, 0, 0, 0, 0]);
   });
 });

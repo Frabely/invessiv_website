@@ -1,28 +1,53 @@
-import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import {
+  CONTACT_LEAD_STATUS_VALUES,
+  ContactLeadStatus,
+  type ContactLeadStatus as ContactLeadStatusType,
+} from "@invessiv/common/constants/contact/contact-lead-statuses";
 import {
   MESSAGING_STAGE_ORDER,
   type MessagingStage,
 } from "@/common/constants/dashboard/messaging-stage-order";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
 import type { MessagingConversionSpanRateDto } from "@/common/contracts/dashboard/messaging-conversion-span-rate.dto";
+import type { MessagingConversionStageRankRow } from "@/common/contracts/dashboard/messaging-conversion-stage-rank-row";
 import type { MessagingConversionStatusRow } from "@/common/contracts/dashboard/messaging-conversion-status-row";
 import type { MessagingConversionStepDto } from "@/common/contracts/dashboard/messaging-conversion-step.dto";
 import { aggregateCountService } from "../aggregate-count-service";
 
-const CONTACTED_OUTREACH_STATUSES: ReadonlySet<string> = new Set([
-  ContactLeadStatus.Contacted,
-  ContactLeadStatus.FollowUp,
-  ContactLeadStatus.Reminder,
-]);
+const CONTACTED_OUTREACH_STATUSES: ReadonlySet<ContactLeadStatusType> = new Set(
+  [ContactLeadStatus.Contacted, ContactLeadStatus.NotReached],
+);
 
-function getMessagingStageForStatus(status: string): MessagingStage | null {
+const RESPONDED_OUTREACH_STATUSES: ReadonlySet<ContactLeadStatusType> = new Set(
+  [
+    ContactLeadStatus.Responded,
+    ContactLeadStatus.FollowUp,
+    ContactLeadStatus.Reminder,
+    ContactLeadStatus.Proposal,
+    ContactLeadStatus.Lost,
+  ],
+);
+
+const CONTACT_LEAD_STATUSES: ReadonlySet<string> = new Set(
+  CONTACT_LEAD_STATUS_VALUES,
+);
+
+function isContactLeadStatus(status: string): status is ContactLeadStatusType {
+  return CONTACT_LEAD_STATUSES.has(status);
+}
+
+function getMessagingStageForStatus(
+  status: ContactLeadStatusType,
+): MessagingStage | null {
   if (CONTACTED_OUTREACH_STATUSES.has(status)) {
     return ContactLeadStatus.Contacted;
   }
 
+  if (RESPONDED_OUTREACH_STATUSES.has(status)) {
+    return ContactLeadStatus.Responded;
+  }
+
   switch (status) {
-    case ContactLeadStatus.Responded:
-      return ContactLeadStatus.Responded;
     case ContactLeadStatus.SettingCall:
       return ContactLeadStatus.SettingCall;
     case ContactLeadStatus.ClosingCall:
@@ -64,6 +89,9 @@ function aggregateCurrentStageCounts(
   const countByCurrentStage = new Map<MessagingStage, number>();
 
   for (const row of rows) {
+    if (!isContactLeadStatus(row.lead_status)) {
+      continue;
+    }
     const stage = getMessagingStageForStatus(row.lead_status);
     if (stage === null) {
       continue;
@@ -80,6 +108,30 @@ function aggregateCurrentStageCounts(
   }
 
   return countByCurrentStage;
+}
+
+function mapRangedRowsToConversionDto(
+  eventRows: ReadonlyArray<MessagingConversionStageRankRow>,
+  legacyRows: ReadonlyArray<MessagingConversionStatusRow>,
+): MessagingConversionDto {
+  const eventStatusRows: MessagingConversionStatusRow[] = [];
+
+  for (const row of eventRows) {
+    if (row.stageRank === null) {
+      continue;
+    }
+    const rank = aggregateCountService.coerceCount(row.stageRank);
+    if (!Number.isInteger(rank)) {
+      continue;
+    }
+    const stage = MESSAGING_STAGE_ORDER[rank];
+    if (stage === undefined) {
+      continue;
+    }
+    eventStatusRows.push({ lead_status: stage, count: row.count });
+  }
+
+  return mapRowsToConversionDto([...eventStatusRows, ...legacyRows]);
 }
 
 function getCumulativeStageCount(
@@ -137,5 +189,6 @@ function mapRowsToConversionDto(
 }
 
 export const messagingConversionMappingService = {
+  mapRangedRowsToConversionDto,
   mapRowsToConversionDto,
 };
