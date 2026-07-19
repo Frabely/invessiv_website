@@ -1,5 +1,6 @@
 import "server-only";
-import type { RangeSelection } from "@/common/contracts/range-selection";
+import type { RangeSelection } from "@/common/contracts/dashboard/range-selection";
+import { DashboardRangeKind } from "@/common/constants/dashboard/dashboard-range-kinds";
 import type { Locale } from "@/config/i18n";
 import {
   getDashboardMessagingDictionary,
@@ -17,10 +18,11 @@ export async function MessagingConversionModule({
   locale,
   range,
 }: MessagingConversionModuleProps) {
-  const data = await getMessagingConversion({
-    from: range.from,
-    to: range.to,
-  });
+  const data = await getMessagingConversion(
+    range.kind === DashboardRangeKind.Bounded
+      ? { from: range.from, to: range.to }
+      : {},
+  );
 
   const labels = getDashboardMessagingDictionary(locale);
   const modulesContent = getDashboardModulesDictionary(locale);

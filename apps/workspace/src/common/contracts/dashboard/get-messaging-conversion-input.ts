@@ -1,4 +1,4 @@
 export type GetMessagingConversionInput = {
-  from: Date;
-  to: Date;
+  from?: Date;
+  to?: Date;
 };

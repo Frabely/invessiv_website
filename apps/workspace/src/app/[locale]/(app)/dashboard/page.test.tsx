@@ -47,7 +47,7 @@ describe("DashboardPage", () => {
     cleanup();
   });
 
-  it("renders the header, date-range inputs, and module placeholders for de", async () => {
+  it("renders the header, date-range preset, and module placeholders for de", async () => {
     const { container } = render(
       await DashboardPage({
         params: Promise.resolve({ locale: "de" }),
@@ -60,8 +60,11 @@ describe("DashboardPage", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText("Zeitraum")).toBeInTheDocument();
-    expect(screen.getByLabelText("Von")).toBeInTheDocument();
-    expect(screen.getByLabelText("Bis")).toBeInTheDocument();
+    expect(screen.getByLabelText("Zeitraum auswählen")).toHaveValue(
+      "last-7-days",
+    );
+    expect(screen.queryByLabelText("Von")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bis")).not.toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", { level: 2, name: "Akquise-Volumen" }),

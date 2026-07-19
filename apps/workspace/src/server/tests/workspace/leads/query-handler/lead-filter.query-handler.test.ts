@@ -114,20 +114,22 @@ describe("buildLeadFilter", () => {
   });
 
   describe("date range filter", () => {
-    it("adds created_at >= condition when date_from is provided", () => {
-      const { sql } = toSQLFull(
+    it("adds updated_at >= start-of-day condition when date_from is provided", () => {
+      const { sql, params } = toSQLFull(
         buildLeadFilter({ date_from: "2024-01-01" }).where,
       );
-      expect(sql).toContain("created_at");
+      expect(sql).toContain("updated_at");
       expect(sql).toContain(">=");
+      expect(params).toContain("2024-01-01T00:00:00.000Z");
     });
 
-    it("adds created_at <= condition when date_to is provided", () => {
-      const { sql } = toSQLFull(
+    it("includes the complete date_to day via an exclusive next-day bound", () => {
+      const { sql, params } = toSQLFull(
         buildLeadFilter({ date_to: "2024-12-31" }).where,
       );
-      expect(sql).toContain("created_at");
-      expect(sql).toContain("<=");
+      expect(sql).toContain("updated_at");
+      expect(sql).toContain("<");
+      expect(params).toContain("2025-01-01T00:00:00.000Z");
     });
 
     it("adds both date bounds when date_from and date_to are provided", () => {
@@ -136,7 +138,7 @@ describe("buildLeadFilter", () => {
           .where,
       );
       expect(sql).toContain(">=");
-      expect(sql).toContain("<=");
+      expect(sql).toContain("<");
     });
   });
 
@@ -352,7 +354,7 @@ describe("buildLeadFilter", () => {
         buildLeadFilter({ score_min: 50, date_from: "2024-01-01" }).where,
       );
       expect(params).toContain(50);
-      expect(sql).toContain("created_at");
+      expect(sql).toContain("updated_at");
     });
   });
 });

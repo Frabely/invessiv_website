@@ -4,21 +4,22 @@ import { rangeResolverService } from "@/server/workspace/dashboard/services/rang
 vi.mock("server-only", () => ({}));
 
 const NOW = new Date("2026-05-21T12:00:00.000Z");
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 describe("rangeResolverService.resolveDashboardRange", () => {
-  it("defaults to the last 30 days when no date params are set", () => {
+  it("defaults to the last 7 calendar days when no date params are set", () => {
     const result = rangeResolverService.resolveDashboardRange({}, { now: NOW });
 
-    expect(result.to.getTime()).toBe(NOW.getTime());
-    expect(result.from.getTime()).toBe(NOW.getTime() - 30 * DAY_MS);
+    expect(result.kind).toBe("bounded");
+    if (result.kind !== "bounded") throw new Error("expected bounded range");
+    expect(result.to.toISOString()).toBe("2026-05-21T23:59:59.999Z");
+    expect(result.from.toISOString()).toBe("2026-05-15T00:00:00.000Z");
   });
 
   it("populates the input values with the effective default window", () => {
     const result = rangeResolverService.resolveDashboardRange({}, { now: NOW });
 
     expect(result.toInputValue).toBe("2026-05-21");
-    expect(result.fromInputValue).toBe("2026-04-21");
+    expect(result.fromInputValue).toBe("2026-05-15");
   });
 
   it("uses provided date_from and date_to from search params", () => {
@@ -27,6 +28,8 @@ describe("rangeResolverService.resolveDashboardRange", () => {
       { now: NOW },
     );
 
+    expect(result.kind).toBe("bounded");
+    if (result.kind !== "bounded") throw new Error("expected bounded range");
     expect(result.fromInputValue).toBe("2026-01-01");
     expect(result.toInputValue).toBe("2026-03-31");
     expect(result.from.toISOString()).toBe("2026-01-01T00:00:00.000Z");
@@ -39,7 +42,7 @@ describe("rangeResolverService.resolveDashboardRange", () => {
       { now: NOW },
     );
 
-    expect(result.fromInputValue).toBe("2026-04-21");
+    expect(result.fromInputValue).toBe("2026-05-15");
   });
 
   it("uses the first value when params arrive as an array", () => {
@@ -57,6 +60,8 @@ describe("rangeResolverService.resolveDashboardRange", () => {
       { now: NOW },
     );
 
+    expect(result.kind).toBe("bounded");
+    if (result.kind !== "bounded") throw new Error("expected bounded range");
     expect(result.fromInputValue).toBe("2026-01-01");
     expect(result.toInputValue).toBe("2026-03-31");
   });
@@ -67,6 +72,8 @@ describe("rangeResolverService.resolveDashboardRange", () => {
       { now: NOW },
     );
 
+    expect(result.kind).toBe("bounded");
+    if (result.kind !== "bounded") throw new Error("expected bounded range");
     expect(result.previousTo.getTime()).toBe(result.from.getTime());
     const span = result.to.getTime() - result.from.getTime();
     expect(result.previousFrom.getTime()).toBe(result.from.getTime() - span);
@@ -75,9 +82,17 @@ describe("rangeResolverService.resolveDashboardRange", () => {
   it("uses now() as the default reference time when no override is given", () => {
     const before = Date.now();
     const result = rangeResolverService.resolveDashboardRange({});
-    const after = Date.now();
+    expect(result.toInputValue).toBe(
+      new Date(before).toISOString().slice(0, 10),
+    );
+  });
 
-    expect(result.to.getTime()).toBeGreaterThanOrEqual(before);
-    expect(result.to.getTime()).toBeLessThanOrEqual(after);
+  it("returns the explicit unbounded state for range=all", () => {
+    expect(
+      rangeResolverService.resolveDashboardRange(
+        { range: "all", date_from: "2026-01-01" },
+        { now: NOW },
+      ),
+    ).toEqual({ kind: "all", fromInputValue: "", toInputValue: "" });
   });
 });

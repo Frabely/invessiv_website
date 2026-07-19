@@ -7,7 +7,7 @@ import {
   exists,
   gte,
   ilike,
-  lte,
+  lt,
   ne,
   notExists,
   or,
@@ -61,11 +61,15 @@ export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
   }
 
   if (filter.date_from) {
-    conditions.push(gte(leads.created_at, new Date(filter.date_from)));
+    conditions.push(
+      gte(leads.updated_at, new Date(`${filter.date_from}T00:00:00.000Z`)),
+    );
   }
 
   if (filter.date_to) {
-    conditions.push(lte(leads.created_at, new Date(filter.date_to)));
+    const exclusiveTo = new Date(`${filter.date_to}T00:00:00.000Z`);
+    exclusiveTo.setUTCDate(exclusiveTo.getUTCDate() + 1);
+    conditions.push(lt(leads.updated_at, exclusiveTo));
   }
 
   if (filter.search) {

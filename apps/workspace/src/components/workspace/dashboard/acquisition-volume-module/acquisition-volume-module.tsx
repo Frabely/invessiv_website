@@ -1,5 +1,6 @@
 import "server-only";
-import type { RangeSelection } from "@/common/contracts/range-selection";
+import type { RangeSelection } from "@/common/contracts/dashboard/range-selection";
+import { DashboardRangeKind } from "@/common/constants/dashboard/dashboard-range-kinds";
 import type { Locale } from "@/config/i18n";
 import {
   getDashboardAcquisitionVolumeDictionary,
@@ -17,12 +18,16 @@ export async function AcquisitionVolumeModule({
   locale,
   range,
 }: AcquisitionVolumeModuleProps) {
-  const data = await getAcquisitionVolume({
-    from: range.from,
-    to: range.to,
-    previousFrom: range.previousFrom,
-    previousTo: range.previousTo,
-  });
+  const data = await getAcquisitionVolume(
+    range.kind === DashboardRangeKind.Bounded
+      ? {
+          from: range.from,
+          to: range.to,
+          previousFrom: range.previousFrom,
+          previousTo: range.previousTo,
+        }
+      : {},
+  );
 
   const labels = getDashboardAcquisitionVolumeDictionary(locale);
   const modulesContent = getDashboardModulesDictionary(locale);

@@ -11,13 +11,17 @@ export async function getMessagingConversion(
   input: GetMessagingConversionInput,
 ): Promise<MessagingConversionDto> {
   const db = getDrizzleDatabaseClient();
+  const rangeCondition =
+    input.from && input.to
+      ? between(leads.updated_at, input.from, input.to)
+      : undefined;
   const rows = (await db
     .select({
       lead_status: leads.lead_status,
       count: countRows(),
     })
     .from(leads)
-    .where(between(leads.created_at, input.from, input.to))
+    .where(rangeCondition)
     .groupBy(leads.lead_status)) as ReadonlyArray<MessagingConversionStatusRow>;
 
   return messagingConversionMappingService.mapRowsToConversionDto(rows);

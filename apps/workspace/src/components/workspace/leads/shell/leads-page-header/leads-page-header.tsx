@@ -9,6 +9,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { DateRangeFilter } from "@/components/workspace/shared/date-range-filter/date-range-filter";
+import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadProfileType as LeadProfileTypeValue } from "@/common/constants/leads/profile/lead-profile-types";
@@ -276,17 +277,21 @@ export function LeadsPageHeader({
 
           <DateRangeFilter
             className={styles.dateRangeSlot}
+            defaultPreset={DateRangePreset.All}
             fromValue={currentDateFrom}
+            key={`${currentDateFrom}:${currentDateTo}`}
             labels={{
               group: filtersContent.filters.dateRange,
+              preset: filtersContent.filters.datePreset,
               from: filtersContent.filters.dateFrom,
               to: filtersContent.filters.dateTo,
+              options: filtersContent.filters.dateOptions,
             }}
-            onFromChangeAction={(value) =>
-              commitFilter({ [LeadListQueryParam.DateFrom]: value })
-            }
-            onToChangeAction={(value) =>
-              commitFilter({ [LeadListQueryParam.DateTo]: value })
+            onRangeChangeAction={({ from, to }) =>
+              commitFilter({
+                [LeadListQueryParam.DateFrom]: from,
+                [LeadListQueryParam.DateTo]: to,
+              })
             }
             toValue={currentDateTo}
           />

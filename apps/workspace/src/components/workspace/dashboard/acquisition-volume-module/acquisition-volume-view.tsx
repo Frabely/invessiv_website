@@ -1,5 +1,6 @@
 import type { AcquisitionVolumeDto } from "@/common/contracts/dashboard/acquisition-volume.dto";
 import type { KpiCardComparison } from "@/common/contracts/dashboard/kpi-card-comparison";
+import { KpiTrend } from "@/common/constants/dashboard/kpi-trend";
 import type { Locale } from "@/config/i18n";
 import type { DashboardAcquisitionVolumeDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import { calculateKpiDelta } from "@/lib/workspace/dashboard/calculate-kpi-delta";
@@ -36,6 +37,14 @@ function buildComparison(
   labels: DashboardAcquisitionVolumeDictionary,
   locale: Locale,
 ): KpiCardComparison {
+  if (data.previous === null) {
+    return {
+      trend: KpiTrend.Flat,
+      formattedDelta: labels.comparisonFormat.noData,
+      description: labels.comparisonNoPriorData,
+    };
+  }
+
   const delta = calculateKpiDelta(data.current, data.previous);
 
   if (delta.deltaPercent === null) {

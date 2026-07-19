@@ -1,6 +1,6 @@
 export type GetAcquisitionVolumeInput = {
-  from: Date;
-  to: Date;
-  previousFrom: Date;
-  previousTo: Date;
+  from?: Date;
+  to?: Date;
+  previousFrom?: Date;
+  previousTo?: Date;
 };

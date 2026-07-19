@@ -1,13 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
-const { getDrizzleDatabaseClientMock } = vi.hoisted(() => ({
-  getDrizzleDatabaseClientMock: vi.fn(),
-}));
+const { betweenMock, getDrizzleDatabaseClientMock, updatedAtColumn } =
+  vi.hoisted(() => ({
+    betweenMock: vi.fn().mockReturnValue("date-range-condition"),
+    getDrizzleDatabaseClientMock: vi.fn(),
+    updatedAtColumn: Symbol("leads.updated_at"),
+  }));
 
 vi.mock("server-only", () => ({}));
+vi.mock("drizzle-orm", () => ({
+  between: betweenMock,
+  count: vi.fn().mockReturnValue("count-expression"),
+}));
 vi.mock("@invessiv/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
+}));
+vi.mock("@invessiv/db/record-configuration", () => ({
+  leads: {
+    lead_status: Symbol("leads.lead_status"),
+    updated_at: updatedAtColumn,
+  },
 }));
 
 function drizzleChain(value: unknown) {
@@ -36,6 +49,7 @@ const INPUT = {
 
 beforeEach(() => {
   vi.resetModules();
+  betweenMock.mockClear();
   getDrizzleDatabaseClientMock.mockReset();
 });
 
@@ -54,6 +68,23 @@ describe("getMessagingConversion", () => {
     const result = await getMessagingConversion(INPUT);
 
     expect(select).toHaveBeenCalledTimes(1);
+    expect(betweenMock).toHaveBeenCalledWith(
+      updatedAtColumn,
+      INPUT.from,
+      INPUT.to,
+    );
     expect(result.steps.map((step) => step.count)).toEqual([12, 2, 0, 0, 0]);
+  });
+
+  it("does not add a date condition for an unbounded query", async () => {
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      select: vi.fn().mockImplementation(() => drizzleChain([])),
+    });
+    const { getMessagingConversion } =
+      await import("@/server/workspace/dashboard/query-handler/get-messaging-conversion.query-handler");
+
+    await getMessagingConversion({});
+
+    expect(betweenMock).not.toHaveBeenCalled();
   });
 });
