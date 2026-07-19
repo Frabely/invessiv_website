@@ -21,6 +21,11 @@ const labels = {
   },
 };
 
+function choosePreset(optionLabel: string) {
+  fireEvent.click(screen.getByRole("button", { name: labels.preset }));
+  fireEvent.click(screen.getByRole("option", { name: optionLabel }));
+}
+
 describe("DateRangeFilter", () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -40,9 +45,9 @@ describe("DateRangeFilter", () => {
         toValue=""
       />,
     );
-    expect(screen.getByLabelText(labels.preset)).toHaveValue(
-      DateRangePreset.Last7Days,
-    );
+    expect(
+      screen.getByRole("button", { name: labels.preset }),
+    ).toHaveTextContent(labels.options.last7Days);
     expect(screen.queryByLabelText(labels.from)).not.toBeInTheDocument();
   });
 
@@ -56,9 +61,9 @@ describe("DateRangeFilter", () => {
         toValue=""
       />,
     );
-    expect(screen.getByLabelText(labels.preset)).toHaveValue(
-      DateRangePreset.All,
-    );
+    expect(
+      screen.getByRole("button", { name: labels.preset }),
+    ).toHaveTextContent(labels.options.all);
   });
 
   it.each([
@@ -77,9 +82,7 @@ describe("DateRangeFilter", () => {
         toValue=""
       />,
     );
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: preset },
-    });
+    choosePreset(String(_));
     expect(onChange).toHaveBeenLastCalledWith({
       preset,
       from: expectedFrom,
@@ -97,9 +100,7 @@ describe("DateRangeFilter", () => {
         toValue="2026-05-21"
       />,
     );
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: DateRangePreset.All },
-    });
+    choosePreset(labels.options.all);
     expect(onChange).toHaveBeenLastCalledWith({
       preset: DateRangePreset.All,
       from: undefined,
@@ -117,9 +118,7 @@ describe("DateRangeFilter", () => {
         toValue="2026-05-21"
       />,
     );
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: DateRangePreset.Custom },
-    });
+    choosePreset(labels.options.custom);
     expect(screen.getByLabelText(labels.from)).toHaveValue("2026-05-15");
     fireEvent.change(screen.getByLabelText(labels.from), {
       target: { value: "2026-05-20" },

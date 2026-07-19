@@ -60,9 +60,9 @@ describe("DashboardPage", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText("Zeitraum")).toBeInTheDocument();
-    expect(screen.getByLabelText("Zeitraum auswählen")).toHaveValue(
-      "last-7-days",
-    );
+    expect(
+      screen.getByRole("button", { name: "Zeitraum auswählen" }),
+    ).toHaveTextContent("Letzte 7 Tage");
     expect(screen.queryByLabelText("Von")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Bis")).not.toBeInTheDocument();
 

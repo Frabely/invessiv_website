@@ -3,7 +3,6 @@
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
 import { DashboardDateRangeFilter } from "./dashboard-date-range-filter";
 
 const mockRouter = vi.hoisted(() => ({ push: vi.fn() }));
@@ -23,6 +22,11 @@ const labels = {
     custom: "Custom",
   },
 };
+
+function choosePreset(optionLabel: string) {
+  fireEvent.click(screen.getByRole("button", { name: labels.preset }));
+  fireEvent.click(screen.getByRole("option", { name: optionLabel }));
+}
 
 describe("DashboardDateRangeFilter", () => {
   beforeEach(() => {
@@ -49,9 +53,7 @@ describe("DashboardDateRangeFilter", () => {
 
   it("writes both preset bounds in one navigation and preserves other params", () => {
     renderFilter();
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: DateRangePreset.Last30Days },
-    });
+    choosePreset(labels.options.last30Days);
     expect(mockRouter.push).toHaveBeenCalledWith(
       "/en/dashboard?foo=bar&date_from=2026-04-22&date_to=2026-05-21",
       { scroll: false },
@@ -60,9 +62,7 @@ describe("DashboardDateRangeFilter", () => {
 
   it("uses an explicit range state for All", () => {
     renderFilter("foo=bar&date_from=2026-05-15&date_to=2026-05-21");
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: DateRangePreset.All },
-    });
+    choosePreset(labels.options.all);
     expect(mockRouter.push).toHaveBeenCalledWith(
       "/en/dashboard?foo=bar&range=all",
       { scroll: false },
@@ -79,12 +79,10 @@ describe("DashboardDateRangeFilter", () => {
         toValue=""
       />,
     );
-    expect(screen.getByLabelText(labels.preset)).toHaveValue(
-      DateRangePreset.All,
-    );
-    fireEvent.change(screen.getByLabelText(labels.preset), {
-      target: { value: DateRangePreset.Today },
-    });
+    expect(
+      screen.getByRole("button", { name: labels.preset }),
+    ).toHaveTextContent(labels.options.all);
+    choosePreset(labels.options.today);
     expect(mockRouter.push).toHaveBeenCalledWith(
       "/en/dashboard?foo=bar&date_from=2026-05-21&date_to=2026-05-21",
       { scroll: false },

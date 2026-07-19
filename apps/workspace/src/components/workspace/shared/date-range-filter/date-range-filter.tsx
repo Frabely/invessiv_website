@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { CustomSelect } from "@invessiv/ui";
 import {
   type DateRangeDefaultPreset,
   DateRangePreset,
@@ -52,11 +53,20 @@ export function DateRangeFilter({
   onRangeChangeAction,
   toValue,
 }: DateRangeFilterProps) {
+  const presetSelectId = useId();
   const [preset, setPreset] = useState<DateRangePresetValue>(() =>
     resolvePreset(fromValue, toValue, defaultPreset),
   );
   const [customFrom, setCustomFrom] = useState(fromValue);
   const [customTo, setCustomTo] = useState(toValue);
+  const presetOptions = [
+    { value: DateRangePreset.Today, label: labels.options.today },
+    { value: DateRangePreset.Last7Days, label: labels.options.last7Days },
+    { value: DateRangePreset.Last30Days, label: labels.options.last30Days },
+    { value: DateRangePreset.Last90Days, label: labels.options.last90Days },
+    { value: DateRangePreset.All, label: labels.options.all },
+    { value: DateRangePreset.Custom, label: labels.options.custom },
+  ];
 
   function selectPreset(nextPreset: DateRangePresetValue) {
     setPreset(nextPreset);
@@ -90,31 +100,15 @@ export function DateRangeFilter({
       className={className ? `${styles.group} ${className}` : styles.group}
     >
       <legend className={styles.label}>{labels.group}</legend>
-      <label className={styles.field}>
-        <span className={styles.srOnly}>{labels.preset}</span>
-        <select
-          className={styles.select}
-          onChange={(event) =>
-            selectPreset(event.target.value as DateRangePresetValue)
-          }
+      <div className={styles.field}>
+        <CustomSelect<DateRangePresetValue>
+          ariaLabel={labels.preset}
+          id={presetSelectId}
+          onChange={selectPreset}
+          options={presetOptions}
           value={preset}
-        >
-          <option value={DateRangePreset.Today}>{labels.options.today}</option>
-          <option value={DateRangePreset.Last7Days}>
-            {labels.options.last7Days}
-          </option>
-          <option value={DateRangePreset.Last30Days}>
-            {labels.options.last30Days}
-          </option>
-          <option value={DateRangePreset.Last90Days}>
-            {labels.options.last90Days}
-          </option>
-          <option value={DateRangePreset.All}>{labels.options.all}</option>
-          <option value={DateRangePreset.Custom}>
-            {labels.options.custom}
-          </option>
-        </select>
-      </label>
+        />
+      </div>
       {preset === DateRangePreset.Custom && (
         <div className={styles.inputs}>
           <label className={styles.field}>

@@ -24,8 +24,7 @@
   min-width: 0;
 }
 
-.input,
-.select {
+.input {
   width: 100%;
   height: 40px;
   padding: 0 0.8rem;
@@ -37,13 +36,7 @@
   box-sizing: border-box;
 }
 
-.select {
-  min-width: 10.5rem;
-  cursor: pointer;
-}
-
-.input:focus-visible,
-.select:focus-visible {
+.input:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--color-cta) 45%, transparent);
   outline-offset: 2px;
 }
@@ -66,8 +59,7 @@
   }
 
   .field,
-  .input,
-  .select {
+  .input {
     min-width: 0;
     width: 100%;
     max-width: 100%;
@@ -79,8 +71,7 @@
     padding-inline: 0.65rem;
   }
 
-  .input,
-  .select {
+  .input {
     min-height: 44px;
   }
 }

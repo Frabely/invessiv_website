@@ -472,11 +472,14 @@ describe("LeadsPageHeader", () => {
     it("defaults to All and writes both preset dates while resetting pagination", () => {
       vi.setSystemTime(new Date("2026-05-21T12:00:00Z"));
       renderToolbar("foo=bar&page=3");
-      expect(screen.getByLabelText("Zeitraum auswählen")).toHaveValue("all");
+      expect(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      ).toHaveTextContent("Alle");
 
-      fireEvent.change(screen.getByLabelText("Zeitraum auswählen"), {
-        target: { value: "last-7-days" },
-      });
+      fireEvent.click(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      );
+      fireEvent.click(screen.getByRole("option", { name: "Letzte 7 Tage" }));
 
       const params = lastPushedParams();
       expect(params.get("date_from")).toBe("2026-05-15");
@@ -489,9 +492,10 @@ describe("LeadsPageHeader", () => {
       renderToolbar(
         "date_from=2026-01-01&date_to=2026-01-31&sort=created_desc",
       );
-      fireEvent.change(screen.getByLabelText("Zeitraum auswählen"), {
-        target: { value: "all" },
-      });
+      fireEvent.click(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      );
+      fireEvent.click(screen.getByRole("option", { name: "Alle" }));
       expect(lastPushedParams().has("date_from")).toBe(false);
       expect(lastPushedParams().has("date_to")).toBe(false);
 

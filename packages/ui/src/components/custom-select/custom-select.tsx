@@ -1,6 +1,12 @@
 "use client";
 
-import { type FocusEvent, useState } from "react";
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -58,7 +64,16 @@ export function CustomSelect<TValue extends string = string>(
     onClear,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const listBoxId = `${id}-listbox`;
+
+  useEffect(() => {
+    if (isOpen && activeIndex !== null) {
+      optionRefs.current[activeIndex]?.focus();
+    }
+  }, [activeIndex, isOpen]);
 
   function handleBlur(event: FocusEvent<HTMLDivElement>) {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -176,6 +191,67 @@ export function CustomSelect<TValue extends string = string>(
     options.find((option) => option.value === value) ?? options[0];
   const hasSelectedLeading = Boolean(selected?.leading);
 
+  function openSingleSelect(index: number) {
+    setActiveIndex(index);
+    setIsOpen(true);
+  }
+
+  function handleSingleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    const selectedIndex = Math.max(
+      options.findIndex((option) => option.value === value),
+      0,
+    );
+
+    if (
+      event.key === "ArrowDown" ||
+      event.key === "Enter" ||
+      event.key === " "
+    ) {
+      event.preventDefault();
+      openSingleSelect(selectedIndex);
+      return;
+    }
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      openSingleSelect(options.length - 1);
+    }
+  }
+
+  function handleSingleOptionKeyDown(
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) {
+    let nextIndex: number | undefined;
+    if (event.key === "ArrowDown") {
+      nextIndex = (index + 1) % options.length;
+    } else if (event.key === "ArrowUp") {
+      nextIndex = (index - 1 + options.length) % options.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = options.length - 1;
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setIsOpen(false);
+      triggerRef.current?.focus();
+      return;
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const option = options[index];
+      if (option) {
+        onChange(option.value);
+      }
+      setIsOpen(false);
+      triggerRef.current?.focus();
+      return;
+    }
+
+    if (nextIndex !== undefined) {
+      event.preventDefault();
+      setActiveIndex(nextIndex);
+    }
+  }
+
   return (
     <div className={styles.root} onBlur={handleBlur}>
       <button
@@ -189,12 +265,19 @@ export function CustomSelect<TValue extends string = string>(
         data-has-leading={hasSelectedLeading || undefined}
         data-invalid={invalid || undefined}
         id={id}
-        onClick={() => setIsOpen((current) => !current)}
-        onKeyDown={(event) => {
-          if (event.key === "Escape") {
+        onClick={() => {
+          if (isOpen) {
             setIsOpen(false);
+            return;
           }
+          const selectedIndex = Math.max(
+            options.findIndex((option) => option.value === value),
+            0,
+          );
+          openSingleSelect(selectedIndex);
         }}
+        onKeyDown={handleSingleTriggerKeyDown}
+        ref={triggerRef}
         type="button"
       >
         {selected?.leading ? (
@@ -217,7 +300,7 @@ export function CustomSelect<TValue extends string = string>(
 
       {isOpen ? (
         <div className={styles.listbox} id={listBoxId} role="listbox">
-          {options.map((option) => (
+          {options.map((option, index) => (
             <button
               aria-label={option.ariaLabel}
               aria-selected={value === option.value}
@@ -227,6 +310,11 @@ export function CustomSelect<TValue extends string = string>(
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
+                triggerRef.current?.focus();
+              }}
+              onKeyDown={(event) => handleSingleOptionKeyDown(event, index)}
+              ref={(element) => {
+                optionRefs.current[index] = element;
               }}
               role="option"
               type="button"
