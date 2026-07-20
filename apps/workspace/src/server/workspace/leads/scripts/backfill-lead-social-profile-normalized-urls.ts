@@ -64,21 +64,41 @@ async function run() {
     .from(leadSocialProfiles);
 
   let updatedCount = 0;
+  const failures: Array<{ id: string; reason: string }> = [];
 
   for (const row of rows) {
     const recomputed = normalizeLeadProfileUrl(row.profile_url);
-    if (recomputed !== row.normalized_url) {
+    if (recomputed === row.normalized_url) {
+      continue;
+    }
+
+    try {
       await db
         .update(leadSocialProfiles)
         .set({ normalized_url: recomputed, updated_at: new Date() })
         .where(eq(leadSocialProfiles.id, row.id));
       updatedCount += 1;
+    } catch (error) {
+      // Keep going: a single failing row (e.g. a would-be unique-index
+      // collision) must not abort the whole backfill and leave it partial.
+      const reason = error instanceof Error ? error.message : String(error);
+      failures.push({ id: row.id, reason });
     }
   }
 
   console.log(
     `Backfill complete: ${updatedCount} of ${rows.length} normalized_url values updated.`,
   );
+
+  if (failures.length > 0) {
+    console.error(
+      `Backfill finished with ${failures.length} failed row(s) — resolve these manually:`,
+    );
+    for (const failure of failures) {
+      console.error(`  - ${failure.id}: ${failure.reason}`);
+    }
+    process.exitCode = 1;
+  }
 }
 
 run().catch((error: unknown) => {
