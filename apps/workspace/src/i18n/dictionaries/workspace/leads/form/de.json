@@ -71,6 +71,7 @@
     "improvementTooLong": "Verbesserung darf maximal 500 Zeichen lang sein",
     "emailExists": "Diese E-Mail ist bereits einem bestehenden Lead zugeordnet.",
     "companyNameExists": "Dieses Unternehmen ist bereits einem bestehenden Lead zugeordnet.",
+    "socialProfileExists": "Dieses Social-Profil ist bereits einem bestehenden Lead zugeordnet.",
     "generic": "Lead konnte nicht gespeichert werden",
     "socialProfileInvalid": "Ungültige Plattform",
     "socialProfileRequired": "Plattform und URL sind erforderlich",

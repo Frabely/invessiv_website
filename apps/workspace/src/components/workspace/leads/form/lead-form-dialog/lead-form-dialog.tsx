@@ -175,6 +175,11 @@ function handleLeadMutationFailure(
     return true;
   }
 
+  if (result.code === LeadErrorCode.SocialProfileExists) {
+    onValidationError([]);
+    return true;
+  }
+
   if (result.code === LeadErrorCode.ValidationError) {
     if (!result.errors) {
       return false;
@@ -561,6 +566,11 @@ export function LeadFormDialog({
             if (result.code === LeadErrorCode.CompanyNameExists) {
               setError(LeadFormDialogField.CompanyName, {
                 message: content.validation.companyNameExists,
+                type: "manual",
+              });
+            } else if (result.code === LeadErrorCode.SocialProfileExists) {
+              setError("root", {
+                message: content.validation.socialProfileExists,
                 type: "manual",
               });
             } else {

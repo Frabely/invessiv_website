@@ -20,16 +20,13 @@ type DeleteLeadSuccessPayload = {
 };
 
 type CreateLeadServiceResult =
-  | CreateLeadResult
-  | { ok: false; code: LeadErrorCodeType };
+  CreateLeadResult | { ok: false; code: LeadErrorCodeType };
 
 type UpdateLeadServiceResult =
-  | UpdateLeadResult
-  | { ok: false; code: LeadErrorCodeType };
+  UpdateLeadResult | { ok: false; code: LeadErrorCodeType };
 
 type DeleteLeadServiceResult =
-  | { ok: true }
-  | { ok: false; code: LeadErrorCodeType };
+  { ok: true } | { ok: false; code: LeadErrorCodeType };
 
 function mapLeadMutationConflictCode(
   payload: unknown,
@@ -40,6 +37,13 @@ function mapLeadMutationConflictCode(
     payload.error === LeadErrorCode.CompanyNameExists
   ) {
     return LeadErrorCode.CompanyNameExists;
+  }
+
+  if (
+    isLeadApiErrorPayload(payload) &&
+    payload.error === LeadErrorCode.SocialProfileExists
+  ) {
+    return LeadErrorCode.SocialProfileExists;
   }
 
   return fallbackCode;
