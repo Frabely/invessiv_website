@@ -8,8 +8,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "test:e2e": "playwright test --pass-with-no-tests",
-    "leads:backfill-social-profile-urls": "tsx src/server/workspace/leads/scripts/backfill-lead-social-profile-normalized-urls.ts"
+    "test:e2e": "playwright test --pass-with-no-tests"
   },
   "dependencies": {
     "@clerk/localizations": "^4.5.6",
@@ -32,7 +31,6 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "dotenv": "^17.3.1",
-    "tsx": "^4.21.0"
+    "dotenv": "^17.3.1"
   }
 }

@@ -1,9 +1,6 @@
 -- Replace the per-lead social profile uniqueness with a global uniqueness across all leads.
--- Prerequisite: run `pnpm --filter @invessiv/workspace leads:backfill-social-profile-urls <target>`
--- against this environment first so normalized_url reflects the hardened normalization
--- (https-only, lowercased host, no www.) before this index is built — otherwise
--- semantically identical profiles stored in the old format will not collide correctly
--- going forward.
+-- Existing environments must have normalized_url values recomputed with the hardened
+-- normalization (https-only, lowercased host, no www.) before this index is built.
 --
 -- Ordering: the new global index is created BEFORE the old per-lead index is dropped.
 -- The migration runner executes each statement in its own autocommit step (there is no
