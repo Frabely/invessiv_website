@@ -159,6 +159,37 @@ describe("importLeads", () => {
     expect(createLeadCoreInTransactionMock).toHaveBeenCalledTimes(3);
   });
 
+  it("adds a duplicate_social_profile skip issue when the social profile already exists on another lead", async () => {
+    vi.resetModules();
+    setupEmptyDb();
+    getLeadCategoriesMock.mockResolvedValue([
+      { id: "cat-consulting", slug: "consulting", labelKey: "consulting" },
+    ]);
+    const { DuplicateSocialProfileError } =
+      await import("@/server/workspace/leads/shared/duplicate-social-profile-error.class");
+    createLeadCoreInTransactionMock
+      .mockResolvedValueOnce(STUB_LEAD_DTO)
+      .mockRejectedValueOnce(new DuplicateSocialProfileError())
+      .mockResolvedValueOnce(STUB_LEAD_DTO);
+    const { importLeads } =
+      await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
+
+    const result = await importLeads(makeFile(EXAMPLE_CSV));
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.report.skippedCount).toBe(1);
+    expect(result.report.importedCount).toBe(2);
+    expect(result.report.rowIssues).toContainEqual(
+      expect.objectContaining({
+        code: LeadImportRowIssueCode.DuplicateSocialProfile,
+        severity: LeadImportRowIssueSeverity.Skip,
+      }),
+    );
+  });
+
   it("imports a row with pending_review status and preserves the status override", async () => {
     vi.resetModules();
     setupEmptyDb();

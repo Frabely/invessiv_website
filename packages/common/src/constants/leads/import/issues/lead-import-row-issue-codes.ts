@@ -11,6 +11,7 @@ export const LeadImportRowIssueCode = {
   DuplicateEmail: "duplicate_email",
   DuplicateCompanyName: "duplicate_company_name",
   DuplicateExternalGuid: "duplicate_external_guid",
+  DuplicateSocialProfile: "duplicate_social_profile",
   ConflictEmailGuidMismatch: "conflict_email_guid_mismatch",
 } as const;
 
@@ -30,5 +31,6 @@ export const LEAD_IMPORT_ROW_ISSUE_CODE_VALUES = [
   LeadImportRowIssueCode.DuplicateEmail,
   LeadImportRowIssueCode.DuplicateCompanyName,
   LeadImportRowIssueCode.DuplicateExternalGuid,
+  LeadImportRowIssueCode.DuplicateSocialProfile,
   LeadImportRowIssueCode.ConflictEmailGuidMismatch,
 ] as const;

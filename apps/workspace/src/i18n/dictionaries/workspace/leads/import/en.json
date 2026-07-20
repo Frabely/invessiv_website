@@ -63,6 +63,7 @@
     "duplicate_email": "Lead with this email already exists (skipped)",
     "duplicate_company_name": "Lead with this company name already exists (skipped)",
     "duplicate_external_guid": "Lead with this external GUID already exists (skipped)",
+    "duplicate_social_profile": "Social profile is already assigned to another lead (skipped)",
     "conflict_email_guid_mismatch": "Email and external GUID refer to different leads (skipped)"
   },
   "warnings": {
