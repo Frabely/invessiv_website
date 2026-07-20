@@ -1,6 +1,7 @@
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 import { DuplicateCompanyNameError } from "@/server/workspace/leads/shared/duplicate-company-name-error.class";
+import { DuplicateSocialProfileError } from "@/server/workspace/leads/shared/duplicate-social-profile-error.class";
 
 const DUPLICATE_ERROR_KEYS = [
   "cause",
@@ -11,6 +12,8 @@ const DUPLICATE_ERROR_KEYS = [
 const LEADS_EMAIL_UNIQUE_CONSTRAINT = "leads_email_lower_uidx";
 const LEADS_COMPANY_NAME_UNIQUE_CONSTRAINT = "leads_company_name_lower_uidx";
 const LEADS_EXTERNAL_GUID_UNIQUE_CONSTRAINT = "leads_external_guid_uidx";
+const LEAD_SOCIAL_PROFILES_UNIQUE_CONSTRAINT =
+  "lead_social_profiles_platform_normalized_url_uidx";
 
 function getUniqueViolationConstraint(error: unknown): string | undefined {
   const visited = new WeakSet<object>();
@@ -111,6 +114,19 @@ export function isDuplicateCompanyNameError(error: unknown): boolean {
   const constraint = getUniqueViolationConstraint(error);
   if (constraint !== undefined) {
     return constraint === LEADS_COMPANY_NAME_UNIQUE_CONSTRAINT;
+  }
+
+  return false;
+}
+
+export function isDuplicateSocialProfileError(error: unknown): boolean {
+  if (error instanceof DuplicateSocialProfileError) {
+    return true;
+  }
+
+  const constraint = getUniqueViolationConstraint(error);
+  if (constraint !== undefined) {
+    return constraint === LEAD_SOCIAL_PROFILES_UNIQUE_CONSTRAINT;
   }
 
   return false;
