@@ -86,17 +86,17 @@ describe("validateRow", () => {
           platform: "linkedin",
           profile_url:
             "https://www.linkedin.com/in/anna-schmidt?utm_source=test",
-          normalized_url: "https://www.linkedin.com/in/anna-schmidt",
+          normalized_url: "https://linkedin.com/in/anna-schmidt",
         },
         {
           platform: "instagram",
           profile_url: "https://www.instagram.com/schmidtconsulting",
-          normalized_url: "https://www.instagram.com/schmidtconsulting",
+          normalized_url: "https://instagram.com/schmidtconsulting",
         },
         {
           platform: "youtube",
           profile_url: "https://www.youtube.com/@schmidtconsulting/",
-          normalized_url: "https://www.youtube.com/@schmidtconsulting",
+          normalized_url: "https://youtube.com/@schmidtconsulting",
         },
       ],
     });
