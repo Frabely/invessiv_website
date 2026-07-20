@@ -63,6 +63,7 @@
     "duplicate_email": "Lead mit dieser E-Mail existiert bereits (übersprungen)",
     "duplicate_company_name": "Lead mit diesem Firmennamen existiert bereits (übersprungen)",
     "duplicate_external_guid": "Lead mit dieser externen GUID existiert bereits (übersprungen)",
+    "duplicate_social_profile": "Social-Profil ist bereits einem anderen Lead zugeordnet (übersprungen)",
     "conflict_email_guid_mismatch": "E-Mail und externe GUID verweisen auf unterschiedliche Leads (übersprungen)"
   },
   "warnings": {

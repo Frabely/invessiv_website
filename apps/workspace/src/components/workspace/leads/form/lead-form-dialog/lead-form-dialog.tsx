@@ -79,6 +79,7 @@ type LeadMutationResult =
       code:
         | typeof LeadErrorCode.EmailExists
         | typeof LeadErrorCode.CompanyNameExists
+        | typeof LeadErrorCode.SocialProfileExists
         | typeof LeadErrorCode.Internal
         | typeof LeadErrorCode.NotFound
         | typeof LeadErrorCode.ValidationError;
@@ -149,11 +150,11 @@ function getLeadFormDialogModeContent(
 type LeadMutationFailureResult =
   | { code: typeof LeadErrorCode.EmailExists; ok: false }
   | { code: typeof LeadErrorCode.CompanyNameExists; ok: false }
+  | { code: typeof LeadErrorCode.SocialProfileExists; ok: false }
   | { code: typeof LeadErrorCode.Internal; ok: false }
   | {
       code:
-        | typeof LeadErrorCode.ValidationError
-        | typeof LeadErrorCode.NotFound;
+        typeof LeadErrorCode.ValidationError | typeof LeadErrorCode.NotFound;
       errors?: z.core.$ZodIssue[];
       ok: false;
     };
@@ -170,6 +171,11 @@ function handleLeadMutationFailure(
   }
 
   if (result.code === LeadErrorCode.CompanyNameExists) {
+    onValidationError([]);
+    return true;
+  }
+
+  if (result.code === LeadErrorCode.SocialProfileExists) {
     onValidationError([]);
     return true;
   }
@@ -560,6 +566,11 @@ export function LeadFormDialog({
             if (result.code === LeadErrorCode.CompanyNameExists) {
               setError(LeadFormDialogField.CompanyName, {
                 message: content.validation.companyNameExists,
+                type: "manual",
+              });
+            } else if (result.code === LeadErrorCode.SocialProfileExists) {
+              setError("root", {
+                message: content.validation.socialProfileExists,
                 type: "manual",
               });
             } else {

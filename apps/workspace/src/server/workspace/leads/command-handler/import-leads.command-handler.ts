@@ -24,6 +24,7 @@ import { leadImportExistingKeysLoaderService } from "@/server/workspace/leads/se
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
+import { DuplicateSocialProfileError } from "@/server/workspace/leads/shared/duplicate-social-profile-error.class";
 import type { ValidatedLeadImportRow } from "@invessiv/common/contracts/leads/import/validation/lead-import-valid-row";
 import {
   isDuplicateCompanyNameError,
@@ -263,6 +264,15 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
         allRowIssues.push(
           ...issues,
           makeSkipIssue(rowIndex, LeadImportRowIssueCode.DuplicateCompanyName),
+        );
+        skippedCount += 1;
+      } else if (error instanceof DuplicateSocialProfileError) {
+        allRowIssues.push(
+          ...issues,
+          makeSkipIssue(
+            rowIndex,
+            LeadImportRowIssueCode.DuplicateSocialProfile,
+          ),
         );
         skippedCount += 1;
       } else if (isDuplicateExternalGuidError(error)) {

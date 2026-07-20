@@ -64,4 +64,36 @@ describe("normalizeLeadProfileUrl", () => {
       "https://example.com/",
     );
   });
+
+  it("unifies the protocol to https", () => {
+    expect(normalizeLeadProfileUrl("http://linkedin.com/in/max")).toBe(
+      "https://linkedin.com/in/max",
+    );
+  });
+
+  it("lowercases the host", () => {
+    expect(normalizeLeadProfileUrl("https://LinkedIn.COM/in/max")).toBe(
+      "https://linkedin.com/in/max",
+    );
+  });
+
+  it("strips a leading www. from the host", () => {
+    expect(normalizeLeadProfileUrl("https://www.linkedin.com/in/max")).toBe(
+      "https://linkedin.com/in/max",
+    );
+  });
+
+  it("sorts remaining non-tracking query parameters alphabetically", () => {
+    expect(
+      normalizeLeadProfileUrl("https://youtube.com/channel/UCxyz?b=2&a=1"),
+    ).toBe("https://youtube.com/channel/UCxyz?a=1&b=2");
+  });
+
+  it("produces the same output for URLs that only differ by protocol, www. and host case", () => {
+    const variantA = "http://WWW.LinkedIn.com/in/max/";
+    const variantB = "https://linkedin.com/in/max";
+    expect(normalizeLeadProfileUrl(variantA)).toBe(
+      normalizeLeadProfileUrl(variantB),
+    );
+  });
 });

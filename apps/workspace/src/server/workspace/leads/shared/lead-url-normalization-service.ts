@@ -7,10 +7,20 @@ function isTrackingParam(key: string): boolean {
 export function normalizeLeadProfileUrl(url: string): string {
   const parsed = new URL(url.trim());
 
-  for (const key of [...parsed.searchParams.keys()]) {
-    if (isTrackingParam(key)) {
-      parsed.searchParams.delete(key);
+  parsed.protocol = "https:";
+  parsed.hostname = parsed.hostname.toLowerCase().replace(/^www\./, "");
+
+  const remainingParams: Array<[string, string]> = [];
+  for (const [key, value] of parsed.searchParams.entries()) {
+    if (!isTrackingParam(key)) {
+      remainingParams.push([key, value]);
     }
+  }
+  remainingParams.sort(([a], [b]) => a.localeCompare(b));
+
+  parsed.search = "";
+  for (const [key, value] of remainingParams) {
+    parsed.searchParams.append(key, value);
   }
 
   // Remove trailing slashes from non-root paths
