@@ -183,6 +183,7 @@ describe("LeadErrorCode", () => {
     expect(LEAD_ERROR_CODE_VALUES).toEqual([
       LeadErrorCode.EmailExists,
       LeadErrorCode.CompanyNameExists,
+      LeadErrorCode.SocialProfileExists,
       LeadErrorCode.ValidationError,
       LeadErrorCode.NotFound,
       LeadErrorCode.Internal,
