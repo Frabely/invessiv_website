@@ -27,10 +27,12 @@ import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-ur
 import {
   isDuplicateCompanyNameError,
   isDuplicateEmailError,
+  isDuplicateSocialProfileError,
 } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 
 import { DuplicateCompanyNameError } from "./duplicate-company-name-error.class";
 import { DuplicateEmailError } from "./duplicate-email-error.class";
+import { DuplicateSocialProfileError } from "./duplicate-social-profile-error.class";
 
 async function loadLeadDetailInTransaction(
   tx: ContactDatabaseTransaction,
@@ -188,6 +190,10 @@ export async function createLeadCoreInTransaction(
 
     if (isDuplicateCompanyNameError(error)) {
       throw new DuplicateCompanyNameError();
+    }
+
+    if (isDuplicateSocialProfileError(error)) {
+      throw new DuplicateSocialProfileError();
     }
 
     throw error;

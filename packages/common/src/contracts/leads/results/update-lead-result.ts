@@ -6,6 +6,7 @@ export type UpdateLeadResult =
   | { ok: true; lead: LeadDetailDto }
   | { ok: false; code: typeof LeadErrorCode.EmailExists }
   | { ok: false; code: typeof LeadErrorCode.CompanyNameExists }
+  | { ok: false; code: typeof LeadErrorCode.SocialProfileExists }
   | { ok: false; code: typeof LeadErrorCode.NotFound }
   | {
       ok: false;

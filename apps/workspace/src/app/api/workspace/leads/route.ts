@@ -93,6 +93,12 @@ export const POST = withWorkspaceApiAuth(async (request: NextRequest) => {
         HttpResponseCode.Conflict,
       );
     }
+    if (result.code === LeadErrorCode.SocialProfileExists) {
+      return leadApiError(
+        LeadErrorCode.SocialProfileExists,
+        HttpResponseCode.Conflict,
+      );
+    }
     return leadApiError(
       LeadErrorCode.ValidationError,
       HttpResponseCode.BadRequest,

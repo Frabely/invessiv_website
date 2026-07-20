@@ -12,6 +12,7 @@ import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-ur
 import {
   isDuplicateCompanyNameError,
   isDuplicateEmailError,
+  isDuplicateSocialProfileError,
 } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
@@ -101,6 +102,9 @@ export async function updateLead(
     }
     if (isDuplicateCompanyNameError(error)) {
       return { ok: false, code: LeadErrorCode.CompanyNameExists };
+    }
+    if (isDuplicateSocialProfileError(error)) {
+      return { ok: false, code: LeadErrorCode.SocialProfileExists };
     }
     throw error;
   }
