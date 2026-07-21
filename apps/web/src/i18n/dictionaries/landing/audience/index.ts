@@ -18,15 +18,24 @@ export const AUDIENCE_ICON_KEYS = [
 
 export type AudienceIconKey = (typeof AUDIENCE_ICON_KEYS)[number];
 
+export type LandingAudienceDetail = {
+  headline: string;
+  outcome: string;
+  problems: string[];
+};
+
 export type LandingAudienceItem = {
+  detail: LandingAudienceDetail;
   iconKey: AudienceIconKey;
   label: string;
 };
 
 export type LandingAudienceContent = {
+  body: string;
   cta?: LandingSectionCtaContent;
   eyebrow: string;
   items: LandingAudienceItem[];
+  outcomeLabel: string;
   title: string;
 };
 
