@@ -1,26 +1,15 @@
 {
   "body": "Eine Landingpage kann neue Kunden bringen — oder neue Mitarbeiter. Wähl deine Branche, dann wird's konkret.",
+  "bodyHighlight": "Wähl deine Branche",
+  "closeLabel": "Schließen",
   "cta": {
     "analyticsTarget": "contact",
     "analyticsVariant": "primary",
-    "helper": "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
     "href": "#contact",
     "label": "Kostenlose Ersteinschätzung anfragen"
   },
   "eyebrow": "Für wen",
   "items": [
-    {
-      "detail": {
-        "headline": "Aufträge sind da. Die Leute fehlen.",
-        "outcome": "Eine Seite, die zeigt, wie bei euch gearbeitet wird — und auf der man sich in zwei Minuten meldet.",
-        "problems": [
-          "Deine Stellenanzeige steht zwischen 40 anderen — und sieht aus wie alle.",
-          "Wer sich für dich interessiert, findet nichts über den Betrieb, das Team oder den Alltag."
-        ]
-      },
-      "iconKey": "hammer",
-      "label": "Handwerker"
-    },
     {
       "detail": {
         "headline": "Deine Kanzlei kann acht Rechtsgebiete. Der Mandant hat eins.",
@@ -56,6 +45,18 @@
       },
       "iconKey": "calculator",
       "label": "Steuerberater"
+    },
+    {
+      "detail": {
+        "headline": "Aufträge sind da. Die Leute fehlen.",
+        "outcome": "Eine Seite, die zeigt, wie bei euch gearbeitet wird — und auf der man sich in zwei Minuten meldet.",
+        "problems": [
+          "Deine Stellenanzeige steht zwischen 40 anderen — und sieht aus wie alle.",
+          "Wer sich für dich interessiert, findet nichts über den Betrieb, das Team oder den Alltag."
+        ]
+      },
+      "iconKey": "hammer",
+      "label": "Handwerker"
     },
     {
       "detail": {

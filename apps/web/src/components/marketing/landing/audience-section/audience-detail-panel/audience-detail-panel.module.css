@@ -103,6 +103,11 @@
   line-height: 1.55;
 }
 
+.cta {
+  justify-self: start;
+  min-height: 42px;
+}
+
 :global([data-theme="light"]) .card {
   background: color-mix(in srgb, #ffffff 74%, var(--color-surface-2) 26%);
   border-color: color-mix(in srgb, var(--color-text) 12%, transparent);
@@ -117,5 +122,10 @@
 
   .headline {
     max-width: none;
+  }
+
+  .cta {
+    justify-self: stretch;
+    text-align: center;
   }
 }

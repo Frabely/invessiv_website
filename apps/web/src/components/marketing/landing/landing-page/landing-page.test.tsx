@@ -161,11 +161,6 @@ describe("LandingPage", () => {
       screen.queryByText("Seitenstruktur aus deinem Angebot ableiten"),
     ).toBeNull();
     expect(screen.queryByText(/Der Check bleibt bewusst schlank/)).toBeNull();
-    expect(
-      screen.getByText(
-        "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
-      ),
-    ).toBeTruthy();
     const audienceCta = screen
       .getAllByRole("link", { name: "Kostenlose Ersteinschätzung anfragen" })
       .find((link) => link.dataset.analyticsLocation === "audience");

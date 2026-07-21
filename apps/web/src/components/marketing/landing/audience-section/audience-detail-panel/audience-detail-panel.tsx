@@ -1,19 +1,25 @@
+import { PrimaryCtaLink } from "@/components/shared/button/button";
 import type {
   AudienceIconKey,
   LandingAudienceDetail,
 } from "@/i18n/dictionaries/landing/audience";
+import type { LandingSectionCtaContent } from "@/i18n/dictionaries/landing/types";
 import { AudienceIcon } from "../audience-icon";
 import styles from "./audience-detail-panel.module.css";
 
 type AudienceDetailPanelProps = {
+  cta?: LandingSectionCtaContent;
   detail: LandingAudienceDetail;
+  headlineId?: string;
   iconKey: AudienceIconKey;
   label: string;
   outcomeLabel: string;
 };
 
 export function AudienceDetailPanel({
+  cta,
   detail,
+  headlineId,
   iconKey,
   label,
   outcomeLabel,
@@ -27,7 +33,9 @@ export function AudienceDetailPanel({
         <span className={styles.label}>{label}</span>
       </header>
 
-      <p className={styles.headline}>{detail.headline}</p>
+      <p className={styles.headline} id={headlineId}>
+        {detail.headline}
+      </p>
 
       <ul className={styles.problems}>
         {detail.problems.map((problem) => (
@@ -41,6 +49,19 @@ export function AudienceDetailPanel({
         <span className={styles.outcomeLabel}>{outcomeLabel}</span>
         <p className={styles.outcomeText}>{detail.outcome}</p>
       </div>
+
+      {cta ? (
+        <PrimaryCtaLink
+          className={styles.cta}
+          data-analytics-event="cta_click"
+          data-analytics-location="audience"
+          data-analytics-target={cta.analyticsTarget}
+          data-analytics-variant={cta.analyticsVariant ?? "primary"}
+          href={cta.href}
+        >
+          {cta.label}
+        </PrimaryCtaLink>
+      ) : null}
     </article>
   );
 }

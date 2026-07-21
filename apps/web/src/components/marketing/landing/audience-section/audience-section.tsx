@@ -1,15 +1,35 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 
-import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
+import { useMediaQuery } from "@/hooks/marketing/use-media-query";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { LandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { AudienceDetailPanel } from "./audience-detail-panel/audience-detail-panel";
 import { AudienceIcon } from "./audience-icon";
+import { AudienceSheet } from "./audience-sheet/audience-sheet";
 import styles from "./audience-section.module.css";
+
+/** Mirrors the `max-width: 640px` block in audience-section.module.css. */
+const SHEET_MEDIA_QUERY = "(max-width: 640px)";
+
+function renderHighlightedBody(body: string, highlight: string) {
+  const start = body.indexOf(highlight);
+
+  if (start < 0) {
+    return body;
+  }
+
+  return (
+    <>
+      {body.slice(0, start)}
+      <span className={styles.bodyHighlight}>{highlight}</span>
+      {body.slice(start + highlight.length)}
+    </>
+  );
+}
 
 type AudienceSectionProps = LandingAudienceContent & {
   id: string;
@@ -18,6 +38,8 @@ type AudienceSectionProps = LandingAudienceContent & {
 
 export function AudienceSection({
   body,
+  bodyHighlight,
+  closeLabel,
   cta,
   eyebrow,
   id,
@@ -27,12 +49,20 @@ export function AudienceSection({
   title,
 }: AudienceSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const activePillRef = useRef<HTMLButtonElement | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const usesSheet = useMediaQuery(SHEET_MEDIA_QUERY);
   const baseId = useId();
   const panelId = `${baseId}-panel`;
+  const headlineId = `${baseId}-headline`;
   useStaggeredSectionReveal(sectionRef, locale);
 
   const selectedItem = selectedIndex === null ? null : items[selectedIndex];
+
+  const closeSheet = useCallback(() => {
+    setSheetOpen(false);
+  }, []);
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
@@ -41,7 +71,9 @@ export function AudienceSection({
       <div className={styles.intro} data-reveal-item="true">
         <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
-        <p className={styles.body}>{body}</p>
+        <p className={styles.body}>
+          {renderHighlightedBody(body, bodyHighlight)}
+        </p>
       </div>
 
       <ul className={styles.pillList} data-reveal-item="true">
@@ -56,14 +88,20 @@ export function AudienceSection({
             >
               <button
                 aria-controls={panelId}
-                aria-expanded={isActive}
+                aria-expanded={isActive && !usesSheet}
                 className={styles.pill}
                 data-active={isActive ? "true" : undefined}
                 data-analytics-event="audience_select"
                 data-analytics-location="audience"
                 data-analytics-target={item.iconKey}
                 id={`${baseId}-pill-${index}`}
-                onClick={() => {
+                onClick={(event) => {
+                  if (usesSheet) {
+                    activePillRef.current = event.currentTarget;
+                    setSelectedIndex(index);
+                    setSheetOpen(true);
+                    return;
+                  }
                   setSelectedIndex(isActive ? null : index);
                 }}
                 type="button"
@@ -91,6 +129,7 @@ export function AudienceSection({
         <div className={styles.panelInner}>
           {selectedItem ? (
             <AudienceDetailPanel
+              cta={cta}
               detail={selectedItem.detail}
               iconKey={selectedItem.iconKey}
               label={selectedItem.label}
@@ -100,20 +139,23 @@ export function AudienceSection({
         </div>
       </div>
 
-      {cta ? (
-        <div className={styles.ctaWrap} data-reveal-item="true">
-          {cta.helper ? <p className={styles.ctaHelper}>{cta.helper}</p> : null}
-          <PrimaryCtaLink
-            className={styles.cta}
-            data-analytics-event="cta_click"
-            data-analytics-location="audience"
-            data-analytics-target={cta.analyticsTarget}
-            data-analytics-variant={cta.analyticsVariant ?? "primary"}
-            href={cta.href}
-          >
-            {cta.label}
-          </PrimaryCtaLink>
-        </div>
+      {usesSheet && selectedItem ? (
+        <AudienceSheet
+          closeLabel={closeLabel}
+          labelledById={headlineId}
+          onClose={closeSheet}
+          open={sheetOpen}
+          returnFocusRef={activePillRef}
+        >
+          <AudienceDetailPanel
+            cta={cta}
+            detail={selectedItem.detail}
+            headlineId={headlineId}
+            iconKey={selectedItem.iconKey}
+            label={selectedItem.label}
+            outcomeLabel={outcomeLabel}
+          />
+        </AudienceSheet>
       ) : null}
     </section>
   );

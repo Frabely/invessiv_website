@@ -32,6 +32,8 @@ export type LandingAudienceItem = {
 
 export type LandingAudienceContent = {
   body: string;
+  bodyHighlight: string;
+  closeLabel: string;
   cta?: LandingSectionCtaContent;
   eyebrow: string;
   items: LandingAudienceItem[];

@@ -1,26 +1,15 @@
 {
   "body": "A landing page can bring in new clients — or new staff. Pick your field and it gets specific.",
+  "bodyHighlight": "Pick your field",
+  "closeLabel": "Close",
   "cta": {
     "analyticsTarget": "contact",
     "analyticsVariant": "primary",
-    "helper": "Not sure whether a landing page fits your offer?",
     "href": "#contact",
     "label": "Request a free initial assessment"
   },
   "eyebrow": "Who it's for",
   "items": [
-    {
-      "detail": {
-        "headline": "The work is there. The people aren't.",
-        "outcome": "A page that shows how you actually work — and lets someone apply in two minutes.",
-        "problems": [
-          "Your job ad sits between 40 others — and looks like all of them.",
-          "Anyone who is interested finds nothing about the company, the team or the daily work."
-        ]
-      },
-      "iconKey": "hammer",
-      "label": "Skilled trades"
-    },
     {
       "detail": {
         "headline": "Your firm covers eight practice areas. The client has one.",
@@ -56,6 +45,18 @@
       },
       "iconKey": "calculator",
       "label": "Tax advisors"
+    },
+    {
+      "detail": {
+        "headline": "The work is there. The people aren't.",
+        "outcome": "A page that shows how you actually work — and lets someone apply in two minutes.",
+        "problems": [
+          "Your job ad sits between 40 others — and looks like all of them.",
+          "Anyone who is interested finds nothing about the company, the team or the daily work."
+        ]
+      },
+      "iconKey": "hammer",
+      "label": "Skilled trades"
     },
     {
       "detail": {
