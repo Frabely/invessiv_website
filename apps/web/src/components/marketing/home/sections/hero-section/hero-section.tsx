@@ -1,9 +1,9 @@
 ﻿import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
-import heroVisualStyles from "@/components/marketing/hero-visual/hero-visual.module.css";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
 import { HERO_SECTION_ID } from "@/config/navigation/home";
+import { HeroBackground } from "./hero-background/hero-background";
 import styles from "./hero-section.module.css";
 
 type HeroSectionProps = {
@@ -48,28 +48,7 @@ export function HeroSection({
       className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} hero`}
       id={HERO_SECTION_ID}
     >
-      <div aria-hidden="true" className={styles.backgroundLayers}>
-        {heroVideoSrc ? (
-          <video
-            aria-hidden="true"
-            autoPlay
-            className={styles.backgroundVideo}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-          >
-            <source src={heroVideoSrc} type="video/mp4" />
-          </video>
-        ) : null}
-        {heroVideoSrc ? null : (
-          <>
-            <div className={heroVisualStyles.vignette} />
-            <div className={heroVisualStyles.gridOverlay} />
-            <div className={heroVisualStyles.noise} />
-          </>
-        )}
-      </div>
+      <HeroBackground videoSrc={heroVideoSrc} />
 
       <div className={styles.grid}>
         <div className={styles.content}>

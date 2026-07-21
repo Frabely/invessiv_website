@@ -1,0 +1,69 @@
+.layers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 74%,
+    rgba(0, 0, 0, 0.82) 84%,
+    rgba(0, 0, 0, 0.38) 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 74%,
+    rgba(0, 0, 0, 0.82) 84%,
+    rgba(0, 0, 0, 0.38) 93%,
+    transparent 100%
+  );
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 58% center;
+}
+
+.layers:has(.video)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-bg) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-bg) 58%, transparent) 46%,
+    color-mix(in srgb, var(--color-bg) 8%, transparent) 100%
+  );
+}
+
+.layers:has(.video) > :not(.video) {
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .video {
+    object-position: 70% center;
+  }
+
+  .layers:has(.video)::before {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 68%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 46%,
+      color-mix(in srgb, var(--color-bg) 72%, transparent) 100%
+    );
+  }
+}
+
+@media (max-width: 640px) {
+  .video {
+    object-position: 74% center;
+  }
+}

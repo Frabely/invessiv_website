@@ -1,29 +1,29 @@
 {
-  "body": "Eine Landingpage bündelt dein Angebot auf einer Seite: was du anbietest, warum es relevant ist und wie man anfragt.",
+  "body": "Wenn Besucher abspringen, liegt es selten am Angebot — sondern daran, dass die Seite es nicht auf den Punkt bringt. Genau dafür ist eine Landingpage da.",
   "eyebrow": "Problem → Lösung",
   "pairs": [
     {
-      "problem": "Angebot zu allgemein",
-      "solution": "Eine Seite, ein konkretes Angebot"
+      "problem": "Angebot bleibt vage",
+      "solution": "Ein Angebot, klar benannt"
     },
     {
-      "problem": "Nutzen nicht greifbar",
+      "problem": "Nutzen erst weit unten",
       "solution": "Der Nutzen steht ganz oben"
     },
     {
-      "problem": "Vertrauen kommt zu spät",
-      "solution": "Klarer Preis, klarer Ablauf"
+      "problem": "Unklar, wer dahintersteht",
+      "solution": "Ablauf und Ansprechpartner sichtbar"
     },
     {
-      "problem": "Nächster Schritt unklar",
+      "problem": "Viele Wege, kein Ziel",
       "solution": "Ein Button, ein Ziel"
     },
     {
-      "problem": "Anfrage wirkt aufwendig",
+      "problem": "Kontakt wirkt wie Aufwand",
       "solution": "Anfrage in zwei Minuten"
     }
   ],
-  "problemLabel": "Ohne Landingpage",
-  "solutionLabel": "Mit Landingpage",
+  "problemLabel": "Warum Besucher abspringen",
+  "solutionLabel": "Was deine Landingpage anders macht",
   "title": "Vom Absprung zur Anfrage."
 }

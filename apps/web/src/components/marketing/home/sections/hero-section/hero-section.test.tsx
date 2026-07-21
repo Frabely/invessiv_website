@@ -11,6 +11,10 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
   ),
 }));
 
+vi.mock("@/components/providers/theme-provider", () => ({
+  useTheme: () => ({ theme: "dark", setTheme: vi.fn(), toggleTheme: vi.fn() }),
+}));
+
 describe("HeroSection", () => {
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
@@ -75,7 +79,7 @@ describe("HeroSection", () => {
     expect(secondaryLink.dataset.analyticsTarget).toBe("footer");
   });
 
-  it("renders an optional decorative background video", () => {
+  it("renders an optional decorative background video in dark mode", () => {
     const { container } = render(
       <HeroSection
         description="Kurze Beschreibung"
