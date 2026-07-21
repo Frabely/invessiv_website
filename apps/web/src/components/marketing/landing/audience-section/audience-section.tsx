@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
@@ -53,9 +53,8 @@ export function AudienceSection({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
   const [sheetOpen, setSheetOpen] = useState(false);
   const usesSheet = useMediaQuery(SHEET_MEDIA_QUERY);
-  const baseId = useId();
-  const panelId = `${baseId}-panel`;
-  const headlineId = `${baseId}-headline`;
+  const panelId = `${id}-panel`;
+  const headlineId = `${id}-sheet-headline`;
   useStaggeredSectionReveal(sectionRef, locale);
 
   const selectedItem = selectedIndex === null ? null : items[selectedIndex];
@@ -94,7 +93,7 @@ export function AudienceSection({
                 data-analytics-event="audience_select"
                 data-analytics-location="audience"
                 data-analytics-target={item.iconKey}
-                id={`${baseId}-pill-${index}`}
+                id={`${id}-pill-${index}`}
                 onClick={(event) => {
                   if (usesSheet) {
                     activePillRef.current = event.currentTarget;
@@ -118,7 +117,7 @@ export function AudienceSection({
 
       <div
         aria-labelledby={
-          selectedIndex === null ? undefined : `${baseId}-pill-${selectedIndex}`
+          selectedIndex === null ? undefined : `${id}-pill-${selectedIndex}`
         }
         aria-live="polite"
         className={styles.panelWrap}
