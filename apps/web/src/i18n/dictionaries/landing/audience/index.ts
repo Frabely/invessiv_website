@@ -11,6 +11,9 @@ export const AUDIENCE_ICON_KEYS = [
   "pin",
   "building",
   "spark",
+  "scales",
+  "clipboard",
+  "calculator",
 ] as const;
 
 export type AudienceIconKey = (typeof AUDIENCE_ICON_KEYS)[number];

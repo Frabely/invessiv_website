@@ -13,16 +13,16 @@
       "label": "Handwerker"
     },
     {
-      "iconKey": "coach",
-      "label": "Coaches"
+      "iconKey": "scales",
+      "label": "Anwälte"
     },
     {
-      "iconKey": "consultant",
-      "label": "Berater"
+      "iconKey": "clipboard",
+      "label": "Gutachter"
     },
     {
-      "iconKey": "camera",
-      "label": "Fotografen"
+      "iconKey": "calculator",
+      "label": "Steuerberater"
     },
     {
       "iconKey": "pin",

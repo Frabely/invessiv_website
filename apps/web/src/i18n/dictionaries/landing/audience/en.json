@@ -13,16 +13,16 @@
       "label": "Skilled trades"
     },
     {
-      "iconKey": "coach",
-      "label": "Coaches"
+      "iconKey": "scales",
+      "label": "Lawyers"
     },
     {
-      "iconKey": "consultant",
-      "label": "Consultants"
+      "iconKey": "clipboard",
+      "label": "Appraisers"
     },
     {
-      "iconKey": "camera",
-      "label": "Photographers"
+      "iconKey": "calculator",
+      "label": "Tax advisors"
     },
     {
       "iconKey": "pin",

@@ -68,5 +68,31 @@ export function AudienceIcon({ iconKey }: AudienceIconProps) {
           <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" />
         </svg>
       );
+    case "scales":
+      return (
+        <svg {...SVG_PROPS}>
+          <path d="M12 4.5v15" />
+          <path d="M5.5 8h13" />
+          <path d="M8.5 19.5h7" />
+          <path d="M3 13h5L5.5 8z" />
+          <path d="M16 13h5L18.5 8z" />
+        </svg>
+      );
+    case "clipboard":
+      return (
+        <svg {...SVG_PROPS}>
+          <rect height="15.5" rx="2" width="13" x="5.5" y="5" />
+          <path d="M9.5 5V4a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 4v1" />
+          <path d="M9.25 13.25l2 2 3.5-3.75" />
+        </svg>
+      );
+    case "calculator":
+      return (
+        <svg {...SVG_PROPS}>
+          <rect height="18" rx="2" width="14" x="5" y="3" />
+          <rect height="3" rx="1" width="8" x="8" y="5.5" />
+          <path d="M8 12.5h2M14 12.5h2M8 16.5h2M14 16.5h2" />
+        </svg>
+      );
   }
 }
