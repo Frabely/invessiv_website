@@ -1,12 +1,19 @@
 "use client";
 
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import {
-  type FocusEvent,
-  type KeyboardEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+  FloatingPortal,
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  size,
+  useClick,
+  useDismiss,
+  useFloating,
+  useInteractions,
+  useMergeRefs,
+} from "@floating-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -44,13 +51,15 @@ type MultiSelectProps<TValue extends string> = {
 };
 
 type CustomSelectProps<TValue extends string = string> =
-  | SingleSelectProps<TValue>
-  | MultiSelectProps<TValue>;
+  SingleSelectProps<TValue> | MultiSelectProps<TValue>;
 
 const STATE_ICON: Partial<Record<TriState, IconDefinition>> = {
   [TriState.Include]: faCheck,
   [TriState.Exclude]: faXmark,
 };
+
+const MAX_LIST_BOX_HEIGHT = 256;
+const MIN_LIST_BOX_HEIGHT = 120;
 
 export function CustomSelect<TValue extends string = string>(
   props: CustomSelectProps<TValue>,
@@ -67,19 +76,62 @@ export function CustomSelect<TValue extends string = string>(
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const pendingFocusIndexRef = useRef<number | null>(null);
   const listBoxId = `${id}-listbox`;
+
+  function handleOpenChange(open: boolean) {
+    setIsOpen(open);
+    if (!open) {
+      setActiveIndex(null);
+      pendingFocusIndexRef.current = null;
+      return;
+    }
+    if (!props.multiple) {
+      const nextIndex = Math.max(
+        props.options.findIndex((option) => option.value === props.value),
+        0,
+      );
+      setActiveIndex(nextIndex);
+      pendingFocusIndexRef.current = nextIndex;
+    }
+  }
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: handleOpenChange,
+    placement: "bottom-start",
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      offset(6),
+      flip({ padding: 8 }),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ availableHeight, elements, rects }) {
+          elements.floating.style.maxHeight = `${Math.max(
+            MIN_LIST_BOX_HEIGHT,
+            Math.min(availableHeight, MAX_LIST_BOX_HEIGHT),
+          )}px`;
+          elements.floating.style.minWidth = `${rects.reference.width}px`;
+        },
+      }),
+    ],
+  });
+
+  const click = useClick(context, { keyboardHandlers: false });
+  const dismiss = useDismiss(context, { outsidePress: true });
+  const { getReferenceProps, getFloatingProps } = useInteractions([
+    click,
+    dismiss,
+  ]);
+  const setTriggerRef = useMergeRefs([refs.setReference, triggerRef]);
+  const setFloatingRef = useMergeRefs([refs.setFloating]);
 
   useEffect(() => {
     if (isOpen && activeIndex !== null) {
-      optionRefs.current[activeIndex]?.focus();
+      optionRefs.current[activeIndex]?.focus({ preventScroll: true });
     }
   }, [activeIndex, isOpen]);
-
-  function handleBlur(event: FocusEvent<HTMLDivElement>) {
-    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      setIsOpen(false);
-    }
-  }
 
   const clearButton =
     onClear && clearLabel ? (
@@ -104,8 +156,9 @@ export function CustomSelect<TValue extends string = string>(
     );
 
     return (
-      <div className={styles.root} onBlur={handleBlur}>
+      <div className={styles.root}>
         <button
+          {...getReferenceProps()}
           aria-controls={listBoxId}
           aria-describedby={describedBy}
           aria-expanded={isOpen}
@@ -115,12 +168,7 @@ export function CustomSelect<TValue extends string = string>(
           data-clearable={clearButton ? true : undefined}
           data-invalid={invalid || undefined}
           id={id}
-          onClick={() => setIsOpen((current) => !current)}
-          onKeyDown={(event) => {
-            if (event.key === "Escape") {
-              setIsOpen(false);
-            }
-          }}
+          ref={setTriggerRef}
           type="button"
         >
           <span className={styles.triggerText}>
@@ -154,33 +202,42 @@ export function CustomSelect<TValue extends string = string>(
         {clearButton}
 
         {isOpen ? (
-          <div className={styles.listbox} id={listBoxId} role="group">
-            {options.map((option) => {
-              const stateIcon = STATE_ICON[option.state];
+          <FloatingPortal>
+            <div
+              {...getFloatingProps()}
+              className={styles.listBox}
+              id={listBoxId}
+              ref={setFloatingRef}
+              role="group"
+              style={floatingStyles}
+            >
+              {options.map((option) => {
+                const stateIcon = STATE_ICON[option.state];
 
-              return (
-                <button
-                  aria-label={option.ariaLabel}
-                  className={styles.option}
-                  data-has-leading={Boolean(option.leading) || undefined}
-                  data-state={option.state}
-                  key={option.value}
-                  onClick={() => onToggleOption(option.value)}
-                  type="button"
-                >
-                  {option.leading ? (
-                    <span className={styles.leading}>{option.leading}</span>
-                  ) : null}
-                  <span className={styles.optionText}>
-                    <span className={styles.optionLabel}>{option.label}</span>
-                  </span>
-                  <span aria-hidden="true" className={styles.indicator}>
-                    {stateIcon ? <FontAwesomeIcon icon={stateIcon} /> : null}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+                return (
+                  <button
+                    aria-label={option.ariaLabel}
+                    className={styles.option}
+                    data-has-leading={Boolean(option.leading) || undefined}
+                    data-state={option.state}
+                    key={option.value}
+                    onClick={() => onToggleOption(option.value)}
+                    type="button"
+                  >
+                    {option.leading ? (
+                      <span className={styles.leading}>{option.leading}</span>
+                    ) : null}
+                    <span className={styles.optionText}>
+                      <span className={styles.optionLabel}>{option.label}</span>
+                    </span>
+                    <span aria-hidden="true" className={styles.indicator}>
+                      {stateIcon ? <FontAwesomeIcon icon={stateIcon} /> : null}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </FloatingPortal>
         ) : null}
       </div>
     );
@@ -190,11 +247,6 @@ export function CustomSelect<TValue extends string = string>(
   const selected =
     options.find((option) => option.value === value) ?? options[0];
   const hasSelectedLeading = Boolean(selected?.leading);
-
-  function openSingleSelect(index: number) {
-    setActiveIndex(index);
-    setIsOpen(true);
-  }
 
   function handleSingleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     const selectedIndex = Math.max(
@@ -208,12 +260,16 @@ export function CustomSelect<TValue extends string = string>(
       event.key === " "
     ) {
       event.preventDefault();
-      openSingleSelect(selectedIndex);
+      setActiveIndex(selectedIndex);
+      pendingFocusIndexRef.current = selectedIndex;
+      setIsOpen(true);
       return;
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      openSingleSelect(options.length - 1);
+      setActiveIndex(options.length - 1);
+      pendingFocusIndexRef.current = options.length - 1;
+      setIsOpen(true);
     }
   }
 
@@ -233,7 +289,7 @@ export function CustomSelect<TValue extends string = string>(
     } else if (event.key === "Escape") {
       event.preventDefault();
       setIsOpen(false);
-      triggerRef.current?.focus();
+      triggerRef.current?.focus({ preventScroll: true });
       return;
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -242,7 +298,7 @@ export function CustomSelect<TValue extends string = string>(
         onChange(option.value);
       }
       setIsOpen(false);
-      triggerRef.current?.focus();
+      triggerRef.current?.focus({ preventScroll: true });
       return;
     }
 
@@ -253,8 +309,9 @@ export function CustomSelect<TValue extends string = string>(
   }
 
   return (
-    <div className={styles.root} onBlur={handleBlur}>
+    <div className={styles.root}>
       <button
+        {...getReferenceProps()}
         aria-controls={listBoxId}
         aria-describedby={describedBy}
         aria-expanded={isOpen}
@@ -265,19 +322,8 @@ export function CustomSelect<TValue extends string = string>(
         data-has-leading={hasSelectedLeading || undefined}
         data-invalid={invalid || undefined}
         id={id}
-        onClick={() => {
-          if (isOpen) {
-            setIsOpen(false);
-            return;
-          }
-          const selectedIndex = Math.max(
-            options.findIndex((option) => option.value === value),
-            0,
-          );
-          openSingleSelect(selectedIndex);
-        }}
         onKeyDown={handleSingleTriggerKeyDown}
-        ref={triggerRef}
+        ref={setTriggerRef}
         type="button"
       >
         {selected?.leading ? (
@@ -299,40 +345,53 @@ export function CustomSelect<TValue extends string = string>(
       {clearButton}
 
       {isOpen ? (
-        <div className={styles.listbox} id={listBoxId} role="listbox">
-          {options.map((option, index) => (
-            <button
-              aria-label={option.ariaLabel}
-              aria-selected={value === option.value}
-              className={styles.option}
-              data-has-leading={Boolean(option.leading) || undefined}
-              key={option.value}
-              onClick={() => {
-                onChange(option.value);
-                setIsOpen(false);
-                triggerRef.current?.focus();
-              }}
-              onKeyDown={(event) => handleSingleOptionKeyDown(event, index)}
-              ref={(element) => {
-                optionRefs.current[index] = element;
-              }}
-              role="option"
-              type="button"
-            >
-              {option.leading ? (
-                <span className={styles.leading}>{option.leading}</span>
-              ) : null}
-              <span className={styles.optionText}>
-                <span className={styles.optionLabel}>{option.label}</span>
-                {option.description ? (
-                  <span className={styles.optionDescription}>
-                    {option.description}
-                  </span>
+        <FloatingPortal>
+          <div
+            {...getFloatingProps()}
+            className={styles.listBox}
+            id={listBoxId}
+            ref={setFloatingRef}
+            role="listbox"
+            style={floatingStyles}
+          >
+            {options.map((option, index) => (
+              <button
+                aria-label={option.ariaLabel}
+                aria-selected={value === option.value}
+                className={styles.option}
+                data-has-leading={Boolean(option.leading) || undefined}
+                key={option.value}
+                onClick={() => {
+                  onChange(option.value);
+                  setIsOpen(false);
+                  triggerRef.current?.focus({ preventScroll: true });
+                }}
+                onKeyDown={(event) => handleSingleOptionKeyDown(event, index)}
+                ref={(element) => {
+                  optionRefs.current[index] = element;
+                  if (element && pendingFocusIndexRef.current === index) {
+                    pendingFocusIndexRef.current = null;
+                    element.focus({ preventScroll: true });
+                  }
+                }}
+                role="option"
+                type="button"
+              >
+                {option.leading ? (
+                  <span className={styles.leading}>{option.leading}</span>
                 ) : null}
-              </span>
-            </button>
-          ))}
-        </div>
+                <span className={styles.optionText}>
+                  <span className={styles.optionLabel}>{option.label}</span>
+                  {option.description ? (
+                    <span className={styles.optionDescription}>
+                      {option.description}
+                    </span>
+                  ) : null}
+                </span>
+              </button>
+            ))}
+          </div>
+        </FloatingPortal>
       ) : null}
     </div>
   );
