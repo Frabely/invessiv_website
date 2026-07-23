@@ -43,6 +43,27 @@ describe("CustomSelect single-select keyboard interaction", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("opens on pointer click and selects an option on click", () => {
+    const onChange = vi.fn();
+    render(
+      <CustomSelect
+        ariaLabel="Time range"
+        id="time-range"
+        onChange={onChange}
+        options={options}
+        value="today"
+      />,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Time range" });
+    fireEvent.click(trigger);
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("option", { name: "All" }));
+    expect(onChange).toHaveBeenCalledWith("all");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("supports Home, End, wrapping, and Escape", () => {
     render(
       <CustomSelect

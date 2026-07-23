@@ -178,13 +178,10 @@
   outline-offset: 1px;
 }
 
-.listbox {
-  position: absolute;
-  z-index: 10;
-  inset-inline: 0;
-  top: calc(100% + 0.35rem);
+.listBox {
+  /* Position, Größe und max-height liefert floating-ui via inline style. */
+  z-index: 1000;
   display: grid;
-  max-height: 16rem;
   padding: 0.3rem;
   overflow-y: auto;
   border: 1px solid
@@ -215,7 +212,6 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Multi-Select-Optionen tragen zusätzlich einen Zustandsindikator (✓/✕). */
 .option[data-state] {
   grid-template-columns: auto minmax(0, 1fr) auto;
   border: 1px solid transparent;

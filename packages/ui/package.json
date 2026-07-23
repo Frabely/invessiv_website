@@ -7,12 +7,14 @@
   },
   "dependencies": {
     "@invessiv/common": "workspace:*",
+    "@floating-ui/react": "^0.27.20",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0"
   },
   "peerDependencies": {
-    "react": "19.2.3"
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@types/react": "^19",
