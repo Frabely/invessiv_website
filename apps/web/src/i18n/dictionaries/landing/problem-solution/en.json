@@ -1,29 +1,29 @@
 {
-  "body": "A landing page brings your offer onto one page: what you offer, why it matters, and how to inquire.",
+  "body": "When visitors leave, it's rarely the offer — it's that the page never gets to the point. That's exactly what a landing page is for.",
   "eyebrow": "Problem → Solution",
   "pairs": [
     {
-      "problem": "Offer too generic",
-      "solution": "One page, one concrete offer"
+      "problem": "Offer stays vague",
+      "solution": "One offer, clearly named"
     },
     {
-      "problem": "Value not tangible",
+      "problem": "Value buried further down",
       "solution": "The benefit comes first"
     },
     {
-      "problem": "Trust comes too late",
-      "solution": "Clear price, clear process"
+      "problem": "Unclear who's behind it",
+      "solution": "Process and contact person visible"
     },
     {
-      "problem": "Next step unclear",
+      "problem": "Many paths, no goal",
       "solution": "One button, one goal"
     },
     {
-      "problem": "Inquiring feels like effort",
-      "solution": "Inquiry takes two minutes"
+      "problem": "Getting in touch feels like work",
+      "solution": "An inquiry in two minutes"
     }
   ],
-  "problemLabel": "Without a landing page",
-  "solutionLabel": "With a landing page",
+  "problemLabel": "Why visitors leave",
+  "solutionLabel": "What your landing page does differently",
   "title": "From bounce to inquiry."
 }

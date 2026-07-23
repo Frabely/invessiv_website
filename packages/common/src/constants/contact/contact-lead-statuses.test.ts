@@ -5,8 +5,8 @@ import {
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 
 describe("CONTACT_LEAD_STATUS_VALUES", () => {
-  it("contains all 15 statuses", () => {
-    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(15);
+  it("contains all 17 statuses", () => {
+    expect(CONTACT_LEAD_STATUS_VALUES).toHaveLength(17);
   });
 
   it("positions pending_review between new and contacted", () => {
@@ -36,6 +36,25 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
     expect(respondedIdx).not.toBe(-1);
     expect(respondedIdx).toBeGreaterThan(contactedIdx);
     expect(respondedIdx).toBeLessThan(qualifiedIdx);
+  });
+
+  it("positions the call stages between responded and qualified", () => {
+    const respondedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "responded" as never,
+    );
+    const settingCallIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "setting_call" as never,
+    );
+    const closingCallIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "closing_call" as never,
+    );
+    const qualifiedIdx = CONTACT_LEAD_STATUS_VALUES.indexOf(
+      "qualified" as never,
+    );
+
+    expect(settingCallIdx).toBeGreaterThan(respondedIdx);
+    expect(closingCallIdx).toBeGreaterThan(settingCallIdx);
+    expect(closingCallIdx).toBeLessThan(qualifiedIdx);
   });
 
   it("positions proposal between qualified and on_hold", () => {
@@ -106,6 +125,8 @@ describe("CONTACT_LEAD_STATUS_VALUES", () => {
       "not_reached",
       "reminder",
       "responded",
+      "setting_call",
+      "closing_call",
       "qualified",
       "proposal",
       "on_hold",

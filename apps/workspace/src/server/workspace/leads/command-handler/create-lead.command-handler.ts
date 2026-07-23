@@ -8,6 +8,7 @@ import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/crea
 import type { CreateLeadResult } from "@invessiv/common/contracts/leads/results/create-lead-result";
 import { createLeadValidationService } from "@/server/workspace/leads/services/create-lead/create-lead-validation-service";
 import { DuplicateCompanyNameError } from "@/server/workspace/leads/shared/duplicate-company-name-error.class";
+import { DuplicateSocialProfileError } from "@/server/workspace/leads/shared/duplicate-social-profile-error.class";
 import { isDuplicateEmailError } from "@/server/workspace/leads/shared/is-duplicate-email-error";
 import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/create-lead-core";
 
@@ -42,6 +43,9 @@ export async function createLead(
     }
     if (error instanceof DuplicateCompanyNameError) {
       return { ok: false, code: LeadErrorCode.CompanyNameExists };
+    }
+    if (error instanceof DuplicateSocialProfileError) {
+      return { ok: false, code: LeadErrorCode.SocialProfileExists };
     }
     throw error;
   }

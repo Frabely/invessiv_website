@@ -1,0 +1,13 @@
+{
+  "stageLabels": {
+    "contacted": "Contacted",
+    "responded": "Replied",
+    "setting_call": "Setting call booked",
+    "closing_call": "Closing call booked",
+    "won": "Won"
+  },
+  "ratePercent": "{value} %",
+  "stageCountAriaSuffix": "leads",
+  "directRateLabel": "{from} → {to}",
+  "transitionAriaLabel": "{from} to {to}: {rate}, {ratio} leads"
+}

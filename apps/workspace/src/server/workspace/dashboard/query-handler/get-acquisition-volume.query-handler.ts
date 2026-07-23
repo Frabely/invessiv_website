@@ -11,23 +11,34 @@ export async function getAcquisitionVolume(
   input: GetAcquisitionVolumeInput,
 ): Promise<AcquisitionVolumeDto> {
   const db = getDrizzleDatabaseClient();
+  const hasCurrentRange = input.from !== undefined && input.to !== undefined;
+  const hasPreviousRange =
+    input.previousFrom !== undefined && input.previousTo !== undefined;
 
   const currentWhere = and(
-    between(leads.created_at, input.from, input.to),
+    hasCurrentRange
+      ? between(leads.created_at, input.from!, input.to!)
+      : undefined,
     ne(leads.lead_status, ContactLeadStatus.PendingReview),
   );
-  const previousWhere = and(
-    between(leads.created_at, input.previousFrom, input.previousTo),
-    ne(leads.lead_status, ContactLeadStatus.PendingReview),
-  );
+  const previousWhere = hasPreviousRange
+    ? and(
+        between(leads.created_at, input.previousFrom!, input.previousTo!),
+        ne(leads.lead_status, ContactLeadStatus.PendingReview),
+      )
+    : undefined;
   const pendingReviewWhere = and(
-    between(leads.created_at, input.from, input.to),
+    hasCurrentRange
+      ? between(leads.created_at, input.from!, input.to!)
+      : undefined,
     eq(leads.lead_status, ContactLeadStatus.PendingReview),
   );
 
   const [currentRows, previousRows, pendingReviewRows] = await Promise.all([
     db.select({ count: count() }).from(leads).where(currentWhere),
-    db.select({ count: count() }).from(leads).where(previousWhere),
+    hasPreviousRange
+      ? db.select({ count: count() }).from(leads).where(previousWhere)
+      : Promise.resolve(null),
     db.select({ count: count() }).from(leads).where(pendingReviewWhere),
   ]);
 

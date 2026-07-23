@@ -321,6 +321,37 @@ describe("updateLead", () => {
     });
   });
 
+  it("returns SOCIAL_PROFILE_EXISTS on social profile unique violation", async () => {
+    vi.resetModules();
+    const duplicateError = Object.assign(new Error("duplicate key value"), {
+      cause: {
+        code: PostgresErrorCode.UniqueViolation,
+        constraint: "lead_social_profiles_platform_normalized_url_uidx",
+      },
+    });
+    getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
+    getDrizzleDatabaseClientMock.mockReturnValue({
+      transaction: vi.fn().mockRejectedValue(duplicateError),
+    });
+    const { updateLead } =
+      await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
+
+    const result = await updateLead("lead-existing-uuid", {
+      displayName: "Max Mustermann",
+      social_profiles: [
+        {
+          platform: "linkedin",
+          profile_url: "https://linkedin.com/in/already-taken",
+        },
+      ],
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: LeadErrorCode.SocialProfileExists,
+    });
+  });
+
   it("logs status_change activity with body '<old> → <new>' and transition metadata when lead_status changes", async () => {
     vi.resetModules();
     createLeadActivityMock.mockClear();

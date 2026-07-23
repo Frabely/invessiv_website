@@ -1,5 +1,14 @@
 {
   "group": "Zeitraum",
+  "preset": "Zeitraum auswählen",
   "from": "Von",
-  "to": "Bis"
+  "to": "Bis",
+  "options": {
+    "today": "Heute",
+    "last7Days": "Letzte 7 Tage",
+    "last30Days": "Letzte 30 Tage",
+    "last90Days": "Letzte 90 Tage",
+    "all": "Alle",
+    "custom": "Benutzerdefiniert"
+  }
 }

@@ -106,4 +106,19 @@ describe("getAcquisitionVolume", () => {
     const dbClient = getDrizzleDatabaseClientMock.mock.results[0]?.value;
     expect(dbClient.select).toHaveBeenCalledTimes(3);
   });
+
+  it("queries all records without a previous-period query when unbounded", async () => {
+    mockSelectSequence([[{ count: 20 }], [{ count: 4 }]]);
+
+    const { getAcquisitionVolume } =
+      await import("@/server/workspace/dashboard/query-handler/get-acquisition-volume.query-handler");
+
+    await expect(getAcquisitionVolume({})).resolves.toEqual({
+      current: 20,
+      previous: null,
+      pendingReview: 4,
+    });
+    const dbClient = getDrizzleDatabaseClientMock.mock.results[0]?.value;
+    expect(dbClient.select).toHaveBeenCalledTimes(2);
+  });
 });

@@ -71,6 +71,7 @@
     "improvementTooLong": "Improvement can be at most 500 characters long",
     "emailExists": "This email is already assigned to an existing lead.",
     "companyNameExists": "This company is already assigned to an existing lead.",
+    "socialProfileExists": "This social profile is already assigned to an existing lead.",
     "generic": "Lead could not be saved",
     "socialProfileInvalid": "Invalid platform",
     "socialProfileRequired": "Platform and URL are required",

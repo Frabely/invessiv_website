@@ -5,111 +5,86 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { DashboardDateRangeFilter } from "./dashboard-date-range-filter";
 
-const mockRouter = vi.hoisted(() => ({
-  push: vi.fn(),
-  replace: vi.fn(),
-}));
-
-vi.mock("next/navigation", () => ({
-  useRouter: () => mockRouter,
-}));
+const mockRouter = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => mockRouter }));
 
 const labels = {
   group: "Time range",
+  preset: "Select time range",
   from: "From",
   to: "To",
+  options: {
+    today: "Today",
+    last7Days: "Last 7 days",
+    last30Days: "Last 30 days",
+    last90Days: "Last 90 days",
+    all: "All",
+    custom: "Custom",
+  },
 };
+
+function choosePreset(optionLabel: string) {
+  fireEvent.click(screen.getByRole("button", { name: labels.preset }));
+  fireEvent.click(screen.getByRole("option", { name: optionLabel }));
+}
 
 describe("DashboardDateRangeFilter", () => {
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-05-21T12:00:00Z"));
     mockRouter.push.mockReset();
   });
-
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
   });
 
-  it("pushes the new date_from value into the URL", () => {
+  function renderFilter(query = "foo=bar") {
     render(
       <DashboardDateRangeFilter
         basePath="/en/dashboard"
-        currentQueryString=""
-        fromValue="2026-04-21"
+        currentQueryString={query}
+        fromValue="2026-05-15"
         labels={labels}
         toValue="2026-05-21"
       />,
     );
+  }
 
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "2026-04-01" },
-    });
-
+  it("writes both preset bounds in one navigation and preserves other params", () => {
+    renderFilter();
+    choosePreset(labels.options.last30Days);
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/en/dashboard?date_from=2026-04-01&date_to=2026-05-21",
+      "/en/dashboard?foo=bar&date_from=2026-04-22&date_to=2026-05-21",
       { scroll: false },
     );
   });
 
-  it("repairs inverted ranges when the current URL is already inverted", () => {
-    render(
-      <DashboardDateRangeFilter
-        basePath="/de/dashboard"
-        currentQueryString="foo=bar&date_from=2026-04-30&date_to=2026-04-01"
-        fromValue="2026-04-01"
-        labels={labels}
-        toValue="2026-04-30"
-      />,
-    );
-
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "2026-04-15" },
-    });
-
+  it("uses an explicit range state for All", () => {
+    renderFilter("foo=bar&date_from=2026-05-15&date_to=2026-05-21");
+    choosePreset(labels.options.all);
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/de/dashboard?foo=bar&date_from=2026-04-15&date_to=2026-04-30",
+      "/en/dashboard?foo=bar&range=all",
       { scroll: false },
     );
   });
 
-  it("preserves existing query params when updating date_to", () => {
-    render(
-      <DashboardDateRangeFilter
-        basePath="/de/dashboard"
-        currentQueryString="foo=bar&date_from=2026-04-01"
-        fromValue="2026-04-01"
-        labels={labels}
-        toValue="2026-05-21"
-      />,
-    );
-
-    fireEvent.change(screen.getByLabelText("To"), {
-      target: { value: "2026-04-30" },
-    });
-
-    const [calledHref] = mockRouter.push.mock.calls[0] as [string, unknown];
-    const params = new URLSearchParams(calledHref.split("?")[1] ?? "");
-    expect(params.get("foo")).toBe("bar");
-    expect(params.get("date_from")).toBe("2026-04-01");
-    expect(params.get("date_to")).toBe("2026-04-30");
-  });
-
-  it("removes the param when an input is cleared", () => {
+  it("removes the All marker when selecting a bounded preset", () => {
     render(
       <DashboardDateRangeFilter
         basePath="/en/dashboard"
-        currentQueryString="date_from=2026-04-01"
-        fromValue="2026-04-01"
+        currentQueryString="range=all&foo=bar"
+        fromValue=""
         labels={labels}
-        toValue="2026-05-21"
+        toValue=""
       />,
     );
-
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "" },
-    });
-
+    expect(
+      screen.getByRole("button", { name: labels.preset }),
+    ).toHaveTextContent(labels.options.all);
+    choosePreset(labels.options.today);
     expect(mockRouter.push).toHaveBeenCalledWith(
-      "/en/dashboard?date_to=2026-05-21",
+      "/en/dashboard?foo=bar&date_from=2026-05-21&date_to=2026-05-21",
       { scroll: false },
     );
   });

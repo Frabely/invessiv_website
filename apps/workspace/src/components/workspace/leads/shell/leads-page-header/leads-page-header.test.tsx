@@ -467,4 +467,43 @@ describe("LeadsPageHeader", () => {
       screen.getByRole("button", { name: "Filter zurücksetzen" }),
     ).toBeDisabled();
   });
+
+  describe("date range presets", () => {
+    it("defaults to All and writes both preset dates while resetting pagination", () => {
+      vi.setSystemTime(new Date("2026-05-21T12:00:00Z"));
+      renderToolbar("foo=bar&page=3");
+      expect(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      ).toHaveTextContent("Alle");
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      );
+      fireEvent.click(screen.getByRole("option", { name: "Letzte 7 Tage" }));
+
+      const params = lastPushedParams();
+      expect(params.get("date_from")).toBe("2026-05-15");
+      expect(params.get("date_to")).toBe("2026-05-21");
+      expect(params.get("foo")).toBe("bar");
+      expect(params.has("page")).toBe(false);
+    });
+
+    it("clears both dates for All and reset", () => {
+      renderToolbar(
+        "date_from=2026-01-01&date_to=2026-01-31&sort=created_desc",
+      );
+      fireEvent.click(
+        screen.getByRole("button", { name: "Zeitraum auswählen" }),
+      );
+      fireEvent.click(screen.getByRole("option", { name: "Alle" }));
+      expect(lastPushedParams().has("date_from")).toBe(false);
+      expect(lastPushedParams().has("date_to")).toBe(false);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "Filter zurücksetzen" }),
+      );
+      expect(lastPushedParams().get("sort")).toBe("created_desc");
+      expect(lastPushedParams().has("date_from")).toBe(false);
+    });
+  });
 });

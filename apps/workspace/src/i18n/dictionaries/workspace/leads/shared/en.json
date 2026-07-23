@@ -9,6 +9,8 @@
     "not_reached": "Not Reached",
     "reminder": "Reminder",
     "responded": "Responded",
+    "setting_call": "Setting Call",
+    "closing_call": "Closing Call",
     "qualified": "Qualified",
     "proposal": "Proposal",
     "on_hold": "On Hold",
@@ -28,6 +30,9 @@
     "small-b2b-providers": "Small B2B Providers",
     "consultants": "Consultants",
     "photographers": "Photographers",
+    "lawyers": "Lawyers",
+    "tax-advisors": "Tax Advisors",
+    "appraisers": "Appraisers",
     "other": "Other"
   },
   "platform": {

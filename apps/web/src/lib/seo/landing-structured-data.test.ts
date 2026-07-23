@@ -83,10 +83,10 @@ describe("landing-structured-data", () => {
     );
     expect(deService?.audience).not.toEqual(enService?.audience);
     expect(deService?.offers.priceRange).toBe(
-      `${deStructuredData.offer.priceRangePrefix} 999 ${deStructuredData.offer.priceRangeCurrencySymbol}`,
+      `${deStructuredData.offer.priceRangePrefix} 2000 ${deStructuredData.offer.priceRangeCurrencySymbol}`,
     );
     expect(enService?.offers.priceRange).toBe(
-      `${enStructuredData.offer.priceRangePrefix} 999 ${enStructuredData.offer.priceRangeCurrencySymbol}`,
+      `${enStructuredData.offer.priceRangePrefix} 2000 ${enStructuredData.offer.priceRangeCurrencySymbol}`,
     );
     expect(deService?.offers.priceRange).not.toBe(enService?.offers.priceRange);
   });

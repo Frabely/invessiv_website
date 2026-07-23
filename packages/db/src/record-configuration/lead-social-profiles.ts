@@ -46,8 +46,7 @@ export const leadSocialProfiles = pgTable(
       sql`btrim(${table.normalized_url}) <> ''`,
     ),
     index("lead_social_profiles_lead_id_idx").on(table.lead_id),
-    uniqueIndex("lead_social_profiles_lead_platform_url_uidx").on(
-      table.lead_id,
+    uniqueIndex("lead_social_profiles_platform_normalized_url_uidx").on(
       table.platform,
       table.normalized_url,
     ),

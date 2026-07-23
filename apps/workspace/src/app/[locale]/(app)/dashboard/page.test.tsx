@@ -30,9 +30,9 @@ vi.mock(
 );
 
 vi.mock(
-  "@/components/workspace/dashboard/funnel-snapshot-module/funnel-snapshot-module",
+  "@/components/workspace/dashboard/messaging-conversion-module/messaging-conversion-module",
   () => ({
-    FunnelSnapshotModule: () => <h2>Funnel</h2>,
+    MessagingConversionModule: () => <h2>Nachrichten</h2>,
   }),
 );
 
@@ -47,8 +47,8 @@ describe("DashboardPage", () => {
     cleanup();
   });
 
-  it("renders the header, date-range inputs, and module placeholders for de", async () => {
-    render(
+  it("renders the header, date-range preset, and module placeholders for de", async () => {
+    const { container } = render(
       await DashboardPage({
         params: Promise.resolve({ locale: "de" }),
         searchParams: Promise.resolve({}),
@@ -60,14 +60,24 @@ describe("DashboardPage", () => {
     ).toBeInTheDocument();
 
     expect(screen.getByText("Zeitraum")).toBeInTheDocument();
-    expect(screen.getByLabelText("Von")).toBeInTheDocument();
-    expect(screen.getByLabelText("Bis")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Zeitraum auswählen" }),
+    ).toHaveTextContent("Letzte 7 Tage");
+    expect(screen.queryByLabelText("Von")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Bis")).not.toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", { level: 2, name: "Akquise-Volumen" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { level: 2, name: "Funnel" }),
+      container.querySelector('[data-widget="acquisitionVolume"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('[data-widget="newLeadsSummary"]'),
+    ).toBeNull();
+    expect(container.querySelector('[data-widget="funnel"]')).toBeNull();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Nachrichten" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", {

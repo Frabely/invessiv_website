@@ -1,37 +1,88 @@
 {
+  "body": "A landing page can bring in new clients — or new staff. Pick your field and it gets specific.",
+  "bodyHighlight": "Pick your field",
+  "closeLabel": "Close",
   "cta": {
     "analyticsTarget": "contact",
     "analyticsVariant": "primary",
-    "helper": "Not sure whether a landing page fits your offer?",
     "href": "#contact",
     "label": "Request a free initial assessment"
   },
   "eyebrow": "Who it's for",
   "items": [
     {
+      "detail": {
+        "headline": "Your firm covers eight practice areas. The client has one.",
+        "outcome": "One page per situation that names the case, explains the process and makes the enquiry easy.",
+        "problems": [
+          "Someone who just got a termination letter isn't looking for a law firm — they want help with that one case.",
+          "What the first consultation costs and how it works is nowhere to be found. So nobody calls."
+        ]
+      },
+      "iconKey": "scales",
+      "label": "Lawyers"
+    },
+    {
+      "detail": {
+        "headline": "Anyone who needs an expert report has never needed one before.",
+        "outcome": "A page that explains in plain language when a report is needed — and who pays for it.",
+        "problems": [
+          "After an accident that wasn't your fault, you may choose your own appraiser — almost nobody knows this.",
+          "With no detail on process, duration or cost, hiring one feels like a risk."
+        ]
+      },
+      "iconKey": "clipboard",
+      "label": "Appraisers"
+    },
+    {
+      "detail": {
+        "headline": "Enquiries aren't the problem. The right ones are.",
+        "outcome": "A page for one ideal client profile that filters out the wrong enquiries up front.",
+        "problems": [
+          "Your firm's site speaks to everyone — so mostly the cases you don't want get in touch.",
+          "The clients you do want can't tell that you have handled their industry many times over."
+        ]
+      },
+      "iconKey": "calculator",
+      "label": "Tax advisors"
+    },
+    {
+      "detail": {
+        "headline": "The work is there. The people aren't.",
+        "outcome": "A page that shows how you actually work — and lets someone apply in two minutes.",
+        "problems": [
+          "Your job ad sits between 40 others — and looks like all of them.",
+          "Anyone who is interested finds nothing about the company, the team or the daily work."
+        ]
+      },
       "iconKey": "hammer",
       "label": "Skilled trades"
     },
     {
-      "iconKey": "coach",
-      "label": "Coaches"
-    },
-    {
-      "iconKey": "consultant",
-      "label": "Consultants"
-    },
-    {
-      "iconKey": "camera",
-      "label": "Photographers"
-    },
-    {
+      "detail": {
+        "headline": "Being found isn't enough.",
+        "outcome": "A page that works on a phone and takes enquiries around the clock.",
+        "problems": [
+          "Google sends visitors to a page that hasn't changed in years.",
+          "Enquiries only work by phone, during office hours. In the evening people click on."
+        ]
+      },
       "iconKey": "pin",
       "label": "Local service providers"
     },
     {
+      "detail": {
+        "headline": "The decision maker has three tabs open.",
+        "outcome": "A page that shows the offer, the difference and the next step at a glance.",
+        "problems": [
+          "Your website explains your company. They are looking for the answer to their problem.",
+          "What sets you apart from the other two providers, they have to work out themselves."
+        ]
+      },
       "iconKey": "building",
       "label": "Small B2B providers"
     }
   ],
+  "outcomeLabel": "What the page then has to do",
   "title": "See yourself in here?"
 }

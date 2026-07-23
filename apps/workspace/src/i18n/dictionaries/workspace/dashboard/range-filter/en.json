@@ -1,5 +1,14 @@
 {
   "group": "Time range",
+  "preset": "Select time range",
   "from": "From",
-  "to": "To"
+  "to": "To",
+  "options": {
+    "today": "Today",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "last90Days": "Last 90 days",
+    "all": "All",
+    "custom": "Custom"
+  }
 }

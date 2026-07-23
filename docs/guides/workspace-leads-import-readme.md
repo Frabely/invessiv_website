@@ -60,7 +60,7 @@ Wenn du als KI dieses Dokument erhältst, gilt:
 
 ## Gültige Kategoriewerte
 
-Das Feld `category` akzeptiert folgende Slugs (case-sensitive):
+Das Feld `category` akzeptiert folgende Slugs (Groß-/Kleinschreibung egal):
 
 | Slug                      | Bezeichnung (DE)     | Bezeichnung (EN)        |
 | ------------------------- | -------------------- | ----------------------- |
@@ -70,6 +70,10 @@ Das Feld `category` akzeptiert folgende Slugs (case-sensitive):
 | `small-b2b-providers`     | Kleine B2B-Anbieter  | Small B2B Providers     |
 | `consultants`             | Berater              | Consultants             |
 | `photographers`           | Fotografen           | Photographers           |
+| `lawyers`                 | Anwälte              | Lawyers                 |
+| `tax-advisors`            | Steuerberater        | Tax Advisors            |
+| `appraisers`              | Gutachter            | Appraisers              |
+| `other`                   | Andere               | Other                   |
 
 Ein unbekannter Slug ist ein **Fehler** - die betroffene Zeile wird nicht importiert und im Report ausgewiesen.
 Alternativ kann `category_id` (UUID) direkt angegeben werden; sie hat Vorrang vor `category`.
@@ -92,6 +96,8 @@ snake_case-Werte:
 | `not_reached`          | `not_reached`          | Nicht erreicht                             |
 | `reminder`             | `reminder`             | Erinnerung                                 |
 | `responded`            | `responded`            | Geantwortet                                |
+| `setting_call`         | `setting_call`         | Setting Call (gebucht)                     |
+| `closing_call`         | `closing_call`         | Closing Call (gebucht)                     |
 | `qualified`            | `qualified`            | Qualifiziert                               |
 | `proposal`             | `proposal`             | Angebot                                    |
 | `on_hold`              | `on_hold`              | Pausiert                                   |

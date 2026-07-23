@@ -1,0 +1,214 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: clamp(0.92rem, 1.5vw, 1.15rem);
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--color-surface-2) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 55%, transparent) 100%
+  );
+  overflow: hidden;
+  isolation: isolate;
+  --stage-accent: var(--color-accent-warm);
+  --stage-delay: 0s;
+}
+
+.card[data-index="0"] {
+  --stage-delay: 80ms;
+}
+
+.card[data-index="1"] {
+  --stage-delay: 180ms;
+}
+
+.card[data-index="2"] {
+  --stage-delay: 280ms;
+}
+
+.card[data-index="3"] {
+  --stage-delay: 380ms;
+}
+
+.card[data-index="4"] {
+  --stage-delay: 480ms;
+}
+
+.card[data-tone="info"] {
+  --stage-accent: color-mix(in srgb, #38bdf8 74%, var(--color-text-muted) 26%);
+}
+
+.card[data-tone="primary"] {
+  --stage-accent: var(--color-cta);
+}
+
+.card[data-tone="pink"] {
+  --stage-accent: color-mix(in srgb, #ec4899 80%, var(--color-text-muted) 20%);
+}
+
+.card[data-tone="indigo"] {
+  --stage-accent: color-mix(in srgb, #6366f1 76%, var(--color-text-muted) 24%);
+}
+
+.card[data-tone="teal"] {
+  --stage-accent: color-mix(in srgb, #14b8a6 76%, var(--color-text-muted) 24%);
+}
+
+.card[data-tone="orange"] {
+  --stage-accent: var(--color-accent-orange);
+}
+
+.card[data-tone="purple"] {
+  --stage-accent: color-mix(in srgb, #a855f7 76%, var(--color-text-muted) 24%);
+}
+
+.card[data-tone="success"] {
+  --stage-accent: color-mix(in srgb, #22c55e 76%, var(--color-text-muted) 24%);
+}
+
+.accent {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--stage-accent) 95%, transparent) 0%,
+    color-mix(in srgb, var(--stage-accent) 35%, transparent) 100%
+  );
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation: funnel-stage-accent 600ms cubic-bezier(0.22, 0.61, 0.36, 1)
+    var(--stage-delay, 0s) forwards;
+}
+
+.top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  z-index: 1;
+}
+
+.badge {
+  max-width: 100%;
+}
+
+.body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  z-index: 1;
+}
+
+.value {
+  font-size: clamp(2rem, 3.2vw, 3.1rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 0
+    color-mix(in srgb, var(--color-surface-1) 40%, transparent);
+}
+
+.shareRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  margin-top: auto;
+}
+
+.barTrack {
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+  overflow: hidden;
+}
+
+.barTrack::-webkit-progress-bar {
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.barTrack::-webkit-progress-value {
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--stage-accent) 95%, transparent) 0%,
+    color-mix(in srgb, var(--stage-accent) 55%, transparent) 100%
+  );
+  box-shadow: 0 0 14px color-mix(in srgb, var(--stage-accent) 35%, transparent);
+}
+
+.barTrack::-moz-progress-bar {
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--stage-accent) 95%, transparent) 0%,
+    color-mix(in srgb, var(--stage-accent) 55%, transparent) 100%
+  );
+  box-shadow: 0 0 14px color-mix(in srgb, var(--stage-accent) 35%, transparent);
+}
+
+.barTrack[data-empty="true"] {
+  background: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-border) 55%, transparent) 0 5px,
+    transparent 5px 10px
+  );
+  opacity: 0.6;
+}
+
+.shareLabel {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--color-text) 82%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes funnel-stage-accent {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+@media (min-width: 1100px) {
+  .card {
+    grid-row: 1;
+    min-width: 0;
+    padding: 0.85rem;
+  }
+
+  .value {
+    font-size: clamp(1.9rem, 2vw, 2.65rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .value {
+    font-size: clamp(2rem, 2.05vw, 2.8rem);
+  }
+}

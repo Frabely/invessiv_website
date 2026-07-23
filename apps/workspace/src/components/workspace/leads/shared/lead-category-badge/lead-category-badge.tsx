@@ -1,11 +1,14 @@
 import {
   faBriefcase,
+  faCalculator,
   faCamera,
   faChalkboardUser,
   faCircleQuestion,
   faHammer,
   faLayerGroup,
   faLocationDot,
+  faMagnifyingGlassChart,
+  faScaleBalanced,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
@@ -14,7 +17,7 @@ import {
   LeadBadgeTone,
   type LeadBadgeTone as LeadBadgeToneValue,
 } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadge } from "../lead-badge/lead-badge";
+import { LeadBadge } from "../../../shared/lead-badge/lead-badge";
 
 type LeadCategoryBadgeProps = {
   className?: string;
@@ -49,6 +52,18 @@ const CATEGORY_CONFIG: Record<
   photographers: {
     icon: faCamera,
     tone: LeadBadgeTone.Info,
+  },
+  lawyers: {
+    icon: faScaleBalanced,
+    tone: LeadBadgeTone.Indigo,
+  },
+  "tax-advisors": {
+    icon: faCalculator,
+    tone: LeadBadgeTone.Teal,
+  },
+  appraisers: {
+    icon: faMagnifyingGlassChart,
+    tone: LeadBadgeTone.Lime,
   },
   other: {
     icon: faCircleQuestion,

@@ -109,6 +109,27 @@ describe("leadsService.createLead", () => {
       ok: false,
     });
   });
+
+  it("maps duplicate social profile errors from the API response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        error: LeadErrorCode.SocialProfileExists,
+      }),
+      ok: false,
+      status: 409,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      leadsService.createLead({
+        displayName: "Anna Meyer",
+        email: "anna@example.com",
+      }),
+    ).resolves.toEqual({
+      code: LeadErrorCode.SocialProfileExists,
+      ok: false,
+    });
+  });
 });
 
 describe("leadsService.updateLead", () => {
@@ -225,6 +246,24 @@ describe("leadsService.updateLead", () => {
       leadsService.updateLead(leadId, { displayName: "Anna Meyer" }),
     ).resolves.toEqual({
       code: LeadErrorCode.CompanyNameExists,
+      ok: false,
+    });
+  });
+
+  it("maps duplicate social profile errors from the API response", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      json: async () => ({
+        error: LeadErrorCode.SocialProfileExists,
+      }),
+      ok: false,
+      status: 409,
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      leadsService.updateLead(leadId, { displayName: "Anna Meyer" }),
+    ).resolves.toEqual({
+      code: LeadErrorCode.SocialProfileExists,
       ok: false,
     });
   });

@@ -1,37 +1,88 @@
 {
+  "body": "Eine Landingpage kann neue Kunden bringen — oder neue Mitarbeiter. Wähl deine Branche, dann wird's konkret.",
+  "bodyHighlight": "Wähl deine Branche",
+  "closeLabel": "Schließen",
   "cta": {
     "analyticsTarget": "contact",
     "analyticsVariant": "primary",
-    "helper": "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
     "href": "#contact",
     "label": "Kostenlose Ersteinschätzung anfragen"
   },
   "eyebrow": "Für wen",
   "items": [
     {
+      "detail": {
+        "headline": "Deine Kanzlei kann acht Rechtsgebiete. Der Mandant hat eins.",
+        "outcome": "Eine Seite pro Anlass, die den Fall benennt, den Ablauf erklärt und die Anfrage einfach macht.",
+        "problems": [
+          "Wer gerade eine Kündigung im Briefkasten hatte, sucht keine Kanzlei — sondern Hilfe bei genau diesem Fall.",
+          "Was die Erstberatung kostet und wie sie abläuft, steht nirgends. Also ruft niemand an."
+        ]
+      },
+      "iconKey": "scales",
+      "label": "Anwälte"
+    },
+    {
+      "detail": {
+        "headline": "Wer ein Gutachten braucht, hat noch nie eins gebraucht.",
+        "outcome": "Eine Seite, die in einfacher Sprache erklärt, wann ein Gutachten nötig ist — und wer es zahlt.",
+        "problems": [
+          "Nach einem unverschuldeten Unfall darf man den Gutachter frei wählen — die wenigsten wissen das.",
+          "Ohne Angaben zu Ablauf, Dauer und Kosten wirkt die Beauftragung wie ein Risiko."
+        ]
+      },
+      "iconKey": "clipboard",
+      "label": "Gutachter"
+    },
+    {
+      "detail": {
+        "headline": "Anfragen kommen genug. Die passenden selten.",
+        "outcome": "Eine Seite für ein Wunschmandat, die unpassende Anfragen vorher aussortiert.",
+        "problems": [
+          "Die Kanzleiseite spricht alle an — also melden sich vor allem Fälle, die du gar nicht annehmen willst.",
+          "Wunschmandate erkennen nicht, dass du genau ihre Branche längst im Griff hast."
+        ]
+      },
+      "iconKey": "calculator",
+      "label": "Steuerberater"
+    },
+    {
+      "detail": {
+        "headline": "Aufträge sind da. Die Leute fehlen.",
+        "outcome": "Eine Seite, die zeigt, wie bei euch gearbeitet wird — und auf der man sich in zwei Minuten meldet.",
+        "problems": [
+          "Deine Stellenanzeige steht zwischen 40 anderen — und sieht aus wie alle.",
+          "Wer sich für dich interessiert, findet nichts über den Betrieb, das Team oder den Alltag."
+        ]
+      },
       "iconKey": "hammer",
       "label": "Handwerker"
     },
     {
-      "iconKey": "coach",
-      "label": "Coaches"
-    },
-    {
-      "iconKey": "consultant",
-      "label": "Berater"
-    },
-    {
-      "iconKey": "camera",
-      "label": "Fotografen"
-    },
-    {
+      "detail": {
+        "headline": "Gefunden werden reicht nicht.",
+        "outcome": "Eine Seite, die auf dem Handy funktioniert und Anfragen rund um die Uhr annimmt.",
+        "problems": [
+          "Google bringt Besucher auf eine Seite, die seit Jahren unverändert ist.",
+          "Anfragen gehen nur telefonisch, zu Bürozeiten. Abends klickt man weiter."
+        ]
+      },
       "iconKey": "pin",
       "label": "Lokale Dienstleister"
     },
     {
+      "detail": {
+        "headline": "Der Entscheider hat drei Tabs offen.",
+        "outcome": "Eine Seite, die Angebot, Unterschied und nächsten Schritt auf einen Blick zeigt.",
+        "problems": [
+          "Deine Website erklärt dein Unternehmen. Er sucht die Lösung für sein Problem.",
+          "Was dich von den anderen zwei Anbietern unterscheidet, muss er sich selbst zusammenreimen."
+        ]
+      },
       "iconKey": "building",
       "label": "Kleine B2B-Anbieter"
     }
   ],
+  "outcomeLabel": "Was die Seite dann leisten muss",
   "title": "Erkennst du dich wieder?"
 }

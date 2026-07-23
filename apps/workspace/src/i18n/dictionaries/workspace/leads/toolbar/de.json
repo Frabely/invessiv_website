@@ -16,8 +16,17 @@
     "category": "Kategorie",
     "score": "Score",
     "dateRange": "Zeitraum",
+    "datePreset": "Zeitraum auswählen",
     "dateFrom": "Von",
     "dateTo": "Bis",
+    "dateOptions": {
+      "today": "Heute",
+      "last7Days": "Letzte 7 Tage",
+      "last30Days": "Letzte 30 Tage",
+      "last90Days": "Letzte 90 Tage",
+      "all": "Alle",
+      "custom": "Benutzerdefiniert"
+    },
     "allStatuses": "Alle Status",
     "allSources": "Alle Quellen",
     "allCategories": "Alle Kategorien"

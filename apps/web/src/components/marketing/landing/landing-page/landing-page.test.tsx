@@ -49,6 +49,10 @@ vi.mock("@/components/marketing/hero-visual/hero-visual", () => ({
   ),
 }));
 
+vi.mock("@/components/providers/theme-provider", () => ({
+  useTheme: () => ({ theme: "dark", setTheme: vi.fn(), toggleTheme: vi.fn() }),
+}));
+
 vi.mock(
   "@/components/marketing/landing/coaching-landing-preview/coaching-landing-preview",
   () => ({
@@ -109,10 +113,10 @@ describe("LandingPage", () => {
         name: /Vom Absprung zur Anfrage/,
       }),
     ).toBeTruthy();
-    expect(screen.getByText(/Eine Landingpage bündelt/)).toBeTruthy();
-    const firstProblemItem = screen.getByText("Angebot zu allgemein");
+    expect(screen.getByText(/Wenn Besucher abspringen/)).toBeTruthy();
+    const firstProblemItem = screen.getByText("Angebot bleibt vage");
     expect(firstProblemItem).toBeTruthy();
-    expect(screen.getByText("Eine Seite, ein konkretes Angebot")).toBeTruthy();
+    expect(screen.getByText("Ein Angebot, klar benannt")).toBeTruthy();
     await waitFor(() => {
       expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
     });
@@ -157,11 +161,6 @@ describe("LandingPage", () => {
       screen.queryByText("Seitenstruktur aus deinem Angebot ableiten"),
     ).toBeNull();
     expect(screen.queryByText(/Der Check bleibt bewusst schlank/)).toBeNull();
-    expect(
-      screen.getByText(
-        "Nicht sicher, ob eine Landingpage für dein Angebot passt?",
-      ),
-    ).toBeTruthy();
     const audienceCta = screen
       .getAllByRole("link", { name: "Kostenlose Ersteinschätzung anfragen" })
       .find((link) => link.dataset.analyticsLocation === "audience");

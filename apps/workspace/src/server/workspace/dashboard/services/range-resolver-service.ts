@@ -1,7 +1,10 @@
 import "server-only";
+import { DEFAULT_DASHBOARD_RANGE_PRESET } from "@/common/constants/dashboard/dashboard-defaults";
 import { DashboardQueryParam } from "@/common/constants/dashboard/dashboard-query-params";
-import { DEFAULT_DASHBOARD_RANGE_DAYS } from "@/common/constants/dashboard/dashboard-defaults";
-import type { RangeSelection } from "@/common/contracts/range-selection";
+import { DashboardRangeKind } from "@/common/constants/dashboard/dashboard-range-kinds";
+import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
+import type { RangeSelection } from "@/common/contracts/dashboard/range-selection";
+import { getDateRangeForPreset } from "@/common/patterns/date-range/date-range-preset-range";
 
 type SearchParamsInput = Record<string, string | string[] | undefined>;
 
@@ -49,10 +52,24 @@ function resolveDashboardRange(
   options: ResolveOptions = {},
 ): RangeSelection {
   const now = options.now ?? new Date();
-  const defaultTo = new Date(now.getTime());
-  const defaultFrom = new Date(
-    now.getTime() - DEFAULT_DASHBOARD_RANGE_DAYS * DAY_MS,
+  const rawRange = readParam(searchParams, DashboardQueryParam.Range);
+  if (rawRange === DateRangePreset.All) {
+    return {
+      kind: DashboardRangeKind.All,
+      fromInputValue: "",
+      toInputValue: "",
+    };
+  }
+
+  const defaultRange = getDateRangeForPreset(
+    DEFAULT_DASHBOARD_RANGE_PRESET,
+    now,
   );
+  const defaultFrom = parseIsoDateAtStartOfDay(defaultRange.from ?? "");
+  const defaultTo = parseIsoDateAtEndOfDay(defaultRange.to ?? "");
+  if (!defaultFrom || !defaultTo) {
+    throw new Error("The dashboard default range must be bounded.");
+  }
 
   const rawFrom = readParam(searchParams, DashboardQueryParam.DateFrom);
   const rawTo = readParam(searchParams, DashboardQueryParam.DateTo);
@@ -73,6 +90,7 @@ function resolveDashboardRange(
   const previousFrom = new Date(from.getTime() - Math.max(spanMs, DAY_MS));
 
   return {
+    kind: DashboardRangeKind.Bounded,
     from,
     to,
     previousFrom,

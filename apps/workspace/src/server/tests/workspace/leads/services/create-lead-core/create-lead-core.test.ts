@@ -45,7 +45,10 @@ beforeEach(() => {
   createLeadActivityMock.mockClear();
 });
 
-function createTxMock(options?: { duplicateEmailError?: unknown }) {
+function createTxMock(options?: {
+  duplicateEmailError?: unknown;
+  duplicateSocialProfileError?: unknown;
+}) {
   const capturedInserts: Array<{ tableArg: unknown; valuesArg: unknown }> = [];
   const leadRow = {
     id: mockLeadDto.id,
@@ -113,6 +116,11 @@ function createTxMock(options?: { duplicateEmailError?: unknown }) {
         if (insertCallIndex === 0 && options?.duplicateEmailError) {
           insertCallIndex += 1;
           return Promise.reject(options.duplicateEmailError);
+        }
+
+        if (insertCallIndex === 1 && options?.duplicateSocialProfileError) {
+          insertCallIndex += 1;
+          return Promise.reject(options.duplicateSocialProfileError);
         }
 
         insertCallIndex += 1;
@@ -222,5 +230,42 @@ describe("createLeadCoreInTransaction", () => {
         },
       ),
     ).rejects.toBeInstanceOf(DuplicateEmailError);
+  });
+
+  it("wraps duplicate social profile errors in DuplicateSocialProfileError", async () => {
+    const duplicateError = Object.assign(new Error("duplicate key value"), {
+      cause: {
+        code: PostgresErrorCode.UniqueViolation,
+        constraint: "lead_social_profiles_platform_normalized_url_uidx",
+      },
+    });
+    const { txMock } = createTxMock({
+      duplicateSocialProfileError: duplicateError,
+    });
+    const { createLeadCoreInTransaction } =
+      await import("@/server/workspace/leads/shared/create-lead-core");
+    const { DuplicateSocialProfileError } =
+      await import("@/server/workspace/leads/shared/duplicate-social-profile-error.class");
+
+    await expect(
+      createLeadCoreInTransaction(
+        txMock as never,
+        {
+          displayName: "Max Mustermann",
+          last_name: "Mustermann",
+          email: "unique@example.com",
+          social_profiles: [
+            {
+              platform: "linkedin",
+              profile_url: "https://linkedin.com/in/max-mustermann",
+            },
+          ],
+        },
+        {
+          source: LeadSource.Manual,
+          activityType: LeadActivityType.Note,
+        },
+      ),
+    ).rejects.toBeInstanceOf(DuplicateSocialProfileError);
   });
 });

@@ -5,9 +5,8 @@
       "title": "Akquise-Volumen",
       "description": "Neue Leads im gewählten Zeitraum inkl. Vergleich zur Vorperiode."
     },
-    "funnel": {
-      "title": "Funnel",
-      "description": "Vier Pipeline-Stufen mit Drop-Off zwischen den Stufen."
+    "messaging": {
+      "title": "Nachrichten"
     },
     "sourcePerformance": {
       "title": "Quellen-Performance",
