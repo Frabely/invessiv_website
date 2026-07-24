@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-24T10:52:18.7182723+02:00",
+  "title": "Design System: Invessiv",
+  "extensions": {
+    "colorMeta": {
+      "graphite-brown": {
+        "role": "neutral",
+        "displayName": "Graphitbraun",
+        "canonical": "#1d1a18",
+        "tonalRamp": [
+          "oklch(15% 0.012 55)",
+          "oklch(25% 0.012 55)",
+          "oklch(36% 0.012 55)",
+          "oklch(48% 0.012 55)",
+          "oklch(60% 0.012 55)",
+          "oklch(72% 0.012 55)",
+          "oklch(84% 0.012 55)",
+          "oklch(95% 0.012 55)"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dunkle Oberfläche",
+        "canonical": "#282320",
+        "tonalRamp": [
+          "oklch(15% 0.014 55)",
+          "oklch(25% 0.014 55)",
+          "oklch(36% 0.014 55)",
+          "oklch(48% 0.014 55)",
+          "oklch(60% 0.014 55)",
+          "oklch(72% 0.014 55)",
+          "oklch(84% 0.014 55)",
+          "oklch(95% 0.014 55)"
+        ]
+      },
+      "dark-surface-raised": {
+        "role": "neutral",
+        "displayName": "Erhöhte dunkle Oberfläche",
+        "canonical": "#312b27",
+        "tonalRamp": [
+          "oklch(15% 0.016 55)",
+          "oklch(25% 0.016 55)",
+          "oklch(36% 0.016 55)",
+          "oklch(48% 0.016 55)",
+          "oklch(60% 0.016 55)",
+          "oklch(72% 0.016 55)",
+          "oklch(84% 0.016 55)",
+          "oklch(95% 0.016 55)"
+        ]
+      },
+      "dark-text": {
+        "role": "neutral",
+        "displayName": "Heller Haupttext",
+        "canonical": "#f4f7fd",
+        "tonalRamp": [
+          "oklch(15% 0.006 255)",
+          "oklch(25% 0.006 255)",
+          "oklch(36% 0.006 255)",
+          "oklch(48% 0.006 255)",
+          "oklch(60% 0.006 255)",
+          "oklch(72% 0.006 255)",
+          "oklch(84% 0.006 255)",
+          "oklch(95% 0.006 255)"
+        ]
+      },
+      "dark-text-muted": {
+        "role": "neutral",
+        "displayName": "Gedämpfter heller Text",
+        "canonical": "#d2dae8",
+        "tonalRamp": [
+          "oklch(15% 0.014 255)",
+          "oklch(25% 0.014 255)",
+          "oklch(36% 0.014 255)",
+          "oklch(48% 0.014 255)",
+          "oklch(60% 0.014 255)",
+          "oklch(72% 0.014 255)",
+          "oklch(84% 0.014 255)",
+          "oklch(95% 0.014 255)"
+        ]
+      },
+      "trust-blue": {
+        "role": "primary",
+        "displayName": "Vertrauensblau",
+        "canonical": "#4e83e6",
+        "tonalRamp": [
+          "oklch(15% 0.15 260)",
+          "oklch(25% 0.15 260)",
+          "oklch(36% 0.15 260)",
+          "oklch(48% 0.15 260)",
+          "oklch(60% 0.15 260)",
+          "oklch(72% 0.15 260)",
+          "oklch(84% 0.15 260)",
+          "oklch(95% 0.15 260)"
+        ]
+      },
+      "trust-blue-hover": {
+        "role": "primary",
+        "displayName": "Vertrauensblau Hover",
+        "canonical": "#6899f0",
+        "tonalRamp": [
+          "oklch(15% 0.13 260)",
+          "oklch(25% 0.13 260)",
+          "oklch(36% 0.13 260)",
+          "oklch(48% 0.13 260)",
+          "oklch(60% 0.13 260)",
+          "oklch(72% 0.13 260)",
+          "oklch(84% 0.13 260)",
+          "oklch(95% 0.13 260)"
+        ]
+      },
+      "trust-blue-active": {
+        "role": "primary",
+        "displayName": "Vertrauensblau Aktiv",
+        "canonical": "#3d6fcb",
+        "tonalRamp": [
+          "oklch(15% 0.15 260)",
+          "oklch(25% 0.15 260)",
+          "oklch(36% 0.15 260)",
+          "oklch(48% 0.15 260)",
+          "oklch(60% 0.15 260)",
+          "oklch(72% 0.15 260)",
+          "oklch(84% 0.15 260)",
+          "oklch(95% 0.15 260)"
+        ]
+      },
+      "copper-glow": {
+        "role": "secondary",
+        "displayName": "Kupferglut",
+        "canonical": "#e79a49",
+        "tonalRamp": [
+          "oklch(15% 0.14 63)",
+          "oklch(25% 0.14 63)",
+          "oklch(36% 0.14 63)",
+          "oklch(48% 0.14 63)",
+          "oklch(60% 0.14 63)",
+          "oklch(72% 0.14 63)",
+          "oklch(84% 0.14 63)",
+          "oklch(95% 0.14 63)"
+        ]
+      },
+      "light-canvas": {
+        "role": "neutral",
+        "displayName": "Helle Leinwand",
+        "canonical": "#eef4fb",
+        "tonalRamp": [
+          "oklch(15% 0.012 255)",
+          "oklch(25% 0.012 255)",
+          "oklch(36% 0.012 255)",
+          "oklch(48% 0.012 255)",
+          "oklch(60% 0.012 255)",
+          "oklch(72% 0.012 255)",
+          "oklch(84% 0.012 255)",
+          "oklch(95% 0.012 255)"
+        ]
+      },
+      "light-surface": {
+        "role": "neutral",
+        "displayName": "Weiße Oberfläche",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.002 255)",
+          "oklch(25% 0.002 255)",
+          "oklch(36% 0.002 255)",
+          "oklch(48% 0.002 255)",
+          "oklch(60% 0.002 255)",
+          "oklch(72% 0.002 255)",
+          "oklch(84% 0.002 255)",
+          "oklch(95% 0.002 255)"
+        ]
+      },
+      "light-surface-soft": {
+        "role": "neutral",
+        "displayName": "Weiche helle Oberfläche",
+        "canonical": "#e2ebf6",
+        "tonalRamp": [
+          "oklch(15% 0.018 255)",
+          "oklch(25% 0.018 255)",
+          "oklch(36% 0.018 255)",
+          "oklch(48% 0.018 255)",
+          "oklch(60% 0.018 255)",
+          "oklch(72% 0.018 255)",
+          "oklch(84% 0.018 255)",
+          "oklch(95% 0.018 255)"
+        ]
+      },
+      "light-text": {
+        "role": "neutral",
+        "displayName": "Dunkler Haupttext",
+        "canonical": "#162033",
+        "tonalRamp": [
+          "oklch(15% 0.035 255)",
+          "oklch(25% 0.035 255)",
+          "oklch(36% 0.035 255)",
+          "oklch(48% 0.035 255)",
+          "oklch(60% 0.035 255)",
+          "oklch(72% 0.035 255)",
+          "oklch(84% 0.035 255)",
+          "oklch(95% 0.035 255)"
+        ]
+      },
+      "light-text-muted": {
+        "role": "neutral",
+        "displayName": "Gedämpfter dunkler Text",
+        "canonical": "#445775",
+        "tonalRamp": [
+          "oklch(15% 0.045 255)",
+          "oklch(25% 0.045 255)",
+          "oklch(36% 0.045 255)",
+          "oklch(48% 0.045 255)",
+          "oklch(60% 0.045 255)",
+          "oklch(72% 0.045 255)",
+          "oklch(84% 0.045 255)",
+          "oklch(95% 0.045 255)"
+        ]
+      },
+      "light-trust-blue": {
+        "role": "primary",
+        "displayName": "Helles Vertrauensblau",
+        "canonical": "#285fc1",
+        "tonalRamp": [
+          "oklch(15% 0.16 260)",
+          "oklch(25% 0.16 260)",
+          "oklch(36% 0.16 260)",
+          "oklch(48% 0.16 260)",
+          "oklch(60% 0.16 260)",
+          "oklch(72% 0.16 260)",
+          "oklch(84% 0.16 260)",
+          "oklch(95% 0.16 260)"
+        ]
+      },
+      "light-copper": {
+        "role": "secondary",
+        "displayName": "Helles Kupfer",
+        "canonical": "#cb7728",
+        "tonalRamp": [
+          "oklch(15% 0.15 58)",
+          "oklch(25% 0.15 58)",
+          "oklch(36% 0.15 58)",
+          "oklch(48% 0.15 58)",
+          "oklch(60% 0.15 58)",
+          "oklch(72% 0.15 58)",
+          "oklch(84% 0.15 58)",
+          "oklch(95% 0.15 58)"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Gefahr",
+        "canonical": "#d92d20",
+        "tonalRamp": [
+          "oklch(15% 0.18 25)",
+          "oklch(25% 0.18 25)",
+          "oklch(36% 0.18 25)",
+          "oklch(48% 0.18 25)",
+          "oklch(60% 0.18 25)",
+          "oklch(72% 0.18 25)",
+          "oklch(84% 0.18 25)",
+          "oklch(95% 0.18 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero-Aussagen und wenige große Conversion-Momente."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Sektionsüberschriften und zentrale Orientierung."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Karten-, Panel- und Angebotstitel."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Fließtext, Erklärungen und Formulareingaben."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Bedienelemente, Feldbezeichnungen, Chips und Metadaten."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-card",
+        "value": "0 10px 24px rgba(8, 10, 15, 0.2)",
+        "purpose": "Ruhige Trennung wichtiger Karten vom Hintergrund."
+      },
+      {
+        "name": "action-lift",
+        "value": "0 10px 24px rgba(31, 70, 137, 0.3)",
+        "purpose": "Tiefe unter primären Handlungen."
+      },
+      {
+        "name": "header-float",
+        "value": "0 10px 24px rgba(6, 8, 12, 0.24)",
+        "purpose": "Gesonderte Ebene des gescrollten Desktop-Headers."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-standard",
+        "value": "180ms ease",
+        "purpose": "Kleine Farb-, Kontur- und Transformationswechsel."
+      },
+      {
+        "name": "surface-standard",
+        "value": "220ms ease",
+        "purpose": "Oberflächen, Schatten und Headerzustände."
+      },
+      {
+        "name": "guided-reveal",
+        "value": "560ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Einmalige, ruhige Inhalts-Reveals mit Reduced-Motion-Fallback."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "640px" },
+      { "name": "navigation", "value": "900px" },
+      { "name": "compact-desktop", "value": "1200px" },
+      { "name": "wide-desktop", "value": "1500px" },
+      { "name": "ultrawide", "value": "2200px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primäre Handlung mit Vertrauensblau und kontrolliertem Lift.",
+      "html": "<button class=\"ds-btn-primary\">Angebot einschätzen lassen</button>",
+      "css": ".ds-btn-primary { min-height: 46px; padding: 0 18px; border: 1px solid color-mix(in srgb, var(--color-cta) 72%, #fff 8%); border-radius: 12px; background: linear-gradient(125deg, var(--color-cta-hover) 0%, var(--color-cta) 46%, var(--color-cta-active) 100%); color: var(--color-on-cta); font: 700 var(--font-size-button)/1.15 var(--font-family-base); box-shadow: 0 10px 24px rgba(31,70,137,.3); transition: transform 180ms ease, box-shadow 220ms ease; } .ds-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 30px rgba(31,70,137,.38); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Sekundäre Handlung auf einer tonalen Oberfläche.",
+      "html": "<button class=\"ds-btn-ghost\">Mehr erfahren</button>",
+      "css": ".ds-btn-ghost { min-height: 46px; padding: 0 18px; border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--color-surface-2) 76%, transparent); color: color-mix(in srgb, var(--color-text) 78%, var(--color-text-muted) 22%); font: 700 var(--font-size-button)/1.15 var(--font-family-base); transition: transform 180ms ease, background 220ms ease, border-color 220ms ease; } .ds-btn-ghost:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--color-cta) 28%, transparent); background: color-mix(in srgb, var(--color-surface-2) 68%, var(--color-cta) 12%); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Großzügiges, tonal gefülltes Feld mit klarem Label und Fokuszustand.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">E-Mail</span><input class=\"ds-field-input\" type=\"email\" placeholder=\"name@unternehmen.de\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; color: var(--color-text); font-family: var(--font-family-base); } .ds-field-label { font-size: var(--font-size-label-md); font-weight: 700; } .ds-field-input { min-height: 50px; padding: .9rem 1rem; border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent); border-radius: 15px; background: color-mix(in srgb, var(--color-surface-2) 64%, var(--color-surface-1) 36%); color: var(--color-text); font: 400 var(--font-size-body-md)/1.55 var(--font-family-base); } .ds-field-input::placeholder { color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%); } .ds-field-input:focus-visible { outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #fff 18%); outline-offset: 2px; border-color: color-mix(in srgb, var(--color-cta) 50%, transparent); }"
+    },
+    {
+      "name": "Eyebrow Pill",
+      "kind": "chip",
+      "refersTo": "eyebrow",
+      "description": "Warmer Orientierungspunkt vor einer wichtigen Überschrift.",
+      "html": "<span class=\"ds-eyebrow\"><span class=\"ds-eyebrow-dot\"></span>Leistungen</span>",
+      "css": ".ds-eyebrow { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 12px; border: 1px solid color-mix(in srgb, var(--color-accent-warm) 46%, transparent); border-radius: 999px; background: linear-gradient(120deg, color-mix(in srgb, var(--color-accent-warm) 20%, transparent), color-mix(in srgb, var(--color-surface-2) 82%, transparent)); color: color-mix(in srgb, var(--color-text) 86%, var(--color-accent-warm) 14%); font: 700 .82rem/1 var(--font-family-base); letter-spacing: .02em; text-transform: uppercase; } .ds-eyebrow-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--color-accent-warm); box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent-warm) 20%, transparent); }"
+    },
+    {
+      "name": "Service Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Geschichtete Angebotskarte mit klarer Fit-, Leistungs- und Handlungslogik.",
+      "html": "<article class=\"ds-service-card\"><span class=\"ds-service-fit\">Ideal für</span><h3>Landingpage</h3><p>Ein fokussierter Webauftritt für ein klar umrissenes Angebot.</p><button>Mehr erfahren</button></article>",
+      "css": ".ds-service-card { display: grid; gap: 16px; padding: 24px; border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent); border-radius: 24px; background: color-mix(in srgb, var(--color-surface-1) 94%, transparent); color: var(--color-text); box-shadow: 0 10px 24px rgba(8,10,15,.2); font-family: var(--font-family-base); transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease; } .ds-service-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--color-cta) 58%, var(--color-border) 42%); box-shadow: 0 10px 24px color-mix(in srgb, var(--color-cta) 20%, transparent); } .ds-service-card h3 { margin: 0; font: 800 1.42rem/1.2 var(--font-family-display); } .ds-service-card p { margin: 0; color: var(--color-text-muted); line-height: 1.58; } .ds-service-fit { color: var(--color-accent-warm); font-size: .82rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; } .ds-service-card button { justify-self: start; min-height: 40px; padding: 0 14px; border: 1px solid var(--color-border); border-radius: 999px; background: transparent; color: var(--color-text); } .ds-service-card button:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Site Navigation",
+      "kind": "nav",
+      "description": "Dreigeteilte Desktopnavigation mit Marke, zentralen Links und eindeutiger Aktion.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Hauptnavigation\"><strong>Invessiv</strong><span class=\"ds-nav-links\"><a href=\"#services\">Leistungen</a><a href=\"#process\">Prozess</a><a href=\"#contact\">Kontakt</a></span><a class=\"ds-nav-cta\" href=\"#contact\">Anfragen</a></nav>",
+      "css": ".ds-nav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; min-height: 64px; padding: 0 20px; border-bottom: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-bg) 84%, transparent); color: var(--color-text); font-family: var(--font-family-base); } .ds-nav-links { display: flex; gap: 24px; color: var(--color-text-muted); } .ds-nav a { color: inherit; text-decoration: none; } .ds-nav a:hover { color: var(--color-text); } .ds-nav a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-nav-cta { justify-self: end; padding: 10px 14px; border-radius: 10px; background: var(--color-cta); color: var(--color-on-cta) !important; font-weight: 700; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Klarer Signalweg",
+    "overview": "Invessiv führt Besucher ruhig und ohne Umwege vom ersten Eindruck zur nächsten sinnvollen Entscheidung. Die Gestaltung wirkt hochwertig und technisch kompetent, ohne sich wie eine austauschbare SaaS-Oberfläche anzufühlen. Klare Leserichtung, großzügige Abstände und präzise Zustände geben komplexeren Angeboten Ruhe; Vertrauensblau markiert die Handlung, Kupferglut bringt Persönlichkeit und Wärme.\n\nDas System ist standardmäßig dunkel, besitzt aber ein gleichwertiges helles Theme. Komponenten wirken sanft geschichtet und leicht taktil: Konturen, Tonwerte und zurückhaltende Schatten trennen Ebenen, während Bewegung ausschließlich Orientierung oder Interaktionsfeedback unterstützt.",
+    "keyCharacteristics": [
+      "Ruhige, conversion-orientierte Führung statt aggressiver Sales-Inszenierung",
+      "Warmer Graphitgrund mit seltenen Kupferakzenten und eindeutigem Vertrauensblau",
+      "Markante Display-Typografie, kombiniert mit sehr lesbarer UI- und Fließtexttypografie",
+      "Großzügige Layoutschienen, fokussierte Textmaße und mobile Vollbreiten-CTAs",
+      "Sanft geschichtete Oberflächen mit klaren Fokus- und Zustandswechseln"
+    ],
+    "rules": [
+      {
+        "name": "The Signal Rule",
+        "body": "Vertrauensblau gehört an Entscheidungen und Zustände. Es darf nicht zur großflächigen Dekoration werden.",
+        "section": "colors"
+      },
+      {
+        "name": "The Copper Restraint Rule",
+        "body": "Kupferglut markiert Persönlichkeit und Orientierung, konkurriert aber nie mit dem primären CTA.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Display Voice Rule",
+        "body": "Bricolage Grotesque trägt Überschriften, nicht Formulare, Navigation oder längere Fließtexte.",
+        "section": "typography"
+      },
+      {
+        "name": "The Guided Rail Rule",
+        "body": "Breite Flächen schaffen Atmosphäre, aber Copy und Aktionen bleiben auf einer klaren, zentrierten Führungsschiene.",
+        "section": "layout"
+      },
+      {
+        "name": "The Layered, Not Floating Rule",
+        "body": "Flächen werden zuerst durch Tonwert und Kontur getrennt. Schatten bestätigen Hierarchie, sie erzeugen sie nicht allein.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do eine Handlung pro visueller Hierarchie eindeutig mit Vertrauensblau markieren.",
+      "Do beide Themes als gleichwertige Systeme behandeln und Zustände in beiden prüfen.",
+      "Do großzügige Abstände und begrenzte Textmaße für schnelle Erfassung nutzen.",
+      "Do Fokuszustände sichtbar halten und reduzierte Bewegung respektieren.",
+      "Do die Referenzbereiche unter src/references/** vollständig von Invessiv-Designentscheidungen trennen."
+    ],
+    "donts": [
+      "Don't generisches SaaS-Neon, großflächige Glow-Effekte oder aggressive Sales-Optik einführen.",
+      "Don't Glassmorphism als allgemeine Materiallogik verwenden.",
+      "Don't dekorative Raster, Linienfelder oder Gradient-Text als wiederkehrende Signatur einsetzen.",
+      "Don't Kupferglut und Vertrauensblau gleichzeitig um dieselbe Aufmerksamkeit konkurrieren lassen.",
+      "Don't KlarKompass oder andere isolierte Referenzdesigns in dieses System übernehmen."
+    ]
+  }
+}

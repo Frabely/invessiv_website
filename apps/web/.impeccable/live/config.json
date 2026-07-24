@@ -1,0 +1,10 @@
+{
+  "files": ["src/app/**/layout.tsx"],
+  "exclude": [
+    "src/references/**",
+    "src/app/[locale]/(marketing)/references/**"
+  ],
+  "insertBefore": "</body>",
+  "commentSyntax": "jsx",
+  "cspChecked": true
+}
