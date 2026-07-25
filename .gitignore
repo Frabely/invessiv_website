@@ -53,6 +53,10 @@ next-env.d.ts
 .serena/
 .claude/
 .playwright-mcp
+.codex/hooks.json
+
+# Impeccable live runtime
+apps/web/.impeccable/live/dev-server.*.log
 
 # local scratch / one-off artifacts
 command_chatgpt.txt
