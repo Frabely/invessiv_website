@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": ["chrome"],
+    "paths": {
+      "@invessiv/common": ["../../packages/common/src/index.ts"],
+      "@invessiv/common/*": ["../../packages/common/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.mjs"],
+  "exclude": ["node_modules", "dist"]
+}

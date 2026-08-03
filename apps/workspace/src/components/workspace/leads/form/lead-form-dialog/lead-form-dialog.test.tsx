@@ -16,11 +16,16 @@ import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-quer
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsFormDictionary,
+  getLeadsPitchDictionary,
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadFormDialog } from "./lead-form-dialog";
 
 const replaceMock = vi.fn();
+
+vi.mock("../lead-form-pitch-section/lead-form-pitch-section", () => ({
+  LeadFormPitchSection: () => null,
+}));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/de/leads",
@@ -76,6 +81,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -113,6 +119,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open={false}
         sharedContent={getLeadsSharedDictionary("de")}
@@ -129,6 +136,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -153,6 +161,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -189,6 +198,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -243,6 +253,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -275,6 +286,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -302,6 +314,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -373,6 +386,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -452,6 +466,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -552,6 +567,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -587,6 +603,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -626,6 +643,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -707,6 +725,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={getLeadsFormDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         mode="create"
         open
         sharedContent={getLeadsSharedDictionary("de")}
@@ -744,6 +763,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         editLeadId={EDIT_LEAD.id}
         initialLead={EDIT_LEAD}
         mode="edit"
@@ -779,6 +799,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         editLeadId={EDIT_LEAD.id}
         initialLead={EDIT_LEAD}
         mode="edit"
@@ -814,6 +835,7 @@ describe("LeadFormDialog", () => {
           },
         ]}
         content={content}
+        pitchContent={getLeadsPitchDictionary("de")}
         editLeadId={EDIT_LEAD.id}
         initialLead={EDIT_LEAD}
         mode="edit"

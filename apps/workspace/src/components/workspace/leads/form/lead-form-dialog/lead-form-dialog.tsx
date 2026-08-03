@@ -32,13 +32,11 @@ import {
   ButtonControl,
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
-import { LeadOutreachTrigger } from "@/components/workspace/leads/outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { FormActions } from "@/components/shared/form/form-actions/form-actions";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
-import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
 import { trapDialogFocus } from "../../shared/dialog-focus-trap";
@@ -46,11 +44,12 @@ import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-c
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsFormDictionary,
-  LeadsOutreachDictionary,
+  LeadsPitchDictionary,
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import type { z } from "zod";
 import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";
+import { LeadFormPitchSection } from "../lead-form-pitch-section/lead-form-pitch-section";
 import { leadFormSchema } from "./lead-form-dialog.schema";
 import { leadsService } from "./leads-service";
 import styles from "./lead-form-dialog.module.css";
@@ -62,7 +61,7 @@ type LeadFormDialogProps = {
   initialLead?: LeadDetailDto;
   mode: LeadFormDialogModeValue;
   open: boolean;
-  outreachContent?: LeadsOutreachDictionary;
+  pitchContent: LeadsPitchDictionary;
   sharedContent: LeadsSharedDictionary;
 };
 
@@ -253,7 +252,7 @@ export function LeadFormDialog({
   initialLead,
   mode,
   open,
-  outreachContent,
+  pitchContent,
   sharedContent,
 }: LeadFormDialogProps) {
   const router = useRouter();
@@ -284,6 +283,7 @@ export function LeadFormDialog({
     register,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LeadFormValues>({
     defaultValues: initialValues,
@@ -654,6 +654,18 @@ export function LeadFormDialog({
           </ButtonControl>
         </header>
 
+        {isEditMode && initialLead ? (
+          <LeadFormPitchSection
+            content={pitchContent}
+            lead={initialLead}
+            onContactedAction={(status) =>
+              setValue(LeadFormDialogField.LeadStatus, status, {
+                shouldDirty: false,
+              })
+            }
+          />
+        ) : null}
+
         <FormStatus className={styles.statusBanner} message={statusMessage} />
         {rootErrorMessage ? (
           <p className={styles.statusBanner} role="alert">
@@ -1018,14 +1030,6 @@ export function LeadFormDialog({
                       {content.buttons.cancel}
                     </span>
                   </ButtonControl>
-                  {isEditMode && initialLead && outreachContent ? (
-                    <LeadOutreachTrigger
-                      className={styles.footerOutreachButton}
-                      content={outreachContent}
-                      lead={initialLead}
-                      variant={LeadOutreachTriggerVariant.IconText}
-                    />
-                  ) : null}
                   <PrimaryCtaButton
                     aria-label={isSubmitting ? savingLabel : submitLabel}
                     className={styles.footerIconButton}

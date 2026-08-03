@@ -9,13 +9,18 @@ import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/le
 import {
   getLeadsBulkDictionary,
   getLeadsDeleteDictionary,
-  getLeadsOutreachDictionary,
+  getLeadsPitchDictionary,
   getLeadsSharedDictionary,
   getLeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadsTable } from "./leads-table";
 
 const pushMock = vi.fn();
+
+vi.mock(
+  "@/components/workspace/leads/pitch/lead-pitch-row-cell/lead-pitch-row-cell",
+  () => ({ LeadPitchRowCell: () => <td /> }),
+);
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -42,7 +47,7 @@ describe("LeadsTable", () => {
           variant: LeadsEmptyStateVariant.Filtered,
         }}
         locale="de"
-        outreachContent={getLeadsOutreachDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         queryString="search=abc"
         currentSearchParams={{ search: "abc" }}
         rows={[]}
@@ -81,6 +86,7 @@ describe("LeadsTable", () => {
           labelKey: "coaches",
         },
         socialProfiles: [],
+        latestPitch: null,
       },
     ];
 
@@ -91,7 +97,7 @@ describe("LeadsTable", () => {
         categories={[]}
         deleteContent={getLeadsDeleteDictionary("de")}
         locale="de"
-        outreachContent={getLeadsOutreachDictionary("de")}
+        pitchContent={getLeadsPitchDictionary("de")}
         queryString=""
         currentSearchParams={{}}
         rows={rows}

@@ -7,7 +7,7 @@ import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summa
 import type {
   LeadsBulkDictionary,
   LeadsDeleteDictionary,
-  LeadsOutreachDictionary,
+  LeadsPitchDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
@@ -28,7 +28,7 @@ type LeadsTableProps = {
   deleteContent: LeadsDeleteDictionary;
   locale: Locale;
   currentSearchParams: Record<string, string | string[] | undefined>;
-  outreachContent?: LeadsOutreachDictionary;
+  pitchContent: LeadsPitchDictionary;
   queryString: string;
   rows: LeadSummaryDto[];
   selectionResetKey?: string;
@@ -55,7 +55,7 @@ export function LeadsTable({
   deleteContent,
   locale,
   currentSearchParams,
-  outreachContent,
+  pitchContent,
   queryString,
   rows,
   selectionResetKey,
@@ -83,6 +83,7 @@ export function LeadsTable({
                 <col className={styles.stageColumn} />
                 <col className={styles.scoreColumn} />
                 <col className={styles.socialColumn} />
+                <col className={styles.pitchColumn} />
                 <col className={styles.dateColumn} />
                 <col className={styles.dateColumn} />
                 <col className={styles.sourceColumn} />
@@ -125,6 +126,9 @@ export function LeadsTable({
                   <th className={styles.header} scope="col">
                     {tableContent.columns.social}
                   </th>
+                  <th className={styles.header} scope="col">
+                    {tableContent.columns.pitch}
+                  </th>
                   <SortableHeader
                     activeSort={activeSort}
                     ascLabel={tableContent.sort.createdAsc}
@@ -166,7 +170,7 @@ export function LeadsTable({
                       key={lead.id}
                       lead={lead}
                       locale={locale}
-                      outreachContent={outreachContent}
+                      pitchContent={pitchContent}
                       sharedContent={sharedContent}
                       tableContent={tableContent}
                     />

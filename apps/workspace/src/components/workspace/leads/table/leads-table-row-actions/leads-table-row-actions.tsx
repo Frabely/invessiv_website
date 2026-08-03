@@ -9,14 +9,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
-import type {
-  LeadsDeleteDictionary,
-  LeadsOutreachDictionary,
-} from "@/i18n/dictionaries/workspace/leads";
+import type { LeadsDeleteDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadDeleteConfirmDialog } from "../../delete/lead-delete-confirm-dialog/lead-delete-confirm-dialog";
-import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
 import styles from "./leads-table-row-actions.module.css";
 
 type LeadsTableRowActionsProps = {
@@ -28,7 +23,6 @@ type LeadsTableRowActionsProps = {
   leadDisplayName: string;
   leadId: string;
   menuLabel: string;
-  outreachContent?: LeadsOutreachDictionary;
 };
 
 function stopRowPropagation(event: MouseEvent<HTMLElement>) {
@@ -44,7 +38,6 @@ export function LeadsTableRowActions({
   leadDisplayName,
   leadId,
   menuLabel,
-  outreachContent,
 }: LeadsTableRowActionsProps) {
   const router = useRouter();
   const startTransition = useNavigationContext();
@@ -92,14 +85,6 @@ export function LeadsTableRowActions({
         >
           <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
         </button>
-        {outreachContent ? (
-          <LeadOutreachTrigger
-            content={outreachContent}
-            lead={{ displayName: leadDisplayName, id: leadId }}
-            onClickCaptureAction={stopRowPropagation}
-            variant={LeadOutreachTriggerVariant.IconOnly}
-          />
-        ) : null}
         <button
           aria-label={deleteLabel}
           className={`${styles.button} ${styles.buttonDestructive}`}

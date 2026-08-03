@@ -65,6 +65,10 @@
   width: 180px;
 }
 
+.pitchColumn {
+  width: 150px;
+}
+
 .dateColumn {
   width: 150px;
 }

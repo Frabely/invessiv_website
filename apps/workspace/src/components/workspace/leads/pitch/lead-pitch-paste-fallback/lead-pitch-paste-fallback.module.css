@@ -1,0 +1,89 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  border: 1px dashed
+    color-mix(in srgb, var(--color-border-strong) 70%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface-2) 60%, transparent);
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.description {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.textarea {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.error {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-danger);
+}
+
+.actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.submit,
+.cancel {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit {
+  border-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
+  background: color-mix(in srgb, var(--color-cta) 22%, transparent);
+  color: var(--color-text);
+}
+
+.submit:hover {
+  background: color-mix(in srgb, var(--color-cta) 34%, transparent);
+}
+
+.cancel {
+  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.cancel:hover {
+  color: var(--color-text);
+}
+
+.submit:focus-visible,
+.cancel:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

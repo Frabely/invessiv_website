@@ -6,7 +6,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   getLeadsDetailDictionary,
-  getLeadsOutreachDictionary,
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadDetailPanel } from "./lead-detail-panel";
@@ -63,7 +62,6 @@ describe("LeadDetailPanel", () => {
         editHref={`/de/leads?status=qualified&page=2&mode=edit&edit=${leadFixture.id}`}
         lead={leadFixture}
         locale="de"
-        outreachContent={getLeadsOutreachDictionary("de")}
         sharedContent={getLeadsSharedDictionary("de")}
       />,
     );
@@ -108,7 +106,6 @@ describe("LeadDetailPanel", () => {
           socialProfiles: [],
         }}
         locale="en"
-        outreachContent={getLeadsOutreachDictionary("en")}
         sharedContent={getLeadsSharedDictionary("en")}
       />,
     );

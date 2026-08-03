@@ -5,6 +5,7 @@ import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dial
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
 import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
+import { LeadPitchQueueProvider } from "@/components/workspace/leads/pitch/lead-pitch-queue-provider/lead-pitch-queue-provider";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
@@ -22,7 +23,7 @@ import {
   getLeadsFormDictionary,
   getLeadsImportDictionary,
   getLeadsMetaDictionary,
-  getLeadsOutreachDictionary,
+  getLeadsPitchDictionary,
   getLeadsPaginationDictionary,
   getLeadsSharedDictionary,
   getLeadsShellDictionary,
@@ -91,7 +92,7 @@ export default async function LeadsPage({
   const deleteContent = getLeadsDeleteDictionary(locale as Locale);
   const detailContent = getLeadsDetailDictionary(locale as Locale);
   const bulkContent = getLeadsBulkDictionary(locale as Locale);
-  const outreachContent = getLeadsOutreachDictionary(locale as Locale);
+  const pitchContent = getLeadsPitchDictionary(locale as Locale);
   const parsedFilters = parseLeadListFilters(resolvedSearchParams);
   const selectedLeadId = parseSelectedLeadId(resolvedSearchParams);
   const resolvedSort = parsedFilters.sort ?? LeadSort.CreatedDesc;
@@ -158,7 +159,6 @@ export default async function LeadsPage({
         ),
         lead: selectedLead,
         locale: locale as Locale,
-        outreachContent,
         sharedContent,
       }
     : undefined;
@@ -181,7 +181,7 @@ export default async function LeadsPage({
     (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead));
 
   return (
-    <>
+    <LeadPitchQueueProvider>
       <LeadsPageShell detailPanelProps={detailPanelProps}>
         <LeadsTableTransitionProvider>
           <LeadsPageHeader
@@ -217,7 +217,7 @@ export default async function LeadsPage({
                 : undefined
             }
             locale={locale as Locale}
-            outreachContent={outreachContent}
+            pitchContent={pitchContent}
             queryString={queryString}
             currentSearchParams={resolvedSearchParams}
             rows={leadList.rows}
@@ -242,9 +242,9 @@ export default async function LeadsPage({
         initialLead={editLead ?? undefined}
         mode={dialogMode}
         open={dialogOpen}
-        outreachContent={outreachContent}
+        pitchContent={pitchContent}
         sharedContent={sharedContent}
       />
-    </>
+    </LeadPitchQueueProvider>
   );
 }

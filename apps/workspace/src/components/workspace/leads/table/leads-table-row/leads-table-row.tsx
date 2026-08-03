@@ -8,10 +8,11 @@ import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-quer
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type {
   LeadsDeleteDictionary,
-  LeadsOutreachDictionary,
+  LeadsPitchDictionary,
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { LeadPitchRowCell } from "@/components/workspace/leads/pitch/lead-pitch-row-cell/lead-pitch-row-cell";
 import { buildLeadTableRowEditHref } from "@/lib/workspace/leads/lead-list-query-string";
 import {
   LeadCategoryBadge,
@@ -33,7 +34,7 @@ type LeadsTableRowProps = {
   deleteContent: LeadsDeleteDictionary;
   lead: LeadSummaryDto;
   locale: Locale;
-  outreachContent?: LeadsOutreachDictionary;
+  pitchContent: LeadsPitchDictionary;
   sharedContent: LeadsSharedDictionary;
   tableContent: LeadsTableDictionary;
 };
@@ -78,7 +79,7 @@ export function LeadsTableRow({
   deleteContent,
   lead,
   locale,
-  outreachContent,
+  pitchContent,
   sharedContent,
   tableContent,
 }: LeadsTableRowProps) {
@@ -196,6 +197,8 @@ export function LeadsTableRow({
         />
       </td>
 
+      <LeadPitchRowCell content={pitchContent} lead={lead} />
+
       <td className={styles.createdCell} title={createdAbsolute}>
         {createdRelative}
       </td>
@@ -220,7 +223,6 @@ export function LeadsTableRow({
         leadDisplayName={displayName}
         leadId={lead.id}
         menuLabel={tableContent.actions.label}
-        outreachContent={outreachContent}
       />
     </tr>
   );

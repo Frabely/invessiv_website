@@ -1,0 +1,78 @@
+{
+  "label": "Pitch",
+  "channel": {
+    "label": "Channel",
+    "labels": {
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    },
+    "missingProfile": "No profile is linked for this channel. You can paste the profile text below.",
+    "switchAriaLabel": "Switch channel"
+  },
+  "states": {
+    "idle": "No pitch yet. Read the profile and write the icebreaker.",
+    "capturing": "Reading profile",
+    "generating": "Writing icebreaker",
+    "ready": "Ready to send",
+    "error": "Failed"
+  },
+  "counter": {
+    "withLimit": "{count} of {limit} characters",
+    "withoutLimit": "{count} characters",
+    "ariaLabel": "Pitch length"
+  },
+  "buttons": {
+    "generate": "Create pitch",
+    "regenerate": "New icebreaker",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyAndContact": "Copy + contacted",
+    "contacted": "Marked as contacted",
+    "expand": "Show full pitch",
+    "collapse": "Show preview",
+    "retry": "Try again",
+    "openProfile": "Open profile"
+  },
+  "provider": {
+    "checking": "Checking model",
+    "ready": "Model configured",
+    "missing": "No model configured",
+    "bridgeReady": "Bridge connected",
+    "bridgeMissing": "Bridge not connected"
+  },
+  "paste": {
+    "title": "Paste profile text",
+    "description": "Copy the bio and one or two posts from the profile in here. It produces the same icebreaker as the bridge.",
+    "placeholder": "Paste bio and posts …",
+    "submit": "Generate from this",
+    "cancel": "Cancel",
+    "tooShort": "That is not enough yet. Add the bio or a post."
+  },
+  "errors": {
+    "BRIDGE_NOT_CONFIGURED": "No extension ID is set. Add NEXT_PUBLIC_PROFILE_BRIDGE_EXTENSION_ID to .env.local and restart the dev server.",
+    "BRIDGE_MISSING": "The profile bridge is not responding. Check that the extension is installed and enabled, and that you opened the workspace on localhost:3001.",
+    "NOT_LOGGED_IN": "Instagram is not signed in on this browser. Sign in and try again.",
+    "PROFILE_NOT_FOUND": "The profile was not reachable. Check the linked profile URL.",
+    "PROFILE_PRIVATE": "The profile is private. Paste the visible profile text manually.",
+    "TAB_NOT_OPEN": "Open the LinkedIn profile in a tab, then the bridge can read it.",
+    "RATE_LIMITED": "Instagram is throttling right now. Wait a moment and try again.",
+    "TIMEOUT": "The bridge took too long. Try again.",
+    "BRIDGE_NETWORK_ERROR": "The bridge could not reach Instagram. Check your connection and try again.",
+    "BRIDGE_UPSTREAM_UNAVAILABLE": "Instagram is temporarily unavailable. Wait a moment and try again.",
+    "BRIDGE_INVALID_RESPONSE": "Instagram returned an unexpected response. Reload the extension and try again.",
+    "BRIDGE_INTERNAL": "The profile bridge failed internally. Reload the extension and try again.",
+    "LEAD_NOT_FOUND": "The lead was not found.",
+    "NO_PROFILE_DATA": "The profile holds too little for a real icebreaker. Paste the profile text manually.",
+    "ICEBREAKER_TOO_LONG": "The icebreaker does not fit the character limit. Try again.",
+    "TEMPLATE_INVALID": "The pitch template is broken.",
+    "VALIDATION_ERROR": "The request was invalid.",
+    "NOT_CONFIGURED": "No AI model is configured.",
+    "PROVIDER_AUTHENTICATION_FAILED": "OpenAI rejected the credentials. Check the API key.",
+    "PROVIDER_MODEL_UNAVAILABLE": "The configured AI model is unavailable. Check OPENAI_MODEL.",
+    "PROVIDER_RATE_LIMITED": "The AI rate limit has been reached. Wait a moment and try again.",
+    "PROVIDER_REJECTED": "OpenAI rejected the request. Check the model configuration.",
+    "PROVIDER_INVALID_RESPONSE": "OpenAI returned an unusable response. Try again.",
+    "PROVIDER_UNAVAILABLE": "The AI model is not reachable right now.",
+    "PITCH_INTERNAL": "The pitch could not be created on the server."
+  }
+}

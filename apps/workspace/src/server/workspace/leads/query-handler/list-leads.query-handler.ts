@@ -1,11 +1,13 @@
-import { count, eq, inArray } from "drizzle-orm";
+import { count, desc, eq, inArray } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   leadCategories,
+  leadOutreachDrafts,
   leads,
   leadSocialProfiles,
 } from "@invessiv/db/record-configuration";
 import type { LeadSocialProfileDto } from "@invessiv/common/contracts/leads/lead-social-profile.dto";
+import type { LeadLatestPitchDto } from "@invessiv/common/contracts/leads/outreach/lead-latest-pitch.dto";
 import type { LeadFilterInput } from "@/server/workspace/leads/services/lead-filter/lead-filter.schema";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import type { ListLeadsResult } from "@invessiv/common/contracts/leads/results/list-leads-result";
@@ -62,6 +64,32 @@ export async function listLeads(
         .where(inArray(leadSocialProfiles.lead_id, leadIds))
     : [];
 
+  const pitchRows = leadIds.length
+    ? await db
+        .select({
+          lead_id: leadOutreachDrafts.lead_id,
+          channel: leadOutreachDrafts.channel,
+          char_count: leadOutreachDrafts.char_count,
+          created_at: leadOutreachDrafts.created_at,
+        })
+        .from(leadOutreachDrafts)
+        .where(inArray(leadOutreachDrafts.lead_id, leadIds))
+        .orderBy(desc(leadOutreachDrafts.created_at))
+    : [];
+
+  const latestPitchByLead = new Map<string, LeadLatestPitchDto>();
+  for (const row of pitchRows) {
+    if (latestPitchByLead.has(row.lead_id)) {
+      continue;
+    }
+
+    latestPitchByLead.set(row.lead_id, {
+      channel: row.channel,
+      charCount: row.char_count,
+      createdAt: row.created_at.toISOString(),
+    });
+  }
+
   const socialProfilesByLead = new Map<string, LeadSocialProfileDto[]>();
   for (const row of socialProfileRows) {
     const list = socialProfilesByLead.get(row.lead_id) ?? [];
@@ -79,6 +107,7 @@ export async function listLeads(
       leadsMapperService.mapLeadRowToSummaryDto(
         row,
         socialProfilesByLead.get(row.id) ?? [],
+        latestPitchByLead.get(row.id) ?? null,
       ),
     ),
     total: Number(countRows[0]?.count ?? 0),

@@ -71,6 +71,7 @@ function createLead(index: number): LeadSummaryDto {
     updatedAt: "2026-05-02T10:00:00.000Z",
     category: null,
     socialProfiles: [],
+    latestPitch: null,
   };
 }
 

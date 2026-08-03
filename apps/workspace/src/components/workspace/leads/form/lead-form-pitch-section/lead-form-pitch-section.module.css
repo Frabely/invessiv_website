@@ -1,0 +1,4 @@
+.wrapper {
+  padding-inline: clamp(1rem, 3vw, 1.75rem);
+  padding-block-end: 0.5rem;
+}

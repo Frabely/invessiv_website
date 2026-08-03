@@ -2,6 +2,7 @@ export * from "./lead-activities";
 export * from "./lead-call-contacts";
 export * from "./lead-categories";
 export * from "./lead-email-contacts";
+export * from "./lead-outreach-drafts";
 export * from "./lead-project-requests";
 export * from "./lead-social-profiles";
 export * from "./lead-submissions";

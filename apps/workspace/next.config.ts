@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@invessiv/common", "@invessiv/db", "@invessiv/ui"],
+  outputFileTracingIncludes: {
+    "/api/workspace/outreach/**": ["./local-skills/**"],
+  },
   async redirects() {
     return [
       {

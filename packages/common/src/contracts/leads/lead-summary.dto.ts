@@ -2,6 +2,7 @@ import type { ContactLeadStatus } from "@invessiv/common/constants/contact/conta
 import type { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import type { LeadCategoryDto } from "./lead-category.dto";
 import type { LeadSocialProfileDto } from "./lead-social-profile.dto";
+import type { LeadLatestPitchDto } from "./outreach/lead-latest-pitch.dto";
 
 export interface LeadSummaryDto {
   id: string;
@@ -20,4 +21,5 @@ export interface LeadSummaryDto {
   updatedAt: string;
   category: LeadCategoryDto | null;
   socialProfiles: LeadSocialProfileDto[];
+  latestPitch: LeadLatestPitchDto | null;
 }

@@ -146,6 +146,7 @@ describe("listLeads", () => {
           normalizedUrl: "linkedin.com/in/max",
         },
       ],
+      latestPitch: null,
     });
   });
 
@@ -163,6 +164,7 @@ describe("listLeads", () => {
       companyName: "ACME GmbH",
       category: null,
       socialProfiles: [],
+      latestPitch: null,
     });
   });
 

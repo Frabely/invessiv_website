@@ -21,8 +21,8 @@ import deleteDe from "./delete/de.json";
 import deleteEn from "./delete/en.json";
 import bulkDe from "./bulk/de.json";
 import bulkEn from "./bulk/en.json";
-import outreachDe from "./outreach/de.json";
-import outreachEn from "./outreach/en.json";
+import pitchDe from "./pitch/de.json";
+import pitchEn from "./pitch/en.json";
 
 export type LeadsMetaDictionary = typeof metaDe;
 export type LeadsToolbarDictionary = typeof toolbarDe;
@@ -35,7 +35,7 @@ export type LeadsFormDictionary = typeof formDe;
 export type LeadsImportDictionary = typeof importDe;
 export type LeadsDeleteDictionary = typeof deleteDe;
 export type LeadsBulkDictionary = typeof bulkDe;
-export type LeadsOutreachDictionary = typeof outreachDe;
+export type LeadsPitchDictionary = typeof pitchDe;
 
 const LEADS_META: Record<Locale, LeadsMetaDictionary> = {
   de: metaDe,
@@ -90,11 +90,6 @@ const LEADS_DELETE: Record<Locale, LeadsDeleteDictionary> = {
 const LEADS_BULK: Record<Locale, LeadsBulkDictionary> = {
   de: bulkDe,
   en: bulkEn,
-};
-
-const LEADS_OUTREACH: Record<Locale, LeadsOutreachDictionary> = {
-  de: outreachDe,
-  en: outreachEn,
 };
 
 export function getLeadsMetaDictionary(locale: Locale): LeadsMetaDictionary {
@@ -153,8 +148,11 @@ export function getLeadsBulkDictionary(locale: Locale): LeadsBulkDictionary {
   return LEADS_BULK[locale];
 }
 
-export function getLeadsOutreachDictionary(
-  locale: Locale,
-): LeadsOutreachDictionary {
-  return LEADS_OUTREACH[locale];
+const LEADS_PITCH: Record<Locale, LeadsPitchDictionary> = {
+  de: pitchDe,
+  en: pitchEn,
+};
+
+export function getLeadsPitchDictionary(locale: Locale): LeadsPitchDictionary {
+  return LEADS_PITCH[locale];
 }

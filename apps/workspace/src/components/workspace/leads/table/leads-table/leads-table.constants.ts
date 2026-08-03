@@ -1,1 +1,1 @@
-export const LEADS_TABLE_COLUMN_COUNT = 10;
+export const LEADS_TABLE_COLUMN_COUNT = 11;

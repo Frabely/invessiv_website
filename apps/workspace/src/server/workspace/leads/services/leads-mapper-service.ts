@@ -8,6 +8,7 @@ import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead
 import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type { LeadSummaryRow } from "@invessiv/common/contracts/leads/rows/lead-summary-row";
+import type { LeadLatestPitchDto } from "@invessiv/common/contracts/leads/outreach/lead-latest-pitch.dto";
 import { mapCategoryRowToDto } from "@/server/workspace/leads/services/lead-category/lead-category-mapping-service";
 
 function mapSocialProfileRowToDto(
@@ -50,6 +51,7 @@ function mapSubmissionRowToDto(row: LeadSubmissionRow): LeadSubmissionDto {
 function mapLeadRowToSummaryDto(
   row: LeadSummaryRow,
   socialProfiles: LeadSocialProfileDto[] = [],
+  latestPitch: LeadLatestPitchDto | null = null,
 ): LeadSummaryDto {
   return {
     id: row.id,
@@ -68,6 +70,7 @@ function mapLeadRowToSummaryDto(
     updatedAt: row.updated_at.toISOString(),
     category: mapCategoryRowToDto(row),
     socialProfiles,
+    latestPitch,
   };
 }
 

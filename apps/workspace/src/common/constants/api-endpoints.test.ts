@@ -8,7 +8,7 @@ describe("WorkspaceApiEndpoint", () => {
       Leads: "/api/workspace/leads",
       LeadsBulk: "/api/workspace/leads/bulk",
       LeadsImport: "/api/workspace/leads/import",
-      OutreachGenerate: "/api/workspace/outreach/generate",
+      OutreachPitch: "/api/workspace/outreach/pitch",
       OutreachProviderStatus: "/api/workspace/outreach/provider-status",
     });
   });

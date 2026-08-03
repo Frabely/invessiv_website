@@ -16,6 +16,7 @@ describe("HttpResponseCode", () => {
       UnsupportedMediaType: 415,
       TooManyRequests: 429,
       UnprocessableContent: 422,
+      BadGateway: 502,
       ServiceUnavailable: 503,
       InternalServerError: 500,
     });

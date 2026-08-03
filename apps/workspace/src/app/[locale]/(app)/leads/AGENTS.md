@@ -106,7 +106,7 @@ apps/workspace/src/i18n/dictionaries/workspace/leads/
   form/{de,en}.json
   import/{de,en}.json
   meta/{de,en}.json
-  outreach/{de,en}.json + outreach/index.ts
+  pitch/{de,en}.json
   pagination/{de,en}.json
   shared/{de,en}.json
   shell/{de,en}.json
@@ -116,7 +116,7 @@ apps/workspace/src/i18n/dictionaries/workspace/leads/
 ```
 
 `index.ts` stellt typisierte Loader bereit (`getLeadsMetaDictionary(locale)`, `getLeadsShellDictionary(locale)`,
-`getLeadsTableDictionary(locale)`, `getLeadsSharedDictionary(locale)`, `getLeadsOutreachDictionary(locale)`, …).
+`getLeadsTableDictionary(locale)`, `getLeadsSharedDictionary(locale)`, `getLeadsPitchDictionary(locale)`, …).
 Neue Sektionen ergänzen bestehende Unterordner oder legen neue Subordner unterhalb `leads/` an.
 Komponenten konsumieren vorbereitete Inhalte und enthalten keine sprachabhängige Rest-Copy.
 

@@ -1,0 +1,78 @@
+{
+  "label": "Pitch",
+  "channel": {
+    "label": "Kanal",
+    "labels": {
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn"
+    },
+    "missingProfile": "Für diesen Kanal ist kein Profil hinterlegt. Du kannst den Profiltext unten einfügen.",
+    "switchAriaLabel": "Kanal wechseln"
+  },
+  "states": {
+    "idle": "Noch kein Pitch. Lies das Profil aus und schreib den Icebreaker.",
+    "capturing": "Profil wird gelesen",
+    "generating": "Icebreaker wird geschrieben",
+    "ready": "Bereit zum Senden",
+    "error": "Fehlgeschlagen"
+  },
+  "counter": {
+    "withLimit": "{count} von {limit} Zeichen",
+    "withoutLimit": "{count} Zeichen",
+    "ariaLabel": "Länge des Pitch"
+  },
+  "buttons": {
+    "generate": "Pitch erstellen",
+    "regenerate": "Neuer Icebreaker",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "copyAndContact": "Kopieren + kontaktiert",
+    "contacted": "Auf kontaktiert gesetzt",
+    "expand": "Ganzen Pitch anzeigen",
+    "collapse": "Vorschau anzeigen",
+    "retry": "Nochmal versuchen",
+    "openProfile": "Profil öffnen"
+  },
+  "provider": {
+    "checking": "Modell wird geprüft",
+    "ready": "Modell konfiguriert",
+    "missing": "Kein Modell konfiguriert",
+    "bridgeReady": "Bridge verbunden",
+    "bridgeMissing": "Bridge nicht verbunden"
+  },
+  "paste": {
+    "title": "Profiltext einfügen",
+    "description": "Kopier Bio und ein bis zwei Beiträge vom Profil hier hinein. Daraus entsteht derselbe Icebreaker wie über die Bridge.",
+    "placeholder": "Bio und Beiträge einfügen …",
+    "submit": "Daraus generieren",
+    "cancel": "Abbrechen",
+    "tooShort": "Das reicht noch nicht. Füg Bio oder einen Beitrag ein."
+  },
+  "errors": {
+    "BRIDGE_NOT_CONFIGURED": "Es ist keine Extension-ID hinterlegt. Trag NEXT_PUBLIC_PROFILE_BRIDGE_EXTENSION_ID in .env.local ein und starte den Dev-Server neu.",
+    "BRIDGE_MISSING": "Die Profile-Bridge antwortet nicht. Prüf, ob die Erweiterung installiert und aktiv ist und ob du den Workspace über localhost:3001 geöffnet hast.",
+    "NOT_LOGGED_IN": "Instagram ist in diesem Browser nicht angemeldet. Melde dich an und versuch es nochmal.",
+    "PROFILE_NOT_FOUND": "Das Profil war nicht erreichbar. Prüf die hinterlegte Profil-URL.",
+    "PROFILE_PRIVATE": "Das Profil ist privat. Füg den sichtbaren Profiltext manuell ein.",
+    "TAB_NOT_OPEN": "Öffne das LinkedIn-Profil in einem Tab, dann liest die Bridge es aus.",
+    "RATE_LIMITED": "Instagram bremst gerade. Warte einen Moment und versuch es nochmal.",
+    "TIMEOUT": "Die Bridge hat zu lange gebraucht. Versuch es nochmal.",
+    "BRIDGE_NETWORK_ERROR": "Die Bridge konnte Instagram nicht erreichen. Prüfe deine Verbindung und versuch es nochmal.",
+    "BRIDGE_UPSTREAM_UNAVAILABLE": "Instagram ist gerade nicht verfügbar. Warte kurz und versuch es erneut.",
+    "BRIDGE_INVALID_RESPONSE": "Instagram hat eine unerwartete Antwort geliefert. Lade die Extension neu und versuch es erneut.",
+    "BRIDGE_INTERNAL": "Die Profile-Bridge ist intern fehlgeschlagen. Lade die Extension neu und versuch es erneut.",
+    "LEAD_NOT_FOUND": "Der Lead wurde nicht gefunden.",
+    "NO_PROFILE_DATA": "Im Profil steht zu wenig für einen echten Icebreaker. Füg den Profiltext manuell ein.",
+    "ICEBREAKER_TOO_LONG": "Der Icebreaker passt nicht ins Zeichenlimit. Versuch es nochmal.",
+    "TEMPLATE_INVALID": "Die Pitch-Vorlage ist fehlerhaft.",
+    "VALIDATION_ERROR": "Die Anfrage war ungültig.",
+    "NOT_CONFIGURED": "Es ist kein KI-Modell konfiguriert.",
+    "PROVIDER_AUTHENTICATION_FAILED": "Der OpenAI-Zugang wurde abgelehnt. Prüfe den API-Key.",
+    "PROVIDER_MODEL_UNAVAILABLE": "Das konfigurierte KI-Modell ist nicht verfügbar. Prüfe OPENAI_MODEL.",
+    "PROVIDER_RATE_LIMITED": "Das KI-Limit ist gerade erreicht. Warte kurz und versuch es erneut.",
+    "PROVIDER_REJECTED": "OpenAI hat die Anfrage abgelehnt. Prüfe die Modellkonfiguration.",
+    "PROVIDER_INVALID_RESPONSE": "OpenAI hat keine verwertbare Antwort geliefert. Versuch es erneut.",
+    "PROVIDER_UNAVAILABLE": "Das KI-Modell ist gerade nicht erreichbar.",
+    "PITCH_INTERNAL": "Der Pitch konnte serverseitig nicht erstellt werden."
+  }
+}

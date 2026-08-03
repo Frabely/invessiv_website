@@ -68,6 +68,7 @@ describe("leadsMapperService.mapLeadRowToSummaryDto", () => {
       updatedAt: NOW.toISOString(),
       category: null,
       socialProfiles: [],
+      latestPitch: null,
     });
   });
 
