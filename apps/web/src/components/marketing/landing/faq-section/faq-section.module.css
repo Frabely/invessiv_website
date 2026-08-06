@@ -274,6 +274,7 @@
   color: color-mix(in srgb, var(--color-text-muted) 92%, var(--color-text) 8%);
   font-size: clamp(0.98rem, 0.94rem + 0.22vw, 1.08rem);
   line-height: 1.7;
+  text-wrap: pretty;
 }
 
 .answerLink {

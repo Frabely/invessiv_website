@@ -111,11 +111,23 @@ export type Dictionary = {
         title: string;
         body: string;
       };
+      customerContentRights?: {
+        title: string;
+        body: string;
+      };
+      legalTextsReview?: {
+        title: string;
+        body: string;
+      };
       usageRights: {
         title: string;
         body: string;
       };
       thirdPartyServices: {
+        title: string;
+        body: string;
+      };
+      ongoingSupportAvailability?: {
         title: string;
         body: string;
       };

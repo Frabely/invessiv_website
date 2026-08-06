@@ -9,7 +9,7 @@
     "page": {
       "title": "Allgemeine Geschäftsbedingungen",
       "lead": "Diese Bedingungen gelten im Regelfall für Verträge mit Unternehmern. Verträge mit Verbrauchern schließt Invessiv nur im Einzelfall auf Grundlage individueller Angebote.",
-      "updatedAt": "Zuletzt geändert: 26. März 2026.",
+      "updatedAt": "Zuletzt geändert: 3. August 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Start",
       "tocLabel": "Inhalt"
@@ -50,27 +50,39 @@
         "body": "Soweit Invessiv ausnahmsweise Verträge mit Verbrauchern schließt, erfolgt dies ausschließlich auf Grundlage individueller Angebote. Zwingende Verbraucherschutzrechte und gesetzlich vorgeschriebene Informationen bleiben unberührt. Sofern für den konkreten Vertrag zusätzliche gesetzliche Hinweise, Widerrufsinformationen oder gesonderte Erklärungen erforderlich sind, werden diese im jeweiligen Angebots- oder Vertragsprozess gesondert bereitgestellt."
       },
       "acceptance": {
-        "title": "8. Review, Freigabe und Fertigstellung",
-        "body": "Bei abgegrenzten Projektleistungen stellt Invessiv Arbeitsergebnisse zur Prüfung und Freigabe bereit. Der Kunde prüft diese zeitnah und teilt wesentliche Abweichungen nachvollziehbar mit. Berechtigte wesentliche Abweichungen werden innerhalb angemessener Frist nachgebessert. Laufende Leistungen, Support und sonstige Dienstleistungen unterliegen keiner förmlichen Abnahme, sofern nicht ausdrücklich etwas anderes vereinbart ist."
+        "title": "8. Prüfung, Abnahme, Mängel und Nachbesserung",
+        "body": "Bei abnahmefähigen Projektleistungen stellt Invessiv dem Kunden die fertiggestellte Leistung zur Prüfung und Abnahme bereit. Der Kunde hat erkennbare Abweichungen vom vereinbarten Leistungsumfang gebündelt, nachvollziehbar und in Textform mitzuteilen. Wegen unwesentlicher Mängel darf die Abnahme nicht verweigert werden. Persönliche Geschmacksänderungen, nachträgliche inhaltliche Wünsche sowie Änderungen an zuvor freigegebenen Entwürfen oder Gestaltungsrichtungen gelten nicht als Mängel. Bei berechtigten Mängeln erhält Invessiv zunächst die Gelegenheit zur Nachbesserung innerhalb einer angemessenen Frist. Erfolgt weder eine Abnahme noch eine begründete Abnahmeverweigerung, kann Invessiv eine angemessene Frist zur Abnahme setzen. Verstreicht auch diese Frist ohne Abnahme oder begründete Verweigerung, gelten die gesetzlichen Regelungen zur Abnahme. Gegenüber Verbrauchern wird der gesetzlich erforderliche Hinweis auf die Folgen einer ausbleibenden Erklärung gesondert in Textform erteilt. Laufende Betreuungs-, Wartungs-, Support- und Beratungsleistungen unterliegen keiner förmlichen Abnahme, sofern nichts anderes vereinbart wurde."
+      },
+      "customerContentRights": {
+        "title": "9. Kundeninhalte und Rechte Dritter",
+        "body": "Der Kunde ist für die inhaltliche Richtigkeit und rechtliche Zulässigkeit der von ihm bereitgestellten Inhalte, Informationen und Materialien verantwortlich. Der Kunde stellt sicher, dass er über die erforderlichen Nutzungs-, Marken-, Persönlichkeits- und sonstigen Rechte an bereitgestellten Texten, Bildern, Logos, Videos, Schriftarten und weiteren Materialien verfügt und dass deren vertragsgemäße Verwendung keine Rechte Dritter verletzt. Invessiv ist nicht verpflichtet, die vom Kunden bereitgestellten Inhalte oder Materialien rechtlich zu prüfen. Hinweise von Invessiv auf mögliche rechtliche oder lizenzrechtliche Risiken stellen keine Rechtsberatung dar."
+      },
+      "legalTextsReview": {
+        "title": "10. Rechtliche Texte und rechtliche Prüfung",
+        "body": "Die technische Einbindung von Texten, die der Kunde für Impressum, Datenschutz, Cookie-Hinweise oder vergleichbare rechtliche Inhalte bereitstellt, umfasst keine rechtliche Erstellung oder Prüfung dieser Texte. Sofern Invessiv auf Grundlage der Angaben des Kunden einen technischen Entwurf oder Platzhalter erstellt, ist dieser vom Kunden eigenständig zu prüfen und vor der Veröffentlichung ausdrücklich freizugeben. Invessiv erbringt keine Rechtsberatung. Die rechtliche Prüfung der Website und der eingesetzten Dienste, insbesondere hinsichtlich Datenschutz-, Wettbewerbs-, Urheber- und Verbraucherschutzrecht, ist nur geschuldet, wenn dies ausdrücklich und rechtlich zulässig vereinbart wurde."
       },
       "usageRights": {
-        "title": "9. Nutzungsrechte",
+        "title": "11. Nutzungsrechte",
         "body": "Bis zur vollständigen Zahlung verbleiben sämtliche Nutzungsrechte an den von Invessiv erstellten Arbeitsergebnissen bei Invessiv, soweit nicht zwingendes Recht entgegensteht. Nach vollständiger Zahlung erhält der Kunde die für den vertraglich vereinbarten Zweck erforderlichen Nutzungsrechte an den vereinbarten Ergebnissen. Die Übergabe von offenem Quellcode, editierbaren Projektdateien, Rohdaten oder sonstigen nicht ausdrücklich geschuldeten Ausgangsdateien erfolgt nur, wenn dies im Angebot oder in einer sonstigen Vereinbarung ausdrücklich vorgesehen ist. Rechte an Open-Source-Bestandteilen, Drittanbieter-Assets, externen Bibliotheken, Plugins, Schriftarten oder sonstigen Fremdbestandteilen richten sich nach den jeweiligen Lizenzbedingungen."
       },
       "thirdPartyServices": {
-        "title": "10. Drittanbieter und Fremdleistungen",
-        "body": "Hosting, Domains, externe Software, APIs, Drittanbieter-Tools, Plattformen, Lizenzen und sonstige Leistungen Dritter sind nur dann Bestandteil der Leistungen von Invessiv, wenn dies ausdrücklich vereinbart wurde. Solche Leistungen können gesonderten Bedingungen, Kosten und Lizenzvorgaben der jeweiligen Anbieter unterliegen. Invessiv ist berechtigt, geeignete Subunternehmer oder technische Dienstleister zur Leistungserbringung einzusetzen."
+        "title": "12. Drittanbieter und Fremdleistungen",
+        "body": "Hosting, Domains, externe Software, APIs, Drittanbieter-Tools, Plattformen, Lizenzen und sonstige Leistungen Dritter sind nur dann Bestandteil der Leistungen von Invessiv, wenn dies ausdrücklich vereinbart wurde. Solche Leistungen können gesonderten Bedingungen, Kosten und Lizenzvorgaben der jeweiligen Anbieter unterliegen. Invessiv ist berechtigt, geeignete Subunternehmer oder technische Dienstleister zur Leistungserbringung einzusetzen. Invessiv hat keinen unmittelbaren Einfluss auf die dauerhafte Verfügbarkeit, Funktionsweise, Preisgestaltung oder Weiterentwicklung externer Hosting-, Domain-, E-Mail-, Plattform-, API- und Softwareanbieter. Ausfälle, Einschränkungen, Änderungen oder die Einstellung externer Dienste, die außerhalb des Einflussbereichs von Invessiv liegen, stellen keine von Invessiv verursachte Pflichtverletzung dar. Zwingende gesetzliche Ansprüche und die Haftung nach den übrigen Bestimmungen dieser AGB bleiben unberührt. Erforderliche Anpassungen aufgrund nachträglicher Änderungen externer Dienste können zusätzlichen Aufwand darstellen und werden vor der Umsetzung mit dem Kunden abgestimmt."
+      },
+      "ongoingSupportAvailability": {
+        "title": "13. Laufende Betreuung und Verfügbarkeit",
+        "body": "Der konkrete Umfang laufender Wartungs-, Betreuungs-, Support- oder SEO-Leistungen richtet sich nach dem jeweiligen Angebot. Sofern nicht ausdrücklich vereinbart, umfassen laufende Leistungen keine durchgehende 24/7-Überwachung, keine garantierte unterbrechungsfreie Verfügbarkeit und keine verbindlichen Reaktions- oder Wiederherstellungszeiten. Störungen oder zusätzlicher Aufwand, die durch Eingriffe des Kunden, von ihm beauftragter Dritter oder durch Änderungen außerhalb des von Invessiv betreuten Systems verursacht werden, sind nicht automatisch vom vereinbarten Leistungsumfang umfasst. Eine kostenpflichtige Bearbeitung wird vorab abgestimmt."
       },
       "liability": {
-        "title": "11. Haftung",
+        "title": "14. Haftung",
         "body": "Invessiv haftet unbeschränkt bei Vorsatz und grober Fahrlässigkeit sowie bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit. Bei leicht fahrlässiger Verletzung wesentlicher Vertragspflichten haftet Invessiv nur auf den vertragstypischen, vorhersehbaren Schaden. Im Übrigen ist die Haftung bei leichter Fahrlässigkeit ausgeschlossen, soweit gesetzlich zulässig. Zwingende gesetzliche Haftungsvorschriften, insbesondere nach dem Produkthaftungsgesetz oder zugunsten von Verbrauchern, bleiben unberührt."
       },
       "confidentiality": {
-        "title": "12. Vertraulichkeit",
+        "title": "15. Vertraulichkeit",
         "body": "Beide Parteien behandeln vertrauliche Informationen der jeweils anderen Partei, die ihnen im Zusammenhang mit Angebot, Vertrag oder Zusammenarbeit bekannt werden, vertraulich und verwenden sie nur für die Durchführung des jeweiligen Vertragsverhältnisses."
       },
       "finalProvisions": {
-        "title": "13. Schlussbestimmungen",
+        "title": "16. Schlussbestimmungen",
         "body": "Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts, soweit gesetzlich zulässig. Gegenüber Unternehmern, juristischen Personen des öffentlichen Rechts oder öffentlich-rechtlichen Sondervermögen ist, soweit gesetzlich zulässig, der Sitz von Invessiv Gerichtsstand. Individuelle Vereinbarungen im Angebot oder Vertrag gehen diesen Bedingungen vor."
       }
     }

@@ -1,6 +1,6 @@
 {
   "eyebrow": "Offer",
-  "title": "One landing page. One clear price.",
+  "title": "One landing page. One defined scope.",
   "card": {
     "planLabel": "Starter",
     "planTitle": "Landing Page Starter",
@@ -15,10 +15,8 @@
       "Launch: domain, technical setup, go-live"
     ],
     "durationLabel": "Built in",
-    "durationValue": "5–10 days",
-    "priceLabel": "Price",
-    "priceValue": "€2000"
+    "durationValue": "5–10 days"
   },
-  "hint": "€2000 applies to exactly this scope. More sections, extra feedback rounds, or custom functionality are quoted transparently in advance — you decide before any costs are added.",
+  "hint": "You get the price for exactly this scope in the free initial assessment — as a fixed price, before anything is commissioned. More sections or custom features are quoted just as openly upfront.",
   "ctaLabel": "Request a free initial assessment"
 }

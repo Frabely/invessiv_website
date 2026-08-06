@@ -22,18 +22,6 @@ const PHONE_DISPLAY_BY_LOCALE: Record<Locale, string> = {
   en: COMPANY.contact.phoneDisplayEn,
 };
 
-export function parsePriceRange(
-  priceValue: string,
-  priceRangePrefix: string,
-  priceRangeCurrencySymbol: string,
-): string {
-  const amount = priceValue.match(/\d[\d.\s]*/)?.[0]?.replace(/\s/g, "");
-
-  return amount
-    ? `${priceRangePrefix} ${amount} ${priceRangeCurrencySymbol}`
-    : priceValue;
-}
-
 export function parseLeadTime(durationValue: string): LeadTime {
   const [minValue, maxValue] = [...durationValue.matchAll(/\d+/g)].map(
     ([value]) => Number(value),
@@ -62,11 +50,6 @@ export function createLandingStructuredData(locale: Locale) {
   const meta = getLandingMetaContent(locale);
   const pricing = getLandingPricingContent(locale);
   const faq = getLandingFaqContent(locale);
-  const priceRange = parsePriceRange(
-    pricing.card.priceValue,
-    structuredData.offer.priceRangePrefix,
-    structuredData.offer.priceRangeCurrencySymbol,
-  );
   const deliveryLeadTime = parseLeadTime(pricing.card.durationValue);
 
   return {
@@ -102,8 +85,6 @@ export function createLandingStructuredData(locale: Locale) {
         offers: {
           "@type": "Offer",
           name: pricing.card.planTitle,
-          priceCurrency: structuredData.offer.priceCurrency,
-          priceRange,
           availability: "https://schema.org/InStock",
           deliveryLeadTime,
           itemOffered: {

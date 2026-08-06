@@ -1,6 +1,6 @@
 {
   "eyebrow": "Angebot",
-  "title": "Eine Landingpage. Ein klarer Preis.",
+  "title": "Eine Landingpage. Ein fester Umfang.",
   "card": {
     "planLabel": "Starter",
     "planTitle": "Landingpage Starter",
@@ -15,10 +15,8 @@
       "Launch: Domain, Technik, Go-live"
     ],
     "durationLabel": "Umsetzung",
-    "durationValue": "5–10 Tage",
-    "priceLabel": "Preis",
-    "priceValue": "2000 €"
+    "durationValue": "5–10 Tage"
   },
-  "hint": "2000 € gelten für genau diesen Umfang. Mehr Sektionen, zusätzliche Feedback-Runden oder Sonderfunktionen kalkuliere ich vorab transparent — du entscheidest, bevor Kosten entstehen.",
+  "hint": "Den Preis für genau diesen Umfang bekommst du in der kostenlosen Ersteinschätzung — als Festpreis, bevor irgendetwas beauftragt ist. Mehr Sektionen oder Sonderfunktionen kalkuliere ich vorab genauso transparent.",
   "ctaLabel": "Kostenlose Ersteinschätzung anfragen"
 }

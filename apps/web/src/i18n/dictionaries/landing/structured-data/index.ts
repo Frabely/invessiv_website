@@ -12,11 +12,6 @@ export type LandingStructuredDataContent = {
     services: string;
     service: string;
   };
-  offer: {
-    priceCurrency: string;
-    priceRangeCurrencySymbol: string;
-    priceRangePrefix: string;
-  };
   service: {
     name: string;
     serviceType: string;

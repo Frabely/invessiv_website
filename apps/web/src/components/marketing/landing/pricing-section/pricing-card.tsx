@@ -14,8 +14,6 @@ export function PricingCard({ content }: PricingCardProps) {
     planDescription,
     planLabel,
     planTitle,
-    priceLabel,
-    priceValue,
   } = content;
 
   return (
@@ -84,11 +82,6 @@ export function PricingCard({ content }: PricingCardProps) {
             <span className={styles.durationLabel}>{durationLabel}</span>
             <span className={styles.durationValue}>{durationValue}</span>
           </span>
-        </div>
-
-        <div className={styles.price}>
-          <span className={styles.priceLabel}>{priceLabel}</span>
-          <span className={styles.priceValue}>{priceValue}</span>
         </div>
       </footer>
     </article>

@@ -31,14 +31,12 @@ describe("landing-structured-data", () => {
     const locale = "de";
     const data = createLandingStructuredData(locale);
     const pricing = getLandingPricingContent(locale);
-    const structuredData = getLandingStructuredDataContent(locale);
     const faq = getLandingFaqContent(locale);
     const service = graphEntry(data, "Service");
     const faqPage = graphEntry(data, "FAQPage");
 
     expect(service?.offers).toMatchObject({
       name: pricing.card.planTitle,
-      priceRange: `${structuredData.offer.priceRangePrefix} ${pricing.card.priceValue}`,
       deliveryLeadTime: {
         minValue: 5,
         maxValue: 10,
@@ -46,6 +44,22 @@ describe("landing-structured-data", () => {
       },
     });
     expect(faqPage?.mainEntity).toHaveLength(faq.items.length);
+  });
+
+  it("omits any price from the offer", () => {
+    for (const locale of ["de", "en"] as const) {
+      const offers = graphEntry(
+        createLandingStructuredData(locale),
+        "Service",
+      )?.offers;
+
+      expect(offers).toBeDefined();
+      expect(offers).not.toHaveProperty("price");
+      expect(offers).not.toHaveProperty("priceRange");
+      expect(offers).not.toHaveProperty("priceCurrency");
+      expect(offers).not.toHaveProperty("priceSpecification");
+      expect(JSON.stringify(offers)).not.toMatch(/\d{3,}/);
+    }
   });
 
   it("reuses the homepage organization id", () => {
@@ -61,7 +75,7 @@ describe("landing-structured-data", () => {
     expect(landingOrganization?.["@id"]).toBe(marketingOrganization?.["@id"]);
   });
 
-  it("localizes service fields including the price range prefix", () => {
+  it("localizes service and offer fields", () => {
     const deData = createLandingStructuredData("de");
     const enData = createLandingStructuredData("en");
     const deService = graphEntry(deData, "Service");
@@ -82,13 +96,13 @@ describe("landing-structured-data", () => {
       getLandingMetaContent("en").description,
     );
     expect(deService?.audience).not.toEqual(enService?.audience);
-    expect(deService?.offers.priceRange).toBe(
-      `${deStructuredData.offer.priceRangePrefix} 2000 ${deStructuredData.offer.priceRangeCurrencySymbol}`,
+    expect(deService?.offers.name).toBe(
+      getLandingPricingContent("de").card.planTitle,
     );
-    expect(enService?.offers.priceRange).toBe(
-      `${enStructuredData.offer.priceRangePrefix} 2000 ${enStructuredData.offer.priceRangeCurrencySymbol}`,
+    expect(enService?.offers.name).toBe(
+      getLandingPricingContent("en").card.planTitle,
     );
-    expect(deService?.offers.priceRange).not.toBe(enService?.offers.priceRange);
+    expect(deService?.offers.name).not.toBe(enService?.offers.name);
   });
 
   it("keeps private owner names out of the output", () => {

@@ -1,5 +1,10 @@
 # Plan: Landingpage /services/landing-page als Google-Ads-Zielseite überarbeiten
 
+> **Update (06.08.2026):** Die Preis-Kommunikation ist seitdem ins Erstgespräch verlagert. Auf der Seite steht keine
+> Preiszahl mehr — die Angebots-Sektion beschreibt nur Umfang und Dauer, der Festpreis wird in der kostenlosen
+> Ersteinschätzung genannt. Alle Preisbeträge in diesem Plan sind damit historisch; verbindlich ist die Preis-Logik in
+> `.claude/skills/invessiv-landing/SKILL.md`. Der Rest des Plans (Struktur, Tracking, Success-Flow) gilt weiter.
+
 ## Kontext
 
 Die Landingpage `/de/services/landing-page` soll Zielseite für Google Search Ads werden (Testbudget ~100 €). Ziel:

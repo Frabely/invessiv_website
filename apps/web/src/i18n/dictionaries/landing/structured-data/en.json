@@ -8,11 +8,6 @@
     "services": "Services",
     "service": "Landing page development"
   },
-  "offer": {
-    "priceCurrency": "EUR",
-    "priceRangePrefix": "from",
-    "priceRangeCurrencySymbol": "€"
-  },
   "service": {
     "name": "Landing page development",
     "serviceType": "Landing page development"

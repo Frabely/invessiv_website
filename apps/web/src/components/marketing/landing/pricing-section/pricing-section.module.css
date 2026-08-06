@@ -2,6 +2,7 @@
   --reveal-delay: 0ms;
   --card-radius: 24px;
   --card-border-thickness: 1.5px;
+  --card-max: 51rem;
 
   position: relative;
   display: grid;
@@ -104,7 +105,7 @@
 
 .card {
   position: relative;
-  width: min(100%, var(--focus-lane-max));
+  width: min(100%, var(--card-max));
   display: grid;
   border-radius: var(--card-radius);
   border: var(--card-border-thickness) solid transparent;
@@ -234,10 +235,8 @@
 
 .cardFooter {
   display: grid;
-  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: clamp(1rem, 2vw, 1.6rem);
-  padding: clamp(1.1rem, 2vw, 1.4rem) clamp(1.5rem, 2.8vw, 2.25rem);
+  padding: clamp(1rem, 1.8vw, 1.25rem) clamp(1.5rem, 2.8vw, 2.25rem);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
   background: color-mix(in srgb, var(--color-surface-2) 35%, transparent 65%);
 }
@@ -281,41 +280,11 @@
   font-weight: 600;
 }
 
-.price {
-  display: grid;
-  justify-items: end;
-  gap: 0.1rem;
-  line-height: 1;
-}
-
-.priceLabel {
-  color: color-mix(in srgb, var(--color-text-muted) 80%, var(--color-text) 20%);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.priceValue {
-  font-size: clamp(2rem, 1.3rem + 2.2vw, 3rem);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-warm),
-    var(--color-cta)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-feature-settings: "tnum" 1;
-}
-
 .afterCard {
   display: grid;
   justify-items: center;
   gap: clamp(1rem, 2vw, 1.5rem);
-  width: min(100%, var(--focus-lane-max));
+  width: min(100%, var(--card-max));
 }
 
 .hint {
@@ -323,6 +292,7 @@
   color: color-mix(in srgb, var(--color-text-muted) 88%, transparent);
   font-size: clamp(0.9rem, 0.86rem + 0.18vw, 1rem);
   line-height: 1.5;
+  text-wrap: pretty;
 }
 
 .cta {
@@ -360,12 +330,6 @@
   }
 
   .cardFooter {
-    grid-template-columns: 1fr;
-    justify-items: start;
-    gap: 1rem;
-  }
-
-  .price {
     justify-items: start;
   }
 
@@ -387,10 +351,6 @@
 
   .planTitle {
     font-size: clamp(1.3rem, 5.5vw, 1.55rem);
-  }
-
-  .priceValue {
-    font-size: clamp(1.85rem, 8.5vw, 2.35rem);
   }
 }
 

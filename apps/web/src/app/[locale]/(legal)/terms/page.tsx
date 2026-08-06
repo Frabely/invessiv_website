@@ -28,8 +28,14 @@ const TERMS_SECTION_CONFIG: Array<{ id: string; key: TermsSectionKey }> = [
   { id: "payment", key: "payment" },
   { id: "consumer-contracts", key: "consumerContracts" },
   { id: "acceptance", key: "acceptance" },
+  { id: "customer-content-rights", key: "customerContentRights" },
+  { id: "legal-texts-review", key: "legalTextsReview" },
   { id: "usage-rights", key: "usageRights" },
   { id: "third-party-services", key: "thirdPartyServices" },
+  {
+    id: "ongoing-support-availability",
+    key: "ongoingSupportAvailability",
+  },
   { id: "liability", key: "liability" },
   { id: "confidentiality", key: "confidentiality" },
   { id: "final-provisions", key: "finalProvisions" },
@@ -103,11 +109,13 @@ export default async function TermsPage({ params }: TermsPageProps) {
         </>
       ),
     },
-    ...TERMS_SECTION_CONFIG.map(({ id, key }) => ({
-      id,
-      title: terms.sections[key].title,
-      body: <p>{terms.sections[key].body}</p>,
-    })),
+    ...TERMS_SECTION_CONFIG.flatMap(({ id, key }) => {
+      const section = terms.sections[key];
+
+      return section
+        ? [{ id, title: section.title, body: <p>{section.body}</p> }]
+        : [];
+    }),
   ];
 
   return (

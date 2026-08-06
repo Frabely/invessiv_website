@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -73,6 +73,7 @@ import TermsPage from "./page";
 
 describe("TermsPage", () => {
   beforeEach(() => {
+    cleanup();
     mockNotFound.mockClear();
     mockLegalDocumentLayout.mockClear();
     mockLegalDocumentContent.mockClear();
@@ -94,8 +95,11 @@ describe("TermsPage", () => {
       "payment",
       "consumer-contracts",
       "acceptance",
+      "customer-content-rights",
+      "legal-texts-review",
       "usage-rights",
       "third-party-services",
+      "ongoing-support-availability",
       "liability",
       "confidentiality",
       "final-provisions",
@@ -107,7 +111,7 @@ describe("TermsPage", () => {
         name: "Allgemeine Geschäftsbedingungen",
       }),
     ).toBeTruthy();
-    expect(screen.getByText("Zuletzt geändert: 26. März 2026.")).toBeTruthy();
+    expect(screen.getByText("Zuletzt geändert: 3. August 2026.")).toBeTruthy();
     expect(
       screen.getByText(
         "Diese Bedingungen gelten im Regelfall für Verträge mit Unternehmern. Verträge mit Verbrauchern schließt Invessiv nur im Einzelfall auf Grundlage individueller Angebote.",
@@ -138,6 +142,19 @@ describe("TermsPage", () => {
     expect(
       screen.getByText(/ausnahmsweise Verträge mit Verbrauchern/),
     ).toBeTruthy();
+    expect(
+      screen.getByText("8. Prüfung, Abnahme, Mängel und Nachbesserung"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("9. Kundeninhalte und Rechte Dritter"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("10. Rechtliche Texte und rechtliche Prüfung"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("13. Laufende Betreuung und Verfügbarkeit"),
+    ).toBeTruthy();
+    expect(screen.getByText("16. Schlussbestimmungen")).toBeTruthy();
     expect(screen.queryByText(/Bestellprozess/i)).toBeNull();
     expect(screen.queryByText(/Vercel Pro/i)).toBeNull();
     expect(screen.queryByText(/IONOS/i)).toBeNull();
@@ -149,5 +166,30 @@ describe("TermsPage", () => {
     ).rejects.toThrow("notFound called");
 
     expect(mockNotFound).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the English terms sections unchanged", async () => {
+    render(await TermsPage({ params: Promise.resolve({ locale: "en" }) }));
+
+    const renderedSectionIds = Array.from(
+      document.querySelectorAll("[data-section-id]"),
+    ).map((section) => section.getAttribute("data-section-id"));
+
+    expect(renderedSectionIds).toEqual([
+      "provider",
+      "scope",
+      "contract-conclusion",
+      "services-scope",
+      "client-cooperation",
+      "payment",
+      "consumer-contracts",
+      "acceptance",
+      "usage-rights",
+      "third-party-services",
+      "liability",
+      "confidentiality",
+      "final-provisions",
+    ]);
+    expect(screen.getByText("Last updated: March 26, 2026.")).toBeTruthy();
   });
 });

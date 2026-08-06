@@ -10,8 +10,6 @@ export type LandingPricingCard = {
   items: string[];
   durationLabel: string;
   durationValue: string;
-  priceLabel: string;
-  priceValue: string;
 };
 
 export type LandingPricingContent = {
