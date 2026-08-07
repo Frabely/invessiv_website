@@ -121,6 +121,7 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
   await expect(
     page.locator("[data-testid='coaching-preview-highlight-overlay']"),
   ).toHaveAttribute("data-active", "false");
+  await expect(formRow).toHaveAttribute("data-active", "false");
 
   const firstRow = page.locator("#solution button").first();
   await firstRow.scrollIntoViewIfNeeded();

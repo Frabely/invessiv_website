@@ -46,7 +46,7 @@ export function LandingVisualStage({
   const activeAnchor = hoveredAnchor ?? focusedAnchor ?? selectedAnchor;
   const usesMobileStage = useMediaQuery(MOBILE_STAGE_QUERY);
   const isProblemSectionInView = useElementInView(problemSlotRef);
-  const previewAnchor =
+  const visibleAnchor =
     usesMobileStage && !isProblemSectionInView ? null : activeAnchor;
 
   const toggleSelectedAnchor = useCallback((anchor: LandingPreviewAnchor) => {
@@ -60,7 +60,7 @@ export function LandingVisualStage({
       <div className={styles.problemSlot} ref={problemSlotRef}>
         <ProblemSolutionSection
           {...problemSolution}
-          activeAnchor={activeAnchor}
+          activeAnchor={visibleAnchor}
           id={solutionSectionId}
           locale={locale}
           onAnchorFocus={setFocusedAnchor}
@@ -74,7 +74,7 @@ export function LandingVisualStage({
         <div className={styles.visualRail}>
           <div className={styles.visualSticky}>
             <CoachingLandingPreview
-              activeAnchor={previewAnchor}
+              activeAnchor={visibleAnchor}
               content={preview}
             />
           </div>

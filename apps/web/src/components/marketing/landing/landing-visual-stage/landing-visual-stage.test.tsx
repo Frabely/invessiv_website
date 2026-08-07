@@ -151,6 +151,7 @@ describe("LandingVisualStage", () => {
     fireEvent.click(firstRow as HTMLElement);
 
     expect(firstRow?.getAttribute("aria-pressed")).toBe("true");
+    expect(firstRow?.dataset.active).toBe("false");
     expect(ring().dataset.active).toBe("false");
 
     act(() => {
@@ -160,6 +161,7 @@ describe("LandingVisualStage", () => {
       );
     });
 
+    expect(firstRow?.dataset.active).toBe("true");
     expect(ring().dataset.active).toBe("true");
   });
 });
