@@ -1,4 +1,7 @@
 .section {
+  --pair-inline-pad: clamp(0.6rem, 1.2vw, 0.95rem);
+  --reveal-delay: 0ms;
+
   position: relative;
   width: min(
     calc(100% - (var(--page-inline-gutter) * 2)),
@@ -6,26 +9,31 @@
   );
   margin: 0 auto;
   padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  display: grid;
+  grid-template-columns: var(--hero-grid-columns);
+  gap: var(--hero-grid-gap);
+}
+
+.inner {
+  grid-column: 1;
+  display: grid;
+  align-content: start;
+  gap: clamp(1.75rem, 3.4vw, 2.5rem);
+  min-width: 0;
 }
 
 .header,
-.chaosPanel,
-.clarityPanel,
-.scrap,
-.clarityRow {
+.pair {
   opacity: 0;
   transform: translateY(18px);
   transition:
     opacity 520ms ease,
     transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--reveal-delay, 0ms);
+  transition-delay: var(--reveal-delay);
 }
 
 .header[data-visible="true"],
-.chaosPanel[data-visible="true"],
-.clarityPanel[data-visible="true"],
-.scrap[data-visible="true"],
-.clarityRow[data-visible="true"] {
+.pair[data-visible="true"] {
   opacity: 1;
   transform: translateY(0);
 }
@@ -33,21 +41,16 @@
 .header {
   display: grid;
   gap: clamp(0.9rem, 1.8vw, 1.35rem);
-  margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
-}
-
-.intro {
-  display: grid;
-  gap: clamp(0.9rem, 1.8vw, 1.35rem);
 }
 
 .eyebrow {
+  justify-self: start;
   margin-bottom: 0.15rem;
 }
 
 .title {
   margin: 0;
-  max-width: 18ch;
+  max-width: 16ch;
   color: var(--color-text);
   font-size: clamp(2.05rem, 4vw, 3.85rem);
   line-height: 1.02;
@@ -57,344 +60,131 @@
 
 .body {
   margin: 0;
-  max-width: 36rem;
+  max-width: 34rem;
   color: color-mix(in srgb, var(--color-text) 76%, var(--color-text-muted) 24%);
   font-size: var(--font-size-body-lg);
   line-height: 1.62;
 }
 
-.transform {
+.pairList {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) auto minmax(0, 1fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  align-items: stretch;
-}
-
-/* Linkes Panel: Pinnwand mit verstreuten Problem-Schnipseln */
-.chaosPanel {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  align-content: start;
-  gap: clamp(1.1rem, 2.2vw, 1.5rem);
-  padding: clamp(1.25rem, 2.6vw, 2rem);
-  border: 1px dashed color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 24px;
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--color-border) 48%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 18px 18px;
-}
-
-.chaosLabel,
-.clarityLabel {
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.chaosLabel {
-  color: color-mix(in srgb, var(--color-text-muted) 90%, var(--color-text) 10%);
-}
-
-.clarityLabel {
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 72%,
-    var(--color-text) 28%
-  );
-}
-
-.chaosList {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.55rem, 1.4vw, 0.85rem);
-  align-self: stretch;
-  align-items: flex-start;
-  justify-content: space-evenly;
-  min-height: 100%;
-  margin: 0;
-  padding: 0.35rem 0 0.85rem;
-  list-style: none;
-}
-
-.scrap {
-  max-width: 100%;
-}
-
-.scrapCard {
-  display: inline-flex;
-  gap: 0.55rem;
-  align-items: baseline;
-  padding: 0.55rem 0.95rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
-  border-radius: 10px;
-  background: color-mix(in srgb, var(--color-surface-2) 88%, transparent);
-  box-shadow: 0 12px 26px -20px rgb(0 0 0 / 0.6);
-  color: color-mix(in srgb, var(--color-text) 62%, var(--color-text-muted) 38%);
-  font-weight: 600;
-  line-height: 1.35;
-  transform: rotate(var(--scrap-rotation, 0deg));
-  transition:
-    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 240ms ease,
-    color 240ms ease,
-    box-shadow 240ms ease;
-}
-
-.scrap:nth-child(5n + 1) {
-  margin-left: 0;
-}
-
-.scrap:nth-child(5n + 1) .scrapCard {
-  --scrap-rotation: -4.5deg;
-
-  font-size: 0.98rem;
-}
-
-.scrap:nth-child(5n + 2) {
-  margin-left: 42%;
-}
-
-.scrap:nth-child(5n + 2) .scrapCard {
-  --scrap-rotation: 3.5deg;
-
-  font-size: 1.04rem;
-}
-
-.scrap:nth-child(5n + 3) {
-  margin-left: 7%;
-}
-
-.scrap:nth-child(5n + 3) .scrapCard {
-  --scrap-rotation: -2.6deg;
-
-  font-size: 0.92rem;
-}
-
-.scrap:nth-child(5n + 4) {
-  margin-left: 48%;
-}
-
-.scrap:nth-child(5n + 4) .scrapCard {
-  --scrap-rotation: 6deg;
-
-  font-size: 1rem;
-}
-
-.scrap:nth-child(5n + 5) {
-  margin-left: 18%;
-}
-
-.scrap:nth-child(5n + 5) .scrapCard {
-  --scrap-rotation: -6.5deg;
-
-  font-size: 0.95rem;
-}
-
-@media (hover: hover) {
-  .scrap[data-highlight="true"] .scrapCard {
-    border-color: color-mix(
-      in srgb,
-      var(--color-accent-warm) 56%,
-      var(--color-border) 44%
-    );
-    box-shadow: 0 16px 32px -18px rgb(0 0 0 / 0.65);
-    color: var(--color-text);
-    transform: rotate(0deg);
-  }
-}
-
-.scrapIndex {
-  flex: 0 0 auto;
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 62%,
-    var(--color-text-muted) 38%
-  );
-  font-size: 0.7rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
-}
-
-.connector {
-  display: grid;
-  place-items: center;
-  align-self: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-surface-2) 90%, transparent);
-  color: color-mix(
-    in srgb,
-    var(--color-accent-warm) 84%,
-    var(--color-text) 16%
-  );
-  font-size: 1.05rem;
-}
-
-/* Rechtes Panel: ruhige, nummerierte Klarheits-Karte */
-.clarityPanel {
-  display: grid;
-  align-content: start;
-  gap: clamp(1.1rem, 2.2vw, 1.5rem);
-  padding: clamp(1.4rem, 2.8vw, 2.1rem);
-  border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
-  border-radius: 24px;
-  background:
-    linear-gradient(
-      160deg,
-      color-mix(in srgb, var(--color-accent-warm) 7%, transparent),
-      transparent 55%
-    ),
-    color-mix(in srgb, var(--color-surface-2) 56%, transparent);
-  box-shadow: 0 20px 48px -36px rgb(0 0 0 / 0.65);
-}
-
-.clarityList {
-  display: grid;
-  margin: 0;
+  gap: 0;
+  max-width: 42rem;
+  margin: 0 calc(var(--pair-inline-pad) * -1);
   padding: 0;
   list-style: none;
 }
 
-.clarityRow {
-  display: flex;
-  gap: 0.85rem;
-  align-items: baseline;
-  margin-inline: -0.55rem;
-  padding: clamp(0.8rem, 1.6vw, 1.05rem) 0.55rem;
+.pair {
   border-bottom: 1px solid
     color-mix(in srgb, var(--color-border) 52%, transparent);
-  border-radius: 10px;
-  color: var(--color-text);
-  font-size: clamp(1.02rem, 0.96rem + 0.3vw, 1.18rem);
-  font-weight: 650;
-  line-height: 1.4;
-  transition:
-    opacity 520ms ease,
-    transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 220ms ease;
-  transition-delay: var(--reveal-delay, 0ms), var(--reveal-delay, 0ms), 0ms;
 }
 
-.clarityRow:last-child {
+.pair:last-child {
   border-bottom: none;
 }
 
-@media (hover: hover) {
-  .clarityRow[data-highlight="true"] {
-    background-color: color-mix(
-      in srgb,
-      var(--color-accent-warm) 9%,
-      transparent
-    );
-  }
+.pairButton {
+  width: 100%;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) auto minmax(0, 1fr);
+  gap: clamp(0.75rem, 1.6vw, 1.15rem);
+  align-items: baseline;
+  padding: clamp(0.85rem, 1.8vw, 1.15rem) var(--pair-inline-pad);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 240ms ease,
+    border-color 240ms ease;
 }
 
-.clarityIndex {
-  flex: 0 0 1.7rem;
-  color: color-mix(
+.pairButton[data-active="true"] {
+  border-color: color-mix(
     in srgb,
-    var(--color-accent-warm) 78%,
-    var(--color-text-muted) 22%
+    var(--color-accent-warm) 34%,
+    var(--color-border)
   );
-  font-size: 0.74rem;
+  background: color-mix(in srgb, var(--color-accent-warm) 9%, transparent);
+}
+
+.problem {
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: clamp(0.98rem, 0.94rem + 0.25vw, 1.12rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.arrow {
+  color: color-mix(in srgb, var(--color-cta) 70%, var(--color-text-muted));
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
+  line-height: 1.35;
+  transition: color 240ms ease;
 }
 
-:global([data-theme="light"]) .scrapCard {
-  box-shadow: 0 12px 26px -20px rgb(15 23 42 / 0.28);
+.pairButton[data-active="true"] .arrow {
+  color: var(--color-accent-warm);
 }
 
-@media (hover: hover) {
-  :global([data-theme="light"]) .scrap[data-highlight="true"] .scrapCard {
-    box-shadow: 0 16px 32px -18px rgb(15 23 42 / 0.3);
-  }
+.solution {
+  color: var(--color-text);
+  font-size: clamp(1.02rem, 0.96rem + 0.3vw, 1.2rem);
+  font-weight: 650;
+  line-height: 1.35;
+  text-wrap: balance;
 }
 
-:global([data-theme="light"]) .clarityPanel {
-  box-shadow: 0 20px 48px -36px rgb(15 23 42 / 0.3);
+.hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 960px) {
-  .section {
-    padding-block: clamp(4rem, 11vw, 6rem);
-  }
-
   .title {
     font-size: clamp(1.8rem, 6.4vw, 2.7rem);
   }
+}
 
-  .transform {
+@media (max-width: 900px) {
+  .section {
+    padding-block: clamp(2rem, 6vw, 3rem) clamp(4rem, 11vw, 6rem);
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .connector {
-    justify-self: center;
-    transform: rotate(90deg);
+  .pairButton {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.35rem 0.55rem;
   }
 
-  .scrap:nth-child(5n + 2) {
-    margin-left: 20%;
-  }
-
-  .scrap:nth-child(5n + 4) {
-    margin-left: 26%;
-  }
-}
-
-@media (max-width: 640px) {
-  .section {
-    width: calc(100% - (var(--page-inline-gutter) * 2));
-  }
-
-  .chaosPanel,
-  .clarityPanel {
-    border-radius: 18px;
-  }
-
-  .scrap:nth-child(5n + 2) {
-    margin-left: 10%;
-  }
-
-  .scrap:nth-child(5n + 3) {
-    margin-left: 4%;
-  }
-
-  .scrap:nth-child(5n + 4) {
-    margin-left: 14%;
-  }
-
-  .scrap:nth-child(5n + 5) {
-    margin-left: 7%;
+  .problem {
+    grid-column: 1 / -1;
   }
 }
 
 @media (min-width: 901px) {
   .section {
-    padding-top: clamp(10.5rem, 14vw, 14rem);
+    padding-block: clamp(5.5rem, 8vw, 8rem) clamp(12rem, 18vw, 23rem);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .header,
-  .chaosPanel,
-  .clarityPanel,
-  .scrap,
-  .clarityRow {
+  .pair {
     opacity: 1;
     transform: none;
     transition: none;
   }
 
-  .scrapCard {
+  .arrow,
+  .pairButton {
     transition: none;
   }
 }

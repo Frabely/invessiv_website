@@ -1,16 +1,5 @@
 @import "tailwindcss";
 
-/*
- * Global CSS contract:
- * - Tailwind base import
- * - theme tokens and app-wide custom properties
- * - reset/base element defaults
- * - global accessibility utilities and interaction defaults
- * - shared page-level surfaces and spacing tokens
- *
- * Component, section, and route-specific styles must not be added here.
- */
-
 @property --font-plus-jakarta-sans {
   syntax: "*";
   inherits: true;
@@ -21,7 +10,6 @@
   inherits: true;
 }
 
-/* Theme tokens */
 :root {
   color-scheme: light dark;
   --color-bg: #1d1a18;
@@ -93,6 +81,9 @@
   --focus-lane-wide: 50rem;
   --layout-rail-max-width: var(--max-content-width);
   --layout-rail-inline-gutter: var(--page-inline-gutter);
+  --hero-grid-columns: minmax(0, 1.24fr) minmax(320px, 0.76fr);
+  --hero-grid-gap: clamp(28px, 4.6vw, 72px);
+  --hero-visual-bleed-slice: 0.16;
   --measure-text: 72ch;
   --measure-lead: 64ch;
   --measure-compact: 58ch;
@@ -211,7 +202,6 @@
   );
 }
 
-/* Base reset and document defaults */
 *,
 *::before,
 *::after {
@@ -378,7 +368,6 @@ a {
   outline-offset: 2px;
 }
 
-/* Shared page-level surfaces */
 main {
   position: relative;
   isolation: isolate;
@@ -412,6 +401,8 @@ main {
     --anchor-scroll-offset: calc(
       64px + var(--mobile-safe-top) + var(--anchor-scroll-gap)
     );
+    --hero-grid-columns: 1fr;
+    --hero-grid-gap: 24px;
   }
 
   html,
@@ -488,7 +479,6 @@ main {
   }
 }
 
-/* Shared responsive section spacing */
 .marketing-main {
   --section-shell-pad-inline: 0px;
   --section-shell-pad-top: clamp(1.25rem, 2.6vw, 2.25rem);
@@ -502,6 +492,8 @@ main {
     --max-content-width: 1500px;
     --page-inline-gutter: clamp(136px, 7vw, 172px);
     --section-space: clamp(6rem, 6vw, 8.5rem);
+    --hero-grid-columns: minmax(0, 1.28fr) minmax(320px, 0.72fr);
+    --hero-grid-gap: clamp(40px, 4vw, 80px);
   }
 
   .marketing-main {

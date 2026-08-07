@@ -1,0 +1,98 @@
+.hero {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1.35fr) minmax(0, 0.65fr);
+  overflow: hidden;
+  background: var(--preview-surface);
+}
+
+.copy {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 3.5cqw 5cqw;
+  overflow: hidden;
+}
+
+.brand,
+.kicker,
+.title,
+.description {
+  margin: 0;
+}
+
+.brand {
+  margin-bottom: 1.25cqw;
+  color: var(--preview-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 3cqw;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.kicker {
+  margin-bottom: 0.85cqw;
+  color: var(--preview-accent);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 1.55cqw;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.11em;
+}
+
+.title {
+  max-width: 18ch;
+  color: var(--preview-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 6.4cqw;
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 36ch;
+  margin-top: 1.25cqw;
+  color: var(--preview-muted);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 2.6cqw;
+  font-weight: 500;
+  line-height: 1.42;
+}
+
+.cta {
+  display: inline-flex;
+  margin-top: 1.6cqw;
+  padding: 1.9cqw 3.3cqw;
+  border-radius: 999px;
+  background: var(--preview-action);
+  color: var(--preview-on-action);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 2.1cqw;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 5px 16px var(--preview-shadow-soft);
+  white-space: nowrap;
+}
+
+.imageWrap {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--preview-surface-soft);
+}
+
+.image {
+  object-fit: cover;
+  filter: saturate(0.82) brightness(0.78) contrast(1.06);
+  object-position: 51% 32%;
+}
+
+:global([data-theme="light"]) .image {
+  filter: saturate(0.9) brightness(0.96) contrast(1.02);
+}

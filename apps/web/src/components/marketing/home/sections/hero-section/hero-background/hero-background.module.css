@@ -49,21 +49,10 @@
 
 @media (max-width: 900px) {
   .video {
-    object-position: 70% center;
+    display: none;
   }
 
   .layers:has(.video)::before {
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-bg) 68%, transparent) 0%,
-      color-mix(in srgb, var(--color-bg) 48%, transparent) 46%,
-      color-mix(in srgb, var(--color-bg) 72%, transparent) 100%
-    );
-  }
-}
-
-@media (max-width: 640px) {
-  .video {
-    object-position: 74% center;
+    content: none;
   }
 }

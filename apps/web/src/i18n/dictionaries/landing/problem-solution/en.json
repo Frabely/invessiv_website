@@ -1,29 +1,28 @@
 {
-  "body": "When visitors leave, it's rarely the offer — it's that the page never gets to the point. That's exactly what a landing page is for.",
+  "body": "When visitors leave, it's rarely the offer — it's that the page never gets to the point.",
   "eyebrow": "Problem → Solution",
-  "pairs": [
-    {
-      "problem": "Offer stays vague",
-      "solution": "One offer, clearly named"
-    },
-    {
-      "problem": "Value buried further down",
-      "solution": "The benefit comes first"
-    },
-    {
-      "problem": "Unclear who's behind it",
-      "solution": "Process and contact person visible"
-    },
-    {
+  "hint": "Select a line — the demo shows the matching spot.",
+  "pairs": {
+    "cta": {
       "problem": "Many paths, no goal",
       "solution": "One button, one goal"
     },
-    {
+    "form": {
       "problem": "Getting in touch feels like work",
       "solution": "An inquiry in two minutes"
+    },
+    "headline": {
+      "problem": "Offer stays vague",
+      "solution": "One offer, clearly named"
+    },
+    "offer": {
+      "problem": "Unclear what you get",
+      "solution": "The scope is on the page"
+    },
+    "trust": {
+      "problem": "No picture of the outcome",
+      "solution": "The outcome in one sentence"
     }
-  ],
-  "problemLabel": "Why visitors leave",
-  "solutionLabel": "What your landing page does differently",
+  },
   "title": "From bounce to inquiry."
 }

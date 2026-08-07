@@ -1,29 +1,28 @@
 {
-  "body": "Wenn Besucher abspringen, liegt es selten am Angebot — sondern daran, dass die Seite es nicht auf den Punkt bringt. Genau dafür ist eine Landingpage da.",
+  "body": "Wenn Besucher abspringen, liegt es selten am Angebot — sondern daran, dass die Seite es nicht auf den Punkt bringt.",
   "eyebrow": "Problem → Lösung",
-  "pairs": [
-    {
-      "problem": "Angebot bleibt vage",
-      "solution": "Ein Angebot, klar benannt"
-    },
-    {
-      "problem": "Nutzen erst weit unten",
-      "solution": "Der Nutzen steht ganz oben"
-    },
-    {
-      "problem": "Unklar, wer dahintersteht",
-      "solution": "Ablauf und Ansprechpartner sichtbar"
-    },
-    {
+  "hint": "Zeile auswählen — die Demo zeigt die passende Stelle.",
+  "pairs": {
+    "cta": {
       "problem": "Viele Wege, kein Ziel",
       "solution": "Ein Button, ein Ziel"
     },
-    {
+    "form": {
       "problem": "Kontakt wirkt wie Aufwand",
       "solution": "Anfrage in zwei Minuten"
+    },
+    "headline": {
+      "problem": "Angebot bleibt vage",
+      "solution": "Ein Angebot, klar benannt"
+    },
+    "offer": {
+      "problem": "Unklar, was man bekommt",
+      "solution": "Der Umfang steht auf der Seite"
+    },
+    "trust": {
+      "problem": "Kein Bild vom Ergebnis",
+      "solution": "Das Ergebnis in einem Satz"
     }
-  ],
-  "problemLabel": "Warum Besucher abspringen",
-  "solutionLabel": "Was deine Landingpage anders macht",
+  },
   "title": "Vom Absprung zur Anfrage."
 }

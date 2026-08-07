@@ -1,0 +1,110 @@
+.stage {
+  --stage-visual-balance-offset: 13rem;
+  --stage-visual-start: max(
+    var(--anchor-scroll-offset),
+    calc(50svh - var(--stage-visual-balance-offset))
+  );
+  --stage-visual-bleed: 20rem;
+
+  position: relative;
+}
+
+.heroSlot,
+.problemSlot {
+  position: relative;
+}
+
+.visualLayer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 3;
+  padding-inline: var(--layout-rail-inline-gutter);
+  padding-block-start: var(--stage-visual-start);
+  pointer-events: none;
+}
+
+.visualRail {
+  width: 100%;
+  max-width: var(--layout-rail-max-width);
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--hero-grid-columns);
+  gap: var(--hero-grid-gap);
+}
+
+.visualSticky {
+  grid-column: 2;
+  position: sticky;
+  top: var(--anchor-scroll-offset);
+  height: calc(100svh - var(--stage-visual-start) + var(--stage-visual-bleed));
+  display: grid;
+  place-items: stretch;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .stage {
+    --stage-mobile-preview-inline: clamp(0.65rem, 2.8vw, 0.9rem);
+    --stage-mobile-preview-height: calc(
+      (100vw - var(--stage-mobile-preview-inline) * 2) * 0.88
+    );
+    --stage-mobile-preview-visible-height: calc(
+      var(--stage-mobile-preview-height) * 0.75
+    );
+    --stage-mobile-tall-screen-spacing: clamp(
+      0rem,
+      calc((100dvh - 52rem) * 0.18),
+      1.5rem
+    );
+    --stage-mobile-visual-top-padding: calc(
+      var(--anchor-scroll-offset) - 0.35rem
+    );
+
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+  }
+
+  .heroSlot {
+    order: 1;
+    display: grid;
+    min-height: calc(
+      100dvh - var(--stage-mobile-preview-visible-height) -
+        var(--stage-mobile-visual-top-padding) +
+        var(--stage-mobile-tall-screen-spacing)
+    );
+  }
+
+  .heroSlot :global(.hero) {
+    min-height: 0;
+  }
+
+  .problemSlot {
+    order: 3;
+  }
+
+  .visualLayer {
+    order: 2;
+    position: sticky;
+    inset-block: 0 auto;
+    inset-inline: auto;
+    padding: var(--stage-mobile-visual-top-padding)
+      var(--stage-mobile-preview-inline) clamp(1.25rem, 4vw, 1.75rem);
+    background: var(--color-bg);
+  }
+
+  .visualRail {
+    max-width: none;
+    height: auto;
+    padding-inline: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .visualSticky {
+    grid-column: 1;
+    position: static;
+    height: auto;
+  }
+}

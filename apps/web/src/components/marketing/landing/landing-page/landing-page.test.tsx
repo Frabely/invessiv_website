@@ -114,11 +114,10 @@ describe("LandingPage", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText(/Wenn Besucher abspringen/)).toBeTruthy();
-    const firstProblemItem = screen.getByText("Angebot bleibt vage");
-    expect(firstProblemItem).toBeTruthy();
-    expect(screen.getByText("Ein Angebot, klar benannt")).toBeTruthy();
+    const firstPair = screen.getByText("Angebot bleibt vage").closest("li");
+    expect(firstPair?.textContent).toContain("Ein Angebot, klar benannt");
     await waitFor(() => {
-      expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
+      expect(firstPair?.dataset.visible).toBe("true");
     });
     expect(screen.queryByText("4,9 von 5 Sternen")).toBeNull();
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();

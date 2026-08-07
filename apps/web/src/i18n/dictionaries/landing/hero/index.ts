@@ -11,7 +11,6 @@ type LandingHeroContent = {
   tag: string;
   title: string;
   trustLine: string;
-  visualAriaLabel: string;
 };
 
 const LANDING_HERO_CONTENT: Record<Locale, LandingHeroContent> = {

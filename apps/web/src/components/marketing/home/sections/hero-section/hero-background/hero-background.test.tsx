@@ -39,6 +39,9 @@ describe("HeroBackground", () => {
     expect(container.querySelector("source")?.getAttribute("src")).toBe(
       "/spotlight.mp4",
     );
+    expect(container.querySelector("source")?.getAttribute("media")).toBe(
+      "(min-width: 901px)",
+    );
   });
 
   it("keeps the video out of the DOM in light mode so it is never requested", () => {

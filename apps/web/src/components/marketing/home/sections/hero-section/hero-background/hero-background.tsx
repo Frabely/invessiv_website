@@ -24,7 +24,7 @@ export function HeroBackground({ videoSrc }: HeroBackgroundProps) {
           playsInline
           preload="metadata"
         >
-          <source src={videoSrc} type="video/mp4" />
+          <source media="(min-width: 901px)" src={videoSrc} type="video/mp4" />
         </video>
       ) : (
         <>
