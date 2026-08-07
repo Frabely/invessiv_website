@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
 import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
@@ -12,16 +12,29 @@ import styles from "./coaching-landing-preview.module.css";
 type CoachingLandingPreviewProps = {
   activeAnchor: LandingPreviewAnchor | null;
   content: LandingCoachingPreviewContent;
+  highlightVisible?: boolean;
 };
 
 export function CoachingLandingPreview({
   activeAnchor,
   content,
+  highlightVisible = activeAnchor !== null,
 }: CoachingLandingPreviewProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
   usePreviewAnchorFrame(trackRef, overlayRef, activeAnchor);
+
+  useLayoutEffect(() => {
+    const overlay = overlayRef.current;
+
+    if (!overlay) {
+      return;
+    }
+
+    overlay.dataset.active =
+      highlightVisible && activeAnchor !== null ? "true" : "false";
+  }, [activeAnchor, highlightVisible]);
 
   return (
     <div className={styles.visual}>

@@ -74,8 +74,9 @@ export function LandingVisualStage({
         <div className={styles.visualRail}>
           <div className={styles.visualSticky}>
             <CoachingLandingPreview
-              activeAnchor={visibleAnchor}
+              activeAnchor={activeAnchor}
               content={preview}
+              highlightVisible={visibleAnchor !== null}
             />
           </div>
         </div>

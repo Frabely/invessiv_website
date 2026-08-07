@@ -129,9 +129,6 @@ export function usePreviewAnchorFrame(
     }
 
     window.addEventListener("resize", scheduleMeasure);
-    window.addEventListener("scroll", scheduleMeasure, { passive: true });
-    window.visualViewport?.addEventListener("resize", scheduleMeasure);
-    window.visualViewport?.addEventListener("scroll", scheduleMeasure);
 
     document.fonts?.ready.then(() => {
       if (!cancelled) {
@@ -143,9 +140,6 @@ export function usePreviewAnchorFrame(
       cancelled = true;
       observer?.disconnect();
       window.removeEventListener("resize", scheduleMeasure);
-      window.removeEventListener("scroll", scheduleMeasure);
-      window.visualViewport?.removeEventListener("resize", scheduleMeasure);
-      window.visualViewport?.removeEventListener("scroll", scheduleMeasure);
 
       if (animationFrame !== null) {
         window.cancelAnimationFrame(animationFrame);

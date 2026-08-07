@@ -117,37 +117,51 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
   await expect(formRow).toHaveAttribute("aria-pressed", "true");
   await expect(formRow).toHaveAttribute("data-active", "true");
 
+  const track = page.locator("[data-preview-page]").locator("..");
+  const panBeforePageScroll = await track.evaluate((element) =>
+    (element as HTMLElement).style.getPropertyValue("--preview-pan"),
+  );
+
   await page.locator("#hero").scrollIntoViewIfNeeded();
   await expect(
     page.locator("[data-testid='coaching-preview-highlight-overlay']"),
   ).toHaveAttribute("data-active", "false");
   await expect(formRow).toHaveAttribute("data-active", "false");
+  await expect
+    .poll(() =>
+      track.evaluate((element) =>
+        (element as HTMLElement).style.getPropertyValue("--preview-pan"),
+      ),
+    )
+    .toBe(panBeforePageScroll);
 
   const firstRow = page.locator("#solution button").first();
   await firstRow.scrollIntoViewIfNeeded();
   await firstRow.click();
   await expect(firstRow).toHaveAttribute("aria-pressed", "true");
 
-  const headlineIsVisible = await page.evaluate(() => {
-    const track = document
-      .querySelector<HTMLElement>("[data-preview-page]")
-      ?.parentElement?.getBoundingClientRect();
-    const headline = document
-      .querySelector<HTMLElement>('[data-preview-anchor="headline"]')
-      ?.getBoundingClientRect();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const track = document
+          .querySelector<HTMLElement>("[data-preview-page]")
+          ?.parentElement?.getBoundingClientRect();
+        const headline = document
+          .querySelector<HTMLElement>('[data-preview-anchor="headline"]')
+          ?.getBoundingClientRect();
 
-    if (!track || !headline) {
-      return false;
-    }
+        if (!track || !headline) {
+          return false;
+        }
 
-    const visibleTop = Math.max(0, track.top);
-    const visibleBottom = Math.min(window.innerHeight, track.bottom);
-    const headlineCenter = headline.top + headline.height / 2;
+        const visibleTop = Math.max(0, track.top);
+        const visibleBottom = Math.min(window.innerHeight, track.bottom);
+        const headlineCenter = headline.top + headline.height / 2;
 
-    return headlineCenter >= visibleTop && headlineCenter <= visibleBottom;
-  });
-
-  expect(headlineIsVisible).toBe(true);
+        return headlineCenter >= visibleTop && headlineCenter <= visibleBottom;
+      }),
+    )
+    .toBe(true);
 });
 
 test("keeps one quarter of the mobile preview below a tall viewport", async ({
