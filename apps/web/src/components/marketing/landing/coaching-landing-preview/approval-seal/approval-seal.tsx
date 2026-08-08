@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import styles from "./approval-seal.module.css";
 
 type ApprovalSealProps = {
@@ -6,7 +8,7 @@ type ApprovalSealProps = {
   stamped: boolean;
 };
 
-/** Stamps the solved column once the last pair is reached. Mobile layout only. */
+/** Stamps the demo once the pairs have been read. */
 export function ApprovalSeal({ ariaLabel, brand, stamped }: ApprovalSealProps) {
   return (
     <div
@@ -16,7 +18,13 @@ export function ApprovalSeal({ ariaLabel, brand, stamped }: ApprovalSealProps) {
       role="img"
     >
       <span className={styles.ink} />
-      <span className={styles.mark}>✓</span>
+      <Image
+        alt=""
+        className={styles.mark}
+        height={72}
+        src="/brand/icon_noText.png"
+        width={72}
+      />
       <span className={styles.brand}>{brand}</span>
     </div>
   );
