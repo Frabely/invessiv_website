@@ -44,9 +44,6 @@ const CONTENT = {
       solution: "Ihre Lage, in ihren Worten",
     },
   },
-  seal: {
-    brand: "Invessiv",
-  },
   title: "Warum Besucher abspringen — und was deine Landingpage anders macht.",
 };
 
@@ -62,7 +59,6 @@ function renderSection({
   const onAnchorFocus = vi.fn();
   const onAnchorAmbient = vi.fn();
   const onAnchorToggle = vi.fn();
-  const onPairsRead = vi.fn();
 
   render(
     <ProblemSolutionSection
@@ -73,13 +69,12 @@ function renderSection({
       onAnchorAmbient={onAnchorAmbient}
       onAnchorFocus={onAnchorFocus}
       onAnchorToggle={onAnchorToggle}
-      onPairsRead={onPairsRead}
       selectedAnchor={selectedAnchor}
       usesTapToggle={usesTapToggle}
     />,
   );
 
-  return { onAnchorFocus, onAnchorAmbient, onAnchorToggle, onPairsRead };
+  return { onAnchorFocus, onAnchorAmbient, onAnchorToggle };
 }
 
 /** The row element is a button in the tap layout and a plain div otherwise. */
@@ -230,32 +225,6 @@ describe("ProblemSolutionSection", () => {
 
     expect(pressed).toHaveLength(1);
     expect(pressed[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
-  });
-
-  it("reports the pairs as read only when the last mobile row is tapped", () => {
-    const { onPairsRead } = renderSection({ usesTapToggle: true });
-    const pairRows = rows();
-
-    fireEvent.click(pairRows[0] as HTMLElement);
-    expect(onPairsRead).not.toHaveBeenCalled();
-
-    fireEvent.click(pairRows.at(-1) as HTMLElement);
-    expect(onPairsRead).toHaveBeenCalledTimes(1);
-  });
-
-  it("reports the pairs as read when the last row is hovered", () => {
-    const { onPairsRead } = renderSection();
-    const pairRows = rows();
-
-    fireEvent.pointerEnter(pairRows[0] as HTMLElement, {
-      pointerType: "mouse",
-    });
-    expect(onPairsRead).not.toHaveBeenCalled();
-
-    fireEvent.pointerEnter(pairRows.at(-1) as HTMLElement, {
-      pointerType: "mouse",
-    });
-    expect(onPairsRead).toHaveBeenCalledTimes(1);
   });
 
   it("marks items as visible for the staggered reveal", async () => {

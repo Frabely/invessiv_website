@@ -46,7 +46,6 @@ export function LandingVisualStage({
     useState<LandingPreviewAnchor | null>(null);
   const [selectedAnchor, setSelectedAnchor] =
     useState<LandingPreviewAnchor | null>(null);
-  const [isSealStamped, setIsSealStamped] = useState(false);
   const usesTapToggle = useMediaQuery(TAP_TOGGLE_MEDIA_QUERY);
   const tapSelection = usesTapToggle ? selectedAnchor : null;
   const activeAnchor = usesTapToggle
@@ -62,10 +61,6 @@ export function LandingVisualStage({
     setSelectedAnchor((current) => (current === anchor ? null : anchor));
   }, []);
 
-  const stampSeal = useCallback(() => {
-    setIsSealStamped(true);
-  }, []);
-
   return (
     <div className={styles.stage}>
       <div className={styles.heroSlot}>{hero}</div>
@@ -79,7 +74,6 @@ export function LandingVisualStage({
           onAnchorAmbient={setAmbientAnchor}
           onAnchorFocus={setFocusedAnchor}
           onAnchorToggle={toggleSelectedAnchor}
-          onPairsRead={stampSeal}
           selectedAnchor={tapSelection}
           usesTapToggle={usesTapToggle}
         />
@@ -92,8 +86,6 @@ export function LandingVisualStage({
               activeAnchor={activeAnchor}
               content={preview}
               highlightVisible={visibleAnchor !== null}
-              seal={problemSolution.seal}
-              sealStamped={isSealStamped}
             />
           </div>
         </div>

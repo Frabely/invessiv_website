@@ -20,7 +20,6 @@ type ProblemSolutionSectionProps = LandingProblemSolutionContent & {
   onAnchorAmbient: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorFocus: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorToggle: (anchor: LandingPreviewAnchor) => void;
-  onPairsRead: () => void;
   selectedAnchor: LandingPreviewAnchor | null;
   usesTapToggle: boolean;
 };
@@ -35,7 +34,6 @@ export function ProblemSolutionSection({
   onAnchorAmbient,
   onAnchorFocus,
   onAnchorToggle,
-  onPairsRead,
   pairs,
   selectedAnchor,
   title,
@@ -50,13 +48,6 @@ export function ProblemSolutionSection({
   ) => {
     if (event.pointerType === "mouse") {
       onAnchorAmbient(anchor);
-
-      if (
-        anchor ===
-        LANDING_PREVIEW_ANCHOR_ORDER[LANDING_PREVIEW_ANCHOR_ORDER.length - 1]
-      ) {
-        onPairsRead();
-      }
     }
   };
 
@@ -70,13 +61,6 @@ export function ProblemSolutionSection({
 
   const handleTap = (anchor: LandingPreviewAnchor) => {
     onAnchorToggle(anchor);
-
-    if (
-      anchor ===
-      LANDING_PREVIEW_ANCHOR_ORDER[LANDING_PREVIEW_ANCHOR_ORDER.length - 1]
-    ) {
-      onPairsRead();
-    }
   };
 
   return (
