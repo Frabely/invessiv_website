@@ -72,6 +72,7 @@
 }
 
 .ledger {
+  position: relative;
   display: grid;
   max-width: 40rem;
 }

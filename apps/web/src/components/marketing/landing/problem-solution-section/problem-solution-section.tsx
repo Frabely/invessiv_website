@@ -1,13 +1,14 @@
 "use client";
 
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
 import { LANDING_PREVIEW_ANCHOR_ORDER } from "@/common/constants/marketing";
 import type { LandingProblemSolutionContent } from "@/common/contracts/marketing";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
+import { useScrollFocusedItem } from "@/hooks/marketing/use-scroll-focused-item";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./problem-solution-section.module.css";
 
@@ -15,9 +16,10 @@ type ProblemSolutionSectionProps = LandingProblemSolutionContent & {
   activeAnchor: LandingPreviewAnchor | null;
   id: string;
   locale: Locale;
+  onAnchorAmbient: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorFocus: (anchor: LandingPreviewAnchor | null) => void;
-  onAnchorHover: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorToggle: (anchor: LandingPreviewAnchor) => void;
+  onPairsRead: () => void;
   selectedAnchor: LandingPreviewAnchor | null;
   usesTapToggle: boolean;
 };
@@ -29,30 +31,53 @@ export function ProblemSolutionSection({
   id,
   labels,
   locale,
+  onAnchorAmbient,
   onAnchorFocus,
-  onAnchorHover,
   onAnchorToggle,
+  onPairsRead,
   pairs,
   selectedAnchor,
   title,
   usesTapToggle,
 }: ProblemSolutionSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const listRef = useRef<HTMLUListElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
+
+  const reportScrollFocus = useCallback(
+    (index: number | null) => {
+      if (usesTapToggle) {
+        onAnchorAmbient(
+          index === null ? null : (LANDING_PREVIEW_ANCHOR_ORDER[index] ?? null),
+        );
+      }
+
+      if (index === LANDING_PREVIEW_ANCHOR_ORDER.length - 1) {
+        onPairsRead();
+      }
+    },
+    [onAnchorAmbient, onPairsRead, usesTapToggle],
+  );
+
+  useScrollFocusedItem(listRef, {
+    enabled: true,
+    itemSelector: ":scope > li",
+    onFocusChange: reportScrollFocus,
+  });
 
   const handlePointerEnter = (
     event: ReactPointerEvent<HTMLButtonElement>,
     anchor: LandingPreviewAnchor,
   ) => {
     if (event.pointerType === "mouse") {
-      onAnchorHover(anchor);
+      onAnchorAmbient(anchor);
     }
   };
 
   /** Also releases the focus a mouse click leaves behind, so nothing sticks. */
   const handlePointerLeave = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.pointerType === "mouse") {
-      onAnchorHover(null);
+      onAnchorAmbient(null);
       onAnchorFocus(null);
     }
   };
@@ -72,7 +97,7 @@ export function ProblemSolutionSection({
             <span className={styles.columnLabel}>{labels.solution}</span>
           </div>
 
-          <ul className={styles.pairList}>
+          <ul className={styles.pairList} ref={listRef}>
             {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
               const pair = pairs[anchor];
 

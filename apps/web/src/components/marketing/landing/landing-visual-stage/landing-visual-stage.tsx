@@ -29,7 +29,8 @@ type LandingVisualStageProps = {
 /**
  * Keeps the demo visible across the hero and problem-solution section.
  * Owns the active anchor shared by the list and preview. Pointer devices drive
- * it by hover only; the mobile layout switches to a tap toggle instead.
+ * it by hover; the mobile layout follows the scroll position and lets a tap
+ * lock a row on top of that.
  */
 export function LandingVisualStage({
   hero,
@@ -41,13 +42,14 @@ export function LandingVisualStage({
   const problemSlotRef = useRef<HTMLDivElement | null>(null);
   const [focusedAnchor, setFocusedAnchor] =
     useState<LandingPreviewAnchor | null>(null);
-  const [hoveredAnchor, setHoveredAnchor] =
+  const [ambientAnchor, setAmbientAnchor] =
     useState<LandingPreviewAnchor | null>(null);
   const [selectedAnchor, setSelectedAnchor] =
     useState<LandingPreviewAnchor | null>(null);
+  const [isSealStamped, setIsSealStamped] = useState(false);
   const usesTapToggle = useMediaQuery(TAP_TOGGLE_MEDIA_QUERY);
   const tapSelection = usesTapToggle ? selectedAnchor : null;
-  const activeAnchor = tapSelection ?? hoveredAnchor ?? focusedAnchor;
+  const activeAnchor = tapSelection ?? ambientAnchor ?? focusedAnchor;
   const isProblemSectionInView = useElementInView(
     problemSlotRef,
     "0px 0px -50%",
@@ -56,6 +58,10 @@ export function LandingVisualStage({
 
   const toggleSelectedAnchor = useCallback((anchor: LandingPreviewAnchor) => {
     setSelectedAnchor((current) => (current === anchor ? null : anchor));
+  }, []);
+
+  const stampSeal = useCallback(() => {
+    setIsSealStamped(true);
   }, []);
 
   return (
@@ -68,9 +74,10 @@ export function LandingVisualStage({
           activeAnchor={visibleAnchor}
           id={solutionSectionId}
           locale={locale}
+          onAnchorAmbient={setAmbientAnchor}
           onAnchorFocus={setFocusedAnchor}
-          onAnchorHover={setHoveredAnchor}
           onAnchorToggle={toggleSelectedAnchor}
+          onPairsRead={stampSeal}
           selectedAnchor={tapSelection}
           usesTapToggle={usesTapToggle}
         />
@@ -83,6 +90,8 @@ export function LandingVisualStage({
               activeAnchor={activeAnchor}
               content={preview}
               highlightVisible={visibleAnchor !== null}
+              seal={problemSolution.seal}
+              sealStamped={isSealStamped}
             />
           </div>
         </div>

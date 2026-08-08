@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -44,6 +45,10 @@ const CONTENT = {
       solution: "Ihre Lage, in ihren Worten",
     },
   },
+  seal: {
+    ariaLabel: "Von Invessiv geprüft",
+    brand: "Invessiv",
+  },
   title: "Warum Besucher abspringen — und was deine Landingpage anders macht.",
 };
 
@@ -57,8 +62,9 @@ function renderSection({
   usesTapToggle?: boolean;
 } = {}) {
   const onAnchorFocus = vi.fn();
-  const onAnchorHover = vi.fn();
+  const onAnchorAmbient = vi.fn();
   const onAnchorToggle = vi.fn();
+  const onPairsRead = vi.fn();
 
   render(
     <ProblemSolutionSection
@@ -66,15 +72,29 @@ function renderSection({
       activeAnchor={activeAnchor}
       id="solution"
       locale="de"
+      onAnchorAmbient={onAnchorAmbient}
       onAnchorFocus={onAnchorFocus}
-      onAnchorHover={onAnchorHover}
       onAnchorToggle={onAnchorToggle}
+      onPairsRead={onPairsRead}
       selectedAnchor={selectedAnchor}
       usesTapToggle={usesTapToggle}
     />,
   );
 
-  return { onAnchorFocus, onAnchorHover, onAnchorToggle };
+  return { onAnchorFocus, onAnchorAmbient, onAnchorToggle, onPairsRead };
+}
+
+function placeRowsAroundReadingLine(centeredIndex: number) {
+  const readingLine = window.innerHeight * 0.7;
+
+  within(screen.getByRole("list"))
+    .getAllByRole("listitem")
+    .forEach((item, index) => {
+      const top = readingLine - 30 + (index - centeredIndex) * 200;
+
+      item.getBoundingClientRect = () =>
+        ({ bottom: top + 60, height: 60, top }) as DOMRect;
+    });
 }
 
 describe("ProblemSolutionSection", () => {
@@ -106,24 +126,24 @@ describe("ProblemSolutionSection", () => {
   });
 
   it("reports the hovered anchor and releases it when the mouse leaves", () => {
-    const { onAnchorFocus, onAnchorHover } = renderSection();
+    const { onAnchorFocus, onAnchorAmbient } = renderSection();
 
     const [firstRow] = screen.getAllByRole("button");
     fireEvent.pointerEnter(firstRow as HTMLElement, { pointerType: "mouse" });
-    expect(onAnchorHover).toHaveBeenCalledWith(LandingPreviewAnchor.Headline);
+    expect(onAnchorAmbient).toHaveBeenCalledWith(LandingPreviewAnchor.Headline);
 
     fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
-    expect(onAnchorHover).toHaveBeenCalledWith(null);
+    expect(onAnchorAmbient).toHaveBeenCalledWith(null);
     expect(onAnchorFocus).toHaveBeenCalledWith(null);
   });
 
   it("keeps the anchor when a touch pointer leaves", () => {
-    const { onAnchorHover } = renderSection();
+    const { onAnchorAmbient } = renderSection();
 
     const [firstRow] = screen.getAllByRole("button");
     fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "touch" });
 
-    expect(onAnchorHover).not.toHaveBeenCalled();
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
   });
 
   it("reports the focused anchor and releases it on blur", () => {
@@ -170,6 +190,30 @@ describe("ProblemSolutionSection", () => {
     expect(onAnchorFocus).not.toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
   });
 
+  it("follows the scrolled row in the tap layout", async () => {
+    const { onAnchorAmbient } = renderSection({ usesTapToggle: true });
+
+    placeRowsAroundReadingLine(1);
+    await act(async () => {
+      fireEvent.scroll(window);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+
+    expect(onAnchorAmbient).toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
+  });
+
+  it("leaves scrolling alone while the pointer layout is active", async () => {
+    const { onAnchorAmbient } = renderSection();
+
+    placeRowsAroundReadingLine(1);
+    await act(async () => {
+      fireEvent.scroll(window);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
+  });
+
   it("marks exactly the active row", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
@@ -195,6 +239,29 @@ describe("ProblemSolutionSection", () => {
     expect(pressed).toHaveLength(1);
     expect(pressed[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
   });
+
+  it.each([true, false])(
+    "reports the pairs as read once the last one is reached (tap layout: %s)",
+    async (usesTapToggle) => {
+      const { onPairsRead } = renderSection({ usesTapToggle });
+
+      placeRowsAroundReadingLine(0);
+      await act(async () => {
+        fireEvent.scroll(window);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      });
+
+      expect(onPairsRead).not.toHaveBeenCalled();
+
+      placeRowsAroundReadingLine(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
+      await act(async () => {
+        fireEvent.scroll(window);
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      });
+
+      expect(onPairsRead).toHaveBeenCalled();
+    },
+  );
 
   it("marks items as visible for the staggered reveal", async () => {
     renderSection();

@@ -10,17 +10,26 @@ vi.mock("next/image", () => ({
   default: ({ alt }: { alt: string }) => <span aria-label={alt} role="img" />,
 }));
 
+const SEAL = { ariaLabel: "Von Invessiv geprüft", brand: "Invessiv" };
+
 function renderPreview({
   activeAnchor = null,
   locale = "de",
+  sealStamped = false,
 }: {
   activeAnchor?: LandingPreviewAnchor | null;
   locale?: "de" | "en";
+  sealStamped?: boolean;
 } = {}) {
   const content = getLandingHeroContent(locale).preview;
 
   render(
-    <CoachingLandingPreview activeAnchor={activeAnchor} content={content} />,
+    <CoachingLandingPreview
+      activeAnchor={activeAnchor}
+      content={content}
+      seal={SEAL}
+      sealStamped={sealStamped}
+    />,
   );
 
   return { content };
@@ -82,6 +91,23 @@ describe("CoachingLandingPreview", () => {
         document.querySelectorAll(`[data-preview-anchor="${anchor}"]`),
       ).toHaveLength(1);
     });
+  });
+
+  it("keeps the approval seal unstamped until the pairs are read", () => {
+    renderPreview();
+
+    expect(
+      screen.getByRole("img", { name: SEAL.ariaLabel }).dataset.stamped,
+    ).toBe("false");
+  });
+
+  it("stamps the approval seal onto the demo", () => {
+    renderPreview({ sealStamped: true });
+
+    const seal = screen.getByRole("img", { name: SEAL.ariaLabel });
+
+    expect(seal.dataset.stamped).toBe("true");
+    expect(seal.textContent).toContain(SEAL.brand);
   });
 
   it("hides the highlight until an anchor is active", () => {

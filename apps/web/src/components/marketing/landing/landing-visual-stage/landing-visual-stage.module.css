@@ -47,8 +47,10 @@
 @media (max-width: 900px) {
   .stage {
     --stage-mobile-preview-inline: clamp(0.65rem, 2.8vw, 0.9rem);
+    --stage-mobile-preview-ratio: 0.62;
     --stage-mobile-preview-height: calc(
-      (100vw - var(--stage-mobile-preview-inline) * 2) * 0.88
+      (100vw - var(--stage-mobile-preview-inline) * 2) *
+        var(--stage-mobile-preview-ratio)
     );
     --stage-mobile-preview-visible-height: calc(
       var(--stage-mobile-preview-height) * 0.75
@@ -56,7 +58,7 @@
     --stage-mobile-tall-screen-spacing: clamp(
       0rem,
       calc((100dvh - 52rem) * 0.18),
-      1.5rem
+      0.75rem
     );
     --stage-mobile-visual-top-padding: calc(
       var(--anchor-scroll-offset) - 0.35rem

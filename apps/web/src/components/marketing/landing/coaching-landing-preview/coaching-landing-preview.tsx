@@ -3,8 +3,12 @@
 import { useLayoutEffect, useRef } from "react";
 
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
-import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
+import type {
+  LandingCoachingPreviewContent,
+  LandingProblemSolutionSeal,
+} from "@/common/contracts/marketing";
 import { usePreviewAnchorFrame } from "@/hooks/marketing/use-preview-anchor-frame";
+import { ApprovalSeal } from "./approval-seal/approval-seal";
 import { HighlightRing } from "./highlight-ring/highlight-ring";
 import { PreviewPage } from "./preview-page/preview-page";
 import styles from "./coaching-landing-preview.module.css";
@@ -13,12 +17,16 @@ type CoachingLandingPreviewProps = {
   activeAnchor: LandingPreviewAnchor | null;
   content: LandingCoachingPreviewContent;
   highlightVisible?: boolean;
+  seal: LandingProblemSolutionSeal;
+  sealStamped: boolean;
 };
 
 export function CoachingLandingPreview({
   activeAnchor,
   content,
   highlightVisible = activeAnchor !== null,
+  seal,
+  sealStamped,
 }: CoachingLandingPreviewProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
@@ -64,6 +72,12 @@ export function CoachingLandingPreview({
               <HighlightRing overlayRef={overlayRef} />
             </div>
           </div>
+
+          <ApprovalSeal
+            ariaLabel={seal.ariaLabel}
+            brand={seal.brand}
+            stamped={sealStamped}
+          />
         </div>
       </div>
     </div>

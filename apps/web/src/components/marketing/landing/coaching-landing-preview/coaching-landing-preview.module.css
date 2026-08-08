@@ -53,6 +53,7 @@
 }
 
 .browser {
+  position: relative;
   height: 100%;
   width: auto;
   max-width: 100%;
@@ -193,10 +194,14 @@
     height: auto;
     width: 100%;
     max-width: none;
-    aspect-ratio: 100 / 88;
+    aspect-ratio: 1 / var(--stage-mobile-preview-ratio, 0.62);
     box-shadow:
       0 20px 42px rgba(3, 6, 12, 0.3),
       0 5px 14px rgba(3, 6, 12, 0.16);
+  }
+
+  .panLayer {
+    transition-duration: 400ms;
   }
 }
 
