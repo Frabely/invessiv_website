@@ -46,7 +46,6 @@ const CONTENT = {
     },
   },
   seal: {
-    ariaLabel: "Von Invessiv geprüft",
     brand: "Invessiv",
   },
   title: "Warum Besucher abspringen — und was deine Landingpage anders macht.",

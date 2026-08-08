@@ -13,8 +13,18 @@ export function useElementInView(
   useEffect(() => {
     const element = elementRef.current;
 
-    if (!element || !("IntersectionObserver" in window)) {
+    if (!element) {
       return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      const animationFrame = globalThis.requestAnimationFrame(() => {
+        setIsInView(true);
+      });
+
+      return () => {
+        globalThis.cancelAnimationFrame(animationFrame);
+      };
     }
 
     const observer = new IntersectionObserver(

@@ -73,10 +73,6 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
   impliziten Variablen.
 - **UTF-8:** verpflichtend. Deutsche Zeichen (`ä ö ü ß`) als echtes UTF-8; keine ASCII-Umschreibungen (`ae/oe/ue`) in
   finalem UI-Text. Encoding-Artefakte (`�`, `Ã¤`) vor Abschluss bereinigen.
-- **Kommentare/Docstrings:** Keine erklärenden Inline- oder Blockkommentare im Quellcode. Docstrings/JSDoc nur, wenn sie
-  eine öffentliche API oder nicht offensichtliches Verhalten dokumentieren, und dann ausschließlich auf Englisch.
-  Technisch notwendige Tool-Direktiven (z. B. `@vitest-environment`, ESLint- oder TypeScript-Direktiven) sind davon
-  ausgenommen und werden nur so eng wie nötig eingesetzt.
 - **Routen-Slugs** standardmäßig Englisch (`/terms`, `/privacy`, `/imprint`), auch bei deutschem UI-Text. Kanonischer
   AGB-Pfad ist immer `/terms` (nicht `/agb`).
 

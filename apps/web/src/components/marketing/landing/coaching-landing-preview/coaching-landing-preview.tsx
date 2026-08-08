@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
 
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
 import type {
@@ -31,18 +31,7 @@ export function CoachingLandingPreview({
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
-  usePreviewAnchorFrame(trackRef, overlayRef, activeAnchor);
-
-  useLayoutEffect(() => {
-    const overlay = overlayRef.current;
-
-    if (!overlay) {
-      return;
-    }
-
-    overlay.dataset.active =
-      highlightVisible && activeAnchor !== null ? "true" : "false";
-  }, [activeAnchor, highlightVisible]);
+  usePreviewAnchorFrame(trackRef, overlayRef, activeAnchor, highlightVisible);
 
   return (
     <div className={styles.visual}>
@@ -73,11 +62,7 @@ export function CoachingLandingPreview({
             </div>
           </div>
 
-          <ApprovalSeal
-            ariaLabel={seal.ariaLabel}
-            brand={seal.brand}
-            stamped={sealStamped}
-          />
+          <ApprovalSeal brand={seal.brand} stamped={sealStamped} />
         </div>
       </div>
     </div>

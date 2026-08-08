@@ -10,7 +10,7 @@ vi.mock("next/image", () => ({
   default: ({ alt }: { alt: string }) => <span aria-label={alt} role="img" />,
 }));
 
-const SEAL = { ariaLabel: "Von Invessiv geprüft", brand: "Invessiv" };
+const SEAL = { brand: "Invessiv" };
 
 function renderPreview({
   activeAnchor = null,
@@ -96,17 +96,19 @@ describe("CoachingLandingPreview", () => {
   it("keeps the approval seal unstamped until the pairs are read", () => {
     renderPreview();
 
-    expect(
-      screen.getByRole("img", { name: SEAL.ariaLabel }).dataset.stamped,
-    ).toBe("false");
+    expect(screen.getByTestId("coaching-preview-approval-seal")).toHaveProperty(
+      "dataset.stamped",
+      "false",
+    );
   });
 
   it("stamps the approval seal onto the demo", () => {
     renderPreview({ sealStamped: true });
 
-    const seal = screen.getByRole("img", { name: SEAL.ariaLabel });
+    const seal = screen.getByTestId("coaching-preview-approval-seal");
 
     expect(seal.dataset.stamped).toBe("true");
+    expect(seal.getAttribute("aria-hidden")).toBe("true");
     expect(seal.textContent).toContain(SEAL.brand);
   });
 

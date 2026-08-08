@@ -27,6 +27,7 @@ export function usePreviewAnchorFrame(
   trackRef: RefObject<HTMLElement | null>,
   overlayRef: RefObject<HTMLElement | null>,
   activeAnchor: LandingPreviewAnchor | null,
+  highlightVisible: boolean,
 ) {
   useLayoutEffect(() => {
     const track = trackRef.current;
@@ -100,7 +101,7 @@ export function usePreviewAnchorFrame(
       setLengthProperty(overlay, "--preview-ring-width", blockRect.width);
       setLengthProperty(overlay, "--preview-ring-height", blockRect.height);
       overlay.dataset.frameReady = "true";
-      overlay.dataset.active = "true";
+      overlay.dataset.active = highlightVisible ? "true" : "false";
     };
 
     const scheduleMeasure = () => {
@@ -145,5 +146,5 @@ export function usePreviewAnchorFrame(
         window.cancelAnimationFrame(animationFrame);
       }
     };
-  }, [activeAnchor, overlayRef, trackRef]);
+  }, [activeAnchor, highlightVisible, overlayRef, trackRef]);
 }

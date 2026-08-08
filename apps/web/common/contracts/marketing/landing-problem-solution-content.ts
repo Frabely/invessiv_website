@@ -6,7 +6,6 @@ type LandingProblemSolutionPair = {
 };
 
 export type LandingProblemSolutionSeal = {
-  ariaLabel: string;
   brand: string;
 };
 

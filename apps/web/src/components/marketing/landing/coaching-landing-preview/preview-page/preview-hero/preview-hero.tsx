@@ -32,7 +32,7 @@ export function PreviewHero({ content }: PreviewHeroProps) {
 
       <div className={styles.imageWrap}>
         <Image
-          alt={content.imageAlt}
+          alt=""
           className={styles.image}
           fill
           priority

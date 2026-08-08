@@ -8,7 +8,6 @@ export type LandingCoachingPreviewContent = {
   formEmailLabel: string;
   formNameLabel: string;
   formTitle: string;
-  imageAlt: string;
   kicker: string;
   offerItems: string[];
   offerNote: string;

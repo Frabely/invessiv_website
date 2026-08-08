@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { useRef } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -33,13 +33,15 @@ function rect({
 
 function Fixture({
   activeAnchor,
+  highlightVisible = true,
 }: {
   activeAnchor: LandingPreviewAnchor | null;
+  highlightVisible?: boolean;
 }) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
-  usePreviewAnchorFrame(trackRef, overlayRef, activeAnchor);
+  usePreviewAnchorFrame(trackRef, overlayRef, activeAnchor, highlightVisible);
 
   return (
     <div data-box="track" ref={trackRef}>
@@ -143,6 +145,30 @@ describe("usePreviewAnchorFrame", () => {
     expect(track.style.getPropertyValue("--preview-pan")).toBe("0px");
     expect(overlay.dataset.active).toBe("false");
     expect(overlay.style.getPropertyValue("--preview-ring-top")).toBe("40px");
+  });
+
+  it("keeps a hidden highlight inactive after later measurements", async () => {
+    const view = render(<Fixture activeAnchor={LandingPreviewAnchor.Form} />);
+    const overlay = view.getByTestId("overlay");
+    const track = overlay.parentElement as HTMLElement;
+
+    view.rerender(
+      <Fixture
+        activeAnchor={LandingPreviewAnchor.Form}
+        highlightVisible={false}
+      />,
+    );
+
+    expect(overlay.dataset.active).toBe("false");
+    expect(track.style.getPropertyValue("--preview-pan")).toBe("-460px");
+
+    await act(async () => {
+      fireEvent.resize(window);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
+
+    expect(overlay.dataset.active).toBe("false");
+    expect(track.style.getPropertyValue("--preview-pan")).toBe("-460px");
   });
 
   it("moves the first anchor down when the track begins above the viewport", () => {
