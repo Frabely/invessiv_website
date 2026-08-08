@@ -83,6 +83,13 @@ function renderSection({
   return { onAnchorFocus, onAnchorAmbient, onAnchorToggle, onPairsRead };
 }
 
+/** The row element is a button in the tap layout and a plain div otherwise. */
+function rows() {
+  return within(screen.getByRole("list"))
+    .getAllByRole("listitem")
+    .map((item) => item.firstElementChild as HTMLElement);
+}
+
 function placeRowsAroundReadingLine(centeredIndex: number) {
   const readingLine = window.innerHeight * 0.7;
 
@@ -127,7 +134,7 @@ describe("ProblemSolutionSection", () => {
   it("reports the hovered anchor and releases it when the mouse leaves", () => {
     const { onAnchorFocus, onAnchorAmbient } = renderSection();
 
-    const [firstRow] = screen.getAllByRole("button");
+    const [firstRow] = rows();
     fireEvent.pointerEnter(firstRow as HTMLElement, { pointerType: "mouse" });
     expect(onAnchorAmbient).toHaveBeenCalledWith(LandingPreviewAnchor.Headline);
 
@@ -139,7 +146,7 @@ describe("ProblemSolutionSection", () => {
   it("keeps the anchor when a touch pointer leaves", () => {
     const { onAnchorAmbient } = renderSection();
 
-    const [firstRow] = screen.getAllByRole("button");
+    const [firstRow] = rows();
     fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "touch" });
 
     expect(onAnchorAmbient).not.toHaveBeenCalled();
@@ -148,27 +155,34 @@ describe("ProblemSolutionSection", () => {
   it("reports the focused anchor and releases it on blur", () => {
     const { onAnchorFocus } = renderSection();
 
-    const rows = screen.getAllByRole("button");
-    fireEvent.focus(rows[1] as HTMLElement);
+    const pairRows = rows();
+    fireEvent.focus(pairRows[1] as HTMLElement);
     expect(onAnchorFocus).toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
 
-    fireEvent.blur(rows[1] as HTMLElement);
+    fireEvent.blur(pairRows[1] as HTMLElement);
     expect(onAnchorFocus).toHaveBeenCalledWith(null);
+  });
+
+  it("announces no button while the pointer layout is active", () => {
+    renderSection();
+
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+    expect(rows().every((row) => row.tabIndex === 0)).toBe(true);
   });
 
   it("ignores clicks while the pointer layout is active", () => {
     const { onAnchorToggle } = renderSection();
 
-    fireEvent.click(screen.getAllByRole("button")[2] as HTMLElement);
+    fireEvent.click(rows()[2] as HTMLElement);
     expect(onAnchorToggle).not.toHaveBeenCalled();
   });
 
   it("offers no toggle state while the pointer layout is active", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
-    const withToggleState = screen
-      .getAllByRole("button")
-      .filter((row) => row.hasAttribute("aria-pressed"));
+    const withToggleState = rows().filter((row) =>
+      row.hasAttribute("aria-pressed"),
+    );
 
     expect(withToggleState).toHaveLength(0);
   });
@@ -183,8 +197,7 @@ describe("ProblemSolutionSection", () => {
   it("keeps focus from driving the highlight in the tap layout", () => {
     const { onAnchorFocus } = renderSection({ usesTapToggle: true });
 
-    const rows = screen.getAllByRole("button");
-    fireEvent.focus(rows[1] as HTMLElement);
+    fireEvent.focus(rows()[1] as HTMLElement);
 
     expect(onAnchorFocus).not.toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
   });
@@ -216,9 +229,7 @@ describe("ProblemSolutionSection", () => {
   it("marks exactly the active row", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
-    const active = screen
-      .getAllByRole("button")
-      .filter((row) => row.dataset.active === "true");
+    const active = rows().filter((row) => row.dataset.active === "true");
 
     expect(active).toHaveLength(1);
     expect(active[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
@@ -231,36 +242,48 @@ describe("ProblemSolutionSection", () => {
       usesTapToggle: true,
     });
 
-    const pressed = screen
-      .getAllByRole("button")
-      .filter((row) => row.getAttribute("aria-pressed") === "true");
+    const pressed = rows().filter(
+      (row) => row.getAttribute("aria-pressed") === "true",
+    );
 
     expect(pressed).toHaveLength(1);
     expect(pressed[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
   });
 
-  it.each([true, false])(
-    "reports the pairs as read once the last one is reached (tap layout: %s)",
-    async (usesTapToggle) => {
-      const { onPairsRead } = renderSection({ usesTapToggle });
+  it("reports the pairs as read only once the mobile reading line reaches the last row", async () => {
+    const { onPairsRead } = renderSection({ usesTapToggle: true });
 
-      placeRowsAroundReadingLine(0);
-      await act(async () => {
-        fireEvent.scroll(window);
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-      });
+    placeRowsAroundReadingLine(0);
+    await act(async () => {
+      fireEvent.scroll(window);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
 
-      expect(onPairsRead).not.toHaveBeenCalled();
+    expect(onPairsRead).not.toHaveBeenCalled();
 
-      placeRowsAroundReadingLine(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
-      await act(async () => {
-        fireEvent.scroll(window);
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-      });
+    placeRowsAroundReadingLine(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
+    await act(async () => {
+      fireEvent.scroll(window);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    });
 
-      expect(onPairsRead).toHaveBeenCalled();
-    },
-  );
+    expect(onPairsRead).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports the pairs as read when the last row is hovered", () => {
+    const { onPairsRead } = renderSection();
+    const pairRows = rows();
+
+    fireEvent.pointerEnter(pairRows[0] as HTMLElement, {
+      pointerType: "mouse",
+    });
+    expect(onPairsRead).not.toHaveBeenCalled();
+
+    fireEvent.pointerEnter(pairRows.at(-1) as HTMLElement, {
+      pointerType: "mouse",
+    });
+    expect(onPairsRead).toHaveBeenCalledTimes(1);
+  });
 
   it("marks items as visible for the staggered reveal", async () => {
     renderSection();

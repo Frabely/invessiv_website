@@ -63,6 +63,12 @@
     --stage-mobile-visual-top-padding: calc(
       var(--anchor-scroll-offset) - 0.35rem
     );
+    --stage-mobile-visual-bottom-padding: clamp(1.25rem, 4vw, 1.75rem);
+    --landing-anchor-scroll-margin: calc(
+      var(--stage-mobile-visual-top-padding) +
+        var(--stage-mobile-preview-height) +
+        var(--stage-mobile-visual-bottom-padding) + 0.75rem
+    );
 
     display: flex;
     flex-direction: column;
@@ -93,7 +99,8 @@
     inset-block: 0 auto;
     inset-inline: auto;
     padding: var(--stage-mobile-visual-top-padding)
-      var(--stage-mobile-preview-inline) clamp(1.25rem, 4vw, 1.75rem);
+      var(--stage-mobile-preview-inline)
+      var(--stage-mobile-visual-bottom-padding);
     background: var(--color-bg);
   }
 

@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/*
+ * Global CSS contract:
+ * - Tailwind base import
+ * - theme tokens and app-wide custom properties
+ * - reset/base element defaults
+ * - global accessibility utilities and interaction defaults
+ * - shared page-level surfaces and spacing tokens
+ *
+ * Component, section, and route-specific styles must not be added here.
+ */
+
 @property --font-plus-jakarta-sans {
   syntax: "*";
   inherits: true;
@@ -17,6 +28,16 @@
   --color-surface-2: #312b27;
   --color-text: #f4f7fd;
   --color-text-muted: #d2dae8;
+  --color-text-faint: color-mix(
+    in srgb,
+    var(--color-text-muted) 62%,
+    transparent
+  );
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 56%,
+    transparent
+  );
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-strong: rgba(255, 255, 255, 0.18);
   --color-shadow: rgba(0, 0, 0, 0.42);
@@ -137,6 +158,12 @@
   --color-surface-2: #e2ebf6;
   --color-text: #162033;
   --color-text-muted: #445775;
+  --color-text-faint: var(--color-text-muted);
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 85%,
+    transparent
+  );
   --color-border: rgba(42, 64, 102, 0.24);
   --color-border-strong: rgba(42, 64, 102, 0.36);
   --color-shadow: rgba(28, 41, 67, 0.18);
@@ -271,7 +298,10 @@ section[id] {
 }
 
 .landing-main section[id] {
-  scroll-margin-top: clamp(0.35rem, 1vw, 0.75rem);
+  scroll-margin-top: var(
+    --landing-anchor-scroll-margin,
+    clamp(0.35rem, 1vw, 0.75rem)
+  );
 }
 
 [data-theme="light"] body {

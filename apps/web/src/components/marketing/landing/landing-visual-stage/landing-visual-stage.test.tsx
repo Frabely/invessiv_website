@@ -30,9 +30,12 @@ function renderStage() {
   );
 }
 
+/** The row element is a button in the tap layout and a plain div otherwise. */
 function rows() {
   const section = document.getElementById("solution") as HTMLElement;
-  return within(within(section).getByRole("list")).getAllByRole("button");
+  return within(within(section).getByRole("list"))
+    .getAllByRole("listitem")
+    .map((item) => item.firstElementChild as HTMLElement);
 }
 
 function ring() {

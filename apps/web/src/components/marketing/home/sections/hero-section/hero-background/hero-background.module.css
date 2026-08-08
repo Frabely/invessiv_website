@@ -46,13 +46,3 @@
 .layers:has(.video) > :not(.video) {
   z-index: 2;
 }
-
-@media (max-width: 900px) {
-  .video {
-    display: none;
-  }
-
-  .layers:has(.video)::before {
-    content: none;
-  }
-}

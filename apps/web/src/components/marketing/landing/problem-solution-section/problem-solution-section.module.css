@@ -86,7 +86,7 @@
 }
 
 .columnLabel {
-  color: color-mix(in srgb, var(--color-text-muted) 62%, transparent);
+  color: var(--color-text-faint);
   font-size: var(--font-size-ui-xs);
   font-weight: 700;
   line-height: 1;
@@ -167,7 +167,7 @@
 }
 
 .pairButton[data-active="true"] .problem {
-  color: color-mix(in srgb, var(--color-text-muted) 56%, transparent);
+  color: var(--color-text-struck);
   text-decoration-color: color-mix(
     in srgb,
     var(--color-accent-warm) 85%,

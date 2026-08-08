@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 
 const LANDING_PATH = "/de/services/landing-page";
 const PREVIEW_SELECTOR = "[data-testid='coaching-preview-browser']";
+/** The pointer layout renders rows as plain divs; only the tap layout uses buttons. */
+const POINTER_ROW_SELECTOR = "#solution li > div";
 
 test("keeps the preview geometry stable across hydration", async ({
   browser,
@@ -21,14 +23,14 @@ test("keeps the preview geometry stable across hydration", async ({
   const hydratedContext = await browser.newContext({ baseURL, viewport });
   const hydratedPage = await hydratedContext.newPage();
   await hydratedPage.goto(LANDING_PATH);
-  const firstRow = hydratedPage.locator("#solution button").first();
+  const firstRow = hydratedPage.locator(POINTER_ROW_SELECTOR).first();
   await firstRow.hover();
   await expect(firstRow).toHaveAttribute("data-active", "true");
   await expect(firstRow).not.toHaveAttribute("aria-pressed", /.*/);
   await expect(
     hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
   ).toHaveAttribute("data-active", "true");
-  const secondRow = hydratedPage.locator("#solution button").nth(1);
+  const secondRow = hydratedPage.locator(POINTER_ROW_SELECTOR).nth(1);
   await secondRow.hover();
   await expect(firstRow).toHaveAttribute("data-active", "false");
   await expect(secondRow).toHaveAttribute("data-active", "true");

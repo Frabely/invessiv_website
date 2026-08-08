@@ -46,36 +46,41 @@ export function ProblemSolutionSection({
 
   const reportScrollFocus = useCallback(
     (index: number | null) => {
-      if (usesTapToggle) {
-        onAnchorAmbient(
-          index === null ? null : (LANDING_PREVIEW_ANCHOR_ORDER[index] ?? null),
-        );
-      }
+      onAnchorAmbient(
+        index === null ? null : (LANDING_PREVIEW_ANCHOR_ORDER[index] ?? null),
+      );
 
       if (index === LANDING_PREVIEW_ANCHOR_ORDER.length - 1) {
         onPairsRead();
       }
     },
-    [onAnchorAmbient, onPairsRead, usesTapToggle],
+    [onAnchorAmbient, onPairsRead],
   );
 
   useScrollFocusedItem(listRef, {
-    enabled: true,
+    enabled: usesTapToggle,
     itemSelector: ":scope > li",
     onFocusChange: reportScrollFocus,
   });
 
   const handlePointerEnter = (
-    event: ReactPointerEvent<HTMLButtonElement>,
+    event: ReactPointerEvent<HTMLElement>,
     anchor: LandingPreviewAnchor,
   ) => {
     if (event.pointerType === "mouse") {
       onAnchorAmbient(anchor);
+
+      if (
+        anchor ===
+        LANDING_PREVIEW_ANCHOR_ORDER[LANDING_PREVIEW_ANCHOR_ORDER.length - 1]
+      ) {
+        onPairsRead();
+      }
     }
   };
 
   /** Also releases the focus a mouse click leaves behind, so nothing sticks. */
-  const handlePointerLeave = (event: ReactPointerEvent<HTMLButtonElement>) => {
+  const handlePointerLeave = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType === "mouse") {
       onAnchorAmbient(null);
       onAnchorFocus(null);
@@ -100,6 +105,15 @@ export function ProblemSolutionSection({
           <ul className={styles.pairList} ref={listRef}>
             {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
               const pair = pairs[anchor];
+              const row = (
+                <>
+                  <span className={styles.problem}>{pair.problem}</span>
+                  <span aria-hidden="true" className={styles.link}>
+                    <span className={styles.node} />
+                  </span>
+                  <span className={styles.solution}>{pair.solution}</span>
+                </>
+              );
 
               return (
                 <li
@@ -107,31 +121,36 @@ export function ProblemSolutionSection({
                   data-reveal-item="true"
                   key={anchor}
                 >
-                  <button
-                    aria-pressed={
-                      usesTapToggle ? anchor === selectedAnchor : undefined
-                    }
-                    className={styles.pairButton}
-                    data-active={anchor === activeAnchor}
-                    onBlur={() => onAnchorFocus(null)}
-                    onClick={
-                      usesTapToggle ? () => onAnchorToggle(anchor) : undefined
-                    }
-                    onFocus={
-                      usesTapToggle ? undefined : () => onAnchorFocus(anchor)
-                    }
-                    onPointerEnter={(event) =>
-                      handlePointerEnter(event, anchor)
-                    }
-                    onPointerLeave={handlePointerLeave}
-                    type="button"
-                  >
-                    <span className={styles.problem}>{pair.problem}</span>
-                    <span aria-hidden="true" className={styles.link}>
-                      <span className={styles.node} />
-                    </span>
-                    <span className={styles.solution}>{pair.solution}</span>
-                  </button>
+                  {usesTapToggle ? (
+                    <button
+                      aria-pressed={anchor === selectedAnchor}
+                      className={styles.pairButton}
+                      data-active={anchor === activeAnchor}
+                      onBlur={() => onAnchorFocus(null)}
+                      onClick={() => onAnchorToggle(anchor)}
+                      onPointerEnter={(event) =>
+                        handlePointerEnter(event, anchor)
+                      }
+                      onPointerLeave={handlePointerLeave}
+                      type="button"
+                    >
+                      {row}
+                    </button>
+                  ) : (
+                    <div
+                      className={styles.pairButton}
+                      data-active={anchor === activeAnchor}
+                      onBlur={() => onAnchorFocus(null)}
+                      onFocus={() => onAnchorFocus(anchor)}
+                      onPointerEnter={(event) =>
+                        handlePointerEnter(event, anchor)
+                      }
+                      onPointerLeave={handlePointerLeave}
+                      tabIndex={0}
+                    >
+                      {row}
+                    </div>
+                  )}
                 </li>
               );
             })}
