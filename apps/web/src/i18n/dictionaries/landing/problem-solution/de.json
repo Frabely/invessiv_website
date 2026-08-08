@@ -1,5 +1,5 @@
 {
-  "body": "Typische Beispiele, jeweils an einer echten Seite gezeigt.",
+  "body": "Typische Beispiele, gezeigt an einer Demo-Landingpage.",
   "eyebrow": "Was sich ändert",
   "labels": {
     "problem": "Problem",
@@ -7,8 +7,8 @@
   },
   "pairs": {
     "cta": {
-      "problem": "Viele Wege, kein Ziel",
-      "solution": "Ein Button, ein Ziel"
+      "problem": "Der nächste Schritt fehlt oder geht unter",
+      "solution": "Ein klarer, sichtbarer Button"
     },
     "form": {
       "problem": "Kontakt wirkt wie Aufwand",
@@ -19,11 +19,11 @@
       "solution": "Ein Satz, der sitzt"
     },
     "offer": {
-      "problem": "Was drin ist: auf Anfrage",
-      "solution": "Umfang und Dauer stehen da"
+      "problem": "Unklare Leistungsbeschreibung",
+      "solution": "Umfang klar definiert, Ergebnis und Dauer genannt"
     },
     "problems": {
-      "problem": "Redet an Besuchern vorbei",
+      "problem": "Das Problem der Besucher verfehlt",
       "solution": "Ihre Lage, in ihren Worten"
     }
   },

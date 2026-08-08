@@ -1,5 +1,5 @@
 {
-  "body": "Typical examples, each shown on a real page.",
+  "body": "Typical examples, shown on a demo landing page.",
   "eyebrow": "What changes",
   "labels": {
     "problem": "Problem",
@@ -7,8 +7,8 @@
   },
   "pairs": {
     "cta": {
-      "problem": "Many paths, no goal",
-      "solution": "One button, one goal"
+      "problem": "The next step is missing or easy to overlook",
+      "solution": "One clear, visible button"
     },
     "form": {
       "problem": "Getting in touch feels like work",
@@ -19,11 +19,11 @@
       "solution": "One sentence that lands"
     },
     "offer": {
-      "problem": "What you get: on request",
-      "solution": "Scope and timeline are there"
+      "problem": "Unclear service description",
+      "solution": "Clear scope, outcome and timeline"
     },
     "problems": {
-      "problem": "Talks past its visitors",
+      "problem": "Misses the visitor's actual problem",
       "solution": "Their situation, in their words"
     }
   },
