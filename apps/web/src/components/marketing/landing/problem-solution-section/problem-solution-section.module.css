@@ -77,6 +77,10 @@
   max-width: 40rem;
 }
 
+.actionCue {
+  display: none;
+}
+
 .columns {
   display: grid;
   grid-template-columns: var(--ledger-columns);
@@ -260,9 +264,11 @@
   }
 
   .pairButton {
-    grid-template-columns: var(--node-size) minmax(0, 1fr);
+    grid-template-columns: var(--node-size) minmax(0, 1fr) 1.9rem;
     column-gap: 0.9rem;
     row-gap: 0.2rem;
+    cursor: pointer;
+    touch-action: manipulation;
   }
 
   .link {
@@ -280,6 +286,38 @@
     grid-column: 2;
     grid-row: 2;
     padding-inline-start: 0;
+  }
+
+  .actionCue {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    align-self: center;
+    display: grid;
+    width: 1.9rem;
+    height: 1.9rem;
+    place-items: center;
+    border: 1px solid
+      color-mix(in srgb, var(--color-border-strong) 72%, transparent);
+    border-radius: 999px;
+    color: var(--color-text-muted);
+    background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
+    transition:
+      color 220ms ease,
+      border-color 220ms ease,
+      background 220ms ease,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .actionCue > svg {
+    width: 0.82rem;
+    height: 0.82rem;
+  }
+
+  .pairButton[data-active="true"] .actionCue {
+    border-color: color-mix(in srgb, var(--color-accent-warm) 68%, transparent);
+    color: var(--color-on-cta);
+    background: var(--color-accent-warm);
+    transform: scale(1.04);
   }
 
   .pairButton[data-active="true"] .solution {
@@ -305,6 +343,7 @@
   .node,
   .problem,
   .solution,
+  .actionCue,
   .pairButton::before {
     transition: none;
   }

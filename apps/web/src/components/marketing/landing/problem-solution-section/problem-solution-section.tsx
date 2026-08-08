@@ -1,14 +1,15 @@
 "use client";
 
+import { faCheck, faHandPointer } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
 import { LANDING_PREVIEW_ANCHOR_ORDER } from "@/common/constants/marketing";
 import type { LandingProblemSolutionContent } from "@/common/contracts/marketing";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
-import { useScrollFocusedItem } from "@/hooks/marketing/use-scroll-focused-item";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./problem-solution-section.module.css";
 
@@ -41,27 +42,7 @@ export function ProblemSolutionSection({
   usesTapToggle,
 }: ProblemSolutionSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const listRef = useRef<HTMLUListElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
-
-  const reportScrollFocus = useCallback(
-    (index: number | null) => {
-      onAnchorAmbient(
-        index === null ? null : (LANDING_PREVIEW_ANCHOR_ORDER[index] ?? null),
-      );
-
-      if (index === LANDING_PREVIEW_ANCHOR_ORDER.length - 1) {
-        onPairsRead();
-      }
-    },
-    [onAnchorAmbient, onPairsRead],
-  );
-
-  useScrollFocusedItem(listRef, {
-    enabled: usesTapToggle,
-    itemSelector: ":scope > li",
-    onFocusChange: reportScrollFocus,
-  });
 
   const handlePointerEnter = (
     event: ReactPointerEvent<HTMLElement>,
@@ -87,6 +68,17 @@ export function ProblemSolutionSection({
     }
   };
 
+  const handleTap = (anchor: LandingPreviewAnchor) => {
+    onAnchorToggle(anchor);
+
+    if (
+      anchor ===
+      LANDING_PREVIEW_ANCHOR_ORDER[LANDING_PREVIEW_ANCHOR_ORDER.length - 1]
+    ) {
+      onPairsRead();
+    }
+  };
+
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
       <div className={styles.inner}>
@@ -102,7 +94,7 @@ export function ProblemSolutionSection({
             <span className={styles.columnLabel}>{labels.solution}</span>
           </div>
 
-          <ul className={styles.pairList} ref={listRef}>
+          <ul className={styles.pairList}>
             {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
               const pair = pairs[anchor];
               const row = (
@@ -112,6 +104,11 @@ export function ProblemSolutionSection({
                     <span className={styles.node} />
                   </span>
                   <span className={styles.solution}>{pair.solution}</span>
+                  <span aria-hidden="true" className={styles.actionCue}>
+                    <FontAwesomeIcon
+                      icon={anchor === activeAnchor ? faCheck : faHandPointer}
+                    />
+                  </span>
                 </>
               );
 
@@ -127,7 +124,7 @@ export function ProblemSolutionSection({
                       className={styles.pairButton}
                       data-active={anchor === activeAnchor}
                       onBlur={() => onAnchorFocus(null)}
-                      onClick={() => onAnchorToggle(anchor)}
+                      onClick={() => handleTap(anchor)}
                       onPointerEnter={(event) =>
                         handlePointerEnter(event, anchor)
                       }

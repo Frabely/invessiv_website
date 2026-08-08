@@ -1,7 +1,6 @@
 // @vitest-environment jsdom
 
 import {
-  act,
   cleanup,
   fireEvent,
   render,
@@ -88,19 +87,6 @@ function rows() {
   return within(screen.getByRole("list"))
     .getAllByRole("listitem")
     .map((item) => item.firstElementChild as HTMLElement);
-}
-
-function placeRowsAroundReadingLine(centeredIndex: number) {
-  const readingLine = window.innerHeight * 0.7;
-
-  within(screen.getByRole("list"))
-    .getAllByRole("listitem")
-    .forEach((item, index) => {
-      const top = readingLine - 30 + (index - centeredIndex) * 200;
-
-      item.getBoundingClientRect = () =>
-        ({ bottom: top + 60, height: 60, top }) as DOMRect;
-    });
 }
 
 describe("ProblemSolutionSection", () => {
@@ -202,26 +188,18 @@ describe("ProblemSolutionSection", () => {
     expect(onAnchorFocus).not.toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
   });
 
-  it("follows the scrolled row in the tap layout", async () => {
+  it("leaves the selection unchanged when the tap layout is scrolled", () => {
     const { onAnchorAmbient } = renderSection({ usesTapToggle: true });
 
-    placeRowsAroundReadingLine(1);
-    await act(async () => {
-      fireEvent.scroll(window);
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-    });
+    fireEvent.scroll(window);
 
-    expect(onAnchorAmbient).toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
   });
 
-  it("leaves scrolling alone while the pointer layout is active", async () => {
+  it("leaves scrolling alone while the pointer layout is active", () => {
     const { onAnchorAmbient } = renderSection();
 
-    placeRowsAroundReadingLine(1);
-    await act(async () => {
-      fireEvent.scroll(window);
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-    });
+    fireEvent.scroll(window);
 
     expect(onAnchorAmbient).not.toHaveBeenCalled();
   });
@@ -230,9 +208,13 @@ describe("ProblemSolutionSection", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
     const active = rows().filter((row) => row.dataset.active === "true");
+    const checkIcons = document.querySelectorAll('[data-icon="check"]');
+    const tapIcons = document.querySelectorAll('[data-icon="hand-pointer"]');
 
     expect(active).toHaveLength(1);
     expect(active[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
+    expect(checkIcons).toHaveLength(1);
+    expect(tapIcons).toHaveLength(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
   });
 
   it("exposes the tapped selection with aria-pressed", () => {
@@ -250,23 +232,14 @@ describe("ProblemSolutionSection", () => {
     expect(pressed[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
   });
 
-  it("reports the pairs as read only once the mobile reading line reaches the last row", async () => {
+  it("reports the pairs as read only when the last mobile row is tapped", () => {
     const { onPairsRead } = renderSection({ usesTapToggle: true });
+    const pairRows = rows();
 
-    placeRowsAroundReadingLine(0);
-    await act(async () => {
-      fireEvent.scroll(window);
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-    });
-
+    fireEvent.click(pairRows[0] as HTMLElement);
     expect(onPairsRead).not.toHaveBeenCalled();
 
-    placeRowsAroundReadingLine(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
-    await act(async () => {
-      fireEvent.scroll(window);
-      await new Promise((resolve) => requestAnimationFrame(resolve));
-    });
-
+    fireEvent.click(pairRows.at(-1) as HTMLElement);
     expect(onPairsRead).toHaveBeenCalledTimes(1);
   });
 

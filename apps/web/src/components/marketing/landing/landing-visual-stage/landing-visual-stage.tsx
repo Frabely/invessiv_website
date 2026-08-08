@@ -49,7 +49,9 @@ export function LandingVisualStage({
   const [isSealStamped, setIsSealStamped] = useState(false);
   const usesTapToggle = useMediaQuery(TAP_TOGGLE_MEDIA_QUERY);
   const tapSelection = usesTapToggle ? selectedAnchor : null;
-  const activeAnchor = tapSelection ?? ambientAnchor ?? focusedAnchor;
+  const activeAnchor = usesTapToggle
+    ? tapSelection
+    : (ambientAnchor ?? focusedAnchor);
   const isProblemSectionInView = useElementInView(
     problemSlotRef,
     "0px 0px -50%",
