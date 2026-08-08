@@ -5,12 +5,13 @@
   gap: 2.6cqw;
   padding: 5cqw;
   overflow: hidden;
-  background: var(--preview-action);
+  border-top: 1px solid var(--preview-border);
+  background: var(--preview-surface-soft);
 }
 
 .formTitle {
   margin: 0;
-  color: var(--preview-on-action);
+  color: var(--preview-text);
   font-family: var(--font-family-display), sans-serif;
   font-size: 3.8cqw;
   font-weight: 600;
@@ -28,27 +29,17 @@
   align-items: center;
   height: 7.2cqw;
   padding: 0 3cqw;
-  border: 1px solid
-    color-mix(in srgb, var(--preview-on-action) 34%, transparent);
+  border: 1px solid var(--preview-border-strong);
   border-radius: 1.6cqw;
-  background: color-mix(in srgb, var(--preview-on-action) 12%, transparent);
-  color: color-mix(in srgb, var(--preview-on-action) 76%, transparent);
+  background: var(--preview-surface-raised);
+  color: var(--preview-subtle);
   font-family: var(--font-family-base), sans-serif;
   font-size: 2.2cqw;
   font-weight: 500;
   white-space: nowrap;
 }
 
-.formSubmit {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.formAction {
+  display: grid;
   margin-top: 0.6cqw;
-  height: 8cqw;
-  border-radius: 999px;
-  background: var(--preview-accent-soft);
-  color: var(--preview-text);
-  font-family: var(--font-family-base), sans-serif;
-  font-size: 2.2cqw;
-  font-weight: 700;
 }

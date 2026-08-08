@@ -1,7 +1,10 @@
 {
-  "body": "When visitors leave, it's rarely the offer — it's that the page never gets to the point.",
-  "eyebrow": "Problem → Solution",
-  "hint": "Select a line — the demo shows the matching spot.",
+  "body": "Typical examples, each shown on a real page.",
+  "eyebrow": "What changes",
+  "labels": {
+    "problem": "Problem",
+    "solution": "Solution"
+  },
   "pairs": {
     "cta": {
       "problem": "Many paths, no goal",
@@ -12,17 +15,17 @@
       "solution": "An inquiry in two minutes"
     },
     "headline": {
-      "problem": "Offer stays vague",
-      "solution": "One offer, clearly named"
+      "problem": "Explains a lot, says little",
+      "solution": "One sentence that lands"
     },
     "offer": {
-      "problem": "Unclear what you get",
-      "solution": "The scope is on the page"
+      "problem": "What you get: on request",
+      "solution": "Scope and timeline are there"
     },
-    "trust": {
-      "problem": "No picture of the outcome",
-      "solution": "The outcome in one sentence"
+    "problems": {
+      "problem": "Talks past its visitors",
+      "solution": "Their situation, in their words"
     }
   },
-  "title": "From bounce to inquiry."
+  "title": "Where visitors drop off — and what keeps them."
 }

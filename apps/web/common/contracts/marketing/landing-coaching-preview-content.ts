@@ -7,7 +7,6 @@ export type LandingCoachingPreviewContent = {
   description: string;
   formEmailLabel: string;
   formNameLabel: string;
-  formSubmitLabel: string;
   formTitle: string;
   imageAlt: string;
   kicker: string;

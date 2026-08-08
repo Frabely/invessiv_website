@@ -3,8 +3,8 @@
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useRef } from "react";
 
-import { LANDING_PREVIEW_ANCHOR_ORDER } from "@/common/constants/marketing";
 import type { LandingPreviewAnchor } from "@/common/constants/marketing";
+import { LANDING_PREVIEW_ANCHOR_ORDER } from "@/common/constants/marketing";
 import type { LandingProblemSolutionContent } from "@/common/contracts/marketing";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
@@ -19,14 +19,15 @@ type ProblemSolutionSectionProps = LandingProblemSolutionContent & {
   onAnchorHover: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorToggle: (anchor: LandingPreviewAnchor) => void;
   selectedAnchor: LandingPreviewAnchor | null;
+  usesTapToggle: boolean;
 };
 
 export function ProblemSolutionSection({
   activeAnchor,
   body,
   eyebrow,
-  hint,
   id,
+  labels,
   locale,
   onAnchorFocus,
   onAnchorHover,
@@ -34,6 +35,7 @@ export function ProblemSolutionSection({
   pairs,
   selectedAnchor,
   title,
+  usesTapToggle,
 }: ProblemSolutionSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
@@ -47,9 +49,11 @@ export function ProblemSolutionSection({
     }
   };
 
+  /** Also releases the focus a mouse click leaves behind, so nothing sticks. */
   const handlePointerLeave = (event: ReactPointerEvent<HTMLButtonElement>) => {
     if (event.pointerType === "mouse") {
       onAnchorHover(null);
+      onAnchorFocus(null);
     }
   };
 
@@ -60,36 +64,54 @@ export function ProblemSolutionSection({
           <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
           <h2 className={styles.title}>{title}</h2>
           <p className={styles.body}>{body}</p>
-          <p className={styles.hint}>{hint}</p>
         </header>
 
-        <ul className={styles.pairList}>
-          {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
-            const pair = pairs[anchor];
+        <div className={styles.ledger}>
+          <div className={styles.columns} data-reveal-item="true">
+            <span className={styles.columnLabel}>{labels.problem}</span>
+            <span className={styles.columnLabel}>{labels.solution}</span>
+          </div>
 
-            return (
-              <li className={styles.pair} data-reveal-item="true" key={anchor}>
-                <button
-                  aria-pressed={anchor === selectedAnchor}
-                  className={styles.pairButton}
-                  data-active={anchor === activeAnchor}
-                  onBlur={() => onAnchorFocus(null)}
-                  onClick={() => onAnchorToggle(anchor)}
-                  onFocus={() => onAnchorFocus(anchor)}
-                  onPointerEnter={(event) => handlePointerEnter(event, anchor)}
-                  onPointerLeave={handlePointerLeave}
-                  type="button"
+          <ul className={styles.pairList}>
+            {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
+              const pair = pairs[anchor];
+
+              return (
+                <li
+                  className={styles.pair}
+                  data-reveal-item="true"
+                  key={anchor}
                 >
-                  <span className={styles.problem}>{pair.problem}</span>
-                  <span aria-hidden="true" className={styles.arrow}>
-                    →
-                  </span>
-                  <span className={styles.solution}>{pair.solution}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                  <button
+                    aria-pressed={
+                      usesTapToggle ? anchor === selectedAnchor : undefined
+                    }
+                    className={styles.pairButton}
+                    data-active={anchor === activeAnchor}
+                    onBlur={() => onAnchorFocus(null)}
+                    onClick={
+                      usesTapToggle ? () => onAnchorToggle(anchor) : undefined
+                    }
+                    onFocus={
+                      usesTapToggle ? undefined : () => onAnchorFocus(anchor)
+                    }
+                    onPointerEnter={(event) =>
+                      handlePointerEnter(event, anchor)
+                    }
+                    onPointerLeave={handlePointerLeave}
+                    type="button"
+                  >
+                    <span className={styles.problem}>{pair.problem}</span>
+                    <span aria-hidden="true" className={styles.link}>
+                      <span className={styles.node} />
+                    </span>
+                    <span className={styles.solution}>{pair.solution}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );

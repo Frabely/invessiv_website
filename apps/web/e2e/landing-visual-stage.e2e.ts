@@ -22,20 +22,41 @@ test("keeps the preview geometry stable across hydration", async ({
   const hydratedPage = await hydratedContext.newPage();
   await hydratedPage.goto(LANDING_PATH);
   const firstRow = hydratedPage.locator("#solution button").first();
-  await firstRow.click();
-  await expect(firstRow).toHaveAttribute("aria-pressed", "true");
+  await firstRow.hover();
+  await expect(firstRow).toHaveAttribute("data-active", "true");
+  await expect(firstRow).not.toHaveAttribute("aria-pressed", /.*/);
   await expect(
     hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
   ).toHaveAttribute("data-active", "true");
+  const secondRow = hydratedPage.locator("#solution button").nth(1);
+  await secondRow.hover();
+  await expect(firstRow).toHaveAttribute("data-active", "false");
+  await expect(secondRow).toHaveAttribute("data-active", "true");
+  await secondRow.click();
+  await expect(secondRow).not.toHaveAttribute("aria-pressed", /.*/);
+  await expect(secondRow).toHaveAttribute("data-active", "true");
+  await hydratedPage.mouse.move(0, 0);
+  await expect(secondRow).toHaveAttribute("data-active", "false");
+  await expect(
+    hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
+  ).toHaveAttribute("data-active", "false");
+  await secondRow.hover();
+  await expect(secondRow).toHaveAttribute("data-active", "true");
   const hydratedBox = await hydratedPage
     .locator(PREVIEW_SELECTOR)
     .boundingBox();
-  await hydratedContext.close();
 
   expect(serverBox).not.toBeNull();
   expect(hydratedBox).not.toBeNull();
   expect(hydratedBox?.width).toBeCloseTo(serverBox?.width ?? 0, 1);
   expect(hydratedBox?.height).toBeCloseTo(serverBox?.height ?? 0, 1);
+
+  await hydratedPage.evaluate(() => window.scrollTo({ top: 0 }));
+  await expect(secondRow).toHaveAttribute("data-active", "false");
+  await expect(
+    hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
+  ).toHaveAttribute("data-active", "false");
+  await hydratedContext.close();
 });
 
 test("keeps first highlight, focus, and persistent selection synchronized", async ({

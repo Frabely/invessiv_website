@@ -3,8 +3,8 @@
   --preview-ring-top: 0px;
   --preview-ring-width: 0px;
   --preview-ring-height: 0px;
-  --ring-pad-x: 2cqw;
-  --ring-pad-y: 1.1cqw;
+  --ring-pad-x: 2.4cqw;
+  --ring-pad-y: 1.5cqw;
   --ring-x: calc(var(--preview-ring-left) - var(--ring-pad-x));
   --ring-y: calc(var(--preview-ring-top) - var(--ring-pad-y));
   --ring-width: calc(var(--preview-ring-width) + var(--ring-pad-x) * 2);
@@ -13,39 +13,24 @@
   position: absolute;
   inset: 0;
   z-index: 2;
+  overflow: hidden;
   pointer-events: none;
 }
 
 .scrimLayer {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
+  top: 0;
+  left: 0;
+  width: var(--ring-width);
+  height: var(--ring-height);
+  border-radius: 2.2cqw;
   opacity: 0;
-  transition: opacity 280ms ease;
-}
-
-.scrimPanel {
-  position: absolute;
-  inset: 0;
-  background: var(--preview-scrim-color);
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
-}
-
-.scrimTop {
-  transform: translate3d(0, calc(var(--ring-y) - 100%), 0);
-}
-
-.scrimRight {
-  transform: translate3d(calc(var(--ring-x) + var(--ring-width)), 0, 0);
-}
-
-.scrimBottom {
-  transform: translate3d(0, calc(var(--ring-y) + var(--ring-height)), 0);
-}
-
-.scrimLeft {
-  transform: translate3d(calc(var(--ring-x) - 100%), 0, 0);
+  box-shadow: 0 0 0 100vmax var(--preview-scrim-color);
+  transform: translate3d(var(--ring-x), var(--ring-y), 0);
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms ease;
+  will-change: transform, opacity;
 }
 
 .ring {
@@ -54,14 +39,27 @@
   left: 0;
   width: var(--ring-width);
   height: var(--ring-height);
-  border: 0.4cqw solid var(--preview-accent);
-  border-radius: 1.8cqw;
+  border: 0.68cqw solid var(--preview-accent);
+  border-radius: 2.2cqw;
   opacity: 0;
   transform: translate3d(var(--ring-x), var(--ring-y), 0);
+  box-shadow:
+    0 0 0 0.85cqw color-mix(in srgb, var(--preview-accent) 24%, transparent),
+    0 0 4.5cqw color-mix(in srgb, var(--preview-accent) 48%, transparent),
+    inset 0 0 2.4cqw color-mix(in srgb, var(--preview-accent) 22%, transparent);
   transition:
     transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 280ms ease;
   will-change: transform, opacity;
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: -2cqw;
+  border: 0.26cqw dashed
+    color-mix(in srgb, var(--preview-accent) 72%, transparent);
+  border-radius: 3.4cqw;
 }
 
 .overlay[data-active="true"] .scrimLayer {
@@ -72,14 +70,13 @@
   opacity: 1;
 }
 
-.overlay[data-animate="false"] .scrimPanel,
+.overlay[data-animate="false"] .scrimLayer,
 .overlay[data-animate="false"] .ring {
   transition-property: opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .scrimLayer,
-  .scrimPanel,
   .ring {
     transition: none;
   }

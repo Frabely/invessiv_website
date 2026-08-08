@@ -1,5 +1,6 @@
 import { LandingPreviewAnchor } from "@/common/constants/marketing";
 import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
+import { PreviewCta } from "../preview-cta/preview-cta";
 import styles from "./preview-form.module.css";
 
 type PreviewFormProps = {
@@ -17,7 +18,9 @@ export function PreviewForm({ content }: PreviewFormProps) {
       >
         <span className={styles.formField}>{content.formNameLabel}</span>
         <span className={styles.formField}>{content.formEmailLabel}</span>
-        <span className={styles.formSubmit}>{content.formSubmitLabel}</span>
+        <div className={styles.formAction}>
+          <PreviewCta label={content.cta} />
+        </div>
       </div>
     </div>
   );

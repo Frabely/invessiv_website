@@ -8,7 +8,7 @@ type LandingProblemSolutionPair = {
 export type LandingProblemSolutionContent = {
   body: string;
   eyebrow: string;
-  hint: string;
+  labels: LandingProblemSolutionPair;
   pairs: Record<LandingPreviewAnchor, LandingProblemSolutionPair>;
   title: string;
 };

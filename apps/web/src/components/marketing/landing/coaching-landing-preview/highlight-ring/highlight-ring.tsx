@@ -21,12 +21,7 @@ export function HighlightRing({ overlayRef }: HighlightRingProps) {
       data-testid="coaching-preview-highlight-overlay"
       ref={overlayRef}
     >
-      <div className={styles.scrimLayer}>
-        <span className={`${styles.scrimPanel} ${styles.scrimTop}`} />
-        <span className={`${styles.scrimPanel} ${styles.scrimRight}`} />
-        <span className={`${styles.scrimPanel} ${styles.scrimBottom}`} />
-        <span className={`${styles.scrimPanel} ${styles.scrimLeft}`} />
-      </div>
+      <div className={styles.scrimLayer} />
       <span
         className={styles.ring}
         data-testid="coaching-preview-highlight-ring"

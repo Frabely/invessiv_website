@@ -1,7 +1,10 @@
 {
-  "body": "Wenn Besucher abspringen, liegt es selten am Angebot — sondern daran, dass die Seite es nicht auf den Punkt bringt.",
-  "eyebrow": "Problem → Lösung",
-  "hint": "Zeile auswählen — die Demo zeigt die passende Stelle.",
+  "body": "Typische Beispiele, jeweils an einer echten Seite gezeigt.",
+  "eyebrow": "Was sich ändert",
+  "labels": {
+    "problem": "Problem",
+    "solution": "Lösung"
+  },
   "pairs": {
     "cta": {
       "problem": "Viele Wege, kein Ziel",
@@ -12,17 +15,17 @@
       "solution": "Anfrage in zwei Minuten"
     },
     "headline": {
-      "problem": "Angebot bleibt vage",
-      "solution": "Ein Angebot, klar benannt"
+      "problem": "Viel erklärt, nichts gesagt",
+      "solution": "Ein Satz, der sitzt"
     },
     "offer": {
-      "problem": "Unklar, was man bekommt",
-      "solution": "Der Umfang steht auf der Seite"
+      "problem": "Was drin ist: auf Anfrage",
+      "solution": "Umfang und Dauer stehen da"
     },
-    "trust": {
-      "problem": "Kein Bild vom Ergebnis",
-      "solution": "Das Ergebnis in einem Satz"
+    "problems": {
+      "problem": "Redet an Besuchern vorbei",
+      "solution": "Ihre Lage, in ihren Worten"
     }
   },
-  "title": "Vom Absprung zur Anfrage."
+  "title": "Wo Besucher aussteigen — und was sie hält."
 }

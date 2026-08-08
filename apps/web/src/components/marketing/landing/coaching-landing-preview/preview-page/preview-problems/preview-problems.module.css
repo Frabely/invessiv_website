@@ -1,13 +1,17 @@
 .problemBlock {
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto;
   align-content: center;
-  gap: 3.1cqw;
   padding: 4.6cqw 5cqw;
   overflow: hidden;
   border-top: 1px solid var(--preview-border);
   background: var(--preview-surface-soft);
+}
+
+.statement {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 3.1cqw;
 }
 
 .problemTitle {

@@ -15,7 +15,8 @@ import { useElementInView } from "@/hooks/marketing/use-element-in-view";
 import { useMediaQuery } from "@/hooks/marketing/use-media-query";
 import styles from "./landing-visual-stage.module.css";
 
-const MOBILE_STAGE_QUERY = "(max-width: 900px)";
+/** Mirrors the `max-width: 900px` block in problem-solution-section.module.css. */
+const TAP_TOGGLE_MEDIA_QUERY = "(max-width: 900px)";
 
 type LandingVisualStageProps = {
   hero: ReactNode;
@@ -27,7 +28,8 @@ type LandingVisualStageProps = {
 
 /**
  * Keeps the demo visible across the hero and problem-solution section.
- * Owns the active anchor shared by the list and preview.
+ * Owns the active anchor shared by the list and preview. Pointer devices drive
+ * it by hover only; the mobile layout switches to a tap toggle instead.
  */
 export function LandingVisualStage({
   hero,
@@ -43,11 +45,14 @@ export function LandingVisualStage({
     useState<LandingPreviewAnchor | null>(null);
   const [selectedAnchor, setSelectedAnchor] =
     useState<LandingPreviewAnchor | null>(null);
-  const activeAnchor = hoveredAnchor ?? focusedAnchor ?? selectedAnchor;
-  const usesMobileStage = useMediaQuery(MOBILE_STAGE_QUERY);
-  const isProblemSectionInView = useElementInView(problemSlotRef);
-  const visibleAnchor =
-    usesMobileStage && !isProblemSectionInView ? null : activeAnchor;
+  const usesTapToggle = useMediaQuery(TAP_TOGGLE_MEDIA_QUERY);
+  const tapSelection = usesTapToggle ? selectedAnchor : null;
+  const activeAnchor = tapSelection ?? hoveredAnchor ?? focusedAnchor;
+  const isProblemSectionInView = useElementInView(
+    problemSlotRef,
+    "0px 0px -50%",
+  );
+  const visibleAnchor = isProblemSectionInView ? activeAnchor : null;
 
   const toggleSelectedAnchor = useCallback((anchor: LandingPreviewAnchor) => {
     setSelectedAnchor((current) => (current === anchor ? null : anchor));
@@ -66,7 +71,8 @@ export function LandingVisualStage({
           onAnchorFocus={setFocusedAnchor}
           onAnchorHover={setHoveredAnchor}
           onAnchorToggle={toggleSelectedAnchor}
-          selectedAnchor={selectedAnchor}
+          selectedAnchor={tapSelection}
+          usesTapToggle={usesTapToggle}
         />
       </div>
 

@@ -53,11 +53,24 @@ describe("CoachingLandingPreview", () => {
 
       expect(screen.getByText(content.title)).toBeTruthy();
       expect(screen.getByText(content.kicker)).toBeTruthy();
-      expect(screen.getByTestId("coaching-preview-cta").textContent).toBe(
-        content.cta,
-      );
+      expect(screen.getByText(content.problemTitle)).toBeTruthy();
       expect(screen.getByText(content.quoteAuthor)).toBeTruthy();
       expect(screen.queryByText(/4 (Wochen|weeks)/i)).toBeNull();
+    },
+  );
+
+  it.each(["de", "en"] as const)(
+    "repeats one identical call to action for %s",
+    (locale) => {
+      const { content } = renderPreview({ locale });
+
+      const ctas = screen.getAllByTestId("coaching-preview-cta");
+
+      expect(ctas.length).toBeGreaterThan(1);
+      ctas.forEach((cta) => {
+        expect(cta.textContent).toBe(content.cta);
+        expect(cta.className).toBe(ctas[0]?.className);
+      });
     },
   );
 

@@ -39,10 +39,23 @@ function ring() {
   return screen.getByTestId("coaching-preview-highlight-overlay");
 }
 
-function mediaQueryList(matches: boolean): MediaQueryList {
+let intersectionCallback: IntersectionObserverCallback | null;
+
+function setProblemSectionInView(isIntersecting: boolean) {
+  act(() => {
+    intersectionCallback?.(
+      [{ isIntersecting } as IntersectionObserverEntry],
+      {} as IntersectionObserver,
+    );
+  });
+}
+
+const TAP_TOGGLE_MEDIA_QUERY = "(max-width: 900px)";
+
+function mediaQueryList(matches: boolean, media: string): MediaQueryList {
   return {
     matches,
-    media: "(max-width: 900px)",
+    media,
     onchange: null,
     addEventListener: vi.fn(),
     addListener: vi.fn(),
@@ -52,15 +65,19 @@ function mediaQueryList(matches: boolean): MediaQueryList {
   };
 }
 
-describe("LandingVisualStage", () => {
-  let intersectionCallback: IntersectionObserverCallback | null;
+function setTapLayout(usesTapToggle: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn((query: string) =>
+      mediaQueryList(usesTapToggle && query === TAP_TOGGLE_MEDIA_QUERY, query),
+    ),
+  });
+}
 
+describe("LandingVisualStage", () => {
   beforeEach(() => {
     intersectionCallback = null;
-    Object.defineProperty(window, "matchMedia", {
-      configurable: true,
-      value: vi.fn(() => mediaQueryList(false)),
-    });
+    setTapLayout(false);
     Object.defineProperty(window, "IntersectionObserver", {
       configurable: true,
       value: class MockIntersectionObserver {
@@ -107,6 +124,7 @@ describe("LandingVisualStage", () => {
 
   it("marks row and preview together, and clears both again", () => {
     renderStage();
+    setProblemSectionInView(true);
 
     const [firstRow] = rows();
     fireEvent.pointerEnter(firstRow as HTMLElement, { pointerType: "mouse" });
@@ -122,6 +140,7 @@ describe("LandingVisualStage", () => {
 
   it("moves the highlight to the row that takes over", () => {
     renderStage();
+    setProblemSectionInView(true);
 
     const [first, second] = rows();
     fireEvent.pointerEnter(first as HTMLElement, { pointerType: "mouse" });
@@ -131,20 +150,56 @@ describe("LandingVisualStage", () => {
     expect(second?.dataset.active).toBe("true");
   });
 
-  it("keeps a clicked row selected after the mouse leaves", () => {
+  it("leaves no highlight behind when a row is clicked with a mouse", () => {
     renderStage();
+    setProblemSectionInView(true);
+
+    const [firstRow] = rows();
+    fireEvent.pointerEnter(firstRow as HTMLElement, { pointerType: "mouse" });
+    fireEvent.click(firstRow as HTMLElement);
+    fireEvent.focus(firstRow as HTMLElement);
+    fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
+
+    expect(firstRow?.hasAttribute("aria-pressed")).toBe(false);
+    expect(firstRow?.dataset.active).toBe("false");
+    expect(ring().dataset.active).toBe("false");
+  });
+
+  it("keeps a tapped row selected until it is tapped again", () => {
+    setTapLayout(true);
+    renderStage();
+    setProblemSectionInView(true);
 
     const [firstRow] = rows();
     fireEvent.click(firstRow as HTMLElement);
-    fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
 
     expect(firstRow?.getAttribute("aria-pressed")).toBe("true");
     expect(firstRow?.dataset.active).toBe("true");
     expect(ring().dataset.active).toBe("true");
+
+    fireEvent.click(firstRow as HTMLElement);
+
+    expect(firstRow?.getAttribute("aria-pressed")).toBe("false");
+    expect(firstRow?.dataset.active).toBe("false");
+    expect(ring().dataset.active).toBe("false");
   });
 
-  it("keeps the mobile preview on its hero until the problem section is visible", () => {
-    vi.mocked(window.matchMedia).mockReturnValue(mediaQueryList(true));
+  it("moves the tapped selection to another row", () => {
+    setTapLayout(true);
+    renderStage();
+    setProblemSectionInView(true);
+
+    const [firstRow, secondRow] = rows();
+    fireEvent.click(firstRow as HTMLElement);
+    fireEvent.click(secondRow as HTMLElement);
+
+    expect(firstRow?.getAttribute("aria-pressed")).toBe("false");
+    expect(secondRow?.getAttribute("aria-pressed")).toBe("true");
+    expect(secondRow?.dataset.active).toBe("true");
+  });
+
+  it("hides the shared highlight until the problem section is visible", () => {
+    setTapLayout(true);
     renderStage();
 
     const [firstRow] = rows();
@@ -154,12 +209,7 @@ describe("LandingVisualStage", () => {
     expect(firstRow?.dataset.active).toBe("false");
     expect(ring().dataset.active).toBe("false");
 
-    act(() => {
-      intersectionCallback?.(
-        [{ isIntersecting: true } as IntersectionObserverEntry],
-        {} as IntersectionObserver,
-      );
-    });
+    setProblemSectionInView(true);
 
     expect(firstRow?.dataset.active).toBe("true");
     expect(ring().dataset.active).toBe("true");

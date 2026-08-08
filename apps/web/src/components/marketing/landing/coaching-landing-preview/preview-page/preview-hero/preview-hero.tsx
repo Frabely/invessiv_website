@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { LandingPreviewAnchor } from "@/common/constants/marketing";
 import type { LandingCoachingPreviewContent } from "@/common/contracts/marketing";
+import { PreviewCta } from "../preview-cta/preview-cta";
 import styles from "./preview-hero.module.css";
 
 type PreviewHeroProps = {
@@ -24,13 +25,9 @@ export function PreviewHero({ content }: PreviewHeroProps) {
 
         <p className={styles.description}>{content.description}</p>
 
-        <span
-          className={styles.cta}
-          data-preview-anchor={LandingPreviewAnchor.Cta}
-          data-testid="coaching-preview-cta"
-        >
-          {content.cta}
-        </span>
+        <div className={styles.action}>
+          <PreviewCta anchor={LandingPreviewAnchor.Cta} label={content.cta} />
+        </div>
       </div>
 
       <div className={styles.imageWrap}>
