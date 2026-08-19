@@ -81,6 +81,14 @@
   display: none;
 }
 
+.mobilePreview {
+  display: none;
+}
+
+.mobilePreview[hidden] {
+  display: none;
+}
+
 .columns {
   display: grid;
   grid-template-columns: var(--ledger-columns);
@@ -127,7 +135,7 @@
   color: inherit;
   font: inherit;
   text-align: left;
-  cursor: default;
+  cursor: pointer;
 }
 
 .pairButton::before {
@@ -253,7 +261,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
   .section {
     padding-block: clamp(2rem, 6vw, 3rem) clamp(4rem, 11vw, 6rem);
     grid-template-columns: minmax(0, 1fr);
@@ -311,21 +319,58 @@
   .actionCue > svg {
     width: 0.82rem;
     height: 0.82rem;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .pairButton[data-active="true"] .actionCue {
     border-color: color-mix(in srgb, var(--color-accent-warm) 68%, transparent);
-    color: var(--color-on-cta);
-    background: var(--color-accent-warm);
-    transform: scale(1.04);
+    color: var(--color-accent-warm);
+    background: color-mix(
+      in srgb,
+      var(--color-accent-warm) 12%,
+      var(--color-surface-1)
+    );
+  }
+
+  .pair[data-selected="true"] .actionCue > svg {
+    transform: rotate(180deg);
   }
 
   .pairButton[data-active="true"] .solution {
     transform: none;
   }
+
+  .mobilePreview {
+    --mobile-preview-radius: 15px;
+
+    display: grid;
+    margin: 0.3rem var(--ledger-inline-pad) 1rem;
+    padding: clamp(0.45rem, 2vw, 0.65rem);
+    overflow: hidden;
+    border: 1px solid
+      color-mix(in srgb, var(--color-border-strong) 82%, transparent);
+    border-radius: var(--mobile-preview-radius);
+    background: color-mix(in srgb, var(--color-surface-1) 88%, var(--color-bg));
+    box-shadow: 0 16px 34px color-mix(in srgb, #05080d 22%, transparent);
+    animation: mobile-preview-reveal 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 }
 
-@media (min-width: 901px) {
+@keyframes mobile-preview-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+    clip-path: inset(0 0 18% 0 round var(--mobile-preview-radius));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 round var(--mobile-preview-radius));
+  }
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
   .section {
     padding-block: clamp(5.5rem, 8vw, 8rem) clamp(12rem, 18vw, 23rem);
   }
@@ -344,7 +389,12 @@
   .problem,
   .solution,
   .actionCue,
+  .actionCue > svg,
   .pairButton::before {
     transition: none;
+  }
+
+  .mobilePreview {
+    animation: none;
   }
 }

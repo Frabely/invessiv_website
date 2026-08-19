@@ -23,30 +23,25 @@ export function HeroBackground({ videoSrc }: HeroBackgroundProps) {
   const isWideViewport = useMediaQuery(VIDEO_MEDIA_QUERY);
   const usesVideo = Boolean(videoSrc) && theme === "dark";
 
-  if (usesVideo) {
-    return (
-      <div aria-hidden="true" className={styles.layers}>
-        {isWideViewport ? (
-          <video
-            aria-hidden="true"
-            autoPlay
-            className={styles.video}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            src={videoSrc}
-          />
-        ) : null}
-      </div>
-    );
-  }
-
   return (
     <div aria-hidden="true" className={styles.layers}>
-      <div className={heroVisualStyles.vignette} />
-      <div className={heroVisualStyles.gridOverlay} />
-      <div className={heroVisualStyles.noise} />
+      <div className={styles.fallbackLayers}>
+        <div className={heroVisualStyles.vignette} />
+        <div className={heroVisualStyles.gridOverlay} />
+        <div className={heroVisualStyles.noise} />
+      </div>
+      {usesVideo && isWideViewport ? (
+        <video
+          aria-hidden="true"
+          autoPlay
+          className={styles.video}
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          src={videoSrc}
+        />
+      ) : null}
     </div>
   );
 }

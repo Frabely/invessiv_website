@@ -44,76 +44,23 @@
   min-width: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
   .stage {
-    --stage-mobile-preview-inline: clamp(0.65rem, 2.8vw, 0.9rem);
     --stage-mobile-preview-ratio: 0.62;
-    --stage-mobile-preview-height: calc(
-      (100vw - var(--stage-mobile-preview-inline) * 2) *
-        var(--stage-mobile-preview-ratio)
-    );
-    --stage-mobile-preview-visible-height: calc(
-      var(--stage-mobile-preview-height) * 0.75
-    );
-    --stage-mobile-tall-screen-spacing: clamp(
-      0rem,
-      calc((100dvh - 52rem) * 0.18),
-      0.75rem
-    );
-    --stage-mobile-visual-top-padding: calc(
-      var(--anchor-scroll-offset) - 0.35rem
-    );
-    --stage-mobile-visual-bottom-padding: clamp(1.25rem, 4vw, 1.75rem);
-    --landing-anchor-scroll-margin: calc(
-      var(--stage-mobile-visual-top-padding) +
-        var(--stage-mobile-preview-height) +
-        var(--stage-mobile-visual-bottom-padding) + 0.75rem
-    );
+    --landing-anchor-scroll-margin: calc(var(--anchor-scroll-offset) + 1rem);
 
-    display: flex;
-    flex-direction: column;
     background: var(--color-bg);
   }
 
   .heroSlot {
-    order: 1;
-    display: grid;
-    min-height: calc(
-      100dvh - var(--stage-mobile-preview-visible-height) -
-        var(--stage-mobile-visual-top-padding) +
-        var(--stage-mobile-tall-screen-spacing)
-    );
-  }
-
-  .heroSlot :global(.hero) {
     min-height: 0;
   }
 
-  .problemSlot {
-    order: 3;
+  .heroSlot :global(.hero) {
+    min-height: var(--mobile-viewport-height);
   }
 
   .visualLayer {
-    order: 2;
-    position: sticky;
-    inset-block: 0 auto;
-    inset-inline: auto;
-    padding: var(--stage-mobile-visual-top-padding)
-      var(--stage-mobile-preview-inline)
-      var(--stage-mobile-visual-bottom-padding);
-    background: var(--color-bg);
-  }
-
-  .visualRail {
-    max-width: none;
-    height: auto;
-    padding-inline: 0;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .visualSticky {
-    grid-column: 1;
-    position: static;
-    height: auto;
+    display: none;
   }
 }

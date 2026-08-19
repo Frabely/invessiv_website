@@ -35,7 +35,6 @@ export function PreviewHero({ content }: PreviewHeroProps) {
           alt=""
           className={styles.image}
           fill
-          priority
           sizes="(max-width: 900px) 88vw, (max-width: 1400px) 34vw, 480px"
           src="/assets/landing-page/coaching-preview-v1.png"
         />

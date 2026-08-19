@@ -2,8 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const LANDING_PATH = "/de/services/landing-page";
 const PREVIEW_SELECTOR = "[data-testid='coaching-preview-browser']";
-/** The pointer layout renders rows as plain divs; only the tap layout uses buttons. */
-const POINTER_ROW_SELECTOR = "#solution li > div";
+const POINTER_ROW_SELECTOR = "#solution li > button";
 
 test("keeps the preview geometry stable across hydration", async ({
   browser,
@@ -26,7 +25,7 @@ test("keeps the preview geometry stable across hydration", async ({
   const firstRow = hydratedPage.locator(POINTER_ROW_SELECTOR).first();
   await firstRow.hover();
   await expect(firstRow).toHaveAttribute("data-active", "true");
-  await expect(firstRow).not.toHaveAttribute("aria-pressed", /.*/);
+  await expect(firstRow).not.toHaveAttribute("aria-expanded", /.*/);
   await expect(
     hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
   ).toHaveAttribute("data-active", "true");
@@ -35,13 +34,15 @@ test("keeps the preview geometry stable across hydration", async ({
   await expect(firstRow).toHaveAttribute("data-active", "false");
   await expect(secondRow).toHaveAttribute("data-active", "true");
   await secondRow.click();
-  await expect(secondRow).not.toHaveAttribute("aria-pressed", /.*/);
+  await expect(secondRow).not.toHaveAttribute("aria-expanded", /.*/);
   await expect(secondRow).toHaveAttribute("data-active", "true");
   await hydratedPage.mouse.move(0, 0);
-  await expect(secondRow).toHaveAttribute("data-active", "false");
+  await expect(secondRow).toHaveAttribute("data-active", "true");
   await expect(
     hydratedPage.locator("[data-testid='coaching-preview-highlight-overlay']"),
-  ).toHaveAttribute("data-active", "false");
+  ).toHaveAttribute("data-active", "true");
+  await secondRow.evaluate((element) => (element as HTMLElement).blur());
+  await expect(secondRow).toHaveAttribute("data-active", "false");
   await secondRow.hover();
   await expect(secondRow).toHaveAttribute("data-active", "true");
   const hydratedBox = await hydratedPage
@@ -76,40 +77,33 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
 
   const heroBox = await page.locator("#hero").boundingBox();
   const heroTrustBox = await page.locator("#hero p").last().boundingBox();
-  const previewBox = await page.locator(PREVIEW_SELECTOR).boundingBox();
+  const preview = page.locator(PREVIEW_SELECTOR);
+  const previewBox = await preview.boundingBox();
   const solutionBox = await page.locator("#solution").boundingBox();
 
   expect(videoRequests).toEqual([]);
   expect(heroBox).not.toBeNull();
   expect(heroTrustBox).not.toBeNull();
-  expect(previewBox).not.toBeNull();
+  expect(previewBox).toBeNull();
   expect(solutionBox).not.toBeNull();
-  expect(previewBox?.x).toBeLessThan(15);
-  expect(previewBox?.width).toBeGreaterThan(360);
-  expect(previewBox?.y).toBeGreaterThan(
-    (heroBox?.y ?? 0) + (heroBox?.height ?? 0),
-  );
-  expect(previewBox?.y).toBeLessThan(844);
-  expect(previewBox?.y).toBeGreaterThan(
-    (heroTrustBox?.y ?? 0) + (heroTrustBox?.height ?? 0) + 16,
-  );
-  expect((previewBox?.y ?? 0) + (previewBox?.height ?? 0)).toBeGreaterThan(844);
-  expect((previewBox?.y ?? 0) + (previewBox?.height ?? 0)).toBeLessThan(934);
-  expect((844 - (previewBox?.y ?? 0)) / (previewBox?.height ?? 1)).toBeCloseTo(
-    0.75,
-    1,
-  );
   expect(solutionBox?.y).toBeGreaterThan(
-    (previewBox?.y ?? 0) + (previewBox?.height ?? 0),
+    (heroTrustBox?.y ?? 0) + (heroTrustBox?.height ?? 0),
   );
 
   const formRow = page.locator("#solution button").last();
   await formRow.scrollIntoViewIfNeeded();
   await formRow.click();
 
-  await expect(formRow).toHaveAttribute("aria-pressed", "true");
+  await expect(formRow).toHaveAttribute("aria-expanded", "true");
   await expect(formRow).toHaveAttribute("data-active", "true");
   await expect(formRow).toBeFocused();
+  await expect(preview).toBeVisible();
+  await expect(page.locator(PREVIEW_SELECTOR)).toHaveCount(1);
+  const controlledPanelId = await formRow.getAttribute("aria-controls");
+  expect(controlledPanelId).not.toBeNull();
+  await expect(
+    page.locator(`#${controlledPanelId} ${PREVIEW_SELECTOR}`),
+  ).toHaveCount(1);
 
   const initialDelta = await page.evaluate(() => {
     const anchor = document.querySelector<HTMLElement>(
@@ -137,7 +131,7 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
   await page.mouse.move(0, 0);
 
   await expect(formRow).toBeFocused();
-  await expect(formRow).toHaveAttribute("aria-pressed", "true");
+  await expect(formRow).toHaveAttribute("aria-expanded", "true");
   await expect(formRow).toHaveAttribute("data-active", "true");
 
   const track = page.locator("[data-preview-page]").locator("..");
@@ -148,8 +142,8 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
   await page.locator("#hero").scrollIntoViewIfNeeded();
   await expect(
     page.locator("[data-testid='coaching-preview-highlight-overlay']"),
-  ).toHaveAttribute("data-active", "false");
-  await expect(formRow).toHaveAttribute("data-active", "false");
+  ).toHaveAttribute("data-active", "true");
+  await expect(formRow).toHaveAttribute("data-active", "true");
   await expect
     .poll(() =>
       track.evaluate((element) =>
@@ -161,7 +155,7 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
   const firstRow = page.locator("#solution button").first();
   await firstRow.scrollIntoViewIfNeeded();
   await firstRow.click();
-  await expect(firstRow).toHaveAttribute("aria-pressed", "true");
+  await expect(firstRow).toHaveAttribute("aria-expanded", "true");
 
   await expect
     .poll(() =>
@@ -187,30 +181,34 @@ test("keeps first highlight, focus, and persistent selection synchronized", asyn
     .toBe(true);
 });
 
-test("keeps one quarter of the mobile preview below a tall viewport", async ({
+test("reveals one mobile preview directly below the selected row", async ({
   page,
 }) => {
   await page.setViewportSize({ height: 932, width: 430 });
   await page.goto(LANDING_PATH);
+  const rejectCookies = page.getByRole("button", { name: "Ablehnen" });
+  if (await rejectCookies.isVisible()) {
+    await rejectCookies.click();
+  }
 
-  const previewBox = await page.locator(PREVIEW_SELECTOR).boundingBox();
-  const headerBox = await page.locator("header").first().boundingBox();
-  const headingBox = await page.locator("#hero h1").boundingBox();
-  const trustBox = await page.locator("#hero p").last().boundingBox();
+  const preview = page.locator(PREVIEW_SELECTOR);
+  expect(await preview.boundingBox()).toBeNull();
 
-  expect(previewBox).not.toBeNull();
-  expect(headerBox).not.toBeNull();
-  expect(headingBox).not.toBeNull();
-  expect(trustBox).not.toBeNull();
-  expect(
-    (headingBox?.y ?? 0) - ((headerBox?.y ?? 0) + (headerBox?.height ?? 0)),
-  ).toBeGreaterThan(48);
-  expect(previewBox?.y).toBeGreaterThan(
-    (trustBox?.y ?? 0) + (trustBox?.height ?? 0) + 16,
+  const firstRow = page.locator("#solution li > button").first();
+  await firstRow.scrollIntoViewIfNeeded();
+  await firstRow.click();
+  await expect(firstRow).toHaveAttribute("aria-expanded", "true");
+  await expect(preview).toBeVisible();
+  await expect(page.locator(PREVIEW_SELECTOR)).toHaveCount(1);
+
+  const rowBox = await firstRow.boundingBox();
+  const revealedPreviewBox = await preview.boundingBox();
+  expect(rowBox).not.toBeNull();
+  expect(revealedPreviewBox).not.toBeNull();
+  expect(revealedPreviewBox?.y).toBeGreaterThanOrEqual(
+    (rowBox?.y ?? 0) + (rowBox?.height ?? 0),
   );
-  const visiblePreviewShare =
-    (932 - (previewBox?.y ?? 0)) / (previewBox?.height ?? 1);
-
-  expect(visiblePreviewShare).toBeGreaterThan(0.68);
-  expect(visiblePreviewShare).toBeLessThan(0.73);
+  const controlledPanelId = await firstRow.getAttribute("aria-controls");
+  expect(controlledPanelId).not.toBeNull();
+  await expect(page.locator(`#${controlledPanelId}`)).toBeVisible();
 });

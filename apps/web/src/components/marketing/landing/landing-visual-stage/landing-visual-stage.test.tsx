@@ -30,7 +30,6 @@ function renderStage() {
   );
 }
 
-/** The row element is a button in the tap layout and a plain div otherwise. */
 function rows() {
   const section = document.getElementById("solution") as HTMLElement;
   return within(within(section).getByRole("list"))
@@ -53,7 +52,8 @@ function setProblemSectionInView(isIntersecting: boolean) {
   });
 }
 
-const TAP_TOGGLE_MEDIA_QUERY = "(max-width: 900px)";
+const TAP_TOGGLE_MEDIA_QUERY =
+  "(max-width: 900px), (hover: none) and (pointer: coarse)";
 
 function mediaQueryList(matches: boolean, media: string): MediaQueryList {
   return {
@@ -153,7 +153,7 @@ describe("LandingVisualStage", () => {
     expect(second?.dataset.active).toBe("true");
   });
 
-  it("leaves no highlight behind when a row is clicked with a mouse", () => {
+  it("keeps keyboard focus active after the pointer leaves", () => {
     renderStage();
     setProblemSectionInView(true);
 
@@ -163,7 +163,12 @@ describe("LandingVisualStage", () => {
     fireEvent.focus(firstRow as HTMLElement);
     fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
 
-    expect(firstRow?.hasAttribute("aria-pressed")).toBe(false);
+    expect(firstRow?.hasAttribute("aria-expanded")).toBe(false);
+    expect(firstRow?.dataset.active).toBe("true");
+    expect(ring().dataset.active).toBe("true");
+
+    fireEvent.blur(firstRow as HTMLElement);
+
     expect(firstRow?.dataset.active).toBe("false");
     expect(ring().dataset.active).toBe("false");
   });
@@ -176,15 +181,21 @@ describe("LandingVisualStage", () => {
     const [firstRow] = rows();
     fireEvent.click(firstRow as HTMLElement);
 
-    expect(firstRow?.getAttribute("aria-pressed")).toBe("true");
+    expect(firstRow?.getAttribute("aria-expanded")).toBe("true");
     expect(firstRow?.dataset.active).toBe("true");
-    expect(ring().dataset.active).toBe("true");
+    expect(screen.getByTestId("problem-solution-mobile-preview")).toBeTruthy();
+    expect(screen.getAllByTestId("coaching-preview-browser")).toHaveLength(1);
+    expect(
+      within(screen.getByTestId("problem-solution-mobile-preview")).getByTestId(
+        "coaching-preview-highlight-overlay",
+      ).dataset.active,
+    ).toBe("true");
 
     fireEvent.click(firstRow as HTMLElement);
 
-    expect(firstRow?.getAttribute("aria-pressed")).toBe("false");
+    expect(firstRow?.getAttribute("aria-expanded")).toBe("false");
     expect(firstRow?.dataset.active).toBe("false");
-    expect(ring().dataset.active).toBe("false");
+    expect(screen.queryByTestId("problem-solution-mobile-preview")).toBeNull();
   });
 
   it("moves the tapped selection to another row", () => {
@@ -196,25 +207,33 @@ describe("LandingVisualStage", () => {
     fireEvent.click(firstRow as HTMLElement);
     fireEvent.click(secondRow as HTMLElement);
 
-    expect(firstRow?.getAttribute("aria-pressed")).toBe("false");
-    expect(secondRow?.getAttribute("aria-pressed")).toBe("true");
+    expect(firstRow?.getAttribute("aria-expanded")).toBe("false");
+    expect(secondRow?.getAttribute("aria-expanded")).toBe("true");
     expect(secondRow?.dataset.active).toBe("true");
   });
 
-  it("hides the shared highlight until the problem section is visible", () => {
+  it("keeps an inline selection visible independently of sticky-section visibility", () => {
     setTapLayout(true);
     renderStage();
 
     const [firstRow] = rows();
     fireEvent.click(firstRow as HTMLElement);
 
-    expect(firstRow?.getAttribute("aria-pressed")).toBe("true");
-    expect(firstRow?.dataset.active).toBe("false");
-    expect(ring().dataset.active).toBe("false");
+    expect(firstRow?.getAttribute("aria-expanded")).toBe("true");
+    expect(firstRow?.dataset.active).toBe("true");
+    expect(
+      within(screen.getByTestId("problem-solution-mobile-preview")).getByTestId(
+        "coaching-preview-highlight-overlay",
+      ).dataset.active,
+    ).toBe("true");
 
     setProblemSectionInView(true);
 
     expect(firstRow?.dataset.active).toBe("true");
-    expect(ring().dataset.active).toBe("true");
+    expect(
+      within(screen.getByTestId("problem-solution-mobile-preview")).getByTestId(
+        "coaching-preview-highlight-overlay",
+      ).dataset.active,
+    ).toBe("true");
   });
 });

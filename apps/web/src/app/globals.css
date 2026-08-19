@@ -104,7 +104,6 @@
   --layout-rail-inline-gutter: var(--page-inline-gutter);
   --hero-grid-columns: minmax(0, 1.24fr) minmax(320px, 0.76fr);
   --hero-grid-gap: clamp(28px, 4.6vw, 72px);
-  --hero-visual-bleed-slice: 0.16;
   --measure-text: 72ch;
   --measure-lead: 64ch;
   --measure-compact: 58ch;

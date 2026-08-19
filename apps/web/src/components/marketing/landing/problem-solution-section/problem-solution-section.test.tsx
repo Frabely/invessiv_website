@@ -59,6 +59,7 @@ function renderSection({
   const onAnchorFocus = vi.fn();
   const onAnchorAmbient = vi.fn();
   const onAnchorToggle = vi.fn();
+  const onMobilePreviewHostChange = vi.fn();
 
   render(
     <ProblemSolutionSection
@@ -69,15 +70,20 @@ function renderSection({
       onAnchorAmbient={onAnchorAmbient}
       onAnchorFocus={onAnchorFocus}
       onAnchorToggle={onAnchorToggle}
+      onMobilePreviewHostChange={onMobilePreviewHostChange}
       selectedAnchor={selectedAnchor}
       usesTapToggle={usesTapToggle}
     />,
   );
 
-  return { onAnchorFocus, onAnchorAmbient, onAnchorToggle };
+  return {
+    onAnchorFocus,
+    onAnchorAmbient,
+    onAnchorToggle,
+    onMobilePreviewHostChange,
+  };
 }
 
-/** The row element is a button in the tap layout and a plain div otherwise. */
 function rows() {
   return within(screen.getByRole("list"))
     .getAllByRole("listitem")
@@ -121,7 +127,7 @@ describe("ProblemSolutionSection", () => {
 
     fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
     expect(onAnchorAmbient).toHaveBeenCalledWith(null);
-    expect(onAnchorFocus).toHaveBeenCalledWith(null);
+    expect(onAnchorFocus).not.toHaveBeenCalled();
   });
 
   it("keeps the anchor when a touch pointer leaves", () => {
@@ -144,11 +150,13 @@ describe("ProblemSolutionSection", () => {
     expect(onAnchorFocus).toHaveBeenCalledWith(null);
   });
 
-  it("announces no button while the pointer layout is active", () => {
+  it("keeps stable button markup in the pointer layout", () => {
     renderSection();
 
-    expect(screen.queryAllByRole("button")).toHaveLength(0);
-    expect(rows().every((row) => row.tabIndex === 0)).toBe(true);
+    expect(screen.getAllByRole("button")).toHaveLength(
+      LANDING_PREVIEW_ANCHOR_ORDER.length,
+    );
+    expect(rows().every((row) => row.tagName === "BUTTON")).toBe(true);
   });
 
   it("ignores clicks while the pointer layout is active", () => {
@@ -158,11 +166,11 @@ describe("ProblemSolutionSection", () => {
     expect(onAnchorToggle).not.toHaveBeenCalled();
   });
 
-  it("offers no toggle state while the pointer layout is active", () => {
+  it("offers no disclosure state while the pointer layout is active", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
     const withToggleState = rows().filter((row) =>
-      row.hasAttribute("aria-pressed"),
+      row.hasAttribute("aria-expanded"),
     );
 
     expect(withToggleState).toHaveLength(0);
@@ -203,28 +211,29 @@ describe("ProblemSolutionSection", () => {
     renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
 
     const active = rows().filter((row) => row.dataset.active === "true");
-    const checkIcons = document.querySelectorAll('[data-icon="check"]');
-    const tapIcons = document.querySelectorAll('[data-icon="hand-pointer"]');
 
     expect(active).toHaveLength(1);
     expect(active[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
-    expect(checkIcons).toHaveLength(1);
-    expect(tapIcons).toHaveLength(LANDING_PREVIEW_ANCHOR_ORDER.length - 1);
   });
 
-  it("exposes the tapped selection with aria-pressed", () => {
+  it("exposes the tapped selection as an expanded inline preview", () => {
     renderSection({
       activeAnchor: LandingPreviewAnchor.Problems,
       selectedAnchor: LandingPreviewAnchor.Problems,
       usesTapToggle: true,
     });
 
-    const pressed = rows().filter(
-      (row) => row.getAttribute("aria-pressed") === "true",
+    const expanded = rows().filter(
+      (row) => row.getAttribute("aria-expanded") === "true",
     );
 
-    expect(pressed).toHaveLength(1);
-    expect(pressed[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
+    expect(expanded).toHaveLength(1);
+    expect(expanded[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
+    const panel = screen.getByTestId("problem-solution-mobile-preview");
+    expect(panel.id).toBe(expanded[0]?.getAttribute("aria-controls"));
+    expect(panel.hidden).toBe(false);
+    expect(document.getElementById("solution-headline-preview")).toBeTruthy();
+    expect(document.getElementById("solution-cta-preview")?.hidden).toBe(true);
   });
 
   it("marks items as visible for the staggered reveal", async () => {

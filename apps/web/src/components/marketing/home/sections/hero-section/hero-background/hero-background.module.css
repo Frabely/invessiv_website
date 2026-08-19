@@ -24,25 +24,28 @@
 .video {
   position: absolute;
   inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 58% center;
 }
 
+.fallbackLayers {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .layers:has(.video)::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 2;
   background: linear-gradient(
     90deg,
     color-mix(in srgb, var(--color-bg) 92%, transparent) 0%,
     color-mix(in srgb, var(--color-bg) 58%, transparent) 46%,
     color-mix(in srgb, var(--color-bg) 8%, transparent) 100%
   );
-}
-
-.layers:has(.video) > :not(.video) {
-  z-index: 2;
 }

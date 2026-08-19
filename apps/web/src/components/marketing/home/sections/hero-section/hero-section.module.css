@@ -256,6 +256,8 @@
   }
 
   .visualBleed {
+    --hero-visual-bleed-slice: 0.16;
+
     min-height: calc(
       100dvh + (100vw - var(--layout-rail-inline-gutter) * 2) *
         var(--hero-visual-bleed-slice)

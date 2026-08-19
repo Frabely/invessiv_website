@@ -1,6 +1,6 @@
 "use client";
 
-import { faCheck, faHandPointer } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import { useRef } from "react";
@@ -20,6 +20,7 @@ type ProblemSolutionSectionProps = LandingProblemSolutionContent & {
   onAnchorAmbient: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorFocus: (anchor: LandingPreviewAnchor | null) => void;
   onAnchorToggle: (anchor: LandingPreviewAnchor) => void;
+  onMobilePreviewHostChange: (element: HTMLDivElement | null) => void;
   selectedAnchor: LandingPreviewAnchor | null;
   usesTapToggle: boolean;
 };
@@ -34,6 +35,7 @@ export function ProblemSolutionSection({
   onAnchorAmbient,
   onAnchorFocus,
   onAnchorToggle,
+  onMobilePreviewHostChange,
   pairs,
   selectedAnchor,
   title,
@@ -46,16 +48,14 @@ export function ProblemSolutionSection({
     event: ReactPointerEvent<HTMLElement>,
     anchor: LandingPreviewAnchor,
   ) => {
-    if (event.pointerType === "mouse") {
+    if (event.pointerType === "mouse" || event.pointerType === "pen") {
       onAnchorAmbient(anchor);
     }
   };
 
-  /** Also releases the focus a mouse click leaves behind, so nothing sticks. */
   const handlePointerLeave = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.pointerType === "mouse") {
+    if (event.pointerType === "mouse" || event.pointerType === "pen") {
       onAnchorAmbient(null);
-      onAnchorFocus(null);
     }
   };
 
@@ -81,57 +81,60 @@ export function ProblemSolutionSection({
           <ul className={styles.pairList}>
             {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
               const pair = pairs[anchor];
-              const row = (
-                <>
-                  <span className={styles.problem}>{pair.problem}</span>
-                  <span aria-hidden="true" className={styles.link}>
-                    <span className={styles.node} />
-                  </span>
-                  <span className={styles.solution}>{pair.solution}</span>
-                  <span aria-hidden="true" className={styles.actionCue}>
-                    <FontAwesomeIcon
-                      icon={anchor === activeAnchor ? faCheck : faHandPointer}
-                    />
-                  </span>
-                </>
-              );
+              const isSelected = anchor === selectedAnchor;
+              const mobilePreviewId = `${id}-${anchor}-preview`;
 
               return (
                 <li
                   className={styles.pair}
                   data-reveal-item="true"
+                  data-selected={isSelected}
                   key={anchor}
                 >
-                  {usesTapToggle ? (
-                    <button
-                      aria-pressed={anchor === selectedAnchor}
-                      className={styles.pairButton}
-                      data-active={anchor === activeAnchor}
-                      onBlur={() => onAnchorFocus(null)}
-                      onClick={() => handleTap(anchor)}
-                      onPointerEnter={(event) =>
-                        handlePointerEnter(event, anchor)
+                  <button
+                    aria-controls={usesTapToggle ? mobilePreviewId : undefined}
+                    aria-expanded={usesTapToggle ? isSelected : undefined}
+                    className={styles.pairButton}
+                    data-active={anchor === activeAnchor}
+                    onBlur={() => onAnchorFocus(null)}
+                    onClick={() => {
+                      if (usesTapToggle) {
+                        handleTap(anchor);
                       }
-                      onPointerLeave={handlePointerLeave}
-                      type="button"
-                    >
-                      {row}
-                    </button>
-                  ) : (
-                    <div
-                      className={styles.pairButton}
-                      data-active={anchor === activeAnchor}
-                      onBlur={() => onAnchorFocus(null)}
-                      onFocus={() => onAnchorFocus(anchor)}
-                      onPointerEnter={(event) =>
-                        handlePointerEnter(event, anchor)
+                    }}
+                    onFocus={() => {
+                      if (!usesTapToggle) {
+                        onAnchorFocus(anchor);
                       }
-                      onPointerLeave={handlePointerLeave}
-                      tabIndex={0}
-                    >
-                      {row}
-                    </div>
-                  )}
+                    }}
+                    onPointerEnter={(event) =>
+                      handlePointerEnter(event, anchor)
+                    }
+                    onPointerLeave={handlePointerLeave}
+                    type="button"
+                  >
+                    <span className={styles.problem}>{pair.problem}</span>
+                    <span aria-hidden="true" className={styles.link}>
+                      <span className={styles.node} />
+                    </span>
+                    <span className={styles.solution}>{pair.solution}</span>
+                    <span aria-hidden="true" className={styles.actionCue}>
+                      <FontAwesomeIcon icon={faChevronDown} />
+                    </span>
+                  </button>
+                  <div
+                    className={styles.mobilePreview}
+                    data-testid={
+                      isSelected ? "problem-solution-mobile-preview" : undefined
+                    }
+                    hidden={!usesTapToggle || !isSelected}
+                    id={mobilePreviewId}
+                    ref={
+                      usesTapToggle && isSelected
+                        ? onMobilePreviewHostChange
+                        : undefined
+                    }
+                  />
                 </li>
               );
             })}
