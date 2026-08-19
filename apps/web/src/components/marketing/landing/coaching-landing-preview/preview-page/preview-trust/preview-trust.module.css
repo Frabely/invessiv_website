@@ -1,0 +1,35 @@
+.trustBlock {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  padding: 4.6cqw 5.4cqw;
+  overflow: hidden;
+  border-top: 1px solid var(--preview-border);
+  background: var(--preview-surface);
+}
+
+.statement {
+  display: grid;
+  gap: 1.7cqw;
+}
+
+.quote {
+  margin: 0;
+  color: var(--preview-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 3.1cqw;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.015em;
+}
+
+.quoteAuthor {
+  margin: 0;
+  color: var(--preview-subtle);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 1.9cqw;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}

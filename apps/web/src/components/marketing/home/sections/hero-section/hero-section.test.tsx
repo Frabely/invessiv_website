@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HeroSection } from "./hero-section";
 
@@ -16,6 +16,22 @@ vi.mock("@/components/providers/theme-provider", () => ({
 }));
 
 describe("HeroSection", () => {
+  beforeEach(() => {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: vi.fn((query: string) => ({
+        matches: query === "(min-width: 901px)",
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        addListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        removeEventListener: vi.fn(),
+        removeListener: vi.fn(),
+      })),
+    });
+  });
+
   it("renders the updated hero messaging with effort-focused pills", () => {
     render(
       <HeroSection
@@ -98,13 +114,11 @@ describe("HeroSection", () => {
     );
 
     const video = container.querySelector("video");
-    const source = container.querySelector("source");
 
     expect(video).toBeTruthy();
     expect(video?.getAttribute("preload")).toBe("metadata");
     expect(video?.muted).toBe(true);
     expect(video?.playsInline).toBe(true);
-    expect(source?.getAttribute("src")).toBe("/spotlight.mp4");
-    expect(source?.getAttribute("type")).toBe("video/mp4");
+    expect(video?.getAttribute("src")).toBe("/spotlight.mp4");
   });
 });

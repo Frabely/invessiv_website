@@ -1,0 +1,45 @@
+.formBlock {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 2.6cqw;
+  padding: 5cqw;
+  overflow: hidden;
+  border-top: 1px solid var(--preview-border);
+  background: var(--preview-surface-soft);
+}
+
+.formTitle {
+  margin: 0;
+  color: var(--preview-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 3.8cqw;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.formFields {
+  display: grid;
+  align-content: start;
+  gap: 1.8cqw;
+}
+
+.formField {
+  display: flex;
+  align-items: center;
+  height: 7.2cqw;
+  padding: 0 3cqw;
+  border: 1px solid var(--preview-border-strong);
+  border-radius: 1.6cqw;
+  background: var(--preview-surface-raised);
+  color: var(--preview-subtle);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 2.2cqw;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.formAction {
+  display: grid;
+  margin-top: 0.6cqw;
+}

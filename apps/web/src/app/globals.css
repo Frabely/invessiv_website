@@ -21,7 +21,6 @@
   inherits: true;
 }
 
-/* Theme tokens */
 :root {
   color-scheme: light dark;
   --color-bg: #1d1a18;
@@ -29,6 +28,16 @@
   --color-surface-2: #312b27;
   --color-text: #f4f7fd;
   --color-text-muted: #d2dae8;
+  --color-text-faint: color-mix(
+    in srgb,
+    var(--color-text-muted) 62%,
+    transparent
+  );
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 56%,
+    transparent
+  );
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-strong: rgba(255, 255, 255, 0.18);
   --color-shadow: rgba(0, 0, 0, 0.42);
@@ -93,6 +102,8 @@
   --focus-lane-wide: 50rem;
   --layout-rail-max-width: var(--max-content-width);
   --layout-rail-inline-gutter: var(--page-inline-gutter);
+  --hero-grid-columns: minmax(0, 1.24fr) minmax(320px, 0.76fr);
+  --hero-grid-gap: clamp(28px, 4.6vw, 72px);
   --measure-text: 72ch;
   --measure-lead: 64ch;
   --measure-compact: 58ch;
@@ -146,6 +157,12 @@
   --color-surface-2: #e2ebf6;
   --color-text: #162033;
   --color-text-muted: #445775;
+  --color-text-faint: var(--color-text-muted);
+  --color-text-struck: color-mix(
+    in srgb,
+    var(--color-text-muted) 85%,
+    transparent
+  );
   --color-border: rgba(42, 64, 102, 0.24);
   --color-border-strong: rgba(42, 64, 102, 0.36);
   --color-shadow: rgba(28, 41, 67, 0.18);
@@ -211,7 +228,6 @@
   );
 }
 
-/* Base reset and document defaults */
 *,
 *::before,
 *::after {
@@ -281,7 +297,10 @@ section[id] {
 }
 
 .landing-main section[id] {
-  scroll-margin-top: clamp(0.35rem, 1vw, 0.75rem);
+  scroll-margin-top: var(
+    --landing-anchor-scroll-margin,
+    clamp(0.35rem, 1vw, 0.75rem)
+  );
 }
 
 [data-theme="light"] body {
@@ -378,7 +397,6 @@ a {
   outline-offset: 2px;
 }
 
-/* Shared page-level surfaces */
 main {
   position: relative;
   isolation: isolate;
@@ -412,6 +430,8 @@ main {
     --anchor-scroll-offset: calc(
       64px + var(--mobile-safe-top) + var(--anchor-scroll-gap)
     );
+    --hero-grid-columns: 1fr;
+    --hero-grid-gap: 24px;
   }
 
   html,
@@ -488,7 +508,6 @@ main {
   }
 }
 
-/* Shared responsive section spacing */
 .marketing-main {
   --section-shell-pad-inline: 0px;
   --section-shell-pad-top: clamp(1.25rem, 2.6vw, 2.25rem);
@@ -502,6 +521,8 @@ main {
     --max-content-width: 1500px;
     --page-inline-gutter: clamp(136px, 7vw, 172px);
     --section-space: clamp(6rem, 6vw, 8.5rem);
+    --hero-grid-columns: minmax(0, 1.28fr) minmax(320px, 0.72fr);
+    --hero-grid-gap: clamp(40px, 4vw, 80px);
   }
 
   .marketing-main {

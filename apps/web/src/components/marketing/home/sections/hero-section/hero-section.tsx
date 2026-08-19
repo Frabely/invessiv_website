@@ -6,7 +6,7 @@ import { HERO_SECTION_ID } from "@/config/navigation/home";
 import { HeroBackground } from "./hero-background/hero-background";
 import styles from "./hero-section.module.css";
 
-type HeroSectionProps = {
+type HeroSectionBaseProps = {
   compactMobile?: boolean;
   description: string;
   primaryCtaAnalyticsTarget: string;
@@ -18,31 +18,46 @@ type HeroSectionProps = {
   heroSecondaryCta: string;
   heroTag: string;
   heroTrustLine?: string;
-  heroVisualAriaLabel: string;
   heroVideoSrc?: string;
   title: string;
   visualBleed?: boolean;
-  visualSlot?: import("react").ReactNode;
 };
 
-export function HeroSection({
-  compactMobile = false,
-  description,
-  primaryCtaAnalyticsTarget,
-  primaryCtaHref,
-  secondaryCtaAnalyticsTarget,
-  secondaryCtaHref,
-  trackingLocation,
-  heroPrimaryCta,
-  heroSecondaryCta,
-  heroTag,
-  heroTrustLine,
-  heroVisualAriaLabel,
-  heroVideoSrc,
-  title,
-  visualBleed = false,
-  visualSlot,
-}: HeroSectionProps) {
+type HeroSectionProps = HeroSectionBaseProps &
+  (
+    | {
+        heroVisualAriaLabel: string;
+        visualSlot?: never;
+      }
+    | {
+        heroVisualAriaLabel?: never;
+        visualSlot: import("react").ReactNode;
+      }
+  );
+
+export function HeroSection(props: HeroSectionProps) {
+  const visual =
+    props.heroVisualAriaLabel !== undefined ? (
+      <HeroVisual ariaLabel={props.heroVisualAriaLabel} />
+    ) : (
+      props.visualSlot
+    );
+  const {
+    compactMobile = false,
+    description,
+    primaryCtaAnalyticsTarget,
+    primaryCtaHref,
+    secondaryCtaAnalyticsTarget,
+    secondaryCtaHref,
+    trackingLocation,
+    heroPrimaryCta,
+    heroSecondaryCta,
+    heroTag,
+    heroTrustLine,
+    heroVideoSrc,
+    title,
+    visualBleed = false,
+  } = props;
   return (
     <section
       className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} hero`}
@@ -86,7 +101,7 @@ export function HeroSection({
           ) : null}
         </div>
 
-        {visualSlot ?? <HeroVisual ariaLabel={heroVisualAriaLabel} />}
+        {visual}
       </div>
     </section>
   );

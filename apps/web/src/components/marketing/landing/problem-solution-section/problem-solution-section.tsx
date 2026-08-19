@@ -1,99 +1,144 @@
 "use client";
 
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
+import { useRef } from "react";
 
+import type { LandingPreviewAnchor } from "@/common/constants/marketing";
+import { LANDING_PREVIEW_ANCHOR_ORDER } from "@/common/constants/marketing";
+import type { LandingProblemSolutionContent } from "@/common/contracts/marketing";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { Locale } from "@/config/i18n";
-import type { LandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./problem-solution-section.module.css";
 
 type ProblemSolutionSectionProps = LandingProblemSolutionContent & {
+  activeAnchor: LandingPreviewAnchor | null;
   id: string;
   locale: Locale;
+  onAnchorAmbient: (anchor: LandingPreviewAnchor | null) => void;
+  onAnchorFocus: (anchor: LandingPreviewAnchor | null) => void;
+  onAnchorToggle: (anchor: LandingPreviewAnchor) => void;
+  onMobilePreviewHostChange: (element: HTMLDivElement | null) => void;
+  selectedAnchor: LandingPreviewAnchor | null;
+  usesTapToggle: boolean;
 };
 
-function formatPairIndex(index: number): string {
-  return String(index + 1).padStart(2, "0");
-}
-
 export function ProblemSolutionSection({
+  activeAnchor,
   body,
   eyebrow,
   id,
+  labels,
   locale,
+  onAnchorAmbient,
+  onAnchorFocus,
+  onAnchorToggle,
+  onMobilePreviewHostChange,
   pairs,
-  problemLabel,
-  solutionLabel,
+  selectedAnchor,
   title,
+  usesTapToggle,
 }: ProblemSolutionSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [activePairIndex, setActivePairIndex] = useState<number | null>(null);
   useStaggeredSectionReveal(sectionRef, locale);
+
+  const handlePointerEnter = (
+    event: ReactPointerEvent<HTMLElement>,
+    anchor: LandingPreviewAnchor,
+  ) => {
+    if (event.pointerType === "mouse" || event.pointerType === "pen") {
+      onAnchorAmbient(anchor);
+    }
+  };
+
+  const handlePointerLeave = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse" || event.pointerType === "pen") {
+      onAnchorAmbient(null);
+    }
+  };
+
+  const handleTap = (anchor: LandingPreviewAnchor) => {
+    onAnchorToggle(anchor);
+  };
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <header className={styles.header} data-reveal-item="true">
-        <div className={styles.intro}>
+      <div className={styles.inner}>
+        <header className={styles.header} data-reveal-item="true">
           <EyebrowPill className={styles.eyebrow}>{eyebrow}</EyebrowPill>
           <h2 className={styles.title}>{title}</h2>
-        </div>
-        <p className={styles.body}>{body}</p>
-      </header>
+          <p className={styles.body}>{body}</p>
+        </header>
 
-      <div className={styles.transform}>
-        <div className={styles.chaosPanel} data-reveal-item="true">
-          <p aria-hidden="true" className={styles.chaosLabel}>
-            {problemLabel}
-          </p>
-          <ul aria-label={problemLabel} className={styles.chaosList}>
-            {pairs.map((pair, index) => (
-              <li
-                className={styles.scrap}
-                data-highlight={activePairIndex === index ? "true" : undefined}
-                data-reveal-item="true"
-                key={pair.problem}
-                onMouseEnter={() => setActivePairIndex(index)}
-                onMouseLeave={() => setActivePairIndex(null)}
-              >
-                <span className={styles.scrapCard}>
-                  <span aria-hidden="true" className={styles.scrapIndex}>
-                    {formatPairIndex(index)}
-                  </span>
-                  {pair.problem}
-                </span>
-              </li>
-            ))}
+        <div className={styles.ledger}>
+          <div className={styles.columns} data-reveal-item="true">
+            <span className={styles.columnLabel}>{labels.problem}</span>
+            <span className={styles.columnLabel}>{labels.solution}</span>
+          </div>
+
+          <ul className={styles.pairList}>
+            {LANDING_PREVIEW_ANCHOR_ORDER.map((anchor) => {
+              const pair = pairs[anchor];
+              const isSelected = anchor === selectedAnchor;
+              const mobilePreviewId = `${id}-${anchor}-preview`;
+
+              return (
+                <li
+                  className={styles.pair}
+                  data-reveal-item="true"
+                  data-selected={isSelected}
+                  key={anchor}
+                >
+                  <button
+                    aria-controls={usesTapToggle ? mobilePreviewId : undefined}
+                    aria-expanded={usesTapToggle ? isSelected : undefined}
+                    className={styles.pairButton}
+                    data-active={anchor === activeAnchor}
+                    onBlur={() => onAnchorFocus(null)}
+                    onClick={() => {
+                      if (usesTapToggle) {
+                        handleTap(anchor);
+                      }
+                    }}
+                    onFocus={() => {
+                      if (!usesTapToggle) {
+                        onAnchorFocus(anchor);
+                      }
+                    }}
+                    onPointerEnter={(event) =>
+                      handlePointerEnter(event, anchor)
+                    }
+                    onPointerLeave={handlePointerLeave}
+                    type="button"
+                  >
+                    <span className={styles.problem}>{pair.problem}</span>
+                    <span aria-hidden="true" className={styles.link}>
+                      <span className={styles.node} />
+                    </span>
+                    <span className={styles.solution}>{pair.solution}</span>
+                    <span aria-hidden="true" className={styles.actionCue}>
+                      <FontAwesomeIcon icon={faChevronDown} />
+                    </span>
+                  </button>
+                  <div
+                    className={styles.mobilePreview}
+                    data-testid={
+                      isSelected ? "problem-solution-mobile-preview" : undefined
+                    }
+                    hidden={!usesTapToggle || !isSelected}
+                    id={mobilePreviewId}
+                    ref={
+                      usesTapToggle && isSelected
+                        ? onMobilePreviewHostChange
+                        : undefined
+                    }
+                  />
+                </li>
+              );
+            })}
           </ul>
-        </div>
-
-        <span aria-hidden="true" className={styles.connector}>
-          <FontAwesomeIcon aria-hidden="true" icon={faArrowRightLong} />
-        </span>
-
-        <div className={styles.clarityPanel} data-reveal-item="true">
-          <p aria-hidden="true" className={styles.clarityLabel}>
-            {solutionLabel}
-          </p>
-          <ol aria-label={solutionLabel} className={styles.clarityList}>
-            {pairs.map((pair, index) => (
-              <li
-                className={styles.clarityRow}
-                data-highlight={activePairIndex === index ? "true" : undefined}
-                data-reveal-item="true"
-                key={pair.solution}
-                onMouseEnter={() => setActivePairIndex(index)}
-                onMouseLeave={() => setActivePairIndex(null)}
-              >
-                <span aria-hidden="true" className={styles.clarityIndex}>
-                  {formatPairIndex(index)}
-                </span>
-                {pair.solution}
-              </li>
-            ))}
-          </ol>
         </div>
       </div>
     </section>

@@ -1,14 +1,13 @@
 ﻿import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
-import { CoachingLandingPreview } from "@/components/marketing/landing/coaching-landing-preview/coaching-landing-preview";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
 import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { LandingVisualStage } from "@/components/marketing/landing/landing-visual-stage/landing-visual-stage";
 import { SectionScrollFade } from "@/components/marketing/landing/section-scroll-fade/section-scroll-fade";
 import { PricingSection } from "@/components/marketing/landing/pricing-section/pricing-section";
-import { ProblemSolutionSection } from "@/components/marketing/landing/problem-solution-section/problem-solution-section";
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
 import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
@@ -76,32 +75,33 @@ export function LandingPage({ locale }: LandingPageProps) {
 
         <LandingFunnelTracker />
 
-        <HeroSection
-          compactMobile
-          description={hero.description}
-          heroPrimaryCta={hero.primaryCta}
-          heroSecondaryCta={hero.secondaryCta}
-          heroTag={hero.tag}
-          heroTrustLine={hero.trustLine}
-          heroVisualAriaLabel={hero.visualAriaLabel}
-          heroVideoSrc="/assets/landing-page/spotlight.mp4"
-          primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
-          primaryCtaHref={SECTION_HREFS.contact}
-          secondaryCtaAnalyticsTarget="process"
-          secondaryCtaHref={SECTION_HREFS.process}
-          title={hero.title}
-          trackingLocation="landing_hero"
-          visualBleed
-          visualSlot={<CoachingLandingPreview content={hero.preview} />}
+        <LandingVisualStage
+          hero={
+            <HeroSection
+              compactMobile
+              description={hero.description}
+              heroPrimaryCta={hero.primaryCta}
+              heroSecondaryCta={hero.secondaryCta}
+              heroTag={hero.tag}
+              heroTrustLine={hero.trustLine}
+              heroVideoSrc="/assets/landing-page/spotlight.mp4"
+              primaryCtaAnalyticsTarget={CONTACT_SECTION_ID}
+              primaryCtaHref={SECTION_HREFS.contact}
+              secondaryCtaAnalyticsTarget="process"
+              secondaryCtaHref={SECTION_HREFS.process}
+              title={hero.title}
+              trackingLocation="landing_hero"
+              visualBleed
+              visualSlot={null}
+            />
+          }
+          locale={locale}
+          preview={hero.preview}
+          problemSolution={problemSolution}
+          solutionSectionId={LANDING_SECTION_IDS.solution}
         />
 
         <SectionScrollFade sectionIds={LANDING_FUNNEL_SECTION_IDS} />
-
-        <ProblemSolutionSection
-          id={LANDING_SECTION_IDS.solution}
-          locale={locale}
-          {...problemSolution}
-        />
 
         <TrustSection
           id={LANDING_SECTION_IDS.trust}

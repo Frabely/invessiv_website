@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { cleanup, render } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { HeroBackground } from "./hero-background";
 
@@ -21,6 +21,26 @@ function mockTheme(theme: "dark" | "light") {
   });
 }
 
+function mockViewport(isWide: boolean) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: vi.fn((query: string) => ({
+      matches: isWide && query === "(min-width: 901px)",
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      addListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+      removeEventListener: vi.fn(),
+      removeListener: vi.fn(),
+    })),
+  });
+}
+
+beforeEach(() => {
+  mockViewport(true);
+});
+
 afterEach(() => {
   cleanup();
   useThemeMock.mockReset();
@@ -36,9 +56,19 @@ describe("HeroBackground", () => {
     expect(video?.muted).toBe(true);
     expect(video?.playsInline).toBe(true);
     expect(video?.getAttribute("preload")).toBe("metadata");
-    expect(container.querySelector("source")?.getAttribute("src")).toBe(
-      "/spotlight.mp4",
-    );
+    expect(video?.getAttribute("src")).toBe("/spotlight.mp4");
+    expect(container.querySelector("source")).toBeNull();
+  });
+
+  it("keeps the video out of the DOM below the desktop breakpoint", () => {
+    mockTheme("dark");
+    mockViewport(false);
+    const { container } = render(<HeroBackground videoSrc="/spotlight.mp4" />);
+
+    expect(container.querySelector("video")).toBeNull();
+    expect(
+      container.firstElementChild?.firstElementChild?.children,
+    ).toHaveLength(3);
   });
 
   it("keeps the video out of the DOM in light mode so it is never requested", () => {
@@ -53,7 +83,9 @@ describe("HeroBackground", () => {
     mockTheme("light");
     const { container } = render(<HeroBackground videoSrc="/spotlight.mp4" />);
 
-    expect(container.firstElementChild?.children).toHaveLength(3);
+    expect(
+      container.firstElementChild?.firstElementChild?.children,
+    ).toHaveLength(3);
   });
 
   it("renders the static layers in dark mode without a video source", () => {
@@ -61,6 +93,8 @@ describe("HeroBackground", () => {
     const { container } = render(<HeroBackground />);
 
     expect(container.querySelector("video")).toBeNull();
-    expect(container.firstElementChild?.children).toHaveLength(3);
+    expect(
+      container.firstElementChild?.firstElementChild?.children,
+    ).toHaveLength(3);
   });
 });

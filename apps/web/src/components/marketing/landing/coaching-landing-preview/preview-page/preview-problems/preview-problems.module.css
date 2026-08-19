@@ -1,0 +1,57 @@
+.problemBlock {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  padding: 4.6cqw 5cqw;
+  overflow: hidden;
+  border-top: 1px solid var(--preview-border);
+  background: var(--preview-surface-soft);
+}
+
+.statement {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 3.1cqw;
+}
+
+.problemTitle {
+  margin: 0;
+  color: var(--preview-text);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: 4.2cqw;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.problemList {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  align-content: start;
+  gap: 2.6cqw;
+  list-style: none;
+  color: var(--preview-muted);
+  font-family: var(--font-family-base), sans-serif;
+  font-size: 2.45cqw;
+  font-weight: 600;
+  line-height: 1.32;
+}
+
+.problemList li {
+  position: relative;
+  padding-left: 3.3cqw;
+}
+
+.problemList li::before {
+  content: "";
+  position: absolute;
+  top: 0.44em;
+  left: 0;
+  width: 1.25cqw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--preview-accent);
+}

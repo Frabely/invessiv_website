@@ -1,0 +1,66 @@
+.stage {
+  --stage-visual-balance-offset: 13rem;
+  --stage-visual-start: max(
+    var(--anchor-scroll-offset),
+    calc(50svh - var(--stage-visual-balance-offset))
+  );
+  --stage-visual-bleed: 20rem;
+
+  position: relative;
+}
+
+.heroSlot,
+.problemSlot {
+  position: relative;
+}
+
+.visualLayer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 3;
+  padding-inline: var(--layout-rail-inline-gutter);
+  padding-block-start: var(--stage-visual-start);
+  pointer-events: none;
+}
+
+.visualRail {
+  width: 100%;
+  max-width: var(--layout-rail-max-width);
+  height: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--hero-grid-columns);
+  gap: var(--hero-grid-gap);
+}
+
+.visualSticky {
+  grid-column: 2;
+  position: sticky;
+  top: var(--anchor-scroll-offset);
+  height: calc(100svh - var(--stage-visual-start) + var(--stage-visual-bleed));
+  display: grid;
+  place-items: stretch;
+  min-width: 0;
+}
+
+@media (max-width: 900px), (hover: none) and (pointer: coarse) {
+  .stage {
+    --stage-mobile-preview-ratio: 0.62;
+    --landing-anchor-scroll-margin: calc(var(--anchor-scroll-offset) + 1rem);
+
+    background: var(--color-bg);
+  }
+
+  .heroSlot {
+    min-height: 0;
+  }
+
+  .heroSlot :global(.hero) {
+    min-height: var(--mobile-viewport-height);
+  }
+
+  .visualLayer {
+    display: none;
+  }
+}

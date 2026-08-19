@@ -1,0 +1,83 @@
+.overlay {
+  --preview-ring-left: 0px;
+  --preview-ring-top: 0px;
+  --preview-ring-width: 0px;
+  --preview-ring-height: 0px;
+  --ring-pad-x: 2.4cqw;
+  --ring-pad-y: 1.5cqw;
+  --ring-x: calc(var(--preview-ring-left) - var(--ring-pad-x));
+  --ring-y: calc(var(--preview-ring-top) - var(--ring-pad-y));
+  --ring-width: calc(var(--preview-ring-width) + var(--ring-pad-x) * 2);
+  --ring-height: calc(var(--preview-ring-height) + var(--ring-pad-y) * 2);
+
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scrimLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--ring-width);
+  height: var(--ring-height);
+  border-radius: 2.2cqw;
+  opacity: 0;
+  box-shadow: 0 0 0 100vmax var(--preview-scrim-color);
+  transform: translate3d(var(--ring-x), var(--ring-y), 0);
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms ease;
+  will-change: transform, opacity;
+}
+
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--ring-width);
+  height: var(--ring-height);
+  border: 0.68cqw solid var(--preview-accent);
+  border-radius: 2.2cqw;
+  opacity: 0;
+  transform: translate3d(var(--ring-x), var(--ring-y), 0);
+  box-shadow:
+    0 0 0 0.85cqw color-mix(in srgb, var(--preview-accent) 24%, transparent),
+    0 0 4.5cqw color-mix(in srgb, var(--preview-accent) 48%, transparent),
+    inset 0 0 2.4cqw color-mix(in srgb, var(--preview-accent) 22%, transparent);
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 280ms ease;
+  will-change: transform, opacity;
+}
+
+.ring::after {
+  content: "";
+  position: absolute;
+  inset: -2cqw;
+  border: 0.26cqw dashed
+    color-mix(in srgb, var(--preview-accent) 72%, transparent);
+  border-radius: 3.4cqw;
+}
+
+.overlay[data-active="true"] .scrimLayer {
+  opacity: var(--preview-scrim-opacity);
+}
+
+.overlay[data-active="true"] .ring {
+  opacity: 1;
+}
+
+.overlay[data-animate="false"] .scrimLayer,
+.overlay[data-animate="false"] .ring {
+  transition-property: opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrimLayer,
+  .ring {
+    transition: none;
+  }
+}

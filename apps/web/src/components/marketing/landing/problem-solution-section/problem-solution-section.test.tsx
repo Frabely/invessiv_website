@@ -8,31 +8,93 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  LANDING_PREVIEW_ANCHOR_ORDER,
+  LandingPreviewAnchor,
+} from "@/common/constants/marketing";
 import { ProblemSolutionSection } from "./problem-solution-section";
 
 const CONTENT = {
   body: "Eine Landingpage bündelt dein Angebot auf einer Seite.",
-  eyebrow: "Problem → Lösung",
-  pairs: [
-    { problem: "Angebot zu allgemein", solution: "Angebot klar auf den Punkt" },
-    {
+  eyebrow: "Was sich ändert",
+  labels: {
+    problem: "Problem",
+    solution: "Lösung",
+  },
+  pairs: {
+    cta: {
       problem: "Nächster Schritt unklar",
       solution: "Nächster Schritt eindeutig",
     },
-  ],
-  problemLabel: "Ohne Landingpage",
-  solutionLabel: "Mit Landingpage",
+    form: {
+      problem: "Kontakt wirkt wie Aufwand",
+      solution: "Anfrage in zwei Minuten",
+    },
+    headline: {
+      problem: "Angebot zu allgemein",
+      solution: "Angebot klar auf den Punkt",
+    },
+    offer: {
+      problem: "Unklar, was man bekommt",
+      solution: "Der Umfang steht auf der Seite",
+    },
+    problems: {
+      problem: "Besucher fühlen sich nicht gemeint",
+      solution: "Ihre Lage, in ihren Worten",
+    },
+  },
   title: "Warum Besucher abspringen — und was deine Landingpage anders macht.",
 };
 
-describe("ProblemSolutionSection", () => {
-  afterEach(() => {
-    cleanup();
-  });
+function renderSection({
+  activeAnchor = null,
+  selectedAnchor = null,
+  usesTapToggle = false,
+}: {
+  activeAnchor?: LandingPreviewAnchor | null;
+  selectedAnchor?: LandingPreviewAnchor | null;
+  usesTapToggle?: boolean;
+} = {}) {
+  const onAnchorFocus = vi.fn();
+  const onAnchorAmbient = vi.fn();
+  const onAnchorToggle = vi.fn();
+  const onMobilePreviewHostChange = vi.fn();
 
-  it("renders heading, body, and both labelled lists with all pairs", () => {
-    render(<ProblemSolutionSection id="solution" locale="de" {...CONTENT} />);
+  render(
+    <ProblemSolutionSection
+      {...CONTENT}
+      activeAnchor={activeAnchor}
+      id="solution"
+      locale="de"
+      onAnchorAmbient={onAnchorAmbient}
+      onAnchorFocus={onAnchorFocus}
+      onAnchorToggle={onAnchorToggle}
+      onMobilePreviewHostChange={onMobilePreviewHostChange}
+      selectedAnchor={selectedAnchor}
+      usesTapToggle={usesTapToggle}
+    />,
+  );
+
+  return {
+    onAnchorFocus,
+    onAnchorAmbient,
+    onAnchorToggle,
+    onMobilePreviewHostChange,
+  };
+}
+
+function rows() {
+  return within(screen.getByRole("list"))
+    .getAllByRole("listitem")
+    .map((item) => item.firstElementChild as HTMLElement);
+}
+
+describe("ProblemSolutionSection", () => {
+  afterEach(cleanup);
+
+  it("renders heading, body, and every anchor with its problem and solution", () => {
+    renderSection();
 
     expect(
       screen.getByRole("heading", {
@@ -40,54 +102,149 @@ describe("ProblemSolutionSection", () => {
         name: /Warum Besucher abspringen/,
       }),
     ).toBeTruthy();
-    expect(
-      screen.getByText(
-        "Eine Landingpage bündelt dein Angebot auf einer Seite.",
-      ),
-    ).toBeTruthy();
+    expect(screen.getByText(CONTENT.body)).toBeTruthy();
+    expect(screen.getByText(CONTENT.labels.problem)).toBeTruthy();
+    expect(screen.getByText(CONTENT.labels.solution)).toBeTruthy();
 
-    const chaosList = screen.getByRole("list", { name: "Ohne Landingpage" });
-    const clarityList = screen.getByRole("list", { name: "Mit Landingpage" });
-    expect(within(chaosList).getAllByRole("listitem")).toHaveLength(2);
-    expect(within(clarityList).getAllByRole("listitem")).toHaveLength(2);
-    expect(within(chaosList).getByText("Angebot zu allgemein")).toBeTruthy();
-    expect(
-      within(clarityList).getByText("Angebot klar auf den Punkt"),
-    ).toBeTruthy();
-    expect(within(chaosList).getByText("Nächster Schritt unklar")).toBeTruthy();
-    expect(
-      within(clarityList).getByText("Nächster Schritt eindeutig"),
-    ).toBeTruthy();
+    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    expect(items).toHaveLength(LANDING_PREVIEW_ANCHOR_ORDER.length);
+
+    LANDING_PREVIEW_ANCHOR_ORDER.forEach((anchor, position) => {
+      const pair = CONTENT.pairs[anchor];
+      const text = items[position]?.textContent ?? "";
+
+      expect(text).toContain(pair.problem);
+      expect(text).toContain(pair.solution);
+    });
   });
 
-  it("highlights the matching problem scrap when hovering a solution row", () => {
-    render(<ProblemSolutionSection id="solution" locale="de" {...CONTENT} />);
+  it("reports the hovered anchor and releases it when the mouse leaves", () => {
+    const { onAnchorFocus, onAnchorAmbient } = renderSection();
 
-    const solutionRow = screen
-      .getByText("Angebot klar auf den Punkt")
-      .closest("li") as HTMLElement;
-    const problemScrap = screen
-      .getByText("Angebot zu allgemein")
-      .closest("li") as HTMLElement;
+    const [firstRow] = rows();
+    fireEvent.pointerEnter(firstRow as HTMLElement, { pointerType: "mouse" });
+    expect(onAnchorAmbient).toHaveBeenCalledWith(LandingPreviewAnchor.Headline);
 
-    expect(problemScrap.dataset.highlight).toBeUndefined();
+    fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "mouse" });
+    expect(onAnchorAmbient).toHaveBeenCalledWith(null);
+    expect(onAnchorFocus).not.toHaveBeenCalled();
+  });
 
-    fireEvent.mouseOver(solutionRow);
-    expect(problemScrap.dataset.highlight).toBe("true");
-    expect(solutionRow.dataset.highlight).toBe("true");
+  it("keeps the anchor when a touch pointer leaves", () => {
+    const { onAnchorAmbient } = renderSection();
 
-    fireEvent.mouseOut(solutionRow);
-    expect(problemScrap.dataset.highlight).toBeUndefined();
+    const [firstRow] = rows();
+    fireEvent.pointerLeave(firstRow as HTMLElement, { pointerType: "touch" });
+
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
+  });
+
+  it("reports the focused anchor and releases it on blur", () => {
+    const { onAnchorFocus } = renderSection();
+
+    const pairRows = rows();
+    fireEvent.focus(pairRows[1] as HTMLElement);
+    expect(onAnchorFocus).toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
+
+    fireEvent.blur(pairRows[1] as HTMLElement);
+    expect(onAnchorFocus).toHaveBeenCalledWith(null);
+  });
+
+  it("keeps stable button markup in the pointer layout", () => {
+    renderSection();
+
+    expect(screen.getAllByRole("button")).toHaveLength(
+      LANDING_PREVIEW_ANCHOR_ORDER.length,
+    );
+    expect(rows().every((row) => row.tagName === "BUTTON")).toBe(true);
+  });
+
+  it("ignores clicks while the pointer layout is active", () => {
+    const { onAnchorToggle } = renderSection();
+
+    fireEvent.click(rows()[2] as HTMLElement);
+    expect(onAnchorToggle).not.toHaveBeenCalled();
+  });
+
+  it("offers no disclosure state while the pointer layout is active", () => {
+    renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
+
+    const withToggleState = rows().filter((row) =>
+      row.hasAttribute("aria-expanded"),
+    );
+
+    expect(withToggleState).toHaveLength(0);
+  });
+
+  it("reports the clicked anchor in the tap layout", () => {
+    const { onAnchorToggle } = renderSection({ usesTapToggle: true });
+
+    fireEvent.click(screen.getAllByRole("button")[3] as HTMLElement);
+    expect(onAnchorToggle).toHaveBeenCalledWith(LandingPreviewAnchor.Offer);
+  });
+
+  it("keeps focus from driving the highlight in the tap layout", () => {
+    const { onAnchorFocus } = renderSection({ usesTapToggle: true });
+
+    fireEvent.focus(rows()[1] as HTMLElement);
+
+    expect(onAnchorFocus).not.toHaveBeenCalledWith(LandingPreviewAnchor.Cta);
+  });
+
+  it("leaves the selection unchanged when the tap layout is scrolled", () => {
+    const { onAnchorAmbient } = renderSection({ usesTapToggle: true });
+
+    fireEvent.scroll(window);
+
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
+  });
+
+  it("leaves scrolling alone while the pointer layout is active", () => {
+    const { onAnchorAmbient } = renderSection();
+
+    fireEvent.scroll(window);
+
+    expect(onAnchorAmbient).not.toHaveBeenCalled();
+  });
+
+  it("marks exactly the active row", () => {
+    renderSection({ activeAnchor: LandingPreviewAnchor.Problems });
+
+    const active = rows().filter((row) => row.dataset.active === "true");
+
+    expect(active).toHaveLength(1);
+    expect(active[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
+  });
+
+  it("exposes the tapped selection as an expanded inline preview", () => {
+    renderSection({
+      activeAnchor: LandingPreviewAnchor.Problems,
+      selectedAnchor: LandingPreviewAnchor.Problems,
+      usesTapToggle: true,
+    });
+
+    const expanded = rows().filter(
+      (row) => row.getAttribute("aria-expanded") === "true",
+    );
+
+    expect(expanded).toHaveLength(1);
+    expect(expanded[0]?.textContent).toContain(CONTENT.pairs.problems.solution);
+    const panel = screen.getByTestId("problem-solution-mobile-preview");
+    expect(panel.id).toBe(expanded[0]?.getAttribute("aria-controls"));
+    expect(panel.hidden).toBe(false);
+    expect(document.getElementById("solution-headline-preview")).toBeTruthy();
+    expect(document.getElementById("solution-cta-preview")?.hidden).toBe(true);
   });
 
   it("marks items as visible for the staggered reveal", async () => {
-    render(<ProblemSolutionSection id="solution" locale="de" {...CONTENT} />);
+    renderSection();
 
-    const firstScrap = screen
-      .getByText("Angebot zu allgemein")
+    const firstPair = screen
+      .getByText(CONTENT.pairs.headline.problem)
       .closest("li") as HTMLElement;
+
     await waitFor(() => {
-      expect(firstScrap.dataset.visible).toBe("true");
+      expect(firstPair.dataset.visible).toBe("true");
     });
   });
 });

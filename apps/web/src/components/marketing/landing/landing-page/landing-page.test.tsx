@@ -110,15 +110,16 @@ describe("LandingPage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: /Vom Absprung zur Anfrage/,
+        name: /Wo Besucher aussteigen/,
       }),
     ).toBeTruthy();
-    expect(screen.getByText(/Wenn Besucher abspringen/)).toBeTruthy();
-    const firstProblemItem = screen.getByText("Angebot bleibt vage");
-    expect(firstProblemItem).toBeTruthy();
-    expect(screen.getByText("Ein Angebot, klar benannt")).toBeTruthy();
+    expect(screen.getByText(/Typische Beispiele/)).toBeTruthy();
+    const firstPair = screen
+      .getByText("Viel erklärt, nichts gesagt")
+      .closest("li");
+    expect(firstPair?.textContent).toContain("Ein Satz, der sitzt");
     await waitFor(() => {
-      expect(firstProblemItem.closest("li")?.dataset.visible).toBe("true");
+      expect(firstPair?.dataset.visible).toBe("true");
     });
     expect(screen.queryByText("4,9 von 5 Sternen")).toBeNull();
     expect(screen.queryByText("Anfrage auslösen")).toBeNull();
