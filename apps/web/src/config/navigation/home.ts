@@ -3,6 +3,7 @@ import type { Locale } from "@/config/i18n";
 export const SECTION_IDS = [
   "hero",
   "problem",
+  "usp",
   "services",
   "proof",
   "process",
@@ -17,6 +18,7 @@ export type SectionHref = `#${SectionId}`;
 export const [
   HERO_SECTION_ID,
   PROBLEM_SECTION_ID,
+  USP_SECTION_ID,
   SERVICES_SECTION_ID,
   PROOF_SECTION_ID,
   PROCESS_SECTION_ID,
@@ -28,6 +30,7 @@ export const [
 export const SECTION_HREFS = {
   hero: "#hero",
   problem: "#problem",
+  usp: "#usp",
   proof: "#proof",
   services: "#services",
   process: "#process",

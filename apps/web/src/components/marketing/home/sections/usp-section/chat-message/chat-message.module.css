@@ -1,0 +1,122 @@
+.message {
+  --bubble-bg: color-mix(
+    in srgb,
+    var(--color-surface-2) 88%,
+    var(--color-bg) 12%
+  );
+  --bubble-border: color-mix(in srgb, var(--color-border) 74%, transparent);
+
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-end;
+  max-width: min(34rem, 94%);
+}
+
+.message[data-author="owner"] {
+  justify-self: start;
+}
+
+.message[data-author="visitor"] {
+  --bubble-bg: color-mix(
+    in srgb,
+    var(--color-accent-warm) 16%,
+    var(--color-bg) 84%
+  );
+  --bubble-border: color-mix(
+    in srgb,
+    var(--color-accent-warm) 42%,
+    var(--color-border) 58%
+  );
+
+  flex-direction: row-reverse;
+  justify-self: end;
+}
+
+.avatar {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px -12px color-mix(in srgb, #000 65%, transparent);
+}
+
+.avatarSpacer {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 0;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visitorImage {
+  object-position: 46% 12%;
+  transform: scale(1.9);
+  transform-origin: 46% 12%;
+}
+
+.bubble {
+  margin: 0;
+  padding: clamp(0.75rem, 1.5vw, 0.95rem) clamp(0.95rem, 1.8vw, 1.2rem);
+  border: 1px solid var(--bubble-border);
+  border-radius: 18px;
+  background: var(--bubble-bg);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #ffffff 5%, transparent) inset,
+    0 12px 28px -24px color-mix(in srgb, #000 60%, transparent);
+  color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
+  font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.message[data-author="owner"] .bubble {
+  border-end-start-radius: 6px;
+}
+
+.message[data-author="visitor"] .bubble {
+  border-end-end-radius: 6px;
+}
+
+/* Consecutive messages of one author sit closer together, like a message run */
+
+.message[data-author="owner"] + .message[data-author="owner"],
+.message[data-author="visitor"] + .message[data-author="visitor"] {
+  margin-top: calc(-1 * clamp(0.25rem, 0.7vw, 0.4rem));
+}
+
+/* Scroll reveal: each bubble pops in from its own side */
+
+.message {
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition:
+    opacity 460ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+}
+
+.message[data-author="owner"] {
+  transform-origin: left bottom;
+}
+
+.message[data-author="visitor"] {
+  transform-origin: right bottom;
+}
+
+.message[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

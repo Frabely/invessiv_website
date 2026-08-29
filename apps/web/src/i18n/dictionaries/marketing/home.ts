@@ -327,7 +327,7 @@ type ContentSectionMap = {
   footer: FooterSectionCopy;
 };
 
-type ContentSectionId = Exclude<SectionId, "problem">;
+type ContentSectionId = Exclude<SectionId, "problem" | "usp">;
 
 type LocalizedLandingSection<Id extends ContentSectionId> = {
   id: Id;

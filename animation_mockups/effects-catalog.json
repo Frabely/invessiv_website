@@ -253,6 +253,20 @@
     "mockupPath": "all/svg-path-draw"
   },
   {
+    "id": "marker_strikethrough",
+    "name": "Marker Strikethrough",
+    "inspiredBy": ["Invessiv home USP section"],
+    "effectType": "Scroll-triggered cross-out stroke",
+    "trigger": "IntersectionObserver on enter",
+    "implementation": "Overlaid SVG path with pathLength=1 and a stroke-dasharray/stroke-dashoffset CSS transition; stroke sized in viewBox units, no vector-effect non-scaling-stroke (breaks dash animation in Chromium)",
+    "uxGoal": "Visually dismiss an old state before presenting the improvement",
+    "bestFor": ["Problem-to-solution transitions", "Before/after moments"],
+    "performanceNotes": "One-shot CSS transition on stroke-dashoffset only; observer disconnects after the first trigger",
+    "a11yNotes": "Wrap image and SVG in an aria-hidden container with the caption outside; static struck-through state for reduced motion",
+    "platformGroup": "all",
+    "mockupPath": "all/marker-strikethrough"
+  },
+  {
     "id": "gradient_border_grain",
     "name": "Gradient Border Grain",
     "inspiredBy": ["Effect mockup 08"],

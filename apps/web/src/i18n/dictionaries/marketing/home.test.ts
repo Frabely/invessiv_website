@@ -136,6 +136,29 @@ describe("home dictionary", () => {
     expect(deKeys).toEqual(enKeys);
   });
 
+  it.each(["de", "en"] as const)(
+    "keeps the %s USP chat complete with filled messages",
+    (locale) => {
+      const uspContent = getHomeUiContent(locale).uspContent;
+
+      expect(uspContent.messages).toHaveLength(9);
+      expect(uspContent.messages.map((message) => message.text)).toEqual(
+        uspContent.messages.map(() => expect.stringMatching(/\S/)),
+      );
+    },
+  );
+
+  it("keeps the USP chat author sequence aligned between DE and EN", () => {
+    const deAuthors = getHomeUiContent("de").uspContent.messages.map(
+      (message) => message.author,
+    );
+    const enAuthors = getHomeUiContent("en").uspContent.messages.map(
+      (message) => message.author,
+    );
+
+    expect(deAuthors).toEqual(enAuthors);
+  });
+
   it("positions the hero around personal web design from Chemnitz in both locales", () => {
     const deHero = getHomeSections("de").find(
       (section) => section.id === "hero",

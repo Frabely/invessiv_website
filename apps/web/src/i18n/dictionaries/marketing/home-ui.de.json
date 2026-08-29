@@ -49,6 +49,53 @@
     "resolution": "Möchtest du, dass ich diese Probleme für dich löse?",
     "ctaLabel": "Kostenloses Erstgespräch anfragen"
   },
+  "uspContent": {
+    "title": "Warum du mit mir arbeiten solltest",
+    "chatAriaLabel": "Chatverlauf zwischen einem Kunden und Moritz",
+    "authorLabels": {
+      "owner": "Moritz",
+      "visitor": "Du"
+    },
+    "messages": [
+      {
+        "author": "visitor",
+        "text": "Klar Moritz, lass uns das so machen. Aber Webdesigner gibt es wie Sand am Meer — warum sollte ich ausgerechnet mit dir arbeiten?"
+      },
+      {
+        "author": "owner",
+        "text": "Berechtigte Frage."
+      },
+      {
+        "author": "owner",
+        "text": "Aber zwischen all dem Sand liegt am Meer auch Bernstein. Man muss nur wissen, woran man ihn erkennt."
+      },
+      {
+        "author": "owner",
+        "text": "Zum Beispiel daran: Ich bin Entwickler und Webdesigner in einer Person. Seit rund 10 Jahren arbeite ich mit Code — davon 3 Jahre professionell in der Softwareentwicklung und seit rund einem Jahr mit klarem Fokus auf Webdesign."
+      },
+      {
+        "author": "owner",
+        "text": "Deine Webseite entsteht als echter Code statt Baukasten: schnelle Ladezeiten, keine Vorlagen-Grenzen — und sie wächst mit deinem Geschäft mit."
+      },
+      {
+        "author": "owner",
+        "text": "Du redest immer direkt mit dem, der deine Seite baut. Ich antworte dir in der Regel innerhalb von 24 Stunden — und bin nach dem Launch nicht weg."
+      },
+      {
+        "author": "owner",
+        "text": "Und wir reden normal miteinander: kein Entwicklerjargon, kein Agentursprech. Wenn du etwas nicht brauchst, sage ich dir das."
+      },
+      {
+        "author": "visitor",
+        "text": "Okay, klingt gut. Aber ganz ehrlich: Was kostet mich das?"
+      },
+      {
+        "author": "owner",
+        "text": "Ehrliche Antwort: Das ist sehr individuell. Am besten klären wir das in einem kurzen 15-Minuten-Gespräch — kostenlos und unverbindlich."
+      }
+    ],
+    "replyCtaLabel": "Alles klar, lass loslegen"
+  },
   "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
   "proofRatingAriaLabel": "5 von 5 Sternen",
   "proofReviewLinkLabel": "Bei Google ansehen",

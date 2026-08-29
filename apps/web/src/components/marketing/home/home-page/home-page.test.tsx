@@ -77,6 +77,9 @@ describe("HomePage", () => {
     const problemHeading = screen.getByRole("heading", {
       name: "Hast du mindestens eines dieser Probleme?",
     });
+    const uspHeading = screen.getByRole("heading", {
+      name: "Warum du mit mir arbeiten solltest",
+    });
     const servicesHeading = screen.getByRole("heading", {
       name: "Was brauchst du gerade?",
     });
@@ -89,7 +92,11 @@ describe("HomePage", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      problemHeading.compareDocumentPosition(servicesHeading) &
+      problemHeading.compareDocumentPosition(uspHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      uspHeading.compareDocumentPosition(servicesHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(

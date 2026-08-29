@@ -49,6 +49,53 @@
     "resolution": "Want me to solve these problems for you?",
     "ctaLabel": "Request a free consultation"
   },
+  "uspContent": {
+    "title": "Why you should work with me",
+    "chatAriaLabel": "Chat between a client and Moritz",
+    "authorLabels": {
+      "owner": "Moritz",
+      "visitor": "You"
+    },
+    "messages": [
+      {
+        "author": "visitor",
+        "text": "Alright Moritz, let's do it that way. But web designers are a dime a dozen — why should I work with you of all people?"
+      },
+      {
+        "author": "owner",
+        "text": "Fair question."
+      },
+      {
+        "author": "owner",
+        "text": "But among all that sand on the shore, there's amber too. You just have to know how to spot it."
+      },
+      {
+        "author": "owner",
+        "text": "For a start: I'm a developer and web designer in one person. I've been working with code for around 10 years — including 3 years professionally in software development, and for about a year now with a clear focus on web design."
+      },
+      {
+        "author": "owner",
+        "text": "Your website is built as real code instead of a site builder: fast load times, no template limits — and it grows with your business."
+      },
+      {
+        "author": "owner",
+        "text": "You always talk directly to the person building your site. I usually reply within 24 hours — and I'm not gone after launch."
+      },
+      {
+        "author": "owner",
+        "text": "And we talk like normal people: no developer jargon, no agency speak. If you don't need something, I'll tell you."
+      },
+      {
+        "author": "visitor",
+        "text": "Okay, sounds good. But honestly: what's it going to cost me?"
+      },
+      {
+        "author": "owner",
+        "text": "Honest answer: it really depends. Best we sort that out in a quick 15-minute call — free and without obligation."
+      }
+    ],
+    "replyCtaLabel": "Alright, let's get started"
+  },
   "proofHighlightsAriaLabel": "Proof section highlights",
   "proofRatingAriaLabel": "5 out of 5 stars",
   "proofReviewLinkLabel": "View on Google",

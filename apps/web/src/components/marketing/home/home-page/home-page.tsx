@@ -12,6 +12,7 @@ import { ProofSection } from "@/components/marketing/home/sections/proof-section
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
 import { ProblemSection } from "@/components/marketing/home/sections/problem-section/problem-section";
+import { UspSection } from "@/components/marketing/home/sections/usp-section/usp-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -29,6 +30,7 @@ import {
   SECTION_HREFS,
   SECTION_IDS,
   SERVICES_SECTION_ID,
+  USP_SECTION_ID,
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import {
@@ -117,6 +119,10 @@ export function HomePage({ showProofSection }: HomePageProps) {
               return (
                 <ProblemSection content={ui.problemContent} id={id} key={id} />
               );
+            }
+
+            if (id === USP_SECTION_ID) {
+              return <UspSection content={ui.uspContent} id={id} key={id} />;
             }
 
             const section = getSectionById(id);

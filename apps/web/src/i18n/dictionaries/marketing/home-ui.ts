@@ -31,6 +31,23 @@ type ProblemContent = {
   title: string;
 };
 
+export const USP_CHAT_AUTHORS = ["owner", "visitor"] as const;
+
+export type UspChatAuthor = (typeof USP_CHAT_AUTHORS)[number];
+
+type UspChatMessage = {
+  author: UspChatAuthor;
+  text: string;
+};
+
+type UspContent = {
+  authorLabels: Record<UspChatAuthor, string>;
+  chatAriaLabel: string;
+  messages: UspChatMessage[];
+  replyCtaLabel: string;
+  title: string;
+};
+
 export type HomeUiContent = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
@@ -39,6 +56,7 @@ export type HomeUiContent = {
   heroVisualAriaLabel: string;
   mappingWarning: string;
   problemContent: ProblemContent;
+  uspContent: UspContent;
   proofHighlightsAriaLabel: string;
   proofRatingAriaLabel: string;
   proofReviewLinkLabel: string;
