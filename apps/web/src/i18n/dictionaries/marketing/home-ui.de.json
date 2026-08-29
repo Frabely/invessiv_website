@@ -59,7 +59,8 @@
     "messages": [
       {
         "author": "visitor",
-        "text": "Okay Moritz, das kenne ich. Aber Webdesigner gibt es wie Sand am Meer. Was machst du anders?"
+        "questionEmphasis": ["Warum sollte ich ausgerechnet mit dir arbeiten?"],
+        "text": "Okay Moritz, genau das ist mein Problem. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
       },
       {
         "author": "owner",

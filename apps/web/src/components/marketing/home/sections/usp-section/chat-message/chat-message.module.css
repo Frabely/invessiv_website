@@ -85,6 +85,29 @@
   font-weight: 700;
 }
 
+.questionEmphasis {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--color-text);
+  font-size: clamp(1.2rem, 1.08rem + 0.45vw, 1.4rem);
+  font-weight: 900;
+  letter-spacing: -0.018em;
+  line-height: 1.2;
+}
+
+.message[data-question-emphasis="true"] {
+  width: min(52rem, 98%);
+}
+
+.message[data-question-emphasis="true"] .bubble {
+  border-color: color-mix(
+    in srgb,
+    var(--color-text) 20%,
+    var(--bubble-border) 80%
+  );
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.1rem);
+}
+
 .message[data-author="owner"] .bubble {
   border-end-start-radius: 6px;
 }

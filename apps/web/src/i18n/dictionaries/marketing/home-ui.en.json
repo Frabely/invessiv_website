@@ -59,7 +59,8 @@
     "messages": [
       {
         "author": "visitor",
-        "text": "Okay Moritz, that sounds familiar. But there are plenty of web designers. What do you do differently?"
+        "questionEmphasis": ["Why should I work with you specifically?"],
+        "text": "Okay Moritz, that's exactly my problem. But there are plenty of web designers. Why should I work with you specifically?"
       },
       {
         "author": "owner",

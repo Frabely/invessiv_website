@@ -19,6 +19,7 @@ type UspSectionContent = {
   messages: {
     author: UspChatAuthor;
     highlights?: string[];
+    questionEmphasis?: string[];
     text: string;
   }[];
   replyCtaLabel: string;
@@ -69,6 +70,7 @@ export function UspSection({ content, id }: UspSectionProps) {
                 authorLabel={content.authorLabels[message.author]}
                 highlights={message.highlights}
                 key={message.text}
+                questionEmphasis={message.questionEmphasis}
                 showsAvatar={
                   !nextMessage || nextMessage.author !== message.author
                 }

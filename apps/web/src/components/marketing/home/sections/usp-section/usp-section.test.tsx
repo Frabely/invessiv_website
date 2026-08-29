@@ -47,10 +47,17 @@ describe("UspSection", () => {
       (message) => message.highlights ?? [],
     );
     const renderedHighlights = Array.from(
-      container.querySelectorAll("strong"),
+      container.querySelectorAll("[data-emphasis='usp']"),
+    ).map((highlight) => highlight.textContent);
+    const expectedQuestions = content.messages.flatMap(
+      (message) => message.questionEmphasis ?? [],
+    );
+    const renderedQuestions = Array.from(
+      container.querySelectorAll("[data-emphasis='question']"),
     ).map((highlight) => highlight.textContent);
 
     expect(renderedHighlights).toEqual(expectedHighlights);
+    expect(renderedQuestions).toEqual(expectedQuestions);
   });
 
   it("reveals the conversation with a measured chat-like stagger", () => {
