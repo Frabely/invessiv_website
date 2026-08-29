@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sticky Window Backdrop Mockup</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="lead">
+      <h1>Sticky Window Backdrop</h1>
+      <p>
+        Das Bild steht viewportfest, die Section ist nur das Fenster darauf.
+        Ohne JavaScript: kein Scroll-Listener, kein Nachziehen. Ersetzt
+        <code>background-attachment: fixed</code>, das iOS Safari ignoriert.
+      </p>
+      <p class="hint">Nach unten scrollen.</p>
+    </header>
+
+    <section class="window">
+      <div class="backdrop" aria-hidden="true">
+        <span class="backdropTrack">
+          <span class="backdropViewport">
+            <span class="scene"></span>
+          </span>
+        </span>
+      </div>
+
+      <div class="inner">
+        <p class="kicker">Fenster-Section</p>
+        <p class="line">Der Inhalt scrollt.</p>
+        <p class="line">Das Bild dahinter nicht.</p>
+        <p class="line">Der Compositor hält es.</p>
+      </div>
+    </section>
+
+    <footer class="lead">
+      <h2>Danach geht es normal weiter</h2>
+      <p>
+        Die Bahn steht oben und unten je eine Viewport-Höhe über, damit das Bild
+        auch beim Ein- und Auslaufen der Section nicht an ihre Kanten klemmt.
+        Geclippt wird über <code>overflow: clip</code> — mit
+        <code>overflow: hidden</code> entstünde ein Scrollport, an dem
+        <code>sticky</code> statt am Viewport haften würde.
+      </p>
+    </footer>
+  </body>
+</html>

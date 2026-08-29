@@ -374,5 +374,23 @@
     "a11yNotes": "Provide keyboard fallback controls in production and preserve readable static state",
     "platformGroup": "all",
     "mockupPath": "all/rondell"
+  },
+  {
+    "id": "sticky_window_backdrop",
+    "name": "Sticky Window Backdrop",
+    "inspiredBy": ["Editorial cover sections", "Apple product pages"],
+    "effectType": "Viewport-anchored image backdrop",
+    "trigger": "Scroll",
+    "implementation": "Sticky viewport-height image layer on a track that overhangs the section by 100lvh top and bottom, clipped by an overflow:clip window",
+    "uxGoal": "Section reads as a window onto a standing image while the content scrolls over it",
+    "bestFor": [
+      "Story and about sections",
+      "Chat or testimonial threads over a photo",
+      "Full-bleed section breaks"
+    ],
+    "performanceNotes": "Compositor-driven, no scroll listener; replaces background-attachment: fixed (ignored by iOS Safari) and the JS counter-scroll that lags a frame on mobile. overflow:clip is required - overflow:hidden would create a scrollport and sticky would latch onto it",
+    "a11yNotes": "Backdrop is decorative (aria-hidden); tint layer keeps text contrast at WCAG AA; under prefers-reduced-motion the layer sits statically inside the section",
+    "platformGroup": "all",
+    "mockupPath": "all/sticky-window-backdrop"
   }
 ]

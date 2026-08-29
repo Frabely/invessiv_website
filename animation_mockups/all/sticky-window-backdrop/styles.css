@@ -1,0 +1,236 @@
+:root {
+  --bg: #0d0f13;
+  --text: #f4f1ec;
+  --muted: #a8a49c;
+  --accent: #e79a49;
+  --edge-fade: clamp(4rem, 9vw, 8rem);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  /* 100vw am .backdrop rechnet die Scrollbar mit — sonst scrollt die Seite quer. */
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.5;
+}
+
+.lead {
+  display: grid;
+  gap: 0.9rem;
+  align-content: center;
+  min-height: 90svh;
+  padding: 3rem clamp(1.25rem, 5vw, 4rem);
+  max-width: 46rem;
+}
+
+.lead h1,
+.lead h2 {
+  margin: 0;
+  font-size: clamp(1.9rem, 1.2rem + 3vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.lead p {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+.lead code {
+  color: var(--accent);
+  font-size: 0.92em;
+}
+
+.hint {
+  color: color-mix(in srgb, var(--accent) 80%, var(--text));
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------------------------
+ * Der Effekt
+ *
+ * .backdrop         Fenster: liegt exakt über der Section und clippt.
+ *                   `overflow: clip` erzeugt — anders als `overflow: hidden` —
+ *                   KEINEN Scrollport. Genau darauf beruht der Trick: sticky
+ *                   haftet dadurch weiter am Viewport statt am .backdrop.
+ * .backdropTrack    Laufbahn des Sticky-Elements. Sie steht oben und unten je
+ *                   eine Viewport-Höhe über, damit das Bild nicht an die
+ *                   Section-Kanten geklemmt wird, während die Section ein-
+ *                   und ausläuft.
+ * .backdropViewport Die viewporthohe Bildebene selbst — sticky, also vom
+ *                   Compositor gehalten. Kein Scroll-Listener, kein
+ *                   Main-Thread-Frame Rückstand.
+ * ------------------------------------------------------------------------- */
+
+.window {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: 100svh;
+  padding: clamp(5rem, 12vw, 9rem) clamp(1.25rem, 5vw, 4rem);
+}
+
+.backdrop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 50vw);
+  z-index: 0;
+  width: 100vw;
+  overflow: clip;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent 100%
+  );
+}
+
+.backdropTrack {
+  position: absolute;
+  top: -100lvh;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: calc(100% + 200lvh);
+}
+
+.backdropViewport {
+  position: sticky;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100lvh;
+}
+
+/* Tint hält den Text lesbar, ohne das Bild auszubleichen. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 58%, transparent);
+}
+
+/* Synthetische „Foto"-Ebene, damit das Mockup ohne Assets läuft. */
+.scene {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      42vmin 42vmin at 72% 26%,
+      rgba(255, 214, 152, 0.95),
+      rgba(231, 154, 73, 0.45) 42%,
+      transparent 68%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.07) 0 1px,
+      transparent 1px 12.5%
+    ),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.07) 0 1px,
+      transparent 1px 12.5%
+    ),
+    linear-gradient(180deg, #1b2a41 0%, #3a4a63 34%, #7c6046 62%, #33261c 100%);
+}
+
+/* Zwei Bergrücken – geben dem Bild eine klare Silhouette als Bezugspunkt. */
+.scene::before,
+.scene::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.scene::before {
+  height: 46%;
+  background: #24303f;
+  clip-path: polygon(
+    0 100%,
+    0 46%,
+    22% 12%,
+    41% 52%,
+    63% 8%,
+    100% 62%,
+    100% 100%
+  );
+}
+
+.scene::after {
+  height: 30%;
+  background: #171d26;
+  clip-path: polygon(
+    0 100%,
+    0 62%,
+    30% 24%,
+    55% 66%,
+    78% 32%,
+    100% 70%,
+    100% 100%
+  );
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 46rem);
+  margin-inline: auto;
+}
+
+.kicker {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.line {
+  margin: 0;
+  font-size: clamp(1.5rem, 1rem + 2.6vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdropTrack {
+    top: 0;
+    height: 100%;
+  }
+
+  .backdropViewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+}
