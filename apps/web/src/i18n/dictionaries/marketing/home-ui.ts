@@ -37,6 +37,7 @@ export type UspChatAuthor = (typeof USP_CHAT_AUTHORS)[number];
 
 type UspChatMessage = {
   author: UspChatAuthor;
+  highlights?: string[];
   text: string;
 };
 

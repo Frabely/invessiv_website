@@ -41,6 +41,35 @@ describe("UspSection", () => {
     });
   });
 
+  it("emphasizes every configured USP without changing the message copy", () => {
+    const { container } = render(<UspSection content={content} id="usp" />);
+    const expectedHighlights = content.messages.flatMap(
+      (message) => message.highlights ?? [],
+    );
+    const renderedHighlights = Array.from(
+      container.querySelectorAll("strong"),
+    ).map((highlight) => highlight.textContent);
+
+    expect(renderedHighlights).toEqual(expectedHighlights);
+  });
+
+  it("reveals the conversation with a measured chat-like stagger", () => {
+    const { container } = render(<UspSection content={content} id="usp" />);
+    const revealItems = Array.from(
+      container.querySelectorAll<HTMLElement>("[data-reveal-item='true']"),
+    );
+
+    expect(revealItems[0]?.style.getPropertyValue("--reveal-delay")).toBe(
+      "0ms",
+    );
+    expect(revealItems[1]?.style.getPropertyValue("--reveal-delay")).toBe(
+      "240ms",
+    );
+    expect(revealItems.at(-1)?.style.getPropertyValue("--reveal-delay")).toBe(
+      "1920ms",
+    );
+  });
+
   it("links the reply CTA to the contact section", () => {
     render(<UspSection content={content} id="usp" />);
 

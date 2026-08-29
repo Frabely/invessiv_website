@@ -16,7 +16,11 @@ import styles from "./usp-section.module.css";
 type UspSectionContent = {
   authorLabels: Record<UspChatAuthor, string>;
   chatAriaLabel: string;
-  messages: { author: UspChatAuthor; text: string }[];
+  messages: {
+    author: UspChatAuthor;
+    highlights?: string[];
+    text: string;
+  }[];
   replyCtaLabel: string;
   title: string;
 };
@@ -29,7 +33,7 @@ type UspSectionProps = {
 export function UspSection({ content, id }: UspSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const backdropRef = useRef<HTMLSpanElement | null>(null);
-  useStaggeredSectionReveal(sectionRef, content.title, { staggerMs: 130 });
+  useStaggeredSectionReveal(sectionRef, content.title, { staggerMs: 240 });
   useViewportAnchoredBackdrop(sectionRef, backdropRef);
 
   return (
@@ -63,6 +67,7 @@ export function UspSection({ content, id }: UspSectionProps) {
               <ChatMessage
                 author={message.author}
                 authorLabel={content.authorLabels[message.author]}
+                highlights={message.highlights}
                 key={message.text}
                 showsAvatar={
                   !nextMessage || nextMessage.author !== message.author

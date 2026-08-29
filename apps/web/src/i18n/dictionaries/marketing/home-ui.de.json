@@ -59,42 +59,42 @@
     "messages": [
       {
         "author": "visitor",
-        "text": "Okay Moritz, das trifft es ziemlich genau. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
+        "text": "Okay Moritz, das kenne ich. Aber Webdesigner gibt es wie Sand am Meer. Was machst du anders?"
       },
       {
         "author": "owner",
-        "text": "Berechtigte Frage."
-      },
-      {
-        "author": "owner",
-        "text": "Aber zwischen all dem Sand liegt am Meer auch Bernstein. Man muss nur wissen, woran man ihn erkennt."
-      },
-      {
-        "author": "owner",
-        "text": "Zum Beispiel daran: Ich bin Entwickler und Webdesigner in einer Person. Seit rund 10 Jahren arbeite ich mit Code — davon 3 Jahre professionell in der Softwareentwicklung und seit rund einem Jahr mit klarem Fokus auf Webdesign."
-      },
-      {
-        "author": "owner",
-        "text": "Deine Webseite entsteht als echter Code statt Baukasten: schnelle Ladezeiten, keine Vorlagen-Grenzen — und sie wächst mit deinem Geschäft mit."
-      },
-      {
-        "author": "owner",
-        "text": "Du redest immer direkt mit dem, der deine Seite baut. Ich antworte dir in der Regel innerhalb von 24 Stunden — und bin nach dem Launch nicht weg."
-      },
-      {
-        "author": "owner",
-        "text": "Und wir reden normal miteinander: kein Entwicklerjargon, kein Agentursprech. Wenn du etwas nicht brauchst, sage ich dir das."
+        "highlights": ["Webdesign mit echter Softwareentwicklung"],
+        "text": "Ich verbinde Webdesign mit echter Softwareentwicklung. Seit rund 10 Jahren arbeite ich mit Code, 3 Jahre davon professionell und etwa seit einem Jahr liegt mein Fokus auf Webdesign."
       },
       {
         "author": "visitor",
-        "text": "Okay, klingt gut. Aber ganz ehrlich: Was kostet mich das?"
+        "text": "Und was bringt das meiner Webseite konkret?"
       },
       {
         "author": "owner",
-        "text": "Ehrliche Antwort: Das ist sehr individuell. Am besten klären wir das in einem kurzen 15-Minuten-Gespräch — kostenlos und unverbindlich."
+        "highlights": ["individuelles Design ohne starre Vorlagen"],
+        "text": "Sie entsteht mit echtem Code statt im Baukasten. Das ermöglicht ein individuelles Design ohne starre Vorlagen, schnelle Ladezeiten und eine Webseite, die mit deinem Geschäft wachsen kann."
+      },
+      {
+        "author": "visitor",
+        "text": "Wie läuft die Zusammenarbeit? Spreche ich immer direkt mit dir?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["immer direkt mit mir"],
+        "text": "Ja. Du sprichst immer direkt mit mir, bekommst meist innerhalb von 24 Stunden eine Antwort und erreichst mich auch nach dem Launch. Technische Themen erkläre ich verständlich und sage dir offen, was du nicht brauchst."
+      },
+      {
+        "author": "visitor",
+        "text": "Klingt gut. Wie finden wir heraus, was für mich sinnvoll ist?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["Kostenlos und unverbindlich"],
+        "text": "Wir klären dein Vorhaben in 15 Minuten. Danach sage ich dir ehrlich, was sinnvoll ist und womit du rechnen kannst. Kostenlos und unverbindlich."
       }
     ],
-    "replyCtaLabel": "Alles klar, lass loslegen"
+    "replyCtaLabel": "Klingt gut, lass uns starten"
   },
   "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
   "proofRatingAriaLabel": "5 von 5 Sternen",

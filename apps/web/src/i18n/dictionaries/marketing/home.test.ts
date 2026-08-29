@@ -141,10 +141,19 @@ describe("home dictionary", () => {
     (locale) => {
       const uspContent = getHomeUiContent(locale).uspContent;
 
-      expect(uspContent.messages).toHaveLength(9);
+      expect(uspContent.messages).toHaveLength(8);
       expect(uspContent.messages.map((message) => message.text)).toEqual(
         uspContent.messages.map(() => expect.stringMatching(/\S/)),
       );
+
+      const messageWordCounts = uspContent.messages.map(
+        (message) => message.text.trim().split(/\s+/).length,
+      );
+
+      expect(Math.max(...messageWordCounts)).toBeLessThanOrEqual(35);
+      expect(
+        messageWordCounts.reduce((total, wordCount) => total + wordCount, 0),
+      ).toBeLessThanOrEqual(190);
     },
   );
 
@@ -156,7 +165,67 @@ describe("home dictionary", () => {
       (message) => message.author,
     );
 
+    expect(deAuthors).toEqual([
+      "visitor",
+      "owner",
+      "visitor",
+      "owner",
+      "visitor",
+      "owner",
+      "visitor",
+      "owner",
+    ]);
     expect(deAuthors).toEqual(enAuthors);
+  });
+
+  it.each([
+    [
+      "de",
+      [
+        "Webdesign mit echter Softwareentwicklung",
+        "10 Jahren",
+        "3 Jahre davon professionell",
+        "etwa seit einem Jahr",
+        "echtem Code",
+        "individuelles Design",
+        "ohne starre Vorlagen",
+        "schnelle Ladezeiten",
+        "mit deinem Geschäft wachsen",
+        "immer direkt mit mir",
+        "24 Stunden",
+        "nach dem Launch",
+        "Technische Themen erkläre ich verständlich",
+        "was du nicht brauchst",
+      ],
+    ],
+    [
+      "en",
+      [
+        "web design with real software development",
+        "10 years",
+        "3 years professionally",
+        "past year",
+        "real code",
+        "custom design",
+        "without fixed templates",
+        "fast load times",
+        "as your business grows",
+        "always speak directly with me",
+        "24 hours",
+        "after launch",
+        "explain technical topics clearly",
+        "what you don't need",
+      ],
+    ],
+  ] as const)("keeps every core USP in the natural %s chat", (locale, usps) => {
+    const chatCopy = getHomeUiContent(locale)
+      .uspContent.messages.map((message) => message.text)
+      .join(" ");
+
+    usps.forEach((usp) => expect(chatCopy).toContain(usp));
+    expect(
+      `${chatCopy} ${getHomeUiContent(locale).uspContent.replyCtaLabel}`,
+    ).not.toMatch(/[—–-]/);
   });
 
   it("positions the hero around personal web design from Chemnitz in both locales", () => {

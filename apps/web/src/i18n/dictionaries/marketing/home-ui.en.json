@@ -59,42 +59,42 @@
     "messages": [
       {
         "author": "visitor",
-        "text": "Okay Moritz, that hits pretty close to home. But web designers are a dime a dozen — why should I work with you of all people?"
+        "text": "Okay Moritz, that sounds familiar. But there are plenty of web designers. What do you do differently?"
       },
       {
         "author": "owner",
-        "text": "Fair question."
-      },
-      {
-        "author": "owner",
-        "text": "But among all that sand on the shore, there's amber too. You just have to know how to spot it."
-      },
-      {
-        "author": "owner",
-        "text": "For a start: I'm a developer and web designer in one person. I've been working with code for around 10 years — including 3 years professionally in software development, and for about a year now with a clear focus on web design."
-      },
-      {
-        "author": "owner",
-        "text": "Your website is built as real code instead of a site builder: fast load times, no template limits — and it grows with your business."
-      },
-      {
-        "author": "owner",
-        "text": "You always talk directly to the person building your site. I usually reply within 24 hours — and I'm not gone after launch."
-      },
-      {
-        "author": "owner",
-        "text": "And we talk like normal people: no developer jargon, no agency speak. If you don't need something, I'll tell you."
+        "highlights": ["web design with real software development"],
+        "text": "I combine web design with real software development. I've worked with code for 10 years, including 3 years professionally and for the past year, my focus has been web design."
       },
       {
         "author": "visitor",
-        "text": "Okay, sounds good. But honestly: what's it going to cost me?"
+        "text": "And what does that mean for my website?"
       },
       {
         "author": "owner",
-        "text": "Honest answer: it really depends. Best we sort that out in a quick 15-minute call — free and without obligation."
+        "highlights": ["custom design without fixed templates"],
+        "text": "It's built with real code instead of a site builder. That means a custom design without fixed templates, fast load times, and a website we can expand as your business grows."
+      },
+      {
+        "author": "visitor",
+        "text": "And do I always speak with you directly?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["always speak directly with me"],
+        "text": "Yes. You always speak directly with me, usually get a reply within 24 hours, and can still reach me after launch. I explain technical topics clearly and openly tell you what you don't need."
+      },
+      {
+        "author": "visitor",
+        "text": "Sounds good. How do we figure out what makes sense for me?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["free and comes with no obligation"],
+        "text": "We'll discuss your plans in 15 minutes. Afterwards, I'll tell you honestly what makes sense and what to expect. The conversation is free and comes with no obligation."
       }
     ],
-    "replyCtaLabel": "Alright, let's get started"
+    "replyCtaLabel": "Sounds good, let's get started"
   },
   "proofHighlightsAriaLabel": "Proof section highlights",
   "proofRatingAriaLabel": "5 out of 5 stars",
