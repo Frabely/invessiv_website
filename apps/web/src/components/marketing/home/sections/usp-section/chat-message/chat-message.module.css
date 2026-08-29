@@ -9,7 +9,7 @@
   display: flex;
   gap: 0.65rem;
   align-items: flex-end;
-  max-width: min(34rem, 94%);
+  width: min(50rem, 96%);
 }
 
 .message[data-author="owner"] {
@@ -61,6 +61,7 @@
 }
 
 .bubble {
+  flex: 1;
   margin: 0;
   padding: clamp(0.75rem, 1.5vw, 0.95rem) clamp(0.95rem, 1.8vw, 1.2rem);
   border: 1px solid var(--bubble-border);
@@ -71,6 +72,7 @@
     0 12px 28px -24px color-mix(in srgb, #000 60%, transparent);
   color: color-mix(in srgb, var(--color-text) 90%, var(--color-text-muted) 10%);
   font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+  letter-spacing: 0.01em;
   line-height: 1.5;
 }
 

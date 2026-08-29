@@ -7,6 +7,7 @@ import { useRef } from "react";
 
 import { SECTION_HREFS } from "@/config/navigation/home";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
+import { useViewportAnchoredBackdrop } from "@/hooks/marketing/use-viewport-anchored-backdrop";
 import type { UspChatAuthor } from "@/i18n/dictionaries/marketing/home-ui";
 import backdropPhoto from "../../../../../../assets/home/back-mountain.jpeg";
 import { ChatMessage } from "./chat-message/chat-message";
@@ -27,7 +28,9 @@ type UspSectionProps = {
 
 export function UspSection({ content, id }: UspSectionProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const backdropRef = useRef<HTMLSpanElement | null>(null);
   useStaggeredSectionReveal(sectionRef, content.title, { staggerMs: 130 });
+  useViewportAnchoredBackdrop(sectionRef, backdropRef);
 
   return (
     <section
@@ -37,13 +40,15 @@ export function UspSection({ content, id }: UspSectionProps) {
       ref={sectionRef}
     >
       <div aria-hidden="true" className={styles.backdrop}>
-        <Image
-          alt=""
-          className={styles.backdropImage}
-          fill
-          sizes="100vw"
-          src={backdropPhoto}
-        />
+        <span className={styles.backdropViewport} ref={backdropRef}>
+          <Image
+            alt=""
+            className={styles.backdropImage}
+            fill
+            sizes="100vw"
+            src={backdropPhoto}
+          />
+        </span>
       </div>
 
       <div className={styles.inner}>
