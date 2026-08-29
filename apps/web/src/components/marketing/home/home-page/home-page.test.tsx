@@ -1,19 +1,34 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { createRef } from "react";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
-import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
-import { HomeSectionsRenderer } from "./home-sections-renderer";
+import { HomePage } from "./home-page";
 
 vi.mock("@/components/providers/language-provider", () => ({
   useLanguage: () => ({
     locale: "de",
   }),
 }));
+
+vi.mock(
+  "@/components/marketing/home/sections/hero-section/hero-section",
+  () => ({
+    HeroSection: () => <section data-testid="home-hero" />,
+  }),
+);
+
+vi.mock("@/components/marketing/site-header/site-header", () => ({
+  SiteHeader: () => <header data-testid="site-header" />,
+}));
+
+vi.mock(
+  "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll",
+  () => ({
+    AnchorOffsetScroll: () => null,
+  }),
+);
 
 vi.mock("@/lib/analytics/conversion-events", () => ({
   trackConversionEvent: vi.fn(),
@@ -23,29 +38,17 @@ vi.mock("@/hooks/marketing/use-process-start-point", () => ({
   useProcessStartPoint: () => undefined,
 }));
 
+vi.mock("@/hooks/marketing/use-services-card-reveal", () => ({
+  useServicesCardReveal: () => undefined,
+}));
+
 afterEach(() => {
   cleanup();
 });
 
-const sections = getHomeSections("de");
-
-describe("HomeSectionsRenderer", () => {
+describe("HomePage", () => {
   it("passes the three canonical offer options into the project request select", () => {
-    render(
-      <HomeSectionsRenderer
-        landingPageServiceHref="/de/services/landing-page"
-        locale="de"
-        sections={sections}
-        servicesSectionRef={createRef<HTMLElement>()}
-        showProofSection={true}
-        ui={getHomeUiContent("de")}
-        validation={{
-          hasCompleteMapping: true,
-          missingInNavigation: [],
-          missingInSections: [],
-        }}
-      />,
-    );
+    render(<HomePage showProofSection />);
 
     const offerSelect = screen.getByRole("combobox", {
       name: /Passendes Angebot/,
@@ -67,23 +70,10 @@ describe("HomeSectionsRenderer", () => {
     expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
   });
 
-  it("renders the lead bridge before services and proof after services", () => {
-    render(
-      <HomeSectionsRenderer
-        landingPageServiceHref="/de/services/landing-page"
-        locale="de"
-        sections={sections}
-        servicesSectionRef={createRef<HTMLElement>()}
-        showProofSection={true}
-        ui={getHomeUiContent("de")}
-        validation={{
-          hasCompleteMapping: true,
-          missingInNavigation: [],
-          missingInSections: [],
-        }}
-      />,
-    );
+  it("renders the hero and all enabled content sections in their configured order", () => {
+    render(<HomePage showProofSection />);
 
+    const hero = screen.getByTestId("home-hero");
     const bridgeHeading = screen.getByRole("heading", {
       name: "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
     });
@@ -95,6 +85,10 @@ describe("HomeSectionsRenderer", () => {
     });
 
     expect(
+      hero.compareDocumentPosition(bridgeHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
       bridgeHeading.compareDocumentPosition(servicesHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
@@ -105,21 +99,7 @@ describe("HomeSectionsRenderer", () => {
   });
 
   it("does not render the proof section while the launch flag is disabled", () => {
-    render(
-      <HomeSectionsRenderer
-        landingPageServiceHref="/de/services/landing-page"
-        locale="de"
-        sections={sections}
-        servicesSectionRef={createRef<HTMLElement>()}
-        showProofSection={false}
-        ui={getHomeUiContent("de")}
-        validation={{
-          hasCompleteMapping: true,
-          missingInNavigation: [],
-          missingInSections: [],
-        }}
-      />,
-    );
+    render(<HomePage showProofSection={false} />);
 
     expect(
       screen.queryByRole("heading", {

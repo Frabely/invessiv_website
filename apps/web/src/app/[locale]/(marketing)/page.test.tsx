@@ -9,8 +9,8 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 
-vi.mock("@/components/marketing/home/marketing-home-page-client", () => ({
-  MarketingHomePageClient: () => <div data-testid="home-page" />,
+vi.mock("@/components/marketing/home/home-page/home-page", () => ({
+  HomePage: () => <div data-testid="home-page" />,
 }));
 
 describe("LocalePage metadata", () => {

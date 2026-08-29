@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { MarketingHomePageClient } from "@/components/marketing/home/marketing-home-page-client";
+import { HomePage } from "@/components/marketing/home/home-page/home-page";
 import {
   isSupportedLocale,
   type Locale,
@@ -68,7 +68,7 @@ export default async function LocalePage({ params }: LocalePageProps) {
           __html: JSON.stringify(marketingStructuredData),
         }}
       />
-      <MarketingHomePageClient showProofSection={isMarketingProofEnabled()} />
+      <HomePage showProofSection={isMarketingProofEnabled()} />
     </>
   );
 }
