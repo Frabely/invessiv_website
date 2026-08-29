@@ -47,27 +47,19 @@ afterEach(() => {
 });
 
 describe("HomePage", () => {
-  it("passes the three canonical offer options into the project request select", () => {
+  it("keeps the project request select focused on web design and support", () => {
     render(<HomePage showProofSection />);
 
     const offerSelect = screen.getByRole("combobox", {
       name: /Passendes Angebot/,
     });
 
-    expect(
-      screen.getByRole("option", { name: "Webauftritt & Landingpages" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("option", { name: "Landingpage" })).toBeTruthy();
     expect(
       screen.getByRole("option", { name: "Wartung & Support" }),
     ).toBeTruthy();
-    expect(
-      screen.getByRole("option", {
-        name: "Prozessoptimierung & digitale Workflows",
-      }),
-    ).toBeTruthy();
-    expect(offerSelect.textContent).not.toContain("Webseite");
-    expect(offerSelect.textContent).not.toContain("Webseiten-Upgrade");
-    expect(offerSelect.textContent).not.toContain("KI-Templates & Agents");
+    expect(offerSelect.textContent).not.toContain("Prozessoptimierung");
+    expect(offerSelect.querySelectorAll("option")).toHaveLength(3);
   });
 
   it("renders the hero and all enabled content sections in their configured order", () => {
@@ -81,7 +73,7 @@ describe("HomePage", () => {
       name: "Warum du mit mir arbeiten solltest",
     });
     const servicesHeading = screen.getByRole("heading", {
-      name: "Was brauchst du gerade?",
+      name: "Welcher Webauftritt passt zu deinem Vorhaben?",
     });
     const proofHeading = screen.getByRole("heading", {
       name: "Was Kunden über die Zusammenarbeit sagen",

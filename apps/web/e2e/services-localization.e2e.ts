@@ -12,8 +12,6 @@ type LocaleExpectation = {
   navAriaLabel: string;
   privacyPageTitle: string;
   privacyHref: "/de/privacy" | "/en/privacy";
-  processTitle: string;
-  secondarySectionTitle: string;
   upgradeTitle: string;
   webTitle: string;
   recommendedBadge: string;
@@ -28,19 +26,17 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/de/services/landing-page",
     imprintHref: "/de/imprint",
     imprintPageTitle: "Impressum",
-    heading: "Was brauchst du gerade?",
+    heading: "Welcher Webauftritt passt zu deinem Vorhaben?",
     detailLinkLabel: "Mehr zu Landingpages",
     maintenanceTitle: "Wartung & Support",
-    processTitle: "Internes Tool",
     recommendedBadge: "Empfohlen für dich",
-    secondarySectionTitle: "Ergänzend nach dem Launch",
-    upgradeTitle: "Webseiten-Upgrade",
+    upgradeTitle: "Kompakte Website",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
     privacyHref: "/de/privacy",
     skipLinkLabel: "Direkt zum Hauptinhalt springen",
     termsHref: "/de/terms",
-    webTitle: "Webseite",
+    webTitle: "Business Website",
   },
   {
     localePath: "/en",
@@ -48,19 +44,17 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/en/services/landing-page",
     imprintHref: "/en/imprint",
     imprintPageTitle: "Legal Notice",
-    heading: "What do you need right now?",
+    heading: "Which web presence fits your plans?",
     detailLinkLabel: "More about landing pages",
     maintenanceTitle: "Maintenance & support",
-    processTitle: "Internal tool",
     recommendedBadge: "Recommended for you",
-    secondarySectionTitle: "Additional after launch",
-    upgradeTitle: "Website upgrade",
+    upgradeTitle: "Compact Website",
     navAriaLabel: "Primary navigation",
     privacyPageTitle: "Privacy Policy",
     privacyHref: "/en/privacy",
     skipLinkLabel: "Skip to main content",
     termsHref: "/en/terms",
-    webTitle: "Website",
+    webTitle: "Business Website",
   },
 ];
 
@@ -142,26 +136,17 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       servicesSection.locator('[data-card-key="landing"]'),
     ).toBeVisible();
     await expect(
-      servicesSection
-        .locator('[data-card-key="web"]')
-        .getByText(expectations.webTitle, { exact: true }),
+      servicesSection.getByText(expectations.webTitle, { exact: true }),
     ).toBeVisible();
     await expect(
-      servicesSection
-        .locator('[data-card-key="process"]')
-        .getByText(expectations.processTitle, { exact: true }),
-    ).toBeVisible();
-    await expect(
-      servicesSection.getByRole("heading", {
-        name: expectations.secondarySectionTitle,
-      }),
-    ).toBeVisible();
+      servicesSection.locator('[data-card-key="process"]'),
+    ).toHaveCount(0);
     await expect(
       servicesSection.getByText(expectations.upgradeTitle, { exact: true }),
     ).toBeVisible();
     await expect(
       servicesSection.getByText(expectations.maintenanceTitle, { exact: true }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       servicesSection.getByText(expectations.recommendedBadge, { exact: true }),
     ).toBeVisible();

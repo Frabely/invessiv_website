@@ -75,10 +75,7 @@ export type HomeUiContent = {
   servicesRecommendedBadgeLabel: string;
   servicesDeliveryLabel: string;
   servicesDetailPageCta: string;
-  servicesDetailsCta: string;
   servicesKicker: string;
-  servicesLaunchAddonTitle: string;
-  servicesOtherTitle: string;
   servicesIntentOptions: ServiceOption[];
   servicesIntentTitle: string;
   servicesPrimaryCta: string;

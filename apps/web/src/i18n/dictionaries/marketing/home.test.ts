@@ -69,7 +69,7 @@ describe("home dictionary", () => {
       );
 
       expect(landingCard?.included).toHaveLength(3);
-      expect(landingCard?.details).toHaveLength(2);
+      expect(landingCard?.details).toBeUndefined();
     },
   );
 
@@ -88,7 +88,7 @@ describe("home dictionary", () => {
 
       expect(
         ui.servicesIntentOptions.map((option) => option.serviceKey),
-      ).toEqual(["landing", "process"]);
+      ).toEqual(["landing", "upgrade", "web"]);
       expect(
         servicesSection.serviceCards
           .filter((card) =>
@@ -97,10 +97,22 @@ describe("home dictionary", () => {
             ),
           )
           .map((card) => card.key),
-      ).toEqual(["landing", "process"]);
+      ).toEqual(["landing", "upgrade", "web"]);
       expect(
         servicesSection.serviceCards.find((card) => card.key === "process"),
-      ).toBeTruthy();
+      ).toBeUndefined();
+      expect(
+        servicesSection.serviceCards.find((card) => card.key === "upgrade")
+          ?.iconSrc,
+      ).toBe("/services/compact-site.svg");
+      expect(
+        servicesSection.serviceCards.find((card) => card.key === "landing")
+          ?.iconSrc,
+      ).toBe("/services/landing-page.svg");
+      expect(
+        servicesSection.serviceCards.find((card) => card.key === "web")
+          ?.iconSrc,
+      ).toBe("/services/business-website.svg");
     },
   );
 
@@ -126,6 +138,30 @@ describe("home dictionary", () => {
           expect.stringMatching(/\S/),
         ]),
       );
+    },
+  );
+
+  it.each([
+    ["de", ["1–2 Wochen", "2–4 Wochen", "ab 4 Wochen"]],
+    ["en", ["1–2 weeks", "2–4 weeks", "from 4 weeks"]],
+  ] as const)(
+    "keeps the %s package timeframes progressive",
+    (locale, timeframes) => {
+      const servicesSection = getHomeSections(locale).find(
+        (section) => section.id === "services",
+      );
+
+      if (!servicesSection) {
+        throw new Error("Expected services section to be available.");
+      }
+
+      expect(
+        ["landing", "upgrade", "web"].map(
+          (key) =>
+            servicesSection.serviceCards.find((card) => card.key === key)
+              ?.delivery,
+        ),
+      ).toEqual(timeframes);
     },
   );
 

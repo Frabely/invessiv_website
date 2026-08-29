@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { CANONICAL_CONTACT_OFFER_KEY_BY_GROUP } from "@/common/constants/marketing";
+import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
@@ -135,24 +135,19 @@ export function HomePage({ showProofSection }: HomePageProps) {
                 <ServicesSection
                   deliveryLabel={ui.servicesDeliveryLabel}
                   detailPageCtaLabel={ui.servicesDetailPageCta}
-                  detailsCtaLabel={ui.servicesDetailsCta}
                   id={section.id}
                   key={section.id}
                   kicker={ui.servicesKicker}
-                  launchAddonTitle={ui.servicesLaunchAddonTitle}
-                  otherServicesTitle={ui.servicesOtherTitle}
                   primaryCtaLabel={ui.servicesPrimaryCta}
                   primaryCtaLabels={ui.servicesPrimaryCtaLabels}
                   recommendedBadgeLabel={ui.servicesRecommendedBadgeLabel}
                   sectionRef={servicesSectionRef}
                   serviceCards={section.serviceCards}
-                  serviceContextNote={section.serviceContextNote}
                   serviceDetailHrefs={{
                     landing: landingPageServiceHref,
                   }}
                   serviceOptions={ui.servicesIntentOptions}
                   servicePickerTitle={ui.servicesIntentTitle}
-                  serviceSecondaryTitle={section.serviceSecondaryTitle}
                   title={section.title}
                 />
               );
@@ -212,9 +207,10 @@ export function HomePage({ showProofSection }: HomePageProps) {
             }
 
             if (section.id === CONTACT_SECTION_ID) {
-              const contactFormOfferKeys = Object.values(
-                CANONICAL_CONTACT_OFFER_KEY_BY_GROUP,
-              );
+              const contactFormOfferKeys = [
+                CONTACT_OFFER_KEY.Landing,
+                CONTACT_OFFER_KEY.Maintenance,
+              ] as const;
               const contactFormOffers = contactFormOfferKeys.flatMap(
                 (offerKey) => {
                   const card = servicesSection.serviceCards.find(

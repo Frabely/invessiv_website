@@ -107,35 +107,37 @@
   "servicesMoreAboutLabels": {
     "landing": "Landingpages",
     "process": "internen Tools",
-    "upgrade": "Webseiten-Upgrades",
-    "web": "Webseiten"
+    "upgrade": "kompakten Websites",
+    "web": "Business Websites"
   },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
-  "servicesIntentTitle": "Wähle dein Ziel. Du siehst sofort, welches Angebot passt und was der nächste Schritt wäre.",
-  "servicesOtherTitle": "Weiteres Kernangebot",
-  "servicesLaunchAddonTitle": "Ergänzend nach dem Launch",
+  "servicesIntentTitle": "Wähle das Paket, das deinem Vorhaben am nächsten kommt.",
   "servicesIntentOptions": [
     {
-      "key": "more_inquiries",
-      "label": "Mehr passende Anfragen",
+      "key": "landing_page",
+      "label": "Landingpage",
       "serviceKey": "landing"
     },
     {
-      "key": "simplify_processes",
-      "label": "Interne Abläufe vereinfachen",
-      "serviceKey": "process"
+      "key": "compact_website",
+      "label": "Kompakte Website",
+      "serviceKey": "upgrade"
+    },
+    {
+      "key": "business_website",
+      "label": "Business Website",
+      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Angebot einschätzen lassen",
+  "servicesPrimaryCta": "Kostenloses Erstgespräch anfragen",
   "servicesPrimaryCtaLabels": {
-    "landing": "Angebot einschätzen lassen",
-    "web": "Angebot einschätzen lassen",
-    "process": "Angebot einschätzen lassen",
-    "upgrade": "Angebot einschätzen lassen",
-    "maintenance": "Wartung & Support anfragen"
+    "landing": "Kostenloses Erstgespräch anfragen",
+    "web": "Kostenloses Erstgespräch anfragen",
+    "process": "Kostenloses Erstgespräch anfragen",
+    "upgrade": "Kostenloses Erstgespräch anfragen",
+    "maintenance": "Kostenloses Erstgespräch anfragen"
   },
   "servicesDetailPageCta": "Mehr zu Landingpages",
-  "servicesDetailsCta": "Mehr Infos",
   "servicesDeliveryLabel": "Zeitrahmen"
 }

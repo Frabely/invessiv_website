@@ -107,35 +107,37 @@
   "servicesMoreAboutLabels": {
     "landing": "landing pages",
     "process": "internal tools",
-    "upgrade": "website upgrades",
-    "web": "websites"
+    "upgrade": "compact websites",
+    "web": "business websites"
   },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
-  "servicesIntentTitle": "Choose your goal. You immediately see which offer fits and what the next step would be.",
-  "servicesOtherTitle": "Other core offer",
-  "servicesLaunchAddonTitle": "Additional after launch",
+  "servicesIntentTitle": "Choose the package that comes closest to what you have in mind.",
   "servicesIntentOptions": [
     {
-      "key": "more_inquiries",
-      "label": "Get better inquiries",
+      "key": "landing_page",
+      "label": "Landing page",
       "serviceKey": "landing"
     },
     {
-      "key": "simplify_processes",
-      "label": "Simplify internal workflows",
-      "serviceKey": "process"
+      "key": "compact_website",
+      "label": "Compact Website",
+      "serviceKey": "upgrade"
+    },
+    {
+      "key": "business_website",
+      "label": "Business Website",
+      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Get an offer estimate",
+  "servicesPrimaryCta": "Request a free consultation",
   "servicesPrimaryCtaLabels": {
-    "landing": "Get an offer estimate",
-    "web": "Get an offer estimate",
-    "process": "Get an offer estimate",
-    "upgrade": "Get an offer estimate",
-    "maintenance": "Request maintenance & support"
+    "landing": "Request a free consultation",
+    "web": "Request a free consultation",
+    "process": "Request a free consultation",
+    "upgrade": "Request a free consultation",
+    "maintenance": "Request a free consultation"
   },
   "servicesDetailPageCta": "More about landing pages",
-  "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Timeframe"
 }

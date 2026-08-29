@@ -37,7 +37,6 @@ type StandardServiceCardBase = BaseServiceCard & {
   delivery: string;
   deliveryLabel?: string;
   included: string[];
-  timeline?: string[];
   details?: string[];
 };
 
@@ -271,8 +270,6 @@ type HeroSectionCopy = {
 type ServicesSectionCopy = {
   title: string;
   serviceCards: ServiceCardCopy[];
-  serviceSecondaryTitle: string;
-  serviceContextNote: string;
 };
 
 type ProofSectionCopy = {
@@ -489,78 +486,59 @@ const HOME_SECTIONS = [
     id: "services",
     copy: {
       de: {
-        title: "Was brauchst du gerade?",
-        serviceContextNote:
-          "Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten.",
-        serviceSecondaryTitle: "Ergänzend nach dem Launch",
+        title: "Welcher Webauftritt passt zu deinem Vorhaben?",
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/website-layout-icon.svg",
+            iconSrc: "/services/landing-page.svg",
             iconAlt: "Landingpage Icon",
-            title: "Webauftritt & Landingpages",
+            title: "Landingpage",
             description:
-              "Für Angebote, die schneller verstanden werden sollen und zu passenderen Anfragen führen müssen.",
-            fit: "Landingpage, neue Website, Relaunch oder gezielte Verbesserung einer bestehenden Seite.",
+              "Eine fokussierte Seite für ein konkretes Angebot, eine Kampagne oder ein klares Ziel.",
+            fit: "Ein einzelnes Angebot, das verständlich präsentiert und gezielt angefragt werden soll.",
             isRecommended: true,
-            highlight: "mit Landingpages als fokussiertem Hauptangebot",
-            pricingHint: "Angebot nach Ziel, Umfang und Seitenbedarf",
-            delivery: "5–21 Tage",
+            highlight: "ein klarer Auftritt mit einem eindeutigen Ziel",
+            pricingHint: "Individuelles Angebot nach Ziel und Umfang",
+            delivery: "1–2 Wochen",
             included: [
-              "Struktur und Design für ein klares Angebot",
-              "Mobile Umsetzung, SEO-Basis und Kontaktweg",
-              "Launch mit Formular oder direktem Anfragepfad",
-            ],
-            timeline: ["Ziel", "Struktur", "Umsetzung", "Launch"],
-            details: [
-              "Landingpages sind der schnellste Einstieg, wenn ein konkretes Angebot erklärt und angefragt werden soll.",
-              "Website, Relaunch oder Upgrade passen, wenn der bestehende Auftritt mehr Klarheit, Vertrauen oder bessere Führung braucht.",
-            ],
-          },
-          {
-            key: "web",
-            iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Webseite Icon",
-            title: "Webseite",
-            description:
-              "Strukturierte Webauftritte, die Angebote verständlich erklären und passende Anfragen erleichtern.",
-            fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
-            highlight: "professioneller Auftritt mit klaren Wegen zur Anfrage",
-            pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
-            delivery: "10–21 Tage",
-            included: [
-              "Klare Struktur",
-              "Professioneller Auftritt",
-              "Direkter Anfrageweg",
-            ],
-            timeline: ["Struktur", "Seitenbau", "Launch"],
-            details: [
-              "Sprachen, zusätzliche Seiten und Integrationen werden vor Start als eigener Umfang eingeplant.",
-              "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
+              "Konzept für ein klares Seitenziel",
+              "Individuelles Design passend zu deinem Angebot",
+              "Technische Umsetzung für alle Geräte",
             ],
           },
           {
             key: "upgrade",
-            iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Webseiten-Upgrade Icon",
-            title: "Webseiten-Upgrade",
+            iconSrc: "/services/compact-site.svg",
+            iconAlt: "Kompakte Website Icon",
+            title: "Kompakte Website",
             description:
-              "Gezielte Verbesserungen, die bestehende Seiten klarer, nutzbarer und schneller machen.",
-            fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
-            highlight:
-              "klarer, schneller und leichter nutzbar ohne kompletten Neubau",
-            pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
-            delivery: "3–14 Tage",
+              "Eine übersichtliche Webpräsenz mit den wichtigsten Inhalten und mehreren Themenbereichen.",
+            fit: "Selbstständige und kleinere Unternehmen, die professionell sichtbar werden möchten.",
+            highlight: "alle wichtigen Inhalte in einem stimmigen Webauftritt",
+            pricingHint: "Individuelles Angebot nach Aufbau und Umfang",
+            delivery: "2–4 Wochen",
             included: [
-              "Klarere Inhalte",
-              "Bessere Nutzung",
-              "Schnellere Seite",
+              "Klare Struktur für deine zentralen Themen",
+              "Individuelle Gestaltung statt starrer Vorlage",
+              "Flexible Umsetzung passend zu deinem Bedarf",
             ],
-            timeline: ["Analyse", "Umbau", "Check"],
-            details: [
-              "Auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
-              "Größere Rebuild-Themen werden separat empfohlen und geplant.",
-              "Größere Umbauten im Hintergrund der Anwendung sind nicht Teil des Basis-Upgrades.",
+          },
+          {
+            key: "web",
+            iconSrc: "/services/business-website.svg",
+            iconAlt: "Business Website Icon",
+            title: "Business Website",
+            description:
+              "Eine umfangreichere, individuell aufgebaute Website für Unternehmen mit mehreren Leistungen und Wachstumsplänen.",
+            fit: "Unternehmen, die unterschiedliche Angebote klar vermitteln und ihren Webauftritt langfristig ausbauen möchten.",
+            highlight:
+              "eine starke digitale Basis, die mit dem Unternehmen wachsen kann",
+            pricingHint: "Individuelles Angebot nach Anforderungen und Tiefe",
+            delivery: "ab 4 Wochen",
+            included: [
+              "Strategische Struktur für mehrere Leistungen",
+              "Eigenständiges Design passend zu deinem Unternehmen",
+              "Erweiterbare Umsetzung für zukünftige Anforderungen",
             ],
           },
           {
@@ -569,12 +547,12 @@ const HOME_SECTIONS = [
             iconAlt: "Wartung und Support Icon",
             title: "Wartung & Support",
             description:
-              "Planbare Pflege, kleine Weiterentwicklungen und Bugfixes für bestehende Seiten oder Tools.",
-            fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
+              "Planbare Pflege, technische Betreuung und kleinere Weiterentwicklungen für deine Website.",
+            fit: "Websites, die nach dem Launch verlässlich betreut und weiterentwickelt werden sollen.",
             highlight: "verlässliche Hilfe für laufende Anpassungen",
             pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
-            delivery: "24–72h Antwortzeit",
-            deliveryLabel: "Typische Reaktionszeit",
+            delivery: "ca. 24h",
+            deliveryLabel: "Antwortzeit",
             included: [
               "Kleine Inhalts- und Layoutänderungen",
               "Bugfixes und technische Korrekturen",
@@ -587,101 +565,62 @@ const HOME_SECTIONS = [
               "Notfallanfragen werden nach Verfügbarkeit priorisiert; feste Reaktionszeiten nur mit abgestimmtem Support-Paket.",
             ],
           },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Internes Tool Icon",
-            title: "Prozessoptimierung & digitale Workflows",
-            description:
-              "Für wiederkehrende Abläufe, die heute zu verteilt, manuell oder fehleranfällig laufen.",
-            fit: "Custom KI-Skill für einzelne Routinen oder zentrale Softwarelösung für größere Prozessabläufe.",
-            highlight: "klarere Abläufe und weniger manuelle Wiederholung",
-            pricingHint: "Kalkulation nach Prozess, Daten und Integrationen",
-            delivery: "nach Klärung",
-            included: [
-              "Kundendaten, Status und Folgeschritte zentral verwalten",
-              "Wiederkehrende Inhalte oder Antworten vorbereiten",
-              "Manuelle Schritte reduzieren und Übergaben sauberer machen",
-            ],
-            timeline: ["Prozess", "Engpass", "Lösung", "Übergabe"],
-            details: [
-              "Kleine Vorhaben starten als Custom KI-Skill, wenn eine wiederkehrende Aufgabe schneller vorbereitet werden soll.",
-              "Größere Vorhaben werden als zentrale Softwarelösung geplant, wenn mehrere Systeme, Daten oder Folgeschritte zusammenlaufen sollen.",
-              "Kein Overengineering: Die kleinste sinnvolle Lösung wird vor der Umsetzung eingegrenzt.",
-            ],
-          },
         ],
       },
       en: {
-        title: "What do you need right now?",
-        serviceContextNote:
-          "Before kickoff, you receive a clear offer with scope, timeline, and cost.",
-        serviceSecondaryTitle: "Additional after launch",
+        title: "Which web presence fits your plans?",
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/website-layout-icon.svg",
+            iconSrc: "/services/landing-page.svg",
             iconAlt: "Landing page icon",
-            title: "Web presence & landing pages",
+            title: "Landing page",
             description:
-              "For offers that need to be understood faster and lead to better-fit inquiries.",
-            fit: "Landing page, new website, relaunch, or focused improvement of an existing site.",
+              "A focused page for one specific offer, campaign, or clearly defined goal.",
+            fit: "A single offer that needs to be presented clearly and guide visitors toward an inquiry.",
             isRecommended: true,
-            highlight: "with landing pages as the focused core offer",
-            pricingHint: "Quote based on goal, scope, and page needs",
-            delivery: "5–21 days",
+            highlight: "a focused presence built around one clear goal",
+            pricingHint: "Individual quote based on goal and scope",
+            delivery: "1–2 weeks",
             included: [
-              "Structure and design for a clear offer",
-              "Mobile implementation, SEO basics, and contact path",
-              "Launch with form or direct inquiry route",
-            ],
-            timeline: ["Goal", "Structure", "Build", "Launch"],
-            details: [
-              "Landing pages are the fastest entry point when one concrete offer needs to be explained and requested.",
-              "Website, relaunch, or upgrade fit when the existing presence needs more clarity, trust, or better guidance.",
-            ],
-          },
-          {
-            key: "web",
-            iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Website icon",
-            title: "Website",
-            description:
-              "Structured websites that explain your offer clearly and make relevant inquiries easier.",
-            fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
-            highlight: "a professional presence with clear paths to contact",
-            pricingHint: "Individual quote based on page scope and depth",
-            delivery: "10–21 days",
-            included: [
-              "Clear structure",
-              "Professional presence",
-              "Direct inquiry path",
-            ],
-            timeline: ["Structure", "Page build", "Launch"],
-            details: [
-              "Languages, additional pages, and integrations are planned as their own scope before kickoff.",
-              "Third-party licenses and external integrations are aligned separately when needed.",
+              "A concept built around one clear page goal",
+              "Custom design tailored to your offer",
+              "Technical implementation for every device",
             ],
           },
           {
             key: "upgrade",
-            iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Website upgrade icon",
-            title: "Website upgrade",
+            iconSrc: "/services/compact-site.svg",
+            iconAlt: "Compact website icon",
+            title: "Compact Website",
             description:
-              "Focused improvements that make existing sites clearer, easier to use, and faster.",
-            fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
+              "A clear web presence with your essential content organised across several key topics.",
+            fit: "Self-employed professionals and smaller businesses that want a credible, professional presence online.",
+            highlight: "all essential content in one coherent web presence",
+            pricingHint: "Individual quote based on structure and scope",
+            delivery: "2–4 weeks",
+            included: [
+              "A clear structure for your core topics",
+              "Custom design instead of a rigid template",
+              "Flexible implementation shaped around your needs",
+            ],
+          },
+          {
+            key: "web",
+            iconSrc: "/services/business-website.svg",
+            iconAlt: "Business website icon",
+            title: "Business Website",
+            description:
+              "A more extensive, individually structured website for businesses with multiple services and plans for growth.",
+            fit: "Businesses that need to communicate different services clearly and expand their website over time.",
             highlight:
-              "clearer, faster, and easier to use without a full rebuild",
-            pricingHint:
-              "Quote based on the current state and depth of intervention",
-            delivery: "3–14 days",
-            included: ["Clearer content", "Better usability", "Faster site"],
-            timeline: ["Analysis", "Rework", "Check"],
-            details: [
-              "Can also be planned as ongoing improvement or a focused one-off service.",
-              "Larger rebuild topics are recommended and planned separately.",
-              "Larger changes behind the application are not part of the base upgrade.",
+              "a strong digital foundation that can grow with your business",
+            pricingHint: "Individual quote based on requirements and depth",
+            delivery: "from 4 weeks",
+            included: [
+              "Strategic structure for multiple services",
+              "A distinctive design tailored to your business",
+              "An expandable build for future requirements",
             ],
           },
           {
@@ -690,12 +629,12 @@ const HOME_SECTIONS = [
             iconAlt: "Maintenance and support icon",
             title: "Maintenance & support",
             description:
-              "Planned maintenance, small improvements, and bugfixes for existing websites or tools.",
-            fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
+              "Planned upkeep, technical support, and smaller enhancements for your website.",
+            fit: "Websites that should remain reliable and continue to evolve after launch.",
             highlight: "reliable help for ongoing changes",
             pricingHint: "By effort or an agreed support retainer",
-            delivery: "24–72h response time",
-            deliveryLabel: "Typical response time",
+            delivery: "approx. 24h",
+            deliveryLabel: "Response time",
             included: [
               "Small content and layout changes",
               "Bugfixes and technical corrections",
@@ -706,29 +645,6 @@ const HOME_SECTIONS = [
             details: [
               "You only pay for the agreed or actually logged effort with a clear breakdown.",
               "Urgent requests are prioritized by availability; fixed response times require an agreed support package.",
-            ],
-          },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Internal tool icon",
-            title: "Process optimization & digital workflows",
-            description:
-              "For recurring workflows that are currently too scattered, manual, or error-prone.",
-            fit: "Custom AI skill for specific routines or central software for larger process workflows.",
-            highlight: "clearer workflows and less repeated manual work",
-            pricingHint: "Calculated by process, data, and integrations",
-            delivery: "after scoping",
-            included: [
-              "Manage customer data, status, and next steps centrally",
-              "Prepare recurring content or replies faster",
-              "Reduce manual steps and make handovers cleaner",
-            ],
-            timeline: ["Process", "Bottleneck", "Solution", "Handover"],
-            details: [
-              "Smaller requests start as a custom AI skill when a recurring task should be prepared faster.",
-              "Larger requests become central software when multiple systems, data points, or follow-up steps need to come together.",
-              "No overengineering: the smallest useful solution is scoped before implementation.",
             ],
           },
         ],

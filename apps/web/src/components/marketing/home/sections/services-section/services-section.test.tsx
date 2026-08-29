@@ -7,7 +7,6 @@ import {
   screen,
   within,
 } from "@testing-library/react";
-import type { RefObject } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ServicesSection } from "./services-section";
@@ -17,7 +16,8 @@ const serviceCards = [
     key: "web" as const,
     iconSrc: "/services/coding-icon.svg",
     iconAlt: "Web Icon",
-    title: "Webseite",
+    title: "Business Website",
+    description: "Eine umfangreiche Website für mehrere Leistungen.",
     fit: "Relaunches mit mehreren Kernseiten.",
     highlight: "klarer professioneller Auftritt",
     pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
@@ -29,7 +29,8 @@ const serviceCards = [
     key: "landing" as const,
     iconSrc: "/services/website-layout-icon.svg",
     iconAlt: "Landing Icon",
-    title: "Webauftritt & Landingpages",
+    title: "Landingpage",
+    description: "Eine fokussierte Seite für ein klares Ziel.",
     fit: "Angebotsseiten mit klarem Conversion-Ziel.",
     highlight: "schnell live & conversion-fokussiert",
     pricingHint: "Angebot nach Ziel, Umfang und Feedbackbedarf",
@@ -41,26 +42,11 @@ const serviceCards = [
     ],
   },
   {
-    key: "process" as const,
-    iconSrc: "/services/process-icon.svg",
-    iconAlt: "Process Icon",
-    title: "Prozessoptimierung & digitale Workflows",
-    description: "Custom KI-Skills oder individuelle Softwarelösungen.",
-    fit: "Teams mit klaren Routineabläufen.",
-    highlight: "weniger manuelle Schritte im Alltag",
-    pricingHint: "Kalkulation nach Workflow, Daten und Integrationen",
-    delivery: "1-2 Wochen",
-    included: ["Audit", "Konzept", "Setup", "Testing"],
-    details: [
-      "Kleine Vorhaben starten als KI-Skill.",
-      "Größere Vorhaben werden als zentrale Software geplant.",
-    ],
-  },
-  {
     key: "upgrade" as const,
     iconSrc: "/services/upgrade-icon.svg",
     iconAlt: "Upgrade Icon",
-    title: "Webseiten-Upgrade",
+    title: "Kompakte Website",
+    description: "Eine übersichtliche Webpräsenz mit zentralen Inhalten.",
     fit: "Für Seiten mit Potenzial.",
     highlight: "spürbare UX- und Speed-Verbesserung",
     pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
@@ -77,58 +63,57 @@ const serviceCards = [
     fit: "Für laufende Anpassungen.",
     highlight: "schnelle Hilfe für laufende Themen",
     pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
-    delivery: "24-72h",
+    delivery: "ca. 24h",
+    deliveryLabel: "Antwortzeit",
     included: ["Bugfixes", "Anpassungen", "Checks"],
   },
 ];
 
 const serviceOptions = [
   {
-    key: "more_inquiries",
-    label: "Mehr passende Anfragen",
+    key: "landing_page",
+    label: "Landingpage",
     serviceKey: "landing",
   },
   {
-    key: "simplify_processes",
-    label: "Interne Abläufe vereinfachen",
-    serviceKey: "process",
+    key: "compact_website",
+    label: "Kompakte Website",
+    serviceKey: "upgrade",
+  },
+  {
+    key: "business_website",
+    label: "Business Website",
+    serviceKey: "web",
   },
 ];
 
 const servicePickerName =
-  "Wähle die Leistung, die gerade am besten zu deinem nächsten Schritt passt.";
+  "Wähle das Paket, das deinem Vorhaben am nächsten kommt.";
 
-function renderSection(options?: {
-  sectionRef?: RefObject<HTMLElement | null>;
-}) {
+function renderSection() {
   return render(
     <ServicesSection
       deliveryLabel="Zeitrahmen"
       detailPageCtaLabel="Ablauf & Kosten ansehen"
-      detailsCtaLabel="Mehr Infos"
       id="services"
       kicker="LEISTUNGEN"
-      launchAddonTitle="Ergänzend nach dem Launch"
-      otherServicesTitle="Andere mögliche Leistungen"
-      primaryCtaLabel="Angebot einschätzen lassen"
+      primaryCtaLabel="Kostenloses Erstgespräch anfragen"
       primaryCtaLabels={{
-        landing: "Angebot einschätzen lassen",
-        maintenance: "Wartung & Support anfragen",
-        process: "Angebot einschätzen lassen",
-        upgrade: "Upgrade anfragen",
-        web: "Projekt anfragen",
+        landing: "Kostenloses Erstgespräch anfragen",
+        maintenance: "Kostenloses Erstgespräch anfragen",
+        process: "Kostenloses Erstgespräch anfragen",
+        upgrade: "Kostenloses Erstgespräch anfragen",
+        web: "Kostenloses Erstgespräch anfragen",
       }}
       recommendedBadgeLabel="Empfohlen für dich"
-      sectionRef={options?.sectionRef ?? { current: null }}
+      sectionRef={{ current: null }}
       serviceCards={serviceCards}
-      serviceContextNote="Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten."
       serviceDetailHrefs={{
         landing: "/de/services/landing-page",
       }}
       serviceOptions={serviceOptions}
-      servicePickerTitle="Wähle die Leistung, die gerade am besten zu deinem nächsten Schritt passt."
-      serviceSecondaryTitle="Ergänzend nach dem Launch"
-      title="Was brauchst du gerade?"
+      servicePickerTitle="Wähle das Paket, das deinem Vorhaben am nächsten kommt."
+      title="Welcher Webauftritt passt zu deinem Vorhaben?"
     />,
   );
 }
@@ -146,20 +131,17 @@ describe("ServicesSection", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Was brauchst du gerade?",
+        name: "Welcher Webauftritt passt zu deinem Vorhaben?",
       }),
     ).toBeTruthy();
     expect(
       within(screen.getByRole("group", { name: servicePickerName }))
         .getAllByRole("button")
         .map((button) => button.textContent),
-    ).toEqual(["Mehr passende Anfragen", "Interne Abläufe vereinfachen"]);
+    ).toEqual(["Landingpage", "Kompakte Website", "Business Website"]);
 
     const activeService = container.querySelector(
       "[data-service-variant='active']",
-    );
-    const alternatives = Array.from(
-      container.querySelectorAll("[data-service-variant='alternative']"),
     );
 
     expect(activeService?.getAttribute("data-card-key")).toBe("landing");
@@ -168,7 +150,7 @@ describe("ServicesSection", () => {
     ).toBeTruthy();
     expect(
       within(activeService as HTMLElement)
-        .getByRole("link", { name: "Angebot einschätzen lassen" })
+        .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("data-project-offer"),
     ).toBe("landing");
     expect(
@@ -177,109 +159,60 @@ describe("ServicesSection", () => {
         .getAttribute("href"),
     ).toBe("/de/services/landing-page");
     expect(
-      within(activeService as HTMLElement).getByText("Mehr Infos"),
-    ).toBeTruthy();
+      within(activeService as HTMLElement).queryByText("Mehr Infos"),
+    ).toBeNull();
+    expect(within(activeService as HTMLElement).queryByText(/→/)).toBeNull();
+    expect(screen.queryByText("Weitere Webdesign-Pakete")).toBeNull();
     expect(
-      alternatives.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["process"]);
+      container.querySelector("[data-service-variant='alternative']"),
+    ).toBeNull();
   });
 
-  it("selects process as a primary service and removes it from the alternative list", () => {
+  it("selects the compact website from the package picker", () => {
     const { container } = renderSection();
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Interne Abläufe vereinfachen" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Kompakte Website" }));
 
     const activeService = container.querySelector(
       "[data-service-variant='active']",
     ) as HTMLElement;
-    const alternatives = Array.from(
-      container.querySelectorAll("[data-service-variant='alternative']"),
-    );
-
-    expect(activeService.getAttribute("data-card-key")).toBe("process");
-    expect(
-      within(activeService).getByText(
-        "Prozess\u00ADoptimierung & digitale Workflows",
-      ),
-    ).toBeTruthy();
+    expect(activeService.getAttribute("data-card-key")).toBe("upgrade");
+    expect(within(activeService).getByText("Kompakte Website")).toBeTruthy();
     expect(
       within(activeService).queryByText("Empfohlen für dich"),
     ).toBeTruthy();
     expect(
       within(activeService)
-        .getByRole("link", { name: "Angebot einschätzen lassen" })
+        .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("data-project-offer"),
-    ).toBe("process");
+    ).toBe("upgrade");
     expect(
       within(activeService)
-        .getByRole("link", { name: "Angebot einschätzen lassen" })
+        .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("Interne Abläufe vereinfachen");
-    expect(within(activeService).getByText("Mehr Infos")).toBeTruthy();
-    expect(
-      within(activeService).getByText("Kleine Vorhaben starten als KI-Skill."),
-    ).toBeTruthy();
-    expect(
-      alternatives.map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["landing"]);
+    ).toBe("Kompakte Website");
+    expect(within(activeService).queryByText("Mehr Infos")).toBeNull();
   });
 
-  it("hovers an alternative service without changing selection, then clicks it to select", () => {
-    const scrollIntoView = vi.fn();
-    const sectionRef = { current: null } as RefObject<HTMLElement | null>;
-
-    Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
-      configurable: true,
-      value: scrollIntoView,
-    });
-
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
-      callback(0);
-      return 1;
-    });
-
-    const { container } = renderSection({ sectionRef });
-    const processRowButton = container.querySelector(
-      "[data-card-key='process'] button",
-    ) as HTMLButtonElement;
-
-    fireEvent.mouseEnter(processRowButton);
-
-    expect(scrollIntoView).not.toHaveBeenCalled();
-    expect(
-      container
-        .querySelector("[data-service-variant='active']")
-        ?.getAttribute("data-card-key"),
-    ).toBe("landing");
-
-    fireEvent.click(processRowButton);
-
-    expect(scrollIntoView).toHaveBeenCalledWith({
-      behavior: "smooth",
-      block: "start",
-    });
-    expect(
-      container
-        .querySelector("[data-service-variant='active']")
-        ?.getAttribute("data-card-key"),
-    ).toBe("process");
-  });
-
-  it("renders two primary offers and no legacy web or upgrade alternatives", () => {
+  it("renders all three web design packages in the picker", () => {
     const { container } = renderSection();
 
     expect(
-      Array.from(
-        container.querySelectorAll("[data-service-variant='alternative']"),
-      ).map((card) => card.getAttribute("data-card-key")),
-    ).toEqual(["process"]);
-    expect(container.querySelector("[data-card-key='web']")).toBeNull();
-    expect(container.querySelector("[data-card-key='upgrade']")).toBeNull();
+      within(screen.getByRole("group", { name: servicePickerName }))
+        .getAllByRole("button")
+        .map((button) => button.textContent),
+    ).toEqual(["Landingpage", "Kompakte Website", "Business Website"]);
+    expect(container.querySelector("[data-card-key='process']")).toBeNull();
   });
 
-  it("keeps maintenance separate from the primary service picker", () => {
+  it("keeps the picker hint accessible only", () => {
+    renderSection();
+
+    expect(screen.queryByText(servicePickerName)).toBeNull();
+    expect(screen.getByRole("group", { name: servicePickerName })).toBeTruthy();
+  });
+
+  it("does not render the maintenance service", () => {
     const { container } = renderSection();
 
     expect(
@@ -287,16 +220,7 @@ describe("ServicesSection", () => {
         .getAllByRole("button")
         .map((button) => button.textContent),
     ).not.toContain("Wartung & Support");
-    expect(
-      Array.from(
-        container.querySelectorAll("[data-service-variant='alternative']"),
-      ).map((card) => card.getAttribute("data-card-key")),
-    ).not.toContain("maintenance");
-    expect(
-      container
-        .querySelector("[data-service-variant='secondary']")
-        ?.getAttribute("data-card-key"),
-    ).toBe("maintenance");
-    expect(screen.getByText("Ergänzend nach dem Launch")).toBeTruthy();
+    expect(container.querySelector("[data-card-key='maintenance']")).toBeNull();
+    expect(screen.queryByText("Wartung & Support")).toBeNull();
   });
 });
