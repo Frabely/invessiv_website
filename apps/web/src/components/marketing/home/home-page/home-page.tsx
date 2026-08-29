@@ -11,7 +11,7 @@ import { ProcessSection } from "@/components/marketing/home/sections/process-sec
 import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
-import { TrustOutcomeBridgeSection } from "@/components/marketing/home/sections/trust-outcome-bridge-section/trust-outcome-bridge-section";
+import { ProblemSection } from "@/components/marketing/home/sections/problem-section/problem-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { LayoutShell } from "@/components/marketing/shared/layout-shell/layout-shell";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -21,9 +21,9 @@ import {
   FAQ_SECTION_ID,
   FOOTER_SECTION_ID,
   HERO_SECTION_ID,
-  LEAD_BRIDGE_SECTION_ID,
   PRIMARY_NAVIGATION,
   PRIMARY_NAVIGATION_SECTION_IDS,
+  PROBLEM_SECTION_ID,
   PROCESS_SECTION_ID,
   PROOF_SECTION_ID,
   SECTION_HREFS,
@@ -113,13 +113,9 @@ export function HomePage({ showProofSection }: HomePageProps) {
           {SECTION_IDS.filter(
             (id) => id !== HERO_SECTION_ID && id !== FOOTER_SECTION_ID,
           ).map((id) => {
-            if (id === LEAD_BRIDGE_SECTION_ID) {
+            if (id === PROBLEM_SECTION_ID) {
               return (
-                <TrustOutcomeBridgeSection
-                  content={ui.leadBridgeContent}
-                  id={id}
-                  key={id}
-                />
+                <ProblemSection content={ui.problemContent} id={id} key={id} />
               );
             }
 

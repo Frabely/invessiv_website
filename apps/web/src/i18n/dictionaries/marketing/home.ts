@@ -327,7 +327,7 @@ type ContentSectionMap = {
   footer: FooterSectionCopy;
 };
 
-type ContentSectionId = Exclude<SectionId, "lead-bridge">;
+type ContentSectionId = Exclude<SectionId, "problem">;
 
 type LocalizedLandingSection<Id extends ContentSectionId> = {
   id: Id;

@@ -7,18 +7,48 @@
     "Softwareentwicklungs-Background"
   ],
   "heroVisualAriaLabel": "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
-  "leadBridgeContent": {
-    "kicker": "MEIN ANSATZ",
-    "title": "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
-    "signalAriaLabel": "Leistungsüberblick und Vorgehensweise",
-    "summaryPoints": [
-      "Ehrliche Einschätzung vor dem Start",
-      "Für mehr Anfragen oder produktivere Abläufe — je nach Ziel",
-      "Nur das, was dein Projekt wirklich braucht"
-    ],
-    "bridge": "Ich entwickle Landingpages, Webseiten, Upgrades und interne Tools für mehr passende Anfragen oder effizientere Abläufe. Welche Leistung für dein Ziel passt, klären wir ehrlich vor dem Start."
-  },
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
+  "problemContent": {
+    "kicker": "KOMMT DIR DAS BEKANNT VOR?",
+    "title": "Hast du mindestens eines dieser Probleme?",
+    "listAriaLabel": "Häufige Probleme mit der eigenen Webseite",
+    "photoAlt": "Selbstständiger sitzt mit Telefon am Ohr vor dem Laptop und blickt angestrengt auf seine Webseite",
+    "problems": [
+      {
+        "iconKey": "outdated",
+        "label": "Veraltete Webseite",
+        "note": "Der letzte Relaunch ist Jahre her."
+      },
+      {
+        "iconKey": "mobile",
+        "label": "Schlechte Darstellung auf dem Smartphone",
+        "note": "Auf dem Handy muss man zoomen und schieben."
+      },
+      {
+        "iconKey": "unclear",
+        "label": "Besucher verstehen das Angebot nicht sofort",
+        "note": "Was du genau anbietest, muss man sich zusammensuchen."
+      },
+      {
+        "iconKey": "trust",
+        "label": "Fehlendes Vertrauen bei potenziellen Kunden",
+        "note": "Nichts auf der Seite belegt, dass du lieferst."
+      },
+      {
+        "iconKey": "inquiries",
+        "label": "Zu wenig Anfragen über die Webseite",
+        "note": "Besucher kommen, Anfragen bleiben aus."
+      },
+      {
+        "iconKey": "contact",
+        "label": "Kein verlässlicher Ansprechpartner",
+        "note": "Beim letzten Dienstleister kam wochenlang keine Antwort."
+      }
+    ],
+    "conclusion": "Dann arbeitet deine Webseite vermutlich gerade gegen dich.",
+    "resolution": "Möchtest du, dass ich diese Probleme für dich löse?",
+    "ctaLabel": "Kostenloses Erstgespräch anfragen"
+  },
   "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
   "proofRatingAriaLabel": "5 von 5 Sternen",
   "proofReviewLinkLabel": "Bei Google ansehen",

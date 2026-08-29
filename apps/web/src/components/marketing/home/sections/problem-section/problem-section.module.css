@@ -1,0 +1,393 @@
+.section {
+  --reveal-delay: 0ms;
+  --problem-photo-radius: 18px;
+  --problem-icon-size: clamp(2.3rem, 3vw, 2.7rem);
+  --problem-leader-color: var(--color-border-strong);
+  --problem-node-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 70%,
+    transparent
+  );
+  --problem-icon-surface: color-mix(
+    in srgb,
+    var(--color-accent-warm) 13%,
+    transparent
+  );
+  --problem-icon-border: color-mix(
+    in srgb,
+    var(--color-accent-warm) 26%,
+    transparent
+  );
+  --problem-icon-glyph: color-mix(
+    in srgb,
+    var(--color-accent-warm) 76%,
+    var(--color-text) 24%
+  );
+
+  position: relative;
+  overflow: clip;
+}
+
+/* Ambient photo: decorative, dissolves into the background */
+
+/* Mobile: sits behind the last problem, fading out on every side */
+
+.ambient {
+  position: absolute;
+  inset-block-end: 8%;
+  inset-inline-start: 50%;
+  z-index: 0;
+  width: min(118%, 480px);
+  aspect-ratio: 3 / 2;
+  transform: translateX(-50%);
+  opacity: 0.15;
+  filter: grayscale(1) contrast(1.08);
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    50% 50% at 50% 50%,
+    #000 0%,
+    transparent 82%
+  );
+  mask-image: radial-gradient(50% 50% at 50% 50%, #000 0%, transparent 82%);
+  overflow: hidden;
+}
+
+.ambientImage {
+  object-fit: cover;
+  object-position: 50% 55%;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* Header */
+
+.header {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.kicker {
+  margin: 0;
+}
+
+.title {
+  max-width: 20ch;
+  margin: 0;
+  font-size: var(--font-size-section-title);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+/* Stage: photo plus the problems flanking it */
+
+.stage {
+  --stage-column-gap: clamp(2rem, 4.5vw, 4.25rem);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.list {
+  display: contents;
+}
+
+.photo {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--problem-photo-radius);
+  box-shadow: 0 26px 60px -32px var(--color-shadow);
+}
+
+.photoImage {
+  object-fit: cover;
+  object-position: 52% 26%;
+}
+
+.problem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.iconWell {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--problem-icon-size);
+  height: var(--problem-icon-size);
+  border: 1px solid var(--problem-icon-border);
+  border-radius: 999px;
+  background: var(--problem-icon-surface);
+  color: var(--problem-icon-glyph);
+  font-size: 0.95rem;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.34rem;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--font-size-body-lg);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.45;
+}
+
+/* Leader line: only meaningful once the items flank the photo */
+
+.leader {
+  display: none;
+}
+
+/* Verdict */
+
+.verdict {
+  display: grid;
+  justify-items: center;
+  gap: 0.7rem;
+  text-align: center;
+}
+
+.conclusion {
+  max-width: 24ch;
+  margin: 0;
+  font-family: var(--font-family-display), serif;
+  font-size: var(--font-size-section-subtitle);
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.resolution {
+  margin: 0;
+  color: var(--color-accent-warm);
+  font-size: var(--font-size-body-lg);
+  font-weight: 600;
+}
+
+.cta {
+  margin-top: 0.9rem;
+}
+
+/* Desktop composition */
+
+@media (min-width: 900px) {
+  /* The visible core sits on the laptop rather than the section centre; the
+       falloff still completes inside the element, so no edge meets the border. */
+  .ambient {
+    inset-block-start: 0;
+    inset-block-end: auto;
+    inset-inline-start: 0;
+    width: clamp(620px, 80vw, 1260px);
+    aspect-ratio: 16 / 9;
+    transform: none;
+    -webkit-mask-image:
+      radial-gradient(30% 34% at 30% 34%, #000 0%, #000 34%, transparent 88%),
+      radial-gradient(25% 34% at 76% 68%, #000 0%, #000 34%, transparent 88%);
+    mask-image:
+      radial-gradient(30% 34% at 30% 34%, #000 0%, #000 34%, transparent 88%),
+      radial-gradient(25% 34% at 76% 68%, #000 0%, #000 34%, transparent 88%);
+  }
+
+  .ambientImage {
+    object-position: 50% 50%;
+  }
+
+  .stage {
+    grid-template-columns:
+      minmax(0, 1fr)
+      clamp(240px, 23vw, 330px)
+      minmax(0, 1fr);
+    grid-template-rows: repeat(3, auto);
+    align-items: center;
+    column-gap: var(--stage-column-gap);
+    row-gap: clamp(1.9rem, 3vw, 3rem);
+  }
+
+  .photo {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    aspect-ratio: 4 / 5;
+  }
+
+  .problem:nth-child(1),
+  .problem:nth-child(4) {
+    grid-row: 1;
+  }
+
+  .problem:nth-child(2),
+  .problem:nth-child(5) {
+    grid-row: 2;
+  }
+
+  .problem:nth-child(3),
+  .problem:nth-child(6) {
+    grid-row: 3;
+  }
+
+  .problem[data-side="left"] {
+    grid-column: 1;
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+
+  .problem[data-side="left"] .text {
+    align-items: flex-end;
+  }
+
+  .problem[data-side="right"] {
+    grid-column: 3;
+  }
+
+  .leader {
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: calc(var(--stage-column-gap) * 0.84);
+    height: 1px;
+    background: var(--problem-leader-color);
+    transform: scaleX(0);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--reveal-delay) + 140ms);
+  }
+
+  .leader::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: var(--problem-node-color);
+    transform: translateY(-50%);
+  }
+
+  .problem[data-side="left"] .leader {
+    left: 100%;
+    transform-origin: left center;
+  }
+
+  .problem[data-side="left"] .leader::after {
+    right: -1px;
+  }
+
+  .problem[data-side="right"] .leader {
+    right: 100%;
+    transform-origin: right center;
+  }
+
+  .problem[data-side="right"] .leader::after {
+    left: -1px;
+  }
+
+  .problem[data-visible="true"] .leader {
+    transform: scaleX(1);
+  }
+}
+
+/* Scroll reveal */
+
+.header,
+.problem,
+.verdict {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 520ms ease,
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+}
+
+.header[data-visible="true"],
+.problem[data-visible="true"],
+.verdict[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.photo {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+}
+
+.photo[data-visible="true"] {
+  clip-path: inset(0 0 0 0);
+}
+
+.photoImage {
+  transform: scale(1.06);
+  transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+}
+
+.photo[data-visible="true"] .photoImage {
+  transform: scale(1);
+}
+
+/* Light theme */
+
+:global([data-theme="light"]) .ambient {
+  opacity: 0.125;
+}
+
+:global([data-theme="light"]) .section {
+  --problem-node-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 80%,
+    transparent
+  );
+}
+
+/* The ambient photo is smaller on phones, so it carries more opacity there */
+
+@media (max-width: 899px) {
+  .ambient {
+    opacity: 0.22;
+  }
+
+  :global([data-theme="light"]) .ambient {
+    opacity: 0.19;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .problem,
+  .verdict,
+  .photo,
+  .photoImage,
+  .leader {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
+  }
+
+  .problem[data-side="left"] .leader,
+  .problem[data-side="right"] .leader {
+    transform: none;
+  }
+}

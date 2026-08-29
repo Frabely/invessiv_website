@@ -31,7 +31,7 @@ const PROJECT_IMAGES = {
 
 export function ProjectsPage({ content, locale }: ProjectsPageProps) {
   const navigation: NavigationItem[] = [
-    { href: getLocalizedSectionHref(locale, "lead-bridge") },
+    { href: getLocalizedSectionHref(locale, "problem") },
     { href: getLocalizedSectionHref(locale, "services") },
     { href: getLocalizedSectionHref(locale, "process") },
     { href: getLocalizedSectionHref(locale, "faq") },

@@ -7,18 +7,48 @@
     "Software development background"
   ],
   "heroVisualAriaLabel": "Moritz Hecht, your personal web design contact in Chemnitz",
-  "leadBridgeContent": {
-    "kicker": "MY APPROACH",
-    "title": "Landing page, website, upgrade, or tool — depending on your goal.",
-    "signalAriaLabel": "Service overview and approach",
-    "summaryPoints": [
-      "Honest assessment before kickoff",
-      "More inquiries or more productive workflows — depending on your goal",
-      "Only what your project actually needs"
-    ],
-    "bridge": "I build landing pages, websites, upgrades, and internal tools for more relevant inquiries or more efficient workflows. Which service fits your goal, we'll work out honestly before we start."
-  },
   "mappingWarning": "Navigation/section mapping is incomplete.",
+  "problemContent": {
+    "kicker": "SOUND FAMILIAR?",
+    "title": "Do you have at least one of these problems?",
+    "listAriaLabel": "Common problems business owners have with their own website",
+    "photoAlt": "Business owner on the phone in front of a laptop, staring at his website with a tense expression",
+    "problems": [
+      {
+        "iconKey": "outdated",
+        "label": "An outdated website",
+        "note": "The last relaunch was years ago."
+      },
+      {
+        "iconKey": "mobile",
+        "label": "Falls apart on a phone",
+        "note": "Visitors have to pinch and scroll to read anything."
+      },
+      {
+        "iconKey": "unclear",
+        "label": "Visitors don't get the offer right away",
+        "note": "What you actually do takes effort to piece together."
+      },
+      {
+        "iconKey": "trust",
+        "label": "No trust with potential customers",
+        "note": "Nothing on the page proves you deliver."
+      },
+      {
+        "iconKey": "inquiries",
+        "label": "Too few inquiries through the website",
+        "note": "Visitors arrive, inquiries don't."
+      },
+      {
+        "iconKey": "contact",
+        "label": "No reliable person to talk to",
+        "note": "With the last provider, replies took weeks."
+      }
+    ],
+    "conclusion": "Then your website is probably working against you right now.",
+    "resolution": "Want me to solve these problems for you?",
+    "ctaLabel": "Request a free consultation"
+  },
   "proofHighlightsAriaLabel": "Proof section highlights",
   "proofRatingAriaLabel": "5 out of 5 stars",
   "proofReviewLinkLabel": "View on Google",

@@ -3,11 +3,31 @@ import type { ServiceOption } from "@/common/contracts/marketing";
 import de from "./home-ui.de.json";
 import en from "./home-ui.en.json";
 
-type LeadBridgeContent = {
-  bridge: string;
+export const PROBLEM_ICON_KEYS = [
+  "outdated",
+  "mobile",
+  "unclear",
+  "trust",
+  "inquiries",
+  "contact",
+] as const;
+
+export type ProblemIconKey = (typeof PROBLEM_ICON_KEYS)[number];
+
+type ProblemItem = {
+  iconKey: ProblemIconKey;
+  label: string;
+  note: string;
+};
+
+type ProblemContent = {
+  conclusion: string;
+  ctaLabel: string;
   kicker: string;
-  signalAriaLabel: string;
-  summaryPoints: string[];
+  listAriaLabel: string;
+  photoAlt: string;
+  problems: ProblemItem[];
+  resolution: string;
   title: string;
 };
 
@@ -17,8 +37,8 @@ export type HomeUiContent = {
   heroTag: string;
   heroTrustChips: string[];
   heroVisualAriaLabel: string;
-  leadBridgeContent: LeadBridgeContent;
   mappingWarning: string;
+  problemContent: ProblemContent;
   proofHighlightsAriaLabel: string;
   proofRatingAriaLabel: string;
   proofReviewLinkLabel: string;
@@ -52,8 +72,8 @@ export type HomeUiContent = {
 };
 
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
-  de,
-  en,
+  de: de as HomeUiContent,
+  en: en as HomeUiContent,
 };
 
 export function getHomeUiContent(locale: Locale): HomeUiContent {

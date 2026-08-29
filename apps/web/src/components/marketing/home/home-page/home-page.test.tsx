@@ -74,8 +74,8 @@ describe("HomePage", () => {
     render(<HomePage showProofSection />);
 
     const hero = screen.getByTestId("home-hero");
-    const bridgeHeading = screen.getByRole("heading", {
-      name: "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
+    const problemHeading = screen.getByRole("heading", {
+      name: "Hast du mindestens eines dieser Probleme?",
     });
     const servicesHeading = screen.getByRole("heading", {
       name: "Was brauchst du gerade?",
@@ -85,11 +85,11 @@ describe("HomePage", () => {
     });
 
     expect(
-      hero.compareDocumentPosition(bridgeHeading) &
+      hero.compareDocumentPosition(problemHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      bridgeHeading.compareDocumentPosition(servicesHeading) &
+      problemHeading.compareDocumentPosition(servicesHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
