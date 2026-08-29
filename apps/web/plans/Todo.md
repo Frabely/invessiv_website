@@ -135,6 +135,61 @@ der bestehenden Anzeigen- und Tracking-Logik widersprechen.
 
 **Gate:** Kein Design und keine Copy umsetzen, bevor diese Routing-Entscheidung dokumentiert ist.
 
+#### SEO-/Indexierungsstatus vor dem Rebranding klären
+
+Die deutsche Detailroute `/de/services/landing-page` ist trotz mehrmonatiger Erreichbarkeit offenbar noch nicht bei
+Google indexiert, während die jüngere Route `/de/services/linkedin-post` bereits indexiert wurde. Vor einer Änderung der
+Angebotsarchitektur muss deshalb geklärt werden, ob ein technisches Problem, Googles Canonical-Auswahl oder eine
+inhaltliche Qualitätsbewertung die Indexierung verhindert.
+
+**Aktueller technischer Befund (Produktion, geprüft am 29.08.2026):**
+
+- Die Landingpage antwortet nach der permanenten Weiterleitung auf `www.invessiv.com` mit HTTP `200`.
+- `robots.txt` erlaubt das Crawling; es wird kein `noindex` ausgeliefert.
+- Die Seite besitzt einen Self-Canonical auf `https://www.invessiv.com/de/services/landing-page`.
+- Die `de`-, `en`- und `x-default`-Alternates zeigen auf die korrekten Locale-Varianten.
+- Beide Locale-Varianten stehen in der XML-Sitemap.
+- Die Homepage verlinkt die Detailseite crawlbar.
+- Homepage und Landingpage behandeln teilweise dasselbe Themenfeld, sind in Hauptinhalt, H1, Title und Suchintention
+  aber ausreichend unterschiedlich. Eine einfache Wortmengen-Heuristik ergab rund 22 % Überschneidung; das ist kein
+  Google-Grenzwert, liefert aktuell aber keinen starken Hinweis auf ein Near-Duplicate.
+
+**Bewertung:** Ein harter technischer Indexierungsblock ist im aktuellen Stand nicht erkennbar. Eine Zusammenfassung mit
+der Homepage bleibt theoretisch möglich, weil Google trotz Self-Canonical eine andere Canonical wählen kann. Ohne die
+URL-Prüfung in der Google Search Console lässt sich diese Hypothese nicht bestätigen. Wahrscheinliche Alternativen sind
+`Gecrawlt – zurzeit nicht indexiert`, schwache externe beziehungsweise interne Qualitätssignale oder eine aus Googles
+Sicht noch nicht ausreichend eigenständige kommerzielle Suchintention. Die jüngere LinkedIn-Seite kann durch den klar
+abgrenzbaren Generator einen leichter erkennbaren eigenständigen Nutzen besitzen.
+
+**Verbindliches Diagnose-Gate vor Routing-, Copy- oder Canonical-Änderungen:**
+
+- [ ] In der Search Console die exakte URL `https://www.invessiv.com/de/services/landing-page` prüfen.
+- [ ] Grund der Nichtindexierung, letzten Crawl, verweisende Seite und Sitemap-Erkennung dokumentieren.
+- [ ] Vom Nutzer festgelegte Canonical und von Google ausgewählte Canonical dokumentieren.
+- [ ] Wenn Google die Homepage als Canonical gewählt hat: Suchintention, H1, Meta-Daten, Hauptinhalt und interne
+      Ankertexte der beiden Seiten klarer trennen; keine vorschnelle Weiterleitung einrichten.
+- [ ] Wenn der Status `Gecrawlt – zurzeit nicht indexiert` bei korrektem Self-Canonical lautet: eigenständigen Nutzen,
+      Referenzen/Belege, fachliche Tiefe, interne Verlinkung und externe Signale priorisieren.
+- [ ] Wenn der Status `Gefunden – zurzeit nicht indexiert` lautet: Crawl- und Discovery-Signale, Sitemap-Verarbeitung,
+      interne Linkposition und Serverantworten prüfen.
+- [ ] Nach dem Rebranding Live-Test ausführen, Indexierung erneut beantragen und Status beziehungsweise Google-Canonical
+      nach zwei bis vier Wochen kontrollieren.
+
+**Technische Punkte für den Umbau:**
+
+- Das Locale-Layout setzt derzeit alle Marketingseiten über `dynamic = "force-dynamic"` und `revalidate = 0` auf eine
+  dynamische Auslieferung mit `private, no-cache, no-store`. Das blockiert Google nicht, sollte für statische
+  Marketingseiten aber überprüft und nach Möglichkeit auf cachebare beziehungsweise statisch erzeugte Seiten umgestellt
+  werden.
+- Der aktuelle Homepage-Title wird durch Title-Inhalt plus Layout-Template doppelt gebrandet
+  (`Invessiv | … | Invessiv`). Beim Rebranding gemäß projektweiter Title-Konvention korrigieren.
+- Die Sitemap enthält aktuell die richtigen kanonischen URLs, aber keine `lastModified`-Angaben oder Sitemap-`hreflang`
+  -Alternates. Beides ist kein Indexierungsblock; beim Umbau kann `lastModified` für tatsächlich substanziell geänderte
+  Seiten ergänzt werden. Die bestehenden HTML-Alternates müssen erhalten bleiben.
+- Bei einer neuen Route `/[locale]/services/webdesign` die Landingpage nicht allein wegen der aktuellen Nichtindexierung
+  ersetzen oder weiterleiten. Erst Suchintention und Aufgaben beider URLs festlegen, dann Canonicals, Sitemap, interne
+  Links und gegebenenfalls Redirects konsistent umsetzen.
+
 #### Positionierung und USP
 
 Die zentrale Differenzierung ist die Verbindung aus Softwareentwicklung und Webdesign:

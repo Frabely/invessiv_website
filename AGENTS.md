@@ -21,7 +21,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 | Scope                                            | Worum es geht                                                                                                   |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, Route-Gruppen, SEO, i18n, interne Service-Verlinkung                                          |
+| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, route-spezifische Positionierung, SEO, i18n, interne Service-Verlinkung                       |
 | `apps/web/src/components/`                       | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
 | `apps/web/src/client/`                           | Clientseitige Services                                                                                          |
 | `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`   | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |

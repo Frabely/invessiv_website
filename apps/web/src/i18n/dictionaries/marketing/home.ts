@@ -378,16 +378,14 @@ const HOME_SECTIONS = [
     id: "hero",
     copy: {
       de: {
-        title:
-          "Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten.",
+        title: "Websites, die Vertrauen schaffen und Anfragen bringen.",
         description:
-          "Landingpages, Webseiten, Upgrades und Interne Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Abläufe spürbar einfacher, besser oder schneller machen wollen.",
+          "Ich bin Moritz Hecht und entwickle verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten gezielt zur Anfrage führen.",
       },
       en: {
-        title:
-          "Digital solutions\nthat lead to better inquiries and reduce internal effort.",
+        title: "Websites that build trust and bring in inquiries.",
         description:
-          "Landing pages, websites, upgrades, and internal tools for service businesses and SMBs that want to present their offer clearly and make internal workflows simpler, better, or faster.",
+          "I’m Moritz Hecht, and I create conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
       },
     },
   },

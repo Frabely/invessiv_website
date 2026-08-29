@@ -136,6 +136,51 @@ describe("home dictionary", () => {
     expect(deKeys).toEqual(enKeys);
   });
 
+  it("positions the hero around personal web design from Chemnitz in both locales", () => {
+    const deHero = getHomeSections("de").find(
+      (section) => section.id === "hero",
+    );
+    const enHero = getHomeSections("en").find(
+      (section) => section.id === "hero",
+    );
+
+    expect(deHero).toEqual({
+      id: "hero",
+      title: "Websites, die Vertrauen schaffen und Anfragen bringen.",
+      description:
+        "Ich bin Moritz Hecht und entwickle verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten gezielt zur Anfrage führen.",
+    });
+    expect(getHomeUiContent("de")).toMatchObject({
+      heroPrimaryCta: "Kostenloses Erstgespräch anfragen",
+      heroSecondaryCta: "Leistungen ansehen",
+      heroTag: "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
+      heroTrustChips: [
+        "Direkter Ansprechpartner",
+        "Softwareentwicklungs-Background",
+      ],
+      heroVisualAriaLabel:
+        "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
+    });
+
+    expect(enHero).toEqual({
+      id: "hero",
+      title: "Websites that build trust and bring in inquiries.",
+      description:
+        "I’m Moritz Hecht, and I create conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
+    });
+    expect(getHomeUiContent("en")).toMatchObject({
+      heroPrimaryCta: "Request a free consultation",
+      heroSecondaryCta: "Explore services",
+      heroTag: "WEB DESIGN · CHEMNITZ & REGION",
+      heroTrustChips: [
+        "Direct point of contact",
+        "Software development background",
+      ],
+      heroVisualAriaLabel:
+        "Moritz Hecht, your personal web design contact in Chemnitz",
+    });
+  });
+
   it.each(["de", "en"] as const)(
     "keeps the %s proof summary copy readable",
     (locale) => {

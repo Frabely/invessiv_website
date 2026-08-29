@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { HomeSectionsRenderer } from "@/components/marketing/home/home-sections-renderer";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
+import { HomeHeroPhoto } from "@/components/marketing/home/sections/hero-section/home-hero-photo/home-hero-photo";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -58,16 +59,18 @@ export function MarketingHomePageClient({
 
         <HeroSection
           description={heroSection.description}
+          fullscreenVisual
           heroPrimaryCta={ui.heroPrimaryCta}
           heroSecondaryCta={ui.heroSecondaryCta}
           heroTag={ui.heroTag}
-          heroVisualAriaLabel={ui.heroVisualAriaLabel}
+          heroTrustChips={ui.heroTrustChips}
           primaryCtaAnalyticsTarget="form"
           primaryCtaHref={SECTION_HREFS.contact}
           secondaryCtaAnalyticsTarget="services"
           secondaryCtaHref={SECTION_HREFS.services}
           title={heroSection.title}
           trackingLocation="hero"
+          visualSlot={<HomeHeroPhoto alt={ui.heroVisualAriaLabel} />}
         />
 
         <HomeSectionsRenderer

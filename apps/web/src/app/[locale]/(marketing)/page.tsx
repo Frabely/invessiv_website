@@ -38,6 +38,7 @@ export async function generateMetadata({
     ]),
   );
   return createPageMetadata({
+    absoluteTitle: true,
     title,
     description,
     canonicalPath: `/${locale}`,

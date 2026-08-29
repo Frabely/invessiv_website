@@ -1,8 +1,12 @@
 {
-  "heroPrimaryCta": "Get an offer estimate",
-  "heroSecondaryCta": "Find the right service",
-  "heroTag": "MORE INQUIRIES, SIMPLER PROCESSES",
-  "heroVisualAriaLabel": "Live performance snapshot",
+  "heroPrimaryCta": "Request a free consultation",
+  "heroSecondaryCta": "Explore services",
+  "heroTag": "WEB DESIGN · CHEMNITZ & REGION",
+  "heroTrustChips": [
+    "Direct point of contact",
+    "Software development background"
+  ],
+  "heroVisualAriaLabel": "Moritz Hecht, your personal web design contact in Chemnitz",
   "leadBridgeContent": {
     "kicker": "MY APPROACH",
     "title": "Landing page, website, upgrade, or tool — depending on your goal.",

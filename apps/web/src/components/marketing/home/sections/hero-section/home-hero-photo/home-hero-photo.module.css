@@ -1,0 +1,21 @@
+.root,
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 900px) {
+  .image {
+    object-position: 72% center;
+  }
+}

@@ -21,6 +21,37 @@
   align-items: center;
 }
 
+.fullscreenVisualRoot .grid {
+  grid-template-columns: minmax(0, 760px) 1fr;
+}
+
+.fullscreenVisual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.fullscreenVisual::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-bg) 98%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 90%, transparent) 38%,
+      color-mix(in srgb, var(--color-bg) 45%, transparent) 70%,
+      color-mix(in srgb, var(--color-bg) 22%, transparent) 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 68%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 32%, transparent) 48%,
+      color-mix(in srgb, var(--color-bg) 72%, transparent) 100%
+    );
+  pointer-events: none;
+}
+
 .content {
   width: 100%;
   max-width: 880px;
@@ -74,6 +105,11 @@
   font-size: var(--font-size-body-lg);
   line-height: 1.66;
   text-wrap: pretty;
+}
+
+.trustChips {
+  margin: 0;
+  max-width: 100%;
 }
 
 .ctaRow {
@@ -144,6 +180,23 @@
   animation: titleFlow 5s ease-in-out infinite alternate;
 }
 
+[data-theme="light"] .fullscreenVisual::after {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-bg) 90%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 74%, transparent) 38%,
+      color-mix(in srgb, var(--color-bg) 28%, transparent) 70%,
+      color-mix(in srgb, var(--color-bg) 8%, transparent) 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg) 42%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 10%, transparent) 48%,
+      color-mix(in srgb, var(--color-bg) 48%, transparent) 100%
+    );
+}
+
 @keyframes titleFlow {
   0% {
     background-position: 0 45%;
@@ -188,6 +241,40 @@
   .content {
     max-width: none;
     gap: clamp(0.9rem, 3vw, 1.35rem);
+  }
+
+  .fullscreenVisualRoot .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullscreenVisual::after {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-bg) 86%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 68%, transparent) 56%,
+        color-mix(in srgb, var(--color-bg) 88%, transparent) 100%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-bg) 78%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 36%, transparent) 100%
+      );
+  }
+
+  [data-theme="light"] .fullscreenVisual::after {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-bg) 58%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 42%, transparent) 56%,
+        color-mix(in srgb, var(--color-bg) 62%, transparent) 100%
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-bg) 64%, transparent) 0%,
+        color-mix(in srgb, var(--color-bg) 20%, transparent) 100%
+      );
   }
 
   .tag {

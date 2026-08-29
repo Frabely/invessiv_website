@@ -18,14 +18,53 @@ Projects und Service-Detailseiten wie `/[locale]/services/landing-page`.
 ## SEO und Structured Data
 
 - Jede Route definiert eigene Metadata inklusive Canonical und `alternates.languages`.
-- Die Home bleibt breit auf Webentwicklung und digitale Lösungen positioniert; die Landingpage bleibt die fokussierte
-  Service-Detailseite für Landingpages.
-- Landingpage-spezifische Structured Data wird über `createLandingStructuredData` erzeugt. Generische
-  Marketing-Structured-Data nur für breite Marketing-Seiten verwenden.
+- Metadata, OpenGraph und Structured Data müssen die unten definierte Positionierung der jeweiligen Route abbilden;
+  Inhalte eines anderen Produkts oder einer anderen Route dürfen nicht als SEO-Vorlage übernommen werden.
+- Die Home verwendet die Title-Konvention `Invessiv | Kernversprechen` und fokussiert das Keyword-Cluster Webdesign,
+  Chemnitz, KMU/Dienstleister und Anfragen. Breite Begriffe wie digitale Lösungen, interne Tools oder Prozessoptimierung
+  sind keine primäre Home-Positionierung.
+- Die Landingpage-Detailroute verwendet landingpage-spezifische Metadata und Structured Data über
+  `createLandingStructuredData`. Ihr Keyword-Cluster bleibt Landingpage-Erstellung, Conversion und Anfragen innerhalb
+  derselben persönlichen Invessiv-/Moritz-Hecht-Positionierung.
+- Generische Marketing-Structured-Data darf auf der Home nur verwendet werden, wenn Service-Typ und Beschreibung mit der
+  aktuellen Webdesign-Positionierung übereinstimmen; veraltete Sammelangebote dürfen nicht über Schema.org
+  fortgeschrieben werden.
 - Sprach- oder suchrelevante Texte gehören in Dictionaries, nicht in Route-Dateien oder SEO-Helper.
 - Jede Landing/Service-Detailseite hat ein primäres Keyword-Cluster und eine klare Suchintention (
   informational/commercial); genau eine H1 pro Seite.
 - OG-Bilder pro Offer/Template vorsehen (Fallback erlaubt), damit Shares konsistent bleiben.
+
+## Verbindliche Positionierung und Produktabgrenzung
+
+### Home (`/[locale]`)
+
+- Kernpositionierung: persönliches Webdesign für KMU und Dienstleister aus Chemnitz und Umgebung.
+- Moritz Hecht ist der direkte Ansprechpartner; dieser persönliche Bezug ist ein Vertrauensmerkmal, keine anonyme
+  Agenturpositionierung.
+- Kernnutzen: Angebote verständlich vermitteln, Vertrauen schaffen und Interessenten gezielt zu Anfragen führen.
+- Softwareentwicklung darf als fachlicher Background und Vertrauenssignal genannt werden, aber nicht als gleichrangiges
+  Hauptangebot der Home.
+- Interne Tools, Prozessoptimierung, KI-Workflows und allgemein formulierte „digitale Lösungen“ sind keine Quelle für
+  neue Home-Copy. Noch vorhandene Abschnitte mit dieser breiten Ausrichtung gelten ausschließlich als schrittweise zu
+  migrierender Bestand und nicht als freigegebener Markenstandard.
+
+### Landingpage-Service (`/[locale]/services/landing-page`)
+
+- Die Route ist die fokussierte Angebotsseite für verkaufspsychologisch durchdachte, conversion-orientierte Landingpages
+  und bleibt unter derselben persönlichen Positionierung von Invessiv und Moritz Hecht.
+- Sie konkretisiert das Home-Versprechen für ein einzelnes Angebot: klare Kommunikation, Vertrauen und mehr passende
+  Anfragen. Sie wird nicht als separate Software-, Tool- oder Prozessoptimierungsmarke formuliert.
+- Landingpage-spezifische Aussagen zu Ablauf, Preislogik, CTA-Strategie und SEO richten sich zusätzlich nach dem Skill
+  `invessiv-landing`.
+- Diese Landingpage-Regeln sind keine Home-Defaults: Preis, Haupt-CTA und Ein-Angebot-Funnel dürfen nicht ungeprüft auf
+  die Home übertragen werden.
+
+### Unabhängige Bereiche
+
+- Der LinkedIn-Post-Generator unter `/[locale]/services/linkedin-post` ist ein eigenständiges Produkt. Seine Copy,
+  Positionierung, SEO-Daten und Serverregeln definieren weder die Home noch die Landingpage-Service-Route.
+- Inhalte aus LinkedIn-Post-, Workspace-, Lead- oder internen Tool-Bereichen werden nicht auf Home oder Landingpage
+  übertragen, solange der Nutzer dies nicht ausdrücklich beauftragt.
 
 ## i18n und Copy
 

@@ -20,6 +20,18 @@ describe("LocalePage metadata", () => {
     });
 
     expect(metadata.alternates?.canonical).toBe("https://www.invessiv.com/de");
+    expect(metadata.title).toEqual({
+      absolute: "Invessiv | Webdesign aus Chemnitz für KMU",
+    });
+    expect(metadata.description).toContain("Moritz Hecht");
+    expect(metadata.openGraph?.title).toBe(
+      "Invessiv | Webdesign aus Chemnitz für KMU",
+    );
+    expect(metadata.openGraph?.description).toBe(metadata.description);
+    expect(metadata.twitter?.title).toBe(
+      "Invessiv | Webdesign aus Chemnitz für KMU",
+    );
+    expect(metadata.twitter?.description).toBe(metadata.description);
     expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/de");
     expect(metadata.openGraph?.images).toEqual([
       {

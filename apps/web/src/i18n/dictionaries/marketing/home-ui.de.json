@@ -1,8 +1,12 @@
 {
-  "heroPrimaryCta": "Angebot einschätzen lassen",
-  "heroSecondaryCta": "Leistung passend einschätzen",
-  "heroTag": "MEHR ANFRAGEN, EINFACHERE PROZESSE",
-  "heroVisualAriaLabel": "Live Performance Einblick",
+  "heroPrimaryCta": "Kostenloses Erstgespräch anfragen",
+  "heroSecondaryCta": "Leistungen ansehen",
+  "heroTag": "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
+  "heroTrustChips": [
+    "Direkter Ansprechpartner",
+    "Softwareentwicklungs-Background"
+  ],
+  "heroVisualAriaLabel": "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
   "leadBridgeContent": {
     "kicker": "MEIN ANSATZ",
     "title": "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",

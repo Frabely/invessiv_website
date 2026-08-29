@@ -15,6 +15,7 @@ export type HomeUiContent = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroTrustChips: string[];
   heroVisualAriaLabel: string;
   leadBridgeContent: LeadBridgeContent;
   mappingWarning: string;
