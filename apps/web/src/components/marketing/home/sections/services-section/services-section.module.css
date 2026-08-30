@@ -9,10 +9,14 @@
 
 .brandMark {
   position: absolute;
-  inset: 0 0 -70%;
+  top: -3rem;
+  left: 50%;
   z-index: -1;
+  width: min(100%, 72rem);
+  aspect-ratio: 1;
   opacity: 0.045;
   pointer-events: none;
+  transform: translateX(-50%);
   user-select: none;
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -36,7 +40,11 @@
 
 @media (max-width: 759px) {
   .brandMark {
-    inset: auto 0 6%;
+    top: 30rem;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: 100%;
     height: auto;
     aspect-ratio: 1;
   }

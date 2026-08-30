@@ -12,6 +12,7 @@
   grid-area: stage;
   position: relative;
   display: block;
+  align-self: start;
   width: 100%;
   aspect-ratio: 1.37;
   border-radius: 24px;
@@ -129,8 +130,12 @@
 
 .portraitBackdrop {
   position: absolute;
+  top: -2rem;
+  right: -12%;
+  bottom: auto;
+  left: -12%;
   z-index: 0;
-  inset: -10% -12%;
+  aspect-ratio: 1.55 / 1;
   overflow: hidden;
   opacity: 0.15;
   filter: grayscale(0.35) contrast(1.08);
@@ -227,6 +232,13 @@
       "stage panel";
     column-gap: clamp(2rem, 3.4vw, 3.4rem);
     row-gap: clamp(1.5rem, 2.2vw, 2rem);
+  }
+}
+
+@media (max-width: 759px) {
+  .portraitBackdrop {
+    top: -1.5rem;
+    aspect-ratio: 1 / 1;
   }
 }
 
