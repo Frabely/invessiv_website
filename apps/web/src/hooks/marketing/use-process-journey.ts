@@ -353,8 +353,8 @@ export function useProcessJourney({
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
       // Start and end trigger lines tune when drawing begins and completes.
-      const startLine = viewportHeight * 0.7;
-      const endLine = viewportHeight * 0.42;
+      const startLine = viewportHeight * 0.78;
+      const endLine = viewportHeight * 0.46;
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
