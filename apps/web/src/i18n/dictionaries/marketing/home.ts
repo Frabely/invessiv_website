@@ -629,12 +629,12 @@ const HOME_SECTIONS = [
           {
             question: "Was kostet ein Projekt?",
             answer:
-              "Der Preis hängt vom Umfang ab, deshalb nenne ich dir keine Zahl aus der Luft. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Festpreisangebot ohne versteckte Posten. Alles, was später dazukommt, stimme ich vorher mit dir ab.",
+              "Der Preis hängt vom Umfang ab, deshalb nenne ich dir keinen Preis ins Blaue hinein. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Festpreisangebot ohne versteckte Posten. Alles, was später dazukommt, stimme ich vorher mit dir ab.",
           },
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Projektstart heißt bei mir Onboarding: Wir schauen uns vorhandene Assets an, sprechen Ideen noch einmal im Detail durch und klären, wie die Seite am Ende aussehen soll. Dafür brauche ich die Zugänge, Fotos, Videos und weitere Materialien, die wir für die Website brauchen, damit ich sauber loslegen kann.",
+              "Der Projektstart ist bei mir das Onboarding: Wir schauen uns vorhandene Assets an, sprechen Ideen noch einmal im Detail durch und klären, wie die Seite am Ende aussehen soll. Dafür brauche ich die Zugänge, Fotos, Videos und weitere Materialien, die wir für die Website brauchen, damit ich sauber loslegen kann.",
           },
           {
             question: "Wie viele Korrekturen sind enthalten?",
@@ -644,7 +644,12 @@ const HOME_SECTIONS = [
           {
             question: "Was ist im Angebot typischerweise nicht enthalten?",
             answer:
-              "Typisch nicht enthalten sind Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen außerhalb des vereinbarten Umfangs. Texte schreibe ich normalerweise selbst, außer du wünschst es ausdrücklich anders. Bilder und Videos kommen idealerweise von dir; wenn noch nichts da ist, arbeite ich nach Absprache vorerst mit KI- oder Stockmaterial.",
+              "Typisch nicht enthalten sind Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen außerhalb des vereinbarten Umfangs. Texte schreibe ich normalerweise selbst, außer du möchtest es ausdrücklich anders. Bilder und Videos kommen idealerweise von dir; wenn noch nichts da ist, arbeite ich nach Absprache vorerst mit KI- oder Stockmaterial.",
+          },
+          {
+            question: "Was passiert nach dem Launch?",
+            answer:
+              "Nach dem Go-live bist du nicht von mir abhängig. Üblicherweise geht das in eine laufende Wartung oder Betreuung über, wenn du das möchtest. Mir ist wichtig, Kunden auch nach dem Launch verlässlich und professionell weiter zu begleiten. Theoretisch kannst du die Website aber auch einfach übernehmen und ohne weitere Zusammenarbeit weiterlaufen lassen. Wir entscheiden dann gemeinsam, was für dich sinnvoll ist.",
           },
           {
             question: "Kann ich Inhalte später selbst ändern?",
@@ -652,12 +657,7 @@ const HOME_SECTIONS = [
               "Ja. Meistens übernehme ich Änderungen für dich: Du schreibst mir kurz, was angepasst werden soll, und ich kümmere mich darum. Für viele ist das der schnellere Weg. Wenn du Inhalte selbst pflegen willst, bauen wir ein CMS ein und sprechen das vor dem Start ab.",
           },
           {
-            question: "Was passiert nach dem Launch?",
-            answer:
-              "Nach dem Go-live bist du nicht von mir abhängig. In der Regel läuft dann eine laufende Betreuung über Wartung weiter, oft als planbarer Vertrag mit monatlicher Laufzeit. Wenn du später Unterstützung willst, bin ich gern an Bord. Theoretisch kannst du die Website aber auch einfach übernehmen und ohne weitere Zusammenarbeit weiterlaufen lassen. Wir entscheiden dann gemeinsam, was für dich sinnvoll ist.",
-          },
-          {
-            question: "Welche Mitwirkung ist auf Kundenseite nötig?",
+            question: "Was brauche ich von dir für einen sauberen Start?",
             answer:
               "Ich brauche von dir zeitnahes Feedback, Freigaben, die nötigen Zugänge und, wenn vorhanden, Texte, Bilder und Videos. Der größte Teil davon fällt einmalig beim Onboarding an. Wenn Rückmeldungen länger dauern, verschiebt sich der Zeitplan entsprechend.",
           },
@@ -704,7 +704,7 @@ const HOME_SECTIONS = [
           {
             question: "How does project kickoff work?",
             answer:
-              "Kickoff with me means onboarding: we look through the available assets, go through the ideas in detail once more, and define how the site should look in the end. I also need the access, photos, videos, and any other material required to build the website so I can start cleanly.",
+              "Project kickoff means onboarding with me: we look through the available assets, go through the ideas in detail once more, and define how the site should look in the end. I also need the access, photos, videos, and any other material required to build the website so I can start cleanly.",
           },
           {
             question: "How many revision rounds are included?",
@@ -719,7 +719,7 @@ const HOME_SECTIONS = [
           {
             question: "What happens after launch?",
             answer:
-              "I do not disappear after go-live. In practice, that usually means ongoing maintenance, often as a predictable monthly agreement. If you later want support, I am happy to stay involved. In theory, though, you can also take over the website and keep it running without any further collaboration. What comes next depends on what makes sense for you.",
+              "I do not disappear after go-live. Usually that moves into ongoing maintenance or support if you want it. It matters to me to keep supporting clients reliably and professionally after launch. In theory, though, you can also take over the website and keep it running without any further collaboration. What comes next depends on what makes sense for you.",
           },
           {
             question: "Can I edit the content myself later?",
@@ -727,7 +727,7 @@ const HOME_SECTIONS = [
               "Yes. As a rule I handle changes for you: you send me a short message about what needs updating and I take care of it. For most clients that is the faster route. If you would rather maintain content yourself, we build in a CMS and discuss that before the project starts.",
           },
           {
-            question: "What client-side input is required?",
+            question: "What do I need from you for a clean start?",
             answer:
               "I need timely feedback, approvals, the required access, and, where available, your texts, images, and videos. Most of that happens once, during onboarding. If responses take longer, the timeline shifts accordingly.",
           },
