@@ -14,8 +14,8 @@ import { getLinkedInPostSuccessContent } from "@/i18n/dictionaries/linkedin-post
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type LinkedInPostSuccessRouteProps = {
@@ -35,20 +35,18 @@ export async function generateMetadata({
   }
 
   const { meta } = getLinkedInPostSuccessContent(locale);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}${SITE_ROUTES.LINKEDIN_POST_SERVICE_SUCCESS}`,
-    ]),
-  );
-
   return {
     ...createPageMetadata({
       absoluteTitle: true,
       title: meta.title,
       description: meta.description,
-      canonicalPath: `/${locale}${SITE_ROUTES.LINKEDIN_POST_SERVICE_SUCCESS}`,
-      languages: createLocaleAlternates(languages),
+      canonicalPath: createLocalePathname(
+        SITE_ROUTES.LINKEDIN_POST_SERVICE_SUCCESS,
+        locale,
+      ),
+      languages: createRouteAlternates(
+        SITE_ROUTES.LINKEDIN_POST_SERVICE_SUCCESS,
+      ),
     }),
     robots: { index: false, follow: false },
   };

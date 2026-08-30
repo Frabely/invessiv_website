@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { PRIMARY_NAVIGATION } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
@@ -310,18 +310,46 @@ describe("home dictionary", () => {
   });
 
   it.each(["de", "en"] as const)(
-    "keeps the %s proof summary copy readable",
+    "keeps the %s references section free of rating and source claims",
     (locale) => {
-      const proofSection = getHomeSections(locale).find(
-        (section) => section.id === "proof",
+      const referencesSection = getHomeSections(locale).find(
+        (section) => section.id === "references",
       );
 
-      if (!proofSection) {
-        throw new Error("Expected proof section to be available.");
+      if (!referencesSection) {
+        throw new Error("Expected references section to be available.");
       }
 
-      expect(proofSection.summaryPoints[0]).toContain("★");
-      expect(proofSection.summaryPoints[0]).not.toContain("?");
+      const sectionCopy = referencesSection.referenceEntries
+        .flatMap((entry) => [entry.authorName, entry.quote, entry.role])
+        .join(" ");
+
+      expect(sectionCopy).not.toContain("★");
+      expect(sectionCopy).not.toContain("?");
+      expect(sectionCopy.toLowerCase()).not.toContain("google");
+    },
+  );
+
+  it.each([
+    ["de", "Projekt im Detail ansehen"],
+    ["en", "View project details"],
+  ] as const)(
+    "keeps the %s reference entries ordered with detail-link copy",
+    (locale, expectedLinkLabel) => {
+      const referencesSection = getHomeSections(locale).find(
+        (section) => section.id === "references",
+      );
+
+      if (!referencesSection) {
+        throw new Error("Expected references section to be available.");
+      }
+
+      expect(
+        referencesSection.referenceEntries.map((entry) => entry.imageKey),
+      ).toEqual(["allmacher", "kolja"]);
+      expect(
+        referencesSection.referenceEntries.map((entry) => entry.linkLabel),
+      ).toEqual([expectedLinkLabel, expectedLinkLabel]);
     },
   );
 });

@@ -54,6 +54,7 @@ export function FooterSection({
 }: FooterSectionProps) {
   const copy = getFooterStaticContent(locale);
   const imprintHref = createLocalePathname(SITE_ROUTES.IMPRINT, locale);
+  const referencesHref = createLocalePathname(SITE_ROUTES.REFERENCES, locale);
 
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
@@ -95,7 +96,13 @@ export function FooterSection({
   const columns = [
     filteredNavColumn,
     { title: copy.legalTitle, links: copy.legalLinks },
-    { title: copy.invessivTitle, links: copy.invessivLinks },
+    {
+      title: copy.invessivTitle,
+      links: [
+        ...copy.invessivLinks,
+        { label: copy.referencesLabel, href: referencesHref },
+      ],
+    },
     contactColumn,
   ];
 

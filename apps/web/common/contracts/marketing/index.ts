@@ -5,4 +5,7 @@ export * from "./linkedin-post-author";
 export * from "./primary-service-card-data";
 export * from "./primary-service-key";
 export * from "./project-offer-sync-detail";
+export * from "./reference-entry";
+export * from "./reference-labels";
+export * from "./reference-testimonial";
 export * from "./service-option";

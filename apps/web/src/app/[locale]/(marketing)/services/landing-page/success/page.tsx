@@ -19,8 +19,8 @@ import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type LandingSuccessRouteProps = {
@@ -40,20 +40,18 @@ export async function generateMetadata({
   }
 
   const { meta } = getLandingSuccessContent(locale);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}${SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS}`,
-    ]),
-  );
-
   return {
     ...createPageMetadata({
       absoluteTitle: true,
       title: meta.title,
       description: meta.description,
-      canonicalPath: `/${locale}${SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS}`,
-      languages: createLocaleAlternates(languages),
+      canonicalPath: createLocalePathname(
+        SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
+        locale,
+      ),
+      languages: createRouteAlternates(
+        SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
+      ),
     }),
     robots: { index: false, follow: false },
   };

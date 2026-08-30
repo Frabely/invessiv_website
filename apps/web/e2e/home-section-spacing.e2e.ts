@@ -14,7 +14,7 @@ const VIEWPORTS = [
 const SECTION_IDS: string[] = [
   "lead-bridge",
   "services",
-  "proof",
+  "references",
   "process",
   "faq",
   "contact",

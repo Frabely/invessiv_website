@@ -4,7 +4,15 @@ import en from "./home-meta.en.json";
 
 export type HomeMetaContent = {
   description: string;
-  openGraphLocale: "de_DE" | "en_US";
+  imageAccentText: string;
+  imageAlt: string;
+  imageContactLabel: string;
+  imageHeight: number;
+  imageKicker: string;
+  imageSupportingText: string;
+  imageTitle: string;
+  imageUrl: string;
+  imageWidth: number;
   title: string;
 };
 

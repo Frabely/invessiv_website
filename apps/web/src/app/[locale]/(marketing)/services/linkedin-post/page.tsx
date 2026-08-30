@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
 import { notFound } from "next/navigation";
 import { LinkedInPostPage } from "@/components/marketing/linkedin-post/linkedin-post-page/linkedin-post-page";
 import {
@@ -7,11 +8,12 @@ import {
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getLinkedInPostMetaContent } from "@/i18n/dictionaries/linkedin-post/meta";
 import { createLinkedInPostStructuredData } from "@/lib/seo/linkedin-post-structured-data";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type LinkedInPostRouteProps = {
@@ -30,29 +32,19 @@ export async function generateMetadata({
     return {};
   }
 
-  const {
-    title,
-    description,
-    imageAlt,
-    imageHeight,
-    imageUrl,
-    imageWidth,
-    openGraphLocale,
-  } = getLinkedInPostMetaContent(locale);
+  const { title, description, imageAlt, imageHeight, imageUrl, imageWidth } =
+    getLinkedInPostMetaContent(locale);
 
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}${SITE_ROUTES.LINKEDIN_POST_SERVICE}`,
-    ]),
-  );
   return createPageMetadata({
     absoluteTitle: true,
     title,
     description,
-    canonicalPath: `/${locale}${SITE_ROUTES.LINKEDIN_POST_SERVICE}`,
-    languages: createLocaleAlternates(languages),
-    openGraphLocale,
+    canonicalPath: createLocalePathname(
+      SITE_ROUTES.LINKEDIN_POST_SERVICE,
+      locale,
+    ),
+    languages: createRouteAlternates(SITE_ROUTES.LINKEDIN_POST_SERVICE),
+    openGraphLocale: OPEN_GRAPH_LOCALE[locale],
     socialImage: {
       alt: imageAlt,
       height: imageHeight,

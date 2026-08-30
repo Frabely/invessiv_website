@@ -1,0 +1,36 @@
+.testimonial {
+  display: grid;
+  gap: clamp(1.1rem, 1.8vw, 1.5rem);
+  min-width: 0;
+}
+
+.identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(0.9rem, 1.4vw, 1.15rem);
+}
+
+.identityCopy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.author,
+.role {
+  margin: 0;
+}
+
+.author {
+  font-size: var(--font-size-heading-lg);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.role {
+  color: color-mix(in srgb, var(--color-text) 60%, var(--color-text-muted) 40%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 500;
+  line-height: 1.4;
+}

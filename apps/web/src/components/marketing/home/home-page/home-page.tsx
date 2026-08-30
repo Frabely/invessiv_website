@@ -8,7 +8,7 @@ import { FooterSection } from "@/components/marketing/home/sections/footer-secti
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
 import { HomeHeroPhoto } from "@/components/marketing/home/sections/hero-section/home-hero-photo/home-hero-photo";
 import { ProcessSection } from "@/components/marketing/home/sections/process-section/process-section";
-import { ProofSection } from "@/components/marketing/home/sections/proof-section/proof-section";
+import { ReferencesSection } from "@/components/marketing/home/sections/references-section/references-section";
 import { QAndASection } from "@/components/marketing/home/sections/q-and-a-section/q-and-a-section";
 import { ServicesSection } from "@/components/marketing/home/sections/services-section/services-section";
 import { ProblemSection } from "@/components/marketing/home/sections/problem-section/problem-section";
@@ -26,7 +26,7 @@ import {
   PRIMARY_NAVIGATION_SECTION_IDS,
   PROBLEM_SECTION_ID,
   PROCESS_SECTION_ID,
-  PROOF_SECTION_ID,
+  REFERENCES_SECTION_ID,
   SECTION_HREFS,
   SECTION_IDS,
   SERVICES_SECTION_ID,
@@ -43,11 +43,7 @@ import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-sectio
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { validateNavigationSections } from "@/lib/navigation/validate-navigation-sections";
 
-type HomePageProps = {
-  showProofSection: boolean;
-};
-
-export function HomePage({ showProofSection }: HomePageProps) {
+export function HomePage() {
   const { locale } = useLanguage();
   const servicesSectionRef = useRef<HTMLElement | null>(null);
   const sections = getHomeSections(locale);
@@ -65,6 +61,7 @@ export function HomePage({ showProofSection }: HomePageProps) {
     SITE_ROUTES.LANDING_PAGE_SERVICE,
     locale,
   );
+  const referencesHref = createLocalePathname(SITE_ROUTES.REFERENCES, locale);
   const validation = validateNavigationSections({
     navigationHrefs: PRIMARY_NAVIGATION.map((item) => item.href),
     sectionIds: [...PRIMARY_NAVIGATION_SECTION_IDS],
@@ -153,27 +150,15 @@ export function HomePage({ showProofSection }: HomePageProps) {
               );
             }
 
-            if (section.id === PROOF_SECTION_ID) {
-              if (!showProofSection) {
-                return null;
-              }
-
+            if (section.id === REFERENCES_SECTION_ID) {
               return (
-                <ProofSection
-                  description={section.description}
-                  featuredProject={section.proofFeaturedProject}
-                  highlightsAriaLabel={ui.proofHighlightsAriaLabel}
+                <ReferencesSection
+                  entries={section.referenceEntries}
                   id={section.id}
                   key={section.id}
-                  moreProjects={section.proofMoreProjects}
-                  ratingAriaLabel={
-                    section.proofRatingAriaLabel ?? ui.proofRatingAriaLabel
-                  }
-                  reviewLinkLabel={
-                    section.proofReviewLinkLabel ?? ui.proofReviewLinkLabel
-                  }
-                  reviews={section.proofReviews}
-                  summaryPoints={section.summaryPoints}
+                  kicker={section.kicker}
+                  labels={ui.referencesLabels}
+                  referencesHref={referencesHref}
                   title={section.title}
                 />
               );

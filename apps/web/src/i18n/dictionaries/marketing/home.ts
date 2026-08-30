@@ -7,6 +7,7 @@ import {
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
+import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { COMPANY, COMPANY_CALENDLY, COMPANY_MAILTO } from "@/config/company";
 import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
@@ -56,32 +57,6 @@ type ContactFormOption = {
   label: string;
 };
 
-type ProofReview = {
-  authorName: string;
-  context: string;
-  excerpt: string;
-  profileImageSrc?: string;
-  reviewHref: string;
-  sourceLabel: string;
-};
-
-type ProofFeaturedProject = {
-  ariaLabel: string;
-  kicker: string;
-  title: string;
-  description: string;
-  meta: string;
-};
-
-type ProofMoreProjects = {
-  ctaLabel: string;
-  description: string;
-  href: string;
-  title: string;
-};
-
-const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
-
 export type ProcessStepCopy = {
   step: string;
   title: string;
@@ -127,14 +102,6 @@ export type ContactChannelCopy = {
   detailPoints?: string[];
   metaLabel?: string;
   metaValue?: string;
-};
-
-export type ContactCtaCopy = {
-  kicker?: string;
-  label: string;
-  href: string;
-  description?: string;
-  hint?: string;
 };
 
 export type ContactSecondaryCtaCopy = {
@@ -272,15 +239,10 @@ type ServicesSectionCopy = {
   serviceCards: ServiceCardCopy[];
 };
 
-type ProofSectionCopy = {
+type ReferencesSectionCopy = {
+  kicker: string;
   title: string;
-  description: string;
-  summaryPoints: string[];
-  proofRatingAriaLabel: string;
-  proofReviewLinkLabel: string;
-  proofReviews: ProofReview[];
-  proofFeaturedProject: ProofFeaturedProject;
-  proofMoreProjects: ProofMoreProjects;
+  referenceEntries: ReferenceEntry[];
 };
 
 type ProcessSectionCopy = {
@@ -317,7 +279,7 @@ type FooterSectionCopy = {
 type ContentSectionMap = {
   hero: HeroSectionCopy;
   services: ServicesSectionCopy;
-  proof: ProofSectionCopy;
+  references: ReferencesSectionCopy;
   process: ProcessSectionCopy;
   faq: QnaSectionCopy;
   contact: ContactSectionCopy;
@@ -387,96 +349,73 @@ const HOME_SECTIONS = [
     },
   },
   {
-    id: "proof",
+    id: "references",
     copy: {
       de: {
-        title: "Was Kunden über die Zusammenarbeit sagen",
-        description: "aus realen Web- & Softwareprojekten",
-        summaryPoints: [
-          "5,0 ★★★★★ bei Google",
-          "echte Kundenstimmen",
-          "klare Ergebnisse",
-        ],
-        proofRatingAriaLabel: "5 von 5 Sternen",
-        proofReviewLinkLabel: "Bei Google ansehen",
-        proofFeaturedProject: {
-          ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
-          kicker: "Umgesetztes Projekt",
-          title:
-            "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
-          description:
-            "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
-          meta: "Umgesetzt für Kolja Wienigk",
-        },
-        proofMoreProjects: {
-          title: "Projektübersicht",
-          description:
-            "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
-          ctaLabel: "Projektübersicht öffnen",
-          href: "/de/projects",
-        },
-        proofReviews: [
+        kicker: "Projekte & Kundenstimmen",
+        title: "Was entsteht, wenn wir zusammenarbeiten?",
+        referenceEntries: [
           {
-            authorName: "Kolja Wienigk",
-            context: "Finanzmakler aus Dresden",
-            excerpt:
-              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
-            profileImageSrc: "/assets/kolja.png",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google Bewertung",
+            authorName: "Dr. Christoph Allmacher",
+            avatarKey: "allmacher",
+            avatarAlt: "Porträt von Dr. Christoph Allmacher",
+            role: "Allmacher Coaching, Verhandlungstraining in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
+            quote:
+              "Ich erstelle meine Website aktuell gemeinsam mit Moritz und bin mit der Zusammenarbeit sehr zufrieden. Die Kommunikation über WhatsApp ist unkompliziert, direkt und schnell, sodass Fragen jederzeit leicht geklärt werden können. Besonders schätze ich, dass Moritz sich Zeit nimmt, Zusammenhänge verständlich erklärt und nicht einfach nur „abarbeitet“. Die Zusammenarbeit ist angenehm entspannt und dennoch sehr professionell – ohne künstlichen Zeitdruck oder eine rein geschäftliche Atmosphäre. Eigene Ideen werden ernst genommen, konstruktiv weiterentwickelt und zuverlässig umgesetzt. Ich würde mich jederzeit wieder für eine Zusammenarbeit mit Moritz entscheiden und kann ihn uneingeschränkt weiterempfehlen.",
+            imageKey: "allmacher",
+            imageAlt:
+              "Startseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
+            siteLabel: "allmacher-coaching.de",
+            linkLabel: "Projekt im Detail ansehen",
           },
           {
-            authorName: "Andreas H.",
-            context: "Chemnitz",
-            excerpt:
-              "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google Bewertung",
+            authorName: "Kolja Wienigk",
+            role: "Finanzmakler aus Dresden",
+            quote:
+              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+            avatarKey: "kolja",
+            avatarAlt: "Porträt von Kolja Wienigk",
+            imageKey: "kolja",
+            selectorLabel: "Kolja Wienigk · Finanzmakler",
+            imageAlt:
+              "Startseite der Finanzberatung von Kolja Wienigk mit klarer Struktur",
+            siteLabel: "kolja-wienigk.de",
+            linkLabel: "Projekt im Detail ansehen",
           },
         ],
       },
       en: {
-        title: "What clients say about working together",
-        description: "from real web and software projects",
-        summaryPoints: [
-          "5.0 ★★★★★ on Google",
-          "real client reviews",
-          "clear outcomes",
-        ],
-        proofRatingAriaLabel: "5 out of 5 stars",
-        proofReviewLinkLabel: "View on Google",
-        proofFeaturedProject: {
-          ariaLabel: "Delivered project for Kolja Wienigk",
-          kicker: "Delivered project",
-          title: "New website for a financial broker with clear positioning",
-          description:
-            "This is the project delivered for Kolja: a calm, trustworthy presence with a clear offer structure, guided flow, and a homepage that makes the services easy to understand right away.",
-          meta: "Delivered for Kolja Wienigk",
-        },
-        proofMoreProjects: {
-          title: "Project overview",
-          description:
-            "In the project overview, there is currently one more delivered example.",
-          ctaLabel: "Open project overview",
-          href: "/en/projects",
-        },
-        proofReviews: [
+        kicker: "Projects & client voices",
+        title: "What can we create together?",
+        referenceEntries: [
           {
-            authorName: "Kolja Wienigk",
-            context: "Financial broker from Dresden",
-            excerpt:
-              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
-            profileImageSrc: "/assets/kolja.png",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google review",
+            authorName: "Dr. Christoph Allmacher",
+            avatarKey: "allmacher",
+            avatarAlt: "Portrait of Dr Christoph Allmacher",
+            role: "Allmacher Coaching, negotiation training in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
+            quote:
+              "I am building my website together with Moritz right now, and I am very happy with how we work together. Communication over WhatsApp is easy, direct, and fast, so questions get sorted out whenever they come up. What I value most is that Moritz takes the time to explain how things connect instead of simply working through a list. The collaboration feels relaxed and still very professional, without artificial time pressure or a purely transactional tone. My own ideas are taken seriously, developed further, and implemented reliably. I would work with Moritz again at any time and can recommend him without reservation.",
+            imageKey: "allmacher",
+            imageAlt:
+              "Homepage of Allmacher Coaching with the negotiation seminar in Chemnitz",
+            siteLabel: "allmacher-coaching.de",
+            linkLabel: "View project details",
           },
           {
-            authorName: "Andreas H.",
-            context: "Chemnitz",
-            excerpt:
-              "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google review",
+            authorName: "Kolja Wienigk",
+            role: "Financial broker from Dresden",
+            quote:
+              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
+            avatarKey: "kolja",
+            avatarAlt: "Portrait of Kolja Wienigk",
+            imageKey: "kolja",
+            selectorLabel: "Kolja Wienigk · Financial Broker",
+            imageAlt:
+              "Homepage of Kolja Wienigk's financial advice with a clear structure",
+            siteLabel: "kolja-wienigk.de",
+            linkLabel: "View project details",
           },
         ],
       },

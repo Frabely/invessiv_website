@@ -17,7 +17,6 @@ export type LinkedInPostMetaStructuredData = {
 export type LinkedInPostMetaContent = {
   title: string;
   description: string;
-  openGraphLocale: string;
   imageUrl: string;
   imageWidth: number;
   imageHeight: number;

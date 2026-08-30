@@ -61,3 +61,38 @@ Bewusste, dokumentierte Abweichungen von Konventionen oder zurückgestellte Refa
 **Risiko:** ~3 HTTP-Roundtrips pro Lead × ≤200 Leads = bis ~600 sequenzielle Neon-HTTP-Calls. Latenz spürbar bei großen Bulk-Operationen.
 
 **Next-Step:** Erst bei Bedarf optimieren. Möglicher Plan: ein vorgelagertes `SELECT … WHERE id = ANY($1)` lädt alle Rows in den Speicher, dann pro Lead nur eine Tx mit UPDATE + Activity-INSERT (spart ~200 SELECT-Roundtrips). Würde aber das Race-Re-Read aus CR #2 wieder schwächen — Trade-off in eigener Brainstorm-Session evaluieren.
+
+---
+
+## 5. `apps/workspace` dupliziert die Metadata- und Locale-Pfad-Bausteine der Web-App
+
+**Datum:** 2026-08-30 **Bereich:**
+
+- `apps/workspace/src/lib/seo/page-metadata.ts` — eigene Kopie: exportiertes `createLocaleAlternates`, hartes
+  `languages.de` statt `DEFAULT_LOCALE`, kein `createRouteAlternates`
+- `apps/workspace/src/lib/navigation/locale-pathname.ts` — Kopie von `apps/web/src/lib/navigation/locale-pathname.ts`
+- `apps/workspace/src/components/auth/auth-frame/auth-frame.tsx` (Z. 25–32) — dieselbe Logik ein drittes Mal inline
+- `apps/workspace/src/lib/auth/routes.ts`, `workspace-header.tsx`, `workspace-sidebar.tsx`,
+  `(app)/leads/page.tsx`, `(auth)/auth-route-metadata.ts` — bauen lokalisierte Pfade per Template-Literal aus
+  `locale` und `SITE_ROUTES.X` statt über `createLocalePathname`
+
+**Regel-Referenz:** Root-`AGENTS.md` → Architektur-Prinzipien, „URL-Pfade": lokalisierte Pfade über
+`createLocalePathname(SITE_ROUTES.X, locale)`, Canonical und `alternates.languages` über
+`createRouteAlternates(SITE_ROUTES.X)`. Ebenda i18n: von der Locale ableitbare Werte als `Record<Locale, …>` unter
+`packages/common/src/constants/i18n/`. Beide Regeln wurden am 30.08.2026 im Zuge des Referenzen-Reworks ergänzt und in
+`apps/web` umgesetzt; `apps/workspace` wurde bewusst nicht mitgezogen.
+
+**Risiko:** Aktuell gering, aber wachsend. Die Workspace-Routen sind `noindex`, es entsteht also kein SEO-Schaden. Aber
+`x-default` zeigt in `apps/workspace` hart auf `languages.de`: kommt eine dritte Locale dazu oder wechselt die
+Default-Locale, muss das an zwei Stellen nachgezogen werden — und eine davon wird erfahrungsgemäß vergessen. Dieselbe
+Pfad-Logik existiert dreifach (Web-Helper, Workspace-Helper, inline in `auth-frame.tsx`) und kann auseinanderlaufen.
+
+**Next-Step:** Eigener PR, nicht in einem laufenden Feature-Task.
+
+1. Source of Truth festlegen: `createLocalePathname`, `createRouteAlternates`, `DEFAULT_LOCALE` sowie
+   `SITE_URL`/`SITE_NAME` nach `packages/common` ziehen — dort liegen bereits `Locale`/`SUPPORTED_LOCALES` und seit dem
+   Rework `constants/i18n/OPEN_GRAPH_LOCALE`. `SITE_ROUTES` bleibt app-spezifisch und wird als Parameter übergeben.
+2. `apps/web` und `apps/workspace` auf die geteilten Helfer umstellen; die zwei `page-metadata.ts` und zwei
+   `locale-pathname.ts` auf je eine reduzieren.
+3. Inline-Duplikat in `auth-frame.tsx` entfernen.
+4. Gate: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` plus beide App-Builds.

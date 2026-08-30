@@ -14,7 +14,7 @@ vi.mock("@/components/marketing/home/home-page/home-page", () => ({
 }));
 
 describe("LocalePage metadata", () => {
-  it("uses the shared static OG image for the German homepage", async () => {
+  it("uses the German homepage OG image", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ locale: "de" }),
     });
@@ -35,16 +35,38 @@ describe("LocalePage metadata", () => {
     expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/de");
     expect(metadata.openGraph?.images).toEqual([
       {
-        alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
+        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Anfragen bringen.",
         height: 630,
-        url: "https://www.invessiv.com/og/landing.png",
+        url: "https://www.invessiv.com/og/home-de.png",
         width: 1200,
       },
     ]);
     expect(metadata.twitter?.images).toEqual([
       {
-        alt: "Invessiv Landingpage-Angebot für Selbstständige und kleine Unternehmen",
-        url: "https://www.invessiv.com/og/landing.png",
+        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Anfragen bringen.",
+        url: "https://www.invessiv.com/og/home-de.png",
+      },
+    ]);
+  });
+
+  it("uses the English homepage OG image", async () => {
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ locale: "en" }),
+    });
+
+    expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/en");
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring in inquiries.",
+        height: 630,
+        url: "https://www.invessiv.com/og/home-en.png",
+        width: 1200,
+      },
+    ]);
+    expect(metadata.twitter?.images).toEqual([
+      {
+        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring in inquiries.",
+        url: "https://www.invessiv.com/og/home-en.png",
       },
     ]);
   });

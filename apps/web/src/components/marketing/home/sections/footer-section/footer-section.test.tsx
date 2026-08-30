@@ -13,19 +13,22 @@ describe("FooterSection", () => {
         locale="de"
         navColumn={{
           title: "Navigation",
-          links: [{ href: "#proof", label: "Ergebnisse" }],
+          links: [{ href: "#references", label: "Ergebnisse" }],
         }}
       />,
     );
 
     expect(
       screen.getByRole("link", { name: "Ergebnisse" }).getAttribute("href"),
-    ).toBe("#proof");
+    ).toBe("#references");
     expect(screen.getByText("Schnellzugriff")).toBeTruthy();
     expect(
       screen.getByText("© 2026 Invessiv. Alle Rechte vorbehalten."),
     ).toBeTruthy();
     expect(screen.getByRole("link", { name: "LinkedIn" })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Referenzen" }).getAttribute("href"),
+    ).toBe("/de/references");
     expect(screen.getAllByText("Invessiv").length).toBeGreaterThan(0);
   });
 });

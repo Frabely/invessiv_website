@@ -3,7 +3,7 @@
 ## Geltungsbereich
 
 Diese Regeln gelten für alle öffentlichen Marketing-Routen unter `apps/web/src/app/[locale]/(marketing)/`, aktuell Home,
-Projects und Service-Detailseiten wie `/[locale]/services/landing-page`.
+References und Service-Detailseiten wie `/[locale]/services/landing-page`.
 
 ## Routing
 
@@ -33,6 +33,13 @@ Projects und Service-Detailseiten wie `/[locale]/services/landing-page`.
 - Jede Landing/Service-Detailseite hat ein primäres Keyword-Cluster und eine klare Suchintention (
   informational/commercial); genau eine H1 pro Seite.
 - OG-Bilder pro Offer/Template vorsehen (Fallback erlaubt), damit Shares konsistent bleiben.
+- Die sprachspezifischen OG-Bilder für Home und References werden reproduzierbar mit
+  `apps/web/scripts/generate-og-images.mjs` erzeugt. Bei Änderungen an Hero-/Referenzbildern, OG-Copy oder deren Layout
+  dieses Script anpassen und anschließend bei laufender Web-App mit
+  `node apps/web/scripts/generate-og-images.mjs` neu ausführen. Als Quellen dienen die jeweiligen Meta-Dictionaries und
+  bestehenden Bildassets; die Ergebnisse liegen unter `apps/web/public/og/home-{de,en}.png` und
+  `apps/web/public/og/references-{de,en}.png`. DE und EN immer gemeinsam aktualisieren und alle Ausgaben im Format
+  1200 × 630 visuell prüfen.
 
 ## Verbindliche Positionierung und Produktabgrenzung
 

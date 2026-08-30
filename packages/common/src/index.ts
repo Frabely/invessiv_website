@@ -9,6 +9,7 @@ export * from "./constants/leads/import";
 export * from "./constants/leads/list";
 export * from "./constants/leads/sources";
 export * from "./constants/leads/tracking";
+export * from "./constants/i18n/open-graph-locale";
 export * from "./contracts/i18n/locale";
 export type * from "./contracts/generator";
 export type * from "./contracts/leads";

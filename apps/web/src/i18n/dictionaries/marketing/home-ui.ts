@@ -1,3 +1,4 @@
+import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
 import type { Locale } from "@/config/i18n";
 import type { ServiceOption } from "@/common/contracts/marketing";
 import de from "./home-ui.de.json";
@@ -59,9 +60,7 @@ export type HomeUiContent = {
   mappingWarning: string;
   problemContent: ProblemContent;
   uspContent: UspContent;
-  proofHighlightsAriaLabel: string;
-  proofRatingAriaLabel: string;
-  proofReviewLinkLabel: string;
+  referencesLabels: ReferenceLabels;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;

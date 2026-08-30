@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
 import { HomePage } from "@/components/marketing/home/home-page/home-page";
 import {
   isSupportedLocale,
   type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
-import { isMarketingProofEnabled } from "@/config/marketing-launch";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
 import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type LocalePageProps = {
@@ -30,20 +32,21 @@ export async function generateMetadata({
     return {};
   }
 
-  const { title, description, openGraphLocale } = getHomeMetaContent(locale);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}`,
-    ]),
-  );
+  const { description, imageAlt, imageHeight, imageUrl, imageWidth, title } =
+    getHomeMetaContent(locale);
   return createPageMetadata({
     absoluteTitle: true,
     title,
     description,
-    canonicalPath: `/${locale}`,
-    languages: createLocaleAlternates(languages),
-    openGraphLocale,
+    canonicalPath: createLocalePathname(SITE_ROUTES.HOME, locale),
+    languages: createRouteAlternates(SITE_ROUTES.HOME),
+    openGraphLocale: OPEN_GRAPH_LOCALE[locale],
+    socialImage: {
+      alt: imageAlt,
+      height: imageHeight,
+      url: imageUrl,
+      width: imageWidth,
+    },
   });
 }
 
@@ -68,7 +71,7 @@ export default async function LocalePage({ params }: LocalePageProps) {
           __html: JSON.stringify(marketingStructuredData),
         }}
       />
-      <HomePage showProofSection={isMarketingProofEnabled()} />
+      <HomePage />
     </>
   );
 }

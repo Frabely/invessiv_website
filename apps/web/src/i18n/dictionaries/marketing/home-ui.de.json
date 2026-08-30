@@ -97,9 +97,12 @@
     ],
     "replyCtaLabel": "Klingt gut, lass uns starten"
   },
-  "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
-  "proofRatingAriaLabel": "5 von 5 Sternen",
-  "proofReviewLinkLabel": "Bei Google ansehen",
+  "referencesLabels": {
+    "showcaseAriaLabel": "Referenzen von Kunden mit Projektvorschau",
+    "counterTemplate": "Referenz {current} von {total}",
+    "expandQuote": "Ganzes Zitat lesen",
+    "collapseQuote": "Zitat einklappen"
+  },
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",

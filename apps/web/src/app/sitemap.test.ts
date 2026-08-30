@@ -7,6 +7,8 @@ describe("sitemap", () => {
     const entries = sitemap();
     const urls = entries.map((entry) => entry.url);
 
+    expect(urls).toContain(`${SITE_URL}/de/references`);
+    expect(urls).toContain(`${SITE_URL}/en/references`);
     expect(urls).toContain(`${SITE_URL}/de/services/landing-page`);
     expect(urls).toContain(`${SITE_URL}/en/services/landing-page`);
     expect(urls).toContain(`${SITE_URL}/de/services/linkedin-post`);

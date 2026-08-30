@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { SITE_NAME, SITE_URL } from "@/lib/site-metadata";
+import { SUPPORTED_LOCALES } from "@/config/i18n";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import { DEFAULT_LOCALE, SITE_NAME, SITE_URL } from "@/lib/site-metadata";
 
 function createSharedSocialImage() {
   return {
@@ -10,13 +12,22 @@ function createSharedSocialImage() {
   } as const;
 }
 
-export function createLocaleAlternates<T extends Record<string, string>>(
-  languages: T,
-) {
+function createLocaleAlternates(languages: Record<string, string>) {
   return {
     ...languages,
-    "x-default": languages.de,
+    "x-default": languages[DEFAULT_LOCALE],
   };
+}
+
+export function createRouteAlternates(route: string) {
+  return createLocaleAlternates(
+    Object.fromEntries(
+      SUPPORTED_LOCALES.map((locale) => [
+        locale,
+        createLocalePathname(route, locale),
+      ]),
+    ),
+  );
 }
 
 type CreatePageMetadataInput = {
@@ -50,7 +61,11 @@ export function createPageMetadata({
   const socialTitle = openGraphTitle ?? title;
   const socialDescription = openGraphDescription ?? description;
   const absoluteCanonical = new URL(canonicalPath, SITE_URL).toString();
-  const sharedSocialImage = socialImage ?? createSharedSocialImage();
+  const socialImageInput = socialImage ?? createSharedSocialImage();
+  const sharedSocialImage = {
+    ...socialImageInput,
+    url: new URL(socialImageInput.url, SITE_URL).toString(),
+  };
   const absoluteLanguages = Object.fromEntries(
     Object.entries(languages).map(([language, path]) => [
       language,

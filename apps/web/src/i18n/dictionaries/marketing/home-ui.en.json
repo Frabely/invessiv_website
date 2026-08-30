@@ -97,9 +97,12 @@
     ],
     "replyCtaLabel": "Sounds good, let's get started"
   },
-  "proofHighlightsAriaLabel": "Proof section highlights",
-  "proofRatingAriaLabel": "5 out of 5 stars",
-  "proofReviewLinkLabel": "View on Google",
+  "referencesLabels": {
+    "showcaseAriaLabel": "Client references with project preview",
+    "counterTemplate": "Reference {current} of {total}",
+    "expandQuote": "Read the full quote",
+    "collapseQuote": "Collapse quote"
+  },
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",

@@ -48,7 +48,7 @@ afterEach(() => {
 
 describe("HomePage", () => {
   it("keeps the project request select focused on web design and support", () => {
-    render(<HomePage showProofSection />);
+    render(<HomePage />);
 
     const offerSelect = screen.getByRole("combobox", {
       name: /Passendes Angebot/,
@@ -63,7 +63,7 @@ describe("HomePage", () => {
   });
 
   it("renders the hero and all enabled content sections in their configured order", () => {
-    render(<HomePage showProofSection />);
+    render(<HomePage />);
 
     const hero = screen.getByTestId("home-hero");
     const problemHeading = screen.getByRole("heading", {
@@ -75,8 +75,8 @@ describe("HomePage", () => {
     const servicesHeading = screen.getByRole("heading", {
       name: "Was hast du mit deiner Website vor?",
     });
-    const proofHeading = screen.getByRole("heading", {
-      name: "Was Kunden über die Zusammenarbeit sagen",
+    const referencesHeading = screen.getByRole("heading", {
+      name: "Was entsteht, wenn wir zusammenarbeiten?",
     });
 
     expect(
@@ -92,18 +92,8 @@ describe("HomePage", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      servicesHeading.compareDocumentPosition(proofHeading) &
+      servicesHeading.compareDocumentPosition(referencesHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-  });
-
-  it("does not render the proof section while the launch flag is disabled", () => {
-    render(<HomePage showProofSection={false} />);
-
-    expect(
-      screen.queryByRole("heading", {
-        name: "Was Kunden über die Zusammenarbeit sagen",
-      }),
-    ).not.toBeInTheDocument();
   });
 });

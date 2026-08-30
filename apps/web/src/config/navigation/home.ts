@@ -1,11 +1,12 @@
 import type { Locale } from "@/config/i18n";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 
 export const SECTION_IDS = [
   "hero",
   "problem",
   "usp",
   "services",
-  "proof",
+  "references",
   "process",
   "faq",
   "contact",
@@ -20,7 +21,7 @@ export const [
   PROBLEM_SECTION_ID,
   USP_SECTION_ID,
   SERVICES_SECTION_ID,
-  PROOF_SECTION_ID,
+  REFERENCES_SECTION_ID,
   PROCESS_SECTION_ID,
   FAQ_SECTION_ID,
   CONTACT_SECTION_ID,
@@ -31,7 +32,7 @@ export const SECTION_HREFS = {
   hero: "#hero",
   problem: "#problem",
   usp: "#usp",
-  proof: "#proof",
+  references: "#references",
   services: "#services",
   process: "#process",
   faq: "#faq",
@@ -57,7 +58,7 @@ export const getSectionHref = (sectionId: SectionId): SectionHref =>
   SECTION_HREFS[sectionId];
 
 export const getLocalizedSectionHref = (locale: Locale, sectionId: SectionId) =>
-  `/${locale}${getSectionHref(sectionId)}`;
+  createLocalePathname(getSectionHref(sectionId), locale);
 
 export const PRIMARY_NAVIGATION_SECTION_IDS = [
   "problem",

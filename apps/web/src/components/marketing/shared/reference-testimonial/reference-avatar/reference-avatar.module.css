@@ -1,0 +1,40 @@
+.avatarImageFrame,
+.avatarFallback {
+  display: grid;
+  place-items: center;
+  width: clamp(56px, 6vw, 64px);
+  height: clamp(56px, 6vw, 64px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 88%, transparent);
+  border-radius: 999px;
+}
+
+.avatarImageFrame {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-2);
+}
+
+.avatarImage {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.avatarImage[data-avatar="allmacher"] {
+  object-position: 62% 31%;
+  transform: translate(-11%, -1.5%) scale(3.15);
+  transform-origin: 62% 31%;
+}
+
+.avatarImage[data-avatar="kolja"] {
+  object-position: 50% 11%;
+  transform: scale(2.2);
+  transform-origin: 50% 11%;
+}
+
+.avatarFallback {
+  background: color-mix(in srgb, var(--color-surface-2) 88%, var(--accent) 12%);
+  color: color-mix(in srgb, var(--color-text) 82%, var(--accent) 18%);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}

@@ -1,0 +1,190 @@
+.pageShell.pageShell {
+  padding-top: 110px;
+  padding-bottom: 72px;
+}
+
+.pageHero {
+  position: relative;
+  display: grid;
+  gap: 28px;
+  padding-bottom: 18px;
+}
+
+.breadcrumbs {
+  margin-bottom: 6px;
+}
+
+.heroGrid {
+  display: grid;
+  gap: 28px;
+}
+
+.heroContent,
+.heroAside {
+  position: relative;
+  z-index: 1;
+}
+
+.heroContent {
+  display: grid;
+  gap: 18px;
+}
+
+.heroAside {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border) 84%);
+  border-radius: 28px;
+  background: color-mix(
+    in srgb,
+    var(--surface) 82%,
+    rgba(255, 255, 255, 0.03) 18%
+  );
+}
+
+.title,
+.intro,
+.supportingNote,
+.sectionTitle,
+.sectionDescription {
+  margin: 0;
+}
+
+.title {
+  max-width: 18ch;
+  font-size: var(--font-size-hero-title);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
+}
+
+.intro,
+.sectionDescription {
+  color: color-mix(in srgb, var(--text) 78%, var(--muted) 22%);
+  font-size: var(--font-size-body-lg);
+  line-height: 1.72;
+}
+
+.intro {
+  max-width: 58ch;
+}
+
+.supportingNote {
+  max-width: min(72ch, 100%);
+  padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  border-radius: 20px;
+  color: color-mix(in srgb, var(--text) 70%, var(--muted) 30%);
+  font-size: var(--font-size-body-md);
+  line-height: 1.7;
+  background: color-mix(in srgb, var(--color-surface-1) 86%, transparent);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-section-subtitle);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.heroHighlights.heroHighlights {
+  margin: 0;
+}
+
+.projectsSection {
+  display: grid;
+  gap: 44px;
+  padding-bottom: 52px;
+}
+
+.projectsGrid {
+  display: grid;
+  gap: 0;
+}
+
+:global([data-theme="light"]) .pageHero {
+  gap: 20px;
+}
+
+:global([data-theme="light"]) .heroAside {
+  border-color: color-mix(in srgb, var(--color-cta) 18%, var(--border) 82%);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--surface) 94%, #ffffff 6%),
+    color-mix(in srgb, var(--color-surface-2) 68%, var(--surface) 32%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 72%, transparent),
+    0 16px 30px color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+:global([data-theme="light"]) .sectionTitle {
+  color: color-mix(in srgb, var(--text) 92%, var(--color-cta) 8%);
+}
+
+:global([data-theme="light"]) .supportingNote,
+:global([data-theme="light"]) .sectionDescription {
+  color: color-mix(in srgb, var(--text) 82%, var(--muted) 18%);
+}
+
+@media (min-width: 900px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+    align-items: end;
+    gap: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .pageShell.pageShell {
+    padding-top: 98px;
+    padding-bottom: 56px;
+  }
+
+  .pageHero {
+    padding-bottom: 0;
+    gap: 22px;
+  }
+
+  .heroGrid {
+    gap: 20px;
+  }
+
+  .heroAside {
+    padding: 20px;
+  }
+
+  .title {
+    max-width: 15ch;
+    font-size: clamp(2.2rem, 10vw, 3.5rem);
+  }
+
+  .projectsSection {
+    gap: 34px;
+    padding-bottom: 40px;
+  }
+
+  .projectsGrid {
+    gap: 0;
+  }
+
+  .supportingNote {
+    padding: 16px;
+  }
+}
+
+@media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
+  .title {
+    font-size: var(--font-size-hero-title-wide);
+  }
+
+  .projectsGrid {
+    gap: 0;
+  }
+
+  .title {
+    max-width: 19ch;
+  }
+}

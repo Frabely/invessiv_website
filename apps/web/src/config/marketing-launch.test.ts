@@ -1,24 +1,24 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { isMarketingProofEnabled } from "./marketing-launch";
+import { isConsumptionReferenceEnabled } from "./marketing-launch";
 
-describe("isMarketingProofEnabled", () => {
+describe("isConsumptionReferenceEnabled", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
   it("returns false when the flag is missing", () => {
-    expect(isMarketingProofEnabled()).toBe(false);
+    expect(isConsumptionReferenceEnabled()).toBe(false);
   });
 
   it("returns false when the flag is not set to true", () => {
-    vi.stubEnv("ENABLE_MARKETING_PROOF", "false");
+    vi.stubEnv("ENABLE_MARKETING_REFERENCE_CONSUMPTION", "false");
 
-    expect(isMarketingProofEnabled()).toBe(false);
+    expect(isConsumptionReferenceEnabled()).toBe(false);
   });
 
   it("returns true when the flag is set to true", () => {
-    vi.stubEnv("ENABLE_MARKETING_PROOF", "true");
+    vi.stubEnv("ENABLE_MARKETING_REFERENCE_CONSUMPTION", "true");
 
-    expect(isMarketingProofEnabled()).toBe(true);
+    expect(isConsumptionReferenceEnabled()).toBe(true);
   });
 });

@@ -1,7 +1,9 @@
 import path from "node:path";
 import { defineConfig } from "vitest/config";
+import { nextStaticImagePlugin } from "./vitest/next-static-image-plugin";
 
 export default defineConfig({
+  plugins: [nextStaticImagePlugin(__dirname)],
   resolve: {
     alias: [
       {

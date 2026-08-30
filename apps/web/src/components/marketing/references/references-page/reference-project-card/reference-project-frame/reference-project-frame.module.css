@@ -1,0 +1,403 @@
+.frame {
+  position: relative;
+  display: grid;
+  width: min(100%, 360px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 82%, transparent);
+  border-radius: 38px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 92%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 90%, black 10%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 10%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #ffffff 4%, transparent),
+    0 24px 40px rgba(0, 0, 0, 0.24);
+}
+
+.frame[data-device="browser"] {
+  width: min(100%, 548px);
+  grid-template-rows: auto minmax(0, 1fr);
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 90%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
+    0 22px 36px rgba(0, 0, 0, 0.2),
+    0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.frame[data-device="browser"]::before {
+  content: "";
+  position: absolute;
+  inset: 1px 1px auto;
+  height: 14px;
+  border-radius: 17px 17px 0 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 5%, transparent),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.chrome {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 4px 10px 8px;
+}
+
+.frame[data-device="browser"] .chrome {
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 92%, black 8%)
+  );
+}
+
+.chromeDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 86%, #fff3e1 14%),
+    color-mix(in srgb, var(--accent) 70%, #7b4510 30%)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, #ffffff 5%, transparent);
+}
+
+.chromeBar {
+  position: relative;
+  width: min(100%, 210px);
+  height: 14px;
+  margin-left: 16px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-2) 80%, #ffffff 20%),
+    color-mix(in srgb, var(--color-surface-1) 92%, black 8%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 7%, transparent),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+}
+
+.chromeBar::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 34%, #ffffff 66%);
+  transform: translateY(-50%);
+}
+
+.phoneStatusMeta,
+.phoneStatusIcons {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.phoneStatusMeta {
+  justify-self: start;
+}
+
+.phoneStatusIcons {
+  justify-self: end;
+  gap: 6px;
+}
+
+.phoneTime {
+  color: var(--project-device-status-ink);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.phoneIsland {
+  justify-self: center;
+  width: 38%;
+  max-width: 118px;
+  min-width: 92px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--project-device-island-bg);
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, #ffffff 8%, transparent),
+    0 1px 0 color-mix(in srgb, #ffffff 4%, transparent);
+}
+
+.phoneSignal,
+.phoneWifi,
+.phoneBattery {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.phoneSignal {
+  width: 13px;
+  height: 10px;
+  background:
+    linear-gradient(
+        var(--project-device-status-ink),
+        var(--project-device-status-ink)
+      )
+      0 100% / 2px 3px no-repeat,
+    linear-gradient(
+        var(--project-device-status-ink),
+        var(--project-device-status-ink)
+      )
+      4px 100% / 2px 5px no-repeat,
+    linear-gradient(
+        var(--project-device-status-ink),
+        var(--project-device-status-ink)
+      )
+      8px 100% / 2px 7px no-repeat,
+    linear-gradient(
+        var(--project-device-status-ink),
+        var(--project-device-status-ink)
+      )
+      12px 100% / 2px 9px no-repeat;
+  border-radius: 1px;
+}
+
+.phoneWifi {
+  width: 13px;
+  height: 10px;
+  background: radial-gradient(
+      circle,
+      var(--project-device-status-ink) 0 1.4px,
+      transparent 1.6px
+    )
+    50% 100% / 4px 4px no-repeat;
+}
+
+.phoneWifi::before,
+.phoneWifi::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  border: 1.6px solid var(--project-device-status-ink);
+  border-radius: 999px;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.phoneWifi::before {
+  bottom: 1px;
+  width: 10px;
+  height: 10px;
+}
+
+.phoneWifi::after {
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+}
+
+.phoneBattery {
+  width: 16px;
+  height: 9px;
+  border: 1.5px solid var(--project-device-status-border);
+  border-radius: 3px;
+}
+
+.phoneBattery::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: -3px;
+  width: 2px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--project-device-status-border);
+}
+
+.phoneBattery::after {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  border-radius: 1.5px;
+  background: var(--project-device-battery-fill);
+}
+
+.viewport {
+  overflow: hidden;
+  margin: 0 2px;
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 2%, transparent),
+      color-mix(in srgb, #000000 16%, transparent)
+    ),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 4%, transparent),
+    0 0 0 1px color-mix(in srgb, #ffffff 3%, transparent);
+}
+
+.frame[data-device="browser"] .viewport {
+  margin: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 2%, transparent),
+      transparent
+    ),
+    color-mix(in srgb, var(--color-surface-1) 94%, black 6%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 3%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, #ffffff 1.5%, transparent);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.phoneHomeIndicator {
+  justify-self: center;
+  width: 34%;
+  max-width: 110px;
+  height: 5px;
+  margin: 10px 0 2px;
+  border-radius: 999px;
+  background: var(--project-device-home-indicator);
+  opacity: 0.92;
+}
+
+:global([data-theme="light"]) .frame {
+  border-color: color-mix(in srgb, var(--color-cta) 22%, var(--border) 78%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #eef4fb 86%, #dfe8f3 14%),
+    color-mix(in srgb, #d7e2ef 84%, #cbd8e8 16%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    0 18px 34px color-mix(in srgb, #98add0 20%, transparent);
+}
+
+:global([data-theme="light"]) .frame[data-device="browser"] {
+  border-color: color-mix(in srgb, var(--color-cta) 24%, var(--border) 76%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f6faff 88%, #e2ebf6 12%),
+    color-mix(in srgb, #e5edf8 88%, #d7e3f2 12%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 92%, transparent),
+    0 16px 30px color-mix(in srgb, #98add0 16%, transparent);
+}
+
+:global([data-theme="light"]) .frame[data-device="browser"]::before {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 72%, transparent),
+    transparent
+  );
+}
+
+:global([data-theme="light"]) .frame[data-device="browser"] .chrome {
+  border-bottom-color: color-mix(
+    in srgb,
+    var(--color-cta) 14%,
+    var(--border) 86%
+  );
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #f8fbff 92%, #e7eff8 8%),
+    color-mix(in srgb, #edf3fa 86%, #dde7f3 14%)
+  );
+}
+
+:global([data-theme="light"]) .chromeDot {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--accent) 72%, #ffffff 28%),
+    color-mix(in srgb, var(--accent) 56%, #b5671e 44%)
+  );
+  box-shadow: 0 0 0 1px color-mix(in srgb, #ffffff 65%, transparent);
+}
+
+:global([data-theme="light"]) .chromeBar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 90%, #dce6f3 10%),
+    color-mix(in srgb, #e2ebf6 84%, #d1dced 16%)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 86%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, #b9c8de 28%, transparent);
+}
+
+:global([data-theme="light"]) .chromeBar::before {
+  background: color-mix(in srgb, var(--color-cta) 34%, #ffffff 66%);
+}
+
+:global([data-theme="light"]) .viewport {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 74%, transparent),
+      color-mix(in srgb, #eef4fb 20%, transparent)
+    ),
+    color-mix(in srgb, #edf3fa 90%, #dce5f1 10%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    0 0 0 1px color-mix(in srgb, #b7c7dc 26%, transparent);
+}
+
+:global([data-theme="light"]) .frame[data-device="browser"] .viewport {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, #ffffff 82%, transparent),
+      color-mix(in srgb, #eef4fb 18%, transparent)
+    ),
+    color-mix(in srgb, #f4f8fd 92%, #dde6f2 8%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 88%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, #bccbdf 20%, transparent);
+}
+
+@media (min-width: 900px) {
+  .frame[data-device="browser"] {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  .frame {
+    width: min(100%, 320px);
+  }
+
+  .frame[data-device="browser"] {
+    width: min(100%, 480px);
+  }
+}

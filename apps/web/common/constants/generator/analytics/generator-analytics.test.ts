@@ -5,7 +5,7 @@ import {
   GeneratorAnalyticsEvent,
   GeneratorErrorReason,
   PostDownloadTarget,
-} from "./generator-analytics";
+} from "@/common/constants";
 
 describe("generator analytics constants", () => {
   it("exposes the exact analytics event names", () => {
