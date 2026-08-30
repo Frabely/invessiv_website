@@ -236,8 +236,8 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: clamp(4.5rem, 12vw, 9.5rem);
-  row-gap: clamp(6rem, 11vw, 10rem);
-  width: min(100%, 84rem);
+  row-gap: clamp(8.5rem, 17vw, 16rem);
+  width: min(100%, 76rem);
   margin-inline: auto;
 }
 

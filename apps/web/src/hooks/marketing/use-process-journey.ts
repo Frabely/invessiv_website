@@ -58,6 +58,7 @@ export function useProcessJourney({
       top: number;
       bottom: number;
     }[] = [];
+    let segmentWeights: number[] = [];
     let lastActiveIndex: number | null = null;
     let rafId: number | null = null;
     let isJourneyActive = true;
@@ -168,6 +169,9 @@ export function useProcessJourney({
 
       const segments: string[] = [];
       const lengths: number[] = [];
+      // Scroll share per segment; the outer bows get more so their step stays readable.
+      const weights: number[] = [];
+      const outerBowWeight = 2;
       const measure = () => {
         path.setAttribute("d", segments.join(" "));
         return path.getTotalLength();
@@ -185,9 +189,11 @@ export function useProcessJourney({
         metrics.slice(1).forEach((metric) => {
           segments.push(`L ${lineX.toFixed(2)} ${metric.centerY.toFixed(2)}`);
           lengths.push(measure());
+          weights.push(1);
         });
         segments.push(`L ${lineX.toFixed(2)} ${ctaY.toFixed(2)}`);
         segments.push(`L ${ctaX.toFixed(2)} ${ctaY.toFixed(2)}`);
+        weights.push(1);
         setCssPoint(
           "--process-start-x",
           "--process-start-y",
@@ -219,11 +225,28 @@ export function useProcessJourney({
         );
         const innerGap = Math.max(rightEdge - leftEdge, 0);
         const curveStrength = Math.min(Math.max(innerGap * 0.55, 48), 260);
-        const sideSpace = Math.max(
-          (window.innerWidth - layoutRect.width) / 2,
+        // The outer bows leave the content column, so they may only reach as far as the
+        // visible viewport allows -- body clips horizontally, and the stroke has a glow.
+        const viewportWidth = document.documentElement.clientWidth;
+        const outerLeft = anchors.reduce(
+          (currentMin, anchor) =>
+            anchor.dir === 1 ? Math.min(currentMin, anchor.outerX) : currentMin,
+          layoutRect.width,
+        );
+        const outerRight = anchors.reduce(
+          (currentMax, anchor) =>
+            anchor.dir === -1
+              ? Math.max(currentMax, anchor.outerX)
+              : currentMax,
           0,
         );
-        const outwardStrength = Math.min(Math.max(sideSpace * 0.8, 36), 110);
+        const strokeSafety = 22;
+        const spaceLeft = layoutRect.left + outerLeft;
+        const spaceRight = viewportWidth - (layoutRect.left + outerRight);
+        const outwardStrength = Math.min(
+          Math.max(Math.min(spaceLeft, spaceRight) - strokeSafety, 12),
+          140,
+        );
 
         const firstAnchor = anchors[0];
         if (!firstAnchor) {
@@ -257,6 +280,7 @@ export function useProcessJourney({
               `C ${cp1x.toFixed(2)} ${(previous.y + sag).toFixed(2)} ${cp2x.toFixed(2)} ${(anchor.y + sag).toFixed(2)} ${anchor.innerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
             );
             currentX = anchor.innerX;
+            weights.push(1);
           } else {
             // Same column: dive under the card and bow around its outer side.
             if (currentX !== previous.outerX) {
@@ -270,6 +294,7 @@ export function useProcessJourney({
               `C ${cp1x.toFixed(2)} ${previous.y.toFixed(2)} ${cp2x.toFixed(2)} ${anchor.y.toFixed(2)} ${anchor.outerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
             );
             currentX = anchor.outerX;
+            weights.push(outerBowWeight);
           }
           lengths.push(measure());
         });
@@ -286,6 +311,7 @@ export function useProcessJourney({
           segments.push(
             `C ${cp1x.toFixed(2)} ${ctaY.toFixed(2)} ${cp2x.toFixed(2)} ${ctaY.toFixed(2)} ${ctaX.toFixed(2)} ${ctaY.toFixed(2)}`,
           );
+          weights.push(1);
         }
         setCssPoint(
           "--process-start-x",
@@ -298,6 +324,7 @@ export function useProcessJourney({
       setCssPoint("--process-end-x", "--process-end-y", ctaX, ctaY);
       path.setAttribute("d", segments.join(" "));
       cardLengths = lengths;
+      segmentWeights = weights;
       const measuredLength = path.getTotalLength();
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
@@ -309,22 +336,38 @@ export function useProcessJourney({
     };
 
     const mapProgressToLength = (progress: number) => {
-      // Give every step-to-step segment the same share of the scroll distance, so the
-      // short outer bows do not rush past faster than the long center crossings.
+      // Hand each step-to-step segment its own share of the scroll distance instead of
+      // mapping scroll onto raw path length, so no segment rushes past on a short path.
       if (cardLengths.length < 2 || totalLength <= 0) {
         return totalLength * progress;
       }
       const stops = [...cardLengths, totalLength];
       const segmentCount = stops.length - 1;
-      const scaled = Math.max(0, Math.min(1, progress)) * segmentCount;
-      const index = Math.min(Math.floor(scaled), segmentCount - 1);
-      const segmentStart = stops[index];
-      const segmentEnd = stops[index + 1];
-      if (segmentStart == null || segmentEnd == null) {
+      const weights =
+        segmentWeights.length === segmentCount
+          ? segmentWeights
+          : new Array<number>(segmentCount).fill(1);
+      const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+      if (totalWeight <= 0) {
         return totalLength * progress;
       }
+      const target = Math.max(0, Math.min(1, progress)) * totalWeight;
+      let consumed = 0;
+      for (let index = 0; index < segmentCount; index += 1) {
+        const weight = weights[index] ?? 1;
+        const segmentStart = stops[index];
+        const segmentEnd = stops[index + 1];
+        if (segmentStart == null || segmentEnd == null) {
+          break;
+        }
+        if (target <= consumed + weight || index === segmentCount - 1) {
+          const local = Math.max(0, Math.min(1, (target - consumed) / weight));
+          return segmentStart + (segmentEnd - segmentStart) * local;
+        }
+        consumed += weight;
+      }
 
-      return segmentStart + (segmentEnd - segmentStart) * (scaled - index);
+      return totalLength * progress;
     };
 
     const applyCardStates = (activeIndex: number) => {
@@ -353,7 +396,7 @@ export function useProcessJourney({
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
       // Start and end trigger lines tune when drawing begins and completes.
-      const startLine = viewportHeight * 0.78;
+      const startLine = viewportHeight * 0.52;
       const endLine = viewportHeight * 0.46;
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
