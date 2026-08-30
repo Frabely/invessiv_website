@@ -330,6 +330,43 @@ describe("home dictionary", () => {
     },
   );
 
+  it.each(["de", "en"] as const)(
+    "starts every %s process outcome with an uppercase letter",
+    (locale) => {
+      const processSection = getHomeSections(locale).find(
+        (section) => section.id === "process",
+      );
+
+      if (!processSection) {
+        throw new Error("Expected process section to be available.");
+      }
+
+      processSection.processSteps.forEach((step) => {
+        const result = step.result.split(":")[1]?.trim() ?? "";
+        expect(result).toMatch(/^\p{Lu}/u);
+      });
+    },
+  );
+
+  it("keeps the revised German process effort concrete", () => {
+    const processSection = getHomeSections("de").find(
+      (section) => section.id === "process",
+    );
+
+    if (!processSection) {
+      throw new Error("Expected process section to be available.");
+    }
+
+    expect(processSection.processSteps.map((step) => step.effort)).toEqual([
+      "Aufwand: ca. 15 Min",
+      "Aufwand: 60–90 Min",
+      "Aufwand: Bilder, Texte & Zugangsdaten übergeben",
+      "Aufwand: Keiner – Ich arbeite",
+      "Aufwand: Je nach Umfang deiner Änderungswünsche",
+      "Aufwand: Ein letzter gemeinsamer Check",
+    ]);
+  });
+
   it.each([
     ["de", "Projekt im Detail ansehen"],
     ["en", "View project details"],

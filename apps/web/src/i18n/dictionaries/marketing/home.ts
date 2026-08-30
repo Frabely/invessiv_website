@@ -16,6 +16,8 @@ import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-of
 import { CONTACT_PAGE_KEY } from "@invessiv/common/constants/contact/contact-page-keys";
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
+import processDe from "./home-process.de.json";
+import processEn from "./home-process.en.json";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "process" | "upgrade" | "web";
@@ -248,6 +250,25 @@ type ProcessSectionCopy = {
   processSteps: ProcessStepCopy[];
   processCta: ProcessCtaCopy;
 };
+
+type ProcessDictionaryContent = {
+  title: string;
+  processSteps: ProcessStepCopy[];
+  processCtaLabel: string;
+};
+
+function createProcessSectionCopy({
+  processCtaLabel,
+  ...content
+}: ProcessDictionaryContent): ProcessSectionCopy {
+  return {
+    ...content,
+    processCta: {
+      label: processCtaLabel,
+      href: SECTION_HREFS.contact,
+    },
+  };
+}
 
 type QnaSectionCopy = {
   title: string;
@@ -589,96 +610,8 @@ const HOME_SECTIONS = [
   {
     id: "process",
     copy: {
-      de: {
-        title: "So läuft unsere Zusammenarbeit ab",
-        processSteps: [
-          {
-            step: "01",
-            title: "Kostenloses Erstgespräch",
-            effort: "Aufwand: ca. 15 Min",
-            result: "Ergebnis: Klarheit, was du wirklich brauchst",
-          },
-          {
-            step: "02",
-            title: "Prozess & Entscheidung",
-            effort: "Aufwand: ca. 30 Min",
-            result: "Ergebnis: wir entscheiden gemeinsam, ob es passt",
-          },
-          {
-            step: "03",
-            title: "Onboarding",
-            effort: "Aufwand: Bilder, Texte & Ideen übergeben",
-            result: "Ergebnis: alles für den Start beisammen",
-          },
-          {
-            step: "04",
-            title: "Erster Entwurf",
-            effort: "Aufwand: keiner – ich arbeite",
-            result: "Ergebnis: der erste sichtbare Stand deiner Seite",
-          },
-          {
-            step: "05",
-            title: "Feedbackrunden",
-            effort: "Aufwand: kurzes Feedback je Runde",
-            result: "Ergebnis: der Entwurf wird deine Website",
-          },
-          {
-            step: "06",
-            title: "Technik & Launch",
-            effort: "Aufwand: finale Freigabe",
-            result: "Ergebnis: deine Seite ist live und geprüft",
-          },
-        ],
-        processCta: {
-          label: "Kostenloses Erstgespräch anfragen",
-          href: SECTION_HREFS.contact,
-        },
-      },
-      en: {
-        title: "How our collaboration works",
-        processSteps: [
-          {
-            step: "01",
-            title: "Free consultation",
-            effort: "Effort: about 15 min",
-            result: "Outcome: clarity on what you actually need",
-          },
-          {
-            step: "02",
-            title: "Process & decision",
-            effort: "Effort: about 30 min",
-            result: "Outcome: we decide together if it's a fit",
-          },
-          {
-            step: "03",
-            title: "Onboarding",
-            effort: "Effort: hand over images, texts & ideas",
-            result: "Outcome: everything ready for the start",
-          },
-          {
-            step: "04",
-            title: "First draft",
-            effort: "Effort: none – I do the work",
-            result: "Outcome: the first visible version of your site",
-          },
-          {
-            step: "05",
-            title: "Feedback rounds",
-            effort: "Effort: short feedback per round",
-            result: "Outcome: the draft becomes your website",
-          },
-          {
-            step: "06",
-            title: "Tech & launch",
-            effort: "Effort: final approval",
-            result: "Outcome: your site is live and checked",
-          },
-        ],
-        processCta: {
-          label: "Request a free consultation",
-          href: SECTION_HREFS.contact,
-        },
-      },
+      de: createProcessSectionCopy(processDe),
+      en: createProcessSectionCopy(processEn),
     },
   },
   {
