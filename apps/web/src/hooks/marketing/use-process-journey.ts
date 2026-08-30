@@ -366,7 +366,8 @@ export function useProcessJourney({
             point.y < rect.bottom - overCardInset,
         );
         leader.dataset.overCard = isOverCard ? "true" : "false";
-        let activeIndex = -1;
+        // The first step stays highlighted from the start, before the path is drawn.
+        let activeIndex = 0;
         if (drawnLength > 0.5) {
           cardLengths.forEach((length, index) => {
             if (drawnLength + 1 >= length) {

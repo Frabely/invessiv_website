@@ -93,7 +93,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
 }
 
 .layoutHasJourneyCtaGate .endCta {
@@ -240,9 +240,9 @@
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(3.5rem, 9vw, 7rem);
+  column-gap: clamp(4.5rem, 12vw, 9.5rem);
   row-gap: clamp(2.5rem, 5vw, 4rem);
-  width: min(100%, 72rem);
+  width: min(100%, 78rem);
   margin-inline: auto;
 }
 
@@ -251,9 +251,9 @@
   width: min(100%, 23rem);
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
   border-radius: 18px;
-  background: color-mix(in srgb, var(--color-surface-1) 78%, transparent);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--color-surface-1) 58%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
   transition:
     border-color 300ms ease,
@@ -309,11 +309,16 @@
   filter: brightness(0.68) saturate(0.85);
 }
 
+.step[data-journey-state="passed"] .stepInner {
+  opacity: 0.55;
+}
+
 .stepInner {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 18px 20px 17px;
+  transition: opacity 320ms ease;
 }
 
 .stepTitleRow {
@@ -413,12 +418,12 @@
 }
 
 :global([data-theme="light"]) .backdrop::after {
-  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 70%, transparent);
 }
 
 :global([data-theme="light"]) .step {
   border-color: var(--color-border);
-  background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 68%, transparent);
   box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
 }
 
@@ -570,7 +575,7 @@
   }
 
   .backdrop::after {
-    background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+    background: color-mix(in srgb, var(--color-bg) 86%, transparent);
   }
 
   .steps {
