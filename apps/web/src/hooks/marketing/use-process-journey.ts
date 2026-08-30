@@ -52,6 +52,12 @@ export function useProcessJourney({
     let totalLength = 0;
     let cards: HTMLElement[] = [];
     let cardLengths: number[] = [];
+    let cardRects: {
+      left: number;
+      right: number;
+      top: number;
+      bottom: number;
+    }[] = [];
     let lastActiveIndex: number | null = null;
     let rafId: number | null = null;
     let isJourneyActive = true;
@@ -99,6 +105,12 @@ export function useProcessJourney({
       if (!firstMetrics || !lastMetrics) {
         return;
       }
+      cardRects = metrics.map((metric) => ({
+        left: metric.left,
+        right: metric.right,
+        top: metric.top,
+        bottom: metric.bottom,
+      }));
 
       if (mask) {
         // Punch the card areas out of the path so it never shows through translucent cards.
@@ -344,6 +356,16 @@ export function useProcessJourney({
           "--process-leader-y",
           `${point.y.toFixed(2)}px`,
         );
+        // Hide the leader dot while it travels beneath a card, matching the masked path.
+        const overCardInset = 6;
+        const isOverCard = cardRects.some(
+          (rect) =>
+            point.x > rect.left + overCardInset &&
+            point.x < rect.right - overCardInset &&
+            point.y > rect.top + overCardInset &&
+            point.y < rect.bottom - overCardInset,
+        );
+        leader.dataset.overCard = isOverCard ? "true" : "false";
         let activeIndex = -1;
         if (drawnLength > 0.5) {
           cardLengths.forEach((length, index) => {

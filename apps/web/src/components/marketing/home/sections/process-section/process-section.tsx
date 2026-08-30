@@ -136,6 +136,7 @@ export function ProcessSection({
           aria-hidden="true"
           className={`${styles.pathPoint} ${styles.pathPointLeader}`}
           data-finished="false"
+          data-over-card="false"
           ref={leaderRef}
         />
         {processCta ? (

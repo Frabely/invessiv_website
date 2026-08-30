@@ -187,6 +187,14 @@
   visibility: hidden;
 }
 
+.pathPointLeader {
+  transition: opacity 140ms ease;
+}
+
+.pathPointLeader[data-over-card="true"] {
+  opacity: 0;
+}
+
 .pathPointLeader[data-finished="true"] {
   animation: processLeaderPulse 0.72s ease-out 1 both;
 }
@@ -232,9 +240,9 @@
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: clamp(3rem, 8vw, 6rem);
+  column-gap: clamp(3.5rem, 9vw, 7rem);
   row-gap: clamp(2.5rem, 5vw, 4rem);
-  width: min(100%, 64rem);
+  width: min(100%, 72rem);
   margin-inline: auto;
 }
 
