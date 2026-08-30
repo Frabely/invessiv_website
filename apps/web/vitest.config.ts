@@ -45,6 +45,10 @@ export default defineConfig({
         ),
       },
       {
+        find: /^@\/assets\/(.+)$/,
+        replacement: path.resolve(__dirname, "assets/$1"),
+      },
+      {
         find: /^@\/common\/(.+)$/,
         replacement: path.resolve(__dirname, "common/$1"),
       },

@@ -1,0 +1,37 @@
+.cta {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  margin: 0;
+  text-align: center;
+}
+
+.hint {
+  color: color-mix(in srgb, var(--color-text) 68%, var(--color-text-muted) 32%);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.link {
+  color: color-mix(in srgb, var(--color-cta) 78%, var(--color-text) 22%);
+  font-size: var(--font-size-body-md);
+  font-weight: 800;
+  line-height: 1.4;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 44%, transparent);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.link:hover {
+  color: var(--color-cta-hover);
+}
+
+.link:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+:global([data-theme="light"]) .hint {
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+}

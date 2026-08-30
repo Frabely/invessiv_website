@@ -9,6 +9,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@/assets/*": ["./assets/*"],
       "@/common/*": ["./common/*"],
       "@invessiv/common": ["../../packages/common/src/index.ts"],
       "@invessiv/common/*": ["../../packages/common/src/*"],

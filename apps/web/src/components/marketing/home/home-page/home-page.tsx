@@ -180,8 +180,9 @@ export function HomePage() {
             if (section.id === FAQ_SECTION_ID) {
               return (
                 <QAndASection
-                  description={section.description}
+                  avatarAlt={section.qnaAvatarAlt}
                   id={section.id}
+                  intro={section.qnaIntro}
                   items={section.qnaItems}
                   key={section.id}
                   secondaryContact={section.qnaSecondaryContact}

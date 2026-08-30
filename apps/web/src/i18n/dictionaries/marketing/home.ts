@@ -7,6 +7,11 @@ import {
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
+import type {
+  QnaIntroCopy,
+  QnaItemCopy,
+  QnaSecondaryContactCopy,
+} from "@/common/contracts/marketing/qna-copy";
 import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { COMPANY, COMPANY_CALENDLY, COMPANY_MAILTO } from "@/config/company";
@@ -67,21 +72,6 @@ export type ProcessStepCopy = {
 };
 
 export type ProcessCtaCopy = {
-  label: string;
-  href: string;
-};
-
-export type QnaItemCopy = {
-  question: string;
-  answer: string;
-  link?: {
-    href: string;
-    label: string;
-  };
-};
-
-export type QnaSecondaryContactCopy = {
-  hint: string;
   label: string;
   href: string;
 };
@@ -272,7 +262,8 @@ function createProcessSectionCopy({
 
 type QnaSectionCopy = {
   title: string;
-  description: string;
+  qnaIntro: QnaIntroCopy;
+  qnaAvatarAlt: string;
   qnaItems: QnaItemCopy[];
   qnaSecondaryContact: QnaSecondaryContactCopy;
 };
@@ -619,8 +610,11 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         title: "Q&A",
-        description:
-          "Die wichtigsten Fragen vor dem Projektstart sind hier bewusst knapp, konkret und ohne Vertriebssprache beantwortet.",
+        qnaIntro: {
+          primary: "Hast du noch Fragen?",
+          secondary: "Hier sind Fragen, die mir häufig gestellt werden.",
+        },
+        qnaAvatarAlt: "Moritz Hecht, Webentwickler aus Chemnitz",
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -630,58 +624,71 @@ const HOME_SECTIONS = [
           {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung. Für klassische Einzel-Landingpages gibt es einen eigenen Ablauf auf der Landingpage-Detailseite.",
+              "Nach deiner Anfrage melde ich mich innerhalb von 24 Stunden. Im Erstgespräch klären wir Ziel, Umfang und Zeitrahmen, danach bekommst du ein konkretes Angebot mit Festpreis. Sagst du zu, sammeln wir in einer kurzen Onboarding-Runde Texte, Bilder und Zugänge ein. Ab da arbeite ich, und du siehst den ersten Entwurf, bevor etwas live geht.",
             link: {
               label: "Mehr zu Landingpages",
               href: SITE_ROUTES.LANDING_PAGE_SERVICE,
             },
           },
           {
-            question: "Kannst du meine bestehende Webseite überarbeiten?",
+            question: "Was kostet ein Projekt?",
             answer:
-              "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
+              "Der Preis hängt vom Umfang ab, deshalb nenne ich keine Pauschale ins Blaue. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Angebot mit Festpreis, noch bevor die Arbeit startet. Versteckte Posten gibt es nicht, und alles, was später dazukommt, stimme ich vorher mit dir ab.",
           },
           {
             question: "Welche Tools setzt du ein?",
             answer:
-              "Ich arbeite mit einem modernen Projekt-Setup rund um Next.js, Tailwind und passenden Analyse- bzw. Automatisierungs-Tools. Schnelle Build-Workflows nutze ich dort, wo sie sinnvoll sind, die Verantwortung für Architektur, Review und QA bleibt aber bei mir.",
-          },
-          {
-            question: "Gibt es versteckte Kosten?",
-            answer:
-              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Leistungsumfang. Zusätzliche Wünsche außerhalb des Leistungsumfangs stimme ich immer vor Umsetzung transparent mit dir ab.",
-          },
-          {
-            question: "Was ist im Angebot typischerweise nicht enthalten?",
-            answer:
-              "Nicht enthalten sind in der Regel Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen, die nicht im vereinbarten Leistungsumfang stehen. Solche Punkte werden vor Umsetzung separat aufgeführt und abgestimmt.",
+              "Ich arbeite mit Next.js als Framework, Tailwind für das Design, Vercel für Hosting und Auslieferung und Resend für die Formular-Mails. Der Stack ist bewusst schlank: schnelle Ladezeiten, wenig Wartung, keine Plugin-Abhängigkeiten. Die technische Verantwortung für Architektur, Review und QA bleibt bei mir, du musst dich in nichts davon einarbeiten.",
           },
           {
             question: "Wie viele Korrekturen sind enthalten?",
             answer:
-              "Die enthaltenen Korrekturen hängen vom gewählten Leistungsmodell ab. Bei Landingpages sind in der Regel 1–2 Feedbackrunden enthalten. Weitere Korrekturen oder zusätzliche Schleifen stimmen wir vorab transparent als Zusatzaufwand ab.",
+              "Das hängt vom Projekt und vom gewählten Angebot ab, in der Regel sind zwei Feedbackrunden enthalten. Wie viele es bei dir genau sind, steht in deinem Angebot. Brauchst du danach weitere Runden, sage ich dir vorher, was das an Aufwand und Kosten bedeutet.",
+          },
+          {
+            question: "Was ist im Angebot typischerweise nicht enthalten?",
+            answer:
+              "Nicht enthalten sind in der Regel Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen, die nicht im vereinbarten Leistungsumfang stehen. Auch Texte und Bilder kommen von dir, sofern wir nichts anderes vereinbaren. Alles, was zusätzlich anfällt, führe ich vor dem Start separat auf.",
           },
           {
             question: "Wie gehst du mit Zusatzwünschen um?",
             answer:
-              "Zusatzwünsche außerhalb des vereinbarten Rahmens werden nicht stillschweigend umgesetzt. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
+              "Zusatzwünsche außerhalb des vereinbarten Rahmens setze ich nicht stillschweigend um. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail. So bleibt der Rahmen für uns beide planbar.",
           },
           {
             question: "Welche Mitwirkung ist auf Kundenseite nötig?",
             answer:
-              "Für einen sauberen Ablauf brauche ich zeitnahes Feedback, Freigaben, notwendige Zugänge und ggf. Inhalte/Assets. Verzögerungen bei diesen Mitwirkungen können den Zeitplan entsprechend verschieben.",
+              "Ich brauche von dir zeitnahes Feedback, Freigaben, die nötigen Zugänge und, soweit vorhanden, Texte und Bilder. Der größte Teil davon fällt einmalig beim Onboarding an. Wenn Rückmeldungen länger dauern, verschiebt sich der Zeitplan entsprechend.",
           },
           {
             question: "Wann gilt ein Projekt als abgeschlossen?",
             answer:
-              "Ein Projekt gilt als abgeschlossen, wenn der vereinbarte Leistungsumfang geliefert und die Übergabe bzw. der Go-live erfolgt ist. Weitere Wünsche danach behandeln wir als Folgeauftrag, sofern es sich nicht um Abweichungen vom vereinbarten Umfang handelt.",
+              "Abgeschlossen ist ein Projekt, wenn der vereinbarte Leistungsumfang geliefert und die Seite live bzw. übergeben ist. Was danach dazukommt, behandeln wir als eigenen Folgeauftrag, sofern es sich nicht um Abweichungen vom vereinbarten Umfang handelt.",
+          },
+          {
+            question: "Was passiert nach dem Launch?",
+            answer:
+              "Ich verschwinde nach dem Go-live nicht. Du erreichst mich weiterhin direkt, und wir klären in Ruhe, ob du Wartung, Weiterentwicklung oder erst einmal gar nichts brauchst. Es gibt keinen Abo-Zwang und keinen Vertrag, der im Hintergrund weiterläuft.",
+          },
+          {
+            question: "Wem gehört die Website danach?",
+            answer:
+              "Dir. Domain, Hosting-Zugang, Inhalte und der fertige Code laufen über Accounts, die auf deinen Namen angelegt sind, und werden dir übergeben. Du bleibst bei mir, weil du willst, nicht weil dir sonst der Zugriff auf deine eigene Seite fehlt.",
+          },
+          {
+            question: "Kann ich Inhalte später selbst ändern?",
+            answer:
+              "In der Regel übernehme ich Änderungen für dich: Du schreibst mir kurz, was angepasst werden soll, und ich erledige es. Für die meisten ist das der schnellere Weg, weil du dich in kein System einarbeiten musst. Willst du Inhalte lieber selbst pflegen, bauen wir ein CMS ein. Das besprechen wir vor dem Start, weil es den Umfang verändert.",
           },
         ],
       },
       en: {
         title: "Q&A",
-        description:
-          "The most relevant pre-project questions are answered here in a concise, direct format without sales fluff.",
+        qnaIntro: {
+          primary: "Still have questions?",
+          secondary: "Here are the questions I get asked most often.",
+        },
+        qnaAvatarAlt: "Moritz Hecht, web developer from Chemnitz",
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",
@@ -691,51 +698,61 @@ const HOME_SECTIONS = [
           {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right service model, the next step, and, where useful, an individual offer for delivery. Classic single landing pages have their own process on the landing page detail page.",
+              "After your request I get back to you within 24 hours. In a first call we align on goal, project range, and timeline, and you then receive a concrete offer at a fixed price. Once you accept, we collect texts, images, and access in a short onboarding round. From there I build, and you see the first draft before anything goes live.",
             link: {
               label: "View landing page details",
               href: SITE_ROUTES.LANDING_PAGE_SERVICE,
             },
           },
           {
-            question: "Can you redesign my existing website?",
+            question: "What does a project cost?",
             answer:
-              "Yes. I can modernize existing pages, improve technical stability, and optimize for conversion without rebuilding everything from scratch. If a full relaunch is the better option, I tell you upfront.",
+              "The price depends on the project range, so I never quote a blanket number. We talk about your goal and the actual effort first, then you receive a written fixed-price offer before any work starts. There are no hidden items, and anything that comes up later is agreed with you in advance.",
           },
           {
             question: "Which tools do you use?",
             answer:
-              "I work with a modern project setup around Next.js, Tailwind, and suitable analytics or automation tools. Where fast build workflows help, I use them, but architecture, review, and QA stay under my responsibility.",
-          },
-          {
-            question: "Are there any hidden costs?",
-            answer:
-              "No. You receive a clear offer with a defined delivery frame before implementation starts. Any additional requests outside that frame are always aligned transparently before execution.",
-          },
-          {
-            question: "What is typically not included in the offer?",
-            answer:
-              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. These items are listed and aligned separately before implementation.",
+              "I work with Next.js as the framework, Tailwind for the design, Vercel for hosting and delivery, and Resend for form emails. The stack is deliberately lean: fast load times, little maintenance, no plugin dependencies. Technical responsibility for architecture, review, and QA stays with me, so you never have to learn any of it.",
           },
           {
             question: "How many revision rounds are included?",
             answer:
-              "Included revisions depend on the selected service model. For landing pages, typically 1-2 feedback rounds are included. Any additional rounds are aligned transparently in advance as extra effort.",
+              "That depends on the project and the offer you choose, and usually two feedback rounds are included. The exact number for your project is stated in your offer. If you need further rounds after that, I tell you upfront what it means in effort and cost.",
+          },
+          {
+            question: "What is typically not included in the offer?",
+            answer:
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. Texts and images come from you unless we agree otherwise. Anything that comes on top is listed separately before the project starts.",
           },
           {
             question: "How are additional requests handled?",
             answer:
-              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
+              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email. That keeps the frame predictable for both of us.",
           },
           {
             question: "What client-side input is required?",
             answer:
-              "A smooth process requires timely feedback, approvals, required access, and, where needed, content or assets. Delays in these inputs can shift the project timeline accordingly.",
+              "I need timely feedback, approvals, the required access, and, where available, your texts and images. Most of that happens once, during onboarding. If responses take longer, the timeline shifts accordingly.",
           },
           {
             question: "When is a project considered completed?",
             answer:
-              "A project is considered completed when the agreed service range has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed basis.",
+              "A project is complete once the agreed service range has been delivered and the site is live or handed over. Anything after that is treated as its own follow-up assignment, unless it concerns deviations from the agreed range.",
+          },
+          {
+            question: "What happens after launch?",
+            answer:
+              "I do not disappear after go-live. You still reach me directly, and we take the time to work out whether you need maintenance, further development, or nothing at all for now. There is no forced subscription and no contract running quietly in the background.",
+          },
+          {
+            question: "Who owns the website afterwards?",
+            answer:
+              "You do. Domain, hosting access, content, and the finished code run through accounts registered in your name and are handed over to you. You stay with me because you want to, not because you would otherwise lose access to your own site.",
+          },
+          {
+            question: "Can I edit the content myself later?",
+            answer:
+              "As a rule I handle changes for you: you send me a short message about what needs updating and I take care of it. For most clients that is the faster route, because you never have to learn a system. If you would rather maintain content yourself, we build in a CMS. We discuss that before the project starts, since it changes the project range.",
           },
         ],
       },

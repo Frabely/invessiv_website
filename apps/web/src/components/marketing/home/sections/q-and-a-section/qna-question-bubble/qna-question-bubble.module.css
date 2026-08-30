@@ -1,0 +1,257 @@
+.bubble {
+  --qna-bubble-surface: color-mix(
+    in srgb,
+    var(--color-surface-2) 86%,
+    var(--color-bg) 14%
+  );
+  --qna-bubble-border: color-mix(in srgb, var(--color-border) 82%, transparent);
+
+  position: relative;
+  border: 1px solid var(--qna-bubble-border);
+  border-radius: 20px;
+  background: var(--qna-bubble-surface);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 8%, transparent),
+    0 16px 34px -26px color-mix(in srgb, #000 70%, transparent);
+  transition:
+    transform 220ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 220ms ease;
+}
+
+/*
+ * The tail is a rotated square whose two outer edges carry the bubble border,
+ * so it reads as a real speech bubble instead of a rounded card.
+ */
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  top: 1.45rem;
+  left: -0.36rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-bottom: 1px solid var(--qna-bubble-border);
+  border-left: 1px solid var(--qna-bubble-border);
+  background: var(--qna-bubble-surface);
+  transform: rotate(45deg);
+  transition:
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.bubble:not([data-open="true"]):hover {
+  --qna-bubble-border: var(--color-cta);
+
+  transform: translateY(-2px);
+}
+
+.bubble:not([data-open="true"]):hover .question {
+  color: color-mix(in srgb, var(--color-cta) 84%, var(--color-text) 16%);
+}
+
+.bubble:not([data-open="true"]):hover .marker {
+  color: var(--color-cta);
+}
+
+.bubble:focus-within {
+  border-color: color-mix(in srgb, var(--color-focus) 52%, transparent);
+}
+
+.bubble[data-open="true"] {
+  --qna-bubble-surface: color-mix(
+    in srgb,
+    var(--color-faq-open-surface) 45%,
+    var(--color-faq-open-surface-strong) 55%
+  );
+  --qna-bubble-border: color-mix(
+    in srgb,
+    var(--color-cta) 56%,
+    var(--color-border) 44%
+  );
+
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 16%, transparent),
+    0 22px 44px -26px color-mix(in srgb, #000 78%, transparent);
+}
+
+.disclosure {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: clamp(0.95rem, 1.6vw, 1.25rem) clamp(1.1rem, 1.8vw, 1.45rem);
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.disclosure:focus-visible {
+  border-radius: 20px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.question {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.4;
+  text-wrap: balance;
+  transition: color 180ms ease;
+}
+
+.bubble[data-open="true"] .question {
+  color: var(--color-faq-open-text);
+}
+
+.marker {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  color: color-mix(in srgb, var(--color-text) 54%, var(--color-text-muted) 46%);
+  transition: color 180ms ease;
+}
+
+.bubble[data-open="true"] .marker {
+  color: var(--color-faq-open-arrow);
+}
+
+.answerWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  padding: 0 clamp(1.1rem, 1.8vw, 1.45rem);
+  opacity: 0.7;
+  transition:
+    grid-template-rows 240ms ease,
+    opacity 200ms ease,
+    padding 200ms ease;
+}
+
+.bubble[data-open="true"] .answerWrap {
+  grid-template-rows: 1fr;
+  padding-bottom: clamp(1.1rem, 1.8vw, 1.45rem);
+  opacity: 1;
+}
+
+.answerContent {
+  min-height: 0;
+  overflow: hidden;
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 500;
+  line-height: 1.66;
+}
+
+.bubble[data-open="true"] .answerContent {
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--color-faq-open-divider);
+  color: var(--color-faq-open-muted);
+}
+
+.answer {
+  margin: 0;
+}
+
+.answerLink {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 0.8rem;
+  color: var(--color-cta);
+  font-size: var(--font-size-label-md);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.answerLink:hover,
+.answerLink:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+.answerLink:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+:global([data-theme="light"]) .bubble {
+  --qna-bubble-surface: color-mix(
+    in srgb,
+    var(--color-surface-1) 92%,
+    var(--color-surface-2) 8%
+  );
+
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-text) 5%, transparent),
+    0 16px 32px -26px color-mix(in srgb, var(--color-cta) 40%, transparent);
+}
+
+:global([data-theme="light"]) .answerContent {
+  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
+}
+
+/* Around the portrait every tail points along the way back to the head. */
+
+@media (min-width: 960px) {
+  [data-qna-side="left"] .bubble::after {
+    top: 1.45rem;
+    right: -0.36rem;
+    bottom: auto;
+    left: auto;
+    border: 0;
+    border-top: 1px solid var(--qna-bubble-border);
+    border-right: 1px solid var(--qna-bubble-border);
+  }
+
+  [data-qna-side="right"] .bubble::after {
+    top: 1.45rem;
+    right: auto;
+    bottom: auto;
+    left: -0.36rem;
+    border: 0;
+    border-bottom: 1px solid var(--qna-bubble-border);
+    border-left: 1px solid var(--qna-bubble-border);
+  }
+
+  [data-qna-side="top"] .bubble::after {
+    top: auto;
+    right: auto;
+    bottom: -0.36rem;
+    left: calc(50% - 0.35rem);
+    border: 0;
+    border-right: 1px solid var(--qna-bubble-border);
+    border-bottom: 1px solid var(--qna-bubble-border);
+  }
+
+  [data-qna-side="bottom"] .bubble::after {
+    top: -0.36rem;
+    right: auto;
+    bottom: auto;
+    left: calc(50% - 0.35rem);
+    border: 0;
+    border-top: 1px solid var(--qna-bubble-border);
+    border-left: 1px solid var(--qna-bubble-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble,
+  .bubble::after,
+  .marker,
+  .answerWrap {
+    transition: none;
+  }
+
+  .bubble:hover {
+    transform: none;
+  }
+}

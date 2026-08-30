@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { PRIMARY_NAVIGATION } from "@/config/navigation/home";
+import { FAQ_SECTION_ID, PRIMARY_NAVIGATION } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 import { getHomeSections } from "./home";
@@ -37,7 +37,7 @@ describe("home dictionary", () => {
     "localizes the %s Q&A landing detail link",
     (locale, expectedHref) => {
       const faqSection = getHomeSections(locale).find(
-        (section) => section.id === "faq",
+        (section) => section.id === FAQ_SECTION_ID,
       );
 
       if (!faqSection) {
@@ -52,6 +52,42 @@ describe("home dictionary", () => {
       ).toBe(true);
     },
   );
+
+  it("keeps the DE and EN Q&A conversation in sync", () => {
+    const getFaqSection = (locale: "de" | "en") => {
+      const faqSection = getHomeSections(locale).find(
+        (section) => section.id === FAQ_SECTION_ID,
+      );
+
+      if (!faqSection) {
+        throw new Error("Expected FAQ section to be available.");
+      }
+
+      return faqSection;
+    };
+
+    const deFaq = getFaqSection("de");
+    const enFaq = getFaqSection("en");
+
+    expect(deFaq.qnaItems).toHaveLength(enFaq.qnaItems.length);
+    expect(deFaq.qnaItems.map((item) => Boolean(item.link))).toEqual(
+      enFaq.qnaItems.map((item) => Boolean(item.link)),
+    );
+
+    [deFaq, enFaq].forEach((faqSection) => {
+      expect(faqSection.qnaIntro.primary).toMatch(/\S/);
+      expect(faqSection.qnaIntro.secondary).toMatch(/\S/);
+      expect(faqSection.qnaAvatarAlt).toMatch(/\S/);
+      expect(
+        faqSection.qnaItems.map((item) => [item.question, item.answer]),
+      ).toEqual(
+        faqSection.qnaItems.map(() => [
+          expect.stringMatching(/\S/),
+          expect.stringMatching(/\S/),
+        ]),
+      );
+    });
+  });
 
   it.each(["de", "en"] as const)(
     "keeps the %s landing service card concise because the detail page carries the depth",

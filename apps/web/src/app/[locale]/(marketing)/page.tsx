@@ -7,9 +7,11 @@ import {
   type Locale,
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
+import { FAQ_SECTION_ID } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
+import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
 import { createMarketingStructuredData } from "@/lib/seo/marketing-structured-data";
 import {
   createPageMetadata,
@@ -58,9 +60,13 @@ export default async function LocalePage({ params }: LocalePageProps) {
 
   const activeLocale = locale as Locale;
   const { description } = getHomeMetaContent(activeLocale);
+  const faqSection = getHomeSections(activeLocale).find(
+    (section) => section.id === FAQ_SECTION_ID,
+  );
   const marketingStructuredData = createMarketingStructuredData(
     activeLocale,
     description,
+    faqSection?.qnaItems ?? [],
   );
 
   return (

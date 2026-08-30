@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import type { RefObject } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 import type { ContactOfferKey } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { BrandMarkBackdrop } from "@/components/marketing/shared/brand-mark-backdrop/brand-mark-backdrop";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
@@ -24,7 +24,6 @@ const PRIMARY_SERVICE_ORDER = [
   CONTACT_OFFER_KEY.Web,
 ] as const;
 const DEFAULT_SERVICE_KEY = CONTACT_OFFER_KEY.Landing;
-const BRAND_MARK_SRC = "/brand/icon_noText.png";
 
 type ServicesSectionProps = {
   deliveryLabel: string;
@@ -108,14 +107,8 @@ export function ServicesSection({
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
-      <span aria-hidden="true" className={styles.brandMark}>
-        <Image
-          alt=""
-          className={styles.brandMarkImage}
-          fill
-          sizes="(max-width: 760px) 90vw, 60vw"
-          src={BRAND_MARK_SRC}
-        />
+      <span className={styles.brandMark}>
+        <BrandMarkBackdrop sizes="(max-width: 760px) 90vw, 60vw" />
       </span>
 
       <header className={styles.header}>
