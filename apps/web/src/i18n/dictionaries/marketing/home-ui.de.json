@@ -112,21 +112,21 @@
   },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
-  "servicesIntentTitle": "Wähle das Paket, das deinem Vorhaben am nächsten kommt.",
+  "servicesIntentTitle": "Wähle das Ziel, das deinem Vorhaben am nächsten kommt.",
   "servicesIntentOptions": [
     {
       "key": "landing_page",
-      "label": "Landingpage",
+      "label": "Ein Angebot verkaufen",
       "serviceKey": "landing"
     },
     {
       "key": "compact_website",
-      "label": "Kompakte Website",
+      "label": "Online gefunden werden",
       "serviceKey": "upgrade"
     },
     {
       "key": "business_website",
-      "label": "Business Website",
+      "label": "Wachsen und ausbauen",
       "serviceKey": "web"
     }
   ],

@@ -486,7 +486,7 @@ const HOME_SECTIONS = [
     id: "services",
     copy: {
       de: {
-        title: "Welcher Webauftritt passt zu deinem Vorhaben?",
+        title: "Was soll deine Website erreichen?",
         serviceCards: [
           {
             key: "landing",
@@ -538,7 +538,7 @@ const HOME_SECTIONS = [
             included: [
               "Strategische Struktur für mehrere Leistungen",
               "Eigenständiges Design passend zu deinem Unternehmen",
-              "Erweiterbare Umsetzung für zukünftige Anforderungen",
+              "Ausbaubar Richtung Web-App: Login, Kundenbereich, eigenes Backend",
             ],
           },
           {
@@ -568,7 +568,7 @@ const HOME_SECTIONS = [
         ],
       },
       en: {
-        title: "Which web presence fits your plans?",
+        title: "What should your website achieve?",
         serviceCards: [
           {
             key: "landing",
@@ -620,7 +620,7 @@ const HOME_SECTIONS = [
             included: [
               "Strategic structure for multiple services",
               "A distinctive design tailored to your business",
-              "An expandable build for future requirements",
+              "Extendable toward a web app: login, client area, own backend",
             ],
           },
           {

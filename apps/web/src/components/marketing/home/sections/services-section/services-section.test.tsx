@@ -72,23 +72,23 @@ const serviceCards = [
 const serviceOptions = [
   {
     key: "landing_page",
-    label: "Landingpage",
+    label: "Ein Angebot verkaufen",
     serviceKey: "landing",
   },
   {
     key: "compact_website",
-    label: "Kompakte Website",
+    label: "Online gefunden werden",
     serviceKey: "upgrade",
   },
   {
     key: "business_website",
-    label: "Business Website",
+    label: "Wachsen und ausbauen",
     serviceKey: "web",
   },
 ];
 
 const servicePickerName =
-  "Wähle das Paket, das deinem Vorhaben am nächsten kommt.";
+  "Wähle das Ziel, das deinem Vorhaben am nächsten kommt.";
 
 function renderSection() {
   return render(
@@ -112,8 +112,8 @@ function renderSection() {
         landing: "/de/services/landing-page",
       }}
       serviceOptions={serviceOptions}
-      servicePickerTitle="Wähle das Paket, das deinem Vorhaben am nächsten kommt."
-      title="Welcher Webauftritt passt zu deinem Vorhaben?"
+      servicePickerTitle="Wähle das Ziel, das deinem Vorhaben am nächsten kommt."
+      title="Was soll deine Website erreichen?"
     />,
   );
 }
@@ -131,14 +131,18 @@ describe("ServicesSection", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Welcher Webauftritt passt zu deinem Vorhaben?",
+        name: "Was soll deine Website erreichen?",
       }),
     ).toBeTruthy();
     expect(
       within(screen.getByRole("group", { name: servicePickerName }))
         .getAllByRole("button")
         .map((button) => button.textContent),
-    ).toEqual(["Landingpage", "Kompakte Website", "Business Website"]);
+    ).toEqual([
+      "Ein Angebot verkaufen",
+      "Online gefunden werden",
+      "Wachsen und ausbauen",
+    ]);
 
     const activeService = container.querySelector(
       "[data-service-variant='active']",
@@ -171,7 +175,9 @@ describe("ServicesSection", () => {
   it("selects the compact website from the package picker", () => {
     const { container } = renderSection();
 
-    fireEvent.click(screen.getByRole("button", { name: "Kompakte Website" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Online gefunden werden" }),
+    );
 
     const activeService = container.querySelector(
       "[data-service-variant='active']",
@@ -190,7 +196,7 @@ describe("ServicesSection", () => {
       within(activeService)
         .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("Kompakte Website");
+    ).toBe("Online gefunden werden");
     expect(within(activeService).queryByText("Mehr Infos")).toBeNull();
   });
 
@@ -201,7 +207,11 @@ describe("ServicesSection", () => {
       within(screen.getByRole("group", { name: servicePickerName }))
         .getAllByRole("button")
         .map((button) => button.textContent),
-    ).toEqual(["Landingpage", "Kompakte Website", "Business Website"]);
+    ).toEqual([
+      "Ein Angebot verkaufen",
+      "Online gefunden werden",
+      "Wachsen und ausbauen",
+    ]);
     expect(container.querySelector("[data-card-key='process']")).toBeNull();
   });
 

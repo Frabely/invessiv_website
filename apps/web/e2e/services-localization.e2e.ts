@@ -8,11 +8,14 @@ type LocaleExpectation = {
   htmlLang: "de" | "en";
   landingServiceHref: "/de/services/landing-page" | "/en/services/landing-page";
   localePath: "/de" | "/en";
+  growthChip: string;
+  intentChips: string[];
+  landingChip: string;
   maintenanceTitle: string;
   navAriaLabel: string;
   privacyPageTitle: string;
   privacyHref: "/de/privacy" | "/en/privacy";
-  upgradeTitle: string;
+  webAppTeaser: string;
   webTitle: string;
   recommendedBadge: string;
   skipLinkLabel: string;
@@ -26,11 +29,19 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/de/services/landing-page",
     imprintHref: "/de/imprint",
     imprintPageTitle: "Impressum",
-    heading: "Welcher Webauftritt passt zu deinem Vorhaben?",
+    heading: "Was soll deine Website erreichen?",
     detailLinkLabel: "Mehr zu Landingpages",
+    growthChip: "Wachsen und ausbauen",
+    intentChips: [
+      "Ein Angebot verkaufen",
+      "Online gefunden werden",
+      "Wachsen und ausbauen",
+    ],
+    landingChip: "Ein Angebot verkaufen",
     maintenanceTitle: "Wartung & Support",
     recommendedBadge: "Empfohlen für dich",
-    upgradeTitle: "Kompakte Website",
+    webAppTeaser:
+      "Ausbaubar Richtung Web-App: Login, Kundenbereich, eigenes Backend",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
     privacyHref: "/de/privacy",
@@ -44,11 +55,15 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/en/services/landing-page",
     imprintHref: "/en/imprint",
     imprintPageTitle: "Legal Notice",
-    heading: "Which web presence fits your plans?",
+    heading: "What should your website achieve?",
     detailLinkLabel: "More about landing pages",
+    growthChip: "Grow and expand",
+    intentChips: ["Sell one offer", "Get found online", "Grow and expand"],
+    landingChip: "Sell one offer",
     maintenanceTitle: "Maintenance & support",
     recommendedBadge: "Recommended for you",
-    upgradeTitle: "Compact Website",
+    webAppTeaser:
+      "Extendable toward a web app: login, client area, own backend",
     navAriaLabel: "Primary navigation",
     privacyPageTitle: "Privacy Policy",
     privacyHref: "/en/privacy",
@@ -136,17 +151,36 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       servicesSection.locator('[data-card-key="landing"]'),
     ).toBeVisible();
     await expect(
-      servicesSection.getByText(expectations.webTitle, { exact: true }),
-    ).toBeVisible();
-    await expect(
       servicesSection.locator('[data-card-key="process"]'),
     ).toHaveCount(0);
     await expect(
-      servicesSection.getByText(expectations.upgradeTitle, { exact: true }),
-    ).toBeVisible();
+      servicesSection.getByRole("group").getByRole("button"),
+    ).toHaveText(expectations.intentChips);
     await expect(
       servicesSection.getByText(expectations.maintenanceTitle, { exact: true }),
     ).toHaveCount(0);
+    await expect(
+      servicesSection.getByRole("button", { name: expectations.growthChip }),
+    ).toBeVisible();
+    await servicesSection
+      .getByRole("button", { name: expectations.growthChip })
+      .click();
+    await expect(
+      servicesSection
+        .locator('[data-card-key="web"]')
+        .getByText(expectations.webTitle, { exact: true }),
+    ).toBeVisible();
+    await expect(
+      servicesSection
+        .locator('[data-card-key="web"]')
+        .getByText(expectations.webAppTeaser, { exact: true }),
+    ).toBeVisible();
+    await servicesSection
+      .getByRole("button", { name: expectations.landingChip })
+      .click();
+    await expect(
+      servicesSection.locator('[data-card-key="landing"]'),
+    ).toBeVisible();
     await expect(
       servicesSection.getByText(expectations.recommendedBadge, { exact: true }),
     ).toBeVisible();

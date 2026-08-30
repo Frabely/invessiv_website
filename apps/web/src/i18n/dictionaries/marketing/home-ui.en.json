@@ -112,21 +112,21 @@
   },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
-  "servicesIntentTitle": "Choose the package that comes closest to what you have in mind.",
+  "servicesIntentTitle": "Choose the goal that comes closest to what you have in mind.",
   "servicesIntentOptions": [
     {
       "key": "landing_page",
-      "label": "Landing page",
+      "label": "Sell one offer",
       "serviceKey": "landing"
     },
     {
       "key": "compact_website",
-      "label": "Compact Website",
+      "label": "Get found online",
       "serviceKey": "upgrade"
     },
     {
       "key": "business_website",
-      "label": "Business Website",
+      "label": "Grow and expand",
       "serviceKey": "web"
     }
   ],

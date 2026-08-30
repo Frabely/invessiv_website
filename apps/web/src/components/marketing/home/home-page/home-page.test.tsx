@@ -73,7 +73,7 @@ describe("HomePage", () => {
       name: "Warum du mit mir arbeiten solltest",
     });
     const servicesHeading = screen.getByRole("heading", {
-      name: "Welcher Webauftritt passt zu deinem Vorhaben?",
+      name: "Was soll deine Website erreichen?",
     });
     const proofHeading = screen.getByRole("heading", {
       name: "Was Kunden über die Zusammenarbeit sagen",
