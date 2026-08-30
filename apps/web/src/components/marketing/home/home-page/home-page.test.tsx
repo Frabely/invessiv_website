@@ -34,8 +34,8 @@ vi.mock("@/lib/analytics/conversion-events", () => ({
   trackConversionEvent: vi.fn(),
 }));
 
-vi.mock("@/hooks/marketing/use-process-start-point", () => ({
-  useProcessStartPoint: () => undefined,
+vi.mock("@/hooks/marketing/use-process-journey", () => ({
+  useProcessJourney: () => undefined,
 }));
 
 vi.mock("@/hooks/marketing/use-services-card-reveal", () => ({

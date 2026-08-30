@@ -60,10 +60,8 @@ type ContactFormOption = {
 export type ProcessStepCopy = {
   step: string;
   title: string;
-  deliverable: string;
   effort: string;
   result: string;
-  description: string;
 };
 
 export type ProcessCtaCopy = {
@@ -594,106 +592,106 @@ const HOME_SECTIONS = [
     id: "process",
     copy: {
       de: {
-        title: "Von der Anfrage zur klaren Entscheidung in vier Schritten",
+        title: "So läuft unsere Zusammenarbeit ab",
         description:
-          "Der Ablauf reduziert Risiko vor dem Start: Du bekommst schnell Klarheit zu Ziel, Umfang, Timing und dem nächsten sinnvollen Schritt.",
+          "Sechs klare Schritte von deiner Anfrage bis zum Launch – du weißt immer, was als Nächstes passiert und wie viel Zeit es dich kostet.",
         summaryPoints: [
-          "Ziel, Angebot und Umfang früh geklärt",
-          "erste Richtung schnell sichtbar",
-          "Launch inkl. QA und sauberer Übergabe",
+          "unverbindlich bis nach dem zweiten Gespräch",
+          "dein Aufwand pro Schritt sichtbar",
+          "am Ende ist deine Seite live",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Ziel & Rahmen klären",
-            deliverable: "Briefing + Angebotsempfehlung",
-            effort: "Aufwand: ca. 30 Min",
-            result: "Ergebnis: klarer Rahmen + Prioritäten",
-            description:
-              "Wir klären Ziel, Zielgruppe, vorhandenes Material und Rahmen. Danach bekommst du eine Empfehlung, welches Leistungsmodell wirklich passt.",
+            title: "Kostenloses Erstgespräch",
+            effort: "Aufwand: ca. 15 Min",
+            result: "Ergebnis: Klarheit, was du wirklich brauchst",
           },
           {
             step: "02",
-            title: "Struktur & erster Draft",
-            deliverable: "Klickbarer Draft oder Prototyp",
-            effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
-            result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
-            description:
-              "Ich entwickle die Seitenlogik oder den ersten Prototypen. So siehst du früh, ob Angebot, Inhalte und Anfrageweg zusammenpassen.",
+            title: "Prozess & Entscheidung",
+            effort: "Aufwand: ca. 30 Min",
+            result: "Ergebnis: wir entscheiden gemeinsam, ob es passt",
           },
           {
             step: "03",
-            title: "Umsetzung, Copy & QA",
-            deliverable: "Ausgearbeitete Version",
-            effort: "Feedback: 1-2 Runden",
-            result: "Ergebnis: klare UX + saubere Details",
-            description:
-              "Danach folgt die Umsetzung mit den nötigen Inhalten, Details und QA-Schritten bis zur sauberen Freigabe.",
+            title: "Onboarding",
+            effort: "Aufwand: Bilder, Texte & Ideen übergeben",
+            result: "Ergebnis: alles für den Start beisammen",
           },
           {
             step: "04",
-            title: "Launch & Übergabe",
-            deliverable: "Launch + Übergabe",
-            effort: "QA: finaler Check",
-            result: "Ergebnis: Livegang oder saubere Integration",
-            description:
-              "Zum Schluss geht das Projekt live oder wird sauber übergeben – inklusive der nächsten sinnvollen Schritte nach dem Launch.",
+            title: "Erster Entwurf",
+            effort: "Aufwand: keiner – ich arbeite",
+            result: "Ergebnis: der erste sichtbare Stand deiner Seite",
+          },
+          {
+            step: "05",
+            title: "Feedbackrunden",
+            effort: "Aufwand: kurzes Feedback je Runde",
+            result: "Ergebnis: der Entwurf wird deine Website",
+          },
+          {
+            step: "06",
+            title: "Technik & Launch",
+            effort: "Aufwand: finale Freigabe",
+            result: "Ergebnis: deine Seite ist live und geprüft",
           },
         ],
         processCta: {
-          label: "Angebot einschätzen lassen",
+          label: "Kostenloses Erstgespräch anfragen",
           href: SECTION_HREFS.contact,
         },
       },
       en: {
-        title: "From request to clear decision in four steps",
+        title: "How our collaboration works",
         description:
-          "The flow reduces risk before kickoff: you quickly get clarity on goal, scope, timing, and the next sensible step.",
+          "Six clear steps from your inquiry to launch – you always know what happens next and how much of your time it takes.",
         summaryPoints: [
-          "goal, offer, and project range clarified early",
-          "first direction visible quickly",
-          "launch includes QA and clean handover",
+          "no commitment until after the second call",
+          "your effort visible per step",
+          "your site is live at the end",
         ],
         processSteps: [
           {
             step: "01",
-            title: "Clarify goal & outline",
-            deliverable: "Briefing + offer recommendation",
-            effort: "Effort: about 30 min",
-            result: "Outcome: clear frame + priorities",
-            description:
-              "We align on the goal, audience, available materials, and frame. After that, you get a recommendation on the service model that actually fits.",
+            title: "Free consultation",
+            effort: "Effort: about 15 min",
+            result: "Outcome: clarity on what you actually need",
           },
           {
             step: "02",
-            title: "Structure & first draft",
-            deliverable: "Clickable draft or prototype",
-            effort: "Delivery: visible early in the project",
-            result: "Outcome: page structure or core workflow",
-            description:
-              "I develop the page logic or first prototype. This shows early whether the offer, content, and inquiry path work together.",
+            title: "Process & decision",
+            effort: "Effort: about 30 min",
+            result: "Outcome: we decide together if it's a fit",
           },
           {
             step: "03",
-            title: "Implementation, copy & QA",
-            deliverable: "Worked-out version",
-            effort: "Feedback: 1-2 rounds",
-            result: "Outcome: clearer UX + clean details",
-            description:
-              "Then comes the implementation with the required content, details, and QA steps through to a clean approval.",
+            title: "Onboarding",
+            effort: "Effort: hand over images, texts & ideas",
+            result: "Outcome: everything ready for the start",
           },
           {
             step: "04",
-            title: "Launch & handover",
-            deliverable: "Launch + handover",
-            effort: "QA: final check",
-            result: "Outcome: go-live or clean integration",
-            description:
-              "In the end, the project goes live or is handed over cleanly, including the next sensible steps after launch.",
+            title: "First draft",
+            effort: "Effort: none – I do the work",
+            result: "Outcome: the first visible version of your site",
+          },
+          {
+            step: "05",
+            title: "Feedback rounds",
+            effort: "Effort: short feedback per round",
+            result: "Outcome: the draft becomes your website",
+          },
+          {
+            step: "06",
+            title: "Tech & launch",
+            effort: "Effort: final approval",
+            result: "Outcome: your site is live and checked",
           },
         ],
         processCta: {
-          label: "Get an offer estimate",
+          label: "Request a free consultation",
           href: SECTION_HREFS.contact,
         },
       },
