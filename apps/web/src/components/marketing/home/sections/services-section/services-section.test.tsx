@@ -72,23 +72,23 @@ const serviceCards = [
 const serviceOptions = [
   {
     key: "landing_page",
-    label: "Ein Angebot verkaufen",
+    label: "Ein Angebot gezielt verkaufen",
     serviceKey: "landing",
   },
   {
     key: "compact_website",
-    label: "Online gefunden werden",
+    label: "Professionell online auftreten",
     serviceKey: "upgrade",
   },
   {
     key: "business_website",
-    label: "Wachsen und ausbauen",
+    label: "Ein umfangreiches Webprojekt umsetzen",
     serviceKey: "web",
   },
 ];
 
 const servicePickerName =
-  "Wähle das Ziel, das deinem Vorhaben am nächsten kommt.";
+  "Wähle das Vorhaben, das deinen Plänen am nächsten kommt.";
 
 function renderSection() {
   return render(
@@ -112,8 +112,8 @@ function renderSection() {
         landing: "/de/services/landing-page",
       }}
       serviceOptions={serviceOptions}
-      servicePickerTitle="Wähle das Ziel, das deinem Vorhaben am nächsten kommt."
-      title="Was soll deine Website erreichen?"
+      servicePickerTitle="Wähle das Vorhaben, das deinen Plänen am nächsten kommt."
+      title="Was hast du mit deiner Website vor?"
     />,
   );
 }
@@ -131,7 +131,7 @@ describe("ServicesSection", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Was soll deine Website erreichen?",
+        name: "Was hast du mit deiner Website vor?",
       }),
     ).toBeTruthy();
     expect(
@@ -139,9 +139,9 @@ describe("ServicesSection", () => {
         .getAllByRole("button")
         .map((button) => button.textContent),
     ).toEqual([
-      "Ein Angebot verkaufen",
-      "Online gefunden werden",
-      "Wachsen und ausbauen",
+      "Ein Angebot gezielt verkaufen",
+      "Professionell online auftreten",
+      "Ein umfangreiches Webprojekt umsetzen",
     ]);
 
     const activeService = container.querySelector(
@@ -176,7 +176,7 @@ describe("ServicesSection", () => {
     const { container } = renderSection();
 
     fireEvent.click(
-      screen.getByRole("button", { name: "Online gefunden werden" }),
+      screen.getByRole("button", { name: "Professionell online auftreten" }),
     );
 
     const activeService = container.querySelector(
@@ -196,7 +196,7 @@ describe("ServicesSection", () => {
       within(activeService)
         .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("data-project-goal"),
-    ).toBe("Online gefunden werden");
+    ).toBe("Professionell online auftreten");
     expect(within(activeService).queryByText("Mehr Infos")).toBeNull();
   });
 
@@ -208,9 +208,9 @@ describe("ServicesSection", () => {
         .getAllByRole("button")
         .map((button) => button.textContent),
     ).toEqual([
-      "Ein Angebot verkaufen",
-      "Online gefunden werden",
-      "Wachsen und ausbauen",
+      "Ein Angebot gezielt verkaufen",
+      "Professionell online auftreten",
+      "Ein umfangreiches Webprojekt umsetzen",
     ]);
     expect(container.querySelector("[data-card-key='process']")).toBeNull();
   });

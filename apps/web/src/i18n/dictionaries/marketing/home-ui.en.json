@@ -60,7 +60,7 @@
       {
         "author": "visitor",
         "questionEmphasis": ["Why should I work with you specifically?"],
-        "text": "Okay Moritz, that's exactly my problem. But there are plenty of web designers. Why should I work with you specifically?"
+        "text": "Okay Moritz, I recognize myself in that. But there are plenty of web designers. Why should I work with you specifically?"
       },
       {
         "author": "owner",
@@ -112,21 +112,21 @@
   },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
-  "servicesIntentTitle": "Choose the goal that comes closest to what you have in mind.",
+  "servicesIntentTitle": "Choose the project that comes closest to what you have in mind.",
   "servicesIntentOptions": [
     {
       "key": "landing_page",
-      "label": "Sell one offer",
+      "label": "Sell one offer with clear focus",
       "serviceKey": "landing"
     },
     {
       "key": "compact_website",
-      "label": "Get found online",
+      "label": "Build a professional online presence",
       "serviceKey": "upgrade"
     },
     {
       "key": "business_website",
-      "label": "Grow and expand",
+      "label": "Bring an extensive web project to life",
       "serviceKey": "web"
     }
   ],

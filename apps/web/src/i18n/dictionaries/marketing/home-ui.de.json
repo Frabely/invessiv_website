@@ -60,7 +60,7 @@
       {
         "author": "visitor",
         "questionEmphasis": ["Warum sollte ich ausgerechnet mit dir arbeiten?"],
-        "text": "Okay Moritz, genau das ist mein Problem. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
+        "text": "Okay Moritz, da erkenne ich mich wieder. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
       },
       {
         "author": "owner",
@@ -112,21 +112,21 @@
   },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
-  "servicesIntentTitle": "Wähle das Ziel, das deinem Vorhaben am nächsten kommt.",
+  "servicesIntentTitle": "Wähle das Vorhaben, das deinen Plänen am nächsten kommt.",
   "servicesIntentOptions": [
     {
       "key": "landing_page",
-      "label": "Ein Angebot verkaufen",
+      "label": "Ein Angebot gezielt verkaufen",
       "serviceKey": "landing"
     },
     {
       "key": "compact_website",
-      "label": "Online gefunden werden",
+      "label": "Professionell online auftreten",
       "serviceKey": "upgrade"
     },
     {
       "key": "business_website",
-      "label": "Wachsen und ausbauen",
+      "label": "Ein umfangreiches Webprojekt umsetzen",
       "serviceKey": "web"
     }
   ],

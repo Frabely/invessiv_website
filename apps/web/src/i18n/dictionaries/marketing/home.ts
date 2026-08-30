@@ -486,7 +486,7 @@ const HOME_SECTIONS = [
     id: "services",
     copy: {
       de: {
-        title: "Was soll deine Website erreichen?",
+        title: "Was hast du mit deiner Website vor?",
         serviceCards: [
           {
             key: "landing",
@@ -568,7 +568,7 @@ const HOME_SECTIONS = [
         ],
       },
       en: {
-        title: "What should your website achieve?",
+        title: "What are you planning for your website?",
         serviceCards: [
           {
             key: "landing",
