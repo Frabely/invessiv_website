@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { FAQ_SECTION_ID, PRIMARY_NAVIGATION } from "@/config/navigation/home";
-import { SITE_ROUTES } from "@/config/routes";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 import { getHomeSections } from "./home";
 import { getHomeUiContent } from "./home-ui";
@@ -30,12 +29,9 @@ describe("home dictionary", () => {
     },
   );
 
-  it.each([
-    ["de", "/de/services/landing-page"],
-    ["en", "/en/services/landing-page"],
-  ] as const)(
-    "localizes the %s Q&A landing detail link",
-    (locale, expectedHref) => {
+  it.each(["de", "en"] as const)(
+    "keeps the %s FAQ focused on the most likely first questions",
+    (locale) => {
       const faqSection = getHomeSections(locale).find(
         (section) => section.id === FAQ_SECTION_ID,
       );
@@ -44,12 +40,26 @@ describe("home dictionary", () => {
         throw new Error("Expected FAQ section to be available.");
       }
 
-      const kickoffItem = faqSection.qnaItems[0];
+      const expectedQuestionsByLocale = {
+        de: [
+          "Wem gehört die Website danach?",
+          "Was kostet ein Projekt?",
+          "Wie läuft der Projektstart ab?",
+        ],
+        en: [
+          "Who owns the website afterwards?",
+          "What does a project cost?",
+          "How does project kickoff work?",
+        ],
+      } as const;
 
-      expect(kickoffItem.link?.href).toBe(expectedHref);
       expect(
-        kickoffItem.link?.href.endsWith(SITE_ROUTES.LANDING_PAGE_SERVICE),
-      ).toBe(true);
+        faqSection.qnaItems.slice(0, 3).map((item) => item.question),
+      ).toEqual(expectedQuestionsByLocale[locale]);
+
+      expect(faqSection.qnaItems.every((item) => item.link === undefined)).toBe(
+        true,
+      );
     },
   );
 

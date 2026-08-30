@@ -622,63 +622,59 @@ const HOME_SECTIONS = [
         },
         qnaItems: [
           {
-            question: "Wie läuft der Projektstart ab?",
+            question: "Wem gehört die Website danach?",
             answer:
-              "Nach deiner Anfrage melde ich mich innerhalb von 24 Stunden. Im Erstgespräch klären wir Ziel, Umfang und Zeitrahmen, danach bekommst du ein konkretes Angebot mit Festpreis. Sagst du zu, sammeln wir in einer kurzen Onboarding-Runde Texte, Bilder und Zugänge ein. Ab da arbeite ich, und du siehst den ersten Entwurf, bevor etwas live geht.",
-            link: {
-              label: "Mehr zu Landingpages",
-              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-            },
+              "Dir. Domain, Hosting-Zugänge, Inhalte und der fertige Code laufen über Accounts auf deinen Namen und werden sauber übergeben. Du behältst die volle Kontrolle über deine Website.",
           },
           {
             question: "Was kostet ein Projekt?",
             answer:
-              "Der Preis hängt vom Umfang ab, deshalb nenne ich keine Pauschale ins Blaue. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Angebot mit Festpreis, noch bevor die Arbeit startet. Versteckte Posten gibt es nicht, und alles, was später dazukommt, stimme ich vorher mit dir ab.",
+              "Der Preis hängt vom Umfang ab, deshalb nenne ich dir keine Zahl aus der Luft. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Festpreisangebot ohne versteckte Posten. Alles, was später dazukommt, stimme ich vorher mit dir ab.",
           },
           {
-            question: "Welche Tools setzt du ein?",
+            question: "Wie läuft der Projektstart ab?",
             answer:
-              "Ich arbeite mit Next.js als Framework, Tailwind für das Design, Vercel für Hosting und Auslieferung und Resend für die Formular-Mails. Der Stack ist bewusst schlank: schnelle Ladezeiten, wenig Wartung, keine Plugin-Abhängigkeiten. Die technische Verantwortung für Architektur, Review und QA bleibt bei mir, du musst dich in nichts davon einarbeiten.",
+              "Projektstart heißt bei mir Onboarding: Wir schauen uns vorhandene Assets an, sprechen Ideen noch einmal im Detail durch und klären, wie die Seite am Ende aussehen soll. Dafür brauche ich die Zugänge, Fotos, Videos und weitere Materialien, die wir für die Website brauchen, damit ich sauber loslegen kann.",
           },
           {
             question: "Wie viele Korrekturen sind enthalten?",
             answer:
-              "Das hängt vom Projekt und vom gewählten Angebot ab, in der Regel sind zwei Feedbackrunden enthalten. Wie viele es bei dir genau sind, steht in deinem Angebot. Brauchst du danach weitere Runden, sage ich dir vorher, was das an Aufwand und Kosten bedeutet.",
+              "Wie viele Korrekturen enthalten sind, klären wir individuell und halten es in deinem Angebot fest. Alles darüber hinaus stimmen wir vorab mit dir ab.",
           },
           {
             question: "Was ist im Angebot typischerweise nicht enthalten?",
             answer:
-              "Nicht enthalten sind in der Regel Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen, die nicht im vereinbarten Leistungsumfang stehen. Auch Texte und Bilder kommen von dir, sofern wir nichts anderes vereinbaren. Alles, was zusätzlich anfällt, führe ich vor dem Start separat auf.",
-          },
-          {
-            question: "Wie gehst du mit Zusatzwünschen um?",
-            answer:
-              "Zusatzwünsche außerhalb des vereinbarten Rahmens setze ich nicht stillschweigend um. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail. So bleibt der Rahmen für uns beide planbar.",
-          },
-          {
-            question: "Welche Mitwirkung ist auf Kundenseite nötig?",
-            answer:
-              "Ich brauche von dir zeitnahes Feedback, Freigaben, die nötigen Zugänge und, soweit vorhanden, Texte und Bilder. Der größte Teil davon fällt einmalig beim Onboarding an. Wenn Rückmeldungen länger dauern, verschiebt sich der Zeitplan entsprechend.",
-          },
-          {
-            question: "Wann gilt ein Projekt als abgeschlossen?",
-            answer:
-              "Abgeschlossen ist ein Projekt, wenn der vereinbarte Leistungsumfang geliefert und die Seite live bzw. übergeben ist. Was danach dazukommt, behandeln wir als eigenen Folgeauftrag, sofern es sich nicht um Abweichungen vom vereinbarten Umfang handelt.",
-          },
-          {
-            question: "Was passiert nach dem Launch?",
-            answer:
-              "Ich verschwinde nach dem Go-live nicht. Du erreichst mich weiterhin direkt, und wir klären in Ruhe, ob du Wartung, Weiterentwicklung oder erst einmal gar nichts brauchst. Es gibt keinen Abo-Zwang und keinen Vertrag, der im Hintergrund weiterläuft.",
-          },
-          {
-            question: "Wem gehört die Website danach?",
-            answer:
-              "Dir. Domain, Hosting-Zugang, Inhalte und der fertige Code laufen über Accounts, die auf deinen Namen angelegt sind, und werden dir übergeben. Du bleibst bei mir, weil du willst, nicht weil dir sonst der Zugriff auf deine eigene Seite fehlt.",
+              "Typisch nicht enthalten sind Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen außerhalb des vereinbarten Umfangs. Texte schreibe ich normalerweise selbst, außer du wünschst es ausdrücklich anders. Bilder und Videos kommen idealerweise von dir; wenn noch nichts da ist, arbeite ich nach Absprache vorerst mit KI- oder Stockmaterial.",
           },
           {
             question: "Kann ich Inhalte später selbst ändern?",
             answer:
-              "In der Regel übernehme ich Änderungen für dich: Du schreibst mir kurz, was angepasst werden soll, und ich erledige es. Für die meisten ist das der schnellere Weg, weil du dich in kein System einarbeiten musst. Willst du Inhalte lieber selbst pflegen, bauen wir ein CMS ein. Das besprechen wir vor dem Start, weil es den Umfang verändert.",
+              "Ja. Meistens übernehme ich Änderungen für dich: Du schreibst mir kurz, was angepasst werden soll, und ich kümmere mich darum. Für viele ist das der schnellere Weg. Wenn du Inhalte selbst pflegen willst, bauen wir ein CMS ein und sprechen das vor dem Start ab.",
+          },
+          {
+            question: "Was passiert nach dem Launch?",
+            answer:
+              "Nach dem Go-live bist du nicht von mir abhängig. In der Regel läuft dann eine laufende Betreuung über Wartung weiter, oft als planbarer Vertrag mit monatlicher Laufzeit. Wenn du später Unterstützung willst, bin ich gern an Bord. Theoretisch kannst du die Website aber auch einfach übernehmen und ohne weitere Zusammenarbeit weiterlaufen lassen. Wir entscheiden dann gemeinsam, was für dich sinnvoll ist.",
+          },
+          {
+            question: "Welche Mitwirkung ist auf Kundenseite nötig?",
+            answer:
+              "Ich brauche von dir zeitnahes Feedback, Freigaben, die nötigen Zugänge und, wenn vorhanden, Texte, Bilder und Videos. Der größte Teil davon fällt einmalig beim Onboarding an. Wenn Rückmeldungen länger dauern, verschiebt sich der Zeitplan entsprechend.",
+          },
+          {
+            question: "Wie gehst du mit Zusatzwünschen um?",
+            answer:
+              "Zusatzwünsche außerhalb des vereinbarten Rahmens setze ich nicht einfach stillschweigend um. Ich sage dir vorher, was sie für Aufwand, Timing und Preis bedeuten, und starte erst nach kurzer Freigabe per E-Mail.",
+          },
+          {
+            question: "Welche Tools setzt du ein?",
+            answer:
+              "Ich arbeite mit Next.js, Tailwind, Vercel und Resend. Der Stack bleibt bewusst schlank: schnelle Ladezeiten, wenig Wartung, keine unnötigen Abhängigkeiten. Die technische Verantwortung für Architektur, Review und QA bleibt bei mir.",
+          },
+          {
+            question: "Wann gilt ein Projekt als abgeschlossen?",
+            answer:
+              "Abgeschlossen ist ein Projekt, wenn der vereinbarte Umfang geliefert und die Seite live bzw. übergeben ist. Was danach dazukommt, behandeln wir als eigenen Folgeauftrag, wenn es nicht vom vereinbarten Rahmen abweicht.",
           },
         ],
       },
@@ -696,63 +692,59 @@ const HOME_SECTIONS = [
         },
         qnaItems: [
           {
-            question: "How does project kickoff work?",
+            question: "Who owns the website afterwards?",
             answer:
-              "After your request I get back to you within 24 hours. In a first call we align on goal, project range, and timeline, and you then receive a concrete offer at a fixed price. Once you accept, we collect texts, images, and access in a short onboarding round. From there I build, and you see the first draft before anything goes live.",
-            link: {
-              label: "View landing page details",
-              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-            },
+              "You do. Domain, hosting access, content, and the finished code run through accounts registered in your name and are handed over to you. You keep full control of your website.",
           },
           {
             question: "What does a project cost?",
             answer:
-              "The price depends on the project range, so I never quote a blanket number. We talk about your goal and the actual effort first, then you receive a written fixed-price offer before any work starts. There are no hidden items, and anything that comes up later is agreed with you in advance.",
+              "The price depends on the project range, so I never pull a number out of thin air. We talk about your goal and the actual effort first, then you receive a written fixed-price offer with no hidden items. Anything that comes up later is agreed with you in advance.",
           },
           {
-            question: "Which tools do you use?",
+            question: "How does project kickoff work?",
             answer:
-              "I work with Next.js as the framework, Tailwind for the design, Vercel for hosting and delivery, and Resend for form emails. The stack is deliberately lean: fast load times, little maintenance, no plugin dependencies. Technical responsibility for architecture, review, and QA stays with me, so you never have to learn any of it.",
+              "Kickoff with me means onboarding: we look through the available assets, go through the ideas in detail once more, and define how the site should look in the end. I also need the access, photos, videos, and any other material required to build the website so I can start cleanly.",
           },
           {
             question: "How many revision rounds are included?",
             answer:
-              "That depends on the project and the offer you choose, and usually two feedback rounds are included. The exact number for your project is stated in your offer. If you need further rounds after that, I tell you upfront what it means in effort and cost.",
+              "How many are included exactly depends on the project. We decide that individually and spell it out in your offer. Anything beyond that is agreed in advance.",
           },
           {
             question: "What is typically not included in the offer?",
             answer:
-              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. Texts and images come from you unless we agree otherwise. Anything that comes on top is listed separately before the project starts.",
-          },
-          {
-            question: "How are additional requests handled?",
-            answer:
-              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email. That keeps the frame predictable for both of us.",
-          },
-          {
-            question: "What client-side input is required?",
-            answer:
-              "I need timely feedback, approvals, the required access, and, where available, your texts and images. Most of that happens once, during onboarding. If responses take longer, the timeline shifts accordingly.",
-          },
-          {
-            question: "When is a project considered completed?",
-            answer:
-              "A project is complete once the agreed service range has been delivered and the site is live or handed over. Anything after that is treated as its own follow-up assignment, unless it concerns deviations from the agreed range.",
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. I normally write the texts myself unless you explicitly want it differently. Images and videos are ideally provided by you; if nothing is available yet, I can use AI or stock material for the time being.",
           },
           {
             question: "What happens after launch?",
             answer:
-              "I do not disappear after go-live. You still reach me directly, and we take the time to work out whether you need maintenance, further development, or nothing at all for now. There is no forced subscription and no contract running quietly in the background.",
-          },
-          {
-            question: "Who owns the website afterwards?",
-            answer:
-              "You do. Domain, hosting access, content, and the finished code run through accounts registered in your name and are handed over to you. You stay with me because you want to, not because you would otherwise lose access to your own site.",
+              "I do not disappear after go-live. In practice, that usually means ongoing maintenance, often as a predictable monthly agreement. If you later want support, I am happy to stay involved. In theory, though, you can also take over the website and keep it running without any further collaboration. What comes next depends on what makes sense for you.",
           },
           {
             question: "Can I edit the content myself later?",
             answer:
-              "As a rule I handle changes for you: you send me a short message about what needs updating and I take care of it. For most clients that is the faster route, because you never have to learn a system. If you would rather maintain content yourself, we build in a CMS. We discuss that before the project starts, since it changes the project range.",
+              "Yes. As a rule I handle changes for you: you send me a short message about what needs updating and I take care of it. For most clients that is the faster route. If you would rather maintain content yourself, we build in a CMS and discuss that before the project starts.",
+          },
+          {
+            question: "What client-side input is required?",
+            answer:
+              "I need timely feedback, approvals, the required access, and, where available, your texts, images, and videos. Most of that happens once, during onboarding. If responses take longer, the timeline shifts accordingly.",
+          },
+          {
+            question: "How are additional requests handled?",
+            answer:
+              "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
+          },
+          {
+            question: "Which tools do you use?",
+            answer:
+              "I work with Next.js, Tailwind, Vercel, and Resend. The stack stays deliberately lean: fast load times, little maintenance, no unnecessary dependencies. Technical responsibility for architecture, review, and QA stays with me.",
+          },
+          {
+            question: "When is a project considered completed?",
+            answer:
+              "A project is complete once the agreed scope has been delivered and the site is live or handed over. Anything after that is treated as its own follow-up assignment if it goes beyond the agreed frame.",
           },
         ],
       },
