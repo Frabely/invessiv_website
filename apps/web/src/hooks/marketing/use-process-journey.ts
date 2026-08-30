@@ -308,6 +308,25 @@ export function useProcessJourney({
       }
     };
 
+    const mapProgressToLength = (progress: number) => {
+      // Give every step-to-step segment the same share of the scroll distance, so the
+      // short outer bows do not rush past faster than the long center crossings.
+      if (cardLengths.length < 2 || totalLength <= 0) {
+        return totalLength * progress;
+      }
+      const stops = [...cardLengths, totalLength];
+      const segmentCount = stops.length - 1;
+      const scaled = Math.max(0, Math.min(1, progress)) * segmentCount;
+      const index = Math.min(Math.floor(scaled), segmentCount - 1);
+      const segmentStart = stops[index];
+      const segmentEnd = stops[index + 1];
+      if (segmentStart == null || segmentEnd == null) {
+        return totalLength * progress;
+      }
+
+      return segmentStart + (segmentEnd - segmentStart) * (scaled - index);
+    };
+
     const applyCardStates = (activeIndex: number) => {
       if (lastActiveIndex === activeIndex) {
         return;
@@ -334,8 +353,8 @@ export function useProcessJourney({
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
       // Start and end trigger lines tune when drawing begins and completes.
-      const startLine = viewportHeight * 0.55;
-      const endLine = viewportHeight * 0.78;
+      const startLine = viewportHeight * 0.7;
+      const endLine = viewportHeight * 0.42;
       const travelRange = rect.height + (startLine - endLine);
       const rawProgress =
         travelRange > 0 ? (startLine - rect.top) / travelRange : 0;
@@ -343,7 +362,7 @@ export function useProcessJourney({
         ? 1
         : Math.max(0, Math.min(1, rawProgress));
       if (totalLength > 0) {
-        const drawnLength = totalLength * progress;
+        const drawnLength = mapProgressToLength(progress);
         path.style.strokeDashoffset = `${totalLength - drawnLength}`;
         const point = path.getPointAtLength(
           Math.max(0, Math.min(totalLength, drawnLength)),
