@@ -1,11 +1,8 @@
-import {
-  REFERENCE_IMAGE_KEY,
-  type ReferenceImageKey,
-} from "@/common/constants";
-import { REFERENCE_DEVICE, type ReferenceDevice } from "./reference-device";
+import type { ReferenceDevice } from "./reference-device";
+import type { ReferenceImageKey } from "@/common/constants";
 
 export const REFERENCE_IMAGE_DEVICE = {
-  [REFERENCE_IMAGE_KEY.Allmacher]: REFERENCE_DEVICE.Browser,
-  [REFERENCE_IMAGE_KEY.Kolja]: REFERENCE_DEVICE.Browser,
-  [REFERENCE_IMAGE_KEY.Consumption]: REFERENCE_DEVICE.Phone,
+  allmacher: "browser",
+  kolja: "browser",
+  consumption: "phone",
 } as const satisfies Record<ReferenceImageKey, ReferenceDevice>;
