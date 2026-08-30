@@ -169,6 +169,7 @@ export function HomePage() {
                 <ProcessSection
                   id={section.id}
                   key={section.id}
+                  kicker={ui.processKicker}
                   processCta={section.processCta}
                   processSteps={section.processSteps}
                   title={section.title}

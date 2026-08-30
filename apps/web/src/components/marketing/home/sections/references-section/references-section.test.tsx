@@ -95,6 +95,15 @@ describe("ReferencesSection", () => {
       }),
     ).toBeInTheDocument();
     expect(
+      screen
+        .getByRole("button", { name: "Allmacher Coaching" })
+        .compareDocumentPosition(
+          screen.getByRole("img", {
+            name: "Startseite von Allmacher Coaching",
+          }),
+        ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
       screen.queryByRole("link", { name: "Alle Referenzen ansehen" }),
     ).not.toBeInTheDocument();
     expect(

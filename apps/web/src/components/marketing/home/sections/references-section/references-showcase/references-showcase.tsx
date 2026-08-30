@@ -59,6 +59,23 @@ export function ReferencesShowcase({
       className={styles.showcase}
       role="group"
     >
+      <div className={styles.controls}>
+        <p className={styles.counter}>{counterLabel}</p>
+        <div className={styles.actions}>
+          {entries.map((entry, index) => (
+            <ButtonControl
+              aria-pressed={index === activeIndex}
+              className={styles.navButton}
+              key={entry.imageKey}
+              onClick={() => setActiveIndex(index)}
+              variant="ghost"
+            >
+              {entry.selectorLabel}
+            </ButtonControl>
+          ))}
+        </div>
+      </div>
+
       <Link
         aria-label={`${activeEntry.linkLabel}: ${activeEntry.selectorLabel}`}
         className={styles.stage}
@@ -116,23 +133,6 @@ export function ReferencesShowcase({
           );
         })}
       </Link>
-
-      <div className={styles.controls}>
-        <p className={styles.counter}>{counterLabel}</p>
-        <div className={styles.actions}>
-          {entries.map((entry, index) => (
-            <ButtonControl
-              aria-pressed={index === activeIndex}
-              className={styles.navButton}
-              key={entry.imageKey}
-              onClick={() => setActiveIndex(index)}
-              variant="ghost"
-            >
-              {entry.selectorLabel}
-            </ButtonControl>
-          ))}
-        </div>
-      </div>
 
       <div className={styles.panel}>
         {activeEntry.avatarKey ? (

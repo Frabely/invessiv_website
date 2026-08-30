@@ -1,8 +1,8 @@
 .showcase {
   display: grid;
   grid-template-areas:
-    "stage"
     "controls"
+    "stage"
     "panel";
   gap: clamp(2rem, 3.4vw, 3.4rem);
   align-items: stretch;
@@ -169,7 +169,10 @@
 .controls {
   grid-area: controls;
   display: grid;
+  grid-template-rows: max-content max-content;
+  align-self: start;
   gap: clamp(0.9rem, 1.4vw, 1.15rem);
+  width: 100%;
 }
 
 .counter {
@@ -182,13 +185,12 @@
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.75rem;
 }
 
 .navButton {
-  flex: 1 1 12rem;
+  width: 100%;
 }
 
 .navButton[aria-pressed="true"],
@@ -226,12 +228,23 @@
 @media (min-width: 760px) {
   .showcase {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
     grid-template-areas:
-      "stage controls"
-      "stage panel";
+      "stage panel"
+      "stage controls";
     column-gap: clamp(2rem, 3.4vw, 3.4rem);
     row-gap: clamp(1.5rem, 2.2vw, 2rem);
+  }
+
+  .actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .navButton {
+    width: 100%;
+    min-height: 52px;
+    height: 100%;
   }
 }
 
@@ -239,12 +252,5 @@
   .portraitBackdrop {
     top: -1.5rem;
     aspect-ratio: 1 / 1;
-  }
-}
-
-@media (min-width: 1080px) {
-  .navButton {
-    flex: 0 1 auto;
-    min-width: 128px;
   }
 }

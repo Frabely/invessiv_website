@@ -4,6 +4,12 @@
   margin-top: 0;
 }
 
+.header {
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+
 .title {
   margin: 0;
   color: var(--color-text);

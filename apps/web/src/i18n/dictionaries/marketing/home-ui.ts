@@ -58,6 +58,7 @@ export type HomeUiContent = {
   heroTrustChips: string[];
   heroVisualAriaLabel: string;
   mappingWarning: string;
+  processKicker: string;
   problemContent: ProblemContent;
   uspContent: UspContent;
   referencesLabels: ReferenceLabels;

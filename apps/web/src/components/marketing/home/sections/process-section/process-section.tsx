@@ -7,6 +7,7 @@ import type {
   ProcessCtaCopy,
   ProcessStepCopy,
 } from "@/i18n/dictionaries/marketing/home";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
 import backdropPhoto from "../../../../../../assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";
@@ -18,6 +19,7 @@ type ProcessField = { label: string | null; value: string };
 
 type ProcessSectionProps = {
   id: string;
+  kicker?: string;
   processCta?: ProcessCta;
   processSteps: ProcessStep[];
   title: string;
@@ -52,6 +54,7 @@ function parseProcessField(field: string | undefined): ProcessField | null {
 
 export function ProcessSection({
   id,
+  kicker,
   processCta,
   processSteps,
   title,
@@ -73,7 +76,10 @@ export function ProcessSection({
 
   return (
     <section className={styles.section} data-process-section="true" id={id}>
-      <h2 className={styles.title}>{title}</h2>
+      <header className={styles.header}>
+        {kicker ? <EyebrowPill>{kicker}</EyebrowPill> : null}
+        <h2 className={styles.title}>{title}</h2>
+      </header>
 
       <div
         className={`${styles.layout} ${styles.layoutHasJourneyCtaGate}`}
