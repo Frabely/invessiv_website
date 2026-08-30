@@ -245,8 +245,6 @@ type ReferencesSectionCopy = {
 
 type ProcessSectionCopy = {
   title: string;
-  description: string;
-  summaryPoints: string[];
   processSteps: ProcessStepCopy[];
   processCta: ProcessCtaCopy;
 };
@@ -593,13 +591,6 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         title: "So läuft unsere Zusammenarbeit ab",
-        description:
-          "Sechs klare Schritte von deiner Anfrage bis zum Launch – du weißt immer, was als Nächstes passiert und wie viel Zeit es dich kostet.",
-        summaryPoints: [
-          "unverbindlich bis nach dem zweiten Gespräch",
-          "dein Aufwand pro Schritt sichtbar",
-          "am Ende ist deine Seite live",
-        ],
         processSteps: [
           {
             step: "01",
@@ -645,13 +636,6 @@ const HOME_SECTIONS = [
       },
       en: {
         title: "How our collaboration works",
-        description:
-          "Six clear steps from your inquiry to launch – you always know what happens next and how much of your time it takes.",
-        summaryPoints: [
-          "no commitment until after the second call",
-          "your effort visible per step",
-          "your site is live at the end",
-        ],
         processSteps: [
           {
             step: "01",

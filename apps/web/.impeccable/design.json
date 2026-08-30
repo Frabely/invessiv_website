@@ -258,6 +258,11 @@
           "oklch(84% 0.18 25)",
           "oklch(95% 0.18 25)"
         ]
+      },
+      "light-shadow-navy": {
+        "role": "neutral",
+        "displayName": "Schattenton Hell-Theme",
+        "canonical": "#24375a"
       }
     },
     "typographyMeta": {
@@ -297,6 +302,11 @@
         "name": "header-float",
         "value": "0 10px 24px rgba(6, 8, 12, 0.24)",
         "purpose": "Gesonderte Ebene des gescrollten Desktop-Headers."
+      },
+      {
+        "name": "ambient-card-light",
+        "value": "0 8px 18px rgba(36, 55, 90, 0.08)",
+        "purpose": "Pendant zu ambient-card im hellen Theme; kuehler und zurueckhaltender."
       }
     ],
     "motion": [
@@ -317,11 +327,26 @@
       }
     ],
     "breakpoints": [
-      { "name": "mobile", "value": "640px" },
-      { "name": "navigation", "value": "900px" },
-      { "name": "compact-desktop", "value": "1200px" },
-      { "name": "wide-desktop", "value": "1500px" },
-      { "name": "ultrawide", "value": "2200px" }
+      {
+        "name": "mobile",
+        "value": "640px"
+      },
+      {
+        "name": "navigation",
+        "value": "900px"
+      },
+      {
+        "name": "compact-desktop",
+        "value": "1200px"
+      },
+      {
+        "name": "wide-desktop",
+        "value": "1500px"
+      },
+      {
+        "name": "ultrawide",
+        "value": "2200px"
+      }
     ]
   },
   "components": [

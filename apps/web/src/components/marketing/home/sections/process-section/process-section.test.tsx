@@ -11,7 +11,7 @@ vi.mock("@/hooks/marketing/use-process-journey", () => ({
 }));
 
 describe("ProcessSection", () => {
-  it("renders summary, steps with effort and result, and cta content", () => {
+  it("renders title, steps with effort and result, and cta content", () => {
     const processSection = getHomeSections("de").find(
       (section) => section.id === "process",
     );
@@ -29,11 +29,9 @@ describe("ProcessSection", () => {
 
     const { container } = render(
       <ProcessSection
-        description={processSection.description}
         id="process"
         processCta={processSection.processCta}
         processSteps={processSection.processSteps}
-        summaryPoints={processSection.summaryPoints}
         title={processSection.title}
       />,
     );
@@ -41,7 +39,6 @@ describe("ProcessSection", () => {
     expect(
       screen.getByRole("heading", { name: processSection.title }),
     ).toBeTruthy();
-    expect(screen.getByText(processSection.summaryPoints[0])).toBeTruthy();
     expect(
       container.querySelectorAll("[data-process-step='true']"),
     ).toHaveLength(processSection.processSteps.length);

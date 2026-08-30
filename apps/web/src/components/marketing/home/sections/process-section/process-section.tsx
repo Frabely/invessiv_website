@@ -7,7 +7,6 @@ import type {
   ProcessCtaCopy,
   ProcessStepCopy,
 } from "@/i18n/dictionaries/marketing/home";
-import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
 import backdropPhoto from "../../../../../../assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";
@@ -18,11 +17,9 @@ type ProcessCta = ProcessCtaCopy;
 type ProcessField = { label: string | null; value: string };
 
 type ProcessSectionProps = {
-  description: string;
   id: string;
   processCta?: ProcessCta;
   processSteps: ProcessStep[];
-  summaryPoints?: string[];
   title: string;
 };
 
@@ -54,11 +51,9 @@ function parseProcessField(field: string | undefined): ProcessField | null {
 }
 
 export function ProcessSection({
-  description,
   id,
   processCta,
   processSteps,
-  summaryPoints,
   title,
 }: ProcessSectionProps) {
   const layoutRef = useRef<HTMLDivElement | null>(null);
@@ -79,12 +74,6 @@ export function ProcessSection({
   return (
     <section className={styles.section} data-process-section="true" id={id}>
       <h2 className={styles.title}>{title}</h2>
-      <SectionScanPoints
-        className={styles.scanPoints}
-        fallbackClassName={styles.hint}
-        fallbackText={description}
-        points={summaryPoints}
-      />
 
       <div
         className={`${styles.layout} ${styles.layoutHasJourneyCtaGate}`}

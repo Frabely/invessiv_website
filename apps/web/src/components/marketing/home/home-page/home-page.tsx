@@ -167,12 +167,10 @@ export function HomePage() {
             if (section.id === PROCESS_SECTION_ID) {
               return (
                 <ProcessSection
-                  description={section.description}
                   id={section.id}
                   key={section.id}
                   processCta={section.processCta}
                   processSteps={section.processSteps}
-                  summaryPoints={section.summaryPoints}
                   title={section.title}
                 />
               );
