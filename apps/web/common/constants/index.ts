@@ -1,6 +1,7 @@
 export * from "./analytics";
 export * from "./api-endpoints";
 export * from "./consent";
+export * from "./contact";
 export * from "./events";
 export * from "./generator";
 export * from "./http";

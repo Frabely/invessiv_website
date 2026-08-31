@@ -1,0 +1,82 @@
+.panel {
+  display: grid;
+  gap: clamp(0.85rem, 1.3vw, 1.05rem);
+  padding: clamp(1.05rem, 1.8vw, 1.65rem);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
+}
+
+:global([data-theme="light"]) .panel {
+  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+}
+
+/* The message is optional, so it must not outweigh the required fields. */
+.messageField textarea {
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+  border-radius: 15px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  line-height: 1.45;
+  padding: 0.76rem 0.92rem;
+}
+
+.messageField textarea::placeholder {
+  color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
+}
+
+.messageField textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
+}
+
+/* Second exit from the same form: send it as an email instead of booking. */
+.emailHandoff {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  margin-top: clamp(0.35rem, 0.8vw, 0.65rem);
+  padding-top: clamp(1.1rem, 1.8vw, 1.5rem);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
+  text-align: center;
+}
+
+.emailQuestion {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 92%, var(--color-text-muted) 8%);
+  font-family: var(--font-family-display), sans-serif;
+  font-size: var(--font-size-heading-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.emailNote {
+  margin: 0 0 0.35rem;
+  max-width: 46ch;
+  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
+  font-size: var(--font-size-label-md);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+@media (max-width: 599px) {
+  .emailHandoff > button {
+    width: 100%;
+  }
+}

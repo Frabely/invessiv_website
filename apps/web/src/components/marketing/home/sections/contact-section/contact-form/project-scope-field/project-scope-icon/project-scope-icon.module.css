@@ -1,0 +1,37 @@
+.mask,
+.glyph {
+  display: block;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+}
+
+/* Line icons of the services section, tinted through a CSS mask. */
+.mask {
+  --scope-icon: none;
+  background-color: currentColor;
+  -webkit-mask-image: var(--scope-icon);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-image: var(--scope-icon);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.mask[data-scope="landing_page"] {
+  --scope-icon: url("../../../../../../../../../public/services/landing-page.svg");
+}
+
+.mask[data-scope="compact_website"] {
+  --scope-icon: url("../../../../../../../../../public/services/compact-site.svg");
+}
+
+.mask[data-scope="business_website"] {
+  --scope-icon: url("../../../../../../../../../public/services/business-website.svg");
+}
+
+.glyph {
+  color: currentColor;
+}

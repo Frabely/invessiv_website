@@ -1,0 +1,9 @@
+{
+  "listAriaLabel": "Kontaktwege",
+  "channels": {
+    "email": "E-Mail schreiben",
+    "phone": "Anrufen",
+    "linkedin": "LinkedIn-Profil öffnen",
+    "instagram": "Instagram-Profil öffnen"
+  }
+}

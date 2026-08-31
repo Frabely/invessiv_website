@@ -1,7 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { ContactOfferKey } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
@@ -62,6 +62,7 @@ export function ServicesSection({
 }: ServicesSectionProps) {
   const [selectedServiceKey, setSelectedServiceKey] =
     useState<PrimaryServiceKey>(DEFAULT_SERVICE_KEY);
+  const hasChosenServiceRef = useRef(false);
 
   const primaryCards = useMemo(
     () =>
@@ -82,7 +83,7 @@ export function ServicesSection({
   const ctaProjectGoal = selectedOption?.label ?? selectedCard?.title ?? "";
 
   useEffect(() => {
-    if (!selectedCard) {
+    if (!selectedCard || !hasChosenServiceRef.current) {
       return;
     }
 
@@ -134,6 +135,7 @@ export function ServicesSection({
               key={option.key}
               onClick={() => {
                 if (isPrimaryServiceKey(optionServiceKey)) {
+                  hasChosenServiceRef.current = true;
                   setSelectedServiceKey(optionServiceKey);
                 }
               }}

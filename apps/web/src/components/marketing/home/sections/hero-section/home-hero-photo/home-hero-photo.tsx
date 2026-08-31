@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import heroPhoto from "../../../../../../../assets/home/hero_cutted.jpg";
+import heroPhoto from "@/assets/home/hero_cutted.jpg";
 import styles from "./home-hero-photo.module.css";
 
 type HomeHeroPhotoProps = {

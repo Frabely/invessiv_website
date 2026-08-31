@@ -28,6 +28,7 @@ export async function persistDiscoveryCallLead(
       id: discoveryCallPersistInput.call_contact.id,
       lead_submission_id: sharedResult.submissionId,
       message: discoveryCallPersistInput.call_contact.message ?? null,
+      project_scope: discoveryCallPersistInput.call_contact.project_scope,
       updated_at: discoveryCallPersistInput.call_contact.updated_at,
     });
   });

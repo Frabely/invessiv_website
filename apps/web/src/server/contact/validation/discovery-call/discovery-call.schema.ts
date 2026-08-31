@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { CONTACT_PROJECT_SCOPES } from "@invessiv/common/constants/contact/contact-project-scopes";
 import {
   emailStringSchema,
   localeSchema,
@@ -22,6 +23,7 @@ export const discoveryCallSchema = z
     kind: z.literal(CONTACT_REQUEST_KIND.DiscoveryCall),
     locale: localeSchema,
     message: optionalTrimmedString,
+    projectScope: z.enum(CONTACT_PROJECT_SCOPES),
   })
   .superRefine(applyDiscoveryCallValidationRules);
 

@@ -21,6 +21,7 @@ import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-le
 import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { CONTACT_PROJECT_SCOPE } from "@invessiv/common/constants/contact/contact-project-scopes";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
@@ -563,15 +564,13 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     page_keys: string[] | null;
     phone: string | null;
     preferred_start_key:
-      | (typeof CONTACT_START_KEY)[keyof typeof CONTACT_START_KEY]
-      | null;
+      (typeof CONTACT_START_KEY)[keyof typeof CONTACT_START_KEY] | null;
     project_details: string;
     role: string | null;
     updated_at: Date;
     website: string | null;
     workflow_key:
-      | (typeof CONTACT_WORKFLOW_KEY)[keyof typeof CONTACT_WORKFLOW_KEY]
-      | null;
+      (typeof CONTACT_WORKFLOW_KEY)[keyof typeof CONTACT_WORKFLOW_KEY] | null;
   }> = [];
 
   const emailContactRows: Array<{
@@ -587,6 +586,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     id: string;
     lead_submission_id: string;
     message: string | null;
+    project_scope: (typeof CONTACT_PROJECT_SCOPE)[keyof typeof CONTACT_PROJECT_SCOPE];
     updated_at: Date;
   }> = [];
 
@@ -650,6 +650,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         id: crypto.randomUUID(),
         lead_submission_id: submissionRow.id,
         message: fixture.submission.message,
+        project_scope: CONTACT_PROJECT_SCOPE.Unsure,
         updated_at: minutesAfter(submissionCreatedAt, 1),
       });
     }

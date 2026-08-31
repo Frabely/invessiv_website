@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 
 import type { UspChatAuthor } from "@/i18n/dictionaries/marketing/home-ui";
-import visitorPhoto from "../../../../../../../assets/home/unhappy-with-website.jpg";
+import visitorPhoto from "@/assets/home/unhappy-with-website.jpg";
 import styles from "./chat-message.module.css";
 
 type ChatMessageProps = {

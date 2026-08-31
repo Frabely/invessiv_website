@@ -212,13 +212,13 @@ describe("LandingPage", () => {
       pageFooter?.querySelector('a[href="/de/imprint#company-details"]')
         ?.textContent,
     ).toBe("Invessiv");
+    // Email and phone are reachable through the icon-only contact buttons.
     expect(
-      pageFooter?.querySelector('a[href="mailto:service@invessiv.com"]')
-        ?.textContent,
-    ).toBe("service@invessiv.com");
+      pageFooter?.querySelector('a[href="mailto:service@invessiv.com"]'),
+    ).toBeTruthy();
     expect(
-      pageFooter?.querySelector('a[href="tel:+4915232070477"]')?.textContent,
-    ).toBe("+49 1523 2070477");
+      pageFooter?.querySelector('a[href="tel:+4915232070477"]'),
+    ).toBeTruthy();
   });
 
   it("submits landing leads with the landing page origin", async () => {

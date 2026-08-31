@@ -10,7 +10,7 @@ import type {
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
-import backdropPhoto from "../../../../../../assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";
+import backdropPhoto from "@/assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";
 import styles from "./process-section.module.css";
 
 type ProcessStep = ProcessStepCopy;

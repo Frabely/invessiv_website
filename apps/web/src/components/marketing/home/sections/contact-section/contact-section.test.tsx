@@ -1,14 +1,12 @@
 // @vitest-environment jsdom
 
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  within,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import type {
+  ContactFormCopy,
+  ContactPortraitCopy,
+} from "@/i18n/dictionaries/marketing/home";
 import { ContactSection } from "./contact-section";
 
 vi.mock("@/components/providers/language-provider", () => ({
@@ -17,401 +15,176 @@ vi.mock("@/components/providers/language-provider", () => ({
   }),
 }));
 
+vi.mock("@/client/contact/services/contact-form-service", () => ({
+  createCalendlyPrefillHref: vi.fn(() => "https://calendly.test/booking"),
+  submitDiscoveryCall: vi.fn(),
+  submitQuickContact: vi.fn(),
+}));
+
 vi.mock("@/lib/analytics/conversion-events", () => ({
   trackConversionEvent: vi.fn(),
 }));
 
 afterEach(() => {
   cleanup();
+  window.location.hash = "";
 });
 
+const PORTRAIT: ContactPortraitCopy = {
+  imageAlt: "Porträt von Moritz Hecht",
+  points: ["30 Minuten", "Unverbindlich", "Klarer nächster Schritt"],
+};
+
+const FORM_COPY: ContactFormCopy = {
+  nameLabel: "Name",
+  emailLabel: "E-Mail",
+  projectScopeLabel: "Leistungsmodell",
+  projectScopeOptions: {
+    landing_page: "Landingpage",
+    compact_website: "Kompakte Website",
+    business_website: "Business Website",
+    unsure: "Noch unsicher",
+  },
+  messageLabel: "Worum geht es? (optional)",
+  messagePlaceholder: "Zwei Sätze reichen.",
+  consentLabel: "Ich stimme gemäß",
+  privacyLabel: "Datenschutzerklärung",
+  requiredHint: "* Pflichtfelder",
+  fieldErrorInvalidEmail: "Ungültige E-Mail",
+  fieldErrorRequired: "Pflichtfeld",
+  fieldErrorConsentRequired: "Zustimmung erforderlich",
+  submitErrorRateLimited: "Rate limited",
+  submitErrorGeneric: "Generic error",
+  callSubmitLabel: "Weiter zur Terminauswahl",
+  callSubmittingLabel: "Terminauswahl wird geöffnet",
+  callSubmitSuccess: "Terminauswahl öffnet sich",
+  emailQuestion: "Lieber schreiben statt sprechen?",
+  emailNote:
+    "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+  emailSubmitLabel: "Anfrage senden",
+  emailSubmittingLabel: "Wird gesendet",
+  emailSubmitSuccess: "Anfrage gesendet.",
+  emailSubmitErrorDelivery: "Delivery error",
+};
+
+function renderContactSection() {
+  return render(
+    <ContactSection
+      calendlyHref="https://calendly.com/service-invessiv-cxf5/30min"
+      contactForm={FORM_COPY}
+      id="contact"
+      intro="30 Minuten, unverbindlich."
+      locale="de"
+      portrait={PORTRAIT}
+      privacyHref="/privacy"
+      title="Kostenloses Erstgespräch"
+    />,
+  );
+}
+
 describe("ContactSection", () => {
-  it("renders contact entry picker and shows only the active path panel", () => {
-    render(
-      <ContactSection
-        contactAlternativeLabel="Weitere Kontaktwege"
-        contactChannels={[
-          {
-            actionLabel: "Kurze E-Mail senden",
-            copyLabel: "E-Mail kopieren",
-            copyValue: "service@invessiv.com",
-            description: "Für mittlere Leads mit grobem Vorhaben.",
-            href: "mailto:hi@invessiv.de",
-            kicker: "Erst grob anfragen",
-            label: "Kurze E-Mail",
-            mode: "email",
-            value: "hi@invessiv.de",
-          },
-          {
-            actionLabel: "Kennenlern-Call starten",
-            description: "Für frühe Leads mit Klärungsbedarf.",
-            href: "https://calendly.com/service-invessiv-cxf5/30min",
-            kicker: "Kurz abstimmen",
-            label: "Kennenlern-Call",
-            mode: "call",
-            value: "15-20 Min. Orientierungsgespräch",
-          },
-        ]}
-        contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
-        contactForm={{
-          budgetLabel: "Budgetrahmen",
-          budgetOptions: [
-            { key: "between_1000_2500", label: "1.000 € - 2.500 €" },
-          ],
-          closeLabel: "Formular schließen",
-          conditionalFieldHint: "Dynamische Pflichtfelder",
-          companyLabel: "Unternehmen",
-          consentLabel: "Ich stimme gemäß",
-          emailLabel: "E-Mail",
-          nameLabel: "Name",
-          addPageLabel: "Seite hinzufügen",
-          goalLabel: "Ziel",
-          goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
-          intro: "Kurzbeschreibung",
-          nextStepLabel: "Weiter",
-          offerLabel: "Angebot",
-          offerPlaceholder: "Bitte wählen",
-          pagesLabel: "Seiten",
-          pagesOptions: [{ key: "home", label: "Start" }],
-          pagesPlaceholder: "Start, Kontakt",
-          phoneLabel: "Telefon",
-          previousStepLabel: "Zurück",
-          projectDetailsLabel: "Projektbeschreibung",
-          projectDetailsPlaceholder: "Details",
-          requiredHint: "* Pflichtfelder",
-          roleLabel: "Rolle",
-          startLabel: "Start",
-          startOptions: [{ key: "immediately", label: "Sofort" }],
-          stepLabel: "Schritt",
-          stepNavigationLabel: "Anfragefortschritt",
-          stepOneTitle: "Kontakt",
-          stepThreeTitle: "Rahmen",
-          stepTwoTitle: "Projekt",
-          submitErrorDelivery: "Delivery error",
-          submitErrorGeneric: "Generic error",
-          submitErrorRateLimited: "Rate limited",
-          submitErrorValidation: "Validation error",
-          validationSummaryPrefix: "Bitte prüfen:",
-          fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorInvalidWebsite:
-            "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
-          fieldErrorRequired: "Pflichtfeld",
-          fieldErrorProjectDetailsRequired: "Projekt erforderlich",
-          fieldErrorPagesRequired: "Seiten erforderlich",
-          fieldErrorTooManyPages: "Zu viele Seiten",
-          fieldErrorGoalRequired: "Ziel erforderlich",
-          fieldErrorWorkflowRequired: "Workflow erforderlich",
-          fieldErrorConsentRequired: "Zustimmung erforderlich",
-          submitLabel: "Senden",
-          submitSuccess: "Gesendet",
-          submittingLabel: "Wird gesendet",
-          subtitle: "Projekt-Check",
-          title: "Projektanfrage",
-          websiteLabel: "Webseite",
-          workflowLabel: "Workflows",
-          workflowOptions: [
-            {
-              key: "digitize_existing_process",
-              label: "Bestehenden Ablauf digitalisieren",
-            },
-          ],
-          privacyLabel: "Datenschutzerklärung",
-        }}
-        contactFormOffers={[
-          { key: "landing", title: "Landing pages" },
-          { key: "web", title: "Webseiten" },
-        ]}
-        quickContactForm={{
-          title: "Kurze E-Mail",
-          subtitle: "Schneller Kontakt",
-          intro: "Kurz reicht.",
-          metaLabel: "E-Mail",
-          copyActionLabel: "E-Mail kopieren",
-          copiedActionLabel: "E-Mail kopiert",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Nachricht",
-          messagePlaceholder: "Schreib kurz dein Anliegen.",
-          consentLabel: "Ich stimme gemäß",
-          privacyLabel: "Datenschutzerklärung",
-          submitLabel: "E-Mail senden",
-          submittingLabel: "Wird gesendet",
-          submitErrorRateLimited: "Rate limited",
-          submitErrorDelivery: "Delivery error",
-          submitErrorGeneric: "Generic error",
-          submitSuccess: "Mail wird geöffnet",
-          fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorRequired: "Pflichtfeld",
-          fieldErrorConsentRequired: "Zustimmung erforderlich",
-          requiredHint: "* Pflichtfelder",
-        }}
-        discoveryCallForm={{
-          title: "Kennenlern-Call",
-          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
-          intro: "Kurz vorbereiten und dann Termin wählen.",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Anliegen",
-          messagePlaceholder: "Optionales Anliegen.",
-          consentLabel: "Ich stimme gemäß",
-          privacyLabel: "Datenschutzerklärung",
-          submitLabel: "Termin wählen",
-          submittingLabel: "Wird geöffnet",
-          submitSuccess: "Calendly wird geöffnet",
-          submitErrorRateLimited: "Rate limited",
-          submitErrorGeneric: "Generic error",
-          fieldErrorInvalidEmail: "Ungültige E-Mail",
-          fieldErrorRequired: "Pflichtfeld",
-          fieldErrorConsentRequired: "Zustimmung erforderlich",
-          requiredHint: "* Pflichtfelder",
-        }}
-        contactSecondaryCta={{
-          href: "#services",
-          label: "Leistungen ansehen",
-        }}
-        id="contact"
-        privacyHref="/privacy"
-        title="Bereit für eine neue, produktive Webseite?"
-      />,
-    );
+  it("renders exactly one contact form with both submit paths", () => {
+    renderContactSection();
 
     expect(
       screen.getByRole("heading", {
-        name: "Bereit für eine neue, produktive Webseite?",
+        level: 2,
+        name: "Kostenloses Erstgespräch",
       }),
     ).toBeTruthy();
-    expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
-    expect(screen.getByRole("textbox", { name: /Name/ })).toBeTruthy();
+    expect(document.querySelectorAll("form")).toHaveLength(1);
+    expect(
+      screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
+    expect(screen.getByText("Lieber schreiben statt sprechen?")).toBeTruthy();
+  });
+
+  it("renders the portrait card with its trust points", () => {
+    renderContactSection();
+
+    expect(screen.getByAltText("Porträt von Moritz Hecht")).toBeTruthy();
+    expect(screen.getByText("Moritz Hecht")).toBeTruthy();
+    expect(screen.getByText("Klarer nächster Schritt")).toBeTruthy();
+  });
+
+  it("offers the direct contact channels in the portrait card", () => {
+    renderContactSection();
+
     expect(
       screen
-        .getByRole("link", { name: "Leistungen ansehen" })
+        .getByRole("link", { name: "E-Mail schreiben" })
         .getAttribute("href"),
-    ).toBe("#services");
-
-    expect(screen.queryByRole("textbox", { name: /Nachricht/ })).toBeNull();
+    ).toBe("mailto:service@invessiv.com");
     expect(
-      screen.queryByRole("link", { name: "Kennenlern-Call starten" }),
-    ).toBeNull();
-    expect(screen.getAllByText("Weitere Kontaktwege").length).toBeGreaterThan(
-      0,
+      screen.getByRole("link", { name: "Anrufen" }).getAttribute("href"),
+    ).toBe("tel:+4915232070477");
+
+    const linkedin = screen.getByRole("link", {
+      name: "LinkedIn-Profil öffnen",
+    });
+    expect(linkedin.getAttribute("href")).toBe(
+      "https://www.linkedin.com/in/moritz-hecht-4a5200235/",
     );
-    expect(screen.getByRole("button", { name: /Kurze E-Mail/ })).toBeTruthy();
-    expect(
-      screen.getByRole("button", { name: /Kennenlern-Call/ }),
-    ).toBeTruthy();
-
-    fireEvent.click(screen.getByRole("button", { name: /Kurze E-Mail/ }));
-    const emailPanel = screen.getByRole("region", { name: "Kurze E-Mail" });
-    expect(
-      within(emailPanel).getByRole("textbox", { name: /Nachricht/ }),
-    ).toBeTruthy();
-    expect(
-      within(emailPanel).getByRole("button", { name: "E-Mail kopieren" }),
-    ).toBeTruthy();
-
-    fireEvent.click(screen.getByRole("button", { name: /Kurze E-Mail/ }));
-    expect(screen.queryByRole("region", { name: "Kurze E-Mail" })).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: /Kennenlern-Call/ }));
-    const callPanel = screen.getByRole("region", { name: "Kennenlern-Call" });
-    expect(
-      within(callPanel).getByRole("textbox", { name: /Name/ }),
-    ).toBeTruthy();
-    expect(
-      within(callPanel).getByRole("textbox", { name: /E-Mail/ }),
-    ).toBeTruthy();
-    expect(
-      within(callPanel).getByRole("textbox", { name: "Anliegen" }),
-    ).toBeTruthy();
-    expect(within(callPanel).getByRole("checkbox")).toBeTruthy();
+    expect(linkedin.getAttribute("rel")).toBe("noreferrer");
   });
 
-  it("renders contact channels even without a primary project form", () => {
-    render(
-      <ContactSection
-        contactAlternativeLabel="Weitere Kontaktwege"
-        contactChannels={[
-          {
-            actionLabel: "Kurze E-Mail senden",
-            description: "Für schnellen Erstkontakt.",
-            href: "mailto:hi@invessiv.de",
-            kicker: "Kurz",
-            label: "Kurze E-Mail",
-            mode: "email",
-            value: "hi@invessiv.de",
-          },
-        ]}
-        contactDecisionIntro="Wähle den passenden Kontaktweg."
-        contactFormOffers={[]}
-        contactSecondaryCta={{
-          href: "#services",
-          label: "Leistungen ansehen",
-        }}
-        id="contact"
-        privacyHref="/privacy"
-        title="Kontakt"
-      />,
-    );
+  it("tracks the direct channels as contact clicks", () => {
+    renderContactSection();
 
-    expect(screen.getAllByText("Weitere Kontaktwege").length).toBeGreaterThan(
-      0,
+    const emailLink = screen.getByRole("link", { name: "E-Mail schreiben" });
+    expect(emailLink.getAttribute("data-analytics-event")).toBe(
+      "contact_click",
     );
+    expect(emailLink.getAttribute("data-analytics-location")).toBe("contact");
+    expect(emailLink.getAttribute("data-analytics-target")).toBe("email");
+
     expect(
-      screen.getAllByRole("button", { name: /Kurze E-Mail/ }).length,
-    ).toBeGreaterThan(0);
-    expect(
-      screen.getAllByRole("link", { name: "Leistungen ansehen" }).length,
-    ).toBeGreaterThan(0);
-    expect(screen.queryByRole("region", { name: "Projektanfrage" })).toBeNull();
+      screen
+        .getByRole("link", { name: "Anrufen" })
+        .getAttribute("data-analytics-target"),
+    ).toBe("phone");
   });
 
-  it("opens the quick email form as the primary entry when linked from the Q&A email shortcut", () => {
-    render(
-      <>
-        <a href="#contact-email" onClick={(event) => event.preventDefault()}>
-          Schreib mir direkt per Mail.
-        </a>
-        <ContactSection
-          contactAlternativeLabel="Weitere Kontaktwege"
-          contactChannels={[
-            {
-              actionLabel: "Kurze E-Mail senden",
-              copyLabel: "E-Mail kopieren",
-              copyValue: "service@invessiv.com",
-              description: "Für mittlere Leads mit grobem Vorhaben.",
-              href: "mailto:hi@invessiv.de",
-              kicker: "Erst grob anfragen",
-              label: "Kurze E-Mail",
-              mode: "email",
-              value: "hi@invessiv.de",
-            },
-            {
-              actionLabel: "Kennenlern-Call starten",
-              description: "Für frühe Leads mit Klärungsbedarf.",
-              href: "https://calendly.com/service-invessiv-cxf5/30min",
-              kicker: "Kurz abstimmen",
-              label: "Kennenlern-Call",
-              mode: "call",
-              value: "15-20 Min. Orientierungsgespräch",
-            },
-          ]}
-          contactDecisionIntro="Je nachdem, wie konkret dein Vorhaben ist."
-          contactForm={{
-            budgetLabel: "Budgetrahmen",
-            budgetOptions: [
-              { key: "between_1000_2500", label: "1.000 € - 2.500 €" },
-            ],
-            closeLabel: "Formular schließen",
-            conditionalFieldHint: "Dynamische Pflichtfelder",
-            companyLabel: "Unternehmen",
-            consentLabel: "Ich stimme gemäß",
-            emailLabel: "E-Mail",
-            nameLabel: "Name",
-            addPageLabel: "Seite hinzufügen",
-            goalLabel: "Ziel",
-            goalOptions: [{ key: "generate_inquiries", label: "Leads" }],
-            intro: "Kurzbeschreibung",
-            nextStepLabel: "Weiter",
-            offerLabel: "Angebot",
-            offerPlaceholder: "Bitte wählen",
-            pagesLabel: "Seiten",
-            pagesOptions: [{ key: "home", label: "Start" }],
-            pagesPlaceholder: "Start, Kontakt",
-            phoneLabel: "Telefon",
-            previousStepLabel: "Zurück",
-            projectDetailsLabel: "Projektbeschreibung",
-            projectDetailsPlaceholder: "Details",
-            requiredHint: "* Pflichtfelder",
-            roleLabel: "Rolle",
-            startLabel: "Start",
-            startOptions: [{ key: "immediately", label: "Sofort" }],
-            stepLabel: "Schritt",
-            stepNavigationLabel: "Anfragefortschritt",
-            stepOneTitle: "Kontakt",
-            stepThreeTitle: "Rahmen",
-            stepTwoTitle: "Projekt",
-            submitErrorDelivery: "Delivery error",
-            submitErrorGeneric: "Generic error",
-            submitErrorRateLimited: "Rate limited",
-            submitErrorValidation: "Validation error",
-            validationSummaryPrefix: "Bitte prüfen:",
-            fieldErrorInvalidEmail: "Ungültige E-Mail",
-            fieldErrorInvalidWebsite:
-              "Ungültige Webseite, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
-            fieldErrorRequired: "Pflichtfeld",
-            fieldErrorProjectDetailsRequired: "Projekt erforderlich",
-            fieldErrorPagesRequired: "Seiten erforderlich",
-            fieldErrorTooManyPages: "Zu viele Seiten",
-            fieldErrorGoalRequired: "Ziel erforderlich",
-            fieldErrorWorkflowRequired: "Workflow erforderlich",
-            fieldErrorConsentRequired: "Zustimmung erforderlich",
-            submitLabel: "Senden",
-            submitSuccess: "Gesendet",
-            submittingLabel: "Wird gesendet",
-            subtitle: "Projekt-Check",
-            title: "Projektanfrage",
-            websiteLabel: "Webseite",
-            workflowLabel: "Workflows",
-            workflowOptions: [
-              {
-                key: "digitize_existing_process",
-                label: "Bestehenden Ablauf digitalisieren",
-              },
-            ],
-            privacyLabel: "Datenschutzerklärung",
-          }}
-          contactFormOffers={[
-            { key: "landing", title: "Landing pages" },
-            { key: "web", title: "Webseiten" },
-          ]}
-          quickContactForm={{
-            title: "Kurze E-Mail für den nächsten Schritt",
-            subtitle: "Schneller Kontakt",
-            intro: "Kurz reicht.",
-            metaLabel: "E-Mail",
-            copyActionLabel: "E-Mail kopieren",
-            copiedActionLabel: "E-Mail kopiert",
-            nameLabel: "Name",
-            emailLabel: "E-Mail",
-            messageLabel: "Nachricht",
-            messagePlaceholder: "Schreib kurz dein Anliegen.",
-            consentLabel: "Ich stimme gemäß",
-            privacyLabel: "Datenschutzerklärung",
-            submitLabel: "E-Mail senden",
-            submittingLabel: "Wird gesendet",
-            submitErrorRateLimited: "Rate limited",
-            submitErrorDelivery: "Delivery error",
-            submitErrorGeneric: "Generic error",
-            submitSuccess: "Mail wird geöffnet",
-            fieldErrorInvalidEmail: "Ungültige E-Mail",
-            fieldErrorRequired: "Pflichtfeld",
-            fieldErrorConsentRequired: "Zustimmung erforderlich",
-            requiredHint: "* Pflichtfelder",
-          }}
-          discoveryCallForm={undefined}
-          contactSecondaryCta={{
-            href: "#services",
-            label: "Leistungen ansehen",
-          }}
-          id="contact"
-          privacyHref="/privacy"
-          title="Bereit für eine neue, produktive Webseite?"
-        />
-      </>,
-    );
+  it("explains what the email path does before the visitor uses it", () => {
+    renderContactSection();
 
-    fireEvent.click(
-      screen.getByRole("link", {
-        name: "Schreib mir direkt per Mail.",
-      }),
-    );
-
+    expect(screen.getByText("Lieber schreiben statt sprechen?")).toBeTruthy();
     expect(
-      screen.getByRole("region", {
-        name: "Kurze E-Mail für den nächsten Schritt",
-      }),
+      screen.getByText(
+        "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+      ),
     ).toBeTruthy();
-    expect(document.getElementById("contact-email")).toBeTruthy();
-    expect(screen.getByRole("region", { name: "Projektanfrage" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
+  });
+
+  it("focuses the form when arriving from the #contact-email hash", () => {
+    window.location.hash = "#contact-email";
+    renderContactSection();
+
+    expect((document.activeElement as HTMLInputElement | null)?.name).toBe(
+      "displayName",
+    );
+  });
+
+  it("focuses the form when an anchor to #contact-email is clicked", () => {
+    renderContactSection();
+
+    const anchor = document.createElement("a");
+    anchor.setAttribute("href", "#contact-email");
+    document.body.appendChild(anchor);
+    fireEvent.click(anchor);
+
+    expect((document.activeElement as HTMLInputElement | null)?.name).toBe(
+      "displayName",
+    );
+    anchor.remove();
+  });
+
+  it("no longer renders the project request form", () => {
+    renderContactSection();
+
+    expect(screen.queryByText("Budgetrahmen")).toBeNull();
+    expect(screen.queryByText(/Projektanfrage/)).toBeNull();
   });
 });

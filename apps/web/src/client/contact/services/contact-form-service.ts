@@ -86,12 +86,18 @@ export function submitDiscoveryCall(
 
 export function createCalendlyPrefillHref(
   values: BaseContactFieldsValues,
-  { calendlyUrl, concernAnswerSlot = 1 }: CalendlyPrefillOptions,
+  {
+    calendlyUrl,
+    concernAnswerSlot = 1,
+    projectScopeAnswerSlot = 2,
+    projectScopeLabel,
+  }: CalendlyPrefillOptions,
 ) {
   const url = new URL(calendlyUrl);
   const normalizedName = values.displayName.trim();
   const normalizedEmail = values.email.trim();
   const normalizedConcern = values.message.trim();
+  const normalizedProjectScope = projectScopeLabel?.trim() ?? "";
 
   url.searchParams.set(ContactSearchParam.Name, normalizedName);
   url.searchParams.set(ContactSearchParam.Email, normalizedEmail);
@@ -100,6 +106,12 @@ export function createCalendlyPrefillHref(
     url.searchParams.set(`a${concernAnswerSlot}`, normalizedConcern);
   } else {
     url.searchParams.delete(`a${concernAnswerSlot}`);
+  }
+
+  if (normalizedProjectScope) {
+    url.searchParams.set(`a${projectScopeAnswerSlot}`, normalizedProjectScope);
+  } else {
+    url.searchParams.delete(`a${projectScopeAnswerSlot}`);
   }
 
   return url.toString();

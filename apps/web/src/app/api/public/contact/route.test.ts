@@ -259,6 +259,7 @@ describe("POST /api/public/contact", () => {
           kind: "discovery_call",
           locale: "de",
           message: "Wir wollen den Umfang kurz einordnen.",
+          projectScope: "compact_website",
           displayName: "Max Mustermann",
         }),
         headers: {

@@ -8,8 +8,8 @@ import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { ProblemIconKey } from "@/i18n/dictionaries/marketing/home-ui";
-import ambientPhoto from "../../../../../../assets/home/unhappy-with-website-2.jpg";
-import centerPhoto from "../../../../../../assets/home/unhappy-with-website.jpg";
+import ambientPhoto from "@/assets/home/unhappy-with-website-2.jpg";
+import centerPhoto from "@/assets/home/unhappy-with-website.jpg";
 import { ProblemIcon } from "./problem-icon/problem-icon";
 import styles from "./problem-section.module.css";
 

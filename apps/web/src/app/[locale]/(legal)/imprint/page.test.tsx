@@ -3,6 +3,7 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import ImprintPage from "./page";
 
 const { mockNotFound, mockLegalDocumentContent, mockLegalDocumentLayout } =
   vi.hoisted(() => ({
@@ -69,8 +70,6 @@ vi.mock(
   }),
 );
 
-import ImprintPage from "./page";
-
 describe("ImprintPage", () => {
   beforeEach(() => {
     mockNotFound.mockClear();
@@ -105,7 +104,7 @@ describe("ImprintPage", () => {
     ).toBe("tel:+4915232070477");
     expect(
       screen.getByRole("link", { name: "LinkedIn" }).getAttribute("href"),
-    ).toBe("https://www.linkedin.com/company/invessiv");
+    ).toBe("https://www.linkedin.com/in/moritz-hecht-4a5200235/");
     expect(
       screen.getByRole("link", { name: "Instagram" }).getAttribute("href"),
     ).toBe("https://www.instagram.com/invessiv/");

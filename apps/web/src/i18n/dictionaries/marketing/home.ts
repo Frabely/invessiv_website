@@ -1,6 +1,5 @@
 import {
   CONTACT_EMAIL_SECTION_HREF,
-  type ContactChannelMode,
   PRIMARY_NAVIGATION,
   SECTION_HREFS,
   type SectionId,
@@ -14,13 +13,10 @@ import type {
 } from "@/common/contracts/marketing/qna-copy";
 import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
-import { COMPANY, COMPANY_CALENDLY, COMPANY_MAILTO } from "@/config/company";
-import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
-import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
-import { CONTACT_PAGE_KEY } from "@invessiv/common/constants/contact/contact-page-keys";
-import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
+import {
+  CONTACT_PROJECT_SCOPE,
+  type ContactProjectScope,
+} from "@invessiv/common/constants/contact/contact-project-scopes";
 import processDe from "./home-process.de.json";
 import processEn from "./home-process.en.json";
 import { getSiteHeaderUiContent } from "./site-header-ui";
@@ -59,11 +55,6 @@ type SecondaryServiceCard = StandardServiceCardBase & {
 
 export type ServiceCardCopy = PrimaryServiceCard | SecondaryServiceCard;
 
-type ContactFormOption = {
-  key: string;
-  label: string;
-};
-
 export type ProcessStepCopy = {
   step: string;
   title: string;
@@ -76,139 +67,35 @@ export type ProcessCtaCopy = {
   href: string;
 };
 
-export type ContactChannelCopy = {
-  mode: ContactChannelMode;
-  kicker?: string;
-  label: string;
-  description?: string;
-  value: string;
-  href: string;
-  hint?: string;
-  actionLabel?: string;
-  copyValue?: string;
-  copyLabel?: string;
-  copiedLabel?: string;
-  helper?: string;
-  detailPoints?: string[];
-  metaLabel?: string;
-  metaValue?: string;
-};
-
-export type ContactSecondaryCtaCopy = {
-  label: string;
-  href: string;
+export type ContactPortraitCopy = {
+  imageAlt: string;
+  points: string[];
 };
 
 export type ContactFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  conditionalFieldHint: string;
   nameLabel: string;
   emailLabel: string;
-  addPageLabel: string;
-  phoneLabel: string;
-  companyLabel: string;
-  roleLabel: string;
-  websiteLabel: string;
-  offerLabel: string;
-  offerPlaceholder: string;
-  goalLabel: string;
-  goalOptions: ContactFormOption[];
-  pagesLabel: string;
-  pagesPlaceholder: string;
-  pagesOptions?: ContactFormOption[];
-  pagesCustomLabel?: string;
-  pagesCustomPlaceholder?: string;
-  pagesCustomRemoveLabel?: string;
-  pagesHint?: string;
-  pagesRequiredHint?: string;
-  offerGuidance?: ContactFormOption[];
-  workflowLabel: string;
-  workflowOptions: ContactFormOption[];
-  stepNavigationLabel: string;
-  stepLabel: string;
-  stepOneTitle: string;
-  stepTwoTitle: string;
-  stepThreeTitle: string;
-  previousStepLabel: string;
-  nextStepLabel: string;
-  nextStepContactLabel?: string;
-  nextStepProjectLabel?: string;
-  budgetLabel: string;
-  budgetOptions: ContactFormOption[];
-  startLabel: string;
-  startOptions: ContactFormOption[];
-  projectDetailsLabel: string;
-  projectDetailsPlaceholder: string;
-  projectDetailsPlaceholders?: ContactFormOption[];
-  consentLabel: string;
-  privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
-  submitErrorValidation: string;
-  submitErrorRateLimited: string;
-  submitErrorDelivery: string;
-  submitErrorGeneric: string;
-  validationSummaryPrefix: string;
-  fieldErrorInvalidEmail: string;
-  fieldErrorInvalidWebsite: string;
-  fieldErrorRequired: string;
-  fieldErrorProjectDetailsRequired: string;
-  fieldErrorPagesRequired: string;
-  fieldErrorTooManyPages: string;
-  fieldErrorGoalRequired: string;
-  fieldErrorWorkflowRequired: string;
-  fieldErrorConsentRequired: string;
-  requiredHint: string;
-  closeLabel?: string;
-};
-
-export type QuickContactFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  metaLabel: string;
-  copyActionLabel: string;
-  copiedActionLabel: string;
-  nameLabel: string;
-  emailLabel: string;
+  projectScopeLabel: string;
+  projectScopeOptions: Record<ContactProjectScope, string>;
   messageLabel: string;
   messagePlaceholder: string;
   consentLabel: string;
   privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
-  submitErrorRateLimited: string;
-  submitErrorDelivery: string;
-  submitErrorGeneric: string;
+  requiredHint: string;
   fieldErrorInvalidEmail: string;
   fieldErrorRequired: string;
   fieldErrorConsentRequired: string;
-  requiredHint: string;
-};
-
-export type DiscoveryCallFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  nameLabel: string;
-  emailLabel: string;
-  messageLabel: string;
-  messagePlaceholder: string;
-  consentLabel: string;
-  privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
   submitErrorRateLimited: string;
   submitErrorGeneric: string;
-  fieldErrorInvalidEmail: string;
-  fieldErrorRequired: string;
-  fieldErrorConsentRequired: string;
-  requiredHint: string;
+  callSubmitLabel: string;
+  callSubmittingLabel: string;
+  callSubmitSuccess: string;
+  emailQuestion: string;
+  emailNote: string;
+  emailSubmitLabel: string;
+  emailSubmittingLabel: string;
+  emailSubmitSuccess: string;
+  emailSubmitErrorDelivery: string;
 };
 
 export type FooterColumnCopy = {
@@ -270,13 +157,9 @@ type QnaSectionCopy = {
 
 type ContactSectionCopy = {
   title: string;
-  contactDecisionIntro: string;
-  contactAlternativeLabel: string;
-  contactChannels: ContactChannelCopy[];
-  contactSecondaryCta: ContactSecondaryCtaCopy;
+  intro: string;
+  portrait: ContactPortraitCopy;
   contactForm: ContactFormCopy;
-  quickContactForm: QuickContactFormCopy;
-  discoveryCallForm: DiscoveryCallFormCopy;
 };
 
 type FooterSectionCopy = {
@@ -754,569 +637,92 @@ const HOME_SECTIONS = [
     id: "contact",
     copy: {
       de: {
-        title: "Starte mit einer Projektanfrage",
-        contactDecisionIntro:
-          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und machen dein Vorhaben schneller einschätzbar.",
-        contactAlternativeLabel: "Falls es noch kürzer sein soll",
-        contactChannels: [
-          {
-            mode: "call",
-            kicker: "Optional",
-            label: "Kennenlern-Call",
-            description:
-              "Für direkte Abstimmung, wenn du noch unsicher bist, welcher Leistungsweg passt.",
-            value: "15-20 Minuten Abstimmung",
-            href: COMPANY_CALENDLY,
-            actionLabel: "Termin auswählen",
-            detailPoints: [
-              "15-20 Minuten fokussiert",
-              "Umfang und Aufwand grob einordnen",
-              "Konkreter nächster Schritt danach",
-            ],
-          },
-          {
-            mode: "email",
-            kicker: "Kurz",
-            label: "Kurze Nachricht",
-            description:
-              "Für schnelle Rückfragen, wenn eine vollständige Projektanfrage noch zu früh ist.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            actionLabel: "E-Mail senden",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Adresse kopieren",
-            copiedLabel: "Adresse kopiert",
-            detailPoints: [
-              "Antwort in der Regel innerhalb von 24h",
-              "Kein Termin nötig",
-            ],
-            metaLabel: "E-Mail",
-            metaValue: "Asynchroner Schnellkontakt",
-          },
-        ],
-        contactSecondaryCta: {
-          label: "Leistungsmodelle vergleichen",
-          href: SECTION_HREFS.services,
+        title: "Kostenloses Erstgespräch",
+        intro:
+          "30 Minuten, unverbindlich. Danach weißt du, was dein Vorhaben kostet und wie lange es dauert.",
+        portrait: {
+          imageAlt: "Porträt von Moritz Hecht",
+          points: ["30 Minuten", "Unverbindlich", "Klarer nächster Schritt"],
         },
         contactForm: {
-          title: "Projekt einschätzen lassen",
-          subtitle: "Für konkrete Vorhaben mit klarer nächster Entscheidung.",
-          intro:
-            "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
-          conditionalFieldHint:
-            "Wähle eines der drei Angebote. Die nächsten Fragen passen sich daran an.",
           nameLabel: "Name",
           emailLabel: "E-Mail",
-          addPageLabel: "Seite hinzufügen",
-          phoneLabel: "Telefon",
-          companyLabel: "Unternehmen",
-          roleLabel: "Rolle",
-          websiteLabel: "Aktuelle Webseite",
-          offerLabel: "Passendes Angebot",
-          offerPlaceholder: "Angebot wählen",
-          goalLabel: "Ziel des Webauftritts",
-          goalOptions: [
-            {
-              key: CONTACT_GOAL_KEY.GenerateInquiries,
-              label: "Anfragen gewinnen",
-            },
-            {
-              key: CONTACT_GOAL_KEY.IncreaseBookings,
-              label: "Termine buchen lassen",
-            },
-            { key: CONTACT_GOAL_KEY.SellProduct, label: "Produkt verkaufen" },
-            {
-              key: CONTACT_GOAL_KEY.GrowNewsletter,
-              label: "Kontakte aufbauen",
-            },
-            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Anderes Ziel" },
-          ],
-          pagesLabel: "Grobe Seitenidee",
-          pagesPlaceholder: "z. B. Team, FAQ, Karriere",
-          pagesOptions: [
-            { key: CONTACT_PAGE_KEY.Home, label: "Start" },
-            { key: CONTACT_PAGE_KEY.Services, label: "Leistungen" },
-            { key: CONTACT_PAGE_KEY.About, label: "Über uns" },
-            { key: CONTACT_PAGE_KEY.Contact, label: "Kontakt" },
-            { key: CONTACT_PAGE_KEY.Careers, label: "Karriere" },
-            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
-            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landingpage" },
-          ],
-          pagesHint:
-            "Falls du noch nicht sicher bist, klären wir den sinnvollen Umfang gemeinsam.",
-          pagesCustomLabel: "Weitere Seite hinzufügen",
-          pagesCustomPlaceholder: "z. B. Sponsoren",
-          pagesCustomRemoveLabel: "Seite entfernen",
-          pagesRequiredHint:
-            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          offerGuidance: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Für Landingpages, neue Websites, Relaunches oder gezielte Verbesserungen bestehender Seiten.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Für wiederkehrende Abläufe: vom Custom KI-Skill bis zur individuellen Softwarelösung.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Für bestehende Websites, Tools oder laufende Änderungen nach dem Launch.",
-            },
-          ],
-          workflowLabel: "Wiederkehrender Prozess oder Workflow",
-          workflowOptions: [
-            {
-              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
-              label: "Bestehenden Ablauf digitalisieren",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
-              label: "Manuellen Prozess vereinfachen",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
-              label: "Daten oder Systeme verbinden",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
-              label: "Internes Tool für ein Team bauen",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
-              label: "Bestehendes Tool oder System verbessern",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.OtherProcess,
-              label: "Anderes Vorhaben",
-            },
-          ],
-          stepNavigationLabel: "Anfragefortschritt",
-          stepLabel: "Schritt",
-          stepOneTitle: "Kontakt",
-          stepTwoTitle: "Projektdetails",
-          stepThreeTitle: "Rahmen",
-          previousStepLabel: "Zurück",
-          nextStepLabel: "Weiter",
-          nextStepContactLabel: "Weiter zu Projektdetails",
-          nextStepProjectLabel: "Weiter zu Rahmen & Versand",
-          budgetLabel: "Budgetrahmen",
-          budgetOptions: [
-            { key: CONTACT_BUDGET_KEY.Below1000, label: "Unter 1.000 €" },
-            {
-              key: CONTACT_BUDGET_KEY.Between1000And2500,
-              label: "1.000 € - 2.500 €",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between2500And5000,
-              label: "2.500 € - 5.000 €",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between5000And10000,
-              label: "5.000 € - 10.000 €",
-            },
-            { key: CONTACT_BUDGET_KEY.Above10000, label: "10.000 €+" },
-            { key: CONTACT_BUDGET_KEY.Open, label: "Noch offen" },
-          ],
-          startLabel: "Gewünschter Start",
-          startOptions: [
-            { key: CONTACT_START_KEY.Immediately, label: "Sofort" },
-            {
-              key: CONTACT_START_KEY.WithinTwoWeeks,
-              label: "Innerhalb von 2 Wochen",
-            },
-            {
-              key: CONTACT_START_KEY.WithinOneMonth,
-              label: "Innerhalb von 1 Monat",
-            },
-            {
-              key: CONTACT_START_KEY.LaterFlexible,
-              label: "Später / flexibel",
-            },
-          ],
-          projectDetailsLabel: "Projektziel und Anforderungen",
-          projectDetailsPlaceholder:
-            "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
-          projectDetailsPlaceholders: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Beschreibe Angebot, Zielgruppe, Ziel der Seite, vorhandene Inhalte und was am aktuellen Auftritt besser werden soll.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Beschreibe den wiederkehrenden Ablauf, heutige Tools, manuelle Schritte und ob eher ein Custom KI-Skill oder eine Softwarelösung naheliegt.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Beschreibe bestehendes Projekt, gewünschte Änderung, Wartungsbedarf, Dringlichkeit und bekannte technische Rahmenbedingungen.",
-            },
-          ],
+          projectScopeLabel: "Leistungsmodell",
+          projectScopeOptions: {
+            [CONTACT_PROJECT_SCOPE.LandingPage]: "Landingpage",
+            [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Kompakte Website",
+            [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business Website",
+            [CONTACT_PROJECT_SCOPE.Unsure]: "Noch unsicher",
+          },
+          messageLabel: "Worum geht es? (optional)",
+          messagePlaceholder: "Zwei Sätze reichen.",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
           privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "Anfrage senden",
-          submittingLabel: "Anfrage wird gesendet …",
-          submitSuccess: "Danke. Deine Anfrage wurde erfolgreich gesendet.",
-          submitErrorValidation:
-            "Die Anfrage konnte nicht gesendet werden. Bitte prüfe deine Angaben.",
-          submitErrorRateLimited:
-            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
-          submitErrorDelivery:
-            "Die Anfrage konnte gerade nicht zugestellt werden. Nutze alternativ die E-Mail im Kontaktbereich.",
-          submitErrorGeneric:
-            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
-          validationSummaryPrefix: "Bitte korrigiere dieses Feld",
+          requiredHint: "* Pflichtfelder",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorInvalidWebsite:
-            "Bitte gib eine gültige Webseiten-URL ein, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
-          fieldErrorProjectDetailsRequired:
-            "Bitte gib eine kurze Projektbeschreibung ein.",
-          fieldErrorPagesRequired:
-            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          fieldErrorTooManyPages: "Bitte füge maximal 12 eigene Seiten hinzu.",
-          fieldErrorGoalRequired: "Bitte wähle ein Ziel für den Webauftritt.",
-          fieldErrorWorkflowRequired: "Bitte wähle die Art des Vorhabens.",
           fieldErrorConsentRequired:
             "Bitte bestätige die Datenschutzerklärung.",
-          requiredHint: "* Pflichtfelder",
-          closeLabel: "Formular schließen",
-        },
-        quickContactForm: {
-          title: "Kurze E-Mail für den nächsten Schritt",
-          subtitle: "Für schnellen Erstkontakt ohne komplettes Briefing.",
-          intro: "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst.",
-          metaLabel: "E-Mail",
-          copyActionLabel: "Adresse kopieren",
-          copiedActionLabel: "Adresse kopiert",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Nachricht",
-          messagePlaceholder:
-            "2-4 Sätze genügen: Worum geht es, was ist der Kontext, und was brauchst du als Nächstes?",
-          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "E-Mail senden",
-          submittingLabel: "Wird gesendet ...",
-          submitSuccess: "Deine Anfrage wurde gesendet.",
           submitErrorRateLimited:
             "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
-          submitErrorDelivery:
+          submitErrorGeneric:
+            "Das hat gerade nicht geklappt. Bitte versuche es später erneut.",
+          callSubmitLabel: "Weiter zur Terminauswahl",
+          callSubmittingLabel: "Terminauswahl wird geöffnet ...",
+          callSubmitSuccess:
+            "Die Terminauswahl öffnet sich mit deinen Angaben.",
+          emailQuestion: "Lieber schreiben statt sprechen?",
+          emailNote:
+            "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+          emailSubmitLabel: "Anfrage senden",
+          emailSubmittingLabel: "Wird gesendet ...",
+          emailSubmitSuccess: "Anfrage gesendet. Ich melde mich bei dir.",
+          emailSubmitErrorDelivery:
             "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuche es später erneut.",
-          submitErrorGeneric:
-            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es später erneut.",
-          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorRequired: "Dieses Feld ist erforderlich.",
-          fieldErrorConsentRequired:
-            "Bitte bestätige die Datenschutzerklärung.",
-          requiredHint: "* Pflichtfelder",
-        },
-        discoveryCallForm: {
-          title: "Kennenlerncall mit kurzer Vorbereitung",
-          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
-          intro:
-            "Trag kurz deine Kontaktdaten ein und gib optional dein Anliegen mit, damit der Termin fokussierter starten kann.",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Anliegen",
-          messagePlaceholder:
-            "Optional: Worum geht es grob, was soll im Termin geklärt werden?",
-          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "Termin wählen",
-          submittingLabel: "Terminübersicht wird geöffnet ...",
-          submitSuccess:
-            "Die Terminübersicht wird mit deinen Angaben geöffnet.",
-          submitErrorRateLimited:
-            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
-          submitErrorGeneric:
-            "Die Terminübersicht konnte gerade nicht geöffnet werden. Bitte versuche es später erneut.",
-          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorRequired: "Dieses Feld ist erforderlich.",
-          fieldErrorConsentRequired:
-            "Bitte bestätige die Datenschutzerklärung.",
-          requiredHint: "* Pflichtfelder",
         },
       },
       en: {
-        title: "Start with a project request",
-        contactDecisionIntro:
-          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and make the request easier to estimate.",
-        contactAlternativeLabel: "If you need a shorter path",
-        contactChannels: [
-          {
-            mode: "call",
-            kicker: "Optional",
-            label: "Discovery call",
-            description:
-              "Best for live alignment when you are still unsure which service path fits.",
-            value: "15-20 minute alignment call",
-            href: COMPANY_CALENDLY,
-            actionLabel: "Choose a time",
-            detailPoints: [
-              "15-20 minutes focused",
-              "Roughly map range & effort",
-              "Leave with a concrete next step",
-            ],
-          },
-          {
-            mode: "email",
-            kicker: "Short",
-            label: "Quick message",
-            description:
-              "Best for quick questions when a full project request feels too early.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            actionLabel: "Send email",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Copy address",
-            copiedLabel: "Address copied",
-            detailPoints: [
-              "Typically a reply within 24h",
-              "No scheduling needed",
-            ],
-            metaLabel: "Email",
-            metaValue: "Asynchronous quick contact",
-          },
-        ],
-        contactSecondaryCta: {
-          label: "Compare service models",
-          href: SECTION_HREFS.services,
+        title: "Free intro call",
+        intro:
+          "30 minutes, no strings attached. Afterwards you know what your project costs and how long it takes.",
+        portrait: {
+          imageAlt: "Portrait of Moritz Hecht",
+          points: ["30 minutes", "No commitment", "A clear next step"],
         },
         contactForm: {
-          title: "Get a project estimate",
-          subtitle: "For concrete requirements with a clear next decision.",
-          intro:
-            "Share the key facts. You get a clear view on scope, timing, and budget range.",
-          conditionalFieldHint:
-            "Choose one of the three offers. The next questions adapt to it.",
           nameLabel: "Name",
           emailLabel: "Email",
-          addPageLabel: "Add page",
-          phoneLabel: "Phone",
-          companyLabel: "Company",
-          roleLabel: "Role",
-          websiteLabel: "Current website",
-          offerLabel: "Relevant offer",
-          offerPlaceholder: "Choose an offer",
-          goalLabel: "Goal of the web presence",
-          goalOptions: [
-            {
-              key: CONTACT_GOAL_KEY.GenerateInquiries,
-              label: "Generate inquiries",
-            },
-            {
-              key: CONTACT_GOAL_KEY.IncreaseBookings,
-              label: "Book more calls",
-            },
-            { key: CONTACT_GOAL_KEY.SellProduct, label: "Sell a product" },
-            {
-              key: CONTACT_GOAL_KEY.GrowNewsletter,
-              label: "Build a contact list",
-            },
-            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Other goal" },
-          ],
-          pagesLabel: "Rough page idea",
-          pagesPlaceholder: "e.g. Team, FAQ, Careers",
-          pagesOptions: [
-            { key: CONTACT_PAGE_KEY.Home, label: "Home" },
-            { key: CONTACT_PAGE_KEY.Services, label: "Services" },
-            { key: CONTACT_PAGE_KEY.About, label: "About" },
-            { key: CONTACT_PAGE_KEY.Contact, label: "Contact" },
-            { key: CONTACT_PAGE_KEY.Careers, label: "Careers" },
-            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
-            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landing page" },
-          ],
-          pagesHint:
-            "If you are not sure yet, we will clarify the useful scope together.",
-          pagesCustomLabel: "Add another page",
-          pagesCustomPlaceholder: "e.g. Sponsors",
-          pagesCustomRemoveLabel: "Remove page",
-          pagesRequiredHint: "Please select at least one page or add your own.",
-          offerGuidance: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "For landing pages, new websites, relaunches, or focused improvements to existing sites.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "For recurring workflows: from a custom AI skill to a bespoke software solution.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "For existing websites, tools, or ongoing changes after launch.",
-            },
-          ],
-          workflowLabel: "Recurring process or workflow",
-          workflowOptions: [
-            {
-              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
-              label: "Digitize an existing process",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
-              label: "Simplify a manual process",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
-              label: "Connect data or systems",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
-              label: "Build an internal tool for a team",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
-              label: "Improve an existing tool or system",
-            },
-            { key: CONTACT_WORKFLOW_KEY.OtherProcess, label: "Other request" },
-          ],
-          stepNavigationLabel: "Request progress",
-          stepLabel: "Step",
-          stepOneTitle: "Contact",
-          stepTwoTitle: "Project details",
-          stepThreeTitle: "Timing",
-          previousStepLabel: "Back",
-          nextStepLabel: "Continue",
-          nextStepContactLabel: "Continue to project details",
-          nextStepProjectLabel: "Continue to timing & send",
-          budgetLabel: "Budget range",
-          budgetOptions: [
-            { key: CONTACT_BUDGET_KEY.Below1000, label: "Below €1,000" },
-            {
-              key: CONTACT_BUDGET_KEY.Between1000And2500,
-              label: "€1,000 - €2,500",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between2500And5000,
-              label: "€2,500 - €5,000",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between5000And10000,
-              label: "€5,000 - €10,000",
-            },
-            { key: CONTACT_BUDGET_KEY.Above10000, label: "€10,000+" },
-            { key: CONTACT_BUDGET_KEY.Open, label: "Not defined yet" },
-          ],
-          startLabel: "Preferred start",
-          startOptions: [
-            { key: CONTACT_START_KEY.Immediately, label: "Immediately" },
-            { key: CONTACT_START_KEY.WithinTwoWeeks, label: "Within 2 weeks" },
-            { key: CONTACT_START_KEY.WithinOneMonth, label: "Within 1 month" },
-            { key: CONTACT_START_KEY.LaterFlexible, label: "Later / flexible" },
-          ],
-          projectDetailsLabel: "Notes, requirements, and project description",
-          projectDetailsPlaceholder:
-            "Describe your goal, audience, timeline, key pages/features, and available assets.",
-          projectDetailsPlaceholders: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Describe the offer, audience, page goal, available content, and what should improve in the current presence.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Describe the recurring workflow, current tools, manual steps, and whether a custom AI skill or software solution seems more likely.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Describe the existing project, requested change, maintenance need, urgency, and known technical context.",
-            },
-          ],
+          projectScopeLabel: "Service",
+          projectScopeOptions: {
+            [CONTACT_PROJECT_SCOPE.LandingPage]: "Landing page",
+            [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Compact website",
+            [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business website",
+            [CONTACT_PROJECT_SCOPE.Unsure]: "Not sure yet",
+          },
+          messageLabel: "What's it about? (optional)",
+          messagePlaceholder: "Two sentences are enough.",
           consentLabel:
             "I agree to the processing of my information according to the",
           privacyLabel: "privacy policy.",
-          submitLabel: "Send request",
-          submittingLabel: "Sending request …",
-          submitSuccess: "Thanks. Your request has been sent successfully.",
-          submitErrorValidation:
-            "The request could not be sent. Please review your information.",
-          submitErrorRateLimited:
-            "Too many requests in a short time. Please try again in a moment.",
-          submitErrorDelivery:
-            "The request could not be delivered right now. Please use the email option in the contact section.",
-          submitErrorGeneric:
-            "The request could not be sent right now. Please try again.",
-          validationSummaryPrefix: "Please fix this field",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorInvalidWebsite:
-            "Please enter a valid website URL, for example https://www.website.com. www.website.com is invalid without the protocol.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorProjectDetailsRequired:
-            "Please add a short project description.",
-          fieldErrorPagesRequired:
-            "Please select at least one page or add your own.",
-          fieldErrorTooManyPages: "Please add no more than 12 custom pages.",
-          fieldErrorGoalRequired: "Please select a goal for the web presence.",
-          fieldErrorWorkflowRequired: "Please select the type of request.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
           requiredHint: "* Required fields",
-          closeLabel: "Close form",
-        },
-        quickContactForm: {
-          title: "Short email for the next step",
-          subtitle: "Best for quick first contact without a full brief.",
-          intro:
-            "A few lines are enough: goal, context, and what you need next.",
-          metaLabel: "Email",
-          copyActionLabel: "Copy address",
-          copiedActionLabel: "Address copied",
-          nameLabel: "Name",
-          emailLabel: "Email",
-          messageLabel: "Message",
-          messagePlaceholder:
-            "2-4 lines are enough: what this is about, the context, and what you need next.",
-          consentLabel:
-            "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
-          submitLabel: "Send email",
-          submittingLabel: "Sending ...",
-          submitSuccess: "Your inquiry has been sent.",
+          fieldErrorInvalidEmail: "Please enter a valid email address.",
+          fieldErrorRequired: "This field is required.",
+          fieldErrorConsentRequired: "Please confirm the privacy policy.",
           submitErrorRateLimited:
             "Too many requests in a short time. Please try again in a moment.",
-          submitErrorDelivery:
+          submitErrorGeneric:
+            "That did not work just now. Please try again later.",
+          callSubmitLabel: "Continue to booking",
+          callSubmittingLabel: "Opening the calendar ...",
+          callSubmitSuccess: "The calendar is opening with your details.",
+          emailQuestion: "Rather write than talk?",
+          emailNote:
+            "Your filled-in form comes to me as an email. I usually reply within 24 hours.",
+          emailSubmitLabel: "Send inquiry",
+          emailSubmittingLabel: "Sending ...",
+          emailSubmitSuccess: "Inquiry sent. I will get back to you.",
+          emailSubmitErrorDelivery:
             "The message could not be delivered right now. Please try again later.",
-          submitErrorGeneric:
-            "The inquiry could not be sent right now. Please try again later.",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
-          requiredHint: "* Required fields",
-        },
-        discoveryCallForm: {
-          title: "Discovery call with a short prep note",
-          subtitle:
-            "Best for live alignment with a bit of context before the call.",
-          intro:
-            "Add your contact details and, if useful, a short note so the call can start with clearer context.",
-          nameLabel: "Name",
-          emailLabel: "Email",
-          messageLabel: "Topic",
-          messagePlaceholder:
-            "Optional: what is this roughly about and what should the call clarify?",
-          consentLabel:
-            "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
-          submitLabel: "Choose a time",
-          submittingLabel: "Opening the schedule ...",
-          submitSuccess: "The schedule is opening with your details.",
-          submitErrorRateLimited:
-            "Too many requests in a short time. Please try again in a moment.",
-          submitErrorGeneric:
-            "The schedule could not be opened right now. Please try again later.",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
-          requiredHint: "* Required fields",
         },
       },
     },
@@ -1326,11 +732,12 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         description:
-          "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+          "Verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten zur Anfrage führen.",
         navColumn: { title: "Menü", links: [] },
       },
       en: {
-        description: "Quick access to core pages and contact options.",
+        description:
+          "Conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
         navColumn: { title: "Menu", links: [] },
       },
     },

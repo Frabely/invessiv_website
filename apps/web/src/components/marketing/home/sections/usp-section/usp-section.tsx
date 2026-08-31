@@ -8,7 +8,7 @@ import { useRef } from "react";
 import { SECTION_HREFS } from "@/config/navigation/home";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { UspChatAuthor } from "@/i18n/dictionaries/marketing/home-ui";
-import backdropPhoto from "../../../../../../assets/home/back-mountain.jpeg";
+import backdropPhoto from "@/assets/home/back-mountain.jpeg";
 import { ChatMessage } from "./chat-message/chat-message";
 import styles from "./usp-section.module.css";
 

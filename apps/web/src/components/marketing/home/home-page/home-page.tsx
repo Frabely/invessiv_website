@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 
-import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { COMPANY_CALENDLY } from "@/config/company";
 import { ContactSection } from "@/components/marketing/home/sections/contact-section/contact-section";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { HeroSection } from "@/components/marketing/home/sections/hero-section/hero-section";
@@ -192,50 +192,21 @@ export function HomePage() {
             }
 
             if (section.id === CONTACT_SECTION_ID) {
-              const contactFormOfferKeys = [
-                CONTACT_OFFER_KEY.Landing,
-                CONTACT_OFFER_KEY.Maintenance,
-              ] as const;
-              const contactFormOffers = contactFormOfferKeys.flatMap(
-                (offerKey) => {
-                  const card = servicesSection.serviceCards.find(
-                    (serviceCard) => serviceCard.key === offerKey,
-                  );
-
-                  return card
-                    ? [
-                        {
-                          key: card.key,
-                          title: card.title,
-                        },
-                      ]
-                    : [];
-                },
-              );
               const privacyHref = createLocalePathname(
                 SITE_ROUTES.PRIVACY,
                 locale,
               );
 
-              if (contactFormOffers.length !== contactFormOfferKeys.length) {
-                throw new Error(
-                  "Expected contact form offer cards to be available.",
-                );
-              }
-
               return (
                 <ContactSection
-                  contactAlternativeLabel={section.contactAlternativeLabel}
-                  contactChannels={section.contactChannels}
-                  contactDecisionIntro={section.contactDecisionIntro}
+                  calendlyHref={COMPANY_CALENDLY}
                   contactForm={section.contactForm}
-                  contactFormOffers={contactFormOffers}
-                  contactSecondaryCta={section.contactSecondaryCta}
-                  discoveryCallForm={section.discoveryCallForm}
                   id={section.id}
+                  intro={section.intro}
                   key={section.id}
+                  locale={locale}
+                  portrait={section.portrait}
                   privacyHref={privacyHref}
-                  quickContactForm={section.quickContactForm}
                   title={section.title}
                 />
               );

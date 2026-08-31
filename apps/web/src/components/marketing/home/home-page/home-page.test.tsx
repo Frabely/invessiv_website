@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { HomePage } from "./home-page";
@@ -47,19 +47,33 @@ afterEach(() => {
 });
 
 describe("HomePage", () => {
-  it("keeps the project request select focused on web design and support", () => {
+  it("makes the free intro call the primary contact form", () => {
     render(<HomePage />);
 
-    const offerSelect = screen.getByRole("combobox", {
-      name: /Passendes Angebot/,
-    });
-
-    expect(screen.getByRole("option", { name: "Landingpage" })).toBeTruthy();
     expect(
-      screen.getByRole("option", { name: "Wartung & Support" }),
+      screen.getByRole("heading", {
+        level: 2,
+        name: "Kostenloses Erstgespräch",
+      }),
     ).toBeTruthy();
-    expect(offerSelect.textContent).not.toContain("Prozessoptimierung");
-    expect(offerSelect.querySelectorAll("option")).toHaveLength(3);
+    expect(
+      screen.getByRole("button", { name: /Weiter zur Terminauswahl/ }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("combobox", { name: /Passendes Angebot/ }),
+    ).toBeNull();
+  });
+
+  it("offers the three service models plus an unsure fallback", () => {
+    render(<HomePage />);
+
+    const scopeGroup = screen.getByRole("group", { name: /Leistungsmodell/ });
+    const scopeOptions = within(scopeGroup).getAllByRole("radio");
+
+    expect(scopeOptions).toHaveLength(4);
+    expect(
+      within(scopeGroup).getByRole("radio", { name: "Noch unsicher" }),
+    ).toBeChecked();
   });
 
   it("renders the hero and all enabled content sections in their configured order", () => {
