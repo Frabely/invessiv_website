@@ -187,7 +187,6 @@
 
 .pathPointLeader {
   transition: opacity 140ms ease;
-  will-change: transform, opacity;
 }
 
 .pathPointLeader[data-over-card="true"] {

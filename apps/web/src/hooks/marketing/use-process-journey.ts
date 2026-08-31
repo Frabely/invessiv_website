@@ -60,8 +60,8 @@ export function useProcessJourney({
     }[] = [];
     let segmentWeights: number[] = [];
     let lastActiveIndex: number | null = null;
-    let lastProgress = 0;
-    let lastViewportWidth = window.innerWidth;
+    let lastMobileProgress = 0;
+    let mobileViewportWidth = window.innerWidth;
     let journeyViewportHeight = window.innerHeight;
     let mobileJourneyStart = 0;
     let mobileJourneyEnd = 0;
@@ -78,6 +78,10 @@ export function useProcessJourney({
       layout.style.setProperty(xName, `${x.toFixed(2)}px`);
       layout.style.setProperty(yName, `${y.toFixed(2)}px`);
     };
+
+    const matchesMobileViewport = () =>
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 900px)").matches;
 
     const updateGeometry = () => {
       const layoutRect = layout.getBoundingClientRect();
@@ -118,10 +122,7 @@ export function useProcessJourney({
         bottom: metric.bottom,
       }));
 
-      const hasMatchMedia = typeof window.matchMedia === "function";
-      const isMobileViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 900px)").matches
-        : false;
+      const isMobileViewport = matchesMobileViewport();
 
       if (mask && !isMobileViewport) {
         // Punch the card areas out of the path so it never shows through translucent cards.
@@ -346,12 +347,11 @@ export function useProcessJourney({
         totalLength = measuredLength;
         if (isMobileViewport) {
           path.style.strokeDasharray = `${totalLength}`;
-          path.style.strokeDashoffset = `${totalLength - totalLength * lastProgress}`;
+          path.style.strokeDashoffset = `${totalLength - totalLength * lastMobileProgress}`;
           leader.style.visibility = "hidden";
         } else {
           path.style.strokeDasharray = `${totalLength}`;
-          // Keep the currently drawn portion when a real layout change occurs.
-          path.style.strokeDashoffset = `${totalLength - mapProgressToLength(lastProgress)}`;
+          path.style.strokeDashoffset = `${totalLength}`;
           leader.style.visibility = "visible";
         }
         path.style.visibility = "visible";
@@ -393,6 +393,18 @@ export function useProcessJourney({
       return totalLength * progress;
     };
 
+    const getActiveCardIndex = (drawnLength: number) => {
+      let activeIndex = 0;
+      if (drawnLength > 0.5) {
+        cardLengths.forEach((length, index) => {
+          if (drawnLength + 1 >= length) {
+            activeIndex = index;
+          }
+        });
+      }
+      return activeIndex;
+    };
+
     const applyCardStates = (activeIndex: number) => {
       if (lastActiveIndex === activeIndex) {
         return;
@@ -414,9 +426,7 @@ export function useProcessJourney({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const hasMatchMedia = typeof window.matchMedia === "function";
-      const isMobileViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 900px)").matches
-        : false;
+      const isMobileViewport = matchesMobileViewport();
       if (isMobileViewport) {
         // Mobile keeps the lightweight line draw and card state changes, but
         // omits the continuously moving leader dot.
@@ -429,19 +439,11 @@ export function useProcessJourney({
                 Math.min(1, (cursorY - mobileJourneyStart) / travelRange),
               )
             : 0;
-        lastProgress = progress;
+        lastMobileProgress = progress;
         if (totalLength > 0) {
           const drawnLength = totalLength * progress;
           path.style.strokeDashoffset = `${totalLength - drawnLength}`;
-          let activeIndex = 0;
-          if (drawnLength > 0.5) {
-            cardLengths.forEach((length, index) => {
-              if (drawnLength + 1 >= length) {
-                activeIndex = index;
-              }
-            });
-          }
-          applyCardStates(activeIndex);
+          applyCardStates(getActiveCardIndex(drawnLength));
           const isCtaVisible = progress >= ctaRevealProgress;
           leader.dataset.finished = "false";
           leader.dataset.overCard = "false";
@@ -452,12 +454,7 @@ export function useProcessJourney({
         }
         return;
       }
-      // The browser chrome changes window.innerHeight during a mobile scroll.
-      // Keep one stable reference height for this journey so its progress never
-      // reverses merely because the address bar expands or collapses.
-      const viewportHeight = isMobileViewport
-        ? journeyViewportHeight
-        : window.innerHeight;
+      const viewportHeight = window.innerHeight;
       const prefersReducedMotion = hasMatchMedia
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
@@ -470,43 +467,32 @@ export function useProcessJourney({
       const progress = prefersReducedMotion
         ? 1
         : Math.max(0, Math.min(1, rawProgress));
-      lastProgress = progress;
       if (totalLength > 0) {
         const drawnLength = mapProgressToLength(progress);
-        if (!isMobileViewport) {
-          path.style.strokeDashoffset = `${totalLength - drawnLength}`;
-          const point = path.getPointAtLength(
-            Math.max(0, Math.min(totalLength, drawnLength)),
-          );
-          leader.style.setProperty(
-            "--process-leader-x",
-            `${point.x.toFixed(2)}px`,
-          );
-          leader.style.setProperty(
-            "--process-leader-y",
-            `${point.y.toFixed(2)}px`,
-          );
-          // Hide the leader dot while it travels beneath a card, matching the masked path.
-          const overCardInset = 6;
-          const isOverCard = cardRects.some(
-            (rect) =>
-              point.x > rect.left + overCardInset &&
-              point.x < rect.right - overCardInset &&
-              point.y > rect.top + overCardInset &&
-              point.y < rect.bottom - overCardInset,
-          );
-          leader.dataset.overCard = isOverCard ? "true" : "false";
-        }
+        path.style.strokeDashoffset = `${totalLength - drawnLength}`;
+        const point = path.getPointAtLength(
+          Math.max(0, Math.min(totalLength, drawnLength)),
+        );
+        layout.style.setProperty(
+          "--process-leader-x",
+          `${point.x.toFixed(2)}px`,
+        );
+        layout.style.setProperty(
+          "--process-leader-y",
+          `${point.y.toFixed(2)}px`,
+        );
+        // Hide the leader dot while it travels beneath a card, matching the masked path.
+        const overCardInset = 6;
+        const isOverCard = cardRects.some(
+          (rect) =>
+            point.x > rect.left + overCardInset &&
+            point.x < rect.right - overCardInset &&
+            point.y > rect.top + overCardInset &&
+            point.y < rect.bottom - overCardInset,
+        );
+        leader.dataset.overCard = isOverCard ? "true" : "false";
         // The first step stays highlighted from the start, before the path is drawn.
-        let activeIndex = 0;
-        if (drawnLength > 0.5) {
-          cardLengths.forEach((length, index) => {
-            if (drawnLength + 1 >= length) {
-              activeIndex = index;
-            }
-          });
-        }
-        applyCardStates(activeIndex);
+        applyCardStates(getActiveCardIndex(drawnLength));
         const isCtaVisible =
           prefersReducedMotion || progress >= ctaRevealProgress;
         const isFinished =
@@ -538,15 +524,17 @@ export function useProcessJourney({
     };
 
     const handleResize = () => {
-      // A pure height change is normally the mobile browser chrome, not a
-      // layout change. Ignoring it keeps scroll progress monotonic and avoids
-      // rebuilding the SVG mask while the user scrolls.
-      if (window.innerWidth === lastViewportWidth) {
+      const isMobileViewport = matchesMobileViewport();
+      // The address bar changes only the mobile viewport height. Desktop keeps
+      // the original resize behavior; Mobile recalculates only for a width change.
+      if (isMobileViewport && window.innerWidth === mobileViewportWidth) {
         return;
       }
 
-      lastViewportWidth = window.innerWidth;
-      journeyViewportHeight = window.innerHeight;
+      mobileViewportWidth = window.innerWidth;
+      if (isMobileViewport) {
+        journeyViewportHeight = window.innerHeight;
+      }
       updateGeometry();
       scheduleJourneyProgressUpdate();
     };
@@ -561,7 +549,9 @@ export function useProcessJourney({
           }
           isJourneyActive = entry.isIntersecting;
           if (isJourneyActive) {
-            journeyViewportHeight = window.innerHeight;
+            if (matchesMobileViewport()) {
+              journeyViewportHeight = window.innerHeight;
+            }
             updateGeometry();
             scheduleJourneyProgressUpdate();
           }
