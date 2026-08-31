@@ -116,7 +116,12 @@ export function useProcessJourney({
         bottom: metric.bottom,
       }));
 
-      if (mask) {
+      const hasMatchMedia = typeof window.matchMedia === "function";
+      const isMobileViewport = hasMatchMedia
+        ? window.matchMedia("(max-width: 900px)").matches
+        : false;
+
+      if (mask && !isMobileViewport) {
         // Punch the card areas out of the path so it never shows through translucent cards.
         while (mask.firstChild) {
           mask.removeChild(mask.firstChild);
@@ -156,10 +161,14 @@ export function useProcessJourney({
         });
       }
 
-      const hasMatchMedia = typeof window.matchMedia === "function";
-      const isMobileViewport = hasMatchMedia
-        ? window.matchMedia("(max-width: 900px)").matches
-        : false;
+      if (isMobileViewport) {
+        // The mobile path runs in the free left gutter, never beneath a card.
+        // Avoiding the SVG mask keeps the animated stroke on a cheap paint path.
+        path.removeAttribute("mask");
+      } else {
+        path.setAttribute("mask", "url(#processJourneyMask)");
+      }
+
       const edgePadding = 12;
       const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
       const ctaGap = isMobileViewport ? 28 : 40;
@@ -425,11 +434,11 @@ export function useProcessJourney({
         const point = path.getPointAtLength(
           Math.max(0, Math.min(totalLength, drawnLength)),
         );
-        layout.style.setProperty(
+        leader.style.setProperty(
           "--process-leader-x",
           `${point.x.toFixed(2)}px`,
         );
-        layout.style.setProperty(
+        leader.style.setProperty(
           "--process-leader-y",
           `${point.y.toFixed(2)}px`,
         );
