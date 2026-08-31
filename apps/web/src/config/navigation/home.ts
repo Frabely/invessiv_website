@@ -64,7 +64,7 @@ export const PRIMARY_NAVIGATION_SECTION_IDS = [
   "problem",
   "services",
   "process",
-  "faq",
+  "references",
 ] as const;
 
 export const PRIMARY_NAVIGATION: NavigationItem[] =

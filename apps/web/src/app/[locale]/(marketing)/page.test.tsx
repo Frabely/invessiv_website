@@ -35,7 +35,7 @@ describe("LocalePage metadata", () => {
     expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/de");
     expect(metadata.openGraph?.images).toEqual([
       {
-        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Anfragen bringen.",
+        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
         height: 630,
         url: "https://www.invessiv.com/og/home-de.png",
         width: 1200,
@@ -43,7 +43,7 @@ describe("LocalePage metadata", () => {
     ]);
     expect(metadata.twitter?.images).toEqual([
       {
-        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Anfragen bringen.",
+        alt: "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
         url: "https://www.invessiv.com/og/home-de.png",
       },
     ]);
@@ -57,7 +57,7 @@ describe("LocalePage metadata", () => {
     expect(metadata.openGraph?.url).toBe("https://www.invessiv.com/en");
     expect(metadata.openGraph?.images).toEqual([
       {
-        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring in inquiries.",
+        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring you inquiries.",
         height: 630,
         url: "https://www.invessiv.com/og/home-en.png",
         width: 1200,
@@ -65,7 +65,7 @@ describe("LocalePage metadata", () => {
     ]);
     expect(metadata.twitter?.images).toEqual([
       {
-        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring in inquiries.",
+        alt: "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring you inquiries.",
         url: "https://www.invessiv.com/og/home-en.png",
       },
     ]);

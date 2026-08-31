@@ -22,22 +22,22 @@
       },
       {
         "iconKey": "mobile",
-        "label": "Schlechte Darstellung auf dem Smartphone",
+        "label": "Auf dem Handy kaum nutzbar",
         "note": "Auf dem Handy muss man zoomen und schieben."
       },
       {
         "iconKey": "unclear",
-        "label": "Besucher verstehen das Angebot nicht sofort",
+        "label": "Keiner versteht dein Angebot",
         "note": "Was du genau anbietest, muss man sich zusammensuchen."
       },
       {
         "iconKey": "trust",
-        "label": "Fehlendes Vertrauen bei potenziellen Kunden",
+        "label": "Du erzeugst kein Vertrauen",
         "note": "Nichts auf der Seite belegt, dass du lieferst."
       },
       {
         "iconKey": "inquiries",
-        "label": "Zu wenig Anfragen über die Webseite",
+        "label": "Weniger Anfragen über die Webseite",
         "note": "Besucher kommen, Anfragen bleiben aus."
       },
       {

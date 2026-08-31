@@ -320,7 +320,7 @@ describe("home dictionary", () => {
 
     expect(deHero).toEqual({
       id: "hero",
-      title: "Websites, die Vertrauen schaffen und Anfragen bringen.",
+      title: "Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
       description:
         "Ich bin Moritz Hecht und entwickle verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten gezielt zur Anfrage führen.",
     });
@@ -338,7 +338,7 @@ describe("home dictionary", () => {
 
     expect(enHero).toEqual({
       id: "hero",
-      title: "Websites that build trust and bring in inquiries.",
+      title: "Websites that build trust and bring you inquiries.",
       description:
         "I’m Moritz Hecht, and I create conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
     });

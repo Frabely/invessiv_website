@@ -48,7 +48,7 @@ describe("HeroSection", () => {
         primaryCtaHref="#contact"
         secondaryCtaAnalyticsTarget="services"
         secondaryCtaHref="#services"
-        title="Websites, die Vertrauen schaffen und Anfragen bringen."
+        title="Websites, die Vertrauen schaffen und Dir Anfragen bringen."
         trackingLocation="hero"
         visualSlot={
           <span
@@ -61,7 +61,7 @@ describe("HeroSection", () => {
 
     const heroHeading = screen.getByRole("heading", { level: 1 });
     expect(heroHeading.textContent).toBe(
-      "Websites, die Vertrauen schaffen und Anfragen bringen.",
+      "Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
     );
     expect(
       screen

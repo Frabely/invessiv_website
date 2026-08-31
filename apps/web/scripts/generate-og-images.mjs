@@ -189,7 +189,9 @@ async function renderImage(page, { content, fileName, markup }) {
     { css: sharedCss, html: markup(content) },
   );
   await page.evaluate(() => document.fonts.ready);
+  await page.evaluate(() => window.scrollTo({ left: 0, top: 0 }));
   await page.screenshot({
+    clip: { height: 630, width: 1200, x: 0, y: 0 },
     path: path.join(outputDirectory, fileName),
     type: "png",
   });

@@ -22,22 +22,22 @@
       },
       {
         "iconKey": "mobile",
-        "label": "Falls apart on a phone",
+        "label": "Hard to use on a phone",
         "note": "Visitors have to pinch and scroll to read anything."
       },
       {
         "iconKey": "unclear",
-        "label": "Visitors don't get the offer right away",
+        "label": "No one understands your offer",
         "note": "What you actually do takes effort to piece together."
       },
       {
         "iconKey": "trust",
-        "label": "No trust with potential customers",
+        "label": "You don't build trust",
         "note": "Nothing on the page proves you deliver."
       },
       {
         "iconKey": "inquiries",
-        "label": "Too few inquiries through the website",
+        "label": "Fewer inquiries through the website",
         "note": "Visitors arrive, inquiries don't."
       },
       {

@@ -5,6 +5,10 @@
   overflow: visible;
 }
 
+.section.section {
+  margin-top: calc(var(--section-space) + clamp(5rem, 7vw, 8rem));
+}
+
 @media (max-width: 759px) {
   .section {
     gap: 1.35rem;

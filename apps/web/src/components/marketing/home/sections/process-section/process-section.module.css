@@ -1,7 +1,10 @@
 .section {
   display: grid;
   gap: clamp(1.1rem, 2vw, 1.6rem);
-  margin-top: 0;
+}
+
+.section.section {
+  margin-top: calc(var(--section-space) + clamp(5rem, 7vw, 8rem));
 }
 
 .header {
