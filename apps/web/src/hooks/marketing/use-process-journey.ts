@@ -415,6 +415,21 @@ export function useProcessJourney({
       const isMobileViewport = hasMatchMedia
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
+      if (isMobileViewport) {
+        // Mobile intentionally uses the static timeline variant: no deferred
+        // CTA and no scroll-driven card animation.
+        lastActiveIndex = null;
+        cards.forEach((card) => {
+          delete card.dataset.journeyState;
+        });
+        leader.dataset.finished = "false";
+        leader.dataset.overCard = "false";
+        if (endCta) {
+          endCta.dataset.journeyVisible = "true";
+          endCta.dataset.journeyActive = "false";
+        }
+        return;
+      }
       // The browser chrome changes window.innerHeight during a mobile scroll.
       // Keep one stable reference height for this journey so its progress never
       // reverses merely because the address bar expands or collapses.
@@ -497,6 +512,12 @@ export function useProcessJourney({
     };
 
     const handleScroll = () => {
+      if (
+        typeof window.matchMedia === "function" &&
+        window.matchMedia("(max-width: 900px)").matches
+      ) {
+        return;
+      }
       scheduleJourneyProgressUpdate();
     };
 
