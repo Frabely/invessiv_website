@@ -1,0 +1,65 @@
+/* The photo is flush with the card edge, so the card itself carries no padding
+   and clips the image to its own radius. Inner blocks bring their own inset. */
+.card {
+  --portrait-card-inset: clamp(0.9rem, 1.4vw, 1.15rem);
+
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-areas: "frame identity";
+  align-items: stretch;
+  align-content: start;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
+}
+
+:global([data-theme="light"]) .card {
+  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+}
+
+.frame {
+  grid-area: frame;
+  overflow: hidden;
+  min-height: 100%;
+  background: color-mix(in srgb, var(--color-surface-2) 70%, transparent);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+
+.identity {
+  grid-area: identity;
+  align-self: center;
+  min-width: 0;
+  padding: var(--portrait-card-inset);
+}
+
+@media (min-width: 900px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "frame"
+      "identity";
+  }
+
+  .frame {
+    min-height: 0;
+    aspect-ratio: 238 / 318;
+  }
+
+  .identity {
+    align-self: start;
+  }
+}

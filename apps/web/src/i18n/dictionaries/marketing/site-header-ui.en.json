@@ -2,9 +2,9 @@
   "actionsAriaLabel": "Language and primary action",
   "brandLabel": "Invessiv",
   "brandLogoAlt": "Invessiv logo",
-  "ctaLabel": "Get an offer estimate",
+  "ctaLabel": "Request a free consultation",
   "labelsByHref": {
-    "#lead-bridge": "Start point",
+    "#problem": "Problems",
     "#services": "Service models",
     "#process": "Process",
     "#faq": "Q&A",

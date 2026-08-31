@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
 import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
 import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import {
@@ -9,10 +10,12 @@ import {
   COMPANY_SOCIAL_LINKEDIN,
 } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getDictionary } from "@/i18n/get-dictionary";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type ImprintPageProps = {
@@ -32,21 +35,14 @@ export async function generateMetadata({
   }
 
   const dict = await getDictionary(locale);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}/imprint`,
-    ]),
-  );
-
   return {
     ...createPageMetadata({
       title: dict.imprint.meta.title,
       description: dict.imprint.meta.description,
-      canonicalPath: `/${locale}/imprint`,
-      languages: createLocaleAlternates(languages),
+      canonicalPath: createLocalePathname(SITE_ROUTES.IMPRINT, locale),
+      languages: createRouteAlternates(SITE_ROUTES.IMPRINT),
       openGraphTitle: dict.imprint.meta.openGraphTitle,
-      openGraphLocale: dict.imprint.meta.openGraphLocale,
+      openGraphLocale: OPEN_GRAPH_LOCALE[locale],
     }),
     robots: { index: false, follow: true },
   };

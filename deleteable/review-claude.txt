@@ -1,0 +1,224 @@
+REVIEW: feat/rebrand-home gegen master
+Erstellt von Claude, 2026-08-31
+Umfang: 344 Dateien, 30 Commits, +13.940 / -12.826 Zeilen
+Zwei Durchgänge: (1) Struktur & Konventionen, (2) Korrektheit, A11y, SEO
+
+================================================================
+STATUS DER QUALITÄTS-GATES
+================================================================
+pnpm -r typecheck ................ grün
+pnpm -r lint ..................... 0 Fehler, 1 Warnung (vorbestehend,
+                                   sample-card.test.tsx nutzt <img>)
+pnpm -r test ..................... 1323 Tests grün
+pnpm --filter web build .......... grün
+pnpm --filter workspace build .... grün
+Alle 11 Routen (DE/EN) ........... HTTP 200
+
+================================================================
+BEFUNDE NACH SCHWERE
+================================================================
+
+--------------------------------------------------------------
+KRITISCH
+--------------------------------------------------------------
+
+[K1] Google-Ads-Conversion feuert nicht mehr
+     Datei: apps/web/src/lib/analytics/google-ads-conversion/conversion-guard.ts
+            apps/web/src/hooks/analytics/use-landing-conversion.ts
+     markLandingConversionPending() wird aus KEINEM Produktionscode mehr
+     aufgerufen — nur noch aus Tests. useLandingConversion() liest das Guard-
+     Flag und steigt bei leerem Wert sofort aus:
+         const transactionId = consumeLandingConversionGuard();
+         if (!transactionId) return;      // <- immer der Fall
+     Damit feuert auf der Success-Seite nie eine Conversion.
+
+     Zusätzlich architektonisch überholt: Laut deleteable/contact-form-
+     rollout-todos.md soll der Redirect zur Success-Seite künftig aus
+     CALENDLY kommen. Das Formular öffnet Calendly per window.open in einem
+     NEUEN TAB; sessionStorage ist tab-gebunden. Das Guard-Muster kann in
+     diesem Ablauf grundsätzlich nicht mehr funktionieren.
+
+     STATUS: Vom Nutzer bewusst zurückgestellt (aktuell keine Ads geschaltet).
+     Vor dem nächsten Ads-Start zwingend neu lösen — z. B. Conversion direkt
+     beim Submit feuern statt über die Success-Seite.
+
+--------------------------------------------------------------
+HOCH
+--------------------------------------------------------------
+
+[H1] Öffentlicher project_request-Endpoint ohne jede UI
+     Datei: apps/web/src/app/api/public/contact/route.ts:55-56
+     Die Route nimmt weiterhin kind="project_request" an und schreibt über
+     submit-project-request.command-handler.ts nach lead_project_requests.
+     Es gibt aber keinen einzigen UI-Aufrufer mehr (submitProjectRequest wird
+     von keiner .tsx importiert).
+     Ein offener, ungenutzter Schreibpfad ins Produktivsystem.
+     Laut Plan "Teil 2" bewusst verschoben — sollte aber nicht dauerhaft so
+     bleiben, da er Daten annimmt, die niemand mehr liest.
+
+[H2] Migration 0020 wurde nachträglich verändert
+     Datei: packages/db/migrations/0020_add_discovery_call_project_scope.sql
+     Die Datei ist gegenüber master GEÄNDERT (vorher project_scope NOT NULL,
+     jetzt nullable + CHECK). Migrationsrunner führen bereits gelaufene
+     Migrationen nicht erneut aus.
+     RISIKO: Wurde 0020 in einer Dev- oder Staging-DB schon in der alten
+     Fassung ausgeführt, bleibt die Spalte dort NOT NULL. Jeder Submit ohne
+     Leistungsmodell schlägt dann fehl — obwohl das Feld optional ist.
+     PRÜFEN vor Rollout:
+         SELECT is_nullable FROM information_schema.columns
+         WHERE table_name='lead_call_contacts' AND column_name='project_scope';
+     Muss 'YES' liefern. Sonst manuell:
+         ALTER TABLE lead_call_contacts ALTER COLUMN project_scope DROP NOT NULL;
+
+--------------------------------------------------------------
+MITTEL
+--------------------------------------------------------------
+
+[M1] Rate-Limit ist prozesslokal und damit auf Vercel weitgehend wirkungslos
+     Datei: apps/web/src/server/services/anti-abuse/contact-rate-limit-service.ts
+     Der Zähler liegt in einer Map im Modul-Scope (5 Requests / 10 Min).
+     In einer serverless Umgebung hat jede Instanz ihre eigene Map — das
+     effektive Limit ist 5 × Anzahl gleichzeitiger Instanzen, und nach jedem
+     Cold Start ist der Zähler leer.
+     Der Honeypot fängt einfache Bots, ein gezielter Absender läuft durch.
+     Für echte Begrenzung brauchst du geteilten Zustand (Upstash/Redis, Vercel
+     KV) oder Edge-Middleware-Ratelimiting.
+
+[M2] Temp-Ordner liegen im Git und wachsen mit diesem Branch
+     27 getrackte Dateien in Aufräum-Ordnern, davon 1,6 MB Bilder:
+         apps/web/deletable/   1,6 MB (u. a. 4 WhatsApp-Screenshots)
+         apps/web/plans/       144 KB
+         plans/                 85 KB
+         deleteable/           (neu, ungetrackt — inkl. dieser Datei)
+     Keiner davon steht in .gitignore. Dieser Branch fügt 13 Dateien /
+     736 Zeilen hinzu.
+     AGENTS.md: "Temporäre Artefakte (Mockups, Screenshots, Reports, Exporte,
+     Pläne) nur committen, wenn sie fachlich gebraucht werden."
+     Nebenbei: zwei Schreibweisen nebeneinander — "deletable" und "deleteable".
+
+[M3] Englische AGB unvollständig  (VORBESTEHEND, nicht aus diesem Branch)
+     Datei: apps/web/src/i18n/dictionaries/legal/terms/en.json
+     Drei Abschnitte existieren nur auf Deutsch:
+         terms.sections.customerContentRights
+         terms.sections.legalTextsReview
+         terms.sections.ongoingSupportAvailability
+     Schon in master so. Bei einem Rechtstext relevant, sobald /en/terms
+     öffentlich erreichbar ist (die Route liefert HTTP 200).
+     Alle übrigen Dictionaries sind DE/EN paritätisch.
+
+--------------------------------------------------------------
+NIEDRIG
+--------------------------------------------------------------
+
+[N1] Kein direkter Test für die geteilte Kontaktkanal-Komponente
+     apps/web/src/components/shared/contact-channel-links/ (kein .test.tsx)
+     Ebenso ohne eigenen Test: contact-identity/, contact-portrait-card/,
+     project-scope-icon/.
+     Sie sind indirekt über contact-section.test.tsx, footer-section.test.tsx
+     und landing-page.test.tsx abgedeckt. contact-channel-links trägt aber
+     echte Logik (locale-abhängige Telefonnummer, extern vs. intern,
+     Analytics-Attribute) und erscheint auf JEDER Seite — ein eigener Test
+     wäre angemessen.
+     AGENTS.md verlangt mind. einen jsdom-Test bei kritischer Interaktion.
+
+[N2] Title-Konvention auf der Landingpage abweichend
+     "Landingpage erstellen lassen | in 5–10 Tagen | Invessiv"  (drei Teile)
+     AGENTS.md: Subseiten "Seitenthema | Brand".
+     Alle anderen Routen halten die Konvention ein. Bewusst als SEO-Titel
+     gewählt? Dann in AGENTS.md als Ausnahme dokumentieren.
+
+[N3] Exportierte Typen aus Komponenten-Dateien
+     apps/web/src/components/legal/breadcrumbs/breadcrumbs.tsx:4
+         export type BreadcrumbsItem
+     apps/web/src/components/marketing/home/sections/footer-section/
+         footer-section.tsx:14  export type FooterSectionProps
+     apps/web/src/components/shared/form/form-field/form-field.tsx:65
+         export type FormFieldProps
+     AGENTS.md: "Aus einer Komponenten-Datei wird kein Typ exportiert" —
+     Geteiltes gehört nach common/contracts.
+     Alle drei sind vorbestehend, nicht neu in diesem Branch.
+
+[N4] Statisches Inline-Styling
+     apps/web/src/components/marketing/linkedin-post/workflow-showcase-section/
+         workflow-showcase-section.tsx:89   style={{ objectFit: "cover" }}
+     Statischer Wert, gehört ins CSS-Modul. Die übrigen Inline-Styles im
+     Repo tragen dynamische Werte (zIndex, CSS-Custom-Property) und sind
+     damit legitim.
+
+[N5] Verwaiste Komponente  (VORBESTEHEND)
+     apps/web/src/components/marketing/linkedin-post/offer-section/
+     Weder in master noch im Branch von irgendwo importiert. Toter Code.
+
+================================================================
+GEPRÜFT UND IN ORDNUNG
+================================================================
+- i18n-Parität: alle Dictionaries außer legal/terms (siehe M3) deckungsgleich
+- Keine binären Locale-Verzweigungen (locale === "de" ? …) im Code
+- Keine Encoding-Artefakte (Ã¤, Ã¶, ï¿½), keine ASCII-Umschreibungen im UI-Text
+- Keine TODO/FIXME/PLATZHALTER-Marker im Produktivcode
+- Keine verwaisten CSS-Custom-Properties
+  (--font-plus-jakarta-sans / --font-bricolage-grotesque werden von next/font
+   zur Laufzeit gesetzt und haben Fallbacks — Fehlalarm)
+- Alle 11 geprüften Routen: genau eine H1, keine doppelten DOM-Ids, keine
+  übersprungenen Heading-Ebenen, alle Bilder mit alt, alle Links und Buttons
+  mit zugänglichem Namen
+- Metadata vollständig: Title, Description, Canonical, hreflang (de/en/x-default)
+  auf allen Routen; Rechtstexte noindex,follow; Success-Seiten noindex,nofollow
+- EN-Startseite vollständig übersetzt, kein deutscher Rest im Kontaktbereich
+- project_scope wird korrekt durchgereicht: Mapper -> persist-discovery-call
+  -> lead_call_contacts.project_scope
+- origin wird bis in die Persistenz durchgereicht (Website / Landingpage /
+  LinkedIn-Post)
+- Rate-Limit ist am Endpoint verdrahtet (Wirksamkeit siehe M1)
+- console.* nur in Server-Handlern und report-client-error — legitim
+
+================================================================
+IN DIESER SITZUNG BEHOBEN
+================================================================
+1. origin war im discovery-call-Schema Pflichtfeld ohne Default
+   -> jeder Aufruf ohne origin bekam HTTP 400. Default ergänzt wie beim
+      quick-contact-Schema.
+2. Natives Radio blieb beim Abwählen des Leistungsmodells checked
+   -> Screenreader meldeten weiter "ausgewählt". Radio ist jetzt kontrolliert.
+3. Chip-Hover ohne Pointer-Guard
+   -> blieb auf Touch nach dem Tap kleben und sah aus wie "ausgewählt".
+      Jetzt neutral (kein CTA-Blau) und auf @media (hover: hover) begrenzt.
+4. Honeypot war beim Zusammenlegen der Formulare verlorengegangen
+   -> wieder eingebaut, bricht beide Absende-Wege still ab.
+5. Consent-Fehler-Id war hartkodiert
+   -> kollidierte bei zwei Formularen auf einer Seite. Jetzt aus useId().
+6. mapQuickContactFormToDto setzte origin nicht
+   -> Mail-Anfragen von der Landingpage wären als "website" im CRM gelandet.
+7. Toter Code entfernt: map-final-cta-form-to-dto.ts, final-cta-form-values
+   (Contract + Default), map-final-cta-form-to-dto-options.ts sowie die
+   verwaisten Copy-Keys fields.website, errorWebsite, payloadContext.
+8. LandingFinalCtaFormCopy verlangte ein website-Feld, das im JSON fehlte —
+   die "as"-Casts der Dictionary-Fabrik verdeckten das vor dem Compiler.
+9. Zwei gelöschte Testdateien ersetzt: Honeypot- und Consent-Id-Abdeckung in
+   contact-form.test.tsx, dazu ein schlanker landing-page.test.tsx, der
+   Struktur statt Copy prüft (der alte pinnte ~40 Copy-Strings fest).
+
+================================================================
+VOR DEM MERGE ZU KLÄREN
+================================================================
+[ ] H2: Nullable-Status von lead_call_contacts.project_scope in allen
+        bereits migrierten Datenbanken prüfen
+[ ] H1: Entscheiden, ob der project_request-Endpoint jetzt (Teil 2) oder
+        später entfernt wird — bis dahin bleibt ein offener Schreibpfad
+[ ] M2: Temp-Ordner aufräumen oder in .gitignore aufnehmen
+[ ] Calendly: zweite Frage (a2, Leistungsmodell) anlegen, sonst wird der
+        Parameter still ignoriert — siehe deleteable/contact-form-rollout-todos.md
+[ ] Manuell testen: je ein Submit über Termin-Weg und Mail-Weg auf allen
+        drei Seiten (schreibt echte Leads und versendet Mail — daher hier
+        bewusst nicht automatisiert ausgeführt)
+
+================================================================
+NICHT GEPRÜFT
+================================================================
+- Kein zeilenweiser Review aller 344 Dateien. Der Fokus lag auf dem
+  Kontakt-Flow, den geteilten Komponenten, i18n, A11y, SEO und den
+  Konventionen aus AGENTS.md.
+- Keine Live-Submits (würden echte Leads anlegen und Mails versenden).
+- Keine Lighthouse-/Core-Web-Vitals-Messung.
+- Kein Review der apps/workspace-Änderungen über die Build-/Testgrün-Prüfung
+  hinaus.

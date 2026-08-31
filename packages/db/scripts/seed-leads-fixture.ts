@@ -563,15 +563,13 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     page_keys: string[] | null;
     phone: string | null;
     preferred_start_key:
-      | (typeof CONTACT_START_KEY)[keyof typeof CONTACT_START_KEY]
-      | null;
+      (typeof CONTACT_START_KEY)[keyof typeof CONTACT_START_KEY] | null;
     project_details: string;
     role: string | null;
     updated_at: Date;
     website: string | null;
     workflow_key:
-      | (typeof CONTACT_WORKFLOW_KEY)[keyof typeof CONTACT_WORKFLOW_KEY]
-      | null;
+      (typeof CONTACT_WORKFLOW_KEY)[keyof typeof CONTACT_WORKFLOW_KEY] | null;
   }> = [];
 
   const emailContactRows: Array<{
@@ -587,6 +585,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     id: string;
     lead_submission_id: string;
     message: string | null;
+    project_scope: null;
     updated_at: Date;
   }> = [];
 
@@ -650,6 +649,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         id: crypto.randomUUID(),
         lead_submission_id: submissionRow.id,
         message: fixture.submission.message,
+        project_scope: null,
         updated_at: minutesAfter(submissionCreatedAt, 1),
       });
     }

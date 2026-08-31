@@ -1,23 +1,109 @@
 {
-  "heroPrimaryCta": "Angebot einschätzen lassen",
-  "heroSecondaryCta": "Leistung passend einschätzen",
-  "heroTag": "MEHR ANFRAGEN, EINFACHERE PROZESSE",
-  "heroVisualAriaLabel": "Live Performance Einblick",
-  "leadBridgeContent": {
-    "kicker": "MEIN ANSATZ",
-    "title": "Landingpage, Website, Upgrade oder Tool — je nach Ziel.",
-    "signalAriaLabel": "Leistungsüberblick und Vorgehensweise",
-    "summaryPoints": [
-      "Ehrliche Einschätzung vor dem Start",
-      "Für mehr Anfragen oder produktivere Abläufe — je nach Ziel",
-      "Nur das, was dein Projekt wirklich braucht"
-    ],
-    "bridge": "Ich entwickle Landingpages, Webseiten, Upgrades und interne Tools für mehr passende Anfragen oder effizientere Abläufe. Welche Leistung für dein Ziel passt, klären wir ehrlich vor dem Start."
-  },
+  "heroPrimaryCta": "Kostenloses Erstgespräch anfragen",
+  "heroSecondaryCta": "Leistungen ansehen",
+  "heroTag": "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
+  "heroTrustChips": [
+    "Direkter Ansprechpartner",
+    "Softwareentwicklungs-Background"
+  ],
+  "heroVisualAriaLabel": "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
   "mappingWarning": "Navigation/Section Mapping ist unvollständig.",
-  "proofHighlightsAriaLabel": "Highlights der Referenzsektion",
-  "proofRatingAriaLabel": "5 von 5 Sternen",
-  "proofReviewLinkLabel": "Bei Google ansehen",
+  "processKicker": "PROZESS",
+  "problemContent": {
+    "kicker": "KOMMT DIR DAS BEKANNT VOR?",
+    "title": "Hast du mindestens eines dieser Probleme?",
+    "listAriaLabel": "Häufige Probleme mit der eigenen Webseite",
+    "photoAlt": "Selbstständiger sitzt mit Telefon am Ohr vor dem Laptop und blickt angestrengt auf seine Webseite",
+    "problems": [
+      {
+        "iconKey": "outdated",
+        "label": "Veraltete Webseite",
+        "note": "Der letzte Relaunch ist Jahre her."
+      },
+      {
+        "iconKey": "mobile",
+        "label": "Schlechte Darstellung auf dem Smartphone",
+        "note": "Auf dem Handy muss man zoomen und schieben."
+      },
+      {
+        "iconKey": "unclear",
+        "label": "Besucher verstehen das Angebot nicht sofort",
+        "note": "Was du genau anbietest, muss man sich zusammensuchen."
+      },
+      {
+        "iconKey": "trust",
+        "label": "Fehlendes Vertrauen bei potenziellen Kunden",
+        "note": "Nichts auf der Seite belegt, dass du lieferst."
+      },
+      {
+        "iconKey": "inquiries",
+        "label": "Zu wenig Anfragen über die Webseite",
+        "note": "Besucher kommen, Anfragen bleiben aus."
+      },
+      {
+        "iconKey": "contact",
+        "label": "Kein verlässlicher Ansprechpartner",
+        "note": "Beim letzten Dienstleister kam wochenlang keine Antwort."
+      }
+    ],
+    "conclusion": "Dann arbeitet deine Webseite vermutlich gerade gegen dich.",
+    "resolution": "Möchtest du, dass ich diese Probleme für dich löse?",
+    "ctaLabel": "Kostenloses Erstgespräch anfragen"
+  },
+  "uspContent": {
+    "title": "Warum du mit mir arbeiten solltest",
+    "chatAriaLabel": "Chatverlauf zwischen einem Kunden und Moritz",
+    "authorLabels": {
+      "owner": "Moritz",
+      "visitor": "Du"
+    },
+    "messages": [
+      {
+        "author": "visitor",
+        "questionEmphasis": ["Warum sollte ich ausgerechnet mit dir arbeiten?"],
+        "text": "Okay Moritz, da erkenne ich mich wieder. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["Webdesign mit echter Softwareentwicklung"],
+        "text": "Ich verbinde Webdesign mit echter Softwareentwicklung. Seit rund 10 Jahren arbeite ich mit Code, 3 Jahre davon professionell und etwa seit einem Jahr liegt mein Fokus auf Webdesign."
+      },
+      {
+        "author": "visitor",
+        "text": "Und was bringt das meiner Webseite konkret?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["individuelles Design ohne starre Vorlagen"],
+        "text": "Sie entsteht mit echtem Code statt im Baukasten. Das ermöglicht ein individuelles Design ohne starre Vorlagen, schnelle Ladezeiten und eine Webseite, die mit deinem Geschäft wachsen kann."
+      },
+      {
+        "author": "visitor",
+        "text": "Wie läuft die Zusammenarbeit? Spreche ich immer direkt mit dir?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["immer direkt mit mir"],
+        "text": "Ja. Du sprichst immer direkt mit mir, bekommst meist innerhalb von 24 Stunden eine Antwort und erreichst mich auch nach dem Launch. Technische Themen erkläre ich verständlich und sage dir offen, was du nicht brauchst."
+      },
+      {
+        "author": "visitor",
+        "text": "Klingt gut. Wie finden wir heraus, was für mich sinnvoll ist?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["Kostenlos und unverbindlich"],
+        "text": "Wir klären dein Vorhaben in 15 Minuten. Danach sage ich dir ehrlich, was sinnvoll ist und womit du rechnen kannst. Kostenlos und unverbindlich."
+      }
+    ],
+    "replyCtaLabel": "Klingt gut, lass uns starten"
+  },
+  "referencesLabels": {
+    "showcaseAriaLabel": "Referenzen von Kunden mit Projektvorschau",
+    "counterTemplate": "Referenz {current} von {total}",
+    "expandQuote": "Ganzes Zitat lesen",
+    "collapseQuote": "Zitat einklappen"
+  },
   "servicesFitLabel": "Ideal für",
   "servicesMoreItemsPluralLabel": "weitere Punkte",
   "servicesMoreItemsSingularLabel": "weiterer Punkt",
@@ -25,35 +111,37 @@
   "servicesMoreAboutLabels": {
     "landing": "Landingpages",
     "process": "internen Tools",
-    "upgrade": "Webseiten-Upgrades",
-    "web": "Webseiten"
+    "upgrade": "kompakten Websites",
+    "web": "Business Websites"
   },
   "servicesRecommendedBadgeLabel": "Empfohlen für dich",
   "servicesKicker": "LEISTUNGEN",
-  "servicesIntentTitle": "Wähle dein Ziel. Du siehst sofort, welches Angebot passt und was der nächste Schritt wäre.",
-  "servicesOtherTitle": "Weiteres Kernangebot",
-  "servicesLaunchAddonTitle": "Ergänzend nach dem Launch",
+  "servicesIntentTitle": "Wähle das Vorhaben, das deinen Plänen am nächsten kommt.",
   "servicesIntentOptions": [
     {
-      "key": "more_inquiries",
-      "label": "Mehr passende Anfragen",
+      "key": "landing_page",
+      "label": "Ein Angebot gezielt verkaufen",
       "serviceKey": "landing"
     },
     {
-      "key": "simplify_processes",
-      "label": "Interne Abläufe vereinfachen",
-      "serviceKey": "process"
+      "key": "compact_website",
+      "label": "Professionell online auftreten",
+      "serviceKey": "upgrade"
+    },
+    {
+      "key": "business_website",
+      "label": "Ein umfangreiches Webprojekt umsetzen",
+      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Angebot einschätzen lassen",
+  "servicesPrimaryCta": "Kostenloses Erstgespräch anfragen",
   "servicesPrimaryCtaLabels": {
-    "landing": "Angebot einschätzen lassen",
-    "web": "Angebot einschätzen lassen",
-    "process": "Angebot einschätzen lassen",
-    "upgrade": "Angebot einschätzen lassen",
-    "maintenance": "Wartung & Support anfragen"
+    "landing": "Kostenloses Erstgespräch anfragen",
+    "web": "Kostenloses Erstgespräch anfragen",
+    "process": "Kostenloses Erstgespräch anfragen",
+    "upgrade": "Kostenloses Erstgespräch anfragen",
+    "maintenance": "Kostenloses Erstgespräch anfragen"
   },
   "servicesDetailPageCta": "Mehr zu Landingpages",
-  "servicesDetailsCta": "Mehr Infos",
   "servicesDeliveryLabel": "Zeitrahmen"
 }

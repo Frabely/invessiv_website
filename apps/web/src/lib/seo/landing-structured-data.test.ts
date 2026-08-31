@@ -70,6 +70,7 @@ describe("landing-structured-data", () => {
     const marketingOrganization = createMarketingStructuredData(
       "de",
       "Invessiv entwickelt Webseiten und digitale Lösungen.",
+      [],
     )["@graph"].find((entry) => entry["@type"] === "Organization");
 
     expect(landingOrganization?.["@id"]).toBe(marketingOrganization?.["@id"]);

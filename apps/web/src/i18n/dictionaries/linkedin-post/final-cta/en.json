@@ -1,7 +1,10 @@
 {
-  "eyebrow": "CHECK WORKFLOW",
-  "title": "Which task should your workflow take over?",
-  "body": "Briefly describe how your posts get made today. I'll check which steps a workflow can take over.",
+  "eyebrow": "Free intro call",
+  "title": "Let's talk about your workflow.",
+  "body": "Afterwards you know what your workflow needs and roughly what it costs.",
+  "portrait": {
+    "imageAlt": "Portrait of Moritz Hecht"
+  },
   "form": {
     "fields": {
       "name": {
@@ -22,19 +25,25 @@
         "label": "Please leave empty"
       }
     },
-    "consentLabel": "I agree to the processing of my data to handle my inquiry.",
-    "privacyLabel": "Privacy",
+    "consentLabel": "I agree to the processing of my data according to the",
+    "privacyLabel": "privacy policy",
+    "privacySuffix": ".",
     "privacyHref": "/en/privacy",
     "requiredHint": "Required fields are marked with *.",
-    "submitLabel": "Check workflow",
+    "submitLabel": "Request a free intro call",
     "submittingLabel": "Sending ...",
-    "payloadContext": "AI workflow inquiry",
     "errorRequired": "Please fill this in.",
     "errorEmail": "Please enter a valid email address.",
     "errorConsent": "Without your consent I can't process the inquiry.",
     "errorRateLimited": "Too many requests in a short time. Please try again in a few minutes.",
     "errorDelivery": "The inquiry couldn't be delivered just now. Please try again.",
-    "errorGeneric": "Something went wrong. Please try again or send me an email directly."
+    "errorGeneric": "Something went wrong. Please try again or send me an email directly.",
+    "callSubmitSuccess": "The calendar is opening with your details.",
+    "emailQuestion": "Rather write than talk?",
+    "emailNote": "The completed form then goes straight to me, without booking a time. I usually reply within 24 hours.",
+    "emailSubmitLabel": "Send inquiry",
+    "emailSubmittingLabel": "Sending ...",
+    "emailSubmitSuccess": "Your inquiry arrived. I'll be in touch shortly."
   },
-  "trustLine": "A short assessment instead of a sales call."
+  "trustLine": "15 minutes, free and without obligation."
 }

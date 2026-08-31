@@ -8,7 +8,6 @@ export type LandingMetaContent = {
   imageHeight: number;
   imageUrl: string;
   imageWidth: number;
-  openGraphLocale: string;
   title: string;
 };
 

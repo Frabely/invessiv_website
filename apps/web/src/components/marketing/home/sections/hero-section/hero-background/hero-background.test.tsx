@@ -47,6 +47,16 @@ afterEach(() => {
 });
 
 describe("HeroBackground", () => {
+  it("can omit the decorative grid for photo-based heroes", () => {
+    mockTheme("dark");
+    const { container } = render(<HeroBackground hideGrid />);
+
+    expect(container.querySelector("[class*='gridOverlay']")).toBeNull();
+    expect(
+      container.firstElementChild?.firstElementChild?.children,
+    ).toHaveLength(2);
+  });
+
   it("renders the video only in dark mode", () => {
     mockTheme("dark");
     const { container } = render(<HeroBackground videoSrc="/spotlight.mp4" />);

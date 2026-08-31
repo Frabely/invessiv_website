@@ -1,20 +1,24 @@
 import {
   CONTACT_EMAIL_SECTION_HREF,
-  type ContactChannelMode,
   PRIMARY_NAVIGATION,
   SECTION_HREFS,
   type SectionId,
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
+import type {
+  QnaIntroCopy,
+  QnaItemCopy,
+  QnaSecondaryContactCopy,
+} from "@/common/contracts/marketing/qna-copy";
+import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
-import { COMPANY, COMPANY_CALENDLY, COMPANY_MAILTO } from "@/config/company";
-import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
-import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
-import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
-import { CONTACT_PAGE_KEY } from "@invessiv/common/constants/contact/contact-page-keys";
-import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
-import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
+import {
+  CONTACT_PROJECT_SCOPE,
+  type ContactProjectScope,
+} from "@invessiv/common/constants/contact/contact-project-scopes";
+import processDe from "./home-process.de.json";
+import processEn from "./home-process.en.json";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "process" | "upgrade" | "web";
@@ -37,7 +41,6 @@ type StandardServiceCardBase = BaseServiceCard & {
   delivery: string;
   deliveryLabel?: string;
   included: string[];
-  timeline?: string[];
   details?: string[];
 };
 
@@ -52,44 +55,11 @@ type SecondaryServiceCard = StandardServiceCardBase & {
 
 export type ServiceCardCopy = PrimaryServiceCard | SecondaryServiceCard;
 
-type ContactFormOption = {
-  key: string;
-  label: string;
-};
-
-type ProofReview = {
-  authorName: string;
-  context: string;
-  excerpt: string;
-  profileImageSrc?: string;
-  reviewHref: string;
-  sourceLabel: string;
-};
-
-type ProofFeaturedProject = {
-  ariaLabel: string;
-  kicker: string;
-  title: string;
-  description: string;
-  meta: string;
-};
-
-type ProofMoreProjects = {
-  ctaLabel: string;
-  description: string;
-  href: string;
-  title: string;
-};
-
-const GOOGLE_REVIEW_PLACEHOLDER_URL = "https://www.google.com";
-
 export type ProcessStepCopy = {
   step: string;
   title: string;
-  deliverable: string;
   effort: string;
   result: string;
-  description: string;
 };
 
 export type ProcessCtaCopy = {
@@ -97,162 +67,36 @@ export type ProcessCtaCopy = {
   href: string;
 };
 
-export type QnaItemCopy = {
-  question: string;
-  answer: string;
-  link?: {
-    href: string;
-    label: string;
-  };
-};
-
-export type QnaSecondaryContactCopy = {
-  hint: string;
-  label: string;
-  href: string;
-};
-
-export type ContactChannelCopy = {
-  mode: ContactChannelMode;
-  kicker?: string;
-  label: string;
-  description?: string;
-  value: string;
-  href: string;
-  hint?: string;
-  actionLabel?: string;
-  copyValue?: string;
-  copyLabel?: string;
-  copiedLabel?: string;
-  helper?: string;
-  detailPoints?: string[];
-  metaLabel?: string;
-  metaValue?: string;
-};
-
-export type ContactCtaCopy = {
-  kicker?: string;
-  label: string;
-  href: string;
-  description?: string;
-  hint?: string;
-};
-
-export type ContactSecondaryCtaCopy = {
-  label: string;
-  href: string;
+export type ContactPortraitCopy = {
+  imageAlt: string;
 };
 
 export type ContactFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  conditionalFieldHint: string;
   nameLabel: string;
   emailLabel: string;
-  addPageLabel: string;
-  phoneLabel: string;
-  companyLabel: string;
-  roleLabel: string;
-  websiteLabel: string;
-  offerLabel: string;
-  offerPlaceholder: string;
-  goalLabel: string;
-  goalOptions: ContactFormOption[];
-  pagesLabel: string;
-  pagesPlaceholder: string;
-  pagesOptions?: ContactFormOption[];
-  pagesCustomLabel?: string;
-  pagesCustomPlaceholder?: string;
-  pagesCustomRemoveLabel?: string;
-  pagesHint?: string;
-  pagesRequiredHint?: string;
-  offerGuidance?: ContactFormOption[];
-  workflowLabel: string;
-  workflowOptions: ContactFormOption[];
-  stepNavigationLabel: string;
-  stepLabel: string;
-  stepOneTitle: string;
-  stepTwoTitle: string;
-  stepThreeTitle: string;
-  previousStepLabel: string;
-  nextStepLabel: string;
-  nextStepContactLabel?: string;
-  nextStepProjectLabel?: string;
-  budgetLabel: string;
-  budgetOptions: ContactFormOption[];
-  startLabel: string;
-  startOptions: ContactFormOption[];
-  projectDetailsLabel: string;
-  projectDetailsPlaceholder: string;
-  projectDetailsPlaceholders?: ContactFormOption[];
-  consentLabel: string;
-  privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
-  submitErrorValidation: string;
-  submitErrorRateLimited: string;
-  submitErrorDelivery: string;
-  submitErrorGeneric: string;
-  validationSummaryPrefix: string;
-  fieldErrorInvalidEmail: string;
-  fieldErrorInvalidWebsite: string;
-  fieldErrorRequired: string;
-  fieldErrorProjectDetailsRequired: string;
-  fieldErrorPagesRequired: string;
-  fieldErrorTooManyPages: string;
-  fieldErrorGoalRequired: string;
-  fieldErrorWorkflowRequired: string;
-  fieldErrorConsentRequired: string;
-  requiredHint: string;
-  closeLabel?: string;
-};
-
-export type QuickContactFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  metaLabel: string;
-  copyActionLabel: string;
-  copiedActionLabel: string;
-  nameLabel: string;
-  emailLabel: string;
+  projectScopeLabel: string;
+  projectScopeOptions: Record<ContactProjectScope, string>;
   messageLabel: string;
   messagePlaceholder: string;
   consentLabel: string;
   privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
-  submitErrorRateLimited: string;
-  submitErrorDelivery: string;
-  submitErrorGeneric: string;
+  privacySuffix: string;
+  requiredHint: string;
+  honeypotLabel: string;
   fieldErrorInvalidEmail: string;
   fieldErrorRequired: string;
   fieldErrorConsentRequired: string;
-  requiredHint: string;
-};
-
-export type DiscoveryCallFormCopy = {
-  title: string;
-  subtitle: string;
-  intro: string;
-  nameLabel: string;
-  emailLabel: string;
-  messageLabel: string;
-  messagePlaceholder: string;
-  consentLabel: string;
-  privacyLabel: string;
-  submitLabel: string;
-  submittingLabel: string;
-  submitSuccess: string;
   submitErrorRateLimited: string;
   submitErrorGeneric: string;
-  fieldErrorInvalidEmail: string;
-  fieldErrorRequired: string;
-  fieldErrorConsentRequired: string;
-  requiredHint: string;
+  callSubmitLabel: string;
+  callSubmittingLabel: string;
+  callSubmitSuccess: string;
+  emailQuestion: string;
+  emailNote: string;
+  emailSubmitLabel: string;
+  emailSubmittingLabel: string;
+  emailSubmitSuccess: string;
+  emailSubmitErrorDelivery: string;
 };
 
 export type FooterColumnCopy = {
@@ -271,45 +115,53 @@ type HeroSectionCopy = {
 type ServicesSectionCopy = {
   title: string;
   serviceCards: ServiceCardCopy[];
-  serviceSecondaryTitle: string;
-  serviceContextNote: string;
 };
 
-type ProofSectionCopy = {
+type ReferencesSectionCopy = {
+  kicker: string;
   title: string;
-  description: string;
-  summaryPoints: string[];
-  proofRatingAriaLabel: string;
-  proofReviewLinkLabel: string;
-  proofReviews: ProofReview[];
-  proofFeaturedProject: ProofFeaturedProject;
-  proofMoreProjects: ProofMoreProjects;
+  referenceEntries: ReferenceEntry[];
 };
 
 type ProcessSectionCopy = {
   title: string;
-  description: string;
-  summaryPoints: string[];
   processSteps: ProcessStepCopy[];
   processCta: ProcessCtaCopy;
 };
 
+type ProcessDictionaryContent = {
+  title: string;
+  processSteps: ProcessStepCopy[];
+  processCtaLabel: string;
+};
+
+function createProcessSectionCopy({
+  processCtaLabel,
+  ...content
+}: ProcessDictionaryContent): ProcessSectionCopy {
+  return {
+    ...content,
+    processCta: {
+      label: processCtaLabel,
+      href: SECTION_HREFS.contact,
+    },
+  };
+}
+
 type QnaSectionCopy = {
   title: string;
-  description: string;
+  qnaIntro: QnaIntroCopy;
+  qnaAvatarAlt: string;
   qnaItems: QnaItemCopy[];
   qnaSecondaryContact: QnaSecondaryContactCopy;
 };
 
 type ContactSectionCopy = {
+  eyebrow: string;
   title: string;
-  contactDecisionIntro: string;
-  contactAlternativeLabel: string;
-  contactChannels: ContactChannelCopy[];
-  contactSecondaryCta: ContactSecondaryCtaCopy;
+  intro: string;
+  portrait: ContactPortraitCopy;
   contactForm: ContactFormCopy;
-  quickContactForm: QuickContactFormCopy;
-  discoveryCallForm: DiscoveryCallFormCopy;
 };
 
 type FooterSectionCopy = {
@@ -320,14 +172,14 @@ type FooterSectionCopy = {
 type ContentSectionMap = {
   hero: HeroSectionCopy;
   services: ServicesSectionCopy;
-  proof: ProofSectionCopy;
+  references: ReferencesSectionCopy;
   process: ProcessSectionCopy;
   faq: QnaSectionCopy;
   contact: ContactSectionCopy;
   footer: FooterSectionCopy;
 };
 
-type ContentSectionId = Exclude<SectionId, "lead-bridge">;
+type ContentSectionId = Exclude<SectionId, "problem" | "usp">;
 
 type LocalizedLandingSection<Id extends ContentSectionId> = {
   id: Id;
@@ -378,110 +230,85 @@ const HOME_SECTIONS = [
     id: "hero",
     copy: {
       de: {
-        title:
-          "Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten.",
+        title: "Websites, die Vertrauen schaffen und Anfragen bringen.",
         description:
-          "Landingpages, Webseiten, Upgrades und Interne Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Abläufe spürbar einfacher, besser oder schneller machen wollen.",
+          "Ich bin Moritz Hecht und entwickle verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten gezielt zur Anfrage führen.",
       },
       en: {
-        title:
-          "Digital solutions\nthat lead to better inquiries and reduce internal effort.",
+        title: "Websites that build trust and bring in inquiries.",
         description:
-          "Landing pages, websites, upgrades, and internal tools for service businesses and SMBs that want to present their offer clearly and make internal workflows simpler, better, or faster.",
+          "I’m Moritz Hecht, and I create conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
       },
     },
   },
   {
-    id: "proof",
+    id: "references",
     copy: {
       de: {
-        title: "Was Kunden über die Zusammenarbeit sagen",
-        description: "aus realen Web- & Softwareprojekten",
-        summaryPoints: [
-          "5,0 ★★★★★ bei Google",
-          "echte Kundenstimmen",
-          "klare Ergebnisse",
-        ],
-        proofRatingAriaLabel: "5 von 5 Sternen",
-        proofReviewLinkLabel: "Bei Google ansehen",
-        proofFeaturedProject: {
-          ariaLabel: "Umgesetztes Projekt für Kolja Wienigk",
-          kicker: "Umgesetztes Projekt",
-          title:
-            "Neue Webseite für einen Finanzmakler mit klarer Positionierung",
-          description:
-            "Das ist das konkret umgesetzte Projekt für Kolja: ein ruhiger, vertrauenswürdiger Auftritt mit klarer Angebotsstruktur, sauberer Führung und einer Startseite, die Leistungen direkt verständlich macht.",
-          meta: "Umgesetzt für Kolja Wienigk",
-        },
-        proofMoreProjects: {
-          title: "Projektübersicht",
-          description:
-            "In der Projektübersicht findest du aktuell noch ein weiteres umgesetztes Beispiel.",
-          ctaLabel: "Projektübersicht öffnen",
-          href: "/de/projects",
-        },
-        proofReviews: [
+        kicker: "Projekte & Kundenstimmen",
+        title: "Was entsteht, wenn wir zusammenarbeiten?",
+        referenceEntries: [
           {
-            authorName: "Kolja Wienigk",
-            context: "Finanzmakler aus Dresden",
-            excerpt:
-              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
-            profileImageSrc: "/assets/kolja.png",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google Bewertung",
+            authorName: "Dr. Christoph Allmacher",
+            avatarKey: "allmacher",
+            avatarAlt: "Porträt von Dr. Christoph Allmacher",
+            role: "Allmacher Coaching, Verhandlungstraining in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
+            quote:
+              "Ich erstelle meine Website aktuell gemeinsam mit Moritz und bin mit der Zusammenarbeit sehr zufrieden. Die Kommunikation über WhatsApp ist unkompliziert, direkt und schnell, sodass Fragen jederzeit leicht geklärt werden können. Besonders schätze ich, dass Moritz sich Zeit nimmt, Zusammenhänge verständlich erklärt und nicht einfach nur „abarbeitet“. Die Zusammenarbeit ist angenehm entspannt und dennoch sehr professionell – ohne künstlichen Zeitdruck oder eine rein geschäftliche Atmosphäre. Eigene Ideen werden ernst genommen, konstruktiv weiterentwickelt und zuverlässig umgesetzt. Ich würde mich jederzeit wieder für eine Zusammenarbeit mit Moritz entscheiden und kann ihn uneingeschränkt weiterempfehlen.",
+            imageKey: "allmacher",
+            imageAlt:
+              "Startseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
+            siteLabel: "allmacher-coaching.de",
+            linkLabel: "Projekt im Detail ansehen",
           },
           {
-            authorName: "Andreas H.",
-            context: "Chemnitz",
-            excerpt:
-              "Besonders hilfreich war die klare Kommunikation im Projekt. Entscheidungen wurden sauber vorbereitet, Feedback schnell umgesetzt und das Ergebnis hat deutlich professioneller gewirkt als vorher.",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google Bewertung",
+            authorName: "Kolja Wienigk",
+            role: "Finanzmakler aus Dresden",
+            quote:
+              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
+            avatarKey: "kolja",
+            avatarAlt: "Porträt von Kolja Wienigk",
+            imageKey: "kolja",
+            selectorLabel: "Kolja Wienigk · Finanzmakler",
+            imageAlt:
+              "Startseite der Finanzberatung von Kolja Wienigk mit klarer Struktur",
+            siteLabel: "kolja-wienigk.de",
+            linkLabel: "Projekt im Detail ansehen",
           },
         ],
       },
       en: {
-        title: "What clients say about working together",
-        description: "from real web and software projects",
-        summaryPoints: [
-          "5.0 ★★★★★ on Google",
-          "real client reviews",
-          "clear outcomes",
-        ],
-        proofRatingAriaLabel: "5 out of 5 stars",
-        proofReviewLinkLabel: "View on Google",
-        proofFeaturedProject: {
-          ariaLabel: "Delivered project for Kolja Wienigk",
-          kicker: "Delivered project",
-          title: "New website for a financial broker with clear positioning",
-          description:
-            "This is the project delivered for Kolja: a calm, trustworthy presence with a clear offer structure, guided flow, and a homepage that makes the services easy to understand right away.",
-          meta: "Delivered for Kolja Wienigk",
-        },
-        proofMoreProjects: {
-          title: "Project overview",
-          description:
-            "In the project overview, there is currently one more delivered example.",
-          ctaLabel: "Open project overview",
-          href: "/en/projects",
-        },
-        proofReviews: [
+        kicker: "Projects & client voices",
+        title: "What can we create together?",
+        referenceEntries: [
           {
-            authorName: "Kolja Wienigk",
-            context: "Financial broker from Dresden",
-            excerpt:
-              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
-            profileImageSrc: "/assets/kolja.png",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google review",
+            authorName: "Dr. Christoph Allmacher",
+            avatarKey: "allmacher",
+            avatarAlt: "Portrait of Dr Christoph Allmacher",
+            role: "Allmacher Coaching, negotiation training in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
+            quote:
+              "I am building my website together with Moritz right now, and I am very happy with how we work together. Communication over WhatsApp is easy, direct, and fast, so questions get sorted out whenever they come up. What I value most is that Moritz takes the time to explain how things connect instead of simply working through a list. The collaboration feels relaxed and still very professional, without artificial time pressure or a purely transactional tone. My own ideas are taken seriously, developed further, and implemented reliably. I would work with Moritz again at any time and can recommend him without reservation.",
+            imageKey: "allmacher",
+            imageAlt:
+              "Homepage of Allmacher Coaching with the negotiation seminar in Chemnitz",
+            siteLabel: "allmacher-coaching.de",
+            linkLabel: "View project details",
           },
           {
-            authorName: "Andreas H.",
-            context: "Chemnitz",
-            excerpt:
-              "The clearest strength was the communication throughout the project. Decisions were prepared well, feedback moved quickly, and the final result felt significantly more professional than before.",
-            reviewHref: GOOGLE_REVIEW_PLACEHOLDER_URL,
-            sourceLabel: "Google review",
+            authorName: "Kolja Wienigk",
+            role: "Financial broker from Dresden",
+            quote:
+              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
+            avatarKey: "kolja",
+            avatarAlt: "Portrait of Kolja Wienigk",
+            imageKey: "kolja",
+            selectorLabel: "Kolja Wienigk · Financial Broker",
+            imageAlt:
+              "Homepage of Kolja Wienigk's financial advice with a clear structure",
+            siteLabel: "kolja-wienigk.de",
+            linkLabel: "View project details",
           },
         ],
       },
@@ -491,78 +318,59 @@ const HOME_SECTIONS = [
     id: "services",
     copy: {
       de: {
-        title: "Was brauchst du gerade?",
-        serviceContextNote:
-          "Vor Start erhältst du ein klares Angebot mit Umfang, Zeitrahmen und Kosten.",
-        serviceSecondaryTitle: "Ergänzend nach dem Launch",
+        title: "Was hast du mit deiner Website vor?",
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/website-layout-icon.svg",
+            iconSrc: "/services/landing-page.svg",
             iconAlt: "Landingpage Icon",
-            title: "Webauftritt & Landingpages",
+            title: "Landingpage",
             description:
-              "Für Angebote, die schneller verstanden werden sollen und zu passenderen Anfragen führen müssen.",
-            fit: "Landingpage, neue Website, Relaunch oder gezielte Verbesserung einer bestehenden Seite.",
+              "Eine fokussierte Seite für ein konkretes Angebot, eine Kampagne oder ein klares Ziel.",
+            fit: "Ein einzelnes Angebot, das verständlich präsentiert und gezielt angefragt werden soll.",
             isRecommended: true,
-            highlight: "mit Landingpages als fokussiertem Hauptangebot",
-            pricingHint: "Angebot nach Ziel, Umfang und Seitenbedarf",
-            delivery: "5–21 Tage",
+            highlight: "ein klarer Auftritt mit einem eindeutigen Ziel",
+            pricingHint: "Individuelles Angebot nach Ziel und Umfang",
+            delivery: "1–2 Wochen",
             included: [
-              "Struktur und Design für ein klares Angebot",
-              "Mobile Umsetzung, SEO-Basis und Kontaktweg",
-              "Launch mit Formular oder direktem Anfragepfad",
-            ],
-            timeline: ["Ziel", "Struktur", "Umsetzung", "Launch"],
-            details: [
-              "Landingpages sind der schnellste Einstieg, wenn ein konkretes Angebot erklärt und angefragt werden soll.",
-              "Website, Relaunch oder Upgrade passen, wenn der bestehende Auftritt mehr Klarheit, Vertrauen oder bessere Führung braucht.",
-            ],
-          },
-          {
-            key: "web",
-            iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Webseite Icon",
-            title: "Webseite",
-            description:
-              "Strukturierte Webauftritte, die Angebote verständlich erklären und passende Anfragen erleichtern.",
-            fit: "Relaunches oder Unternehmensseiten mit mehreren Kernseiten und klarer Lead-Zielsetzung.",
-            highlight: "professioneller Auftritt mit klaren Wegen zur Anfrage",
-            pricingHint: "Individuelles Angebot nach Seitenumfang und Tiefe",
-            delivery: "10–21 Tage",
-            included: [
-              "Klare Struktur",
-              "Professioneller Auftritt",
-              "Direkter Anfrageweg",
-            ],
-            timeline: ["Struktur", "Seitenbau", "Launch"],
-            details: [
-              "Sprachen, zusätzliche Seiten und Integrationen werden vor Start als eigener Umfang eingeplant.",
-              "Drittanbieter-Lizenzen und externe Integrationen werden bei Bedarf separat abgestimmt.",
+              "Konzept für ein klares Seitenziel",
+              "Individuelles Design passend zu deinem Angebot",
+              "Technische Umsetzung für alle Geräte",
             ],
           },
           {
             key: "upgrade",
-            iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Webseiten-Upgrade Icon",
-            title: "Webseiten-Upgrade",
+            iconSrc: "/services/compact-site.svg",
+            iconAlt: "Kompakte Website Icon",
+            title: "Kompakte Website",
             description:
-              "Gezielte Verbesserungen, die bestehende Seiten klarer, nutzbarer und schneller machen.",
-            fit: "Bestehende Seiten mit gutem Kern, aber schwächerer Klarheit, UX oder Performance.",
-            highlight:
-              "klarer, schneller und leichter nutzbar ohne kompletten Neubau",
-            pricingHint: "Angebot nach Ist-Zustand und Eingriffstiefe",
-            delivery: "3–14 Tage",
+              "Eine übersichtliche Webpräsenz mit den wichtigsten Inhalten und mehreren Themenbereichen.",
+            fit: "Selbstständige und kleinere Unternehmen, die professionell sichtbar werden möchten.",
+            highlight: "alle wichtigen Inhalte in einem stimmigen Webauftritt",
+            pricingHint: "Individuelles Angebot nach Aufbau und Umfang",
+            delivery: "2–4 Wochen",
             included: [
-              "Klarere Inhalte",
-              "Bessere Nutzung",
-              "Schnellere Seite",
+              "Klare Struktur für deine zentralen Themen",
+              "Individuelle Gestaltung statt starrer Vorlage",
+              "Flexible Umsetzung passend zu deinem Bedarf",
             ],
-            timeline: ["Analyse", "Umbau", "Check"],
-            details: [
-              "Auch als laufende Weiterentwicklung oder gezielte Einzelleistung planbar.",
-              "Größere Rebuild-Themen werden separat empfohlen und geplant.",
-              "Größere Umbauten im Hintergrund der Anwendung sind nicht Teil des Basis-Upgrades.",
+          },
+          {
+            key: "web",
+            iconSrc: "/services/business-website.svg",
+            iconAlt: "Business Website Icon",
+            title: "Business Website",
+            description:
+              "Eine umfangreichere, individuell aufgebaute Website für Unternehmen mit mehreren Leistungen und Wachstumsplänen.",
+            fit: "Unternehmen, die unterschiedliche Angebote klar vermitteln und ihren Webauftritt langfristig ausbauen möchten.",
+            highlight:
+              "eine starke digitale Basis, die mit dem Unternehmen wachsen kann",
+            pricingHint: "Individuelles Angebot nach Anforderungen und Tiefe",
+            delivery: "ab 4 Wochen",
+            included: [
+              "Strategische Struktur für mehrere Leistungen",
+              "Eigenständiges Design passend zu deinem Unternehmen",
+              "Ausbaubar Richtung Web-App: Login, Kundenbereich, eigenes Backend",
             ],
           },
           {
@@ -571,12 +379,12 @@ const HOME_SECTIONS = [
             iconAlt: "Wartung und Support Icon",
             title: "Wartung & Support",
             description:
-              "Planbare Pflege, kleine Weiterentwicklungen und Bugfixes für bestehende Seiten oder Tools.",
-            fit: "Bestehende Seiten oder Tools, die laufend weiterentwickelt statt komplett neu gebaut werden.",
+              "Planbare Pflege, technische Betreuung und kleinere Weiterentwicklungen für deine Website.",
+            fit: "Websites, die nach dem Launch verlässlich betreut und weiterentwickelt werden sollen.",
             highlight: "verlässliche Hilfe für laufende Anpassungen",
             pricingHint: "Nach Aufwand oder abgestimmtem Betreuungspaket",
-            delivery: "24–72h Antwortzeit",
-            deliveryLabel: "Typische Reaktionszeit",
+            delivery: "ca. 24h",
+            deliveryLabel: "Antwortzeit",
             included: [
               "Kleine Inhalts- und Layoutänderungen",
               "Bugfixes und technische Korrekturen",
@@ -589,101 +397,62 @@ const HOME_SECTIONS = [
               "Notfallanfragen werden nach Verfügbarkeit priorisiert; feste Reaktionszeiten nur mit abgestimmtem Support-Paket.",
             ],
           },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Internes Tool Icon",
-            title: "Prozessoptimierung & digitale Workflows",
-            description:
-              "Für wiederkehrende Abläufe, die heute zu verteilt, manuell oder fehleranfällig laufen.",
-            fit: "Custom KI-Skill für einzelne Routinen oder zentrale Softwarelösung für größere Prozessabläufe.",
-            highlight: "klarere Abläufe und weniger manuelle Wiederholung",
-            pricingHint: "Kalkulation nach Prozess, Daten und Integrationen",
-            delivery: "nach Klärung",
-            included: [
-              "Kundendaten, Status und Folgeschritte zentral verwalten",
-              "Wiederkehrende Inhalte oder Antworten vorbereiten",
-              "Manuelle Schritte reduzieren und Übergaben sauberer machen",
-            ],
-            timeline: ["Prozess", "Engpass", "Lösung", "Übergabe"],
-            details: [
-              "Kleine Vorhaben starten als Custom KI-Skill, wenn eine wiederkehrende Aufgabe schneller vorbereitet werden soll.",
-              "Größere Vorhaben werden als zentrale Softwarelösung geplant, wenn mehrere Systeme, Daten oder Folgeschritte zusammenlaufen sollen.",
-              "Kein Overengineering: Die kleinste sinnvolle Lösung wird vor der Umsetzung eingegrenzt.",
-            ],
-          },
         ],
       },
       en: {
-        title: "What do you need right now?",
-        serviceContextNote:
-          "Before kickoff, you receive a clear offer with scope, timeline, and cost.",
-        serviceSecondaryTitle: "Additional after launch",
+        title: "What are you planning for your website?",
         serviceCards: [
           {
             key: "landing",
-            iconSrc: "/services/website-layout-icon.svg",
+            iconSrc: "/services/landing-page.svg",
             iconAlt: "Landing page icon",
-            title: "Web presence & landing pages",
+            title: "Landing page",
             description:
-              "For offers that need to be understood faster and lead to better-fit inquiries.",
-            fit: "Landing page, new website, relaunch, or focused improvement of an existing site.",
+              "A focused page for one specific offer, campaign, or clearly defined goal.",
+            fit: "A single offer that needs to be presented clearly and guide visitors toward an inquiry.",
             isRecommended: true,
-            highlight: "with landing pages as the focused core offer",
-            pricingHint: "Quote based on goal, scope, and page needs",
-            delivery: "5–21 days",
+            highlight: "a focused presence built around one clear goal",
+            pricingHint: "Individual quote based on goal and scope",
+            delivery: "1–2 weeks",
             included: [
-              "Structure and design for a clear offer",
-              "Mobile implementation, SEO basics, and contact path",
-              "Launch with form or direct inquiry route",
-            ],
-            timeline: ["Goal", "Structure", "Build", "Launch"],
-            details: [
-              "Landing pages are the fastest entry point when one concrete offer needs to be explained and requested.",
-              "Website, relaunch, or upgrade fit when the existing presence needs more clarity, trust, or better guidance.",
-            ],
-          },
-          {
-            key: "web",
-            iconSrc: "/services/coding-icon.svg",
-            iconAlt: "Website icon",
-            title: "Website",
-            description:
-              "Structured websites that explain your offer clearly and make relevant inquiries easier.",
-            fit: "Relaunches or company sites with multiple core pages and a clear lead goal.",
-            highlight: "a professional presence with clear paths to contact",
-            pricingHint: "Individual quote based on page scope and depth",
-            delivery: "10–21 days",
-            included: [
-              "Clear structure",
-              "Professional presence",
-              "Direct inquiry path",
-            ],
-            timeline: ["Structure", "Page build", "Launch"],
-            details: [
-              "Languages, additional pages, and integrations are planned as their own scope before kickoff.",
-              "Third-party licenses and external integrations are aligned separately when needed.",
+              "A concept built around one clear page goal",
+              "Custom design tailored to your offer",
+              "Technical implementation for every device",
             ],
           },
           {
             key: "upgrade",
-            iconSrc: "/services/slow-internet-speed-icon.svg",
-            iconAlt: "Website upgrade icon",
-            title: "Website upgrade",
+            iconSrc: "/services/compact-site.svg",
+            iconAlt: "Compact website icon",
+            title: "Compact Website",
             description:
-              "Focused improvements that make existing sites clearer, easier to use, and faster.",
-            fit: "Existing sites with a solid base but weaker clarity, UX, or performance.",
+              "A clear web presence with your essential content organised across several key topics.",
+            fit: "Self-employed professionals and smaller businesses that want a credible, professional presence online.",
+            highlight: "all essential content in one coherent web presence",
+            pricingHint: "Individual quote based on structure and scope",
+            delivery: "2–4 weeks",
+            included: [
+              "A clear structure for your core topics",
+              "Custom design instead of a rigid template",
+              "Flexible implementation shaped around your needs",
+            ],
+          },
+          {
+            key: "web",
+            iconSrc: "/services/business-website.svg",
+            iconAlt: "Business website icon",
+            title: "Business Website",
+            description:
+              "A more extensive, individually structured website for businesses with multiple services and plans for growth.",
+            fit: "Businesses that need to communicate different services clearly and expand their website over time.",
             highlight:
-              "clearer, faster, and easier to use without a full rebuild",
-            pricingHint:
-              "Quote based on the current state and depth of intervention",
-            delivery: "3–14 days",
-            included: ["Clearer content", "Better usability", "Faster site"],
-            timeline: ["Analysis", "Rework", "Check"],
-            details: [
-              "Can also be planned as ongoing improvement or a focused one-off service.",
-              "Larger rebuild topics are recommended and planned separately.",
-              "Larger changes behind the application are not part of the base upgrade.",
+              "a strong digital foundation that can grow with your business",
+            pricingHint: "Individual quote based on requirements and depth",
+            delivery: "from 4 weeks",
+            included: [
+              "Strategic structure for multiple services",
+              "A distinctive design tailored to your business",
+              "Extendable toward a web app: login, client area, own backend",
             ],
           },
           {
@@ -692,12 +461,12 @@ const HOME_SECTIONS = [
             iconAlt: "Maintenance and support icon",
             title: "Maintenance & support",
             description:
-              "Planned maintenance, small improvements, and bugfixes for existing websites or tools.",
-            fit: "Existing sites or tools that need ongoing iteration instead of a full rebuild.",
+              "Planned upkeep, technical support, and smaller enhancements for your website.",
+            fit: "Websites that should remain reliable and continue to evolve after launch.",
             highlight: "reliable help for ongoing changes",
             pricingHint: "By effort or an agreed support retainer",
-            delivery: "24–72h response time",
-            deliveryLabel: "Typical response time",
+            delivery: "approx. 24h",
+            deliveryLabel: "Response time",
             included: [
               "Small content and layout changes",
               "Bugfixes and technical corrections",
@@ -710,29 +479,6 @@ const HOME_SECTIONS = [
               "Urgent requests are prioritized by availability; fixed response times require an agreed support package.",
             ],
           },
-          {
-            key: "process",
-            iconSrc: "/services/process-icon.svg",
-            iconAlt: "Internal tool icon",
-            title: "Process optimization & digital workflows",
-            description:
-              "For recurring workflows that are currently too scattered, manual, or error-prone.",
-            fit: "Custom AI skill for specific routines or central software for larger process workflows.",
-            highlight: "clearer workflows and less repeated manual work",
-            pricingHint: "Calculated by process, data, and integrations",
-            delivery: "after scoping",
-            included: [
-              "Manage customer data, status, and next steps centrally",
-              "Prepare recurring content or replies faster",
-              "Reduce manual steps and make handovers cleaner",
-            ],
-            timeline: ["Process", "Bottleneck", "Solution", "Handover"],
-            details: [
-              "Smaller requests start as a custom AI skill when a recurring task should be prepared faster.",
-              "Larger requests become central software when multiple systems, data points, or follow-up steps need to come together.",
-              "No overengineering: the smallest useful solution is scoped before implementation.",
-            ],
-          },
         ],
       },
     },
@@ -740,110 +486,8 @@ const HOME_SECTIONS = [
   {
     id: "process",
     copy: {
-      de: {
-        title: "Von der Anfrage zur klaren Entscheidung in vier Schritten",
-        description:
-          "Der Ablauf reduziert Risiko vor dem Start: Du bekommst schnell Klarheit zu Ziel, Umfang, Timing und dem nächsten sinnvollen Schritt.",
-        summaryPoints: [
-          "Ziel, Angebot und Umfang früh geklärt",
-          "erste Richtung schnell sichtbar",
-          "Launch inkl. QA und sauberer Übergabe",
-        ],
-        processSteps: [
-          {
-            step: "01",
-            title: "Ziel & Rahmen klären",
-            deliverable: "Briefing + Angebotsempfehlung",
-            effort: "Aufwand: ca. 30 Min",
-            result: "Ergebnis: klarer Rahmen + Prioritäten",
-            description:
-              "Wir klären Ziel, Zielgruppe, vorhandenes Material und Rahmen. Danach bekommst du eine Empfehlung, welches Leistungsmodell wirklich passt.",
-          },
-          {
-            step: "02",
-            title: "Struktur & erster Draft",
-            deliverable: "Klickbarer Draft oder Prototyp",
-            effort: "Lieferzeit: früh im Projekt sichtbar (je nach Umfang)",
-            result: "Ergebnis: Seitenstruktur oder Kern-Workflow",
-            description:
-              "Ich entwickle die Seitenlogik oder den ersten Prototypen. So siehst du früh, ob Angebot, Inhalte und Anfrageweg zusammenpassen.",
-          },
-          {
-            step: "03",
-            title: "Umsetzung, Copy & QA",
-            deliverable: "Ausgearbeitete Version",
-            effort: "Feedback: 1-2 Runden",
-            result: "Ergebnis: klare UX + saubere Details",
-            description:
-              "Danach folgt die Umsetzung mit den nötigen Inhalten, Details und QA-Schritten bis zur sauberen Freigabe.",
-          },
-          {
-            step: "04",
-            title: "Launch & Übergabe",
-            deliverable: "Launch + Übergabe",
-            effort: "QA: finaler Check",
-            result: "Ergebnis: Livegang oder saubere Integration",
-            description:
-              "Zum Schluss geht das Projekt live oder wird sauber übergeben – inklusive der nächsten sinnvollen Schritte nach dem Launch.",
-          },
-        ],
-        processCta: {
-          label: "Angebot einschätzen lassen",
-          href: SECTION_HREFS.contact,
-        },
-      },
-      en: {
-        title: "From request to clear decision in four steps",
-        description:
-          "The flow reduces risk before kickoff: you quickly get clarity on goal, scope, timing, and the next sensible step.",
-        summaryPoints: [
-          "goal, offer, and project range clarified early",
-          "first direction visible quickly",
-          "launch includes QA and clean handover",
-        ],
-        processSteps: [
-          {
-            step: "01",
-            title: "Clarify goal & outline",
-            deliverable: "Briefing + offer recommendation",
-            effort: "Effort: about 30 min",
-            result: "Outcome: clear frame + priorities",
-            description:
-              "We align on the goal, audience, available materials, and frame. After that, you get a recommendation on the service model that actually fits.",
-          },
-          {
-            step: "02",
-            title: "Structure & first draft",
-            deliverable: "Clickable draft or prototype",
-            effort: "Delivery: visible early in the project",
-            result: "Outcome: page structure or core workflow",
-            description:
-              "I develop the page logic or first prototype. This shows early whether the offer, content, and inquiry path work together.",
-          },
-          {
-            step: "03",
-            title: "Implementation, copy & QA",
-            deliverable: "Worked-out version",
-            effort: "Feedback: 1-2 rounds",
-            result: "Outcome: clearer UX + clean details",
-            description:
-              "Then comes the implementation with the required content, details, and QA steps through to a clean approval.",
-          },
-          {
-            step: "04",
-            title: "Launch & handover",
-            deliverable: "Launch + handover",
-            effort: "QA: final check",
-            result: "Outcome: go-live or clean integration",
-            description:
-              "In the end, the project goes live or is handed over cleanly, including the next sensible steps after launch.",
-          },
-        ],
-        processCta: {
-          label: "Get an offer estimate",
-          href: SECTION_HREFS.contact,
-        },
-      },
+      de: createProcessSectionCopy(processDe),
+      en: createProcessSectionCopy(processEn),
     },
   },
   {
@@ -851,8 +495,11 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         title: "Q&A",
-        description:
-          "Die wichtigsten Fragen vor dem Projektstart sind hier bewusst knapp, konkret und ohne Vertriebssprache beantwortet.",
+        qnaIntro: {
+          primary: "Hast du noch Fragen?",
+          secondary: "Hier sind Fragen, die mir häufig gestellt werden.",
+        },
+        qnaAvatarAlt: "Moritz Hecht, Webentwickler aus Chemnitz",
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -860,60 +507,69 @@ const HOME_SECTIONS = [
         },
         qnaItems: [
           {
+            question: "Wem gehört die Website danach?",
+            answer:
+              "Dir. Domain, Hosting-Zugänge, Inhalte und der fertige Code laufen über Accounts auf deinen Namen und werden sauber übergeben. Du behältst die volle Kontrolle über deine Website.",
+          },
+          {
+            question: "Was kostet ein Projekt?",
+            answer:
+              "Der Preis hängt vom Umfang ab, deshalb nenne ich dir keinen Preis ins Blaue hinein. Wir sprechen vorher über dein Ziel und den nötigen Aufwand, danach bekommst du ein schriftliches Festpreisangebot ohne versteckte Posten. Alles, was später dazukommt, stimme ich vorher mit dir ab.",
+          },
+          {
             question: "Wie läuft der Projektstart ab?",
             answer:
-              "Nach deiner Anfrage kläre ich Ziel, Umfang und Zeitrahmen in einem kurzen Call oder per E-Mail. Danach erhältst du eine klare Empfehlung zum passenden Leistungsmodell, den nächsten Schritt und bei Bedarf ein individuelles Angebot für die Umsetzung. Für klassische Einzel-Landingpages gibt es einen eigenen Ablauf auf der Landingpage-Detailseite.",
-            link: {
-              label: "Mehr zu Landingpages",
-              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-            },
-          },
-          {
-            question: "Kannst du meine bestehende Webseite überarbeiten?",
-            answer:
-              "Ja. Ich kann bestehende Seiten gezielt modernisieren, technisch stabilisieren und für Conversion verbessern, ohne alles neu zu bauen. Falls ein kompletter Relaunch sinnvoller ist, sage ich das offen vorab.",
-          },
-          {
-            question: "Welche Tools setzt du ein?",
-            answer:
-              "Ich arbeite mit einem modernen Projekt-Setup rund um Next.js, Tailwind und passenden Analyse- bzw. Automatisierungs-Tools. Schnelle Build-Workflows nutze ich dort, wo sie sinnvoll sind, die Verantwortung für Architektur, Review und QA bleibt aber bei mir.",
-          },
-          {
-            question: "Gibt es versteckte Kosten?",
-            answer:
-              "Nein. Du erhältst vor Start ein klares Angebot mit definiertem Leistungsumfang. Zusätzliche Wünsche außerhalb des Leistungsumfangs stimme ich immer vor Umsetzung transparent mit dir ab.",
-          },
-          {
-            question: "Was ist im Angebot typischerweise nicht enthalten?",
-            answer:
-              "Nicht enthalten sind in der Regel Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen, die nicht im vereinbarten Leistungsumfang stehen. Solche Punkte werden vor Umsetzung separat aufgeführt und abgestimmt.",
+              "Der Projektstart ist bei mir das Onboarding: Wir schauen uns vorhandene Assets an, sprechen Ideen noch einmal im Detail durch und klären, wie die Seite am Ende aussehen soll. Dafür brauche ich die Zugänge, Fotos, Videos und weitere Materialien, die wir für die Website brauchen, damit ich sauber loslegen kann.",
           },
           {
             question: "Wie viele Korrekturen sind enthalten?",
             answer:
-              "Die enthaltenen Korrekturen hängen vom gewählten Leistungsmodell ab. Bei Landingpages sind in der Regel 1–2 Feedbackrunden enthalten. Weitere Korrekturen oder zusätzliche Schleifen stimmen wir vorab transparent als Zusatzaufwand ab.",
+              "Wie viele Korrekturen enthalten sind, klären wir individuell und halten es in deinem Angebot fest. Alles darüber hinaus stimmen wir vorab mit dir ab.",
+          },
+          {
+            question: "Was ist im Angebot typischerweise nicht enthalten?",
+            answer:
+              "Typisch nicht enthalten sind Hosting, Domain, externe Tool- oder Lizenzkosten sowie Integrationen außerhalb des vereinbarten Umfangs. Texte schreibe ich normalerweise selbst, außer du möchtest es ausdrücklich anders. Bilder und Videos kommen idealerweise von dir; wenn noch nichts da ist, arbeite ich nach Absprache vorerst mit KI- oder Stockmaterial.",
+          },
+          {
+            question: "Was passiert nach dem Launch?",
+            answer:
+              "Nach dem Go-live bist du nicht von mir abhängig. Üblicherweise geht das in eine laufende Wartung oder Betreuung über, wenn du das möchtest. Mir ist wichtig, Kunden auch nach dem Launch verlässlich und professionell weiter zu begleiten. Theoretisch kannst du die Website aber auch einfach übernehmen und ohne weitere Zusammenarbeit weiterlaufen lassen. Wir entscheiden dann gemeinsam, was für dich sinnvoll ist.",
+          },
+          {
+            question: "Kann ich Inhalte später selbst ändern?",
+            answer:
+              "Ja. Meistens übernehme ich Änderungen für dich: Du schreibst mir kurz, was angepasst werden soll, und ich kümmere mich darum. Für viele ist das der schnellere Weg. Wenn du Inhalte selbst pflegen willst, bauen wir ein CMS ein und sprechen das vor dem Start ab.",
+          },
+          {
+            question: "Was brauche ich von dir für einen sauberen Start?",
+            answer:
+              "Ich brauche von dir zeitnahes Feedback, Freigaben, die nötigen Zugänge und, wenn vorhanden, Texte, Bilder und Videos. Der größte Teil davon fällt einmalig beim Onboarding an. Wenn Rückmeldungen länger dauern, verschiebt sich der Zeitplan entsprechend.",
           },
           {
             question: "Wie gehst du mit Zusatzwünschen um?",
             answer:
-              "Zusatzwünsche außerhalb des vereinbarten Rahmens werden nicht stillschweigend umgesetzt. Ich nenne dir vorab die Auswirkungen auf Aufwand, Timing und Preis und starte erst nach kurzer schriftlicher Freigabe per E-Mail.",
+              "Zusatzwünsche außerhalb des vereinbarten Rahmens setze ich nicht einfach stillschweigend um. Ich sage dir vorher, was sie für Aufwand, Timing und Preis bedeuten, und starte erst nach kurzer Freigabe per E-Mail.",
           },
           {
-            question: "Welche Mitwirkung ist auf Kundenseite nötig?",
+            question: "Welche Tools setzt du ein?",
             answer:
-              "Für einen sauberen Ablauf brauche ich zeitnahes Feedback, Freigaben, notwendige Zugänge und ggf. Inhalte/Assets. Verzögerungen bei diesen Mitwirkungen können den Zeitplan entsprechend verschieben.",
+              "Ich arbeite mit Next.js, Tailwind, Vercel und Resend. Der Stack bleibt bewusst schlank: schnelle Ladezeiten, wenig Wartung, keine unnötigen Abhängigkeiten. Die technische Verantwortung für Architektur, Review und QA bleibt bei mir.",
           },
           {
             question: "Wann gilt ein Projekt als abgeschlossen?",
             answer:
-              "Ein Projekt gilt als abgeschlossen, wenn der vereinbarte Leistungsumfang geliefert und die Übergabe bzw. der Go-live erfolgt ist. Weitere Wünsche danach behandeln wir als Folgeauftrag, sofern es sich nicht um Abweichungen vom vereinbarten Umfang handelt.",
+              "Abgeschlossen ist ein Projekt, wenn der vereinbarte Umfang geliefert und die Seite live bzw. übergeben ist. Was danach dazukommt, behandeln wir als eigenen Folgeauftrag, wenn es nicht vom vereinbarten Rahmen abweicht.",
           },
         ],
       },
       en: {
         title: "Q&A",
-        description:
-          "The most relevant pre-project questions are answered here in a concise, direct format without sales fluff.",
+        qnaIntro: {
+          primary: "Still have questions?",
+          secondary: "Here are the questions I get asked most often.",
+        },
+        qnaAvatarAlt: "Moritz Hecht, web developer from Chemnitz",
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",
@@ -921,38 +577,44 @@ const HOME_SECTIONS = [
         },
         qnaItems: [
           {
+            question: "Who owns the website afterwards?",
+            answer:
+              "You do. Domain, hosting access, content, and the finished code run through accounts registered in your name and are handed over to you. You keep full control of your website.",
+          },
+          {
+            question: "What does a project cost?",
+            answer:
+              "The price depends on the project range, so I never pull a number out of thin air. We talk about your goal and the actual effort first, then you receive a written fixed-price offer with no hidden items. Anything that comes up later is agreed with you in advance.",
+          },
+          {
             question: "How does project kickoff work?",
             answer:
-              "After your request, I align on goals, project range, and timeline in a short call or by email. You then get a clear recommendation on the right service model, the next step, and, where useful, an individual offer for delivery. Classic single landing pages have their own process on the landing page detail page.",
-            link: {
-              label: "View landing page details",
-              href: SITE_ROUTES.LANDING_PAGE_SERVICE,
-            },
-          },
-          {
-            question: "Can you redesign my existing website?",
-            answer:
-              "Yes. I can modernize existing pages, improve technical stability, and optimize for conversion without rebuilding everything from scratch. If a full relaunch is the better option, I tell you upfront.",
-          },
-          {
-            question: "Which tools do you use?",
-            answer:
-              "I work with a modern project setup around Next.js, Tailwind, and suitable analytics or automation tools. Where fast build workflows help, I use them, but architecture, review, and QA stay under my responsibility.",
-          },
-          {
-            question: "Are there any hidden costs?",
-            answer:
-              "No. You receive a clear offer with a defined delivery frame before implementation starts. Any additional requests outside that frame are always aligned transparently before execution.",
-          },
-          {
-            question: "What is typically not included in the offer?",
-            answer:
-              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. These items are listed and aligned separately before implementation.",
+              "Project kickoff means onboarding with me: we look through the available assets, go through the ideas in detail once more, and define how the site should look in the end. I also need the access, photos, videos, and any other material required to build the website so I can start cleanly.",
           },
           {
             question: "How many revision rounds are included?",
             answer:
-              "Included revisions depend on the selected service model. For landing pages, typically 1-2 feedback rounds are included. Any additional rounds are aligned transparently in advance as extra effort.",
+              "How many are included exactly depends on the project. We decide that individually and spell it out in your offer. Anything beyond that is agreed in advance.",
+          },
+          {
+            question: "What is typically not included in the offer?",
+            answer:
+              "What is usually not included: hosting, domain, external tool or license costs, and integrations outside the agreed project range. I normally write the texts myself unless you explicitly want it differently. Images and videos are ideally provided by you; if nothing is available yet, I can use AI or stock material for the time being.",
+          },
+          {
+            question: "What happens after launch?",
+            answer:
+              "I do not disappear after go-live. Usually that moves into ongoing maintenance or support if you want it. It matters to me to keep supporting clients reliably and professionally after launch. In theory, though, you can also take over the website and keep it running without any further collaboration. What comes next depends on what makes sense for you.",
+          },
+          {
+            question: "Can I edit the content myself later?",
+            answer:
+              "Yes. As a rule I handle changes for you: you send me a short message about what needs updating and I take care of it. For most clients that is the faster route. If you would rather maintain content yourself, we build in a CMS and discuss that before the project starts.",
+          },
+          {
+            question: "What do I need from you for a clean start?",
+            answer:
+              "I need timely feedback, approvals, the required access, and, where available, your texts, images, and videos. Most of that happens once, during onboarding. If responses take longer, the timeline shifts accordingly.",
           },
           {
             question: "How are additional requests handled?",
@@ -960,14 +622,14 @@ const HOME_SECTIONS = [
               "Requests outside the agreed frame are not implemented silently. I first share the impact on effort, timeline, and price, and proceed only after short written confirmation by email.",
           },
           {
-            question: "What client-side input is required?",
+            question: "Which tools do you use?",
             answer:
-              "A smooth process requires timely feedback, approvals, required access, and, where needed, content or assets. Delays in these inputs can shift the project timeline accordingly.",
+              "I work with Next.js, Tailwind, Vercel, and Resend. The stack stays deliberately lean: fast load times, little maintenance, no unnecessary dependencies. Technical responsibility for architecture, review, and QA stays with me.",
           },
           {
             question: "When is a project considered completed?",
             answer:
-              "A project is considered completed when the agreed service range has been delivered and handover or go-live has taken place. Requests beyond that are handled as follow-up work unless they concern deviations from the agreed basis.",
+              "A project is complete once the agreed scope has been delivered and the site is live or handed over. Anything after that is treated as its own follow-up assignment if it goes beyond the agreed frame.",
           },
         ],
       },
@@ -977,569 +639,94 @@ const HOME_SECTIONS = [
     id: "contact",
     copy: {
       de: {
-        title: "Starte mit einer Projektanfrage",
-        contactDecisionIntro:
-          "Du brauchst noch kein fertiges Briefing. Wähle aus, worum es ungefähr geht - die Fragen passen sich daran an und machen dein Vorhaben schneller einschätzbar.",
-        contactAlternativeLabel: "Falls es noch kürzer sein soll",
-        contactChannels: [
-          {
-            mode: "call",
-            kicker: "Optional",
-            label: "Kennenlern-Call",
-            description:
-              "Für direkte Abstimmung, wenn du noch unsicher bist, welcher Leistungsweg passt.",
-            value: "15-20 Minuten Abstimmung",
-            href: COMPANY_CALENDLY,
-            actionLabel: "Termin auswählen",
-            detailPoints: [
-              "15-20 Minuten fokussiert",
-              "Umfang und Aufwand grob einordnen",
-              "Konkreter nächster Schritt danach",
-            ],
-          },
-          {
-            mode: "email",
-            kicker: "Kurz",
-            label: "Kurze Nachricht",
-            description:
-              "Für schnelle Rückfragen, wenn eine vollständige Projektanfrage noch zu früh ist.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            actionLabel: "E-Mail senden",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Adresse kopieren",
-            copiedLabel: "Adresse kopiert",
-            detailPoints: [
-              "Antwort in der Regel innerhalb von 24h",
-              "Kein Termin nötig",
-            ],
-            metaLabel: "E-Mail",
-            metaValue: "Asynchroner Schnellkontakt",
-          },
-        ],
-        contactSecondaryCta: {
-          label: "Leistungsmodelle vergleichen",
-          href: SECTION_HREFS.services,
+        eyebrow: "Kontakt",
+        title: "Lass uns über dein Vorhaben sprechen.",
+        intro:
+          "15 Minuten, kostenlos und unverbindlich. Danach weißt du, was deine Website braucht und was sie ungefähr kostet.",
+        portrait: {
+          imageAlt: "Porträt von Moritz Hecht",
         },
         contactForm: {
-          title: "Projekt einschätzen lassen",
-          subtitle: "Für konkrete Vorhaben mit klarer nächster Entscheidung.",
-          intro:
-            "Teile die wichtigsten Eckdaten. Du bekommst eine klare Einschätzung zu Umfang, Timing und Budgetrahmen.",
-          conditionalFieldHint:
-            "Wähle eines der drei Angebote. Die nächsten Fragen passen sich daran an.",
           nameLabel: "Name",
           emailLabel: "E-Mail",
-          addPageLabel: "Seite hinzufügen",
-          phoneLabel: "Telefon",
-          companyLabel: "Unternehmen",
-          roleLabel: "Rolle",
-          websiteLabel: "Aktuelle Webseite",
-          offerLabel: "Passendes Angebot",
-          offerPlaceholder: "Angebot wählen",
-          goalLabel: "Ziel des Webauftritts",
-          goalOptions: [
-            {
-              key: CONTACT_GOAL_KEY.GenerateInquiries,
-              label: "Anfragen gewinnen",
-            },
-            {
-              key: CONTACT_GOAL_KEY.IncreaseBookings,
-              label: "Termine buchen lassen",
-            },
-            { key: CONTACT_GOAL_KEY.SellProduct, label: "Produkt verkaufen" },
-            {
-              key: CONTACT_GOAL_KEY.GrowNewsletter,
-              label: "Kontakte aufbauen",
-            },
-            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Anderes Ziel" },
-          ],
-          pagesLabel: "Grobe Seitenidee",
-          pagesPlaceholder: "z. B. Team, FAQ, Karriere",
-          pagesOptions: [
-            { key: CONTACT_PAGE_KEY.Home, label: "Start" },
-            { key: CONTACT_PAGE_KEY.Services, label: "Leistungen" },
-            { key: CONTACT_PAGE_KEY.About, label: "Über uns" },
-            { key: CONTACT_PAGE_KEY.Contact, label: "Kontakt" },
-            { key: CONTACT_PAGE_KEY.Careers, label: "Karriere" },
-            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
-            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landingpage" },
-          ],
-          pagesHint:
-            "Falls du noch nicht sicher bist, klären wir den sinnvollen Umfang gemeinsam.",
-          pagesCustomLabel: "Weitere Seite hinzufügen",
-          pagesCustomPlaceholder: "z. B. Sponsoren",
-          pagesCustomRemoveLabel: "Seite entfernen",
-          pagesRequiredHint:
-            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          offerGuidance: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Für Landingpages, neue Websites, Relaunches oder gezielte Verbesserungen bestehender Seiten.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Für wiederkehrende Abläufe: vom Custom KI-Skill bis zur individuellen Softwarelösung.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Für bestehende Websites, Tools oder laufende Änderungen nach dem Launch.",
-            },
-          ],
-          workflowLabel: "Wiederkehrender Prozess oder Workflow",
-          workflowOptions: [
-            {
-              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
-              label: "Bestehenden Ablauf digitalisieren",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
-              label: "Manuellen Prozess vereinfachen",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
-              label: "Daten oder Systeme verbinden",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
-              label: "Internes Tool für ein Team bauen",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
-              label: "Bestehendes Tool oder System verbessern",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.OtherProcess,
-              label: "Anderes Vorhaben",
-            },
-          ],
-          stepNavigationLabel: "Anfragefortschritt",
-          stepLabel: "Schritt",
-          stepOneTitle: "Kontakt",
-          stepTwoTitle: "Projektdetails",
-          stepThreeTitle: "Rahmen",
-          previousStepLabel: "Zurück",
-          nextStepLabel: "Weiter",
-          nextStepContactLabel: "Weiter zu Projektdetails",
-          nextStepProjectLabel: "Weiter zu Rahmen & Versand",
-          budgetLabel: "Budgetrahmen",
-          budgetOptions: [
-            { key: CONTACT_BUDGET_KEY.Below1000, label: "Unter 1.000 €" },
-            {
-              key: CONTACT_BUDGET_KEY.Between1000And2500,
-              label: "1.000 € - 2.500 €",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between2500And5000,
-              label: "2.500 € - 5.000 €",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between5000And10000,
-              label: "5.000 € - 10.000 €",
-            },
-            { key: CONTACT_BUDGET_KEY.Above10000, label: "10.000 €+" },
-            { key: CONTACT_BUDGET_KEY.Open, label: "Noch offen" },
-          ],
-          startLabel: "Gewünschter Start",
-          startOptions: [
-            { key: CONTACT_START_KEY.Immediately, label: "Sofort" },
-            {
-              key: CONTACT_START_KEY.WithinTwoWeeks,
-              label: "Innerhalb von 2 Wochen",
-            },
-            {
-              key: CONTACT_START_KEY.WithinOneMonth,
-              label: "Innerhalb von 1 Monat",
-            },
-            {
-              key: CONTACT_START_KEY.LaterFlexible,
-              label: "Später / flexibel",
-            },
-          ],
-          projectDetailsLabel: "Projektziel und Anforderungen",
-          projectDetailsPlaceholder:
-            "Beschreibe Ziel, Zielgruppe, Deadline, wichtige Seiten/Features und vorhandene Assets.",
-          projectDetailsPlaceholders: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Beschreibe Angebot, Zielgruppe, Ziel der Seite, vorhandene Inhalte und was am aktuellen Auftritt besser werden soll.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Beschreibe den wiederkehrenden Ablauf, heutige Tools, manuelle Schritte und ob eher ein Custom KI-Skill oder eine Softwarelösung naheliegt.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Beschreibe bestehendes Projekt, gewünschte Änderung, Wartungsbedarf, Dringlichkeit und bekannte technische Rahmenbedingungen.",
-            },
-          ],
+          projectScopeLabel: "Leistungsmodell (optional)",
+          projectScopeOptions: {
+            [CONTACT_PROJECT_SCOPE.LandingPage]: "Landingpage",
+            [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Kompakte Website",
+            [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business Website",
+          },
+          messageLabel: "Worum geht es? (optional)",
+          messagePlaceholder: "Zwei Sätze reichen.",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "Anfrage senden",
-          submittingLabel: "Anfrage wird gesendet …",
-          submitSuccess: "Danke. Deine Anfrage wurde erfolgreich gesendet.",
-          submitErrorValidation:
-            "Die Anfrage konnte nicht gesendet werden. Bitte prüfe deine Angaben.",
-          submitErrorRateLimited:
-            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
-          submitErrorDelivery:
-            "Die Anfrage konnte gerade nicht zugestellt werden. Nutze alternativ die E-Mail im Kontaktbereich.",
-          submitErrorGeneric:
-            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es erneut.",
-          validationSummaryPrefix: "Bitte korrigiere dieses Feld",
-          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorInvalidWebsite:
-            "Bitte gib eine gültige Webseiten-URL ein, z. B. https://www.webseite.com. www.webseite.com ist ohne Protokoll ungültig.",
-          fieldErrorRequired: "Dieses Feld ist erforderlich.",
-          fieldErrorProjectDetailsRequired:
-            "Bitte gib eine kurze Projektbeschreibung ein.",
-          fieldErrorPagesRequired:
-            "Bitte wähle mindestens eine Seite oder ergänze eine eigene.",
-          fieldErrorTooManyPages: "Bitte füge maximal 12 eigene Seiten hinzu.",
-          fieldErrorGoalRequired: "Bitte wähle ein Ziel für den Webauftritt.",
-          fieldErrorWorkflowRequired: "Bitte wähle die Art des Vorhabens.",
-          fieldErrorConsentRequired:
-            "Bitte bestätige die Datenschutzerklärung.",
+          privacyLabel: "Datenschutzerklärung",
+          privacySuffix: " zu.",
           requiredHint: "* Pflichtfelder",
-          closeLabel: "Formular schließen",
-        },
-        quickContactForm: {
-          title: "Kurze E-Mail für den nächsten Schritt",
-          subtitle: "Für schnellen Erstkontakt ohne komplettes Briefing.",
-          intro: "Kurz reicht: Ziel, Kontext und was du als Nächstes brauchst.",
-          metaLabel: "E-Mail",
-          copyActionLabel: "Adresse kopieren",
-          copiedActionLabel: "Adresse kopiert",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Nachricht",
-          messagePlaceholder:
-            "2-4 Sätze genügen: Worum geht es, was ist der Kontext, und was brauchst du als Nächstes?",
-          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "E-Mail senden",
-          submittingLabel: "Wird gesendet ...",
-          submitSuccess: "Deine Anfrage wurde gesendet.",
-          submitErrorRateLimited:
-            "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
-          submitErrorDelivery:
-            "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuche es später erneut.",
-          submitErrorGeneric:
-            "Die Anfrage konnte gerade nicht gesendet werden. Bitte versuche es später erneut.",
+          honeypotLabel: "Bitte nicht ausfüllen",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorConsentRequired:
             "Bitte bestätige die Datenschutzerklärung.",
-          requiredHint: "* Pflichtfelder",
-        },
-        discoveryCallForm: {
-          title: "Kennenlerncall mit kurzer Vorbereitung",
-          subtitle: "Für direkte Abstimmung mit etwas Kontext vor dem Termin.",
-          intro:
-            "Trag kurz deine Kontaktdaten ein und gib optional dein Anliegen mit, damit der Termin fokussierter starten kann.",
-          nameLabel: "Name",
-          emailLabel: "E-Mail",
-          messageLabel: "Anliegen",
-          messagePlaceholder:
-            "Optional: Worum geht es grob, was soll im Termin geklärt werden?",
-          consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
-          submitLabel: "Termin wählen",
-          submittingLabel: "Terminübersicht wird geöffnet ...",
-          submitSuccess:
-            "Die Terminübersicht wird mit deinen Angaben geöffnet.",
           submitErrorRateLimited:
             "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
           submitErrorGeneric:
-            "Die Terminübersicht konnte gerade nicht geöffnet werden. Bitte versuche es später erneut.",
-          fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
-          fieldErrorRequired: "Dieses Feld ist erforderlich.",
-          fieldErrorConsentRequired:
-            "Bitte bestätige die Datenschutzerklärung.",
-          requiredHint: "* Pflichtfelder",
+            "Das hat gerade nicht geklappt. Bitte versuche es später erneut.",
+          callSubmitLabel: "Kostenloses Erstgespräch anfragen",
+          callSubmittingLabel: "Terminauswahl wird geöffnet ...",
+          callSubmitSuccess:
+            "Die Terminauswahl öffnet sich mit deinen Angaben.",
+          emailQuestion: "Doch lieber schreiben?",
+          emailNote:
+            "Dann geht das ausgefüllte Formular direkt an mich, ohne Terminauswahl. Ich antworte in der Regel innerhalb von 24 Stunden.",
+          emailSubmitLabel: "Anfrage senden",
+          emailSubmittingLabel: "Wird gesendet ...",
+          emailSubmitSuccess: "Anfrage ist da. Ich melde mich bei dir.",
+          emailSubmitErrorDelivery:
+            "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuch es später noch einmal.",
         },
       },
       en: {
-        title: "Start with a project request",
-        contactDecisionIntro:
-          "You do not need a finished brief yet. Choose what your project is roughly about - the questions adapt and make the request easier to estimate.",
-        contactAlternativeLabel: "If you need a shorter path",
-        contactChannels: [
-          {
-            mode: "call",
-            kicker: "Optional",
-            label: "Discovery call",
-            description:
-              "Best for live alignment when you are still unsure which service path fits.",
-            value: "15-20 minute alignment call",
-            href: COMPANY_CALENDLY,
-            actionLabel: "Choose a time",
-            detailPoints: [
-              "15-20 minutes focused",
-              "Roughly map range & effort",
-              "Leave with a concrete next step",
-            ],
-          },
-          {
-            mode: "email",
-            kicker: "Short",
-            label: "Quick message",
-            description:
-              "Best for quick questions when a full project request feels too early.",
-            value: COMPANY.contact.email,
-            href: COMPANY_MAILTO,
-            actionLabel: "Send email",
-            copyValue: COMPANY.contact.email,
-            copyLabel: "Copy address",
-            copiedLabel: "Address copied",
-            detailPoints: [
-              "Typically a reply within 24h",
-              "No scheduling needed",
-            ],
-            metaLabel: "Email",
-            metaValue: "Asynchronous quick contact",
-          },
-        ],
-        contactSecondaryCta: {
-          label: "Compare service models",
-          href: SECTION_HREFS.services,
+        eyebrow: "Contact",
+        title: "Let's talk about your project.",
+        intro:
+          "15 minutes, free and without obligation. Afterwards you know what your website needs and roughly what it costs.",
+        portrait: {
+          imageAlt: "Portrait of Moritz Hecht",
         },
         contactForm: {
-          title: "Get a project estimate",
-          subtitle: "For concrete requirements with a clear next decision.",
-          intro:
-            "Share the key facts. You get a clear view on scope, timing, and budget range.",
-          conditionalFieldHint:
-            "Choose one of the three offers. The next questions adapt to it.",
           nameLabel: "Name",
           emailLabel: "Email",
-          addPageLabel: "Add page",
-          phoneLabel: "Phone",
-          companyLabel: "Company",
-          roleLabel: "Role",
-          websiteLabel: "Current website",
-          offerLabel: "Relevant offer",
-          offerPlaceholder: "Choose an offer",
-          goalLabel: "Goal of the web presence",
-          goalOptions: [
-            {
-              key: CONTACT_GOAL_KEY.GenerateInquiries,
-              label: "Generate inquiries",
-            },
-            {
-              key: CONTACT_GOAL_KEY.IncreaseBookings,
-              label: "Book more calls",
-            },
-            { key: CONTACT_GOAL_KEY.SellProduct, label: "Sell a product" },
-            {
-              key: CONTACT_GOAL_KEY.GrowNewsletter,
-              label: "Build a contact list",
-            },
-            { key: CONTACT_GOAL_KEY.OtherGoal, label: "Other goal" },
-          ],
-          pagesLabel: "Rough page idea",
-          pagesPlaceholder: "e.g. Team, FAQ, Careers",
-          pagesOptions: [
-            { key: CONTACT_PAGE_KEY.Home, label: "Home" },
-            { key: CONTACT_PAGE_KEY.Services, label: "Services" },
-            { key: CONTACT_PAGE_KEY.About, label: "About" },
-            { key: CONTACT_PAGE_KEY.Contact, label: "Contact" },
-            { key: CONTACT_PAGE_KEY.Careers, label: "Careers" },
-            { key: CONTACT_PAGE_KEY.Blog, label: "Blog" },
-            { key: CONTACT_PAGE_KEY.LandingPage, label: "Landing page" },
-          ],
-          pagesHint:
-            "If you are not sure yet, we will clarify the useful scope together.",
-          pagesCustomLabel: "Add another page",
-          pagesCustomPlaceholder: "e.g. Sponsors",
-          pagesCustomRemoveLabel: "Remove page",
-          pagesRequiredHint: "Please select at least one page or add your own.",
-          offerGuidance: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "For landing pages, new websites, relaunches, or focused improvements to existing sites.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "For recurring workflows: from a custom AI skill to a bespoke software solution.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "For existing websites, tools, or ongoing changes after launch.",
-            },
-          ],
-          workflowLabel: "Recurring process or workflow",
-          workflowOptions: [
-            {
-              key: CONTACT_WORKFLOW_KEY.DigitizeExistingProcess,
-              label: "Digitize an existing process",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.SimplifyManualProcess,
-              label: "Simplify a manual process",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ConnectDataOrSystems,
-              label: "Connect data or systems",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.BuildInternalTool,
-              label: "Build an internal tool for a team",
-            },
-            {
-              key: CONTACT_WORKFLOW_KEY.ImproveExistingTool,
-              label: "Improve an existing tool or system",
-            },
-            { key: CONTACT_WORKFLOW_KEY.OtherProcess, label: "Other request" },
-          ],
-          stepNavigationLabel: "Request progress",
-          stepLabel: "Step",
-          stepOneTitle: "Contact",
-          stepTwoTitle: "Project details",
-          stepThreeTitle: "Timing",
-          previousStepLabel: "Back",
-          nextStepLabel: "Continue",
-          nextStepContactLabel: "Continue to project details",
-          nextStepProjectLabel: "Continue to timing & send",
-          budgetLabel: "Budget range",
-          budgetOptions: [
-            { key: CONTACT_BUDGET_KEY.Below1000, label: "Below €1,000" },
-            {
-              key: CONTACT_BUDGET_KEY.Between1000And2500,
-              label: "€1,000 - €2,500",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between2500And5000,
-              label: "€2,500 - €5,000",
-            },
-            {
-              key: CONTACT_BUDGET_KEY.Between5000And10000,
-              label: "€5,000 - €10,000",
-            },
-            { key: CONTACT_BUDGET_KEY.Above10000, label: "€10,000+" },
-            { key: CONTACT_BUDGET_KEY.Open, label: "Not defined yet" },
-          ],
-          startLabel: "Preferred start",
-          startOptions: [
-            { key: CONTACT_START_KEY.Immediately, label: "Immediately" },
-            { key: CONTACT_START_KEY.WithinTwoWeeks, label: "Within 2 weeks" },
-            { key: CONTACT_START_KEY.WithinOneMonth, label: "Within 1 month" },
-            { key: CONTACT_START_KEY.LaterFlexible, label: "Later / flexible" },
-          ],
-          projectDetailsLabel: "Notes, requirements, and project description",
-          projectDetailsPlaceholder:
-            "Describe your goal, audience, timeline, key pages/features, and available assets.",
-          projectDetailsPlaceholders: [
-            {
-              key: CONTACT_OFFER_KEY.Landing,
-              label:
-                "Describe the offer, audience, page goal, available content, and what should improve in the current presence.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Process,
-              label:
-                "Describe the recurring workflow, current tools, manual steps, and whether a custom AI skill or software solution seems more likely.",
-            },
-            {
-              key: CONTACT_OFFER_KEY.Maintenance,
-              label:
-                "Describe the existing project, requested change, maintenance need, urgency, and known technical context.",
-            },
-          ],
+          projectScopeLabel: "Service (optional)",
+          projectScopeOptions: {
+            [CONTACT_PROJECT_SCOPE.LandingPage]: "Landing page",
+            [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Compact website",
+            [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business website",
+          },
+          messageLabel: "What's it about? (optional)",
+          messagePlaceholder: "Two sentences are enough.",
           consentLabel:
             "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
-          submitLabel: "Send request",
-          submittingLabel: "Sending request …",
-          submitSuccess: "Thanks. Your request has been sent successfully.",
-          submitErrorValidation:
-            "The request could not be sent. Please review your information.",
-          submitErrorRateLimited:
-            "Too many requests in a short time. Please try again in a moment.",
-          submitErrorDelivery:
-            "The request could not be delivered right now. Please use the email option in the contact section.",
-          submitErrorGeneric:
-            "The request could not be sent right now. Please try again.",
-          validationSummaryPrefix: "Please fix this field",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorInvalidWebsite:
-            "Please enter a valid website URL, for example https://www.website.com. www.website.com is invalid without the protocol.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorProjectDetailsRequired:
-            "Please add a short project description.",
-          fieldErrorPagesRequired:
-            "Please select at least one page or add your own.",
-          fieldErrorTooManyPages: "Please add no more than 12 custom pages.",
-          fieldErrorGoalRequired: "Please select a goal for the web presence.",
-          fieldErrorWorkflowRequired: "Please select the type of request.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
+          privacyLabel: "privacy policy",
+          privacySuffix: ".",
           requiredHint: "* Required fields",
-          closeLabel: "Close form",
-        },
-        quickContactForm: {
-          title: "Short email for the next step",
-          subtitle: "Best for quick first contact without a full brief.",
-          intro:
-            "A few lines are enough: goal, context, and what you need next.",
-          metaLabel: "Email",
-          copyActionLabel: "Copy address",
-          copiedActionLabel: "Address copied",
-          nameLabel: "Name",
-          emailLabel: "Email",
-          messageLabel: "Message",
-          messagePlaceholder:
-            "2-4 lines are enough: what this is about, the context, and what you need next.",
-          consentLabel:
-            "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
-          submitLabel: "Send email",
-          submittingLabel: "Sending ...",
-          submitSuccess: "Your inquiry has been sent.",
+          honeypotLabel: "Please leave this empty",
+          fieldErrorInvalidEmail: "Please enter a valid email address.",
+          fieldErrorRequired: "This field is required.",
+          fieldErrorConsentRequired: "Please confirm the privacy policy.",
           submitErrorRateLimited:
             "Too many requests in a short time. Please try again in a moment.",
-          submitErrorDelivery:
+          submitErrorGeneric:
+            "That did not work just now. Please try again later.",
+          callSubmitLabel: "Request a free intro call",
+          callSubmittingLabel: "Opening the calendar ...",
+          callSubmitSuccess: "The calendar is opening with your details.",
+          emailQuestion: "Rather write instead?",
+          emailNote:
+            "Then the form above goes straight to me, without booking a time. I usually reply within 24 hours.",
+          emailSubmitLabel: "Send inquiry",
+          emailSubmittingLabel: "Sending ...",
+          emailSubmitSuccess: "Got it. I'll get back to you.",
+          emailSubmitErrorDelivery:
             "The message could not be delivered right now. Please try again later.",
-          submitErrorGeneric:
-            "The inquiry could not be sent right now. Please try again later.",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
-          requiredHint: "* Required fields",
-        },
-        discoveryCallForm: {
-          title: "Discovery call with a short prep note",
-          subtitle:
-            "Best for live alignment with a bit of context before the call.",
-          intro:
-            "Add your contact details and, if useful, a short note so the call can start with clearer context.",
-          nameLabel: "Name",
-          emailLabel: "Email",
-          messageLabel: "Topic",
-          messagePlaceholder:
-            "Optional: what is this roughly about and what should the call clarify?",
-          consentLabel:
-            "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
-          submitLabel: "Choose a time",
-          submittingLabel: "Opening the schedule ...",
-          submitSuccess: "The schedule is opening with your details.",
-          submitErrorRateLimited:
-            "Too many requests in a short time. Please try again in a moment.",
-          submitErrorGeneric:
-            "The schedule could not be opened right now. Please try again later.",
-          fieldErrorInvalidEmail: "Please enter a valid email address.",
-          fieldErrorRequired: "This field is required.",
-          fieldErrorConsentRequired: "Please confirm the privacy policy.",
-          requiredHint: "* Required fields",
         },
       },
     },
@@ -1549,11 +736,12 @@ const HOME_SECTIONS = [
     copy: {
       de: {
         description:
-          "Schnellzugriff auf die wichtigsten Bereiche und Kontaktwege.",
+          "Verkaufspsychologisch durchdachte Websites, die dein Angebot verständlich vermitteln und Interessenten zur Anfrage führen.",
         navColumn: { title: "Menü", links: [] },
       },
       en: {
-        description: "Quick access to core pages and contact options.",
+        description:
+          "Conversion-focused websites that communicate your offer clearly and guide prospects toward an inquiry.",
         navColumn: { title: "Menu", links: [] },
       },
     },

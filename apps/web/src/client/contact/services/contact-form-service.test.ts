@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { WebApiEndpoint } from "@/common/constants";
 import {
   createCalendlyPrefillHref,
@@ -119,6 +120,8 @@ describe("contact-form-service", () => {
         kind: "discovery_call",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",
+        origin: ContactSubmissionOrigin.Website,
+        projectScope: "compact_website",
       },
       {
         submitPath: WebApiEndpoint.ContactSubmit,
@@ -136,6 +139,8 @@ describe("contact-form-service", () => {
           kind: "discovery_call",
           locale: "de",
           message: "Wir wollen den Umfang kurz einordnen.",
+          origin: ContactSubmissionOrigin.Website,
+          projectScope: "compact_website",
         }),
         headers: {
           "Content-Type": "application/json",
@@ -179,5 +184,38 @@ describe("contact-form-service", () => {
     expect(calendlyHref).toContain("name=Max+Mustermann");
     expect(calendlyHref).toContain("email=max%40example.com");
     expect(calendlyHref).not.toContain("a1=");
+  });
+
+  it("writes the project scope label into the second Calendly answer slot", () => {
+    const calendlyHref = createCalendlyPrefillHref(
+      {
+        email: "max@example.com",
+        displayName: "Max Mustermann",
+        message: "Kurz den Umfang einordnen.",
+      },
+      {
+        calendlyUrl: "https://calendly.com/service-invessiv-cxf5/30min",
+        projectScopeLabel: "Kompakte Website",
+      },
+    );
+
+    expect(calendlyHref).toContain("a1=Kurz+den+Umfang+einordnen.");
+    expect(calendlyHref).toContain("a2=Kompakte+Website");
+  });
+
+  it("omits a2 when no project scope label is given", () => {
+    const calendlyHref = createCalendlyPrefillHref(
+      {
+        email: "max@example.com",
+        displayName: "Max Mustermann",
+        message: "Kurz den Umfang einordnen.",
+      },
+      {
+        calendlyUrl: "https://calendly.com/service-invessiv-cxf5/30min?a2=alt",
+        projectScopeLabel: "   ",
+      },
+    );
+
+    expect(calendlyHref).not.toContain("a2=");
   });
 });

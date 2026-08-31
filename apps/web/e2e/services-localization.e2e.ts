@@ -8,13 +8,14 @@ type LocaleExpectation = {
   htmlLang: "de" | "en";
   landingServiceHref: "/de/services/landing-page" | "/en/services/landing-page";
   localePath: "/de" | "/en";
+  growthChip: string;
+  intentChips: string[];
+  landingChip: string;
   maintenanceTitle: string;
   navAriaLabel: string;
   privacyPageTitle: string;
   privacyHref: "/de/privacy" | "/en/privacy";
-  processTitle: string;
-  secondarySectionTitle: string;
-  upgradeTitle: string;
+  webAppTeaser: string;
   webTitle: string;
   recommendedBadge: string;
   skipLinkLabel: string;
@@ -28,19 +29,25 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/de/services/landing-page",
     imprintHref: "/de/imprint",
     imprintPageTitle: "Impressum",
-    heading: "Was brauchst du gerade?",
+    heading: "Was hast du mit deiner Website vor?",
     detailLinkLabel: "Mehr zu Landingpages",
+    growthChip: "Ein umfangreiches Webprojekt umsetzen",
+    intentChips: [
+      "Ein Angebot gezielt verkaufen",
+      "Professionell online auftreten",
+      "Ein umfangreiches Webprojekt umsetzen",
+    ],
+    landingChip: "Ein Angebot gezielt verkaufen",
     maintenanceTitle: "Wartung & Support",
-    processTitle: "Internes Tool",
     recommendedBadge: "Empfohlen für dich",
-    secondarySectionTitle: "Ergänzend nach dem Launch",
-    upgradeTitle: "Webseiten-Upgrade",
+    webAppTeaser:
+      "Ausbaubar Richtung Web-App: Login, Kundenbereich, eigenes Backend",
     navAriaLabel: "Hauptnavigation",
     privacyPageTitle: "Datenschutzerklärung",
     privacyHref: "/de/privacy",
     skipLinkLabel: "Direkt zum Hauptinhalt springen",
     termsHref: "/de/terms",
-    webTitle: "Webseite",
+    webTitle: "Business Website",
   },
   {
     localePath: "/en",
@@ -48,19 +55,25 @@ const LOCALE_EXPECTATIONS: LocaleExpectation[] = [
     landingServiceHref: "/en/services/landing-page",
     imprintHref: "/en/imprint",
     imprintPageTitle: "Legal Notice",
-    heading: "What do you need right now?",
+    heading: "What are you planning for your website?",
     detailLinkLabel: "More about landing pages",
+    growthChip: "Bring an extensive web project to life",
+    intentChips: [
+      "Sell one offer with clear focus",
+      "Build a professional online presence",
+      "Bring an extensive web project to life",
+    ],
+    landingChip: "Sell one offer with clear focus",
     maintenanceTitle: "Maintenance & support",
-    processTitle: "Internal tool",
     recommendedBadge: "Recommended for you",
-    secondarySectionTitle: "Additional after launch",
-    upgradeTitle: "Website upgrade",
+    webAppTeaser:
+      "Extendable toward a web app: login, client area, own backend",
     navAriaLabel: "Primary navigation",
     privacyPageTitle: "Privacy Policy",
     privacyHref: "/en/privacy",
     skipLinkLabel: "Skip to main content",
     termsHref: "/en/terms",
-    webTitle: "Website",
+    webTitle: "Business Website",
   },
 ];
 
@@ -142,25 +155,35 @@ for (const expectations of LOCALE_EXPECTATIONS) {
       servicesSection.locator('[data-card-key="landing"]'),
     ).toBeVisible();
     await expect(
+      servicesSection.locator('[data-card-key="process"]'),
+    ).toHaveCount(0);
+    await expect(
+      servicesSection.getByRole("group").getByRole("button"),
+    ).toHaveText(expectations.intentChips);
+    await expect(
+      servicesSection.getByText(expectations.maintenanceTitle, { exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      servicesSection.getByRole("button", { name: expectations.growthChip }),
+    ).toBeVisible();
+    await servicesSection
+      .getByRole("button", { name: expectations.growthChip })
+      .click();
+    await expect(
       servicesSection
         .locator('[data-card-key="web"]')
         .getByText(expectations.webTitle, { exact: true }),
     ).toBeVisible();
     await expect(
       servicesSection
-        .locator('[data-card-key="process"]')
-        .getByText(expectations.processTitle, { exact: true }),
+        .locator('[data-card-key="web"]')
+        .getByText(expectations.webAppTeaser, { exact: true }),
     ).toBeVisible();
+    await servicesSection
+      .getByRole("button", { name: expectations.landingChip })
+      .click();
     await expect(
-      servicesSection.getByRole("heading", {
-        name: expectations.secondarySectionTitle,
-      }),
-    ).toBeVisible();
-    await expect(
-      servicesSection.getByText(expectations.upgradeTitle, { exact: true }),
-    ).toBeVisible();
-    await expect(
-      servicesSection.getByText(expectations.maintenanceTitle, { exact: true }),
+      servicesSection.locator('[data-card-key="landing"]'),
     ).toBeVisible();
     await expect(
       servicesSection.getByText(expectations.recommendedBadge, { exact: true }),

@@ -17,6 +17,7 @@
     }
   ],
   "invessivTitle": "Invessiv",
+  "referencesLabel": "References",
   "invessivLinks": [
     {
       "label": "More about Invessiv",
@@ -31,6 +32,5 @@
       "href": "/en/services/linkedin-post"
     }
   ],
-  "contactTitle": "Contact",
-  "socialsAriaLabel": "Social links"
+  "contactTitle": "Contact"
 }

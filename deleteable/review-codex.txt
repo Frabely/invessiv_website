@@ -1,0 +1,95 @@
+# Codex-Review — `feat/rebrand-home` gegen `master`
+
+Stand: 2026-08-31
+
+Geprüft wurde der gesamte Branch-Diff gegen `master`, einschließlich des aktuellen
+uncommitted Worktrees. Zwei getrennte Schleifen:
+
+1. Funktions-, Routing- und Datenfluss-Review.
+2. Tracking-, SEO-/Redirect- sowie Test-/Robustheits-Review.
+
+Der vollständige Web-Testlauf war zum Review-Zeitpunkt grün: 128 Testdateien,
+554 Tests. Die untenstehenden Punkte werden dadurch nicht abgedeckt.
+
+## Befunde
+
+### P1 — Google-Ads-Conversion der Landingpage ist nicht mehr erreichbar
+
+**Stellen:**
+
+- `apps/web/src/components/shared/final-cta-section/final-cta-section.tsx`
+- `apps/web/src/components/marketing/home/sections/contact-section/contact-form/contact-form.tsx:228`
+- `apps/web/src/app/[locale]/(marketing)/services/landing-page/success/page.tsx:76`
+- `apps/web/src/app/[locale]/(marketing)/success/page.tsx`
+
+**Auswirkung:** Der bisherige Landingpage-CTA setzte vor dem Redirect das
+`markLandingConversionPending`-Guard. Die Landing-Success-Route konsumiert dieses
+Guard und feuert erst dann das konfigurierte Google-Ads-Event. Der neue gemeinsame
+`ContactForm` leitet E-Mail-Anfragen direkt auf `/{locale}/success`; diese Route
+mountet keine `LandingConversion`. Gleichzeitig gibt es im Produktivcode keinen
+Aufruf von `markLandingConversionPending` mehr. Damit wird für Landingpage-
+Formularanfragen keine Google-Ads-Conversion mehr ausgelöst.
+
+**Empfohlener Fix:** Den Conversion-Kontext explizit in den gemeinsamen
+E-Mail-Erfolgspfad geben und auf der generischen Success-Route einmalig konsumieren
+(mit bestehendem Consent- und Transaction-ID-Guard). Alternativ die Conversion
+serverseitig über den bestätigten Submit abbilden. Ein Test muss den Weg
+„Landingpage-E-Mail-Submit → genau ein Ads-Event“ abdecken.
+
+### P1 — Bestehende `/projects`-URLs enden nach dem Rebranding auf 404
+
+**Stellen:**
+
+- gelöschte Route `apps/web/src/app/[locale]/(marketing)/projects/page.tsx`
+- `apps/web/src/config/routes.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/next.config.ts`
+
+**Auswirkung:** Die bisherige, indexierbare Projects-Route wurde durch
+`/references` ersetzt. Es gibt jedoch keinen Redirect für `/de/projects` und
+`/en/projects`; auch die frühere locale-lose Behandlung von `/projects` wurde aus
+dem Proxy entfernt. Alte interne/externe Links, Suchmaschinen-Treffer und
+getrackte Kampagnen-URLs verlieren damit Zielseite und Link Equity.
+
+**Empfohlener Fix:** Permanente Redirects ergänzen:
+
+- `/de/projects` → `/de/references`
+- `/en/projects` → `/en/references`
+- `/projects` → `/de/references`
+
+Query-Strings erhalten und die Redirects mit Route-/Proxy-Tests absichern.
+
+### P2 — Calendly-Klicks aus Landingpage und LinkedIn werden als Home-Klick gezählt
+
+**Stellen:**
+
+- `apps/web/src/components/shared/final-cta-section/final-cta-section.tsx:105`
+- `apps/web/src/components/marketing/home/sections/contact-section/contact-form/contact-form.tsx:302`
+- `apps/web/src/lib/analytics/events/discovery-call-events.ts:5`
+
+**Auswirkung:** `FinalCtaSection` verwendet nun die gemeinsame `ContactForm` und
+übergibt den korrekten `analyticsLocation` (`landing_final_cta` bzw.
+`linkedin_post_final_cta`). Das zusätzlich bei der Calendly-Öffnung gesendete Event
+`calendar_click` ignoriert diesen Wert jedoch und schreibt `location: "contact"`
+fest. Auswertungen ordnen diese Termin-CTAs daher fälschlich dem Home-
+Kontaktbereich zu.
+
+**Empfohlener Fix:** `trackDiscoveryCallCalendarClick` den Location-Wert als
+Parameter übernehmen lassen und aus `ContactForm` mit `analyticsLocation` aufrufen.
+Testfälle für Home, Landingpage und LinkedIn ergänzen.
+
+### P3 — Proxy-Matcher verliert das Escaping für den Dateipunkt
+
+**Stelle:** `apps/web/src/proxy.ts:33` (und die dazu passende Erwartung in
+`apps/web/src/proxy.test.ts:46`)
+
+**Auswirkung:** Der Matcher enthält im TypeScript-String `\.` statt `\\.`. In einem
+JavaScript-String wird daraus ein nicht escapeter Regex-Punkt (`.`), also „beliebiges
+Zeichen“, nicht der literal Dateipunkt. Dadurch werden auch dynamische Pfade ohne
+Dateiendung, die zufällig auf z. B. `css`, `svg` oder `zip` enden, vom Locale-Proxy
+ausgenommen. Das ist aktuell kein bekannter Nutzerpfad, macht die Matcher-Regel aber
+falsch und erschwert sichere neue Routen.
+
+**Empfohlener Fix:** Den String wieder auf `[^?]*\\.(?:...)` setzen und den Test mit
+einem Pfad ohne Punkt (z. B. `/processcss`) ergänzen, der weiterhin durch den Proxy
+laufen muss.

@@ -9,6 +9,7 @@ import styles from "./hero-background.module.css";
 const VIDEO_MEDIA_QUERY = "(min-width: 901px)";
 
 type HeroBackgroundProps = {
+  hideGrid?: boolean;
   videoSrc?: string;
 };
 
@@ -18,7 +19,10 @@ type HeroBackgroundProps = {
  * attribute — a resize past it then swaps the element rather than leaving an
  * empty video box behind.
  */
-export function HeroBackground({ videoSrc }: HeroBackgroundProps) {
+export function HeroBackground({
+  hideGrid = false,
+  videoSrc,
+}: HeroBackgroundProps) {
   const { theme } = useTheme();
   const isWideViewport = useMediaQuery(VIDEO_MEDIA_QUERY);
   const usesVideo = Boolean(videoSrc) && theme === "dark";
@@ -27,7 +31,7 @@ export function HeroBackground({ videoSrc }: HeroBackgroundProps) {
     <div aria-hidden="true" className={styles.layers}>
       <div className={styles.fallbackLayers}>
         <div className={heroVisualStyles.vignette} />
-        <div className={heroVisualStyles.gridOverlay} />
+        {hideGrid ? null : <div className={heroVisualStyles.gridOverlay} />}
         <div className={heroVisualStyles.noise} />
       </div>
       {usesVideo && isWideViewport ? (

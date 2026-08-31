@@ -4,14 +4,15 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { getHomeSections } from "@/i18n/dictionaries/marketing/home";
+import { getHomeUiContent } from "@/i18n/dictionaries/marketing/home-ui";
 import { ProcessSection } from "./process-section";
 
-vi.mock("@/hooks/marketing/use-process-start-point", () => ({
-  useProcessStartPoint: () => undefined,
+vi.mock("@/hooks/marketing/use-process-journey", () => ({
+  useProcessJourney: () => undefined,
 }));
 
 describe("ProcessSection", () => {
-  it("renders summary, roles, steps and cta content", () => {
+  it("renders title, steps with effort and result, and cta content", () => {
     const processSection = getHomeSections("de").find(
       (section) => section.id === "process",
     );
@@ -27,13 +28,12 @@ describe("ProcessSection", () => {
       );
     }
 
-    render(
+    const { container } = render(
       <ProcessSection
-        description={processSection.description}
         id="process"
+        kicker={getHomeUiContent("de").processKicker}
         processCta={processSection.processCta}
         processSteps={processSection.processSteps}
-        summaryPoints={processSection.summaryPoints}
         title={processSection.title}
       />,
     );
@@ -41,8 +41,15 @@ describe("ProcessSection", () => {
     expect(
       screen.getByRole("heading", { name: processSection.title }),
     ).toBeTruthy();
-    expect(screen.getByText(processSection.summaryPoints[0])).toBeTruthy();
-    expect(screen.getByText(firstStep.deliverable)).toBeTruthy();
+    expect(screen.getByText("PROZESS")).toBeTruthy();
+    expect(
+      container.querySelectorAll("[data-process-step='true']"),
+    ).toHaveLength(processSection.processSteps.length);
+    expect(screen.getByRole("heading", { name: firstStep.title })).toBeTruthy();
+    const effortValue = firstStep.effort.split(":")[1]?.trim() ?? "";
+    const resultValue = firstStep.result.split(":")[1]?.trim() ?? "";
+    expect(screen.getByText(effortValue)).toBeTruthy();
+    expect(screen.getByText(resultValue)).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: processSection.processCta.label })

@@ -1,16 +1,12 @@
 import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import type { ContactIdentityFieldsCopy } from "@invessiv/common/contracts/contact/copy/contact-identity-fields-copy";
+import type { ContactIdentityFieldsValues } from "@invessiv/common/contracts/contact/fields/contact-identity-fields-values";
 import { CONTACT_FIELD_NAME } from "@invessiv/common/constants/contact/contact-field-names";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
 import { FormField } from "@/components/shared/form/form-field/form-field";
-
-export type ContactIdentityFieldsValues = {
-  displayName: string;
-  email: string;
-};
 
 type ContactIdentityFieldsProps<TValues extends ContactIdentityFieldsValues> = {
   copy: ContactIdentityFieldsCopy;

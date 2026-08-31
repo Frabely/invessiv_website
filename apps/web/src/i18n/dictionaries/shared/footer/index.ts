@@ -8,9 +8,9 @@ export type FooterStaticContent = {
   legalTitle: string;
   legalLinks: Array<{ label: string; href: string }>;
   invessivTitle: string;
+  referencesLabel: string;
   invessivLinks: Array<{ label: string; href: string }>;
   contactTitle: string;
-  socialsAriaLabel: string;
 };
 
 const FOOTER_STATIC_CONTENT: Record<Locale, FooterStaticContent> = { de, en };

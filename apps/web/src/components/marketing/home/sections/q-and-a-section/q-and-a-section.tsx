@@ -1,57 +1,59 @@
+"use client";
+
+import { useRef } from "react";
+
+import { QNA_STAGE_PHASE } from "@/common/constants/marketing/qna-stage-phase";
 import type {
+  QnaIntroCopy,
   QnaItemCopy,
   QnaSecondaryContactCopy,
-} from "@/i18n/dictionaries/marketing/home";
-import { QAndAAccordion } from "@/components/marketing/home/shared/q-and-a-accordion/q-and-a-accordion";
-import { CONTACT_CHANNEL_MODES } from "@/config/navigation/home";
+} from "@/common/contracts/marketing/qna-copy";
+import { useQnaStage } from "@/hooks/marketing/use-qna-stage";
+import { BrandMarkBackdrop } from "@/components/marketing/shared/brand-mark-backdrop/brand-mark-backdrop";
+import { QnaBubbleBoard } from "./qna-bubble-board/qna-bubble-board";
 import styles from "./q-and-a-section.module.css";
 
-type QnaItem = QnaItemCopy;
-type QnaSecondaryContact = QnaSecondaryContactCopy;
-
 type QAndASectionProps = {
-  description: string;
+  avatarAlt: string;
   id: string;
-  items: QnaItem[];
-  secondaryContact?: QnaSecondaryContact;
+  intro: QnaIntroCopy;
+  items: QnaItemCopy[];
+  secondaryContact?: QnaSecondaryContactCopy;
   title: string;
 };
 
 export function QAndASection({
-  description,
+  avatarAlt,
   id,
+  intro,
   items,
   secondaryContact,
   title,
 }: QAndASectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useQnaStage({ sectionRef });
+
   return (
-    <section className={styles.section} id={id}>
-      <div className={styles.inner}>
-        <div className={styles.overview}>
-          <h2 className={styles.title}>{title}</h2>
-          {description ? (
-            <p className={styles.description}>{description}</p>
-          ) : null}
+    <section
+      className={styles.section}
+      data-qna-phase={QNA_STAGE_PHASE.Board}
+      id={id}
+      ref={sectionRef}
+    >
+      <div className={styles.stage}>
+        <span className={styles.brandMark}>
+          <BrandMarkBackdrop sizes="(max-width: 959px) 90vw, 44rem" />
+        </span>
 
-          {secondaryContact ? (
-            <aside className={styles.contactCard}>
-              <p className={styles.contactHint}>{secondaryContact.hint}</p>
-              <a
-                className={styles.secondaryContactLink}
-                href={secondaryContact.href}
-                data-analytics-event="contact_click"
-                data-analytics-location="qna"
-                data-analytics-target={CONTACT_CHANNEL_MODES.Email}
-              >
-                {secondaryContact.label}
-              </a>
-            </aside>
-          ) : null}
-        </div>
-
-        <div className={styles.board}>
-          <QAndAAccordion ariaLabel={title} id={id} items={items} />
-        </div>
+        <QnaBubbleBoard
+          avatarAlt={avatarAlt}
+          id={id}
+          intro={intro}
+          items={items}
+          secondaryContact={secondaryContact}
+          title={title}
+        />
       </div>
     </section>
   );

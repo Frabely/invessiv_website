@@ -1,7 +1,10 @@
 {
-  "eyebrow": "WORKFLOW PRÜFEN",
-  "title": "Welche Aufgabe soll dein Workflow abnehmen?",
-  "body": "Beschreib kurz, wie deine Posts heute entstehen. Ich prüfe, welche Schritte ein Workflow übernehmen kann.",
+  "eyebrow": "Kostenloses Erstgespräch",
+  "title": "Lass uns über deinen Workflow sprechen.",
+  "body": "Danach weißt du, was dein Workflow braucht und was er ungefähr kostet.",
+  "portrait": {
+    "imageAlt": "Porträt von Moritz Hecht"
+  },
   "form": {
     "fields": {
       "name": {
@@ -22,19 +25,25 @@
         "label": "Bitte nicht ausfüllen"
       }
     },
-    "consentLabel": "Ich bin mit der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage einverstanden.",
-    "privacyLabel": "Datenschutz",
+    "consentLabel": "Ich stimme der Verarbeitung meiner Daten gemäß",
+    "privacyLabel": "Datenschutzerklärung",
+    "privacySuffix": " zu.",
     "privacyHref": "/de/privacy",
     "requiredHint": "Pflichtfelder sind mit * markiert.",
-    "submitLabel": "Workflow prüfen lassen",
+    "submitLabel": "Kostenloses Erstgespräch anfragen",
     "submittingLabel": "Wird gesendet ...",
-    "payloadContext": "KI-Workflow-Anfrage",
     "errorRequired": "Bitte ausfüllen.",
     "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
     "errorConsent": "Ohne deine Einwilligung kann ich die Anfrage nicht bearbeiten.",
     "errorRateLimited": "Zu viele Anfragen in kurzer Zeit. Bitte versuch es in ein paar Minuten erneut.",
     "errorDelivery": "Die Anfrage konnte gerade nicht zugestellt werden. Bitte versuch es noch einmal.",
-    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail."
+    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail.",
+    "callSubmitSuccess": "Die Terminauswahl öffnet sich mit deinen Angaben.",
+    "emailQuestion": "Lieber schreiben statt sprechen?",
+    "emailNote": "Das ausgefüllte Formular geht dann ohne Terminauswahl direkt an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+    "emailSubmitLabel": "Anfrage senden",
+    "emailSubmittingLabel": "Wird gesendet ...",
+    "emailSubmitSuccess": "Deine Anfrage ist angekommen. Ich melde mich in Kürze."
   },
-  "trustLine": "Kurze Einschätzung statt Verkaufsgespräch."
+  "trustLine": "15 Minuten, unverbindlich und kostenlos."
 }

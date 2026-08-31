@@ -1,13 +1,53 @@
+import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
 import type { Locale } from "@/config/i18n";
 import type { ServiceOption } from "@/common/contracts/marketing";
 import de from "./home-ui.de.json";
 import en from "./home-ui.en.json";
 
-type LeadBridgeContent = {
-  bridge: string;
+export const PROBLEM_ICON_KEYS = [
+  "outdated",
+  "mobile",
+  "unclear",
+  "trust",
+  "inquiries",
+  "contact",
+] as const;
+
+export type ProblemIconKey = (typeof PROBLEM_ICON_KEYS)[number];
+
+type ProblemItem = {
+  iconKey: ProblemIconKey;
+  label: string;
+  note: string;
+};
+
+type ProblemContent = {
+  conclusion: string;
+  ctaLabel: string;
   kicker: string;
-  signalAriaLabel: string;
-  summaryPoints: string[];
+  listAriaLabel: string;
+  photoAlt: string;
+  problems: ProblemItem[];
+  resolution: string;
+  title: string;
+};
+
+export const USP_CHAT_AUTHORS = ["owner", "visitor"] as const;
+
+export type UspChatAuthor = (typeof USP_CHAT_AUTHORS)[number];
+
+type UspChatMessage = {
+  author: UspChatAuthor;
+  highlights?: string[];
+  questionEmphasis?: string[];
+  text: string;
+};
+
+type UspContent = {
+  authorLabels: Record<UspChatAuthor, string>;
+  chatAriaLabel: string;
+  messages: UspChatMessage[];
+  replyCtaLabel: string;
   title: string;
 };
 
@@ -15,12 +55,13 @@ export type HomeUiContent = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroTrustChips: string[];
   heroVisualAriaLabel: string;
-  leadBridgeContent: LeadBridgeContent;
   mappingWarning: string;
-  proofHighlightsAriaLabel: string;
-  proofRatingAriaLabel: string;
-  proofReviewLinkLabel: string;
+  processKicker: string;
+  problemContent: ProblemContent;
+  uspContent: UspContent;
+  referencesLabels: ReferenceLabels;
   servicesFitLabel: string;
   servicesMoreItemsPluralLabel: string;
   servicesMoreItemsSingularLabel: string;
@@ -34,10 +75,7 @@ export type HomeUiContent = {
   servicesRecommendedBadgeLabel: string;
   servicesDeliveryLabel: string;
   servicesDetailPageCta: string;
-  servicesDetailsCta: string;
   servicesKicker: string;
-  servicesLaunchAddonTitle: string;
-  servicesOtherTitle: string;
   servicesIntentOptions: ServiceOption[];
   servicesIntentTitle: string;
   servicesPrimaryCta: string;
@@ -51,8 +89,8 @@ export type HomeUiContent = {
 };
 
 const HOME_UI_CONTENT: Record<Locale, HomeUiContent> = {
-  de,
-  en,
+  de: de as HomeUiContent,
+  en: en as HomeUiContent,
 };
 
 export function getHomeUiContent(locale: Locale): HomeUiContent {

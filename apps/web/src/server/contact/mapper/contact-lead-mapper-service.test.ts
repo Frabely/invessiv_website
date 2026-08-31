@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { CONTACT_PROJECT_SCOPE } from "@invessiv/common/constants/contact/contact-project-scopes";
 import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { SaveDiscoveryCallDto } from "@invessiv/common/contracts/contact/discovery-call/save-discovery-call-dto";
@@ -33,6 +34,8 @@ const DISCOVERY_CALL_DTO: SaveDiscoveryCallDto = {
   kind: CONTACT_REQUEST_KIND.DiscoveryCall,
   locale: Locale.De,
   message: "Bitte um einen Kennenlern-Termin.",
+  origin: ContactSubmissionOrigin.Website,
+  projectScope: CONTACT_PROJECT_SCOPE.CompactWebsite,
 };
 
 const QUICK_CONTACT_DTO: SaveQuickContactDto = {
@@ -67,6 +70,9 @@ describe("leadMapperService submission origin and marketing consent", () => {
       ContactSubmissionOrigin.Website,
     );
     expect(persistInput.lead_submission.marketing_consent).toBe(false);
+    expect(persistInput.call_contact.project_scope).toBe(
+      CONTACT_PROJECT_SCOPE.CompactWebsite,
+    );
   });
 
   it("keeps the payload origin for quick contacts and disables marketing consent", () => {

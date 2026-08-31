@@ -1,5 +1,13 @@
 {
-  "title": "Invessiv | Webentwicklung & digitale Lösungen für KMU",
-  "description": "Invessiv entwickelt Webseiten, Landingpages, Interne Tools und gezielte Upgrades für Dienstleister und KMU, die ihr Angebot klar erklären und interne Abläufe vereinfachen wollen.",
-  "openGraphLocale": "de_DE"
+  "title": "Invessiv | Webdesign aus Chemnitz für KMU",
+  "description": "Webdesign aus Chemnitz: Moritz Hecht entwickelt durchdachte Websites für KMU und Dienstleister, die Angebote verständlich vermitteln und Anfragen bringen.",
+  "imageAccentText": "Anfragen bringen.",
+  "imageAlt": "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Anfragen bringen.",
+  "imageContactLabel": "Direkter Ansprechpartner",
+  "imageHeight": 630,
+  "imageKicker": "WEBDESIGN AUS CHEMNITZ UND UMGEBUNG",
+  "imageSupportingText": "Persönliches Webdesign für KMU und Dienstleister.",
+  "imageTitle": "Websites, die Vertrauen schaffen und Anfragen bringen.",
+  "imageUrl": "/og/home-de.png",
+  "imageWidth": 1200
 }

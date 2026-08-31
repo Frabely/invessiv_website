@@ -1,0 +1,87 @@
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-border) 78%, transparent),
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 12%, transparent),
+    0 30px 64px -34px color-mix(in srgb, #000 82%, transparent);
+}
+
+/*
+ * Each photo is laid out wider than the circle and offset until the face is
+ * centred. The width has to stay large enough that the offset never exposes
+ * the frame behind it.
+ */
+
+.image {
+  position: absolute;
+  top: var(--qna-avatar-top);
+  left: var(--qna-avatar-left);
+  width: var(--qna-avatar-width);
+  max-width: none;
+  height: auto;
+  transition:
+    opacity 380ms ease,
+    visibility 380ms ease;
+}
+
+.owner {
+  --qna-avatar-width: 125%;
+  --qna-avatar-left: -24.1%;
+  --qna-avatar-top: -30%;
+}
+
+.asking {
+  --qna-avatar-width: 118%;
+  --qna-avatar-left: -9.9%;
+  --qna-avatar-top: -23%;
+
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* On the desktop stage the circle shows whoever is asking right now. */
+
+@media (min-width: 960px) {
+  .asking {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .owner {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (min-width: 960px) and (min-height: 700px) {
+  [data-qna-animated="true"][data-qna-phase="question"] .owner,
+  [data-qna-animated="true"][data-qna-phase="handover"] .owner {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="question"] .asking,
+  [data-qna-animated="true"][data-qna-phase="handover"] .asking {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+:global([data-theme="light"]) .frame {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-border) 70%, transparent),
+    0 0 0 8px color-mix(in srgb, var(--color-cta) 10%, transparent),
+    0 30px 60px -34px color-mix(in srgb, var(--color-cta) 34%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transition: none;
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "breadcrumbs": {
+    "navLabel": "Breadcrumb navigation",
+    "homeLabel": "Home",
+    "currentLabel": "References"
+  },
+  "hero": {
+    "kicker": "References",
+    "title": "Web design references",
+    "intro": "Selected client projects, outcomes, and words from working together — every one of them is live to look at.",
+    "highlights": [
+      "{count} delivered projects",
+      "context, focus, and outcome",
+      "every project live to visit"
+    ],
+    "supportingNote": "More projects will be added here as they are delivered. The stronger signal is how positioning, reading flow, and usability work together."
+  },
+  "sectionIntro": {
+    "eyebrow": "Project overview",
+    "title": "Delivered projects with a clear focus on usefulness and outcome.",
+    "description": "Each project is framed as a compact case study with context, focus, concrete deliverables, and the outcome that makes the page or tool easier to use."
+  },
+  "testimonialLabels": {
+    "collapseQuote": "Collapse quote",
+    "expandQuote": "Read the full quote"
+  },
+  "projects": [
+    {
+      "imageKey": "allmacher",
+      "imageAlt": "Preview of the Allmacher Coaching website for the negotiation seminar in Chemnitz",
+      "kicker": "Website project",
+      "category": "Seminar offer & inquiries",
+      "title": "Allmacher Coaching: website for a negotiation seminar",
+      "summary": "A clear presence for Dr. Christoph Allmacher and his negotiation seminar in Chemnitz. Content, differentiators, and ticket options are ordered so that leaders grasp the value right away. The site is being built together right now and keeps growing.",
+      "focusLabel": "Project focus",
+      "focus": "Describe the seminar so that format and value are immediately clear and the inquiry becomes the obvious next step.",
+      "deliverablesLabel": "Delivery blocks",
+      "deliverables": [
+        "seminar offer split into clear sections",
+        "trainer and method visible as trust anchors",
+        "consistent guidance toward the seminar inquiry"
+      ],
+      "outcomesLabel": "What the result does",
+      "outcomes": [
+        "makes the seminar content and format tangible at first read",
+        "puts Dr. Christoph Allmacher forward as the trainer",
+        "guides prospects to the inquiry without detours"
+      ],
+      "testimonial": {
+        "authorName": "Dr. Christoph Allmacher",
+        "avatarKey": "allmacher",
+        "avatarAlt": "Portrait of Dr Christoph Allmacher",
+        "role": "Allmacher Coaching, negotiation training in Chemnitz",
+        "quote": "I am building my website together with Moritz right now, and I am very happy with how we work together. Communication over WhatsApp is easy, direct, and fast, so questions get sorted out whenever they come up. What I value most is that Moritz takes the time to explain how things connect instead of simply working through a list. The collaboration feels relaxed and still very professional, without artificial time pressure or a purely transactional tone. My own ideas are taken seriously, developed further, and implemented reliably. I would work with Moritz again at any time and can recommend him without reservation."
+      },
+      "linkLabel": "Visit Allmacher Coaching",
+      "href": "https://www.allmacher-coaching.de"
+    },
+    {
+      "imageKey": "kolja",
+      "imageAlt": "Preview of Kolja Wienigk's financial broker website with clear structure",
+      "kicker": "Website project",
+      "category": "Positioning & inquiry flow",
+      "title": "Financial broker website with clear positioning",
+      "summary": "A calm, trustworthy presence for a financial broker that makes the service offer easy to understand, establishes clear entry points, and prepares inquiries in a structured way.",
+      "focusLabel": "Project focus",
+      "focus": "Build trust, organise the offer clearly, and guide visitors toward the right inquiry path without friction.",
+      "deliverablesLabel": "Delivery blocks",
+      "deliverables": [
+        "sharpened positioning and page entry",
+        "clear offer and CTA hierarchy",
+        "calm, mobile-ready reading flow"
+      ],
+      "outcomesLabel": "What the result improves",
+      "outcomes": [
+        "makes the offer easier to understand immediately",
+        "reduces visual noise in favour of orientation",
+        "guides inquiries into contact more clearly"
+      ],
+      "testimonial": {
+        "authorName": "Kolja Wienigk",
+        "avatarKey": "kolja",
+        "avatarAlt": "Portrait of Kolja Wienigk",
+        "role": "Financial broker from Dresden",
+        "quote": "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops."
+      },
+      "linkLabel": "Visit Kolja Wienigk – Financial Broker",
+      "href": "https://www.kolja-wienigk.de"
+    },
+    {
+      "imageKey": "consumption",
+      "imageAlt": "Preview of a tool for consumption data capture",
+      "kicker": "Software project",
+      "category": "Capture & usage data",
+      "title": "Consumption trial for structured usage data capture",
+      "summary": "A focused tool that brings technical data and consumption figures into one clear interface, simplifies inputs, and makes the ongoing workflow easier to read.",
+      "focusLabel": "Project focus",
+      "focus": "Reduce friction in repeated inputs, surface status clearly, and turn technical data into a practical working interface.",
+      "deliverablesLabel": "Delivery blocks",
+      "deliverables": [
+        "compact input logic with less friction",
+        "clear interface for technical consumption data",
+        "better readability across the active workflow"
+      ],
+      "outcomesLabel": "What the result improves",
+      "outcomes": [
+        "cuts manual effort during capture",
+        "makes usage data faster to interpret",
+        "brings structure to the process in one clear UI"
+      ],
+      "linkLabel": "Open Consumption Trial",
+      "href": "https://consumption-trial.invessiv.com/"
+    }
+  ],
+  "closingCta": {
+    "title": "If your next project needs the same level of clarity, the next step stays short.",
+    "supportingText": "Whether it is a new website, a relaunch, or an internal tool, the strongest leverage comes from clear guidance before the first build, not louder visuals.",
+    "primaryLabel": "Get an offer estimate",
+    "secondaryLabel": "View service models"
+  }
+}

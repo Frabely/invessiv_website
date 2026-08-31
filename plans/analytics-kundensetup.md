@@ -76,18 +76,6 @@ Real-User-Monitoring für Core Web Vitals. Misst reale Performance nach Route un
 
 Pflichttool für SEO-Basisdaten. Liefert Suchanfragen, Impressionen, Klicks, CTR, durchschnittliche Positionen, Indexierungsstatus und technische Hinweise zur Auffindbarkeit.
 
-### GA4
-
-Umfangreiche Webanalyse für Kampagnen, Audiences, Key Events, Ads-Anbindung und detailliertere Marketing-Auswertung. Sinnvoll bei Google Ads, größeren Marketing-Setups oder wenn mehrere Kanäle gemeinsam bewertet werden müssen.
-
-### Google Tag Manager
-
-Tag-Verwaltung ohne Code-Deploys. Sinnvoll, wenn mehrere Marketing-, Analytics- oder Conversion-Tags verwaltet werden oder Kunden selbst Kampagnen-Tags ergänzen möchten.
-
-### Google Consent Mode v2
-
-Consent-Signale für Google-Tags. Im EWR-Kontext relevant, sobald Google-Marketing- oder Google-Analytics-Setups mit consent-pflichtigen Tags genutzt werden.
-
 ### Plausible
 
 Privacy-first Analytics mit cookielosem Ansatz und einfachen Reports. Gut geeignet für kleine bis mittlere Kunden, die verständliche Kennzahlen ohne großes Marketing-Setup benötigen.
@@ -126,11 +114,9 @@ Für schlanke Websites und Landingpages mit klarem Datenschutzprofil.
 
 ### Growth
 
-Für Kunden mit Kampagnen, Ads oder stärkerem Marketing-Fokus.
+Für Kunden mit mehreren Kanälen oder stärkerem Marketing-Fokus.
 
-- GA4
-- Google Tag Manager
-- Google Consent Mode v2
+- Plausible, Umami oder Matomo
 - Google Search Console
 - definierte Key Events
 - Kampagnen- und Conversion-Auswertung
@@ -160,7 +146,8 @@ Für SaaS, Webapps oder produktnahe Funnels.
 
 ## Datenschutz und Consent
 
-Ein Cookiebanner oder eine Consent-Management-Plattform ist nötig, sobald zustimmungspflichtige Cookies, Marketing-Tags, GA4, Clarity, Hotjar oder Replay-Funktionen genutzt werden.
+Ein Cookiebanner oder eine Consent-Management-Plattform ist nötig, sobald zustimmungspflichtige Cookies, Marketing-Tags,
+Clarity, Hotjar oder Replay-Funktionen genutzt werden.
 
 Für jedes Kundenprojekt gilt:
 

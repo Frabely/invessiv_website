@@ -1,20 +1,18 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { isMarketingProofEnabled } from "@/config/marketing-launch";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
+import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 
-const LEGACY_REDIRECTS: Record<string, string> = {
-  "/": "/de",
-  "/imprint": "/de/imprint",
-  "/projects": "/de",
-  "/privacy": "/de/privacy",
-  "/terms": "/de/terms",
-};
+const LOCALE_LESS_REDIRECTS: Record<string, string> = Object.fromEntries(
+  Object.values(SITE_ROUTES).map((route) => [
+    route,
+    createLocalePathname(route, DEFAULT_LOCALE),
+  ]),
+);
 
-export function handleLegacyRedirect(request: NextRequest) {
-  const targetPath =
-    request.nextUrl.pathname === "/projects" && isMarketingProofEnabled()
-      ? "/de/projects"
-      : LEGACY_REDIRECTS[request.nextUrl.pathname];
+export function handleLocaleLessRedirect(request: NextRequest) {
+  const targetPath = LOCALE_LESS_REDIRECTS[request.nextUrl.pathname];
 
   if (!targetPath) {
     return null;
@@ -27,7 +25,7 @@ export function handleLegacyRedirect(request: NextRequest) {
 }
 
 export function proxy(request: NextRequest) {
-  return handleLegacyRedirect(request) ?? NextResponse.next();
+  return handleLocaleLessRedirect(request) ?? NextResponse.next();
 }
 
 export const config = {

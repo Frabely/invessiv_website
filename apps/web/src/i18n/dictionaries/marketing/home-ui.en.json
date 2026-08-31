@@ -1,23 +1,109 @@
 {
-  "heroPrimaryCta": "Get an offer estimate",
-  "heroSecondaryCta": "Find the right service",
-  "heroTag": "MORE INQUIRIES, SIMPLER PROCESSES",
-  "heroVisualAriaLabel": "Live performance snapshot",
-  "leadBridgeContent": {
-    "kicker": "MY APPROACH",
-    "title": "Landing page, website, upgrade, or tool — depending on your goal.",
-    "signalAriaLabel": "Service overview and approach",
-    "summaryPoints": [
-      "Honest assessment before kickoff",
-      "More inquiries or more productive workflows — depending on your goal",
-      "Only what your project actually needs"
-    ],
-    "bridge": "I build landing pages, websites, upgrades, and internal tools for more relevant inquiries or more efficient workflows. Which service fits your goal, we'll work out honestly before we start."
-  },
+  "heroPrimaryCta": "Request a free consultation",
+  "heroSecondaryCta": "Explore services",
+  "heroTag": "WEB DESIGN · CHEMNITZ & REGION",
+  "heroTrustChips": [
+    "Direct point of contact",
+    "Software development background"
+  ],
+  "heroVisualAriaLabel": "Moritz Hecht, your personal web design contact in Chemnitz",
   "mappingWarning": "Navigation/section mapping is incomplete.",
-  "proofHighlightsAriaLabel": "Proof section highlights",
-  "proofRatingAriaLabel": "5 out of 5 stars",
-  "proofReviewLinkLabel": "View on Google",
+  "processKicker": "PROCESS",
+  "problemContent": {
+    "kicker": "SOUND FAMILIAR?",
+    "title": "Do you have at least one of these problems?",
+    "listAriaLabel": "Common problems business owners have with their own website",
+    "photoAlt": "Business owner on the phone in front of a laptop, staring at his website with a tense expression",
+    "problems": [
+      {
+        "iconKey": "outdated",
+        "label": "An outdated website",
+        "note": "The last relaunch was years ago."
+      },
+      {
+        "iconKey": "mobile",
+        "label": "Falls apart on a phone",
+        "note": "Visitors have to pinch and scroll to read anything."
+      },
+      {
+        "iconKey": "unclear",
+        "label": "Visitors don't get the offer right away",
+        "note": "What you actually do takes effort to piece together."
+      },
+      {
+        "iconKey": "trust",
+        "label": "No trust with potential customers",
+        "note": "Nothing on the page proves you deliver."
+      },
+      {
+        "iconKey": "inquiries",
+        "label": "Too few inquiries through the website",
+        "note": "Visitors arrive, inquiries don't."
+      },
+      {
+        "iconKey": "contact",
+        "label": "No reliable person to talk to",
+        "note": "With the last provider, replies took weeks."
+      }
+    ],
+    "conclusion": "Then your website is probably working against you right now.",
+    "resolution": "Want me to solve these problems for you?",
+    "ctaLabel": "Request a free consultation"
+  },
+  "uspContent": {
+    "title": "Why you should work with me",
+    "chatAriaLabel": "Chat between a client and Moritz",
+    "authorLabels": {
+      "owner": "Moritz",
+      "visitor": "You"
+    },
+    "messages": [
+      {
+        "author": "visitor",
+        "questionEmphasis": ["Why should I work with you specifically?"],
+        "text": "Okay Moritz, I recognize myself in that. But there are plenty of web designers. Why should I work with you specifically?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["web design with real software development"],
+        "text": "I combine web design with real software development. I've worked with code for 10 years, including 3 years professionally and for the past year, my focus has been web design."
+      },
+      {
+        "author": "visitor",
+        "text": "And what does that mean for my website?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["custom design without fixed templates"],
+        "text": "It's built with real code instead of a site builder. That means a custom design without fixed templates, fast load times, and a website we can expand as your business grows."
+      },
+      {
+        "author": "visitor",
+        "text": "And do I always speak with you directly?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["always speak directly with me"],
+        "text": "Yes. You always speak directly with me, usually get a reply within 24 hours, and can still reach me after launch. I explain technical topics clearly and openly tell you what you don't need."
+      },
+      {
+        "author": "visitor",
+        "text": "Sounds good. How do we figure out what makes sense for me?"
+      },
+      {
+        "author": "owner",
+        "highlights": ["free and comes with no obligation"],
+        "text": "We'll discuss your plans in 15 minutes. Afterwards, I'll tell you honestly what makes sense and what to expect. The conversation is free and comes with no obligation."
+      }
+    ],
+    "replyCtaLabel": "Sounds good, let's get started"
+  },
+  "referencesLabels": {
+    "showcaseAriaLabel": "Client references with project preview",
+    "counterTemplate": "Reference {current} of {total}",
+    "expandQuote": "Read the full quote",
+    "collapseQuote": "Collapse quote"
+  },
   "servicesFitLabel": "Ideal for",
   "servicesMoreItemsPluralLabel": "more items",
   "servicesMoreItemsSingularLabel": "more item",
@@ -25,35 +111,37 @@
   "servicesMoreAboutLabels": {
     "landing": "landing pages",
     "process": "internal tools",
-    "upgrade": "website upgrades",
-    "web": "websites"
+    "upgrade": "compact websites",
+    "web": "business websites"
   },
   "servicesRecommendedBadgeLabel": "Recommended for you",
   "servicesKicker": "SERVICES",
-  "servicesIntentTitle": "Choose your goal. You immediately see which offer fits and what the next step would be.",
-  "servicesOtherTitle": "Other core offer",
-  "servicesLaunchAddonTitle": "Additional after launch",
+  "servicesIntentTitle": "Choose the project that comes closest to what you have in mind.",
   "servicesIntentOptions": [
     {
-      "key": "more_inquiries",
-      "label": "Get better inquiries",
+      "key": "landing_page",
+      "label": "Sell one offer with clear focus",
       "serviceKey": "landing"
     },
     {
-      "key": "simplify_processes",
-      "label": "Simplify internal workflows",
-      "serviceKey": "process"
+      "key": "compact_website",
+      "label": "Build a professional online presence",
+      "serviceKey": "upgrade"
+    },
+    {
+      "key": "business_website",
+      "label": "Bring an extensive web project to life",
+      "serviceKey": "web"
     }
   ],
-  "servicesPrimaryCta": "Get an offer estimate",
+  "servicesPrimaryCta": "Request a free consultation",
   "servicesPrimaryCtaLabels": {
-    "landing": "Get an offer estimate",
-    "web": "Get an offer estimate",
-    "process": "Get an offer estimate",
-    "upgrade": "Get an offer estimate",
-    "maintenance": "Request maintenance & support"
+    "landing": "Request a free consultation",
+    "web": "Request a free consultation",
+    "process": "Request a free consultation",
+    "upgrade": "Request a free consultation",
+    "maintenance": "Request a free consultation"
   },
   "servicesDetailPageCta": "More about landing pages",
-  "servicesDetailsCta": "More details",
   "servicesDeliveryLabel": "Timeframe"
 }

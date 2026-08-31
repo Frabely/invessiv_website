@@ -28,6 +28,7 @@ Aktuelle Zuordnung:
 - `all/floating-glass/`
 - `all/svg-path-journey/`
 - `all/view-transition-routing/`
+- `all/sticky-window-backdrop/`
 
 Begleitdaten:
 

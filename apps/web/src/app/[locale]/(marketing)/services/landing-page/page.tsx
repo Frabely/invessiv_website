@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
 import { LandingPage } from "@/components/marketing/landing/landing-page/landing-page";
 import {
   isSupportedLocale,
@@ -7,11 +8,12 @@ import {
   SUPPORTED_LOCALES,
 } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
 import { createLandingStructuredData } from "@/lib/seo/landing-structured-data";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type LandingRouteProps = {
@@ -30,28 +32,18 @@ export async function generateMetadata({
     return {};
   }
 
-  const {
-    title,
-    description,
-    imageAlt,
-    imageHeight,
-    imageUrl,
-    imageWidth,
-    openGraphLocale,
-  } = getLandingMetaContent(locale);
-  const languages = Object.fromEntries(
-    SUPPORTED_LOCALES.map((supportedLocale) => [
-      supportedLocale,
-      `/${supportedLocale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`,
-    ]),
-  );
+  const { title, description, imageAlt, imageHeight, imageUrl, imageWidth } =
+    getLandingMetaContent(locale);
   return createPageMetadata({
     absoluteTitle: true,
     title,
     description,
-    canonicalPath: `/${locale}${SITE_ROUTES.LANDING_PAGE_SERVICE}`,
-    languages: createLocaleAlternates(languages),
-    openGraphLocale,
+    canonicalPath: createLocalePathname(
+      SITE_ROUTES.LANDING_PAGE_SERVICE,
+      locale,
+    ),
+    languages: createRouteAlternates(SITE_ROUTES.LANDING_PAGE_SERVICE),
+    openGraphLocale: OPEN_GRAPH_LOCALE[locale],
     socialImage: {
       alt: imageAlt,
       height: imageHeight,

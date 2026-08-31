@@ -1,0 +1,42 @@
+{
+  "title": "So läuft unsere Zusammenarbeit ab",
+  "processSteps": [
+    {
+      "step": "01",
+      "title": "Kostenloses Erstgespräch",
+      "effort": "Aufwand: ca. 15 Min",
+      "result": "Ergebnis: Klarheit, was du wirklich brauchst"
+    },
+    {
+      "step": "02",
+      "title": "Prozess & Entscheidung",
+      "effort": "Aufwand: 60–90 Min",
+      "result": "Ergebnis: Wir entscheiden gemeinsam, ob es passt"
+    },
+    {
+      "step": "03",
+      "title": "Onboarding",
+      "effort": "Aufwand: Bilder, Texte & Zugangsdaten übergeben",
+      "result": "Ergebnis: Alles für den Start beisammen"
+    },
+    {
+      "step": "04",
+      "title": "Erster Entwurf",
+      "effort": "Aufwand: Keiner – Ich arbeite",
+      "result": "Ergebnis: Der erste sichtbare Stand deiner Seite"
+    },
+    {
+      "step": "05",
+      "title": "Feedbackrunden",
+      "effort": "Aufwand: Je nach Umfang deiner Änderungswünsche",
+      "result": "Ergebnis: Der Entwurf wird deine Website"
+    },
+    {
+      "step": "06",
+      "title": "Technik & Launch",
+      "effort": "Aufwand: Ein letzter gemeinsamer Check",
+      "result": "Ergebnis: Deine Seite ist live und geprüft"
+    }
+  ],
+  "processCtaLabel": "Kostenloses Erstgespräch anfragen"
+}

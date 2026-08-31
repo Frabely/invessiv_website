@@ -1,0 +1,58 @@
+.quote {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: clamp(1rem, 1.6vw, 1.35rem);
+  border-left: 2px solid color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.quote::before {
+  content: "“";
+  height: 0.42em;
+  color: var(--color-accent-orange);
+  font-family: Georgia, serif;
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 0.8;
+}
+
+.text {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
+  font-size: var(--font-size-body-lg);
+  font-style: italic;
+  line-height: 1.62;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+
+.text[data-expanded="false"] {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.toggle {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-accent-orange);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.toggle:hover {
+  color: color-mix(in srgb, var(--color-accent-orange) 82%, white 18%);
+}
+
+.toggle:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}

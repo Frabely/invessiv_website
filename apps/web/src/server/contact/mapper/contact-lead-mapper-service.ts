@@ -43,7 +43,7 @@ export type SubmissionApiToDbMapperExtra = {
   marketingConsent: boolean;
 };
 
-export function mapLeadApiToDb(
+function mapLeadApiToDb(
   payload: LeadMapperInput,
   createdAt: Date,
 ): ContactLeadPersistRecord {
@@ -65,7 +65,7 @@ export function mapLeadApiToDb(
   };
 }
 
-export function mapSubmissionApiToDb(
+function mapSubmissionApiToDb(
   payload: SubmissionApiToDbMapperInput,
   requestId: string,
   channel: ContactSubmissionChannel,
@@ -199,7 +199,7 @@ export function mapDiscoveryCallDtoToDbPersistInput(
     CONTACT_REQUEST_KIND.DiscoveryCall,
     lead.id,
     createdAt,
-    { marketingConsent: false, origin: ContactSubmissionOrigin.Website },
+    { marketingConsent: false, origin: payload.origin },
   );
   const message = payload.message?.trim();
 
@@ -209,6 +209,7 @@ export function mapDiscoveryCallDtoToDbPersistInput(
       id: randomUUID(),
       lead_submission_id: leadSubmission.id,
       message: message || undefined,
+      project_scope: payload.projectScope,
       updated_at: leadSubmission.updated_at,
     },
     lead,
@@ -218,8 +219,6 @@ export function mapDiscoveryCallDtoToDbPersistInput(
 
 export const leadMapperService = {
   mapDiscoveryCallDtoToDbPersistInput,
-  mapLeadApiToDb,
   mapProjectRequestDtoToDbPersistInput,
   mapQuickContactDtoToDbPersistInput,
-  mapSubmissionApiToDb,
 };

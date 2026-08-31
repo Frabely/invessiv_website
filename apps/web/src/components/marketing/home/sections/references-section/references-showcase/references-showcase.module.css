@@ -1,0 +1,256 @@
+.showcase {
+  display: grid;
+  grid-template-areas:
+    "controls"
+    "stage"
+    "panel";
+  gap: clamp(2rem, 3.4vw, 3.4rem);
+  align-items: stretch;
+}
+
+.stage {
+  grid-area: stage;
+  position: relative;
+  display: block;
+  align-self: start;
+  width: 100%;
+  aspect-ratio: 1.37;
+  border-radius: 24px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.stage:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 6px;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+}
+
+.frame {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 72%, transparent);
+  border-radius: 24px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 92%,
+    rgba(255, 255, 255, 0.03) 8%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 34px rgba(0, 0, 0, 0.2);
+}
+
+.chrome {
+  display: grid;
+  grid-template-columns: auto auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 15px;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 82%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(
+      in srgb,
+      var(--color-surface-2) 96%,
+      rgba(255, 255, 255, 0.03) 4%
+    ),
+    color-mix(in srgb, var(--color-surface-1) 92%, rgba(255, 255, 255, 0.02) 8%)
+  );
+}
+
+.chromeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text-muted) 48%, transparent);
+}
+
+.chromeAddress {
+  overflow: hidden;
+  margin-left: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 60%,
+    rgba(255, 255, 255, 0.08) 40%
+  );
+  color: color-mix(in srgb, var(--color-text) 62%, var(--color-text-muted) 38%);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-surface-1) 94%, black 6%);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.frame[data-device="phone"] .viewport {
+  padding: clamp(0.7rem, 1.4vw, 1.1rem) 0;
+}
+
+.frame[data-device="phone"] .image {
+  object-fit: contain;
+}
+
+.panel {
+  grid-area: panel;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: start;
+}
+
+.statement {
+  display: grid;
+  gap: clamp(1.1rem, 1.8vw, 1.5rem);
+}
+
+.portraitBackdrop {
+  position: absolute;
+  top: -2rem;
+  right: -12%;
+  bottom: auto;
+  left: -12%;
+  z-index: 0;
+  aspect-ratio: 1.55 / 1;
+  overflow: hidden;
+  opacity: 0.15;
+  filter: grayscale(0.35) contrast(1.08);
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(
+    50% 50% at 50% 50%,
+    #000 0%,
+    transparent 82%
+  );
+  mask-image: radial-gradient(50% 50% at 50% 50%, #000 0%, transparent 82%);
+}
+
+.portraitBackdropImage {
+  object-fit: cover;
+}
+
+.portraitBackdropImage[data-avatar="allmacher"] {
+  object-position: 65% 28%;
+}
+
+.portraitBackdropImage[data-avatar="kolja"] {
+  object-position: 50% 8%;
+}
+
+.statement,
+.controls {
+  position: relative;
+  z-index: 1;
+}
+
+.controls {
+  grid-area: controls;
+  display: grid;
+  grid-template-rows: max-content max-content;
+  align-self: start;
+  gap: clamp(0.9rem, 1.4vw, 1.15rem);
+  width: 100%;
+}
+
+.counter {
+  margin: 0;
+  color: color-mix(in srgb, var(--accent) 72%, var(--color-text) 28%);
+  font-size: var(--font-size-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.navButton {
+  width: 100%;
+}
+
+.navButton[aria-pressed="true"],
+.navButton[aria-pressed="true"]:hover,
+.navButton[aria-pressed="true"]:focus-visible {
+  border-color: color-mix(in srgb, var(--color-cta) 88%, transparent);
+  color: var(--color-text);
+}
+
+.projectDetailsLink {
+  justify-self: start;
+  color: var(--color-cta);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-cta) 54%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+:global([data-theme="light"]) .portraitBackdropImage {
+  opacity: 0.82;
+}
+
+.projectDetailsLink:hover,
+.projectDetailsLink:focus-visible {
+  color: var(--color-cta-hover);
+  text-decoration-color: currentColor;
+}
+
+@media (min-width: 760px) {
+  .showcase {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "stage panel"
+      "stage controls";
+    column-gap: clamp(2rem, 3.4vw, 3.4rem);
+    row-gap: clamp(1.5rem, 2.2vw, 2rem);
+  }
+
+  .actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .navButton {
+    width: 100%;
+    min-height: 52px;
+    height: 100%;
+  }
+}
+
+@media (max-width: 759px) {
+  .portraitBackdrop {
+    top: -1.5rem;
+    aspect-ratio: 1 / 1;
+  }
+}

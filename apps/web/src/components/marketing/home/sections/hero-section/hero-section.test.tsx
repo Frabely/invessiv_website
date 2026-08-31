@@ -32,39 +32,61 @@ describe("HeroSection", () => {
     });
   });
 
-  it("renders the updated hero messaging with effort-focused pills", () => {
+  it("renders the personal web design messaging, CTA targets, and custom photo slot", () => {
     render(
       <HeroSection
-        description="Landingpages, Webseiten, Upgrades und Interne Tools für Dienstleister und KMU, die ihr Angebot klar zeigen und interne Abläufe spürbar einfacher, besser oder schneller machen wollen."
-        heroPrimaryCta="Projekt anfragen"
-        heroSecondaryCta="Leistung passend einschätzen"
-        heroTag="MEHR ANFRAGEN, EINFACHERE PROZESSE"
-        heroVisualAriaLabel="Hero visual preview"
+        description="Ich entwickle klar strukturierte Websites für KMU und Dienstleister in Chemnitz."
+        fullscreenVisual
+        heroPrimaryCta="Kostenloses Erstgespräch anfragen"
+        heroSecondaryCta="Leistungen ansehen"
+        heroTag="WEBDESIGN AUS CHEMNITZ UND UMGEBUNG"
+        heroTrustChips={[
+          "Direkter Ansprechpartner",
+          "Softwareentwicklungs-Background",
+        ]}
         primaryCtaAnalyticsTarget="form"
         primaryCtaHref="#contact"
         secondaryCtaAnalyticsTarget="services"
         secondaryCtaHref="#services"
-        title="Digitale Lösungen,\ndie zu passenden Anfragen führen und interne Arbeit entlasten."
+        title="Websites, die Vertrauen schaffen und Anfragen bringen."
         trackingLocation="hero"
+        visualSlot={
+          <span
+            aria-label="Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz"
+            role="img"
+          />
+        }
       />,
     );
 
     const heroHeading = screen.getByRole("heading", { level: 1 });
-    expect(heroHeading.textContent).toContain("Digitale Lösungen,");
-    expect(heroHeading.textContent).toContain(
-      "die zu passenden Anfragen führen und interne Arbeit entlasten.",
+    expect(heroHeading.textContent).toBe(
+      "Websites, die Vertrauen schaffen und Anfragen bringen.",
     );
     expect(
       screen
-        .getByRole("link", { name: "Projekt anfragen" })
+        .getByRole("link", { name: "Kostenloses Erstgespräch anfragen" })
         .getAttribute("href"),
     ).toBe("#contact");
     const secondaryLink = screen.getByRole("link", {
-      name: "Leistung passend einschätzen",
+      name: "Leistungen ansehen",
     });
     expect(secondaryLink.getAttribute("href")).toBe("#services");
     expect(secondaryLink.dataset.analyticsTarget).toBe("services");
-    expect(screen.queryByText("KI-Agenten-Workflow")).toBeNull();
+    const directContactChip = screen.getByText("Direkter Ansprechpartner");
+    expect(directContactChip).toBeTruthy();
+    expect(screen.getByText("Softwareentwicklungs-Background")).toBeTruthy();
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(
+      secondaryLink.compareDocumentPosition(directContactChip) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("img", {
+        name: "Moritz Hecht, persönlicher Ansprechpartner für Webdesign aus Chemnitz",
+      }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Hero visual")).toBeNull();
   });
 
   it("supports custom CTA targets for route-specific hero reuse", () => {

@@ -1,4 +1,4 @@
-﻿# AGENTS.md — packages/common/src
+# AGENTS.md — packages/common/src
 
 Dieser Ordner enthält alles, was Client und Server **gemeinsam** nutzen: Konstanten, Contracts (DTOs/Interfaces), Defaults und Patterns. Kein serverseitiger, kein clientseitiger Code gehört hier hinein.
 
@@ -9,6 +9,9 @@ Inhalte von `AGENTS.md`-Dateien in diesem Projekt immer auf Deutsch pflegen.
 ## Was hier hingehört
 
 - `constants/` — benannte String-/Zahl-Konstanten und Enumerationswerte (kein Runtime-Code)
+  - `constants/i18n/` — alles, was sich eindeutig aus der Locale ableitet, als `Record<Locale, …>` neben
+    `SUPPORTED_LOCALES` (z. B. `OPEN_GRAPH_LOCALE`). Solche Werte gehören nicht in die Sprach-Dictionaries der Apps,
+    damit eine neue Locale genau eine Stelle erzwingt.
 - `contracts/` — TypeScript-Interfaces und DTOs, die über API-/DB-Grenzen geteilt werden; dazu gehören auch
   geteilte UI-Control-Contracts (z. B. Option-/Props-Shapes generischer `@invessiv/ui`-Controls unter `contracts/ui/`).
   Diese dürfen React **ausschließlich auf Typ-Ebene** referenzieren (`import type { ReactNode }`), niemals als

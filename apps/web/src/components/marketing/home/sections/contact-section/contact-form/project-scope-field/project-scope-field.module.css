@@ -1,0 +1,154 @@
+.fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: 0.55rem;
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted) 18%);
+  font-size: var(--font-size-label-md);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 14px 0 11px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+:global([data-theme="light"]) .chip {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-1) 92%,
+    var(--color-cta) 8%
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-border) 80%,
+    var(--color-cta) 20%
+  );
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
+}
+
+/* Pointer devices only: on touch :hover sticks after a tap. The hover state is
+   deliberately neutral — no CTA blue — so it can never read as "selected". */
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover:not([data-selected="true"]) {
+    border-color: var(--color-border-strong);
+    background: color-mix(
+      in srgb,
+      var(--color-surface-1) 88%,
+      var(--color-text) 12%
+    );
+    color: var(--color-text);
+  }
+
+  .chip:hover:not([data-selected="true"]) .iconSlot {
+    opacity: 1;
+  }
+
+  .chip[data-selected="true"]:hover {
+    box-shadow:
+      0 10px 24px color-mix(in srgb, var(--color-cta) 26%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip:has(.input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* Icon carries the CTA colour: quiet when idle, full when selected. */
+.iconSlot {
+  display: flex;
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--color-cta) 62%, var(--color-text) 38%);
+  opacity: 0.68;
+  transition:
+    color 180ms ease,
+    opacity 180ms ease;
+}
+
+.chip[data-selected="true"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-cta) 58%,
+    var(--color-border) 42%
+  );
+  background: linear-gradient(
+    120deg,
+    color-mix(in srgb, var(--color-cta) 26%, var(--color-surface-2) 74%),
+    color-mix(in srgb, var(--color-cta) 18%, var(--color-surface-1) 82%)
+  );
+  color: color-mix(in srgb, var(--color-text) 94%, var(--color-text-muted) 6%);
+  box-shadow:
+    0 8px 20px color-mix(in srgb, var(--color-cta) 18%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+:global([data-theme="light"]) .chip[data-selected="true"] {
+  color: var(--color-text);
+}
+
+.chip[data-selected="true"] .iconSlot {
+  color: var(--color-cta);
+  opacity: 1;
+}
+
+.chipLabel {
+  min-width: 0;
+}
+
+@media (max-width: 599px) {
+  .chips {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .iconSlot {
+    transition: none;
+  }
+}

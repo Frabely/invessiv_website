@@ -21,7 +21,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 | Scope                                            | Worum es geht                                                                                                   |
 | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, Route-Gruppen, SEO, i18n, interne Service-Verlinkung                                          |
+| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, route-spezifische Positionierung, SEO, i18n, interne Service-Verlinkung                       |
 | `apps/web/src/components/`                       | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
 | `apps/web/src/client/`                           | Clientseitige Services                                                                                          |
 | `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`   | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
@@ -113,7 +113,10 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
   (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.
 - **Error-Codes** als Const-Objekt in `…/constants/<domain>/`, Message-Texte nur in co-located `*-error.ts` der
   Nutzungsschicht. **URL-Pfade** ausschließlich aus typisierten Konstanten (`SITE_ROUTES` in `src/config/routes.ts`) /
-  Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen.
+  Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen. Lokalisierte Pfade laufen über
+  `createLocalePathname(SITE_ROUTES.X, locale)`; Canonical und `alternates.languages` einer Route über
+  `createLocalePathname` bzw. `createRouteAlternates(SITE_ROUTES.X)` (`src/lib/seo/page-metadata.ts`) — kein
+  `` `/${locale}/pfad` `` im Route- oder Komponenten-Code.
 - **Styling:** kein Inline-Styling und keine neuen globalen Komponentenklassen; neue Komponenten nutzen co-located
   `*.module.css` oder triviale Tailwind-Utilities. `globals.css` bleibt schlank (Tokens, Reset/Base, globale Utilities).
   Token zentral definieren.
@@ -141,6 +144,11 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - **Keine binären Locale-Branches** (`locale === "de" ? … : …`) für Inhalte, SEO/Structured-Data oder
   Drittanbieter-Configs (z. B. Clerk `deDE`/`enUS`). Stattdessen locale-keyed Dictionaries oder
   `Record<SupportedLocale, …>`-Mappings mit identischen Keys, damit >2 Sprachen ohne Umbau möglich sind.
+- **Von der Locale ableitbare Werte gehören nicht in die Dictionaries.** Alles, was sich eindeutig aus der Locale ergibt
+  (OpenGraph-Locale, `html lang`, Datums-/Zahlenformate, Drittanbieter-Locale-Codes), lebt als
+  `Record<Locale, …>` unter `packages/common/src/constants/i18n/` — z. B. `OPEN_GRAPH_LOCALE[locale]` statt eines
+  `"openGraphLocale"`-Felds je Sprach-JSON. Dictionaries enthalten nur übersetzten Text. Eine neue Sprache erzeugt so
+  genau einen Compile-Fehler an einer Stelle statt still fehlender Felder in vielen JSONs.
 - Wird ein Sprachfile zu groß, fachlich aufteilen (`legal`, `home`, `services`, `footer`, …). Key-Konvention: Namespace
   pro Seite/Domain, konsistente Unterteilung in `meta`/`page`/`sections`/`labels`/`values`.
 - **Neue Sprache hinzufügen:** Locale in `SUPPORTED_LOCALES` (`src/config/i18n.ts`) ergänzen → Dictionary mit

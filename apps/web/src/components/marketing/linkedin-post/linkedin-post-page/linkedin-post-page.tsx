@@ -13,7 +13,6 @@ import {
   LINKEDIN_POST_HEADER_NAVIGATION,
   LINKEDIN_POST_SECTION_HREFS,
 } from "@/config/navigation/linkedin-post";
-import { SITE_ROUTES } from "@/config/routes";
 import { getLinkedInPostHeaderContent } from "@/i18n/dictionaries/linkedin-post/header";
 import { getLinkedInPostExampleContent } from "@/i18n/dictionaries/linkedin-post/example";
 import { getLinkedInPostFooterContent } from "@/i18n/dictionaries/linkedin-post/footer";
@@ -21,7 +20,6 @@ import { getLinkedInPostGeneratorContent } from "@/i18n/dictionaries/linkedin-po
 import { getLinkedInPostFinalCtaContent } from "@/i18n/dictionaries/linkedin-post/final-cta";
 import { getLinkedInPostHeroContent } from "@/i18n/dictionaries/linkedin-post/hero";
 import { getLinkedInPostProblemExamplesContent } from "@/i18n/dictionaries/linkedin-post/problem-examples";
-import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 
 type LinkedInPostPageProps = {
   locale: Locale;
@@ -84,14 +82,9 @@ export function LinkedInPostPage({ locale }: LinkedInPostPageProps) {
 
         <FinalCtaSection
           analyticsLocation="linkedin_post_final_cta"
-          formId="linkedin_post_final_cta"
           id={LINKEDIN_POST_SECTION_HREFS.contact.slice(1)}
           locale={locale}
           origin={ContactSubmissionOrigin.LinkedInPost}
-          successRedirectHref={createLocalePathname(
-            SITE_ROUTES.LINKEDIN_POST_SERVICE_SUCCESS,
-            locale,
-          )}
           {...finalCta}
         />
 

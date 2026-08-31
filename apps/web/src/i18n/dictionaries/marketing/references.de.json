@@ -1,0 +1,121 @@
+{
+  "breadcrumbs": {
+    "navLabel": "Breadcrumb-Navigation",
+    "homeLabel": "Start",
+    "currentLabel": "Referenzen"
+  },
+  "hero": {
+    "kicker": "Referenzen",
+    "title": "Webdesign Referenzen",
+    "intro": "Ausgewählte Kundenprojekte, Ergebnisse und Stimmen aus der Zusammenarbeit — jedes davon kannst du dir live ansehen.",
+    "highlights": [
+      "{count} umgesetzte Projekte",
+      "Kontext, Fokus und Ergebnis",
+      "jedes Projekt live einsehbar"
+    ],
+    "supportingNote": "Weitere Projekte werden hier ergänzt, sobald sie umgesetzt sind. Entscheidend ist, wie Positionierung, Leseführung und Nutzbarkeit zusammenspielen."
+  },
+  "sectionIntro": {
+    "eyebrow": "Projektübersicht",
+    "title": "Umgesetzte Projekte mit klarem Fokus auf Wirkung und Nutzbarkeit.",
+    "description": "Jedes Projekt wird als kompakte Fallstudie dargestellt: mit Kontext, Fokus, konkreten Deliverables und dem Ergebnis, das die Seite oder das Tool im Einsatz klarer macht."
+  },
+  "testimonialLabels": {
+    "collapseQuote": "Zitat einklappen",
+    "expandQuote": "Ganzes Zitat lesen"
+  },
+  "projects": [
+    {
+      "imageKey": "allmacher",
+      "imageAlt": "Vorschau der Webseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
+      "kicker": "Webseiten-Projekt",
+      "category": "Seminarangebot & Anfragen",
+      "title": "Allmacher Coaching: Webseite für ein Verhandlungsseminar",
+      "summary": "Ein klarer Auftritt für Dr. Christoph Allmacher und sein Verhandlungsseminar in Chemnitz. Inhalte, Besonderheiten und Ticket-Optionen sind so geordnet, dass Führungskräfte den Nutzen sofort erfassen. Die Seite entsteht aktuell gemeinsam und wächst weiter.",
+      "focusLabel": "Projektfokus",
+      "focus": "Das Seminar so beschreiben, dass Ablauf und Nutzen sofort verständlich sind und die Anfrage der naheliegende nächste Schritt ist.",
+      "deliverablesLabel": "Leistungsbausteine",
+      "deliverables": [
+        "Seminarangebot in klare Abschnitte gegliedert",
+        "Trainer und Methode als Vertrauensanker sichtbar",
+        "durchgehende Führung zur Seminaranfrage"
+      ],
+      "outcomesLabel": "Was das Ergebnis leistet",
+      "outcomes": [
+        "macht Inhalt und Ablauf des Seminars auf Anhieb greifbar",
+        "stellt Dr. Christoph Allmacher als Trainer nach vorn",
+        "führt Interessenten ohne Umwege zur Anfrage"
+      ],
+      "testimonial": {
+        "authorName": "Dr. Christoph Allmacher",
+        "avatarKey": "allmacher",
+        "avatarAlt": "Porträt von Dr. Christoph Allmacher",
+        "role": "Allmacher Coaching, Verhandlungstraining in Chemnitz",
+        "quote": "Ich erstelle meine Website aktuell gemeinsam mit Moritz und bin mit der Zusammenarbeit sehr zufrieden. Die Kommunikation über WhatsApp ist unkompliziert, direkt und schnell, sodass Fragen jederzeit leicht geklärt werden können. Besonders schätze ich, dass Moritz sich Zeit nimmt, Zusammenhänge verständlich erklärt und nicht einfach nur „abarbeitet“. Die Zusammenarbeit ist angenehm entspannt und dennoch sehr professionell – ohne künstlichen Zeitdruck oder eine rein geschäftliche Atmosphäre. Eigene Ideen werden ernst genommen, konstruktiv weiterentwickelt und zuverlässig umgesetzt. Ich würde mich jederzeit wieder für eine Zusammenarbeit mit Moritz entscheiden und kann ihn uneingeschränkt weiterempfehlen."
+      },
+      "linkLabel": "Zu Allmacher Coaching",
+      "href": "https://www.allmacher-coaching.de"
+    },
+    {
+      "imageKey": "kolja",
+      "imageAlt": "Vorschau der Finanzmakler-Webseite von Kolja Wienigk mit klarer Struktur",
+      "kicker": "Webseiten-Projekt",
+      "category": "Positionierung & Anfrageführung",
+      "title": "Finanzmakler-Webseite mit klarer Positionierung",
+      "summary": "Ein ruhiger, vertrauenswürdiger Auftritt für einen Finanzmakler, der Leistungen schnell verständlich macht, relevante Einstiege klar setzt und Anfragen strukturiert vorbereitet.",
+      "focusLabel": "Projektfokus",
+      "focus": "Vertrauen aufbauen, Leistungen lesbar ordnen und Interessenten ohne Umwege zur passenden Anfrage führen.",
+      "deliverablesLabel": "Leistungsbausteine",
+      "deliverables": [
+        "Positionierung und Seiteneinstieg geschärft",
+        "klare Angebots- und CTA-Hierarchie",
+        "ruhige, mobiletaugliche Leseführung"
+      ],
+      "outcomesLabel": "Was das Ergebnis leistet",
+      "outcomes": [
+        "macht den Angebotsrahmen auf Anhieb verständlicher",
+        "reduziert visuelle Unruhe zugunsten klarer Orientierung",
+        "führt Anfragen nachvollziehbar in den Kontakt"
+      ],
+      "testimonial": {
+        "authorName": "Kolja Wienigk",
+        "avatarKey": "kolja",
+        "avatarAlt": "Porträt von Kolja Wienigk",
+        "role": "Finanzmakler aus Dresden",
+        "quote": "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen."
+      },
+      "linkLabel": "Zu Kolja Wienigk – Finanzmakler",
+      "href": "https://www.kolja-wienigk.de"
+    },
+    {
+      "imageKey": "consumption",
+      "imageAlt": "Vorschau eines Tools zur Erfassung von Verbrauchsdaten",
+      "kicker": "Software-Projekt",
+      "category": "Erfassung & Verbrauchsdaten",
+      "title": "Consumption Trial zur strukturierten Erfassung von Verbrauchsdaten",
+      "summary": "Ein fokussiertes Tool, das technische Daten und Verbräuche in einer klaren Oberfläche bündelt, Eingaben vereinfacht und den laufenden Prozess lesbarer macht.",
+      "focusLabel": "Projektfokus",
+      "focus": "Wiederkehrende Eingaben vereinfachen, Status sichtbar machen und technische Daten in eine nutzbare Arbeitsoberfläche überführen.",
+      "deliverablesLabel": "Leistungsbausteine",
+      "deliverables": [
+        "kompakte Eingabelogik statt unnötiger Reibung",
+        "klare Oberfläche für technische Verbrauchsdaten",
+        "bessere Lesbarkeit im laufenden Workflow"
+      ],
+      "outcomesLabel": "Was das Ergebnis leistet",
+      "outcomes": [
+        "senkt manuellen Aufwand in der Erfassung",
+        "macht Verbrauchsdaten schneller auswertbar",
+        "ordnet den Prozess in einer klaren UI"
+      ],
+      "linkLabel": "Zum Consumption Trial",
+      "href": "https://consumption-trial.invessiv.com/"
+    }
+  ],
+  "closingCta": {
+    "title": "Wenn dein nächstes Projekt dieselbe Klarheit braucht, ist der nächste Schritt kurz.",
+    "supportingText": "Ob neue Webseite, Relaunch oder internes Tool: entscheidend ist eine klare Führung vor dem ersten Build, nicht mehr visuelle Lautstärke.",
+    "primaryLabel": "Angebot einschätzen lassen",
+    "secondaryLabel": "Leistungsmodelle"
+  }
+}

@@ -30,15 +30,17 @@ async function getLeadByEmail(email: string) {
   const rows = await sql.query(
     `
             SELECT leads.email,
-                   leads.display_name AS "displayName",
-                   lead_project_requests.offer_key                   AS "inquiryType",
-                   lead_submissions.channel                          AS "sourceForm",
-                   lead_project_requests.goal_key                    AS "goalKey"
+                   leads.display_name               AS "displayName",
+                   lead_submissions.channel         AS "sourceForm",
+                   lead_email_contacts.message      AS "message",
+                   lead_call_contacts.project_scope AS "projectScope"
             FROM leads
                      LEFT JOIN lead_submissions
                                ON lead_submissions.lead_id = leads.id
-                     LEFT JOIN lead_project_requests
-                               ON lead_project_requests.lead_submission_id = lead_submissions.id
+                     LEFT JOIN lead_email_contacts
+                               ON lead_email_contacts.lead_submission_id = lead_submissions.id
+                     LEFT JOIN lead_call_contacts
+                               ON lead_call_contacts.lead_submission_id = lead_submissions.id
             WHERE leads.email = $1
             ORDER BY lead_submissions.created_at DESC LIMIT 1
         `,
@@ -49,7 +51,7 @@ async function getLeadByEmail(email: string) {
 }
 
 test.describe("contact lead persistence", () => {
-  test("submits the project request form and persists the lead in Neon", async ({
+  test("sends the contact form as an email and persists the lead in Neon", async ({
     page,
   }, testInfo) => {
     testInfo.setTimeout(90_000);
@@ -57,6 +59,7 @@ test.describe("contact lead persistence", () => {
 
     const uniqueId = Date.now();
     const email = `lead-e2e-${uniqueId}@example.com`;
+    const message = "E2E-Test fuer die Lead-Persistierung in Neon.";
 
     await deleteLeadByEmail(email);
 
@@ -65,29 +68,16 @@ test.describe("contact lead persistence", () => {
 
     await page.locator('input[name="displayName"]').fill("Lead E2E");
     await page.locator('input[name="email"]').fill(email);
-    await page.locator('select[name="offerKey"]').selectOption("landing");
-    await page
-      .getByRole("button", { name: "Weiter zu Projektdetails" })
-      .click();
-
-    await page
-      .locator('select[name="goalKey"]')
-      .selectOption("generate_inquiries");
-    await page
-      .locator('textarea[name="projectDetails"]')
-      .fill("E2E-Test fuer die Lead-Persistierung in Neon.");
-    await page
-      .getByRole("button", { name: "Weiter zu Rahmen & Versand" })
-      .click();
-
-    await page.locator('input[name="company"]').fill("Invessiv Test");
-    await page.locator('input[name="role"]').fill("QA");
+    await page.getByRole("radio", { name: "Kompakte Website" }).check();
+    await page.locator('textarea[name="message"]').fill(message);
     await page.locator('input[name="consentAccepted"]').check();
     await page.getByRole("button", { name: "Anfrage senden" }).click();
 
     await expect(
-      page.getByText("Danke. Deine Anfrage wurde erfolgreich gesendet."),
-    ).toBeVisible({ timeout: 45_000 });
+      page.getByText("Anfrage gesendet.", { exact: false }),
+    ).toBeVisible({
+      timeout: 45_000,
+    });
 
     await expect
       .poll(async () => getLeadByEmail(email), {
@@ -97,11 +87,62 @@ test.describe("contact lead persistence", () => {
       .toMatchObject({
         email,
         displayName: "Lead E2E",
-        goalKey: "generate_inquiries",
-        inquiryType: "landing",
-        sourceForm: "project_request",
+        message: `Leistungsmodell: Kompakte Website\n\n${message}`,
+        sourceForm: "quick_contact",
       });
 
+    await deleteLeadByEmail(email);
+  });
+
+  test("persists the selected scope before opening Calendly", async ({
+    page,
+  }, testInfo) => {
+    testInfo.setTimeout(90_000);
+    test.skip(!sql, "DATABASE_URL is not configured for E2E verification.");
+
+    const uniqueId = Date.now();
+    const email = `call-e2e-${uniqueId}@example.com`;
+    const message = "E2E-Test fuer den Projektrahmen im Erstgespraech.";
+
+    await deleteLeadByEmail(email);
+    await page.context().route("https://calendly.com/**", async (route) => {
+      await route.fulfill({ body: "Calendly test page", status: 200 });
+    });
+
+    await page.goto("/de");
+    await page.locator("#contact").scrollIntoViewIfNeeded();
+
+    await page.locator('input[name="displayName"]').fill("Call E2E");
+    await page.locator('input[name="email"]').fill(email);
+    await page.getByRole("radio", { name: "Business Website" }).check();
+    await page.locator('textarea[name="message"]').fill(message);
+    await page.locator('input[name="consentAccepted"]').check();
+
+    const popupPromise = page.waitForEvent("popup");
+    await page
+      .getByRole("button", { name: "Weiter zur Terminauswahl" })
+      .click();
+    const popup = await popupPromise;
+
+    await expect
+      .poll(async () => getLeadByEmail(email), {
+        message: "Expected the discovery call to be written to Neon.",
+        timeout: 30_000,
+      })
+      .toMatchObject({
+        displayName: "Call E2E",
+        email,
+        message,
+        projectScope: "business_website",
+        sourceForm: "discovery_call",
+      });
+
+    await popup.waitForURL(/calendly\.com/);
+    const calendlyUrl = new URL(popup.url());
+    expect(calendlyUrl.searchParams.get("a1")).toBe(message);
+    expect(calendlyUrl.searchParams.get("a2")).toBe("Business Website");
+
+    await popup.close();
     await deleteLeadByEmail(email);
   });
 });

@@ -3,13 +3,12 @@
     "meta": {
       "title": "Terms and Conditions",
       "description": "Terms and conditions of Invessiv for project-based digital services, primarily for business customers.",
-      "openGraphTitle": "Terms and Conditions | Invessiv",
-      "openGraphLocale": "en_US"
+      "openGraphTitle": "Terms and Conditions | Invessiv"
     },
     "page": {
       "title": "Terms and Conditions",
       "lead": "These terms primarily apply to contracts with business customers. Invessiv enters into contracts with consumers only in individual cases on the basis of individual offers.",
-      "updatedAt": "Last updated: March 26, 2026.",
+      "updatedAt": "Last updated: August 3, 2026.",
       "breadcrumbAriaLabel": "Breadcrumb",
       "homeLabel": "Home",
       "tocLabel": "Contents"
@@ -53,24 +52,36 @@
         "title": "8. Review, approval, and completion",
         "body": "For defined project-based services, Invessiv provides work results for review and approval. The customer shall review them promptly and communicate any material deviations in a comprehensible manner. Justified material deviations will be remedied within a reasonable period. Ongoing services, support, and other services are not subject to formal acceptance unless expressly agreed otherwise."
       },
+      "customerContentRights": {
+        "title": "9. Customer content and third-party rights",
+        "body": "The customer is responsible for the factual accuracy and legal admissibility of the content, information, and materials they provide. The customer warrants that they hold the necessary usage, trademark, personality, and other rights to the texts, images, logos, videos, fonts, and further materials they supply, and that using them as agreed does not infringe the rights of third parties. Invessiv is not obliged to review the content or materials provided by the customer for legal compliance. Where Invessiv points out possible legal or licensing risks, this does not constitute legal advice."
+      },
+      "legalTextsReview": {
+        "title": "10. Legal texts and legal review",
+        "body": "Technically integrating texts that the customer provides for an imprint, privacy policy, cookie notice, or comparable legal content does not include drafting or reviewing those texts. Where Invessiv prepares a technical draft or placeholder based on the customer’s input, the customer must review it independently and expressly approve it before publication. Invessiv does not provide legal advice. A legal review of the website and the services used — in particular with regard to data protection, competition, copyright, and consumer protection law — is owed only where this has been expressly agreed and is legally permissible."
+      },
       "usageRights": {
-        "title": "9. Usage rights",
+        "title": "11. Usage rights",
         "body": "Until full payment has been received, all usage rights in the work results created by Invessiv remain with Invessiv unless mandatory law provides otherwise. After full payment, the customer receives the usage rights required for the contractually agreed purpose in the agreed results. Delivery of open source code, editable project files, raw data, or other source files not expressly owed will only take place if this is expressly provided for in the offer or another agreement. Rights in open-source components, third-party assets, external libraries, plugins, fonts, or other third-party elements are governed by their respective license terms."
       },
       "thirdPartyServices": {
-        "title": "10. Third-party services and external components",
+        "title": "12. Third-party services and external components",
         "body": "Hosting, domains, external software, APIs, third-party tools, platforms, licenses, and other third-party services are included in Invessiv's services only if this has been expressly agreed. Such services may be subject to separate terms, costs, and license requirements of the respective providers. Invessiv may engage suitable subcontractors or technical service providers to perform the agreed services."
       },
+      "ongoingSupportAvailability": {
+        "title": "13. Ongoing support and availability",
+        "body": "The specific scope of ongoing maintenance, support, or SEO services follows from the respective offer. Unless expressly agreed otherwise, ongoing services do not include continuous 24/7 monitoring, guaranteed uninterrupted availability, or binding response or restoration times. Disruptions or additional work caused by interventions by the customer, by third parties they have engaged, or by changes outside the system maintained by Invessiv are not automatically covered by the agreed scope of services. Any chargeable work is agreed in advance."
+      },
       "liability": {
-        "title": "11. Liability",
+        "title": "14. Liability",
         "body": "Invessiv has unlimited liability in cases of intent and gross negligence and for damages arising from injury to life, body, or health. In cases of slight negligence involving a breach of essential contractual obligations, liability is limited to foreseeable damage typical for the contract. In all other cases, liability for slight negligence is excluded to the extent permitted by law. Mandatory statutory liability provisions, in particular under product liability law or for the benefit of consumers, remain unaffected."
       },
       "confidentiality": {
-        "title": "12. Confidentiality",
+        "title": "15. Confidentiality",
         "body": "Both parties shall treat as confidential any confidential information of the other party that becomes known to them in connection with the offer, contract, or collaboration and shall use it only for the performance of the respective contractual relationship."
       },
       "finalProvisions": {
-        "title": "13. Final provisions",
+        "title": "16. Final provisions",
         "body": "The law of the Federal Republic of Germany applies, excluding the UN Convention on Contracts for the International Sale of Goods (CISG), to the extent legally permissible. For contracts with merchants, legal entities under public law, or special funds under public law, the registered seat of Invessiv is the place of jurisdiction where legally permissible. Individual agreements in the offer or contract take precedence over these terms."
       }
     }

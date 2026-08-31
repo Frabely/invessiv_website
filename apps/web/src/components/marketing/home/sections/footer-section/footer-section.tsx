@@ -1,15 +1,4 @@
-import type { ReactNode } from "react";
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
-import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
-import {
-  COMPANY,
-  COMPANY_MAILTO,
-  COMPANY_SOCIAL_INSTAGRAM,
-  COMPANY_SOCIAL_LINKEDIN,
-  COMPANY_TEL,
-} from "@/config/company";
 import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
@@ -17,43 +6,23 @@ import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import type { Locale } from "@/config/i18n";
 import type { FooterColumnCopy } from "@/i18n/dictionaries/marketing/home";
 import { getFooterStaticContent } from "@/i18n/dictionaries/shared/footer";
+import { CONTACT_CHANNEL_KEYS } from "@/common/constants/contact/contact-channel-keys";
+import { ContactIdentity } from "@/components/shared/contact-identity/contact-identity";
 import styles from "./footer-section.module.css";
 
 export type FooterSectionProps = {
-  cookieSettings?: ReactNode;
   description: string;
   locale: Locale;
   navColumn: FooterColumnCopy;
 };
 
-const PHONE_DISPLAY: Record<Locale, string> = {
-  de: COMPANY.contact.phoneDisplayDe,
-  en: COMPANY.contact.phoneDisplayEn,
-};
-
-const SOCIAL_LINKS = [
-  {
-    platform: LeadSocialPlatform.Linkedin,
-    href: COMPANY_SOCIAL_LINKEDIN,
-    label: "LinkedIn",
-    icon: faLinkedinIn,
-  },
-  {
-    platform: LeadSocialPlatform.Instagram,
-    href: COMPANY_SOCIAL_INSTAGRAM,
-    label: "Instagram",
-    icon: faInstagram,
-  },
-];
-
 export function FooterSection({
-  cookieSettings,
   description,
   locale,
   navColumn,
 }: FooterSectionProps) {
   const copy = getFooterStaticContent(locale);
-  const imprintHref = createLocalePathname(SITE_ROUTES.IMPRINT, locale);
+  const referencesHref = createLocalePathname(SITE_ROUTES.REFERENCES, locale);
 
   const isPlaceholderHref = (href: string) =>
     href.includes("placeholder") || href.includes("PLATZHALTER");
@@ -83,20 +52,16 @@ export function FooterSection({
     links: navColumn.links.filter((link) => !isPlaceholderHref(link.href)),
   };
 
-  const contactColumn = {
-    title: copy.contactTitle,
-    links: [
-      { label: copy.brand, href: `${imprintHref}#company-details` },
-      { label: COMPANY.contact.email, href: COMPANY_MAILTO },
-      { label: PHONE_DISPLAY[locale], href: COMPANY_TEL },
-    ],
-  };
-
   const columns = [
     filteredNavColumn,
     { title: copy.legalTitle, links: copy.legalLinks },
-    { title: copy.invessivTitle, links: copy.invessivLinks },
-    contactColumn,
+    {
+      title: copy.invessivTitle,
+      links: [
+        ...copy.invessivLinks,
+        { label: copy.referencesLabel, href: referencesHref },
+      ],
+    },
   ];
 
   return (
@@ -116,20 +81,6 @@ export function FooterSection({
               </span>
 
               <p className={styles.description}>{description}</p>
-
-              <ul className={styles.socials} aria-label={copy.socialsAriaLabel}>
-                {SOCIAL_LINKS.map((socialLink) => (
-                  <li key={socialLink.platform}>
-                    <a
-                      aria-label={socialLink.label}
-                      className={styles.socialLink}
-                      href={socialLink.href}
-                    >
-                      <FontAwesomeIcon icon={socialLink.icon} />
-                    </a>
-                  </li>
-                ))}
-              </ul>
             </section>
 
             <div className={styles.grid} role="list">
@@ -159,6 +110,15 @@ export function FooterSection({
                   </ul>
                 </section>
               ))}
+
+              <section className={styles.column} role="listitem">
+                <h3 className={styles.heading}>{copy.contactTitle}</h3>
+                <ContactIdentity
+                  analyticsLocation="footer"
+                  channels={CONTACT_CHANNEL_KEYS}
+                  locale={locale}
+                />
+              </section>
             </div>
           </div>
 
@@ -166,9 +126,6 @@ export function FooterSection({
             <div className={styles.bottomMeta}>
               <span>{copy.copyright}</span>
             </div>
-            {cookieSettings ? (
-              <div className={styles.cookieSettings}>{cookieSettings}</div>
-            ) : null}
           </div>
         </div>
       </div>

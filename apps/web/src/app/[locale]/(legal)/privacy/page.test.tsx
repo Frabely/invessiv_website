@@ -89,7 +89,6 @@ describe("PrivacyPage", () => {
       "hosting",
       "vercel-analytics",
       "speed-insights",
-      "google-tracking",
       "contact",
       "linkedin-post-generator",
       "appointments",
@@ -139,14 +138,8 @@ describe("PrivacyPage", () => {
       ),
     ).toBeTruthy();
     expect(screen.getByText(/invessiv-theme/)).toBeTruthy();
-    expect(
-      screen.getByText(
-        "5. Google Analytics 4 und Google Ads (nur Landingpage)",
-      ),
-    ).toBeTruthy();
-    expect(
-      screen.getByText(/Google Consent Mode v2 im Advanced Mode/),
-    ).toBeTruthy();
+    expect(screen.queryByText(/Google Analytics 4/i)).toBeNull();
+    expect(screen.queryByText(/Google Consent Mode/i)).toBeNull();
   });
 
   it("calls notFound for unsupported locales", async () => {

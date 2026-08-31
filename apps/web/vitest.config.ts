@@ -1,7 +1,9 @@
 import path from "node:path";
 import { defineConfig } from "vitest/config";
+import { nextStaticImagePlugin } from "./vitest/next-static-image-plugin";
 
 export default defineConfig({
+  plugins: [nextStaticImagePlugin(__dirname)],
   resolve: {
     alias: [
       {
@@ -41,6 +43,10 @@ export default defineConfig({
           __dirname,
           "../../packages/common/src/index.ts",
         ),
+      },
+      {
+        find: /^@\/assets\/(.+)$/,
+        replacement: path.resolve(__dirname, "assets/$1"),
       },
       {
         find: /^@\/common\/(.+)$/,

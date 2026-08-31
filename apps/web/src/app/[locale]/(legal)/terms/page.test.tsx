@@ -3,6 +3,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import TermsPage from "./page";
 
 const { mockNotFound, mockLegalDocumentContent, mockLegalDocumentLayout } =
   vi.hoisted(() => ({
@@ -68,8 +69,6 @@ vi.mock(
     LegalDocumentContent: mockLegalDocumentContent,
   }),
 );
-
-import TermsPage from "./page";
 
 describe("TermsPage", () => {
   beforeEach(() => {
@@ -168,7 +167,7 @@ describe("TermsPage", () => {
     expect(mockNotFound).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps the English terms sections unchanged", async () => {
+  it("renders the English terms with the same sections as the German version", async () => {
     render(await TermsPage({ params: Promise.resolve({ locale: "en" }) }));
 
     const renderedSectionIds = Array.from(
@@ -184,12 +183,15 @@ describe("TermsPage", () => {
       "payment",
       "consumer-contracts",
       "acceptance",
+      "customer-content-rights",
+      "legal-texts-review",
       "usage-rights",
       "third-party-services",
+      "ongoing-support-availability",
       "liability",
       "confidentiality",
       "final-provisions",
     ]);
-    expect(screen.getByText("Last updated: March 26, 2026.")).toBeTruthy();
+    expect(screen.getByText("Last updated: August 3, 2026.")).toBeTruthy();
   });
 });

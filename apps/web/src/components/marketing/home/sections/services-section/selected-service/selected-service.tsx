@@ -15,7 +15,6 @@ type SelectedServiceProps = {
   defaultDeliveryLabel: string;
   detailHref?: string;
   detailPageCtaLabel: string;
-  detailsCtaLabel: string;
   recommendedBadgeLabel: string;
   selectedCard: PrimaryServiceCardData;
 };
@@ -31,7 +30,6 @@ export function SelectedService({
   defaultDeliveryLabel,
   detailHref,
   detailPageCtaLabel,
-  detailsCtaLabel,
   recommendedBadgeLabel,
   selectedCard,
 }: SelectedServiceProps) {
@@ -42,9 +40,6 @@ export function SelectedService({
     "Prozess\u00ADoptimierung",
   );
   const selectedDescription = selectedCard.description;
-  const detailItems = selectedCard.details ?? [];
-  const timelineItems =
-    selectedCard.timeline ?? selectedCard.included.slice(0, 3);
 
   return (
     <article
@@ -83,19 +78,6 @@ export function SelectedService({
               <li key={bullet}>{bullet}</li>
             ))}
           </ul>
-
-          {detailItems.length > 0 ? (
-            <details className={styles.activeDetails}>
-              <summary className={styles.activeDetailsSummary}>
-                {detailsCtaLabel}
-              </summary>
-              <ul className={styles.activeDetailsList}>
-                {detailItems.map((detail) => (
-                  <li key={detail}>{detail}</li>
-                ))}
-              </ul>
-            </details>
-          ) : null}
         </div>
       </div>
 
@@ -113,7 +95,6 @@ export function SelectedService({
               <p className={styles.timeValue}>{selectedCard.delivery}</p>
             </div>
           </div>
-          <p className={styles.timeSteps}>{timelineItems.join(" → ")}</p>
         </div>
 
         <div className={styles.actionRow}>

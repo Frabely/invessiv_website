@@ -253,6 +253,20 @@
     "mockupPath": "all/svg-path-draw"
   },
   {
+    "id": "marker_strikethrough",
+    "name": "Marker Strikethrough",
+    "inspiredBy": ["Invessiv home USP section"],
+    "effectType": "Scroll-triggered cross-out stroke",
+    "trigger": "IntersectionObserver on enter",
+    "implementation": "Overlaid SVG path with pathLength=1 and a stroke-dasharray/stroke-dashoffset CSS transition; stroke sized in viewBox units, no vector-effect non-scaling-stroke (breaks dash animation in Chromium)",
+    "uxGoal": "Visually dismiss an old state before presenting the improvement",
+    "bestFor": ["Problem-to-solution transitions", "Before/after moments"],
+    "performanceNotes": "One-shot CSS transition on stroke-dashoffset only; observer disconnects after the first trigger",
+    "a11yNotes": "Wrap image and SVG in an aria-hidden container with the caption outside; static struck-through state for reduced motion",
+    "platformGroup": "all",
+    "mockupPath": "all/marker-strikethrough"
+  },
+  {
     "id": "gradient_border_grain",
     "name": "Gradient Border Grain",
     "inspiredBy": ["Effect mockup 08"],
@@ -360,5 +374,23 @@
     "a11yNotes": "Provide keyboard fallback controls in production and preserve readable static state",
     "platformGroup": "all",
     "mockupPath": "all/rondell"
+  },
+  {
+    "id": "sticky_window_backdrop",
+    "name": "Sticky Window Backdrop",
+    "inspiredBy": ["Editorial cover sections", "Apple product pages"],
+    "effectType": "Viewport-anchored image backdrop",
+    "trigger": "Scroll",
+    "implementation": "Sticky viewport-height image layer on a track that overhangs the section by 100lvh top and bottom, clipped by an overflow:clip window",
+    "uxGoal": "Section reads as a window onto a standing image while the content scrolls over it",
+    "bestFor": [
+      "Story and about sections",
+      "Chat or testimonial threads over a photo",
+      "Full-bleed section breaks"
+    ],
+    "performanceNotes": "Compositor-driven, no scroll listener; replaces background-attachment: fixed (ignored by iOS Safari) and the JS counter-scroll that lags a frame on mobile. overflow:clip is required - overflow:hidden would create a scrollport and sticky would latch onto it",
+    "a11yNotes": "Backdrop is decorative (aria-hidden); tint layer keeps text contrast at WCAG AA; under prefers-reduced-motion the layer sits statically inside the section",
+    "platformGroup": "all",
+    "mockupPath": "all/sticky-window-backdrop"
   }
 ]

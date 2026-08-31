@@ -1,8 +1,33 @@
 .section {
+  position: relative;
+  isolation: isolate;
   display: grid;
   gap: clamp(3rem, 5vw, 5.6rem);
   padding-block: clamp(2.2rem, 4.5vw, 4.8rem);
   margin-top: 0;
+}
+
+.brandMark {
+  position: absolute;
+  top: -3rem;
+  left: 50%;
+  z-index: -1;
+  width: min(100%, 72rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 759px) {
+  .brandMark {
+    top: 30rem;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
 }
 
 .header {
@@ -10,16 +35,10 @@
   gap: 24px;
 }
 
-.contextNote,
-.contextMeta,
-.fitNote,
 .activeDescription,
 .activeEyebrow,
-.activeDetailsList,
 .timeLabel,
-.timeValue,
-.timeSteps,
-.maintenanceDescription {
+.timeValue {
   margin: 0;
 }
 
@@ -35,11 +54,6 @@
   text-transform: uppercase;
 }
 
-.headingBlock {
-  display: grid;
-  gap: 18px;
-}
-
 .sectionTitle {
   margin: 0;
   color: var(--color-text);
@@ -47,24 +61,6 @@
   line-height: 1.08;
   letter-spacing: -0.04em;
   text-wrap: balance;
-}
-
-.contextNote {
-  max-width: min(100%, 52rem);
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-text-muted) 16%);
-  font-size: var(--font-size-heading-lg);
-  font-weight: 740;
-  line-height: 1.35;
-  letter-spacing: -0.02em;
-}
-
-.contextMeta {
-  max-width: min(100%, 54rem);
-  color: color-mix(in srgb, var(--accent) 74%, var(--color-text) 26%);
-  font-size: var(--font-size-body-md);
-  font-weight: 600;
-  line-height: 1.55;
-  letter-spacing: -0.01em;
 }
 
 .servicePicker {
@@ -164,10 +160,7 @@
 }
 
 .activeMain,
-.activeAside,
-.otherServices,
-.launchAddon,
-.maintenanceCard {
+.activeAside {
   display: grid;
   align-content: start;
 }
@@ -185,7 +178,8 @@
 
 .activeAside {
   gap: clamp(3rem, 5vw, 5rem);
-  justify-items: start;
+  grid-template-columns: minmax(0, max-content);
+  justify-content: start;
 }
 
 .activeHeading {
@@ -204,8 +198,7 @@
   gap: 0.58rem;
 }
 
-.activeTitle,
-.maintenanceTitle {
+.activeTitle {
   margin: 0;
   color: var(--color-text);
   font-weight: 800;
@@ -229,10 +222,6 @@
   font-weight: 500;
   line-height: 1.42;
   letter-spacing: -0.01em;
-}
-
-.fitNote {
-  display: none;
 }
 
 .bulletList {
@@ -268,150 +257,26 @@
     color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
 }
 
-.activeDetails {
-  grid-column: 1 / -1;
-  width: fit-content;
-  max-width: 100%;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
-  border-radius: 14px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-surface-2) 80%, transparent),
-    color-mix(in srgb, var(--color-surface-1) 70%, transparent)
-  );
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
-    0 18px 44px color-mix(in srgb, var(--color-bg) 42%, transparent);
-}
-
-.activeDetails[open] {
-  width: 100%;
-}
-
-.activeDetailsSummary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 1rem;
-  min-height: 3.2rem;
-  padding: 0.9rem 1rem;
-  color: color-mix(in srgb, var(--color-text) 82%, var(--color-cta) 18%);
-  font-size: var(--font-size-body-sm);
-  font-weight: 820;
-  line-height: 1.2;
-  cursor: pointer;
-  list-style: none;
-}
-
-.activeDetailsSummary::-webkit-details-marker {
-  display: none;
-}
-
-.activeDetailsSummary::after {
-  content: "";
-  width: 0.58rem;
-  height: 0.58rem;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  opacity: 0.78;
-  transform: translateY(-0.12rem) rotate(45deg);
-  transition:
-    opacity 160ms ease,
-    transform 160ms ease;
-}
-
-.activeDetails[open] .activeDetailsSummary {
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--color-border) 72%, transparent);
-}
-
-.activeDetails[open] .activeDetailsSummary::after {
-  opacity: 1;
-  transform: translateY(0.12rem) rotate(225deg);
-}
-
-.activeDetailsSummary:hover {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 78%,
-    var(--color-cta) 8%
-  );
-}
-
-.activeDetailsSummary:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: -2px;
-}
-
-.activeDetailsList {
-  display: grid;
-  gap: 0;
-  padding: 0;
-  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.48;
-  list-style: none;
-}
-
-.activeDetailsList > li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.78rem;
-  align-items: start;
-  padding: 0.82rem 1rem;
-}
-
-.activeDetailsList > li + li {
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
-}
-
-.activeDetailsList > li::before {
-  content: "";
-  width: 0.42rem;
-  height: 0.42rem;
-  margin-top: 0.48rem;
-  border-radius: 999px;
-  background: color-mix(
-    in srgb,
-    var(--color-accent-warm) 66%,
-    var(--color-text) 34%
-  );
-}
-
-:global([data-theme="light"]) .activeDetails {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-surface-1) 96%, var(--color-cta) 4%),
-    color-mix(in srgb, var(--color-surface-2) 94%, transparent)
-  );
-  box-shadow: 0 16px 34px color-mix(in srgb, var(--color-cta) 8%, transparent);
-}
-
-.maintenanceCard {
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 66%, transparent);
-}
-
 .timeBlock {
   display: grid;
   gap: clamp(1rem, 1.45vw, 1.25rem);
+  width: 100%;
 }
 
 .timeHeader {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: clamp(1.05rem, 1.5vw, 1.3rem);
-  align-items: start;
+  align-items: center;
 }
 
 .timeIcon {
   display: inline-flex;
-  width: 2.65rem;
-  height: 2.65rem;
+  width: clamp(3.5rem, 4vw, 4rem);
+  height: clamp(3.5rem, 4vw, 4rem);
   align-items: center;
   justify-content: center;
-  border-radius: 0.55rem;
+  border-radius: 0.8rem;
   border: 1px solid var(--color-border);
   background: color-mix(in srgb, var(--color-surface-2) 76%, transparent);
   color: color-mix(
@@ -424,8 +289,8 @@
 .timeIconImage {
   display: block;
   flex: 0 0 auto;
-  width: 1.55rem;
-  height: 1.55rem;
+  width: clamp(2.1rem, 2.5vw, 2.4rem);
+  height: clamp(2.1rem, 2.5vw, 2.4rem);
   background-color: color-mix(
     in srgb,
     var(--color-accent-warm) 72%,
@@ -459,8 +324,7 @@
 
 .timeText {
   display: grid;
-  gap: 0.72rem;
-  padding-top: 0.05rem;
+  gap: 0.48rem;
 }
 
 .timeLabel {
@@ -477,235 +341,26 @@
   font-weight: 840;
   line-height: 1.08;
   letter-spacing: -0.03em;
-}
-
-.timeSteps {
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-size: var(--font-size-body-md);
-  line-height: 1.45;
-}
-
-.actionRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-}
-
-.actionRow {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: min(100%, 22rem);
-  gap: 1.18rem;
-}
-
-.primaryCta {
-  min-height: 46px;
-  width: fit-content;
-  max-width: 100%;
-  padding-inline: 18px;
-  font-size: var(--font-size-body-md);
-}
-
-.otherServices,
-.launchAddon {
-  gap: 30px;
-}
-
-.listTitle {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 66%, var(--color-text-muted) 34%);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.serviceRows {
-  display: grid;
-  gap: 0;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--color-surface-1) 80%, transparent);
-}
-
-.serviceRows > * + * {
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-accent-warm) 22%, transparent),
-    inset 0 0 18px color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
-}
-
-.serviceRowShell {
-  display: block;
-}
-
-.serviceRowButton {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.serviceRowButton:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: -2px;
-}
-
-.serviceRowButton:hover .serviceRow,
-.serviceRowButton:focus-visible .serviceRow,
-.serviceRowShell[data-selected="true"] .serviceRow {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 88%,
-    var(--color-cta) 12%
-  );
-}
-
-.serviceRowButton:hover .rowTitle,
-.serviceRowButton:focus-visible .rowTitle,
-.serviceRowShell[data-selected="true"] .rowTitle {
-  color: color-mix(in srgb, var(--color-text) 92%, var(--color-cta) 8%);
-}
-
-.serviceRow {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  min-height: 6rem;
-  padding: 1.45rem 1.4rem;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  overflow: hidden;
-}
-
-.rowIconTitle {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 1.45rem;
-  min-width: 0;
-}
-
-.rowText {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.3rem;
-  align-items: center;
-  min-width: 0;
-}
-
-.rowTitle {
-  color: var(--color-text);
-  font-size: var(--font-size-body-lg);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.rowDescription,
-.maintenanceDescription {
-  color: color-mix(in srgb, var(--color-text) 70%, var(--color-text-muted) 30%);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.5;
-}
-
-@media (min-width: 760px) {
-  .rowText {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.85rem;
-    align-items: baseline;
-  }
-
-  .rowDescription {
-    align-self: center;
-  }
-}
-
-.rowMeta {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  max-width: 100%;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
-  background: color-mix(in srgb, var(--color-surface-2) 72%, transparent);
-  color: color-mix(in srgb, var(--color-text) 72%, var(--color-text-muted) 28%);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.rowMeta {
-  position: relative;
-  z-index: 1;
-  min-height: 2.35rem;
-  min-width: 8.5rem;
-  justify-content: center;
-  padding: 0 1rem;
-  font-size: var(--font-size-body-sm);
   white-space: nowrap;
 }
 
-.maintenanceCard {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(2.4rem, 4.2vw, 4.2rem);
-  align-items: start;
-  min-height: 6rem;
-  padding: clamp(1.6rem, 2.8vw, 2.4rem) 1.4rem;
-  border-radius: 14px;
-}
-
-.maintenanceContent {
-  display: grid;
-  gap: 0.75rem;
-  justify-items: start;
-  min-width: 0;
-}
-
-.maintenanceTitleRow {
-  min-width: 0;
-}
-
-.maintenanceTitle {
-  --service-icon-size: 48px;
-  --service-icon-image-size: 34px;
-  --service-icon-radius: 13px;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 1.45rem;
-  align-items: center;
-  font-size: clamp(1.22rem, 1.04rem + 0.4vw, 1.48rem);
-  line-height: 1.15;
-}
-
-.maintenanceDescription {
-  max-width: 42rem;
-}
-
-.maintenanceMeta {
+.actionRow {
   display: flex;
-  justify-content: flex-end;
-  min-width: max-content;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 1.18rem;
 }
 
-:global([data-theme="light"]) .serviceRows,
-:global([data-theme="light"]) .maintenanceCard {
-  background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+.actionRow > a {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.primaryCta {
+  white-space: nowrap;
 }
 
 @media (min-width: 760px) {
@@ -733,15 +388,17 @@
   }
 
   .activeService {
-    grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.64fr);
+    grid-template-columns: minmax(0, 1.12fr) minmax(20rem, 0.6fr);
     gap: clamp(2rem, 3.5vw, 4rem);
   }
 
   .activeAside {
+    align-content: center;
     min-height: 100%;
-    padding-left: clamp(3.4rem, 5.4vw, 5.4rem);
+    padding-left: clamp(2.6rem, 4.2vw, 4.4rem);
     position: relative;
-    justify-items: center;
+    gap: clamp(2.4rem, 3.4vw, 3.4rem);
+    justify-content: center;
   }
 
   .activeAside::before {
@@ -756,29 +413,6 @@
       0 0 0 1px color-mix(in srgb, var(--color-accent-warm) 28%, transparent),
       0 0 18px color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
     pointer-events: none;
-  }
-
-  .primaryCta {
-    min-height: 52px;
-    min-width: min(100%, 18rem);
-    justify-content: center;
-  }
-
-  .actionRow > a:not(.primaryCta) {
-    width: min(100%, 18rem);
-    justify-content: center;
-    text-align: center;
-  }
-
-  .timeBlock,
-  .actionRow {
-    width: min(100%, 18rem);
-  }
-
-  .timeSteps {
-    text-align: center;
-    width: 100%;
-    max-width: 18rem;
   }
 
   .serviceChip {
@@ -797,8 +431,7 @@
     align-items: start;
   }
 
-  .bulletList,
-  .timeSteps {
+  .bulletList {
     font-size: var(--font-size-body-lg);
   }
 }
@@ -837,7 +470,7 @@
   }
 
   .activeTitle {
-    font-size: clamp(1.95rem, 1rem + 7vw, 2.65rem);
+    font-size: clamp(1.78rem, 0.95rem + 6.1vw, 2.38rem);
     overflow-wrap: anywhere;
   }
 
@@ -845,46 +478,7 @@
     padding-top: 1.35rem;
     border-top: 1px solid
       color-mix(in srgb, var(--color-border) 82%, transparent);
-  }
-
-  .activeAside .actionRow {
-    width: 100%;
-    align-items: center;
-  }
-
-  .serviceRow {
-    grid-template-columns: minmax(0, 1fr) auto;
-    padding-bottom: 0.75rem;
-  }
-
-  .serviceRowShell {
-    grid-template-columns: 1fr;
-  }
-
-  .rowMeta {
-    grid-column: 1 / -1;
-    width: fit-content;
-    min-width: 0;
-    white-space: normal;
-  }
-
-  .activeAside .primaryCta {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .actionRow > a:not(.primaryCta) {
-    justify-content: center;
-    text-align: center;
-  }
-
-  .maintenanceCard {
-    grid-template-columns: 1fr;
-  }
-
-  .maintenanceMeta {
-    justify-content: flex-start;
-    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

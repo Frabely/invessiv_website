@@ -2,11 +2,69 @@
 
 ## Offen
 
-### project-request-form.tsx hardcoded error codes ersetzen
+### Projektanfrage-Stack entfernen (Teil 2)
 
-In `src/components/marketing/home/sections/contact-section/project-request-form/project-request-form.tsx` werden noch
-hartcodierte String-Fehlercodes verwendet. Das muss in einem separaten Schritt auf zentrale Error-Code-Konstanten und
-ein sauberes Mapping umgestellt werden, aber nicht in diesem Branch.
+Das Projektanfrage-Formular ist im Frontend bereits weg (`project-request-form/` wurde mit dem Formular-Rework
+gelöscht). Der komplette Backend-Stack läuft aber weiter: Der API-Endpoint nimmt `project_request` noch an, validiert,
+verschickt Mail und schreibt in `lead_project_requests`. Solange das so ist, existiert ein öffentlicher Schreibpfad in
+eine Tabelle, die kein UI mehr befüllt.
+
+**Ausführlicher Plan mit Rollout- und Rollback-Reihenfolge:** `home/remove-project-request-stack.md`. Dort stehen die
+Migrationsdetails, die Reihenfolge Code-Deploy → Zählabfrage → Migration und der Rollback-Pfad. Die folgende Liste ist
+die abgeglichene Dateiübersicht (Stand 31.08.2026, alle Pfade geprüft und weiterhin vorhanden).
+
+**Server / API**
+
+- `src/app/api/public/contact/route.ts` — `project_request`-Dispatch-Zweig
+- `src/server/contact/handlers/submit-project-request.command-handler.ts`
+- `src/server/contact/validation/project-request/` (ganzer Ordner)
+- `src/server/services/mail/mappers/map-contact-to-mail.ts`
+- `src/server/services/mail/templates/contact-notification.ts` (+ Test)
+- `src/i18n/dictionaries/mail/contact-notification/` und die Bereinigung von `get-dictionary.ts`
+- `CONTACT_SUBMIT_LOG_PREFIX.ProjectRequest`
+
+**Client**
+
+- `src/client/contact/mappers/map-project-request-form-to-dto.ts`
+- `submitProjectRequest` aus dem Contact-Form-Service
+
+**Contracts / Konstanten**
+
+- `packages/common/src/contracts/contact/project-request/`
+- `packages/common/src/contracts/contact/forms/project-request-form-values.ts`
+- `packages/common/src/defaults/contact/project-request-form-values.ts`
+- `CONTACT_REQUEST_KIND.ProjectRequest` samt Eintrag in `CONTACT_REQUEST_KINDS`
+- `common/constants/marketing/contact-offer-groups.ts` (+ Test) — hat bereits null Nutzer außerhalb der eigenen Datei
+
+**DB**
+
+- `packages/db/src/record-configuration/lead-project-requests.ts` und die Registrierung im `record-configuration`-Index
+- `packages/db/src/contact/persist-project-request.ts` und die zugehörigen Contracts samt Exports aus
+  `packages/db/src/index.ts`
+- `packages/db/scripts/seed-leads-fixture.ts` — nur die Projektanfrage-Fixtures entfernen, Datei behalten
+- `apps/web/e2e/contact-lead-persistence.e2e.ts` auf einen verbleibenden Kanal umstellen
+- neu: `packages/db/migrations/0021_remove_project_requests.sql` — zuerst den Channel-CHECK auf `quick_contact` und
+  `discovery_call` neu setzen, danach `DROP TABLE lead_project_requests`. Bestehende Migrationen nicht umschreiben.
+
+**Workspace**
+
+- `activity.channels.project_request` in den Lead-Detail-Dictionaries DE und EN — sonst nichts
+
+**Nicht entfernen:** `CONTACT_OFFER_KEY`. Die Konstante hat aktuell elf Nutzer außerhalb ihrer eigenen Datei, darunter
+die Services-Section, `PrimaryServiceKey` und den LinkedIn-Generator. Die fünf übrigen Key-Konstanten (`goal`, `budget`,
+`page`, `start`, `workflow`) haben zwar noch Nutzer, aber ausschließlich innerhalb des Projektanfrage-Stacks selbst —
+sie fallen nach dessen Entfernung von allein weg. Nicht vorab löschen, sondern per
+`pnpm -r typecheck` nachweisen.
+
+**Vorbedingung vor der Migration** (unmittelbar vor dem Rollout erneut ausführen, beide Werte müssen `0` sein):
+
+```sql
+SELECT count(*) FROM lead_project_requests;
+SELECT count(*) FROM lead_submissions WHERE channel = 'project_request';
+```
+
+**Abschlussprüfung:** `git grep -n -i -E 'project_request|ProjectRequest|lead_project_requests' -- apps packages`
+liefert keine produktiven Fundstellen mehr. Historische Migrationen und der Plan selbst sind zulässige Ausnahmen.
 
 ### Zeitangabe Landingpage überarbeiten
 
@@ -80,29 +138,6 @@ Frage: Sind diese Zeitangaben realistisch und konsistent mit der Landing-Positio
 
 ---
 
-### Landing-Page Tracking/Consent: Playwright E2E-Smoke
-
-Ausgelagert aus `apps/web/plans/landing-page/google-ads-tracking-consent-success.md` (dortiger Task 8). Tasks 1–7 des
-Plans stehen; dieser E2E-Smoke ist der letzte offene Schritt und wird separat nachgezogen.
-
-**Scope:** Playwright-Smoke für den Kernablauf der Landing-/Success-Route.
-
-**Abzudeckende Fälle:**
-
-- Consent-Banner ist sichtbar, Accept/Reject sind gleichwertig erreichbar und per Tastatur (Tab/Enter, `Escape`)
-  bedienbar.
-- Vor jeder Auswahl gilt Consent-Default `denied` (kein `consent update` auf `granted` ohne Klick).
-- Erfolgreicher Formular-Submit → Redirect auf die Success-Route → Conversion-Event feuert **genau einmal**.
-- Direktaufruf der Success-Route und Reload/Back nach konsumiertem Guard feuern **nicht**.
-- Honeypot-Treffer redirectet identisch, feuert aber **nicht**.
-
-**Hinweise zur Umsetzung:**
-
-- `gtag`/`dataLayer` im Test stubben und die gepushten Events asserten, statt echte Google-Calls abzuwarten — so läuft
-  der Smoke ohne gesetzte `AW-`Env-Vars und ohne externe Abhängigkeit.
-- Mobile-Viewport (360 px) mit prüfen: Banner verdeckt den Haupt-CTA nicht dauerhaft.
-- Erst umsetzen, wenn die übrigen Tasks stabil sind (Tasks 1–7 erledigt).
-
 ---
 
 ### Webdesign-Angebotsseite vollständig neu positionieren und gestalten
@@ -119,21 +154,75 @@ Websites angeboten.
 
 #### Phase 0: Routing und Conversion-Fokus verbindlich entscheiden
 
-Die bestehende Route `/[locale]/services/landing-page` ist aktuell eine fokussierte Google-Ads-Zielseite mit genau
-einem Angebot, einem Ergebnis und einem Haupt-CTA. Drei Webdesign-Pakete auf dieser Route würden dieser Vorgabe sowie
-der bestehenden Anzeigen- und Tracking-Logik widersprechen.
+Die bestehende Route `/[locale]/services/landing-page` ist eine fokussierte Angebotsseite mit genau einem Angebot, einem
+Ergebnis und einem Haupt-CTA. Drei Webdesign-Pakete auf dieser Route würden diesen Fokus verwässern.
 
 **Empfohlene Lösung:**
 
 - Neue Angebotsseite unter `/[locale]/services/webdesign` für das breite Webdesign-Angebot mit drei Paketen anlegen.
-- `/[locale]/services/landing-page` als fokussierte Zielseite für das Landingpage-Angebot und Google Ads erhalten.
+- `/[locale]/services/landing-page` als fokussierte Zielseite für das Landingpage-Angebot erhalten.
 - Das Landingpage-Paket der neuen Webdesign-Seite crawlbar mit der Detailseite verlinken.
 - Navigation, Homepage-Servicekarten, Sitemap, Canonicals, Structured Data und interne Links auf die neue
   Angebotsarchitektur abstimmen.
 - Falls stattdessen die bestehende Landingpage-Route ersetzt werden soll, vor Umsetzung bewusst entscheiden, wie mit
-  Google-Ads-Kampagnen, bestehender Preis-/CTA-Logik, Success-Route, Tracking und Weiterleitungen umgegangen wird.
+  bestehender Preis-/CTA-Logik, Success-Route und Weiterleitungen umgegangen wird.
 
 **Gate:** Kein Design und keine Copy umsetzen, bevor diese Routing-Entscheidung dokumentiert ist.
+
+#### SEO-/Indexierungsstatus vor dem Rebranding klären
+
+Die deutsche Detailroute `/de/services/landing-page` ist trotz mehrmonatiger Erreichbarkeit offenbar noch nicht bei
+Google indexiert, während die jüngere Route `/de/services/linkedin-post` bereits indexiert wurde. Vor einer Änderung der
+Angebotsarchitektur muss deshalb geklärt werden, ob ein technisches Problem, Googles Canonical-Auswahl oder eine
+inhaltliche Qualitätsbewertung die Indexierung verhindert.
+
+**Aktueller technischer Befund (Produktion, geprüft am 29.08.2026):**
+
+- Die Landingpage antwortet nach der permanenten Weiterleitung auf `www.invessiv.com` mit HTTP `200`.
+- `robots.txt` erlaubt das Crawling; es wird kein `noindex` ausgeliefert.
+- Die Seite besitzt einen Self-Canonical auf `https://www.invessiv.com/de/services/landing-page`.
+- Die `de`-, `en`- und `x-default`-Alternates zeigen auf die korrekten Locale-Varianten.
+- Beide Locale-Varianten stehen in der XML-Sitemap.
+- Die Homepage verlinkt die Detailseite crawlbar.
+- Homepage und Landingpage behandeln teilweise dasselbe Themenfeld, sind in Hauptinhalt, H1, Title und Suchintention
+  aber ausreichend unterschiedlich. Eine einfache Wortmengen-Heuristik ergab rund 22 % Überschneidung; das ist kein
+  Google-Grenzwert, liefert aktuell aber keinen starken Hinweis auf ein Near-Duplicate.
+
+**Bewertung:** Ein harter technischer Indexierungsblock ist im aktuellen Stand nicht erkennbar. Eine Zusammenfassung mit
+der Homepage bleibt theoretisch möglich, weil Google trotz Self-Canonical eine andere Canonical wählen kann. Ohne die
+URL-Prüfung in der Google Search Console lässt sich diese Hypothese nicht bestätigen. Wahrscheinliche Alternativen sind
+`Gecrawlt – zurzeit nicht indexiert`, schwache externe beziehungsweise interne Qualitätssignale oder eine aus Googles
+Sicht noch nicht ausreichend eigenständige kommerzielle Suchintention. Die jüngere LinkedIn-Seite kann durch den klar
+abgrenzbaren Generator einen leichter erkennbaren eigenständigen Nutzen besitzen.
+
+**Verbindliches Diagnose-Gate vor Routing-, Copy- oder Canonical-Änderungen:**
+
+- [ ] In der Search Console die exakte URL `https://www.invessiv.com/de/services/landing-page` prüfen.
+- [ ] Grund der Nichtindexierung, letzten Crawl, verweisende Seite und Sitemap-Erkennung dokumentieren.
+- [ ] Vom Nutzer festgelegte Canonical und von Google ausgewählte Canonical dokumentieren.
+- [ ] Wenn Google die Homepage als Canonical gewählt hat: Suchintention, H1, Meta-Daten, Hauptinhalt und interne
+      Ankertexte der beiden Seiten klarer trennen; keine vorschnelle Weiterleitung einrichten.
+- [ ] Wenn der Status `Gecrawlt – zurzeit nicht indexiert` bei korrektem Self-Canonical lautet: eigenständigen Nutzen,
+      Referenzen/Belege, fachliche Tiefe, interne Verlinkung und externe Signale priorisieren.
+- [ ] Wenn der Status `Gefunden – zurzeit nicht indexiert` lautet: Crawl- und Discovery-Signale, Sitemap-Verarbeitung,
+      interne Linkposition und Serverantworten prüfen.
+- [ ] Nach dem Rebranding Live-Test ausführen, Indexierung erneut beantragen und Status beziehungsweise Google-Canonical
+      nach zwei bis vier Wochen kontrollieren.
+
+**Technische Punkte für den Umbau:**
+
+- Das Locale-Layout setzt derzeit alle Marketingseiten über `dynamic = "force-dynamic"` und `revalidate = 0` auf eine
+  dynamische Auslieferung mit `private, no-cache, no-store`. Das blockiert Google nicht, sollte für statische
+  Marketingseiten aber überprüft und nach Möglichkeit auf cachebare beziehungsweise statisch erzeugte Seiten umgestellt
+  werden.
+- Der aktuelle Homepage-Title wird durch Title-Inhalt plus Layout-Template doppelt gebrandet
+  (`Invessiv | … | Invessiv`). Beim Rebranding gemäß projektweiter Title-Konvention korrigieren.
+- Die Sitemap enthält aktuell die richtigen kanonischen URLs, aber keine `lastModified`-Angaben oder Sitemap-`hreflang`
+  -Alternates. Beides ist kein Indexierungsblock; beim Umbau kann `lastModified` für tatsächlich substanziell geänderte
+  Seiten ergänzt werden. Die bestehenden HTML-Alternates müssen erhalten bleiben.
+- Bei einer neuen Route `/[locale]/services/webdesign` die Landingpage nicht allein wegen der aktuellen Nichtindexierung
+  ersetzen oder weiterleiten. Erst Suchintention und Aufgaben beider URLs festlegen, dann Canonicals, Sitemap, interne
+  Links und gegebenenfalls Redirects konsistent umsetzen.
 
 #### Positionierung und USP
 
@@ -270,7 +359,6 @@ Softwareentwicklung mit einem ruhigen, hochwertigen Webdesign-Auftritt verbindet
 - Die Kombination aus Coding-, Softwareentwicklungs- und Webdesign-Erfahrung ist konkret und glaubwürdig erklärt.
 - Das Design besitzt mit Logo-Hintergrund, wechselnden Farbflächen und eigener Fotografie eine erkennbare Invessiv-
   Handschrift und wirkt nicht wie ein Template.
-- Keine bestehende Google-Ads-Conversion-Strecke wird unbeabsichtigt verändert oder verwässert.
 - DE und EN sind in Struktur und Aussage synchron.
 - Der Anfrage-Flow ist responsiv, zugänglich, messbar und ohne toten CTA nutzbar.
 

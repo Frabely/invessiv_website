@@ -1,0 +1,26 @@
+.section {
+  position: relative;
+  display: grid;
+  gap: clamp(2rem, 3.2vw, 3rem);
+  overflow: visible;
+}
+
+@media (max-width: 759px) {
+  .section {
+    gap: 1.35rem;
+  }
+}
+
+.headerCopy {
+  display: grid;
+  justify-items: start;
+  gap: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-section-title);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}

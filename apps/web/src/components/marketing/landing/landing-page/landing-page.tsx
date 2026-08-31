@@ -1,5 +1,4 @@
-﻿import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
-import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
+﻿import { AudienceSection } from "@/components/marketing/landing/audience-section/audience-section";
 import { FaqSection } from "@/components/marketing/landing/faq-section/faq-section";
 import { LandingFunnelTracker } from "@/components/shared/analytics/landing-funnel-tracker/landing-funnel-tracker";
 import { FinalCtaSection } from "@/components/shared/final-cta-section/final-cta-section";
@@ -11,8 +10,6 @@ import { PricingSection } from "@/components/marketing/landing/pricing-section/p
 import { ProcessSection } from "@/components/marketing/landing/process-section/process-section";
 import { TrustSection } from "@/components/marketing/landing/trust-section/trust-section";
 import { AnchorOffsetScroll } from "@/components/marketing/shared/anchor-offset-scroll/anchor-offset-scroll";
-import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
-import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
 import type { Locale } from "@/config/i18n";
 import {
@@ -21,7 +18,6 @@ import {
   LANDING_SECTION_IDS,
 } from "@/config/navigation/landing";
 import { CONTACT_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
-import { SITE_ROUTES } from "@/config/routes";
 import { getLandingAudienceContent } from "@/i18n/dictionaries/landing/audience";
 import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingFinalCtaContent } from "@/i18n/dictionaries/landing/final-cta";
@@ -32,8 +28,6 @@ import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingProblemSolutionContent } from "@/i18n/dictionaries/landing/problem-solution";
 import { getLandingProcessContent } from "@/i18n/dictionaries/landing/process";
 import { getLandingTrustContent } from "@/i18n/dictionaries/landing/trust";
-import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
-import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 
 type LandingPageProps = {
@@ -41,7 +35,6 @@ type LandingPageProps = {
 };
 
 export function LandingPage({ locale }: LandingPageProps) {
-  const consent = getConsentStaticContent(locale);
   const audience = getLandingAudienceContent(locale);
   const faq = getLandingFaqContent(locale);
   const finalCta = getLandingFinalCtaContent(locale);
@@ -54,8 +47,7 @@ export function LandingPage({ locale }: LandingPageProps) {
   const trust = getLandingTrustContent(locale);
 
   return (
-    <ConsentProvider content={consent} locale={locale}>
-      <GoogleTag />
+    <>
       <AnchorOffsetScroll />
       <SiteHeader
         ctaHref={SECTION_HREFS.contact}
@@ -134,25 +126,20 @@ export function LandingPage({ locale }: LandingPageProps) {
 
         <FinalCtaSection
           analyticsLocation="landing_final_cta"
-          formId="landing_final_cta"
           id={CONTACT_SECTION_ID}
           locale={locale}
           origin={ContactSubmissionOrigin.LandingPage}
-          successRedirectHref={createLocalePathname(
-            SITE_ROUTES.LANDING_PAGE_SERVICE_SUCCESS,
-            locale,
-          )}
-          trackAdsConversion
+          projectScope="landing_page"
+          projectScopeLabel={finalCta.form.projectScopeLabel}
           {...finalCta}
         />
 
         <FooterSection
-          cookieSettings={<CookieSettingsButton />}
           description={footer.description}
           locale={locale}
           navColumn={footer.navColumn}
         />
       </main>
-    </ConsentProvider>
+    </>
   );
 }

@@ -53,73 +53,6 @@
   line-height: 1.72;
 }
 
-.socials {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.socials li {
-  display: inline-flex;
-}
-
-.socialLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-cta) 32%, var(--color-border) 68%);
-  border-radius: 999px;
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 82%,
-    var(--color-cta) 18%
-  );
-  color: color-mix(in srgb, var(--color-text) 84%, var(--color-cta) 16%);
-  font-size: var(--font-size-ui-xs);
-  line-height: 1;
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    color 180ms ease,
-    box-shadow 180ms ease,
-    transform 180ms ease;
-}
-
-.socialLink:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 52%,
-    var(--color-border) 48%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 64%,
-    var(--color-cta) 36%
-  );
-  color: var(--color-text);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 16%, transparent);
-  transform: translateY(-1px);
-}
-
-.socialLink:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.socialLink svg {
-  display: block;
-  width: 0.84rem;
-  height: 0.84rem;
-  flex: 0 0 auto;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
@@ -194,41 +127,9 @@
   line-height: 1.45;
 }
 
-.cookieSettings {
-  margin-left: auto;
-}
-
 :global([data-theme="light"]) .description,
 :global([data-theme="light"]) .bottomMeta {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-}
-
-:global([data-theme="light"]) .socialLink {
-  border-color: color-mix(
-    in srgb,
-    var(--color-border) 84%,
-    var(--color-cta) 16%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 88%,
-    var(--color-cta) 12%
-  );
-  color: color-mix(in srgb, var(--color-text) 80%, var(--color-cta) 20%);
-}
-
-:global([data-theme="light"]) .socialLink:hover {
-  border-color: color-mix(
-    in srgb,
-    var(--color-cta) 40%,
-    var(--color-border) 60%
-  );
-  background: color-mix(
-    in srgb,
-    var(--color-surface-2) 74%,
-    var(--color-cta) 26%
-  );
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--color-cta) 12%, transparent);
 }
 
 @media (min-width: 1500px) and (min-height: 900px) and (max-aspect-ratio: 21 / 10) {
@@ -263,10 +164,6 @@
   }
 
   .brand {
-    justify-content: center;
-  }
-
-  .socials {
     justify-content: center;
   }
 

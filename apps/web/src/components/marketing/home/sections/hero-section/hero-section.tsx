@@ -1,4 +1,5 @@
 ﻿import { HeroVisual } from "@/components/marketing/hero-visual/hero-visual";
+import { SectionScanPoints } from "@/components/marketing/home/shared/section-scan-points/section-scan-points";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import buttonStyles from "@/components/shared/button/button.module.css";
@@ -17,8 +18,10 @@ type HeroSectionBaseProps = {
   heroPrimaryCta: string;
   heroSecondaryCta: string;
   heroTag: string;
+  heroTrustChips?: string[];
   heroTrustLine?: string;
   heroVideoSrc?: string;
+  fullscreenVisual?: boolean;
   title: string;
   visualBleed?: boolean;
 };
@@ -53,17 +56,22 @@ export function HeroSection(props: HeroSectionProps) {
     heroPrimaryCta,
     heroSecondaryCta,
     heroTag,
+    heroTrustChips,
     heroTrustLine,
     heroVideoSrc,
+    fullscreenVisual = false,
     title,
     visualBleed = false,
   } = props;
   return (
     <section
-      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} hero`}
+      className={`${styles.root} ${compactMobile ? styles.compactMobile : ""} ${visualBleed ? styles.visualBleed : ""} ${fullscreenVisual ? styles.fullscreenVisualRoot : ""} hero`}
       id={HERO_SECTION_ID}
     >
-      <HeroBackground videoSrc={heroVideoSrc} />
+      <HeroBackground hideGrid={fullscreenVisual} videoSrc={heroVideoSrc} />
+      {fullscreenVisual ? (
+        <div className={styles.fullscreenVisual}>{visual}</div>
+      ) : null}
 
       <div className={styles.grid}>
         <div className={styles.content}>
@@ -96,12 +104,17 @@ export function HeroSection(props: HeroSectionProps) {
             </a>
           </div>
 
+          <SectionScanPoints
+            className={styles.trustChips}
+            points={heroTrustChips}
+          />
+
           {heroTrustLine ? (
             <p className={styles.trustLine}>{heroTrustLine}</p>
           ) : null}
         </div>
 
-        {visual}
+        {fullscreenVisual ? null : visual}
       </div>
     </section>
   );

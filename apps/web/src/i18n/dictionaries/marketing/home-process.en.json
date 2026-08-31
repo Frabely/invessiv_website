@@ -1,0 +1,42 @@
+{
+  "title": "How our collaboration works",
+  "processSteps": [
+    {
+      "step": "01",
+      "title": "Free consultation",
+      "effort": "Effort: about 15 min",
+      "result": "Outcome: Clarity on what you actually need"
+    },
+    {
+      "step": "02",
+      "title": "Process & decision",
+      "effort": "Effort: 60–90 min",
+      "result": "Outcome: Together, we decide whether it’s a fit"
+    },
+    {
+      "step": "03",
+      "title": "Onboarding",
+      "effort": "Effort: Provide images, copy, and access credentials",
+      "result": "Outcome: Everything is ready for the start"
+    },
+    {
+      "step": "04",
+      "title": "First draft",
+      "effort": "Effort: None – I do the work",
+      "result": "Outcome: The first visible version of your site"
+    },
+    {
+      "step": "05",
+      "title": "Feedback rounds",
+      "effort": "Effort: Depends on the scope of your change requests",
+      "result": "Outcome: The draft becomes your website"
+    },
+    {
+      "step": "06",
+      "title": "Tech & launch",
+      "effort": "Effort: One final check together",
+      "result": "Outcome: Your site is live and checked"
+    }
+  ],
+  "processCtaLabel": "Request a free consultation"
+}

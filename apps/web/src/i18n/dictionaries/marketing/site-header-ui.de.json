@@ -2,9 +2,9 @@
   "actionsAriaLabel": "Sprache und primäre Aktion",
   "brandLabel": "Invessiv",
   "brandLogoAlt": "Invessiv Logo",
-  "ctaLabel": "Angebot einschätzen lassen",
+  "ctaLabel": "Kostenloses Erstgespräch anfragen",
   "labelsByHref": {
-    "#lead-bridge": "Einstieg",
+    "#problem": "Probleme",
     "#services": "Leistungsmodelle",
     "#process": "Prozess",
     "#faq": "Q&A",

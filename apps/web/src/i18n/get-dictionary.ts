@@ -23,7 +23,6 @@ export type Dictionary = {
       title: string;
       description: string;
       openGraphTitle: string;
-      openGraphLocale: string;
     };
     page: {
       title: string;
@@ -62,7 +61,6 @@ export type Dictionary = {
       title: string;
       description: string;
       openGraphTitle: string;
-      openGraphLocale: string;
     };
     page: {
       title: string;
@@ -150,7 +148,6 @@ export type Dictionary = {
       title: string;
       description: string;
       openGraphTitle: string;
-      openGraphLocale: string;
     };
     page: {
       title: string;
@@ -178,10 +175,6 @@ export type Dictionary = {
         body: string;
       };
       speedInsights: {
-        title: string;
-        body: string;
-      };
-      googleTracking: {
         title: string;
         body: string;
       };

@@ -65,6 +65,10 @@
   overflow: hidden;
 }
 
+.postImage img {
+  object-fit: cover;
+}
+
 /* Command row in the pitch column, below the context copy */
 .command {
   display: flex;

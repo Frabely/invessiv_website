@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { OPEN_GRAPH_LOCALE } from "@invessiv/common";
 import { LegalDocumentContent } from "@/components/legal/legal-document-content/legal-document-content";
 import { LegalDocumentLayout } from "@/components/legal/legal-document-layout/legal-document-layout";
 import { COMPANY, COMPANY_MAILTO } from "@/config/company";
 import { isSupportedLocale, SUPPORTED_LOCALES } from "@/config/i18n";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { getDictionary } from "@/i18n/get-dictionary";
 import {
-  createLocaleAlternates,
   createPageMetadata,
+  createRouteAlternates,
 } from "@/lib/seo/page-metadata";
 
 type TermsPageProps = {
@@ -60,17 +63,10 @@ export async function generateMetadata({
     ...createPageMetadata({
       title: terms.meta.title,
       description: terms.meta.description,
-      canonicalPath: `/${locale}/terms`,
-      languages: createLocaleAlternates(
-        Object.fromEntries(
-          SUPPORTED_LOCALES.map((supportedLocale) => [
-            supportedLocale,
-            `/${supportedLocale}/terms`,
-          ]),
-        ),
-      ),
+      canonicalPath: createLocalePathname(SITE_ROUTES.TERMS, locale),
+      languages: createRouteAlternates(SITE_ROUTES.TERMS),
       openGraphTitle: terms.meta.openGraphTitle,
-      openGraphLocale: terms.meta.openGraphLocale,
+      openGraphLocale: OPEN_GRAPH_LOCALE[locale],
     }),
     robots: { index: false, follow: true },
   };

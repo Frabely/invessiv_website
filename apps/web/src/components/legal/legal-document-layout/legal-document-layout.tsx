@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Breadcrumbs } from "@/components/legal/breadcrumbs/breadcrumbs";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
@@ -7,7 +7,9 @@ import {
   getLocalizedSectionHref,
   PRIMARY_NAVIGATION,
 } from "@/config/navigation/home";
+import { SITE_ROUTES } from "@/config/routes";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./legal-document-layout.module.css";
 
 type LegalDocumentLayoutProps = {
@@ -30,15 +32,16 @@ export function LegalDocumentLayout({
   updatedAt,
 }: LegalDocumentLayoutProps) {
   const footerSection = getHomeFooterSectionContent(locale);
+  const homeHref = createLocalePathname(SITE_ROUTES.HOME, locale);
   const legalHeaderNavigation = PRIMARY_NAVIGATION.map((item) => ({
     ...item,
-    href: `/${locale}${item.href}`,
+    href: createLocalePathname(item.href, locale),
   }));
 
   return (
     <>
       <SiteHeader
-        brandHref={`/${locale}`}
+        brandHref={homeHref}
         ctaHref={getLocalizedSectionHref(locale, "contact")}
         navigation={legalHeaderNavigation}
       />
@@ -47,7 +50,7 @@ export function LegalDocumentLayout({
           <div className={styles.breadcrumbsWrap}>
             <Breadcrumbs
               items={[
-                { href: `/${locale}`, isLink: true, label: homeLabel },
+                { href: homeHref, isLink: true, label: homeLabel },
                 { isLink: false, label: title },
               ]}
               navLabel={breadcrumbAriaLabel}

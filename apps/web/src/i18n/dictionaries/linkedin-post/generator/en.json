@@ -90,8 +90,8 @@
         "badge": "Next step",
         "headline": "Like the post?",
         "body": "A custom workflow builds posts like this with your branding and your voice — week after week.",
-        "ctaLabel": "Request workflow",
-        "ctaAriaLabel": "Jump to the inquiry form"
+        "ctaLabel": "Request a free intro call",
+        "ctaAriaLabel": "Jump to the free intro call form"
       }
     },
     "limitReached": {
@@ -99,8 +99,8 @@
       "headline": "You've created your 2 free posts.",
       "body": "Like the result? Then I'll build you a custom workflow that fits your voice and your branding.",
       "resetPrefix": "New tests from",
-      "ctaLabel": "Request workflow",
-      "ctaAriaLabel": "Jump to the inquiry form and request a workflow"
+      "ctaLabel": "Request a free intro call",
+      "ctaAriaLabel": "Jump to the free intro call form"
     },
     "error": {
       "headline": "Something went wrong.",

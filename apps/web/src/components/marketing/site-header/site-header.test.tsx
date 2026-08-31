@@ -78,15 +78,13 @@ describe("SiteHeader", () => {
     });
 
     render(
-      <SiteHeader
-        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
-      />,
+      <SiteHeader navigation={[{ href: "#problem" }, { href: "#services" }]} />,
     );
 
-    expect(screen.getAllByText("Einstieg").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Probleme").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Leistungsmodelle").length).toBeGreaterThan(0);
     expect(
-      screen.getAllByText("Angebot einschätzen lassen").length,
+      screen.getAllByText("Kostenloses Erstgespräch anfragen").length,
     ).toBeGreaterThan(0);
     expect(screen.getByTestId("reading-progress")).toBeTruthy();
   });
@@ -105,9 +103,7 @@ describe("SiteHeader", () => {
     });
 
     render(
-      <SiteHeader
-        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
-      />,
+      <SiteHeader navigation={[{ href: "#problem" }, { href: "#services" }]} />,
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
@@ -162,9 +158,7 @@ describe("SiteHeader", () => {
     window.history.replaceState({}, "", "/de/imprint?ref=nav#services");
 
     render(
-      <SiteHeader
-        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
-      />,
+      <SiteHeader navigation={[{ href: "#problem" }, { href: "#services" }]} />,
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "EN" })[0]);
@@ -190,9 +184,7 @@ describe("SiteHeader", () => {
     });
 
     const { container } = render(
-      <SiteHeader
-        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
-      />,
+      <SiteHeader navigation={[{ href: "#problem" }, { href: "#services" }]} />,
     );
 
     const desktopLocaleMenu = container.querySelector("details");
@@ -224,9 +216,7 @@ describe("SiteHeader", () => {
     });
 
     const { container } = render(
-      <SiteHeader
-        navigation={[{ href: "#lead-bridge" }, { href: "#services" }]}
-      />,
+      <SiteHeader navigation={[{ href: "#problem" }, { href: "#services" }]} />,
     );
 
     const mobileMenu = container.querySelector(".site-header__mobile-menu");
@@ -236,7 +226,7 @@ describe("SiteHeader", () => {
 
     mobileMenu.setAttribute("open", "");
 
-    fireEvent.click(within(mobileMenu).getByRole("link", { name: "Einstieg" }));
+    fireEvent.click(within(mobileMenu).getByRole("link", { name: "Probleme" }));
 
     expect(mobileMenu.hasAttribute("open")).toBe(false);
   });

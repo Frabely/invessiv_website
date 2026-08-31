@@ -1,49 +1,43 @@
 "use client";
 
 import type { RefObject } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { ContactOfferKey } from "@invessiv/common/constants/contact/contact-offer-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
+import { BrandMarkBackdrop } from "@/components/marketing/shared/brand-mark-backdrop/brand-mark-backdrop";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import type { ServiceCardCopy } from "@/i18n/dictionaries/marketing/home";
 import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing";
 import type {
-  MaintenanceServiceCardData,
   PrimaryServiceCardData,
   PrimaryServiceKey,
   ServiceOption,
 } from "@/common/contracts/marketing";
 
-import { ExtraService } from "./extra-service/extra-service";
-import { SecondaryService } from "./secondary-service/secondary-service";
 import { SelectedService } from "./selected-service/selected-service";
 import styles from "./services-section.module.css";
 
 const PRIMARY_SERVICE_ORDER = [
   CONTACT_OFFER_KEY.Landing,
-  CONTACT_OFFER_KEY.Process,
+  CONTACT_OFFER_KEY.Upgrade,
+  CONTACT_OFFER_KEY.Web,
 ] as const;
 const DEFAULT_SERVICE_KEY = CONTACT_OFFER_KEY.Landing;
 
 type ServicesSectionProps = {
   deliveryLabel: string;
   detailPageCtaLabel: string;
-  detailsCtaLabel: string;
   id: string;
   kicker: string;
-  launchAddonTitle: string;
-  otherServicesTitle: string;
   primaryCtaLabel: string;
   primaryCtaLabels: Record<ContactOfferKey, string>;
   recommendedBadgeLabel: string;
   sectionRef: RefObject<HTMLElement | null>;
   serviceCards: ServiceCardCopy[];
-  serviceContextNote?: string;
   serviceDetailHrefs?: Partial<Record<ContactOfferKey, string>>;
   serviceOptions: ServiceOption[];
   servicePickerTitle: string;
-  serviceSecondaryTitle?: string;
   title: string;
 };
 
@@ -54,40 +48,27 @@ function isPrimaryServiceKey(key: string): key is PrimaryServiceKey {
 export function ServicesSection({
   deliveryLabel,
   detailPageCtaLabel,
-  detailsCtaLabel,
   id,
   kicker,
-  launchAddonTitle,
-  otherServicesTitle,
   primaryCtaLabel,
   primaryCtaLabels,
   recommendedBadgeLabel,
   sectionRef,
   serviceCards,
-  serviceContextNote,
   serviceDetailHrefs,
   serviceOptions,
   servicePickerTitle,
-  serviceSecondaryTitle,
   title,
 }: ServicesSectionProps) {
   const [selectedServiceKey, setSelectedServiceKey] =
     useState<PrimaryServiceKey>(DEFAULT_SERVICE_KEY);
+  const hasChosenServiceRef = useRef(false);
 
   const primaryCards = useMemo(
     () =>
       PRIMARY_SERVICE_ORDER.map((key) =>
         serviceCards.find((card) => card.key === key),
       ).filter((card): card is PrimaryServiceCardData => Boolean(card)),
-    [serviceCards],
-  );
-
-  const maintenanceCard = useMemo(
-    () =>
-      serviceCards.find(
-        (card): card is MaintenanceServiceCardData =>
-          card.key === CONTACT_OFFER_KEY.Maintenance,
-      ),
     [serviceCards],
   );
 
@@ -100,12 +81,9 @@ export function ServicesSection({
       (option) => (option.serviceKey ?? option.key) === selectedCard?.key,
     ) ?? null;
   const ctaProjectGoal = selectedOption?.label ?? selectedCard?.title ?? "";
-  const otherPrimaryCards = primaryCards.filter(
-    (card) => card.key !== selectedCard?.key,
-  );
 
   useEffect(() => {
-    if (!selectedCard) {
+    if (!selectedCard || !hasChosenServiceRef.current) {
       return;
     }
 
@@ -122,17 +100,6 @@ export function ServicesSection({
   const getPrimaryCtaLabel = (cardKey: ContactOfferKey) =>
     primaryCtaLabels[cardKey] || primaryCtaLabel;
 
-  const selectServiceAndReveal = (cardKey: PrimaryServiceKey) => {
-    setSelectedServiceKey(cardKey);
-
-    window.requestAnimationFrame(() => {
-      sectionRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
-  };
-
   if (!selectedCard) {
     return null;
   }
@@ -141,15 +108,13 @@ export function ServicesSection({
 
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
+      <span className={styles.brandMark}>
+        <BrandMarkBackdrop sizes="(max-width: 760px) 90vw, 60vw" />
+      </span>
+
       <header className={styles.header}>
         <EyebrowPill>{kicker}</EyebrowPill>
-        <div className={styles.headingBlock}>
-          <h2 className={styles.sectionTitle}>{title}</h2>
-          <p className={styles.contextNote}>{servicePickerTitle}</p>
-          {serviceContextNote ? (
-            <p className={styles.contextMeta}>{serviceContextNote}</p>
-          ) : null}
-        </div>
+        <h2 className={styles.sectionTitle}>{title}</h2>
       </header>
 
       <div
@@ -170,6 +135,7 @@ export function ServicesSection({
               key={option.key}
               onClick={() => {
                 if (isPrimaryServiceKey(optionServiceKey)) {
+                  hasChosenServiceRef.current = true;
                   setSelectedServiceKey(optionServiceKey);
                 }
               }}
@@ -189,44 +155,9 @@ export function ServicesSection({
         defaultDeliveryLabel={deliveryLabel}
         detailHref={detailHref}
         detailPageCtaLabel={detailPageCtaLabel}
-        detailsCtaLabel={detailsCtaLabel}
         recommendedBadgeLabel={recommendedBadgeLabel}
         selectedCard={selectedCard}
       />
-
-      <div className={styles.otherServices}>
-        <h3 className={styles.listTitle}>{otherServicesTitle}</h3>
-        <div className={styles.serviceRows} role="list">
-          {otherPrimaryCards.map((card) => {
-            const rowDeliveryLabel = card.deliveryLabel ?? deliveryLabel;
-            const isSelected = card.key === selectedCard.key;
-
-            return (
-              <SecondaryService
-                card={card}
-                defaultDeliveryLabel={rowDeliveryLabel}
-                isSelected={isSelected}
-                key={card.key}
-                onSelectAction={selectServiceAndReveal}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {maintenanceCard ? (
-        <div className={styles.launchAddon}>
-          <h3 className={styles.listTitle}>
-            {serviceSecondaryTitle ?? launchAddonTitle}
-          </h3>
-          <ExtraService
-            card={maintenanceCard}
-            ctaLabel={getPrimaryCtaLabel(maintenanceCard.key)}
-            ctaProjectGoal={ctaProjectGoal}
-            defaultDeliveryLabel={deliveryLabel}
-          />
-        </div>
-      ) : null}
     </section>
   );
 }

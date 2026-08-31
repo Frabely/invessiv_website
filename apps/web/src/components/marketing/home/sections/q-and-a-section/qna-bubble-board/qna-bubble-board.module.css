@@ -1,0 +1,264 @@
+.board {
+  position: relative;
+  display: grid;
+  row-gap: 0.9rem;
+  justify-items: center;
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+}
+
+.portrait {
+  display: grid;
+  row-gap: 1.1rem;
+  justify-items: center;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.avatarSlot {
+  width: clamp(9rem, 34vw, 11.5rem);
+}
+
+.column {
+  display: grid;
+  row-gap: 0.9rem;
+  align-content: start;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  --qna-item-enter-x: 0px;
+
+  min-width: 0;
+}
+
+.ctaSlot {
+  margin-top: 1.5rem;
+}
+
+@media (min-width: 960px) {
+  .board {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 19rem) minmax(0, 1fr);
+    grid-template-areas:
+      "ring-top       ring-top        ring-top"
+      "questions-left portrait-center questions-right"
+      "questions-left contact-cta     questions-right"
+      "ring-bottom    ring-bottom     ring-bottom";
+    column-gap: clamp(2rem, 4.5vw, 4.5rem);
+    row-gap: clamp(1.6rem, 3vw, 2.8rem);
+  }
+
+  .portrait {
+    position: relative;
+    grid-area: portrait-center;
+    align-self: end;
+    width: auto;
+    margin: 0;
+    transform-origin: bottom center;
+    transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .avatarSlot {
+    width: clamp(12rem, 15vw, 16rem);
+  }
+
+  .ctaSlot {
+    grid-area: contact-cta;
+    align-self: start;
+    margin: 0;
+  }
+
+  .column[data-qna-column="top"] {
+    grid-area: ring-top;
+  }
+
+  .column[data-qna-column="left"] {
+    grid-area: questions-left;
+  }
+
+  .column[data-qna-column="right"] {
+    grid-area: questions-right;
+  }
+
+  .column[data-qna-column="bottom"] {
+    grid-area: ring-bottom;
+  }
+
+  .column[data-qna-column="left"],
+  .column[data-qna-column="right"] {
+    align-content: center;
+    row-gap: clamp(1rem, 1.9vw, 1.6rem);
+  }
+
+  /* The ring rows sit above and below the portrait as a centred pair. */
+  .column[data-qna-column="top"],
+  .column[data-qna-column="bottom"] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(1rem, 2.4vw, 2.4rem);
+  }
+
+  .column[data-qna-column="top"] .item,
+  .column[data-qna-column="bottom"] .item {
+    flex: 1 1 26rem;
+    max-width: 36rem;
+  }
+
+  /* Alternating insets break up the straight edge of the side columns. */
+  .column[data-qna-column="left"] .item:nth-child(odd) {
+    margin-inline-end: clamp(0.75rem, 2.6vw, 2.6rem);
+  }
+
+  .column[data-qna-column="left"] .item:nth-child(3n) {
+    margin-inline-start: clamp(0.5rem, 1.8vw, 1.8rem);
+  }
+
+  .column[data-qna-column="right"] .item:nth-child(even) {
+    margin-inline-start: clamp(0.75rem, 2.6vw, 2.6rem);
+  }
+
+  .column[data-qna-column="right"] .item:nth-child(3n) {
+    margin-inline-end: clamp(0.5rem, 1.8vw, 1.8rem);
+  }
+
+  .item[data-qna-side="left"] {
+    --qna-item-enter-x: -16px;
+  }
+
+  .item[data-qna-side="right"] {
+    --qna-item-enter-x: 16px;
+  }
+
+  /*
+       * The intro bubble hangs off the top of the portrait, so it always keeps its
+       * gap to the head no matter how the stage is sized.
+       */
+  .introSlot {
+    position: absolute;
+    bottom: calc(100% + clamp(1.5rem, 3vh, 2.4rem));
+    left: 50%;
+    z-index: 1;
+    width: min(34rem, 60vw);
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 14px);
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .column,
+  .ctaSlot {
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .item {
+    transition:
+      opacity 520ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 580ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/*
+ * The phase choreography is bound to the same gate as the sticky stage in
+ * q-and-a-section.module.css. On short viewports there is no scroll stage, so
+ * nothing here may hide the board.
+ */
+
+@media (min-width: 960px) and (min-height: 700px) {
+  /* Intro phases: only the portrait and the bubble above it are on stage. */
+  [data-qna-animated="true"][data-qna-phase="question"] .introSlot,
+  [data-qna-animated="true"][data-qna-phase="handover"] .introSlot {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  [data-qna-animated="true"][data-qna-phase="question"] .column,
+  [data-qna-animated="true"][data-qna-phase="handover"] .column,
+  [data-qna-animated="true"][data-qna-phase="question"] .ctaSlot,
+  [data-qna-animated="true"][data-qna-phase="handover"] .ctaSlot {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="question"] .item,
+  [data-qna-animated="true"][data-qna-phase="handover"] .item {
+    opacity: 0;
+    transform: translate3d(var(--qna-item-enter-x), 18px, 0) scale(0.97);
+  }
+
+  [data-qna-animated="true"][data-qna-phase="question"] .portrait,
+  [data-qna-animated="true"][data-qna-phase="handover"] .portrait {
+    transform: translateY(clamp(5rem, 13vh, 9rem)) scale(1.12);
+  }
+
+  /*
+       * Keep every disclosure in the accessibility tree during the visual intro.
+       * Keyboard focus reveals the complete board immediately and remains the
+       * stronger state even if a pending scroll frame reports an earlier phase.
+       */
+  [data-qna-animated="true"]:focus-within .introSlot {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  [data-qna-animated="true"]:focus-within .column,
+  [data-qna-animated="true"]:focus-within .ctaSlot {
+    opacity: 1;
+    pointer-events: auto;
+    transition: none;
+  }
+
+  [data-qna-animated="true"]:focus-within .item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  [data-qna-animated="true"]:focus-within .portrait {
+    transform: none;
+    transition: none;
+  }
+
+  /* Board phase: the questions arrive column by column. */
+  [data-qna-animated="true"][data-qna-phase="board"] .item:nth-child(1) {
+    transition-delay: 40ms;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="board"] .item:nth-child(2) {
+    transition-delay: 100ms;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="board"] .item:nth-child(3) {
+    transition-delay: 160ms;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="board"] .item:nth-child(4) {
+    transition-delay: 220ms;
+  }
+
+  [data-qna-animated="true"][data-qna-phase="board"] .item:nth-child(n + 5) {
+    transition-delay: 280ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .introSlot,
+  .column,
+  .ctaSlot,
+  .portrait,
+  .item {
+    transition: none;
+  }
+}

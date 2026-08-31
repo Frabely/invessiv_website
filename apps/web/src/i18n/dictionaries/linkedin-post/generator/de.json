@@ -90,8 +90,8 @@
         "badge": "Nächster Schritt",
         "headline": "Gefällt dir der Post?",
         "body": "Ein eigener Workflow baut solche Posts mit deinem Branding und deiner Stimme — Woche für Woche.",
-        "ctaLabel": "Workflow anfragen",
-        "ctaAriaLabel": "Zum Anfrageformular springen"
+        "ctaLabel": "Kostenloses Erstgespräch anfragen",
+        "ctaAriaLabel": "Zum Formular für ein kostenloses Erstgespräch springen"
       }
     },
     "limitReached": {
@@ -99,8 +99,8 @@
       "headline": "Du hast deine 2 kostenlosen Posts erstellt.",
       "body": "Gefällt dir das Ergebnis? Dann baue ich dir einen eigenen Workflow, der zu deiner Stimme und deinem Branding passt.",
       "resetPrefix": "Neue Tests ab",
-      "ctaLabel": "Workflow anfragen",
-      "ctaAriaLabel": "Zum Anfrageformular springen und einen Workflow anfragen"
+      "ctaLabel": "Kostenloses Erstgespräch anfragen",
+      "ctaAriaLabel": "Zum Formular für ein kostenloses Erstgespräch springen"
     },
     "error": {
       "headline": "Etwas ist schiefgegangen.",
