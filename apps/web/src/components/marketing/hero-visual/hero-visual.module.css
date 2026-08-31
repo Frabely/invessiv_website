@@ -1,5 +1,4 @@
 .visual {
-  --hero-noise-opacity: 0.006;
   --hero-blob-opacity: 0.56;
   --hero-blob-cool: rgba(124, 155, 203, 0.24);
   --hero-blob-warm: rgba(231, 154, 73, 0.3);
@@ -30,16 +29,6 @@
   --hero-status-warm: rgba(231, 154, 73, 0.52);
   --hero-status-soft: rgba(157, 182, 218, 0.72);
   --hero-status-cool: rgba(130, 157, 198, 0.62);
-  --hero-vignette-bg:
-    radial-gradient(
-      130% 110% at 50% 45%,
-      transparent 52%,
-      rgba(6, 9, 16, 0.22) 88%,
-      rgba(4, 6, 12, 0.38) 100%
-    ),
-    linear-gradient(180deg, rgba(10, 13, 20, 0.22) 0%, transparent 34%);
-  --hero-grid-opacity: 0.12;
-  --hero-grid-mask: none;
   position: relative;
   z-index: 2;
   display: flex;
@@ -207,11 +196,49 @@
   fill: var(--hero-status-cool);
 }
 
+/*
+ * These three layers are rendered by hero-background, outside `.visual`, so
+ * their tokens have to sit on the layers themselves — on `.visual` they never
+ * reached a consumer.
+ */
 .noise,
 .vignette,
 .gridOverlay {
+  --hero-noise-opacity: 0.006;
+  --hero-vignette-bg:
+    radial-gradient(
+      130% 110% at 50% 45%,
+      transparent 52%,
+      rgba(6, 9, 16, 0.22) 88%,
+      rgba(4, 6, 12, 0.38) 100%
+    ),
+    linear-gradient(180deg, rgba(10, 13, 20, 0.22) 0%, transparent 34%);
+  --hero-grid-opacity: 0.12;
+  --hero-grid-mask: none;
+
   position: absolute;
   pointer-events: none;
+}
+
+[data-theme="light"] .noise,
+[data-theme="light"] .vignette,
+[data-theme="light"] .gridOverlay {
+  --hero-noise-opacity: 0.003;
+  --hero-vignette-bg:
+    radial-gradient(
+      136% 118% at 50% 40%,
+      rgba(255, 255, 255, 0) 48%,
+      rgba(74, 96, 138, 0.035) 84%,
+      rgba(27, 39, 63, 0.06) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.035) 28%,
+      rgba(255, 255, 255, 0) 68%
+    );
+  --hero-grid-opacity: 0.1;
+  --hero-grid-mask: none;
 }
 
 .noise {
@@ -248,7 +275,6 @@
 }
 
 [data-theme="light"] .visual {
-  --hero-noise-opacity: 0.003;
   --hero-blob-opacity: 0.42;
   --hero-blob-cool: rgba(88, 128, 198, 0.18);
   --hero-blob-warm: rgba(203, 119, 40, 0.2);
@@ -283,21 +309,6 @@
   --hero-status-warm: rgba(203, 119, 40, 0.78);
   --hero-status-soft: rgba(96, 134, 198, 0.7);
   --hero-status-cool: rgba(52, 95, 193, 0.82);
-  --hero-vignette-bg:
-    radial-gradient(
-      136% 118% at 50% 40%,
-      rgba(255, 255, 255, 0) 48%,
-      rgba(74, 96, 138, 0.035) 84%,
-      rgba(27, 39, 63, 0.06) 100%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.035) 28%,
-      rgba(255, 255, 255, 0) 68%
-    );
-  --hero-grid-opacity: 0.1;
-  --hero-grid-mask: none;
 }
 
 @keyframes heroBlobDriftA {
