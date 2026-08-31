@@ -340,13 +340,19 @@ export function useProcessJourney({
       const measuredLength = path.getTotalLength();
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
-        path.style.strokeDasharray = `${totalLength}`;
-        // Keep the currently drawn portion when a real layout change occurs.
-        // In particular, mobile browsers emit resize events while their chrome
-        // expands or collapses during scroll.
-        path.style.strokeDashoffset = `${totalLength - mapProgressToLength(lastProgress)}`;
+        if (isMobileViewport) {
+          // A static mobile timeline avoids a continuous SVG repaint while a
+          // touch scroll is in progress. Step states still follow the scroll.
+          path.style.strokeDasharray = "none";
+          path.style.strokeDashoffset = "0";
+          leader.style.visibility = "hidden";
+        } else {
+          path.style.strokeDasharray = `${totalLength}`;
+          // Keep the currently drawn portion when a real layout change occurs.
+          path.style.strokeDashoffset = `${totalLength - mapProgressToLength(lastProgress)}`;
+          leader.style.visibility = "visible";
+        }
         path.style.visibility = "visible";
-        leader.style.visibility = "visible";
       }
     };
 
@@ -430,28 +436,30 @@ export function useProcessJourney({
       lastProgress = progress;
       if (totalLength > 0) {
         const drawnLength = mapProgressToLength(progress);
-        path.style.strokeDashoffset = `${totalLength - drawnLength}`;
-        const point = path.getPointAtLength(
-          Math.max(0, Math.min(totalLength, drawnLength)),
-        );
-        leader.style.setProperty(
-          "--process-leader-x",
-          `${point.x.toFixed(2)}px`,
-        );
-        leader.style.setProperty(
-          "--process-leader-y",
-          `${point.y.toFixed(2)}px`,
-        );
-        // Hide the leader dot while it travels beneath a card, matching the masked path.
-        const overCardInset = 6;
-        const isOverCard = cardRects.some(
-          (rect) =>
-            point.x > rect.left + overCardInset &&
-            point.x < rect.right - overCardInset &&
-            point.y > rect.top + overCardInset &&
-            point.y < rect.bottom - overCardInset,
-        );
-        leader.dataset.overCard = isOverCard ? "true" : "false";
+        if (!isMobileViewport) {
+          path.style.strokeDashoffset = `${totalLength - drawnLength}`;
+          const point = path.getPointAtLength(
+            Math.max(0, Math.min(totalLength, drawnLength)),
+          );
+          leader.style.setProperty(
+            "--process-leader-x",
+            `${point.x.toFixed(2)}px`,
+          );
+          leader.style.setProperty(
+            "--process-leader-y",
+            `${point.y.toFixed(2)}px`,
+          );
+          // Hide the leader dot while it travels beneath a card, matching the masked path.
+          const overCardInset = 6;
+          const isOverCard = cardRects.some(
+            (rect) =>
+              point.x > rect.left + overCardInset &&
+              point.x < rect.right - overCardInset &&
+              point.y > rect.top + overCardInset &&
+              point.y < rect.bottom - overCardInset,
+          );
+          leader.dataset.overCard = isOverCard ? "true" : "false";
+        }
         // The first step stays highlighted from the start, before the path is drawn.
         let activeIndex = 0;
         if (drawnLength > 0.5) {
