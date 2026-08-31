@@ -63,6 +63,8 @@ export function useProcessJourney({
     let lastProgress = 0;
     let lastViewportWidth = window.innerWidth;
     let journeyViewportHeight = window.innerHeight;
+    let mobileJourneyStart = 0;
+    let mobileJourneyEnd = 0;
     let rafId: number | null = null;
     let isJourneyActive = true;
     let visibilityObserver: IntersectionObserver | null = null;
@@ -212,6 +214,8 @@ export function useProcessJourney({
           lineX,
           firstMetrics.centerY,
         );
+        mobileJourneyStart = firstMetrics.centerY;
+        mobileJourneyEnd = ctaY;
       } else {
         const anchors: CardAnchor[] = metrics.map((metric) => {
           const isLeftColumn = metric.centerX < layoutRect.width / 2;
@@ -341,10 +345,8 @@ export function useProcessJourney({
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
         if (isMobileViewport) {
-          // A static mobile timeline avoids a continuous SVG repaint while a
-          // touch scroll is in progress. Step states still follow the scroll.
-          path.style.strokeDasharray = "none";
-          path.style.strokeDashoffset = "0";
+          path.style.strokeDasharray = `${totalLength}`;
+          path.style.strokeDashoffset = `${totalLength - totalLength * lastProgress}`;
           leader.style.visibility = "hidden";
         } else {
           path.style.strokeDasharray = `${totalLength}`;
@@ -416,17 +418,31 @@ export function useProcessJourney({
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
       if (isMobileViewport) {
-        // Mobile intentionally uses the static timeline variant: no deferred
-        // CTA and no scroll-driven card animation.
+        // Mobile keeps only the lightweight line draw: no leader dot and no
+        // animated card states. The line reaches the CTA just after the final card.
         lastActiveIndex = null;
         cards.forEach((card) => {
           delete card.dataset.journeyState;
         });
-        leader.dataset.finished = "false";
-        leader.dataset.overCard = "false";
-        if (endCta) {
-          endCta.dataset.journeyVisible = "true";
-          endCta.dataset.journeyActive = "false";
+        const cursorY = journeyViewportHeight * 0.58 - rect.top;
+        const travelRange = mobileJourneyEnd - mobileJourneyStart;
+        const progress =
+          travelRange > 0
+            ? Math.max(
+                0,
+                Math.min(1, (cursorY - mobileJourneyStart) / travelRange),
+              )
+            : 0;
+        lastProgress = progress;
+        if (totalLength > 0) {
+          path.style.strokeDashoffset = `${totalLength - totalLength * progress}`;
+          const isCtaVisible = progress >= ctaRevealProgress;
+          leader.dataset.finished = "false";
+          leader.dataset.overCard = "false";
+          if (endCta) {
+            endCta.dataset.journeyVisible = isCtaVisible ? "true" : "false";
+            endCta.dataset.journeyActive = "false";
+          }
         }
         return;
       }
@@ -512,12 +528,6 @@ export function useProcessJourney({
     };
 
     const handleScroll = () => {
-      if (
-        typeof window.matchMedia === "function" &&
-        window.matchMedia("(max-width: 900px)").matches
-      ) {
-        return;
-      }
       scheduleJourneyProgressUpdate();
     };
 
