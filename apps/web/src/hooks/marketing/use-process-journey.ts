@@ -62,6 +62,7 @@ export function useProcessJourney({
     let lastActiveIndex: number | null = null;
     let lastProgress = 0;
     let lastViewportWidth = window.innerWidth;
+    let journeyViewportHeight = window.innerHeight;
     let rafId: number | null = null;
     let isJourneyActive = true;
     let visibilityObserver: IntersectionObserver | null = null;
@@ -395,8 +396,16 @@ export function useProcessJourney({
 
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
       const hasMatchMedia = typeof window.matchMedia === "function";
+      const isMobileViewport = hasMatchMedia
+        ? window.matchMedia("(max-width: 900px)").matches
+        : false;
+      // The browser chrome changes window.innerHeight during a mobile scroll.
+      // Keep one stable reference height for this journey so its progress never
+      // reverses merely because the address bar expands or collapses.
+      const viewportHeight = isMobileViewport
+        ? journeyViewportHeight
+        : window.innerHeight;
       const prefersReducedMotion = hasMatchMedia
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
         : false;
@@ -483,6 +492,7 @@ export function useProcessJourney({
       }
 
       lastViewportWidth = window.innerWidth;
+      journeyViewportHeight = window.innerHeight;
       updateGeometry();
       scheduleJourneyProgressUpdate();
     };
@@ -497,6 +507,7 @@ export function useProcessJourney({
           }
           isJourneyActive = entry.isIntersecting;
           if (isJourneyActive) {
+            journeyViewportHeight = window.innerHeight;
             updateGeometry();
             scheduleJourneyProgressUpdate();
           }
