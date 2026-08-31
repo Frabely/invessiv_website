@@ -6,6 +6,7 @@ export function mapQuickContactFormToDto(
   values: ContactFormValues,
   locale: SaveQuickContactDto["locale"],
   message: string,
+  origin?: SaveQuickContactDto["origin"],
 ): SaveQuickContactDto {
   return {
     consentAccepted: values.consentAccepted,
@@ -14,5 +15,6 @@ export function mapQuickContactFormToDto(
     kind: CONTACT_REQUEST_KIND.QuickContact,
     locale,
     message: message.trim(),
+    ...(origin ? { origin } : {}),
   };
 }

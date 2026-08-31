@@ -53,27 +53,27 @@ describe("HomePage", () => {
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Kostenloses Erstgespräch",
+        name: "Lass uns über dein Vorhaben sprechen.",
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("button", { name: /Weiter zur Terminauswahl/ }),
+      screen.getByRole("button", { name: /Kostenloses Erstgespräch anfragen/ }),
     ).toBeTruthy();
     expect(
       screen.queryByRole("combobox", { name: /Passendes Angebot/ }),
     ).toBeNull();
   });
 
-  it("offers the three service models plus an unsure fallback", () => {
+  it("offers the three optional service models without a preselection", () => {
     render(<HomePage />);
 
     const scopeGroup = screen.getByRole("group", { name: /Leistungsmodell/ });
     const scopeOptions = within(scopeGroup).getAllByRole("radio");
 
-    expect(scopeOptions).toHaveLength(4);
+    expect(scopeOptions).toHaveLength(3);
     expect(
-      within(scopeGroup).getByRole("radio", { name: "Noch unsicher" }),
-    ).toBeChecked();
+      scopeOptions.every((option) => !(option as HTMLInputElement).checked),
+    ).toBe(true);
   });
 
   it("renders the hero and all enabled content sections in their configured order", () => {

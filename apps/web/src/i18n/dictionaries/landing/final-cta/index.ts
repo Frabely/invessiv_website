@@ -1,17 +1,13 @@
 import type { Locale } from "@/config/i18n";
 import type {
   FinalCtaContent,
-  FinalCtaFieldCopy,
   FinalCtaFormCopy,
 } from "@/i18n/dictionaries/shared/final-cta";
 import de from "./de.json";
 import en from "./en.json";
 
 export type LandingFinalCtaFormCopy = FinalCtaFormCopy & {
-  fields: FinalCtaFormCopy["fields"] & {
-    website: FinalCtaFieldCopy;
-  };
-  errorWebsite: string;
+  projectScopeLabel: string;
 };
 export type LandingFinalCtaContent = FinalCtaContent & {
   form: LandingFinalCtaFormCopy;

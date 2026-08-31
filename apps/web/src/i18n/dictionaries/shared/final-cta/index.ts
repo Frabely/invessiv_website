@@ -11,28 +11,35 @@ export type FinalCtaFormCopy = {
     goal: FinalCtaFieldCopy;
     honeypot: FinalCtaFieldCopy;
     name: FinalCtaFieldCopy;
-    website?: FinalCtaFieldCopy;
   };
   consentLabel: string;
   privacyLabel: string;
+  privacySuffix: string;
   privacyHref: string;
-  payloadContext: string;
   requiredHint: string;
   submitLabel: string;
   submittingLabel: string;
   errorRequired: string;
   errorEmail: string;
-  errorWebsite?: string;
   errorConsent: string;
   errorRateLimited: string;
   errorDelivery: string;
   errorGeneric: string;
+  callSubmitSuccess: string;
+  emailQuestion: string;
+  emailNote: string;
+  emailSubmitLabel: string;
+  emailSubmittingLabel: string;
+  emailSubmitSuccess: string;
 };
 
 export type FinalCtaContent = {
   body: string;
   eyebrow: string;
   form: FinalCtaFormCopy;
+  portrait: {
+    imageAlt: string;
+  };
   title: string;
   trustLine: string;
 };

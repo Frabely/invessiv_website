@@ -1,7 +1,10 @@
 {
-  "eyebrow": "Anfrage",
-  "title": "Worum geht's bei deiner Landingpage?",
-  "body": "Schreib kurz, welches Angebot die Landingpage verkaufen soll und ob es schon eine bestehende Seite gibt.",
+  "eyebrow": "Kostenloses Erstgespräch",
+  "title": "Lass uns über deine Landingpage sprechen.",
+  "body": "Danach weißt du, was deine Landingpage braucht und was sie ungefähr kostet.",
+  "portrait": {
+    "imageAlt": "Porträt von Moritz Hecht"
+  },
   "form": {
     "fields": {
       "name": {
@@ -14,12 +17,6 @@
         "placeholder": "name@beispiel.de",
         "autocomplete": "email"
       },
-      "website": {
-        "label": "Website",
-        "hint": "Falls vorhanden.",
-        "placeholder": "https://…",
-        "autocomplete": "url"
-      },
       "goal": {
         "label": "Was möchtest du mit der Landingpage erreichen?",
         "placeholder": "z. B. mehr Anfragen für deine Beratung oder Buchungen für dein Angebot"
@@ -28,20 +25,26 @@
         "label": "Bitte nicht ausfüllen"
       }
     },
-    "consentLabel": "Ich bin mit der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage einverstanden.",
-    "privacyLabel": "Datenschutz",
+    "consentLabel": "Ich stimme der Verarbeitung meiner Daten gemäß",
+    "privacyLabel": "Datenschutzerklärung",
+    "privacySuffix": " zu.",
     "privacyHref": "/de/privacy",
     "requiredHint": "Pflichtfelder sind mit * markiert.",
-    "submitLabel": "Ersteinschätzung anfragen",
+    "submitLabel": "Kostenlose Ersteinschätzung anfragen",
     "submittingLabel": "Wird gesendet ...",
-    "payloadContext": "Landingpage-Anfrage",
+    "projectScopeLabel": "Landingpage",
     "errorRequired": "Bitte ausfüllen.",
     "errorEmail": "Bitte eine gültige E-Mail-Adresse angeben.",
-    "errorWebsite": "Bitte eine gültige URL angeben (z. B. https://beispiel.de).",
     "errorConsent": "Ohne deine Einwilligung kann ich die Anfrage nicht bearbeiten.",
     "errorRateLimited": "Zu viele Anfragen in kurzer Zeit. Bitte versuch es in ein paar Minuten erneut.",
     "errorDelivery": "Die Anfrage konnte gerade nicht zugestellt werden. Bitte versuch es noch einmal.",
-    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail."
+    "errorGeneric": "Da ist etwas schiefgegangen. Bitte versuch es erneut oder schreib mir direkt eine E-Mail.",
+    "callSubmitSuccess": "Die Terminauswahl öffnet sich mit deinen Angaben.",
+    "emailQuestion": "Lieber schreiben statt sprechen?",
+    "emailNote": "Das ausgefüllte Formular geht dann ohne Terminauswahl direkt an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+    "emailSubmitLabel": "Anfrage senden",
+    "emailSubmittingLabel": "Wird gesendet ...",
+    "emailSubmitSuccess": "Deine Anfrage ist angekommen. Ich melde mich in Kürze."
   },
-  "trustLine": "Antwort in der Regel innerhalb von 24 Stunden."
+  "trustLine": "15 Minuten, unverbindlich und kostenlos."
 }

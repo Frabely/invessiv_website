@@ -32,24 +32,24 @@ afterEach(() => {
 
 const PORTRAIT: ContactPortraitCopy = {
   imageAlt: "Porträt von Moritz Hecht",
-  points: ["30 Minuten", "Unverbindlich", "Klarer nächster Schritt"],
 };
 
 const FORM_COPY: ContactFormCopy = {
   nameLabel: "Name",
   emailLabel: "E-Mail",
-  projectScopeLabel: "Leistungsmodell",
+  projectScopeLabel: "Leistungsmodell (optional)",
   projectScopeOptions: {
     landing_page: "Landingpage",
     compact_website: "Kompakte Website",
     business_website: "Business Website",
-    unsure: "Noch unsicher",
   },
   messageLabel: "Worum geht es? (optional)",
   messagePlaceholder: "Zwei Sätze reichen.",
   consentLabel: "Ich stimme gemäß",
   privacyLabel: "Datenschutzerklärung",
+  privacySuffix: " zu.",
   requiredHint: "* Pflichtfelder",
+  honeypotLabel: "Bitte nicht ausfüllen",
   fieldErrorInvalidEmail: "Ungültige E-Mail",
   fieldErrorRequired: "Pflichtfeld",
   fieldErrorConsentRequired: "Zustimmung erforderlich",
@@ -58,13 +58,12 @@ const FORM_COPY: ContactFormCopy = {
   callSubmitLabel: "Weiter zur Terminauswahl",
   callSubmittingLabel: "Terminauswahl wird geöffnet",
   callSubmitSuccess: "Terminauswahl öffnet sich",
-  emailQuestion: "Lieber schreiben statt sprechen?",
-  emailNote:
-    "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+  emailQuestion: "Doch lieber schreiben?",
+  emailNote: "Formular per Mail, Antwort in 24 Stunden.",
   emailSubmitLabel: "Anfrage senden",
   emailSubmittingLabel: "Wird gesendet",
-  emailSubmitSuccess: "Anfrage gesendet.",
-  emailSubmitErrorDelivery: "Delivery error",
+  emailSubmitSuccess: "Anfrage ist da.",
+  emailSubmitErrorDelivery: "Zustellung fehlgeschlagen",
 };
 
 function renderContactSection() {
@@ -72,40 +71,38 @@ function renderContactSection() {
     <ContactSection
       calendlyHref="https://calendly.com/service-invessiv-cxf5/30min"
       contactForm={FORM_COPY}
+      eyebrow="Kontakt"
       id="contact"
       intro="30 Minuten, unverbindlich."
-      locale="de"
       portrait={PORTRAIT}
       privacyHref="/privacy"
-      title="Kostenloses Erstgespräch"
+      title="Lass uns über dein Vorhaben sprechen."
     />,
   );
 }
 
 describe("ContactSection", () => {
-  it("renders exactly one contact form with both submit paths", () => {
+  it("renders exactly one Calendly contact form", () => {
     renderContactSection();
 
     expect(
       screen.getByRole("heading", {
         level: 2,
-        name: "Kostenloses Erstgespräch",
+        name: "Lass uns über dein Vorhaben sprechen.",
       }),
     ).toBeTruthy();
     expect(document.querySelectorAll("form")).toHaveLength(1);
     expect(
       screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
     ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
-    expect(screen.getByText("Lieber schreiben statt sprechen?")).toBeTruthy();
   });
 
-  it("renders the portrait card with its trust points", () => {
+  it("renders the portrait card with the identity block", () => {
     renderContactSection();
 
     expect(screen.getByAltText("Porträt von Moritz Hecht")).toBeTruthy();
     expect(screen.getByText("Moritz Hecht")).toBeTruthy();
-    expect(screen.getByText("Klarer nächster Schritt")).toBeTruthy();
+    expect(screen.queryByText("Klarer nächster Schritt")).toBeNull();
   });
 
   it("offers the direct contact channels in the portrait card", () => {
@@ -144,18 +141,6 @@ describe("ContactSection", () => {
         .getByRole("link", { name: "Anrufen" })
         .getAttribute("data-analytics-target"),
     ).toBe("phone");
-  });
-
-  it("explains what the email path does before the visitor uses it", () => {
-    renderContactSection();
-
-    expect(screen.getByText("Lieber schreiben statt sprechen?")).toBeTruthy();
-    expect(
-      screen.getByText(
-        "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
-      ),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
   });
 
   it("focuses the form when arriving from the #contact-email hash", () => {

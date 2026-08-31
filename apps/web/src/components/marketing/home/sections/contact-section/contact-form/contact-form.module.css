@@ -12,14 +12,86 @@
   box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
 }
 
+.layout {
+  display: grid;
+  align-items: start;
+  overflow: hidden;
+  max-width: calc(var(--focus-lane-wide) + 2.25rem + 300px);
+  margin-inline: auto;
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 94%, transparent),
+    color-mix(in srgb, var(--color-surface-1) 98%, transparent)
+  );
+  box-shadow: 0 10px 24px rgba(8, 10, 15, 0.2);
+}
+
+.portraitColumn {
+  min-width: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
+}
+
+.submitArea {
+  display: grid;
+  gap: clamp(0.85rem, 1.2vw, 1.05rem);
+}
+
+.layout .panel {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.portraitColumn > * {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 :global([data-theme="light"]) .panel {
+  box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+    align-items: stretch;
+  }
+
+  .layout .panel,
+  .layout .panel > form {
+    height: 100%;
+  }
+
+  .layout .submitArea {
+    margin-top: auto;
+  }
+
+  .portraitColumn {
+    border-top: 0;
+    border-left: 1px solid
+      color-mix(in srgb, var(--color-border) 62%, transparent);
+  }
+}
+
+@media (min-width: 1100px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  }
+}
+
+:global([data-theme="light"]) .layout {
   box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
 }
 
 /* The message is optional, so it must not outweigh the required fields. */
 .messageField textarea {
   width: 100%;
-  min-height: 92px;
+  min-height: 128px;
   resize: vertical;
   border-radius: 15px;
   border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
@@ -44,7 +116,19 @@
   border-color: color-mix(in srgb, var(--color-cta) 50%, transparent);
 }
 
-/* Second exit from the same form: send it as an email instead of booking. */
+@media (max-width: 599px) {
+  .panel {
+    padding-inline: 0.625rem;
+  }
+
+  .messageField textarea {
+    min-height: 112px;
+  }
+}
+
+/* Second, deliberately quieter exit from the same form: send it as an email
+   instead of booking a call. Separated by a rule and centred so it reads as
+   the fallback, not as a competing primary action. */
 .emailHandoff {
   display: grid;
   justify-items: center;
@@ -79,4 +163,14 @@
   .emailHandoff > button {
     width: 100%;
   }
+}
+
+/* Off-screen bot trap; never announced and never reachable by keyboard. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }

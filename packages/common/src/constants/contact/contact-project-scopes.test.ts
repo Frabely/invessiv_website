@@ -11,7 +11,6 @@ describe("CONTACT_PROJECT_SCOPE", () => {
       BusinessWebsite: "business_website",
       CompactWebsite: "compact_website",
       LandingPage: "landing_page",
-      Unsure: "unsure",
     });
   });
 });
@@ -19,7 +18,6 @@ describe("CONTACT_PROJECT_SCOPE", () => {
 describe("CONTACT_PROJECT_SCOPES", () => {
   it("lists the chip order without duplicates", () => {
     expect(CONTACT_PROJECT_SCOPES).toEqual([
-      "unsure",
       "landing_page",
       "compact_website",
       "business_website",
@@ -29,8 +27,8 @@ describe("CONTACT_PROJECT_SCOPES", () => {
     );
   });
 
-  it("offers the low-commitment option first", () => {
-    expect(CONTACT_PROJECT_SCOPES[0]).toBe(CONTACT_PROJECT_SCOPE.Unsure);
+  it("lists landing pages first", () => {
+    expect(CONTACT_PROJECT_SCOPES[0]).toBe(CONTACT_PROJECT_SCOPE.LandingPage);
   });
 });
 

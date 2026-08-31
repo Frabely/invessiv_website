@@ -1,7 +1,9 @@
+/* Used inside centred sections too, so it sets its own alignment. */
 .root {
   display: grid;
   gap: 0.2rem;
   min-width: 0;
+  text-align: left;
 }
 
 .name {

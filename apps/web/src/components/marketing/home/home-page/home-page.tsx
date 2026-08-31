@@ -201,10 +201,10 @@ export function HomePage() {
                 <ContactSection
                   calendlyHref={COMPANY_CALENDLY}
                   contactForm={section.contactForm}
+                  eyebrow={section.eyebrow}
                   id={section.id}
                   intro={section.intro}
                   key={section.id}
-                  locale={locale}
                   portrait={section.portrait}
                   privacyHref={privacyHref}
                   title={section.title}

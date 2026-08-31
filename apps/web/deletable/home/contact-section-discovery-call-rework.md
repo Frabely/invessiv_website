@@ -202,7 +202,8 @@ Muster folgt Migration `0010` (nullable + CHECK statt NOT NULL mit Backfill).
 
 > **Vor dem Ausrollen prüfen:** `SELECT count(*) FROM lead_submissions WHERE channel = 'project_request';` und
 > `SELECT count(*) FROM lead_project_requests;`. Beide Abfragen wurden für Production mit `0` bestätigt. Falls eine
-> Abfrage künftig einen Wert > 0 liefert, Migration nicht ausrollen, Daten sichern und zuerst entscheiden, ob sie migriert
+> Abfrage künftig einen Wert > 0 liefert, Migration nicht ausrollen, Daten sichern und zuerst entscheiden, ob sie
+> migriert
 > oder bewusst entfernt werden. Der Channel-CHECK wird vor dem Table-Drop gesetzt, damit ein unerwarteter Alt-Datensatz
 > den destruktiven Schritt verhindert. Migrationen laufen **ohne** umschließende Transaktion (autocommit pro Statement,
 > siehe `run-migrations.ts`) — bei Abbruch also Teilzustand prüfen.
@@ -280,7 +281,8 @@ Muster folgt Migration `0010` (nullable + CHECK statt NOT NULL mit Backfill).
 
 > Der Workspace-Dictionary-Key `activity.channels.project_request`
 > (`apps/workspace/src/i18n/dictionaries/workspace/leads/detail/{de,en}.json`) wird mit entfernt. Der dort ebenfalls
-> vorhandene Key `linkedin_post_delivery` ist bereits heute nicht Teil von `CONTACT_REQUEST_KINDS` — unangetastet lassen,
+> vorhandene Key `linkedin_post_delivery` ist bereits heute nicht Teil von `CONTACT_REQUEST_KINDS` — unangetastet
+> lassen,
 > das ist ein separater Fund.
 
 ### Phase 4 — Komponenten
@@ -328,7 +330,8 @@ Roving-Tabindex-Logik. Visuell an `services-section.module.css` `.serviceChip` a
 und drei Scan-Punkte (aus dem Dictionary, nicht inline).
 
 > **Bild-Follow-up:** `suit-1.jpeg` ist 238×318 px. Die Karte wird auf max. ~260 px Anzeigebreite begrenzt, damit es
-> nicht sichtbar hochskaliert. Sobald eine höher aufgelöste Version als `apps/web/assets/home/suit-portrait.jpeg` (Ziel: ≥
+> nicht sichtbar hochskaliert. Sobald eine höher aufgelöste Version als `apps/web/assets/home/suit-portrait.jpeg`
+> (Ziel: ≥
 > 800×1100, Hochformat) vorliegt, genügt der Austausch des Imports plus Anhebung der `max-width` in
 > `contact-portrait-card.module.css`.
 

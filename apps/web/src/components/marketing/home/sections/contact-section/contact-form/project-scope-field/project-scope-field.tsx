@@ -1,10 +1,8 @@
-import type { UseFormRegister } from "react-hook-form";
+import type { UseFormRegister, UseFormSetValue } from "react-hook-form";
 import {
   CONTACT_PROJECT_SCOPES,
   type ContactProjectScope,
-  isContactProjectScope,
 } from "@invessiv/common/constants/contact/contact-project-scopes";
-import { CONTACT_FIELD_ERROR_CODE } from "@invessiv/common/constants/contact/contact-field-error-codes";
 import { CONTACT_FORM_FIELD_NAME } from "@invessiv/common/constants/contact/contact-form-field-names";
 import type { ContactFormValues } from "@invessiv/common/contracts/contact/forms/contact-form-values";
 import { ProjectScopeIcon } from "@/components/marketing/home/sections/contact-section/contact-form/project-scope-field/project-scope-icon/project-scope-icon";
@@ -12,35 +10,26 @@ import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-f
 import styles from "./project-scope-field.module.css";
 
 type ProjectScopeFieldProps = {
-  errorMessage?: string;
   label: string;
   optionLabels: Record<ContactProjectScope, string>;
   register: UseFormRegister<ContactFormValues>;
-  selectedScope: ContactProjectScope;
+  selectedScope?: ContactProjectScope;
+  setValue: UseFormSetValue<ContactFormValues>;
 };
 
 export function ProjectScopeField({
-  errorMessage,
   label,
   optionLabels,
   register,
   selectedScope,
+  setValue,
 }: ProjectScopeFieldProps) {
-  const scopeField = register(CONTACT_FORM_FIELD_NAME.ProjectScope, {
-    required: CONTACT_FIELD_ERROR_CODE.Required,
-    validate: (value) =>
-      isContactProjectScope(value) || CONTACT_FIELD_ERROR_CODE.Required,
-  });
+  const scopeField = register(CONTACT_FORM_FIELD_NAME.ProjectScope);
 
   return (
-    <fieldset
-      aria-describedby={CONTACT_FORM_FIELD_NAME.ProjectScope}
-      aria-invalid={errorMessage ? "true" : undefined}
-      aria-required="true"
-      className={styles.fieldset}
-    >
+    <fieldset className={styles.fieldset}>
       <legend className={styles.legend}>
-        <FormFieldLabel label={label} required />
+        <FormFieldLabel label={label} />
       </legend>
 
       <div className={styles.chips}>
@@ -52,7 +41,21 @@ export function ProjectScopeField({
           >
             <input
               {...scopeField}
+              // Controlled so deselecting also unchecks the native radio;
+              // otherwise assistive tech keeps announcing it as selected.
+              checked={scope === selectedScope}
               className={styles.input}
+              onClick={(event) => {
+                if (scope !== selectedScope) {
+                  return;
+                }
+
+                event.preventDefault();
+                setValue(CONTACT_FORM_FIELD_NAME.ProjectScope, undefined, {
+                  shouldDirty: true,
+                  shouldTouch: true,
+                });
+              }}
               type="radio"
               value={scope}
             />
@@ -63,15 +66,6 @@ export function ProjectScopeField({
           </label>
         ))}
       </div>
-
-      <small
-        aria-hidden={errorMessage ? undefined : "true"}
-        className={`${styles.error}${errorMessage ? "" : ` ${styles.errorHidden}`}`}
-        id={CONTACT_FORM_FIELD_NAME.ProjectScope}
-        role={errorMessage ? "alert" : undefined}
-      >
-        {errorMessage}
-      </small>
     </fieldset>
   );
 }

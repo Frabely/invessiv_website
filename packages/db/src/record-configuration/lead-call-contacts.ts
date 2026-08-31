@@ -13,7 +13,7 @@ export const leadCallContacts = pgTable(
     message: text("message"),
     project_scope: text("project_scope", {
       enum: CONTACT_PROJECT_SCOPES,
-    }).notNull(),
+    }),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

@@ -1,7 +1,10 @@
 {
-  "eyebrow": "Inquire",
-  "title": "What should your landing page do?",
-  "body": "Tell me which offer the landing page should sell and whether an existing page already exists.",
+  "eyebrow": "Free intro call",
+  "title": "Let's talk about your landing page.",
+  "body": "Afterwards you know what your landing page needs and roughly what it costs.",
+  "portrait": {
+    "imageAlt": "Portrait of Moritz Hecht"
+  },
   "form": {
     "fields": {
       "name": {
@@ -14,12 +17,6 @@
         "placeholder": "name@example.com",
         "autocomplete": "email"
       },
-      "website": {
-        "label": "Website",
-        "hint": "If you have one.",
-        "placeholder": "https://…",
-        "autocomplete": "url"
-      },
       "goal": {
         "label": "What do you want to achieve with the landing page?",
         "placeholder": "e.g. more inquiries for your consulting or bookings for your offer"
@@ -28,20 +25,26 @@
         "label": "Please leave empty"
       }
     },
-    "consentLabel": "I agree to the processing of my data to handle my inquiry.",
-    "privacyLabel": "Privacy",
+    "consentLabel": "I agree to the processing of my data according to the",
+    "privacyLabel": "privacy policy",
+    "privacySuffix": ".",
     "privacyHref": "/en/privacy",
     "requiredHint": "Required fields are marked with *.",
-    "submitLabel": "Request initial assessment",
+    "submitLabel": "Request a free initial assessment",
     "submittingLabel": "Sending ...",
-    "payloadContext": "Landing page inquiry",
+    "projectScopeLabel": "Landing page",
     "errorRequired": "Please fill this in.",
     "errorEmail": "Please enter a valid email address.",
-    "errorWebsite": "Please enter a valid URL (e.g. https://example.com).",
     "errorConsent": "Without your consent I can't process the inquiry.",
     "errorRateLimited": "Too many requests in a short time. Please try again in a few minutes.",
     "errorDelivery": "The inquiry couldn't be delivered just now. Please try again.",
-    "errorGeneric": "Something went wrong. Please try again or send me an email directly."
+    "errorGeneric": "Something went wrong. Please try again or send me an email directly.",
+    "callSubmitSuccess": "The calendar is opening with your details.",
+    "emailQuestion": "Rather write than talk?",
+    "emailNote": "The completed form then goes straight to me, without booking a time. I usually reply within 24 hours.",
+    "emailSubmitLabel": "Send inquiry",
+    "emailSubmittingLabel": "Sending ...",
+    "emailSubmitSuccess": "Your inquiry arrived. I'll be in touch shortly."
   },
-  "trustLine": "Usually a reply within 24 hours."
+  "trustLine": "15 minutes, free and without obligation."
 }

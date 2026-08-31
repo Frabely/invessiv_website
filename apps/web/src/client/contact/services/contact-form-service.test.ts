@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { WebApiEndpoint } from "@/common/constants";
 import {
   createCalendlyPrefillHref,
@@ -119,6 +120,7 @@ describe("contact-form-service", () => {
         kind: "discovery_call",
         locale: "de",
         message: "Wir wollen den Umfang kurz einordnen.",
+        origin: ContactSubmissionOrigin.Website,
         projectScope: "compact_website",
       },
       {
@@ -137,6 +139,7 @@ describe("contact-form-service", () => {
           kind: "discovery_call",
           locale: "de",
           message: "Wir wollen den Umfang kurz einordnen.",
+          origin: ContactSubmissionOrigin.Website,
           projectScope: "compact_website",
         }),
         headers: {

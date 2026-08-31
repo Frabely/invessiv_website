@@ -9,7 +9,6 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useForm, useWatch } from "react-hook-form";
-
 import type { ContactProjectScope } from "@invessiv/common/constants/contact/contact-project-scopes";
 import type { ContactFormValues } from "@invessiv/common/contracts/contact/forms/contact-form-values";
 import { ProjectScopeField } from "./project-scope-field";
@@ -19,42 +18,37 @@ afterEach(() => {
 });
 
 const OPTION_LABELS: Record<ContactProjectScope, string> = {
-  unsure: "Noch unsicher",
   landing_page: "Landingpage",
   compact_website: "Kompakte Website",
   business_website: "Business Website",
 };
 
 type HarnessProps = {
-  initialScope: ContactProjectScope | "";
-  onValid: () => void;
+  initialScope?: ContactProjectScope;
+  onValid: (values: ContactFormValues) => void;
 };
 
 function Harness({ initialScope, onValid }: HarnessProps) {
-  const {
-    control,
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<ContactFormValues>({
-    defaultValues: {
-      consentAccepted: true,
-      displayName: "Mara Kern",
-      email: "mara@example.com",
-      message: "",
-      projectScope: initialScope as ContactProjectScope,
-    },
-  });
+  const { control, handleSubmit, register, setValue } =
+    useForm<ContactFormValues>({
+      defaultValues: {
+        consentAccepted: true,
+        displayName: "Mara Kern",
+        email: "mara@example.com",
+        message: "",
+        projectScope: initialScope,
+      },
+    });
   const selectedScope = useWatch({ control, name: "projectScope" });
 
   return (
     <form onSubmit={handleSubmit(onValid)}>
       <ProjectScopeField
-        errorMessage={errors.projectScope ? "Pflichtfeld" : undefined}
-        label="Leistungsmodell"
+        label="Leistungsmodell (optional)"
         optionLabels={OPTION_LABELS}
         register={register}
         selectedScope={selectedScope}
+        setValue={setValue}
       />
       <button type="submit">Senden</button>
     </form>
@@ -62,85 +56,100 @@ function Harness({ initialScope, onValid }: HarnessProps) {
 }
 
 describe("ProjectScopeField", () => {
-  it("lists the fallback option first", () => {
-    render(<Harness initialScope="unsure" onValid={vi.fn()} />);
+  it("lists only the three service models", () => {
+    render(<Harness onValid={vi.fn()} />);
 
-    const labels = screen
-      .getAllByRole("radio")
-      .map((radio) => radio.closest("label")?.textContent?.trim());
-
-    expect(labels).toEqual([
-      "Noch unsicher",
-      "Landingpage",
-      "Kompakte Website",
-      "Business Website",
-    ]);
+    expect(
+      screen.getAllByRole("radio").map((radio) => radio.getAttribute("value")),
+    ).toEqual(["landing_page", "compact_website", "business_website"]);
+    expect(screen.queryByText("Noch unsicher")).toBeNull();
   });
 
-  it("marks the group as required for assistive technology", () => {
-    render(<Harness initialScope="unsure" onValid={vi.fn()} />);
+  it("is optional for assistive technology", () => {
+    render(<Harness onValid={vi.fn()} />);
 
     expect(
       screen
         .getByRole("group", { name: /Leistungsmodell/ })
         .getAttribute("aria-required"),
-    ).toBe("true");
+    ).toBeNull();
   });
 
-  it("renders a scope-specific service icon for every service scope", () => {
-    const { container } = render(
-      <Harness initialScope="unsure" onValid={vi.fn()} />,
-    );
-
-    const maskedIcons = [...container.querySelectorAll("[data-scope]")].map(
-      (icon) => icon.getAttribute("data-scope"),
-    );
-
-    expect(maskedIcons).toEqual([
-      "landing_page",
-      "compact_website",
-      "business_website",
-    ]);
-  });
-
-  it("draws the fallback scope from the icon library instead of a service file", () => {
-    const { container } = render(
-      <Harness initialScope="unsure" onValid={vi.fn()} />,
-    );
-
-    const unsureChip = screen
-      .getByRole("radio", { name: "Noch unsicher" })
-      .closest("label");
-
-    expect(unsureChip?.querySelector("[data-scope]")).toBeNull();
-    expect(unsureChip?.querySelector("svg[data-icon]")).not.toBeNull();
-    expect(container.innerHTML).not.toContain("unsure.svg");
-  });
-
-  it("blocks submitting when no scope is set", async () => {
+  it("submits without a selected scope", async () => {
     const onValid = vi.fn();
-    render(<Harness initialScope="" onValid={onValid} />);
+    render(<Harness onValid={onValid} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Senden" }));
 
-    await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveProperty(
-        "textContent",
-        "Pflichtfeld",
-      );
-    });
-    expect(onValid).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(onValid).toHaveBeenCalledWith(
+        expect.objectContaining({ projectScope: null }),
+        expect.anything(),
+      ),
+    );
   });
 
-  it("submits once a scope is chosen", async () => {
+  it("submits the selected scope", async () => {
     const onValid = vi.fn();
-    render(<Harness initialScope="" onValid={onValid} />);
+    render(<Harness onValid={onValid} />);
 
     fireEvent.click(screen.getByRole("radio", { name: "Kompakte Website" }));
     fireEvent.click(screen.getByRole("button", { name: "Senden" }));
 
-    await waitFor(() => {
-      expect(onValid).toHaveBeenCalledTimes(1);
-    });
+    await waitFor(() =>
+      expect(onValid).toHaveBeenCalledWith(
+        expect.objectContaining({ projectScope: "compact_website" }),
+        expect.anything(),
+      ),
+    );
+  });
+
+  it("unchecks the native radio when the scope is cleared", async () => {
+    render(<Harness initialScope="compact_website" onValid={vi.fn()} />);
+
+    const chip = screen.getByRole("radio", { name: "Kompakte Website" });
+    expect(chip).toHaveProperty("checked", true);
+
+    fireEvent.click(chip);
+
+    // Assistive tech reads the native state, so it has to follow the form value.
+    await waitFor(() => expect(chip).toHaveProperty("checked", false));
+    expect(document.querySelector("input:checked")).toBeNull();
+  });
+
+  it("selects the scope again after it was cleared", async () => {
+    const onValid = vi.fn();
+    render(<Harness initialScope="compact_website" onValid={onValid} />);
+
+    const chip = screen.getByRole("radio", { name: "Kompakte Website" });
+    fireEvent.click(chip);
+    await waitFor(() => expect(chip).toHaveProperty("checked", false));
+
+    fireEvent.click(chip);
+    await waitFor(() => expect(chip).toHaveProperty("checked", true));
+
+    fireEvent.click(screen.getByRole("button", { name: "Senden" }));
+
+    await waitFor(() =>
+      expect(onValid).toHaveBeenCalledWith(
+        expect.objectContaining({ projectScope: "compact_website" }),
+        expect.anything(),
+      ),
+    );
+  });
+
+  it("clears the selected scope when its chip is selected again", async () => {
+    const onValid = vi.fn();
+    render(<Harness initialScope="compact_website" onValid={onValid} />);
+
+    fireEvent.click(screen.getByRole("radio", { name: "Kompakte Website" }));
+    fireEvent.click(screen.getByRole("button", { name: "Senden" }));
+
+    await waitFor(() =>
+      expect(onValid).toHaveBeenCalledWith(
+        expect.objectContaining({ projectScope: undefined }),
+        expect.anything(),
+      ),
+    );
   });
 });

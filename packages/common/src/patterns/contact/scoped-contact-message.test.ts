@@ -15,8 +15,8 @@ describe("createScopedContactMessage", () => {
 
   it("keeps the scope line alone when no message was written", () => {
     expect(
-      createScopedContactMessage("Leistungsmodell: Noch unsicher", "   "),
-    ).toBe("Leistungsmodell: Noch unsicher");
+      createScopedContactMessage("Leistungsmodell: Landingpage", "   "),
+    ).toBe("Leistungsmodell: Landingpage");
   });
 
   it("falls back to the message when there is no scope line", () => {

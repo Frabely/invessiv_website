@@ -15,7 +15,8 @@ type ContactConsentFieldProps<TValues extends FieldValues> = {
   errorMessage?: string;
   privacyHref: string;
   privacyLabel: string;
-  register: UseFormRegister<TValues>;
+  privacySuffix?: string;
+  registerAction: UseFormRegister<TValues>;
 };
 
 export function ContactConsentField<TValues extends FieldValues>({
@@ -27,14 +28,15 @@ export function ContactConsentField<TValues extends FieldValues>({
   errorMessage,
   privacyHref,
   privacyLabel,
-  register,
+  privacySuffix,
+  registerAction,
 }: ContactConsentFieldProps<TValues>) {
   const consentField = CONTACT_FORM_FIELD_NAME.ConsentAccepted as Path<TValues>;
 
   return (
     <label className={className}>
       <input
-        {...register(consentField, {
+        {...registerAction(consentField, {
           validate: (value) =>
             value || CONTACT_FIELD_ERROR_CODE.ConsentRequired,
         })}
@@ -45,10 +47,13 @@ export function ContactConsentField<TValues extends FieldValues>({
       />
       <span className={styles.text}>
         {consentLabel}{" "}
-        <a className={styles.link} href={privacyHref} target="_self">
-          {privacyLabel}
-        </a>
-        <FormRequiredMarker />
+        <span className={styles.privacyGroup}>
+          <a className={styles.link} href={privacyHref} target="_self">
+            {privacyLabel}
+          </a>
+          {privacySuffix}
+          <FormRequiredMarker className={styles.requiredMarker} />
+        </span>
       </span>
       <p
         aria-hidden={errorMessage ? undefined : "true"}

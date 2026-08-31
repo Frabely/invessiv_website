@@ -21,6 +21,17 @@
   border-bottom-color: color-mix(in srgb, var(--accent) 72%, transparent);
 }
 
+.requiredMarker {
+  margin: 0;
+}
+
+.privacyGroup {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.22em;
+  white-space: nowrap;
+}
+
 :global([data-theme="light"]) .link {
   color: var(--accent);
   border-bottom-color: color-mix(in srgb, var(--accent) 60%, transparent);

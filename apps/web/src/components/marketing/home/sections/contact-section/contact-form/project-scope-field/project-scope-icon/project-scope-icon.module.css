@@ -1,5 +1,4 @@
-.mask,
-.glyph {
+.mask {
   display: block;
   flex: 0 0 auto;
   width: 18px;
@@ -30,8 +29,4 @@
 
 .mask[data-scope="business_website"] {
   --scope-icon: url("../../../../../../../../../public/services/business-website.svg");
-}
-
-.glyph {
-  color: currentColor;
 }

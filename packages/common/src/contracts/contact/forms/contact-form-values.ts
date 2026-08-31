@@ -3,5 +3,7 @@ import type { ContactProjectScope } from "@invessiv/common/constants/contact/con
 
 export type ContactFormValues = BaseContactFieldsValues & {
   consentAccepted: boolean;
-  projectScope: ContactProjectScope;
+  /** Stays empty for humans; a filled value marks the submit as a bot. */
+  honeypot: string;
+  projectScope?: ContactProjectScope;
 };

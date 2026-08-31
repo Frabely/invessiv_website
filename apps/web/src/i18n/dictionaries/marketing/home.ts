@@ -69,7 +69,6 @@ export type ProcessCtaCopy = {
 
 export type ContactPortraitCopy = {
   imageAlt: string;
-  points: string[];
 };
 
 export type ContactFormCopy = {
@@ -81,7 +80,9 @@ export type ContactFormCopy = {
   messagePlaceholder: string;
   consentLabel: string;
   privacyLabel: string;
+  privacySuffix: string;
   requiredHint: string;
+  honeypotLabel: string;
   fieldErrorInvalidEmail: string;
   fieldErrorRequired: string;
   fieldErrorConsentRequired: string;
@@ -156,6 +157,7 @@ type QnaSectionCopy = {
 };
 
 type ContactSectionCopy = {
+  eyebrow: string;
   title: string;
   intro: string;
   portrait: ContactPortraitCopy;
@@ -637,28 +639,29 @@ const HOME_SECTIONS = [
     id: "contact",
     copy: {
       de: {
-        title: "Kostenloses Erstgespräch",
+        eyebrow: "Kontakt",
+        title: "Lass uns über dein Vorhaben sprechen.",
         intro:
-          "30 Minuten, unverbindlich. Danach weißt du, was dein Vorhaben kostet und wie lange es dauert.",
+          "15 Minuten, kostenlos und unverbindlich. Danach weißt du, was deine Website braucht und was sie ungefähr kostet.",
         portrait: {
           imageAlt: "Porträt von Moritz Hecht",
-          points: ["30 Minuten", "Unverbindlich", "Klarer nächster Schritt"],
         },
         contactForm: {
           nameLabel: "Name",
           emailLabel: "E-Mail",
-          projectScopeLabel: "Leistungsmodell",
+          projectScopeLabel: "Leistungsmodell (optional)",
           projectScopeOptions: {
             [CONTACT_PROJECT_SCOPE.LandingPage]: "Landingpage",
             [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Kompakte Website",
             [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business Website",
-            [CONTACT_PROJECT_SCOPE.Unsure]: "Noch unsicher",
           },
           messageLabel: "Worum geht es? (optional)",
           messagePlaceholder: "Zwei Sätze reichen.",
           consentLabel: "Ich stimme der Verarbeitung meiner Angaben gemäß",
-          privacyLabel: "Datenschutzerklärung zu.",
+          privacyLabel: "Datenschutzerklärung",
+          privacySuffix: " zu.",
           requiredHint: "* Pflichtfelder",
+          honeypotLabel: "Bitte nicht ausfüllen",
           fieldErrorInvalidEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
           fieldErrorRequired: "Dieses Feld ist erforderlich.",
           fieldErrorConsentRequired:
@@ -667,44 +670,45 @@ const HOME_SECTIONS = [
             "Zu viele Anfragen in kurzer Zeit. Bitte versuche es gleich noch einmal.",
           submitErrorGeneric:
             "Das hat gerade nicht geklappt. Bitte versuche es später erneut.",
-          callSubmitLabel: "Weiter zur Terminauswahl",
+          callSubmitLabel: "Kostenloses Erstgespräch anfragen",
           callSubmittingLabel: "Terminauswahl wird geöffnet ...",
           callSubmitSuccess:
             "Die Terminauswahl öffnet sich mit deinen Angaben.",
-          emailQuestion: "Lieber schreiben statt sprechen?",
+          emailQuestion: "Doch lieber schreiben?",
           emailNote:
-            "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+            "Dann geht das ausgefüllte Formular direkt an mich, ohne Terminauswahl. Ich antworte in der Regel innerhalb von 24 Stunden.",
           emailSubmitLabel: "Anfrage senden",
           emailSubmittingLabel: "Wird gesendet ...",
-          emailSubmitSuccess: "Anfrage gesendet. Ich melde mich bei dir.",
+          emailSubmitSuccess: "Anfrage ist da. Ich melde mich bei dir.",
           emailSubmitErrorDelivery:
-            "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuche es später erneut.",
+            "Die Nachricht konnte gerade nicht zugestellt werden. Bitte versuch es später noch einmal.",
         },
       },
       en: {
-        title: "Free intro call",
+        eyebrow: "Contact",
+        title: "Let's talk about your project.",
         intro:
-          "30 minutes, no strings attached. Afterwards you know what your project costs and how long it takes.",
+          "15 minutes, free and without obligation. Afterwards you know what your website needs and roughly what it costs.",
         portrait: {
           imageAlt: "Portrait of Moritz Hecht",
-          points: ["30 minutes", "No commitment", "A clear next step"],
         },
         contactForm: {
           nameLabel: "Name",
           emailLabel: "Email",
-          projectScopeLabel: "Service",
+          projectScopeLabel: "Service (optional)",
           projectScopeOptions: {
             [CONTACT_PROJECT_SCOPE.LandingPage]: "Landing page",
             [CONTACT_PROJECT_SCOPE.CompactWebsite]: "Compact website",
             [CONTACT_PROJECT_SCOPE.BusinessWebsite]: "Business website",
-            [CONTACT_PROJECT_SCOPE.Unsure]: "Not sure yet",
           },
           messageLabel: "What's it about? (optional)",
           messagePlaceholder: "Two sentences are enough.",
           consentLabel:
             "I agree to the processing of my information according to the",
-          privacyLabel: "privacy policy.",
+          privacyLabel: "privacy policy",
+          privacySuffix: ".",
           requiredHint: "* Required fields",
+          honeypotLabel: "Please leave this empty",
           fieldErrorInvalidEmail: "Please enter a valid email address.",
           fieldErrorRequired: "This field is required.",
           fieldErrorConsentRequired: "Please confirm the privacy policy.",
@@ -712,15 +716,15 @@ const HOME_SECTIONS = [
             "Too many requests in a short time. Please try again in a moment.",
           submitErrorGeneric:
             "That did not work just now. Please try again later.",
-          callSubmitLabel: "Continue to booking",
+          callSubmitLabel: "Request a free intro call",
           callSubmittingLabel: "Opening the calendar ...",
           callSubmitSuccess: "The calendar is opening with your details.",
-          emailQuestion: "Rather write than talk?",
+          emailQuestion: "Rather write instead?",
           emailNote:
-            "Your filled-in form comes to me as an email. I usually reply within 24 hours.",
+            "Then the form above goes straight to me, without booking a time. I usually reply within 24 hours.",
           emailSubmitLabel: "Send inquiry",
           emailSubmittingLabel: "Sending ...",
-          emailSubmitSuccess: "Inquiry sent. I will get back to you.",
+          emailSubmitSuccess: "Got it. I'll get back to you.",
           emailSubmitErrorDelivery:
             "The message could not be delivered right now. Please try again later.",
         },

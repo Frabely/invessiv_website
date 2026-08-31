@@ -34,6 +34,7 @@ const DISCOVERY_CALL_DTO: SaveDiscoveryCallDto = {
   kind: CONTACT_REQUEST_KIND.DiscoveryCall,
   locale: Locale.De,
   message: "Bitte um einen Kennenlern-Termin.",
+  origin: ContactSubmissionOrigin.Website,
   projectScope: CONTACT_PROJECT_SCOPE.CompactWebsite,
 };
 

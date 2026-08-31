@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CONTACT_PROJECT_SCOPE } from "@invessiv/common/constants/contact/contact-project-scopes";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { discoveryCallSchema } from "./discovery-call.schema";
 
 const VALID_DISCOVERY_CALL = {
@@ -8,6 +9,7 @@ const VALID_DISCOVERY_CALL = {
   email: "mara@example.com",
   kind: "discovery_call",
   locale: "de",
+  origin: ContactSubmissionOrigin.Website,
   projectScope: CONTACT_PROJECT_SCOPE.CompactWebsite,
 };
 
@@ -27,12 +29,12 @@ describe("discoveryCallSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("requires a project scope", () => {
+  it("accepts a submission without a project scope", () => {
     const payload = {
       ...VALID_DISCOVERY_CALL,
       projectScope: undefined,
     };
 
-    expect(discoveryCallSchema.safeParse(payload).success).toBe(false);
+    expect(discoveryCallSchema.safeParse(payload).success).toBe(true);
   });
 });

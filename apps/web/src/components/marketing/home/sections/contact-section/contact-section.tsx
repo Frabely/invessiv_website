@@ -1,23 +1,22 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Locale } from "@/config/i18n";
 import { CONTACT_EMAIL_SECTION_HREF } from "@/config/navigation/home";
 import type {
   ContactFormCopy,
   ContactPortraitCopy,
 } from "@/i18n/dictionaries/marketing/home";
+import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { ContactForm } from "@/components/marketing/home/sections/contact-section/contact-form/contact-form";
-import { ContactPortraitCard } from "@/components/marketing/home/sections/contact-section/contact-portrait-card/contact-portrait-card";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import styles from "./contact-section.module.css";
 
 type ContactSectionProps = {
   calendlyHref: string;
   contactForm: ContactFormCopy;
+  eyebrow: string;
   id: string;
   intro: string;
-  locale: Locale;
   portrait: ContactPortraitCopy;
   privacyHref: string;
   title: string;
@@ -31,9 +30,9 @@ const CONTACT_SECTION_EVENTS = {
 export function ContactSection({
   calendlyHref,
   contactForm,
+  eyebrow,
   id,
   intro,
-  locale,
   portrait,
   privacyHref,
   title,
@@ -90,30 +89,22 @@ export function ContactSection({
   return (
     <section className={styles.section} id={id} ref={sectionRef}>
       <header className={styles.head} data-reveal-item="true">
+        <EyebrowPill>{eyebrow}</EyebrowPill>
         <h2 className={styles.title}>{title}</h2>
         <p className={styles.intro}>{intro}</p>
       </header>
 
-      <div className={styles.layout}>
-        <div
-          className={styles.formColumn}
-          data-reveal-item="true"
-          ref={formColumnRef}
-        >
-          <ContactForm
-            calendlyHref={calendlyHref}
-            formCopy={contactForm}
-            privacyHref={privacyHref}
-          />
-        </div>
-
-        <div className={styles.portraitColumn} data-reveal-item="true">
-          <ContactPortraitCard
-            imageAlt={portrait.imageAlt}
-            locale={locale}
-            points={portrait.points}
-          />
-        </div>
+      <div
+        className={styles.formColumn}
+        data-reveal-item="true"
+        ref={formColumnRef}
+      >
+        <ContactForm
+          calendlyHref={calendlyHref}
+          formCopy={contactForm}
+          privacyHref={privacyHref}
+          portrait={portrait}
+        />
       </div>
 
       <span aria-hidden="true" id={CONTACT_EMAIL_SECTION_HREF.slice(1)} />

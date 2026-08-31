@@ -199,7 +199,7 @@ export function mapDiscoveryCallDtoToDbPersistInput(
     CONTACT_REQUEST_KIND.DiscoveryCall,
     lead.id,
     createdAt,
-    { marketingConsent: false, origin: ContactSubmissionOrigin.Website },
+    { marketingConsent: false, origin: payload.origin },
   );
   const message = payload.message?.trim();
 

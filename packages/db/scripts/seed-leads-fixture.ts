@@ -21,7 +21,6 @@ import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-le
 import { CONTACT_BUDGET_KEY } from "@invessiv/common/constants/contact/contact-budget-keys";
 import { CONTACT_GOAL_KEY } from "@invessiv/common/constants/contact/contact-goal-keys";
 import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-offer-keys";
-import { CONTACT_PROJECT_SCOPE } from "@invessiv/common/constants/contact/contact-project-scopes";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
@@ -586,7 +585,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     id: string;
     lead_submission_id: string;
     message: string | null;
-    project_scope: (typeof CONTACT_PROJECT_SCOPE)[keyof typeof CONTACT_PROJECT_SCOPE];
+    project_scope: null;
     updated_at: Date;
   }> = [];
 
@@ -650,7 +649,7 @@ function createSubmissionRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         id: crypto.randomUUID(),
         lead_submission_id: submissionRow.id,
         message: fixture.submission.message,
-        project_scope: CONTACT_PROJECT_SCOPE.Unsure,
+        project_scope: null,
         updated_at: minutesAfter(submissionCreatedAt, 1),
       });
     }

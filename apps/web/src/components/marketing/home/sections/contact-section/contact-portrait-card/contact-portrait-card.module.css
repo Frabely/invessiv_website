@@ -5,10 +5,9 @@
 
   display: grid;
   grid-template-columns: 112px minmax(0, 1fr);
-  grid-template-areas:
-    "frame identity"
-    "points points";
+  grid-template-areas: "frame identity";
   align-items: stretch;
+  align-content: start;
   overflow: hidden;
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
@@ -45,38 +44,6 @@
   align-self: center;
   min-width: 0;
   padding: var(--portrait-card-inset);
-  padding-left: 0;
-}
-
-.points {
-  grid-area: points;
-  display: grid;
-  gap: 0.45rem;
-  margin: 0;
-  padding: 0 var(--portrait-card-inset) var(--portrait-card-inset);
-  padding-block-start: 0.9rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
-  list-style: none;
-}
-
-.point {
-  position: relative;
-  padding-left: 1.4rem;
-  color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);
-  font-size: var(--font-size-label-md);
-  line-height: 1.45;
-}
-
-.point::before {
-  content: "";
-  position: absolute;
-  top: 0.42em;
-  left: 0.1rem;
-  width: 0.62rem;
-  height: 0.34rem;
-  border-left: 2px solid var(--color-cta);
-  border-bottom: 2px solid var(--color-cta);
-  transform: rotate(-45deg);
 }
 
 @media (min-width: 900px) {
@@ -84,8 +51,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "frame"
-      "identity"
-      "points";
+      "identity";
   }
 
   .frame {
@@ -95,18 +61,5 @@
 
   .identity {
     align-self: start;
-    padding: var(--portrait-card-inset);
-    padding-bottom: 0;
-  }
-
-  .points {
-    margin-top: var(--portrait-card-inset);
-  }
-}
-
-@media (min-width: 1100px) {
-  .card {
-    position: sticky;
-    top: calc(var(--anchor-scroll-offset) + 1rem);
   }
 }

@@ -1,325 +1,319 @@
 // @vitest-environment jsdom
 
 import {
-  act,
   cleanup,
   fireEvent,
   render,
   screen,
   waitFor,
 } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-import { PROJECT_OFFER_CHANGE_EVENT } from "@/common/constants/marketing/project-offer-change-event";
-import type { ContactFormCopy } from "@/i18n/dictionaries/marketing/home";
-import {
-  submitDiscoveryCall,
-  submitQuickContact,
-} from "@/client/contact/services/contact-form-service";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { ContactForm } from "./contact-form";
 
 vi.mock("@/components/providers/language-provider", () => ({
-  useLanguage: () => ({
-    locale: "de",
-  }),
+  useLanguage: () => ({ locale: "de" }),
 }));
 
-vi.mock("@/client/contact/services/contact-form-service", async () => {
-  const actual = await vi.importActual<
-    typeof import("@/client/contact/services/contact-form-service")
-  >("@/client/contact/services/contact-form-service");
+const { submitDiscoveryCall, submitQuickContact } = vi.hoisted(() => ({
+  submitDiscoveryCall: vi
+    .fn()
+    .mockResolvedValue({ ok: true, requestId: "request-1" }),
+  submitQuickContact: vi
+    .fn()
+    .mockResolvedValue({ ok: true, requestId: "request-2" }),
+}));
+vi.mock("@/client/contact/services/contact-form-service", () => ({
+  createCalendlyPrefillHref: () => "https://calendly.com/invessiv/30min",
+  submitDiscoveryCall,
+  submitQuickContact,
+}));
 
-  return {
-    createCalendlyPrefillHref: actual.createCalendlyPrefillHref,
-    submitDiscoveryCall: vi.fn(),
-    submitQuickContact: vi.fn(),
-  };
+afterEach(() => {
+  cleanup();
+  submitDiscoveryCall.mockClear();
+  submitQuickContact.mockClear();
 });
 
-vi.mock("@/lib/analytics/conversion-events", () => ({
-  trackConversionEvent: vi.fn(),
-}));
-
-const CALENDLY_HREF = "https://calendly.com/service-invessiv-cxf5/30min";
-
-const FORM_COPY: ContactFormCopy = {
-  nameLabel: "Name",
+const copy = {
+  callSubmitLabel: "Weiter zur Terminauswahl",
+  callSubmitSuccess: "Termin wird geöffnet",
+  callSubmittingLabel: "Öffnet",
+  consentLabel: "Ich stimme zu",
   emailLabel: "E-Mail",
-  projectScopeLabel: "Leistungsmodell",
+  fieldErrorConsentRequired: "Zustimmung erforderlich",
+  fieldErrorInvalidEmail: "Ungültige E-Mail",
+  fieldErrorRequired: "Pflichtfeld",
+  messageLabel: "Nachricht",
+  messagePlaceholder: "",
+  nameLabel: "Name",
+  privacyLabel: "Datenschutz",
+  privacySuffix: " zu.",
+  projectScopeLabel: "Leistungsmodell (optional)",
   projectScopeOptions: {
     landing_page: "Landingpage",
     compact_website: "Kompakte Website",
     business_website: "Business Website",
-    unsure: "Noch unsicher",
   },
-  messageLabel: "Worum geht es? (optional)",
-  messagePlaceholder: "Zwei Sätze reichen.",
-  consentLabel: "Ich stimme gemäß",
-  privacyLabel: "Datenschutzerklärung",
   requiredHint: "* Pflichtfelder",
-  fieldErrorInvalidEmail: "Ungültige E-Mail",
-  fieldErrorRequired: "Pflichtfeld",
-  fieldErrorConsentRequired: "Zustimmung erforderlich",
-  submitErrorRateLimited: "Rate limited",
-  submitErrorGeneric: "Generic error",
-  callSubmitLabel: "Weiter zur Terminauswahl",
-  callSubmittingLabel: "Terminauswahl wird geöffnet",
-  callSubmitSuccess: "Terminauswahl öffnet sich",
-  emailQuestion: "Lieber schreiben statt sprechen?",
-  emailNote:
-    "Das ausgefüllte Formular geht als E-Mail an mich. Ich antworte in der Regel innerhalb von 24 Stunden.",
+  honeypotLabel: "Bitte nicht ausfüllen",
+  submitErrorGeneric: "Fehler",
+  submitErrorRateLimited: "Zu viele Anfragen",
+  emailQuestion: "Doch lieber schreiben?",
+  emailNote: "Formular per Mail, Antwort in 24 Stunden.",
   emailSubmitLabel: "Anfrage senden",
   emailSubmittingLabel: "Wird gesendet",
-  emailSubmitSuccess: "Anfrage gesendet.",
-  emailSubmitErrorDelivery: "Delivery error",
+  emailSubmitSuccess: "Anfrage ist da.",
+  emailSubmitErrorDelivery: "Zustellung fehlgeschlagen",
 };
 
-const submitDiscoveryCallMock = vi.mocked(submitDiscoveryCall);
-const submitQuickContactMock = vi.mocked(submitQuickContact);
-
-let replacedHref: string | null = null;
-
-beforeEach(() => {
-  vi.clearAllMocks();
-  replacedHref = null;
-  submitDiscoveryCallMock.mockResolvedValue({ ok: true, requestId: "req_1" });
-  submitQuickContactMock.mockResolvedValue({ ok: true, requestId: "req_2" });
-
-  vi.spyOn(window, "open").mockImplementation(
-    () =>
-      ({
-        close: vi.fn(),
-        location: {
-          replace: (href: string) => {
-            replacedHref = href;
-          },
-        },
-        opener: {},
-      }) as unknown as Window,
-  );
-});
-
-afterEach(() => {
-  cleanup();
-  vi.restoreAllMocks();
-});
-
-function renderForm({ calendlyHref = CALENDLY_HREF } = {}) {
-  return render(
-    <ContactForm
-      calendlyHref={calendlyHref}
-      formCopy={FORM_COPY}
-      privacyHref="/privacy"
-    />,
-  );
-}
-
-function fillRequiredFields({ message }: { message?: string } = {}) {
-  fireEvent.change(screen.getByRole("textbox", { name: /Name/ }), {
-    target: { value: "Mara Kern" },
-  });
-  fireEvent.change(screen.getByRole("textbox", { name: /E-Mail/ }), {
-    target: { value: "mara@example.com" },
-  });
-
-  if (message !== undefined) {
-    fireEvent.change(screen.getByRole("textbox", { name: /Worum geht es/ }), {
-      target: { value: message },
-    });
-  }
-
-  fireEvent.click(screen.getByRole("checkbox"));
-}
-
 describe("ContactForm", () => {
-  it("renders one field set with two ways to submit it", () => {
-    renderForm();
-
-    expect(screen.getAllByRole("textbox")).toHaveLength(3);
-    expect(screen.getByRole("group", { name: /Leistungsmodell/ })).toBeTruthy();
-    expect(
+  it("submits the fixed landing-page scope without rendering project chips", async () => {
+    render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        origin={ContactSubmissionOrigin.LandingPage}
+        privacyHref="/privacy"
+        projectScope="landing_page"
+        projectScopeLabel="Landingpage"
+        showProjectScope={false}
+      />,
+    );
+    expect(screen.queryByRole("group", { name: /Leistungsmodell/ })).toBeNull();
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Mara Kern" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "mara@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
       screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
-  });
-
-  it("preselects 'Noch unsicher'", () => {
-    renderForm();
-
-    expect(screen.getByRole("radio", { name: "Noch unsicher" })).toHaveProperty(
-      "checked",
-      true,
+    );
+    await waitFor(() =>
+      expect(submitDiscoveryCall).toHaveBeenCalledWith(
+        expect.objectContaining({
+          origin: "landing_page",
+          projectScope: "landing_page",
+        }),
+        { submitPath: undefined },
+      ),
     );
   });
 
-  it("blocks both paths until the required fields are valid", async () => {
-    renderForm();
+  it("offers the email fallback as a secondary action next to the call", async () => {
+    render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
 
+    expect(screen.getByText("Doch lieber schreiben?")).toBeTruthy();
+    expect(
+      screen.getByText("Formular per Mail, Antwort in 24 Stunden."),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Anfrage senden" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
+    ).toBeTruthy();
+  });
+
+  it("sends the form as a quick contact and never opens Calendly", async () => {
+    render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Mara Kern" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "mara@example.com" },
+    });
+    fireEvent.click(screen.getByRole("radio", { name: "Kompakte Website" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Nachricht" }), {
+      target: { value: "Kurz zum Umfang." },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
 
-    await waitFor(() => {
-      expect(screen.getByText("Zustimmung erforderlich")).toBeTruthy();
-    });
-    expect(screen.getAllByText("Pflichtfeld").length).toBeGreaterThan(0);
-    expect(submitQuickContactMock).not.toHaveBeenCalled();
-    expect(submitDiscoveryCallMock).not.toHaveBeenCalled();
-  });
-
-  describe("call path", () => {
-    it("passes the selected scope to Calendly as a2", async () => {
-      renderForm();
-
-      fireEvent.click(screen.getByRole("radio", { name: "Kompakte Website" }));
-      fillRequiredFields({ message: "Neue Website für meine Praxis" });
-      fireEvent.click(
-        screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
-      );
-
-      await waitFor(() => {
-        expect(replacedHref).not.toBeNull();
-      });
-
-      const url = new URL(replacedHref as unknown as string);
-      expect(url.searchParams.get("name")).toBe("Mara Kern");
-      expect(url.searchParams.get("email")).toBe("mara@example.com");
-      expect(url.searchParams.get("a1")).toBe("Neue Website für meine Praxis");
-      expect(url.searchParams.get("a2")).toBe("Kompakte Website");
-      expect(submitDiscoveryCallMock.mock.calls[0]?.[0]).toMatchObject({
-        kind: "discovery_call",
-        projectScope: "compact_website",
-      });
-      expect(submitQuickContactMock).not.toHaveBeenCalled();
-    });
-
-    it("omits a2 when the visitor is still unsure", async () => {
-      renderForm();
-
-      fillRequiredFields();
-      fireEvent.click(
-        screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
-      );
-
-      await waitFor(() => {
-        expect(replacedHref).not.toBeNull();
-      });
-
-      expect(
-        new URL(replacedHref as unknown as string).searchParams.has("a2"),
-      ).toBe(false);
-    });
-
-    it("keeps the visitor on the page when the Calendly URL is invalid", async () => {
-      renderForm({ calendlyHref: "not a URL" });
-
-      fillRequiredFields();
-      fireEvent.click(
-        screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
-      );
-
-      await waitFor(() => {
-        expect(screen.getByText("Generic error")).toBeTruthy();
-      });
-    });
-  });
-
-  describe("email path", () => {
-    it("sends the form as a quick contact with the scope in the message", async () => {
-      renderForm();
-
-      fireEvent.click(screen.getByRole("radio", { name: "Business Website" }));
-      fillRequiredFields({ message: "Wir brauchen eine neue Seite." });
-      fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
-
-      await waitFor(() => {
-        expect(submitQuickContactMock).toHaveBeenCalled();
-      });
-
-      expect(submitQuickContactMock.mock.calls[0]?.[0]).toMatchObject({
-        displayName: "Mara Kern",
-        email: "mara@example.com",
-        kind: "quick_contact",
-        message:
-          "Leistungsmodell: Business Website\n\nWir brauchen eine neue Seite.",
-      });
-      expect(window.open).not.toHaveBeenCalled();
-      expect(submitDiscoveryCallMock).not.toHaveBeenCalled();
-    });
-
-    it("still carries the scope when no message was written", async () => {
-      renderForm();
-
-      fillRequiredFields();
-      fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
-
-      await waitFor(() => {
-        expect(submitQuickContactMock).toHaveBeenCalled();
-      });
-
-      expect(submitQuickContactMock.mock.calls[0]?.[0]?.message).toBe(
-        "Leistungsmodell: Noch unsicher",
-      );
-    });
-
-    it("confirms the send in the same words as the button", async () => {
-      renderForm();
-
-      fillRequiredFields();
-      fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
-
-      await waitFor(() => {
-        expect(screen.getByText("Anfrage gesendet.")).toBeTruthy();
-      });
-    });
-
-    it("reports a delivery failure", async () => {
-      submitQuickContactMock.mockResolvedValue({
-        code: "delivery_unavailable",
-        ok: false,
-        requestId: "req_3",
-      });
-      renderForm();
-
-      fillRequiredFields();
-      fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
-
-      await waitFor(() => {
-        expect(screen.getByText("Delivery error")).toBeTruthy();
-      });
-    });
-  });
-
-  it("adopts the preselection dispatched by the services section", async () => {
-    renderForm();
-
-    act(() => {
-      window.dispatchEvent(
-        new CustomEvent(PROJECT_OFFER_CHANGE_EVENT, {
-          detail: { offerKey: "web" },
+    await waitFor(() =>
+      expect(submitQuickContact).toHaveBeenCalledWith(
+        expect.objectContaining({
+          displayName: "Mara Kern",
+          email: "mara@example.com",
+          kind: "quick_contact",
+          // The scope has no column on this channel, so it rides in the message.
+          message:
+            "Leistungsmodell (optional): Kompakte Website\n\nKurz zum Umfang.",
         }),
-      );
-    });
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole("radio", { name: "Business Website" }),
-      ).toHaveProperty("checked", true);
-    });
+        { submitPath: undefined },
+      ),
+    );
+    expect(submitDiscoveryCall).not.toHaveBeenCalled();
   });
 
-  it("ignores offer keys without a matching scope", () => {
-    renderForm();
+  it("keeps the originating page on email submissions", async () => {
+    render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        origin={ContactSubmissionOrigin.LandingPage}
+        privacyHref="/privacy"
+        projectScope="landing_page"
+        projectScopeLabel="Landingpage"
+        showProjectScope={false}
+      />,
+    );
 
-    act(() => {
-      window.dispatchEvent(
-        new CustomEvent(PROJECT_OFFER_CHANGE_EVENT, {
-          detail: { offerKey: "maintenance" },
-        }),
-      );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Mara Kern" },
     });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "mara@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
 
-    expect(screen.getByRole("radio", { name: "Noch unsicher" })).toHaveProperty(
-      "checked",
-      true,
+    await waitFor(() =>
+      expect(submitQuickContact).toHaveBeenCalledWith(
+        expect.objectContaining({ origin: "landing_page" }),
+        { submitPath: undefined },
+      ),
+    );
+  });
+
+  it("keeps consent error ids unique across two forms on one page", () => {
+    const { container } = render(
+      <>
+        <ContactForm
+          calendlyHref="https://calendly.com/invessiv/30min"
+          formCopy={copy}
+          privacyHref="/privacy"
+        />
+        <ContactForm
+          calendlyHref="https://calendly.com/invessiv/30min"
+          formCopy={copy}
+          privacyHref="/privacy"
+        />
+      </>,
+    );
+
+    const errorIds = [
+      ...container.querySelectorAll("input[type='checkbox']"),
+    ].map((input) => input.getAttribute("aria-describedby"));
+
+    expect(errorIds).toHaveLength(2);
+    expect(errorIds[0]).not.toBe(errorIds[1]);
+    expect(new Set(errorIds).size).toBe(2);
+  });
+
+  it("hides the bot trap from humans and assistive tech", () => {
+    const { container } = render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+
+    const honeypot = container.querySelector<HTMLInputElement>(
+      'input[name="honeypot"]',
+    );
+    expect(honeypot).not.toBeNull();
+    expect(honeypot?.tabIndex).toBe(-1);
+    expect(honeypot?.closest("[aria-hidden='true']")).not.toBeNull();
+  });
+
+  it("drops bot submissions on the email path without calling the API", async () => {
+    const { container } = render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Bot" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "bot@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.change(container.querySelector('input[name="honeypot"]')!, {
+      target: { value: "bot-value" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Anfrage senden" }));
+
+    // Silent success: the bot must not learn that it was filtered.
+    await waitFor(() =>
+      expect(screen.getByText("Anfrage ist da.")).toBeTruthy(),
+    );
+    expect(submitQuickContact).not.toHaveBeenCalled();
+  });
+
+  it("drops bot submissions on the call path without opening Calendly", async () => {
+    const openSpy = vi.spyOn(window, "open").mockReturnValue(null);
+    const { container } = render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Bot" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "bot@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.change(container.querySelector('input[name="honeypot"]')!, {
+      target: { value: "bot-value" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
+    );
+
+    await waitFor(() =>
+      expect(screen.getByText("Termin wird geöffnet")).toBeTruthy(),
+    );
+    expect(submitDiscoveryCall).not.toHaveBeenCalled();
+    openSpy.mockRestore();
+  });
+
+  it("submits no project scope when the optional selection stays empty", async () => {
+    render(
+      <ContactForm
+        calendlyHref="https://calendly.com/invessiv/30min"
+        formCopy={copy}
+        privacyHref="/privacy"
+      />,
+    );
+    fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+      target: { value: "Mara Kern" },
+    });
+    fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+      target: { value: "mara@example.com" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
+    );
+
+    await waitFor(() =>
+      expect(submitDiscoveryCall).toHaveBeenLastCalledWith(
+        expect.objectContaining({ projectScope: undefined }),
+        { submitPath: undefined },
+      ),
     );
   });
 });
