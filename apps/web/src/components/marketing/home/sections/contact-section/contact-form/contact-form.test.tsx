@@ -11,6 +11,14 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ContactSubmissionOrigin } from "@invessiv/common/constants/contact/contact-submission-origin";
 import { ContactForm } from "./contact-form";
 
+const { push } = vi.hoisted(() => ({
+  push: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+}));
+
 vi.mock("@/components/providers/language-provider", () => ({
   useLanguage: () => ({ locale: "de" }),
 }));
@@ -33,6 +41,7 @@ afterEach(() => {
   cleanup();
   submitDiscoveryCall.mockClear();
   submitQuickContact.mockClear();
+  push.mockClear();
 });
 
 const copy = {
@@ -121,7 +130,7 @@ describe("ContactForm", () => {
     ).toBeTruthy();
   });
 
-  it("sends the form as a quick contact and never opens Calendly", async () => {
+  it("sends the form as a quick contact, navigates to success, and never opens Calendly", async () => {
     render(
       <ContactForm
         calendlyHref="https://calendly.com/invessiv/30min"
@@ -156,6 +165,7 @@ describe("ContactForm", () => {
         { submitPath: undefined },
       ),
     );
+    expect(push).toHaveBeenCalledWith("/de/success");
     expect(submitDiscoveryCall).not.toHaveBeenCalled();
   });
 

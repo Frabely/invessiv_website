@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Anfrage gesendet | Invessiv",
+    "description": "Deine Anfrage ist eingegangen. Ich melde mich persönlich innerhalb von 24 Stunden mit den nächsten Schritten."
+  },
+  "page": {
+    "statusLabel": "Anfrage gesendet",
+    "title": "Danke, deine Nachricht ist angekommen.",
+    "body": "Ich schaue mir dein Anliegen persönlich an und melde mich innerhalb von 24 Stunden bei dir.",
+    "stepsLabel": "So geht es weiter",
+    "steps": [
+      {
+        "title": "Anfrage prüfen",
+        "body": "Ich lese deine Nachricht und ordne ein, was für dein Vorhaben sinnvoll ist."
+      },
+      {
+        "title": "Persönlich antworten",
+        "body": "Du erhältst innerhalb von 24 Stunden eine klare Rückmeldung per E-Mail."
+      },
+      {
+        "title": "Nächsten Schritt wählen",
+        "body": "Danach entscheidest du in Ruhe, ob und wie wir weitermachen."
+      }
+    ],
+    "contactLead": "Du musst jetzt nichts weiter tun. Falls du lieber direkt sprechen möchtest, kannst du einen Termin buchen.",
+    "contactLabel": "Termin buchen",
+    "backLabel": "Zur Startseite"
+  }
+}

@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { useEffect, useId, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { ContactConsentField } from "@/components/shared/form/contact-consent-field/contact-consent-field";
 import sharedStyles from "@/components/marketing/home/sections/contact-section/shared/contact-form-primitives.module.css";
@@ -45,6 +46,8 @@ import { getContactSubmitAnalyticsErrorType } from "@/lib/analytics/contact-subm
 import { trackDiscoveryCallCalendarClick } from "@/lib/analytics/events/discovery-call-events";
 import { getContactTarget } from "@/lib/analytics/get-contact-target";
 import { useContactFormAnalytics } from "@/hooks/analytics/use-contact-form-analytics";
+import { SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./contact-form.module.css";
 
 type ContactFormProps = {
@@ -83,6 +86,7 @@ export function ContactForm({
   submitPath,
 }: ContactFormProps) {
   const { locale } = useLanguage();
+  const router = useRouter();
   const fieldIdPrefix = useId();
   const honeypotId = `${fieldIdPrefix}-honeypot`;
   // Derived so two forms on one page cannot share the same error id.
@@ -220,10 +224,10 @@ export function ContactForm({
           return;
         }
 
-        setStatusMessage(formCopy.emailSubmitSuccess);
         emailAnalytics.trackSubmitSuccess();
         reset(DEFAULT_CONTACT_FORM_VALUES);
         emailAnalytics.resetFormAnalytics();
+        router.push(createLocalePathname(SITE_ROUTES.SUCCESS, locale));
       } catch {
         setStatusMessage(formCopy.submitErrorGeneric);
         emailAnalytics.trackSubmitError(ContactFormSubmitErrorType.Generic);

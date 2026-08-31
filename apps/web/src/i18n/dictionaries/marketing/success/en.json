@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "Inquiry sent | Invessiv",
+    "description": "Your inquiry has been received. I will personally get back to you within 24 hours with the next steps."
+  },
+  "page": {
+    "statusLabel": "Inquiry sent",
+    "title": "Thanks, your message has arrived.",
+    "body": "I'll review your request personally and get back to you within 24 hours.",
+    "stepsLabel": "What happens next",
+    "steps": [
+      {
+        "title": "Review your request",
+        "body": "I'll read your message and consider what makes sense for your project."
+      },
+      {
+        "title": "Reply personally",
+        "body": "You'll receive a clear reply by email within 24 hours."
+      },
+      {
+        "title": "Choose the next step",
+        "body": "Then you can decide calmly whether and how we move forward."
+      }
+    ],
+    "contactLead": "You don't need to do anything else right now. If you'd rather talk directly, you can book a call.",
+    "contactLabel": "Book a call",
+    "backLabel": "Back to home"
+  }
+}
