@@ -187,6 +187,7 @@
 
 .pathPointLeader {
   transition: opacity 140ms ease;
+  will-change: transform, opacity;
 }
 
 .pathPointLeader[data-over-card="true"] {
@@ -576,6 +577,11 @@
 
   .pathPoint {
     box-shadow: none;
+  }
+
+  .step {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .backdrop::after {

@@ -60,6 +60,8 @@ export function useProcessJourney({
     }[] = [];
     let segmentWeights: number[] = [];
     let lastActiveIndex: number | null = null;
+    let lastProgress = 0;
+    let lastViewportWidth = window.innerWidth;
     let rafId: number | null = null;
     let isJourneyActive = true;
     let visibilityObserver: IntersectionObserver | null = null;
@@ -329,7 +331,10 @@ export function useProcessJourney({
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
         path.style.strokeDasharray = `${totalLength}`;
-        path.style.strokeDashoffset = `${totalLength}`;
+        // Keep the currently drawn portion when a real layout change occurs.
+        // In particular, mobile browsers emit resize events while their chrome
+        // expands or collapses during scroll.
+        path.style.strokeDashoffset = `${totalLength - mapProgressToLength(lastProgress)}`;
         path.style.visibility = "visible";
         leader.style.visibility = "visible";
       }
@@ -404,6 +409,7 @@ export function useProcessJourney({
       const progress = prefersReducedMotion
         ? 1
         : Math.max(0, Math.min(1, rawProgress));
+      lastProgress = progress;
       if (totalLength > 0) {
         const drawnLength = mapProgressToLength(progress);
         path.style.strokeDashoffset = `${totalLength - drawnLength}`;
@@ -468,6 +474,19 @@ export function useProcessJourney({
       scheduleJourneyProgressUpdate();
     };
 
+    const handleResize = () => {
+      // A pure height change is normally the mobile browser chrome, not a
+      // layout change. Ignoring it keeps scroll progress monotonic and avoids
+      // rebuilding the SVG mask while the user scrolls.
+      if (window.innerWidth === lastViewportWidth) {
+        return;
+      }
+
+      lastViewportWidth = window.innerWidth;
+      updateGeometry();
+      scheduleJourneyProgressUpdate();
+    };
+
     if ("IntersectionObserver" in window) {
       isJourneyActive = false;
       visibilityObserver = new IntersectionObserver(
@@ -492,14 +511,12 @@ export function useProcessJourney({
 
     updateGeometry();
     scheduleJourneyProgressUpdate();
-    window.addEventListener("resize", updateGeometry);
-    window.addEventListener("resize", scheduleJourneyProgressUpdate);
+    window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
     return () => {
-      window.removeEventListener("resize", updateGeometry);
-      window.removeEventListener("resize", scheduleJourneyProgressUpdate);
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
       visibilityObserver?.disconnect();
       if (rafId !== null) {
