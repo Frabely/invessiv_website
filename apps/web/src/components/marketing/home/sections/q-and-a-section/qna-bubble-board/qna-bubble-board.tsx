@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import type {
+  QnaDisclosureCopy,
   QnaIntroCopy,
   QnaItemCopy,
   QnaSecondaryContactCopy,
@@ -15,6 +19,7 @@ import styles from "./qna-bubble-board.module.css";
 
 type QnaBubbleBoardProps = {
   avatarAlt: string;
+  disclosure: QnaDisclosureCopy;
   id: string;
   intro: QnaIntroCopy;
   items: QnaItemCopy[];
@@ -22,8 +27,13 @@ type QnaBubbleBoardProps = {
   title: string;
 };
 
+// Narrow viewports show a first batch and keep the rest behind the toggle; the
+// desktop ring has room for every question at once.
+const MOBILE_VISIBLE_COUNT = 4;
+
 export function QnaBubbleBoard({
   avatarAlt,
+  disclosure,
   id,
   intro,
   items,
@@ -31,9 +41,11 @@ export function QnaBubbleBoard({
   title,
 }: QnaBubbleBoardProps) {
   const [openQuestionId, setOpenQuestionId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const entries = items.map((item, index) => ({
     answerId: `${id}-answer-${index + 1}`,
+    index,
     item,
     questionId: `${id}-question-${index + 1}`,
   }));
@@ -57,8 +69,23 @@ export function QnaBubbleBoard({
     ] as const
   ).filter((column) => column.entries.length > 0);
 
+  const hasHiddenQuestions = entries.length > MOBILE_VISIBLE_COUNT;
+
+  const handleDisclosureToggle = () => {
+    const openEntry = entries.find(
+      (entry) => entry.questionId === openQuestionId,
+    );
+
+    // Collapsing must not leave an answer open inside the hidden batch.
+    if (isExpanded && openEntry && openEntry.index >= MOBILE_VISIBLE_COUNT) {
+      setOpenQuestionId(null);
+    }
+
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className={styles.board}>
+    <div className={styles.board} data-qna-expanded={String(isExpanded)}>
       <h2 className="sr-only">{title}</h2>
 
       <div className={styles.portrait}>
@@ -80,6 +107,7 @@ export function QnaBubbleBoard({
           {column.entries.map((entry) => (
             <li
               className={styles.item}
+              data-qna-overflow={String(entry.index >= MOBILE_VISIBLE_COUNT)}
               data-qna-side={column.side}
               key={entry.questionId}
             >
@@ -100,6 +128,24 @@ export function QnaBubbleBoard({
           ))}
         </ul>
       ))}
+
+      {hasHiddenQuestions ? (
+        <div className={styles.disclosureSlot}>
+          <button
+            aria-expanded={isExpanded}
+            className={styles.disclosure}
+            onClick={handleDisclosureToggle}
+            type="button"
+          >
+            {isExpanded ? disclosure.lessLabel : disclosure.moreLabel}
+            <FontAwesomeIcon
+              aria-hidden="true"
+              className={styles.disclosureMarker}
+              icon={faChevronDown}
+            />
+          </button>
+        </div>
+      ) : null}
 
       {secondaryContact ? (
         <div className={styles.ctaSlot}>

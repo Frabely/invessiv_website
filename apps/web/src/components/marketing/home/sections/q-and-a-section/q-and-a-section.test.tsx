@@ -25,16 +25,22 @@ const items = [
   },
 ];
 
-function renderSection() {
+const disclosure = {
+  moreLabel: "Weitere Fragen anzeigen",
+  lessLabel: "Weniger anzeigen",
+};
+
+function renderSection(sectionItems = items) {
   return render(
     <QAndASection
       avatarAlt="Moritz Hecht, Webentwickler aus Chemnitz"
+      disclosure={disclosure}
       id={FAQ_SECTION_ID}
       intro={{
         primary: "Hast du noch Fragen?",
         secondary: "Hier sind Fragen, die mir häufig gestellt werden.",
       }}
-      items={items}
+      items={sectionItems}
       secondaryContact={{
         hint: "Frage nicht dabei?",
         href: "#contact-email",
@@ -116,6 +122,73 @@ describe("QAndASection", () => {
 
     fireEvent.click(lastQuestion);
     expect(lastQuestion.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("keeps every question in place while the set stays short", () => {
+    renderSection();
+
+    expect(
+      screen.queryByRole("button", { name: "Weitere Fragen anzeigen" }),
+    ).toBeNull();
+  });
+
+  it("marks the questions beyond the first four as the collapsed batch", () => {
+    const longItems = Array.from({ length: 7 }, (_, index) => ({
+      question: `Frage ${index + 1}?`,
+      answer: `Antwort ${index + 1}.`,
+    }));
+
+    const { container } = renderSection(longItems);
+
+    const overflowFlags = Array.from(
+      container.querySelectorAll("[data-qna-overflow]"),
+    ).map((item) => item.getAttribute("data-qna-overflow"));
+
+    expect(overflowFlags).toEqual([
+      "false",
+      "false",
+      "false",
+      "false",
+      "true",
+      "true",
+      "true",
+    ]);
+  });
+
+  it("toggles the collapsed batch and closes an answer that goes back into hiding", () => {
+    const longItems = Array.from({ length: 7 }, (_, index) => ({
+      question: `Frage ${index + 1}?`,
+      answer: `Antwort ${index + 1}.`,
+    }));
+
+    const { container } = renderSection(longItems);
+
+    const board = container.querySelector("[data-qna-expanded]");
+    const toggle = screen.getByRole("button", {
+      name: "Weitere Fragen anzeigen",
+    });
+
+    expect(board?.getAttribute("data-qna-expanded")).toBe("false");
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(toggle);
+
+    expect(board?.getAttribute("data-qna-expanded")).toBe("true");
+    const openToggle = screen.getByRole("button", { name: "Weniger anzeigen" });
+    expect(openToggle.getAttribute("aria-expanded")).toBe("true");
+
+    const hiddenQuestion = screen.getByRole("button", { name: "Frage 6?" });
+    fireEvent.click(hiddenQuestion);
+    expect(hiddenQuestion.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.click(openToggle);
+
+    expect(board?.getAttribute("data-qna-expanded")).toBe("false");
+    expect(
+      screen
+        .getByRole("button", { name: "Frage 6?" })
+        .getAttribute("aria-expanded"),
+    ).toBe("false");
   });
 
   it("keeps the direct mail route available", () => {

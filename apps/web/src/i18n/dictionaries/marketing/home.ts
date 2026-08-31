@@ -7,6 +7,7 @@ import {
 import { SITE_ROUTES } from "@/config/routes";
 import type { Locale } from "@/config/i18n";
 import type {
+  QnaDisclosureCopy,
   QnaIntroCopy,
   QnaItemCopy,
   QnaSecondaryContactCopy,
@@ -153,6 +154,7 @@ type QnaSectionCopy = {
   qnaIntro: QnaIntroCopy;
   qnaAvatarAlt: string;
   qnaItems: QnaItemCopy[];
+  qnaDisclosure: QnaDisclosureCopy;
   qnaSecondaryContact: QnaSecondaryContactCopy;
 };
 
@@ -264,6 +266,7 @@ const HOME_SECTIONS = [
           },
           {
             authorName: "Kolja Wienigk",
+            isQuoteHidden: true,
             role: "Finanzmakler aus Dresden",
             quote:
               "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
@@ -298,6 +301,7 @@ const HOME_SECTIONS = [
           },
           {
             authorName: "Kolja Wienigk",
+            isQuoteHidden: true,
             role: "Financial broker from Dresden",
             quote:
               "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
@@ -500,6 +504,10 @@ const HOME_SECTIONS = [
           secondary: "Hier sind Fragen, die mir häufig gestellt werden.",
         },
         qnaAvatarAlt: "Moritz Hecht, Webentwickler aus Chemnitz",
+        qnaDisclosure: {
+          moreLabel: "Weitere Fragen anzeigen",
+          lessLabel: "Weniger anzeigen",
+        },
         qnaSecondaryContact: {
           hint: "Frage nicht dabei?",
           label: "Schreib mir direkt per Mail.",
@@ -570,6 +578,10 @@ const HOME_SECTIONS = [
           secondary: "Here are the questions I get asked most often.",
         },
         qnaAvatarAlt: "Moritz Hecht, web developer from Chemnitz",
+        qnaDisclosure: {
+          moreLabel: "Show more questions",
+          lessLabel: "Show fewer",
+        },
         qnaSecondaryContact: {
           hint: "Question not listed?",
           label: "Write to me directly by email.",

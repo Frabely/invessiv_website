@@ -61,10 +61,10 @@ export const getLocalizedSectionHref = (locale: Locale, sectionId: SectionId) =>
   createLocalePathname(getSectionHref(sectionId), locale);
 
 export const PRIMARY_NAVIGATION_SECTION_IDS = [
-  "problem",
+  "usp",
   "services",
-  "process",
   "references",
+  "process",
 ] as const;
 
 export const PRIMARY_NAVIGATION: NavigationItem[] =

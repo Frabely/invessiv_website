@@ -137,23 +137,11 @@
 }
 
 .text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.34rem;
   min-width: 0;
-}
-
-.label {
-  font-size: clamp(1.3rem, 1.08rem + 0.75vw, 1.7rem);
+  font-size: clamp(1.08rem, 0.96rem + 0.48vw, 1.36rem);
   font-weight: 650;
-  line-height: 1.18;
-  letter-spacing: -0.015em;
-}
-
-.note {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.45;
+  line-height: 1.26;
+  letter-spacing: -0.01em;
 }
 
 /* Leader line: only meaningful once the items flank the photo */
@@ -305,13 +293,6 @@
 
   .problem[data-visible="true"] .leader {
     transform: scaleX(1);
-  }
-}
-
-@media (min-width: 1120px) {
-  .problem:nth-child(5) .label {
-    font-size: clamp(1.18rem, 0.94rem + 0.5vw, 1.42rem);
-    white-space: nowrap;
   }
 }
 

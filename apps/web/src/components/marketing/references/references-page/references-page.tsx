@@ -8,6 +8,7 @@ import type { Locale } from "@/config/i18n";
 import {
   getLocalizedSectionHref,
   type NavigationItem,
+  PRIMARY_NAVIGATION_SECTION_IDS,
 } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
 import type { ReferencesPageContent } from "@/i18n/dictionaries/marketing/references";
@@ -25,12 +26,10 @@ type ReferencesPageProps = {
 const CLOSING_CTA_TITLE_ID = "references-cta-title";
 
 export function ReferencesPage({ content, locale }: ReferencesPageProps) {
-  const navigation: NavigationItem[] = [
-    { href: getLocalizedSectionHref(locale, "problem") },
-    { href: getLocalizedSectionHref(locale, "services") },
-    { href: getLocalizedSectionHref(locale, "process") },
-    { href: getLocalizedSectionHref(locale, "faq") },
-  ];
+  // Same entries as the home header, so the two can never drift apart.
+  const navigation: NavigationItem[] = PRIMARY_NAVIGATION_SECTION_IDS.map(
+    (sectionId) => ({ href: getLocalizedSectionHref(locale, sectionId) }),
+  );
   const footerSection = getHomeFooterSectionContent(locale);
   const homeHref = createLocalePathname(SITE_ROUTES.HOME, locale);
 

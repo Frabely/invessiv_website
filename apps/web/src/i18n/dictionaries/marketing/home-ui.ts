@@ -18,7 +18,6 @@ export type ProblemIconKey = (typeof PROBLEM_ICON_KEYS)[number];
 type ProblemItem = {
   iconKey: ProblemIconKey;
   label: string;
-  note: string;
 };
 
 type ProblemContent = {

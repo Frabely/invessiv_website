@@ -4,6 +4,7 @@ import { useRef } from "react";
 
 import { QNA_STAGE_PHASE } from "@/common/constants/marketing/qna-stage-phase";
 import type {
+  QnaDisclosureCopy,
   QnaIntroCopy,
   QnaItemCopy,
   QnaSecondaryContactCopy,
@@ -15,6 +16,7 @@ import styles from "./q-and-a-section.module.css";
 
 type QAndASectionProps = {
   avatarAlt: string;
+  disclosure: QnaDisclosureCopy;
   id: string;
   intro: QnaIntroCopy;
   items: QnaItemCopy[];
@@ -24,6 +26,7 @@ type QAndASectionProps = {
 
 export function QAndASection({
   avatarAlt,
+  disclosure,
   id,
   intro,
   items,
@@ -48,6 +51,7 @@ export function QAndASection({
 
         <QnaBubbleBoard
           avatarAlt={avatarAlt}
+          disclosure={disclosure}
           id={id}
           intro={intro}
           items={items}

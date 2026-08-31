@@ -181,6 +181,7 @@ export function HomePage() {
               return (
                 <QAndASection
                   avatarAlt={section.qnaAvatarAlt}
+                  disclosure={section.qnaDisclosure}
                   id={section.id}
                   intro={section.qnaIntro}
                   items={section.qnaItems}

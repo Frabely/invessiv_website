@@ -12,6 +12,11 @@ export type QnaItemCopy = {
   };
 };
 
+export type QnaDisclosureCopy = {
+  moreLabel: string;
+  lessLabel: string;
+};
+
 export type QnaSecondaryContactCopy = {
   hint: string;
   label: string;

@@ -159,6 +159,7 @@ export function ReferencesShowcase({
             avatarKey={activeEntry.avatarKey}
             collapseLabel={labels.collapseQuote}
             expandLabel={labels.expandQuote}
+            isQuoteHidden={activeEntry.isQuoteHidden}
             key={activeEntry.imageKey}
             quote={activeEntry.quote}
             role={activeEntry.role}

@@ -17,33 +17,27 @@
     "problems": [
       {
         "iconKey": "outdated",
-        "label": "An outdated website",
-        "note": "The last relaunch was years ago."
+        "label": "Your last relaunch was years ago."
       },
       {
         "iconKey": "mobile",
-        "label": "Hard to use on a phone",
-        "note": "Visitors have to pinch and scroll to read anything."
+        "label": "Visitors have to pinch and scroll to read anything."
       },
       {
         "iconKey": "unclear",
-        "label": "No one understands your offer",
-        "note": "What you actually do takes effort to piece together."
+        "label": "What you actually do takes effort to piece together."
       },
       {
         "iconKey": "trust",
-        "label": "You don't build trust",
-        "note": "Nothing on the page proves you deliver."
+        "label": "Nothing on the page proves you deliver."
       },
       {
         "iconKey": "inquiries",
-        "label": "Fewer inquiries through the website",
-        "note": "Visitors arrive, inquiries don't."
+        "label": "Visitors arrive, inquiries don't."
       },
       {
         "iconKey": "contact",
-        "label": "No reliable person to talk to",
-        "note": "With the last provider, replies took weeks."
+        "label": "With the last provider, replies took weeks."
       }
     ],
     "conclusion": "Then your website is probably working against you right now.",
@@ -88,7 +82,7 @@
       },
       {
         "author": "visitor",
-        "text": "Sounds good. How do we figure out what makes sense for me?"
+        "text": "How do we get started?"
       },
       {
         "author": "owner",

@@ -17,33 +17,27 @@
     "problems": [
       {
         "iconKey": "outdated",
-        "label": "Veraltete Webseite",
-        "note": "Der letzte Relaunch ist Jahre her."
+        "label": "Der letzte Relaunch ist Jahre her."
       },
       {
         "iconKey": "mobile",
-        "label": "Auf dem Handy kaum nutzbar",
-        "note": "Auf dem Handy muss man zoomen und schieben."
+        "label": "Auf dem Handy musst du zoomen und schieben."
       },
       {
         "iconKey": "unclear",
-        "label": "Keiner versteht dein Angebot",
-        "note": "Was du genau anbietest, muss man sich zusammensuchen."
+        "label": "Was du genau anbietest, muss man sich zusammensuchen."
       },
       {
         "iconKey": "trust",
-        "label": "Du erzeugst kein Vertrauen",
-        "note": "Nichts auf der Seite belegt, dass du lieferst."
+        "label": "Nichts auf der Seite belegt, dass du lieferst."
       },
       {
         "iconKey": "inquiries",
-        "label": "Weniger Anfragen über die Webseite",
-        "note": "Besucher kommen, Anfragen bleiben aus."
+        "label": "Besucher kommen, Anfragen bleiben aus."
       },
       {
         "iconKey": "contact",
-        "label": "Kein verlässlicher Ansprechpartner",
-        "note": "Beim letzten Dienstleister kam wochenlang keine Antwort."
+        "label": "Beim letzten Dienstleister kam wochenlang keine Antwort."
       }
     ],
     "conclusion": "Dann arbeitet deine Webseite vermutlich gerade gegen dich.",
@@ -88,7 +82,7 @@
       },
       {
         "author": "visitor",
-        "text": "Klingt gut. Wie finden wir heraus, was für mich sinnvoll ist?"
+        "text": "Wie starten wir am besten?"
       },
       {
         "author": "owner",
@@ -96,7 +90,7 @@
         "text": "Wir klären dein Vorhaben in 15 Minuten. Danach sage ich dir ehrlich, was sinnvoll ist und womit du rechnen kannst. Kostenlos und unverbindlich."
       }
     ],
-    "replyCtaLabel": "Klingt gut, lass uns starten"
+    "replyCtaLabel": "Klingt gut, lass loslegen!"
   },
   "referencesLabels": {
     "showcaseAriaLabel": "Referenzen von Kunden mit Projektvorschau",

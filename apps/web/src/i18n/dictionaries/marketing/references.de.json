@@ -79,6 +79,7 @@
       ],
       "testimonial": {
         "authorName": "Kolja Wienigk",
+        "isQuoteHidden": true,
         "avatarKey": "kolja",
         "avatarAlt": "Porträt von Kolja Wienigk",
         "role": "Finanzmakler aus Dresden",

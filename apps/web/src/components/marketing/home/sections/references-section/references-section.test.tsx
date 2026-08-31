@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { ImgHTMLAttributes } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
 import { ReferencesSection } from "./references-section";
 
 vi.mock("next/image", () => ({
@@ -56,10 +57,10 @@ const ENTRIES = [
   },
 ] as const;
 
-function renderSection() {
+function renderSection(entries: ReferenceEntry[] = [...ENTRIES]) {
   render(
     <ReferencesSection
-      entries={[...ENTRIES]}
+      entries={entries}
       id="references"
       kicker="Projekte & Kundenstimmen"
       labels={LABELS}
@@ -114,6 +115,34 @@ describe("ReferencesSection", () => {
     expect(
       document.querySelector('img[data-avatar="allmacher"][alt=""]'),
     ).toBeInTheDocument();
+  });
+
+  it("parks the quote but keeps the person visible in the showcase", () => {
+    renderSection(
+      ENTRIES.map((entry) =>
+        entry.imageKey === "kolja"
+          ? { ...entry, isQuoteHidden: true }
+          : { ...entry },
+      ),
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Kolja Wienigk · Finanzmakler" }),
+    );
+
+    expect(
+      screen.queryByText("Die Umsetzung wirkte strukturiert und schnell."),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Kolja Wienigk" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Finanzmakler aus Dresden")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Projekt im Detail ansehen" }),
+    ).toHaveAttribute("href", "/de/references#kolja");
   });
 
   it("selects references directly by the person's name", () => {

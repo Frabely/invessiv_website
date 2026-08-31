@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("ProblemSection", () => {
-  it("renders every problem with its supporting note", () => {
+  it("renders every concrete problem headline without a duplicate supporting note", () => {
     render(<ProblemSection content={content} id="problem" />);
 
     const list = screen.getByRole("list", { name: content.listAriaLabel });
@@ -20,8 +20,9 @@ describe("ProblemSection", () => {
 
     for (const problem of content.problems) {
       expect(within(list).getByText(problem.label)).toBeTruthy();
-      expect(within(list).getByText(problem.note)).toBeTruthy();
     }
+
+    expect(within(list).queryByText("Veraltete Webseite")).toBeNull();
   });
 
   it("labels the section by its heading and states the verdict", () => {

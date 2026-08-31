@@ -21,7 +21,7 @@ type ProblemSectionContent = {
   kicker: string;
   listAriaLabel: string;
   photoAlt: string;
-  problems: { iconKey: ProblemIconKey; label: string; note: string }[];
+  problems: { iconKey: ProblemIconKey; label: string }[];
   resolution: string;
   title: string;
 };
@@ -86,10 +86,7 @@ export function ProblemSection({ content, id }: ProblemSectionProps) {
                 <span className={styles.iconWell}>
                   <ProblemIcon iconKey={problem.iconKey} />
                 </span>
-                <span className={styles.text}>
-                  <span className={styles.label}>{problem.label}</span>
-                  <span className={styles.note}>{problem.note}</span>
-                </span>
+                <span className={styles.text}>{problem.label}</span>
                 <span aria-hidden="true" className={styles.leader} />
               </li>
             ))}
