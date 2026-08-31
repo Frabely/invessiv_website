@@ -96,3 +96,30 @@ Pfad-Logik existiert dreifach (Web-Helper, Workspace-Helper, inline in `auth-fra
    `locale-pathname.ts` auf je eine reduzieren.
 3. Inline-Duplikat in `auth-frame.tsx` entfernen.
 4. Gate: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` plus beide App-Builds.
+
+---
+
+## 6. Contact-Rate-Limit zählt nur prozesslokal
+
+**Datum:** 2026-08-31 **Bereich:**
+
+- `apps/web/src/server/services/anti-abuse/contact-rate-limit-service.ts` — `rateLimitStore` ist eine `Map` im
+  Modul-Scope (5 Anfragen / 10 Minuten je Identifier)
+- Aufrufer: `apps/web/src/app/api/public/contact/route.ts`
+
+**Regel-Referenz:** Root-`AGENTS.md` → Qualitäts-Gates, „Security by default" sowie „jede neue kritische Integration mit
+dokumentiertem Fallback". Der Rate-Limit ist als Schutz gemeint, hält seine Zusage im Serverless-Betrieb aber nicht.
+
+**Risiko:** Auf Vercel hat jede Lambda-Instanz ihre eigene `Map`. Effektiv gilt das Limit pro Instanz, nicht global —
+bei n gleichzeitigen Instanzen also 5 × n —, und jeder Cold Start setzt den Zähler zurück. Ein verteilter oder auch nur
+langsamer Bot läuft daran vorbei. Aktuell trägt der Honeypot im Kontaktformular (`contact-form.tsx`, stiller Erfolg ohne
+Signal an den Bot) den eigentlichen Schutz; der Rate-Limit ist eine zweite, schwächere Schicht. Bewusst akzeptiert,
+solange kein realer Spam ankommt.
+
+**Next-Step:** Erst handeln, wenn Spam auftritt — kein vorsorglicher Umbau.
+
+1. Auf geteilten Speicher wechseln (Vercel KV oder Upstash Redis), Interface von `checkContactRateLimit` beibehalten,
+   damit die Aufrufseite unverändert bleibt.
+2. Fallback definieren, wenn der Store nicht erreichbar ist: durchlassen und Fehler loggen — der Rate-Limit darf das
+   Kontaktformular nie blockieren.
+3. Gate: bestehende Tests zu `contact-rate-limit-service` auf den asynchronen Store anpassen.

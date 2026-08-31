@@ -43,7 +43,11 @@ describe("web proxy locale-less redirects", () => {
 
   it("keeps the Next.js proxy matcher scoped to public app routes", () => {
     expect(config.matcher).toEqual([
-      "/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+      "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     ]);
+
+    const matcher = new RegExp(config.matcher[0]);
+    expect(matcher.test("/processcss")).toBe(true);
+    expect(matcher.test("/styles.css")).toBe(false);
   });
 });

@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CookieSettingsButton } from "@/components/consent/cookie-settings-button/cookie-settings-button";
 import { FooterSection } from "@/components/marketing/home/sections/footer-section/footer-section";
 import { SiteHeader } from "@/components/marketing/site-header/site-header";
-import { ConsentProvider } from "@/components/providers/consent-provider/consent-provider";
-import { GoogleTag } from "@/components/providers/google-tag/google-tag";
 import { SuccessPage } from "@/components/shared/success-page/success-page";
 import { COMPANY_CALENDLY } from "@/config/company";
 import {
@@ -14,7 +11,6 @@ import {
 } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
 import { getSuccessContent } from "@/i18n/dictionaries/marketing/success";
-import { getConsentStaticContent } from "@/i18n/dictionaries/shared/consent";
 import { getHomeFooterSectionContent } from "@/lib/navigation/home-footer-section";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import {
@@ -60,11 +56,9 @@ export default async function SuccessRoute({ params }: SuccessRouteProps) {
   const activeLocale = locale as Locale;
   const { page } = getSuccessContent(activeLocale);
   const footer = getHomeFooterSectionContent(activeLocale);
-  const consent = getConsentStaticContent(activeLocale);
 
   return (
-    <ConsentProvider content={consent} locale={activeLocale}>
-      <GoogleTag />
+    <>
       <SiteHeader
         isMinimalHeader
         brandHref={createLocalePathname(SITE_ROUTES.HOME, activeLocale)}
@@ -78,12 +72,11 @@ export default async function SuccessRoute({ params }: SuccessRouteProps) {
       </main>
       {footer ? (
         <FooterSection
-          cookieSettings={<CookieSettingsButton />}
           description={footer.description}
           locale={activeLocale}
           navColumn={footer.navColumn}
         />
       ) : null}
-    </ConsentProvider>
+    </>
   );
 }

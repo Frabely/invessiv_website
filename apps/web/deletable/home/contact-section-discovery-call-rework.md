@@ -432,8 +432,7 @@ Reihenfolge beim Ausführen:
      sind sichtbar. Projektrahmen und Call-Nachricht bleiben in diesem Branch bewusst nur gespeichert; ihre Anzeige ist
      ein separater CRM-Follow-up.
    - Kurznachricht absenden → `channel = 'quick_contact'`, `lead_email_contacts` befüllt, Mail kommt an.
-   - Landingpage `/services/landing-page` und `/services/linkedin-post` absenden → weiterhin funktionsfähig,
-     Google-Ads-Conversion feuert.
+   - Landingpage `/services/landing-page` und `/services/linkedin-post` absenden → weiterhin funktionsfähig.
    - Services-Section: Leistung wählen → Projektrahmen im Erstgespräch-Formular ist vorausgewählt.
    - FAQ-CTA (`#contact-email`) → Kurznachricht klappt auf und bekommt Fokus.
 6. **A11y/Responsive-Smoke:** 360 px / 768 px / 1440 px; Tastaturnavigation durch beide Formulare inkl. Chip-Gruppe

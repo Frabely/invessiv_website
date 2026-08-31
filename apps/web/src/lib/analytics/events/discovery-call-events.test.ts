@@ -11,11 +11,11 @@ vi.mock("@/lib/analytics/conversion-events", () => ({
 
 describe("discovery call analytics events", () => {
   it("tracks calendar clicks with the discovery call payload", () => {
-    trackDiscoveryCallCalendarClick();
+    trackDiscoveryCallCalendarClick("landing_final_cta");
 
     expect(mockTrackConversionEvent).toHaveBeenCalledWith("calendar_click", {
       form_id: "discovery_call",
-      location: "contact",
+      location: "landing_final_cta",
       target: "calendly",
       variant: "primary",
     });

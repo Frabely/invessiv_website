@@ -178,10 +178,6 @@ export type Dictionary = {
         title: string;
         body: string;
       };
-      googleTracking: {
-        title: string;
-        body: string;
-      };
       contact: {
         title: string;
         body: string;

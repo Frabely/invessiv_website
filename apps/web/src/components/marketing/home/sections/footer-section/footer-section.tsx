@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import Image from "next/image";
 import { FOOTER_SECTION_ID, SECTION_HREFS } from "@/config/navigation/home";
 import { SITE_ROUTES } from "@/config/routes";
@@ -12,14 +11,12 @@ import { ContactIdentity } from "@/components/shared/contact-identity/contact-id
 import styles from "./footer-section.module.css";
 
 export type FooterSectionProps = {
-  cookieSettings?: ReactNode;
   description: string;
   locale: Locale;
   navColumn: FooterColumnCopy;
 };
 
 export function FooterSection({
-  cookieSettings,
   description,
   locale,
   navColumn,
@@ -129,9 +126,6 @@ export function FooterSection({
             <div className={styles.bottomMeta}>
               <span>{copy.copyright}</span>
             </div>
-            {cookieSettings ? (
-              <div className={styles.cookieSettings}>{cookieSettings}</div>
-            ) : null}
           </div>
         </div>
       </div>

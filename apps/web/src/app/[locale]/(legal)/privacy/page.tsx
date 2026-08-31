@@ -92,11 +92,6 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       body: <p>{privacy.sections.speedInsights.body}</p>,
     },
     {
-      id: "google-tracking",
-      title: privacy.sections.googleTracking.title,
-      body: <p>{privacy.sections.googleTracking.body}</p>,
-    },
-    {
       id: "contact",
       title: privacy.sections.contact.title,
       body: <p>{privacy.sections.contact.body}</p>,

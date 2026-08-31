@@ -1,5 +1,14 @@
 # Teil 2: Alten Projektanfrage-Stack entfernen
 
+> **Stand 31.08.2026** — gegen den aktuellen Branch abgeglichen. Zwei Abweichungen gegenüber der Erstfassung:
+>
+> 1. Die Migration heißt jetzt `0021`, nicht `0020`. `0020_add_discovery_call_project_scope.sql` ist inzwischen
+>    vergeben.
+> 2. Der Home-UI-Teil ist bereits erledigt: `project-request-form/` wurde mit dem Formular-Rework entfernt, das
+>    Formular ist im Frontend nicht mehr erreichbar. Die Arbeit beginnt damit direkt bei Schritt 1 (API und Common).
+>
+> Alles Übrige wurde nachgeprüft und existiert unverändert. Kurzfassung der Dateiliste: `apps/web/plans/Todo.md`.
+
 ## Entscheidung und Vorbedingung
 
 Der Projektanfrage-Stack wird vollständig entfernt. Production enthält nach bestätigter Aussage keine
@@ -63,7 +72,7 @@ Projektanfrage-Cleanup und muss als separater, kompatibilitätsgeprüfter Refact
    - `apps/web/e2e/contact-lead-persistence.e2e.ts` auf einen verbleibenden Call- oder Kurznachricht-Flow umstellen.
    - `apps/web/plans/Todo.md`-Eintrag zum alten Projektformular löschen.
 
-4. **Migration `0020_remove_project_requests.sql`.**
+4. **Migration `0021_remove_project_requests.sql`.**
    - Bestehende Migrationen `0001` und `0002` niemals umschreiben; sie müssen für Neuinstallationen historisch
      reproduzierbar bleiben.
    - Erst den Channel-CHECK auf `quick_contact` und `discovery_call` ersetzen, danach `DROP TABLE

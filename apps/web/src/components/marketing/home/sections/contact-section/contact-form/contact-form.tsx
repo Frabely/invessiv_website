@@ -299,7 +299,7 @@ export function ContactForm({
         setPendingAction(null);
         setStatusMessage(formCopy.callSubmitSuccess);
         callAnalytics.trackSubmitSuccess();
-        trackDiscoveryCallCalendarClick();
+        trackDiscoveryCallCalendarClick(analyticsLocation);
 
         if (pendingWindow) {
           pendingWindow.opener = null;

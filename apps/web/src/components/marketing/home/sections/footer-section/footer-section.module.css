@@ -127,10 +127,6 @@
   line-height: 1.45;
 }
 
-.cookieSettings {
-  margin-left: auto;
-}
-
 :global([data-theme="light"]) .description,
 :global([data-theme="light"]) .bottomMeta {
   color: color-mix(in srgb, var(--color-text) 74%, var(--color-text-muted) 26%);

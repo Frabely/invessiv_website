@@ -15,24 +15,30 @@ vi.mock("@/components/providers/language-provider", () => ({
   useLanguage: () => ({ locale: "de" }),
 }));
 
-const { submitDiscoveryCall, submitQuickContact } = vi.hoisted(() => ({
-  submitDiscoveryCall: vi
-    .fn()
-    .mockResolvedValue({ ok: true, requestId: "request-1" }),
-  submitQuickContact: vi
-    .fn()
-    .mockResolvedValue({ ok: true, requestId: "request-2" }),
-}));
+const { submitDiscoveryCall, submitQuickContact, trackCalendarClick } =
+  vi.hoisted(() => ({
+    submitDiscoveryCall: vi
+      .fn()
+      .mockResolvedValue({ ok: true, requestId: "request-1" }),
+    submitQuickContact: vi
+      .fn()
+      .mockResolvedValue({ ok: true, requestId: "request-2" }),
+    trackCalendarClick: vi.fn(),
+  }));
 vi.mock("@/client/contact/services/contact-form-service", () => ({
   createCalendlyPrefillHref: () => "https://calendly.com/invessiv/30min",
   submitDiscoveryCall,
   submitQuickContact,
+}));
+vi.mock("@/lib/analytics/events/discovery-call-events", () => ({
+  trackDiscoveryCallCalendarClick: trackCalendarClick,
 }));
 
 afterEach(() => {
   cleanup();
   submitDiscoveryCall.mockClear();
   submitQuickContact.mockClear();
+  trackCalendarClick.mockClear();
 });
 
 const copy = {
@@ -68,6 +74,35 @@ const copy = {
 };
 
 describe("ContactForm", () => {
+  it.each(["contact", "landing_final_cta", "linkedin_post_final_cta"])(
+    "uses %s for the calendar click location",
+    async (analyticsLocation) => {
+      render(
+        <ContactForm
+          analyticsLocation={analyticsLocation}
+          calendlyHref="https://calendly.com/invessiv/30min"
+          formCopy={copy}
+          privacyHref="/privacy"
+        />,
+      );
+
+      fireEvent.change(screen.getByRole("textbox", { name: "Name" }), {
+        target: { value: "Mara Kern" },
+      });
+      fireEvent.change(screen.getByRole("textbox", { name: "E-Mail" }), {
+        target: { value: "mara@example.com" },
+      });
+      fireEvent.click(screen.getByRole("checkbox"));
+      fireEvent.click(
+        screen.getByRole("button", { name: "Weiter zur Terminauswahl" }),
+      );
+
+      await waitFor(() =>
+        expect(trackCalendarClick).toHaveBeenCalledWith(analyticsLocation),
+      );
+    },
+  );
+
   it("submits the fixed landing-page scope without rendering project chips", async () => {
     render(
       <ContactForm

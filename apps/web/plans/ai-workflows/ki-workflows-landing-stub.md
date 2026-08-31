@@ -34,7 +34,7 @@ bis hin zu ausgebauten, dokumentierten Prozessen (ab 5.000 €).
 SiteHeader
 ├── Hero-Section          (neu — allgemeiner KI-Workflow-Fokus)
 ├── Problem-Section       (angepasst aus linkedin-post — breiter: nicht nur LinkedIn)
-├── Offer-Section         (wiederverwendet aus linkedin-post — ggf. minimale Copy-Anpassung)
+├── Offer-Section         (neu — allgemeine Workflow-Deliverables)
 ├── Pricing-Section       (neu — die 4 Pilot-Tiers)
 ├── Privacy-Note-Section  (wiederverwendet oder angepasst)
 FooterSection
@@ -44,17 +44,11 @@ FooterSection
 
 ## Wiederverwendbare Komponenten
 
-| Komponente                      | Herkunft        | Änderungsbedarf                                           |
-| ------------------------------- | --------------- | --------------------------------------------------------- |
-| `OfferSection`                  | `linkedin-post` | Copy-Anpassung: Fokus auf allgemeine Workflow-Optimierung |
-| `ProblemSection`                | `linkedin-post` | Copy-Anpassung: Beispiele breiter fassen                  |
-| `SiteHeader`, `FooterSection`   | global          | keine                                                     |
-| `EyebrowPill`, `PrimaryCtaLink` | global          | keine                                                     |
-
-> **Import-Hinweis:** `OfferSection` liegt unter
-> `@/components/marketing/linkedin-post/offer-section/offer-section`. Direkt importieren,
-> nicht kopieren. Die Komponente wird auf `/services/linkedin-post` **nicht gerendert** —
-> sie existiert dort nur als Quelle zur Wiederverwendung auf dieser Page.
+| Komponente                      | Herkunft        | Änderungsbedarf                          |
+| ------------------------------- | --------------- | ---------------------------------------- |
+| `ProblemSection`                | `linkedin-post` | Copy-Anpassung: Beispiele breiter fassen |
+| `SiteHeader`, `FooterSection`   | global          | keine                                    |
+| `EyebrowPill`, `PrimaryCtaLink` | global          | keine                                    |
 
 ---
 
@@ -125,10 +119,9 @@ Mobile-first: gestapelte Karten, klare Scope-Grenzen, kein "unbegrenzter Content
 - [ ] Option B: Komponente kopieren wenn strukturelle Unterschiede nötig.
 - [ ] Commit — `feat(ai-workflows): add adapted problem section`
 
-### Task P3: Offer-Section einbinden
+### Task P3: Offer-Section erstellen
 
-- [ ] `OfferSection` aus `linkedin-post` importieren.
-- [ ] Eigene DE/EN-Dictionaries mit angepasster Copy (allgemeine Workflow-Deliverables).
+- [ ] Eigene `OfferSection` mit DE/EN-Dictionaries für allgemeine Workflow-Deliverables erstellen.
 - [ ] Steps-Zeile: "Prozess beschreiben → Workflow-Ideen erhalten → Pilot-Scope entscheiden".
 - [ ] Commit — `feat(ai-workflows): add offer section`
 
@@ -182,7 +175,7 @@ Mobile-first: gestapelte Karten, klare Scope-Grenzen, kein "unbegrenzter Content
 - Route `/de|/en/services/ai-workflows` erreichbar und indexierbar.
 - Alle 4 Pricing-Tiers mit klaren Scope-Grenzen sichtbar.
 - Mobile 360 px: kein Überlauf, alle Preisangaben vollständig lesbar.
-- `OfferSection` erfolgreich wiederverwendet (kein Duplikat).
+- Eigene OfferSection mit klaren Workflow-Deliverables vorhanden.
 - Homepage-Link vorhanden und crawlbar.
 - Metadata, Canonical, Alternates, Structured Data korrekt.
 - Dark Mode default, Light kompatibel.

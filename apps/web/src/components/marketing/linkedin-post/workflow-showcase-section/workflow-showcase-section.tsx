@@ -86,7 +86,6 @@ export function WorkflowShowcaseSection({
                   quality={90}
                   sizes="(max-width: 720px) 92vw, (max-width: 960px) 46vw, 460px"
                   src={post.imageSrc}
-                  style={{ objectFit: "cover" }}
                 />
               </figure>
             }
