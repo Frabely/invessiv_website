@@ -418,12 +418,8 @@ export function useProcessJourney({
         ? window.matchMedia("(max-width: 900px)").matches
         : false;
       if (isMobileViewport) {
-        // Mobile keeps only the lightweight line draw: no leader dot and no
-        // animated card states. The line reaches the CTA just after the final card.
-        lastActiveIndex = null;
-        cards.forEach((card) => {
-          delete card.dataset.journeyState;
-        });
+        // Mobile keeps the lightweight line draw and card state changes, but
+        // omits the continuously moving leader dot.
         const cursorY = journeyViewportHeight * 0.58 - rect.top;
         const travelRange = mobileJourneyEnd - mobileJourneyStart;
         const progress =
@@ -435,7 +431,17 @@ export function useProcessJourney({
             : 0;
         lastProgress = progress;
         if (totalLength > 0) {
-          path.style.strokeDashoffset = `${totalLength - totalLength * progress}`;
+          const drawnLength = totalLength * progress;
+          path.style.strokeDashoffset = `${totalLength - drawnLength}`;
+          let activeIndex = 0;
+          if (drawnLength > 0.5) {
+            cardLengths.forEach((length, index) => {
+              if (drawnLength + 1 >= length) {
+                activeIndex = index;
+              }
+            });
+          }
+          applyCardStates(activeIndex);
           const isCtaVisible = progress >= ctaRevealProgress;
           leader.dataset.finished = "false";
           leader.dataset.overCard = "false";
