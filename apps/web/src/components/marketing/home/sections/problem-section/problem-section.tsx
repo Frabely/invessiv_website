@@ -3,9 +3,7 @@
 import Image from "next/image";
 import { useRef } from "react";
 
-import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
-import { SECTION_HREFS } from "@/config/navigation/home";
 import { useStaggeredSectionReveal } from "@/hooks/marketing/use-staggered-section-reveal";
 import type { ProblemIconKey } from "@/i18n/dictionaries/marketing/home-ui";
 import ambientPhoto from "@/assets/home/unhappy-with-website-2.jpg";
@@ -17,7 +15,6 @@ const LEFT_COLUMN_COUNT = 3;
 
 type ProblemSectionContent = {
   conclusion: string;
-  ctaLabel: string;
   kicker: string;
   listAriaLabel: string;
   photoAlt: string;
@@ -96,16 +93,6 @@ export function ProblemSection({ content, id }: ProblemSectionProps) {
         <footer className={styles.verdict} data-reveal-item="true">
           <p className={styles.conclusion}>{content.conclusion}</p>
           <p className={styles.resolution}>{content.resolution}</p>
-          <PrimaryCtaLink
-            className={styles.cta}
-            data-analytics-event="cta_click"
-            data-analytics-location="problem"
-            data-analytics-target="form"
-            data-analytics-variant="primary"
-            href={SECTION_HREFS.contact}
-          >
-            {content.ctaLabel}
-          </PrimaryCtaLink>
         </footer>
       </div>
     </section>

@@ -22,7 +22,6 @@ type ProblemItem = {
 
 type ProblemContent = {
   conclusion: string;
-  ctaLabel: string;
   kicker: string;
   listAriaLabel: string;
   photoAlt: string;

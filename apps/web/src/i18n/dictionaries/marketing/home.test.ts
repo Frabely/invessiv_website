@@ -223,7 +223,7 @@ describe("home dictionary", () => {
     (locale) => {
       const uspContent = getHomeUiContent(locale).uspContent;
 
-      expect(uspContent.messages).toHaveLength(8);
+      expect(uspContent.messages).toHaveLength(9);
       expect(uspContent.messages.map((message) => message.text)).toEqual(
         uspContent.messages.map(() => expect.stringMatching(/\S/)),
       );
@@ -248,6 +248,7 @@ describe("home dictionary", () => {
     );
 
     expect(deAuthors).toEqual([
+      "visitor",
       "visitor",
       "owner",
       "visitor",

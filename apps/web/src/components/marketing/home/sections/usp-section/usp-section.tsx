@@ -56,10 +56,6 @@ export function UspSection({ content, id }: UspSectionProps) {
       </div>
 
       <div className={styles.inner}>
-        <h2 className="sr-only" id={`${id}-title`}>
-          {content.title}
-        </h2>
-
         <ol aria-label={content.chatAriaLabel} className={styles.thread}>
           {content.messages.map((message, index) => {
             const nextMessage = content.messages[index + 1];
@@ -70,6 +66,9 @@ export function UspSection({ content, id }: UspSectionProps) {
                 highlights={message.highlights}
                 key={message.text}
                 questionEmphasis={message.questionEmphasis}
+                questionHeadingId={
+                  message.questionEmphasis?.length ? `${id}-title` : undefined
+                }
                 showsAvatar={
                   !nextMessage || nextMessage.author !== message.author
                 }

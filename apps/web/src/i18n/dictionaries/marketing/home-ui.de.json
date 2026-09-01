@@ -41,8 +41,7 @@
       }
     ],
     "conclusion": "Dann arbeitet deine Webseite vermutlich gerade gegen dich.",
-    "resolution": "Möchtest du, dass ich diese Probleme für dich löse?",
-    "ctaLabel": "Kostenloses Erstgespräch anfragen"
+    "resolution": "Das kann ich für dich lösen!"
   },
   "uspContent": {
     "title": "Warum du mit mir arbeiten solltest",
@@ -54,8 +53,12 @@
     "messages": [
       {
         "author": "visitor",
+        "text": "Okay Moritz, da erkenne ich mich wieder. Aber Webdesigner gibt es wie Sand am Meer …"
+      },
+      {
+        "author": "visitor",
         "questionEmphasis": ["Warum sollte ich ausgerechnet mit dir arbeiten?"],
-        "text": "Okay Moritz, da erkenne ich mich wieder. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
+        "text": "Warum sollte ich ausgerechnet mit dir arbeiten?"
       },
       {
         "author": "owner",
@@ -73,12 +76,12 @@
       },
       {
         "author": "visitor",
-        "text": "Wie läuft die Zusammenarbeit? Spreche ich immer direkt mit dir?"
+        "text": "Wie läuft die Zusammenarbeit? Wer ist mein Ansprechpartner?"
       },
       {
         "author": "owner",
         "highlights": ["immer direkt mit mir"],
-        "text": "Ja. Du sprichst immer direkt mit mir, bekommst meist innerhalb von 24 Stunden eine Antwort und erreichst mich auch nach dem Launch. Technische Themen erkläre ich verständlich und sage dir offen, was du nicht brauchst."
+        "text": "Ich. Du sprichst immer direkt mit mir, bekommst meist innerhalb von 24 Stunden eine Antwort und erreichst mich auch nach dem Launch. Technische Themen erkläre ich verständlich und sage dir offen, was du nicht brauchst."
       },
       {
         "author": "visitor",

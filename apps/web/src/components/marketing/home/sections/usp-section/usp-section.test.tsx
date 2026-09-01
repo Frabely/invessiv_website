@@ -11,13 +11,17 @@ afterEach(() => {
   cleanup();
 });
 
+const uspQuestion = content.messages.flatMap(
+  (message) => message.questionEmphasis ?? [],
+)[0];
+
 describe("UspSection", () => {
-  it("labels the section by its single visually hidden heading", () => {
+  it("labels the section by the visible question of the visitor", () => {
     render(<UspSection content={content} id="usp" />);
 
     const heading = screen.getByRole("heading", {
       level: 2,
-      name: content.title,
+      name: uspQuestion,
     });
     expect(heading.id).toBe("usp-title");
     expect(
@@ -73,7 +77,7 @@ describe("UspSection", () => {
       "240ms",
     );
     expect(revealItems.at(-1)?.style.getPropertyValue("--reveal-delay")).toBe(
-      "1920ms",
+      "2160ms",
     );
   });
 

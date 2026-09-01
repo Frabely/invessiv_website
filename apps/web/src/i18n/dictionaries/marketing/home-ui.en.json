@@ -41,8 +41,7 @@
       }
     ],
     "conclusion": "Then your website is probably working against you right now.",
-    "resolution": "Want me to solve these problems for you?",
-    "ctaLabel": "Request a free consultation"
+    "resolution": "I can solve that for you!"
   },
   "uspContent": {
     "title": "Why you should work with me",
@@ -54,8 +53,12 @@
     "messages": [
       {
         "author": "visitor",
+        "text": "Okay Moritz, I recognize myself in that. But there are plenty of web designers …"
+      },
+      {
+        "author": "visitor",
         "questionEmphasis": ["Why should I work with you specifically?"],
-        "text": "Okay Moritz, I recognize myself in that. But there are plenty of web designers. Why should I work with you specifically?"
+        "text": "Why should I work with you specifically?"
       },
       {
         "author": "owner",
@@ -73,12 +76,12 @@
       },
       {
         "author": "visitor",
-        "text": "And do I always speak with you directly?"
+        "text": "And who is my point of contact?"
       },
       {
         "author": "owner",
         "highlights": ["always speak directly with me"],
-        "text": "Yes. You always speak directly with me, usually get a reply within 24 hours, and can still reach me after launch. I explain technical topics clearly and openly tell you what you don't need."
+        "text": "That's me. You always speak directly with me, usually get a reply within 24 hours, and can still reach me after launch. I explain technical topics clearly and openly tell you what you don't need."
       },
       {
         "author": "visitor",

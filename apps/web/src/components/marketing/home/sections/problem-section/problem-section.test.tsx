@@ -38,15 +38,6 @@ describe("ProblemSection", () => {
     expect(screen.getByText(content.resolution)).toBeTruthy();
   });
 
-  it("links the CTA to the contact section", () => {
-    render(<ProblemSection content={content} id="problem" />);
-
-    const cta = screen.getByRole("link", { name: content.ctaLabel });
-    expect(cta.getAttribute("href")).toBe("#contact");
-    expect(cta.getAttribute("data-analytics-event")).toBe("cta_click");
-    expect(cta.getAttribute("data-analytics-location")).toBe("problem");
-  });
-
   it("keeps the ambient photo out of the accessibility tree", () => {
     render(<ProblemSection content={content} id="problem" />);
 
