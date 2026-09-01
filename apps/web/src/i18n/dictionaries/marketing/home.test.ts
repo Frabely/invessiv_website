@@ -263,7 +263,7 @@ describe("home dictionary", () => {
       "de",
       [
         "Webdesign mit echter Softwareentwicklung",
-        "technisch umgesetzt",
+        "technisch sauber umgesetzt",
         "Individuelles Design statt Baukasten",
         "schnelle Ladezeiten",
         "mit deinem Unternehmen wachsen",
@@ -276,7 +276,7 @@ describe("home dictionary", () => {
       "en",
       [
         "web design with real software development",
-        "built technically",
+        "under the hood",
         "Custom design instead of a site builder",
         "fast load times",
         "grow with your business",

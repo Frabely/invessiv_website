@@ -59,11 +59,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: color-mix(in srgb, var(--color-bg) 62%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
 }
 
 :global([data-theme="light"]) .backdrop::after {
-  background: color-mix(in srgb, var(--color-bg) 48%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 58%, transparent);
 }
 
 .inner {
