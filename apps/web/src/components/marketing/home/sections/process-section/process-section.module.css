@@ -311,6 +311,25 @@
   opacity: 0.55;
 }
 
+.stepGlow {
+  position: absolute;
+  inset: -1px;
+  display: none;
+  border-radius: 25px;
+  box-shadow:
+    0 0 0 2px var(--color-cta),
+    0 0 0 7px color-mix(in srgb, var(--color-cta) 26%, transparent),
+    0 0 42px color-mix(in srgb, var(--color-cta) 58%, transparent),
+    0 16px 48px color-mix(in srgb, var(--color-cta) 32%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.step[data-journey-state="active"] .stepGlow {
+  opacity: 1;
+}
+
 .stepInner {
   display: flex;
   flex-direction: column;
@@ -429,6 +448,14 @@
   filter: brightness(0.93) saturate(0.5);
 }
 
+:global([data-theme="light"]) .stepGlow {
+  box-shadow:
+    0 0 0 2px var(--color-cta),
+    0 0 0 7px color-mix(in srgb, var(--color-cta) 18%, transparent),
+    0 0 36px color-mix(in srgb, var(--color-cta) 38%, transparent),
+    0 12px 36px color-mix(in srgb, var(--color-cta) 22%, transparent);
+}
+
 :global([data-theme="light"]) .step[data-journey-state="active"] {
   border-color: var(--color-cta);
   background: color-mix(
@@ -536,6 +563,17 @@
   }
 }
 
+@keyframes processEndCtaPulseMobile {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.035);
+  }
+}
+
 @keyframes processEndCtaPulse {
   0%,
   100% {
@@ -567,15 +605,61 @@
 
 @media (max-width: 900px) {
   .layout {
-    padding-block: clamp(1.75rem, 5vw, 2.5rem) clamp(5rem, 14vw, 6.5rem);
+    padding-block: clamp(1.75rem, 5vw, 2.5rem)
+      calc(
+        var(--process-cta-gap) + var(--process-cta-height) +
+          var(--process-cta-inset)
+      );
+    --process-rail-gutter: 26px;
+    --process-step-gap: clamp(3rem, 9vw, 4.5rem);
+    --process-cta-height: 46px;
+    --process-cta-gap: 30px;
+    --process-cta-inset: clamp(0.75rem, 3vw, 1.25rem);
   }
 
-  .journeyProgress {
+  .journeySvg,
+  .pathPoint {
+    display: none;
+  }
+
+  .step {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  }
+
+  .step[data-journey-state="passed"] {
     filter: none;
   }
 
-  .pathPoint {
-    box-shadow: none;
+  :global([data-theme="light"]) .step {
+    background: color-mix(in srgb, var(--color-surface-1) 94%, transparent);
+  }
+
+  :global([data-theme="light"]) .step[data-journey-state="passed"] {
+    filter: none;
+  }
+
+  /* The CTA closes the step column, so it lines up with the cards. */
+  .endCta {
+    top: auto;
+    right: 0;
+    bottom: var(--process-cta-inset);
+    left: var(--process-rail-gutter);
+    min-height: var(--process-cta-height);
+    transform: none;
+  }
+
+  .layoutHasJourneyCtaGate .endCta,
+  .layoutHasJourneyCtaGate .endCta[data-journey-visible="true"] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .endCta[data-journey-active="true"] {
+    animation: processEndCtaPulseMobile 0.78s cubic-bezier(0.22, 1, 0.36, 1) 1
+      both;
   }
 
   .backdrop::after {
@@ -583,8 +667,9 @@
   }
 
   .steps {
-    grid-template-columns: 1fr;
-    row-gap: clamp(3rem, 9vw, 4.5rem);
+    grid-template-columns: var(--process-rail-gutter) minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: var(--process-step-gap);
     width: 100%;
   }
 
@@ -593,9 +678,125 @@
   .step:nth-child(4n),
   .step:nth-child(4n + 2),
   .step:nth-child(4n + 3) {
-    grid-column: 1;
-    justify-self: end;
-    width: 86%;
+    grid-column: 2;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .stepGlow {
+    display: block;
+  }
+
+  /* The active glow lives on the overlay so no box-shadow paints while scrolling. */
+  .step[data-journey-state="active"] {
+    box-shadow: 0 12px 28px rgba(8, 10, 15, 0.2);
+  }
+
+  :global([data-theme="light"]) .step[data-journey-state="active"] {
+    box-shadow: 0 8px 18px rgba(36, 55, 90, 0.08);
+  }
+
+  /* Rail node, aligned with the step number: 19px .stepInner padding + 31px / 2.
+     Adjust together with .stepInner padding and .stepNumber height below. */
+  .step::before {
+    content: "";
+    position: absolute;
+    top: 27px;
+    left: calc(
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 7px
+    );
+    width: 14px;
+    height: 14px;
+    border: 2px solid color-mix(in srgb, var(--color-border) 85%, transparent);
+    border-radius: 999px;
+    background: var(--color-surface-2);
+    pointer-events: none;
+    transition:
+      background-color 280ms ease,
+      border-color 280ms ease,
+      box-shadow 280ms ease;
+  }
+
+  .step::after {
+    content: "";
+    position: absolute;
+    top: 46px;
+    bottom: calc(-1 * (var(--process-step-gap) + 22px));
+    left: calc(
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 1px
+    );
+    width: 2px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-border) 55%, transparent);
+    pointer-events: none;
+    transition: background-color 280ms ease;
+  }
+
+  .step[data-journey-state="active"]::before {
+    top: 25px;
+    left: calc(
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / -2 - 9px
+    );
+    width: 18px;
+    height: 18px;
+    border-color: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(
+      135deg,
+      var(--color-cta),
+      var(--color-cta-active)
+    );
+    box-shadow:
+      0 0 0 8px color-mix(in srgb, var(--color-cta) 24%, transparent),
+      0 0 28px color-mix(in srgb, var(--color-cta) 52%, transparent);
+  }
+
+  .step[data-journey-state="passed"]::before {
+    border-color: rgba(255, 255, 255, 0.9);
+    background: var(--color-accent-warm);
+  }
+
+  :global([data-theme="light"]) .step[data-journey-state="passed"]::before {
+    border-color: rgba(255, 255, 255, 0.96);
+    background: color-mix(in srgb, var(--color-accent-warm) 76%, #ffffff 24%);
+  }
+
+  :global([data-theme="light"]) .step[data-journey-state="active"]::before {
+    border-color: rgba(255, 255, 255, 0.96);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-cta) 76%, #ffffff 24%),
+      color-mix(in srgb, var(--color-cta-active) 72%, #ffffff 28%)
+    );
+    box-shadow:
+      0 0 0 8px color-mix(in srgb, var(--color-cta) 16%, transparent),
+      0 0 28px color-mix(in srgb, var(--color-cta) 24%, transparent);
+  }
+
+  .step[data-journey-state="passed"]::after {
+    background: color-mix(in srgb, var(--color-accent-warm) 52%, transparent);
+  }
+
+  /* The last segment turns right and runs into the CTA. */
+  .step:last-child::after {
+    bottom: calc(-1 * (var(--process-cta-gap) + var(--process-cta-height) / 2));
+    width: calc(
+      (var(--process-rail-gutter) + var(--page-inline-gutter)) / 2 + 9px
+    );
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 2px solid
+      color-mix(in srgb, var(--color-border) 55%, transparent);
+    border-left: 2px solid
+      color-mix(in srgb, var(--color-border) 55%, transparent);
+    border-radius: 0 0 0 12px;
+    background: none;
+    transition: border-color 280ms ease;
+  }
+
+  .step:last-child[data-journey-state="active"]::after,
+  .step:last-child[data-journey-state="passed"]::after {
+    border-bottom-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
+    border-left-color: color-mix(in srgb, var(--color-cta) 70%, transparent);
   }
 
   .step:nth-child(-n + 2),
@@ -639,7 +840,6 @@
 
 @media (max-width: 640px) {
   .endCta {
-    min-height: 40px;
     padding-inline: 14px;
     font-size: var(--font-size-ui-xs);
   }
@@ -647,6 +847,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .step,
+  .step::before,
+  .step::after,
+  .stepGlow,
+  .stepInner,
   .stepNumber,
   .endCta {
     transition: none;
@@ -661,6 +865,13 @@
   .layoutHasJourneyCtaGate .endCta[data-journey-visible="true"] {
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+/* The mobile CTA is anchored to the layout bottom and keeps its own transform. */
+@media (prefers-reduced-motion: reduce) and (min-width: 901px) {
+  .layoutHasJourneyCtaGate .endCta,
+  .layoutHasJourneyCtaGate .endCta[data-journey-visible="true"] {
     transform: translate(-50%, -50%) scale(1);
   }
 }

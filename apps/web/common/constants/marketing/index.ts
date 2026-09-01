@@ -3,6 +3,7 @@ export * from "./landing-preview-anchor";
 export * from "./linkedin-post-caption-clamp";
 export * from "./linkedin-post-caption-fit";
 export * from "./linkedin-post-variant";
+export * from "./process-journey";
 export * from "./project-offer-change-event";
 export * from "./qna-stage-phase";
 export * from "./reference-avatar-key";
