@@ -16,8 +16,8 @@ const PHONE_DISPLAY_BY_LOCALE: Record<Locale, string> = {
 };
 
 const SERVICE_TYPE_BY_LOCALE: Record<Locale, string> = {
-  de: "Webentwicklung, Landingpages und Interne Tools",
-  en: "Web development, landing pages, and internal tools",
+  de: "Webdesign für KMU und Dienstleister",
+  en: "Web design for SMBs and service providers",
 };
 
 export function createMarketingStructuredData(

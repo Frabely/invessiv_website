@@ -18,9 +18,12 @@ type UspSectionContent = {
   messages: {
     author: UspChatAuthor;
     highlights?: string[];
-    questionEmphasis?: string[];
     text: string;
   }[];
+  introMessage: {
+    author: UspChatAuthor;
+    text: string;
+  };
   replyCtaLabel: string;
   title: string;
 };
@@ -56,7 +59,16 @@ export function UspSection({ content, id }: UspSectionProps) {
       </div>
 
       <div className={styles.inner}>
-        <h2 className="sr-only" id={`${id}-title`}>
+        <ol aria-label={content.chatAriaLabel} className={styles.introThread}>
+          <ChatMessage
+            author={content.introMessage.author}
+            authorLabel={content.authorLabels[content.introMessage.author]}
+            showsAvatar={true}
+            text={content.introMessage.text}
+          />
+        </ol>
+
+        <h2 className={styles.title} data-reveal-item="true" id={`${id}-title`}>
           {content.title}
         </h2>
 
@@ -69,7 +81,6 @@ export function UspSection({ content, id }: UspSectionProps) {
                 authorLabel={content.authorLabels[message.author]}
                 highlights={message.highlights}
                 key={message.text}
-                questionEmphasis={message.questionEmphasis}
                 showsAvatar={
                   !nextMessage || nextMessage.author !== message.author
                 }

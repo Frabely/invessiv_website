@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("UspSection", () => {
-  it("labels the section by its single visually hidden heading", () => {
+  it("labels the section by its visible headline", () => {
     render(<UspSection content={content} id="usp" />);
 
     const heading = screen.getByRole("heading", {
@@ -26,14 +26,16 @@ describe("UspSection", () => {
     expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(1);
   });
 
-  it("renders the full chat thread in order with author labels", () => {
+  it("renders the transition and full chat thread in order with author labels", () => {
     render(<UspSection content={content} id="usp" />);
 
-    const thread = screen.getByRole("list", { name: content.chatAriaLabel });
-    const items = within(thread).getAllByRole("listitem");
-    expect(items).toHaveLength(content.messages.length);
+    const items = screen
+      .getAllByRole("list", { name: content.chatAriaLabel })
+      .flatMap((thread) => within(thread).getAllByRole("listitem"));
+    const allMessages = [content.introMessage, ...content.messages];
+    expect(items).toHaveLength(allMessages.length);
 
-    content.messages.forEach((message, index) => {
+    allMessages.forEach((message, index) => {
       expect(items[index].textContent).toContain(message.text);
       expect(items[index].textContent).toContain(
         content.authorLabels[message.author],
@@ -49,15 +51,9 @@ describe("UspSection", () => {
     const renderedHighlights = Array.from(
       container.querySelectorAll("[data-emphasis='usp']"),
     ).map((highlight) => highlight.textContent);
-    const expectedQuestions = content.messages.flatMap(
-      (message) => message.questionEmphasis ?? [],
-    );
-    const renderedQuestions = Array.from(
-      container.querySelectorAll("[data-emphasis='question']"),
-    ).map((highlight) => highlight.textContent);
 
     expect(renderedHighlights).toEqual(expectedHighlights);
-    expect(renderedQuestions).toEqual(expectedQuestions);
+    expect(container.querySelector("[data-emphasis='question']")).toBeNull();
   });
 
   it("reveals the conversation with a measured chat-like stagger", () => {
@@ -73,7 +69,7 @@ describe("UspSection", () => {
       "240ms",
     );
     expect(revealItems.at(-1)?.style.getPropertyValue("--reveal-delay")).toBe(
-      "1920ms",
+      `${(revealItems.length - 1) * 240}ms`,
     );
   });
 
@@ -90,10 +86,12 @@ describe("UspSection", () => {
   it("keeps the backdrop and avatars out of the accessibility tree", () => {
     render(<UspSection content={content} id="usp" />);
 
-    const avatarCount = content.messages.filter(
-      (message, index) =>
-        content.messages[index + 1]?.author !== message.author,
-    ).length;
+    const avatarCount =
+      1 +
+      content.messages.filter(
+        (message, index) =>
+          content.messages[index + 1]?.author !== message.author,
+      ).length;
     const images = Array.from(document.querySelectorAll("img"));
     expect(images.length).toBe(avatarCount + 1);
     expect(images.every((image) => image.alt === "")).toBe(true);

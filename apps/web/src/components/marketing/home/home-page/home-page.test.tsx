@@ -84,7 +84,7 @@ describe("HomePage", () => {
       name: "Hast du mindestens eines dieser Probleme?",
     });
     const uspHeading = screen.getByRole("heading", {
-      name: "Warum du mit mir arbeiten solltest",
+      name: "Warum sollte ich ausgerechnet mit dir arbeiten?",
     });
     const servicesHeading = screen.getByRole("heading", {
       name: "Was hast du mit deiner Website vor?",

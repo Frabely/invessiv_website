@@ -9,7 +9,7 @@
   display: flex;
   gap: 0.65rem;
   align-items: flex-end;
-  width: min(50rem, 96%);
+  width: min(68%, 42rem);
 }
 
 .message[data-author="owner"] {
@@ -30,6 +30,7 @@
 
   flex-direction: row-reverse;
   justify-self: end;
+  width: min(58%, 34rem);
 }
 
 .avatar {
@@ -76,6 +77,10 @@
   line-height: 1.5;
 }
 
+.bubbleText {
+  margin: 0;
+}
+
 .highlight {
   color: color-mix(
     in srgb,
@@ -83,29 +88,6 @@
     var(--color-text) 30%
   );
   font-weight: 700;
-}
-
-.questionEmphasis {
-  display: block;
-  margin-top: 0.65rem;
-  color: var(--color-text);
-  font-size: clamp(1.2rem, 1.08rem + 0.45vw, 1.4rem);
-  font-weight: 900;
-  letter-spacing: -0.018em;
-  line-height: 1.2;
-}
-
-.message[data-question-emphasis="true"] {
-  width: min(52rem, 98%);
-}
-
-.message[data-question-emphasis="true"] .bubble {
-  border-color: color-mix(
-    in srgb,
-    var(--color-text) 20%,
-    var(--bubble-border) 80%
-  );
-  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.1rem);
 }
 
 .message[data-author="owner"] .bubble {
@@ -149,6 +131,22 @@
 .message[data-visible="true"] {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+@media (max-width: 47.99rem) {
+  .message,
+  .message[data-author="visitor"] {
+    width: min(90%, 42rem);
+  }
+
+  .avatar,
+  .avatarSpacer {
+    width: 1.9rem;
+  }
+
+  .avatar {
+    height: 1.9rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

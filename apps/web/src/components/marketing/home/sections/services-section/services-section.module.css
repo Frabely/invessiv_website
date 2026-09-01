@@ -57,7 +57,7 @@
 .sectionTitle {
   margin: 0;
   color: var(--color-text);
-  font-size: var(--font-size-section-title);
+  font-size: var(--font-size-section-headline);
   line-height: 1.08;
   letter-spacing: -0.04em;
   text-wrap: balance;
@@ -437,10 +437,6 @@
 }
 
 @media (min-width: 1500px) {
-  .sectionTitle {
-    font-size: var(--font-size-section-title-wide);
-  }
-
   .contextNote {
     max-width: 58rem;
   }

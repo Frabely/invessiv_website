@@ -9,28 +9,14 @@ type ChatMessageProps = {
   author: UspChatAuthor;
   authorLabel: string;
   highlights?: string[];
-  questionEmphasis?: string[];
   showsAvatar: boolean;
   text: string;
 };
 
-type EmphasisKind = "question" | "usp";
-
-function emphasizeText(
-  text: string,
-  highlights: string[],
-  questionEmphasis: string[],
-): ReactNode[] {
-  const ranges = [
-    ...highlights.map((emphasis) => ({ emphasis, kind: "usp" as const })),
-    ...questionEmphasis.map((emphasis) => ({
+function emphasizeText(text: string, highlights: string[]): ReactNode[] {
+  const ranges = highlights
+    .map((emphasis) => ({
       emphasis,
-      kind: "question" as const,
-    })),
-  ]
-    .map(({ emphasis, kind }) => ({
-      emphasis,
-      kind,
       start: text.indexOf(emphasis),
     }))
     .filter(({ start }) => start >= 0)
@@ -38,7 +24,7 @@ function emphasizeText(
   const parts: ReactNode[] = [];
   let cursor = 0;
 
-  ranges.forEach(({ emphasis, kind, start }) => {
+  ranges.forEach(({ emphasis, start }) => {
     if (start < cursor) {
       return;
     }
@@ -49,10 +35,8 @@ function emphasizeText(
 
     parts.push(
       <strong
-        className={
-          kind === "question" ? styles.questionEmphasis : styles.highlight
-        }
-        data-emphasis={kind satisfies EmphasisKind}
+        className={styles.highlight}
+        data-emphasis="usp"
         key={`${start}-${emphasis}`}
       >
         {emphasis}
@@ -72,17 +56,11 @@ export function ChatMessage({
   author,
   authorLabel,
   highlights = [],
-  questionEmphasis = [],
   showsAvatar,
   text,
 }: ChatMessageProps) {
   return (
-    <li
-      className={styles.message}
-      data-author={author}
-      data-question-emphasis={questionEmphasis.length > 0 ? "true" : undefined}
-      data-reveal-item="true"
-    >
+    <li className={styles.message} data-author={author} data-reveal-item="true">
       {showsAvatar ? (
         <span aria-hidden="true" className={styles.avatar}>
           {author === "owner" ? (
@@ -106,10 +84,10 @@ export function ChatMessage({
       ) : (
         <span aria-hidden="true" className={styles.avatarSpacer} />
       )}
-      <p className={styles.bubble}>
+      <div className={styles.bubble}>
         <span className="sr-only">{`${authorLabel}: `}</span>
-        {emphasizeText(text, highlights, questionEmphasis)}
-      </p>
+        <p className={styles.bubbleText}>{emphasizeText(text, highlights)}</p>
+      </div>
     </li>
   );
 }

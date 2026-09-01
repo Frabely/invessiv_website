@@ -19,7 +19,7 @@
 .title {
   margin: 0;
   color: var(--color-text);
-  font-size: var(--font-size-section-title);
+  font-size: var(--font-size-section-headline);
   line-height: 1.08;
   letter-spacing: -0.03em;
   text-wrap: balance;

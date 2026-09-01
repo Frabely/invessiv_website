@@ -45,7 +45,7 @@ describe("marketing-structured-data", () => {
     });
     expect(service).toMatchObject({
       "@type": "Service",
-      serviceType: "Webentwicklung, Landingpages und Interne Tools",
+      serviceType: "Webdesign für KMU und Dienstleister",
     });
     expect(serialized).not.toContain("Moritz Hecht");
   });

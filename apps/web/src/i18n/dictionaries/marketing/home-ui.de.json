@@ -41,56 +41,45 @@
       }
     ],
     "conclusion": "Dann arbeitet deine Webseite vermutlich gerade gegen dich.",
-    "resolution": "Möchtest du, dass ich diese Probleme für dich löse?",
-    "ctaLabel": "Kostenloses Erstgespräch anfragen"
+    "resolution": "Das kann ich für dich lösen!"
   },
   "uspContent": {
-    "title": "Warum du mit mir arbeiten solltest",
+    "title": "Warum sollte ich ausgerechnet mit dir arbeiten?",
     "chatAriaLabel": "Chatverlauf zwischen einem Kunden und Moritz",
     "authorLabels": {
       "owner": "Moritz",
       "visitor": "Du"
     },
+    "introMessage": {
+      "author": "visitor",
+      "text": "Okay Moritz, da erkenne ich mich wieder. Genau diese Probleme habe ich. Mir stellt sich nur die Frage:"
+    },
     "messages": [
-      {
-        "author": "visitor",
-        "questionEmphasis": ["Warum sollte ich ausgerechnet mit dir arbeiten?"],
-        "text": "Okay Moritz, da erkenne ich mich wieder. Aber Webdesigner gibt es wie Sand am Meer. Warum sollte ich ausgerechnet mit dir arbeiten?"
-      },
       {
         "author": "owner",
         "highlights": ["Webdesign mit echter Softwareentwicklung"],
-        "text": "Ich verbinde Webdesign mit echter Softwareentwicklung. Seit rund 10 Jahren arbeite ich mit Code, 3 Jahre davon professionell und etwa seit einem Jahr liegt mein Fokus auf Webdesign."
+        "text": "Absolut berechtigte Frage. Ich verbinde Webdesign mit echter Softwareentwicklung. Deshalb schaue ich nicht nur darauf, wie deine Website aussieht, sondern auch darauf, dass sie technisch sauber umgesetzt ist."
       },
       {
         "author": "visitor",
-        "text": "Und was bringt das meiner Webseite konkret?"
+        "text": "Und was bringt mir das konkret?"
       },
       {
         "author": "owner",
-        "highlights": ["individuelles Design ohne starre Vorlagen"],
-        "text": "Sie entsteht mit echtem Code statt im Baukasten. Das ermöglicht ein individuelles Design ohne starre Vorlagen, schnelle Ladezeiten und eine Webseite, die mit deinem Geschäft wachsen kann."
+        "highlights": ["Individuelles Design statt Baukasten"],
+        "text": "Individuelles Design statt Baukasten. Dazu schnelle Ladezeiten und eine Website, die technisch sauber aufgebaut ist und mit deinem Unternehmen wachsen kann."
       },
       {
         "author": "visitor",
-        "text": "Wie läuft die Zusammenarbeit? Spreche ich immer direkt mit dir?"
+        "text": "Und wie läuft die Zusammenarbeit?"
       },
       {
         "author": "owner",
-        "highlights": ["immer direkt mit mir"],
-        "text": "Ja. Du sprichst immer direkt mit mir, bekommst meist innerhalb von 24 Stunden eine Antwort und erreichst mich auch nach dem Launch. Technische Themen erkläre ich verständlich und sage dir offen, was du nicht brauchst."
-      },
-      {
-        "author": "visitor",
-        "text": "Wie starten wir am besten?"
-      },
-      {
-        "author": "owner",
-        "highlights": ["Kostenlos und unverbindlich"],
-        "text": "Wir klären dein Vorhaben in 15 Minuten. Danach sage ich dir ehrlich, was sinnvoll ist und womit du rechnen kannst. Kostenlos und unverbindlich."
+        "highlights": ["direkt mit mir"],
+        "text": "Du arbeitest direkt mit mir. Ohne Projektmanager und ohne Weitergabe durchs Team. Ich antworte dir in der Regel innerhalb von 24 Stunden und bleibe auch nach dem Launch dein Ansprechpartner."
       }
     ],
-    "replyCtaLabel": "Klingt gut, lass loslegen!"
+    "replyCtaLabel": "Klingt gut, lass uns loslegen."
   },
   "referencesLabels": {
     "showcaseAriaLabel": "Referenzen von Kunden mit Projektvorschau",

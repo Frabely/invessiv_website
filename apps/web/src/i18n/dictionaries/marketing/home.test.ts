@@ -223,7 +223,8 @@ describe("home dictionary", () => {
     (locale) => {
       const uspContent = getHomeUiContent(locale).uspContent;
 
-      expect(uspContent.messages).toHaveLength(8);
+      expect(uspContent.messages).toHaveLength(5);
+      expect(uspContent.introMessage.text).toMatch(/\S/);
       expect(uspContent.messages.map((message) => message.text)).toEqual(
         uspContent.messages.map(() => expect.stringMatching(/\S/)),
       );
@@ -248,9 +249,6 @@ describe("home dictionary", () => {
     );
 
     expect(deAuthors).toEqual([
-      "visitor",
-      "owner",
-      "visitor",
       "owner",
       "visitor",
       "owner",
@@ -265,38 +263,26 @@ describe("home dictionary", () => {
       "de",
       [
         "Webdesign mit echter Softwareentwicklung",
-        "10 Jahren",
-        "3 Jahre davon professionell",
-        "etwa seit einem Jahr",
-        "echtem Code",
-        "individuelles Design",
-        "ohne starre Vorlagen",
+        "technisch sauber umgesetzt",
+        "Individuelles Design statt Baukasten",
         "schnelle Ladezeiten",
-        "mit deinem Geschäft wachsen",
-        "immer direkt mit mir",
+        "mit deinem Unternehmen wachsen",
+        "direkt mit mir",
         "24 Stunden",
         "nach dem Launch",
-        "Technische Themen erkläre ich verständlich",
-        "was du nicht brauchst",
       ],
     ],
     [
       "en",
       [
         "web design with real software development",
-        "10 years",
-        "3 years professionally",
-        "past year",
-        "real code",
-        "custom design",
-        "without fixed templates",
+        "under the hood",
+        "Custom design instead of a site builder",
         "fast load times",
-        "as your business grows",
-        "always speak directly with me",
+        "grow with your business",
+        "directly with me",
         "24 hours",
         "after launch",
-        "explain technical topics clearly",
-        "what you don't need",
       ],
     ],
   ] as const)("keeps every core USP in the natural %s chat", (locale, usps) => {
@@ -305,9 +291,6 @@ describe("home dictionary", () => {
       .join(" ");
 
     usps.forEach((usp) => expect(chatCopy).toContain(usp));
-    expect(
-      `${chatCopy} ${getHomeUiContent(locale).uspContent.replyCtaLabel}`,
-    ).not.toMatch(/[—–-]/);
   });
 
   it("positions the hero around personal web design from Chemnitz in both locales", () => {

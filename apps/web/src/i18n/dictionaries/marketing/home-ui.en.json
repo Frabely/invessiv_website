@@ -41,53 +41,42 @@
       }
     ],
     "conclusion": "Then your website is probably working against you right now.",
-    "resolution": "Want me to solve these problems for you?",
-    "ctaLabel": "Request a free consultation"
+    "resolution": "I can solve that for you!"
   },
   "uspContent": {
-    "title": "Why you should work with me",
+    "title": "Why should I work with you specifically?",
     "chatAriaLabel": "Chat between a client and Moritz",
     "authorLabels": {
       "owner": "Moritz",
       "visitor": "You"
     },
+    "introMessage": {
+      "author": "visitor",
+      "text": "Okay Moritz, I recognize myself in that. Those are exactly the problems I have. I just have one question:"
+    },
     "messages": [
-      {
-        "author": "visitor",
-        "questionEmphasis": ["Why should I work with you specifically?"],
-        "text": "Okay Moritz, I recognize myself in that. But there are plenty of web designers. Why should I work with you specifically?"
-      },
       {
         "author": "owner",
         "highlights": ["web design with real software development"],
-        "text": "I combine web design with real software development. I've worked with code for 10 years, including 3 years professionally and for the past year, my focus has been web design."
+        "text": "Absolutely fair question. I combine web design with real software development. So I look at more than how your website looks. I also make sure it is built properly under the hood."
       },
       {
         "author": "visitor",
-        "text": "And what does that mean for my website?"
+        "text": "And what does that mean for me in concrete terms?"
       },
       {
         "author": "owner",
-        "highlights": ["custom design without fixed templates"],
-        "text": "It's built with real code instead of a site builder. That means a custom design without fixed templates, fast load times, and a website we can expand as your business grows."
+        "highlights": ["Custom design instead of a site builder"],
+        "text": "Custom design instead of a site builder. Plus fast load times and a website that is built cleanly and can grow with your business."
       },
       {
         "author": "visitor",
-        "text": "And do I always speak with you directly?"
+        "text": "And what is it like working together?"
       },
       {
         "author": "owner",
-        "highlights": ["always speak directly with me"],
-        "text": "Yes. You always speak directly with me, usually get a reply within 24 hours, and can still reach me after launch. I explain technical topics clearly and openly tell you what you don't need."
-      },
-      {
-        "author": "visitor",
-        "text": "How do we get started?"
-      },
-      {
-        "author": "owner",
-        "highlights": ["free and comes with no obligation"],
-        "text": "We'll discuss your plans in 15 minutes. Afterwards, I'll tell you honestly what makes sense and what to expect. The conversation is free and comes with no obligation."
+        "highlights": ["directly with me"],
+        "text": "You work directly with me. No project managers and no handoffs through a team. I usually get back to you within 24 hours and stay your point of contact after launch."
       }
     ],
     "replyCtaLabel": "Sounds good, let's get started"
