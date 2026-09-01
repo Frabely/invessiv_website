@@ -10,6 +10,7 @@ import type {
 import { EyebrowPill } from "@/components/shared/eyebrow-pill/eyebrow-pill";
 import { PrimaryCtaLink } from "@/components/shared/button/button";
 import { useProcessJourney } from "@/hooks/marketing/use-process-journey";
+import { useProcessJourneyMobile } from "@/hooks/marketing/use-process-journey-mobile";
 import backdropPhoto from "@/assets/home/Ueberstunde_Torfgrube_Mittweida_1.jpg";
 import styles from "./process-section.module.css";
 
@@ -73,6 +74,7 @@ export function ProcessSection({
     pathRef,
     stepsRef,
   });
+  useProcessJourneyMobile({ endCtaRef, stepsRef });
 
   return (
     <section className={styles.section} data-process-section="true" id={id}>
@@ -161,6 +163,7 @@ export function ProcessSection({
                 key={step.step}
                 role="listitem"
               >
+                <span aria-hidden="true" className={styles.stepGlow} />
                 <div className={styles.stepInner}>
                   <header className={styles.stepTitleRow}>
                     <p className={styles.stepNumber}>{step.step}</p>

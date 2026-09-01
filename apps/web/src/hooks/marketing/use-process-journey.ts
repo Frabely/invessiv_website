@@ -3,6 +3,12 @@
 import type { RefObject } from "react";
 import { useEffect } from "react";
 
+import {
+  PROCESS_JOURNEY_MOBILE_QUERY,
+  PROCESS_JOURNEY_STATES,
+} from "@/common/constants/marketing/process-journey";
+import { useMediaQuery } from "@/hooks/marketing/use-media-query";
+
 type UseProcessJourneyParams = {
   layoutRef: RefObject<HTMLDivElement | null>;
   endCtaRef: RefObject<HTMLAnchorElement | null>;
@@ -23,11 +29,9 @@ type CardAnchor = {
   dir: number;
 };
 
-const JOURNEY_STATES = {
-  upcoming: "upcoming",
-  active: "active",
-  passed: "passed",
-} as const;
+const matchesMobileViewport = () =>
+  typeof window.matchMedia === "function" &&
+  window.matchMedia(PROCESS_JOURNEY_MOBILE_QUERY).matches;
 
 export function useProcessJourney({
   layoutRef,
@@ -37,7 +41,13 @@ export function useProcessJourney({
   pathRef,
   stepsRef,
 }: UseProcessJourneyParams) {
+  const isMobileJourney = useMediaQuery(PROCESS_JOURNEY_MOBILE_QUERY);
+
   useEffect(() => {
+    // The mobile layout renders no SVG journey; this pipeline stays desktop-only.
+    if (isMobileJourney || matchesMobileViewport()) {
+      return;
+    }
     const ctaRevealProgress = 0.97;
     const ctaPulseProgress = 0.99;
     const endCta = endCtaRef.current;
@@ -60,11 +70,6 @@ export function useProcessJourney({
     }[] = [];
     let segmentWeights: number[] = [];
     let lastActiveIndex: number | null = null;
-    let lastMobileProgress = 0;
-    let mobileViewportWidth = window.innerWidth;
-    let journeyViewportHeight = window.innerHeight;
-    let mobileJourneyStart = 0;
-    let mobileJourneyEnd = 0;
     let rafId: number | null = null;
     let isJourneyActive = true;
     let visibilityObserver: IntersectionObserver | null = null;
@@ -78,10 +83,6 @@ export function useProcessJourney({
       layout.style.setProperty(xName, `${x.toFixed(2)}px`);
       layout.style.setProperty(yName, `${y.toFixed(2)}px`);
     };
-
-    const matchesMobileViewport = () =>
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(max-width: 900px)").matches;
 
     const updateGeometry = () => {
       const layoutRect = layout.getBoundingClientRect();
@@ -110,11 +111,6 @@ export function useProcessJourney({
           centerX: left + rect.width / 2,
         };
       });
-      const lastMetrics = metrics[metrics.length - 1];
-      const firstMetrics = metrics[0];
-      if (!firstMetrics || !lastMetrics) {
-        return;
-      }
       cardRects = metrics.map((metric) => ({
         left: metric.left,
         right: metric.right,
@@ -122,9 +118,7 @@ export function useProcessJourney({
         bottom: metric.bottom,
       }));
 
-      const isMobileViewport = matchesMobileViewport();
-
-      if (mask && !isMobileViewport) {
+      if (mask) {
         // Punch the card areas out of the path so it never shows through translucent cards.
         while (mask.firstChild) {
           mask.removeChild(mask.firstChild);
@@ -164,17 +158,8 @@ export function useProcessJourney({
         });
       }
 
-      if (isMobileViewport) {
-        // The mobile path runs in the free left gutter, never beneath a card.
-        // Avoiding the SVG mask keeps the animated stroke on a cheap paint path.
-        path.removeAttribute("mask");
-      } else {
-        path.setAttribute("mask", "url(#processJourneyMask)");
-      }
-
-      const edgePadding = 12;
       const ctaHeight = endCta?.getBoundingClientRect().height ?? 40;
-      const ctaGap = isMobileViewport ? 28 : 40;
+      const ctaGap = 40;
       const maxBottom = metrics.reduce(
         (currentMax, metric) => Math.max(currentMax, metric.bottom),
         0,
@@ -192,151 +177,120 @@ export function useProcessJourney({
         return path.getTotalLength();
       };
 
-      if (isMobileViewport) {
-        const lineX = Math.min(
-          Math.max(firstMetrics.left / 2, edgePadding),
-          layoutRect.width - edgePadding,
-        );
-        segments.push(
-          `M ${lineX.toFixed(2)} ${firstMetrics.centerY.toFixed(2)}`,
-        );
-        lengths.push(0);
-        metrics.slice(1).forEach((metric) => {
-          segments.push(`L ${lineX.toFixed(2)} ${metric.centerY.toFixed(2)}`);
-          lengths.push(measure());
-          weights.push(1);
-        });
-        segments.push(`L ${lineX.toFixed(2)} ${ctaY.toFixed(2)}`);
-        segments.push(`L ${ctaX.toFixed(2)} ${ctaY.toFixed(2)}`);
-        weights.push(1);
-        setCssPoint(
-          "--process-start-x",
-          "--process-start-y",
-          lineX,
-          firstMetrics.centerY,
-        );
-        mobileJourneyStart = firstMetrics.centerY;
-        mobileJourneyEnd = ctaY;
-      } else {
-        const anchors: CardAnchor[] = metrics.map((metric) => {
-          const isLeftColumn = metric.centerX < layoutRect.width / 2;
-          return {
-            card: metric.card,
-            innerX: isLeftColumn ? metric.right : metric.left,
-            outerX: isLeftColumn ? metric.left : metric.right,
-            y: metric.centerY,
-            dir: isLeftColumn ? 1 : -1,
-          };
-        });
-        const leftEdge = anchors.reduce(
-          (currentMax, anchor) =>
-            anchor.dir === 1 ? Math.max(currentMax, anchor.innerX) : currentMax,
-          0,
-        );
-        const rightEdge = anchors.reduce(
-          (currentMin, anchor) =>
-            anchor.dir === -1
-              ? Math.min(currentMin, anchor.innerX)
-              : currentMin,
-          layoutRect.width,
-        );
-        const innerGap = Math.max(rightEdge - leftEdge, 0);
-        const curveStrength = Math.min(Math.max(innerGap * 0.55, 48), 260);
-        // The outer bows leave the content column, so they may only reach as far as the
-        // visible viewport allows -- body clips horizontally, and the stroke has a glow.
-        const viewportWidth = document.documentElement.clientWidth;
-        const outerLeft = anchors.reduce(
-          (currentMin, anchor) =>
-            anchor.dir === 1 ? Math.min(currentMin, anchor.outerX) : currentMin,
-          layoutRect.width,
-        );
-        const outerRight = anchors.reduce(
-          (currentMax, anchor) =>
-            anchor.dir === -1
-              ? Math.max(currentMax, anchor.outerX)
-              : currentMax,
-          0,
-        );
-        const strokeSafety = 22;
-        const spaceLeft = layoutRect.left + outerLeft;
-        const spaceRight = viewportWidth - (layoutRect.left + outerRight);
-        const outwardStrength = Math.min(
-          Math.max(Math.min(spaceLeft, spaceRight) - strokeSafety, 12),
-          140,
-        );
+      const anchors: CardAnchor[] = metrics.map((metric) => {
+        const isLeftColumn = metric.centerX < layoutRect.width / 2;
+        return {
+          card: metric.card,
+          innerX: isLeftColumn ? metric.right : metric.left,
+          outerX: isLeftColumn ? metric.left : metric.right,
+          y: metric.centerY,
+          dir: isLeftColumn ? 1 : -1,
+        };
+      });
+      const leftEdge = anchors.reduce(
+        (currentMax, anchor) =>
+          anchor.dir === 1 ? Math.max(currentMax, anchor.innerX) : currentMax,
+        0,
+      );
+      const rightEdge = anchors.reduce(
+        (currentMin, anchor) =>
+          anchor.dir === -1 ? Math.min(currentMin, anchor.innerX) : currentMin,
+        layoutRect.width,
+      );
+      const innerGap = Math.max(rightEdge - leftEdge, 0);
+      const curveStrength = Math.min(Math.max(innerGap * 0.55, 48), 260);
+      // The outer bows leave the content column, so they may only reach as far as the
+      // visible viewport allows -- body clips horizontally, and the stroke has a glow.
+      const viewportWidth = document.documentElement.clientWidth;
+      const outerLeft = anchors.reduce(
+        (currentMin, anchor) =>
+          anchor.dir === 1 ? Math.min(currentMin, anchor.outerX) : currentMin,
+        layoutRect.width,
+      );
+      const outerRight = anchors.reduce(
+        (currentMax, anchor) =>
+          anchor.dir === -1 ? Math.max(currentMax, anchor.outerX) : currentMax,
+        0,
+      );
+      const strokeSafety = 22;
+      const spaceLeft = layoutRect.left + outerLeft;
+      const spaceRight = viewportWidth - (layoutRect.left + outerRight);
+      const outwardStrength = Math.min(
+        Math.max(Math.min(spaceLeft, spaceRight) - strokeSafety, 12),
+        140,
+      );
 
-        const firstAnchor = anchors[0];
-        if (!firstAnchor) {
+      const firstAnchor = anchors[0];
+      if (!firstAnchor) {
+        return;
+      }
+      segments.push(
+        `M ${firstAnchor.innerX.toFixed(2)} ${firstAnchor.y.toFixed(2)}`,
+      );
+      lengths.push(0);
+      let currentX = firstAnchor.innerX;
+      anchors.slice(1).forEach((anchor, index) => {
+        const previous = anchors[index];
+        if (!previous) {
           return;
         }
-        segments.push(
-          `M ${firstAnchor.innerX.toFixed(2)} ${firstAnchor.y.toFixed(2)}`,
-        );
-        lengths.push(0);
-        let currentX = firstAnchor.innerX;
-        anchors.slice(1).forEach((anchor, index) => {
-          const previous = anchors[index];
-          if (!previous) {
-            return;
-          }
-          if (previous.dir !== anchor.dir) {
-            // Column crossing: swing through the free center.
-            if (currentX !== previous.innerX) {
-              segments.push(
-                `L ${previous.innerX.toFixed(2)} ${previous.y.toFixed(2)}`,
-              );
-            }
-            const cp1x = previous.innerX + previous.dir * curveStrength;
-            const cp2x = anchor.innerX + anchor.dir * curveStrength;
-            // A same-row crossing would be dead straight; sag it slightly for an organic flow.
-            const sag =
-              Math.abs(anchor.y - previous.y) < 10
-                ? Math.min(36, curveStrength * 0.16)
-                : 0;
+        if (previous.dir !== anchor.dir) {
+          // Column crossing: swing through the free center.
+          if (currentX !== previous.innerX) {
             segments.push(
-              `C ${cp1x.toFixed(2)} ${(previous.y + sag).toFixed(2)} ${cp2x.toFixed(2)} ${(anchor.y + sag).toFixed(2)} ${anchor.innerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
-            );
-            currentX = anchor.innerX;
-            weights.push(1);
-          } else {
-            // Same column: dive under the card and bow around its outer side.
-            if (currentX !== previous.outerX) {
-              segments.push(
-                `L ${previous.outerX.toFixed(2)} ${previous.y.toFixed(2)}`,
-              );
-            }
-            const cp1x = previous.outerX - previous.dir * outwardStrength;
-            const cp2x = anchor.outerX - anchor.dir * outwardStrength;
-            segments.push(
-              `C ${cp1x.toFixed(2)} ${previous.y.toFixed(2)} ${cp2x.toFixed(2)} ${anchor.y.toFixed(2)} ${anchor.outerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
-            );
-            currentX = anchor.outerX;
-            weights.push(outerBowWeight);
-          }
-          lengths.push(measure());
-        });
-        const lastAnchor = anchors[anchors.length - 1];
-        if (lastAnchor) {
-          // Dive under the last card and bow around its outer side down to the CTA.
-          if (currentX !== lastAnchor.outerX) {
-            segments.push(
-              `L ${lastAnchor.outerX.toFixed(2)} ${lastAnchor.y.toFixed(2)}`,
+              `L ${previous.innerX.toFixed(2)} ${previous.y.toFixed(2)}`,
             );
           }
-          const cp1x = lastAnchor.outerX - lastAnchor.dir * outwardStrength;
-          const cp2x = ctaX - lastAnchor.dir * Math.min(180, curveStrength);
+          const cp1x = previous.innerX + previous.dir * curveStrength;
+          const cp2x = anchor.innerX + anchor.dir * curveStrength;
+          // A same-row crossing would be dead straight; sag it slightly for an organic flow.
+          const sag =
+            Math.abs(anchor.y - previous.y) < 10
+              ? Math.min(36, curveStrength * 0.16)
+              : 0;
           segments.push(
-            `C ${cp1x.toFixed(2)} ${ctaY.toFixed(2)} ${cp2x.toFixed(2)} ${ctaY.toFixed(2)} ${ctaX.toFixed(2)} ${ctaY.toFixed(2)}`,
+            `C ${cp1x.toFixed(2)} ${(previous.y + sag).toFixed(2)} ${cp2x.toFixed(2)} ${(anchor.y + sag).toFixed(2)} ${anchor.innerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
           );
+          currentX = anchor.innerX;
           weights.push(1);
+        } else {
+          // Same column: dive under the card and bow around its outer side.
+          if (currentX !== previous.outerX) {
+            segments.push(
+              `L ${previous.outerX.toFixed(2)} ${previous.y.toFixed(2)}`,
+            );
+          }
+          const cp1x = previous.outerX - previous.dir * outwardStrength;
+          const cp2x = anchor.outerX - anchor.dir * outwardStrength;
+          segments.push(
+            `C ${cp1x.toFixed(2)} ${previous.y.toFixed(2)} ${cp2x.toFixed(2)} ${anchor.y.toFixed(2)} ${anchor.outerX.toFixed(2)} ${anchor.y.toFixed(2)}`,
+          );
+          currentX = anchor.outerX;
+          weights.push(outerBowWeight);
         }
-        setCssPoint(
-          "--process-start-x",
-          "--process-start-y",
-          firstAnchor.innerX,
-          firstAnchor.y,
+        lengths.push(measure());
+      });
+      const lastAnchor = anchors[anchors.length - 1];
+      if (lastAnchor) {
+        // Dive under the last card and bow around its outer side down to the CTA.
+        if (currentX !== lastAnchor.outerX) {
+          segments.push(
+            `L ${lastAnchor.outerX.toFixed(2)} ${lastAnchor.y.toFixed(2)}`,
+          );
+        }
+        const cp1x = lastAnchor.outerX - lastAnchor.dir * outwardStrength;
+        const cp2x = ctaX - lastAnchor.dir * Math.min(180, curveStrength);
+        segments.push(
+          `C ${cp1x.toFixed(2)} ${ctaY.toFixed(2)} ${cp2x.toFixed(2)} ${ctaY.toFixed(2)} ${ctaX.toFixed(2)} ${ctaY.toFixed(2)}`,
         );
+        weights.push(1);
       }
+      setCssPoint(
+        "--process-start-x",
+        "--process-start-y",
+        firstAnchor.innerX,
+        firstAnchor.y,
+      );
 
       setCssPoint("--process-end-x", "--process-end-y", ctaX, ctaY);
       path.setAttribute("d", segments.join(" "));
@@ -345,15 +299,9 @@ export function useProcessJourney({
       const measuredLength = path.getTotalLength();
       if (Number.isFinite(measuredLength) && measuredLength > 0) {
         totalLength = measuredLength;
-        if (isMobileViewport) {
-          path.style.strokeDasharray = `${totalLength}`;
-          path.style.strokeDashoffset = `${totalLength - totalLength * lastMobileProgress}`;
-          leader.style.visibility = "hidden";
-        } else {
-          path.style.strokeDasharray = `${totalLength}`;
-          path.style.strokeDashoffset = `${totalLength}`;
-          leader.style.visibility = "visible";
-        }
+        path.style.strokeDasharray = `${totalLength}`;
+        path.style.strokeDashoffset = `${totalLength}`;
+        leader.style.visibility = "visible";
         path.style.visibility = "visible";
       }
     };
@@ -413,10 +361,10 @@ export function useProcessJourney({
       cards.forEach((card, index) => {
         const state =
           index < activeIndex
-            ? JOURNEY_STATES.passed
+            ? PROCESS_JOURNEY_STATES.passed
             : index === activeIndex
-              ? JOURNEY_STATES.active
-              : JOURNEY_STATES.upcoming;
+              ? PROCESS_JOURNEY_STATES.active
+              : PROCESS_JOURNEY_STATES.upcoming;
         if (card.dataset.journeyState !== state) {
           card.dataset.journeyState = state;
         }
@@ -426,34 +374,6 @@ export function useProcessJourney({
     const updateJourneyProgress = () => {
       const rect = layout.getBoundingClientRect();
       const hasMatchMedia = typeof window.matchMedia === "function";
-      const isMobileViewport = matchesMobileViewport();
-      if (isMobileViewport) {
-        // Mobile keeps the lightweight line draw and card state changes, but
-        // omits the continuously moving leader dot.
-        const cursorY = journeyViewportHeight * 0.58 - rect.top;
-        const travelRange = mobileJourneyEnd - mobileJourneyStart;
-        const progress =
-          travelRange > 0
-            ? Math.max(
-                0,
-                Math.min(1, (cursorY - mobileJourneyStart) / travelRange),
-              )
-            : 0;
-        lastMobileProgress = progress;
-        if (totalLength > 0) {
-          const drawnLength = totalLength * progress;
-          path.style.strokeDashoffset = `${totalLength - drawnLength}`;
-          applyCardStates(getActiveCardIndex(drawnLength));
-          const isCtaVisible = progress >= ctaRevealProgress;
-          leader.dataset.finished = "false";
-          leader.dataset.overCard = "false";
-          if (endCta) {
-            endCta.dataset.journeyVisible = isCtaVisible ? "true" : "false";
-            endCta.dataset.journeyActive = "false";
-          }
-        }
-        return;
-      }
       const viewportHeight = window.innerHeight;
       const prefersReducedMotion = hasMatchMedia
         ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -524,17 +444,6 @@ export function useProcessJourney({
     };
 
     const handleResize = () => {
-      const isMobileViewport = matchesMobileViewport();
-      // The address bar changes only the mobile viewport height. Desktop keeps
-      // the original resize behavior; Mobile recalculates only for a width change.
-      if (isMobileViewport && window.innerWidth === mobileViewportWidth) {
-        return;
-      }
-
-      mobileViewportWidth = window.innerWidth;
-      if (isMobileViewport) {
-        journeyViewportHeight = window.innerHeight;
-      }
       updateGeometry();
       scheduleJourneyProgressUpdate();
     };
@@ -549,9 +458,6 @@ export function useProcessJourney({
           }
           isJourneyActive = entry.isIntersecting;
           if (isJourneyActive) {
-            if (matchesMobileViewport()) {
-              journeyViewportHeight = window.innerHeight;
-            }
             updateGeometry();
             scheduleJourneyProgressUpdate();
           }
@@ -578,5 +484,13 @@ export function useProcessJourney({
         window.cancelAnimationFrame(rafId);
       }
     };
-  }, [endCtaRef, layoutRef, leaderRef, maskRef, pathRef, stepsRef]);
+  }, [
+    endCtaRef,
+    isMobileJourney,
+    layoutRef,
+    leaderRef,
+    maskRef,
+    pathRef,
+    stepsRef,
+  ]);
 }
