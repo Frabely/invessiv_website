@@ -9,8 +9,6 @@ type ChatMessageProps = {
   author: UspChatAuthor;
   authorLabel: string;
   highlights?: string[];
-  questionEmphasis?: string[];
-  questionHeadingId?: string;
   showsAvatar: boolean;
   text: string;
 };
@@ -58,25 +56,11 @@ export function ChatMessage({
   author,
   authorLabel,
   highlights = [],
-  questionEmphasis = [],
-  questionHeadingId,
   showsAvatar,
   text,
 }: ChatMessageProps) {
-  // The question closing a visitor message carries the section heading, so it
-  // has to leave the paragraph -- a heading may not be nested inside one.
-  const question = questionEmphasis.find((emphasis) => text.endsWith(emphasis));
-  const leadText = question
-    ? text.slice(0, text.length - question.length)
-    : text;
-
   return (
-    <li
-      className={styles.message}
-      data-author={author}
-      data-question-emphasis={questionEmphasis.length > 0 ? "true" : undefined}
-      data-reveal-item="true"
-    >
+    <li className={styles.message} data-author={author} data-reveal-item="true">
       {showsAvatar ? (
         <span aria-hidden="true" className={styles.avatar}>
           {author === "owner" ? (
@@ -102,20 +86,7 @@ export function ChatMessage({
       )}
       <div className={styles.bubble}>
         <span className="sr-only">{`${authorLabel}: `}</span>
-        {leadText ? (
-          <p className={styles.bubbleText}>
-            {emphasizeText(leadText, highlights)}
-          </p>
-        ) : null}
-        {question ? (
-          <h2
-            className={styles.questionEmphasis}
-            data-emphasis="question"
-            id={questionHeadingId}
-          >
-            {question}
-          </h2>
-        ) : null}
+        <p className={styles.bubbleText}>{emphasizeText(text, highlights)}</p>
       </div>
     </li>
   );

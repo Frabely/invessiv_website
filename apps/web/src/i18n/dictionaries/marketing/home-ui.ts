@@ -37,13 +37,13 @@ export type UspChatAuthor = (typeof USP_CHAT_AUTHORS)[number];
 type UspChatMessage = {
   author: UspChatAuthor;
   highlights?: string[];
-  questionEmphasis?: string[];
   text: string;
 };
 
 type UspContent = {
   authorLabels: Record<UspChatAuthor, string>;
   chatAriaLabel: string;
+  introMessage: UspChatMessage;
   messages: UspChatMessage[];
   replyCtaLabel: string;
   title: string;
