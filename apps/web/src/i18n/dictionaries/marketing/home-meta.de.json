@@ -1,6 +1,6 @@
 {
-  "title": "Invessiv | Webdesign aus Chemnitz für KMU",
-  "description": "Webdesign aus Chemnitz: Moritz Hecht entwickelt durchdachte Websites für KMU und Dienstleister, die Angebote verständlich vermitteln und Anfragen bringen.",
+  "title": "Invessiv | Moritz Hecht – Webdesign aus Chemnitz",
+  "description": "Webdesign in Chemnitz von Moritz Hecht: Invessiv entwickelt professionelle Websites und Landingpages, die Angebote verständlich vermitteln und Anfragen bringen.",
   "imageAccentText": "Dir Anfragen bringen.",
   "imageAlt": "Moritz Hecht vor einer Berglandschaft mit der Aussage: Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
   "imageContactLabel": "Direkter Ansprechpartner",
@@ -9,5 +9,7 @@
   "imageSupportingText": "Persönliches Webdesign für KMU und Dienstleister.",
   "imageTitle": "Websites, die Vertrauen schaffen und Dir Anfragen bringen.",
   "imageUrl": "/og/home-de.png",
-  "imageWidth": 1200
+  "imageWidth": 1200,
+  "serviceName": "Webdesign und Landingpages aus Chemnitz",
+  "serviceType": "Webdesign, Landingpages und Website-Betreuung"
 }

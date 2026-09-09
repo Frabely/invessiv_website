@@ -2,6 +2,7 @@ import {
   COMPANY,
   COMPANY_SOCIAL_INSTAGRAM,
   COMPANY_SOCIAL_LINKEDIN,
+  COMPANY_SOCIAL_LINKEDIN_ORGANIZATION,
 } from "@/config/company";
 import type { QnaItemCopy } from "@/common/contracts/marketing/qna-copy";
 import type { Locale } from "@/config/i18n";
@@ -10,25 +11,23 @@ import { SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { SITE_LOGO_URL, SITE_URL } from "@/lib/site-metadata";
 
-const PHONE_DISPLAY_BY_LOCALE: Record<Locale, string> = {
-  de: COMPANY.contact.phoneDisplayDe,
-  en: COMPANY.contact.phoneDisplayEn,
-};
-
-const SERVICE_TYPE_BY_LOCALE: Record<Locale, string> = {
-  de: "Webdesign für KMU und Dienstleister",
-  en: "Web design for SMBs and service providers",
-};
-
 export function createMarketingStructuredData(
   locale: Locale,
-  description: string,
+  content: {
+    description: string;
+    serviceName: string;
+    serviceType: string;
+  },
   faqItems: QnaItemCopy[],
 ) {
   const organizationId = `${SITE_URL}#organization`;
+  const personId = `${SITE_URL}#moritz-hecht`;
   const homeUrl = `${SITE_URL}${createLocalePathname(SITE_ROUTES.HOME, locale)}`;
-  const phoneDisplay = PHONE_DISPLAY_BY_LOCALE[locale];
-  const serviceType = SERVICE_TYPE_BY_LOCALE[locale];
+  const phoneDisplayByLocale: Record<Locale, string> = {
+    de: COMPANY.contact.phoneDisplayDe,
+    en: COMPANY.contact.phoneDisplayEn,
+  };
+  const phoneDisplay = phoneDisplayByLocale[locale];
 
   return {
     "@context": "https://schema.org",
@@ -37,16 +36,35 @@ export function createMarketingStructuredData(
         "@type": "Organization",
         "@id": organizationId,
         name: COMPANY.brandName,
+        legalName: COMPANY.legalName,
         url: SITE_URL,
         logo: SITE_LOGO_URL,
         email: COMPANY.contact.email,
         telephone: phoneDisplay,
-        sameAs: [COMPANY_SOCIAL_LINKEDIN, COMPANY_SOCIAL_INSTAGRAM],
+        sameAs: [
+          COMPANY_SOCIAL_LINKEDIN_ORGANIZATION,
+          COMPANY_SOCIAL_INSTAGRAM,
+        ],
+        founder: {
+          "@id": personId,
+        },
+      },
+      {
+        "@type": "Person",
+        "@id": personId,
+        name: COMPANY.owner,
+        url: homeUrl,
+        image: `${SITE_URL}/assets/moritz-hecht.jpeg`,
+        sameAs: [COMPANY_SOCIAL_LINKEDIN],
+        worksFor: {
+          "@id": organizationId,
+        },
       },
       {
         "@type": "WebSite",
         "@id": `${SITE_URL}#website`,
         name: COMPANY.brandName,
+        alternateName: "invessiv.com",
         url: SITE_URL,
         inLanguage: ["de", "en"],
         publisher: {
@@ -55,13 +73,25 @@ export function createMarketingStructuredData(
       },
       {
         "@type": "Service",
-        serviceType,
+        "@id": `${homeUrl}#webdesign-service`,
+        name: content.serviceName,
+        url: homeUrl,
+        serviceType: content.serviceType,
         provider: {
           "@id": organizationId,
         },
-        areaServed: "DE",
+        areaServed: [
+          {
+            "@type": "City",
+            name: COMPANY.address.city,
+          },
+          {
+            "@type": "Country",
+            name: COMPANY.address.country[locale],
+          },
+        ],
         availableLanguage: ["de", "en"],
-        description,
+        description: content.description,
       },
       {
         "@type": "FAQPage",

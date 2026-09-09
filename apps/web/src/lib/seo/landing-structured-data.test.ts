@@ -4,6 +4,7 @@ import { getLandingFaqContent } from "@/i18n/dictionaries/landing/faq";
 import { getLandingMetaContent } from "@/i18n/dictionaries/landing/meta";
 import { getLandingPricingContent } from "@/i18n/dictionaries/landing/pricing";
 import { getLandingStructuredDataContent } from "@/i18n/dictionaries/landing/structured-data";
+import { getHomeMetaContent } from "@/i18n/dictionaries/marketing/home-meta";
 import { SITE_URL } from "@/lib/site-metadata";
 import { createLandingStructuredData } from "./landing-structured-data";
 import { createMarketingStructuredData } from "./marketing-structured-data";
@@ -63,13 +64,18 @@ describe("landing-structured-data", () => {
   });
 
   it("reuses the homepage organization id", () => {
+    const homeMeta = getHomeMetaContent("de");
     const landingOrganization = graphEntry(
       createLandingStructuredData("de"),
       "Organization",
     );
     const marketingOrganization = createMarketingStructuredData(
       "de",
-      "Invessiv entwickelt Webseiten und digitale Lösungen.",
+      {
+        description: homeMeta.description,
+        serviceName: homeMeta.serviceName,
+        serviceType: homeMeta.serviceType,
+      },
       [],
     )["@graph"].find((entry) => entry["@type"] === "Organization");
 

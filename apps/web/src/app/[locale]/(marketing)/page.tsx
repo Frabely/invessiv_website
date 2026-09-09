@@ -59,13 +59,14 @@ export default async function LocalePage({ params }: LocalePageProps) {
   }
 
   const activeLocale = locale as Locale;
-  const { description } = getHomeMetaContent(activeLocale);
+  const { description, serviceName, serviceType } =
+    getHomeMetaContent(activeLocale);
   const faqSection = getHomeSections(activeLocale).find(
     (section) => section.id === FAQ_SECTION_ID,
   );
   const marketingStructuredData = createMarketingStructuredData(
     activeLocale,
-    description,
+    { description, serviceName, serviceType },
     faqSection?.qnaItems ?? [],
   );
 

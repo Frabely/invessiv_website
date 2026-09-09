@@ -19,7 +19,11 @@ describe("marketing-structured-data", () => {
   it("keeps the homepage graph focused on the Invessiv brand", () => {
     const data = createMarketingStructuredData(
       "de",
-      "Invessiv entwickelt Landingpages, Webseiten und Interne Tools.",
+      {
+        description: "Invessiv entwickelt Websites und Landingpages.",
+        serviceName: "Webdesign und Landingpages aus Chemnitz",
+        serviceType: "Webdesign, Landingpages und Website-Betreuung",
+      },
       faqItems,
     );
 
@@ -29,31 +33,72 @@ describe("marketing-structured-data", () => {
     const website = data["@graph"].find(
       (entry) => entry["@type"] === "WebSite",
     );
+    const person = data["@graph"].find((entry) => entry["@type"] === "Person");
     const service = data["@graph"].find(
       (entry) => entry["@type"] === "Service",
     );
-    const serialized = JSON.stringify(data);
 
     expect(organization).toMatchObject({
       "@type": "Organization",
       name: "Invessiv",
+      legalName: "Invessiv – Inhaber Moritz Hecht",
+      founder: {
+        "@id": "https://www.invessiv.com#moritz-hecht",
+      },
     });
     expect(organization).toHaveProperty("sameAs");
+    expect(organization?.sameAs).toEqual([
+      "https://www.linkedin.com/company/invessiv/",
+      "https://www.instagram.com/invessiv/",
+    ]);
+    expect(person).toMatchObject({
+      "@type": "Person",
+      "@id": "https://www.invessiv.com#moritz-hecht",
+      name: "Moritz Hecht",
+      url: "https://www.invessiv.com/de",
+      image: "https://www.invessiv.com/assets/moritz-hecht.jpeg",
+      sameAs: ["https://www.linkedin.com/in/moritz-hecht-4a5200235/"],
+      worksFor: {
+        "@id": "https://www.invessiv.com#organization",
+      },
+    });
     expect(website).toMatchObject({
       "@type": "WebSite",
       name: "Invessiv",
+      alternateName: "invessiv.com",
     });
     expect(service).toMatchObject({
       "@type": "Service",
-      serviceType: "Webdesign für KMU und Dienstleister",
+      "@id": "https://www.invessiv.com/de#webdesign-service",
+      name: "Webdesign und Landingpages aus Chemnitz",
+      url: "https://www.invessiv.com/de",
+      serviceType: "Webdesign, Landingpages und Website-Betreuung",
+      areaServed: [
+        {
+          "@type": "City",
+          name: "Chemnitz",
+        },
+        {
+          "@type": "Country",
+          name: "Deutschland",
+        },
+      ],
+      description: "Invessiv entwickelt Websites und Landingpages.",
     });
-    expect(serialized).not.toContain("Moritz Hecht");
   });
 
   it.each(["de", "en"] as const)(
     "publishes the %s Q&A section as a FAQPage",
     (locale) => {
-      const data = createMarketingStructuredData(locale, "…", faqItems);
+      const data = createMarketingStructuredData(
+        locale,
+        {
+          description: "…",
+          serviceName: "…",
+          serviceType: "…",
+        },
+        faqItems,
+      );
 
       const faqPage = data["@graph"].find(
         (entry) => entry["@type"] === "FAQPage",
@@ -87,7 +132,11 @@ describe("marketing-structured-data", () => {
 
       const data = createMarketingStructuredData(
         locale,
-        "…",
+        {
+          description: "…",
+          serviceName: "…",
+          serviceType: "…",
+        },
         faqSection.qnaItems,
       );
       const faqPage = data["@graph"].find(

@@ -2,7 +2,7 @@ import type { Locale } from "@/config/i18n";
 import de from "./home-meta.de.json";
 import en from "./home-meta.en.json";
 
-export type HomeMetaContent = {
+type HomeMetaContent = {
   description: string;
   imageAccentText: string;
   imageAlt: string;
@@ -13,6 +13,8 @@ export type HomeMetaContent = {
   imageTitle: string;
   imageUrl: string;
   imageWidth: number;
+  serviceName: string;
+  serviceType: string;
   title: string;
 };
 

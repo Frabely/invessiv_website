@@ -1,6 +1,6 @@
 {
-  "title": "Invessiv | Web Design from Chemnitz for SMBs",
-  "description": "Web design from Chemnitz: Moritz Hecht creates conversion-focused websites for SMBs and service providers that explain offers clearly and bring in inquiries.",
+  "title": "Invessiv | Moritz Hecht – Web Design from Chemnitz",
+  "description": "Web design in Chemnitz by Moritz Hecht: Invessiv creates professional websites and landing pages that communicate offers clearly and generate inquiries.",
   "imageAccentText": "bring you inquiries.",
   "imageAlt": "Moritz Hecht in front of a mountain landscape with the statement: Websites that build trust and bring you inquiries.",
   "imageContactLabel": "Direct point of contact",
@@ -9,5 +9,7 @@
   "imageSupportingText": "Personal web design for SMBs and service providers.",
   "imageTitle": "Websites that build trust and bring you inquiries.",
   "imageUrl": "/og/home-en.png",
-  "imageWidth": 1200
+  "imageWidth": 1200,
+  "serviceName": "Web design and landing pages from Chemnitz",
+  "serviceType": "Web design, landing pages and website support"
 }

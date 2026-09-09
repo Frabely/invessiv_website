@@ -1,6 +1,6 @@
 export const COMPANY = {
   brandName: "Invessiv",
-  legalName: "Moritz Hecht – Invessiv",
+  legalName: "Invessiv – Inhaber Moritz Hecht",
   owner: "Moritz Hecht",
   legalForm: {
     de: "Einzelunternehmen (Nebentätigkeit)",
@@ -25,6 +25,8 @@ export const COMPANY = {
 
 export const COMPANY_SOCIAL_LINKEDIN =
   "https://www.linkedin.com/in/moritz-hecht-4a5200235/";
+export const COMPANY_SOCIAL_LINKEDIN_ORGANIZATION =
+  "https://www.linkedin.com/company/invessiv/";
 export const COMPANY_SOCIAL_INSTAGRAM = "https://www.instagram.com/invessiv/";
 export const COMPANY_CALENDLY =
   "https://calendly.com/service-invessiv-cxf5/30min";
