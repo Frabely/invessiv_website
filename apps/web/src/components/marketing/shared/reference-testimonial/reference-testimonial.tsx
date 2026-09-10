@@ -10,8 +10,6 @@ type ReferenceTestimonialProps = {
   className?: string;
   collapseLabel: string;
   expandLabel: string;
-  // Set while a quote is parked: the person stays visible, the quote does not.
-  isQuoteHidden?: boolean;
   quote: string;
   role: string;
 };
@@ -23,7 +21,6 @@ export function ReferenceTestimonial({
   className,
   collapseLabel,
   expandLabel,
-  isQuoteHidden,
   quote,
   role,
 }: ReferenceTestimonialProps) {
@@ -45,13 +42,11 @@ export function ReferenceTestimonial({
         </div>
       </div>
 
-      {isQuoteHidden ? null : (
-        <ReferenceQuote
-          collapseLabel={collapseLabel}
-          expandLabel={expandLabel}
-          quote={quote}
-        />
-      )}
+      <ReferenceQuote
+        collapseLabel={collapseLabel}
+        expandLabel={expandLabel}
+        quote={quote}
+      />
     </div>
   );
 }

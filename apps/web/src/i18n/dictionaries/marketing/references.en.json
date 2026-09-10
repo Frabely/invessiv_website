@@ -46,13 +46,6 @@
         "puts Dr. Christoph Allmacher forward as the trainer",
         "guides prospects to the inquiry without detours"
       ],
-      "testimonial": {
-        "authorName": "Dr. Christoph Allmacher",
-        "avatarKey": "allmacher",
-        "avatarAlt": "Portrait of Dr Christoph Allmacher",
-        "role": "Allmacher Coaching, negotiation training in Chemnitz",
-        "quote": "I am building my website together with Moritz right now, and I am very happy with how we work together. Communication over WhatsApp is easy, direct, and fast, so questions get sorted out whenever they come up. What I value most is that Moritz takes the time to explain how things connect instead of simply working through a list. The collaboration feels relaxed and still very professional, without artificial time pressure or a purely transactional tone. My own ideas are taken seriously, developed further, and implemented reliably. I would work with Moritz again at any time and can recommend him without reservation."
-      },
       "linkLabel": "Visit Allmacher Coaching",
       "href": "https://www.allmacher-coaching.de"
     },
@@ -77,14 +70,6 @@
         "reduces visual noise in favour of orientation",
         "guides inquiries into contact more clearly"
       ],
-      "testimonial": {
-        "authorName": "Kolja Wienigk",
-        "isQuoteHidden": true,
-        "avatarKey": "kolja",
-        "avatarAlt": "Portrait of Kolja Wienigk",
-        "role": "Financial broker from Dresden",
-        "quote": "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops."
-      },
       "linkLabel": "Visit Kolja Wienigk – Financial Broker",
       "href": "https://www.kolja-wienigk.de"
     },

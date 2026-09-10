@@ -2,6 +2,7 @@ import type { ReferenceImageKey } from "@/common/constants/marketing/reference-i
 import type { Locale } from "@/config/i18n";
 import type { ReferenceLabels } from "@/common/contracts/marketing/reference-labels";
 import type { ReferenceTestimonialContent } from "@/common/contracts/marketing/reference-testimonial";
+import { findReferenceTestimonial } from "./reference-testimonials";
 import de from "./references.de.json";
 import en from "./references.en.json";
 
@@ -59,13 +60,25 @@ export type ReferencesPageContent = {
   testimonialLabels: Pick<ReferenceLabels, "collapseQuote" | "expandQuote">;
 };
 
-const REFERENCES_PAGE_CONTENT: Record<Locale, ReferencesPageContent> = {
-  de: de as ReferencesPageContent,
-  en: en as ReferencesPageContent,
+type ReferencesPageDictionary = Omit<ReferencesPageContent, "projects"> & {
+  projects: Array<Omit<ReferencesCaseStudyContent, "testimonial">>;
+};
+
+const REFERENCES_PAGE_CONTENT: Record<Locale, ReferencesPageDictionary> = {
+  de: de as ReferencesPageDictionary,
+  en: en as ReferencesPageDictionary,
 };
 
 export function getReferencesPageContent(
   locale: Locale,
 ): ReferencesPageContent {
-  return REFERENCES_PAGE_CONTENT[locale];
+  const content = REFERENCES_PAGE_CONTENT[locale];
+
+  return {
+    ...content,
+    projects: content.projects.map((project) => ({
+      ...project,
+      testimonial: findReferenceTestimonial(project.imageKey, locale),
+    })),
+  };
 }

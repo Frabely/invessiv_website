@@ -117,32 +117,31 @@ describe("ReferencesSection", () => {
     ).toBeInTheDocument();
   });
 
-  it("parks the quote but keeps the person visible in the showcase", () => {
-    renderSection(
-      ENTRIES.map((entry) =>
-        entry.imageKey === "kolja"
-          ? { ...entry, isQuoteHidden: true }
-          : { ...entry },
+  it("shows the quote of the selected reference", () => {
+    renderSection();
+
+    expect(
+      screen.getByText(
+        "Die Zusammenarbeit ist angenehm entspannt und sehr professionell.",
       ),
-    );
+    ).toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole("button", { name: "Kolja Wienigk · Finanzmakler" }),
     );
 
     expect(
-      screen.queryByText("Die Umsetzung wirkte strukturiert und schnell."),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Kolja Wienigk" }),
+      screen.getByText("Die Umsetzung wirkte strukturiert und schnell."),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Die Zusammenarbeit ist angenehm entspannt und sehr professionell.",
+      ),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Finanzmakler aus Dresden")).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "Projekt im Detail ansehen" }),
-    ).toHaveAttribute("href", "/de/references#kolja");
   });
 
   it("selects references directly by the person's name", () => {

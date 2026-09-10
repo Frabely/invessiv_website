@@ -63,7 +63,6 @@ export function ReferenceProjectCard({
             className={styles.projectTestimonial}
             collapseLabel={testimonialLabels.collapseQuote}
             expandLabel={testimonialLabels.expandQuote}
-            isQuoteHidden={project.testimonial.isQuoteHidden}
             quote={project.testimonial.quote}
             role={project.testimonial.role}
           />

@@ -12,7 +12,9 @@ import type {
   QnaItemCopy,
   QnaSecondaryContactCopy,
 } from "@/common/contracts/marketing/qna-copy";
+import type { ReferenceTestimonialKey } from "@/common/constants/marketing/reference-testimonial-authors";
 import type { ReferenceEntry } from "@/common/contracts/marketing/reference-entry";
+import type { ReferenceTestimonialContent } from "@/common/contracts/marketing/reference-testimonial";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import {
   CONTACT_PROJECT_SCOPE,
@@ -20,6 +22,7 @@ import {
 } from "@invessiv/common/constants/contact/contact-project-scopes";
 import processDe from "./home-process.de.json";
 import processEn from "./home-process.en.json";
+import { getReferenceTestimonial } from "./reference-testimonials";
 import { getSiteHeaderUiContent } from "./site-header-ui";
 
 type PrimaryServiceCardKey = "landing" | "process" | "upgrade" | "web";
@@ -118,6 +121,19 @@ type ServicesSectionCopy = {
   serviceCards: ServiceCardCopy[];
 };
 
+type ReferenceShowcaseEntrySource = Omit<
+  ReferenceEntry,
+  keyof ReferenceTestimonialContent
+> & {
+  imageKey: ReferenceTestimonialKey;
+};
+
+type ReferencesSectionSource = {
+  kicker: string;
+  title: string;
+  referenceEntries: ReferenceShowcaseEntrySource[];
+};
+
 type ReferencesSectionCopy = {
   kicker: string;
   title: string;
@@ -181,11 +197,15 @@ type ContentSectionMap = {
   footer: FooterSectionCopy;
 };
 
+type SourceSectionMap = Omit<ContentSectionMap, "references"> & {
+  references: ReferencesSectionSource;
+};
+
 type ContentSectionId = Exclude<SectionId, "problem" | "usp">;
 
 type LocalizedLandingSection<Id extends ContentSectionId> = {
   id: Id;
-  copy: Record<Locale, ContentSectionMap[Id]>;
+  copy: Record<Locale, SourceSectionMap[Id]>;
 };
 
 export type LandingSection = {
@@ -251,31 +271,18 @@ const HOME_SECTIONS = [
         title: "Was entsteht, wenn wir zusammenarbeiten?",
         referenceEntries: [
           {
-            authorName: "Dr. Christoph Allmacher",
-            avatarKey: "allmacher",
-            avatarAlt: "Porträt von Dr. Christoph Allmacher",
-            role: "Allmacher Coaching, Verhandlungstraining in Chemnitz",
-            selectorLabel: "Allmacher Coaching",
-            quote:
-              "Ich erstelle meine Website aktuell gemeinsam mit Moritz und bin mit der Zusammenarbeit sehr zufrieden. Die Kommunikation über WhatsApp ist unkompliziert, direkt und schnell, sodass Fragen jederzeit leicht geklärt werden können. Besonders schätze ich, dass Moritz sich Zeit nimmt, Zusammenhänge verständlich erklärt und nicht einfach nur „abarbeitet“. Die Zusammenarbeit ist angenehm entspannt und dennoch sehr professionell – ohne künstlichen Zeitdruck oder eine rein geschäftliche Atmosphäre. Eigene Ideen werden ernst genommen, konstruktiv weiterentwickelt und zuverlässig umgesetzt. Ich würde mich jederzeit wieder für eine Zusammenarbeit mit Moritz entscheiden und kann ihn uneingeschränkt weiterempfehlen.",
             imageKey: "allmacher",
             imageAlt:
               "Startseite von Allmacher Coaching mit dem Verhandlungsseminar in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
             siteLabel: "allmacher-coaching.de",
             linkLabel: "Projekt im Detail ansehen",
           },
           {
-            authorName: "Kolja Wienigk",
-            isQuoteHidden: true,
-            role: "Finanzmakler aus Dresden",
-            quote:
-              "Vom ersten Gespräch an war klar, welche Schritte sinnvoll sind und worauf wir zuerst den Fokus legen sollten. Die Umsetzung wirkte strukturiert, schnell und ohne unnötige Schleifen.",
-            avatarKey: "kolja",
-            avatarAlt: "Porträt von Kolja Wienigk",
             imageKey: "kolja",
-            selectorLabel: "Kolja Wienigk · Finanzmakler",
             imageAlt:
               "Startseite der Finanzberatung von Kolja Wienigk mit klarer Struktur",
+            selectorLabel: "Kolja Wienigk · Finanzmakler",
             siteLabel: "kolja-wienigk.de",
             linkLabel: "Projekt im Detail ansehen",
           },
@@ -286,31 +293,18 @@ const HOME_SECTIONS = [
         title: "What can we create together?",
         referenceEntries: [
           {
-            authorName: "Dr. Christoph Allmacher",
-            avatarKey: "allmacher",
-            avatarAlt: "Portrait of Dr Christoph Allmacher",
-            role: "Allmacher Coaching, negotiation training in Chemnitz",
-            selectorLabel: "Allmacher Coaching",
-            quote:
-              "I am building my website together with Moritz right now, and I am very happy with how we work together. Communication over WhatsApp is easy, direct, and fast, so questions get sorted out whenever they come up. What I value most is that Moritz takes the time to explain how things connect instead of simply working through a list. The collaboration feels relaxed and still very professional, without artificial time pressure or a purely transactional tone. My own ideas are taken seriously, developed further, and implemented reliably. I would work with Moritz again at any time and can recommend him without reservation.",
             imageKey: "allmacher",
             imageAlt:
               "Homepage of Allmacher Coaching with the negotiation seminar in Chemnitz",
+            selectorLabel: "Allmacher Coaching",
             siteLabel: "allmacher-coaching.de",
             linkLabel: "View project details",
           },
           {
-            authorName: "Kolja Wienigk",
-            isQuoteHidden: true,
-            role: "Financial broker from Dresden",
-            quote:
-              "From the first conversation onward, it was clear which steps made sense and what should be prioritised first. The delivery felt structured, fast, and free of unnecessary loops.",
-            avatarKey: "kolja",
-            avatarAlt: "Portrait of Kolja Wienigk",
             imageKey: "kolja",
-            selectorLabel: "Kolja Wienigk · Financial Broker",
             imageAlt:
               "Homepage of Kolja Wienigk's financial advice with a clear structure",
+            selectorLabel: "Kolja Wienigk · Financial Broker",
             siteLabel: "kolja-wienigk.de",
             linkLabel: "View project details",
           },
@@ -781,6 +775,19 @@ export function getHomeSections(locale: Locale): HomeSectionContent[] {
   };
 
   return HOME_SECTIONS.map((section): HomeSectionContent => {
+    if (section.id === "references") {
+      const copy = section.copy[locale];
+
+      return {
+        id: section.id,
+        ...copy,
+        referenceEntries: copy.referenceEntries.map((entry) => ({
+          ...entry,
+          ...getReferenceTestimonial(entry.imageKey, locale),
+        })),
+      };
+    }
+
     if (section.id !== "footer") {
       const localizedSection = {
         id: section.id,

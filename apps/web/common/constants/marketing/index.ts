@@ -13,4 +13,5 @@ export * from "./reference-section-ids";
 export * from "./reference-image-device";
 export * from "./reference-images";
 export * from "./reference-section-hrefs";
+export * from "./reference-testimonial-authors";
 export * from "./service-key-project-scope";

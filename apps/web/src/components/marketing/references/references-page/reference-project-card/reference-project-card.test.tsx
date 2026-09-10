@@ -68,16 +68,9 @@ describe("ReferenceProjectCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("parks the quote but keeps the person on the card", () => {
-    renderCard({
-      ...PROJECT,
-      testimonial: { ...PROJECT.testimonial!, isQuoteHidden: true },
-    });
+  it("shows the person next to the project title and the live link", () => {
+    renderCard(PROJECT);
 
-    expect(
-      screen.queryByText("Die Umsetzung wirkte strukturiert und schnell."),
-    ).not.toBeInTheDocument();
-    expect(screen.getByText("Kolja Wienigk")).toBeInTheDocument();
     expect(
       screen.getByRole("img", { name: "Porträt von Kolja Wienigk" }),
     ).toBeInTheDocument();
