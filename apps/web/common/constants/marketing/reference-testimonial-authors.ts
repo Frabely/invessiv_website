@@ -1,18 +1,19 @@
 import type { ReferenceAvatarKey, ReferenceImageKey } from "@/common/constants";
-import { REFERENCE_AVATAR_KEY } from "@/common/constants";
 
 type ReferenceTestimonialAuthor = {
   avatarKey?: ReferenceAvatarKey;
   name: string;
 };
 
+// Nur Literale + `satisfies`: ein Wert-Import aus dem Barrel würde hier einen
+// Init-Zyklus erzeugen, weil das Barrel dieses Modul selbst re-exportiert.
 export const REFERENCE_TESTIMONIAL_AUTHORS = {
   allmacher: {
-    avatarKey: REFERENCE_AVATAR_KEY.Allmacher,
+    avatarKey: "allmacher",
     name: "Dr. Christoph Allmacher",
   },
   kolja: {
-    avatarKey: REFERENCE_AVATAR_KEY.Kolja,
+    avatarKey: "kolja",
     name: "Kolja Wienigk",
   },
 } as const satisfies Partial<
