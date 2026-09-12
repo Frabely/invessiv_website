@@ -52,7 +52,6 @@
   outline-offset: 2px;
 }
 
-/* Included = "muss vorhanden sein": blauer Rahmen, blau hinterlegt. */
 .profileChip[data-state="include"] {
   border-color: color-mix(in srgb, var(--color-cta) 55%, var(--color-border));
   background: color-mix(in srgb, var(--color-cta) 15%, transparent);
@@ -60,7 +59,6 @@
   transform: translateY(-1px);
 }
 
-/* Excluded = "darf nicht vorhanden sein": roter Rahmen, durchgestrichen. */
 .profileChip[data-state="exclude"] {
   border-color: color-mix(
     in srgb,
@@ -82,7 +80,6 @@
   flex-shrink: 0;
 }
 
-/* Plattform-Markenfarben am Icon (neutraler Zustand). */
 .profileChip[data-profile-type="linkedin"] .profileChipIcon {
   color: #0a66c2;
 }
@@ -100,8 +97,6 @@
   color: inherit;
 }
 
-/* Plattform-Icons im Mobile-Multiselect (Trigger-Badges + Optionen) in den
-   Markenfarben der Tabellen-UI. */
 .profileOptionIcon {
   display: inline-flex;
   align-items: center;

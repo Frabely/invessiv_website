@@ -6,7 +6,7 @@
 
 - Dieser Task legt `workspace_members`, `customers`, globale `people`,
   `customer_contact_assignments` und das Activity-Expand-Schema additiv an.
-- Kundenstatus ausschließlich `active | paused | archived`, Default `active`.
+- Kundenstatus ausschließlich `active | paused | archived`; der Create-Command setzt ihn explizit.
 - `customers.owner_member_id` ist Pflicht-FK; bearbeitbare Entitäten erhalten `version`.
 - Kein `deleted_at`, `churned_at` oder `churn_reason`. Archivierung ist reversibel; Purge folgt nur
   im internen Owner-Command aus Task 34.
@@ -14,7 +14,10 @@
   Firmen-E-Mail/-Telefon und `is_primary`.
 - Ein Kunde muss nach dem Create-Command genau einen Primärkontakt besitzen. Die DB erzwingt
   höchstens einen, der atomare Command mindestens einen.
-- `CustomerSummaryDto.primaryContact*` ist nicht nullable.
+- `CustomerSummaryDto.primaryContactName` ist nicht nullable;
+  `primaryContactEmail` bleibt nullable, weil Name plus Telefon einen gültigen Kontakt bilden.
+- Kontakt-DTOs führen `personVersion` und `assignmentVersion` getrennt, weil globale Personendaten
+  und kundenspezifische Zuordnungsdaten unabhängig versioniert sind.
 - Sequenzlücken sind gültig und werden getestet; keine Nummer wird wiederverwendet.
 
 ## Context
@@ -42,7 +45,7 @@ Index-Strategie werden übernommen, nicht neu erfunden.
 | Kundentyp                   | `customer_type` (`company` \| `individual`). `display_name` ist Pflicht- und Anzeigefeld, `company_name` optional                           |
 | Warum                       | Privatkunden und Freiberufler haben keinen Firmennamen. Ohne den Typ müsste Task 08 den Personennamen ins Feld Firmenname schreiben         |
 | Firmenname                  | **Kein** Unique-Index. Zwei echte „Müller GmbH" in verschiedenen Städten sind ein gültiger Zustand; Task 04 warnt stattdessen vor Dubletten |
-| Status                      | Feste Liste `active, paused, archived`; Default `active`                                                                                    |
+| Status                      | Feste Liste `active, paused, archived`; der Create-Command setzt den Startwert explizit                                                     |
 | Kategorie                   | Verweist auf die **bestehende** Tabelle `lead_categories`, damit Task 08 die Kategorie des Leads übernehmen kann                            |
 | Archivieren                 | Reversibel über `status = archived`; kein `deleted_at` und kein Löschpfad in dieser Einheit                                                 |
 | Beträge                     | `default_hourly_rate_cents` am Kunden als Vorgabe; Budget und abweichender Satz liegen am Projekt (Task 09)                                 |
@@ -100,7 +103,7 @@ export interface CustomerSummaryDto {
   categoryId: string | null;
   city: string | null;
   primaryContactName: string;
-  primaryContactEmail: string;
+  primaryContactEmail: string | null;
   createdAt: string; // ISO
   updatedAt: string; // ISO
 }
@@ -181,13 +184,16 @@ export interface VersionConflictDto<T> {
  * - 0 Zeilen → Zeile neu laden: existiert sie, ist es ein Konflikt; sonst NotFound.
  * Erhöht `version` im selben Statement. Es gibt keinen zweiten Weg, `version` zu setzen.
  */
-export async function updateVersioned<TRow, TDto>(args: {
+export async function updateVersioned<
+  TTable extends VersionedTable,
+  TDto,
+>(args: {
   tx: Tx;
-  table: PgTable;
+  table: TTable;
   id: string;
   expectedVersion: number;
-  patch: Partial<TRow>;
-  toDto: (row: TRow) => TDto;
+  patch: VersionedPatch<TTable>; // ohne id, version, created_at und updated_at
+  toDto: (row: TTable["$inferSelect"]) => TDto;
 }): Promise<
   | { ok: true; value: TDto }
   | { ok: false; code: "version_conflict"; conflict: VersionConflictDto<TDto> }
@@ -197,7 +203,7 @@ export async function updateVersioned<TRow, TDto>(args: {
 
 ### Regeln
 
-- **Jede** bearbeitbare Tabelle bekommt `version integer NOT NULL DEFAULT 1`.
+- **Jede** bearbeitbare Tabelle bekommt `version integer NOT NULL`; der Create-Command setzt `1` explizit.
 - `version` wird ausschließlich im selben `UPDATE` erhöht. Kein Trigger — sonst springt sie an
   Stellen, die den Helper nutzen, um zwei.
 - Jeder schreibende Command auf einer bearbeitbaren Entität nimmt `VersionedWriteInput` an. Eine
@@ -225,10 +231,10 @@ export async function updateVersioned<TRow, TDto>(args: {
 customers
   id uuid PK
   customer_number integer NOT NULL            DEFAULT nextval('customers_customer_number_seq')
-  customer_type text NOT NULL DEFAULT 'company'    CHECK in CUSTOMER_TYPE_VALUES
+  customer_type text NOT NULL                          CHECK in CUSTOMER_TYPE_VALUES
   display_name text NOT NULL
   company_name text NULL
-  status text NOT NULL DEFAULT 'active'            CHECK in CUSTOMER_STATUS_VALUES
+  status text NOT NULL                                 CHECK in CUSTOMER_STATUS_VALUES
   owner_member_id uuid NOT NULL → workspace_members.id
   category_id uuid NULL → lead_categories.id ON DELETE SET NULL
   street / postal_code / city / country            text NULL
@@ -236,7 +242,7 @@ customers
   default_hourly_rate_cents integer NULL           CHECK (>= 0)
   created_at / updated_at                          timestamptz NOT NULL DEFAULT now()
   UNIQUE INDEX customers_customer_number_uidx ON (customer_number)
-  version integer NOT NULL DEFAULT 1 CHECK (version > 0)
+  version integer NOT NULL CHECK (version > 0)
   INDEX (status, created_at desc)
   INDEX (category_id)
 
@@ -245,8 +251,8 @@ customer_contact_assignments
   customer_id uuid NOT NULL → customers.id ON DELETE CASCADE
   person_id uuid NOT NULL → people.id ON DELETE RESTRICT
   role_label / business_email / business_phone          text NULL
-  is_primary boolean NOT NULL DEFAULT false
-  version integer NOT NULL DEFAULT 1 CHECK (version > 0)
+  is_primary boolean NOT NULL
+  version integer NOT NULL CHECK (version > 0)
   created_at / updated_at
   UNIQUE INDEX customer_contact_assignments_primary_uidx ON (customer_id) WHERE is_primary
   INDEX (customer_id)
@@ -295,9 +301,10 @@ apps/workspace/src/server/workspace/crm/services/
   - `formatCustomerNumber` als reine Funktion, vierstellig aufgefüllt, darüber frei wachsend
   - Fehlercodes: `CustomerNotFound`, `ValidationError`, `ContactNotFound`. **Kein** `CompanyNameExists` — Duplikate
     sind erlaubt und werden in Task 04 nur angewarnt
-  - Kein TS `enum`, kein String-Literal doppelt
+- Kein TS `enum`, kein String-Literal doppelt
 - **Akzeptanz:**
   - Co-located Test prüft `_VALUES` gegen `Object.values()` des Const-Objekts und auf Duplikate
+    — einschließlich `ConcurrencyErrorCode`
   - Test der Formatierung: 1, 42, 999, 1000, 10000 und 99999
   - `pnpm --filter @invessiv/common typecheck` grün
 
@@ -358,7 +365,7 @@ apps/workspace/src/server/workspace/crm/services/
 - **Inhalt:** Contract, Fehlercode und Helper wie oben. Der Helper ist der **einzige** Weg, eine
   versionierte Zeile zu aktualisieren
 - **Akzeptanz:** die fünf Punkte aus dem Abschnitt „Optimistic Concurrency", inklusive des
-  nebenläufigen DB-Tests
+  nebenläufigen DB-Tests, der den echten `updateVersioned`-Helper gegen PostgreSQL ausführt
 
 ## Deploy-Sicherheit
 

@@ -1,3 +1,4 @@
+export * from "./crm";
 export * from "./lead-activities";
 export * from "./lead-call-contacts";
 export * from "./lead-categories";

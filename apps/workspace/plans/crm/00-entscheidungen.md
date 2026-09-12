@@ -401,30 +401,30 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 
 ## Merge-Einheiten
 
-| #   | Status | Ordner                            | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
-| --- | ------ | --------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
-| 01  | offen  | `01-kernschema-und-contracts`     | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
-| 02  | offen  | `02-activity-migration`           | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
-| 03  | offen  | `03-mitglieder-und-auth`          | Owner kann Mitglieder sicher verwalten; Auth ist fail-closed                    |   50–80 |  3–4 T. |
-| 04  | offen  | `04-personen-und-kundenakte`      | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
-| 05  | offen  | `05-kundenliste-und-zuweisung`    | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
-| 06  | offen  | `06-lead-konvertierung`           | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
-| 07  | offen  | `07-projekte`                     | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
-| 08  | offen  | `08-aufgaben`                     | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
-| 09  | offen  | `09-aufgabenserien-und-reminder`  | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
-| 10  | offen  | `10-jobs-und-benachrichtigungen`  | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
-| 11  | offen  | `11-renewals`                     | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
-| 12  | offen  | `12-portal-identitaet`            | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
-| 13  | offen  | `13-portal-dashboard`             | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
-| 14  | offen  | `14-storage-und-upload`           | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
-| 15  | offen  | `15-dateien-und-portal-downloads` | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
-| 16  | offen  | `16-feedbackrunden`               | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
-| 17  | offen  | `17-kundenchat-intern`            | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
-| 18  | offen  | `18-kundenchat-portal`            | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
-| 19  | offen  | `19-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
-| 20  | offen  | `20-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
-| 21  | offen  | `21-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
-| 22  | offen  | `22-activity-cleanup`             | Dual-Write aus, `lead_activities` abgebaut, genau eine Activity-Tabelle         |   15–30 |  1–2 T. |
+| #   | Status    | Ordner                            | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
+| --- | --------- | --------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
+| 01  | im Review | `01-kernschema-und-contracts`     | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
+| 02  | offen     | `02-activity-migration`           | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
+| 03  | offen     | `03-mitglieder-und-auth`          | Owner kann Mitglieder sicher verwalten; Auth ist fail-closed                    |   50–80 |  3–4 T. |
+| 04  | offen     | `04-personen-und-kundenakte`      | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
+| 05  | offen     | `05-kundenliste-und-zuweisung`    | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
+| 06  | offen     | `06-lead-konvertierung`           | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
+| 07  | offen     | `07-projekte`                     | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
+| 08  | offen     | `08-aufgaben`                     | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
+| 09  | offen     | `09-aufgabenserien-und-reminder`  | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
+| 10  | offen     | `10-jobs-und-benachrichtigungen`  | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
+| 11  | offen     | `11-renewals`                     | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
+| 12  | offen     | `12-portal-identitaet`            | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
+| 13  | offen     | `13-portal-dashboard`             | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
+| 14  | offen     | `14-storage-und-upload`           | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
+| 15  | offen     | `15-dateien-und-portal-downloads` | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
+| 16  | offen     | `16-feedbackrunden`               | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
+| 17  | offen     | `17-kundenchat-intern`            | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
+| 18  | offen     | `18-kundenchat-portal`            | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
+| 19  | offen     | `19-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
+| 20  | offen     | `20-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
+| 21  | offen     | `21-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
+| 22  | offen     | `22-activity-cleanup`             | Dual-Write aus, `lead_activities` abgebaut, genau eine Activity-Tabelle         |   15–30 |  1–2 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

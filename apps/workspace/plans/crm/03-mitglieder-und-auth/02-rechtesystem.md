@@ -319,7 +319,9 @@ sonst weiß der Nutzer nicht, wo er aufräumen soll.
 - **Skills:** `best-practices`
 - **Inhalt:**
   - `workspace_members`: `id uuid PK`, `clerk_user_id text UNIQUE NOT NULL`, `email text NOT NULL`,
-    `role text NOT NULL DEFAULT 'member'` (CHECK), `created_at`, `updated_at`
+    `role text NOT NULL` (CHECK), `active boolean NOT NULL`,
+    `credentials_access boolean NOT NULL`, `version integer NOT NULL` (CHECK), `created_at`,
+    `updated_at`; der anlegende Schreibpfad setzt alle fachlichen Startwerte explizit
   - Unique-Index auf `lower(email)`
 - **Akzeptanz:** Migration idempotent, `db:smoke:dev` grün
 

@@ -72,6 +72,42 @@ created_at: Date;
 Der Mapper in der Query-/Command-Handler-Schicht übersetzt DB-`snake_case` → DTO-`camelCase`. DTOs berühren die
 DB-Spaltenform nie direkt.
 
+## Contract-Felder: Docstring auf jedem Feld (verbindlich)
+
+**Jedes** Feld in `contracts/**/*.dto.ts` bekommt einen JSDoc-Docstring. Das ist die bewusste
+Ausnahme von der allgemeinen Regel „keine Kommentare, die den Code wiederholen"
+(`apps/workspace/AGENTS.md`, Abschnitt Kommentardichte).
+
+**Warum hier anders:** DTOs sind die API-Oberfläche. Der Docstring erscheint im Editor-Tooltip an
+jeder Call-Site, also überall dort, wo jemand das Feld benutzt, ohne die Definition zu öffnen. Ein
+fehlender Docstring bedeutet dort eine offene Frage; bei einer internen Hilfsfunktion bedeutet er
+nur Rauschen.
+
+Der Docstring beantwortet, was der Feldname nicht sagt. Bei einem Feld, dessen Name für sich
+sprechen würde, ist das:
+
+- **warum es nullable ist** — welcher echte Fall den Wert fehlen lässt
+- **woraus es abgeleitet ist** oder wen es speist
+- **welchem Feld der Vorrang gehört**, wenn zwei dasselbe meinen
+- **wozu es ausdrücklich nicht dient** (z. B. „autorisiert nie")
+- **an welcher Entität der Wert wirklich hängt**, wenn der Typ etwas anderes suggeriert
+
+```ts
+// ✅ sagt, was der Name nicht sagt
+/** Id of the assignment, not of the person. Mutations address this value. */
+id: string;
+/** Source for `displayName`. Nullable: a contact reached only by a company address
+ *  may have no known first name. */
+firstName: string | null;
+
+// ❌ Wiederholung des Namens
+/** The first name. */
+firstName: string | null;
+```
+
+Findet sich zu einem Feld nichts außer der Wiederholung, ist das ein Hinweis auf das Feld, nicht auf
+den Kommentar: entweder ist der Name unpräzise, oder das Feld gehört nicht ins DTO.
+
 ## Datei- und Ordnerstruktur
 
 - Pro Domain ein Unterordner (`contact/`, `leads/`, `marketing/`, …)

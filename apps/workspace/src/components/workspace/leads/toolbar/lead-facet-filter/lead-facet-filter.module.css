@@ -64,7 +64,6 @@
   );
 }
 
-/* Mobil-only: die Chips weichen einem kompakten Select. */
 .selectSlot {
   display: none;
 }

@@ -94,7 +94,6 @@
   line-height: 1.6;
 }
 
-/* Chat-Karte: Vertrauen als direkter Draht statt Feature-Liste */
 .chatCard {
   --trust-online: #34c98e;
 
@@ -402,7 +401,6 @@
   }
 }
 
-/* Antwortleiste im Eingabefeld-Look: der nächste Schritt liegt direkt im Chat */
 .reply {
   display: flex;
   gap: 1rem;
