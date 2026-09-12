@@ -2,12 +2,12 @@ import "server-only";
 import { inArray } from "drizzle-orm";
 
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { BulkArchiveLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-archive-leads-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 export type BulkArchiveLeadsInput = {
   ids: string[];
@@ -49,15 +49,15 @@ export async function bulkArchiveLeads(
       );
 
     for (const row of toUpdate) {
-      await leadActivityService.createLeadActivity(tx, {
+      await activityService.createActivity(tx, {
         leadId: row.id,
-        type: LeadActivityType.StatusChange,
+        type: ActivityType.StatusChange,
         body: `${row.lead_status} → ${ContactLeadStatus.Archived}`,
         metadata: {
           previous_status: row.lead_status,
           next_status: ContactLeadStatus.Archived,
         },
-        actorType: LeadActorType.System,
+        actorType: ActorType.System,
       });
     }
 

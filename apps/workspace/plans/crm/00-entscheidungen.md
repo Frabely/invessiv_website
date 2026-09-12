@@ -347,7 +347,7 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                |
 | Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                |
 | Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                  |
-| Activity-Service      | `apps/workspace/src/server/workspace/leads/services/lead-activity-service.ts`                                                   |
+| Activity-Service      | `apps/workspace/src/server/workspace/shared/services/activity-service.ts`                                                       |
 | Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts` |
 | Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                          |
 | Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                        |
@@ -391,7 +391,12 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 ## Migrationen
 
 - Nummer zur Umsetzung als höchste vorhandene Nummer plus eins bestimmen.
-- Activity-Umzug als Expand → Dual-Write → Backfill → Read-Cutover → späterer Cleanup.
+- Standardablauf für Datenumzüge: Expand → Dual-Write → Backfill → Read-Cutover → späterer Cleanup.
+- **Ausnahme Activity-Umzug (Ordner 02):** direkter Umzug. Die Migration legt `activities` an,
+  übernimmt `lead_activities` mit derselben ID und bricht bei Abweichung ab; ab dem Deploy lesen und
+  schreiben alle Pfade nur `activities`. Begründung: geringer Wert der Bestandsdaten und betrieblich
+  zugesichert keine Activity-Writes zwischen Migration und Deploy. Folge: Einträge zwischen Deploy und
+  einem Revert sieht die alte Version nicht — bewusst akzeptiert.
 - Ein Backfill erhält eine neue registrierte Migration oder einen separat versionierten Job. Eine
   bereits in `schema_migrations` gespeicherte Datei wird niemals verändert.
 - Jede Merge-Einheit bleibt kompatibel zur unmittelbar vorherigen App-Version.
@@ -403,8 +408,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 
 | #   | Status    | Ordner                            | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
 | --- | --------- | --------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
-| 01  | im Review | `01-kernschema-und-contracts`     | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
-| 02  | offen     | `02-activity-migration`           | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
+| 01  | gemerged  | `01-kernschema-und-contracts`     | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
+| 02  | im Review | `02-activity-migration`           | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
 | 03  | offen     | `03-mitglieder-und-auth`          | Owner kann Mitglieder sicher verwalten; Auth ist fail-closed                    |   50–80 |  3–4 T. |
 | 04  | offen     | `04-personen-und-kundenakte`      | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen     | `05-kundenliste-und-zuweisung`    | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
@@ -424,7 +429,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 19  | offen     | `19-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
 | 20  | offen     | `20-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
 | 21  | offen     | `21-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
-| 22  | offen     | `22-activity-cleanup`             | Dual-Write aus, `lead_activities` abgebaut, genau eine Activity-Tabelle         |   15–30 |  1–2 T. |
+| 22  | offen     | `22-activity-cleanup`             | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.
@@ -452,4 +457,4 @@ nach einer neuen Scope-Entscheidung umgesetzt werden.
 - Vor Merge: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, relevante DB-Smokes und
   `pnpm --filter @invessiv/workspace build`.
 - Bei Web-App-Änderungen zusätzlich `pnpm --filter @invessiv/web build`.
-- Portalgrenzen, Credential-Reveal, Purge, Activity-Backfill und Restore benötigen negative Tests.
+- Portalgrenzen, Credential-Reveal, Purge, Activity-Übernahme und Restore benötigen negative Tests.

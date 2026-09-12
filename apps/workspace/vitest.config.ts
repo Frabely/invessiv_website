@@ -6,6 +6,9 @@ export default defineConfig(({ mode }) => ({
     "process.env.CRM_DB_INTEGRATION": JSON.stringify(
       mode === "crm-integration" ? "true" : "false",
     ),
+    "process.env.ACTIVITY_DB_INTEGRATION": JSON.stringify(
+      mode === "activity-integration" ? "true" : "false",
+    ),
   },
   resolve: {
     alias: [

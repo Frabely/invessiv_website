@@ -9,7 +9,18 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Was hier hingehört
 
 Serverseitige Bausteine, die **mehrere** Workspace-Domänen benutzen und keiner davon gehören.
-Aktuell: das Concurrency-Muster.
+Aktuell: das Concurrency-Muster und der Activity-Service.
+
+## `activityService` ist der einzige Schreibweg für Aktivitäten
+
+`services/activity-service.ts` schreibt ausschließlich in `activities`. Kein Command-Handler fügt
+selbst in `activities` ein, und niemand schreibt mehr in `lead_activities` — die Tabelle ist seit
+dem Umzug in Ordner 02 stillgelegt und wird in Ordner 22 abgebaut.
+
+- Ein Aufruf trägt `leadId` und/oder `customerId`; ohne beide ist er ein Typfehler.
+- `createActivity(tx, …)` schreibt in der Transaktion des fachlichen Writes, `appendActivity(…)`
+  öffnet eine eigene.
+- Der Service protokolliert nichts und wirft keine Domänenfehler.
 
 Ein Baustein zieht erst hierher, wenn er **tatsächlich** einen zweiten Nutzer hat — nicht
 vorsorglich. Domänenspezifisches bleibt bei der Domäne.

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({
@@ -16,9 +16,9 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    createLeadActivity: createLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    createActivity: createLeadActivityMock,
   },
 }));
 
@@ -93,9 +93,9 @@ describe("bulkArchiveLeads", () => {
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       expect.any(Object),
       expect.objectContaining({
-        actorType: LeadActorType.System,
+        actorType: ActorType.System,
         leadId: "lead-1",
-        type: LeadActivityType.StatusChange,
+        type: ActivityType.StatusChange,
       }),
     );
   });

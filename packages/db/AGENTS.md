@@ -91,7 +91,7 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
 ## Skripte
 
 - `db:migrate:*` und `db:smoke:*` laufen gegen jedes Ziel. Schreibende Skripte (`db:seed:*`,
-  `db:smoke:crm`) sind auf `development` und `preview` begrenzt und lehnen `production` ab.
+  `db:smoke:crm`, `db:smoke:activities`) sind auf `development` und `preview` begrenzt und lehnen `production` ab.
 - Schreibende Skripte kennzeichnen ihre Zeilen mit einem Fixture-Präfix und räumen sie wieder ab —
   auch wenn eine Prüfung fehlschlägt.
 - Seeds sind wiederholbar: jeder Lauf setzt die eigenen Zeilen zurück und legt sie neu an.

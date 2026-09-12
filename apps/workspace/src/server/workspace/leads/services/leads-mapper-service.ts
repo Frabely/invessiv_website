@@ -8,6 +8,10 @@ import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead
 import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type { LeadSummaryRow } from "@invessiv/common/contracts/leads/rows/lead-summary-row";
+import {
+  isLegacyLeadActivityType,
+  isLegacyLeadActorType,
+} from "@invessiv/common/patterns/activity/legacy-lead-activity";
 import { mapCategoryRowToDto } from "@/server/workspace/leads/services/lead-category/lead-category-mapping-service";
 
 function mapSocialProfileRowToDto(
@@ -21,18 +25,28 @@ function mapSocialProfileRowToDto(
   };
 }
 
-function mapActivityRowToDto(row: LeadActivityRow): LeadActivityDto {
-  return {
-    id: row.id,
-    type: row.type,
-    title: row.title,
-    body: row.body,
-    metadata: row.metadata,
-    occurredAt: row.occurred_at.toISOString(),
-    actorType: row.actor_type,
-    actorId: row.actor_id,
-    actorLabel: row.actor_label,
-  };
+// The lead timeline renders only lead activity types; Task 02a lifts this filter.
+function mapActivityRowToDtos(row: LeadActivityRow): LeadActivityDto[] {
+  if (
+    !isLegacyLeadActivityType(row.type) ||
+    !isLegacyLeadActorType(row.actor_type)
+  ) {
+    return [];
+  }
+
+  return [
+    {
+      id: row.id,
+      type: row.type,
+      title: row.title,
+      body: row.body,
+      metadata: row.metadata,
+      occurredAt: row.occurred_at.toISOString(),
+      actorType: row.actor_type,
+      actorId: row.actor_id,
+      actorLabel: row.actor_label,
+    },
+  ];
 }
 
 function mapSubmissionRowToDto(row: LeadSubmissionRow): LeadSubmissionDto {
@@ -97,7 +111,7 @@ function mapLeadDetailRowToDto(
     updatedAt: mainRow.updated_at.toISOString(),
     category: mapCategoryRowToDto(mainRow),
     socialProfiles: socialProfileRows.map(mapSocialProfileRowToDto),
-    activities: activityRows.map(mapActivityRowToDto),
+    activities: activityRows.flatMap(mapActivityRowToDtos),
     submissions: submissionRows.map(mapSubmissionRowToDto),
   };
 }

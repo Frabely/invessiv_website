@@ -1,8 +1,8 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { BulkEditFieldKey } from "@invessiv/common/constants/leads/bulk/bulk-edit-field-keys";
 import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
@@ -24,7 +24,7 @@ import {
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
   [BulkEditFieldKey.Status]: "status",
@@ -174,12 +174,12 @@ async function processSingleLead(
   }
 
   await tx.update(leads).set(setClause).where(eq(leads.id, current.id));
-  await leadActivityService.createLeadActivity(tx, {
+  await activityService.createActivity(tx, {
     leadId: current.id,
-    type: LeadActivityType.BulkEdit,
+    type: ActivityType.BulkEdit,
     body: buildBulkEditActivityBody(metadata),
     metadata,
-    actorType: LeadActorType.System,
+    actorType: ActorType.System,
   });
 
   return { updated: true };

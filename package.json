@@ -15,6 +15,7 @@
     "db:smoke:preview": "pnpm --filter @invessiv/db db:smoke:preview",
     "db:smoke:prod": "pnpm --filter @invessiv/db db:smoke:prod",
     "db:smoke:crm": "pnpm --filter @invessiv/db db:smoke:crm && pnpm --filter @invessiv/workspace db:smoke:crm",
+    "db:smoke:activities": "pnpm --filter @invessiv/db db:smoke:activities && pnpm --filter @invessiv/workspace db:smoke:activities",
     "db:seed:leads": "pnpm --filter @invessiv/db db:seed:leads",
     "db:seed:crm": "pnpm --filter @invessiv/db db:seed:crm",
     "dev:web": "pnpm --filter @invessiv/web dev",

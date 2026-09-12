@@ -1,7 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/lead-sources";
-import { LEAD_ACTIVITY_TYPE_VALUES } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LEAD_ACTOR_TYPE_VALUES } from "@invessiv/common/constants/leads/activity/lead-actor-types";
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { LEAD_SORT_VALUES } from "@invessiv/common/constants/leads/list/lead-sort";
 import {
@@ -39,37 +37,6 @@ describe("LEAD_SOURCES", () => {
 
   it("has no duplicates", () => {
     expect(new Set(LEAD_SOURCES_VALUES).size).toBe(LEAD_SOURCES_VALUES.length);
-  });
-});
-
-describe("LEAD_ACTIVITY_TYPES", () => {
-  it("contains exactly the supported activity types", () => {
-    expect(LEAD_ACTIVITY_TYPE_VALUES).toEqual([
-      "note",
-      "status_change",
-      "inbound_submission",
-      "import",
-      "bulk_edit",
-      "message_drafted",
-    ]);
-  });
-
-  it("has no duplicates", () => {
-    expect(new Set(LEAD_ACTIVITY_TYPE_VALUES).size).toBe(
-      LEAD_ACTIVITY_TYPE_VALUES.length,
-    );
-  });
-});
-
-describe("LEAD_ACTOR_TYPES", () => {
-  it("contains exactly system, user", () => {
-    expect(LEAD_ACTOR_TYPE_VALUES).toEqual(["system", "user"]);
-  });
-
-  it("has no duplicates", () => {
-    expect(new Set(LEAD_ACTOR_TYPE_VALUES).size).toBe(
-      LEAD_ACTOR_TYPE_VALUES.length,
-    );
   });
 });
 

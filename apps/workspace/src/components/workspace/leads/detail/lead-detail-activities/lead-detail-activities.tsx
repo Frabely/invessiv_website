@@ -12,8 +12,11 @@ import type { ContactLeadStatus } from "@invessiv/common/constants/contact/conta
 import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import type { ContactRequestKind } from "@invessiv/common/constants/contact/contact-request-kind";
 import { LeadDetailEntryKind } from "@invessiv/common/constants/leads/activity/lead-detail-entry-kinds";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import type { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import {
+  ActivityType,
+  type LegacyLeadActivityType,
+} from "@invessiv/common/constants/activity/activity-types";
+import type { LegacyLeadActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
 import type { Locale } from "@/config/i18n";
@@ -51,13 +54,13 @@ type StatusChangeMetadata = {
   next_status: ContactLeadStatus;
 };
 
-const ACTIVITY_TYPE_ICON: Record<LeadActivityType, IconDefinition> = {
-  [LeadActivityType.Note]: faPenToSquare,
-  [LeadActivityType.StatusChange]: faArrowRightArrowLeft,
-  [LeadActivityType.InboundSubmission]: faInbox,
-  [LeadActivityType.Import]: faFileImport,
-  [LeadActivityType.BulkEdit]: faLayerGroup,
-  [LeadActivityType.MessageDrafted]: faComment,
+const ACTIVITY_TYPE_ICON: Record<LegacyLeadActivityType, IconDefinition> = {
+  [ActivityType.Note]: faPenToSquare,
+  [ActivityType.StatusChange]: faArrowRightArrowLeft,
+  [ActivityType.InboundSubmission]: faInbox,
+  [ActivityType.Import]: faFileImport,
+  [ActivityType.BulkEdit]: faLayerGroup,
+  [ActivityType.MessageDrafted]: faComment,
 };
 
 function getStatusChangeMetadata(
@@ -129,7 +132,7 @@ function getActorLabel(
 ): string {
   return (
     activity.actorLabel ??
-    content.activity.actor[activity.actorType as LeadActorType]
+    content.activity.actor[activity.actorType as LegacyLeadActorType]
   );
 }
 
@@ -220,9 +223,9 @@ function renderActivityEntry(
         </header>
 
         <h4 className={styles.title}>{title}</h4>
-        {activity.type === LeadActivityType.StatusChange ? (
+        {activity.type === ActivityType.StatusChange ? (
           renderStatusChange(activity, content, sharedContent)
-        ) : activity.type === LeadActivityType.BulkEdit ? (
+        ) : activity.type === ActivityType.BulkEdit ? (
           renderBulkEdit(activity, content)
         ) : activity.body ? (
           <p className={styles.bodyText}>{activity.body}</p>

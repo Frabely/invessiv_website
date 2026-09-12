@@ -3,8 +3,8 @@ import { eq } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads, leadSocialProfiles } from "@invessiv/db/record-configuration";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { UpdateLeadResult } from "@invessiv/common/contracts/leads/results/update-lead-result";
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
@@ -14,7 +14,7 @@ import {
   isDuplicateEmailError,
   isDuplicateSocialProfileError,
 } from "@/server/workspace/leads/shared/is-duplicate-email-error";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
 export async function updateLead(
@@ -64,15 +64,15 @@ export async function updateLead(
       await tx.update(leads).set(setFields).where(eq(leads.id, leadId));
 
       if (isStatusChange) {
-        await leadActivityService.createLeadActivity(tx, {
+        await activityService.createActivity(tx, {
           leadId,
-          type: LeadActivityType.StatusChange,
+          type: ActivityType.StatusChange,
           body: `${existing.leadStatus} → ${data.lead_status}`,
           metadata: {
             previous_status: existing.leadStatus,
             next_status: data.lead_status,
           },
-          actorType: LeadActorType.System,
+          actorType: ActorType.System,
         });
       }
 

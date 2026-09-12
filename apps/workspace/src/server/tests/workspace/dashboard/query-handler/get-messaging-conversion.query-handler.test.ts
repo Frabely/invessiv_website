@@ -16,7 +16,7 @@ const {
   getDrizzleDatabaseClientMock: vi.fn(),
   maxAliasMock: vi.fn().mockReturnValue("aliased-max-stage-rank"),
   notExistsMock: vi.fn().mockReturnValue("lead-has-no-status-history"),
-  occurredAtColumn: Symbol("lead_activities.occurred_at"),
+  occurredAtColumn: Symbol("activities.occurred_at"),
 }));
 
 vi.mock("server-only", () => ({}));
@@ -26,6 +26,7 @@ vi.mock("drizzle-orm", () => ({
   count: vi.fn().mockReturnValue("count-expression"),
   eq: eqMock,
   gte: vi.fn().mockReturnValue("non-negative-stage-rank"),
+  isNotNull: vi.fn().mockReturnValue("lead-reference-condition"),
   max: vi.fn().mockReturnValue({
     mapWith: vi.fn().mockReturnValue({ as: maxAliasMock }),
   }),
@@ -36,11 +37,11 @@ vi.mock("@invessiv/db/core", () => ({
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
 vi.mock("@invessiv/db/record-configuration", () => ({
-  leadActivities: {
-    id: Symbol("lead_activities.id"),
-    lead_id: Symbol("lead_activities.lead_id"),
+  activities: {
+    id: Symbol("activities.id"),
+    lead_id: Symbol("activities.lead_id"),
     occurred_at: occurredAtColumn,
-    type: Symbol("lead_activities.type"),
+    type: Symbol("activities.type"),
   },
   leads: {
     id: Symbol("leads.id"),

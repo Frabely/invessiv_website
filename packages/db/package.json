@@ -30,6 +30,7 @@
     "db:smoke:preview": "tsx scripts/smoke-test.ts preview",
     "db:smoke:prod": "tsx scripts/smoke-test.ts production",
     "db:smoke:crm": "tsx scripts/smoke-crm-constraints.ts development",
+    "db:smoke:activities": "tsx scripts/smoke-activity-migration.ts development",
     "db:seed:leads": "tsx scripts/seed-leads-fixture.ts",
     "db:seed:crm": "tsx scripts/seed-crm-fixture.ts",
     "lint": "eslint .",

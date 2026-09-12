@@ -3,24 +3,23 @@ import "server-only";
 import { desc, eq } from "drizzle-orm";
 
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { CreateLeadCoreInput } from "@invessiv/common/contracts/leads/create-lead-core-input";
 import type { CreateLeadCoreOptions } from "@invessiv/common/contracts/leads/create-lead-core-options";
-import type { CreateLeadActivityInput } from "@invessiv/common/contracts/leads/create-lead-activity-input";
+import type { CreateActivityInput } from "@invessiv/common/contracts/activity/create-activity-input";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
-import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead-activity-row";
 import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
 import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
 import type { LeadSubmissionRow } from "@invessiv/common/contracts/leads/rows/lead-submission-row";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
-  leadActivities,
+  activities,
   leadCategories,
   leads,
   leadSocialProfiles,
   leadSubmissions,
 } from "@invessiv/db/record-configuration";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";
@@ -38,8 +37,8 @@ async function loadLeadDetailInTransaction(
   tx: ContactDatabaseTransaction,
   leadId: string,
 ): Promise<LeadDetailDto> {
-  const [leadRows, socialProfiles, activities, submissions] = await Promise.all(
-    [
+  const [leadRows, socialProfiles, activityRows, submissions] =
+    await Promise.all([
       tx
         .select({
           id: leads.id,
@@ -78,19 +77,19 @@ async function loadLeadDetailInTransaction(
         .where(eq(leadSocialProfiles.lead_id, leadId)),
       tx
         .select({
-          id: leadActivities.id,
-          type: leadActivities.type,
-          title: leadActivities.title,
-          body: leadActivities.body,
-          metadata: leadActivities.metadata,
-          occurred_at: leadActivities.occurred_at,
-          actor_type: leadActivities.actor_type,
-          actor_id: leadActivities.actor_id,
-          actor_label: leadActivities.actor_label,
+          id: activities.id,
+          type: activities.type,
+          title: activities.title,
+          body: activities.body,
+          metadata: activities.metadata,
+          occurred_at: activities.occurred_at,
+          actor_type: activities.actor_type,
+          actor_id: activities.actor_id,
+          actor_label: activities.actor_label,
         })
-        .from(leadActivities)
-        .where(eq(leadActivities.lead_id, leadId))
-        .orderBy(desc(leadActivities.occurred_at)),
+        .from(activities)
+        .where(eq(activities.lead_id, leadId))
+        .orderBy(desc(activities.occurred_at), desc(activities.id)),
       tx
         .select({
           id: leadSubmissions.id,
@@ -104,8 +103,7 @@ async function loadLeadDetailInTransaction(
         .from(leadSubmissions)
         .where(eq(leadSubmissions.lead_id, leadId))
         .orderBy(desc(leadSubmissions.created_at)),
-    ],
-  );
+    ]);
 
   const leadRow = leadRows[0];
   if (!leadRow) {
@@ -115,7 +113,7 @@ async function loadLeadDetailInTransaction(
   return leadsMapperService.mapLeadDetailRowToDto(
     leadRow as LeadDetailMainRow,
     socialProfiles as LeadSocialProfileRow[],
-    activities as LeadActivityRow[],
+    activityRows,
     submissions as LeadSubmissionRow[],
   );
 }
@@ -174,13 +172,13 @@ export async function createLeadCoreInTransaction(
       );
     }
 
-    const activityInput: CreateLeadActivityInput = {
+    const activityInput: CreateActivityInput = {
       leadId,
       type: options.activityType,
-      actorType: LeadActorType.System,
+      actorType: ActorType.System,
       metadata: options.activityMetadata ?? null,
     };
-    await leadActivityService.createLeadActivity(tx, activityInput);
+    await activityService.createActivity(tx, activityInput);
 
     return await loadLeadDetailInTransaction(tx, leadId);
   } catch (error) {

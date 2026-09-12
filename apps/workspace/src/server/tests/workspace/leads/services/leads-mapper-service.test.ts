@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import type { LeadActivityRow } from "@invessiv/common/contracts/leads/rows/lead-activity-row";
 import type { LeadDetailMainRow } from "@invessiv/common/contracts/leads/rows/lead-detail-main-row";
 import type { LeadSocialProfileRow } from "@invessiv/common/contracts/leads/rows/lead-social-profile-row";
@@ -186,12 +186,12 @@ const detailSocialProfileRow = {
 
 const detailActivityRow = {
   id: "act-uuid-1",
-  type: LeadActivityType.Note,
+  type: ActivityType.Note,
   title: "Erstes Gespräch",
   body: "Sehr gutes Gespräch gehabt.",
   metadata: null,
   occurred_at: DETAIL_NOW,
-  actor_type: LeadActorType.User,
+  actor_type: ActorType.User,
   actor_id: "clerk-user-1",
   actor_label: "Moritz",
 } satisfies LeadActivityRow;
@@ -307,12 +307,12 @@ describe("leadsMapperService.mapLeadDetailRowToDto", () => {
     expect(result.activities).toEqual([
       {
         id: "act-uuid-1",
-        type: LeadActivityType.Note,
+        type: ActivityType.Note,
         title: "Erstes Gespräch",
         body: "Sehr gutes Gespräch gehabt.",
         metadata: null,
         occurredAt: DETAIL_NOW.toISOString(),
-        actorType: LeadActorType.User,
+        actorType: ActorType.User,
         actorId: "clerk-user-1",
         actorLabel: "Moritz",
       },
@@ -328,6 +328,27 @@ describe("leadsMapperService.mapLeadDetailRowToDto", () => {
     );
 
     expect(result.activities).toEqual([]);
+  });
+
+  it("skips activities the lead timeline cannot render", () => {
+    const result = leadsMapperService.mapLeadDetailRowToDto(
+      detailMainRow,
+      [],
+      [
+        { ...detailActivityRow, id: "act-uuid-2", type: ActivityType.Created },
+        {
+          ...detailActivityRow,
+          id: "act-uuid-3",
+          actor_type: ActorType.Customer,
+        },
+        detailActivityRow,
+      ],
+      [],
+    );
+
+    expect(result.activities.map((activity) => activity.id)).toEqual([
+      "act-uuid-1",
+    ]);
   });
 
   it("maps submissions from snake_case to camelCase", () => {

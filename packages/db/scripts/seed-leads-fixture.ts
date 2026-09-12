@@ -7,7 +7,7 @@ import {
   parseDatabaseTarget,
 } from "./database-target";
 import {
-  leadActivities,
+  activities,
   leadCallContacts,
   leadCategories,
   leadEmailContacts,
@@ -24,8 +24,8 @@ import { CONTACT_OFFER_KEY } from "@invessiv/common/constants/contact/contact-of
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import { LEAD_TRACKING_PARAMS } from "@invessiv/common/constants/leads/tracking/lead-tracking-params";
@@ -667,7 +667,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
   const activityRows: Array<{
     actor_id: string | null;
     actor_label: string | null;
-    actor_type: (typeof LeadActorType)[keyof typeof LeadActorType];
+    actor_type: ActorType;
     body: string | null;
     created_at: Date;
     id: string;
@@ -675,7 +675,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     metadata: Record<string, unknown> | null;
     occurred_at: Date;
     title: string | null;
-    type: (typeof LeadActivityType)[keyof typeof LeadActivityType];
+    type: ActivityType;
   }> = [];
 
   fixtures.forEach((fixture, index) => {
@@ -685,7 +685,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     activityRows.push({
       actor_id: null,
       actor_label: "Fixture Seeder",
-      actor_type: LeadActorType.System,
+      actor_type: ActorType.System,
       body: fixture.notes,
       created_at: noteAt,
       id: crypto.randomUUID(),
@@ -693,7 +693,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
       metadata: null,
       occurred_at: noteAt,
       title: "Fixture lead angelegt",
-      type: LeadActivityType.Note,
+      type: ActivityType.Note,
     });
 
     if (fixture.source === LeadSource.Import) {
@@ -701,7 +701,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
       activityRows.push({
         actor_id: null,
         actor_label: "Fixture Seeder",
-        actor_type: LeadActorType.System,
+        actor_type: ActorType.System,
         body: "Lead wurde für das Listen- und Detailtesting importiert.",
         created_at: importAt,
         id: crypto.randomUUID(),
@@ -712,7 +712,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         },
         occurred_at: importAt,
         title: "Import verarbeitet",
-        type: LeadActivityType.Import,
+        type: ActivityType.Import,
       });
     }
 
@@ -721,7 +721,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
       activityRows.push({
         actor_id: null,
         actor_label: "Fixture Seeder",
-        actor_type: LeadActorType.System,
+        actor_type: ActorType.System,
         body: `${ContactLeadStatus.New} -> ${fixture.leadStatus}`,
         created_at: statusChangeAt,
         id: crypto.randomUUID(),
@@ -732,7 +732,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         },
         occurred_at: statusChangeAt,
         title: "Status aktualisiert",
-        type: LeadActivityType.StatusChange,
+        type: ActivityType.StatusChange,
       });
     }
 
@@ -741,7 +741,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
       activityRows.push({
         actor_id: null,
         actor_label: "Fixture Seeder",
-        actor_type: LeadActorType.System,
+        actor_type: ActorType.System,
         body: `Eingehende ${fixture.submission.kind} mit Request ${fixture.submission.requestId}`,
         created_at: submissionAt,
         id: crypto.randomUUID(),
@@ -752,7 +752,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         },
         occurred_at: submissionAt,
         title: "Submission eingegangen",
-        type: LeadActivityType.InboundSubmission,
+        type: ActivityType.InboundSubmission,
       });
     }
   });
@@ -847,7 +847,13 @@ async function run() {
     await tx
       .insert(leadCallContacts)
       .values(submissionRowsPayload.callContactRows);
-    await tx.insert(leadActivities).values(activityRows);
+    await tx.insert(activities).values(
+      activityRows.map((activity) => ({
+        ...activity,
+        customer_id: null,
+        project_id: null,
+      })),
+    );
   });
 
   console.log(`Seeded ${fixtures.length} leads with related fixture data.`);

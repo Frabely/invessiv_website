@@ -5,7 +5,7 @@ import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/err
 import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
 import type { LeadImportResultDto } from "@invessiv/common/contracts/leads/import/lead-import-result.dto";
 import type { LeadImportRowIssueDto } from "@invessiv/common/contracts/leads";
@@ -239,7 +239,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
           },
           {
             source: LeadSource.Import,
-            activityType: LeadActivityType.Import,
+            activityType: ActivityType.Import,
             activityMetadata: {
               import_batch_id: importBatchId,
               row_index: rowIndex,

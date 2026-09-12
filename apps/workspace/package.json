@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "db:smoke:crm": "vitest run src/server/tests/workspace/shared/update-versioned.integration.test.ts --mode crm-integration",
+    "db:smoke:activities": "vitest run src/server/tests/workspace/shared/services/activity-service.integration.test.ts --mode activity-integration",
     "test:e2e": "playwright test --pass-with-no-tests"
   },
   "dependencies": {

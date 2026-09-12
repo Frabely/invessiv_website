@@ -5,14 +5,15 @@ import {
   count as countRows,
   eq,
   gte,
+  isNotNull,
   max,
   notExists,
   sql,
 } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { leadActivities, leads } from "@invessiv/db/record-configuration";
+import { activities, leads } from "@invessiv/db/record-configuration";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import type { GetMessagingConversionInput } from "@/common/contracts/dashboard/get-messaging-conversion-input";
 import type { MessagingConversionDto } from "@/common/contracts/dashboard/messaging-conversion.dto";
 import type { MessagingConversionStageRankRow } from "@/common/contracts/dashboard/messaging-conversion-stage-rank-row";
@@ -24,7 +25,7 @@ export async function getMessagingConversion(
 ): Promise<MessagingConversionDto> {
   const db = getDrizzleDatabaseClient();
   if (input.from && input.to) {
-    const nextStatus = sql<string | null>`${leadActivities.metadata}
+    const nextStatus = sql<string | null>`${activities.metadata}
         ->> 'next_status'`;
     const stageRank = sql<number>`case
       when
@@ -78,17 +79,18 @@ export async function getMessagingConversion(
         end`;
     const highestStageByLead = db
       .select({
-        leadId: leadActivities.lead_id,
+        leadId: activities.lead_id,
         stageRank: max(stageRank).mapWith(Number).as("stage_rank"),
       })
-      .from(leadActivities)
+      .from(activities)
       .where(
         and(
-          eq(leadActivities.type, LeadActivityType.StatusChange),
-          between(leadActivities.occurred_at, input.from, input.to),
+          isNotNull(activities.lead_id),
+          eq(activities.type, ActivityType.StatusChange),
+          between(activities.occurred_at, input.from, input.to),
         ),
       )
-      .groupBy(leadActivities.lead_id)
+      .groupBy(activities.lead_id)
       .as("highest_messaging_stage_by_lead");
 
     const statusEvents: ReadonlyArray<MessagingConversionStageRankRow> =
@@ -102,12 +104,12 @@ export async function getMessagingConversion(
         .groupBy(highestStageByLead.stageRank);
 
     const statusHistoryForLead = db
-      .select({ id: leadActivities.id })
-      .from(leadActivities)
+      .select({ id: activities.id })
+      .from(activities)
       .where(
         and(
-          eq(leadActivities.lead_id, leads.id),
-          eq(leadActivities.type, LeadActivityType.StatusChange),
+          eq(activities.lead_id, leads.id),
+          eq(activities.type, ActivityType.StatusChange),
         ),
       );
 

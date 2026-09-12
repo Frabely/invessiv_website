@@ -84,7 +84,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
   nur über bestehende Theme-Tokens, Zustände über `data-*`-Attribute.
 - Migrationen additiv und idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen
   den Statements, ein zweiter Lauf ist folgenlos.
-- Expand → Dual-Write → Backfill → Read-Cutover → Cleanup über getrennte Releases.
+- Expand → Dual-Write → Backfill → Read-Cutover → Cleanup über getrennte Releases. Einzige
+  Ausnahme: der direkte Activity-Umzug in Ordner 02, begründet in `00-entscheidungen.md`.
 - Bereits registrierte Migrationen werden nie verändert oder erneut erwartet.
 - Outbox-Eintrag und fachlicher DB-Write entstehen in derselben Transaktion.
 - Vor jedem neuen Baustein die Tabelle „Wiederverwendete Muster" in `00-entscheidungen.md` prüfen.
