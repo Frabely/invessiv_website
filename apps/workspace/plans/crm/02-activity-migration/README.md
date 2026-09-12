@@ -35,7 +35,8 @@ und Betriebsschritte hinzufügen, ohne ein reales Risiko abzudecken.
       wechseln.
 - [x] Die Migration übernimmt jede Bestandszeile mit derselben ID und bricht bei Abweichung ab.
 - [x] Ein zweiter Migrationslauf erzeugt keine doppelten Activities.
-- [x] Kein Leser und kein Schreiber greift mehr auf `lead_activities` zu.
+- [x] Kein Anwendungscode liest oder schreibt mehr `lead_activities`; Zugriff haben nur noch das
+      Drizzle-Modell und die Übernahmeprüfung im Activity-Smoke.
 - [x] Timeline-Reihenfolge bleibt bei identischen Zeitstempeln deterministisch.
 - [x] Der Smoke prüft die CHECK-Werte der Datenbank gegen die Const-Objekte.
 - [x] Kein Cleanup alter Daten in dieser Einheit.

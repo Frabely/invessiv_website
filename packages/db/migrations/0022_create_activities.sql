@@ -128,7 +128,7 @@ EXISTS (
       OR migrated.type IS DISTINCT FROM legacy.type
       OR migrated.occurred_at IS DISTINCT FROM legacy.occurred_at
   ) THEN
-    RAISE EXCEPTION 'Activity backfill verification failed';
+    RAISE EXCEPTION 'Lead activity migration verification failed';
 END IF;
 END
 $$;

@@ -42,11 +42,11 @@ export const activities = pgTable(
     check(
       "activities_subject_check",
       sql`${table.lead_id}
-            is not null or
-            ${table.customer_id}
-            is
-            not
-            null`,
+        is not null or
+        ${table.customer_id}
+        is
+        not
+        null`,
     ),
     check(
       "activities_type_check",
@@ -61,19 +61,19 @@ export const activities = pgTable(
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.customer_id}
-            is not null`),
+          is not null`),
     index("activities_lead_id_occurred_at_idx").on(
       table.lead_id,
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.lead_id}
-            is not null`),
+          is not null`),
     index("activities_project_id_occurred_at_idx").on(
       table.project_id,
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.project_id}
-            is not null`),
+          is not null`),
     index("activities_type_occurred_at_idx").on(table.type, table.occurred_at),
   ],
 );
